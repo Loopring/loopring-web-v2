@@ -53,7 +53,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
     // const {account} = useAccount();
 
 
-    const {ammMap, updateAmmMap} = ammMapState;
+    const {ammMap, getAmmMap} = ammMapState;
 
     // const {ammMap,updateAmmMap} = useAmmMap();
     const walletLayer2State = useWalletLayer2();
@@ -167,7 +167,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
 
         if (amm && market && ammMap) {
             //TODO should add it into websocket
-            updateAmmMap();
+            getAmmMap();
             let apiList = [
                 pairDetailBlock({coinKey: market, ammKey: amm, ammMap}),
                 // LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({poolAddress: ammMap[ ammKey ].address}),

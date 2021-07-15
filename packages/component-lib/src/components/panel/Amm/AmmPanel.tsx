@@ -88,17 +88,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
         if (typeof onChangeEvent == 'function') {
             setAmmChgWithdrawData(onChangeEvent({tradeData, type} as AmmChgData<T>));
         } else {
-            if(percentage){
-                console.log('from percentage')
-            }
             setAmmChgWithdrawData({tradeData, type});
-
-            // if (type !== 'percentage') {
-            //     console.log('from Input',tradeData);
-            // } else {
-            //     console.log('from percentage',tradeData)
-            //     setAmmChgWithdrawData({tradeData,type});
-            // }
         }
 
     }, [handleAmmRemoveChangeEvent, onChangeEvent]);

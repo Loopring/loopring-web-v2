@@ -15,7 +15,7 @@ const ammActivityMapSlice:Slice = createSlice({
         getAmmActivityMap(state, action:PayloadAction<string | undefined>) {
             state.status = STATUS.PENDING
         },
-        getAmmActivityMapStatus(state, action: PayloadAction<AmmActivityMapStates>) {
+        updateAmmActivityMap(state, action: PayloadAction<AmmActivityMapStates>) {
             // @ts-ignore
             if (action.error) {
                 state.status =  STATUS.ERROR

@@ -63,7 +63,7 @@ export function useInit(){
             case "DONE":
                 systemState.statusUnset();
                 //TODO do some static information update
-                //tokenState.updateTokenMap();
+                //tokenState.getTokenMap();
                 break;
             default:
                 break;
@@ -73,7 +73,8 @@ export function useInit(){
         systemState,
         // systemState.status,
         // systemState.statusUnset,
-        //tokenState.updateTokenMap
+        //tokenState.getTokenMap
+
     ]);
     React.useEffect(() => {
         if(ammMapState.status ==="ERROR" || tokenState.status === "ERROR"){
