@@ -1,6 +1,6 @@
 {
   "name": "@loopring-web/component-lib",
-  "version": "0.1.1-alpha.0",
+  "version": "1.0.0",
   "private": true,
   "resolutions": {
     "**/@emotion/styled": "^11.1.5"
