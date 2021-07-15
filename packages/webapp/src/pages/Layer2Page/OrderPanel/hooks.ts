@@ -6,7 +6,7 @@ import { useAccount } from 'stores/account/hook'
 import { OrderHistoryRawDataItem } from '@loopring-web/component-lib'
 
 import { OrderDetail } from 'loopring-sdk'
-import { TransactionTradeTypes } from '@loopring-web/component-lib/components/tableList/transactionsTable/Interface';
+import { TransactionTradeTypes } from '@loopring-web/component-lib';
 
 /*
     {

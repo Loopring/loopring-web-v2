@@ -8,7 +8,7 @@ import { Column, generateColumns, generateRows, Table } from '../../basic-lib/ta
 import { TablePagination } from '../../basic-lib'
 import { Filter, TokenTypeCol } from './components/Filter'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
-import { TableType } from 'static-resource';
+import { TableType } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores'
 
 const TableStyled = styled(Box)`

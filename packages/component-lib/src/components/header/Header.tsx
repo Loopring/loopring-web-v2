@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { AppBar, Box, Container, IconButton, Slide, Toolbar } from '@material-ui/core';
 import { Typography } from '@material-ui/core/';
 import { Link as RouterLink } from "react-router-dom";
-import logoSVG from 'common-resources/assets/svg/logo.svg'
+import logoSVG from '@loopring-web/common-resources/assets/svg/logo.svg'
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { HeaderMenuSub, HeadMenuItem, Layer2Item, MenuTab, TabItemPlus } from '../basic-lib';
 import { HeaderProps, HeaderToolBarInterface } from './Interface';
@@ -11,7 +11,7 @@ import {
     HeaderMenuItemInterface,
     HeaderMenuTabStatus,
     ToolBarAvailableItem
-} from 'static-resource';
+} from '@loopring-web/common-resources';
 import { BtnDownload, BtnLanguage, BtnNotification, BtnTheme, BtnWalletConnect } from './toolbar';
 import React from 'react';
 import { useSettings } from '../../stores';

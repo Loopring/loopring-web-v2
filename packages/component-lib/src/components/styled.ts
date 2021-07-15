@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Grid, Typography } from '@material-ui/core';
 import { css } from '@emotion/react';
-import { UpColor } from 'static-resource';
+import { UpColor } from '@loopring-web/common-resources';
 import { Box } from '@material-ui/core/';
 
 

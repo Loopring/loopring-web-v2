@@ -1,4 +1,4 @@
-import { AmmDetailBase, CoinKey, TradeFloat } from '@loopring-web/component-lib/src/static-resource';
+import { AmmDetailBase, CoinKey, TradeFloat } from '@loopring-web/common-resources';
 import { StateBase } from '../../interface';
 import { AmmPoolInfoV3, LoopringMap } from 'loopring-sdk';
 

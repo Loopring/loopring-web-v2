@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { Box } from '@material-ui/core'
 import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
-import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes } from 'static-resource'
+import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes } from '@loopring-web/common-resources'
 import { Column, generateColumns, generateRows, Popover, PopoverType, Table, TablePagination } from '../../basic-lib'
 import { SingleOrderHistoryTable } from './SingleOrderHistoryTable'
 import { Filter, FilterTradeTypes } from './components/Filter'

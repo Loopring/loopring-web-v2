@@ -3,9 +3,9 @@ import { withTranslation, WithTranslation } from 'react-i18next';
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
-import { DropDownIcon, IBData, ProToLiteIcon, TradeCalcData } from 'static-resource';
+import { DropDownIcon, IBData, ProToLiteIcon, TradeCalcData } from '@loopring-web/common-resources';
 import { useDeepCompareEffect } from 'react-use';
-import clockLoading from 'common-resources/assets/svg/clock-loading.svg';
+import clockLoading from '@loopring-web/common-resources/assets/svg/clock-loading.svg';
 import { IconButtonStyled, SwapMenuList, SwapTradeWrap } from '../components';
 import { SwapData } from '../components/panel/SwapWrap/Interface';
 

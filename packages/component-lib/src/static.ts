@@ -6,7 +6,7 @@ import {
     TradeCalcData,
     WalletCoin,
     WalletMap
-} from 'static-resource';
+} from '@loopring-web/common-resources';
 import { List } from 'immutable';
 
 export const coinMap: CoinMap<CoinType, CoinInfo<CoinType>> = {

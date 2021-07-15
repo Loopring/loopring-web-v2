@@ -9,7 +9,7 @@ import {
     ReverseIcon,
     SlippageTolerance,
     TradeCalcData
-} from 'static-resource';
+} from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
 import { Grid, Typography } from '@material-ui/core';

@@ -1,8 +1,8 @@
 import { Box, Grid, IconButton, Typography } from '@material-ui/core/';
-import { ActiveIcon, CopyIcon, LinkIcon, PowerIcon, ReverseIcon } from 'static-resource';
+import { ActiveIcon, CopyIcon, LinkIcon, PowerIcon, ReverseIcon } from '@loopring-web/common-resources';
 import { Trans, withTranslation, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
-import { AccountInfoProps, Button, TypographyStrong, VipStyled } from './../';
+import { AccountInfoProps, Button, TypographyStrong, VipStyled } from '../';
 import QRCode from 'qrcode.react';
 
 

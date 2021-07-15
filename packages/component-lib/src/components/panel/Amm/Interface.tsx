@@ -1,5 +1,5 @@
 import { InputButtonProps } from '../../basic-lib';
-import { AmmData, CoinInfo, IBData } from 'static-resource';
+import { AmmData, CoinInfo, IBData } from '@loopring-web/common-resources';
 import { AmmChgData, AmmDepositBaseProps, AmmWithdrawBaseProps } from '../components';
 
 export enum AmmPanelType {

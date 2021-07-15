@@ -1,7 +1,7 @@
 import { TGItemJSXInterface, ToggleButtonGroup } from '../../../basic-lib';
 import React from 'react';
 import CurrencyInput from 'react-currency-input-field';
-import { globalSetup } from 'static-resource';
+import { globalSetup } from '@loopring-web/common-resources';
 import styled from '@emotion/styled';
 import { Box } from '@material-ui/core';
 import { WithTranslation } from 'react-i18next';

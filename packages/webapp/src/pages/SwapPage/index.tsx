@@ -5,7 +5,7 @@ import TradePanel from './panel/TradePanel'
 import styled from 'styled-components'
 import { useSwapPage } from './hook';
 import { SwapPanel } from '@loopring-web/component-lib'
-import { TradeBtnStatus } from '@loopring-web/component-lib/components/panel/index';
+import { TradeBtnStatus } from '@loopring-web/component-lib'
 
 const FixedStyle = styled(Box)`
   @media only screen and (min-height: 680px ) and (min-width: 1024px) {
@@ -43,8 +43,8 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
 
         <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}}>
             <FixedStyle>
-                <SwapPanel tradeData={tradeData}
-                           tradeCalcData={tradeCalcData}
+                <SwapPanel tradeData={tradeData as any}
+                           tradeCalcData={tradeCalcData as any}
                            onSwapClick={onSwapClick}
                            swapBtnI18nKey={swapBtnI18nKey}
                            swapBtnStatus={isSwapLoading ? TradeBtnStatus.LOADING : TradeBtnStatus.AVAILABLE}

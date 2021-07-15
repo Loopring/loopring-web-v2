@@ -1,4 +1,4 @@
-import { CoinInfo } from '../../../static-resource';
+import { CoinInfo } from '@loopring-web/common-resources';
 
 
 export enum AmmTradeType {

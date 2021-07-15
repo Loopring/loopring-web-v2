@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { Box, Container, GlobalStyles, } from '@material-ui/core';
 
 import { css, Theme, useTheme } from '@emotion/react';
-import { globalCss, } from 'static-resource';
+import { globalCss, } from '@loopring-web/common-resources';
 import { useTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 

@@ -1,7 +1,7 @@
 import { PanelContent, WrapStyled, } from '../../basic-lib';
 import { AmmChgData, AmmWithdrawWrap, IconButtonStyled } from '../components';
 import { Grid, Tab, Tabs, Toolbar } from '@material-ui/core';
-import { AmmData, AmmInData, IBData, RefreshIcon } from 'static-resource';
+import { AmmData, AmmInData, IBData, RefreshIcon } from '@loopring-web/common-resources';
 import { AmmDepositWrap } from '../components/panel/AmmWrap/AmmDeposit';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { AmmPanelType, AmmProps } from './Interface';

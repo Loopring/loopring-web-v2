@@ -1,7 +1,7 @@
 import { withTranslation, WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import React from 'react';
-import { EmptyIcon } from '../../../static-resource';
+import { EmptyIcon } from '@loopring-web/common-resources';
 import { Typography } from '@material-ui/core/';
 
 

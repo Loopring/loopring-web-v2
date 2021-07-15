@@ -1,5 +1,5 @@
 import store from '../../stores';
-import { WalletMap,WalletCoin,CoinKey } from '@loopring-web/component-lib/src/static-resource';
+import { WalletMap,WalletCoin,CoinKey } from '@loopring-web/common-resources';
 import * as fm from 'loopring-sdk';
 import { fromWEI } from '../../utils/swap_calc_utils';
 import { UserBalanceInfo } from 'loopring-sdk';

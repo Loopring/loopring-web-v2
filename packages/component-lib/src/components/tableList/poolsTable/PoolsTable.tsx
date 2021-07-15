@@ -12,7 +12,7 @@ import {
     PriceTag,
     SearchIcon,
     TableType,
-} from 'static-resource';
+} from '@loopring-web/common-resources';
 import { Avatar, Box, InputAdornment, OutlinedInput, Typography } from '@material-ui/core/';
 import { PoolTableProps, Row } from './Interface';
 import styled from '@emotion/styled';

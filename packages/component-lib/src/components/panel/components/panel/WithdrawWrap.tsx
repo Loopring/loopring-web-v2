@@ -1,7 +1,7 @@
 import { Trans, WithTranslation } from 'react-i18next';
 import React, { ChangeEvent } from 'react';
 import { FormControlLabel, Grid, ListItemText, Radio, RadioGroup, Typography } from '@material-ui/core';
-import { CloseIcon, DropDownIcon, globalSetup, IBData, WithdrawTypes } from 'static-resource';
+import { CloseIcon, DropDownIcon, globalSetup, IBData, WithdrawTypes } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../../Interface';
 import { Button, IconClearStyled, MenuItem, TextField } from '../../../../';
 import { WithdrawViewProps } from '../Interface';

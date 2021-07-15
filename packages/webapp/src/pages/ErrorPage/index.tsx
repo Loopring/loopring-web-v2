@@ -1,7 +1,7 @@
 import { Trans, useTranslation } from 'react-i18next';
 import { Box, Container, Link, Typography } from '@material-ui/core';
 import styled from '@emotion/styled';
-import { ErrorObject } from '@loopring-web/component-lib/src/static-resource';
+import { ErrorObject } from '@loopring-web/common-resources';
 import { getContactInfo } from '../../utils/dt_tools';
 
 const StyleBox = styled(Box)`

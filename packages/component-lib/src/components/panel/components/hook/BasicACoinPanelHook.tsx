@@ -1,4 +1,4 @@
-import { IBData } from 'static-resource';
+import { IBData } from '@loopring-web/common-resources';
 import { BasicACoinTradeHookProps } from '../Interface';
 import React from 'react';
 import { SwitchData } from '../../Interface';

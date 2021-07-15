@@ -3,7 +3,7 @@ import { Button, Column, generateColumns, Table, TableProps, } from '../../basic
 import { Default } from '../../basic-lib/tables/table.stories';
 import { FormatterProps } from 'react-data-grid';
 import { Typography } from '@material-ui/core/';
-import { Currency, FloatTag, PriceTag } from 'static-resource';
+import { Currency, FloatTag, PriceTag } from '@loopring-web/common-resources';
 import { HeaderCell } from './componnents/HeaderCell';
 import React from 'react';
 import styled from '@emotion/styled';

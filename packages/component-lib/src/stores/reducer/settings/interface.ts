@@ -1,4 +1,4 @@
-import { LanguageKeys, ThemeKeys, UpColor } from 'static-resource';
+import { LanguageKeys, ThemeKeys, UpColor } from '@loopring-web/common-resources';
 
 export enum PlatFormType {
     mobile = 'mobile',

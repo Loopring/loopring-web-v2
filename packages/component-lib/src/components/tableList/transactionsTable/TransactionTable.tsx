@@ -5,7 +5,7 @@ import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
 import { Popover, PopoverType, TablePagination } from '../../basic-lib'
 import { Column, generateColumns, generateRows, Table } from '../../basic-lib/tables/index'
-import { AlertIcon, CheckIcon, EmptyValueTag, PendingIcon, TableType } from 'static-resource'
+import { AlertIcon, CheckIcon, EmptyValueTag, PendingIcon, TableType } from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
 import { TablePaddingX, TableFilterStyled } from '../../styled';
 import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes } from './Interface'

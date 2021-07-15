@@ -1,5 +1,5 @@
 import React from "react";
-import { AmmActivity, CoinInfo, TradeFloat } from "@loopring-web/component-lib/src/static-resource";
+import { AmmActivity, CoinInfo, TradeFloat, WalletMap } from "@loopring-web/common-resources";
 import { useTokenMap } from "stores/token";
 import { useRouteMatch } from 'react-router';
 import { AmmDetailStore, useAmmMap } from '../../../stores/Amm/AmmMap';
@@ -8,9 +8,9 @@ import { makeTickView, makeWallet, pairDetailBlock, WalletMapExtend } from '../.
 import { AmmPoolSnapshot, AmmUserRewardMap, getExistedMarket, TickerData } from 'loopring-sdk';
 import { deepClone } from '../../../utils/obj_tools';
 import { getUserAmmTransaction, makeMyAmmMarketArray } from '../../../hooks/help/marketTable';
-import { AmmRecordRow } from '@loopring-web/component-lib/components/tableList/ammRecordTable/Interface';
+import { AmmRecordRow } from '@loopring-web/component-lib';
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
-import { MyAmmLP } from '@loopring-web/component-lib/src/static-resource';
+import { MyAmmLP } from '@loopring-web/common-resources';
 import { useSystem } from '../../../stores/system';
 import { makeMyAmmWithSnapshot } from '../../../hooks/help/makeUIAmmActivityMap';
 import store from '../../../stores';
@@ -110,7 +110,8 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
 
     const walletLayer2DoIt = React.useCallback((market) => {
         const {walletMap: _walletMap} = makeWallet();
-        setWalletMap(_walletMap)
+
+        setWalletMap(_walletMap as WalletMapExtend<any>)
         if (_walletMap) {
             getUserAmmTransaction()?.then((marketTrades) => {
                 let _myTradeArray = makeMyAmmMarketArray(market, marketTrades)

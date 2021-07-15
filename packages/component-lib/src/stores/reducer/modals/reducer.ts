@@ -8,7 +8,7 @@ import {
     TransferInfoProps,
     WithdrawInfoProps
 } from '../../../index';
-import { IBData } from 'static-resource';
+import { IBData } from '@loopring-web/common-resources';
 
 const initialState: ModalState<IBData<any>, any> = {
     isShowTransfer: {isShow: false, props: {}},

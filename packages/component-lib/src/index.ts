@@ -6,4 +6,7 @@
 
 export * from './stores'
 export * from './components'
-// export * from "./static-resource";
+
+export * from './static'
+
+// export * from "./@loopring-web/common-resources";

@@ -16,7 +16,7 @@ import {
     WithdrawPanel,
     WithdrawProps
 } from '../../';
-import { IBData } from 'static-resource';
+import { IBData } from '@loopring-web/common-resources';
 
 
 const SwitchPanelStyled = styled(Box)<{ _height?: number | string, _width?: number | string }>`

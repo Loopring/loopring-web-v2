@@ -7,14 +7,14 @@ import {
     ThemeDarkIcon,
     ThemeLightIcon,
     ThemeType,
-} from 'static-resource';
+    i18n,
+} from '@loopring-web/common-resources';
 import React from 'react';
 import { QRCodePanel } from '../../modal';
 import { WithTranslation } from 'react-i18next';
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';
 import { bindPopper } from 'material-ui-popup-state/es';
 import { OutlineSelect, OutlineSelectItem, PopoverPure } from '../../basic-lib';
-import i18n from '../../../static-resource/src/i18n';
 import { useSettings } from '../../../stores';
 
 

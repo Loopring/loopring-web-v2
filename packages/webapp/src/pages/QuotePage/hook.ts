@@ -8,7 +8,7 @@ import { TradingInterval, WsTopicType } from 'loopring-sdk';
 import { LoopringAPI } from 'stores/apis/api'
 import { tickerService } from '../../services/tickerService';
 import { debounce } from "lodash"
-import { globalSetup } from '@loopring-web/component-lib/src/static-resource';
+import { globalSetup } from '@loopring-web/common-resources';
 
 const amtCol = 5
 const OnePageSize = 16;
@@ -152,7 +152,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
                 if (coinMap) {
                     const {coinA, coinB} = item.pair;
                     const _item: MarketBlockProps<C> = {
-                        tradeFloat: item,
+                        tradeFloat: item as any,
                         // @ts-ignore
                         coinAInfo: coinMap[ coinA ],
                         // @ts-ignore

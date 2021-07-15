@@ -1,7 +1,7 @@
 import { Column, generateColumns, generateRows, Table, } from '../../basic-lib'
 import { OrderHistoryTableDetailItem, OrderPair } from './OrderHistoryTable'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next';
-import { EmptyValueTag } from '../../../static-resource';
+import { EmptyValueTag } from '@loopring-web/common-resources';
 
 interface Row {
     amount: OrderPair

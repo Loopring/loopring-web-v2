@@ -4,7 +4,7 @@ import * as fm from 'loopring-sdk'
 
 import BigNumber from 'bignumber.js'
 
-import { CoinInfo, CoinMap, } from '@loopring-web/component-lib/src/static-resource'
+import { CoinInfo, CoinMap, } from '@loopring-web/common-resources'
 import { DepthData, getBaseQuote, LoopringMap, MarketInfo, MarketStatus, TokenInfo, } from 'loopring-sdk'
 import { BIG0, BIG1, BIG10, BIG10K, MULTI_FACTOR, } from '../defs/swap_defs'
 

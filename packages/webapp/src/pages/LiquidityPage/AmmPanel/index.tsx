@@ -1,10 +1,10 @@
 import { AmmPanel, AmmPanelType } from '@loopring-web/component-lib';
-import { AmmData, AmmInData, CoinInfo, IBData, WalletMap } from '@loopring-web/component-lib/src/static-resource';
+import { AmmData, AmmInData, CoinInfo, IBData, WalletMap } from '@loopring-web/common-resources';
 import { useAmmPanel } from './hooks';
 import React from 'react';
 import { Box } from '@material-ui/core';
 import { AmmPoolSnapshot, TickerData } from 'loopring-sdk';
-import { TradeBtnStatus } from '@loopring-web/component-lib/components/panel/index';
+import { TradeBtnStatus } from '@loopring-web/component-lib';
 
 export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
     ACD extends AmmInData<I>,

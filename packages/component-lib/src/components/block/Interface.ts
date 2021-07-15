@@ -1,5 +1,5 @@
 import { MouseEventHandler } from 'react';
-import { CoinInfo, PriceTag, TradeFloat } from 'static-resource';
+import { CoinInfo, PriceTag, TradeFloat } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../panel';
 import { ButtonProps } from '../basic-lib';
 

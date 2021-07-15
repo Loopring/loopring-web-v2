@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { setCurrency, setLanguage, setPlatform, setSlippage, setTheme, setUpColor, } from './reducer'
 import { PlatFormType, SettingsState } from "./interface";
-import { LanguageKeys, LanguageType, ThemeKeys, ThemeType, UpColor } from 'static-resource';
+import { LanguageKeys, LanguageType, ThemeKeys, ThemeType, UpColor } from '@loopring-web/common-resources';
 import React from 'react';
 
 export function useSettings(): SettingsState & {

@@ -1,5 +1,5 @@
 import { HeaderRendererProps } from 'react-data-grid';
-// import { DropDownIcon } from 'static-resource';
+// import { DropDownIcon } from '@loopring-web/common-resources';
 import React from 'react';
 import styled from '@emotion/styled'
 import { Box, BoxProps } from '@material-ui/core'

@@ -1,5 +1,5 @@
 import { WithTranslation } from 'react-i18next';
-import { CoinInfo, FloatTag, TradeFloat } from 'static-resource';
+import { CoinInfo, FloatTag, TradeFloat } from '@loopring-web/common-resources';
 import { Box, Grid } from '@material-ui/core';
 import { Avatar, Typography } from '@material-ui/core/';
 import styled from '@emotion/styled';
