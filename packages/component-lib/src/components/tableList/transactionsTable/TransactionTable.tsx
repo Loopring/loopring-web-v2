@@ -7,7 +7,7 @@ import { Popover, PopoverType, TablePagination } from '../../basic-lib'
 import { Column, generateColumns, generateRows, Table } from '../../basic-lib/tables/index'
 import { AlertIcon, CheckIcon, EmptyValueTag, PendingIcon, TableType } from 'static-resource'
 import { Filter } from './components/Filter'
-import { TablePaddingX } from '../../styled';
+import { TablePaddingX, TableFilterStyled } from '../../styled';
 import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes } from './Interface'
 
 interface Row {
@@ -376,15 +376,11 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         updateData({TableType: TableType.page, currPage: page})
     }, [updateData])
 
-    const FilterStyled = styled(Box)`
-        margin-left: 26px;
-    `
-
     return <TableStyled>
         {showFilter && (
-            <FilterStyled>
+            <TableFilterStyled>
                 <Filter originalData={formattedRawData} handleFilterChange={handleFilterChange}/>
-            </FilterStyled>
+            </TableFilterStyled>
         )}
         <Table {...{...defaultArgs, ...props, rawData: getRenderData()}}/>
         {pagination && (
