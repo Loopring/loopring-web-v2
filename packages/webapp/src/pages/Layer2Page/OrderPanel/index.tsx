@@ -1,7 +1,7 @@
 
 import React, { useEffect } from 'react'
 import { OrderHistoryTable, OrderHistoryRawDataItem } from '@loopring-web/component-lib'
-import { TradeTypes } from '@loopring-web/component-lib/static-resource'
+import { TradeTypes } from '@loopring-web/component-lib/src/static-resource'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import store from 'stores'
 import { LoopringAPI } from 'stores/apis/api'

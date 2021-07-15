@@ -1,5 +1,5 @@
 import React from "react";
-import { AmmActivity, CoinInfo, TradeFloat } from "@loopring-web/component-lib/static-resource";
+import { AmmActivity, CoinInfo, TradeFloat } from "@loopring-web/component-lib/src/static-resource";
 import { useTokenMap } from "stores/token";
 import { useRouteMatch } from 'react-router';
 import { AmmDetailStore, useAmmMap } from '../../../stores/Amm/AmmMap';

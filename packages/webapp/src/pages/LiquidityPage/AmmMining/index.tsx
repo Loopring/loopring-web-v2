@@ -1,7 +1,7 @@
 import { AmmProps } from '@loopring-web/component-lib';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { AmmCardProps, AmmData, AmmInData, IBData } from '@loopring-web/component-lib/static-resource';
+import { AmmCardProps, AmmData, AmmInData, IBData } from '@loopring-web/component-lib/src/static-resource';
 import { AmmCard } from '@loopring-web/component-lib/components/block/AmmCard';
 import { Grid } from '@material-ui/core';
 import { useAmmMiningUI } from './hook';

@@ -3469,9 +3469,6 @@
     npmlog "^4.1.2"
     write-file-atomic "^3.0.3"
 
-"@loopring-web/component-lib@file:packages/component-lib/src":
-  version "0.0.0"
-
 "@manaflair/redux-batch@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@manaflair/redux-batch/-/redux-batch-1.0.0.tgz#3af65dc3ac4ba81cf115c96f9759a6d4077b49f5"

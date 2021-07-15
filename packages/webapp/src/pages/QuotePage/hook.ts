@@ -8,7 +8,7 @@ import { TradingInterval, WsTopicType } from 'loopring-sdk';
 import { LoopringAPI } from 'stores/apis/api'
 import { tickerService } from '../../services/tickerService';
 import { debounce } from "lodash"
-import { globalSetup } from '@loopring-web/component-lib/static-resource';
+import { globalSetup } from '@loopring-web/component-lib/src/static-resource';
 
 const amtCol = 5
 const OnePageSize = 16;

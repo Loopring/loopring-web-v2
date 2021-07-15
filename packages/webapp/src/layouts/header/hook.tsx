@@ -66,7 +66,7 @@ import { useEtherscan } from 'hooks/web3/useWeb3'
 import { useModals } from 'hooks/modal/useModals'
 import Web3 from 'web3'
 
-import { AmmData, AmmInData, IBData, TradeCalcData, WalletMap } from '@loopring-web/component-lib/static-resource'
+import { AmmData, AmmInData, IBData, TradeCalcData, WalletMap } from '@loopring-web/component-lib/src/static-resource'
 
 import { useUserAPI } from 'hooks/exchange/useApi'
 import { CoinType } from '@loopring-web/component-lib/static'

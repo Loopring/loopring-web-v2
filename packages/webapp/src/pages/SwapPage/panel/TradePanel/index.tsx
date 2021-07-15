@@ -9,7 +9,7 @@ import styled from '@emotion/styled'
 
 import { FormControlLabel, TradeTable, } from '@loopring-web/component-lib'
 import { withTranslation, WithTranslation } from 'react-i18next';
-import { CheckBoxIcon, CheckedIcon } from '@loopring-web/component-lib/static-resource'
+import { CheckBoxIcon, CheckedIcon } from '@loopring-web/component-lib/src/static-resource'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { Box } from '@material-ui/core';
 import { RawDataTradeItem } from '@loopring-web/component-lib/components/tableList/tradeTable/TradeTable';

@@ -7,7 +7,8 @@
   "license": "GPLV3",
   "dependencies": {
     "@bedrock-layout/center": "^1.2.0",
-    "@loopring-web/component-lib": "file:../component-lib/src",
+    "@loopring-web/common-resources": "1.0.0",
+    "@loopring-web/component-lib": "1.0.0",
     "@manaflair/redux-batch": "^1.0.0",
     "@metamask/detect-provider": "^1.2.0",
     "@web3-react/abstract-connector": "^6.0.7",
@@ -24,7 +25,6 @@
     "chalk": "^4.1.0",
     "circomlib": "^0.4.1",
     "clipboard": "^2.0.8",
-    "common-resources": "1.0.0",
     "concurrently": "^5.3.0",
     "eventemitter3": "^4.0.7",
     "fast-deep-equal": "^3.1.3",

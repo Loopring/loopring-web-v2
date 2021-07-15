@@ -1,4 +1,4 @@
-import { AmmCardProps } from '@loopring-web/component-lib/static-resource';
+import { AmmCardProps } from '@loopring-web/component-lib/src/static-resource';
 import { AmmPoolActivityRule, AmmPoolActivityStatus,LoopringMap } from 'loopring-sdk';
 import React from 'react';
 import {

@@ -4,7 +4,7 @@ import { AmmPanelType } from '@loopring-web/component-lib';
 import { IdMap, useTokenMap } from '../../../stores/token';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
 import { accountStaticCallBack, ammPairInit, bntLabel, btnClickMap, fnType, makeCache } from '../../../hooks/help';
-import { WalletMap } from '@loopring-web/component-lib/static-resource';
+import { WalletMap } from '@loopring-web/component-lib/src/static-resource';
 import * as sdk from 'loopring-sdk';
 import {
     AmmPoolRequestPatch,

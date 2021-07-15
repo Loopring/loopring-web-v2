@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { PriceTag } from '@loopring-web/component-lib/static-resource'
+import { PriceTag } from '@loopring-web/component-lib/src/static-resource'
 import { Box, Paper, Typography } from '@material-ui/core'
 import styled from '@emotion/styled'
 import {

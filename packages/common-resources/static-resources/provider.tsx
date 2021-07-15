@@ -1,4 +1,4 @@
-import type { Provider as TProvider } from "react";
+import type { Provider as TProvider } from "react"
 
 export const provider = (Provider: TProvider<any>, props: any = {}) => [Provider, props];
 

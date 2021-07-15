@@ -6,7 +6,7 @@ import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect'
 import { TradingInterval, Candlestick, GetCandlestickRequest, GetDepthRequest, GetTickerRequest, dumpError400, getExistedMarket } from 'loopring-sdk'
 import { fromWEI } from 'utils/swap_calc_utils'
 
-import { ChartUnit, CoinInfo } from '@loopring-web/component-lib/static-resource'
+import { ChartUnit, CoinInfo } from '@loopring-web/component-lib/src/static-resource'
 
 import { ChartType } from '@loopring-web/component-lib'
 
