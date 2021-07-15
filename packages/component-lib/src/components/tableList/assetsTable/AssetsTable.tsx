@@ -3,7 +3,7 @@ import { Box, Grid, Menu, MenuItem } from '@material-ui/core'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
-import { Button } from '../../basic-lib/btns'
+import { Button } from '../../basic-lib'
 import { Column, generateColumns, generateRows, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { Filter, TokenTypeCol } from './components/Filter'
@@ -82,9 +82,9 @@ export interface AssetsTableProps {
     }
     onVisibleRowsChange?: (props: any) => void
     showFiliter?: boolean
-    onShowDeposit?: React.MouseEventHandler<any>,
-    onShowTransfer?: React.MouseEventHandler<any>,
-    onShowWithdraw?: React.MouseEventHandler<any>,
+    onShowDeposit: (token: string) => void,
+    onShowTransfer: (token: string) => void,
+    onShowWithdraw: (token: string) => void,
 }
 
 export const AssetsTable = withTranslation('tables')((props: WithTranslation & AssetsTableProps) => {
@@ -152,15 +152,15 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                     <Grid container spacing={1} alignItems={'center'}>
                         <Grid item>
                             <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                    onClick={onShowDeposit}>{t('labelDeposit')}</Button>
+                                    onClick={() => onShowDeposit(token.value)}>{t('labelDeposit')}</Button>
                         </Grid>
                         <Grid item>
                             <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                    onClick={onShowTransfer}>{t('labelTransfer')}</Button>
+                                    onClick={() => onShowTransfer(token.value)}>{t('labelTransfer')}</Button>
                         </Grid>
                         <Grid item>
                             <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                    onClick={onShowWithdraw}>{t('labelWithdraw')}</Button>
+                                    onClick={() => onShowWithdraw(token.value)}>{t('labelWithdraw')}</Button>
                         </Grid>
                         <Grid item>
                             {isLp
@@ -177,7 +177,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                                                     const value = `${first}/${last}`;
                                                     return (
                                                         <MenuItem onClick={popupState.close} key={value}
-                                                                  value={value}>{value}</MenuItem>
+                                                                value={value}>{value}</MenuItem>
                                                     )
                                                 })}
                                             </Menu>
