@@ -106,3 +106,8 @@ export const ModalContentStyled = styled(Box)`
 // export const TwoIconBoxStyled = styled(Box)`
 //   ${({theme}) => AvatarIconPair({theme})}
 // ` as typeof Box
+
+export const TableFilterStyled = styled(Box)`
+  margin-left: 26px;
+  margin-bottom: ${({theme}) => theme.unit}px;
+` as typeof Box
