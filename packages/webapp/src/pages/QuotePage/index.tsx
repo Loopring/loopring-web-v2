@@ -4,7 +4,7 @@ import styled from '@emotion/styled/macro'
 import { MarketBlock, QuoteTable, TablePaddingX } from '@loopring-web/component-lib'
 
 import { WithTranslation, withTranslation } from 'react-i18next'
-// import { FloatTag } from '@loopring-web/component-lib/src/static-resource'
+// import { FloatTag } from '@loopring-web/common-resources'
 import { Box, Grid } from '@material-ui/core'
 import { useQuote, useCandlestickList } from './hook'
 import { LoopringAPI } from 'stores/apis/api'
@@ -78,7 +78,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
               const market = `${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}`
               const chartData = candlestickList.find(o => o.market === market)?.data
               return (
-                <Grid key={item.coinAInfo+item.coinBInfo+index} item xs={3} >
+                <Grid key={index} item xs={3} >
                     <MarketBlock {...{...item, chartData: chartData ? chartData : [], ...rest}}></MarketBlock>
                 </Grid>
               )

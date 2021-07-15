@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Box, Button, Divider, Grid, Switch, Typography } from '@material-ui/core';
 import React from 'react';
-import { UpColor, Currency, DropDownIcon } from '@loopring-web/component-lib/src/static-resource';
+import { UpColor, Currency, DropDownIcon } from '@loopring-web/common-resources';
 import {
     BtnLanguage,
     OutlineSelect,
@@ -10,7 +10,7 @@ import {
 } from '@loopring-web/component-lib';
 import { Trans, useTranslation, WithTranslation, withTranslation } from 'react-i18next';
 import { useTheme } from '@emotion/react';
-import { LanguageKeys } from '@loopring-web/component-lib/static-resource';
+import { LanguageKeys } from '@loopring-web/common-resources';
 
 // const MuiModalStyled = styled(MuiModal)`
 //   //background: ${({theme}) => theme.colorBase.background().secondary};

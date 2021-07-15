@@ -1,4 +1,4 @@
-import { CoinInfo, CoinKey, IBData } from 'static-resource';
+import { CoinInfo, CoinKey, IBData } from '@loopring-web/common-resources';
 import { Trans, WithTranslation } from 'react-i18next';
 import React from 'react';
 import { CoinMenu, EmptyDefault, InputSelect, InputSelectProps } from '../../../basic-lib';
@@ -36,7 +36,6 @@ export const TradeMenuList = <T extends IBData<I>,
 
         const PanelRender = ({selected, value}: any) => {
             const handleSelect = (_event: any, itemKey: CoinKey<I>) => {
-                // console.log('TradeMenuList item handleSelect',itemKey)
                 onChangeEvent(0, {...{tradeData: {...tradeData, belong: itemKey}}, to: 'button'})
             }
             return <CoinMenu {...{

@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/react/types-6-0'
 import { MemoryRouter } from 'react-router-dom'
 import { PoolsRow, PoolsTable } from './index'
 import { coinMap } from '../../../static';
-import { CoinInfo, FloatTag } from 'static-resource';
+import { CoinInfo, FloatTag } from '@loopring-web/common-resources';
 
 const Style = styled.div`
   color: #fff;

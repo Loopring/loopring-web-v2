@@ -1,5 +1,5 @@
 import { WithTranslation } from 'react-i18next';
-import { CoinKey, EmptyValueTag, getThousandFormattedNumbers } from 'static-resource';
+import { CoinKey, EmptyValueTag, getThousandFormattedNumbers } from '@loopring-web/common-resources';
 import { Box, BoxProps, Grid } from '@material-ui/core';
 import { Typography } from '@material-ui/core/';
 import styled from '@emotion/styled';
@@ -16,11 +16,11 @@ const MarketBlockStyled = styled(Box)<StyledProps>`
 
   & {
     background-color: ${({theme}) => theme.colorBase.background().default};
-  
-    border-radius: ${({ theme }) => theme.unit}px;
+
+    border-radius: ${({theme}) => theme.unit}px;
 
   }
- 
+
   // &:not(:last-of-type){
     //   margin-right: ${({theme}) => theme.unit * 3}px;
   //   background-color: chocolate;
@@ -39,12 +39,14 @@ const MarketBlockStyled = styled(Box)<StyledProps>`
 
 ` as React.ElementType<StyledProps & BoxProps>;
 
-export const MarketBlock = <C extends CoinKey<I>, I>({coinAInfo, t, coinBInfo, tradeFloat, chartData = []}:  & WithTranslation & MarketBlockProps<C>) => {
+export const MarketBlock = <C extends CoinKey<I>, I>({
+                                                         coinAInfo,
+                                                         t,
+                                                         coinBInfo,
+                                                         tradeFloat,
+                                                         chartData = []
+                                                     }: & WithTranslation & MarketBlockProps<C>) => {
     const {upColor} = useSettings();
-    // const sellIconHasLoaded = useImage(coinBInfo?.icon ? coinBInfo?.icon : '').hasLoaded;
-    // const buyIconHasLoaded = useImage(coinAInfo?.icon ? coinAInfo?.icon : '').hasLoaded;
-    //TODO: get which currency is base
-    //TODO: get which color increase
     return <MarketBlockStyled custom={{chg: upColor}} padding={0.5 * 5} display={'flex'}
                               justifyContent={'stretch'}>
         {coinAInfo && coinBInfo ?
@@ -67,27 +69,27 @@ export const MarketBlock = <C extends CoinKey<I>, I>({coinAInfo, t, coinBInfo, t
                          className={'left-block'}>
                         <Typography variant={'h4'} height={24} component={'span'}
                                     className={`float-tag float-${tradeFloat.floatTag}`}>${
-                            getThousandFormattedNumbers(tradeFloat.priceDollar,2,{isAbbreviate:true})
-                                    } </Typography>
+                            getThousandFormattedNumbers(tradeFloat.priceDollar, 2, {isAbbreviate: true})
+                        } </Typography>
                         <Typography variant={'body2'} component={'span'} marginTop={1 / 2}
                                     className={`float-tag float-${tradeFloat.floatTag}`}>{
                             tradeFloat.change ?
-                                getThousandFormattedNumbers(tradeFloat.change,2)+'%':EmptyValueTag
+                                getThousandFormattedNumbers(tradeFloat.change, 2) + '%' : EmptyValueTag
                         }</Typography>
                     </Box>
                     <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'}
                          justifyContent={'flex-end'}>
-                        <Typography variant={'body2'} component={'span'}  textOverflow={'ellipsis'}
+                        <Typography variant={'body2'} component={'span'} textOverflow={'ellipsis'}
                                     height={24}> ￥{
-                            getThousandFormattedNumbers(tradeFloat.priceYuan,2,)
+                            getThousandFormattedNumbers(tradeFloat.priceYuan, 2,)
                         } </Typography>
-                        <Typography variant={'body2'} component={'span'}  textOverflow={'ellipsis'}
+                        <Typography variant={'body2'} component={'span'} textOverflow={'ellipsis'}
                                     marginTop={1 / 2}>{t('labelVolume')} : {tradeFloat.volume}</Typography>
                     </Box>
 
                 </Grid>
                 <Grid item position={'absolute'} top={0} right={0} width={120} height={42}>
-                        <ScaleAreaChart showTooltip={false} showArea={false} type={ChartType.Trend} data={chartData} />
+                    <ScaleAreaChart showTooltip={false} showArea={false} type={ChartType.Trend} data={chartData}/>
                 </Grid>
             </Grid> : <></>
         } </MarketBlockStyled>

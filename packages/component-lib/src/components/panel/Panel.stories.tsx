@@ -3,7 +3,7 @@ import { SwapPanel } from './Swap/SwapPanel';
 import { Meta, Story } from '@storybook/react/types-6-0';
 import { MemoryRouter } from 'react-router-dom';
 import { Box, Grid } from '@material-ui/core';
-import { AmmData, AmmInData, IBData, WithdrawType, WithdrawTypes } from 'static-resource';
+import { AmmData, AmmInData, IBData, WithdrawType, WithdrawTypes } from '@loopring-web/common-resources';
 import { ammCalcData, coinMap, CoinType, tradeCalcData, walletMap } from '../../static';
 import { Button } from '../basic-lib';
 import { ResetPanel } from './Reset';
@@ -324,7 +324,11 @@ const WrapAmmPanel = (rest: any) => {
             <AmmPanel {...{...ammProps, tabSelected: AmmPanelType.WithDraw}} {...rest} > </AmmPanel>
         </Grid>
         <Grid item sm={6}>
-            <AmmPanel {...{...ammProps, tabSelected: AmmPanelType.WithDraw,ammWithdrawBtnStatus: TradeBtnStatus.DISABLED}} {...rest} > </AmmPanel>
+            <AmmPanel {...{
+                ...ammProps,
+                tabSelected: AmmPanelType.WithDraw,
+                ammWithdrawBtnStatus: TradeBtnStatus.DISABLED
+            }} {...rest} > </AmmPanel>
         </Grid>
     </>
 

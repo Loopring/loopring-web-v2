@@ -53,4 +53,4 @@ const tokenMapSlice: Slice<TokenMapStates<object>> = createSlice({
     },
 });
 export { tokenMapSlice };
-export const {getTokenMap, getTokenMapStatus,getTokenPairMap, statusUnset} = tokenMapSlice.actions;
+export const {getTokenMap, getTokenMapStatus, statusUnset} = tokenMapSlice.actions;

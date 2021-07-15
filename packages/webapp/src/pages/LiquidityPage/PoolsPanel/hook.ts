@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
-import { AmmDetail, CustomError, ErrorMap, } from '@loopring-web/component-lib/src/static-resource';
+import { AmmDetail, CustomError, ErrorMap, } from '@loopring-web/common-resources';
 import { deepClone } from '../../../utils/obj_tools';
 import { STATUS } from '../../../stores/constant';
 import { useTokenMap } from '../../../stores/token';

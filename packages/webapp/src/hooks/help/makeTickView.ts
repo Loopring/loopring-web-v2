@@ -1,6 +1,6 @@
 import { TickerData } from 'loopring-sdk';
 import store from '../../stores';
-import { FloatTag,TradeFloat } from '@loopring-web/component-lib/src/static-resource';
+import { FloatTag,TradeFloat } from '@loopring-web/common-resources';
 import { volumeToCountAsBigNumber } from './volumeToCount';
 import { Ticker, TickerMap } from '../../stores/ticker';
 import { LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';

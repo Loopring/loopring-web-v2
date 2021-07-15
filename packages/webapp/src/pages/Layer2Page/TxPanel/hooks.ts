@@ -5,8 +5,7 @@ import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect'
 import { useAccount } from 'stores/account/hook'
 import { TransactionStatus, RawDataTransactionItem } from '@loopring-web/component-lib'
 
-import { TxStatus } from 'loopring-sdk'
-import { TransactionTradeTypes } from '@loopring-web/component-lib/components/tableList/transactionsTable/Interface';
+import { TransactionTradeTypes } from '@loopring-web/component-lib';
 
 export function useGetTxs() {
 

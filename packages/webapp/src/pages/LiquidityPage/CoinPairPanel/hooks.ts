@@ -1,5 +1,5 @@
 import React from "react";
-import { AmmActivity, CoinInfo, TradeFloat } from "@loopring-web/component-lib/static-resource";
+import { AmmActivity, CoinInfo, TradeFloat, WalletMap } from "@loopring-web/common-resources";
 import { useTokenMap } from "stores/token";
 import { useRouteMatch } from 'react-router';
 import { AmmDetailStore, useAmmMap } from '../../../stores/Amm/AmmMap';
@@ -8,9 +8,9 @@ import { makeTickView, makeWallet, pairDetailBlock, WalletMapExtend } from '../.
 import { AmmPoolSnapshot, AmmUserRewardMap, getExistedMarket, TickerData } from 'loopring-sdk';
 import { deepClone } from '../../../utils/obj_tools';
 import { getUserAmmTransaction, makeMyAmmMarketArray } from '../../../hooks/help/marketTable';
-import { AmmRecordRow } from '@loopring-web/component-lib/components/tableList/ammRecordTable/Interface';
+import { AmmRecordRow } from '@loopring-web/component-lib';
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
-import { MyAmmLP } from '@loopring-web/component-lib/src/static-resource';
+import { MyAmmLP } from '@loopring-web/common-resources';
 import { useSystem } from '../../../stores/system';
 import { makeMyAmmWithSnapshot } from '../../../hooks/help/makeUIAmmActivityMap';
 import store from '../../../stores';
@@ -53,7 +53,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
     // const {account} = useAccount();
 
 
-    const {ammMap, updateAmmMap} = ammMapState;
+    const {ammMap, getAmmMap} = ammMapState;
 
     // const {ammMap,updateAmmMap} = useAmmMap();
     const walletLayer2State = useWalletLayer2();
@@ -110,7 +110,8 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
 
     const walletLayer2DoIt = React.useCallback((market) => {
         const {walletMap: _walletMap} = makeWallet();
-        setWalletMap(_walletMap)
+
+        setWalletMap(_walletMap as WalletMapExtend<any>)
         if (_walletMap) {
             getUserAmmTransaction()?.then((marketTrades) => {
                 let _myTradeArray = makeMyAmmMarketArray(market, marketTrades)
@@ -167,7 +168,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
 
         if (amm && market && ammMap) {
             //TODO should add it into websocket
-            updateAmmMap();
+            getAmmMap();
             let apiList = [
                 pairDetailBlock({coinKey: market, ammKey: amm, ammMap}),
                 // LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({poolAddress: ammMap[ ammKey ].address}),
@@ -203,8 +204,6 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
             switch (walletLayer2State.status) {
                 case "ERROR":
                     walletLayer2State.statusUnset();
-                    // setState('ERROR')
-                    //TODO: show error at button page show error  some retry dispath again
                     break;
                 case "DONE":
                     walletLayer2State.statusUnset();
@@ -220,15 +219,12 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
 
     }, [walletLayer2State.status, ammUserRewardMap])
 
-    //TODO tickMap
     React.useEffect(() => {
         const {market} = getExistedMarket(marketArray, pair.coinAInfo?.simpleName as string, pair.coinBInfo?.simpleName as string);
         if (market) {
             switch (useUserRewardsState.status) {
                 case "ERROR":
                     useUserRewardsState.statusUnset();
-                    // setState('ERROR')
-                    //TODO: show error at button page show error  some retry dispath again
                     break;
                 case "DONE":
                     // getAmmPoolUserRewards().then((ammUserRewardMap)=>{
@@ -247,7 +243,6 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
 
     React.useEffect(() => {
         if (ammMapState.status === "ERROR") {
-            //TODO: solve error
             ammMapState.statusUnset();
         } else if (ammMapState.status === "DONE") {
             ammMapState.statusUnset();

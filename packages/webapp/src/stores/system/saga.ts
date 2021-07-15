@@ -7,7 +7,7 @@ import { ChainId } from 'loopring-sdk';
 import { exchangeAPI, LoopringAPI } from '../apis/api';
 import { getAmmMap, updateRealTimeAmmMap } from '../Amm/AmmMap';
 import { getTokenMap } from '../token';
-import { CustomError, ErrorMap } from '@loopring-web/component-lib/src/static-resource';
+import { CustomError, ErrorMap } from '@loopring-web/common-resources';
 import { getAmmActivityMap } from '../Amm/AmmActivityMap';
 import { updateWalletLayer1 } from '../walletLayer1';
 import { delay } from 'rxjs/operators';

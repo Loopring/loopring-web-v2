@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { TradeFloat } from '@loopring-web/component-lib/src/static-resource';
+import { TradeFloat } from '@loopring-web/common-resources';
 
 const subject = new Subject();
 

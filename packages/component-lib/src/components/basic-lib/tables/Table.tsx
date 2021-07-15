@@ -188,10 +188,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation) => {
     const onSortColumnsChange = React.useCallback((sortColumns: SortColumn[]) => {
         setSortColumns(sortColumns.slice(-1));
     }, []);
-    // const handleSort = React.useCallback((sortColumns: SortColumn[]) => {
-    //     //console.log(direction);
-    //     setSort([columnKey, direction]);
-    // }, []);
+
     const loopringColumns = React.useMemo(() => {
         return columns.map(c => {
             if (c.headerRenderer) {

@@ -9,11 +9,10 @@ import styled from '@emotion/styled'
 
 import { FormControlLabel, TradeTable, } from '@loopring-web/component-lib'
 import { withTranslation, WithTranslation } from 'react-i18next';
-import { CheckBoxIcon, CheckedIcon } from '@loopring-web/component-lib/static-resource'
+import { CheckBoxIcon, CheckedIcon } from '@loopring-web/common-resources'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { Box } from '@material-ui/core';
-import { RawDataTradeItem } from '@loopring-web/component-lib/components/tableList/tradeTable/TradeTable';
-import { BasicHeaderItem, HeadMenuType } from '@loopring-web/component-lib/components/basic-lib/lists/Interface';
+import { RawDataTradeItem, BasicHeaderItem, HeadMenuType } from '@loopring-web/component-lib'
 import { TableWrapStyled } from '../../../styled';
 
 // const StylePaper = styled(Box)`

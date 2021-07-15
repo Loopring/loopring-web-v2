@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getWalletLayer2Status, updateWalletLayer2 } from './reducer';
-import { CoinKey, PairKey, WalletCoin } from '@loopring-web/component-lib/src/static-resource';
+import { CoinKey, PairKey, WalletCoin } from '@loopring-web/common-resources';
 import { userAPI } from '../apis/api';
 import store from '../index';
 

@@ -1,4 +1,4 @@
-import { AmmData, AmmInData, CoinInfo, DropDownIcon, EmptyValueTag, IBData, SlippageTolerance } from 'static-resource';
+import { AmmData, AmmInData, CoinInfo, DropDownIcon, EmptyValueTag, IBData, SlippageTolerance } from '@loopring-web/common-resources';
 import { AmmWithdrawWrapProps } from './Interface';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
@@ -52,7 +52,6 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
     const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any, flag = -1) => {
         let focus: 'coinA' | 'coinB' | 'percentage';
         if (flag !== _selectedPercentage) {
-            // console.log(flag,_selectedPercentage)
             setSelectedPercentage(flag)
         }
         if (_ref) {

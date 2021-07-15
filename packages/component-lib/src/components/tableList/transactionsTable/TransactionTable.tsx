@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react'
 import styled from '@emotion/styled'
-import { Link, Box } from '@material-ui/core'
-import { withTranslation, WithTranslation, TFunction } from 'react-i18next';
+import { Box, Link } from '@material-ui/core'
+import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
 import { Popover, PopoverType, TablePagination } from '../../basic-lib'
 import { Column, generateColumns, generateRows, Table } from '../../basic-lib/tables/index'
-import { AlertIcon, CheckIcon, EmptyValueTag, PendingIcon, TableType } from 'static-resource'
+import { AlertIcon, CheckIcon, EmptyValueTag, PendingIcon, TableType } from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
-import { TablePaddingX } from '../../styled';
-import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes, TransactionSide } from './Interface'
+import { TablePaddingX, TableFilterStyled } from '../../styled';
+import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes } from './Interface'
 
 interface Row {
     from: string
@@ -227,7 +227,7 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
             const value = row[ column.key ]
             const hasValue = Number.isFinite(value)
             const renderValue = hasValue
-                ? moment(new Date(row['time']), "YYYYMMDDHHMM").fromNow()
+                ? moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
                 : EmptyValueTag
             return (
                 <div className="rdg-cell-value">
@@ -292,7 +292,7 @@ const TableStyled = styled(Box)`
         align-items: center;
         }
     }
-    ${({theme}) => TablePaddingX({pLeft:theme.unit * 3,pRight:theme.unit * 3})}
+    ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
 
 export interface TransactionTableProps {
@@ -311,7 +311,7 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         generateRows,
         generateColumns,
     }
-    const { rawData, pagination, showFilter } = props
+    const {rawData, pagination, showFilter} = props
     const [page, setPage] = React.useState(1)
     const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
     // const [totalData, setTotalData] = React.useState(formattedRawData)
@@ -319,7 +319,7 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
     const [filterType, setFilterType] = React.useState(TransactionTradeTypes.allTypes)
     const [filterDate, setFilterDate] = React.useState(null)
     const [filterToken, setFilterToken] = React.useState('All Tokens')
-    
+
     const pageSize = pagination ? pagination.pageSize : 10;
 
     useEffect(() => {
@@ -327,17 +327,17 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
     }, [rawData])
 
     const getRenderData = React.useCallback(() => pagination
-            ? totalData.slice((page - 1) * pageSize, page * pageSize)
-            : totalData
-    , [page, pagination, pageSize, totalData])
+        ? totalData.slice((page - 1) * pageSize, page * pageSize)
+        : totalData
+        , [page, pagination, pageSize, totalData])
 
-    const updateData = React.useCallback(({ 
-            TableType,
-            currFilterType = filterType,
-            currFilterDate = filterDate,
-            currFilterToken = filterToken,
-            // currPage = page
-        }) => {
+    const updateData = React.useCallback(({
+                                              TableType,
+                                              currFilterType = filterType,
+                                              currFilterDate = filterDate,
+                                              currFilterToken = filterToken,
+                                              // currPage = page
+                                          }) => {
         // let resultData = cloneDeep(formattedRawData)
         let resultData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
         // o[10]: tradeType
@@ -359,27 +359,28 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         setTotalData(resultData)
     }, [rawData, filterDate, filterToken, filterType])
 
-    const handleFilterChange = React.useCallback(({ filterType, filterDate, filterToken }) => {
+    const handleFilterChange = React.useCallback(({filterType, filterDate, filterToken}) => {
         setFilterType(filterType)
         setFilterDate(filterDate)
         setFilterToken(filterToken)
-        updateData({ TableType: TableType.filter, currFilterType: filterType, currFilterDate: filterDate, currFilterToken: filterToken })
+        updateData({
+            TableType: TableType.filter,
+            currFilterType: filterType,
+            currFilterDate: filterDate,
+            currFilterToken: filterToken
+        })
     }, [updateData])
 
     const handlePageChange = React.useCallback((page: number) => {
         setPage(page)
-        updateData({ TableType: TableType.page, currPage: page })
+        updateData({TableType: TableType.page, currPage: page})
     }, [updateData])
-
-    const FilterStyled = styled(Box)`
-        margin-left: 26px;
-    `
 
     return <TableStyled>
         {showFilter && (
-            <FilterStyled>
-                <Filter originalData={formattedRawData} handleFilterChange={handleFilterChange} />
-            </FilterStyled>
+            <TableFilterStyled>
+                <Filter originalData={formattedRawData} handleFilterChange={handleFilterChange}/>
+            </TableFilterStyled>
         )}
         <Table {...{...defaultArgs, ...props, rawData: getRenderData()}}/>
         {pagination && (

@@ -18,12 +18,12 @@ export const StylePaper = styled(Box)`
     line-height: 19px;
     margin-left: ${({ theme }) => 3 * theme.unit}px;
     margin-top: ${({ theme }) => 3 * theme.unit}px;
-    margin-bottom: ${({ theme }) => 2 * theme.unit}px;
+    // margin-bottom: ${({ theme }) => 2 * theme.unit}px;
   }
 
   .tableWrapper {
     display: flex;
-    margin-top: ${({ theme }) => 2 * theme.unit}px;
+    margin-top: ${({ theme }) => 3 * theme.unit}px;
     flex: 1;
     .rdg {
       flex: 1;

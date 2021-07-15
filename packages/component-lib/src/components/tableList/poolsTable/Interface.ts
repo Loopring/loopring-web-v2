@@ -1,10 +1,10 @@
-import { AmmDetail, TradeFloat } from 'static-resource';
+import { AmmDetail, TradeFloat } from '@loopring-web/common-resources';
 
 export type Row<T> = AmmDetail<T> & {
     // currency:  keyof typeof Currency,
     tradeFloat?: TradeFloat,
 }
-export type PoolTableProps<T,R = Row<T>> = {
+export type PoolTableProps<T, R = Row<T>> = {
     rawData: R[];
     pagination?: {
         pageSize: number

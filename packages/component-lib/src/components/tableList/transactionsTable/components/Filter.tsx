@@ -4,7 +4,7 @@ import { Box, Grid, MenuItem } from '@material-ui/core'
 import { withTranslation, WithTranslation } from "react-i18next";
 import { DatePicker, TextField } from '../../../basic-lib/form'
 import { Button } from '../../../basic-lib/btns'
-import { DropDownIcon } from 'static-resource'
+import { DropDownIcon } from '@loopring-web/common-resources'
 import { TransactionSide, TransactionTradeTypes } from '../Interface'
 
 export interface FilterProps {
@@ -12,7 +12,7 @@ export interface FilterProps {
         unit: string;
         value: number;
     } | undefined)[][];
-    handleFilterChange: ({ filterType, filterDate, filterToken }: any) => void
+    handleFilterChange: ({filterType, filterDate, filterToken}: any) => void
 }
 
 const StyledTextFiled = styled(TextField)`
@@ -39,10 +39,10 @@ const StyledBtnBox = styled(Box)`
 `
 
 export const Filter = withTranslation('tables', {withRef: true})(({
-                                                                                t,
-                                                                                originalData,
-                                                                                handleFilterChange
-                                                                            }: FilterProps & WithTranslation) => {
+                                                                      t,
+                                                                      originalData,
+                                                                      handleFilterChange
+                                                                  }: FilterProps & WithTranslation) => {
     const transactionTypeList = [
         {
             label: t('labelTxFilterAllTypes'),

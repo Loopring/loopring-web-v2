@@ -9,7 +9,7 @@ import {
 } from '@material-ui/pickers';
 
 import { TFunction } from 'i18next';
-import { CalendarIcon } from 'static-resource';
+import { CalendarIcon } from '@loopring-web/common-resources';
 
 const DateTextField = styled(TextField)`
   position: relative;

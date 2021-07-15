@@ -1,4 +1,4 @@
-import { AmmDetailBase } from '@loopring-web/component-lib/src/static-resource';
+import { AmmDetailBase } from '@loopring-web/common-resources';
 import { volumeToCountAsBigNumber } from './volumeToCount';
 
 export const ammPairInit = ({

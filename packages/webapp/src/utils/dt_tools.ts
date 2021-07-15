@@ -1,4 +1,4 @@
-// import { i18nInstance as i18n  } from "@loopring-web/component-lib/static-resource"
+// import { i18nInstance as i18n  } from "@loopring-web/common-resources"
 import i18n from 'i18next';
 
 const covertLocale = (rawLocale: string = i18n.language) => {

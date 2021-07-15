@@ -1,13 +1,14 @@
 {
   "name": "@loopring-web/component-lib",
-  "version": "0.1.1-alpha.0",
+  "version": "1.0.0",
+  "main": "src/index.ts",
   "private": true,
   "resolutions": {
     "**/@emotion/styled": "^11.1.5"
   },
   "dependencies": {
+    "@loopring-web/common-resources": "1.0.0",
     "clsx": "^1.1.1",
-    "common-resources": "1.0.0",
     "immutable": "^4.0.0-rc.12",
     "material-ui-popup-state": "^1.8.0",
     "moment": "^2.29.1",
@@ -22,10 +23,8 @@
     "recharts": "^2.0.9",
     "web-vitals": "^1.0.1",
     "react-financial-charts": "^1.3.0",
-    "d3-format": "^3.0.1",
-    "@types/d3-format": "^2.0.0",
-    "d3-time-format": "^4.0.0",
-    "@types/d3-time-format": "^3.0.0"
+    "d3-format": "2.0.0",
+    "d3-time-format": "3.0.0"
   },
   "scripts": {
     "rollup:build": "rollup --config --no-stdin",
@@ -91,6 +90,8 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "@types/d3-format": "^2.0.0",
+    "@types/d3-time-format": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^4.21.0",
     "@typescript-eslint/parser": "^4.20.0",
     "arr-flatten": "^1.1.0",
@@ -106,6 +107,5 @@
     "storybook-addon-redux-listener": "^0.1.7",
     "storybook-react-router": "^1.0.8"
   },
-  "main": "index.js",
   "license": "MIT"
 }

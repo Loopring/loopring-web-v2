@@ -26,10 +26,14 @@ module.exports = {
     ]
     return {
       ...config,
-      plugins:[
+      plugins: [
         ...config.plugins,
         new CopyWebpackPlugin({
-          patterns: [{ from: path.resolve(__dirname, '..', '..', 'common-resources', "assets"), to: './static',toType: "dir" }],
+          patterns: [{
+            from: path.resolve(__dirname, '..', '..', 'common-resources', "assets"),
+            to: './static',
+            toType: "dir"
+          }],
         })
       ],
 

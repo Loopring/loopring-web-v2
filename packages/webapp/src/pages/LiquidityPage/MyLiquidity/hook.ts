@@ -22,7 +22,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
 ): {
     myAmmMarketArray: AmmRecordRow<R>[],
     summaryReward: SummaryMyAmm | undefined,
-    myPoolRow: AmmRecordRow<R>[]
+    myPoolRow: MyPoolRow<R>[]
     // ammActivityViewMap: Array<AmmCardProps<I>>,
     // ammActivityPastViewMap: Array<AmmCardProps<I>>
 } => {
@@ -43,7 +43,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     // }|undefined>(undefined);
     const walletLayer2DoIt = React.useCallback(() => {
         const {walletMap: _walletMap} = makeWallet();
-        setWalletMap(_walletMap)
+        setWalletMap(_walletMap as WalletMapExtend<any>)
         if (_walletMap) {
             getUserAmmTransaction()?.then((marketTrades) => {
                 let _myTradeArray = makeMyAmmMarketArray(undefined, marketTrades)
@@ -64,14 +64,15 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
                     //  if(ammPoolSnapShots)
                     // makeData by snapshot else
                     // else
+                    
                     rowData = makeMyPoolRowWithPoolState(
                         {
-                            ammDetail: ammMap[ ammKey ],
+                            ammDetail: ammMap[ ammKey ] ,
                             walletMap: _walletMap,
                             market: marketKey,
                             ammUserRewardMap: userRewardsMapState.userRewardsMap
                         }
-                    )
+                    ) as any
                     if (rowData !== undefined) {
                         prev.push(rowData);
                     }

@@ -1,4 +1,4 @@
-import { HeaderMenuItemInterface } from 'static-resource';
+import { HeaderMenuItemInterface } from '@loopring-web/common-resources';
 
 export interface HeaderToolBarInterface {
     buttonComponent: number,

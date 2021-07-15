@@ -6,7 +6,7 @@ import {
     IBData,
     LinkedIcon,
     SlippageTolerance
-} from 'static-resource';
+} from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import { AmmDepositWrapProps } from './Interface';
 import { Button, InputCoin, PopoverPure } from '../../../../basic-lib';

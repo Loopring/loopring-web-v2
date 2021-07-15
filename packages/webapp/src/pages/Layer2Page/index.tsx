@@ -8,7 +8,7 @@ import {
 } from '@loopring-web/component-lib'
 import { useTranslation, withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
-import { subMenuLayer2 } from '@loopring-web/component-lib/src/static-resource'
+import { subMenuLayer2 } from '@loopring-web/common-resources'
 
 import TxPanel from './TxPanel'
 import AssetPanel from './AssetPanel'
