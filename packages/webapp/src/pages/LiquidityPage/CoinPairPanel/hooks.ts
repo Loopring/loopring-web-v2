@@ -203,8 +203,6 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
             switch (walletLayer2State.status) {
                 case "ERROR":
                     walletLayer2State.statusUnset();
-                    // setState('ERROR')
-                    //TODO: show error at button page show error  some retry dispath again
                     break;
                 case "DONE":
                     walletLayer2State.statusUnset();
@@ -220,15 +218,12 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
 
     }, [walletLayer2State.status, ammUserRewardMap])
 
-    //TODO tickMap
     React.useEffect(() => {
         const {market} = getExistedMarket(marketArray, pair.coinAInfo?.simpleName as string, pair.coinBInfo?.simpleName as string);
         if (market) {
             switch (useUserRewardsState.status) {
                 case "ERROR":
                     useUserRewardsState.statusUnset();
-                    // setState('ERROR')
-                    //TODO: show error at button page show error  some retry dispath again
                     break;
                 case "DONE":
                     // getAmmPoolUserRewards().then((ammUserRewardMap)=>{
@@ -247,7 +242,6 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
 
     React.useEffect(() => {
         if (ammMapState.status === "ERROR") {
-            //TODO: solve error
             ammMapState.statusUnset();
         } else if (ammMapState.status === "DONE") {
             ammMapState.statusUnset();

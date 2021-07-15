@@ -138,7 +138,7 @@ export const globalCss = ({theme}: any) => css`
     --datePicker-width: 320px;
     --datePicker-height: 232px;
     --list-coin-item: 44px;
-    --header-menu-icon-size:28px;
+    --header-menu-icon-size: 28px;
     --list-menu-coin-size: 24px;
     --chart-title-coin-size: 28px;
     --btn-icon-size-small: 24px;
@@ -155,8 +155,8 @@ export const globalCss = ({theme}: any) => css`
     --transfer-modal-width: 480px;
     --modal-width: 480px;
     --gateway-icon-size: 56px;
-    --account-button-fixed-width:88px;
-    --account-button-fixed-height:72px;   
+    --account-button-fixed-width: 88px;
+    --account-button-fixed-height: 72px;
     --empty-size: 130px
 
   }

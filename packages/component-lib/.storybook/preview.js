@@ -6,9 +6,9 @@ import {I18nextProvider} from "react-i18next";
 import {Provider} from "react-redux";
 import StoryRouter from 'storybook-react-router';
 import {ThemeProvider} from "@emotion/react";
-import {getTheme, globalCss, provider, ProviderComposer, i18n} from 'static-resource';
+import {getTheme, globalCss, i18n, provider, ProviderComposer} from 'static-resource';
 
-import {setTheme,setLanguage} from "../src";
+import {setLanguage, setTheme} from "../src";
 
 
 export const parameters = {
@@ -55,7 +55,7 @@ export const decorators = [
     StoryRouter();
     return <ProviderComposer providers={[
       provider(LocalizationProvider, {dateAdapter: MomentUtils}),
-      provider(I18nextProvider, {i18n:i18n}),
+      provider(I18nextProvider, {i18n: i18n}),
       provider(MuThemeProvider, {theme: getTheme('dark')}),
       provider(ThemeProvider, {theme: getTheme('dark')}),
       provider(Provider, {store}),
