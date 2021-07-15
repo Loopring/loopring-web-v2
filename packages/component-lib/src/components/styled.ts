@@ -109,5 +109,5 @@ export const ModalContentStyled = styled(Box)`
 
 export const TableFilterStyled = styled(Box)`
   margin-left: 26px;
-  margin-bottom: ${({theme}) => theme.unit}px;
+  margin-bottom: ${({theme}) => theme.unit * 2}px;
 ` as typeof Box
