@@ -1,13 +1,13 @@
 import React from 'react'
 import { Box } from '@material-ui/core'
 import styled from '@emotion/styled'
-import { WithTranslation, withTranslation, TFunction } from 'react-i18next'
+import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import moment from 'moment'
-import { Table, Column } from '../../basic-lib/tables'
+import { Column, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { TablePaddingX } from '../../styled';
 import { Filter, FilterTradeTypes } from './components/Filter'
-import { TableType, getThousandFormattedNumbers } from 'static-resource';
+import { getThousandFormattedNumbers, TableType } from 'static-resource';
 import { useSettings } from '../../../stores';
 import { useDeepCompareEffect } from 'react-use';
 import { Row } from '../poolsTable/Interface';
@@ -72,40 +72,41 @@ export type AmmTableProps = {
 // }
 
 const TableStyled = styled(Box)`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 
-    .rdg{
-        // --template-columns: 240px auto auto auto 68px 120px !important;
-        .rdg-cell.action{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+  .rdg {
+    // --template-columns: 240px auto auto auto 68px 120px !important;
+    .rdg-cell.action {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    ${({theme}) => TablePaddingX({pLeft:theme.unit * 3,pRight:theme.unit * 3})}
+  }
+
+  ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
 
 const StyledSideCell: any = styled(Box)`
-    color: ${(props: any) => {
-        const {
-            value,
-            theme: {colorBase},
-        } = props
-        return value === AmmSideTypes.Join ? colorBase.success : colorBase.error
-    }}
+  color: ${(props: any) => {
+    const {
+      value,
+      theme: {colorBase},
+    } = props
+    return value === AmmSideTypes.Join ? colorBase.success : colorBase.error
+  }}
 `
 
-const getColumnModeAssets = (t: TFunction, _currency: 'USD'|'CYN'): Column<RawDataAmmItem, unknown>[] => [
+const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<RawDataAmmItem, unknown>[] => [
     {
         key: 'side',
         name: t('labelAmmSide'),
         formatter: ({row}) => {
-            const tradeType = row['side'] === AmmSideTypes.Exit ? t('labelAmmExit'): t('labelAmmJoin')
+            const tradeType = row[ 'side' ] === AmmSideTypes.Exit ? t('labelAmmExit') : t('labelAmmJoin')
             return (
                 <div className="rdg-cell-value">
-                    <StyledSideCell value={row['side']}>
+                    <StyledSideCell value={row[ 'side' ]}>
                         {tradeType}
                     </StyledSideCell>
                 </div>
@@ -116,7 +117,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD'|'CYN'): Column<RawDa
         key: 'amount',
         name: t('labelAmmAmount'),
         formatter: ({row}) => {
-            const {from, to} = row['amount']
+            const {from, to} = row[ 'amount' ]
             return (
                 <div className="rdg-cell-value">
                     {`${from.value} ${from.key} + ${to.value} ${to.key}`}
@@ -128,8 +129,8 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD'|'CYN'): Column<RawDa
         key: 'lpTokenAmount',
         name: t('labelAmmLpTokenAmount'),
         formatter: ({row}) => {
-            const amount = row['lpTokenAmount']
-            const renderValue = row['side'] === AmmSideTypes.Join
+            const amount = row[ 'lpTokenAmount' ]
+            const renderValue = row[ 'side' ] === AmmSideTypes.Join
                 ? `+${getThousandFormattedNumbers(Number(amount))}`
                 : `-${getThousandFormattedNumbers(Number(amount))}`
             return (
@@ -146,7 +147,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD'|'CYN'): Column<RawDa
         key: 'fee',
         name: t('labelAmmFee'),
         formatter: ({row}) => {
-            const {key, value} = row['fee']
+            const {key, value} = row[ 'fee' ]
             return (
                 <div className="rdg-cell-value">
                     {`${value} ${key}`}
@@ -158,8 +159,8 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD'|'CYN'): Column<RawDa
         key: 'time',
         name: t('labelAmmRecordTime'),
         // minWidth: 400,
-        formatter: ({ row }) => {
-            const time = moment(new Date(row['time']), "YYYYMMDDHHMM").fromNow()
+        formatter: ({row}) => {
+            const time = moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
             return (
                 <div className="rdg-cell-value">
                     {time}
@@ -170,7 +171,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD'|'CYN'): Column<RawDa
 ]
 
 export const AmmTable = withTranslation('tables')((props: WithTranslation & AmmTableProps) => {
-    const { t, pagination, showFilter, rawData } = props
+    const {t, pagination, showFilter, rawData} = props
     // const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
     const [filterType, setFilterType] = React.useState(FilterTradeTypes.allTypes)
     const [filterDate, setFilterDate] = React.useState(null)
@@ -179,35 +180,34 @@ export const AmmTable = withTranslation('tables')((props: WithTranslation & AmmT
     const {currency} = useSettings();
     const defaultArgs: any = {
         // rawData: rawData,
-        columnMode: getColumnModeAssets(t,currency).filter(o => !o.hidden),
+        columnMode: getColumnModeAssets(t, currency).filter(o => !o.hidden),
         generateRows: (rawData: any) => rawData,
-        generateColumns: ({columnsRaw}:any) => columnsRaw as Column<Row<any>, unknown>[],
+        generateColumns: ({columnsRaw}: any) => columnsRaw as Column<Row<any>, unknown>[],
         style: {
             backgroundColor: ({colorBase}: any) => `${colorBase.backgroundBox}`
         }
     }
-    useDeepCompareEffect(()=>{
+    useDeepCompareEffect(() => {
         setTotalData(rawData);
-    },[rawData])
+    }, [rawData])
 
     const pageSize = pagination ? pagination.pageSize : 10;
 
     const getRenderData = React.useCallback(() => pagination
-            ? totalData.slice((page - 1) * pageSize, page * pageSize)
-            : totalData
-    , [page, pageSize, pagination, totalData])
+        ? totalData.slice((page - 1) * pageSize, page * pageSize)
+        : totalData
+        , [page, pageSize, pagination, totalData])
 
-    const updateData = React.useCallback(({ 
-        TableType,
-        currFilterType = filterType,
-        currFilterDate = filterDate,
-    }) => {
-        let resultData = rawData ? rawData: []
+    const updateData = React.useCallback(({
+                                              TableType,
+                                              currFilterType = filterType,
+                                              currFilterDate = filterDate,
+                                          }) => {
+        let resultData = rawData ? rawData : []
         if (currFilterType !== FilterTradeTypes.allTypes) {
             resultData = resultData.filter(o => o.side === currFilterType)
         }
         if (currFilterDate) {
-            // TODO: time filter
             // const _diff = moment(moment()).diff(currFilterDate, 'days')
             resultData = resultData.filter(o => o.time)
         }
@@ -217,37 +217,37 @@ export const AmmTable = withTranslation('tables')((props: WithTranslation & AmmT
         setTotalData(resultData)
     }, [rawData, filterDate, filterType])
 
-    const setFilterItems = React.useCallback(({ filterType, filterDate }) => {
+    const setFilterItems = React.useCallback(({filterType, filterDate}) => {
         setFilterType(filterType)
         setFilterDate(filterDate)
     }, [])
 
-    const handleFilterChange = React.useCallback(({ filterType, filterDate }) => {
-        setFilterItems({ filterType, filterDate })
-        updateData({ TableType: TableType.filter, currFilterType: filterType, currFilterDate: filterDate })
+    const handleFilterChange = React.useCallback(({filterType, filterDate}) => {
+        setFilterItems({filterType, filterDate})
+        updateData({TableType: TableType.filter, currFilterType: filterType, currFilterDate: filterDate})
     }, [updateData, setFilterItems])
 
     const handlePageChange = React.useCallback((page: number) => {
         setPage(page)
-        updateData({ TableType: TableType.page, currPage: page })
+        updateData({TableType: TableType.page, currPage: page})
     }, [updateData])
 
     const FilterStyled = styled(Box)`
-        margin-left: 26px;
+      margin-left: 26px;
     `
 
     return <TableStyled>
         {showFilter && (
             <FilterStyled>
-                <Filter 
-                    handleFilterChange={handleFilterChange} 
+                <Filter
+                    handleFilterChange={handleFilterChange}
                     setFilterItems={setFilterItems}
-                    filterType={filterType} 
+                    filterType={filterType}
                     filterDate={filterDate}
                 />
             </FilterStyled>
         )}
-        <Table {...{...defaultArgs, ...props, rawData: getRenderData() }}/>
+        <Table {...{...defaultArgs, ...props, rawData: getRenderData()}}/>
         {pagination && (
             <TablePagination page={page} pageSize={pageSize} total={totalData.length} onPageChange={handlePageChange}/>
         )}

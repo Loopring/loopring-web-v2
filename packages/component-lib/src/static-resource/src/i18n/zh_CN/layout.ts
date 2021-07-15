@@ -28,11 +28,11 @@ export default {
     rewards: '推荐奖励',
     labelOrders: '挂单记录',
     selectLanguage: '语言设置',
-    labelPools:'流动性挖矿池',
-    labelAmmMining:'交易大赛',
-    labelMyLiquidity:'我的流动性',
-    labelOrderBookMining:'订单本挖矿排名',
-    labelMakerRebates:'做市收益',
-    labelSetting:'高级设置',
+    labelPools: '流动性挖矿池',
+    labelAmmMining: '交易大赛',
+    labelMyLiquidity: '我的流动性',
+    labelOrderBookMining: '订单本挖矿排名',
+    labelMakerRebates: '做市收益',
+    labelSetting: '高级设置',
 }
 

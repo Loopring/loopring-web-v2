@@ -12,7 +12,8 @@ export const ToolBarItemBack = <T extends any>({
                           className={'switch'}
                           color="inherit"
                           onClick={() => {
-                              onChangeEvent(0, {tradeData, to: 'button'})}
+                              onChangeEvent(0, {tradeData, to: 'button'})
+                          }
                           }
                           aria-label="to Professional">
 

@@ -64,10 +64,10 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
     })
 
     useDeepCompareEffect(() => {
-        if (rest.tradeData  &&   rest.tradeData !==  swapData.tradeData
+        if (rest.tradeData && rest.tradeData !== swapData.tradeData
             // && (rest.tradeData.sell.tradeValue !== swapData.tradeData.sell.tradeValue
             //     || rest.tradeData.buy.tradeValue !== swapData.tradeData.buy.tradeValue)
-            ) {
+        ) {
             setSwapData({...swapData, tradeData: rest.tradeData});
         }
     }, [rest.tradeData])

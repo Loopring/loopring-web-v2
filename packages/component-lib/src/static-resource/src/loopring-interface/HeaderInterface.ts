@@ -10,12 +10,12 @@ export interface HeaderMenuItemInterface {
         id: string,
         style?: any,
         description?: string,
-        i18nKey:string
+        i18nKey: string
     },
     child?: Array<HeaderMenuItemInterface>,
     router?: { path: string, [ key: string ]: any },
     status?: keyof typeof HeaderMenuTabStatus
-    extender?: React.ElementType<any>|JSX.Element | undefined,
+    extender?: React.ElementType<any> | JSX.Element | undefined,
 }
 
 

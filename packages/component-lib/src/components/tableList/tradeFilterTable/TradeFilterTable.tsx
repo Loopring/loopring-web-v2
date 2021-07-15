@@ -1,10 +1,5 @@
 import { WithTranslation, withTranslation } from 'react-i18next'
-import {
-    Table,
-    generateColumns,
-    TableProps,
-    Button, Column,
-} from '../../basic-lib/'
+import { Button, Column, generateColumns, Table, TableProps, } from '../../basic-lib/'
 import { Default } from '../../basic-lib/tables/table.stories';
 import { FormatterProps } from 'react-data-grid';
 import { Typography } from '@material-ui/core/';
@@ -21,12 +16,12 @@ interface Row {
     priceYuan: number,
     priceDollar: number,
     change24: string,
-    showTag: 'USD'|'CYN',
+    showTag: 'USD' | 'CYN',
     floatTag: keyof typeof FloatTag,
 }
 
 const Styled = styled.div`
-  ${({theme})=> `
+  ${({theme}) => `
   & .rdg{
     .rdg-cell.float-decrease {
       .btn-change24 {
@@ -41,27 +36,28 @@ const Styled = styled.div`
         background-color: ${theme.colorBase.success};
       }
       .color-price {
-        color: ${ theme.colorBase.success};
+        color: ${theme.colorBase.success};
       }
 
     }
   }`
-}
+  }
 `
 
 
-const generateRows =  <Row,SR=unknown>(rawData: Row[], _rest: TableProps<Row,SR>): Row[] => {
-    // const {columnMode,filterWord} = rest;
-    //TODO Filter
-    // return rawData;
+const generateRows = <Row, SR = unknown>(rawData: Row[], _rest: TableProps<Row, SR>): Row[] => {
     return rawData && Array.isArray(rawData) ? rawData : [];
 }
 export type TradeFilterTableProps<R> = {
-    rawData:R,
+    rawData: R,
 } & Partial<TableProps<R, unknown>>
 
 
-export const TradeFilterTable = withTranslation('tables')(({t,rawData,...rest}: WithTranslation & TradeFilterTableProps<Row>) => {
+export const TradeFilterTable = withTranslation('tables')(({
+                                                               t,
+                                                               rawData,
+                                                               ...rest
+                                                           }: WithTranslation & TradeFilterTableProps<Row>) => {
     // const formattedRawData = props.rawData.map(o => Object.values(o))
     // const [filterType, setFilterType] = React.useState(FilterTradeTypes.allTypes)
     // const [filterDate, setFilterDate] = React.useState(null)
@@ -110,41 +106,45 @@ export const TradeFilterTable = withTranslation('tables')(({t,rawData,...rest}: 
     //         return <>{row.county}</>;
     //     }
     // },
-    const [filterBy,setFilterBy] = React.useState('');
-    const columnMode:readonly Column<Row, unknown>[] = [
-        {key: 'tradePair', name: 'tradePair',sortable: true,
+    const [filterBy, setFilterBy] = React.useState('');
+    const columnMode: readonly Column<Row, unknown>[] = [
+        {
+            key: 'tradePair', name: 'tradePair', sortable: true,
             cellClass: (row: Row) => `${row.floatTag}`,
-            headerRenderer: (props: any) => <HeaderCell {...props} filterBy={filterBy} setFilterBy={setFilterBy} />  ,
-            formatter: ({row}:FormatterProps<Row, unknown>) => <>
-                <Typography component={'p'} paddingTop={1/2}>
+            headerRenderer: (props: any) => <HeaderCell {...props} filterBy={filterBy} setFilterBy={setFilterBy}/>,
+            formatter: ({row}: FormatterProps<Row, unknown>) => <>
+                <Typography component={'p'} paddingTop={1 / 2}>
                     <Typography component={'span'} title={'sell'} className={'next-coin'}>
                         {row.sellData}
                     </Typography>
                     <Typography component={'i'}>/</Typography>
-                    <Typography component={'span'} title={'buy'}  variant={'body2'} color={'textSecondary'} >
+                    <Typography component={'span'} title={'buy'} variant={'body2'} color={'textSecondary'}>
                         {row.buyData}
                     </Typography>
                 </Typography>
                 <Typography component={'p'} variant={'body2'}>{t('labelVolume')} {row.volume}</Typography>
             </>
         },
-            {key: 'price', name: 'labelTradePrice', sortable: true,
-                cellClass: (row: Row) => `float-${row.floatTag}`,
-                formatter: ({row}:FormatterProps<Row, unknown>) => <>
-                    <Typography component={'p'} className={'color-price'}  paddingTop={1/2}>
-                        {row.price}
-                    </Typography>
-                    <Typography component={'p'} variant={'body2'}>{row.showTag ===  Currency.dollar ? PriceTag.Dollar + row.priceDollar: PriceTag.Yuan + row.priceYuan}</Typography>
-                </>
-            },
-            {key: 'change24', name: 'labelQuota24hChange', sortable: true,
-                cellClass: (row: Row) => `float-${row.floatTag}`,
-                formatter: ({row}:FormatterProps<Row, unknown>) =>{
-                    return <Button className={'btn-change24'} variant={'contained'} size={'small'} color={'primary'}>
-                        {row.change24}</Button>
-                }
-            },
-        ]
+        {
+            key: 'price', name: 'labelTradePrice', sortable: true,
+            cellClass: (row: Row) => `float-${row.floatTag}`,
+            formatter: ({row}: FormatterProps<Row, unknown>) => <>
+                <Typography component={'p'} className={'color-price'} paddingTop={1 / 2}>
+                    {row.price}
+                </Typography>
+                <Typography component={'p'}
+                            variant={'body2'}>{row.showTag === Currency.dollar ? PriceTag.Dollar + row.priceDollar : PriceTag.Yuan + row.priceYuan}</Typography>
+            </>
+        },
+        {
+            key: 'change24', name: 'labelQuota24hChange', sortable: true,
+            cellClass: (row: Row) => `float-${row.floatTag}`,
+            formatter: ({row}: FormatterProps<Row, unknown>) => {
+                return <Button className={'btn-change24'} variant={'contained'} size={'small'} color={'primary'}>
+                    {row.change24}</Button>
+            }
+        },
+    ]
     const defaultArgs = {
         ...Default.args,
         generateRows,
@@ -152,7 +152,7 @@ export const TradeFilterTable = withTranslation('tables')(({t,rawData,...rest}: 
         columnMode,
         sortDefaultKey: 'sortColumn',
         frozeSort: false,
-        sortMethod: (sortedRows: Row[], sortColumn:any) => {
+        sortMethod: (sortedRows: Row[], sortColumn: any) => {
             switch (sortColumn) {
                 case 'tokenInfo':
                     sortedRows = sortedRows.sort((a, b) => a[ sortColumn ].localeCompare(b[ sortColumn ]));
@@ -167,7 +167,7 @@ export const TradeFilterTable = withTranslation('tables')(({t,rawData,...rest}: 
         }
     };
     return <Styled>
-        <Table<any, unknown>  {...{t,...rest,...defaultArgs, rawData }}/>
+        <Table<any, unknown> {...{t, ...rest, ...defaultArgs, rawData}}/>
     </Styled>
 
 })

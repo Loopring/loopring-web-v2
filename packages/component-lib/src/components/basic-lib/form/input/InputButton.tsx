@@ -269,10 +269,6 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                     {belong ?
                         <Grid container align-items={'center'} display={'flex'}>
                             <Grid item className={'logo-icon'}>
-                                {/*//TODO:*/}
-                                {/*<Avatar alt={coinMap[ belong ]?.simpleName} src={coinMap[ belong ]?.icon} />*/}
-                                {/*<Avatar alt={coinMap[ belong ]?.simpleName}*/}
-                                {/*        src="https://exchange.loopring.io/assets/images/ethereum/assets/0x9A0aBA393aac4dFbFf4333B06c407458002C6183/logo.png"/>*/}
                                 <Avatar variant="square" alt={coinMap[ belong ]?.simpleName}
                                     // src={sellData?.icon}
                                         src={hasLoaded ? coinMap[ belong ]?.icon : 'static/images/icon-default.png'}/>
