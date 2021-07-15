@@ -1,6 +1,6 @@
 import { ButtonProps as MuButtonPros, ToggleButtonGroupProps as MuToggleButtonGroupProps } from "@material-ui/core";
 import { Dispatch, SetStateAction } from "react";
-import {  XOR } from "../../../types/lib";
+import { XOR } from "../../../types/lib";
 
 export type ButtonProps = MuButtonPros & {
     // bg:'',
@@ -9,10 +9,13 @@ export type ButtonProps = MuButtonPros & {
     // hColor:'',
     loading?: 'true' | 'false'
 }
+
 export interface BtnPercentageProps {
-    anchors?:number[], //0 --100    default 0,20,40,60,80,100
-    selected:number,
-    handleChanged:(item:any)=>void }
+    anchors?: number[], //0 --100    default 0,20,40,60,80,100
+    selected: number,
+    handleChanged: (item: any) => void
+}
+
 export interface TGItemJSXInterface {
     value: any,
     key?: string,

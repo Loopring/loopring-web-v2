@@ -1,8 +1,8 @@
 import { CoinInfo, CoinKey, IBData } from 'static-resource';
-import { WithTranslation } from 'react-i18next';
+import { Trans, WithTranslation } from 'react-i18next';
 import React from 'react';
 import { CoinMenu, EmptyDefault, InputSelect, InputSelectProps } from '../../../basic-lib';
-import { Box, Link } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import { TradeMenuListProps } from '../Interface';
 
 
@@ -22,7 +22,9 @@ export const TradeMenuList = <T extends IBData<I>,
     //TODO: for error and when empty
     const PanelEmptyRender = () => {
         return <><EmptyDefault height={"calc(100% - 35px)"} message={() => {
-            return <>Go to <Link onClick={() => console.log('EMPTY ON CLICK')}> link or event</Link> at here</>
+            return <Trans i18nKey="labelEmptyDefault">
+                Content is Empty
+            </Trans>
         }}/></>
     }
     try {

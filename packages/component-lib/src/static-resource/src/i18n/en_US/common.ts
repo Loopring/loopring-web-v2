@@ -139,6 +139,8 @@ export default {
     labelMiningRewards:'Mining Rewards',
     labelLiquidityValue:'Liquidity Value',
     labelCopyAddClip:' Address Copied to Clipboard!',
-    labelPleaseInputWalletAddress:'Please Input Address'
+    labelPleaseInputWalletAddress:'Please Input Address',
+    labelEmptyDefault: 'Empty content',
+
 }
 

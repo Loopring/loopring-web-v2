@@ -49,7 +49,7 @@ export const SubMenuList = <I extends any>({
                                            }: SubMenuListProps<I> & WithTranslation<'layout'>) => {
     return <>{Object.keys(subMenu).map((list: any, index) => {
         const subList = subMenu[ list ].map((item: any) => {
-            return <SubMenuItem button selected={new RegExp(item.label.id,'ig').test(selected)}
+            return <SubMenuItem button selected={new RegExp(item.label.id, 'ig').test(selected)}
                                 alignItems={item.label.description ? 'flex-start' : 'center'}
                                 key={item.label.id}
                                 {...{
