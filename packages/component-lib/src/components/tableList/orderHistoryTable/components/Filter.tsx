@@ -4,10 +4,10 @@ import { Box, Grid, MenuItem } from '@material-ui/core'
 import { withTranslation, WithTranslation } from "react-i18next";
 import { DatePicker, TextField } from '../../../'
 import { Button } from '../../../basic-lib/btns'
-import { DropDownIcon } from 'static-resource'
+import { DropDownIcon } from '@loopring-web/common-resources'
 
 export interface FilterProps {
-    handleFilterChange: ({ filterType, filterDate, filterToken }: any) => void
+    handleFilterChange: ({filterType, filterDate, filterToken}: any) => void
 }
 
 export enum FilterTradeTypes {
@@ -40,9 +40,9 @@ const StyledBtnBox = styled(Box)`
 `
 
 export const Filter = withTranslation('tables', {withRef: true})(({
-                                                                                t,
-                                                                                handleFilterChange
-                                                                            }: FilterProps & WithTranslation) => {
+                                                                      t,
+                                                                      handleFilterChange
+                                                                  }: FilterProps & WithTranslation) => {
     const FilterTradeTypeList = [
         {
             label: t('labelOrderFilterAllTypes'),
@@ -88,7 +88,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                         setFilterType(event.target.value as FilterTradeTypes);
                     }}
                     inputProps={{IconComponent: DropDownIcon}}
-                // > {Object.values(FilterTradeTypes).map(type => <MenuItem key={type} value={type}>{t(type)}</MenuItem>)}
+                    // > {Object.values(FilterTradeTypes).map(type => <MenuItem key={type} value={type}>{t(type)}</MenuItem>)}
                 > {FilterTradeTypeList.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
                 </StyledTextFiled>
             </Grid>

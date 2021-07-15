@@ -91,9 +91,9 @@ module.exports = override(
   // addWebpackPlugin(gitRevisionPlugin),
   addWebpackPlugin(
     new CopyWebpackPlugin({
-          patterns: [{ from: path.resolve(__dirname,"..","assets"), to: './static',toType: "dir" }],
-    }
-  )),
+        patterns: [{from: path.resolve(__dirname, "..", "assets"), to: './static', toType: "dir"}],
+      }
+    )),
   addWebpackPlugin(
     new webpack.DefinePlugin({
       'process.env.COMMITHASH': JSON.stringify(getCommitHash()),

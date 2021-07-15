@@ -2,7 +2,7 @@ import { Avatar, Box, BoxProps, FormHelperText, FormLabel, Grid } from "@materia
 import styled from "@emotion/styled";
 import { debounce } from "lodash"
 import CurrencyInput from 'react-currency-input-field';
-import { CoinInfo, getThousandFormattedNumbers, globalSetup, IBData } from 'static-resource';
+import { CoinInfo, getThousandFormattedNumbers, globalSetup, IBData } from '@loopring-web/common-resources';
 import { InputCoinProps } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
@@ -300,7 +300,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 <Grid container align-items={'center'} display={'flex'}>
                     <Grid item order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}
                           className={'logo-icon'}>
-                        {coinMap[ belong ]?.simpleName ? <Avatar variant="square" alt={coinMap[ belong ]?.simpleName}
+                        {coinMap[ belong ]?.simpleName ? <Avatar variant="square" alt={coinMap[ belong ]?.simpleName as string}
                                                                  src={hasLoaded ? coinMap[ belong ]?.icon : 'static/images/icon-default.png'}/> : ''}
                     </Grid>
                     <Grid item order={order === 'left' ? 1 : 2}

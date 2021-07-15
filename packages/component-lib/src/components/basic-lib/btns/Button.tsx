@@ -8,8 +8,8 @@ import {
 import { ButtonProps, TGItemJSXInterface, ToggleButtonGroupProps } from './Interface';
 import { WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
-import loadingSvg from 'common-resources/assets/svg/loading.svg'
-import { CloseIcon } from '../../../static-resource';
+import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
+import { CloseIcon } from '@loopring-web/common-resources';
 
 export const Button = styled(MuButton)<ButtonProps>`
   && {

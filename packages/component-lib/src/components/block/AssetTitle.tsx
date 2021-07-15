@@ -1,11 +1,11 @@
 import { Box, Grid, IconButton, Typography } from '@material-ui/core/';
-import { getThousandFormattedNumbers, HideIcon, ViewIcon } from 'static-resource';
+import { getThousandFormattedNumbers, HideIcon, ViewIcon } from '@loopring-web/common-resources';
 import React from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { AssetTitleProps } from './Interface';
 import styled from '@emotion/styled';
 import { TradeBtnStatus } from '../panel';
-import { ButtonListRightStyled, Button} from './../';
+import { Button, ButtonListRightStyled } from './../';
 
 const BoxStyled = styled(Box)`
   color: ${({theme}) => theme.colorBase.textSecondary};
@@ -45,7 +45,8 @@ export const AssetTitle = withTranslation('common')(({
 
             </BoxStyled>
 
-            <Typography component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'} marginTop={1}>
+            <Typography component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}
+                        marginTop={1}>
                 <Typography component={'span'} paddingRight={1} variant={'h1'}> {assetInfo.priceTag} </Typography>
                 {isShow ? <Typography component={'span'}
                                       variant={'h1'}>{getThousandFormattedNumbers(assetInfo.totalAsset)}</Typography> :

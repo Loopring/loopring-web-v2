@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-// import { TradeFloat } from '@loopring-web/component-lib/src/static-resource';
+// import { TradeFloat } from '@loopring-web/common-resources';
 import { LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
 import { TickerData } from 'loopring-sdk';
 import { makeTickerMap } from '../hooks/help';

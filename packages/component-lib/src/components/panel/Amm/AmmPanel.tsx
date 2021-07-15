@@ -1,10 +1,10 @@
 import { PanelContent, WrapStyled, } from '../../basic-lib';
 import { AmmChgData, AmmWithdrawWrap, IconButtonStyled } from '../components';
 import { Grid, Tab, Tabs, Toolbar } from '@material-ui/core';
-import { AmmData, AmmInData, IBData, RefreshIcon } from 'static-resource';
+import { AmmData, AmmInData, IBData, RefreshIcon } from '@loopring-web/common-resources';
 import { AmmDepositWrap } from '../components/panel/AmmWrap/AmmDeposit';
 import { WithTranslation, withTranslation } from 'react-i18next';
-import { AmmProps, AmmPanelType } from './Interface';
+import { AmmPanelType, AmmProps } from './Interface';
 import React from 'react';
 import { useDeepCompareEffect } from 'react-use';
 import { Box } from '@material-ui/core/';
@@ -57,48 +57,41 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
         ...rest
     }: AmmProps<T, I, ACD, C> & WithTranslation) => {
     const [index, setIndex] = React.useState(AmmPanelTypeMap[ tabSelected ]);
-    const [ammChgDepositData, setAmmChgDepositData] = React.useState<AmmChgData<T>>({tradeData: ammDepositData,type:'coinA'});
-    const [ammChgWithdrawData, setAmmChgWithdrawData] = React.useState<Pick<AmmChgData<T>, 'tradeData'> & { type?: 'coinA' | 'coinB' | 'percentage'}>({tradeData: ammWithdrawData});
+    const [ammChgDepositData, setAmmChgDepositData] = React.useState<AmmChgData<T>>({
+        tradeData: ammDepositData,
+        type: 'coinA'
+    });
+    const [ammChgWithdrawData, setAmmChgWithdrawData] = React.useState<Pick<AmmChgData<T>, 'tradeData'> & { type?: 'coinA' | 'coinB' | 'percentage' }>({tradeData: ammWithdrawData});
 
     //
     useDeepCompareEffect(() => {
         if (ammDepositData !== ammChgDepositData.tradeData) {
             setAmmChgDepositData({...ammChgDepositData, tradeData: ammDepositData});
         }
-        if (ammWithdrawData !== ammChgWithdrawData.tradeData && ammChgWithdrawData.type !== 'percentage' ) {
+        if (ammWithdrawData !== ammChgWithdrawData.tradeData && ammChgWithdrawData.type !== 'percentage') {
             setAmmChgWithdrawData({...ammChgWithdrawData, tradeData: ammWithdrawData});
         }
-    }, [ammDepositData,ammWithdrawData]);
+    }, [ammDepositData, ammWithdrawData]);
 
     const _onChangeAddEvent = React.useCallback(async ({tradeData, type}: AmmChgData<T>) => {
         await handleAmmAddChangeEvent(tradeData, type)
         if (typeof onChangeEvent == 'function') {
             setAmmChgDepositData(onChangeEvent({tradeData, type} as AmmChgData<T>));
-        }else {
+        } else {
             setAmmChgDepositData({tradeData, type})
         }
     }, [handleAmmAddChangeEvent, onChangeEvent])
     const _onChangeRemoveEvent = React.useCallback(async ({
-                                                                tradeData,
-                                                                type,
-                                                                percentage
-                                                            }: Pick<AmmChgData<T>, 'tradeData'> & { type: 'coinA' | 'coinB' | 'percentage', percentage?: number }) => {
+                                                              tradeData,
+                                                              type,
+                                                              percentage
+                                                          }: Pick<AmmChgData<T>, 'tradeData'> & { type: 'coinA' | 'coinB' | 'percentage', percentage?: number }) => {
 
         await handleAmmRemoveChangeEvent(tradeData, type === 'percentage' ? 'coinA' : type)
         if (typeof onChangeEvent == 'function') {
             setAmmChgWithdrawData(onChangeEvent({tradeData, type} as AmmChgData<T>));
         } else {
-            if(percentage){
-                console.log('from percentage')
-            }
             setAmmChgWithdrawData({tradeData, type});
-
-            // if (type !== 'percentage') {
-            //     console.log('from Input',tradeData);
-            // } else {
-            //     console.log('from percentage',tradeData)
-            //     setAmmChgWithdrawData({tradeData,type});
-            // }
         }
 
     }, [handleAmmRemoveChangeEvent, onChangeEvent]);
@@ -122,7 +115,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
                 onChangeEvent: _onChangeAddEvent,
                 onAmmAddClick,
                 handleError,
-                ammData:ammChgDepositData.tradeData,
+                ammData: ammChgDepositData.tradeData,
                 tokenAProps: {...tokenDepositAProps},
                 tokenBProps: {...tokenDepositBProps},
             }}/>,
@@ -133,7 +126,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
                 t,
                 ...rest,
                 anchors,
-                selectedPercentage:-1,
+                selectedPercentage: -1,
                 disableDeposit,
                 ammWithdrawBtnStatus,
                 ammWithdrawBtnI18nKey,
@@ -151,7 +144,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
     return <WrapStyled height={height} width={width}>
         <Grid container className={'container'} direction={'column'}
               justifyContent={"start"} flexWrap={'nowrap'}>
-            <Toolbar variant={'dense'}  >
+            <Toolbar variant={'dense'}>
                 <Box alignSelf={'center'}>
                     <TabPanelBtn {...{t, value: index, handleChange: handleTabChange, ...rest}} />
                 </Box>
@@ -175,7 +168,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
             {/*</Grid>*/}
         </Grid>
     </WrapStyled>
-})  as <T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
+}) as <T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
     ACD extends AmmInData<I>,
     C = IBData<I>>(props: AmmProps<T, I, ACD, C> & React.RefAttributes<any>) => JSX.Element;
 

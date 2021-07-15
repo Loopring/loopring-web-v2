@@ -4,7 +4,7 @@ import { LoopringAPI } from '../../stores/apis/api';
 import * as fm from 'loopring-sdk';
 import { BIG10 } from '../../defs/swap_defs';
 import { getToken } from 'utils/swap_calc_utils';
-import { CoinMap, CustomError, ErrorMap } from '@loopring-web/component-lib/src/static-resource';
+import { CoinMap, CustomError, ErrorMap } from '@loopring-web/common-resources';
 import { volumeToCountAsBigNumber } from './volumeToCount';
 
 export const pairDetailBlock = <C extends { [ key: string ]: any }, I extends { [ key: string ]: any }>({

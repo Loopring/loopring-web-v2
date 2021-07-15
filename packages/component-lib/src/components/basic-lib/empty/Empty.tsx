@@ -1,7 +1,7 @@
 import { withTranslation, WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import React from 'react';
-import { EmptyIcon } from '../../../static-resource';
+import { EmptyIcon } from '@loopring-web/common-resources';
 import { Typography } from '@material-ui/core/';
 
 
@@ -13,21 +13,22 @@ export type EmptyProps = {
 const EmptyIconStyle = styled(EmptyIcon)`
   && {
     height: var(--empty-size);
-    width: var(--empty-size); 
+    width: var(--empty-size);
   }
+
   opacity: .3;
-  font-size: ${({theme}) => theme.fontDefault.h1}; 
+  font-size: ${({theme}) => theme.fontDefault.h1};
   color: ${({theme}) => theme.colorBase.textHint};
 ` as typeof EmptyIcon
 const WrapStyled = styled.div<{ height: number | undefined | string }>`
-      display: flex;
-      flex-direction: column;
-      flex-flow: column wrap;
-      justify-content: center;
-      align-items: center;
-      height: ${props => (props.height ? typeof props.height == 'number' ? props.height + 'px' : props.height : `${350 - 35}px`)};
-      
-    `;
+  display: flex;
+  flex-direction: column;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  height: ${props => (props.height ? typeof props.height == 'number' ? props.height + 'px' : props.height : `${350 - 35}px`)};
+
+`;
 export const EmptyDefault = withTranslation('layout')(({
                                                            t,
                                                            defaultPic = <EmptyIconStyle fontSize={'large'}/>,

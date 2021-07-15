@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getAmmMap, getAmmMapStatus, updateRealTimeAmmMap } from './reducer';
-import { AmmDetail } from '@loopring-web/component-lib/src/static-resource';
+import { AmmDetail } from '@loopring-web/common-resources';
 import store from '../../index';
 import { AmmPoolInfoV3, AmmPoolStat, toBig, TokenVolumeV3, } from "loopring-sdk";
 import { ammpoolAPI } from "stores/apis/api";

@@ -2,9 +2,8 @@ import styled from '@emotion/styled'
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
-import { Currency, FloatTag } from 'static-resource'
+import { Currency, FloatTag } from '@loopring-web/common-resources'
 import { TradeFilterTable } from './TradeFilterTable';
-
 
 
 const Style = styled.div`
@@ -15,16 +14,16 @@ const Style = styled.div`
 `
 
 const rawData: any = [{
-        sellData: "ETH",
-        buyData: "LRC",
-        volume: 1924342,
-        price: 1231,
-        priceYuan: 1231231,
-        priceDollar: 12312312,
-        change24: '+24%',
-        showTag: Currency.dollar,
-        floatTag: FloatTag.decrease
-    },
+    sellData: "ETH",
+    buyData: "LRC",
+    volume: 1924342,
+    price: 1231,
+    priceYuan: 1231231,
+    priceDollar: 12312312,
+    change24: '+24%',
+    showTag: Currency.dollar,
+    floatTag: FloatTag.decrease
+},
     {
         sellData: "ETH",
         buyData: "LRC",
@@ -44,7 +43,7 @@ const rawData: any = [{
         priceYuan: 1231231,
         priceDollar: 12312312,
         change24: '+24%',
-        showTag: Currency.dollar  ,
+        showTag: Currency.dollar,
         floatTag: FloatTag.decrease
     },
     {

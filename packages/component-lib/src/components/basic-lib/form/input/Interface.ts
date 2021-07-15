@@ -1,4 +1,4 @@
-import { CoinInfo, CoinKey, CoinMap } from 'static-resource';
+import { CoinInfo, CoinKey, CoinMap } from '@loopring-web/common-resources';
 import React from 'react';
 import { InputProps } from "@material-ui/core";
 

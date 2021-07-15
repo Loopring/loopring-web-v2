@@ -6,8 +6,9 @@ import {
     globalSetup,
     IBData,
     TradeCalcData,
-    TradeFloat
-} from '@loopring-web/component-lib/static-resource';
+    TradeFloat,
+    WalletMap
+} from '@loopring-web/common-resources';
 import React, { useState } from 'react';
 import { LoopringAPI } from '../../stores/apis/api';
 import { useTokenMap } from '../../stores/token';
@@ -45,7 +46,7 @@ import {
 import * as _ from 'lodash'
 import store from 'stores';
 import { AccountStatus } from 'state_machine/account_machine_spec';
-import { SwapData } from '@loopring-web/component-lib/components/panel/components';
+import { SwapData } from '@loopring-web/component-lib';
 import { deepClone } from '../../utils/obj_tools';
 
 export const useSwapPage = <C extends { [ key: string ]: any }>() => {
@@ -320,7 +321,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             }
             if (walletLayer2State.walletLayer2) {
                 const {walletMap} = makeWallet();
-                _tradeCalcData.walletMap = walletMap;
+                _tradeCalcData.walletMap = walletMap as WalletMap<any>;
                 getUserTrades(market).then((marketTrades) => {
                     let _myTradeArray = makeMarketArray(market, marketTrades) as RawDataTradeItem[]
                     setMyTradeArray(_myTradeArray ? _myTradeArray : [])

@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 import { coinMap, CoinType, layer2ItemData, walletMap } from "../../../static";
 import { CoinMenu } from './CoinList';
-import { AlertIcon, AssetsIcon, CheckIcon, CoinInfo, DownloadIcon, globalCss, PendingIcon } from 'static-resource';
+import { AlertIcon, AssetsIcon, CheckIcon, CoinInfo, DownloadIcon, globalCss, PendingIcon } from '@loopring-web/common-resources';
 import React from 'react';
 
 import { Typography } from '@material-ui/core/';

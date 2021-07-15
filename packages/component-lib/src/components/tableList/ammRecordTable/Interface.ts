@@ -1,11 +1,12 @@
-import { CoinInfo } from '../../../static-resource';
+import { CoinInfo } from '@loopring-web/common-resources';
 
 
 export enum AmmTradeType {
-    add='add',
-    swap='swap',
-    remove='remove'
+    add = 'add',
+    swap = 'swap',
+    remove = 'remove'
 }
+
 enum TxStatus {
     processing = "processing",
     processed = "processed",
@@ -25,7 +26,7 @@ export interface AmmRecordRow<C> {
     status?: keyof typeof TxStatus;
 }
 
-export type AmmRecordTableProps<T,R = AmmRecordRow<T>> = {
+export type AmmRecordTableProps<T, R = AmmRecordRow<T>> = {
     rawData: R[];
     pagination?: {
         pageSize: number

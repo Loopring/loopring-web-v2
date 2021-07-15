@@ -1,8 +1,8 @@
 import { Box, Grid, IconButton, Typography } from '@material-ui/core/';
-import { ActiveIcon, CopyIcon, LinkIcon, PowerIcon, ReverseIcon } from 'static-resource';
+import { ActiveIcon, CopyIcon, LinkIcon, PowerIcon, ReverseIcon } from '@loopring-web/common-resources';
 import { Trans, withTranslation, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
-import { AccountInfoProps, Button, VipStyled, TypographyStrong } from './../';
+import { AccountInfoProps, Button, TypographyStrong, VipStyled } from '../';
 import QRCode from 'qrcode.react';
 
 
@@ -57,8 +57,8 @@ export const AccountInfo = withTranslation('common')(({
                                                           t
                                                       }: AccountInfoProps & WithTranslation) => {
 
-    return <Grid container justifyContent={'space-between'} alignItems={'center'} >
-        <Grid item xs={12} display={'flex'} flexDirection={'column'} alignItems={'flex-start'} paddingX={3} >
+    return <Grid container justifyContent={'space-between'} alignItems={'center'}>
+        <Grid item xs={12} display={'flex'} flexDirection={'column'} alignItems={'flex-start'} paddingX={3}>
             <Typography component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}>
                 <Typography component={'span'} variant={'h4'}>{addressShort}</Typography>
                 {level ? <VipStyled component={'span'} variant={'body2'}
@@ -70,32 +70,39 @@ export const AccountInfo = withTranslation('common')(({
                 </Trans>
             </Typography>
             <Box alignSelf={'center'} marginY={2} display={'flex'} alignItems={'center'} flexDirection={'column'}>
-                <QRCode value={address} size={160} style={{padding: 5, backgroundColor: '#fff'}} aria-label={`link:${address}`}/>
-                <Typography component={'span'} variant={'body2'} >
+                <QRCode value={address} size={160} style={{padding: 5, backgroundColor: '#fff'}}
+                        aria-label={`link:${address}`}/>
+                <Typography component={'span'} variant={'body2'}>
                     <Typography variant={'body2'} marginBottom={3} marginTop={1}>
                         {address}
-                        <IconButton size={'small'} data-clipboard-text={address} onClick={() => { if (onCopy) onCopy()} }><CopyIcon/></IconButton>
+                        <IconButton size={'small'} data-clipboard-text={address} onClick={() => {
+                            if (onCopy) onCopy()
+                        }}><CopyIcon/></IconButton>
                     </Typography>
                 </Typography>
             </Box>
             <BoxStyled component={'div'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
                        marginTop={1} alignSelf={'stretch'}>
-                <Button href={etherscanLink} variant={'outlined'}  startIcon={<LinkIcon fontSize={'large'}/>}>
-                    <Typography variant={'body2'} marginTop={1/2} > {'Etherscan'} </Typography>
+                <Button href={etherscanLink} variant={'outlined'} startIcon={<LinkIcon fontSize={'large'}/>}>
+                    <Typography variant={'body2'} marginTop={1 / 2}> {'Etherscan'} </Typography>
                 </Button>
-                <Button startIcon={<ReverseIcon fontSize={'large'}/>} onClick={()=>{
-                    if (onSwitch) onSwitch()}} variant={'outlined'} >
-                    <Typography variant={'body2'} marginTop={1/2}>  {t('labelSwitchAccount')} </Typography>
+                <Button startIcon={<ReverseIcon fontSize={'large'}/>} onClick={() => {
+                    if (onSwitch) onSwitch()
+                }} variant={'outlined'}>
+                    <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelSwitchAccount')} </Typography>
                 </Button>
-                <Button startIcon={<PowerIcon fontSize={'large'}/>} onClick={()=>{
-                    if (onDisconnect) onDisconnect()}} variant={'outlined'} >
-                    <Typography variant={'body2'} marginTop={1/2}>  {t('labelDisconnect')} </Typography>
+                <Button startIcon={<PowerIcon fontSize={'large'}/>} onClick={() => {
+                    if (onDisconnect) onDisconnect()
+                }} variant={'outlined'}>
+                    <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelDisconnect')} </Typography>
                 </Button>
-                {mainBtn ? mainBtn : <Button className={'active'} variant={'contained'} startIcon={<ActiveIcon fontSize={'large'}/>}   onClick={() => {
-                    if (onLock) onLock()
-                }}  >
-                    <Typography variant={'body2'} marginTop={1/2}>  {t('labelActiveLayer2')} </Typography>
-                </Button>}
+                {mainBtn ? mainBtn :
+                    <Button className={'active'} variant={'contained'} startIcon={<ActiveIcon fontSize={'large'}/>}
+                            onClick={() => {
+                                if (onLock) onLock()
+                            }}>
+                        <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelActiveLayer2')} </Typography>
+                    </Button>}
             </BoxStyled>
         </Grid>
     </Grid>;

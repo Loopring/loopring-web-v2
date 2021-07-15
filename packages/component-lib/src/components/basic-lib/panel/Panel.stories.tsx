@@ -6,7 +6,7 @@ import { SwitchPanel, SwitchPanelProps } from './SwitchPanel';
 import { MemoryRouter } from 'react-router-dom';
 import { Box, Button, Grid, IconButton, ListItemAvatar, ListItemText, Typography } from '@material-ui/core';
 
-import { AssetsIcon, DropDownIcon } from 'static-resource';
+import { AssetsIcon, DropDownIcon } from '@loopring-web/common-resources';
 import { SubMenuItem } from '../lists';
 import { SubMenu } from '.';
 
