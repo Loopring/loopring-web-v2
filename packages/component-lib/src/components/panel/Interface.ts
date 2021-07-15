@@ -11,12 +11,9 @@ import {
     WithdrawExtendProps,
     WithdrawInfoProps as _WithdrawInfoProps,
 } from './components/Interface';
-import {
-    SwapData,
-    SwapTradeBaseEventProps,
-    SwapTradeBaseProps,
-} from './components/panel/SwapWrap/Interface';
+import { SwapData, SwapTradeBaseEventProps, SwapTradeBaseProps, } from './components/panel/SwapWrap/Interface';
 import { AmmPanelBaseProps } from './Amm';
+
 export type SwapTradeData<T> = {
     sell: T,
     buy: T,
@@ -25,7 +22,6 @@ export type SwapTradeData<T> = {
         [ key: string ]: any
     }
 }
-
 
 
 export type ModalProps = {
@@ -45,8 +41,8 @@ export  type  DepositInfoProps<T, I> = DefaultProps<T, I> & _DepositInfoProps;
 export  type  WithdrawInfoProps<T, I> = DefaultProps<T, I> & _WithdrawInfoProps<CoinKey<I>>;
 export  type  TransferInfoProps<T, I> = DefaultProps<T, I> & _TransferInfoProps<CoinKey<I>>;
 
-export  type  SwapInfoProps<T, I, TCD> =  SwapTradeBaseProps<T, I, TCD> ;
-export  type  AmmInfoProps<T, I, ACD, C = IBData<I>> =  AmmPanelBaseProps<T, I, ACD, C>;
+export  type  SwapInfoProps<T, I, TCD> = SwapTradeBaseProps<T, I, TCD>;
+export  type  AmmInfoProps<T, I, ACD, C = IBData<I>> = AmmPanelBaseProps<T, I, ACD, C>;
 
 
 /**
@@ -106,6 +102,6 @@ export type  ModalPanelProps = {
     open: boolean,
     onClose: { bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void; }['bivarianceHack'];
     content: React.ElementType<any> | JSX.Element,
-    height?: number|string,
-    width?: number|string,
+    height?: number | string,
+    width?: number | string,
 }

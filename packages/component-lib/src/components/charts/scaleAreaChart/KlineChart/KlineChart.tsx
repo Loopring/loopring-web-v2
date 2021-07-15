@@ -2,36 +2,30 @@ import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 import * as React from "react";
 import {
-    elderRay,
-    ema,
-    sma,
-    discontinuousTimeScaleProviderBuilder,
+    bollingerBand,
+    BollingerBandTooltip,
+    BollingerSeries,
+    CandlestickSeries,
     Chart,
     ChartCanvas,
-    CurrentCoordinate,
-    BarSeries,
-    CandlestickSeries,
-    ElderRaySeries,
-    LineSeries,
-    MovingAverageTooltip,
-    OHLCTooltip,
-    SingleValueTooltip,
-    lastVisibleItemBasedZoomAnchor,
-    XAxis,
-    YAxis,
     CrossHairCursor,
+    CurrentCoordinate,
+    discontinuousTimeScaleProviderBuilder,
     EdgeIndicator,
-    MouseCoordinateX,
-    MouseCoordinateY,
-    ZoomButtons,
-    withDeviceRatio,
-    withSize,
-    BollingerSeries,
-    BollingerBandTooltip,
-    bollingerBand,
+    ema,
+    lastVisibleItemBasedZoomAnchor,
+    LineSeries,
     MACDSeries,
     MACDTooltip,
-    // macd
+    MouseCoordinateX,
+    MouseCoordinateY,
+    MovingAverageTooltip,
+    OHLCTooltip,
+    sma,
+    withDeviceRatio,
+    withSize,
+    XAxis,
+    YAxis,
 } from "react-financial-charts";
 import { macd } from "@react-financial-charts/indicators";
 
@@ -58,7 +52,7 @@ export interface StockChartProps {
 }
 
 class StockChart extends React.Component<StockChartProps> {
-    private readonly margin = { left: 0, right: 48, top: 0, bottom: 24 };
+    private readonly margin = {left: 0, right: 48, top: 0, bottom: 24};
     private readonly pricesDisplayFormat = format(".2f");
     private readonly xScaleProvider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(
         (d: IOHLCData) => d.date,
@@ -88,8 +82,7 @@ class StockChart extends React.Component<StockChartProps> {
     //     .accessor((d: any) => d.macd);
 
     public render() {
-        const { data: initialData, dateTimeFormat = "%d %b", height, ratio, width } = this.props;
-        console.log(initialData)
+        const {data: initialData, dateTimeFormat = "%d %b", height, ratio, width} = this.props;
         // simple moving average
         const macdCalculator = macd()
             // .id(6)
@@ -105,7 +98,7 @@ class StockChart extends React.Component<StockChartProps> {
 
         const sma5 = sma()
             .id(1)
-            .options({ windowSize: 5 })
+            .options({windowSize: 5})
             .merge((d: any, c: any) => {
                 d.sma5 = c;
             })
@@ -113,7 +106,7 @@ class StockChart extends React.Component<StockChartProps> {
 
         const sma10 = sma()
             .id(2)
-            .options({ windowSize: 10 })
+            .options({windowSize: 10})
             .merge((d: any, c: any) => {
                 d.sma10 = c;
             })
@@ -121,7 +114,7 @@ class StockChart extends React.Component<StockChartProps> {
 
         const sma30 = sma()
             .id(3)
-            .options({ windowSize: 30 })
+            .options({windowSize: 30})
             .merge((d: any, c: any) => {
                 d.sma30 = c;
             })
@@ -129,7 +122,7 @@ class StockChart extends React.Component<StockChartProps> {
 
         const sma60 = sma()
             .id(4)
-            .options({ windowSize: 60 })
+            .options({windowSize: 60})
             .merge((d: any, c: any) => {
                 d.sma60 = c;
             })
@@ -146,15 +139,15 @@ class StockChart extends React.Component<StockChartProps> {
 
         const ema26 = ema()
             .id(6)
-            .options({ windowSize: 26 })
+            .options({windowSize: 26})
             .merge((d: any, c: any) => {
                 d.ema26 = c;
-            })  
+            })
             .accessor((d: any) => d.ema26);
 
         const ema12 = ema()
             .id(7)
-            .options({ windowSize: 12 })
+            .options({windowSize: 12})
             .merge((d: any, c: any) => {
                 d.ema12 = c;
             })
@@ -166,14 +159,13 @@ class StockChart extends React.Component<StockChartProps> {
         // const calculatedData = macdCalculator(ema12(ema26(sma60(sma30(sma10(sma5(bollinger(initialData))))))));
         const calculatedData = macdCalculator(ema12(ema26(initialData)));
 
-        console.log(calculatedData)
 
-        const { margin, xScaleProvider } = this;
+        const {margin, xScaleProvider} = this;
 
-        const { data, xScale, xAccessor, displayXAccessor } = xScaleProvider(calculatedData);
+        const {data, xScale, xAccessor, displayXAccessor} = xScaleProvider(calculatedData);
 
-        const max = xAccessor(data[data.length - 1]);
-        const min = xAccessor(data[Math.max(0, data.length - 100)]);
+        const max = xAccessor(data[ data.length - 1 ]);
+        const min = xAccessor(data[ Math.max(0, data.length - 100) ]);
         const xExtents = [min, max + 5];
 
         const gridHeight = height - margin.top - margin.bottom;
@@ -209,19 +201,23 @@ class StockChart extends React.Component<StockChartProps> {
                 xExtents={xExtents}
                 zoomAnchor={lastVisibleItemBasedZoomAnchor}
             >
-                <Chart id={1} height={chartHeight} yExtents={this.candleChartExtents} padding={{ top: 10, bottom: 20 }}>
-                    <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} showTicks={false} showTickLabel={false} tickLabelFill={'rgba(255, 255, 255, 0.4)'} strokeStyle={'rgba(255, 255, 255, 0.3)'} />
-                    <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} tickFormat={this.pricesDisplayFormat} tickLabelFill={'rgba(255, 255, 255, 0.4)'} strokeStyle={'rgba(255, 255, 255, 0.3)'} />
-                    <CandlestickSeries fill={this.candleStickColor} />
-                    <LineSeries yAccessor={sma5.accessor()} strokeStyle={sma5.stroke()} />
-                    <CurrentCoordinate yAccessor={sma5.accessor()} fillStyle={sma5.stroke()} />
-                    <LineSeries yAccessor={sma10.accessor()} strokeStyle={sma10.stroke()} />
-                    <CurrentCoordinate yAccessor={sma10.accessor()} fillStyle={sma10.stroke()} />
-                    <LineSeries yAccessor={sma30.accessor()} strokeStyle={sma30.stroke()} />
-                    <CurrentCoordinate yAccessor={sma30.accessor()} fillStyle={sma30.stroke()} />
-                    <LineSeries yAccessor={sma60.accessor()} strokeStyle={sma60.stroke()} />
-                    <CurrentCoordinate yAccessor={sma60.accessor()} fillStyle={sma60.stroke()} />
-                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
+                <Chart id={1} height={chartHeight} yExtents={this.candleChartExtents} padding={{top: 10, bottom: 20}}>
+                    <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} showTicks={false}
+                           showTickLabel={false} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                           strokeStyle={'rgba(255, 255, 255, 0.3)'}/>
+                    <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'}
+                           tickFormat={this.pricesDisplayFormat} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                           strokeStyle={'rgba(255, 255, 255, 0.3)'}/>
+                    <CandlestickSeries fill={this.candleStickColor}/>
+                    <LineSeries yAccessor={sma5.accessor()} strokeStyle={sma5.stroke()}/>
+                    <CurrentCoordinate yAccessor={sma5.accessor()} fillStyle={sma5.stroke()}/>
+                    <LineSeries yAccessor={sma10.accessor()} strokeStyle={sma10.stroke()}/>
+                    <CurrentCoordinate yAccessor={sma10.accessor()} fillStyle={sma10.stroke()}/>
+                    <LineSeries yAccessor={sma30.accessor()} strokeStyle={sma30.stroke()}/>
+                    <CurrentCoordinate yAccessor={sma30.accessor()} fillStyle={sma30.stroke()}/>
+                    <LineSeries yAccessor={sma60.accessor()} strokeStyle={sma60.stroke()}/>
+                    <CurrentCoordinate yAccessor={sma60.accessor()} fillStyle={sma60.stroke()}/>
+                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat}/>
                     <EdgeIndicator
                         itemType="last"
                         rectWidth={margin.right}
@@ -261,13 +257,13 @@ class StockChart extends React.Component<StockChartProps> {
                         ]}
                     />
                     {/* <ZoomButtons /> */}
-                    <OHLCTooltip origin={[8, 16]} textFill={'#FFF'} />
+                    <OHLCTooltip origin={[8, 16]} textFill={'#FFF'}/>
                     <BollingerSeries
-						strokeStyle={bbStroke}
-					/>
+                        strokeStyle={bbStroke}
+                    />
                     <BollingerBandTooltip
                         origin={[8, 64]}
-						yAccessor={d => d.bb}
+                        yAccessor={d => d.bb}
                         options={bollinger.options()}
                         textFill={'#fff'}
                     />
@@ -286,11 +282,15 @@ class StockChart extends React.Component<StockChartProps> {
                         origin={[8, 16]}
                     />
 				</Chart> */}
-                <Chart id={8} origin={(w, h) => [0, h - 100]} height={100} yExtents={macdYAccessor}>
-                    <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="bottom" orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'} strokeStyle={'rgba(255, 255, 255, 0.3)'} />
-					<YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right" ticks={5} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'} strokeStyle={'rgba(255, 255, 255, 0.3)'} />
-                    <MouseCoordinateX displayFormat={timeDisplayFormat} />
-                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
+                <Chart id={8} origin={(_w, _h) => [0, _h - 100]} height={100} yExtents={macdYAccessor}>
+                    <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="bottom"
+                           orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                           strokeStyle={'rgba(255, 255, 255, 0.3)'}/>
+                    <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right"
+                           ticks={5} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                           strokeStyle={'rgba(255, 255, 255, 0.3)'}/>
+                    <MouseCoordinateX displayFormat={timeDisplayFormat}/>
+                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat}/>
                     <MACDSeries yAccessor={macdYAccessor} {...this.macdAppearance} />
                     <MACDTooltip
                         origin={[8, 16]}
@@ -299,11 +299,12 @@ class StockChart extends React.Component<StockChartProps> {
                         yAccessor={macdYAccessor}
                     />
                 </Chart>
-                <CrossHairCursor strokeStyle={'#fff'} />
+                <CrossHairCursor strokeStyle={'#fff'}/>
             </ChartCanvas>
         );
     }
 
+    // @ts-ignore
     private readonly barChartExtents = (data: IOHLCData) => {
         return data.volume;
     };
@@ -317,11 +318,11 @@ class StockChart extends React.Component<StockChartProps> {
     };
 
     private readonly candleStickColor = (data: IOHLCData) => data.close > data.open ? CandleStickFill.up : CandleStickFill.down
-
+    // @ts-ignore
     private readonly volumeColor = (data: IOHLCData) => {
         return data.close > data.open ? "rgba(38, 166, 154, 0.3)" : "rgba(239, 83, 80, 0.3)";
     };
-
+    // @ts-ignore
     private readonly volumeSeries = (data: IOHLCData) => {
         return data.volume;
     };
@@ -331,4 +332,4 @@ class StockChart extends React.Component<StockChartProps> {
     };
 }
 
-export const DayilyStockChart = withSize({ style: { minHeight: 600 } })(withDeviceRatio()(StockChart));
+export const DayilyStockChart = withSize({style: {minHeight: 600}})(withDeviceRatio()(StockChart));

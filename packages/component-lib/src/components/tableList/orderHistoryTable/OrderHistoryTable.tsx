@@ -1,19 +1,18 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 import { Box } from '@material-ui/core'
-import { withTranslation, WithTranslation, TFunction } from 'react-i18next';
+import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
 import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes } from 'static-resource'
-import { Column, generateColumns, generateRows, Table, Popover, PopoverType, TablePagination } from '../../basic-lib'
+import { Column, generateColumns, generateRows, Popover, PopoverType, Table, TablePagination } from '../../basic-lib'
 import { SingleOrderHistoryTable } from './SingleOrderHistoryTable'
 import { Filter, FilterTradeTypes } from './components/Filter'
-import { TablePaddingX } from '../../styled'
+import { TableFilterStyled, TablePaddingX } from '../../styled'
 
 // export enum OrderSide {
 //     sell = 'Sell',
 //     buy = 'Buy'
 // }
-
 
 
 // enum ActionType {
@@ -93,7 +92,7 @@ const TableStyled = styled(Box)`
             align-items: center;
         }
     }
-    ${({theme}) => TablePaddingX({pLeft:theme.unit * 3,pRight:theme.unit * 3})}
+    ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
 
 export interface OrderHistoryTableProps {
@@ -172,7 +171,7 @@ const getColumnModeOrderHistory = (t: TFunction): Column<OrderHistoryRow, unknow
         formatter: ({row, column}) => {
             const value = row[ column.key ]
             const renderValue = Number.isFinite(value)
-                ? moment(new Date(row['time']), "YYYYMMDDHHMM").fromNow()
+                ? moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
                 : EmptyValueTag
             return (
                 <div className="rdg-cell-value">
@@ -187,7 +186,7 @@ const getColumnModeOrderHistory = (t: TFunction): Column<OrderHistoryRow, unknow
         formatter: ({row, column, rowIdx}) => <>
             <CellStatus {...{row, column, rowIdx}} />
         </>
-    },{
+    }, {
         key: 'detail',
         name: '',
         hidden: true
@@ -204,12 +203,12 @@ const CellStatus = ({row, column, rowIdx}: any) => {
         justify-content: space-between;
         align-items: center;
 		color: ${({theme}) => {
-            const {colorBase} = theme
-            return value === TradeStatus.Processed
-                ? colorBase.success
-                : value === TradeStatus.Expired ? colorBase.textSecondary
+        const {colorBase} = theme
+        return value === TradeStatus.Processed
+            ? colorBase.success
+            : value === TradeStatus.Expired ? colorBase.textSecondary
                 : colorBase.textPrimary
-        }};
+    }};
 		width: 110px;
         padding-right: 10px;
 
@@ -353,7 +352,7 @@ const CellStatus = ({row, column, rowIdx}: any) => {
 }
 
 export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryTableProps & WithTranslation) => {
-    const { t, rawData, pagination, showFilter } = props
+    const {t, rawData, pagination, showFilter} = props
     const actionColumns = ['status']
     const defaultArgs: any = {
         rawData: [],
@@ -379,15 +378,15 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
     const pageSize = pagination ? pagination.pageSize : 10
 
     const getRenderData = useCallback(() => pagination
-            ? totalData.slice((page - 1) * pageSize, page * pageSize)
-            : totalData
-    , [page, pageSize, pagination, totalData])
+        ? totalData.slice((page - 1) * pageSize, page * pageSize)
+        : totalData
+        , [page, pageSize, pagination, totalData])
 
-    const updateData = useCallback(({ 
-        actionType,
-        currFilterType = filterType,
-        currFilterDate = filterDate,
-    }) => {
+    const updateData = useCallback(({
+                                        actionType,
+                                        currFilterType = filterType,
+                                        currFilterDate = filterDate,
+                                    }) => {
         // let resultData = cloneDeep(formattedRawData)
         let resultData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
         // o[0]: tradeType
@@ -405,31 +404,28 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         setTotalData(resultData)
     }, [rawData, filterDate, filterType])
 
-    const handleFilterChange = useCallback(({ filterType, filterDate }) => {
+    const handleFilterChange = useCallback(({filterType, filterDate}) => {
         setFilterType(filterType)
         setFilterDate(filterDate)
-        updateData({ actionType: TableType.filter, currFilterType: filterType, currFilterDate: filterDate })
+        updateData({actionType: TableType.filter, currFilterType: filterType, currFilterDate: filterDate})
     }, [updateData])
 
     const handlePageChange = useCallback((page: number) => {
         setPage(page)
-        updateData({ actionType: TableType.page, currPage: page })
+        updateData({actionType: TableType.page, currPage: page})
     }, [updateData])
-
-    const FilterStyled = styled(Box)`
-        margin-left: 26px;
-    `
 
     return <TableStyled>
         {showFilter && (
-            <FilterStyled>
-                <Filter handleFilterChange={handleFilterChange} />
-            </FilterStyled>
+            <TableFilterStyled>
+                <Filter handleFilterChange={handleFilterChange}/>
+            </TableFilterStyled>
         )}
         <Table {...{...defaultArgs, ...props, rawData: getRenderData()}} />
         {
             pagination && (
-                <TablePagination page={page} pageSize={pageSize} total={totalData.length} onPageChange={handlePageChange} />
+                <TablePagination page={page} pageSize={pageSize} total={totalData.length}
+                                 onPageChange={handlePageChange}/>
             )
         }
     </TableStyled>

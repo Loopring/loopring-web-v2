@@ -13,7 +13,8 @@ const socketSlice: Slice<StateBase & {socket: SocketMap}> = createSlice({
   initialState,
   reducers: {
     socketEnd(state,action:PayloadAction<undefined>){
-      state.status = STATUS.PENDING
+      state.socket = {};
+      state.status = STATUS.PENDING;
     },
     sendSocketTopic(state, action: PayloadAction<{socket: SocketMap}>) {
       state.socket = action.payload.socket

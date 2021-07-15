@@ -8,14 +8,14 @@ import { useAmmMap } from '../../stores/Amm/AmmMap';
 
 export const useAmmPool = <R extends {[key:string]:any},I extends {[key:string]:any}>()=>{
     const AmmActivityMapState  = useAmmActivityMap()
-    const {updateUserRewards}  = useUserRewards()
+    const {getUserRewards}  = useUserRewards()
     const {account} = useAccount();
-    const {ammMap,updateAmmMap} = useAmmMap();
+    const {ammMap,getAmmMap} = useAmmMap();
     const [ammActivityMap,setAmmActivityMap] = React.useState<LoopringMap<LoopringMap<AmmPoolActivityRule[]>>|undefined>(AmmActivityMapState.ammActivityMap)
     // init AmmMap at begin
     React.useEffect(() => {
         if (!ammMap || Object.keys(ammMap).length === 0) {
-            updateAmmMap();
+            getAmmMap();
         }
     }, []);
     React.useEffect(() => {
@@ -36,7 +36,7 @@ export const useAmmPool = <R extends {[key:string]:any},I extends {[key:string]:
     }, [AmmActivityMapState.status])
     React.useEffect(() => {
         if(account.accountId){
-            updateUserRewards()
+            getUserRewards()
         }
     }, [account.accountId])
 

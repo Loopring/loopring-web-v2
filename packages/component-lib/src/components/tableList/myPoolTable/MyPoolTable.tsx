@@ -21,7 +21,7 @@ export enum PoolTradeType {
 //     // filter = 'filter',
 //     page = 'page'
 // }
-const rowHeight=86;
+const rowHeight = 86;
 
 const TableStyled = styled(Box)`
   .rdg {
@@ -40,7 +40,7 @@ const TableStyled = styled(Box)`
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
 const TypogStyle = styled(Typography)`
-  font-size: ${({theme})=>theme.fontDefault.body1};
+  font-size: ${({theme}) => theme.fontDefault.body1};
 ` as typeof Typography;
 
 const PoolStyle = styled(Box)`
@@ -50,14 +50,14 @@ const PoolStyle = styled(Box)`
   }
   
   .MuiButton-root:not(:first-of-type){
-    margin-left:  ${({theme})=>theme.unit}px;
+    margin-left:  ${({theme}) => theme.unit}px;
   }
 ` as typeof Box;
 const columnMode = ({
                         t,
                         handleWithdraw,
                         handleDeposit
-                    }: WithTranslation & Method<Row<any>>, currency: 'USD'|'CYN'): Column<Row<any>, unknown>[] => [
+                    }: WithTranslation & Method<Row<any>>, currency: 'USD' | 'CYN'): Column<Row<any>, unknown>[] => [
     {
         key: 'pools',
         sortable: false,
@@ -66,7 +66,7 @@ const columnMode = ({
         name: t('labelPool'),
         formatter: ({row}: FormatterProps<Row<any>, unknown>) => {
             return <PoolStyle display={'flex'} flexDirection={'column'} alignContent={'flex-start'}
-                              justifyContent={'center'} >
+                              justifyContent={'center'}>
                 <IconColumn row={row.ammDetail as any}/>
                 <Box marginLeft={7} display={'flex'}>
                     <Button variant={'outlined'} size={'small'}
@@ -86,27 +86,27 @@ const columnMode = ({
         key: 'liquidity',
         sortable: false,
         width: 'auto',
-        headerCellClass:'textAlignRight',
+        headerCellClass: 'textAlignRight',
         name: t('labelLiquidity'),
         formatter: ({row}: FormatterProps<Row<any>, unknown>) => {
-            const {ammDetail:{coinAInfo, coinBInfo}, balanceA, balanceB,balanceYuan,balanceDollar} = row;
+            const {ammDetail: {coinAInfo, coinBInfo}, balanceA, balanceB, balanceYuan, balanceDollar} = row;
             return <Box display={'flex'} flexDirection={'column'} alignItems={'flex-end'}
                         justifyContent={'space-around'} marginY={1}>
                 <TypogStyle variant={'body1'} component={'span'} color={'textPrimary'}>
                     {balanceDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? 'US' + PriceTag.Dollar + getThousandFormattedNumbers(balanceDollar)
                         : 'CNY' + PriceTag.Yuan + getThousandFormattedNumbers(balanceYuan)}
                 </TypogStyle>
-                <Typography variant={'body2'} component={'p'} color={'textSecondary'} marginTop={1/2}>
+                <Typography variant={'body2'} component={'p'} color={'textSecondary'} marginTop={1 / 2}>
 
                     <Typography component={'span'}
                                 color={'textSecondary'}>{getThousandFormattedNumbers(balanceA)}</Typography>
-                    <Typography component={'span'}  marginLeft={1/2}
+                    <Typography component={'span'} marginLeft={1 / 2}
                                 color={'textSecondary'}>{' ' + coinAInfo?.simpleName}</Typography>
                 </Typography>
                 <Typography variant={'body2'} component={'p'} color={'textSecondary'} marginTop={0}>
                     <Typography component={'span'}
                                 color={'textSecondary'}>{getThousandFormattedNumbers(balanceB)}</Typography>
-                    <Typography component={'span'}  marginLeft={1/2}
+                    <Typography component={'span'} marginLeft={1 / 2}
                                 color={'textSecondary'}>{' ' + coinBInfo?.simpleName}</Typography>
 
                 </Typography>
@@ -119,24 +119,24 @@ const columnMode = ({
         sortable: false,
         width: 'auto',
         name: t('labelFeeEarned'),
-        headerCellClass:'textAlignRight',
+        headerCellClass: 'textAlignRight',
         formatter: ({row}: FormatterProps<Row<any>, unknown>) => {
-            const {ammDetail:{coinAInfo, coinBInfo}, feeA, feeB,feeYuan,feeDollar} = row;
+            const {ammDetail: {coinAInfo, coinBInfo}, feeA, feeB, feeYuan, feeDollar} = row;
             return <Box display={'flex'} flexDirection={'column'} alignItems={'flex-end'}
                         justifyContent={'space-around'} marginY={1}>
                 <TypogStyle variant={'body1'} component={'span'} color={'textPrimary'}>
                     {feeDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? 'US' + PriceTag.Dollar + getThousandFormattedNumbers(feeDollar)
                         : 'CNY' + PriceTag.Yuan + getThousandFormattedNumbers(feeYuan as number)}
                 </TypogStyle>
-                <Typography variant={'body2'} component={'p'} color={'textSecondary'}  marginTop={1/2}>
+                <Typography variant={'body2'} component={'p'} color={'textSecondary'} marginTop={1 / 2}>
 
                     <Typography component={'span'}
                                 color={'textSecondary'}>{getThousandFormattedNumbers(feeA)}</Typography>
-                    <Typography component={'span'} marginLeft={1/2}
+                    <Typography component={'span'} marginLeft={1 / 2}
                                 color={'textSecondary'}>{' ' + coinAInfo?.simpleName}</Typography>
                 </Typography>
-                <Typography variant={'body2'} component={'p'} color={'textSecondary'}  marginTop={0}>
-                    <Typography component={'span'}  marginLeft={1/2}
+                <Typography variant={'body2'} component={'p'} color={'textSecondary'} marginTop={0}>
+                    <Typography component={'span'} marginLeft={1 / 2}
                                 color={'textSecondary'}>{getThousandFormattedNumbers(feeB)}</Typography>
                     <Typography component={'span'}
                                 color={'textSecondary'}>{' ' + coinBInfo?.simpleName}</Typography>
@@ -149,18 +149,18 @@ const columnMode = ({
 ]
 
 
-export const MyPoolTable = withTranslation('tables')(<T extends {[key:string]:any}>({
-                                                                            t, i18n,
-                                                                            tReady,
-                                                                            handlePageChange,
-                                                                            pagination,
-                                                                            showFilter = true,
-                                                                            rawData,
-                                                                            handleWithdraw,
-                                                                            handleDeposit,
-                                                                            wait = globalSetup.wait,
-                                                                            ...rest
-                                                                        }: MyPoolTableProps<T> & WithTranslation) => {
+export const MyPoolTable = withTranslation('tables')(<T extends { [ key: string ]: any }>({
+                                                                                              t, i18n,
+                                                                                              tReady,
+                                                                                              handlePageChange,
+                                                                                              pagination,
+                                                                                              showFilter = true,
+                                                                                              rawData,
+                                                                                              handleWithdraw,
+                                                                                              handleDeposit,
+                                                                                              wait = globalSetup.wait,
+                                                                                              ...rest
+                                                                                          }: MyPoolTableProps<T> & WithTranslation) => {
     const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
     const [totalData, setTotalData] = React.useState<Row<T>[]>(rawData && Array.isArray(rawData) ? rawData : []);
     useDeepCompareEffect(() => {

@@ -1,5 +1,5 @@
 export function storageFactory(getStorage: () => Storage): Storage {
-    let inMemoryStorage: { [key: string]: string } = {};
+    let inMemoryStorage: { [ key: string ]: string } = {};
 
     function isSupported() {
         try {
@@ -25,7 +25,7 @@ export function storageFactory(getStorage: () => Storage): Storage {
             return getStorage().getItem(name);
         }
         if (inMemoryStorage.hasOwnProperty(name)) {
-            return inMemoryStorage[name];
+            return inMemoryStorage[ name ];
         }
         return null;
     }
@@ -34,7 +34,7 @@ export function storageFactory(getStorage: () => Storage): Storage {
         if (isSupported()) {
             return getStorage().key(index);
         } else {
-            return Object.keys(inMemoryStorage)[index] || null;
+            return Object.keys(inMemoryStorage)[ index ] || null;
         }
     }
 
@@ -42,7 +42,7 @@ export function storageFactory(getStorage: () => Storage): Storage {
         if (isSupported()) {
             getStorage().removeItem(name);
         } else {
-            delete inMemoryStorage[name];
+            delete inMemoryStorage[ name ];
         }
     }
 
@@ -50,7 +50,7 @@ export function storageFactory(getStorage: () => Storage): Storage {
         if (isSupported()) {
             getStorage().setItem(name, value);
         } else {
-            inMemoryStorage[name] = String(value); // not everyone uses TypeScript
+            inMemoryStorage[ name ] = String(value); // not everyone uses TypeScript
         }
     }
 

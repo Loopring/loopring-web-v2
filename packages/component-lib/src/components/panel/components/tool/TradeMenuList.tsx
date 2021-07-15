@@ -36,7 +36,6 @@ export const TradeMenuList = <T extends IBData<I>,
 
         const PanelRender = ({selected, value}: any) => {
             const handleSelect = (_event: any, itemKey: CoinKey<I>) => {
-                // console.log('TradeMenuList item handleSelect',itemKey)
                 onChangeEvent(0, {...{tradeData: {...tradeData, belong: itemKey}}, to: 'button'})
             }
             return <CoinMenu {...{

@@ -13,7 +13,6 @@ import { TradeBtnStatus } from '../Interface';
 import React from 'react';
 
 
-
 /**
  * private props
  */
@@ -41,9 +40,9 @@ export type TransferInfoProps<C> = {
 }
 
 export type TransferExtendProps<T, I, C> = {
-    addressDefault?:string;
+    addressDefault?: string;
     onTransferClick: (data: T) => void,
-    handleFeeChange: (value: { belong: C | string, fee: number | string, __raw__?:any } ) => void,
+    handleFeeChange: (value: { belong: C | string, fee: number | string, __raw__?: any }) => void,
     handleOnAddressChange: (value: string | undefined | I) => void,
     handleAddressError: (address: string) => { error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined,
     wait?: number
@@ -85,15 +84,15 @@ export type WithdrawInfoProps<C> = {
     withdrawBtnStatus?: keyof typeof TradeBtnStatus | undefined,
     withdrawType?: keyof typeof WithdrawType,
     withdrawTypes: typeof WithdrawTypes,
-    chargeFeeTokenList: Array<{ belong: C | string, fee: number | string, __raw__?:any }>,
+    chargeFeeTokenList: Array<{ belong: C | string, fee: number | string, __raw__?: any }>,
     chargeFeeToken?: C | string,
 }
 
 export type WithdrawExtendProps<T, I, C> = {
-    addressDefault?:string;
+    addressDefault?: string;
     onWithdrawClick: (data: T) => void,
-    handleFeeChange: (value: { belong: C | string, fee: number | string, __raw__?:any } ) => void,
-    handleWithdrawTypeChange: (value:keyof typeof WithdrawType) => void,
+    handleFeeChange: (value: { belong: C | string, fee: number | string, __raw__?: any }) => void,
+    handleWithdrawTypeChange: (value: keyof typeof WithdrawType) => void,
     handleOnAddressChange: (value: string | undefined | I) => void,
     handleAddressError?: (address: string) => { error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined,
     wait?: number

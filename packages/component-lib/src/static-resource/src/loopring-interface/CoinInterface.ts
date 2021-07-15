@@ -1,6 +1,3 @@
-//TODO get from service and mantain
-
-
 import { FloatTag, TradeStatus, TradeTypes } from '../constant';
 
 export type CoinKey<R> = keyof R;
@@ -9,7 +6,7 @@ export type PairKey<P> = keyof P;
 export interface IBData<R> {
     belong: CoinKey<R>,
     balance: number,
-    tradeValue: number|undefined
+    tradeValue: number | undefined
 }
 
 export interface CoinInfo<R> {
@@ -110,7 +107,9 @@ export type AmmDetail<T> = AmmDetailBase<T> & {
 }
 
 
-export type AmmCardProps<T> = AmmDetail<T> & { activity:AmmActivity<T>,tradeFloat:TradeFloat, handleClick: () => void} ;
+export type AmmCardProps<T> =
+    AmmDetail<T>
+    & { activity: AmmActivity<T>, tradeFloat: TradeFloat, handleClick: () => void };
 
 export type AmmActivity<I> = {
     totalRewards: number,

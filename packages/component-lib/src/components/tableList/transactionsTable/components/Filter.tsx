@@ -12,7 +12,7 @@ export interface FilterProps {
         unit: string;
         value: number;
     } | undefined)[][];
-    handleFilterChange: ({ filterType, filterDate, filterToken }: any) => void
+    handleFilterChange: ({filterType, filterDate, filterToken}: any) => void
 }
 
 const StyledTextFiled = styled(TextField)`
@@ -39,10 +39,10 @@ const StyledBtnBox = styled(Box)`
 `
 
 export const Filter = withTranslation('tables', {withRef: true})(({
-                                                                                t,
-                                                                                originalData,
-                                                                                handleFilterChange
-                                                                            }: FilterProps & WithTranslation) => {
+                                                                      t,
+                                                                      originalData,
+                                                                      handleFilterChange
+                                                                  }: FilterProps & WithTranslation) => {
     const transactionTypeList = [
         {
             label: t('labelTxFilterAllTypes'),

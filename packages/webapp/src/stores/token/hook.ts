@@ -1,23 +1,20 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { tokenMapSlice } from './reducer';
-import { TokenMapStates } from './interface';
+import { getTokenMap, statusUnset} from './reducer';
+import { GetTokenMapParams, TokenMapStates } from './interface';
+import React from 'react';
+import { PayloadAction } from '@reduxjs/toolkit';
 
 export function useTokenMap<R extends {[key:string]:any}>(): TokenMapStates<R> & {
-    updateTokenMap:()=>void,
+    getTokenMap:(props:PayloadAction<GetTokenMapParams<any>>)=>void,
     statusUnset:()=>void,
 } {
     const tokenMap:TokenMapStates<R> = useSelector((state: any) => state.tokenMap)
     const dispatch = useDispatch();
-    const updateTokenMap = () => {
-        dispatch(tokenMapSlice.actions.getTokenMap(undefined))
-    }
-    const statusUnset = ()=>{
-        dispatch(tokenMapSlice.actions.statusUnset(undefined))
-    }
+
     return {
         ...tokenMap,
-        statusUnset,
-        updateTokenMap,
+        statusUnset:React.useCallback(()=>dispatch(statusUnset(undefined)),[dispatch]),
+        getTokenMap:React.useCallback((props:PayloadAction<GetTokenMapParams<R>>)=>dispatch(getTokenMap(props)),[dispatch]),
     }
 
 }

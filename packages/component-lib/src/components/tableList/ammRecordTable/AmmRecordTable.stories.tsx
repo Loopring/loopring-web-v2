@@ -1,11 +1,7 @@
 import styled from '@emotion/styled'
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { MemoryRouter } from 'react-router-dom'
-import {
-    AmmTradeType,
-    AmmRecordRow as Row,
-    AmmRecordTable,
-} from './index'
+import { AmmRecordRow as Row, AmmRecordTable, AmmTradeType, } from './index'
 import { coinMap } from '../../../static';
 import { CoinInfo } from 'static-resource';
 import moment from 'moment';
