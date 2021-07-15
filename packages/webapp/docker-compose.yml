@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  loopring_webapp:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: loopring_webapp:1.0.0
+    container_name: loopring_webapp
+    ports:
+      - "8089:80"
+    volumes:
+      - logvolume01:/var/log
+      
+volumes:
+  logvolume01: {}

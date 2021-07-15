@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    
+    "paths": {
+      "@loopring-web/webapp": ["./packages/webapp/src"],
+      "@loopring-web/webapp/*": ["./packages/webapp/src/*"],
+      "@loopring-web/sdk": ["./packages/sdk/src"],
+      "@loopring-web/sdk/*": ["./packages/sdk/src/*"]
+    }
+    
+  },
+  "include": [
+    "**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+  ]
+}
