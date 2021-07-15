@@ -150,7 +150,7 @@ export const useHeader = () => {
             default:
                 break
         }
-    }, [setShowConnect, lock, unlock, ShowDeposit, setShowAccountInfo])
+    }, [setShowConnect, setShowAccountInfo])
 
     const onThemeBtnClick = React.useCallback(async (themeMode: ThemeKeys) => {
         if (themeMode === Theme.dark) {
@@ -203,10 +203,10 @@ export const useHeader = () => {
 
     const lockCallback = React.useCallback((event) => {
         lock(account)
-    }, [account])
+    }, [account,lock])
     const unLockCallback = React.useCallback((event) => {
         unlock(account)
-    }, [account])
+    }, [account,unlock])
 
     const LockBtn = ({onClick}: { onClick: ({...props}: any) => void }) => {
         return <Button className={'lock'} startIcon={<UnLockIcon fontSize={'large'}/>}
