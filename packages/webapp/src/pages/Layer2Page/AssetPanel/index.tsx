@@ -3,6 +3,7 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 import { PriceTag } from '@loopring-web/common-resources'
 import { Box, Paper, Typography } from '@material-ui/core'
 import styled from '@emotion/styled'
+import { useHistory } from 'react-router-dom'
 import {
     AssetsTable,
     AssetTitle,
@@ -12,6 +13,7 @@ import {
     ScaleAreaChart,
     ToggleButtonGroup,
     TokenType,
+    LpTokenAction,
 } from '@loopring-web/component-lib'
 import { useModals } from 'hooks/modal/useModals'
 // import { useGetUserBalances } from 'hooks/exchange/useUserAPI'
@@ -143,6 +145,8 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
     const { updateWalletLayer1 } = useWalletLayer1()
 
+    let history = useHistory();
+
     const onShowDeposit = useCallback((token?: any) => {
         updateWalletLayer1()
         ShowDeposit(true, {
@@ -170,6 +174,12 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
             },
         })
     }, [ShowWithdraw])
+
+    const lpTokenJump = useCallback((token: string, type: LpTokenAction) => {
+        if (history) {
+            history.push(`/liquidity/pools/coinPair/${token}?type=${type}`)
+        }
+    }, [history])
 
     const handleChartPeriodChange = useCallback((event: React.MouseEvent<HTMLElement, MouseEvent>, newValue: string) => {
         const limit = newValue === 'week' ? 7 : 9999
@@ -280,6 +290,8 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                         onShowDeposit: onShowDeposit,
                         onShowTransfer: onShowTransfer,
                         onShowWithdraw: onShowWithdraw,
+                        onLpDeposit: lpTokenJump,
+                        onLpWithdraw: lpTokenJump,
                         ...rest
                     }} />
                 </div>
