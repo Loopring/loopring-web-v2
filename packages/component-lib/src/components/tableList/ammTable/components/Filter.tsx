@@ -83,7 +83,6 @@ export const Filter = withTranslation('tables', {withRef: true})(({
     }, [handleFilterChange])
 
     const handleSearch = React.useCallback(() => {
-        console.log(filterType, filterDate)
         handleFilterChange({
             filterType,
             filterDate,

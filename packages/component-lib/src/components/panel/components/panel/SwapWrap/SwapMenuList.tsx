@@ -18,7 +18,6 @@ export const SwapMenuList = <T extends IBData<I>,
     const coinMap = swapData.type === 'sell' ? tradeCalcData?.sellCoinInfoMap : tradeCalcData?.buyCoinInfoMap as any;
     const walletMap = tradeCalcData?.walletMap as any;   //IBData<I>
     const handleOnChangeIndex = React.useCallback((index: 0 | 1, {tradeData, to}: SwitchData<IBData<I>>) => {
-        console.log('SwapMenuList item handleSelect', tradeData, swapData)
         onChangeEvent(index, {
             ...swapData,
             tradeData: {...swapData.tradeData, [ swapData.type ]: tradeData},

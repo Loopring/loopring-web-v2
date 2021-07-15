@@ -202,14 +202,13 @@ export const AmmTable = withTranslation('tables')((props: WithTranslation & AmmT
         currFilterType = filterType,
         currFilterDate = filterDate,
     }) => {
-        console.log(filterType, filterDate)
         let resultData = rawData ? rawData: []
         if (currFilterType !== FilterTradeTypes.allTypes) {
             resultData = resultData.filter(o => o.side === currFilterType)
         }
         if (currFilterDate) {
             // TODO: time filter
-            const diff = moment(moment()).diff(currFilterDate, 'days')
+            // const _diff = moment(moment()).diff(currFilterDate, 'days')
             resultData = resultData.filter(o => o.time)
         }
         if (TableType === 'filter') {

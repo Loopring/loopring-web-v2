@@ -65,7 +65,8 @@ const App =  () => {
 // const mapStateToProps = state => {
 //     ,
 //         status,
-//         updateTokenMap
+//         getTokenMap
+
 //     return {
 //         tokenMap: state.tokenMap.tokenMap,
 //         tokenMap: state.tokenMap.t,
