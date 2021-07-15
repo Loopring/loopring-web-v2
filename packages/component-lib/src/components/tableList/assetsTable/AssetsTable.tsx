@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Box, Grid, Menu, MenuItem } from '@material-ui/core'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
-import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
+// import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
 import { Button } from '../../basic-lib'
 import { Column, generateColumns, generateRows, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
@@ -63,6 +63,11 @@ export type TradePairItem = {
     last: string;
 }
 
+export enum LpTokenAction {
+    add = 'add',
+    remove = 'remove'
+}
+
 export type RawDataAssetsItem = {
     token: {
         type: TokenType,
@@ -85,6 +90,8 @@ export interface AssetsTableProps {
     onShowDeposit: (token: string) => void,
     onShowTransfer: (token: string) => void,
     onShowWithdraw: (token: string) => void,
+    onLpDeposit: (token: string, type: LpTokenAction ) => void,
+    onLpWithdraw: (token: string, type: LpTokenAction) => void,
 }
 
 export const AssetsTable = withTranslation('tables')((props: WithTranslation & AssetsTableProps) => {
@@ -96,7 +103,9 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         showFiliter,
         onShowDeposit,
         onShowTransfer,
-        onShowWithdraw
+        onShowWithdraw,
+        onLpDeposit,
+        onLpWithdraw,
     } = props
     const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
     const [filterTokenType, setFilterTokenType] = useState('All Tokens')
@@ -146,23 +155,43 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             formatter: ({row}) => {
                 const token = row[ 'token' ]
                 const isLp = token.type === TokenType.lp
-                const tradePairs: TradePairItem[] = row[ '_rawData' ][ 4 ] || []
+                // const tradePairs: TradePairItem[] = row[ '_rawData' ][ 4 ] || []
+                const lpPair = token.value.split('-')
+                lpPair.splice(0, 1)
+                const tokenValue = isLp ? lpPair.join('-') : token.value
+                console.log(tokenValue)
 
                 return (
                     <Grid container spacing={1} alignItems={'center'}>
-                        <Grid item>
-                            <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                    onClick={() => onShowDeposit(token.value)}>{t('labelDeposit')}</Button>
-                        </Grid>
-                        <Grid item>
-                            <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                    onClick={() => onShowTransfer(token.value)}>{t('labelTransfer')}</Button>
-                        </Grid>
-                        <Grid item>
-                            <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                    onClick={() => onShowWithdraw(token.value)}>{t('labelWithdraw')}</Button>
-                        </Grid>
-                        <Grid item>
+                        {isLp ? (
+                            <>
+                                <Grid item>
+                                    <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                            onClick={() => onLpDeposit(tokenValue, LpTokenAction.add)}>{t('labelDeposit')}</Button>
+                                </Grid>
+                                <Grid item>
+                                    <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                            onClick={() => onLpWithdraw(tokenValue, LpTokenAction.remove)}>{t('labelWithdraw')}</Button>
+                                </Grid>
+                            </>
+                        ) : (
+                            <>
+                                <Grid item>
+                                    <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                            onClick={() => onShowDeposit(tokenValue)}>{t('labelDeposit')}</Button>
+                                </Grid>
+                                <Grid item>
+                                    <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                            onClick={() => onShowTransfer(tokenValue)}>{t('labelTransfer')}</Button>
+                                </Grid>
+                                <Grid item>
+                                    <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                            onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
+                                </Grid>
+                            </>
+                        )}
+                        
+                        {/* <Grid item>
                             {isLp
                                 ? <Button variant={'outlined'} color={'primary'} disabled>{t('labelAMM')} </Button>
                                 : <PopupState variant="popover" popupId="demo-popup-menu">
@@ -185,7 +214,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                                     )}
                                 </PopupState>
                             }
-                        </Grid>
+                        </Grid> */}
                     </Grid>
                 )
             }
