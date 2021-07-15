@@ -13,7 +13,7 @@ const Style = styled.div`
   height: 100%;
   flex: 1
 `
-const FilterMarketPanelWrap = ()=>{
+const FilterMarketPanelWrap = () => {
     return <FilterMarketPanel/>
 }
 

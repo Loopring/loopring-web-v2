@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { Box, Container, GlobalStyles, } from '@material-ui/core';
 
 import { css, Theme, useTheme } from '@emotion/react';
-import { globalCss,  } from 'static-resource';
+import { globalCss, } from 'static-resource';
 import { useTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 
@@ -15,19 +15,17 @@ const StyleBox = styled(Box)`
 ` as typeof Box
 
 
-
 const ErrorWrap = () => {
-    const {messageKey}: { id?:string,messageKey:string } = {messageKey: 'errorMessageTokenMapIsEmpty'};
-    //TODO: checkRouter
+    const {messageKey}: { id?: string, messageKey: string } = {messageKey: 'errorMessageTokenMapIsEmpty'};
     const {t} = useTranslation('common');
     return <>
         <Container maxWidth="lg">
             {/*style={{height: '100%' }}*/}
-            <Box  flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}
+            <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}
                  flexDirection="row" marginTop={4}>
-               <StyleBox height={680} width={120}>
-                   {t(messageKey)}
-               </StyleBox>
+                <StyleBox height={680} width={120}>
+                    {t(messageKey)}
+                </StyleBox>
             </Box>
         </Container>
 
@@ -40,6 +38,7 @@ const Template: Story<any> = () => {
     const theme: Theme = useTheme();
     return <><GlobalStyles styles={css`
       ${globalCss({theme})};
+
       body:before {
         ${theme.mode === 'dark' ? ` 
                         background: #191C30;
@@ -48,10 +47,10 @@ const Template: Story<any> = () => {
       }
     }
     `}></GlobalStyles>
-     <MemoryRouter initialEntries={['/']}>
+        <MemoryRouter initialEntries={['/']}>
             <ErrorWrap/>
         </MemoryRouter>
-  </>
+    </>
 };
 
 export default {

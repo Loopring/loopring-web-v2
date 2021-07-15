@@ -15,7 +15,6 @@ const IconWrapperStyled = styled(Box)`
 ` as typeof Box;
 
 
-
 const WalletConnectPanelStyled = styled(Box)`
   width: var(--transfer-modal-width);
 ` as typeof Box;

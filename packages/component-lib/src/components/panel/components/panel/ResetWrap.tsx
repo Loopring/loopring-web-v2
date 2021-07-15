@@ -41,8 +41,6 @@ export const ResetWrap = <T extends IBData<I>,
                     Create a new signing key for layer-2 authentication (no backup needed). This will
                     <TypographyStrong component={'span'}>cancel all your pending orders</TypographyStrong>.
                 </Trans>
-                {/*//TODO:*/}
-                {/*<Link href="http.google.com">Read More</Link>.*/}
             </Typography>
 
         </Grid>

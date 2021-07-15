@@ -195,4 +195,4 @@ export const globalCss = ({theme}: any) => css`
     --background-color: inherit;
   }
 `
-export {ColorDarkDefault, ColorLightDefault}
+export { ColorDarkDefault, ColorLightDefault }

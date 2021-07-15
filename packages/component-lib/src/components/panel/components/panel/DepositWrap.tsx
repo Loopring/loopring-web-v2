@@ -56,7 +56,6 @@ export const DepositWrap = <T extends IBData<I>,
                 inputBtnRef: inputBtnRef,
             }} />
         </Grid>
-        {/* TODO: check whether there's a need to show deposit fee */}
         <Grid item marginTop={2} alignSelf={'center'}>
             <Button variant={'contained'} size={'medium'} color={'primary'} onClick={() => {
                 onDepositClick(tradeData)
@@ -66,11 +65,7 @@ export const DepositWrap = <T extends IBData<I>,
                     disabled={getDisabled() || depositBtnStatus === TradeBtnStatus.DISABLED || depositBtnStatus === TradeBtnStatus.LOADING ? true : false}
             >{t(`depositLabelBtn`)}
             </Button>
-            {/* TODO: link to last deposit history */}
-            {/*<Box component={'p'} display={'flex'} marginTop={2} width={'100%'} justifyContent={'center'}>*/}
-            {/*    <Typography variant={'body2'} component={'span'}> <Link component={RouterLink}*/}
-            {/*                                                            to={'/'}>{t('depositLabelLinkRecent')}</Link></Typography>*/}
-            {/*</Box>*/}
+
         </Grid>
     </Grid>
 }

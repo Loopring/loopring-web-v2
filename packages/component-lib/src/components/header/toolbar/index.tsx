@@ -3,7 +3,9 @@ import {
     DownloadIcon,
     DropDownIcon,
     LanguageType,
-    NotificationIcon, ThemeDarkIcon, ThemeLightIcon,
+    NotificationIcon,
+    ThemeDarkIcon,
+    ThemeLightIcon,
     ThemeType,
 } from 'static-resource';
 import React from 'react';

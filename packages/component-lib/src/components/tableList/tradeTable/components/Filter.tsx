@@ -7,7 +7,7 @@ import { Button } from '../../../basic-lib/btns'
 import { DropDownIcon } from 'static-resource'
 
 export interface FilterProps {
-    handleFilterChange: ({ filterType, filterDate, filterToken }: any) => void
+    handleFilterChange: ({filterType, filterDate, filterToken}: any) => void
 }
 
 const StyledTextFiled = styled(TextField)`
@@ -40,9 +40,9 @@ export enum FilterTradeTypes {
 }
 
 export const Filter = withTranslation('tables', {withRef: true})(({
-                                                                                t,
-                                                                                handleFilterChange
-                                                                            }: FilterProps & WithTranslation) => {
+                                                                      t,
+                                                                      handleFilterChange
+                                                                  }: FilterProps & WithTranslation) => {
     const FilterTradeTypeList = [
         {
             label: t('labelOrderFilterAllTypes'),

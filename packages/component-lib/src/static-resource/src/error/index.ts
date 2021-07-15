@@ -7,23 +7,6 @@ export type ErrorType = {
 }
 
 export class CustomError extends Error {
-    get options(): any {
-        return this._options;
-    }
-
-    private _options: any;
-
-    get messageKey(): string {
-        return this._messageKey;
-    }
-
-    get date(): number {
-        return this._date;
-    }
-
-    private _date: number;
-    private _messageKey: string;
-
     constructor(error: ErrorType) {
         // Pass remaining arguments (including vendor specific ones) to parent constructor
         super(error.id)
@@ -41,5 +24,23 @@ export class CustomError extends Error {
         // Custom debugging information
         // this.foo = foo
         // this.date = new Date()
+    }
+
+    private _options: any;
+
+    get options(): any {
+        return this._options;
+    }
+
+    private _date: number;
+
+    get date(): number {
+        return this._date;
+    }
+
+    private _messageKey: string;
+
+    get messageKey(): string {
+        return this._messageKey;
     }
 }
