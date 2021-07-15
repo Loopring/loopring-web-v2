@@ -18,7 +18,7 @@ export const useImage = (src: string) => {
             setHasError(true);
         }
 
-        const handleLoad =() => {
+        const handleLoad = () => {
             setHasLoaded(true);
             setHasError(false);
         }
@@ -27,7 +27,7 @@ export const useImage = (src: string) => {
         image.addEventListener("load", handleLoad);
 
 
-        return ()=> {
+        return () => {
             image.removeEventListener("error", handleError);
             image.removeEventListener("load", handleLoad);
         };

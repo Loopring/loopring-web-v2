@@ -156,7 +156,8 @@ export const globalCss = ({theme}: any) => css`
     --modal-width: 480px;
     --gateway-icon-size: 56px;
     --account-button-fixed-width:88px;
-    --account-button-fixed-height:72px;
+    --account-button-fixed-height:72px;   
+    --empty-size: 130px
 
   }
 

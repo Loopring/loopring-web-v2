@@ -121,12 +121,12 @@ const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
   }
   &.icon-wrap-right > div{
      justify-content: flex-start;
-     padding-left:${({theme}) => theme.unit/2 * 3}px;
+     padding-left:${({theme}) => theme.unit / 2 * 3}px;
      align-items: center;
   }
   &.icon-wrap-left > div{
     justify-content: flex-end;
-    padding-right:${({theme}) => theme.unit/2 * 3}px;
+    padding-right:${({theme}) => theme.unit / 2 * 3}px;
     align-items: center;
   }
   
@@ -200,7 +200,7 @@ const IInput = styled(CurrencyInput)`
     `};
     :focus {
       ${({theme}) => `
-        ${theme.border.defaultFrame({c_key: 'focus',d_R: 0.5})};
+        ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
         border-top-right-radius: 0px;
         border-bottom-right-radius: 0px;
      `};
@@ -211,21 +211,21 @@ const IInput = styled(CurrencyInput)`
 ` as typeof CurrencyInput
 
 function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
-                                                                         order = 'left',
-                                                                         label = "Amount",
-                                                                         handleError,
-                                                                         subLabel = "Available",
-                                                                         wait = globalSetup.wait,
-                                                                         coinMap,
-                                                                         maxAllow,
-                                                                         disabled,
-                                                                         placeholderText = '0.00',
-                                                                         inputData,
-                                                                         handleCountChange,
-                                                                         focusOnInput,
+                                                                       order = 'left',
+                                                                       label = "Amount",
+                                                                       handleError,
+                                                                       subLabel = "Available",
+                                                                       wait = globalSetup.wait,
+                                                                       coinMap,
+                                                                       maxAllow,
+                                                                       disabled,
+                                                                       placeholderText = '0.00',
+                                                                       inputData,
+                                                                       handleCountChange,
+                                                                       focusOnInput,
 
-                                                                     }
-                                                                         : InputCoinProps<T, C, I>, ref: React.ForwardedRef<any>) {
+                                                                   }
+                                                                       : InputCoinProps<T, C, I>, ref: React.ForwardedRef<any>) {
     const {balance, belong, tradeValue} = (inputData ? inputData : {}) as IBData<C>;
     const [sValue, setsValue] = React.useState<number | undefined>(tradeValue ? tradeValue : undefined);
     // let _error = {error: false, message: ''};
@@ -233,13 +233,16 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
     //     let error:any = handleError(inputData, ref);
     //     _error = error ? error : {error: false}
     // }
-    const _handleError = (value:any)=>{
+    const _handleError = (value: any) => {
         if (handleError) {
             let _error = handleError({balance: Number(balance), belong, ...{tradeValue: value}} as T, ref);
             setError(_error ? _error : {error: false});
         }
     }
-    const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({error: false, message: ''});
+    const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
+        error: false,
+        message: ''
+    });
     const inputCallback = React.useCallback(({current}) => {
             if (inputData && (inputData.tradeValue !== Number(current?.value))) {
                 setsValue(inputData.tradeValue);
@@ -262,7 +265,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
             setsValue(value);
             debounceCount({...inputData, ...{tradeValue: value}})
         }
-        , [debounceCount,  _handleError, inputData])
+        , [debounceCount, _handleError, inputData])
     // const _handleContChange =
     // const _handleOnClick = React.useCallback((event: React.MouseEvent) => {
     //     if (handleOnClick) handleOnClick(event,ref)
@@ -287,21 +290,24 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 </FormLabel> : null}</Grid>
         </Grid>
 
-        <Grid container className={`coinInput-wrap ${error.error ? 'error' : ''}`} wrap={'nowrap'} alignItems={'stretch'}
+        <Grid container className={`coinInput-wrap ${error.error ? 'error' : ''}`} wrap={'nowrap'}
+              alignItems={'stretch'}
               alignContent={'stretch'}>
-            <CoinWrap order={order === 'left'?2:1}
+            <CoinWrap order={order === 'left' ? 2 : 1}
                       display={'flex'}
                       alignItems={'center'}
                       className={`icon-wrap icon-wrap-${order}`}>
                 <Grid container align-items={'center'} display={'flex'}>
-                    <Grid item order={order === 'left'?2:1} paddingLeft={order === 'left'?1:0} className={'logo-icon'}>
-                        {coinMap[ belong ]?.simpleName? <Avatar variant="square" alt={coinMap[ belong ]?.simpleName}
-                                                                src={hasLoaded ? coinMap[ belong ]?.icon : 'static/images/icon-default.png'}/>:'' }
+                    <Grid item order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}
+                          className={'logo-icon'}>
+                        {coinMap[ belong ]?.simpleName ? <Avatar variant="square" alt={coinMap[ belong ]?.simpleName}
+                                                                 src={hasLoaded ? coinMap[ belong ]?.icon : 'static/images/icon-default.png'}/> : ''}
                     </Grid>
-                    <Grid item order={order === 'left'?1:2} paddingLeft={order === 'left'?0:1}>{coinMap[ belong ]?.simpleName}</Grid>
+                    <Grid item order={order === 'left' ? 1 : 2}
+                          paddingLeft={order === 'left' ? 0 : 1}>{coinMap[ belong ]?.simpleName}</Grid>
                 </Grid>
             </CoinWrap>
-            <Grid order={order === 'left'?1:2} flex={1} item className={`input-wrap input-wrap-${order}`}>
+            <Grid order={order === 'left' ? 1 : 2} flex={1} item className={`input-wrap input-wrap-${order}`}>
                 <IInput ref={inputEle} onValueChange={_handleContChange} value={sValue} allowNegativeValue={false}
                         disabled={!disabled || belong ? false : true}
                         placeholder={placeholderText}
@@ -310,7 +316,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
             </Grid>
         </Grid>
 
-        
+
         <Grid container className={'message-wrap'} wrap={'nowrap'} alignItems={'stretch'} alignContent={'stretch'}
               justifyContent={'flex-end'}>
             <Grid item><FormHelperText>{error.message}</FormHelperText></Grid>
@@ -322,5 +328,5 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
 }
 
 export const InputCoin = React.memo(React.forwardRef(_InputCoin)) as
-    <T extends IBData<C>, C, I extends CoinInfo<C>>(props: InputCoinProps<T, C, I> , ref: React.RefAttributes<any>) => JSX.Element;
+    <T extends IBData<C>, C, I extends CoinInfo<C>>(props: InputCoinProps<T, C, I>, ref: React.RefAttributes<any>) => JSX.Element;
 //as React.ComponentType<InputButtonProps<coinType,CoinInfo> & RefAttributes<HTMLDivElement>>;

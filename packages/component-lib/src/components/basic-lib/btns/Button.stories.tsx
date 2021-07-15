@@ -64,10 +64,10 @@ const PaginationControlled = () => {
 }
 
 
-export const LButton: Story<ButtonProps> = withTranslation()(({t,...rest}: WithTranslation & any) => {
+export const LButton: Story<ButtonProps> = withTranslation()(({t, ...rest}: WithTranslation & any) => {
     const [switched, setSwitched] = React.useState(false);
     /*********Toggle Button**********/
-    const [selected,setSelected]  = React.useState(-1);
+    const [selected, setSelected] = React.useState(-1);
     /*********Toggle **********/
 
     return <>
@@ -103,9 +103,9 @@ export const LButton: Story<ButtonProps> = withTranslation()(({t,...rest}: WithT
                         <Grid container direction={"column"} spacing={2}>
                             <Grid item> <Button variant={'contained'} size={'small'} color={'primary'}>small
                                 contained 32</Button></Grid>
-                            <Grid item> <Button variant={'outlined'} size={'medium'} color={'primary'} >outline
+                            <Grid item> <Button variant={'outlined'} size={'medium'} color={'primary'}>outline
                                 default 32</Button></Grid>
-                            <Grid item> <Button variant={'outlined'} size={'medium'} color={'secondary'} >outline
+                            <Grid item> <Button variant={'outlined'} size={'medium'} color={'secondary'}>outline
                                 primary 32</Button></Grid>
                             <Grid item> <Button variant={'outlined'} size={'medium'}
                                                 disabled={true}>outline default 32</Button></Grid>
@@ -114,7 +114,7 @@ export const LButton: Story<ButtonProps> = withTranslation()(({t,...rest}: WithT
                     <Grid item> <Button variant={'outlined'} size={'small'} color={'primary'}>outline small
                         28</Button></Grid>
                     <Grid item>
-                        <ModalCloseButton {...{t,...rest}}/>
+                        <ModalCloseButton {...{t, ...rest}}/>
                     </Grid>
                 </Grid>
             </Box>
@@ -136,14 +136,14 @@ export const LButton: Story<ButtonProps> = withTranslation()(({t,...rest}: WithT
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item  xs={6}>
+                <Grid item xs={6}>
                     <h4>Pagination</h4>
-                    <Grid item marginY={1} >
+                    <Grid item marginY={1}>
                         <PaginationControlled/>
                     </Grid>
                     <h4>Percentage selector</h4>
-                    <Grid item marginY={1}  >
-                        <BtnPercentage selected={selected} handleChanged={(value:any)=>{
+                    <Grid item marginY={1}>
+                        <BtnPercentage selected={selected} handleChanged={(value: any) => {
                             console.log(value)
                             setSelected(value)
                         }
@@ -158,17 +158,15 @@ export const LButton: Story<ButtonProps> = withTranslation()(({t,...rest}: WithT
                 </Grid>
                 <Grid item>
                     <Breadcrumbs aria-label="breadcrumb">
-                        <Link color="textPrimary" href="/" >
+                        <Link color="textPrimary" href="/">
                             Material-UI
                         </Link>
-                        <Link color="textPrimary" href="/" >
+                        <Link color="textPrimary" href="/">
                             Core
                         </Link>
                         <Typography color="textSecondary">Breadcrumb</Typography>
                     </Breadcrumbs>
                 </Grid>
-
-
 
 
             </Grid>

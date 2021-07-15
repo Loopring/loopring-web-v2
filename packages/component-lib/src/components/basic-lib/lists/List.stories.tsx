@@ -140,7 +140,7 @@ const LoopringHeader = (wrap: any) => {
 const CoinMapMenu = (rest: any) => {
     return <CoinMenu<CoinType, CoinInfo<CoinType>> {...{
         coinMap, walletMap, handleListItemClick: (_event: any) => {
-           // console.log('handleListItemClick', key)
+            // console.log('handleListItemClick', key)
         }, ...rest
     }}></CoinMenu>
 }
