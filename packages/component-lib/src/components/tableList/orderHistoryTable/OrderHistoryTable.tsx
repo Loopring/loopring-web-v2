@@ -70,29 +70,31 @@ export type OrderHistoryRawDataItem = {
 }
 
 const LastDayPriceChangedCell: any = styled(Box)`
-	color: ${(props: any) => {
+  color: ${(props: any) => {
     const {
-        value,
-        theme: {colorBase},
+      value,
+      theme: {colorBase},
     } = props
     return value === TradeTypes.Buy ? colorBase.success : colorBase.error
-}};
+  }};
 `
 
 const TableStyled = styled(Box)`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 
-    .rdg{
-        --template-columns: 80px 150px auto 150px auto auto 130px !important;
-        .rdg-cell.action{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+  .rdg {
+    --template-columns: 80px 150px auto 150px auto auto 130px !important;
+
+    .rdg-cell.action {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
+  }
+
+  ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
 
 export interface OrderHistoryTableProps {
@@ -198,26 +200,26 @@ const CellStatus = ({row, column, rowIdx}: any) => {
     const popupId = `${column.key}-${rowIdx}`
     const [isOpen, setIsOpen] = useState(false)
     const RenderValue: any = styled.span`
-        position: relative;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-		color: ${({theme}) => {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: ${({theme}) => {
         const {colorBase} = theme
         return value === TradeStatus.Processed
-            ? colorBase.success
-            : value === TradeStatus.Expired ? colorBase.textSecondary
-                : colorBase.textPrimary
-    }};
-		width: 110px;
-        padding-right: 10px;
+                ? colorBase.success
+                : value === TradeStatus.Expired ? colorBase.textSecondary
+                        : colorBase.textPrimary
+      }};
+      width: 110px;
+      padding-right: 10px;
 
-		& svg {
-			font-size: 14px;
-			transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-			transform: ${() => isOpen ? 'rotate(180deg)' : ''};
-		}
-	`
+      & svg {
+        font-size: 14px;
+        transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+        transform: ${() => isOpen ? 'rotate(180deg)' : ''};
+      }
+    `
     const popupContent = [
         {
             amount: {
@@ -279,15 +281,15 @@ const CellStatus = ({row, column, rowIdx}: any) => {
     ]
 
     const RenderPopover = styled.div`
-		width: 700px;
-		margin: 12px;
-		max-height: 250px;
+      width: 700px;
+      margin: 12px;
+      max-height: 250px;
 
-		.contentWrapper {
-			max-height: 250px;
-			overflow: scroll;
-		}
-	`
+      .contentWrapper {
+        max-height: 250px;
+        overflow: scroll;
+      }
+    `
     let actualValue = ''
     switch (value) {
         case TradeStatus.Processing:

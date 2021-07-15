@@ -12,20 +12,22 @@ import { TableType } from 'static-resource';
 import { useSettings } from '../../../stores'
 
 const TableStyled = styled(Box)`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 
-    .rdg{
-        flex: 1;
-        --template-columns: auto auto auto auto ${(props: any) => props.lan === 'zh_CN' ? '320px' : '380px'} !important;
-        .rdg-cell.action{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+  .rdg {
+    flex: 1;
+    --template-columns: auto auto auto auto ${(props: any) => props.lan === 'zh_CN' ? '320px' : '380px'} !important;
+
+    .rdg-cell.action {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
+  }
+
+  ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as any
 
 interface Row {
@@ -118,7 +120,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             formatter: ({row, column}) => {
                 const token = row[ column.key ]
                 const StyledToken = styled(Box)`
-                    font-size: 13px;
+                  font-size: 13px;
                 `
                 return <StyledToken>{token.value}</StyledToken>
             }
