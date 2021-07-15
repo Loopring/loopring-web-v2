@@ -16,20 +16,19 @@ const Style = styled.div`
 `
 const TradeWrap = () => {
     let tradeData: any = {sell: {belong: undefined}, buy: {belong: undefined}};
-    //TODO: checkRouter
     const WrapSwapPanel = () => {
         let swapProps = {
-            swapTradeData:tradeData,
+            swapTradeData: tradeData,
             tradeCalcData,
-            onSwapClick: (tradeData:any) => {
+            onSwapClick: (tradeData: any) => {
                 console.log('Swap button click', tradeData);
             },
-            handleSwapPanelEvent: async (data: any,switchType:any) => {
-                console.log(data,switchType)
+            handleSwapPanelEvent: async (data: any, switchType: any) => {
+                console.log(data, switchType)
             },
         }
 
-        return <SwapPanel<any,any,any> {...swapProps} > </SwapPanel>
+        return <SwapPanel<any, any, any> {...swapProps} > </SwapPanel>
     };
     return <>
         <Header headerMenuData={headerMenuData} headerToolBarData={headerToolBarData}
@@ -56,6 +55,7 @@ const Template: Story<any> = () => {
     const theme: Theme = useTheme();
     return <><GlobalStyles styles={css`
       ${globalCss({theme})};
+
       body:before {
         ${theme.mode === 'dark' ? ` 
                         background: #191C30;

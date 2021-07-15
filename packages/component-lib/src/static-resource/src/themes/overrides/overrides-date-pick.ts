@@ -69,7 +69,7 @@ export const MuPickDate = ({colorBase, themeMode}: { colorBase: typeof ColorDark
                     },
                     "& .MuiPickersArrowSwitcher-root": {
                         border: borderFunc(themeMode).borderConfig({c_key: "rgba(0,0,0,0)"}),
-                        borderBottomColor:colorBase.border().blur,
+                        borderBottomColor: colorBase.border().blur,
                         boxSizing: "border-box",
                         height: 52,
                         minHeight: 52,

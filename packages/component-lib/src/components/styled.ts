@@ -5,8 +5,7 @@ import { UpColor } from 'static-resource';
 import { Box } from '@material-ui/core/';
 
 
-
-export const TablePaddingX = ({pLeft=24,pRight=24}: {pLeft:number,pRight:number}) => css`
+export const TablePaddingX = ({pLeft = 24, pRight = 24}: { pLeft: number, pRight: number }) => css`
   .rdg-row,.rdg-header-row {
     .rdg-cell:first-of-type {
       padding-left: ${pLeft}px;
@@ -43,15 +42,15 @@ export const floatTag = ({theme, custom}: any) => css`
     }
   }
 `
-export const AvatarIconPair =  ({theme}: any)=>css`
+export const AvatarIconPair = ({theme}: any) => css`
   .MuiAvatar-root {
     width: var(--chart-title-coin-size);
     height: var(--chart-title-coin-size);
   }
   .icon-next {
-    margin-left: -${ theme.unit}px;
+    margin-left: -${theme.unit}px;
   }`
-export const baseTitleCss = ({theme, custom}: any)=> css`
+export const baseTitleCss = ({theme, custom}: any) => css`
   height: 72px;
   ${AvatarIconPair({theme})}
 
@@ -75,7 +74,7 @@ export const baseTitleCss = ({theme, custom}: any)=> css`
     margin-left: ${theme.unit}px;
 
     .chart-change {
-      color: ${ theme.colorBase.textSecondary};
+      color: ${theme.colorBase.textSecondary};
     }
   }
 `

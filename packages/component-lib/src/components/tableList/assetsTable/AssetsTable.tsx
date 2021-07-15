@@ -1,13 +1,13 @@
-import { useState, useCallback, useEffect } from 'react'
-import { Box, Grid, MenuItem, Menu } from '@material-ui/core'
+import { useCallback, useEffect, useState } from 'react'
+import { Box, Grid, Menu, MenuItem } from '@material-ui/core'
 import styled from '@emotion/styled'
-import { WithTranslation, withTranslation, TFunction } from 'react-i18next'
-import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state'
+import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
+import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
 import { Button } from '../../basic-lib/btns'
-import { Table, generateColumns, generateRows, Column } from '../../basic-lib/tables'
+import { Column, generateColumns, generateRows, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { Filter, TokenTypeCol } from './components/Filter'
-import { TablePaddingX, TableFilterStyled } from '../../styled'
+import { TableFilterStyled, TablePaddingX } from '../../styled'
 import { TableType } from 'static-resource';
 import { useSettings } from '../../../stores'
 
@@ -25,7 +25,7 @@ const TableStyled = styled(Box)`
             align-items: center;
         }
     }
-    ${({theme}) => TablePaddingX({pLeft:theme.unit * 3,pRight:theme.unit * 3})}
+    ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as any
 
 interface Row {
@@ -86,7 +86,16 @@ export interface AssetsTableProps {
 }
 
 export const AssetsTable = withTranslation('tables')((props: WithTranslation & AssetsTableProps) => {
-    const { t, pagination, rawData, onVisibleRowsChange, showFiliter, onShowDeposit, onShowTransfer, onShowWithdraw } = props
+    const {
+        t,
+        pagination,
+        rawData,
+        onVisibleRowsChange,
+        showFiliter,
+        onShowDeposit,
+        onShowTransfer,
+        onShowWithdraw
+    } = props
     const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
     const [filterTokenType, setFilterTokenType] = useState('All Tokens')
     const [hideSmallBalance, setHideSmallBalance] = useState(false)
@@ -95,7 +104,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     const [page, setPage] = useState(1)
     const pageSize = pagination ? pagination.pageSize : 10;
 
-    const { language } = useSettings()
+    const {language} = useSettings()
 
     useEffect(() => {
         setTotalData(rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : [])
@@ -107,7 +116,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             key: 'token',
             name: t('labelToken'),
             formatter: ({row, column}) => {
-                const token = row[column.key]
+                const token = row[ column.key ]
                 const StyledToken = styled(Box)`
                     font-size: 13px;
                 `
@@ -132,21 +141,24 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             key: 'actions',
             name: t('labelActions'),
             minWidth: 280,
-            formatter: ({ row }) => {
-                const token = row['token']
+            formatter: ({row}) => {
+                const token = row[ 'token' ]
                 const isLp = token.type === TokenType.lp
-                const tradePairs: TradePairItem[] = row['_rawData'][4] || []
-                
+                const tradePairs: TradePairItem[] = row[ '_rawData' ][ 4 ] || []
+
                 return (
                     <Grid container spacing={1} alignItems={'center'}>
                         <Grid item>
-                            <Button variant={'outlined'} size={'medium'} color={'primary'} onClick={onShowDeposit}>{t('labelDeposit')}</Button>
+                            <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                    onClick={onShowDeposit}>{t('labelDeposit')}</Button>
                         </Grid>
                         <Grid item>
-                            <Button variant={'outlined'} size={'medium'} color={'primary'} onClick={onShowTransfer}>{t('labelTransfer')}</Button>
+                            <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                    onClick={onShowTransfer}>{t('labelTransfer')}</Button>
                         </Grid>
                         <Grid item>
-                            <Button variant={'outlined'} size={'medium'} color={'primary'} onClick={onShowWithdraw}>{t('labelWithdraw')}</Button>
+                            <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                    onClick={onShowWithdraw}>{t('labelWithdraw')}</Button>
                         </Grid>
                         <Grid item>
                             {isLp
@@ -154,14 +166,16 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                                 : <PopupState variant="popover" popupId="demo-popup-menu">
                                     {(popupState) => (
                                         <>
-                                            <Button variant={'outlined'} size={'medium'} color="primary" {...bindTrigger(popupState)}>
+                                            <Button variant={'outlined'} size={'medium'}
+                                                    color="primary" {...bindTrigger(popupState)}>
                                                 Trade
                                             </Button>
                                             <Menu {...bindMenu(popupState)}>
                                                 {tradePairs.map(({first, last}) => {
                                                     const value = `${first}/${last}`;
-                                                    return  (
-                                                        <MenuItem onClick={popupState.close} key={value} value={value}>{value}</MenuItem>
+                                                    return (
+                                                        <MenuItem onClick={popupState.close} key={value}
+                                                                  value={value}>{value}</MenuItem>
                                                     )
                                                 })}
                                             </Menu>
@@ -189,29 +203,29 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     }
 
     const getRenderData = useCallback(() => pagination
-            ? totalData.slice((page - 1) * pageSize, page * pageSize)
-            : totalData
-    , [page, pageSize, pagination, totalData])
+        ? totalData.slice((page - 1) * pageSize, page * pageSize)
+        : totalData
+        , [page, pageSize, pagination, totalData])
 
-    const updateData = useCallback(({ 
-        TableType,
-        currFilterTokenType = filterTokenType,
-        currHideSmallBalance = hideSmallBalance,
-        currHideLPToken = hideLPToken
-    }) => {
+    const updateData = useCallback(({
+                                        TableType,
+                                        currFilterTokenType = filterTokenType,
+                                        currHideSmallBalance = hideSmallBalance,
+                                        currHideLPToken = hideLPToken
+                                    }) => {
         // let resultData = cloneDeep(formattedRawData)
         let resultData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
         // o[0]: token type
         if (currFilterTokenType !== 'All Tokens') {
-            resultData = resultData.filter(o => 
-                (o[0] as TokenTypeCol).value === currFilterTokenType
+            resultData = resultData.filter(o =>
+                (o[ 0 ] as TokenTypeCol).value === currFilterTokenType
             )
         }
         if (currHideSmallBalance) {
-            resultData = resultData.filter(o => !o[5])
+            resultData = resultData.filter(o => !o[ 5 ])
         }
         if (currHideLPToken) {
-            resultData = resultData.filter(o => (o[0] as TokenTypeCol).type === TokenType.single)
+            resultData = resultData.filter(o => (o[ 0 ] as TokenTypeCol).type === TokenType.single)
         }
         if (TableType === 'filter') {
             setPage(1)
@@ -219,20 +233,20 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         setTotalData(resultData)
     }, [rawData, filterTokenType, hideSmallBalance, hideLPToken])
 
-    const handleFilterChange = useCallback(({ tokenType, currHideSmallBalance, currHideLPToken }) => {
+    const handleFilterChange = useCallback(({tokenType, currHideSmallBalance, currHideLPToken}) => {
         setFilterTokenType(tokenType)
         setHideSmallBalance(currHideSmallBalance)
         setHideLPToken(currHideLPToken)
-        updateData({ TableType: TableType.filter, currFilterTokenType: tokenType, currHideSmallBalance, currHideLPToken })
+        updateData({TableType: TableType.filter, currFilterTokenType: tokenType, currHideSmallBalance, currHideLPToken})
     }, [updateData])
 
     const handlePageChange = useCallback((page: number) => {
         setPage(page)
-        updateData({ TableType: TableType.page })
+        updateData({TableType: TableType.page})
     }, [updateData])
 
     const getScrollIndex = useCallback((e) => {
-        const startIndex =  parseInt(String(e.target.scrollTop / 44))
+        const startIndex = parseInt(String(e.target.scrollTop / 44))
         const viewportRows = rawData && Array.isArray(rawData) ? rawData.slice(startIndex, startIndex + 10).map(o => o.token.value) : []
         if (onVisibleRowsChange) {
             onVisibleRowsChange(viewportRows)
@@ -242,12 +256,12 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     return <TableStyled lan={language}>
         {showFiliter && (
             <TableFilterStyled>
-                <Filter originalData={formattedRawData} handleFilterChange={handleFilterChange} />
+                <Filter originalData={formattedRawData} handleFilterChange={handleFilterChange}/>
             </TableFilterStyled>
         )}
-        <Table {...{...defaultArgs, ...props, rawData: getRenderData()}} onScroll={getScrollIndex} />
+        <Table {...{...defaultArgs, ...props, rawData: getRenderData()}} onScroll={getScrollIndex}/>
         {pagination && (
-            <TablePagination page={page} pageSize={pageSize} total={totalData.length} onPageChange={handlePageChange} />
+            <TablePagination page={page} pageSize={pageSize} total={totalData.length} onPageChange={handlePageChange}/>
         )}
     </TableStyled>
 })

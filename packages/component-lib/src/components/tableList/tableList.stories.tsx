@@ -5,7 +5,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { QuoteTable, QuoteTableRawDataItem } from './QuoteTable'
 import { OrderHistoryTable } from './orderHistoryTable'
 import { RawDataTransactionItem, TransactionStatus, TransactionTable, TransactionTradeTypes } from './transactionsTable'
-import { OrderHistoryRawDataItem} from './orderHistoryTable/OrderHistoryTable'
+import { OrderHistoryRawDataItem } from './orderHistoryTable/OrderHistoryTable'
 import { TradeStatus, TradeTypes } from '../../static-resource';
 
 const Style = styled.div`
@@ -1098,7 +1098,9 @@ export const Transaction = Template.bind({})
 Quote.args = {
     rawData: rawDataLastPrice,
     type: 'lastPrice',
-    onVisibleRowsChange: (data: any) => {console.log(data)},
+    onVisibleRowsChange: (data: any) => {
+        console.log(data)
+    },
 }
 
 OrderHistory.args = {

@@ -131,8 +131,8 @@ export const inputProps = {
 
 export const coinType = {
     ETH: 'ETH',
-    USDT:'USDT',
-    USDC:'USDC',
+    USDT: 'USDT',
+    USDC: 'USDC',
     LRC: 'LRC',
     CRV: 'CRV',
     DPR: 'DPR',
@@ -159,12 +159,12 @@ export const tradeCalcData: TradeCalcData<CoinType> = {
     fee: '1%'
 }
 export const ammCalcData: AmmInData<CoinType> = {
-    myCoinA: {belong:'ETH',balance:1000,tradeValue:0},
-    myCoinB: {belong:'LRC',balance:1000,tradeValue:0},
-    lpCoinA:{belong:'ETH',balance:1000,tradeValue:0},
-    lpCoinB:{belong:'ETH',balance:1000,tradeValue:0},
-    lpCoin:{belong:'ETH',balance:1000,tradeValue:0},
-    AtoB:50,
+    myCoinA: {belong: 'ETH', balance: 1000, tradeValue: 0},
+    myCoinB: {belong: 'LRC', balance: 1000, tradeValue: 0},
+    lpCoinA: {belong: 'ETH', balance: 1000, tradeValue: 0},
+    lpCoinB: {belong: 'ETH', balance: 1000, tradeValue: 0},
+    lpCoin: {belong: 'ETH', balance: 1000, tradeValue: 0},
+    AtoB: 50,
     coinInfoMap: coinMap,
     slippage: 0.5,
     fee: '1%'
@@ -174,15 +174,14 @@ export const ammCalcData: AmmInData<CoinType> = {
 export const layer2ItemData = List<HeaderMenuItemInterface>([{
     label: {
         id: 'classic',
-        i18nKey:'labelClassic',
+        i18nKey: 'labelClassic',
         description: 'Simple and easy-to-user interface',
     },
     router: {path: ''},
 }, {
     label: {
         id: 'advanced',
-        i18nKey:'labelAdvanced',
-        //TODO: translate id
+        i18nKey: 'labelAdvanced',
         description: 'Full access to all trading tools',
     },
     router: {path: ''},

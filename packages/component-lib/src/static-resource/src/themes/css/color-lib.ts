@@ -1,4 +1,3 @@
-
 export const ColorDarkDefault = Object.freeze({
     primary: '#1C42FF',
     primaryLight: '#1C96FF',
