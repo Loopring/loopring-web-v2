@@ -1,29 +1,21 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { tickerMapSlice } from './reducer';
+import { getTicker, getTickers, statusUnset } from './reducer';
 import { TickerStates } from './interface';
 import { CoinKey } from '@loopring-web/component-lib/src/static-resource';
+import React from 'react';
 
 export function useTicker(): TickerStates & {
-    updateTickers:(tickerKeys:Array<CoinKey<any>>)=>void,
-    updateTicker:(tickerKey:CoinKey<any>)=>void,
-    statusUnset:()=>void,
+    updateTickers: (tickerKeys: Array<CoinKey<any>>) => void,
+    updateTicker: (tickerKey: CoinKey<any>) => void,
+    statusUnset: () => void,
 } {
-    const tickerMap:TickerStates = useSelector((state: any) => state.tickerMap)
+    const tickerMap: TickerStates = useSelector((state: any) => state.tickerMap)
     const dispatch = useDispatch();
-    const updateTicker = (tickerKey:CoinKey<any>) => {
-        dispatch(tickerMapSlice.actions.getTicker({tickerKey}))
-    }
-    const updateTickers = (tickerKeys:Array<CoinKey<any>>) => {
-        dispatch(tickerMapSlice.actions.getTickers({tickerKeys}))
-    }
-    const statusUnset = ()=>{
-        dispatch(tickerMapSlice.actions.statusUnset(undefined))
-    }
     return {
         ...tickerMap,
-        statusUnset,
-        updateTickers,
-        updateTicker,
+        statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),
+        updateTickers: React.useCallback((tickerKeys: Array<CoinKey<any>>) => dispatch(getTickers({tickerKeys})), [dispatch]),
+        updateTicker: React.useCallback((tickerKey: CoinKey<any>) => dispatch(getTicker({tickerKey})), [dispatch]),
     }
 
 }
