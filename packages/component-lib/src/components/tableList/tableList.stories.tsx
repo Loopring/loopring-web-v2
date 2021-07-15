@@ -9,10 +9,10 @@ import { OrderHistoryRawDataItem } from './orderHistoryTable/OrderHistoryTable'
 import { TradeStatus, TradeTypes } from '../../static-resource';
 
 const Style = styled.div`
-	color: #fff;
-	flex: 1;
-	height: 100%;
-	flex: 1;
+  color: #fff;
+  flex: 1;
+  height: 100%;
+  flex: 1;
 `
 
 // type RawDataItem = (string | number | number[] | string[])[] | {}

@@ -41,7 +41,7 @@ const Styled = styled.div`
 
     }
   }`
-  }
+}
 `
 
 
