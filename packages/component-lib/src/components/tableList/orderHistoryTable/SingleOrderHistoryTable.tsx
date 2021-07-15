@@ -1,6 +1,6 @@
 import { Column, generateColumns, generateRows, Table, } from '../../basic-lib'
 import { OrderHistoryTableDetailItem, OrderPair } from './OrderHistoryTable'
-import { WithTranslation, withTranslation, TFunction } from 'react-i18next';
+import { TFunction, withTranslation, WithTranslation } from 'react-i18next';
 import { EmptyValueTag } from '../../../static-resource';
 
 interface Row {

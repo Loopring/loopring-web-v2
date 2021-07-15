@@ -19,12 +19,12 @@ export const resources = {
 
 i18n.use(initReactI18next).init({
     resources,
-    ns: ['common', 'layout', 'tables','error'],
+    ns: ['common', 'layout', 'tables', 'error'],
     defaultNS: 'common',
     lng: LanguageType.en_US,
     load: 'currentOnly',
     fallbackLng: LanguageType.en_US,
-    supportedLngs: [LanguageType.en_US,LanguageType.zh_CN],
+    supportedLngs: [LanguageType.en_US, LanguageType.zh_CN],
     keySeparator: false, // we do not use keys in form messages.welcome
     interpolation: {
         escapeValue: false // react already safes from xss

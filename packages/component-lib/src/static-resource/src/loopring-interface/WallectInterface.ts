@@ -5,7 +5,7 @@ export enum WalletStatus {
     connect = 'connect',
     noAccount = 'noAccount',
     accountPending = 'accountPending',
-    noNetwork='noNetwork',
+    noNetwork = 'noNetwork',
     default = 'default',
 }
 

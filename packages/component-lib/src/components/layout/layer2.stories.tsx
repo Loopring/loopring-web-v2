@@ -150,7 +150,7 @@ let resetProps: ResetProps<any, any> = {
     fee: {count: 234, price: 123}
 }
 let swapProps: SwapProps<IBData<string>, string, any> = {
-    tradeData:  {sell: {belong: undefined}, buy: {belong: undefined}, slippage: ''} as any,
+    tradeData: {sell: {belong: undefined}, buy: {belong: undefined}, slippage: ''} as any,
     tradeCalcData,
     onSwapClick: (tradeData) => {
         console.log('Swap button click', tradeData);
@@ -222,7 +222,6 @@ const AssetTitleWrap = (rest: any) => {
 const Layer2Wrap = () => {
     // const _headerMenuData: List<HeaderMenuItemInterface> = headerMenuData as List<HeaderMenuItemInterface>;
     // const _headerToolBarData: List<HeaderToolBarInterface> = headerToolBarData as List<HeaderToolBarInterface>;
-    //TODO: checkRouter
     const selected = 'assets';
     const StylePaper = styled(Box)`
       width: 100%;
@@ -242,10 +241,10 @@ const Layer2Wrap = () => {
       }
     ` as typeof Paper;
     const accountInfoProps: AccountInfoProps = {
-        addressShort:'0x123...8784',
+        addressShort: '0x123...8784',
         address: '0x123567243o24o242423098784',
         level: 'VIP 1',
-        connectBy:  'MetaMask',
+        connectBy: 'MetaMask',
         etherscanLink: 'https://material-ui.com/components/material-icons/',
         mainBtn: <Button variant={'contained'} size={'small'} color={'primary'} onClick={() => console.log('my event')}>My
             button</Button>

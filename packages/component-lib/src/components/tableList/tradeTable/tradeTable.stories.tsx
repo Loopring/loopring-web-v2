@@ -2,7 +2,7 @@ import styled from '@emotion/styled'
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
-import { TradeTable, RawDataTradeItem } from './index'
+import { RawDataTradeItem, TradeTable } from './index'
 import { TradeTypes } from 'static-resource';
 
 const Style = styled.div`

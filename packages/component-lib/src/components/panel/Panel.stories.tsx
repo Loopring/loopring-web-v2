@@ -324,7 +324,11 @@ const WrapAmmPanel = (rest: any) => {
             <AmmPanel {...{...ammProps, tabSelected: AmmPanelType.WithDraw}} {...rest} > </AmmPanel>
         </Grid>
         <Grid item sm={6}>
-            <AmmPanel {...{...ammProps, tabSelected: AmmPanelType.WithDraw,ammWithdrawBtnStatus: TradeBtnStatus.DISABLED}} {...rest} > </AmmPanel>
+            <AmmPanel {...{
+                ...ammProps,
+                tabSelected: AmmPanelType.WithDraw,
+                ammWithdrawBtnStatus: TradeBtnStatus.DISABLED
+            }} {...rest} > </AmmPanel>
         </Grid>
     </>
 

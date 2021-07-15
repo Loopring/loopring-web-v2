@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from '@emotion/styled'
 
-import { PieChart, Pie, Sector, Tooltip, ResponsiveContainer, Legend, Cell } from 'recharts';
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Sector, Tooltip } from 'recharts';
 
 const colors = [
     "#00BBA8",
@@ -31,14 +31,14 @@ const StyledLegendItem = styled.div`
 `
 
 const renderActiveShape = ({
-    cx,
-    cy, 
-    innerRadius, 
-    outerRadius, 
-    startAngle, 
-    endAngle,
-    fill 
-}: any) => (
+                               cx,
+                               cy,
+                               innerRadius,
+                               outerRadius,
+                               startAngle,
+                               endAngle,
+                               fill
+                           }: any) => (
     <g>
         <Sector
             cx={cx}
@@ -60,10 +60,10 @@ export interface DoughnutChartProps {
     }[]
 }
 
-const renderLegend = ({ payload }: any) => (
-    <ul style={{ marginRight: 26 }}>
+const renderLegend = ({payload}: any) => (
+    <ul style={{marginRight: 26}}>
         {payload.map((entry: any, index: number) => {
-            const { color, value, payload: { value: amount } } = entry
+            const {color, value, payload: {value: amount}} = entry
             const StyledColoredRect = styled.div`
                 width: 12px;
                 height: 12px;
@@ -72,7 +72,7 @@ const renderLegend = ({ payload }: any) => (
             return (
                 <li key={`item-${index}`}>
                     <StyledLegendItem>
-                        <span><StyledColoredRect />{value}</span>
+                        <span><StyledColoredRect/>{value}</span>
                         <span>${amount.toFixed(2)}</span>
                     </StyledLegendItem>
                 </li>
@@ -81,8 +81,8 @@ const renderLegend = ({ payload }: any) => (
     </ul>
 );
 
-export const DoughnutChart = ({ data }: DoughnutChartProps) => {
-	const [activeIndex, setActiveIndex] = React.useState(undefined)
+export const DoughnutChart = ({data}: DoughnutChartProps) => {
+    const [activeIndex, setActiveIndex] = React.useState(undefined)
 
     const onPieEnter = React.useCallback((_, index) => {
         setActiveIndex(index)
@@ -104,13 +104,13 @@ export const DoughnutChart = ({ data }: DoughnutChartProps) => {
         return result
     }, [data])
 
-  	return (
+    return (
         <ResponsiveContainer debounce={1} width={'99%'}>
             <PieChart>
-                <Pie 
+                <Pie
                     dataKey={'value'}
                     activeIndex={activeIndex}
-                    activeShape={renderActiveShape} 
+                    activeShape={renderActiveShape}
                     data={data}
                     cx={'30%'}
                     // cy={200}
@@ -127,7 +127,7 @@ export const DoughnutChart = ({ data }: DoughnutChartProps) => {
                     onMouseLeave={onPieLeave}
                 >
                     {getFormattedData().map((entry, index) => (
-                        <Cell key={entry.name} fill={colors[index]} />
+                        <Cell key={entry.name} fill={colors[ index ]}/>
                     ))}
                 </Pie>
                 <Tooltip
@@ -140,7 +140,7 @@ export const DoughnutChart = ({ data }: DoughnutChartProps) => {
                         color: '#FFFFFF'
                     }}
                 />
-                <Legend layout="vertical" align="right" verticalAlign="middle" content={renderLegend} />
+                <Legend layout="vertical" align="right" verticalAlign="middle" content={renderLegend}/>
             </PieChart>
         </ResponsiveContainer>
     );

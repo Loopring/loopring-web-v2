@@ -76,20 +76,19 @@ const LogoStyle = styled(Typography)`
 ` as typeof Typography
 
 
-
 export const LoopringLogo = (<LogoStyle variant="h6" component="h1">
-    <IconButton edge="start" aria-label="menu" component={RouterLink} to="/#" color={"inherit"}>
-    Loopring 路印
-{/*/!*<SvgIcon>*!/*/}
-{/*    <img src={logoSVG} alt="" width="104" height="40" />*/}
-{/*</SvgIcon>*/}
-</IconButton>
-</LogoStyle>
+        <IconButton edge="start" aria-label="menu" component={RouterLink} to="/#" color={"inherit"}>
+            Loopring 路印
+            {/*/!*<SvgIcon>*!/*/}
+            {/*    <img src={logoSVG} alt="" width="104" height="40" />*/}
+            {/*</SvgIcon>*/}
+        </IconButton>
+    </LogoStyle>
 );
 
 
 const ToolBarItem = ({buttonComponent, ...props}: any) => {
-    const { themeMode, language} = useSettings()
+    const {themeMode, language} = useSettings()
     const render = (buttonComponent: number, props: any) => {
 
         switch (buttonComponent) {
@@ -99,9 +98,9 @@ const ToolBarItem = ({buttonComponent, ...props}: any) => {
             case  ButtonComponentsMap.Notification:
                 return <BtnNotification {...props} />;
             case  ButtonComponentsMap.Theme:
-                return <BtnTheme {...{...props,themeMode}} />;
+                return <BtnTheme {...{...props, themeMode}} />;
             case  ButtonComponentsMap.Language:
-                return <BtnLanguage {...{...props,language}} />;
+                return <BtnLanguage {...{...props, language}} />;
             case  ButtonComponentsMap.WalletConnect:
                 return <BtnWalletConnect {...props} />;
             default:
@@ -162,8 +161,8 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                                 toolbarList,
                                 ...rest
                             }: { toolbarList: HeaderToolBarInterface[] } & WithTranslation) => {
-        return ToolBarAvailableItem.map((index:number) =>{
-            return <ToolBarItem {...{...toolbarList[index], ...rest}} key={index}/>
+        return ToolBarAvailableItem.map((index: number) => {
+            return <ToolBarItem {...{...toolbarList[ index ], ...rest}} key={index}/>
         })
         // toolbarList.map((item, index) =>);
     };
@@ -181,15 +180,15 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                                   ...rest
                               }: { menuList: HeaderMenuItemInterface[], layer?: number, handleListKeyDown?: any } & WithTranslation) => {
         const nodeMenuItem = ({label, router, layer, child, ...rest}: HeaderMenuItemInterface & any) => {
-            const selectedFlag = new RegExp(label.id, 'ig').test(selected.split('/')[1]?selected.split('/')[1]:selected)
+            const selectedFlag = new RegExp(label.id, 'ig').test(selected.split('/')[ 1 ] ? selected.split('/')[ 1 ] : selected)
             return <>{layer >= 1 ? <Layer2Item {...{...rest, label, router, child, layer}} /> : //key={label.id+ '-layer2Item'}/> :
                 // label.id === 'Layer2' ? <Box display={'flex'} justifyContent={'space-around'} alignItems={'center'}>
                 //     <MenuTab component='div' label={rest.t(label.i18nKey)} key={label.id}
                 //              className={ selectedFlag ? 'Mui-selected' : ''}/>
                 //     {rest.extender ? rest.extender : undefined}
                 // </Box> :
-                    <MenuTab component='div' label={rest.t(label.i18nKey)} key={label.id}
-                                  className={selectedFlag ? 'Mui-selected' : ''}/>
+                <MenuTab component='div' label={rest.t(label.i18nKey)} key={label.id}
+                         className={selectedFlag ? 'Mui-selected' : ''}/>
             }
             </>
         }
@@ -200,7 +199,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
             router,
             child,
             layer,
-            className: new RegExp(label.id, 'ig').test(selected.split('/')[1]?selected.split('/')[1]:selected) ? 'Mui-selected' : '',
+            className: new RegExp(label.id, 'ig').test(selected.split('/')[ 1 ] ? selected.split('/')[ 1 ] : selected) ? 'Mui-selected' : '',
             renderList: ({handleListKeyDown}: { handleListKeyDown: ({...rest}) => any }) => {
                 return getDrawerChoices({menuList: child, layer: layer + 1, handleListKeyDown, ...rest})
             },

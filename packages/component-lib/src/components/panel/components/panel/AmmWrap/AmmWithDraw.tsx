@@ -52,7 +52,6 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
     const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any, flag = -1) => {
         let focus: 'coinA' | 'coinB' | 'percentage';
         if (flag !== _selectedPercentage) {
-            // console.log(flag,_selectedPercentage)
             setSelectedPercentage(flag)
         }
         if (_ref) {
