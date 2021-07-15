@@ -23,7 +23,7 @@ export const BasicACoinTrade = <T extends IBData<I>,
     const handleCountChange: any = React.useCallback((_tradeData: T, _ref: any) => {
         //const focus: 'buy' | 'sell' = _ref?.current === buyRef.current ? 'buy' : 'sell';
         if (tradeData.tradeValue !== _tradeData.tradeValue) {
-            onChangeEvent(0,{ tradeData:{...tradeData,..._tradeData}, to: 'button'});
+            onChangeEvent(0, {tradeData: {...tradeData, ..._tradeData}, to: 'button'});
         }
 
         // onCoinValueChange(ibData);

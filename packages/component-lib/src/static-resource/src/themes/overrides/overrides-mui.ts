@@ -414,7 +414,7 @@ export const MuiInputBase = ({colorBase}: any): { styleOverrides: ComponentsOver
                 padding: '.6rem 2.4rem .6rem .8rem',
                 height: pxToRem(24),
                 lineHeight: pxToRem(24),
-                ' .MuiTypography-root':{
+                ' .MuiTypography-root': {
                     height: pxToRem(24),
                     lineHeight: pxToRem(24),
                 }

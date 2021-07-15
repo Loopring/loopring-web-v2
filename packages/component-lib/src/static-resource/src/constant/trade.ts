@@ -10,11 +10,11 @@ export const WithdrawTypes: {
     'Standard': '',
 }
 
-export  type PriceTagType = '$'|'￥';
+export  type PriceTagType = '$' | '￥';
 
 export enum PriceTag {
-    Dollar='$',
-    Yuan='￥'
+    Dollar = '$',
+    Yuan = '￥'
 }
 
 
@@ -34,6 +34,7 @@ export enum TradeStatus {
     Expired = 'expired',
     Waiting = 'waiting'
 }
+
 export const EmptyValueTag = 'N/A'
 
 

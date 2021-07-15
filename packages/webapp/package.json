@@ -4,7 +4,7 @@
   "author": "Loopring Dex Frontend Team",
   "description": "dexwebapp new version",
   "private": true,
-  "license": "(MIT OR Apache-2.0)",
+  "license": "GPLV3",
   "dependencies": {
     "@bedrock-layout/center": "^1.2.0",
     "@loopring-web/component-lib": "file:../component-lib/src",
@@ -70,19 +70,14 @@
   "main": "./public/electron.js",
   "homepage": ".",
   "scripts": {
-    "deploy:ipfs": "sh -ac '. .env.deploy; ipfs-deploy build/ -p pinata -d cloudflare'",
+    "deploy:ipfs": "sh -ac '. .env.deploy; ipd -p pinata -d cloudflare build'",
+    "predeploy:ipfs": "yarn build",
     "deploy": "bash ./deploy.sh",
     "predocker": "if [ ! -d \"build\" ]; then yarn build; fi",
     "docker": "docker-compose build",
-    "dev2": "dotenv -e .env.development react-scripts start",
     "dev": "dotenv -e .env.development react-app-rewired start",
-    "dev_ssl": "HTTPS=true dotenv -e .env.development react-app-rewired start",
-    "start": "dotenv -e .env.prod_for_dev react-app-rewired start",
-    "start_ssl": "HTTPS=true dotenv -e .env.prod_for_dev react-app-rewired start",
     "build_dev": "dotenv -e .env.development react-app-rewired build",
     "build": "dotenv -e .env.production react-app-rewired build",
-    "test": "dotenv -e .env.test jest test",
-    "test_prod": "dotenv -e .env.prod_for_dev react-app-rewired test",
     "gen_api": "cd src/lightcone_api/ && rm -rf api && java -jar openapi-generator-cli.jar generate -i openapi.yaml -g typescript-axios -o ./api"
   },
   "browserslist": {

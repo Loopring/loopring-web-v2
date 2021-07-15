@@ -204,10 +204,10 @@ const Template: Story<any> = withTranslation()((args: any) => {
             <Style>
                 <MemoryRouter initialEntries={['/']}>
                     <AssetsTable {...args} />
-                    <div style={{ marginTop: 24 }}>
+                    <div style={{marginTop: 24}}>
                         <AssetsTable {...args} pagination={{
                             pageSize: 5
-                        }} showFiliter />
+                        }} showFiliter/>
                     </div>
                 </MemoryRouter>
             </Style>
@@ -222,7 +222,9 @@ Assets.args = {
     // pagination: {
     //     pageSize: 5
     // }
-    onVisibleRowsChange: (data: any) => {console.log(data)}
+    onVisibleRowsChange: (data: any) => {
+        console.log(data)
+    }
 }
 
 export default {

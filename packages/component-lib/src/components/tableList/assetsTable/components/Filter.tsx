@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { Grid, MenuItem, Checkbox } from '@material-ui/core'
+import { Checkbox, Grid, MenuItem } from '@material-ui/core'
 import { withTranslation, WithTranslation } from "react-i18next";
-import { TextField, FormControlLabel } from '../../../'
-import { DropDownIcon, CheckBoxIcon, CheckedIcon } from 'static-resource'
+import { FormControlLabel, TextField } from '../../../'
+import { CheckBoxIcon, CheckedIcon, DropDownIcon } from 'static-resource'
 import { TokenType, TradePairItem } from '../AssetsTable'
 
 export type TokenTypeCol = {
@@ -15,7 +15,7 @@ export type OriginalDataItem = string | number | TokenTypeCol | TradePairItem[] 
 
 export interface FilterProps {
     originalData: OriginalDataItem[][];
-    handleFilterChange: ({ tokenType, hideSmallBalance, hideLPToken }: any) => void;
+    handleFilterChange: ({tokenType, hideSmallBalance, hideLPToken}: any) => void;
 }
 
 const StyledTextFiled = styled(TextField)`
@@ -34,10 +34,10 @@ export enum CheckboxType {
 }
 
 export const Filter = withTranslation('tables', {withRef: true})(({
-                                                                            t,
-                                                                            originalData,
-                                                                            handleFilterChange
-                                                                        }: FilterProps & WithTranslation) => {
+                                                                      t,
+                                                                      originalData,
+                                                                      handleFilterChange
+                                                                  }: FilterProps & WithTranslation) => {
     // de-duplicate
     const tokenTypeList = [{
         label: t('labelAllToken'),
@@ -65,7 +65,11 @@ export const Filter = withTranslation('tables', {withRef: true})(({
         const valueTokenType = refTokenType.current;
         const valueHideSmallBalance = refHideSmallBalance.current;
         const valueHideLPToken = refHideLPToken.current;
-        handleFilterChange({ tokenType: valueTokenType, currHideSmallBalance: valueHideSmallBalance, currHideLPToken: valueHideLPToken })
+        handleFilterChange({
+            tokenType: valueTokenType,
+            currHideSmallBalance: valueHideSmallBalance,
+            currHideLPToken: valueHideLPToken
+        })
     }, [handleFilterChange])
 
     return (
@@ -83,26 +87,29 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                     }}
                     inputProps={{IconComponent: DropDownIcon}}
                 > {tokenTypeList.map(token => <MenuItem key={token.value}
-                    value={token.value}>{token.label}</MenuItem>)}
+                                                        value={token.value}>{token.label}</MenuItem>)}
                 </StyledTextFiled>
             </Grid>
 
             <Grid item>
-                <FormControlLabel style={{ marginRight: 0 }} control={<Checkbox checked={hideSmallBalance} checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
-                color="default" onChange={(event) => {
-                    handleCheckboxChange(CheckboxType.smallBalance, event);
-                    refHideSmallBalance.current = event.target.checked;
-                    handleFilterData();
-                }} />} label={t('labelHideSmallBalances')} />
+                <FormControlLabel style={{marginRight: 0}}
+                                  control={<Checkbox checked={hideSmallBalance} checkedIcon={<CheckedIcon/>}
+                                                     icon={<CheckBoxIcon/>}
+                                                     color="default" onChange={(event) => {
+                                      handleCheckboxChange(CheckboxType.smallBalance, event);
+                                      refHideSmallBalance.current = event.target.checked;
+                                      handleFilterData();
+                                  }}/>} label={t('labelHideSmallBalances')}/>
             </Grid>
 
             <Grid item>
-                <FormControlLabel control={<Checkbox checked={hideLPToken} checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
-                color="default" onChange={(event) => {
-                    handleCheckboxChange(CheckboxType.lp, event);
-                    refHideLPToken.current = event.target.checked;
-                    handleFilterData();
-                }} />} label={t('labelHideLPToken')} />
+                <FormControlLabel
+                    control={<Checkbox checked={hideLPToken} checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
+                                       color="default" onChange={(event) => {
+                        handleCheckboxChange(CheckboxType.lp, event);
+                        refHideLPToken.current = event.target.checked;
+                        handleFilterData();
+                    }}/>} label={t('labelHideLPToken')}/>
             </Grid>
         </Grid>
     )

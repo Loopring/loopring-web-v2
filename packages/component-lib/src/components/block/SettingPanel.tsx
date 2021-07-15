@@ -7,7 +7,9 @@ import {
     generateColumns,
     generateRows,
     OutlineSelect,
-    OutlineSelectItem, SortableHeaderCell, SortableHeaderCellProps,
+    OutlineSelectItem,
+    SortableHeaderCell,
+    SortableHeaderCellProps,
     Table,
     useSettings,
     VipStyled
@@ -96,7 +98,7 @@ const rawData: Array<Array<any>> = [
 
 export const SettingPanel = withTranslation(['common', 'layout'])(({t, ...rest}: & WithTranslation) => {
     const theme = useTheme();
-    const {setUpColor, setCurrency,setLanguage,currency, upColor} = useSettings()
+    const {setUpColor, setCurrency, setLanguage, currency, upColor} = useSettings()
 
     // const handleOnLanguageChange = (value: any) => {
     //
@@ -116,9 +118,10 @@ export const SettingPanel = withTranslation(['common', 'layout'])(({t, ...rest}:
         {
             key: 'level', name: 'labelLevel',
             headerRenderer: (props: SortableHeaderCellProps<Row>) => <SortableHeaderCell {...props}
-                                                                                    children={<Typography variant={'body1'}
-                                                                                                       paddingLeft={2}
-                                                                                                       component={'span'}>{t('labelLevel')}</Typography>}/>,
+                                                                                         children={<Typography
+                                                                                             variant={'body1'}
+                                                                                             paddingLeft={2}
+                                                                                             component={'span'}>{t('labelLevel')}</Typography>}/>,
             formatter: ({row}) => <Typography variant={'body1'} paddingLeft={2}
                                               component={'span'}>{row.level}</Typography>
         },
@@ -208,7 +211,7 @@ export const SettingPanel = withTranslation(['common', 'layout'])(({t, ...rest}:
                             <BtnLanguage {...{
                                 t,
                                 ...rest,
-                                ...headerToolBarData[ButtonComponentsMap.Language],
+                                ...headerToolBarData[ ButtonComponentsMap.Language ],
                                 handleChange: (language: LanguageKeys) => {
                                     setLanguage(language)
                                 }
