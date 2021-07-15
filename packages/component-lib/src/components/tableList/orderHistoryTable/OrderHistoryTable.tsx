@@ -7,7 +7,7 @@ import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes } from 
 import { Column, generateColumns, generateRows, Table, Popover, PopoverType, TablePagination } from '../../basic-lib'
 import { SingleOrderHistoryTable } from './SingleOrderHistoryTable'
 import { Filter, FilterTradeTypes } from './components/Filter'
-import { TablePaddingX } from '../../styled'
+import { TablePaddingX, TableFilterStyled } from '../../styled'
 
 // export enum OrderSide {
 //     sell = 'Sell',
@@ -416,15 +416,11 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         updateData({ actionType: TableType.page, currPage: page })
     }, [updateData])
 
-    const FilterStyled = styled(Box)`
-        margin-left: 26px;
-    `
-
     return <TableStyled>
         {showFilter && (
-            <FilterStyled>
+            <TableFilterStyled>
                 <Filter handleFilterChange={handleFilterChange} />
-            </FilterStyled>
+            </TableFilterStyled>
         )}
         <Table {...{...defaultArgs, ...props, rawData: getRenderData()}} />
         {
