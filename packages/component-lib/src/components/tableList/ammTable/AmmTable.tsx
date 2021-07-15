@@ -5,7 +5,7 @@ import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import moment from 'moment'
 import { Column, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
-import { TablePaddingX } from '../../styled';
+import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { Filter, FilterTradeTypes } from './components/Filter'
 import { getThousandFormattedNumbers, TableType } from 'static-resource';
 import { useSettings } from '../../../stores';
@@ -232,20 +232,16 @@ export const AmmTable = withTranslation('tables')((props: WithTranslation & AmmT
         updateData({TableType: TableType.page, currPage: page})
     }, [updateData])
 
-    const FilterStyled = styled(Box)`
-      margin-left: 26px;
-    `
-
     return <TableStyled>
         {showFilter && (
-            <FilterStyled>
+            <TableFilterStyled>
                 <Filter
                     handleFilterChange={handleFilterChange}
                     setFilterItems={setFilterItems}
                     filterType={filterType}
                     filterDate={filterDate}
                 />
-            </FilterStyled>
+            </TableFilterStyled>
         )}
         <Table {...{...defaultArgs, ...props, rawData: getRenderData()}}/>
         {pagination && (
