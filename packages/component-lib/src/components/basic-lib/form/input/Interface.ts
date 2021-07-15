@@ -17,9 +17,9 @@ export type InputButtonProps<T, R, I> = {
     wait?: number,
     handleCountChange?: (ibData: T, ref: React.ForwardedRef<any>) => void,
     handleOnClick: (event: React.MouseEvent, ref: React.ForwardedRef<any>) => void,
-    handleError?: (ibData: T & {maxAllow?:boolean}, ref: React.ForwardedRef<any>) => { error: boolean, message?: string | React.ElementType<HTMLElement> },
+    handleError?: (ibData: T & { maxAllow?: boolean }, ref: React.ForwardedRef<any>) => { error: boolean, message?: string | React.ElementType<HTMLElement> },
     focusOnInput?: boolean,
-    name?:string
+    name?: string
 }
 export type InputCoinProps<T, R, I> = {
     inputData?: T | undefined,
@@ -34,7 +34,7 @@ export type InputCoinProps<T, R, I> = {
     handleCountChange?: (ibData: T, ref: React.ForwardedRef<any>) => void,
     handleError?: (ibData: T, ref: React.ForwardedRef<any>) => { error: boolean, message?: string | React.ElementType<HTMLElement> },
     focusOnInput?: boolean,
-    order?:'left'|'right',
+    order?: 'left' | 'right',
 }
 export type InputSelectProps<T, I = CoinKey<T>> = {
     // coinMap: CoinMap<R,I extends CoinInfo?CoinInfo:CoinInfo>,

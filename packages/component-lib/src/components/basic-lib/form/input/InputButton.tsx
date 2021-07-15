@@ -165,7 +165,7 @@ const IInput = styled(CurrencyInput)`
     outline: 0;
 
     ${({theme}) => `
-        ${theme.border.defaultFrame({c_key: 'focus',d_R: 0.5})};
+        ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
         border-top-left-radius: 0px;
         border-bottom-left-radius: 0px;
      `};
@@ -199,22 +199,29 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
     //     let error:any = handleError(inputData, ref);
     //     _error = error ? error : {error: false}
     // }
-    const _handleError = (value:any)=>{
+    const _handleError = (value: any) => {
         if (handleError) {
-            let _error = handleError({balance: Number(balance), belong, ...{tradeValue: value}, maxAllow} as T & {maxAllow?:boolean} , ref);
+            let _error = handleError({
+                balance: Number(balance),
+                belong, ...{tradeValue: value},
+                maxAllow
+            } as T & { maxAllow?: boolean }, ref);
             setError(_error ? _error : {error: false});
         }
     }
-    const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({error: false, message: ''});
+    const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
+        error: false,
+        message: ''
+    });
     const inputCallback = React.useCallback(({current}) => {
-            if (inputData  && (inputData.tradeValue !== Number(current?.value))) {
+            if (inputData && (inputData.tradeValue !== Number(current?.value))) {
                 setsValue(inputData.tradeValue);
                 _handleError(inputData.tradeValue);
                 // debounceCount({...inputData, ...{tradeValue: inputData.tradeValue}})
                 // _handleContChange(current?.value, name)
             }
         },
-        [inputData,name])
+        [inputData, name])
     const inputEle = useFocusRef({
         callback: inputCallback,
         shouldFocusOn: focusOnInput,
@@ -237,7 +244,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
     // }, [])
     const _handleMaxAllowClick = (_event: React.MouseEvent) => {
         if (maxAllow) {
-            _handleContChange(balance,name)
+            _handleContChange(balance, name)
             //setsValue(balance);
         }
     }
@@ -277,7 +284,8 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 </ISBtn>
             </Grid>
             <Grid item className={'input-wrap'}>
-                <IInput ref={inputEle} onValueChange={_handleContChange} value={sValue} allowNegativeValue={false}  name={name}
+                <IInput ref={inputEle} onValueChange={_handleContChange} value={sValue} allowNegativeValue={false}
+                        name={name}
                         disabled={!disabled || belong ? false : true}
                         placeholder={placeholderText}
                         aria-placeholder={placeholderText} aria-label={label} decimalsLimit={10000000}></IInput>

@@ -6,7 +6,7 @@ export const FormControlLabel = styled(MuFormControlLabel)`
   && {
     padding-right: ${({theme}) => theme.unit * 2}px;
     background-color: ${({theme}) => theme.colorBase.background().outline};
-    border-radius: ${({theme}) => theme.unit/2}px;
+    border-radius: ${({theme}) => theme.unit / 2}px;
   }
 `
 export const TextField = styled(MuTextField)`
@@ -19,7 +19,7 @@ export const TextField = styled(MuTextField)`
     .MuiSelect-nativeInput + svg {
       position: absolute;
       right: .4rem;
-      top:  ${({theme}) => theme.unit }px;
+      top:  ${({theme}) => theme.unit}px;
       color: ${({theme}) => theme.colorBase.textSecondary};
     }
 

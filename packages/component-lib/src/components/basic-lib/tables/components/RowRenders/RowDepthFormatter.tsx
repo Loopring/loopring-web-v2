@@ -48,7 +48,7 @@ export interface IDepthRendererProps<R, SR> extends RowRendererProps<R, SR> {
 
 function _DepthRow<R, SR = unknown>({
                                         cellRenderer:
-                                        CellRenderer = Cell,
+                                            CellRenderer = Cell,
                                         className,
                                         rowIdx,
                                         isRowSelected,
@@ -69,7 +69,7 @@ function _DepthRow<R, SR = unknown>({
                                         'aria-rowindex': ariaRowIndex,
                                         'aria-selected': ariaSelected,
                                         ...props
-                                    }: IDepthRendererProps<R, SR> & {selectRow:any}, ref: React.Ref<HTMLDivElement>) {
+                                    }: IDepthRendererProps<R, SR> & { selectRow: any }, ref: React.Ref<HTMLDivElement>) {
     function handleDragEnter(event: React.MouseEvent<HTMLDivElement>) {
         setDraggedOverRowIdx?.(rowIdx);
         onMouseEnter?.(event);
@@ -102,9 +102,9 @@ function _DepthRow<R, SR = unknown>({
             </div>
             {
                 viewportColumns.map(column => {
-                const isCellSelected = selectedCellProps?.idx === column.idx;
+                    const isCellSelected = selectedCellProps?.idx === column.idx;
 
-                return CellRenderer&&<CellRenderer
+                    return CellRenderer && <CellRenderer
                         {...props}
                         colSpan={undefined}
                         key={column.key}
@@ -124,7 +124,7 @@ function _DepthRow<R, SR = unknown>({
                         // selectRow={selectRow}
                     />
 
-            })
+                })
             }
 
         </RowDepthStyled>

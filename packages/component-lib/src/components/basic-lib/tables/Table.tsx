@@ -1,17 +1,15 @@
 import type { Column as RdgColumn } from 'react-data-grid';
 import DataGrid, { SortColumn } from 'react-data-grid';
 import styled from "@emotion/styled";
-import { WithTranslation } from 'react-i18next';
+import { Trans, WithTranslation } from 'react-i18next';
 
 import { WithT } from "i18next";
 import React from "react";
-import { Link } from '@material-ui/core';
-import { Column, DataGridProps, TableProps, SortableHeaderCell, SortableHeaderCellProps } from './';
-import { EmptyIcon } from 'static-resource'
+import { Column, DataGridProps, SortableHeaderCell, SortableHeaderCellProps, TableProps } from './';
 import { EmptyDefault } from '../empty';
 
 export const DataGridStyled = styled(DataGrid)`
-  
+
   &.rdg {
     min-height: 350px;
     color: ${({theme}) => theme.colorBase.textPrimary};
@@ -25,6 +23,7 @@ export const DataGridStyled = styled(DataGrid)`
       width: 100%;
       background-color: inherit;
     }
+
     &.scrollable .rdg-header-row {
       background-color: ${({theme}) => theme.colorBase.backgroundHeader};
     }
@@ -85,6 +84,7 @@ export const DataGridStyled = styled(DataGrid)`
       box-sizing: border-box;
       height: 100%;
     }
+
     .rdg-cell[aria-selected=true] {
       box-shadow: none;
     }
@@ -165,20 +165,20 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation) => {
     const columns = generateColumns({columnsRaw: columnMode, t});
     const [rows, setRows] = React.useState(generateRows(rawData, props));
 
-    React.useEffect(()=>{
+    React.useEffect(() => {
         setRows(generateRows(rawData, props));
-    },[rawData])
+    }, [rawData])
     /*** sort handle start ***/
     const [sortColumns, setSortColumns] = React.useState<readonly Readonly<SortColumn>[]>([{
         columnKey: sortDefaultKey as any,
-        direction: sortInitDirection ? sortInitDirection : undefined  as any
+        direction: sortInitDirection ? sortInitDirection : undefined as any
     }]);
 
     // const [[sortColumn, sortDirection], setSort] = React.useState<[string | undefined, SortDirection]>([sortDefaultKey, sortInitDirection ? sortInitDirection : undefined]);
 
     const sortedRows: readonly R[] = React.useMemo(() => {
         if (sortColumns.length === 0) return rows;
-        const { columnKey, direction } = sortColumns[0];
+        const {columnKey, direction} = sortColumns[ 0 ];
         let sortedRows: R[] = [...rows];
         sortedRows = sortMethod ? sortMethod(sortedRows, columnKey, direction) : rows;
         return direction === 'DESC' ? sortedRows.reverse() : sortedRows;
@@ -203,13 +203,6 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation) => {
             }
         }) as Column<R, unknown>[];
     }, [columns]);
-    const RenderPic = styled.div`
-      & svg {
-        font-size: 110px;
-        fill: #727FAA;
-        fill-opacity: 0.3;
-      }
-    `
     const RenderEmptyMsg = styled.span`
       display: flex;
 
@@ -234,9 +227,12 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation) => {
         rowRenderer={rowRenderer as any}
         sortColumns={sortColumns}
         emptyRowsRenderer={() => EmptyRowsRenderer ? EmptyRowsRenderer :
-            <EmptyDefault height={`calc(100% - var(--header-row-height))`} defaultPic={<RenderPic><EmptyIcon/></RenderPic>} message={() => {
-                return <RenderEmptyMsg>Go to <Link className="link" onClick={() => console.log('EMPTY ON CLICK')}> link
-                    or event</Link> at here</RenderEmptyMsg>
+            <EmptyDefault height={`calc(100% - var(--header-row-height))`} message={() => {
+                return <RenderEmptyMsg>
+                    <Trans i18nKey="labelEmptyDefault">
+                        Content is Empty
+                    </Trans>
+                </RenderEmptyMsg>
             }}/>}
     />;
     //  <EmptyDefault height={"calc(100% - 35px)"} url={'/path'} message={()=>{

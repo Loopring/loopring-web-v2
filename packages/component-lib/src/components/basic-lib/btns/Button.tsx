@@ -15,7 +15,7 @@ export const Button = styled(MuButton)<ButtonProps>`
   && {
     &.MuiButton-root.Mui-disabled {
       ${({loading, theme}) => {
-       return  loading === 'true' ? `
+    return loading === 'true' ? `
            color:transparent;
            background:${theme.colorBase.primaryDark};
            &::after{
@@ -32,7 +32,7 @@ export const Button = styled(MuButton)<ButtonProps>`
             color:#fff  
            }
        ` : ''
-      }
+}
 }
     }
   }
@@ -71,10 +71,12 @@ export const ToggleButtonGroup = ({
 
 }
 
-export const ModalCloseButton = ({onClose,t}:{onClose?: {
+export const ModalCloseButton = ({onClose, t}: {
+    onClose?: {
         bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void;
-    }['bivarianceHack']} & WithTranslation)=>{
-    return  <Box alignSelf={'flex-end'} marginTop={-2} marginRight={1}>
+    }['bivarianceHack']
+} & WithTranslation) => {
+    return <Box alignSelf={'flex-end'} marginTop={-2} marginRight={1}>
         <IconButton aria-label={t('labelClose')} size={'small'} onClick={(event) => {
             onClose && onClose(event, 'escapeKeyDown')
         }}>

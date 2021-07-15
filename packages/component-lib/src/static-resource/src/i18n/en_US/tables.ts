@@ -84,5 +84,6 @@ export default {
     labelAmmFilterJoin: 'Join',
     labelAmmFilterExit: 'Exit',
     labelPoolTableAddLiqudity: 'Add',
-    labelPoolTableRemoveLiqudity: 'Remove'
+    labelPoolTableRemoveLiqudity: 'Remove',
+    labelEmptyDefault: 'Content is empty',
 }

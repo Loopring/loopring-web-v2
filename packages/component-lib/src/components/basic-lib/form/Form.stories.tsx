@@ -1,20 +1,19 @@
 import React from 'react'
 import { Meta, Story } from '@storybook/react/types-6-0';
 import styled from "@emotion/styled";
-
-// import { MemoryRouter } from 'react-router-dom'
 import {
     Box,
     Checkbox,
     FormControl,
     FormControlLabel as MuiFormControlLabel,
-    Grid, InputAdornment,
-    Link,
-    ListItemText, OutlinedInput,
+    Grid,
+    InputAdornment,
+    ListItemText,
+    OutlinedInput,
     Typography
 } from '@material-ui/core'
 import { FormControlLabel, InputCoinProps, MenuItem } from '../../basic-lib'
-import { withTranslation } from "react-i18next";
+import { Trans, withTranslation } from "react-i18next";
 import {
     DatePicker,
     DateRangePicker,
@@ -52,7 +51,7 @@ const InputButtonWrap = () => {
 
     const ref = React.createRef<HTMLInputElement>();
     const handleError = ({belong, balance, tradeValue}: IBData<CoinType>) => {
-        if (balance < tradeValue) {
+        if (typeof tradeValue !== 'undefined' && balance < tradeValue) {
             return {error: true, message: `Not enough ${belong} perform a deposit`}
         }
         return {error: false}
@@ -98,7 +97,7 @@ const InputButtonWrap = () => {
 const InputIconWrap = () => {
     const ref = React.createRef<HTMLInputElement>();
     const handleError = ({belong, balance, tradeValue}: IBData<CoinType>) => {
-        if (balance < tradeValue) {
+        if (typeof tradeValue !== 'undefined' && balance < tradeValue) {
             return {error: true, message: `Not enough ${belong} perform a deposit`}
         }
         return {error: false}
@@ -132,7 +131,7 @@ const InputIconWrap = () => {
         <Grid item xs={4}>
             <InputCoin<IBData<CoinType>, CoinType, CoinInfo<CoinType>> {...{
                 ..._inputProps, ...{
-                    order:'right',
+                    order: 'right',
                     maxAllow: true,
                     inputData: data,
                     handleError,
@@ -215,32 +214,12 @@ const InputSelectWrap = (rest: any) => {
 
     const PanelEmptyRender = () => {
         return <Box alignSelf={'center'}><EmptyDefault message={() => {
-            return <>Go to <Link onClick={() => console.log('EMPTY ON CLICK')}> link or event</Link> at here</>
+            return <Trans i18nKey="labelEmptyDefault">
+                Content is Empty
+            </Trans>
         }}/></Box>
     }
-    // let information = {value:"hello, it's callback inject"};
-    // setTimeout(()=>{
-    //     information.value='I have update';
-    // },100)
-    // const ref = React.createRef<HTMLInputElement>();
-    // const handleError = ({belong,balance,tradeValue}:IBData<coinType>) =>{
-    //     if(balance < tradeValue){
-    //         return {error:true,message:`Not enough ${belong} perform a deposit`}
-    //     }
-    //     return  {error:false}
-    // }
-    // const [data,setData] = React.useState<IBData<coinType>>({
-    //     belong: 'ETH',
-    //     balance: 23244,
-    //     tradeValue: 0
-    // })
-    // const handleCountChange = React.useCallback((ibData: IBData<coinType>)=>{
-    //     setData(ibData)
-    //     console.log(information)
-    // },[information])
-    // React.useEffect(() => {
-    //     console.log('data update', data);
-    // }, [data])
+
     return <>
         <Grid item xs={6} md={4}>
             <Box height={500} width={338}> <InputSelect  {...{
@@ -281,11 +260,11 @@ const MyDatePicker = (props: any) => {
         </Grid> </>
 
 }
-const SearchWrap = ()=>{
-    const inputProps: OutlinedInputProps= {
+const SearchWrap = () => {
+    const inputProps: OutlinedInputProps = {
         placeholder: 'Search Coin',
         value: '',
-        onChange: (value:any) => {
+        onChange: (value: any) => {
             console.log('FilterString', value);
             //setFilterString(value);
         },

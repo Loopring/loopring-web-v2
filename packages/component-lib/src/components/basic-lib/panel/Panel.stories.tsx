@@ -4,15 +4,7 @@ import { Meta, Story } from '@storybook/react/types-6-0';
 import { withTranslation } from 'react-i18next';
 import { SwitchPanel, SwitchPanelProps } from './SwitchPanel';
 import { MemoryRouter } from 'react-router-dom';
-import {
-    Box,
-    Button,
-    Grid,
-    IconButton,
-    ListItemAvatar,
-    ListItemText,
-    Typography
-} from '@material-ui/core';
+import { Box, Button, Grid, IconButton, ListItemAvatar, ListItemText, Typography } from '@material-ui/core';
 
 import { AssetsIcon, DropDownIcon } from 'static-resource';
 import { SubMenuItem } from '../lists';

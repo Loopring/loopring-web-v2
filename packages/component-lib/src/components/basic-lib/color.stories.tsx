@@ -17,13 +17,15 @@ const Styled = styled.div`
 
 
 export const ColorList: Story<any> = withTranslation()(({}: WithTranslation & any) => {
-    const view = Object.keys(ColorDarkDefault).map((key,indx) => {
-        if(key!== 'background' && key !== 'border'){
-            return <Grid item  width={120} key={indx} padding={2} display={'flex'} flexDirection={'column'} alignItems={'center'}>
-                <Box width={60} height={60} style={{background:ColorDarkDefault[key], border:'1px solid #fff'}}></Box>
+    const view = Object.keys(ColorDarkDefault).map((key, indx) => {
+        if (key !== 'background' && key !== 'border') {
+            return <Grid item width={120} key={indx} padding={2} display={'flex'} flexDirection={'column'}
+                         alignItems={'center'}>
+                <Box width={60} height={60}
+                     style={{background: ColorDarkDefault[ key ], border: '1px solid #fff'}}></Box>
                 <Typography padding={1} variant={'body2'} color={'rgb(104 107 208)'}>{key}</Typography>
             </Grid>
-        }else{
+        } else {
             return <React.Fragment key={indx}></React.Fragment>
         }
 
@@ -34,10 +36,10 @@ export const ColorList: Story<any> = withTranslation()(({}: WithTranslation & an
             {/*<MemoryRouter initialEntries={['/']}>*/}
             <Styled>
                 {/*<MemoryRouter initialEntries={['/']}>*/}
-                <Grid container style={{background:'#fff'}} >
+                <Grid container style={{background: '#fff'}}>
                     {view}
                 </Grid>
-                <Grid container style={{background:'#000'}} >
+                <Grid container style={{background: '#000'}}>
                     {view}
                 </Grid>
 
