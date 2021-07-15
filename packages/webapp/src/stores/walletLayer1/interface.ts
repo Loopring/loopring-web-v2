@@ -1,5 +1,5 @@
 import { StateBase } from '../interface';
-import { WalletCoin } from '@loopring-web/component-lib/src/static-resource';
+import { WalletCoin } from '@loopring-web/common-resources';
 
 export type WalletLayer1Map<R extends {[key:string]:any}> = {
     [key in keyof R]:WalletCoin<R>

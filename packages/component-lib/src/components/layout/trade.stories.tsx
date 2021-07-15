@@ -5,7 +5,7 @@ import { Box, Container, GlobalStyles, Toolbar, } from '@material-ui/core';
 
 import { css, Theme, useTheme } from '@emotion/react';
 import { Header } from '../header/Header';
-import { globalCss, headerMenuData, headerToolBarData } from 'static-resource';
+import { globalCss, headerMenuData, headerToolBarData } from '@loopring-web/common-resources';
 
 import { tradeCalcData } from '../../static';
 import { SwapPanel } from '../panel';

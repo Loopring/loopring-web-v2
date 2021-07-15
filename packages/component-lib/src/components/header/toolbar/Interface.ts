@@ -1,5 +1,5 @@
 import React from 'react';
-import { WalletStatus } from 'static-resource';
+import { WalletStatus } from '@loopring-web/common-resources';
 
 export enum WalletNotificationStatus {
     none = 'none',

@@ -20,7 +20,7 @@ import {
     LinkedIcon,
     MyAmmLP,
     PriceTag
-} from 'static-resource';
+} from '@loopring-web/common-resources';
 
 import { ammCalcData, coinMap, tradeCalcData, } from '../../static';
 import { AmmPanel, AmmPanelType, AmmProps } from '../panel';

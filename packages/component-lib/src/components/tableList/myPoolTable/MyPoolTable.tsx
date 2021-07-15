@@ -3,7 +3,7 @@ import { Box, Typography } from '@material-ui/core'
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { Button, TablePagination, TableProps } from '../../basic-lib'
 import { Column, Table, } from '../../basic-lib/'
-import { Currency, EmptyValueTag, getThousandFormattedNumbers, globalSetup, PriceTag } from 'static-resource'
+import { Currency, EmptyValueTag, getThousandFormattedNumbers, globalSetup, PriceTag } from '@loopring-web/common-resources'
 import { Method, MyPoolRow as Row, MyPoolTableProps } from './Interface'
 import { FormatterProps } from 'react-data-grid';
 import styled from '@emotion/styled';

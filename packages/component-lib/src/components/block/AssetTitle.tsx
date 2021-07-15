@@ -1,5 +1,5 @@
 import { Box, Grid, IconButton, Typography } from '@material-ui/core/';
-import { getThousandFormattedNumbers, HideIcon, ViewIcon } from 'static-resource';
+import { getThousandFormattedNumbers, HideIcon, ViewIcon } from '@loopring-web/common-resources';
 import React from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { AssetTitleProps } from './Interface';

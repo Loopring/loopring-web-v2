@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { Box, Button } from '@material-ui/core'
 import { withTranslation, WithTranslation } from 'react-i18next'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { EmptyValueTag, FloatTag, getThousandFormattedNumbers } from 'static-resource'
+import { EmptyValueTag, FloatTag, getThousandFormattedNumbers } from '@loopring-web/common-resources'
 import { Column, Table } from '../../basic-lib/tables/index'
 import { TablePaddingX } from '../../styled'
 import { Typography } from '@material-ui/core/';

@@ -2,12 +2,12 @@ import { ModalProvider } from 'styled-react-modal'
 import RouterView from './routers'
 import { Avatar, GlobalStyles } from '@material-ui/core';
 import { css, Theme, useTheme } from '@emotion/react';
-import { globalCss,ErrorMap } from '@loopring-web/component-lib/src/static-resource';
+import { globalCss,ErrorMap } from '@loopring-web/common-resources';
 import { GlobalProvider, Web3ReactManager } from './provider/';
 import React, { useEffect } from 'react';
 import { useInit } from './hook';
 import { STATUS } from 'stores/constant';
-import loadingSvg from 'common-resources/assets/svg/loading.svg';
+import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
 import { ErrorPage } from './pages/ErrorPage';
 
 const App =  () => {

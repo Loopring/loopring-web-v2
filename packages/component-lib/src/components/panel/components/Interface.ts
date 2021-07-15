@@ -8,7 +8,7 @@ import {
     WalletMap,
     WithdrawType,
     WithdrawTypes
-} from 'static-resource';
+} from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../Interface';
 import React from 'react';
 

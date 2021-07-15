@@ -4,7 +4,7 @@ import { AvatarIconPair, Button, useImage } from '../';
 import React from 'react';
 import moment from 'moment';
 import { WithTranslation, withTranslation } from 'react-i18next';
-import { AmmCardProps, Currency, EmptyValueTag, getThousandFormattedNumbers, PriceTag } from 'static-resource';
+import { AmmCardProps, Currency, EmptyValueTag, getThousandFormattedNumbers, PriceTag } from '@loopring-web/common-resources';
 import { useSettings } from '../../stores';
 import styled from '@emotion/styled';
 

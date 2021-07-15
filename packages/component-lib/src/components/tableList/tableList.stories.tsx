@@ -6,7 +6,7 @@ import { QuoteTable, QuoteTableRawDataItem } from './QuoteTable'
 import { OrderHistoryTable } from './orderHistoryTable'
 import { RawDataTransactionItem, TransactionStatus, TransactionTable, TransactionTradeTypes } from './transactionsTable'
 import { OrderHistoryRawDataItem } from './orderHistoryTable/OrderHistoryTable'
-import { TradeStatus, TradeTypes } from '../../static-resource';
+import { TradeStatus, TradeTypes } from '@loopring-web/common-resources';
 
 const Style = styled.div`
   color: #fff;

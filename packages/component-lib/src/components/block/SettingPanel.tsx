@@ -16,7 +16,7 @@ import {
 } from '../../';
 import Switch from '@material-ui/core/Switch';
 import React from 'react';
-import { ButtonComponentsMap, Currency, DropDownIcon, headerToolBarData, LanguageKeys, UpColor } from 'static-resource';
+import { ButtonComponentsMap, Currency, DropDownIcon, headerToolBarData, LanguageKeys, UpColor } from '@loopring-web/common-resources';
 import { useTheme } from '@emotion/react';
 import { TypographyStrong } from 'components/panel';
 

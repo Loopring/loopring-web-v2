@@ -3,7 +3,7 @@ import styled from '@emotion/styled'
 import { Checkbox, Grid, MenuItem } from '@material-ui/core'
 import { withTranslation, WithTranslation } from "react-i18next";
 import { FormControlLabel, TextField } from '../../../'
-import { CheckBoxIcon, CheckedIcon, DropDownIcon } from 'static-resource'
+import { CheckBoxIcon, CheckedIcon, DropDownIcon } from '@loopring-web/common-resources'
 import { TokenType, TradePairItem } from '../AssetsTable'
 
 export type TokenTypeCol = {

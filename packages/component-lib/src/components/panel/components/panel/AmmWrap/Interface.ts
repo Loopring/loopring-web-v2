@@ -1,5 +1,5 @@
 import { InputButtonProps } from '../../../../basic-lib';
-import { CoinInfo } from 'static-resource';
+import { CoinInfo } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../../../';
 
 

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { PriceTag } from '@loopring-web/component-lib/src/static-resource'
+import { PriceTag } from '@loopring-web/common-resources'
 import { Box, Paper, Typography } from '@material-ui/core'
 import styled from '@emotion/styled'
 import {
@@ -22,7 +22,7 @@ import { AssetType } from 'loopring-sdk'
 import store from 'stores'
 import { useWalletLayer1 } from 'stores/walletLayer1'
 import { makeWallet } from 'hooks/help'
-import { EmptyValueTag,unit } from '@loopring-web/component-lib/src/static-resource'
+import { EmptyValueTag,unit } from '@loopring-web/common-resources'
 import { StylePaper } from '../../styled'
 
 // const StylePaper = styled(Box)`

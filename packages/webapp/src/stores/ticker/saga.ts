@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects"
 import { getTicker, getTickers, getTickerStatus } from './reducer'
-import { CoinKey, CustomError, ErrorMap, PairKey, TradeFloat } from '@loopring-web/component-lib/src/static-resource'
+import { CoinKey, CustomError, ErrorMap, PairKey, TradeFloat } from '@loopring-web/common-resources'
 
 
 import { exchangeAPI } from "stores/apis/api"

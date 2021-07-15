@@ -4,7 +4,7 @@ import { Trans, withTranslation, WithTranslation } from 'react-i18next';
 import moment from 'moment'
 import { TablePagination, TableProps } from '../../basic-lib'
 import { Column, Table, } from '../../basic-lib/'
-import { Currency, EmptyValueTag, getThousandFormattedNumbers, globalSetup, PriceTag } from 'static-resource'
+import { Currency, EmptyValueTag, getThousandFormattedNumbers, globalSetup, PriceTag } from '@loopring-web/common-resources'
 import { AmmRecordRow as Row, AmmRecordTableProps, AmmTradeType } from './Interface'
 import { FormatterProps } from 'react-data-grid';
 import styled from '@emotion/styled';

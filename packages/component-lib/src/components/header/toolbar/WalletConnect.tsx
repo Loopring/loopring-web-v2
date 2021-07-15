@@ -1,11 +1,11 @@
 import { WalletConnectBtnProps } from './Interface';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
-import { globalSetup, LockIcon, NoNetWorkIcon, WalletStatus } from 'static-resource';
+import { globalSetup, LockIcon, NoNetWorkIcon, WalletStatus } from '@loopring-web/common-resources';
 import { debounce } from 'lodash';
 import { Typography } from '@material-ui/core';
 
-import loadingSvg from 'common-resources/assets/svg/loading.svg';
+import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
 import styled from '@emotion/styled';
 import { Button } from '../../basic-lib';
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';

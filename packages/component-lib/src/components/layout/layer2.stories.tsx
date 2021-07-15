@@ -21,7 +21,7 @@ import {
     ViewIcon,
     WithdrawType,
     WithdrawTypes
-} from 'static-resource';
+} from '@loopring-web/common-resources';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { OrderHistoryTable as OrderHistoryTableUI } from '../tableList/orderHistoryTable'
 import { AccountInfo, AccountInfoProps, AssetTitleProps } from '../block';

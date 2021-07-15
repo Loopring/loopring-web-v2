@@ -7,7 +7,7 @@ import { Column, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { Filter, FilterTradeTypes } from './components/Filter'
-import { TableType, TradeTypes } from 'static-resource';
+import { TableType, TradeTypes } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores';
 import { useDeepCompareEffect } from 'react-use';
 import { Row } from '../poolsTable/Interface';

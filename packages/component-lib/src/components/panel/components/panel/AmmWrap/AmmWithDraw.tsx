@@ -1,4 +1,4 @@
-import { AmmData, AmmInData, CoinInfo, DropDownIcon, EmptyValueTag, IBData, SlippageTolerance } from 'static-resource';
+import { AmmData, AmmInData, CoinInfo, DropDownIcon, EmptyValueTag, IBData, SlippageTolerance } from '@loopring-web/common-resources';
 import { AmmWithdrawWrapProps } from './Interface';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';

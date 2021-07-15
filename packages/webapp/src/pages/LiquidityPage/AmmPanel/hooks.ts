@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { AmmData, AmmInData, CoinInfo, globalSetup, IBData } from '@loopring-web/component-lib/src/static-resource';
+import { AmmData, AmmInData, CoinInfo, globalSetup, IBData } from '@loopring-web/common-resources';
 import { AmmPanelType } from '@loopring-web/component-lib';
 import { IdMap, useTokenMap } from '../../../stores/token';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
 import { accountStaticCallBack, ammPairInit, bntLabel, btnClickMap, fnType, makeCache } from '../../../hooks/help';
-import { WalletMap } from '@loopring-web/component-lib/src/static-resource';
+import { WalletMap } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
 import {
     AmmPoolRequestPatch,

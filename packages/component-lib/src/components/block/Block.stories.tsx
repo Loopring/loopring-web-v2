@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { Meta, Story } from '@storybook/react/types-6-0';
 import { MemoryRouter } from 'react-router-dom';
 import { Grid, Typography } from '@material-ui/core';
-import { AmmCardProps, CoinInfo, FloatTag, LockIcon, PriceTag, UnLockIcon, WalletStatus } from 'static-resource';
+import { AmmCardProps, CoinInfo, FloatTag, LockIcon, PriceTag, UnLockIcon, WalletStatus } from '@loopring-web/common-resources';
 import { coinMap, CoinType } from '../../static';
 import { withTranslation } from 'react-i18next';
 import { AccountInfo, BtnWalletConnect } from '../index';

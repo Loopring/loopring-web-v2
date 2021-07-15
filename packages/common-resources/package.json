@@ -3,5 +3,5 @@
   "version": "1.0.0",
   "description": "Common package for code sharing",
   "license": "GPLV3",
-  "main": "static-resources/index.ts"
+  "main": "index.ts"
 }

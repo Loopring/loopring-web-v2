@@ -1,4 +1,4 @@
-import { CoinKey, CoinMap } from '@loopring-web/component-lib/src/static-resource';
+import { CoinKey, CoinMap } from '@loopring-web/common-resources';
 import { StateBase } from '../interface';
 import { MarketInfo, TokenInfo, TokenRelatedInfo } from 'loopring-sdk/dist/defs/loopring_defs';
 import { LoopringMap } from 'loopring-sdk';

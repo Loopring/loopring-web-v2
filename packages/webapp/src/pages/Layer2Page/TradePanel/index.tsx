@@ -79,6 +79,7 @@ const TradePanel = withTranslation('common')((rest:WithTranslation<'common'>) =>
                 }, apiKey)
 
                 if (userTrades && userTrades.userTrades) {
+                  /*
                   setOriginalData(userTrades.userTrades.map(o => {
                     const marketList = o.market.split('-')
                     // due to AMM case, we cannot use first index
@@ -110,6 +111,7 @@ const TradePanel = withTranslation('common')((rest:WithTranslation<'common'>) =>
                       }
                     })
                   }))
+                  */
                 }
             }
         })()

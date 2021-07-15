@@ -1,4 +1,4 @@
-import { CoinKey, IBData } from 'static-resource';
+import { CoinKey, IBData } from '@loopring-web/common-resources';
 import {
     BasicACoinTradeHookProps,
     DefaultProps,
@@ -23,6 +23,7 @@ export type SwapTradeData<T> = {
     }
 }
 
+export type { SwapData }
 
 export type ModalProps = {
     open: boolean,

@@ -1,4 +1,4 @@
-import { AmmDetail, MyAmmLP } from 'static-resource';
+import { AmmDetail, MyAmmLP } from '@loopring-web/common-resources';
 
 export type MyPoolRow<R> = MyAmmLP<R> & {
     ammDetail: AmmDetail<R>

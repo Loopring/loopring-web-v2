@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import {
     ButtonComponentsMap,
+    CoinMap,
     GatewayItem,
     gatewayList as DefaultGatewayList,
     headerMenuData,
@@ -17,7 +18,7 @@ import {
     WalletStatus,
     WithdrawType,
     WithdrawTypes,
-} from '@loopring-web/component-lib/src/static-resource'
+} from '@loopring-web/common-resources'
 
 import { useAccount, useConnect, useUnlock, useWeb3Account, } from 'stores/account/hook'
 
@@ -60,16 +61,15 @@ import {
     VALID_UNTIL
 } from 'loopring-sdk'
 import { Typography } from '@material-ui/core';
-import { AccountInfoProps } from '@loopring-web/component-lib/components/block';
+import { AccountInfoProps, CoinType, } from '@loopring-web/component-lib';
 import { useEtherscan } from 'hooks/web3/useWeb3'
 
 import { useModals } from 'hooks/modal/useModals'
 import Web3 from 'web3'
 
-import { AmmData, AmmInData, IBData, TradeCalcData, WalletMap } from '@loopring-web/component-lib/src/static-resource'
+import { AmmData, AmmInData, IBData, TradeCalcData, WalletMap } from '@loopring-web/common-resources'
 
 import { useUserAPI } from 'hooks/exchange/useApi'
-import { CoinType } from '@loopring-web/component-lib/static'
 import { makeWallet } from 'hooks/help'
 import { useWalletLayer2 } from 'stores/walletLayer2'
 import { useTokenMap } from 'stores/token'
@@ -537,8 +537,8 @@ export function useModalProps() {
 
     let depositProps: DepositProps<any, any> = {
         tradeData: {belong: undefined},
-        coinMap: coinMap,
-        walletMap: walletMap1,
+        coinMap: coinMap as CoinMap<any>,
+        walletMap: walletMap1 as WalletMap<any>,
         depositBtnStatus: TradeBtnStatus.AVAILABLE,
         onDepositClick: (tradeData: any) => {
             if (depositValue && depositValue.belong) {
@@ -647,8 +647,8 @@ export function useModalProps() {
 
     let transferProps: TransferProps<any, any> = {
         tradeData: {belong: undefined},
-        coinMap: coinMap,
-        walletMap: walletMap2,
+        coinMap: coinMap as CoinMap<any>,
+        walletMap: walletMap2 as WalletMap<any>,
         transferBtnStatus: TradeBtnStatus.AVAILABLE,
         onTransferClick: (tradeData: any) => {
             if (transferValue && transferValue.belong) {
@@ -657,7 +657,7 @@ export function useModalProps() {
 
             ShowTransfer(false)
         },
-        handleFeeChange(value: { belong: string; fee: number | string; __raw__?: any }): void {
+        handleFeeChange(value: { belong: any; fee: number | string; __raw__?: any }): void {
             setFeeInfo(value)
         },
         handlePanelEvent: async (data: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
@@ -699,6 +699,7 @@ export function useModalProps() {
     const [withdrawType, setWithdrawType] = useState<OffchainFeeReqType>(OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
     const {chargeFeeList: withdrawalFeeList} = useChargeFeeList(tokenSymbol, withdrawType, tokenMap, withdrawValue.tradeValue)
 
+    const withdrawType2 = withdrawType === OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
     const [withdrawFeeInfo, setWithdrawFeeInfo] = useState<any>()
 
     useCustomDCEffect(() => {
@@ -774,8 +775,8 @@ export function useModalProps() {
 
     let withdrawProps: WithdrawProps<any, any> = {
         tradeData: {belong: undefined},
-        coinMap: coinMap,
-        walletMap: walletMap2,
+        coinMap: coinMap as CoinMap<any>,
+        walletMap: walletMap2 as WalletMap<any>,
         withdrawBtnStatus: TradeBtnStatus.AVAILABLE,
         onWithdrawClick: (tradeData: any) => {
             if (withdrawValue && withdrawValue.belong) {
@@ -797,11 +798,11 @@ export function useModalProps() {
                 res();
             })
         },
-        withdrawType,
+        withdrawType: withdrawType2,
         withdrawTypes: WithdrawTypes,
         chargeFeeToken: 'ETH',
         chargeFeeTokenList: withdrawalFeeList,
-        handleFeeChange(value: { belong: string; fee: number | string; __raw__?: any }): void {
+        handleFeeChange(value: { belong: any; fee: number | string; __raw__?: any }): void {
             console.log('handleWithdrawFee', value);
             setWithdrawFeeInfo(value)
         },
@@ -829,8 +830,8 @@ export function useModalProps() {
 
     let resetProps: ResetProps<any, any> = {
         tradeData: {belong: undefined},
-        coinMap: coinMap,
-        walletMap: walletMap2,
+        coinMap: coinMap as CoinMap<any>,
+        walletMap: walletMap2 as WalletMap<any>,
         resetBtnStatus: TradeBtnStatus.AVAILABLE,
         onResetClick: (tradeData: any) => {
             if (resetValue && resetValue.belong) {

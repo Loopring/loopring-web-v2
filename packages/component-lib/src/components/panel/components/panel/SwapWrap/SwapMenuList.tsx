@@ -1,5 +1,5 @@
 import { SwitchData } from '../../../Interface';
-import { IBData, TradeCalcData } from 'static-resource';
+import { IBData, TradeCalcData } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
 import { TradeMenuList } from '../../tool/TradeMenuList';

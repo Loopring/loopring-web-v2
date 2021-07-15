@@ -46,7 +46,7 @@ import {
     TradeIcon,
     TransactionsIcon,
     ViewIcon,
-} from 'static-resource';
+} from '@loopring-web/common-resources';
 
 const Styled = styled.div`
   background: ${({theme}) => theme.colorBase.background().bg};
