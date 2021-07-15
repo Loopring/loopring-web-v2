@@ -2,7 +2,7 @@ import { ModalProvider } from 'styled-react-modal'
 import RouterView from './routers'
 import { Avatar, GlobalStyles } from '@material-ui/core';
 import { css, Theme, useTheme } from '@emotion/react';
-import { globalCss,ErrorMap } from '@loopring-web/component-lib/static-resource';
+import { globalCss,ErrorMap } from '@loopring-web/component-lib/src/static-resource';
 import { GlobalProvider, Web3ReactManager } from './provider/';
 import React, { useEffect } from 'react';
 import { useInit } from './hook';

@@ -6,7 +6,7 @@ import {
     TickerData,
     toBig,
 } from 'loopring-sdk';
-import { AmmActivity, AmmCardProps } from '@loopring-web/component-lib/static-resource';
+import { AmmActivity, AmmCardProps } from '@loopring-web/component-lib/src/static-resource';
 import store from '../../stores';
 import { deepClone } from '../../utils/obj_tools';
 import { AmmUserReward, AmmUserRewardMap } from 'loopring-sdk/dist/defs/loopring_defs';

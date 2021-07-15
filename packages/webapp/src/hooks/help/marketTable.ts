@@ -1,6 +1,6 @@
 import * as fm from 'loopring-sdk';
 import store from '../../stores';
-import { TradeTypes,CoinMap } from '@loopring-web/component-lib/static-resource';
+import { TradeTypes,CoinMap } from '@loopring-web/component-lib/src/static-resource';
 import { ammpoolAPI, LoopringAPI, userAPI } from '../../stores/apis/api';
 import { AmmRecordRow, AmmTradeType,RawDataTradeItem } from '@loopring-web/component-lib';
 import { AmmPoolTx, BillType, AmmTxType, UserAmmPoolTx,getBaseQuote, MarketTradeInfo, Side, UserTrade } from 'loopring-sdk';

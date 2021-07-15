@@ -7,7 +7,7 @@ import {
     IBData,
     TradeCalcData,
     TradeFloat
-} from '@loopring-web/component-lib/static-resource';
+} from '@loopring-web/component-lib/src/static-resource';
 import React, { useState } from 'react';
 import { LoopringAPI } from '../../stores/apis/api';
 import { useTokenMap } from '../../stores/token';

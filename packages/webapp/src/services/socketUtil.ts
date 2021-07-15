@@ -15,7 +15,7 @@ import store from '../stores';
 import { updateSocketURL } from '../stores/system';
 import { tickerService } from './tickerService';
 import { ammPoolService } from './ammPoolService';
-import { CustomError, ErrorMap } from '@loopring-web/component-lib/static-resource';
+import { CustomError, ErrorMap } from '@loopring-web/component-lib/src/static-resource';
 
 export type socketEventMap = { fn: (e: MessageEvent, props?: { [ key: string ]: any }) => any, deps?: any[] }
 

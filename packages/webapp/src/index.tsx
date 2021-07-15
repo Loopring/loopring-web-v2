@@ -9,7 +9,9 @@ import store from 'stores'
 import { getLibrary } from 'utils/web3_tools'
 import { NetworkContextName } from 'loopring-sdk'
 
-import { getTheme, i18n, provider, ProviderComposer } from "@loopring-web/component-lib/static-resource"
+import { getTheme, i18n } from "@loopring-web/component-lib/src/static-resource"
+import { provider, ProviderComposer } from "@loopring-web/common-resources"
+
 import { ThemeProvider as MuThemeProvider } from '@material-ui/core'
 import LocalizationProvider from '@material-ui/pickers/LocalizationProvider'
 

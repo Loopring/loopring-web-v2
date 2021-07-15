@@ -10,7 +10,7 @@ import {
 } from '@loopring-web/component-lib';
 import { Trans, useTranslation, WithTranslation, withTranslation } from 'react-i18next';
 import { useTheme } from '@emotion/react';
-import { LanguageKeys } from '@loopring-web/component-lib/static-resource';
+import { LanguageKeys } from '@loopring-web/component-lib/src/static-resource';
 
 // const MuiModalStyled = styled(MuiModal)`
 //   //background: ${({theme}) => theme.colorBase.background().secondary};

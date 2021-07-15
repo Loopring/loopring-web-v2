@@ -1,5 +1,5 @@
 import { AmmPanel, AmmPanelType } from '@loopring-web/component-lib';
-import { AmmData, AmmInData, CoinInfo, IBData, WalletMap } from '@loopring-web/component-lib/static-resource';
+import { AmmData, AmmInData, CoinInfo, IBData, WalletMap } from '@loopring-web/component-lib/src/static-resource';
 import { useAmmPanel } from './hooks';
 import React from 'react';
 import { Box } from '@material-ui/core';

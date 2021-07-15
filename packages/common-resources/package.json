@@ -1,6 +1,7 @@
 {
-  "name": "common-resources",
+  "name": "@loopring-web/common-resources",
   "version": "1.0.0",
   "description": "Common package for code sharing",
-  "license": "GPLV3"
+  "license": "GPLV3",
+  "main": "static-resources/index.ts"
 }

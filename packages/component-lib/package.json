@@ -1,13 +1,14 @@
 {
   "name": "@loopring-web/component-lib",
   "version": "1.0.0",
+  "main": "src/index.ts",
   "private": true,
   "resolutions": {
     "**/@emotion/styled": "^11.1.5"
   },
   "dependencies": {
+    "@loopring-web/common-resources": "1.0.0",
     "clsx": "^1.1.1",
-    "common-resources": "1.0.0",
     "immutable": "^4.0.0-rc.12",
     "material-ui-popup-state": "^1.8.0",
     "moment": "^2.29.1",
@@ -106,6 +107,5 @@
     "storybook-addon-redux-listener": "^0.1.7",
     "storybook-react-router": "^1.0.8"
   },
-  "main": "index.js",
   "license": "MIT"
 }

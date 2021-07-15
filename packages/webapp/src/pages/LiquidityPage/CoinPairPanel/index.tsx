@@ -7,7 +7,7 @@ import {
     getThousandFormattedNumbers,
     PriceTag,
     unit
-} from '@loopring-web/component-lib/static-resource';
+} from '@loopring-web/component-lib/src/static-resource';
 import { Avatar, Box, Breadcrumbs, Grid, Link, Typography } from '@material-ui/core';
 import { AmmPanelView } from '../AmmPanel';
 import moment from 'moment';

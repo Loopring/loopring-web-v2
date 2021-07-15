@@ -1,4 +1,4 @@
-import { ChartUnit,UpColor } from '@loopring-web/component-lib/static-resource'
+import { ChartUnit,UpColor } from '@loopring-web/component-lib/src/static-resource'
 import { ScaleAreaChart, ToggleButtonGroup, useSettings, TradeTitle, ChartType } from '@loopring-web/component-lib'
 import { Box, Grid } from "@material-ui/core"
 import { WithTranslation } from 'react-i18next'

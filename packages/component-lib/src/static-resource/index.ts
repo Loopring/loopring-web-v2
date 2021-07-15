@@ -7,6 +7,5 @@ export * from './src/themes';
 export * from './src/loopring-interface';
 export * from './src/constant';
 export * from './src/utils'
-export * from './provider'
 export * from './src/error'
 
