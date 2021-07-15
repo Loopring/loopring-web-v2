@@ -124,7 +124,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         const {fees} = await LoopringAPI.userAPI.getOffchainFeeAmt(request2, acc.apiKey)
         setJoinFees(fees)
 
-        console.log('joinFees:', fees)
+        myLog('joinFees:', fees)
 
     }, [LoopringAPI.userAPI, pair.coinBInfo?.simpleName, store.getState().account.status])
 
@@ -132,10 +132,9 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
     const handlerJoinInDebounce = React.useCallback(debounce(async (data, type, joinFees) => {
 
         // {
-        console.log('handlerJoinInDebounce', data, type);
+            myLog('handlerJoinInDebounce', data, type);
 
         if (!tokenMap || !data.coinA.belong || !data.coinB.belong) {
-            console.log('return!')
             return
         }
 
@@ -233,7 +232,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
         const {fees} = await LoopringAPI.userAPI.getOffchainFeeAmt(request2, acc.apiKey)
 
-        console.log('setExitfees:', fees)
+        myLog('setExitfees:', fees)
 
         setExitfees(fees)
 
@@ -242,10 +241,9 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
     // const handler = React.useCallback(async () =>,[])
     const handleExitInDebounce = React.useCallback(debounce(async (data, type, exitFees) => {
 
-        console.log('handleExitInDebounce', data, type);
+        myLog('handleExitInDebounce', data, type);
 
         if (!tokenMap || !data.coinA.belong || !data.coinB.belong) {
-            console.log('return!')
             return
         }
 
@@ -338,7 +336,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
         setJoinLoading(true);
         if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !joinRequest) {
-            console.log(' onAmmJoin ammpoolAPI:', LoopringAPI.ammpoolAPI,
+            myLog(' onAmmJoin ammpoolAPI:', LoopringAPI.ammpoolAPI,
                 'joinRequest:', joinRequest)
             setJoinLoading(true);
             return
@@ -405,12 +403,12 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
     ) {
         setExitLoading(true);
         //TODO: onExit
-        console.log('removeAmmCalculator props:', props)
+        myLog('removeAmmCalculator props:', props)
 
         // const { exitRequest } = props
 
         if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !exitRequest) {
-            console.log(' onExit ammpoolAPI:', LoopringAPI.ammpoolAPI,
+            myLog(' onExit ammpoolAPI:', LoopringAPI.ammpoolAPI,
                 'exitRequest:', exitRequest)
             setExitLoading(false);
             return
@@ -437,7 +435,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
         try {
 
-            console.log('exit req:', request)
+            myLog('exit req:', request)
             setAmmExitData({
                 ...ammExitData, ...{
                     coinA: {...ammExitData.coinA, tradeValue: 0},
@@ -446,7 +444,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
             })
             const response = await LoopringAPI.ammpoolAPI.exitAmmPool(request, patch, acc.apiKey)
 
-            console.log('exit ammpool response:', response)
+            myLog('exit ammpool response:', response)
 
             await delayAndUpdateWalletLayer2()
             setExitLoading(false);
@@ -467,7 +465,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
     const onAmmRemoveClick = React.useCallback((props: AmmData<IBData<C>>) => {
 
-        console.log('onAmmRemoveClick, exitRequest:', exitRequest, ' ammExitData:', ammExitData)
+        myLog('onAmmRemoveClick, exitRequest:', exitRequest, ' ammExitData:', ammExitData)
         accountStaticCallBack(removeAmmClickMap, [props])
     }, [exitRequest, ammExitData]);
 
