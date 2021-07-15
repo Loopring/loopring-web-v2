@@ -15,12 +15,12 @@ A layer2 walllet in ETH
 
 </div>
 
-## Installation
+## Install & Run 
 
 ```sh
-// with npm
-npm install 
-
 // with yarn
 yarn install
+yarn up
+cd ./packages/webapp
+npm run dev
 ```
