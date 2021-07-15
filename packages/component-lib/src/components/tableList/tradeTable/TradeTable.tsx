@@ -5,7 +5,7 @@ import { WithTranslation, withTranslation, TFunction } from 'react-i18next'
 import moment from 'moment'
 import { Table, Column } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
-import { TablePaddingX } from '../../styled';
+import { TablePaddingX, TableFilterStyled } from '../../styled';
 import { Filter, FilterTradeTypes } from './components/Filter'
 import { TableType, TradeTypes } from 'static-resource';
 import { useSettings } from '../../../stores';
@@ -232,15 +232,11 @@ export const TradeTable = withTranslation('tables')((props: WithTranslation & Tr
         updateData({ TableType: TableType.page, currPage: page })
     }, [updateData])
 
-    const FilterStyled = styled(Box)`
-        margin-left: 26px;
-    `
-
     return <TableStyled>
         {showFilter && (
-            <FilterStyled>
+            <TableFilterStyled>
                 <Filter handleFilterChange={handleFilterChange} />
-            </FilterStyled>
+            </TableFilterStyled>
         )}
         <Table className={'scrollable'} {...{...defaultArgs, ...props, rawData: getRenderData() }}/>
         {pagination && (

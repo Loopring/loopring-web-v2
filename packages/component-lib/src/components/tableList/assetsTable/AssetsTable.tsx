@@ -7,7 +7,7 @@ import { Button } from '../../basic-lib/btns'
 import { Table, generateColumns, generateRows, Column } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { Filter, TokenTypeCol } from './components/Filter'
-import { TablePaddingX } from '../../styled'
+import { TablePaddingX, TableFilterStyled } from '../../styled'
 import { TableType } from 'static-resource';
 import { useSettings } from '../../../stores'
 
@@ -239,15 +239,11 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         }
     }, [onVisibleRowsChange, rawData])
 
-    const FilterStyled = styled(Box)`
-        margin-left: 26px;
-    `
-
     return <TableStyled lan={language}>
         {showFiliter && (
-            <FilterStyled>
+            <TableFilterStyled>
                 <Filter originalData={formattedRawData} handleFilterChange={handleFilterChange} />
-            </FilterStyled>
+            </TableFilterStyled>
         )}
         <Table {...{...defaultArgs, ...props, rawData: getRenderData()}} onScroll={getScrollIndex} />
         {pagination && (
