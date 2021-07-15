@@ -143,18 +143,33 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
     const { updateWalletLayer1 } = useWalletLayer1()
 
-    const onShowDeposit = useCallback(() => {
+    const onShowDeposit = useCallback((token?: any) => {
         updateWalletLayer1()
-        ShowDeposit(true)
+        ShowDeposit(true, {
+            tradeData: {
+                balance: '',
+                belong: token
+            },
+        })
     }, [ShowDeposit, updateWalletLayer1])
 
-    const onShowTransfer = () => {
-        ShowTransfer(true)
-    }
+    const onShowTransfer = useCallback((token?: any) => {
+        ShowTransfer(true, {
+            tradeData: {
+                balance: '',
+                belong: token
+            },
+        })
+    }, [ShowTransfer])
 
-    const onShowWithdraw = () => {
-        ShowWithdraw(true)
-    }
+    const onShowWithdraw = useCallback((token?: any) => {
+        ShowWithdraw(true, {
+            tradeData: {
+                balance: '',
+                belong: token
+            },
+        })
+    }, [ShowWithdraw])
 
     const handleChartPeriodChange = useCallback((event: React.MouseEvent<HTMLElement, MouseEvent>, newValue: string) => {
         const limit = newValue === 'week' ? 7 : 9999
