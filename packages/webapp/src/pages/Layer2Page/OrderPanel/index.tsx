@@ -1,13 +1,12 @@
 
 import React, { useEffect } from 'react'
 import { OrderHistoryTable, OrderHistoryRawDataItem } from '@loopring-web/component-lib'
-import { TradeTypes } from '@loopring-web/common-resources'
+import { TradeTypes, TradeStatus } from '@loopring-web/common-resources'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import store from 'stores'
 import { LoopringAPI } from 'stores/apis/api'
 import { volumeToCount } from 'hooks/help'
 import { StylePaper } from '../../styled'
-
 
 
 const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
@@ -24,7 +23,7 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
                     accountId,
                 }, apiKey)
                 if (userOrders && Array.isArray(userOrders.orders) && !!userOrders.orders.length) {
-                    /*
+                    
                     setOrderOriginalData(userOrders.orders.map(o => {
                         const marketList = o.market.split('-')
                         // due to AMM case, we cannot use first index
@@ -63,11 +62,10 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
                                 value: Number(o.price)
                             },
                             time: o.validity.start * 1000,
-                            status: o.status,
+                            status: o.status as unknown as TradeStatus,
                             detailTable: []
                         })
                     }))
-                    */
                 }
             }
         })()
