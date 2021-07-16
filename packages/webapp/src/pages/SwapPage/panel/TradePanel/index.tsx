@@ -69,10 +69,10 @@ const TradePanel = withTranslation('common')(
 
         return (
             <StyledTabsWrapper>
-                <StyledFormControlLabel
+                {/* <StyledFormControlLabel
                     control={<Checkbox checked={isAllTrade} size={'small'} checkedIcon={<CheckedIcon/>}
                                        icon={<CheckBoxIcon/>} color={'default'} onChange={handleCheckboxChange}/>}
-                    label={t('labelTradePanelHideOtherPairs')}/>
+                    label={t('labelTradePanelHideOtherPairs')}/> */}
 
                 <Tabs value={value}
                       onChange={handleChange}
