@@ -193,7 +193,7 @@ export const useHeader = () => {
     }, [themeMode, language, i18n, onWalletBtnConnect, onThemeBtnClick, onLangBtnClick, onNotification, t]);
 
     const UnlockBtn = ({onClick}: { onClick: ({...props}: any) => void }) => {
-        return <Button className={'unlock'} startIcon={<LockIcon fontSize={'large'}/>}
+        return <Button className={'unlock'} startIcon={<UnLockIcon fontSize={'large'}/>}
                        onClick={(event) => {
                            onClick(event)
                        }} variant={'outlined'}>
@@ -209,7 +209,7 @@ export const useHeader = () => {
     }, [account,unlock])
 
     const LockBtn = ({onClick}: { onClick: ({...props}: any) => void }) => {
-        return <Button className={'lock'} startIcon={<UnLockIcon fontSize={'large'}/>}
+        return <Button className={'lock'} startIcon={<LockIcon fontSize={'large'}/>}
                        onClick={(event) => {
                            onClick(event)
                        }} variant={'outlined'}>

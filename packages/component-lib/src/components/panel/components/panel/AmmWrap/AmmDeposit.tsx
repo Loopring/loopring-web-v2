@@ -11,10 +11,10 @@ import { WithTranslation } from 'react-i18next';
 import { AmmDepositWrapProps } from './Interface';
 import { Button, InputCoin, PopoverPure } from '../../../../basic-lib';
 import React from 'react';
-import { bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
+import { usePopupState } from 'material-ui-popup-state/hooks';
 import { Grid, Typography } from '@material-ui/core';
 import { IconButtonStyled } from '../../Styled';
-import { bindPopover } from 'material-ui-popup-state/es';
+import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { SlippagePanel } from '../../tool';
 import { TradeBtnStatus } from '../../../Interface';
 import { SvgStyled } from './styled';
@@ -148,7 +148,7 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
                             {ammCalcData ? <>
                                 <span>
                                     <IconButtonStyled
-                                        {...bindTrigger(popupState)}
+                                        {...bindHover(popupState)}
                                         sx={{fontSize: '1.4rem', height: '24px', minWidth: '24px', width: '24px'}}
                                         className={'clock-loading'}
                                         color="inherit"
