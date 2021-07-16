@@ -124,7 +124,7 @@ const TrendChart = ({
                     stroke={trendColor}
                     dot={false}
                     legendType="none"
-                    // isAnimationActive={false}
+                    isAnimationActive={false}
                 />
                 {showArea && (
                     <Area

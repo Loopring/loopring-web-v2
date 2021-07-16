@@ -122,7 +122,7 @@ export const DoughnutChart = ({data}: DoughnutChartProps) => {
                     paddingAngle={5}
                     minAngle={2}
                     animationEasing={'ease-in-out'}
-                    animationDuration={1500}
+                    animationDuration={1000}
                     onMouseEnter={onPieEnter}
                     onMouseLeave={onPieLeave}
                 >
