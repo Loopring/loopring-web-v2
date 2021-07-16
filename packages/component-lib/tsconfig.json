@@ -3,7 +3,8 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "noUnusedLocals": true,
-    "noUnusedParameters": true,  
+    "noUnusedParameters": true,
+    "allowSyntheticDefaultImports":true,
     "baseUrl": "./src",
     "rootDir": "./src",
   },

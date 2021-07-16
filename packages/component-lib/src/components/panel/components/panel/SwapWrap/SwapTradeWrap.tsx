@@ -14,8 +14,8 @@ import { WithTranslation } from 'react-i18next';
 import React from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import { Button, InputButton, PopoverPure } from '../../../../basic-lib';
-import { bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
-import { bindPopover } from 'material-ui-popup-state/es';
+import { usePopupState } from 'material-ui-popup-state/hooks';
+import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { IconButtonStyled, SlippagePanel } from '../../';
 import { SwapTradeProps } from './Interface';
 import { useSettings } from '../../../../../stores';
@@ -163,7 +163,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                             {tradeCalcData ? <>
                                 <span>
                                     <IconButtonStyled
-                                        {...bindTrigger(popupState)}
+                                        {...bindHover(popupState)}
                                         size={'small'}
                                         sx={{fontSize: '1.4rem', height: '24px', minWidth: '24px', width: '24px'}}
                                         className={'clock-loading'}

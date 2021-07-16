@@ -103,6 +103,9 @@ export const Popover: React.FC<PopoverWrapProps> = ({
 
 export const PopoverPure = styled(HoverPopover)<PopoverProps>`
   &.MuiModal-root {
+    .MuiBackdrop-root{
+      background-color: inherit;
+    }
     &.arrow-center .MuiPopover-paper {
       // border-image-slice: 12 20 6 20 fill;
       // border-image-width: 12px 0px 6px 0px;
@@ -112,7 +115,7 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
       margin-top: 12px;
       border-radius: 4px;
       overflow: visible;
-      background-color: ${({theme}) => theme.colorBase.background().secondary};
+      // background-color: ${({theme}) => theme.colorBase.background().secondary};
 
       &:before {
         content: '';
