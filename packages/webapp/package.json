@@ -70,8 +70,8 @@
   "main": "./public/electron.js",
   "homepage": ".",
   "scripts": {
-    "deploy:ipfs": "sh -ac '. .env.deploy; ipd -p pinata -d cloudflare build'",
-    "predeploy:ipfs": "yarn build",
+    "deploy:ipfs": "sh -ac '. .env.deploy; npx ipfs-deploy build | xargs -I {} npx ipfs-deploy -p pinata -d cloudflare -c {}'",
+    "check_dns": "dig TXT _dnslink.alpha.loopring.pro | grep 'dnslink=/ipfs/' | awk -F '\"' {'print $2'} | awk -F '/' {'print $3'}",
     "deploy": "bash ./deploy.sh",
     "predocker": "if [ ! -d \"build\" ]; then yarn build; fi",
     "docker": "docker-compose build",
