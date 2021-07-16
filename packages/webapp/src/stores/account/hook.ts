@@ -450,8 +450,6 @@ export function useCheckAccStatus() {
 
             cleanUp()
 
-            console.log('checkStatus:', account.status)
-
             switch (account.status) {
                 case AccountStatus.UNCONNNECTED:
                     // console.log('---> render UNCONNNECTED active:', active, ' isConnected:', isConnected)

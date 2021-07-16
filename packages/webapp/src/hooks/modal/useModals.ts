@@ -17,7 +17,7 @@ export function useModals() {
 
     const { t } = useTranslation('common')
 
-    const ShowDeposit = useCallback((isShow: boolean)=>{
+    const ShowDeposit = useCallback((isShow: boolean, defaultProps?: any)=>{
         const isNoAccount = store.getState().account.status === AccountStatus.NOACCOUNT
 
         console.log('isNoAccount: ', isNoAccount, t('depositTitleAndActive'))
@@ -25,14 +25,15 @@ export function useModals() {
             isShow,
             props: {
                 title: isNoAccount ? t('depositTitleAndActive') : t('depositTitle'),
-                description: 'depositAndActiveDescription'
-            }
+                description: 'depositAndActiveDescription',
+                ...defaultProps
+            },
         }
         dispatch(setShowDeposit(action))
     }, [dispatch, t])
-    const ShowTransfer = useCallback((isShow: boolean)=>dispatch(setShowTransfer({isShow})), [dispatch])
-    const ShowWithdraw = useCallback((isShow: boolean)=>dispatch(setShowWithdraw({isShow})), [dispatch])
-    const ShowResetAccount = useCallback((isShow: boolean)=>dispatch(setShowResetAccount({isShow})), [dispatch])
+    const ShowTransfer = useCallback((isShow: boolean, defaultProps?: any) => dispatch(setShowTransfer({isShow, props: {...defaultProps}})), [dispatch])
+    const ShowWithdraw = useCallback((isShow: boolean, defaultProps?: any) => dispatch(setShowWithdraw({isShow, props: {...defaultProps}})), [dispatch])
+    const ShowResetAccount = useCallback((isShow: boolean, defaultProps?: any) => dispatch(setShowResetAccount({isShow, props: {...defaultProps}})), [dispatch])
 
     return {
         ShowDeposit,
