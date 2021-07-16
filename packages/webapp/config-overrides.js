@@ -168,7 +168,7 @@ module.exports = override(
     ]*/
 
     alias({
-      'static-resource': path.resolve(__dirname, 'node_modules/@loopring-web/component-lib/static-resource'),
+      // 'static-resource': path.resolve(__dirname, 'node_modules/@loopring-web/component-lib/static-resource'),
     })(config)
 
     return config

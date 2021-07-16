@@ -205,7 +205,7 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
         name: t('labelTxMemo'),
         formatter: ({row, column}) => {
             const value = row[ column.key ]
-            const renderValue = value || '--'
+            const renderValue = value || EmptyValueTag
             const Wrapper = styled.div`
                 color: ${({theme}) => theme.colorBase.textSecondary};
                 max-width: 90%;

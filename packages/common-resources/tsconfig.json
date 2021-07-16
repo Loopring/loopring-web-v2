@@ -4,11 +4,11 @@
     "jsx": "react-jsx",
     "noUnusedLocals": true,
     "noUnusedParameters": true,  
-    "baseUrl": "./src",
-    "rootDir": "./src",
+    "baseUrl": "./static-resources/src",
+    "rootDir": "./src"
   },
   "include": [
-    "src",
+    "static-resources/src",
     "src/**/*.json",
     "src/*"
   ],
