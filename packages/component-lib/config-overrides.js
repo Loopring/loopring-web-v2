@@ -39,36 +39,56 @@ const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent') // 直接这么引入就可以，他在create-app-react包里 这个就是getLocalIdent属性要设置的值
 
 const getStyleLoaders = (cssOptions, preProcessor, lessOptions) => {
-  const loaders = [
-    require.resolve('style-loader'),
-    {
-      loader: require.resolve('css-loader'),
-      options: cssOptions,
-    },
-    {
-      // Options for PostCSS as we reference these options twice
-      // Adds vendor prefixing based on your specified browser support in
-      // package.json
-      loader: require.resolve('postcss-loader'),
-      options: {
-        // Necessary for external CSS imports to work
-        // https://github.com/facebook/create-react-app/issues/2677
-        ident: 'postcss',
-        plugins: () => [
-          require('postcss-flexbugs-fixes'),
-          require('postcss-preset-env')({
-            autoprefixer: {
-              flexbox: 'no-2009',
-            },
-            stage: 3,
-          }),
-        ],
-      },
-    },
-  ]
+  // const loaders = [
+  //     { test: /\.(mjs|js|jsx|tsx|ts)$/,
+  //       // exclude: [/node_modules/, /dist/],
+  //       include: ['node_modules/@loopring-web/common-resources'],
+  //       // TODO - this should be handled by the general `resolve.extensions` option
+  //       resolve: { fullySpecified: false },
+  //       loader: require.resolve('babel-loader'),
+  //       options: {
+  //         babelrc: false,
+  //         configFile: false,
+  //         presets: [ require.resolve('babel-preset-react-app') ],
+  //         plugins: [
+  //           require.resolve('react-refresh/babel'),
+  //
+  //           // problematic babel loader here:
+  //           [require.resolve('@teambit/react.babel.bit-react-transformer'), { componentFilesPath: fileMapPath }],
+  //         ],
+  //       },
+  //     }
+  //   // require.resolve('style-loader'),
+  //   // {
+  //   //   loader: require.resolve('css-loader'),
+  //   //   options: cssOptions,
+  //   // },
+  //   // {
+  //   //   // Options for PostCSS as we reference these options twice
+  //   //   // Adds vendor prefixing based on your specified browser support in
+  //   //   // package.json
+  //   //   loader: require.resolve('postcss-loader'),
+  //   //   options: {
+  //   //     // Necessary for external CSS imports to work
+  //   //     // https://github.com/facebook/create-react-app/issues/2677
+  //   //     ident: 'postcss',
+  //   //     plugins: () => [
+  //   //       require('postcss-flexbugs-fixes'),
+  //   //       require('postcss-preset-env')({
+  //   //         autoprefixer: {
+  //   //           flexbox: 'no-2009',
+  //   //         },
+  //   //         stage: 3,
+  //   //       }),
+  //   //     ],
+  //   //   },
+  //   // },
+  // ]
   if (preProcessor) {
+    // console.log(path.resolve(__dirname, "..", "common-resources"))
     loaders.push({
       loader: require.resolve(preProcessor),
+      // include: [path.resolve(__dirname, "..", "common-resources")],
       options: lessOptions,
     })
   }
@@ -89,11 +109,12 @@ module.exports = override(
   */
 
   // addWebpackPlugin(gitRevisionPlugin),
-  addWebpackPlugin(
-    new CopyWebpackPlugin({
-        patterns: [{from: path.resolve(__dirname, "..", "assets"), to: './static', toType: "dir"}],
-      }
-    )),
+  // addWebpackPlugin(
+  //   new CopyWebpackPlugin({
+  //       patterns: [{from: path.resolve(__dirname, "..", "assets"), to: './static', toType: "dir"}],
+  //     }
+  //   )
+  // ),
   addWebpackPlugin(
     new webpack.DefinePlugin({
       'process.env.COMMITHASH': JSON.stringify(getCommitHash()),
@@ -126,19 +147,19 @@ module.exports = override(
     // 增加处理less module配置 customize-cra 不提供 less.module 只提供css.module
     const oneOf_loc = config.module.rules.findIndex((n) => n.oneOf) // 这里的config是全局的
     config.module.rules[oneOf_loc].oneOf = [
-      {
-        test: /\.module\.less$/,
-        use: getStyleLoaders(
-          {
-            importLoaders: 2,
-            modules: {
-              getLocalIdent: getCSSModuleLocalIdent,
-            },
-          },
-
-          'less-loader',
-        ),
-      },
+      // {
+      //   test: /\.module\.less$/,
+      //   use: getStyleLoaders(
+      //     {
+      //       importLoaders: 2,
+      //       modules: {
+      //         getLocalIdent: getCSSModuleLocalIdent,
+      //       },
+      //     },
+      //
+      //     'less-loader',
+      //   ),
+      // },
       {
         test: /\.(png|woff|woff2|eot|ttf|svg)$/,
         loader: 'url-loader?limit=10240',

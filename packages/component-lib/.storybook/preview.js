@@ -6,7 +6,7 @@ import {I18nextProvider} from "react-i18next";
 import {Provider} from "react-redux";
 import StoryRouter from 'storybook-react-router';
 import {ThemeProvider} from "@emotion/react";
-import {getTheme, globalCss, i18n, provider, ProviderComposer} from 'static-resource';
+import {getTheme, globalCss, i18n, provider, ProviderComposer} from '@loopring-web/common-resources';
 
 import {setLanguage, setTheme} from "../src";
 
