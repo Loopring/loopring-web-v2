@@ -143,6 +143,7 @@ const DepthChart = ({
                     stroke={asksColor}
                     dot={false}
                     animationDuration={500}
+                    isAnimationActive={false}
                 />
                 <Line
                     type="step"
@@ -150,6 +151,7 @@ const DepthChart = ({
                     stroke={bidsColor}
                     dot={false}
                     animationDuration={500}
+                    isAnimationActive={false}
                 />
                 <Area
                     type="step"
@@ -157,6 +159,7 @@ const DepthChart = ({
                     stroke="false"
                     fill="url(#colorAsks)"
                     animationDuration={500}
+                    isAnimationActive={false}
                 />
                 <Area
                     type="step"
@@ -164,6 +167,7 @@ const DepthChart = ({
                     stroke="false"
                     fill="url(#colorBids)"
                     animationDuration={500}
+                    isAnimationActive={false}
                 />
             </ComposedChart>
         </ResponsiveContainer>
