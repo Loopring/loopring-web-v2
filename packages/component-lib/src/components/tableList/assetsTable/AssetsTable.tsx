@@ -159,7 +159,6 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                 const lpPair = token.value.split('-')
                 lpPair.splice(0, 1)
                 const tokenValue = isLp ? lpPair.join('-') : token.value
-                console.log(tokenValue)
 
                 return (
                     <Grid container spacing={1} alignItems={'center'}>
