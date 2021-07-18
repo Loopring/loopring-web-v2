@@ -79,6 +79,8 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     const [output, setOutput] = useState<any>()
 
+    const feeBips = '60'
+
     //HIGH: get Router info
     // const symbol = match?.params.symbol ?? undefined;
     React.useEffect(() => {
@@ -103,7 +105,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 walletLayer2State.statusUnset();
                 const {walletMap} = makeWallet();
                 if (tradeCalcData) {
-                    setTradeCalcData({...tradeCalcData, walletMap} as TradeCalcData<C>);
+                    setTradeCalcData({...tradeCalcData, fee: feeBips, walletMap} as TradeCalcData<C>);
                     setTradeData({
                         sell: {
                             belong: tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap[ tradeCalcData.coinSell ]?.simpleName : undefined,
@@ -283,7 +285,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const throttleSetValue = React.useCallback(_.debounce(async (type, _tradeData, _ammPoolSnapshot) => {
         const {_tradeData: td, _tradeCalcData} = await calculateTradeData(type, _tradeData, _ammPoolSnapshot)//.then(()=>{
         setTradeData(td)
-        setTradeCalcData(_tradeCalcData)
+        setTradeCalcData({..._tradeCalcData, fee: feeBips})
 
     }, wait * 2), [setTradeData, setTradeCalcData, calculateTradeData]);
 
@@ -312,7 +314,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             } = getExistedMarket(marketArray, _tradeCalcData.coinSell as string, _tradeCalcData.coinBuy as string);
             const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i)
 
-            setTradeCalcData({...tradeCalcData, ..._tradeCalcData} as TradeCalcData<C>);
+            setTradeCalcData({...tradeCalcData, fee: feeBips, ..._tradeCalcData} as TradeCalcData<C>);
             if (coinMap) {
                 setPair({
                     coinAInfo: coinMap[ coinA ],
@@ -351,7 +353,8 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                                 tokenMap,
                                 _tradeCalcData,
                                 coinMap,
-                                marketCoins
+                                marketCoins,
+                                fee: feeBips,
                             })
                             _tradeCalcData = _td;
                             _tradeFloat = makeTickView(tickMap[ market ] ? tickMap[ market ] : {})
