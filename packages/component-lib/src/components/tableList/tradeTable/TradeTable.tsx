@@ -207,7 +207,7 @@ export const TradeTable = withTranslation('tables')((props: WithTranslation & Tr
         let resultData = rawData ? rawData : []
         // o[0]: tradeType
         if (currFilterType !== FilterTradeTypes.allTypes) {
-            resultData = resultData.filter(o => o[ 0 ] === currFilterType)
+            resultData = resultData.filter(o => o.side === (currFilterType === TradeTypes.Buy ? TradeTypes.Buy : TradeTypes.Sell))
         }
         if (currFilterDate) {
             const diff = moment(moment()).diff(currFilterDate, 'days')
