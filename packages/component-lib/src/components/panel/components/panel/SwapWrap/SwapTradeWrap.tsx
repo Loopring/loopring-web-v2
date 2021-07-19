@@ -20,7 +20,6 @@ import { IconButtonStyled, SlippagePanel } from '../../';
 import { SwapTradeProps } from './Interface';
 import { useSettings } from '../../../../../stores';
 
-
 export const SwapTradeWrap = <T extends IBData<I>,
     I,
     TCD extends TradeCalcData<I>>({
@@ -114,6 +113,9 @@ export const SwapTradeWrap = <T extends IBData<I>,
         popupId: 'slippagePop',
     })
 
+    const priceImpact = tradeCalcData && tradeCalcData.priceImpact ? parseFloat(tradeCalcData.priceImpact).toPrecision(3).toString() + ' %' : EmptyValueTag
+
+    const fee = tradeCalcData && tradeCalcData.fee ? (tradeCalcData.fee + '%%') : EmptyValueTag
 
     return <Grid className={tradeCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
@@ -195,7 +197,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapPriceImpact')}</Typography>
                         <Typography component={'p'}
-                                    variant="body1"> {t(tradeCalcData ? tradeCalcData.priceImpact : EmptyValueTag)} </Typography>
+                                    variant="body1"> {priceImpact}  </Typography>
                     </Grid>
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapMinReceive')}</Typography>
@@ -205,7 +207,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapFee')} </Typography>
                         <Typography component={'p'}
-                                    variant="body1">{t(tradeCalcData ? tradeCalcData.fee : EmptyValueTag)}</Typography>
+                                    variant="body1">{fee}</Typography>
                     </Grid>
                 </Grid>
                 <Grid item>

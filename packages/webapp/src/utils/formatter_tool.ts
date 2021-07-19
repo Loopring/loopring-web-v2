@@ -1,7 +1,10 @@
 import { BIG10 } from 'defs/swap_defs'
-import { toBig } from 'loopring-sdk'
+import { flatMap } from 'lodash'
+import { LoopringMap, MarketInfo, toBig } from 'loopring-sdk'
 
 import store from 'stores'
+
+import * as fm from 'loopring-sdk'
 
 const getTokenInfo = (symbol: string) => {
     const tokenMap = store.getState().tokenMap.tokenMap
@@ -11,6 +14,16 @@ const getTokenInfo = (symbol: string) => {
     }
 
     return tokenMap[symbol]
+}
+
+const getMarketInfo = (symbol: string) => {
+    const marketMap = store.getState().tokenMap.marketMap
+
+    if (!marketMap || !marketMap[symbol]) {
+        return undefined
+    }
+
+    return marketMap[symbol]
 }
 
 export function StringToNumberWithPrecision(rawVal: string, symbol: string) {
@@ -27,6 +40,9 @@ export function StringToNumberWithPrecision(rawVal: string, symbol: string) {
     return parseFloat(toBig(rawVal).toFixed(tokenInfo.precision, 0))
 }
 
+/*
+* format volume to real number
+*/
 export function VolToNumberWithPrecision(rawVal: string, symbol: string) {
 
     const tokenInfo = getTokenInfo(symbol)
@@ -38,5 +54,36 @@ export function VolToNumberWithPrecision(rawVal: string, symbol: string) {
     if (rawVal === undefined || rawVal === null || rawVal.trim() === '')
         return 0
 
-    return parseFloat(toBig(rawVal).div('1e' + tokenInfo.decimals).toFixed(tokenInfo.precision, 0))
+    return toBig(rawVal).div('1e' + tokenInfo.decimals).toFixed(tokenInfo.precision, 0)
+}
+
+/*
+* format raw val with precision
+*/
+export function FormatValWithPrecision(rawVal: string, symbol: string) {
+
+    const tokenInfo = getTokenInfo(symbol)
+
+    if (!tokenInfo) {
+        return undefined
+    }
+
+    if (rawVal === undefined || rawVal === null || rawVal.trim() === '')
+        return 0
+
+    return toBig(rawVal).toFixed(tokenInfo.precision, 0)
+}
+
+/*
+* format order price with precision
+*/
+export function formatPriceWithPrecision(rawVal: string, 
+    symbol: string) {
+    const marketInfo = getMarketInfo(symbol)
+    if (!rawVal || !marketInfo || !symbol) {
+        return '0'
+    }
+
+    return fm.toBig(rawVal).toFixed(marketInfo.precisionForPrice)
+
 }

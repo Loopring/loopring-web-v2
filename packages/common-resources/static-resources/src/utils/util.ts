@@ -28,3 +28,10 @@ export function abbreviateNumber(value: number) {
     result += suffixes[ suffixNum ];
     return result;
 }
+
+export const getFormattedHash = (hash?: string) => {
+    if (!hash) return hash
+    const firstSix = hash.slice(0, 6)
+    const lastFour = hash.slice(hash.length - 4)
+    return `${firstSix}****${lastFour}`
+}

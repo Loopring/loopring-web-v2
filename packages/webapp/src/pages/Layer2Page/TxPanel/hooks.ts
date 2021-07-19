@@ -26,14 +26,9 @@ export function useGetTxs() {
         let tmpTx: RawDataTransactionItem[] = []
 
         txs.userTransfers.forEach((item: any, index: number) => {
-            tmpTx.push({from: {
-                    address: item.senderAddress,
-                    env: ''
-                },
-                to: {
-                    address: item.receiverAddress,
-                    env: ''
-                },
+            tmpTx.push({
+                from: item.senderAddress,
+                to: item.receiverAddress,
                 amount: item.amount,
                 fee: {
                     unit: item.feeTokenSymbol,
