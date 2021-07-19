@@ -5,12 +5,12 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,  
     "baseUrl": "./static-resources/src",
-    "rootDir": "./src"
+    "rootDir": "./static-resources"
   },
   "include": [
-    "static-resources/src",
-    "src/**/*.json",
-    "src/*"
+    "./static-resources/src",
+    "./static-resources/src/**/*.json",
+    "./static-resources/src/*"
   ],
   "exclude": [
     "node_modules",
