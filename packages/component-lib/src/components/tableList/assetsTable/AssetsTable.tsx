@@ -107,18 +107,20 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         onLpDeposit,
         onLpWithdraw,
     } = props
-    const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
-    const [filterTokenType, setFilterTokenType] = useState('All Tokens')
+    // const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
+    // const formattedRawData = rawData && Array.isArray(rawData) ? rawData : []
+    // const [filterTokenType, setFilterTokenType] = useState('All Tokens')
     const [hideSmallBalance, setHideSmallBalance] = useState(false)
     const [hideLPToken, setHideLPToken] = useState(false)
-    const [totalData, setTotalData] = useState(formattedRawData)
+    const [totalData, setTotalData] = useState<RawDataAssetsItem[]>([])
     const [page, setPage] = useState(1)
     const pageSize = pagination ? pagination.pageSize : 10;
 
     const {language} = useSettings()
 
     useEffect(() => {
-        setTotalData(rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : [])
+        // setTotalData(rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : [])
+        setTotalData(rawData && Array.isArray(rawData) ? rawData : [])
     }, [rawData])
 
 
@@ -226,10 +228,10 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     ]
 
     const defaultArgs: any = {
-        rawData: [],
+        // rawData: [],
         columnMode: getColumnModeAssets(t).filter(o => !o.hidden),
-        generateRows,
-        generateColumns,
+        generateRows: (rawData: any) => rawData,
+        generateColumns: ({columnsRaw}: any) => columnsRaw as Column<any, unknown>[],
     }
 
     const getRenderData = useCallback(() => pagination
@@ -239,35 +241,34 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
 
     const updateData = useCallback(({
                                         TableType,
-                                        currFilterTokenType = filterTokenType,
+                                        // currFilterTokenType = filterTokenType,
                                         currHideSmallBalance = hideSmallBalance,
                                         currHideLPToken = hideLPToken
                                     }) => {
-        // let resultData = cloneDeep(formattedRawData)
-        let resultData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
-        // o[0]: token type
-        if (currFilterTokenType !== 'All Tokens') {
-            resultData = resultData.filter(o =>
-                (o[ 0 ] as TokenTypeCol).value === currFilterTokenType
-            )
-        }
+        // let resultData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
+        let resultData = (rawData && !!rawData.length) ? rawData : []
+        // if (currFilterTokenType !== 'All Tokens') {
+        //     resultData = resultData.filter(o =>
+        //         (o[ 0 ] as TokenTypeCol).value === currFilterTokenType
+        //     )
+        // }
         if (currHideSmallBalance) {
-            resultData = resultData.filter(o => !o[ 5 ])
+            resultData = resultData.filter(o => !o.smallBalance)
         }
         if (currHideLPToken) {
-            resultData = resultData.filter(o => (o[ 0 ] as TokenTypeCol).type === TokenType.single)
+            resultData = resultData.filter(o => o.token.type === TokenType.single)
         }
         if (TableType === 'filter') {
             setPage(1)
         }
         setTotalData(resultData)
-    }, [rawData, filterTokenType, hideSmallBalance, hideLPToken])
+    }, [rawData, /* filterTokenType,  */hideSmallBalance, hideLPToken])
 
-    const handleFilterChange = useCallback(({tokenType, currHideSmallBalance, currHideLPToken}) => {
-        setFilterTokenType(tokenType)
+    const handleFilterChange = useCallback(({/* tokenType,  */currHideSmallBalance, currHideLPToken}) => {
+        // setFilterTokenType(tokenType)
         setHideSmallBalance(currHideSmallBalance)
         setHideLPToken(currHideLPToken)
-        updateData({TableType: TableType.filter, currFilterTokenType: tokenType, currHideSmallBalance, currHideLPToken})
+        updateData({TableType: TableType.filter, /* currFilterTokenType: tokenType, */ currHideSmallBalance, currHideLPToken})
     }, [updateData])
 
     const handlePageChange = useCallback((page: number) => {
@@ -286,7 +287,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     return <TableStyled lan={language}>
         {showFiliter && (
             <TableFilterStyled>
-                <Filter originalData={formattedRawData} handleFilterChange={handleFilterChange}/>
+                <Filter originalData={rawData} handleFilterChange={handleFilterChange}/>
             </TableFilterStyled>
         )}
         <Table {...{...defaultArgs, ...props, rawData: getRenderData()}} onScroll={getScrollIndex}/>

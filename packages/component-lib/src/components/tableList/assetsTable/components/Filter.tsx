@@ -4,17 +4,17 @@ import { Checkbox, Grid, MenuItem } from '@material-ui/core'
 import { withTranslation, WithTranslation } from "react-i18next";
 import { FormControlLabel, TextField } from '../../../'
 import { CheckBoxIcon, CheckedIcon, DropDownIcon } from '@loopring-web/common-resources'
-import { TokenType, TradePairItem } from '../AssetsTable'
+import { TokenType, TradePairItem, RawDataAssetsItem } from '../AssetsTable'
 
 export type TokenTypeCol = {
     type: TokenType,
     value: string
 }
 
-export type OriginalDataItem = string | number | TokenTypeCol | TradePairItem[] | boolean | undefined
+// export type OriginalDataItem = string | number | TokenTypeCol | TradePairItem[] | boolean | undefined
 
 export interface FilterProps {
-    originalData: OriginalDataItem[][];
+    originalData: RawDataAssetsItem[];
     handleFilterChange: ({tokenType, hideSmallBalance, hideLPToken}: any) => void;
 }
 
@@ -35,21 +35,21 @@ export enum CheckboxType {
 
 export const Filter = withTranslation('tables', {withRef: true})(({
                                                                       t,
-                                                                      originalData,
+                                                                    //   originalData,
                                                                       handleFilterChange
                                                                   }: FilterProps & WithTranslation) => {
     // de-duplicate
-    const tokenTypeList = [{
-        label: t('labelAllToken'),
-        value: 'All Tokens'
-    }, ...Array.from(new Set(originalData.map(o => (o[ 0 ] as TokenTypeCol).value))).map(val => ({
-        label: val,
-        value: val
-    }))]
-    const [tokenType, setTokenType] = React.useState<string>('All Tokens')
+    // const tokenTypeList = [{
+    //     label: t('labelAllToken'),
+    //     value: 'All Tokens'
+    // }, ...Array.from(new Set(originalData.map(o => (o[ 0 ] as TokenTypeCol).value))).map(val => ({
+    //     label: val,
+    //     value: val
+    // }))]
+    // const [tokenType, setTokenType] = React.useState<string>('All Tokens')
     const [hideSmallBalance, setHideSmallBalance] = React.useState(false)
     const [hideLPToken, setHideLPToken] = React.useState(false)
-    const refTokenType = React.useRef(tokenType)
+    // const refTokenType = React.useRef(tokenType)
     const refHideSmallBalance = React.useRef(hideSmallBalance)
     const refHideLPToken = React.useRef(hideLPToken)
 
@@ -62,11 +62,11 @@ export const Filter = withTranslation('tables', {withRef: true})(({
     }, [])
 
     const handleFilterData = React.useCallback(() => {
-        const valueTokenType = refTokenType.current;
+        // const valueTokenType = refTokenType.current;
         const valueHideSmallBalance = refHideSmallBalance.current;
         const valueHideLPToken = refHideLPToken.current;
         handleFilterChange({
-            tokenType: valueTokenType,
+            // tokenType: valueTokenType,
             currHideSmallBalance: valueHideSmallBalance,
             currHideLPToken: valueHideLPToken
         })
@@ -74,7 +74,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
 
     return (
         <Grid container spacing={4}>
-            <Grid item xs={2}>
+            {/* <Grid item xs={2}>
                 <StyledTextFiled
                     id="table-assets-trade-types"
                     select
@@ -89,7 +89,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                 > {tokenTypeList.map(token => <MenuItem key={token.value}
                                                         value={token.value}>{token.label}</MenuItem>)}
                 </StyledTextFiled>
-            </Grid>
+            </Grid> */}
 
             <Grid item>
                 <FormControlLabel style={{marginRight: 0}}
