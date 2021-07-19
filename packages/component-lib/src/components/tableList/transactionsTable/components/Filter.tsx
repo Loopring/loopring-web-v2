@@ -2,10 +2,11 @@ import React from 'react'
 import styled from '@emotion/styled'
 import { Box, Grid, MenuItem } from '@material-ui/core'
 import { withTranslation, WithTranslation } from "react-i18next";
-import { DatePicker, TextField } from '../../../basic-lib/form'
+import { DatePicker, TextField, DateRangePicker } from '../../../basic-lib/form'
 import { Button } from '../../../basic-lib/btns'
 import { DropDownIcon } from '@loopring-web/common-resources'
 import { TransactionTradeTypes } from '../Interface'
+import { DateRange } from '@material-ui/lab';
 
 export interface FilterProps {
     originalData: (string | number | {
@@ -40,7 +41,7 @@ const StyledBtnBox = styled(Box)`
 
 export const Filter = withTranslation('tables', {withRef: true})(({
                                                                       t,
-                                                                      originalData,
+                                                                    //   originalData,
                                                                       handleFilterChange
                                                                   }: FilterProps & WithTranslation) => {
     const transactionTypeList = [
@@ -62,25 +63,27 @@ export const Filter = withTranslation('tables', {withRef: true})(({
         },
     ]
     const [filterType, setFilterType] = React.useState<TransactionTradeTypes>(TransactionTradeTypes.allTypes)
-    const [filterDate, setFilterDate] = React.useState<Date | any>(null);
+    // const [filterDate, setFilterDate] = React.useState<Date | any>(null);
     const [filterToken, setFilterToken] = React.useState('All Tokens')
 
+    const [timeRange, setTimeRange] = React.useState<DateRange<Date | string>>(['', '']);
+
     // de-duplicate
-    const tokenTypeList = [{
-        label: t('labelTxFilterAllTokens'),
-        value: 'All Tokens'
-    }, ...Array.from(new Set(originalData.map(o => o[ 0 ] as string))).map(val => ({
-        label: val,
-        value: val
-    }))]
+    // const tokenTypeList = [{
+    //     label: t('labelTxFilterAllTokens'),
+    //     value: 'All Tokens'
+    // }, ...Array.from(new Set(originalData.map(o => o[ 0 ] as string))).map(val => ({
+    //     label: val,
+    //     value: val
+    // }))]
 
     const handleReset = React.useCallback(() => {
         setFilterType(TransactionTradeTypes.allTypes)
-        setFilterDate(null)
+        setTimeRange(['', ''])
         setFilterToken('All Tokens')
         handleFilterChange({
             filterType: TransactionTradeTypes.allTypes,
-            filterDate: null,
+            filterDate: ['', ''],
             filterToken: 'All Tokens'
         })
     }, [handleFilterChange])
@@ -88,10 +91,10 @@ export const Filter = withTranslation('tables', {withRef: true})(({
     const handleSearch = React.useCallback(() => {
         handleFilterChange({
             filterType,
-            filterDate,
+            filterDate: timeRange,
             filterToken
         })
-    }, [handleFilterChange, filterDate, filterType, filterToken])
+    }, [handleFilterChange, filterType, filterToken, timeRange])
 
     return (
         <Grid container spacing={2}>
@@ -109,9 +112,10 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                 </StyledTextFiled>
             </Grid>
             <Grid item>
-                <StyledDatePicker value={filterDate} onChange={(newValue: any) => setFilterDate(newValue)}/>
+                {/* <StyledDatePicker value={filterDate} onChange={(newValue: any) => setFilterDate(newValue)}/> */}
+                <DateRangePicker value={timeRange} onChange={(date: any) => setTimeRange(date)} />
             </Grid>
-            <Grid item xs={2}>
+            {/* <Grid item xs={2}>
                 <StyledTextFiled
                     id="table-transaction-token-types"
                     select
@@ -123,7 +127,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                     inputProps={{IconComponent: DropDownIcon}}
                 > {tokenTypeList.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
                 </StyledTextFiled>
-            </Grid>
+            </Grid> */}
             <Grid item>
                 <StyledBtnBox>
                     <Button variant={'outlined'} size={'medium'} color={'primary'}

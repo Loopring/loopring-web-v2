@@ -336,7 +336,7 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
     // const [totalData, setTotalData] = React.useState(formattedRawData)
     const [totalData, setTotalData] = React.useState<any[]>(rawData)
     const [filterType, setFilterType] = React.useState(TransactionTradeTypes.allTypes)
-    const [filterDate, setFilterDate] = React.useState(null)
+    const [filterDate, setFilterDate] = React.useState(['', ''])
     const [filterToken, setFilterToken] = React.useState('All Tokens')
 
     const pageSize = pagination ? pagination.pageSize : 10;
@@ -364,7 +364,7 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         if (currFilterType !== TransactionTradeTypes.allTypes) {
             resultData = resultData.filter(o => o.side === currFilterType)
         }
-        if (currFilterDate) {
+        if (currFilterDate[0] && currFilterDate[1]) {
             const diff = moment(moment()).diff(currFilterDate, 'days')
             // o[6]: date
             resultData = resultData.filter(o => o[ 6 ] === diff)
