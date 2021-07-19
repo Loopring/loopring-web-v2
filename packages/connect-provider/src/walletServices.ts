@@ -12,17 +12,17 @@ const subject = new Subject<{ status: keyof typeof Commands, data:any,}>();
 // <R extends {[key:string]:any}>
 //<R>
 export const walletServices = {
-    sendConnect : async (web3:Web3,provide:any) => {
+    sendConnect : async (web3:Web3,provider:any) => {
         const accounts = await web3.eth.getAccounts();
         const chainId = await web3.eth.getChainId();
         const networkId = await web3.eth.net.getId();
-        subject.next({status:'ConnectWallet',data:{provide,accounts,chainId,networkId}});
+        subject.next({status:'ConnectWallet',data:{provider,accounts,chainId,networkId}});
 
     },
     sendChainChanged: async (chainId:number) =>{
         subject.next({status:'ChangeNetwork',data:{chainId}})
     },
-    sendDisconnect : async (reason:any, code:any)=>{
+    sendDisconnect : async (code:any, reason:any)=>{
         subject.next({status:'DisConnect',data: {reason:reason,code:code}})
 
     },

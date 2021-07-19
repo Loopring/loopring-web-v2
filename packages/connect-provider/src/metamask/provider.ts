@@ -18,9 +18,9 @@ export const MetaMaskProvide = async ()=>{
         });
         provider.on("disconnect", (code: number, reason: string) => {
             console.log(code, reason);
+            walletServices.sendDisconnect(code,reason);
         });
-        return  provider
-    }else{
-        return undefined;
     }
+    return  provider;
+    // provider;
 }
