@@ -1,11 +1,11 @@
-import { AmmData, AmmInData, CoinInfo, DropDownIcon, EmptyValueTag, IBData, SlippageTolerance } from 'static-resource';
+import { AmmData, AmmInData, CoinInfo, DropDownIcon, EmptyValueTag, IBData, SlippageTolerance } from '@loopring-web/common-resources';
 import { AmmWithdrawWrapProps } from './Interface';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
-import { bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
+import { usePopupState } from 'material-ui-popup-state/hooks';
 import { Grid, Typography } from '@material-ui/core';
 import { BtnPercentage, Button, IconButtonStyled, InputCoin, PopoverPure, TradeBtnStatus } from '../../../../';
-import { bindPopover } from 'material-ui-popup-state/es';
+import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { SlippagePanel } from '../../tool';
 import { useSettings } from '../../../../../stores';
 
@@ -156,7 +156,7 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
                             {ammCalcData ? <>
                                 <span>
                                     <IconButtonStyled
-                                        {...bindTrigger(popupState)}
+                                        {...bindHover(popupState)}
                                         sx={{fontSize: '1.4rem', height: '24px', minWidth: '24px', width: '24px'}}
                                         className={'clock-loading'}
                                         color="inherit"

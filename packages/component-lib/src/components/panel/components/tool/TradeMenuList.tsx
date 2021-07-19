@@ -1,4 +1,4 @@
-import { CoinInfo, CoinKey, IBData } from 'static-resource';
+import { CoinInfo, CoinKey, IBData } from '@loopring-web/common-resources';
 import { Trans, WithTranslation } from 'react-i18next';
 import React from 'react';
 import { CoinMenu, EmptyDefault, InputSelect, InputSelectProps } from '../../../basic-lib';

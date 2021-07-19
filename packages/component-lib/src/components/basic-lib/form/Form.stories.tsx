@@ -23,7 +23,7 @@ import {
     InputSelectProps,
     TextField
 } from "./input";
-import { CheckBoxIcon, CheckedIcon, CoinInfo, CoinKey, DropDownIcon, IBData, SearchIcon } from 'static-resource';
+import { CheckBoxIcon, CheckedIcon, CoinInfo, CoinKey, DropDownIcon, IBData, SearchIcon } from '@loopring-web/common-resources';
 import { DateRange } from '@material-ui/lab';
 import { EmptyDefault } from '../empty';
 import { coinMap, CoinType, inputProps, walletMap } from '../../../static';

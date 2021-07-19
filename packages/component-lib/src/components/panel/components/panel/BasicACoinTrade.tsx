@@ -1,4 +1,4 @@
-import { CoinInfo, CoinMap, IBData } from 'static-resource';
+import { CoinInfo, CoinMap, IBData } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
 import { BasicACoinTradeProps } from '../Interface';
@@ -23,7 +23,7 @@ export const BasicACoinTrade = <T extends IBData<I>,
     const handleCountChange: any = React.useCallback((_tradeData: T, _ref: any) => {
         //const focus: 'buy' | 'sell' = _ref?.current === buyRef.current ? 'buy' : 'sell';
         if (tradeData.tradeValue !== _tradeData.tradeValue) {
-            onChangeEvent(0,{ tradeData:{...tradeData,..._tradeData}, to: 'button'});
+            onChangeEvent(0, {tradeData: {...tradeData, ..._tradeData}, to: 'button'});
         }
 
         // onCoinValueChange(ibData);
@@ -31,7 +31,7 @@ export const BasicACoinTrade = <T extends IBData<I>,
 
     if (typeof handleError !== 'function') {
         handleError = ({belong, balance, tradeValue}: T) => {
-            if (balance < tradeValue || (tradeValue && !balance)) {
+            if (typeof tradeValue !== 'undefined' && balance < tradeValue || (tradeValue && !balance)) {
                 return {error: true, message: t('tokenNotEnough', {belong: belong})}
             }
             return {error: false, message: ''}

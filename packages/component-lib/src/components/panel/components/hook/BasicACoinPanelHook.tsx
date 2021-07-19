@@ -1,4 +1,4 @@
-import { IBData } from 'static-resource';
+import { IBData } from '@loopring-web/common-resources';
 import { BasicACoinTradeHookProps } from '../Interface';
 import React from 'react';
 import { SwitchData } from '../../Interface';
@@ -32,13 +32,13 @@ export const useBasicTrade = <T extends IBData<I>,
                 setSwitchData({tradeData: {...tradeData, balance: count}, to});
             }
         }
-        if(_index!== index) {
+        if (_index !== index) {
             setIndex(_index);
         }
-    }, [handlePanelEvent, tradeData, walletMap, coinMap, rest,index]);
+    }, [handlePanelEvent, tradeData, walletMap, coinMap, rest, index]);
 
     const toolBarItemBack = React.useMemo(() => <ToolBarItemBack onChangeEvent={onChangeEvent}
-                                                                 tradeData={tradeData}/>, [tradeData,onChangeEvent])
+                                                                 tradeData={tradeData}/>, [tradeData, onChangeEvent])
     return {
         //toolbar UI
         toolBarItemBack,

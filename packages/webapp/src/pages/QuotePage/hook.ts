@@ -8,7 +8,7 @@ import { TradingInterval, WsTopicType } from 'loopring-sdk';
 import { LoopringAPI } from 'stores/apis/api'
 import { tickerService } from '../../services/tickerService';
 import { debounce } from "lodash"
-import { globalSetup } from '@loopring-web/component-lib/static-resource';
+import { globalSetup } from '@loopring-web/common-resources';
 
 const amtCol = 5
 const OnePageSize = 16;
@@ -24,13 +24,6 @@ function isNeedCallMore(currentStartIndex: number, to: number, marketArrayLength
     } else {
         return false
     }
-    // const target = event.target as HTMLDivElement;
-    //TODO 2 times height for scrollHeight  to - 16 - 4  calculator scroll  超过 20 个刷第二屏幕 。。。。超过 36 个刷下个一个屏幕 第一屏幕是 16+4+16
-    // if( target.clientHeight + target.scrollTop === target.scrollHeight &&  to*pageSize >= marketArrayLength) {
-    //     return  true
-    // }else{
-    //     return false;
-    // }
 }
 
 export function useQuote<C extends { [ key: string ]: string }>() {
@@ -71,7 +64,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
                         // setRecommendations
                         updateRecommendation(recommendationIndex, tickerMap[ key as string ])
                     }
-                    //todo update related row. use socket return
+                    //TODO update related row. use socket return
                 })
             }
         });
@@ -150,7 +143,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
         setTickList([...tickList, ..._tickList])
         //setTickList
         if (focusRowFrom[ 0 ] === 0 && _recommendationsFloat.length > 0) {
-            //TODO : fix in uat env not enough pair_recommendations
+            //FIX: fix in uat env not enough pair_recommendations
             while (_recommendationsFloat.length < 4) {
                 _recommendationsFloat.push(deepClone(_recommendationsFloat[ 0 ]));
             }
@@ -159,7 +152,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
                 if (coinMap) {
                     const {coinA, coinB} = item.pair;
                     const _item: MarketBlockProps<C> = {
-                        tradeFloat: item,
+                        tradeFloat: item as any,
                         // @ts-ignore
                         coinAInfo: coinMap[ coinA ],
                         // @ts-ignore

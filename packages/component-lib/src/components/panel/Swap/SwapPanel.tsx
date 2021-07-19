@@ -3,9 +3,9 @@ import { withTranslation, WithTranslation } from 'react-i18next';
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
-import { DropDownIcon, IBData, ProToLiteIcon, TradeCalcData } from 'static-resource';
+import { DropDownIcon, IBData, ProToLiteIcon, TradeCalcData } from '@loopring-web/common-resources';
 import { useDeepCompareEffect } from 'react-use';
-import clockLoading from 'common-resources/assets/svg/clock-loading.svg';
+import clockLoading from '@loopring-web/common-resources/assets/svg/clock-loading.svg';
 import { IconButtonStyled, SwapMenuList, SwapTradeWrap } from '../components';
 import { SwapData } from '../components/panel/SwapWrap/Interface';
 
@@ -64,10 +64,10 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
     })
 
     useDeepCompareEffect(() => {
-        if (rest.tradeData  &&   rest.tradeData !==  swapData.tradeData
+        if (rest.tradeData && rest.tradeData !== swapData.tradeData
             // && (rest.tradeData.sell.tradeValue !== swapData.tradeData.sell.tradeValue
             //     || rest.tradeData.buy.tradeValue !== swapData.tradeData.buy.tradeValue)
-            ) {
+        ) {
             setSwapData({...swapData, tradeData: rest.tradeData});
         }
     }, [rest.tradeData])

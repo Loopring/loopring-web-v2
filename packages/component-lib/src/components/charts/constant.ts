@@ -3,6 +3,7 @@ export enum ChartType {
     Depth = 'Depth',
     Trend = 'Trend'
 }
+
 export enum timeUnit {
     W1 = '1W',
     H1 = '1H',

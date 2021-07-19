@@ -6,7 +6,7 @@ import { useAccount } from 'stores/account/hook'
 import { TransactionStatus, RawDataTransactionItem, RawDataTradeItem } from '@loopring-web/component-lib'
 
 import { FilledType, TxStatus, UserTrade } from 'loopring-sdk'
-import { TransactionTradeTypes } from '@loopring-web/component-lib/components/tableList/transactionsTable/Interface';
+import { TransactionTradeTypes } from '@loopring-web/component-lib';
 
 /*
     {

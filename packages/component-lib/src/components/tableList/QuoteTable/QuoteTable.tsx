@@ -1,13 +1,12 @@
-import {  useCallback } from 'react'
+import { useCallback } from 'react'
 import styled from '@emotion/styled'
-import { Button, Box } from '@material-ui/core'
+import { Box, Button } from '@material-ui/core'
 import { withTranslation, WithTranslation } from 'react-i18next'
-import { withRouter, RouteComponentProps } from 'react-router-dom'
-import { EmptyValueTag, FloatTag, getThousandFormattedNumbers } from 'static-resource'
+import { RouteComponentProps, withRouter } from 'react-router-dom'
+import { EmptyValueTag, FloatTag, getThousandFormattedNumbers } from '@loopring-web/common-resources'
 import { Column, Table } from '../../basic-lib/tables/index'
 import { TablePaddingX } from '../../styled'
 import { Typography } from '@material-ui/core/';
-
 
 
 const TableStyled = styled(Box)`
@@ -24,7 +23,7 @@ const TableStyled = styled(Box)`
         align-items: center;
         }
     }
-    ${({theme}) => TablePaddingX({pLeft:theme.unit * 3,pRight:theme.unit * 3})}
+    ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
 
 // interface Row {
@@ -54,7 +53,7 @@ export type QuoteTableRawDataItem = {
     change: number;
     high: number;
     low: number;
-    floatTag:keyof typeof FloatTag
+    floatTag: keyof typeof FloatTag
     volume: number;
 }
 
@@ -65,32 +64,33 @@ export type QuoteTableRawDataItem = {
 
 const QuoteTableChangedCell: any = styled.span`
 	color: ${(props: any) => {
-        const {theme: {colorBase}} = props
-        return props.value > 0
-            ? colorBase.success
-            : props.value < 0
-                ? colorBase.error
-                : colorBase.textSecondary
-    }
+    const {theme: {colorBase}} = props
+    return props.value > 0
+        ? colorBase.success
+        : props.value < 0
+            ? colorBase.error
+            : colorBase.textSecondary
+}
 }
 `
 
 // const getColumnModelQuoteTable = (t: TFunction, history: any): Column<Row, unknown>[] => [
-const  columnMode = ({t}: WithTranslation,history: any): Column<QuoteTableRawDataItem, unknown>[] => [
+const columnMode = ({t}: WithTranslation, history: any): Column<QuoteTableRawDataItem, unknown>[] => [
     {
         key: 'pair',
         name: t('labelQuotaPair'),
         // sortable: true,
         formatter: ({row}) => {
             // const RenderValue = styled.span`
-			// 	color: ${({theme}) => theme.colorBase.textSecondary}
-			// `
-            const {coinA, coinB} = row['pair']
+            // 	color: ${({theme}) => theme.colorBase.textSecondary}
+            // `
+            const {coinA, coinB} = row[ 'pair' ]
             return (
-                <Box className="rdg-cell-value" >
-                        {/* <StarIcon/> */}
-                        <Typography component={'span'}> {coinA}<Typography component={'span'} color={'textSecondary'}> / {coinB}</Typography>
-                        </Typography>
+                <Box className="rdg-cell-value">
+                    {/* <StarIcon/> */}
+                    <Typography component={'span'}> {coinA}<Typography component={'span'}
+                                                                       color={'textSecondary'}> / {coinB}</Typography>
+                    </Typography>
 
                 </Box>
             )
@@ -107,11 +107,11 @@ const  columnMode = ({t}: WithTranslation,history: any): Column<QuoteTableRawDat
             //     return Number.isFinite(value) ? value.toFixed(2) : EmptyValueTag;
             // }
             // const RenderValue = styled.span`
-			// 	color: ${({theme}) => theme.colorBase.textSecondary}
-			// `
+            // 	color: ${({theme}) => theme.colorBase.textSecondary}
+            // `
             return (
                 <div className="rdg-cell-value">
-                    <span>{typeof value !== 'undefined'? getThousandFormattedNumbers(value):EmptyValueTag}</span>
+                    <span>{typeof value !== 'undefined' ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
                 </div>
             )
         },
@@ -130,8 +130,8 @@ const  columnMode = ({t}: WithTranslation,history: any): Column<QuoteTableRawDat
             return (
                 <div className="rdg-cell-value">
                     <QuoteTableChangedCell value={value}>
-                        {typeof value !== 'undefined'? (
-                            (row.floatTag === FloatTag.increase?'+': '') + getThousandFormattedNumbers(value) + '%'):EmptyValueTag}
+                        {typeof value !== 'undefined' ? (
+                            (row.floatTag === FloatTag.increase ? '+' : '') + getThousandFormattedNumbers(value) + '%') : EmptyValueTag}
                     </QuoteTableChangedCell>
                 </div>
             )
@@ -147,7 +147,7 @@ const  columnMode = ({t}: WithTranslation,history: any): Column<QuoteTableRawDat
             // const renderValue = hasValue ? value.toFixed(2) : EmptyValueTag
             return (
                 <div className="rdg-cell-value">
-                    <span>{typeof value !== 'undefined'? getThousandFormattedNumbers(value):EmptyValueTag}</span>
+                    <span>{typeof value !== 'undefined' ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
                 </div>
             )
         },
@@ -162,7 +162,7 @@ const  columnMode = ({t}: WithTranslation,history: any): Column<QuoteTableRawDat
             // const renderValue = hasValue ? value.toFixed(2) : EmptyValueTag
             return (
                 <div className="rdg-cell-value">
-                    <span>{typeof value !== 'undefined'? getThousandFormattedNumbers(value):EmptyValueTag}</span>
+                    <span>{typeof value !== 'undefined' ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
                 </div>
             )
         },
@@ -175,7 +175,7 @@ const  columnMode = ({t}: WithTranslation,history: any): Column<QuoteTableRawDat
             const value = row[ 'volume' ]
             return (
                 <div className="rdg-cell-value">
-                    <span>{typeof value !== 'undefined'? getThousandFormattedNumbers(value):EmptyValueTag}</span>
+                    <span>{typeof value !== 'undefined' ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
                 </div>
             )
         },
@@ -184,7 +184,7 @@ const  columnMode = ({t}: WithTranslation,history: any): Column<QuoteTableRawDat
         key: 'trade',
         name: '',
         formatter: ({row}) => {
-            const {coinA, coinB} = row['pair']
+            const {coinA, coinB} = row[ 'pair' ]
             const tradePair = `${coinA}-${coinB}`
             return (
                 <div className="rdg-cell-value">
@@ -213,10 +213,17 @@ export type VisibleDataItem = {
     coinB: string;
 }
 
-export const QuoteTable = withTranslation('tables')(withRouter(({ t, rowHeight = 44,onVisibleRowsChange, rawData, history, ...rest } : QuoteTableProps & WithTranslation & RouteComponentProps) => {
+export const QuoteTable = withTranslation('tables')(withRouter(({
+                                                                    t,
+                                                                    rowHeight = 44,
+                                                                    onVisibleRowsChange,
+                                                                    rawData,
+                                                                    history,
+                                                                    ...rest
+                                                                }: QuoteTableProps & WithTranslation & RouteComponentProps) => {
     //const formattedRawData = rawData && Array.isArray(rawData) ? rawData : []
     const getScrollIndex = useCallback((e) => {
-        const startIndex =  parseInt(String(e.target.scrollTop / rowHeight))
+        const startIndex = parseInt(String(e.target.scrollTop / rowHeight))
         // const data = rawData && Array.isArray(rawData) ? rawData : []
         // const viewportRows = data.slice(startIndex, startIndex + 10).map(o => ({
         //     coinA: o.pair.coinA,
@@ -227,17 +234,18 @@ export const QuoteTable = withTranslation('tables')(withRouter(({ t, rowHeight =
         }
     }, [onVisibleRowsChange, rawData])
 
-   // const finalData = formattedRawData.map(o => Object.values(o))
+    // const finalData = formattedRawData.map(o => Object.values(o))
     const defaultArgs: any = {
         rawData: [],
         columnMode: columnMode({t, ...rest}, history),//getColumnModelQuoteTable(t, history),
         generateRows: (rawData: any) => rawData,
-        generateColumns: ({columnsRaw}:any) => columnsRaw as Column<QuoteTableRawDataItem, unknown>[],
+        generateColumns: ({columnsRaw}: any) => columnsRaw as Column<QuoteTableRawDataItem, unknown>[],
     }
 
     return (
         <TableStyled>
-            <Table className={'scrollable'} {...{...defaultArgs, ...rest,onVisibleRowsChange , rawData , rowHeight}} onScroll={getScrollIndex} />
+            <Table className={'scrollable'} {...{...defaultArgs, ...rest, onVisibleRowsChange, rawData, rowHeight}}
+                   onScroll={getScrollIndex}/>
         </TableStyled>
     )
 }))

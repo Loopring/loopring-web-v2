@@ -1,4 +1,4 @@
-import { TradeFloat } from '@loopring-web/component-lib/src/static-resource';
+import { TradeFloat } from '@loopring-web/common-resources';
 import { StateBase } from '../interface';
 import { TickerData } from 'loopring-sdk/dist/defs/loopring_defs';
 

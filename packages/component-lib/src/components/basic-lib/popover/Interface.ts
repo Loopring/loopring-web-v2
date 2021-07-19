@@ -1,5 +1,5 @@
 import { PopoverOrigin } from '@material-ui/core';
-import { OneOf } from 'static-resource';
+import { OneOf } from '@loopring-web/common-resources';
 
 import * as React from 'react';
 import { PopupState as InjectedProps } from 'material-ui-popup-state/core';

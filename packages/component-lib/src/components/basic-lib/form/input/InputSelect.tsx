@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Box, debounce, Grid, InputAdornment, OutlinedInput } from "@material-ui/core";
-import { CoinInfo, CoinKey, globalSetup, SearchIcon } from 'static-resource';
+import { CoinInfo, CoinKey, globalSetup, SearchIcon } from '@loopring-web/common-resources';
 import React from "react";
 import { InputSelectProps } from "./Interface";
 import { useFocusRef, usePanelRef } from "../hooks";
@@ -36,6 +36,7 @@ const WrapStyled = styled(Box)`
 
 ` as typeof Box;
 
+// @ts-ignore TODO
 function _InputSelect<C, I extends string = CoinKey<C>>({
                                                             t,
                                                             handleContentChange,

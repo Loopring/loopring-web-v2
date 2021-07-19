@@ -1,6 +1,6 @@
 import { ResetProps } from '../Interface';
 import { withTranslation, WithTranslation } from 'react-i18next';
-import { IBData } from 'static-resource';
+import { IBData } from '@loopring-web/common-resources';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
 import { ResetWrap, TradeMenuList, useBasicTrade } from '../components';
 import React from 'react';

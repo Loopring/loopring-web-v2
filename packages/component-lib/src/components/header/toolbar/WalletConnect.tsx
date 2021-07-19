@@ -1,13 +1,13 @@
-import { WalletConnectBtnProps} from './Interface';
+import { WalletConnectBtnProps } from './Interface';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
-import { globalSetup, LockIcon, NoNetWorkIcon, WalletStatus } from 'static-resource';
+import { globalSetup, LockIcon, NoNetWorkIcon, WalletStatus } from '@loopring-web/common-resources';
 import { debounce } from 'lodash';
 import { Typography } from '@material-ui/core';
 
-import loadingSvg from 'common-resources/assets/svg/loading.svg';
+import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
 import styled from '@emotion/styled';
-import { Button} from '../../basic-lib';
+import { Button } from '../../basic-lib';
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';
 // import Popover from 'material-ui-popup-state/HoverPopover';
 const BtnWalletConnectStyled = styled(Button)`
@@ -28,9 +28,10 @@ const BtnWalletConnectStyled = styled(Button)`
   // .icon-build{
     //   color: ${({theme}) => theme.colorBase.secondary};
   // }
-  .icon-no-network{
+  .icon-no-network {
     color: ${({theme}) => theme.colorBase.error};
   }
+
   .icon-pending, .icon-progressing {
     color: ${({theme}) => theme.colorBase.secondary};
   }
@@ -38,7 +39,7 @@ const BtnWalletConnectStyled = styled(Button)`
   .icon-error, .icon-no-account {
     color: ${({theme}) => theme.colorBase.error};
   }
-  
+
 
   .icon-success {
     color: ${({theme}) => theme.colorBase.success};
@@ -123,7 +124,6 @@ export const BtnWalletConnect = ({
     //             default:
     //                 break
     //         }
-    //         //TODO fill the router
     //         return <WalletNotificationListItem  {...{
     //             ...rest,
     //             t,
@@ -145,10 +145,11 @@ export const BtnWalletConnect = ({
                                 className={'wallet-btn'}
                                 disabled={disabled} onClick={_handleClick} {...bindHover(popupState)} >
 
-            {   noNetwork?  <Typography component={'i'} height={20} className={'icon-no-network icon-error'}><NoNetWorkIcon/></Typography> :
+            {noNetwork ? <Typography component={'i'} height={20}
+                                     className={'icon-no-network icon-error'}><NoNetWorkIcon/></Typography> :
                 loading ? <Typography component={'i'} height={20}><img width={20} height={20} src={loadingSvg}
-                                                                    alt={'loading'}/></Typography>
-                                 : unlock ?  <></>
+                                                                       alt={'loading'}/></Typography>
+                    : unlock ? <></>
                     // <Typography component={'i'} height={20}
                     //                        className={`icon-notification icon-success`}></Typography>
                     : connect || accountPending || noAccount ? <Typography component={'i'} height={20}

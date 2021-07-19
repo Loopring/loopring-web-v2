@@ -4,7 +4,7 @@ import { AvatarIconPair, Button, useImage } from '../';
 import React from 'react';
 import moment from 'moment';
 import { WithTranslation, withTranslation } from 'react-i18next';
-import { AmmCardProps, Currency, EmptyValueTag, getThousandFormattedNumbers, PriceTag } from 'static-resource';
+import { AmmCardProps, Currency, EmptyValueTag, getThousandFormattedNumbers, PriceTag } from '@loopring-web/common-resources';
 import { useSettings } from '../../stores';
 import styled from '@emotion/styled';
 
@@ -17,12 +17,12 @@ const BoxStyled = styled(Box)`
 ` as typeof Box
 const BoxBg = styled(Box)`
   background-color: ${({theme}) => theme.colorBase.background().outline};
-  ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1/2})};
+  ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2})};
 ` as typeof Box
 
 
 export const AmmCard = withTranslation('common', {withRef: true})(
-    React.memo(React.forwardRef(<T extends {[key:string]:any}>(
+    React.memo(React.forwardRef(<T extends { [ key: string ]: any }>(
         {
             t,
             coinAInfo,
@@ -31,7 +31,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             amountYuan,
             // isNew,
             APY,
-            activity:{duration,totalRewards,myRewards,rewardToken,isPass},
+            activity: {duration, totalRewards, myRewards, rewardToken, isPass},
             handleClick,
             // ...rest
         }: AmmCardProps<T> & WithTranslation, ref: React.ForwardedRef<any>) => {
@@ -42,8 +42,9 @@ export const AmmCard = withTranslation('common', {withRef: true})(
 
         return <Card ref={ref}>
             <CardContent>
-                <BoxStyled display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
-                    <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-start'} alignItems={'center'} >
+                <BoxStyled display={'flex'} flexDirection={'row'} justifyContent={'space-between'}
+                           alignItems={'center'}>
+                    <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-start'} alignItems={'center'}>
                         <Avatar variant="square" alt={coinAInfo?.simpleName}
                             // src={sellData?.icon}
                                 src={coinAIconHasLoaded ? coinAInfo?.icon : 'static/images/icon-default.png'}/>
@@ -63,23 +64,23 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                             </Typography>
                             <Typography variant={'body2'} component={'span'} color={'textSecondary'}>
                                 {t('labelLiquidity') + ' ' +
-                                amountDollar === undefined? EmptyValueTag: currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(amountDollar as number)
+                                amountDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(amountDollar as number)
                                     : PriceTag.Yuan + getThousandFormattedNumbers(amountYuan as number)}
                             </Typography>
                         </Typography>
                         {/*{isNew ? <NewTagIcon/> : undefined}*/}
                     </Box>
-                    <Typography display={'flex'} flexDirection={'column'} component={'span'} alignItems={'flex-end'} >
-                        <Typography component={'span'}  color={'textSecondary'}  variant={'body2'}
+                    <Typography display={'flex'} flexDirection={'column'} component={'span'} alignItems={'flex-end'}>
+                        <Typography component={'span'} color={'textSecondary'} variant={'body2'}
                                     style={{textTransform: 'uppercase'}}>{t('labelAPY')}</Typography>
-                        <Typography component={'span'}  variant={'body1'}> {APY}%
+                        <Typography component={'span'} variant={'body1'}> {APY}%
                         </Typography>
                     </Typography>
                 </BoxStyled>
 
                 <BoxBg display={'flex'} flexDirection={'column'} alignItems={'stretch'} marginTop={2} padding={1}>
                     <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
-                        <Typography display={'flex'}  flexDirection={'column'} component={'div'}>
+                        <Typography display={'flex'} flexDirection={'column'} component={'div'}>
                             <Typography variant={'body2'} component={'h5'} color={'textSecondary'}>
                                 {t('labelReward')}
                             </Typography>
@@ -88,7 +89,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                 {rewardToken?.simpleName}
                             </Typography>
                         </Typography>
-                        <Typography display={'flex'} flexDirection={'column'} alignItems={'flex-end'} component={'div'} >
+                        <Typography display={'flex'} flexDirection={'column'} alignItems={'flex-end'} component={'div'}>
                             <Typography variant={'body2'} component={'h5'} color={'textSecondary'}>
                                 {t('labelMyReward')}
                             </Typography>
@@ -98,14 +99,15 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                             </Typography>
                         </Typography>
                     </Box>
-                    <Typography alignSelf={'flex-start'} variant={'body2'}  color={'textSecondary'} component="span" marginTop={1}>
+                    <Typography alignSelf={'flex-start'} variant={'body2'} color={'textSecondary'} component="span"
+                                marginTop={1}>
                         {t('labelDate')}:
                         {moment(duration.from).format('L')} - {moment(duration.to).format('L')}
                     </Typography>
                 </BoxBg>
             </CardContent>
             <CardActions>
-                <Button fullWidth variant={'contained'} size={'medium'}  disabled={isPass?true:false}
+                <Button fullWidth variant={'contained'} size={'medium'} disabled={isPass ? true : false}
                         color={'primary'} onClick={handleClick}>{t('labelAddLiquidityBtn')}</Button>
             </CardActions>
         </Card>

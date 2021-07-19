@@ -1,7 +1,7 @@
 import { Trans, WithTranslation } from 'react-i18next';
 import React, { ChangeEvent } from 'react';
 import { FormControlLabel, Grid, ListItemText, Radio, RadioGroup, Typography } from '@material-ui/core';
-import { CloseIcon, DropDownIcon, globalSetup, IBData, WithdrawTypes } from 'static-resource';
+import { CloseIcon, DropDownIcon, globalSetup, IBData, WithdrawTypes } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../../Interface';
 import { Button, IconClearStyled, MenuItem, TextField } from '../../../../';
 import { WithdrawViewProps } from '../Interface';
@@ -62,7 +62,7 @@ export const WithdrawWrap = <T extends IBData<I>,
         if (handleOnAddressChange) {
             handleOnAddressChange(address)
         }
-    }, wait),[handleOnAddressChange,debounce])
+    }, wait), [handleOnAddressChange, debounce])
     const _handleOnAddressChange = React.useCallback((event) => {
         const address = event.target.value;
         if (handleAddressError) {
@@ -71,21 +71,16 @@ export const WithdrawWrap = <T extends IBData<I>,
                 setAddressError(error)
             }
         }
-        //TODO error handle and notification
         setAddress(address);
         debounceAddress({address})
-        // debounce(() => {
-        //     if (handleOnAddressChange) {
-        //         handleOnAddressChange(address)
-        //     }
-        // }, wait)
+
     }, [debounce, wait, handleAddressError])
 
-    const handleClear = React.useCallback(()=>{
+    const handleClear = React.useCallback(() => {
         // @ts-ignore
         // addressInput?.current?.value = "";
         setAddress('')
-    },[])
+    }, [])
 
     return <Grid className={walletMap ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"} minHeight={540}
@@ -131,9 +126,9 @@ export const WithdrawWrap = <T extends IBData<I>,
                                         variant={'body2'}>{addressError && addressError.error ? addressError.message : ''}</Typography>}
                 fullWidth={true}
             />
-            { address !== ''? <IconClearStyled size={'small'} aria-label="Clear" onClick={handleClear}>
+            {address !== '' ? <IconClearStyled size={'small'} aria-label="Clear" onClick={handleClear}>
                 <CloseIcon/>
-            </IconClearStyled>  :''}
+            </IconClearStyled> : ''}
         </Grid>
         <Grid item marginTop={2} alignSelf={'stretch'}>
             <RadioGroup row aria-label="withdraw" name="withdraw" value={_withdrawType}
@@ -191,7 +186,7 @@ export const WithdrawWrap = <T extends IBData<I>,
             {/*<Box marginTop={2} display={'flex'} justifyContent={'center'}>*/}
             {/*    <Link component={RouterLink} to={'/'}> <Typography variant={'body2'}>*/}
             {/*        {t('withdrawLabelLinkRecent')}*/}
-            
+
             {/*    </Typography></Link>*/}
             {/*</Box>*/}
         </Grid>

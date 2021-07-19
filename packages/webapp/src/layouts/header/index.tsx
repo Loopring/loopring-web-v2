@@ -8,7 +8,7 @@ import {
     ModalCloseButton,
 } from '@loopring-web/component-lib'
 
-import { headerRoot } from '@loopring-web/component-lib/src/static-resource'
+import { headerRoot } from '@loopring-web/common-resources'
 
 import { useLocation } from 'react-router-dom'
 

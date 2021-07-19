@@ -5,14 +5,14 @@ import { MemoryRouter } from 'react-router-dom'
 import { QuoteTable, QuoteTableRawDataItem } from './QuoteTable'
 import { OrderHistoryTable } from './orderHistoryTable'
 import { RawDataTransactionItem, TransactionStatus, TransactionTable, TransactionTradeTypes } from './transactionsTable'
-import { OrderHistoryRawDataItem} from './orderHistoryTable/OrderHistoryTable'
-import { TradeStatus, TradeTypes } from '../../static-resource';
+import { OrderHistoryRawDataItem } from './orderHistoryTable/OrderHistoryTable'
+import { TradeStatus, TradeTypes } from '@loopring-web/common-resources';
 
 const Style = styled.div`
-	color: #fff;
-	flex: 1;
-	height: 100%;
-	flex: 1;
+  color: #fff;
+  flex: 1;
+  height: 100%;
+  flex: 1;
 `
 
 // type RawDataItem = (string | number | number[] | string[])[] | {}
@@ -1098,7 +1098,9 @@ export const Transaction = Template.bind({})
 Quote.args = {
     rawData: rawDataLastPrice,
     type: 'lastPrice',
-    onVisibleRowsChange: (data: any) => {console.log(data)},
+    onVisibleRowsChange: (data: any) => {
+        console.log(data)
+    },
 }
 
 OrderHistory.args = {

@@ -6,7 +6,7 @@ import { anchorRef, bindHover, bindMenu, bindTrigger, usePopupState } from "mate
 import { BasicHeaderItem, HeadMenuType, MenuItemLink, MenuItemProps } from './Interface'
 import styled from "@emotion/styled";
 import clsx from "clsx";
-import { DropDownIcon } from 'static-resource';
+import { DropDownIcon } from '@loopring-web/common-resources';
 import { css } from "@emotion/react";
 import Menu from 'material-ui-popup-state/HoverMenu';
 import React, { ForwardedRef, RefAttributes } from "react";
@@ -37,7 +37,7 @@ export const MenuTab = styled(Tab)`
       ${hr}
     }
   }
-` as typeof Tab;
+` as unknown as typeof Tab;
 export const HeaderMenu = styled(Container)`
   display: flex;
   justify-content: space-between;
