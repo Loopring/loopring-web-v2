@@ -18,10 +18,11 @@ export enum TransactionStatus {
 }
 
 export type RawDataTransactionItem = {
-    token?: string,
-    tradeType: TransactionTradeTypes,
-    from: string;
-    to: string;
+    side: TransactionTradeTypes,
+    // token?: string,
+    // tradeType: TransactionTradeTypes,
+    // from: string;
+    // to: string;
     amount: number;
     fee: {
         unit: string;
