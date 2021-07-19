@@ -9,6 +9,7 @@ import { useInit } from './hook';
 import { STATUS } from 'stores/constant';
 import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
 import { ErrorPage } from './pages/ErrorPage';
+import { LoadingPage } from './pages/LoadingPage';
 
 const App =  () => {
     const theme: Theme = useTheme();
@@ -49,7 +50,8 @@ const App =  () => {
       <GlobalProvider>
           <Web3ReactManager>
               { status === 'PENDING' ?
-                  <ErrorPage {...ErrorMap.LOADING_WHOLE_SITE}/>
+                  <LoadingPage />
+                  // <ErrorPage {...ErrorMap.LOADING_WHOLE_SITE}/>
                   // <Avatar src={loadingSvg}/>
                   : status === 'ERROR'? <ErrorPage {...ErrorMap.NO_NETWORK_ERROR}/> : <>
                   <RouterView />

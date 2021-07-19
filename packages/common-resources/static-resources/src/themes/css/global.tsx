@@ -3,7 +3,11 @@ import reset from './reset';
 // @ts-ignore
 import InterMedium from '../fonts/english/Inter-Medium.ttf';
 // @ts-ignore
-import GilroyMedium from '../fonts/english/Gilroy-Medium.ttf';
+// import GilroyMedium from '../fonts/english/DINCondensed.ttf';
+import DINCondensed from  '../fonts/english/DINCondensed/363123_0_0.ttf'
+// @ts-ignore
+// import DINCondensed2 from  '../fonts/english/DINCondensed/363123_2_0.ttf'
+
 import { ColorDarkDefault, ColorLightDefault } from "./color-lib";
 
 export const fontDefault = {
@@ -68,16 +72,17 @@ export const globalCss = ({theme}: any) => css`
       font-style: normal;
     }
     @font-face {
-      font-family: 'Gilroy-Medium';
-      src: url(${GilroyMedium}) format('truetype');
+      font-family: 'DINCondensed';
+      src: url(${DINCondensed}) format('truetype');
       font-weight: normal;
       font-style: normal;
     }
+    
     height: 100%;
     box-sizing: border-box;
     -moz-box-sizing: border-box; /* Firefox */
     -webkit-box-sizing: border-box; /* Safari */
-    font-family: Gilroy-Medium, Helvetica, Arial, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
+    font-family: DINCondensed, Helvetica, Arial, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
     font-size: 62.5%; /* 62.5% of 16px = 10px */
 
   }

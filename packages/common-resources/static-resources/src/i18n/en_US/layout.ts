@@ -34,4 +34,6 @@ export default {
     labelOrderBookMining: 'Orderbook Mining ',
     labelMakerRebates: 'Maker Rebates',
     labelSetting: 'Setting',
+    titleLoopring:'Loopring',
+    labelLoopringDescribe:'zkRollup Exchange and Payment Protocol',
 }
