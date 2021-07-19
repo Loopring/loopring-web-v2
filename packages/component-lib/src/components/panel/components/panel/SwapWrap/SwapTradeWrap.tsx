@@ -39,7 +39,15 @@ export const SwapTradeWrap = <T extends IBData<I>,
     const buyRef = React.useRef();
     const {slippage} = useSettings();
     const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number | string>;
-    const [_isSotB, setIsStoB] = React.useState(typeof isStob !== 'undefined'?isStob:true);
+
+    const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined'?isStob:true);
+
+    const _onSwitchStob = React.useCallback((_event: any)=>{
+        setIsStoB(!_isStoB)
+        if(typeof switchStobEvent === 'function') {
+            switchStobEvent(!_isStoB) 
+        }
+    },[switchStobEvent, _isStoB])
 
     
     const getDisabled = () => {
@@ -68,12 +76,6 @@ export const SwapTradeWrap = <T extends IBData<I>,
             to: 'button'
         });
     }, [swapData, onChangeEvent]);
-    const _onSwitchStob = React.useCallback((_event: any)=>{
-        setIsStoB(!_isSotB)
-        if(typeof switchStobEvent === 'function') {
-            switchStobEvent(!_isSotB) 
-        }
-    },[switchStobEvent, _isSotB])
     const _onSlippageChange = React.useCallback((slippage: number | string, customSlippage: number | string | undefined) => {
         popupState.close();
         onChangeEvent(0, {
@@ -162,7 +164,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
         <Grid item>
             <Typography component={'p'} variant="body1" height={24} lineHeight={'24px'}>
                 {tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData ? <>
-                    {_isSotB ? `1${tradeData.sell?.belong} = ${tradeCalcData.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
+                    {_isStoB ? `1${tradeData.sell?.belong} = ${tradeCalcData.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
                         : `1${tradeData.buy?.belong} = ${tradeCalcData.BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`}
                     <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
                         // style={{transform: 'rotate(90deg)'}}
