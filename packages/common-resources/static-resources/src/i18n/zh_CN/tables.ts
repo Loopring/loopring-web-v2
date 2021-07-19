@@ -45,6 +45,7 @@ export default {
     labelTxFilterWithdraw: '提现',
     labelTxFilterTransfer: '转账',
     labelTxFilterAllTokens: '所有类型',
+    labelTxSide: '交易类型',
     labelTxToken: '币种',
     labelTxFrom: '起始',
     labelTxTo: '完结',
