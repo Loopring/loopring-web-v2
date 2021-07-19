@@ -59,6 +59,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     // const {setShowConnect, setShowAccountInfo} = useOpenModals();
     // const {ShowDeposit} = useModals()
     const {account} = useAccount()
+    const {delayAndUpdateWalletLayer2} = useWalletLayer2();
 
     const walletLayer2State = useWalletLayer2();
     const [isSwapLoading, setIsSwapLoading] = useState(false)
@@ -175,15 +176,23 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 },
                 buyToken: {
                     tokenId: quoteToken.tokenId,
-                    volume: output.amountBOutSlip
+                    volume: output.amountBOutSlip.minReceived
                 },
                 allOrNone: false,
                 validUntil: VALID_UNTIL,
-                maxFeeBips: 60,
+                maxFeeBips: parseInt(feeBips),
                 fillAmountBOrS: false, // amm only false
                 orderType: OrderType.ClassAmm,
                 eddsaSignature: '',
             }
+            const response = await LoopringAPI.userAPI.submitOrder(request, account.eddsaKey, account.apiKey)
+
+            console.log(response)
+
+            await delayAndUpdateWalletLayer2()
+
+            setIsSwapLoading(false)
+            
             setTradeData({
                 ...tradeData,
                 ...{
@@ -191,9 +200,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                     buy: {...tradeData?.buy, tradeValue: 0},
                 }
             } as SwapTradeData<IBData<C>>)
-            const response = await LoopringAPI.userAPI.submitOrder(request, account.eddsaKey, account.apiKey)
-            setIsSwapLoading(false);
-            console.log(response)
 
         } catch (reason) {
             setIsSwapLoading(false);
