@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from '@emotion/styled/macro'
 
-import { MarketBlock, QuoteTable, TablePaddingX } from '@loopring-web/component-lib'
+import { MarketBlock, QuoteTable, TablePaddingX, QuoteTableRawDataItem } from '@loopring-web/component-lib'
 
 import { WithTranslation, withTranslation } from 'react-i18next'
+import { useHistory } from 'react-router-dom'
 // import { FloatTag } from '@loopring-web/common-resources'
 import { Box, Grid } from '@material-ui/core'
 import { useQuote, useCandlestickList } from './hook'
@@ -64,7 +65,15 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
       }
     }, [recommendations, getCandlestick])
 
+    let history = useHistory()
 
+    const handleRowClick = React.useCallback((row: QuoteTableRawDataItem) => {
+      const { coinA, coinB } = row.pair
+      const tradePair = `${coinA}-${coinB}`
+      history.push({
+        pathname: `/trading/lite/${tradePair}`
+      })
+    }, [history])
 
     return <Box display={'flex'} flexDirection={'column'} flex={1} >
 
@@ -90,7 +99,9 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
         </RowStyled>
         <TableWrapStyled container marginY={3}  paddingBottom={2} flex={1}>
             <Grid item xs={12} display={'flex'}>
-                <QuoteTable onVisibleRowsChange={onVisibleRowsChange}  rawData={tickList} {...{ ...rest }} />
+                <QuoteTable onVisibleRowsChange={onVisibleRowsChange} onRowClick={(index, row, col) => 
+                  handleRowClick(row)
+                } rawData={tickList} {...{ ...rest }} />
             </Grid>
         </TableWrapStyled>
     </Box>
