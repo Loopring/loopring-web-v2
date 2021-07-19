@@ -516,6 +516,7 @@ export function useModalProps() {
             const gasPrice = store.getState().system.gasPrice ?? 30
             const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
 
+            // @ts-ignore
             const nonce = await sdk.getNonce(web3, account.accAddr)
 
             const response = await sdk.approveMax(web3, account.accAddr, tokenInfo.address,
@@ -633,7 +634,7 @@ export function useModalProps() {
                 },
                 validUntil: VALID_UNTIL,
             }
-
+            // @ts-ignore
             const response = await LoopringAPI.userAPI.submitInternalTransfer(request2, web3, chainId, walletType,
                 eddsaKey, apiKey, false)
 
@@ -762,6 +763,7 @@ export function useModalProps() {
             const provider = await connector.getProvider()
             const web3 = new Web3(provider as any)
 
+            // @ts-ignore
             const response = await LoopringAPI.userAPI.submitOffchainWithdraw(request2, web3, chainId, ConnectorNames.Injected,
                 account.eddsaKey, apiKey, false)
 

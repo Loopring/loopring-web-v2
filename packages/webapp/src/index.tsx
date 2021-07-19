@@ -23,7 +23,7 @@ import { I18nextProvider } from "react-i18next"
 
 
 
-const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
+// const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 const providers = [
     provider(LocalizationProvider as any, {dateAdapter: MomentUtils}),
     provider(I18nextProvider as any, {i18n:i18n}),
@@ -35,11 +35,11 @@ const providers = [
 ReactDOM.render(
 // @ts-ignore
     <ProviderComposer providers={providers}>
-        <Web3ReactProvider getLibrary={getLibrary}>
-            <Web3ProviderNetwork getLibrary={getLibrary}>
+        {/*<Web3ReactProvider getLibrary={getLibrary}>*/}
+        {/*    <Web3ProviderNetwork getLibrary={getLibrary}>*/}
                 <App/>
-            </Web3ProviderNetwork>
-        </Web3ReactProvider>
+        {/*    </Web3ProviderNetwork>*/}
+        {/*</Web3ReactProvider>*/}
     </ProviderComposer>,
     document.getElementById('root')
 )

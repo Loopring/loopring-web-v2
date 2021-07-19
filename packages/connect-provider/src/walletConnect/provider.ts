@@ -22,6 +22,7 @@ export const WalletConnectProvide = async ()=>{
         walletServices.sendChainChanged(chainId)
     });
     provider.on("disconnect", (code: number, reason: string) => {
+        walletServices.sendDisconnect(code,reason)
         console.log(code, reason);
     });
 
