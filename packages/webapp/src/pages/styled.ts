@@ -13,9 +13,8 @@ export const StylePaper = styled(Box)`
   // padding: ${({ theme }) => 3 * theme.unit}px  0;
   margin-bottom: ${({ theme }) => 2* theme.unit}px;
   .title {
-    font-family: Gilroy-Medium;
     font-size: ${({ theme }) => theme.unit * 3}px;
-    line-height: 19px;
+    //line-height: 19px;
     margin-left: ${({ theme }) => 3 * theme.unit}px;
     margin-top: ${({ theme }) => 3 * theme.unit}px;
     // margin-bottom: ${({ theme }) => 2 * theme.unit}px;

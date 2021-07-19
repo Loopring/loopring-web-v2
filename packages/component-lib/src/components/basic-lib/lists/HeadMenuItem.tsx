@@ -37,7 +37,7 @@ export const MenuTab = styled(Tab)`
       ${hr}
     }
   }
-` as typeof Tab;
+` as unknown as typeof Tab;
 export const HeaderMenu = styled(Container)`
   display: flex;
   justify-content: space-between;
