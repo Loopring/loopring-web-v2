@@ -3,7 +3,7 @@ import { WithTranslation, withTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import { ModalWalletConnectProps, WalletConnectPanelProps } from './Interface';
 import { Typography } from '@material-ui/core/';
-import { GatewayItem } from 'static-resource';
+import { GatewayItem } from '@loopring-web/common-resources';
 import { ModalContentStyled } from '../../styled';
 
 
@@ -13,7 +13,6 @@ const IconWrapperStyled = styled(Box)`
     height: var(--gateway-icon-size);
     border-radius: 50%;
 ` as typeof Box;
-
 
 
 const WalletConnectPanelStyled = styled(Box)`

@@ -57,7 +57,7 @@ const store = configureStore({
   // middleware: [...getDefaultMiddleware({ thunk: true }), ],
   devTools: process.env.NODE_ENV !== 'production',
   enhancers: [reduxBatch],
-  preloadedState: load({ states: PERSISTED_KEYS })
+  preloadedState: load({ states: PERSISTED_KEYS }) as any
 })
 store.dispatch(updateVersion())
 store.dispatch(setLanguage(store.getState().settings.language))

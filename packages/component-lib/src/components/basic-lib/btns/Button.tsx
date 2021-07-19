@@ -8,8 +8,8 @@ import {
 import { ButtonProps, TGItemJSXInterface, ToggleButtonGroupProps } from './Interface';
 import { WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
-import loadingSvg from 'common-resources/assets/svg/loading.svg'
-import { CloseIcon } from '../../../static-resource';
+import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
+import { CloseIcon } from '@loopring-web/common-resources';
 
 export const Button = styled(MuButton)<ButtonProps>`
   && {
@@ -76,7 +76,7 @@ export const ModalCloseButton = ({onClose, t}: {
         bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void;
     }['bivarianceHack']
 } & WithTranslation) => {
-    return <Box alignSelf={'flex-end'} marginTop={-2} marginRight={1}>
+    return <Box alignSelf={'flex-end'} marginTop={-3} marginRight={1}>
         <IconButton aria-label={t('labelClose')} size={'small'} onClick={(event) => {
             onClose && onClose(event, 'escapeKeyDown')
         }}>

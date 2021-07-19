@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getTokenMap, getTokenMapStatus } from './reducer';
 import { getIcon } from '../../utils/swap_calc_utils';
-import { CoinInfo, CoinMap } from '@loopring-web/component-lib/static-resource';
+import { CoinInfo, CoinMap } from '@loopring-web/common-resources';
 import { AddressMap, GetTokenMapParams, IdMap } from './interface';
 import { PayloadAction } from '@reduxjs/toolkit';
 
@@ -20,7 +20,7 @@ const getTokenMapApi = async <R extends { [ key: string ]: any }>({
             coinMap[ key as string ] = {
                 icon: getIcon(key as string, tokensMap),
                 name: key as string,
-                simpleName: key,
+                simpleName: key as string,
                 description: '',
                 company: '',
             }

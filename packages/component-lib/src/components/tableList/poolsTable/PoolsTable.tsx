@@ -4,13 +4,15 @@ import { debounce } from 'lodash'
 import { Button, Column, NewTagIcon, Table, TablePagination, TableProps, useImage } from '../../basic-lib'
 import {
     AmmDetail,
-    Currency, EmptyValueTag,
+    Currency,
+    EmptyValueTag,
     getThousandFormattedNumbers,
     globalSetup,
     MiningIcon,
     PriceTag,
-    SearchIcon, TableType,
-} from 'static-resource';
+    SearchIcon,
+    TableType,
+} from '@loopring-web/common-resources';
 import { Avatar, Box, InputAdornment, OutlinedInput, Typography } from '@material-ui/core/';
 import { PoolTableProps, Row } from './Interface';
 import styled from '@emotion/styled';
@@ -73,7 +75,7 @@ const TableStyled = styled(Box)`
 ` as typeof Box
 
 
-export const IconColumn = React.memo(<R extends AmmDetail<T>,T>({row}: { row: R }) => {
+export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R }) => {
     const {coinAInfo, coinBInfo, isNew, isActivity} = row;
     const coinAIconHasLoaded = useImage(coinAInfo?.icon ? coinAInfo?.icon : '').hasLoaded;
     const coinBIconHasLoaded = useImage(coinBInfo?.icon ? coinBInfo?.icon : '').hasLoaded;
@@ -86,7 +88,8 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>,T>({row}: { row: R 
             <Avatar variant="square" alt={coinBInfo?.simpleName} className={'icon-next'}
                 // src={buyData?.icon}
                     src={coinBIconHasLoaded ? coinBInfo?.icon : 'static/images/icon-default.png'}/>
-            <Typography variant={'inherit'} display={'flex'} flexDirection={'column'} marginLeft={1} component={'div'} paddingRight={1}>
+            <Typography variant={'inherit'} display={'flex'} flexDirection={'column'} marginLeft={1} component={'div'}
+                        paddingRight={1}>
                 <Typography component={'h3'} color={'textPrimary'} title={'sell'}>
                     <Typography component={'span'} className={'next-coin'}>
                         {coinAInfo?.simpleName}
@@ -106,16 +109,16 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>,T>({row}: { row: R 
         </Box>
     </BoxStyled>
 
-}) as <R extends AmmDetail<T>,T>(props: { row: R }) => JSX.Element;
+}) as <R extends AmmDetail<T>, T>(props: { row: R }) => JSX.Element;
 
-const columnMode = <R extends Row<T>,T>({t}: WithTranslation, currency: 'USD'|'CYN'): Column<R, unknown>[] => [
+const columnMode = <R extends Row<T>, T>({t}: WithTranslation, currency: 'USD' | 'CYN'): Column<R, unknown>[] => [
     {
         key: 'pools',
         sortable: false,
         width: 'auto',
         minWidth: 240,
         name: t('labelPool'),
-        formatter: ({row}:FormatterProps<R, unknown>) => {
+        formatter: ({row}: FormatterProps<R, unknown>) => {
             return <Box flex={1} height={'100%'} alignContent={'center'} display={'flex'}>
                 <IconColumn row={row as any}/>
             </Box>
@@ -128,11 +131,11 @@ const columnMode = <R extends Row<T>,T>({t}: WithTranslation, currency: 'USD'|'C
         width: 'auto',
         name: t('labelLiquidity'),
         formatter: ({row}) => {
-            const {amountDollar , amountYuan = 0} = row
+            const {amountDollar, amountYuan = 0} = row
             return <Typography
                 component={'span'}> {
                 typeof amountDollar === 'undefined' ? EmptyValueTag :
-                    typeof amountDollar === 'undefined'?EmptyValueTag: currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(amountDollar) : PriceTag.Yuan + getThousandFormattedNumbers(amountYuan)}
+                    typeof amountDollar === 'undefined' ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(amountDollar) : PriceTag.Yuan + getThousandFormattedNumbers(amountYuan)}
             </Typography>
 
         }
@@ -148,10 +151,10 @@ const columnMode = <R extends Row<T>,T>({t}: WithTranslation, currency: 'USD'|'C
             // typeof priceDollar === 'undefined' ? EmptyValueTag :
             //     currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(Number(priceDollar)) : PriceTag.Yuan + getThousandFormattedNumbers(Number(priceYuan))}
 
-            const { volume } = row.tradeFloat ? row.tradeFloat : {volume:EmptyValueTag};
+            const {volume} = row.tradeFloat ? row.tradeFloat : {volume: EmptyValueTag};
             return <Typography
-                component={'span'}> {volume}  {row.coinAInfo.simpleName}
-                </Typography>
+                component={'span'}> {volume} {row.coinAInfo.simpleName}
+            </Typography>
         }
     },
     // {
@@ -178,8 +181,9 @@ const columnMode = <R extends Row<T>,T>({t}: WithTranslation, currency: 'USD'|'C
         width: 'auto',
         maxWidth: 68,
         formatter: ({row}) => {
-            const APY = typeof row.APY !== undefined && row.APY? row?.APY : EmptyValueTag;
-            return <Typography component={'span'}> {APY === EmptyValueTag || typeof APY === 'undefined' ? EmptyValueTag : APY + '%'}</Typography>
+            const APY = typeof row.APY !== undefined && row.APY ? row?.APY : EmptyValueTag;
+            return <Typography
+                component={'span'}> {APY === EmptyValueTag || typeof APY === 'undefined' ? EmptyValueTag : APY + '%'}</Typography>
         }
     },
     {
@@ -200,16 +204,16 @@ const columnMode = <R extends Row<T>,T>({t}: WithTranslation, currency: 'USD'|'C
 
 
 export const PoolsTable = withTranslation('tables')(
-    <T extends {[key:string]:any}>({
-                           t, i18n,
-                           tReady,
-                           handlePageChange,
-                           pagination,
-                           showFilter = true,
-                           rawData,
-                           wait = globalSetup.wait,
-                           ...rest
-                       }: WithTranslation & PoolTableProps<T>) => {
+    <T extends { [ key: string ]: any }>({
+                                             t, i18n,
+                                             tReady,
+                                             handlePageChange,
+                                             pagination,
+                                             showFilter = true,
+                                             rawData,
+                                             wait = globalSetup.wait,
+                                             ...rest
+                                         }: WithTranslation & PoolTableProps<T>) => {
         const [filterBy, setFilterBy] = React.useState<string>('');
         const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
         const [totalData, setTotalData] = React.useState<Row<T>[]>(rawData && Array.isArray(rawData) ? rawData : []);
@@ -257,7 +261,7 @@ export const PoolsTable = withTranslation('tables')(
             setPage(page);
             updateData({TableType: TableType.page, currPage: page})
             handlePageChange(page);
-        }, [updateData,handlePageChange])
+        }, [updateData, handlePageChange])
 
         return <TableStyled flex={1} flexDirection={'column'} display={'flex'}>
             {showFilter && <Box display={'flex'} margin={3}>

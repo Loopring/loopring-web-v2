@@ -17,7 +17,7 @@ import {
     Currency, EmptyValueTag,
     getThousandFormattedNumbers,
     PriceTag
-} from '@loopring-web/component-lib/src/static-resource';
+} from '@loopring-web/common-resources';
 
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
 import { useOverview } from './hook';

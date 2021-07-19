@@ -4,19 +4,19 @@ import { Meta, Story } from '@storybook/react/types-6-0'
 import { withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
 import { Button } from '@material-ui/core'
-import { gatewayList } from 'static-resource'
+import { gatewayList } from '@loopring-web/common-resources'
 import { ModalWalletConnect, WalletConnectPanel } from './WalletConnect'
 import { ModalQRCode, QRCodePanel } from './QRCode'
 
 // import { GlobalStyles, Grid } from '@material-ui/core'
-// import { globalCss } from 'static-resource'
+// import { globalCss } from '@loopring-web/common-resources'
 // import { css, Theme, useTheme } from '@emotion/react'
 // import { ModalWalletConnect } from './WalletConnect'
 // import { ModalQRCode } from './QRCode'
 // import { Button } from '../basic-lib/btns'
 
 // import { useState } from 'react'
-// import {  IBData } from 'static-resource'
+// import {  IBData } from '@loopring-web/common-resources'
 // import { coinMap, CoinType, walletMap } from '../../static';
 // import { SwitchData, SwapTradeData } from './Interface'
 // import { DepositModal } from '../panel/Deposit';

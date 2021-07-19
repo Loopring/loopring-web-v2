@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react'
 import { TradeTable, TradeFilterTable, RawDataTradeItem } from '@loopring-web/component-lib'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import styled from '@emotion/styled'
-import { Box, Paper } from '@material-ui/core'
+// import styled from '@emotion/styled'
+// import { Box, Paper } from '@material-ui/core'
 import store from 'stores'
 import { LoopringAPI } from 'stores/apis/api'
-import { volumeToCount } from 'hooks/help'
+// import { volumeToCount } from 'hooks/help'
 import { StylePaper } from '../../styled'
-import { toBig } from 'loopring-sdk'
+import { TradeTypes } from '@loopring-web/common-resources'
+import { toBig, Side } from 'loopring-sdk'
 import { StringToNumberWithPrecision, VolToNumberWithPrecision, } from 'utils/formatter_tool'
 
 // const StylePaper = styled(Box)`
@@ -79,6 +80,7 @@ const TradePanel = withTranslation('common')((rest:WithTranslation<'common'>) =>
                 }, apiKey)
 
                 if (userTrades && userTrades.userTrades) {
+                  // @ts-ignore
                   setOriginalData(userTrades.userTrades.map(o => {
                     const marketList = o.market.split('-')
                     // due to AMM case, we cannot use first index
@@ -88,7 +90,7 @@ const TradePanel = withTranslation('common')((rest:WithTranslation<'common'>) =>
                     const amt = toBig(o.volume).times(o.price).toString()
 
                     return ({
-                      side: o.side,
+                      side: o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell ,
                       price: {
                         key: baseToken,
                         value: StringToNumberWithPrecision(o.price, baseToken)
@@ -113,7 +115,7 @@ const TradePanel = withTranslation('common')((rest:WithTranslation<'common'>) =>
                 }
             }
         })()
-    }, [accountId, apiKey])
+    }, [accountId, apiKey, tokenMap])
 
     React.useEffect(() => {
         // @ts-ignore

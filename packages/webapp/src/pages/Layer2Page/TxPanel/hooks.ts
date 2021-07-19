@@ -5,8 +5,7 @@ import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect'
 import { useAccount } from 'stores/account/hook'
 import { TransactionStatus, RawDataTransactionItem } from '@loopring-web/component-lib'
 
-import { TxStatus } from 'loopring-sdk'
-import { TransactionTradeTypes } from '@loopring-web/component-lib/components/tableList/transactionsTable/Interface';
+import { TransactionTradeTypes } from '@loopring-web/component-lib';
 
 export function useGetTxs() {
 
@@ -27,14 +26,9 @@ export function useGetTxs() {
         let tmpTx: RawDataTransactionItem[] = []
 
         txs.userTransfers.forEach((item: any, index: number) => {
-            tmpTx.push({from: {
-                    address: item.senderAddress,
-                    env: ''
-                },
-                to: {
-                    address: item.receiverAddress,
-                    env: ''
-                },
+            tmpTx.push({
+                from: item.senderAddress,
+                to: item.receiverAddress,
                 amount: item.amount,
                 fee: {
                     unit: item.feeTokenSymbol,

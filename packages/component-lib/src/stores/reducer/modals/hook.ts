@@ -18,7 +18,7 @@ import {
     TransferInfoProps,
     WithdrawInfoProps
 } from '../../../index';
-import { AmmData, IBData } from 'static-resource';
+import { AmmData, IBData } from '@loopring-web/common-resources';
 import React from 'react';
 
 export const useOpenModals = <T extends IBData<any>, I, A = AmmData<IBData<string>>, C = unknown>() => {

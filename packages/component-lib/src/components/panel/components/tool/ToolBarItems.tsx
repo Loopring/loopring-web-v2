@@ -1,5 +1,5 @@
 import { Grid } from '@material-ui/core';
-import { DropDownIcon } from '../../../../static-resource';
+import { DropDownIcon } from '@loopring-web/common-resources';
 import { SwitchData } from '../../Interface';
 import { IconButtonStyled } from '../index'
 
@@ -12,7 +12,8 @@ export const ToolBarItemBack = <T extends any>({
                           className={'switch'}
                           color="inherit"
                           onClick={() => {
-                              onChangeEvent(0, {tradeData, to: 'button'})}
+                              onChangeEvent(0, {tradeData, to: 'button'})
+                          }
                           }
                           aria-label="to Professional">
 

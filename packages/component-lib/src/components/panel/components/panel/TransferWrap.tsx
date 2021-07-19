@@ -2,7 +2,7 @@ import { Trans, WithTranslation } from 'react-i18next';
 import React, { ChangeEvent } from 'react';
 import { Grid, ListItemText, Typography } from '@material-ui/core';
 // import { Link as RouterLink } from 'react-router-dom';
-import { CloseIcon, DropDownIcon, globalSetup, IBData } from 'static-resource';
+import { CloseIcon, DropDownIcon, globalSetup, IBData } from '@loopring-web/common-resources';
 import { Button, MenuItem, TextField, TradeBtnStatus } from '../../../';
 import { TransferViewProps } from '../Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
@@ -39,15 +39,15 @@ export const TransferWrap = <T extends IBData<I>,
     }
 
 
-    const [address, setAddress] = React.useState<string | undefined>(addressDefault?addressDefault:'');
+    const [address, setAddress] = React.useState<string | undefined>(addressDefault ? addressDefault : '');
     const [addressError, setAddressError] = React.useState<{ error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined>();
     const [feeIndex, setFeeIndex] = React.useState<any | undefined>(0);
 
     const debounceAddress = React.useCallback(debounce(({address}: any) => {
         if (handleOnAddressChange) {
-                    handleOnAddressChange(address)
-                }
-    }, wait),[handleOnAddressChange,debounce])
+            handleOnAddressChange(address)
+        }
+    }, wait), [handleOnAddressChange, debounce])
     const _handleOnAddressChange = React.useCallback((event) => {
         const address = event.target.value;
         if (handleAddressError) {
@@ -56,14 +56,8 @@ export const TransferWrap = <T extends IBData<I>,
                 setAddressError(error)
             }
         }
-        //TODO error handle and notification
         setAddress(address);
         debounceAddress({address})
-        // debounce(() => {
-        //     if (handleOnAddressChange) {
-        //         handleOnAddressChange(address)
-        //     }
-        // }, wait)
     }, [debounce, wait, handleAddressError])
 
     const _handleFeeChange = React.useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -75,11 +69,11 @@ export const TransferWrap = <T extends IBData<I>,
     }, [chargeFeeTokenList, handleFeeChange]);
 
     // const addressInput = React.useRef();
-    const handleClear = React.useCallback(()=>{
+    const handleClear = React.useCallback(() => {
         // @ts-ignore
         // addressInput?.current?.value = "";
         setAddress('')
-    },[])
+    }, [])
 
     return <Grid className={walletMap ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
@@ -126,12 +120,11 @@ export const TransferWrap = <T extends IBData<I>,
                     component={'span'}>{addressError && addressError.error ? addressError.message : ''}</Typography>}
                 fullWidth={true}
             />
-            { address !== ''? <IconClearStyled size={'small'} aria-label="Clear" onClick={handleClear}>
+            {address !== '' ? <IconClearStyled size={'small'} aria-label="Clear" onClick={handleClear}>
                 <CloseIcon/>
-            </IconClearStyled>  :''}
+            </IconClearStyled> : ''}
         </Grid>
 
-        {/* TODO: check whether there's a need to show deposit fee */}
         <Grid item marginTop={2} alignSelf={"stretch"}>
             <TextField
                 id="transferFeeType"

@@ -57,7 +57,8 @@
     "up": "echo y | lerna clean; yarn",
     "reset": "rm -rf node_modules/ yarn.lock; echo y | lerna clean; yarn",
     "dev": "cd ./packages/webapp; yarn dev",
-    "deploy": "cd ./packages/webapp; yarn deploy"
+    "deploy": "cd ./packages/webapp; yarn deploy",
+    "deploy:ipfs": "cd ./pacakges/webapp; yarn deploy:ipfs"
   },
   "browserslist": {
     "production": [

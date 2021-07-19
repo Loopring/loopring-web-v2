@@ -1,5 +1,5 @@
 import { STATUS } from './constant';
-import { ErrorObject } from '@loopring-web/component-lib/src/static-resource';
+import { ErrorObject } from '@loopring-web/common-resources';
 
 export type StateBase = {
   status: keyof typeof STATUS,

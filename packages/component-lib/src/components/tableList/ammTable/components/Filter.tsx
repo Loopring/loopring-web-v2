@@ -4,23 +4,24 @@ import { Box, Grid, MenuItem } from '@material-ui/core'
 import { withTranslation, WithTranslation } from "react-i18next";
 import { DatePicker, TextField } from '../../../basic-lib/form'
 import { Button } from '../../../basic-lib/btns'
-import { DropDownIcon } from 'static-resource'
+import { DropDownIcon } from '@loopring-web/common-resources'
 
 export interface FilterProps {
     filterType: string;
     filterDate: string | null;
-    setFilterItems: ({ filterType, filterDate }: any) => void;
-    handleFilterChange: ({ filterType, filterDate, filterToken }: any) => void
+    setFilterItems: ({filterType, filterDate}: any) => void;
+    handleFilterChange: ({filterType, filterDate, filterToken}: any) => void
 }
 
 const StyledTextFiled = styled(TextField)`
-    &.MuiTextField-root {
-        max-width: initial;
-    }
-    .MuiInputBase-root {
-        width: initial;
-        max-width: initial;
-    }
+  &.MuiTextField-root {
+    max-width: initial;
+  }
+
+  .MuiInputBase-root {
+    width: initial;
+    max-width: initial;
+  }
 `
 
 const StyledDatePicker = styled(DatePicker)`
@@ -28,12 +29,12 @@ const StyledDatePicker = styled(DatePicker)`
 `
 
 const StyledBtnBox = styled(Box)`
-    display: flex;
-    margin-left: 40%;
+  display: flex;
+  margin-left: 40%;
 
-    button:first-of-type {
-        margin-right: 8px;
-    }
+  button:first-of-type {
+    margin-right: 8px;
+  }
 `
 
 export enum FilterTradeTypes {
@@ -43,12 +44,12 @@ export enum FilterTradeTypes {
 }
 
 export const Filter = withTranslation('tables', {withRef: true})(({
-                                                                                t,
-                                                                                filterType,
-                                                                                filterDate,
-                                                                                setFilterItems,
-                                                                                handleFilterChange
-                                                                            }: FilterProps & WithTranslation) => {
+                                                                      t,
+                                                                      filterType,
+                                                                      filterDate,
+                                                                      setFilterItems,
+                                                                      handleFilterChange
+                                                                  }: FilterProps & WithTranslation) => {
     const FilterTradeTypeList = [
         {
             label: t('labelAmmFilterTypes'),

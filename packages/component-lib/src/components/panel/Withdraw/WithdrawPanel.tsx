@@ -1,7 +1,7 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
 import { WithdrawProps } from '../Interface';
-import { IBData } from 'static-resource';
+import { IBData } from '@loopring-web/common-resources';
 import { TradeMenuList, useBasicTrade, WithdrawWrap } from '../components';
 import React from 'react';
 

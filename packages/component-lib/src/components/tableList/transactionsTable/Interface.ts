@@ -5,10 +5,10 @@ export enum TransactionTradeTypes {
     transfer = 'Transfer'
 }
 
-export type TransactionSide = {
-    address: string;
-    env: string;
-}
+// export type TransactionSide = {
+//     address: string;
+//     env: string;
+// }
 
 export enum TransactionStatus {
     processing = "processing",
@@ -20,8 +20,8 @@ export enum TransactionStatus {
 export type RawDataTransactionItem = {
     token?: string,
     tradeType: TransactionTradeTypes,
-    from: string | TransactionSide;
-    to: string | TransactionSide;
+    from: string;
+    to: string;
     amount: number;
     fee: {
         unit: string;

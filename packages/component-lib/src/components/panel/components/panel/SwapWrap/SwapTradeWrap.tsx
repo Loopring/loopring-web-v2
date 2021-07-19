@@ -2,23 +2,23 @@ import { SwapTradeData, TradeBtnStatus } from '../../../Interface';
 import {
     CoinInfo,
     CoinMap,
-    DropDownIcon, EmptyValueTag,
+    DropDownIcon,
+    EmptyValueTag,
     ExchangeIcon,
     IBData,
     ReverseIcon,
     SlippageTolerance,
     TradeCalcData
-} from 'static-resource';
+} from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import { Button, InputButton, PopoverPure } from '../../../../basic-lib';
-import { bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
-import { bindPopover } from 'material-ui-popup-state/es';
+import { usePopupState } from 'material-ui-popup-state/hooks';
+import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { IconButtonStyled, SlippagePanel } from '../../';
 import { SwapTradeProps } from './Interface';
 import { useSettings } from '../../../../../stores';
-
 
 export const SwapTradeWrap = <T extends IBData<I>,
     I,
@@ -36,7 +36,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
     const sellRef = React.useRef();
     const buyRef = React.useRef();
     const {slippage} = useSettings();
-    const slippageArray:Array<number|string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number|string>;
+    const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number | string>;
     const getDisabled = () => {
         if (disabled || tradeCalcData === undefined || tradeCalcData.sellCoinInfoMap === undefined) {
             return true
@@ -113,6 +113,9 @@ export const SwapTradeWrap = <T extends IBData<I>,
         popupId: 'slippagePop',
     })
 
+    const priceImpact = tradeCalcData && tradeCalcData.priceImpact ? parseFloat(tradeCalcData.priceImpact).toPrecision(3).toString() + ' %' : EmptyValueTag
+
+    const fee = tradeCalcData && tradeCalcData.fee ? (tradeCalcData.fee + '%%') : EmptyValueTag
 
     return <Grid className={tradeCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
@@ -127,7 +130,8 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     }} />
                 </Grid>
                 <Grid item>
-                    <IconButtonStyled size={'medium'} onClick={covertOnClick} color="inherit" aria-label={t('tokenExchange')}>
+                    <IconButtonStyled size={'medium'} onClick={covertOnClick} color="inherit"
+                                      aria-label={t('tokenExchange')}>
                         <ExchangeIcon/>
                     </IconButtonStyled>
                 </Grid>
@@ -144,9 +148,9 @@ export const SwapTradeWrap = <T extends IBData<I>,
         <Grid item>
             <Typography component={'p'} variant="body1" height={24} lineHeight={'24px'}>
                 {tradeData.buy.belong && tradeData.sell && tradeCalcData ? <>
-                    {`1${tradeData.sell?.belong} = ${tradeCalcData.StoB?tradeCalcData.StoB:EmptyValueTag} ${tradeData.buy?.belong}`}
-                    <IconButtonStyled  size={'small'} aria-label={t('tokenExchange')} onClick={covertOnClick}
-                                      // style={{transform: 'rotate(90deg)'}}
+                    {`1${tradeData.sell?.belong} = ${tradeCalcData.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`}
+                    <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={covertOnClick}
+                        // style={{transform: 'rotate(90deg)'}}
                     ><ReverseIcon/></IconButtonStyled>
                 </> : EmptyValueTag}
             </Typography>
@@ -154,13 +158,14 @@ export const SwapTradeWrap = <T extends IBData<I>,
         <Grid item alignSelf={"stretch"}>
             <Grid container direction={"column"} spacing={1} alignItems={"stretch"}>
                 <Grid item paddingBottom={3} sx={{color: 'text.secondary'}}>
-                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"} height={24}>
+                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
+                          height={24}>
                         <Typography component={'p'} variant="body1">{t('swapTolerance')}</Typography>
                         <Typography component={'p'} variant="body1">
                             {tradeCalcData ? <>
                                 <span>
                                     <IconButtonStyled
-                                        {...bindTrigger(popupState)}
+                                        {...bindHover(popupState)}
                                         size={'small'}
                                         sx={{fontSize: '1.4rem', height: '24px', minWidth: '24px', width: '24px'}}
                                         className={'clock-loading'}
@@ -192,7 +197,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapPriceImpact')}</Typography>
                         <Typography component={'p'}
-                                    variant="body1"> {t(tradeCalcData ? tradeCalcData.priceImpact : EmptyValueTag)} </Typography>
+                                    variant="body1"> {priceImpact}  </Typography>
                     </Grid>
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapMinReceive')}</Typography>
@@ -202,7 +207,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapFee')} </Typography>
                         <Typography component={'p'}
-                                    variant="body1">{t(tradeCalcData ? tradeCalcData.fee : EmptyValueTag)}</Typography>
+                                    variant="body1">{fee}</Typography>
                     </Grid>
                 </Grid>
                 <Grid item>
@@ -211,7 +216,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     }}
                             loading={!getDisabled() && swapBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                             disabled={getDisabled() || swapBtnStatus === TradeBtnStatus.DISABLED || swapBtnStatus === TradeBtnStatus.LOADING ? true : false}
-                            fullWidth={true}>{t(swapBtnI18nKey?swapBtnI18nKey:`swapBtn`)}
+                            fullWidth={true}>{t(swapBtnI18nKey ? swapBtnI18nKey : `swapBtn`)}
                     </Button>
                 </Grid>
             </Grid>

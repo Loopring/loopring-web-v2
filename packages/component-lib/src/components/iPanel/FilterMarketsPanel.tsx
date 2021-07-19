@@ -1,4 +1,4 @@
-import  React from 'react';
+import React from 'react';
 import { Tab, Tabs } from '@material-ui/core';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { Box, Typography } from '@material-ui/core/';
@@ -12,7 +12,7 @@ interface TabPanelProps {
 }
 
 function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
+    const {children, value, index, ...other} = props;
 
     return (
         <div
@@ -30,7 +30,8 @@ function TabPanel(props: TabPanelProps) {
         </div>
     );
 }
-export const FilterMarketPanel =withTranslation('common')(({t}:WithTranslation)=>{
+
+export const FilterMarketPanel = withTranslation('common')(({t}: WithTranslation) => {
     const [value, setValue] = React.useState(1)
     const theme = useTheme();
 
@@ -48,10 +49,10 @@ export const FilterMarketPanel =withTranslation('common')(({t}:WithTranslation)=
                 onChange={handleChange}
                 aria-label="tabs switch"
             >
-                <Tab label={t('labelAll')}   />
-                <Tab label={t('labelFavorite')}  />
-                <Tab label={'ETH'}  />
-                <Tab label={'LRC'} />
+                <Tab label={t('labelAll')}/>
+                <Tab label={t('labelFavorite')}/>
+                <Tab label={'ETH'}/>
+                <Tab label={'LRC'}/>
             </Tabs>
             {/*</AppBar>*/}
             <SwipeableViews
@@ -59,7 +60,7 @@ export const FilterMarketPanel =withTranslation('common')(({t}:WithTranslation)=
                 index={value}
                 onChangeIndex={handleChangeIndex}
             >
-                <TabPanel value={value} index={0} >
+                <TabPanel value={value} index={0}>
 
                 </TabPanel>
                 <TabPanel value={value} index={1}>

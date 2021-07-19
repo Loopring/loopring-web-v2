@@ -2,13 +2,14 @@ import { ModalProvider } from 'styled-react-modal'
 import RouterView from './routers'
 import { Avatar, GlobalStyles } from '@material-ui/core';
 import { css, Theme, useTheme } from '@emotion/react';
-import { globalCss,ErrorMap } from '@loopring-web/component-lib/static-resource';
+import { globalCss,ErrorMap } from '@loopring-web/common-resources';
 import { GlobalProvider, Web3ReactManager } from './provider/';
 import React, { useEffect } from 'react';
 import { useInit } from './hook';
 import { STATUS } from 'stores/constant';
-import loadingSvg from 'common-resources/assets/svg/loading.svg';
+import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
 import { ErrorPage } from './pages/ErrorPage';
+import { LoadingPage } from './pages/LoadingPage';
 
 const App =  () => {
     const theme: Theme = useTheme();
@@ -49,7 +50,8 @@ const App =  () => {
       <GlobalProvider>
           <Web3ReactManager>
               { status === 'PENDING' ?
-                  <ErrorPage {...ErrorMap.LOADING_WHOLE_SITE}/>
+                  <LoadingPage />
+                  // <ErrorPage {...ErrorMap.LOADING_WHOLE_SITE}/>
                   // <Avatar src={loadingSvg}/>
                   : status === 'ERROR'? <ErrorPage {...ErrorMap.NO_NETWORK_ERROR}/> : <>
                   <RouterView />

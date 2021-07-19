@@ -1,12 +1,9 @@
 import styled from '@emotion/styled'
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { MemoryRouter } from 'react-router-dom'
-import {
-    MyPoolRow as Row,
-    MyPoolTable,
-} from './index'
+import { MyPoolRow as Row, MyPoolTable, } from './index'
 import { coinMap } from '../../../static';
-import { CoinInfo } from 'static-resource';
+import { CoinInfo } from '@loopring-web/common-resources';
 
 const Style = styled.div`
   color: #fff;
@@ -17,17 +14,17 @@ const Style = styled.div`
 
 const rawData: Row<any>[] = [
     {
-        feeA:122,
-        feeB:21,
+        feeA: 122,
+        feeB: 21,
         feeDollar: 0.0012,
-        feeYuan:  0.0312,
-        reward:123,
-        rewardToken:coinMap[ 'USDT' ] as CoinInfo<any>,
-        balanceA:12131,
-        balanceB:0.0012,
+        feeYuan: 0.0312,
+        reward: 123,
+        rewardToken: coinMap[ 'USDT' ] as CoinInfo<any>,
+        balanceA: 12131,
+        balanceB: 0.0012,
         balanceYuan: 1232131,
         balanceDollar: 232,
-        ammDetail:  {
+        ammDetail: {
             coinAInfo: coinMap[ 'ETH' ] as CoinInfo<any>,
             coinBInfo: coinMap[ 'LRC' ] as CoinInfo<any>,
             amountDollar: 12,
@@ -40,17 +37,17 @@ const rawData: Row<any>[] = [
         }
     },
     {
-        feeA:122,
-        feeB:21,
+        feeA: 122,
+        feeB: 21,
         feeDollar: 0.0012,
-        feeYuan:  0.0312,
-        reward:123,
-        rewardToken:coinMap[ 'USDT' ] as CoinInfo<any>,
-        balanceA:12131,
-        balanceB:0.0012,
+        feeYuan: 0.0312,
+        reward: 123,
+        rewardToken: coinMap[ 'USDT' ] as CoinInfo<any>,
+        balanceA: 12131,
+        balanceB: 0.0012,
         balanceYuan: 1232131,
         balanceDollar: 232,
-        ammDetail:  {
+        ammDetail: {
             coinAInfo: coinMap[ 'ETH' ] as CoinInfo<any>,
             coinBInfo: coinMap[ 'LRC' ] as CoinInfo<any>,
             amountDollar: 12,
@@ -63,17 +60,17 @@ const rawData: Row<any>[] = [
         }
     },
     {
-        feeA:122,
-        feeB:21,
+        feeA: 122,
+        feeB: 21,
         feeDollar: 0.0012,
-        feeYuan:  0.0312,
-        reward:123,
-        rewardToken:coinMap[ 'USDT' ] as CoinInfo<any>,
-        balanceA:12131,
-        balanceB:0.0012,
+        feeYuan: 0.0312,
+        reward: 123,
+        rewardToken: coinMap[ 'USDT' ] as CoinInfo<any>,
+        balanceA: 12131,
+        balanceB: 0.0012,
         balanceYuan: 1232131,
         balanceDollar: 232,
-        ammDetail:  {
+        ammDetail: {
             coinAInfo: coinMap[ 'ETH' ] as CoinInfo<any>,
             coinBInfo: coinMap[ 'LRC' ] as CoinInfo<any>,
             amountDollar: 12,
@@ -86,17 +83,17 @@ const rawData: Row<any>[] = [
         }
     },
     {
-        feeA:122,
-        feeB:21,
+        feeA: 122,
+        feeB: 21,
         feeDollar: 0.0012,
-        feeYuan:  0.0312,
-        reward:123,
-        rewardToken:coinMap[ 'USDT' ] as CoinInfo<any>,
-        balanceA:12131,
-        balanceB:0.0012,
+        feeYuan: 0.0312,
+        reward: 123,
+        rewardToken: coinMap[ 'USDT' ] as CoinInfo<any>,
+        balanceA: 12131,
+        balanceB: 0.0012,
         balanceYuan: 1232131,
         balanceDollar: 232,
-        ammDetail:  {
+        ammDetail: {
             coinAInfo: coinMap[ 'ETH' ] as CoinInfo<any>,
             coinBInfo: coinMap[ 'LRC' ] as CoinInfo<any>,
             amountDollar: 12,
@@ -109,17 +106,17 @@ const rawData: Row<any>[] = [
         }
     },
     {
-        feeA:122,
-        feeB:21,
+        feeA: 122,
+        feeB: 21,
         feeDollar: 0.0012,
-        feeYuan:  0.0312,
-        reward:123,
-        rewardToken:coinMap[ 'USDT' ] as CoinInfo<any>,
-        balanceA:12131,
-        balanceB:0.0012,
+        feeYuan: 0.0312,
+        reward: 123,
+        rewardToken: coinMap[ 'USDT' ] as CoinInfo<any>,
+        balanceA: 12131,
+        balanceB: 0.0012,
         balanceYuan: 1232131,
         balanceDollar: 232,
-        ammDetail:  {
+        ammDetail: {
             coinAInfo: coinMap[ 'ETH' ] as CoinInfo<any>,
             coinBInfo: coinMap[ 'LRC' ] as CoinInfo<any>,
             amountDollar: 12,

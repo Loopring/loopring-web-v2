@@ -6,7 +6,7 @@ import {
     TransferInfoProps,
     WithdrawInfoProps
 } from '../../../components';
-import { AmmData, IBData } from '../../../static-resource';
+import { AmmData, IBData } from '@loopring-web/common-resources';
 
 export enum ModalType {
     transfer = 'transfer',

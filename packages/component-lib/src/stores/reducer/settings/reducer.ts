@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { PlatFormType, SettingsState } from "./interface";
-import { Currency, i18n, LanguageKeys, ThemeKeys, ThemeType, UpColor } from 'static-resource';
+import { Currency, i18n, LanguageKeys, ThemeKeys, ThemeType, UpColor } from '@loopring-web/common-resources';
 import moment from 'moment';
-// import { localStore } from '../../../static-resource/src/storage';
+// import { localStore } from '@loopring-web/common-resources/src/storage';
 
 const initialState: SettingsState = {
     themeMode: ThemeType.dark, //localStore.getItem('ThemeType')?localStore.getItem('ThemeType') as ThemeKeys :ThemeType.dark,

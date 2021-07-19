@@ -6,7 +6,7 @@ import {
     SubMenuList as BasicSubMenuList,
 } from '@loopring-web/component-lib'
 import { withTranslation } from 'react-i18next'
-import { subMenuLiquidity } from '@loopring-web/component-lib/src/static-resource'
+import { subMenuLiquidity } from '@loopring-web/common-resources'
 import { PoolsPanel } from './PoolsPanel'
 import { CoinPairPanel } from './CoinPairPanel';
 import { AmmMiningView } from './AmmMining';

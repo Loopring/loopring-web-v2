@@ -2,14 +2,7 @@ import styled from '@emotion/styled';
 import { Meta, Story } from '@storybook/react/types-6-0';
 import { MemoryRouter } from 'react-router-dom';
 import { Grid, Typography } from '@material-ui/core';
-import {
-    AmmCardProps,
-    CoinInfo,
-    FloatTag,
-    LockIcon,
-    PriceTag, UnLockIcon,
-    WalletStatus
-} from 'static-resource';
+import { AmmCardProps, CoinInfo, FloatTag, LockIcon, PriceTag, UnLockIcon, WalletStatus } from '@loopring-web/common-resources';
 import { coinMap, CoinType } from '../../static';
 import { withTranslation } from 'react-i18next';
 import { AccountInfo, BtnWalletConnect } from '../index';
@@ -33,22 +26,22 @@ const Style = styled.div`
 const ConnectButtonWrap = withTranslation('common')((rest: any) => {
     return <>
         <Grid item xs={3}><BtnWalletConnect {...rest} status={WalletStatus.default} handleClick={() => {
-        }}  label={'Connect Wallet'} wait={200}></BtnWalletConnect></Grid>
+        }} label={'Connect Wallet'} wait={200}></BtnWalletConnect></Grid>
         <Grid item xs={3}><BtnWalletConnect {...rest} status={WalletStatus.disabled} handleClick={() => {
-        }}  label={'Connect Wallet'} wait={200}></BtnWalletConnect></Grid>
+        }} label={'Connect Wallet'} wait={200}></BtnWalletConnect></Grid>
         <Grid item xs={3}><BtnWalletConnect {...rest} status={WalletStatus.loading} handleClick={() => {
-        }}  label={'xxxxx....xxxx'} wait={200}></BtnWalletConnect></Grid>
+        }} label={'xxxxx....xxxx'} wait={200}></BtnWalletConnect></Grid>
         <Grid item xs={3}><BtnWalletConnect {...rest} status={WalletStatus.noAccount} handleClick={() => {
-        }}  label={'xxxxx....xxxx'} wait={200}></BtnWalletConnect></Grid>
+        }} label={'xxxxx....xxxx'} wait={200}></BtnWalletConnect></Grid>
         <Grid item xs={3}><BtnWalletConnect {...rest} status={WalletStatus.accountPending} handleClick={() => {
-        }}  label={'xxxxx....xxxx'} wait={200}></BtnWalletConnect></Grid>
+        }} label={'xxxxx....xxxx'} wait={200}></BtnWalletConnect></Grid>
         <Grid item xs={3}><BtnWalletConnect {...rest} status={WalletStatus.connect} handleClick={() => {
-        }}  label={'xxxxx....xxxx'} wait={200}></BtnWalletConnect></Grid>
+        }} label={'xxxxx....xxxx'} wait={200}></BtnWalletConnect></Grid>
         <Grid item xs={3}><BtnWalletConnect {...rest} status={WalletStatus.unlock} handleClick={() => {
-        }}  label={'xxxxx....xxxx'}
+        }} label={'xxxxx....xxxx'}
                                             wait={200}></BtnWalletConnect></Grid>
         <Grid item xs={3}><BtnWalletConnect {...rest} status={WalletStatus.noNetwork} handleClick={() => {
-        }}  label={'xxxxx....xxxx'}
+        }} label={'xxxxx....xxxx'}
                                             wait={200}></BtnWalletConnect></Grid>
     </>
 })
@@ -108,17 +101,17 @@ const AmmCardWrap = () => {
         // ammCalcData,
         coinAInfo: coinMap.ETH as CoinInfo<CoinType>,
         coinBInfo: coinMap.LRC as CoinInfo<CoinType>,
-        activity:{
-            totalRewards:241232132,
-            myRewards:1232.123,
+        activity: {
+            totalRewards: 241232132,
+            myRewards: 1232.123,
             rewardToken: coinMap.ETH as CoinInfo<CoinType>,
             duration: {
                 from: new Date('2021-1-1'),
                 to: new Date()
             },
         },
-        APY:56,
-        tradeFloat:{
+        APY: 56,
+        tradeFloat: {
             priceDollar: 123,
             priceYuan: 2343232,
             change: '0%',
@@ -133,8 +126,8 @@ const AmmCardWrap = () => {
         totalB: 12344,
         rewardToken: 'LRC',
         rewardValue: 13,
-        feeA:121,
-        feeB:1232,
+        feeA: 121,
+        feeB: 1232,
         isNew: true,
         isActivity: false,
     }
@@ -220,12 +213,12 @@ const AccountInfoWrap = (rest: any) => {
             <AccountInfo  {...{
                 ...rest,
                 ...accountInfoProps,
-                mainBtn:  <>
-                    <Button className={'unlock'}  startIcon={<LockIcon fontSize={'large'}/>}  variant={'outlined'} >
-                        <Typography variant={'body2'} marginTop={1/2}> {'unLock'} </Typography>
+                mainBtn: <>
+                    <Button className={'unlock'} startIcon={<LockIcon fontSize={'large'}/>} variant={'outlined'}>
+                        <Typography variant={'body2'} marginTop={1 / 2}> {'unLock'} </Typography>
                     </Button>
-                    <Button className={'lock'}  startIcon={<UnLockIcon fontSize={'large'}/>}    variant={'outlined'} >
-                        <Typography variant={'body2'} marginTop={1/2}> {'Lock'} </Typography>
+                    <Button className={'lock'} startIcon={<UnLockIcon fontSize={'large'}/>} variant={'outlined'}>
+                        <Typography variant={'body2'} marginTop={1 / 2}> {'Lock'} </Typography>
                     </Button>
                 </>
             }} />
@@ -283,7 +276,7 @@ const Template: Story<any> = () => {
                 <AmmCardWrap/>
             </Grid>
             <Grid item md={3} xs={4} lg={4}>
-                <AmmCardWrap/>                                                          
+                <AmmCardWrap/>
             </Grid>
 
         </Grid>
