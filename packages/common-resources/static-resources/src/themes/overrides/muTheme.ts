@@ -81,7 +81,7 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             },
         },
         typography: {
-            fontFamily: `Gilroy-Medium, Helvetica, Arial, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif`,
+            fontFamily: `DINCondensed, Helvetica, Arial, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif`,
             fontSize: 12,
             h1: {
                 fontSize: 48,
