@@ -271,6 +271,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         setOutput(output)
 
         tradeCalcData.priceImpact = output?.priceImpact as string
+        tradeCalcData.minimumReceived = output?.amountBOutSlip.minReceivedVal as string
 
         if (isAtoB) {
             _tradeData.buy.tradeValue = output?.output ? parseFloat(output?.output) : 0
