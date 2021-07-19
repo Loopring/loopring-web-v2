@@ -113,9 +113,11 @@ export const SwapTradeWrap = <T extends IBData<I>,
         popupId: 'slippagePop',
     })
 
-    const priceImpact = tradeCalcData && tradeCalcData.priceImpact ? parseFloat(tradeCalcData.priceImpact).toPrecision(3).toString() + ' %' : EmptyValueTag
+    const priceImpact = (tradeCalcData && tradeCalcData.priceImpact) ? parseFloat(tradeCalcData.priceImpact).toPrecision(3).toString() + ' %' : EmptyValueTag
 
-    const fee = tradeCalcData && tradeCalcData.fee ? (tradeCalcData.fee + '%%') : EmptyValueTag
+    const fee = (tradeCalcData && tradeCalcData.fee) ? (tradeCalcData.fee + '%%') : EmptyValueTag
+
+    const minimumReceived = (tradeCalcData && tradeCalcData.minimumReceived) ? tradeCalcData.minimumReceived : EmptyValueTag
 
     return <Grid className={tradeCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
@@ -202,7 +204,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapMinReceive')}</Typography>
                         <Typography component={'p'}
-                                    variant="body1">{t(tradeCalcData ? tradeCalcData.minimumReceived : EmptyValueTag)} </Typography>
+                                    variant="body1">{ minimumReceived } </Typography>
                     </Grid>
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapFee')} </Typography>
