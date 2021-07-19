@@ -25,6 +25,8 @@ export const SwapTradeWrap = <T extends IBData<I>,
     TCD extends TradeCalcData<I>>({
                                       t,
                                       onChangeEvent,
+                                      isStob,
+                                      switchStobEvent,
                                       swapData, disabled,
                                       handleError, swapBtnStatus,
                                       onSwapClick, swapBtnI18nKey,
@@ -37,6 +39,9 @@ export const SwapTradeWrap = <T extends IBData<I>,
     const buyRef = React.useRef();
     const {slippage} = useSettings();
     const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number | string>;
+    const [_isSotB, setIsStoB] = React.useState(typeof isStob !== 'undefined'?isStob:true);
+
+    
     const getDisabled = () => {
         if (disabled || tradeCalcData === undefined || tradeCalcData.sellCoinInfoMap === undefined) {
             return true
@@ -45,6 +50,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
         }
     };
     const tradeData = swapData.tradeData
+    
     const handleOnClick = React.useCallback((_event: React.MouseEvent, ref: any) => {
         const focus: 'buy' | 'sell' = ref.current === buyRef.current ? 'buy' : 'sell';
         onChangeEvent(1, {tradeData: swapData.tradeData, type: focus, to: 'menu'});
@@ -62,6 +68,12 @@ export const SwapTradeWrap = <T extends IBData<I>,
             to: 'button'
         });
     }, [swapData, onChangeEvent]);
+    const _onSwitchStob = React.useCallback((_event: any)=>{
+        setIsStoB(!_isSotB)
+        if(typeof switchStobEvent === 'function') {
+            switchStobEvent(!_isSotB) 
+        }
+    },[switchStobEvent, _isSotB])
     const _onSlippageChange = React.useCallback((slippage: number | string, customSlippage: number | string | undefined) => {
         popupState.close();
         onChangeEvent(0, {
@@ -149,9 +161,10 @@ export const SwapTradeWrap = <T extends IBData<I>,
         </Grid>
         <Grid item>
             <Typography component={'p'} variant="body1" height={24} lineHeight={'24px'}>
-                {tradeData.buy.belong && tradeData.sell && tradeCalcData ? <>
-                    {`1${tradeData.sell?.belong} = ${tradeCalcData.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`}
-                    <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={covertOnClick}
+                {tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData ? <>
+                    {_isSotB ? `1${tradeData.sell?.belong} = ${tradeCalcData.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
+                        : `1${tradeData.buy?.belong} = ${tradeCalcData.BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`}
+                    <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
                         // style={{transform: 'rotate(90deg)'}}
                     ><ReverseIcon/></IconButtonStyled>
                 </> : EmptyValueTag}

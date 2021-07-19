@@ -18,6 +18,7 @@ export type  SwapMenuListProps<T, TCD> = {
  */
 export type SwapTradeBaseProps<T, I, TCD> = {
     disabled?: boolean,
+    isStob?: boolean,
     swapBtnI18nKey?: string,
     swapBtnStatus?: keyof typeof TradeBtnStatus | undefined,
     tradeCalcData: TCD,
@@ -29,6 +30,7 @@ export type SwapTradeBaseEventProps<T, I> = {
 } & Partial<Pick<InputButtonProps<T, I, unknown>, 'handleError'>>
 
 export type SwapTradeExtendProps<T> = {
+    switchStobEvent?: (value:boolean) => void,
     onChangeEvent: (index: 0 | 1, data: SwapData<SwapTradeData<T>>) => void,
 }
 export type SwapTradeProps<T, I, TCD> =
