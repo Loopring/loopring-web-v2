@@ -62,7 +62,7 @@ const BoxStyled = styled(Box)`
 ` as typeof Box
 const TableStyled = styled(Box)`
   .rdg {
-    --template-columns: 240px auto auto  68px 120px !important;
+    --template-columns: 240px auto auto  68px 130px !important;
 
     .rdg-cell.action {
       display: flex;
@@ -189,7 +189,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, currency: 'USD' |
     {
         key: 'trade',
         name: t('labelAction'),
-        maxWidth: 120,
+        // maxWidth: 120,
         width: 'auto',
         headerCellClass: `action`,
         cellClass: () => `action`,
