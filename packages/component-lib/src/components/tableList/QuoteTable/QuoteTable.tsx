@@ -201,6 +201,7 @@ export interface QuoteTableProps {
     rawData: QuoteTableRawDataItem[],
     rowHeight?: number
     onVisibleRowsChange?: (startIndex: number) => void,
+    onRowClick?: (rowIdx: number, row: QuoteTableRawDataItem, column: any) => void,
     // generateColumns: ({
     //                       columnsRaw,
     //                       t,
@@ -219,6 +220,7 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                                                                     onVisibleRowsChange,
                                                                     rawData,
                                                                     history,
+                                                                    onRowClick,
                                                                     ...rest
                                                                 }: QuoteTableProps & WithTranslation & RouteComponentProps) => {
     //const formattedRawData = rawData && Array.isArray(rawData) ? rawData : []
@@ -239,6 +241,7 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
         rawData: [],
         columnMode: columnMode({t, ...rest}, history),//getColumnModelQuoteTable(t, history),
         generateRows: (rawData: any) => rawData,
+        onRowClick: onRowClick,
         generateColumns: ({columnsRaw}: any) => columnsRaw as Column<QuoteTableRawDataItem, unknown>[],
     }
 
