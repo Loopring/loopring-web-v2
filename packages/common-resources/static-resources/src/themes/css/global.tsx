@@ -77,7 +77,7 @@ export const globalCss = ({theme}: any) => css`
       font-weight: normal;
       font-style: normal;
     }
-   
+    
     height: 100%;
     box-sizing: border-box;
     -moz-box-sizing: border-box; /* Firefox */
