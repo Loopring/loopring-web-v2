@@ -5,10 +5,10 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { DatePicker, TextField } from '../../../basic-lib/form'
 import { Button } from '../../../basic-lib/btns'
 import { DropDownIcon } from '@loopring-web/common-resources'
-import { TransactionSide, TransactionTradeTypes } from '../Interface'
+import { TransactionTradeTypes } from '../Interface'
 
 export interface FilterProps {
-    originalData: (string | number | TransactionSide | {
+    originalData: (string | number | {
         unit: string;
         value: number;
     } | undefined)[][];

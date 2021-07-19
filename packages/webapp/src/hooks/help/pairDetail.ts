@@ -39,7 +39,7 @@ export const pairDetailBlock = <C extends { [ key: string ]: any }, I extends { 
     })
 }
 
-export const pairDetailDone = <C>({coinKey, market,ammPoolsBalance, tokenMap,tickerData, _tradeCalcData, coinMap, marketCoins}:any)=>{
+export const pairDetailDone = <C>({coinKey, market,ammPoolsBalance, fee, tokenMap,tickerData, _tradeCalcData, coinMap, marketCoins}:any)=>{
 
     const [, coinSell, coinbuy] = coinKey.match(/(\w+)-(\w+)/i)
     let stob:number|undefined;
@@ -97,6 +97,8 @@ export const pairDetailDone = <C>({coinKey, market,ammPoolsBalance, tokenMap,tic
     _tradeCalcData.buyCoinInfoMap = coinMap && tokenMap && tokenMap[ _tradeCalcData.coinSell as string ].tradePairs?.reduce((prev: any, item: string | number) => {
         return {...prev, [ item ]: coinMap[ item ]}
     }, {} as CoinMap<C>);
+
+    _tradeCalcData.fee = fee
 
     return {
         _tradeCalcData
