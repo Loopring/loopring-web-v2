@@ -180,11 +180,19 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 },
                 allOrNone: false,
                 validUntil: VALID_UNTIL,
-                maxFeeBips: 60,
+                maxFeeBips: parseInt(feeBips),
                 fillAmountBOrS: false, // amm only false
                 orderType: OrderType.ClassAmm,
                 eddsaSignature: '',
             }
+            const response = await LoopringAPI.userAPI.submitOrder(request, account.eddsaKey, account.apiKey)
+
+            console.log(response)
+
+            await delayAndUpdateWalletLayer2()
+
+            setIsSwapLoading(false)
+            
             setTradeData({
                 ...tradeData,
                 ...{
@@ -192,12 +200,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                     buy: {...tradeData?.buy, tradeValue: 0},
                 }
             } as SwapTradeData<IBData<C>>)
-            const response = await LoopringAPI.userAPI.submitOrder(request, account.eddsaKey, account.apiKey)
-
-            console.log(response)
-            
-            await delayAndUpdateWalletLayer2()
-            setIsSwapLoading(false);
 
         } catch (reason) {
             setIsSwapLoading(false);

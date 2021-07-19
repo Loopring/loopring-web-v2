@@ -221,7 +221,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 // _handleContChange(current?.value, name)
             }
         },
-        [inputData, name])
+        [inputData,])
     const inputEle = useFocusRef({
         callback: inputCallback,
         shouldFocusOn: focusOnInput,
@@ -237,19 +237,21 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
             setsValue(value);
             debounceCount({...inputData, ...{tradeValue: value}})
         }
-        , [debounceCount, _handleError, inputData])
+        , [_handleError, setsValue, inputData])
+
     // const _handleContChange =
     // const _handleOnClick = React.useCallback((event: React.MouseEvent) => {
     //     if (handleOnClick) handleOnClick(event,ref)
     // }, [])
-    const _handleMaxAllowClick = (_event: React.MouseEvent) => {
+    const _handleMaxAllowClick = React.useCallback((_event: React.MouseEvent) => {
         if (maxAllow) {
             _handleContChange(balance, name)
             //setsValue(balance);
         }
-    }
+    }, [_handleContChange, balance, name])
     const coinInfo: any = coinMap[ belong ] ? coinMap[ belong ] : {};
     const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;
+    
     // formatValue(sValue)
     return <> <IWrap component={'div'} ref={ref}>
         <Grid container component={'div'} className={'label-wrap'} justifyContent={'space-between'}
