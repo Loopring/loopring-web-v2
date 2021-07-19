@@ -45,6 +45,7 @@ export default {
     labelTxFilterWithdraw: 'Withdraw',
     labelTxFilterTransfer: 'Transfer',
     labelTxFilterAllTokens: 'All Tokens',
+    labelTxSide: 'Side',
     labelTxToken: 'Token',
     labelTxFrom: 'From',
     labelTxTo: 'To',
