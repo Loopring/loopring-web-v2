@@ -15,6 +15,8 @@ export type AmmDepositBaseProps<T, I> = {
 } & Partial<Pick<InputButtonProps<T, I, unknown>, 'handleError'>>
 
 export type AmmDepositExtendProps<T, I, C, ACD> = {
+    isStob?: boolean,
+    switchStobEvent?: (_isStoB: boolean) => void,
     disabled?: boolean,
     onChangeEvent: (data: AmmChgData<T>) => void,
     tokenAProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>,
@@ -33,6 +35,8 @@ export type AmmWithdrawBaseProps<T, I, > = {
 } & Partial<Pick<InputButtonProps<T, I, unknown>, 'handleError'>>
 export type AmmWithdrawExtendProps<T, I, C, ACD> = {
     disabled?: boolean,
+    isStob?: boolean,
+    switchStobEvent?: (_isStoB: boolean) => void,
     onChangeEvent: (data: Pick<AmmChgData<T>, 'tradeData'> & { type: 'coinA' | 'coinB' | 'percentage', percentage?: number }) => void,
     tokenAProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>,
     tokenBProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>,
