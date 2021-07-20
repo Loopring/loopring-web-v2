@@ -39,7 +39,7 @@ import {
     makeCache,
     makeMarketArray,
     makeTickView,
-    makeWallet,
+    makeWalletLayer2,
     pairDetailBlock,
     pairDetailDone
 } from '../../hooks/help';
@@ -104,7 +104,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 break;
             case "DONE":
                 walletLayer2State.statusUnset();
-                const {walletMap} = makeWallet();
+                const {walletMap} = makeWalletLayer2();
                 if (tradeCalcData) {
                     setTradeCalcData({...tradeCalcData, fee: feeBips, walletMap} as TradeCalcData<C>);
                     setTradeData({
@@ -329,7 +329,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 })
             }
             if (walletLayer2State.walletLayer2) {
-                const {walletMap} = makeWallet();
+                const {walletMap} = makeWalletLayer2();
                 _tradeCalcData.walletMap = walletMap as WalletMap<any>;
                 getUserTrades(market).then((marketTrades) => {
                     let _myTradeArray = makeMarketArray(market, marketTrades) as RawDataTradeItem[]

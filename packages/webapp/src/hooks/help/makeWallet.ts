@@ -31,10 +31,12 @@ export type WalletMapExtend<C> =    {
 //     return {walletMap}
 // }
 
-export const makeWallet = <C extends { [ key: string ]: any }>():{ walletMap: WalletMapExtend<C> | undefined } => {
+export const makeWalletLayer2 = <C extends { [ key: string ]: any }>():{ walletMap: WalletMapExtend<C> | undefined } => {
     const {walletLayer2} = store.getState().walletLayer2;
     const {tokenMap} = store.getState().tokenMap;
     let walletMap: WalletMapExtend<C> | undefined;
+
+
     if (walletLayer2) {
         walletMap = Reflect.ownKeys(walletLayer2).reduce((prev, item) => {
             const {total, locked, pending: {withdraw}} = walletLayer2[ item as string ];
