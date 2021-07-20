@@ -880,7 +880,8 @@ export function useModalProps() {
         coinInfoMap: coinMap as any,
         slippage: 0.5,
         // slippageTolerance: [0.1, 0.5, 1, 'slippage:N'],
-        fee: '1%'
+        feeJoin: '1',
+        feeExit: '1',
     }
 
 

@@ -167,7 +167,8 @@ export const ammCalcData: AmmInData<CoinType> = {
     AtoB: 50,
     coinInfoMap: coinMap,
     slippage: 0.5,
-    fee: '1%'
+    feeJoin: '1%',
+    feeExit: '1%',
 }
 
 
