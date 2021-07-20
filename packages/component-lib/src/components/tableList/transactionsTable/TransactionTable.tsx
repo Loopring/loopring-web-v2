@@ -347,9 +347,9 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
             resultData = resultData.filter(o => o.side === currFilterType)
         }
         if (currFilterDate[0] && currFilterDate[1]) {
-            const diff = moment(moment()).diff(currFilterDate, 'days')
-            // o[6]: date
-            resultData = resultData.filter(o => o[ 6 ] === diff)
+            const startTime = Number(moment(currFilterDate[0]).format('x'))
+            const endTime = Number(moment(currFilterDate[1]).format('x'))
+            resultData = resultData.filter(o => o.time < endTime && o.time > startTime)
         }
         // o[0]: token
         // if (currFilterToken !== 'All Tokens') {
