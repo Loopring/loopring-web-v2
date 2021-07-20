@@ -23,7 +23,7 @@ import { LoopringAPI } from 'stores/apis/api'
 import { AssetType } from 'loopring-sdk'
 import store from 'stores'
 import { useWalletLayer1 } from 'stores/walletLayer1'
-import { makeWallet } from 'hooks/help'
+import { makeWalletLayer2 } from 'hooks/help'
 import { EmptyValueTag,unit } from '@loopring-web/common-resources'
 import { StylePaper } from '../../styled'
 
@@ -100,7 +100,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const { accAddr } = store.getState().account
     const { walletLayer2 } = store.getState().walletLayer2;
     const { ammMap } = store.getState().amm.ammMap
-    const walletMap = makeWallet()
+    const walletMap = makeWalletLayer2()
     const assetsKeyList = walletMap && walletMap.walletMap ? Object.keys(walletMap.walletMap) : []
     const assetsDetailList = walletMap && walletMap.walletMap ? Object.values(walletMap.walletMap) : []
     const assetsList = assetsKeyList.map((key, index) => ({
