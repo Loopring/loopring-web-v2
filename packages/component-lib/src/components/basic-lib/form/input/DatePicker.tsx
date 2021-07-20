@@ -95,7 +95,7 @@ export const DateRangePicker = experimentalStyled(({...props}: DateRangePickerPr
             }
             return (<>
                 <DateTextField {...{...startProps, helperText: null, label: undefined}} placeholder={'YY-MM-DD'}/>
-                <DateRangeDelimiter>~</DateRangeDelimiter>
+                <DateRangeDelimiter>-</DateRangeDelimiter>
                 <DateTextField {...{...endProps, helperText: null, label: undefined}} placeholder={'YY-MM-DD'}/>
             </>)
         }
