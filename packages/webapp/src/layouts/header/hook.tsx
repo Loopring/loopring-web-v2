@@ -70,7 +70,7 @@ import Web3 from 'web3'
 import { AmmData, AmmInData, IBData, TradeCalcData, WalletMap } from '@loopring-web/common-resources'
 
 import { useUserAPI } from 'hooks/exchange/useApi'
-import { makeWallet } from 'hooks/help'
+import { makeWalletLayer2 } from 'hooks/help'
 import { useWalletLayer2 } from 'stores/walletLayer2'
 import { useTokenMap } from 'stores/token'
 import { LoopringAPI } from 'stores/apis/api'
@@ -447,8 +447,8 @@ export function useModalProps() {
     //HIGH: effect by wallet state update
     React.useEffect(() => {
         if (walletLayer2State.walletLayer2) {
-            let {walletMap} = makeWallet();
-            setWalletMap1(walletMap)
+            let {walletMap} = makeWalletLayer2();
+            setWalletMap2(walletMap)
         }
         if (walletLayer1State.walletLayer1) {
             // let {walletMap} =  makeWalletLayer1();
@@ -464,7 +464,7 @@ export function useModalProps() {
                 break;
             case "DONE":
                 walletLayer2State.statusUnset();
-                let {walletMap} = makeWallet();
+                let {walletMap} = makeWalletLayer2();
                 setWalletMap2(walletMap)
                 break;
             default:
@@ -472,6 +472,7 @@ export function useModalProps() {
 
         }
     }, [walletLayer2State.status])
+
     React.useEffect(() => {
         switch (walletLayer1State.status) {
             case "ERROR":
@@ -511,9 +512,8 @@ export function useModalProps() {
             const web3 = new Web3(provider as any)
 
             let sendByMetaMask = account.connectName === ConnectorNames.Injected
-            sendByMetaMask = true
 
-            const gasPrice = store.getState().system.gasPrice ?? 30
+            const gasPrice = store.getState().system.gasPrice ?? 20
             const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
 
             const nonce = await sdk.getNonce(web3, account.accAddr)
