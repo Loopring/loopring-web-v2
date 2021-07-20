@@ -198,7 +198,7 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapFee')} </Typography>
                         <Typography component={'p'}
-                                    variant="body1">{t(ammCalcData ? ammCalcData.fee : EmptyValueTag)}</Typography>
+                                    variant="body1">{t(ammCalcData ? ammCalcData.feeJoin : EmptyValueTag)}</Typography>
                     </Grid>
                 </Grid>
                 <Grid item>

@@ -48,6 +48,7 @@ import store from 'stores';
 import { AccountStatus } from 'state_machine/account_machine_spec';
 import { SwapData } from '@loopring-web/component-lib';
 import { deepClone } from '../../utils/obj_tools';
+import { debug } from 'console';
 
 export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     /*** api prepare ***/
@@ -146,6 +147,8 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         setSwapBtnI18nKey(label);
     }, [account.status]);
     const swapCalculatorCallback = React.useCallback(async function ({sell, buy, slippage, ...rest}: any) {
+
+        debugger
         const {exchangeInfo} = store.getState().system
         setIsSwapLoading(true);
         if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo
@@ -214,6 +217,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         [ fnType.ACTIVATED ]:[swapCalculatorCallback]
     })
     const onSwapClick = React.useCallback(({sell, buy, slippage, ...rest}: SwapTradeData<IBData<C>>) => {
+        debugger
         accountStaticCallBack(swapBtnClickArray, [{sell, buy, slippage, ...rest}])
     }, [swapBtnClickArray])
     const handleSwapPanelEvent = async (swapData: SwapData<SwapTradeData<IBData<C>>>, switchType: any): Promise<void> => {
@@ -270,6 +274,10 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         const base = _tradeData.sell.belong as string
         const quote = _tradeData.buy.belong as string
 
+        let _tradeCalcData = {...tradeCalcData} as TradeCalcData<C>;
+
+        return {_tradeData, _tradeCalcData}
+/*
         const output = fm.getOutputAmount(input, base, quote, isAtoB, marketArray, tokenMap,
             marketMap, depth?.depth, {[ 'AMM-' + market ]: ammMap[ 'AMM-' + market ].__rawConfig__} as LoopringMap<AmmPoolInfoV3>,
             ammPoolSnapshot, '6', '200')
@@ -287,6 +295,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         //TODO: renew  tradeCalcData
         let _tradeCalcData = {...tradeCalcData} as TradeCalcData<C>;
         return {_tradeData, _tradeCalcData}
+        */
     }
 
     const throttleSetValue = React.useCallback(_.debounce(async (type, _tradeData, _ammPoolSnapshot) => {
@@ -335,7 +344,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                     let _myTradeArray = makeMarketArray(market, marketTrades) as RawDataTradeItem[]
                     setMyTradeArray(_myTradeArray ? _myTradeArray : [])
                 })
-
 
             }
             let apiList = [];

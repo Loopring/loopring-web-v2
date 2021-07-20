@@ -7,7 +7,7 @@ import { GlobalProvider, Web3ReactManager } from './provider/';
 import React, { useEffect } from 'react';
 import { useInit } from './hook';
 import { STATUS } from 'stores/constant';
-import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
+// import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
 import { ErrorPage } from './pages/ErrorPage';
 import { LoadingPage } from './pages/LoadingPage';
 
