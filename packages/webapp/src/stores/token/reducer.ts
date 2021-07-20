@@ -4,6 +4,7 @@ import { STATUS } from '../constant';
 
 const initialState: TokenMapStates<object> = {
     coinMap: {},
+    totalCoinMap: {},
     addressIndex: undefined,
     tokenMap: undefined,
     marketMap: undefined,
@@ -26,17 +27,19 @@ const tokenMapSlice: Slice<TokenMapStates<object>> = createSlice({
                 state.errorMessage = action.error
             }
 
-            const {tokenMap, marketMap, addressIndex, idIndex, coinMap, marketArray, marketCoins} = action.payload;
+            const {tokenMap, totalCoinMap, marketMap, addressIndex, idIndex, coinMap, marketArray, marketCoins} = action.payload;
             if (tokenMap) { state.tokenMap = tokenMap }
             if (marketMap) { state.marketMap = marketMap }
             if (addressIndex) { state.addressIndex = addressIndex }
             if (idIndex) { state.idIndex = idIndex }
             if (coinMap) { state.coinMap = coinMap }
+            if (totalCoinMap) { state.totalCoinMap = totalCoinMap }
             if (marketArray) { state.marketArray = marketArray }
             if (marketCoins)  { state.marketCoins = marketCoins }
             // if (tokenPairsMap) {state.tokenPairsMap = tokenPairsMap }
             state.status = STATUS.DONE;
         },
+        
         // getTokenPairMap(state, action: PayloadAction<{tokenPairs: TokenPairs }>) {
         //     const {tokenPairs} = action.payload;
         //     const tokenPairsMap =  Reflect.ownKeys(tokenPairs).reduce((prev,key)=>{

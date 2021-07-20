@@ -1,7 +1,7 @@
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 import React from 'react';
 import { AmmRecordRow, MyPoolRow } from '@loopring-web/component-lib';
-import { makeWallet, WalletMapExtend } from '../../../hooks/help/makeWallet';
+import { makeWalletLayer2, WalletMapExtend } from '../../../hooks/help/makeWallet';
 import {
     getUserAmmTransaction,
     makeMyAmmMarketArray,
@@ -42,7 +42,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     //     ammPoolsBalance: AmmPoolSnapshot|undefined
     // }|undefined>(undefined);
     const walletLayer2DoIt = React.useCallback(() => {
-        const {walletMap: _walletMap} = makeWallet();
+        const {walletMap: _walletMap} = makeWalletLayer2();
         setWalletMap(_walletMap as WalletMapExtend<any>)
         if (_walletMap) {
             getUserAmmTransaction()?.then((marketTrades) => {
@@ -51,7 +51,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
             })
         }
         return _walletMap
-    }, [makeWallet, getUserAmmTransaction, makeMyAmmMarketArray, marketArray])
+    }, [makeWalletLayer2, getUserAmmTransaction, makeMyAmmMarketArray, marketArray])
     const makeMyPoolRow = React.useCallback((_walletMap): MyPoolRow<R>[] => {
         if (_walletMap && ammMap) {
             // @ts-ignore

@@ -5,20 +5,13 @@ import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
 import { useDeepCompareEffect } from 'react-use'
 import { Popover, PopoverType, TablePagination } from '../../basic-lib'
-import { Column, generateColumns, generateRows, Table } from '../../basic-lib/tables/index'
+import { Column, Table } from '../../basic-lib/tables/index'
 import { AlertIcon, CheckIcon, EmptyValueTag, PendingIcon, TableType, getFormattedHash } from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
 import { TablePaddingX, TableFilterStyled } from '../../styled';
 import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes } from './Interface'
+import { DateRange } from '@material-ui/lab'
 interface Row extends RawDataTransactionItem {
-    // from: string
-    // to: string
-    // amount: string
-    // fee: string
-    // memo: string
-    // time: number
-    // txnHash: string
-    // status: string
     filterColumn: string
     cellExpend: {
         value: string
@@ -287,11 +280,6 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
             </div>
         )
     },
-    // {
-    //     key: 'tradeType',
-    //     name: 'TradeType',
-    //     hidden: true
-    // },
 ]
 
 const TableStyled = styled(Box)`
@@ -332,12 +320,10 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
     }
     const {rawData, pagination, showFilter} = props
     const [page, setPage] = React.useState(1)
-    // const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
-    // const [totalData, setTotalData] = React.useState(formattedRawData)
-    const [totalData, setTotalData] = React.useState<any[]>(rawData)
+    const [totalData, setTotalData] = React.useState<RawDataTransactionItem[]>(rawData)
     const [filterType, setFilterType] = React.useState(TransactionTradeTypes.allTypes)
-    const [filterDate, setFilterDate] = React.useState(['', ''])
-    const [filterToken, setFilterToken] = React.useState('All Tokens')
+    const [filterDate, setFilterDate] = React.useState<DateRange<Date | string>>(['', ''])
+    // const [filterToken, setFilterToken] = React.useState('All Tokens')
 
     const pageSize = pagination ? pagination.pageSize : 10;
 
@@ -354,40 +340,44 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         TableType,
         currFilterType = filterType,
         currFilterDate = filterDate,
-        currFilterToken = filterToken,
-        // currPage = page
+        // currFilterToken = filterToken,
     }) => {
-        // let resultData = cloneDeep(formattedRawData)
-        // let resultData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
         let resultData = rawData || []
-        // o[10]: tradeType
         if (currFilterType !== TransactionTradeTypes.allTypes) {
             resultData = resultData.filter(o => o.side === currFilterType)
         }
         if (currFilterDate[0] && currFilterDate[1]) {
-            const diff = moment(moment()).diff(currFilterDate, 'days')
-            // o[6]: date
-            resultData = resultData.filter(o => o[ 6 ] === diff)
+            const startTime = Number(moment(currFilterDate[0]).format('x'))
+            const endTime = Number(moment(currFilterDate[1]).format('x'))
+            resultData = resultData.filter(o => o.time < endTime && o.time > startTime)
         }
         // o[0]: token
-        if (currFilterToken !== 'All Tokens') {
-            resultData = resultData.filter(o => o[ 0 ] === currFilterToken)
-        }
+        // if (currFilterToken !== 'All Tokens') {
+        //     resultData = resultData.filter(o => o[ 0 ] === currFilterToken)
+        // }
         if (TableType === 'filter') {
             setPage(1)
         }
         setTotalData(resultData)
-    }, [rawData, filterDate, filterToken, filterType])
+    }, [rawData, filterDate, filterType])
 
-    const handleFilterChange = React.useCallback(({filterType, filterDate, filterToken}) => {
-        setFilterType(filterType)
-        setFilterDate(filterDate)
-        setFilterToken(filterToken)
+    const handleFilterChange = React.useCallback(({type = filterType, date = filterDate}) => {
         updateData({
             TableType: TableType.filter,
-            currFilterType: filterType,
-            currFilterDate: filterDate,
-            currFilterToken: filterToken
+            currFilterType: type,
+            currFilterDate: date,
+            // currFilterToken: filterToken
+        })
+    }, [updateData, filterDate, filterType])
+
+    const handleReset = React.useCallback(() => {
+        setFilterType(TransactionTradeTypes.allTypes)
+        setFilterDate([null, null])
+        // setFilterToken('All Tokens')
+        updateData({
+            TableType: TableType.filter,
+            currFilterType: TransactionTradeTypes.allTypes,
+            currFilterDate: [null, null],
         })
     }, [updateData])
 
@@ -399,7 +389,15 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
     return <TableStyled>
         {showFilter && (
             <TableFilterStyled>
-                <Filter originalData={totalData} handleFilterChange={handleFilterChange}/>
+                <Filter
+                    originalData={totalData} 
+                    filterDate={filterDate}
+                    filterType={filterType}
+                    setFilterType={setFilterType}
+                    setFilterDate={setFilterDate}
+                    handleFilterChange={handleFilterChange}
+                    handleReset={handleReset}
+                />
             </TableFilterStyled>
         )}
         <Table {...{...defaultArgs, ...props, rawData: getRenderData()}}/>
