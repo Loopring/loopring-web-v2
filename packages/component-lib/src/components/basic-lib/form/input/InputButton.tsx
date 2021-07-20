@@ -221,7 +221,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 // _handleContChange(current?.value, name)
             }
         },
-        [inputData,])
+        [inputData])
     const inputEle = useFocusRef({
         callback: inputCallback,
         shouldFocusOn: focusOnInput,
@@ -282,7 +282,9 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 </ISBtn>
             </Grid>
             <Grid item className={'input-wrap'}>
-                <IInput ref={inputEle} onValueChange={_handleContChange} value={sValue} allowNegativeValue={false}
+                <IInput ref={inputEle} onValueChange={_handleContChange} value={
+                   typeof sValue === 'undefined'? '' : sValue
+                } allowNegativeValue={false}
                         name={name}
                         disabled={!disabled || belong ? false : true}
                         placeholder={placeholderText}
