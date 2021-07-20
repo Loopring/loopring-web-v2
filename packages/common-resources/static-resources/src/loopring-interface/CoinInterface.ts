@@ -77,7 +77,8 @@ export type AmmInData<T> = {
     // AmmWalletMap: WalletMap<T, WalletCoin<T>>,
     slippage: number | string
     // slippageTolerance: Array<number | string>,
-    fee: string,
+    feeJoin: string,
+    feeExit: string,
 }
 
 
