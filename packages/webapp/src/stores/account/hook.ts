@@ -205,7 +205,7 @@ export function useUnlock() {
         let apikey: any = undefined
 
         const provider = await connector.getProvider()
-        const web3 = new Web3(provider as any)
+        const web3:any = new Web3(provider as any)
 
         try {
 
@@ -272,8 +272,7 @@ export function useUnlock() {
                         validUntil: VALID_UNTIL,
                         nonce: account.nonce,
                     }
-
-                    const updateAccountResponse = await userApi.updateAccount(request, web3,
+                    const updateAccountResponse = await userApi.updateAccount(request, web3 as any,
                         chainId, account.connectName, false)
 
                     console.log('updateAccountResponse:', updateAccountResponse)

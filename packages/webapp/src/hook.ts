@@ -27,6 +27,11 @@ export function useInit() {
     // React.useEffect( ()=>{
     //     async ()=>{
     React.useMemo(async () => {
+        if(window.ethereum && window.ethereum.isMetaMask){
+            const _provide = await ConnectProvides.MetaMask;
+        } else {
+            systemState.updateSystem({chainId:1})
+        }
         // const _provide = await ConnectProvides.MetaMask;
         // setProvide(_provide);
         //.then(()=>
