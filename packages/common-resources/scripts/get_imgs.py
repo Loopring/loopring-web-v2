@@ -9,7 +9,13 @@ from eth_utils import to_checksum_address
 
 import os
 
+from PIL import Image 
+
 output_folder = 'output'
+
+output_folder2 = 'output_resize'
+
+SIZE = (36, 36)
 
 if __name__ == '__main__':
     tokens = requests.get('https://api.loopring.network/api/v3/exchange/tokens')
@@ -19,6 +25,9 @@ if __name__ == '__main__':
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
+
+    if not os.path.exists(output_folder2):
+        os.makedirs(output_folder2)
 
     totalNum = len(tokenObjs)
 
@@ -49,3 +58,16 @@ if __name__ == '__main__':
         else:
             print('{}/{}. {} is a LP Token!'.format(count, totalNum, fileName))
         count += 1
+
+    list = os.listdir(output_folder)
+    lst = []
+    for i in range(0, len(list)):
+        path = os.path.join(output_folder, list[i])
+        path2 = os.path.join(output_folder2, list[i])
+        im = Image.open(path)
+        if im.width != im.height:
+            lst.append(path)
+        im = im.resize(SIZE)
+        im.save(path2, 'PNG')
+
+    print('w!=h list:', lst)
