@@ -438,12 +438,13 @@ export function useModalProps() {
 
     const {account, apiKey, accountId, eddsaKey,} = useAccount()
 
-    const {coinMap, tokenMap, marketArray, marketCoins, marketMap,} = useTokenMap()
+    const {totalCoinMap: coinMap, tokenMap, marketArray, marketCoins, marketMap,} = useTokenMap()
 
     const walletLayer2State = useWalletLayer2();
     const walletLayer1State = useWalletLayer1();
     const [walletMap1, setWalletMap1] = useState<WalletMap<any> | undefined>(undefined);
     const [walletMap2, setWalletMap2] = useState<WalletMap<any> | undefined>(undefined);
+
     //HIGH: effect by wallet state update
     React.useEffect(() => {
         if (walletLayer2State.walletLayer2) {
