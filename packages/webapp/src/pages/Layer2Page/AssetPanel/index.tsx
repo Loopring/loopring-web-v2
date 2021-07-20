@@ -186,13 +186,6 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         getUserTotalAssets(limit)
     }, [getUserTotalAssets])
 
-    // const { tokens: tokensAll } = useGetTokens()
-
-    // const tokens = tokensAll?.tokenSymbolMap
-
-    // const { balances } = useGetUserBalances(tokens)
-
-    // const { walletLayer2 } = store.getState().walletLayer2;
     const { faitPrices } = store.getState().system
 
     const tokenPriceList = faitPrices ? Object.entries(faitPrices).map(o => ({
