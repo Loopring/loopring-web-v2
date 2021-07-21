@@ -112,11 +112,10 @@ export const SettingPanel = withTranslation(['common', 'layout'])(({t,i18n, ...r
         }
     }
     return <Grid container direction={'column'} justifyContent={'space-between'} alignItems={'stretch'} flexWrap={'nowrap'}>
-        <Typography variant={'h4'} component={'h3'} paddingLeft={2}>{t('labelTitleSecurity')}</Typography>
+        {/* <Typography variant={'h4'} component={'h3'} paddingLeft={2}>{t('labelTitleSecurity')}</Typography>
         <StyledPaper item xs={12} display={'flex'} flexDirection={'column'} marginY={2}  paddingY={3}>
             <Box component={'section'} display={'flex'} flexDirection={'column'} marginBottom={1}>
                 <Typography variant={'h5'} component={'h4'} paddingX={3}  marginBottom={1}>{t('labelTitleResetL2Keypair')}</Typography>
-                {/*<StyledDivider/>*/}
                 <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}
                       alignItems={'flex-start'} paddingX={3} >
                     <Grid item xs={8} display={'flex'} flexDirection={'column'}>
@@ -155,7 +154,7 @@ export const SettingPanel = withTranslation(['common', 'layout'])(({t,i18n, ...r
                     </Grid>
                 </Grid>
             </Box>
-        </StyledPaper>
+        </StyledPaper> */}
 
         <Typography variant={'h4'} component={'h3'} paddingLeft={2}>{t('labelTitlePreferences')}</Typography>
         <StyledPaper item xs={12} display={'flex'} flexDirection={'column'} marginY={2} paddingY={3}>
