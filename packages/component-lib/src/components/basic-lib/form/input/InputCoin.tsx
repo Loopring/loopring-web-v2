@@ -317,7 +317,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                     {/*<Grid item order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}*/}
                     {/*      className={'logo-icon'}>*/}
                     {/*    {coinMap[ belong ]?.simpleName ?*/}
-                    {/*        <AvatarCoinStyled imgX={coinInfo.x} imgY={coinInfo.y} imgHeight={coinInfo.height}*/}
+                    {/*        <AvatarCoinStyled imgx={coinInfo.x} imgY={coinInfo.y} imgHeight={coinInfo.height}*/}
                     {/*                          imgWidth={coinInfo.width}*/}
                     {/*                          variant="circular" alt={coinMap[ belong ]?.simpleName as string}*/}
                     {/*            // src={sellData?.icon}*/}
@@ -328,7 +328,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                           className={'logo-icon'}
                           height={'var(--list-menu-coin-size)'} width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
                         {coinIcon ?
-                            <AvatarCoinStyled imgX={coinIcon.x} imgY={coinIcon.y} imgHeight={coinIcon.height}
+                            <AvatarCoinStyled imgx={coinIcon.x} imgY={coinIcon.y} imgHeight={coinIcon.height}
                                               imgWidth={coinIcon.width}
                                               variant="circular" alt={coinMap[ belong ]?.simpleName as string}
                                 // src={sellData?.icon}

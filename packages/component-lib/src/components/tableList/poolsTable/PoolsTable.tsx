@@ -86,7 +86,7 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
             <Box className={'logo-icon'} height={'var(--list-menu-coin-size)'}  position={'relative'}  zIndex={20}
                  width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
                 {coinAIcon ?
-                    <AvatarCoinStyled imgX={coinAIcon.x} imgY={coinAIcon.y}
+                    <AvatarCoinStyled imgx={coinAIcon.x} imgY={coinAIcon.y}
                                       imgHeight={coinAIcon.height}
                                       imgWidth={coinAIcon.width} size={24}
                                       variant="circular" alt={coinAInfo?.simpleName as string}
@@ -103,7 +103,7 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
             <Box className={'logo-icon'} height={'var(--list-menu-coin-size)'}   position={'relative'}  zIndex={18}   left={-8}
                  width={'var(--list-menu-coin-size)'} alignItems={'center'}
                  justifyContent={'center'}>{coinBIcon ?
-                <AvatarCoinStyled imgX={coinBIcon.x} imgY={coinBIcon.y} imgHeight={coinBIcon.height}
+                <AvatarCoinStyled imgx={coinBIcon.x} imgY={coinBIcon.y} imgHeight={coinBIcon.height}
                                   imgWidth={coinBIcon.width} size={24}
                                   variant="circular" alt={coinBInfo?.simpleName as string}
                     // src={sellData?.icon}

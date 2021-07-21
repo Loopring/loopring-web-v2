@@ -291,7 +291,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                         <Grid container align-items={'center'} display={'flex'}>
                             <Grid item className={'logo-icon'} height={'var(--list-menu-coin-size)'} width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
                                 {coinIcon ?
-                                    <AvatarCoinStyled imgX={coinIcon.x} imgY={coinIcon.y} imgHeight={coinIcon.height}
+                                    <AvatarCoinStyled imgx={coinIcon.x} imgY={coinIcon.y} imgHeight={coinIcon.height}
                                                       imgWidth={coinIcon.width}
                                                       variant="circular" alt={coinMap[ belong ]?.simpleName as string}
                                         // src={sellData?.icon}

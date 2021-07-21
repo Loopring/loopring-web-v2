@@ -14,9 +14,9 @@ export const AvatarCoinStyled = styled(Avatar)<AvatarCoinProps>`
         width: 36px;
         transform-origin: top left;
         background-image: url("./static/images/coin/loopring.png") ;
-        ${({imgX,imgY,imgHeight=36,imgWidth=36,size=24}:AvatarCoinProps)=>{
+        ${({imgx,imgY,imgHeight=36,imgWidth=36,size=24}:AvatarCoinProps)=>{
             return `
-             background-position-x: -${imgX}px ;
+             background-position-x: -${imgx}px ;
              background-position-y: -${imgY}px ;
              height: ${imgHeight}px ;
              width: ${imgWidth}px ;

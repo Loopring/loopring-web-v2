@@ -45,7 +45,7 @@ export const TradeTitle = <I extends object>({
                     <Box className={'logo-icon'} height={'var(--chart-title-coin-size)'}  position={'relative'}  zIndex={20}
                          width={'var(--chart-title-coin-size)'} alignItems={'center'} justifyContent={'center'}>
                         {sellCoinIcon ?
-                            <AvatarCoinStyled imgX={sellCoinIcon.x} imgY={sellCoinIcon.y}
+                            <AvatarCoinStyled imgx={sellCoinIcon.x} imgY={sellCoinIcon.y}
                                               imgHeight={sellCoinIcon.height}
                                               imgWidth={sellCoinIcon.width} size={28}
                                               variant="circular" alt={coinAInfo?.simpleName as string}
@@ -62,7 +62,7 @@ export const TradeTitle = <I extends object>({
                     <Box className={'logo-icon'} height={'var(--chart-title-coin-size)'}   position={'relative'}  zIndex={18}   left={-8}
                          width={'var(--chart-title-coin-size)'} alignItems={'center'}
                          justifyContent={'center'}>{buyCoinIcon ?
-                        <AvatarCoinStyled imgX={buyCoinIcon.x} imgY={buyCoinIcon.y} imgHeight={buyCoinIcon.height}
+                        <AvatarCoinStyled imgx={buyCoinIcon.x} imgY={buyCoinIcon.y} imgHeight={buyCoinIcon.height}
                                           imgWidth={buyCoinIcon.width} size={28}
                                           variant="circular" alt={coinBInfo?.simpleName as string}
                             // src={sellData?.icon}
