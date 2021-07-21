@@ -299,7 +299,7 @@ export function useUnlock() {
         }
 
     }
-        , [dispatch, sendEvent, LoopringAPI.userAPI, LoopringAPI.exchangeAPI, connector, chainId, store.getState().system.exchangeInfo?.exchangeAddress])
+        , [dispatch, sendEvent, connector, chainId, store.getState().system.exchangeInfo?.exchangeAddress])
 
     return {
         lock,

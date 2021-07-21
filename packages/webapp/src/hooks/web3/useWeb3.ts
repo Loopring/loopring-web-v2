@@ -69,7 +69,7 @@ export function useEagerConnect() {
     if (!tried && active) {
       setTried(true)
     }
-  }, [tried, active])
+  }, [tried, active, activate])
 
   return tried
 }

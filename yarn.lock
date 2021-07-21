@@ -17857,10 +17857,10 @@ looper@^3.0.0:
   resolved "https://registry.yarnpkg.com/looper/-/looper-3.0.0.tgz#2efa54c3b1cbaba9b94aee2e5914b0be57fbb749"
   integrity sha1-LvpUw7HLq6m5Su4uWRSwvlf7t0k=
 
-loopring-sdk@0.0.56:
-  version "0.0.56"
-  resolved "https://registry.yarnpkg.com/loopring-sdk/-/loopring-sdk-0.0.56.tgz#5b301680bb10e3cde9ead7534676213e2c725fc0"
-  integrity sha512-etr5YSAGQyh4kGWPIigzLzHA0gDMv5EsFSmEXR+unnCxphTheKUkXTQow43/iRavzeSSni4GbyC9p0YIRKju2w==
+loopring-sdk@0.0.57:
+  version "0.0.57"
+  resolved "https://registry.yarnpkg.com/loopring-sdk/-/loopring-sdk-0.0.57.tgz#11f59ab2219b939cbfaf35385e1defb6aa70a62c"
+  integrity sha512-uDtszTCP9lD/z/bABITgdYye+0qWlRVJboiH2Dzv4hdBHGDaHXRrTMTThpuDEscPr6+Zj2UpVMZCGAXgSPz5/Q==
   dependencies:
     async "^3.2.0"
     axios "^0.21.1"
