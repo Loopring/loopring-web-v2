@@ -20,15 +20,12 @@ myLog('RPC_URLS 5:', RPC_URLS[5])
 export const injected = new InjectedConnector({ supportedChainIds: [1, 5,] })
 
 export const network = new NetworkConnector({
-  urls: { 
-    1: RPC_URLS[1], 
-    5: RPC_URLS[5] 
-  },
+  urls: RPC_URLS,
   defaultChainId: 1
 })
 
 export const walletconnect = new WalletConnectConnector({
-  rpc: { 1: RPC_URLS[1] },
+  rpc: RPC_URLS,
   bridge: 'https://bridge.walletconnect.org',
   qrcode: true,
   pollingInterval: POLLING_INTERVAL

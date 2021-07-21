@@ -20,12 +20,12 @@ export type LoopringTheme = Theme & {
     }
 }
 export type AvatarCoinProps = AvatarProps & {
-    imgX:number
-    imgY:number
-    imgH?: number
-    imgW?: number
-    imgHeight: number
-    imgWidth: number
+    imgx:number
+    imgy:number
+    imgh?: number
+    imgw?: number
+    imgheight: number
+    imgwidth: number
     size?:number
 }
 

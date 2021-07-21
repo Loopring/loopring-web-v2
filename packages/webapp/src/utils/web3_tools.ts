@@ -15,9 +15,19 @@ import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } fro
 
 import { ChainId } from 'loopring-sdk'
 
+import ms from 'ms.macro'
+
 export function getLibrary(provider: any): Web3Provider {
-  const library = new Web3Provider(provider)
-  library.pollingInterval = 10000
+  const library = new Web3Provider(
+    provider,
+    typeof provider.chainId === 'number'
+      ? provider.chainId
+      : typeof provider.chainId === 'string'
+      ? parseInt(provider.chainId)
+      : 'any'
+  )
+  library.pollingInterval = ms`15s`
+
   return library
 }
 
