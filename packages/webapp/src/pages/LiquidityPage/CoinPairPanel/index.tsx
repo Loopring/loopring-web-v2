@@ -191,9 +191,9 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             <Box component={'span'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
                                  width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
                                 {coinAIcon ?
-                                    <AvatarCoinStyled imgx={coinAIcon.x} imgY={coinAIcon.y}
-                                                      imgHeight={coinAIcon.height}
-                                                      imgWidth={coinAIcon.width} size={24}
+                                    <AvatarCoinStyled imgx={coinAIcon.x} imgy={coinAIcon.y}
+                                                      imgheight={coinAIcon.height}
+                                                      imgwidth={coinAIcon.width} size={24}
                                                       variant="circular"
                                                       alt={coinPairInfo?.myCoinA?.simpleName as string}
                                         // src={sellData?.icon}
@@ -230,8 +230,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             <Box component={'span'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
                                  width={'var(--list-menu-coin-size)'} alignItems={'center'}
                                  justifyContent={'center'}>{coinBIcon ?
-                                <AvatarCoinStyled imgx={coinBIcon.x} imgY={coinBIcon.y} imgHeight={coinBIcon.height}
-                                                  imgWidth={coinBIcon.width} size={24}
+                                <AvatarCoinStyled imgx={coinBIcon.x} imgy={coinBIcon.y} imgheight={coinBIcon.height}
+                                                  imgwidth={coinBIcon.width} size={24}
                                                   variant="circular" alt={coinPairInfo?.myCoinB?.simpleName as string}
                                     // src={sellData?.icon}
                                                   src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>

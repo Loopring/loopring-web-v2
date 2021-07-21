@@ -45,9 +45,9 @@ export const TradeTitle = <I extends object>({
                     <Box className={'logo-icon'} height={'var(--chart-title-coin-size)'}  position={'relative'}  zIndex={20}
                          width={'var(--chart-title-coin-size)'} alignItems={'center'} justifyContent={'center'}>
                         {sellCoinIcon ?
-                            <AvatarCoinStyled imgx={sellCoinIcon.x} imgY={sellCoinIcon.y}
-                                              imgHeight={sellCoinIcon.height}
-                                              imgWidth={sellCoinIcon.width} size={28}
+                            <AvatarCoinStyled imgx={sellCoinIcon.x} imgy={sellCoinIcon.y}
+                                              imgheight={sellCoinIcon.height}
+                                              imgwidth={sellCoinIcon.width} size={28}
                                               variant="circular" alt={coinAInfo?.simpleName as string}
                                 // src={sellData?.icon}
                                               src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
@@ -62,8 +62,8 @@ export const TradeTitle = <I extends object>({
                     <Box className={'logo-icon'} height={'var(--chart-title-coin-size)'}   position={'relative'}  zIndex={18}   left={-8}
                          width={'var(--chart-title-coin-size)'} alignItems={'center'}
                          justifyContent={'center'}>{buyCoinIcon ?
-                        <AvatarCoinStyled imgx={buyCoinIcon.x} imgY={buyCoinIcon.y} imgHeight={buyCoinIcon.height}
-                                          imgWidth={buyCoinIcon.width} size={28}
+                        <AvatarCoinStyled imgx={buyCoinIcon.x} imgy={buyCoinIcon.y} imgheight={buyCoinIcon.height}
+                                          imgwidth={buyCoinIcon.width} size={28}
                                           variant="circular" alt={coinBInfo?.simpleName as string}
                             // src={sellData?.icon}
                                           src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
