@@ -48,6 +48,8 @@ import store from 'stores';
 import { AccountStatus } from 'state_machine/account_machine_spec';
 import { SwapData } from '@loopring-web/component-lib';
 import { deepClone } from '../../utils/obj_tools';
+import { debug } from 'console';
+import { myLog } from 'utils/log_tools';
 
 export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     /*** api prepare ***/
@@ -146,6 +148,8 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         setSwapBtnI18nKey(label);
     }, [account.status]);
     const swapCalculatorCallback = React.useCallback(async function ({sell, buy, slippage, ...rest}: any) {
+
+        debugger
         const {exchangeInfo} = store.getState().system
         setIsSwapLoading(true);
         if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo
@@ -187,7 +191,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             }
             const response = await LoopringAPI.userAPI.submitOrder(request, account.eddsaKey, account.apiKey)
 
-            console.log(response)
+            myLog(response)
 
             await delayAndUpdateWalletLayer2()
 
@@ -214,6 +218,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         [ fnType.ACTIVATED ]:[swapCalculatorCallback]
     })
     const onSwapClick = React.useCallback(({sell, buy, slippage, ...rest}: SwapTradeData<IBData<C>>) => {
+        debugger
         accountStaticCallBack(swapBtnClickArray, [{sell, buy, slippage, ...rest}])
     }, [swapBtnClickArray])
     const handleSwapPanelEvent = async (swapData: SwapData<SwapTradeData<IBData<C>>>, switchType: any): Promise<void> => {
