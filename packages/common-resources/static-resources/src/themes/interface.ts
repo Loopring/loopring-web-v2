@@ -1,4 +1,4 @@
-import { Theme } from '@material-ui/core';
+import { AvatarProps, Theme } from '@material-ui/core';
 import { ColorBaseInterface } from './css/color-lib';
 
 export enum ThemeType {
@@ -19,8 +19,19 @@ export type LoopringTheme = Theme & {
         borderConfig: (props: { d_W?: number, c_key?: 'primary' | 'selected' | 'blur' | 'focus' | string }) => string,
     }
 }
+export type AvatarCoinProps = AvatarProps & {
+    imgX:number
+    imgY:number
+    imgH?: number
+    imgW?: number
+    imgHeight: number
+    imgWidth: number
+    size?:number
+}
+
 declare module '@emotion/react' {
     export interface Theme extends LoopringTheme {
     }
 }
+
 

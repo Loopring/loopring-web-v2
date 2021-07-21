@@ -101,13 +101,13 @@ const columnMode = ({
                     <Typography component={'span'}
                                 color={'textSecondary'}>{getThousandFormattedNumbers(balanceA)}</Typography>
                     <Typography component={'span'} marginLeft={1 / 2}
-                                color={'textSecondary'}>{' ' + coinAInfo?.simpleName}</Typography>
+                                color={'textSecondary'}>{` ${coinAInfo?.simpleName as string}`}</Typography>
                 </Typography>
                 <Typography variant={'body2'} component={'p'} color={'textSecondary'} marginTop={0}>
                     <Typography component={'span'}
                                 color={'textSecondary'}>{getThousandFormattedNumbers(balanceB)}</Typography>
                     <Typography component={'span'} marginLeft={1 / 2}
-                                color={'textSecondary'}>{' ' + coinBInfo?.simpleName}</Typography>
+                                color={'textSecondary'}>{` ${coinBInfo?.simpleName as string}` }</Typography>
 
                 </Typography>
             </Box>
@@ -133,13 +133,13 @@ const columnMode = ({
                     <Typography component={'span'}
                                 color={'textSecondary'}>{getThousandFormattedNumbers(feeA)}</Typography>
                     <Typography component={'span'} marginLeft={1 / 2}
-                                color={'textSecondary'}>{' ' + coinAInfo?.simpleName}</Typography>
+                                color={'textSecondary'}>{` ${coinAInfo?.simpleName as string}`}</Typography>
                 </Typography>
                 <Typography variant={'body2'} component={'p'} color={'textSecondary'} marginTop={0}>
                     <Typography component={'span'} marginLeft={1 / 2}
                                 color={'textSecondary'}>{getThousandFormattedNumbers(feeB)}</Typography>
                     <Typography component={'span'}
-                                color={'textSecondary'}>{' ' + coinBInfo?.simpleName}</Typography>
+                                color={'textSecondary'}>{` ${coinBInfo?.simpleName as string}` }</Typography>
 
                 </Typography>
             </Box>

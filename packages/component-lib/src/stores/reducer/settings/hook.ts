@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { setCurrency, setLanguage, setPlatform, setSlippage, setTheme, setUpColor, } from './reducer'
+import { setCoinJson, setCurrency, setLanguage, setPlatform, setSlippage, setTheme, setUpColor, } from './reducer'
 import { PlatFormType, SettingsState } from "./interface";
 import { LanguageKeys, LanguageType, ThemeKeys, ThemeType, UpColor } from '@loopring-web/common-resources';
 import React from 'react';
@@ -11,6 +11,7 @@ export function useSettings(): SettingsState & {
     setCurrency(value: 'USD' | 'CYN'): void,
     setLanguage(value: LanguageKeys): void,
     setSlippage(value: 'N' | number): void,
+    setCoinJson(value: any): void
 } {
     const settings: SettingsState = useSelector((state: any) => state.settings)
     const dispatch = useDispatch();
@@ -21,7 +22,8 @@ export function useSettings(): SettingsState & {
         setPlatform: React.useCallback((value: keyof typeof PlatFormType) => dispatch(setPlatform(value)), [dispatch]),
         setCurrency: React.useCallback((value: 'USD' | 'CYN') => dispatch(setCurrency(value)), [dispatch]),
         setUpColor: React.useCallback((value: keyof typeof UpColor) => dispatch(setUpColor(value)), [dispatch]),
-        setSlippage: React.useCallback((value: 'N' | number) => dispatch(setSlippage(value)), [dispatch])
+        setSlippage: React.useCallback((value: 'N' | number) => dispatch(setSlippage(value)), [dispatch]),
+        setCoinJson: React.useCallback((value: any) => dispatch(setCoinJson(value)), [dispatch]),
     }
 
 }

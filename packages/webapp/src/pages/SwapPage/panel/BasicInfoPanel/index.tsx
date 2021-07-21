@@ -17,8 +17,7 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
         handleChartUnitChange,
     } = useBasicInfo(props, coinAInfo, coinBInfo, marketArray, t)
     const { upColor } = useSettings();
-
-    return <>
+    return  <>
         <Grid item xs={8}>
             <TradeTitle {...{
                 coinAInfo, coinBInfo,

@@ -1,5 +1,5 @@
 import { borderFunc, pxToRem } from './utils';
-import { ComponentsOverrides } from '@material-ui/core/';
+import {  ComponentsOverrides } from '@material-ui/core/';
 import { rgba } from 'polished';
 import { fontDefault } from '../css/global';
 

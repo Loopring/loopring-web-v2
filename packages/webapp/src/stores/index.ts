@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import { save, load } from 'redux-localstorage-simple'
 
 import createSagaMiddleware from 'redux-saga'
+import * as imgConfig  from '@loopring-web/common-resources/assets/images/coin/loopring.json'
 
 // We'll use redux-logger just as an example of adding another middleware
 import logger from 'redux-logger'
@@ -17,7 +18,7 @@ import tradingSlice from './trading/reducer'
 // import transactionlice from './transactions/reducer'
 
 
-import { modalsSlice, setLanguage, settingsSlice } from '@loopring-web/component-lib';
+import { modalsSlice, setCoinJson, setLanguage, settingsSlice } from '@loopring-web/component-lib';
 import { ammReducer } from './Amm';
 import { tokenMapSlice } from './token';
 import mySaga from './rootSaga';
@@ -46,6 +47,7 @@ const reducer = combineReducers({
   tickerMap: tickerMapSlice.reducer
 })
 
+
 //
 
 const PERSISTED_KEYS: string[] = ['settings']
@@ -61,6 +63,7 @@ const store = configureStore({
 })
 store.dispatch(updateVersion())
 store.dispatch(setLanguage(store.getState().settings.language))
+store.dispatch(setCoinJson(imgConfig.frames))
 // @ts-ignore
 sagaMiddleware.run(mySaga, store.dispatch);
 

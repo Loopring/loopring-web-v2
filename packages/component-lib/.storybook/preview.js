@@ -6,10 +6,9 @@ import {I18nextProvider} from "react-i18next";
 import {Provider} from "react-redux";
 import StoryRouter from 'storybook-react-router';
 import {ThemeProvider} from "@emotion/react";
-import {getTheme, globalCss, i18n, provider, ProviderComposer} from '@loopring-web/common-resources';
+import {getTheme, globalCss, i18n, imgConfig, provider, ProviderComposer} from '@loopring-web/common-resources';
 
-import {setLanguage, setTheme} from "../src";
-
+import {setCoinJson, setLanguage, setTheme} from "../src";
 
 export const parameters = {
   actions: {argTypesRegex: "^on[A-Z].*"},
@@ -50,8 +49,22 @@ export const decorators = [
     const themeMode = backgrounds && backgrounds.value === '#ffffff' ? 'light' : 'dark';
     store.dispatch(setLanguage(locale));
     store.dispatch(setTheme(themeMode));
+    // store.dispatch(imageConfig)
     const theme = getTheme(store.getState().settings.themeMode);
-    // const language = getTheme(store.getState().settings.language);
+
+    // store.dispatch(setCoinJson(imgConfig.frames))
+
+    // let url = "./static/images/coin/loopring.json";
+    // fetch(url)
+    //   .then(res => res.json()).then(imgConfig => {
+    //   // @ts-ignore
+    //   // setCoinJsonimgConfig.frames
+    //     store.dispatch(setCoinJson(imgConfig.frames))
+    //   }
+    //
+    //  )
+
+// const language = getTheme(store.getState().settings.language);
     StoryRouter();
     return <ProviderComposer providers={[
       provider(LocalizationProvider, {dateAdapter: MomentUtils}),

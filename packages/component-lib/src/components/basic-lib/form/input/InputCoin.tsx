@@ -2,11 +2,18 @@ import { Avatar, Box, BoxProps, FormHelperText, FormLabel, Grid } from "@materia
 import styled from "@emotion/styled";
 import { debounce } from "lodash"
 import CurrencyInput from 'react-currency-input-field';
-import { CoinInfo, getThousandFormattedNumbers, globalSetup, IBData } from '@loopring-web/common-resources';
+import {
+    AvatarCoinStyled,
+    CoinInfo,
+    getThousandFormattedNumbers,
+    globalSetup,
+    IBData
+} from '@loopring-web/common-resources';
 import { InputCoinProps } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
-import { useImage } from '../../resource';
+import { useSettings } from '../../../../stores';
+// import { useImage } from '../../resource';
 
 const IWrap = styled(Box)`
   .label-wrap {
@@ -75,6 +82,7 @@ const IWrap = styled(Box)`
           `};
 
       }
+
       .input-wrap-left input {
         ${({theme}) => `
             ${theme.border.defaultFrame({c_key: theme.colorBase.error, d_R: 0.5})};
@@ -96,7 +104,7 @@ const IWrap = styled(Box)`
   .icon-wrap {
     max-width: var(--btn-max-width);
     min-width: var(--coin-min-width);
-  
+
     //.MuiButton-label {
     //  justify-content: flex-start;
     //}
@@ -106,7 +114,7 @@ const IWrap = styled(Box)`
 ` as typeof Box
 const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
   & {
-   
+
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     border-right: 1px solid transparent;
@@ -119,34 +127,36 @@ const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
       color: ${({theme}) => theme.colorBase.textSecondary};
     }
   }
-  &.icon-wrap-right > div{
-     justify-content: flex-start;
-     padding-left:${({theme}) => theme.unit / 2 * 3}px;
-     align-items: center;
-  }
-  &.icon-wrap-left > div{
-    justify-content: flex-end;
-    padding-right:${({theme}) => theme.unit / 2 * 3}px;
+
+  &.icon-wrap-right > div {
+    justify-content: flex-start;
+    padding-left: ${({theme}) => theme.unit / 2 * 3}px;
     align-items: center;
   }
-  
-  .MuiAvatar-root {
-    width: 24px;
-    height: 24px;
+
+  &.icon-wrap-left > div {
+    justify-content: flex-end;
+    padding-right: ${({theme}) => theme.unit / 2 * 3}px;
+    align-items: center;
   }
 
+  //.MuiAvatar-root {
+  //  width: 24px;
+  //  height: 24px;
+  //}
+
   // .MuiButton-endIcon svg {
-  //   color: ${({theme}) => theme.colorBase.textPrimary}
+    //   color: ${({theme}) => theme.colorBase.textPrimary}
   // }
 
   // &:hover, &:active {
-  //     //color: ${({theme}) => theme.colorBase.primaryLight};
-  //   color: ${({theme}) => theme.colorBase.textPrimary};
-  //   background-color: ${({theme}) => theme.colorBase.background().hover};
+    //     //color: ${({theme}) => theme.colorBase.primaryLight};
+    //   color: ${({theme}) => theme.colorBase.textPrimary};
+    //   background-color: ${({theme}) => theme.colorBase.background().hover};
   // }
 ` as React.ComponentType<BoxProps & { logoColor?: any }>;
 const IInput = styled(CurrencyInput)`
-  
+
   color: ${({theme}) => theme.colorBase.textPrimary};
 
   ::placeholder {
@@ -157,8 +167,8 @@ const IInput = styled(CurrencyInput)`
   height: 100%; //var(--btn-Input-height);
   border: 0;
   margin: 0;
-  
- 
+
+
   font-size: ${({theme}) => theme.fontDefault.h4};
   display: block;
   padding: .8rem 1rem;
@@ -173,7 +183,8 @@ const IInput = styled(CurrencyInput)`
   :focus {
     outline: 0;
   }
-  .input-wrap-right &{
+
+  .input-wrap-right & {
     text-align: right;
     border-top-left-radius: 0px;
     border-bottom-left-radius: 0px;
@@ -181,6 +192,7 @@ const IInput = styled(CurrencyInput)`
         border-left:  ${theme.border.borderConfig({c_key: 'blur'})};
         ${theme.mode === 'dark' ? `border-color: transparent` : ''};
     `};
+
     :focus {
       ${({theme}) => `
         ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
@@ -190,7 +202,7 @@ const IInput = styled(CurrencyInput)`
     }
   }
 
-  .input-wrap-left &{
+  .input-wrap-left & {
     text-align: left;
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
@@ -198,6 +210,7 @@ const IInput = styled(CurrencyInput)`
         border-right:  ${theme.border.borderConfig({c_key: 'blur'})};
         ${theme.mode === 'dark' ? `border-color: transparent` : ''};
     `};
+
     :focus {
       ${({theme}) => `
         ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
@@ -275,8 +288,11 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
             setsValue(balance);
         }
     }
-    const coinInfo: any = coinMap[ belong ] ? coinMap[ belong ] : {};
-    const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;
+    const {coinJson} = useSettings();
+    const coinIcon: any = coinJson [ belong ];
+
+    // const coinInfo: any = coinMap[ belong ] ? coinMap[ belong ] : {};
+    // const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;
     // formatValue(sValue)
     return <> <IWrap component={'div'} ref={ref}>
         <Grid container component={'div'} className={'label-wrap'} justifyContent={'space-between'}
@@ -298,10 +314,31 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                       alignItems={'center'}
                       className={`icon-wrap icon-wrap-${order}`}>
                 <Grid container align-items={'center'} display={'flex'}>
+                    {/*<Grid item order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}*/}
+                    {/*      className={'logo-icon'}>*/}
+                    {/*    {coinMap[ belong ]?.simpleName ?*/}
+                    {/*        <AvatarCoinStyled imgX={coinInfo.x} imgY={coinInfo.y} imgHeight={coinInfo.height}*/}
+                    {/*                          imgWidth={coinInfo.width}*/}
+                    {/*                          variant="circular" alt={coinMap[ belong ]?.simpleName as string}*/}
+                    {/*            // src={sellData?.icon}*/}
+                    {/*                          src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>*/}
+                    {/*        : ''}*/}
+                    {/*</Grid>*/}
                     <Grid item order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}
-                          className={'logo-icon'}>
-                        {coinMap[ belong ]?.simpleName ? <Avatar variant="square" alt={coinMap[ belong ]?.simpleName as string}
-                                                                 src={hasLoaded ? coinMap[ belong ]?.icon : 'static/images/icon-default.png'}/> : ''}
+                          className={'logo-icon'}
+                          height={'var(--list-menu-coin-size)'} width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
+                        {coinIcon ?
+                            <AvatarCoinStyled imgX={coinIcon.x} imgY={coinIcon.y} imgHeight={coinIcon.height}
+                                              imgWidth={coinIcon.width}
+                                              variant="circular" alt={coinMap[ belong ]?.simpleName as string}
+                                // src={sellData?.icon}
+                                              src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
+                            : <Avatar variant="circular" alt={coinMap[ belong ]?.simpleName as string} style={{
+                                height:'var(--list-menu-coin-size)',
+                                width:'var(--list-menu-coin-size)'
+                            }}
+                                // src={sellData?.icon}
+                                      src={'static/images/icon-default.png'}/>}
                     </Grid>
                     <Grid item order={order === 'left' ? 1 : 2}
                           paddingLeft={order === 'left' ? 0 : 1}>{coinMap[ belong ]?.simpleName}</Grid>

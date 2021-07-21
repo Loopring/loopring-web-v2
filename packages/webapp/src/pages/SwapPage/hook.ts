@@ -270,6 +270,10 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         const base = _tradeData.sell.belong as string
         const quote = _tradeData.buy.belong as string
 
+        let _tradeCalcData = {...tradeCalcData} as TradeCalcData<C>;
+
+        return {_tradeData, _tradeCalcData}
+/*
         const output = fm.getOutputAmount(input, base, quote, isAtoB, marketArray, tokenMap,
             marketMap, depth?.depth, {[ 'AMM-' + market ]: ammMap[ 'AMM-' + market ].__rawConfig__} as LoopringMap<AmmPoolInfoV3>,
             ammPoolSnapshot, '6', '200')
@@ -287,6 +291,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         //TODO: renew  tradeCalcData
         let _tradeCalcData = {...tradeCalcData} as TradeCalcData<C>;
         return {_tradeData, _tradeCalcData}
+        */
     }
 
     const throttleSetValue = React.useCallback(_.debounce(async (type, _tradeData, _ammPoolSnapshot) => {
@@ -335,7 +340,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                     let _myTradeArray = makeMarketArray(market, marketTrades) as RawDataTradeItem[]
                     setMyTradeArray(_myTradeArray ? _myTradeArray : [])
                 })
-
 
             }
             let apiList = [];

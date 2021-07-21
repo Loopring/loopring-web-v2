@@ -1,9 +1,9 @@
 import React from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { debounce } from 'lodash'
-import { Button, Column, NewTagIcon, Table, TablePagination, TableProps, useImage } from '../../basic-lib'
+import { Button, Column, NewTagIcon, Table, TablePagination, TableProps } from '../../basic-lib'
 import {
-    AmmDetail,
+    AmmDetail, AvatarCoinStyled,
     Currency,
     EmptyValueTag,
     getThousandFormattedNumbers,
@@ -16,10 +16,11 @@ import {
 import { Avatar, Box, InputAdornment, OutlinedInput, Typography } from '@material-ui/core/';
 import { PoolTableProps, Row } from './Interface';
 import styled from '@emotion/styled';
-import { AvatarIconPair, TablePaddingX } from '../../styled';
+import {  TablePaddingX } from '../../styled';
 import { useDeepCompareEffect } from 'react-use';
 import { useHistory } from 'react-router-dom';
 import { FormatterProps } from 'react-data-grid';
+import { useSettings } from '../../../stores';
 
 
 // export enum TradeTypes {
@@ -55,9 +56,8 @@ import { FormatterProps } from 'react-data-grid';
 //     filter = 'filter',
 //     page = 'page'
 // }
-
+//  ${({theme}) => AvatarIconPair({theme})}
 const BoxStyled = styled(Box)`
-  ${({theme}) => AvatarIconPair({theme})}
 
 ` as typeof Box
 const TableStyled = styled(Box)`
@@ -77,17 +77,43 @@ const TableStyled = styled(Box)`
 
 export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R }) => {
     const {coinAInfo, coinBInfo, isNew, isActivity} = row;
-    const coinAIconHasLoaded = useImage(coinAInfo?.icon ? coinAInfo?.icon : '').hasLoaded;
-    const coinBIconHasLoaded = useImage(coinBInfo?.icon ? coinBInfo?.icon : '').hasLoaded;
+    const {coinJson} = useSettings();
+    const coinAIcon: any = coinJson [ coinAInfo.simpleName ];
+    const coinBIcon: any = coinJson [ coinBInfo.simpleName ];
     return <BoxStyled display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
 
         <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
-            <Avatar variant="square" alt={coinAInfo?.simpleName}
-                // src={sellData?.icon}
-                    src={coinAIconHasLoaded ? coinAInfo?.icon : 'static/images/icon-default.png'}/>
-            <Avatar variant="square" alt={coinBInfo?.simpleName} className={'icon-next'}
-                // src={buyData?.icon}
-                    src={coinBIconHasLoaded ? coinBInfo?.icon : 'static/images/icon-default.png'}/>
+            <Box className={'logo-icon'} height={'var(--list-menu-coin-size)'}  position={'relative'}  zIndex={20}
+                 width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
+                {coinAIcon ?
+                    <AvatarCoinStyled imgX={coinAIcon.x} imgY={coinAIcon.y}
+                                      imgHeight={coinAIcon.height}
+                                      imgWidth={coinAIcon.width} size={24}
+                                      variant="circular" alt={coinAInfo?.simpleName as string}
+                        // src={sellData?.icon}
+                                      src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
+                    : <Avatar variant="circular" alt={coinAInfo?.simpleName as string} style={{
+                        height: 'var(--list-menu-coin-size)',
+                        width: 'var(--list-menu-coin-size)'
+                    }}
+                        // src={sellData?.icon}
+                              src={'static/images/icon-default.png'}/>
+                }</Box>
+
+            <Box className={'logo-icon'} height={'var(--list-menu-coin-size)'}   position={'relative'}  zIndex={18}   left={-8}
+                 width={'var(--list-menu-coin-size)'} alignItems={'center'}
+                 justifyContent={'center'}>{coinBIcon ?
+                <AvatarCoinStyled imgX={coinBIcon.x} imgY={coinBIcon.y} imgHeight={coinBIcon.height}
+                                  imgWidth={coinBIcon.width} size={24}
+                                  variant="circular" alt={coinBInfo?.simpleName as string}
+                    // src={sellData?.icon}
+                                  src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
+                : <Avatar variant="circular" alt={coinBInfo?.simpleName as string} style={{
+                    height: 'var(--list-menu-coin-size)',
+                    width: 'var(--list-menu-coin-size)'
+                }}
+                    // src={sellData?.icon}
+                          src={'static/images/icon-default.png'}/>} </Box>
             <Typography variant={'inherit'} display={'flex'} flexDirection={'column'} marginLeft={1} component={'div'}
                         paddingRight={1}>
                 <Typography component={'h3'} color={'textPrimary'} title={'sell'}>

@@ -24,7 +24,8 @@ import {
     OffchainFeeInfo,
     OffchainFeeReqType,
     TickerData,
-    toBig
+    toBig,
+    TokenInfo
 } from 'loopring-sdk';
 import { useCustomDCEffect } from '../../../hooks/common/useCustomDCEffect';
 import { useAccount } from '../../../stores/account/hook';
@@ -36,6 +37,7 @@ import { Lv2Account } from "defs/account_defs";
 import { deepClone } from '../../../utils/obj_tools';
 import { useWalletLayer2 } from "stores/walletLayer2";
 import { myLog } from "utils/log_tools";
+import { BIG10 } from "defs/swap_defs";
 
 export const useAmmPanel = <C extends { [ key: string ]: any }>({
                                                                     pair,
@@ -59,13 +61,13 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
     const [ammJoinData, setAmmJoinData] = React.useState<AmmData<IBData<C>, C>>({
         coinA: {belong: undefined} as unknown as IBData<C>,
         coinB: {belong: undefined} as unknown as IBData<C>,
-        slippage: 0.001
+        slippage: 0.5
     } as AmmData<IBData<C>, C>);
 
     const [ammExitData, setAmmExitData] = React.useState({
         coinA: {belong: undefined} as unknown as IBData<C>,
         coinB: {belong: undefined} as unknown as IBData<C>,
-        slippage: 0.001
+        slippage: 0.5
     } as AmmData<IBData<C>, C>);
 
     const [ammDepositBtnI18nKey, setAmmDepositBtnI18nKey] = React.useState<string | undefined>(undefined);
@@ -91,12 +93,12 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
             setAmmJoinData({
                 coinA: {..._ammCalcData.myCoinA, tradeValue: undefined} as IBData<C>,
                 coinB: {..._ammCalcData.myCoinB, tradeValue: undefined} as IBData<C>,
-                slippage: 0.001
+                slippage: 0.5
             })
             setAmmExitData({
                 coinA: {..._ammCalcData.lpCoinA, tradeValue: undefined} as IBData<C>,
                 coinB: {..._ammCalcData.lpCoinB, tradeValue: undefined} as IBData<C>,
-                slippage: 0.001
+                slippage: 0.5
             })
         }
     }, [snapShotData, walletMap, ammJoinData, ammExitData])
@@ -109,7 +111,8 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
     useCustomDCEffect(async () => {
         if (!LoopringAPI.userAPI || !pair.coinBInfo?.simpleName
-            || store.getState().account.status !== AccountStatus.ACTIVATED) {
+            || store.getState().account.status !== AccountStatus.ACTIVATED
+             || !ammCalcData || !tokenMap) {
             return
         }
 
@@ -124,19 +127,29 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         const {fees} = await LoopringAPI.userAPI.getOffchainFeeAmt(request2, acc.apiKey)
         setJoinFees(fees)
 
+        const feeToken: TokenInfo = tokenMap[pair.coinBInfo.simpleName]
+
+        const fee = sdk.toBig(fees[pair.coinBInfo.simpleName].fee as string).div(BIG10.pow(feeToken.decimals)).toString()
+                    + ' ' + pair.coinBInfo.simpleName
+
         myLog('joinFees:', fees)
 
-    }, [LoopringAPI.userAPI, pair.coinBInfo?.simpleName, store.getState().account.status])
+        setAmmCalcData({ ...ammCalcData, feeJoin: fee })
+
+    }, [LoopringAPI.userAPI, pair.coinBInfo?.simpleName, store.getState().account.status, tokenMap])
 
     // const handler = React.useCallback(async () =>,[])
     const handlerJoinInDebounce = React.useCallback(debounce(async (data, type, joinFees) => {
 
-        // {
-            myLog('handlerJoinInDebounce', data, type);
+        myLog('handlerJoinInDebounce', data, type);
 
-        if (!tokenMap || !data.coinA.belong || !data.coinB.belong) {
+        if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong) {
             return
         }
+
+        const { slippage } = data
+
+        const slippageReal = sdk.toBig(slippage).div(100).toString()
 
         const isAtoB = type === 'coinA'
 
@@ -183,7 +196,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         const rawVal = isAtoB ? rawA : rawB;
 
         const {request} = makeJoinAmmPoolRequest(rawVal,
-            isAtoB, '0.001', acc.accAddr, joinFees as LoopringMap<OffchainFeeInfo>,
+            isAtoB, slippageReal, acc.accAddr, joinFees as LoopringMap<OffchainFeeInfo>,
             ammMap[ amm ], response.ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0, 0)
 
         if (isAtoB) {
@@ -197,7 +210,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         setAmmJoinData({
             coinA: data.coinA as IBData<C>,
             coinB: data.coinB as IBData<C>,
-            slippage: 0.001
+            slippage: slippage
         })
 
         setJoinRequest({
@@ -218,7 +231,8 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
     useCustomDCEffect(async () => {
         if (!LoopringAPI.userAPI || !pair.coinBInfo?.simpleName
-            || store.getState().account.status !== AccountStatus.ACTIVATED) {
+            || store.getState().account.status !== AccountStatus.ACTIVATED
+            || !tokenMap || !ammCalcData) {
             return
         }
 
@@ -234,9 +248,16 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
         myLog('setExitfees:', fees)
 
+        const feeToken: TokenInfo = tokenMap[pair.coinBInfo.simpleName]
+
+        const fee = sdk.toBig(fees[pair.coinBInfo.simpleName].fee as string).div(BIG10.pow(feeToken.decimals)).toString()
+                    + ' ' + pair.coinBInfo.simpleName
+
+        setAmmCalcData({ ...ammCalcData, feeExit: fee })
+
         setExitfees(fees)
 
-    }, [LoopringAPI.userAPI, pair.coinBInfo?.simpleName, store.getState().account.status])
+    }, [LoopringAPI.userAPI, pair.coinBInfo?.simpleName, store.getState().account.status, tokenMap])
 
     // const handler = React.useCallback(async () =>,[])
     const handleExitInDebounce = React.useCallback(debounce(async (data, type, exitFees) => {
@@ -338,7 +359,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !joinRequest) {
             myLog(' onAmmJoin ammpoolAPI:', LoopringAPI.ammpoolAPI,
                 'joinRequest:', joinRequest)
-            setJoinLoading(true);
+            setJoinLoading(false);
             return
         }
 

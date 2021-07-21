@@ -14,7 +14,7 @@ import * as sign_tools from 'loopring-sdk'
 
 import { connectorsByName } from 'defs/web3_defs'
 
-import { ChainId, ConnectorNames, dumpError400, ExchangeAPI, GetOffchainFeeAmtRequest, OffchainFeeReqType, sleep, UpdateAccountRequestV3, UserAPI, VALID_UNTIL, } from 'loopring-sdk'
+import { ConnectorNames, dumpError400, ExchangeAPI, sleep, UpdateAccountRequestV3, UserAPI, VALID_UNTIL, } from 'loopring-sdk'
 
 import { toHex, toBig, } from 'loopring-sdk'
 
@@ -153,7 +153,6 @@ export function useDisconnect() {
     const disconnect = React.useCallback(() => {
         deactivate()
         dispatch(reset(undefined))
-        //TODO dispatch wallet info 
     }, [deactivate, dispatch])
 
     return {
@@ -414,10 +413,8 @@ export function useCheckAccStatus() {
 
     // const { updateWalletLayer1,resetLayer1} = useWalletLayer1();
     // const { updateWalletLayer2, resetLayer2} = useWalletLayer2()
-
     // console.log('prevChainId:', prevChainId, ' chainId:', chainId)
     // console.log('prevWeb3Account:', prevWeb3Account, ' web3Account:', web3Account)
-
     // console.log(exchangeApi, userApi, account, 'prevChainId:', prevChainId, 'chainId:', chainId, 'web3Account:', web3Account)
 
     const { tradingInfo } = useGetTradingInfo()
@@ -533,7 +530,6 @@ export function useCheckAccStatus() {
                     break
 
                 case AccountStatus.DEPOSITING:
-                    // TODO sub contract event, check deposit.
                     const depositFinished = true // TODO
                     if (depositFinished) {
                         //   console.log('depositFinished currStatus:', account.status)
@@ -548,8 +544,6 @@ export function useCheckAccStatus() {
                 case AccountStatus.UNACTIVATED:
                     const isSmartWallet = false // TODO
                     if (isSmartWallet) {
-                        // TODO approve hash,
-                        //  console.log('approve hash, currStatus:', account.status)
                         sendEvent(account, StatusChangeEvent.IsSmartWallet)
                     } else {
                         // console.log('approve hash no smartwallet, account.status:', account.status)
@@ -557,7 +551,6 @@ export function useCheckAccStatus() {
                     break
 
                 case AccountStatus.ARPROVING:
-                    // TODO sub contract event, check approving.
                     const approved = false // TODO
                     if (approved) {
                         //  console.log('sub contract event, check approving. approved! status:', account.status)
