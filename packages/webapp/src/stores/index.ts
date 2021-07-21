@@ -14,9 +14,6 @@ import { reduxBatch } from '@manaflair/redux-batch'
 import { updateVersion } from './global/actions'
 
 import accountSlice from './account/reducer'
-import tradingSlice from './trading/reducer'
-// import transactionlice from './transactions/reducer'
-
 
 import { modalsSlice, setCoinJson, setLanguage, settingsSlice } from '@loopring-web/component-lib';
 import { ammReducer } from './Amm';
@@ -36,8 +33,6 @@ const reducer = combineReducers({
   socket: socketSlice.reducer,
   settings: settingsSlice.reducer,
   system: systemSlice.reducer,
-  trading: tradingSlice.reducer,
-  // transactions: transactionlice.reducer,
   modals: modalsSlice.reducer,
   userRewardsMap: userRewardsMapSlice.reducer,
   amm:ammReducer,

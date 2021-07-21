@@ -1,14 +1,12 @@
 import { WsAPI, ExchangeAPI, AmmpoolAPI, UserAPI, DEFAULT_TIMEOUT, } from 'loopring-sdk'
-import store, { RootState } from 'stores'
+import { RootState } from 'stores'
 import { useSelector } from 'react-redux'
 
 import { useMemo } from 'react'
 
 function useApi(ApiClass: any, timeout = DEFAULT_TIMEOUT) {
-    // const chainId = store.getState().trading.chainId
-    // return new ApiClass(chainId, timeout)
 
-  const { chainId, } = useSelector((state: RootState) => state.trading)
+  const { chainId, } = useSelector((state: RootState) => state.system)
 
   const genApi = () => {
       if (!chainId) {
