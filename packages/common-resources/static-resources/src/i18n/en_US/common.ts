@@ -141,6 +141,6 @@ export default {
     labelCopyAddClip: ' Address Copied to Clipboard!',
     labelPleaseInputWalletAddress: 'Please Input Address',
     labelEmptyDefault: 'Empty content',
-
+    labelUnlockAccount:'Unlock Account',
 }
 
