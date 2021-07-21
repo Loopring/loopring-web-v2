@@ -43,6 +43,7 @@ import { useWalletLayer1 } from '../walletLayer1';
 import { useWalletLayer2 } from '../walletLayer2';
 import { useTokenMap } from '../token';
 import _ from 'lodash'
+import { myLog } from 'utils/log_tools'
 
 export function useWeb3Account() {
 
@@ -127,7 +128,7 @@ export function useConnect() {
         dispatch(setConnectNameTemp(item_name))
 
         if (isSwitch) {
-            //  console.log('try Connecting... isSwitch Reset')
+            //  myLog('try Connecting... isSwitch Reset')
             sendEvent(store.getState().account, StatusChangeEvent.Reset)
         }
 
@@ -226,7 +227,7 @@ export function useUnlock() {
                 sk = account.eddsaKey
             }
 
-            // console.log('useUnlock account:', account, ' sk:', sk)
+            // myLog('useUnlock account:', account, ' sk:', sk)
 
             apikey = await userApi.getUserApiKey({
                 accountId: account.accountId
@@ -276,7 +277,7 @@ export function useUnlock() {
                     const updateAccountResponse = await userApi.updateAccount(request, web3,
                         chainId, account.connectName, false)
 
-                    console.log('updateAccountResponse:', updateAccountResponse)
+                    myLog('updateAccountResponse:', updateAccountResponse)
 
                     await sleep(1000)
 
@@ -359,7 +360,7 @@ async function checkAccountAvailableAsync(exchangeApi: ExchangeAPI, userApi: Use
                 }
 
             } else {
-                console.log('already has accountId!')
+                myLog('already has accountId!')
             }
         } else {
             event = (StatusChangeEvent.HasNoPubkey)
@@ -415,10 +416,10 @@ export function useCheckAccStatus() {
     // const { updateWalletLayer1,resetLayer1} = useWalletLayer1();
     // const { updateWalletLayer2, resetLayer2} = useWalletLayer2()
 
-    // console.log('prevChainId:', prevChainId, ' chainId:', chainId)
-    // console.log('prevWeb3Account:', prevWeb3Account, ' web3Account:', web3Account)
+    // myLog('prevChainId:', prevChainId, ' chainId:', chainId)
+    // myLog('prevWeb3Account:', prevWeb3Account, ' web3Account:', web3Account)
 
-    // console.log(exchangeApi, userApi, account, 'prevChainId:', prevChainId, 'chainId:', chainId, 'web3Account:', web3Account)
+    // myLog(exchangeApi, userApi, account, 'prevChainId:', prevChainId, 'chainId:', chainId, 'web3Account:', web3Account)
 
     const { tradingInfo } = useGetTradingInfo()
 
@@ -452,7 +453,7 @@ export function useCheckAccStatus() {
 
             switch (account.status) {
                 case AccountStatus.UNCONNNECTED:
-                    // console.log('---> render UNCONNNECTED active:', active, ' isConnected:', isConnected)
+                    // myLog('---> render UNCONNNECTED active:', active, ' isConnected:', isConnected)
 
                     if (isConnected) {
                         dispatch(setConnectNameTemp(ConnectorNames.Injected))
@@ -467,7 +468,7 @@ export function useCheckAccStatus() {
                 case AccountStatus.CONNECTED:
                     //check session or local storage
 
-                    //  console.log('---> render CONNECTED account:', account)
+                    //  myLog('---> render CONNECTED account:', account)
 
                     try {
 
@@ -475,9 +476,9 @@ export function useCheckAccStatus() {
 
                         // current acc is local acc info
                         if (account.accAddr && account.eddsaKey && accInfo.owner === account.accAddr) {
-                            // console.log('cur Eddsakey:', account.eddsaKey)
+                            // myLog('cur Eddsakey:', account.eddsaKey)
                         } else {
-                            // console.log('got a new address:', acc)
+                            // myLog('got a new address:', acc)
                             // got a new address
                             dispatch(setAccountInfo(accInfo))
                             // dispatch(setEddsaKey(''))
@@ -511,11 +512,11 @@ export function useCheckAccStatus() {
 
                 case AccountStatus.NOACCOUNT:
 
-                    console.log('NOACCOUNT before wait 15s!')
+                    myLog('NOACCOUNT before wait 15s!')
 
                     _.delay(() => {
                         sendEvent(account, StatusChangeEvent.Reconnect)
-                        console.log('NOACCOUNT wait 15s to reconnect again!')
+                        myLog('NOACCOUNT wait 15s to reconnect again!')
                     }, 15000)
                     
 
@@ -536,7 +537,7 @@ export function useCheckAccStatus() {
                     // TODO sub contract event, check deposit.
                     const depositFinished = true // TODO
                     if (depositFinished) {
-                        //   console.log('depositFinished currStatus:', account.status)
+                        //   myLog('depositFinished currStatus:', account.status)
                         sendEvent(account, StatusChangeEvent.FinishDeposit)
                     }
                     break
@@ -549,10 +550,10 @@ export function useCheckAccStatus() {
                     const isSmartWallet = false // TODO
                     if (isSmartWallet) {
                         // TODO approve hash,
-                        //  console.log('approve hash, currStatus:', account.status)
+                        //  myLog('approve hash, currStatus:', account.status)
                         sendEvent(account, StatusChangeEvent.IsSmartWallet)
                     } else {
-                        // console.log('approve hash no smartwallet, account.status:', account.status)
+                        // myLog('approve hash no smartwallet, account.status:', account.status)
                     }
                     break
 
@@ -560,7 +561,7 @@ export function useCheckAccStatus() {
                     // TODO sub contract event, check approving.
                     const approved = false // TODO
                     if (approved) {
-                        //  console.log('sub contract event, check approving. approved! status:', account.status)
+                        //  myLog('sub contract event, check approving. approved! status:', account.status)
                         sendEvent(account, StatusChangeEvent.ApproveSubmit)
                     }
                     break
@@ -568,7 +569,7 @@ export function useCheckAccStatus() {
                 case AccountStatus.APPROV_TO_CONFIRM:
                     const approveConfirmed = false // TODO
                     if (approveConfirmed) {
-                        //   console.log('approveConfirmed status:', account.status)
+                        //   myLog('approveConfirmed status:', account.status)
                         sendEvent(account, StatusChangeEvent.ApproveConfirmed)
                     }
                     break
