@@ -24,7 +24,7 @@ export enum ButtonComponentsMap {
 export const ToolBarAvailableItem = [
     ButtonComponentsMap.Download,
     // ButtonComponentsMap.Notification,
-    ButtonComponentsMap.Theme,
+    // ButtonComponentsMap.Theme,
     ButtonComponentsMap.Language,
     ButtonComponentsMap.WalletConnect
 ]
