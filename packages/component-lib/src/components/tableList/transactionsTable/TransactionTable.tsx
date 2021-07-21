@@ -362,6 +362,8 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
     }, [rawData, filterDate, filterType])
 
     const handleFilterChange = React.useCallback(({type = filterType, date = filterDate}) => {
+        setFilterType(type)
+        setFilterDate(date)
         updateData({
             TableType: TableType.filter,
             currFilterType: type,
@@ -393,8 +395,6 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
                     originalData={totalData} 
                     filterDate={filterDate}
                     filterType={filterType}
-                    setFilterType={setFilterType}
-                    setFilterDate={setFilterDate}
                     handleFilterChange={handleFilterChange}
                     handleReset={handleReset}
                 />
