@@ -199,7 +199,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         result.splice(0, 1, 'AMM')
         const ammToken = result.join('-')
         const ammTokenList = Object.keys(ammMap)
-        const tokenValue = ammTokenList.includes(ammToken) && ammMap[ammToken] ? Number(ammMap[ammToken].amountDollar) : 0
+        const tokenValue = ammTokenList.includes(ammToken) && ammMap[ammToken] && ammMap[ammToken].amountDollar ? Number(ammMap[ammToken].amountDollar) : 0
         jointLPTokenValue += tokenValue
     });
 

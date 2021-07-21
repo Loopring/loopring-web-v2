@@ -141,5 +141,6 @@ export default {
     labelCopyAddClip: '复制黏贴到剪切板!',
     labelPleaseInputWalletAddress: '请输入地址',
     labelEmptyDefault: '内容空空的～',
+    labelUnlockAccount:'解锁账号',
 }
 

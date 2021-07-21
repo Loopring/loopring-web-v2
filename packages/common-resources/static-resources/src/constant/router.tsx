@@ -151,15 +151,15 @@ export const subMenuLayer2 = {
             },
         }
     ],
-    countInfoGroup: [{
-        icon: OrderIcon,
-        router: {path: '/layer2/orders'},
-        label: {
-            id: 'orders', i18nKey: 'labelOrders',
-        },
-    },
+    // countInfoGroup: [{
+    //     icon: OrderIcon,
+    //     router: {path: '/layer2/orders'},
+    //     label: {
+    //         id: 'orders', i18nKey: 'labelOrders',
+    //     },
+    // },
 
-    ],
+    // ],
     settingGroup: [{
         icon: SettingIcon,
         router: {path: '/layer2/setting'},
