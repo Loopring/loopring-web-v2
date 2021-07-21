@@ -710,6 +710,8 @@ export function useModalProps() {
     const withdrawType2 = withdrawType === OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
     const [withdrawFeeInfo, setWithdrawFeeInfo] = useState<any>()
 
+    const [withdrawAddr, setWithdrawAddr] = useState<string>()
+
     useCustomDCEffect(() => {
 
         if (withdrawalFeeList.length > 0) {
@@ -725,7 +727,7 @@ export function useModalProps() {
         if (!LoopringAPI.userAPI || !account || !account.accountId || !account.accAddr
             || !connector || !chainId || !apiKey || !exchangeInfo
             || !exchangeInfo.exchangeAddress || !withdrawFeeInfo
-            || !withdrawValue || !tokenMap) {
+            || !withdrawValue || !tokenMap || !withdrawAddr) {
             console.error('withdraw return directly!', account, connector, chainId, apiKey, exchangeInfo)
             console.error('withdraw return directly!', withdrawValue, withdrawFeeInfo, tokenMap)
             return
@@ -751,7 +753,7 @@ export function useModalProps() {
             const request2: OffChainWithdrawalRequestV3 = {
                 exchange: exchangeInfo.exchangeAddress,
                 owner: account.accAddr,
-                to: account.accAddr,
+                to: withdrawAddr,
                 accountId: account.accountId,
                 storageId: storageId.offchainId,
                 token: {
@@ -821,6 +823,7 @@ export function useModalProps() {
         },
         handleOnAddressChange: (value: any) => {
             console.log('handleOnAddressChange', value);
+            setWithdrawAddr(value)
         },
         handleAddressError: (_value: any) => {
             return {error: false, message: ''}
