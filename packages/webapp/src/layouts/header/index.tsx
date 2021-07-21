@@ -86,7 +86,9 @@ const Header = ({ ...rest }: any) => {
         depositProps={depositProps} resetProps={resetProps} ammProps={ammProps} swapProps={swapProps}/>
 
         <HideOnScroll>
-            {process.env.NODE_ENV !== 'production' && JSON.stringify(account?.status)}
+            {process.env.NODE_ENV !== 'production' && JSON.stringify(account?.status) 
+            + account?.connectName  + '/' + account?.connectNameTemp }
+             
             {process.env.NODE_ENV !== 'production' && ' exchangeAddress:' + JSON.stringify(exchangeInfo?.exchangeAddress)}
 
             <HeaderUI {...rest} headerMenuData={headerMenuData} headerToolBarData={headerToolBarData}
