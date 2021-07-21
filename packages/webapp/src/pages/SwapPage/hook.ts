@@ -273,7 +273,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: AmmPoolSnapshot | undefined)
         : Promise<{ _tradeCalcData: TradeCalcData<C>, _tradeData: SwapTradeData<IBData<C>> }> => {
-        console.log('calculateTradeData...')
         //if(`${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}` === coinKey)
         if (_tradeData[ type ].tradeValue && tradeCalcData) {
             type === 'sell' ? _tradeData[ 'buy' ].tradeValue = fm.toBig(_tradeData[ 'sell' ].tradeValue).times(tradeCalcData.StoB).toNumber()

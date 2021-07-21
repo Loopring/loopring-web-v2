@@ -14,7 +14,7 @@ import * as sign_tools from 'loopring-sdk'
 
 import { connectorsByName } from 'defs/web3_defs'
 
-import { ConnectorNames, dumpError400, ExchangeAPI, sleep, UpdateAccountRequestV3, UserAPI, VALID_UNTIL, } from 'loopring-sdk'
+import { AccountInfo, ConnectorNames, dumpError400, ExchangeAPI, sleep, UpdateAccountRequestV3, UserAPI, VALID_UNTIL, } from 'loopring-sdk'
 
 import { toHex, toBig, } from 'loopring-sdk'
 
@@ -134,9 +134,11 @@ export function useConnect() {
         activate(newConnector)
         dispatch(setConnectNameTemp(item_name))
 
-        sendEvent(store.getState().account, StatusChangeEvent.Connecting)
+        //sendEvent(store.getState().account, StatusChangeEvent.Connecting)
 
-    }, [activate, dispatch, sendEvent])
+        myLog('store.getState().account.status:', store.getState().account)
+
+    }, [activate, dispatch, sendEvent, store.getState().account.status])
 
     return {
         connect,
@@ -201,6 +203,8 @@ export function useUnlock() {
         if (account.status !== AccountStatus.LOCKED) {
             throw Error('unexpected status:' + account.status)
         }
+        
+        myLog('try to unlock!', account)
 
         let event = undefined
         let sk = undefined
@@ -212,6 +216,7 @@ export function useUnlock() {
         try {
 
             const nonce = account.nonce - 1 < 0 ? 0 : account.nonce - 1
+            myLog('try to unlock! nonce:', nonce)
 
             if (!account.eddsaKey) {
                 const eddsaKey = await sign_tools
@@ -223,7 +228,6 @@ export function useUnlock() {
                         account.connectName,
                     )
                 sk = eddsaKey.sk
-
             } else {
                 sk = account.eddsaKey
             }
@@ -237,6 +241,7 @@ export function useUnlock() {
             event = StatusChangeEvent.Unlock
 
         } catch (reason) {
+            myLog('got :', reason)
             dumpError400(reason)
             if (reason?.response?.data?.resultInfo?.code === 100001) {
 
@@ -395,8 +400,6 @@ export function useCheckAccStatus() {
 
     const dispatch = useDispatch()
 
-    // const { account } = useAccount()
-
     const { sendEvent } = useStateMachine()
 
     const exchangeApi: ExchangeAPI = useExchangeAPI()
@@ -424,7 +427,7 @@ export function useCheckAccStatus() {
 
     useCustomDCEffect(async() => {
 
-        const account = store.getState().account
+        const account = store.getState().account as Lv2Account
 
         const cleanUp = () => {
             let handler = UserStorage.getHandler()
@@ -452,7 +455,7 @@ export function useCheckAccStatus() {
 
             switch (account.status) {
                 case AccountStatus.UNCONNNECTED:
-                    // console.log('---> render UNCONNNECTED active:', active, ' isConnected:', isConnected)
+                    myLog('---> render UNCONNNECTED active:', active, ' isConnected:', isConnected)
 
                     if (isConnected) {
                         dispatch(setConnectNameTemp(ConnectorNames.Injected))
@@ -467,7 +470,7 @@ export function useCheckAccStatus() {
                 case AccountStatus.CONNECTED:
                     //check session or local storage
 
-                    //  console.log('---> render CONNECTED account:', account)
+                    myLog('---> render CONNECTED account:', account)
 
                     try {
 
