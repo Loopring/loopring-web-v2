@@ -4,7 +4,6 @@ import { css } from '@emotion/react';
 import { UpColor } from '@loopring-web/common-resources';
 import { Box } from '@material-ui/core/';
 
-
 export const TablePaddingX = ({pLeft = 24, pRight = 24}: { pLeft: number, pRight: number }) => css`
   .rdg-row, .rdg-header-row {
     .rdg-cell:first-of-type {
@@ -84,7 +83,6 @@ export const ButtonListRightStyled = styled(Grid)`
     margin-right: ${({theme}) => theme.unit}px;
   }
 `
-
 export const ModalContentStyled = styled(Box)`
   & > div {
     display: flex;
@@ -111,3 +109,6 @@ export const TableFilterStyled = styled(Box)`
   margin-left: 26px;
   margin-bottom: ${({theme}) => theme.unit * 2}px;
 ` as typeof Box
+
+
+

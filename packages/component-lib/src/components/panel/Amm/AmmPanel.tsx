@@ -1,7 +1,7 @@
 import { PanelContent, WrapStyled, } from '../../basic-lib';
-import { AmmChgData, AmmWithdrawWrap, IconButtonStyled } from '../components';
+import { AmmChgData, AmmWithdrawWrap, CountDownStyled } from '../components';
 import { Grid, Tab, Tabs, Toolbar } from '@material-ui/core';
-import { AmmData, AmmInData, IBData, RefreshIcon } from '@loopring-web/common-resources';
+import { AmmData, AmmInData, IBData } from '@loopring-web/common-resources';
 import { AmmDepositWrap } from '../components/panel/AmmWrap/AmmDeposit';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { AmmPanelType, AmmProps } from './Interface';
@@ -47,6 +47,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
         ammWithdrawBtnStatus,
         ammDepositBtnI18nKey,
         ammWithdrawBtnI18nKey,
+        onRefreshData,
         onAmmAddClick,
         onAmmRemoveClick,
         onChangeEvent,
@@ -62,6 +63,18 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
         type: 'coinA'
     });
     const [ammChgWithdrawData, setAmmChgWithdrawData] = React.useState<Pick<AmmChgData<T>, 'tradeData'> & { type?: 'coinA' | 'coinB' | 'percentage' }>({tradeData: ammWithdrawData});
+    const countDownRef = React.createRef();
+    const _refresh = React.useCallback(() => {
+        //@ts-ignore
+        countDownRef?.current?.classList?.remove('countdown');
+        setImmediate(()=>{
+            //@ts-ignore
+            countDownRef.current?.classList?.add('countdown');
+        })
+        if(typeof onRefreshData === 'function'){
+            onRefreshData();
+        }
+    }, [onRefreshData,countDownRef])
 
     //
     useDeepCompareEffect(() => {
@@ -84,7 +97,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
     const _onChangeRemoveEvent = React.useCallback(async ({
                                                               tradeData,
                                                               type,
-                                                              percentage
+                                                              // percentage
                                                           }: Pick<AmmChgData<T>, 'tradeData'> & { type: 'coinA' | 'coinB' | 'percentage', percentage?: number }) => {
 
         await handleAmmRemoveChangeEvent(tradeData, type === 'percentage' ? 'coinA' : type)
@@ -149,12 +162,17 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
                     <TabPanelBtn {...{t, value: index, handleChange: handleTabChange, ...rest}} />
                 </Box>
                 <Box alignSelf={'center'}>
-                    <IconButtonStyled edge="end"
-                                      className={'switch outline'}
-                                      color="inherit"
-                                      aria-label="to Professional">
-                        <RefreshIcon/>
-                    </IconButtonStyled>
+                    {/*<IconButtonStyled edge="end"*/}
+                    {/*                  className={'switch outline'}*/}
+                    {/*                  color="inherit"*/}
+                    {/*                  aria-label="to Professional">*/}
+                    {/*    <RefreshIcon/>*/}
+                    {/*</IconButtonStyled>*/}
+                    <CountDownStyled ref={countDownRef} className={'clock-loading outline countdown'} onClick={
+                        _refresh
+                    }>
+                        <Box className={'circle'}></Box>
+                    </CountDownStyled>
                 </Box>
 
             </Toolbar>
