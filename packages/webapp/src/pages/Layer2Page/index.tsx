@@ -4,7 +4,8 @@ import { Box, Paper } from '@material-ui/core'
 import {
     DepositPanel,
     SubMenu,
-    SubMenuList as BasicSubMenuList,
+    Button,
+    SubMenuList as BasicSubMenuList, setShowAccountInfo, useOpenModals,
 } from '@loopring-web/component-lib'
 import { useTranslation, withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
@@ -20,6 +21,7 @@ import store from '../../stores';
 import { AccountStatus } from '../../state_machine/account_machine_spec';
 import { useModalProps } from '../../layouts/header/hook';
 import { Redirect } from 'react-router-dom'
+import React from 'react';
 
 export const subMenu = subMenuLayer2;
 const BoxStyle = styled(Box)`
@@ -39,15 +41,24 @@ const BoxStyle = styled(Box)`
   }
    
 ` as typeof Box
-
+const BtnConnect = withTranslation(['common'], { withRef: true })( ({t}:any)=>{
+    const {setShowAccountInfo} = useOpenModals();
+    const showAccountInfo = React.useCallback(()=>{
+        setShowAccountInfo({isShow: true})
+     
+    },[setShowAccountInfo])
+    return <Button  variant={'contained'} size={'large'} color={'primary'} fullWidth={true}
+                   style={{maxWidth:'280px'}} onClick={ showAccountInfo }>{t(`labelUnlockAccount`) }
+    </Button>
+}) as typeof Button
 const SubMenuList = withTranslation(['layout','common'], { withRef: true })(BasicSubMenuList);
 export const Layer2Page = () => {
 
     let match: any = useRouteMatch("/layer2/:item")
     const {status: accStatus} = store.getState().account;
-    const {t,...rest} = useTranslation()
+    const {t,...rest} = useTranslation();
     const selected = match?.params.item ?? 'assets';
-    const {depositProps} = useModalProps()
+    const {depositProps} = useModalProps();
 
     return <>  {
         accStatus === AccountStatus.UNCONNNECTED 
@@ -69,12 +80,29 @@ export const Layer2Page = () => {
                 </SubMenu>
             </Box>
             <Box minHeight={420} display={'flex'} alignItems={'stretch'} flexDirection={'column'} marginTop={0} flex={1}>
-                {selected === 'assets' && <AssetPanel />}
-                {selected === 'transactions' && <TxPanel />}
-                {selected === 'trades' && <TradePanel />}
-                {selected === 'ammRecords' && <AmmPanel />}
-                {selected === 'orders' && <OrderPanel />}
-                {selected === 'setting' && <SettingPanel />}
+                {accStatus === AccountStatus.LOCKED ?
+                <>
+                    {
+                        selected === 'setting' ? <SettingPanel /> :
+                            <Box flex={1} display={'flex'} justifyContent={'center'} alignItems={'center'} marginTop={-10}>
+                                <BtnConnect  />
+                            </Box>
+
+                    }
+                </> :
+                <>
+                    {selected === 'assets' && <AssetPanel />}
+                    {selected === 'transactions' && <TxPanel />}
+                    {selected === 'trades' && <TradePanel />}
+                    {selected === 'ammRecords' && <AmmPanel />}
+                    {/* {selected === 'orders' && <OrderPanel />} */}
+                    {selected === 'setting' && <SettingPanel />}
+                </>
+
+                }
+
+
+
             </Box>
         </>
     }

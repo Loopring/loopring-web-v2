@@ -85,7 +85,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
             )} */}
             {recommendations.map((item,index)=> {
               const market = `${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}`
-              const chartData = candlestickList.find(o => o.market === market)?.data
+              const chartData = candlestickList.find(o => o.market === market)?.data.sort((a, b) => a.timeStamp - b.timeStamp)
               return (
                 <Grid key={index} item xs={3} >
                     <MarketBlock {...{...item, chartData: chartData ? chartData : [], ...rest}}></MarketBlock>

@@ -1,5 +1,5 @@
 import { WithTranslation } from 'react-i18next';
-import { CoinKey, EmptyValueTag, getThousandFormattedNumbers } from '@loopring-web/common-resources';
+import { CoinKey, EmptyValueTag, getThousandFormattedNumbers, abbreviateNumber } from '@loopring-web/common-resources';
 import { Box, BoxProps, Grid } from '@material-ui/core';
 import { Typography } from '@material-ui/core/';
 import styled from '@emotion/styled';
@@ -73,18 +73,19 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                         } </Typography>
                         <Typography variant={'body2'} component={'span'} marginTop={1 / 2}
                                     className={`float-tag float-${tradeFloat.floatTag}`}>{
-                            tradeFloat.change ?
-                                getThousandFormattedNumbers(tradeFloat.change, 2) + '%' : EmptyValueTag
+                            tradeFloat.change
+                              ? `${tradeFloat.change > 0 ? '+' : ''}${getThousandFormattedNumbers(tradeFloat.change, 2)}%`
+                              : EmptyValueTag
                         }</Typography>
                     </Box>
                     <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'}
                          justifyContent={'flex-end'}>
                         <Typography variant={'body2'} component={'span'} textOverflow={'ellipsis'}
                                     height={24}> ￥{
-                            getThousandFormattedNumbers(tradeFloat.priceYuan, 2,)
+                                      tradeFloat.priceYuan ? abbreviateNumber(tradeFloat.priceYuan) : '--'
                         } </Typography>
                         <Typography variant={'body2'} component={'span'} textOverflow={'ellipsis'}
-                                    marginTop={1 / 2}>{t('labelVolume')} : {tradeFloat.volume}</Typography>
+                                    marginTop={1 / 2}>{t('labelVolume')} : {(tradeFloat.volume ? getThousandFormattedNumbers(tradeFloat.volume, 3) : '--')}</Typography>
                     </Box>
 
                 </Grid>
