@@ -112,50 +112,50 @@ export const SettingPanel = withTranslation(['common', 'layout'])(({t,i18n, ...r
         }
     }
     return <Grid container direction={'column'} justifyContent={'space-between'} alignItems={'stretch'} flexWrap={'nowrap'}>
-        <Typography variant={'h4'} component={'h3'} paddingLeft={2}>{t('labelTitleSecurity')}</Typography>
-        <StyledPaper item xs={12} display={'flex'} flexDirection={'column'} marginY={2}  paddingY={3}>
-            <Box component={'section'} display={'flex'} flexDirection={'column'} marginBottom={1}>
-                <Typography variant={'h5'} component={'h4'} paddingX={3}  marginBottom={1}>{t('labelTitleResetL2Keypair')}</Typography>
-                {/*<StyledDivider/>*/}
-                <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}
-                      alignItems={'flex-start'} paddingX={3} >
-                    <Grid item xs={8} display={'flex'} flexDirection={'column'}>
-                        <Typography variant={'body1'} component={'p'}>
-                            <Trans i18nKey="resetDescription">
-                                Create a new signing key for layer-2 authentication (no backup needed). This will
-                                <TypographyStrong component={'span'}>cancel all your pending orders</TypographyStrong>.
-                            </Trans>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={4} display={'flex'} flexDirection={'column'} justifyContent={'space-evenly'}
-                          alignItems={'flex-end'} alignSelf={'stretch'}>
-                        <Button variant={'outlined'} size={'medium'} color={'primary'} disabled={true}>{t('labelBtnReset')}</Button>
-                    </Grid>
-                    <Grid item xs={12} display={'flex'} flexDirection={'row'} justifyContent={'flex-end'}
-                          alignItems={'center'} alignSelf={'stretch'}>
-                        <Typography variant={'body2'} component={'p'}
-                                    paddingTop={1}>{t('labelHadChangPassword', {passDay: '14 hours'})}</Typography>
-                    </Grid>
+        {/*<Typography variant={'h4'} component={'h3'} paddingLeft={2}>{t('labelTitleSecurity')}</Typography>*/}
+        {/*<StyledPaper item xs={12} display={'flex'} flexDirection={'column'} marginY={2}  paddingY={3}>*/}
+        {/*    <Box component={'section'} display={'flex'} flexDirection={'column'} marginBottom={1}>*/}
+        {/*        <Typography variant={'h5'} component={'h4'} paddingX={3}  marginBottom={1}>{t('labelTitleResetL2Keypair')}</Typography>*/}
+        {/*        /!*<StyledDivider/>*!/*/}
+        {/*        <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}*/}
+        {/*              alignItems={'flex-start'} paddingX={3} >*/}
+        {/*            <Grid item xs={8} display={'flex'} flexDirection={'column'}>*/}
+        {/*                <Typography variant={'body1'} component={'p'}>*/}
+        {/*                    <Trans i18nKey="resetDescription">*/}
+        {/*                        Create a new signing key for layer-2 authentication (no backup needed). This will*/}
+        {/*                        <TypographyStrong component={'span'}>cancel all your pending orders</TypographyStrong>.*/}
+        {/*                    </Trans>*/}
+        {/*                </Typography>*/}
+        {/*            </Grid>*/}
+        {/*            <Grid item xs={4} display={'flex'} flexDirection={'column'} justifyContent={'space-evenly'}*/}
+        {/*                  alignItems={'flex-end'} alignSelf={'stretch'}>*/}
+        {/*                <Button variant={'outlined'} size={'medium'} color={'primary'} disabled={true}>{t('labelBtnReset')}</Button>*/}
+        {/*            </Grid>*/}
+        {/*            <Grid item xs={12} display={'flex'} flexDirection={'row'} justifyContent={'flex-end'}*/}
+        {/*                  alignItems={'center'} alignSelf={'stretch'}>*/}
+        {/*                <Typography variant={'body2'} component={'p'}*/}
+        {/*                            paddingTop={1}>{t('labelHadChangPassword', {passDay: '14 hours'})}</Typography>*/}
+        {/*            </Grid>*/}
 
-                </Grid>
-            </Box>
-            <StyledDivider/>
-            <Box component={'section'} display={'flex'} flexDirection={'column'}>
-                <Typography variant={'h5'} component={'h4'} paddingX={3} marginY={1}>{t('labelTitleExportAccount')}</Typography>
+        {/*        </Grid>*/}
+        {/*    </Box>*/}
+        {/*    <StyledDivider/>*/}
+        {/*    <Box component={'section'} display={'flex'} flexDirection={'column'}>*/}
+        {/*        <Typography variant={'h5'} component={'h4'} paddingX={3} marginY={1}>{t('labelTitleExportAccount')}</Typography>*/}
 
-                <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}
-                      alignItems={'flex-start'} paddingX={3} marginBottom={2}>
-                    <Grid item xs={7} display={'flex'} flexDirection={'column'}>
-                        <Typography variant={'body1'} component={'p'}>{t('descriptionExportAccount')}</Typography>
-                    </Grid>
-                    <Grid item xs={5} display={'flex'} flexDirection={'column'} justifyContent={'space-evenly'}
-                          alignItems={'flex-end'} alignSelf={'stretch'}>
-                        <Grid item> <Button variant={'outlined'} size={'medium'}
-                                            color={'primary'} disabled={true}>{t('labelBtnExportAccount')}</Button></Grid>
-                    </Grid>
-                </Grid>
-            </Box>
-        </StyledPaper>
+        {/*        <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}*/}
+        {/*              alignItems={'flex-start'} paddingX={3} marginBottom={2}>*/}
+        {/*            <Grid item xs={7} display={'flex'} flexDirection={'column'}>*/}
+        {/*                <Typography variant={'body1'} component={'p'}>{t('descriptionExportAccount')}</Typography>*/}
+        {/*            </Grid>*/}
+        {/*            <Grid item xs={5} display={'flex'} flexDirection={'column'} justifyContent={'space-evenly'}*/}
+        {/*                  alignItems={'flex-end'} alignSelf={'stretch'}>*/}
+        {/*                <Grid item> <Button variant={'outlined'} size={'medium'}*/}
+        {/*                                    color={'primary'} disabled={true}>{t('labelBtnExportAccount')}</Button></Grid>*/}
+        {/*            </Grid>*/}
+        {/*        </Grid>*/}
+        {/*    </Box>*/}
+        {/*</StyledPaper>*/}
 
         <Typography variant={'h4'} component={'h3'} paddingLeft={2}>{t('labelTitlePreferences')}</Typography>
         <StyledPaper item xs={12} display={'flex'} flexDirection={'column'} marginY={2} paddingY={3}>

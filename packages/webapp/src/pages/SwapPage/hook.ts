@@ -219,7 +219,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         [ fnType.ACTIVATED ]:[swapCalculatorCallback]
     })
     const onSwapClick = React.useCallback(({sell, buy, slippage, ...rest}: SwapTradeData<IBData<C>>) => {
-        debugger
         accountStaticCallBack(swapBtnClickArray, [{sell, buy, slippage, ...rest}])
     }, [swapBtnClickArray])
     const handleSwapPanelEvent = async (swapData: SwapData<SwapTradeData<IBData<C>>>, switchType: any): Promise<void> => {
