@@ -1,4 +1,4 @@
-import React from 'react'
+import { useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect'
@@ -33,8 +33,6 @@ import { usePrevious } from 'react-use'
 
 import Web3 from 'web3'
 
-import { useExchangeAPI, useUserAPI } from 'hooks/exchange/useApi'
-
 import { UserStorage } from 'storage'
 
 import store from 'stores'
@@ -43,6 +41,7 @@ import { useWalletLayer2 } from '../walletLayer2';
 import { useTokenMap } from '../token';
 import _ from 'lodash'
 import { myLog } from 'utils/log_tools'
+import { LoopringAPI } from 'stores/apis/api'
 
 export function useWeb3Account() {
 
@@ -73,13 +72,13 @@ export function useAccount() {
 
     const account: Lv2Account = useSelector((state: RootState) => state.account)
 
-    const isNoAccount = () => {
+    const isNoAccount = useCallback(() => {
         return account.status === AccountStatus.NOACCOUNT
-    }
+    }, [account.status])
 
-    const isActivated = () => {
+    const isActivated = useCallback(() => {
         return account.status === AccountStatus.ACTIVATED
-    }
+    }, [account.status])
 
     return {
         account,
@@ -96,7 +95,7 @@ export function useStateMachine() {
 
     const machine = buildMachine(AccountMachineSpec())
 
-    const sendEvent = React.useCallback((account: Lv2Account, event: StatusChangeEvent) => {
+    const sendEvent = useCallback((account: Lv2Account, event: StatusChangeEvent) => {
         const nextState = machine(account.status, event)
         if (nextState) {
             dispatch(setAccountStatus(nextState))
@@ -118,9 +117,9 @@ export function useConnect() {
 
     const dispatch = useDispatch()
 
-    const [activatingConnector, setActivatingConnector] = React.useState<any>()
+    const [activatingConnector, setActivatingConnector] = useState<any>()
 
-    const connect = React.useCallback((item_name: ConnectorNames, isSwitch: boolean = false) => {
+    const connect = useCallback((item_name: ConnectorNames, isSwitch: boolean = false) => {
 
         if (isSwitch) {
             myLog('try Connecting... isSwitch Reset')
@@ -154,7 +153,7 @@ export function useDisconnect() {
 
     const dispatch = useDispatch()
 
-    const disconnect = React.useCallback(() => {
+    const disconnect = useCallback(() => {
         deactivate()
         dispatch(reset(undefined))
     }, [deactivate, dispatch])
@@ -171,26 +170,22 @@ export function useUnlock() {
 
     const { chainId } = useWeb3Account()
 
-    const exchangeApi: ExchangeAPI = useExchangeAPI()
-
-    const userApi: UserAPI = useUserAPI()
-
     const { connector, } = useWeb3Account()
 
     const { sendEvent } = useStateMachine()
 
     const { resetLayer2 } = useWalletLayer2()
 
-    const lock = React.useCallback(async (account: Lv2Account) => {
+    const lock = useCallback(async (account: Lv2Account) => {
         resetLayer2()
         sendEvent(account, StatusChangeEvent.Lock)
     }, [sendEvent])
 
-    const unlock = React.useCallback(async (account: Lv2Account) => {
+    const unlock = useCallback(async (account: Lv2Account) => {
 
         const exchangeAddress = store.getState().system.exchangeInfo?.exchangeAddress
 
-        if (!userApi || !exchangeApi || !connector
+        if (!LoopringAPI.userAPI || !LoopringAPI.exchangeAPI || !connector
             || !account.accountId || !exchangeAddress
             || !chainId
             || account.status !== AccountStatus.LOCKED) {
@@ -231,7 +226,7 @@ export function useUnlock() {
 
             myLog('useUnlock account:', account, ' sk:', sk)
 
-            apikey = await userApi.getUserApiKey({
+            apikey = await LoopringAPI.userAPI.getUserApiKey({
                 accountId: account.accountId
             }, sk)
 
@@ -277,7 +272,7 @@ export function useUnlock() {
                         nonce: account.nonce,
                     }
 
-                    const updateAccountResponse = await userApi.updateAccount(request, web3,
+                    const updateAccountResponse = await LoopringAPI.userAPI.updateAccount(request, web3,
                         chainId, account.connectName, false)
 
                     myLog('updateAccountResponse:', updateAccountResponse)
@@ -304,7 +299,7 @@ export function useUnlock() {
         }
 
     }
-        , [dispatch, sendEvent, exchangeApi, userApi, connector, chainId, store.getState().system.exchangeInfo?.exchangeAddress])
+        , [dispatch, sendEvent, LoopringAPI.userAPI, LoopringAPI.exchangeAPI, connector, chainId, store.getState().system.exchangeInfo?.exchangeAddress])
 
     return {
         lock,
@@ -399,10 +394,6 @@ export function useCheckAccStatus() {
 
     const { sendEvent } = useStateMachine()
 
-    const exchangeApi: ExchangeAPI = useExchangeAPI()
-
-    const userApi: UserAPI = useUserAPI()
-
     const { account: web3Account, active, isConnected, chainId, connector, } = useWeb3Account()
     const { marketArray } = useTokenMap()
 
@@ -435,7 +426,7 @@ export function useCheckAccStatus() {
 
         async function checkStatus() {
 
-            if (!account || !lv1Acc || !exchangeApi || !userApi || !chainId
+            if (!account || !lv1Acc || !LoopringAPI.userAPI || !LoopringAPI.exchangeAPI || !chainId
                 || !connector || !exchangeAddress) {
                 return
             }
@@ -471,7 +462,7 @@ export function useCheckAccStatus() {
 
                     try {
 
-                        const { accInfo } = (await exchangeApi.getAccount({ owner: lv1Acc }))
+                        const { accInfo } = (await LoopringAPI.exchangeAPI.getAccount({ owner: lv1Acc }))
 
                         // current acc is local acc info
                         if (account.accAddr && account.eddsaKey && accInfo.owner === account.accAddr) {
@@ -590,7 +581,7 @@ export function useCheckAccStatus() {
         }
 
     }, [updateWalletLayer1, updateWalletLayer2, resetLayer1, resetLayer2,
-        exchangeApi, userApi, store.getState().account.status, prevChainId, chainId, lv1Acc, 
+        LoopringAPI.userAPI, LoopringAPI.exchangeAPI, store.getState().account.status, prevChainId, chainId, lv1Acc, 
         dispatch, connector, store.getState().system.exchangeInfo?.exchangeAddress])
 
 }

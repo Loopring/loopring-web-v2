@@ -17,13 +17,14 @@ import { Toolbar, Snackbar, Alert, } from '@material-ui/core'
 import { useHeader } from './hook'
 
 import { useDisconnect, } from 'stores/account/hook'
-import { ModalPanel, ModalQRCode, } from '@loopring-web/component-lib';
-import { useGetExchangeInfo } from 'hooks/exchange/useExchangeAPI'
+import { ModalPanel, ModalQRCode, } from '@loopring-web/component-lib'
 import { useModalProps } from './hook'
 
 import { copyToClipBoard } from 'utils/obj_tools'
 import { ModalAccountInfo } from '../../pages/AccountPage';
 import { useTranslation } from 'react-i18next';
+
+import store from 'stores'
 
 const Header = ({ ...rest }: any) => {
 
@@ -56,8 +57,6 @@ const Header = ({ ...rest }: any) => {
         // showAccountInfo
     } = useHeader()
 
-    const { exchangeInfo } = useGetExchangeInfo()
-
     const { disconnect } = useDisconnect()
 
     const onSwitch = useCallback(() => {
@@ -88,8 +87,6 @@ const Header = ({ ...rest }: any) => {
         <HideOnScroll>
             {process.env.NODE_ENV !== 'production' && JSON.stringify(account?.status) 
             + account?.connectName  + '/' + account?.connectNameTemp }
-             
-            {process.env.NODE_ENV !== 'production' && ' exchangeAddress:' + JSON.stringify(exchangeInfo?.exchangeAddress)}
 
             <HeaderUI {...rest} headerMenuData={headerMenuData} headerToolBarData={headerToolBarData}
                 selected={location.pathname === '/' ? headerRoot : location.pathname}></HeaderUI>

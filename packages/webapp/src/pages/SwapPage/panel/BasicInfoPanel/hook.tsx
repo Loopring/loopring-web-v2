@@ -1,10 +1,8 @@
 import { useCallback, useState } from 'react'
 
-import { useExchangeAPI } from 'hooks/exchange/useApi'
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect'
 
 import { TradingInterval, Candlestick, GetCandlestickRequest, GetDepthRequest, GetTickerRequest, dumpError400, getExistedMarket } from 'loopring-sdk'
-import { fromWEI } from 'utils/swap_calc_utils'
 
 import { ChartUnit, CoinInfo } from '@loopring-web/common-resources'
 
@@ -13,6 +11,7 @@ import { ChartType } from '@loopring-web/component-lib'
 import { TGItemData, TGItemJSXInterface, } from '@loopring-web/component-lib'
 
 import { IGetDepthDataParams } from '@loopring-web/component-lib'
+import { LoopringAPI } from 'stores/apis/api'
 
 const toggleData: TGItemData[] = [
   {
@@ -59,8 +58,6 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
       const mappedValue = newValue === '1H' ? ChartUnit.H1 : newValue === '1W' ? ChartUnit.W1 : ChartUnit.D1
       setChartUnit(mappedValue)
   }
-
-  const exchangeApi = useExchangeAPI()
 
   // useCustomDCEffect(async () => {
   //
@@ -110,7 +107,7 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
   
     let mounted = true
   
-    if (!exchangeApi || !market || !amm) {
+    if (!LoopringAPI.exchangeAPI || !market || !amm) {
       return
     }
   
@@ -122,7 +119,7 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
       }
   
       try {
-        const candlesticks = await exchangeApi.getCandlestick(request)
+        const candlesticks = await LoopringAPI.exchangeAPI.getCandlestick(request)
   
         if (mounted) {
           const originData = candlesticks.candlesticks.map((item: Candlestick) => {
@@ -149,7 +146,7 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
   
       try {
   
-        const { depth } = await exchangeApi.getMixDepth(request)
+        const { depth } = await LoopringAPI.exchangeAPI.getMixDepth(request)
         console.log('useBasicInfo depth:', depth)
         if (mounted) {
           const originData: IGetDepthDataParams = {
@@ -171,7 +168,7 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
       mounted = false
     }
   
-  }, [exchangeApi, amm, market, chartType])
+  }, [LoopringAPI.exchangeAPI, amm, market, chartType])
 
   return {
     // change,
