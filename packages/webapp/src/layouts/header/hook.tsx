@@ -76,6 +76,7 @@ import { useTokenMap } from 'stores/token'
 import { LoopringAPI } from 'stores/apis/api'
 import { BIG10 } from 'defs/swap_defs'
 import { useWalletLayer1 } from '../../stores/walletLayer1';
+import { myLog } from 'utils/log_tools'
 
 export const useHeader = () => {
     const {i18n, t} = useTranslation(['common', 'layout'])
@@ -98,7 +99,7 @@ export const useHeader = () => {
         {
             ...DefaultGatewayList[ 0 ],
             handleSelect: () => {
-                console.log('try to connect to ', ConnectorNames.Injected)
+                myLog('try to connect to ', ConnectorNames.Injected)
                 connect(ConnectorNames.Injected, true)
                 setShowConnect({isShow: false})
             }
@@ -575,6 +576,8 @@ export function useModalProps() {
 
     const [feeInfo, setFeeInfo] = useState<any>()
 
+    const [payeeAddr, setPayeeAddr] = useState<string>()
+
     useCustomDCEffect(() => {
 
         if (transferFeeList.length > 0) {
@@ -592,7 +595,7 @@ export function useModalProps() {
             return
         }
 
-        if (!tokenMap || !feeInfo) {
+        if (!tokenMap || !feeInfo || !payeeAddr) {
             console.error(feeInfo)
             return
         }
@@ -615,13 +618,16 @@ export function useModalProps() {
             const web3 = new Web3(provider as any)
 
             let walletType = account.connectName
-            walletType = ConnectorNames.Injected
+
+            walletType = ConnectorNames.WalletConnect
+
+            debugger
 
             const request2: OriginTransferRequestV3 = {
                 exchange: exchangeInfo.exchangeAddress,
                 payerAddr: account.accAddr,
                 payerId: accountId,
-                payeeAddr: '0x8cdc4B6C1FA234AE54c53e56376359bFC497f2e6',
+                payeeAddr,
                 payeeId: 0,
                 storageId: storageId.offchainId,
                 token: {
@@ -638,13 +644,13 @@ export function useModalProps() {
             const response = await LoopringAPI.userAPI.submitInternalTransfer(request2, web3, chainId, walletType,
                 eddsaKey, apiKey, false)
 
-            console.log('transfer r:', response)
+            myLog('transfer r:', response)
 
         } catch (reason) {
             dumpError400(reason)
         }
 
-    }, [apiKey, accountId, account, connector, chainId, eddsaKey, feeInfo, LoopringAPI.userAPI, LoopringAPI.exchangeAPI])
+    }, [apiKey, payeeAddr, accountId, account, connector, chainId, eddsaKey, feeInfo, LoopringAPI.userAPI, LoopringAPI.exchangeAPI])
 
     let transferProps: TransferProps<any, any> = {
         tradeData: {belong: undefined},
@@ -683,6 +689,7 @@ export function useModalProps() {
         chargeFeeTokenList: transferFeeList,
         handleOnAddressChange: (value: any) => {
             console.log('transfer handleOnAddressChange', value);
+            setPayeeAddr(value)
         },
         handleAddressError: (_value: any) => {
             return {error: false, message: ''}
