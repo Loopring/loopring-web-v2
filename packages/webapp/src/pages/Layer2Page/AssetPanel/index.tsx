@@ -254,11 +254,11 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
             <StyledChartWrapper display={'flex'} justifyContent={'space-between'} alignItems={'center'} marginTop={2}>
                 <Paper component={'div'}>
-                    <Typography component="span" color="textSecondary" variant="body1">Asset Distribution</Typography>
+                    <Typography component="span" color="textSecondary" variant="body1">{t('labelAssetsDistribution')}</Typography>
                     <DoughnutChart data={walletLayer2 ? formattedDoughnutData : []}/>
                 </Paper>
                 <Paper component={'div'}>
-                    <Typography component="span" color="textSecondary" variant="body1">Total Assets</Typography>
+                    <Typography component="span" color="textSecondary" variant="body1">{t('labelTotalAssets')}</Typography>
                     <ScaleAreaChart type={ChartType.Trend} data={chartData}/>
                     <StyledBtnGroupWrapper>
                         <ToggleButtonGroup exclusive size="small" {...{

@@ -7,7 +7,7 @@ import { AmmTxType } from 'loopring-sdk'
 import { StylePaper } from '../../styled'
 import { volumeToCount } from '../../../hooks/help';
 
-const AmmPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
+const AmmPanel = withTranslation('common')(({ t, ...rest }: WithTranslation<'common'>) => {
     const container = React.useRef(null);
     const [pageSize, setPageSize] = React.useState(10);
     const [originalData, setOriginalData] = React.useState<RawDataAmmItem[]>([])
@@ -73,7 +73,7 @@ const AmmPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
     return (
         <>
             <StylePaper ref={container}>
-                <div className="title">AMM Records</div>
+                <div className="title">{t('labelAmmPageTitle')}</div>
                 <div className="tableWrapper">
                     <AmmTable {...{
                         rawData: originalData,

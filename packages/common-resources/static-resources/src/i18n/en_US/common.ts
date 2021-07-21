@@ -142,5 +142,9 @@ export default {
     labelPleaseInputWalletAddress: 'Please Input Address',
     labelEmptyDefault: 'Empty content',
     labelUnlockAccount:'Unlock Account',
+    labelAssetsDistribution: 'Assets Distribution',
+    labelTotalAssets: 'Total Assets',
+    labelTxnPageTitle: 'Transactions',
+    labelTradePageTitle: 'Trades',
+    labelAmmPageTitle: 'AMM Records',
 }
-

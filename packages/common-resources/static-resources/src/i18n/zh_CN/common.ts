@@ -142,5 +142,10 @@ export default {
     labelPleaseInputWalletAddress: '请输入地址',
     labelEmptyDefault: '内容空空的～',
     labelUnlockAccount:'解锁账号',
+    labelAssetsDistribution: '资产分布',
+    labelTotalAssets: '总资产',
+    labelTxnPageTitle: '充值提现',
+    labelTradePageTitle: '交易记录',
+    labelAmmPageTitle: 'AMM 出入金记录',
 }
 

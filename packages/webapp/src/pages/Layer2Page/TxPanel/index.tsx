@@ -5,6 +5,7 @@ import { StylePaper } from '../../styled'
 import { useGetTxs } from './hooks'
 
 const TxPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
+    const { t } = rest
     const container = React.useRef(null);
     const [pageSize, setPageSize] = React.useState(10);
 
@@ -20,7 +21,7 @@ const TxPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
 
     return (
         <StylePaper ref={container}>
-            <div className="title">Transactions</div>
+            <div className="title">{t('labelTxnPageTitle')}</div>
             <div className="tableWrapper">
                 <TransactionTable {...{
                     rawData: txTableData,

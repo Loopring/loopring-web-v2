@@ -66,6 +66,7 @@ import { StringToNumberWithPrecision, VolToNumberWithPrecision, } from 'utils/fo
 
 const TradePanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
     const container = React.useRef(null);
+    const { t } = rest
     const [pageSize, setPageSize] = React.useState(10);
     const [originalData, setOriginalData] = React.useState<RawDataTradeItem[]>([])
 
@@ -130,7 +131,7 @@ const TradePanel = withTranslation('common')((rest:WithTranslation<'common'>) =>
     return (
         <>
             <StylePaper ref={container}>
-                <div className="title">Trades</div>
+                <div className="title">{t('labelTradePageTitle')}</div>
                 <div className="tableWrapper">
                     <TradeTable {...{
                       rawData: originalData,
