@@ -39,7 +39,7 @@ const pingPong = {
     fn: (e: MessageEvent) => {
         if (e.data === 'ping') {
             // @ts-ignore
-            global.looperingSocket.send('pong')
+            global.loopringSocket.send('pong')
         }
     }
 }
@@ -74,7 +74,7 @@ export const resetSocketEvents = () => {
 export const isConnectSocket = () => {
     const global: Window = window || globalThis;
     // @ts-ignore
-    if (global.looperingSocket && global.looperingSocket.send) {
+    if (global.loopringSocket && global.loopringSocket.send) {
         return true;
     } else {
         return false
@@ -144,7 +144,7 @@ export const socketConnect = async ({chainId, topics, apiKey}: {
             let ws: WebSocket;
             ws = new WebSocket(baseSocket);
             // @ts-ignore
-            global.looperingSocket = ws;
+            global.loopringSocket = ws;
             ws.onopen = function () {
                 console.warn('Socket>>Socket', "WebSocket is open now.");
                 // @ts-ignore
@@ -183,8 +183,8 @@ export const socketConnect = async ({chainId, topics, apiKey}: {
             ws.onclose = async function (e) {
                 // @ts-ignore
                 console.error('Socket>>Socket', e);
-                if (global.looperingSocket) {
-                    global.looperingSocket = undefined;
+                if (global.loopringSocket) {
+                    global.loopringSocket = undefined;
                 }
                 console.log('Socket>>Socket', 'Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
                 clearInitTimer()
@@ -203,9 +203,9 @@ export const socketConnect = async ({chainId, topics, apiKey}: {
         console.error('Socket>>Socket', 'connect error, not from reconnect')
 
         // @ts-ignore
-        if (global.looperingSocket) {
+        if (global.loopringSocket) {
             // @ts-ignore
-            global.looperingSocket.close()
+            global.loopringSocket.close()
         }
 
 
@@ -228,7 +228,7 @@ export const socketSendMessage = async ({socket, chainId, apiKey}: {
             } else {
                 const global: Window = window || globalThis;
                 // @ts-ignore
-                global.looperingSocket.send(makeTopics(topics))
+                global.loopringSocket.send(makeTopics(topics))
 
             }
             return true

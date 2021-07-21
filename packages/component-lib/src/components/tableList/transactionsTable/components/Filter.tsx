@@ -12,8 +12,6 @@ export interface FilterProps {
     originalData: RawDataTransactionItem[];
     filterDate: DateRange<Date | string>;
     filterType: TransactionTradeTypes;
-    setFilterType: React.Dispatch<React.SetStateAction<TransactionTradeTypes>>;
-    setFilterDate: React.Dispatch<React.SetStateAction<DateRange<Date | string>>>;
     handleFilterChange: ({ type, date }: any) => void
     handleReset: () => void;
 }
@@ -41,9 +39,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
     t,
     // originalData,
     filterDate,
-    setFilterDate,
     filterType,
-    setFilterType,
     handleFilterChange,
     handleReset,
     }: FilterProps & WithTranslation) => {
@@ -108,7 +104,6 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                     fullWidth
                     value={filterType}
                     onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                        setFilterType(event.target.value as TransactionTradeTypes);
                         handleFilterChange({type: event.target.value})
                     }}
                     inputProps={{IconComponent: DropDownIcon}}
@@ -117,7 +112,6 @@ export const Filter = withTranslation('tables', {withRef: true})(({
             </Grid>
             <Grid item>
                 <DateRangePicker value={filterDate} onChange={(date: any) => {
-                    setFilterDate(date)
                     handleFilterChange({date: date})
                 }} />
             </Grid>

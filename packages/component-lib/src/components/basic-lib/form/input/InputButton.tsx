@@ -2,11 +2,19 @@ import { Avatar, Box, Button, ButtonProps, FormHelperText, FormLabel, Grid } fro
 import styled from "@emotion/styled";
 import { debounce } from "lodash"
 import CurrencyInput from 'react-currency-input-field';
-import { CoinInfo, DropDownIcon, getThousandFormattedNumbers, globalSetup, IBData } from '@loopring-web/common-resources';
+import {
+    AvatarCoinStyled,
+    CoinInfo,
+    DropDownIcon,
+    getThousandFormattedNumbers,
+    globalSetup,
+    IBData
+} from '@loopring-web/common-resources';
 import { InputButtonProps } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
-import { useImage } from '../../resource';
+import { useSettings } from '../../../../stores';
+// import { useImage } from '../../resource';
 
 const IWrap = styled(Box)`
   .label-wrap {
@@ -248,9 +256,20 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
             _handleContChange(balance, name)
             //setsValue(balance);
         }
-    }, [_handleContChange, balance, name])
-    const coinInfo: any = coinMap[ belong ] ? coinMap[ belong ] : {};
-    const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;
+    }, [_handleContChange, balance, name]);
+    //@ts-ignore
+    const {coinJson} = useSettings();
+    const coinIcon: any = coinJson [ belong ];
+    //"x": 248,
+    // "y": 322,
+    // "w": 36,
+    // "h": 35,
+    // "offX": 0,
+    // "offY": 0,
+    // "sourceW": 37,
+    // "sourceH": 36
+    // const coinInfo: any = coinMap[ belong ] ? coinMap[ belong ] : {};
+    // const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;
     
     // formatValue(sValue)
     return <> <IWrap component={'div'} ref={ref}>
@@ -270,10 +289,19 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 <ISBtn onClick={(event) => handleOnClick(event, ref)} endIcon={<DropDownIcon/>} disabled={disabled}>
                     {belong ?
                         <Grid container align-items={'center'} display={'flex'}>
-                            <Grid item className={'logo-icon'}>
-                                <Avatar variant="square" alt={coinMap[ belong ]?.simpleName as string}
-                                    // src={sellData?.icon}
-                                        src={hasLoaded ? coinMap[ belong ]?.icon : 'static/images/icon-default.png'}/>
+                            <Grid item className={'logo-icon'} height={'var(--list-menu-coin-size)'} width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
+                                {coinIcon ?
+                                    <AvatarCoinStyled imgX={coinIcon.x} imgY={coinIcon.y} imgHeight={coinIcon.height}
+                                                      imgWidth={coinIcon.width}
+                                                      variant="circular" alt={coinMap[ belong ]?.simpleName as string}
+                                        // src={sellData?.icon}
+                                                      src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
+                                : <Avatar variant="circular" alt={coinMap[ belong ]?.simpleName as string} style={{
+                                        height:'var(--list-menu-coin-size)',
+                                        width:'var(--list-menu-coin-size)'
+                                    }}
+                                        // src={sellData?.icon}
+                                          src={'static/images/icon-default.png'}/>}
                             </Grid>
                             <Grid item paddingLeft={1}>{coinMap[ belong ]?.simpleName}</Grid>
                         </Grid>
