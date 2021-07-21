@@ -20,7 +20,7 @@ export type LoopringTheme = Theme & {
     }
 }
 export type AvatarCoinProps = AvatarProps & {
-    imgX:number
+    imgx:number
     imgY:number
     imgH?: number
     imgW?: number
