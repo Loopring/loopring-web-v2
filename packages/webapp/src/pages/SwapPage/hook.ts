@@ -254,12 +254,21 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const [depth, setDepth] = useState<DepthData>()
 
     useCustomDCEffect(async() => {
-        if (!pair || !LoopringAPI.exchangeAPI) {
-            return
+
+        const updateDepth = async() => {
+            if (!pair || !LoopringAPI.exchangeAPI) {
+                return
+            }
+            const market = `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`
+            const { depth } = await LoopringAPI.exchangeAPI?.getMixDepth({market})
+            setDepth(depth)
         }
-        const market = `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`
-        const { depth } = await LoopringAPI.exchangeAPI?.getMixDepth({market})
-        setDepth(depth)
+
+        await updateDepth()
+
+        const handler = setInterval(async() => {
+            await updateDepth()
+        }, 10000)
 
     }, [LoopringAPI.exchangeAPI, pair, setDepth])
 
