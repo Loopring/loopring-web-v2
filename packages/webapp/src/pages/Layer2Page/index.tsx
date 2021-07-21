@@ -95,7 +95,7 @@ export const Layer2Page = () => {
                     {selected === 'transactions' && <TxPanel />}
                     {selected === 'trades' && <TradePanel />}
                     {selected === 'ammRecords' && <AmmPanel />}
-                    {selected === 'orders' && <OrderPanel />}
+                    {/* {selected === 'orders' && <OrderPanel />} */}
                     {selected === 'setting' && <SettingPanel />}
                 </>
 

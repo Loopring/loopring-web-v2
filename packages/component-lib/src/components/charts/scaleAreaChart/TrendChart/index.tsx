@@ -3,6 +3,8 @@ import { Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, 
 import moment from 'moment'
 import { ScaleAreaChartProps } from '../ScaleAreaChart'
 import { getRenderData } from '../data'
+import { Box } from '@material-ui/core'
+import styled from '@emotion/styled'
 
 const DEFAULT_YAXIS_DOMAIN = 0.1
 const UP_COLOR = '#00BBA8'
@@ -15,6 +17,10 @@ const DOWN_COLOR = '#fb3838'
 // 	yAxisDomainPercent?: number // defualt 0.1
 // 	riseColor?: 'green' | 'red'
 // }
+
+const TooltipStyled = styled(Box)`
+    
+`
 
 const TrendChart = ({
                         type,
