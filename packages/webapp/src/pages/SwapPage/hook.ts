@@ -49,6 +49,7 @@ import { AccountStatus } from 'state_machine/account_machine_spec';
 import { SwapData } from '@loopring-web/component-lib';
 import { deepClone } from '../../utils/obj_tools';
 import { debug } from 'console';
+import { myLog } from 'utils/log_tools';
 
 export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     /*** api prepare ***/
@@ -190,7 +191,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             }
             const response = await LoopringAPI.userAPI.submitOrder(request, account.eddsaKey, account.apiKey)
 
-            console.log(response)
+            myLog(response)
 
             await delayAndUpdateWalletLayer2()
 
