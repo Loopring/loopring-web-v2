@@ -21,8 +21,6 @@ import { ThemeProvider } from "@emotion/react"
 
 import { I18nextProvider } from "react-i18next"
 
-
-
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 const providers = [
     provider(LocalizationProvider as any, {dateAdapter: MomentUtils}),

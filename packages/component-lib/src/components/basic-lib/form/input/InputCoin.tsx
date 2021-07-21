@@ -317,8 +317,8 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                     {/*<Grid item order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}*/}
                     {/*      className={'logo-icon'}>*/}
                     {/*    {coinMap[ belong ]?.simpleName ?*/}
-                    {/*        <AvatarCoinStyled imgX={coinInfo.x} imgY={coinInfo.y} imgHeight={coinInfo.height}*/}
-                    {/*                          imgWidth={coinInfo.width}*/}
+                    {/*        <AvatarCoinStyled imgx={coinInfo.x} imgy={coinInfo.y} imgheight={coinInfo.height}*/}
+                    {/*                          imgwidth={coinInfo.width}*/}
                     {/*                          variant="circular" alt={coinMap[ belong ]?.simpleName as string}*/}
                     {/*            // src={sellData?.icon}*/}
                     {/*                          src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>*/}
@@ -328,8 +328,8 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                           className={'logo-icon'}
                           height={'var(--list-menu-coin-size)'} width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
                         {coinIcon ?
-                            <AvatarCoinStyled imgX={coinIcon.x} imgY={coinIcon.y} imgHeight={coinIcon.height}
-                                              imgWidth={coinIcon.width}
+                            <AvatarCoinStyled imgx={coinIcon.x} imgy={coinIcon.y} imgheight={coinIcon.height}
+                                              imgwidth={coinIcon.width}
                                               variant="circular" alt={coinMap[ belong ]?.simpleName as string}
                                 // src={sellData?.icon}
                                               src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>

@@ -127,8 +127,8 @@ export const CoinItem = React.memo(React.forwardRef(<C extends any>({
             {/*    // src={sellData?.icon}*/}
             {/*        src={hasLoaded ? coinInfo.icon : 'static/images/icon-default.png'}/>*/}
             {coinIcon ?
-                <AvatarCoinStyled imgX={coinIcon.x} imgY={coinIcon.y} imgHeight={coinIcon.height}
-                                  imgWidth={coinIcon.width}
+                <AvatarCoinStyled imgx={coinIcon.x} imgy={coinIcon.y} imgheight={coinIcon.height}
+                                  imgwidth={coinIcon.width}
                                   variant="circular" alt={simpleName as string}
                     // src={sellData?.icon}
                                   src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>

@@ -130,6 +130,10 @@ export const globalCss = ({theme}: any) => css`
 
   html {
     overflow-y: scroll;
+    --auto-refresh-duration: 5s;
+    --auto-refresh-color: ${theme.colorBase.primaryLight};
+    --durationInternal: calc(var(--auto-refresh-duration) * 2);
+    --delay: calc(var(--auto-refresh-duration) / 2);
     --header-row-height: 44px;
     --header-height: 64px;
     --header-menu-list-height: 72px;

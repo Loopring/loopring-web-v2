@@ -83,7 +83,7 @@ export const AccountInfo = withTranslation('common')(({
             </Box>
             <BoxStyled component={'div'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
                        marginTop={1} alignSelf={'stretch'}>
-                <Button href={etherscanLink} variant={'outlined'} startIcon={<LinkIcon fontSize={'large'}/>}>
+                <Button formTarget={'_blank'} href={etherscanLink} variant={'outlined'} startIcon={<LinkIcon fontSize={'large'}/>}>
                     <Typography variant={'body2'} marginTop={1 / 2}> {'Etherscan'} </Typography>
                 </Button>
                 <Button startIcon={<ReverseIcon fontSize={'large'}/>} onClick={() => {
