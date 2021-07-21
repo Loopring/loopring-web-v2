@@ -123,7 +123,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
 
     const updateRawData = React.useCallback((tickerMap: TickerMap<C>) => {
         let _recommendationsFloat: QuoteTableRawDataItem[] = [];
-        const _tickList = Reflect.ownKeys(tickerMap).reduce((prev, key) => {
+        const _tickList = Object.keys(tickerMap) ? Reflect.ownKeys(tickerMap).reduce((prev, key) => {
             // @ts-ignore
             const [, coinA, coinB] = key.match(/(\w+)-(\w+)/i);
             let _item = {
@@ -139,7 +139,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
             }
             prev.push(_item);
             return prev
-        }, [] as QuoteTableRawDataItem[])
+        }, [] as QuoteTableRawDataItem[]) : []
         setTickList([...tickList, ..._tickList])
         //setTickList
         if (focusRowFrom[ 0 ] === 0 && _recommendationsFloat.length > 0) {
