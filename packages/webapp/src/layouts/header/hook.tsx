@@ -69,7 +69,6 @@ import Web3 from 'web3'
 
 import { AmmData, AmmInData, IBData, TradeCalcData, WalletMap } from '@loopring-web/common-resources'
 
-import { useUserAPI } from 'hooks/exchange/useApi'
 import { makeWalletLayer2 } from 'hooks/help'
 import { useWalletLayer2 } from 'stores/walletLayer2'
 import { useTokenMap } from 'stores/token'
@@ -373,15 +372,13 @@ export const useHeader = () => {
 export function useChargeFeeList(tokenSymbol: string | undefined, requestType: OffchainFeeReqType,
                                  tokenMap: LoopringMap<TokenInfo> | undefined, amount?: number) {
 
-    const api = useUserAPI()
-
     const {accountId, apiKey,} = useAccount()
 
     const [chargeFeeList, setChargeFeeList] = useState<any[]>([])
 
     useCustomDCEffect(async () => {
 
-        if (!accountId || !tokenSymbol || !tokenMap) {
+        if (!accountId || !tokenSymbol || !tokenMap || !LoopringAPI.userAPI) {
             return
         }
 
@@ -397,7 +394,7 @@ export function useChargeFeeList(tokenSymbol: string | undefined, requestType: O
                 amount: amount ? toBig(amount).times('1e' + tokenInfo.decimals).toFixed(0, 0) : undefined
             }
 
-            const response = await api.getOffchainFeeAmt(request, apiKey)
+            const response = await LoopringAPI.userAPI.getOffchainFeeAmt(request, apiKey)
 
             if (response) {
                 response.raw_data.fees.forEach((item: any, index: number) => {
@@ -418,7 +415,7 @@ export function useChargeFeeList(tokenSymbol: string | undefined, requestType: O
 
         setChargeFeeList(chargeFeeList)
 
-    }, [accountId, apiKey, requestType, tokenSymbol, tokenMap])
+    }, [accountId, apiKey, LoopringAPI.userAPI, requestType, tokenSymbol, tokenMap])
 
     return {
         chargeFeeList,

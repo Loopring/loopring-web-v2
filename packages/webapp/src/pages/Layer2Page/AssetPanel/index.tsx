@@ -16,8 +16,7 @@ import {
     LpTokenAction,
 } from '@loopring-web/component-lib'
 import { useModals } from 'hooks/modal/useModals'
-// import { useGetUserBalances } from 'hooks/exchange/useUserAPI'
-import { useGetTokens } from 'hooks/exchange/useExchangeAPI'
+
 import { volumeToCount } from 'hooks/help'
 import { LoopringAPI } from 'stores/apis/api'
 import { AssetType } from 'loopring-sdk'
