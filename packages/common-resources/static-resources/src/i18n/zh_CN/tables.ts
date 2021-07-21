@@ -4,6 +4,7 @@ export default {
     labelTransfer: '转账',
     labelWithdraw: '提现',
     labelDeposit: '充值',
+    labelTrade: '交易',
     labelToken: '币种',
     labelAmount: '总量',
     labelAvailable: '可用额度',

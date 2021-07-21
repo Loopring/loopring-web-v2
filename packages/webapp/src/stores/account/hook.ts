@@ -43,6 +43,7 @@ import { useWalletLayer1 } from '../walletLayer1';
 import { useWalletLayer2 } from '../walletLayer2';
 import { useTokenMap } from '../token';
 import _ from 'lodash'
+import { myLog } from 'utils/log_tools'
 
 export function useWeb3Account() {
 
@@ -121,15 +122,17 @@ export function useConnect() {
     const [activatingConnector, setActivatingConnector] = React.useState<any>()
 
     const connect = React.useCallback((item_name: ConnectorNames, isSwitch: boolean = false) => {
+
+        if (isSwitch) {
+            myLog('try Connecting... isSwitch Reset')
+            sendEvent(store.getState().account, StatusChangeEvent.Reset)
+        }
+
         const newConnector: any = connectorsByName[item_name]
+        myLog('newConnector:', newConnector)
         setActivatingConnector(newConnector)
         activate(newConnector)
         dispatch(setConnectNameTemp(item_name))
-
-        if (isSwitch) {
-            //  console.log('try Connecting... isSwitch Reset')
-            sendEvent(store.getState().account, StatusChangeEvent.Reset)
-        }
 
         sendEvent(store.getState().account, StatusChangeEvent.Connecting)
 
@@ -225,7 +228,7 @@ export function useUnlock() {
                 sk = account.eddsaKey
             }
 
-            // console.log('useUnlock account:', account, ' sk:', sk)
+            myLog('useUnlock account:', account, ' sk:', sk)
 
             apikey = await userApi.getUserApiKey({
                 accountId: account.accountId
@@ -275,7 +278,7 @@ export function useUnlock() {
                     const updateAccountResponse = await userApi.updateAccount(request, web3,
                         chainId, account.connectName, false)
 
-                    console.log('updateAccountResponse:', updateAccountResponse)
+                    myLog('updateAccountResponse:', updateAccountResponse)
 
                     await sleep(1000)
 
@@ -358,7 +361,7 @@ async function checkAccountAvailableAsync(exchangeApi: ExchangeAPI, userApi: Use
                 }
 
             } else {
-                console.log('already has accountId!')
+                myLog('already has accountId!')
             }
         } else {
             event = (StatusChangeEvent.HasNoPubkey)
@@ -508,24 +511,12 @@ export function useCheckAccStatus() {
 
                 case AccountStatus.NOACCOUNT:
 
-                    console.log('NOACCOUNT before wait 15s!')
+                    myLog('NOACCOUNT before wait 30s!')
 
                     _.delay(() => {
                         sendEvent(account, StatusChangeEvent.Reconnect)
-                        console.log('NOACCOUNT wait 15s to reconnect again!')
-                    }, 15000)
-                    
-
-                    // const noAccHandler = setInterval(async() => {
-
-                    //     try {
-                    //         const { accInfo } = (await exchangeApi.getAccount({ owner: lv1Acc }))
-                    //         clearInterval(noAccHandler)
-                    //         sendEvent(account, StatusChangeEvent.Lock)
-                    //     } catch (reason) {
-                    //     }
-
-                    // }, 15000)
+                        myLog('NOACCOUNT wait 15s to reconnect again!')
+                    }, 30000)
 
                     break
 

@@ -17,6 +17,7 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
         handleChartUnitChange,
     } = useBasicInfo(props, coinAInfo, coinBInfo, marketArray, t)
     const { upColor } = useSettings();
+    const chartData = originData && !!originData.length ? originData.sort((a: any, b: any) => a.timeStamp - b.timeStamp) : []
     return  <>
         <Grid item xs={8}>
             <TradeTitle {...{
@@ -31,7 +32,7 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
 
         <Grid item xs={12} position={'relative'}>
             <Box minHeight={256} maxHeight={256} display={'block'} style={{ height: '100%', width: '100%' }}>
-                <ScaleAreaChart type={chartType} data={originData ?? []} riseColor={upColor as keyof typeof UpColor}
+                <ScaleAreaChart type={chartType} data={chartData} riseColor={upColor as keyof typeof UpColor}
                     handleMove={() => {
                     }} />
             </Box>
