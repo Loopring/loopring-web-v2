@@ -4,6 +4,7 @@ export default {
     labelTransfer: 'Transfer',
     labelWithdraw: 'Withdraw',
     labelDeposit: 'Deposit',
+    labelTrade: 'Trade',
     labelToken: 'Token',
     labelAmount: 'Amount',
     labelAvailable: 'Available',

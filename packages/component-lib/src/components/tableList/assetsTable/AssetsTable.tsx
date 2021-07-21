@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Box, Grid, Menu, MenuItem } from '@material-ui/core'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
+import { useHistory } from 'react-router-dom'
 // import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
 import { Button } from '../../basic-lib'
 import { Column, generateColumns, generateRows, Table } from '../../basic-lib/tables'
@@ -18,7 +19,7 @@ const TableStyled = styled(Box)`
 
   .rdg {
     flex: 1;
-    --template-columns: auto auto auto auto ${(props: any) => props.lan === 'zh_CN' ? '320px' : '380px'} !important;
+    --template-columns: auto auto auto auto ${(props: any) => props.lan === 'zh_CN' ? '320px' : '370px'} !important;
 
     .rdg-cell.action {
       display: flex;
@@ -117,12 +118,18 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     const pageSize = pagination ? pagination.pageSize : 10;
 
     const {language} = useSettings()
+    let history = useHistory()
 
     useEffect(() => {
         // setTotalData(rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : [])
         setTotalData(rawData && Array.isArray(rawData) ? rawData : [])
     }, [rawData])
 
+    const jumpToTrade = (pair: string) => {
+        history.push({
+            pathname: `/trading/lite/${pair}`
+        })
+    }
 
     const getColumnModeAssets = (t: TFunction): Column<Row, unknown>[] => [
         {
@@ -139,7 +146,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         {
             key: 'amount',
             name: t('labelAmount'),
-            minWidth: 120,
+            // minWidth: 120,
         },
         {
             key: 'available',
@@ -148,50 +155,47 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         {
             key: 'locked',
             name: t('labelLocked'),
-            minWidth: 120,
+            // minWidth: 120,
         },
         {
             key: 'actions',
             name: t('labelActions'),
-            minWidth: 280,
+            // minWidth: 280,
             formatter: ({row}) => {
                 const token = row[ 'token' ]
                 const isLp = token.type === TokenType.lp
-                // const tradePairs: TradePairItem[] = row[ '_rawData' ][ 4 ] || []
-                const lpPair = token.value.split('-')
-                lpPair.splice(0, 1)
-                const tokenValue = isLp ? lpPair.join('-') : token.value
+                const lpPairList = token.value.split('-')
+                lpPairList.splice(0, 1)
+                const lpPair = lpPairList.join('-')
+                const tokenValue = token.value
 
                 return (
                     <Grid container spacing={1} alignItems={'center'}>
-                        {isLp ? (
-                            <>
+                        <>
+                            <Grid item>
+                                <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                        onClick={() => onShowDeposit(tokenValue)}>{t('labelDeposit')}</Button>
+                            </Grid>
+                            <Grid item>
+                                <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                        onClick={() => onShowTransfer(tokenValue)}>{t('labelTransfer')}</Button>
+                            </Grid>
+                            <Grid item>
+                                <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                        onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
+                            </Grid>
+                            {isLp ? (
                                 <Grid item>
                                     <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                            onClick={() => onLpDeposit(tokenValue, LpTokenAction.add)}>{t('labelDeposit')}</Button>
+                                            onClick={() => onLpDeposit(lpPair, LpTokenAction.add)}>{t('labelAMM')}</Button>
                                 </Grid>
+                            ) : (
                                 <Grid item>
                                     <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                            onClick={() => onLpWithdraw(tokenValue, LpTokenAction.remove)}>{t('labelWithdraw')}</Button>
+                                            onClick={() => jumpToTrade(tokenValue)}>{t('labelTrade')}</Button>
                                 </Grid>
-                            </>
-                        ) : (
-                            <>
-                                <Grid item>
-                                    <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                            onClick={() => onShowDeposit(tokenValue)}>{t('labelDeposit')}</Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                            onClick={() => onShowTransfer(tokenValue)}>{t('labelTransfer')}</Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                            onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
-                                </Grid>
-                            </>
-                        )}
-                        
+                            )}
+                        </>
                         {/* <Grid item>
                             {isLp
                                 ? <Button variant={'outlined'} color={'primary'} disabled>{t('labelAMM')} </Button>
