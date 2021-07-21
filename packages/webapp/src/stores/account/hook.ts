@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect'
 
-import { useGetTradingInfo } from 'stores/trading/hook'
 import { useActiveWeb3React, } from 'hooks/web3/useWeb3'
 
 import { Lv2Account, } from 'defs/account_defs'
@@ -14,7 +13,7 @@ import * as sign_tools from 'loopring-sdk'
 
 import { connectorsByName } from 'defs/web3_defs'
 
-import { AccountInfo, ConnectorNames, dumpError400, ExchangeAPI, sleep, UpdateAccountRequestV3, UserAPI, VALID_UNTIL, } from 'loopring-sdk'
+import { ConnectorNames, dumpError400, ExchangeAPI, sleep, UpdateAccountRequestV3, UserAPI, VALID_UNTIL, } from 'loopring-sdk'
 
 import { toHex, toBig, } from 'loopring-sdk'
 
@@ -176,8 +175,6 @@ export function useUnlock() {
 
     const userApi: UserAPI = useUserAPI()
 
-    const { tradingInfo } = useGetTradingInfo()
-
     const { connector, } = useWeb3Account()
 
     const { sendEvent } = useStateMachine()
@@ -191,10 +188,10 @@ export function useUnlock() {
 
     const unlock = React.useCallback(async (account: Lv2Account) => {
 
-        const exchangeInfo = store.getState().system.exchangeInfo?.exchangeAddress
+        const exchangeAddress = store.getState().system.exchangeInfo?.exchangeAddress
 
         if (!userApi || !exchangeApi || !connector
-            || !account.accountId || !exchangeInfo
+            || !account.accountId || !exchangeAddress
             || !chainId
             || account.status !== AccountStatus.LOCKED) {
             return
@@ -223,7 +220,7 @@ export function useUnlock() {
                     .generateKeyPair(
                         web3,
                         account.accAddr,
-                        exchangeInfo,
+                        exchangeAddress,
                         nonce,
                         account.connectName,
                     )
@@ -265,13 +262,13 @@ export function useUnlock() {
                         .generateKeyPair(
                             web3,
                             account.accAddr,
-                            tradingInfo.exchangeInfo?.exchangeAddress as string,
+                            exchangeAddress,
                             account.nonce,
                             account.connectName,
                         )
                     
                     const request: UpdateAccountRequestV3 = {
-                        exchange: tradingInfo.exchangeInfo?.exchangeAddress,
+                        exchange: exchangeAddress,
                         owner: account.accAddr,
                         accountId: account.accountId,
                         publicKey: { x: eddsaKey.formatedPx, y: eddsaKey.formatedPy },
@@ -307,7 +304,7 @@ export function useUnlock() {
         }
 
     }
-        , [dispatch, sendEvent, exchangeApi, userApi, connector, chainId, tradingInfo.exchangeInfo])
+        , [dispatch, sendEvent, exchangeApi, userApi, connector, chainId, store.getState().system.exchangeInfo?.exchangeAddress])
 
     return {
         lock,
@@ -423,11 +420,11 @@ export function useCheckAccStatus() {
     // console.log('prevWeb3Account:', prevWeb3Account, ' web3Account:', web3Account)
     // console.log(exchangeApi, userApi, account, 'prevChainId:', prevChainId, 'chainId:', chainId, 'web3Account:', web3Account)
 
-    const { tradingInfo } = useGetTradingInfo()
-
     useCustomDCEffect(async() => {
 
         const account = store.getState().account as Lv2Account
+
+        const exchangeAddress = store.getState().system.exchangeInfo?.exchangeAddress
 
         const cleanUp = () => {
             let handler = UserStorage.getHandler()
@@ -439,7 +436,7 @@ export function useCheckAccStatus() {
         async function checkStatus() {
 
             if (!account || !lv1Acc || !exchangeApi || !userApi || !chainId
-                || !connector || !tradingInfo.exchangeInfo?.exchangeAddress) {
+                || !connector || !exchangeAddress) {
                 return
             }
 
@@ -594,7 +591,7 @@ export function useCheckAccStatus() {
 
     }, [updateWalletLayer1, updateWalletLayer2, resetLayer1, resetLayer2,
         exchangeApi, userApi, store.getState().account.status, prevChainId, chainId, lv1Acc, 
-        dispatch, connector, tradingInfo.exchangeInfo?.exchangeAddress,])
+        dispatch, connector, store.getState().system.exchangeInfo?.exchangeAddress])
 
 }
 

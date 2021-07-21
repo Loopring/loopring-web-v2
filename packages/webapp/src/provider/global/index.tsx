@@ -4,16 +4,6 @@ import { UserStorage } from 'storage'
 
 import { useCheckAccStatus, } from 'stores/account/hook'
 
-import { 
-  useUpdateChainId,
-  useUpdateExchangeInfo, 
-  useUpdateExchangeMarkets, 
-  useUpdateTokens, 
-  useUpdateAmmPoolConf,
-  useUpdateAmmActivityRules,
-  useUpdateAmmPoolStats,
-} from 'stores/trading/hook'
-
 enum WindowEvent {
   Click = 'click',
   Scroll = 'scroll',
@@ -25,14 +15,6 @@ const events = [WindowEvent.Click, WindowEvent.Scroll]
 const forceReset = debounce(() => { UserStorage.checkTimeout(true) }, 100)
 
 export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
-
-  useUpdateExchangeInfo()
-  useUpdateExchangeMarkets()
-  useUpdateTokens()
-  useUpdateAmmPoolConf()
-  useUpdateAmmActivityRules()
-  useUpdateAmmPoolStats()
-  useUpdateChainId()
 
   useCheckAccStatus()
 

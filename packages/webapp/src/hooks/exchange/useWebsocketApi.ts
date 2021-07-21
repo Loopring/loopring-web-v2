@@ -4,7 +4,9 @@ import { useWsAPI, } from './useApi'
 
 import { ChainId, getAccountArg, getCandlestickArg, getAmmpoolArg, 
     getTickerArg, WsProps } from 'loopring-sdk'
-import store from 'stores'
+
+import { RootState } from 'stores'
+import { useSelector } from 'react-redux'
 
 const stateArr = [
     { key: 0, value: 'Connecting' },
@@ -18,11 +20,11 @@ export const useWebsocket = ({ topics, verify, needApiKey, apiKey, }: { topics: 
     const [wsData, setMessage] = useState<any>(undefined)
     const [readyState, setReadyState] = useState({ key: 0, value: 'Connecting' })
 
-    const chainId = store.getState().trading.chainId
+  const { chainId, } = useSelector((state: RootState) => state.system)
 
     const api = useWsAPI()
 
-    const creatWebSocket = () => {
+    const creatWebSocket = useCallback(() => {
 
         if (!api || !chainId) {
             return
@@ -81,7 +83,7 @@ export const useWebsocket = ({ topics, verify, needApiKey, apiKey, }: { topics: 
 
         })
 
-    }
+    }, [chainId])
 
     const webSocketInit = () => {
         if (!ws.current || ws.current.readyState === 3) {

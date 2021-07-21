@@ -619,10 +619,6 @@ export function useModalProps() {
 
             let walletType = account.connectName
 
-            walletType = ConnectorNames.WalletConnect
-
-            debugger
-
             const request2: OriginTransferRequestV3 = {
                 exchange: exchangeInfo.exchangeAddress,
                 payerAddr: account.accAddr,
