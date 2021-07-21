@@ -9,13 +9,14 @@ import {
     TradeFloat,
     WalletMap
 } from '@loopring-web/common-resources';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { LoopringAPI } from '../../stores/apis/api';
 import { useTokenMap } from '../../stores/token';
 import * as fm from 'loopring-sdk';
 import {
     AmmPoolInfoV3,
     AmmPoolSnapshot,
+    DepthData,
     dumpError400,
     getExistedMarket,
     GetNextStorageIdRequest,
@@ -147,9 +148,9 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         const label: string | undefined = accountStaticCallBack(bntLabel)
         setSwapBtnI18nKey(label);
     }, [account.status]);
+
     const swapCalculatorCallback = React.useCallback(async function ({sell, buy, slippage, ...rest}: any) {
 
-        debugger
         const {exchangeInfo} = store.getState().system
         setIsSwapLoading(true);
         if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo
@@ -250,14 +251,27 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     }
 
-    const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: AmmPoolSnapshot | undefined): Promise<{ _tradeCalcData: TradeCalcData<C>, _tradeData: SwapTradeData<IBData<C>> }> => {
+    const [depth, setDepth] = useState<DepthData>()
+
+    useCustomDCEffect(async() => {
+        if (!pair || !LoopringAPI.exchangeAPI) {
+            return
+        }
+        const market = `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`
+        const { depth } = await LoopringAPI.exchangeAPI?.getMixDepth({market})
+        setDepth(depth)
+
+    }, [LoopringAPI.exchangeAPI, pair, setDepth])
+
+    const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: AmmPoolSnapshot | undefined)
+        : Promise<{ _tradeCalcData: TradeCalcData<C>, _tradeData: SwapTradeData<IBData<C>> }> => {
+        console.log('calculateTradeData...')
         //if(`${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}` === coinKey)
         if (_tradeData[ type ].tradeValue && tradeCalcData) {
             type === 'sell' ? _tradeData[ 'buy' ].tradeValue = fm.toBig(_tradeData[ 'sell' ].tradeValue).times(tradeCalcData.StoB).toNumber()
                 : _tradeData[ 'sell' ].tradeValue = fm.toBig(_tradeData[ 'buy' ].tradeValue).times(tradeCalcData.BtoS).toNumber()
         }
         const market = `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`
-        const depth = await LoopringAPI.exchangeAPI?.getMixDepth({market})
         if (!marketArray || !tokenMap || !marketMap || !depth || !ammMap || !tradeCalcData) {
             let _tradeCalcData = {...tradeCalcData} as TradeCalcData<C>;
             return {_tradeData, _tradeCalcData}
@@ -275,13 +289,17 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         const base = _tradeData.sell.belong as string
         const quote = _tradeData.buy.belong as string
 
-        let _tradeCalcData = {...tradeCalcData} as TradeCalcData<C>;
+        let slippage = _tradeData.slippage
 
-        return {_tradeData, _tradeCalcData}
-/*
+        if (slippage === undefined) {
+            slippage = 0.5
+        }
+
+        slippage = fm.toBig(slippage).times(100).toString()
+
         const output = fm.getOutputAmount(input, base, quote, isAtoB, marketArray, tokenMap,
-            marketMap, depth?.depth, {[ 'AMM-' + market ]: ammMap[ 'AMM-' + market ].__rawConfig__} as LoopringMap<AmmPoolInfoV3>,
-            ammPoolSnapshot, '6', '200')
+            marketMap, depth, {[ 'AMM-' + market ]: ammMap[ 'AMM-' + market ].__rawConfig__} as LoopringMap<AmmPoolInfoV3>,
+            ammPoolSnapshot, '6', slippage)
 
         setOutput(output)
 
@@ -296,7 +314,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         //TODO: renew  tradeCalcData
         let _tradeCalcData = {...tradeCalcData} as TradeCalcData<C>;
         return {_tradeData, _tradeCalcData}
-        */
+        
     }
 
     const throttleSetValue = React.useCallback(_.debounce(async (type, _tradeData, _ammPoolSnapshot) => {
