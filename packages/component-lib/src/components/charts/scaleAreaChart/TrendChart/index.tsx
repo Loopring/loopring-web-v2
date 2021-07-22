@@ -5,6 +5,8 @@ import { ScaleAreaChartProps } from '../ScaleAreaChart'
 import { getRenderData } from '../data'
 import { Box } from '@material-ui/core'
 import styled from '@emotion/styled'
+import { useSettings } from '@loopring-web/component-lib/src/stores'
+import { useEffect } from 'react'
 
 const DEFAULT_YAXIS_DOMAIN = 0.1
 const UP_COLOR = '#00BBA8'
@@ -19,7 +21,10 @@ const DOWN_COLOR = '#fb3838'
 // }
 
 const TooltipStyled = styled(Box)`
-    
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: ${({theme}) => theme.unit}px;
+    padding: ${({theme}) => theme.unit * 2}px ${({theme}) => theme.unit * 3}px;
+    font-size: ${({theme}) => theme.unit * 2}px;
 `
 
 const TrendChart = ({
@@ -31,24 +36,32 @@ const TrendChart = ({
                         showTooltip = true,
                         showArea = true,
                     }: ScaleAreaChartProps) => {
-    const [priceTrend, setPriceTrend] = useState<'up' | 'down'>('up')
+    const userSettings = useSettings()
+    const upColor = userSettings ? userSettings.upColor: 'green'
+    const renderData = getRenderData(type, data)
+    const [priceTrend, setPriceTrend] = useState<'up' | 'down'>(renderData[renderData.length - 1]?.sign === 1 ? 'up' : 'down')
     // current chart xAxis index
     const [currentIndex, setCurrentIndex] = useState(-1)
-    const renderData = getRenderData(type, data)
+
+    useEffect(() => {
+        setPriceTrend(renderData[renderData.length - 1]?.sign === 1 ? 'up' : 'down')
+    }, [renderData])
+
     const trendColor =
-        riseColor === 'green'
+        upColor === 'green'
             ? priceTrend === 'up'
-            ? UP_COLOR
-            : DOWN_COLOR
+                ? UP_COLOR
+                : DOWN_COLOR
             : priceTrend === 'up'
-            ? DOWN_COLOR
-            : UP_COLOR
+                ? DOWN_COLOR
+                : UP_COLOR
     const hasData = data && Array.isArray(data) && !!data.length
 
     const handleMousemove = useCallback(
         (props: any) => {
             if (!hasData) return
             const {activeTooltipIndex} = props
+            
             // avoid duplicated event
             const isUpdate = activeTooltipIndex !== currentIndex
             if (Number.isFinite(activeTooltipIndex) && isUpdate) {
@@ -57,6 +70,7 @@ const TrendChart = ({
                     renderData[ activeTooltipIndex ] &&
                     renderData[ activeTooltipIndex ].sign
                 ) {
+                    console.log(renderData[ activeTooltipIndex ])
                     setPriceTrend(
                         renderData[ activeTooltipIndex ].sign === 1
                             ? 'up'
@@ -81,9 +95,9 @@ const TrendChart = ({
             return <span></span>
         const {timeStamp} = props.payload[ 0 ].payload
         return (
-            <span style={{fontSize: 14}}>
-				{moment(timeStamp).format('hh:mm A M[月]D[日]')}
-			</span>
+            <TooltipStyled>
+				{moment(timeStamp).format('HH:mm MMM DD [UTC]Z')}
+			</TooltipStyled>
         )
     }, [hasData])
 
