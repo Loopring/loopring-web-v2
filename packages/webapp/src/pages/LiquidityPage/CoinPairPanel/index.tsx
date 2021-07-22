@@ -117,7 +117,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                 </Grid>
             </Grid>
             <Grid item xs={4} alignItems={'center'} justifyContent={'flex-end'} display={'flex'}>
-                {/*{typeof coinPairInfo.isActivity === 'undefined'? '':*/}
+                {typeof coinPairInfo.isActivity === 'undefined'? '':
                 <BoxTopStyled paddingY={3} paddingX={1 / 2 * 5} display={'flex'}
                               flexDirection={'column'}>
                     <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
@@ -161,9 +161,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         }
                     </Typography>
                 </BoxTopStyled>
-                {/*}*/}
-
-
+                }
             </Grid>
             {/*<Grid item xs={4} alignItems={'center'} justifyContent={'flex-end'} display={'flex'}>*/}
             {/*    <Link href="/#/liquidity/pools" variant={'h5'}>*/}
