@@ -5,7 +5,7 @@ import BasicInfoPanel from './panel/BasicInfoPanel'
 import TradePanel from './panel/TradePanel'
 import styled from 'styled-components'
 import { useSwapPage } from './hook';
-import { SwapPanel } from '@loopring-web/component-lib'
+import { SwapPanel, Toast } from '@loopring-web/component-lib'
 import { TradeBtnStatus } from '@loopring-web/component-lib'
 import { useTokenMap } from '../../stores/token';
 
@@ -28,7 +28,11 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
         onSwapClick,
         pair,
         swapBtnI18nKey,
-        isSwapLoading
+        isSwapLoading,
+        swapToastOpen,
+        setSwapToastOpen,
+        swapAlertText,
+
     } = useSwapPage();
 
     const { coinMap } = useTokenMap()
@@ -43,6 +47,7 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
     const renderPair = customPair.coinAInfo ? customPair : pair
 
     return <>
+        <Toast alertText={swapAlertText as string} open={swapToastOpen} autoHideDuration={2000} setOpen={setSwapToastOpen}/>
         <Grid container marginRight={3} alignContent={'flex-start'}>
             <BasicInfoPanel {...{
                 ...rest,
@@ -50,8 +55,6 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
                 tradeFloat, tradeArray
             }} />
             <TradePanel tradeArray={tradeArray} myTradeArray={myTradeArray}/>
-
-            {/**/}
         </Grid>
 
         <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}}>

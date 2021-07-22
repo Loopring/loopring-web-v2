@@ -22,4 +22,6 @@ export enum MODAL_TYPE {
 
 export const REFRESH_RATE = 1000
 
-export const REFRESH_RATE_SLOW = 15000
+export const REFRESH_RATE_SLOW = 10000
+
+export const TOAST_TIME = 2000
