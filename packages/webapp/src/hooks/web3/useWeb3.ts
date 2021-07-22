@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Web3Provider } from '@ethersproject/providers'
@@ -6,18 +6,12 @@ import { Web3ReactContextInterface } from '@web3-react/core/dist/types'
 
 import { useWeb3React } from '@web3-react/core'
 
+import { isMobile } from 'react-device-detect'
+
 import { injected } from 'networks/web3_connectors'
 
 import { ChainId, NetworkContextName } from 'loopring-sdk'
 import { myLog } from 'utils/log_tools'
-
-/*
-import EXCHANGE_ABI from 'config/abis/exchange_3_6.json'
-import ERC20_ABI from 'config/abis/erc20.json'
-import DEPOSIT_ABI from 'config/abis/deposit.json'
-
-import Web3 from 'web3'
-*/
 
 export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
   const context = useWeb3React<Web3Provider>()
@@ -59,38 +53,41 @@ export function useEagerConnect() {
           setTried(true)
         })
       } else {
-        myLog('useEagerConnect NOT isAuthorized')
-        setTried(true)
+        if (isMobile && window.ethereum) {
+          activate(injected, undefined, true).catch(() => {
+            setTried(true)
+          })
+        } else {
+          setTried(true)
+        }
       }
     })
-  }) // intentionally only running on mount (make sure it's only mounted once :))
+  }, []) // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag
   useEffect(() => {
-    if (!tried && active) {
+    if (active) {
       setTried(true)
     }
-  }, [tried, active, setTried])
+  }, [active])
 
   return tried
 }
 
 export function useInactiveListener(onReConnectInjected: any = undefined, suppress: boolean = false) {
-  const { active, error, activate, chainId, } = useWeb3React()
-  const dispatch = useDispatch()
+  const { active, error, activate, } = useWeb3React()
 
   useEffect((): any => {
     const { ethereum } = window as any
 
     const reConnectInjected = () => {
-      myLog('--------------------------> reConnectInjected')
       activate(injected)
       if (onReConnectInjected) {
         onReConnectInjected()
       }
     }
 
-    if (ethereum && ethereum.on && !active && !error) {
+    if (ethereum && ethereum.on && !active && !error && !suppress) {
 
       const handleChainChanged = (chainId: string | number) => {
         myLog('Handling \'chainChanged\' event with payload', chainId)
@@ -99,7 +96,6 @@ export function useInactiveListener(onReConnectInjected: any = undefined, suppre
       const handleAccountsChanged = (accounts: string[]) => {
         myLog('---------------------------------------------')
         myLog('Handling \'accountsChanged\' event with payload', accounts)
-        myLog('before reset accounts.length=', accounts.length)
         if (accounts.length > 0) {
           reConnectInjected()
         }
@@ -115,7 +111,7 @@ export function useInactiveListener(onReConnectInjected: any = undefined, suppre
         }
       }
     }
-  }, [active, error, chainId, activate, dispatch, onReConnectInjected])
+  }, [active, error, activate, onReConnectInjected])
 }
 
 export function useBlockNumber() {
