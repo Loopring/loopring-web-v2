@@ -40,7 +40,7 @@
     "pify": "^5.0.0",
     "portable-fetch": "^3.0.0",
     "preact": "^10.5.12",
-    "react-device-detect": "^1.15.0",
+    "react-device-detect": "^1.17.0",
     "react-grid-layout": "^1.2.0",
     "react-router-dom": "^5.2.0",
     "redux-localstorage-simple": "^2.4.0",
