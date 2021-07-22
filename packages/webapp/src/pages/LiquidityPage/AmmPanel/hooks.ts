@@ -39,6 +39,7 @@ import { useWalletLayer2 } from "stores/walletLayer2";
 import { myLog } from "utils/log_tools";
 import { BIG10 } from "defs/swap_defs";
 import { useSelector } from "react-redux";
+import { REFRESH_RATE_SLOW } from "defs/common_defs";
 
 export const useAmmPanel = <C extends { [ key: string ]: any }>({
                                                                     pair,
@@ -148,7 +149,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
             updateAmmPoolSnapshot()
 
-        }, 15000)
+        }, REFRESH_RATE_SLOW)
 
         return () => {
             if (handler) {

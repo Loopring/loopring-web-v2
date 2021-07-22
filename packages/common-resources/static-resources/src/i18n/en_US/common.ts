@@ -148,4 +148,6 @@ export default {
     labelTxnPageTitle: 'Transactions',
     labelTradePageTitle: 'Trades',
     labelAmmPageTitle: 'AMM Records',
+    labelSwapSuccess: 'Swap sucessfully!',
+    labelSwapFailed: 'Swap failed!',
 }
