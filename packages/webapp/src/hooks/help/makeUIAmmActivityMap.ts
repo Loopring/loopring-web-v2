@@ -15,6 +15,7 @@ import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
 import { coinMap } from '@loopring-web/component-lib';
 import { AmmDetailStore } from '../../stores/Amm/AmmMap';
 import { WalletMapExtend } from './makeWallet';
+import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
 
 export type AmmActivityViewMap<R, I> = {
     [key in keyof R]?: AmmActivity<I>[] | undefined
@@ -41,11 +42,12 @@ export const makeUIAmmActivityMap = <R extends { [ key: string ]: any }, I exten
                     if (coinMap && ammPoolActivityRule.awardRules[ 0 ] && idIndex && tokenMap) {
 
                         const symbol = idIndex[ ammPoolActivityRule.awardRules[ 0 ].tokenId as any ]
-
+                        const totalRewards = VolToNumberWithPrecision(ammPoolActivityRule.awardRules[ 0 ].volume ,symbol)
                         // @ts-ignore
                         const item = {
                             // @ts-ignore
                             rewardToken: coinMap[ symbol ],
+                            totalRewards: Number(totalRewards),
                             myRewards: status === AmmPoolActivityStatus.InProgress && myReward && myReward[ ammPoolActivityRule.market ] ?
                                 volumeToCount(symbol, myReward[ ammPoolActivityRule.market ]?.currentRewards[ 0 ].volume) : 0,
                             duration: {
