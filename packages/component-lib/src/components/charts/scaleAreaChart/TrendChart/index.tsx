@@ -6,7 +6,6 @@ import { getRenderData } from '../data'
 import { Box } from '@material-ui/core'
 import styled from '@emotion/styled'
 import { useSettings } from '@loopring-web/component-lib/src/stores'
-import { useEffect } from 'react'
 
 const DEFAULT_YAXIS_DOMAIN = 0.1
 const UP_COLOR = '#00BBA8'
@@ -42,11 +41,7 @@ const TrendChart = ({
     const [priceTrend, setPriceTrend] = useState<'up' | 'down'>(renderData[renderData.length - 1]?.sign === 1 ? 'up' : 'down')
     // current chart xAxis index
     const [currentIndex, setCurrentIndex] = useState(-1)
-
-    useEffect(() => {
-        setPriceTrend(renderData[renderData.length - 1]?.sign === 1 ? 'up' : 'down')
-    }, [renderData])
-
+    
     const trendColor =
         upColor === 'green'
             ? priceTrend === 'up'
@@ -70,7 +65,6 @@ const TrendChart = ({
                     renderData[ activeTooltipIndex ] &&
                     renderData[ activeTooltipIndex ].sign
                 ) {
-                    console.log(renderData[ activeTooltipIndex ])
                     setPriceTrend(
                         renderData[ activeTooltipIndex ].sign === 1
                             ? 'up'
@@ -101,9 +95,13 @@ const TrendChart = ({
         )
     }, [hasData])
 
+    const handleMouseLeave = useCallback(() => {
+        setPriceTrend(renderData[renderData.length - 1]?.sign === 1 ? 'up' : 'down')
+    }, [renderData])
+
     return (
         <ResponsiveContainer debounce={1} width={'99%'}>
-            <ComposedChart data={renderData} onMouseMove={showTooltip && handleMousemove}>
+            <ComposedChart data={renderData} onMouseMove={showTooltip && handleMousemove} onMouseLeave={handleMouseLeave}>
                 <defs>
                     <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                         {/* <stop offset="5%" stopColor="rgba(1, 187, 168, 0.4)" stopOpacity={0.8}/> */}

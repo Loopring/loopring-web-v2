@@ -131,8 +131,8 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
                 limit: 30
             })
             const formattedPairHistory = ammList.candlesticks.map(o => ({
-                close: o.close,
-                timeStamp: o.timestamp
+                ...o,
+                timeStamp: o.timestamp / 1000,
             })).reverse()
             setPairHistory(formattedPairHistory)
         }
