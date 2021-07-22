@@ -196,6 +196,13 @@ export type TradeFloat = {
     reward?: number,
     rewardToken?: string,
     volume?: number,
+    close?: number,
+    high?: number,
+    low?: number,
+    changeDollar?: number,
+    changeYuan?: number,
+    closeDollar?: number,
+    closeYuan?: number,
     // APY?:number
     // tagNew?: boolean
 }

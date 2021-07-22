@@ -5,6 +5,8 @@ import {
     AmmProps,
     DepositPanel,
     DepositProps,
+    ModalCloseButton,
+    modalContentBaseStyle,
     ModalPanelProps,
     ResetPanel,
     ResetProps,
@@ -17,29 +19,38 @@ import {
     WithdrawProps
 } from '../../';
 import { IBData } from '@loopring-web/common-resources';
+import React from 'react';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 
 const SwitchPanelStyled = styled(Box)<{ _height?: number | string, _width?: number | string }>`
+  ${({theme}) => modalContentBaseStyle({theme: theme})}
+  ${({_width}) => `
+       width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : 'var(--transfer-modal-width)'};
+    `}
+  
   & > div {
-    background-color: ${({theme}) => theme.colorBase.background().secondary};
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    background-color: initial;
     ${({_width}) => `
        width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : 'var(--transfer-modal-width)'};
-    `
-}
+    `}
   }
 
   & .react-swipeable-view-container {
     ${({_height}) => `
        height: ${_height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : 'unset'} ;
     `
-}
-
+    }
+    
 ` as React.ElementType<{ _height?: number | string, _width?: number | string } & BoxProps>
-const Modal = ({open, onClose, content, height, width}: ModalPanelProps) => {
+const Modal = withTranslation('common')(({
+                                             open,
+                                             onClose,
+                                             content,
+                                             height,
+                                             width,
+                                             ...rest
+                                         }: ModalPanelProps & WithTranslation) => {
     return <MuiModal
         open={open}
         onClose={onClose}
@@ -47,10 +58,11 @@ const Modal = ({open, onClose, content, height, width}: ModalPanelProps) => {
         aria-describedby="modal-modal-description"
     >
         <SwitchPanelStyled {...{_height: height, _width: width}} style={{boxShadow: '24'}}>
+            <ModalCloseButton onClose={onClose} {...rest} />
             {content}
         </SwitchPanelStyled>
     </MuiModal>
-}
+})
 
 export const ModalPanel = <T extends IBData<I>, I>({
                                                        transferProps,

@@ -6,9 +6,9 @@ import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
 import { DropDownIcon, IBData, TradeCalcData } from '@loopring-web/common-resources';
 import { useDeepCompareEffect } from 'react-use';
 // import clockLoading from '@loopring-web/common-resources/assets/svg/clock-loading.svg';
-import { CountDownStyled, IconButtonStyled, SwapMenuList, SwapTradeWrap } from '../components';
+import { IconButtonStyled, SwapMenuList, SwapTradeWrap } from '../components';
 import { SwapData } from '../components/panel/SwapWrap/Interface';
-import { Box } from '@material-ui/core/';
+import { CountDownIcon } from '../components/tool/Refresh';
 
 
 // html {
@@ -71,18 +71,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
             ...swapTradeData
         }
     })
-    const countDownRef = React.createRef();
-    const _refresh = React.useCallback(() => {
-        //@ts-ignore
-        countDownRef?.current?.classList?.remove('countdown');
-        setImmediate(()=>{
-            //@ts-ignore
-            countDownRef.current?.classList?.add('countdown');
-        })
-        if(typeof onRefreshData === 'function'){
-            onRefreshData();
-        }
-    }, [onRefreshData,countDownRef])
+
 
     useDeepCompareEffect(() => {
         if (rest.tradeData && rest.tradeData !== swapData.tradeData
@@ -164,11 +153,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                     {/*                  aria-label="3' price update">*/}
                     {/*    <img src={clockLoading} alt={'loading'} width={28} height={28}/>*/}
                     {/*</IconButtonStyled>*/}
-                    <CountDownStyled ref={countDownRef} className={'clock-loading outline countdown'} onClick={
-                        _refresh
-                    }>
-                        <Box className={'circle'}></Box>
-                    </CountDownStyled>
+                    <CountDownIcon onRefreshData={onRefreshData}/>
                 </Grid>
             },
             {

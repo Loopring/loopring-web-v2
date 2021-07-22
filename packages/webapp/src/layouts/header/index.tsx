@@ -1,18 +1,17 @@
-import React, { useCallback, useState, } from 'react'
+import { useCallback, useState, } from 'react'
 
 import {
     Header as HeaderUI,
     HideOnScroll,
     ModalWalletConnect,
-    AccountInfo,
-    ModalCloseButton,
+    Toast,
 } from '@loopring-web/component-lib'
 
 import { headerRoot } from '@loopring-web/common-resources'
 
 import { useLocation } from 'react-router-dom'
 
-import { Toolbar, Snackbar, Alert, } from '@material-ui/core'
+import { Toolbar, } from '@material-ui/core'
 
 import { useHeader } from './hook'
 
@@ -23,8 +22,6 @@ import { useModalProps } from './hook'
 import { copyToClipBoard } from 'utils/obj_tools'
 import { ModalAccountInfo } from '../../pages/AccountPage';
 import { useTranslation } from 'react-i18next';
-
-import store from 'stores'
 
 const Header = ({ ...rest }: any) => {
 
@@ -59,6 +56,8 @@ const Header = ({ ...rest }: any) => {
 
     const { disconnect } = useDisconnect()
 
+    const {t} = useTranslation('common')
+
     const onSwitch = useCallback(() => {
         setShowAccountInfo({isShow:false})
         setShowConnect({isShow:true})
@@ -67,16 +66,12 @@ const Header = ({ ...rest }: any) => {
     const [openQRCode, setOpenQRCode] = useState(false)
 
     const [copyToastOpen, setCopyToastOpen] = useState(false);
-    const {t} = useTranslation('commom')
 
-    const closeCopyToast = () => { setCopyToastOpen(false) }
+    const closeCopyToast = useCallback(() => { setCopyToastOpen(false) }, [setCopyToastOpen])
 
     return (<>
-        <Snackbar open={copyToastOpen} autoHideDuration={2500} onClose={closeCopyToast}>
-            <Alert onClose={closeCopyToast} severity="success">
-                {t('Address Copied to Clipboard!')}
-        </Alert>
-        </Snackbar>
+        <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen} 
+            autoHideDuration={2500} onClose={closeCopyToast} severity={"success"} />
 
         <ModalQRCode open={openQRCode} onClose={() => setOpenQRCode(false)} title={'ETH Address'}
             description={account.accAddr} url={account.accAddr} />

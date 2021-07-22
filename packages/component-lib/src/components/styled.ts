@@ -83,23 +83,31 @@ export const ButtonListRightStyled = styled(Grid)`
     margin-right: ${({theme}) => theme.unit}px;
   }
 `
-export const ModalContentStyled = styled(Box)`
-  & > div {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    background-color: ${({theme}) => theme.colorBase.background().secondary};
-    transform: translate(-50%, -50%);
-
-    padding: 36px 0;
-    border: 1px solid #252842;
-    box-shadow: 0px 4px 38px rgba(0, 0, 0, 0.16);
-    border-radius: 8px;
+export const modalContentBaseStyle = ({theme}: any) => css`
+  &:focus-visible {
+    outline:0
   }
+
+  //& > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-color: ${theme.colorBase.background().secondary};
+  transform: translate(-50%, -50%);
+
+  padding: 36px 0;
+  border: 0;
+  //border: 1px solid #252842;
+  box-shadow: 0px 4px 38px rgba(0, 0, 0, 0.16);
+  border-radius: 8px;
+  //}
+`
+export const ModalContentStyled = styled(Box)`
+  ${({theme}) => modalContentBaseStyle({theme: theme})}
 ` as typeof Box
 // export const TwoIconBoxStyled = styled(Box)`
 //   ${({theme}) => AvatarIconPair({theme})}
