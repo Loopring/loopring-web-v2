@@ -8,7 +8,7 @@ import { SwapPanel } from '@loopring-web/component-lib'
 import { TradeBtnStatus } from '@loopring-web/component-lib'
 
 const FixedStyle = styled(Box)`
-  @media only screen and (min-height: 680px ) and (min-width: 1024px) {
+  @media only screen and (min-height: 780px ) and (min-width: 1024px) {
     position: fixed;
   }
 `
