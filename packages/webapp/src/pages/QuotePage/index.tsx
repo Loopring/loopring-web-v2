@@ -83,7 +83,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const handleRowClick = React.useCallback((row: QuoteTableRawDataItem) => {
       const { coinA, coinB } = row.pair
       const tradePair = `${coinA}-${coinB}`
-      history.push({
+      history && history.push({
         pathname: `/trading/lite/${tradePair}`
       })
     }, [history])
@@ -100,7 +100,11 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
               const market = `${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}`
               const chartData = candlestickList.find(o => o.market === market)?.data.sort((a: any, b: any) => a.timeStamp - b.timeStamp)
               return (
-                <Grid key={index} item xs={3} >
+                <Grid key={index} item xs={3} onClick={() => {
+                  history && history.push({
+                    pathname: `/trading/lite/${market}`
+                  })
+                }}>
                     <MarketBlock {...{...item, chartData: chartData ? chartData : [], ...rest}}></MarketBlock>
                 </Grid>
               )
