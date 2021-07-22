@@ -117,7 +117,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                 </Grid>
             </Grid>
             <Grid item xs={4} alignItems={'center'} justifyContent={'flex-end'} display={'flex'}>
-                {/*{typeof coinPairInfo.isActivity === 'undefined'? '':*/}
+                {typeof coinPairInfo.isActivity === 'undefined'? '':
                 <BoxTopStyled paddingY={3} paddingX={1 / 2 * 5} display={'flex'}
                               flexDirection={'column'}>
                     <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
@@ -161,9 +161,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         }
                     </Typography>
                 </BoxTopStyled>
-                {/*}*/}
-
-
+                }
             </Grid>
             {/*<Grid item xs={4} alignItems={'center'} justifyContent={'flex-end'} display={'flex'}>*/}
             {/*    <Link href="/#/liquidity/pools" variant={'h5'}>*/}
@@ -260,8 +258,9 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             {t('label24Volume')}
                         </Typography>
                         <Typography variant={'h4'} marginTop={4}
-                                    component={'span'}> {typeof coinPairInfo.amountDollar === 'undefined' ? EmptyValueTag :
-                            currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(coinPairInfo.amountDollar, 4) : PriceTag.Yuan + getThousandFormattedNumbers(coinPairInfo.amountYuan ? coinPairInfo.amountYuan : 0, 4)}
+                                    component={'span'}>
+                            {currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(tradeFloat && tradeFloat.priceDollar ? tradeFloat.priceDollar as number : 0, 2)
+                                : PriceTag.Yuan + getThousandFormattedNumbers(tradeFloat && tradeFloat.priceYuan ? tradeFloat.priceYuan as number : 0, 2)}
                         </Typography>
 
                     </BoxStyled>
@@ -271,12 +270,11 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             {t('labelTVL')}
                         </Typography>
 
-
                         <Typography variant={'h4'} marginTop={4}
-                                    component={'span'}>
-                            {currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(coinPairInfo.tradeFloat && coinPairInfo.tradeFloat.priceDollar ? coinPairInfo.tradeFloat.priceDollar as number : 0, 4)
-                                : PriceTag.Yuan + getThousandFormattedNumbers(coinPairInfo.tradeFloat && coinPairInfo.tradeFloat.priceYuan ? coinPairInfo.tradeFloat.priceYuan as number : 0, 4)}
+                                    component={'span'}> {typeof coinPairInfo.amountDollar === 'undefined' ? EmptyValueTag :
+                            currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(coinPairInfo.amountDollar, 2) : PriceTag.Yuan + getThousandFormattedNumbers(coinPairInfo.amountYuan ? coinPairInfo.amountYuan : 0, 2)}
                         </Typography>
+
 
                     </BoxStyled>
                     <BoxStyled paddingX={2} display={'flex'} flexDirection={'column'}>

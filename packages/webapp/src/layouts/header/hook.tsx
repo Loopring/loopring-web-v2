@@ -130,12 +130,12 @@ export const useHeader = () => {
     //const theme: any = useTheme()
 
     const onNotification = React.useCallback(async () => {
-        console.log('onNotification click')
+        myLog('onNotification click')
     }, [])
 
     const onWalletBtnConnect = React.useCallback(async () => {
         const acc = store.getState().account
-        console.log(`onWalletBtnConnect click: ${acc.status}`)
+        myLog(`onWalletBtnConnect click: ${acc.status}`)
 
         switch (acc.status) {
             case AccountStatus.UNCONNNECTED:
@@ -220,7 +220,7 @@ export const useHeader = () => {
     useCustomDCEffect(() => {
 
         if (!account) {
-            console.log('account' + account + '* exit')
+            myLog('account' + account + '* exit')
             setAccountInfoProps(undefined)
             return
         }
@@ -406,7 +406,7 @@ export function useChargeFeeList(tokenSymbol: string | undefined, requestType: O
 
                 setChargeFeeList(chargeFeeList)
             }
-            console.log('response:', response)
+            myLog('response:', response)
 
         } catch (reason) {
             dumpError400(reason)
@@ -526,13 +526,13 @@ export function useModalProps() {
                 exchangeInfo?.exchangeAddress, tokenInfo, amt, fee,
                 gasPrice, gasLimit, chainId, nonce + 1, sendByMetaMask)
 
-            console.log('!!!!deposit r:', response2)
+            myLog('!!!!deposit r:', response2)
 
         } catch (reason) {
             dumpError400(reason)
         }
 
-    }, [chainId, isConnected, connector, account, tokenMap, LoopringAPI.exchangeAPI])
+    }, [chainId, isConnected, connector, account, tokenMap])
 
     let depositProps: DepositProps<any, any> = {
         tradeData: {belong: undefined},
@@ -643,7 +643,7 @@ export function useModalProps() {
             dumpError400(reason)
         }
 
-    }, [apiKey, payeeAddr, accountId, account, connector, chainId, eddsaKey, feeInfo, LoopringAPI.userAPI, LoopringAPI.exchangeAPI])
+    }, [apiKey, tokenMap, payeeAddr, accountId, account, connector, chainId, eddsaKey, feeInfo])
 
     let transferProps: TransferProps<any, any> = {
         tradeData: {belong: undefined},
@@ -681,7 +681,7 @@ export function useModalProps() {
         chargeFeeToken: 'ETH',
         chargeFeeTokenList: transferFeeList,
         handleOnAddressChange: (value: any) => {
-            console.log('transfer handleOnAddressChange', value);
+            myLog('transfer handleOnAddressChange', value);
             setPayeeAddr(value)
         },
         handleAddressError: (_value: any) => {
@@ -768,13 +768,13 @@ export function useModalProps() {
             const response = await LoopringAPI.userAPI.submitOffchainWithdraw(request2, web3, chainId, ConnectorNames.Injected,
                 account.eddsaKey, apiKey, false)
 
-            console.log(response)
+            myLog(response)
 
         } catch (reason) {
             dumpError400(reason)
         }
 
-    }, [apiKey, account, connector, chainId, withdrawFeeInfo, LoopringAPI.userAPI])
+    }, [apiKey, account, connector, chainId, withdrawFeeInfo, tokenMap, withdrawAddr])
 
     let withdrawProps: WithdrawProps<any, any> = {
         tradeData: {belong: undefined},
@@ -806,16 +806,16 @@ export function useModalProps() {
         chargeFeeToken: 'ETH',
         chargeFeeTokenList: withdrawalFeeList,
         handleFeeChange(value: { belong: any; fee: number | string; __raw__?: any }): void {
-            console.log('handleWithdrawFee', value);
+            myLog('handleWithdrawFee', value);
             setWithdrawFeeInfo(value)
         },
         handleWithdrawTypeChange: (value: any) => {
-            console.log('handleWithdrawTypeChange', value)
+            myLog('handleWithdrawTypeChange', value)
             const offchainType = value === WithdrawType.Fast ? OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL : OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
             setWithdrawType(offchainType)
         },
         handleOnAddressChange: (value: any) => {
-            console.log('handleOnAddressChange', value);
+            myLog('handleOnAddressChange', value);
             setWithdrawAddr(value)
         },
         handleAddressError: (_value: any) => {
@@ -892,10 +892,10 @@ export function useModalProps() {
         tradeData: undefined,
         tradeCalcData,
         onSwapClick: (tradeData) => {
-            console.log('Swap button click', tradeData);
+            myLog('Swap button click', tradeData);
         },
         handleSwapPanelEvent: async (data: any, switchType: any) => {
-            console.log(data, switchType)
+            myLog(data, switchType)
         },
     };
     let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
@@ -912,16 +912,16 @@ export function useModalProps() {
         // tradeCalcData,
         ammCalcData: ammCalcData,
         handleAmmAddChangeEvent: (data, type) => {
-            console.log('handleAmmAddChangeEvent', data, type);
+            myLog('handleAmmAddChangeEvent', data, type);
         },
         handleAmmRemoveChangeEvent: (data, type) => {
-            console.log('handleAmmRemoveChangeEvent', data, type);
+            myLog('handleAmmRemoveChangeEvent', data, type);
         },
         onAmmRemoveClick: (data) => {
-            console.log('onAmmRemoveClick', data);
+            myLog('onAmmRemoveClick', data);
         },
         onAmmAddClick: (data) => {
-            console.log('onAmmAddClick', data);
+            myLog('onAmmAddClick', data);
         }
     }
 

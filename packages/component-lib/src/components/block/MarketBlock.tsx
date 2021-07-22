@@ -55,11 +55,11 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                       alignItems={'center'} height={24}>
                     <Typography variant={'h3'} component={'h3'}>
                         <Typography component={'span'} title={'sell'} color={'textPrimary'}>
-                            {coinBInfo?.simpleName}
+                            {coinAInfo?.simpleName}
                         </Typography>
                         <Typography component={'i'}>/</Typography>
                         <Typography component={'span'} title={'buy'} color={'textPrimary'}>
-                            {coinAInfo.simpleName}
+                            {coinBInfo.simpleName}
                         </Typography>
                     </Typography>
                 </Grid>

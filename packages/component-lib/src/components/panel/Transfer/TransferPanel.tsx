@@ -59,7 +59,7 @@ export const TransferPanel = withTranslation('common', {withRef: true})(<T exten
                     ...rest,
                     onChangeEvent,
                     //rest.walletMap,
-                    selected: switchData.tradeData.belong,
+                    selected: switchData.tradeData.belong as string,
                     tradeData: switchData.tradeData,
                     //oinMap
                 }}/>,

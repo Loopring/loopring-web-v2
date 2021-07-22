@@ -1,5 +1,5 @@
 import { PanelContent, WrapStyled, } from '../../basic-lib';
-import { AmmChgData, AmmWithdrawWrap, CountDownStyled } from '../components';
+import { AmmChgData, AmmWithdrawWrap } from '../components';
 import { Grid, Tab, Tabs, Toolbar } from '@material-ui/core';
 import { AmmData, AmmInData, IBData } from '@loopring-web/common-resources';
 import { AmmDepositWrap } from '../components/panel/AmmWrap/AmmDeposit';
@@ -10,6 +10,7 @@ import { useDeepCompareEffect } from 'react-use';
 import { Box } from '@material-ui/core/';
 import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@emotion/react';
+import { CountDownIcon } from '../components/tool/Refresh';
 
 enum AmmPanelTypeMap {
     Deposit = 0,
@@ -63,18 +64,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
         type: 'coinA'
     });
     const [ammChgWithdrawData, setAmmChgWithdrawData] = React.useState<Pick<AmmChgData<T>, 'tradeData'> & { type?: 'coinA' | 'coinB' | 'percentage' }>({tradeData: ammWithdrawData});
-    const countDownRef = React.createRef();
-    const _refresh = React.useCallback(() => {
-        //@ts-ignore
-        countDownRef?.current?.classList?.remove('countdown');
-        setImmediate(()=>{
-            //@ts-ignore
-            countDownRef.current?.classList?.add('countdown');
-        })
-        if(typeof onRefreshData === 'function'){
-            onRefreshData();
-        }
-    }, [onRefreshData,countDownRef])
+
 
     //
     useDeepCompareEffect(() => {
@@ -168,11 +158,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
                     {/*                  aria-label="to Professional">*/}
                     {/*    <RefreshIcon/>*/}
                     {/*</IconButtonStyled>*/}
-                    <CountDownStyled ref={countDownRef} className={'clock-loading outline countdown'} onClick={
-                        _refresh
-                    }>
-                        <Box className={'circle'}></Box>
-                    </CountDownStyled>
+                    <CountDownIcon onRefreshData={onRefreshData}/>
                 </Box>
 
             </Toolbar>

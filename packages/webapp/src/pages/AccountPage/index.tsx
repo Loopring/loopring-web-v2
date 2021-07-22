@@ -18,12 +18,12 @@ export const ModalAccountInfo = withTranslation('common')(({
         aria-labelledby="Account information"
         aria-describedby="show layer2 address, unlock/locked loopring wallet, copy address"
     >
-        <ModalContentStyled style={{boxShadow: '24'}}>
-            <Box paddingTop={3} paddingBottom={3} display={'flex'} flexDirection={'column'} minWidth='var(--modal-width)'>
-                <ModalCloseButton onClose={onClose} {...{...rest, t}} />
-                <AccountInfo {...rest}/>
-            </Box>
-
+        <ModalContentStyled style={{boxShadow: '24'}} minWidth='var(--modal-width)'>
+            {/*<Box paddingTop={3} paddingBottom={3} display={'flex'} flexDirection={'column'} minWidth='var(--modal-width)'>*/}
+            {/*    */}
+            {/*</Box>*/}
+            <ModalCloseButton onClose={onClose} {...{...rest, t}} />
+            <AccountInfo {...rest}/>
         </ModalContentStyled>
     </Modal>
 })

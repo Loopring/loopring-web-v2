@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, IconButton, LinearProgress, linearProgressClasses, Typography } from '@material-ui/core';
+import { Box,IconButton, LinearProgress, linearProgressClasses, Typography } from '@material-ui/core';
 import { css } from '@emotion/react';
 
 export const TypographyStrong = styled(Typography)`
@@ -72,19 +72,19 @@ const cssAutoRefresh = (_props:any)=>css`
     50% { transform: translate3d(-100%, -50%, 0); width: .5em; }
     75% { transform: translate3d(-50%, -50%, 0); width: 1em; }
   }
-  @keyframes countDown {
-    0% { content:'5'; opacity: 1; }
-    16% { content:''; opacity: 0; }
-    20% { content:'4'; opacity: 1; }
-    36% { content:''; opacity: 0; }
-    40% { content:'3'; opacity: 1; }
-    56% { content:''; opacity: 0; }
-    60% { content:'2'; opacity: 1; }
-    76% { content:''; opacity: 0; }
-    80% { content:'1'; opacity: 1; }
-    96% { content:''; opacity: 0; }
-   
-  }
+  //@keyframes countDown {
+  //  0% { content:'5'; opacity: 1; }
+  //  16% { content:''; opacity: 0; }
+  //  20% { content:'4'; opacity: 1; }
+  //  36% { content:''; opacity: 0; }
+  //  40% { content:'3'; opacity: 1; }
+  //  56% { content:''; opacity: 0; }
+  //  60% { content:'2'; opacity: 1; }
+  //  76% { content:''; opacity: 0; }
+  //  80% { content:'1'; opacity: 1; }
+  //  96% { content:''; opacity: 0; }
+  // 
+  //}
 
 `
 export const CountDownStyled = styled(Box)`
@@ -106,13 +106,9 @@ export const CountDownStyled = styled(Box)`
      }
   }
   &.countdown{
-    &::before {
-      content: '5';
       font-size: ${({theme}) => theme.fontDefault.h6};
       display: inline-block;
-      color:  ${({theme}) => theme.colorBase.primaryLight}; 
-      animation: countDown var(--durationInternal) steps(1) infinite;
-    }
+      color:  ${({theme}) => theme.colorBase.primaryLight};
     .circle {
       font-size: ${({theme}) => theme.fontDefault.h3};
       width: 1em;
