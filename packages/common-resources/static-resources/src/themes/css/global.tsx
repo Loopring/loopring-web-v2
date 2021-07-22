@@ -20,6 +20,8 @@ export const fontDefault = {
     body1: '1.6rem'
 }
 
+export const
+    refreshTime = 10;
 
 export const scrollbarDefault = ({theme}: any) => css`
   html {
@@ -130,7 +132,7 @@ export const globalCss = ({theme}: any) => css`
 
   html {
     overflow-y: scroll;
-    --auto-refresh-duration: 5s;
+    --auto-refresh-duration: ${refreshTime}s;
     --auto-refresh-color: ${theme.colorBase.primaryLight};
     --durationInternal: calc(var(--auto-refresh-duration) * 2);
     --delay: calc(var(--auto-refresh-duration) / 2);
