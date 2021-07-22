@@ -126,8 +126,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                             balance: walletMap ? walletMap[ tradeCalcData.coinBuy ]?.count : 0
                         },
                     } as SwapTradeData<IBData<C>>)
-                    let {
-                        amm,
+                    const {
                         market
                     } = getExistedMarket(marketArray, tradeCalcData.coinSell as string, tradeCalcData.coinBuy as string);
                     getUserTrades(market).then((marketTrades) => {
@@ -195,6 +194,9 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 orderType: OrderType.ClassAmm,
                 eddsaSignature: '',
             }
+            
+            myLog(request)
+
             const response = await LoopringAPI.userAPI.submitOrder(request, account.eddsaKey, account.apiKey)
 
             myLog(response)
@@ -282,7 +284,13 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             await updateDepth()
         }, REFRESH_RATE_SLOW)
 
-    }, [LoopringAPI.exchangeAPI, pair, setDepth])
+        return () => {
+            if (handler) {
+                clearInterval(handler)
+            }
+        }
+
+    }, [pair, setDepth])
 
     const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: AmmPoolSnapshot | undefined)
         : Promise<{ _tradeCalcData: TradeCalcData<C>, _tradeData: SwapTradeData<IBData<C>> }> => {
