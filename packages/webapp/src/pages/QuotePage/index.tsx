@@ -28,7 +28,7 @@ export type CandlestickItem = {
 }
 
 const QuotePage = withTranslation('common')((rest: WithTranslation) => {
-    const [candlestickList, setCandlestickList] = React.useState<CandlestickItem[]>([])
+    const [candlestickList, setCandlestickList] = React.useState<any[]>([])
     const getCandlestick = React.useCallback(async (market: string) => {
       if (LoopringAPI.exchangeAPI) {
         const res = await LoopringAPI.exchangeAPI.getMixCandlestick({
@@ -36,12 +36,25 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
           interval: TradingInterval.d1,
           // start?: number;
           // end?: number;
-          limit: 30
+          limit: 30,
         })
         if (res && res.candlesticks && !!res.candlesticks.length) {
+          // const data = res.candlesticks.map(o => ({
+          //   close: o.close,
+          //   timeStamp: o.timestamp
+          // }))
+          // setCandlestickList(prev => [...prev, {
+          //   market: market,
+          //   data: data
+          // }])
           const data = res.candlesticks.map(o => ({
+            timeStamp: o.timestamp,
+            low: o.low,
+            high: o.high,
+            open: o.open,
             close: o.close,
-            timeStamp: o.timestamp
+            volume: o.baseVol,
+            sign: o.close < o.open ? -1 : 1,
           }))
           setCandlestickList(prev => [...prev, {
             market: market,
@@ -85,7 +98,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
             )} */}
             {recommendations.map((item,index)=> {
               const market = `${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}`
-              const chartData = candlestickList.find(o => o.market === market)?.data.sort((a, b) => a.timeStamp - b.timeStamp)
+              const chartData = candlestickList.find(o => o.market === market)?.data.sort((a: any, b: any) => a.timeStamp - b.timeStamp)
               return (
                 <Grid key={index} item xs={3} >
                     <MarketBlock {...{...item, chartData: chartData ? chartData : [], ...rest}}></MarketBlock>

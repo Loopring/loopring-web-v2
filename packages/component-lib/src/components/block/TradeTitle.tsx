@@ -94,7 +94,7 @@ export const TradeTitle = <I extends object>({
                     <Typography variant={'body2'} component={'span'}
                                 className={'chart-change'}>{t('labelChange24h', {timeUnit: tradeFloat.timeUnit})}</Typography>
                     <Typography variant={'h3'} component={'span'} className={`float-tag float-${tradeFloatType}`}>
-                        {`${(tradeFloat.priceDollar > 0 ? '+' : '') + tradeFloat.priceDollar} (${change})`}</Typography>
+                        {`${(tradeFloat.floatTag === 'decrease' ? '-' : '+') + tradeFloat.priceDollar} (${change})`}</Typography>
                 </Box>
             </Grid>
         </Grid> : <></>

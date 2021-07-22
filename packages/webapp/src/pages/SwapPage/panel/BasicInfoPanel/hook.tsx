@@ -51,7 +51,7 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
     // Settings.setChartType(value)
     // console.log('useBasicInfo handleChange:', value)
     setOriginData(undefined)
-    setChartType(value)
+    setChartType(value === 'Trend' ? ChartType.Trend : ChartType.Depth)
   }, [setOriginData, setChartType])
 
   const handleChartUnitChange = (event: React.MouseEvent<HTMLElement, MouseEvent>, newValue: string) => {
@@ -130,6 +130,7 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
               open: item.open,
               close: item.close,
               volume: item.quoteVol,
+              change: (item.close - item.open) / item.open
             }
           })
           setOriginData(originData)
