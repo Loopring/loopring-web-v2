@@ -45,7 +45,7 @@ export const TradeTitle = <I extends object>({
     const sellCoinIcon: any = coinJson [ coinAInfo?.simpleName ];
     const buyCoinIcon: any = coinJson [ coinBInfo?.simpleName ];
 
-    const tradeFloatType = tradeFloat?.priceDollar === 0 ? FloatTag.none : tradeFloat?.priceDollar < 0 ? FloatTag.decrease : FloatTag.increase;
+    const tradeFloatType = tradeFloat?.changeDollar === 0 ? FloatTag.none : tradeFloat && tradeFloat.changeDollar && tradeFloat.changeDollar < 0 ? FloatTag.decrease : FloatTag.increase;
     const {currency} = useSettings();
     const change = (tradeFloat?.change && tradeFloat?.change !== Number.NaN) ? (tradeFloat.change * 100).toFixed(2) + ' %' : '0.00%'
     return <TradeTitleStyled custom={{chg: currency}}>{coinBInfo && coinAInfo ?
@@ -98,20 +98,21 @@ export const TradeTitle = <I extends object>({
                 </Box>
             </Grid>
             <Grid item xs={12} height={36} display={'flex'} flexDirection={'row'} justifyContent={'flex-start'}
-                  alignItems={'center'} className={'float-group'}>
+                  alignItems={'center'} className={'float-group'} marginTop={1/2}>
 
-                <Typography variant={'h2'}>   {tradeFloat.volume} {coinAInfo.simpleName}    </Typography>
+                <Typography variant={'h2'}>   {tradeFloat.close} {coinBInfo.simpleName}    </Typography>
                 <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'} justifyContent={'center'}
                      className={'float-chart'}>
                     <Typography variant={'body2'} component={'span'}
                                 className={'chart-change'}>{t('labelChange24h', {timeUnit: tradeFloat.timeUnit})}</Typography>
                     <Typography variant={'h3'} component={'span'} className={`float-tag float-${tradeFloatType}`}>
-                        {(tradeFloat.priceDollar > 0 ? '+' : '')}
+                        {/*{ tradeFloatType === FloatTag.increase ? '+' : '' }*/}
                         {currency === Currency.dollar ? PriceTag.Dollar
-                            + getThousandFormattedNumbers(tradeFloat && tradeFloat.priceDollar ? tradeFloat.priceDollar as number : 0, 2)
+                            + getThousandFormattedNumbers(tradeFloat && tradeFloat.closeDollar ? tradeFloat.closeDollar as number : 0, 2)
                             : PriceTag.Yuan
-                            + getThousandFormattedNumbers(tradeFloat && tradeFloat.priceYuan ? tradeFloat.priceYuan as number : 0, 2)}
-                        {change}</Typography>
+                            + getThousandFormattedNumbers(tradeFloat && tradeFloat.closeYuan ? tradeFloat.closeYuan as number : 0, 2)}
+
+                        （ { tradeFloatType === FloatTag.increase ? '+' : '' }{change} ）</Typography>
                 </Box>
             </Grid>
         </Grid> : <></>

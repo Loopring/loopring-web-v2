@@ -147,8 +147,8 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
         <Grid item>
             <Typography component={'p'} variant="body1" height={20}>
                 {ammData.coinA?.belong && ammData.coinB?.belong && ammCalcData ? <>
-                    {_isStoB ? `1${ammData.coinA?.belong} = ${ammCalcData.AtoB ? ammCalcData.AtoB : EmptyValueTag} ${ammData.coinB?.belong}`
-                    : `1${ammData.coinB?.belong} = ${ammCalcData.AtoB ? (1 / ammCalcData.AtoB) : EmptyValueTag} ${ammData.coinA?.belong}`}
+                    {_isStoB ? `1${ammData.coinA?.belong} \u2248 ${ammCalcData.AtoB ? ammCalcData.AtoB : EmptyValueTag} ${ammData.coinB?.belong}`
+                    : `1${ammData.coinB?.belong} \u2248 ${ammCalcData.AtoB ? (1 / ammCalcData.AtoB) : EmptyValueTag} ${ammData.coinA?.belong}`}
                     <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
                     ><ReverseIcon/></IconButtonStyled>
                 </> : EmptyValueTag}

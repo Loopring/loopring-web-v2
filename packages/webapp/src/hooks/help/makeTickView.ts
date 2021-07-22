@@ -19,17 +19,26 @@ export const makeTickView = (tick: TickerData) => {
         priceDollar: 0,
         floatTag,
         reward: 0,
+        close: isNaN(tick.close) ? undefined : tick.close,
+        high: tick.high === 0 ? undefined : tick.high,
+        low: tick.low === 0 ? undefined : tick.low,
+
         // APY: 0,
     }
     if (faitPrices && forex) {
         const volume = VolToNumberWithPrecision(tick.base_token_volume, tick.base as string)
-        const priceDollar = toBig(volume).times(faitPrices[ tick.base as string ] ? faitPrices[ tick.base as string ].price : 0);
-        const priceYuan = priceDollar.times(forex);
+        // const priceDollar = toBig(tiem).times(faitPrices[ tick.base as string ] ? faitPrices[ tick.base as string ].price : 0);
+        // const priceYuan = priceDollar.times(forex);
+        const closeDollar = toBig(tick.close).times(faitPrices[ tick.quote as string ] ? faitPrices[ tick.quote as string ].price : 0);
+        const closeYuan = closeDollar.times(forex);
+        const qPrice = faitPrices[tick.quote as string].price?    faitPrices[tick.quote as string].price:0;
         _tradeFloat = {
             ..._tradeFloat,
+            changeDollar: toBig(tick.close - tick.open).times( qPrice ).toNumber(),
+            changeYuan: toBig(tick.close - tick.open).times( qPrice ).times(forex).toNumber(),
             volume: volume?Number(volume):undefined,
-            priceDollar:priceDollar.toNumber(),
-            priceYuan:priceYuan.toNumber(),
+            closeDollar:closeDollar.toNumber(),
+            closeYuan:closeYuan.toNumber(),
         }
     }
     return _tradeFloat;
@@ -55,7 +64,7 @@ export  const makeTickerMap =  <R extends {[key:string]:any}>({tickerMap}:{ticke
                 change: change,
                 close: isNaN(item.close) ? undefined : item.close,
                 high: item.high === 0 ? undefined : item.high,
-                low: item.low === 0 ? undefined : item.high,
+                low: item.low === 0 ? undefined : item.low,
                 // APY: 0,
                 reward: 0,
                 rewardToken: '',
