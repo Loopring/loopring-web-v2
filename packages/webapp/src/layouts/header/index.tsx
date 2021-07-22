@@ -73,7 +73,7 @@ const Header = ({ ...rest }: any) => {
             autoHideDuration={TOAST_TIME} setOpen={setCopyToastOpen} severity={"success"} />
 
         <ModalQRCode open={openQRCode} onClose={() => setOpenQRCode(false)} title={'ETH Address'}
-            description={account.accAddr} url={account.accAddr} />
+            description={account?.accAddr} url={account?.accAddr} />
 
         <ModalPanel transferProps={transferProps} withDrawProps={withdrawProps} 
         depositProps={depositProps} resetProps={resetProps} ammProps={ammProps} swapProps={swapProps}/>
