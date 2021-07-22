@@ -134,9 +134,9 @@ export function useConnect() {
 
         //sendEvent(store.getState().account, StatusChangeEvent.Connecting)
 
-        myLog('store.getState().account.status:', store.getState().account)
+        myLog('store.getState().account.status:', store.getState().account.status)
 
-    }, [activate, dispatch, sendEvent, store.getState().account.status])
+    }, [activate, dispatch, sendEvent])
 
     return {
         connect,
@@ -179,14 +179,14 @@ export function useUnlock() {
     const lock = useCallback(async (account: Lv2Account) => {
         resetLayer2()
         sendEvent(account, StatusChangeEvent.Lock)
-    }, [sendEvent])
+    }, [sendEvent, resetLayer2])
+
+    const exchangeInfo = useSelector((state: RootState) => state.system.exchangeInfo)
 
     const unlock = useCallback(async (account: Lv2Account) => {
 
-        const exchangeAddress = store.getState().system.exchangeInfo?.exchangeAddress
-
         if (!LoopringAPI.userAPI || !LoopringAPI.exchangeAPI || !connector
-            || !account.accountId || !exchangeAddress
+            || !account.accountId || !exchangeInfo?.exchangeAddress
             || !chainId
             || account.status !== AccountStatus.LOCKED) {
             return
@@ -215,7 +215,7 @@ export function useUnlock() {
                     .generateKeyPair(
                         web3,
                         account.accAddr,
-                        exchangeAddress,
+                        exchangeInfo?.exchangeAddress,
                         nonce,
                         account.connectName,
                     )
@@ -257,13 +257,13 @@ export function useUnlock() {
                         .generateKeyPair(
                             web3,
                             account.accAddr,
-                            exchangeAddress,
+                            exchangeInfo?.exchangeAddress,
                             account.nonce,
                             account.connectName,
                         )
                     
                     const request: UpdateAccountRequestV3 = {
-                        exchange: exchangeAddress,
+                        exchange: exchangeInfo?.exchangeAddress,
                         owner: account.accAddr,
                         accountId: account.accountId,
                         publicKey: { x: eddsaKey.formatedPx, y: eddsaKey.formatedPy },
@@ -299,7 +299,7 @@ export function useUnlock() {
         }
 
     }
-        , [dispatch, sendEvent, connector, chainId, store.getState().system.exchangeInfo?.exchangeAddress])
+        , [dispatch, sendEvent, connector, chainId, exchangeInfo?.exchangeAddress])
 
     return {
         lock,

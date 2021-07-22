@@ -9,6 +9,7 @@ import { useWeb3React } from '@web3-react/core'
 import { injected } from 'networks/web3_connectors'
 
 import { ChainId, NetworkContextName } from 'loopring-sdk'
+import { myLog } from 'utils/log_tools'
 
 /*
 import EXCHANGE_ABI from 'config/abis/exchange_3_6.json'
@@ -53,23 +54,23 @@ export function useEagerConnect() {
   useEffect(() => {
     injected.isAuthorized().then((isAuthorized: boolean) => {
       if (isAuthorized) {
-        console.log('useEagerConnect isAuthorized')
+        myLog('useEagerConnect isAuthorized')
         activate(injected, undefined, true).catch(() => {
           setTried(true)
         })
       } else {
-        console.log('useEagerConnect NOT isAuthorized')
+        myLog('useEagerConnect NOT isAuthorized')
         setTried(true)
       }
     })
-  }, []) // intentionally only running on mount (make sure it's only mounted once :))
+  }) // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag
   useEffect(() => {
     if (!tried && active) {
       setTried(true)
     }
-  }, [tried, active, activate])
+  }, [tried, active, setTried])
 
   return tried
 }
@@ -82,7 +83,7 @@ export function useInactiveListener(onReConnectInjected: any = undefined, suppre
     const { ethereum } = window as any
 
     const reConnectInjected = () => {
-      console.log('--------------------------> reConnectInjected')
+      myLog('--------------------------> reConnectInjected')
       activate(injected)
       if (onReConnectInjected) {
         onReConnectInjected()
@@ -92,15 +93,14 @@ export function useInactiveListener(onReConnectInjected: any = undefined, suppre
     if (ethereum && ethereum.on && !active && !error) {
 
       const handleChainChanged = (chainId: string | number) => {
-        console.log('Handling \'chainChanged\' event with payload', chainId)
+        myLog('Handling \'chainChanged\' event with payload', chainId)
         reConnectInjected()
       }
       const handleAccountsChanged = (accounts: string[]) => {
-        console.log('---------------------------------------------')
-        console.log('Handling \'accountsChanged\' event with payload', accounts)
-        console.log('before reset accounts.length=', accounts.length)
+        myLog('---------------------------------------------')
+        myLog('Handling \'accountsChanged\' event with payload', accounts)
+        myLog('before reset accounts.length=', accounts.length)
         if (accounts.length > 0) {
-          console.log('before reset!!!!!!!!!!!!!!!!1')
           reConnectInjected()
         }
       }
@@ -115,7 +115,7 @@ export function useInactiveListener(onReConnectInjected: any = undefined, suppre
         }
       }
     }
-  }, [active, error, chainId, activate, dispatch])
+  }, [active, error, chainId, activate, dispatch, onReConnectInjected])
 }
 
 export function useBlockNumber() {

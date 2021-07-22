@@ -532,7 +532,7 @@ export function useModalProps() {
             dumpError400(reason)
         }
 
-    }, [chainId, isConnected, connector, account, tokenMap, LoopringAPI.exchangeAPI])
+    }, [chainId, isConnected, connector, account, tokenMap])
 
     let depositProps: DepositProps<any, any> = {
         tradeData: {belong: undefined},
@@ -643,7 +643,7 @@ export function useModalProps() {
             dumpError400(reason)
         }
 
-    }, [apiKey, payeeAddr, accountId, account, connector, chainId, eddsaKey, feeInfo, LoopringAPI.userAPI, LoopringAPI.exchangeAPI])
+    }, [apiKey, tokenMap, payeeAddr, accountId, account, connector, chainId, eddsaKey, feeInfo])
 
     let transferProps: TransferProps<any, any> = {
         tradeData: {belong: undefined},
@@ -774,7 +774,7 @@ export function useModalProps() {
             dumpError400(reason)
         }
 
-    }, [apiKey, account, connector, chainId, withdrawFeeInfo, LoopringAPI.userAPI])
+    }, [apiKey, account, connector, chainId, withdrawFeeInfo, tokenMap, withdrawAddr])
 
     let withdrawProps: WithdrawProps<any, any> = {
         tradeData: {belong: undefined},
