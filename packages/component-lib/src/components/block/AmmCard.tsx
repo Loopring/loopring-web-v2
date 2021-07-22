@@ -54,7 +54,8 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                 <BoxStyled display={'flex'} flexDirection={'row'} justifyContent={'space-between'}
                            alignItems={'center'}>
                     <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-start'} alignItems={'center'}>
-                        <Box className={'logo-icon'} height={'var(--chart-title-coin-size)'}  position={'relative'}  zIndex={20}
+                        <Box className={'logo-icon'} height={'var(--chart-title-coin-size)'} position={'relative'}
+                             zIndex={20}
                              width={'var(--chart-title-coin-size)'} alignItems={'center'} justifyContent={'center'}>
                             {coinAIcon ?
                                 <AvatarCoinStyled imgx={coinAIcon.x} imgy={coinAIcon.y}
@@ -71,7 +72,8 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                           src={'static/images/icon-default.png'}/>
                             }</Box>
 
-                        <Box className={'logo-icon'} height={'var(--chart-title-coin-size)'}   position={'relative'}  zIndex={18}   left={-8}
+                        <Box className={'logo-icon'} height={'var(--chart-title-coin-size)'} position={'relative'}
+                             zIndex={18} left={-8}
                              width={'var(--chart-title-coin-size)'} alignItems={'center'}
                              justifyContent={'center'}>{coinBIcon ?
                             <AvatarCoinStyled imgx={coinBIcon.x} imgy={coinBIcon.y} imgheight={coinBIcon.height}
@@ -119,7 +121,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                             </Typography>
                             <Typography variant={'body1'} component={'span'} color={'textPrimary'}>
                                 {getThousandFormattedNumbers(totalRewards, 2)}
-                                {rewardToken?.simpleName}
+                                {' ' + rewardToken?.simpleName}
                             </Typography>
                         </Typography>
                         <Typography display={'flex'} flexDirection={'column'} alignItems={'flex-end'} component={'div'}>
@@ -127,8 +129,8 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                 {t('labelMyReward')}
                             </Typography>
                             <Typography variant={'body1'} component={'span'} color={'textPrimary'}>
-                                {getThousandFormattedNumbers(myRewards, 6)}
-                                {rewardToken?.simpleName}
+                                {myRewards==0?EmptyValueTag:getThousandFormattedNumbers(myRewards, 6)}
+                                {' ' + rewardToken?.simpleName}
                             </Typography>
                         </Typography>
                     </Box>
@@ -141,7 +143,8 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             </CardContent>
             <CardActions>
                 <Button fullWidth variant={'contained'} size={'medium'} disabled={isPass ? true : false}
-                        color={'primary'} onClick={handleClick}>{t(isPass?'labelEndLiquidityBtn':'labelAddLiquidityBtn')}</Button>
+                        color={'primary'}
+                        onClick={handleClick}>{t(isPass ? 'labelEndLiquidityBtn' : 'labelAddLiquidityBtn')}</Button>
             </CardActions>
         </Card>
     }))) as <T>(props: AmmCardProps<T> & React.RefAttributes<any>) => JSX.Element;
