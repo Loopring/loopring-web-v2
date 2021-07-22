@@ -22,6 +22,7 @@ import { useModalProps } from './hook'
 import { copyToClipBoard } from 'utils/obj_tools'
 import { ModalAccountInfo } from '../../pages/AccountPage';
 import { useTranslation } from 'react-i18next';
+import { TOAST_TIME } from 'defs/common_defs'
 
 const Header = ({ ...rest }: any) => {
 
@@ -67,11 +68,9 @@ const Header = ({ ...rest }: any) => {
 
     const [copyToastOpen, setCopyToastOpen] = useState(false);
 
-    const closeCopyToast = useCallback(() => { setCopyToastOpen(false) }, [setCopyToastOpen])
-
     return (<>
         <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen} 
-            autoHideDuration={2500} onClose={closeCopyToast} severity={"success"} />
+            autoHideDuration={TOAST_TIME} setOpen={setCopyToastOpen} severity={"success"} />
 
         <ModalQRCode open={openQRCode} onClose={() => setOpenQRCode(false)} title={'ETH Address'}
             description={account.accAddr} url={account.accAddr} />

@@ -34,7 +34,7 @@ export function useWalletLayer2(): WalletLayer2States & {
                 dispatch(updateWalletLayer2(undefined))
                 myLog('try to delayAndUpdateWalletLayer2 updated!' + new Date().getTime())
                 return Promise.resolve()
-            }, 3000);
+            }, 2000);
         }, [dispatch]),
     }
 
