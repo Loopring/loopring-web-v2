@@ -80,7 +80,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         myAmm,
         pairHistory,
     } = useCoinPair({ammActivityMap});
-    const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
+    const [tabIndex, setTabIndex] = React.useState<0 | 1>(1);
     const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
     const handleChange = (event: any, newValue: 0 | 1) => {
         setTabIndex(newValue);
@@ -296,9 +296,9 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         <Grid container marginY={3}>
             <Grid item xs={12}>
                 <Tabs value={tabIndex}
-                      onChange={handleChange}
+                    //   onChange={handleChange}
                       aria-label="tabs switch">
-                    <Tab label={t('labelAll')} {...applyProps(0)} />
+                    {/* <Tab label={t('labelAll')} {...applyProps(0)} /> */}
                     <Tab label={t('labelMe')} {...applyProps(1)} />
                 </Tabs>
                 <StylePaper style={{marginTop: `${unit * 2}px`}}>
