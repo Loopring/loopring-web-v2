@@ -100,8 +100,9 @@ export let headerMenuData: Array<HeaderMenuItemInterface> = [
         label: {
             id: 'Trading', i18nKey: 'labelTrade',
         },
-        router: {path: '/trading'},
-        child: layer2ItemData,
+        // router: {path: '/trading'},
+        router: {path: '/trading/lite'},
+        // child: layer2ItemData,
         status: HeaderMenuTabStatus.default,
     },
     {
