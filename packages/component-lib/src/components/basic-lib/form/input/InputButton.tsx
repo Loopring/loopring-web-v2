@@ -1,13 +1,13 @@
 import { Avatar, Box, Button, ButtonProps, FormHelperText, FormLabel, Grid } from "@material-ui/core";
 import styled from "@emotion/styled";
-import { debounce } from "lodash"
+// import { debounce } from "lodash"
 import CurrencyInput from 'react-currency-input-field';
 import {
     AvatarCoinStyled,
     CoinInfo,
     DropDownIcon,
     getThousandFormattedNumbers,
-    globalSetup,
+    // globalSetup,
     IBData
 } from '@loopring-web/common-resources';
 import { InputButtonProps } from "./Interface";
@@ -124,10 +124,10 @@ const ISBtn = styled(Button)<ButtonProps & { logoColor?: any }>`
   // .logo-icon svg {
     //   color: ${({logoColor}) => logoColor}
   // }
-  .MuiAvatar-root {
-    width: 24px;
-    height: 24px;
-  }
+  //.MuiAvatar-root {
+  //  width: 24px;
+  //  height: 24px;
+  //}
 
   .MuiButton-endIcon svg {
     color: ${({theme}) => theme.colorBase.textPrimary}
@@ -186,7 +186,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                          label = "Enter token",
                                                                          handleError,
                                                                          subLabel = "Max",
-                                                                         wait = globalSetup.wait,
+                                                                         // wait = globalSetup.wait,
                                                                          coinMap,
                                                                          maxAllow,
                                                                          disabled,
@@ -235,15 +235,18 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
         shouldFocusOn: focusOnInput,
         value: tradeValue,
     });
-    const debounceCount = debounce(({...props}: any) => {
-        if (handleCountChange) {
-            handleCountChange({...props}, ref)
-        }
-    }, wait)
+    // const debounceCount = debounce(({...props}: any) => {
+    //     if (handleCountChange) {
+    //         handleCountChange({...props}, ref)
+    //     }
+    // }, wait)
     const _handleContChange = React.useCallback((value: any, _name: any) => {
             _handleError(value);
             setsValue(value);
-            debounceCount({...inputData, ...{tradeValue: value}})
+            if (handleCountChange) {
+                handleCountChange({...inputData, ...{tradeValue: value}} as any, ref)
+            }
+            //debounceCount({...inputData, ...{tradeValue: value}})
         }
         , [_handleError, setsValue, inputData])
 
