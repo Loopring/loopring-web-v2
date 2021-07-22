@@ -6,12 +6,11 @@ import {
     TickerData,
     toBig,
 } from 'loopring-sdk';
-import { AmmActivity, AmmCardProps } from '@loopring-web/common-resources';
+import { AmmActivity, AmmCardProps, MyAmmLP } from '@loopring-web/common-resources';
 import store from '../../stores';
 import { deepClone } from '../../utils/obj_tools';
 import { AmmUserReward, AmmUserRewardMap } from 'loopring-sdk/dist/defs/loopring_defs';
 import BigNumber from 'bignumber.js';
-import { MyAmmLP } from '@loopring-web/common-resources';
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
 import { coinMap } from '@loopring-web/component-lib';
 import { AmmDetailStore } from '../../stores/Amm/AmmMap';
