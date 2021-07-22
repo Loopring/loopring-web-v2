@@ -3,6 +3,7 @@ import { ScaleAreaChart, ToggleButtonGroup, useSettings, TradeTitle, ChartType }
 import { Box, Grid } from "@material-ui/core"
 import { WithTranslation } from 'react-i18next'
 import { useBasicInfo } from './hook'
+import { VolToNumberWithPrecision } from 'utils/formatter_tool'
 
 const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, t, ...rest }: any & WithTranslation) => {
 
@@ -17,7 +18,13 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
         handleChartUnitChange,
     } = useBasicInfo(props, coinAInfo, coinBInfo, marketArray, t)
     const { upColor } = useSettings();
-    const chartData = originData && !!originData.length ? originData.sort((a: any, b: any) => a.timeStamp - b.timeStamp) : []
+    const baseToken = coinAInfo?.name
+    const trendChartData = originData && !!originData.length ? originData.sort((a: any, b: any) => a.timeStamp - b.timeStamp) : []
+    const depthChartData = originData && coinAInfo && originData.asksAmtTotals ? { 
+        ...originData,
+        asksAmtTotals: originData.asksAmtTotals.map((amt: string) => Number(VolToNumberWithPrecision(amt, baseToken))),
+        bidsAmtTotals: originData.bidsAmtTotals.map((amt: string) => Number(VolToNumberWithPrecision(amt, baseToken))),
+    } : []
     return  <>
         <Grid item xs={8}>
             <TradeTitle {...{
@@ -32,7 +39,7 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
 
         <Grid item xs={12} position={'relative'}>
             <Box minHeight={256} maxHeight={256} display={'block'} style={{ height: '100%', width: '100%' }}>
-                <ScaleAreaChart type={chartType} data={chartData} riseColor={upColor as keyof typeof UpColor}
+                <ScaleAreaChart type={chartType} data={chartType === ChartType.Trend ? trendChartData : depthChartData} riseColor={upColor as keyof typeof UpColor}
                     handleMove={() => {
                     }} />
             </Box>

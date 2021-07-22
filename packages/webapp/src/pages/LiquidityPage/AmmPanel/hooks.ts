@@ -138,8 +138,6 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
             const { ammPoolSnapshot } = response
 
-            console.log(ammPoolSnapshot)
-
             setAmmPoolSnapShot(ammPoolSnapshot)
         }
 
