@@ -129,7 +129,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
 
     const priceImpact = (tradeCalcData && tradeCalcData.priceImpact) ? parseFloat(tradeCalcData.priceImpact).toPrecision(3).toString() + ' %' : EmptyValueTag
 
-    const fee = (tradeCalcData && tradeCalcData.fee) ? (tradeCalcData.fee + '%%') : EmptyValueTag
+    const fee = (tradeCalcData && tradeCalcData.fee) ? ((parseFloat(tradeCalcData.fee) / 100).toString() + '%') : EmptyValueTag
 
     const minimumReceived = (tradeCalcData && tradeCalcData.minimumReceived) ? tradeCalcData.minimumReceived : EmptyValueTag
 
