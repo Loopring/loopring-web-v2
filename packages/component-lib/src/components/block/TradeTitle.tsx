@@ -47,7 +47,7 @@ export const TradeTitle = <I extends object>({
 
     const tradeFloatType = tradeFloat?.changeDollar === 0 ? FloatTag.none : tradeFloat && tradeFloat.changeDollar && tradeFloat.changeDollar < 0 ? FloatTag.decrease : FloatTag.increase;
     const {currency} = useSettings();
-    const change = (tradeFloat?.change && tradeFloat?.change !== Number.NaN) ? (tradeFloat.change * 100).toFixed(2) + ' %' : '0.00%'
+    const change = (tradeFloat?.change && tradeFloat?.change !== Number.NaN) ? (tradeFloat.change * 100).toFixed(2) + '%' : '0.00%'
     return <TradeTitleStyled custom={{chg: currency}}>{coinBInfo && coinAInfo ?
         <Grid container height={72}>
             <Grid item xs={12} height={28}>
@@ -98,7 +98,7 @@ export const TradeTitle = <I extends object>({
                 </Box>
             </Grid>
             <Grid item xs={12} height={36} display={'flex'} flexDirection={'row'} justifyContent={'flex-start'}
-                  alignItems={'center'} className={'float-group'} marginTop={1/2}>
+                  alignItems={'center'} className={'float-group'} marginTop={1}>
 
                 <Typography variant={'h2'}>   {tradeFloat.close} {coinBInfo.simpleName}    </Typography>
                 <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'} justifyContent={'center'}
@@ -112,7 +112,7 @@ export const TradeTitle = <I extends object>({
                             : PriceTag.Yuan
                             + getThousandFormattedNumbers(tradeFloat && tradeFloat.closeYuan ? tradeFloat.closeYuan as number : 0, 2)}
 
-                        （ { tradeFloatType === FloatTag.increase ? '+' : '' }{change} ）</Typography>
+                        （{ tradeFloatType === FloatTag.increase ? '+' : '' }{change}）</Typography>
                 </Box>
             </Grid>
         </Grid> : <></>
