@@ -106,6 +106,5 @@
     "snapdragon-node": "^3.0.0",
     "storybook-addon-redux-listener": "^0.1.7",
     "storybook-react-router": "^1.0.8"
-  },
-  "license": "MIT"
+  }
 }
