@@ -39,7 +39,7 @@ export const makeWalletLayer2 = <C extends { [ key: string ]: any }>():{ walletM
 
     if (walletLayer2) {
         walletMap = Reflect.ownKeys(walletLayer2).reduce((prev, item) => {
-            const {total, locked, pending: {withdraw}} = walletLayer2[ item as string ];
+            const {total, locked, pending: { withdraw }} = walletLayer2[ item as string ];
             const countBig = fm.toBig(total).minus(fm.toBig(locked)).toString()
             return {
                 ...prev, [ item ]: {
