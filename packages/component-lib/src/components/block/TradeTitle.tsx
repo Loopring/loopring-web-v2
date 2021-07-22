@@ -100,7 +100,7 @@ export const TradeTitle = <I extends object>({
             <Grid item xs={12} height={36} display={'flex'} flexDirection={'row'} justifyContent={'flex-start'}
                   alignItems={'center'} className={'float-group'}>
 
-                <Typography variant={'h2'}>   {tradeFloat.volume} {coinBInfo.simpleName}    </Typography>
+                <Typography variant={'h2'}>   {tradeFloat.volume} {coinAInfo.simpleName}    </Typography>
                 <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'} justifyContent={'center'}
                      className={'float-chart'}>
                     <Typography variant={'body2'} component={'span'}
