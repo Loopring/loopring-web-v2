@@ -46,11 +46,13 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
         LoopringAPI.InitApi(chainId as ChainId);
         if (LoopringAPI.exchangeAPI) {
             const { exchangeInfo } = (await LoopringAPI.exchangeAPI.getExchangeInfo())
-            const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'CNY'})).fiatPrices
+            const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'USD'})).fiatPrices
+            const faitPricesY = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'CNY'})).fiatPrices
             const gasPrice = (await exchangeAPI().getGasPrice()).gasPrice / 1e+9;
             // : process.env.REACT_APP_API_URL_UAT;
             const baseURL = ChainId.MAINNET === chainId ? `https://${process.env.REACT_APP_API_URL}` : `https:/${process.env.REACT_APP_API_URL_UAT}`
-            const forex = faitPrices[ 'USDT' ].price;
+
+            const forex = faitPricesY[ 'USDT' ].price;
             let {__timer__} = store.getState().system;
             __timer__ = ((__timer__) => {
                 if (__timer__ && __timer__ !== -1) {
