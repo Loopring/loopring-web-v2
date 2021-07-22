@@ -107,7 +107,7 @@ export default {
     labelTokenAmount: 'Amount',
     labelRemoveLiquidityBtn: 'Remove Liquidity',
     labelAddLiquidityBtn: 'Add Liquidity',
-    labelEndLiquidityBtn: 'End',
+    labelEndLiquidityBtn: 'Ended',
     labelTradePanelHideOtherPairs: 'Hide other pairs',
     labelLPTokens: 'LP Tokens',
     labelTrade: 'Trade',
