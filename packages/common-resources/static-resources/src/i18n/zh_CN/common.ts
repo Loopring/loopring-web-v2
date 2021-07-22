@@ -107,6 +107,7 @@ export default {
     labelTokenAmount: '数量',
     labelRemoveLiquidityBtn: '立刻移出',
     labelAddLiquidityBtn: '立刻放入',
+    labelEndLiquidityBtn: '活动已结束',
     labelTradePanelHideOtherPairs: '隐藏其他交易对',
     labelLPTokens: '权益代币',
     labelTrade: '兑换',

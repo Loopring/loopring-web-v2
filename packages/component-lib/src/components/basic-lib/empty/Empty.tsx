@@ -2,7 +2,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import React from 'react';
 import { EmptyIcon } from '@loopring-web/common-resources';
-import { Typography } from '@material-ui/core/';
+import { Box, Typography } from '@material-ui/core/';
+import { BoxProps } from '@material-ui/core';
 
 
 export type EmptyProps = {
@@ -20,7 +21,7 @@ const EmptyIconStyle = styled(EmptyIcon)`
   font-size: ${({theme}) => theme.fontDefault.h1};
   color: ${({theme}) => theme.colorBase.textHint};
 ` as typeof EmptyIcon
-const WrapStyled = styled.div<{ height: number | undefined | string }>`
+const WrapStyled = styled(Box)<{ height: number | undefined | string }>`
   display: flex;
   flex-direction: column;
   flex-flow: column wrap;
@@ -28,23 +29,26 @@ const WrapStyled = styled.div<{ height: number | undefined | string }>`
   align-items: center;
   height: ${props => (props.height ? typeof props.height == 'number' ? props.height + 'px' : props.height : `${350 - 35}px`)};
 
-`;
-export const EmptyDefault = withTranslation('layout')(({
-                                                           t,
-                                                           defaultPic = <EmptyIconStyle fontSize={'large'}/>,
-                                                           height,
-                                                           message
-                                                       }: EmptyProps & WithTranslation) => {
-
+` as typeof Box;
+export const EmptyDefault = withTranslation(['layout', 'common'])(({
+                                                                       t,
+                                                                       i18n,
+                                                                       tReady,
+                                                                       defaultPic = <EmptyIconStyle
+                                                                           fontSize={'large'}/>,
+                                                                       height,
+                                                                       message,
+                                                                       ...rest
+                                                                   }: EmptyProps & BoxProps & WithTranslation) => {
     const renderPic = !defaultPic || typeof defaultPic === 'string' ?
-        <img src={defaultPic} alt={t('Empty')}/> : defaultPic
-    return <WrapStyled height={height}>
+        <img src={defaultPic as string} alt={t('Empty')}/> : defaultPic
+    return <WrapStyled height={height} {...rest}>
         {renderPic}
         <Typography component={'span'} color={'textSecondary'} fontSize={'h6'} marginTop={1}>
             {message()}
         </Typography>
     </WrapStyled>
-})
+}) as (props: EmptyProps & BoxProps) => JSX.Element;
 
 
 

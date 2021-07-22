@@ -141,7 +141,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             </CardContent>
             <CardActions>
                 <Button fullWidth variant={'contained'} size={'medium'} disabled={isPass ? true : false}
-                        color={'primary'} onClick={handleClick}>{t('labelAddLiquidityBtn')}</Button>
+                        color={'primary'} onClick={handleClick}>{t(isPass?'labelEndLiquidityBtn':'labelAddLiquidityBtn')}</Button>
             </CardActions>
         </Card>
     }))) as <T>(props: AmmCardProps<T> & React.RefAttributes<any>) => JSX.Element;
