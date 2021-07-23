@@ -8,7 +8,7 @@ import { Box, Typography } from '@material-ui/core'
 import styled from '@emotion/styled'
 import { useSettings } from '@loopring-web/component-lib/src/stores'
 
-const DEFAULT_YAXIS_DOMAIN = 0.1
+const DEFAULT_YAXIS_DOMAIN = 0.05
 const UP_COLOR = '#00BBA8'
 const DOWN_COLOR = '#fb3838'
 
@@ -111,6 +111,9 @@ const TrendChart = ({
     }, [renderData])
 
     const customTick = ({ x, y, payload }: any) => {
+        if (!renderData || !renderData.length) {
+            return <span></span>
+        }
         return (
             <g transform={`translate(${x}, ${y})`}>
                 <text x={0} y={0} dy={16} fontSize={12} textAnchor="start" fill="#A1A7BB">

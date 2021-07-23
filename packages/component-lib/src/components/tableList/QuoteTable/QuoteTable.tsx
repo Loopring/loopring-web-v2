@@ -9,7 +9,6 @@ import { TablePaddingX } from '../../styled'
 import { Typography } from '@material-ui/core/';
 import { useSettings } from '@loopring-web/component-lib/src/stores'
 
-
 const TableStyled = styled(Box)`
     display: flex;
     flex-direction: column;
@@ -137,7 +136,7 @@ const columnMode = ({t}: WithTranslation, history: any, upColor: 'green' | 'red'
                 <div className="rdg-cell-value">
                     <QuoteTableChangedCell value={value} upColor={upColor}>
                         {typeof value !== 'undefined' ? (
-                            (row.floatTag === FloatTag.increase ? '+' : '') + getThousandFormattedNumbers(value) + '%') : EmptyValueTag}
+                            (row.floatTag === FloatTag.increase ? '+' : '') + Number(getThousandFormattedNumbers(value)).toFixed(2) + '%') : EmptyValueTag}
                     </QuoteTableChangedCell>
                 </div>
             )
