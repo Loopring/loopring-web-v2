@@ -150,4 +150,8 @@ export default {
     labelAmmPageTitle: 'AMM Records',
     labelSwapSuccess: 'Swap sucessfully!',
     labelSwapFailed: 'Swap failed!',
+    labelJoinAmmSuccess: 'Join AmmPool sucessfully!',
+    labelJoinAmmFailed: 'Join AmmPool failed!',
+    labelExitAmmSuccess: 'Exit AmmPool sucessfully!',
+    labelExitAmmFailed: 'Exit AmmPool failed!',
 }

@@ -40,6 +40,7 @@ import { myLog } from "utils/log_tools";
 import { BIG10 } from "defs/swap_defs";
 import { useSelector } from "react-redux";
 import { REFRESH_RATE_SLOW } from "defs/common_defs";
+import { useTranslation } from "react-i18next";
 
 export const useAmmPanel = <C extends { [ key: string ]: any }>({
                                                                     pair,
@@ -53,6 +54,12 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
     walletMap: WalletMap<C>
     ammType: keyof typeof AmmPanelType
 }) => {
+
+    const [ammToastOpen, setAmmToastOpen] = useState<boolean>(false)
+    const [ammAlertText, setAmmAlertText] = useState<string>()
+
+    const { t } = useTranslation('common')
+
     // const walletLayer2State = useWalletLayer2();
     const {coinMap, tokenMap} = useTokenMap();
     const {ammMap} = useAmmMap();
@@ -112,6 +119,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         const updateAmmPoolSnapshot = async() => {
 
             if (!pair.coinAInfo?.simpleName || !pair.coinBInfo?.simpleName || !LoopringAPI.ammpoolAPI) {
+                setAmmAlertText(t('labelAmmJoinFailed'))
                 return
             }
 
@@ -290,11 +298,15 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
     const addToAmmCalculator = React.useCallback(async function (props
     ) {
 
-        setJoinLoading(true);
+        setJoinLoading(true)
         if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !joinRequest) {
             myLog(' onAmmJoin ammpoolAPI:', LoopringAPI.ammpoolAPI,
                 'joinRequest:', joinRequest)
-            setJoinLoading(false);
+
+            setAmmAlertText(t('labelJoinAmmFailed'))
+            setAmmToastOpen(true)
+
+            setJoinLoading(false)
             return
         }
 
@@ -336,12 +348,19 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
             myLog('join ammpool response:', response)
 
-            await delayAndUpdateWalletLayer2();
-            setJoinLoading(false);
+            await delayAndUpdateWalletLayer2()
+
+            setAmmAlertText(t('labelJoinAmmSuccess'))
 
         } catch (reason) {
-            setJoinLoading(false);
+
             dumpError400(reason)
+
+            setAmmAlertText(t('labelJoinAmmFailed'))
+        }
+        finally {
+            setAmmToastOpen(true)
+            setJoinLoading(false)
         }
         if (props.__cache__) {
             makeCache(props.__cache__)
@@ -450,6 +469,10 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !exitRequest) {
             myLog(' onExit ammpoolAPI:', LoopringAPI.ammpoolAPI,
                 'exitRequest:', exitRequest)
+                
+            setAmmAlertText(t('labelExitAmmFailed'))
+            setAmmToastOpen(true)
+    
             setExitLoading(false);
             return
         }
@@ -487,10 +510,14 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
             myLog('exit ammpool response:', response)
 
             await delayAndUpdateWalletLayer2()
-            setExitLoading(false);
+
+            setAmmAlertText(t('labelExitAmmSuccess'))
         } catch (reason) {
             dumpError400(reason)
-            setExitLoading(false);
+            setAmmAlertText(t('labelExitAmmFailed'))
+        } finally {
+            setAmmToastOpen(true)
+            setExitLoading(false)
         }
 
         // if (props.__cache__) {
@@ -515,8 +542,11 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         }
     }, [snapShotData, pair, walletMap]);
 
-
     return {
+        ammAlertText,
+        ammToastOpen,
+        setAmmToastOpen,
+
         ammCalcData,
         ammJoinData,
         ammExitData,
