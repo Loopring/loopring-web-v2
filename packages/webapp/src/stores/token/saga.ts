@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getTokenMap, getTokenMapStatus } from './reducer';
-import { getIcon } from '../../utils/swap_calc_utils';
+import { getIcon } from '../../utils/swap_utils';
 import { CoinInfo, CoinMap } from '@loopring-web/common-resources';
 import { AddressMap, GetTokenMapParams, IdMap } from './interface';
 import { PayloadAction } from '@reduxjs/toolkit';

@@ -34,7 +34,7 @@
     "isarray": "^2.0.5",
     "jsbi": "^3.1.5",
     "lodash": "^4.17.20",
-    "loopring-sdk": "0.0.59",
+    "loopring-sdk": "0.0.64",
     "ms.macro": "^2.0.0",
     "node-sass": "4.14.1",
     "pify": "^5.0.0",

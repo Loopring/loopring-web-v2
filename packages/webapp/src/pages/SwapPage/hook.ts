@@ -90,6 +90,8 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     const [output, setOutput] = useState<any>()
 
+    const [takerRate, setTakerRate] = useState<string>('0')
+
     const [feeBips, setFeeBips] = useState<string>('0')
 
     useCustomDCEffect(async() => {
@@ -126,8 +128,11 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         const totalFee = fm.toBig(feeBips).plus(fm.toBig(takerRate)).toString()
 
         myLog('totalFee:', totalFee)
+        myLog('takerRate:', takerRate)
 
         setFeeBips(totalFee)
+        setTakerRate(takerRate.toString())
+
         setTradeCalcData({...tradeCalcData, fee: totalFee} as TradeCalcData<C>)
 
     }, [tradeData?.sell.belong, tradeData?.buy.belong, marketArray, ammMap, 
@@ -267,6 +272,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             makeCache(rest.__cache__)
         }
     },[tradeData])
+
     const swapBtnClickArray: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
         [ fnType.ACTIVATED ]:[swapCalculatorCallback]
     })
@@ -305,6 +311,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const [depth, setDepth] = useState<DepthData>()
 
     useEffect(() => {
+        
         const updateDepth = async() => {
             if (!pair || !LoopringAPI.exchangeAPI || !pair.coinAInfo) {
                 return
@@ -313,6 +320,9 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             const { depth } = await LoopringAPI.exchangeAPI?.getMixDepth({market})
             setDepth(depth)
         }
+
+        updateDepth()
+        
         const handler = setInterval(() => {
             updateDepth()
         }, REFRESH_RATE_SLOW)
@@ -326,14 +336,11 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: AmmPoolSnapshot | undefined)
         : Promise<{ _tradeCalcData: TradeCalcData<C>, _tradeData: SwapTradeData<IBData<C>> }> => {
-        //if(`${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}` === coinKey)
-        if (_tradeData[ type ].tradeValue && tradeCalcData) {
-            type === 'sell' ? _tradeData[ 'buy' ].tradeValue = fm.toBig(_tradeData[ 'sell' ].tradeValue).times(tradeCalcData.StoB).toNumber()
-                : _tradeData[ 'sell' ].tradeValue = fm.toBig(_tradeData[ 'buy' ].tradeValue).times(tradeCalcData.BtoS).toNumber()
-        }
+        
         const market = `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`
         if (!marketArray || !tokenMap || !marketMap || !depth || !ammMap || !tradeCalcData) {
             let _tradeCalcData = {...tradeCalcData} as TradeCalcData<C>;
+            debugger
             return {_tradeData, _tradeCalcData}
         }
 
@@ -357,9 +364,13 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
         slippage = fm.toBig(slippage).times(100).toString()
 
+        const ammMapRaw = {[ 'AMM-' + market ]: ammMap[ 'AMM-' + market ].__rawConfig__} as LoopringMap<AmmPoolInfoV3>
+
+        console.log(input, base, quote, isAtoB, marketArray, tokenMap, marketMap, depth, 
+            ammMap[ 'AMM-' + market ].__rawConfig__.tokens.pooled, ammPoolSnapshot?.pooled, takerRate, slippage)
+
         const output = fm.getOutputAmount(input, base, quote, isAtoB, marketArray, tokenMap,
-            marketMap, depth, {[ 'AMM-' + market ]: ammMap[ 'AMM-' + market ].__rawConfig__} as LoopringMap<AmmPoolInfoV3>,
-            ammPoolSnapshot, '6', slippage)
+            marketMap, depth, ammMapRaw, ammPoolSnapshot, takerRate, slippage)
 
         setOutput(output)
 
@@ -378,11 +389,12 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     }
 
     const throttleSetValue = React.useCallback(_.debounce(async (type, _tradeData, _ammPoolSnapshot) => {
+      
         const {_tradeData: td, _tradeCalcData} = await calculateTradeData(type, _tradeData, _ammPoolSnapshot)//.then(()=>{
         setTradeData(td)
         setTradeCalcData({..._tradeCalcData, fee: feeBips})
 
-    }, wait * 2), [setTradeData, setTradeCalcData, calculateTradeData]);
+    }, wait * 2), [setTradeData, setTradeCalcData, calculateTradeData, takerRate]);
 
     const resetSwap = async (coinKey: any, type: 'sell' | 'buy' | undefined, _tradeData: SwapTradeData<IBData<C>> | undefined, _ammPoolSnapshot: AmmPoolSnapshot | undefined) => {
         if (tradeCalcData
@@ -390,7 +402,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             && _tradeData
             && type
             && (!tradeData || (tradeData[ type ].tradeValue !== _tradeData[ type ].tradeValue))) {
-            // calculateTradeData(type,_tradeData,_ammPoolSnapshot)
+                
             throttleSetValue(type, _tradeData, _ammPoolSnapshot)
             //throttleSetValue(td,_tradeCalcData);
 
