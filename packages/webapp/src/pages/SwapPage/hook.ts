@@ -276,9 +276,11 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const swapBtnClickArray: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
         [ fnType.ACTIVATED ]:[swapCalculatorCallback]
     })
+
     const onSwapClick = React.useCallback(({sell, buy, slippage, ...rest}: SwapTradeData<IBData<C>>) => {
         accountStaticCallBack(swapBtnClickArray, [{sell, buy, slippage, ...rest}])
     }, [swapBtnClickArray])
+
     const handleSwapPanelEvent = async (swapData: SwapData<SwapTradeData<IBData<C>>>, switchType: any): Promise<void> => {
         //TODO setMarket(market);
         // _.throttle(()=>{
@@ -348,7 +350,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         let input: any = (isAtoB ? _tradeData.sell.tradeValue : _tradeData.buy.tradeValue)
 
         if (input) {
-            input = input.toString()
+            input = (input.toString() as string).trim()
         } else {
             input = '0'
         }
@@ -366,8 +368,10 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
         const ammMapRaw = {[ 'AMM-' + market ]: ammMap[ 'AMM-' + market ].__rawConfig__} as LoopringMap<AmmPoolInfoV3>
 
-        console.log(input, base, quote, isAtoB, marketArray, tokenMap, marketMap, depth, 
-            ammMap[ 'AMM-' + market ].__rawConfig__.tokens.pooled, ammPoolSnapshot?.pooled, takerRate, slippage)
+        if (input !== '0' && input !== '0.') {
+            console.log(input, '*', base, quote, isAtoB, depth, 
+                ammMap[ 'AMM-' + market ].__rawConfig__.tokens.pooled, ammPoolSnapshot?.pooled, takerRate, slippage)
+        }
 
         const output = fm.getOutputAmount(input, base, quote, isAtoB, marketArray, tokenMap,
             marketMap, depth, ammMapRaw, ammPoolSnapshot, takerRate, slippage)
