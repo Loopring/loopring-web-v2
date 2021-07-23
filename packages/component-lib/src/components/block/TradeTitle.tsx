@@ -42,8 +42,8 @@ export const TradeTitle = <I extends object>({
     // const buyIconHasLoaded = useImage(coinBInfo?.icon ? coinBInfo?.icon : '').hasLoaded;
     const {coinJson} = useSettings();
 
-    const sellCoinIcon: any = coinJson [ coinAInfo?.simpleName ];
-    const buyCoinIcon: any = coinJson [ coinBInfo?.simpleName ];
+    const sellCoinIcon: any = coinJson[ coinAInfo?.simpleName ];
+    const buyCoinIcon: any = coinJson[ coinBInfo?.simpleName ];
 
     const tradeFloatType = tradeFloat?.changeDollar === 0 ? FloatTag.none : tradeFloat && tradeFloat.changeDollar && tradeFloat.changeDollar < 0 ? FloatTag.decrease : FloatTag.increase;
     const {currency} = useSettings();
