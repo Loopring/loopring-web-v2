@@ -175,7 +175,11 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         <Box flex={1} display={'flex'} alignItems={'stretch'} flexDirection="row" marginTop={3}>
             <Box flex={1} display={'flex'} flexDirection={'column'} marginRight={3} justifyContent={'space-between'}>
                 <Box flex={1} width={'101%'}>
-                    <ScaleAreaChart type={ChartType.Trend} data={pairHistory}/>
+                    <ScaleAreaChart
+                        type={ChartType.Trend} 
+                        data={pairHistory} 
+                        extraInfo={pair.coinBInfo?.simpleName}
+                    />
                 </Box>
                 <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
                     <BoxStyled paddingX={2} display={'flex'} flexDirection={'column'}>

@@ -15,6 +15,7 @@ export interface ScaleAreaChartProps {
     riseColor?: 'green' | 'red'
     showTooltip?: boolean
     showArea?: boolean
+    extraInfo?: string
 }
 
 export const ScaleAreaChart = (props: ScaleAreaChartProps) => {
