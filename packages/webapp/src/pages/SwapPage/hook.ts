@@ -9,7 +9,7 @@ import {
     TradeFloat,
     WalletMap
 } from '@loopring-web/common-resources';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { LoopringAPI } from '../../stores/apis/api';
 import { useTokenMap } from '../../stores/token';
 import * as fm from 'loopring-sdk';
@@ -267,21 +267,18 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     const [depth, setDepth] = useState<DepthData>()
 
-    useCustomDCEffect(async() => {
-
-        const updateDepth = async() => {
-            if (!pair || !LoopringAPI.exchangeAPI) {
-                return
-            }
-            const market = `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`
-            const { depth } = await LoopringAPI.exchangeAPI?.getMixDepth({market})
-            setDepth(depth)
+    const updateDepth = React.useCallback(async() => {
+        if (!pair || !LoopringAPI.exchangeAPI || !pair.coinAInfo) {
+            return
         }
+        const market = `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`
+        const { depth } = await LoopringAPI.exchangeAPI?.getMixDepth({market})
+        setDepth(depth)
+    }, [pair])
 
-        await updateDepth()
-
-        const handler = setInterval(async() => {
-            await updateDepth()
+    useEffect(() => {
+        const handler = setInterval(() => {
+            updateDepth()
         }, REFRESH_RATE_SLOW)
 
         return () => {
@@ -289,8 +286,30 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 clearInterval(handler)
             }
         }
+    }, [updateDepth]) 
 
-    }, [pair, setDepth])
+    // useCustomDCEffect(async() => {
+    //     const updateDepth = async() => {
+    //         if (!pair || !LoopringAPI.exchangeAPI || !pair.coinAInfo) {
+    //             return
+    //         }
+    //         const market = `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`
+    //         const { depth } = await LoopringAPI.exchangeAPI?.getMixDepth({market})
+    //         setDepth(depth)
+    //     }
+    //     await updateDepth()
+
+    //     const handler = setInterval(async() => {
+    //         await updateDepth()
+    //     }, REFRESH_RATE_SLOW)
+
+    //     return () => {
+    //         if (handler) {
+    //             clearInterval(handler)
+    //         }
+    //     }
+
+    // }, [])
 
     const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: AmmPoolSnapshot | undefined)
         : Promise<{ _tradeCalcData: TradeCalcData<C>, _tradeData: SwapTradeData<IBData<C>> }> => {
