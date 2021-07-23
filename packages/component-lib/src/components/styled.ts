@@ -42,10 +42,10 @@ export const floatTag = ({theme, custom}: any) => css`
   }
 `
 export const AvatarIconPair = ({theme}: any) => css`
-  .MuiAvatar-root {
-    width: var(--chart-title-coin-size);
-    height: var(--chart-title-coin-size);
-  }
+  //.MuiAvatar-root {
+  //  width: var(--chart-title-coin-size);
+  //  height: var(--chart-title-coin-size);
+  //}
 
   .icon-next {
     margin-left: -${theme.unit}px;
