@@ -89,6 +89,9 @@ const TableStyled = styled(Box)`
             justify-content: center;
             align-items: center;
         }
+        .rdg-header-row {
+            background-color: inherit !important;
+        }
     }
     ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box

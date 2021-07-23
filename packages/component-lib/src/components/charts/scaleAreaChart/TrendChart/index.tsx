@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import { Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, } from 'recharts'
 import moment from 'moment'
 import { ScaleAreaChartProps } from '../ScaleAreaChart'
@@ -11,19 +11,10 @@ const DEFAULT_YAXIS_DOMAIN = 0.1
 const UP_COLOR = '#00BBA8'
 const DOWN_COLOR = '#fb3838'
 
-// export interface ScaleAreaChartProps {
-// 	type: 'kline' | 'depth' | 'trend'
-// 	data: IOrigDataItem[]
-// 	handleMove?: (props: any) => void
-// 	yAxisDomainPercent?: number // defualt 0.1
-// 	riseColor?: 'green' | 'red'
-// }
-
 const TooltipStyled = styled(Box)`
     background: rgba(255, 255, 255, 0.1);
     border-radius: ${({theme}) => theme.unit}px;
     padding: ${({theme}) => theme.unit * 2}px ${({theme}) => theme.unit * 3}px;
-    // font-size: ${({theme}) => theme.unit * 2}px;
 
     >div: last-of-type {
         color: ${({theme}) => theme.colorBase.textSecondary}
@@ -107,6 +98,14 @@ const TrendChart = ({
 
     const handleMouseLeave = useCallback(() => {
         setPriceTrend(renderData[renderData.length - 1]?.sign === 1 ? 'up' : 'down')
+    }, [renderData])
+
+    useEffect(() => {
+        if (!!renderData.length) {
+            setPriceTrend(renderData[renderData.length - 1].sign === 1
+                ? 'up'
+                : 'down')
+        }
     }, [renderData])
 
     return (
