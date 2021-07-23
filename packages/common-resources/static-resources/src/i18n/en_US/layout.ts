@@ -29,7 +29,7 @@ export default {
     labelOrders: 'orders',
     selectLanguage: 'select language',
     labelPools: 'Pools',
-    labelAmmMining: 'Amm Mining',
+    labelAmmMining: 'AMM Mining',
     labelMyLiquidity: 'My Liquidity',
     labelOrderBookMining: 'Orderbook Mining ',
     labelMakerRebates: 'Maker Rebates',
