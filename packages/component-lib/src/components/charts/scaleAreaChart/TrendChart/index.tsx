@@ -1,31 +1,29 @@
 import { useCallback, useState } from 'react'
-import { Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, } from 'recharts'
+import { useDeepCompareEffect } from 'react-use';
+import { Area, ComposedChart, Cross, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, } from '@loopring-web/recharts'
 import moment from 'moment'
 import { ScaleAreaChartProps } from '../ScaleAreaChart'
 import { getRenderData } from '../data'
-import { Box } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import styled from '@emotion/styled'
 import { useSettings } from '@loopring-web/component-lib/src/stores'
 
-const DEFAULT_YAXIS_DOMAIN = 0.1
+const DEFAULT_YAXIS_DOMAIN = 0.05
 const UP_COLOR = '#00BBA8'
 const DOWN_COLOR = '#fb3838'
-
-// export interface ScaleAreaChartProps {
-// 	type: 'kline' | 'depth' | 'trend'
-// 	data: IOrigDataItem[]
-// 	handleMove?: (props: any) => void
-// 	yAxisDomainPercent?: number // defualt 0.1
-// 	riseColor?: 'green' | 'red'
-// }
 
 const TooltipStyled = styled(Box)`
     background: rgba(255, 255, 255, 0.1);
     border-radius: ${({theme}) => theme.unit}px;
     padding: ${({theme}) => theme.unit * 2}px ${({theme}) => theme.unit * 3}px;
-    font-size: ${({theme}) => theme.unit * 2}px;
-`
 
+    >div: last-of-type {
+        color: ${({theme}) => theme.colorBase.textSecondary}
+    }
+`
+const CustomCursor = (props:any) => {
+    return <Cross {...props} />;
+};
 const TrendChart = ({
                         type,
                         data,
@@ -34,6 +32,8 @@ const TrendChart = ({
                         riseColor = 'green',
                         showTooltip = true,
                         showArea = true,
+                        extraInfo,
+                        showXAxis = false,
                     }: ScaleAreaChartProps) => {
     const userSettings = useSettings()
     const upColor = userSettings ? userSettings.upColor: 'green'
@@ -87,17 +87,43 @@ const TrendChart = ({
             !props.payload[ 0 ].payload.timeStamp
         )
             return <span></span>
-        const {timeStamp} = props.payload[ 0 ].payload
+        const {timeStamp, close} = props.payload[ 0 ].payload
         return (
             <TooltipStyled>
-				{moment(timeStamp).format('HH:mm MMM DD [UTC]Z')}
+                {extraInfo && (
+                    <Typography component={'div'} fontSize={16}>{`${close} ${extraInfo}`}</Typography>
+                )}
+                <Typography component={'div'} fontSize={12}>
+                    {moment(timeStamp).format('HH:mm MMM DD [UTC]Z')}
+                </Typography>
 			</TooltipStyled>
         )
-    }, [hasData])
+    }, [hasData, extraInfo])
 
     const handleMouseLeave = useCallback(() => {
         setPriceTrend(renderData[renderData.length - 1]?.sign === 1 ? 'up' : 'down')
     }, [renderData])
+
+    useDeepCompareEffect(() => {
+        if (renderData && !!renderData.length) {
+            setPriceTrend(renderData[renderData.length - 1].sign === 1
+                ? 'up'
+                : 'down')
+        }
+    }, [renderData])
+
+    const customTick = ({ x, y, payload }: any) => {
+        if (!renderData || !renderData.length) {
+            return <span></span>
+        }
+        return (
+            <g transform={`translate(${x}, ${y})`}>
+                <text x={0} y={0} dy={16} fontSize={12} textAnchor="start" fill="#A1A7BB">
+                {payload.value}
+                </text>
+            </g>
+        )
+    }
 
     return (
         <ResponsiveContainer debounce={1} width={'99%'}>
@@ -118,8 +144,12 @@ const TrendChart = ({
                     </linearGradient>
                 </defs>
                 <XAxis
-                    hide={true}
-                    dataKey="time" /* tickFormatter={convertDate} */
+                    hide={!showXAxis}
+                    dataKey="date" /* tickFormatter={convertDate} */
+                    interval={8}
+                    axisLine={false}
+                    tickLine={false}
+                    tick={customTick}
                 />
                 <YAxis
                     hide={true}
@@ -130,6 +160,8 @@ const TrendChart = ({
                 />
                 {hasData && showTooltip && (
                     <Tooltip
+                        cursor={{stroke: '#808080', strokeDasharray: '5 5'}}
+                       //  cursor={<CustomCursor/>}
                         position={{y: 50}}
                         content={(props) => renderTooltipContent(props)}
                     />

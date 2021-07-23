@@ -1,6 +1,8 @@
 import { PanelContent, WrapStyled, } from '../../basic-lib';
 import { AmmChgData, AmmWithdrawWrap } from '../components';
 import { Grid, Tab, Tabs, Toolbar } from '@material-ui/core';
+import { useLocation } from 'react-router-dom'
+import qs from 'query-string'
 import { AmmData, AmmInData, IBData } from '@loopring-web/common-resources';
 import { AmmDepositWrap } from '../components/panel/AmmWrap/AmmDeposit';
 import { WithTranslation, withTranslation } from 'react-i18next';
@@ -11,6 +13,7 @@ import { Box } from '@material-ui/core/';
 import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@emotion/react';
 import { CountDownIcon } from '../components/tool/Refresh';
+import { useEffect } from 'react';
 
 enum AmmPanelTypeMap {
     Deposit = 0,
@@ -64,8 +67,15 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
         type: 'coinA'
     });
     const [ammChgWithdrawData, setAmmChgWithdrawData] = React.useState<Pick<AmmChgData<T>, 'tradeData'> & { type?: 'coinA' | 'coinB' | 'percentage' }>({tradeData: ammWithdrawData});
+    let routerLocation = useLocation()
+    const search = routerLocation?.search
+    const customType = qs.parse(search)?.type
 
-
+    useEffect(() => {
+        if (customType) {
+            setIndex(customType === 'remove' ? AmmPanelTypeMap.WithDraw : AmmPanelTypeMap.Deposit)
+        }
+    }, [customType])
     //
     useDeepCompareEffect(() => {
         if (ammDepositData !== ammChgDepositData.tradeData) {

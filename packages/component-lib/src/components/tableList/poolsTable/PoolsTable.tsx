@@ -177,9 +177,9 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, currency: 'USD' |
             // typeof priceDollar === 'undefined' ? EmptyValueTag :
             //     currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(Number(priceDollar)) : PriceTag.Yuan + getThousandFormattedNumbers(Number(priceYuan))}
 
-            const {volume} = row.tradeFloat ? row.tradeFloat : {volume: EmptyValueTag};
+            const {volume} = row.tradeFloat && row.tradeFloat.volume ? row.tradeFloat : {volume: EmptyValueTag};
             return <Typography
-                component={'span'}> {volume} {row.coinAInfo.simpleName}
+                component={'span'}> {volume} {row.tradeFloat && row.tradeFloat.volume ? row.coinAInfo.simpleName : ''}
             </Typography>
         }
     },
