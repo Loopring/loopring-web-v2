@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box,IconButton, LinearProgress, linearProgressClasses, Typography } from '@material-ui/core';
+import { Box, IconButton, LinearProgress, linearProgressClasses, Typography } from '@material-ui/core';
 import { css } from '@emotion/react';
 
 export const TypographyStrong = styled(Typography)`
@@ -67,48 +67,44 @@ const cssAutoRefresh = (_props:any)=>css`
   }
 
   @keyframes container {
-
+    //0% { background-image:}
+    //5% { background-image: none }
     25% { transform: translate3d(0, -50%, 0); width: .5em; }
     50% { transform: translate3d(-100%, -50%, 0); width: .5em; }
     75% { transform: translate3d(-50%, -50%, 0); width: 1em; }
   }
-  //@keyframes countDown {
-  //  0% { content:'5'; opacity: 1; }
-  //  16% { content:''; opacity: 0; }
-  //  20% { content:'4'; opacity: 1; }
-  //  36% { content:''; opacity: 0; }
-  //  40% { content:'3'; opacity: 1; }
-  //  56% { content:''; opacity: 0; }
-  //  60% { content:'2'; opacity: 1; }
-  //  76% { content:''; opacity: 0; }
-  //  80% { content:'1'; opacity: 1; }
-  //  96% { content:''; opacity: 0; }
-  // 
-  //}
-
 `
+//      //background-image: url("data:image/svg+xml,%3Csvg width='34' height='27' viewBox='0 0 34 27' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M19.354 12.7874H33.4527V12.8709L11.4393 26.1381L22.351 17.5019L19.354 12.7874ZM11.1439 0V26.3259L0 17.5228L11.1439 0Z' fill='%231C60FF'/%3E%3C/svg%3E%0A");
 export const CountDownStyled = styled(Box)`
   ${({theme}) => cssAutoRefresh({theme})}
   width: var(--btn-icon-size);
   height: var(--btn-icon-size);
-  position: relative; 
-  &.outline {
-      background-color: ${({theme}) => theme.colorBase.textDisable};
-      margin: 0 ${({theme}) => theme.unit / 2}px;
-      ${({theme}) => theme.border.defaultFrame({c_key: 'transparent'})};
-      text-align: center;
-      line-height: var(--btn-icon-size);
-      &:last-child {
-        margin-right: 0;
+  position: relative;
+  background-size: 68%;
+  background-repeat: no-repeat;
+  background-position: center;
 
-      }
-   
-     }
+  &.outline {
+    background-color: ${({theme}) => theme.colorBase.textDisable};
+    margin: 0 ${({theme}) => theme.unit / 2}px;
+    ${({theme}) => theme.border.defaultFrame({c_key: 'transparent'})};
+    text-align: center;
+    line-height: var(--btn-icon-size);
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
-  &.countdown{
-      font-size: ${({theme}) => theme.fontDefault.h6};
-      display: inline-block;
-      color:  ${({theme}) => theme.colorBase.primaryLight};
+
+  &.logo {
+    background-image: url("data:image/svg+xml,%3Csvg width='34' height='27' viewBox='0 0 34 27' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M19.354 12.7874H33.4527V12.8709L11.4393 26.1381L22.351 17.5019L19.354 12.7874ZM11.1439 0V26.3259L0 17.5228L11.1439 0Z' fill='%231C60FF'/%3E%3C/svg%3E%0A");
+  }
+
+  &.countdown {
+    font-size: ${({theme}) => theme.fontDefault.h6};
+    display: inline-block;
+    color: ${({theme}) => theme.colorBase.primaryLight};
+
     .circle {
       font-size: ${({theme}) => theme.fontDefault.h3};
       width: 1em;
@@ -149,7 +145,7 @@ export const CountDownStyled = styled(Box)`
         animation-name: rotate, hide2;
         right: 0;
       }
-  }
-  
-  //}
+    }
+
+    //}
 `

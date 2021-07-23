@@ -132,7 +132,7 @@ export const globalCss = ({theme}: any) => css`
 
   html {
     overflow-y: scroll;
-    --auto-refresh-duration: ${refreshTime}s;
+    --auto-refresh-duration: ${refreshTime-1}s;
     --auto-refresh-color: ${theme.colorBase.primaryLight};
     --durationInternal: calc(var(--auto-refresh-duration) * 2);
     --delay: calc(var(--auto-refresh-duration) / 2);
