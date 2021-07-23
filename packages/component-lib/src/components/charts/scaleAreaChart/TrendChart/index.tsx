@@ -3,7 +3,7 @@ import { Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, 
 import moment from 'moment'
 import { ScaleAreaChartProps } from '../ScaleAreaChart'
 import { getRenderData } from '../data'
-import { Box } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import styled from '@emotion/styled'
 import { useSettings } from '@loopring-web/component-lib/src/stores'
 
@@ -23,7 +23,11 @@ const TooltipStyled = styled(Box)`
     background: rgba(255, 255, 255, 0.1);
     border-radius: ${({theme}) => theme.unit}px;
     padding: ${({theme}) => theme.unit * 2}px ${({theme}) => theme.unit * 3}px;
-    font-size: ${({theme}) => theme.unit * 2}px;
+    // font-size: ${({theme}) => theme.unit * 2}px;
+
+    >div: last-of-type {
+        color: ${({theme}) => theme.colorBase.textSecondary}
+    }
 `
 
 const TrendChart = ({
@@ -34,6 +38,7 @@ const TrendChart = ({
                         riseColor = 'green',
                         showTooltip = true,
                         showArea = true,
+                        extraInfo,
                     }: ScaleAreaChartProps) => {
     const userSettings = useSettings()
     const upColor = userSettings ? userSettings.upColor: 'green'
@@ -87,13 +92,18 @@ const TrendChart = ({
             !props.payload[ 0 ].payload.timeStamp
         )
             return <span></span>
-        const {timeStamp} = props.payload[ 0 ].payload
+        const {timeStamp, close} = props.payload[ 0 ].payload
         return (
             <TooltipStyled>
-				{moment(timeStamp).format('HH:mm MMM DD [UTC]Z')}
+                {extraInfo && (
+                    <Typography component={'div'} fontSize={16}>{`${close} ${extraInfo}`}</Typography>
+                )}
+                <Typography component={'div'} fontSize={12}>
+                    {moment(timeStamp).format('HH:mm MMM DD [UTC]Z')}
+                </Typography>
 			</TooltipStyled>
         )
-    }, [hasData])
+    }, [hasData, extraInfo])
 
     const handleMouseLeave = useCallback(() => {
         setPriceTrend(renderData[renderData.length - 1]?.sign === 1 ? 'up' : 'down')

@@ -19,6 +19,7 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
     } = useBasicInfo(props, coinAInfo, coinBInfo, marketArray, t)
     const { upColor } = useSettings();
     const baseToken = coinAInfo?.name
+    const quoteToken = coinBInfo?.name
     const trendChartData = originData && !!originData.length ? originData.sort((a: any, b: any) => a.timeStamp - b.timeStamp) : []
     const depthChartData = originData && coinAInfo && originData.asksAmtTotals ? { 
         ...originData,
@@ -39,9 +40,12 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
 
         <Grid item xs={12} position={'relative'}>
             <Box minHeight={256} maxHeight={256} display={'block'} style={{ height: '100%', width: '100%' }}>
-                <ScaleAreaChart type={chartType} data={chartType === ChartType.Trend ? trendChartData : depthChartData} riseColor={upColor as keyof typeof UpColor}
-                    handleMove={() => {
-                    }} />
+                <ScaleAreaChart 
+                    type={chartType} 
+                    data={chartType === ChartType.Trend ? trendChartData : depthChartData} 
+                    riseColor={upColor as keyof typeof UpColor}
+                    extraInfo={quoteToken}
+                    handleMove={() => {}} />
             </Box>
             {/* {chartType === ChartType.Trend && (
                 <Box height={24} display={'flex'} justifyContent={'flex-end'} position={'absolute'} right={0} bottom={0}>
