@@ -28,7 +28,7 @@ export const LoadingPage = () => {
         {/*<Container>*/}
             {/*style={{height: '100%' }}*/}
             <StyleBox flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}
-                      flexDirection={'column'} height={'100%'} maxWidth={1200}>
+                      flexDirection={'column'} height={'100%'}  width={'100%'}>
                 <div className="loader loader--style3" title="2">
                     <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg"
                          xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
