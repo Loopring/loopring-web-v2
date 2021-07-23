@@ -9,7 +9,7 @@ import {
     TradeFloat,
     WalletMap
 } from '@loopring-web/common-resources';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { LoopringAPI } from '../../stores/apis/api';
 import { useTokenMap } from '../../stores/token';
 import * as fm from 'loopring-sdk';
@@ -19,6 +19,7 @@ import {
     DepthData,
     dumpError400,
     getExistedMarket,
+    GetMinimumTokenAmtRequest,
     GetNextStorageIdRequest,
     LoopringMap,
     OrderType,
@@ -27,7 +28,7 @@ import {
 } from 'loopring-sdk';
 import { useAmmMap } from '../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../stores/walletLayer2';
-import { RawDataTradeItem, SwapTradeData, SwapType } from '@loopring-web/component-lib';
+import { RawDataTradeItem, SwapTradeData, SwapType, ToastProps } from '@loopring-web/component-lib';
 import { useAccount } from '../../stores/account/hook';
 import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
 import {
@@ -51,10 +52,17 @@ import { SwapData } from '@loopring-web/component-lib';
 import { deepClone } from '../../utils/obj_tools';
 import { debug } from 'console';
 import { myLog } from 'utils/log_tools';
+import { useTranslation } from 'react-i18next';
+import { REFRESH_RATE_SLOW } from 'defs/common_defs';
+import { accordionClasses } from '@material-ui/core';
 
 export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     /*** api prepare ***/
-        // const exchangeApi = exchangeAPI();
+    const { t } = useTranslation('common')
+
+    const [swapToastOpen, setSwapToastOpen] = useState<boolean>(false)
+        
+    const [swapAlertText, setSwapAlertText] = useState<string>()
     const wait = globalSetup.wait;
     const match: any = useRouteMatch(":symbol")
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap,} = useTokenMap()
@@ -76,14 +84,54 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         coinBInfo: undefined,
     });
 
-
     const [ammPoolSnapshot, setAmmPoolSnapshot] = React.useState<AmmPoolSnapshot | undefined>(undefined);
 
     const [swapBtnI18nKey, setSwapBtnI18nKey] = React.useState<string | undefined>(undefined);
 
     const [output, setOutput] = useState<any>()
 
-    const feeBips = '60'
+    const [feeBips, setFeeBips] = useState<string>('0')
+
+    useCustomDCEffect(async() => {
+
+        const base = tradeData?.sell.belong
+        const quote = tradeData?.buy.belong
+
+        if (!LoopringAPI.userAPI || !base || !quote || !ammMap || !marketArray 
+            || account.status !== AccountStatus.ACTIVATED || !account.accountId || !account.apiKey) {
+            return
+        }
+
+        const {
+            amm
+        } = getExistedMarket(marketArray, base, quote)
+
+        if (!amm) {
+            return
+        }
+
+        const ammInfo = ammMap[amm]
+
+        const feeBips = ammInfo.__rawConfig__.feeBips
+
+        const req: GetMinimumTokenAmtRequest = {
+            accountId: account?.accountId,
+            market: amm,
+        }
+
+        const { amountMap } = await LoopringAPI.userAPI.getMinimumTokenAmt(req, account.apiKey)
+
+        const takerRate = amountMap[quote].userOrderInfo.takerRate
+
+        const totalFee = fm.toBig(feeBips).plus(fm.toBig(takerRate)).toString()
+
+        myLog('totalFee:', totalFee)
+
+        setFeeBips(totalFee)
+        setTradeCalcData({...tradeCalcData, fee: totalFee} as TradeCalcData<C>)
+
+    }, [tradeData?.sell.belong, tradeData?.buy.belong, marketArray, ammMap, 
+        account.status, account.apiKey, account.accountId])
 
     //HIGH: get Router info
     // const symbol = match?.params.symbol ?? undefined;
@@ -121,8 +169,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                             balance: walletMap ? walletMap[ tradeCalcData.coinBuy ]?.count : 0
                         },
                     } as SwapTradeData<IBData<C>>)
-                    let {
-                        amm,
+                    const {
                         market
                     } = getExistedMarket(marketArray, tradeCalcData.coinSell as string, tradeCalcData.coinBuy as string);
                     getUserTrades(market).then((marketTrades) => {
@@ -130,19 +177,13 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                         setMyTradeArray(_myTradeArray ? _myTradeArray : [])
                     })
                 }
+
                 break;
             default:
                 break;
 
         }
     }, [walletLayer2State.status, setMyTradeArray, marketArray, tradeCalcData])
-
-    // React.useEffect(() => {
-    //    // const label: string | undefined = accountStaticCallBack(bntLabel)
-    //     // setSwapBtnI18nKey(label);
-    // }, [])
-
-    // console.log(account.status)
 
     useCustomDCEffect(() => {
         const label: string | undefined = accountStaticCallBack(bntLabel)
@@ -190,13 +231,14 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 orderType: OrderType.ClassAmm,
                 eddsaSignature: '',
             }
+            
+            myLog(request)
+
             const response = await LoopringAPI.userAPI.submitOrder(request, account.eddsaKey, account.apiKey)
 
             myLog(response)
 
             await delayAndUpdateWalletLayer2()
-
-            setIsSwapLoading(false)
             
             setTradeData({
                 ...tradeData,
@@ -206,9 +248,19 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 }
             } as SwapTradeData<IBData<C>>)
 
+            setSwapAlertText(t('Swap sucessfully!'))
+            setSwapToastOpen(true)
+
+            setIsSwapLoading(false)
+
         } catch (reason) {
             setIsSwapLoading(false);
             dumpError400(reason)
+
+            setSwapAlertText(t('Swap failed!'))
+            setSwapToastOpen(true)
+
+            setIsSwapLoading(false)
         }
 
         if (rest.__cache__) {
@@ -252,24 +304,25 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     const [depth, setDepth] = useState<DepthData>()
 
-    useCustomDCEffect(async() => {
-
+    useEffect(() => {
         const updateDepth = async() => {
-            if (!pair || !LoopringAPI.exchangeAPI) {
+            if (!pair || !LoopringAPI.exchangeAPI || !pair.coinAInfo) {
                 return
             }
             const market = `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`
             const { depth } = await LoopringAPI.exchangeAPI?.getMixDepth({market})
             setDepth(depth)
         }
+        const handler = setInterval(() => {
+            updateDepth()
+        }, REFRESH_RATE_SLOW)
 
-        await updateDepth()
-
-        const handler = setInterval(async() => {
-            await updateDepth()
-        }, 10000)
-
-    }, [LoopringAPI.exchangeAPI, pair, setDepth])
+        return () => {
+            if (handler) {
+                clearInterval(handler)
+            }
+        }
+    }, [pair])
 
     const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: AmmPoolSnapshot | undefined)
         : Promise<{ _tradeCalcData: TradeCalcData<C>, _tradeData: SwapTradeData<IBData<C>> }> => {
@@ -428,6 +481,10 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     }
     return {
+        swapToastOpen,
+        setSwapToastOpen,
+        swapAlertText,
+
         tradeCalcData,
         tradeFloat,
         tradeArray,

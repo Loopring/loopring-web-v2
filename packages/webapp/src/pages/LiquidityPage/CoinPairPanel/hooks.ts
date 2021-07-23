@@ -2,6 +2,7 @@ import React from "react";
 import { AmmActivity, CoinInfo, TradeFloat, WalletMap } from "@loopring-web/common-resources";
 import { useTokenMap } from "stores/token";
 import { useRouteMatch } from 'react-router';
+import moment from 'moment'
 import { AmmDetailStore, useAmmMap } from '../../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../../stores/walletLayer2';
 import { makeTickView, makeWalletLayer2, pairDetailBlock, WalletMapExtend } from '../../../hooks/help';
@@ -132,8 +133,9 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
             })
             const formattedPairHistory = ammList.candlesticks.map(o => ({
                 ...o,
-                timeStamp: o.timestamp / 1000,
-            })).reverse()
+                timeStamp: o.timestamp,
+                date: moment(o.timestamp).format('MMM DD')
+            })).sort((a, b) => a.timeStamp - b.timeStamp)
             setPairHistory(formattedPairHistory)
         }
     }, [coinPairInfo])

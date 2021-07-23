@@ -175,7 +175,12 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         <Box flex={1} display={'flex'} alignItems={'stretch'} flexDirection="row" marginTop={3}>
             <Box flex={1} display={'flex'} flexDirection={'column'} marginRight={3} justifyContent={'space-between'}>
                 <Box flex={1} width={'101%'}>
-                    <ScaleAreaChart type={ChartType.Trend} data={pairHistory}/>
+                    <ScaleAreaChart
+                        type={ChartType.Trend} 
+                        data={pairHistory} 
+                        extraInfo={pair.coinBInfo?.simpleName}
+                        showXAxis
+                    />
                 </Box>
                 <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
                     <BoxStyled paddingX={2} display={'flex'} flexDirection={'column'}>
@@ -296,9 +301,9 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         <Grid container marginY={3}>
             <Grid item xs={12}>
                 <Tabs value={tabIndex}
-                      onChange={handleChange}
+                    //   onChange={handleChange}
                       aria-label="tabs switch">
-                    <Tab label={t('labelAll')} {...applyProps(0)} />
+                    {/* <Tab label={t('labelAll')} {...applyProps(0)} /> */}
                     <Tab label={t('labelMe')} {...applyProps(1)} />
                 </Tabs>
                 <StylePaper style={{marginTop: `${unit * 2}px`}}>
