@@ -1,10 +1,11 @@
-import { AmmPanel, AmmPanelType } from '@loopring-web/component-lib';
+import { AmmPanel, AmmPanelType, Toast } from '@loopring-web/component-lib';
 import { AmmData, AmmInData, CoinInfo, IBData, WalletMap } from '@loopring-web/common-resources';
 import { useAmmPanel } from './hooks';
 import React from 'react';
 import { Box } from '@material-ui/core';
 import { AmmPoolSnapshot, TickerData } from 'loopring-sdk';
 import { TradeBtnStatus } from '@loopring-web/component-lib';
+import { TOAST_TIME } from 'defs/common_defs';
 
 export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
     ACD extends AmmInData<I>,
@@ -20,6 +21,11 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
     ammType?: keyof typeof AmmPanelType
 } & any) => {
     const {
+        ammAlertText,
+        ammToastOpen,
+        setAmmToastOpen,
+
+
         ammCalcData,
         ammJoinData,
         ammExitData,
@@ -53,7 +59,12 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
     },[snapShotData,ammWithdrawBtnI18nKey,ammWithdrawBtnI18nKey,isJoinLoading,isExitLoading])
 
 
-    return <> {pair ?
+    return <> 
+    
+    <Toast alertText={ammAlertText as string} open={ammToastOpen} 
+            autoHideDuration={TOAST_TIME} setOpen={setAmmToastOpen}/>
+
+    {pair ?
         <AmmPanel {...{...rest}}
                   ammDepositData={ammJoinData}
                   ammWithdrawData={ammExitData}

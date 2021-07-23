@@ -146,11 +146,8 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         // const label: string | undefined = accountStaticCallBack(bntLabel)
         // setSwapBtnI18nKey(label);
     }, []);
-    //TODO tickMap
-    // React.useEffect(() => {
-    // }, [])
 
-    //HIGH: effect by wallet state update
+        //HIGH: effect by wallet state update
     React.useEffect(() => {
         switch (walletLayer2State.status) {
             case "ERROR":
@@ -195,13 +192,18 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         setSwapBtnI18nKey(label);
     }, [account.status]);
 
-    const swapCalculatorCallback = React.useCallback(async function ({sell, buy, slippage, ...rest}: any) {
+    const swapCalculatorCallback = useCallback(async({sell, buy, slippage, ...rest}: any) => {
 
         const {exchangeInfo} = store.getState().system
         setIsSwapLoading(true);
-        if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo
+        if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo || !output
             || account.status !== AccountStatus.ACTIVATED) {
-            setIsSwapLoading(false);
+
+            setSwapAlertText(t('labelSwapFailed'))
+            setSwapToastOpen(true)
+            
+            setIsSwapLoading(false)
+
             return
         }
 
@@ -253,7 +255,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 }
             } as SwapTradeData<IBData<C>>)
 
-            setSwapAlertText(t('Swap sucessfully!'))
+            setSwapAlertText(t('labelSwapSuccess'))
             setSwapToastOpen(true)
 
             setIsSwapLoading(false)
@@ -262,16 +264,19 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             setIsSwapLoading(false);
             dumpError400(reason)
 
-            setSwapAlertText(t('Swap failed!'))
+            setSwapAlertText(t('labelSwapFailed'))
             setSwapToastOpen(true)
 
             setIsSwapLoading(false)
         }
 
+        setOutput(undefined)
+
         if (rest.__cache__) {
             makeCache(rest.__cache__)
         }
-    },[tradeData])
+        
+    },[tradeData, output, tokenMap])
 
     const swapBtnClickArray: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
         [ fnType.ACTIVATED ]:[swapCalculatorCallback]
@@ -408,7 +413,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             && (!tradeData || (tradeData[ type ].tradeValue !== _tradeData[ type ].tradeValue))) {
                 
             throttleSetValue(type, _tradeData, _ammPoolSnapshot)
-            //throttleSetValue(td,_tradeCalcData);
 
         } else {
             let _tradeFloat: Partial<TradeFloat> = {}

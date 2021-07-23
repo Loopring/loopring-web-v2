@@ -8,6 +8,7 @@ import { useSwapPage } from './hook';
 import { SwapPanel, Toast } from '@loopring-web/component-lib'
 import { TradeBtnStatus } from '@loopring-web/component-lib'
 import { useTokenMap } from '../../stores/token';
+import { TOAST_TIME } from 'defs/common_defs'
 
 const FixedStyle = styled(Box)`
   @media only screen and (min-height: 780px ) and (min-width: 1024px) {
@@ -47,7 +48,10 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
     const renderPair = customPair.coinAInfo ? customPair : pair
 
     return <>
-        <Toast alertText={swapAlertText as string} open={swapToastOpen} autoHideDuration={2000} setOpen={setSwapToastOpen}/>
+
+        <Toast alertText={swapAlertText as string} open={swapToastOpen} 
+            autoHideDuration={TOAST_TIME} setOpen={setSwapToastOpen}/>
+
         <Grid container marginRight={3} alignContent={'flex-start'}>
             <BasicInfoPanel {...{
                 ...rest,
