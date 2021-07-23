@@ -84,8 +84,6 @@ const StyledCoinItem = styled(ListItem)`
 
     .MuiAvatar-root {
       transform-origin: center;
-      //width: var(--list-menu-coin-size);
-      //height: var(--list-menu-coin-size);
     }
   }
 

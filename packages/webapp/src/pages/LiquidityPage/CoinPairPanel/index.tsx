@@ -98,7 +98,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
     return <>
 
         <Grid container>
-            <Grid item xs={8}>
+            <Grid item xs={7}>
                 <Breadcrumbs aria-label="breadcrumb">
                     <Link color="textSecondary" href="/#/liquidity/pools">
                         {t('labelAmmList')}
@@ -107,7 +107,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                 justifyContent={'center'}
                     >{pair.coinAInfo?.simpleName}-{pair.coinBInfo?.simpleName}</Typography>
                 </Breadcrumbs>
-                <Grid item xs={7} marginTop={2}>
+                <Grid item xs={12} marginTop={2}>
                     <TradeTitle {...{
                         ...rest, t,
                         ...pair,
