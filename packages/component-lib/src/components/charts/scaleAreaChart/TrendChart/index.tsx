@@ -31,6 +31,7 @@ const TrendChart = ({
                         showTooltip = true,
                         showArea = true,
                         extraInfo,
+                        showXAxis = false,
                     }: ScaleAreaChartProps) => {
     const userSettings = useSettings()
     const upColor = userSettings ? userSettings.upColor: 'green'
@@ -109,6 +110,16 @@ const TrendChart = ({
         }
     }, [renderData])
 
+    const customTick = ({ x, y, payload }: any) => {
+        return (
+            <g transform={`translate(${x}, ${y})`}>
+                <text x={0} y={0} dy={16} fontSize={12} textAnchor="start" fill="#A1A7BB">
+                {payload.value}
+                </text>
+            </g>
+        )
+    }
+
     return (
         <ResponsiveContainer debounce={1} width={'99%'}>
             <ComposedChart data={renderData} onMouseMove={showTooltip && handleMousemove} onMouseLeave={handleMouseLeave}>
@@ -128,8 +139,12 @@ const TrendChart = ({
                     </linearGradient>
                 </defs>
                 <XAxis
-                    hide={true}
-                    dataKey="time" /* tickFormatter={convertDate} */
+                    hide={!showXAxis}
+                    dataKey="date" /* tickFormatter={convertDate} */
+                    interval={8}
+                    axisLine={false}
+                    tickLine={false}
+                    tick={customTick}
                 />
                 <YAxis
                     hide={true}

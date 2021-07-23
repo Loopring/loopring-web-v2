@@ -45,7 +45,9 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
                     data={chartType === ChartType.Trend ? trendChartData : depthChartData} 
                     riseColor={upColor as keyof typeof UpColor}
                     extraInfo={quoteToken}
-                    handleMove={() => {}} />
+                    handleMove={() => {}}
+                    showXAxis
+                />
             </Box>
             {/* {chartType === ChartType.Trend && (
                 <Box height={24} display={'flex'} justifyContent={'flex-end'} position={'absolute'} right={0} bottom={0}>
