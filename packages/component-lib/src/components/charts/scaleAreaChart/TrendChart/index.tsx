@@ -1,4 +1,5 @@
-import { useCallback, useState, useEffect } from 'react'
+import { useCallback, useState } from 'react'
+import { useDeepCompareEffect } from 'react-use';
 import { Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, } from 'recharts'
 import moment from 'moment'
 import { ScaleAreaChartProps } from '../ScaleAreaChart'
@@ -100,8 +101,8 @@ const TrendChart = ({
         setPriceTrend(renderData[renderData.length - 1]?.sign === 1 ? 'up' : 'down')
     }, [renderData])
 
-    useEffect(() => {
-        if (!!renderData.length) {
+    useDeepCompareEffect(() => {
+        if (renderData && !!renderData.length) {
             setPriceTrend(renderData[renderData.length - 1].sign === 1
                 ? 'up'
                 : 'down')
