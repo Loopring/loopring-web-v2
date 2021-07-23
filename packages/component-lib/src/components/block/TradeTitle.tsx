@@ -23,7 +23,8 @@ const TradeTitleStyled = styled(Box)<StyledProps>`
 ` as React.ElementType<StyledProps>;
 
 export const TradeTitle = <I extends object>({
-                                                 coinAInfo, coinBInfo, t,
+                                                 coinAInfo, coinBInfo,
+                                                 // t,
                                                  tradeFloat = {
                                                      volume: 0,
                                                      change: 0,
@@ -104,16 +105,23 @@ export const TradeTitle = <I extends object>({
                 <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'} justifyContent={'center'}
                      className={'float-chart'}>
                     <Typography variant={'body2'} component={'span'}
-                                className={'chart-change'}>{t('labelChange24h', {timeUnit: tradeFloat.timeUnit})}</Typography>
-                    <Typography variant={'h3'} component={'span'} className={`float-tag float-${tradeFloatType}`}>
-                        {/* {`${(tradeFloat.floatTag === 'decrease' ? '-' : '+') + tradeFloat.priceDollar} (${change})`}</Typography> */}
-                        {/*{ tradeFloatType === FloatTag.increase ? '+' : '' }*/}
-                        {currency === Currency.dollar ? PriceTag.Dollar
-                            + getThousandFormattedNumbers(tradeFloat && tradeFloat.closeDollar ? tradeFloat.closeDollar as number : 0, 2)
-                            : PriceTag.Yuan
-                            + getThousandFormattedNumbers(tradeFloat && tradeFloat.closeYuan ? tradeFloat.closeYuan as number : 0, 2)}
-
-                        （{ tradeFloatType === FloatTag.increase ? '+' : '' }{change}）</Typography>
+                                className={'chart-change'}>
+                        {' '}
+                        {/*{t('labelChange24h', {timeUnit: tradeFloat.timeUnit})}*/}
+                    </Typography>
+                    <Typography variant={'h3'} component={'span'}>
+                        <Typography component={'span'}>
+                            {/* {`${(tradeFloat.floatTag === 'decrease' ? '-' : '+') + tradeFloat.priceDollar} (${change})`}</Typography> */}
+                            {/*{ tradeFloatType === FloatTag.increase ? '+' : '' }*/}
+                            {currency === Currency.dollar ? '\u2248 ' + PriceTag.Dollar
+                                + getThousandFormattedNumbers(tradeFloat && tradeFloat.closeDollar ? tradeFloat.closeDollar as number : 0, 2)
+                                : '\u2248 ' + PriceTag.Yuan
+                                + getThousandFormattedNumbers(tradeFloat && tradeFloat.closeYuan ? tradeFloat.closeYuan as number : 0, 2)}
+                        </Typography>
+                        <Typography component={'span'} className={`float-tag float-${tradeFloatType}`}>
+                            （{ tradeFloatType === FloatTag.increase ? '+' : '' }{change}）
+                        </Typography>
+                    </Typography>
                 </Box>
             </Grid>
         </Grid> : <></>
