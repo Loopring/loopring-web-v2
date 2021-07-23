@@ -16,6 +16,7 @@ export interface ScaleAreaChartProps {
     showTooltip?: boolean
     showArea?: boolean
     extraInfo?: string
+    showXAxis?: boolean
 }
 
 export const ScaleAreaChart = (props: ScaleAreaChartProps) => {

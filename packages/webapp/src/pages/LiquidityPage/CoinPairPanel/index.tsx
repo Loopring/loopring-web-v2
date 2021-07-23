@@ -80,7 +80,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         myAmm,
         pairHistory,
     } = useCoinPair({ammActivityMap});
-    const [tabIndex, setTabIndex] = React.useState<0 | 1>(1);
+    const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
     const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
     const handleChange = (event: any, newValue: 0 | 1) => {
         setTabIndex(newValue);
@@ -179,6 +179,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         type={ChartType.Trend} 
                         data={pairHistory} 
                         extraInfo={pair.coinBInfo?.simpleName}
+                        showXAxis
                     />
                 </Box>
                 <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>

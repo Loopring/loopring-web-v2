@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-
+import moment from 'moment'
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect'
 
 import { TradingInterval, Candlestick, GetCandlestickRequest, GetDepthRequest, GetTickerRequest, dumpError400, getExistedMarket } from 'loopring-sdk'
@@ -114,8 +114,8 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
     if (chartType === ChartType.Trend) {
       const request: GetCandlestickRequest = {
         market: amm as string,
-        interval: TradingInterval.min15,
-        limit: 96
+        interval: TradingInterval.d1,
+        limit: 30
       }
   
       try {
@@ -130,7 +130,8 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
               open: item.open,
               close: item.close,
               volume: item.quoteVol,
-              change: (item.close - item.open) / item.open
+              change: (item.close - item.open) / item.open,
+              date: moment(item.timestamp).format('MMM DD')
             }
           })
           setOriginData(originData)
