@@ -7,7 +7,7 @@ import { Column, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { Filter, FilterTradeTypes } from './components/Filter'
-import { TableType, TradeTypes } from '@loopring-web/common-resources';
+import { EmptyValueTag, TableType, TradeTypes, getThousandFormattedNumbers } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores';
 import { useDeepCompareEffect } from 'react-use';
 import { Row } from '../poolsTable/Interface';
@@ -90,7 +90,7 @@ const TableStyled = styled(Box)`
             align-items: center;
         }
         .rdg-header-row {
-            background-color: inherit !important;
+            // background-color: inherit !important;
         }
     }
     ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
@@ -126,9 +126,11 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
         name: t('labelTradeAmount'),
         formatter: ({row}) => {
             const {from, to} = row[ 'amount' ]
+            const fromValue = from.value ? getThousandFormattedNumbers(Number(from.value)) : EmptyValueTag
+            const toValue = to.value ? getThousandFormattedNumbers(Number(to.value)) : EmptyValueTag
             return (
                 <div className="rdg-cell-value">
-                    {`${from.value} ${from.key} -> ${to.value} ${to.key}`}
+                    {`${fromValue} ${from.key} -> ${toValue} ${to.key}`}
                 </div>
             )
         }
@@ -138,9 +140,10 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
         name: t('labelTradePrice'),
         formatter: ({row}) => {
             const {value} = row[ 'price' ]
+            const renderValue = value ? `$ ${getThousandFormattedNumbers(value)}` : EmptyValueTag
             return (
                 <div className="rdg-cell-value">
-                    {value}
+                    {renderValue}
                     {/*{currency === Currency.dollar ?*/}
                     {/*    PriceTag.Dollar + getThousandFormattedNumbers(priceDollar)*/}
                     {/*    : PriceTag.Yuan + getThousandFormattedNumbers(priceYuan)}*/}
