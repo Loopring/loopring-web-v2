@@ -47,9 +47,9 @@ export const TradeTitle = <I extends object>({
     const buyCoinIcon: any = coinJson[ coinBInfo?.simpleName ];
 
     const tradeFloatType = tradeFloat?.changeDollar === 0 ? FloatTag.none : tradeFloat && tradeFloat.changeDollar && tradeFloat.changeDollar < 0 ? FloatTag.decrease : FloatTag.increase;
-    const {currency} = useSettings();
+    const {currency,upColor} = useSettings();
     const change = (tradeFloat?.change && tradeFloat?.change !== Number.NaN) ? (tradeFloat.change * 100).toFixed(2) + '%' : '0.00%'
-    return <TradeTitleStyled custom={{chg: currency}}>{coinBInfo && coinAInfo ?
+    return <TradeTitleStyled custom={{chg: upColor}}>{coinBInfo && coinAInfo ?
         <Grid container height={72}>
             <Grid item xs={12} height={28}>
                 <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-start'} alignItems={'center'}>
