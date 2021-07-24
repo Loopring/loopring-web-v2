@@ -308,7 +308,7 @@ export const makeMessageArray = ({socket}: { socket: { [ key: string ]: string[]
     })
     return {topics}
 }
-const SocketEventMap = {
+const socketEventMap = {
     // PING_PONG : (e)=>{
     //
     // },
@@ -363,7 +363,7 @@ export const makeReceiveMessageCallback = (type: keyof typeof SocketEventType) =
 
     addSocketEvents(type, {
         // @ts-ignore
-        fn: SocketEventMap [ type ]
+        fn: socketEventMap [ type ]
     })
 }
 
