@@ -1,14 +1,12 @@
 import store from '../../stores';
 import { WalletMap,WalletCoin,CoinKey } from '@loopring-web/common-resources';
 import * as fm from 'loopring-sdk';
-import { fromWEI } from '../../utils/swap_calc_utils';
 import { UserBalanceInfo } from 'loopring-sdk';
 export type WalletMapExtend<C> =    {
     [K in CoinKey<C>]?: WalletCoin<C> & {
     detail:UserBalanceInfo
 }
 }
-
 
 // export const makeWalletLayer1 = <C extends { [ key: string ]: any }>():{ walletMap: WalletMapExtend<C> | undefined } => {
 //     const {walletLayer1} = store.getState().walletLayer1;
@@ -44,7 +42,7 @@ export const makeWalletLayer2 = <C extends { [ key: string ]: any }>():{ walletM
             return {
                 ...prev, [ item ]: {
                     belong: item,
-                    count: fromWEI(tokenMap, item, countBig),
+                    count: fm.fromWEI(tokenMap, item, countBig),
                     detail: walletLayer2[ item as string ]
                 }
             }
