@@ -62,7 +62,7 @@ export function useEagerConnect() {
         }
       }
     })
-  }, []) // intentionally only running on mount (make sure it's only mounted once :))
+  }, [activate]) // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag
   useEffect(() => {
@@ -111,7 +111,7 @@ export function useInactiveListener(onReConnectInjected: any = undefined, suppre
         }
       }
     }
-  }, [active, error, activate, onReConnectInjected])
+  }, [active, error, suppress, activate, onReConnectInjected])
 }
 
 export function useBlockNumber() {
