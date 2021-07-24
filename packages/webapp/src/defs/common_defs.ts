@@ -24,4 +24,6 @@ export const REFRESH_RATE = 1000
 
 export const REFRESH_RATE_SLOW = 10000
 
-export const TOAST_TIME = 2000
+export const UPDATE_ACC_DELAY = 2500
+
+export const TOAST_TIME = 3000

@@ -149,7 +149,7 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
       try {
   
         const { depth } = await LoopringAPI.exchangeAPI.getMixDepth(request)
-        console.log('useBasicInfo depth:', depth)
+        
         if (mounted) {
           const originData: IGetDepthDataParams = {
             bidsPrices: depth.bids_prices,

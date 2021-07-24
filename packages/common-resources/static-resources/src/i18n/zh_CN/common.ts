@@ -148,5 +148,11 @@ export default {
     labelTxnPageTitle: '充值提现',
     labelTradePageTitle: '交易记录',
     labelAmmPageTitle: 'AMM 出入金记录',
+    labelSwapSuccess: '兑换成功!',
+    labelSwapFailed: '兑换失败!',
+    labelJoinAmmSuccess: '加入流动性池成功!',
+    labelJoinAmmFailed: '加入流动性池失败!',
+    labelExitAmmSuccess: '退出流动性池成功!',
+    labelExitAmmFailed: '退出流动性池失败!',
 }
 
