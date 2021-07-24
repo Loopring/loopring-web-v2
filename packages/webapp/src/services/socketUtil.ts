@@ -17,7 +17,7 @@ import { tickerService } from './tickerService';
 import { ammPoolService } from './ammPoolService';
 import { CustomError, ErrorMap } from '@loopring-web/common-resources';
 
-export type socketEventMap = { fn: (e: MessageEvent, props?: { [ key: string ]: any }) => any, deps?: any[] }
+export type SocketEvent = { fn: (e: MessageEvent, props?: { [ key: string ]: any }) => any, deps?: any[] }
 
 export enum SocketEventType {
     pingpong = 'pingpong',
@@ -32,9 +32,19 @@ export enum SocketEventType {
 
 
 export type SocketEventMap = {
-    [key in WsTopicType]: socketEventMap
+    [key in WsTopicType]: SocketEvent
 }
 
+
+
+
+export const removeSocketEvents = (key: string) => {
+    // @ts-ignore
+    if (window.socketEventMap && window.socketEventMap[ key ]) {
+        // @ts-ignore
+        delete window.socketEventMap[ key ]
+    }
+}
 const pingPong = {
     fn: (e: MessageEvent) => {
         if (e.data === 'ping') {
@@ -44,26 +54,6 @@ const pingPong = {
     }
 }
 
-//@ts-ignore
-window.socketEventMap = {
-    [ SocketEventType.pingpong ]: pingPong
-} as SocketEventMap;
-
-export const addSocketEvents = (key: string, event: socketEventMap) => {
-    // @ts-ignore
-    window.socketEventMap = {
-        // @ts-ignore
-        ...window.socketEventMap,
-        [ key ]: event
-    }
-}
-export const removeSocketEvents = (key: string) => {
-    // @ts-ignore
-    if (window.socketEventMap && window.socketEventMap[ key ]) {
-        // @ts-ignore
-        delete window.socketEventMap[ key ]
-    }
-}
 export const resetSocketEvents = () => {
     // @ts-ignore
     window.socketEventMap = {
@@ -74,18 +64,14 @@ export const resetSocketEvents = () => {
 export const isConnectSocket = () => {
     const global: Window = window || globalThis;
     // @ts-ignore
-    if (global.loopringSocket && global.loopringSocket.send) {
-        return true;
-    } else {
-        return false
-    }
+    return !!(global.loopringSocket && global.loopringSocket.send);
 }
 export const socketClose = async () => {
     const global = window || globalThis;
     // @ts-ignore
     let ws: WebSocket | undefined = global.loopringSocket;
 
-    return new Promise((reolve, reject) => {
+    return new Promise((reolve) => {
         if (ws) {
             ws.onclose = function (e) {
                 reolve(`Socket is closed, ${e.reason}`)
@@ -163,16 +149,7 @@ export const socketConnect = async ({chainId, topics, apiKey}: {
                         // console.log('Socket>>Socket topics first return', topics);
                     }
                     if (topic && topic.topic) {
-                        const {topic: {topic: _topic}, data} = result
-                        // {
-                        //     "topic" : {
-                        //         "topic" : "ticker",
-                        //             "market" : "LRC-USDT"
-                        //     },
-                        //     "ts" : 1626062177522,
-                        //         "data" : [ "LRC-USDT", "1626062177173", "1614688563700000000000000", "381151436640", "0.2315", "0.2408", "0.2309", "0.2408", "869", "0.2406", "0.2413" ]
-                        // }
-                        // console.log('Socket>>Socket topic', _topic, data);
+                        const {topic: {topic}, data} = result
                         global.socketEventMap[ topic.topic ].fn.call(global.socketEventMap[ topic.topic ].deps, data)
 
                     }
@@ -195,7 +172,7 @@ export const socketConnect = async ({chainId, topics, apiKey}: {
                 }
             };
             ws.onerror = function (err: Event) {
-                console.error('Socket>>Socket', 'Socket encountered error:', 'Closing socket');
+                console.error('Socket>>Socket', 'Socket encountered error:', 'Closing socket',err);
             };
 
         }
@@ -309,9 +286,6 @@ export const makeMessageArray = ({socket}: { socket: { [ key: string ]: string[]
     return {topics}
 }
 const socketEventMap = {
-    // PING_PONG : (e)=>{
-    //
-    // },
     [ SocketEventType.account ]: (_e: any) => {
 
     },
@@ -357,12 +331,22 @@ const socketEventMap = {
     },
 }
 
+//@ts-ignore
+window.socketEventMap = {
+    [ SocketEventType.pingpong ]: pingPong
+} as SocketEventMap;
+
+export const addSocketEvents = (key: string, socketEvent: SocketEvent) => {
+    // @ts-ignore
+    window.socketEventMap = {
+        // @ts-ignore
+        ...window.socketEventMap,
+        [ key ]: socketEvent
+    }
+}
 
 export const makeReceiveMessageCallback = (type: keyof typeof SocketEventType) => {
-
-
     addSocketEvents(type, {
-        // @ts-ignore
         fn: socketEventMap [ type ]
     })
 }
