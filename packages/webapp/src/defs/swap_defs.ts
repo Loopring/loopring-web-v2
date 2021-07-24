@@ -13,5 +13,3 @@ export const BIG1 = toBig(1)
 export const BIG10 = toBig(10)
 
 export const BIG10K = toBig(10000)
-
-export const MULTI_FACTOR = 10000

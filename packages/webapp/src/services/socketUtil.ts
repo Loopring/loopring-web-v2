@@ -363,7 +363,7 @@ export const makeReceiveMessageCallback = (type: keyof typeof SocketEventType) =
 
     addSocketEvents(type, {
         // @ts-ignore
-        fn: SocketEventMap [ type ]
+        fn: SocketEventMap[type]
     })
 }
 
