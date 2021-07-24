@@ -62,11 +62,11 @@ const BoxStyled = styled(Box)`
 ` as typeof Box
 const TableStyled = styled(Box)`
   .rdg {
-    --template-columns: 240px auto auto  68px 130px !important;
+    --template-columns: 240px auto auto  86px 130px !important;
 
     .rdg-cell.action {
       display: flex;
-      justify-content: center;
+      justify-content: center;                    
       align-items: center;
     }
   }
