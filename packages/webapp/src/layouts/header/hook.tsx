@@ -453,8 +453,9 @@ export function useModalProps() {
             // let {walletMap} =  makeWalletLayer1();
             setWalletMap1(walletLayer1State.walletLayer1)
         }
-    }, [])
-    React.useEffect(() => {
+    }, [walletLayer1State.walletLayer1, walletLayer2State.walletLayer2])
+
+    useCustomDCEffect(() => {
         switch (walletLayer2State.status) {
             case "ERROR":
                 walletLayer2State.statusUnset();
@@ -470,9 +471,9 @@ export function useModalProps() {
                 break;
 
         }
-    }, [walletLayer2State.status])
+    }, [walletLayer2State])
 
-    React.useEffect(() => {
+    useCustomDCEffect(() => {
         switch (walletLayer1State.status) {
             case "ERROR":
                 walletLayer1State.statusUnset();
@@ -487,7 +488,7 @@ export function useModalProps() {
                 break;
 
         }
-    }, [walletLayer1State.status])
+    }, [walletLayer1State])
 
     // deposit
     const [depositValue, setDepositValue] = useState<IBData<any>>({
