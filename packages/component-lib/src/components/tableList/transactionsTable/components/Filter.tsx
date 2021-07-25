@@ -96,7 +96,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
     // }, [handleFilterChange, filterType, filterDate])
 
     return (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} alignItems={'center'}>
             <Grid item xs={2}>
                 <StyledTextFiled
                     id="table-transaction-trade-types"
@@ -130,7 +130,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
             </Grid> */}
             <Grid item>
                 <StyledBtnBox>
-                    <Button variant={'contained'} size={'small'} color={'primary'}
+                    <Button variant={'outlined'} size={'medium'} color={'primary'}
                             onClick={handleReset}>{t('labelFilterReset')}</Button>
                     {/* <Button variant={'contained'} size={'small'} color={'primary'}
                             onClick={handleSearch}>{t('Search')}</Button> */}
