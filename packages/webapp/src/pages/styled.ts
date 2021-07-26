@@ -28,6 +28,12 @@ export const StylePaper = styled(Box)`
       flex: 1;
     }
   }
+
+  .extraTradeClass {
+    .rdg-header-row {
+      background-color: inherit !important;
+    }
+  }
 ` as typeof Paper;
 
 
