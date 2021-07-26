@@ -259,7 +259,7 @@ export class LoopringSocket {
         this._socketCallbackMap = {
             ...this._socketCallbackMap,
             [ type ]: {
-                fn: LoopringSocket.SocketEventMap [ type ],
+                fn: LoopringSocket.SocketEventMap[type],
                 deps:deps?deps:[]
             }
         }
