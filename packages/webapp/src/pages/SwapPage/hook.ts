@@ -346,8 +346,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         
         const market = `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`
         if (!marketArray || !tokenMap || !marketMap || !depth || !ammMap || !tradeCalcData) {
-            let _tradeCalcData = {...tradeCalcData} as TradeCalcData<C>;
-            debugger
+            let _tradeCalcData = {...tradeCalcData} as TradeCalcData<C>
             return {_tradeData, _tradeCalcData}
         }
 
@@ -356,6 +355,9 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
         if (input) {
             input = (input.toString() as string).trim()
+            if (input === '0.') {
+                input = '0'
+            }
         } else {
             input = '0'
         }
@@ -373,10 +375,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
         const ammMapRaw = {[ 'AMM-' + market ]: ammMap[ 'AMM-' + market ].__rawConfig__} as LoopringMap<AmmPoolInfoV3>
 
-        if (input !== '0' && input !== '0.') {
-            console.log(input, '*', base, quote, isAtoB, depth, 
-                ammMap[ 'AMM-' + market ].__rawConfig__.tokens.pooled, ammPoolSnapshot?.pooled, takerRate, slippage)
-        }
+        myLog(input)
 
         const output = fm.getOutputAmount(input, base, quote, isAtoB, marketArray, tokenMap,
             marketMap, depth, ammMapRaw, ammPoolSnapshot, takerRate, slippage)
@@ -391,6 +390,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         } else {
             _tradeData.sell.tradeValue = output?.output ? parseFloat(output?.output) : 0
         }
+        
         //TODO: renew  tradeCalcData
         let _tradeCalcData = {...tradeCalcData} as TradeCalcData<C>;
         return {_tradeData, _tradeCalcData}

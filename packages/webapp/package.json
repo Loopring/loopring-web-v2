@@ -66,7 +66,7 @@
     ],
     "publish": {
       "provider": "custom",
-      "repo": "ssh://git@github.com/loopring/dexwebappv2",
+      "repo": "https://github.com/Loopring/loopring-web-v2",
       "owner": "Loopring Dex Frontend Team"
     }
   },
@@ -83,7 +83,7 @@
     "build_dev": "dotenv -e .env.development react-app-rewired build",
     "predocker": "if [ ! -d \"build\" ]; then yarn build; fi",
     "docker": "docker-compose build",
-    "deploy_ghpage": "bash ./deploy.sh"
+    "deploy_ghpage": "yarn build_dev; bash ./deploy.sh"
   },
   "browserslist": {
     "production": [
