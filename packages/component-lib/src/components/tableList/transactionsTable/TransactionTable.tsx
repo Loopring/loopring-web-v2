@@ -201,7 +201,7 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
         formatter: ({row}) => {
             const fee = row['fee']
             const hasValue = fee ? Number.isFinite(fee.value) : ''
-            const renderValue = hasValue ? `${fee.value.toFixed(6)} ${fee.unit}` : EmptyValueTag
+            const renderValue = hasValue && fee.value !== 0 ? `${fee.value.toFixed(6)} ${fee.unit}` : EmptyValueTag
             return (
                 <div className="rdg-cell-value">
                     <span>{renderValue}</span>
