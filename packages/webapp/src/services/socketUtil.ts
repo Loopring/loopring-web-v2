@@ -278,8 +278,10 @@ export class LoopringSocket {
 
                 this._loopringSocket.onopen = function () {
                     console.warn('Socket>>Socket', "WebSocket is open now.");
-                    // @ts-ignore
-                    self._loopringSocket.send(self.makeTopics(topics))
+                    if(self._loopringSocket && self._loopringSocket.readyState === WebSocket.OPEN){
+                        self._loopringSocket.send(self.makeTopics(topics))
+                    }
+
                 };
                 this._loopringSocket.onmessage = function (e) {
                     const {data} = e;
