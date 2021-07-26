@@ -122,20 +122,23 @@ export function useConnect() {
     const connect = useCallback((item_name: ConnectorNames, isSwitch: boolean = false) => {
 
         if (isSwitch) {
-            myLog('try Connecting... isSwitch Reset')
+            myLog('try Connecting... isSwitch Reset:', store.getState().account.status)
             sendEvent(store.getState().account, StatusChangeEvent.Reset)
         }
 
         const newConnector: any = connectorsByName[item_name]
         myLog('newConnector:', newConnector)
         setActivatingConnector(newConnector)
-        activate(newConnector)
+        activate(newConnector).then(() => {
 
-        UserStorage.setConnectorName(item_name)
-        
-        dispatch(setConnectName(item_name))
+            myLog('activate ok! ' + item_name)
+            UserStorage.setConnectorName(item_name)
+            dispatch(setConnectName(item_name))
+            // sendEvent(store.getState().account, StatusChangeEvent.Connecting)
 
-        sendEvent(store.getState().account, StatusChangeEvent.Connecting)
+        }).catch((reason) => {
+            myLog('activate failed:', item_name, '-> ', reason)
+        })
 
     }, [activate, dispatch, sendEvent, setActivatingConnector])
 
@@ -226,7 +229,7 @@ export function useUnlock() {
                 sk = account.eddsaKey
             }
 
-            myLog('useUnlock account:', account, ' sk:', sk)
+            // myLog('useUnlock account:', account, ' sk:', sk)
 
             apikey = await LoopringAPI.userAPI.getUserApiKey({
                 accountId: account.accountId
