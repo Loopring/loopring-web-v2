@@ -155,8 +155,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                 component="span" marginTop={1}>
                         {typeof coinPairInfo.isActivity === 'undefined' ? t('labelNoActiveEvent')
                             : <>
-                                {t('labelDate')} :
-                                <> {moment(coinPairInfo.activity?.duration.from).format('L') + ' - ' + moment(coinPairInfo.activity?.duration.to).format('L')}</>
+                                {t('labelDate')} : 
+                                <> {' '+moment(coinPairInfo.activity?.duration.from).format('L') + ' - ' + moment(coinPairInfo.activity?.duration.to).format('L')}</>
                             </>
                         }
                     </Typography>
