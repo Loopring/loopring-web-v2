@@ -282,7 +282,7 @@ export const useHeader = () => {
             }
 
             if (props) {
-                props.connectBy = account.connectName
+                props.connectBy = account.connectName === ConnectorNames.Injected ? 'MetaMask' : account.connectName
             }
 
             if (status === AccountStatus.NOACCOUNT && props) {

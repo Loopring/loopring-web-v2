@@ -131,7 +131,10 @@ export function useConnect() {
         setActivatingConnector(newConnector)
         activate(newConnector).then(() => {
 
-            myLog('activate ok! ' + item_name)
+            myLog('-----> activate ok! ' + item_name)
+            if (item_name !== ConnectorNames.WalletConnect) {
+                UserStorage.clearWalletConnect()
+            }
             UserStorage.setConnectorName(item_name)
             dispatch(setConnectName(item_name))
             // sendEvent(store.getState().account, StatusChangeEvent.Connecting)
