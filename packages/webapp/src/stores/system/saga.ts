@@ -54,8 +54,8 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
             // : process.env.REACT_APP_API_URL_UAT;
             const baseURL = ChainId.MAINNET === chainId ? `https://${process.env.REACT_APP_API_URL}` : `https:/${process.env.REACT_APP_API_URL_UAT}`
             
-            const socketBase = ChainId.MAINNET === chainId ? process.env.REACT_APP_API_URL : process.env.REACT_APP_API_URL_UAT;
-            window.loopringSocket = new LoopringSocket(`wss://ws.${socketBase}/v3/ws`);
+            const socketURL = ChainId.MAINNET === chainId ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws` :`wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`  ;
+            window.loopringSocket = new LoopringSocket(socketURL);
 
             const forex = faitPricesY[ 'USDT' ].price;
             let {__timer__} = store.getState().system;
@@ -72,7 +72,7 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
                 }, 300000)   //
 
             })(__timer__);
-            return {chainId, env, baseURL, faitPrices, gasPrice, forex, exchangeInfo, __timer__}
+            return {chainId, env, baseURL,socketURL, faitPrices, gasPrice, forex, exchangeInfo, __timer__}
         }
     }
 }
