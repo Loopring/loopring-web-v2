@@ -26,7 +26,10 @@ export function useWalletLayer2(): WalletLayer2States & {
     // }
     return {
         ...walletLayer2,
-        resetLayer2: React.useCallback(() => dispatch(reset(undefined)), [dispatch]),
+        resetLayer2: React.useCallback(() => {
+            myLog('resetLayer2 resetLayer2 resetLayer2')
+            dispatch(reset(undefined))
+        }, [dispatch]),
         statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),
         updateWalletLayer2: React.useCallback(() => dispatch(updateWalletLayer2(undefined)), [dispatch]),
         delayAndUpdateWalletLayer2: React.useCallback(async () => {

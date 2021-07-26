@@ -7,13 +7,15 @@ import { useWeb3React } from '@web3-react/core'
 import { network } from 'networks/web3_connectors'
 
 import { useEagerConnect, useInactiveListener } from 'hooks/web3/useWeb3'
-import { reset, setAccountStatus } from 'stores/account/reducer'
+import { reset, setAccountStatus, setConnectName } from 'stores/account/reducer'
 
-import { ChainId, NetworkContextName } from 'loopring-sdk'
+import { ChainId, ConnectorNames, NetworkContextName } from 'loopring-sdk'
 
 // import Loader from 'components/modals/Loader'
 import { useDispatch } from 'react-redux'
 import { AccountStatus } from 'state_machine/account_machine_spec'
+import { ConnectorEvent } from '@web3-react/types'
+import { myLog } from 'utils/log_tools'
 
 const MessageWrapper = styled.div`
   display: flex;
@@ -37,7 +39,10 @@ export function Web3ReactManager({ children }: { children: JSX.Element }) {
   // after eagerly trying injected, if the network connect ever isn't active or in an error state, activate itd
   useEffect(() => {
     if (triedEager && !networkActive && !networkError && !active) {
+      myLog('-------------------->>>>>>>')
       activateNetwork(network)
+    } else {
+      myLog(triedEager, !networkActive, !networkError, !active)
     }
   }, [triedEager, networkActive, networkError, activateNetwork, active])
 
@@ -46,9 +51,8 @@ export function Web3ReactManager({ children }: { children: JSX.Element }) {
   const dispatch = useDispatch()
 
   const onReConnectInjected = () => {
-    console.log('onReConnectInjected')
+    myLog('1111 ------------> onReConnectInjected')
     dispatch(reset(undefined))
-    dispatch(setAccountStatus(AccountStatus.UNCONNNECTED))
   }
   
   useInactiveListener(onReConnectInjected, !triedEager)

@@ -9,6 +9,7 @@ export enum CONSTANTS {
     ActiveTime = 'active_time',
     AmmOrder = 'amm_order',
     HardwareAddresses = 'hardware_addresses',
+    ConnectorName = 'connector_name',
 }
 
 const SESSION_TIMEOUT_SECONDS = 600
@@ -23,6 +24,18 @@ export class UserStorage {
         } catch (err) {
         }
         return undefined
+    }
+
+    public static setConnectorName(connectionName: string) {
+        sessionStorage.setItem(CONSTANTS.ConnectorName, connectionName)
+    }
+
+    public static getConnectorName() {
+        return sessionStorage.getItem(CONSTANTS.ConnectorName)
+    }
+
+    public static clearConnectorName() {
+        sessionStorage.removeItem(CONSTANTS.ConnectorName)
     }
 
     public static setHandler(handler: any) {

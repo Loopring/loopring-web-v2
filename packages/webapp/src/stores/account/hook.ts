@@ -21,7 +21,7 @@ import { RootState } from 'stores'
 
 import {
     reset, setAccountStatus, setConnectName,
-    setConnectNameTemp, setAccountInfo, setEddsaKey, setApikey, setAccAddr,
+    setAccountInfo, setEddsaKey, setApikey, setAccAddr,
 } from 'stores/account/reducer'
 
 import { AccountMachineSpec, } from 'state_machine/account_machine_spec'
@@ -130,13 +130,14 @@ export function useConnect() {
         myLog('newConnector:', newConnector)
         setActivatingConnector(newConnector)
         activate(newConnector)
-        dispatch(setConnectNameTemp(item_name))
 
-        //sendEvent(store.getState().account, StatusChangeEvent.Connecting)
+        UserStorage.setConnectorName(item_name)
+        
+        dispatch(setConnectName(item_name))
 
-        myLog('store.getState().account.status:', store.getState().account.status)
+        sendEvent(store.getState().account, StatusChangeEvent.Connecting)
 
-    }, [activate, dispatch, sendEvent])
+    }, [activate, dispatch, sendEvent, setActivatingConnector])
 
     return {
         connect,
@@ -155,6 +156,7 @@ export function useDisconnect() {
 
     const disconnect = useCallback(() => {
         deactivate()
+        console.log('disconnect!!!---->')
         dispatch(reset(undefined))
     }, [deactivate, dispatch])
 
@@ -431,13 +433,14 @@ export function useCheckAccStatus() {
                 return
             }
 
-            if (((prevChainId && chainId && prevChainId !== chainId)
-                || (prevWeb3Account && web3Account && prevWeb3Account !== web3Account))
-                && account.status !== AccountStatus.UNCONNNECTED) {
-                dispatch(reset(undefined))
-                sendEvent(account, StatusChangeEvent.Reset)
-                return
-            }
+            // if (((prevChainId && chainId && prevChainId !== chainId)
+            //     || (prevWeb3Account && web3Account && prevWeb3Account !== web3Account))
+            //     && account.status !== AccountStatus.UNCONNNECTED) {
+            //     console.log('-------------------->>>>>>>Reset')
+            //     dispatch(reset(undefined))
+            //     sendEvent(account, StatusChangeEvent.Reset)
+            //     return
+            // }
 
             cleanUp()
 
@@ -445,14 +448,18 @@ export function useCheckAccStatus() {
                 case AccountStatus.UNCONNNECTED:
                     myLog('---> render UNCONNNECTED active:', active, ' isConnected:', isConnected)
 
-                    if (isConnected) {
-                        dispatch(setConnectNameTemp(ConnectorNames.Injected))
+                    //HIGH:
+                    // resetLayer1()
+                    // resetLayer2()
+
+                    if (active && isConnected) {
+
+                        if (UserStorage.getConnectorName() === ConnectorNames.Injected) {
+                            dispatch(setConnectName(ConnectorNames.Injected))
+                        }
+
                         sendEvent(account, StatusChangeEvent.Connecting)
                     }
-
-                    //HIGH:
-                    resetLayer1()
-                    resetLayer2()
                     break
 
                 case AccountStatus.CONNECTED:
@@ -477,10 +484,6 @@ export function useCheckAccStatus() {
                             if (marketArray?.length) {
                                 updateWalletLayer1()
                             }
-                        }
-
-                        if (account?.connectName !== account?.connectNameTemp) {
-                            dispatch(setConnectName(account.connectNameTemp))
                         }
 
                         sendEvent(account, StatusChangeEvent.HasPubkey)

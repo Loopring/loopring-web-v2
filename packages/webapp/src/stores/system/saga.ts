@@ -12,9 +12,11 @@ import { getAmmActivityMap } from '../Amm/AmmActivityMap';
 import { updateWalletLayer1 } from '../walletLayer1';
 import { delay } from 'rxjs/operators';
 import { LoopringSocket } from '../../services/socketUtil';
+import { myLog } from "utils/log_tools";
 
 
 const initConfig = function* <R extends { [ key: string ]: any }>(chainId: ChainId | 'unknown') {
+    myLog('initConfig initConfig initConfig')
     store.dispatch(reset(undefined));
     const {tokenSymbolMap: tokensMap} = yield call(async ()=> await LoopringAPI.exchangeAPI?.getTokens())
     const {ammpools} = yield call(async ()=>await LoopringAPI.ammpoolAPI?.getAmmPoolConf());
