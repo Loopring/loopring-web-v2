@@ -66,7 +66,7 @@ export const AccountInfo = withTranslation('common')(({
             </Typography>
             <Typography component={'h6'} variant={'body2'} marginTop={1}>
                 <Trans i18nKey="labelConnectBy">
-                    Connected with <TypographyStrong component={'span'}>{connectBy}</TypographyStrong>.
+                    Connected with &nbsp;<TypographyStrong component={'span'}>{{connectBy}}</TypographyStrong>.
                 </Trans>
             </Typography>
             <Box alignSelf={'center'} marginY={2} display={'flex'} alignItems={'center'} flexDirection={'column'}>

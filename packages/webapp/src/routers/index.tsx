@@ -5,8 +5,6 @@ import Header from 'layouts/header'
 import QuotePage from 'pages/QuotePage'
 import { SwapPage } from 'pages/SwapPage'
 
-import DebugPage from 'pages/DebugPage'
-
 import Container from '@material-ui/core/Container'
 import { Box } from '@material-ui/core'
 import { DevWrapper } from '../provider/'
@@ -47,7 +45,6 @@ const RouterView = () => {
 
                     <DevWrapper>
                         <Route exact path='/debug'>
-                            <DebugPage/>
                         </Route>
                     </DevWrapper>
 

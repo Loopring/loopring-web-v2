@@ -4,41 +4,37 @@ import React from 'react';
 import { refreshTime } from '@loopring-web/common-resources';
 
 export const  CountDownIcon = React.memo(({onRefreshData}:{onRefreshData?:()=>void})=>{
-    const countDownRef = React.useRef();
+    const countDownRef = React.useRef<any>();
     const [refreshCount, setRefreshCount] = React.useState(0);
-    const [nodeTimer, setNodeTimer] = React.useState<NodeJS.Timeout | -1>(-1);
+    const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+    const logoTimer = React.useRef<NodeJS.Timeout | -1>(-1);
     const startCountDown = React.useCallback(() => {
-        //@ts-ignore
-        countDownRef.current?.classList.add('countdown');
-        //@ts-ignore
-        countDownRef?.current?.classList?.remove('logo');
-        setRefreshCount(refreshTime-1);
-        setNodeTimer(setInterval(decreaseNum, 1000))
-
+        if(countDownRef && countDownRef.current) {
+            countDownRef.current?.classList.add('countdown');
+            countDownRef.current?.classList?.remove('logo');
+            setRefreshCount(refreshTime-1);
+            nodeTimer.current = setInterval(decreaseNum, 1000)
+        }
     }, [countDownRef,nodeTimer])
     const _refresh = React.useCallback(() => {
-        setRefreshCount(0)
-        if(nodeTimer!== -1){
-            clearInterval(nodeTimer as NodeJS.Timeout);
+        if(countDownRef && countDownRef.current) {
+            setRefreshCount(0)
+            if(nodeTimer.current !== -1){
+                clearInterval(nodeTimer.current as NodeJS.Timeout);
+            }
+            countDownRef.current?.classList?.remove('countdown');
+            countDownRef.current?.classList?.add('logo');
+
+            logoTimer.current = setTimeout(() => {
+                startCountDown()
+            }, 1000);
+
+            if (typeof onRefreshData === 'function') {
+                onRefreshData();
+            }
         }
 
-        //@ts-ignore
-        countDownRef?.current?.classList?.remove('countdown');
-        //@ts-ignore
-        countDownRef?.current?.classList?.add('logo');
-        // setImmediate(() => {
-        //     startCountDown()
-        // }, [])
-        setTimeout(() => {
-            startCountDown()
-
-        }, 1000)
-
-        if (typeof onRefreshData === 'function') {
-            onRefreshData();
-        }
-        return refreshTime;
-    }, [onRefreshData, countDownRef, refreshTime,nodeTimer,startCountDown]);
+    }, [onRefreshData, countDownRef,refreshTime,nodeTimer,startCountDown]);
     const decreaseNum = React.useCallback(() => setRefreshCount((prev) => {
         if (prev > 1) {
             return prev - 1
@@ -57,9 +53,13 @@ export const  CountDownIcon = React.memo(({onRefreshData}:{onRefreshData?:()=>vo
             return refreshTime-1
         }
     }), [refreshCount]);
+    const cleanSubscribe = React.useCallback(()=>{
+        clearInterval(nodeTimer.current as NodeJS.Timeout);
+        clearTimeout(logoTimer.current as NodeJS.Timeout);
+    },[nodeTimer,logoTimer] )
     React.useEffect(() => {
         _refresh();
-        return () => clearInterval(nodeTimer as NodeJS.Timeout);
+        return cleanSubscribe;
     }, []);
     return <CountDownStyled ref={countDownRef}
                             className={'clock-loading outline logo'}
