@@ -83,8 +83,6 @@ export const useHeader = () => {
     const {ShowDeposit} = useModals()
     const {modals: {isShowAccountInfo, isShowConnect}, setShowConnect, setShowAccountInfo} = useOpenModals()
 
-    const [openConnect, setOpenConnect] = React.useState(false)
-
     const forceUpdate = React.useReducer((bool) => !bool, false)[ 1 ]
     const {account} = useAccount()
 
@@ -234,7 +232,7 @@ export const useHeader = () => {
                 ...headerMenuData[ HeadMenuTabKey.Layer2 ],
                 status: HeaderMenuTabStatus.default
             }
-            let props;
+            let props: AccountInfoProps | undefined = undefined;
             if (status === AccountStatus.ACTIVATED) {
                 props = {
                     addressShort: addr ? addr : '',
@@ -283,8 +281,12 @@ export const useHeader = () => {
                 setShowAccountInfo({isShow: false})
             }
 
-            if (status === AccountStatus.NOACCOUNT) {
-                (props as any).onLock = () => {
+            if (props) {
+                props.connectBy = account.connectName
+            }
+
+            if (status === AccountStatus.NOACCOUNT && props) {
+                props.onLock = () => {
                     setShowAccountInfo({isShow: false})
                     ShowDeposit(true)
                 }
@@ -444,7 +446,7 @@ export function useModalProps() {
     const [walletMap2, setWalletMap2] = useState<WalletMap<any> | undefined>(undefined);
 
     //HIGH: effect by wallet state update
-    React.useEffect(() => {
+    useCustomDCEffect(() => {
         if (walletLayer2State.walletLayer2) {
             let {walletMap} = makeWalletLayer2();
             setWalletMap2(walletMap)
