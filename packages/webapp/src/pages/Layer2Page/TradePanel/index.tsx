@@ -5,11 +5,11 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 // import { Box, Paper } from '@material-ui/core'
 import store from 'stores'
 import { LoopringAPI } from 'stores/apis/api'
-// import { volumeToCount } from 'hooks/help'
+import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
 import { StylePaper } from '../../styled'
 import { TradeTypes } from '@loopring-web/common-resources'
 import { toBig, Side } from 'loopring-sdk'
-import { StringToNumberWithPrecision, VolToNumberWithPrecision, } from 'utils/formatter_tool'
+import { StringToNumberWithPrecision, VolToNumberWithPrecision } from 'utils/formatter_tool'
 
 // const StylePaper = styled(Box)`
 //   display: flex;
@@ -90,25 +90,32 @@ const TradePanel = withTranslation('common')((rest:WithTranslation<'common'>) =>
 
                     const amt = toBig(o.volume).times(o.price).toString()
 
+                    const feeKey = o.side === Side.Buy ? baseToken : quoteToken
+
+
                     return ({
                       side: o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell ,
                       price: {
                         key: baseToken,
-                        value: StringToNumberWithPrecision(o.price, baseToken)
-                      },
+                        // value: StringToNumberWithPrecision(o.price, baseToken)
+                        value: toBig(o.price).toNumber()
+                      }, 
                       fee: {
-                        key: quoteToken,
-                        value: VolToNumberWithPrecision(o.fee, quoteToken)
+                        key: feeKey,
+                        // value: VolToNumberWithPrecision(o.fee, quoteToken),
+                        value: feeKey ? volumeToCount(feeKey, o.fee) : undefined,
                       },
                       time: Number(o.tradeTime),
                       amount: {
                         from: {
                           key: baseToken,
-                          value: VolToNumberWithPrecision(o.volume, baseToken)
+                          // value: VolToNumberWithPrecision(o.volume, baseToken),
+                          value: baseToken ? volumeToCount(baseToken, o.volume) : undefined
                         },
                         to: {
                           key: quoteToken,
-                          value: VolToNumberWithPrecision(amt, quoteToken)
+                          // value: VolToNumberWithPrecision(amt, quoteToken)
+                          value: baseToken ? volumeToCountAsBigNumber(baseToken, o.volume)?.times(o.price).toNumber() : undefined
                         }
                       }
                     })
