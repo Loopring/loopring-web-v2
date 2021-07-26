@@ -84,7 +84,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                                     height={24}> ￥{
                                       tradeFloat.priceYuan ? abbreviateNumber(tradeFloat.priceYuan) : '--'
                         } </Typography>
-                        <Typography variant={'body2'} component={'span'} textOverflow={'ellipsis'}
+                        <Typography variant={'body2'} component={'div'} textOverflow={'ellipsis'} overflow={'hidden'} whiteSpace={'nowrap'}
                                     marginTop={1 / 2}>{t('labelVolume')} : {(tradeFloat.volume ? getThousandFormattedNumbers(tradeFloat.volume, 3) : '--')}</Typography>
                     </Box>
 

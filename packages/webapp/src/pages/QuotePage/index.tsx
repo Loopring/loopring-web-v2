@@ -14,7 +14,7 @@ import { TableWrapStyled } from 'pages/styled'
 
 const  RowStyled = styled(Grid)`
       & .MuiGrid-root:not(:last-of-type) > div{
-        margin-right: ${({theme}) => theme.unit * 3}px;
+        margin-right: ${({theme}) => theme.unit * 2}px;
       }
 ` as typeof Grid
 
