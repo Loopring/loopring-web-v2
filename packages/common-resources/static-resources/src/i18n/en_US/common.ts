@@ -154,4 +154,5 @@ export default {
     labelJoinAmmFailed: 'Join AmmPool failed!',
     labelExitAmmSuccess: 'Exit AmmPool sucessfully!',
     labelExitAmmFailed: 'Exit AmmPool failed!',
+    labelConnectBy: 'Connected with <1>{{connectBy}}</1>'
 }
