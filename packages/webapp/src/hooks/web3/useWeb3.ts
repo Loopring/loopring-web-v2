@@ -10,8 +10,10 @@ import { isMobile } from 'react-device-detect'
 
 import { injected } from 'networks/web3_connectors'
 
-import { ChainId, NetworkContextName } from 'loopring-sdk'
+import { ChainId, ConnectorNames, NetworkContextName } from 'loopring-sdk'
 import { myLog } from 'utils/log_tools'
+import { setConnectName } from 'stores/account/reducer'
+import { UserStorage } from 'storage'
 
 export function useActiveWeb3React(): Web3ReactContextInterface<Web3Provider> & { chainId?: ChainId } {
   const context = useWeb3React<Web3Provider>()
@@ -45,16 +47,24 @@ export function useEagerConnect() {
 
   const [tried, setTried] = useState(false)
 
+  const dispatch = useDispatch()
+
   useEffect(() => {
     injected.isAuthorized().then((isAuthorized: boolean) => {
       if (isAuthorized) {
         myLog('useEagerConnect isAuthorized')
-        activate(injected, undefined, true).catch(() => {
+        activate(injected, undefined, true).then(() => {
+          myLog('-------------------->>>>>>>dispatch 1')
+          UserStorage.setConnectorName(ConnectorNames.Injected)
+        }).catch(() => {
           setTried(true)
         })
       } else {
         if (isMobile && window.ethereum) {
-          activate(injected, undefined, true).catch(() => {
+          activate(injected, undefined, true).then(() => {
+            myLog('-------------------->>>>>>>dispatch 2')
+            UserStorage.setConnectorName(ConnectorNames.Injected)
+          }).catch(() => {
             setTried(true)
           })
         } else {
@@ -62,7 +72,7 @@ export function useEagerConnect() {
         }
       }
     })
-  }, [activate]) // intentionally only running on mount (make sure it's only mounted once :))
+  }, [activate, dispatch]) // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag
   useEffect(() => {

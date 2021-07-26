@@ -86,8 +86,6 @@ export const pairDetailDone = <C>({coinKey, market,ammPoolsBalance, fee, tokenMa
         }
     }
 
-    console.log('aa----------')
-
     _tradeCalcData.StoB = stob;
     _tradeCalcData.BtoS = stob !== 0 && stob !== undefined? 1 / (stob * 1.0): 0;
     _tradeCalcData.sellCoinInfoMap = coinMap && marketCoins?.reduce((prev: any, item: string | number) => {

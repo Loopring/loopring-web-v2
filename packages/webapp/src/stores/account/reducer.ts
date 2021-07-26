@@ -5,6 +5,7 @@ import { AccountInfo, ConnectorNames, } from 'loopring-sdk'
 import { Lv2Account, } from 'defs/account_defs'
 import { AccountStatus } from 'state_machine/account_machine_spec'
 import { UserStorage } from 'storage'
+import { myLog } from 'utils/log_tools'
 
 
 const initialState = () => {
@@ -24,7 +25,6 @@ const initialState = () => {
     apiKey: defaultApiKey,
     eddsaKey: defaultEddsaKey,
     connectName: ConnectorNames.Unknown,
-    connectNameTemp: ConnectorNames.Unknown,
   } as Lv2Account
 }
 
@@ -33,6 +33,7 @@ const accountSlice:Slice = createSlice({
   initialState: initialState(),
   reducers: {
     reset(state) {
+      myLog('try to reset account !!!!!!!!!')
       const initState = initialState()
       Object.assign(state, initState)
     },
@@ -64,14 +65,11 @@ const accountSlice:Slice = createSlice({
     setConnectName(state, action: PayloadAction<ConnectorNames>) {
       state.connectName = action.payload
     },
-    setConnectNameTemp(state, action: PayloadAction<ConnectorNames>) {
-      state.connectNameTemp = action.payload
-    },
     setIsContractAddress(state, action: PayloadAction<boolean>) {
       state.isContractAddress = action.payload
     },
   },
 })
 
-export const { reset, setAccAddr, setApikey, setConnectName, setConnectNameTemp, setAccountInfo, setAccountStatus, setEddsaKey, setIsContractAddress, } = accountSlice.actions
+export const { reset, setAccAddr, setApikey, setConnectName, setAccountInfo, setAccountStatus, setEddsaKey, setIsContractAddress, } = accountSlice.actions
 export default accountSlice

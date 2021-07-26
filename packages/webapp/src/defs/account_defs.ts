@@ -10,7 +10,6 @@ export interface Lv2Account {
   nonce: number,
   isContractAddress: boolean
   connectName: ConnectorNames
-  connectNameTemp: ConnectorNames
   apiKey: string
   eddsaKey: any
 }
