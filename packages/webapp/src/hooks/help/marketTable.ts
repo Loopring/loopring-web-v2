@@ -51,7 +51,7 @@ export const makeMarketArray = (coinKey: any, marketTrades: MarketTradeInfo[]): 
                     },
                     fee: {
                         key: feeKey || '--',
-                        value: quote? volumeToCount(quote, item.fee):undefined, //fm.toBig(item.fee).div(BIG10.pow(quoteToken.decimals)).toNumber(),
+                        value: feeKey ? volumeToCountAsBigNumber(feeKey, item.fee)?.toNumber() : undefined, //fm.toBig(item.fee).div(BIG10.pow(quoteToken.decimals)).toNumber(),
                     },
                     time: parseInt(item.tradeTime.toString()),
                 })
