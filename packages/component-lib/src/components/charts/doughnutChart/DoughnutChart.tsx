@@ -101,6 +101,7 @@ export const DoughnutChart = ({data}: DoughnutChartProps) => {
             value: a.value + b.value
         }))
         const result = data.slice(0, 5).concat([others])
+        console.log(result)
         return result
     }, [data])
 
@@ -111,7 +112,7 @@ export const DoughnutChart = ({data}: DoughnutChartProps) => {
                     dataKey={'value'}
                     activeIndex={activeIndex}
                     activeShape={renderActiveShape}
-                    data={data}
+                    data={getFormattedData()}
                     cx={'30%'}
                     // cy={200}
                     innerRadius={45}

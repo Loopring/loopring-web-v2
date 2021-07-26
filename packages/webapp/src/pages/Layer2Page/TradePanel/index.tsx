@@ -136,20 +136,18 @@ const TradePanel = withTranslation('common')((rest:WithTranslation<'common'>) =>
     // const txList: any[] = []
 
     return (
-        <>
-            <StylePaper ref={container}>
-                <div className="title">{t('labelTradePageTitle')}</div>
-                <div className="tableWrapper">
-                    <TradeTable {...{
-                      rawData: originalData,
-                      pagination: {
-                        pageSize: pageSize
-                      },
-                      showFilter: true,
-                      ...rest}}/>
-                </div>
-            </StylePaper>
-        </>
+        <StylePaper ref={container}>
+            <div className="title">{t('labelTradePageTitle')}</div>
+            <div className="tableWrapper extraTradeClass">
+                <TradeTable {...{
+                  rawData: originalData,
+                  pagination: {
+                    pageSize: pageSize
+                  },
+                  showFilter: true,
+                  ...rest}}/>
+            </div>
+        </StylePaper>
     )
 })
 
