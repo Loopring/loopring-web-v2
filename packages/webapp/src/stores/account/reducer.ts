@@ -36,6 +36,8 @@ const accountSlice:Slice = createSlice({
       myLog('try to reset account !!!!!!!!!')
       const initState = initialState()
       Object.assign(state, initState)
+      UserStorage.clearWalletConnect()
+      UserStorage.clearConnectorName()
     },
     setAccAddr(state, action: PayloadAction<string>) {
       state.accAddr = action.payload

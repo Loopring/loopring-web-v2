@@ -10,11 +10,31 @@ export enum CONSTANTS {
     AmmOrder = 'amm_order',
     HardwareAddresses = 'hardware_addresses',
     ConnectorName = 'connector_name',
+
+    WalletConnect = 'walletconnect',
 }
 
 const SESSION_TIMEOUT_SECONDS = 600
 
 export class UserStorage {
+
+    public static clearWalletConnect() {
+        myLog('try to clearWalletConnect')
+        localStorage.removeItem(CONSTANTS.WalletConnect)
+    }
+
+    public static setConnectorName(connectionName: string) {
+        localStorage.setItem(CONSTANTS.ConnectorName, connectionName)
+    }
+
+    public static getConnectorName() {
+        return localStorage.getItem(CONSTANTS.ConnectorName)
+    }
+
+    public static clearConnectorName() {
+        myLog('try to clearConnectorName')
+        localStorage.removeItem(CONSTANTS.ConnectorName)
+    }
 
     public static getHandler() {
         const rawHandler = sessionStorage.getItem(CONSTANTS.Handler)
@@ -24,18 +44,6 @@ export class UserStorage {
         } catch (err) {
         }
         return undefined
-    }
-
-    public static setConnectorName(connectionName: string) {
-        sessionStorage.setItem(CONSTANTS.ConnectorName, connectionName)
-    }
-
-    public static getConnectorName() {
-        return sessionStorage.getItem(CONSTANTS.ConnectorName)
-    }
-
-    public static clearConnectorName() {
-        sessionStorage.removeItem(CONSTANTS.ConnectorName)
     }
 
     public static setHandler(handler: any) {
