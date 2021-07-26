@@ -28,9 +28,9 @@ const systemSlice: Slice<SystemStatus> = createSlice({
             state.chainId = action.payload.chainId
             state.status = STATUS.PENDING
         },
-        updateSocketURL(state, action:PayloadAction<{socketURL:string}>) {
-            state.socketURL =  action.payload.socketURL;
-        },
+        // updateSocketURL(state, action:PayloadAction<{socketURL:string}>) {
+        //     state.socketURL =  action.payload.socketURL;
+        // },
         updateRealTimeObj(state, action: PayloadAction<Partial<{ faitPrices: any, gasPrice: number, forex: number }>>) {
             const {forex, faitPrices, gasPrice} = action.payload;
             if (forex) {
@@ -60,9 +60,12 @@ const systemSlice: Slice<SystemStatus> = createSlice({
                 // @ts-ignore
                 state.errorMessage = action.error
             }
-            const {env, baseURL, faitPrices, gasPrice, forex, exchangeInfo, __timer__} = action.payload;
+            const {env, baseURL,socketURL, faitPrices, gasPrice, forex, exchangeInfo, __timer__} = action.payload;
             if (env) {
                 state.env = env
+            }
+            if(socketURL){
+                state.socketURL = socketURL;
             }
             if (baseURL) {
                 state.baseURL = baseURL
@@ -93,4 +96,4 @@ const systemSlice: Slice<SystemStatus> = createSlice({
     },
 });
 export { systemSlice };
-export const {updateSystem, setTopics, getSystemStatus, statusUnset, updateRealTimeObj, updateSocketURL} = systemSlice.actions;
+export const {updateSystem, setTopics, getSystemStatus, statusUnset, updateRealTimeObj} = systemSlice.actions;
