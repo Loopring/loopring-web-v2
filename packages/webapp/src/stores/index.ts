@@ -25,6 +25,7 @@ import { walletLayer1Slice } from './walletLayer1';
 import { walletLayer2Slice } from './walletLayer2';
 import { socketSlice } from './socket';
 import { userRewardsMapSlice } from './userRewards';
+import { localStoreReducer } from './localStore';
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -39,18 +40,19 @@ const reducer = combineReducers({
   tokenMap: tokenMapSlice.reducer,
   walletLayer2: walletLayer2Slice.reducer,
   walletLayer1: walletLayer1Slice.reducer,
-  tickerMap: tickerMapSlice.reducer
+  tickerMap: tickerMapSlice.reducer,
+  localStore: localStoreReducer,
 })
 
 
 //
 
-const PERSISTED_KEYS: string[] = ['settings']
+const PERSISTED_KEYS: string[] = ['settings','localStore']
 
 const store = configureStore({
   reducer,
   // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
-  middleware: [...getDefaultMiddleware({ thunk: false,serializableCheck:false, }), save({ states: PERSISTED_KEYS }), sagaMiddleware, ],
+  middleware: [...getDefaultMiddleware({ thunk: false,serializableCheck:false, }), save({ states: PERSISTED_KEYS }), sagaMiddleware ],
   // middleware: [...getDefaultMiddleware({ thunk: true }), ],
   devTools: process.env.NODE_ENV !== 'production',
   enhancers: [reduxBatch],
