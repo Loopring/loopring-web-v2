@@ -137,7 +137,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography alignSelf={'flex-start'} variant={'body2'} color={'textSecondary'} component="span"
                                 marginTop={1}>
                         {t('labelDate')}:
-                        {moment(duration.from).format('L')} - {moment(duration.to).format('L')}
+                        {' ' + moment(duration.from).format('L')} - {moment(duration.to).format('L')}
                     </Typography>
                 </BoxBg>
             </CardContent>
