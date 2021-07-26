@@ -11,6 +11,7 @@ import { CustomError, ErrorMap } from '@loopring-web/common-resources';
 import { getAmmActivityMap } from '../Amm/AmmActivityMap';
 import { updateWalletLayer1 } from '../walletLayer1';
 import { delay } from 'rxjs/operators';
+import { LoopringSocket } from '../../services/socketUtil';
 
 
 const initConfig = function* <R extends { [ key: string ]: any }>(chainId: ChainId | 'unknown') {
@@ -40,6 +41,7 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
     // const { chainId } = system
     const env = window.location.hostname === 'localhost' ? ENV.DEV : ChainId.GORLI === chainId ? ENV.UAT : ENV.PROD
     chainId = ChainId.GORLI === chainId ? ChainId.GORLI : ChainId.MAINNET === chainId ? ChainId.MAINNET : NETWORKEXTEND.NONETWORK
+
     if (chainId === NETWORKEXTEND.NONETWORK) {
         throw new CustomError(ErrorMap.NO_NETWORK_ERROR)
     } else {
@@ -51,6 +53,9 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
             const gasPrice = (await exchangeAPI().getGasPrice()).gasPrice / 1e+9;
             // : process.env.REACT_APP_API_URL_UAT;
             const baseURL = ChainId.MAINNET === chainId ? `https://${process.env.REACT_APP_API_URL}` : `https:/${process.env.REACT_APP_API_URL_UAT}`
+            
+            const socketBase = ChainId.MAINNET === chainId ? process.env.REACT_APP_API_URL : process.env.REACT_APP_API_URL_UAT;
+            window.loopringSocket = new LoopringSocket(`wss://ws.${socketBase}/v3/ws`);
 
             const forex = faitPricesY[ 'USDT' ].price;
             let {__timer__} = store.getState().system;

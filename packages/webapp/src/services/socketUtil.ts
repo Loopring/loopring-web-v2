@@ -40,13 +40,6 @@ export type SocketEventMap = {
 }
 
 export class LoopringSocket {
-    get loopringSocket(): WebSocket | undefined {
-        return this._loopringSocket;
-    }
-    get socketCallbackMap(): SocketCallbackMap | undefined {
-        return this._socketCallbackMap;
-    }
-    //TODO fill the socket receiver format callback
     private static SocketEventMap: SocketEventMap = {
         [ SocketEventType.account ]: (_e: any) => {
 
@@ -101,19 +94,31 @@ export class LoopringSocket {
             }
         },
     }
+    get loopringSocket(): WebSocket | undefined {
+        return this._loopringSocket;
+    }
+    get socketCallbackMap(): SocketCallbackMap | undefined {
+        return this._socketCallbackMap;
+    }
+    //TODO fill the socket receiver format callback
+
     private _socketCallbackMap: SocketCallbackMap|undefined;
     private _loopringSocket:WebSocket|undefined;
     private __wsTimer__:{timer:NodeJS.Timer|-1,count:number} = {
         timer:-1,
         count:0
     };
-
+    private _baseUrl:string;
+    constructor(url:string) {
+        // const url = ChainId.MAINNET === chainId ? process.env.REACT_APP_API_URL : process.env.REACT_APP_API_URL_UAT;
+        this._baseUrl = url; // baseSocket: string = `wss://ws.${url}/v3/ws?wsApiKey=${wsKey}`;
+    }
 
     // private static PingPong = {
     //     fn:
     // }
 
-    public socketSendMessage = async ({socket, chainId, apiKey}: {
+    public socketSendMessage = async ({socket, apiKey}: {
         chainId: ChainId | 'unknown',
         socket: { [ key: string ]: string[] }
         apiKey?: string
@@ -125,7 +130,7 @@ export class LoopringSocket {
                 this.resetSocketEvents();
                 const {topics} = this.makeMessageArray({socket});
                 if (!this.isConnectSocket() ) {
-                    await this.socketConnect({chainId, topics, apiKey})
+                    await this.socketConnect({ topics, apiKey})
                 } else {
 
                     this._loopringSocket?.send(this.makeTopics(topics))
@@ -259,22 +264,17 @@ export class LoopringSocket {
             }
         }
     }
-    private socketConnect = async ({chainId, topics, apiKey}: {
-        chainId: ChainId | 'unknown',
+
+    private socketConnect = async ({ topics, apiKey}: {
+       // chainId: ChainId | 'unknown',
         topics: any[],
         apiKey?: string
     }) => {
         try {
             const self = this;
-            if (chainId !== 'unknown' && LoopringAPI.wsAPI && topics) {
-                const url = ChainId.MAINNET === chainId ? process.env.REACT_APP_API_URL : process.env.REACT_APP_API_URL_UAT;
+            if (LoopringAPI.wsAPI && topics) {
                 const {wsKey} = await LoopringAPI.wsAPI.getWsKey();
-                let baseSocket: string = `wss://ws.${url}/v3/ws?wsApiKey=${wsKey}`;
-                //todo remove it if not necessary
-                // store.dispatch(updateSocketURL({socketURL: baseSocket}));
-
-                // let ws: WebSocket;
-                this._loopringSocket = new WebSocket(baseSocket);
+                this._loopringSocket = new WebSocket(`${this._baseUrl}?wsApiKey=${wsKey}`);
 
                 this._loopringSocket.onopen = function () {
                     console.warn('Socket>>Socket', "WebSocket is open now.");
@@ -303,7 +303,7 @@ export class LoopringSocket {
                     return false;
                 };
                 this._loopringSocket.onclose = async function (e) {
-                    console.error('Socket>>Socket', e);
+                    // console.error('Socket>>Socket', e);
                     if (self._loopringSocket) {
                         self._loopringSocket = undefined;
                     }
@@ -311,7 +311,7 @@ export class LoopringSocket {
                     self.clearInitTimer()
                     if (self.__wsTimer__.count < 5) {
                         self.__wsTimer__.timer = setTimeout(function () {
-                            self.socketConnect.call(self, {chainId, topics, apiKey});
+                            self.socketConnect.call(self, { topics, apiKey});
                         }, 1000 * self.__wsTimer__.count);
                     }
                 };
@@ -351,11 +351,11 @@ export class LoopringSocket {
         this.addSocketEvents(SocketEventType.pingpong,[this])
     }
 }
-const socketInstance = new LoopringSocket();
-// @ts-ignore
-window.loopringSocket = socketInstance;
-
-export default socketInstance;
+// const socketInstance = new LoopringSocket();
+// // @ts-ignore
+// window.loopringSocket = socketInstance;
+//
+// export default socketInstance;
 
 
 
