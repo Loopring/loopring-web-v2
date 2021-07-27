@@ -14,8 +14,12 @@ const RPC_URLS: { [chainId: number]: string } = {
   5: process.env.REACT_APP_RPC_URL_5 as string
 }
 
+const WALLET_CONNECT_BRIDGE = process.env.REACT_APP_WALLET_CONNECT_BRIDGE ?? 'https://bridge.walletconnect.org'
+
 myLog('RPC_URLS 1:', RPC_URLS[1])
 myLog('RPC_URLS 5:', RPC_URLS[5])
+
+myLog('WALLET_CONNECT_BRIDGE:', WALLET_CONNECT_BRIDGE)
 
 export const injected = new InjectedConnector({ supportedChainIds: [1, 5,] })
 
@@ -26,7 +30,7 @@ export const network = new NetworkConnector({
 
 export const walletconnect = new WalletConnectConnector({
   rpc: RPC_URLS,
-  bridge: 'https://bridge.walletconnect.org',
+  bridge: WALLET_CONNECT_BRIDGE,
   qrcode: true,
   pollingInterval: POLLING_INTERVAL
 })
