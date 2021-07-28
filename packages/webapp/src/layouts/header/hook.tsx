@@ -637,8 +637,12 @@ export function useModalProps() {
                 validUntil: VALID_UNTIL,
             }
 
+            myLog('walletType:', walletType, ' request2:', request2)
+
+            const isHardwareWallet = walletType === ConnectorNames.Trezor || walletType === ConnectorNames.Ledger
+
             const response = await LoopringAPI.userAPI.submitInternalTransfer(request2, web3, chainId, walletType,
-                eddsaKey, apiKey, false)
+                eddsaKey, apiKey)
 
             myLog('transfer r:', response)
 
@@ -769,7 +773,7 @@ export function useModalProps() {
             const web3 = new Web3(provider as any)
 
             const response = await LoopringAPI.userAPI.submitOffchainWithdraw(request2, web3, chainId, ConnectorNames.Injected,
-                account.eddsaKey, apiKey, false)
+                account.eddsaKey, apiKey)
 
             myLog(response)
 
