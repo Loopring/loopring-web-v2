@@ -132,6 +132,7 @@ export function useConnect() {
         activate(newConnector).then(() => {
 
             myLog('-----> activate ok! ' + item_name)
+            
             if (item_name !== ConnectorNames.WalletConnect) {
                 UserStorage.clearWalletConnect()
             }
@@ -281,7 +282,7 @@ export function useUnlock() {
                     }
 
                     const updateAccountResponse = await LoopringAPI.userAPI.updateAccount(request, web3,
-                        chainId, account.connectName, false)
+                        chainId, account.connectName)
 
                     myLog('updateAccountResponse:', updateAccountResponse)
 

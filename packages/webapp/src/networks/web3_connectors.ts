@@ -40,14 +40,21 @@ export const walletlink = new WalletLinkConnector({
   appName: 'Loopring DEX'
 })
 
-export const ledger = new LedgerConnector({ chainId: 1, url: RPC_URLS[1], pollingInterval: POLLING_INTERVAL })
+const LEDGER_LIVE_PATH = "m/44'/60'/0'/0"
+
+export const ledger = new LedgerConnector({ 
+  chainId: 1, 
+  url: RPC_URLS[1], 
+  pollingInterval: POLLING_INTERVAL,
+  baseDerivationPath: LEDGER_LIVE_PATH,
+})
 
 export const trezor = new TrezorConnector({
   chainId: 1,
   url: RPC_URLS[1],
   pollingInterval: POLLING_INTERVAL,
-  manifestEmail: 'dummy@abc.xyz',
-  manifestAppUrl: 'http://localhost:1234'
+  manifestEmail: 'webdev@loopring.io',
+  manifestAppUrl: 'https://loopring.io'
 })
 
 export const authereum = new AuthereumConnector({ chainId: 42 })

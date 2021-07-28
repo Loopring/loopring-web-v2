@@ -19,7 +19,7 @@ const SESSION_TIMEOUT_SECONDS = 600
 export class UserStorage {
 
     public static clearWalletConnect() {
-        myLog('try to clearWalletConnect')
+        myLog('try to clearWalletConnect....')
         localStorage.removeItem(CONSTANTS.WalletConnect)
     }
 
