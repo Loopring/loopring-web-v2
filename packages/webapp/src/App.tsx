@@ -3,7 +3,7 @@ import RouterView from './routers'
 import { Avatar, GlobalStyles } from '@material-ui/core';
 import { css, Theme, useTheme } from '@emotion/react';
 import { globalCss,ErrorMap } from '@loopring-web/common-resources';
-import { GlobalProvider, Web3ReactManager } from './provider/';
+// import { GlobalProvider, Web3ReactManager } from './provider/';
 import React, { useEffect } from 'react';
 import { useInit } from './hook';
 import { STATUS } from 'stores/constant';
@@ -47,8 +47,8 @@ const App =  () => {
       //}
 }`}></GlobalStyles>
   <ModalProvider>
-      <GlobalProvider>
-          <Web3ReactManager>
+      {/*<GlobalProvider>*/}
+          {/*<Web3ReactManager>*/}
               { status === 'PENDING' ?
                   <LoadingPage />
                   // <ErrorPage {...ErrorMap.LOADING_WHOLE_SITE}/>
@@ -57,8 +57,8 @@ const App =  () => {
                   <RouterView />
                   {/*    <ErrorPage {...ErrorMap.LOADING_WHOLE_SITE}/>*/}
                   </>  }
-          </Web3ReactManager>
-      </GlobalProvider>
+          {/*</Web3ReactManager>*/}
+      {/*</GlobalProvider>*/}
   </ModalProvider></>
 
      

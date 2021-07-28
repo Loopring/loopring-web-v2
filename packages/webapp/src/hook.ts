@@ -8,6 +8,7 @@ import { STATUS } from './stores/constant';
 import { useTokenMap } from './stores/token';
 import { useWalletLayer1 } from './stores/walletLayer1';
 import { useAccount } from './stores/account/hook';
+import { Commands, walletServices } from '@loopring-web/web3-provider';
 
 
 /**
@@ -22,6 +23,7 @@ export function useInit(){
     const walletLayer1State  =  useWalletLayer1()
     //store.getState().account
     // const socketState =   useSocket();
+    useConnectHook();
 
     useCustomDCEffect(async() => {
 
@@ -100,3 +102,41 @@ export function useInit(){
     }
 
 }
+function  useConnectHook(){
+    const subject = React.useMemo(() => walletServices.onSocket(),[]);
+
+    const handleChainChanged = React.useCallback((chainId)=>{
+        console.log(chainId)
+    },[])
+    const handleConnect = React.useCallback((accounts,provider)=>{
+        console.log(accounts,provider)
+    },[])
+    const handleAccountDisconnect = React.useCallback(()=>{
+        console.log('Disconnect')
+    },[])
+    React.useEffect(() => {
+        const subscription = subject.subscribe(({data, status}: { status: keyof typeof Commands, data?: any }) => {
+            switch (status) {
+                case 'ChangeNetwork':
+                    // @ts-ignore
+                    const {chainId} = data ? data : {chainId: undefined};
+                    handleChainChanged(chainId)
+                    // systemState.updateSystem({ chainId })
+                    // window.location.reload();
+                    // console.log(data)
+                    break
+                case 'ConnectWallet':
+                    const {accounts,provider} = data ? data : {accounts: undefined,provider:undefined};
+                    handleConnect(accounts,provider)
+                    break
+                case 'DisConnect':
+                    handleAccountDisconnect()
+                    //TODO reset
+                    console.log(data)
+
+            }
+        });
+        return () => subscription.unsubscribe();
+    }, [subject]);
+}
+

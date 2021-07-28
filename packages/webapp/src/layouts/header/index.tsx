@@ -15,7 +15,7 @@ import { Toolbar, } from '@material-ui/core'
 
 import { useHeader } from './hook'
 
-import { useDisconnect, } from 'stores/account/hook'
+ import { useAccount } from 'stores/account/hook'
 import { ModalPanel, ModalQRCode, } from '@loopring-web/component-lib'
 import { useModalProps } from './hook'
 
@@ -55,7 +55,7 @@ const Header = ({ ...rest }: any) => {
         // showAccountInfo
     } = useHeader()
 
-    const { disconnect } = useDisconnect()
+    const { resetAccount } = useAccount()
 
     const {t} = useTranslation('common')
 
@@ -100,7 +100,7 @@ const Header = ({ ...rest }: any) => {
                 setOpenQRCode(true)
             }}
             onDisconnect={() => {
-                disconnect();
+                resetAccount();
                 setShowAccountInfo({isShow:false});
             }}
             onSwitch={onSwitch}

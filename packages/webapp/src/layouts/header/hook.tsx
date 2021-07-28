@@ -3,6 +3,8 @@ import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import {
+    AmmData,
+    AmmInData,
     ButtonComponentsMap,
     CoinMap,
     GatewayItem,
@@ -11,28 +13,32 @@ import {
     HeaderMenuTabStatus,
     headerToolBarData,
     HeadMenuTabKey,
+    IBData,
     LanguageKeys,
     LockIcon,
     ThemeKeys,
+    TradeCalcData,
     UnLockIcon,
+    WalletMap,
     WalletStatus,
     WithdrawType,
     WithdrawTypes,
 } from '@loopring-web/common-resources'
 
-import { useAccount, useConnect, useUnlock, useWeb3Account, } from 'stores/account/hook'
+import { AccountStatus, useAccount, } from 'stores/account'
 
 import { getShortAddr } from 'utils/web3_tools'
 
-import { AccountStatus } from 'state_machine/account_machine_spec'
-
+// import {  } from 'state_machine/account_machine_spec'
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect'
 
 import { Theme, } from 'defs/common_defs'
 
 import {
+    AccountInfoProps,
     AmmProps,
     Button,
+    CoinType,
     DepositProps,
     ResetProps,
     SwapProps,
@@ -61,13 +67,10 @@ import {
     VALID_UNTIL
 } from 'loopring-sdk'
 import { Typography } from '@material-ui/core';
-import { AccountInfoProps, CoinType, } from '@loopring-web/component-lib';
 import { useEtherscan } from 'hooks/web3/useWeb3'
 
 import { useModals } from 'hooks/modal/useModals'
 import Web3 from 'web3'
-
-import { AmmData, AmmInData, IBData, TradeCalcData, WalletMap } from '@loopring-web/common-resources'
 
 import { makeWalletLayer2 } from 'hooks/help'
 import { useWalletLayer2 } from 'stores/walletLayer2'
@@ -76,6 +79,8 @@ import { LoopringAPI } from 'stores/apis/api'
 import { BIG10 } from 'defs/swap_defs'
 import { useWalletLayer1 } from '../../stores/walletLayer1';
 import { myLog } from 'utils/log_tools'
+import { useSystem } from '../../stores/system';
+import { ConnectProvides } from '@loopring-web/web3-provider';
 
 export const useHeader = () => {
     const {i18n, t} = useTranslation(['common', 'layout'])
@@ -84,11 +89,11 @@ export const useHeader = () => {
     const {modals: {isShowAccountInfo, isShowConnect}, setShowConnect, setShowAccountInfo} = useOpenModals()
 
     const forceUpdate = React.useReducer((bool) => !bool, false)[ 1 ]
-    const {account} = useAccount()
+    const {account, updateAccount, status: accountStatus, errorMessage} = useAccount()
 
-    const {lock, unlock} = useUnlock()
-
-    const {connect} = useConnect()
+    // const {lock, unlock} = useUnlock()
+    //
+    // const {connect} = useConnect()
 
     const {etherscanUrl} = useEtherscan()
 
@@ -97,28 +102,28 @@ export const useHeader = () => {
             ...DefaultGatewayList[ 0 ],
             handleSelect: () => {
                 myLog('try to connect to ', ConnectorNames.Injected)
-                connect(ConnectorNames.Injected, true)
+                // connect(ConnectorNames.Injected, true)
                 setShowConnect({isShow: false})
             }
         },
         {
             ...DefaultGatewayList[ 1 ],
             handleSelect: () => {
-                connect(ConnectorNames.WalletConnect, true)
+                // connect(ConnectorNames.WalletConnect, true)
                 setShowConnect({isShow: false})
             }
         },
         {
             ...DefaultGatewayList[ 2 ],
             handleSelect: () => {
-                connect(ConnectorNames.Ledger, true)
+                // connect(ConnectorNames.Ledger, true)
                 setShowConnect({isShow: false})
             }
         },
         {
             ...DefaultGatewayList[ 3 ],
             handleSelect: () => {
-                connect(ConnectorNames.Trezor, true)
+                // connect(ConnectorNames.Trezor, true)
                 setShowConnect({isShow: false})
             }
         },
@@ -132,15 +137,16 @@ export const useHeader = () => {
     }, [])
 
     const onWalletBtnConnect = React.useCallback(async () => {
-        const acc = store.getState().account
-        myLog(`onWalletBtnConnect click: ${acc.status}`)
+        // const acc = store.getState().account
+        myLog(`onWalletBtnConnect click: ${account.readyState}`)
 
-        switch (acc.status) {
-            case AccountStatus.UNCONNNECTED:
+        switch (account.readyState) {
+            case AccountStatus.RESET:
+                // case AccountStatus.UN_CONNECT:
                 setShowConnect({isShow: true})
                 break
-            case AccountStatus.NOACCOUNT:
-            case AccountStatus.CONNECTED:
+            case AccountStatus.NO_ACCOUNT:
+            case AccountStatus.DEPOSITING:
             case AccountStatus.LOCKED:
             case AccountStatus.ACTIVATED:
                 setShowAccountInfo({isShow: true})
@@ -200,11 +206,13 @@ export const useHeader = () => {
     }
 
     const lockCallback = React.useCallback((event) => {
-        lock(account)
-    }, [account,lock])
+        // lock(account)
+        updateAccount()
+    }, [account, updateAccount])
     const unLockCallback = React.useCallback((event) => {
-        unlock(account)
-    }, [account,unlock])
+        // unlock(account)
+        updateAccount()
+    }, [account, updateAccount])
 
     const LockBtn = ({onClick}: { onClick: ({...props}: any) => void }) => {
         return <Button className={'lock'} startIcon={<LockIcon fontSize={'large'}/>}
@@ -223,57 +231,45 @@ export const useHeader = () => {
             return
         }
 
-        const {status} = account
+        const {readyState} = account
 
-        const addr = getShortAddr(account?.accAddr)
+        const addressShort = getShortAddr(account.accAddress)
 
-        const updateHeaderMenuWhenHasAccountInfo = ({status}: { status: keyof typeof AccountStatus }) => {
+        const updateHeaderMenuWhenHasAccountInfo = ({readyState}: { readyState: keyof typeof AccountStatus }) => {
             headerMenuData[ HeadMenuTabKey.Layer2 ] = {
                 ...headerMenuData[ HeadMenuTabKey.Layer2 ],
                 status: HeaderMenuTabStatus.default
             }
-            let props: AccountInfoProps | undefined = undefined;
-            if (status === AccountStatus.ACTIVATED) {
+            let props: Partial<AccountInfoProps> | undefined = {
+                addressShort,
+                address: account.accAddress,
+                level: account.level,
+                etherscanLink: etherscanUrl + account.accAddress,
+                connectBy: account.connectName
+            };
+            if (readyState === AccountStatus.ACTIVATED) {
                 props = {
-                    addressShort: addr ? addr : '',
-                    address: account?.accAddr,
-                    level: 'VIP 1',
-                    etherscanLink: etherscanUrl + account?.accAddr,
-                    //TODO: changed by account status
+                    ...props,
                     mainBtn: <LockBtn onClick={(_event) => {
                         lockCallback(_event)
                     }}/>,
-                    connectBy: ''
+
                 }
                 setShowAccountInfo({isShow: false})
-            } else if (status === AccountStatus.LOCKED) {
+            } else if (readyState === AccountStatus.LOCKED) {
                 props = {
-                    addressShort: addr ? addr : '',
-                    address: account?.accAddr,
-                    level: 'VIP 1',
-                    etherscanLink: etherscanUrl + account?.accAddr,
-                    //TODO: changed by account status
+                    ...props,
                     mainBtn: <UnlockBtn onClick={(_event) => {
                         unLockCallback(_event)
                     }}/>,
-                    connectBy: ''
                 }
                 setShowAccountInfo({isShow: true})
-            } else if (status === AccountStatus.UNACTIVATED
-                || status === AccountStatus.NOACCOUNT
-                || status === AccountStatus.DEPOSITING
-                || status === AccountStatus.DEPOSIT_TO_CONFIREM
-                || status === AccountStatus.ARPROVING
-                || status === AccountStatus.APPROV_TO_CONFIRM
+            } else if (readyState === AccountStatus.UN_CONNECT
+                || readyState === AccountStatus.NO_ACCOUNT
+                || readyState === AccountStatus.DEPOSITING
             ) {
                 props = {
-                    addressShort: addr ? addr : '',
-                    address: account?.accAddr,
-                    //TODO: level
-                    level: 'VIP 1',
-                    etherscanLink: etherscanUrl + account?.accAddr,
-                    //TODO: changed by account status
-                    connectBy: ''
+                    ...props
                 }
                 setShowAccountInfo({isShow: false});
 
@@ -285,17 +281,17 @@ export const useHeader = () => {
                 props.connectBy = account.connectName
             }
 
-            if (status === AccountStatus.NOACCOUNT && props) {
+            if (readyState === AccountStatus.NO_ACCOUNT && props) {
                 props.onLock = () => {
                     setShowAccountInfo({isShow: false})
                     ShowDeposit(true)
                 }
             }
 
-            setAccountInfoProps(props)
+            setAccountInfoProps(props as AccountInfoProps)
         }
-        switch (status) {
-            case AccountStatus.UNCONNNECTED:
+        switch (readyState) {
+            case AccountStatus.UN_CONNECT:
                 headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
                     ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
                     label: t('labelConnectWallet'),
@@ -310,42 +306,38 @@ export const useHeader = () => {
             case AccountStatus.LOCKED:
                 headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
                     ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                    label: addr,
+                    label: addressShort,
                     status: WalletStatus.connect
                 };
 
-                updateHeaderMenuWhenHasAccountInfo({status});
+                updateHeaderMenuWhenHasAccountInfo({readyState});
                 break
             case AccountStatus.ACTIVATED:
                 headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
                     ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                    label: addr,
+                    label: addressShort,
                     status: WalletStatus.unlock
                 }
 
-                updateHeaderMenuWhenHasAccountInfo({status});
+                updateHeaderMenuWhenHasAccountInfo({readyState});
                 break
-            case AccountStatus.UNACTIVATED:
-            case AccountStatus.NOACCOUNT:
+            case AccountStatus.NO_ACCOUNT:
                 headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
                     ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
                     // TODO got cache address if no show Connect Wallet
-                    label: addr,
+                    label: addressShort,
                     status: WalletStatus.noAccount
                 }
 
-                updateHeaderMenuWhenHasAccountInfo({status});
+                updateHeaderMenuWhenHasAccountInfo({readyState});
                 break
             case AccountStatus.DEPOSITING:
-            case AccountStatus.DEPOSIT_TO_CONFIREM:
-            case AccountStatus.ARPROVING:
-            case AccountStatus.APPROV_TO_CONFIRM:
                 headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
                     ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                    label: addr,
+                    label: addressShort,
                     status: WalletStatus.accountPending
                 }
-                updateHeaderMenuWhenHasAccountInfo({status});
+                updateHeaderMenuWhenHasAccountInfo({readyState});
 
                 break
         }
@@ -374,13 +366,13 @@ export const useHeader = () => {
 export function useChargeFeeList(tokenSymbol: string | undefined, requestType: OffchainFeeReqType,
                                  tokenMap: LoopringMap<TokenInfo> | undefined, amount?: number) {
 
-    const {accountId, apiKey,} = useAccount()
+    const {account} = useAccount()
 
     const [chargeFeeList, setChargeFeeList] = useState<any[]>([])
 
     useCustomDCEffect(async () => {
 
-        if (!accountId || !tokenSymbol || !tokenMap || !LoopringAPI.userAPI) {
+        if (account.accountId === -1 || !tokenSymbol || !tokenMap || !LoopringAPI.userAPI) {
             return
         }
 
@@ -390,13 +382,13 @@ export function useChargeFeeList(tokenSymbol: string | undefined, requestType: O
             const tokenInfo = tokenMap[ tokenSymbol ]
 
             const request: GetOffchainFeeAmtRequest = {
-                accountId,
+                accountId: account.accountId,
                 tokenSymbol,
                 requestType,
                 amount: amount ? toBig(amount).times('1e' + tokenInfo.decimals).toFixed(0, 0) : undefined
             }
 
-            const response = await LoopringAPI.userAPI.getOffchainFeeAmt(request, apiKey)
+            const response = await LoopringAPI.userAPI.getOffchainFeeAmt(request, account.apiKey)
 
             if (response) {
                 response.raw_data.fees.forEach((item: any, index: number) => {
@@ -417,7 +409,7 @@ export function useChargeFeeList(tokenSymbol: string | undefined, requestType: O
 
         setChargeFeeList(chargeFeeList)
 
-    }, [accountId, apiKey, LoopringAPI.userAPI, requestType, tokenSymbol, tokenMap])
+    }, [account.accountId, account.apiKey, LoopringAPI.userAPI, requestType, tokenSymbol, tokenMap])
 
     return {
         chargeFeeList,
@@ -434,9 +426,9 @@ export function useModalProps() {
         ShowResetAccount,
     } = useModals()
 
-    const {chainId, isConnected, connector,} = useWeb3Account()
-
-    const {account, apiKey, accountId, eddsaKey,} = useAccount()
+    // const {chainId, isConnected, connector,} = useWeb3Account()
+    const {chainId, exchangeInfo} = useSystem()
+    const {account} = useAccount()
 
     const {totalCoinMap: coinMap, tokenMap, marketArray, marketCoins, marketMap,} = useTokenMap()
 
@@ -499,35 +491,36 @@ export function useModalProps() {
         balance: 0
     } as IBData<unknown>)
 
+    // const checkAccountStatus  = useCallback(()=>{
+    //
+    //     return false;
+    // },[account,ConnectProvides])
     const deposit = useCallback(async (token: string, amt: any) => {
-
-        const exchangeInfo = store.getState().system.exchangeInfo
-
-        if (!LoopringAPI.exchangeAPI || !tokenMap || !isConnected || !connector || !exchangeInfo?.exchangeAddress || !exchangeInfo?.depositAddress) {
+        if (!LoopringAPI.exchangeAPI || !tokenMap || !account.accAddress || !ConnectProvides.usedWeb3 || !exchangeInfo?.exchangeAddress || !exchangeInfo?.depositAddress) {
             return
         }
 
         try {
             const tokenInfo: TokenInfo = tokenMap[ token ]
 
-            const provider = await connector.getProvider()
-            const web3 = new Web3(provider as any)
-
-            let sendByMetaMask = account.connectName === ConnectorNames.Injected
-
+            // const provider = await connector.getProvider()
+            // const web3 = new Web3(provider as any)
+            // const  ConnectProvides
+            // let sendByMetaMask = account.connectName === ConnectorNames.Injected
+            let sendByMetaMask = true;
             const gasPrice = store.getState().system.gasPrice ?? 20
             const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
 
-            const nonce = await sdk.getNonce(web3, account.accAddr)
+            const nonce = await sdk.getNonce(ConnectProvides.usedWeb3, account.accAddress)
 
-            const response = await sdk.approveMax(web3, account.accAddr, tokenInfo.address,
-                exchangeInfo?.depositAddress, gasPrice, gasLimit, chainId, nonce, sendByMetaMask)
+            const response = await sdk.approveMax(ConnectProvides.usedWeb3, account.accAddress, tokenInfo.address,
+                exchangeInfo?.depositAddress, gasPrice, gasLimit, chainId ==='unknown' ? undefined:chainId ,nonce, sendByMetaMask)
 
             const fee = 0
 
-            const response2 = await sdk.deposit(web3, account.accAddr,
+            const response2 = await sdk.deposit(ConnectProvides.usedWeb3, account.accAddress,
                 exchangeInfo?.exchangeAddress, tokenInfo, amt, fee,
-                gasPrice, gasLimit, chainId, nonce + 1, sendByMetaMask)
+                gasPrice, gasLimit, chainId ==='unknown' ? undefined:chainId , nonce + 1, sendByMetaMask)
 
             myLog('!!!!deposit r:', response2)
 
@@ -535,7 +528,7 @@ export function useModalProps() {
             dumpError400(reason)
         }
 
-    }, [chainId, isConnected, connector, account, tokenMap])
+    }, [chainId, ConnectProvides, account, tokenMap])
 
     let depositProps: DepositProps<any, any> = {
         tradeData: {belong: undefined},
@@ -591,7 +584,7 @@ export function useModalProps() {
         const exchangeInfo = store.getState().system.exchangeInfo
 
         if (!LoopringAPI.userAPI || !LoopringAPI.exchangeAPI || !exchangeInfo
-            || !connector || !apiKey || !chainId || !accountId || !account?.accAddr) {
+            || !ConnectProvides.usedWeb3 || !account.apiKey || !chainId || !account.accountId || !account?.accAddress) {
             return
         }
 
@@ -609,20 +602,20 @@ export function useModalProps() {
             const transferVol = toBig(transferValue.tradeValue).times('1e' + sellToken.decimals).toFixed(0, 0)
 
             const request: GetNextStorageIdRequest = {
-                accountId,
+                accountId:account.accountId,
                 sellTokenId: sellToken.tokenId
             }
-            const storageId = await LoopringAPI.userAPI.getNextStorageId(request, apiKey)
+            const storageId = await LoopringAPI.userAPI.getNextStorageId(request, account.apiKey)
 
-            const provider = await connector.getProvider()
-            const web3 = new Web3(provider as any)
+            // const provider = await connector.getProvider()
+            // const web3 = new Web3(provider as any)
 
             let walletType = account.connectName
 
             const request2: OriginTransferRequestV3 = {
                 exchange: exchangeInfo.exchangeAddress,
-                payerAddr: account.accAddr,
-                payerId: accountId,
+                payerAddr: account.accAddress,
+                payerId: account.accountId,
                 payeeAddr,
                 payeeId: 0,
                 storageId: storageId.offchainId,
@@ -637,8 +630,8 @@ export function useModalProps() {
                 validUntil: VALID_UNTIL,
             }
 
-            const response = await LoopringAPI.userAPI.submitInternalTransfer(request2, web3, chainId, walletType,
-                eddsaKey, apiKey, false)
+            const response = await LoopringAPI.userAPI.submitInternalTransfer(request2, ConnectProvides.usedWeb3, chainId ==='unknown' ? undefined:chainId , walletType,
+                account.eddsaKey, account.apiKey, false)
 
             myLog('transfer r:', response)
 
@@ -646,7 +639,7 @@ export function useModalProps() {
             dumpError400(reason)
         }
 
-    }, [apiKey, tokenMap, payeeAddr, accountId, account, connector, chainId, eddsaKey, feeInfo])
+    }, [ tokenMap, payeeAddr, account, ConnectProvides, chainId, feeInfo])
 
     let transferProps: TransferProps<any, any> = {
         tradeData: {belong: undefined},
