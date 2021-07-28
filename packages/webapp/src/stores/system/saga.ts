@@ -2,7 +2,7 @@ import { all, call, fork, put, take, takeLatest } from "redux-saga/effects"
 import { getSystemStatus, updateRealTimeObj, updateSystem } from './reducer'
 import { ENV, NETWORKEXTEND } from "./interface"
 import store from '../index';
-import { reset } from '../account/reducer';
+// import { reset } from '../account/reducer';
 import { ChainId } from 'loopring-sdk';
 import { exchangeAPI, LoopringAPI } from '../apis/api';
 import { getAmmMap, updateRealTimeAmmMap } from '../Amm/AmmMap';
@@ -12,10 +12,12 @@ import { getAmmActivityMap } from '../Amm/AmmActivityMap';
 import { updateWalletLayer1 } from '../walletLayer1';
 import { delay } from 'rxjs/operators';
 import { LoopringSocket } from '../../services/socketUtil';
+import { updateAccountStatus } from '../account/reducer';
+import { AccountStatus } from '../account/interface';
 
 
 const initConfig = function* <R extends { [ key: string ]: any }>(chainId: ChainId | 'unknown') {
-    store.dispatch(reset(undefined));
+    store.dispatch(updateAccountStatus(AccountStatus.RESET ));
     const {tokenSymbolMap: tokensMap} = yield call(async ()=> await LoopringAPI.exchangeAPI?.getTokens())
     const {ammpools} = yield call(async ()=>await LoopringAPI.ammpoolAPI?.getAmmPoolConf());
     const {pairs, marketArr, tokenArr, markets}  = yield call(async ()=> LoopringAPI.exchangeAPI?.getMixMarkets());
@@ -30,7 +32,7 @@ const initConfig = function* <R extends { [ key: string ]: any }>(chainId: Chain
     yield delay(10);
     //IF already connect has address, getInfo walletLayer 1
     const {account,walletLayer1} = store.getState() //.account.accAddr && !store.getState().walletLayer1.walletLayer1
-    if(account.accAddr && walletLayer1.walletLayer1 === undefined){
+    if(account.accAddress && walletLayer1.walletLayer1 === undefined){
         store.dispatch(updateWalletLayer1(undefined));
     }
 

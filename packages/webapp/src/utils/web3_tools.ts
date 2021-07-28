@@ -156,10 +156,10 @@ export async function isContract(web3: any, address: string) {
   return code && code.length > 2
 }
 
-export function getShortAddr(address: string) {
+export function getShortAddr(address: string):string|'' {
     if (!address || address === undefined || address === null || address.trim() === '') {
-        console.log('getShortAddr got empty!')
-        return undefined
+        // console.log('getShortAddr got empty!')
+        return ''
     }
     const convertAddr = address.substr(0, 6) + '...' + address.substr(address.length - 4)
     return convertAddr
