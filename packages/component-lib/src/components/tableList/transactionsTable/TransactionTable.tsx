@@ -184,13 +184,12 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
         key: 'amount',
         name: t('labelTxAmount'),
         formatter: ({row}) => {
-            const value = row['amount']
-            const unit = row['symbol'] || row['fee'].unit
+            const {unit, value} = row['amount']
             const hasValue = Number.isFinite(value)
             const renderValue = hasValue ? `${getThousandFormattedNumbers(Number(value), 5)}` : EmptyValueTag
             return (
                 <div className="rdg-cell-value">
-                    {renderValue} {unit}
+                    {renderValue} {unit || ''}
                 </div>
             )
         },

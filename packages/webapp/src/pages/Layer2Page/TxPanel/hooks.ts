@@ -45,7 +45,10 @@ export function useGetTxs() {
                 // token: o.symbol,
                 // from: o.senderAddress,
                 // to: o.receiverAddress,
-                amount: Number(volumeToCount(o.symbol, o.amount)),
+                amount: {
+                    unit: o.symbol || '',
+                    value: Number(volumeToCount(o.symbol, o.amount))
+                },
                 fee: {
                     unit: o.feeTokenSymbol || '',
                     value: Number(volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0))
@@ -62,7 +65,11 @@ export function useGetTxs() {
                 // token: o.symbol,
                 // from: o.hash,
                 // to: 'My Loopring',
-                amount: Number(volumeToCount(o.symbol, o.amount)),
+                // amount: Number(volumeToCount(o.symbol, o.amount)),
+                amount: {
+                    unit: o.symbol || '',
+                    value: Number(volumeToCount(o.symbol, o.amount))
+                },
                 fee: {
                     unit: '',
                     value: 0
@@ -78,7 +85,10 @@ export function useGetTxs() {
                 // token: o.symbol,
                 // from: 'My Loopring',
                 // to: o.distributeHash,
-                amount: Number(volumeToCount(o.symbol, o.amount)),
+                amount: {
+                    unit: o.symbol || '',
+                    value: Number(volumeToCount(o.symbol, o.amount))
+                },
                 fee: {
                     unit: o.feeTokenSymbol || '',
                     value: Number(volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0))
