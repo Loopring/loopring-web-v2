@@ -130,7 +130,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
             const toValue = to.value ? getThousandFormattedNumbers(Number(to.value)) : EmptyValueTag
             return (
                 <div className="rdg-cell-value">
-                    {`${fromValue} ${from.key} -> ${toValue} ${to.key}`}
+                    {`${fromValue} ${from.key} \u279E ${toValue} ${to.key}`}
                 </div>
             )
         }
