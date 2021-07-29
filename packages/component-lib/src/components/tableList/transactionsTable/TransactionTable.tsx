@@ -322,7 +322,7 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
     const [totalData, setTotalData] = React.useState<RawDataTransactionItem[]>(rawData)
     const [filterType, setFilterType] = React.useState(TransactionTradeTypes.allTypes)
     const [filterDate, setFilterDate] = React.useState<DateRange<Date | string>>(['', ''])
-    // const [filterToken, setFilterToken] = React.useState('All Tokens')
+    const [filterToken, setFilterToken] = React.useState<string>('All Tokens')
 
     const pageSize = pagination ? pagination.pageSize : 10;
 
@@ -339,7 +339,7 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         TableType,
         currFilterType = filterType,
         currFilterDate = filterDate,
-        // currFilterToken = filterToken,
+        currFilterToken = filterToken,
     }) => {
         let resultData = rawData || []
         if (currFilterType !== TransactionTradeTypes.allTypes) {
@@ -350,35 +350,36 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
             const endTime = Number(moment(currFilterDate[1]).format('x'))
             resultData = resultData.filter(o => o.time < endTime && o.time > startTime)
         }
-        // o[0]: token
-        // if (currFilterToken !== 'All Tokens') {
-        //     resultData = resultData.filter(o => o[ 0 ] === currFilterToken)
-        // }
+        if (currFilterToken !== 'All Tokens') {
+            resultData = resultData.filter(o => o.amount.unit === currFilterToken)
+        }
         if (TableType === 'filter') {
             setPage(1)
         }
         setTotalData(resultData)
-    }, [rawData, filterDate, filterType])
+    }, [rawData, filterDate, filterType, filterToken])
 
-    const handleFilterChange = React.useCallback(({type = filterType, date = filterDate}) => {
+    const handleFilterChange = React.useCallback(({type = filterType, date = filterDate, token = filterToken}) => {
         setFilterType(type)
         setFilterDate(date)
+        setFilterToken(token)
         updateData({
             TableType: TableType.filter,
             currFilterType: type,
             currFilterDate: date,
-            // currFilterToken: filterToken
+            currFilterToken: token
         })
-    }, [updateData, filterDate, filterType])
+    }, [updateData, filterDate, filterType, filterToken])
 
     const handleReset = React.useCallback(() => {
         setFilterType(TransactionTradeTypes.allTypes)
         setFilterDate([null, null])
-        // setFilterToken('All Tokens')
+        setFilterToken('All Tokens')
         updateData({
             TableType: TableType.filter,
             currFilterType: TransactionTradeTypes.allTypes,
             currFilterDate: [null, null],
+            currFilterToken: 'All Tokens',
         })
     }, [updateData])
 
@@ -391,9 +392,10 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         {showFilter && (
             <TableFilterStyled>
                 <Filter
-                    originalData={totalData} 
+                    originalData={rawData} 
                     filterDate={filterDate}
                     filterType={filterType}
+                    filterToken={filterToken}
                     handleFilterChange={handleFilterChange}
                     handleReset={handleReset}
                 />
