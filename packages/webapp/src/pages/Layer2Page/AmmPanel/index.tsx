@@ -49,7 +49,7 @@ const AmmPanel = withTranslation('common')(({ t, ...rest }: WithTranslation<'com
                     lpTokenAmount: String(volumeToCount(getTokenName(o.lpToken?.tokenId), o.lpToken?.actualAmount)),
                     fee: {
                         key: getTokenName(o.poolTokens[1]?.tokenId),
-                        value: String(volumeToCount(getTokenName(o.poolTokens[1]?.tokenId), o.poolTokens[1]?.feeAmount))
+                        value: volumeToCount(getTokenName(o.poolTokens[1]?.tokenId), o.poolTokens[1]?.feeAmount)?.toFixed(6)
                     },
                     time: o.updatedAt
                 }))
