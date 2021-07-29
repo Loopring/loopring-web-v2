@@ -1,25 +1,37 @@
 import { Subject } from 'rxjs';
-import Web3  from "web3";
-import { Commands } from './command';
+import Web3 from "web3";
+import { Commands, ErrorType } from './command';
 
 //TODO typeof account State
-const subject = new Subject<{ status: keyof typeof Commands, data:any,}>();
+const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
 export const walletServices = {
-    sendConnect : async (web3:Web3,provider:any) => {
+    sendProcess: async (type: string, props: any) => {
+        subject.next({
+            status: Commands.Processing,
+            data: {type, opts: props}
+        });
+    },
+    sendError: async (errorType: keyof typeof ErrorType, errorObj: any) => {
+        subject.next({
+            status: Commands.Error,
+            data: {type: errorType, opts: errorObj}
+        });
+    },
+    sendConnect: async (web3: Web3, provider: any) => {
         const accounts = await web3.eth.getAccounts();
         const chainId = await web3.eth.getChainId();
         const networkId = await web3.eth.net.getId();
-        console.log('wallet connect:',accounts,chainId,networkId);
-        subject.next({status:'ConnectWallet',data:{provider,accounts,chainId,networkId}});
+        console.log('wallet connect:', accounts, chainId, networkId);
+        subject.next({status: 'ConnectWallet', data: {provider, accounts, chainId, networkId}});
     },
-    sendChainChanged: async (chainId:number) =>{
-        console.log('wallet connect:',chainId);
-        subject.next({status:'ChangeNetwork',data:{chainId}})
+    sendChainChanged: async (chainId: number) => {
+        console.log('wallet connect:', chainId);
+        subject.next({status: 'ChangeNetwork', data: {chainId}})
     },
-    sendDisconnect : async (code:any, reason:any)=>{
-        console.log('wallet disconnect:',reason);
-        subject.next({status:'DisConnect',data: {reason:reason,code:code}})
+    sendDisconnect: async (code: any, reason: any) => {
+        console.log('wallet disconnect:', reason);
+        subject.next({status: 'DisConnect', data: {reason: reason, code: code}})
 
     },
 

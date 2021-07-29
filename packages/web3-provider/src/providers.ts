@@ -21,9 +21,13 @@ export const ConnectProvides = new Proxy<{
     clear:undefined
 }, {
     get: async function (obj, prop) {
-        if(prop === 'usedProvide'){
-            return obj.usedProvide;
+        switch (prop){
+            case 'usedProvide':
+                return obj.usedProvide;
+            case 'usedWeb3':
+                return obj.usedWeb3;
         }
+
         if(obj.usedProvide && typeof obj.usedProvide.removeAllListeners === 'function'){
             obj.usedProvide.removeAllListeners('accountsChanged');
             obj.usedProvide.removeAllListeners('chainChanged');
