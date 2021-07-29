@@ -182,6 +182,7 @@ export const TradeTable = withTranslation('tables')((props: WithTranslation & Tr
     const {t, pagination, showFilter, rawData} = props
     const [filterType, setFilterType] = React.useState(FilterTradeTypes.allTypes)
     const [filterDate, setFilterDate] = React.useState<DateRange<string | Date>>([null, null])
+    const [filterPair, setFilterPair] = React.useState('all')
     const [page, setPage] = React.useState(1)
     const [totalData, setTotalData] = React.useState<RawDataTradeItem[]>(rawData)
     const {currency} = useSettings();
@@ -208,6 +209,7 @@ export const TradeTable = withTranslation('tables')((props: WithTranslation & Tr
         TableType,
         currFilterType = filterType,
         currFilterDate = filterDate,
+        currFilterPair = filterPair
     }) => {
         let resultData = rawData ? rawData : []
         if (currFilterType !== FilterTradeTypes.allTypes) {
@@ -218,21 +220,29 @@ export const TradeTable = withTranslation('tables')((props: WithTranslation & Tr
             const endTime = Number(moment(currFilterDate[1]).format('x'))
             resultData = resultData.filter(o => o.time < endTime && o.time > startTime)
         }
+        if (currFilterPair !== 'all') {
+            resultData = resultData.filter(o => {
+                const pair = `${o.amount.from.key} - ${o.amount.to.key}`
+                return pair === currFilterPair
+            })
+        }
         if (TableType === 'filter') {
             setPage(1)
         }
         setTotalData(resultData)
-    }, [rawData, filterDate, filterType])
+    }, [rawData, filterDate, filterType, filterPair])
 
-    const handleFilterChange = React.useCallback(({type = filterType, date = filterDate}) => {
+    const handleFilterChange = React.useCallback(({type = filterType, date = filterDate, pair = filterPair}) => {
         setFilterType(type)
         setFilterDate(date)
+        setFilterPair(pair)
         updateData({
             TableType: TableType.filter,
             currFilterType: type, 
-            currFilterDate: date
+            currFilterDate: date,
+            currFilterPair: pair
         })
-    }, [updateData, filterDate,filterType])
+    }, [updateData, filterDate, filterType, filterPair])
 
     const handlePageChange = React.useCallback((page: number) => {
         setPage(page)
@@ -242,10 +252,12 @@ export const TradeTable = withTranslation('tables')((props: WithTranslation & Tr
     const handleReset = () => {
         setFilterType(FilterTradeTypes.allTypes)
         setFilterDate([null, null])
+        setFilterPair('all')
         updateData({
             TableType: 'filter',
             currFilterType: FilterTradeTypes.allTypes,
             currFilterDate: [null, null],
+            currFilterPair: 'all'
         })
     }
 
@@ -253,10 +265,12 @@ export const TradeTable = withTranslation('tables')((props: WithTranslation & Tr
         {showFilter && (
             <TableFilterStyled>
                 <Filter {...{
+                    rawData,
                     handleFilterChange,
                     filterType,
                     filterDate,
-                    handleReset
+                    filterPair,
+                    handleReset,
                 }} />
             </TableFilterStyled>
         )}
