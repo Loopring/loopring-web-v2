@@ -20,9 +20,10 @@ export const WalletConnectProvide = async () :Promise<{provider:WalletConnectPro
             await connector.createSession();
             // get uri for QR Code modal
             const uri = connector.uri;
-            QRCodeModal.open(uri, () => {
-                console.log("QR Code Modal closed");
-            });
+            walletServices.sendProcess('nextStep',{QRCodeUrl:uri});
+            // QRCodeModal.open(uri, () => {
+            //     console.log("QR Code Modal closed");
+            // });
             await provider.enable();
         }
         web3 = new Web3(provider as any);

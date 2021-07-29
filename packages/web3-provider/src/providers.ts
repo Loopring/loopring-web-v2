@@ -34,7 +34,9 @@ export const ConnectProvides = new Proxy<{
             obj.usedProvide.removeAllListeners('disconnect');
             delete  obj.usedProvide
         }
+
         let provderObj;
+        walletServices.sendProcess('waiting');
         // let provider,web3;
         switch (prop) {
             case LoopringProvider.MetaMask:
