@@ -2,7 +2,7 @@ import React from 'react'
 import { TransactionTable } from '@loopring-web/component-lib'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { StylePaper } from '../../styled'
-import { useGetTxs } from './hooks'
+import { useGetTxs } from './hooks';
 
 const TxPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
     const { t } = rest

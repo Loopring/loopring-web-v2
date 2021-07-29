@@ -36,8 +36,9 @@ export enum AccountStatus {
 
 export type AccountState = {
     accAddress: string,
-    readyState: keyof typeof AccountStatus extends 'RESET' ? 'Unknown': keyof typeof AccountStatus | 'Unknown',
+    readyState: keyof typeof AccountStatus | 'Unknown',
     accountId: number|-1,
+
     //   accountId: defaultAccId,
     //   publicKey: PublicKey,
     //   nonce: 0,

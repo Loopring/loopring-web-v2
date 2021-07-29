@@ -73,14 +73,14 @@ const Header = ({ ...rest }: any) => {
             autoHideDuration={TOAST_TIME} setOpen={setCopyToastOpen} severity={"success"} />
 
         <ModalQRCode open={openQRCode} onClose={() => setOpenQRCode(false)} title={'ETH Address'}
-            description={account?.accAddr} url={account?.accAddr} />
+            description={account?.accAddress} url={account?.accAddress} />
 
         <ModalPanel transferProps={transferProps} withDrawProps={withdrawProps} 
         depositProps={depositProps} resetProps={resetProps} ammProps={ammProps} swapProps={swapProps}/>
 
         <HideOnScroll>
-            {process.env.NODE_ENV !== 'production' && JSON.stringify(account?.status) + '\t'
-            + account?.connectName  + '/' + account?.connectNameTemp }
+            {process.env.NODE_ENV !== 'production' && JSON.stringify(account?.readyState) + '\t'
+            + account?.connectName  + '/'  }
 
             <HeaderUI {...rest} headerMenuData={headerMenuData} headerToolBarData={headerToolBarData}
                 selected={location.pathname === '/' ? headerRoot : location.pathname}></HeaderUI>
@@ -93,7 +93,7 @@ const Header = ({ ...rest }: any) => {
             open={isShowAccountInfo.isShow}
             onClose={() => {setShowAccountInfo({isShow:false})}}
             onCopy={() => {
-                copyToClipBoard(account.accAddr);
+                copyToClipBoard(account.accAddress);
                 setCopyToastOpen(true)
             }}
             onViewQRCode={() => {

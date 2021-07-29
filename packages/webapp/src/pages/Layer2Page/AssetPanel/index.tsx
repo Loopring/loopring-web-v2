@@ -25,6 +25,7 @@ import { useWalletLayer1 } from 'stores/walletLayer1'
 import { makeWalletLayer2 } from 'hooks/help'
 import { EmptyValueTag,unit } from '@loopring-web/common-resources'
 import { StylePaper } from '../../styled'
+import { useAccount } from '../../../stores/account';
 
 // const StylePaper = styled(Box)`
 //   width: 100%;
@@ -96,7 +97,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const [chartPeriod, setChartPeriod] = useState('week')
     const [chartData, setChartData] = useState<TrendDataItem[]>([])
     
-    const { accAddr } = store.getState().account
+    const { account:{accAddress} } = useAccount()
     const { walletLayer2 } = store.getState().walletLayer2;
     const { ammMap } = store.getState().amm.ammMap
     const walletMap = makeWalletLayer2()
@@ -109,7 +110,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
     const getUserTotalAssets = useCallback(async (limit: number = 7) => {
         const userAssets = await LoopringAPI.walletAPI?.getUserAssets({
-            wallet: accAddr,
+            wallet: accAddress,
             assetType: AssetType.DEX,
             limit: limit // TODO: minium unit is day, discuss with pm later
         })
@@ -119,7 +120,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                 close: Number(o.amount)
             })))
         }
-    }, [accAddr])
+    }, [accAddress])
 
     useEffect(() => {
         if (LoopringAPI && LoopringAPI.walletAPI && walletLayer2) {
