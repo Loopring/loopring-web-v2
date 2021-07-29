@@ -103,7 +103,7 @@ const TradePanel = withTranslation('common')((rest:WithTranslation<'common'>) =>
                       fee: {
                         key: feeKey,
                         // value: VolToNumberWithPrecision(o.fee, quoteToken),
-                        value: feeKey ? volumeToCountAsBigNumber(feeKey, o.fee)?.toNumber() : undefined
+                        value: feeKey ? volumeToCount(feeKey, o.fee)?.toFixed(6) : undefined
                       },
                       time: Number(o.tradeTime),
                       amount: {

@@ -91,7 +91,7 @@ export function useGetTxs() {
                 },
                 fee: {
                     unit: o.feeTokenSymbol || '',
-                    value: Number(volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0))
+                    value: Number(volumeToCount(o.feeTokenSymbol, o.feeAmount || 0)?.toFixed(6))
                 },
                 memo: '',
                 time: o.timestamp,
