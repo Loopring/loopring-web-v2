@@ -1,75 +1,45 @@
-import { Machine } from "xstate"
-import { AccountStatus } from '../account_machine_spec'
+import { createMachine } from "xstate"
 
-const appMachine = Machine({
-  initial: AccountStatus.UNCONNNECTED,
-  states: {
-    UNCONNNECTED: {
-      on: {
-        Connecting: AccountStatus.CONNECTED,
-        Reset: AccountStatus.UNCONNNECTED,
+const loopringMachine = createMachine({
+    initial: 'UNCONNECTED',
+    states:{
+      UNCONNECTED:{
+        on:{
+          Connect:'CONNECTED'
+        }
+      },
+      CONNECTED:  {
+        on:{
+          CheckNoAccount:'NO_ACCOUNT',
+          CheckDeposited:'DEPOSITED_NO_UPDATE_ACCOUNT',
+          CheckAccountReady:'LOCKED',
+          Reset:'UNCONNECTED',
+        }
+      },
+      NO_ACCOUNT:{
+        on:{
+          Connect: 'CONNECTED',
+          Depositing:'DEPOSITED_NO_UPDATE_ACCOUNT',
+          Reset:'UNCONNECTED',
+        }
+      },
+      DEPOSITED_NO_UPDATE_ACCOUNT:  {
+        on:{
+          UpdateAccount:'ACTIVATED',
+          Reset:'UNCONNECTED',
+        }
+      },
+      LOCKED:{
+        on:{
+          Unlock:'ACTIVATED',
+          Reset:'UNCONNECTED',
+        }
+      },
+      ACTIVATED:{
+        on:{
+          Lock:'LOCKED',
+          Reset:'UNCONNECTED',
+        }
       }
-    },
-    CONNECTED: {
-      on: {
-        HasPubkey: AccountStatus.LOCKED,
-        HasNoPubkey: AccountStatus.UNACTIVATED,
-        ErrorResponse: AccountStatus.NOACCOUNT,
-        Reset: AccountStatus.UNCONNNECTED,
-      }
-    },
-    NOACCOUNT: {
-      on: {
-        ErrorResponse: AccountStatus.NOACCOUNT,
-        Reconnect: AccountStatus.CONNECTED,
-        Reset: AccountStatus.UNCONNNECTED,
-      }
-    },
-    DEPOSITING: {
-      on: {
-        FinishDeposit: AccountStatus.DEPOSIT_TO_CONFIREM,
-        Reset: AccountStatus.UNCONNNECTED,
-      }
-    },
-    DEPOSIT_TO_CONFIREM: {
-      on: {
-        HasPubkey: AccountStatus.ACTIVATED,
-        HasNoPubkey: AccountStatus.DEPOSIT_TO_CONFIREM,
-        ErrorResponse: AccountStatus.DEPOSIT_TO_CONFIREM,
-        Reset: AccountStatus.UNCONNNECTED,
-      }
-    },
-    UNACTIVATED: {
-      on: {
-        IsSmartWallet: AccountStatus.ARPROVING,
-        Reset: AccountStatus.UNCONNNECTED,
-      }
-    },
-    ARPROVING: {
-      on: {
-        ApproveSubmit: AccountStatus.APPROV_TO_CONFIRM,
-        Reset: AccountStatus.UNCONNNECTED,
-      }
-    },
-    APPROV_TO_CONFIRM: {
-      on: {
-        ApproveConfirmed: AccountStatus.ACTIVATED,
-        Reset: AccountStatus.UNCONNNECTED,
-      }
-    },
-    LOCKED: {
-      on: {
-        Unlock: AccountStatus.ACTIVATED,
-        Reset: AccountStatus.UNCONNNECTED,
-      }
-    },
-    ACTIVATED: {
-      on: {
-        Lock: AccountStatus.LOCKED,
-        Reset: AccountStatus.UNCONNNECTED,
-      }
-    },
-  }
-})
-
-export default appMachine
+    }
+  })

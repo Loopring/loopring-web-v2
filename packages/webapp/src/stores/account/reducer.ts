@@ -7,14 +7,14 @@ import { AccountStatus } from 'state_machine/account_machine_spec'
 import { UserStorage } from 'storage'
 import { myLog } from 'utils/log_tools'
 
-
 const initialState = () => {
   const defaultAccId = process.env.REACT_APP_TEST_ACCOUND_ID ? process.env.REACT_APP_TEST_ACCOUND_ID : UserStorage.getAccountId()
   const defaultApiKey = process.env.REACT_APP_TEST_API_KEY ? process.env.REACT_APP_TEST_API_KEY : UserStorage.getApikey()
   const defaultOwner = process.env.REACT_APP_TEST_OWNER ? process.env.REACT_APP_TEST_OWNER : UserStorage.getAccount()
   const defaultEddsaKey = process.env.REACT_APP_TEST_EDDSA_KEY ? process.env.REACT_APP_TEST_EDDSA_KEY : UserStorage.getEddsakey()
 
-  const defaultStatus = AccountStatus.UNCONNNECTED
+  const defaultStatus = AccountStatus.UNCONNECTED
+  
   return {
     accAddr: defaultOwner,
     status: defaultStatus,

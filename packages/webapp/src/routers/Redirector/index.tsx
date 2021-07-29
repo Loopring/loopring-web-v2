@@ -7,18 +7,18 @@ import { useWeb3Account } from 'stores/account/hook'
 
 const Redirector = ({ children }: { children: React.ReactNode }) => {
 
-  const lv1Acc = useWeb3Account()
+  const { isConnected } = useWeb3Account()
 
   return (
-    <React.Fragment>
+    <>
       {
-        lv1Acc.isConnected ? (
+        isConnected() ? (
           <>
           {children}
           </>
         ) : <Redirect to="/" />
       }
-    </React.Fragment>
+    </>
   )
 
 }

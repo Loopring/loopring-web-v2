@@ -61,12 +61,11 @@ export const Layer2Page = () => {
     const {depositProps} = useModalProps();
 
     return <>  {
-        accStatus === AccountStatus.UNCONNNECTED 
+        accStatus === AccountStatus.UNCONNECTED 
             ? <Redirect to="/" />
             :
         accStatus === AccountStatus.NOACCOUNT
-    || accStatus === AccountStatus.DEPOSITING
-    || accStatus === AccountStatus.DEPOSIT_TO_CONFIREM ?
+    || accStatus === AccountStatus.DEPOSITED_NO_UPDATE_ACCOUNT ?
         <BoxStyle display={'flex'} flexWrap={'wrap'} alignItems={'center'} justifyContent={'center'} alignContent={'flex-start'}>
             <DepositPanel  {...{
                 ...rest, ...depositProps,

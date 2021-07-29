@@ -11,6 +11,8 @@ export enum CONSTANTS {
     HardwareAddresses = 'hardware_addresses',
     ConnectorName = 'connector_name',
 
+    DepositHash = 'deposit_hash',
+
     WalletConnect = 'walletconnect',
 }
 
@@ -124,6 +126,19 @@ export class UserStorage {
 
     public static clearAmmOrder() {
         localStorage.removeItem(CONSTANTS.AmmOrder)
+    }
+
+    public static getDepositHash(): string {
+        var orderHash = localStorage.getItem(CONSTANTS.DepositHash)
+        return orderHash ? orderHash : ''
+    }
+
+    public static setDepositHash(depositHash: string) {
+        localStorage.setItem(CONSTANTS.DepositHash, depositHash)
+    }
+
+    public static clearDepositHash() {
+        localStorage.removeItem(CONSTANTS.DepositHash)
     }
 
     public static isHardwareAddress(address: string) {

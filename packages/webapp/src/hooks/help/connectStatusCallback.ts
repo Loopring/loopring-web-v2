@@ -7,11 +7,7 @@ export enum fnType {
     UNCONNNECTED,
     CONNECTED,
     NOACCOUNT,
-    DEPOSITING,
-    DEPOSIT_TO_CONFIREM,
-    UNACTIVATED,
-    ARPROVING,
-    APPROV_TO_CONFIRM,
+    DEPOSITED_NO_UPDATE_ACCOUNT,
     LOCKED,
     ACTIVATED,
     DEFAULT
@@ -24,7 +20,7 @@ export const accountStaticCallBack = (onclickMap: { [ key: number ]: [fn: (props
         case AccountStatus.UNKNOWN:
             [fn, args] = onclickMap[ fnType.UNKNOWN ] ? onclickMap[ fnType.UNKNOWN ] : [];
             break
-        case AccountStatus.UNCONNNECTED:
+        case AccountStatus.UNCONNECTED:
             [fn, args] = onclickMap[ fnType.UNCONNNECTED ] ? onclickMap[ fnType.UNCONNNECTED ] : [];
             break
         case AccountStatus.CONNECTED:
@@ -33,20 +29,11 @@ export const accountStaticCallBack = (onclickMap: { [ key: number ]: [fn: (props
         case AccountStatus.NOACCOUNT:
             [fn, args] = onclickMap[ fnType.NOACCOUNT ] ? onclickMap[ fnType.NOACCOUNT ] : [];
             break;
-        case AccountStatus.DEPOSITING:
-            [fn, args] = onclickMap[ fnType.DEPOSITING ] ? onclickMap[ fnType.DEPOSITING ] : [];
+        case AccountStatus.DEPOSITED_NO_UPDATE_ACCOUNT:
+            [fn, args] = onclickMap[ fnType.DEPOSITED_NO_UPDATE_ACCOUNT ] ? onclickMap[ fnType.DEPOSITED_NO_UPDATE_ACCOUNT ] : [];
             break;
-        case AccountStatus.DEPOSIT_TO_CONFIREM:
-            [fn, args] = onclickMap[ fnType.DEPOSIT_TO_CONFIREM ] ? onclickMap[ fnType.DEPOSIT_TO_CONFIREM ] : [];
-            break;
-        case AccountStatus.UNACTIVATED:
-            [fn, args] = onclickMap[ fnType.UNACTIVATED ] ? onclickMap[ fnType.UNACTIVATED ] : [];
-            break;
-        case AccountStatus.ARPROVING:
-            [fn, args] = onclickMap[ fnType.ARPROVING ] ? onclickMap[ fnType.ARPROVING ] : [];
-            break;
-        case AccountStatus.APPROV_TO_CONFIRM:
-            [fn, args] = onclickMap[ fnType.APPROV_TO_CONFIRM ] ? onclickMap[ fnType.APPROV_TO_CONFIRM ] : [];
+        case AccountStatus.DEPOSITED_NO_UPDATE_ACCOUNT:
+            [fn, args] = onclickMap[ fnType.DEPOSITED_NO_UPDATE_ACCOUNT ] ? onclickMap[ fnType.DEPOSITED_NO_UPDATE_ACCOUNT ] : [];
             break;
         case AccountStatus.LOCKED:
             [fn, args] = onclickMap[ fnType.LOCKED ] ? onclickMap[ fnType.LOCKED ] : [];
