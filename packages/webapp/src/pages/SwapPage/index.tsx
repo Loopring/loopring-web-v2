@@ -29,7 +29,7 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
         onSwapClick,
         pair,
         swapBtnI18nKey,
-        isSwapLoading,
+        btnStatus,
         swapToastOpen,
         setSwapToastOpen,
         swapAlertText,
@@ -67,7 +67,7 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
                            tradeCalcData={tradeCalcData as any}
                            onSwapClick={onSwapClick}
                            swapBtnI18nKey={swapBtnI18nKey}
-                           swapBtnStatus={isSwapLoading ? TradeBtnStatus.LOADING : TradeBtnStatus.AVAILABLE}
+                           swapBtnStatus={btnStatus}
                     // handleError={}
                            {...{handleSwapPanelEvent, ...rest}}
                 />
