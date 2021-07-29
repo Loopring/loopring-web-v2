@@ -4,7 +4,6 @@ import { walletServices } from '../walletServices';
 import { IpcProvider } from 'web3-core';
 import { ErrorType } from '../command';
 import { LoopringProvider } from '../interface';
-// import { AbstractProvider } from 'web3-core';
 
 export const MetaMaskProvide = async (): Promise<{ provider: IpcProvider, web3: Web3 } | undefined> => {
     try {
@@ -12,9 +11,8 @@ export const MetaMaskProvide = async (): Promise<{ provider: IpcProvider, web3: 
         const ethereum: any = window.ethereum;
         if (provider && ethereum) {
             const web3 = new Web3(provider as any);
-            walletServices.sendConnect(web3, provider);
             await ethereum.request({ method: 'eth_requestAccounts' });
-            // const accounts = await web3.eth.getAccounts();
+            walletServices.sendConnect(web3, provider);
             return {provider, web3}
         } else {
             return undefined

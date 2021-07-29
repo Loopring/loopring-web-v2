@@ -6,10 +6,10 @@ import { Commands, ErrorType } from './command';
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
 export const walletServices = {
-    sendProcess: async (type: string, props: any) => {
+    sendProcess: async (type: 'waiting'|'nextStep', props?: any) => {
         subject.next({
             status: Commands.Processing,
-            data: {type, opts: props}
+            data: {type:type, opts: props}
         });
     },
     sendError: async (errorType: keyof typeof ErrorType, errorObj: any) => {
