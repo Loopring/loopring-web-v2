@@ -12,7 +12,7 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 import { LoopringAPI } from '../../stores/apis/api';
 import { useTokenMap } from '../../stores/token';
-import * as fm from 'loopring-sdk';
+import * as sdk from 'loopring-sdk';
 import {
     AmmPoolInfoV3,
     AmmPoolSnapshot,
@@ -55,6 +55,7 @@ import { myLog } from 'utils/log_tools';
 import { useTranslation } from 'react-i18next';
 import { REFRESH_RATE_SLOW } from 'defs/common_defs';
 import { accordionClasses } from '@material-ui/core';
+import { flatMap } from 'lodash';
 
 export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     /*** api prepare ***/
@@ -94,6 +95,12 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     const [feeBips, setFeeBips] = useState<string>('0')
 
+    const [baseMinAmt, setBaseMinAmt] = useState<string>()
+
+    const [quoteMinAmt, setQuoteMinAmt] = useState<string>()
+
+    const [isValidAmt, setIsValidAmt] = useState<boolean>(false)
+
     useCustomDCEffect(async() => {
 
         const base = tradeData?.sell.belong
@@ -123,9 +130,17 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
         const { amountMap } = await LoopringAPI.userAPI.getMinimumTokenAmt(req, account.apiKey)
 
-        const takerRate = amountMap[quote].userOrderInfo.takerRate
+        const baseMinAmtInfo = amountMap[base]
+        const quoteMinAmtInfo = amountMap[quote]
 
-        const totalFee = fm.toBig(feeBips).plus(fm.toBig(takerRate)).toString()
+        const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
+
+        const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
+
+        setBaseMinAmt(baseMinAmtInfo.userOrderInfo.minAmount)
+        setQuoteMinAmt(quoteMinAmtInfo.userOrderInfo.minAmount)
+
+        myLog('---------------------------- amountMap:', amountMap)
 
         myLog('totalFee:', totalFee)
         myLog('takerRate:', takerRate)
@@ -287,8 +302,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     }, [swapBtnClickArray])
 
     const handleSwapPanelEvent = async (swapData: SwapData<SwapTradeData<IBData<C>>>, switchType: any): Promise<void> => {
-        //TODO setMarket(market);
-        // _.throttle(()=>{
+        
         const {tradeData} = swapData
         return new Promise((resolve) => {
             switch (switchType) {
@@ -311,7 +325,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
             resolve(undefined)
         })
-        // },wait)
 
     }
 
@@ -371,13 +384,13 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             slippage = 0.5
         }
 
-        slippage = fm.toBig(slippage).times(100).toString()
+        slippage = sdk.toBig(slippage).times(100).toString()
 
         const ammMapRaw = {[ 'AMM-' + market ]: ammMap[ 'AMM-' + market ].__rawConfig__} as LoopringMap<AmmPoolInfoV3>
 
         myLog(input)
 
-        const output = fm.getOutputAmount(input, base, quote, isAtoB, marketArray, tokenMap,
+        const output = sdk.getOutputAmount(input, base, quote, isAtoB, marketArray, tokenMap,
             marketMap, depth, ammMapRaw, ammPoolSnapshot, takerRate, slippage)
 
         setOutput(output)
@@ -393,9 +406,24 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         
         //TODO: renew  tradeCalcData
         let _tradeCalcData = {...tradeCalcData} as TradeCalcData<C>;
+
         return {_tradeData, _tradeCalcData}
         
     }
+
+    // check output and min order amt
+    useCustomDCEffect(() => {
+
+        const validAmt = (output?.amountS && output?.amountBOut && baseMinAmt && quoteMinAmt 
+        && sdk.toBig(output?.amountS).gte(sdk.toBig(baseMinAmt)) && sdk.toBig(output?.amountBOut).gte(sdk.toBig(quoteMinAmt))) ? true : false
+        
+        setIsValidAmt(validAmt)
+
+        myLog(output, baseMinAmt, quoteMinAmt)
+
+        myLog('.........validAmt:', validAmt)
+
+    }, [output, baseMinAmt, quoteMinAmt])
 
     const throttleSetValue = React.useCallback(_.debounce(async (type, _tradeData, _ammPoolSnapshot) => {
       
