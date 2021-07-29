@@ -7,14 +7,14 @@ import store from 'stores'
 import { LoopringAPI } from 'stores/apis/api'
 import { volumeToCount } from 'hooks/help'
 import { StylePaper } from '../../styled'
+import { useAccount } from '../../../stores/account';
 
 
 const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
     const container = React.useRef(null);
     const [pageSize, setPageSize] = React.useState(10);
     const [orderOriginalData, setOrderOriginalData] = React.useState<OrderHistoryRawDataItem[]>([])
-
-    const { accountId,apiKey } = store.getState().account;
+    const { account: {accountId, apiKey} } = useAccount()
 
     useEffect(() => {
         (async function getUserApi () {

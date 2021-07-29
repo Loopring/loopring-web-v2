@@ -10,7 +10,7 @@ import { TransactionTradeTypes } from '@loopring-web/component-lib';
 
 export function useGetTxs() {
 
-    const { accountId, apiKey } = useAccount()
+    const { account: {accountId, apiKey} } = useAccount()
 
     // const userApi = useUserAPI()
 

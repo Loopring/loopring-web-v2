@@ -19,7 +19,7 @@ export function useInit(){
     const systemState = useSystem();
     const tokenState = useTokenMap();
     const ammMapState = useAmmMap();
-    const accountState  = useAccount();
+    const {account,status:accuntStatus}  = useAccount();
     const walletLayer1State  =  useWalletLayer1()
     //store.getState().account
     // const socketState =   useSocket();
@@ -89,7 +89,7 @@ export function useInit(){
             tokenState.statusUnset();
             setState('DONE');
         }
-    },[ammMapState,tokenState,accountState.accountId,walletLayer1State])
+    },[ammMapState,tokenState,account.accountId,walletLayer1State])
 
     // React.useEffect(()=>{
     //

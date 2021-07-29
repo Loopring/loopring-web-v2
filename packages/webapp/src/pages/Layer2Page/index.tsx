@@ -15,13 +15,12 @@ import TxPanel from './TxPanel'
 import AssetPanel from './AssetPanel'
 import TradePanel from './TradePanel'
 import AmmPanel from './AmmPanel'
-import OrderPanel from './OrderPanel'
 import { SettingPanel } from '../SettingPage';
-import store from '../../stores';
-import { AccountStatus } from '../../state_machine/account_machine_spec';
+// import { AccountStatus } from '../../state_machine/account_machine_spec';
 import { useModalProps } from '../../layouts/header/hook';
 import { Redirect } from 'react-router-dom'
 import React from 'react';
+import { AccountStatus, useAccount } from '../../stores/account';
 
 export const subMenu = subMenuLayer2;
 const BoxStyle = styled(Box)`
@@ -55,18 +54,17 @@ const SubMenuList = withTranslation(['layout','common'], { withRef: true })(Basi
 export const Layer2Page = () => {
 
     let match: any = useRouteMatch("/layer2/:item")
-    const {status: accStatus} = store.getState().account;
+    const {account:{readyState}} = useAccount()
     const {t,...rest} = useTranslation();
     const selected = match?.params.item ?? 'assets';
     const {depositProps} = useModalProps();
 
     return <>  {
-        accStatus === AccountStatus.UNCONNNECTED 
+        readyState === AccountStatus.RESET  || readyState === AccountStatus.UN_CONNECT
             ? <Redirect to="/" />
             :
-        accStatus === AccountStatus.NOACCOUNT
-    || accStatus === AccountStatus.DEPOSITING
-    || accStatus === AccountStatus.DEPOSIT_TO_CONFIREM ?
+            readyState === AccountStatus.NO_ACCOUNT
+    || readyState === AccountStatus.DEPOSITING?
         <BoxStyle display={'flex'} flexWrap={'wrap'} alignItems={'center'} justifyContent={'center'} alignContent={'flex-start'}>
             <DepositPanel  {...{
                 ...rest, ...depositProps,
@@ -80,7 +78,7 @@ export const Layer2Page = () => {
                 </SubMenu>
             </Box>
             <Box minHeight={420} display={'flex'} alignItems={'stretch'} flexDirection={'column'} marginTop={0} flex={1}>
-                {accStatus === AccountStatus.LOCKED ?
+                {readyState === AccountStatus.LOCKED ?
                 <>
                     {
                         selected === 'setting' ? <SettingPanel /> :

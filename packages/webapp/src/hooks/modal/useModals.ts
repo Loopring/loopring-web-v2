@@ -9,16 +9,17 @@ import {
 } from '@loopring-web/component-lib'
 import { useTranslation } from "react-i18next";
 import store from 'stores'
-import { AccountStatus } from "state_machine/account_machine_spec";
+import { AccountStatus, useAccount } from '../../stores/account';
 
 export function useModals() {
 
     const dispatch = useDispatch()
-
+    const {account:{readyState}} = useAccount()
     const { t } = useTranslation('common')
 
     const ShowDeposit = useCallback((isShow: boolean, defaultProps?: any)=>{
-        const isNoAccount = store.getState().account.status === AccountStatus.NOACCOUNT
+
+        const isNoAccount = readyState === AccountStatus.NO_ACCOUNT
 
         console.log('isNoAccount: ', isNoAccount, t('depositTitleAndActive'))
         const action = {

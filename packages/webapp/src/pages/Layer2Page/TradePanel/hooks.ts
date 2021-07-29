@@ -10,7 +10,7 @@ import { LoopringAPI } from 'stores/apis/api'
 
 export function useGetTrades() {
 
-    const { accountId, apiKey } = useAccount()
+    const { account:{accountId, apiKey} } = useAccount()
 
     const [userTrades, setUserTrades] = useState<RawDataTradeItem[]>()
 
