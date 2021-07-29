@@ -5,12 +5,6 @@ import { Commands } from './command';
 //TODO typeof account State
 const subject = new Subject<{ status: keyof typeof Commands, data:any,}>();
 
-
-// export type TickerMap<R> = {
-//     [key in keyof R]:TradeFloat
-// }
-// <R extends {[key:string]:any}>
-//<R>
 export const walletServices = {
     sendConnect : async (web3:Web3,provider:any) => {
         const accounts = await web3.eth.getAccounts();

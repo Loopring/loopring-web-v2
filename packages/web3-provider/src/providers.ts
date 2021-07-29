@@ -76,7 +76,12 @@ export const ConnectProvides = new Proxy<{
             });
             // @ts-ignore
             obj.usedProvide.on("disconnect", (code: number, reason: string) => {
+                if(obj.usedProvide instanceof WalletConnectProvider) {
+                    const {connector} = obj.usedProvide as WalletConnectProvider;
+                    connector.killSession();
+                }
                 walletServices.sendDisconnect(code,reason);
+
             });
         }
 
