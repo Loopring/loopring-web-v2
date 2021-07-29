@@ -12,7 +12,7 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 import { LoopringAPI } from '../../stores/apis/api';
 import { useTokenMap } from '../../stores/token';
-import * as fm from 'loopring-sdk';
+import * as sdk from 'loopring-sdk';
 import {
     AmmPoolInfoV3,
     AmmPoolSnapshot,
@@ -28,7 +28,7 @@ import {
 } from 'loopring-sdk';
 import { useAmmMap } from '../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../stores/walletLayer2';
-import { RawDataTradeItem, SwapTradeData, SwapType, ToastProps } from '@loopring-web/component-lib';
+import { RawDataTradeItem, SwapTradeData, SwapType, TradeBtnStatus } from '@loopring-web/component-lib';
 import { useAccount } from '../../stores/account/hook';
 import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
 import {
@@ -50,11 +50,39 @@ import store from 'stores';
 import { AccountStatus } from 'state_machine/account_machine_spec';
 import { SwapData } from '@loopring-web/component-lib';
 import { deepClone } from '../../utils/obj_tools';
-import { debug } from 'console';
 import { myLog } from 'utils/log_tools';
 import { useTranslation } from 'react-i18next';
 import { REFRESH_RATE_SLOW } from 'defs/common_defs';
-import { accordionClasses } from '@material-ui/core';
+
+export const useSwapBtnStatusCheck = () => {
+
+    const [btnStatus, setBtnStatus] = useState(TradeBtnStatus.DISABLED)
+    
+    const [isSwapLoading, setIsSwapLoading] = useState(false)
+
+    const [isValidAmt, setIsValidAmt] = useState<boolean>(false)
+
+    useEffect(() => {
+
+        if (isSwapLoading) {
+            setBtnStatus(TradeBtnStatus.LOADING)
+        } else {
+            if (isValidAmt) {
+                setBtnStatus(TradeBtnStatus.AVAILABLE)
+            } else {
+                setBtnStatus(TradeBtnStatus.DISABLED)
+            }
+        }
+
+    }, [isSwapLoading, isValidAmt])
+
+    return {
+        btnStatus,
+        setIsSwapLoading,
+        setIsValidAmt,
+    }
+
+}
 
 export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     /*** api prepare ***/
@@ -67,13 +95,11 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const match: any = useRouteMatch(":symbol")
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap,} = useTokenMap()
     const {ammMap} = useAmmMap();
-    // const {setShowConnect, setShowAccountInfo} = useOpenModals();
-    // const {ShowDeposit} = useModals()
+    
     const {account} = useAccount()
     const {delayAndUpdateWalletLayer2} = useWalletLayer2();
 
-    const walletLayer2State = useWalletLayer2();
-    const [isSwapLoading, setIsSwapLoading] = useState(false)
+    const walletLayer2State = useWalletLayer2()
     const [tradeData, setTradeData] = React.useState<SwapTradeData<IBData<C>> | undefined>(undefined);
     const [tradeCalcData, setTradeCalcData] = React.useState<TradeCalcData<C> | undefined>(undefined);
     const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
@@ -93,6 +119,18 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const [takerRate, setTakerRate] = useState<string>('0')
 
     const [feeBips, setFeeBips] = useState<string>('0')
+
+    const [baseMinAmt, setBaseMinAmt] = useState<string>()
+
+    const [quoteMinAmt, setQuoteMinAmt] = useState<string>()
+
+    // --- btn status check
+    const {
+        btnStatus,
+        setIsSwapLoading,
+        setIsValidAmt,
+    } = useSwapBtnStatusCheck()
+    // --- end of btn status check.
 
     useCustomDCEffect(async() => {
 
@@ -123,9 +161,17 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
         const { amountMap } = await LoopringAPI.userAPI.getMinimumTokenAmt(req, account.apiKey)
 
-        const takerRate = amountMap[quote].userOrderInfo.takerRate
+        const baseMinAmtInfo = amountMap[base]
+        const quoteMinAmtInfo = amountMap[quote]
 
-        const totalFee = fm.toBig(feeBips).plus(fm.toBig(takerRate)).toString()
+        const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
+
+        const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
+
+        setBaseMinAmt(baseMinAmtInfo.userOrderInfo.minAmount)
+        setQuoteMinAmt(quoteMinAmtInfo.userOrderInfo.minAmount)
+
+        myLog('---------------------------- amountMap:', amountMap)
 
         myLog('totalFee:', totalFee)
         myLog('takerRate:', takerRate)
@@ -287,8 +333,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     }, [swapBtnClickArray])
 
     const handleSwapPanelEvent = async (swapData: SwapData<SwapTradeData<IBData<C>>>, switchType: any): Promise<void> => {
-        //TODO setMarket(market);
-        // _.throttle(()=>{
+        
         const {tradeData} = swapData
         return new Promise((resolve) => {
             switch (switchType) {
@@ -311,7 +356,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
             resolve(undefined)
         })
-        // },wait)
 
     }
 
@@ -371,13 +415,13 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             slippage = 0.5
         }
 
-        slippage = fm.toBig(slippage).times(100).toString()
+        slippage = sdk.toBig(slippage).times(100).toString()
 
         const ammMapRaw = {[ 'AMM-' + market ]: ammMap[ 'AMM-' + market ].__rawConfig__} as LoopringMap<AmmPoolInfoV3>
 
         myLog(input)
 
-        const output = fm.getOutputAmount(input, base, quote, isAtoB, marketArray, tokenMap,
+        const output = sdk.getOutputAmount(input, base, quote, isAtoB, marketArray, tokenMap,
             marketMap, depth, ammMapRaw, ammPoolSnapshot, takerRate, slippage)
 
         setOutput(output)
@@ -393,9 +437,24 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         
         //TODO: renew  tradeCalcData
         let _tradeCalcData = {...tradeCalcData} as TradeCalcData<C>;
+
         return {_tradeData, _tradeCalcData}
         
     }
+
+    // check output and min order amt
+    useCustomDCEffect(() => {
+
+        const validAmt = (output?.amountBOut && quoteMinAmt 
+            && sdk.toBig(output?.amountBOut).gte(sdk.toBig(quoteMinAmt))) ? true : false
+        
+        setIsValidAmt(validAmt)
+
+        myLog(output, quoteMinAmt)
+
+        myLog('.........validAmt:', validAmt)
+
+    }, [output, quoteMinAmt])
 
     const throttleSetValue = React.useCallback(_.debounce(async (type, _tradeData, _ammPoolSnapshot) => {
       
@@ -500,6 +559,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         }
 
     }
+
     return {
         swapToastOpen,
         setSwapToastOpen,
@@ -509,7 +569,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         tradeFloat,
         tradeArray,
         myTradeArray,
-        isSwapLoading,
+        btnStatus,
         tradeData,
         pair,
         marketArray,
