@@ -47,7 +47,7 @@ const reducer = combineReducers({
 
 //
 
-const PERSISTED_KEYS: string[] = ['settings','localStore']
+const PERSISTED_KEYS: string[] = ['settings', 'localStore']
 
 const store = configureStore({
   reducer,

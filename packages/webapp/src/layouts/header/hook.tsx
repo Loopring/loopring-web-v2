@@ -136,7 +136,7 @@ export const useHeader = () => {
         myLog(`onWalletBtnConnect click: ${acc.status}`)
 
         switch (acc.status) {
-            case AccountStatus.UNCONNNECTED:
+            case AccountStatus.UNCONNECTED:
                 setShowConnect({isShow: true})
                 break
             case AccountStatus.NOACCOUNT:
@@ -259,12 +259,8 @@ export const useHeader = () => {
                     connectBy: ''
                 }
                 setShowAccountInfo({isShow: true})
-            } else if (status === AccountStatus.UNACTIVATED
-                || status === AccountStatus.NOACCOUNT
-                || status === AccountStatus.DEPOSITING
-                || status === AccountStatus.DEPOSIT_TO_CONFIREM
-                || status === AccountStatus.ARPROVING
-                || status === AccountStatus.APPROV_TO_CONFIRM
+            } else if (status === AccountStatus.NOACCOUNT
+                || status === AccountStatus.DEPOSITED_NO_UPDATE_ACCOUNT
             ) {
                 props = {
                     addressShort: addr ? addr : '',
@@ -295,7 +291,7 @@ export const useHeader = () => {
             setAccountInfoProps(props)
         }
         switch (status) {
-            case AccountStatus.UNCONNNECTED:
+            case AccountStatus.UNCONNECTED:
                 headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
                     ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
                     label: t('labelConnectWallet'),
@@ -325,7 +321,6 @@ export const useHeader = () => {
 
                 updateHeaderMenuWhenHasAccountInfo({status});
                 break
-            case AccountStatus.UNACTIVATED:
             case AccountStatus.NOACCOUNT:
                 headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
                     ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
@@ -336,10 +331,7 @@ export const useHeader = () => {
 
                 updateHeaderMenuWhenHasAccountInfo({status});
                 break
-            case AccountStatus.DEPOSITING:
-            case AccountStatus.DEPOSIT_TO_CONFIREM:
-            case AccountStatus.ARPROVING:
-            case AccountStatus.APPROV_TO_CONFIRM:
+            case AccountStatus.DEPOSITED_NO_UPDATE_ACCOUNT:
                 headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
                     ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
                     label: addr,
