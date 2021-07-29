@@ -28,7 +28,7 @@ import {
 } from 'loopring-sdk';
 import { useAmmMap } from '../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../stores/walletLayer2';
-import { RawDataTradeItem, SwapTradeData, SwapType, ToastProps } from '@loopring-web/component-lib';
+import { RawDataTradeItem, SwapTradeData, SwapType, TradeBtnStatus } from '@loopring-web/component-lib';
 import { useAccount } from '../../stores/account/hook';
 import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
 import {
@@ -50,12 +50,39 @@ import store from 'stores';
 import { AccountStatus } from 'state_machine/account_machine_spec';
 import { SwapData } from '@loopring-web/component-lib';
 import { deepClone } from '../../utils/obj_tools';
-import { debug } from 'console';
 import { myLog } from 'utils/log_tools';
 import { useTranslation } from 'react-i18next';
 import { REFRESH_RATE_SLOW } from 'defs/common_defs';
-import { accordionClasses } from '@material-ui/core';
-import { flatMap } from 'lodash';
+
+export const useSwapBtnStatusCheck = () => {
+
+    const [btnStatus, setBtnStatus] = useState(TradeBtnStatus.DISABLED)
+    
+    const [isSwapLoading, setIsSwapLoading] = useState(false)
+
+    const [isValidAmt, setIsValidAmt] = useState<boolean>(false)
+
+    useEffect(() => {
+
+        if (isSwapLoading) {
+            setBtnStatus(TradeBtnStatus.LOADING)
+        } else {
+            if (isValidAmt) {
+                setBtnStatus(TradeBtnStatus.AVAILABLE)
+            } else {
+                setBtnStatus(TradeBtnStatus.DISABLED)
+            }
+        }
+
+    }, [isSwapLoading, isValidAmt])
+
+    return {
+        btnStatus,
+        setIsSwapLoading,
+        setIsValidAmt,
+    }
+
+}
 
 export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     /*** api prepare ***/
@@ -68,13 +95,11 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const match: any = useRouteMatch(":symbol")
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap,} = useTokenMap()
     const {ammMap} = useAmmMap();
-    // const {setShowConnect, setShowAccountInfo} = useOpenModals();
-    // const {ShowDeposit} = useModals()
+    
     const {account} = useAccount()
     const {delayAndUpdateWalletLayer2} = useWalletLayer2();
 
-    const walletLayer2State = useWalletLayer2();
-    const [isSwapLoading, setIsSwapLoading] = useState(false)
+    const walletLayer2State = useWalletLayer2()
     const [tradeData, setTradeData] = React.useState<SwapTradeData<IBData<C>> | undefined>(undefined);
     const [tradeCalcData, setTradeCalcData] = React.useState<TradeCalcData<C> | undefined>(undefined);
     const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
@@ -99,7 +124,13 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     const [quoteMinAmt, setQuoteMinAmt] = useState<string>()
 
-    const [isValidAmt, setIsValidAmt] = useState<boolean>(false)
+    // --- btn status check
+    const {
+        btnStatus,
+        setIsSwapLoading,
+        setIsValidAmt,
+    } = useSwapBtnStatusCheck()
+    // --- end of btn status check.
 
     useCustomDCEffect(async() => {
 
@@ -414,16 +445,16 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     // check output and min order amt
     useCustomDCEffect(() => {
 
-        const validAmt = (output?.amountS && output?.amountBOut && baseMinAmt && quoteMinAmt 
-        && sdk.toBig(output?.amountS).gte(sdk.toBig(baseMinAmt)) && sdk.toBig(output?.amountBOut).gte(sdk.toBig(quoteMinAmt))) ? true : false
+        const validAmt = (output?.amountBOut && quoteMinAmt 
+            && sdk.toBig(output?.amountBOut).gte(sdk.toBig(quoteMinAmt))) ? true : false
         
         setIsValidAmt(validAmt)
 
-        myLog(output, baseMinAmt, quoteMinAmt)
+        myLog(output, quoteMinAmt)
 
         myLog('.........validAmt:', validAmt)
 
-    }, [output, baseMinAmt, quoteMinAmt])
+    }, [output, quoteMinAmt])
 
     const throttleSetValue = React.useCallback(_.debounce(async (type, _tradeData, _ammPoolSnapshot) => {
       
@@ -528,6 +559,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         }
 
     }
+
     return {
         swapToastOpen,
         setSwapToastOpen,
@@ -537,7 +569,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         tradeFloat,
         tradeArray,
         myTradeArray,
-        isSwapLoading,
+        btnStatus,
         tradeData,
         pair,
         marketArray,
