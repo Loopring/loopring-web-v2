@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 // import { ScaleAreaChartProps } from '../ScaleAreaChart'
 import { getDepthData } from '../data'
-import { Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, } from 'recharts'
+import { Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, } from '@loopring-web/recharts'
 
 const ASKS_COLOR = '#fb3838'
 const BIDS_COLOR = '#00BBA8'

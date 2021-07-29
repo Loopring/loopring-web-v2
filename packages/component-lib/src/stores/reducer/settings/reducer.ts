@@ -2,6 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { PlatFormType, SettingsState } from "./interface";
 import { Currency, i18n, LanguageKeys, ThemeKeys, ThemeType, UpColor } from '@loopring-web/common-resources';
 import moment from 'moment';
+import * as imgConfig  from '@loopring-web/common-resources/assets/images/coin/loopring.json'
+import { Slice } from '@reduxjs/toolkit/src/createSlice';
 // import { localStore } from '@loopring-web/common-resources/src/storage';
 
 const initialState: SettingsState = {
@@ -10,10 +12,11 @@ const initialState: SettingsState = {
     platform: PlatFormType.desktop,
     currency: Currency.dollar,//localStore.getItem('Currency')?localStore.getItem('Currency') as keyof typeof Currency: Currency.dollar,
     upColor: UpColor.green,//localStore.getItem('UpColor')?localStore.getItem('UpColor') as keyof typeof UpColor: UpColor.green,
+    coinJson: imgConfig.frames,
     slippage: 'N',
 }
 
-export const settingsSlice = createSlice({
+export const settingsSlice:Slice<SettingsState> = createSlice({
     name: 'settings',
     initialState,
     reducers: {
@@ -43,7 +46,11 @@ export const settingsSlice = createSlice({
             // localStore.setItem('UpColor',action.payload)
             state.slippage = action.payload
         },
+        setCoinJson(state, action: PayloadAction<any>) {
+            // localStore.setItem('UpColor',action.payload)
+            state.coinJson = action.payload
+        },
     },
 })
-export const {setTheme, setLanguage, setPlatform, setCurrency, setUpColor, setSlippage} = settingsSlice.actions
+export const {setTheme, setLanguage, setPlatform, setCurrency, setUpColor, setSlippage, setCoinJson} = settingsSlice.actions
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

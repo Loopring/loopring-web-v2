@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Box, Grid, Menu, MenuItem } from '@material-ui/core'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
+import { useHistory } from 'react-router-dom'
 // import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
 import { Button } from '../../basic-lib'
 import { Column, generateColumns, generateRows, Table } from '../../basic-lib/tables'
@@ -18,7 +19,7 @@ const TableStyled = styled(Box)`
 
   .rdg {
     flex: 1;
-    --template-columns: auto auto auto auto ${(props: any) => props.lan === 'zh_CN' ? '320px' : '380px'} !important;
+    --template-columns: auto auto auto auto ${(props: any) => props.lan === 'zh_CN' ? '320px' : '370px'} !important;
 
     .rdg-cell.action {
       display: flex;
@@ -107,20 +108,28 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         onLpDeposit,
         onLpWithdraw,
     } = props
-    const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
-    const [filterTokenType, setFilterTokenType] = useState('All Tokens')
+    // const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
+    // const formattedRawData = rawData && Array.isArray(rawData) ? rawData : []
+    // const [filterTokenType, setFilterTokenType] = useState('All Tokens')
     const [hideSmallBalance, setHideSmallBalance] = useState(false)
     const [hideLPToken, setHideLPToken] = useState(false)
-    const [totalData, setTotalData] = useState(formattedRawData)
+    const [totalData, setTotalData] = useState<RawDataAssetsItem[]>([])
     const [page, setPage] = useState(1)
     const pageSize = pagination ? pagination.pageSize : 10;
 
     const {language} = useSettings()
+    let history = useHistory()
 
     useEffect(() => {
-        setTotalData(rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : [])
+        // setTotalData(rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : [])
+        setTotalData(rawData && Array.isArray(rawData) ? rawData : [])
     }, [rawData])
 
+    const jumpToTrade = (pair: string) => {
+        history.push({
+            pathname: `/trading/lite/${pair}`
+        })
+    }
 
     const getColumnModeAssets = (t: TFunction): Column<Row, unknown>[] => [
         {
@@ -137,7 +146,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         {
             key: 'amount',
             name: t('labelAmount'),
-            minWidth: 120,
+            // minWidth: 120,
         },
         {
             key: 'available',
@@ -146,50 +155,47 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         {
             key: 'locked',
             name: t('labelLocked'),
-            minWidth: 120,
+            // minWidth: 120,
         },
         {
             key: 'actions',
             name: t('labelActions'),
-            minWidth: 280,
+            // minWidth: 280,
             formatter: ({row}) => {
                 const token = row[ 'token' ]
                 const isLp = token.type === TokenType.lp
-                // const tradePairs: TradePairItem[] = row[ '_rawData' ][ 4 ] || []
-                const lpPair = token.value.split('-')
-                lpPair.splice(0, 1)
-                const tokenValue = isLp ? lpPair.join('-') : token.value
+                const lpPairList = token.value.split('-')
+                lpPairList.splice(0, 1)
+                const lpPair = lpPairList.join('-')
+                const tokenValue = token.value
 
                 return (
                     <Grid container spacing={1} alignItems={'center'}>
-                        {isLp ? (
-                            <>
+                        <>
+                            <Grid item>
+                                <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                        onClick={() => onShowDeposit(tokenValue)}>{t('labelDeposit')}</Button>
+                            </Grid>
+                            <Grid item>
+                                <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                        onClick={() => onShowTransfer(tokenValue)}>{t('labelTransfer')}</Button>
+                            </Grid>
+                            <Grid item>
+                                <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                        onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
+                            </Grid>
+                            {isLp ? (
                                 <Grid item>
                                     <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                            onClick={() => onLpDeposit(tokenValue, LpTokenAction.add)}>{t('labelDeposit')}</Button>
+                                            onClick={() => onLpDeposit(lpPair, LpTokenAction.add)}>{t('labelAMM')}</Button>
                                 </Grid>
+                            ) : (
                                 <Grid item>
                                     <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                            onClick={() => onLpWithdraw(tokenValue, LpTokenAction.remove)}>{t('labelWithdraw')}</Button>
+                                            onClick={() => jumpToTrade(tokenValue)}>{t('labelTrade')}</Button>
                                 </Grid>
-                            </>
-                        ) : (
-                            <>
-                                <Grid item>
-                                    <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                            onClick={() => onShowDeposit(tokenValue)}>{t('labelDeposit')}</Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                            onClick={() => onShowTransfer(tokenValue)}>{t('labelTransfer')}</Button>
-                                </Grid>
-                                <Grid item>
-                                    <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                            onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
-                                </Grid>
-                            </>
-                        )}
-                        
+                            )}
+                        </>
                         {/* <Grid item>
                             {isLp
                                 ? <Button variant={'outlined'} color={'primary'} disabled>{t('labelAMM')} </Button>
@@ -226,10 +232,10 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     ]
 
     const defaultArgs: any = {
-        rawData: [],
+        // rawData: [],
         columnMode: getColumnModeAssets(t).filter(o => !o.hidden),
-        generateRows,
-        generateColumns,
+        generateRows: (rawData: any) => rawData,
+        generateColumns: ({columnsRaw}: any) => columnsRaw as Column<any, unknown>[],
     }
 
     const getRenderData = useCallback(() => pagination
@@ -239,35 +245,34 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
 
     const updateData = useCallback(({
                                         TableType,
-                                        currFilterTokenType = filterTokenType,
+                                        // currFilterTokenType = filterTokenType,
                                         currHideSmallBalance = hideSmallBalance,
                                         currHideLPToken = hideLPToken
                                     }) => {
-        // let resultData = cloneDeep(formattedRawData)
-        let resultData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
-        // o[0]: token type
-        if (currFilterTokenType !== 'All Tokens') {
-            resultData = resultData.filter(o =>
-                (o[ 0 ] as TokenTypeCol).value === currFilterTokenType
-            )
-        }
+        // let resultData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
+        let resultData = (rawData && !!rawData.length) ? rawData : []
+        // if (currFilterTokenType !== 'All Tokens') {
+        //     resultData = resultData.filter(o =>
+        //         (o[ 0 ] as TokenTypeCol).value === currFilterTokenType
+        //     )
+        // }
         if (currHideSmallBalance) {
-            resultData = resultData.filter(o => !o[ 5 ])
+            resultData = resultData.filter(o => !o.smallBalance)
         }
         if (currHideLPToken) {
-            resultData = resultData.filter(o => (o[ 0 ] as TokenTypeCol).type === TokenType.single)
+            resultData = resultData.filter(o => o.token.type === TokenType.single)
         }
         if (TableType === 'filter') {
             setPage(1)
         }
         setTotalData(resultData)
-    }, [rawData, filterTokenType, hideSmallBalance, hideLPToken])
+    }, [rawData, /* filterTokenType,  */hideSmallBalance, hideLPToken])
 
-    const handleFilterChange = useCallback(({tokenType, currHideSmallBalance, currHideLPToken}) => {
-        setFilterTokenType(tokenType)
+    const handleFilterChange = useCallback(({/* tokenType,  */currHideSmallBalance, currHideLPToken}) => {
+        // setFilterTokenType(tokenType)
         setHideSmallBalance(currHideSmallBalance)
         setHideLPToken(currHideLPToken)
-        updateData({TableType: TableType.filter, currFilterTokenType: tokenType, currHideSmallBalance, currHideLPToken})
+        updateData({TableType: TableType.filter, /* currFilterTokenType: tokenType, */ currHideSmallBalance, currHideLPToken})
     }, [updateData])
 
     const handlePageChange = useCallback((page: number) => {
@@ -286,7 +291,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     return <TableStyled lan={language}>
         {showFiliter && (
             <TableFilterStyled>
-                <Filter originalData={formattedRawData} handleFilterChange={handleFilterChange}/>
+                <Filter originalData={rawData} handleFilterChange={handleFilterChange}/>
             </TableFilterStyled>
         )}
         <Table {...{...defaultArgs, ...props, rawData: getRenderData()}} onScroll={getScrollIndex}/>

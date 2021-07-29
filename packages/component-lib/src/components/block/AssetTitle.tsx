@@ -49,7 +49,7 @@ export const AssetTitle = withTranslation('common')(({
                         marginTop={1}>
                 <Typography component={'span'} paddingRight={1} variant={'h1'}> {assetInfo.priceTag} </Typography>
                 {isShow ? <Typography component={'span'}
-                                      variant={'h1'}>{getThousandFormattedNumbers(assetInfo.totalAsset)}</Typography> :
+                                      variant={'h1'}>{assetInfo.totalAsset ? getThousandFormattedNumbers(Number(assetInfo.totalAsset.toFixed(2))) : 0.00}</Typography> :
                     <Typography component={'span'}
                                 variant={'h1'}>&#10033;&#10033;&#10033;&#10033;.&#10033;&#10033;&#10033;</Typography>}
             </Typography>

@@ -28,9 +28,9 @@ export const makeMarketArray = (coinKey: any, marketTrades: MarketTradeInfo[]): 
             const {currency} = store.getState().settings
             const {tokenMap} = store.getState().tokenMap
             if (tokenMap) {
-               // const baseToken = tokenMap[ base as string ]
-               // const quoteToken = tokenMap[ quote as string ]
-
+                // const baseToken = tokenMap[ base as string ]
+                // const quoteToken = tokenMap[ quote as string ]
+                const feeKey = item.side === Side.Buy ? base : quote
                 // @ts-ignore
                 tradeArray.push({
                     side: item.side === Side.Sell ? TradeTypes.Sell : TradeTypes.Buy,
@@ -50,8 +50,8 @@ export const makeMarketArray = (coinKey: any, marketTrades: MarketTradeInfo[]): 
                         value: fm.toBig(item.price).toNumber(),
                     },
                     fee: {
-                        key: '',
-                        value: quote? volumeToCount(quote, item.fee):undefined, //fm.toBig(item.fee).div(BIG10.pow(quoteToken.decimals)).toNumber(),
+                        key: feeKey || '--',
+                        value: feeKey ? volumeToCountAsBigNumber(feeKey, item.fee)?.toNumber() : undefined, //fm.toBig(item.fee).div(BIG10.pow(quoteToken.decimals)).toNumber(),
                     },
                     time: parseInt(item.tradeTime.toString()),
                 })

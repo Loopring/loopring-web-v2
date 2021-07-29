@@ -4,6 +4,7 @@ import { WalletLayer2States } from './interface';
 import { myLog } from 'utils/log_tools';
 import _ from 'lodash'
 import React from 'react';
+import { TOAST_TIME, UPDATE_ACC_DELAY } from 'defs/common_defs';
 
 export function useWalletLayer2(): WalletLayer2States & {
     delayAndUpdateWalletLayer2: () => Promise<void>,
@@ -13,10 +14,6 @@ export function useWalletLayer2(): WalletLayer2States & {
 } {
     const walletLayer2: WalletLayer2States = useSelector((state: any) => state.walletLayer2)
     const dispatch = useDispatch();
-
-    const delayAndUpdateWalletLayer2 = async () => {
-
-    }
 
     // const updateWalletLayer2 = () => {
     //     dispatch(walletLayer2Slice.actions.updateWalletLayer2(undefined))
@@ -31,14 +28,15 @@ export function useWalletLayer2(): WalletLayer2States & {
         ...walletLayer2,
         resetLayer2: React.useCallback(() => dispatch(reset(undefined)), [dispatch]),
         statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),
-        delayAndUpdateWalletLayer2: React.useCallback(async () => {
-            myLog('try to delayAndUpdateWalletLayer2')
-            _.delay(() => {
-                updateWalletLayer2(undefined)
-                return Promise.resolve()
-            }, 3000);
-        }, [dispatch]),
         updateWalletLayer2: React.useCallback(() => dispatch(updateWalletLayer2(undefined)), [dispatch]),
+        delayAndUpdateWalletLayer2: React.useCallback(async () => {
+            myLog('try to delayAndUpdateWalletLayer2!' + new Date().getTime())
+            _.delay(() => {
+                dispatch(updateWalletLayer2(undefined))
+                myLog('try to delayAndUpdateWalletLayer2 updated!' + new Date().getTime())
+                return Promise.resolve()
+            }, UPDATE_ACC_DELAY);
+        }, [dispatch]),
     }
 
 }

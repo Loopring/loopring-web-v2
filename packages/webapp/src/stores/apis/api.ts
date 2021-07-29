@@ -1,5 +1,10 @@
 import { AmmpoolAPI, ChainId, ExchangeAPI, UserAPI, WalletAPI, WsAPI } from "loopring-sdk"
-import { getChainId } from 'stores/trading/hook'
+import store from 'stores'
+
+export function getChainId(){
+    const chainId = store.getState().system.chainId
+    return chainId
+}
 
 export const walletAPI = () => {
     const walletApi = new WalletAPI(getChainId() as ChainId)

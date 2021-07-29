@@ -1,4 +1,4 @@
-import { AmmData, AmmInData, CoinInfo, DropDownIcon, EmptyValueTag, IBData, SlippageTolerance } from '@loopring-web/common-resources';
+import { AmmData, AmmInData, CoinInfo, DropDownIcon, EmptyValueTag, IBData, ReverseIcon, SlippageTolerance } from '@loopring-web/common-resources';
 import { AmmWithdrawWrapProps } from './Interface';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
@@ -15,6 +15,8 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
     C = IBData<I>>({
                        t,
                        disabled,
+                       isStob,
+                       switchStobEvent,
                        ammWithdrawBtnStatus,
                        ammCalcData,
                        onAmmRemoveClick,
@@ -33,6 +35,15 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
     const {slippage} = useSettings();
     const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number | string>;
     const [_selectedPercentage, setSelectedPercentage] = React.useState(selectedPercentage);
+
+    const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined'?isStob:true);
+
+    const _onSwitchStob = React.useCallback((_event: any)=>{
+        setIsStoB(!_isStoB)
+        if(typeof switchStobEvent === 'function') {
+            switchStobEvent(!_isStoB) 
+        }
+    },[switchStobEvent, _isStoB])
 
     const getDisabled = () => {
         if (disabled || ammCalcData === undefined || ammCalcData.coinInfoMap === undefined) {
@@ -140,8 +151,11 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
 
         <Grid item>
             <Typography component={'p'} variant="body1" height={20}>
-                {ammData.coinA.belong && ammData.coinB.belong && ammCalcData ? <>
-                    {`1${ammData.coinA?.belong} = ${ammCalcData.AtoB ? ammCalcData.AtoB : EmptyValueTag} ${ammData.coinB?.belong}`}
+                {ammData.coinA?.belong && ammData.coinB?.belong && ammCalcData ? <>
+                    {_isStoB ? `1${ammData.coinA?.belong} \u2248 ${ammCalcData.AtoB ? ammCalcData.AtoB : EmptyValueTag} ${ammData.coinB?.belong}`
+                    : `1${ammData.coinB?.belong} \u2248 ${ammCalcData.AtoB ? (1 / ammCalcData.AtoB) : EmptyValueTag} ${ammData.coinA?.belong}`}
+                    <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
+                    ><ReverseIcon/></IconButtonStyled>
                 </> : EmptyValueTag}
             </Typography>
         </Grid>
@@ -189,7 +203,7 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapFee')} </Typography>
                         <Typography component={'p'}
-                                    variant="body1">{t(ammCalcData ? ammCalcData.fee : EmptyValueTag)}</Typography>
+                                    variant="body1">{t(ammCalcData ? ammCalcData.feeExit : EmptyValueTag)}</Typography>
                     </Grid>
                 </Grid>
                 <Grid item>

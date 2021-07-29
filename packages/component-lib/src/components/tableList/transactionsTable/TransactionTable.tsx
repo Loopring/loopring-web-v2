@@ -5,20 +5,13 @@ import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
 import { useDeepCompareEffect } from 'react-use'
 import { Popover, PopoverType, TablePagination } from '../../basic-lib'
-import { Column, generateColumns, generateRows, Table } from '../../basic-lib/tables/index'
+import { Column, Table } from '../../basic-lib/tables/index'
 import { AlertIcon, CheckIcon, EmptyValueTag, PendingIcon, TableType, getFormattedHash } from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
 import { TablePaddingX, TableFilterStyled } from '../../styled';
 import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes } from './Interface'
+import { DateRange } from '@material-ui/lab'
 interface Row extends RawDataTransactionItem {
-    // from: string
-    // to: string
-    // amount: string
-    // fee: string
-    // memo: string
-    // time: number
-    // txnHash: string
-    // status: string
     filterColumn: string
     cellExpend: {
         value: string
@@ -61,20 +54,20 @@ const CellStatus = ({row, column, rowIdx}: any) => {
         align-items: center;
 		cursor: pointer;
 		color: ${({theme}) => theme.colorBase[ `${TYPE_COLOR_MAPPING.find(o => o.type === status)?.color}` ]};
-        // width: 150px;
 
 		& svg {
-			font-size: 14px;
-			margin: 0 5px 3px 0;
+            width: 28px;
+            height: 28px
 		}
 	`
     const svg = status === 'processed' ? <CheckIcon/> : status === 'processing' ? <PendingIcon/> : <AlertIcon/>
     const RenderValueWrapper =
         <RenderValue>
-            {svg}{status}
+            {/* {svg}{status} */}
+            {svg}
         </RenderValue>
 
-    return <div className="rdg-cell-value">
+    return <>
         {/* <Popover
             type={PopoverType.hover}
             popupId={popupId}
@@ -94,96 +87,110 @@ const CellStatus = ({row, column, rowIdx}: any) => {
             {RenderValueWrapper}
         </Popover> */}
         {RenderValueWrapper}
-    </div>
+    </>
 }
 
 const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
-    {
-        key: 'token',
-        name: t('labelTxToken'),
-    },
-    {
-        key: 'from',
-        name: t('labelTxFrom'),
-        formatter: ({row}) => {
-            const valueFrom = row['from']
-            const isMyWallet = valueFrom === 'My Loopring'
-            const actualValue = isMyWallet ? valueFrom : getFormattedHash(valueFrom)
-            const RenderValue = styled.div`
-				height: 100%;
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				color: ${({theme}) => valueFrom && !isMyWallet ? theme.colorBase.primaryLight : theme.colorBase.textPrimary};
+    // {
+    //     key: 'token',
+    //     name: t('labelTxToken'),
+    // },
+    // {
+    //     key: 'from',
+    //     name: t('labelTxFrom'),
+    //     formatter: ({row}) => {
+    //         const valueFrom = row['from']
+    //         const isMyWallet = valueFrom === 'My Loopring'
+    //         const actualValue = isMyWallet ? valueFrom : getFormattedHash(valueFrom)
+    //         const RenderValue = styled.div`
+	// 			height: 100%;
+	// 			display: flex;
+	// 			flex-direction: column;
+	// 			justify-content: center;
+	// 			color: ${({theme}) => valueFrom && !isMyWallet ? theme.colorBase.primaryLight : theme.colorBase.textPrimary};
 
-				// & p:last-child {
-				// 	color: ${({theme}) => theme.colorBase.textPrimary};
-				// }
+	// 			// & p:last-child {
+	// 			// 	color: ${({theme}) => theme.colorBase.textPrimary};
+	// 			// }
 
-				// p {
-				// 	line-height: 100%;
-				// }
+	// 			// p {
+	// 			// 	line-height: 100%;
+	// 			// }
 				
-			`
+	// 		`
 
-            return (
-                <>
-                    <RenderValue title={valueFrom}>
-                        {actualValue || EmptyValueTag}
-                    </RenderValue>
-                </>
-            )
-        },
-    },
-    {
-        key: 'to',
-        name: t('labelTxTo'),
-        formatter: ({row}) => {
-            const valueTo = row['to']
-            const isMyWallet = valueTo === 'My Loopring'
-            const actualValue = isMyWallet ? valueTo : getFormattedHash(valueTo)
-            const RenderValue = styled.div`
-				height: 100%;
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				color: ${({theme}) => valueTo && !isMyWallet ? theme.colorBase.primaryLight : theme.colorBase.textPrimary};
+    //         return (
+    //             <>
+    //                 <RenderValue title={valueFrom}>
+    //                     {actualValue || EmptyValueTag}
+    //                 </RenderValue>
+    //             </>
+    //         )
+    //     },
+    // },
+    // {
+    //     key: 'to',
+    //     name: t('labelTxTo'),
+    //     formatter: ({row}) => {
+    //         const valueTo = row['to']
+    //         const isMyWallet = valueTo === 'My Loopring'
+    //         const actualValue = isMyWallet ? valueTo : getFormattedHash(valueTo)
+    //         const RenderValue = styled.div`
+	// 			height: 100%;
+	// 			display: flex;
+	// 			flex-direction: column;
+	// 			justify-content: center;
+	// 			color: ${({theme}) => valueTo && !isMyWallet ? theme.colorBase.primaryLight : theme.colorBase.textPrimary};
 
-				// & p:last-child {
-				// 	color: ${({theme}) => theme.colorBase.textPrimary};
-				// }
+	// 			// & p:last-child {
+	// 			// 	color: ${({theme}) => theme.colorBase.textPrimary};
+	// 			// }
 
-				// p {
-				// 	line-height: 100%;
-				// }
+	// 			// p {
+	// 			// 	line-height: 100%;
+	// 			// }
 				
-			`
-            // const value = typeof to === 'string'
-            //     ? <p>{to}</p>
-            //     : <>
-            //         <p>{to.address}</p>
-            //         <p>/ {to.env}</p>
-            //     </>
+	// 		`
+    //         // const value = typeof to === 'string'
+    //         //     ? <p>{to}</p>
+    //         //     : <>
+    //         //         <p>{to.address}</p>
+    //         //         <p>/ {to.env}</p>
+    //         //     </>
 
+    //         return (
+    //             <>
+    //                 <RenderValue title={valueTo}>
+    //                     {actualValue || EmptyValueTag}
+    //                 </RenderValue>
+    //             </>
+    //         )
+    //     },
+    // },
+    {
+        key: 'side',
+        name: t('labelTxSide'),
+        formatter: ({row}) => {
+            const value = row['side']
+            const renderValue = value === TransactionTradeTypes.deposit ? t('labelDeposit') : value === TransactionTradeTypes.transfer ? t('labelTransfer') : t('labelWithdraw');
             return (
-                <>
-                    <RenderValue title={valueTo}>
-                        {actualValue || EmptyValueTag}
-                    </RenderValue>
-                </>
+                <div className="rdg-cell-value">
+                    {renderValue}
+                </div>
             )
-        },
+        }
     },
     {
         key: 'amount',
         name: t('labelTxAmount'),
         formatter: ({row}) => {
             const value = row['amount']
+            const unit = row['symbol'] || row['fee'].unit
             const hasValue = Number.isFinite(value)
             const renderValue = hasValue ? `${getThousandFormattedNumbers(Number(value), 5)}` : EmptyValueTag
             return (
                 <div className="rdg-cell-value">
-                    {renderValue}
+                    {renderValue} {unit}
                 </div>
             )
         },
@@ -194,7 +201,7 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
         formatter: ({row}) => {
             const fee = row['fee']
             const hasValue = fee ? Number.isFinite(fee.value) : ''
-            const renderValue = hasValue ? `${fee.value.toFixed(4)} ${fee.unit}` : EmptyValueTag
+            const renderValue = hasValue && fee.value !== 0 ? `${fee.value.toFixed(6)} ${fee.unit}` : EmptyValueTag
             return (
                 <div className="rdg-cell-value">
                     <span>{renderValue}</span>
@@ -241,7 +248,6 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
     {
         key: 'txnHash',
         name: t('labelTxTxnHash'),
-        // minWidth: 130,
         formatter: ({row}) => {
             // let path = ''
             // if ((row as any)._rawData.length === 9) {
@@ -268,17 +274,11 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
     {
         key: 'status',
         name: t('labelTxStatus'),
-        // minWidth: 150,
         formatter: ({row, column, rowIdx}) => (
             <div className="rdg-cell-value">
                 <CellStatus {...{row, column, rowIdx}} />
             </div>
         )
-    },
-    {
-        key: 'tradeType',
-        name: 'TradeType',
-        hidden: true
     },
 ]
 
@@ -288,12 +288,16 @@ const TableStyled = styled(Box)`
     flex: 1;
 
     .rdg{
-        --template-columns: 80px 120px 120px auto auto auto 120px 150px !important;
+        --template-columns: 120px auto auto auto auto 80px !important;
         .rdg-cell.action{
         display: flex;
         justify-content: center;
         align-items: center;
         }
+    }
+    .rdg-cell {
+        display: flex;
+        align-items: center;
     }
     ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
@@ -316,18 +320,12 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
     }
     const {rawData, pagination, showFilter} = props
     const [page, setPage] = React.useState(1)
-    // const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
-    // const [totalData, setTotalData] = React.useState(formattedRawData)
-    const [totalData, setTotalData] = React.useState<any[]>(rawData)
+    const [totalData, setTotalData] = React.useState<RawDataTransactionItem[]>(rawData)
     const [filterType, setFilterType] = React.useState(TransactionTradeTypes.allTypes)
-    const [filterDate, setFilterDate] = React.useState(null)
-    const [filterToken, setFilterToken] = React.useState('All Tokens')
+    const [filterDate, setFilterDate] = React.useState<DateRange<Date | string>>(['', ''])
+    // const [filterToken, setFilterToken] = React.useState('All Tokens')
 
     const pageSize = pagination ? pagination.pageSize : 10;
-
-    // useEffect(() => {
-    //     setTotalData(rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : [])
-    // }, [rawData])
 
     useDeepCompareEffect(() => {
         setTotalData(rawData);
@@ -342,40 +340,46 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         TableType,
         currFilterType = filterType,
         currFilterDate = filterDate,
-        currFilterToken = filterToken,
-        // currPage = page
+        // currFilterToken = filterToken,
     }) => {
-        // let resultData = cloneDeep(formattedRawData)
-        // let resultData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
         let resultData = rawData || []
-        // o[10]: tradeType
         if (currFilterType !== TransactionTradeTypes.allTypes) {
-            resultData = resultData.filter(o => o[ 10 ] === currFilterType)
+            resultData = resultData.filter(o => o.side === currFilterType)
         }
-        if (currFilterDate) {
-            const diff = moment(moment()).diff(currFilterDate, 'days')
-            // o[6]: date
-            resultData = resultData.filter(o => o[ 6 ] === diff)
+        if (currFilterDate[0] && currFilterDate[1]) {
+            const startTime = Number(moment(currFilterDate[0]).format('x'))
+            const endTime = Number(moment(currFilterDate[1]).format('x'))
+            resultData = resultData.filter(o => o.time < endTime && o.time > startTime)
         }
         // o[0]: token
-        if (currFilterToken !== 'All Tokens') {
-            resultData = resultData.filter(o => o[ 0 ] === currFilterToken)
-        }
+        // if (currFilterToken !== 'All Tokens') {
+        //     resultData = resultData.filter(o => o[ 0 ] === currFilterToken)
+        // }
         if (TableType === 'filter') {
             setPage(1)
         }
         setTotalData(resultData)
-    }, [rawData, filterDate, filterToken, filterType])
+    }, [rawData, filterDate, filterType])
 
-    const handleFilterChange = React.useCallback(({filterType, filterDate, filterToken}) => {
-        setFilterType(filterType)
-        setFilterDate(filterDate)
-        setFilterToken(filterToken)
+    const handleFilterChange = React.useCallback(({type = filterType, date = filterDate}) => {
+        setFilterType(type)
+        setFilterDate(date)
         updateData({
             TableType: TableType.filter,
-            currFilterType: filterType,
-            currFilterDate: filterDate,
-            currFilterToken: filterToken
+            currFilterType: type,
+            currFilterDate: date,
+            // currFilterToken: filterToken
+        })
+    }, [updateData, filterDate, filterType])
+
+    const handleReset = React.useCallback(() => {
+        setFilterType(TransactionTradeTypes.allTypes)
+        setFilterDate([null, null])
+        // setFilterToken('All Tokens')
+        updateData({
+            TableType: TableType.filter,
+            currFilterType: TransactionTradeTypes.allTypes,
+            currFilterDate: [null, null],
         })
     }, [updateData])
 
@@ -387,7 +391,13 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
     return <TableStyled>
         {showFilter && (
             <TableFilterStyled>
-                <Filter originalData={totalData} handleFilterChange={handleFilterChange}/>
+                <Filter
+                    originalData={totalData} 
+                    filterDate={filterDate}
+                    filterType={filterType}
+                    handleFilterChange={handleFilterChange}
+                    handleReset={handleReset}
+                />
             </TableFilterStyled>
         )}
         <Table {...{...defaultArgs, ...props, rawData: getRenderData()}}/>

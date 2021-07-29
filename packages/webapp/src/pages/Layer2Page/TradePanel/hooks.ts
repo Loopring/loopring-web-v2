@@ -1,47 +1,26 @@
 import { useState } from 'react'
 
-import { useAmmpoolAPI, useUserAPI } from "hooks/exchange/useApi"
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect'
 import { useAccount } from 'stores/account/hook'
 import { TransactionStatus, RawDataTransactionItem, RawDataTradeItem } from '@loopring-web/component-lib'
 
 import { FilledType, TxStatus, UserTrade } from 'loopring-sdk'
 import { TransactionTradeTypes } from '@loopring-web/component-lib';
-
-/*
-    {
-        from: {
-            address: '0x5e8cxxxxxe741',
-            env: 'Ethereum'
-        },
-        to: 'My Loopring',
-        amount: 25987.09324,
-        fee: {
-            unit: 'ETH',
-            value: 0.0993
-        },
-        memo: 'NoteNoteNoteNoteNoteNoteNote',
-        time: 3,
-        txnHash: '0x2b21xxxxxxx02',
-        status: TransactionStatus.success
-    },
- */
+import { LoopringAPI } from 'stores/apis/api'
 
 export function useGetTrades() {
 
     const { accountId, apiKey } = useAccount()
 
-    const userApi = useUserAPI()
-
     const [userTrades, setUserTrades] = useState<RawDataTradeItem[]>()
 
     useCustomDCEffect(async() => {
 
-        if (!userApi || !accountId || !apiKey) {
+        if (!LoopringAPI.userAPI || !accountId || !apiKey) {
             return
         }
 
-        const response = await userApi.getUserTrades({accountId: accountId}, apiKey)
+        const response = await LoopringAPI.userAPI.getUserTrades({accountId: accountId}, apiKey)
 
         let userTrades: RawDataTradeItem[] = []
 
@@ -50,7 +29,7 @@ export function useGetTrades() {
 
         setUserTrades(userTrades)
 
-    }, [accountId, apiKey, userApi])
+    }, [accountId, apiKey, LoopringAPI.userAPI])
 
     return {
         userTrades,

@@ -15,9 +15,19 @@ import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } fro
 
 import { ChainId } from 'loopring-sdk'
 
+import ms from 'ms.macro'
+
 export function getLibrary(provider: any): Web3Provider {
-  const library = new Web3Provider(provider)
-  library.pollingInterval = 10000
+  const library = new Web3Provider(
+    provider,
+    typeof provider.chainId === 'number'
+      ? provider.chainId
+      : typeof provider.chainId === 'string'
+      ? parseInt(provider.chainId)
+      : 'any'
+  )
+  library.pollingInterval = ms`15s`
+
   return library
 }
 
@@ -146,10 +156,10 @@ export async function isContract(web3: any, address: string) {
   return code && code.length > 2
 }
 
-export function getShortAddr(address: string) {
+export function getShortAddr(address: string):string|'' {
     if (!address || address === undefined || address === null || address.trim() === '') {
-        console.log('getShortAddr got empty!')
-        return undefined
+        // console.log('getShortAddr got empty!')
+        return ''
     }
     const convertAddr = address.substr(0, 6) + '...' + address.substr(address.length - 4)
     return convertAddr

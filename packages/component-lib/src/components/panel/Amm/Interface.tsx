@@ -33,6 +33,7 @@ export type AmmProps<T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I, 
     handleAmmAddChangeEvent: (data: T, focusOn: 'coinA' | 'coinB') => void,
     handleAmmRemoveChangeEvent: (data: T, focusOn: 'coinA' | 'coinB') => void,
     onChangeEvent?: (data: AmmChgData<T>) => AmmChgData<T>,
+    onRefreshData?:()=>void,
 }
     & AmmWithdrawBaseProps<T, I>
     & AmmDepositBaseProps<T, I>

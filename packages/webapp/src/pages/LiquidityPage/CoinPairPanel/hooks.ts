@@ -2,9 +2,10 @@ import React from "react";
 import { AmmActivity, CoinInfo, TradeFloat, WalletMap } from "@loopring-web/common-resources";
 import { useTokenMap } from "stores/token";
 import { useRouteMatch } from 'react-router';
+import moment from 'moment'
 import { AmmDetailStore, useAmmMap } from '../../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../../stores/walletLayer2';
-import { makeTickView, makeWallet, pairDetailBlock, WalletMapExtend } from '../../../hooks/help';
+import { makeTickView, makeWalletLayer2, pairDetailBlock, WalletMapExtend } from '../../../hooks/help';
 import { AmmPoolSnapshot, AmmUserRewardMap, getExistedMarket, TickerData } from 'loopring-sdk';
 import { deepClone } from '../../../utils/obj_tools';
 import { getUserAmmTransaction, makeMyAmmMarketArray } from '../../../hooks/help/marketTable';
@@ -109,7 +110,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
     const [pairHistory, setPairHistory] = React.useState<ammHistoryItem[]>([])
 
     const walletLayer2DoIt = React.useCallback((market) => {
-        const {walletMap: _walletMap} = makeWallet();
+        const {walletMap: _walletMap} = makeWalletLayer2();
 
         setWalletMap(_walletMap as WalletMapExtend<any>)
         if (_walletMap) {
@@ -119,7 +120,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
             })
         }
         return _walletMap
-    }, [makeWallet, getUserAmmTransaction, makeMyAmmMarketArray, marketArray, pair])
+    }, [makeWalletLayer2, getUserAmmTransaction, makeMyAmmMarketArray, marketArray, pair])
 
     const getPairList = React.useCallback(async () => {
         if (LoopringAPI.exchangeAPI && coinPairInfo.coinA && coinPairInfo.coinB) {
@@ -131,9 +132,10 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
                 limit: 30
             })
             const formattedPairHistory = ammList.candlesticks.map(o => ({
-                close: o.close,
-                timeStamp: o.timestamp
-            })).reverse()
+                ...o,
+                timeStamp: o.timestamp,
+                date: moment(o.timestamp).format('MMM DD')
+            })).sort((a, b) => a.timeStamp - b.timeStamp)
             setPairHistory(formattedPairHistory)
         }
     }, [coinPairInfo])

@@ -6,16 +6,16 @@ import {
     TickerData,
     toBig,
 } from 'loopring-sdk';
-import { AmmActivity, AmmCardProps } from '@loopring-web/common-resources';
+import { AmmActivity, AmmCardProps, MyAmmLP } from '@loopring-web/common-resources';
 import store from '../../stores';
 import { deepClone } from '../../utils/obj_tools';
 import { AmmUserReward, AmmUserRewardMap } from 'loopring-sdk/dist/defs/loopring_defs';
 import BigNumber from 'bignumber.js';
-import { MyAmmLP } from '@loopring-web/common-resources';
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
 import { coinMap } from '@loopring-web/component-lib';
 import { AmmDetailStore } from '../../stores/Amm/AmmMap';
 import { WalletMapExtend } from './makeWallet';
+import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
 
 export type AmmActivityViewMap<R, I> = {
     [key in keyof R]?: AmmActivity<I>[] | undefined
@@ -42,11 +42,12 @@ export const makeUIAmmActivityMap = <R extends { [ key: string ]: any }, I exten
                     if (coinMap && ammPoolActivityRule.awardRules[ 0 ] && idIndex && tokenMap) {
 
                         const symbol = idIndex[ ammPoolActivityRule.awardRules[ 0 ].tokenId as any ]
-
+                        const totalRewards = VolToNumberWithPrecision(ammPoolActivityRule.awardRules[ 0 ].volume ,symbol)
                         // @ts-ignore
                         const item = {
                             // @ts-ignore
                             rewardToken: coinMap[ symbol ],
+                            totalRewards: Number(totalRewards),
                             myRewards: status === AmmPoolActivityStatus.InProgress && myReward && myReward[ ammPoolActivityRule.market ] ?
                                 volumeToCount(symbol, myReward[ ammPoolActivityRule.market ]?.currentRewards[ 0 ].volume) : 0,
                             duration: {
@@ -174,7 +175,7 @@ const getOneRewardInfo = <C>({
         feeB = ammUserReward ? volumeToCountAsBigNumber(coinB, ammUserReward.feeRewards[ 1 ]) : toBig(0);
         feeA = feeA ? feeA : toBig(0);
         feeB = feeB ? feeB : toBig(0);
-        feeDollar = feeA.times(faitPrices[ coinA ].price).plus(feeB.times(faitPrices[ coinB ].price))
+        feeDollar = feeA.times(faitPrices[ coinA ]?faitPrices[ coinA ].price:0).plus(feeB.times(faitPrices[ coinB ]?faitPrices[ coinB ].price:0))
         feeYuan = feeDollar.times(forex);
         reward = rewardToken ? volumeToCountAsBigNumber(rewardToken, ammUserReward.currentRewards[ 0 ].volume) as BigNumber : toBig(0);
         reward2 = rewardToken2 ? volumeToCountAsBigNumber(rewardToken2, ammUserReward.currentRewards[ 1 ].volume) as BigNumber : toBig(0);
@@ -267,7 +268,7 @@ export const makeMyAmmWithStat = <C extends { [ key: string ]: any }>
         balanceA = ratio.times(volumeToCountAsBigNumber(coinA, ammDetail.totalA ? ammDetail.totalA : 0) || 1);
         balanceB = ratio.times(volumeToCountAsBigNumber(coinB, ammDetail.totalB ? ammDetail.totalB : 0) || 1);
         // @ts-ignore
-        balanceDollar = balanceA.times(faitPrices[ coinA ].price).plus(balanceB.times(faitPrices[ coinB ].price))
+        balanceDollar = balanceA.times(faitPrices[ coinA ]?faitPrices[ coinA ].price:0).plus(balanceB.times(faitPrices[ coinB ]?faitPrices[ coinB ].price:0))
         balanceYuan = balanceDollar.times(forex);
         _myAmm = {
             // ...ammDetail,
@@ -289,7 +290,7 @@ export const makeMyAmmWithStat = <C extends { [ key: string ]: any }>
             feeB = ammUserReward ? volumeToCountAsBigNumber(coinB, ammUserReward.feeRewards[ 1 ]) : toBig(0);
             feeA = feeA ? feeA : toBig(0);
             feeB = feeB ? feeB : toBig(0);
-            feeDollar = feeA.times(faitPrices[ coinA ].price).plus(feeB.times(faitPrices[ coinB ].price))
+            feeDollar = feeA.times(faitPrices[ coinA ]?faitPrices[ coinA ].price:0).plus(feeB.times(faitPrices[ coinB ]?faitPrices[ coinB ].price:0))
             feeYuan = feeDollar.times(forex);
             reward = rewardToken ? volumeToCountAsBigNumber(rewardToken, ammUserReward.currentRewards[ 0 ].volume) as BigNumber : toBig(0);
             reward2 = rewardToken2 ? volumeToCountAsBigNumber(rewardToken2, ammUserReward.currentRewards[ 1 ].volume) as BigNumber : toBig(0);

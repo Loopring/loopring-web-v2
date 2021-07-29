@@ -7,10 +7,11 @@ import { Column, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { Filter, FilterTradeTypes } from './components/Filter'
-import { TableType, TradeTypes } from '@loopring-web/common-resources';
+import { EmptyValueTag, TableType, TradeTypes, getThousandFormattedNumbers } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores';
 import { useDeepCompareEffect } from 'react-use';
 import { Row } from '../poolsTable/Interface';
+import { DateRange } from '@material-ui/lab'
 
 // interface Row {
 //     side: TradeTypes;
@@ -88,6 +89,9 @@ const TableStyled = styled(Box)`
             justify-content: center;
             align-items: center;
         }
+        .rdg-header-row {
+            // background-color: inherit !important;
+        }
     }
     ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
@@ -122,9 +126,11 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
         name: t('labelTradeAmount'),
         formatter: ({row}) => {
             const {from, to} = row[ 'amount' ]
+            const fromValue = from.value ? getThousandFormattedNumbers(Number(from.value)) : EmptyValueTag
+            const toValue = to.value ? getThousandFormattedNumbers(Number(to.value)) : EmptyValueTag
             return (
                 <div className="rdg-cell-value">
-                    {`${from.value} ${from.key} -> ${to.value} ${to.key}`}
+                    {`${fromValue} ${from.key} -> ${toValue} ${to.key}`}
                 </div>
             )
         }
@@ -134,9 +140,10 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
         name: t('labelTradePrice'),
         formatter: ({row}) => {
             const {value} = row[ 'price' ]
+            const renderValue = value ? `$ ${getThousandFormattedNumbers(value)}` : EmptyValueTag
             return (
                 <div className="rdg-cell-value">
-                    {value}
+                    {renderValue}
                     {/*{currency === Currency.dollar ?*/}
                     {/*    PriceTag.Dollar + getThousandFormattedNumbers(priceDollar)*/}
                     {/*    : PriceTag.Yuan + getThousandFormattedNumbers(priceYuan)}*/}
@@ -173,14 +180,12 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
 
 export const TradeTable = withTranslation('tables')((props: WithTranslation & TradeTableProps) => {
     const {t, pagination, showFilter, rawData} = props
-    // const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
     const [filterType, setFilterType] = React.useState(FilterTradeTypes.allTypes)
-    const [filterDate, setFilterDate] = React.useState(null)
+    const [filterDate, setFilterDate] = React.useState<DateRange<string | Date>>([null, null])
     const [page, setPage] = React.useState(1)
     const [totalData, setTotalData] = React.useState<RawDataTradeItem[]>(rawData)
     const {currency} = useSettings();
     const defaultArgs: any = {
-        // rawData: rawData,
         columnMode: getColumnModeAssets(t, currency).filter(o => !o.hidden),
         generateRows: (rawData: any) => rawData,
         generateColumns: ({columnsRaw}: any) => columnsRaw as Column<Row<any>, unknown>[],
@@ -200,19 +205,18 @@ export const TradeTable = withTranslation('tables')((props: WithTranslation & Tr
         , [page, pageSize, pagination, totalData])
 
     const updateData = React.useCallback(({
-                                              TableType,
-                                              currFilterType = filterType,
-                                              currFilterDate = filterDate,
-                                          }) => {
+        TableType,
+        currFilterType = filterType,
+        currFilterDate = filterDate,
+    }) => {
         let resultData = rawData ? rawData : []
-        // o[0]: tradeType
         if (currFilterType !== FilterTradeTypes.allTypes) {
-            resultData = resultData.filter(o => o[ 0 ] === currFilterType)
+            resultData = resultData.filter(o => o.side === (currFilterType === TradeTypes.Buy ? TradeTypes.Buy : TradeTypes.Sell))
         }
-        if (currFilterDate) {
-            const diff = moment(moment()).diff(currFilterDate, 'days')
-            // o[4]: date
-            resultData = resultData.filter(o => o[ 4 ] === diff)
+        if (currFilterDate[0] && currFilterDate[1]) {
+            const startTime = Number(moment(currFilterDate[0]).format('x'))
+            const endTime = Number(moment(currFilterDate[1]).format('x'))
+            resultData = resultData.filter(o => o.time < endTime && o.time > startTime)
         }
         if (TableType === 'filter') {
             setPage(1)
@@ -220,21 +224,40 @@ export const TradeTable = withTranslation('tables')((props: WithTranslation & Tr
         setTotalData(resultData)
     }, [rawData, filterDate, filterType])
 
-    const handleFilterChange = React.useCallback(({filterType, filterDate}) => {
-        setFilterType(filterType)
-        setFilterDate(filterDate)
-        updateData({TableType: TableType.filter, currFilterType: filterType, currFilterDate: filterDate})
-    }, [updateData])
+    const handleFilterChange = React.useCallback(({type = filterType, date = filterDate}) => {
+        setFilterType(type)
+        setFilterDate(date)
+        updateData({
+            TableType: TableType.filter,
+            currFilterType: type, 
+            currFilterDate: date
+        })
+    }, [updateData, filterDate,filterType])
 
     const handlePageChange = React.useCallback((page: number) => {
         setPage(page)
         updateData({TableType: TableType.page, currPage: page})
     }, [updateData])
 
+    const handleReset = () => {
+        setFilterType(FilterTradeTypes.allTypes)
+        setFilterDate([null, null])
+        updateData({
+            TableType: 'filter',
+            currFilterType: FilterTradeTypes.allTypes,
+            currFilterDate: [null, null],
+        })
+    }
+
     return <TableStyled>
         {showFilter && (
             <TableFilterStyled>
-                <Filter handleFilterChange={handleFilterChange}/>
+                <Filter {...{
+                    handleFilterChange,
+                    filterType,
+                    filterDate,
+                    handleReset
+                }} />
             </TableFilterStyled>
         )}
         <Table className={'scrollable'} {...{...defaultArgs, ...props, rawData: getRenderData()}}/>

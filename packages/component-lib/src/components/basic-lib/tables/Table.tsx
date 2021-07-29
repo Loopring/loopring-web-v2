@@ -159,6 +159,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation) => {
         rowKeyGetter,
         columnMode,
         onScroll,
+        onRowClick,
         rowHeight, t, ...rest
     } = props;
 
@@ -223,6 +224,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation) => {
         // sortDirection={sortDirection}
         rowRenderer={rowRenderer as any}
         sortColumns={sortColumns}
+        onRowClick={onRowClick}
         emptyRowsRenderer={() => EmptyRowsRenderer ? EmptyRowsRenderer :
             <EmptyDefault height={`calc(100% - var(--header-row-height))`} message={() => {
                 return <RenderEmptyMsg>
