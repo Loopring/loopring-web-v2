@@ -77,7 +77,8 @@ export type AmmInData<T> = {
     // AmmWalletMap: WalletMap<T, WalletCoin<T>>,
     slippage: number | string
     // slippageTolerance: Array<number | string>,
-    fee: string,
+    feeJoin: string,
+    feeExit: string,
 }
 
 
@@ -195,6 +196,13 @@ export type TradeFloat = {
     reward?: number,
     rewardToken?: string,
     volume?: number,
+    close?: number,
+    high?: number,
+    low?: number,
+    changeDollar?: number,
+    changeYuan?: number,
+    closeDollar?: number,
+    closeYuan?: number,
     // APY?:number
     // tagNew?: boolean
 }

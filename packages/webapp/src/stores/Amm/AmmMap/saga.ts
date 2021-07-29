@@ -147,7 +147,7 @@ export function* ammMapRealTimeSaga() {
 }
 
 export const ammMapSaga = [
-    fork(ammMapInitSaga),
-    fork(ammMapRealTimeSaga),
+        fork(ammMapInitSaga),
+        fork(ammMapRealTimeSaga),
 ]
 

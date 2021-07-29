@@ -1,14 +1,17 @@
 import { Box, Grid, } from '@material-ui/core'
 import { WithTranslation, withTranslation } from 'react-i18next'
+import { useLocation } from 'react-router-dom'
 import BasicInfoPanel from './panel/BasicInfoPanel'
 import TradePanel from './panel/TradePanel'
 import styled from 'styled-components'
 import { useSwapPage } from './hook';
-import { SwapPanel } from '@loopring-web/component-lib'
+import { SwapPanel, Toast } from '@loopring-web/component-lib'
 import { TradeBtnStatus } from '@loopring-web/component-lib'
+import { useTokenMap } from '../../stores/token';
+import { TOAST_TIME } from 'defs/common_defs'
 
 const FixedStyle = styled(Box)`
-  @media only screen and (min-height: 680px ) and (min-width: 1024px) {
+  @media only screen and (min-height: 780px ) and (min-width: 1024px) {
     position: fixed;
   }
 `
@@ -26,19 +29,36 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
         onSwapClick,
         pair,
         swapBtnI18nKey,
-        isSwapLoading
+        isSwapLoading,
+        swapToastOpen,
+        setSwapToastOpen,
+        swapAlertText,
+
     } = useSwapPage();
 
+    const { coinMap } = useTokenMap()
+    const { pathname } = useLocation()
+    const pairNameList = pathname ? pathname.split('/')[pathname.split('/').length - 1].split('-') : ''
+    const coinA = Array.isArray(pairNameList) ? pairNameList[0] : ''
+    const coinB = Array.isArray(pairNameList) ? pairNameList[1] : ''
+    const customPair = {
+        coinAInfo: coinMap ? coinMap[coinA] : '',
+        coinBInfo: coinMap ? coinMap[coinB] : '',
+    }
+    const renderPair = customPair.coinAInfo ? customPair : pair
+
     return <>
+
+        <Toast alertText={swapAlertText as string} open={swapToastOpen} 
+            autoHideDuration={TOAST_TIME} setOpen={setSwapToastOpen}/>
+
         <Grid container marginRight={3} alignContent={'flex-start'}>
             <BasicInfoPanel {...{
                 ...rest,
-                ...pair, marketArray,
+                ...renderPair, marketArray,
                 tradeFloat, tradeArray
             }} />
             <TradePanel tradeArray={tradeArray} myTradeArray={myTradeArray}/>
-
-            {/**/}
         </Grid>
 
         <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}}>

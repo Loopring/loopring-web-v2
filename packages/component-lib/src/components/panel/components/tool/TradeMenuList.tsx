@@ -30,7 +30,7 @@ export const TradeMenuList = <T extends IBData<I>,
     try {
         // const selected: string | undefined = swapData.tradeData[ swapData.type ].belong ? swapData.tradeData[ swapData.type ]?.belong : '';
         const filterBy = (coinInfo: CoinInfo<I>, filterString: string) => {
-            return filterString && filterString.length ? RegExp(filterString, 'i').test(coinInfo.simpleName) : true;
+            return filterString && filterString.length ? RegExp(filterString, 'i').test(coinInfo.simpleName as string) : true;
         }
 
 

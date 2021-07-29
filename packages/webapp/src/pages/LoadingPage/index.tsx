@@ -25,10 +25,10 @@ const StyleBox = styled(Box)`
 export const LoadingPage = () => {
     const {t} = useTranslation('layout');
     return <>
-        <Container>
+        {/*<Container>*/}
             {/*style={{height: '100%' }}*/}
             <StyleBox flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}
-                      flexDirection={'column'} marginTop={4} height={680} maxWidth={1200}>
+                      flexDirection={'column'} height={'100%'}  width={'100%'}>
                 <div className="loader loader--style3" title="2">
                     <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg"
                          xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -74,7 +74,7 @@ export const LoadingPage = () => {
                 {/*</StyleBox>*/}
             </StyleBox>
 
-        </Container>
+        {/*</Container>*/}
 
         {/*<Footer></Footer>*/}
     </>

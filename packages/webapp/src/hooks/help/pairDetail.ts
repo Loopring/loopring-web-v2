@@ -1,9 +1,6 @@
 import { AmmMap } from '../../stores/Amm/AmmMap';
 import { AmmPoolSnapshot, getBaseQuote, LoopringMap, TickerData, TokenInfo, TokenVolumeV3 } from 'loopring-sdk';
 import { LoopringAPI } from '../../stores/apis/api';
-import * as fm from 'loopring-sdk';
-import { BIG10 } from '../../defs/swap_defs';
-import { getToken } from 'utils/swap_calc_utils';
 import { CoinMap, CustomError, ErrorMap } from '@loopring-web/common-resources';
 import { volumeToCountAsBigNumber } from './volumeToCount';
 
@@ -84,10 +81,12 @@ export const pairDetailDone = <C>({coinKey, market,ammPoolsBalance, fee, tokenMa
             // stob = volumeToCountAsBigNumber(baseVol[0],baseVol[1])?.div(
             //     volumeToCountAsBigNumber(quoteVol[0],quoteVol[1]) || 1
             // ) .toNumber()
-            stob = volumeToCountAsBigNumber(quoteVol[0],quoteVol[1])?.div(
-                volumeToCountAsBigNumber(baseVol[0],baseVol[1]) || 1).toNumber()
+            stob = parseFloat(volumeToCountAsBigNumber(quoteVol[0],quoteVol[1])?.div(
+                volumeToCountAsBigNumber(baseVol[0],baseVol[1]) || 1).toFixed(7, 0) as string)
         }
     }
+
+    console.log('aa----------')
 
     _tradeCalcData.StoB = stob;
     _tradeCalcData.BtoS = stob !== 0 && stob !== undefined? 1 / (stob * 1.0): 0;

@@ -1,29 +1,28 @@
-import React, { useCallback, useState, } from 'react'
+import { useCallback, useState, } from 'react'
 
 import {
     Header as HeaderUI,
     HideOnScroll,
     ModalWalletConnect,
-    AccountInfo,
-    ModalCloseButton,
+    Toast,
 } from '@loopring-web/component-lib'
 
 import { headerRoot } from '@loopring-web/common-resources'
 
 import { useLocation } from 'react-router-dom'
 
-import { Toolbar, Snackbar, Alert, } from '@material-ui/core'
+import { Toolbar, } from '@material-ui/core'
 
 import { useHeader } from './hook'
 
-import { useDisconnect, } from 'stores/account/hook'
-import { ModalPanel, ModalQRCode, } from '@loopring-web/component-lib';
-import { useGetExchangeInfo } from 'hooks/exchange/useExchangeAPI'
+ import { useAccount } from 'stores/account/hook'
+import { ModalPanel, ModalQRCode, } from '@loopring-web/component-lib'
 import { useModalProps } from './hook'
 
 import { copyToClipBoard } from 'utils/obj_tools'
 import { ModalAccountInfo } from '../../pages/AccountPage';
 import { useTranslation } from 'react-i18next';
+import { TOAST_TIME } from 'defs/common_defs'
 
 const Header = ({ ...rest }: any) => {
 
@@ -56,9 +55,9 @@ const Header = ({ ...rest }: any) => {
         // showAccountInfo
     } = useHeader()
 
-    const { exchangeInfo } = useGetExchangeInfo()
+    const { resetAccount } = useAccount()
 
-    const { disconnect } = useDisconnect()
+    const {t} = useTranslation('common')
 
     const onSwitch = useCallback(() => {
         setShowAccountInfo({isShow:false})
@@ -68,26 +67,20 @@ const Header = ({ ...rest }: any) => {
     const [openQRCode, setOpenQRCode] = useState(false)
 
     const [copyToastOpen, setCopyToastOpen] = useState(false);
-    const {t} = useTranslation('commom')
-
-    const closeCopyToast = () => { setCopyToastOpen(false) }
 
     return (<>
-        <Snackbar open={copyToastOpen} autoHideDuration={2500} onClose={closeCopyToast}>
-            <Alert onClose={closeCopyToast} severity="success">
-                {t('Address Copied to Clipboard!')}
-        </Alert>
-        </Snackbar>
+        <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen} 
+            autoHideDuration={TOAST_TIME} setOpen={setCopyToastOpen} severity={"success"} />
 
         <ModalQRCode open={openQRCode} onClose={() => setOpenQRCode(false)} title={'ETH Address'}
-            description={account.accAddr} url={account.accAddr} />
+            description={account?.accAddr} url={account?.accAddr} />
 
         <ModalPanel transferProps={transferProps} withDrawProps={withdrawProps} 
         depositProps={depositProps} resetProps={resetProps} ammProps={ammProps} swapProps={swapProps}/>
 
         <HideOnScroll>
-            {process.env.NODE_ENV !== 'production' && JSON.stringify(account?.status)}
-            {process.env.NODE_ENV !== 'production' && ' exchangeAddress:' + JSON.stringify(exchangeInfo?.exchangeAddress)}
+            {process.env.NODE_ENV !== 'production' && JSON.stringify(account?.status) + '\t'
+            + account?.connectName  + '/' + account?.connectNameTemp }
 
             <HeaderUI {...rest} headerMenuData={headerMenuData} headerToolBarData={headerToolBarData}
                 selected={location.pathname === '/' ? headerRoot : location.pathname}></HeaderUI>
@@ -107,7 +100,7 @@ const Header = ({ ...rest }: any) => {
                 setOpenQRCode(true)
             }}
             onDisconnect={() => {
-                disconnect();
+                resetAccount();
                 setShowAccountInfo({isShow:false});
             }}
             onSwitch={onSwitch}

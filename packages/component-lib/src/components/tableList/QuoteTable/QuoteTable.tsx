@@ -7,7 +7,7 @@ import { EmptyValueTag, FloatTag, getThousandFormattedNumbers } from '@loopring-
 import { Column, Table } from '../../basic-lib/tables/index'
 import { TablePaddingX } from '../../styled'
 import { Typography } from '@material-ui/core/';
-
+import { useSettings } from '@loopring-web/component-lib/src/stores'
 
 const TableStyled = styled(Box)`
     display: flex;
@@ -64,18 +64,23 @@ export type QuoteTableRawDataItem = {
 
 const QuoteTableChangedCell: any = styled.span`
 	color: ${(props: any) => {
-    const {theme: {colorBase}} = props
+    const {theme: {colorBase}, upColor} = props
+    const isUpColorGreen = upColor === 'green'
     return props.value > 0
-        ? colorBase.success
+        ? isUpColorGreen 
+            ? colorBase.success 
+            : colorBase.error
         : props.value < 0
-            ? colorBase.error
+            ? isUpColorGreen 
+                ? colorBase.error 
+                : colorBase.success
             : colorBase.textSecondary
 }
 }
 `
 
 // const getColumnModelQuoteTable = (t: TFunction, history: any): Column<Row, unknown>[] => [
-const columnMode = ({t}: WithTranslation, history: any): Column<QuoteTableRawDataItem, unknown>[] => [
+const columnMode = ({t}: WithTranslation, history: any, upColor: 'green' | 'red'): Column<QuoteTableRawDataItem, unknown>[] => [
     {
         key: 'pair',
         name: t('labelQuotaPair'),
@@ -129,9 +134,9 @@ const columnMode = ({t}: WithTranslation, history: any): Column<QuoteTableRawDat
             // const renderValue = hasValue ? `${sign}${value.toFixed(2)}%` : 'N/A%'
             return (
                 <div className="rdg-cell-value">
-                    <QuoteTableChangedCell value={value}>
+                    <QuoteTableChangedCell value={value} upColor={upColor}>
                         {typeof value !== 'undefined' ? (
-                            (row.floatTag === FloatTag.increase ? '+' : '') + getThousandFormattedNumbers(value) + '%') : EmptyValueTag}
+                            (row.floatTag === FloatTag.increase ? '+' : '') + Number(getThousandFormattedNumbers(value)).toFixed(2) + '%') : EmptyValueTag}
                     </QuoteTableChangedCell>
                 </div>
             )
@@ -201,6 +206,7 @@ export interface QuoteTableProps {
     rawData: QuoteTableRawDataItem[],
     rowHeight?: number
     onVisibleRowsChange?: (startIndex: number) => void,
+    onRowClick?: (rowIdx: number, row: QuoteTableRawDataItem, column: any) => void,
     // generateColumns: ({
     //                       columnsRaw,
     //                       t,
@@ -219,6 +225,7 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                                                                     onVisibleRowsChange,
                                                                     rawData,
                                                                     history,
+                                                                    onRowClick,
                                                                     ...rest
                                                                 }: QuoteTableProps & WithTranslation & RouteComponentProps) => {
     //const formattedRawData = rawData && Array.isArray(rawData) ? rawData : []
@@ -234,11 +241,15 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
         }
     }, [onVisibleRowsChange, rawData])
 
+    let userSettings = useSettings()
+    const upColor = userSettings?.upColor
+
     // const finalData = formattedRawData.map(o => Object.values(o))
     const defaultArgs: any = {
         rawData: [],
-        columnMode: columnMode({t, ...rest}, history),//getColumnModelQuoteTable(t, history),
+        columnMode: columnMode({t, ...rest}, history, upColor),//getColumnModelQuoteTable(t, history),
         generateRows: (rawData: any) => rawData,
+        onRowClick: onRowClick,
         generateColumns: ({columnsRaw}: any) => columnsRaw as Column<QuoteTableRawDataItem, unknown>[],
     }
 

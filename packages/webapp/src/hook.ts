@@ -1,123 +1,59 @@
-import React from 'react';
+import React  from 'react';
+import detectEthereumProvider from '@metamask/detect-provider';
+import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { useSystem } from './stores/system';
+import { ChainId } from 'loopring-sdk';
 import { useAmmMap } from './stores/Amm/AmmMap';
 import { STATUS } from './stores/constant';
 import { useTokenMap } from './stores/token';
 import { useWalletLayer1 } from './stores/walletLayer1';
-// import { useAccount } from './stores/account/hook';
-import { Commands, ConnectProvides, walletServices } from '@loopring-web/connect-provider';
-import { useWalletLayer2 } from './stores/walletLayer2';
+import { useAccount } from './stores/account/hook';
+import { Commands, walletServices } from '@loopring-web/web3-provider';
 
 
 /**
  * @description call it when bootstrap the page or change the network
  */
-export function useInit() {
-    const [state, setState] = React.useState<keyof typeof STATUS>('PENDING');
-    const [provider,setProvider] = React.useState<undefined>(undefined);
+export function useInit(){
+    const [state,setState] = React.useState<keyof typeof STATUS>('PENDING')
     const systemState = useSystem();
     const tokenState = useTokenMap();
     const ammMapState = useAmmMap();
-    // const accountState = useAccount();
-    const walletLayer1State = useWalletLayer1();
-    const walletLayer2State = useWalletLayer2();
+    const accountState  = useAccount();
+    const walletLayer1State  =  useWalletLayer1()
     //store.getState().account
     // const socketState =   useSocket();
-    const subject = React.useMemo(() => walletServices.onSocket(), []);
-    // React.useEffect( ()=>{
-    //     async ()=>{
-    React.useMemo(async () => {
-        if(window.ethereum && window.ethereum.isMetaMask){
-            const _provide = await ConnectProvides.MetaMask;
-        } else {
-            systemState.updateSystem({chainId:1})
+    useConnectHook();
+
+    useCustomDCEffect(async() => {
+
+        const handleChainChanged = (chainId: any) => {
+    
+            // const network = chainId == ChainId.GORLI ? NETWORK.Goerli : NETWORK.MAIN
+             systemState.updateSystem({ chainId })
+             window.location.reload();
         }
-        // const _provide = await ConnectProvides.MetaMask;
-        // setProvide(_provide);
-        //.then(()=>
-        //}
-       // );
-        // debugger
 
-    },[])
-    //     }
-    //
-    // },[])
+        const handleAccountChanged = (accounts: Array<string>) => {
+            window.location.reload()
+        }
 
+        const provider: any = await detectEthereumProvider()
+        if (provider) {
+            const chainId = Number(await provider.request({ method: 'eth_chainId' }))
+            const accounts = await provider.request({ method: 'eth_requestAccounts' })
 
-    const handleChainChanged = (chainId: any) => {
-        // const network = chainId == ChainId.GORLI ? NETWORK.Goerli : NETWORK.MAIN
-        systemState.updateSystem({chainId:Number(chainId) as any})
-        window.location.reload();
-    }
-    const handleConnect =  (accounts: Array<string>,provider:any) => {
-        //TODO update account info
-        walletLayer1State.updateWalletLayer1();
-        setProvider(provider);
-        //walletLayer2State.resetLayer2();
-        //window.location.reload()
-    }
-    const handleAccountDisconnect = () => {
-        //TODO reset wallet 1 and wallet 2  and account info
-        walletLayer1State.resetLayer1();
-        walletLayer2State.resetLayer2();
-        //window.location.reload()
-    }
-    React.useEffect(() => {
-        const subscription = subject.subscribe(({data, status}: { status: keyof typeof Commands, data?: object }) => {
-            switch (status) {
-                case 'ChangeNetwork':
-                    // @ts-ignore
-                    const {chainId} = data ? data : {chainId: undefined};
-                    handleChainChanged(chainId)
-                    // systemState.updateSystem({ chainId })
-                    // window.location.reload();
-                    console.log(data)
-                    break
-                case 'ConnectWallet':
-                    // @ts-ignore
-                    const {accounts,provider} = data ? data : {accounts: undefined};
-                    handleConnect(accounts,provider)
-                    console.log(data)
-                    break
-                case 'DisConnect':
-                    handleAccountDisconnect()
-                    //TODO reset
-                    console.log(data)
+            provider.on('accountsChanged', handleAccountChanged)
+            provider.on('chainChanged', ()=>{handleChainChanged(chainId)} )
+            // @ts-ignore
+            systemState.updateSystem({ chainId  })
+           //handleChainChanged(chainId)
+            
+        } else {
+            systemState.updateSystem({chainId:ChainId.MAINNET})
+        }
 
-            }
-        });
-        return () => subscription.unsubscribe();
-    }, [subject]);
-    // useCustomDCEffect(async() => {
-    //
-    //     const handleChainChanged = (chainId: any) => {
-    //
-    //         // const network = chainId == ChainId.GORLI ? NETWORK.Goerli : NETWORK.MAIN
-    //          systemState.updateSystem({ chainId })
-    //          window.location.reload();
-    //     }
-    //
-    //     const handleAccountChanged = (accounts: Array<string>) => {
-    //         window.location.reload()
-    //     }
-    //
-    //     const provider: any = await detectEthereumProvider()
-    //     if (provider) {
-    //         const chainId = Number(await provider.request({ method: 'eth_chainId' }))
-    //         const accounts = await provider.request({ method: 'eth_requestAccounts' })
-    //
-    //         provider.on('accountsChanged', handleAccountChanged)
-    //         provider.on('chainChanged', ()=>{handleChainChanged(chainId)} )
-    //         // @ts-ignore
-    //         systemState.updateSystem({ chainId  })
-    //        //handleChainChanged(chainId)
-    //
-    //     } else {
-    //         systemState.updateSystem({chainId:ChainId.MAINNET})
-    //     }
-    //
-    // }, [])
+    }, [])
 
     React.useEffect(() => {
         switch (systemState.status) {
@@ -135,7 +71,7 @@ export function useInit() {
                 break;
 
         }
-    }, [
+    },[
         systemState,
         // systemState.status,
         // systemState.statusUnset,
@@ -143,23 +79,22 @@ export function useInit() {
 
     ]);
     React.useEffect(() => {
-        if (ammMapState.status === "ERROR" || tokenState.status === "ERROR") {
+        if(ammMapState.status ==="ERROR" || tokenState.status === "ERROR"){
             //TODO: solve error
             ammMapState.statusUnset();
             tokenState.statusUnset();
             setState('ERROR');
-        } else if (ammMapState.status === "DONE" && tokenState.status === "DONE") {
+        }else if(ammMapState.status ==="DONE" && tokenState.status === "DONE"){
             ammMapState.statusUnset();
             tokenState.statusUnset();
             setState('DONE');
         }
-    }, [ammMapState, tokenState,
-        // accountState.accountId,
-        walletLayer1State])
+    },[ammMapState,tokenState,accountState.accountId,walletLayer1State])
 
     // React.useEffect(()=>{
     //
     // },[])
+
 
 
     return {
@@ -167,3 +102,41 @@ export function useInit() {
     }
 
 }
+function  useConnectHook(){
+    const subject = React.useMemo(() => walletServices.onSocket(),[]);
+
+    const handleChainChanged = React.useCallback((chainId)=>{
+        console.log(chainId)
+    },[])
+    const handleConnect = React.useCallback((accounts,provider)=>{
+        console.log(accounts,provider)
+    },[])
+    const handleAccountDisconnect = React.useCallback(()=>{
+        console.log('Disconnect')
+    },[])
+    React.useEffect(() => {
+        const subscription = subject.subscribe(({data, status}: { status: keyof typeof Commands, data?: any }) => {
+            switch (status) {
+                case 'ChangeNetwork':
+                    // @ts-ignore
+                    const {chainId} = data ? data : {chainId: undefined};
+                    handleChainChanged(chainId)
+                    // systemState.updateSystem({ chainId })
+                    // window.location.reload();
+                    // console.log(data)
+                    break
+                case 'ConnectWallet':
+                    const {accounts,provider} = data ? data : {accounts: undefined,provider:undefined};
+                    handleConnect(accounts,provider)
+                    break
+                case 'DisConnect':
+                    handleAccountDisconnect()
+                    //TODO reset
+                    console.log(data)
+
+            }
+        });
+        return () => subscription.unsubscribe();
+    }, [subject]);
+}
+

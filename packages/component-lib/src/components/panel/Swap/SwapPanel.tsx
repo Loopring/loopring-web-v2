@@ -3,11 +3,19 @@ import { withTranslation, WithTranslation } from 'react-i18next';
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
-import { DropDownIcon, IBData, ProToLiteIcon, TradeCalcData } from '@loopring-web/common-resources';
+import { DropDownIcon, IBData, TradeCalcData } from '@loopring-web/common-resources';
 import { useDeepCompareEffect } from 'react-use';
-import clockLoading from '@loopring-web/common-resources/assets/svg/clock-loading.svg';
+// import clockLoading from '@loopring-web/common-resources/assets/svg/clock-loading.svg';
 import { IconButtonStyled, SwapMenuList, SwapTradeWrap } from '../components';
 import { SwapData } from '../components/panel/SwapWrap/Interface';
+import { CountDownIcon } from '../components/tool/Refresh';
+
+
+// html {
+//     font-size: 1vmin;
+//     background: var(--bg) radial-gradient(closest-corner, rgba(255,255,255,.1), rgba(255,255,255,0));
+//     height: 100%;
+// }
 
 
 export const SwapPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>,
@@ -17,6 +25,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                                       handleSwapPanelEvent, tradeCalcData,
                                       handleError,
                                       onSwapClick,
+                                      onRefreshData,
                                       swapBtnStatus,
                                       tokenSellProps,
                                       tokenBuyProps,
@@ -62,6 +71,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
             ...swapTradeData
         }
     })
+
 
     useDeepCompareEffect(() => {
         if (rest.tradeData && rest.tradeData !== swapData.tradeData
@@ -131,18 +141,19 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                     handleError,
                 }}/>,
                 toolBarItem: () => <Grid container justifyContent={'flex-end'}>
-                    <IconButtonStyled edge="end"
-                                      className={'switch outline'}
-                                      color="inherit"
-                                      aria-label="to Professional">
-                        <ProToLiteIcon/>
-                    </IconButtonStyled>
-                    <IconButtonStyled edge="end"
-                                      className={'clock-loading outline'}
-                                      color="inherit"
-                                      aria-label="3' price update">
-                        <img src={clockLoading} alt={'loading'} width={28} height={28}/>
-                    </IconButtonStyled>
+                    {/*<IconButtonStyled edge="end"*/}
+                    {/*                  className={'switch outline'}*/}
+                    {/*                  color="inherit"*/}
+                    {/*                  aria-label="to Professional">*/}
+                    {/*    <ProToLiteIcon/>*/}
+                    {/*</IconButtonStyled>*/}
+                    {/*<IconButtonStyled edge="end"*/}
+                    {/*                  className={'clock-loading outline'}*/}
+                    {/*                  color="inherit"*/}
+                    {/*                  aria-label="3' price update">*/}
+                    {/*    <img src={clockLoading} alt={'loading'} width={28} height={28}/>*/}
+                    {/*</IconButtonStyled>*/}
+                    <CountDownIcon onRefreshData={onRefreshData}/>
                 </Grid>
             },
             {

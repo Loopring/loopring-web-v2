@@ -19,7 +19,7 @@ import { useDeepCompareEffect } from 'react-use';
 
 const TableStyled = styled(Box)`
   .rdg {
-    --template-columns: 280px 240px auto auto  !important;
+    --template-columns: 180px auto 250px auto auto !important;
 
     .rdg-cell.action {
       display: flex;

@@ -8,9 +8,9 @@ import { DropDownIcon } from '@loopring-web/common-resources'
 
 export interface FilterProps {
     filterType: string;
-    filterDate: string | null;
-    setFilterItems: ({filterType, filterDate}: any) => void;
-    handleFilterChange: ({filterType, filterDate, filterToken}: any) => void
+    filterDate: Date | null;
+    handleFilterChange: ({filterType, filterDate, filterToken}: any) => void;
+    handleReset: () => void;
 }
 
 const StyledTextFiled = styled(TextField)`
@@ -22,10 +22,6 @@ const StyledTextFiled = styled(TextField)`
     width: initial;
     max-width: initial;
   }
-`
-
-const StyledDatePicker = styled(DatePicker)`
-
 `
 
 const StyledBtnBox = styled(Box)`
@@ -44,12 +40,12 @@ export enum FilterTradeTypes {
 }
 
 export const Filter = withTranslation('tables', {withRef: true})(({
-                                                                      t,
-                                                                      filterType,
-                                                                      filterDate,
-                                                                      setFilterItems,
-                                                                      handleFilterChange
-                                                                  }: FilterProps & WithTranslation) => {
+        t,
+        filterType,
+        filterDate,
+        handleReset,
+        handleFilterChange,
+    }: FilterProps & WithTranslation) => {
     const FilterTradeTypeList = [
         {
             label: t('labelAmmFilterTypes'),
@@ -64,60 +60,31 @@ export const Filter = withTranslation('tables', {withRef: true})(({
             value: 'Exit'
         },
     ]
-    // const [filterType, setFilterType] = React.useState<FilterTradeTypes>(FilterTradeTypes.allTypes)
-    // const [filterDate, setFilterDate] = React.useState<Date | any>(null);
-
-    const handleChange = React.useCallback((filterType: any, filterDate: any) => {
-        setFilterItems({
-            filterType,
-            filterDate
-        })
-    }, [setFilterItems])
-
-    const handleReset = React.useCallback(() => {
-        // setFilterType(FilterTradeTypes.allTypes)
-        // setFilterDate(null)
-        handleFilterChange({
-            filterType: FilterTradeTypes.allTypes,
-            filterDate: null,
-        })
-    }, [handleFilterChange])
-
-    const handleSearch = React.useCallback(() => {
-        handleFilterChange({
-            filterType,
-            filterDate,
-        })
-    }, [handleFilterChange, filterDate, filterType])
 
     return (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} alignItems={'center'}>
             <Grid item xs={2}>
                 <StyledTextFiled
                     id="table-amm-filter-types"
                     select
                     fullWidth
                     value={filterType}
-                    // onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                    //     setFilterType(event.target.value as FilterTradeTypes);
-                    // }}
                     onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                        handleChange(event.target.value as FilterTradeTypes, filterDate)
+                        handleFilterChange({type: event.target.value})
                     }}
                     inputProps={{IconComponent: DropDownIcon}}
                 > {FilterTradeTypeList.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
                 </StyledTextFiled>
             </Grid>
             <Grid item>
-                {/* <StyledDatePicker value={filterDate} onChange={(newValue: any) => setFilterDate(newValue)}/> */}
-                <StyledDatePicker value={filterDate} onChange={(newValue: any) => handleChange(filterType, newValue)}/>
+                <DatePicker value={filterDate} onChange={(newValue: any) => handleFilterChange({date: newValue})}/>
             </Grid>
             <Grid item>
                 <StyledBtnBox>
                     <Button variant={'outlined'} size={'medium'} color={'primary'}
-                            onClick={handleReset}>{t('Reset')}</Button>
-                    <Button variant={'contained'} size={'small'} color={'primary'}
-                            onClick={handleSearch}>{t('Search')}</Button>
+                            onClick={handleReset}>{t('labelFilterReset')}</Button>
+                    {/* <Button variant={'contained'} size={'small'} color={'primary'}
+                            onClick={handleSearch}>{t('Search')}</Button> */}
                 </StyledBtnBox>
             </Grid>
         </Grid>

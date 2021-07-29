@@ -24,7 +24,7 @@ export enum ButtonComponentsMap {
 export const ToolBarAvailableItem = [
     ButtonComponentsMap.Download,
     // ButtonComponentsMap.Notification,
-    ButtonComponentsMap.Theme,
+    // ButtonComponentsMap.Theme,
     ButtonComponentsMap.Language,
     ButtonComponentsMap.WalletConnect
 ]
@@ -100,8 +100,9 @@ export let headerMenuData: Array<HeaderMenuItemInterface> = [
         label: {
             id: 'Trading', i18nKey: 'labelTrade',
         },
-        router: {path: '/trading'},
-        child: layer2ItemData,
+        // router: {path: '/trading'},
+        router: {path: '/trading/lite'},
+        // child: layer2ItemData,
         status: HeaderMenuTabStatus.default,
     },
     {
@@ -151,15 +152,15 @@ export const subMenuLayer2 = {
             },
         }
     ],
-    countInfoGroup: [{
-        icon: OrderIcon,
-        router: {path: '/layer2/orders'},
-        label: {
-            id: 'orders', i18nKey: 'labelOrders',
-        },
-    },
+    // countInfoGroup: [{
+    //     icon: OrderIcon,
+    //     router: {path: '/layer2/orders'},
+    //     label: {
+    //         id: 'orders', i18nKey: 'labelOrders',
+    //     },
+    // },
 
-    ],
+    // ],
     settingGroup: [{
         icon: SettingIcon,
         router: {path: '/layer2/setting'},

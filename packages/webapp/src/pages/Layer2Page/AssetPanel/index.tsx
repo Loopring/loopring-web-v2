@@ -16,14 +16,13 @@ import {
     LpTokenAction,
 } from '@loopring-web/component-lib'
 import { useModals } from 'hooks/modal/useModals'
-// import { useGetUserBalances } from 'hooks/exchange/useUserAPI'
-import { useGetTokens } from 'hooks/exchange/useExchangeAPI'
+
 import { volumeToCount } from 'hooks/help'
 import { LoopringAPI } from 'stores/apis/api'
 import { AssetType } from 'loopring-sdk'
 import store from 'stores'
 import { useWalletLayer1 } from 'stores/walletLayer1'
-import { makeWallet } from 'hooks/help'
+import { makeWalletLayer2 } from 'hooks/help'
 import { EmptyValueTag,unit } from '@loopring-web/common-resources'
 import { StylePaper } from '../../styled'
 
@@ -100,7 +99,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const { accAddr } = store.getState().account
     const { walletLayer2 } = store.getState().walletLayer2;
     const { ammMap } = store.getState().amm.ammMap
-    const walletMap = makeWallet()
+    const walletMap = makeWalletLayer2()
     const assetsKeyList = walletMap && walletMap.walletMap ? Object.keys(walletMap.walletMap) : []
     const assetsDetailList = walletMap && walletMap.walletMap ? Object.values(walletMap.walletMap) : []
     const assetsList = assetsKeyList.map((key, index) => ({
@@ -186,13 +185,6 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         getUserTotalAssets(limit)
     }, [getUserTotalAssets])
 
-    // const { tokens: tokensAll } = useGetTokens()
-
-    // const tokens = tokensAll?.tokenSymbolMap
-
-    // const { balances } = useGetUserBalances(tokens)
-
-    // const { walletLayer2 } = store.getState().walletLayer2;
     const { faitPrices } = store.getState().system
 
     const tokenPriceList = faitPrices ? Object.entries(faitPrices).map(o => ({
@@ -206,7 +198,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         result.splice(0, 1, 'AMM')
         const ammToken = result.join('-')
         const ammTokenList = Object.keys(ammMap)
-        const tokenValue = ammTokenList.includes(ammToken) && ammMap[ammToken] ? Number(ammMap[ammToken].amountDollar) : 0
+        const tokenValue = ammTokenList.includes(ammToken) && ammMap[ammToken] && ammMap[ammToken].amountDollar ? Number(ammMap[ammToken].amountDollar) : 0
         jointLPTokenValue += tokenValue
     });
 
@@ -261,11 +253,11 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
             <StyledChartWrapper display={'flex'} justifyContent={'space-between'} alignItems={'center'} marginTop={2}>
                 <Paper component={'div'}>
-                    <Typography component="span" color="textSecondary" variant="body1">Asset Distribution</Typography>
+                    <Typography component="span" color="textSecondary" variant="body1">{t('labelAssetsDistribution')}</Typography>
                     <DoughnutChart data={walletLayer2 ? formattedDoughnutData : []}/>
                 </Paper>
                 <Paper component={'div'}>
-                    <Typography component="span" color="textSecondary" variant="body1">Total Assets</Typography>
+                    <Typography component="span" color="textSecondary" variant="body1">{t('labelTotalAssets')}</Typography>
                     <ScaleAreaChart type={ChartType.Trend} data={chartData}/>
                     <StyledBtnGroupWrapper>
                         <ToggleButtonGroup exclusive size="small" {...{

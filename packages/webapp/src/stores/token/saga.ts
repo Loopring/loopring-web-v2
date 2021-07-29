@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getTokenMap, getTokenMapStatus } from './reducer';
-import { getIcon } from '../../utils/swap_calc_utils';
+import { getIcon } from '../../utils/swap_utils';
 import { CoinInfo, CoinMap } from '@loopring-web/common-resources';
 import { AddressMap, GetTokenMapParams, IdMap } from './interface';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -12,19 +12,22 @@ const getTokenMapApi = async <R extends { [ key: string ]: any }>({
                                                                       tokenArr
                                                                   }: GetTokenMapParams<R>) => {
     let coinMap: CoinMap<any, CoinInfo<any>> = {};
+    let totalCoinMap: CoinMap<any, CoinInfo<any>> = {};
     let tokenMap:any = tokensMap;
     let addressIndex: AddressMap = {};
     let idIndex: IdMap = {};
     Reflect.ownKeys(tokensMap).forEach((key) => {
-        if (!(key as string).startsWith('LP-')) {
-            coinMap[ key as string ] = {
-                icon: getIcon(key as string, tokensMap),
-                name: key as string,
-                simpleName: key as string,
-                description: '',
-                company: '',
-            }
+        const coinInfo = {
+            icon: getIcon(key as string, tokensMap),
+            name: key as string,
+            simpleName: key as string,
+            description: '',
+            company: '',
         }
+        if (!(key as string).startsWith('LP-')) {
+            coinMap[ key as string ] = coinInfo
+        }
+        totalCoinMap[ key as string ] = coinInfo
 
         if (pairs[ key as string ] && pairs[ key as string ].tokenList) {
             // @ts-ignore
@@ -41,7 +44,7 @@ const getTokenMapApi = async <R extends { [ key: string ]: any }>({
             [ tokensMap[ key ].tokenId ]: key as string
         }
     })
-    return {data: {coinMap, addressIndex, idIndex, tokenMap, marketArray: marketArr, marketCoins: tokenArr}}
+    return {data: {coinMap, totalCoinMap, addressIndex, idIndex, tokenMap, marketArray: marketArr, marketCoins: tokenArr}}
 };
 
 export function* getPostsSaga<R extends { [ key: string ]: any }>({payload}: PayloadAction<GetTokenMapParams<R>>) {
@@ -55,7 +58,6 @@ export function* getPostsSaga<R extends { [ key: string ]: any }>({payload}: Pay
         yield put(getTokenMapStatus(err));
     }
 }
-
 
 export function* tokenInitSaga() {
     yield all([takeLatest(getTokenMap, getPostsSaga)]);

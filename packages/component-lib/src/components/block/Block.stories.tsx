@@ -98,6 +98,8 @@ const TradeTitleWrap = withTranslation('common')((rest) => {
 const AmmCardWrap = () => {
     const ref = React.createRef();
     const ammInfo: AmmCardProps<CoinType> = {
+        handleClick(): void {
+        },
         // ammCalcData,
         coinAInfo: coinMap.ETH as CoinInfo<CoinType>,
         coinBInfo: coinMap.LRC as CoinInfo<CoinType>,
@@ -129,7 +131,7 @@ const AmmCardWrap = () => {
         feeA: 121,
         feeB: 1232,
         isNew: true,
-        isActivity: false,
+        isActivity: false
     }
 
     return <AmmCard ref={ref} {...{...ammInfo}} ></AmmCard>

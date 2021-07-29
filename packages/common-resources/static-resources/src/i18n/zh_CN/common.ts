@@ -107,6 +107,7 @@ export default {
     labelTokenAmount: '数量',
     labelRemoveLiquidityBtn: '立刻移出',
     labelAddLiquidityBtn: '立刻放入',
+    labelEndLiquidityBtn: '活动已结束',
     labelTradePanelHideOtherPairs: '隐藏其他交易对',
     labelLPTokens: '权益代币',
     labelTrade: '兑换',
@@ -141,5 +142,17 @@ export default {
     labelCopyAddClip: '复制黏贴到剪切板!',
     labelPleaseInputWalletAddress: '请输入地址',
     labelEmptyDefault: '内容空空的～',
+    labelUnlockAccount:'解锁账号',
+    labelAssetsDistribution: '资产分布',
+    labelTotalAssets: '总资产',
+    labelTxnPageTitle: '充值提现',
+    labelTradePageTitle: '交易记录',
+    labelAmmPageTitle: 'AMM 出入金记录',
+    labelSwapSuccess: '兑换成功!',
+    labelSwapFailed: '兑换失败!',
+    labelJoinAmmSuccess: '加入流动性池成功!',
+    labelJoinAmmFailed: '加入流动性池失败!',
+    labelExitAmmSuccess: '退出流动性池成功!',
+    labelExitAmmFailed: '退出流动性池失败!',
+    labelConnectBy: '已连接 <1>{{connectBy}}</1>'
 }
-

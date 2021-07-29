@@ -66,7 +66,7 @@ export const AccountInfo = withTranslation('common')(({
             </Typography>
             <Typography component={'h6'} variant={'body2'} marginTop={1}>
                 <Trans i18nKey="labelConnectBy">
-                    Connected with <TypographyStrong component={'span'}>{connectBy}</TypographyStrong>.
+                    Connected with &nbsp;<TypographyStrong component={'span'}>{{connectBy}}</TypographyStrong>.
                 </Trans>
             </Typography>
             <Box alignSelf={'center'} marginY={2} display={'flex'} alignItems={'center'} flexDirection={'column'}>
@@ -83,7 +83,7 @@ export const AccountInfo = withTranslation('common')(({
             </Box>
             <BoxStyled component={'div'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
                        marginTop={1} alignSelf={'stretch'}>
-                <Button href={etherscanLink} variant={'outlined'} startIcon={<LinkIcon fontSize={'large'}/>}>
+                <Button formTarget={'_blank'} href={etherscanLink} variant={'outlined'} startIcon={<LinkIcon fontSize={'large'}/>}>
                     <Typography variant={'body2'} marginTop={1 / 2}> {'Etherscan'} </Typography>
                 </Button>
                 <Button startIcon={<ReverseIcon fontSize={'large'}/>} onClick={() => {
