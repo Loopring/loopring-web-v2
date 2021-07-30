@@ -12,13 +12,13 @@ import {
     SortableHeaderCellProps,
     Table,
     useSettings,
-    VipStyled
+    VipStyled,
+    TypographyStrong
 } from '../../';
 import Switch from '@material-ui/core/Switch';
 import React from 'react';
 import { ButtonComponentsMap, Currency, DropDownIcon, headerToolBarData, LanguageKeys, UpColor } from '@loopring-web/common-resources';
 import { useTheme } from '@emotion/react';
-import { TypographyStrong } from 'components/panel';
 
 const StyledPaper = styled(Grid)`
   width: 100%;

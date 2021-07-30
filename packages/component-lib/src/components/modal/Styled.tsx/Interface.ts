@@ -11,14 +11,5 @@ export interface WalletConnectPanelProps {
 export type  ModalWalletConnectProps = WalletConnectPanelProps & {
     open: boolean,
     onClose: { bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void; }['bivarianceHack'];
-
-}
-
-export enum WalletConnectStep  {
-    'Provider',
-    'MetaMaskProcessing',
-    'WalletConnectProcessing',
-    'WalletConnectQRCode',
-    'SuccessConnect',
-    'FailedConnect',
+    step:number
 }

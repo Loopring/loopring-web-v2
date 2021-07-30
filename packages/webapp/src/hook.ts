@@ -1,5 +1,4 @@
-import React  from 'react';
-import detectEthereumProvider from '@metamask/detect-provider';
+import React from 'react';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { useSystem } from './stores/system';
 import { ChainId } from 'loopring-sdk';
@@ -8,73 +7,62 @@ import { STATUS } from './stores/constant';
 import { useTokenMap } from './stores/token';
 import { useWalletLayer1 } from './stores/walletLayer1';
 import { useAccount } from './stores/account/hook';
-import { Commands, ConnectProvides, useConnectHook, walletServices } from '@loopring-web/web3-provider';
+import { ConnectProvides, useConnectHook } from '@loopring-web/web3-provider';
 import { AccountState } from './stores/account';
 
 
-
 /**
- * @description call it when bootstrap the page or change the network
+ * @description
+ * @step1 subscribe Connect hook
+ * @step2 check the session storage ? choose the provider : none provider
+ * @step3 decide china Id by step2
+ * @step4 prepare the static date (tokenMap, ammMap, faitPrice, gasPrice, forex, Activities ...)
+ * @step5 launch the page
+ * @todo each step has error show the ErrorPage , next version for service maintain page.
  */
-export function useInit(){
-    const [state,setState] = React.useState<keyof typeof STATUS>('PENDING')
+export function useInit() {
+    const [state, setState] = React.useState<keyof typeof STATUS>('PENDING')
     const systemState = useSystem();
     const tokenState = useTokenMap();
     const ammMapState = useAmmMap();
-    const {account,status:accuntStatus}  = useAccount();
-    const walletLayer1State  =  useWalletLayer1()
-
-    const handleChainChanged = React.useCallback((chainId)=>{
+    const {account, status: accountStatus} = useAccount();
+    const walletLayer1State = useWalletLayer1()
+    const handleChainChanged = React.useCallback((chainId) => {
         debugger
-        systemState.updateSystem({ chainId })
+        systemState.updateSystem({chainId})
         window.location.reload();
-    },[])
-    const handleConnect = React.useCallback((accounts,provider)=>{
+    }, [])
+    const handleConnect = React.useCallback((accounts, provider) => {
         // debugger
-        console.log('account changed and connect ',accounts,provider)
-    },[])
-    const handleAccountDisconnect = React.useCallback(()=>{
+        console.log('account changed and connect ', accounts, provider)
+    }, [])
+    const handleAccountDisconnect = React.useCallback(() => {
         debugger
         console.log('Disconnect')
-    },[])
-    useConnectHook({handleChainChanged,handleConnect,handleAccountDisconnect});
-
-    useCustomDCEffect(async() => {
-
-        // const handleChainChanged = (chainId: any) => {
-        //
-        //     // const network = chainId == ChainId.GORLI ? NETWORK.Goerli : NETWORK.MAIN
-        //
-        // }
-
-        // const handleAccountChanged = (accounts: Array<string>) => {
-        //
-        // }
+    }, [])
+    useConnectHook({handleChainChanged, handleConnect, handleAccountDisconnect});
+    useCustomDCEffect(async () => {
         //TODO getSessionAccount infor
-        const account =  window.sessionStorage.getItem('account');
-        if(account){
-            const _account:AccountState = JSON.parse(account);
-            if(_account.accAddress &&  _account.connectName && _account.connectName !== 'UnKnow') {
-                 await ConnectProvides[_account.connectName];
-                if(ConnectProvides.usedProvide ){
+        const account = window.sessionStorage.getItem('account');
+        if (account) {
+            const _account: AccountState = JSON.parse(account);
+            if (_account.accAddress && _account.connectName && _account.connectName !== 'UnKnow') {
+                await ConnectProvides[ _account.connectName ];
+                if (ConnectProvides.usedProvide) {
                     // @ts-ignore
                     const chainId = Number(await ConnectProvides.usedProvide.request({method: 'eth_chainId'}))
                     // // @ts-ignore
                     // const accounts = await ConnectProvides.usedProvide.request({ method: 'eth_requestAccounts' })
-                    systemState.updateSystem({ chainId : (chainId? chainId as ChainId:ChainId.MAINNET)  })
+                    systemState.updateSystem({chainId: (chainId ? chainId as ChainId : ChainId.MAINNET)})
                     return
                 }
             }
         }
 
-        systemState.updateSystem({chainId:ChainId.MAINNET})
-
-
-
+        systemState.updateSystem({chainId: ChainId.MAINNET})
 
 
     }, [])
-
     React.useEffect(() => {
         switch (systemState.status) {
             case "ERROR":
@@ -84,38 +72,24 @@ export function useInit(){
                 break;
             case "DONE":
                 systemState.statusUnset();
-                //TODO do some static information update
-                //tokenState.getTokenMap();
                 break;
             default:
                 break;
-
         }
-    },[
-        systemState,
-        // systemState.status,
-        // systemState.statusUnset,
-        //tokenState.getTokenMap
-
-    ]);
+    }, [
+        systemState]);
     React.useEffect(() => {
-        if(ammMapState.status ==="ERROR" || tokenState.status === "ERROR"){
+        if (ammMapState.status === "ERROR" || tokenState.status === "ERROR") {
             //TODO: solve error
             ammMapState.statusUnset();
             tokenState.statusUnset();
             setState('ERROR');
-        }else if(ammMapState.status ==="DONE" && tokenState.status === "DONE"){
+        } else if (ammMapState.status === "DONE" && tokenState.status === "DONE") {
             ammMapState.statusUnset();
             tokenState.statusUnset();
             setState('DONE');
         }
-    },[ammMapState,tokenState,account.accountId,walletLayer1State])
-
-    // React.useEffect(()=>{
-    //
-    // },[])
-
-
+    }, [ammMapState, tokenState, account.accountId, walletLayer1State])
 
     return {
         state,

@@ -1,12 +1,12 @@
 import styled from '@emotion/styled';
 import { Meta, Story } from '@storybook/react/types-6-0';
 import { MemoryRouter } from 'react-router-dom';
-import { Grid, Typography } from '@material-ui/core';
-import { AmmCardProps, CoinInfo, FloatTag, LockIcon, PriceTag, UnLockIcon, WalletStatus } from '@loopring-web/common-resources';
+import { Grid } from '@material-ui/core';
+import { AmmCardProps, CoinInfo, FloatTag, PriceTag, WalletStatus } from '@loopring-web/common-resources';
 import { coinMap, CoinType } from '../../static';
 import { withTranslation } from 'react-i18next';
-import { AccountInfo, BtnWalletConnect } from '../index';
-import { AccountInfoProps, AssetTitle, AssetTitleProps, TradeTitle } from './';
+import { BtnWalletConnect } from '../index';
+import {  AssetTitle, AssetTitleProps, TradeTitle } from './';
 import { useDispatch } from 'react-redux';
 import { setShowDeposit, setShowTransfer, setShowWithdraw } from '../../stores';
 import { SettingPanel } from './SettingPanel';
@@ -14,7 +14,6 @@ import { MarketBlock } from './MarketBlock';
 // import { PoolDetailTitle } from './PoolDetailTitle';
 import { AmmCard } from './AmmCard';
 import React from 'react';
-import { Button } from '@material-ui/core/';
 
 
 const Style = styled.div`
@@ -194,40 +193,7 @@ const MarketWrap = withTranslation('common')((rest) => {
     </>
 })
 
-const AccountInfoWrap = (rest: any) => {
-    const accountInfoProps: AccountInfoProps = {
-        address: '0x123567243o24o24242dsdsd3098784',
-        addressShort: '0x12...8784',
-        level: 'VIP 1',
-        etherscanLink: 'https://material-ui.com/components/material-icons/',
-        connectBy: 'MetaMask',
-        // mainBtn: <Button variant={'contained'} size={'small'} color={'primary'} onClick={() => console.log('my event')}>My
-        //     button</Button>
-    }
-    return <>
-        <Grid item xs={6}>
-            <AccountInfo  {...{
-                ...rest,
-                ...accountInfoProps
-            }} />
-        </Grid>
-        <Grid item xs={6}>
-            <AccountInfo  {...{
-                ...rest,
-                ...accountInfoProps,
-                mainBtn: <>
-                    <Button className={'unlock'} startIcon={<LockIcon fontSize={'large'}/>} variant={'outlined'}>
-                        <Typography variant={'body2'} marginTop={1 / 2}> {'unLock'} </Typography>
-                    </Button>
-                    <Button className={'lock'} startIcon={<UnLockIcon fontSize={'large'}/>} variant={'outlined'}>
-                        <Typography variant={'body2'} marginTop={1 / 2}> {'Lock'} </Typography>
-                    </Button>
-                </>
-            }} />
-        </Grid>
 
-    </>
-}
 const SettingPanelWrap = (_rest: any) => {
     return <SettingPanel/>
 }
@@ -284,10 +250,10 @@ const Template: Story<any> = () => {
         </Grid>
 
 
-        <h4>Account Info</h4>
-        <Grid container spacing={2} alignContent={'center'} justifyContent={'flex-start'} marginBottom={2}>
-            <AccountInfoWrap/>
-        </Grid>
+        {/*<h4>Account Info</h4>*/}
+        {/*<Grid container spacing={2} alignContent={'center'} justifyContent={'flex-start'} marginBottom={2}>*/}
+        {/*    <AccountInfoWrap/>*/}
+        {/*</Grid>*/}
         <h4>Asset Title</h4>
         <Grid container spacing={2} alignContent={'center'} justifyContent={'flex-start'} marginBottom={2}>
             <AssetTitleWrap/>

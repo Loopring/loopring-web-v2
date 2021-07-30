@@ -3,11 +3,10 @@ import React, { ChangeEvent } from 'react';
 import { FormControlLabel, Grid, ListItemText, Radio, RadioGroup, Typography } from '@material-ui/core';
 import { CloseIcon, DropDownIcon, globalSetup, IBData, WithdrawTypes } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../../Interface';
-import { Button, IconClearStyled, MenuItem, TextField } from '../../../../';
+import { Button, IconClearStyled, MenuItem, TextField,TypographyGood, TypographyStrong } from '../../../../';
 import { WithdrawViewProps } from '../Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import { debounce } from 'lodash';
-import { TypographyGood, TypographyStrong } from '..';
 
 export const WithdrawWrap = <T extends IBData<I>,
     I>({
