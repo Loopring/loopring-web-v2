@@ -69,7 +69,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
     const rawPairList = rawData.map(item => `${item.amount.from.key} - ${item.amount.to.key}`)
     const formattedRawPairList = [
         {
-            label: 'All Pairs',
+            label: t('labelFilterAllPairs'),
             value: 'all'
         },
         ...Array.from(new Set(rawPairList)).map((pair: string) => ({
