@@ -35,7 +35,7 @@ import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect'
 import { Theme, } from 'defs/common_defs'
 
 import {
-    AccountInfoProps,
+    AccountBaseProps,
     AmmProps,
     Button,
     CoinType,
@@ -113,7 +113,7 @@ export const useHeader = () => {
         },
     ]
     // const [showAccountInfo, setShowAccountInfo] = React.useState(account?.accAddr ? true : false)
-    const [accountInfoProps, setAccountInfoProps] = React.useState<undefined | AccountInfoProps>(undefined)
+    const [accountInfoProps, setAccountBaseProps] = React.useState<undefined | AccountBaseProps>(undefined)
     //const theme: any = useTheme()
 
     const onNotification = React.useCallback(async () => {
@@ -203,7 +203,7 @@ export const useHeader = () => {
 
         if (!account) {
             myLog('account' + account + '* exit')
-            setAccountInfoProps(undefined)
+            setAccountBaseProps(undefined)
             return
         }
 
@@ -216,7 +216,7 @@ export const useHeader = () => {
                 ...headerMenuData[ HeadMenuTabKey.Layer2 ],
                 status: HeaderMenuTabStatus.default
             }
-            let props: Partial<AccountInfoProps> | undefined = {
+            let props: Partial<AccountBaseProps> | undefined = {
                 addressShort,
                 address: account.accAddress,
                 level: account.level,
@@ -265,7 +265,7 @@ export const useHeader = () => {
                 }
             }
 
-            setAccountInfoProps(props as AccountInfoProps)
+            setAccountBaseProps(props as AccountBaseProps)
         }
         switch (readyState) {
             case AccountStatus.UN_CONNECT:
@@ -319,7 +319,7 @@ export const useHeader = () => {
                 break
         }
         forceUpdate()
-    }, [account, setAccountInfoProps])
+    }, [account, setAccountBaseProps])
 
     return {
         headerToolBarData,

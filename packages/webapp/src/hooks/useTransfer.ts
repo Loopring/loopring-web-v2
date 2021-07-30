@@ -9,7 +9,7 @@ import { useChargeFees } from './useChargeFees';
 import { useCustomDCEffect } from './common/useCustomDCEffect';
 import { LoopringAPI } from '../stores/apis/api';
 import { useSystem } from '../stores/system';
-import { ConnectProvides } from '@loopring-web/web3-provider';
+import { connectProvides } from '@loopring-web/web3-provider';
 import { ConnectorNames } from 'loopring-sdk';
 import { CoinMap, WalletMap } from '@loopring-web/common-resources';
 // import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
@@ -40,7 +40,7 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2:WalletMap<T>|unde
     // }, [chargeFeeList])
     const handleTransfer = React.useCallback(async (inputValue: R) => {
         const {accountId,accAddress,readyState,apiKey,connectName,eddsaKey } = account
-        if (readyState === AccountStatus.ACTIVATED && tokenMap && exchangeInfo && ConnectProvides.usedWeb3) {
+        if (readyState === AccountStatus.ACTIVATED && tokenMap && exchangeInfo && connectProvides.usedWeb3) {
             try{
                 const sellToken = tokenMap[ inputValue.belong as string ]
                 const feeToken = tokenMap[ feeInfo.belong ]
@@ -66,7 +66,7 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2:WalletMap<T>|unde
                         },
                         validUntil: VALID_UNTIL,
                     },
-                    ConnectProvides.usedWeb3,
+                    connectProvides.usedWeb3,
                     chainId === 'unknown' ? 1 : chainId, connectName  as ConnectorNames,
                     eddsaKey, apiKey, false)
                 //TODO check success or failed API
