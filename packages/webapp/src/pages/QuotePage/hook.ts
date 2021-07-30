@@ -45,7 +45,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     const [, setTickerKeys] = React.useState<string[]>([]);
     const [focusRowFrom, setFocusRowFrom] = React.useState<[start: number, end: number]>([0, 2]);
     const [startIndex, setStartIndex] = React.useState<number>(-1);
-
+    
     const subject = React.useMemo(() => tickerService.onSocket(), []);
 
     const updateRecommendation = React.useCallback((recommendationIndex, ticker) => {
