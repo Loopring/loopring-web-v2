@@ -18,3 +18,8 @@ export enum ErrorType {
 // 'SignatureTransfer',
 // 'SignatureApprove'
 
+
+export enum ProcessingType{
+    waiting = 'waiting',
+    nextStep = 'nextStep'
+}

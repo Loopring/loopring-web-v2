@@ -67,7 +67,7 @@ import {
     VALID_UNTIL
 } from 'loopring-sdk'
 import { Typography } from '@material-ui/core';
-import { useEtherscan } from 'hooks/web3/useWeb3'
+// import { useEtherscan } from 'hooks/web3/useWeb3'
 
 import { useModals } from 'hooks/modal/useModals'
 import Web3 from 'web3'
@@ -92,13 +92,14 @@ export const useHeader = () => {
     const {modals: {isShowAccountInfo, isShowConnect}, setShowConnect, setShowAccountInfo} = useOpenModals()
 
     const forceUpdate = React.useReducer((bool) => !bool, false)[ 1 ]
-    const {account, updateAccount, status: accountStatus, errorMessage} = useAccount()
-
+    const {account, updateAccount, status: accountStatus, errorMessage} = useAccount();
+    //TODO: etherscanUrl
+    const {etherscanUrl} = {etherscanUrl:''};
     // const {lock, unlock} = useUnlock()
     //
     // const {connect} = useConnect()
 
-    const {etherscanUrl} = useEtherscan()
+    // const {etherscanUrl} = useEtherscan()
 
     const gatewayList: GatewayItem[] = [
         {
@@ -247,6 +248,7 @@ export const useHeader = () => {
                 addressShort,
                 address: account.accAddress,
                 level: account.level,
+
                 etherscanLink: etherscanUrl + account.accAddress,
                 connectBy: account.connectName
             };
@@ -345,7 +347,7 @@ export const useHeader = () => {
                 break
         }
         forceUpdate()
-    }, [account, etherscanUrl, setAccountInfoProps])
+    }, [account, setAccountInfoProps])
 
     return {
         headerToolBarData,

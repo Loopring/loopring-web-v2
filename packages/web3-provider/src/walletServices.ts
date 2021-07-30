@@ -1,12 +1,12 @@
 import { Subject } from 'rxjs';
 import Web3 from "web3";
-import { Commands, ErrorType } from './command';
+import { Commands, ErrorType,ProcessingType } from './command';
 
 //TODO typeof account State
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
 export const walletServices = {
-    sendProcess: async (type: 'waiting'|'nextStep', props?: any) => {
+    sendProcess: async (type: keyof typeof ProcessingType, props?: any) => {
         subject.next({
             status: Commands.Processing,
             data: {type:type, opts: props}
