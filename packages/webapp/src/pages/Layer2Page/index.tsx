@@ -1,11 +1,11 @@
 import { useRouteMatch } from 'react-router'
 
-import { Box, Paper } from '@material-ui/core'
+import { Box } from '@material-ui/core'
 import {
     DepositPanel,
     SubMenu,
     Button,
-    SubMenuList as BasicSubMenuList, setShowAccountInfo, useOpenModals,
+    SubMenuList as BasicSubMenuList, useOpenModals,
 } from '@loopring-web/component-lib'
 import { useTranslation, withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
@@ -16,7 +16,6 @@ import AssetPanel from './AssetPanel'
 import TradePanel from './TradePanel'
 import AmmPanel from './AmmPanel'
 import { SettingPanel } from '../SettingPage';
-// import { AccountStatus } from '../../state_machine/account_machine_spec';
 import { useModalProps } from '../../layouts/header/hook';
 import { Redirect } from 'react-router-dom'
 import React from 'react';
@@ -41,11 +40,11 @@ const BoxStyle = styled(Box)`
    
 ` as typeof Box
 const BtnConnect = withTranslation(['common'], { withRef: true })( ({t}:any)=>{
-    const {setShowAccountInfo} = useOpenModals();
+    const {setShowAccount} = useOpenModals();
     const showAccountInfo = React.useCallback(()=>{
-        setShowAccountInfo({isShow: true})
+        setShowAccount({isShow: true})
      
-    },[setShowAccountInfo])
+    },[setShowAccount])
     return <Button  variant={'contained'} size={'large'} color={'primary'} fullWidth={true}
                    style={{maxWidth:'280px'}} onClick={ showAccountInfo }>{t(`labelUnlockAccount`) }
     </Button>

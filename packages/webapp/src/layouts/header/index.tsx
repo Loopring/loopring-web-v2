@@ -32,7 +32,7 @@ const Header = ({...rest}: any) => {
         isShowConnect,
         setShowAccount,
         isShowAccount,
-        // setShowAccountInfo,
+        // setShowAccount,
         setShowConnect,
         etherscanUrl,
         // open,

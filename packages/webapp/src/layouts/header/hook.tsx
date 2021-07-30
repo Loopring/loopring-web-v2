@@ -84,7 +84,7 @@ export const useHeader = () => {
     //TODO: etherscanUrl
     const {etherscanUrl} = {etherscanUrl:''};
 
-    // const [showAccountInfo, setShowAccountInfo] = React.useState(account?.accAddr ? true : false)
+    // const [showAccountInfo, setShowAccount] = React.useState(account?.accAddr ? true : false)
     const [accountInfoProps, setAccountBaseProps] = React.useState<undefined | AccountBaseProps>(undefined)
     //const theme: any = useTheme()
 
