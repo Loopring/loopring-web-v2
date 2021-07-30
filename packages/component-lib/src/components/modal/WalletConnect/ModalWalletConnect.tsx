@@ -1,6 +1,6 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { Modal } from '@material-ui/core';
-import { ModalCloseButton, ModalContentStyled, ModalWalletConnectProps } from '../../../index';
+import { ModalCloseButton, SwitchPanelStyled, ModalWalletConnectProps } from '../../../index';
 import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@emotion/react';
 import { Box } from '@material-ui/core/';
@@ -23,7 +23,8 @@ export const ModalWalletConnect = withTranslation('common', {withRef: true})((
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
     >
-        <ModalContentStyled style={{boxShadow: '24'}}>
+        <SwitchPanelStyled style={{boxShadow: '24'}}
+                           {...{_height: 'var(--modal-height)', _width: 'var(--modal-width)' }}>
             <ModalCloseButton onClose={onClose} {...rest} />
             <SwipeableViews axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'} index={step}>
                 {panelList && panelList.map((panel,index)=>{
@@ -32,6 +33,6 @@ export const ModalWalletConnect = withTranslation('common', {withRef: true})((
                     </Box>
                 })} 
             </SwipeableViews>
-        </ModalContentStyled>
+        </SwitchPanelStyled>
     </Modal>
 })

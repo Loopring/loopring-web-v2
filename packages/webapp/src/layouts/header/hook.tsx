@@ -76,14 +76,12 @@ import { useDispatch } from 'react-redux';
 
 export const useHeader = () => {
     const {i18n, t} = useTranslation(['common', 'layout'])
-    const {setTheme, themeMode, language, setLanguage} = useSettings();
+    const {setTheme, themeMode, language, setLanguage } = useSettings();
     const {ShowDeposit} = useModals()
     const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals()
-
+    const {etherscanUrl} = useSystem();
     const forceUpdate = React.useReducer((bool) => !bool, false)[ 1 ]
     const {account, updateAccount, status: accountStatus, errorMessage} = useAccount();
-    //TODO: etherscanUrl
-    const {etherscanUrl} = {etherscanUrl:''};
     const dispatch = useDispatch();
     // const [showAccountInfo, setShowAccount] = React.useState(account?.accAddr ? true : false)
     const [accountInfoProps, setAccountBaseProps] = React.useState<undefined | AccountBaseProps>(undefined)

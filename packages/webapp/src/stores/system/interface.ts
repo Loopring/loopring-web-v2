@@ -16,6 +16,7 @@ export type System<C extends {[key:string]:any}> = {
     env:keyof typeof ENV,
     chainId: 1|5|'unknown'
     // network: keyof typeof NETWORK,
+    etherscanUrl:string,
     socketURL:string,
     baseURL: string,
     faitPrices:{ [k in keyof C]:{price:any,[key:string]:any}} | undefined,
@@ -30,6 +31,9 @@ export type SystemStatus = System<{[key:string]:any}> & {
     __timer__:NodeJS.Timeout | -1
     topics: any[]
 }  & StateBase
+
+
+
 
 
 

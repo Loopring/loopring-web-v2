@@ -8,6 +8,7 @@ const initialState: SystemStatus = {
     // network:'NONETWORK',
     baseURL: '',
     socketURL: '',
+    etherscanUrl:'',
     faitPrices: undefined,
     gasPrice: undefined,
     forex: undefined,
@@ -60,7 +61,7 @@ const systemSlice: Slice<SystemStatus> = createSlice({
                 // @ts-ignore
                 state.errorMessage = action.error
             }
-            const {env, baseURL,socketURL, faitPrices, gasPrice, forex, exchangeInfo, __timer__} = action.payload;
+            const {env, baseURL,socketURL, faitPrices, gasPrice, forex, exchangeInfo, __timer__,etherscanUrl} = action.payload;
             if (env) {
                 state.env = env
             }
@@ -82,6 +83,9 @@ const systemSlice: Slice<SystemStatus> = createSlice({
             
             if (exchangeInfo) {
                 state.exchangeInfo = exchangeInfo
+            }
+            if(etherscanUrl){
+                state.etherscanUrl = etherscanUrl
             }
 
             if (__timer__) {

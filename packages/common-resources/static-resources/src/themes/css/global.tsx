@@ -159,6 +159,8 @@ export const globalCss = ({theme}: any) => css`
     --swap-box-height: 540px; /** js used also **/
     --panel-setting-height: 680px;
     --panel-setting-width: 800px;
+    --modal-height: 540px;
+    --modal-width: 480px;
     --swap-box-width: 338px;
     --toolbar-row-height: 56px; /** js used also  40 + 56 = 96  CoinList.tsx **/
     --sub-menuItem-width: 200px;

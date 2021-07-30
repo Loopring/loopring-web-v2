@@ -1,12 +1,11 @@
-import styled from '@emotion/styled';
-import { Box, BoxProps, Modal as MuiModal } from '@material-ui/core';
+import {  Modal as MuiModal } from '@material-ui/core';
 import {
     AmmPanel,
     AmmProps,
     DepositPanel,
     DepositProps,
     ModalCloseButton,
-    modalContentBaseStyle,
+    SwitchPanelStyled,
     ModalPanelProps,
     ResetPanel,
     ResetProps,
@@ -19,30 +18,10 @@ import {
     WithdrawProps
 } from '../../';
 import { IBData } from '@loopring-web/common-resources';
-import React from 'react';
 import { WithTranslation, withTranslation } from 'react-i18next';
 
 
-const SwitchPanelStyled = styled(Box)<{ _height?: number | string, _width?: number | string }>`
-  ${({theme}) => modalContentBaseStyle({theme: theme})}
-  ${({_width}) => `
-       width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : 'var(--transfer-modal-width)'};
-    `}
-  
-  & > div {
-    background-color: initial;
-    ${({_width}) => `
-       width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : 'var(--transfer-modal-width)'};
-    `}
-  }
 
-  & .react-swipeable-view-container {
-    ${({_height}) => `
-       height: ${_height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : 'unset'} ;
-    `
-    }
-    
-` as React.ElementType<{ _height?: number | string, _width?: number | string } & BoxProps>
 const Modal = withTranslation('common')(({
                                              open,
                                              onClose,
