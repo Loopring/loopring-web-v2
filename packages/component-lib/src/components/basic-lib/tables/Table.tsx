@@ -7,9 +7,34 @@ import { WithT } from "i18next";
 import React from "react";
 import { Column, DataGridProps, SortableHeaderCell, SortableHeaderCellProps, TableProps } from './';
 import { EmptyDefault } from '../empty';
-import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
+// import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
+import { LoadingIcon } from '@loopring-web/common-resources'
+import { Box } from '@material-ui/core';
+
+const TableWrapperStyled = styled(Box)`
+  display: flex;
+  position: relative;
+  flex: 1;
+
+  // &::after {
+  //   position: absolute;
+  //   z-index: 20;
+  //   top: 0;
+  //   right: 0;
+  //   bottom: 0;
+  //   left: 0;
+  //   width: 100%;
+  //   height: 100%;
+  //   background-color: ${({theme}) => theme.colorBase.backgroundBox};
+  //   opacity: 0.1;
+  //   transition: all 0.3s;
+  //   content: '';
+  //   pointer-events: auto;
+  // }
+`
 
 export const DataGridStyled = styled(DataGrid)`
+  height: 100%;
 
   &.rdg {
     min-height: 350px;
@@ -101,6 +126,14 @@ export const DataGridStyled = styled(DataGrid)`
 
 ` as typeof DataGrid;
 
+const LoadingStyled = styled(LoadingIcon)`
+  position: absolute;
+  z-index: 21;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`
+
 // interface Action {
 //     type: 'toggleSubRow' | 'deleteSubRow' | 'refresh' | 'sort';
 //     id: string;
@@ -142,9 +175,13 @@ export const generateRows = <Row, SR>(rawData: [][], rest: TableProps<Row, SR>):
     }, {_rawData: row}) as Row)
 };
 
+export type ExtraTableProps = {
+  showLoading?: boolean
+}
+
 //TODO:
 // {isLoading && <div className={loadMoreRowsClassname}>Loading more rows...</div>
-export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation) => {
+export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & ExtraTableProps) => {
     const {
         EmptyRowsRenderer,
         generateRows,
@@ -161,7 +198,10 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation) => {
         columnMode,
         onScroll,
         onRowClick,
-        rowHeight, t, ...rest
+        rowHeight,
+        showLoading,
+        t,
+        ...rest
     } = props;
 
     const columns = generateColumns({columnsRaw: columnMode, t});
@@ -211,7 +251,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation) => {
     `
 
     /*** sort handle end ***/
-    return <>
+    return <TableWrapperStyled>
       <DataGridStyled
         {...rest}
         onScroll={onScroll}
@@ -227,19 +267,19 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation) => {
         rowRenderer={rowRenderer as any}
         sortColumns={sortColumns}
         onRowClick={onRowClick}
-        emptyRowsRenderer={() => EmptyRowsRenderer ? EmptyRowsRenderer :
+        emptyRowsRenderer={!showLoading ? (() => EmptyRowsRenderer ? EmptyRowsRenderer :
             <EmptyDefault height={`calc(100% - var(--header-row-height))`} message={() => {
                 return <RenderEmptyMsg>
                     <Trans i18nKey="labelEmptyDefault">
                         Content is Empty
                     </Trans>
                 </RenderEmptyMsg>
-            }}/>}
+            }}/>) : null}
       />
-      <div>
-        {loadingSvg}
-      </div>
-    </>
+      {showLoading && (
+        <LoadingStyled />
+      )}
+    </TableWrapperStyled>
     ;
     //  <EmptyDefault height={"calc(100% - 35px)"} url={'/path'} message={()=>{
     //  return <>Go to <Link to={'./path'}> link or event</Link> at here</>} } />   }
