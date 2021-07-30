@@ -1,7 +1,7 @@
 import { Box, Checkbox } from '@material-ui/core';
 import { WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
-import {  WalletConnectPanelProps } from './Interface';
+import { ProviderMenuProps } from './Interface';
 import { Typography } from '@material-ui/core/';
 import { CheckBoxIcon, CheckedIcon, GatewayItem } from '@loopring-web/common-resources';
 import { FormControlLabel } from '../../basic-lib';
@@ -24,7 +24,7 @@ export const ProviderMenu = ({
                                        t, gatewayList,
                                        handleSelect,
 
-                                   }: WalletConnectPanelProps & WithTranslation) => {
+                                   }: ProviderMenuProps & WithTranslation) => {
     return <WalletConnectPanelStyled display={'flex'} justifyContent={'space-between'} alignItems={'center'}
                                      flexDirection={'column'}>
         <Typography variant={'h3'} component='h3' className="modalTitle" marginBottom={3}>Connect Wallet</Typography>

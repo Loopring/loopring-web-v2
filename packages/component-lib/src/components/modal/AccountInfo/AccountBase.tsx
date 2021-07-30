@@ -9,7 +9,7 @@ import {
 import { Trans, withTranslation, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import QRCode from 'qrcode.react';
-import { AccountInfoProps } from './Interface';
+import { AccountBaseProps } from './Interface';
 import { TypographyStrong, VipStyled } from 'components';
 
 
@@ -50,7 +50,7 @@ const BoxStyled = styled(Box)`
   }
 ` as typeof Box
 
-export const AccountInfo = withTranslation('common')(({
+export const AccountBase = withTranslation('common')(({
                                                           address,
                                                           addressShort,
                                                           level,
@@ -63,7 +63,7 @@ export const AccountInfo = withTranslation('common')(({
                                                           onCopy,
                                                           // onViewQRCode,
                                                           t
-                                                      }: AccountInfoProps & WithTranslation) => {
+                                                      }: AccountBaseProps & WithTranslation) => {
 
     return <Grid container justifyContent={'space-between'} alignItems={'center'}>
         <Grid item xs={12} display={'flex'} flexDirection={'column'} alignItems={'flex-start'} paddingX={3}>

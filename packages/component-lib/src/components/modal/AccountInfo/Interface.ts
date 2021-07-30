@@ -1,6 +1,6 @@
 import { ButtonProps } from '../../basic-lib';
 
-export type AccountInfoProps = {
+export type AccountBaseProps = {
     addressShort: string
     address: string,
     level?: string,
@@ -12,4 +12,17 @@ export type AccountInfoProps = {
     onLock?: any,
     onCopy?: any,
     onViewQRCode?: any,
+}
+
+
+export enum AccountStep  {
+    NoAccount,
+    Deposit,
+    Depositing,
+    FailedDeposit,
+    ApproveAccount,
+    ProcessUnlock,
+    SuccessUnlock,
+    FailedUnlock,
+    HadAccount,
 }

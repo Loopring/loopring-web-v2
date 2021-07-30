@@ -1,6 +1,6 @@
 import { Button } from '../../../index';
 
-export const ActiveAccount = ()=>{
+export const ApproveAccount = ()=>{
     return <Button onClick={()=>{
       //TODO
     }}></Button>

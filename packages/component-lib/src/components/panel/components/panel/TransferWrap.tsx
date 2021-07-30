@@ -3,11 +3,11 @@ import React, { ChangeEvent } from 'react';
 import { Grid, ListItemText, Typography } from '@material-ui/core';
 // import { Link as RouterLink } from 'react-router-dom';
 import { CloseIcon, DropDownIcon, globalSetup, IBData } from '@loopring-web/common-resources';
-import { Button, MenuItem, TextField, TradeBtnStatus } from '../../../';
+import { Button, MenuItem, TextField, TradeBtnStatus, TypographyGood } from '../../../';
 import { TransferViewProps } from '../Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import { debounce } from 'lodash';
-import { IconClearStyled, TypographyGood } from '..';
+import { IconClearStyled } from '..';
 
 
 export const TransferWrap = <T extends IBData<I>,
