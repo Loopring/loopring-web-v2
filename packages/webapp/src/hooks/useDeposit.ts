@@ -26,7 +26,7 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
     } as IBData<unknown>)
 
 
-    const handleDeposit = React.useCallback(async (inputValue: R) => {
+    const handleDeposit = React.useCallback(async (inputValue: any) => {
         const {accountId, accAddress, readyState, apiKey, connectName, eddsaKey} = account
         if ((readyState !== AccountStatus.UN_CONNECT
             && readyState !== AccountStatus.RESET
@@ -57,7 +57,7 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
             return false
         }
 
-    }, [account, tokenMap])
+    }, [account, tokenMap,chainId,exchangeInfo,gasPrice])
     const [depositProps, setDepositProps] = React.useState<Partial<DepositProps<R, T>>>({
         tradeData: {belong: undefined} as any,
         coinMap: coinMap as CoinMap<any>,

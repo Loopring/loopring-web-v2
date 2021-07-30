@@ -32,7 +32,6 @@ import store from "stores";
 import { LoopringAPI } from "stores/apis/api";
 import { debounce } from "lodash";
 // import { AccountStatus } from "state_machine/account_machine_spec";
-import { Lv2Account } from "defs/account_defs";
 import { deepClone } from '../../../utils/obj_tools';
 import { useWalletLayer2 } from "stores/walletLayer2";
 import { myLog } from "utils/log_tools";
@@ -62,7 +61,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
     // const walletLayer2State = useWalletLayer2();
     const {coinMap, tokenMap} = useTokenMap();
     const {ammMap} = useAmmMap();
-    const {account,status:accountStatus} = useAccount();
+    const {account, status: accountStatus} = useAccount();
     const {delayAndUpdateWalletLayer2} = useWalletLayer2();
     const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<C> | undefined>();
 
@@ -82,8 +81,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
     const [ammWithdrawBtnI18nKey, setAmmWithdrawBtnI18nKey] = React.useState<string | undefined>(undefined);
 
     const initAmmData = React.useCallback(async (pair: any) => {
-        // @ts-ignore
-        let _ammCalcData: Partial<AmmInData<C>> = ammPairInit(
+        let _ammCalcData = ammPairInit(
             {
                 pair,
                 ammType,
@@ -96,20 +94,20 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
                 ammPoolsBalance: snapShotData?.ammPoolsBalance
             })
 
-        setAmmCalcData({...ammCalcData, ..._ammCalcData} as AmmInData<C>);
+        setAmmCalcData({...ammCalcData, ..._ammCalcData});
         if (_ammCalcData.myCoinA) {
             setAmmJoinData({
-                coinA: {..._ammCalcData.myCoinA, tradeValue: undefined} as IBData<C>,
-                coinB: {..._ammCalcData.myCoinB, tradeValue: undefined} as IBData<C>,
+                coinA: {..._ammCalcData.myCoinA, tradeValue: undefined},
+                coinB: {..._ammCalcData.myCoinB, tradeValue: undefined},
                 slippage: 0.5
             })
             setAmmExitData({
-                coinA: {..._ammCalcData.lpCoinA, tradeValue: undefined} as IBData<C>,
-                coinB: {..._ammCalcData.lpCoinB, tradeValue: undefined} as IBData<C>,
+                coinA: {..._ammCalcData.lpCoinA, tradeValue: undefined},
+                coinB: {..._ammCalcData.lpCoinB, tradeValue: undefined},
                 slippage: 0.5
             })
         }
-    }, [snapShotData, walletMap, ammJoinData, ammExitData])
+    }, [snapShotData, walletMap, coinMap, tokenMap, ammCalcData, ammMap, ammType])
 
     const [ammPoolSnapshot, setAmmPoolSnapShot] = useState<AmmPoolSnapshot>()
 
@@ -290,9 +288,9 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
     }, globalSetup.wait), [account])
 
-    const handleJoinAmmPoolEvent = React.useCallback(async (data: AmmData<IBData<C>>, type: 'coinA' | 'coinB') => {
+    const handleJoinAmmPoolEvent = React.useCallback(async (data: AmmData<IBData<any>>, type: 'coinA' | 'coinB') => {
         await handlerJoinInDebounce(data, type, joinFees, ammPoolSnapshot)
-    }, [joinFees, ammPoolSnapshot]);
+    }, [joinFees, handlerJoinInDebounce, ammPoolSnapshot]);
 
     const addToAmmCalculator = React.useCallback(async function (props
     ) {
@@ -363,12 +361,12 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         if (props.__cache__) {
             makeCache(props.__cache__)
         }
-    }, [joinRequest, ammJoinData, account])
+    }, [joinRequest, ammJoinData, account, delayAndUpdateWalletLayer2, t])
 
     const onAmmDepositClickMap: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
         [ fnType.ACTIVATED ]: [addToAmmCalculator]
     })
-    const onAmmAddClick = React.useCallback((props: AmmData<IBData<C>>) => {
+    const onAmmAddClick = React.useCallback((props: AmmData<IBData<any>>) => {
         accountStaticCallBack(onAmmDepositClickMap, [props])
     }, [onAmmDepositClickMap]);
 
@@ -441,9 +439,9 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
     }, globalSetup.wait), [])
 
-    const handleExitAmmPoolEvent = React.useCallback(async (data: AmmData<IBData<C>>, type: 'coinA' | 'coinB') => {
+    const handleExitAmmPoolEvent = React.useCallback(async (data: AmmData<IBData<any>>, type: 'coinA' | 'coinB') => {
         await handleExitInDebounce(data, type, exitFees, ammPoolSnapshot)
-    }, [exitFees, ammPoolSnapshot]);
+    }, [exitFees, ammPoolSnapshot, handleExitInDebounce]);
 
     useCustomDCEffect(() => {
 
@@ -522,23 +520,23 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         //     makeCache(props.__cache__)
         // }
 
-    }, [exitRequest, ammExitData])
+    }, [exitRequest, ammExitData, delayAndUpdateWalletLayer2, account, t])
 
     const removeAmmClickMap: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
         [ fnType.ACTIVATED ]: [removeAmmCalculator]
     })
 
-    const onAmmRemoveClick = React.useCallback((props: AmmData<IBData<C>>) => {
+    const onAmmRemoveClick = React.useCallback((props: AmmData<IBData<any>>) => {
 
         myLog('onAmmRemoveClick, exitRequest:', exitRequest, ' ammExitData:', ammExitData)
         accountStaticCallBack(removeAmmClickMap, [props])
-    }, [exitRequest, ammExitData]);
+    }, [exitRequest, ammExitData, removeAmmClickMap]);
 
     React.useEffect(() => {
         if (snapShotData) {
             initAmmData(pair)
         }
-    }, [snapShotData, pair, walletMap]);
+    }, [snapShotData, pair, walletMap, initAmmData]);
 
     return {
         ammAlertText,

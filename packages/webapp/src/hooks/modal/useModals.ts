@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import React  from "react";
 import { useDispatch } from "react-redux"
 
 import {
@@ -8,7 +8,6 @@ import {
     setShowWithdraw,
 } from '@loopring-web/component-lib'
 import { useTranslation } from "react-i18next";
-import store from 'stores'
 import { AccountStatus, useAccount } from '../../stores/account';
 
 export function useModals() {
@@ -17,7 +16,7 @@ export function useModals() {
     const {account:{readyState}} = useAccount()
     const { t } = useTranslation('common')
 
-    const ShowDeposit = useCallback((isShow: boolean, defaultProps?: any)=>{
+    const ShowDeposit = React.useCallback((isShow: boolean, defaultProps?: any)=>{
 
         const isNoAccount = readyState === AccountStatus.NO_ACCOUNT
 
@@ -31,10 +30,10 @@ export function useModals() {
             },
         }
         dispatch(setShowDeposit(action))
-    }, [dispatch, t])
-    const ShowTransfer = useCallback((isShow: boolean, defaultProps?: any) => dispatch(setShowTransfer({isShow, props: {...defaultProps}})), [dispatch])
-    const ShowWithdraw = useCallback((isShow: boolean, defaultProps?: any) => dispatch(setShowWithdraw({isShow, props: {...defaultProps}})), [dispatch])
-    const ShowResetAccount = useCallback((isShow: boolean, defaultProps?: any) => dispatch(setShowResetAccount({isShow, props: {...defaultProps}})), [dispatch])
+    }, [dispatch, t, readyState])
+    const ShowTransfer = React.useCallback((isShow: boolean, defaultProps?: any) => dispatch(setShowTransfer({isShow, props: {...defaultProps}})), [dispatch])
+    const ShowWithdraw = React.useCallback((isShow: boolean, defaultProps?: any) => dispatch(setShowWithdraw({isShow, props: {...defaultProps}})), [dispatch])
+    const ShowResetAccount = React.useCallback((isShow: boolean, defaultProps?: any) => dispatch(setShowResetAccount({isShow, props: {...defaultProps}})), [dispatch])
 
     return {
         ShowDeposit,

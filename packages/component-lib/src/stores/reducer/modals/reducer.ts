@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ModalState, ModalStatePlayLoad } from './interface';
 import {
     AmmInfoProps,
-    DepositInfoProps,
+    DepositInfoProps, ModalAccountProps,
+    ModalWalletConnectProps,
     ResetInfoProps,
     SwapInfoProps,
     TransferInfoProps,
@@ -17,8 +18,8 @@ const initialState: ModalState<IBData<any>, any> = {
     isShowResetAccount: {isShow: false, props: {}},
     isShowSwap: {isShow: false, props: {}},
     isShowAmm: {isShow: false, props: {}},
-    isShowConnect: {isShow: false},
-    isShowAccountInfo: {isShow: false}
+    isShowConnect: {isShow: false, props: {}},
+    isShowAccount: {isShow: false, props: {}},
 }
 
 export const modalsSlice = createSlice({
@@ -79,13 +80,13 @@ export const modalsSlice = createSlice({
                 })
             }
         },
-        setShowConnect(state, action: PayloadAction<{ isShow: boolean }>) {
+        setShowConnect(state, action: PayloadAction<{ isShow: boolean } & { props?: Partial<ModalWalletConnectProps> }>) {
             const {isShow} = action.payload;
             state.isShowConnect.isShow = isShow
         },
-        setShowAccountInfo(state, action: PayloadAction<{ isShow: boolean }>) {
+        setShowAccount(state, action: PayloadAction<{ isShow: boolean } & { props?: Partial<ModalAccountProps> }>) {
             const {isShow} = action.payload;
-            state.isShowAccountInfo.isShow = isShow
+            state.isShowAccount.isShow = isShow
         }
     },
 })
@@ -97,6 +98,6 @@ export const {
     setShowSwap,
     setShowAmm,
     setShowConnect,
-    setShowAccountInfo
+    setShowAccount
 } = modalsSlice.actions
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

@@ -4,7 +4,7 @@ import React from 'react';
 import { Grid } from '@material-ui/core';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
 import { DropDownIcon, IBData, TradeCalcData } from '@loopring-web/common-resources';
-import { useDeepCompareEffect } from 'react-use';
+// import { useDeepCompareEffect } from 'react-use';
 // import clockLoading from '@loopring-web/common-resources/assets/svg/clock-loading.svg';
 import { IconButtonStyled, SwapMenuList, SwapTradeWrap } from '../components';
 import { SwapData } from '../components/panel/SwapWrap/Interface';
@@ -73,14 +73,14 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
     })
 
 
-    useDeepCompareEffect(() => {
+    React.useEffect(() => {
         if (rest.tradeData && rest.tradeData !== swapData.tradeData
             // && (rest.tradeData.sell.tradeValue !== swapData.tradeData.sell.tradeValue
             //     || rest.tradeData.buy.tradeValue !== swapData.tradeData.buy.tradeValue)
         ) {
             setSwapData({...swapData, tradeData: rest.tradeData});
         }
-    }, [rest.tradeData])
+    }, [rest.tradeData, swapData])
     const onChangeEvent = React.useCallback(async (_index: 0 | 1, {
         to,
         tradeData,
@@ -122,7 +122,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
             setIndex(_index);
         }
 
-    }, [handleSwapPanelEvent, tradeCalcData, rest, index]);
+    }, [handleSwapPanelEvent, tradeCalcData, rest, index, swapData]);
     const props: SwitchPanelProps<'tradeMenuList' | 'trade'> = {
         index: index, // show default show
         panelList: [

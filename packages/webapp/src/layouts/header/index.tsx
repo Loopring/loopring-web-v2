@@ -1,11 +1,6 @@
-import { useCallback, useState, } from 'react'
+import React from 'react'
 
-import {
-    Header as HeaderUI,
-    HideOnScroll,
-    ModalWalletConnect,
-    Toast,
-} from '@loopring-web/component-lib'
+import { Header as HeaderUI, HideOnScroll, ModalPanel, } from '@loopring-web/component-lib'
 
 import { headerRoot } from '@loopring-web/common-resources'
 
@@ -13,18 +8,11 @@ import { useLocation } from 'react-router-dom'
 
 import { Toolbar, } from '@material-ui/core'
 
-import { useHeader } from './hook'
+import { useHeader, useModalProps } from './hook'
+import { ModalAccountInfo } from '../AccountModal';
+import { ModalWalletConnectPanel } from '../WalletModal';
 
- import { useAccount } from 'stores/account/hook'
-import { ModalPanel, ModalQRCode, } from '@loopring-web/component-lib'
-import { useModalProps } from './hook'
-
-import { copyToClipBoard } from 'utils/obj_tools'
-import { ModalAccountInfo } from '../../pages/AccountPage';
-import { useTranslation } from 'react-i18next';
-import { TOAST_TIME } from 'defs/common_defs'
-
-const Header = ({ ...rest }: any) => {
+const Header = ({...rest}: any) => {
 
     const {
         depositProps,
@@ -40,12 +28,13 @@ const Header = ({ ...rest }: any) => {
     const {
         headerToolBarData,
         headerMenuData,
-        gatewayList,
+        // gatewayList,
         isShowConnect,
-        isShowAccountInfo,
-        setShowAccountInfo,
+        setShowAccount,
+        isShowAccount,
         // setShowAccountInfo,
         setShowConnect,
+        etherscanUrl,
         // open,
         // setOpen,
         // openConnect,
@@ -55,57 +44,43 @@ const Header = ({ ...rest }: any) => {
         // showAccountInfo
     } = useHeader()
 
-    const { resetAccount } = useAccount()
 
-    const {t} = useTranslation('common')
+    // const {t} = useTranslation('common')
 
-    const onSwitch = useCallback(() => {
-        setShowAccountInfo({isShow:false})
-        setShowConnect({isShow:true})
-    }, [setShowConnect,setShowAccountInfo])
-
-    const [openQRCode, setOpenQRCode] = useState(false)
-
-    const [copyToastOpen, setCopyToastOpen] = useState(false);
+    const onClose = React.useCallback(() => {
+        setShowAccount({isShow: false})
+    }, [])
 
     return (<>
-        <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen} 
-            autoHideDuration={TOAST_TIME} setOpen={setCopyToastOpen} severity={"success"} />
 
-        <ModalQRCode open={openQRCode} onClose={() => setOpenQRCode(false)} title={'ETH Address'}
-            description={account?.accAddress} url={account?.accAddress} />
 
-        <ModalPanel transferProps={transferProps} withDrawProps={withdrawProps} 
-        depositProps={depositProps} resetProps={resetProps} ammProps={ammProps} swapProps={swapProps}/>
+        <ModalPanel transferProps={transferProps} withDrawProps={withdrawProps}
+                    depositProps={depositProps} resetProps={resetProps} ammProps={ammProps} swapProps={swapProps}/>
 
         <HideOnScroll>
             {process.env.NODE_ENV !== 'production' && JSON.stringify(account?.readyState) + '\t'
-            + account?.connectName  + '/'  }
+            + account?.connectName + '/'}
 
             <HeaderUI {...rest} headerMenuData={headerMenuData} headerToolBarData={headerToolBarData}
-                selected={location.pathname === '/' ? headerRoot : location.pathname}></HeaderUI>
+                      selected={location.pathname === '/' ? headerRoot : location.pathname}></HeaderUI>
 
         </HideOnScroll>
-        <Toolbar />
-
-        <ModalWalletConnect {...{ ...rest, gatewayList, open:isShowConnect.isShow, onClose: () => setShowConnect({isShow:false}) }} />
-        {<ModalAccountInfo
-            open={isShowAccountInfo.isShow}
-            depositProps={depositProps}
-            onClose={() => {setShowAccountInfo({isShow:false})}}
-            onCopy={() => {
-                copyToClipBoard(account.accAddress);
-                setCopyToastOpen(true)
+        <Toolbar/>
+        <ModalWalletConnectPanel {...{
+            ...rest,
+            // gatewayList,
+            open: isShowConnect.isShow,
+            onClose: () => setShowConnect({isShow: false})
+        }} />
+        <ModalAccountInfo
+            {...{
+                ...rest,
+                depositProps,
+                etherscanUrl,
+                open: isShowAccount.isShow,
+                onClose: () => setShowAccount({isShow: false})
             }}
-            onViewQRCode={() => {
-                setOpenQRCode(true)
-            }}
-            onDisconnect={() => {
-                resetAccount();
-                setShowAccountInfo({isShow:false});
-            }}
-            onSwitch={onSwitch}
-            {...{...accountInfoProps, ...rest}}></ModalAccountInfo>}
+        ></ModalAccountInfo>
     </>)
 }
 

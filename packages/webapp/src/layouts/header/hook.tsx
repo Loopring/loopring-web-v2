@@ -77,41 +77,13 @@ export const useHeader = () => {
     const {i18n, t} = useTranslation(['common', 'layout'])
     const {setTheme, themeMode, language, setLanguage} = useSettings();
     const {ShowDeposit} = useModals()
-    const {modals: {isShowAccountInfo, isShowConnect}, setShowConnect, setShowAccountInfo} = useOpenModals()
+    const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals()
 
     const forceUpdate = React.useReducer((bool) => !bool, false)[ 1 ]
     const {account, updateAccount, status: accountStatus, errorMessage} = useAccount();
     //TODO: etherscanUrl
     const {etherscanUrl} = {etherscanUrl:''};
 
-    const gatewayList: GatewayItem[] = [
-        {
-            ...DefaultGatewayList[ 0 ],
-            handleSelect: () => {
-                myLog('try to connect to ', ConnectorNames.Injected)
-                setShowConnect({isShow: false})
-            }
-        },
-        {
-            ...DefaultGatewayList[ 1 ],
-            handleSelect: () => {
-                setShowConnect({isShow: false})
-            }
-        },
-        {
-            ...DefaultGatewayList[ 2 ],
-            handleSelect: () => {
-                setShowConnect({isShow: false})
-            }
-        },
-        {
-            ...DefaultGatewayList[ 3 ],
-            handleSelect: () => {
-                // connect(ConnectorNames.Trezor, true)
-                setShowConnect({isShow: false})
-            }
-        },
-    ]
     // const [showAccountInfo, setShowAccountInfo] = React.useState(account?.accAddr ? true : false)
     const [accountInfoProps, setAccountBaseProps] = React.useState<undefined | AccountBaseProps>(undefined)
     //const theme: any = useTheme()
@@ -127,18 +99,18 @@ export const useHeader = () => {
         switch (account.readyState) {
             case AccountStatus.RESET:
             case AccountStatus.UN_CONNECT:
-            case AccountStatus.NO_ACCOUNT:
                 setShowConnect({isShow: true})
                 break
+            case AccountStatus.NO_ACCOUNT:
             case AccountStatus.DEPOSITING:
             case AccountStatus.LOCKED:
             case AccountStatus.ACTIVATED:
-                setShowAccountInfo({isShow: true})
+                setShowAccount({isShow: true})
                 break
             default:
                 break
         }
-    }, [account,setShowConnect, setShowAccountInfo])
+    }, [account,setShowConnect, setShowAccount])
 
     const onThemeBtnClick = React.useCallback(async (themeMode: ThemeKeys) => {
         if (themeMode === Theme.dark) {
@@ -184,11 +156,11 @@ export const useHeader = () => {
     const lockCallback = React.useCallback((event) => {
         // lock(account)
         updateAccount()
-    }, [account, updateAccount])
+    }, [ updateAccount])
     const unLockCallback = React.useCallback((event) => {
         // unlock(account)
         updateAccount()
-    }, [account, updateAccount])
+    }, [ updateAccount])
 
     const LockBtn = ({onClick}: { onClick: ({...props}: any) => void }) => {
         return <Button className={'lock'} startIcon={<LockIcon fontSize={'large'}/>}
@@ -232,7 +204,7 @@ export const useHeader = () => {
                     }}/>,
 
                 }
-                setShowAccountInfo({isShow: false})
+                setShowAccount({isShow: false})
             } else if (readyState === AccountStatus.LOCKED) {
                 props = {
                     ...props,
@@ -240,7 +212,7 @@ export const useHeader = () => {
                         unLockCallback(_event)
                     }}/>,
                 }
-                setShowAccountInfo({isShow: true})
+                setShowAccount({isShow: true})
             } else if (readyState === AccountStatus.UN_CONNECT
                 || readyState === AccountStatus.NO_ACCOUNT
                 || readyState === AccountStatus.DEPOSITING
@@ -248,10 +220,10 @@ export const useHeader = () => {
                 props = {
                     ...props
                 }
-                setShowAccountInfo({isShow: false});
+                setShowAccount({isShow: false});
 
             } else {
-                setShowAccountInfo({isShow: false})
+                setShowAccount({isShow: false})
             }
 
             if (props) {
@@ -260,7 +232,7 @@ export const useHeader = () => {
 
             if (readyState === AccountStatus.NO_ACCOUNT && props) {
                 props.onLock = () => {
-                    setShowAccountInfo({isShow: false})
+                    setShowAccount({isShow: false})
                     ShowDeposit(true)
                 }
             }
@@ -278,7 +250,7 @@ export const useHeader = () => {
                     //TODO:  HeaderMenuTabStatus.hidden
                     ...headerMenuData[ HeadMenuTabKey.Layer2 ], status: HeaderMenuTabStatus.hidden
                 }
-                setShowAccountInfo({isShow: false})
+                setShowAccount({isShow: false})
                 break
             case AccountStatus.LOCKED:
                 headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
@@ -324,11 +296,12 @@ export const useHeader = () => {
     return {
         headerToolBarData,
         headerMenuData,
-        gatewayList,
+        // gatewayList,
         isShowConnect,
-        isShowAccountInfo,
-        setShowAccountInfo,
+        isShowAccount,
+        setShowAccount,
         setShowConnect,
+        etherscanUrl,
         // open,
         // setOpen,
         // openConnect,

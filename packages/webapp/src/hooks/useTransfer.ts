@@ -68,7 +68,7 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2:WalletMap<T>|unde
                     },
                     connectProvides.usedWeb3,
                     chainId === 'unknown' ? 1 : chainId, connectName  as ConnectorNames,
-                    eddsaKey, apiKey, false)
+                    eddsaKey, apiKey)
                 //TODO check success or failed API
             } catch (e) {
 
