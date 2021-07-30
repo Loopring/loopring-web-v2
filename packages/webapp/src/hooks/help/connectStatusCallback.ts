@@ -1,5 +1,5 @@
 import store from '../../stores';
-import { setShowAccountInfo, setShowConnect, setShowDeposit } from '@loopring-web/component-lib';
+import { setShowAccount, setShowConnect, setShowDeposit } from '@loopring-web/component-lib';
 
 export enum fnType {
     RESET,
@@ -72,7 +72,7 @@ export const btnClickMap: { [ key: number ]: [fn: (props: any) => any, args?: an
 
     , [ fnType.LOCKED ]: [
         function () {
-            store.dispatch(setShowAccountInfo({isShow: true}))
+            store.dispatch(setShowAccount({isShow: true}))
         }
     ]
 };
