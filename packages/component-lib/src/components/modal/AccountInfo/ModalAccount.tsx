@@ -1,12 +1,11 @@
 // import { Box, Modal } from '@material-ui/core';
 import { WithTranslation, withTranslation } from 'react-i18next';
-import { ModalWalletConnectProps } from '../Styled.tsx';
 import { Modal } from '@material-ui/core';
-import { ModalContentStyled } from 'components';
+import { ModalAccountProps, ModalContentStyled } from 'components';
 import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@emotion/react';
-// import styled from '@emotion/styled';
-// import { ModalWalletConnectProps, WalletConnectPanelProps } from './Interface';
+import { Box } from '@material-ui/core/';
+// import { ModalWalletConnectProps } from './Interface';
 // import { Typography } from '@material-ui/core/';
 // import { GatewayItem } from '@loopring-web/common-resources';
 // import { ModalContentStyled } from '../../styled';
@@ -49,15 +48,18 @@ import { useTheme } from '@emotion/react';
 //     return <></>
 // }
 
-export const ModalWalletConnect = withTranslation('swap', {withRef: true})((
+export const ModalAccount = withTranslation('common', {withRef: true})((
     {
         // t,
         open,
         onClose,
         step,
+        panelList,
         // ...rest
-    }: ModalWalletConnectProps & WithTranslation) => {
+    }: ModalAccountProps & WithTranslation) => {
     const theme = useTheme();
+
+
     return <Modal
         open={open}
         onClose={onClose}
@@ -66,6 +68,11 @@ export const ModalWalletConnect = withTranslation('swap', {withRef: true})((
     >
         <ModalContentStyled style={{boxShadow: '24'}}>
             <SwipeableViews axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'} index={step}>
+                {panelList.map((panel,index)=>{
+                    return <Box key={index}>
+                        {panel}
+                    </Box>
+                })}
             </SwipeableViews>
         </ModalContentStyled>
     </Modal>

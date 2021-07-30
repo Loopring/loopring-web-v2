@@ -1,5 +1,6 @@
-import QRCode from 'qrcode.react';
+import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
 
-export const WalletConnectProcess = (url:string)=>{
-    return <>  <QRCode value={url} size={160} style={{padding: 5, backgroundColor: '#fff'}} aria-label={`link:${url}`}/></>
+export const WalletConnectProcess = ()=>{
+    return  <img width={20} height={20} src={loadingSvg}
+                       alt={'loading'}/>
 }

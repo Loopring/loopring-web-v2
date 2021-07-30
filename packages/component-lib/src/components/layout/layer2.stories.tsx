@@ -24,7 +24,7 @@ import {
 } from '@loopring-web/common-resources';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { OrderHistoryTable as OrderHistoryTableUI } from '../tableList/orderHistoryTable'
-import { AccountInfo, AccountInfoProps, AssetTitleProps } from '../block';
+import {  AssetTitleProps } from '../block';
 import React from 'react';
 import { AssetTitle } from '../block/AssetTitle';
 import {
@@ -43,6 +43,8 @@ import { setShowDeposit, setShowTransfer, setShowWithdraw, useSettings } from '.
 import { ammCalcData, coinMap, CoinType, tradeCalcData, walletMap } from '../../static';
 import { useDispatch } from 'react-redux';
 import { Typography } from '@material-ui/core/';
+import { AccountBaseProps } from '../modal/AccountInfo';
+import { AccountBase } from '../modal/AccountInfo/AccountBase';
 
 const Style = styled.div`
   color: #fff;
@@ -240,7 +242,7 @@ const Layer2Wrap = () => {
         // padding: 26px;
       }
     ` as typeof Paper;
-    const accountInfoProps: AccountInfoProps = {
+    const accountInfoProps: AccountBaseProps = {
         addressShort: '0x123...8784',
         address: '0x123567243o24o242423098784',
         level: 'VIP 1',
@@ -290,7 +292,7 @@ const Layer2Wrap = () => {
             <Collapse in={showAccountInfo}>
                 <Container maxWidth="lg">
                     <Box marginTop={3}>
-                        <AccountInfo  {...accountInfoProps}></AccountInfo>
+                        <AccountBase  {...accountInfoProps}></AccountBase>
                     </Box>
                 </Container>
             </Collapse> : undefined}
