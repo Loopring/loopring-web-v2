@@ -91,6 +91,7 @@ const Header = ({ ...rest }: any) => {
         <ModalWalletConnect {...{ ...rest, gatewayList, open:isShowConnect.isShow, onClose: () => setShowConnect({isShow:false}) }} />
         {<ModalAccountInfo
             open={isShowAccountInfo.isShow}
+            depositProps={depositProps}
             onClose={() => {setShowAccountInfo({isShow:false})}}
             onCopy={() => {
                 copyToClipBoard(account.accAddress);

@@ -1,10 +1,12 @@
 // import { Box, Modal } from '@material-ui/core';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { Modal } from '@material-ui/core';
-import { ModalAccountProps, ModalContentStyled } from 'components';
 import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@emotion/react';
 import { Box } from '@material-ui/core/';
+import { ModalAccountProps } from '../WalletConnect';
+import { ModalContentStyled } from '../../styled';
+ModalContentStyled
 // import { ModalWalletConnectProps } from './Interface';
 // import { Typography } from '@material-ui/core/';
 // import { GatewayItem } from '@loopring-web/common-resources';

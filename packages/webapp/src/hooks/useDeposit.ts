@@ -6,7 +6,7 @@ import * as sdk from 'loopring-sdk';
 import { useTokenMap } from '../stores/token';
 import { AccountStatus, useAccount } from '../stores/account';
 import { useSystem } from '../stores/system';
-import { ConnectProvides, LoopringProvider } from '@loopring-web/web3-provider';
+import { connectProvides, LoopringProvider } from '@loopring-web/web3-provider';
 import { CoinMap, WalletMap } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '@loopring-web/component-lib';
 
@@ -31,19 +31,19 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
         if ((readyState !== AccountStatus.UN_CONNECT
             && readyState !== AccountStatus.RESET
             && inputValue.tradeValue)
-            && tokenMap && exchangeInfo && ConnectProvides.usedWeb3) {
+            && tokenMap && exchangeInfo && connectProvides.usedWeb3) {
             try {
                 const tokenInfo = tokenMap[ inputValue.belong ]
                 // const gasPrice = gasPrice ?? 20
                 const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
-                const nonce = await sdk.getNonce(ConnectProvides.usedWeb3, account.accAddress)
+                const nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
                 const isMetaMask = connectName === LoopringProvider.MetaMask;
-                await sdk.approveMax(ConnectProvides.usedWeb3, account.accAddress, tokenInfo.address,
+                await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
                     exchangeInfo?.depositAddress, gasPrice ?? 20, gasLimit, chainId === 'unknown' ? undefined : chainId, nonce, isMetaMask)
 
                 const fee = 0
 
-                const response2 = await sdk.deposit(ConnectProvides.usedWeb3, account.accAddress,
+                const response2 = await sdk.deposit(connectProvides.usedWeb3, account.accAddress,
                     exchangeInfo?.exchangeAddress, tokenInfo, inputValue.tradeValue, fee,
                     gasPrice ?? 20, gasLimit, chainId === 'unknown' ? 1 : chainId, nonce + 1, isMetaMask)
 

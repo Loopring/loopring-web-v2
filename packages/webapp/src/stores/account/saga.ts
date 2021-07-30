@@ -3,7 +3,7 @@ import { nextAccountStatus, updateAccountStatus } from './reducer';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { AccountState, AccountStatus, StorageCommands } from './interface';
 import { Subject } from 'rxjs';
-import { ConnectProvides,LoopringProvider } from "@loopring-web/web3-provider";
+import { connectProvides,LoopringProvider } from "@loopring-web/web3-provider";
 
 
 const subject = new Subject<{ command: keyof typeof StorageCommands, data?: any }>();
@@ -13,9 +13,8 @@ const goNextAccountStatus = async (currentState: Partial<AccountState>,
     // let newAccountState: Partial<AccountState>
     switch (nextState) {
         case AccountStatus.RESET:
-            if(!ConnectProvides.clear){
+            connectProvides.clear()
                //TODO sessionStorage clear
-            }
             break;
         case AccountStatus.UN_CONNECT:
             console.log('connectName:', nextState.connectName, 'readyState:', currentState.readyState)

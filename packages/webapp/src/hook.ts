@@ -7,7 +7,7 @@ import { STATUS } from './stores/constant';
 import { useTokenMap } from './stores/token';
 import { useWalletLayer1 } from './stores/walletLayer1';
 import { useAccount } from './stores/account/hook';
-import { ConnectProvides, useConnectHook } from '@loopring-web/web3-provider';
+import { connectProvides, useConnectHook } from '@loopring-web/web3-provider';
 import { AccountState } from './stores/account';
 
 
@@ -43,20 +43,32 @@ export function useInit() {
     useConnectHook({handleChainChanged, handleConnect, handleAccountDisconnect});
     useCustomDCEffect(async () => {
         //TODO getSessionAccount infor
-        const account = window.sessionStorage.getItem('account');
-        if (account) {
-            const _account: AccountState = JSON.parse(account);
-            if (_account.accAddress && _account.connectName && _account.connectName !== 'UnKnow') {
-                await ConnectProvides[ _account.connectName ];
-                if (ConnectProvides.usedProvide) {
-                    // @ts-ignore
-                    const chainId = Number(await ConnectProvides.usedProvide.request({method: 'eth_chainId'}))
-                    // // @ts-ignore
-                    // const accounts = await ConnectProvides.usedProvide.request({ method: 'eth_requestAccounts' })
-                    systemState.updateSystem({chainId: (chainId ? chainId as ChainId : ChainId.MAINNET)})
-                    return
-                }
-            }
+        // const account = window.sessionStorage.getItem('account');
+        // if (account) {
+        //     const _account: AccountState = JSON.parse(account);
+        //     if (_account.accAddress && _account.connectName && _account.connectName !== 'UnKnow') {
+        //         await ConnectProvides[ _account.connectName ];
+        //         if (ConnectProvides.usedProvide) {
+        //             // @ts-ignore
+        //             const chainId = Number(await ConnectProvides.usedProvide.request({method: 'eth_chainId'}))
+        //             // // @ts-ignore
+        //             // const accounts = await ConnectProvides.usedProvide.request({ method: 'eth_requestAccounts' })
+        //             systemState.updateSystem({chainId: (chainId ? chainId as ChainId : ChainId.MAINNET)})
+        //             return
+        //         }
+        //     }
+        // }
+
+
+        //TEST: 
+        await connectProvides.MetaMask();
+        if (connectProvides.usedProvide) {
+            // @ts-ignore
+            const chainId = Number(await connectProvides.usedProvide.request({method: 'eth_chainId'}))
+            // // @ts-ignore
+            //const accounts = await connectProvides.usedProvide.request({ method: 'eth_requestAccounts' })
+            systemState.updateSystem({chainId: (chainId ? chainId as ChainId : ChainId.MAINNET)})
+            return
         }
 
         systemState.updateSystem({chainId: ChainId.MAINNET})

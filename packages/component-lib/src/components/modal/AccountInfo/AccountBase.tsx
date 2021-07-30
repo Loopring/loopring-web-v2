@@ -10,7 +10,7 @@ import { Trans, withTranslation, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import QRCode from 'qrcode.react';
 import { AccountBaseProps } from './Interface';
-import { TypographyStrong, VipStyled } from 'components';
+import { TypographyStrong, VipStyled } from '../../../';
 
 
 
