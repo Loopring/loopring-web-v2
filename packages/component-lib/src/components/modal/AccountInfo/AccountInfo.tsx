@@ -1,9 +1,17 @@
-import { Box, Grid, IconButton, Typography } from '@material-ui/core/';
-import { ActiveIcon, CopyIcon, LinkIcon, PowerIcon, ReverseIcon } from '@loopring-web/common-resources';
+import { Box, Button, Grid, IconButton, Typography } from '@material-ui/core/';
+import {
+    ActiveIcon,
+    CopyIcon,
+    LinkIcon,
+    PowerIcon,
+    ReverseIcon,
+} from '@loopring-web/common-resources';
 import { Trans, withTranslation, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
-import { AccountInfoProps, Button, TypographyStrong, VipStyled } from '../';
 import QRCode from 'qrcode.react';
+import { AccountInfoProps } from './Interface';
+import { TypographyStrong, VipStyled } from 'components';
+
 
 
 const BoxStyled = styled(Box)`
@@ -109,3 +117,39 @@ export const AccountInfo = withTranslation('common')(({
 
 })
 
+
+
+// const AccountInfoWrap = (rest: any) => {
+//     const accountInfoProps: AccountInfoProps = {
+//         address: '0x123567243o24o24242dsdsd3098784',
+//         addressShort: '0x12...8784',
+//         level: 'VIP 1',
+//         etherscanLink: 'https://material-ui.com/components/material-icons/',
+//         connectBy: 'MetaMask',
+//         // mainBtn: <Button variant={'contained'} size={'small'} color={'primary'} onClick={() => console.log('my event')}>My
+//         //     button</Button>
+//     }
+//     return <>
+//         <Grid item xs={6}>
+//             <AccountInfo  {...{
+//                 ...rest,
+//                 ...accountInfoProps
+//             }} />
+//         </Grid>
+//         <Grid item xs={6}>
+//             <AccountInfo  {...{
+//                 ...rest,
+//                 ...accountInfoProps,
+//                 mainBtn: <>
+//                     <Button className={'unlock'} startIcon={<LockIcon fontSize={'large'}/>} variant={'outlined'}>
+//                         <Typography variant={'body2'} marginTop={1 / 2}> {'unLock'} </Typography>
+//                     </Button>
+//                     <Button className={'lock'} startIcon={<UnLockIcon fontSize={'large'}/>} variant={'outlined'}>
+//                         <Typography variant={'body2'} marginTop={1 / 2}> {'Lock'} </Typography>
+//                     </Button>
+//                 </>
+//             }} />
+//         </Grid>
+//
+//     </>
+// }

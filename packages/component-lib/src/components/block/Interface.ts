@@ -1,7 +1,6 @@
 import { MouseEventHandler } from 'react';
 import { CoinInfo, PriceTag, TradeFloat } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../panel';
-import { ButtonProps } from '../basic-lib';
 
 export type MarketBlockProps<C> = {
     coinAInfo: CoinInfo<C>,
@@ -13,19 +12,6 @@ export type MarketBlockProps<C> = {
     }[]
 }
 
-export type AccountInfoProps = {
-    addressShort: string
-    address: string,
-    level?: string,
-    etherscanLink: string,
-    mainBtn?: JSX.Element | React.ElementType<ButtonProps>
-    connectBy: string,
-    onDisconnect?: any,
-    onSwitch?: any,
-    onLock?: any,
-    onCopy?: any,
-    onViewQRCode?: any,
-}
 
 export type AssetTitleProps = {
     assetInfo: {

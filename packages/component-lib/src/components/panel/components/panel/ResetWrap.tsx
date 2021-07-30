@@ -6,7 +6,7 @@ import { Grid, Typography } from '@material-ui/core';
 import { Button } from '../../../basic-lib';
 import { ResetViewProps } from '../Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
-import { TypographyStrong } from '..';
+import { TypographyStrong } from 'components/styled';
 
 
 export const ResetWrap = <T extends IBData<I>,

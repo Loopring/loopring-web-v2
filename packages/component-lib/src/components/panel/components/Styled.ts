@@ -1,13 +1,8 @@
 import styled from '@emotion/styled';
-import { Box, IconButton, LinearProgress, linearProgressClasses, Typography } from '@material-ui/core';
+import { Box, IconButton, LinearProgress, linearProgressClasses } from '@material-ui/core';
 import { css } from '@emotion/react';
 
-export const TypographyStrong = styled(Typography)`
-  color: ${({theme}) => theme.colorBase.secondary};
-` as typeof Typography
-export const TypographyGood = styled(Typography)`
-  color: ${({theme}) => theme.colorBase.success};
-` as typeof Typography
+
 export const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
     height: 10,
     borderRadius: 5,

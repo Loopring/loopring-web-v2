@@ -4,6 +4,12 @@ import { css } from '@emotion/react';
 import { UpColor } from '@loopring-web/common-resources';
 import { Box } from '@material-ui/core/';
 
+export const TypographyStrong = styled(Typography)`
+  color: ${({theme}) => theme.colorBase.secondary};
+` as typeof Typography
+export const TypographyGood = styled(Typography)`
+  color: ${({theme}) => theme.colorBase.success};
+` as typeof Typography
 export const TablePaddingX = ({pLeft = 24, pRight = 24}: { pLeft: number, pRight: number }) => css`
   .rdg-row, .rdg-header-row {
     .rdg-cell:first-of-type {

@@ -39,38 +39,27 @@ import {
     AmmProps,
     Button,
     CoinType,
-    DepositProps,
     ResetProps,
     SwapProps,
     SwitchData,
     TradeBtnStatus,
-    TransferProps,
     useOpenModals,
     useSettings,
-    WithdrawProps
 } from '@loopring-web/component-lib'
-
-import store from 'stores'
 
 import * as sdk from 'loopring-sdk'
 import {
     ConnectorNames,
     dumpError400,
-    GetNextStorageIdRequest,
     GetOffchainFeeAmtRequest,
     LoopringMap,
     OffchainFeeReqType,
-    OffChainWithdrawalRequestV3,
-    OriginTransferRequestV3,
     toBig,
     TokenInfo,
-    VALID_UNTIL
 } from 'loopring-sdk'
 import { Typography } from '@material-ui/core';
-// import { useEtherscan } from 'hooks/web3/useWeb3'
 
 import { useModals } from 'hooks/modal/useModals'
-import Web3 from 'web3'
 
 import { makeWalletLayer2 } from 'hooks/help'
 import { useWalletLayer2 } from 'stores/walletLayer2'
@@ -80,7 +69,6 @@ import { BIG10 } from 'defs/swap_defs'
 import { useWalletLayer1 } from '../../stores/walletLayer1';
 import { myLog } from 'utils/log_tools'
 import { useSystem } from '../../stores/system';
-import { ConnectProvides } from '@loopring-web/web3-provider';
 import { useDeposit } from '../../hooks/useDeposit';
 import { useTransfer } from '../../hooks/useTransfer';
 import { useWithdraw } from '../../hooks/useWithdraw';
@@ -95,32 +83,24 @@ export const useHeader = () => {
     const {account, updateAccount, status: accountStatus, errorMessage} = useAccount();
     //TODO: etherscanUrl
     const {etherscanUrl} = {etherscanUrl:''};
-    // const {lock, unlock} = useUnlock()
-    //
-    // const {connect} = useConnect()
-
-    // const {etherscanUrl} = useEtherscan()
 
     const gatewayList: GatewayItem[] = [
         {
             ...DefaultGatewayList[ 0 ],
             handleSelect: () => {
                 myLog('try to connect to ', ConnectorNames.Injected)
-                // connect(ConnectorNames.Injected, true)
                 setShowConnect({isShow: false})
             }
         },
         {
             ...DefaultGatewayList[ 1 ],
             handleSelect: () => {
-                // connect(ConnectorNames.WalletConnect, true)
                 setShowConnect({isShow: false})
             }
         },
         {
             ...DefaultGatewayList[ 2 ],
             handleSelect: () => {
-                // connect(ConnectorNames.Ledger, true)
                 setShowConnect({isShow: false})
             }
         },
@@ -146,10 +126,10 @@ export const useHeader = () => {
 
         switch (account.readyState) {
             case AccountStatus.RESET:
-                // case AccountStatus.UN_CONNECT:
+            case AccountStatus.UN_CONNECT:
+            case AccountStatus.NO_ACCOUNT:
                 setShowConnect({isShow: true})
                 break
-            case AccountStatus.NO_ACCOUNT:
             case AccountStatus.DEPOSITING:
             case AccountStatus.LOCKED:
             case AccountStatus.ACTIVATED:
@@ -180,24 +160,16 @@ export const useHeader = () => {
             ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
             handleClick: onWalletBtnConnect,
         }
-
-        // headerToolBarData[ButtonComponentsMap.Notification] = { ...headerToolBarData[ButtonComponentsMap.Theme], themeMode: theme.mode, handleClick: onNotification }
-        // headerToolBarData.update(ButtonComponentsMap.WalletConnect,value=>{
-        //   return {...value, handleClick:onWalletBtnConnect}});
         headerToolBarData[ ButtonComponentsMap.Theme ] = {
             ...headerToolBarData[ ButtonComponentsMap.Theme ],
             themeMode,
             handleClick: onThemeBtnClick
         }
-        // headerToolBarData.update(ButtonComponentsMap.Theme,value=>{
-        //   return {...value, themeMode:theme.mode, handleClick:onThemeBtnClick}});
 
         headerToolBarData[ ButtonComponentsMap.Language ] = {
             ...headerToolBarData[ ButtonComponentsMap.Language ],
             handleChange: onLangBtnClick
         }
-        // headerToolBarData.update(ButtonComponentsMap.Language,value=>{
-        //  return  {...value, language:i18n.language, handleClick:onThemeBtnClick}});
     }, [themeMode, language, i18n, onWalletBtnConnect, onThemeBtnClick, onLangBtnClick, onNotification, t]);
 
     const UnlockBtn = ({onClick}: { onClick: ({...props}: any) => void }) => {
