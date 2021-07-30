@@ -4,6 +4,7 @@ import {
     Header as HeaderUI,
     HideOnScroll,
     ModalWalletConnect,
+    BottomRule,
     Toast,
 } from '@loopring-web/component-lib'
 
@@ -23,6 +24,7 @@ import { copyToClipBoard } from 'utils/obj_tools'
 import { ModalAccountInfo } from '../../pages/AccountPage';
 import { useTranslation } from 'react-i18next';
 import { TOAST_TIME } from 'defs/common_defs'
+import { useConfirmation } from 'stores/localStore/confirmation'
 
 const Header = ({ ...rest }: any) => {
 
@@ -66,9 +68,16 @@ const Header = ({ ...rest }: any) => {
 
     const [openQRCode, setOpenQRCode] = useState(false)
 
-    const [copyToastOpen, setCopyToastOpen] = useState(false);
+    const [copyToastOpen, setCopyToastOpen] = useState(false)
+
+    const { confirmation, confirmWrapper } = useConfirmation()
+
+    const isShow: boolean = !confirmation?.confirmed
 
     return (<>
+
+        <BottomRule clickToConfirm={() => { confirmWrapper() }} isShow={isShow} title={'the loopring protocol'} checkTxt={'Click to Confirm'} content={'you need to confirm loopring protocol!'} />
+
         <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen} 
             autoHideDuration={TOAST_TIME} setOpen={setCopyToastOpen} severity={"success"} />
 
@@ -93,7 +102,7 @@ const Header = ({ ...rest }: any) => {
             open={isShowAccountInfo.isShow}
             onClose={() => {setShowAccountInfo({isShow:false})}}
             onCopy={() => {
-                copyToClipBoard(account.accAddr);
+                copyToClipBoard(account.accAddr)
                 setCopyToastOpen(true)
             }}
             onViewQRCode={() => {
