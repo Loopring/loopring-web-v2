@@ -65,16 +65,11 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
     const walletList = React.useMemo(()=>{
         return Object.values({
             [WalletConnectStep.Provider]:<ProviderMenu  gatewayList={gatewayList} {...{...rest}}/>,
-            [WalletConnectStep.MetaMaskProcessing]:<MetaMaskProcess />
-            ,
-            [WalletConnectStep.WalletConnectProcessing]:<WalletConnectProcess />
-            ,
-            [WalletConnectStep.WalletConnectQRCode]:<WalletConnectQRCode  url={url}/>
-            ,
-            [WalletConnectStep.SuccessConnect]:<SuccessConnect />
-            ,
-            [WalletConnectStep.FailedConnect]:<FailedConnect />
-            ,
+            [WalletConnectStep.MetaMaskProcessing]:<MetaMaskProcess />,
+            [WalletConnectStep.WalletConnectProcessing]:<WalletConnectProcess />,
+            [WalletConnectStep.WalletConnectQRCode]:<WalletConnectQRCode  url={url}/>,
+            [WalletConnectStep.SuccessConnect]:<SuccessConnect />,
+            [WalletConnectStep.FailedConnect]:<FailedConnect />,
         })
 
     },[url])
