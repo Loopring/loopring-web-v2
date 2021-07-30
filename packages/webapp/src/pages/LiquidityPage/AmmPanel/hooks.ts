@@ -176,34 +176,34 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
     useCustomDCEffect(async () => {
         if (!LoopringAPI.userAPI || !pair.coinBInfo?.simpleName
-            || status !== AccountStatus.ACTIVATED
+            || account.readyState !== AccountStatus.ACTIVATED
             || !ammCalcData || !tokenMap) {
             return
         }
 
         const feeToken: TokenInfo = tokenMap[ pair.coinBInfo.simpleName ]
 
-        const acc = store.getState().account
+        // const acc = store.getState().account
 
         const requestJoin: GetOffchainFeeAmtRequest = {
-            accountId: acc.accountId,
+            accountId: account.accountId,
             requestType: OffchainFeeReqType.AMM_JOIN,
             tokenSymbol: pair.coinBInfo.simpleName as string,
         }
 
-        const {fees: feesJoin} = await LoopringAPI.userAPI.getOffchainFeeAmt(requestJoin, acc.apiKey)
+        const {fees: feesJoin} = await LoopringAPI.userAPI.getOffchainFeeAmt(requestJoin, account.apiKey)
         setJoinFees(feesJoin)
 
         const feeJoin = sdk.toBig(feesJoin[ pair.coinBInfo.simpleName ].fee as string).div(BIG10.pow(feeToken.decimals)).toString()
             + ' ' + pair.coinBInfo.simpleName
 
         const requestExit: GetOffchainFeeAmtRequest = {
-            accountId: acc.accountId,
+            accountId: account.accountId,
             requestType: OffchainFeeReqType.AMM_EXIT,
             tokenSymbol: pair.coinBInfo.simpleName as string,
         }
 
-        const {fees: feesExit} = await LoopringAPI.userAPI.getOffchainFeeAmt(requestExit, acc.apiKey)
+        const {fees: feesExit} = await LoopringAPI.userAPI.getOffchainFeeAmt(requestExit, account.apiKey)
 
         setExitfees(feesExit)
 
@@ -214,7 +214,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
         setAmmCalcData({...ammCalcData, feeJoin, feeExit})
 
-    }, [LoopringAPI.userAPI, pair.coinBInfo?.simpleName, ammCalcData, status, tokenMap])
+    }, [LoopringAPI.userAPI, pair.coinBInfo?.simpleName, ammCalcData, accountStatus, tokenMap])
 
     // join
 

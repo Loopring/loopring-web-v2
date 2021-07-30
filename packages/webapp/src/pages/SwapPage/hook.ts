@@ -138,7 +138,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         const quote = tradeData?.buy.belong
 
         if (!LoopringAPI.userAPI || !base || !quote || !ammMap || !marketArray 
-            || account.status !== AccountStatus.ACTIVATED || !account.accountId || !account.apiKey) {
+            || account.readyState !== AccountStatus.ACTIVATED || !account.accountId || !account.apiKey) {
             return
         }
 
@@ -182,7 +182,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         setTradeCalcData({...tradeCalcData, fee: totalFee} as TradeCalcData<C>)
 
     }, [tradeData?.sell.belong, tradeData?.buy.belong, marketArray, ammMap, 
-        account.status, account.apiKey, account.accountId])
+        account.readyState, account.apiKey, account.accountId])
 
     //HIGH: get Router info
     // const symbol = match?.params.symbol ?? undefined;
@@ -236,14 +236,14 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     useCustomDCEffect(() => {
         const label: string | undefined = accountStaticCallBack(bntLabel)
         setSwapBtnI18nKey(label);
-    }, [account.status]);
+    }, [account.readyState]);
 
     const swapCalculatorCallback = useCallback(async({sell, buy, slippage, ...rest}: any) => {
 
         const {exchangeInfo} = store.getState().system
         setIsSwapLoading(true);
         if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo || !output
-            || account.status !== AccountStatus.ACTIVATED) {
+            || account.readyState !== AccountStatus.ACTIVATED) {
 
             setSwapAlertText(t('labelSwapFailed'))
             setSwapToastOpen(true)
