@@ -157,7 +157,7 @@ export const useHeader = () => {
             default:
                 break
         }
-    }, [setShowConnect, setShowAccountInfo])
+    }, [account,setShowConnect, setShowAccountInfo])
 
     const onThemeBtnClick = React.useCallback(async (themeMode: ThemeKeys) => {
         if (themeMode === Theme.dark) {

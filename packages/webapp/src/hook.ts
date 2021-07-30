@@ -23,6 +23,7 @@ export function useInit(){
     const walletLayer1State  =  useWalletLayer1()
     //store.getState().account
     // const socketState =   useSocket();
+    debugger
     useConnectHook();
 
     useCustomDCEffect(async() => {
@@ -37,21 +38,23 @@ export function useInit(){
         const handleAccountChanged = (accounts: Array<string>) => {
             window.location.reload()
         }
-
-        const provider: any = await detectEthereumProvider()
-        if (provider) {
+        //TODO getSessionAccount infor
+        const account =  window.sessionStorage.getItem('account');
+        if(account){
             const chainId = Number(await provider.request({ method: 'eth_chainId' }))
             const accounts = await provider.request({ method: 'eth_requestAccounts' })
 
-            provider.on('accountsChanged', handleAccountChanged)
-            provider.on('chainChanged', ()=>{handleChainChanged(chainId)} )
+            // provider.on('accountsChanged', handleAccountChanged)
+            // provider.on('chainChanged', ()=>{handleChainChanged(chainId)} )
             // @ts-ignore
             systemState.updateSystem({ chainId  })
-           //handleChainChanged(chainId)
-            
-        } else {
+           // const provider: any = await detectEthereumProvider(JSON.parse(account))
+        }else{
             systemState.updateSystem({chainId:ChainId.MAINNET})
         }
+
+
+
 
     }, [])
 
@@ -106,12 +109,15 @@ function  useConnectHook(){
     const subject = React.useMemo(() => walletServices.onSocket(),[]);
 
     const handleChainChanged = React.useCallback((chainId)=>{
+        debugger
         console.log(chainId)
     },[])
     const handleConnect = React.useCallback((accounts,provider)=>{
+        debugger
         console.log(accounts,provider)
     },[])
     const handleAccountDisconnect = React.useCallback(()=>{
+        debugger
         console.log('Disconnect')
     },[])
     React.useEffect(() => {

@@ -4,6 +4,7 @@ import { CoinKey, PairKey, WalletCoin } from '@loopring-web/common-resources';
 import { exchangeAPI } from '../apis/api';
 import store from '../index';
 import { fromWEI } from 'loopring-sdk';
+import { useAccount } from '../account';
 
 type WalletLayer1Map<R extends {[key:string]:any}> = {
     [key in CoinKey<R>|PairKey<R>]?:WalletCoin<R>
@@ -14,9 +15,9 @@ const getWalletLayer1Balance = async <R extends {[key:string]:any}>()=> {
     //TODO: if not reject directory, any error happen will clean the
     // await sdk
     const exchangeApi = exchangeAPI();
-    const {accAddr,accountId} = store.getState().account;
+    const {accAddress} = store.getState().account;
     const {tokenMap,marketCoins} = store.getState().tokenMap;
-    const {ethBalance} =  await exchangeApi.getEthBalances({owner:accAddr});
+    const {ethBalance} =  await exchangeApi.getEthBalances({owner:accAddress});
     // @ts-ignore
     const {tokenBalances} =  await exchangeApi.getTokenBalances({owner:accAddr,token: marketCoins.join()},tokenMap);
     tokenBalances['ETH'] = ethBalance;

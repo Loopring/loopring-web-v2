@@ -2,23 +2,25 @@ import React from 'react'
 import {
   Redirect,
 } from 'react-router-dom'
+import { AccountStatus, useAccount } from '../../stores/account';
 
-import { useWeb3Account } from 'stores/account/hook'
+// import { useWeb3Account } from 'stores/account/hook'
 
 const Redirector = ({ children }: { children: React.ReactNode }) => {
 
-  const { isConnected } = useWeb3Account()
+  // const lv1Acc = useWeb3Account()
+  const {account:{readyState,accAddress,accountId}}  = useAccount()
 
   return (
-    <>
+    <React.Fragment>
       {
-        isConnected() ? (
+        accountId!==-1 ? (
           <>
           {children}
           </>
         ) : <Redirect to="/" />
       }
-    </>
+    </React.Fragment>
   )
 
 }
