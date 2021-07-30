@@ -14,7 +14,7 @@ import { TableWrapStyled } from 'pages/styled'
 
 const  RowStyled = styled(Grid)`
       & .MuiGrid-root:not(:last-of-type) > div{
-        margin-right: ${({theme}) => theme.unit * 3}px;
+        margin-right: ${({theme}) => theme.unit * 2}px;
       }
 ` as typeof Grid
 
@@ -116,7 +116,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
         </RowStyled>
         <TableWrapStyled container marginY={3}  paddingBottom={2} flex={1}>
             <Grid item xs={12} display={'flex'}>
-                <QuoteTable onVisibleRowsChange={onVisibleRowsChange} onRowClick={(index, row, col) => 
+                <QuoteTable /* onVisibleRowsChange={onVisibleRowsChange} */ onRowClick={(index, row, col) => 
                   handleRowClick(row)
                 } rawData={tickList} {...{ ...rest }} />
             </Grid>

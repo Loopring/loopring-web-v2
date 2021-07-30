@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import styled from '@emotion/styled'
 import { Box, Button } from '@material-ui/core'
 import { withTranslation, WithTranslation } from 'react-i18next'
@@ -15,7 +14,8 @@ const TableStyled = styled(Box)`
     flex: 1;
 
     .rdg{
-        height: 750px;
+        // height: 750px;
+        height: 100%;
         --template-columns: 240px auto auto auto auto auto 92px !important;
         .rdg-cell.action{
         display: flex;
@@ -85,6 +85,7 @@ const columnMode = ({t}: WithTranslation, history: any, upColor: 'green' | 'red'
         key: 'pair',
         name: t('labelQuotaPair'),
         // sortable: true,
+        // resizable: true,
         formatter: ({row}) => {
             // const RenderValue = styled.span`
             // 	color: ${({theme}) => theme.colorBase.textSecondary}
@@ -104,7 +105,8 @@ const columnMode = ({t}: WithTranslation, history: any, upColor: 'green' | 'red'
     {
         key: 'close',
         name: t('labelQuotaLastPrice'),
-        // sortable: true,
+        sortable: true,
+        // resizable: true,
         formatter: ({row}) => {
             const value = row[ 'close' ]
             // const [valueFirst, valueLast] = value
@@ -124,7 +126,8 @@ const columnMode = ({t}: WithTranslation, history: any, upColor: 'green' | 'red'
     {
         key: 'change',
         name: t('labelQuota24hChange'),
-        // sortable: true,
+        // resizable: true,
+        sortable: true,
         formatter: ({row}) => {
             const value = row.change
 
@@ -145,7 +148,8 @@ const columnMode = ({t}: WithTranslation, history: any, upColor: 'green' | 'red'
     {
         key: 'high',
         name: t('labelQuota24hHigh'),
-        // sortable: true,
+        // resizable: true,
+        sortable: true,
         formatter: ({row, column}) => {
             const value = row[ column.key ]
             // const hasValue = Number.isFinite(value)
@@ -160,7 +164,8 @@ const columnMode = ({t}: WithTranslation, history: any, upColor: 'green' | 'red'
     {
         key: 'low',
         name: t('labelQuota24hLow'),
-        // sortable: true,
+        // resizable: true,
+        sortable: true,
         formatter: ({row, column}) => {
             const value = row[ column.key ]
             // const hasValue = Number.isFinite(value)
@@ -175,7 +180,8 @@ const columnMode = ({t}: WithTranslation, history: any, upColor: 'green' | 'red'
     {
         key: 'volume',
         name: t('labelQuota24Volume'),
-        // sortable: true,
+        // resizable: true,
+        sortable: true,
         formatter: ({row}) => {
             const value = row[ 'volume' ]
             return (
@@ -187,6 +193,7 @@ const columnMode = ({t}: WithTranslation, history: any, upColor: 'green' | 'red'
     },
     {
         key: 'trade',
+        // resizable: true,
         name: '',
         formatter: ({row}) => {
             const {coinA, coinB} = row[ 'pair' ]
@@ -229,17 +236,18 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                                                                     ...rest
                                                                 }: QuoteTableProps & WithTranslation & RouteComponentProps) => {
     //const formattedRawData = rawData && Array.isArray(rawData) ? rawData : []
-    const getScrollIndex = useCallback((e) => {
-        const startIndex = parseInt(String(e.target.scrollTop / rowHeight))
-        // const data = rawData && Array.isArray(rawData) ? rawData : []
-        // const viewportRows = data.slice(startIndex, startIndex + 10).map(o => ({
-        //     coinA: o.pair.coinA,
-        //     coinB: o.pair.coinB
-        // }))
-        if (onVisibleRowsChange) {
-            onVisibleRowsChange(startIndex)
-        }
-    }, [onVisibleRowsChange, rawData])
+
+    // const getScrollIndex = useCallback((e) => {
+    //     const startIndex = parseInt(String(e.target.scrollTop / rowHeight))
+    //     // const data = rawData && Array.isArray(rawData) ? rawData : []
+    //     // const viewportRows = data.slice(startIndex, startIndex + 10).map(o => ({
+    //     //     coinA: o.pair.coinA,
+    //     //     coinB: o.pair.coinB
+    //     // }))
+    //     if (onVisibleRowsChange) {
+    //         onVisibleRowsChange(startIndex)
+    //     }
+    // }, [onVisibleRowsChange, rawData])
 
     let userSettings = useSettings()
     const upColor = userSettings?.upColor
@@ -251,12 +259,100 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
         generateRows: (rawData: any) => rawData,
         onRowClick: onRowClick,
         generateColumns: ({columnsRaw}: any) => columnsRaw as Column<QuoteTableRawDataItem, unknown>[],
+        sortMethod: (sortedRows: QuoteTableRawDataItem[], sortColumn: string) => {
+            switch (sortColumn) {
+                case 'close':
+                    sortedRows = sortedRows.sort((a, b) => {
+                        const valueA = a['close']
+                        const valueB = b['close']
+                        if (valueA && valueB) {
+                            return valueB - valueA
+                        }
+                        if (valueA && !valueB) {
+                            return -1
+                        }
+                        if (!valueA && valueB) {
+                            return 1
+                        }
+                        return 0
+                    })
+                    break;
+                case 'change':
+                    sortedRows = sortedRows.sort((a, b) => {
+                        const valueA = a['change']
+                        const valueB = b['change']
+                        if (valueA && valueB) {
+                            return valueB - valueA
+                        }
+                        if (valueA && !valueB) {
+                            return -1
+                        }
+                        if (!valueA && valueB) {
+                            return 1
+                        }
+                        return 0
+                    })
+                    break;
+                case 'high':
+                    sortedRows = sortedRows.sort((a, b) => {
+                        const valueA = a['high']
+                        const valueB = b['high']
+                        if (valueA && valueB) {
+                            return valueB - valueA
+                        }
+                        if (valueA && !valueB) {
+                            return -1
+                        }
+                        if (!valueA && valueB) {
+                            return 1
+                        }
+                        return 0
+                    })
+                    break;
+                case 'low':
+                    sortedRows = sortedRows.sort((a, b) => {
+                        const valueA = a['low']
+                        const valueB = b['low']
+                        if (valueA && valueB) {
+                            return valueB - valueA
+                        }
+                        if (valueA && !valueB) {
+                            return -1
+                        }
+                        if (!valueA && valueB) {
+                            return 1
+                        }
+                        return 0
+                    })
+                    break;
+                case 'volume':
+                    sortedRows = sortedRows.sort((a, b) => {
+                        const valueA = a['volume']
+                        const valueB = b['volume']
+                        if (valueA && valueB) {
+                            return valueB - valueA
+                        }
+                        if (valueA && !valueB) {
+                            return -1
+                        }
+                        if (!valueA && valueB) {
+                            return 1
+                        }
+                        return 0
+                    })
+                    break;
+                default: 
+                    return sortedRows
+            }
+            return sortedRows;
+        },
+        sortDefaultKey: 'change'
     }
 
     return (
         <TableStyled>
             <Table className={'scrollable'} {...{...defaultArgs, ...rest, onVisibleRowsChange, rawData, rowHeight}}
-                   onScroll={getScrollIndex}/>
+                   /* onScroll={getScrollIndex} */ />
         </TableStyled>
     )
 }))

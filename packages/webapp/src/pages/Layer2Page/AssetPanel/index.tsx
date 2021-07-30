@@ -115,8 +115,10 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
             limit: limit // TODO: minium unit is day, discuss with pm later
         })
         if (userAssets && userAssets.userAssets.length && !!userAssets.userAssets.length) {
+            // console.log(userAssets.userAssets)
             setChartData(userAssets.userAssets.map(o => ({
                 timeStamp: Number(o.createdAt),
+                // close: o.amount && o.amount !== NaN ? Number(o.amount) : 0
                 close: Number(o.amount)
             })))
         }
@@ -193,30 +195,74 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         detail: o[ 1 ]
     })) as ITokenInfoItem[] : []
 
-    let jointLPTokenValue = 0
-    assetsList.filter(o => o.token.split('-')[0] === 'LP').forEach(o => {
-        const result = o.token.split('-')
+    // let jointLPTokenValue = 0
+    // assetsList.filter(o => o.token.split('-')[0] === 'LP').forEach(o => {
+    //     const result = o.token.split('-')
+    //     result.splice(0, 1, 'AMM')
+    //     const ammToken = result.join('-')
+    //     console.log(ammToken)
+    //     const ammTokenList = Object.keys(ammMap)
+    //     const tokenValue = ammTokenList.includes(ammToken) && ammMap[ammToken] && ammMap[ammToken].amountDollar ? Number(ammMap[ammToken].amountDollar) : 0
+    //     console.log(ammMap)
+    //     jointLPTokenValue += tokenValue
+    // });
+
+    // const doughnutData = assetsList.filter(o => o.token.split('-')[0] !== 'LP').map((tokenInfo) => {
+    //     const tokenPriceUSDT = tokenInfo.token === 'DAI'
+    //         ? 1
+    //         : Number(tokenPriceList.find(o => o.token === tokenInfo.token) ? tokenPriceList.find(o => o.token === tokenInfo.token)?.detail.price : 0) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
+    //     return ({
+    //         name: tokenInfo.token,
+    //         value: Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail?.total as string)) * tokenPriceUSDT
+    //     })
+    // })
+    const formattedData = assetsList.map(item => {
+        const isLpToken = item.token.split('-')[0] === 'LP'
+        if (!isLpToken) {
+            const tokenPriceUSDT = item.token === 'DAI'
+                ? 1
+                : Number(tokenPriceList.find(o => o.token === item.token) ? tokenPriceList.find(o => o.token === item.token)?.detail.price : 0) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
+            return ({
+                name: item.token,
+                value: Number(volumeToCount(item.token, item.detail?.detail?.total as string)) * tokenPriceUSDT
+            })
+        }
+        // let jointLPTokenValue = 0
+        const result = item.token.split('-')
         result.splice(0, 1, 'AMM')
         const ammToken = result.join('-')
         const ammTokenList = Object.keys(ammMap)
-        const tokenValue = ammTokenList.includes(ammToken) && ammMap[ammToken] && ammMap[ammToken].amountDollar ? Number(ammMap[ammToken].amountDollar) : 0
-        jointLPTokenValue += tokenValue
-    });
-
-    const doughnutData = assetsList.filter(o => o.token.split('-')[0] !== 'LP').map((tokenInfo) => {
-        const tokenPriceUSDT = tokenInfo.token === 'DAI' ? 1 : Number(tokenPriceList.find(o => o.token === tokenInfo.token)?.detail.price) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
+        const ammTokenPrice = ammTokenList.includes(ammToken) && ammMap[ammToken] && ammMap[ammToken].amountDollar ? (ammMap[ammToken].totalLpToken || 0) / ammMap[ammToken].amountDollar : 0
+        const tokenValue =  ammTokenPrice * (item.detail?.count || 0)
+        // jointLPTokenValue += 1
         return ({
-            name: tokenInfo.token,
-            value: Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail?.total as string)) * tokenPriceUSDT
+            name: item.token,
+            value: tokenValue
         })
     })
-    const formattedDoughnutData = [...doughnutData, {
+
+    
+    const lpTotalData = formattedData
+        .filter(o => o.name.split('-')[0] === 'LP')
+        .reduce((prev, next) => ({
             name: 'LP-Token',
-            value: jointLPTokenValue
-        }]
+            value: prev.value + next.value
+        }), {
+            name: 'LP-Token',
+            value: 0
+        })
+    
+    const formattedDoughnutData = formattedData.filter(o => o.name.split('-')[0] === 'LP').length > 0
+        ? [...formattedData.filter(o => o.name.split('-')[0] !== 'LP'), lpTotalData]
+        : formattedData
+
+    // const formattedDoughnutData = [...doughnutData, {
+    //         name: 'LP-Token',
+    //         value: jointLPTokenValue
+    //     }]
     const AssetTitleProps: AssetTitleProps = {
         assetInfo: {
-            totalAsset: formattedDoughnutData.map(o => o.value).reduce((prev, next) => {
+            totalAsset: formattedData.map(o => o.value).reduce((prev, next) => {
                 return prev + next
             }, 0),
             priceTag: PriceTag.Dollar,
@@ -227,6 +273,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     }
 
     const assetsRawData = assetsList.map((tokenInfo) => {
+        
         const tokenPriceUSDT = Number(tokenPriceList.find(o => o.token === tokenInfo.token)?.detail.price) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
         return ({
             token: {

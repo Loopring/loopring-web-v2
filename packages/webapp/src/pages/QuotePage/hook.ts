@@ -110,7 +110,8 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     }, [tickerStatus, tickerStatusUnset]);
     const getTicker = React.useCallback((from: number, to: number) => {
         if (_marketArrayWithOutRecommend) {
-            let array = _marketArrayWithOutRecommend.slice(from * OnePageSize, to * OnePageSize);
+            // let array = _marketArrayWithOutRecommend.slice(from * OnePageSize, to * OnePageSize);
+            let array = _marketArrayWithOutRecommend; // 暂时获取全量数据
             //High: add recommendations market first time is 36个数据
             if (from === 0) {
                 array = recommendMarkets.concat(array)

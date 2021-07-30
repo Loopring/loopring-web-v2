@@ -23,7 +23,10 @@ export type RawDataTransactionItem = {
     // tradeType: TransactionTradeTypes,
     // from: string;
     // to: string;
-    amount: number;
+    amount: {
+        unit: string;
+        value: number;
+    }
     fee: {
         unit: string;
         value: number;

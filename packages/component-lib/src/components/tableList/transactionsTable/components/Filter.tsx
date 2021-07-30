@@ -12,6 +12,7 @@ export interface FilterProps {
     originalData: RawDataTransactionItem[];
     filterDate: DateRange<Date | string>;
     filterType: TransactionTradeTypes;
+    filterToken: string;
     handleFilterChange: ({ type, date }: any) => void
     handleReset: () => void;
 }
@@ -37,9 +38,10 @@ const StyledBtnBox = styled(Box)`
 
 export const Filter = withTranslation('tables', {withRef: true})(({
     t,
-    // originalData,
+    originalData,
     filterDate,
     filterType,
+    filterToken,
     handleFilterChange,
     handleReset,
     }: FilterProps & WithTranslation) => {
@@ -61,6 +63,8 @@ export const Filter = withTranslation('tables', {withRef: true})(({
             value: 'Transfer',
         },
     ]
+
+    // tokenPairList.map(o => <MenuItem key={o.key} value={o.value}>{o.value}</MenuItem>)
     // const [filterType, setFilterType] = React.useState<TransactionTradeTypes>(TransactionTradeTypes.allTypes)
     // const [filterDate, setFilterDate] = React.useState<Date | any>(null);
     // const [filterToken, setFilterToken] = React.useState('All Tokens')
@@ -68,13 +72,13 @@ export const Filter = withTranslation('tables', {withRef: true})(({
     // const [timeRange, setTimeRange] = React.useState<DateRange<Date | string>>(['', '']);
 
     // de-duplicate
-    // const tokenTypeList = [{
-    //     label: t('labelTxFilterAllTokens'),
-    //     value: 'All Tokens'
-    // }, ...Array.from(new Set(originalData.map(o => o[ 0 ] as string))).map(val => ({
-    //     label: val,
-    //     value: val
-    // }))]
+    const tokenTypeList = [{
+        label: t('labelTxFilterAllTokens'),
+        value: 'All Tokens'
+    }, ...Array.from(new Set(originalData.map(o => o.amount.unit))).map(token => ({
+        label: token,
+        value: token
+    }))]
 
     // const handleReset = React.useCallback(() => {
     //     setFilterType(TransactionTradeTypes.allTypes)
@@ -115,19 +119,19 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                     handleFilterChange({date: date})
                 }} />
             </Grid>
-            {/* <Grid item xs={2}>
+            <Grid item xs={2}>
                 <StyledTextFiled
                     id="table-transaction-token-types"
                     select
                     fullWidth
                     value={filterToken}
                     onChange={(event: React.ChangeEvent<{ value: string }>) => {
-                        setFilterToken(event.target.value);
+                        handleFilterChange({token: event.target.value});
                     }}
                     inputProps={{IconComponent: DropDownIcon}}
                 > {tokenTypeList.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
                 </StyledTextFiled>
-            </Grid> */}
+            </Grid>
             <Grid item>
                 <StyledBtnBox>
                     <Button variant={'outlined'} size={'medium'} color={'primary'}

@@ -3,7 +3,7 @@ import { useState, useCallback } from 'react'
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect'
 import { useAccount } from 'stores/account/hook'
 import { TransactionStatus, RawDataTransactionItem } from '@loopring-web/component-lib'
-import { volumeToCount } from 'hooks/help'
+import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
 import { LoopringAPI } from 'stores/apis/api'
 
 import { TransactionTradeTypes } from '@loopring-web/component-lib';
@@ -45,10 +45,13 @@ export function useGetTxs() {
                 // token: o.symbol,
                 // from: o.senderAddress,
                 // to: o.receiverAddress,
-                amount: Number(volumeToCount(o.symbol, o.amount)),
+                amount: {
+                    unit: o.symbol || '',
+                    value: Number(volumeToCount(o.symbol, o.amount))
+                },
                 fee: {
                     unit: o.feeTokenSymbol || '',
-                    value: Number(volumeToCount(o.symbol, o.feeAmount || 0))
+                    value: Number(volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0))
                 },
                 memo: o.memo || '',
                 time: o.timestamp,
@@ -62,7 +65,11 @@ export function useGetTxs() {
                 // token: o.symbol,
                 // from: o.hash,
                 // to: 'My Loopring',
-                amount: Number(volumeToCount(o.symbol, o.amount)),
+                // amount: Number(volumeToCount(o.symbol, o.amount)),
+                amount: {
+                    unit: o.symbol || '',
+                    value: Number(volumeToCount(o.symbol, o.amount))
+                },
                 fee: {
                     unit: '',
                     value: 0
@@ -78,10 +85,13 @@ export function useGetTxs() {
                 // token: o.symbol,
                 // from: 'My Loopring',
                 // to: o.distributeHash,
-                amount: Number(volumeToCount(o.symbol, o.amount)),
+                amount: {
+                    unit: o.symbol || '',
+                    value: Number(volumeToCount(o.symbol, o.amount))
+                },
                 fee: {
-                    unit: o.feeTokenSymbol,
-                    value: Number(volumeToCount(o.feeTokenSymbol, o.feeAmount))
+                    unit: o.feeTokenSymbol || '',
+                    value: Number(volumeToCount(o.feeTokenSymbol, o.feeAmount || 0)?.toFixed(6))
                 },
                 memo: '',
                 time: o.timestamp,
