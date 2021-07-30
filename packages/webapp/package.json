@@ -8,7 +8,6 @@
     "@bedrock-layout/center": "^1.2.0",
     "@loopring-web/web3-provider": "1.0.0",
     "@loopring-web/common-resources": "1.0.0",
-    "@loopring-web/connect-provider": "1.0.0",
     "@loopring-web/component-lib": "1.0.0",
     "@loopring-web/recharts": "^2.0.10",
     "@manaflair/redux-batch": "^1.0.0",

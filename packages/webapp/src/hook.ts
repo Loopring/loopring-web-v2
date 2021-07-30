@@ -31,7 +31,7 @@ export function useInit() {
         debugger
         systemState.updateSystem({chainId})
         window.location.reload();
-    }, [])
+    }, [systemState])
     const handleConnect = React.useCallback((accounts, provider) => {
         // debugger
         console.log('account changed and connect ', accounts, provider)
@@ -42,34 +42,33 @@ export function useInit() {
     }, [])
     useConnectHook({handleChainChanged, handleConnect, handleAccountDisconnect});
     useCustomDCEffect(async () => {
-        //TODO getSessionAccount infor
-        // const account = window.sessionStorage.getItem('account');
-        // if (account) {
-        //     const _account: AccountState = JSON.parse(account);
-        //     if (_account.accAddress && _account.connectName && _account.connectName !== 'UnKnow') {
-        //         await ConnectProvides[ _account.connectName ];
-        //         if (ConnectProvides.usedProvide) {
-        //             // @ts-ignore
-        //             const chainId = Number(await ConnectProvides.usedProvide.request({method: 'eth_chainId'}))
-        //             // // @ts-ignore
-        //             // const accounts = await ConnectProvides.usedProvide.request({ method: 'eth_requestAccounts' })
-        //             systemState.updateSystem({chainId: (chainId ? chainId as ChainId : ChainId.MAINNET)})
-        //             return
-        //         }
-        //     }
-        // }
+        // TODO getSessionAccount infor
+        if (account && account.connectName && account.accAddress) {
+            // const _account: AccountState = JSON.parse(account);
+            if (account.accAddress && account.connectName && account.connectName !== 'UnKnow') {
+                await connectProvides[ account.connectName ];
+                if (connectProvides.usedProvide) {
+                    const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
+                    // // @ts-ignore
+                    // const accounts = await ConnectProvides.usedProvide.request({ method: 'eth_requestAccounts' })
+                    //TODO error network
+                    systemState.updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
+                    return
+                }
+            }
+        }
 
 
         //TEST: 
-        await connectProvides.MetaMask();
-        if (connectProvides.usedProvide) {
-            // @ts-ignore
-            const chainId = Number(await connectProvides.usedProvide.request({method: 'eth_chainId'}))
-            // // @ts-ignore
-            //const accounts = await connectProvides.usedProvide.request({ method: 'eth_requestAccounts' })
-            systemState.updateSystem({chainId: (chainId ? chainId as ChainId : ChainId.MAINNET)})
-            return
-        }
+        // await connectProvides.MetaMask();
+        // if (connectProvides.usedProvide) {
+        //     // @ts-ignore
+        //     const chainId = Number(await connectProvides.usedProvide.request({method: 'eth_chainId'}))
+        //     // // @ts-ignore
+        //     //const accounts = await connectProvides.usedProvide.request({ method: 'eth_requestAccounts' })
+        //     systemState.updateSystem({chainId: (chainId ? chainId as ChainId : ChainId.MAINNET)})
+        //     return
+        // }
 
         systemState.updateSystem({chainId: ChainId.MAINNET})
 

@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { ModalState, ModalStatePlayLoad } from './interface';
 import {
-    setShowAccountInfo,
+    setShowAccount,
     setShowAmm,
     setShowConnect,
     setShowDeposit,
@@ -31,7 +31,7 @@ export const useOpenModals = <T extends IBData<any>, I, A = AmmData<IBData<strin
         setShowResetAccount: React.useCallback((state: ModalStatePlayLoad & { props?: Partial<ResetInfoProps<T, I>> }) => dispatch(setShowResetAccount(state)), [dispatch]),
         setShowAmm: React.useCallback((state: ModalStatePlayLoad & { props?: AmmInfoProps<A, I, C> }) => dispatch(setShowAmm(state)), [dispatch]),
         setShowSwap: React.useCallback((state: ModalStatePlayLoad & { props?: SwapInfoProps<T, I, C> }) => dispatch(setShowSwap(state)), [dispatch]),
-        setShowAccountInfo: React.useCallback((state: ModalStatePlayLoad) => dispatch(setShowAccountInfo(state)), [dispatch]),
+        setShowAccount: React.useCallback((state: ModalStatePlayLoad) => dispatch(setShowAccount(state)), [dispatch]),
         setShowConnect: React.useCallback((state: ModalStatePlayLoad) => dispatch(setShowConnect(state)), [dispatch]),
     }
 
