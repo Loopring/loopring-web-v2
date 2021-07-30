@@ -1,47 +1,39 @@
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3 from "web3";
-// import { provider, provider as Provider } from 'web3-core';
 import { walletServices } from '../walletServices';
-import { IpcProvider } from 'web3-core';
-
+import QRCodeModal from "@walletconnect/qrcode-modal";
+import { ErrorType } from '../command';
+import { LoopringProvider } from '../interface';
 
 export const WalletConnectProvide = async () :Promise<{provider:WalletConnectProvider,web3:Web3}| undefined> =>{
-    const provider:WalletConnectProvider = new WalletConnectProvider({
-        rpc: {
-            1: "https://mainnet.eth.loopring.network",
-            5: "https://goerli.infura.io/v3/84842078b09946638c03157f83405213",
-        },
-    }) ;
-    await provider.enable();
-    const web3 = new Web3(provider as any);
-    walletServices.sendConnect(web3,provider)
+    try{
+        const provider:WalletConnectProvider = new WalletConnectProvider({
+            rpc: {
+                1: "https://mainnet.eth.loopring.network",
+                5: "https://goerli.infura.io/v3/84842078b09946638c03157f83405213",
+            },
+            qrcode: false,
+        }) ;
+        const {connector} = provider;
+        let web3:Web3;
+        if (!connector.connected) {
+            await connector.createSession();
+            // get uri for QR Code modal
+            const uri = connector.uri;
+            walletServices.sendProcess('nextStep',{QRCodeUrl:uri});
+            // QRCodeModal.open(uri, () => {
+            //     console.log("QR Code Modal closed");
+            // });
+            await provider.enable();
+        }
+        web3 = new Web3(provider as any);
+        walletServices.sendConnect(web3,provider)
+        return {provider,web3}
+    } catch (error){
+        console.log('error happen at connect wallet with WalletConnect:', error)
+        walletServices.sendError(ErrorType.FailedConnect, {connectName:LoopringProvider.WalletConnect,error})
+    }
 
-    // walletServices.sendConnect(web3,provider)
-    // provider.on("accountsChanged", (accounts: string[]) => {
-    //     walletServices.sendConnect(web3,provider)
-    // });
-    // provider.on("chainChanged", (chainId: number) => {
-    //     //walletServices.sendConnect(web3)
-    //     walletServices.sendChainChanged(chainId)
-    // });
-    // provider.on("disconnect", (code: number, reason: string) => {
-    //     walletServices.sendDisconnect(code,reason)
-    //     console.log(code, reason);
-    // });
-    // provider
-
-
-    // const txHash = await web3.eth.sendTransaction(tx);
-
-    // Sign Transaction
-    //const signedTx = await web3.eth.signTransaction(tx);
-
-    // Sign Message
-    //const signedMessage = await web3.eth.sign(msg);
-
-    // Sign Typed Data
-    //const signedTypedData = await web3.eth.signTypedData(msg);
-    return {provider,web3}
 }
 //)
 

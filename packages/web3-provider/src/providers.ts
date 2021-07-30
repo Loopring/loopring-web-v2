@@ -21,16 +21,22 @@ export const ConnectProvides = new Proxy<{
     clear:undefined
 }, {
     get: async function (obj, prop) {
-        if(prop === 'usedProvide'){
-            return obj.usedProvide;
+        switch (prop){
+            case 'usedProvide':
+                return obj.usedProvide;
+            case 'usedWeb3':
+                return obj.usedWeb3;
         }
+
         if(obj.usedProvide && typeof obj.usedProvide.removeAllListeners === 'function'){
             obj.usedProvide.removeAllListeners('accountsChanged');
             obj.usedProvide.removeAllListeners('chainChanged');
             obj.usedProvide.removeAllListeners('disconnect');
             delete  obj.usedProvide
         }
+
         let provderObj;
+        walletServices.sendProcess('waiting');
         // let provider,web3;
         switch (prop) {
             case LoopringProvider.MetaMask:
@@ -76,7 +82,12 @@ export const ConnectProvides = new Proxy<{
             });
             // @ts-ignore
             obj.usedProvide.on("disconnect", (code: number, reason: string) => {
+                if(obj.usedProvide instanceof WalletConnectProvider) {
+                    const {connector} = obj.usedProvide as WalletConnectProvider;
+                    connector.killSession();
+                }
                 walletServices.sendDisconnect(code,reason);
+
             });
         }
 
