@@ -66,6 +66,7 @@ export default {
     labelTradePool: 'Add Liqudity',
     labelAction: 'Action',
     labelFilter: 'Filter',
+    labelFilterAllPairs: 'All pairs',
     valueAddTOAMM: `Add <1></1> and <3></3>`,
     valueSwapForAMM: `Swap <1></1> for <3></3>`,
     valueRemoveTOAMM: `Remove <1></1> and <3></3>`,

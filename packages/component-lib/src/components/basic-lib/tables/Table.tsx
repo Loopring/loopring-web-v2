@@ -7,6 +7,7 @@ import { WithT } from "i18next";
 import React from "react";
 import { Column, DataGridProps, SortableHeaderCell, SortableHeaderCellProps, TableProps } from './';
 import { EmptyDefault } from '../empty';
+import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
 
 export const DataGridStyled = styled(DataGrid)`
 
@@ -210,7 +211,8 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation) => {
     `
 
     /*** sort handle end ***/
-    return <DataGridStyled
+    return <>
+      <DataGridStyled
         {...rest}
         onScroll={onScroll}
         columns={loopringColumns as any}
@@ -233,7 +235,12 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation) => {
                     </Trans>
                 </RenderEmptyMsg>
             }}/>}
-    />;
+      />
+      <div>
+        {loadingSvg}
+      </div>
+    </>
+    ;
     //  <EmptyDefault height={"calc(100% - 35px)"} url={'/path'} message={()=>{
     //  return <>Go to <Link to={'./path'}> link or event</Link> at here</>} } />   }
 }
