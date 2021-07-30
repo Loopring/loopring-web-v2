@@ -114,3 +114,4 @@ test_datadir
 ipfs_deploy.txt
 .env.deploy
 .testfile
+.DS_Store
