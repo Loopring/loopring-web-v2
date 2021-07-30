@@ -15,6 +15,7 @@ export function useGetTxs() {
     // const userApi = useUserAPI()
 
     const [txs, setTxs] = useState<RawDataTransactionItem[]>([])
+    const [isLoading, setIsLoading] = useState(true)
 
     const getTxnStatus = (status: string) => 
         status === ''
@@ -102,6 +103,7 @@ export function useGetTxs() {
             const mappingList = [...userTransferMapped, ...userDepositMapped, ...userWithdrawMapped]
             const sortedMappingList = mappingList.sort((a, b) => b.time - a.time)
             setTxs(sortedMappingList)
+            setIsLoading(false)
         }
     }, [accountId, apiKey])
 
@@ -111,5 +113,6 @@ export function useGetTxs() {
 
     return {
         txs,
+        isLoading
     }
 }
