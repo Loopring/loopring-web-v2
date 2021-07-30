@@ -38,11 +38,6 @@ export type AccountState = {
     accAddress: string,
     readyState: keyof typeof AccountStatus | 'Unknown',
     accountId: number|-1,
-
-    //   accountId: defaultAccId,
-    //   publicKey: PublicKey,
-    //   nonce: 0,
-    // isContractAddress: false,
     level:string,
     apiKey: string,
     eddsaKey: string,

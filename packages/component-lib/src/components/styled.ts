@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
-import { Grid, Typography } from '@material-ui/core';
+import { BoxProps, Grid, Typography } from '@material-ui/core';
 import { css } from '@emotion/react';
 import { UpColor } from '@loopring-web/common-resources';
 import { Box } from '@material-ui/core/';
+import React from 'react';
 
 export const TypographyStrong = styled(Typography)`
   color: ${({theme}) => theme.colorBase.secondary};
@@ -91,10 +92,9 @@ export const ButtonListRightStyled = styled(Grid)`
 `
 export const modalContentBaseStyle = ({theme}: any) => css`
   &:focus-visible {
-    outline:0
+    outline: 0
   }
 
-  //& > div {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -104,21 +104,41 @@ export const modalContentBaseStyle = ({theme}: any) => css`
   left: 50%;
   background-color: ${theme.colorBase.background().secondary};
   transform: translate(-50%, -50%);
-
-  padding: 36px 0;
+  padding: ${4 * theme.unit}px 0;
   border: 0;
-  //border: 1px solid #252842;
-  box-shadow: 0px 4px 38px rgba(0, 0, 0, 0.16);
-  border-radius: 8px;
-  //}
+  border-radius: ${theme.unit}px;
 `
-export const ModalContentStyled = styled(Box)`
-  ${({theme}) => modalContentBaseStyle({theme: theme})}
-` as typeof Box
+// export const ModalContentStyled = styled(Box)`
+//   ${({theme}) => modalContentBaseStyle({theme: theme})}
+// ` as typeof Box
 // export const TwoIconBoxStyled = styled(Box)`
 //   ${({theme}) => AvatarIconPair({theme})}
 // ` as typeof Box
 
+// & .div {
+//   background-color: initial;
+//   ${({_width}) => `
+//      width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : 'var(--transfer-modal-width)'};
+//   `}
+// }
+export const SwitchPanelStyled = styled(Box)<{ _height?: number | string, _width?: number | string }>`
+  ${({theme}) => modalContentBaseStyle({theme: theme})}
+  ${({_width}) => `
+       width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : 'var(--transfer-modal-width)'};
+    `}
+  & > div {
+    background-color: initial;
+  }
+
+  & .react-swipeable-view-container {
+    background-color: initial;
+    ${({_height, _width}) => `
+       height: ${_height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : 'unset'} ;
+       width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : 'var(--transfer-modal-width)'};
+    `
+    }
+
+` as React.ElementType<{ _height?: number | string, _width?: number | string } & BoxProps>
 export const TableFilterStyled = styled(Box)`
   margin-left: 26px;
   margin-bottom: ${({theme}) => theme.unit * 2}px;

@@ -28,7 +28,6 @@ export function useInit() {
     const {account, status: accountStatus} = useAccount();
     const walletLayer1State = useWalletLayer1()
     const handleChainChanged = React.useCallback((chainId) => {
-        debugger
         systemState.updateSystem({chainId})
         window.location.reload();
     }, [systemState])
@@ -44,14 +43,10 @@ export function useInit() {
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
         if (account && account.connectName && account.accAddress) {
-            // const _account: AccountState = JSON.parse(account);
             if (account.accAddress && account.connectName && account.connectName !== 'UnKnow') {
-                await connectProvides[ account.connectName ];
+                await connectProvides[ account.connectName ]();
                 if (connectProvides.usedProvide) {
                     const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
-                    // // @ts-ignore
-                    // const accounts = await ConnectProvides.usedProvide.request({ method: 'eth_requestAccounts' })
-                    //TODO error network
                     systemState.updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
                     return
                 }
@@ -59,7 +54,7 @@ export function useInit() {
         }
 
 
-        //TEST: 
+        //TEST:
         // await connectProvides.MetaMask();
         // if (connectProvides.usedProvide) {
         //     // @ts-ignore

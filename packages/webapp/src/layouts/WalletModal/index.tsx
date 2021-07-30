@@ -12,8 +12,10 @@ import {
 import React from 'react';
 import { GatewayItem, gatewayList as DefaultGatewayList } from '@loopring-web/common-resources';
 import { myLog } from '../../utils/log_tools';
-import { ConnectorNames } from 'loopring-sdk';
+import { ChainId, ConnectorNames } from 'loopring-sdk';
 import { useAccount } from '../../stores/account';
+import { connectProvides } from '@loopring-web/web3-provider';
+import { useSystem } from '../../stores/system';
 
 export const ModalWalletConnectPanel = withTranslation('common')(({
                                                                       onClose,
@@ -22,33 +24,44 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
                                                                       ...rest
                                                                   }: { open: boolean, onClose: (e: any) => void } & WithTranslation) => {
     const {account} = useAccount();
+    const {updateSystem} = useSystem();
     const gatewayList: GatewayItem[] = [
         {
             ...DefaultGatewayList[ 0 ],
-            handleSelect: () => {
-                myLog('try to connect to ', ConnectorNames.Injected)
-                // setShowConnect({isShow: false})
-            }
+            handleSelect: React.useCallback(async () => {
+                // myLog('try to connect to ', ConnectorNames.Injected);
+                await connectProvides.MetaMask();
+                if (connectProvides.usedProvide) {
+                    const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
+                    updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
+                    return
+                }
+            },[])
         },
         {
             ...DefaultGatewayList[ 1 ],
-            handleSelect: () => {
-                // setShowConnect({isShow: false})
-            }
+            handleSelect: React.useCallback(async () => {
+                await connectProvides.WalletConnect();
+                if (connectProvides.usedProvide) {
+                    const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
+                    updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
+                    return
+                }
+            },[])
         },
-        {
-            ...DefaultGatewayList[ 2 ],
-            handleSelect: () => {
-                // setShowConnect({isShow: false})
-            }
-        },
-        {
-            ...DefaultGatewayList[ 3 ],
-            handleSelect: () => {
-                // connect(ConnectorNames.Trezor, true)
-                // setShowConnect({isShow: false})
-            }
-        },
+        // {
+        //     ...DefaultGatewayList[ 2 ],
+        //     handleSelect:React.useCallback(async () => {
+        //         // setShowConnect({isShow: false})
+        //     },[])
+        // },
+        // {
+        //     ...DefaultGatewayList[ 3 ],
+        //     handleSelect: () => {
+        //         // connect(ConnectorNames.Trezor, true)
+        //         // setShowConnect({isShow: false})
+        //     }
+        // },
     ]
     const url = '';
     const walletList = React.useMemo(() => {

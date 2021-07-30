@@ -28,10 +28,10 @@ export const ProviderMenu = ({
     return <WalletConnectPanelStyled display={'flex'} justifyContent={'space-between'} alignItems={'center'}
                                      flexDirection={'column'}>
         <Typography variant={'h3'} component='h3' className="modalTitle" marginBottom={3}>Connect Wallet</Typography>
-        <FormControlLabel control={<Checkbox defaultChecked checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
+        <FormControlLabel control={<Checkbox  checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
                                              color="default"/>} label="Label"/>
         <Box display={'flex'} justifyContent={'space-evenly'} flex={1} alignItems={'center'} alignSelf={'stretch'}
-             className="modalContent">
+             className="modalContent" marginTop={3}>
 
             <>   {gatewayList.map((item: GatewayItem) => (
                 <Box component={'a'} display={'flex'} flexDirection={'column'} justifyContent={''} alignItems={'center'}

@@ -23,8 +23,8 @@ export class ConnectProvides  {
        this.clearProviderSubscribe();
        const obj = await WalletConnectProvide();
        if(obj) {
-           this.usedProvide =  obj.provider
-           this.usedWeb3 =    obj.web3
+           this.usedProvide = obj.provider
+           this.usedWeb3 =  obj.web3
        }
        this.subScribe()
    }
