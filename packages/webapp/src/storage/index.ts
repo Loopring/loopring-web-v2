@@ -9,11 +9,34 @@ export enum CONSTANTS {
     ActiveTime = 'active_time',
     AmmOrder = 'amm_order',
     HardwareAddresses = 'hardware_addresses',
+    ConnectorName = 'connector_name',
+
+    DepositHash = 'deposit_hash',
+
+    WalletConnect = 'walletconnect',
 }
 
 const SESSION_TIMEOUT_SECONDS = 600
 
 export class UserStorage {
+
+    public static clearWalletConnect() {
+        myLog('try to clearWalletConnect....')
+        localStorage.removeItem(CONSTANTS.WalletConnect)
+    }
+
+    public static setConnectorName(connectionName: string) {
+        localStorage.setItem(CONSTANTS.ConnectorName, connectionName)
+    }
+
+    public static getConnectorName() {
+        return localStorage.getItem(CONSTANTS.ConnectorName)
+    }
+
+    public static clearConnectorName() {
+        myLog('try to clearConnectorName')
+        localStorage.removeItem(CONSTANTS.ConnectorName)
+    }
 
     public static getHandler() {
         const rawHandler = sessionStorage.getItem(CONSTANTS.Handler)
@@ -103,6 +126,19 @@ export class UserStorage {
 
     public static clearAmmOrder() {
         localStorage.removeItem(CONSTANTS.AmmOrder)
+    }
+
+    public static getDepositHash(): string {
+        var orderHash = localStorage.getItem(CONSTANTS.DepositHash)
+        return orderHash ? orderHash : ''
+    }
+
+    public static setDepositHash(depositHash: string) {
+        localStorage.setItem(CONSTANTS.DepositHash, depositHash)
+    }
+
+    public static clearDepositHash() {
+        localStorage.removeItem(CONSTANTS.DepositHash)
     }
 
     public static isHardwareAddress(address: string) {

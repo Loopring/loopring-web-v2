@@ -37,7 +37,7 @@
     "isarray": "^2.0.5",
     "jsbi": "^3.1.5",
     "lodash": "^4.17.20",
-    "loopring-sdk": "0.0.65",
+    "loopring-sdk": "0.0.67",
     "ms.macro": "^2.0.0",
     "node-sass": "4.14.1",
     "pify": "^5.0.0",
@@ -68,7 +68,7 @@
     ],
     "publish": {
       "provider": "custom",
-      "repo": "ssh://git@github.com/loopring/dexwebappv2",
+      "repo": "https://github.com/Loopring/loopring-web-v2",
       "owner": "Loopring Dex Frontend Team"
     }
   },
@@ -85,7 +85,7 @@
     "build_dev": "dotenv -e .env.development react-app-rewired build",
     "predocker": "if [ ! -d \"build\" ]; then yarn build; fi",
     "docker": "docker-compose build",
-    "deploy_ghpage": "bash ./deploy.sh"
+    "deploy_ghpage": "yarn build_dev; bash ./deploy.sh"
   },
   "browserslist": {
     "production": [

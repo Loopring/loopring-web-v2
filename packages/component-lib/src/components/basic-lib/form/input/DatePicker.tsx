@@ -63,6 +63,10 @@ const DateTextField = styled(TextField)`
 
 `;
 
+const DateRangeDelimiterStyled = styled(DateRangeDelimiter)`
+    margin: 0 ${({theme}) => theme.unit}px !important;
+`
+
 export type DateRangePickerProps = {} & Omit<MuDateRangePickerProps, 'renderInput'>;
 
 export const DateRangePicker = experimentalStyled(({...props}: DateRangePickerProps & { t: TFunction }) => {
@@ -95,7 +99,7 @@ export const DateRangePicker = experimentalStyled(({...props}: DateRangePickerPr
             }
             return (<>
                 <DateTextField {...{...startProps, helperText: null, label: undefined}} placeholder={'YY-MM-DD'}/>
-                <DateRangeDelimiter>-</DateRangeDelimiter>
+                <DateRangeDelimiterStyled>-</DateRangeDelimiterStyled>
                 <DateTextField {...{...endProps, helperText: null, label: undefined}} placeholder={'YY-MM-DD'}/>
             </>)
         }

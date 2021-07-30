@@ -6,10 +6,13 @@ import { TextField, DateRangePicker } from '../../../basic-lib/form'
 import { Button } from '../../../basic-lib/btns'
 import { DropDownIcon } from '@loopring-web/common-resources'
 import { DateRange } from '@material-ui/lab'
+import { RawDataTradeItem } from '../TradeTable'
 
 export interface FilterProps {
+    rawData: RawDataTradeItem[];
     filterDate: DateRange<Date | string>;
     filterType: FilterTradeTypes;
+    filterPair: string;
     handleReset: () => void;
     handleFilterChange: ({type, date}: any) => void
 }
@@ -41,12 +44,14 @@ export enum FilterTradeTypes {
 
 export const Filter = withTranslation('tables', {withRef: true})(({
         t,
+        rawData,
         filterDate,
         filterType,
+        filterPair,
         handleReset,
         handleFilterChange,
     }: FilterProps & WithTranslation) => {
-    const FilterTradeTypeList = [
+    const filterTradeTypeList = [
         {
             label: t('labelOrderFilterAllTypes'),
             value: 'All Types'
@@ -59,6 +64,18 @@ export const Filter = withTranslation('tables', {withRef: true})(({
             label: t('labelOrderFilterSell'),
             value: 'Sell'
         },
+    ]
+
+    const rawPairList = rawData.map(item => `${item.amount.from.key} - ${item.amount.to.key}`)
+    const formattedRawPairList = [
+        {
+            label: 'All Pairs',
+            value: 'all'
+        },
+        ...Array.from(new Set(rawPairList)).map((pair: string) => ({
+            label: pair,
+            value: pair
+        }))
     ]
 
     return (
@@ -74,7 +91,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                         handleFilterChange({type: event.target.value})
                     }}
                     inputProps={{IconComponent: DropDownIcon}}
-                > {FilterTradeTypeList.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
+                > {filterTradeTypeList.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
                 </StyledTextFiled>
             </Grid>
             <Grid item>
@@ -82,6 +99,19 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                     // setFilterDate(date)
                     handleFilterChange({date: date})
                 }} />
+            </Grid>
+            <Grid item xs={2}>
+                <StyledTextFiled
+                    id="table-trade-filter-pairs"
+                    select
+                    fullWidth
+                    value={filterPair}
+                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                        handleFilterChange({ pair: event.target.value })
+                    }}
+                    inputProps={{IconComponent: DropDownIcon}}
+                > {formattedRawPairList.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
+                </StyledTextFiled>
             </Grid>
             <Grid item>
                 <StyledBtnBox>

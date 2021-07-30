@@ -31,7 +31,6 @@ const ModalContentStyled = styled(Box)`
 //     btnAction?: (props?: any) => void;
 // }
 
-
 export const QRCodePanel = ((
     {
         // open,
@@ -42,6 +41,9 @@ export const QRCodePanel = ((
         url = 'https://exchange.loopring.io/',
         // handleClick
     }: QRCodeProps) => {
+    if (url === undefined) {
+        url = ''
+    }
     return <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} flexDirection={'column'}>
         {title && (
             <Typography variant={'h3'} component='h3' className="modalTitle" marginBottom={3}>{title}</Typography>)}

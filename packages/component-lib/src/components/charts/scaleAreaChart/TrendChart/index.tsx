@@ -146,7 +146,7 @@ const TrendChart = ({
                 <XAxis
                     hide={!showXAxis}
                     dataKey="date" /* tickFormatter={convertDate} */
-                    interval={3}
+                    interval={8}
                     axisLine={false}
                     tickLine={false}
                     tick={customTick}
