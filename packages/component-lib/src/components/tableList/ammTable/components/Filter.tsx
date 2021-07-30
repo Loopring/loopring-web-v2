@@ -5,10 +5,13 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { DatePicker, TextField } from '../../../basic-lib/form'
 import { Button } from '../../../basic-lib/btns'
 import { DropDownIcon } from '@loopring-web/common-resources'
+import { RawDataAmmItem } from '../AmmTable'
 
 export interface FilterProps {
+    rawData: RawDataAmmItem[];
     filterType: string;
     filterDate: Date | null;
+    filterPair: string;
     handleFilterChange: ({filterType, filterDate, filterToken}: any) => void;
     handleReset: () => void;
 }
@@ -41,8 +44,10 @@ export enum FilterTradeTypes {
 
 export const Filter = withTranslation('tables', {withRef: true})(({
         t,
+        rawData,
         filterType,
         filterDate,
+        filterPair,
         handleReset,
         handleFilterChange,
     }: FilterProps & WithTranslation) => {
@@ -59,6 +64,18 @@ export const Filter = withTranslation('tables', {withRef: true})(({
             label: t('labelAmmFilterExit'),
             value: 'Exit'
         },
+    ]
+
+    const rawPairList = rawData.map(item => `${item.amount.from.key} - ${item.amount.to.key}`)
+    const formattedRawPairList = [
+        {
+            label: t('labelFilterAllPairs'),
+            value: 'all'
+        },
+        ...Array.from(new Set(rawPairList)).map((pair: string) => ({
+            label: pair,
+            value: pair
+        }))
     ]
 
     return (
@@ -78,6 +95,19 @@ export const Filter = withTranslation('tables', {withRef: true})(({
             </Grid>
             <Grid item>
                 <DatePicker value={filterDate} onChange={(newValue: any) => handleFilterChange({date: newValue})}/>
+            </Grid>
+            <Grid item xs={2}>
+                <StyledTextFiled
+                    id="table-trade-filter-pairs"
+                    select
+                    fullWidth
+                    value={filterPair}
+                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                        handleFilterChange({ pair: event.target.value })
+                    }}
+                    inputProps={{IconComponent: DropDownIcon}}
+                > {formattedRawPairList.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
+                </StyledTextFiled>
             </Grid>
             <Grid item>
                 <StyledBtnBox>
