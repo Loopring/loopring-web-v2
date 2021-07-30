@@ -2,8 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { ModalState, ModalStatePlayLoad } from './interface';
 import {
     AmmInfoProps,
-    DepositInfoProps, ModalAccountProps,
-    ModalWalletConnectProps,
+    DepositInfoProps,
     ResetInfoProps,
     SwapInfoProps,
     TransferInfoProps,
@@ -18,8 +17,8 @@ const initialState: ModalState<IBData<any>, any> = {
     isShowResetAccount: {isShow: false, props: {}},
     isShowSwap: {isShow: false, props: {}},
     isShowAmm: {isShow: false, props: {}},
-    isShowConnect: {isShow: false, props: {}},
-    isShowAccount: {isShow: false, props: {}},
+    isShowConnect: {isShow: false},
+    isShowAccount: {isShow: false},
 }
 
 export const modalsSlice = createSlice({
@@ -80,11 +79,11 @@ export const modalsSlice = createSlice({
                 })
             }
         },
-        setShowConnect(state, action: PayloadAction<{ isShow: boolean } & { props?: Partial<ModalWalletConnectProps> }>) {
+        setShowConnect(state, action: PayloadAction<{ isShow: boolean } >) {
             const {isShow} = action.payload;
             state.isShowConnect.isShow = isShow
         },
-        setShowAccount(state, action: PayloadAction<{ isShow: boolean } & { props?: Partial<ModalAccountProps> }>) {
+        setShowAccount(state, action: PayloadAction<{ isShow: boolean } >) {
             const {isShow} = action.payload;
             state.isShowAccount.isShow = isShow
         }

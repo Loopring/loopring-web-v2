@@ -22,7 +22,6 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
                                                                       ...rest
                                                                   }: { open: boolean, onClose: (e: any) => void } & WithTranslation) => {
     const {account} = useAccount();
-
     const gatewayList: GatewayItem[] = [
         {
             ...DefaultGatewayList[ 0 ],
@@ -52,7 +51,6 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
         },
     ]
     const url = '';
-
     const walletList = React.useMemo(() => {
         return Object.values({
             [ WalletConnectStep.Provider ]: <ProviderMenu gatewayList={gatewayList} {...{t, ...rest}}/>,
@@ -65,7 +63,6 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
 
     }, [url])
     return <>
-
         <ModalWalletConnect open={open} onClose={onClose}
                             panelList={walletList} step={WalletConnectStep.Provider}/> </>
 })
