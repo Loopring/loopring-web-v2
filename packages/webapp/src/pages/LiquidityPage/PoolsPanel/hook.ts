@@ -69,7 +69,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
         },60000))
         
         //console.log(_keys)
-        setImmediate(updateTickers,_keys)
+        setImmediate(updateTickers, _keys as string[])
     },[])
 
     const updateTickersUI = React.useCallback((_page) => {
