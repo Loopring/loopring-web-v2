@@ -1,6 +1,6 @@
 import {
     AmmInfoProps,
-    DepositInfoProps, ModalAccountProps, ModalWalletConnectProps,
+    DepositInfoProps,
     ResetInfoProps,
     SwapInfoProps,
     TransferInfoProps,
@@ -27,6 +27,6 @@ export interface ModalState<T, I, A = AmmData<IBData<string>>, C = unknown> {
     isShowResetAccount: ModalStatePlayLoad & { props: Partial<ResetInfoProps<T, I>> },
     isShowSwap: ModalStatePlayLoad & { props: Partial<SwapInfoProps<T, I, C>> },
     isShowAmm: ModalStatePlayLoad & { props: Partial<AmmInfoProps<A, I, C>> },
-    isShowConnect: ModalStatePlayLoad  & { props: Partial<ModalWalletConnectProps> },
-    isShowAccount: ModalStatePlayLoad   & { props: Partial<ModalAccountProps> },
+    isShowConnect: ModalStatePlayLoad ,
+    isShowAccount: ModalStatePlayLoad ,
 }

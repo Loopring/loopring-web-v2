@@ -72,6 +72,7 @@ import { useSystem } from '../../stores/system';
 import { useDeposit } from '../../hooks/useDeposit';
 import { useTransfer } from '../../hooks/useTransfer';
 import { useWithdraw } from '../../hooks/useWithdraw';
+import { useDispatch } from 'react-redux';
 
 export const useHeader = () => {
     const {i18n, t} = useTranslation(['common', 'layout'])
@@ -83,7 +84,7 @@ export const useHeader = () => {
     const {account, updateAccount, status: accountStatus, errorMessage} = useAccount();
     //TODO: etherscanUrl
     const {etherscanUrl} = {etherscanUrl:''};
-
+    const dispatch = useDispatch();
     // const [showAccountInfo, setShowAccount] = React.useState(account?.accAddr ? true : false)
     const [accountInfoProps, setAccountBaseProps] = React.useState<undefined | AccountBaseProps>(undefined)
     //const theme: any = useTheme()
@@ -99,13 +100,13 @@ export const useHeader = () => {
         switch (account.readyState) {
             case AccountStatus.RESET:
             case AccountStatus.UN_CONNECT:
-                setShowConnect({isShow: true})
+                dispatch(setShowConnect({isShow: true}))
                 break
             case AccountStatus.NO_ACCOUNT:
             case AccountStatus.DEPOSITING:
             case AccountStatus.LOCKED:
             case AccountStatus.ACTIVATED:
-                setShowAccount({isShow: true})
+                dispatch(setShowAccount({isShow: true}))
                 break
             default:
                 break
