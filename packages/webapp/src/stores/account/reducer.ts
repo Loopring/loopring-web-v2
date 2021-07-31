@@ -41,7 +41,7 @@ const initialState: AccountState = {
     accountId: -1,
     apiKey: '',
     eddsaKey: '',
-    level:'',
+    level: '',
     connectName: LoopringProvider.UnKnow,
     status: 'UNSET',
     errorMessage: null,
@@ -54,21 +54,47 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
         updateAccountStatus(state: AccountState, action: PayloadAction<Partial<Account>>) {
             state.status = STATUS.PENDING
         },
-        restAccountStatus(state: AccountState, action: PayloadAction<undefined>){
+        restAccountStatus(state: AccountState, action: PayloadAction<undefined>) {
             state.status = STATUS.PENDING
         },
-        nextAccountStatus(state: AccountState, action: PayloadAction<Partial<any>>) {
+        nextAccountStatus(state: AccountState, action: PayloadAction<Partial<Account>>) {
             // @ts-ignore
             if (action.error) {
                 state.status = STATUS.ERROR
                 // @ts-ignore
                 state.errorMessage = action.error
             } else {
-                state = {
-                    ...state,
-                    ...action.payload,
-                    status: STATUS.DONE
+                const {
+                    accAddress,
+                    readyState,
+                    accountId,
+                    level,
+                    apiKey,
+                    eddsaKey,
+                    connectName
+                } = action.payload;
+                if (accAddress) {
+                    state.accAddress = accAddress;
                 }
+                if (readyState) {
+                    state.readyState = readyState;
+                }
+                if (accountId) {
+                    state.accountId = accountId;
+                }
+                if (level) {
+                    state.level = level;
+                }
+                if (apiKey) {
+                    state.apiKey = apiKey;
+                }
+                if (eddsaKey) {
+                    state.eddsaKey = eddsaKey;
+                }
+                if (connectName) {
+                    state.connectName = connectName;
+                }
+                state.status = STATUS.DONE;
             }
         },
         statusUnset: (state: AccountState) => {
@@ -77,5 +103,5 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
     },
 })
 export default accountSlice
-export const {updateAccountStatus,restAccountStatus, nextAccountStatus, statusUnset} = accountSlice.actions
+export const {updateAccountStatus, restAccountStatus, nextAccountStatus, statusUnset} = accountSlice.actions
 

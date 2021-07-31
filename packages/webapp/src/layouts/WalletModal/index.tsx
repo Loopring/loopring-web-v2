@@ -42,7 +42,11 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
         {
             ...DefaultGatewayList[ 0 ],
             handleSelect: React.useCallback(async () => {
-                resetAccount();
+                // @ts-ignore
+                if(connectProvides.usedProvide && connectProvides.usedProvide.disconnect ){
+                    // @ts-ignore
+                    await connectProvides.usedProvide.disconnect()
+                }
                 setShowConnect({isShow: true, step: WalletConnectStep.MetaMaskProcessing});
                 await connectProvides.MetaMask();
                 updateAccount({connectName: LoopringProvider.MetaMask});
@@ -56,6 +60,11 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
         {
             ...DefaultGatewayList[ 1 ],
             handleSelect: React.useCallback(async () => {
+                // @ts-ignore
+                if(connectProvides.usedProvide && connectProvides.usedProvide.disconnect ){
+                    // @ts-ignore
+                    await connectProvides.usedProvide.disconnect()
+                }
                 resetAccount();
                 setShowConnect({isShow: true, step: WalletConnectStep.WalletConnectProcessing});
                 await connectProvides.WalletConnect();

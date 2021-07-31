@@ -30,13 +30,13 @@ export enum AccountStatus {
 }
 
 export enum fnType {
-    UN_CONNECT,
-    CONNECT,
-    NO_ACCOUNT,
-    LOCKED,
-    ACTIVATED,
-    DEPOSITING,
-    DEFAULT,
+    UN_CONNECT='UN_CONNECT',
+    CONNECT='CONNECT',
+    NO_ACCOUNT='NO_ACCOUNT',
+    LOCKED='LOCKED',
+    ACTIVATED='ACTIVATED',
+    DEPOSITING='DEPOSITING',
+    DEFAULT='DEFAULT',
 }
 
 export type Account = {

@@ -32,6 +32,7 @@ export async function unlockAccount({accInfo}: { accInfo: AccountInfo }) {
         }));
         store.dispatch(setShowConnect({isShow: false}));
         store.dispatch(setShowAccount({isShow: true, step: AccountStep.ProcessUnlock}));
+
         // await sleep(1000)
         try {
             if (exchangeInfo && LoopringAPI.userAPI) {

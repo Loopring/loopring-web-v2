@@ -1,7 +1,7 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import {
     AccountStep,
-    ApproveAccount,
+    ApproveAccount, Button,
     Depositing,
     DepositPanel,
     DepositProps,
@@ -22,6 +22,8 @@ import { copyToClipBoard } from '../../utils/obj_tools';
 import { useAccount } from '../../stores/account';
 import { TOAST_TIME } from '../../defs/common_defs';
 import { getShortAddr } from '../../utils/web3_tools';
+import { LockIcon, UnLockIcon } from '@loopring-web/common-resources';
+import { Typography } from '@material-ui/core';
 
 export const ModalAccountInfo = withTranslation('common')(({
                                                                onClose,
@@ -47,7 +49,25 @@ export const ModalAccountInfo = withTranslation('common')(({
         setShowAccount({isShow: false})
         setShowConnect({isShow: true})
     }, [setShowConnect, setShowAccount])
+    const UnlockBtn = ({onClick}: { onClick: ({...props}: any) => void }) => {
+        return <Button className={'unlock'} startIcon={<UnLockIcon fontSize={'large'}/>}
+                       onClick={(event) => {
+                           onClick(event)
+                       }} variant={'outlined'}>
+            <Typography variant={'body2'} marginTop={1 / 2}>   {t('labelUnLockLayer2')} </Typography>
+        </Button>
+    }
 
+
+
+    const LockBtn = ({onClick}: { onClick: ({...props}: any) => void }) => {
+        return <Button className={'lock'} startIcon={<LockIcon fontSize={'large'}/>}
+                       onClick={(event) => {
+                           onClick(event)
+                       }} variant={'outlined'}>
+            <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelLockLayer2')} </Typography>
+        </Button>
+    }
 
     const onCopy = React.useCallback(() => {
         copyToClipBoard(account.accAddress);

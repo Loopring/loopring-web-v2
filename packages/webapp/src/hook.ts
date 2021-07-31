@@ -36,11 +36,11 @@ export function useInit() {
         status: systemStatus,
         statusUnset: systemStatusUnset
     } = useSystem();
-    const {account, updateAccount} = useAccount();
+    const {account, updateAccount, resetAccount,statusUnset:statusAccountUnset} = useAccount();
     const {setShowConnect, setShowAccount} = useOpenModals();
     const walletLayer1State = useWalletLayer1()
     const handleChainChanged = React.useCallback(async (chainId) => {
-        if (chainId !== _chainId && chainId !== 1) {
+        if (chainId !== _chainId &&  _chainId !== 'unknown') {
             updateSystem({chainId});
             window.location.reload();
         }
@@ -51,11 +51,12 @@ export function useInit() {
                                                        provider
                                                    }: { accounts: string, provider: any, chainId: number }) => {
         const accAddress = accounts[ 0 ];
-        if (chainId !== _chainId && chainId !== 1) {
+        if (chainId !== _chainId && _chainId !== 'unknown') {
             updateSystem({chainId: chainId as ChainId});
             window.location.reload();
         }
         updateAccount({accAddress, readyState: AccountStatus.CONNECT});
+        statusAccountUnset();
         setShowConnect({isShow: true, step: WalletConnectStep.SuccessConnect});
 
         //TODO if have account  how unlocl if not show
@@ -77,17 +78,21 @@ export function useInit() {
             } else if (activeDeposit && activeDeposit[ accAddress ]) {
                 setShowConnect({isShow: false});
                 setShowAccount({isShow: true, step: AccountStep.Depositing});
+                updateAccount({readyState: AccountStatus.DEPOSITING});
+
 
             } else {
                 setShowConnect({isShow: false});
                 setShowAccount({isShow: true, step: AccountStep.NoAccount});
+                updateAccount({readyState: AccountStatus.NO_ACCOUNT});
+
             }
         }
 
 
     }, [_chainId, account])
     const handleAccountDisconnect = React.useCallback(() => {
-        debugger
+        resetAccount();
         console.log('Disconnect')
     }, []);
 
