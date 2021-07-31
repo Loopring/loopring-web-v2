@@ -40,7 +40,7 @@ export function useInit() {
     const {setShowConnect, setShowAccount} = useOpenModals();
     const walletLayer1State = useWalletLayer1()
     const handleChainChanged = React.useCallback(async (chainId) => {
-        if (chainId !== _chainId) {
+        if (chainId !== _chainId && chainId !== 1) {
             updateSystem({chainId});
             window.location.reload();
         }
@@ -51,7 +51,7 @@ export function useInit() {
                                                        provider
                                                    }: { accounts: string, provider: any, chainId: number }) => {
         const accAddress = accounts[ 0 ];
-        if (chainId !== _chainId) {
+        if (chainId !== _chainId && chainId !== 1) {
             updateSystem({chainId: chainId as ChainId});
             window.location.reload();
         }
