@@ -17,8 +17,8 @@ const initialState: ModalState<IBData<any>, any> = {
     isShowResetAccount: {isShow: false, props: {}},
     isShowSwap: {isShow: false, props: {}},
     isShowAmm: {isShow: false, props: {}},
-    isShowConnect: {isShow: false},
-    isShowAccount: {isShow: false},
+    isShowConnect: {isShow: false, step: 0},
+    isShowAccount: {isShow: false, step: 0},
 }
 
 export const modalsSlice = createSlice({
@@ -79,13 +79,19 @@ export const modalsSlice = createSlice({
                 })
             }
         },
-        setShowConnect(state, action: PayloadAction<{ isShow: boolean } >) {
-            const {isShow} = action.payload;
-            state.isShowConnect.isShow = isShow
+        setShowConnect(state, action: PayloadAction<{ isShow: boolean, step ?: number }>) {
+            const {isShow, step} = action.payload;
+            state.isShowConnect = {
+                isShow,
+                step:  step?step: 0
+            };
         },
-        setShowAccount(state, action: PayloadAction<{ isShow: boolean } >) {
-            const {isShow} = action.payload;
-            state.isShowAccount.isShow = isShow
+        setShowAccount(state, action: PayloadAction<{ isShow: boolean, step?: number }>) {
+            const {isShow, step} = action.payload;
+            state.isShowAccount = {
+                isShow,
+                step:  step?step: 0
+            };
         }
     },
 })

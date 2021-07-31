@@ -3,7 +3,7 @@ import {
     AssetsIcon,
     MiningIcon,
     MyLiquidityIcon,
-    OrderIcon,
+    // OrderIcon,
     PoolsIcon,
     SettingIcon,
     TradeIcon,

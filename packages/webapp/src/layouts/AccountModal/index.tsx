@@ -37,7 +37,7 @@ export const ModalAccountInfo = withTranslation('common')(({
     etherscanUrl: string
 } & WithTranslation) => {
     const {account, updateAccount, status: accountStatus, errorMessage, resetAccount} = useAccount();
-    const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals();
+    const {modals: {isShowAccount}, setShowConnect, setShowAccount} = useOpenModals();
     const [openQRCode, setOpenQRCode] = useState(false);
     const addressShort = getShortAddr(account.accAddress)
 
@@ -58,8 +58,22 @@ export const ModalAccountInfo = withTranslation('common')(({
     }, [])
     const onDisconnect = React.useCallback(() => {
         resetAccount();
-        setShowAccount({isShow: false});
+        setShowAccount({isShow: false})
+        // // setShowAccount({isShow: false,step:AccountStep.});
     }, [resetAccount, setShowAccount])
+    const lockCallback = React.useCallback((event) => {
+        // lock(account)
+        updateAccount({
+            // level:string,
+            apiKey: '',
+            eddsaKey: '',
+        })
+    }, [updateAccount])
+    const unLockCallback = React.useCallback((event) => {
+        // unlock(account)
+        // updateAccount()
+        setShowAccount({isShow: true, step:AccountStep.ProcessUnlock});
+    }, [updateAccount])
     // const onSwitch = {onSwitch}
     const accountList = React.useMemo(() => {
         return Object.values({
@@ -91,7 +105,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
         <ModalQRCode open={openQRCode} onClose={() => setOpenQRCode(false)} title={'ETH Address'}
                      description={account?.accAddress} url={account?.accAddress}/>
-        <ModalAccount open={open} onClose={onClose}
-                      panelList={accountList} step={WalletConnectStep.Provider}/>
+        <ModalAccount open={isShowAccount.isShow} onClose={onClose}
+                      panelList={accountList} step={isShowAccount.step}/>
     </>
 })

@@ -59,7 +59,7 @@ export const Layer2Page = () => {
     const {depositProps} = useModalProps();
 
     return <>  {
-        readyState === AccountStatus.RESET  || readyState === AccountStatus.UN_CONNECT
+       readyState === AccountStatus.UN_CONNECT
             ? <Redirect to="/" />
             :
             readyState === AccountStatus.NO_ACCOUNT

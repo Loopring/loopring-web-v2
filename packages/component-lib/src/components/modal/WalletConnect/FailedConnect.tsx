@@ -1,11 +1,9 @@
 import { AlertIcon } from '@loopring-web/common-resources';
 import { Button } from '../../basic-lib';
 
-export const FailedConnect = ()=>{
+export const FailedConnect = ({handleRetry}: { handleRetry:(event:any)=>void })=>{
     return    <>
         <AlertIcon />
-        <Button onClick={()=>{
-            //TODO
-        }}></Button></>
+        <Button onClick={handleRetry}></Button></>
 
 }

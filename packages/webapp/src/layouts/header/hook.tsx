@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 
 import { useTranslation } from 'react-i18next'
 
@@ -7,8 +7,6 @@ import {
     AmmInData,
     ButtonComponentsMap,
     CoinMap,
-    GatewayItem,
-    gatewayList as DefaultGatewayList,
     headerMenuData,
     HeaderMenuTabStatus,
     headerToolBarData,
@@ -21,11 +19,9 @@ import {
     UnLockIcon,
     WalletMap,
     WalletStatus,
-    WithdrawType,
-    WithdrawTypes,
 } from '@loopring-web/common-resources'
 
-import { AccountStatus, useAccount, } from 'stores/account'
+import { AccountStatus, fnType, useAccount, } from 'stores/account'
 
 import { getShortAddr } from 'utils/web3_tools'
 
@@ -36,6 +32,7 @@ import { Theme, } from 'defs/common_defs'
 
 import {
     AccountBaseProps,
+    AccountStep,
     AmmProps,
     Button,
     CoinType,
@@ -45,23 +42,16 @@ import {
     TradeBtnStatus,
     useOpenModals,
     useSettings,
+    WalletConnectStep,
 } from '@loopring-web/component-lib'
 
 import * as sdk from 'loopring-sdk'
-import {
-    ConnectorNames,
-    dumpError400,
-    GetOffchainFeeAmtRequest,
-    LoopringMap,
-    OffchainFeeReqType,
-    toBig,
-    TokenInfo,
-} from 'loopring-sdk'
+import { dumpError400, GetOffchainFeeAmtRequest, LoopringMap, OffchainFeeReqType, toBig, TokenInfo } from 'loopring-sdk'
 import { Typography } from '@material-ui/core';
 
 import { useModals } from 'hooks/modal/useModals'
 
-import { makeWalletLayer2 } from 'hooks/help'
+import { btnClickMap, makeWalletLayer2 } from 'hooks/help'
 import { useWalletLayer2 } from 'stores/walletLayer2'
 import { useTokenMap } from 'stores/token'
 import { LoopringAPI } from 'stores/apis/api'
@@ -73,10 +63,12 @@ import { useDeposit } from '../../hooks/useDeposit';
 import { useTransfer } from '../../hooks/useTransfer';
 import { useWithdraw } from '../../hooks/useWithdraw';
 import { useDispatch } from 'react-redux';
+import store from '../../stores';
+import { deepClone } from '../../utils/obj_tools';
 
 export const useHeader = () => {
     const {i18n, t} = useTranslation(['common', 'layout'])
-    const {setTheme, themeMode, language, setLanguage } = useSettings();
+    const {setTheme, themeMode, language, setLanguage} = useSettings();
     const {ShowDeposit} = useModals()
     const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals()
     const {etherscanUrl} = useSystem();
@@ -91,25 +83,59 @@ export const useHeader = () => {
         myLog('onNotification click')
     }, [])
 
+    // export const btnClickMap: { [ key: number ]: [fn: (props: any) => any, args?: any[]] } = {
+    //     // [ fnType.RESET ]: [
+    //     //     function () {
+    //     //         store.dispatch(setShowConnect({isShow: true}))
+    //     //     }
+    //     // ],
+    //     [ fnType.UN_CONNECT ]: [
+    //         function () {
+    //             // setShowConnect({isShow: true})
+    //             store.dispatch(setShowConnect({isShow: true}))
+    //         }
+    //     ]
+    //     , [ fnType.DEFAULT ]: [
+    //         function () {
+    //             store.dispatch(setShowDeposit({isShow: true}))
+    //             // ShowDeposit(true)
+    //         }
+    //     ]
+    //
+    //     , [ fnType.LOCKED ]: [
+    //         function () {
+    //             store.dispatch(setShowAccount({isShow: true}))
+    //         }
+    //     ]
+    // };
+    const _btnClickMap: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
+        [ fnType.ACTIVATED ]: [
+            function () {
+                store.dispatch(setShowAccount({isShow: true, step: AccountStep.HadAccount}))
+            }
+        ],
+
+    });
+
     const onWalletBtnConnect = React.useCallback(async () => {
         // const acc = store.getState().account
         myLog(`onWalletBtnConnect click: ${account.readyState}`)
 
         switch (account.readyState) {
-            case AccountStatus.RESET:
+            // case AccountStatus.RESET:
             case AccountStatus.UN_CONNECT:
-                dispatch(setShowConnect({isShow: true}))
-                break
+                dispatch(setShowConnect({isShow: true, step: WalletConnectStep.Provider}))
+                break;
             case AccountStatus.NO_ACCOUNT:
             case AccountStatus.DEPOSITING:
             case AccountStatus.LOCKED:
             case AccountStatus.ACTIVATED:
-                dispatch(setShowAccount({isShow: true}))
+                dispatch(setShowAccount({isShow: true, step: AccountStep.HadAccount}))
                 break
             default:
                 break
         }
-    }, [account,setShowConnect, setShowAccount])
+    }, [account, setShowConnect, setShowAccount])
 
     const onThemeBtnClick = React.useCallback(async (themeMode: ThemeKeys) => {
         if (themeMode === Theme.dark) {
@@ -152,14 +178,7 @@ export const useHeader = () => {
         </Button>
     }
 
-    const lockCallback = React.useCallback((event) => {
-        // lock(account)
-        updateAccount()
-    }, [ updateAccount])
-    const unLockCallback = React.useCallback((event) => {
-        // unlock(account)
-        updateAccount()
-    }, [ updateAccount])
+
 
     const LockBtn = ({onClick}: { onClick: ({...props}: any) => void }) => {
         return <Button className={'lock'} startIcon={<LockIcon fontSize={'large'}/>}
@@ -191,25 +210,24 @@ export const useHeader = () => {
                 addressShort,
                 address: account.accAddress,
                 level: account.level,
-
                 etherscanLink: etherscanUrl + account.accAddress,
                 connectBy: account.connectName
             };
             if (readyState === AccountStatus.ACTIVATED) {
                 props = {
                     ...props,
-                    mainBtn: <LockBtn onClick={(_event) => {
-                        lockCallback(_event)
-                    }}/>,
+                    // mainBtn: <LockBtn onClick={(_event) => {
+                    //     lockCallback(_event)
+                    // }}/>,
 
                 }
                 setShowAccount({isShow: false})
             } else if (readyState === AccountStatus.LOCKED) {
                 props = {
                     ...props,
-                    mainBtn: <UnlockBtn onClick={(_event) => {
-                        unLockCallback(_event)
-                    }}/>,
+                    // mainBtn: <UnlockBtn onClick={(_event) => {
+                    //     unLockCallback(_event)
+                    // }}/>,
                 }
                 setShowAccount({isShow: true})
             } else if (readyState === AccountStatus.UN_CONNECT
@@ -292,7 +310,9 @@ export const useHeader = () => {
         forceUpdate()
     }, [account, setAccountBaseProps])
 
+
     return {
+        // connectStep,
         headerToolBarData,
         headerMenuData,
         // gatewayList,
@@ -533,9 +553,9 @@ export function useModalProps() {
             myLog('onAmmAddClick', data);
         }
     }
-    const {transferProps} = useTransfer(walletMap2,ShowTransfer)
-    const {depositProps} = useDeposit(walletMap1,ShowDeposit)
-    const {withdrawProps} = useWithdraw(walletMap2,ShowDeposit)
+    const {transferProps} = useTransfer(walletMap2, ShowTransfer)
+    const {depositProps} = useDeposit(walletMap1, ShowDeposit)
+    const {withdrawProps} = useWithdraw(walletMap2, ShowDeposit)
 
     return {
         depositProps, withdrawProps, transferProps, resetProps, ammProps, swapProps,
