@@ -1,14 +1,17 @@
 import React from 'react';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { useSystem } from './stores/system';
-import { ChainId } from 'loopring-sdk';
+import { ChainId, sleep } from 'loopring-sdk';
 import { useAmmMap } from './stores/Amm/AmmMap';
 import { STATUS } from './stores/constant';
 import { useTokenMap } from './stores/token';
 import { useWalletLayer1 } from './stores/walletLayer1';
 import { useAccount } from './stores/account/hook';
-import { connectProvides, useConnectHook } from '@loopring-web/web3-provider';
-import { AccountState } from './stores/account';
+import { connectProvides, ErrorType, useConnectHook } from '@loopring-web/web3-provider';
+import { AccountStatus } from './stores/account';
+import { AccountStep, useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
+import { LoopringAPI } from './stores/apis/api';
+import { unlockAccount } from './hooks/unlockAccount';
 
 
 /**
@@ -20,24 +23,79 @@ import { AccountState } from './stores/account';
  * @step5 launch the page
  * @todo each step has error show the ErrorPage , next version for service maintain page.
  */
+
 export function useInit() {
     const [state, setState] = React.useState<keyof typeof STATUS>('PENDING')
-    const systemState = useSystem();
+    // const systemState = useSystem();
     const tokenState = useTokenMap();
     const ammMapState = useAmmMap();
-    const {account,updateAccount, status: accountStatus} = useAccount();
+    const {
+        updateSystem,
+        chainId: _chainId,
+        exchangeInfo,
+        status: systemStatus,
+        statusUnset: systemStatusUnset
+    } = useSystem();
+    const {account, updateAccount} = useAccount();
+    const {setShowConnect, setShowAccount} = useOpenModals();
     const walletLayer1State = useWalletLayer1()
     const handleChainChanged = React.useCallback(async (chainId) => {
-        // const accAddress= await connectProvides.usedWeb3?.eth.accounts[0];
-        // if(accAddress && account.accAddress !== accAddress) {
-        //     updateAccount({accAddress})
-        // }
-        if(chainId !== systemState.chainId) {
-            systemState.updateSystem({chainId});
+        if (chainId !== _chainId) {
+            updateSystem({chainId});
             window.location.reload();
         }
-    }, [systemState])
-    useConnectHook({handleChainChanged});
+    }, [_chainId])
+    const handleConnect = React.useCallback(async ({
+                                                       accounts,
+                                                       chainId,
+                                                       provider
+                                                   }: { accounts: string, provider: any, chainId: number }) => {
+        const accAddress = accounts[ 0 ];
+        if (chainId !== _chainId) {
+            updateSystem({chainId: chainId as ChainId});
+            window.location.reload();
+        }
+        updateAccount({accAddress, readyState: AccountStatus.CONNECT});
+        setShowConnect({isShow: true, step: WalletConnectStep.SuccessConnect});
+
+        //TODO if have account  how unlocl if not show
+        if (connectProvides.usedWeb3 && exchangeInfo && LoopringAPI.exchangeAPI && LoopringAPI.userAPI) {
+            // try {
+            const {accInfo} = (await LoopringAPI.exchangeAPI.getAccount({
+                owner: accAddress
+            }));
+
+            await sleep(1000)
+            let activeDeposit = localStorage.getItem('activeDeposit');
+            if (activeDeposit) {
+                activeDeposit = JSON.stringify(activeDeposit);
+            }
+
+            if (accInfo && accInfo.accountId) {
+                await unlockAccount({accInfo})
+
+            } else if (activeDeposit && activeDeposit[ accAddress ]) {
+                setShowConnect({isShow: false});
+                setShowAccount({isShow: true, step: AccountStep.Depositing});
+
+            } else {
+                setShowConnect({isShow: false});
+                setShowAccount({isShow: true, step: AccountStep.NoAccount});
+            }
+        }
+
+
+    }, [_chainId, account])
+    const handleAccountDisconnect = React.useCallback(() => {
+        debugger
+        console.log('Disconnect')
+    }, []);
+
+    const handleError = React.useCallback(({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
+
+    }, []);
+
+    useConnectHook({handleAccountDisconnect, handleError, handleConnect, handleChainChanged});
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
         if (account && account.connectName && account.accAddress) {
@@ -45,7 +103,7 @@ export function useInit() {
                 await connectProvides[ account.connectName ]();
                 if (connectProvides.usedProvide) {
                     const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
-                    systemState.updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
+                    updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
                     return
                 }
             }
@@ -63,25 +121,24 @@ export function useInit() {
         //     return
         // }
 
-        systemState.updateSystem({chainId: ChainId.MAINNET})
+        updateSystem({chainId: ChainId.MAINNET})
 
 
     }, [])
     React.useEffect(() => {
-        switch (systemState.status) {
+        switch (systemStatus) {
             case "ERROR":
-                systemState.statusUnset();
+                systemStatusUnset();
                 setState('ERROR')
                 //TODO show error at button page show error  some retry dispat again
                 break;
             case "DONE":
-                systemState.statusUnset();
+                systemStatusUnset();
                 break;
             default:
                 break;
         }
-    }, [
-        systemState]);
+    }, [systemStatus, systemStatusUnset]);
     React.useEffect(() => {
         if (ammMapState.status === "ERROR" || tokenState.status === "ERROR") {
             //TODO: solve error

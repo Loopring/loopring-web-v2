@@ -4,9 +4,64 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { Account, AccountStatus } from './interface';
 import { LoopringProvider } from "@loopring-web/web3-provider";
 
+export function* accountUpdateSaga({payload}: PayloadAction<Partial<Account>>) {
+    try {
+        // let data: { accountState: Partial<AccountState> };
+        const {currentState} = yield select();
+        const account = payload;
+        yield put(nextAccountStatus({
+            ...currentState,
+            ...account
+        }));
+        // switch (toStatus) {
+        //     case 'next':
+        //         // @ts-ignore
+        //         data = yield call(goNextAccountStatus, currentState, newState);
+        //         subject.next({command: StorageCommands.UPDATE, data: data.accountState})
+        //         yield put(nextAccountStatus(data.accountState));
+        //         break
+        //     // case AccountStatus.RESET:
+        //     //     data = yield call(goCleanAccount);
+        //     //     yield put(nextAccountStatus(data.accountState));
+        //     //     break
+        //     case AccountStatus.LOCKED:
+        //         data = yield call(goAccountLocked, currentState);
+        //         subject.next({command: StorageCommands.UPDATE, data: data.accountState})
+        //         yield put(nextAccountStatus(data.accountState));
+        //
+        //         break
+        //     default:
+        //         break;
+        // }
+
+    } catch (err) {
+        yield put(nextAccountStatus(err));
+    }
+}
+function* accountSage() {
+    yield all([takeLatest(updateAccountStatus, accountUpdateSaga)]);
+}
+function* goCleanAccount({payload}: PayloadAction<undefined>) {
+    yield put(nextAccountStatus({
+        accAddress: '',
+        readyState: AccountStatus.UN_CONNECT,
+        accountId: -1,
+        apiKey: '',
+        eddsaKey: '',
+        connectName: LoopringProvider.UnKnow,
+        status: 'UNSET',
+        errorMessage: null,
+    }));
+}
+function* accountRestSage() {
+    yield all([takeLatest(restAccountStatus, goCleanAccount)]);
+}
+export const accountFork = [
+    fork(accountSage),
+    fork(accountRestSage)
+]
 
 // const subject = new Subject<{ command: keyof typeof StorageCommands, data?: any }>();
-
 // const goNextAccountStatus = async (currentState: Partial<AccountState>,
 //                                    nextState: Partial<AccountState>): Promise<{ accountState: Partial<AccountState> }> => {
 //     // let newAccountState: Partial<AccountState>
@@ -72,49 +127,6 @@ import { LoopringProvider } from "@loopring-web/web3-provider";
 //         accountState: {}
 //     }
 // }
-
-
-export function* accountUpdateSaga({payload}: PayloadAction<Partial<Account>>) {
-    try {
-        // let data: { accountState: Partial<AccountState> };
-        const {currentState} = yield select();
-        const account = payload;
-        yield put(nextAccountStatus({
-            ...currentState,
-            ...account
-        }));
-        // switch (toStatus) {
-        //     case 'next':
-        //         // @ts-ignore
-        //         data = yield call(goNextAccountStatus, currentState, newState);
-        //         subject.next({command: StorageCommands.UPDATE, data: data.accountState})
-        //         yield put(nextAccountStatus(data.accountState));
-        //         break
-        //     // case AccountStatus.RESET:
-        //     //     data = yield call(goCleanAccount);
-        //     //     yield put(nextAccountStatus(data.accountState));
-        //     //     break
-        //     case AccountStatus.LOCKED:
-        //         data = yield call(goAccountLocked, currentState);
-        //         subject.next({command: StorageCommands.UPDATE, data: data.accountState})
-        //         yield put(nextAccountStatus(data.accountState));
-        //
-        //         break
-        //     default:
-        //         break;
-        // }
-
-    } catch (err) {
-        yield put(nextAccountStatus(err));
-    }
-}
-
-
-function* accountSage() {
-    yield all([takeLatest(updateAccountStatus, accountUpdateSaga)]);
-}
-
-
 // const goCleanAccount = async (): Promise<{ accountState: Partial<AccountState> }> => {
 //
 //     subject.next({command: StorageCommands.CLEAN})
@@ -131,29 +143,6 @@ function* accountSage() {
 //         }
 //     }
 // }
-
-function* goCleanAccount({payload}: PayloadAction<undefined>) {
-    yield put(nextAccountStatus({
-        accAddress: '',
-        readyState: AccountStatus.UN_CONNECT,
-        accountId: -1,
-        apiKey: '',
-        eddsaKey: '',
-        connectName: LoopringProvider.UnKnow,
-        status: 'UNSET',
-        errorMessage: null,
-    }));
-}
-
-function* accountRestSage() {
-    yield all([takeLatest(restAccountStatus, goCleanAccount)]);
-}
-
-
-export const accountFork = [
-    fork(accountSage),
-    fork(accountRestSage)
-]
 //
 //
 //
