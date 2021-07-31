@@ -1,10 +1,17 @@
 import store from '../../stores';
-import { AccountStep, setShowAccount, setShowConnect, setShowDeposit } from '@loopring-web/component-lib';
+import {
+    AccountStep,
+    setShowAccount,
+    setShowConnect,
+    setShowDeposit,
+    WalletConnectStep
+} from '@loopring-web/component-lib';
 import { fnType } from 'stores/account';
 
 
 export const accountStaticCallBack = (onclickMap: { [ key: number ]: [fn: (props: any) => any, args?: any[]] }, deps?: any[]) => {
     const {readyState} = store.getState().account;
+    // fnType[readyState]
     let fn, args;
     [fn, args] = onclickMap[ readyState ] ? onclickMap[ readyState ] : [];
     if (typeof fn === 'function') {
@@ -44,7 +51,7 @@ export const bntLabel: typeof btnClickMap = {
 };
 
 
-export const btnClickMap: { [ key: number ]: [fn: (props: any) => any, args?: any[]] } = {
+export const btnClickMap: { [ key: string ]: [fn: (props: any) => any, args?: any[]] } = {
     // [ fnType.RESET ]: [
     //     function () {
     //         store.dispatch(setShowConnect({isShow: true}))
@@ -53,7 +60,7 @@ export const btnClickMap: { [ key: number ]: [fn: (props: any) => any, args?: an
     [ fnType.UN_CONNECT ]: [
         function () {
             // setShowConnect({isShow: true})
-            store.dispatch(setShowConnect({isShow: true, step:0}))
+            store.dispatch(setShowConnect({isShow: true, step:WalletConnectStep.Provider}))
         }
     ]
     , [ fnType.NO_ACCOUNT ]: [

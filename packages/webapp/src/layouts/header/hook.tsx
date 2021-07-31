@@ -36,7 +36,7 @@ import {
     AmmProps,
     Button,
     CoinType,
-    ResetProps,
+    ResetProps, setShowConnect,
     SwapProps,
     SwitchData,
     TradeBtnStatus,
@@ -51,7 +51,7 @@ import { Typography } from '@material-ui/core';
 
 import { useModals } from 'hooks/modal/useModals'
 
-import { btnClickMap, makeWalletLayer2 } from 'hooks/help'
+import { accountStaticCallBack, btnClickMap, makeWalletLayer2 } from 'hooks/help'
 import { useWalletLayer2 } from 'stores/walletLayer2'
 import { useTokenMap } from 'stores/token'
 import { LoopringAPI } from 'stores/apis/api'
@@ -72,7 +72,7 @@ export const useHeader = () => {
     const {ShowDeposit} = useModals()
     const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals()
     const {etherscanUrl} = useSystem();
-    const forceUpdate = React.useReducer((bool) => !bool, false)[ 1 ]
+    // const forceUpdate = React.useReducer((bool) => !bool, false)[ 1 ]
     const {account, updateAccount, status: accountStatus, errorMessage} = useAccount();
     const dispatch = useDispatch();
     // const [showAccountInfo, setShowAccount] = React.useState(account?.accAddr ? true : false)
@@ -83,59 +83,26 @@ export const useHeader = () => {
         myLog('onNotification click')
     }, [])
 
-    // export const btnClickMap: { [ key: number ]: [fn: (props: any) => any, args?: any[]] } = {
-    //     // [ fnType.RESET ]: [
-    //     //     function () {
-    //     //         store.dispatch(setShowConnect({isShow: true}))
-    //     //     }
-    //     // ],
-    //     [ fnType.UN_CONNECT ]: [
-    //         function () {
-    //             // setShowConnect({isShow: true})
-    //             store.dispatch(setShowConnect({isShow: true}))
-    //         }
-    //     ]
-    //     , [ fnType.DEFAULT ]: [
-    //         function () {
-    //             store.dispatch(setShowDeposit({isShow: true}))
-    //             // ShowDeposit(true)
-    //         }
-    //     ]
-    //
-    //     , [ fnType.LOCKED ]: [
-    //         function () {
-    //             store.dispatch(setShowAccount({isShow: true}))
-    //         }
-    //     ]
-    // };
     const _btnClickMap: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
         [ fnType.ACTIVATED ]: [
             function () {
                 store.dispatch(setShowAccount({isShow: true, step: AccountStep.HadAccount}))
             }
         ],
+        [ fnType.CONNECT ]: [
+            function () {
+                // setShowConnect({isShow: true})
+                store.dispatch(setShowAccount({isShow: true, step: AccountStep.HadAccount}))
+            }
+        ]
 
     });
 
     const onWalletBtnConnect = React.useCallback(async () => {
         // const acc = store.getState().account
         myLog(`onWalletBtnConnect click: ${account.readyState}`)
-
-        switch (account.readyState) {
-            // case AccountStatus.RESET:
-            case AccountStatus.UN_CONNECT:
-                dispatch(setShowConnect({isShow: true, step: WalletConnectStep.Provider}))
-                break;
-            case AccountStatus.NO_ACCOUNT:
-            case AccountStatus.DEPOSITING:
-            case AccountStatus.LOCKED:
-            case AccountStatus.ACTIVATED:
-                dispatch(setShowAccount({isShow: true, step: AccountStep.HadAccount}))
-                break
-            default:
-                break
-        }
-    }, [account, setShowConnect, setShowAccount])
+        accountStaticCallBack(_btnClickMap, [])
+    }, [account])
 
     const onThemeBtnClick = React.useCallback(async (themeMode: ThemeKeys) => {
         if (themeMode === Theme.dark) {
@@ -150,9 +117,7 @@ export const useHeader = () => {
     }
 
 
-    useCustomDCEffect(() => {
-
-
+    React.useEffect(() => {
         headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
             ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
             handleClick: onWalletBtnConnect,
@@ -162,153 +127,69 @@ export const useHeader = () => {
             themeMode,
             handleClick: onThemeBtnClick
         }
-
         headerToolBarData[ ButtonComponentsMap.Language ] = {
             ...headerToolBarData[ ButtonComponentsMap.Language ],
             handleChange: onLangBtnClick
         }
-    }, [themeMode, language, i18n, onWalletBtnConnect, onThemeBtnClick, onLangBtnClick, onNotification, t]);
-
-    const UnlockBtn = ({onClick}: { onClick: ({...props}: any) => void }) => {
-        return <Button className={'unlock'} startIcon={<UnLockIcon fontSize={'large'}/>}
-                       onClick={(event) => {
-                           onClick(event)
-                       }} variant={'outlined'}>
-            <Typography variant={'body2'} marginTop={1 / 2}>   {t('labelUnLockLayer2')} </Typography>
-        </Button>
-    }
+    }, []);
 
 
 
-    const LockBtn = ({onClick}: { onClick: ({...props}: any) => void }) => {
-        return <Button className={'lock'} startIcon={<LockIcon fontSize={'large'}/>}
-                       onClick={(event) => {
-                           onClick(event)
-                       }} variant={'outlined'}>
-            <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelLockLayer2')} </Typography>
-        </Button>
-    }
+    React.useEffect(() => {
+        if(accountStatus === 'UNSET'){
+            const {readyState} = account
+            const addressShort = getShortAddr(account.accAddress);
+            switch (readyState) {
+                case AccountStatus.UN_CONNECT:
+                    headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
+                        ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
+                        label: t('labelConnectWallet'),
+                        status: WalletStatus.default
+                    }
+                    headerMenuData[ HeadMenuTabKey.Layer2 ] = {
+                        //TODO:  HeaderMenuTabStatus.hidden
+                        ...headerMenuData[ HeadMenuTabKey.Layer2 ], status: HeaderMenuTabStatus.hidden
+                    }
+                    // setShowAccount({isShow: false})
+                    break
+                case AccountStatus.CONNECT:
+                case AccountStatus.LOCKED:
+                    headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
+                        ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
+                        label: addressShort,
+                        status: WalletStatus.connect
+                    };
+                    break
+                case AccountStatus.ACTIVATED:
+                    headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
+                        ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
+                        label: addressShort,
+                        status: WalletStatus.unlock
+                    }
+                    break
+                case AccountStatus.NO_ACCOUNT:
+                    headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
+                        ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
+                        // TODO got cache address if no show Connect Wallet
+                        label: addressShort,
+                        status: WalletStatus.noAccount
+                    }
 
-    useCustomDCEffect(() => {
+                    // updateHeaderMenuWhenHasAccountInfo({readyState});
+                    break
+                case AccountStatus.DEPOSITING:
+                    headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
+                        ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
+                        label: addressShort,
+                        status: WalletStatus.accountPending
+                    }
+                    // updateHeaderMenuWhenHasAccountInfo({readyState});
 
-        if (!account) {
-            myLog('account' + account + '* exit')
-            setAccountBaseProps(undefined)
-            return
+                    break
+            }
         }
 
-        const {readyState} = account
-
-        const addressShort = getShortAddr(account.accAddress)
-
-        const updateHeaderMenuWhenHasAccountInfo = ({readyState}: { readyState: keyof typeof AccountStatus }) => {
-            headerMenuData[ HeadMenuTabKey.Layer2 ] = {
-                ...headerMenuData[ HeadMenuTabKey.Layer2 ],
-                status: HeaderMenuTabStatus.default
-            }
-            let props: Partial<AccountBaseProps> | undefined = {
-                addressShort,
-                address: account.accAddress,
-                level: account.level,
-                etherscanLink: etherscanUrl + account.accAddress,
-                connectBy: account.connectName
-            };
-            if (readyState === AccountStatus.ACTIVATED) {
-                props = {
-                    ...props,
-                    // mainBtn: <LockBtn onClick={(_event) => {
-                    //     lockCallback(_event)
-                    // }}/>,
-
-                }
-                setShowAccount({isShow: false})
-            } else if (readyState === AccountStatus.LOCKED) {
-                props = {
-                    ...props,
-                    // mainBtn: <UnlockBtn onClick={(_event) => {
-                    //     unLockCallback(_event)
-                    // }}/>,
-                }
-                setShowAccount({isShow: true})
-            } else if (readyState === AccountStatus.UN_CONNECT
-                || readyState === AccountStatus.NO_ACCOUNT
-                || readyState === AccountStatus.DEPOSITING
-            ) {
-                props = {
-                    ...props
-                }
-                setShowAccount({isShow: false});
-
-            } else {
-                setShowAccount({isShow: false})
-            }
-
-            if (props) {
-                props.connectBy = account.connectName
-            }
-
-            if (readyState === AccountStatus.NO_ACCOUNT && props) {
-                props.onLock = () => {
-                    setShowAccount({isShow: false})
-                    ShowDeposit(true)
-                }
-            }
-
-            setAccountBaseProps(props as AccountBaseProps)
-        }
-        switch (readyState) {
-            case AccountStatus.UN_CONNECT:
-                headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-                    ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                    label: t('labelConnectWallet'),
-                    status: WalletStatus.default
-                }
-                headerMenuData[ HeadMenuTabKey.Layer2 ] = {
-                    //TODO:  HeaderMenuTabStatus.hidden
-                    ...headerMenuData[ HeadMenuTabKey.Layer2 ], status: HeaderMenuTabStatus.hidden
-                }
-                setShowAccount({isShow: false})
-                break
-            case AccountStatus.LOCKED:
-                headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-                    ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                    label: addressShort,
-                    status: WalletStatus.connect
-                };
-
-                updateHeaderMenuWhenHasAccountInfo({readyState});
-                break
-            case AccountStatus.ACTIVATED:
-                headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-                    ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                    label: addressShort,
-                    status: WalletStatus.unlock
-                }
-
-                updateHeaderMenuWhenHasAccountInfo({readyState});
-                break
-            case AccountStatus.NO_ACCOUNT:
-                headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-                    ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                    // TODO got cache address if no show Connect Wallet
-                    label: addressShort,
-                    status: WalletStatus.noAccount
-                }
-
-                updateHeaderMenuWhenHasAccountInfo({readyState});
-                break
-            case AccountStatus.DEPOSITING:
-                headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-                    ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                    label: addressShort,
-                    status: WalletStatus.accountPending
-                }
-                updateHeaderMenuWhenHasAccountInfo({readyState});
-
-                break
-        }
-        forceUpdate()
-    }, [account, setAccountBaseProps])
+    }, [accountStatus, setAccountBaseProps])
 
 
     return {

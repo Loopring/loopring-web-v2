@@ -7,10 +7,10 @@ import { LoopringProvider } from "@loopring-web/web3-provider";
 export function* accountUpdateSaga({payload}: PayloadAction<Partial<Account>>) {
     try {
         // let data: { accountState: Partial<AccountState> };
-        const {currentState} = yield select();
+        // const {currentState} = yield select();
         const account = payload;
         yield put(nextAccountStatus({
-            ...currentState,
+            // ...currentState,
             ...account
         }));
         // switch (toStatus) {
@@ -49,7 +49,6 @@ function* goCleanAccount({payload}: PayloadAction<undefined>) {
         apiKey: '',
         eddsaKey: '',
         connectName: LoopringProvider.UnKnow,
-        status: 'UNSET',
         errorMessage: null,
     }));
 }

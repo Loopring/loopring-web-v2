@@ -19,12 +19,17 @@ export const walletServices = {
         });
     },
     sendConnect: async (web3: Web3, provider: any) => {
-        const accounts = await web3.eth.getAccounts();
-        const chainId = await web3.eth.getChainId();
-        // const networkId = await web3.eth.net.getId();
-        // networkId
-        console.log('wallet connect:', accounts, chainId);
-        subject.next({status: 'ConnectWallet', data: {provider, accounts, chainId}});
+        try {
+            const accounts = await web3.eth.getAccounts();
+            const chainId = await web3.eth.getChainId();
+            // const networkId = await web3.eth.net.getId();
+            // networkId
+            console.log('wallet connect:', accounts, chainId);
+
+            subject.next({status: 'ConnectWallet', data: {provider, accounts, chainId}});
+        } catch (error){
+            subject.next({status: 'Error', data: {error}});
+        }
     },
     sendChainChanged: async (chainId: number) => {
         console.log('wallet connect:', chainId);

@@ -57,7 +57,7 @@ export class ConnectProvides  {
                    connector.killSession();
                }
                walletServices.sendDisconnect(code,reason);
-
+               this.clearProviderSubscribe();
            });
        }
 
