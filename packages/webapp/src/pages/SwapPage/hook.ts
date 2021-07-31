@@ -36,7 +36,6 @@ import {
     bntLabel,
     btnClickMap,
     coinPairInit,
-    fnType,
     getUserTrades,
     makeCache,
     makeMarketArray,
@@ -53,6 +52,7 @@ import { deepClone } from '../../utils/obj_tools';
 import { myLog } from 'utils/log_tools';
 import { useTranslation } from 'react-i18next';
 import { REFRESH_RATE_SLOW } from 'defs/common_defs';
+import { fnType } from '../../stores/account';
 
 export const useSwapBtnStatusCheck = () => {
 

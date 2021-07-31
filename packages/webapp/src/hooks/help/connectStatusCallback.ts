@@ -1,15 +1,7 @@
 import store from '../../stores';
-import { setShowAccount, setShowConnect, setShowDeposit } from '@loopring-web/component-lib';
+import { AccountStep, setShowAccount, setShowConnect, setShowDeposit } from '@loopring-web/component-lib';
+import { fnType } from 'stores/account';
 
-export enum fnType {
-    RESET,
-    UN_CONNECT,
-    NO_ACCOUNT,
-    LOCKED,
-    ACTIVATED,
-    DEPOSITING,
-    DEFAULT,
-}
 
 export const accountStaticCallBack = (onclickMap: { [ key: number ]: [fn: (props: any) => any, args?: any[]] }, deps?: any[]) => {
     const {readyState} = store.getState().account;
@@ -24,16 +16,17 @@ export const accountStaticCallBack = (onclickMap: { [ key: number ]: [fn: (props
 
 
 export const bntLabel: typeof btnClickMap = {
-    [ fnType.RESET ]: [
-        function () {
-            return `labelConnectWallet`
-        }
-    ],
+
     [ fnType.UN_CONNECT ]: [
         function () {
             return `labelConnectWallet`
         }
-    ] ,
+    ],
+    // [ fnType.CONNECT]: [
+    //     function () {
+    //         return `labelConnectWallet`
+    //     }
+    // ],
     [ fnType.DEFAULT ]: [
         function () {
             return `depositTitleAndActive`
@@ -52,27 +45,32 @@ export const bntLabel: typeof btnClickMap = {
 
 
 export const btnClickMap: { [ key: number ]: [fn: (props: any) => any, args?: any[]] } = {
-    [ fnType.RESET ]: [
-        function () {
-            store.dispatch(setShowConnect({isShow: true}))
-        }
-    ],
+    // [ fnType.RESET ]: [
+    //     function () {
+    //         store.dispatch(setShowConnect({isShow: true}))
+    //     }
+    // ],
     [ fnType.UN_CONNECT ]: [
         function () {
             // setShowConnect({isShow: true})
-            store.dispatch(setShowConnect({isShow: true}))
+            store.dispatch(setShowConnect({isShow: true, step:0}))
         }
     ]
-    , [ fnType.DEFAULT ]: [
+    , [ fnType.NO_ACCOUNT ]: [
         function () {
-            store.dispatch(setShowDeposit({isShow: true}))
+            store.dispatch(setShowAccount({isShow: true, step:AccountStep.NoAccount}))
             // ShowDeposit(true)
         }
     ]
-
+    , [ fnType.DEPOSITING ]: [
+        function () {
+            store.dispatch(setShowAccount({isShow: true, step:AccountStep.Depositing}))
+            // ShowDeposit(true)
+        }
+    ]
     , [ fnType.LOCKED ]: [
         function () {
-            store.dispatch(setShowAccount({isShow: true}))
+            store.dispatch(setShowAccount({isShow: true, step:AccountStep.HadAccount}))
         }
     ]
 };

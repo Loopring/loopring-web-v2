@@ -3,7 +3,7 @@ import { AmmData, AmmInData, CoinInfo, globalSetup, IBData, WalletMap } from '@l
 import { AmmPanelType } from '@loopring-web/component-lib';
 import { IdMap, useTokenMap } from '../../../stores/token';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
-import { accountStaticCallBack, ammPairInit, bntLabel, btnClickMap, fnType, makeCache } from '../../../hooks/help';
+import { accountStaticCallBack, ammPairInit, bntLabel, btnClickMap, makeCache } from '../../../hooks/help';
 import * as sdk from 'loopring-sdk';
 import {
     AmmPoolRequestPatch,
@@ -38,7 +38,7 @@ import { myLog } from "utils/log_tools";
 import { BIG10 } from "defs/swap_defs";
 import { REFRESH_RATE_SLOW } from "defs/common_defs";
 import { useTranslation } from "react-i18next";
-import { AccountStatus } from '../../../stores/account';
+import { AccountStatus, fnType } from '../../../stores/account';
 
 export const useAmmPanel = <C extends { [ key: string ]: any }>({
                                                                     pair,

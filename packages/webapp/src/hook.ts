@@ -25,21 +25,19 @@ export function useInit() {
     const systemState = useSystem();
     const tokenState = useTokenMap();
     const ammMapState = useAmmMap();
-    const {account, status: accountStatus} = useAccount();
+    const {account,updateAccount, status: accountStatus} = useAccount();
     const walletLayer1State = useWalletLayer1()
-    const handleChainChanged = React.useCallback((chainId) => {
-        systemState.updateSystem({chainId})
-        window.location.reload();
+    const handleChainChanged = React.useCallback(async (chainId) => {
+        // const accAddress= await connectProvides.usedWeb3?.eth.accounts[0];
+        // if(accAddress && account.accAddress !== accAddress) {
+        //     updateAccount({accAddress})
+        // }
+        if(chainId !== systemState.chainId) {
+            systemState.updateSystem({chainId});
+            window.location.reload();
+        }
     }, [systemState])
-    const handleConnect = React.useCallback((accounts, provider) => {
-        // debugger
-        console.log('account changed and connect ', accounts, provider)
-    }, [])
-    const handleAccountDisconnect = React.useCallback(() => {
-        debugger
-        console.log('Disconnect')
-    }, [])
-    useConnectHook({handleChainChanged, handleConnect, handleAccountDisconnect});
+    useConnectHook({handleChainChanged});
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
         if (account && account.connectName && account.accAddress) {

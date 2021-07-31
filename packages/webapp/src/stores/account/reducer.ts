@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import { AccountState, AccountStatus, STATUS } from './interface';
+import { Account, AccountState, AccountStatus, STATUS } from './interface';
 import { LoopringProvider } from "@loopring-web/web3-provider";
 import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice';
 
@@ -37,7 +37,7 @@ import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice';
 // }
 const initialState: AccountState = {
     accAddress: '',
-    readyState: AccountStatus.RESET,
+    readyState: AccountStatus.UN_CONNECT,
     accountId: -1,
     apiKey: '',
     eddsaKey: '',
@@ -51,10 +51,10 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
     name: 'account',
     initialState: initialState,
     reducers: {
-        updateAccountStatus(state: AccountState, action: PayloadAction<{
-            toStatus: 'next' | AccountStatus.RESET | AccountStatus.LOCKED,
-            newState?: AccountState
-        }>) {
+        updateAccountStatus(state: AccountState, action: PayloadAction<Partial<Account>>) {
+            state.status = STATUS.PENDING
+        },
+        restAccountStatus(state: AccountState, action: PayloadAction<undefined>){
             state.status = STATUS.PENDING
         },
         nextAccountStatus(state: AccountState, action: PayloadAction<Partial<any>>) {
@@ -77,5 +77,5 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
     },
 })
 export default accountSlice
-export const {updateAccountStatus, nextAccountStatus, statusUnset} = accountSlice.actions
+export const {updateAccountStatus,restAccountStatus, nextAccountStatus, statusUnset} = accountSlice.actions
 

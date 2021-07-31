@@ -29,7 +29,7 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
     const handleDeposit = React.useCallback(async (inputValue: any) => {
         const {accountId, accAddress, readyState, apiKey, connectName, eddsaKey} = account
         if ((readyState !== AccountStatus.UN_CONNECT
-            && readyState !== AccountStatus.RESET
+            // && readyState !== Acco   untStatus.RESET
             && inputValue.tradeValue)
             && tokenMap && exchangeInfo && connectProvides.usedWeb3) {
             try {

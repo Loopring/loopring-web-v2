@@ -1,29 +1,28 @@
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3 from "web3";
 import { walletServices } from '../walletServices';
-import QRCodeModal from "@walletconnect/qrcode-modal";
 import { ErrorType } from '../command';
 import { LoopringProvider } from '../interface';
 
+const RPC_URLS: { [chainId: number]: string } = {
+    1: process.env.REACT_APP_RPC_URL_1 as string,
+    5: process.env.REACT_APP_RPC_URL_5 as string
+}
+const POLLING_INTERVAL = 12000
 export const WalletConnectProvide = async () :Promise<{provider:WalletConnectProvider,web3:Web3}| undefined> =>{
     try{
         const provider:WalletConnectProvider = new WalletConnectProvider({
-            rpc: {
-                1: "https://mainnet.eth.loopring.network",
-                5: "https://goerli.infura.io/v3/84842078b09946638c03157f83405213",
-            },
+            rpc: RPC_URLS,
+            bridge: 'https://bridge.walletconnect.org',
+            pollingInterval: POLLING_INTERVAL,
             qrcode: false,
-        }) ;
+        });
         const {connector} = provider;
         let web3:Web3;
         if (!connector.connected) {
             await connector.createSession();
             const uri = connector.uri;
-            debugger
-            walletServices.sendProcess('nextStep',{QRCodeUrl:uri});
-            // QRCodeModal.open(uri, () => {
-            //     console.log("QR Code Modal closed");
-            // });
+            walletServices.sendProcess('nextStep',{qrCodeUrl:uri});
             await provider.enable();
         }
         web3 = new Web3(provider as any);
@@ -33,13 +32,8 @@ export const WalletConnectProvide = async () :Promise<{provider:WalletConnectPro
         console.log('error happen at connect wallet with WalletConnect:', error)
         walletServices.sendError(ErrorType.FailedConnect, {connectName:LoopringProvider.WalletConnect,error})
     }
-
 }
 //)
-
-
-
-
 //     new Proxy<Array<keyof typeof Commands>>(
 //    [
 //        'Provider',
@@ -91,3 +85,53 @@ export const WalletConnectProvide = async () :Promise<{provider:WalletConnectPro
 //     },
 //
 // })
+
+// import { InjectedConnector } from '@web3-react/injected-connector'
+// import { NetworkConnector } from '@web3-react/network-connector'
+// import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
+// import { WalletLinkConnector } from '@web3-react/walletlink-connector'
+// import { LedgerConnector } from '@web3-react/ledger-connector'
+// import { TrezorConnector } from '@web3-react/trezor-connector'
+// import { AuthereumConnector } from '@web3-react/authereum-connector'
+// import { myLog } from 'utils/log_tools'
+//
+// const POLLING_INTERVAL = 12000
+//
+// const RPC_URLS: { [chainId: number]: string } = {
+//     1: process.env.REACT_APP_RPC_URL_1 as string,
+//     5: process.env.REACT_APP_RPC_URL_5 as string
+// }
+//
+// myLog('RPC_URLS 1:', RPC_URLS[1])
+// myLog('RPC_URLS 5:', RPC_URLS[5])
+//
+// export const injected = new InjectedConnector({ supportedChainIds: [1, 5,] })
+//
+// export const network = new NetworkConnector({
+//     urls: RPC_URLS,
+//     defaultChainId: 1
+// })
+//
+// export const walletconnect = new WalletConnectConnector({
+//     rpc: RPC_URLS,
+//     bridge: 'https://bridge.walletconnect.org',
+//     qrcode: true,
+//     pollingInterval: POLLING_INTERVAL
+// })
+//
+// export const walletlink = new WalletLinkConnector({
+//     url: RPC_URLS[1],
+//     appName: 'Loopring DEX'
+// })
+//
+// export const ledger = new LedgerConnector({ chainId: 1, url: RPC_URLS[1], pollingInterval: POLLING_INTERVAL })
+//
+// export const trezor = new TrezorConnector({
+//     chainId: 1,
+//     url: RPC_URLS[1],
+//     pollingInterval: POLLING_INTERVAL,
+//     manifestEmail: 'dummy@abc.xyz',
+//     manifestAppUrl: 'http://localhost:1234'
+// })
+//
+// export const authereum = new AuthereumConnector({ chainId: 42 })

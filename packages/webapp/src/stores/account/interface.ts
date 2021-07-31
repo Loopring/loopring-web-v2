@@ -21,32 +21,36 @@ export enum STATUS {
 }
 
 export enum AccountStatus {
-    RESET='Unknown',
     UN_CONNECT='UN_CONNECT',
+    CONNECT='CONNECT',
     NO_ACCOUNT='NO_ACCOUNT',
     LOCKED='LOCKED',
     ACTIVATED='ACTIVATED',
     DEPOSITING='DEPOSITING'
 }
-// export const ConnectorName = {
-//     Unknown: 'Unknown',
-//     MetaMask : 'MetaMask' ,
-//     WalletConnect : 'Wallet Connect',
-// }
 
-export type AccountState = {
+export enum fnType {
+    UN_CONNECT,
+    CONNECT,
+    NO_ACCOUNT,
+    LOCKED,
+    ACTIVATED,
+    DEPOSITING,
+    DEFAULT,
+}
+
+export type Account = {
     accAddress: string,
     readyState: keyof typeof AccountStatus | 'Unknown',
     accountId: number|-1,
     level:string,
     apiKey: string,
-    eddsaKey: string,
+    eddsaKey: any,
     connectName: keyof typeof LoopringProvider
-    // connectNameTemp: ConnectorNames.Unknown,
-} & StateBase
-
-
-export  enum StorageCommands {
-    CLEAN= 'CLEAN',
-    UPDATE='UPDATE'
 }
+export type AccountState = Account & StateBase;
+
+// export  enum StorageCommands {
+//     CLEAN= 'CLEAN',
+//     UPDATE='UPDATE'
+// }

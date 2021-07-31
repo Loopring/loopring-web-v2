@@ -1,6 +1,6 @@
-import { AccountState, AccountStatus } from './interface';
+import { Account, AccountState, AccountStatus } from './interface';
 import { useDispatch, useSelector } from 'react-redux'
-import { statusUnset, updateAccountStatus } from './reducer';
+import { restAccountStatus, statusUnset, updateAccountStatus } from './reducer';
 import React from 'react';
 
 
@@ -8,10 +8,10 @@ export function useAccount() {
     const {status, errorMessage, ...account}: AccountState = useSelector((state: any) => state.account);
     const dispatch = useDispatch();
     const resetAccount = React.useCallback(() => {
-        dispatch(updateAccountStatus(AccountStatus.RESET))
+        dispatch(restAccountStatus(undefined))
     }, [dispatch])
-    const updateAccount = React.useCallback(() => {
-        dispatch(updateAccountStatus('next'))
+    const updateAccount = React.useCallback((account:Partial<Account>) => {
+        dispatch(updateAccountStatus(account))
     }, [dispatch]);
 
 

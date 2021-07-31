@@ -17,7 +17,7 @@ import { AccountStatus } from '../account/interface';
 
 
 const initConfig = function* <R extends { [ key: string ]: any }>(chainId: ChainId | 'unknown') {
-    store.dispatch(updateAccountStatus(AccountStatus.RESET));
+    // store.dispatch(updateAccountStatus());
     const {tokenSymbolMap: tokensMap} = yield call(async () => await LoopringAPI.exchangeAPI?.getTokens())
     const {ammpools} = yield call(async () => await LoopringAPI.ammpoolAPI?.getAmmPoolConf());
     const {pairs, marketArr, tokenArr, markets} = yield call(async () => LoopringAPI.exchangeAPI?.getMixMarkets());

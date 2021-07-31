@@ -68,6 +68,7 @@ const Header = ({...rest}: any) => {
         <Toolbar/>
         <ModalWalletConnectPanel {...{
             ...rest,
+            // step:connectStep,
             // gatewayList,
             open: isShowConnect.isShow,
             onClose: () => setShowConnect({isShow: false})

@@ -3,25 +3,25 @@ import { LoopringProvider } from "@loopring-web/web3-provider";
 import { provider as Web3Provider } from 'web3-core';
 import { LoopringAPI } from '../apis/api';
 
-export async function connect(accounts:Array<string>,provider:Web3Provider){
-   // store.getState()
-   const accAddress =  accounts[0];
-   // store.dispatch()
-    // @ts-ignore
-    const  accInfo = (await LoopringAPI.exchangeAPI.getAccount({
-        owner: accAddress
-    })).accInfo
-   return  {
-            accAddress: accAddress,
-            readyState: AccountStatus,
-            accountId: '',
-            apiKey: '',
-            eddsaKey: '',
-            connectName: LoopringProvider.UnKnow,
-            status: 'UNSET',
-            errorMessage: null,
-    }
-}
+// export async function connect(accounts:Array<string>,provider:Web3Provider){
+//    // store.getState()
+//    const accAddress =  accounts[0];
+//    // store.dispatch()
+//     // @ts-ignore
+//     const  accInfo = (await LoopringAPI.exchangeAPI.getAccount({
+//         owner: accAddress
+//     })).accInfo
+//    return  {
+//             accAddress: accAddress,
+//             readyState: AccountStatus,
+//             accountId: '',
+//             apiKey: '',
+//             eddsaKey: '',
+//             connectName: LoopringProvider.UnKnow,
+//             status: 'UNSET',
+//             errorMessage: null,
+//     }
+// }
 // export function useConnect() {
 //
 //     // const {
