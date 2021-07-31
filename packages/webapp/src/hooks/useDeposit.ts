@@ -12,9 +12,7 @@ import { TradeBtnStatus } from '@loopring-web/component-lib';
 
 
 export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | undefined, ShowDeposit: (isShow: boolean, defaultProps?: any) => void): {
-    // handleDeposit: (inputValue:R) => void,
     depositProps: DepositProps<R, T>
-    // depositValue: R
 } => {
     const {tokenMap, coinMap} = useTokenMap();
     const {account} = useAccount()
@@ -96,7 +94,6 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
 //     tradeValue: 0,
 //     balance: 0
 // } as IBData<unknown>)
-
 // const checkAccountStatus  = useCallback(()=>{
 //
 //     return false;
@@ -108,7 +105,6 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
 //
 //     try {
 //         const tokenInfo: TokenInfo = tokenMap[ token ]
-
 // const provider = await connector.getProvider()
 // const web3 = new Web3(provider as any)
 // const  ConnectProvides
@@ -116,14 +112,11 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
 // let sendByMetaMask = true;
 // const gasPrice = store.getState().system.gasPrice ?? 20
 // const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
-
-
 //     } catch (reason) {
 //         dumpError400(reason)
 //     }
 //
 // }, [chainId, ConnectProvides, account, tokenMap])
-
 // let depositProps: DepositProps<any, any> = {
 //     tradeData: {belong: undefined},
 //     coinMap: coinMap as CoinMap<any>,
