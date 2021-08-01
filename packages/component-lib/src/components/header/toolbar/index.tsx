@@ -2,12 +2,12 @@ import { Box, IconButton, Link } from '@material-ui/core';
 import {
     DownloadIcon,
     DropDownIcon,
+    i18n,
     LanguageType,
     NotificationIcon,
     ThemeDarkIcon,
     ThemeLightIcon,
     ThemeType,
-    i18n,
 } from '@loopring-web/common-resources';
 import React from 'react';
 import { QRCodePanel } from '../../modal';
@@ -80,7 +80,7 @@ export const BtnLanguage = ({t, label, handleChange}: any) => {
     return <OutlineSelect aria-label={t(label)} IconComponent={DropDownIcon}
                           labelId="language-selected"
                           id="language-selected"
-                          value={i18n.language} autoWidth
+                          value={i18n.language} style={{minWidth: 60}}
                           onChange={_handleChange}>
         <OutlineSelectItem value={LanguageType.en_US}>EN</OutlineSelectItem>
         <OutlineSelectItem value={LanguageType.zh_CN}>中文</OutlineSelectItem>
