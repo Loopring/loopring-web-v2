@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { AmmMapStates, GetAmmMapParams } from './interface';
-import { STATUS } from '../../constant';
-
+import { SagaStatus } from '@loopring-web/common-resources';
 
 
 const initialState: Required<AmmMapStates<object, object>> = {
@@ -15,25 +14,29 @@ const ammMapSlice: Slice = createSlice({
     initialState,
     reducers: {
         getAmmMap(state, action: PayloadAction<GetAmmMapParams>) {
-            state.status = STATUS.PENDING
+            state.status = SagaStatus.PENDING
         },
         getAmmMapStatus(state, action: PayloadAction<AmmMapStates<any, any>>) {
             // @ts-ignore
             if (action.error) {
-                state.status = STATUS.ERROR
+                state.status = SagaStatus.ERROR
                 // @ts-ignore
                 state.errorMessage = action.error
             }
             const {ammMap, __timer__} = action.payload
-            if (ammMap) {state.ammMap = ammMap;}
-            if (__timer__) {state.__timer__ = __timer__;}
-            state.status = STATUS.DONE
+            if (ammMap) {
+                state.ammMap = ammMap;
+            }
+            if (__timer__) {
+                state.__timer__ = __timer__;
+            }
+            state.status = SagaStatus.DONE
         },
         updateRealTimeAmmMap(state, action: PayloadAction<undefined>) {
-            state.status = STATUS.PENDING
+            state.status = SagaStatus.PENDING
         },
         statusUnset: state => {
-            state.status = STATUS.UNSET
+            state.status = SagaStatus.UNSET
         }
     },
 });

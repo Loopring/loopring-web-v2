@@ -3,25 +3,25 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import {
+    AccountStatus,
     AmmData,
     AmmInData,
     ButtonComponentsMap,
     CoinMap,
+    fnType,
     headerMenuData,
     HeaderMenuTabStatus,
     headerToolBarData,
     HeadMenuTabKey,
     IBData,
     LanguageKeys,
-    LockIcon,
     ThemeKeys,
     TradeCalcData,
-    UnLockIcon,
     WalletMap,
     WalletStatus,
 } from '@loopring-web/common-resources'
 
-import { AccountStatus, fnType, useAccount, } from 'stores/account'
+import { useAccount, } from 'stores/account'
 
 import { getShortAddr } from 'utils/web3_tools'
 
@@ -34,20 +34,17 @@ import {
     AccountBaseProps,
     AccountStep,
     AmmProps,
-    Button,
     CoinType,
-    ResetProps, setShowConnect,
+    ResetProps,
     SwapProps,
     SwitchData,
     TradeBtnStatus,
     useOpenModals,
     useSettings,
-    WalletConnectStep,
 } from '@loopring-web/component-lib'
 
 import * as sdk from 'loopring-sdk'
 import { dumpError400, GetOffchainFeeAmtRequest, LoopringMap, OffchainFeeReqType, toBig, TokenInfo } from 'loopring-sdk'
-import { Typography } from '@material-ui/core';
 
 import { useModals } from 'hooks/modal/useModals'
 
@@ -134,9 +131,8 @@ export const useHeader = () => {
     }, []);
 
 
-
     React.useEffect(() => {
-        if(accountStatus === 'UNSET'){
+        if (accountStatus === 'UNSET') {
             const {readyState} = account
             const addressShort = getShortAddr(account.accAddress);
             switch (readyState) {

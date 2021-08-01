@@ -1,7 +1,8 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import {
     AccountStep,
-    ApproveAccount, Button,
+    ApproveAccount,
+    Button,
     Depositing,
     DepositPanel,
     DepositProps,
@@ -14,8 +15,7 @@ import {
     ProcessUnlock,
     SuccessUnlock,
     Toast,
-    useOpenModals,
-    WalletConnectStep
+    useOpenModals
 } from '@loopring-web/component-lib';
 import React, { useCallback, useState } from 'react';
 import { copyToClipBoard } from '../../utils/obj_tools';
@@ -59,7 +59,6 @@ export const ModalAccountInfo = withTranslation('common')(({
     }
 
 
-
     const LockBtn = ({onClick}: { onClick: ({...props}: any) => void }) => {
         return <Button className={'lock'} startIcon={<LockIcon fontSize={'large'}/>}
                        onClick={(event) => {
@@ -92,7 +91,7 @@ export const ModalAccountInfo = withTranslation('common')(({
     const unLockCallback = React.useCallback((event) => {
         // unlock(account)
         // updateAccount()
-        setShowAccount({isShow: true, step:AccountStep.ProcessUnlock});
+        setShowAccount({isShow: true, step: AccountStep.ProcessUnlock});
     }, [updateAccount])
     // const onSwitch = {onSwitch}
     const accountList = React.useMemo(() => {
@@ -112,6 +111,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             [ AccountStep.SuccessUnlock ]: <SuccessUnlock/>,
             [ AccountStep.FailedUnlock ]: <FailedUnlock/>,
             [ AccountStep.HadAccount ]: <HadAccount {...{
+                account,
                 onSwitch, onCopy,
                 address: account.accAddress,
                 connectBy: account.connectName,

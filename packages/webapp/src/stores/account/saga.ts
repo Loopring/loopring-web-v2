@@ -1,8 +1,8 @@
-import { all, fork, put, select, takeLatest } from "redux-saga/effects"
+import { all, fork, put, takeLatest } from "redux-saga/effects"
 import { nextAccountStatus, restAccountStatus, updateAccountStatus } from './reducer';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { Account, AccountStatus } from './interface';
-import { LoopringProvider } from "@loopring-web/web3-provider";
+import { Account, AccountStatus, ConnectProviders } from '@loopring-web/common-resources';
+
 
 export function* accountUpdateSaga({payload}: PayloadAction<Partial<Account>>) {
     try {
@@ -38,9 +38,11 @@ export function* accountUpdateSaga({payload}: PayloadAction<Partial<Account>>) {
         yield put(nextAccountStatus(err));
     }
 }
+
 function* accountSage() {
     yield all([takeLatest(updateAccountStatus, accountUpdateSaga)]);
 }
+
 function* goCleanAccount({payload}: PayloadAction<undefined>) {
     yield put(nextAccountStatus({
         accAddress: '',
@@ -48,13 +50,15 @@ function* goCleanAccount({payload}: PayloadAction<undefined>) {
         accountId: -1,
         apiKey: '',
         eddsaKey: '',
-        connectName: LoopringProvider.UnKnow,
+        connectName: ConnectProviders.UnKnow,
         errorMessage: null,
     }));
 }
+
 function* accountRestSage() {
     yield all([takeLatest(restAccountStatus, goCleanAccount)]);
 }
+
 export const accountFork = [
     fork(accountSage),
     fork(accountRestSage)
@@ -136,7 +140,7 @@ export const accountFork = [
 //             accountId: -1,
 //             apiKey: '',
 //             eddsaKey: '',
-//             connectName: LoopringProvider.UnKnow,
+//             connectName: ConnectProviders.UnKnow,
 //             status: 'UNSET',
 //             errorMessage: null,
 //         }

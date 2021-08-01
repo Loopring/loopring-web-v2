@@ -3,12 +3,11 @@ import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { useSystem } from './stores/system';
 import { ChainId, sleep } from 'loopring-sdk';
 import { useAmmMap } from './stores/Amm/AmmMap';
-import { STATUS } from './stores/constant';
+import { AccountStatus, SagaStatus } from '@loopring-web/common-resources';
 import { useTokenMap } from './stores/token';
 import { useWalletLayer1 } from './stores/walletLayer1';
 import { useAccount } from './stores/account/hook';
 import { connectProvides, ErrorType, useConnectHook } from '@loopring-web/web3-provider';
-import { AccountStatus } from './stores/account';
 import { AccountStep, useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
 import { LoopringAPI } from './stores/apis/api';
 import { unlockAccount } from './hooks/unlockAccount';
@@ -25,7 +24,7 @@ import { unlockAccount } from './hooks/unlockAccount';
  */
 
 export function useInit() {
-    const [state, setState] = React.useState<keyof typeof STATUS>('PENDING')
+    const [state, setState] = React.useState<keyof typeof SagaStatus>('PENDING')
     // const systemState = useSystem();
     const tokenState = useTokenMap();
     const ammMapState = useAmmMap();
@@ -36,11 +35,11 @@ export function useInit() {
         status: systemStatus,
         statusUnset: systemStatusUnset
     } = useSystem();
-    const {account, updateAccount, resetAccount,statusUnset:statusAccountUnset} = useAccount();
+    const {account, updateAccount, resetAccount, statusUnset: statusAccountUnset} = useAccount();
     const {setShowConnect, setShowAccount} = useOpenModals();
     const walletLayer1State = useWalletLayer1()
     const handleChainChanged = React.useCallback(async (chainId) => {
-        if (chainId !== _chainId &&  _chainId !== 'unknown') {
+        if (chainId !== _chainId && _chainId !== 'unknown') {
             updateSystem({chainId});
             window.location.reload();
         }

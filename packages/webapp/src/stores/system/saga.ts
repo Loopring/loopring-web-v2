@@ -12,8 +12,6 @@ import { getAmmActivityMap } from '../Amm/AmmActivityMap';
 import { updateWalletLayer1 } from '../walletLayer1';
 import { delay } from 'rxjs/operators';
 import { LoopringSocket } from '../../services/socketUtil';
-import { updateAccountStatus } from '../account/reducer';
-import { AccountStatus } from '../account/interface';
 
 
 const initConfig = function* <R extends { [ key: string ]: any }>(chainId: ChainId | 'unknown') {
@@ -95,9 +93,18 @@ export function* getUpdateSystem({payload}: any) {
     try {
         // @ts-ignore
         const {chainId} = payload;
-        const {env, baseURL, faitPrices, gasPrice, forex, exchangeInfo,etherscanUrl, __timer__} = yield call(getSystemsApi, chainId);
+        const {
+            env,
+            baseURL,
+            faitPrices,
+            gasPrice,
+            forex,
+            exchangeInfo,
+            etherscanUrl,
+            __timer__
+        } = yield call(getSystemsApi, chainId);
 
-        yield put(getSystemStatus({env, baseURL, faitPrices, gasPrice, forex, exchangeInfo, etherscanUrl,__timer__}));
+        yield put(getSystemStatus({env, baseURL, faitPrices, gasPrice, forex, exchangeInfo, etherscanUrl, __timer__}));
         yield call(initConfig, chainId)
         //TODO check wallect store
     } catch (err) {

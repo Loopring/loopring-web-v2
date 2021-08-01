@@ -1,12 +1,6 @@
 import store from '../../stores';
-import {
-    AccountStep,
-    setShowAccount,
-    setShowConnect,
-    setShowDeposit,
-    WalletConnectStep
-} from '@loopring-web/component-lib';
-import { fnType } from 'stores/account';
+import { AccountStep, setShowAccount, setShowConnect, WalletConnectStep } from '@loopring-web/component-lib';
+import { fnType } from '@loopring-web/common-resources';
 
 
 export const accountStaticCallBack = (onclickMap: { [ key: number ]: [fn: (props: any) => any, args?: any[]] }, deps?: any[]) => {
@@ -60,24 +54,24 @@ export const btnClickMap: { [ key: string ]: [fn: (props: any) => any, args?: an
     [ fnType.UN_CONNECT ]: [
         function () {
             // setShowConnect({isShow: true})
-            store.dispatch(setShowConnect({isShow: true, step:WalletConnectStep.Provider}))
+            store.dispatch(setShowConnect({isShow: true, step: WalletConnectStep.Provider}))
         }
     ]
     , [ fnType.NO_ACCOUNT ]: [
         function () {
-            store.dispatch(setShowAccount({isShow: true, step:AccountStep.NoAccount}))
+            store.dispatch(setShowAccount({isShow: true, step: AccountStep.NoAccount}))
             // ShowDeposit(true)
         }
     ]
     , [ fnType.DEPOSITING ]: [
         function () {
-            store.dispatch(setShowAccount({isShow: true, step:AccountStep.Depositing}))
+            store.dispatch(setShowAccount({isShow: true, step: AccountStep.Depositing}))
             // ShowDeposit(true)
         }
     ]
     , [ fnType.LOCKED ]: [
         function () {
-            store.dispatch(setShowAccount({isShow: true, step:AccountStep.HadAccount}))
+            store.dispatch(setShowAccount({isShow: true, step: AccountStep.HadAccount}))
         }
     ]
 };

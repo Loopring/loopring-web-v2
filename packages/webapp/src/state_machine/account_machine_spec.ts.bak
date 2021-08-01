@@ -1,82 +1,56 @@
 export enum AccountStatus {
     UNKNOWN = 'UNKNOWN',
-    UNCONNNECTED = 'UNCONNNECTED',
+    UNCONNECTED = 'UNCONNECTED',
     CONNECTED = 'CONNECTED',
     NOACCOUNT = 'NOACCOUNT',
-    DEPOSITING = 'DEPOSITING',
-    DEPOSIT_TO_CONFIREM = 'DEPOSIT_TO_CONFIREM',
-    UNACTIVATED = 'UNACTIVATED',
-    ARPROVING = 'ARPROVING',
-    APPROV_TO_CONFIRM = 'APPROV_TO_CONFIRM',
+    DEPOSITED_NO_UPDATE_ACCOUNT = 'DEPOSITED_NO_UPDATE_ACCOUNT',
     LOCKED = 'LOCKED',
     ACTIVATED = 'ACTIVATED',
 }
 
 export enum StatusChangeEvent {
     Reset = 'Reset',
-    Connecting = 'Connecting',
-    HasPubkey = 'HasPubkey',
-    HasNoPubkey = 'HasNoPubkey',
-    ErrorResponse = 'ErrorResponse',
-    Reconnect = 'Reconnect',
-    FinishDeposit = 'FinishDeposit',
-    DepositConfirmed = 'DepositConfirmed',
-    IsSmartWallet = 'IsSmartWallet',
-    ApproveSubmit = 'ApproveSubmit',
-    ApproveConfirmed = 'ApproveConfirmed',
+    Connect = 'Connect',
+    CheckNoAccount = 'CheckNoAccount',
+    CheckDeposited = 'CheckDeposited',
+    CheckAccountReady = 'CheckAccountReady',
+    Depositing = 'Depositing',
+    UpdateAccount = 'UpdateAccount',
     Unlock = 'Unlock',
     Lock = 'Lock',
 }
 
-export const AccountMachineSpec = (initialState: AccountStatus = AccountStatus.UNCONNNECTED) => 
+export const AccountMachineSpec = (initialState: AccountStatus = AccountStatus.UNCONNECTED) =>
 {
     return {
         initialState: initialState,
         states: {
-            UNCONNNECTED: {
-                Connecting: AccountStatus.CONNECTED,
-                Reset: AccountStatus.UNCONNNECTED,
+            UNCONNECTED: {
+                Connect: AccountStatus.CONNECTED,
+                Reset: AccountStatus.UNCONNECTED,
             },
             CONNECTED: {
-                HasPubkey: AccountStatus.LOCKED,
-                HasNoPubkey: AccountStatus.UNACTIVATED,
-                ErrorResponse: AccountStatus.NOACCOUNT,
-                Reset: AccountStatus.UNCONNNECTED,
+                CheckNoAccount: AccountStatus.NOACCOUNT,
+                CheckDeposited: AccountStatus.DEPOSITED_NO_UPDATE_ACCOUNT,
+                CheckAccountReady: AccountStatus.LOCKED,
+                Reset: AccountStatus.UNCONNECTED,
             },
             NOACCOUNT: {
-                ErrorResponse: AccountStatus.NOACCOUNT,
-                Reconnect: AccountStatus.CONNECTED,
-                Reset: AccountStatus.UNCONNNECTED,
+                Connect: AccountStatus.CONNECTED,
+                Depositing: AccountStatus.DEPOSITED_NO_UPDATE_ACCOUNT,
+                Reset: AccountStatus.UNCONNECTED,
             },
-            DEPOSITING: {
-                FinishDeposit: AccountStatus.DEPOSIT_TO_CONFIREM,
-                Reset: AccountStatus.UNCONNNECTED,
-            },
-            DEPOSIT_TO_CONFIREM: {
-                HasPubkey: AccountStatus.ACTIVATED,
-                HasNoPubkey: AccountStatus.DEPOSIT_TO_CONFIREM,
-                ErrorResponse: AccountStatus.DEPOSIT_TO_CONFIREM,
-                Reset: AccountStatus.UNCONNNECTED,
-            },
-            UNACTIVATED: {
-                IsSmartWallet: AccountStatus.ARPROVING,
-                Reset: AccountStatus.UNCONNNECTED,
-            },
-            ARPROVING: {
-                ApproveSubmit: AccountStatus.APPROV_TO_CONFIRM,
-                Reset: AccountStatus.UNCONNNECTED,
-            },
-            APPROV_TO_CONFIRM: {
-                ApproveConfirmed: AccountStatus.ACTIVATED,
-                Reset: AccountStatus.UNCONNNECTED,
+            DEPOSITED_NO_UPDATE_ACCOUNT: {
+                UpdateAccount: AccountStatus.ACTIVATED,
+                Reset: AccountStatus.UNCONNECTED,
             },
             LOCKED: {
                 Unlock: AccountStatus.ACTIVATED,
-                Reset: AccountStatus.UNCONNNECTED,
+                Reset: AccountStatus.UNCONNECTED,
             },
             ACTIVATED: {
                 Lock: AccountStatus.LOCKED,
-                Reset: AccountStatus.UNCONNNECTED,
+                Reset: AccountStatus.UNCONNECTED,
             },
         },
     }

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { ENV, System, SystemStatus } from './interface';
-import { STATUS } from '../constant';
+import { SagaStatus } from '@loopring-web/common-resources';
 
 const initialState: SystemStatus = {
     env: ENV.PROD,
@@ -8,7 +8,7 @@ const initialState: SystemStatus = {
     // network:'NONETWORK',
     baseURL: '',
     socketURL: '',
-    etherscanUrl:'',
+    etherscanUrl: '',
     faitPrices: undefined,
     gasPrice: undefined,
     forex: undefined,
@@ -25,9 +25,9 @@ const systemSlice: Slice<SystemStatus> = createSlice({
     initialState,
     reducers: {
 
-        updateSystem(state, action: PayloadAction<System<{[key:string]:any}>>) {
+        updateSystem(state, action: PayloadAction<System<{ [ key: string ]: any }>>) {
             state.chainId = action.payload.chainId
-            state.status = STATUS.PENDING
+            state.status = SagaStatus.PENDING
         },
         // updateSocketURL(state, action:PayloadAction<{socketURL:string}>) {
         //     state.socketURL =  action.payload.socketURL;
@@ -57,15 +57,25 @@ const systemSlice: Slice<SystemStatus> = createSlice({
 
             // @ts-ignore
             if (action.error) {
-                state.status = STATUS.ERROR
+                state.status = SagaStatus.ERROR
                 // @ts-ignore
                 state.errorMessage = action.error
             }
-            const {env, baseURL,socketURL, faitPrices, gasPrice, forex, exchangeInfo, __timer__,etherscanUrl} = action.payload;
+            const {
+                env,
+                baseURL,
+                socketURL,
+                faitPrices,
+                gasPrice,
+                forex,
+                exchangeInfo,
+                __timer__,
+                etherscanUrl
+            } = action.payload;
             if (env) {
                 state.env = env
             }
-            if(socketURL){
+            if (socketURL) {
                 state.socketURL = socketURL;
             }
             if (baseURL) {
@@ -80,21 +90,21 @@ const systemSlice: Slice<SystemStatus> = createSlice({
             if (forex) {
                 state.forex = forex
             }
-            
+
             if (exchangeInfo) {
                 state.exchangeInfo = exchangeInfo
             }
-            if(etherscanUrl){
+            if (etherscanUrl) {
                 state.etherscanUrl = etherscanUrl
             }
 
             if (__timer__) {
                 state.__timer__ = __timer__
             }
-            state.status = STATUS.DONE
+            state.status = SagaStatus.DONE
         },
         statusUnset: state => {
-            state.status = STATUS.UNSET
+            state.status = SagaStatus.UNSET
         }
 
     },

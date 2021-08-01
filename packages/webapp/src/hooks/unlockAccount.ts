@@ -1,10 +1,11 @@
-import { AccountStatus, updateAccountStatus } from '../stores/account';
+import { updateAccountStatus } from '../stores/account';
 import { AccountStep, setShowAccount, setShowConnect } from '@loopring-web/component-lib';
 import { generateKeyPair, sleep, toBig, toHex } from 'loopring-sdk';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { LoopringAPI } from '../stores/apis/api';
 import { AccountInfo } from 'loopring-sdk/dist/defs/account_defs';
 import store from '../stores';
+import { AccountStatus } from '@loopring-web/common-resources';
 
 export async function unlockAccount({accInfo}: { accInfo: AccountInfo }) {
     // const  dispach =  store.dispatch;

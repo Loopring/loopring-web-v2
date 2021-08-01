@@ -1,14 +1,12 @@
 import React from 'react';
 
-import { DepositProps, SwitchData } from '@loopring-web/component-lib';
-import { IBData } from '@loopring-web/common-resources';
+import { DepositProps, SwitchData, TradeBtnStatus } from '@loopring-web/component-lib';
+import { AccountStatus, CoinMap, ConnectProviders, IBData, WalletMap } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
 import { useTokenMap } from '../stores/token';
-import { AccountStatus, useAccount } from '../stores/account';
+import { useAccount } from '../stores/account';
 import { useSystem } from '../stores/system';
-import { connectProvides, LoopringProvider } from '@loopring-web/web3-provider';
-import { CoinMap, WalletMap } from '@loopring-web/common-resources';
-import { TradeBtnStatus } from '@loopring-web/component-lib';
+import { connectProvides } from '@loopring-web/web3-provider';
 
 
 export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | undefined, ShowDeposit: (isShow: boolean, defaultProps?: any) => void): {
@@ -35,7 +33,7 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
                 // const gasPrice = gasPrice ?? 20
                 const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
                 const nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
-                const isMetaMask = connectName === LoopringProvider.MetaMask;
+                const isMetaMask = connectName === ConnectProviders.MetaMask;
                 await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
                     exchangeInfo?.depositAddress, gasPrice ?? 20, gasLimit, chainId === 'unknown' ? undefined : chainId, nonce, isMetaMask)
 
@@ -55,7 +53,7 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
             return false
         }
 
-    }, [account, tokenMap,chainId,exchangeInfo,gasPrice])
+    }, [account, tokenMap, chainId, exchangeInfo, gasPrice])
     const [depositProps, setDepositProps] = React.useState<Partial<DepositProps<R, T>>>({
         tradeData: {belong: undefined} as any,
         coinMap: coinMap as CoinMap<any>,
