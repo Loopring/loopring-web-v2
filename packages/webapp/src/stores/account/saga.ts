@@ -1,7 +1,7 @@
 import { all, fork, put, takeLatest } from "redux-saga/effects"
-import { nextAccountStatus, restAccountStatus, updateAccountStatus } from './reducer';
+import { cleanAccountStatus, nextAccountStatus, restAccountStatus, updateAccountStatus } from './reducer';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { Account, AccountStatus, ConnectProviders } from '@loopring-web/common-resources';
+import { Account } from '@loopring-web/common-resources';
 
 
 export function* accountUpdateSaga({payload}: PayloadAction<Partial<Account>>) {
@@ -44,15 +44,7 @@ function* accountSage() {
 }
 
 function* goCleanAccount({payload}: PayloadAction<undefined>) {
-    yield put(nextAccountStatus({
-        accAddress: '',
-        readyState: AccountStatus.UN_CONNECT,
-        accountId: -1,
-        apiKey: '',
-        eddsaKey: '',
-        connectName: ConnectProviders.UnKnow,
-        errorMessage: null,
-    }));
+    yield put(cleanAccountStatus(undefined));
 }
 
 function* accountRestSage() {

@@ -15,19 +15,6 @@ export function useConnectHook(
     }
 ) {
     const subject = React.useMemo(() => walletServices.onSocket(), []);
-
-    // const handleChainChanged = React.useCallback((chainId)=>{
-    //     debugger
-    //     console.log(chainId)
-    // },[])
-    // const handleConnect = React.useCallback((accounts,provider)=>{
-    //     debugger
-    //     console.log(accounts,provider)
-    // },[])
-    // const handleAccountDisconnect = React.useCallback(()=>{
-    //     debugger
-    //     console.log('Disconnect')
-    // },[])
     React.useEffect(() => {
         const subscription = subject.subscribe(({data, status}: { status: keyof typeof Commands, data?: any }) => {
             switch (status) {
@@ -57,5 +44,5 @@ export function useConnectHook(
             }
         });
         return () => subscription.unsubscribe();
-    }, [subject]);
+    }, [subject, handleChainChanged, handleConnect, handleAccountDisconnect, handleError, handleProcessing]);
 }

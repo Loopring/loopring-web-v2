@@ -11,7 +11,7 @@ import { connectProvides, ErrorType, useConnectHook } from '@loopring-web/web3-p
 import { AccountStep, useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
 import { LoopringAPI } from './stores/apis/api';
 import { unlockAccount } from './hooks/unlockAccount';
-
+import { myLog } from './utils/log_tools';
 
 /**
  * @description
@@ -39,9 +39,12 @@ export function useInit() {
     const {setShowConnect, setShowAccount} = useOpenModals();
     const walletLayer1State = useWalletLayer1()
     const handleChainChanged = React.useCallback(async (chainId) => {
-        if (chainId !== _chainId && _chainId !== 'unknown') {
+        if (chainId !== _chainId && _chainId !== 'unknown' && chainId !== 'unknown') {
+            chainId === 5 ? updateAccount({chainId}) : updateAccount({chainId: 1})
             updateSystem({chainId});
             window.location.reload();
+        } else if (chainId == 'unknown') {
+            //TODO show error
         }
     }, [_chainId])
     const handleConnect = React.useCallback(async ({
@@ -50,10 +53,14 @@ export function useInit() {
                                                        provider
                                                    }: { accounts: string, provider: any, chainId: number }) => {
         const accAddress = accounts[ 0 ];
-        if (chainId !== _chainId && _chainId !== 'unknown') {
-            updateSystem({chainId: chainId as ChainId});
-            window.location.reload();
-        }
+        await handleChainChanged(chainId)
+        // if (chainId !== _chainId && _chainId !== 'unknown') {
+        //     chainId === 5 ? updateAccount({chainId}):updateAccount({chainId:1})
+        //     updateSystem({chainId: chainId as ChainId});
+        //     window.location.reload();
+        // }  else if(chainId == 'unknown'){
+        //     //TODO show error
+        // }
         updateAccount({accAddress, readyState: AccountStatus.CONNECT});
         statusAccountUnset();
         setShowConnect({isShow: true, step: WalletConnectStep.SuccessConnect});
@@ -90,29 +97,44 @@ export function useInit() {
 
 
     }, [_chainId, account])
-    const handleAccountDisconnect = React.useCallback(() => {
+    const handleAccountDisconnect = React.useCallback(async () => {
+        if (account && account.accAddress) {
+            resetAccount();
+            statusAccountUnset();
+            myLog('Disconnect and clear')
+        } else {
+            myLog('Disconnect with no account')
+        }
+
+    }, [account]);
+
+    const handleError = React.useCallback(async ({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
+        updateSystem({chainId: account.chainId ? account.chainId : 1})
         resetAccount();
-        console.log('Disconnect')
-    }, []);
-
-    const handleError = React.useCallback(({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
-
-    }, []);
+        await sleep(10);
+        statusAccountUnset();
+        myLog('Error')
+    }, [account]);
 
     useConnectHook({handleAccountDisconnect, handleError, handleConnect, handleChainChanged});
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
-        if (account && account.connectName && account.accAddress) {
-            if (account.accAddress && account.connectName && account.connectName !== 'UnKnow') {
+        if (account.accAddress && account.connectName && account.connectName !== 'UnKnow' && account.accAddress) {
+            try {
                 await connectProvides[ account.connectName ]();
                 if (connectProvides.usedProvide) {
                     const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
                     updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
                     return
                 }
+            } catch (error) {
+                console.log(error)
             }
+        } else if (account.chainId) {
+            updateSystem({chainId: account.chainId})
+        } else {
+            updateSystem({chainId: ChainId.MAINNET})
         }
-
 
         //TEST:
         // await connectProvides.MetaMask();
@@ -124,8 +146,6 @@ export function useInit() {
         //     systemState.updateSystem({chainId: (chainId ? chainId as ChainId : ChainId.MAINNET)})
         //     return
         // }
-
-        updateSystem({chainId: ChainId.MAINNET})
 
 
     }, [])

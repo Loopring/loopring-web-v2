@@ -28,7 +28,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
     open: boolean, onClose: (e: any) => void
 } & WithTranslation) => {
     // const [_step, setStep] = React.useState<number>(step === undefined? WalletConnectStep.Provider: step);
-    const {account, updateAccount, resetAccount} = useAccount();
+    const {account, updateAccount, resetAccount, statusUnset: statusAccountUnset} = useAccount();
     const {updateSystem, chainId: _chainId, exchangeInfo} = useSystem();
     const {modals: {isShowConnect}, setShowConnect, setShowAccount} = useOpenModals();
     const [qrCodeUrl, setQrCodeUrl] = React.useState<string>('');
@@ -36,10 +36,9 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
         {
             ...DefaultGatewayList[ 0 ],
             handleSelect: React.useCallback(async () => {
-                // @ts-ignore
-                if (connectProvides.usedProvide && connectProvides.usedProvide.disconnect) {
-                    // @ts-ignore
-                    await connectProvides.usedProvide.disconnect()
+                if (connectProvides.usedProvide && connectProvides.usedProvide) {
+                    resetAccount();
+                    connectProvides.clear();
                 }
                 setShowConnect({isShow: true, step: WalletConnectStep.MetaMaskProcessing});
                 await connectProvides.MetaMask();
@@ -54,12 +53,10 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
         {
             ...DefaultGatewayList[ 1 ],
             handleSelect: React.useCallback(async () => {
-                // @ts-ignore
-                if (connectProvides.usedProvide && connectProvides.usedProvide.disconnect) {
-                    // @ts-ignore
-                    await connectProvides.usedProvide.disconnect()
+                if (connectProvides.usedProvide && connectProvides.usedProvide) {
+                    resetAccount();
+                    connectProvides.clear();
                 }
-                resetAccount();
                 setShowConnect({isShow: true, step: WalletConnectStep.WalletConnectProcessing});
                 await connectProvides.WalletConnect();
                 updateAccount({connectName: ConnectProviders.WalletConnect});

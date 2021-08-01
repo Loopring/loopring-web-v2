@@ -36,7 +36,8 @@ export type Account = {
     apiKey: string,
     eddsaKey: any,
     publicKey: any,
-    connectName: keyof typeof ConnectProviders
+    connectName: keyof typeof ConnectProviders,
+    chainId: 1 | 5,
 }
 export type AccountState = Account & StateBase;
 

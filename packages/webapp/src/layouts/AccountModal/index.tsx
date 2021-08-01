@@ -24,6 +24,7 @@ import { TOAST_TIME } from '../../defs/common_defs';
 import { getShortAddr } from '../../utils/web3_tools';
 import { LockIcon, UnLockIcon } from '@loopring-web/common-resources';
 import { Typography } from '@material-ui/core';
+import { sleep } from 'loopring-sdk';
 
 export const ModalAccountInfo = withTranslation('common')(({
                                                                onClose,
@@ -38,7 +39,7 @@ export const ModalAccountInfo = withTranslation('common')(({
     depositProps: DepositProps<any, any>,
     etherscanUrl: string
 } & WithTranslation) => {
-    const {account, updateAccount, status: accountStatus, errorMessage, resetAccount} = useAccount();
+    const {account, updateAccount, resetAccount, statusUnset: statusAccountUnset} = useAccount();
     const {modals: {isShowAccount}, setShowConnect, setShowAccount} = useOpenModals();
     const [openQRCode, setOpenQRCode] = useState(false);
     const addressShort = getShortAddr(account.accAddress)
@@ -75,8 +76,10 @@ export const ModalAccountInfo = withTranslation('common')(({
     const onViewQRCode = React.useCallback(() => {
         setOpenQRCode(true)
     }, [])
-    const onDisconnect = React.useCallback(() => {
+    const onDisconnect = React.useCallback(async () => {
         resetAccount();
+        await sleep(10);
+        statusAccountUnset();
         setShowAccount({isShow: false})
         // // setShowAccount({isShow: false,step:AccountStep.});
     }, [resetAccount, setShowAccount])

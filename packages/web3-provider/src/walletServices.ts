@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import Web3 from "web3";
-import { Commands, ErrorType,ProcessingType } from './command';
+import { Commands, ErrorType, ProcessingType } from './command';
 
 //TODO typeof account State
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
@@ -9,7 +9,7 @@ export const walletServices = {
     sendProcess: async (type: keyof typeof ProcessingType, props?: any) => {
         subject.next({
             status: Commands.Processing,
-            data: {type:type, opts: props}
+            data: {type: type, opts: props}
         });
     },
     sendError: async (errorType: keyof typeof ErrorType, errorObj: any) => {
@@ -27,13 +27,13 @@ export const walletServices = {
             console.log('wallet connect:', accounts, chainId);
 
             subject.next({status: 'ConnectWallet', data: {provider, accounts, chainId}});
-        } catch (error){
+        } catch (error) {
             subject.next({status: 'Error', data: {error}});
         }
     },
     sendChainChanged: async (chainId: number) => {
         console.log('wallet connect:', chainId);
-        subject.next({status: 'ChangeNetwork', data: {chainId}})
+        subject.next({status: 'ChangeNetwork', data: {chainId: Number(chainId)}})
     },
     sendDisconnect: async (code: any, reason: any) => {
         console.log('wallet disconnect:', reason);

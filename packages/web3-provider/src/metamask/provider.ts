@@ -3,7 +3,6 @@ import Web3 from 'web3';
 import { walletServices } from '../walletServices';
 import { IpcProvider } from 'web3-core';
 import { ErrorType } from '../command';
-import WalletConnectProvider from '@walletconnect/web3-provider';
 import { ConnectProviders } from '@loopring-web/common-resources';
 
 export const MetaMaskProvide = async (): Promise<{ provider: IpcProvider, web3: Web3 } | undefined> => {
@@ -29,18 +28,18 @@ export const MetaMaskSubscribe = (provider: any, web3: Web3) => {
         provider.on("accountsChanged", (accounts: Array<string>) => {
             // const _accounts = await web3.eth.getAccounts();
             console.log('accounts:', accounts)
-            walletServices.sendConnect(web3, provider)
+            if (accounts.length) {
+                walletServices.sendConnect(web3, provider)
+            } else {
+                walletServices.sendDisconnect(-1, 'disconnect for no account');
+            }
+
         });
-        // @ts-ignore
         provider.on("chainChanged", (chainId: number) => {
             walletServices.sendChainChanged(chainId);
         });
-        // @ts-ignore
         provider.on("disconnect", (code: number, reason: string) => {
-            if (provider instanceof WalletConnectProvider) {
-                const {connector} = provider as WalletConnectProvider;
-                connector.killSession();
-            }
+
             walletServices.sendDisconnect(code, reason);
             MetaMaskUnsubscribe(provider)
         });

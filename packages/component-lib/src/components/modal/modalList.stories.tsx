@@ -8,30 +8,35 @@ import { gatewayList } from '@loopring-web/common-resources'
 import {
     MetaMaskProcess,
     ModalWalletConnect,
-    ProviderMenu, SuccessConnect,
-     WalletConnectProcess, WalletConnectQRCode,
+    ProviderMenu,
+    SuccessConnect,
+    WalletConnectProcess,
+    WalletConnectQRCode,
     WalletConnectStep
 } from './WalletConnect'
 import { ModalQRCode, QRCodePanel } from './QRCode'
 import { FailedConnect } from './WalletConnect/FailedConnect';
 import {
-    NoAccount,
-    AccountBaseProps, AccountStep, Depositing,
-    FailedDeposit,
+    AccountBaseProps,
+    AccountStep,
     ApproveAccount,
+    Depositing,
+    FailedDeposit,
+    FailedUnlock,
+    HadAccount,
+    ModalAccount,
+    NoAccount,
     ProcessUnlock,
     SuccessUnlock,
-    FailedUnlock,
-    HadAccount, ModalAccount,
 } from './AccountInfo';
 import { coinMap, CoinType, walletMap } from '../../static';
 import { DepositPanel, DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../panel';
 
 const Style = styled.div`
-	color: #fff;
-	flex: 1;
-	height: 100%;
-	flex: 1;
+  color: #fff;
+  flex: 1;
+  height: 100%;
+  flex: 1;
 `
 
 
@@ -61,18 +66,19 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
         ...gatewayList[ 0 ],
         handleSelect: () => console.log('metaMask 11')
     };
-    const url:string = 'xxxxxx'
-    const walletList = React.useMemo(()=>{
+    const url: string = 'xxxxxx'
+    const walletList = React.useMemo(() => {
         return Object.values({
-            [WalletConnectStep.Provider]:<ProviderMenu  gatewayList={gatewayList} {...{...rest}}/>,
-            [WalletConnectStep.MetaMaskProcessing]:<MetaMaskProcess />,
-            [WalletConnectStep.WalletConnectProcessing]:<WalletConnectProcess />,
-            [WalletConnectStep.WalletConnectQRCode]:<WalletConnectQRCode  url={url}/>,
-            [WalletConnectStep.SuccessConnect]:<SuccessConnect />,
-            [WalletConnectStep.FailedConnect]:<FailedConnect />,
+            [ WalletConnectStep.Provider ]: <ProviderMenu gatewayList={gatewayList} {...{...rest}}/>,
+            [ WalletConnectStep.MetaMaskProcessing ]: <MetaMaskProcess/>,
+            [ WalletConnectStep.WalletConnectProcessing ]: <WalletConnectProcess/>,
+            [ WalletConnectStep.WalletConnectQRCode ]: <WalletConnectQRCode url={url}/>,
+            [ WalletConnectStep.SuccessConnect ]: <SuccessConnect/>,
+            [ WalletConnectStep.FailedConnect ]: <FailedConnect handleRetry={() => {
+            }}/>,
         })
 
-    },[url])
+    }, [url])
     const accountInfoProps: AccountBaseProps = {
         addressShort: '0x123...8784',
         address: '0x123567243o24o242423098784',
@@ -83,26 +89,26 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
             button</Button>
     }
 
-    const accountList =  React.useMemo(()=>{
+    const accountList = React.useMemo(() => {
         return Object.values({
-            [AccountStep.NoAccount]:<NoAccount  {...accountInfoProps}/>,
-            [AccountStep.Deposit]: <DepositPanel  {...{...rest, ...depositProps}} > </DepositPanel>,
-            [AccountStep.Depositing]:<Depositing/>,
-            [AccountStep.FailedDeposit]:<FailedDeposit/>,
-            [AccountStep.ApproveAccount]:<ApproveAccount/>,
-            [AccountStep.ProcessUnlock]:<ProcessUnlock/>,
-            [AccountStep.SuccessUnlock]:<SuccessUnlock/>,
-            [AccountStep.FailedUnlock]:<FailedUnlock/>,
-            [AccountStep.HadAccount]:<HadAccount   {...accountInfoProps}/>,
+            [ AccountStep.NoAccount ]: <NoAccount  {...accountInfoProps}/>,
+            [ AccountStep.Deposit ]: <DepositPanel  {...{...rest, ...depositProps}} > </DepositPanel>,
+            [ AccountStep.Depositing ]: <Depositing/>,
+            [ AccountStep.FailedDeposit ]: <FailedDeposit/>,
+            [ AccountStep.ApproveAccount ]: <ApproveAccount/>,
+            [ AccountStep.ProcessUnlock ]: <ProcessUnlock/>,
+            [ AccountStep.SuccessUnlock ]: <SuccessUnlock/>,
+            [ AccountStep.FailedUnlock ]: <FailedUnlock/>,
+            [ AccountStep.HadAccount ]: <HadAccount account={{} as any} {...accountInfoProps}/>,
         })
 
-    },[])
+    }, [])
 
     return (
         <>
             <Style>
                 <MemoryRouter initialEntries={['/']}>
-                    {walletList.map((panel,index)=>{
+                    {walletList.map((panel, index) => {
                         return <Box key={index}>
                             {panel}
                         </Box>
@@ -113,18 +119,18 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                                         panelList={walletList} step={WalletConnectStep.Provider}/>
 
 
-                    {accountList.map((panel,index)=>{
+                    {accountList.map((panel, index) => {
                         return <Box key={index}>
                             {panel}
-                          </Box>
+                        </Box>
                     })}
 
                     <Button variant={'outlined'} size={'small'} color={'primary'} style={{marginRight: 8}}
                             onClick={() => setOpenAccount(true)}>Connect wallet</Button>
                     <ModalAccount open={openAccount} onClose={() => setOpenAccount(false)}
-                                        panelList={accountList} step={WalletConnectStep.Provider}/>
+                                  panelList={accountList} step={WalletConnectStep.Provider}/>
 
-                    
+
                     <Button variant={'outlined'} size={'medium'} color={'primary'} onClick={() => setOpenQRCode(true)}>QR
                         Code</Button>
                     <ModalQRCode open={openQRCode} onClose={() => setOpenQRCode(false)} title={'title'}
