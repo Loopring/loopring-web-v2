@@ -12,15 +12,9 @@ import {
 } from '@loopring-web/component-lib';
 import { ChainId } from 'loopring-sdk'
 import React from 'react';
-import { GatewayItem, gatewayList as DefaultGatewayList } from '@loopring-web/common-resources';
-import { AccountStatus, useAccount } from '../../stores/account';
-import {
-    connectProvides,
-    ErrorType,
-    LoopringProvider,
-    ProcessingType,
-    useConnectHook
-} from '@loopring-web/web3-provider';
+import { ConnectProviders, GatewayItem, gatewayList as DefaultGatewayList } from '@loopring-web/common-resources';
+import { useAccount } from '../../stores/account';
+import { connectProvides, ProcessingType, useConnectHook } from '@loopring-web/web3-provider';
 import { useSystem } from '../../stores/system';
 
 export const ModalWalletConnectPanel = withTranslation('common')(({
@@ -43,13 +37,13 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
             ...DefaultGatewayList[ 0 ],
             handleSelect: React.useCallback(async () => {
                 // @ts-ignore
-                if(connectProvides.usedProvide && connectProvides.usedProvide.disconnect ){
+                if (connectProvides.usedProvide && connectProvides.usedProvide.disconnect) {
                     // @ts-ignore
                     await connectProvides.usedProvide.disconnect()
                 }
                 setShowConnect({isShow: true, step: WalletConnectStep.MetaMaskProcessing});
                 await connectProvides.MetaMask();
-                updateAccount({connectName: LoopringProvider.MetaMask});
+                updateAccount({connectName: ConnectProviders.MetaMask});
                 if (connectProvides.usedProvide) {
                     const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
                     updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
@@ -61,14 +55,14 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
             ...DefaultGatewayList[ 1 ],
             handleSelect: React.useCallback(async () => {
                 // @ts-ignore
-                if(connectProvides.usedProvide && connectProvides.usedProvide.disconnect ){
+                if (connectProvides.usedProvide && connectProvides.usedProvide.disconnect) {
                     // @ts-ignore
                     await connectProvides.usedProvide.disconnect()
                 }
                 resetAccount();
                 setShowConnect({isShow: true, step: WalletConnectStep.WalletConnectProcessing});
                 await connectProvides.WalletConnect();
-                updateAccount({connectName: LoopringProvider.WalletConnect});
+                updateAccount({connectName: ConnectProviders.WalletConnect});
                 if (connectProvides.usedProvide) {
                     const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
                     updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
@@ -99,7 +93,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
         }
     }, []);
 
-    useConnectHook({ handleProcessing});
+    useConnectHook({handleProcessing});
 
     const walletList = React.useMemo(() => {
         return Object.values({

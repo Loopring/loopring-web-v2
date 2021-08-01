@@ -1,7 +1,7 @@
-import { Account, AccountState, AccountStatus } from './interface';
 import { useDispatch, useSelector } from 'react-redux'
 import { restAccountStatus, statusUnset, updateAccountStatus } from './reducer';
 import React from 'react';
+import { Account, AccountState } from '@loopring-web/common-resources';
 
 
 export function useAccount() {
@@ -10,13 +10,13 @@ export function useAccount() {
     const resetAccount = React.useCallback(() => {
         dispatch(restAccountStatus(undefined))
     }, [dispatch])
-    const updateAccount = React.useCallback((account:Partial<Account>) => {
+    const updateAccount = React.useCallback((account: Partial<Account>) => {
         dispatch(updateAccountStatus(account))
     }, [dispatch]);
 
 
     return {
-        account:account,
+        account: account,
         resetAccount,
         updateAccount,
         statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),

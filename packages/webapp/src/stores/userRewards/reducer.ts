@@ -1,38 +1,38 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import {  UserRewardsStates } from './interface';
-import { STATUS } from '../constant';
+import { UserRewardsStates } from './interface';
+import { SagaStatus } from '@loopring-web/common-resources';
 
-const initialState:UserRewardsStates = {
-    userRewardsMap:undefined,
-    status:'UNSET',
-    errorMessage:null,
-    __timer__:-1,
+const initialState: UserRewardsStates = {
+    userRewardsMap: undefined,
+    status: 'UNSET',
+    errorMessage: null,
+    __timer__: -1,
 }
-const userRewardsMapSlice:Slice<UserRewardsStates> = createSlice({
+const userRewardsMapSlice: Slice<UserRewardsStates> = createSlice({
     name: 'userRewardsMap',
     initialState,
     reducers: {
-        getUserRewards(state, action:PayloadAction<undefined>) {
-            state.status = STATUS.PENDING
+        getUserRewards(state, action: PayloadAction<undefined>) {
+            state.status = SagaStatus.PENDING
         },
         getUserRewardsStatus(state, action: PayloadAction<UserRewardsStates>) {
             // @ts-ignore
             if (action.error) {
-                state.status =  STATUS.ERROR
+                state.status = SagaStatus.ERROR
                 // @ts-ignore
                 state.errorMessage = action.error
             }
-            state.userRewardsMap = {...state.userRewardsMap,...action.payload.userRewardsMap};
-            if(action.payload.__timer__){
-                state.__timer__  =  action.payload.__timer__
+            state.userRewardsMap = {...state.userRewardsMap, ...action.payload.userRewardsMap};
+            if (action.payload.__timer__) {
+                state.__timer__ = action.payload.__timer__
             }
-            state.status = STATUS.DONE
+            state.status = SagaStatus.DONE
         },
         statusUnset: state => {
-            state.status = STATUS.UNSET
+            state.status = SagaStatus.UNSET
         }
 
     },
 });
 export { userRewardsMapSlice };
-export const { getUserRewards, getUserRewardsStatus, statusUnset } = userRewardsMapSlice.actions;
+export const {getUserRewards, getUserRewardsStatus, statusUnset} = userRewardsMapSlice.actions;

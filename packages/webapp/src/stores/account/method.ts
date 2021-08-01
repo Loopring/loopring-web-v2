@@ -1,8 +1,3 @@
-import { AccountStatus } from './interface';
-import { LoopringProvider } from "@loopring-web/web3-provider";
-import { provider as Web3Provider } from 'web3-core';
-import { LoopringAPI } from '../apis/api';
-
 // export async function connect(accounts:Array<string>,provider:Web3Provider){
 //    // store.getState()
 //    const accAddress =  accounts[0];
@@ -17,7 +12,7 @@ import { LoopringAPI } from '../apis/api';
 //             accountId: '',
 //             apiKey: '',
 //             eddsaKey: '',
-//             connectName: LoopringProvider.UnKnow,
+//             connectName: ConnectProviders.UnKnow,
 //             status: 'UNSET',
 //             errorMessage: null,
 //     }

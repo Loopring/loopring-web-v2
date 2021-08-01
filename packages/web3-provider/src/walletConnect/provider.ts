@@ -2,35 +2,83 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3 from "web3";
 import { walletServices } from '../walletServices';
 import { ErrorType } from '../command';
-import { LoopringProvider } from '../interface';
+import { ConnectProviders } from '@loopring-web/common-resources';
 
-const RPC_URLS: { [chainId: number]: string } = {
+const RPC_URLS: { [ chainId: number ]: string } = {
     1: process.env.REACT_APP_RPC_URL_1 as string,
     5: process.env.REACT_APP_RPC_URL_5 as string
 }
 const POLLING_INTERVAL = 12000
-export const WalletConnectProvide = async () :Promise<{provider:WalletConnectProvider,web3:Web3}| undefined> =>{
-    try{
-        const provider:WalletConnectProvider = new WalletConnectProvider({
+export const WalletConnectProvide = async (): Promise<{ provider: WalletConnectProvider, web3: Web3 } | undefined> => {
+    try {
+        const provider: WalletConnectProvider = new WalletConnectProvider({
             rpc: RPC_URLS,
             bridge: 'https://bridge.walletconnect.org',
             pollingInterval: POLLING_INTERVAL,
             qrcode: false,
         });
         const {connector} = provider;
-        let web3:Web3;
+        let web3: Web3;
         if (!connector.connected) {
             await connector.createSession();
             const uri = connector.uri;
-            walletServices.sendProcess('nextStep',{qrCodeUrl:uri});
+            walletServices.sendProcess('nextStep', {qrCodeUrl: uri});
             await provider.enable();
         }
         web3 = new Web3(provider as any);
-        walletServices.sendConnect(web3,provider)
-        return {provider,web3}
-    } catch (error){
+        walletServices.sendConnect(web3, provider)
+        return {provider, web3}
+    } catch (error) {
         console.log('error happen at connect wallet with WalletConnect:', error)
-        walletServices.sendError(ErrorType.FailedConnect, {connectName:LoopringProvider.WalletConnect,error})
+        walletServices.sendError(ErrorType.FailedConnect, {connectName: ConnectProviders.WalletConnect, error})
+    }
+}
+
+export const WalletConnectSubscribe = (provider: any, web3: Web3) => {
+    const {connector} = provider;
+    if (provider && connector && connector.connected) {
+
+
+        connector.on("connect", (error: Error | null, payload: any | null) => {
+            if (error) {
+                walletServices.sendError(ErrorType.FailedConnect, {connectName: ConnectProviders.WalletConnect, error})
+            }
+            const {accounts, chainId} = payload.params[ 0 ];
+            connector.approveSession({accounts, chainId})
+            //
+            // // const _accounts = await web3.eth.getAccounts();
+            // console.log('accounts:', accounts)
+            walletServices.sendConnect(web3, provider)
+        });
+        connector.on("session_update", (error: Error | null, payload: any | null) => {
+            const {accounts, chainId} = payload.params[ 0 ];
+            if (error) {
+                walletServices.sendError(ErrorType.FailedConnect, {connectName: ConnectProviders.WalletConnect, error})
+            }
+            connector.updateSession({accounts, chainId})
+            walletServices.sendChainChanged(chainId);
+        });
+        connector.on("disconnect", (error: Error | null, payload: any | null) => {
+            const {message} = payload.params[ 0 ];
+            if (error) {
+                walletServices.sendError(ErrorType.FailedConnect, {connectName: ConnectProviders.WalletConnect, error})
+            }
+            walletServices.sendDisconnect('', message);
+            WalletConnectUnsubscribe(provider);
+
+        });
+    }
+}
+
+export const WalletConnectUnsubscribe = (provider: any) => {
+    if (provider && provider.connector && provider.connector.connected) {
+        const {connector} = provider;
+        connector.off('disconnect');
+        connector.off('connect')
+        connector.off('session_update');
+        connector.killSession();
+
+        // connector.removeAllListeners()
     }
 }
 //)

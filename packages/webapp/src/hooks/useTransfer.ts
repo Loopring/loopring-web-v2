@@ -1,28 +1,25 @@
 import React from 'react';
 
-import { SwitchData, TransferProps,TradeBtnStatus } from '@loopring-web/component-lib';
-import { IBData } from '@loopring-web/common-resources';
-import { OffchainFeeReqType, toBig, VALID_UNTIL } from 'loopring-sdk';
+import { SwitchData, TradeBtnStatus, TransferProps } from '@loopring-web/component-lib';
+import { AccountStatus, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
+import { ConnectorNames, OffchainFeeReqType, toBig, VALID_UNTIL } from 'loopring-sdk';
 import { useTokenMap } from '../stores/token';
-import { AccountStatus, useAccount } from '../stores/account';
+import { useAccount } from '../stores/account';
 import { useChargeFees } from './useChargeFees';
-import { useCustomDCEffect } from './common/useCustomDCEffect';
 import { LoopringAPI } from '../stores/apis/api';
 import { useSystem } from '../stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
-import { ConnectorNames } from 'loopring-sdk';
-import { CoinMap, WalletMap } from '@loopring-web/common-resources';
 // import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
 // import { useChargeFeeList } from './hook';
 
-export const useTransfer = <R extends IBData<T>, T>(walletMap2:WalletMap<T>|undefined,ShowTransfer: (isShow: boolean, defaultProps?: any)=>void): {
+export const useTransfer = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | undefined, ShowTransfer: (isShow: boolean, defaultProps?: any) => void): {
     // handleTransfer: (inputValue:R) => void,
     transferProps: TransferProps<R, T>
     // transferValue: R
 } => {
     const {tokenMap, coinMap} = useTokenMap();
     const {account} = useAccount()
-    const { exchangeInfo, chainId } = useSystem();
+    const {exchangeInfo, chainId} = useSystem();
     const [transferValue, setTransferValue] = React.useState<IBData<T>>({
         belong: undefined,
         tradeValue: 0,
@@ -39,9 +36,9 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2:WalletMap<T>|unde
     //     }
     // }, [chargeFeeList])
     const handleTransfer = React.useCallback(async (inputValue: R) => {
-        const {accountId,accAddress,readyState,apiKey,connectName,eddsaKey } = account
+        const {accountId, accAddress, readyState, apiKey, connectName, eddsaKey} = account
         if (readyState === AccountStatus.ACTIVATED && tokenMap && exchangeInfo && connectProvides.usedWeb3) {
-            try{
+            try {
                 const sellToken = tokenMap[ inputValue.belong as string ]
                 const feeToken = tokenMap[ feeInfo.belong ]
                 const transferVol = toBig(inputValue.tradeValue).times('1e' + sellToken.decimals).toFixed(0, 0)
@@ -67,7 +64,7 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2:WalletMap<T>|unde
                         validUntil: VALID_UNTIL,
                     },
                     connectProvides.usedWeb3,
-                    chainId === 'unknown' ? 1 : chainId, connectName  as ConnectorNames,
+                    chainId === 'unknown' ? 1 : chainId, connectName as ConnectorNames,
                     eddsaKey, apiKey)
                 //TODO check success or failed API
             } catch (e) {
@@ -78,7 +75,7 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2:WalletMap<T>|unde
             return false
         }
 
-    }, [account,tokenMap,feeInfo])
+    }, [account, tokenMap, feeInfo])
     const [transferProps, setTransferProps] = React.useState<Partial<TransferProps<R, T>>>({
         tradeData: {belong: undefined} as any,
         coinMap: coinMap as CoinMap<T>,
@@ -122,13 +119,13 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2:WalletMap<T>|unde
         }
     })
 
-   React.useEffect(()=>{
-       setTransferProps( {
-           ...transferProps,
-           walletMap: walletMap2 as WalletMap<any>,
-           }
-         )
-   },[walletMap2])
+    React.useEffect(() => {
+        setTransferProps({
+                ...transferProps,
+                walletMap: walletMap2 as WalletMap<any>,
+            }
+        )
+    }, [walletMap2])
 
 
     return {

@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import { Account, AccountState, AccountStatus, STATUS } from './interface';
-import { LoopringProvider } from "@loopring-web/web3-provider";
 import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice';
+import { Account, AccountState, AccountStatus, ConnectProviders, SagaStatus } from '@loopring-web/common-resources';
 
 // import { Lv2Account, } from 'defs/account_defs'
 // import { AccountStatus } from 'state_machine/account_machine_spec'
@@ -31,7 +30,7 @@ import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice';
 //     accountId: '',
 //     apiKey: '',
 //     eddsaKey: '',
-//     connectName: LoopringProvider.UnKnow,
+//     connectName: ConnectProviders.UnKnow,
 //     // ...initState,
 //   }
 // }
@@ -42,7 +41,7 @@ const initialState: AccountState = {
     apiKey: '',
     eddsaKey: '',
     level: '',
-    connectName: LoopringProvider.UnKnow,
+    connectName: ConnectProviders.UnKnow,
     status: 'UNSET',
     errorMessage: null,
 }
@@ -52,15 +51,15 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
     initialState: initialState,
     reducers: {
         updateAccountStatus(state: AccountState, action: PayloadAction<Partial<Account>>) {
-            state.status = STATUS.PENDING
+            state.status = SagaStatus.PENDING
         },
         restAccountStatus(state: AccountState, action: PayloadAction<undefined>) {
-            state.status = STATUS.PENDING
+            state.status = SagaStatus.PENDING
         },
         nextAccountStatus(state: AccountState, action: PayloadAction<Partial<Account>>) {
             // @ts-ignore
             if (action.error) {
-                state.status = STATUS.ERROR
+                state.status = SagaStatus.ERROR
                 // @ts-ignore
                 state.errorMessage = action.error
             } else {
@@ -94,11 +93,11 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                 if (connectName) {
                     state.connectName = connectName;
                 }
-                state.status = STATUS.DONE;
+                state.status = SagaStatus.DONE;
             }
         },
         statusUnset: (state: AccountState) => {
-            state.status = STATUS.UNSET
+            state.status = SagaStatus.UNSET
         }
     },
 })

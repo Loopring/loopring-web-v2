@@ -6,7 +6,7 @@ import { globalCss,ErrorMap } from '@loopring-web/common-resources';
 import { GlobalProvider, Web3ReactManager } from './provider/';
 import React, { useEffect } from 'react';
 import { useInit } from './hook';
-import { STATUS } from 'stores/constant';
+import { SagaStatus } from 'stores/constant';
 import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
 import { ErrorPage } from './pages/ErrorPage';
 import { LoadingPage } from './pages/LoadingPage';
@@ -14,14 +14,14 @@ import { LoadingPage } from './pages/LoadingPage';
 const App =  () => {
     const theme: Theme = useTheme();
     const { state } = useInit();
-    const [status,setStatus] = React.useState<keyof typeof STATUS>('PENDING');
+    const [status,setStatus] = React.useState<keyof typeof SagaStatus>('PENDING');
     // check all status be
     //TODO  demo if  tokenMapStatus is unset and tokenMap is empty. show error
     //TODO tokenMapObj.status is pending, show global loading
     //console.log(tokenMapObj.tokenMap && Object.keys(tokenMapObj.tokenMap).length>0,tokenMapObj.status, tokenMapObj.errorMessage)
 
     useEffect(() => {
-      if (state === STATUS.PENDING || state === STATUS.ERROR) {
+      if (state === SagaStatus.PENDING || state === SagaStatus.ERROR) {
           setStatus(state)
       } else {
           setStatus('DONE')

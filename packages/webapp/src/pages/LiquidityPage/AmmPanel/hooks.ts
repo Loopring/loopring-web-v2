@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { AmmData, AmmInData, CoinInfo, globalSetup, IBData, WalletMap } from '@loopring-web/common-resources';
+import {
+    AccountStatus,
+    AmmData,
+    AmmInData,
+    CoinInfo,
+    fnType,
+    globalSetup,
+    IBData,
+    WalletMap
+} from '@loopring-web/common-resources';
 import { AmmPanelType } from '@loopring-web/component-lib';
 import { IdMap, useTokenMap } from '../../../stores/token';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
@@ -38,7 +47,6 @@ import { myLog } from "utils/log_tools";
 import { BIG10 } from "defs/swap_defs";
 import { REFRESH_RATE_SLOW } from "defs/common_defs";
 import { useTranslation } from "react-i18next";
-import { AccountStatus, fnType } from '../../../stores/account';
 
 export const useAmmPanel = <C extends { [ key: string ]: any }>({
                                                                     pair,

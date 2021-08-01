@@ -1,5 +1,4 @@
-import { TradeFloat } from '@loopring-web/common-resources';
-import { StateBase } from '../interface';
+import { StateBase, TradeFloat } from '@loopring-web/common-resources';
 import { TickerData } from 'loopring-sdk/dist/defs/loopring_defs';
 
 export type Ticker = TradeFloat & {
@@ -9,12 +8,13 @@ export type Ticker = TradeFloat & {
     close: number,
     change: number,
     volume: number,
-    __rawTicker__:TickerData};
-export type TickerMap<R extends {[key:string]:any}> = {
-    [key in keyof R]:Ticker
+    __rawTicker__: TickerData
+};
+export type TickerMap<R extends { [ key: string ]: any }> = {
+    [key in keyof R]: Ticker
 }
-export type TickerStates<C = {[key:string]:any}> = {
-    tickerMap?:TickerMap<C>
-}  & StateBase
+export type TickerStates<C = { [ key: string ]: any }> = {
+    tickerMap?: TickerMap<C>
+} & StateBase
 
 

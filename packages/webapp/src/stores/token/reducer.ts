@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { GetTokenMapParams, TokenMapStates } from './interface';
-import { STATUS } from '../constant';
+import { SagaStatus } from '@loopring-web/common-resources';
 
 const initialState: TokenMapStates<object> = {
     coinMap: {},
@@ -17,29 +17,54 @@ const tokenMapSlice: Slice<TokenMapStates<object>> = createSlice({
     initialState,
     reducers: {
         getTokenMap(state, action: PayloadAction<GetTokenMapParams<any>>) {
-            state.status = STATUS.PENDING
+            state.status = SagaStatus.PENDING
         },
         getTokenMapStatus(state, action: PayloadAction<TokenMapStates<object>>) {
             // @ts-ignore      console.log(action.type)
             if (action.error) {
-                state.status = STATUS.ERROR
+                state.status = SagaStatus.ERROR
                 // @ts-ignore
                 state.errorMessage = action.error
             }
 
-            const {tokenMap, totalCoinMap, marketMap, addressIndex, idIndex, coinMap, marketArray, marketCoins} = action.payload;
-            if (tokenMap) { state.tokenMap = tokenMap }
-            if (marketMap) { state.marketMap = marketMap }
-            if (addressIndex) { state.addressIndex = addressIndex }
-            if (idIndex) { state.idIndex = idIndex }
-            if (coinMap) { state.coinMap = coinMap }
-            if (totalCoinMap) { state.totalCoinMap = totalCoinMap }
-            if (marketArray) { state.marketArray = marketArray }
-            if (marketCoins)  { state.marketCoins = marketCoins }
+            const {
+                tokenMap,
+                totalCoinMap,
+                marketMap,
+                addressIndex,
+                idIndex,
+                coinMap,
+                marketArray,
+                marketCoins
+            } = action.payload;
+            if (tokenMap) {
+                state.tokenMap = tokenMap
+            }
+            if (marketMap) {
+                state.marketMap = marketMap
+            }
+            if (addressIndex) {
+                state.addressIndex = addressIndex
+            }
+            if (idIndex) {
+                state.idIndex = idIndex
+            }
+            if (coinMap) {
+                state.coinMap = coinMap
+            }
+            if (totalCoinMap) {
+                state.totalCoinMap = totalCoinMap
+            }
+            if (marketArray) {
+                state.marketArray = marketArray
+            }
+            if (marketCoins) {
+                state.marketCoins = marketCoins
+            }
             // if (tokenPairsMap) {state.tokenPairsMap = tokenPairsMap }
-            state.status = STATUS.DONE;
+            state.status = SagaStatus.DONE;
         },
-        
+
         // getTokenPairMap(state, action: PayloadAction<{tokenPairs: TokenPairs }>) {
         //     const {tokenPairs} = action.payload;
         //     const tokenPairsMap =  Reflect.ownKeys(tokenPairs).reduce((prev,key)=>{
@@ -47,10 +72,10 @@ const tokenMapSlice: Slice<TokenMapStates<object>> = createSlice({
         //         return prev[key as string] =  tokenPairs[key as string].tokenList
         //     }, {} )
         //     if (tokenPairsMap) {state.tokenPairsMap = tokenPairsMap }
-        //     // state.status = STATUS.PENDING
+        //     // state.status = SagaStatus.PENDING
         // },
         statusUnset: state => {
-            state.status = STATUS.UNSET
+            state.status = SagaStatus.UNSET
         }
 
     },

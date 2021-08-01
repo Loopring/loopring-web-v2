@@ -1,8 +1,10 @@
 import { useRouteMatch } from 'react-router';
 import {
+    AccountStatus,
     CoinInfo,
     CustomError,
     ErrorMap,
+    fnType,
     globalSetup,
     IBData,
     TradeCalcData,
@@ -28,7 +30,7 @@ import {
 } from 'loopring-sdk';
 import { useAmmMap } from '../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../stores/walletLayer2';
-import { RawDataTradeItem, SwapTradeData, SwapType, TradeBtnStatus } from '@loopring-web/component-lib';
+import { RawDataTradeItem, SwapData, SwapTradeData, SwapType, TradeBtnStatus } from '@loopring-web/component-lib';
 import { useAccount } from '../../stores/account/hook';
 import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
 import {
@@ -46,18 +48,15 @@ import {
 } from '../../hooks/help';
 import * as _ from 'lodash'
 import store from 'stores';
-import { AccountStatus } from 'state_machine/account_machine_spec';
-import { SwapData } from '@loopring-web/component-lib';
 import { deepClone } from '../../utils/obj_tools';
 import { myLog } from 'utils/log_tools';
 import { useTranslation } from 'react-i18next';
 import { REFRESH_RATE_SLOW } from 'defs/common_defs';
-import { fnType } from '../../stores/account';
 
 export const useSwapBtnStatusCheck = () => {
 
     const [btnStatus, setBtnStatus] = useState(TradeBtnStatus.DISABLED)
-    
+
     const [isSwapLoading, setIsSwapLoading] = useState(false)
 
     const [isValidAmt, setIsValidAmt] = useState<boolean>(false)
@@ -86,16 +85,16 @@ export const useSwapBtnStatusCheck = () => {
 
 export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     /*** api prepare ***/
-    const { t } = useTranslation('common')
+    const {t} = useTranslation('common')
 
     const [swapToastOpen, setSwapToastOpen] = useState<boolean>(false)
-        
+
     const [swapAlertText, setSwapAlertText] = useState<string>()
     const wait = globalSetup.wait;
     const match: any = useRouteMatch(":symbol")
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap,} = useTokenMap()
     const {ammMap} = useAmmMap();
-    
+
     const {account} = useAccount()
     const {delayAndUpdateWalletLayer2} = useWalletLayer2();
 
@@ -132,12 +131,12 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     } = useSwapBtnStatusCheck()
     // --- end of btn status check.
 
-    useCustomDCEffect(async() => {
+    useCustomDCEffect(async () => {
 
         const base = tradeData?.sell.belong
         const quote = tradeData?.buy.belong
 
-        if (!LoopringAPI.userAPI || !base || !quote || !ammMap || !marketArray 
+        if (!LoopringAPI.userAPI || !base || !quote || !ammMap || !marketArray
             || account.readyState !== AccountStatus.ACTIVATED || !account.accountId || !account.apiKey) {
             return
         }
@@ -150,7 +149,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             return
         }
 
-        const ammInfo = ammMap[amm]
+        const ammInfo = ammMap[ amm ]
 
         const feeBips = ammInfo.__rawConfig__.feeBips
 
@@ -159,10 +158,10 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             market: amm,
         }
 
-        const { amountMap } = await LoopringAPI.userAPI.getMinimumTokenAmt(req, account.apiKey)
+        const {amountMap} = await LoopringAPI.userAPI.getMinimumTokenAmt(req, account.apiKey)
 
-        const baseMinAmtInfo = amountMap[base]
-        const quoteMinAmtInfo = amountMap[quote]
+        const baseMinAmtInfo = amountMap[ base ]
+        const quoteMinAmtInfo = amountMap[ quote ]
 
         const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
 
@@ -181,7 +180,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
         setTradeCalcData({...tradeCalcData, fee: totalFee} as TradeCalcData<C>)
 
-    }, [tradeData?.sell.belong, tradeData?.buy.belong, marketArray, ammMap, 
+    }, [tradeData?.sell.belong, tradeData?.buy.belong, marketArray, ammMap,
         account.readyState, account.apiKey, account.accountId])
 
     //HIGH: get Router info
@@ -193,7 +192,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         // setSwapBtnI18nKey(label);
     }, []);
 
-        //HIGH: effect by wallet state update
+    //HIGH: effect by wallet state update
     React.useEffect(() => {
         switch (walletLayer2State.status) {
             case "ERROR":
@@ -238,7 +237,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         setSwapBtnI18nKey(label);
     }, [account.readyState]);
 
-    const swapCalculatorCallback = useCallback(async({sell, buy, slippage, ...rest}: any) => {
+    const swapCalculatorCallback = useCallback(async ({sell, buy, slippage, ...rest}: any) => {
 
         const {exchangeInfo} = store.getState().system
         setIsSwapLoading(true);
@@ -247,7 +246,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
             setSwapAlertText(t('labelSwapFailed'))
             setSwapToastOpen(true)
-            
+
             setIsSwapLoading(false)
 
             return
@@ -284,7 +283,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 orderType: OrderType.ClassAmm,
                 eddsaSignature: '',
             }
-            
+
             myLog(request)
 
             const response = await LoopringAPI.userAPI.submitOrder(request, account.eddsaKey, account.apiKey)
@@ -292,7 +291,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             myLog(response)
 
             await delayAndUpdateWalletLayer2()
-            
+
             setTradeData({
                 ...tradeData,
                 ...{
@@ -321,11 +320,11 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         if (rest.__cache__) {
             makeCache(rest.__cache__)
         }
-        
-    },[tradeData, output, tokenMap])
+
+    }, [tradeData, output, tokenMap])
 
     const swapBtnClickArray: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
-        [ fnType.ACTIVATED ]:[swapCalculatorCallback]
+        [ fnType.ACTIVATED ]: [swapCalculatorCallback]
     })
 
     const onSwapClick = React.useCallback(({sell, buy, slippage, ...rest}: SwapTradeData<IBData<C>>) => {
@@ -333,7 +332,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     }, [swapBtnClickArray])
 
     const handleSwapPanelEvent = async (swapData: SwapData<SwapTradeData<IBData<C>>>, switchType: any): Promise<void> => {
-        
+
         const {tradeData} = swapData
         return new Promise((resolve) => {
             switch (switchType) {
@@ -362,18 +361,18 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const [depth, setDepth] = useState<DepthData>()
 
     useEffect(() => {
-        
-        const updateDepth = async() => {
+
+        const updateDepth = async () => {
             if (!pair || !LoopringAPI.exchangeAPI || !pair.coinAInfo) {
                 return
             }
             const market = `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`
-            const { depth } = await LoopringAPI.exchangeAPI?.getMixDepth({market})
+            const {depth} = await LoopringAPI.exchangeAPI?.getMixDepth({market})
             setDepth(depth)
         }
 
         updateDepth()
-        
+
         const handler = setInterval(() => {
             updateDepth()
         }, REFRESH_RATE_SLOW)
@@ -387,7 +386,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: AmmPoolSnapshot | undefined)
         : Promise<{ _tradeCalcData: TradeCalcData<C>, _tradeData: SwapTradeData<IBData<C>> }> => {
-        
+
         const market = `${pair.coinAInfo?.simpleName}-${pair.coinBInfo?.simpleName}`
         if (!marketArray || !tokenMap || !marketMap || !depth || !ammMap || !tradeCalcData) {
             let _tradeCalcData = {...tradeCalcData} as TradeCalcData<C>
@@ -434,20 +433,20 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         } else {
             _tradeData.sell.tradeValue = output?.output ? parseFloat(output?.output) : 0
         }
-        
+
         //TODO: renew  tradeCalcData
         let _tradeCalcData = {...tradeCalcData} as TradeCalcData<C>;
 
         return {_tradeData, _tradeCalcData}
-        
+
     }
 
     // check output and min order amt
     useCustomDCEffect(() => {
 
-        const validAmt = (output?.amountBOut && quoteMinAmt 
+        const validAmt = (output?.amountBOut && quoteMinAmt
             && sdk.toBig(output?.amountBOut).gte(sdk.toBig(quoteMinAmt))) ? true : false
-        
+
         setIsValidAmt(validAmt)
 
         myLog(output, quoteMinAmt)
@@ -457,7 +456,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     }, [output, quoteMinAmt])
 
     const throttleSetValue = React.useCallback(_.debounce(async (type, _tradeData, _ammPoolSnapshot) => {
-      
+
         const {_tradeData: td, _tradeCalcData} = await calculateTradeData(type, _tradeData, _ammPoolSnapshot)//.then(()=>{
         setTradeData(td)
         setTradeCalcData({..._tradeCalcData, fee: feeBips})
@@ -470,7 +469,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             && _tradeData
             && type
             && (!tradeData || (tradeData[ type ].tradeValue !== _tradeData[ type ].tradeValue))) {
-                
+
             throttleSetValue(type, _tradeData, _ammPoolSnapshot)
 
         } else {
