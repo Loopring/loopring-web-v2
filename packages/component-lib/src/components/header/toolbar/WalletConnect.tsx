@@ -1,8 +1,8 @@
 import { WalletConnectBtnProps } from './Interface';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
-import { globalSetup, LockIcon, NoNetWorkIcon, WalletStatus } from '@loopring-web/common-resources';
-import { debounce } from 'lodash';
+import {  LockIcon, NoNetWorkIcon, WalletStatus } from '@loopring-web/common-resources';
+// import { debounce } from 'lodash';
 import { Typography } from '@material-ui/core';
 
 import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
@@ -52,11 +52,11 @@ const BtnWalletConnectStyled = styled(Button)`
 // `
 
 export const BtnWalletConnect = ({
-                                     t,
+                                     // t,
                                      label,
                                      status = undefined,
                                      // notificationList,
-                                     wait = globalSetup.wait,
+                                     // wait = globalSetup.wait,
                                      handleClick,
                                  }: WalletConnectBtnProps & WithTranslation) => {
     let disabled = undefined, loading = undefined, connect = false, accountPending = false, unlock = false,
@@ -85,60 +85,16 @@ export const BtnWalletConnect = ({
             connect = false;
             break;
     }
-    const debounceCount = React.useCallback(debounce(({...props}: any) => {
-        if (handleClick) {
-            handleClick(props)
-        }
-    }, wait), [handleClick])
+    // const debounceCount = React.useCallback(debounce(({...props}: any) => {
+    //     if (handleClick) {
+    //
+    //     }
+    // }, wait), [handleClick])
     const _handleClick = (event: React.MouseEvent) => {
-        debounceCount(event)
+        // debounceCount(event)
+        handleClick(event)
     }
-    // const notificationRender = React.useMemo(() => {
-    //     let error = 0, pending = 0, success = 0;
-    //     const jsx = notificationList.map(({status, message, handleClick}: WalletNotificationInterface, index) => {
-    //         let startIcon: { iconItem: any, className: any } = {iconItem: undefined, className: ''};
-    //         switch (status) {
-    //             case 'error':
-    //                 error++;
-    //                 startIcon = {
-    //                     iconItem: <AlertIcon/>,
-    //                     className: 'alert-error error',
-    //                 }
-    //
-    //                 break;
-    //             case 'pending':
-    //                 pending++;
-    //                 startIcon = {
-    //                     iconItem: <PendingIcon/>,
-    //                     className: 'alert-pending pending',
-    //                 }
-    //
-    //                 break;
-    //             case 'success':
-    //                 success++;
-    //                 startIcon = {
-    //                     iconItem: <CheckIcon/>,
-    //                     className: 'alert-success success',
-    //                 }
-    //                 break;
-    //             default:
-    //                 break
-    //         }
-    //         return <WalletNotificationListItem  {...{
-    //             ...rest,
-    //             t,
-    //             handleClick,
-    //             startIcon: startIcon,
-    //             label: {id: message}
-    //         }} key={index}></WalletNotificationListItem>
-    //
-    //
-    //     })
-    //
-    //     setNotificationStatus(error ? WalletNotificationStatus.error : pending ?
-    //         WalletNotificationStatus.pending : success ? WalletNotificationStatus.success : WalletNotificationStatus.none)
-    //     return jsx;
-    // }, [notificationList, setNotificationStatus, t])
+
     const popupState = usePopupState({variant: 'popover', popupId: `popupId: 'wallet-connect-notification'`});
     return <>
         <BtnWalletConnectStyled variant={'outlined'} size={'medium'} color={'primary'}
@@ -157,7 +113,7 @@ export const BtnWalletConnect = ({
                                                                            className={`icon-notification icon-error`}><LockIcon/></Typography> : ''
             }
 
-            <Typography component={'span'}> {t(label)}  </Typography>
+            <Typography component={'span'}> {label}  </Typography>
         </BtnWalletConnectStyled>
     </>
 

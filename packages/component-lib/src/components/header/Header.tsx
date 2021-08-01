@@ -89,12 +89,11 @@ export const LoopringLogo = (<LogoStyle variant="h6" component="h1">
 
 const ToolBarItem = ({buttonComponent, ...props}: any) => {
     const {themeMode, language} = useSettings()
-    const render = (buttonComponent: number, props: any) => {
-
+    
+    const render = React.useMemo(() => {
         switch (buttonComponent) {
             case  ButtonComponentsMap.Download:
                 return <BtnDownload {...props} />;
-            // @ts-ignore
             case  ButtonComponentsMap.Notification:
                 return <BtnNotification {...props} />;
             case  ButtonComponentsMap.Theme:
@@ -106,8 +105,8 @@ const ToolBarItem = ({buttonComponent, ...props}: any) => {
             default:
                 return undefined;
         }
-    }
-    return <TabItemPlus>{render(buttonComponent, props)}</TabItemPlus>;
+    },[props,buttonComponent] )
+    return <TabItemPlus>{render}</TabItemPlus>;
 }
 
 export const HideOnScroll = React.forwardRef(({children, ...rest}: any, ref) => {
