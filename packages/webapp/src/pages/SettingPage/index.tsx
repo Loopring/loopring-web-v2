@@ -11,6 +11,7 @@ import {
 import { Trans, useTranslation, WithTranslation, withTranslation } from 'react-i18next';
 import { useTheme } from '@emotion/react';
 import { LanguageKeys } from '@loopring-web/common-resources';
+import { useExportAccoutInfo } from './hook';
 
 // const MuiModalStyled = styled(MuiModal)`
 //   //background: ${({theme}) => theme.colorBase.background().secondary};
@@ -111,6 +112,9 @@ export const SettingPanel = withTranslation(['common', 'layout'])(({t,i18n, ...r
             setUpColor(UpColor.red);
         }
     }
+
+    const { exportAccInfo } = useExportAccoutInfo()
+
     return <Grid container direction={'column'} justifyContent={'space-between'} alignItems={'stretch'} flexWrap={'nowrap'}>
         {/* <Typography variant={'h4'} component={'h3'} paddingLeft={2}>{t('labelTitleSecurity')}</Typography>
         <StyledPaper item xs={12} display={'flex'} flexDirection={'column'} marginY={2}  paddingY={3}>
@@ -128,7 +132,7 @@ export const SettingPanel = withTranslation(['common', 'layout'])(({t,i18n, ...r
                     </Grid>
                     <Grid item xs={4} display={'flex'} flexDirection={'column'} justifyContent={'space-evenly'}
                           alignItems={'flex-end'} alignSelf={'stretch'}>
-                        <Button variant={'outlined'} size={'medium'} color={'primary'} disabled={true}>{t('labelBtnReset')}</Button>
+                        <Button variant={'outlined'} size={'medium'} color={'primary'} disabled={false}>{t('labelBtnReset')}</Button>
                     </Grid>
                     <Grid item xs={12} display={'flex'} flexDirection={'row'} justifyContent={'flex-end'}
                           alignItems={'center'} alignSelf={'stretch'}>
@@ -149,8 +153,10 @@ export const SettingPanel = withTranslation(['common', 'layout'])(({t,i18n, ...r
                     </Grid>
                     <Grid item xs={5} display={'flex'} flexDirection={'column'} justifyContent={'space-evenly'}
                           alignItems={'flex-end'} alignSelf={'stretch'}>
-                        <Grid item> <Button variant={'outlined'} size={'medium'}
-                                            color={'primary'} disabled={true}>{t('labelBtnExportAccount')}</Button></Grid>
+                        <Grid item> <Button onClick={() => {
+                            exportAccInfo()
+                        }} variant={'outlined'} size={'medium'}
+                                            color={'primary'} disabled={false}>{t('labelBtnExportAccount')}</Button></Grid>
                     </Grid>
                 </Grid>
             </Box>

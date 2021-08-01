@@ -176,6 +176,8 @@ export const AmmTable = withTranslation('tables')((props: WithTranslation & AmmT
     const [filterDate, setFilterDate] = React.useState<Date | null>(null)
     const [page, setPage] = React.useState(1)
     const [totalData, setTotalData] = React.useState<RawDataAmmItem[]>(rawData)
+    const [filterPair, setFilterPair] = React.useState('all')
+
     const {currency} = useSettings();
     const defaultArgs: any = {
         columnMode: getColumnModeAssets(t, currency).filter(o => !o.hidden),
@@ -185,6 +187,7 @@ export const AmmTable = withTranslation('tables')((props: WithTranslation & AmmT
             backgroundColor: ({colorBase}: any) => `${colorBase.backgroundBox}`
         }
     }
+
     useDeepCompareEffect(() => {
         setTotalData(rawData);
     }, [rawData])
@@ -200,6 +203,7 @@ export const AmmTable = withTranslation('tables')((props: WithTranslation & AmmT
         TableType,
         currFilterType = filterType,
         currFilterDate = filterDate,
+        currFilterPair = filterPair,
     }) => {
         let resultData = rawData ? rawData : []
         if (currFilterType !== FilterTradeTypes.allTypes) {
@@ -211,21 +215,28 @@ export const AmmTable = withTranslation('tables')((props: WithTranslation & AmmT
                 return chosenDate < o.time
             })
         }
+        if (currFilterPair !== 'all') {
+            resultData = resultData.filter(o => {
+                const pair = `${o.amount.from.key} - ${o.amount.to.key}`
+                return pair === currFilterPair
+            })
+        }
         if (TableType === 'filter') {
             setPage(1)
         }
         setTotalData(resultData)
-    }, [rawData, filterDate, filterType])
+    }, [rawData, filterDate, filterType, filterPair])
 
-    const setFilterItems = React.useCallback(({type, date}) => {
+    const setFilterItems = React.useCallback(({type, date, pair}) => {
         setFilterType(type)
         setFilterDate(date)
+        setFilterPair(pair)
     }, [])
 
-    const handleFilterChange = React.useCallback(({type = filterType, date = filterDate}) => {
-        setFilterItems({type, date})
+    const handleFilterChange = React.useCallback(({type = filterType, date = filterDate, pair = filterPair}) => {
+        setFilterItems({type, date, pair})
         updateData({TableType: TableType.filter, currFilterType: type, currFilterDate: date})
-    }, [updateData, setFilterItems, filterType, filterDate])
+    }, [updateData, setFilterItems, filterType, filterDate, filterPair])
 
     const handlePageChange = React.useCallback((page: number) => {
         setPage(page)
@@ -236,6 +247,7 @@ export const AmmTable = withTranslation('tables')((props: WithTranslation & AmmT
         handleFilterChange({
             type: FilterTradeTypes.allTypes,
             date: null,
+            pair: 'all'
         })
     }, [handleFilterChange])
 
@@ -243,9 +255,11 @@ export const AmmTable = withTranslation('tables')((props: WithTranslation & AmmT
         {showFilter && (
             <TableFilterStyled>
                 <Filter
+                    rawData={rawData}
                     handleFilterChange={handleFilterChange}
                     filterType={filterType}
                     filterDate={filterDate}
+                    filterPair={filterPair}
                     handleReset={handleReset}
                 />
             </TableFilterStyled>

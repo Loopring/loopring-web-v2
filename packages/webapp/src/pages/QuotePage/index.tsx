@@ -118,7 +118,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
             <Grid item xs={12} display={'flex'}>
                 <QuoteTable /* onVisibleRowsChange={onVisibleRowsChange} */ onRowClick={(index, row, col) => 
                   handleRowClick(row)
-                } rawData={tickList} {...{ ...rest }} />
+                } rawData={tickList} {...{ showLoading: tickList && !tickList.length, ...rest }} />
             </Grid>
         </TableWrapStyled>
     </Box>

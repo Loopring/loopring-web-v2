@@ -1,13 +1,16 @@
 import React from 'react'
 
-import { Header as HeaderUI, HideOnScroll, ModalPanel, } from '@loopring-web/component-lib'
+import {
+    Header as HeaderUI,
+    HideOnScroll,
+    ModalPanel
+} from '@loopring-web/component-lib'
 
 import { headerRoot } from '@loopring-web/common-resources'
 
 import { useLocation } from 'react-router-dom'
 
 import { Toolbar, } from '@material-ui/core'
-
 import { useHeader, useModalProps } from './hook'
 import { ModalAccountInfo } from '../AccountModal';
 import { ModalWalletConnectPanel } from '../WalletModal';
@@ -47,12 +50,11 @@ const Header = ({...rest}: any) => {
 
     // const {t} = useTranslation('common')
 
+
     const onClose = React.useCallback(() => {
         setShowAccount({isShow: false})
     }, [])
-
     return (<>
-
 
         <ModalPanel transferProps={transferProps} withDrawProps={withdrawProps}
                     depositProps={depositProps} resetProps={resetProps} ammProps={ammProps} swapProps={swapProps}/>

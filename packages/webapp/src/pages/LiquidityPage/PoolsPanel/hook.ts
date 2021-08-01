@@ -69,8 +69,8 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
         }, 60000))
 
         //console.log(_keys)
-        setImmediate(updateTickers, _keys)
-    }, [])
+        setImmediate(updateTickers, _keys as string[])
+    },[])
 
     const updateTickersUI = React.useCallback((_page) => {
         setPage(_page);
@@ -79,7 +79,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
             for (let i = (page - 1) * pageSize; i < Object.keys(ammMap).length && i < (page - 1) * pageSize + pageSize; i++) {
                 _keys.push(Object.keys(ammMap)[ i ]);
             }
-
+            
             // setKeys(_keys);
             updateTickerLoop(_keys);
             // try{
