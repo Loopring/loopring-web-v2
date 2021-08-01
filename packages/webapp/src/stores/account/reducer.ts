@@ -40,6 +40,7 @@ const initialState: AccountState = {
     accountId: -1,
     apiKey: '',
     eddsaKey: '',
+    publicKey: {},
     level: '',
     connectName: ConnectProviders.UnKnow,
     status: 'UNSET',

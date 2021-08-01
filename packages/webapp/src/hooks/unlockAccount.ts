@@ -45,14 +45,18 @@ export async function unlockAccount({accInfo}: { accInfo: AccountInfo }) {
                     account.connectName as any,
                 )
                 const sk = toHex(toBig(eddsaKey.keyPair.secretKey))
-                // const px = toHex(toBig(eddsakey.keyPair.publicKeyX))
-                // const py = toHex(toBig(eddsakey.keyPair.publicKeyY))
+                // const px =
+                // const py =
                 const {apiKey} = (await LoopringAPI.userAPI.getUserApiKey({
                     accountId: accInfo.accountId
                 }, sk))
                 store.dispatch(updateAccountStatus({
                     apiKey,
                     eddsaKey,
+                    publicKey: {
+                        x: toHex(toBig(eddsaKey.keyPair.publicKeyX)),
+                        y: toHex(toBig(eddsaKey.keyPair.publicKeyY)),
+                    },
                     readyState: AccountStatus.ACTIVATED
                 }));
                 store.dispatch(setShowAccount({isShow: true, step: AccountStep.SuccessUnlock}));

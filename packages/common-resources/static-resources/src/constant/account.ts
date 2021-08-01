@@ -35,6 +35,7 @@ export type Account = {
     level: string,
     apiKey: string,
     eddsaKey: any,
+    publicKey: any,
     connectName: keyof typeof ConnectProviders
 }
 export type AccountState = Account & StateBase;
