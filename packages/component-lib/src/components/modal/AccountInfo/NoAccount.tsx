@@ -8,7 +8,7 @@ export const NoAccount = (props: AccountBaseProps) => {
         <AccountBase {...props}/>
         <Button onClick={() => {
             //TODO
-        }}>Click To deposite </Button>
+        }}>Click To deposit </Button>
     </Box>
 
 }

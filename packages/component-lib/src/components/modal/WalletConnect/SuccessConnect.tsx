@@ -1,5 +1,7 @@
-import { CheckedIcon } from '@loopring-web/common-resources';
+import { Box, Typography } from '@material-ui/core';
 
 export const SuccessConnect = ()=>{
-    return <CheckedIcon/>
+    return <Box>
+        <Typography component={'h2'}>Success Connect</Typography>
+    </Box>
 }

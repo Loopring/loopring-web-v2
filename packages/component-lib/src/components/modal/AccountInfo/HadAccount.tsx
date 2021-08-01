@@ -11,6 +11,6 @@ export const HadAccount = (props: AccountBaseProps & { account: Account }) => {
         <AccountBase {...props}/>
         <Button onClick={() => {
             //TODO
-        }}>Click To deposite </Button>
+        }}>lock/ unlock</Button>
     </Box>
 }
