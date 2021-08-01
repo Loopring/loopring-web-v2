@@ -130,62 +130,58 @@ export const useHeader = () => {
         }
     }, []);
 
-
     React.useEffect(() => {
-        if (accountStatus === 'UNSET') {
-            const {readyState} = account
-            const addressShort = getShortAddr(account.accAddress);
-            switch (readyState) {
-                case AccountStatus.UN_CONNECT:
-                    headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-                        ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                        label: t('labelConnectWallet'),
-                        status: WalletStatus.default
-                    }
-                    headerMenuData[ HeadMenuTabKey.Layer2 ] = {
-                        //TODO:  HeaderMenuTabStatus.hidden
-                        ...headerMenuData[ HeadMenuTabKey.Layer2 ], status: HeaderMenuTabStatus.hidden
-                    }
-                    // setShowAccount({isShow: false})
-                    break
-                case AccountStatus.CONNECT:
-                case AccountStatus.LOCKED:
-                    headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-                        ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                        label: addressShort,
-                        status: WalletStatus.connect
-                    };
-                    break
-                case AccountStatus.ACTIVATED:
-                    headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-                        ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                        label: addressShort,
-                        status: WalletStatus.unlock
-                    }
-                    break
-                case AccountStatus.NO_ACCOUNT:
-                    headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-                        ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                        // TODO got cache address if no show Connect Wallet
-                        label: addressShort,
-                        status: WalletStatus.noAccount
-                    }
+        const {readyState} = account
+        const addressShort = getShortAddr(account.accAddress);
+        switch (readyState) {
+            case AccountStatus.UN_CONNECT:
+                headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
+                    ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
+                    label: t('labelConnectWallet'),
+                    status: WalletStatus.default
+                }
+                headerMenuData[ HeadMenuTabKey.Layer2 ] = {
+                    //TODO:  HeaderMenuTabStatus.hidden
+                    ...headerMenuData[ HeadMenuTabKey.Layer2 ], status: HeaderMenuTabStatus.hidden
+                }
+                // setShowAccount({isShow: false})
+                break
+            case AccountStatus.CONNECT:
+            case AccountStatus.LOCKED:
+                headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
+                    ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
+                    label: addressShort,
+                    status: WalletStatus.connect
+                };
+                break
+            case AccountStatus.ACTIVATED:
+                headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
+                    ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
+                    label: addressShort,
+                    status: WalletStatus.unlock
+                }
+                break
+            case AccountStatus.NO_ACCOUNT:
+                headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
+                    ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
+                    // TODO got cache address if no show Connect Wallet
+                    label: addressShort,
+                    status: WalletStatus.noAccount
+                }
 
-                    // updateHeaderMenuWhenHasAccountInfo({readyState});
-                    break
-                case AccountStatus.DEPOSITING:
-                    headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-                        ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                        label: addressShort,
-                        status: WalletStatus.accountPending
-                    }
-                    // updateHeaderMenuWhenHasAccountInfo({readyState});
+                // updateHeaderMenuWhenHasAccountInfo({readyState});
+                break
+            case AccountStatus.DEPOSITING:
+                headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
+                    ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
+                    label: addressShort,
+                    status: WalletStatus.accountPending
+                }
+                // updateHeaderMenuWhenHasAccountInfo({readyState});
 
-                    break
-            }
+                break
         }
-
-    }, [accountStatus, setAccountBaseProps])
+    }, [account.readyState, language])
 
 
     return {

@@ -19,8 +19,7 @@ import { walletLayer2Slice } from './walletLayer2';
 import { socketSlice } from './socket';
 import { userRewardsMapSlice } from './userRewards';
 import { localStoreReducer } from './localStore';
-import { persistReducer, persistStore } from "redux-persist";
-import storageSession from 'redux-persist/lib/storage/session'
+
 const sagaMiddleware = createSagaMiddleware()
 
 const reducer = combineReducers({
@@ -37,17 +36,17 @@ const reducer = combineReducers({
     tickerMap: tickerMapSlice.reducer,
     localStore: localStoreReducer,
 })
-const DEFAULT_TIMEOUT = 1000*60*60;
+// const DEFAULT_TIMEOUT = 1000*60*60;
+//
+// const persistConfig = {
+//     key: 'account',
+//     storage: storageSession,
+//     timeout:DEFAULT_TIMEOUT,
+//     whitelist: ['account'] // only navigation will be persisted
+// };
+const PERSISTED_KEYS: string[] = ['settings', 'localStore', 'account']
 
-const persistConfig = {
-    key: 'root',
-    storage: storageSession,
-    timeout:DEFAULT_TIMEOUT,
-    whitelist: ['account'] // only navigation will be persisted
-};
-const PERSISTED_KEYS: string[] = ['settings', 'localStore']
-
-const persistedReducer = persistReducer(persistConfig, reducer)
+// const persistedReducer = persistReducer(persistConfig, reducer)
 
 const store = configureStore({
     reducer,
@@ -77,6 +76,6 @@ export type AppDispatch = typeof store.dispatch
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 
 export type RootState = ReturnType<typeof reducer>
-export const persistor = persistStore(store)
+// export const persistor = persistStore(store)
 
 export default store

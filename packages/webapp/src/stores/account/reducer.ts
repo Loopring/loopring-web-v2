@@ -43,8 +43,10 @@ const initialState: AccountState = {
     publicKey: {},
     level: '',
     connectName: ConnectProviders.UnKnow,
+    chainId: 1,
     status: 'UNSET',
     errorMessage: null,
+
 }
 
 const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseReducers<AccountState>>({
@@ -71,6 +73,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                     level,
                     apiKey,
                     eddsaKey,
+                    chainId,
                     connectName
                 } = action.payload;
                 if (accAddress) {
@@ -94,8 +97,24 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                 if (connectName) {
                     state.connectName = connectName;
                 }
+                if (chainId) {
+                    state.chainId = chainId;
+                }
                 state.status = SagaStatus.DONE;
             }
+        },
+        cleanAccountStatus(state: AccountState, action: PayloadAction<undefined>) {
+            state.accAddress = '';
+            state.readyState = AccountStatus.UN_CONNECT;
+            state.accountId = -1;
+            state.apiKey = '';
+            state.eddsaKey = '';
+            state.publicKey = {};
+            state.level = '';
+            state.connectName = ConnectProviders.UnKnow;
+            state.status = SagaStatus.DONE;
+            state.errorMessage = null;
+
         },
         statusUnset: (state: AccountState) => {
             state.status = SagaStatus.UNSET
@@ -103,5 +122,11 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
     },
 })
 export default accountSlice
-export const {updateAccountStatus, restAccountStatus, nextAccountStatus, statusUnset} = accountSlice.actions
+export const {
+    updateAccountStatus,
+    restAccountStatus,
+    cleanAccountStatus,
+    nextAccountStatus,
+    statusUnset
+} = accountSlice.actions
 

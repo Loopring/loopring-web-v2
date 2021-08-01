@@ -63,6 +63,7 @@ export const WalletConnectSubscribe = (provider: any, web3: Web3) => {
             if (error) {
                 walletServices.sendError(ErrorType.FailedConnect, {connectName: ConnectProviders.WalletConnect, error})
             }
+            connector.killSession();
             walletServices.sendDisconnect('', message);
             WalletConnectUnsubscribe(provider);
 
