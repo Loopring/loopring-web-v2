@@ -9,7 +9,7 @@ const TxPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
     const container = React.useRef(null);
     const [pageSize, setPageSize] = React.useState(10);
 
-    const { txs: txTableData } = useGetTxs()
+    const { txs: txTableData, isLoading } = useGetTxs()
 
     React.useEffect(() => {
         // @ts-ignore
@@ -29,6 +29,7 @@ const TxPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
                         pageSize: pageSize
                     },
                     showFilter: true,
+                    showLoading: isLoading,
                     ...rest
                 }} />
             </div>

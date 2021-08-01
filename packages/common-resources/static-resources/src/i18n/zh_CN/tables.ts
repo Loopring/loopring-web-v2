@@ -66,6 +66,7 @@ export default {
     labelTradePool: '放入池子',
     labelAction: '操作',
     labelFilter: '搜索',
+    labelFilterAllPairs: '所有交易对',
     valueAddTOAMM: `添加 <1></1> 和 <3></3>`,
     valueSwapForAMM: `<1></1> 和 <3></3> 兑换`,
     valueRemoveTOAMM: `移出 <1></1> 和 <3></3>`,
