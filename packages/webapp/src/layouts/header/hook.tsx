@@ -133,11 +133,12 @@ export const useHeader = () => {
     React.useEffect(() => {
         const {readyState} = account
         const addressShort = getShortAddr(account.accAddress);
+        const labelConnect = t('labelConnectWallet')
         switch (readyState) {
             case AccountStatus.UN_CONNECT:
                 headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
                     ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                    label: t('labelConnectWallet'),
+                    label: labelConnect,
                     status: WalletStatus.default
                 }
                 headerMenuData[ HeadMenuTabKey.Layer2 ] = {

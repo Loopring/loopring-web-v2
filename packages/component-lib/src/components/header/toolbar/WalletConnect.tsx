@@ -12,7 +12,7 @@ import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';
 // import Popover from 'material-ui-popup-state/HoverPopover';
 const BtnWalletConnectStyled = styled(Button)`
   text-transform: none;
-
+  min-width: 120px;
   i {
     padding-right: ${({theme}) => theme.unit}px;
     display: flex;
