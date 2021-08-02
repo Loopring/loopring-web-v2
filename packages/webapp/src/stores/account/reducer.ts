@@ -42,7 +42,7 @@ const initialState: AccountState = {
     eddsaKey: '',
     publicKey: {},
     level: '',
-    connectName: ConnectProviders.UnKnow,
+    connectName: ConnectProviders.UnKnown,
     chainId: 1,
     status: 'UNSET',
     errorMessage: null,
@@ -111,7 +111,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
             state.eddsaKey = '';
             state.publicKey = {};
             state.level = '';
-            state.connectName = ConnectProviders.UnKnow;
+            state.connectName = ConnectProviders.UnKnown;
             state.status = SagaStatus.DONE;
             state.errorMessage = null;
 
