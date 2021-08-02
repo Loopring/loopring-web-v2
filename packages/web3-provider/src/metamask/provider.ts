@@ -27,7 +27,7 @@ export const MetaMaskSubscribe = (provider: any, web3: Web3) => {
     if (provider) {
         provider.on("accountsChanged", (accounts: Array<string>) => {
             // const _accounts = await web3.eth.getAccounts();
-            console.log('accounts:', accounts)
+            // console.log('accounts:', accounts)
             if (accounts.length) {
                 walletServices.sendConnect(web3, provider)
             } else {

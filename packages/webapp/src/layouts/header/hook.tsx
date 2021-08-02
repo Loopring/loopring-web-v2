@@ -64,17 +64,15 @@ import store from '../../stores';
 import { deepClone } from '../../utils/obj_tools';
 
 export const useHeader = () => {
-    const {i18n, t} = useTranslation(['common', 'layout'])
-    const {setTheme, themeMode, language, setLanguage} = useSettings();
-    const {ShowDeposit} = useModals()
+    // const {i18n, t} = useTranslation(['common', 'layout'])
+    // const _headerToolBarData = React.useMemo(()=>headerToolBarData,[])
+    // const headerToolBarData = deepClone(_headerToolBarData);
+    const {setTheme, themeMode, setLanguage} = useSettings();
+    // const {ShowDeposit} = useModals()
     const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals()
     const {etherscanUrl} = useSystem();
-    // const forceUpdate = React.useReducer((bool) => !bool, false)[ 1 ]
     const accountState  = useAccount();
-    const {account} = accountState;
-    // const  accountStatus  =  accountState.status
-    // const dispatch = useDispatch();
-    // const [showAccountInfo, setShowAccount] = React.useState(account?.accAddr ? true : false)
+    const {account,setShouldShow,status:accountStatus,statusUnset:accoutStatusUnset} = accountState;
     const [accountInfoProps, setAccountBaseProps] = React.useState<undefined | AccountBaseProps>(undefined)
     //const theme: any = useTheme()
 
@@ -90,7 +88,6 @@ export const useHeader = () => {
         ],
         [ fnType.CONNECT ]: [
             function () {
-                // setShowConnect({isShow: true})
                 store.dispatch(setShowAccount({isShow: true, step: AccountStep.HadAccount}))
             }
         ]
@@ -99,8 +96,9 @@ export const useHeader = () => {
 
     const onWalletBtnConnect = React.useCallback(async () => {
         // const acc = store.getState().account
-        myLog(`onWalletBtnConnect click: ${account.readyState}`)
-        accountStaticCallBack(_btnClickMap, [])
+        myLog(`onWalletBtnConnect click: ${account.readyState}`);
+        setShouldShow(true);
+        accountStaticCallBack(_btnClickMap, []);
     }, [account])
 
     const onThemeBtnClick = React.useCallback(async (themeMode: ThemeKeys) => {
@@ -131,15 +129,19 @@ export const useHeader = () => {
             ...headerToolBarData[ ButtonComponentsMap.Language ],
             handleChange: onLangBtnClick
         }
+
     }, []);
 
-    // React.useEffect(() => {
-    //     const {readyState} = account
-    //     const addressShort = getShortAddr(account.accAddress);
-    //     const labelConnect = t('labelConnectWallet')
-    //
-    // }, [account.readyState, language])
-
+    const forceUpdate = React.useReducer(() => ({}), {})[1] as () => void
+    React.useEffect(() => {
+        if(accountState && accountState.status === 'UNSET') {
+            headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
+                ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
+                accountState,
+            }
+        }
+        forceUpdate()
+    }, [accountStatus]);
 
     return {
         // connectStep,

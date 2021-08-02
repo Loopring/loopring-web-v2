@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { restAccountStatus, statusUnset, updateAccountStatus } from './reducer';
+import { nextAccountStatus, restAccountStatus, statusUnset, updateAccountStatus } from './reducer';
 import React from 'react';
 import { Account, AccountState } from '@loopring-web/common-resources';
 
 
 export function useAccount() {
     const {status, errorMessage, ...account}: AccountState = useSelector((state: any) => state.account);
+    // const [shouldShow,setShouldShow] = React.useState(account._userOnModel)
     const dispatch = useDispatch();
     const resetAccount = React.useCallback(() => {
         dispatch(restAccountStatus(undefined))
@@ -13,10 +14,17 @@ export function useAccount() {
     const updateAccount = React.useCallback((account: Partial<Account>) => {
         dispatch(updateAccountStatus(account))
     }, [dispatch]);
-
+    const shouldShow = React.useMemo(()=>{
+        return  account._userOnModel
+    },[account]);
+    const setShouldShow = React.useCallback((flag:boolean)=>{
+        dispatch(nextAccountStatus({_userOnModel:flag}))
+    },[]);
     return {
         account: account,
         resetAccount,
+        shouldShow,
+        setShouldShow,
         updateAccount,
         statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),
         status,

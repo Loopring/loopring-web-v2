@@ -28,7 +28,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
     open: boolean, onClose: (e: any) => void
 } & WithTranslation) => {
     // const [_step, setStep] = React.useState<number>(step === undefined? WalletConnectStep.Provider: step);
-    const {account, updateAccount, resetAccount, statusUnset: statusAccountUnset} = useAccount();
+    const {account, updateAccount, setShouldShow, resetAccount, statusUnset: statusAccountUnset} = useAccount();
     const {updateSystem, chainId: _chainId, exchangeInfo} = useSystem();
     const {modals: {isShowConnect}, setShowConnect, setShowAccount} = useOpenModals();
     const [qrCodeUrl, setQrCodeUrl] = React.useState<string>('');
@@ -103,8 +103,10 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
         })
 
     }, [qrCodeUrl])
-    return <ModalWalletConnect open={isShowConnect.isShow} onClose={onClose}
-                               panelList={walletList} step={isShowConnect.step}/>
+    return <ModalWalletConnect open={isShowConnect.isShow} onClose={(e) => {
+        setShouldShow(false);
+        onClose(e);
+    }} panelList={walletList} step={isShowConnect.step}/>
 })
 
 

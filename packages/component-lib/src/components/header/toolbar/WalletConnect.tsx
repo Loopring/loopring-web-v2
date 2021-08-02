@@ -1,5 +1,5 @@
 import { WalletConnectBtnProps } from './Interface';
-import { WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import React, { useEffect } from 'react';
 import { AccountStatus, CloseIcon, LockIcon, } from '@loopring-web/common-resources';
 // import { debounce } from 'lodash';
@@ -71,32 +71,28 @@ const TestNetworkStyle = styled(Typography)`
 // `
 
 export const BtnWalletConnect = ({
-                                     t,
-                                     i18n,
-                                     // label,
-                                     // status = undefined,
-                                     // notificationList,
-                                     // wait = globalSetup.wait,
                                      accountState,
                                      handleClick,
-                                 }: WalletConnectBtnProps & WithTranslation) => {
-    // let disabled = undefined, loading = undefined, connect = false, accountPending = false, unlock = false,
-    //     noAccount = false, noNetwork = false;
+                                 }: WalletConnectBtnProps ) => {
+    const {t,i18n} = useTranslation('layout');
     const [label, setLabel] = React.useState<string>(t('labelConnectWallet'))
     const [networkLabel, setNetworkLabel] = React.useState<string | undefined>(undefined)
     const [btnClassname, setBtnClassname] = React.useState<string | undefined>('');
     const [icon, setIcon] = React.useState<JSX.Element | undefined>();
     useEffect(() => {
-        if(accountState && accountState.status === 'UNSET'){
+        if (accountState) {// && accountState.status === 'UNSET'){
             const {account} = accountState;
-            const addressShort = account?.accAddress?getShortAddr(account?.accAddress):undefined;
-            addressShort?setLabel(addressShort):undefined;
+            const addressShort = account.accAddress ? getShortAddr(account?.accAddress) : undefined;
+            if (addressShort) {
+                setLabel(addressShort);
+            }
+            setIcon(undefined)
             switch (account.readyState) {
                 case AccountStatus.UN_CONNECT:
-                    setLabel(t('labelConnectWallet'));
+                    setLabel('labelConnectWallet');
                     break
                 case AccountStatus.CONNECT:
-                    setBtnClassname('labelWrongHappen')
+                    setBtnClassname('wrongStatus')
                     break
                 case AccountStatus.LOCKED:
                     setBtnClassname('locked')
@@ -119,46 +115,17 @@ export const BtnWalletConnect = ({
             }
             if (account && account.chainId == 5) {
                 setNetworkLabel('Gorli')
-            } else if(account && account.chainId!==1) {
+            } else if (account && account.chainId !== 1) {
                 setBtnClassname('wrong-network')
                 setNetworkLabel(undefined)
             }
-        }else{
-            // const [label, setLabel] = React.useState<string>(t('labelConnectWallet'))
-            setLabel(t('labelConnectWallet'))
+        } else {
+            setLabel('labelConnectWallet')
         }
 
-
-
     }, [accountState, i18n])
-    // switch (status) {
-    //     case WalletStatus.disabled:
-    //         disabled = true;
-    //         break;
-    //     case WalletStatus.loading:
-    //         loading = true;
-    //         break;
-    //     case WalletStatus.noAccount:
-    //         noAccount = true;
-    //         break;
-    //     case WalletStatus.accountPending:
-    //         accountPending = true;
-    //         break;
-    //     case WalletStatus.unlock:
-    //         unlock = true;
-    //         break;
-    //     case WalletStatus.noNetwork:
-    //         noNetwork = true;
-    //         break;
-    //     default:
-    //         connect = false;
-    //         break;
-    // }
-    // const debounceCount = React.useCallback(debounce(({...props}: any) => {
-    //     if (handleClick) {
-    //
-    //     }
-    // }, wait), [handleClick])
+
+
     const _handleClick = (event: React.MouseEvent) => {
         // debounceCount(event)
         handleClick(event)
@@ -171,7 +138,7 @@ export const BtnWalletConnect = ({
                                 className={`wallet-btn ${btnClassname}`}
                                 onClick={_handleClick} {...bindHover(popupState)} >
             {icon}
-            <Typography component={'span'}> {label}  </Typography>
+            <Typography component={'span'}> {t(label)}  </Typography>
         </BtnWalletConnectStyled>
     </>
 

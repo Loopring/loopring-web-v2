@@ -63,23 +63,6 @@ const App = () => {
 
 }
 
-// const mapStateToProps = state => {
-//     ,
-//         status,
-//         getTokenMap
-
-//     return {
-//         tokenMap: state.tokenMap.tokenMap,
-//         tokenMap: state.tokenMap.t,
-//         actionCreated: state.posts.newAction
-//     };
-// };
-
-
 export default App;
 
-// connect(
-//     mapStateToProps,
-//     null // Generaly its the place of mapStateToDispatch
-// )(App);
 
