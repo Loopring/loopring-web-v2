@@ -15,7 +15,6 @@ export const ModalAccount = withTranslation('common', {withRef: true})((
     }: ModalAccountProps & WithTranslation) => {
     const theme = useTheme();
 
-
     return <Modal
         open={open}
         onClose={onClose}
@@ -27,7 +26,6 @@ export const ModalAccount = withTranslation('common', {withRef: true})((
                            {...{_height: 'var(--modal-height)', _width: 'var(--modal-width)' }}>
             <ModalCloseButton onClose={onClose} {...rest} />
             <SwipeableViews axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'} index={step}>
-                <ModalCloseButton onClose={onClose} {...rest} />
                 {panelList.map((panel,index)=>{
                     return <Box key={index}>
                         {panel}
