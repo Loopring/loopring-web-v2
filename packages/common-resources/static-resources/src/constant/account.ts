@@ -38,9 +38,15 @@ export type Account = {
     publicKey: any,
     connectName: keyof typeof ConnectProviders,
     chainId: 1 | 5,
+    wrongChain?: boolean|undefined,
+    _userOnModel?: boolean|undefined
 }
 export type AccountState = Account & StateBase;
-
+export type accountFull = {
+    account: Account,
+    resetAccount:()=>void
+    updateAccount:(account: Partial<Account>)=>void
+} & StateBase
 // export  enum StorageCommands {
 //     CLEAN= 'CLEAN',
 //     UPDATE='UPDATE'

@@ -1,7 +1,7 @@
 import { WalletConnectBtnProps } from './Interface';
 import { WithTranslation } from 'react-i18next';
-import React from 'react';
-import {  LockIcon, NoNetWorkIcon, WalletStatus } from '@loopring-web/common-resources';
+import React, { useEffect } from 'react';
+import { AccountStatus, CloseIcon, LockIcon, } from '@loopring-web/common-resources';
 // import { debounce } from 'lodash';
 import { Typography } from '@material-ui/core';
 
@@ -9,10 +9,12 @@ import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
 import styled from '@emotion/styled';
 import { Button } from '../../basic-lib';
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';
+import { getShortAddr } from '@loopring-web/webapp/src/utils/web3_tools';
 // import Popover from 'material-ui-popup-state/HoverPopover';
 const BtnWalletConnectStyled = styled(Button)`
   text-transform: none;
   min-width: 120px;
+
   i {
     padding-right: ${({theme}) => theme.unit}px;
     display: flex;
@@ -46,45 +48,112 @@ const BtnWalletConnectStyled = styled(Button)`
   }
 
 `
+const TestNetworkStyle = styled(Typography)`
+  position: relative;
+  padding-right: ${({theme}) => theme.unit}px;
+  color: ${({theme}) => theme.colorBase.secondary};
+  &:after {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: .1;
+    background: ${({theme}) => theme.colorBase.secondary}px;
+    ${({theme}) => theme.border.defaultFrame({d_W: 0, d_R: 1 / 2, c_key: theme.colorBase.backgroundBox})};
+  } ${({theme}) => theme.border.defaultFrame({d_W: 0, d_R: 1 / 2, c_key: theme.colorBase.backgroundBox})};
+
+` as typeof Typography
 // const ListStyled = styled(List)`
 //   margin: 0;
 //   width: 240px;
 // `
 
 export const BtnWalletConnect = ({
-                                     // t,
-                                     label,
-                                     status = undefined,
+                                     t,
+                                     i18n,
+                                     // label,
+                                     // status = undefined,
                                      // notificationList,
                                      // wait = globalSetup.wait,
+                                     accountState,
                                      handleClick,
                                  }: WalletConnectBtnProps & WithTranslation) => {
-    let disabled = undefined, loading = undefined, connect = false, accountPending = false, unlock = false,
-        noAccount = false, noNetwork = false;
-    // const [notificationStatus, setNotificationStatus] = React.useState(WalletNotificationStatus.none)
-    switch (status) {
-        case WalletStatus.disabled:
-            disabled = true;
-            break;
-        case WalletStatus.loading:
-            loading = true;
-            break;
-        case WalletStatus.noAccount:
-            noAccount = true;
-            break;
-        case WalletStatus.accountPending:
-            accountPending = true;
-            break;
-        case WalletStatus.unlock:
-            unlock = true;
-            break;
-        case WalletStatus.noNetwork:
-            noNetwork = true;
-            break;
-        default:
-            connect = false;
-            break;
-    }
+    // let disabled = undefined, loading = undefined, connect = false, accountPending = false, unlock = false,
+    //     noAccount = false, noNetwork = false;
+    const [label, setLabel] = React.useState<string>(t('labelConnectWallet'))
+    const [networkLabel, setNetworkLabel] = React.useState<string | undefined>(undefined)
+    const [btnClassname, setBtnClassname] = React.useState<string | undefined>('');
+    const [icon, setIcon] = React.useState<JSX.Element | undefined>();
+    useEffect(() => {
+        if(accountState && accountState.status === 'UNSET'){
+            const {account} = accountState;
+            const addressShort = account?.accAddress?getShortAddr(account?.accAddress):undefined;
+            addressShort?setLabel(addressShort):undefined;
+            switch (account.readyState) {
+                case AccountStatus.UN_CONNECT:
+                    setLabel(t('labelConnectWallet'));
+                    break
+                case AccountStatus.CONNECT:
+                    setBtnClassname('labelWrongHappen')
+                    break
+                case AccountStatus.LOCKED:
+                    setBtnClassname('locked')
+                    setIcon(<LockIcon/>)
+                    break
+                case AccountStatus.ACTIVATED:
+                    setBtnClassname('unlocked')
+                    setIcon(undefined)
+                    break
+                case AccountStatus.NO_ACCOUNT:
+                    setBtnClassname('no-account')
+                    setIcon(<CloseIcon/>)
+                    break
+                case AccountStatus.DEPOSITING:
+                    setBtnClassname('no-depositing')
+                    setIcon(<img width={20} height={20} src={loadingSvg}
+                                 alt={'loading'}/>)
+                    break
+                default:
+            }
+            if (account && account.chainId == 5) {
+                setNetworkLabel('Gorli')
+            } else if(account && account.chainId!==1) {
+                setBtnClassname('wrong-network')
+                setNetworkLabel(undefined)
+            }
+        }else{
+            // const [label, setLabel] = React.useState<string>(t('labelConnectWallet'))
+            setLabel(t('labelConnectWallet'))
+        }
+
+
+
+    }, [accountState, i18n])
+    // switch (status) {
+    //     case WalletStatus.disabled:
+    //         disabled = true;
+    //         break;
+    //     case WalletStatus.loading:
+    //         loading = true;
+    //         break;
+    //     case WalletStatus.noAccount:
+    //         noAccount = true;
+    //         break;
+    //     case WalletStatus.accountPending:
+    //         accountPending = true;
+    //         break;
+    //     case WalletStatus.unlock:
+    //         unlock = true;
+    //         break;
+    //     case WalletStatus.noNetwork:
+    //         noNetwork = true;
+    //         break;
+    //     default:
+    //         connect = false;
+    //         break;
+    // }
     // const debounceCount = React.useCallback(debounce(({...props}: any) => {
     //     if (handleClick) {
     //
@@ -97,22 +166,11 @@ export const BtnWalletConnect = ({
 
     const popupState = usePopupState({variant: 'popover', popupId: `popupId: 'wallet-connect-notification'`});
     return <>
+        {networkLabel ? <TestNetworkStyle component={'span'}>{networkLabel}</TestNetworkStyle> : <></>}
         <BtnWalletConnectStyled variant={'outlined'} size={'medium'} color={'primary'}
-                                className={'wallet-btn'}
-                                disabled={disabled} onClick={_handleClick} {...bindHover(popupState)} >
-
-            {noNetwork ? <Typography component={'i'} height={20}
-                                     className={'icon-no-network icon-error'}><NoNetWorkIcon/></Typography> :
-                loading ? <Typography component={'i'} height={20}><img width={20} height={20} src={loadingSvg}
-                                                                       alt={'loading'}/></Typography>
-                    : unlock ? <></>
-                    // <Typography component={'i'} height={20}
-                    //                        className={`icon-notification icon-success`}></Typography>
-                    : connect || accountPending || noAccount ? <Typography component={'i'} height={20}
-                        // icon-${notificationStatus}
-                                                                           className={`icon-notification icon-error`}><LockIcon/></Typography> : ''
-            }
-
+                                className={`wallet-btn ${btnClassname}`}
+                                onClick={_handleClick} {...bindHover(popupState)} >
+            {icon}
             <Typography component={'span'}> {label}  </Typography>
         </BtnWalletConnectStyled>
     </>

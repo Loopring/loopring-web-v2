@@ -14,7 +14,6 @@ export function useAccount() {
         dispatch(updateAccountStatus(account))
     }, [dispatch]);
 
-
     return {
         account: account,
         resetAccount,

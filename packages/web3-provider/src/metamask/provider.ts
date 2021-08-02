@@ -36,7 +36,7 @@ export const MetaMaskSubscribe = (provider: any, web3: Web3) => {
 
         });
         provider.on("chainChanged", (chainId: number) => {
-            walletServices.sendChainChanged(chainId);
+            walletServices.sendConnect(web3, provider);
         });
         provider.on("disconnect", (code: number, reason: string) => {
 

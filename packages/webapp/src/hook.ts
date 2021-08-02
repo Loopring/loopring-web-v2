@@ -3,7 +3,7 @@ import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { useSystem } from './stores/system';
 import { ChainId, sleep } from 'loopring-sdk';
 import { useAmmMap } from './stores/Amm/AmmMap';
-import { AccountStatus, SagaStatus } from '@loopring-web/common-resources';
+import { Account, AccountStatus, ConnectProviders, SagaStatus } from '@loopring-web/common-resources';
 import { useTokenMap } from './stores/token';
 import { useWalletLayer1 } from './stores/walletLayer1';
 import { useAccount } from './stores/account/hook';
@@ -12,6 +12,7 @@ import { AccountStep, useOpenModals, WalletConnectStep } from '@loopring-web/com
 import { LoopringAPI } from './stores/apis/api';
 import { unlockAccount } from './hooks/unlockAccount';
 import { myLog } from './utils/log_tools';
+import { lockAccount } from './hooks/lockAccount';
 
 /**
  * @description
@@ -38,31 +39,26 @@ export function useInit() {
     const {account, updateAccount, resetAccount, statusUnset: statusAccountUnset} = useAccount();
     const {setShowConnect, setShowAccount} = useOpenModals();
     const walletLayer1State = useWalletLayer1()
-    const handleChainChanged = React.useCallback(async (chainId) => {
+    // const handleChainChanged = React.useCallback(async (chainId) => {
+    //
+    // }, [_chainId])
+    const handleConnect = React.useCallback(async ({
+                                                       accounts,
+                                                       chainId,
+                                                       provider
+                                                   }: { accounts: string, provider: any, chainId: ChainId|'unknown' }) => {
+        const accAddress = accounts[ 0 ];
+        // await handleChainChanged(chainId)
         if (chainId !== _chainId && _chainId !== 'unknown' && chainId !== 'unknown') {
             chainId === 5 ? updateAccount({chainId}) : updateAccount({chainId: 1})
             updateSystem({chainId});
             window.location.reload();
         } else if (chainId == 'unknown') {
-            //TODO show error
+            const _account:Partial<Account> = lockAccount({ readyState: AccountStatus.CONNECT,wrongChain:true,})
+            updateAccount({..._account});
         }
-    }, [_chainId])
-    const handleConnect = React.useCallback(async ({
-                                                       accounts,
-                                                       chainId,
-                                                       provider
-                                                   }: { accounts: string, provider: any, chainId: number }) => {
-        const accAddress = accounts[ 0 ];
-        await handleChainChanged(chainId)
-        // if (chainId !== _chainId && _chainId !== 'unknown') {
-        //     chainId === 5 ? updateAccount({chainId}):updateAccount({chainId:1})
-        //     updateSystem({chainId: chainId as ChainId});
-        //     window.location.reload();
-        // }  else if(chainId == 'unknown'){
-        //     //TODO show error
-        // }
         updateAccount({accAddress, readyState: AccountStatus.CONNECT});
-        statusAccountUnset();
+        // statusAccountUnset();
         setShowConnect({isShow: true, step: WalletConnectStep.SuccessConnect});
 
         //TODO if have account  how unlocl if not show
@@ -71,7 +67,7 @@ export function useInit() {
             const {accInfo} = (await LoopringAPI.exchangeAPI.getAccount({
                 owner: accAddress
             }));
-
+            statusAccountUnset();
             await sleep(1000)
             let activeDeposit = localStorage.getItem('activeDeposit');
             if (activeDeposit) {
@@ -116,7 +112,7 @@ export function useInit() {
         myLog('Error')
     }, [account]);
 
-    useConnectHook({handleAccountDisconnect, handleError, handleConnect, handleChainChanged});
+    useConnectHook({handleAccountDisconnect, handleError, handleConnect});
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
         if (account.accAddress && account.connectName && account.connectName !== 'UnKnow' && account.accAddress) {
