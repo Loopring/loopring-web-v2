@@ -61,7 +61,7 @@ export function useInit() {
         // }  else if(chainId == 'unknown'){
         //     //TODO show error
         // }
-        updateAccount({accAddress, readyState: AccountStatus.CONNECT});
+        updateAccount({accAddress, readyState: AccountStatus.CONNECT, chainId: chainId as any});
         statusAccountUnset();
         setShowConnect({isShow: true, step: WalletConnectStep.SuccessConnect});
 
@@ -79,19 +79,19 @@ export function useInit() {
             }
 
             if (accInfo && accInfo.accountId) {
+                debugger
                 await unlockAccount({accInfo})
 
             } else if (activeDeposit && activeDeposit[ accAddress ]) {
+                debugger
                 setShowConnect({isShow: false});
                 setShowAccount({isShow: true, step: AccountStep.Depositing});
                 updateAccount({readyState: AccountStatus.DEPOSITING});
-
-
             } else {
+                debugger
                 setShowConnect({isShow: false});
                 setShowAccount({isShow: true, step: AccountStep.NoAccount});
                 updateAccount({readyState: AccountStatus.NO_ACCOUNT});
-
             }
         }
 
