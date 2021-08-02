@@ -1,6 +1,6 @@
-import { updateAccountStatus } from '../stores/account';
+import { statusUnset as statusAccountUnset, updateAccountStatus } from '../stores/account';
 import { AccountStep, setShowAccount, setShowConnect } from '@loopring-web/component-lib';
-import { generateKeyPair, sleep, toBig, toHex } from 'loopring-sdk';
+import { dumpError400, generateKeyPair, sleep, toBig, toHex } from 'loopring-sdk';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { LoopringAPI } from '../stores/apis/api';
 import { AccountInfo } from 'loopring-sdk/dist/defs/account_defs';
@@ -62,9 +62,10 @@ export async function unlockAccount({accInfo}: { accInfo: AccountInfo }) {
                 store.dispatch(setShowAccount({isShow: true, step: AccountStep.SuccessUnlock}));
                 await sleep(1000)
                 store.dispatch(setShowAccount({isShow: false}));
+                store.dispatch(statusAccountUnset(undefined))
             }
         } catch (reason) {
-            // dumpError400(reason);
+            dumpError400(reason);
             store.dispatch(setShowAccount({isShow: true, step: AccountStep.FailedUnlock}));
             // event = (StatusChangeEvent.ErrorResponse)
         }
