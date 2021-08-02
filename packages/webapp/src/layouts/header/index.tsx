@@ -61,7 +61,7 @@ const Header = ({...rest}: any) => {
 
         <HideOnScroll>
             {process.env.NODE_ENV !== 'production' && JSON.stringify(account?.readyState) + '\t'
-            + account?.connectName + '/'}
+            + account?.connectName + '/' + JSON.stringify(isShowConnect)}
 
             <HeaderUI {...rest} headerMenuData={headerMenuData} headerToolBarData={headerToolBarData}
                       selected={location.pathname === '/' ? headerRoot : location.pathname}></HeaderUI>

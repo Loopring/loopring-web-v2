@@ -40,7 +40,7 @@ export const ModalAccountInfo = withTranslation('common')(({
     etherscanUrl: string
 } & WithTranslation) => {
     const {account, updateAccount, resetAccount, statusUnset: statusAccountUnset} = useAccount();
-    const {modals: {isShowAccount}, setShowConnect, setShowAccount} = useOpenModals();
+    const {modals: {isShowAccount}, setShowConnect, setShowAccount, setShowDeposit} = useOpenModals();
     const [openQRCode, setOpenQRCode] = useState(false);
     const addressShort = getShortAddr(account.accAddress)
 
@@ -96,10 +96,15 @@ export const ModalAccountInfo = withTranslation('common')(({
         // updateAccount()
         setShowAccount({isShow: true, step: AccountStep.ProcessUnlock});
     }, [updateAccount])
+
+    const goDeposit = React.useCallback(() => {
+        setShowAccount({isShow: true, step: AccountStep.Deposit});
+    }, [setShowAccount, setShowDeposit])
+
     // const onSwitch = {onSwitch}
     const accountList = React.useMemo(() => {
         return Object.values({
-            [ AccountStep.NoAccount ]: <NoAccount  {...{
+            [ AccountStep.NoAccount ]: <NoAccount {...{goDeposit,
                 onSwitch, onCopy,
                 address: account.accAddress,
                 connectBy: account.connectName,
