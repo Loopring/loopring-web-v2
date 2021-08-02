@@ -3,7 +3,7 @@ import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { useSystem } from './stores/system';
 import { ChainId, dumpError400, sleep } from 'loopring-sdk';
 import { useAmmMap } from './stores/Amm/AmmMap';
-import { Account, AccountStatus, ConnectProviders, SagaStatus } from '@loopring-web/common-resources';
+import { Account, AccountStatus, SagaStatus } from '@loopring-web/common-resources';
 import { useTokenMap } from './stores/token';
 import { useWalletLayer1 } from './stores/walletLayer1';
 import { useAccount } from './stores/account/hook';
@@ -13,6 +13,7 @@ import { LoopringAPI } from './stores/apis/api';
 import { unlockAccount } from './hooks/unlockAccount';
 import { myLog } from './utils/log_tools';
 import { lockAccount } from './hooks/lockAccount';
+import { activeAccount } from './hooks/activeAccount';
 
 /**
  * @description
@@ -36,17 +37,16 @@ export function useInit() {
         status: systemStatus,
         statusUnset: systemStatusUnset
     } = useSystem();
-    const { account, updateAccount, resetAccount, statusUnset: statusAccountUnset } = useAccount();
-    const { setShowConnect, setShowAccount } = useOpenModals();
-    const walletLayer1State = useWalletLayer1()
-    // const handleChainChanged = React.useCallback(async (chainId) => {
-    //
-    // }, [_chainId])
+    const {account, updateAccount, shouldShow, resetAccount, statusUnset: statusAccountUnset} = useAccount();
+
+    const {setShowConnect, setShowAccount} = useOpenModals();
+    const walletLayer1State = useWalletLayer1();
+
     const handleConnect = React.useCallback(async ({
                                                        accounts,
                                                        chainId,
                                                        provider
-                                                   }: { accounts: string, provider: any, chainId: ChainId|'unknown' }) => {
+                                                   }: { accounts: string, provider: any, chainId: ChainId | 'unknown' }) => {
         const accAddress = accounts[ 0 ];
         // await handleChainChanged(chainId)
         if (chainId !== _chainId && _chainId !== 'unknown' && chainId !== 'unknown') {
@@ -54,57 +54,33 @@ export function useInit() {
             updateSystem({chainId});
             window.location.reload();
         } else if (chainId == 'unknown') {
-            const _account:Partial<Account> = lockAccount({ readyState: AccountStatus.CONNECT,wrongChain:true,})
+            const _account: Partial<Account> = lockAccount({readyState: AccountStatus.CONNECT, wrongChain: true,})
             updateAccount({..._account});
         }
         updateAccount({accAddress, readyState: AccountStatus.CONNECT});
         // statusAccountUnset();
-        setShowConnect({isShow: true, step: WalletConnectStep.SuccessConnect});
-
+        setShowConnect({isShow: shouldShow??false, step: WalletConnectStep.SuccessConnect});
+        // debugger
         //TODO if have account  how unlocl if not show
-        if (connectProvides.usedWeb3 && exchangeInfo && LoopringAPI.exchangeAPI && LoopringAPI.userAPI) {
+        if (connectProvides.usedWeb3 && LoopringAPI.exchangeAPI && LoopringAPI.userAPI) {
 
             try {
-                const { accInfo } = (await LoopringAPI.exchangeAPI.getAccount({
+                const {accInfo} = (await LoopringAPI.exchangeAPI.getAccount({
                     owner: accAddress
                 }))
 
                 if (accInfo && accInfo.accountId) {
-                    await unlockAccount({ accInfo })
+                    await unlockAccount({accInfo,shouldShow:shouldShow??false})
                 }
                 statusAccountUnset();
             } catch (reason) {
                 dumpError400(reason)
-                if (reason?.response?.data?.resultInfo?.code === 100001) {
-                    // deposited, but need update account
-                    console.log('ApproveAccount')
-                    setShowConnect({ isShow: false });
-                    setShowAccount({ isShow: true, step: AccountStep.ApproveAccount });
-                    // updateAccount({ readyState: AccountStatus.DEPOSITFINISH });
-                } else {
-                    // need to deposit.
-                    let activeDeposit = localStorage.getItem('activeDeposit');
-                    if (activeDeposit) {
-                        activeDeposit = JSON.stringify(activeDeposit);
-                    }
-                    if (activeDeposit && activeDeposit[accAddress]) {
-                        console.log('DEPOSITING')
-                        setShowConnect({ isShow: false });
-                        setShowAccount({ isShow: true, step: AccountStep.Depositing });
-                        updateAccount({ readyState: AccountStatus.DEPOSITING });
-                        statusAccountUnset();
-                    } else {
-                        console.log('NO_ACCOUNT')
-                        setShowConnect({ isShow: false });
-                        setShowAccount({ isShow: true, step: AccountStep.NoAccount });
-                        updateAccount({ readyState: AccountStatus.NO_ACCOUNT });
-                        statusAccountUnset();
-                    }
-                }
+                await activeAccount({reason,shouldShow:shouldShow??false});
+                statusAccountUnset();
             }
         }
 
-    }, [_chainId, account])
+    }, [_chainId, account, shouldShow])
 
     const handleAccountDisconnect = React.useCallback(async () => {
         if (account && account.accAddress) {
@@ -117,33 +93,33 @@ export function useInit() {
 
     }, [account]);
 
-    const handleError = React.useCallback(async ({ type, errorObj }: { type: keyof typeof ErrorType, errorObj: any }) => {
-        updateSystem({ chainId: account.chainId ? account.chainId : 1 })
+    const handleError = React.useCallback(async ({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
+        updateSystem({chainId: account.chainId ? account.chainId : 1})
         resetAccount();
         await sleep(10);
         statusAccountUnset();
         myLog('Error')
     }, [account]);
 
-    useConnectHook({ handleAccountDisconnect, handleError, handleConnect });
+    useConnectHook({handleAccountDisconnect, handleError, handleConnect});
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
         if (account.accAddress && account.connectName && account.connectName !== 'UnKnown' && account.accAddress) {
             try {
-                await connectProvides[account.connectName]();
+                await connectProvides[ account.connectName ]();
                 if (connectProvides.usedProvide) {
                     const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
 
                     //LoopringAPI.InitApi(chainId)
 
-                    updateSystem({ chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET) })
+                    updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
                     return
                 }
             } catch (error) {
                 console.log(error)
             }
         } else if (account.chainId) {
-            updateSystem({ chainId: account.chainId })
+            updateSystem({chainId: account.chainId})
         } else {
             updateSystem({chainId: ChainId.MAINNET})
         }

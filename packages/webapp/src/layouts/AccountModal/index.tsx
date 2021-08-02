@@ -39,7 +39,7 @@ export const ModalAccountInfo = withTranslation('common')(({
     depositProps: DepositProps<any, any>,
     etherscanUrl: string
 } & WithTranslation) => {
-    const {account, updateAccount, resetAccount, statusUnset: statusAccountUnset} = useAccount();
+    const {account, updateAccount,setShouldShow, resetAccount, statusUnset: statusAccountUnset} = useAccount();
     const {modals: {isShowAccount}, setShowConnect, setShowAccount, setShowDeposit} = useOpenModals();
     const [openQRCode, setOpenQRCode] = useState(false);
     const addressShort = getShortAddr(account.accAddress)
@@ -133,7 +133,8 @@ export const ModalAccountInfo = withTranslation('common')(({
 
         <ModalQRCode open={openQRCode} onClose={() => setOpenQRCode(false)} title={'ETH Address'}
                      description={account?.accAddress} url={account?.accAddress}/>
-        <ModalAccount open={isShowAccount.isShow} onClose={onClose}
-                      panelList={accountList} step={isShowAccount.step}/>
+        <ModalAccount open={isShowAccount.isShow} onClose={(e)=>{
+            setShouldShow(false);
+            onClose(e);}} panelList={accountList} step={isShowAccount.step}/>
     </>
 })

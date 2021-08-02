@@ -74,7 +74,8 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                     apiKey,
                     eddsaKey,
                     chainId,
-                    connectName
+                    connectName,
+                    _userOnModel
                 } = action.payload;
                 if (accAddress) {
                     state.accAddress = accAddress;
@@ -100,6 +101,10 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                 if (chainId) {
                     state.chainId = chainId;
                 }
+                if( _userOnModel!== undefined){
+                    state._userOnModel = _userOnModel;
+                }
+
                 state.status = SagaStatus.DONE;
             }
         },

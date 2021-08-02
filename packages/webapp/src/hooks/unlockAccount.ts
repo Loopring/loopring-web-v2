@@ -7,17 +7,9 @@ import { AccountInfo } from 'loopring-sdk/dist/defs/account_defs';
 import store from '../stores';
 import { AccountStatus } from '@loopring-web/common-resources';
 
-export async function unlockAccount({accInfo}: { accInfo: AccountInfo }) {
-    // const  dispach =  store.dispatch;
+export async function unlockAccount({accInfo, shouldShow}: { accInfo: AccountInfo, shouldShow: boolean }) {
     const account = store.getState().account;
     const {exchangeInfo} = store.getState().system;
-    // const {isShowConnect}  = store.getState().modals
-    // setShowConnect, setShowAccount
-    // const {account, updateAccount, resetAccount} = useAccount();
-    // const {updateSystem, chainId: _chainId, exchangeInfo} = useSystem();
-    // const {modals: {isShowConnect}, setShowConnect, setShowAccount} = useOpenModals();
-    // store.dispatch
-
     if (account.eddsaKey && account.apiKey) {
         store.dispatch(updateAccountStatus({
             accountId: accInfo.accountId,
@@ -25,16 +17,16 @@ export async function unlockAccount({accInfo}: { accInfo: AccountInfo }) {
             readyState: AccountStatus.ACTIVATED
         }));
         store.dispatch(setShowConnect({isShow: false}));
+        store.dispatch(statusAccountUnset(undefined))
     } else {
         store.dispatch(updateAccountStatus({
             accountId: accInfo.accountId,
             level: accInfo.tags,
             readyState: AccountStatus.LOCKED
         }));
+        store.dispatch(statusAccountUnset(undefined))
         store.dispatch(setShowConnect({isShow: false}));
-        store.dispatch(setShowAccount({isShow: true, step: AccountStep.ProcessUnlock}));
-
-        // await sleep(1000)
+        store.dispatch(setShowAccount({isShow: shouldShow, step: AccountStep.ProcessUnlock}));
         try {
             if (exchangeInfo && LoopringAPI.userAPI) {
                 const eddsaKey = await generateKeyPair(
@@ -59,14 +51,14 @@ export async function unlockAccount({accInfo}: { accInfo: AccountInfo }) {
                     },
                     readyState: AccountStatus.ACTIVATED
                 }));
-                store.dispatch(setShowAccount({isShow: true, step: AccountStep.SuccessUnlock}));
+                store.dispatch(setShowAccount({isShow: shouldShow, step: AccountStep.SuccessUnlock}));
                 await sleep(1000)
                 store.dispatch(setShowAccount({isShow: false}));
                 store.dispatch(statusAccountUnset(undefined))
             }
         } catch (reason) {
             dumpError400(reason);
-            store.dispatch(setShowAccount({isShow: true, step: AccountStep.FailedUnlock}));
+            store.dispatch(setShowAccount({isShow: shouldShow, step: AccountStep.FailedUnlock}));
             // event = (StatusChangeEvent.ErrorResponse)
         }
 
