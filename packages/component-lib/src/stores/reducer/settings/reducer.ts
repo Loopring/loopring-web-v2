@@ -27,7 +27,6 @@ export const settingsSlice:Slice<SettingsState> = createSlice({
         setLanguage(state, action: PayloadAction<LanguageKeys>) {
             i18n.changeLanguage(action.payload);
             if (action.payload) {
-                console.log(action.payload.toLocaleLowerCase())
                 // action.payload === 'en_US' ? moment.locale('en') : moment.locale(action.payload.toLocaleLowerCase());
                 action.payload === 'en_US' 
                     ? moment.updateLocale('en', {
