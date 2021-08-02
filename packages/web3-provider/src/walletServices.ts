@@ -5,6 +5,7 @@ import { Commands, ErrorType, ProcessingType } from './command';
 //TODO typeof account State
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
+const AvaiableNetwork = [1,5];
 export const walletServices = {
     sendProcess: async (type: keyof typeof ProcessingType, props?: any) => {
         subject.next({
@@ -21,20 +22,21 @@ export const walletServices = {
     sendConnect: async (web3: Web3, provider: any) => {
         try {
             const accounts = await web3.eth.getAccounts();
-            const chainId = await web3.eth.getChainId();
-            // const networkId = await web3.eth.net.getId();
-            // networkId
-            console.log('wallet connect:', accounts, chainId);
+            let chainId = await web3.eth.getChainId();
 
-            subject.next({status: 'ConnectWallet', data: {provider, accounts, chainId}});
+            // console.log('wallet connect:', accounts, chainId);
+
+            subject.next({status: 'ConnectWallet', data: {provider, accounts,
+                    chainId: AvaiableNetwork.findIndex((i)=>i == Number(chainId))!==-1?'unknown':  Number(chainId)
+            }});
         } catch (error) {
             subject.next({status: 'Error', data: {error}});
         }
     },
-    sendChainChanged: async (chainId: number) => {
-        console.log('wallet connect:', chainId);
-        subject.next({status: 'ChangeNetwork', data: {chainId: Number(chainId)}})
-    },
+    // sendChainChanged: async (chainId: number) => {
+    //     console.log('wallet connect:', chainId);
+    //     subject.next({status: 'ChangeNetwork', data: {chainId: Number(chainId)}})
+    // },
     sendDisconnect: async (code: any, reason: any) => {
         console.log('wallet disconnect:', reason);
         subject.next({status: 'DisConnect', data: {reason: reason, code: code}})

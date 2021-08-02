@@ -70,8 +70,10 @@ export const useHeader = () => {
     const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals()
     const {etherscanUrl} = useSystem();
     // const forceUpdate = React.useReducer((bool) => !bool, false)[ 1 ]
-    const {account, updateAccount, status: accountStatus, errorMessage} = useAccount();
-    const dispatch = useDispatch();
+    const accountState  = useAccount();
+    const {account} = accountState;
+    // const  accountStatus  =  accountState.status
+    // const dispatch = useDispatch();
     // const [showAccountInfo, setShowAccount] = React.useState(account?.accAddr ? true : false)
     const [accountInfoProps, setAccountBaseProps] = React.useState<undefined | AccountBaseProps>(undefined)
     //const theme: any = useTheme()
@@ -117,6 +119,7 @@ export const useHeader = () => {
     React.useEffect(() => {
         headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
             ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
+            accountState,
             handleClick: onWalletBtnConnect,
         }
         headerToolBarData[ ButtonComponentsMap.Theme ] = {
@@ -130,59 +133,12 @@ export const useHeader = () => {
         }
     }, []);
 
-    React.useEffect(() => {
-        const {readyState} = account
-        const addressShort = getShortAddr(account.accAddress);
-        const labelConnect = t('labelConnectWallet')
-        switch (readyState) {
-            case AccountStatus.UN_CONNECT:
-                headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-                    ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                    label: labelConnect,
-                    status: WalletStatus.default
-                }
-                headerMenuData[ HeadMenuTabKey.Layer2 ] = {
-                    //TODO:  HeaderMenuTabStatus.hidden
-                    ...headerMenuData[ HeadMenuTabKey.Layer2 ], status: HeaderMenuTabStatus.hidden
-                }
-                // setShowAccount({isShow: false})
-                break
-            case AccountStatus.CONNECT:
-            case AccountStatus.LOCKED:
-                headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-                    ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                    label: addressShort,
-                    status: WalletStatus.connect
-                };
-                break
-            case AccountStatus.ACTIVATED:
-                headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-                    ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                    label: addressShort,
-                    status: WalletStatus.unlock
-                }
-                break
-            case AccountStatus.NO_ACCOUNT:
-                headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-                    ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                    // TODO got cache address if no show Connect Wallet
-                    label: addressShort,
-                    status: WalletStatus.noAccount
-                }
-
-                // updateHeaderMenuWhenHasAccountInfo({readyState});
-                break
-            case AccountStatus.DEPOSITING:
-                headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-                    ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                    label: addressShort,
-                    status: WalletStatus.accountPending
-                }
-                // updateHeaderMenuWhenHasAccountInfo({readyState});
-
-                break
-        }
-    }, [account.readyState, language])
+    // React.useEffect(() => {
+    //     const {readyState} = account
+    //     const addressShort = getShortAddr(account.accAddress);
+    //     const labelConnect = t('labelConnectWallet')
+    //
+    // }, [account.readyState, language])
 
 
     return {

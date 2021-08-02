@@ -56,7 +56,7 @@ export const WalletConnectSubscribe = (provider: any, web3: Web3) => {
                 walletServices.sendError(ErrorType.FailedConnect, {connectName: ConnectProviders.WalletConnect, error})
             }
             connector.updateSession({accounts, chainId})
-            walletServices.sendChainChanged(chainId);
+            walletServices.sendConnect(web3, provider);
         });
         connector.on("disconnect", (error: Error | null, payload: any | null) => {
             const {message} = payload.params[ 0 ];
