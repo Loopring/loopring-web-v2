@@ -119,7 +119,7 @@ export function useInit() {
     useConnectHook({handleAccountDisconnect, handleError, handleConnect, handleChainChanged});
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
-        if (account.accAddress && account.connectName && account.connectName !== 'UnKnow' && account.accAddress) {
+        if (account.accAddress && account.connectName && account.connectName !== 'UnKnown' && account.accAddress) {
             try {
                 await connectProvides[ account.connectName ]();
                 if (connectProvides.usedProvide) {
