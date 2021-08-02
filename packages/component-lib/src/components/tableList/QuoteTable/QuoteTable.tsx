@@ -266,7 +266,6 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                     sortedRows = sortedRows.sort((a, b) => {
                         const valueA = a.pair.coinA
                         const valueB = b.pair.coinA
-                        console.log(valueA, valueB)
                         return valueA.localeCompare(valueB)
                     })
                     break;

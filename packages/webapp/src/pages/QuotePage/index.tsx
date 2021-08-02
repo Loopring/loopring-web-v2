@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import styled from '@emotion/styled/macro'
 
 import { MarketBlock, QuoteTable, TablePaddingX, QuoteTableRawDataItem } from '@loopring-web/component-lib'
@@ -29,6 +29,8 @@ export type CandlestickItem = {
 
 const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const [candlestickList, setCandlestickList] = React.useState<any[]>([])
+    const [ammPoolBalances, setAmmPoolBalances] = React.useState<any[]>([])
+
     const getCandlestick = React.useCallback(async (market: string) => {
       if (LoopringAPI.exchangeAPI) {
         const res = await LoopringAPI.exchangeAPI.getMixCandlestick({
@@ -65,6 +67,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     }, [])
 
     const { recommendations, tickList, onVisibleRowsChange } = useQuote()
+
     React.useEffect(() => {
       const list = recommendations.map(item => {
         const market = `${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}`
@@ -78,9 +81,38 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
       }
     }, [recommendations, getCandlestick])
 
+    const getAmmPoolBalances = useCallback(async () => {
+      if (LoopringAPI.ammpoolAPI) {
+        const ammRes = await LoopringAPI.ammpoolAPI?.getAmmPoolBalances()
+        const fomattedRes = ammRes.raw_data.map((o: any) => ({
+          ...o,
+          poolName: o.poolName.replace('AMM-', '')
+        }))
+        setAmmPoolBalances(fomattedRes)
+      }
+    }, [])
+
+    React.useEffect(() => {
+      getAmmPoolBalances()
+    }, [getAmmPoolBalances])
+
     let history = useHistory()
 
-    const handleRowClick = React.useCallback((row: QuoteTableRawDataItem) => {
+    const getFilteredTickList = useCallback(() => {
+      if (!!ammPoolBalances.length && tickList && !!tickList.length) {
+        console.log('run')
+        return tickList.filter((o: any) => {
+          const pair = `${o.pair.coinA}-${o.pair.coinB}`
+          if (ammPoolBalances.find(o => o.poolName === pair)) {
+            return !ammPoolBalances.find(o => o.poolName === pair).risky
+          }
+          return true
+        })
+      }
+      return []
+    }, [tickList, ammPoolBalances])
+
+    const handleRowClick = useCallback((row: QuoteTableRawDataItem) => {
       const { coinA, coinB } = row.pair
       const tradePair = `${coinA}-${coinB}`
       history && history.push({
@@ -118,7 +150,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
             <Grid item xs={12} display={'flex'}>
                 <QuoteTable /* onVisibleRowsChange={onVisibleRowsChange} */ onRowClick={(index, row, col) => 
                   handleRowClick(row)
-                } rawData={tickList} {...{ showLoading: tickList && !tickList.length, ...rest }} />
+                } rawData={getFilteredTickList()} {...{ showLoading: tickList && !tickList.length, ...rest }} />
             </Grid>
         </TableWrapStyled>
     </Box>
