@@ -15,7 +15,7 @@ export type AccountBaseProps = {
 }
 
 
-export enum AccountStep  {
+export enum AccountStep {
     NoAccount,
     Deposit,
     Depositing,

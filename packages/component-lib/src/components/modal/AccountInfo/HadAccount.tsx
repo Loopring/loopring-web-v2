@@ -5,16 +5,24 @@ import { Box, Typography } from '@material-ui/core';
 import { WithTranslation, withTranslation } from 'react-i18next';
 
 
-export const HadAccount = withTranslation('common')(({goDeposit,t,...props}:WithTranslation & AccountBaseProps & { goDeposit:()=>void }) => {
+export const HadAccount = withTranslation('common')(({ goDeposit, unlock, t, ...props }: WithTranslation & AccountBaseProps
+    & {
+        unlock: () => void,
+        goDeposit: () => void
+    }) => {
     return <Box flex={1} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
 
-        <AccountBase {...props} t={t}/>
+        <AccountBase {...props} t={t} />
         <Box display={'flex'} marginTop={3} flexDirection={'column'} alignItems={'center'}>
             <Typography variant={'body2'} >
                 {t('labelActivatedAccountDeposit')}
             </Typography>
-            
+
         </Box>
+
+        <Button onClick={() => {
+            unlock();
+        }}>unlock</Button>
 
         <Button onClick={() => {
             goDeposit();

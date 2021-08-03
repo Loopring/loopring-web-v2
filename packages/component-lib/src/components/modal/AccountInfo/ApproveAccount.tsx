@@ -6,5 +6,6 @@ export const ApproveAccount = () => {
         <Typography component={'h2'}>Active Account</Typography>
         <Button onClick={() => {
             //TODO
-        }}>Click Approve</Button></>
+        }}>Click Approve</Button>
+        </>
 }

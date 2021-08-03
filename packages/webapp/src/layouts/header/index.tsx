@@ -1,6 +1,7 @@
 import React from 'react'
 
 import {
+    AccountStep,
     Header as HeaderUI,
     HideOnScroll,
     ModalPanel
@@ -63,7 +64,9 @@ const Header = ({...rest}: any) => {
         <HideOnScroll>
             {process.env.NODE_ENV !== 'production' 
             && JSON.stringify(account?.readyState) + '| addr:' + account.accAddress + '|\t'
-            + account?.connectName + '/' + JSON.stringify(isShowConnect)}
+            + account?.connectName + '/' + JSON.stringify(isShowConnect)
+             + ' |isShowConnect:' + (AccountStep[isShowConnect.step])
+              + '| isShowAccount:' + (AccountStep[isShowAccount.step])}
 
             <HeaderUI {...rest} headerMenuData={headerMenuData} headerToolBarData={headerToolBarData}
                       selected={location.pathname === '/' ? headerRoot : location.pathname}></HeaderUI>
