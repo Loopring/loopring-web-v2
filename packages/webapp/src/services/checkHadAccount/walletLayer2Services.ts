@@ -1,7 +1,6 @@
 import { Account } from '@loopring-web/common-resources';
 import { Subject } from 'rxjs';
-import { Commands } from './command';
-import { LoopringAPI } from '../../stores/apis/api';
+import { Commands } from '@loopring-web/web3-provider';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
@@ -46,66 +45,21 @@ export const walletLayer2Services = {
 
     },
     //INFO: for lock account todo clear the private info, user click or provider on wrong network
-    sendAccountLock: () => {
-        subject.next({
-            status: Commands.LockAccount,
-            data:undefined
-        })
+    sendLock: () => {
+
     },
     sendActiveAccountDeposit: () => {
 
     },
-    sendAccountSigned:() => {
-        subject.next({
-            status: Commands.UnLockAccount,
-            data:undefined
-        })
-    },
-    sendNoAccount:()=>{
-        subject.next({
-            status: Commands.NoAccount,
-            data:undefined
-        })
-    },
-    sendCheckAccount: async (ethAddress:string) => {
-      const self = this;
-        // debugger
-    //TODO if have account  how unlocl if not show
-    // if (connectProvides.usedWeb3 && LoopringAPI.exchangeAPI && LoopringAPI.userAPI) {
-
-    if(LoopringAPI.exchangeAPI) {
-        const {accInfo} = (await LoopringAPI.exchangeAPI.getAccount({
-            owner: ethAddress
-        }))
-        //TODO code is notaccount
-        if(accInfo === undefined) {
-            walletLayer2Services.sendNoAccount()
-            // subject.next({
-            //     status: Commands.NoAccount,
-            //     data:undefined
-            // })
-        }else{
-            walletLayer2Services.sendAccountLock()
-        }
-    }
-
-    // try {
-    //
-    //
-    //     if (accInfo && accInfo.accountId) {
-    //         await unlockAccount({accInfo, shouldShow: shouldShow ?? false})
-    //     }
-    //     statusAccountUnset();
-    // } catch (reason) {
-    //     dumpError400(reason)
-    //     await activeAccount({reason, shouldShow: shouldShow ?? false});
-    //     statusAccountUnset();
-    // }
-
-
+    sendCheckAccount: () => {
 
     },
+    sendHadAccount:()=>{
 
+    },
+    checkIsDepositing: () => {
+
+    },
     onSocket: () => subject.asObservable()
     // clearMessages: () => subject.next(),
     // onSocket: () => subject.asObservable()

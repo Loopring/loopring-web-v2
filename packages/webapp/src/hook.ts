@@ -8,12 +8,15 @@ import { useTokenMap } from './stores/token';
 import { useWalletLayer1 } from './stores/walletLayer1';
 import { useAccount } from './stores/account/hook';
 import { connectProvides, ErrorType, useConnectHook } from '@loopring-web/web3-provider';
-import { AccountStep, useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
+import { useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
 import { LoopringAPI } from './stores/apis/api';
 import { unlockAccount } from './services/account/unlockAccount';
 import { myLog } from './utils/log_tools';
 import { lockAccount } from './services/account/lockAccount';
 import { activeAccount } from './services/account/activeAccount';
+import { useAccountHook } from './services/account/useAccountHook';
+import { walletLayer2Services } from './services/account/walletLayer2Services';
+import { checkAccount } from './services/account/checkAccount';
 
 /**
  * @description
@@ -32,76 +35,13 @@ export function useInit() {
     const ammMapState = useAmmMap();
     const {
         updateSystem,
-        chainId: _chainId,
-        exchangeInfo,
+
         status: systemStatus,
         statusUnset: systemStatusUnset
     } = useSystem();
-    const {account, updateAccount, shouldShow, resetAccount, statusUnset: statusAccountUnset} = useAccount();
-
-    const {setShowConnect, setShowAccount} = useOpenModals();
+    const {account,} = useAccount();
     const walletLayer1State = useWalletLayer1();
-
-    const handleConnect = React.useCallback(async ({
-                                                       accounts,
-                                                       chainId,
-                                                       provider
-                                                   }: { accounts: string, provider: any, chainId: ChainId | 'unknown' }) => {
-        const accAddress = accounts[ 0 ];
-        // await handleChainChanged(chainId)
-        if (chainId !== _chainId && _chainId !== 'unknown' && chainId !== 'unknown') {
-            chainId === 5 ? updateAccount({chainId}) : updateAccount({chainId: 1})
-            updateSystem({chainId});
-            window.location.reload();
-        } else if (chainId == 'unknown') {
-            const _account: Partial<Account> = lockAccount({readyState: AccountStatus.CONNECT, wrongChain: true,})
-            updateAccount({..._account});
-        }
-        updateAccount({accAddress, readyState: AccountStatus.CONNECT});
-        // statusAccountUnset();
-        setShowConnect({isShow: shouldShow??false, step: WalletConnectStep.SuccessConnect});
-        // debugger
-        //TODO if have account  how unlocl if not show
-        if (connectProvides.usedWeb3 && LoopringAPI.exchangeAPI && LoopringAPI.userAPI) {
-
-            try {
-                const {accInfo} = (await LoopringAPI.exchangeAPI.getAccount({
-                    owner: accAddress
-                }))
-
-                if (accInfo && accInfo.accountId) {
-                    await unlockAccount({accInfo,shouldShow:shouldShow??false})
-                }
-                statusAccountUnset();
-            } catch (reason) {
-                dumpError400(reason)
-                await activeAccount({reason,shouldShow:shouldShow??false});
-                statusAccountUnset();
-            }
-        }
-
-    }, [_chainId, account, shouldShow])
-
-    const handleAccountDisconnect = React.useCallback(async () => {
-        if (account && account.accAddress) {
-            resetAccount();
-            statusAccountUnset();
-            myLog('Disconnect and clear')
-        } else {
-            myLog('Disconnect with no account')
-        }
-
-    }, [account]);
-
-    const handleError = React.useCallback(async ({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
-        updateSystem({chainId: account.chainId ? account.chainId : 1})
-        resetAccount();
-        await sleep(10);
-        statusAccountUnset();
-        myLog('Error')
-    }, [account]);
-
-    useConnectHook({handleAccountDisconnect, handleError, handleConnect});
+    useConnectHandle();
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
         if (account.accAddress && account.connectName && account.connectName !== 'UnKnown' && account.accAddress) {
@@ -150,7 +90,7 @@ export function useInit() {
             default:
                 break;
         }
-    }, x[systemStatus, systemStatusUnset]);
+    }, [systemStatus, systemStatusUnset]);
     React.useEffect(() => {
         if (ammMapState.status === "ERROR" || tokenState.status === "ERROR") {
             //TODO: solve errorx
@@ -167,6 +107,97 @@ export function useInit() {
     return {
         state,
     }
+}
 
+function useConnectHandle() {
+    const {account, updateAccount, shouldShow, resetAccount, statusUnset: statusAccountUnset} = useAccount();
+    const {
+        updateSystem,
+        chainId: _chainId,
+    } = useSystem();
+    const handleConnect = React.useCallback(async ({
+                                                       accounts,
+                                                       chainId,
+                                                       provider
+                                                   }: { accounts: string, provider: any, chainId: ChainId | 'unknown' }) => {
+        const accAddress = accounts[ 0 ];
+        const {setShowConnect, setShowAccount} = useOpenModals();
+        const {
+            updateSystem,
+            chainId: _chainId,
+            exchangeInfo,
+            status: systemStatus,
+            statusUnset: systemStatusUnset
+        } = useSystem();
+        // await handleChainChanged(chainId)
+        if (chainId !== _chainId && _chainId !== 'unknown' && chainId !== 'unknown') {
+            chainId === 5 ? updateAccount({chainId}) : updateAccount({chainId: 1})
+            updateSystem({chainId});
+            window.location.reload();
+        } else if (chainId == 'unknown') {
+            const _account: Partial<Account> = lockAccount({readyState: AccountStatus.NO_ACCOUNT, wrongChain: true,})
+            updateAccount({..._account});
+        }
+        checkAccount(accAddress);
+
+        setShowConnect({isShow: shouldShow ?? false, step: WalletConnectStep.SuccessConnect});
+        await sleep(1000)
+        setShowConnect({isShow: false, step: WalletConnectStep.SuccessConnect});
+
+
+
+    }, [_chainId, account, shouldShow])
+
+    const handleAccountDisconnect = React.useCallback(async () => {
+        if (account && account.accAddress) {
+            resetAccount();
+            statusAccountUnset();
+            myLog('Disconnect and clear')
+        } else {
+            myLog('Disconnect with no account')
+        }
+
+    }, [account]);
+
+    const handleError = React.useCallback(async ({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
+        updateSystem({chainId: account.chainId ? account.chainId : 1})
+        resetAccount();
+        await sleep(10);
+        statusAccountUnset();
+        myLog('Error')
+    }, [account]);
+
+    useConnectHook({handleAccountDisconnect, handleError, handleConnect});
+
+}
+
+function useAccountHandle() {
+    const {account, updateAccount, shouldShow, resetAccount, statusUnset: statusAccountUnset} = useAccount();
+    const handleLockAccount = React.useCallback(()=>{},[])
+    const handleNoAccount = React.useCallback(()=>{},[])
+    const handleDepositingAccount = React.useCallback(()=>{},[])
+    const handleErrorApproveToken = React.useCallback(()=>{},[])
+    const handleErrorDepositSign = React.useCallback(()=>{},[])
+    const handleProcessDeposit = React.useCallback(()=>{},[])
+    const handleSignAccount = React.useCallback(()=>{},[])
+    const handleSignError = React.useCallback(()=>{},[])
+
+    const handleProcessSign = React.useCallback(()=>{},[])
+    const handleProcessAccountCheck = React.useCallback(()=>{},[])
+    useAccountHook({
+        handleLockAccount,// clear private data
+        handleNoAccount,//
+        // TODO
+        //  step1 Approve account;  click allow from provider
+        //  step2 send to ETH;  click allow from provider
+        handleDepositingAccount,
+        handleErrorApproveToken,
+        handleErrorDepositSign,
+        handleProcessDeposit,// two or one step
+        handleSignAccount, //unlock or update account  assgin
+        handleProcessSign,
+        handleSignError,
+        handleProcessAccountCheck
+    })
 }
 
