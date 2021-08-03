@@ -66,7 +66,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
       }
     }, [])
 
-    const { recommendations, tickList, onVisibleRowsChange } = useQuote()
+    const { recommendations, tickList /* onVisibleRowsChange */ } = useQuote()
 
     React.useEffect(() => {
       const list = recommendations.map(item => {
@@ -98,6 +98,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
 
     let history = useHistory()
 
+    // prevent amm risky pair
     const getFilteredTickList = useCallback(() => {
       if (!!ammPoolBalances.length && tickList && !!tickList.length) {
         return tickList.filter((o: any) => {
