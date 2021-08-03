@@ -115,20 +115,15 @@ function useConnectHandle() {
         updateSystem,
         chainId: _chainId,
     } = useSystem();
+    const {setShowConnect, setShowAccount} = useOpenModals();
+
     const handleConnect = React.useCallback(async ({
                                                        accounts,
                                                        chainId,
                                                        provider
                                                    }: { accounts: string, provider: any, chainId: ChainId | 'unknown' }) => {
         const accAddress = accounts[ 0 ];
-        const {setShowConnect, setShowAccount} = useOpenModals();
-        const {
-            updateSystem,
-            chainId: _chainId,
-            exchangeInfo,
-            status: systemStatus,
-            statusUnset: systemStatusUnset
-        } = useSystem();
+
         if (chainId !== _chainId && _chainId !== 'unknown' && chainId !== 'unknown') {
             chainId === 5 ? updateAccount({chainId}) : updateAccount({chainId: 1})
             updateSystem({chainId});
