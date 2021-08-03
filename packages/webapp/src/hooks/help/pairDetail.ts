@@ -24,7 +24,7 @@ export const pairDetailBlock = <C extends { [ key: string ]: any }, I extends { 
                 //{raw_data},
                 .then(([{ammPoolSnapshot}, {tickMap}]) => {
                     resolve({
-                        ammPoolsBalance: ammPoolSnapshot,
+                        ammPoolsBalance: ammPoolSnapshot as AmmPoolSnapshot,
                         tickMap,
                     })
                 })
