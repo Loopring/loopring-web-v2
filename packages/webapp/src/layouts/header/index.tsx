@@ -54,13 +54,15 @@ const Header = ({...rest}: any) => {
     const onClose = React.useCallback(() => {
         setShowAccount({isShow: false})
     }, [])
+
     return (<>
 
         <ModalPanel transferProps={transferProps} withDrawProps={withdrawProps}
                     depositProps={depositProps} resetProps={resetProps} ammProps={ammProps} swapProps={swapProps}/>
 
         <HideOnScroll>
-            {process.env.NODE_ENV !== 'production' && JSON.stringify(account?.readyState) + '\t'
+            {process.env.NODE_ENV !== 'production' 
+            && JSON.stringify(account?.readyState) + '| addr:' + account.accAddress + '|\t'
             + account?.connectName + '/' + JSON.stringify(isShowConnect)}
 
             <HeaderUI {...rest} headerMenuData={headerMenuData} headerToolBarData={headerToolBarData}

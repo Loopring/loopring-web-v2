@@ -38,6 +38,7 @@ export function useInit() {
     const {account,resetAccount} = useAccount();
     const walletLayer1State = useWalletLayer1();
     useConnectHandle();
+    useAccountHandle();
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
         if (account.accAddress && account.connectName && account.connectName !== 'UnKnown' && account.accAddress) {
@@ -166,13 +167,17 @@ function useConnectHandle() {
 
 function useAccountHandle() {
     const {account, updateAccount, shouldShow, resetAccount, statusUnset: statusAccountUnset} = useAccount();
-    const handleLockAccount = React.useCallback(()=>{},[])
-    const handleNoAccount = React.useCallback(()=>{
-        updateAccount({readyState:'NO_ACCOUNT'});
+    const handleLockAccount = React.useCallback(()=>{
+        // updateAccount({readyState:'NO_ACCOUNT'});
+        statusAccountUnset();
+        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.NoAccount});
+    },[])
+    const handleNoAccount = React.useCallback((data: any)=>{
+        // updateAccount({readyState:'NO_ACCOUNT'});
         setShowAccount({isShow: shouldShow ?? false,step:AccountStep.NoAccount});
     },[])
     const handleDepositingAccount = React.useCallback(()=>{
-        updateAccount({readyState:'DEPOSITING'});
+        // updateAccount({readyState:'DEPOSITING'});
         setShowAccount({isShow: shouldShow ?? false,step:AccountStep.Depositing});
     },[])
     const handleErrorApproveToken = React.useCallback(()=>{
