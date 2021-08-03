@@ -10,10 +10,10 @@ import { useAccount } from './stores/account/hook';
 import { connectProvides, ErrorType, useConnectHook } from '@loopring-web/web3-provider';
 import { AccountStep, useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
 import { LoopringAPI } from './stores/apis/api';
-import { unlockAccount } from './hooks/unlockAccount';
+import { unlockAccount } from './services/account/unlockAccount';
 import { myLog } from './utils/log_tools';
-import { lockAccount } from './hooks/lockAccount';
-import { activeAccount } from './hooks/activeAccount';
+import { lockAccount } from './services/account/lockAccount';
+import { activeAccount } from './services/account/activeAccount';
 
 /**
  * @description
@@ -150,10 +150,10 @@ export function useInit() {
             default:
                 break;
         }
-    }, [systemStatus, systemStatusUnset]);
+    }, x[systemStatus, systemStatusUnset]);
     React.useEffect(() => {
         if (ammMapState.status === "ERROR" || tokenState.status === "ERROR") {
-            //TODO: solve error
+            //TODO: solve errorx
             ammMapState.statusUnset();
             tokenState.statusUnset();
             setState('ERROR');

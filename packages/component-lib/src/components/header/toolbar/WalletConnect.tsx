@@ -91,9 +91,9 @@ export const BtnWalletConnect = ({
                 case AccountStatus.UN_CONNECT:
                     setLabel('labelConnectWallet');
                     break
-                case AccountStatus.CONNECT:
-                    setBtnClassname('wrongStatus')
-                    break
+                // case AccountStatus.CONNECT:
+                //     setBtnClassname('wrongStatus')
+                //     break
                 case AccountStatus.LOCKED:
                     setBtnClassname('locked')
                     setIcon(<LockIcon/>)
