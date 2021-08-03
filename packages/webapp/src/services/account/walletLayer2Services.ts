@@ -78,8 +78,7 @@ export const walletLayer2Services = {
             const {accInfo} = (await LoopringAPI.exchangeAPI.getAccount({
                 owner: ethAddress
             }))
-            myLog('After connect >>,checkAccount: step3',accInfo
-            )
+            myLog('After connect >>,checkAccount: step3',accInfo)
 
             //TODO code is notaccount
             if (accInfo === undefined) {
