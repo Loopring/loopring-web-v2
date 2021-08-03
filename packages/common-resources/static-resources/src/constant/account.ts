@@ -11,7 +11,7 @@ export type ErrorObject = {
 
 export enum AccountStatus {
     UN_CONNECT = 'UN_CONNECT',
-    CONNECT = 'CONNECT',
+    // CONNECT = 'CONNECT',
     NO_ACCOUNT = 'NO_ACCOUNT',
     LOCKED = 'LOCKED',
     ACTIVATED = 'ACTIVATED',
