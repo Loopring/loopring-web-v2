@@ -5,7 +5,7 @@ import { updateAccountStatus } from '../../stores/account';
 
 export const checkAccount = (accAddress:string)=>{
     const account = store.getState().account;
-    if(!account.accountId){
+    if( account.accountId ==-1 ){
         walletLayer2Services.sendCheckAccount(accAddress)
         store.dispatch(updateAccountStatus({accAddress}))
     }else if( account.accountId && account.apiKey && account.eddsaKey){
