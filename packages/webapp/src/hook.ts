@@ -10,7 +10,7 @@ import { useAccount } from './stores/account/hook';
 import { connectProvides, ErrorType, useConnectHook } from '@loopring-web/web3-provider';
 import { AccountStep, setShowAccount, useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
 import { myLog } from './utils/log_tools';
-import { cleanSigned, lockAccount } from './services/account/lockAccount';
+import { cleanLayer2, goErrorNetWork } from './services/account/lockAccount';
 import { useAccountHook } from './services/account/useAccountHook';
 import { checkAccount } from './services/account/checkAccount';
 
@@ -124,15 +124,16 @@ function useConnectHandle() {
             window.location.reload();
         } else if (chainId == 'unknown') {
             updateAccount({wrongChain: true})
-            cleanSigned();
+            goErrorNetWork();
         }else{
             updateAccount({wrongChain: false,chainId})
         }
         if(account.accAddress === accAddress){
-            console.log('same account:')
+            myLog('After connect >>,same account: step1 check account')
             checkAccount(accAddress);
         } else {
-            cleanSigned();
+            myLog('After connect >>,diff account clean layer2: step1 check account')
+            cleanLayer2();
             checkAccount(accAddress);
         }
         setShowConnect({isShow: shouldShow ?? false, step: WalletConnectStep.SuccessConnect});

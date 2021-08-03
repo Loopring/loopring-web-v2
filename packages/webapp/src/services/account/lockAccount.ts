@@ -13,9 +13,18 @@ export function lockAccount() {
         publicKey: '',
     }))
 }
-export function cleanSigned() {
+export function goErrorNetWork(){
     store.dispatch(updateAccountStatus({
-        readyState: AccountStatus.LOCKED,
+        readyState: AccountStatus.ERROR_NETWORK,
+        apiKey: '',
+        eddsaKey: '',
+        publicKey: '',
+    }))
+}
+export function cleanLayer2() {
+    store.dispatch(updateAccountStatus({
+        account: -1,
+        readyState: AccountStatus.UN_CONNECT,
         apiKey: '',
         eddsaKey: '',
         publicKey: '',
