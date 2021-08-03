@@ -20,7 +20,7 @@ export enum AccountStep  {
     Deposit,
     Depositing,
     FailedDeposit,
-    ApproveAccount,
+    SignAccount,
     ProcessUnlock,
     SuccessUnlock,
     FailedUnlock,

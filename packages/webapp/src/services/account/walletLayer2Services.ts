@@ -5,7 +5,7 @@ import { LoopringAPI } from '../../stores/apis/api';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
-function getLocalDepositHash(account: Account): {[key:string]:any}|undefined {
+function getLocalDepositHash(account: Account): { [ key: string ]: any } | undefined {
     let depositsHash = window.localStorage.getItem('__loopring__.depositsHash');
     if (depositsHash) {
         depositsHash = JSON.parse(depositsHash);
@@ -18,29 +18,24 @@ function getLocalDepositHash(account: Account): {[key:string]:any}|undefined {
 
 function clearDepositHash(account: Account, value: string) {
     // @ts-ignore
-    let depositsHash: { [ key: string ]:object } = window.localStorage.getItem('__loopring__.depositsHash');
+    let depositsHash: { [ key: string ]: object } = window.localStorage.getItem('__loopring__.depositsHash');
     depositsHash = depositsHash ? JSON.parse(depositsHash as any) : {};
-    if ( depositsHash[ account.accAddress ] && depositsHash[ account.accAddress ][value]) {
-        delete depositsHash[ account.accAddress ][value];
+    if (depositsHash[ account.accAddress ] && depositsHash[ account.accAddress ][ value ]) {
+        delete depositsHash[ account.accAddress ][ value ];
     }
 }
 
 function setLocalDepositHash(account: Account, value: string): void {
     // @ts-ignore
-    let depositsHash: { [ key: string ]:object} = window.localStorage.getItem('__loopring__.depositsHash');
+    let depositsHash: { [ key: string ]: object } = window.localStorage.getItem('__loopring__.depositsHash');
     depositsHash = depositsHash ? JSON.parse(depositsHash as any) : {};
     depositsHash[ account.accAddress ] = {
         ...depositsHash[ account.accAddress ],
-        [value]:1,
+        [ value ]: 1,
     }
 }
 
 export const walletLayer2Services = {
-    // ...walletServices,
-
-    sendLayer2Processing: () => {
-
-    },
     //INFO: for update Account and unlock account
     sendAssign: () => {
 
@@ -49,59 +44,58 @@ export const walletLayer2Services = {
     sendAccountLock: () => {
         subject.next({
             status: Commands.LockAccount,
-            data:undefined
+            data: undefined
         })
     },
     sendActiveAccountDeposit: () => {
 
     },
-    sendAccountSigned:() => {
+    sendAccountSigned: () => {
         subject.next({
-            status: Commands.UnLockAccount,
-            data:undefined
+            status: Commands.AccountUnlocked,
+            data: undefined
         })
     },
-    sendNoAccount:()=>{
+    sendNoAccount: () => {
         subject.next({
             status: Commands.NoAccount,
-            data:undefined
+            data: undefined
         })
     },
-    sendCheckAccount: async (ethAddress:string) => {
-      const self = this;
-        // debugger
-    //TODO if have account  how unlocl if not show
-    // if (connectProvides.usedWeb3 && LoopringAPI.exchangeAPI && LoopringAPI.userAPI) {
-
-    if(LoopringAPI.exchangeAPI) {
-        const {accInfo} = (await LoopringAPI.exchangeAPI.getAccount({
-            owner: ethAddress
-        }))
-        //TODO code is notaccount
-        if(accInfo === undefined) {
-            walletLayer2Services.sendNoAccount()
-            // subject.next({
-            //     status: Commands.NoAccount,
-            //     data:undefined
-            // })
-        }else{
-            walletLayer2Services.sendAccountLock()
+    sendCheckAccount: async (ethAddress: string) => {
+        const self = this;
+        subject.next({
+            status: Commands.ProcessAccountCheck,
+            data: undefined
+        })
+        if (LoopringAPI.exchangeAPI) {
+            const {accInfo} = (await LoopringAPI.exchangeAPI.getAccount({
+                owner: ethAddress
+            }))
+            //TODO code is notaccount
+            if (accInfo === undefined) {
+                walletLayer2Services.sendNoAccount()
+                // subject.next({
+                //     status: Commands.NoAccount,
+                //     data:undefined
+                // })
+            } else {
+                walletLayer2Services.sendAccountLock()
+            }
         }
-    }
 
-    // try {
-    //
-    //
-    //     if (accInfo && accInfo.accountId) {
-    //         await unlockAccount({accInfo, shouldShow: shouldShow ?? false})
-    //     }
-    //     statusAccountUnset();
-    // } catch (reason) {
-    //     dumpError400(reason)
-    //     await activeAccount({reason, shouldShow: shouldShow ?? false});
-    //     statusAccountUnset();
-    // }
-
+        // try {
+        //
+        //
+        //     if (accInfo && accInfo.accountId) {
+        //         await unlockAccount({accInfo, shouldShow: shouldShow ?? false})
+        //     }
+        //     statusAccountUnset();
+        // } catch (reason) {
+        //     dumpError400(reason)
+        //     await activeAccount({reason, shouldShow: shouldShow ?? false});
+        //     statusAccountUnset();
+        // }
 
 
     },
