@@ -62,6 +62,7 @@ export const walletLayer2Services = {
         })
     },
     sendNoAccount: () => {
+        store.dispatch(updateAccountStatus({readyState:AccountStatus.NO_ACCOUNT, }))
         subject.next({
             status: Commands.NoAccount,
             data: undefined
