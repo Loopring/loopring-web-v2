@@ -19,19 +19,19 @@ const BoxStyled = styled(Box)`
   //
   //  
   // }                                                               
-  &  .MuiButton-root{
-        width: var(--account-button-fixed-width);
-        height: var(--account-button-fixed-height);
-        text-overflow: ellipsis;
-        align-items: flex-end;
-        position: relative;
-        svg{
-          position: absolute;
-          top: ${({theme}) => theme.unit}px;
-          left: 50%;
-          margin-left: calc(var(--svg-size-large) / -2) ;
-        }
-  }
+  // &  .MuiButton-root{
+  //       width: var(--account-button-fixed-width);
+  //       height: var(--account-button-fixed-height);
+  //       text-overflow: ellipsis;
+  //       align-items: flex-end;
+  //       position: relative;
+  //       svg{
+  //         position: absolute;
+  //         top: ${({theme}) => theme.unit}px;
+  //         left: 50%;
+  //         margin-left: calc(var(--svg-size-large) / -2) ;
+  //       }
+  // }
   & .active{
    
   }
@@ -62,14 +62,14 @@ export const AccountBase =({
                                                           t
                                                       }: AccountBaseProps & WithTranslation) => {
 
-    return <Box display={'flex'} justifyContent={'flex-start'} alignItems={'center'}>
+    return <Box display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
         <Typography component={'h6'} variant={'body2'} color={'textSecondary'} marginTop={1}>
             <Trans i18nKey="labelConnectBy">
                 Connected with &nbsp;<Typography
                 component={'span'}>{connectBy === 'unknown' ? connectBy : t('labelWrongNetwork')}</Typography>.
             </Trans>
         </Typography>
-        <Typography component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}>
+        <Typography marginTop={1} component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}>
             <Typography component={'span'} variant={'h4'}>{addressShort}</Typography>
             {level ? <VipStyled component={'span'} variant={'body2'}
                                 alignSelf={'flex-start'}>{level}</VipStyled> : undefined}
@@ -84,7 +84,7 @@ export const AccountBase =({
             }}>
                 <Typography variant={'body2'} marginTop={1 / 2}> {t('labelCopy')} </Typography>
             </Button>
-            <Button startIcon={<ReverseIcon fontSize={'large'}/>} onClick={() => {
+            <Button startIcon={<ReverseIcon fontSize={'small'}/>} onClick={() => {
                 if (onSwitch) onSwitch()
             }}>
                 <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelSwitchAccount')} </Typography>

@@ -174,6 +174,7 @@ function useAccountHandle() {
     },[])
     const handleNoAccount = React.useCallback((data: any)=>{
         // updateAccount({readyState:'NO_ACCOUNT'});
+        statusAccountUnset();
         setShowAccount({isShow: shouldShow ?? false,step:AccountStep.NoAccount});
     },[])
     const handleDepositingAccount = React.useCallback(()=>{
@@ -194,6 +195,7 @@ function useAccountHandle() {
     },[])
     const handleSignAccount = React.useCallback(()=>{
         // updateAccount({readyState:'DEPOSITING'});
+        statusAccountUnset();
         setShowAccount({isShow: shouldShow ?? false,step:AccountStep.SignAccount});
     },[])
     const handleSignError = React.useCallback(()=>{
@@ -202,11 +204,13 @@ function useAccountHandle() {
     const handleProcessSign = React.useCallback(()=>{
         setShowAccount({isShow: shouldShow ?? false,step:AccountStep.ProcessUnlock});
     },[])
-    const handleAccountUnlocked  = React.useCallback(async ()=>{
-        updateAccount({readyState:'ACTIVATED'});
+    const handleAccountActived  = React.useCallback(async ()=>{
+
+        //updateAccount({readyState:'ACTIVATED'});
         setShowAccount({isShow: shouldShow ?? false,step:AccountStep.SuccessUnlock});
         await sleep(100)
         setShowAccount({isShow: false});
+        statusAccountUnset();
     },[])
     useAccountHook({
         handleLockAccount,// clear private data
@@ -218,11 +222,11 @@ function useAccountHandle() {
         handleErrorApproveToken,
         handleErrorDepositSign,
         handleProcessDeposit,// two or one step
-        handleSignAccount, //unlock or update account  assgin
+        handleSignAccount, //unlock or update account  sgin
         handleProcessSign,
         handleSignError,
         // handleProcessAccountCheck,
-        handleAccountUnlocked,
+        handleAccountActived,
     })
 }
 

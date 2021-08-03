@@ -15,6 +15,6 @@ export const checkAccount = (accAddress:string)=>{
         walletLayer2Services.sendAccountSigned();
     }else {
         myLog('After connect >>,checkAccount: step2 account locked')
-        walletLayer2Services.sendAccountLock(account.accountId);
+        walletLayer2Services.sendAccountLock();
     }
 }

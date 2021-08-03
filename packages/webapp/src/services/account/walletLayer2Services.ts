@@ -5,7 +5,7 @@ import { LoopringAPI } from '../../stores/apis/api';
 import { myLog } from '../../utils/log_tools';
 import store from 'stores';
 import { updateAccountStatus } from 'stores/account';
-import { AccountInfo } from 'loopring-sdk';
+import { AccountInfo, toBig, toHex } from 'loopring-sdk';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
@@ -41,12 +41,21 @@ function setLocalDepositHash(account: Account, value: string): void {
 
 export const walletLayer2Services = {
     //INFO: for update Account and unlock account
-    sendAssign: () => {
-
+    sendSign: () => {
+        subject.next({
+            status: Commands.ProcessSign,
+            data: undefined,
+        })
     },
     //INFO: for lock account todo clear the private info, user click or provider on wrong network
-    sendAccountLock: (accountId: number) => {
-        store.dispatch(updateAccountStatus({readyState:AccountStatus.LOCKED, accountId, }))
+    sendAccountLock: (accInfo?:AccountInfo) => {
+        const updateInfo = accInfo?{
+            readyState:AccountStatus.LOCKED,
+            accountId:  accInfo.accountId,
+            nonce: accInfo.nonce,
+            level: accInfo.tags,
+        }:{readyState:AccountStatus.LOCKED}
+        store.dispatch(updateAccountStatus(updateInfo))
         subject.next({
             status: Commands.LockAccount,
             data: undefined,
@@ -55,7 +64,17 @@ export const walletLayer2Services = {
     sendActiveAccountDeposit: () => {
 
     },
-    sendAccountSigned: () => {
+    sendAccountSigned: (apiKey?:any,eddsaKey?:any) => {
+        const updateInfo = apiKey && eddsaKey ?{
+            apiKey,
+            eddsaKey,
+            publicKey: {
+                x: toHex(toBig(eddsaKey.keyPair.publicKeyX)),
+                y: toHex(toBig(eddsaKey.keyPair.publicKeyY)),
+            },
+            readyState: AccountStatus.ACTIVATED
+        }:{readyState:AccountStatus.ACTIVATED}
+        store.dispatch(updateAccountStatus(updateInfo));
         subject.next({
             status: Commands.AccountUnlocked,
             data: undefined
@@ -89,7 +108,7 @@ export const walletLayer2Services = {
                 //     data:undefined
                 // })
             } else {
-                walletLayer2Services.sendAccountLock(accInfo.accountId)
+                walletLayer2Services.sendAccountLock(accInfo)
             }
         }
 

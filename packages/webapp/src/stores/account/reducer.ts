@@ -42,6 +42,7 @@ const initialState: AccountState = {
     eddsaKey: '',
     publicKey: {},
     level: '',
+    nonce: undefined,
     connectName: ConnectProviders.UnKnown,
     chainId: 1,
     status: 'UNSET',
@@ -74,6 +75,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                     apiKey,
                     eddsaKey,
                     chainId,
+                    nonce,
                     connectName,
                     _userOnModel
                 } = action.payload;
@@ -101,9 +103,13 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                 if (chainId) {
                     state.chainId = chainId;
                 }
-                if( _userOnModel!== undefined){
+                if (nonce) {
+                    state.nonce = nonce;
+                }
+                if (_userOnModel !== undefined) {
                     state._userOnModel = _userOnModel;
                 }
+
 
                 state.status = SagaStatus.DONE;
             }
@@ -116,6 +122,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
             state.eddsaKey = '';
             state.publicKey = {};
             state.level = '';
+            state.nonce = undefined;
             state.connectName = ConnectProviders.UnKnown;
             state.status = SagaStatus.DONE;
             state.errorMessage = null;
