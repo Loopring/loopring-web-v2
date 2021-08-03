@@ -1,21 +1,17 @@
 import React from 'react';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { useSystem } from './stores/system';
-import { ChainId, dumpError400, sleep } from 'loopring-sdk';
+import { ChainId, sleep } from 'loopring-sdk';
 import { useAmmMap } from './stores/Amm/AmmMap';
-import { Account, AccountStatus, SagaStatus } from '@loopring-web/common-resources';
+import { SagaStatus } from '@loopring-web/common-resources';
 import { useTokenMap } from './stores/token';
 import { useWalletLayer1 } from './stores/walletLayer1';
 import { useAccount } from './stores/account/hook';
 import { connectProvides, ErrorType, useConnectHook } from '@loopring-web/web3-provider';
 import { AccountStep, setShowAccount, useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
-import { LoopringAPI } from './stores/apis/api';
-import { unlockAccount } from './services/account/unlockAccount';
 import { myLog } from './utils/log_tools';
 import { lockAccount } from './services/account/lockAccount';
-import { activeAccount } from './services/account/activeAccount';
 import { useAccountHook } from './services/account/useAccountHook';
-import { walletLayer2Services } from './services/account/walletLayer2Services';
 import { checkAccount } from './services/account/checkAccount';
 
 /**

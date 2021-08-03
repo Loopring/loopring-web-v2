@@ -19,7 +19,7 @@ import { FailedConnect } from './WalletConnect/FailedConnect';
 import {
     AccountBaseProps,
     AccountStep,
-    SignAccount,
+    ApproveAccount,
     Depositing,
     FailedDeposit,
     FailedUnlock,
@@ -91,11 +91,11 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
 
     const accountList = React.useMemo(() => {
         return Object.values({
-            [ AccountStep.NoAccount ]: <NoAccount  {...accountInfoProps}/>,
+            [ AccountStep.NoAccount ]: <NoAccount goDeposit={()=>{}} {...accountInfoProps} address={''}/>,
             [ AccountStep.Deposit ]: <DepositPanel  {...{...rest, ...depositProps}} > </DepositPanel>,
             [ AccountStep.Depositing ]: <Depositing/>,
             [ AccountStep.FailedDeposit ]: <FailedDeposit/>,
-            [ AccountStep.SignAccount ]: <SignAccount/>,
+            [ AccountStep.SignAccount ]: <ApproveAccount/>,
             [ AccountStep.ProcessUnlock ]: <ProcessUnlock/>,
             [ AccountStep.SuccessUnlock ]: <SuccessUnlock/>,
             [ AccountStep.FailedUnlock ]: <FailedUnlock/>,
