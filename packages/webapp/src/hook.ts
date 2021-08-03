@@ -10,7 +10,7 @@ import { useAccount } from './stores/account/hook';
 import { connectProvides, ErrorType, useConnectHook } from '@loopring-web/web3-provider';
 import { AccountStep, setShowAccount, useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
 import { myLog } from './utils/log_tools';
-import { lockAccount } from './services/account/lockAccount';
+import { cleanLayer2, goErrorNetWork } from './services/account/lockAccount';
 import { useAccountHook } from './services/account/useAccountHook';
 import { checkAccount } from './services/account/checkAccount';
 
@@ -35,7 +35,7 @@ export function useInit() {
         status: systemStatus,
         statusUnset: systemStatusUnset
     } = useSystem();
-    const {account,} = useAccount();
+    const {account,resetAccount} = useAccount();
     const walletLayer1State = useWalletLayer1();
     useConnectHandle();
     useCustomDCEffect(async () => {
@@ -45,18 +45,16 @@ export function useInit() {
                 await connectProvides[ account.connectName ]();
                 if (connectProvides.usedProvide) {
                     const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
-
-                    //LoopringAPI.InitApi(chainId)
-
                     updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
                     return
                 }
             } catch (error) {
                 console.log(error)
             }
-        } else if (account.chainId) {
+        } else if (account.chainId && account.chainId!=='unknown') {
             updateSystem({chainId: account.chainId})
         } else {
+                resetAccount();
             updateSystem({chainId: ChainId.MAINNET})
         }
 
@@ -125,12 +123,19 @@ function useConnectHandle() {
             updateSystem({chainId});
             window.location.reload();
         } else if (chainId == 'unknown') {
-            updateAccount({wrongChain: true, chainId})
-            lockAccount();
+            updateAccount({wrongChain: true})
+            goErrorNetWork();
         }else{
-            updateAccount({wrongChain: false, chainId})
+            updateAccount({wrongChain: false,chainId})
         }
-        checkAccount(accAddress);
+        if(account.accAddress === accAddress){
+            myLog('After connect >>,same account: step1 check account')
+            checkAccount(accAddress);
+        } else {
+            myLog('After connect >>,diff account clean layer2: step1 check account')
+            cleanLayer2();
+            checkAccount(accAddress);
+        }
         setShowConnect({isShow: shouldShow ?? false, step: WalletConnectStep.SuccessConnect});
         await sleep(1000)
         setShowConnect({isShow: false, step: WalletConnectStep.SuccessConnect});

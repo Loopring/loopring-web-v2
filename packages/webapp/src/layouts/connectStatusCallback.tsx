@@ -1,5 +1,5 @@
-import store from '../../stores';
-import { AccountStep, setShowAccount, setShowConnect, WalletConnectStep } from '@loopring-web/component-lib';
+import store from '../stores';
+import { AccountStep, setShowAccount, setShowConnect, Toast, WalletConnectStep } from '@loopring-web/component-lib';
 import { fnType } from '@loopring-web/common-resources';
 
 
@@ -46,11 +46,12 @@ export const bntLabel: typeof btnClickMap = {
 
 
 export const btnClickMap: { [ key: string ]: [fn: (props: any) => any, args?: any[]] } = {
-    // [ fnType.RESET ]: [
-    //     function () {
-    //         store.dispatch(setShowConnect({isShow: true}))
-    //     }
-    // ],
+    [ fnType.ERROR_NETWORK ]: [
+        function () {
+            //TODO toast
+            return
+        }
+    ],
     [ fnType.UN_CONNECT ]: [
         function () {
             // setShowConnect({isShow: true})
