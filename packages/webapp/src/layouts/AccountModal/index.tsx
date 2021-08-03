@@ -100,6 +100,10 @@ export const ModalAccountInfo = withTranslation('common')(({
         setShowAccount({isShow: true, step: AccountStep.Deposit});
     }, [setShowAccount, setShowDeposit])
 
+    const unlock = React.useCallback(() => {
+        console.log('unlock...')
+    }, [setShowAccount, setShowDeposit])
+
     // const onSwitch = {onSwitch}
     const accountList = React.useMemo(() => {
         return Object.values({
@@ -117,7 +121,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             [ AccountStep.ProcessUnlock ]: <ProcessUnlock/>,
             [ AccountStep.SuccessUnlock ]: <SuccessUnlock/>,
             [ AccountStep.FailedUnlock ]: <FailedUnlock/>,
-            [ AccountStep.HadAccount ]: <HadAccount {...{
+            [ AccountStep.HadAccount ]: <HadAccount {...{unlock, goDeposit,
                 account,
                 onSwitch, onCopy,
                 address: account.accAddress,
