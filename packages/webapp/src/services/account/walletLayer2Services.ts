@@ -2,6 +2,7 @@ import { Account } from '@loopring-web/common-resources';
 import { Subject } from 'rxjs';
 import { Commands } from './command';
 import { LoopringAPI } from '../../stores/apis/api';
+import { myLog } from '../../utils/log_tools';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
@@ -64,6 +65,7 @@ export const walletLayer2Services = {
     },
     sendCheckAccount: async (ethAddress: string) => {
         const self = this;
+        myLog('After connect >>,checkAccount: step3 processAccountCheck')
         subject.next({
             status: Commands.ProcessAccountCheck,
             data: undefined
@@ -72,6 +74,8 @@ export const walletLayer2Services = {
             const {accInfo} = (await LoopringAPI.exchangeAPI.getAccount({
                 owner: ethAddress
             }))
+            myLog('After connect >>,checkAccount: step3',accInfo)
+
             //TODO code is notaccount
             if (accInfo === undefined) {
                 walletLayer2Services.sendNoAccount()
