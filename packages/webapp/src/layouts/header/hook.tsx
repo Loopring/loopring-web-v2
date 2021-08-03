@@ -23,9 +23,7 @@ import {
 
 import { useAccount, } from 'stores/account'
 
-import { getShortAddr } from 'utils/web3_tools'
 
-// import {  } from 'state_machine/account_machine_spec'
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect'
 
 import { Theme, } from 'defs/common_defs'

@@ -1,16 +1,13 @@
-import { Box, Button, Grid, IconButton, Typography } from '@material-ui/core/';
+import { Box, Button, Typography } from '@material-ui/core/';
 import {
-    ActiveIcon,
     CopyIcon,
     LinkIcon,
-    PowerIcon,
     ReverseIcon,
 } from '@loopring-web/common-resources';
-import { Trans, withTranslation, WithTranslation } from 'react-i18next';
+import { Trans, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
-import QRCode from 'qrcode.react';
 import { AccountBaseProps } from './Interface';
-import { TypographyStrong, VipStyled } from '../../../';
+import { VipStyled } from '../../../';
 
 
 
@@ -50,72 +47,103 @@ const BoxStyled = styled(Box)`
   }
 ` as typeof Box
 
-export const AccountBase = withTranslation('common')(({
-                                                          address,
+export const AccountBase =({
+                                                          // address,
                                                           addressShort,
                                                           level,
                                                           connectBy,
                                                           etherscanLink,
-                                                          onDisconnect,
+                                                          // onDisconnect,
                                                           onSwitch,
-                                                          onLock,
-                                                          mainBtn,
+                                                          // onLock,
+                                                          // mainBtn,
                                                           onCopy,
                                                           // onViewQRCode,
                                                           t
                                                       }: AccountBaseProps & WithTranslation) => {
 
-    return <Grid container justifyContent={'space-between'} alignItems={'center'}>
-        <Grid item xs={12} display={'flex'} flexDirection={'column'} alignItems={'flex-start'} paddingX={3}>
-            <Typography component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}>
-                <Typography component={'span'} variant={'h4'}>{addressShort}</Typography>
-                {level ? <VipStyled component={'span'} variant={'body2'}
-                                    alignSelf={'flex-start'}>{level}</VipStyled> : undefined}
-            </Typography>
-            <Typography component={'h6'} variant={'body2'} marginTop={1}>
-                <Trans i18nKey="labelConnectBy">
-                    Connected with &nbsp;<TypographyStrong component={'span'}>{{connectBy}}</TypographyStrong>.
-                </Trans>
-            </Typography>
-            <Box alignSelf={'center'} marginY={2} display={'flex'} alignItems={'center'} flexDirection={'column'}>
-                <QRCode value={address} size={160} style={{padding: 5, backgroundColor: '#fff'}}
-                        aria-label={`link:${address}`}/>
-                <Typography component={'span'} variant={'body2'}>
-                    <Typography variant={'body2'} marginBottom={3} marginTop={1}>
-                        {address}
-                        <IconButton size={'small'} data-clipboard-text={address} onClick={() => {
-                            if (onCopy) onCopy()
-                        }}><CopyIcon/></IconButton>
-                    </Typography>
-                </Typography>
-            </Box>
-            <BoxStyled component={'div'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
-                       marginTop={1} alignSelf={'stretch'}>
-                <Button formTarget={'_blank'} href={etherscanLink} variant={'outlined'} startIcon={<LinkIcon fontSize={'large'}/>}>
-                    <Typography variant={'body2'} marginTop={1 / 2}> {'Etherscan'} </Typography>
-                </Button>
-                <Button startIcon={<ReverseIcon fontSize={'large'}/>} onClick={() => {
-                    if (onSwitch) onSwitch()
-                }} variant={'outlined'}>
-                    <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelSwitchAccount')} </Typography>
-                </Button>
-                <Button startIcon={<PowerIcon fontSize={'large'}/>} onClick={() => {
-                    if (onDisconnect) onDisconnect()
-                }} variant={'outlined'}>
-                    <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelDisconnect')} </Typography>
-                </Button>
-                {mainBtn ? mainBtn :
-                    <Button className={'active'} variant={'contained'} startIcon={<ActiveIcon fontSize={'large'}/>}
-                            onClick={() => {
-                                if (onLock) onLock()
-                            }}>
-                        <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelActiveLayer2')} </Typography>
-                    </Button>}
-            </BoxStyled>
-        </Grid>
-    </Grid>;
+    return <Box display={'flex'} justifyContent={'flex-start'} alignItems={'center'}>
+        <Typography component={'h6'} variant={'body2'} color={'textSecondary'} marginTop={1}>
+            <Trans i18nKey="labelConnectBy">
+                Connected with &nbsp;<Typography
+                component={'span'}>{connectBy === 'unknown' ? connectBy : t('labelWrongNetwork')}</Typography>.
+            </Trans>
+        </Typography>
+        <Typography component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}>
+            <Typography component={'span'} variant={'h4'}>{addressShort}</Typography>
+            {level ? <VipStyled component={'span'} variant={'body2'}
+                                alignSelf={'flex-start'}>{level}</VipStyled> : undefined}
+        </Typography>
+        <BoxStyled component={'div'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
+                   marginTop={1} alignSelf={'stretch'}>
+            <Button formTarget={'_blank'} href={etherscanLink} startIcon={<LinkIcon fontSize={'small'}/>}>
+                <Typography variant={'body2'} marginTop={1 / 2}> {'Etherscan'} </Typography>
+            </Button>
+            <Button startIcon={<CopyIcon fontSize={'small'}/>} onClick={() => {
+                if (onCopy) onCopy()
+            }}>
+                <Typography variant={'body2'} marginTop={1 / 2}> {t('labelCopy')} </Typography>
+            </Button>
+            <Button startIcon={<ReverseIcon fontSize={'large'}/>} onClick={() => {
+                if (onSwitch) onSwitch()
+            }}>
+                <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelSwitchAccount')} </Typography>
+            </Button>
+        </BoxStyled>
+    </Box>
+}
+    // <Grid container justifyContent={'space-between'} alignItems={'center'}>
+    //     <Grid item xs={12} display={'flex'} flexDirection={'column'} alignItems={'flex-start'} paddingX={3}>
+    //         <Typography component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}>
+    //             <Typography component={'span'} variant={'h4'}>{addressShort}</Typography>
+    //             {level ? <VipStyled component={'span'} variant={'body2'}
+    //                                 alignSelf={'flex-start'}>{level}</VipStyled> : undefined}
+    //         </Typography>
+    //         <Typography component={'h6'} variant={'body2'} marginTop={1}>
+    //             <Trans i18nKey="labelConnectBy">
+    //                 Connected with &nbsp;<TypographyStrong component={'span'}>{{connectBy}}</TypographyStrong>.
+    //             </Trans>
+    //         </Typography>
+    //         <Box alignSelf={'center'} marginY={2} display={'flex'} alignItems={'center'} flexDirection={'column'}>
+    //             <QRCode value={address} size={160} style={{padding: 5, backgroundColor: '#fff'}}
+    //                     aria-label={`link:${address}`}/>
+    //             <Typography component={'span'} variant={'body2'}>
+    //                 <Typography variant={'body2'} marginBottom={3} marginTop={1}>
+    //                     {address}
+    //                     <IconButton size={'small'} data-clipboard-text={address} onClick={() => {
+    //                         if (onCopy) onCopy()
+    //                     }}><CopyIcon/></IconButton>
+    //                 </Typography>
+    //             </Typography>
+    //         </Box>
+    //         <BoxStyled component={'div'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
+    //                    marginTop={1} alignSelf={'stretch'}>
+    //             <Button formTarget={'_blank'} href={etherscanLink} variant={'outlined'} startIcon={<LinkIcon fontSize={'large'}/>}>
+    //                 <Typography variant={'body2'} marginTop={1 / 2}> {'Etherscan'} </Typography>
+    //             </Button>
+    //             <Button startIcon={<ReverseIcon fontSize={'large'}/>} onClick={() => {
+    //                 if (onSwitch) onSwitch()
+    //             }} variant={'outlined'}>
+    //                 <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelSwitchAccount')} </Typography>
+    //             </Button>
+    //             <Button startIcon={<PowerIcon fontSize={'large'}/>} onClick={() => {
+    //                 if (onDisconnect) onDisconnect()
+    //             }} variant={'outlined'}>
+    //                 <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelDisconnect')} </Typography>
+    //             </Button>
+    //             {mainBtn ? mainBtn :
+    //                 <Button className={'active'} variant={'contained'} startIcon={<ActiveIcon fontSize={'large'}/>}
+    //                         onClick={() => {
+    //                             if (onLock) onLock()
+    //                         }}>
+    //                     <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelActiveLayer2')} </Typography>
+    //                 </Button>}
+    //         </BoxStyled>
+        // </Grid>
+    // </Grid>;
 
-})
+
+
 
 
 

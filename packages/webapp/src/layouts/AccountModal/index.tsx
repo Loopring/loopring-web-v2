@@ -21,8 +21,7 @@ import React, { useCallback, useState } from 'react';
 import { copyToClipBoard } from '../../utils/obj_tools';
 import { useAccount } from '../../stores/account';
 import { TOAST_TIME } from '../../defs/common_defs';
-import { getShortAddr } from '../../utils/web3_tools';
-import { LockIcon, UnLockIcon } from '@loopring-web/common-resources';
+import { getShortAddr, LockIcon, UnLockIcon } from '@loopring-web/common-resources';
 import { Typography } from '@material-ui/core';
 import { sleep } from 'loopring-sdk';
 
