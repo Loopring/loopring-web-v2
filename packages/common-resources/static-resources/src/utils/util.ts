@@ -1,3 +1,4 @@
+
 /**
  *
  * @param value
@@ -35,3 +36,13 @@ export const getFormattedHash = (hash?: string) => {
     const lastFour = hash.slice(hash.length - 4)
     return `${firstSix}****${lastFour}`
 }
+
+export function getShortAddr(address: string):string|'' {
+    if (!address || address === undefined || address === null || address.trim() === '') {
+        // console.log('getShortAddr got empty!')
+        return ''
+    }
+    const convertAddr = address.substr(0, 6) + '...' + address.substr(address.length - 4)
+    return convertAddr
+}
+
