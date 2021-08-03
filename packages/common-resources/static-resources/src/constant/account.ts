@@ -15,7 +15,8 @@ export enum AccountStatus {
     NO_ACCOUNT = 'NO_ACCOUNT',
     LOCKED = 'LOCKED',
     ACTIVATED = 'ACTIVATED',
-    DEPOSITING = 'DEPOSITING'
+    DEPOSITING = 'DEPOSITING',
+    ERROR_NETWORK = 'ERROR_NETWORK'
 }
 
 export enum fnType {
@@ -26,6 +27,7 @@ export enum fnType {
     ACTIVATED = 'ACTIVATED',
     DEPOSITING = 'DEPOSITING',
     DEFAULT = 'DEFAULT',
+    ERROR_NETWORK='ERROR_NETWORK',
 }
 
 export type Account = {

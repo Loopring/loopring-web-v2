@@ -1,6 +1,6 @@
 export * from './ammPairDetail'
 export * from './coinPairInit'
-export * from './connectStatusCallback'
+export * from '../../layouts/connectStatusCallback'
 export * from './makeCache'
 export * from './makeMyPoolDetail'
 export * from './makeTickView'
