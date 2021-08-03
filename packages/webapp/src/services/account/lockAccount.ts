@@ -5,12 +5,13 @@ import { updateAccountStatus } from '../../stores/account';
 
 export function lockAccount() {
     const account = store.getState().account;
-    walletLayer2Services.sendAccountLock(account.accountId)
+    walletLayer2Services.sendAccountLock()
     store.dispatch(updateAccountStatus({
         readyState: AccountStatus.LOCKED,
         apiKey: '',
         eddsaKey: '',
         publicKey: '',
+        nonce:undefined,
     }))
 }
 export function goErrorNetWork(){
@@ -19,6 +20,7 @@ export function goErrorNetWork(){
         apiKey: '',
         eddsaKey: '',
         publicKey: '',
+        nonce:undefined,
     }))
 }
 export function cleanLayer2() {
@@ -28,5 +30,6 @@ export function cleanLayer2() {
         apiKey: '',
         eddsaKey: '',
         publicKey: '',
+        nonce:undefined,
     }))
 }

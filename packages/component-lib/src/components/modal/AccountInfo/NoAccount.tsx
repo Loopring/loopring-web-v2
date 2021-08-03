@@ -7,11 +7,12 @@ import { WithTranslation, withTranslation } from 'react-i18next';
 
 const AnimationArrow = styled(Box)`
   &.arrowCta {
+    transform-origin: center;
     display: block;
     height: 12px;
     width: 12px;
     border: 9px solid transparent;
-    transform: rotate(45deg);                           
+    transform: rotate(45deg) scale(.5);                           
     position: relative;
     //margin: 25vh auto;
   }
@@ -85,21 +86,21 @@ const AnimationArrow = styled(Box)`
   }
 ` as typeof Box
 export const NoAccount =  withTranslation('common')(({goDeposit,t,...props}:WithTranslation & AccountBaseProps & { goDeposit:()=>void }) => {
-    return <Box flex={1} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-
+    return <Box flex={1} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'}>
         <AccountBase {...props} t={t}/>
         <Box display={'flex'} marginTop={3} flexDirection={'column'} alignItems={'center'}>
-            <Typography variant={'body2'} >
+            <Typography variant={'body2'} marginBottom={1}>
                 {t('labelActivatedAccountDeposit')}
             </Typography>
-            <AnimationArrow marginTop={1} className={'arrowCta'}/>
-
-
+            
+            <AnimationArrow className={'arrowCta'}/>
+        </Box>
+        <Box width={120} marginTop={2}>
+            <Button variant={'contained'} fullWidth size={'medium'}  onClick={() => {
+                goDeposit();
+            }}>{t('depositLabelBtn')} </Button>
         </Box>
 
-        <Button variant={'contained'} size={'medium'}  onClick={() => {
-            goDeposit();
-        }}>t('depositLabelBtn') </Button>
     </Box>
 
 })

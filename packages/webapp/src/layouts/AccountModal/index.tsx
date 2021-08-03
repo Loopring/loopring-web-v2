@@ -24,6 +24,9 @@ import { TOAST_TIME } from '../../defs/common_defs';
 import { getShortAddr, LockIcon, UnLockIcon } from '@loopring-web/common-resources';
 import { Typography } from '@material-ui/core';
 import { sleep } from 'loopring-sdk';
+import { walletLayer2Services } from '../../services/account/walletLayer2Services';
+import { lockAccount } from '../../services/account/lockAccount';
+import { unlockAccount } from '../../services/account/unlockAccount';
 
 export const ModalAccountInfo = withTranslation('common')(({
                                                                onClose,
@@ -82,14 +85,7 @@ export const ModalAccountInfo = withTranslation('common')(({
         setShowAccount({isShow: false})
         // // setShowAccount({isShow: false,step:AccountStep.});
     }, [resetAccount, setShowAccount])
-    const lockCallback = React.useCallback((event) => {
-        // lock(account)
-        updateAccount({
-            // level:string,
-            apiKey: '',
-            eddsaKey: '',
-        })
-    }, [updateAccount])
+
     const unLockCallback = React.useCallback((event) => {
         // unlock(account)
         // updateAccount()
@@ -100,10 +96,14 @@ export const ModalAccountInfo = withTranslation('common')(({
         setShowAccount({isShow: true, step: AccountStep.Deposit});
     }, [setShowAccount, setShowDeposit])
 
-    const unlock = React.useCallback(() => {
-        console.log('unlock...')
-    }, [setShowAccount, setShowDeposit])
-
+    const unlockBtn =  React.useMemo(()=>{
+        return <Button variant={'contained'} fullWidth size={'medium'}  onClick={() => {
+            unlockAccount();
+        }}>{t('labelUnLockLayer2')} </Button>},[updateAccount]);
+    const lockBtn = React.useMemo(()=>{
+        return <Button variant={'contained'} fullWidth size={'medium'}  onClick={() => {
+            lockAccount();
+        }}>{t('labelLockLayer2')} </Button>},[lockAccount]);
     // const onSwitch = {onSwitch}
     const accountList = React.useMemo(() => {
         return Object.values({
@@ -121,13 +121,13 @@ export const ModalAccountInfo = withTranslation('common')(({
             [ AccountStep.ProcessUnlock ]: <ProcessUnlock/>,
             [ AccountStep.SuccessUnlock ]: <SuccessUnlock/>,
             [ AccountStep.FailedUnlock ]: <FailedUnlock/>,
-            [ AccountStep.HadAccount ]: <HadAccount {...{unlock, goDeposit,
-                account,
+            [ AccountStep.HadAccount ]: <HadAccount {...{
                 onSwitch, onCopy,
                 address: account.accAddress,
                 connectBy: account.connectName,
                 onViewQRCode, onDisconnect, addressShort,
-                etherscanLink: etherscanUrl + account.accAddress
+                etherscanLink: etherscanUrl + account.accAddress,
+                mainBtn: account.readyState === 'ACTIVATED'?  lockBtn: unlockBtn
             }} />
         })
     }, [addressShort, account, depositProps, etherscanUrl, onCopy, onSwitch, onDisconnect, onViewQRCode])

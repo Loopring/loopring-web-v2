@@ -79,27 +79,28 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
         })
 
     }, [url])
+    const mainBtn = React.useMemo(()=>{
+        return <Button variant={'contained'} fullWidth size={'medium'}  onClick={() => {
+        }}>{'unlock'} </Button>},[]);
     const accountInfoProps: AccountBaseProps = {
         addressShort: '0x123...8784',
         address: '0x123567243o24o242423098784',
         level: 'VIP 1',
         connectBy: 'MetaMask',
         etherscanLink: 'https://material-ui.com/components/material-icons/',
-        mainBtn: <Button variant={'contained'} size={'small'} color={'primary'} onClick={() => console.log('my event')}>My
-            button</Button>
     }
 
     const accountList = React.useMemo(() => {
         return Object.values({
-            [ AccountStep.NoAccount ]: <NoAccount goDeposit={()=>{}} {...accountInfoProps} address={''}/>,
-            [ AccountStep.Deposit ]: <DepositPanel  {...{...rest, ...depositProps}} > </DepositPanel>,
+            [ AccountStep.NoAccount ]: <NoAccount {...{...accountInfoProps, goDeposit:()=> {}}}/>,
+            [ AccountStep.Deposit ]: <DepositPanel  {...{...rest,...depositProps}} />,
             [ AccountStep.Depositing ]: <Depositing/>,
             [ AccountStep.FailedDeposit ]: <FailedDeposit/>,
-            [ AccountStep.SignAccount ]: <ApproveAccount/>,
+            [ AccountStep.SignAccount ]: <ApproveAccount />,
             [ AccountStep.ProcessUnlock ]: <ProcessUnlock/>,
             [ AccountStep.SuccessUnlock ]: <SuccessUnlock/>,
             [ AccountStep.FailedUnlock ]: <FailedUnlock/>,
-            [ AccountStep.HadAccount ]: <HadAccount account={{} as any} {...accountInfoProps}/>,
+            [ AccountStep.HadAccount ]: <HadAccount mainBtn={mainBtn} {...accountInfoProps}/>,
         })
 
     }, [])

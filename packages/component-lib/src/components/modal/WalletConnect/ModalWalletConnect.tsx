@@ -26,7 +26,7 @@ export const ModalWalletConnect = withTranslation('common', {withRef: true})((
         <SwitchPanelStyled style={{boxShadow: '24'}}
                            {...{_height: 'var(--modal-height)', _width: 'var(--modal-width)' }}>
             <ModalCloseButton onClose={onClose} {...rest} />
-            <SwipeableViews axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'} index={step}>
+            <SwipeableViews animateTransitions={false} axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'} index={step}>
                 {panelList && panelList.map((panel,index)=>{
                     return <Box key={index}>
                         {panel}
