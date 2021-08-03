@@ -19,7 +19,7 @@ import { FailedConnect } from './WalletConnect/FailedConnect';
 import {
     AccountBaseProps,
     AccountStep,
-    ApproveAccount,
+    SignAccount,
     Depositing,
     FailedDeposit,
     FailedUnlock,
@@ -95,7 +95,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
             [ AccountStep.Deposit ]: <DepositPanel  {...{...rest, ...depositProps}} > </DepositPanel>,
             [ AccountStep.Depositing ]: <Depositing/>,
             [ AccountStep.FailedDeposit ]: <FailedDeposit/>,
-            [ AccountStep.ApproveAccount ]: <ApproveAccount/>,
+            [ AccountStep.SignAccount ]: <SignAccount/>,
             [ AccountStep.ProcessUnlock ]: <ProcessUnlock/>,
             [ AccountStep.SuccessUnlock ]: <SuccessUnlock/>,
             [ AccountStep.FailedUnlock ]: <FailedUnlock/>,

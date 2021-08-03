@@ -1,15 +1,18 @@
 import { AccountStatus } from '@loopring-web/common-resources';
+import store from '../../stores';
+import { walletLayer2Services } from './walletLayer2Services';
+import { updateAccountStatus } from '../../stores/account';
 
-export function lockAccount({wrongChain,readyState}: {wrongChain?:boolean|undefined,readyState:AccountStatus}) {
-    // const  dispach =  store.dispatch;
-    // const account = store.getState().account;
-    // const {exchangeInfo} = store.getState().system;
-    return {
-        readyState: readyState,
+export function lockAccount() {
+    const account = store.getState().account;
+    walletLayer2Services.sendAccountLock()
+    store.dispatch(updateAccountStatus({
+        readyState: AccountStatus.LOCKED,
         apiKey: '',
         eddsaKey: '',
-        // publicKey: '',
+        publicKey: '',
         // chainId: 1 | 5,
-        wrongChain: wrongChain,
-    }
+        // wrongChain: wrongChain,
+    }))
+
 }

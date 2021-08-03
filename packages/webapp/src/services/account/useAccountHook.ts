@@ -17,7 +17,8 @@ export function useAccountHook(
         handleSignAccount, //unlock or update account  assgin
         handleProcessSign,
         handleSignError,
-        handleProcessAccountCheck
+        handleProcessAccountCheck,
+        handleAccountUnlocked,
     }
 
         : any) {
@@ -52,7 +53,9 @@ export function useAccountHook(
                 case 'ErrorSign':
                     handleSignError(data);
                     break;
-
+                case 'AccountUnlocked':
+                    handleAccountUnlocked(data);
+                    break;
             }
         });
         return () => subscription.unsubscribe();

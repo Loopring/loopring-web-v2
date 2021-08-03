@@ -37,7 +37,7 @@ export type Account = {
     eddsaKey: any,
     publicKey: any,
     connectName: keyof typeof ConnectProviders,
-    chainId: 1 | 5,
+    chainId: 1 | 5 | 'unknown',
     wrongChain?: boolean|undefined,
     _userOnModel?: boolean|undefined
 }

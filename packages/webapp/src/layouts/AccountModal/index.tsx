@@ -1,7 +1,7 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import {
     AccountStep,
-    ApproveAccount,
+    SignAccount,
     Button,
     Depositing,
     DepositPanel,
@@ -114,7 +114,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             [ AccountStep.Deposit ]: <DepositPanel  {...depositProps} />,
             [ AccountStep.Depositing ]: <Depositing/>,
             [ AccountStep.FailedDeposit ]: <FailedDeposit/>,
-            [ AccountStep.ApproveAccount ]: <ApproveAccount/>,
+            [ AccountStep.SignAccount ]: <SignAccount/>,
             [ AccountStep.ProcessUnlock ]: <ProcessUnlock/>,
             [ AccountStep.SuccessUnlock ]: <SuccessUnlock/>,
             [ AccountStep.FailedUnlock ]: <FailedUnlock/>,

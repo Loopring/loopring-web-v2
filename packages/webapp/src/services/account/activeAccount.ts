@@ -13,9 +13,9 @@ export async function activeAccount({reason,shouldShow}: { reason:any,shouldShow
     // const {exchangeInfo} = store.getState().system;
     if (reason?.response?.data?.resultInfo?.code === 100001) {
         // deposited, but need update account
-        console.log('ApproveAccount')
+        console.log('SignAccount')
         store.dispatch(setShowConnect({isShow: false}));
-        store.dispatch(setShowAccount({isShow: true, step: AccountStep.ApproveAccount}));
+        store.dispatch(setShowAccount({isShow: true, step: AccountStep.SignAccount}));
         store.dispatch(updateAccountStatus({readyState: AccountStatus.DEPOSITING}));
 
     } else {

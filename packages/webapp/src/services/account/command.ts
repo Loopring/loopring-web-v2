@@ -9,7 +9,7 @@ export enum Commands {
     ErrorSign='ErrorSign',
     ProcessSign='ProcessSign',
     ProcessAccountCheck='ProcessAccountCheck',
-    UnLockAccount = 'UnLockAccount'
+    AccountUnlocked = 'AccountUnlocked'
 }
 export enum ErrorType {
     FailedConnect = 'FailedConnect'
