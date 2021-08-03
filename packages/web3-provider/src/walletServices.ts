@@ -7,6 +7,7 @@ const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
 const AvaiableNetwork = [1,5];
 export const walletServices = {
+    subject,
     sendProcess: async (type: keyof typeof ProcessingType, props?: any) => {
         subject.next({
             status: Commands.Processing,

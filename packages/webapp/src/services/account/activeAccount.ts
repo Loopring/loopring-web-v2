@@ -1,10 +1,10 @@
-import { statusUnset as statusAccountUnset, updateAccountStatus } from '../stores/account';
+import { statusUnset as statusAccountUnset, updateAccountStatus } from '../../stores/account';
 import { AccountStep, setShowAccount, setShowConnect } from '@loopring-web/component-lib';
 import { dumpError400, generateKeyPair, sleep, toBig, toHex } from 'loopring-sdk';
 import { connectProvides } from '@loopring-web/web3-provider';
-import { LoopringAPI } from '../stores/apis/api';
+import { LoopringAPI } from '../../stores/apis/api';
 import { AccountInfo } from 'loopring-sdk/dist/defs/account_defs';
-import store from '../stores';
+import store from '../../stores';
 import { AccountStatus } from '@loopring-web/common-resources';
 import { unlockAccount } from './unlockAccount';
 
