@@ -80,40 +80,39 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                     connectName,
                     _userOnModel
                 } = action.payload;
-                if (accAddress) {
+                if (accAddress !== undefined) {
                     state.accAddress = accAddress;
                 }
-                if( wrongChain !== undefined){
+                if(wrongChain !== undefined){
                     state.wrongChain = wrongChain
                 }
                 if (readyState) {
                     state.readyState = readyState;
                 }
-                if (accountId) {
+                if (accountId !== undefined) {
                     state.accountId = accountId;
                 }
-                if (level) {
+                if (level !== undefined) {
                     state.level = level;
                 }
-                if (apiKey) {
+                if (apiKey !== undefined) {
                     state.apiKey = apiKey;
                 }
-                if (eddsaKey) {
+                if (eddsaKey !== undefined) {
                     state.eddsaKey = eddsaKey;
                 }
-                if (connectName) {
+                if (connectName !== undefined) {
                     state.connectName = connectName;
                 }
-                if (_chainId) {
+                if (_chainId !== undefined) {
                     state._chainId = _chainId;
                 }
-                if (nonce) {
+                if (nonce !== undefined) {
                     state.nonce = nonce;
                 }
                 if (_userOnModel !== undefined) {
                     state._userOnModel = _userOnModel;
                 }
-
 
                 state.status = SagaStatus.DONE;
             }

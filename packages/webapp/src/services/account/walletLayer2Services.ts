@@ -49,12 +49,16 @@ export const walletLayer2Services = {
     },
     //INFO: for lock account todo clear the private info, user click or provider on wrong network
     sendAccountLock: (accInfo?:AccountInfo) => {
-        const updateInfo = accInfo?{
+        const updateInfo = accInfo ? {
             readyState:AccountStatus.LOCKED,
             accountId:  accInfo.accountId,
             nonce: accInfo.nonce,
             level: accInfo.tags,
-        }:{readyState:AccountStatus.LOCKED}
+        }:{readyState:AccountStatus.LOCKED,
+            apiKey: '',
+            eddsaKey: '',
+            publicKey: '',
+            nonce:undefined,}
         store.dispatch(updateAccountStatus(updateInfo))
         subject.next({
             status: Commands.LockAccount,
