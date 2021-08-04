@@ -10,14 +10,14 @@ export const checkAccount = (newAccAddress: string) => {
         myLog('After connect >>,account part: diff account, clean layer2')
         store.dispatch(cleanAccountStatus(undefined));
     }
-    if (newAccAddress && newAccAddress!=='') {
+    if (newAccAddress && newAccAddress !== '') {
         myLog('After connect >>,checkAccount: step1 address',newAccAddress)
-        if (account.accountId == -1) {
+        if (account.accountId === -1) {
             myLog('After connect >>,checkAccount: step1 no account Id')
             walletLayer2Services.sendCheckAccount(newAccAddress)
             store.dispatch(updateAccountStatus({accAddress: newAccAddress}))
         } else if (account.accountId && account.apiKey && account.eddsaKey) {
-            myLog('After connect >>,checkAccount: step1 have activate account from store')
+            myLog('After connect >>,checkAccount: step1 have activate account from store, account:', account)
             walletLayer2Services.sendAccountSigned();
         } else {
             myLog('After connect >>,checkAccount: step1 account locked')

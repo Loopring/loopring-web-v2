@@ -154,5 +154,7 @@ export default {
     labelJoinAmmFailed: 'Join AmmPool failed!',
     labelExitAmmSuccess: 'Exit AmmPool sucessfully!',
     labelExitAmmFailed: 'Exit AmmPool failed!',
-    labelConnectBy: 'Connected with <1>{{connectBy}}</1>'
+    labelConnectBy: 'Connected with <1>{{connectBy}}</1>',
+    labelWrongNetwork: 'Wrong network',
+    labelActivatedAccountDeposit:'Apply Layer2 wallet, Please deposit to Activated account'
 }
