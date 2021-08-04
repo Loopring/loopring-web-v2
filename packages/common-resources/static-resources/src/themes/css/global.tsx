@@ -11,13 +11,13 @@ import DINCondensed from  '../fonts/english/DINCondensed/363123_0_0.ttf'
 import { ColorDarkDefault, ColorLightDefault } from "./color-lib";
 
 export const fontDefault = {
-    h1: '4.8rem',
-    h2: '3.6rem',
-    h3: '2.4rem',
-    h4: '2rem',
+    h1: '3.0rem',
+    h2: '2.4rem',
+    h3: '2.0rem',
+    h4: '1.6rem',
     h5: '1.4rem',
     h6: '1.2rem',
-    body1: '1.6rem'
+    body1: '1.4rem'
 }
 
 export const

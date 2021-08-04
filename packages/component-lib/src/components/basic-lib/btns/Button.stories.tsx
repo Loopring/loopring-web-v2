@@ -116,6 +116,11 @@ export const LButton: Story<ButtonProps> = withTranslation()(({t, ...rest}: With
                     <Grid item>
                         <ModalCloseButton {...{t, ...rest}}/>
                     </Grid>
+                    <Grid item>
+                        <Button variant={'text'} size={'medium'} color={'primary'}>
+                            Text Btn
+                        </Button>
+                    </Grid>
                 </Grid>
             </Box>
 
