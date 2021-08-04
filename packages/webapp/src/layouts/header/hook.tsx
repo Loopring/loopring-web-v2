@@ -77,7 +77,6 @@ export const useHeader = () => {
     const onNotification = React.useCallback(async () => {
         myLog('onNotification click')
     }, [])
-
     const _btnClickMap: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
         [ fnType.ACTIVATED ]: [
             function () {
@@ -98,7 +97,6 @@ export const useHeader = () => {
         setShouldShow(true);
         accountStaticCallBack(_btnClickMap, []);
     }, [account])
-
     const onThemeBtnClick = React.useCallback(async (themeMode: ThemeKeys) => {
         if (themeMode === Theme.dark) {
             setTheme(Theme.light)
