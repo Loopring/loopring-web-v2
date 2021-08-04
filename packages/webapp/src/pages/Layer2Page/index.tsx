@@ -2,6 +2,7 @@ import { useRouteMatch } from 'react-router'
 
 import { Box } from '@material-ui/core'
 import {
+    AccountStep,
     Button,
     DepositPanel,
     SubMenu,
@@ -10,7 +11,7 @@ import {
 } from '@loopring-web/component-lib'
 import { useTranslation, withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
-import { AccountStatus, subMenuLayer2 } from '@loopring-web/common-resources'
+import { AccountStatus, fnType, subMenuLayer2 } from '@loopring-web/common-resources'
 
 import TxPanel from './TxPanel'
 import AssetPanel from './AssetPanel'
@@ -21,6 +22,10 @@ import { useModalProps } from '../../layouts/header/hook';
 import { Redirect } from 'react-router-dom'
 import React from 'react';
 import { useAccount } from '../../stores/account';
+import { accountStaticCallBack, bntLabel, btnClickMap } from '../../layouts/connectStatusCallback';
+import { deepClone } from '../../utils/obj_tools';
+import store from '../../stores';
+import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
 
 export const subMenu = subMenuLayer2;
 const BoxStyle = styled(Box)`
@@ -41,13 +46,15 @@ const BoxStyle = styled(Box)`
    
 ` as typeof Box
 const BtnConnect = withTranslation(['common'], {withRef: true})(({t}: any) => {
-    const {setShowAccount} = useOpenModals();
-    const showAccountInfo = React.useCallback(() => {
-        setShowAccount({isShow: true})
-
-    }, [setShowAccount])
+    const [label,setLabel]  = React.useState(undefined);
+    const { status: accountStatus} = useAccount();
+    const _btnClickMap: typeof btnClickMap = Object.assign(deepClone(btnClickMap));
+    useCustomDCEffect(() => {
+        setLabel(accountStaticCallBack(bntLabel));
+    }, [accountStatus])
     return <Button variant={'contained'} size={'large'} color={'primary'} fullWidth={true}
-                   style={{maxWidth: '280px'}} onClick={showAccountInfo}>{t(`labelUnlockAccount`)}
+                   style={{maxWidth: '280px'}} onClick={()=>{accountStaticCallBack(_btnClickMap, [])}
+    }>{t(label)}
     </Button>
 }) as typeof Button
 const SubMenuList = withTranslation(['layout', 'common'], {withRef: true})(BasicSubMenuList);
