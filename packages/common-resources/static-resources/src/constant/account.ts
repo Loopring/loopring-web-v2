@@ -40,8 +40,8 @@ export type Account = {
     publicKey: any,
     nonce:number|undefined,
     connectName: keyof typeof ConnectProviders,
-    chainId: 1 | 5 | 'unknown',
     wrongChain?: boolean|undefined,
+    _chainId: 1 | 5 | 'unknown',
     _userOnModel?: boolean|undefined
 }
 export type AccountState = Account & StateBase;

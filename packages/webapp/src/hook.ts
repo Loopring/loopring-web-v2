@@ -13,6 +13,7 @@ import { myLog } from './utils/log_tools';
 import { useAccountHook } from './services/account/useAccountHook';
 import { checkAccount } from './services/account/checkAccount';
 import { networkUpdate } from './services/account/networkUpdate';
+import { useWalletLayer2 } from './stores/walletLayer2';
 
 /**
  * @description
@@ -26,7 +27,9 @@ import { networkUpdate } from './services/account/networkUpdate';
 
 export function useInit() {
     const [state, setState] = React.useState<keyof typeof SagaStatus>('PENDING')
-    // const systemState = useSystem();
+    const {updateWalletLayer1, resetLayer1,} = useWalletLayer1()
+    const {updateWalletLayer2, resetLayer2, } = useWalletLayer2();
+    const {account, resetAccount, status:accountStatus} = useAccount();
     const tokenState = useTokenMap();
     const ammMapState = useAmmMap();
     const {
@@ -35,13 +38,12 @@ export function useInit() {
         status: systemStatus,
         statusUnset: systemStatusUnset
     } = useSystem();
-    const {account,resetAccount} = useAccount();
     const walletLayer1State = useWalletLayer1();
     useConnectHandle();
     useAccountHandle();
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
-        if (account.accAddress && account.connectName && account.connectName !== 'UnKnown' && account.accAddress) {
+        if (account.accAddress !== '' && account.connectName && account.connectName !== 'UnKnown') {
             try {
                 await connectProvides[ account.connectName ]();
                 if (connectProvides.usedProvide) {
@@ -52,11 +54,12 @@ export function useInit() {
             } catch (error) {
                 console.log(error)
             }
-        } else if (account.chainId && account.chainId!=='unknown') {
-            updateSystem({chainId: account.chainId})
-        } else {
-                resetAccount();
-            updateSystem({chainId: ChainId.MAINNET})
+        } else  {
+            if(account.accAddress === '' ||  account.connectName === 'UnKnown' ){
+                resetAccount() 
+            }
+            const chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
+            updateSystem({chainId})
         }
 
         //TEST:
@@ -98,6 +101,24 @@ export function useInit() {
             setState('DONE');
         }
     }, [ammMapState, tokenState, account.accountId, walletLayer1State])
+    React.useEffect(() => {
+        switch (account.readyState){
+            case 'UN_CONNECT':
+            case 'ERROR_NETWORK':
+                resetLayer1();
+                break;
+            case 'NO_ACCOUNT':
+            case 'DEPOSITING':
+            case 'LOCKED':
+                resetLayer2();
+                updateWalletLayer1();
+                break;
+            case 'ACTIVATED':
+                updateWalletLayer1();
+                updateWalletLayer2();
+
+        }
+    }, [accountStatus]);
 
     return {
         state,
@@ -138,7 +159,7 @@ function useConnectHandle() {
     }, [account]);
 
     const handleError = React.useCallback(async ({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
-        updateSystem({chainId: account.chainId ? account.chainId : 1})
+        updateSystem({chainId: account._chainId ? account._chainId : 1})
         resetAccount();
         await sleep(10);
         statusAccountUnset();

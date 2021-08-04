@@ -44,7 +44,7 @@ const initialState: AccountState = {
     level: '',
     nonce: undefined,
     connectName: ConnectProviders.UnKnown,
-    chainId: 1,
+    _chainId: 1,
     status: 'UNSET',
     errorMessage: null,
 
@@ -74,7 +74,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                     level,
                     apiKey,
                     eddsaKey,
-                    chainId,
+                    _chainId,
                     nonce,
                     connectName,
                     _userOnModel
@@ -100,8 +100,8 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                 if (connectName) {
                     state.connectName = connectName;
                 }
-                if (chainId) {
-                    state.chainId = chainId;
+                if (_chainId) {
+                    state._chainId = _chainId;
                 }
                 if (nonce) {
                     state.nonce = nonce;
@@ -114,7 +114,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                 state.status = SagaStatus.DONE;
             }
         },
-        cleanAccountStatus(state: AccountState, action: PayloadAction<undefined>) {
+        cleanAccountStatus(state: AccountState, action: PayloadAction<{shouldUpdateProvider?:boolean|undefined}>) {
             state.accAddress = '';
             state.readyState = AccountStatus.UN_CONNECT;
             state.accountId = -1;
@@ -123,10 +123,13 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
             state.publicKey = {};
             state.level = '';
             state.nonce = undefined;
-            state.connectName = ConnectProviders.UnKnown;
             state.status = SagaStatus.DONE;
             state.errorMessage = null;
-
+            if(action.payload?.shouldUpdateProvider){
+                state.connectName = ConnectProviders.UnKnown;
+            }
+            //no need update _chainId
+            //no need update _userOnModel
         },
         statusUnset: (state: AccountState) => {
             state.status = SagaStatus.UNSET

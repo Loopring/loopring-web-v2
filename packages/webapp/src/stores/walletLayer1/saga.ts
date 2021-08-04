@@ -17,21 +17,23 @@ const getWalletLayer1Balance = async <R extends {[key:string]:any}>()=> {
     const exchangeApi = exchangeAPI();
     const {accAddress} = store.getState().account;
     const {tokenMap,marketCoins} = store.getState().tokenMap;
-    const {ethBalance} =  await exchangeApi.getEthBalances({owner:accAddress});
-    // @ts-ignore
-    const {tokenBalances} =  await exchangeApi.getTokenBalances({owner:accAddr,token: marketCoins.join()},tokenMap);
-    tokenBalances['ETH'] = ethBalance;
-    let walletLayer1;
-    if(tokenBalances) {
-        walletLayer1 = Reflect.ownKeys(tokenBalances).reduce((prev,item)=>{
-            return   {...prev, [ item ]:{
-                    belong: item,
-                    count: fromWEI(tokenMap, item, tokenBalances[item as string]),
+    if(marketCoins && tokenMap) {
+        const {ethBalance} =  await exchangeApi.getEthBalances({owner:accAddress});
+        const {tokenBalances} =  await exchangeApi.getTokenBalances({owner:accAddress,token: marketCoins.join()},tokenMap);
+        tokenBalances['ETH'] = ethBalance;
+        let walletLayer1;
+        if(tokenBalances) {
+            walletLayer1 = Reflect.ownKeys(tokenBalances).reduce((prev,item)=>{
+                return   {...prev, [ item ]:{
+                        belong: item,
+                        count: fromWEI(tokenMap, item, tokenBalances[item as string]),
+                    }
                 }
-            }
-        },{} as WalletLayer1Map<R>)
+            },{} as WalletLayer1Map<R>)
+        }
+        return {walletLayer1}
     }
-    return {walletLayer1}
+
 };
 
 export function* getPostsSaga() {
