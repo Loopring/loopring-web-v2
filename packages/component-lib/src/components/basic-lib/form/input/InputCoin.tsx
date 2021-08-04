@@ -315,16 +315,6 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                       alignItems={'center'}
                       className={`icon-wrap icon-wrap-${order}`}>
                 <Grid container align-items={'center'} display={'flex'}>
-                    {/*<Grid item order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}*/}
-                    {/*      className={'logo-icon'}>*/}
-                    {/*    {coinMap[ belong ]?.simpleName ?*/}
-                    {/*        <AvatarCoinStyled imgx={coinInfo.x} imgy={coinInfo.y} imgheight={coinInfo.height}*/}
-                    {/*                          imgwidth={coinInfo.width}*/}
-                    {/*                          variant="circular" alt={coinMap[ belong ]?.simpleName as string}*/}
-                    {/*            // src={sellData?.icon}*/}
-                    {/*                          src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>*/}
-                    {/*        : ''}*/}
-                    {/*</Grid>*/}
                     <Grid item order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}
                           className={'logo-icon'}
                           height={'var(--list-menu-coin-size)'} width={'var(--list-menu-coin-size)'}
