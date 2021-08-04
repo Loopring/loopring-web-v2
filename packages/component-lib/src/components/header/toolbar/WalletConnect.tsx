@@ -113,9 +113,9 @@ export const BtnWalletConnect = ({
                     break
                 default:
             }
-            if (account && account.chainId == 5) {
+            if (account && account._chainId == 5) {
                 setNetworkLabel('Gorli')
-            } else if (account && account.chainId !== 1) {
+            } else if (account && account._chainId !== 1) {
                 setBtnClassname('wrong-network')
                 setNetworkLabel(undefined)
             }
