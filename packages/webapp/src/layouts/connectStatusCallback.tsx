@@ -23,6 +23,11 @@ export const bntLabel: typeof btnClickMap = {
             return `labelConnectWallet`
         }
     ],
+    [ fnType.ERROR_NETWORK ]: [
+        function () {
+            return `labelWrongNetwork`
+        }
+    ],
     // [ fnType.CONNECT]: [
     //     function () {
     //         return `labelConnectWallet`
