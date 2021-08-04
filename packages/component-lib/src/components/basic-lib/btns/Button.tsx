@@ -17,7 +17,7 @@ export const Button = styled(MuButton)<ButtonProps>`
       ${({loading, theme}) => {
     return loading === 'true' ? `
            color:transparent;
-           background:${theme.colorBase.primaryDark};
+           background:${theme.colorBase.primary};
            &::after{
             display: block;
             content: url(${loadingSvg});
