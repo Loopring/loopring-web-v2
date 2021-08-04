@@ -5,7 +5,7 @@ import { FormControlLabel as MuFormControlLabel, TextField as MuTextField } from
 export const FormControlLabel = styled(MuFormControlLabel)`
   && {
     padding-right: ${({theme}) => theme.unit * 2}px;
-    background-color: ${({theme}) => theme.colorBase.background().outline};
+    background-color: ${({theme}) => theme.colorBase.background().field};
     border-radius: ${({theme}) => theme.unit / 2}px;
   }
 `

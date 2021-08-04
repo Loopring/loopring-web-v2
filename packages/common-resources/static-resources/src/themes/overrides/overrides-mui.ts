@@ -231,11 +231,11 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 fontWeight: 'normal',
                 color: colorBase.textSecondary,
                 borderColor: colorBase.border().default,
-                backgroundColor: colorBase.background().outline,
+                backgroundColor: colorBase.background().field,
                 '&:hover': {
                     color: colorBase.textPrimary,
                     borderColor: colorBase.textPrimary,
-                    backgroundColor: colorBase.background().outline,
+                    backgroundColor: colorBase.background().hover,
                 },
                 '&.Mui-disabled': {
                     backgroundColor: colorBase.background().disabled,
@@ -387,7 +387,7 @@ export const MuiInputBase = ({colorBase}: any): { styleOverrides: ComponentsOver
                 position: 'relative',
                 // border: `1px solid ${colorBase.border().blur}`,
                 fontSize: '1.4rem',
-                backgroundColor: colorBase.background().outline,
+                backgroundColor: colorBase.background().field,
                 borderRadius: 4,
                 '&:not(.MuiFormControl-fullWidth)': {
                     // width: 'var(--btn-min-width)',
@@ -450,9 +450,9 @@ export const MuiToggleButton = ({colorBase, themeMode}: any) => {
                 '&&:not(:first-of-type), &&:not(:last-child)': {
                     borderColor: colorBase.border().default,
                 },
-                backgroundColor: colorBase.background().outline,
+                backgroundColor: colorBase.background().field,
                 '&:hover': {
-                    backgroundColor: colorBase.background().outline,
+                    backgroundColor: colorBase.background().hover,  
                     borderColor: colorBase.textPrimary,
                     '&:not(:last-child), &:not(:first-of-type)': {
                         borderColor: colorBase.textPrimary,
