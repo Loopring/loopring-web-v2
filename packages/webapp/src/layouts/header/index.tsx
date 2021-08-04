@@ -11,7 +11,7 @@ import { headerRoot } from '@loopring-web/common-resources'
 
 import { useLocation } from 'react-router-dom'
 
-import { Toolbar, } from '@material-ui/core'
+import { Button, Toolbar, } from '@material-ui/core'
 import { useHeader, useModalProps } from './hook'
 import { ModalAccountInfo } from '../AccountModal';
 import { ModalWalletConnectPanel } from '../WalletModal';
@@ -62,11 +62,17 @@ const Header = ({...rest}: any) => {
                     depositProps={depositProps} resetProps={resetProps} ammProps={ammProps} swapProps={swapProps}/>
 
         <HideOnScroll>
+            <>
             {process.env.NODE_ENV !== 'production' 
             && JSON.stringify(account?.readyState) + '| addr:' + account.accAddress + '|\t'
             + account?.connectName + '/' + JSON.stringify(isShowConnect)
-             + ' |isShowConnect:' + (AccountStep[isShowConnect.step])
-              + '| isShowAccount:' + (AccountStep[isShowAccount.step])}
+            + ' |isShowConnect:' + (AccountStep[isShowConnect.step])}
+            </>
+            <>
+            {process.env.NODE_ENV !== 'production' 
+            && JSON.stringify(isShowAccount)
+            + ' |isShowAccount:' + (AccountStep[isShowAccount.step])}
+            </>
 
             <HeaderUI {...rest} headerMenuData={headerMenuData} headerToolBarData={headerToolBarData}
                       selected={location.pathname === '/' ? headerRoot : location.pathname}></HeaderUI>
