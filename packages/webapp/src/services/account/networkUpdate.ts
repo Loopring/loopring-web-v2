@@ -3,10 +3,9 @@ import store from '../../stores';
 import { updateAccountStatus } from '../../stores/account';
 import { updateSystem } from '../../stores/system';
 
-
-export const networkUpdate =  ({chainId}:any):boolean=>{
+export const networkUpdate = ({chainId}: any): boolean => {
     const _chainId = store.getState().system.chainId;
-    if (chainId == 'unknown') {
+    if (chainId === 'unknown') {
         store.dispatch(updateAccountStatus({wrongChain: true, _chainId:chainId}));
         goErrorNetWork();
         return false;
