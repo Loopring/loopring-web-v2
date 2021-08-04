@@ -186,8 +186,8 @@ const IInput = styled(CurrencyInput)`
 
   .input-wrap-right & {
     text-align: right;
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
     ${({theme}) => `
         border-left:  ${theme.border.borderConfig({c_key: 'blur'})};
         ${theme.mode === 'dark' ? `border-color: transparent` : ''};
@@ -204,8 +204,8 @@ const IInput = styled(CurrencyInput)`
 
   .input-wrap-left & {
     text-align: left;
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
     ${({theme}) => `
         border-right:  ${theme.border.borderConfig({c_key: 'blur'})};
         ${theme.mode === 'dark' ? `border-color: transparent` : ''};
@@ -214,8 +214,8 @@ const IInput = styled(CurrencyInput)`
     :focus {
       ${({theme}) => `
         ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
-        border-top-right-radius: 0px;
-        border-bottom-right-radius: 0px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
      `};
     }
   }
@@ -246,12 +246,12 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
     //     let error:any = handleError(inputData, ref);
     //     _error = error ? error : {error: false}
     // }
-    const _handleError = (value: any) => {
+    const _handleError = React.useCallback((value: any) => {
         if (handleError) {
             let _error = handleError({balance: Number(balance), belong, ...{tradeValue: value}} as T, ref);
             setError(_error ? _error : {error: false});
         }
-    }
+    }, [handleError, balance, belong, ref])
     const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
         error: false,
         message: ''
@@ -262,12 +262,13 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 _handleError(inputData.tradeValue);
             }
         },
-        [inputData])
+        [inputData,_handleError])
     const inputEle = useFocusRef({
         callback: inputCallback,
         shouldFocusOn: focusOnInput,
         value: tradeValue,
     });
+
     const debounceCount = debounce(({...props}: any) => {
         if (handleCountChange) {
             handleCountChange({...props}, ref)
@@ -326,7 +327,8 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                     {/*</Grid>*/}
                     <Grid item order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}
                           className={'logo-icon'}
-                          height={'var(--list-menu-coin-size)'} width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
+                          height={'var(--list-menu-coin-size)'} width={'var(--list-menu-coin-size)'}
+                          alignItems={'center'} justifyContent={'center'}>
                         {coinIcon ?
                             <AvatarCoinStyled imgx={coinIcon.x} imgy={coinIcon.y} imgheight={coinIcon.height}
                                               imgwidth={coinIcon.width}
@@ -334,8 +336,8 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                 // src={sellData?.icon}
                                               src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
                             : <Avatar variant="circular" alt={coinMap[ belong ]?.simpleName as string} style={{
-                                height:'var(--list-menu-coin-size)',
-                                width:'var(--list-menu-coin-size)'
+                                height: 'var(--list-menu-coin-size)',
+                                width: 'var(--list-menu-coin-size)'
                             }}
                                 // src={sellData?.icon}
                                       src={'static/images/icon-default.png'}/>}
@@ -346,13 +348,12 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
             </CoinWrap>
             <Grid order={order === 'left' ? 1 : 2} flex={1} item className={`input-wrap input-wrap-${order}`}>
                 <IInput ref={inputEle} onValueChange={_handleContChange} value={sValue} allowNegativeValue={false}
-                        disabled={!disabled || belong ? false : true}
+                        disabled={!(!disabled || belong)}
                         placeholder={placeholderText}
-                        aria-placeholder={placeholderText} aria-label={label} decimalsLimit={10000000}></IInput>
+                        aria-placeholder={placeholderText} aria-label={label} decimalsLimit={10000000}/>
 
             </Grid>
         </Grid>
-
 
         <Grid container className={'message-wrap'} wrap={'nowrap'} alignItems={'stretch'} alignContent={'stretch'}
               justifyContent={'flex-end'}>
