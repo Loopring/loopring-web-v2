@@ -112,7 +112,7 @@ export const MuPickDate = ({colorBase, themeMode}: { colorBase: typeof ColorDark
                         fontSize: '2rem',
                         color: colorBase.textSecondary
                     },
-                    background: colorBase.backgroundBox,
+                    background:  colorBase.background().default,
                     boxShadow: colorBase.shadowBox,
                     borderRadius: radius * 2 + 'px',
                     border: borderFunc(themeMode).borderConfig({c_key: 'blur'}),
@@ -246,7 +246,7 @@ export const MuPickDate = ({colorBase, themeMode}: { colorBase: typeof ColorDark
                     },
 
                     "&:hover.Mui-selected, &:hover": {
-                        backgroundColor: colorBase.backgroundHover,
+                        backgroundColor: colorBase.background().field,
                     }
 
 
