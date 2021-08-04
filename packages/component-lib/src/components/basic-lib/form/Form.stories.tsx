@@ -324,7 +324,8 @@ const Template: Story<any> = withTranslation()((props: any) => {
             </Grid>
 
             <Grid item xs={3}>
-                <FormControlLabel control={<Checkbox defaultChecked checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
+                <FormControlLabel
+                    control={<Checkbox defaultChecked checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
                                                      color="default"/>} label="Label"/>
             </Grid>
             <Grid item xs={3}>
