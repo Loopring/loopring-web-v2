@@ -1,18 +1,20 @@
 import { ButtonProps } from '../../basic-lib';
+import { Account } from '@loopring-web/common-resources';
 
 export type AccountBaseProps = {
-    addressShort: string
-    address: string,
+
+    // addressShort: string
+    // address: string,
     level?: string,
-    etherscanLink: string,
-    mainBtn?: JSX.Element | React.ElementType<ButtonProps>
-    connectBy: string,
+    mainBtn?: JSX.Element | React.ElementType<ButtonProps> ,
+    etherscanUrl:string
+    // connectBy: string,
     // onDisconnect?: any,
     onSwitch?: any,
     // onLock?: any,
     onCopy?: any,
     onViewQRCode?: any,
-}
+} & Account
 
 
 export enum AccountStep {

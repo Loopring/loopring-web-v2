@@ -52,25 +52,6 @@ export const ModalAccountInfo = withTranslation('common')(({
         setShowAccount({isShow: false})
         setShowConnect({isShow: true})
     }, [setShowConnect, setShowAccount])
-    const UnlockBtn = ({onClick}: { onClick: ({...props}: any) => void }) => {
-        return <Button className={'unlock'} startIcon={<UnLockIcon fontSize={'large'}/>}
-                       onClick={(event) => {
-                           onClick(event)
-                       }} variant={'outlined'}>
-            <Typography variant={'body2'} marginTop={1 / 2}>   {t('labelUnLockLayer2')} </Typography>
-        </Button>
-    }
-
-
-    const LockBtn = ({onClick}: { onClick: ({...props}: any) => void }) => {
-        return <Button className={'lock'} startIcon={<LockIcon fontSize={'large'}/>}
-                       onClick={(event) => {
-                           onClick(event)
-                       }} variant={'outlined'}>
-            <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelLockLayer2')} </Typography>
-        </Button>
-    }
-
     const onCopy = React.useCallback(() => {
         copyToClipBoard(account.accAddress);
         setCopyToastOpen(true)
@@ -86,11 +67,6 @@ export const ModalAccountInfo = withTranslation('common')(({
         // // setShowAccount({isShow: false,step:AccountStep.});
     }, [resetAccount, setShowAccount])
 
-    const unLockCallback = React.useCallback((event) => {
-        // unlock(account)
-        // updateAccount()
-        setShowAccount({isShow: true, step: AccountStep.ProcessUnlock});
-    }, [updateAccount])
 
     const goDeposit = React.useCallback(() => {
         setShowAccount({isShow: true, step: AccountStep.Deposit});
@@ -108,11 +84,12 @@ export const ModalAccountInfo = withTranslation('common')(({
     const accountList = React.useMemo(() => {
         return Object.values({
             [ AccountStep.NoAccount ]: <NoAccount {...{goDeposit,
+                ...account,
+                etherscanUrl,
                 onSwitch, onCopy,
-                address: account.accAddress,
-                connectBy: account.connectName,
+                // address: account.accAddress,
+                // connectBy: account.connectName,
                 onViewQRCode, onDisconnect, addressShort,
-                etherscanLink: etherscanUrl + account.accAddress
             }} />,
             [ AccountStep.Deposit ]: <DepositPanel  {...depositProps} />,
             [ AccountStep.Depositing ]: <Depositing/>,
@@ -122,9 +99,11 @@ export const ModalAccountInfo = withTranslation('common')(({
             [ AccountStep.SuccessUnlock ]: <SuccessUnlock/>,
             [ AccountStep.FailedUnlock ]: <FailedUnlock/>,
             [ AccountStep.HadAccount ]: <HadAccount {...{
+                ...account,
                 onSwitch, onCopy,
-                address: account.accAddress,
-                connectBy: account.connectName,
+                etherscanUrl,
+                // address: account.accAddress,
+                // connectBy: account.connectName,
                 onViewQRCode, onDisconnect, addressShort,
                 etherscanLink: etherscanUrl + account.accAddress,
                 mainBtn: account.readyState === 'ACTIVATED'?  lockBtn: unlockBtn
