@@ -1,5 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { nextAccountStatus, restAccountStatus, statusUnset, updateAccountStatus } from './reducer';
+import {
+    cleanAccountStatus, nextAccountStatus,
+    // restAccountStatus,
+    statusUnset, updateAccountStatus
+} from './reducer';
 import React from 'react';
 import { Account, AccountState } from '@loopring-web/common-resources';
 
@@ -8,8 +12,8 @@ export function useAccount() {
     const {status, errorMessage, ...account}: AccountState = useSelector((state: any) => state.account);
     // const [shouldShow,setShouldShow] = React.useState(account._userOnModel)
     const dispatch = useDispatch();
-    const resetAccount = React.useCallback(() => {
-        dispatch(restAccountStatus(undefined))
+    const resetAccount = React.useCallback((props?:{shouldUpdateProvider?:boolean|undefined}) => {
+        dispatch(cleanAccountStatus(props))
     }, [dispatch])
     const updateAccount = React.useCallback((account: Partial<Account>) => {
         dispatch(updateAccountStatus(account))

@@ -36,50 +36,43 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
         {
             ...DefaultGatewayList[ 0 ],
             handleSelect: React.useCallback(async () => {
-                if (connectProvides.usedProvide && connectProvides.usedProvide) {
-                    resetAccount();
+                if (account.connectName === DefaultGatewayList[ 0 ].key) {
+                    setShowConnect({isShow: false});
+                } else {
+                    resetAccount({shouldUpdateProvider:true});
+                    statusAccountUnset();
                     connectProvides.clear();
+                    setShowConnect({isShow: true, step: WalletConnectStep.MetaMaskProcessing});
+                    await connectProvides.MetaMask();
+                    updateAccount({connectName: ConnectProviders.MetaMask});
+                    if (connectProvides.usedProvide) {
+                        const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
+                        updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
+                        return
+                    }
+
                 }
-                setShowConnect({isShow: true, step: WalletConnectStep.MetaMaskProcessing});
-                await connectProvides.MetaMask();
-                updateAccount({connectName: ConnectProviders.MetaMask});
-                if (connectProvides.usedProvide) {
-                    const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
-                    updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
-                    return
-                }
+
             }, [])
         },
         {
             ...DefaultGatewayList[ 1 ],
             handleSelect: React.useCallback(async () => {
-                if (connectProvides.usedProvide && connectProvides.usedProvide) {
-                    resetAccount();
+                resetAccount({shouldUpdateProvider:true});
+                    statusAccountUnset();
                     connectProvides.clear();
-                }
-                setShowConnect({isShow: true, step: WalletConnectStep.WalletConnectProcessing});
-                await connectProvides.WalletConnect();
-                updateAccount({connectName: ConnectProviders.WalletConnect});
-                if (connectProvides.usedProvide) {
-                    const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
-                    updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
-                    return
-                }
+                    setShowConnect({isShow: true, step: WalletConnectStep.WalletConnectProcessing});
+                    await connectProvides.WalletConnect();
+                    updateAccount({connectName: ConnectProviders.WalletConnect});
+                    if (connectProvides.usedProvide) {
+                        const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
+                        updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
+                        return
+                    }
+                // }
             }, [])
         },
-        // {
-        //     ...DefaultGatewayList[ 2 ],
-        //     handleSelect:React.useCallback(async () => {
-        //         // setShowConnect({isShow: false})
-        //     },[])
-        // },
-        // {
-        //     ...DefaultGatewayList[ 3 ],
-        //     handleSelect: () => {
-        //         // connect(ConnectorNames.Trezor, true)
-        //         // setShowConnect({isShow: false})
-        //     }
-        // },
+
     ]
 
     const handleProcessing = React.useCallback(({type, opts}: { type: keyof typeof ProcessingType, opts: any }) => {
@@ -94,7 +87,8 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
 
     const walletList = React.useMemo(() => {
         return Object.values({
-            [ WalletConnectStep.Provider ]: <ProviderMenu gatewayList={gatewayList} {...{t, ...rest}}/>,
+            [ WalletConnectStep.Provider ]: <ProviderMenu gatewayList={gatewayList}
+                                                          providerName={account.connectName} {...{t, ...rest}}/>,
             [ WalletConnectStep.MetaMaskProcessing ]: <MetaMaskProcess/>,
             [ WalletConnectStep.WalletConnectProcessing ]: <WalletConnectProcess/>,
             [ WalletConnectStep.WalletConnectQRCode ]: <WalletConnectQRCode url={qrCodeUrl}/>,
@@ -102,7 +96,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
             [ WalletConnectStep.FailedConnect ]: <FailedConnect handleRetry={resetAccount}/>,
         })
 
-    }, [qrCodeUrl])
+    }, [qrCodeUrl, account])
     return <ModalWalletConnect open={isShowConnect.isShow} onClose={(e) => {
         setShouldShow(false);
         onClose(e);
