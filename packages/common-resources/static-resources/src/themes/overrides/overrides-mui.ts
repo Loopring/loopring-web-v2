@@ -85,10 +85,10 @@ export const MuiModal = ({colorBase}: any) => {
                 color: colorBase.textPrimary,
                 ' .MuiBackdrop-root': {
                     zIndex: -1,
-                    backgroundColor: colorBase.background().backDrop,
+                    // backgroundColor: colorBase.background().backDrop,
+                    backgroundColor: colorBase.modalMask,
                 },
             }
-
         }
     }
 }
@@ -645,8 +645,8 @@ export const MuiDivider = ({colorBase}: any) => {
     return {
         styleOverrides: {
             root: {
-                borderColor: `${colorBase.border().blur}`,
-                margin: `${unit / 2 * 5}px 0`,
+                borderColor: `${colorBase.dividerColor}`,
+                margin: `${unit / 4 * 5}px 0`,
             },
 
         }

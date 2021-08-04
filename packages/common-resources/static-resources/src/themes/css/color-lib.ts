@@ -33,6 +33,8 @@ export const ColorDarkDefault = Object.freeze({
     focus: "rgba(235, 238, 255, 0.6)",
     vipBgColor: "rgba(255, 242, 202, 0.2)",
     shadowBox: "0px 4px 38px rgba(0, 0, 0, 0.16)",
+    modalMask: 'rgba(0, 0, 0, 0.7)',
+    dividerColor: 'rgba(255, 255, 255, 0.1)',
     background: () => {
         return {
             default: ColorDarkDefault.backgroundBox,
