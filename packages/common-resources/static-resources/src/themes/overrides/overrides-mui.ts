@@ -187,24 +187,26 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 borderRadius: pxToRem(4),
                 fontWeight: 'normal',
                 paddingLeft: pxToRem(12),
-                paddingRight: pxToRem(12)
+                paddingRight: pxToRem(12),
             },
             contained: {
                 '&:hover': {
-                    // backgroundColor: colorBase.hoverSecondary,
+                    backgroundColor: colorBase.primaryHover,
                 },
-                height: pxToRem(44),
+                height: pxToRem(40),
                 fontSize: '1.6rem',
+                backgroundColor: colorBase.colorPrimary,
                 '&.Mui-disabled': {
-                    backgroundColor: colorBase.border().blur,
-                    color: colorBase.textSecondary,
+                    // backgroundColor: colorBase.border().blur,
+                    backgroundColor: colorBase.background().disabled,
+                    color: colorBase.textDisable,
                     // backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23FFFFFF33' stroke-width='1' stroke-dasharray='4%25%2c 8%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e")`
 
                 },
             },
             sizeLarge: {
-                height: pxToRem(52),
-                fontSize: '1.6rem',
+                height: pxToRem(48),
+                fontSize: '2.0rem',
                 fontWeight: 'normal',
                 //     '& .MuiButton-label': {
                 //
@@ -212,30 +214,35 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
             },
             sizeSmall: {
                 height: pxToRem(32),
-                fontSize: '1.4rem'
+                fontSize: '1.6rem'
                 //     '& $label': {
                 //
                 // },
 
             },
             outlinedSizeSmall: {
-                height: pxToRem(28),
-                fontSize: '1.4rem'
+                height: pxToRem(24),
+                fontSize: '1.2rem'
             },
             outlined: {
-                height: pxToRem(32),
+                height: pxToRem(28),
                 // boxShadow: '0px 4px 62px rgba(0, 0, 0, 0.25)',
                 fontSize: '1.4rem',
                 fontWeight: 'normal',
-                color: colorBase.textPrimary,
-                borderColor: colorBase.border().blur,
+                color: colorBase.textSecondary,
+                borderColor: colorBase.border().default,
                 backgroundColor: colorBase.background().outline,
-                '&:hover': {borderColor: colorBase.textPrimary},
+                '&:hover': {
+                    color: colorBase.textPrimary,
+                    borderColor: colorBase.textPrimary,
+                    backgroundColor: colorBase.background().outline,
+                },
                 '&.Mui-disabled': {
-                    backgroundColor: colorBase.border().blur,
+                    backgroundColor: colorBase.background().disabled,
                     color: colorBase.textSecondary,
-                    border: 0,
-                    backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23FFFFFF33' stroke-width='1' stroke-dasharray='4%25%2c 8%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e")`
+                    border: '1px dashed',
+                    borderColor: colorBase.border().default
+                    // backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23FFFFFF33' stroke-width='1' stroke-dasharray='4%25%2c 8%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e")`
                 },
             },
             // outlinedSecondary:{
@@ -439,12 +446,13 @@ export const MuiToggleButton = ({colorBase, themeMode}: any) => {
                 margin: '0 8px',
                 fontSize: '1.4rem',
                 color: colorBase.textPrimary,
-                borderColor: colorBase.border().blur,
+                borderColor: colorBase.border().default,
                 '&&:not(:first-of-type), &&:not(:last-child)': {
-                    borderColor: colorBase.border().blur,
+                    borderColor: colorBase.border().default,
                 },
                 backgroundColor: colorBase.background().outline,
                 '&:hover': {
+                    backgroundColor: colorBase.background().outline,
                     borderColor: colorBase.textPrimary,
                     '&:not(:last-child), &:not(:first-of-type)': {
                         borderColor: colorBase.textPrimary,
@@ -454,10 +462,11 @@ export const MuiToggleButton = ({colorBase, themeMode}: any) => {
                     }
                 },
                 '&.Mui-disabled': {
-                    backgroundColor: colorBase.border().blur,
+                    backgroundColor: colorBase.background().disabled,
                     color: colorBase.textSecondary,
-                    border: 0,
-                    backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23FFFFFF33' stroke-width='1' stroke-dasharray='4%25%2c 8%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e")`
+                    border: '1px dashed',
+                    borderColor: colorBase.border().default
+                    // backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23FFFFFF33' stroke-width='1' stroke-dasharray='4%25%2c 8%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e")`
                 },
                 '&&.Mui-selected, &&.Mui-selected + &.Mui-selected': {
                     color: colorBase.primaryLight,
