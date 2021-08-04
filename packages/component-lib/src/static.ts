@@ -1,14 +1,26 @@
 import {
+    Account,
+    AccountStatus,
     AmmInData,
     CoinInfo,
-    CoinMap,
+    CoinMap, ConnectProviders,
     HeaderMenuItemInterface,
     TradeCalcData,
     WalletCoin,
     WalletMap
 } from '@loopring-web/common-resources';
 import { List } from 'immutable';
-
+export const account:Account = {
+    accAddress: 'xxxxxxxxxxxxxxxxxxx',
+    readyState: AccountStatus.UN_CONNECT,
+    accountId: -1,
+    apiKey: '',
+    eddsaKey: '',
+    publicKey: {},
+    level: '',
+    nonce: undefined,
+    connectName: ConnectProviders.UnKnown,
+}
 export const coinMap: CoinMap<CoinType, CoinInfo<CoinType>> = {
     ETH: {
         icon: 'https://exchange.loopring.io/assets/images/ethereum/assets/0x9A0aBA393aac4dFbFf4333B06c407458002C6183/logo.png',

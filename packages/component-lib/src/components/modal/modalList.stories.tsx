@@ -29,7 +29,7 @@ import {
     ProcessUnlock,
     SuccessUnlock,
 } from './AccountInfo';
-import { coinMap, CoinType, walletMap } from '../../static';
+import { account, coinMap, CoinType, walletMap } from '../../static';
 import { DepositPanel, DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../panel';
 
 const Style = styled.div`
@@ -83,11 +83,9 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
         return <Button variant={'contained'} fullWidth size={'medium'}  onClick={() => {
         }}>{'unlock'} </Button>},[]);
     const accountInfoProps: AccountBaseProps = {
-        addressShort: '0x123...8784',
-        address: '0x123567243o24o242423098784',
+        ...account,
         level: 'VIP 1',
-        connectBy: 'MetaMask',
-        etherscanLink: 'https://material-ui.com/components/material-icons/',
+        etherscanUrl: 'https://material-ui.com/components/material-icons/'
     }
 
     const accountList = React.useMemo(() => {
