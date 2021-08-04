@@ -91,7 +91,7 @@ export const ModalBackButton = ({onBack, t}: {
         <IconButton aria-label={t('labelBack')} size={'small'} onClick={() => {
             onBack && onBack()
         }}>
-            <DropDownIcon style={{transform:'rotate(90deg)'}}/>
+            <DropDownIcon style={{transform:'rotate(90deg) scale(1.5)'}}/>
         </IconButton>
     </Box>
 }

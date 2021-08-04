@@ -4,7 +4,7 @@ import { Meta, Story } from '@storybook/react/types-6-0'
 import { withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
 import { Box, Button } from '@material-ui/core'
-import { gatewayList } from '@loopring-web/common-resources'
+import { ConnectProviders, gatewayList } from '@loopring-web/common-resources'
 import {
     MetaMaskProcess,
     ModalWalletConnect,
@@ -64,17 +64,17 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
     const [openQRCode, setOpenQRCode] = React.useState(false)
     gatewayList[ 0 ] = {
         ...gatewayList[ 0 ],
-        handleSelect: () => console.log('metaMask 11')
+        handleSelect: () => console.log('metaMask 11'),
     };
     const url: string = 'xxxxxx'
     const walletList = React.useMemo(() => {
         return Object.values({
-            [ WalletConnectStep.Provider ]: <ProviderMenu gatewayList={gatewayList} {...{...rest}}/>,
-            [ WalletConnectStep.MetaMaskProcessing ]: <MetaMaskProcess/>,
-            [ WalletConnectStep.WalletConnectProcessing ]: <WalletConnectProcess/>,
-            [ WalletConnectStep.WalletConnectQRCode ]: <WalletConnectQRCode url={url}/>,
-            [ WalletConnectStep.SuccessConnect ]: <SuccessConnect/>,
-            [ WalletConnectStep.FailedConnect ]: <FailedConnect handleRetry={() => {
+            [ WalletConnectStep.Provider ]: <ProviderMenu gatewayList={gatewayList} {...{providerName:ConnectProviders.MetaMask,...rest}}/>,
+            [ WalletConnectStep.MetaMaskProcessing ]: <MetaMaskProcess {...rest}/>,
+            [ WalletConnectStep.WalletConnectProcessing ]: <WalletConnectProcess {...rest}/>,
+            [ WalletConnectStep.WalletConnectQRCode ]: <WalletConnectQRCode  {...rest} url={url}/>,
+            [ WalletConnectStep.SuccessConnect ]: <SuccessConnect {...rest}/>,
+            [ WalletConnectStep.FailedConnect ]: <FailedConnect {...rest} handleRetry={() => {
             }}/>,
         })
 
@@ -114,8 +114,10 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                     })}
                     <Button variant={'outlined'} size={'small'} color={'primary'} style={{marginRight: 8}}
                             onClick={() => setOpenWallet(true)}>Connect wallet</Button>
-                    <ModalWalletConnect open={openWallet} onClose={() => setOpenWallet(false)}
-                                        panelList={walletList} step={WalletConnectStep.Provider}/>
+                    <ModalWalletConnect open={openWallet} onClose={() => setOpenWallet(false)} onBack = {()=>{
+                        setOpenWallet(false)
+                    }}
+                                        panelList={walletList} step={WalletConnectStep.WalletConnectQRCode}/>
 
 
                     {accountList.map((panel, index) => {
