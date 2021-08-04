@@ -89,11 +89,11 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
         return Object.values({
             [ WalletConnectStep.Provider ]: <ProviderMenu gatewayList={gatewayList}
                                                           providerName={account.connectName} {...{t, ...rest}}/>,
-            [ WalletConnectStep.MetaMaskProcessing ]: <MetaMaskProcess/>,
-            [ WalletConnectStep.WalletConnectProcessing ]: <WalletConnectProcess/>,
-            [ WalletConnectStep.WalletConnectQRCode ]: <WalletConnectQRCode url={qrCodeUrl}/>,
-            [ WalletConnectStep.SuccessConnect ]: <SuccessConnect/>,
-            [ WalletConnectStep.FailedConnect ]: <FailedConnect handleRetry={resetAccount}/>,
+            [ WalletConnectStep.MetaMaskProcessing ]: <MetaMaskProcess {...{t, ...rest}}/>,
+            [ WalletConnectStep.WalletConnectProcessing ]: <WalletConnectProcess {...{t, ...rest}}/>,
+            [ WalletConnectStep.WalletConnectQRCode ]: <WalletConnectQRCode url={qrCodeUrl} {...{t, ...rest}}/>,
+            [ WalletConnectStep.SuccessConnect ]: <SuccessConnect {...{t, ...rest}}/>,
+            [ WalletConnectStep.FailedConnect ]: <FailedConnect{...{t, ...rest}}  handleRetry={resetAccount}/>,
         })
 
     }, [qrCodeUrl, account])

@@ -27,7 +27,7 @@ export const ModalAccount = withTranslation('common', {withRef: true})((
 
         <SwitchPanelStyled style={{boxShadow: '24'}}
                            {...{_height: h?h:'var(--modal-height)', _width: w?w:'var(--modal-width)' }}>
-            <Box display={'flex'}>
+            <Box display={'flex'}  width={"100%"} flexDirection={'column'}>
                 <ModalCloseButton onClose={onClose} {...rest} />
                 {onBack?<ModalBackButton onBack={onBack}  {...rest}/>:<></>}
             </Box>

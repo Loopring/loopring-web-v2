@@ -84,23 +84,23 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             fontFamily: `DINCondensed, Helvetica, Arial, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif`,
             fontSize: 12,
             h1: {
-                fontSize: 48,
+                fontSize: fontDefault.h1,
             },
             h2: {
-                fontSize: 36,
+                fontSize: fontDefault.h2,
             },
             h3: {
-                fontSize: 16,
+                fontSize: fontDefault.h3,
             },
             h4: {
-                fontSize: 20,
+                fontSize: fontDefault.h4,
             },
             h5: {
-                fontSize: 14,
+                fontSize: fontDefault.h5,
                 margin: 0,
             },
             h6: {
-                fontSize: 12,
+                fontSize: fontDefault.h6,
                 margin: 0,
             },
             subtitle1: {
@@ -110,7 +110,7 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
                 fontSize: 20,
             },
             body1: {
-                fontSize: 14,
+                fontSize: fontDefault.body1,
                 fontColor: colorBase.textPrimary,
             },
             body2: {
