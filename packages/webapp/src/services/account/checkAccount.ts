@@ -17,7 +17,7 @@ export const checkAccount = (newAccAddress: string) => {
             walletLayer2Services.sendCheckAccount(newAccAddress)
             store.dispatch(updateAccountStatus({accAddress: newAccAddress}))
         } else if (account.accountId && account.apiKey && account.eddsaKey) {
-            myLog('After connect >>,checkAccount: step1 have activate account from store')
+            myLog('After connect >>,checkAccount: step1 have activate account from store, account:', account)
             walletLayer2Services.sendAccountSigned();
         } else {
             myLog('After connect >>,checkAccount: step1 account locked')
