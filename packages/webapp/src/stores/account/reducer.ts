@@ -71,6 +71,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                     accAddress,
                     readyState,
                     accountId,
+                    wrongChain,
                     level,
                     apiKey,
                     eddsaKey,
@@ -81,6 +82,9 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                 } = action.payload;
                 if (accAddress) {
                     state.accAddress = accAddress;
+                }
+                if( wrongChain !== undefined){
+                    state.wrongChain = wrongChain
                 }
                 if (readyState) {
                     state.readyState = readyState;

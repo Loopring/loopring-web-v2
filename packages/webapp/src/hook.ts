@@ -34,7 +34,6 @@ export function useInit() {
     const ammMapState = useAmmMap();
     const {
         updateSystem,
-
         status: systemStatus,
         statusUnset: systemStatusUnset
     } = useSystem();
@@ -139,12 +138,15 @@ function useConnectHandle() {
                                                    }: { accounts: string, provider: any, chainId: ChainId | 'unknown' }) => {
         const accAddress = accounts[ 0 ];
         myLog('After connect >>,network part start: step1 networkUpdate')
-        networkUpdate({chainId})
+        const networkFlag = networkUpdate({chainId})
         myLog('After connect >>,network part done: step2 check account')
-        checkAccount(accAddress);
+        if(networkFlag){
+            checkAccount(accAddress);
+        }
         setShowConnect({isShow: shouldShow ?? false, step: WalletConnectStep.SuccessConnect});
         await sleep(1000)
         setShowConnect({isShow: false, step: WalletConnectStep.SuccessConnect});
+
     }, [_chainId, account, shouldShow])
 
     const handleAccountDisconnect = React.useCallback(async () => {
