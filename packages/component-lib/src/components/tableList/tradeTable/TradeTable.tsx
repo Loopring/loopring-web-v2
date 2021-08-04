@@ -83,7 +83,7 @@ const TableStyled = styled(Box)`
     flex: 1;
 
     .rdg{
-        --template-columns: 100px 280px auto auto auto !important;
+        --template-columns: 100px 280px auto 160px auto !important;
         .rdg-cell.action{
             display: flex;
             justify-content: center;

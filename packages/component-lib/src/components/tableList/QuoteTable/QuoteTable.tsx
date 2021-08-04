@@ -86,6 +86,7 @@ const columnMode = ({t}: WithTranslation, history: any, upColor: 'green' | 'red'
         name: t('labelQuotaPair'),
         // sortable: true,
         // resizable: true,
+        sortable: true,
         formatter: ({row}) => {
             // const RenderValue = styled.span`
             // 	color: ${({theme}) => theme.colorBase.textSecondary}
@@ -261,6 +262,13 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
         generateColumns: ({columnsRaw}: any) => columnsRaw as Column<QuoteTableRawDataItem, unknown>[],
         sortMethod: (sortedRows: QuoteTableRawDataItem[], sortColumn: string) => {
             switch (sortColumn) {
+                case 'pair':
+                    sortedRows = sortedRows.sort((a, b) => {
+                        const valueA = a.pair.coinA
+                        const valueB = b.pair.coinA
+                        return valueA.localeCompare(valueB)
+                    })
+                    break;
                 case 'close':
                     sortedRows = sortedRows.sort((a, b) => {
                         const valueA = a['close']
