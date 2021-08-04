@@ -7,7 +7,6 @@ import {
     CoinInfo,
     DropDownIcon,
     getThousandFormattedNumbers,
-    // globalSetup,
     IBData
 } from '@loopring-web/common-resources';
 import { InputButtonProps } from "./Interface";
@@ -78,8 +77,8 @@ const IWrap = styled(Box)`
       input {
         ${({theme}) => `
             ${theme.border.defaultFrame({c_key: theme.colorBase.error})};
-            border-top-left-radius: 0px;
-            border-bottom-left-radius: 0px;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
           `};
 
       }
@@ -152,8 +151,8 @@ const IInput = styled(CurrencyInput)`
   height: 100%; //var(--btn-Input-height);
   border: 0;
   margin: 0;
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
   ${({theme}) => `
     border-left:  ${theme.border.borderConfig({c_key: 'blur'})};
     ${theme.mode === 'dark' ? `border-color: transparent` : ''};
@@ -174,8 +173,8 @@ const IInput = styled(CurrencyInput)`
 
     ${({theme}) => `
         ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
-        border-top-left-radius: 0px;
-        border-bottom-left-radius: 0px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
      `};
   }
 }
@@ -207,7 +206,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
     //     let error:any = handleError(inputData, ref);
     //     _error = error ? error : {error: false}
     // }
-    const _handleError = (value: any) => {
+    const _handleError = React.useCallback((value: any) => {
         if (handleError) {
             let _error = handleError({
                 balance: Number(balance),
@@ -216,7 +215,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
             } as T & { maxAllow?: boolean }, ref);
             setError(_error ? _error : {error: false});
         }
-    }
+    }, [handleError, balance, belong, maxAllow, ref])
     const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
         error: false,
         message: ''
@@ -229,7 +228,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 // _handleContChange(current?.value, name)
             }
         },
-        [inputData])
+        [inputData, _handleError])
     const inputEle = useFocusRef({
         callback: inputCallback,
         shouldFocusOn: focusOnInput,
@@ -248,7 +247,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
             }
             //debounceCount({...inputData, ...{tradeValue: value}})
         }
-        , [_handleError, setsValue, inputData])
+        , [_handleError, setsValue, inputData, handleCountChange, ref])
 
     // const _handleContChange =
     // const _handleOnClick = React.useCallback((event: React.MouseEvent) => {
@@ -259,10 +258,10 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
             _handleContChange(balance, name)
             //setsValue(balance);
         }
-    }, [_handleContChange, balance, name]);
+    }, [_handleContChange, balance, name, maxAllow]);
     //@ts-ignore
     const {coinJson} = useSettings();
-    const coinIcon: any = coinJson [ belong ];
+    const coinIcon: any = coinJson[ belong ];
     //"x": 248,
     // "y": 322,
     // "w": 36,
@@ -273,7 +272,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
     // "sourceH": 36
     // const coinInfo: any = coinMap[ belong ] ? coinMap[ belong ] : {};
     // const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;
-    
+
     // formatValue(sValue)
     return <> <IWrap component={'div'} ref={ref}>
         <Grid container component={'div'} className={'label-wrap'} justifyContent={'space-between'}
@@ -292,19 +291,20 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 <ISBtn onClick={(event) => handleOnClick(event, ref)} endIcon={<DropDownIcon/>} disabled={disabled}>
                     {belong ?
                         <Grid container align-items={'center'} display={'flex'}>
-                            <Grid item className={'logo-icon'} height={'var(--list-menu-coin-size)'} width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
+                            <Grid item className={'logo-icon'} height={'var(--list-menu-coin-size)'}
+                                  width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
                                 {coinIcon ?
                                     <AvatarCoinStyled imgx={coinIcon.x} imgy={coinIcon.y} imgheight={coinIcon.height}
                                                       imgwidth={coinIcon.width}
                                                       variant="circular" alt={coinMap[ belong ]?.simpleName as string}
                                         // src={sellData?.icon}
                                                       src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
-                                : <Avatar variant="circular" alt={coinMap[ belong ]?.simpleName as string} style={{
-                                        height:'var(--list-menu-coin-size)',
-                                        width:'var(--list-menu-coin-size)'
+                                    : <Avatar variant="circular" alt={coinMap[ belong ]?.simpleName as string} style={{
+                                        height: 'var(--list-menu-coin-size)',
+                                        width: 'var(--list-menu-coin-size)'
                                     }}
                                         // src={sellData?.icon}
-                                          src={'static/images/icon-default.png'}/>}
+                                              src={'static/images/icon-default.png'}/>}
                             </Grid>
                             <Grid item paddingLeft={1}>{coinMap[ belong ]?.simpleName}</Grid>
                         </Grid>
@@ -314,12 +314,12 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
             </Grid>
             <Grid item className={'input-wrap'}>
                 <IInput ref={inputEle} onValueChange={_handleContChange} value={
-                   typeof sValue === 'undefined'? '' : sValue
+                    typeof sValue === 'undefined' ? '' : sValue
                 } allowNegativeValue={false}
                         name={name}
-                        disabled={!disabled || belong ? false : true}
+                        disabled={!(!disabled || belong)}
                         placeholder={placeholderText}
-                        aria-placeholder={placeholderText} aria-label={label} decimalsLimit={10000000}></IInput>
+                        aria-placeholder={placeholderText} aria-label={label} decimalsLimit={10000000}/>
 
             </Grid>
         </Grid>
