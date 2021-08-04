@@ -49,7 +49,7 @@ const IWrap = styled(Box)`
   }
 
   .coinInput-wrap {
-    background-color: ${({theme}) => theme.colorBase.background().outline};
+    background-color: ${({theme}) => theme.colorBase.background().field};
     border-radius: ${({theme}) => theme.unit / 2}px;
     position: relative;
     margin-top: ${({theme}) => `${theme.unit / 2}px`};
