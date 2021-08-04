@@ -1,5 +1,9 @@
 import { all, fork, put, takeLatest } from "redux-saga/effects"
-import { cleanAccountStatus, nextAccountStatus, restAccountStatus, updateAccountStatus } from './reducer';
+import {
+    // cleanAccountStatus,
+    nextAccountStatus,
+    // restAccountStatus,
+    updateAccountStatus } from './reducer';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { Account } from '@loopring-web/common-resources';
 
@@ -43,17 +47,17 @@ function* accountSage() {
     yield all([takeLatest(updateAccountStatus, accountUpdateSaga)]);
 }
 
-function* goCleanAccount({payload}: PayloadAction<undefined>) {
-    yield put(cleanAccountStatus(undefined));
-}
+// function* goCleanAccount({payload}: PayloadAction<undefined>) {
+//     yield put(cleanAccountStatus(undefined));
+// }
 
-function* accountRestSage() {
-    yield all([takeLatest(restAccountStatus, goCleanAccount)]);
-}
+// function* accountRestSage() {
+//     yield all([takeLatest(restAccountStatus, goCleanAccount)]);
+// }
 
 export const accountFork = [
     fork(accountSage),
-    fork(accountRestSage)
+    // fork(accountRestSage)
 ]
 
 // const subject = new Subject<{ command: keyof typeof StorageCommands, data?: any }>();

@@ -48,8 +48,9 @@ export const MetaMaskSubscribe = (provider: any, web3: Web3) => {
 
 export const MetaMaskUnsubscribe = (provider: any) => {
     if (provider && typeof provider.removeAllListeners === 'function') {
-        provider.removeAllListeners('accountsChanged');
-        provider.removeAllListeners('chainChanged');
-        provider.removeAllListeners('disconnect');
+        // provider.removeAllListeners('accountsChanged');
+        // provider.removeAllListeners('chainChanged');
+        // provider.removeAllListeners('disconnect');
+        provider.removeAllListeners();
     }
 }

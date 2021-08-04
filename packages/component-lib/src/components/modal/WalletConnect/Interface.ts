@@ -5,7 +5,8 @@ import { GatewayItem } from '@loopring-web/common-resources';
  */
 export interface ProviderMenuProps {
     gatewayList: GatewayItem[]
-    handleSelect?: (event: React.MouseEvent, key: string) => void
+    handleSelect?: (event: React.MouseEvent, key: string) => void,
+    providerName?: string
 }
 
 export type  ModalWalletConnectProps =  {
