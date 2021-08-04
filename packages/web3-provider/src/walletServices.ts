@@ -28,7 +28,7 @@ export const walletServices = {
             // console.log('wallet connect:', accounts, chainId);
 
             subject.next({status: 'ConnectWallet', data: {provider, accounts,
-                    chainId: AvaiableNetwork.findIndex((i)=>i == Number(chainId))!==-1?'unknown':  Number(chainId)
+                    chainId: AvaiableNetwork.findIndex((i)=>i == Number(chainId))!==-1?  Number(chainId) :'unknown'
             }});
         } catch (error) {
             subject.next({status: 'Error', data: {error}});

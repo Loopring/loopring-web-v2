@@ -22,15 +22,6 @@ export async function unlockAccount() {
         }, sk))
 
         walletLayer2Services.sendAccountSigned(apiKey,eddsaKey)
-        // store.dispatch(setShowAccount({isShow: shouldShow, step: AccountStep.SuccessUnlock}));
-        // await sleep(1000)
-        // store.dispatch(setShowAccount({isShow: false}));
-        // store.dispatch(statusAccountUnset(undefined))
+
     }
-
-// catch (reason) {
-//     store.dispatch(setShowAccount({isShow: shouldShow, step: AccountStep.FailedUnlock}));
-//     // event = (StatusChangeEvent.ErrorResponse)
-// }
-
 }

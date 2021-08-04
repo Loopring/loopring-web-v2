@@ -115,7 +115,6 @@ function useConnectHandle() {
     const handleConnect = React.useCallback(async ({
                                                        accounts,
                                                        chainId,
-                                                       provider
                                                    }: { accounts: string, provider: any, chainId: ChainId | 'unknown' }) => {
         const accAddress = accounts[ 0 ];
         myLog('After connect >>,network part start: step1 networkUpdate')
