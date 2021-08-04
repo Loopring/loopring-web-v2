@@ -154,5 +154,7 @@ export default {
     labelJoinAmmFailed: '加入流动性池失败!',
     labelExitAmmSuccess: '退出流动性池成功!',
     labelExitAmmFailed: '退出流动性池失败!',
-    labelConnectBy: '已连接 <1>{{connectBy}}</1>'
+    labelConnectBy: '当前链接 <1>{{connectBy}}</1>',
+    labelWrongNetwork: '未识别网络',
+    labelActivatedAccountDeposit:'首次开通二层钱包需充值并激活'
 }

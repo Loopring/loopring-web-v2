@@ -9,7 +9,7 @@ import { ButtonProps, TGItemJSXInterface, ToggleButtonGroupProps } from './Inter
 import { WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
-import { CloseIcon } from '@loopring-web/common-resources';
+import { CloseIcon, DropDownIcon } from '@loopring-web/common-resources';
 
 export const Button = styled(MuButton)<ButtonProps>`
   && {
@@ -81,6 +81,17 @@ export const ModalCloseButton = ({onClose, t}: {
             onClose && onClose(event, 'escapeKeyDown')
         }}>
             <CloseIcon/>
+        </IconButton>
+    </Box>
+}
+export const ModalBackButton = ({onBack, t}: {
+    onBack?:()=>void
+} & WithTranslation) => {
+    return <Box alignSelf={'flex-start'} marginTop={-3} marginLeft={1.5}>
+        <IconButton aria-label={t('labelBack')} size={'small'} onClick={() => {
+            onBack && onBack()
+        }}>
+            <DropDownIcon style={{transform:'rotate(90deg)'}}/>
         </IconButton>
     </Box>
 }

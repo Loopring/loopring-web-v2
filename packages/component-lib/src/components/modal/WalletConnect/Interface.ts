@@ -9,15 +9,17 @@ export interface ProviderMenuProps {
     providerName?: string
 }
 
-export type  ModalWalletConnectProps =  {
+export type  ModalWalletConnectProps = {
     open: boolean,
     onClose: { bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void; }['bivarianceHack'];
-    step:number,
+    onBack?: ()=>void;
+    step: number,
+    style?: any, //{w,h}
     panelList: Array<JSX.Element>
 }
-export type ModalAccountProps =  ModalWalletConnectProps;
+export type ModalAccountProps = ModalWalletConnectProps;
 
-export enum WalletConnectStep  {
+export enum WalletConnectStep {
     Provider,
     MetaMaskProcessing,
     WalletConnectProcessing,
