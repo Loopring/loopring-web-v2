@@ -18,7 +18,7 @@ export function useAccountHook(
         handleProcessSign,
         handleSignError,
         handleProcessAccountCheck,
-        handleAccountActived,
+        handleAccountActive,
     }
 
         : any) {
@@ -54,7 +54,7 @@ export function useAccountHook(
                     handleSignError(data);
                     break;
                 case 'AccountUnlocked':
-                    handleAccountActived(data);
+                    handleAccountActive(data);
                     break;
             }
         });

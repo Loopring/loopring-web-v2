@@ -10,9 +10,9 @@ import { useAccount } from './stores/account/hook';
 import { connectProvides, ErrorType, useConnectHook } from '@loopring-web/web3-provider';
 import { AccountStep, setShowAccount, useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
 import { myLog } from './utils/log_tools';
-import { cleanLayer2, goErrorNetWork } from './services/account/lockAccount';
 import { useAccountHook } from './services/account/useAccountHook';
 import { checkAccount } from './services/account/checkAccount';
+import { networkUpdate } from './services/account/networkUpdate';
 
 /**
  * @description
@@ -105,12 +105,12 @@ export function useInit() {
 }
 
 function useConnectHandle() {
-    const {account, updateAccount, shouldShow, resetAccount, statusUnset: statusAccountUnset} = useAccount();
+    const {account, shouldShow, resetAccount, statusUnset: statusAccountUnset} = useAccount();
     const {
         updateSystem,
         chainId: _chainId,
     } = useSystem();
-    const {setShowConnect, setShowAccount} = useOpenModals();
+    const {setShowConnect} = useOpenModals();
 
     const handleConnect = React.useCallback(async ({
                                                        accounts,
@@ -118,25 +118,10 @@ function useConnectHandle() {
                                                        provider
                                                    }: { accounts: string, provider: any, chainId: ChainId | 'unknown' }) => {
         const accAddress = accounts[ 0 ];
-
-        if (chainId !== _chainId && _chainId !== 'unknown' && chainId !== 'unknown') {
-            chainId === 5 ? updateAccount({chainId}) : updateAccount({chainId: 1})
-            updateSystem({chainId});
-            window.location.reload();
-        } else if (chainId == 'unknown') {
-            updateAccount({wrongChain: true})
-            goErrorNetWork();
-        }else{
-            updateAccount({wrongChain: false,chainId})
-        }
-        if(account.accAddress === accAddress){
-            myLog('After connect >>,same account: step1 check account')
-            checkAccount(accAddress);
-        } else {
-            myLog('After connect >>,diff account clean layer2: step1 check account')
-            cleanLayer2();
-            checkAccount(accAddress);
-        }
+        myLog('After connect >>,network part start: step1 networkUpdate')
+        networkUpdate({chainId})
+        myLog('After connect >>,network part done: step2 check account')
+        checkAccount(accAddress);
         setShowConnect({isShow: shouldShow ?? false, step: WalletConnectStep.SuccessConnect});
         await sleep(1000)
         setShowConnect({isShow: false, step: WalletConnectStep.SuccessConnect});
@@ -204,7 +189,7 @@ function useAccountHandle() {
     const handleProcessSign = React.useCallback(()=>{
         setShowAccount({isShow: shouldShow ?? false,step:AccountStep.ProcessUnlock});
     },[])
-    const handleAccountActived  = React.useCallback(async ()=>{
+    const handleAccountActive  = React.useCallback(async ()=>{
 
         //updateAccount({readyState:'ACTIVATED'});
         setShowAccount({isShow: shouldShow ?? false,step:AccountStep.SuccessUnlock});
@@ -226,7 +211,7 @@ function useAccountHandle() {
         handleProcessSign,
         handleSignError,
         // handleProcessAccountCheck,
-        handleAccountActived,
+        handleAccountActive: handleAccountActive,
     })
 }
 

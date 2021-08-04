@@ -39,7 +39,6 @@ export const walletServices = {
     //     subject.next({status: 'ChangeNetwork', data: {chainId: Number(chainId)}})
     // },
     sendDisconnect: async (code: any, reason: any) => {
-        console.log('wallet disconnect:', reason);
         subject.next({status: 'DisConnect', data: {reason: reason, code: code}})
 
     },
