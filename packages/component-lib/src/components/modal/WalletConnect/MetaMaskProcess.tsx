@@ -14,7 +14,7 @@ export const MetaMaskProcess = ({t}: WithTranslation) => {
             <LoadingIcon color={'primary'} style={{width:60,height:60}}/>
             <Typography component={'span'} paddingY={1}>{t('labelProcessing')}</Typography>
         </Typography>
-        <Typography variant={'body2'} color={'textSecondary'} component={'p'} marginTop={3} alignSelf={'flex-start'} paddingX={6} textAlign={'b'}>
+        <Typography variant={'body2'} color={'textSecondary'} component={'p'} marginTop={3} alignSelf={'flex-start'} paddingX={6} >
             <Trans i18nKey={'labelMetaMaskProcessDescribe'}>
                 {/*Please adding MetaMask to your browser,*/}
                 Please click approve button on MetaMask popup window.

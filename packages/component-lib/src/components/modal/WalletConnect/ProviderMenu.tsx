@@ -11,7 +11,7 @@ import React from 'react';
 const ProviderBtnStyled = styled(Button)`
   background-color: ${({theme}) => theme.colorBase.background().field};
 
-  &:hover {
+  &:hover {                                    <Typography variant={'body2'} color={'textSecondary'}
     background-color: ${({theme}) => theme.colorBase.background().hover};
   }
 
