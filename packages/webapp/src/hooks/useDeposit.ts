@@ -78,7 +78,7 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
     }, [account, tokenMap, chainId, exchangeInfo, gasPrice, LoopringAPI.exchangeAPI])
 
     const onDepositClick = useCallback((depositValue) => {
-        console.log('onDepositClick depositValue:', depositValue)
+        myLog('onDepositClick depositValue:', depositValue)
         if (depositValue && depositValue.belong) {
             handleDeposit(depositValue as R)
         }
