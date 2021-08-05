@@ -57,7 +57,7 @@ export const AccountBase = ({
                             }: AccountBaseProps & WithTranslation) => {
     const addressShort = getShortAddr(accAddress)
     const etherscanLink = etherscanUrl + accAddress;
-     console.log(connectName)
+    
     return <Box display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
         <Typography component={'h6'} variant={'body2'} color={'textSecondary'} marginTop={1}>
             <Trans i18nKey="labelConnectBy"  >
