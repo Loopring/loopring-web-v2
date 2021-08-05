@@ -168,12 +168,6 @@ module.exports = override(
       ...config.module.rules[oneOf_loc].oneOf,
     ]
 
-    alias({
-      "static-resource": path.resolve(__dirname, 'src/static-resource'),
-      "static": path.resolve(__dirname, 'src/static-resource'),
-      //"@loopring-web/static-resource": 'static-resource',
-    })(config)
-
     return config
   },
   /*

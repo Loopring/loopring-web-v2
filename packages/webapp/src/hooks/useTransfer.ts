@@ -116,9 +116,6 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | u
         }
     })
 
-    myLog('chargeFeeList:', chargeFeeList)
-    myLog("transfer walletMap2:", walletMap2)
-
     useCustomDCEffect(() => {
         setTransferProps({
                 ...transferProps,
@@ -126,6 +123,14 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | u
             }
         )
     }, [walletMap2])
+
+    useCustomDCEffect(() => {
+        setTransferProps({
+                ...transferProps,
+                chargeFeeTokenList: chargeFeeList,
+            }
+        )
+    }, [chargeFeeList])
 
     return {
         // handleTransfer,

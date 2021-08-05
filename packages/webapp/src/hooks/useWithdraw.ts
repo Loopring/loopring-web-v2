@@ -129,6 +129,14 @@ export const useWithdraw = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | u
         )
     }, [walletMap2])
 
+    useCustomDCEffect(() => {
+        setWithdrawProps({
+                ...withdrawProps,
+                chargeFeeTokenList: chargeFeeList,
+            }
+        )
+    }, [chargeFeeList])
+
 
     return {
         // handleWithdraw,
