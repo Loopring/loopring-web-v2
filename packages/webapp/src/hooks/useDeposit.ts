@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { DepositProps, SwitchData, TradeBtnStatus } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, ConnectProviders, IBData, WalletMap } from '@loopring-web/common-resources';
@@ -9,6 +9,7 @@ import { useSystem } from '../stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { useCustomDCEffect } from './common/useCustomDCEffect';
 import { myLog } from 'utils/log_tools';
+import { useClickOutside } from '../../../component-lib/src/components/basic-lib/tables/hook';
 
 
 export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | undefined, ShowDeposit: (isShow: boolean, defaultProps?: any) => void): {
@@ -56,30 +57,36 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
 
     }, [account, tokenMap, chainId, exchangeInfo, gasPrice])
 
+    const onDepositClick = useCallback(() => {
+        if (depositValue && depositValue.belong) {
+            handleDeposit(depositValue as R)
+        }
+        ShowDeposit(false)
+    }, [depositValue, handleDeposit, ShowDeposit])
+
+    const handlePanelEvent = useCallback(async(data: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
+        return new Promise<void>((res: any) => {
+            console.log('handlePanelEvent:', data)
+            if (data?.tradeData?.belong) {
+                if (depositValue !== data.tradeData) {
+                    console.log('depositValue:', depositValue)
+                    setDepositValue(data.tradeData)
+                }
+            } else {
+                console.log('reset depositValue:', depositValue)
+                setDepositValue({belong: undefined, tradeValue: 0, balance: 0} as IBData<unknown>)
+            }
+            res();
+        })
+    }, [depositValue, setDepositValue])
+
     const [depositProps, setDepositProps] = React.useState<Partial<DepositProps<R, T>>>({
         tradeData: {belong: undefined} as any,
         coinMap: coinMap as CoinMap<any>,
         walletMap: walletMap1 as WalletMap<any>,
         depositBtnStatus: TradeBtnStatus.AVAILABLE,
-        onDepositClick: () => {
-            if (depositValue && depositValue.belong) {
-                handleDeposit(depositValue as R)
-            }
-            ShowDeposit(false)
-        },
-        handlePanelEvent: async (data: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
-            return new Promise((res) => {
-                if (data?.tradeData?.belong) {
-                    if (depositValue !== data.tradeData) {
-                        setDepositValue(data.tradeData)
-                    }
-                    // setTokenSymbol(data.tradeData.belong)
-                } else {
-                    setDepositValue({belong: undefined, tradeValue: 0, balance: 0} as IBData<unknown>)
-                }
-                res();
-            })
-        },
+        onDepositClick,
+        handlePanelEvent,
     })
 
     useCustomDCEffect(() => {
