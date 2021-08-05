@@ -76,9 +76,9 @@ export const ModalPanel = <T extends IBData<I>, I>({
         isShowSwap
     } = modals;
     return <>
-        <Modal open={isShowTransfer.isShow} height={620} onClose={() => setShowTransfer({isShow: false})}
+        <Modal open={isShowTransfer.isShow} width={`var(--swap-box-width)`} height={620} onClose={() => setShowTransfer({isShow: false})}
                content={<TransferPanel<any, any> {...{...transferProps, ...isShowTransfer.props}}> </TransferPanel>}/>
-        <Modal open={isShowWithdraw.isShow} height={620} onClose={() => setShowWithdraw({isShow: false})}
+        <Modal open={isShowWithdraw.isShow} width={`var(--swap-box-width)`} height={620} onClose={() => setShowWithdraw({isShow: false})}
                content={<WithdrawPanel<any, any> {...{...withDrawProps, ...isShowWithdraw.props}}  > </WithdrawPanel>}/>
         <Modal open={isShowDeposit.isShow}
                width={`var(--swap-box-width)`} onClose={() => setShowDeposit({isShow: false})}

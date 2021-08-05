@@ -78,7 +78,7 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | u
 
     }, [account, tokenMap, feeInfo])
     const [transferProps, setTransferProps] = React.useState<Partial<TransferProps<R, T>>>({
-        tradeData: {belong: undefined} as any,
+        tradeData: { belong: undefined } as any,
         coinMap: coinMap as CoinMap<T>,
         walletMap: walletMap2 as WalletMap<any>,
         transferBtnStatus: TradeBtnStatus.AVAILABLE,
@@ -108,7 +108,7 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | u
         chargeFeeToken: 'ETH',
         chargeFeeTokenList: chargeFeeList,
         handleOnAddressChange: (value: any) => {
-            // myLog('transfer handleOnAddressChange', value);
+            myLog('transfer handleOnAddressChange', value);
             setPayeeAddr(value)
         },
         handleAddressError: (_value: any) => {
@@ -116,6 +116,7 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | u
         }
     })
 
+    myLog('chargeFeeList:', chargeFeeList)
     myLog("transfer walletMap2:", walletMap2)
 
     useCustomDCEffect(() => {
