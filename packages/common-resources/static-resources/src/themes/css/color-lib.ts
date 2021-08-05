@@ -7,6 +7,9 @@ export const ColorDarkDefault = Object.freeze({
     secondary: '#F0B90B',
     secondaryLight: '#F0B90B',
     secondaryDark: '#F3A008',
+    info: '#1890FF',
+    infoHover: '#40A9FF',
+    infoVisited: '#096DD9',
     success: '#00BBA8',
     error: '#FF5677',
     warning: '#F2994A',
@@ -31,12 +34,16 @@ export const ColorDarkDefault = Object.freeze({
     // outline: 'rgba(235, 238, 255, 0.1)',
     backgroundField:'#212530',
     backgroundFieldOpacity:'rgba(255,255,255,.1)',
+    backgroundInput: '#343754',
+    backgroundInputOpacity:'rgba(255, 255, 255, .1)',
+    backgroundSwapPanelLinear: 'linear-gradient(194.79deg, #322C53 17.96%, #262B50 44.29%, #32314F 96.93%)',
     outline: '#282C48',
     focus: "rgba(235, 238, 255, 0.6)",
     vipBgColor: "rgba(255, 242, 202, 0.2)",
     shadowBox: "0px 4px 38px rgba(0, 0, 0, 0.16)",
     modalMask: 'rgba(0, 0, 0, 0.7)',
     dividerColor: 'rgba(255, 255, 255, 0.1)',
+    checkboxDefault: '#687295',
     background: () => {
         return {
             default: ColorDarkDefault.backgroundBox,
@@ -49,6 +56,7 @@ export const ColorDarkDefault = Object.freeze({
             fieldOpacity: ColorDarkDefault.backgroundFieldOpacity,
             hover: ColorDarkDefault.backgroundFieldOpacity,
             disabled: ColorDarkDefault.backgroundDisabled,
+            swap: ColorDarkDefault.backgroundSwapPanelLinear,
         }
     },
     border: () => {

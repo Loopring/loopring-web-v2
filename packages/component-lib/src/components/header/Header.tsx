@@ -37,7 +37,7 @@ const HeaderStyled = styled(AppBar)`
       //min-width: 800px;
     }
     // background-image: linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04));
-    background-color: ${({theme}) => theme.mode === 'dark' ? 'rgba(0, 0, 0, 0.3)' : ''};
+    background-color: ${({theme}) => theme.mode === 'dark' ? 'rgba(0, 0, 0, 0.5)' : ''};
     // box-shadow: inherit;
     box-sizing: border-box;
     // border-bottom: ${({theme}) => theme.border.borderConfig({d_W: 1, c_key: 'blur'})};

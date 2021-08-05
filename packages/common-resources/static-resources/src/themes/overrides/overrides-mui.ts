@@ -34,11 +34,16 @@ export const MuiCheckbox = ({colorBase}: any): { styleOverrides: ComponentsOverr
                     height
                 },
                 '&.MuiCheckbox-colorDefault': {
+                    // color: colorBase.textPrimary,
+                    color: colorBase.checkboxDefault,
+                },
+                '&:hover': {
+                    backgroundColor: 'inherit',
+                },
+                '&.Mui-checked': {
                     color: colorBase.textPrimary,
                 },
-
-
-            }
+            },
         }
     }
 }
@@ -189,6 +194,17 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 paddingLeft: pxToRem(12),
                 paddingRight: pxToRem(12),
             },
+            text: {
+                color: colorBase.info,
+                fontSize: '1.4rem',
+                '&:hover': {
+                    color: colorBase.infoHover,
+                    backgroundColor: 'inherit',
+                },
+                '&:active': {
+                    color: colorBase.infoVisited
+                }
+            },
             contained: {
                 '&:hover': {
                     backgroundColor: colorBase.primaryHover,
@@ -231,11 +247,12 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 fontWeight: 'normal',
                 color: colorBase.textSecondary,
                 borderColor: colorBase.border().default,
-                backgroundColor: colorBase.background().field,
+                // backgroundColor: colorBase.background().field,
+                backgroundColor: colorBase.background().outline,
                 '&:hover': {
                     color: colorBase.textPrimary,
                     borderColor: colorBase.textPrimary,
-                    backgroundColor: colorBase.background().hover,
+                    backgroundColor: colorBase.background().outline,
                 },
                 '&.Mui-disabled': {
                     backgroundColor: colorBase.background().disabled,
@@ -387,7 +404,8 @@ export const MuiInputBase = ({colorBase}: any): { styleOverrides: ComponentsOver
                 position: 'relative',
                 // border: `1px solid ${colorBase.border().blur}`,
                 fontSize: '1.4rem',
-                backgroundColor: colorBase.background().field,
+                backgroundColor: colorBase.backgroundInput,
+                // border: `1px solid ${colorBase.border().default}`,
                 borderRadius: 4,
                 '&:not(.MuiFormControl-fullWidth)': {
                     // width: 'var(--btn-min-width)',
@@ -408,7 +426,10 @@ export const MuiInputBase = ({colorBase}: any): { styleOverrides: ComponentsOver
                 '& svg': {
                     pointerEvents: 'none',
                 },
-                paddingRight: 0
+                paddingRight: 0,
+                '&:hover': {
+                    borderColor: colorBase.textPrimary
+                },
                 // padding: '10px 12px',
 
                 // transition: theme.transitions.create([

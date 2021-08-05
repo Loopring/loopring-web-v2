@@ -13,7 +13,8 @@ export const MuPickDate = ({colorBase, themeMode}: { colorBase: typeof ColorDark
                     background: colorBase.backgroundBox,
                     boxShadow: colorBase.shadowBox,
                     borderRadius: radius * 2 + 'px',
-                    border: borderFunc(themeMode).borderConfig({c_key: 'blur'}),
+                    // border: borderFunc(themeMode).borderConfig({c_key: 'blur'}),
+                    border: `1px solid ${colorBase.backgroundInputOpacity}`,
                     '& svg': {
                         fontSize: '2rem',
                         color: colorBase.textSecondary
@@ -62,7 +63,8 @@ export const MuPickDate = ({colorBase, themeMode}: { colorBase: typeof ColorDark
                     background: colorBase.backgroundBox,
                     boxShadow: colorBase.shadowBox,
                     borderRadius: radius * 2 + 'px',
-                    border: borderFunc(themeMode).borderConfig({c_key: 'blur'}),
+                    // border: borderFunc(themeMode).borderConfig({c_key: 'blur'}),
+                    border: `1px solid ${colorBase.backgroundInputOpacity}`,
                     fontSize: 1.6,
                     "& .MuiDateRangePickerViewDesktop-rangeCalendarContainer:not(:last-child)": {
                         borderColor: colorBase.border().blur,
@@ -266,7 +268,7 @@ export const MuPickDate = ({colorBase, themeMode}: { colorBase: typeof ColorDark
                 root: {
                     '&&': {
                         border: borderFunc(themeMode).borderConfig({c_key: "rgba(0,0,0,0)"}),
-                        borderBottomColor: colorBase.border().blur,
+                        borderBottomColor: colorBase.backgroundInputOpacity,
                         boxSizing: "border-box",
                         height: 52,
                         minHeight: 52,
