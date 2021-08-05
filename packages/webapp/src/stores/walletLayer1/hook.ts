@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { updateWalletLayer1, reset,statusUnset } from './reducer';
 import { WalletLayer1States } from './interface';
 import React from 'react';
-import { myLog } from 'utils/log_tools';
 
 export function useWalletLayer1(): WalletLayer1States & {
     updateWalletLayer1:()=> void,
@@ -15,7 +14,6 @@ export function useWalletLayer1(): WalletLayer1States & {
     return {
         ...walletLayer1,
         resetLayer1:React.useCallback(()=>{
-            myLog('resetLayer1:')
             dispatch(reset(undefined))
         },[dispatch]),
         statusUnset:React.useCallback(()=>dispatch(statusUnset(undefined)),[dispatch]),

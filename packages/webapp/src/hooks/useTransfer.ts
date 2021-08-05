@@ -10,6 +10,7 @@ import { LoopringAPI } from '../stores/apis/api';
 import { useSystem } from '../stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { useCustomDCEffect } from './common/useCustomDCEffect';
+import { myLog } from 'utils/log_tools';
 // import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
 // import { useChargeFeeList } from './hook';
 
@@ -69,7 +70,6 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | u
                     eddsaKey, apiKey)
                 //TODO check success or failed API
             } catch (e) {
-
             }
 
         } else {
@@ -98,13 +98,9 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | u
                     if (transferValue !== data.tradeData) {
                         setTransferValue(data.tradeData)
                     }
-                    // setTransferTokenSymbol(data.tradeData.belong)
                 } else {
                     setTransferValue({belong: undefined, tradeValue: 0, balance: 0} as IBData<unknown>)
                 }
-                // else{
-                //     setTransferValue({ belong: undefined, amt: 0 })
-                // }
 
                 res();
             })
@@ -120,6 +116,8 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | u
         }
     })
 
+    myLog("transfer walletMap2:", walletMap2)
+
     useCustomDCEffect(() => {
         setTransferProps({
                 ...transferProps,
@@ -127,7 +125,6 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | u
             }
         )
     }, [walletMap2])
-
 
     return {
         // handleTransfer,

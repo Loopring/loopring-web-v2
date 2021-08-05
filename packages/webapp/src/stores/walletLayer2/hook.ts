@@ -15,19 +15,9 @@ export function useWalletLayer2(): WalletLayer2States & {
     const walletLayer2: WalletLayer2States = useSelector((state: any) => state.walletLayer2)
     const dispatch = useDispatch();
 
-    // const updateWalletLayer2 = () => {
-    //     dispatch(walletLayer2Slice.actions.updateWalletLayer2(undefined))
-    // }
-    // const statusUnset = ()=>{
-    //     dispatch(walletLayer2Slice.actions.statusUnset(undefined))
-    // }
-    // const resetLayer2 = ()=>{
-    //     dispatch(walletLayer2Slice.actions.reset(undefined))
-    // }
     return {
         ...walletLayer2,
         resetLayer2: React.useCallback(() => {
-            myLog('resetLayer2 resetLayer2 resetLayer2')
             dispatch(reset(undefined))
         }, [dispatch]),
         statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),
