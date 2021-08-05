@@ -3,7 +3,7 @@ import { Trans, WithTranslation } from 'react-i18next';
 import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
 import React from 'react';
 
-export const SuccessConnect =({t, providerName }:WithTranslation & {providerName})=>{
+export const SuccessConnect =({t, providerName }:WithTranslation & {providerName:string})=>{
     return   <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-evenly'} flexDirection={'column'}>
       <Typography component={'h3'} variant={'h2'} marginBottom={3}>
           {t('labelSuccessConnect', {providerName})}
