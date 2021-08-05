@@ -8,8 +8,6 @@ import { useAccount } from '../stores/account';
 import { useSystem } from '../stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { useCustomDCEffect } from './common/useCustomDCEffect';
-import { myLog } from 'utils/log_tools';
-import { useClickOutside } from '../../../component-lib/src/components/basic-lib/tables/hook';
 
 
 export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | undefined, ShowDeposit: (isShow: boolean, defaultProps?: any) => void): {
