@@ -9,6 +9,7 @@ import { useChargeFees } from './useChargeFees';
 import { LoopringAPI } from '../stores/apis/api';
 import { useSystem } from '../stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
+import { useCustomDCEffect } from './common/useCustomDCEffect';
 // import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
 // import { useChargeFeeList } from './hook';
 
@@ -119,7 +120,7 @@ export const useTransfer = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | u
         }
     })
 
-    React.useEffect(() => {
+    useCustomDCEffect(() => {
         setTransferProps({
                 ...transferProps,
                 walletMap: walletMap2 as WalletMap<any>,
