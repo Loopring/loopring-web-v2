@@ -1,6 +1,6 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import {
-    AccountStep,
+    AccountStep, ActiveAccountProcess,
     ApproveAccount,
     Button, DepositApproveProcess,
     Depositing,
@@ -89,9 +89,9 @@ export const ModalAccountInfo = withTranslation('common')(({
                 // connectBy: account.connectName,
                 onViewQRCode, onDisconnect, addressShort,
             }} />,
-            [ AccountStep.Deposit ]: <DepositPanel  {...{...rest, ...depositProps,t}}/>,
-            [ AccountStep.Depositing ]: <Depositing etherscanLink={etherscanUrl + account.accAddress}  { ...{...rest,t}}/>,
-            [ AccountStep.FailedDeposit ]: <FailedDeposit etherscanLink={etherscanUrl + account.accAddress}  onRetry={()=>undefined} { ...{...rest,t}} />,
+            [ AccountStep.Deposit ]: <DepositPanel title={"depositTitleAndActive"} {...{...rest, ...depositProps,t}}/>,
+            [ AccountStep.Depositing ]: <Depositing label={"depositTitleAndActive"} etherscanLink={etherscanUrl + account.accAddress}  onDepositSubmit={()=>undefined}  { ...{...rest,t}}/>,
+            [ AccountStep.FailedDeposit ]: <FailedDeposit label={"depositTitleAndActive"} etherscanLink={etherscanUrl + account.accAddress}  onRetry={()=>undefined} { ...{...rest,t}} />,
             [ AccountStep.SignAccount ]: <ApproveAccount   {...{
                 ...account,
                 etherscanUrl,
@@ -111,8 +111,9 @@ export const ModalAccountInfo = withTranslation('common')(({
                 etherscanLink: etherscanUrl + account.accAddress,
                 mainBtn: account.readyState === 'ACTIVATED'?  lockBtn: unlockBtn
             }} />,
-            [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess providerName = {account.connectName} { ...{...rest,t}}/>,
-            [ AccountStep.DepositApproveProcess ] : <DepositApproveProcess etherscanLink={etherscanUrl + account.accAddress} providerName = {account.connectName} { ...{...rest,t}}/>,
+            [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess label={"depositTitleAndActive"} providerName = {account.connectName} { ...{...rest,t}}/>,
+            [ AccountStep.DepositApproveProcess ] : <DepositApproveProcess label={"depositTitleAndActive"} etherscanLink={etherscanUrl + account.accAddress} providerName = {account.connectName} { ...{...rest,t}}/>,
+            [ AccountStep.ActiveAccountProcess ]: <ActiveAccountProcess  providerName = {account.connectName} { ...{...rest,t}}/>,
             [ AccountStep.FailedTokenAccess ]: <FailedTokenAccess onRetry={()=>undefined} {...{t,...rest, coinInfo: coinMap?coinMap['USTD']:undefined}}/>,
 
 

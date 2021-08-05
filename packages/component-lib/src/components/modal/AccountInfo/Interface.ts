@@ -6,8 +6,8 @@ export type AccountBaseProps = {
     // addressShort: string
     // address: string,
     level?: string,
-    mainBtn?: JSX.Element | React.ElementType<ButtonProps> ,
-    etherscanUrl:string
+    mainBtn?: JSX.Element | React.ElementType<ButtonProps>,
+    etherscanUrl: string
     // connectBy: string,
     // onDisconnect?: any,
     onSwitch?: any,
@@ -29,5 +29,6 @@ export enum AccountStep {
     HadAccount,
     TokenAccessProcess,
     DepositApproveProcess,
-FailedTokenAccess,
+    FailedTokenAccess,
+    ActiveAccountProcess,
 }

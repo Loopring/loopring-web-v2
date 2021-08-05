@@ -11,6 +11,7 @@ import {
 } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../Interface';
 import React from 'react';
+import { SwitchPanelProps } from '../../basic-lib';
 
 
 /**
@@ -147,7 +148,7 @@ export type BasicACoinTradeHookProps<T, I> = DefaultWithMethodProps<T, I> & {
     handlePanelEvent: (props: SwitchData<T>, switchType: 'Tomenu' | 'Tobutton') => Promise<void>
     onChangeEvent?: (index: 0 | 1, data: SwitchData<T>) => SwitchData<T>,
     inputButtonProps?: inputButtonDefaultProps<T, I>
-}
+} & Partial<SwitchPanelProps<any>>
 
 
 
