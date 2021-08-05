@@ -47,8 +47,20 @@ export const walletLayer2Services = {
             data: undefined,
         })
     },
+
+    sendUpdateAccStatusAndReset: (readyState: AccountStatus) => {
+        store.dispatch(updateAccountStatus({
+            account: -1,
+            readyState,
+            apiKey: '',
+            eddsaKey: '',
+            publicKey: '',
+            nonce:undefined,
+        }))
+    },
+
     //INFO: for lock account todo clear the private info, user click or provider on wrong network
-    sendAccountLock: (accInfo?:AccountInfo) => {
+    sendAccountLock: (accInfo?: AccountInfo) => {
         const updateInfo = accInfo ? {
             readyState:AccountStatus.LOCKED,
             accountId:  accInfo.accountId,
