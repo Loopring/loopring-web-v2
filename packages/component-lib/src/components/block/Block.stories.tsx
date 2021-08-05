@@ -3,17 +3,13 @@ import { Meta, Story } from '@storybook/react/types-6-0';
 import { MemoryRouter } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
 import {
-    Account,
-    AccountFull, AccountStatus,
     AmmCardProps,
     CoinInfo,
     FloatTag,
     PriceTag,
-    WalletStatus
 } from '@loopring-web/common-resources';
-import { coinMap, CoinType,account } from '../../static';
+import { coinMap, CoinType } from '../../static';
 import { withTranslation } from 'react-i18next';
-import { WalletConnectBtn, WalletConnectBtnProps } from '../index';
 import {  AssetTitle, AssetTitleProps, TradeTitle } from './';
 import { useDispatch } from 'react-redux';
 import { setShowDeposit, setShowTransfer, setShowWithdraw } from '../../stores';
