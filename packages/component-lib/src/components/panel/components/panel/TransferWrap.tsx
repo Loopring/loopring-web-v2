@@ -30,7 +30,6 @@ export const TransferWrap = <T extends IBData<I>,
     const inputBtnRef = React.useRef();
     const getDisabled = () => {
         if (disabled || tradeData === undefined || walletMap === undefined || coinMap === undefined) {
-            debugger
             return true
         } else {
             return false

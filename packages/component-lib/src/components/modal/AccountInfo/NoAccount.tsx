@@ -14,7 +14,7 @@ export const NoAccount =  withTranslation('common')(({goDeposit,t,...props}:With
 
             <AnimationArrow className={'arrowCta'}/>
         </Box>
-        <Box width={120} marginTop={2}>
+        <Box marginTop={2} alignSelf={'stretch'} paddingX={6}>
             <Button variant={'contained'} fullWidth size={'medium'}  onClick={() => {
                 goDeposit();
             }}>{t('depositLabelBtn')} </Button>

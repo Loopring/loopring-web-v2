@@ -18,8 +18,8 @@ import { ModalQRCode, QRCodePanel } from './QRCode'
 import { FailedConnect } from './WalletConnect/FailedConnect';
 import {
     AccountBaseProps,
-    AccountStep,
-    ApproveAccount,
+    AccountStep, ActiveAccountProcess,
+    ApproveAccount, DepositApproveProcess,
     Depositing,
     FailedDeposit, FailedTokenAccess,
     FailedUnlock,
@@ -27,13 +27,12 @@ import {
     ModalAccount,
     NoAccount,
     ProcessUnlock,
-    SuccessUnlock,
+    SuccessUnlock, TokenAccessProcess,
 } from './AccountInfo';
 import { account, coinMap, CoinType, walletMap } from '../../static';
 import { DepositPanel, DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../panel';
 import { WalletConnectBtn } from '../header';
-import { TokenAccessProcess } from './AccountInfo/TokenAccessProcess';
-import { DepositApproveProcess } from './AccountInfo/DepositApproveProcess';
+
 
 const Style = styled.div`
   color: #fff;
@@ -110,7 +109,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
             [ WalletConnectStep.WalletConnectProcessing ]: <WalletConnectProcess {...rest}/>,
             [ WalletConnectStep.WalletConnectQRCode ]: <WalletConnectQRCode  {...rest} url={url}/>,
             [ WalletConnectStep.SuccessConnect ]: <SuccessConnect {...{...rest, providerName: 'MetaMask'}}/>,
-            [ WalletConnectStep.FailedConnect ]: <FailedConnect {...rest} handleRetry={() => {
+            [ WalletConnectStep.FailedConnect ]: <FailedConnect {...rest} onRetry={() => {
             }}/>,
         })
 
@@ -131,7 +130,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                 ...accountInfoProps, goDeposit: () => {
                 }
             }}/>,
-            [ AccountStep.Deposit ]: <DepositPanel  {...{...rest, ...depositProps}} />,
+            [ AccountStep.Deposit ]: <DepositPanel  _height={480} _width={400}  {...{...rest, ...depositProps}} />,
             [ AccountStep.Depositing ]: <Depositing {...{
                 providerName: ConnectProviders.MetaMask,
                 etherscanLink: accountInfoProps.etherscanUrl, ...rest
@@ -154,6 +153,10 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                 ...rest,
                 providerName: ConnectProviders.MetaMask
             }}/>,
+            [ AccountStep.ActiveAccountProcess ]: <ActiveAccountProcess {...{
+                ...rest,
+                providerName: ConnectProviders.MetaMask
+            }}/>,
             [ AccountStep.FailedTokenAccess ]: <FailedTokenAccess {...{...rest, coinInfo}}/>,
         })
 
@@ -168,9 +171,9 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                           marginBottom={2}>
                         <ConnectButtonWrap/>
                     </Grid>
-                    <Grid container>
+                    <Grid container spacing={2}>
                         {walletList.map((panel, index) => {
-                            return <Grid item key={index} width={400}>
+                            return <Grid item key={index} width={400} padding={2}>
                                 {panel}
                             </Grid>
                         })}
@@ -181,10 +184,10 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                         setOpenWallet(false)
                     }}
                                         panelList={walletList} step={WalletConnectStep.WalletConnectQRCode}/>
-                    <Grid container>
+                    <Grid container spacing={2}>
 
                         {accountList.map((panel, index) => {
-                            return <Grid item key={index} width={400}>
+                            return <Grid item key={index} width={400} padding={2}>
                                 {panel}
                             </Grid>
                         })}

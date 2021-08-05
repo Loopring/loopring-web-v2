@@ -19,22 +19,27 @@ export type SwitchPanelProps<T extends string> = {
     panelList: Array<PanelContent<T>>,
     // onChangeIndex?: (index: number,data:any) => void,
     // onTransitionEnd?: () => void,
-    height?: number | string;
-    // width?: number | string;
+    _height?: number | string;
+    _width?: number | string;
 
 }
 //${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1})};
-export const WrapStyled = styled(SwipeableViews)<SwipeableViewsProps>`
+export const WrapStyled = styled(SwipeableViews)<SwipeableViewsProps & { height?: number|string, width?: number|string }>`
   border-radius: ${({theme}) => theme.unit}px;
   ${({height, width, theme}) => `       
     background-color: ${theme.colorBase.background().default};
-    width: ${typeof width === 'string' ? width : typeof width === 'number' ? width + 'px' : `var(--swap-box-width)`}; 
+    width: ${typeof width === 'string' ? width : typeof width === 'number' ? width + 'px' : `var(--swap-box-width)`};   
+    height: ${typeof height === 'string' ? height : typeof height === 'number' ? height + 'px' : `var(--swap-box-height)`};
+    .react-swipeable-view-container{
+       height:100%;
+       & > div {
+        display:flex;
+       }
+    }
     .container{
        padding:0 0 ${theme.unit * 3 + 'px'};
-       min-height: var(--swap-box-height);
-       height:100%;
-       // height: ${typeof height === 'string' ? height : typeof height === 'number' ? height + 'px' : `var(--swap-box-height)`};
-       // width: 100%;
+       // min-height: var(--swap-box-height);
+       flex:1;
     }
      .MuiToolbar-root {
         align-content: stretch;
@@ -56,23 +61,22 @@ export const WrapStyled = styled(SwipeableViews)<SwipeableViewsProps>`
             align-items: center;
             font-size: ${theme.fontDefault.h4}; 
         }
-        // .go-back{
-        //   font-size: ${theme.fontDefault.h4}; 
-        //   margin-right: ${theme.unit + 'px'}; 
-        //   transform: rotate(90deg);
-        // }
+       
     }
      `};
 
 
-` as React.ElementType<SwipeableViewsProps>;
+` as React.ElementType<SwipeableViewsProps & { height?: number|string, width?: number|string }>;
 
 function _SwitchPanel<T extends string>({
                                             index,
                                             panelList,
+                                            _height,
+                                            _width
                                         }: SwitchPanelProps<T> & WithTranslation, _ref: React.ForwardedRef<any>) {
     const theme = useTheme();
-    return <WrapStyled axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'} index={index}>
+    return <WrapStyled axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'} index={index} height={_height}
+                       width={_width}>
         {panelList.map((panel: PanelContent<T>) => {
             return <Grid container key={panel.key} className={'container'} direction={'column'}
                          justifyContent={"start"} flexWrap={'nowrap'}>

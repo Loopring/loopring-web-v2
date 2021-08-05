@@ -17,7 +17,7 @@ export const DepositPanel = withTranslation('common', {withRef: true})(<T extend
         onDepositClick,
         depositBtnStatus,
         ...rest
-    }: DepositProps<T, I> & WithTranslation) => {
+    }: DepositProps<T, I> & WithTranslation ) => {
 
     // const [transferData, setTransferData] = React.useState<SwitchData<T>>({
     //     to: 'button',
