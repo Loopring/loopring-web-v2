@@ -11,7 +11,7 @@ export const WalletConnectProcess = ({t}:WithTranslation)=>{
             <LoadingIcon color={'primary'} style={{width:60,height:60}}/>
             <Typography component={'span'} variant={'body1'} paddingY={1}>{t('labelProcessing')}</Typography>
         </Typography>
-        <Typography variant={'body2'} color={'textSecondary'} component={'p'} marginTop={3} alignSelf={'flex-start'} paddingX={6} textAlign={'b'}>
+        <Typography variant={'body2'} color={'textSecondary'} component={'p'} marginTop={3} alignSelf={'flex-start'} paddingX={6} >
             <Trans i18nKey={'labelWalletConnectProcessDescribe'}>
                  Please wait WalletConnect Provider working processing
             </Trans>
