@@ -9,5 +9,11 @@ export * from './ModalAccount'
 export * from './ProcessUnlock'
 export * from './SuccessUnlock'
 export * from './FailedUnlock'
+export * from './TokenAccessProcess'
+export * from './DepositApproveProcess'
+export * from './FailedTokenAccess'
+
+
+
 
 

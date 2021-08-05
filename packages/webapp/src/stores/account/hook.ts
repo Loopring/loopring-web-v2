@@ -6,31 +6,41 @@ import {
 } from './reducer';
 import React from 'react';
 import { Account, AccountState } from '@loopring-web/common-resources';
+import { RootState } from 'stores';
 
 
 export function useAccount() {
-    const {status, errorMessage, ...account}: AccountState = useSelector((state: any) => state.account);
+    const {status, errorMessage, ...account}: AccountState = useSelector((state: RootState) => state.account);
     // const [shouldShow,setShouldShow] = React.useState(account._userOnModel)
     const dispatch = useDispatch();
+    
     const resetAccount = React.useCallback((props?:{shouldUpdateProvider?:boolean|undefined}) => {
         dispatch(cleanAccountStatus(props))
     }, [dispatch])
+
     const updateAccount = React.useCallback((account: Partial<Account>) => {
         dispatch(updateAccountStatus(account))
     }, [dispatch]);
+
     const shouldShow = React.useMemo(()=>{
         return  account._userOnModel
-    },[account]);
+    }, [account]);
+
     const setShouldShow = React.useCallback((flag:boolean)=>{
-        dispatch(nextAccountStatus({_userOnModel:flag}))
-    },[]);
+        dispatch(nextAccountStatus({_userOnModel: flag}))
+    },[dispatch]);
+
+    const statusUnsetFunc = React.useCallback(() => {
+        dispatch(statusUnset(undefined))
+    }, [dispatch])
+
     return {
-        account: account,
+        account,
         resetAccount,
         shouldShow,
         setShouldShow,
         updateAccount,
-        statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),
+        statusUnset: statusUnsetFunc,
         status,
         errorMessage,
     }

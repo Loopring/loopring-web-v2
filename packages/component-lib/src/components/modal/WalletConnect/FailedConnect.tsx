@@ -1,21 +1,25 @@
-import { Button } from '../../basic-lib';
+// import { Button } from '../../basic-lib';
 import { Box, Typography } from '@material-ui/core';
-import { WithTranslation } from 'react-i18next';
-import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
+import { Trans, WithTranslation } from 'react-i18next';
+import {  EmbarIcon } from '@loopring-web/common-resources';
+import { Link } from '@material-ui/core/';
 
 
 export const FailedConnect = ({handleRetry,t}: { handleRetry:(event:any)=>void } & WithTranslation)=>{
     return    <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-evenly'} flexDirection={'column'}>
-        <Typography component={'h3'} variant={'h2'} marginBottom={3}>{t('labelMetaMaskProcessing')}</Typography>
+        <Typography component={'h3'} variant={'h2'} marginBottom={3}>{t('labelFailedConnect')}</Typography>
         <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'}>
-            <img width={60} height={60} src={loadingSvg}
-                 alt={'loading'} />
-            <Typography component={'span'}>{t('labelProcessing')}</Typography>
+            <EmbarIcon color={'error'} style={{width:60,height:60}}></EmbarIcon>
+
         </Typography>
         {/*<Typography component={'p'} marginTop={3} alignSelf={'flex-start'} paddingX={6} >*/}
         {/*    {t('labelMetaMaskProcessDescribe')}*/}
         {/*</Typography>*/}
-        <Button onClick={handleRetry}>Retry</Button>
+        <Typography component={'p'} marginTop={2} >
+            <Trans i18nKey={'labelRejectOrError'}>
+                Rejected, Please<Link onClick={handleRetry}>retry</Link>
+            </Trans>
+        </Typography>
 
     </Box>
 

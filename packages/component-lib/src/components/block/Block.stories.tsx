@@ -2,10 +2,14 @@ import styled from '@emotion/styled';
 import { Meta, Story } from '@storybook/react/types-6-0';
 import { MemoryRouter } from 'react-router-dom';
 import { Grid } from '@material-ui/core';
-import { AmmCardProps, CoinInfo, FloatTag, PriceTag, WalletStatus } from '@loopring-web/common-resources';
+import {
+    AmmCardProps,
+    CoinInfo,
+    FloatTag,
+    PriceTag,
+} from '@loopring-web/common-resources';
 import { coinMap, CoinType } from '../../static';
 import { withTranslation } from 'react-i18next';
-import { BtnWalletConnect } from '../index';
 import {  AssetTitle, AssetTitleProps, TradeTitle } from './';
 import { useDispatch } from 'react-redux';
 import { setShowDeposit, setShowTransfer, setShowWithdraw } from '../../stores';
@@ -22,28 +26,12 @@ const Style = styled.div`
   height: 100%;
   flex: 1
 `
-const ConnectButtonWrap = withTranslation('common')((rest: any) => {
-    return <>
-        <Grid item xs={3}><BtnWalletConnect {...rest} status={WalletStatus.default} handleClick={() => {
-        }} label={'Connect Wallet'} wait={200}></BtnWalletConnect></Grid>
-        <Grid item xs={3}><BtnWalletConnect {...rest} status={WalletStatus.disabled} handleClick={() => {
-        }} label={'Connect Wallet'} wait={200}></BtnWalletConnect></Grid>
-        <Grid item xs={3}><BtnWalletConnect {...rest} status={WalletStatus.loading} handleClick={() => {
-        }} label={'xxxxx....xxxx'} wait={200}></BtnWalletConnect></Grid>
-        <Grid item xs={3}><BtnWalletConnect {...rest} status={WalletStatus.noAccount} handleClick={() => {
-        }} label={'xxxxx....xxxx'} wait={200}></BtnWalletConnect></Grid>
-        <Grid item xs={3}><BtnWalletConnect {...rest} status={WalletStatus.accountPending} handleClick={() => {
-        }} label={'xxxxx....xxxx'} wait={200}></BtnWalletConnect></Grid>
-        <Grid item xs={3}><BtnWalletConnect {...rest} status={WalletStatus.connect} handleClick={() => {
-        }} label={'xxxxx....xxxx'} wait={200}></BtnWalletConnect></Grid>
-        <Grid item xs={3}><BtnWalletConnect {...rest} status={WalletStatus.unlock} handleClick={() => {
-        }} label={'xxxxx....xxxx'}
-                                            wait={200}></BtnWalletConnect></Grid>
-        <Grid item xs={3}><BtnWalletConnect {...rest} status={WalletStatus.noNetwork} handleClick={() => {
-        }} label={'xxxxx....xxxx'}
-                                            wait={200}></BtnWalletConnect></Grid>
-    </>
-})
+
+
+// const walletBtnProps:WalletConnectBtnProps = {
+//     handleClick:,
+//     accountState: accountFull
+// }
 
 
 const TradeTitleWrap = withTranslation('common')((rest) => {
@@ -258,10 +246,7 @@ const Template: Story<any> = () => {
         <Grid container spacing={2} alignContent={'center'} justifyContent={'flex-start'} marginBottom={2}>
             <AssetTitleWrap/>
         </Grid>
-        <h4>Connect Button status</h4>
-        <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'} marginBottom={2}>
-            <ConnectButtonWrap/>
-        </Grid>
+
         <h4>Setting Panel</h4>
         <Grid container spacing={2} alignContent={'stretch'} justifyContent={'stretch'} marginBottom={2}>
             <Grid item xs={10}>

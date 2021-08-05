@@ -33,7 +33,7 @@ export enum fnType {
 export type Account = {
     accAddress: string,
     readyState: keyof typeof AccountStatus | 'Unknown',
-    accountId: number | -1,
+    accountId: number,
     level: string,
     apiKey: string,
     eddsaKey: any,
@@ -45,7 +45,7 @@ export type Account = {
     _userOnModel?: boolean|undefined
 }
 export type AccountState = Account & StateBase;
-export type accountFull = {
+export type AccountFull = {
     account: Account,
     resetAccount:()=>void
     updateAccount:(account: Partial<Account>)=>void

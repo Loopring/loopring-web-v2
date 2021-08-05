@@ -27,13 +27,12 @@
   },
   "scripts": {
     "rollup:build": "rollup --config --no-stdin",
-    "build": "react-scripts-rewired build",
     "release:version": "lerna version --exact --no-changelog --no-push --no-git-tag-version",
     "release:build": "lerna run --parallel --scope \"@loopring-web/*\" build",
     "test": "react-scripts-rewired test",
     "eject": "react-scripts eject",
     "storybook-lib": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build": "build-storybook --debug-webpack --quiet -o build"
   },
   "eslintConfig": {
     "extends": [

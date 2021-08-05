@@ -26,9 +26,11 @@ export const TransferWrap = <T extends IBData<I>,
        }: TransferViewProps<T, I> & WithTranslation) => {
     // const [_chargeFeeToken, setChargeFeeToken] = React.useState<any | undefined>(
     //     chargeFeeToken && chargeFeeTokenList.length ? chargeFeeTokenList[ chargeFeeToken as any ] : undefined);
+    
     const inputBtnRef = React.useRef();
     const getDisabled = () => {
         if (disabled || tradeData === undefined || walletMap === undefined || coinMap === undefined) {
+            debugger
             return true
         } else {
             return false
