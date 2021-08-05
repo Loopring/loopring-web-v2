@@ -156,5 +156,11 @@ export default {
     labelExitAmmFailed: 'Exit AmmPool failed!',
     labelConnectBy: 'Connected with <1>{{connectBy}}</1>',
     labelWrongNetwork: 'Wrong network',
-    labelActivatedAccountDeposit:'Apply Layer2 wallet, Please deposit to Activated account'
+    labelActivatedAccountDeposit:'Apply Layer2 wallet, Please deposit to Activated account',
+    labelProcessing:'In processing',
+    labelMetaMaskProcessing:'Connect Wallet by MetaMask',
+    labelMetaMaskProcessDescribe:'Please click approve button on MetaMask popup window. When MetaMask dialog is dismiss, please manually click <1></1> on your browser toolbar.',
+    labelWalletConnectProcessing:'Connect Wallet by WalletConnect',
+    labelWalletConnectProcessDescribe:'Please wait WalletConnect provider confirm processing',
+    labelSuccessConnect:'Success Connect by {{providerName}}'
 }

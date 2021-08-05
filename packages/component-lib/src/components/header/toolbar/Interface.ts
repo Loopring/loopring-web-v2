@@ -1,5 +1,5 @@
 import React from 'react';
-import { accountFull } from '@loopring-web/common-resources';
+import { AccountFull } from '@loopring-web/common-resources';
 
 export enum WalletNotificationStatus {
     none = 'none',
@@ -9,7 +9,7 @@ export enum WalletNotificationStatus {
 }
 
 export type  WalletNotificationInterface = {
-    status: keyof typeof WalletNotificationStatus
+    // status: keyof typeof WalletNotificationStatus
     message: string,
     handleClick?: (event: React.MouseEvent) => void,
 }
@@ -17,5 +17,5 @@ export type  WalletNotificationInterface = {
 
 export type WalletConnectBtnProps = {
     handleClick: (_e: React.MouseEvent) => {},
-    accountState?:accountFull,
+    accountState?:AccountFull,
 }
