@@ -12,7 +12,12 @@ import {
 } from '@loopring-web/component-lib';
 import { ChainId } from 'loopring-sdk'
 import React from 'react';
-import { ConnectProviders, GatewayItem, gatewayList as DefaultGatewayList } from '@loopring-web/common-resources';
+import {
+    ConnectProviders,
+    GatewayItem,
+    gatewayList,
+    gatewayList as DefaultGatewayList
+} from '@loopring-web/common-resources';
 import { useAccount } from '../../stores/account';
 import { connectProvides, ProcessingType, useConnectHook } from '@loopring-web/web3-provider';
 import { useSystem } from '../../stores/system';
@@ -92,10 +97,9 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
             [ WalletConnectStep.MetaMaskProcessing ]: <MetaMaskProcess {...{t, ...rest}}/>,
             [ WalletConnectStep.WalletConnectProcessing ]: <WalletConnectProcess {...{t, ...rest}}/>,
             [ WalletConnectStep.WalletConnectQRCode ]: <WalletConnectQRCode url={qrCodeUrl} {...{t, ...rest}}/>,
-            [ WalletConnectStep.SuccessConnect ]: <SuccessConnect {...{t, ...rest}}/>,
+            [ WalletConnectStep.SuccessConnect ]: <SuccessConnect providerName={account.connectName} {...{t, ...rest}}/>,
             [ WalletConnectStep.FailedConnect ]: <FailedConnect{...{t, ...rest}}  handleRetry={resetAccount}/>,
         })
-
     }, [qrCodeUrl, account])
     return <ModalWalletConnect open={isShowConnect.isShow} onClose={(e) => {
         setShouldShow(false);

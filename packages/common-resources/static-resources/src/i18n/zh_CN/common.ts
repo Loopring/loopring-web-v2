@@ -44,7 +44,7 @@ export default {
     transferLabelAddressInput: '输入地址',
     transferLabelFee: '请选付费代币',
     transferLabelLinkRecent: '最近转账记入',
-    labelConnectWallet: '链接钱包',
+    labelConnectWallet: '连接钱包',
     labelCustomer: '自定义',
     labelChange24h: '{{timeUnit}} 涨幅',
     labelDepth: '深度',
@@ -154,7 +154,14 @@ export default {
     labelJoinAmmFailed: '加入流动性池失败!',
     labelExitAmmSuccess: '退出流动性池成功!',
     labelExitAmmFailed: '退出流动性池失败!',
-    labelConnectBy: '当前链接 <1>{{connectBy}}</1>',
+    labelConnectBy: '当前连接 <1>{{connectBy}}</1>',
     labelWrongNetwork: '未识别网络',
-    labelActivatedAccountDeposit:'首次开通二层钱包需充值并激活'
+    labelActivatedAccountDeposit:'首次开通二层钱包需充值并激活',
+    labelProcessing:'请等待片刻',
+    labelMetaMaskProcessing:'MetaMask正在连接路印钱包',
+    labelMetaMaskProcessDescribe:'请在MetaMask的弹出窗口内点击确定按钮。 如果MetaMask插件没有主动弹出窗口, 请在浏览器工具栏中点击 <1></1> 图标。',
+    labelWalletConnectProcessing:'WalletConnect正在连接路印钱包',
+    labelWalletConnectProcessDescribe:'正在等待WalletConnect确认相关信息，请耐心等待片刻。',
+    labelSuccessConnect:'成功连接 {{providerName}}',
+    // labelWalletConnectQRCode:'请扫描二维码哦'
 }

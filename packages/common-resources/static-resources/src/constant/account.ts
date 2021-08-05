@@ -45,7 +45,7 @@ export type Account = {
     _userOnModel?: boolean|undefined
 }
 export type AccountState = Account & StateBase;
-export type accountFull = {
+export type AccountFull = {
     account: Account,
     resetAccount:()=>void
     updateAccount:(account: Partial<Account>)=>void

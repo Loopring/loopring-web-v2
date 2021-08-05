@@ -12,7 +12,7 @@ import {
     HeaderMenuTabStatus,
     ToolBarAvailableItem
 } from '@loopring-web/common-resources';
-import { BtnDownload, BtnLanguage, BtnNotification, BtnTheme, BtnWalletConnect } from './toolbar';
+import { BtnDownload, BtnLanguage, BtnNotification, BtnTheme, WalletConnectBtn } from './toolbar';
 import React from 'react';
 import { useSettings } from '../../stores';
 
@@ -101,7 +101,7 @@ const ToolBarItem = ({buttonComponent, ...props}: any) => {
             case  ButtonComponentsMap.Language:
                 return <BtnLanguage {...{...props, language}} />;
             case  ButtonComponentsMap.WalletConnect:
-                return <BtnWalletConnect {...props} />;
+                return <WalletConnectBtn {...props} />;
             default:
                 return undefined;
         }
