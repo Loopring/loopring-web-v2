@@ -28,6 +28,6 @@ export enum AccountStep {
     FailedUnlock,
     HadAccount,
     TokenAccessProcess,
-    DepositApproveProcess
-
+    DepositApproveProcess,
+FailedTokenAccess,
 }

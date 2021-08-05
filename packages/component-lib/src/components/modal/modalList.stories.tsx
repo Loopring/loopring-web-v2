@@ -21,7 +21,7 @@ import {
     AccountStep,
     ApproveAccount,
     Depositing,
-    FailedDeposit,
+    FailedDeposit, FailedTokenAccess,
     FailedUnlock,
     HadAccount,
     ModalAccount,
@@ -63,34 +63,36 @@ let depositProps: DepositProps<any, any> = {
 }
 const accountState: AccountFull = {
     account,
-    status:'DONE',
+    status: 'DONE',
     resetAccount: () => undefined,
     updateAccount: () => undefined,
 }
 const ConnectButtonWrap = withTranslation('common')((_rest: any) => {
     return <>
-        <Grid item xs={3}><WalletConnectBtn accountState={accountState} handleClick={() => undefined }></WalletConnectBtn></Grid>
+        <Grid item xs={3}><WalletConnectBtn accountState={accountState}
+                                            handleClick={() => undefined}></WalletConnectBtn></Grid>
         <Grid item xs={3}><WalletConnectBtn
             accountState={{...accountState, account: {...account, readyState: AccountStatus.NO_ACCOUNT}}}
-            handleClick={() => undefined }></WalletConnectBtn></Grid>
+            handleClick={() => undefined}></WalletConnectBtn></Grid>
         <Grid item xs={3}><WalletConnectBtn
             accountState={{...accountState, account: {...account, readyState: AccountStatus.DEPOSITING}}}
-            handleClick={() => undefined }></WalletConnectBtn></Grid>
+            handleClick={() => undefined}></WalletConnectBtn></Grid>
         <Grid item xs={3}><WalletConnectBtn
             accountState={{...accountState, account: {...account, readyState: AccountStatus.ACTIVATED}}}
-            handleClick={() => undefined }></WalletConnectBtn></Grid>
+            handleClick={() => undefined}></WalletConnectBtn></Grid>
         <Grid item xs={3}><WalletConnectBtn
             accountState={{...accountState, account: {...account, readyState: AccountStatus.ERROR_NETWORK}}}
-            handleClick={() => undefined }></WalletConnectBtn></Grid>
+            handleClick={() => undefined}></WalletConnectBtn></Grid>
         <Grid item xs={3}><WalletConnectBtn
             accountState={{...accountState, account: {...account, readyState: AccountStatus.LOCKED}}}
-            handleClick={() => undefined }></WalletConnectBtn></Grid>
+            handleClick={() => undefined}></WalletConnectBtn></Grid>
         <Grid item xs={3}><WalletConnectBtn
             accountState={{...accountState, account: {...account, readyState: AccountStatus.LOCKED, _chainId: 5}}}
-            handleClick={() => undefined }></WalletConnectBtn></Grid>
+            handleClick={() => undefined}></WalletConnectBtn></Grid>
     </>
 })
 
+const coinInfo = coinMap[ 'USDC' ]
 const Template: Story<any> = withTranslation()(({...rest}: any) => {
     const [openAccount, setOpenAccount] = React.useState(false)
     const [openWallet, setOpenWallet] = React.useState(false)
@@ -107,7 +109,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
             [ WalletConnectStep.MetaMaskProcessing ]: <MetaMaskProcess {...rest}/>,
             [ WalletConnectStep.WalletConnectProcessing ]: <WalletConnectProcess {...rest}/>,
             [ WalletConnectStep.WalletConnectQRCode ]: <WalletConnectQRCode  {...rest} url={url}/>,
-            [ WalletConnectStep.SuccessConnect ]: <SuccessConnect {...{...rest,providerName:'MetaMask'}}/>,
+            [ WalletConnectStep.SuccessConnect ]: <SuccessConnect {...{...rest, providerName: 'MetaMask'}}/>,
             [ WalletConnectStep.FailedConnect ]: <FailedConnect {...rest} handleRetry={() => {
             }}/>,
         })
@@ -130,15 +132,29 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                 }
             }}/>,
             [ AccountStep.Deposit ]: <DepositPanel  {...{...rest, ...depositProps}} />,
-            [ AccountStep.Depositing ]: <Depositing {...{providerName: ConnectProviders.MetaMask,etherscanLink:accountInfoProps.etherscanUrl, ...rest}}/>,
-            [ AccountStep.FailedDeposit ]: <FailedDeposit {...rest} onRetry={()=>undefined} etherscanLink={accountInfoProps.etherscanUrl}  />,
-            [ AccountStep.SignAccount ]: <ApproveAccount {...rest} goActiveAccount={()=>undefined} etherscanLink={accountInfoProps.etherscanUrl} />,
+            [ AccountStep.Depositing ]: <Depositing {...{
+                providerName: ConnectProviders.MetaMask,
+                etherscanLink: accountInfoProps.etherscanUrl, ...rest
+            }}/>,
+            [ AccountStep.FailedDeposit ]: <FailedDeposit {...rest} label={'depositTitleAndActive'}
+                                                          onRetry={() => undefined}
+                                                          etherscanLink={accountInfoProps.etherscanUrl}/>,
+            [ AccountStep.SignAccount ]: <ApproveAccount  {...{...accountInfoProps, ...rest}}
+                                                          goActiveAccount={() => undefined}/>,
             [ AccountStep.ProcessUnlock ]: <ProcessUnlock {...{providerName: ConnectProviders.MetaMask, ...rest}}/>,
             [ AccountStep.SuccessUnlock ]: <SuccessUnlock {...rest}/>,
-            [ AccountStep.FailedUnlock ]: <FailedUnlock {...rest} onRetry={()=>undefined}/>,
+            [ AccountStep.FailedUnlock ]: <FailedUnlock {...rest} onRetry={() => undefined}/>,
             [ AccountStep.HadAccount ]: <HadAccount mainBtn={mainBtn} {...accountInfoProps}/>,
-            [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess {...{...rest,providerName: ConnectProviders.MetaMask}}/>,
-            [ AccountStep.DepositApproveProcess ] : <DepositApproveProcess {...{...rest,providerName: ConnectProviders.MetaMask}}/>,
+            [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess {...{
+                ...rest,
+                coinInfo,
+                providerName: ConnectProviders.MetaMask
+            }}/>,
+            [ AccountStep.DepositApproveProcess ]: <DepositApproveProcess {...{
+                ...rest,
+                providerName: ConnectProviders.MetaMask
+            }}/>,
+            [ AccountStep.FailedTokenAccess ]: <FailedTokenAccess {...{...rest, coinInfo}}/>,
         })
 
     }, [])
