@@ -27,7 +27,8 @@ export type SwitchPanelProps<T extends string> = {
 export const WrapStyled = styled(SwipeableViews)<SwipeableViewsProps>`
   border-radius: ${({theme}) => theme.unit}px;
   ${({height, width, theme}) => `       
-    background-color: ${theme.colorBase.background().default};
+    // background-color: ${theme.colorBase.background().default};
+    background: ${theme.colorBase.background().swap}; 
     width: ${typeof width === 'string' ? width : typeof width === 'number' ? width + 'px' : `var(--swap-box-width)`}; 
     .container{
        padding:0 0 ${theme.unit * 3 + 'px'};
