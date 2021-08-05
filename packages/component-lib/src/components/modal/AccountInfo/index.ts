@@ -11,6 +11,9 @@ export * from './SuccessUnlock'
 export * from './FailedUnlock'
 export * from './TokenAccessProcess'
 export * from './DepositApproveProcess'
+export * from './FailedTokenAccess'
+
+
 
 
 

@@ -6,7 +6,7 @@ import {
     Depositing,
     DepositPanel,
     DepositProps,
-    FailedDeposit,
+    FailedDeposit, FailedTokenAccess,
     FailedUnlock,
     HadAccount,
     ModalAccount,
@@ -22,11 +22,10 @@ import { copyToClipBoard } from '../../utils/obj_tools';
 import { useAccount } from '../../stores/account';
 import { TOAST_TIME } from '../../defs/common_defs';
 import { ConnectProviders, getShortAddr, LockIcon, UnLockIcon } from '@loopring-web/common-resources';
-import { Typography } from '@material-ui/core';
 import { sleep } from 'loopring-sdk';
-import { walletLayer2Services } from '../../services/account/walletLayer2Services';
 import { lockAccount } from '../../services/account/lockAccount';
 import { unlockAccount } from '../../services/account/unlockAccount';
+import { useTokenMap } from '../../stores/token';
 export const ModalAccountInfo = withTranslation('common')(({
                                                                onClose,
                                                                etherscanUrl,
@@ -44,7 +43,7 @@ export const ModalAccountInfo = withTranslation('common')(({
     const {modals: {isShowAccount}, setShowConnect, setShowAccount, setShowDeposit} = useOpenModals();
     const [openQRCode, setOpenQRCode] = useState(false);
     const addressShort = getShortAddr(account.accAddress)
-
+     const {coinMap} = useTokenMap();
     // const [accountInfoProps, setAccountBaseProps] = React.useState<undefined | AccountBaseProps>(undefined)
     const [copyToastOpen, setCopyToastOpen] = useState(false);
     const onSwitch = useCallback(() => {
@@ -93,7 +92,12 @@ export const ModalAccountInfo = withTranslation('common')(({
             [ AccountStep.Deposit ]: <DepositPanel  {...{...rest, ...depositProps,t}}/>,
             [ AccountStep.Depositing ]: <Depositing etherscanLink={etherscanUrl + account.accAddress}  { ...{...rest,t}}/>,
             [ AccountStep.FailedDeposit ]: <FailedDeposit etherscanLink={etherscanUrl + account.accAddress}  onRetry={()=>undefined} { ...{...rest,t}} />,
-            [ AccountStep.SignAccount ]: <ApproveAccount  etherscanLink={etherscanUrl + account.accAddress} goActiveAccount={()=>undefined}  { ...{...rest,t}}/>,
+            [ AccountStep.SignAccount ]: <ApproveAccount   {...{
+                ...account,
+                etherscanUrl,
+                onSwitch, onCopy,
+                onViewQRCode, onDisconnect, addressShort,
+            }}  goActiveAccount={()=>undefined}  { ...{...rest,t}}/>,
             [ AccountStep.ProcessUnlock ]: <ProcessUnlock providerName = {account.connectName} { ...{...rest,t}}/>,
             [ AccountStep.SuccessUnlock ]: <SuccessUnlock providerName = {account.connectName} { ...{...rest,t}}/>,
             [ AccountStep.FailedUnlock ]: <FailedUnlock onRetry={()=>undefined} { ...{...rest,t}}/>,
@@ -109,9 +113,10 @@ export const ModalAccountInfo = withTranslation('common')(({
             }} />,
             [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess providerName = {account.connectName} { ...{...rest,t}}/>,
             [ AccountStep.DepositApproveProcess ] : <DepositApproveProcess etherscanLink={etherscanUrl + account.accAddress} providerName = {account.connectName} { ...{...rest,t}}/>,
+            [ AccountStep.FailedTokenAccess ]: <FailedTokenAccess onRetry={()=>undefined} {...{t,...rest, coinInfo: coinMap?coinMap['USTD']:undefined}}/>,
 
 
-    })
+        })
     }, [addressShort, account, depositProps, etherscanUrl, onCopy, onSwitch, onDisconnect, onViewQRCode])
     return <>   <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen}
                        autoHideDuration={TOAST_TIME} setOpen={setCopyToastOpen} severity={"success"}/>

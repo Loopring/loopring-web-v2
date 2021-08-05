@@ -173,7 +173,10 @@ export default {
     labelDepositingProcessing:'Depositing, about {{count}} minutes remaining',
     labelFailedConnect:'Connect Failed',
     labelDepositApproveProcess:'Waiting approve Deposit required',
-    labelTokenAccess:'Waiting approve Deposit required',
+    labelTokenAccess:'Waiting approve {{symbol}} trade access',
+    labelFailedTokenAccess:'Failed approve {{symbol}} trade access',
     labelSuccessUnlock:'Success Unlock',
     labelDepositApproveSuccess:'Congratulation deposit done, please click button to active your account.',
+    labelActiveAccount:'Active Account',
+
 }

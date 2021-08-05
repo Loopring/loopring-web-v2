@@ -9,7 +9,7 @@ export const SuccessUnlock = ({t, providerName}: WithTranslation & { providerNam
     return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-evenly'}
                 flexDirection={'column'}>
         <Typography component={'h3'} variant={'h2'} marginBottom={3}>
-            {t('labelSuccessUnlock', {providerName})}
+            {t('labelUnLockLayer2', {providerName})}
             {/*<Trans i18nKey={'labelSuccessConnect'}>*/}
             {/*    */}
             {/*</Trans>*/}

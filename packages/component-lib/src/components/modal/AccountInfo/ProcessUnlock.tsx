@@ -18,10 +18,11 @@ export const ProcessUnlock = ({t, providerName}: WithTranslation & { providerNam
                    Please click approve on your device.</Trans>
        }
    },[providerName])
-
+    //labelUnlockProcessing
     return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-evenly'}
                 flexDirection={'column'}>
-        <Typography component={'h3'} variant={'h2'} marginBottom={3}>{t('labelUnlockProcessing')}</Typography>
+
+        <Typography component={'h3'} variant={'h2'} marginBottom={3}>{t('labelUnLockLayer2')}</Typography>
         <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'}>
             <LoadingIcon color={'primary'} style={{width:60,height:60}}/>
             <Typography component={'span'} paddingY={1}>{t('labelProcessing')}</Typography>

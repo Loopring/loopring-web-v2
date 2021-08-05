@@ -175,8 +175,10 @@ export default {
     labelFailedDeposit: '充值失败',
     labelFailedUnLocK: '解锁二层失败',
     labelDepositApproveProcess:'等待用户确认充值',
-    labelTokenAccess:'获得代币交易权限',
+    labelTokenAccess:'等待钱包确认{{symbol}}授权',
+    labelFailedTokenAccess:'{{symbol}}授权失败',
     labelSuccessUnlock:'解锁成功',
     labelDepositApproveSuccess:'恭喜充值成功, 最后一步点击开通账户！',
-
+    labelActiveAccount:'激活账户',
+    labelRetry:'Retry'
 }

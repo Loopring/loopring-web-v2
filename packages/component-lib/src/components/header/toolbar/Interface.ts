@@ -16,6 +16,6 @@ export type  WalletNotificationInterface = {
 
 
 export type WalletConnectBtnProps = {
-    handleClick: (_e: React.MouseEvent) => {},
+    handleClick: (_e: React.MouseEvent) => void,
     accountState?:AccountFull,
 }
