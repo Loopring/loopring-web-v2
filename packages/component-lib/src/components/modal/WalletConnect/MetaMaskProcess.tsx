@@ -1,12 +1,11 @@
 // import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
-import { Avatar, Box, Typography } from '@material-ui/core';
+import {  Box, Typography } from '@material-ui/core';
 import { Trans, WithTranslation } from 'react-i18next';
 import { LoadingIcon } from '@loopring-web/common-resources';
-import { useTheme } from '@emotion/react';
-import React from 'react';
+// import { useTheme } from '@emotion/react';
 
 export const MetaMaskProcess = ({t}: WithTranslation) => {
-    const theme = useTheme();
+    // const theme = useTheme();
     return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-evenly'}
                 flexDirection={'column'}>
         <Typography component={'h3'} variant={'h2'} marginBottom={3}>{t('labelMetaMaskProcessing')}</Typography>
@@ -23,8 +22,6 @@ export const MetaMaskProcess = ({t}: WithTranslation) => {
             </Trans>
 
         </Typography>
-
-
     </Box>
 
 }

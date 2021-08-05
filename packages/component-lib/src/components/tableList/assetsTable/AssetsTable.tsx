@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Box, Grid, Menu, MenuItem } from '@material-ui/core'
+import { Box, Grid } from '@material-ui/core'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 // import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
 import { Button } from '../../basic-lib'
-import { Column, generateColumns, generateRows, Table } from '../../basic-lib/tables'
+import { Column,Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
-import { Filter, TokenTypeCol } from './components/Filter'
+import { Filter } from './components/Filter'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
 import { TableType } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores'
@@ -106,7 +106,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         onShowTransfer,
         onShowWithdraw,
         onLpDeposit,
-        onLpWithdraw,
+        // onLpWithdraw,
     } = props
     // const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
     // const formattedRawData = rawData && Array.isArray(rawData) ? rawData : []
