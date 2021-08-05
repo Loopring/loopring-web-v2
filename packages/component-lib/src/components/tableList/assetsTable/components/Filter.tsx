@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { Checkbox, Grid, MenuItem } from '@material-ui/core'
+import { Checkbox, Grid } from '@material-ui/core'
 import { withTranslation, WithTranslation } from "react-i18next";
 import { FormControlLabel, TextField } from '../../../'
-import { CheckBoxIcon, CheckedIcon, DropDownIcon } from '@loopring-web/common-resources'
-import { TokenType, TradePairItem, RawDataAssetsItem } from '../AssetsTable'
+import { CheckBoxIcon, CheckedIcon } from '@loopring-web/common-resources'
+import { TokenType, RawDataAssetsItem } from '../AssetsTable'
 
 export type TokenTypeCol = {
     type: TokenType,

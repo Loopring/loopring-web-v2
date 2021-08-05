@@ -1,7 +1,5 @@
-import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
 import { Box, Typography } from '@material-ui/core';
 import { Trans, WithTranslation } from 'react-i18next';
-import React from 'react';
 import { LoadingIcon } from '@loopring-web/common-resources';
 
 export const WalletConnectProcess = ({t}:WithTranslation)=>{
