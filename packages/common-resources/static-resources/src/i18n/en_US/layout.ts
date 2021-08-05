@@ -36,4 +36,5 @@ export default {
     labelSetting: 'Setting',
     titleLoopring:'Loopring',
     labelLoopringDescribe:'zkRollup Exchange and Payment Protocol',
+    labelWrongNetwork: 'Wrong network',
 }

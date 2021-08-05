@@ -1,4 +1,13 @@
-import { AmmData, AmmInData, CoinInfo, DropDownIcon, EmptyValueTag, IBData, ReverseIcon, SlippageTolerance } from '@loopring-web/common-resources';
+import {
+    AmmData,
+    AmmInData,
+    CoinInfo,
+    DropDownIcon,
+    EmptyValueTag,
+    IBData,
+    ReverseIcon,
+    SlippageTolerance
+} from '@loopring-web/common-resources';
 import { AmmWithdrawWrapProps } from './Interface';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
@@ -8,6 +17,7 @@ import { BtnPercentage, Button, IconButtonStyled, InputCoin, PopoverPure, TradeB
 import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { SlippagePanel } from '../../tool';
 import { useSettings } from '../../../../../stores';
+import { Box } from '@material-ui/core/';
 
 export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBData<I>>,
     I,
@@ -36,14 +46,14 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
     const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number | string>;
     const [_selectedPercentage, setSelectedPercentage] = React.useState(selectedPercentage);
 
-    const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined'?isStob:true);
+    const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined' ? isStob : true);
 
-    const _onSwitchStob = React.useCallback((_event: any)=>{
+    const _onSwitchStob = React.useCallback((_event: any) => {
         setIsStoB(!_isStoB)
-        if(typeof switchStobEvent === 'function') {
-            switchStobEvent(!_isStoB) 
+        if (typeof switchStobEvent === 'function') {
+            switchStobEvent(!_isStoB)
         }
-    },[switchStobEvent, _isStoB])
+    }, [switchStobEvent, _isStoB])
 
     const getDisabled = () => {
         if (disabled || ammCalcData === undefined || ammCalcData.coinInfoMap === undefined) {
@@ -119,33 +129,24 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
-        <Grid item marginTop={2}>
-            <Grid container direction={"column"} spacing={1} alignItems={"center"}>
-                <Grid item>
-                    <InputCoin<IBData<I>, I, CoinInfo<I>> ref={coinARef} disabled={getDisabled()} {...{
-                        ...propsA,
-                        order: 'right',
-                        inputData: ammData ? ammData.coinA : {} as any,
-                        coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
-                    }}/>
-                </Grid>
-                {/*<Grid item>*/}
-                {/*    <SvgStyled>*/}
-                {/*        <LinkedIcon/>*/}
-                {/*    </SvgStyled>*/}
-                {/*</Grid>*/}
-                <Grid item marginTop={2}>
-                    <InputCoin<IBData<I>, I, CoinInfo<I>> ref={coinBRef} disabled={getDisabled()} {...{
-                        ...propsB,
-                        order: 'right',
-                        inputData: ammData ? ammData.coinB : {} as any,
-                        coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
-                    }}/>
-                </Grid>
-                <Grid item alignSelf={'stretch'} marginTop={2}>
-                    <BtnPercentage selected={_selectedPercentage} anchors={anchors}
-                                   handleChanged={onPercentage}></BtnPercentage>
-                </Grid>
+        <Grid item marginTop={2} display={'flex'} alignSelf={"stretch"} justifyContent={''} alignItems={"stretch"}
+              direction={"column"}>
+            <InputCoin<IBData<I>, I, CoinInfo<I>> ref={coinARef} disabled={getDisabled()} {...{
+                ...propsA,
+                order: 'right',
+                inputData: ammData ? ammData.coinA : {} as any,
+                coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
+            }}/>
+            <Box marginTop={1}/>
+            <InputCoin<IBData<I>, I, CoinInfo<I>> ref={coinBRef} disabled={getDisabled()} {...{
+                ...propsB,
+                order: 'right',
+                inputData: ammData ? ammData.coinB : {} as any,
+                coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
+            }}/>
+            <Grid item alignSelf={'stretch'} marginTop={2}>
+                <BtnPercentage selected={_selectedPercentage} anchors={anchors}
+                               handleChanged={onPercentage}></BtnPercentage>
             </Grid>
         </Grid>
 
@@ -153,7 +154,7 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
             <Typography component={'p'} variant="body1" height={20}>
                 {ammData.coinA?.belong && ammData.coinB?.belong && ammCalcData ? <>
                     {_isStoB ? `1${ammData.coinA?.belong} \u2248 ${ammCalcData.AtoB ? ammCalcData.AtoB : EmptyValueTag} ${ammData.coinB?.belong}`
-                    : `1${ammData.coinB?.belong} \u2248 ${ammCalcData.AtoB ? (1 / ammCalcData.AtoB) : EmptyValueTag} ${ammData.coinA?.belong}`}
+                        : `1${ammData.coinB?.belong} \u2248 ${ammCalcData.AtoB ? (1 / ammCalcData.AtoB) : EmptyValueTag} ${ammData.coinA?.belong}`}
                     <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
                     ><ReverseIcon/></IconButtonStyled>
                 </> : EmptyValueTag}
@@ -218,6 +219,7 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
                 </Grid>
             </Grid>
         </Grid>
-    </Grid>
+    </Grid>;
+
 }
 

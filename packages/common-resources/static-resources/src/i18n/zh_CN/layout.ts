@@ -36,5 +36,6 @@ export default {
     labelSetting: '高级设置',
     titleLoopring:'路印协议',
     labelLoopringDescribe:'零知卷叠交易与支付协议',
+    labelWrongNetwork: '未识别网络',
 }
 

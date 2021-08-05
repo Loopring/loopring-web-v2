@@ -57,14 +57,14 @@ export const AccountBase = ({
                             }: AccountBaseProps & WithTranslation) => {
     const addressShort = getShortAddr(accAddress)
     const etherscanLink = etherscanUrl + accAddress;
-    
+    const connectBy= connectName === 'UnKnown' ?  t('labelWrongNetwork'): connectName;
     return <Box display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
-        <Typography component={'h6'} variant={'body2'} color={'textSecondary'} marginTop={1}>
-            <Trans i18nKey="labelConnectBy"  >
-                Connected with <Typography component={'span'}>{{connectBy:connectName === 'UnKnown' ?  t('labelWrongNetwork'): connectName }}</Typography>.
+        <Typography  variant={'body2'} color={'textSecondary'} marginTop={1}>
+            <Trans i18nKey="labelConnectBy" tOptions={{connectBy}}  >
+                Connected with <Typography variant={'body2'} component={'span'}>{connectName}</Typography>.
             </Trans>
         </Typography>
-        <Typography marginTop={1} component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}>
+        <Typography marginTop={1} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}>
             <Typography component={'span'} variant={'h4'}>{addressShort}</Typography>
             {level ? <VipStyled component={'span'} variant={'body2'}
                                 alignSelf={'flex-start'}>{level}</VipStyled> : undefined}

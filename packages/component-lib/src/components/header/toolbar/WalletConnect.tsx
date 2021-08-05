@@ -1,11 +1,11 @@
 import { WalletConnectBtnProps } from './Interface';
 import { useTranslation } from 'react-i18next';
 import React, { useEffect } from 'react';
-import { AccountStatus, CloseIcon, getShortAddr, LockIcon, } from '@loopring-web/common-resources';
+import { AccountStatus, EmbarIcon, getShortAddr, LoadingIcon, LockIcon, } from '@loopring-web/common-resources';
 // import { debounce } from 'lodash';
 import { Typography } from '@material-ui/core';
 
-import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
+// import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
 import styled from '@emotion/styled';
 import { Button } from '../../basic-lib';
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';
@@ -75,7 +75,7 @@ export const WalletConnectBtn = ({
                                      accountState,
                                      handleClick,
                                  }: WalletConnectBtnProps ) => {
-    const {t,i18n} = useTranslation('layout');
+    const {t,i18n} = useTranslation(['layout','common']);
     const [label, setLabel] = React.useState<string>(t('labelConnectWallet'))
     const [networkLabel, setNetworkLabel] = React.useState<string | undefined>(undefined)
     const [btnClassname, setBtnClassname] = React.useState<string | undefined>('');
@@ -102,12 +102,16 @@ export const WalletConnectBtn = ({
                     break
                 case AccountStatus.NO_ACCOUNT:
                     setBtnClassname('no-account')
-                    setIcon(<CloseIcon/>)
+                    setIcon(<EmbarIcon color={'secondary'} style={{transform:'rotate(58deg)'}}/>)
                     break
                 case AccountStatus.DEPOSITING:
                     setBtnClassname('no-depositing')
-                    setIcon(<img width={20} height={20} src={loadingSvg}
-                                 alt={'loading'}/>)
+                    setIcon(<LoadingIcon/>)
+                    break
+                case AccountStatus.ERROR_NETWORK:
+                    setBtnClassname('wrong-network')
+                    setLabel('labelWrongNetwork')
+                    setIcon(<EmbarIcon color={'error'} style={{transform:'rotate(58deg)'}}/>)
                     break
                 default:
             }
@@ -135,7 +139,7 @@ export const WalletConnectBtn = ({
         <WalletConnectBtnStyled variant={'outlined'} size={'medium'} color={'primary'}
                                 className={`wallet-btn ${btnClassname}`}
                                 onClick={_handleClick} {...bindHover(popupState)} >
-            {icon}
+            <Typography component={'i'} paddingRight={1}>{icon}</Typography>
             <Typography component={'span'}> {t(label)}  </Typography>
         </WalletConnectBtnStyled>
     </>
