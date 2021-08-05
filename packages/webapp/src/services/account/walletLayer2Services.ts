@@ -48,9 +48,9 @@ export const walletLayer2Services = {
         })
     },
 
-    sendUpdateAccStatusAndReset: (readyState: AccountStatus) => {
+    sendUpdateAccStatusAndReset: (readyState: AccountStatus, accountId: number = -1) => {
         store.dispatch(updateAccountStatus({
-            account: -1,
+            accountId,
             readyState,
             apiKey: '',
             eddsaKey: '',
