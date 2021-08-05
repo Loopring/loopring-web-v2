@@ -49,7 +49,8 @@ const IWrap = styled(Box)`
   }
 
   .btnInput-wrap {
-    background-color: ${({theme}) => theme.colorBase.background().field};
+    // background-color: ${({theme}) => theme.colorBase.background().field};
+    background-color: ${({theme}) => theme.colorBase.backgroundInputOpacity};
     border-radius: ${({theme}) => theme.unit / 2}px;
     position: relative;
     margin-top: ${({theme}) => `${theme.unit / 2}px`};

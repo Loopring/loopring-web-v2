@@ -80,7 +80,8 @@ export const CountDownStyled = styled(Box)`
   background-position: center;
 
   &.outline {
-    background-color: ${({theme}) => theme.colorBase.textDisable};
+    // background-color: ${({theme}) => theme.colorBase.textDisable};
+    background-color: ${({theme}) => theme.colorBase.backgroundInputOpacity};
     margin: 0 ${({theme}) => theme.unit / 2}px;
     ${({theme}) => theme.border.defaultFrame({c_key: 'transparent'})};
     text-align: center;
