@@ -8,8 +8,9 @@ import { useAccount } from '../stores/account';
 import { useSystem } from '../stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { useCustomDCEffect } from './common/useCustomDCEffect';
+import { LoopringAPI } from 'stores/apis/api';
+import { ApproveVal, dumpError400, GetAllowancesRequest } from 'loopring-sdk';
 import { myLog } from 'utils/log_tools';
-import { useClickOutside } from '../../../component-lib/src/components/basic-lib/tables/hook';
 
 
 export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | undefined, ShowDeposit: (isShow: boolean, defaultProps?: any) => void): {
@@ -26,28 +27,47 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
 
     const handleDeposit = React.useCallback(async (inputValue: any) => {
         const {accountId, accAddress, readyState, apiKey, connectName, eddsaKey} = account
+
+        console.log(LoopringAPI.exchangeAPI, connectProvides.usedWeb3)
         if ((readyState !== AccountStatus.UN_CONNECT
-            // && readyState !== Acco   untStatus.RESET
             && inputValue.tradeValue)
-            && tokenMap && exchangeInfo && connectProvides.usedWeb3) {
+            && tokenMap && exchangeInfo && connectProvides.usedWeb3 && LoopringAPI.exchangeAPI) {
             try {
-                const tokenInfo = tokenMap[ inputValue.belong ]
-                // const gasPrice = gasPrice ?? 20
+                const tokenInfo = tokenMap[inputValue.belong]
                 const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
-                const nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
-                const isMetaMask = connectName === ConnectProviders.MetaMask;
-                await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
-                    exchangeInfo?.depositAddress, gasPrice ?? 20, gasLimit, chainId === 'unknown' ? undefined : chainId, nonce, isMetaMask)
+                let nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
 
                 const fee = 0
+                
+                const isMetaMask = connectName === ConnectProviders.MetaMask
+
+                const req: GetAllowancesRequest = { owner: account.accAddress, token: tokenInfo.symbol}
+
+                const { tokenAllowances } = await LoopringAPI.exchangeAPI.getAllowances(req, tokenMap)
+
+                const allowance = sdk.toBig(tokenAllowances[tokenInfo.symbol])
+
+                const curValInWei = sdk.toBig(inputValue.tradeValue).times('1e' + tokenInfo.decimals)
+
+                myLog(curValInWei.toString(), allowance.toString())
+
+                if (curValInWei.gt(allowance)) {
+                    myLog(curValInWei, allowance, ' need approveMax!')
+                    await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
+                        exchangeInfo?.depositAddress, gasPrice ?? 30, gasLimit, chainId === 'unknown' ? undefined : chainId, nonce, isMetaMask)
+                    nonce += 1
+                } else {
+                    myLog('allowance is enough! don\'t need approveMax!')
+                }
 
                 const response2 = await sdk.deposit(connectProvides.usedWeb3, account.accAddress,
                     exchangeInfo?.exchangeAddress, tokenInfo, inputValue.tradeValue, fee,
                     gasPrice ?? 20, gasLimit, chainId === 'unknown' ? 1 : chainId, nonce + 1, isMetaMask)
 
-                //  myLog('!!!!deposit r:', response2)
                 //TODO check success or failed API
             } catch (e) {
+
+                dumpError400(e)
 
             }
 
@@ -55,9 +75,10 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
             return false
         }
 
-    }, [account, tokenMap, chainId, exchangeInfo, gasPrice])
+    }, [account, tokenMap, chainId, exchangeInfo, gasPrice, LoopringAPI.exchangeAPI])
 
-    const onDepositClick = useCallback(() => {
+    const onDepositClick = useCallback((depositValue) => {
+        myLog('onDepositClick depositValue:', depositValue)
         if (depositValue && depositValue.belong) {
             handleDeposit(depositValue as R)
         }
@@ -66,16 +87,6 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
 
     const handlePanelEvent = useCallback(async(data: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {
-            console.log('handlePanelEvent:', data)
-            if (data?.tradeData?.belong) {
-                if (depositValue !== data.tradeData) {
-                    console.log('depositValue:', depositValue)
-                    setDepositValue(data.tradeData)
-                }
-            } else {
-                console.log('reset depositValue:', depositValue)
-                setDepositValue({belong: undefined, tradeValue: 0, balance: 0} as IBData<unknown>)
-            }
             res();
         })
     }, [depositValue, setDepositValue])
