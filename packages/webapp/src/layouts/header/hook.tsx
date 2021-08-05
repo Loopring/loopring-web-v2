@@ -237,7 +237,7 @@ export function useModalProps() {
     //HIGH: effect by wallet state update
     useCustomDCEffect(() => {
         if (walletLayer2State.walletLayer2) {
-            let {walletMap} = makeWalletLayer2();
+            const { walletMap } = makeWalletLayer2()
             setWalletMap2(walletMap)
         }
     }, [walletLayer2State.walletLayer2])
