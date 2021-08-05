@@ -4,7 +4,7 @@ import { Meta, Story } from '@storybook/react/types-6-0'
 import { withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
 import { Button, Grid } from '@material-ui/core'
-import { Account, AccountFull, AccountStatus, ConnectProviders, gatewayList } from '@loopring-web/common-resources'
+import { AccountFull, AccountStatus, ConnectProviders, gatewayList } from '@loopring-web/common-resources'
 import {
     MetaMaskProcess,
     ModalWalletConnect,
@@ -32,6 +32,8 @@ import {
 import { account, coinMap, CoinType, walletMap } from '../../static';
 import { DepositPanel, DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../panel';
 import { WalletConnectBtn } from '../header';
+import { TokenAccessProcess } from './AccountInfo/TokenAccessProcess';
+import { DepositApproveProcess } from './AccountInfo/DepositApproveProcess';
 
 const Style = styled.div`
   color: #fff;
@@ -61,40 +63,31 @@ let depositProps: DepositProps<any, any> = {
 }
 const accountState: AccountFull = {
     account,
-    resetAccount: () => {
-
-    },
-    updateAccount: (account: Partial<Account>) => {
-    },
+    status:'DONE',
+    resetAccount: () => undefined,
+    updateAccount: () => undefined,
 }
-const ConnectButtonWrap = withTranslation('common')((rest: any) => {
+const ConnectButtonWrap = withTranslation('common')((_rest: any) => {
     return <>
-        <Grid item xs={3}><WalletConnectBtn accountState={accountState} handleClick={() => {
-        }}></WalletConnectBtn></Grid>
+        <Grid item xs={3}><WalletConnectBtn accountState={accountState} handleClick={() => undefined }></WalletConnectBtn></Grid>
         <Grid item xs={3}><WalletConnectBtn
             accountState={{...accountState, account: {...account, readyState: AccountStatus.NO_ACCOUNT}}}
-            handleClick={() => {
-            }}></WalletConnectBtn></Grid>
+            handleClick={() => undefined }></WalletConnectBtn></Grid>
         <Grid item xs={3}><WalletConnectBtn
             accountState={{...accountState, account: {...account, readyState: AccountStatus.DEPOSITING}}}
-            handleClick={() => {
-            }}></WalletConnectBtn></Grid>
+            handleClick={() => undefined }></WalletConnectBtn></Grid>
         <Grid item xs={3}><WalletConnectBtn
             accountState={{...accountState, account: {...account, readyState: AccountStatus.ACTIVATED}}}
-            handleClick={() => {
-            }}></WalletConnectBtn></Grid>
+            handleClick={() => undefined }></WalletConnectBtn></Grid>
         <Grid item xs={3}><WalletConnectBtn
             accountState={{...accountState, account: {...account, readyState: AccountStatus.ERROR_NETWORK}}}
-            handleClick={() => {
-            }}></WalletConnectBtn></Grid>
+            handleClick={() => undefined }></WalletConnectBtn></Grid>
         <Grid item xs={3}><WalletConnectBtn
             accountState={{...accountState, account: {...account, readyState: AccountStatus.LOCKED}}}
-            handleClick={() => {
-            }}></WalletConnectBtn></Grid>
+            handleClick={() => undefined }></WalletConnectBtn></Grid>
         <Grid item xs={3}><WalletConnectBtn
             accountState={{...accountState, account: {...account, readyState: AccountStatus.LOCKED, _chainId: 5}}}
-            handleClick={() => {
-            }}></WalletConnectBtn></Grid>
+            handleClick={() => undefined }></WalletConnectBtn></Grid>
     </>
 })
 
@@ -137,13 +130,15 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                 }
             }}/>,
             [ AccountStep.Deposit ]: <DepositPanel  {...{...rest, ...depositProps}} />,
-            [ AccountStep.Depositing ]: <Depositing/>,
-            [ AccountStep.FailedDeposit ]: <FailedDeposit/>,
-            [ AccountStep.SignAccount ]: <ApproveAccount/>,
-            [ AccountStep.ProcessUnlock ]: <ProcessUnlock/>,
-            [ AccountStep.SuccessUnlock ]: <SuccessUnlock />,
-            [ AccountStep.FailedUnlock ]: <FailedUnlock/>,
+            [ AccountStep.Depositing ]: <Depositing {...{providerName: ConnectProviders.MetaMask,etherscanLink:accountInfoProps.etherscanUrl, ...rest}}/>,
+            [ AccountStep.FailedDeposit ]: <FailedDeposit {...rest} onRetry={()=>undefined} etherscanLink={accountInfoProps.etherscanUrl}  />,
+            [ AccountStep.SignAccount ]: <ApproveAccount {...rest} goActiveAccount={()=>undefined} etherscanLink={accountInfoProps.etherscanUrl} />,
+            [ AccountStep.ProcessUnlock ]: <ProcessUnlock {...{providerName: ConnectProviders.MetaMask, ...rest}}/>,
+            [ AccountStep.SuccessUnlock ]: <SuccessUnlock {...rest}/>,
+            [ AccountStep.FailedUnlock ]: <FailedUnlock {...rest} onRetry={()=>undefined}/>,
             [ AccountStep.HadAccount ]: <HadAccount mainBtn={mainBtn} {...accountInfoProps}/>,
+            [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess {...{...rest,providerName: ConnectProviders.MetaMask}}/>,
+            [ AccountStep.DepositApproveProcess ] : <DepositApproveProcess {...{...rest,providerName: ConnectProviders.MetaMask}}/>,
         })
 
     }, [])
