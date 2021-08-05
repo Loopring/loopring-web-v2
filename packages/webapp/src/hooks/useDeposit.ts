@@ -7,11 +7,9 @@ import { useTokenMap } from '../stores/token';
 import { useAccount } from '../stores/account';
 import { useSystem } from '../stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
-import { useCustomDCEffect } from './common/useCustomDCEffect';
 import { LoopringAPI } from 'stores/apis/api';
-import { ApproveVal, dumpError400, GetAllowancesRequest } from 'loopring-sdk';
+import { dumpError400, GetAllowancesRequest } from 'loopring-sdk';
 import { myLog } from 'utils/log_tools';
-
 
 export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | undefined, ShowDeposit: (isShow: boolean, defaultProps?: any) => void): {
     depositProps: DepositProps<R, T>
@@ -91,80 +89,17 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
         })
     }, [depositValue, setDepositValue])
 
-    const [depositProps, setDepositProps] = React.useState<Partial<DepositProps<R, T>>>({
+    const depositProps = {
         tradeData: {belong: undefined} as any,
         coinMap: coinMap as CoinMap<any>,
         walletMap: walletMap1 as WalletMap<any>,
         depositBtnStatus: TradeBtnStatus.AVAILABLE,
         onDepositClick,
         handlePanelEvent,
-    })
-
-    useCustomDCEffect(() => {
-        setDepositProps({
-                ...depositProps,
-                walletMap: walletMap1 as WalletMap<any>,
-            }
-        )
-    }, [walletMap1])
-
+    }
 
     return {
         // handleDeposit,
         depositProps: depositProps as DepositProps<R, T>,
     }
 }
-
-// const [depositValue, setDepositValue] = React.useState<IBData<any>>({
-//     belong: undefined,
-//     tradeValue: 0,
-//     balance: 0
-// } as IBData<unknown>)
-// const checkAccountStatus  = useCallback(()=>{
-//
-//     return false;
-// },[account,ConnectProvides])
-// const deposit = useCallback(async (token: string, amt: any) => {
-//     if (!LoopringAPI.exchangeAPI || !tokenMap || !account.accAddress || !ConnectProvides.usedWeb3 || !exchangeInfo?.exchangeAddress || !exchangeInfo?.depositAddress) {
-//         return
-//     }
-//
-//     try {
-//         const tokenInfo: TokenInfo = tokenMap[ token ]
-// const provider = await connector.getProvider()
-// const web3 = new Web3(provider as any)
-// const  ConnectProvides
-// let sendByMetaMask = account.connectName === ConnectorNames.Injected
-// let sendByMetaMask = true;
-// const gasPrice = store.getState().system.gasPrice ?? 20
-// const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
-//     } catch (reason) {
-//         dumpError400(reason)
-//     }
-//
-// }, [chainId, ConnectProvides, account, tokenMap])
-// let depositProps: DepositProps<any, any> = {
-//     tradeData: {belong: undefined},
-//     coinMap: coinMap as CoinMap<any>,
-//     walletMap: walletMap1 as WalletMap<any>,
-//     depositBtnStatus: TradeBtnStatus.AVAILABLE,
-//     onDepositClick: (tradeData: any) => {
-//         if (depositValue && depositValue.belong) {
-//             deposit(depositValue.belong.toString(), depositValue.tradeValue)
-//         }
-//         ShowDeposit(false)
-//     },
-//     handlePanelEvent: async (data: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
-//         return new Promise((res) => {
-//             if (data?.tradeData?.belong) {
-//                 if (depositValue !== data.tradeData) {
-//                     setDepositValue(data.tradeData)
-//                 }
-//                 setTokenSymbol(data.tradeData.belong)
-//             } else {
-//                 setDepositValue({belong: undefined, tradeValue: 0, balance: 0} as IBData<unknown>)
-//             }
-//             res();
-//         })
-//     },
-// }
