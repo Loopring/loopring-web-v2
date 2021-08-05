@@ -8,7 +8,7 @@ import { Button } from '../basic-lib';
 export const FailedBasic= ({onRetry,describe,label,t}: {describe:JSX.Element, onRetry:(event:any)=>void,label:string } & WithTranslation)=>{
     return    <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-evenly'} flexDirection={'column'}>
         <Typography component={'h3'} variant={'h2'} marginBottom={3}>{t(label)}</Typography>
-        <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'}>
+        <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
             <EmbarIcon color={'error'} style={{width:60,height:60}}></EmbarIcon>
         </Typography>
         {describe}
