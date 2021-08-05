@@ -33,7 +33,7 @@ export enum fnType {
 export type Account = {
     accAddress: string,
     readyState: keyof typeof AccountStatus | 'Unknown',
-    accountId: number | -1,
+    accountId: number,
     level: string,
     apiKey: string,
     eddsaKey: any,
