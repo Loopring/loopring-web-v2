@@ -20,6 +20,7 @@ import { SlippagePanel } from '../../tool';
 import { TradeBtnStatus } from '../../../Interface';
 import { SvgStyled } from './styled';
 import { useSettings } from '../../../../../stores';
+import { Box } from '@material-ui/core/';
 
 
 export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBData<I>>,
@@ -118,30 +119,24 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
-        <Grid item marginTop={2}>
-            <Grid container direction={"column"} spacing={1} alignItems={"center"}>
-                <Grid item>
-                    <InputCoin<any, I, any> ref={coinARef} disabled={getDisabled()} {...{
-                        ...propsA,
-                        order: 'right',
-                        inputData: ammData ? ammData.coinA : {} as any,
-                        coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
-                    }}/>
-                </Grid>
-                <Grid item>
-                    <SvgStyled>
-                        <LinkedIcon/>
-                    </SvgStyled>
-                </Grid>
-                <Grid item>
-                    <InputCoin<any, I, any> ref={coinBRef} disabled={getDisabled()} {...{
-                        ...propsB,
-                        order: 'right',
-                        inputData: ammData ? ammData.coinB : {} as any,
-                        coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
-                    }}/>
-                </Grid>
-            </Grid>
+        <Grid item marginTop={2} display={'flex'} alignSelf={"stretch"} justifyContent={''} alignItems={"stretch"}  direction={"column"}  >
+            <InputCoin<any, I, any> ref={coinARef} disabled={getDisabled()} {...{
+                ...propsA,
+                order: 'right',
+                inputData: ammData ? ammData.coinA : {} as any,
+                coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
+            }}/>
+            <Box alignSelf={"center"}>
+                <SvgStyled >
+                    <LinkedIcon/>
+                </SvgStyled>
+            </Box>
+            <InputCoin<any, I, any> ref={coinBRef} disabled={getDisabled()} {...{
+                ...propsB,
+                order: 'right',
+                inputData: ammData ? ammData.coinB : {} as any,
+                coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
+            }}/>
         </Grid>
 
         <Grid item>

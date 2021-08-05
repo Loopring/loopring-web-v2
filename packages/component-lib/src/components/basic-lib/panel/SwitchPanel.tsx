@@ -34,6 +34,10 @@ export const WrapStyled = styled(SwipeableViews)<SwipeableViewsProps & { height?
        height:100%;
        & > div {
         display:flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-content: stretch;
+        align-items: stretch;
        }
     }
     .container{
