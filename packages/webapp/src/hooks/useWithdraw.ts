@@ -27,7 +27,7 @@ export const useWithdraw = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | u
         tradeValue: 0,
         balance: 0
     } as IBData<unknown>)
-    const {chargeFeeList} = useChargeFees(withdrawValue.belong, OffchainFeeReqType.TRANSFER, tokenMap)
+    const {chargeFeeList} = useChargeFees(withdrawValue.belong, OffchainFeeReqType.OFFCHAIN_WITHDRAWAL, tokenMap)
     const [withdrawAddr, setWithdrawAddr] = useState<string>()
     const [withdrawFeeInfo, setWithdrawFeeInfo] = useState<any>(undefined)
     const [withdrawType, setWithdrawType] = useState<OffchainFeeReqType>(OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
