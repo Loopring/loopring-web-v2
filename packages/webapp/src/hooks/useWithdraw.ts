@@ -121,7 +121,7 @@ export const useWithdraw = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | u
         }
     })
 
-    React.useEffect(() => {
+    useCustomDCEffect(() => {
         setWithdrawProps({
                 ...withdrawProps,
                 walletMap: walletMap2 as WalletMap<any>,

@@ -240,11 +240,14 @@ export function useModalProps() {
             let {walletMap} = makeWalletLayer2();
             setWalletMap2(walletMap)
         }
+    }, [walletLayer2State.walletLayer2])
+
+    useCustomDCEffect(() => {
         if (walletLayer1State.walletLayer1) {
             // let {walletMap} =  makeWalletLayer1();
             setWalletMap1(walletLayer1State.walletLayer1)
         }
-    }, [walletLayer1State.walletLayer1, walletLayer2State.walletLayer2])
+    }, [walletLayer1State.walletLayer1])
 
     useCustomDCEffect(() => {
         switch (walletLayer2State.status) {
