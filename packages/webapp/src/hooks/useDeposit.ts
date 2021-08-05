@@ -7,6 +7,7 @@ import { useTokenMap } from '../stores/token';
 import { useAccount } from '../stores/account';
 import { useSystem } from '../stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
+import { useCustomDCEffect } from './common/useCustomDCEffect';
 
 
 export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | undefined, ShowDeposit: (isShow: boolean, defaultProps?: any) => void): {
@@ -20,7 +21,6 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
         tradeValue: 0,
         balance: 0
     } as IBData<unknown>)
-
 
     const handleDeposit = React.useCallback(async (inputValue: any) => {
         const {accountId, accAddress, readyState, apiKey, connectName, eddsaKey} = account
@@ -54,6 +54,9 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
         }
 
     }, [account, tokenMap, chainId, exchangeInfo, gasPrice])
+
+    console.log('useDeposit walletMap1:', walletMap1)
+
     const [depositProps, setDepositProps] = React.useState<Partial<DepositProps<R, T>>>({
         tradeData: {belong: undefined} as any,
         coinMap: coinMap as CoinMap<any>,
@@ -79,6 +82,14 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
             })
         },
     })
+
+    useCustomDCEffect(() => {
+        setDepositProps({
+                ...depositProps,
+                walletMap: walletMap1 as WalletMap<any>,
+            }
+        )
+    }, [walletMap1])
 
 
     return {
