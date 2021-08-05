@@ -11,7 +11,7 @@ import { Button } from '../../basic-lib';
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';
 // import { getShortAddr } from '@loopring-web/webapp/src/utils/web3_tools';
 // import Popover from 'material-ui-popup-state/HoverPopover';
-const BtnWalletConnectStyled = styled(Button)`
+const WalletConnectBtnStyled = styled(Button)`
   text-transform: none;
   min-width: 120px;
 
@@ -52,6 +52,7 @@ const TestNetworkStyle = styled(Typography)`
   position: relative;
   padding-right: ${({theme}) => theme.unit}px;
   color: ${({theme}) => theme.colorBase.secondary};
+  cursor:initial;
   &:after {
     position: absolute;
     z-index: -1;
@@ -70,7 +71,7 @@ const TestNetworkStyle = styled(Typography)`
 //   width: 240px;
 // `
 
-export const BtnWalletConnect = ({
+export const WalletConnectBtn = ({
                                      accountState,
                                      handleClick,
                                  }: WalletConnectBtnProps ) => {
@@ -91,9 +92,6 @@ export const BtnWalletConnect = ({
                 case AccountStatus.UN_CONNECT:
                     setLabel('labelConnectWallet');
                     break
-                // case AccountStatus.CONNECT:
-                //     setBtnClassname('wrongStatus')
-                //     break
                 case AccountStatus.LOCKED:
                     setBtnClassname('locked')
                     setIcon(<LockIcon/>)
@@ -134,12 +132,12 @@ export const BtnWalletConnect = ({
     const popupState = usePopupState({variant: 'popover', popupId: `popupId: 'wallet-connect-notification'`});
     return <>
         {networkLabel ? <TestNetworkStyle component={'span'}>{networkLabel}</TestNetworkStyle> : <></>}
-        <BtnWalletConnectStyled variant={'outlined'} size={'medium'} color={'primary'}
+        <WalletConnectBtnStyled variant={'outlined'} size={'medium'} color={'primary'}
                                 className={`wallet-btn ${btnClassname}`}
                                 onClick={_handleClick} {...bindHover(popupState)} >
             {icon}
             <Typography component={'span'}> {t(label)}  </Typography>
-        </BtnWalletConnectStyled>
+        </WalletConnectBtnStyled>
     </>
 
 }

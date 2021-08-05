@@ -41,11 +41,11 @@ export function useChargeFees(tokenSymbol: string | undefined, requestType: Offc
 
             const response = await LoopringAPI.userAPI.getOffchainFeeAmt(request, account.apiKey)
 
-            if (response) {
-                response.raw_data.fees.forEach((item: any, index: number) => {
+            if (response?.raw_data?.fees instanceof Array) {
+                response.raw_data.fees.forEach((item: any) => {
                     const feeRaw = item.fee
                     const tokenInfo = tokenMap[ item.token ]
-                    const fee = sdk.toBig(item.fee).div(BIG10.pow(sdk.toBig(tokenInfo.decimals))).toNumber()
+                    const fee = sdk.toBig(item.fee).div('1e' + tokenInfo.decimals).toNumber()
                     chargeFeeList.push({belong: item.token, fee, __raw__: feeRaw})
                 })
 

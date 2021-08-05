@@ -21,7 +21,7 @@ export async function unlockAccount() {
             accountId: account.accountId
         }, sk))
 
-        walletLayer2Services.sendAccountSigned(apiKey,eddsaKey)
+        walletLayer2Services.sendAccountSigned(apiKey, eddsaKey)
 
     }
 }

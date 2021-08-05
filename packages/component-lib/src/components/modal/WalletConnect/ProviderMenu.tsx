@@ -11,7 +11,7 @@ import React from 'react';
 const ProviderBtnStyled = styled(Button)`
   background-color: ${({theme}) => theme.colorBase.background().field};
 
-  &:hover {
+  &:hover {                                
     background-color: ${({theme}) => theme.colorBase.background().hover};
   }
 
@@ -62,7 +62,7 @@ const BoxStyle = styled(Box)`
   
 ` as typeof Box;
 const WalletConnectPanelStyled = styled(Box)`
-  width: var(--transfer-modal-width);
+  //width: var(--transfer-modal-width);
 ` as typeof Box;
 
 export const ProviderMenu = ({
@@ -86,12 +86,11 @@ export const ProviderMenu = ({
               className="modalContent" marginTop={3} spacing={1}>
 
             <>   {gatewayList.map((item: GatewayItem) => (
-                <Grid item xs={12}>
+                <Grid key={item.key} item xs={12}>
                     <ProviderBtnStyled variant={'contained'} size={'medium'} className={
                         providerName === item.key ? 'selected' : ''
                     } fullWidth
                                        endIcon={<img src={item.imgSrc} alt={item.key} height={18}/>}
-                                       key={item.key}
                                        onClick={item.handleSelect ? item.handleSelect : (event: React.MouseEvent) => {
                                            if (handleSelect) {
                                                handleSelect(event, item.key);

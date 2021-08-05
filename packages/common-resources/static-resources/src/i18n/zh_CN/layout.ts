@@ -14,7 +14,7 @@ export default {
     labelNotification: '消息提醒',
     themeSetting: '主题模版',
     languageSetting: '语言设置',
-    labelConnectWallet: '链接钱包',
+    labelConnectWallet: '连接钱包',
     notificationApprove: '验证中',
     notificationPending: '进行中',
     labelMyTrades: '交易历史',
