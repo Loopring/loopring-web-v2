@@ -34,14 +34,14 @@ export const ArrowSort = ({
         width: 0;
         height: 0;
         border: ${({theme}) => `${theme.unit / 2}px`} solid transparent;
-        border-bottom-color: ${({theme}) => sortDirection === 'ASC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.textSecondary}`};
+        border-bottom-color: ${({theme}) => sortDirection === 'ASC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.checkboxDefault}`};
       }
     
       .down {
         width: 0;
         height: 0;
         border: ${({theme}) => `${theme.unit / 2}px`} solid transparent;
-        border-top-color:  ${({theme}) => sortDirection === 'DESC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.textSecondary}`};
+        border-top-color:  ${({theme}) => sortDirection === 'DESC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.checkboxDefault}`};
         margin-top: ${({theme}) => `${theme.unit / 4}px`};
       }
     ` as React.ElementType;

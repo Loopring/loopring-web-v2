@@ -253,7 +253,7 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 backgroundColor: colorBase.background().default,
                 '&:hover': {
                     color: colorBase.textPrimary,
-                    borderColor: colorBase.borderHover,
+                    borderColor: colorBase.textPrimary,
                     backgroundColor: colorBase.background().default,
                 },
                 '&.Mui-disabled': {
@@ -404,10 +404,9 @@ export const MuiInputBase = ({colorBase}: any): { styleOverrides: ComponentsOver
                     marginTop: 24,
                 },
                 position: 'relative',
-                // border: `1px solid ${colorBase.border().blur}`,
                 fontSize: '1.4rem',
-                backgroundColor: colorBase.backgroundInput,
-                // border: `1px solid ${colorBase.border().default}`,
+                backgroundColor: colorBase.backgroundBox,
+                border: `1px solid ${colorBase.border().default}`,
                 borderRadius: 4,
                 '&:not(.MuiFormControl-fullWidth)': {
                     // width: 'var(--btn-min-width)',
@@ -430,7 +429,12 @@ export const MuiInputBase = ({colorBase}: any): { styleOverrides: ComponentsOver
                 },
                 paddingRight: 0,
                 '&:hover': {
-                    borderColor: colorBase.textPrimary
+                    borderColor: colorBase.borderInputHover
+                },
+                '&:disabled': {
+                    backgroundColor: colorBase.background().disabled,
+                    borderColor: colorBase.border().default,
+                    color: colorBase.textBtnDisabled,
                 },
                 // padding: '10px 12px',
 
@@ -447,11 +451,10 @@ export const MuiInputBase = ({colorBase}: any): { styleOverrides: ComponentsOver
                 ' .MuiTypography-root': {
                     height: pxToRem(24),
                     lineHeight: pxToRem(24),
-                }
+                },
                 //
                 // lineHeight: 24px;
             },
-
         }
     }
 }
@@ -564,17 +567,28 @@ export const MuiListItem = ({colorBase}: any) => {
                 borderColor: 'transparent',
                 paddingLeft: pxToRem(20),
                 paddingRight: pxToRem(20),
+                // backgroundColor: colorBase.borderHover,
                 '&:hover, &.Mui-selected:hover': {
-                    borderColor: colorBase.primaryLight,
-                    backgroundColor: colorBase.background().hover,
+                    color: colorBase.textPrimary,
+                    // borderColor: colorBase.primaryLight,
+                    backgroundColor: colorBase.backgroundMenuListHover,
                 },
                 '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
                     backgroundColor: 'transparent',
-                    color: colorBase.primaryLight,
+                    color: colorBase.textPrimary,
                 }
             },
         }
     }
+}
+export const MuiMenu = ({colorBase}: any) => {
+    return {
+        styleOverrides: {
+            list: {
+                backgroundColor: colorBase.borderHover
+            }
+        }
+    } 
 }
 export const MuiMenuItem = ({colorBase}: any) => {
     return {
@@ -585,8 +599,11 @@ export const MuiMenuItem = ({colorBase}: any) => {
                 borderLeftColor: 'transparent',
                 paddingLeft: pxToRem(12),
                 paddingRight: pxToRem(12),
+                color: colorBase.textSecondary,
+                // backgroundColor: `${colorBase.borderHover} !important`,
                 '&:hover, &.Mui-selected:hover': {
-                    borderColor: colorBase.primaryLight,
+                    // borderColor: colorBase.primaryLight,
+                    backgroundColor: colorBase.backgroundMenuListHover,
                 },
                 '& .MuiListItemText-multiline': {
                     display: 'flex',
@@ -602,17 +619,17 @@ export const MuiMenuItem = ({colorBase}: any) => {
                 },
                 '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
                     backgroundColor: 'transparent',
-                    color: colorBase.primaryLight,
-                    '&:after': {
-                        fontSize: '1.6rem',
-                        height: '1em',
-                        width: '1em',
-                        right: '1em',
-                        position: 'absolute',
-                        display: 'block',
-                        content: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 13' fill='` + encodeURIComponent(colorBase.primaryLight) + `'><path fillRule='evenodd' clipRule='evenodd' d='M17.7071 0.292893C18.0976 0.683417 18.0976 1.31658 17.7071 1.70711L6.70711 12.7071C6.31658 13.0976 5.68342 13.0976 5.29289 12.7071L0.292893 7.70711C-0.0976311 7.31658 -0.0976311 6.68342 0.292893 6.29289C0.683417 5.90237 1.31658 5.90237 1.70711 6.29289L6 10.5858L11.1464 5.43934L16.2929 0.292893C16.6834 -0.0976311 17.3166 -0.0976311 17.7071 0.292893Z' /></svg>\")`
-                    }
-                }
+                    color: colorBase.textPrimary,
+                    // '&:after': {
+                    //     fontSize: '1.6rem',
+                    //     height: '1em',
+                    //     width: '1em',
+                    //     right: '1em',
+                    //     position: 'absolute',
+                    //     display: 'block',
+                    //     content: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 13' fill='` + encodeURIComponent(colorBase.primaryLight) + `'><path fillRule='evenodd' clipRule='evenodd' d='M17.7071 0.292893C18.0976 0.683417 18.0976 1.31658 17.7071 1.70711L6.70711 12.7071C6.31658 13.0976 5.68342 13.0976 5.29289 12.7071L0.292893 7.70711C-0.0976311 7.31658 -0.0976311 6.68342 0.292893 6.29289C0.683417 5.90237 1.31658 5.90237 1.70711 6.29289L6 10.5858L11.1464 5.43934L16.2929 0.292893C16.6834 -0.0976311 17.3166 -0.0976311 17.7071 0.292893Z' /></svg>\")`
+                    // }
+                },
             },
         }
     }
