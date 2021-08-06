@@ -13,6 +13,7 @@ import { useTokenMap } from '../../../stores/token';
 import { useWalletLayer2 } from '../../../stores/walletLayer2';
 import { useUserRewards } from '../../../stores/userRewards';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
+import { SagaStatus } from '@loopring-web/common-resources';
 
 
 export const useOverview = <R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>(
@@ -26,13 +27,13 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     // ammActivityViewMap: Array<AmmCardProps<I>>,
     // ammActivityPastViewMap: Array<AmmCardProps<I>>
 } => {
-    const walletLayer2State = useWalletLayer2();
+    const {walletLayer2, status: walletLayer2Status} = useWalletLayer2();
     const userRewardsMapState = useUserRewards();
     const {marketArray} = useTokenMap();
     const ammMapState = useAmmMap();
     const {ammMap} = ammMapState;
 
-    const [walletMap, setWalletMap] = React.useState<WalletMapExtend<R> | undefined>(undefined);
+    // const [walletMap, setWalletMap] = React.useState<WalletMapExtend<R> | undefined>(undefined);
     const [summaryReward, setSummaryReward] = React.useState<SummaryMyAmm | undefined>(undefined);
     const [myPoolRow, setMyPoolRow] = React.useState<MyPoolRow<R>[]>([])
     const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<AmmRecordRow<R>[]>([]);
@@ -43,7 +44,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     // }|undefined>(undefined);
     const walletLayer2DoIt = React.useCallback(() => {
         const {walletMap: _walletMap} = makeWalletLayer2();
-        setWalletMap(_walletMap as WalletMapExtend<any>)
+        // setWalletMap(_walletMap as WalletMapExtend<any>)
         if (_walletMap) {
             getUserAmmTransaction()?.then((marketTrades) => {
                 let _myTradeArray = makeMyAmmMarketArray(undefined, marketTrades)
@@ -64,10 +65,10 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
                     //  if(ammPoolSnapShots)
                     // makeData by snapshot else
                     // else
-                    
+
                     rowData = makeMyPoolRowWithPoolState(
                         {
-                            ammDetail: ammMap[ ammKey ] ,
+                            ammDetail: ammMap[ ammKey ],
                             walletMap: _walletMap,
                             market: marketKey,
                             ammUserRewardMap: userRewardsMapState.userRewardsMap
@@ -85,40 +86,30 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
         return [];
     }, [ammMap, userRewardsMapState.userRewardsMap])
 
-    React.useEffect(() => {
-        if (walletLayer2State.walletLayer2) {
-            const _walletMap = walletLayer2DoIt();
-            if (ammMap) {
-                const _myPoolRow = makeMyPoolRow(_walletMap)
-                setMyPoolRow(_myPoolRow)
-            }
-        }
-    }, []);
+    // React.useEffect(() => {
+    //     if (walletLayer2) {
+    //         const _walletMap = walletLayer2DoIt();
+    //         if (ammMap) {
+    //             const _myPoolRow = makeMyPoolRow(_walletMap)
+    //             setMyPoolRow(_myPoolRow)
+    //         }
+    //     }
+    // }, []);
+    // const {walletLayer2, status: walletLayer2Status} = useWalletLayer2();
 
     React.useEffect(() => {
         //ammMapState.ammMap or
-
-        switch (walletLayer2State.status) {
-            case "ERROR":
-                walletLayer2State.statusUnset();
-                break;
-            case "DONE":
-                walletLayer2State.statusUnset();
-               // const _walletMap = walletLayer2DoIt()
-                const _walletMap = walletLayer2DoIt();
-                //TODO check AmmMap state or ammSnapshot sockets
-                //userRewardsMapState is an option but  walletLayer2 amd ammMapState.ammMap is required
-                if (ammMapState.ammMap) {
-                    const _myPoolRow = makeMyPoolRow(_walletMap);
-                    setMyPoolRow(_myPoolRow)
-                }
-                break;
-            default:
-                break;
-
+        if (walletLayer2Status === SagaStatus.UNSET && ammMapState.ammMap) {
+            const _walletMap = walletLayer2DoIt();
+            // //TODO check AmmMap state or ammSnapshot sockets
+            // //userRewardsMapState is an option but  walletLayer2 amd ammMapState.ammMap is required
+            //     if () {
+            const _myPoolRow = makeMyPoolRow(_walletMap);
+            setMyPoolRow(_myPoolRow)
+            // }
         }
         // }
-    }, [walletLayer2State.status])
+    }, [walletLayer2Status])
 
     React.useEffect(() => {
         if (ammMapState.status === "ERROR") {
@@ -127,7 +118,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
         } else if (ammMapState.status === "DONE") {
             ammMapState.statusUnset();
             //TODO check AmmMap state or ammSnapshot sockets when websocket open  ammMapState done should not effect myPoolRow
-            if (walletLayer2State.walletLayer2) {
+            if (walletLayer2) {
                 const _walletMap = walletLayer2DoIt();
                 //userRewardsMapState is an option and walletLayer2 is required
                 const _myPoolRow = makeMyPoolRow(_walletMap);
@@ -147,9 +138,9 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
             setSummaryReward(summaryReward);
 
             //TODO check AmmMap state or ammSnapshot sockets
-            if (walletLayer2State.walletLayer2 && ammMapState.ammMap) {  //  ammMapState.ammMap or websocket
+            if (walletLayer2 && ammMapState.ammMap) {  //  ammMapState.ammMap or websocket
                 //userRewardsMapState is an option and walletLayer2 is required
-                const _myPoolRow = makeMyPoolRow(walletLayer2State.walletLayer2);
+                const _myPoolRow = makeMyPoolRow(walletLayer2);
                 setMyPoolRow(_myPoolRow);
             }
 

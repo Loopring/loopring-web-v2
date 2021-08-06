@@ -142,7 +142,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         ShowDeposit,
         ShowTransfer,
         ShowWithdraw,
-        ShowResetAccount,
+        // ShowResetAccount,
     } = useModals()
 
     const { updateWalletLayer1 } = useWalletLayer1()

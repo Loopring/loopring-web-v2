@@ -46,7 +46,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const {setShowWithdraw}  = useOpenModals();
 
     React.useEffect(()=>{
-        if(walletLayer2Status === SagaStatus.DONE){
+        if(walletLayer2Status === SagaStatus.UNSET){
             setWalletMap2(makeWalletLayer2().walletMap??{} as WalletMap<R>)
         }
     },[walletLayer2Status])

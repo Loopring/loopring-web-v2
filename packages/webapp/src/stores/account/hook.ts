@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import {
+    changeShowModel,
     cleanAccountStatus, nextAccountStatus,
     // restAccountStatus,
     statusUnset, updateAccountStatus
@@ -27,7 +28,7 @@ export function useAccount() {
     }, [account]);
 
     const setShouldShow = React.useCallback((flag:boolean)=>{
-        dispatch(nextAccountStatus({_userOnModel: flag}))
+        dispatch(changeShowModel({_userOnModel: flag}));
     },[dispatch]);
 
     const statusUnsetFunc = React.useCallback(() => {

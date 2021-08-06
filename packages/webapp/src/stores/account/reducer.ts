@@ -57,9 +57,12 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
         updateAccountStatus(state: AccountState, action: PayloadAction<Partial<Account>>) {
             state.status = SagaStatus.PENDING
         },
-        // restAccountStatus(state: AccountState, action: PayloadAction<{shouldUpdateProvider?:boolean|undefined}>) {
-        //     state.status = SagaStatus.PENDING
-        // },
+        changeShowModel(state: AccountState, action: PayloadAction<{_userOnModel:boolean|undefined}>) {
+            const {
+                _userOnModel
+            } = action.payload;
+            state._userOnModel = _userOnModel;
+        },
         nextAccountStatus(state: AccountState, action: PayloadAction<Partial<Account>>) {
             // @ts-ignore
             if (action.error) {
@@ -110,9 +113,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                 if (nonce !== undefined) {
                     state.nonce = nonce;
                 }
-                if (_userOnModel !== undefined) {
-                    state._userOnModel = _userOnModel;
-                }
+
 
                 state.status = SagaStatus.DONE;
             }
@@ -143,6 +144,7 @@ export default accountSlice
 export const {
     updateAccountStatus,
     // restAccountStatus,
+    changeShowModel,
     cleanAccountStatus,
     nextAccountStatus,
     statusUnset

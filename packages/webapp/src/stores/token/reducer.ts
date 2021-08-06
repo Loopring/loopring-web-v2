@@ -9,7 +9,7 @@ const initialState: TokenMapStates<object> = {
     tokenMap: undefined,
     marketMap: undefined,
     idIndex: undefined,
-    status: 'UNSET',
+    status: 'DONE',
     errorMessage: null,
 }
 const tokenMapSlice: Slice<TokenMapStates<object>> = createSlice({

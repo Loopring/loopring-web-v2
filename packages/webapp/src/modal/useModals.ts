@@ -7,11 +7,9 @@ import { useAccount } from '../stores/account';
 import { AccountStatus } from '@loopring-web/common-resources';
 
 export function useModals() {
-
     const dispatch = useDispatch()
     const {account: {readyState}} = useAccount()
     const {t} = useTranslation('common')
-
     const ShowDeposit = React.useCallback((isShow: boolean, defaultProps?: any) => {
 
         const isNoAccount = readyState === AccountStatus.NO_ACCOUNT
@@ -44,6 +42,6 @@ export function useModals() {
         ShowDeposit,
         ShowTransfer,
         ShowWithdraw,
-        ShowResetAccount,
+        // ShowResetAccount,
     }
 }

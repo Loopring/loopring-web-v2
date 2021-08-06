@@ -13,7 +13,7 @@ import { useAccount, } from 'stores/account'
 
 import { Theme, } from 'defs/common_defs'
 
-import { AccountStep, setShowAccount, useSettings, } from '@loopring-web/component-lib'
+import { AccountStep, useOpenModals, useSettings, } from '@loopring-web/component-lib'
 
 import { accountStaticCallBack, btnClickMap } from 'hooks/help'
 import { myLog } from 'utils/log_tools'
@@ -22,7 +22,8 @@ import { deepClone } from '../../utils/obj_tools';
 export const useHeader = () => {
     const {setTheme, themeMode, setLanguage} = useSettings();
     const accountState = useAccount();
-    const {account, setShouldShow, status: accountStatus, statusUnset: accoutStatusUnset} = accountState;
+    const {account, setShouldShow, status: accountStatus} = accountState;
+    const {setShowAccount} = useOpenModals();
     const _btnClickMap: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
         [ fnType.ACTIVATED ]: [
             function () {
@@ -76,7 +77,7 @@ export const useHeader = () => {
 
     const forceUpdate = React.useReducer(() => ({}), {})[ 1 ] as () => void
     React.useEffect(() => {
-        if (accountState && accountState.status === 'UNSET') {
+        if (accountState && accountState.status === 'DONE') {
             headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
                 ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
                 accountState,

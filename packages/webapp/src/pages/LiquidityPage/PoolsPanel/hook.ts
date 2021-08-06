@@ -18,7 +18,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
         ammMap,
         status: ammMapStatus,
         // errorMessage: errorAmmMap,
-        statusUnset: ammMapStatusUnset,
+        // statusUnset: ammMapStatusUnset,
         // updateAmmMap,
     } = useAmmMap();
     const {
@@ -98,40 +98,46 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
     }, []);
 
     React.useEffect(() => {
-        switch (tickerStatus) {
-            case "ERROR":
-                console.log("ERROR", 'get ticker error,ui');
-                tickerStatusUnset()
-                break;
-            case "PENDING":
-                break;
-            case "DONE":
-                tickerStatusUnset();
-
-                updateRawData(tickerMap)
-                break;
-            default:
-                break;
+        // switch (tickerStatus) {
+        //     case "ERROR":
+        //         console.log("ERROR", 'get ticker error,ui');
+        //         tickerStatusUnset()
+        //         break;
+        //     case "PENDING":
+        //         break;
+        //     case "DONE":
+        //         tickerStatusUnset();
+        //
+        //         updateRawData(tickerMap)
+        //         break;
+        //     default:
+        //         break;
+        // }
+        if (tickerStatus === SagaStatus.UNSET){
+            updateTickersUI(page)
         }
     }, [tickerStatus, tickerStatusUnset]);
 
     React.useEffect(() => {
-        switch (ammMapStatus) {
-            case "ERROR":
-                console.log("ERROR", 'get ammMap error,ui');
-                ammMapStatusUnset();
-                break;
-            case SagaStatus.PENDING:
-                console.log("PENDING", 'get ammMap error,ui');
-                break;
-            case SagaStatus.DONE:
-                ammMapStatusUnset();
-                updateTickersUI(1)
-                break;
-            default :
-                break;
+        if(ammMapStatus === SagaStatus.UNSET){
+            updateTickersUI(1)
         }
-    }, [ammMapStatus, ammMapStatusUnset, updateTickersUI]);
+        // switch (ammMapStatus) {
+        //     case "ERROR":
+        //         console.log("ERROR", 'get ammMap error,ui');
+        //         ammMapStatusUnset();
+        //         break;
+        //     case SagaStatus.PENDING:
+        //         console.log("PENDING", 'get ammMap error,ui');
+        //         break;
+        //     case SagaStatus.DONE:
+        //         ammMapStatusUnset();
+        //
+        //         break;
+        //     default :
+        //         break;
+        // }
+    }, [ammMapStatus, updateTickersUI]);
 
 
     return {
