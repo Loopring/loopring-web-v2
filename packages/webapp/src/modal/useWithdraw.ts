@@ -1,20 +1,30 @@
 import React, { useState } from 'react';
 
-import { SwitchData, TradeBtnStatus, WithdrawProps } from '@loopring-web/component-lib';
-import { AccountStatus, CoinMap, IBData, WalletMap, WithdrawType, WithdrawTypes } from '@loopring-web/common-resources';
+import { SwitchData, TradeBtnStatus, useOpenModals, WithdrawProps } from '@loopring-web/component-lib';
+import {
+    AccountStatus,
+    CoinMap,
+    IBData,
+    SagaStatus,
+    WalletMap,
+    WithdrawType,
+    WithdrawTypes
+} from '@loopring-web/common-resources';
 import { ConnectorNames, dumpError400, OffchainFeeReqType, toBig, VALID_UNTIL } from 'loopring-sdk';
 import { useTokenMap } from '../stores/token';
 import { useAccount } from '../stores/account';
 import { useChargeFees } from './useChargeFees';
-import { useCustomDCEffect } from './common/useCustomDCEffect';
+import { useCustomDCEffect } from '../hooks/common/useCustomDCEffect';
 import { LoopringAPI } from '../stores/apis/api';
 import { useSystem } from '../stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { myLog } from 'utils/log_tools';
+import { useWalletLayer2 } from '../stores/walletLayer2';
+import { makeWalletLayer2 } from '../hooks/help';
 // import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
 // import { useChargeFeeList } from './hook';
 
-export const useWithdraw = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | undefined, ShowWithdraw: (isShow: boolean, defaultProps?: any) => void): {
+export const useWithdraw = <R extends IBData<T>, T>(): {
     // handleWithdraw: (inputValue:R) => void,
     withdrawProps: WithdrawProps<R, T>
     // withdrawValue: R
@@ -27,11 +37,20 @@ export const useWithdraw = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | u
         tradeValue: 0,
         balance: 0
     } as IBData<unknown>)
+    const {walletLayer2,status:walletLayer2Status} = useWalletLayer2();
+    const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap??{} as WalletMap<R>);
+
     const {chargeFeeList} = useChargeFees(withdrawValue.belong, OffchainFeeReqType.OFFCHAIN_WITHDRAWAL, tokenMap)
     const [withdrawAddr, setWithdrawAddr] = useState<string>()
     const [withdrawFeeInfo, setWithdrawFeeInfo] = useState<any>(undefined)
     const [withdrawType, setWithdrawType] = useState<OffchainFeeReqType>(OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
-    
+    const {setShowWithdraw}  = useOpenModals();
+
+    React.useEffect(()=>{
+        if(walletLayer2Status === SagaStatus.DONE){
+            setWalletMap2(walletMap2)
+        }
+    },[walletLayer2Status])
     useCustomDCEffect(() => {
         if (chargeFeeList.length > 0) {
             setWithdrawFeeInfo(chargeFeeList[0])
@@ -98,8 +117,7 @@ export const useWithdraw = <R extends IBData<T>, T>(walletMap2: WalletMap<T> | u
             if (withdrawValue && withdrawValue.belong) {
                 handleWithdraw(withdrawValue as R)
             }
-
-            ShowWithdraw(false)
+            setShowWithdraw({isShow:false})
         },
         handleFeeChange(value: { belong: any; fee: number | string; __raw__?: any }): void {
             setWithdrawFeeInfo(value as any)
