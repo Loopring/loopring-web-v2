@@ -39,14 +39,8 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const [payeeAddr, setPayeeAddr] = React.useState<string>('')
     React.useEffect(()=>{
         if(walletLayer2Status === SagaStatus.DONE){
-            setWalletMap(walletMap)
+            setWalletMap(makeWalletLayer2().walletMap??{} as WalletMap<R>)
         }
-        // useCustomDCEffect(() => {
-        //     if (walletLayer2State.walletLayer2) {
-        //
-        //         setWalletMap2(walletMap)
-        //     }
-        // }, [walletLayer2State.walletLayer2])
     },[walletLayer2Status])
 
     useCustomDCEffect(() => {
