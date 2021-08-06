@@ -145,19 +145,19 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         // ShowResetAccount,
     } = useModals()
 
-    const { updateWalletLayer1 } = useWalletLayer1()
+    // const { updateWalletLayer1 } = useWalletLayer1()
 
     let history = useHistory();
 
     const onShowDeposit = useCallback((token?: any) => {
-        updateWalletLayer1()
+        // updateWalletLayer1()
         ShowDeposit(true, {
             tradeData: {
                 balance: '',
                 belong: token
             },
         })
-    }, [ShowDeposit, updateWalletLayer1])
+    }, [ShowDeposit])
 
     const onShowTransfer = useCallback((token?: any) => {
         ShowTransfer(true, {
