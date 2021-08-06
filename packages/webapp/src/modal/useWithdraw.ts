@@ -37,7 +37,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         tradeValue: 0,
         balance: 0
     } as IBData<unknown>)
-    const {walletLayer2,status:walletLayer2Status} = useWalletLayer2();
+    const {status:walletLayer2Status} = useWalletLayer2();
     const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap??{} as WalletMap<R>);
 
     const {chargeFeeList} = useChargeFees(withdrawValue.belong, OffchainFeeReqType.OFFCHAIN_WITHDRAWAL, tokenMap)
@@ -48,7 +48,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     React.useEffect(()=>{
         if(walletLayer2Status === SagaStatus.DONE){
-            setWalletMap2(walletMap2)
+            setWalletMap2(makeWalletLayer2().walletMap??{} as WalletMap<R>)
         }
     },[walletLayer2Status])
     useCustomDCEffect(() => {
