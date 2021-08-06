@@ -15,7 +15,7 @@ import { useTransfer } from './useTransfer';
 import { useDeposit } from './useDeposit';
 import { useWithdraw } from './useWithdraw';
 import { useSystem } from '../stores/system';
-import { useConnectModal } from './useConnectModal';
+// import { useConnectModal } from '../hookConnect';
 import { useAccountModal } from './useAccountModal';
 
 export const ModalGroup = withTranslation('common',{withRef: true})(({...rest}:WithTranslation)=>{
@@ -23,7 +23,6 @@ export const ModalGroup = withTranslation('common',{withRef: true})(({...rest}:W
     const {depositProps} = useDeposit();
     const {withdrawProps} = useWithdraw();
     const {etherscanUrl} = useSystem();
-    useConnectModal();
     useAccountModal();
     const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals();
     return  <>

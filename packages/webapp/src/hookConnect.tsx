@@ -1,14 +1,14 @@
-import { useAccount } from '../stores/account';
-import { useSystem } from '../stores/system';
+import { useAccount } from './stores/account';
+import { useSystem } from './stores/system';
 import { useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
 import React from 'react';
 import { ChainId, sleep } from 'loopring-sdk';
-import { myLog } from '../utils/log_tools';
-import { networkUpdate } from '../services/account/networkUpdate';
-import { checkAccount } from '../services/account/checkAccount';
+import { myLog } from './utils/log_tools';
+import { networkUpdate } from './services/account/networkUpdate';
+import { checkAccount } from './services/account/checkAccount';
 import { ErrorType, useConnectHook } from '@loopring-web/web3-provider';
 
-export  function useConnectModal() {
+export  function useConnect() {
     const {account, shouldShow, resetAccount, statusUnset: statusAccountUnset} = useAccount();
     const {
         updateSystem,

@@ -39,7 +39,7 @@ export const ModalAccountInfo = withTranslation('common')(({
     depositProps: DepositProps<any, any>,
     etherscanUrl: string
 } & WithTranslation) => {
-    const {account, updateAccount,setShouldShow, resetAccount, statusUnset: statusAccountUnset} = useAccount();
+    const {account,shouldShow, updateAccount,setShouldShow, resetAccount, statusUnset: statusAccountUnset} = useAccount();
     const {modals: {isShowAccount}, setShowConnect, setShowAccount, setShowDeposit} = useOpenModals();
     const [openQRCode, setOpenQRCode] = useState(false);
     const addressShort = getShortAddr(account.accAddress)
@@ -48,7 +48,7 @@ export const ModalAccountInfo = withTranslation('common')(({
     const [copyToastOpen, setCopyToastOpen] = useState(false);
     const onSwitch = useCallback(() => {
         setShowAccount({isShow: false})
-        setShowConnect({isShow: true})
+        setShowConnect({isShow: shouldShow ?? false})
     }, [setShowConnect, setShowAccount])
     const onCopy = React.useCallback(() => {
         copyToClipBoard(account.accAddress);

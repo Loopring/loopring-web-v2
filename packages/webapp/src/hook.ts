@@ -7,12 +7,13 @@ import { SagaStatus } from '@loopring-web/common-resources';
 import { useTokenMap } from './stores/token';
 import { useWalletLayer1 } from './stores/walletLayer1';
 import { useAccount } from './stores/account/hook';
-import { connectProvides} from '@loopring-web/web3-provider';
+import { connectProvides, walletServices } from '@loopring-web/web3-provider';
 import { useWalletLayer2 } from './stores/walletLayer2';
 import store from './stores';
 import { useAccountInit } from './hookAccountInit';
 import { useAmmActivityMap } from './stores/Amm/AmmActivityMap';
 import { useTicker } from './stores/ticker';
+import { checkAccount } from './services/account/checkAccount';
 // import { statusUnset as accountStatusUnset } from './stores/account';
 
 /**
@@ -42,10 +43,16 @@ export function useInit() {
         if (account.accAddress !== '' && account.connectName && account.connectName !== 'UnKnown') {
             try {
                 await connectProvides[ account.connectName ]();
-                if (connectProvides.usedProvide) {
+                updateAccount({})
+                if (connectProvides.usedProvide && connectProvides.usedWeb3) {
                     const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
+                    // const accounts = await connectProvides.usedWeb3?.eth.getAccounts();
+                    // if(accounts && accounts[0] === account.accAddress){
+                    //     checkAccount(accounts[0]);
+                    // }
+                    // debugger
+                    // walletServices.sendConnect(connectProvides.usedWeb3,connectProvides.usedProvide)
                     updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
-                    updateAccount({})
                     return
                 }
             } catch (error) {
