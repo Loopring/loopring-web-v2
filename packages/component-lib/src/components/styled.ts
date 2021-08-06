@@ -89,12 +89,11 @@ export const ButtonListRightStyled = styled(Grid)`
   .MuiButton-root:not(:last-child) {
     margin-right: ${({theme}) => theme.unit}px;
   }
-`
+`as typeof Grid
 export const modalContentBaseStyle = ({theme}: any) => css`
   &:focus-visible {
     outline: 0
   }
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -102,43 +101,34 @@ export const modalContentBaseStyle = ({theme}: any) => css`
   position: absolute;
   top: 50%;
   left: 50%;
-  background-color: ${theme.colorBase.background().secondary};
+  background: ${theme.colorBase.background().popupBg1};
   transform: translate(-50%, -50%);
-  padding: ${4 * theme.unit}px 0;
+  padding: var(--toolbar-row-height) 0;
   border: 0;
   border-radius: ${theme.unit}px;
+  
 `
-// export const ModalContentStyled = styled(Box)`
-//   ${({theme}) => modalContentBaseStyle({theme: theme})}
-// ` as typeof Box
-// export const TwoIconBoxStyled = styled(Box)`
-//   ${({theme}) => AvatarIconPair({theme})}
-// ` as typeof Box
 
-// & .div {
-//   background-color: initial;
-//   ${({_width}) => `
-//      width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : 'var(--transfer-modal-width)'};
-//   `}
-// }
-export const SwitchPanelStyled = styled(Box)<{ _height?: number | string, _width?: number | string }>`
+export const SwitchPanelStyled:any = styled(Box)<{ _height?: number | string, _width?: number | string } & BoxProps>`
   ${({theme}) => modalContentBaseStyle({theme: theme})}
-  ${({_width}) => `
-       width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : 'var(--transfer-modal-width)'};
-    `}
-  & > div {
-    background-color: initial;
+  .trade-panel{
+     margin-top: var(--toolbar-row-height-minus);
   }
-
-  & .react-swipeable-view-container {
-    background-color: initial;
+  
+  .react-swipeable-view-container {
+   
+    //.MuiToolbar-root{
+    //  //height: 0;
+    //  //min-height: auto;
+    //  display: none;
+    //}
     ${({_height, _width}) => `
        height: ${_height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : 'unset'} ;
-       width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : 'var(--transfer-modal-width)'};
+       width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : 'var(-modal-width)'};
     `
-    }
-
+  }
 ` as React.ElementType<{ _height?: number | string, _width?: number | string } & BoxProps>
+
 export const TableFilterStyled = styled(Box)`
   margin-left: 26px;
   margin-bottom: ${({theme}) => theme.unit * 2}px;

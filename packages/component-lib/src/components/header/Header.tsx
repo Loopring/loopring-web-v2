@@ -43,7 +43,7 @@ const HeaderStyled = styled(AppBar)`
     border-radius: 0;
     box-shadow: none;
     &.item-scrolled.MuiAppBar-root.MuiAppBar-positionFixed{
-      background-color: ${({theme}) => theme.colorBase.background().secondary};
+      background-color: ${({theme}) => theme.colorBase.background().popupBg2};
 
     }
   }

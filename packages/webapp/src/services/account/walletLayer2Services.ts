@@ -57,6 +57,17 @@ export const walletLayer2Services = {
             publicKey: '',
             nonce:undefined,
         }))
+
+        if(readyState === AccountStatus.ERROR_NETWORK){
+            subject.next({
+                status: Commands.ErrorNetwork,
+                data: undefined,
+            })
+        }else{
+            const {accAddress} =store.getState().account
+            walletLayer2Services.sendCheckAccount(accAddress);
+        }
+
     },
 
     //INFO: for lock account todo clear the private info, user click or provider on wrong network

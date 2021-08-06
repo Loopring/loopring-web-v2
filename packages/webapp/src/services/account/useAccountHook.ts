@@ -7,6 +7,7 @@ export function useAccountHook(
     {
         handleLockAccount,// clear private data
         handleNoAccount,//
+        handleErrorAccount,
         // TODO
         //  step1 Approve account;  click allow from provider
         //  step2 send to ETH;  click allow from provider
@@ -26,6 +27,9 @@ export function useAccountHook(
     React.useEffect(() => {
         const subscription = subject.subscribe(({data, status}: { status: keyof typeof Commands, data?: any }) => {
             switch (status) {
+                case 'ErrorNetwork':
+                    handleErrorAccount(data);
+                    break;// clear private data
                 case 'LockAccount':
                     handleLockAccount(data);
                     break;// clear private data
@@ -60,6 +64,7 @@ export function useAccountHook(
         });
         return () => subscription.unsubscribe();
     }, [subject, handleLockAccount,// clear private data
+        handleErrorAccount,
         handleNoAccount,//
         handleDepositingAccount,
         handleErrorApproveToken,

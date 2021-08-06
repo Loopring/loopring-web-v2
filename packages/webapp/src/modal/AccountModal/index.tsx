@@ -26,6 +26,7 @@ import { sleep } from 'loopring-sdk';
 import { lockAccount } from 'services/account/lockAccount';
 import { unlockAccount } from 'services/account/unlockAccount';
 import { useTokenMap } from 'stores/token';
+import { useModals } from '../useModals';
 export const ModalAccountInfo = withTranslation('common')(({
                                                                onClose,
                                                                etherscanUrl,
@@ -43,12 +44,12 @@ export const ModalAccountInfo = withTranslation('common')(({
     const {modals: {isShowAccount}, setShowConnect, setShowAccount, setShowDeposit} = useOpenModals();
     const [openQRCode, setOpenQRCode] = useState(false);
     const addressShort = getShortAddr(account.accAddress)
+    const {showDeposit} = useModals()
      const {coinMap} = useTokenMap();
     // const [accountInfoProps, setAccountBaseProps] = React.useState<undefined | AccountBaseProps>(undefined)
     const [copyToastOpen, setCopyToastOpen] = useState(false);
     const onSwitch = useCallback(() => {
         setShowAccount({isShow: false})
-        setShouldShow(true);
         setShowConnect({isShow: shouldShow ?? false})
     }, [setShowConnect, setShowAccount])
     const onCopy = React.useCallback(() => {
@@ -67,9 +68,19 @@ export const ModalAccountInfo = withTranslation('common')(({
     }, [resetAccount, setShowAccount])
 
 
-    const goDeposit = React.useCallback(() => {
-        setShowAccount({isShow: true, step: AccountStep.Deposit});
-    }, [setShowAccount, setShowDeposit])
+    const goDeposit = React.useCallback((token?: any) => {
+        setShowAccount({isShow: false})
+        showDeposit(true, {
+            _width: 'var(--modal-width)',
+            _height: 'var(--modal-height)',
+            // _height:'var(--modal-height)',
+            // _width:'var(--modal-width)',
+            tradeData: {
+                balance: '',
+                belong: token
+            },
+        })
+    }, [showDeposit])
 
     const unlockBtn =  React.useMemo(()=>{
         return <Button variant={'contained'} fullWidth size={'medium'}  onClick={() => {
@@ -90,7 +101,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 // connectBy: account.connectName,
                 onViewQRCode, onDisconnect, addressShort,
             }} />,
-            [ AccountStep.Deposit ]: <DepositPanel title={"depositTitleAndActive"} {...{...rest, ...depositProps,t}}/>,
+            // [ AccountStep.Deposit ]: <DepositPanel title={"depositTitleAndActive"} {...{...rest, ...depositProps,t}}/>,
             [ AccountStep.Depositing ]: <Depositing label={"depositTitleAndActive"} etherscanLink={etherscanUrl + account.accAddress}  onDepositSubmit={()=>undefined}  { ...{...rest,t}}/>,
             [ AccountStep.FailedDeposit ]: <FailedDeposit label={"depositTitleAndActive"} etherscanLink={etherscanUrl + account.accAddress}  onRetry={()=>undefined} { ...{...rest,t}} />,
             [ AccountStep.SignAccount ]: <ApproveAccount   {...{

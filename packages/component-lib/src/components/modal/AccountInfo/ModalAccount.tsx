@@ -4,7 +4,27 @@ import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@emotion/react';
 import { Box } from '@material-ui/core/';
 import { ModalCloseButton, ModalAccountProps, SwitchPanelStyled, ModalBackButton } from '../../../index';
+import styled from '@emotion/styled';
 
+const BoxStyle = styled(Box)`
+  height: 100%;
+ 
+  & > div{
+    width: 100%;
+    max-height: initial;
+    flex: 1;
+    height: 100%;
+  }
+  .react-swipeable-view-container{
+    
+    //.MuiToolbar-root{
+    //  height: 0;
+    //  min-height: auto;
+    //}
+  }
+  
+ 
+` as typeof Box;
 export const ModalAccount = withTranslation('common', {withRef: true})((
     {
         open,
@@ -33,9 +53,9 @@ export const ModalAccount = withTranslation('common', {withRef: true})((
             </Box>
             <SwipeableViews animateTransitions={false} axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'} index={step}>
                 {panelList.map((panel,index)=>{
-                    return <Box key={index}>
+                    return <BoxStyle key={index}>
                         {panel}
-                    </Box>
+                    </BoxStyle>
                 })}
             </SwipeableViews>
         </SwitchPanelStyled>

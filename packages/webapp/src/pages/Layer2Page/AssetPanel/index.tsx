@@ -139,9 +139,9 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     }, [container, pageSize]);
 
     const {
-        ShowDeposit,
-        ShowTransfer,
-        ShowWithdraw,
+        showDeposit,
+        showTransfer,
+        showWithdraw,
         // ShowResetAccount,
     } = useModals()
 
@@ -151,31 +151,31 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
     const onShowDeposit = useCallback((token?: any) => {
         // updateWalletLayer1()
-        ShowDeposit(true, {
+        showDeposit(true, {
             tradeData: {
                 balance: '',
                 belong: token
             },
         })
-    }, [ShowDeposit])
+    }, [showDeposit])
 
     const onShowTransfer = useCallback((token?: any) => {
-        ShowTransfer(true, {
+        showTransfer(true, {
             tradeData: {
                 balance: '',
                 belong: token
             },
         })
-    }, [ShowTransfer])
+    }, [showTransfer])
 
     const onShowWithdraw = useCallback((token?: any) => {
-        ShowWithdraw(true, {
+        showWithdraw(true, {
             tradeData: {
                 balance: '',
                 belong: token
             },
         })
-    }, [ShowWithdraw])
+    }, [showWithdraw])
 
     const lpTokenJump = useCallback((token: string, type: LpTokenAction) => {
         if (history) {

@@ -100,6 +100,7 @@ export const Popover: React.FC<PopoverWrapProps> = ({
 //     horizontal: 'left' | 'center' | 'right' | number;
 // }
 
+// background-color: ${({theme}) => theme.colorBase.background().secondary};
 
 export const PopoverPure = styled(HoverPopover)<PopoverProps>`
   &.MuiModal-root {
@@ -115,7 +116,6 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
       margin-top: 12px;
       border-radius: 4px;
       overflow: visible;
-      // background-color: ${({theme}) => theme.colorBase.background().secondary};
 
       &:before {
         content: '';

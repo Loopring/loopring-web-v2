@@ -10,14 +10,6 @@ import { IconButtonStyled, SwapMenuList, SwapTradeWrap } from '../components';
 import { SwapData } from '../components/panel/SwapWrap/Interface';
 import { CountDownIcon } from '../components/tool/Refresh';
 
-
-// html {
-//     font-size: 1vmin;
-//     background: var(--bg) radial-gradient(closest-corner, rgba(255,255,255,.1), rgba(255,255,255,0));
-//     height: 100%;
-// }
-
-
 export const SwapPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>,
     I,
     TCD extends TradeCalcData<I>>({

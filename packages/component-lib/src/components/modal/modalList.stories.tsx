@@ -29,8 +29,8 @@ import {
     ProcessUnlock,
     SuccessUnlock, TokenAccessProcess,
 } from './AccountInfo';
-import { account, coinMap, CoinType, walletMap } from '../../static';
-import { DepositPanel, DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../panel';
+import { account, coinMap } from '../../static';
+// import {  DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../panel';
 import { WalletConnectBtn } from '../header';
 
 
@@ -42,24 +42,24 @@ const Style = styled.div`
 `
 
 
-let tradeData: any = {};
-let depositProps: DepositProps<any, any> = {
-    tradeData,
-    coinMap,
-    walletMap,
-    depositBtnStatus: TradeBtnStatus.AVAILABLE,
-    onDepositClick: (tradeData: SwapTradeData<CoinType>) => {
-        console.log('Swap button click', tradeData);
-    },
-    handlePanelEvent: async (props: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
-        return new Promise((res) => {
-            setTimeout(() => {
-                console.log('wait 100, with props', props, switchType);
-                res();
-            }, 500)
-        })
-    },
-}
+// let tradeData: any = {};
+// let depositProps: DepositProps<any, any> = {
+//     tradeData,
+//     coinMap,
+//     walletMap,
+//     depositBtnStatus: TradeBtnStatus.AVAILABLE,
+//     onDepositClick: (tradeData: SwapTradeData<CoinType>) => {
+//         console.log('Swap button click', tradeData);
+//     },
+//     handlePanelEvent: async (props: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
+//         return new Promise((res) => {
+//             setTimeout(() => {
+//                 console.log('wait 100, with props', props, switchType);
+//                 res();
+//             }, 500)
+//         })
+//     },
+// }
 const accountState: AccountFull = {
     account,
     status: 'DONE',
@@ -130,7 +130,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                 ...accountInfoProps, goDeposit: () => {
                 }
             }}/>,
-            [ AccountStep.Deposit ]: <DepositPanel  _height={480} _width={400}  {...{...rest, ...depositProps}} />,
+            // [ AccountStep.Deposit ]: <DepositPanel  _height={480} _width={400}  {...{...rest, ...depositProps}} />,
             [ AccountStep.Depositing ]: <Depositing {...{
                 providerName: ConnectProviders.MetaMask,
                 etherscanLink: accountInfoProps.etherscanUrl, ...rest
@@ -195,7 +195,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                     <Button variant={'outlined'} size={'small'} color={'primary'} style={{marginRight: 8}}
                             onClick={() => setOpenAccount(true)}>Connect wallet</Button>
                     <ModalAccount open={openAccount} onClose={() => setOpenAccount(false)}
-                                  panelList={accountList} step={WalletConnectStep.Provider}/>
+                                  panelList={accountList} step={AccountStep.Deposit}/>
 
 
                     <Button variant={'outlined'} size={'medium'} color={'primary'} onClick={() => setOpenQRCode(true)}>QR
