@@ -77,7 +77,7 @@ export const AccountBase = ({
             <Button startIcon={<CopyIcon fontSize={'small'}/>} onClick={() => {
                 if (onCopy) onCopy()
             }}>
-                <Typography variant={'body2'} marginTop={1 / 2}> {t('labelCopy')} </Typography>
+                <Typography variant={'body2'} marginTop={1 / 2}> {t('labelCopyAddress')} </Typography>
             </Button>
             <Button startIcon={<ReverseIcon fontSize={'small'}/>} onClick={() => {
                 if (onSwitch) onSwitch()

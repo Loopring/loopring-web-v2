@@ -45,8 +45,9 @@ export const ColorDarkDefault = Object.freeze({
         return {
             default: ColorDarkDefault.backgroundBox,
             bg: ColorDarkDefault.backgroundGlobal,
+            popupBg1: ColorDarkDefault.backgroundSwapPanelLinear,
+            popupBg2: ColorDarkDefault.backgroundSecondary,
             active: ColorDarkDefault.textSecondary,
-            secondary: ColorDarkDefault.backgroundSecondary,
             outline: ColorDarkDefault.outline,
             backDrop: ColorDarkDefault.backDrop,
             field:ColorDarkDefault.backgroundField,

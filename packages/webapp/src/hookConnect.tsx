@@ -9,7 +9,7 @@ import { checkAccount } from './services/account/checkAccount';
 import { ErrorType, useConnectHook } from '@loopring-web/web3-provider';
 
 export  function useConnect() {
-    const {account, shouldShow, resetAccount, statusUnset: statusAccountUnset} = useAccount();
+    const {account, shouldShow, resetAccount, statusUnset: statusAccountUnset, setShouldShow } = useAccount();
     const {
         updateSystem,
         chainId: _chainId,
@@ -27,6 +27,7 @@ export  function useConnect() {
         if(networkFlag){
             checkAccount(accAddress);
         }
+        setShouldShow(false)
         setShowConnect({isShow: shouldShow ?? false, step: WalletConnectStep.SuccessConnect});
         await sleep(1000)
         setShowConnect({isShow: false, step: WalletConnectStep.SuccessConnect});

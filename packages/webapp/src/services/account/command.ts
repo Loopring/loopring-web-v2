@@ -1,4 +1,5 @@
 export enum Commands {
+    ErrorNetwork='ErrorNetwork',
     LockAccount='LockAccount',// clear private data
     NoAccount='NoAccount',//
     DepositingAccount='DepositingAccount',

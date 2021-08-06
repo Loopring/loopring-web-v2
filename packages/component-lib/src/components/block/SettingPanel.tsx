@@ -24,7 +24,7 @@ const StyledPaper = styled(Grid)`
   width: 100%;
   height: 100%;
   //flex: 1;
-  background-color: ${({theme}) => theme.colorBase.background().secondary};
+  background-color: ${({theme}) => theme.colorBase.background().popupBg1};
   ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1})};
 `
 

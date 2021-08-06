@@ -159,14 +159,15 @@ export const globalCss = ({theme}: any) => css`
     --swap-box-height: 540px; /** js used also **/
     --panel-setting-height: 680px;
     --panel-setting-width: 800px;
-    --modal-height: 540px;
     --modal-width: 480px;
+    --modal-height: 400px;
     --swap-box-width: 338px;
     --toolbar-row-height: 56px; /** js used also  40 + 56 = 96  CoinList.tsx **/
+    --toolbar-row-height-minus: -56px;
     --sub-menuItem-width: 200px;
     --sub-menuItem-height: 52px;
-    --transfer-modal-width: 480px;
-    --modal-width: 480px;
+    --lage-modal-width: 580px;
+    --lage-modal-height: 620px;
     --gateway-icon-size: 56px;
     --account-button-fixed-width: 88px;
     --account-button-fixed-height: 72px;
