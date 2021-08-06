@@ -150,14 +150,16 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
         setAmmPoolSnapShot(ammPoolSnapshot)
     }, [])
+
     React.useEffect( () => {
-        // await updateAmmPoolSnapshot()
         if(nodeTimer.current !== -1){
             clearInterval(nodeTimer.current as NodeJS.Timeout);
         }
         nodeTimer.current = setInterval( () => {
             updateAmmPoolSnapshot()
         }, REFRESH_RATE_SLOW)
+        
+        updateAmmPoolSnapshot()
 
         return ()=>{
             if(nodeTimer.current !== -1){
@@ -531,10 +533,11 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
     }, [exitRequest, ammExitData, removeAmmClickMap]);
 
     React.useEffect(() => {
+        console.log('initAmmData--->')
         if (snapShotData) {
             initAmmData(pair)
         }
-    }, [snapShotData, pair, walletMap, initAmmData]);
+    }, [snapShotData, pair, walletMap]);
 
     return {
         ammAlertText,
