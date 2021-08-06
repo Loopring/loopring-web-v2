@@ -11,28 +11,15 @@ import { useTicker } from '../../../stores/ticker';
 export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>({pageSize}: { pageSize: number }) {
     const [rawData, setRawData] = React.useState<Array<AmmDetail<any>> | []>([]);
     const [page, setPage] = React.useState<number>(1);
-    // const [keys, setKeys] = React.useState<string[]>([]);
     const [timestamp, setTimestamp] = React.useState<NodeJS.Timer | -1>(-1)
     const {coinMap} = useTokenMap();
-    const {
-        ammMap,
-        status: ammMapStatus,
-        // errorMessage: errorAmmMap,
-        // statusUnset: ammMapStatusUnset,
-        // updateAmmMap,
-    } = useAmmMap();
+    const {ammMap, status: ammMapStatus,} = useAmmMap();
     const {
         tickerMap,
         status: tickerStatus,
-        // errorMessage: errorTickerMap,
-        statusUnset: tickerStatusUnset,
         updateTickers,
     } = useTicker();
-    const {
-        status: socketStatus,
-        // errorMessage: errorTickerMap,
-        statusUnset: socketStatusUnset,
-    } = useSocket();
+    const {status: socketStatus, statusUnset: socketStatusUnset,} = useSocket();
     const updateRawData = React.useCallback((tickerMap) => {
         try {
             const _ammMap = deepClone(ammMap);
@@ -96,50 +83,16 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
             updateTickersUI(page)
         }
     }, []);
-
     React.useEffect(() => {
-        // switch (tickerStatus) {
-        //     case "ERROR":
-        //         console.log("ERROR", 'get ticker error,ui');
-        //         tickerStatusUnset()
-        //         break;
-        //     case "PENDING":
-        //         break;
-        //     case "DONE":
-        //         tickerStatusUnset();
-        //
-        //         updateRawData(tickerMap)
-        //         break;
-        //     default:
-        //         break;
-        // }
         if (tickerStatus === SagaStatus.UNSET){
-            updateTickersUI(page)
+            updateRawData(tickerMap)
         }
-    }, [tickerStatus, tickerStatusUnset]);
-
+    }, [tickerStatus]);
     React.useEffect(() => {
         if(ammMapStatus === SagaStatus.UNSET){
             updateTickersUI(1)
         }
-        // switch (ammMapStatus) {
-        //     case "ERROR":
-        //         console.log("ERROR", 'get ammMap error,ui');
-        //         ammMapStatusUnset();
-        //         break;
-        //     case SagaStatus.PENDING:
-        //         console.log("PENDING", 'get ammMap error,ui');
-        //         break;
-        //     case SagaStatus.DONE:
-        //         ammMapStatusUnset();
-        //
-        //         break;
-        //     default :
-        //         break;
-        // }
     }, [ammMapStatus, updateTickersUI]);
-
-
     return {
         page,
         rawData,

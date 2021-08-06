@@ -41,7 +41,7 @@ export function useGetTxs() {
                     accountId,
                 }, apiKey)
             ])
-            const userTransferMapped = userTxnList[0].userTransfers.map(o => ({
+            const userTransferMapped = userTxnList[0].userTransfers?.map(o => ({
                 side: TransactionTradeTypes.transfer,
                 // token: o.symbol,
                 // from: o.senderAddress,
@@ -60,7 +60,7 @@ export function useGetTxs() {
                 status: getTxnStatus(o.status),
                 // tradeType: TransactionTradeTypes.transfer
             }))
-            const userDepositMapped = userTxnList[1].userDepositHistory.map(o => ({
+            const userDepositMapped = userTxnList[1].userDepositHistory?.map(o => ({
                 side: TransactionTradeTypes.deposit,
                 symbol: o.symbol,
                 // token: o.symbol,
@@ -81,7 +81,7 @@ export function useGetTxs() {
                 status: getTxnStatus(o.status),
                 // tradeType: TransactionTradeTypes.deposit
             }))
-            const userWithdrawMapped = userTxnList[2].userOnchainWithdrawalHistory.map((o => ({
+            const userWithdrawMapped = userTxnList[2].userOnchainWithdrawalHistory?.map((o => ({
                 side: TransactionTradeTypes.withdraw,
                 // token: o.symbol,
                 // from: 'My Loopring',
@@ -100,7 +100,7 @@ export function useGetTxs() {
                 status: getTxnStatus(o.status),
                 // tradeType: TransactionTradeTypes.withdraw
             })))
-            const mappingList = [...userTransferMapped, ...userDepositMapped, ...userWithdrawMapped]
+            const mappingList = [...userTransferMapped??[], ...userDepositMapped??[], ...userWithdrawMapped??[]]
             const sortedMappingList = mappingList.sort((a, b) => b.time - a.time)
             setTxs(sortedMappingList)
             setIsLoading(false)

@@ -13,7 +13,7 @@ const initialState: SystemStatus = {
     gasPrice: undefined,
     forex: undefined,
     __timer__: -1,
-    status: 'UNSET',
+    status: 'PENDING',
     errorMessage: null,
 
     exchangeInfo: undefined,

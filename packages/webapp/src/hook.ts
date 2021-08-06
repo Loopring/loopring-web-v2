@@ -7,10 +7,13 @@ import { SagaStatus } from '@loopring-web/common-resources';
 import { useTokenMap } from './stores/token';
 import { useWalletLayer1 } from './stores/walletLayer1';
 import { useAccount } from './stores/account/hook';
-import { connectProvides} from '@loopring-web/web3-provider';
+import { connectProvides, walletServices } from '@loopring-web/web3-provider';
 import { useWalletLayer2 } from './stores/walletLayer2';
 import store from './stores';
 import { useAccountInit } from './hookAccountInit';
+import { useAmmActivityMap } from './stores/Amm/AmmActivityMap';
+import { useTicker } from './stores/ticker';
+import { checkAccount } from './services/account/checkAccount';
 // import { statusUnset as accountStatusUnset } from './stores/account';
 
 /**
@@ -31,7 +34,8 @@ export function useInit() {
     const {status: tokenMapStatus, statusUnset: tokenMapStatusUnset}  = useTokenMap();
     const {status: ammMapStatus, statusUnset: ammMapStatusUnset}  = useAmmMap();
     const {updateSystem, status: systemStatus, statusUnset: systemStatusUnset} = useSystem();
-    // const walletLayer1State = useWalletLayer1();
+    const {status:ammActivityMapStatus,statusUnset:ammActivityMapStatusUnset}  = useAmmActivityMap()
+    const {status: tickerStatus,statusUnset: tickerStatusUnset} = useTicker();
 
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
@@ -39,10 +43,16 @@ export function useInit() {
         if (account.accAddress !== '' && account.connectName && account.connectName !== 'UnKnown') {
             try {
                 await connectProvides[ account.connectName ]();
-                if (connectProvides.usedProvide) {
+                updateAccount({})
+                if (connectProvides.usedProvide && connectProvides.usedWeb3) {
                     const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
+                    // const accounts = await connectProvides.usedWeb3?.eth.getAccounts();
+                    // if(accounts && accounts[0] === account.accAddress){
+                    //     checkAccount(accounts[0]);
+                    // }
+                    // debugger
+                    // walletServices.sendConnect(connectProvides.usedWeb3,connectProvides.usedProvide)
                     updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
-                    updateAccount({})
                     return
                 }
             } catch (error) {
@@ -76,7 +86,6 @@ export function useInit() {
             case "ERROR":
                 tokenMapStatusUnset();
                 setState('ERROR')
-                //TODO show error at button page show error  some retry dispat again
                 break;
             case "DONE":
                 tokenMapStatusUnset();
@@ -88,7 +97,6 @@ export function useInit() {
             case "ERROR":
                 ammMapStatusUnset();
                 setState('ERROR')
-                //TODO show error at button page show error  some retry dispat again
                 break;
             case "DONE":
                 ammMapStatusUnset();
@@ -96,11 +104,41 @@ export function useInit() {
             default:
                 break;
         }
-        if((tokenMapStatus === SagaStatus.DONE && ammMapStatus ===  SagaStatus.UNSET )
-            || (tokenMapStatus === SagaStatus.UNSET && ammMapStatus ===  SagaStatus.DONE) ){
+        if(tokenMapStatus === SagaStatus.UNSET && ammMapStatus ===  SagaStatus.UNSET ){
             setState('DONE')
         }
     }, [tokenMapStatus,ammMapStatus])
+
+    React.useEffect(() => {
+        switch (ammActivityMapStatus) {
+            case "ERROR":
+                ammActivityMapStatusUnset();
+                // setState('ERROR')
+                //TODO: show error at button page show error  some retry dispath again
+                break;
+            case "DONE":
+                ammActivityMapStatusUnset();
+                break;
+            default:
+                break;
+        }
+    }, [ammActivityMapStatus])
+    React.useEffect(() => {
+        switch (tickerStatus) {
+            case "ERROR":
+                console.log("ERROR", 'get ticker error,ui');
+                tickerStatusUnset()
+                break;
+            case "PENDING":
+                break;
+            case "DONE":
+                tickerStatusUnset();
+                break;
+            default:
+                break;
+        }
+    }, [tickerStatus])
+
     useAccountInit({state})
     // React.useEffect(() => {
     //     if (tokenMapStatus === SagaStatus.ERROR|| tokenState.status === "ERROR") {
