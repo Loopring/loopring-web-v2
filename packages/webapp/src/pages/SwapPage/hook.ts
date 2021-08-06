@@ -284,7 +284,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
             myLog(request)
 
-            const response = await LoopringAPI.userAPI.submitOrder(request, account.eddsaKey, account.apiKey)
+            const response = await LoopringAPI.userAPI.submitOrder(request, account.eddsaKey.sk, account.apiKey)
 
             myLog(response)
 
