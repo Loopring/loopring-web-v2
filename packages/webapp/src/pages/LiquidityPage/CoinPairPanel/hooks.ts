@@ -1,23 +1,21 @@
 import React from "react";
-import { AmmActivity, CoinInfo, TradeFloat, WalletMap } from "@loopring-web/common-resources";
+import { AmmActivity, CoinInfo, MyAmmLP, SagaStatus, TradeFloat } from "@loopring-web/common-resources";
 import { useTokenMap } from "stores/token";
 import { useRouteMatch } from 'react-router';
 import moment from 'moment'
 import { AmmDetailStore, useAmmMap } from '../../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../../stores/walletLayer2';
 import { makeTickView, makeWalletLayer2, pairDetailBlock, WalletMapExtend } from '../../../hooks/help';
-import { AmmPoolSnapshot, AmmUserRewardMap, getExistedMarket, TickerData } from 'loopring-sdk';
+import { AmmPoolSnapshot, AmmUserRewardMap, getExistedMarket, TickerData, TradingInterval } from 'loopring-sdk';
 import { deepClone } from '../../../utils/obj_tools';
 import { getUserAmmTransaction, makeMyAmmMarketArray } from '../../../hooks/help/marketTable';
 import { AmmRecordRow } from '@loopring-web/component-lib';
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
-import { MyAmmLP } from '@loopring-web/common-resources';
 import { useSystem } from '../../../stores/system';
 import { makeMyAmmWithSnapshot } from '../../../hooks/help/makeUIAmmActivityMap';
 import store from '../../../stores';
 import { useUserRewards } from '../../../stores/userRewards';
 import { LoopringAPI } from 'stores/apis/api';
-import { TradingInterval } from 'loopring-sdk'
 
 const makeAmmDetailExtendsActivityMap = ({ammMap, coinMap, ammActivityMap, ammKey}: any) => {
 
@@ -57,7 +55,8 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
     const {ammMap, getAmmMap} = ammMapState;
 
     // const {ammMap,updateAmmMap} = useAmmMap();
-    const walletLayer2State = useWalletLayer2();
+    // const walletLayer2State = useWalletLayer2();
+    const {walletLayer2, status: walletLayer2Status} = useWalletLayer2();
     const [walletMap, setWalletMap] = React.useState<WalletMapExtend<C> | undefined>(undefined);
     // const [ammRecordArray, setAmmRecordArray] = React.useState<AmmRecordRow<C>[]>([]);
     const [ammMarketArray, setAmmMarketArray] = React.useState<AmmRecordRow<C>[]>([]);
@@ -124,7 +123,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
 
     const getPairList = React.useCallback(async () => {
         if (LoopringAPI.exchangeAPI && coinPairInfo.coinA && coinPairInfo.coinB) {
-            const { myCoinA, myCoinB } = coinPairInfo
+            const {myCoinA, myCoinB} = coinPairInfo
             const market = `${myCoinA?.name}-${myCoinB?.name}`
             const ammList = await LoopringAPI.exchangeAPI.getMixCandlestick({
                 market: market,
@@ -164,7 +163,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
         }
 
         // let _walletMap: WalletMapExtend<C>|undefined = undefined
-        if (walletLayer2State.walletLayer2) {
+        if (walletLayer2) {
             walletLayer2DoIt(market);
         }
 
@@ -202,24 +201,20 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
 
     React.useEffect(() => {
         const {market} = getExistedMarket(marketArray, pair.coinAInfo?.simpleName as string, pair.coinBInfo?.simpleName as string);
-        if (market && snapShotData && snapShotData.ammPoolsBalance) {
-            switch (walletLayer2State.status) {
-                case "ERROR":
-                    walletLayer2State.statusUnset();
-                    break;
-                case "DONE":
-                    walletLayer2State.statusUnset();
-                    const _walletMap = walletLayer2DoIt(market);
-                    const _myAmm: MyAmmLP<C> = makeMyAmmWithSnapshot(market, _walletMap, ammUserRewardMap, snapShotData);
-                    setMyAmm(_myAmm)
-                    break;
-                default:
-                    break;
+        if (market && snapShotData && snapShotData.ammPoolsBalance && walletLayer2Status === SagaStatus.UNSET) {
+            const _walletMap = walletLayer2DoIt(market);
+            const _myAmm: MyAmmLP<C> = makeMyAmmWithSnapshot(market, _walletMap, ammUserRewardMap, snapShotData);
+            setMyAmm(_myAmm)
+            // case "DONE":
+            //             walletLayer2State.statusUnset();
 
-            }
+            //         break;
+            //     default:
+            //         break;
+            //
+            // }
         }
-
-    }, [walletLayer2State.status, ammUserRewardMap])
+    }, [walletLayer2Status, ammUserRewardMap])
 
     React.useEffect(() => {
         const {market} = getExistedMarket(marketArray, pair.coinAInfo?.simpleName as string, pair.coinBInfo?.simpleName as string);

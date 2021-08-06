@@ -12,6 +12,7 @@ import { getAmmActivityMap } from '../Amm/AmmActivityMap';
 import { updateWalletLayer1 } from '../walletLayer1';
 import { delay } from 'rxjs/operators';
 import { LoopringSocket } from '../../services/socketUtil';
+import { statusUnset as accountStatusUnset } from '../account';
 
 
 const initConfig = function* <R extends { [ key: string ]: any }>(chainId: ChainId | 'unknown') {
@@ -33,7 +34,7 @@ const initConfig = function* <R extends { [ key: string ]: any }>(chainId: Chain
     if (account.accAddress && walletLayer1.walletLayer1 === undefined) {
         store.dispatch(updateWalletLayer1(undefined));
     }
-
+    store.dispatch(accountStatusUnset(undefined));
 }
 
 const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) => {

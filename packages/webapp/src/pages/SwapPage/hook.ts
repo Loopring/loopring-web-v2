@@ -6,7 +6,7 @@ import {
     ErrorMap,
     fnType,
     globalSetup,
-    IBData,
+    IBData, SagaStatus,
     TradeCalcData,
     TradeFloat,
     WalletMap
@@ -96,9 +96,9 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const {ammMap} = useAmmMap();
 
     const {account} = useAccount()
-    const {delayAndUpdateWalletLayer2} = useWalletLayer2();
+    const {delayAndUpdateWalletLayer2,walletLayer2, status: walletLayer2Status} = useWalletLayer2();
 
-    const walletLayer2State = useWalletLayer2()
+    // const walletLayer2State = useWalletLayer2()
     const [tradeData, setTradeData] = React.useState<SwapTradeData<IBData<C>> | undefined>(undefined);
     const [tradeCalcData, setTradeCalcData] = React.useState<TradeCalcData<C> | undefined>(undefined);
     const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
@@ -194,14 +194,15 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     //HIGH: effect by wallet state update
     React.useEffect(() => {
-        switch (walletLayer2State.status) {
-            case "ERROR":
-                walletLayer2State.statusUnset();
-                // setState('ERROR')
-                //TODO: show error at button page show error  some retry dispath again
-                break;
-            case "DONE":
-                walletLayer2State.statusUnset();
+        if(walletLayer2Status===SagaStatus.UNSET){
+        // switch (walletLayer2State.status) {
+        //     case "ERROR":
+        //         walletLayer2State.statusUnset();
+        //         // setState('ERROR')
+        //         //TODO: show error at button page show error  some retry dispath again
+        //         break;
+        //     case "DONE":
+
                 const {walletMap} = makeWalletLayer2();
                 if (tradeCalcData) {
                     setTradeCalcData({...tradeCalcData, fee: feeBips, walletMap} as TradeCalcData<C>);
@@ -225,12 +226,9 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                     })
                 }
 
-                break;
-            default:
-                break;
 
         }
-    }, [walletLayer2State.status, setMyTradeArray, marketArray, tradeCalcData])
+    }, [walletLayer2Status, setMyTradeArray, marketArray, tradeCalcData])
 
     useCustomDCEffect(() => {
         const label: string | undefined = accountStaticCallBack(bntLabel)
@@ -494,14 +492,13 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                     coinBInfo: coinMap[ coinB ],
                 })
             }
-            if (walletLayer2State.walletLayer2) {
+            if (walletLayer2) {
                 const {walletMap} = makeWalletLayer2();
                 _tradeCalcData.walletMap = walletMap as WalletMap<any>;
                 getUserTrades(market).then((marketTrades) => {
                     let _myTradeArray = makeMarketArray(market, marketTrades) as RawDataTradeItem[]
                     setMyTradeArray(_myTradeArray ? _myTradeArray : [])
                 })
-
             }
             let apiList = [];
             //TODO wallet saga done

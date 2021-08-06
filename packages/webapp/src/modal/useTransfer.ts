@@ -38,7 +38,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const [tranferFeeInfo, setTransferFeeInfo] = React.useState<any>()
     const [payeeAddr, setPayeeAddr] = React.useState<string>('')
     React.useEffect(()=>{
-        if(walletLayer2Status === SagaStatus.DONE){
+        if(walletLayer2Status === SagaStatus.UNSET){
             setWalletMap(makeWalletLayer2().walletMap??{} as WalletMap<R>)
         }
     },[walletLayer2Status])

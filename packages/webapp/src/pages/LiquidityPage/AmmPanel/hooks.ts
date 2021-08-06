@@ -63,14 +63,11 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
     const [ammToastOpen, setAmmToastOpen] = useState<boolean>(false)
     const [ammAlertText, setAmmAlertText] = useState<string>()
-
+    const {delayAndUpdateWalletLayer2} = useWalletLayer2();
     const {t} = useTranslation('common')
-
-    // const walletLayer2State = useWalletLayer2();
     const {coinMap, tokenMap} = useTokenMap();
     const {ammMap} = useAmmMap();
     const {account, status: accountStatus} = useAccount();
-    const {delayAndUpdateWalletLayer2} = useWalletLayer2();
     const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<C> | undefined>();
 
     const [ammJoinData, setAmmJoinData] = React.useState<AmmData<IBData<C>, C>>({

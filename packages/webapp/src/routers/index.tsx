@@ -10,9 +10,13 @@ import { Box } from '@material-ui/core'
 import { DevWrapper } from '../provider/'
 import { Layer2Page } from '../pages/Layer2Page'
 import { LiquidityPage } from '../pages/LiquidityPage'
+import { ModalGroup } from '../modal';
+import React from 'react';
+import { useAccountInit } from './hook';
 
 const RouterView = () => {
-    
+    useAccountInit();
+
     return <Router>
         <Header />
 
@@ -52,7 +56,7 @@ const RouterView = () => {
             </Box>
         </Container>
         {/*</Box>*/}
-
+        <ModalGroup/>
     </Router>
 }
 

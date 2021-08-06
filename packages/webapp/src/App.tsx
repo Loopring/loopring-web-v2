@@ -58,7 +58,7 @@ const App = () => {
 
                     {/*    <ErrorPage {...ErrorMap.LOADING_WHOLE_SITE}/>*/}
                 </>}
-            <ModalGroup/>
+
         </ModalProvider></>
 
 
