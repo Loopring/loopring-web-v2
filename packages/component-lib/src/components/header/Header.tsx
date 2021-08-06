@@ -36,12 +36,12 @@ const HeaderStyled = styled(AppBar)`
       margin: 0 auto;   
       //min-width: 800px;
     }
-    // background-image: linear-gradient(rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04));
-    background-color: ${({theme}) => theme.mode === 'dark' ? 'rgba(0, 0, 0, 0.5)' : ''};
-    // box-shadow: inherit;
+    background-color: ${({theme}) => theme.mode === 'dark' ? theme.colorBase.background().header : ''};
+    backdrop-filter: blur(4px);
     box-sizing: border-box;
     // border-bottom: ${({theme}) => theme.border.borderConfig({d_W: 1, c_key: 'blur'})};
     border-radius: 0;
+    box-shadow: none;
     &.item-scrolled.MuiAppBar-root.MuiAppBar-positionFixed{
       background-color: ${({theme}) => theme.colorBase.background().secondary};
 
