@@ -4,7 +4,7 @@ import { CoinKey, SagaStatus } from '@loopring-web/common-resources';
 
 const initialState: Required<TickerStates> = {
     tickerMap: {},
-    status: 'UNSET',
+    status: 'PENDING',
     errorMessage: null,
 }
 const tickerMapSlice: Slice = createSlice({

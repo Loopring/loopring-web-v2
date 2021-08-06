@@ -14,7 +14,7 @@ const getUserRewardsApi = async <R extends {[key:string]:any}>(list:Array<keyof 
     const {accountId} = store.getState().account
     let {__timer__} = store.getState().userRewardsMap;
     
-    if(LoopringAPI.ammpoolAPI) {
+    if(LoopringAPI.ammpoolAPI && accountId ) {
         __timer__ = ((__timer__) => {
             if (__timer__ && __timer__ !== -1) {
                 clearInterval(__timer__);
@@ -27,10 +27,16 @@ const getUserRewardsApi = async <R extends {[key:string]:any}>(list:Array<keyof 
         return  LoopringAPI.ammpoolAPI.getAmmPoolUserRewards({owner:accountId}).then(({ammUserRewardMap}) => {
             return {data:ammUserRewardMap,__timer__}
         })
-
-
     }else{
-        return  Promise.reject({data:undefined,__timer__})
+        if (__timer__ && __timer__ !== -1) {
+            clearInterval(__timer__);
+        }
+        if(accountId) {
+            return  Promise.reject({data:undefined,__timer__:-1})
+        }else{
+            return Promise.resolve({data:undefined,__timer__:-1})
+        }
+
     }
 
 }

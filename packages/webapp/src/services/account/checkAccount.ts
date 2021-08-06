@@ -5,7 +5,6 @@ import { myLog } from '../../utils/log_tools';
 
 export const checkAccount = (newAccAddress: string) => {
     const account = store.getState().account;
-
     if (account.accAddress === '' || account.accAddress !== newAccAddress) {
         myLog('After connect >>,account part: diff account, clean layer2')
         store.dispatch(cleanAccountStatus(undefined));

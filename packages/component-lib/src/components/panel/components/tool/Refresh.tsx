@@ -14,6 +14,9 @@ export const  CountDownIcon = React.memo(({onRefreshData,wait=globalSetup.wait}:
             countDownRef.current?.classList.add('countdown');
             countDownRef.current?.classList?.remove('logo');
             setRefreshCount(refreshTime-1);
+            if(nodeTimer.current !== -1){
+                clearInterval(nodeTimer.current as NodeJS.Timeout);
+            }
             nodeTimer.current = setInterval(decreaseNum, 1000)
         }
     }, [countDownRef,nodeTimer])

@@ -13,7 +13,6 @@ import { AmmRecordRow } from '@loopring-web/component-lib';
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
 import { useSystem } from '../../../stores/system';
 import { makeMyAmmWithSnapshot } from '../../../hooks/help/makeUIAmmActivityMap';
-import store from '../../../stores';
 import { useUserRewards } from '../../../stores/userRewards';
 import { LoopringAPI } from 'stores/apis/api';
 
@@ -46,13 +45,13 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
     const match: any = useRouteMatch("/liquidity/pools/coinPair/:symbol")
     const {coinMap, tokenMap, marketArray} = useTokenMap();
     const {faitPrices} = useSystem();
-    const ammMapState = useAmmMap();
-    const useUserRewardsState = useUserRewards()
+    const {ammMap, getAmmMap, status: ammMapStatus} = useAmmMap();
+    const {userRewardsMap, status: useUserRewardsStatus} = useUserRewards()
 
     // const {account} = useAccount();
 
 
-    const {ammMap, getAmmMap} = ammMapState;
+    // const {ammMap, getAmmMap} = ammMapState;
 
     // const {ammMap,updateAmmMap} = useAmmMap();
     // const walletLayer2State = useWalletLayer2();
@@ -214,54 +213,35 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
             //
             // }
         }
-    }, [walletLayer2Status, ammUserRewardMap])
+    }, [walletLayer2Status])
 
     React.useEffect(() => {
         const {market} = getExistedMarket(marketArray, pair.coinAInfo?.simpleName as string, pair.coinBInfo?.simpleName as string);
-        if (market) {
-            switch (useUserRewardsState.status) {
-                case "ERROR":
-                    useUserRewardsState.statusUnset();
-                    break;
-                case "DONE":
-                    // getAmmPoolUserRewards().then((ammUserRewardMap)=>{
-                    const {userRewardsMap} = store.getState().userRewardsMap
-                    setAmmUserRewardMap(userRewardsMap)
-                    const _myAmm: MyAmmLP<C> = makeMyAmmWithSnapshot(market, walletMap, ammUserRewardMap, snapShotData);
-                    setMyAmm(_myAmm);
-                    break;
-                default:
-                    break;
-
-            }
+        if (useUserRewardsStatus === SagaStatus.UNSET && market) {
+            // const {userRewardsMap} = store.getState().userRewardsMap
+            setAmmUserRewardMap(userRewardsMap)
+            const _myAmm: MyAmmLP<C> = makeMyAmmWithSnapshot(market, walletMap, ammUserRewardMap, snapShotData);
+            setMyAmm(_myAmm);
         }
 
-    }, [useUserRewardsState.status])
+    }, [useUserRewardsStatus])
 
     React.useEffect(() => {
-        if (ammMapState.status === "ERROR") {
-            ammMapState.statusUnset();
-        } else if (ammMapState.status === "DONE") {
-            ammMapState.statusUnset();
-            if (ammMapState.ammMap && pair.coinAInfo?.simpleName && pair.coinBInfo?.simpleName) {
-                const _coinPairInfo = makeAmmDetailExtendsActivityMap(
-                    {
-                        ammMap,
-                        coinMap,
-                        ammActivityMap,
-                        ammKey: 'AMM-' + pair.coinAInfo.simpleName + pair.coinBInfo.simpleName
-                    })
-                setCoinPairInfo({
-                    ...coinPairInfo, ..._coinPairInfo,
-                    tradeFloat: coinPairInfo.tradeFloat
+        if (ammMapStatus === SagaStatus.UNSET && ammMap && pair.coinAInfo?.simpleName && pair.coinBInfo?.simpleName) {
+            const _coinPairInfo = makeAmmDetailExtendsActivityMap(
+                {
+                    ammMap,
+                    coinMap,
+                    ammActivityMap,
+                    ammKey: 'AMM-' + pair.coinAInfo.simpleName + pair.coinBInfo.simpleName
                 })
+            setCoinPairInfo({
+                ...coinPairInfo, ..._coinPairInfo,
+                tradeFloat: coinPairInfo.tradeFloat
+            })
 
-            }
-
-            // tokenState.statusUnset()
-            // setState('DONE');
         }
-    }, [ammMapState.status, ammMapState.ammMap, pair, ammActivityMap, tokenMap])
+    }, [ammMapStatus])
 
 
     return {
