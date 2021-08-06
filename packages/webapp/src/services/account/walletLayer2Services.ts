@@ -63,14 +63,14 @@ export const walletLayer2Services = {
     sendAccountLock: (accInfo?: AccountInfo) => {
         const updateInfo = accInfo ? {
             readyState:AccountStatus.LOCKED,
-            accountId:  accInfo.accountId,
+            accountId: accInfo.accountId,
             nonce: accInfo.nonce,
             level: accInfo.tags,
         }:{readyState:AccountStatus.LOCKED,
             apiKey: '',
             eddsaKey: '',
             publicKey: '',
-            nonce:undefined,}
+            nonce: undefined,}
         store.dispatch(updateAccountStatus(updateInfo))
         subject.next({
             status: Commands.LockAccount,
