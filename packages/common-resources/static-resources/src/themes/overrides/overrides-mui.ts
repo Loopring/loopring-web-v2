@@ -31,7 +31,7 @@ export const MuiCheckbox = ({colorBase}: any): { styleOverrides: ComponentsOverr
                 height: pxToRem(32),
                 ' svg': {
                     width,
-                    height
+                    height,
                 },
                 '&.MuiCheckbox-colorDefault': {
                     // color: colorBase.textPrimary,
@@ -203,19 +203,22 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 },
                 '&:active': {
                     color: colorBase.infoVisited
+                },
+                '&:disabled': {
+                    color: colorBase.backgroundDisabled
                 }
             },
             contained: {
+                height: pxToRem(40),
+                fontSize: '1.6rem',
+                backgroundColor: colorBase.primary,
                 '&:hover': {
                     backgroundColor: colorBase.primaryHover,
                 },
-                height: pxToRem(40),
-                fontSize: '1.6rem',
-                backgroundColor: colorBase.colorPrimary,
                 '&.Mui-disabled': {
                     // backgroundColor: colorBase.border().blur,
                     backgroundColor: colorBase.background().disabled,
-                    color: colorBase.textDisable,
+                    color: colorBase.textBtnDisabled,
                     // backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23FFFFFF33' stroke-width='1' stroke-dasharray='4%25%2c 8%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e")`
 
                 },
@@ -247,17 +250,16 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 fontWeight: 'normal',
                 color: colorBase.textSecondary,
                 borderColor: colorBase.border().default,
-                // backgroundColor: colorBase.background().field,
-                backgroundColor: colorBase.background().outline,
+                backgroundColor: colorBase.background().default,
                 '&:hover': {
                     color: colorBase.textPrimary,
-                    borderColor: colorBase.textPrimary,
-                    backgroundColor: colorBase.background().outline,
+                    borderColor: colorBase.borderHover,
+                    backgroundColor: colorBase.background().default,
                 },
                 '&.Mui-disabled': {
                     backgroundColor: colorBase.background().disabled,
-                    color: colorBase.textSecondary,
-                    border: '1px dashed',
+                    color: colorBase.textBtnDisabled,
+                    // border: '1px dashed',
                     borderColor: colorBase.border().default
                     // backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23FFFFFF33' stroke-width='1' stroke-dasharray='4%25%2c 8%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e")`
                 },
