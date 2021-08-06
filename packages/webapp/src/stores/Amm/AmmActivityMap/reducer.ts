@@ -5,7 +5,7 @@ import { SagaStatus } from '@loopring-web/common-resources';
 
 const initialState: Required<AmmActivityMapStates> = {
     ammActivityMap: {},
-    status: 'UNSET',
+    status: 'PENDING',
     errorMessage: null,
 }
 const ammActivityMapSlice: Slice = createSlice({

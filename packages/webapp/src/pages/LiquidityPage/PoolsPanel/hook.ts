@@ -96,7 +96,6 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
             updateTickersUI(page)
         }
     }, []);
-
     React.useEffect(() => {
         // switch (tickerStatus) {
         //     case "ERROR":
@@ -117,29 +116,11 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
             updateTickersUI(page)
         }
     }, [tickerStatus, tickerStatusUnset]);
-
     React.useEffect(() => {
         if(ammMapStatus === SagaStatus.UNSET){
             updateTickersUI(1)
         }
-        // switch (ammMapStatus) {
-        //     case "ERROR":
-        //         console.log("ERROR", 'get ammMap error,ui');
-        //         ammMapStatusUnset();
-        //         break;
-        //     case SagaStatus.PENDING:
-        //         console.log("PENDING", 'get ammMap error,ui');
-        //         break;
-        //     case SagaStatus.DONE:
-        //         ammMapStatusUnset();
-        //
-        //         break;
-        //     default :
-        //         break;
-        // }
     }, [ammMapStatus, updateTickersUI]);
-
-
     return {
         page,
         rawData,

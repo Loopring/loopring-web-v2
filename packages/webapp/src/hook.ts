@@ -11,6 +11,7 @@ import { connectProvides} from '@loopring-web/web3-provider';
 import { useWalletLayer2 } from './stores/walletLayer2';
 import store from './stores';
 import { useAccountInit } from './hookAccountInit';
+import { useAmmActivityMap } from './stores/Amm/AmmActivityMap';
 // import { statusUnset as accountStatusUnset } from './stores/account';
 
 /**
@@ -31,6 +32,8 @@ export function useInit() {
     const {status: tokenMapStatus, statusUnset: tokenMapStatusUnset}  = useTokenMap();
     const {status: ammMapStatus, statusUnset: ammMapStatusUnset}  = useAmmMap();
     const {updateSystem, status: systemStatus, statusUnset: systemStatusUnset} = useSystem();
+    const {status:ammActivityMapStatus,statusUnset:ammActivityMapStatusUnset}  = useAmmActivityMap()
+
     // const walletLayer1State = useWalletLayer1();
 
     useCustomDCEffect(async () => {
@@ -76,7 +79,6 @@ export function useInit() {
             case "ERROR":
                 tokenMapStatusUnset();
                 setState('ERROR')
-                //TODO show error at button page show error  some retry dispat again
                 break;
             case "DONE":
                 tokenMapStatusUnset();
@@ -88,7 +90,6 @@ export function useInit() {
             case "ERROR":
                 ammMapStatusUnset();
                 setState('ERROR')
-                //TODO show error at button page show error  some retry dispat again
                 break;
             case "DONE":
                 ammMapStatusUnset();
@@ -96,11 +97,25 @@ export function useInit() {
             default:
                 break;
         }
-        if((tokenMapStatus === SagaStatus.DONE && ammMapStatus ===  SagaStatus.UNSET )
-            || (tokenMapStatus === SagaStatus.UNSET && ammMapStatus ===  SagaStatus.DONE) ){
+        if(tokenMapStatus === SagaStatus.UNSET && ammMapStatus ===  SagaStatus.UNSET ){
             setState('DONE')
         }
     }, [tokenMapStatus,ammMapStatus])
+
+    React.useEffect(() => {
+        switch (ammActivityMapStatus) {
+            case "ERROR":
+                ammActivityMapStatusUnset();
+                // setState('ERROR')
+                //TODO: show error at button page show error  some retry dispath again
+                break;
+            case "DONE":
+                ammActivityMapStatusUnset();
+                break;
+            default:
+                break;
+        }
+    }, [ammActivityMapStatus])
     useAccountInit({state})
     // React.useEffect(() => {
     //     if (tokenMapStatus === SagaStatus.ERROR|| tokenState.status === "ERROR") {

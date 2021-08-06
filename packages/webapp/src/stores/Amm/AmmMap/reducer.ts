@@ -6,7 +6,7 @@ import { SagaStatus } from '@loopring-web/common-resources';
 const initialState: Required<AmmMapStates<object, object>> = {
     ammMap: undefined,
     __timer__: -1,
-    status: 'DONE',
+    status: 'PENDING',
     errorMessage: null,
 }
 const ammMapSlice: Slice = createSlice({

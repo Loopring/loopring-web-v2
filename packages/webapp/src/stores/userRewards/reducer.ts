@@ -4,7 +4,7 @@ import { SagaStatus } from '@loopring-web/common-resources';
 
 const initialState: UserRewardsStates = {
     userRewardsMap: undefined,
-    status: 'UNSET',
+    status: 'PENDING',
     errorMessage: null,
     __timer__: -1,
 }
