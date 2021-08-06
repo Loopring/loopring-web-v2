@@ -121,7 +121,6 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     let history = useHistory()
 
     useEffect(() => {
-        // setTotalData(rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : [])
         setTotalData(rawData && Array.isArray(rawData) ? rawData : [])
     }, [rawData])
 
@@ -173,15 +172,15 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                     <Grid container spacing={1} alignItems={'center'}>
                         <>
                             <Grid item>
-                                <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                <Button variant={'text'} size={'medium'} color={'primary'}
                                         onClick={() => onShowDeposit(tokenValue)}>{t('labelDeposit')}</Button>
                             </Grid>
                             <Grid item>
-                                <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                <Button variant={'text'} size={'medium'} color={'primary'}
                                         onClick={() => onShowTransfer(tokenValue)}>{t('labelTransfer')}</Button>
                             </Grid>
                             <Grid item>
-                                <Button variant={'outlined'} size={'medium'} color={'primary'}
+                                <Button variant={'text'} size={'medium'} color={'primary'}
                                         onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
                             </Grid>
                             {isLp ? (

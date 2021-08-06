@@ -46,7 +46,7 @@ export const DataGridStyled = styled(DataGrid)`
     //background-color: inherit;
 
     .rdg-header-row {
-      color: ${({theme}) => theme.colorBase.textSecondary};
+      color: ${({theme}) => theme.colorBase.checkboxDefault};
       width: 100%;
       background-color: inherit;
     }
@@ -95,7 +95,7 @@ export const DataGridStyled = styled(DataGrid)`
       width: 100%;
 
       &:hover {
-        background: ${({theme}) => theme.colorBase.background().hover};
+        background: ${({theme}) => theme.colorBase.backgroundMenuListHover};
 
         .rdg-cell:first-of-type {
           border-left: ${({theme}) => theme.border.borderConfig({d_W: 2, c_key: 'selected'})}
