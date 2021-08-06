@@ -1,6 +1,6 @@
-import { goErrorNetWork } from './lockAccount';
+import { cleanLayer2, goErrorNetWork } from './lockAccount';
 import store from '../../stores';
-import { updateAccountStatus } from '../../stores/account';
+import { cleanAccountStatus, updateAccountStatus } from '../../stores/account';
 import { updateSystem } from '../../stores/system';
 
 export const networkUpdate = ({chainId}: any): boolean => {
@@ -12,6 +12,7 @@ export const networkUpdate = ({chainId}: any): boolean => {
     } else if (chainId !== _chainId && _chainId !== 'unknown' && chainId !== 'unknown') {
         store.dispatch(updateAccountStatus({_chainId:chainId}));
         store.dispatch(updateSystem({chainId}));
+        cleanLayer2()
         window.location.reload();
         return true;
     }else{

@@ -164,6 +164,11 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         const baseMinAmtInfo = amountMap[ base ]
         const quoteMinAmtInfo = amountMap[ quote ]
 
+        if (!baseMinAmtInfo || !quoteMinAmtInfo) {
+            debugger
+            return
+        }
+
         const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
 
         const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
