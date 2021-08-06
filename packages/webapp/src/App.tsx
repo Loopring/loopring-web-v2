@@ -55,11 +55,10 @@ const App = () => {
                 // <Avatar src={loadingSvg}/>
                 : status === 'ERROR' ? <ErrorPage {...ErrorMap.NO_NETWORK_ERROR}/> : <>
                     <RouterView/>
-                    <ModalGroup/>
+
                     {/*    <ErrorPage {...ErrorMap.LOADING_WHOLE_SITE}/>*/}
                 </>}
-            {/*</Web3ReactManager>*/}
-            {/*</GlobalProvider>*/}
+            <ModalGroup/>
         </ModalProvider></>
 
 
