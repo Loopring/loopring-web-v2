@@ -165,7 +165,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         const quoteMinAmtInfo = amountMap[ quote ]
 
         if (!baseMinAmtInfo || !quoteMinAmtInfo) {
-            debugger
+            // debugger
             return
         }
 
