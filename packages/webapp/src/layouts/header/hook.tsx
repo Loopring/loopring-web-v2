@@ -22,7 +22,7 @@ import { deepClone } from '../../utils/obj_tools';
 export const useHeader = () => {
     const {setTheme, themeMode, setLanguage} = useSettings();
     const accountState = useAccount();
-    const {account, setShouldShow, status: accountStatus} = accountState;
+    const {account, setShouldShow, status: accountStatus} =  useAccount();
     const {setShowAccount} = useOpenModals();
     const _btnClickMap: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
         [ fnType.ACTIVATED ]: [
@@ -77,7 +77,7 @@ export const useHeader = () => {
 
     const forceUpdate = React.useReducer(() => ({}), {})[ 1 ] as () => void
     React.useEffect(() => {
-        if (accountState && accountState.status === 'DONE') {
+        if (accountStatus && accountStatus === 'UNSET') {
             headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
                 ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
                 accountState,
