@@ -282,8 +282,8 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
             <Grid item xs={6} className={'sub-label'}>{subLabel && belong ?
                 <FormLabel className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>
-                    {<span>{balance > 0 ? subLabel + ':' : ''}</span>}
-                    <span>{getThousandFormattedNumbers(balance)}</span>
+                    <span>{maxAllow? subLabel + ':' : ''}</span>
+                    <span>{balance?getThousandFormattedNumbers(balance):'0'}</span>
                 </FormLabel> : null}</Grid>
         </Grid>
         <Grid container className={`btnInput-wrap ${error.error ? 'error' : ''}`} wrap={'nowrap'} alignItems={'stretch'}
