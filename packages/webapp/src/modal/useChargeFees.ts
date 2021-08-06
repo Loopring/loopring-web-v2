@@ -8,7 +8,7 @@ import {
 } from 'loopring-sdk';
 import { useAccount } from '../stores/account';
 import { useState } from 'react';
-import { useCustomDCEffect } from './common/useCustomDCEffect';
+import { useCustomDCEffect } from '../hooks/common/useCustomDCEffect';
 import { LoopringAPI } from '../stores/apis/api';
 import * as sdk from 'loopring-sdk';
 import { BIG10 } from '../defs/swap_defs';

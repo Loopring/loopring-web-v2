@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { DepositProps, SwitchData, TradeBtnStatus } from '@loopring-web/component-lib';
+import { DepositProps, SwitchData, TradeBtnStatus, useOpenModals } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, ConnectProviders, IBData, WalletMap } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
 import { useTokenMap } from '../stores/token';
@@ -10,8 +10,10 @@ import { connectProvides } from '@loopring-web/web3-provider';
 import { LoopringAPI } from 'stores/apis/api';
 import { dumpError400, GetAllowancesRequest } from 'loopring-sdk';
 import { myLog } from 'utils/log_tools';
+import { useWalletLayer1 } from '../stores/walletLayer1';
+import { useCustomDCEffect } from '../hooks/common/useCustomDCEffect';
 
-export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | undefined, ShowDeposit: (isShow: boolean, defaultProps?: any) => void): {
+export const useDeposit = <R extends IBData<T>, T>(): {
     depositProps: DepositProps<R, T>
 } => {
     const {tokenMap, coinMap} = useTokenMap();
@@ -22,7 +24,11 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
         tradeValue: 0,
         balance: 0
     } as IBData<unknown>)
+    const {walletLayer1} = useWalletLayer1();
+    const {setShowDeposit}  = useOpenModals();
 
+    
+    // walletMap1: WalletMap<T> | undefined, ShowDeposit: (isShow: boolean, defaultProps?: any) => void
     const handleDeposit = React.useCallback(async (inputValue: any) => {
         const {accountId, accAddress, readyState, apiKey, connectName, eddsaKey} = account
 
@@ -80,8 +86,9 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
         if (depositValue && depositValue.belong) {
             handleDeposit(depositValue as R)
         }
-        ShowDeposit(false)
-    }, [depositValue, handleDeposit, ShowDeposit])
+        setShowDeposit({isShow:false})
+        //ShowDeposit(false)
+    }, [depositValue, handleDeposit, setShowDeposit])
 
     const handlePanelEvent = useCallback(async(data: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {
@@ -92,7 +99,7 @@ export const useDeposit = <R extends IBData<T>, T>(walletMap1: WalletMap<T> | un
     const depositProps = {
         tradeData: {belong: undefined} as any,
         coinMap: coinMap as CoinMap<any>,
-        walletMap: walletMap1 as WalletMap<any>,
+        walletMap: walletLayer1 as WalletMap<any>,
         depositBtnStatus: TradeBtnStatus.AVAILABLE,
         onDepositClick,
         handlePanelEvent,

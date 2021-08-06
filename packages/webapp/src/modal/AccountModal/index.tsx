@@ -18,14 +18,14 @@ import {
     useOpenModals
 } from '@loopring-web/component-lib';
 import React, { useCallback, useState } from 'react';
-import { copyToClipBoard } from '../../utils/obj_tools';
-import { useAccount } from '../../stores/account';
-import { TOAST_TIME } from '../../defs/common_defs';
+import { copyToClipBoard } from 'utils/obj_tools';
+import { useAccount } from 'stores/account';
+import { TOAST_TIME } from 'defs/common_defs';
 import { ConnectProviders, getShortAddr, LockIcon, UnLockIcon } from '@loopring-web/common-resources';
 import { sleep } from 'loopring-sdk';
-import { lockAccount } from '../../services/account/lockAccount';
-import { unlockAccount } from '../../services/account/unlockAccount';
-import { useTokenMap } from '../../stores/token';
+import { lockAccount } from 'services/account/lockAccount';
+import { unlockAccount } from 'services/account/unlockAccount';
+import { useTokenMap } from 'stores/token';
 export const ModalAccountInfo = withTranslation('common')(({
                                                                onClose,
                                                                etherscanUrl,
