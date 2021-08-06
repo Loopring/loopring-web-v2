@@ -39,7 +39,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     } as IBData<unknown>)
     const {status:walletLayer2Status} = useWalletLayer2();
     const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap??{} as WalletMap<R>);
-
     const {chargeFeeList} = useChargeFees(withdrawValue.belong, OffchainFeeReqType.OFFCHAIN_WITHDRAWAL, tokenMap)
     const [withdrawAddr, setWithdrawAddr] = useState<string>()
     const [withdrawFeeInfo, setWithdrawFeeInfo] = useState<any>(undefined)
