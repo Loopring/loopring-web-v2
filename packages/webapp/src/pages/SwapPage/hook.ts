@@ -6,7 +6,8 @@ import {
     ErrorMap,
     fnType,
     globalSetup,
-    IBData, SagaStatus,
+    IBData,
+    SagaStatus,
     TradeCalcData,
     TradeFloat,
     WalletMap
@@ -95,8 +96,8 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap,} = useTokenMap()
     const {ammMap} = useAmmMap();
 
-    const {account} = useAccount()
-    const {delayAndUpdateWalletLayer2,walletLayer2, status: walletLayer2Status} = useWalletLayer2();
+    const {account,status:accountStatus} = useAccount()
+    const {delayAndUpdateWalletLayer2, walletLayer2, status: walletLayer2Status} = useWalletLayer2();
 
     // const walletLayer2State = useWalletLayer2()
     const [tradeData, setTradeData] = React.useState<SwapTradeData<IBData<C>> | undefined>(undefined);
@@ -194,36 +195,36 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     //HIGH: effect by wallet state update
     React.useEffect(() => {
-        if(walletLayer2Status===SagaStatus.UNSET){
+        if (walletLayer2Status === SagaStatus.UNSET) {
             const {walletMap} = makeWalletLayer2();
             // if (tradeCalcData) {
-                setTradeCalcData({...tradeCalcData, fee: feeBips, walletMap} as TradeCalcData<C>);
-                setTradeData({
-                    sell: {
-                        belong: tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap[ tradeCalcData.coinSell ]?.simpleName : undefined,
-                        balance: walletMap ? walletMap[ tradeCalcData.coinSell as string ]?.count : 0
-                    },
-                    // @ts-ignore
-                    buy: {
-                        belong: tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap[ tradeCalcData.coinBuy ]?.simpleName : undefined,
-                        balance: walletMap ? walletMap[ tradeCalcData.coinBuy as string ]?.count : 0
-                    },
-                } as SwapTradeData<IBData<C>>)
-                const {
-                    market
-                } = getExistedMarket(marketArray, tradeCalcData.coinSell as string, tradeCalcData.coinBuy as string);
-                getUserTrades(market).then((marketTrades) => {
-                    let _myTradeArray = makeMarketArray(market, marketTrades) as RawDataTradeItem[]
-                    setMyTradeArray(_myTradeArray ? _myTradeArray : [])
-                })
+            setTradeCalcData({...tradeCalcData, fee: feeBips, walletMap} as TradeCalcData<C>);
+            setTradeData({
+                sell: {
+                    belong: tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap[ tradeCalcData.coinSell ]?.simpleName : undefined,
+                    balance: walletMap ? walletMap[ tradeCalcData.coinSell as string ]?.count : 0
+                },
+                // @ts-ignore
+                buy: {
+                    belong: tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap[ tradeCalcData.coinBuy ]?.simpleName : undefined,
+                    balance: walletMap ? walletMap[ tradeCalcData.coinBuy as string ]?.count : 0
+                },
+            } as SwapTradeData<IBData<C>>)
+            const {
+                market
+            } = getExistedMarket(marketArray, tradeCalcData.coinSell as string, tradeCalcData.coinBuy as string);
+            getUserTrades(market).then((marketTrades) => {
+                let _myTradeArray = makeMarketArray(market, marketTrades) as RawDataTradeItem[]
+                setMyTradeArray(_myTradeArray ? _myTradeArray : [])
+            })
             // }
         }
     }, [walletLayer2Status])
 
-    useCustomDCEffect(() => {
+    React.useEffect(() => {
         const label: string | undefined = accountStaticCallBack(bntLabel)
         setSwapBtnI18nKey(label);
-    }, [account.readyState]);
+    }, [accountStatus]);
 
     const swapCalculatorCallback = useCallback(async ({sell, buy, slippage, ...rest}: any) => {
 
