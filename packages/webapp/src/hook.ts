@@ -12,6 +12,7 @@ import { useWalletLayer2 } from './stores/walletLayer2';
 import store from './stores';
 import { useAccountInit } from './hookAccountInit';
 import { useAmmActivityMap } from './stores/Amm/AmmActivityMap';
+import { useTicker } from './stores/ticker';
 // import { statusUnset as accountStatusUnset } from './stores/account';
 
 /**
@@ -33,8 +34,7 @@ export function useInit() {
     const {status: ammMapStatus, statusUnset: ammMapStatusUnset}  = useAmmMap();
     const {updateSystem, status: systemStatus, statusUnset: systemStatusUnset} = useSystem();
     const {status:ammActivityMapStatus,statusUnset:ammActivityMapStatusUnset}  = useAmmActivityMap()
-
-    // const walletLayer1State = useWalletLayer1();
+    const {status: tickerStatus,statusUnset: tickerStatusUnset} = useTicker();
 
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
@@ -116,6 +116,22 @@ export function useInit() {
                 break;
         }
     }, [ammActivityMapStatus])
+    React.useEffect(() => {
+        switch (tickerStatus) {
+            case "ERROR":
+                console.log("ERROR", 'get ticker error,ui');
+                tickerStatusUnset()
+                break;
+            case "PENDING":
+                break;
+            case "DONE":
+                tickerStatusUnset();
+                break;
+            default:
+                break;
+        }
+    }, [tickerStatus])
+
     useAccountInit({state})
     // React.useEffect(() => {
     //     if (tokenMapStatus === SagaStatus.ERROR|| tokenState.status === "ERROR") {
