@@ -52,7 +52,7 @@ export const DataGridStyled = styled(DataGrid)`
     }
 
     &.scrollable .rdg-header-row {
-      background-color: ${({theme}) => theme.colorBase.backgroundHeader};
+      background-color: ${({theme}) => theme.colorBase.backgroundBox};
     }
 
     .rdg-header-sort-name {

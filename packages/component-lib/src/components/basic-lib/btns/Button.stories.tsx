@@ -120,6 +120,9 @@ export const LButton: Story<ButtonProps> = withTranslation()(({t, ...rest}: With
                         <Button variant={'text'} size={'medium'} color={'primary'}>
                             Text Btn
                         </Button>
+                        <Button variant={'text'} size={'medium'} color={'primary'} disabled>
+                            Text Btn
+                        </Button>
                     </Grid>
                 </Grid>
             </Box>
