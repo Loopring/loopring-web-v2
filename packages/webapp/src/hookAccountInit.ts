@@ -1,15 +1,15 @@
 import React from 'react';
 import { SagaStatus } from '@loopring-web/common-resources';
-import { useWalletLayer1 } from '../stores/walletLayer1';
-import { useWalletLayer2 } from '../stores/walletLayer2';
-import { useAccount } from '../stores/account';
-export function  useAccountInit() {
+import { useWalletLayer1 } from './stores/walletLayer1';
+import { useWalletLayer2 } from './stores/walletLayer2';
+import { useAccount } from './stores/account';
+export function  useAccountInit({state}:{state:keyof typeof SagaStatus}) {
     const {updateWalletLayer1, resetLayer1, status:walletLayer1Status,statusUnset:wallet1statusUnset} = useWalletLayer1()
     const {updateWalletLayer2, resetLayer2, status:walletLayer2Status,statusUnset:wallet2statusUnset } = useWalletLayer2();
     const {account, status:accountStatus,statusUnset:accountStatusUnset} = useAccount();
 
     React.useEffect(() => {
-        if(accountStatus === SagaStatus.UNSET ){
+        if(accountStatus === SagaStatus.UNSET && state === SagaStatus.DONE ){
             switch (account.readyState){
                 case 'UN_CONNECT':
                 case 'ERROR_NETWORK':
@@ -19,24 +19,24 @@ export function  useAccountInit() {
                 case 'DEPOSITING':
                 case 'LOCKED':
                     resetLayer2();
-                    if(walletLayer1Status !== SagaStatus.PENDING) {
-                        updateWalletLayer1();
-                    }
+                    // if(walletLayer1Status !== SagaStatus.PENDING) {
+                    updateWalletLayer1();
+                    // }
                     break;
                 case 'ACTIVATED':
                     // debugger
-                    if(walletLayer1Status !== SagaStatus.PENDING) {
+                    // if(walletLayer1Status !== SagaStatus.PENDING) {
                         updateWalletLayer1();
-                    }
-                    if(walletLayer2Status !== SagaStatus.PENDING) {
+                    // }
+                    // if(walletLayer2Status !== SagaStatus.PENDING) {
                         updateWalletLayer2();
-                    }
+                    // }
                     break;
 
             }
         }
 
-    }, [accountStatus]);
+    }, [accountStatus,state]);
     React.useEffect(() => {
         switch (walletLayer1Status) {
             case "ERROR":

@@ -10,6 +10,7 @@ import { useAccount } from './stores/account/hook';
 import { connectProvides} from '@loopring-web/web3-provider';
 import { useWalletLayer2 } from './stores/walletLayer2';
 import store from './stores';
+import { useAccountInit } from './hookAccountInit';
 // import { statusUnset as accountStatusUnset } from './stores/account';
 
 /**
@@ -30,7 +31,7 @@ export function useInit() {
     const {status: tokenMapStatus, statusUnset: tokenMapStatusUnset}  = useTokenMap();
     const {status: ammMapStatus, statusUnset: ammMapStatusUnset}  = useAmmMap();
     const {updateSystem, status: systemStatus, statusUnset: systemStatusUnset} = useSystem();
-    const walletLayer1State = useWalletLayer1();
+    // const walletLayer1State = useWalletLayer1();
 
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
@@ -95,10 +96,12 @@ export function useInit() {
             default:
                 break;
         }
-        if(tokenMapStatus === SagaStatus.UNSET && ammMapStatus ===  SagaStatus.UNSET ){
+        if((tokenMapStatus === SagaStatus.DONE && ammMapStatus ===  SagaStatus.UNSET )
+            || (tokenMapStatus === SagaStatus.UNSET && ammMapStatus ===  SagaStatus.DONE) ){
             setState('DONE')
         }
     }, [tokenMapStatus,ammMapStatus])
+    useAccountInit({state})
     // React.useEffect(() => {
     //     if (tokenMapStatus === SagaStatus.ERROR|| tokenState.status === "ERROR") {
     //         //TODO: solve errorx
