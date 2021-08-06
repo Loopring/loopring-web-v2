@@ -27,8 +27,8 @@ import { useWalletLayer2 } from './stores/walletLayer2';
 
 export function useInit() {
     const [state, setState] = React.useState<keyof typeof SagaStatus>('PENDING')
-    const {updateWalletLayer1, resetLayer1,} = useWalletLayer1()
-    const {updateWalletLayer2, resetLayer2, } = useWalletLayer2();
+    const {updateWalletLayer1, resetLayer1, status:walletLayer1Status,statusUnset:wallet1statusUnset} = useWalletLayer1()
+    const {updateWalletLayer2, resetLayer2, status:walletLayer2Status,statusUnset:wallet2statusUnset } = useWalletLayer2();
     const {account, resetAccount, status:accountStatus} = useAccount();
     const tokenState = useTokenMap();
     const ammMapState = useAmmMap();
@@ -118,7 +118,38 @@ export function useInit() {
 
         }
     }, [accountStatus]);
+    React.useEffect(() => {
+        switch (walletLayer1Status) {
+            case "ERROR":
+                wallet1statusUnset();
+                // setState('ERROR')
+                //TODO: show error at button page show error  some retry dispath again
+                break;
+            case "DONE":
+                wallet1statusUnset();
+                //setWalletMap1(walletLayer1State.walletLayer1);
+                break;
+            default:
+                break;
 
+        }
+    }, [walletLayer1Status]);
+    React.useEffect(() => {
+        switch (walletLayer1Status) {
+            case "ERROR":
+                wallet2statusUnset();
+                // setState('ERROR')
+                //TODO: show error at button page show error  some retry dispath again
+                break;
+            case "DONE":
+                wallet2statusUnset();
+                //setWalletMap1(walletLayer1State.walletLayer1);
+                break;
+            default:
+                break;
+
+        }
+    }, [walletLayer2Status])
     return {
         state,
     }

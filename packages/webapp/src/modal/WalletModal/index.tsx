@@ -18,9 +18,9 @@ import {
     gatewayList,
     gatewayList as DefaultGatewayList
 } from '@loopring-web/common-resources';
-import { useAccount } from '../../stores/account';
+import { useAccount } from 'stores/account';
 import { connectProvides, ProcessingType, useConnectHook } from '@loopring-web/web3-provider';
-import { useSystem } from '../../stores/system';
+import { useSystem } from 'stores/system';
 
 export const ModalWalletConnectPanel = withTranslation('common')(({
                                                                       onClose,

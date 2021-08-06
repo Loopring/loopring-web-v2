@@ -9,6 +9,7 @@ import { useInit } from './hook';
 // import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
 import { ErrorPage } from './pages/ErrorPage';
 import { LoadingPage } from './pages/LoadingPage';
+import { ModalGroup } from './modal';
 
 const App = () => {
     const theme: Theme = useTheme();
@@ -54,6 +55,7 @@ const App = () => {
                 // <Avatar src={loadingSvg}/>
                 : status === 'ERROR' ? <ErrorPage {...ErrorMap.NO_NETWORK_ERROR}/> : <>
                     <RouterView/>
+                    <ModalGroup/>
                     {/*    <ErrorPage {...ErrorMap.LOADING_WHOLE_SITE}/>*/}
                 </>}
             {/*</Web3ReactManager>*/}
