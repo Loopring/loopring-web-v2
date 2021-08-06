@@ -1,13 +1,10 @@
 import React from 'react'
 import { Redirect, } from 'react-router-dom'
-import { useAccount } from '../../stores/account';
-
-// import { useWeb3Account } from 'stores/account/hook'
+import { useAccount } from '../../stores/account'
 
 const Redirector = ({children}: { children: React.ReactNode }) => {
 
-    // const lv1Acc = useWeb3Account()
-    const {account: {readyState, accAddress, accountId}} = useAccount()
+    const { account: { accountId } } = useAccount()
 
     return (
         <React.Fragment>
@@ -16,7 +13,7 @@ const Redirector = ({children}: { children: React.ReactNode }) => {
                     <>
                         {children}
                     </>
-                ) : <Redirect to="/"/>
+                ) : <Redirect to="/" />
             }
         </React.Fragment>
     )
