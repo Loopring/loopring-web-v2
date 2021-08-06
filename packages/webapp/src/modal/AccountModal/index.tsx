@@ -48,6 +48,7 @@ export const ModalAccountInfo = withTranslation('common')(({
     const [copyToastOpen, setCopyToastOpen] = useState(false);
     const onSwitch = useCallback(() => {
         setShowAccount({isShow: false})
+        setShouldShow(true);
         setShowConnect({isShow: shouldShow ?? false})
     }, [setShowConnect, setShowAccount])
     const onCopy = React.useCallback(() => {
