@@ -19,13 +19,13 @@ import { useConnectModal } from './useConnectModal';
 import { useAccountModal } from './useAccountModal';
 
 export const ModalGroup = withTranslation('common',{withRef: true})(({...rest}:WithTranslation)=>{
-    const {transferProps} = useTransfer()
-    const {depositProps} = useDeposit()
-    const {withdrawProps} = useWithdraw()
+    const {transferProps} = useTransfer();
+    const {depositProps} = useDeposit();
+    const {withdrawProps} = useWithdraw();
     const {etherscanUrl} = useSystem();
     useConnectModal();
     useAccountModal();
-    const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals()
+    const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals();
     return  <>
         <ModalPanel transferProps={transferProps} withDrawProps={withdrawProps}
                     depositProps={depositProps}
