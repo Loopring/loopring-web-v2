@@ -15,7 +15,7 @@ import {
     TokenType,
     LpTokenAction,
 } from '@loopring-web/component-lib'
-import { useModals } from 'hooks/modal/useModals'
+import { useModals } from 'modal/useModals'
 
 import { volumeToCount } from 'hooks/help'
 import { LoopringAPI } from 'stores/apis/api'

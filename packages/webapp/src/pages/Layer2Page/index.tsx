@@ -18,7 +18,7 @@ import AssetPanel from './AssetPanel'
 import TradePanel from './TradePanel'
 import AmmPanel from './AmmPanel'
 import { SettingPanel } from '../SettingPage';
-import { useModalProps } from '../../layouts/header/hook';
+// import { useModalProps } from '../../layouts/header/hook';
 import { Redirect } from 'react-router-dom'
 import React from 'react';
 import { useAccount } from '../../stores/account';
@@ -26,6 +26,8 @@ import { accountStaticCallBack, bntLabel, btnClickMap } from '../../layouts/conn
 import { deepClone } from '../../utils/obj_tools';
 import store from '../../stores';
 import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
+import { useDeposit } from '../../modal/useDeposit';
+// import { useModalProps } from '../../modal';
 
 export const subMenu = subMenuLayer2;
 const BoxStyle = styled(Box)`
@@ -64,7 +66,7 @@ export const Layer2Page = () => {
     const {account: {readyState}} = useAccount()
     const {t, ...rest} = useTranslation();
     const selected = match?.params.item ?? 'assets';
-    const {depositProps} = useModalProps();
+    const {depositProps} = useDeposit()
 
     return <>  {
         readyState === AccountStatus.UN_CONNECT
