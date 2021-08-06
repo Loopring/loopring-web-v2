@@ -4,10 +4,11 @@ import { useWalletLayer1 } from './stores/walletLayer1';
 import { useWalletLayer2 } from './stores/walletLayer2';
 import { useAccount } from './stores/account';
 import { useUserRewards } from './stores/userRewards';
+import { useConnect } from './hookConnect';
 
 export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
     const {getUserRewards}  = useUserRewards()
-
+    useConnect()
     const {
         updateWalletLayer1,
         resetLayer1,
