@@ -1,10 +1,10 @@
-import { PanelContent, WrapStyled, } from '../../basic-lib';
+import { PanelContent, SwipeableViewsStyled, } from '../../basic-lib';
 import { AmmChgData, AmmWithdrawWrap } from '../components';
 import { Grid, Tab, Tabs, Toolbar } from '@material-ui/core';
 import { useLocation } from 'react-router-dom'
 import qs from 'query-string'
 import { AmmData, AmmInData, IBData } from '@loopring-web/common-resources';
-import { AmmDepositWrap } from '../components/panel/AmmWrap/AmmDeposit';
+import { AmmDepositWrap } from '../components/AmmWrap/AmmDeposit';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { AmmPanelType, AmmProps } from './Interface';
 import React from 'react';
@@ -154,7 +154,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
         },
     ];
     const theme = useTheme();
-    return <WrapStyled height={height} width={width}>
+    return <SwipeableViewsStyled height={height} width={width}>
         <Grid container className={'container'} direction={'column'}
               justifyContent={"start"} flexWrap={'nowrap'}>
             <Toolbar variant={'dense'}>
@@ -181,7 +181,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
             </SwipeableViews>
             {/*</Grid>*/}
         </Grid>
-    </WrapStyled>
+    </SwipeableViewsStyled>
 }) as <T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
     ACD extends AmmInData<I>,
     C = IBData<I>>(props: AmmProps<T, I, ACD, C> & React.RefAttributes<any>) => JSX.Element;

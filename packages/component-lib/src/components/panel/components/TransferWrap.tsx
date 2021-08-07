@@ -3,11 +3,10 @@ import React, { ChangeEvent } from 'react';
 import { Grid, ListItemText, Typography } from '@material-ui/core';
 // import { Link as RouterLink } from 'react-router-dom';
 import { CloseIcon, DropDownIcon, globalSetup, IBData } from '@loopring-web/common-resources';
-import { Button, MenuItem, TextField, TradeBtnStatus, TypographyGood } from '../../../';
-import { TransferViewProps } from '../Interface';
+import { Button, IconClearStyled, MenuItem, TextField, TradeBtnStatus, TypographyGood } from '../../index';
+import { TransferViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import { debounce } from 'lodash';
-import { IconClearStyled } from '..';
 
 
 export const TransferWrap = <T extends IBData<I>,
@@ -157,7 +156,7 @@ export const TransferWrap = <T extends IBData<I>,
             }</TextField>
         </Grid>
         <Grid item marginTop={2} alignSelf={'center'}>
-            <Button variant={'contained'} size={'medium'} color={'primary'} onClick={() => {
+            <Button fullWidth variant={'contained'} size={'medium'} color={'primary'} onClick={() => {
                 onTransferClick(tradeData)
             }}
                     style={{width: '200px'}}
@@ -171,5 +170,5 @@ export const TransferWrap = <T extends IBData<I>,
             {/*        variant={'body2'}> {t('transferLabelLinkRecent')}</Typography></Link>*/}
             {/*</Box>*/}
         </Grid>
-    </Grid>
+    </Grid>;
 }

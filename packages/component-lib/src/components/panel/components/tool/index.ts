@@ -3,5 +3,5 @@
 export * from './SlippagePanel'
 export * from './ToolBarItems'
 export * from './TradeMenuList'
-export * from '../panel/SwapWrap/SwapMenuList'
+export * from '../SwapWrap/SwapMenuList'
 // export * from './FeeList'

@@ -2,9 +2,9 @@ import { Trans, WithTranslation } from 'react-i18next';
 import React, { ChangeEvent } from 'react';
 import { FormControlLabel, Grid, ListItemText, Radio, RadioGroup, Typography } from '@material-ui/core';
 import { CloseIcon, DropDownIcon, globalSetup, IBData, WithdrawTypes } from '@loopring-web/common-resources';
-import { TradeBtnStatus } from '../../Interface';
-import { Button, IconClearStyled, MenuItem, TextField,TypographyGood, TypographyStrong } from '../../../../';
-import { WithdrawViewProps } from '../Interface';
+import { TradeBtnStatus } from '../Interface';
+import { Button, IconClearStyled, MenuItem, TextField,TypographyGood, TypographyStrong } from '../../../index';
+import { WithdrawViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import { debounce } from 'lodash';
 
@@ -173,7 +173,7 @@ export const WithdrawWrap = <T extends IBData<I>,
             }</TextField>
         </Grid>
         <Grid item marginTop={2} alignSelf={'center'}>
-            <Button variant={'contained'} size={'medium'} color={'primary'} onClick={() => {
+            <Button fullWidth variant={'contained'} size={'medium'} color={'primary'} onClick={() => {
                 onWithdrawClick(tradeData)
             }}
                     style={{width: '200px'}}

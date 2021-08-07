@@ -10,16 +10,16 @@ import {
 } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import { AmmDepositWrapProps } from './Interface';
-import { Button, InputCoin, PopoverPure } from '../../../../basic-lib';
+import { Button, InputCoin, PopoverPure } from '../../../basic-lib';
 import React from 'react';
 import { usePopupState } from 'material-ui-popup-state/hooks';
 import { Grid, Typography } from '@material-ui/core';
-import { IconButtonStyled } from '../../Styled';
+import { IconButtonStyled } from '../Styled';
 import { bindHover, bindPopover } from 'material-ui-popup-state/es';
-import { SlippagePanel } from '../../tool';
-import { TradeBtnStatus } from '../../../Interface';
+import { SlippagePanel } from '../tool';
+import { TradeBtnStatus } from '../../Interface';
 import { SvgStyled } from './styled';
-import { useSettings } from '../../../../../stores';
+import { useSettings } from '../../../../stores';
 import { Box } from '@material-ui/core/';
 
 

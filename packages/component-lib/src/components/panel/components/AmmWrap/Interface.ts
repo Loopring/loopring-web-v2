@@ -1,6 +1,6 @@
-import { InputButtonProps } from '../../../../basic-lib';
+import { InputButtonProps } from '../../../basic-lib';
 import { CoinInfo } from '@loopring-web/common-resources';
-import { TradeBtnStatus } from '../../../';
+import { TradeBtnStatus } from '../../index';
 
 
 export type AmmChgData<AT> = {

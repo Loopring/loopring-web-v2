@@ -13,10 +13,10 @@ import { WithTranslation } from 'react-i18next';
 import React from 'react';
 import { usePopupState } from 'material-ui-popup-state/hooks';
 import { Grid, Typography } from '@material-ui/core';
-import { BtnPercentage, Button, IconButtonStyled, InputCoin, PopoverPure, TradeBtnStatus } from '../../../../';
+import { BtnPercentage, Button, IconButtonStyled, InputCoin, PopoverPure, TradeBtnStatus } from '../../../index';
 import { bindHover, bindPopover } from 'material-ui-popup-state/es';
-import { SlippagePanel } from '../../tool';
-import { useSettings } from '../../../../../stores';
+import { SlippagePanel } from '../tool';
+import { useSettings } from '../../../../stores';
 import { Box } from '@material-ui/core/';
 
 export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBData<I>>,

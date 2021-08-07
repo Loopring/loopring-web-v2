@@ -24,15 +24,17 @@ export type SwitchPanelProps<T extends string> = {
 
 }
 //${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1})};
-export const WrapStyled = styled(SwipeableViews)<SwipeableViewsProps & { height?: number | string, width?: number | string }>`
-  ${({height, width, theme}) => `       
-       width: ${typeof width === 'string' ? width : typeof width === 'number' ? width + 'px' : `var(--swap-box-width)`};   
-       height: ${typeof height === 'string' ? height : typeof height === 'number' ? height + 'px' : `var(--swap-box-height)`};        
+export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps & { _height?: number | string, _width?: number | string }>`
+  ${({_height, _width, theme}) => `       
+       width: ${typeof _width === 'string' ? _width : typeof _width === 'number' ? _width + 'px' : `var(--swap-box-width)`};   
+       height: ${typeof _height === 'string' ? _height : typeof _height === 'number' ? _height + 'px' : `var(--swap-box-height)`};        
       .react-swipeable-view-container > div {
           background: ${theme.colorBase.background().swap}; 
           .container{
-             padding:0 0 ${theme.unit * 3 + 'px'};
+             overflow:hidden;
+             padding:0;
              flex:1;
+             
           }
       }`};
   border-radius: ${({theme}) => theme.unit}px;
@@ -40,6 +42,7 @@ export const WrapStyled = styled(SwipeableViews)<SwipeableViewsProps & { height?
   .react-swipeable-view-container {
 
     height: 100%;
+
     & > div {
       display: flex;
       flex-direction: column;
@@ -52,7 +55,7 @@ export const WrapStyled = styled(SwipeableViews)<SwipeableViewsProps & { height?
   .MuiToolbar-root {
     align-content: stretch;
     justify-content: flex-end;
-    padding: 0  ${({theme}) => theme.unit / 2 * 5 }px  ${({theme}) => theme.unit / 2 }px;
+    padding: 0 ${({theme}) => theme.unit / 2 * 5}px ${({theme}) => theme.unit / 2}px;
     box-sizing: border-box;
     height: var(--toolbar-row-height);
     min-height: var(--toolbar-row-height);
@@ -68,21 +71,23 @@ export const WrapStyled = styled(SwipeableViews)<SwipeableViewsProps & { height?
       justify-content: center;
       justify-items: center;
       align-items: center;
-      font-size:  ${({theme}) => theme.fontDefault.h4};
+      font-size: ${({theme}) => theme.fontDefault.h4};
     }
 
   }
-` as React.ElementType<SwipeableViewsProps & { height?: number|string, width?: number|string }>;
+` as React.ElementType<SwipeableViewsProps & { _height?: number | string, _width?: number | string }>;
 
 function _SwitchPanel<T extends string>({
                                             index,
                                             panelList,
                                             _height,
-                                            _width
+                                            _width,
+
+                                            // ...rest
                                         }: SwitchPanelProps<T> & WithTranslation, _ref: React.ForwardedRef<any>) {
     const theme = useTheme();
-    return <WrapStyled className={'trade-panel'} axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'} index={index} height={_height}
-                       width={_width}>
+    return <SwipeableViewsStyled className={'trade-panel'} axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                       index={index} {...{_height,_width}}>
         {panelList.map((panel: PanelContent<T>) => {
             return <Grid container key={panel.key} className={'container'} direction={'column'}
                          justifyContent={"start"} flexWrap={'nowrap'}>
@@ -92,7 +97,7 @@ function _SwitchPanel<T extends string>({
                 <Grid item flex={1}>{panel.element()}</Grid>
             </Grid>;
         })}
-    </WrapStyled>;
+    </SwipeableViewsStyled>;
 }
 
 export const SwitchPanel = React.memo(React.forwardRef(_SwitchPanel)) as <T extends string>(props: SwitchPanelProps<T> & WithTranslation & RefAttributes<any>) => JSX.Element;

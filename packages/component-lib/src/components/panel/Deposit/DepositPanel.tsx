@@ -5,6 +5,7 @@ import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
 import { DepositWrap, TradeMenuList, useBasicTrade } from '../components';
 import React from 'react';
 
+
 export const DepositPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>, I>(
     {
         // tradeData,
@@ -17,7 +18,7 @@ export const DepositPanel = withTranslation('common', {withRef: true})(<T extend
         onDepositClick,
         depositBtnStatus,
         ...rest
-    }: DepositProps<T, I> & WithTranslation ) => {
+    }: DepositProps<T, I> & WithTranslation) => {
 
     // const [transferData, setTransferData] = React.useState<SwitchData<T>>({
     //     to: 'button',
