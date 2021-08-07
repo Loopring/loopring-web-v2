@@ -126,7 +126,7 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
                 inputData: ammData ? ammData.coinA : {} as any,
                 coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
             }}/>
-            <Box alignSelf={"center"}>
+            <Box alignSelf={"center"} marginY={1}>
                 <SvgStyled >
                     <LinkedIcon/>
                 </SvgStyled>

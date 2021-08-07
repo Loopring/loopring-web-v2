@@ -63,22 +63,20 @@ export const WalletConnectSubscribe = (provider: any, web3: Web3) => {
             if (error) {
                 walletServices.sendError(ErrorType.FailedConnect, {connectName: ConnectProviders.WalletConnect, error})
             }
-            connector.killSession();
-            walletServices.sendDisconnect('', message);
             WalletConnectUnsubscribe(provider);
+            walletServices.sendDisconnect('', message);
 
         });
     }
 }
 
 export const WalletConnectUnsubscribe = (provider: any) => {
-    if (provider && provider.connector && provider.connector.connected) {
+    if (provider && provider.connector ) {
         const {connector} = provider;
         connector.off('disconnect');
         connector.off('connect')
         connector.off('session_update');
         connector.killSession();
-
         // connector.removeAllListeners()
     }
 }

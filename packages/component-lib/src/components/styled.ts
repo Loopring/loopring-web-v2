@@ -119,7 +119,9 @@ export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _
               margin-top: var(--toolbar-row-height-minus);
               background: initial;
               height:100%;
-             
+               .container{
+                padding:0;
+              }
            }
        }
       

@@ -35,15 +35,17 @@ export  function useConnect() {
     }, [_chainId, account, shouldShow])
 
     const handleAccountDisconnect = React.useCallback(async () => {
-        if (account && account.accAddress) {
-            resetAccount();
+        // if (account && account.accAddress) {
+        //     resetAccount({shouldUpdateProvider:true});
+        //     statusAccountUnset();
+        //     myLog('Disconnect and clear')
+        // } else {
+            resetAccount({shouldUpdateProvider:true});
             statusAccountUnset();
-            myLog('Disconnect and clear')
-        } else {
             myLog('Disconnect with no account')
-        }
+        // }
 
-    }, [account]);
+    }, []);
 
     const handleError = React.useCallback(async ({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
         updateSystem({chainId: account._chainId ? account._chainId : 1})

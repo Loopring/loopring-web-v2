@@ -84,7 +84,7 @@ export const WithdrawWrap = <T extends IBData<I>,
     return <Grid className={walletMap ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"} minHeight={540}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}
-                 style={{transform: "translateY(-24px)"}} flexWrap={'nowrap'}>
+                  flexWrap={'nowrap'}>
         <Grid item>
             <Typography component={'h4'} height={36} textAlign={'center'} variant={'h4'}>
                 {t('withdrawTitle')}
