@@ -20,6 +20,7 @@ import { SwapTradeProps } from './Interface';
 import { useSettings } from '../../../../stores';
 import { IconButtonStyled } from '../Styled';
 import { SlippagePanel } from '../tool';
+import { Box } from '@material-ui/core/';
 
 export const SwapTradeWrap = <T extends IBData<I>,
     I,
@@ -41,16 +42,16 @@ export const SwapTradeWrap = <T extends IBData<I>,
     const {slippage} = useSettings();
     const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number | string>;
 
-    const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined'?isStob:true);
+    const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined' ? isStob : true);
 
-    const _onSwitchStob = React.useCallback((_event: any)=>{
+    const _onSwitchStob = React.useCallback((_event: any) => {
         setIsStoB(!_isStoB)
-        if(typeof switchStobEvent === 'function') {
-            switchStobEvent(!_isStoB) 
+        if (typeof switchStobEvent === 'function') {
+            switchStobEvent(!_isStoB)
         }
-    },[switchStobEvent, _isStoB])
+    }, [switchStobEvent, _isStoB])
 
-    
+
     const getDisabled = () => {
         if (disabled || tradeCalcData === undefined || tradeCalcData.sellCoinInfoMap === undefined) {
             return true
@@ -59,7 +60,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
         }
     };
     const tradeData = swapData.tradeData
-    
+
     const handleOnClick = React.useCallback((_event: React.MouseEvent, ref: any) => {
         const focus: 'buy' | 'sell' = ref.current === buyRef.current ? 'buy' : 'sell';
         onChangeEvent(1, {tradeData: swapData.tradeData, type: focus, to: 'menu'});
@@ -135,32 +136,35 @@ export const SwapTradeWrap = <T extends IBData<I>,
     const minimumReceived = (tradeCalcData && tradeCalcData.minimumReceived) ? tradeCalcData.minimumReceived : EmptyValueTag
 
     return <Grid className={tradeCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
-                 direction={"column"}
+                 direction={"column"} flexWrap={'nowrap'}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
-        <Grid item>
-            <Grid container direction={"column"} spacing={1} alignItems={"center"} alignContent={"center"}>
-                <Grid item>
-                    <InputButton<any, I, CoinInfo<I>> ref={sellRef} disabled={getDisabled()}  {...{
-                        ...propsSell,
-                        inputData: tradeData ? tradeData.sell : {} as any,
-                        coinMap: tradeCalcData && tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap : {} as CoinMap<I, CoinInfo<I>>
-                    }} />
-                </Grid>
-                <Grid item>
-                    <IconButtonStyled size={'medium'} onClick={covertOnClick} color="inherit"
-                                      aria-label={t('tokenExchange')}>
-                        <ExchangeIcon/>
-                    </IconButtonStyled>
-                </Grid>
-                <Grid item>
-                    <InputButton<any, I, CoinInfo<I>> ref={buyRef} disabled={getDisabled()} {...{
-                        ...propsBuy,
-                        // maxAllow:false,
-                        inputData: tradeData ? tradeData.buy : {} as any,
-                        coinMap: tradeCalcData && tradeCalcData.buyCoinInfoMap ? tradeCalcData.buyCoinInfoMap : {} as CoinMap<I, CoinInfo<I>>
-                    }} />
-                </Grid>
-            </Grid>
+        <Grid xs={12} item marginTop={2} display={'flex'} alignSelf={"stretch"} justifyContent={'flex-start'}
+              alignItems={"center"} flexDirection={"column"}>
+            {/*<Grid container direction={"column"} spacing={1} alignItems={"center"} alignContent={"center"}>*/}
+            {/*    <Grid item>*/}
+            <InputButton<any, I, CoinInfo<I>> ref={sellRef} disabled={getDisabled()}  {...{
+                ...propsSell,
+                inputData: tradeData ? tradeData.sell : {} as any,
+                coinMap: tradeCalcData && tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap : {} as CoinMap<I, CoinInfo<I>>
+            }} />
+            {/*</Grid>*/}
+            {/*<Grid item>*/}
+            <Box alignSelf={"center"} marginY={1}>
+                <IconButtonStyled size={'medium'} onClick={covertOnClick} color="inherit"
+                                  aria-label={t('tokenExchange')}>
+                    <ExchangeIcon/>
+                </IconButtonStyled>
+            </Box>
+            {/*</Grid>*/}
+            {/*<Grid item>*/}
+            <InputButton<any, I, CoinInfo<I>> ref={buyRef} disabled={getDisabled()} {...{
+                ...propsBuy,
+                // maxAllow:false,
+                inputData: tradeData ? tradeData.buy : {} as any,
+                coinMap: tradeCalcData && tradeCalcData.buyCoinInfoMap ? tradeCalcData.buyCoinInfoMap : {} as CoinMap<I, CoinInfo<I>>
+            }} />
+            {/*</Grid>*/}
+            {/*</Grid>*/}
         </Grid>
         <Grid item>
             <Typography component={'p'} variant="body1" height={24} lineHeight={'24px'}>
@@ -220,7 +224,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapMinReceive')}</Typography>
                         <Typography component={'p'}
-                                    variant="body1">{ minimumReceived } </Typography>
+                                    variant="body1">{minimumReceived} </Typography>
                     </Grid>
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapFee')} </Typography>

@@ -4,7 +4,7 @@ import {
     CoinInfo,
     DropDownIcon,
     EmptyValueTag,
-    IBData,
+    IBData, LinkedIcon,
     ReverseIcon,
     SlippageTolerance
 } from '@loopring-web/common-resources';
@@ -18,6 +18,7 @@ import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { SlippagePanel } from '../tool';
 import { useSettings } from '../../../../stores';
 import { Box } from '@material-ui/core/';
+import { SvgStyled } from './styled';
 
 export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBData<I>>,
     I,
@@ -137,7 +138,11 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
                 inputData: ammData ? ammData.coinA : {} as any,
                 coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
             }}/>
-            <Box marginTop={1}/>
+            <Box alignSelf={"center"} marginY={1}>
+                <SvgStyled >
+                    <LinkedIcon/>
+                </SvgStyled>
+            </Box>
             <InputCoin<IBData<I>, I, CoinInfo<I>> ref={coinBRef} disabled={getDisabled()} {...{
                 ...propsB,
                 order: 'right',
