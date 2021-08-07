@@ -89,11 +89,12 @@ export const ButtonListRightStyled = styled(Grid)`
   .MuiButton-root:not(:last-child) {
     margin-right: ${({theme}) => theme.unit}px;
   }
-`as typeof Grid
+` as typeof Grid
 export const modalContentBaseStyle = ({theme}: any) => css`
   &:focus-visible {
     outline: 0
   }
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -101,31 +102,33 @@ export const modalContentBaseStyle = ({theme}: any) => css`
   position: absolute;
   top: 50%;
   left: 50%;
-  background: ${theme.colorBase.background().popupBg1};
   transform: translate(-50%, -50%);
   padding: var(--toolbar-row-height) 0;
   border: 0;
   border-radius: ${theme.unit}px;
-  
+
 `
 
-export const SwitchPanelStyled:any = styled(Box)<{ _height?: number | string, _width?: number | string } & BoxProps>`
+export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _width?: number | string } & BoxProps>`
   ${({theme}) => modalContentBaseStyle({theme: theme})}
-  .trade-panel{
-     margin-top: var(--toolbar-row-height-minus);
+  .trade-panel {
+    margin-top: var(--toolbar-row-height-minus);
   }
-  
+
   .react-swipeable-view-container {
-   
-    //.MuiToolbar-root{
-    //  //height: 0;
-    //  //min-height: auto;
-    //  display: none;
-    //}
-    ${({_height, _width}) => `
-       height: ${_height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : 'unset'} ;
-       width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : 'var(-modal-width)'};
-    `
+
+    .container{
+      overflow:hidden;
+    }
+    ${({_height, _width, theme}) => `
+       height: ${_height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : '100%'} ;
+       width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : '100%'};
+       &>div{
+          background: ${theme.colorBase.background().popupBg1};
+          height:100%;
+         
+       }
+    `}
   }
 ` as React.ElementType<{ _height?: number | string, _width?: number | string } & BoxProps>
 
@@ -141,7 +144,7 @@ export const AnimationArrow = styled(Box)`
     height: 12px;
     width: 12px;
     border: 9px solid transparent;
-    transform: rotate(45deg) scale(.5);                           
+    transform: rotate(45deg) scale(.5);
     position: relative;
     //margin: 25vh auto;
   }
