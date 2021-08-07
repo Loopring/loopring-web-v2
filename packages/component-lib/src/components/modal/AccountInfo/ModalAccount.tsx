@@ -15,15 +15,7 @@ const BoxStyle = styled(Box)`
     flex: 1;
     height: 100%;
   }
-  .react-swipeable-view-container{
-    
-    //.MuiToolbar-root{
-    //  height: 0;
-    //  min-height: auto;
-    //}
-  }
   
- 
 ` as typeof Box;
 export const ModalAccount = withTranslation('common', {withRef: true})((
     {
