@@ -65,7 +65,7 @@ export const AccountBase = ({
             </Trans>
         </Typography>
         <Typography marginTop={1} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}>
-            <Typography component={'span'} variant={'h4'}>{addressShort}</Typography>
+            <Typography component={'span'} variant={'h1'}>{addressShort}</Typography>
             {level ? <VipStyled component={'span'} variant={'body2'}
                                 alignSelf={'flex-start'}>{level}</VipStyled> : undefined}
         </Typography>

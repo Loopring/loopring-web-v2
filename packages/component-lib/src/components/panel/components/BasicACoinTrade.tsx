@@ -1,8 +1,8 @@
 import { CoinInfo, CoinMap, IBData } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
-import { BasicACoinTradeProps } from '../Interface';
-import { InputButton, } from '../../../basic-lib';
+import { BasicACoinTradeProps } from './Interface';
+import { InputButton, } from '../../basic-lib';
 
 export const BasicACoinTrade = <T extends IBData<I>,
     I>({

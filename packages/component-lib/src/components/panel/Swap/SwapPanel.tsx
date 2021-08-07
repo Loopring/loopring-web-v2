@@ -6,9 +6,10 @@ import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
 import { DropDownIcon, IBData, TradeCalcData } from '@loopring-web/common-resources';
 // import { useDeepCompareEffect } from 'react-use';
 // import clockLoading from '@loopring-web/common-resources/assets/svg/clock-loading.svg';
-import { IconButtonStyled, SwapMenuList, SwapTradeWrap } from '../components';
-import { SwapData } from '../components/panel/SwapWrap/Interface';
+import {  SwapMenuList, SwapTradeWrap } from '../components';
+import { SwapData } from '../components/SwapWrap/Interface';
 import { CountDownIcon } from '../components/tool/Refresh';
+import { IconButtonStyled } from '..';
 
 export const SwapPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>,
     I,

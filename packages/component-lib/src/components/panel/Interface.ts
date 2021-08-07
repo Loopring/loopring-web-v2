@@ -11,7 +11,7 @@ import {
     WithdrawExtendProps,
     WithdrawInfoProps as _WithdrawInfoProps,
 } from './components/Interface';
-import { SwapData, SwapTradeBaseEventProps, SwapTradeBaseProps, } from './components/panel/SwapWrap/Interface';
+import { SwapData, SwapTradeBaseEventProps, SwapTradeBaseProps, } from './components/SwapWrap/Interface';
 import { AmmPanelBaseProps } from './Amm';
 
 export type SwapTradeData<T> = {

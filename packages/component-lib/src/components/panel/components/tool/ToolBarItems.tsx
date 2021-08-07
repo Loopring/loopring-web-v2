@@ -1,7 +1,7 @@
 import { Grid } from '@material-ui/core';
 import { DropDownIcon } from '@loopring-web/common-resources';
 import { SwitchData } from '../../Interface';
-import { IconButtonStyled } from '../index'
+import { IconButtonStyled } from '../Styled';
 
 export const ToolBarItemBack = <T extends any>({
                                                    onChangeEvent,

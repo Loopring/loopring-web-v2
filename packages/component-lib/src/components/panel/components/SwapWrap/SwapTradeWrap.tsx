@@ -1,4 +1,4 @@
-import { SwapTradeData, TradeBtnStatus } from '../../../Interface';
+import { SwapTradeData, TradeBtnStatus } from '../../Interface';
 import {
     CoinInfo,
     CoinMap,
@@ -13,12 +13,13 @@ import {
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
 import { Grid, Typography } from '@material-ui/core';
-import { Button, InputButton, PopoverPure } from '../../../../basic-lib';
+import { Button, InputButton, PopoverPure } from '../../../basic-lib';
 import { usePopupState } from 'material-ui-popup-state/hooks';
 import { bindHover, bindPopover } from 'material-ui-popup-state/es';
-import { IconButtonStyled, SlippagePanel } from '../../';
 import { SwapTradeProps } from './Interface';
-import { useSettings } from '../../../../../stores';
+import { useSettings } from '../../../../stores';
+import { IconButtonStyled } from '../Styled';
+import { SlippagePanel } from '../tool';
 
 export const SwapTradeWrap = <T extends IBData<I>,
     I,
