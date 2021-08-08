@@ -128,6 +128,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
             state.level = '';
             state.nonce = undefined;
             state.status = SagaStatus.DONE;
+            state.connectName = 'UnKnown'
             state.errorMessage = null;
             if(action.payload?.shouldUpdateProvider){
                 state.connectName = ConnectProviders.UnKnown;
