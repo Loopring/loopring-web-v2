@@ -62,8 +62,9 @@ export const ModalAccountInfo = withTranslation('common')(({
     const [copyToastOpen, setCopyToastOpen] = useState(false);
     const onSwitch = useCallback(() => {
         setShowAccount({isShow: false})
+        setShouldShow(true);
         setShowConnect({isShow: shouldShow ?? false})
-    }, [setShowConnect, setShowAccount])
+    }, [setShowConnect, setShowAccount,shouldShow])
     const onCopy = React.useCallback(() => {
         copyToClipBoard(account.accAddress);
         setCopyToastOpen(true)
@@ -97,6 +98,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     const unlockBtn = React.useMemo(() => {
         return <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {
+            setShouldShow(true);
             unlockAccount();
         }}>{t('labelUnLockLayer2')} </Button>
     }, [updateAccount]);

@@ -7,13 +7,12 @@ import { myLog } from './utils/log_tools';
 import { networkUpdate } from './services/account/networkUpdate';
 import { checkAccount } from './services/account/checkAccount';
 import { ErrorType, useConnectHook } from '@loopring-web/web3-provider';
+import { SagaStatus } from '@loopring-web/common-resources';
 
-export  function useConnect() {
+export  function useConnect({state}: { state: keyof typeof SagaStatus }) {
     const {account, shouldShow, resetAccount, statusUnset: statusAccountUnset, setShouldShow } = useAccount();
-    const {
-        updateSystem,
-        chainId: _chainId,
-    } = useSystem();
+    const {updateSystem, chainId: _chainId, status: systemStatus, statusUnset: systemStatusUnset} = useSystem();
+
     const {setShowConnect} = useOpenModals();
 
     const handleConnect = React.useCallback(async ({
@@ -43,9 +42,11 @@ export  function useConnect() {
             resetAccount({shouldUpdateProvider:true});
             statusAccountUnset();
             myLog('Disconnect with no account')
+            const chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
+            updateSystem({chainId})
         // }
 
-    }, []);
+    }, [state]);
 
     const handleError = React.useCallback(async ({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
         updateSystem({chainId: account._chainId ? account._chainId : 1})

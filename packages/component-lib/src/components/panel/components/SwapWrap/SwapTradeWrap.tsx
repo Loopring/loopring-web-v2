@@ -138,8 +138,8 @@ export const SwapTradeWrap = <T extends IBData<I>,
     return <Grid className={tradeCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"} flexWrap={'nowrap'}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
-        <Grid xs={12} item marginTop={2} display={'flex'} alignSelf={"stretch"} justifyContent={'flex-start'}
-              alignItems={"center"} flexDirection={"column"}>
+        <Grid item marginTop={2} display={'flex'} alignSelf={"stretch"} justifyContent={'flex-start'}
+              alignItems={"center"} flexDirection={"column"} flexBasis={'initial'}>
             {/*<Grid container direction={"column"} spacing={1} alignItems={"center"} alignContent={"center"}>*/}
             {/*    <Grid item>*/}
             <InputButton<any, I, CoinInfo<I>> ref={sellRef} disabled={getDisabled()}  {...{

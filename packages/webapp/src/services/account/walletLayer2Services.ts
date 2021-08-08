@@ -5,7 +5,8 @@ import { LoopringAPI } from '../../stores/apis/api';
 import { myLog } from '../../utils/log_tools';
 import store from 'stores';
 import { updateAccountStatus } from 'stores/account';
-import { AccountInfo, toBig, toHex } from 'loopring-sdk';
+import { AccountInfo, generateKeyPair, toBig, toHex } from 'loopring-sdk';
+import { connectProvides } from '@loopring-web/web3-provider';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
@@ -41,9 +42,33 @@ function setLocalDepositHash(account: Account, value: string): void {
 
 export const walletLayer2Services = {
     //INFO: for update Account and unlock account
-    sendSign: () => {
+    sendSign: async  () => {
+        // const account = store.getState().account;
+        // const {exchangeInfo} = store.getState().system;
         subject.next({
             status: Commands.ProcessSign,
+            data: undefined,
+        })
+        // if (exchangeInfo && LoopringAPI.userAPI && account.nonce !== undefined) {
+        //     const eddsaKey = await generateKeyPair(
+        //         connectProvides.usedWeb3,
+        //         account.accAddress,
+        //         exchangeInfo.exchangeAddress,
+        //         account.nonce - 1,
+        //         account.connectName as any,
+        //     )
+        //     const sk = toHex(toBig(eddsaKey.keyPair.secretKey))
+        //     const {apiKey} = (await LoopringAPI.userAPI.getUserApiKey({
+        //         accountId: account.accountId
+        //     }, sk))
+        //
+        //     walletLayer2Services.sendAccountSigned(apiKey, eddsaKey)
+        //
+        // }
+    },
+    sendErrorUnlock:() => {
+        subject.next({
+            status: Commands.ErrorSign,
             data: undefined,
         })
     },
