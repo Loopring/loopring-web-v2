@@ -26,11 +26,14 @@ export const ModalGroup = withTranslation('common',{withRef: true})(({...rest}:W
     useAccountModal();
     const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals();
     return  <>
-        <ModalPanel transferProps={transferProps} withDrawProps={withdrawProps}
+        <ModalPanel transferProps={transferProps}
+                    withDrawProps={withdrawProps}
                     depositProps={depositProps}
                     resetProps={{} as any}
                     ammProps={{} as any}
-                    swapProps={{} as any}/>
+                    swapProps={{} as any}
+                    {...{_height: 'var(--modal-height)', _width: 'var(--modal-width)'}}
+        />
 
         <ModalWalletConnectPanel {...{
             ...rest,

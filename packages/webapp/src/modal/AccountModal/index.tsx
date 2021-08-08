@@ -82,16 +82,17 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     const goDeposit = React.useCallback((token?: any) => {
         setShowAccount({isShow: false})
-        showDeposit(true, {
-            _width: 'var(--modal-width)',
-            _height: 'var(--modal-height)',
-            // _height:'var(--modal-height)',
-            // _width:'var(--modal-width)',
-            tradeData: {
-                balance: '',
-                belong: token
-            },
-        })
+        setShowAccount({isShow: true, step: AccountStep.Deposit});
+        // showDeposit(true, {
+        //     _width: 'var(--modal-width)',
+        //     _height: 'var(--modal-height)',
+        //     // _height:'var(--modal-height)',
+        //     // _width:'var(--modal-width)',
+        //     tradeData: {
+        //         balance: '',
+        //         belong: token
+        //     },
+        // })
     }, [showDeposit])
 
     const unlockBtn = React.useMemo(() => {
@@ -116,7 +117,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 // connectBy: account.connectName,
                 onViewQRCode, onDisconnect, addressShort,
             }} />,
-            [ AccountStep.Deposit ]: <DepositPanel title={"depositTitleAndActive"} {...{...rest, ...depositProps, t}}/>,
+            [ AccountStep.Deposit ]: <DepositPanel title={"depositTitleAndActive"} {...{...rest, _height: 'var(--modal-height)', _width: 'var(--modal-width)', ...depositProps, t}}/>,
             [ AccountStep.Depositing ]: <Depositing label={"depositTitleAndActive"}
                                                     etherscanLink={etherscanUrl + account.accAddress}
                                                     onDepositSubmit={() => undefined}  {...{...rest, t}}/>,

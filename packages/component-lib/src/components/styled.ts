@@ -94,6 +94,7 @@ export const modalContentBaseStyle = ({theme}: any) => css`
   &:focus-visible {
     outline: 0
   }
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -102,13 +103,16 @@ export const modalContentBaseStyle = ({theme}: any) => css`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding-top:var(--toolbar-row-height);
+  padding-top: var(--toolbar-row-height);
   border: 0;
   border-radius: ${theme.unit}px;
 
 `
-
+// height:100%;
+// margin-top: var(--toolbar-row-height-minus);
+// padding-top: var(--toolbar-row-height);
 export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _width?: number | string } & BoxProps>`
+
   ${({theme}) => modalContentBaseStyle({theme: theme})}
   ${({_height, _width, theme}) => `
       background: ${theme.colorBase.background().popupBg1};
@@ -116,17 +120,31 @@ export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _
            height: ${_height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : '100%'} ;
            width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : '100%'};
            & > div{
-              margin-top: var(--toolbar-row-height-minus);
+              padding-bottom:var(--toolbar-row-height); 
               background: initial;
               height:100%;
-               .container{
-                padding:0;
+              .container{
+                height:100%;
               }
            }
        }
+      .trade-panel{
+        margin-top: var(--toolbar-row-height-minus);
+        height: ${_height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : '100%'} ;
+        width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : '100%'};
+        .react-swipeable-view-container {
+            & > div{
+              padding: 0 ${theme.unit * 3}px;
+              overflow: unset !important
+              .container{
+                height:100%;
+              }
+           }
+        }
+      }
       
     `}
-  
+
 ` as React.ElementType<{ _height?: number | string, _width?: number | string } & BoxProps>
 
 export const TableFilterStyled = styled(Box)`
@@ -143,7 +161,7 @@ export const AnimationArrow = styled(Box)`
     border: 9px solid transparent;
     transform: rotate(45deg) scale(.5);
     position: relative;
-    margin:  ${({theme}) => theme.unit*2}px ;
+    margin: ${({theme}) => theme.unit * 2}px;
     //margin: 25vh auto;
   }
 

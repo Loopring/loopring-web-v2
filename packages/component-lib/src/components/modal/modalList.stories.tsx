@@ -34,8 +34,9 @@ import {
     TokenAccessProcess,
 } from './AccountInfo';
 import { account, coinMap, CoinType, walletMap } from '../../static';
-import { DepositPanel, DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../index';
+import { DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../index';
 import { WalletConnectBtn } from '../header';
+import { DepositWrap } from '../panel/components';
 
 
 const Style = styled.div`
@@ -131,10 +132,10 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
     const accountList = React.useMemo(() => {
         return Object.values({
             [ AccountStep.NoAccount ]: <NoAccount {...{
-                ...accountInfoProps, goDeposit: () => {
+                ...accountInfoProps, goDeposit:  () => {
                 }
             }}/>,
-            [ AccountStep.Deposit ]: <DepositPanel _height={480} _width={400}  {...{...rest, ...depositProps}} />,
+            [ AccountStep.Deposit ]: <DepositWrap _height={480} _width={400}  {...{...rest, ...depositProps}} />,
             [ AccountStep.Depositing ]: <Depositing {...{
                 providerName: ConnectProviders.MetaMask,
                 etherscanLink: accountInfoProps.etherscanUrl, ...rest

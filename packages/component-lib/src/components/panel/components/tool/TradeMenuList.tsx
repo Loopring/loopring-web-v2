@@ -8,7 +8,7 @@ import { TradeMenuListProps } from '../Interface';
 
 export const TradeMenuList = <T extends IBData<I>,
     I>({
-           t, onChangeEvent, walletMap, selected, tradeData, coinMap,
+           t, onChangeEvent, walletMap, selected, tradeData, coinMap, _height,
            ...rest
        }: TradeMenuListProps<T, I> & WithTranslation) => {
     const ref = React.useRef<any>(null);
@@ -32,8 +32,6 @@ export const TradeMenuList = <T extends IBData<I>,
         const filterBy = (coinInfo: CoinInfo<I>, filterString: string) => {
             return filterString && filterString.length ? RegExp(filterString, 'i').test(coinInfo.simpleName as string) : true;
         }
-
-
         const PanelRender = ({selected, value}: any) => {
             const handleSelect = (_event: any, itemKey: CoinKey<I>) => {
                 onChangeEvent(0, {...{tradeData: {...tradeData, belong: itemKey}}, to: 'button'})
@@ -41,7 +39,9 @@ export const TradeMenuList = <T extends IBData<I>,
             return <CoinMenu {...{
                 coinMap: coinMap, //swapData.type === 'sell' ? tradeCalcData?.sellCoinInfoMap : tradeCalcData?.buyCoinInfoMap as any,
                 filterBy,
-                height: '410px',
+                height: _height ? typeof _height === 'number' ?
+                    `calc(${_height + 'px'}  - 2 * var(--toolbar-row-height) )`
+                    : `calc(${_height}  - 2 * var(--toolbar-row-height) )` : '410px',
                 filterString: value,
                 handleSelect,
                 walletMap: walletMap,//tradeCalcData?.walletMap as any,   // TODO get form parents Data
@@ -49,7 +49,7 @@ export const TradeMenuList = <T extends IBData<I>,
             }} ref={ref}></CoinMenu>
         }
         return <>
-            <Box flex={1} height={'100%'} width={'100%'}> <InputSelect {...{
+            <Box flex={1} height={'100%'} width={'100%'}  > <InputSelect {...{
                 ...{...inputSelectProps, selected},
                 panelRender: PanelRender, t, ...rest
             }}/> </Box>
