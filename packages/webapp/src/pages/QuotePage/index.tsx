@@ -2,11 +2,12 @@ import React, { useCallback } from 'react'
 import styled from '@emotion/styled/macro'
 
 import { MarketBlock, QuoteTable, TablePaddingX, QuoteTableRawDataItem } from '@loopring-web/component-lib'
-
+import { OutlinedInputProps } from '@material-ui/core/OutlinedInput/OutlinedInput';
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 // import { FloatTag } from '@loopring-web/common-resources'
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid, Tabs, Tab, Divider, OutlinedInput, InputAdornment } from '@material-ui/core'
+import { SearchIcon } from '@loopring-web/common-resources'
 import { useQuote, useCandlestickList } from './hook'
 import { LoopringAPI } from 'stores/apis/api'
 import { TradingInterval } from 'loopring-sdk/dist'
@@ -18,6 +19,10 @@ const  RowStyled = styled(Grid)`
       }
 ` as typeof Grid
 
+const TabsWrapperStyled = styled(Box)`
+      position: relative;
+      padding: 0.8rem 0.8rem 0 1rem;
+`
 
 export type CandlestickItem = {
   market: string;
@@ -30,6 +35,9 @@ export type CandlestickItem = {
 const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const [candlestickList, setCandlestickList] = React.useState<any[]>([])
     const [ammPoolBalances, setAmmPoolBalances] = React.useState<any[]>([])
+    const [tableTabValue, setTableTabValue] = React.useState('all')
+
+    const { t } = rest
 
     const getCandlestick = React.useCallback(async (market: string) => {
       if (LoopringAPI.exchangeAPI) {
@@ -98,6 +106,34 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
 
     let history = useHistory()
 
+    const SearchWrap = () => {
+      const inputProps: OutlinedInputProps = {
+          placeholder: 'Search',
+          value: '',
+          onChange: (value: any) => {
+              console.log('FilterString', value);
+              //setFilterString(value);
+          },
+      }
+      return <OutlinedInput
+          // ref={inputEle}
+          {...inputProps}
+          key={'search'}
+          // placeholder={'search'}
+          className={'search'}
+          aria-label={'search'}
+          startAdornment={<InputAdornment position="start">
+              <SearchIcon/>
+          </InputAdornment>}
+      />
+    }
+
+    const SearchWrapperStyled = styled(Box)`
+      position: absolute;
+      top: 1.3rem;
+      right: ${({theme}) => theme.unit * 2}px;
+    `
+
     // prevent amm risky pair
     const getFilteredTickList = useCallback(() => {
       if (!!ammPoolBalances.length && tickList && !!tickList.length) {
@@ -119,6 +155,11 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
         pathname: `/trading/lite/${tradePair}`
       })
     }, [history])
+
+    const handleTabChange = useCallback((_event: any, newValue: string) => {
+      setTableTabValue(newValue)
+    }, [])
+    
 
     return <Box display={'flex'} flexDirection={'column'} flex={1} >
 
@@ -147,7 +188,22 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
 
         </RowStyled>
         <TableWrapStyled container marginY={3}  paddingBottom={2} flex={1}>
-            <Grid item xs={12} display={'flex'}>
+            <Grid item xs={12}>
+                <TabsWrapperStyled>
+                  <Tabs
+                      value={tableTabValue}
+                      onChange={handleTabChange}
+                      aria-label="disabled tabs example"
+                  >
+                      <Tab label={t('labelQuotePageFavourite')} value="favourite"/>
+                      <Tab label={t('labelAll')} value="all"/>
+                      <Tab label={t('labelQuotePageTradeRanking')} value="ranking"/>
+                  </Tabs>
+                  <SearchWrapperStyled>
+                    <SearchWrap />
+                  </SearchWrapperStyled>
+                </TabsWrapperStyled>
+                <Divider />
                 <QuoteTable /* onVisibleRowsChange={onVisibleRowsChange} */ onRowClick={(index, row, col) => 
                   handleRowClick(row)
                 } rawData={getFilteredTickList()} {...{ showLoading: tickList && !tickList.length, ...rest }} />
