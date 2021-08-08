@@ -33,6 +33,7 @@ export default {
     labelQuota24hHigh: '24h High',
     labelQuota24hLow: '24h Low',
     labelQuota24Volume: '24h Volume',
+    labelQuoteAction: 'Action',
     labelTradeFilterAllTypes: 'All Types',
     labelTradeFilterBuy: 'Buy',
     labelTradeFilterSell: 'Sell',

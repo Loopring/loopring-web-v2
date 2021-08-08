@@ -178,6 +178,8 @@ export default {
     labelSuccessUnlock:'Success Unlock',
     labelDepositApproveSuccess:'Congratulation deposit done, please click button to active your account.',
     labelActiveAccount:'Active Account',
-    labelRetry:'重试'
-
+    labelRetry:'Retry',
+    labelQuotePageFavourite: 'Favourite',
+    labelQuotePageAll: 'All',
+    labelQuotePageTradeRanking: 'Trade Ranking',
 }
