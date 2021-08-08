@@ -9,7 +9,7 @@ export type AccountBaseProps = {
     mainBtn?: JSX.Element | React.ElementType<ButtonProps>,
     etherscanUrl: string
     // connectBy: string,
-    // onDisconnect?: any,
+    onDisconnect?: any,
     onSwitch?: any,
     // onLock?: any,
     onCopy?: any,

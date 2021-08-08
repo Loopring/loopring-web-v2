@@ -57,7 +57,7 @@ export default {
     labelLockLayer2: 'Lock',
     labelUnLockLayer2: 'Unlock',
     labelActiveLayer2: 'Active l2',
-    labelSwitchAccount: 'Switch W',
+    labelSwitchAccount: 'Switch',
     labelViewEth: 'View on Etherscan',
     labelQRCode: 'View QR Code',
     labelShowAccountInfo: 'Show account information',
