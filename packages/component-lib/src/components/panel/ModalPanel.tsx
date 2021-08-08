@@ -41,8 +41,8 @@ const Modal = withTranslation('common')(({
                 <ModalCloseButton onClose={onClose} {...rest} />
                 {/*{onBack ? <ModalBackButton onBack={onBack}  {...rest}/> : <></>}*/}
             </Box>
-            <Box flex={1} display={'flex'} >
-             {content}
+            <Box flex={1} display={'flex'}>
+                {content}
             </Box>
         </SwitchPanelStyled>
     </MuiModal>
@@ -57,8 +57,8 @@ export const ModalPanel = <T extends IBData<I>, I>({
                                                        swapProps,
                                                        ...rest
                                                    }: {
-    _width?: number|string,
-    _height?: number|string,
+    _width?: number | string,
+    _height?: number | string,
     transferProps: TransferProps<T, I>,
     withDrawProps: WithdrawProps<T, I>,
     depositProps: DepositProps<T, I>,
@@ -86,26 +86,38 @@ export const ModalPanel = <T extends IBData<I>, I>({
     return <>
         <Modal open={isShowTransfer.isShow} onClose={() => setShowTransfer({isShow: false})}
                content={<TransferPanel<any, any> {...{
-                   _width: 'var(--lage-modal-width)',
-                   _height: 'var(--lage-modal-height)',...rest, ...transferProps, ...isShowTransfer.props
+                   ...rest, _width: 'var(--lage-modal-width)',
+                   _height: 'var(--lage-modal-height)', ...transferProps, ...isShowTransfer.props
                }}> </TransferPanel>}/>
         <Modal open={isShowWithdraw.isShow} onClose={() => setShowWithdraw({isShow: false})}
                content={<WithdrawPanel<any, any> {...{
-                   _width: 'var(--lage-modal-width)',
-                   _height: 'var(--lage-modal-height)',...rest, ...withDrawProps, ...isShowWithdraw.props
+                   ...rest, _width: 'var(--lage-modal-width)',
+                   _height: 'var(--lage-modal-height)', ...withDrawProps, ...isShowWithdraw.props
                }}  > </WithdrawPanel>}/>
         <Modal open={isShowDeposit.isShow}
                onClose={() => setShowDeposit({isShow: false})}
-               content={<DepositPanel<any, any> {...{...rest,...depositProps, ...isShowDeposit.props}} > </DepositPanel>}/>
+               content={<DepositPanel<any, any> {...{
+                   ...rest, _width: 'var(--modal-width)',
+                   _height: 'var(--modal-height)', ...depositProps, ...isShowDeposit.props
+               }} > </DepositPanel>}/>
         <Modal open={isShowResetAccount.isShow}
                onClose={() => setShowResetAccount({...isShowResetAccount, isShow: false})}
-               content={<ResetPanel<any, any> {...{...rest,...resetProps, ...isShowResetAccount.props}} > </ResetPanel>}/>
+               content={<ResetPanel<any, any> {...{
+                   ...rest, _width: 'var(--modal-width)',
+                   _height: 'var(--modal-height)', ...resetProps, ...isShowResetAccount.props
+               }} > </ResetPanel>}/>
         <Modal open={isShowAmm.isShow}
                onClose={() => setShowAmm({...isShowAmm, isShow: false} as any)}
-               content={<AmmPanel<any, any, any> {...{...rest,...ammProps, ...isShowAmm.props}} > </AmmPanel>}/>
+               content={<AmmPanel<any, any, any> {...{
+                   ...rest, _width: 'var(--modal-width)',
+                   _height: 'var(--modal-height)', ...ammProps, ...isShowAmm.props
+               }} > </AmmPanel>}/>
         <Modal open={isShowSwap.isShow}
                onClose={() => setShowSwap({...isShowSwap, isShow: false} as any)}
-               content={<SwapPanel<any, any, any> {...{...rest,...swapProps, ...isShowSwap.props}} > </SwapPanel>}/>
+               content={<SwapPanel<any, any, any> {...{
+                   ...rest, _width: 'var(--modal-width)',
+                   _height: 'var(--modal-height)', ...swapProps, ...isShowSwap.props
+               }} > </SwapPanel>}/>
     </>
 
 }
