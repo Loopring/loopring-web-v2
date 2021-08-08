@@ -112,24 +112,24 @@ export const modalContentBaseStyle = ({theme}: any) => css`
 // margin-top: var(--toolbar-row-height-minus);
 // padding-top: var(--toolbar-row-height);
 export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _width?: number | string } & BoxProps>`
-
-  ${({theme}) => modalContentBaseStyle({theme: theme})}
-  ${({_height, _width, theme}) => `
+  &&{
+    ${({theme}) => modalContentBaseStyle({theme: theme})}
+    ${({_height, _width, theme}) => `
       background: ${theme.colorBase.background().popupBg1};
       .react-swipeable-view-container {
            height: ${_height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : '100%'} ;
            width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : '100%'};
            & > div{
+              height:initial;
               padding-bottom:var(--toolbar-row-height); 
               background: initial;
-              height:100%;
               .container{
                 height:100%;
               }
                .trade-panel{
                  .react-swipeable-view-container {
                      & > div{
-                          padding: 0 ${theme.unit * 3}px var(--toolbar-row-height);
+                          padding: 0 ${theme.unit * 3}px 0;
                      }
                  }
                }
@@ -152,7 +152,7 @@ export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _
       }
       
     `}
-
+  }
 ` as React.ElementType<{ _height?: number | string, _width?: number | string } & BoxProps>
 
 export const TableFilterStyled = styled(Box)`

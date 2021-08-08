@@ -27,11 +27,13 @@ export const useHeader = () => {
     const _btnClickMap: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
         [ fnType.ACTIVATED ]: [
             function () {
+                setShouldShow(true);
                 setShowAccount({isShow: true, step: AccountStep.HadAccount})
             }
         ],
         [ fnType.CONNECT ]: [
             function () {
+                setShouldShow(true);
                 setShowAccount({isShow: true, step: AccountStep.HadAccount})
             }
         ]

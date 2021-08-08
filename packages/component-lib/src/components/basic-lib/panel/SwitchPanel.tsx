@@ -45,7 +45,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps &
         & > div {  
             height: ${_height ? typeof _height === 'number' ?
                     `calc(${_height + 'px'}  - 2 * var(--toolbar-row-height) )`
-                    : `calc(${_height}  - 2 * var(--toolbar-row-height) )` : '410px'}
+                    : `calc(${_height}  - 2 * var(--toolbar-row-height) )` : 'auto'};
             padding: 0 0 var(--toolbar-row-height);
             background: ${theme.colorBase.background().swap}; 
             .container{
