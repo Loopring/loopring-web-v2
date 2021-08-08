@@ -47,6 +47,7 @@ const BoxStyled = styled(Box)`
 export const AccountBase = ({
 
                                 onSwitch,
+                                onDisconnect,
                                 accAddress,
                                 level,
                                 connectName,
@@ -83,6 +84,11 @@ export const AccountBase = ({
                 if (onSwitch) onSwitch()
             }}>
                 <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelSwitchAccount')} </Typography>
+            </Button>
+            <Button startIcon={<ReverseIcon fontSize={'small'}/>} onClick={() => {
+                if (onDisconnect) onDisconnect()
+            }}>
+                <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelDisconnect')} </Typography>
             </Button>
         </BoxStyled>
     </Box>
