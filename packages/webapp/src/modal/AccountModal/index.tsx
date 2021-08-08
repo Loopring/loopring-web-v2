@@ -134,7 +134,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             }} goActiveAccount={() => undefined}  {...{...rest, t}}/>,
             [ AccountStep.ProcessUnlock ]: <ProcessUnlock providerName={account.connectName} {...{...rest, t}}/>,
             [ AccountStep.SuccessUnlock ]: <SuccessUnlock providerName={account.connectName} {...{...rest, t}}/>,
-            [ AccountStep.FailedUnlock ]: <FailedUnlock onRetry={() => undefined} {...{...rest, t}}/>,
+            [ AccountStep.FailedUnlock ]: <FailedUnlock onRetry={() => {unlockAccount()}} {...{...rest, t}}/>,
             [ AccountStep.HadAccount ]: <HadAccount {...{
                 ...account,
                 onSwitch, onCopy,

@@ -8,7 +8,6 @@ import { myLog } from '../../utils/log_tools';
 export async function unlockAccount() {
     const account = store.getState().account;
     const {exchangeInfo} = store.getState().system;
-    myLog('After connect >>,unlockAccount: step1')
     walletLayer2Services.sendSign()
     if (exchangeInfo && LoopringAPI.userAPI && account.nonce !== undefined) {
         try{
