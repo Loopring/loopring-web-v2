@@ -9,7 +9,7 @@ const RPC_URLS: { [ chainId: number ]: string } = {
     5: process.env.REACT_APP_RPC_URL_5 as string
 }
 const POLLING_INTERVAL = 12000
-export const WalletConnectProvide = async (): Promise<{ provider: WalletConnectProvider, web3: Web3 } | undefined> => {
+export const WalletConnectProvide = async (account?: string): Promise<{ provider: WalletConnectProvider, web3: Web3, } | undefined> => {
     try {
         const provider: WalletConnectProvider = new WalletConnectProvider({
             rpc: RPC_URLS,
@@ -18,15 +18,22 @@ export const WalletConnectProvide = async (): Promise<{ provider: WalletConnectP
             qrcode: false,
         });
         const {connector} = provider;
-        let web3: Web3;
-        if (!connector.connected) {
+        let web3: Web3 = new Web3(provider as any);
+        if (!connector.connected && account === undefined) {
             await connector.createSession();
             const uri = connector.uri;
             walletServices.sendProcess('nextStep', {qrCodeUrl: uri});
             await provider.enable();
+            walletServices.sendConnect(web3, provider)
+
+        } else if (!connector.connected && account !== undefined) {
+            // WalletConnectUnsubscribe(provider);
+            // walletServices.sendDisconnect('', 'walletConnect not connect');
+            throw new Error('walletConnect not connect');
+        } else {
+            walletServices.sendConnect(web3, provider)
+
         }
-        web3 = new Web3(provider as any);
-        walletServices.sendConnect(web3, provider)
         return {provider, web3}
     } catch (error) {
         console.log('error happen at connect wallet with WalletConnect:', error)
@@ -34,10 +41,13 @@ export const WalletConnectProvide = async (): Promise<{ provider: WalletConnectP
     }
 }
 
-export const WalletConnectSubscribe = (provider: any, web3: Web3) => {
+export const WalletConnectSubscribe = (provider: any, web3: Web3, account?: string) => {
     const {connector} = provider;
     if (provider && connector && connector.connected) {
 
+        // if(account) {
+        //     connector.approveSession({accounts:[account], chainId:provider.chainId})
+        // }
 
         connector.on("connect", (error: Error | null, payload: any | null) => {
             if (error) {
@@ -71,7 +81,7 @@ export const WalletConnectSubscribe = (provider: any, web3: Web3) => {
 }
 
 export const WalletConnectUnsubscribe = (provider: any) => {
-    if (provider && provider.connector ) {
+    if (provider && provider.connector) {
         const {connector} = provider;
         connector.off('disconnect');
         connector.off('connect')

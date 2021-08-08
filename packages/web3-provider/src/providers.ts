@@ -29,16 +29,21 @@ export class ConnectProvides {
 
     }
 
-    public WalletConnect = async () => {
+    public WalletConnect = async (account?: string) => {
         this._provideName = ConnectProviders.WalletConnect;
         this.clearProviderSubscribe();
-        const obj = await WalletConnectProvide();
-        if (obj) {
-            this.usedProvide = obj.provider
-            this.usedWeb3 = obj.web3
+        try {
+           const obj = await WalletConnectProvide(account);
+           if (obj) {
+               this.usedProvide = obj.provider
+               this.usedWeb3 = obj.web3
+           }
+           this.subScribe(account)
+        }catch (e){
+            throw e;
         }
-        this.subScribe()
-    }
+
+    };
 
     public clear = async () => {
         this.clearProviderSubscribe();
@@ -60,10 +65,10 @@ export class ConnectProvides {
 
     }
 
-    private subScribe = () => {
+    private subScribe = (account?:string) => {
         switch (this._provideName) {
             case  ConnectProviders.WalletConnect:
-                WalletConnectSubscribe(this.usedProvide, this.usedWeb3 as Web3)
+                WalletConnectSubscribe(this.usedProvide, this.usedWeb3 as Web3, account)
                 break
             case  ConnectProviders.MetaMask:
                 MetaMaskSubscribe(this.usedProvide, this.usedWeb3 as Web3)

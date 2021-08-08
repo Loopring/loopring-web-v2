@@ -20,6 +20,7 @@ import { SwitchPanelProps } from '../../basic-lib';
 export type TradeMenuListProps<T, I> = {
     //swapData: SwapData<T>,
     walletMap: WalletMap<I, WalletCoin<I>>,
+    _height?: string|number,
     coinMap: CoinMap<I, CoinInfo<I>>,
     onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void,
     selected?: string,

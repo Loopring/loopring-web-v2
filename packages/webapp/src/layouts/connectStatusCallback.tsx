@@ -2,6 +2,7 @@ import store from '../stores';
 import { AccountStep, setShowAccount, setShowConnect, Toast, WalletConnectStep } from '@loopring-web/component-lib';
 import { fnType } from '@loopring-web/common-resources';
 import { Provider } from 'react-redux';
+import { changeShowModel } from '../stores/account';
 
 
 export const accountStaticCallBack = (onclickMap: { [ key: number ]: [fn: (props: any) => any, args?: any[]] }, deps?: any[]) => {
@@ -61,11 +62,13 @@ export const btnClickMap: { [ key: string ]: [fn: (props: any) => any, args?: an
     [ fnType.UN_CONNECT ]: [
         function () {
             // setShowConnect({isShow: true})
+            store.dispatch(changeShowModel({_userOnModel: true}));
             store.dispatch(setShowConnect({isShow: true, step:WalletConnectStep.Provider}))
         }
     ]
     , [ fnType.NO_ACCOUNT ]: [
         function () {
+            store.dispatch(changeShowModel({_userOnModel: true}));
             store.dispatch(setShowAccount({isShow: true, step: AccountStep.NoAccount}))
             // ShowDeposit(true)
         }
@@ -78,6 +81,7 @@ export const btnClickMap: { [ key: string ]: [fn: (props: any) => any, args?: an
     ]
     , [ fnType.LOCKED ]: [
         function () {
+            store.dispatch(changeShowModel({_userOnModel: true}));
             store.dispatch(setShowAccount({isShow: true, step: AccountStep.HadAccount}))
         }
     ]

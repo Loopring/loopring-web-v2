@@ -28,6 +28,7 @@ const initConfig = function* <R extends { [ key: string ]: any }>(chainId: Chain
     if (store.getState().tokenMap.status === 'ERROR') {
 
     }
+
     yield delay(10);
     //IF already connect has address, getInfo walletLayer 1
     const {account, walletLayer1} = store.getState() //.account.accAddr && !store.getState().walletLayer1.walletLayer1
