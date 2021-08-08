@@ -30,7 +30,8 @@ export const WalletConnectProvide = async (account?: string): Promise<{ provider
             // WalletConnectUnsubscribe(provider);
             // walletServices.sendDisconnect('', 'walletConnect not connect');
             throw new Error('walletConnect not connect');
-        } else {
+        } else if (account) {
+            connector.updateSession({accounts:[account],chainId:provider.chainId})
             walletServices.sendConnect(web3, provider)
 
         }
