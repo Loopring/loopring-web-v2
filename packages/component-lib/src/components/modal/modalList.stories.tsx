@@ -18,19 +18,23 @@ import { ModalQRCode, QRCodePanel } from './QRCode'
 import { FailedConnect } from './WalletConnect/FailedConnect';
 import {
     AccountBaseProps,
-    AccountStep, ActiveAccountProcess,
-    ApproveAccount, DepositApproveProcess,
+    AccountStep,
+    ActiveAccountProcess,
+    ApproveAccount,
+    DepositApproveProcess,
     Depositing,
-    FailedDeposit, FailedTokenAccess,
+    FailedDeposit,
+    FailedTokenAccess,
     FailedUnlock,
     HadAccount,
     ModalAccount,
     NoAccount,
     ProcessUnlock,
-    SuccessUnlock, TokenAccessProcess,
+    SuccessUnlock,
+    TokenAccessProcess,
 } from './AccountInfo';
-import { account, coinMap } from '../../static';
-// import {  DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../panel';
+import { account, coinMap, CoinType, walletMap } from '../../static';
+import { DepositPanel, DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../index';
 import { WalletConnectBtn } from '../header';
 
 
@@ -42,24 +46,24 @@ const Style = styled.div`
 `
 
 
-// let tradeData: any = {};
-// let depositProps: DepositProps<any, any> = {
-//     tradeData,
-//     coinMap,
-//     walletMap,
-//     depositBtnStatus: TradeBtnStatus.AVAILABLE,
-//     onDepositClick: (tradeData: SwapTradeData<CoinType>) => {
-//         console.log('Swap button click', tradeData);
-//     },
-//     handlePanelEvent: async (props: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
-//         return new Promise((res) => {
-//             setTimeout(() => {
-//                 console.log('wait 100, with props', props, switchType);
-//                 res();
-//             }, 500)
-//         })
-//     },
-// }
+let tradeData: any = {};
+let depositProps: DepositProps<any, any> = {
+    tradeData,
+    coinMap,
+    walletMap,
+    depositBtnStatus: TradeBtnStatus.AVAILABLE,
+    onDepositClick: (tradeData: SwapTradeData<CoinType>) => {
+        console.log('Swap button click', tradeData);
+    },
+    handlePanelEvent: async (props: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
+        return new Promise((res) => {
+            setTimeout(() => {
+                console.log('wait 100, with props', props, switchType);
+                res();
+            }, 500)
+        })
+    },
+}
 const accountState: AccountFull = {
     account,
     status: 'DONE',
@@ -130,7 +134,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                 ...accountInfoProps, goDeposit: () => {
                 }
             }}/>,
-            // [ AccountStep.Deposit ]: <DepositPanel  _height={480} _width={400}  {...{...rest, ...depositProps}} />,
+            [ AccountStep.Deposit ]: <DepositPanel _height={480} _width={400}  {...{...rest, ...depositProps}} />,
             [ AccountStep.Depositing ]: <Depositing {...{
                 providerName: ConnectProviders.MetaMask,
                 etherscanLink: accountInfoProps.etherscanUrl, ...rest
