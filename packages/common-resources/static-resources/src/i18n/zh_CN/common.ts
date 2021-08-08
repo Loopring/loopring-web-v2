@@ -180,5 +180,8 @@ export default {
     labelSuccessUnlock:'解锁成功',
     labelDepositApproveSuccess:'恭喜充值成功, 最后一步点击开通账户！',
     labelActiveAccount:'激活账户',
-    labelRetry:'Retry'
+    labelRetry:'重试',
+    labelQuotePageFavourite: '自选',
+    labelQuotePageAll: '全部',
+    labelQuotePageTradeRanking: '交易竞赛',
 }

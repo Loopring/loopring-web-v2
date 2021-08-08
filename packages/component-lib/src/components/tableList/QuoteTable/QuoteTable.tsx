@@ -195,7 +195,7 @@ const columnMode = ({t}: WithTranslation, history: any, upColor: 'green' | 'red'
     {
         key: 'trade',
         // resizable: true,
-        name: '',
+        name: t('labelQuoteAction'),
         formatter: ({row}) => {
             const {coinA, coinB} = row[ 'pair' ]
             const tradePair = `${coinA}-${coinB}`
