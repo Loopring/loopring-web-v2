@@ -40,9 +40,11 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps &
        .react-swipeable-view-container {
          & > div {
               background: ${theme.colorBase.background().swap}; 
+              .container{
+                flex:1;
+              }
          }       
        } 
-     
   `};
   border-radius: ${({theme}) => theme.unit}px;
 
