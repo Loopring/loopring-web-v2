@@ -33,18 +33,26 @@ export type SwitchPanelProps<T extends string> = {
 //        padding:0 ${theme.unit * 3 + 'px'};
 //     }
 // }
+// height: ${ _height ? typeof _height === 'number' ?
+//       `calc(${_height + 'px'}  - 2 * var(--toolbar-row-height) )`
+//       : `calc(${_height}  - 2 * var(--toolbar-row-height) )` : 'calc($var(--swap-box-width)  - 2 * var(--toolbar-row-height) )' };
+
 export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps & { _height?: number | string, _width?: number | string }>`
   ${({_height, _width, theme}) => `       
-       width: ${typeof _width === 'string' ? _width : typeof _width === 'number' ? _width + 'px' : `var(--swap-box-width)`};   
-       height: ${typeof _height === 'string' ? _height : typeof _height === 'number' ? _height + 'px' : `var(--swap-box-height)`}; 
-       .react-swipeable-view-container {
-         & > div {
-              background: ${theme.colorBase.background().swap}; 
-              .container{
+    width: ${typeof _width === 'string' ? _width : typeof _width === 'number' ? _width + 'px' : `var(--swap-box-width)`};   
+    height: ${typeof _height === 'string' ? _height : typeof _height === 'number' ? _height + 'px' : `var(--swap-box-height)`};         
+    .react-swipeable-view-container {
+        & > div {  
+            height: ${_height ? typeof _height === 'number' ?
+                    `calc(${_height + 'px'}  - 2 * var(--toolbar-row-height) )`
+                    : `calc(${_height}  - 2 * var(--toolbar-row-height) )` : '410px'}
+            padding: 0 0 var(--toolbar-row-height);
+            background: ${theme.colorBase.background().swap}; 
+            .container{
                 flex:1;
-              }
-         }       
-       } 
+            }
+        }       
+    } 
   `};
   border-radius: ${({theme}) => theme.unit}px;
 
@@ -96,7 +104,7 @@ function _SwitchPanel<T extends string>({
                                         }: SwitchPanelProps<T> & WithTranslation, _ref: React.ForwardedRef<any>) {
     const theme = useTheme();
     return <SwipeableViewsStyled className={'trade-panel'} axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                       index={index} {...{_height,_width}}>
+                                 index={index} {...{_height, _width}}>
         {panelList.map((panel: PanelContent<T>) => {
             return <Grid container key={panel.key} className={'container'} direction={'column'}
                          justifyContent={"start"} flexWrap={'nowrap'}>
