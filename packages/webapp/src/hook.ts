@@ -45,16 +45,19 @@ export function useInit() {
                 await connectProvides[ account.connectName ](account.accAddress);
                 updateAccount({})
                 if (connectProvides.usedProvide && connectProvides.usedWeb3) {
-                    // debugger
-                    // const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
-                    // const accounts = await connectProvides.usedWeb3?.eth.getAccounts();
-                    // if(accounts && accounts[0] === account.accAddress){
-                    //     checkAccount(accounts[0]);
+                    // @ts-ignore
+                    let chainId = Number(connectProvides.usedProvide.chainId) ??  Number(await connectProvides.usedWeb3.eth.getChainId())
+                    // if(account.connectName === "MetaMask"){
+                    //     chainId = ;
+                    // }else if (account.connectName === "WalletConnect"){
+                    //     // chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
+                    //     //@ts-ignore
+                    //
+                    //
+                    // } else{
+                    //     chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
                     // }
-                    // debugger
-                    // walletServices.sendConnect(connectProvides.usedWeb3,connectProvides.usedProvide)
-                    const chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
-                    updateSystem({chainId})
+                    updateSystem({chainId:chainId as any})
                     return
                 }
             } catch (error) {
