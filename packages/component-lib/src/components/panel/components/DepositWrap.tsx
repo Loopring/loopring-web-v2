@@ -55,11 +55,11 @@ export const DepositWrap = <T extends IBData<I>,
                 inputBtnRef: inputBtnRef,
             }} />
         </Grid>
-        <Grid item marginTop={2} alignSelf={'center'}>
+        <Grid item marginTop={2} alignSelf={'stretch'}>
             <Button fullWidth variant={'contained'} size={'medium'} color={'primary'} onClick={() => {
                 onDepositClick(tradeData)
             }}
-                    style={{width: '200px'}}
+                    // style={{width: '200px'}}
                     loading={!getDisabled() && depositBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={getDisabled() || depositBtnStatus === TradeBtnStatus.DISABLED || depositBtnStatus === TradeBtnStatus.LOADING ? true : false}
             >{t(`depositLabelBtn`)}

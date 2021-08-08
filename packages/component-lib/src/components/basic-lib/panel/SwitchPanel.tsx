@@ -24,19 +24,26 @@ export type SwitchPanelProps<T extends string> = {
 
 }
 //${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1})};
+//
+//
+//     .container{
+//        // overflow:hidden;
+//        padding:0;
+//        flex:1;
+//        padding:0 ${theme.unit * 3 + 'px'};
+//     }
+// }
 export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps & { _height?: number | string, _width?: number | string }>`
   ${({_height, _width, theme}) => `       
        width: ${typeof _width === 'string' ? _width : typeof _width === 'number' ? _width + 'px' : `var(--swap-box-width)`};   
-       height: ${typeof _height === 'string' ? _height : typeof _height === 'number' ? _height + 'px' : `var(--swap-box-height)`};        
-      .react-swipeable-view-container > div {
-          background: ${theme.colorBase.background().swap}; 
-          .container{
-             // overflow:hidden;
-             padding:0;
-             flex:1;
-             padding:0 0 ${theme.unit * 3 + 'px'};
-          }
-      }`};
+       height: ${typeof _height === 'string' ? _height : typeof _height === 'number' ? _height + 'px' : `var(--swap-box-height)`}; 
+       .react-swipeable-view-container {
+         & > div {
+              background: ${theme.colorBase.background().swap}; 
+         }       
+       } 
+     
+  `};
   border-radius: ${({theme}) => theme.unit}px;
 
   .react-swipeable-view-container {
