@@ -558,13 +558,24 @@ export const MuiFormLabel = ({colorBase}: any) => {
 
     }
 }
+export const MuiList = ({colorBase}: any) => {
+    return {
+        styleOverrides: {
+            root: {
+                '&.MuiList-padding': {
+                    padding: '0.8rem 0'
+                }
+            }
+        }
+    }
+}
 export const MuiListItem = ({colorBase}: any) => {
     return {
         styleOverrides: {
             root: {
                 height: pxToRem(32),
-                borderLeft: '1px solid',
-                borderColor: 'transparent',
+                // borderLeft: '1px solid',
+                // borderColor: 'transparent',
                 paddingLeft: pxToRem(20),
                 paddingRight: pxToRem(20),
                 // backgroundColor: colorBase.borderHover,
@@ -576,6 +587,7 @@ export const MuiListItem = ({colorBase}: any) => {
                 '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
                     backgroundColor: 'transparent',
                     color: colorBase.textPrimary,
+                    border: 'none',
                 }
             },
         }
