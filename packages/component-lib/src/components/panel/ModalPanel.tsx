@@ -1,4 +1,4 @@
-import { Modal as MuiModal } from '@material-ui/core';
+import { Box, Modal as MuiModal } from '@material-ui/core';
 import {
     AmmPanel,
     AmmProps,
@@ -36,8 +36,14 @@ const Modal = withTranslation('common')(({
         aria-describedby="modal-modal-description"
     >
         <SwitchPanelStyled {...{_height: height, _width: width}} style={{boxShadow: '24'}}>
-            <ModalCloseButton onClose={onClose} {...rest} />
-            {content}
+            {/*<ModalCloseButton onClose={onClose} {...rest} />*/}
+            <Box display={'flex'} width={"100%"} flexDirection={'column'}>
+                <ModalCloseButton onClose={onClose} {...rest} />
+                {/*{onBack ? <ModalBackButton onBack={onBack}  {...rest}/> : <></>}*/}
+            </Box>
+            <Box flex={1} display={'flex'} marginTop={'var(--toolbar-row-height)'}  >
+             {content}
+            </Box>
         </SwitchPanelStyled>
     </MuiModal>
 })

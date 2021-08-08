@@ -1,12 +1,15 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import {
-    AccountStep, ActiveAccountProcess,
+    AccountStep,
+    ActiveAccountProcess,
     ApproveAccount,
-    Button, DepositApproveProcess,
+    Button,
+    DepositApproveProcess,
     Depositing,
     DepositPanel,
     DepositProps,
-    FailedDeposit, FailedTokenAccess,
+    FailedDeposit,
+    FailedTokenAccess,
     FailedUnlock,
     HadAccount,
     ModalAccount,
@@ -14,19 +17,21 @@ import {
     NoAccount,
     ProcessUnlock,
     SuccessUnlock,
-    Toast, TokenAccessProcess,
+    Toast,
+    TokenAccessProcess,
     useOpenModals
 } from '@loopring-web/component-lib';
 import React, { useCallback, useState } from 'react';
 import { copyToClipBoard } from 'utils/obj_tools';
 import { useAccount } from 'stores/account';
 import { TOAST_TIME } from 'defs/common_defs';
-import { ConnectProviders, getShortAddr, LockIcon, UnLockIcon } from '@loopring-web/common-resources';
+import { getShortAddr } from '@loopring-web/common-resources';
 import { sleep } from 'loopring-sdk';
 import { lockAccount } from 'services/account/lockAccount';
 import { unlockAccount } from 'services/account/unlockAccount';
 import { useTokenMap } from 'stores/token';
 import { useModals } from '../useModals';
+
 export const ModalAccountInfo = withTranslation('common')(({
                                                                onClose,
                                                                etherscanUrl,
@@ -40,12 +45,19 @@ export const ModalAccountInfo = withTranslation('common')(({
     depositProps: DepositProps<any, any>,
     etherscanUrl: string
 } & WithTranslation) => {
-    const {account,shouldShow, updateAccount,setShouldShow, resetAccount, statusUnset: statusAccountUnset} = useAccount();
+    const {
+        account,
+        shouldShow,
+        updateAccount,
+        setShouldShow,
+        resetAccount,
+        statusUnset: statusAccountUnset
+    } = useAccount();
     const {modals: {isShowAccount}, setShowConnect, setShowAccount, setShowDeposit} = useOpenModals();
     const [openQRCode, setOpenQRCode] = useState(false);
     const addressShort = getShortAddr(account.accAddress)
     const {showDeposit} = useModals()
-     const {coinMap} = useTokenMap();
+    const {coinMap} = useTokenMap();
     // const [accountInfoProps, setAccountBaseProps] = React.useState<undefined | AccountBaseProps>(undefined)
     const [copyToastOpen, setCopyToastOpen] = useState(false);
     const onSwitch = useCallback(() => {
@@ -82,18 +94,21 @@ export const ModalAccountInfo = withTranslation('common')(({
         })
     }, [showDeposit])
 
-    const unlockBtn =  React.useMemo(()=>{
-        return <Button variant={'contained'} fullWidth size={'medium'}  onClick={() => {
+    const unlockBtn = React.useMemo(() => {
+        return <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {
             unlockAccount();
-        }}>{t('labelUnLockLayer2')} </Button>},[updateAccount]);
-    const lockBtn = React.useMemo(()=>{
-        return <Button variant={'contained'} fullWidth size={'medium'}  onClick={() => {
+        }}>{t('labelUnLockLayer2')} </Button>
+    }, [updateAccount]);
+    const lockBtn = React.useMemo(() => {
+        return <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {
             lockAccount();
-        }}>{t('labelLockLayer2')} </Button>},[lockAccount]);
+        }}>{t('labelLockLayer2')} </Button>
+    }, [lockAccount]);
     // const onSwitch = {onSwitch}
     const accountList = React.useMemo(() => {
         return Object.values({
-            [ AccountStep.NoAccount ]: <NoAccount {...{goDeposit,
+            [ AccountStep.NoAccount ]: <NoAccount {...{
+                goDeposit,
                 ...account,
                 etherscanUrl,
                 onSwitch, onCopy,
@@ -101,18 +116,22 @@ export const ModalAccountInfo = withTranslation('common')(({
                 // connectBy: account.connectName,
                 onViewQRCode, onDisconnect, addressShort,
             }} />,
-            // [ AccountStep.Deposit ]: <DepositPanel title={"depositTitleAndActive"} {...{...rest, ...depositProps,t}}/>,
-            [ AccountStep.Depositing ]: <Depositing label={"depositTitleAndActive"} etherscanLink={etherscanUrl + account.accAddress}  onDepositSubmit={()=>undefined}  { ...{...rest,t}}/>,
-            [ AccountStep.FailedDeposit ]: <FailedDeposit label={"depositTitleAndActive"} etherscanLink={etherscanUrl + account.accAddress}  onRetry={()=>undefined} { ...{...rest,t}} />,
+            [ AccountStep.Deposit ]: <DepositPanel title={"depositTitleAndActive"} {...{...rest, ...depositProps, t}}/>,
+            [ AccountStep.Depositing ]: <Depositing label={"depositTitleAndActive"}
+                                                    etherscanLink={etherscanUrl + account.accAddress}
+                                                    onDepositSubmit={() => undefined}  {...{...rest, t}}/>,
+            [ AccountStep.FailedDeposit ]: <FailedDeposit label={"depositTitleAndActive"}
+                                                          etherscanLink={etherscanUrl + account.accAddress}
+                                                          onRetry={() => undefined} {...{...rest, t}} />,
             [ AccountStep.SignAccount ]: <ApproveAccount   {...{
                 ...account,
                 etherscanUrl,
                 onSwitch, onCopy,
                 onViewQRCode, onDisconnect, addressShort,
-            }}  goActiveAccount={()=>undefined}  { ...{...rest,t}}/>,
-            [ AccountStep.ProcessUnlock ]: <ProcessUnlock providerName = {account.connectName} { ...{...rest,t}}/>,
-            [ AccountStep.SuccessUnlock ]: <SuccessUnlock providerName = {account.connectName} { ...{...rest,t}}/>,
-            [ AccountStep.FailedUnlock ]: <FailedUnlock onRetry={()=>undefined} { ...{...rest,t}}/>,
+            }} goActiveAccount={() => undefined}  {...{...rest, t}}/>,
+            [ AccountStep.ProcessUnlock ]: <ProcessUnlock providerName={account.connectName} {...{...rest, t}}/>,
+            [ AccountStep.SuccessUnlock ]: <SuccessUnlock providerName={account.connectName} {...{...rest, t}}/>,
+            [ AccountStep.FailedUnlock ]: <FailedUnlock onRetry={() => undefined} {...{...rest, t}}/>,
             [ AccountStep.HadAccount ]: <HadAccount {...{
                 ...account,
                 onSwitch, onCopy,
@@ -121,12 +140,27 @@ export const ModalAccountInfo = withTranslation('common')(({
                 // connectBy: account.connectName,
                 onViewQRCode, onDisconnect, addressShort,
                 etherscanLink: etherscanUrl + account.accAddress,
-                mainBtn: account.readyState === 'ACTIVATED'?  lockBtn: unlockBtn
+                mainBtn: account.readyState === 'ACTIVATED' ? lockBtn : unlockBtn
             }} />,
-            [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess label={"depositTitleAndActive"} providerName = {account.connectName} { ...{...rest,t}}/>,
-            [ AccountStep.DepositApproveProcess ] : <DepositApproveProcess label={"depositTitleAndActive"} etherscanLink={etherscanUrl + account.accAddress} providerName = {account.connectName} { ...{...rest,t}}/>,
-            [ AccountStep.ActiveAccountProcess ]: <ActiveAccountProcess  providerName = {account.connectName} { ...{...rest,t}}/>,
-            [ AccountStep.FailedTokenAccess ]: <FailedTokenAccess onRetry={()=>undefined} {...{t,...rest, coinInfo: coinMap?coinMap['USTD']:undefined}}/>,
+            [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess label={"depositTitleAndActive"}
+                                                                    providerName={account.connectName} {...{
+                ...rest,
+                t
+            }}/>,
+            [ AccountStep.DepositApproveProcess ]: <DepositApproveProcess label={"depositTitleAndActive"}
+                                                                          etherscanLink={etherscanUrl + account.accAddress}
+                                                                          providerName={account.connectName} {...{
+                ...rest,
+                t
+            }}/>,
+            [ AccountStep.ActiveAccountProcess ]: <ActiveAccountProcess providerName={account.connectName} {...{
+                ...rest,
+                t
+            }}/>,
+            [ AccountStep.FailedTokenAccess ]: <FailedTokenAccess onRetry={() => undefined} {...{
+                t, ...rest,
+                coinInfo: coinMap ? coinMap[ 'USTD' ] : undefined
+            }}/>,
 
 
         })
@@ -136,8 +170,9 @@ export const ModalAccountInfo = withTranslation('common')(({
 
         <ModalQRCode open={openQRCode} onClose={() => setOpenQRCode(false)} title={'ETH Address'}
                      description={account?.accAddress} url={account?.accAddress}/>
-        <ModalAccount open={isShowAccount.isShow} onClose={(e)=>{
+        <ModalAccount open={isShowAccount.isShow} onClose={(e) => {
             setShouldShow(false);
-            onClose(e);}} panelList={accountList} step={isShowAccount.step}/>
+            onClose(e);
+        }} panelList={accountList} step={isShowAccount.step}/>
     </>
 })
