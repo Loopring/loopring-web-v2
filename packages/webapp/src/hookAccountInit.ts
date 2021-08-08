@@ -8,7 +8,7 @@ import { useConnect } from './hookConnect';
 
 export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
     const {getUserRewards}  = useUserRewards()
-    useConnect()
+    useConnect({state})
     const {
         updateWalletLayer1,
         resetLayer1,

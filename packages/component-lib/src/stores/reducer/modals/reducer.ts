@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { ModalState, ModalStatePlayLoad } from './interface';
 import {
     AmmInfoProps,
@@ -21,7 +21,7 @@ const initialState: ModalState<IBData<any>, any> = {
     isShowAccount: {isShow: false, step: 0},
 }
 
-export const modalsSlice = createSlice({
+export const modalsSlice:Slice<ModalState<IBData<any>, any>> = createSlice({
     name: 'settings',
     initialState,
     reducers: {

@@ -1,9 +1,9 @@
 import { HeaderRendererProps } from 'react-data-grid';
 // import { DropDownIcon } from '@loopring-web/common-resources';
-import React from 'react';
 import styled from '@emotion/styled'
 import { Box, BoxProps } from '@material-ui/core'
 import { css } from '@emotion/react';
+import React from 'react';
 
 // export interface LoopringTBHeaderProps<R> extends HeaderRendererProps<R> {
 //     child?: React.ElementType<any> | JSX.Element,
@@ -23,33 +23,43 @@ export const headerSortName = css`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
-export const ArrowSort = ({
-                              sortDirection,
-                              children,
-                              ...rest
-                          }: BoxProps & { sortDirection: 'ASC' | 'DESC' | undefined }) => {
-    const StyledArrowSort = styled(Box)`
-      margin-left: ${({theme}) => `${theme.unit / 2}px`};
-      .up {
-        width: 0;
-        height: 0;
-        border: ${({theme}) => `${theme.unit / 2}px`} solid transparent;
-        border-bottom-color: ${({theme}) => sortDirection === 'ASC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.checkboxDefault}`};
-      }
-    
-      .down {
-        width: 0;
-        height: 0;
-        border: ${({theme}) => `${theme.unit / 2}px`} solid transparent;
-        border-top-color:  ${({theme}) => sortDirection === 'DESC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.checkboxDefault}`};
-        margin-top: ${({theme}) => `${theme.unit / 4}px`};
-      }
-    ` as React.ElementType;
+const StyledArrowSort = styled(Box)<BoxProps & { sortDirection: 'ASC' | 'DESC' | undefined }>`
+  margin-left: ${({theme}) => `${theme.unit / 2}px`};
+
+  .up {
+    width: 0;
+    height: 0;
+    border: ${({theme}) => `${theme.unit / 2}px`} solid transparent;
+    border-bottom-color: ${({
+                              theme,
+                              sortDirection
+                            }) => sortDirection === 'ASC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.checkboxDefault}`};
+  }
+
+  .down {
+    width: 0;
+    height: 0;
+    border: ${({theme}) => `${theme.unit / 2}px`} solid transparent;
+    border-top-color: ${({
+                           theme,
+                           sortDirection
+                         }) => sortDirection === 'DESC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.checkboxDefault}`};
+    margin-top: ${({theme}) => `${theme.unit / 4}px`};
+  }
+` as React.ElementType<BoxProps & { sortDirection: 'ASC' | 'DESC' | undefined }>;
+
+export const ArrowSort: React.ElementType<BoxProps
+    & { sortDirection: 'ASC' | 'DESC' | undefined }> = ({
+                                                            // sortDirection,
+                                                            // children,
+                                                            ...rest
+                                                        }: BoxProps & { sortDirection: 'ASC' | 'DESC' | undefined }) => {
+
     return <StyledArrowSort {...{...rest}}>
         <div className="up"/>
         <div className="down"/>
     </StyledArrowSort>
-}
+};
 
 
 // type SharedHeaderCellProps<R, SR> = Pick<

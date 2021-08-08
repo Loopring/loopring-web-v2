@@ -1,16 +1,23 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styled from '@emotion/styled'
 import { Box, Link } from '@material-ui/core'
 import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
 import { useDeepCompareEffect } from 'react-use'
-import { Popover, PopoverType, TablePagination } from '../../basic-lib'
-import { Column, Table } from '../../basic-lib/tables/index'
-import { AlertIcon, CheckIcon, EmptyValueTag, PendingIcon, TableType, getFormattedHash } from '@loopring-web/common-resources'
+import { Column, Table, TablePagination } from '../../basic-lib'
+import {
+    AlertIcon,
+    CheckIcon,
+    EmptyValueTag,
+    getFormattedHash,
+    PendingIcon,
+    TableType
+} from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
-import { TablePaddingX, TableFilterStyled } from '../../styled';
+import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes } from './Interface'
 import { DateRange } from '@material-ui/lab'
+
 interface Row extends RawDataTransactionItem {
     filterColumn: string
     cellExpend: {
@@ -42,24 +49,24 @@ const TYPE_COLOR_MAPPING = [
     {type: TransactionStatus.failed, color: 'error'},
 ]
 
-const CellStatus = ({row, column, rowIdx}: any) => {
+const CellStatus = ({row, column}: any) => {
     const status = row[ column.key ]
-    const popupId = `${column.key}-${rowIdx}`
-    const popoverContent = <div style={{padding: 12}}>
-        Because the pool price changes dynamically, the price you see when placing an order may be inconsistent with the
-        final transaction price.
-    </div>
+    // const popupId = `${column.key}-${rowIdx}`
+    // const popoverContent = <div style={{padding: 12}}>
+    //     Because the pool price changes dynamically, the price you see when placing an order may be inconsistent with the
+    //     final transaction price.
+    // </div>
     const RenderValue = styled.div`
-        display: flex;
-        align-items: center;
-		cursor: pointer;
-		color: ${({theme}) => theme.colorBase[ `${TYPE_COLOR_MAPPING.find(o => o.type === status)?.color}` ]};
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      color: ${({theme}) => theme.colorBase[ `${TYPE_COLOR_MAPPING.find(o => o.type === status)?.color}` ]};
 
-		& svg {
-            width: 28px;
-            height: 28px
-		}
-	`
+      & svg {
+        width: 28px;
+        height: 28px
+      }
+    `
     const svg = status === 'processed' ? <CheckIcon/> : status === 'processing' ? <PendingIcon/> : <AlertIcon/>
     const RenderValueWrapper =
         <RenderValue>
@@ -103,21 +110,21 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
     //         const isMyWallet = valueFrom === 'My Loopring'
     //         const actualValue = isMyWallet ? valueFrom : getFormattedHash(valueFrom)
     //         const RenderValue = styled.div`
-	// 			height: 100%;
-	// 			display: flex;
-	// 			flex-direction: column;
-	// 			justify-content: center;
-	// 			color: ${({theme}) => valueFrom && !isMyWallet ? theme.colorBase.primaryLight : theme.colorBase.textPrimary};
+    // 			height: 100%;
+    // 			display: flex;
+    // 			flex-direction: column;
+    // 			justify-content: center;
+    // 			color: ${({theme}) => valueFrom && !isMyWallet ? theme.colorBase.primaryLight : theme.colorBase.textPrimary};
 
-	// 			// & p:last-child {
-	// 			// 	color: ${({theme}) => theme.colorBase.textPrimary};
-	// 			// }
+    // 			// & p:last-child {
+    // 			// 	color: ${({theme}) => theme.colorBase.textPrimary};
+    // 			// }
 
-	// 			// p {
-	// 			// 	line-height: 100%;
-	// 			// }
-				
-	// 		`
+    // 			// p {
+    // 			// 	line-height: 100%;
+    // 			// }
+
+    // 		`
 
     //         return (
     //             <>
@@ -136,21 +143,21 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
     //         const isMyWallet = valueTo === 'My Loopring'
     //         const actualValue = isMyWallet ? valueTo : getFormattedHash(valueTo)
     //         const RenderValue = styled.div`
-	// 			height: 100%;
-	// 			display: flex;
-	// 			flex-direction: column;
-	// 			justify-content: center;
-	// 			color: ${({theme}) => valueTo && !isMyWallet ? theme.colorBase.primaryLight : theme.colorBase.textPrimary};
+    // 			height: 100%;
+    // 			display: flex;
+    // 			flex-direction: column;
+    // 			justify-content: center;
+    // 			color: ${({theme}) => valueTo && !isMyWallet ? theme.colorBase.primaryLight : theme.colorBase.textPrimary};
 
-	// 			// & p:last-child {
-	// 			// 	color: ${({theme}) => theme.colorBase.textPrimary};
-	// 			// }
+    // 			// & p:last-child {
+    // 			// 	color: ${({theme}) => theme.colorBase.textPrimary};
+    // 			// }
 
-	// 			// p {
-	// 			// 	line-height: 100%;
-	// 			// }
-				
-	// 		`
+    // 			// p {
+    // 			// 	line-height: 100%;
+    // 			// }
+
+    // 		`
     //         // const value = typeof to === 'string'
     //         //     ? <p>{to}</p>
     //         //     : <>
@@ -171,7 +178,7 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
         key: 'side',
         name: t('labelTxSide'),
         formatter: ({row}) => {
-            const value = row['side']
+            const value = row[ 'side' ]
             const renderValue = value === TransactionTradeTypes.deposit ? t('labelDeposit') : value === TransactionTradeTypes.transfer ? t('labelTransfer') : t('labelWithdraw');
             return (
                 <div className="rdg-cell-value">
@@ -184,7 +191,7 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
         key: 'amount',
         name: t('labelTxAmount'),
         formatter: ({row}) => {
-            const {unit, value} = row['amount']
+            const {unit, value} = row[ 'amount' ]
             const hasValue = Number.isFinite(value)
             const renderValue = hasValue ? `${getThousandFormattedNumbers(Number(value), 5)}` : EmptyValueTag
             return (
@@ -198,7 +205,7 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
         key: 'fee',
         name: t('labelTxFee'),
         formatter: ({row}) => {
-            const fee = row['fee']
+            const fee = row[ 'fee' ]
             const hasValue = fee ? Number.isFinite(fee.value) : ''
             const renderValue = hasValue && fee.value !== 0 ? `${fee.value.toFixed(6)} ${fee.unit}` : EmptyValueTag
             return (
@@ -232,7 +239,7 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
         key: 'time',
         name: t('labelTxTime'),
         formatter: ({row}) => {
-            const value = row['time']
+            const value = row[ 'time' ]
             const hasValue = Number.isFinite(value)
             const renderValue = hasValue
                 ? moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
@@ -252,20 +259,21 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
             // if ((row as any)._rawData.length === 9) {
             //     path = ((row as any)._rawData[ 8 ])
             // }
-            const path = row['path'] || ''
-            const value = row['txnHash']
+            const path = row[ 'path' ] || ''
+            const value = row[ 'txnHash' ]
             const RenderValue = styled.div`
-				color: ${({theme}) => theme.colorBase[ value ? 'primaryLight' : 'textSecondary' ]};
-				// overflow: hidden;
-				// text-overflow: ellipsis;
-				// white-space: nowrap;
-				// max-width: 90%;
-			`
+              color: ${({theme}) => theme.colorBase[ value ? 'primaryLight' : 'textSecondary' ]};
+              // overflow: hidden;
+              // text-overflow: ellipsis;
+              // white-space: nowrap;
+              // max-width: 90%;
+            `
             return (
                 <div className="rdg-cell-value">
                     {path ? <Link href={path}>
-                        <RenderValue title={value}>{value || EmptyValueTag}</RenderValue>
-                    </Link> : <RenderValue title={value}>{value ? getFormattedHash(value) : EmptyValueTag}</RenderValue>}
+                            <RenderValue title={value}>{value || EmptyValueTag}</RenderValue>
+                        </Link> :
+                        <RenderValue title={value}>{value ? getFormattedHash(value) : EmptyValueTag}</RenderValue>}
                 </div>
             )
         }
@@ -282,23 +290,26 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
 ]
 
 const TableStyled = styled(Box)`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 
-    .rdg{
-        --template-columns: 120px auto auto auto auto 80px !important;
-        .rdg-cell.action{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        }
+  .rdg {
+    --template-columns: 120px auto auto auto auto 80px !important;
+
+    .rdg-cell.action {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    .rdg-cell {
-        display: flex;
-        align-items: center;
-    }
-    ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
+  }
+
+  .rdg-cell {
+    display: flex;
+    align-items: center;
+  }
+
+  ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
 
 export interface TransactionTableProps {
@@ -336,18 +347,18 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         , [page, pagination, pageSize, totalData])
 
     const updateData = React.useCallback(({
-        TableType,
-        currFilterType = filterType,
-        currFilterDate = filterDate,
-        currFilterToken = filterToken,
-    }) => {
+                                              TableType,
+                                              currFilterType = filterType,
+                                              currFilterDate = filterDate,
+                                              currFilterToken = filterToken,
+                                          }) => {
         let resultData = rawData || []
         if (currFilterType !== TransactionTradeTypes.allTypes) {
             resultData = resultData.filter(o => o.side === currFilterType)
         }
-        if (currFilterDate[0] && currFilterDate[1]) {
-            const startTime = Number(moment(currFilterDate[0]).format('x'))
-            const endTime = Number(moment(currFilterDate[1]).format('x'))
+        if (currFilterDate[ 0 ] && currFilterDate[ 1 ]) {
+            const startTime = Number(moment(currFilterDate[ 0 ]).format('x'))
+            const endTime = Number(moment(currFilterDate[ 1 ]).format('x'))
             resultData = resultData.filter(o => o.time < endTime && o.time > startTime)
         }
         if (currFilterToken !== 'All Tokens') {
@@ -392,7 +403,7 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         {showFilter && (
             <TableFilterStyled>
                 <Filter
-                    originalData={rawData} 
+                    originalData={rawData}
                     filterDate={filterDate}
                     filterType={filterType}
                     filterToken={filterToken}

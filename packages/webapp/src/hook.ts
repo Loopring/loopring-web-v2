@@ -42,21 +42,26 @@ export function useInit() {
 
         if (account.accAddress !== '' && account.connectName && account.connectName !== 'UnKnown') {
             try {
-                await connectProvides[ account.connectName ]();
+                await connectProvides[ account.connectName ](account.accAddress);
                 updateAccount({})
                 if (connectProvides.usedProvide && connectProvides.usedWeb3) {
-                    const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
+                    // debugger
+                    // const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
                     // const accounts = await connectProvides.usedWeb3?.eth.getAccounts();
                     // if(accounts && accounts[0] === account.accAddress){
                     //     checkAccount(accounts[0]);
                     // }
                     // debugger
                     // walletServices.sendConnect(connectProvides.usedWeb3,connectProvides.usedProvide)
-                    updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
+                    const chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
+                    updateSystem({chainId})
                     return
                 }
             } catch (error) {
                 console.log(error)
+                resetAccount();
+                const chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
+                updateSystem({chainId})
             }
         } else  {
             if(account.accAddress === '' ||  account.connectName === 'UnKnown' ){
