@@ -41,7 +41,7 @@ export const MetaMaskSubscribe = (provider: any, web3: Web3) => {
         provider.on("disconnect", (code: number, reason: string) => {
 
             walletServices.sendDisconnect(code, reason);
-            MetaMaskUnsubscribe(provider)
+
         });
     }
 }

@@ -23,7 +23,7 @@ export const headerSortName = css`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
-const StyledArrowSort = styled(Box)<BoxProps & { sortDirection: 'ASC' | 'DESC' | undefined }>`
+const StyledArrowSort = styled(Box)<BoxProps & { sortdirection: 'ASC' | 'DESC' | undefined }>`
   margin-left: ${({theme}) => `${theme.unit / 2}px`};
 
   .up {
@@ -32,8 +32,8 @@ const StyledArrowSort = styled(Box)<BoxProps & { sortDirection: 'ASC' | 'DESC' |
     border: ${({theme}) => `${theme.unit / 2}px`} solid transparent;
     border-bottom-color: ${({
                               theme,
-                              sortDirection
-                            }) => sortDirection === 'ASC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.checkboxDefault}`};
+                              sortdirection
+                            }) => sortdirection === 'ASC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.checkboxDefault}`};
   }
 
   .down {
@@ -42,20 +42,20 @@ const StyledArrowSort = styled(Box)<BoxProps & { sortDirection: 'ASC' | 'DESC' |
     border: ${({theme}) => `${theme.unit / 2}px`} solid transparent;
     border-top-color: ${({
                            theme,
-                           sortDirection
-                         }) => sortDirection === 'DESC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.checkboxDefault}`};
+                           sortdirection
+                         }) => sortdirection === 'DESC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.checkboxDefault}`};
     margin-top: ${({theme}) => `${theme.unit / 4}px`};
   }
-` as React.ElementType<BoxProps & { sortDirection: 'ASC' | 'DESC' | undefined }>;
+` as (props: BoxProps & { sortdirection: 'ASC' | 'DESC' | undefined }) => JSX.Element;
 
 export const ArrowSort: React.ElementType<BoxProps
     & { sortDirection: 'ASC' | 'DESC' | undefined }> = ({
-                                                            // sortDirection,
+                                                            sortDirection,
                                                             // children,
                                                             ...rest
                                                         }: BoxProps & { sortDirection: 'ASC' | 'DESC' | undefined }) => {
 
-    return <StyledArrowSort {...{...rest}}>
+    return <StyledArrowSort {...{...rest}} sortdirection={sortDirection}>
         <div className="up"/>
         <div className="down"/>
     </StyledArrowSort>

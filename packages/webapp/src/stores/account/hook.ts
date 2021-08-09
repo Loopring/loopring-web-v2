@@ -16,12 +16,8 @@ export function useAccount() {
     // const [shouldShow,setShouldShow] = React.useState(account._userOnModel)
     const dispatch = useDispatch();
     
-    const resetAccount = React.useCallback(async (props?:{shouldUpdateProvider?:boolean|undefined}) => {
+    const resetAccount = React.useCallback( (props?:{shouldUpdateProvider?:boolean|undefined}) => {
         dispatch(cleanAccountStatus(props));
-        if(props&&props.shouldUpdateProvider) {
-           await sleep(10);
-        }
-        return
     }, [dispatch])
 
     const updateAccount = React.useCallback((account: Partial<Account>) => {

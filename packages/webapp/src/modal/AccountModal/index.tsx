@@ -31,6 +31,7 @@ import { lockAccount } from 'services/account/lockAccount';
 import { unlockAccount } from 'services/account/unlockAccount';
 import { useTokenMap } from 'stores/token';
 import { useModals } from '../useModals';
+import { connectProvides, walletServices } from '@loopring-web/web3-provider';
 
 export const ModalAccountInfo = withTranslation('common')(({
     onClose,
@@ -73,10 +74,14 @@ export const ModalAccountInfo = withTranslation('common')(({
         setOpenQRCode(true)
     }, [])
     const onDisconnect = React.useCallback(async () => {
-        await resetAccount({shouldUpdateProvider: true});
-        // await sleep(SHORT_INTERVAL);
-        statusAccountUnset();
+        walletServices.sendDisconnect('', 'customer click disconnect');
         setShowAccount({ isShow: false })
+        // connectProvides.clear();
+        // walletServices.sendDisconnect()
+        //await resetAccount({shouldUpdateProvider: true});
+        // await sleep(SHORT_INTERVAL);
+        // statusAccountUnset();
+        // setShowAccount({ isShow: false })
         // // setShowAccount({isShow: false,step:AccountStep.});
     }, [resetAccount, setShowAccount])
 
