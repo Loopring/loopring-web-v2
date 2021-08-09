@@ -4,7 +4,7 @@ import { SagaStatus } from '@loopring-web/common-resources';
 
 const initialState: SystemStatus = {
     env: ENV.PROD,
-    chainId: 'Unknown',
+    chainId: 'unknown',
     // network:'NONETWORK',
     baseURL: '',
     socketURL: '',

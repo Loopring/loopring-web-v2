@@ -14,7 +14,7 @@ import { delay } from 'rxjs/operators';
 import { LoopringSocket } from '../../services/socketUtil';
 import { statusUnset as accountStatusUnset } from '../account';
 
-const initConfig = function* <R extends { [ key: string ]: any }>(chainId: ChainId | 'Unknown') {
+const initConfig = function* <R extends { [ key: string ]: any }>(chainId: ChainId | 'unknown') {
     // store.dispatch(updateAccountStatus());
     const {tokenSymbolMap: tokensMap} = yield call(async () => await LoopringAPI.exchangeAPI?.getTokens())
     const {ammpools} = yield call(async () => await LoopringAPI.ammpoolAPI?.getAmmPoolConf());

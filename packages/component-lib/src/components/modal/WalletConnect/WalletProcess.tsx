@@ -2,10 +2,14 @@ import { Typography } from '@material-ui/core';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
 import { ProcessBasic } from '../ProcessBasic';
-import { ConnectProviders } from '@loopring-web/common-resources';
+import {  ConnectProviders } from '@loopring-web/common-resources';
+
 
 
 export const WalletConnectProcess = ({t,...rest}:WithTranslation)=>{
+
+
+
     const describe = React.useMemo(()=>{
         return <>
             <Typography component={'span'} variant={'body1'} paddingY={1}>{t('labelProcessing')}</Typography>

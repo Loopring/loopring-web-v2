@@ -8,6 +8,7 @@ import {
 import React from 'react';
 import { Account, AccountState } from '@loopring-web/common-resources';
 import { RootState } from 'stores';
+import { sleep } from 'loopring-sdk';
 
 
 export function useAccount() {
@@ -15,8 +16,12 @@ export function useAccount() {
     // const [shouldShow,setShouldShow] = React.useState(account._userOnModel)
     const dispatch = useDispatch();
     
-    const resetAccount = React.useCallback((props?:{shouldUpdateProvider?:boolean|undefined}) => {
-        dispatch(cleanAccountStatus(props))
+    const resetAccount = React.useCallback(async (props?:{shouldUpdateProvider?:boolean|undefined}) => {
+        dispatch(cleanAccountStatus(props));
+        if(props&&props.shouldUpdateProvider) {
+           await sleep(10);
+        }
+        return
     }, [dispatch])
 
     const updateAccount = React.useCallback((account: Partial<Account>) => {

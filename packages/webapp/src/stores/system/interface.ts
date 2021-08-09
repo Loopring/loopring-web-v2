@@ -8,7 +8,7 @@ export enum ENV {
 }
 
 export enum NETWORKEXTEND {
-    NONETWORK = 'Unknown'
+    NONETWORK = 'unknown'
 }
 
 export type NETWORK = NETWORKEXTEND | ChainId
@@ -16,7 +16,7 @@ export type NETWORK = NETWORKEXTEND | ChainId
 
 export type System<C extends { [ key: string ]: any }> = {
     env: keyof typeof ENV,
-    chainId: 1 | 5 | 'Unknown'
+    chainId: 1 | 5 | 'unknown'
     // network: keyof typeof NETWORK,
     etherscanUrl: string,
     socketURL: string,
