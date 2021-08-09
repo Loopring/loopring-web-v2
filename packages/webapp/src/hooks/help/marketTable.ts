@@ -1,9 +1,8 @@
-import * as fm from 'loopring-sdk';
+import * as sdk from 'loopring-sdk';
 import store from '../../stores';
-import { TradeTypes,CoinMap } from '@loopring-web/common-resources';
-import { ammpoolAPI, LoopringAPI, userAPI } from '../../stores/apis/api';
+import { TradeTypes } from '@loopring-web/common-resources';
+import { LoopringAPI, userAPI } from '../../stores/apis/api';
 import { AmmRecordRow, AmmTradeType,RawDataTradeItem } from '@loopring-web/component-lib';
-import { AmmPoolTx, BillType, AmmTxType, UserAmmPoolTx,getBaseQuote, MarketTradeInfo, Side, UserTrade } from 'loopring-sdk';
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
 
 export const getUserTrades = (marketKey: any) => {
@@ -11,29 +10,29 @@ export const getUserTrades = (marketKey: any) => {
     const {accountId, apiKey} = store.getState().account
     return userApi.getUserTrades({accountId}, apiKey).then((response: {
         totalNum: any;
-        userTrades: UserTrade[];
+        userTrades: sdk.UserTrade[];
         raw_data: any;
     }) => {
         return response.userTrades
     })
 }
-export const makeMarketArray = (coinKey: any, marketTrades: MarketTradeInfo[]): RawDataTradeItem[] => {
+export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[]): RawDataTradeItem[] => {
 
     let tradeArray: Array<Partial<RawDataTradeItem>> = []
 
-    marketTrades.forEach((item: MarketTradeInfo) => {
+    marketTrades.forEach((item: sdk.MarketTradeInfo) => {
         try {
-            const {base, quote} = getBaseQuote(item.market)
+            const {base, quote} = sdk.getBaseQuote(item.market)
             const {forex} = store.getState().system
             const {currency} = store.getState().settings
             const {tokenMap} = store.getState().tokenMap
             if (tokenMap) {
                 // const baseToken = tokenMap[ base as string ]
                 // const quoteToken = tokenMap[ quote as string ]
-                const feeKey = item.side === Side.Buy ? base : quote
+                const feeKey = item.side === sdk.Side.Buy ? base : quote
                 // @ts-ignore
                 tradeArray.push({
-                    side: item.side === Side.Sell ? TradeTypes.Sell : TradeTypes.Buy,
+                    side: item.side === sdk.Side.Sell ? TradeTypes.Sell : TradeTypes.Buy,
                     amount: {
                         from: {
                             key: base as string,
@@ -47,11 +46,11 @@ export const makeMarketArray = (coinKey: any, marketTrades: MarketTradeInfo[]): 
                     },
                     price: {
                         key: '',
-                        value: fm.toBig(item.price).toNumber(),
+                        value: sdk.toBig(item.price).toNumber(),
                     },
                     fee: {
                         key: feeKey || '--',
-                        value: feeKey ? volumeToCountAsBigNumber(feeKey, item.fee)?.toNumber() : undefined, //fm.toBig(item.fee).div(BIG10.pow(quoteToken.decimals)).toNumber(),
+                        value: feeKey ? volumeToCountAsBigNumber(feeKey, item.fee)?.toNumber() : undefined, 
                     },
                     time: parseInt(item.tradeTime.toString()),
                 })
@@ -78,11 +77,11 @@ export const getUserAmmTransaction = () => {
 }
 
 
-export const makeMyAmmMarketArray = <C extends { [ key: string ]:any }>(coinKey: string|undefined, marketTransaction: UserAmmPoolTx[]): AmmRecordRow<C>[] => {
+export const makeMyAmmMarketArray = <C extends { [ key: string ]:any }>(coinKey: string|undefined, marketTransaction: sdk.UserAmmPoolTx[]): AmmRecordRow<C>[] => {
 
     let tradeArray: Array<Partial<AmmRecordRow<C>>> = [];
     let {tokenMap, coinMap, idIndex} = store.getState().tokenMap;
-    marketTransaction.forEach((item: UserAmmPoolTx) => {
+    marketTransaction.forEach((item: sdk.UserAmmPoolTx) => {
         try {
            // const {base, quote} = getBaseQuote(coinKey)
             const {forex} = store.getState().system
@@ -93,7 +92,7 @@ export const makeMyAmmMarketArray = <C extends { [ key: string ]:any }>(coinKey:
                 const [, coinA, coinB] = idIndex[item.lpToken.tokenId].match(/LP-(\w+)-(\w+)/i);
                  
                 tradeArray.push({
-                        type: item.txType === AmmTxType.JOIN ? AmmTradeType.add : AmmTradeType.remove,
+                        type: item.txType === sdk.AmmTxType.JOIN ? AmmTradeType.add : AmmTradeType.remove,
                         //TODO:
                         totalDollar: 1000,
                         totalYuan: 1000 / Number(forex),
@@ -122,7 +121,7 @@ export const makeMyAmmMarketArray = <C extends { [ key: string ]:any }>(coinKey:
 }
 
 
-export const makeMarketAmmArray = <C extends object>(coinKey: any, marketTransaction: AmmPoolTx[]): AmmRecordRow<C>[] => {
+export const makeMarketAmmArray = <C extends object>(coinKey: any, marketTransaction: sdk.AmmPoolTx[]): AmmRecordRow<C>[] => {
 
     let tradeArray: Array<Partial<AmmRecordRow<C>>> = [];
 
