@@ -19,7 +19,7 @@ export const account:Account = {
     publicKey: {},
     level: '',
     nonce: undefined,
-    connectName: ConnectProviders.UnKnown,
+    connectName: ConnectProviders.unKnown,
 }
 export const coinMap: CoinMap<CoinType, CoinInfo<CoinType>> = {
     ETH: {

@@ -40,23 +40,16 @@ export function useInit() {
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
 
-        if (account.accAddress !== '' && account.connectName && account.connectName !== 'UnKnown') {
+        if (account.accAddress !== '' && account.connectName && account.connectName !== 'unKnown') {
             try {
                 await connectProvides[ account.connectName ](account.accAddress);
                 updateAccount({})
                 if (connectProvides.usedProvide && connectProvides.usedWeb3) {
                     // @ts-ignore
                     let chainId = Number(connectProvides.usedProvide.chainId) ??  Number(await connectProvides.usedWeb3.eth.getChainId())
-                    // if(account.connectName === "MetaMask"){
-                    //     chainId = ;
-                    // }else if (account.connectName === "WalletConnect"){
-                    //     // chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
-                    //     //@ts-ignore
-                    //
-                    //
-                    // } else{
-                    //     chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
-                    // }
+                    if( ChainId[chainId] === undefined) {
+                        chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
+                    }
                     updateSystem({chainId:chainId as any})
                     return
                 }
@@ -67,7 +60,7 @@ export function useInit() {
                 updateSystem({chainId})
             }
         } else  {
-            if(account.accAddress === '' ||  account.connectName === 'UnKnown' ){
+            if(account.accAddress === '' ||  account.connectName === 'unKnown' ){
                 resetAccount() 
             }
             const chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
