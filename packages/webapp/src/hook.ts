@@ -5,11 +5,8 @@ import { ChainId, sleep } from 'loopring-sdk';
 import { useAmmMap } from './stores/Amm/AmmMap';
 import { SagaStatus } from '@loopring-web/common-resources';
 import { useTokenMap } from './stores/token';
-import { useWalletLayer1 } from './stores/walletLayer1';
 import { useAccount } from './stores/account/hook';
 import { connectProvides, walletServices } from '@loopring-web/web3-provider';
-import { useWalletLayer2 } from './stores/walletLayer2';
-import store from './stores';
 import { useAccountInit } from './hookAccountInit';
 import { useAmmActivityMap } from './stores/Amm/AmmActivityMap';
 import { useTicker } from './stores/ticker';
@@ -45,9 +42,9 @@ export function useInit() {
                 await connectProvides[ account.connectName ](account.accAddress);
                 updateAccount({})
                 if (connectProvides.usedProvide && connectProvides.usedWeb3) {
-                    
+
                     // @ts-ignore
-                    let chainId = Number(connectProvides.usedProvide.chainId) ??  Number(await connectProvides.usedWeb3.eth.getChainId())
+                    let chainId = Number(connectProvides.usedProvide?.connector?.chainId) ??  Number(await connectProvides.usedWeb3.eth.getChainId())
                     if( ChainId[chainId] === undefined) {
                         chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
                     }
@@ -55,8 +52,8 @@ export function useInit() {
                     return
                 }
             } catch (error) {
-                console.log(error)
-                await resetAccount({shouldUpdateProvider:true});
+                //await resetAccount({shouldUpdateProvider:true});
+                walletServices.sendDisconnect('',`error at init loading  ${error}, disconnect`)
                 const chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
                 updateSystem({chainId})
             }

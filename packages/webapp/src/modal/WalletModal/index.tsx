@@ -19,8 +19,9 @@ import {
     SagaStatus
 } from '@loopring-web/common-resources';
 import { useAccount } from 'stores/account';
-import { connectProvides, ProcessingType, useConnectHook } from '@loopring-web/web3-provider';
+import { connectProvides, ProcessingType, useConnectHook, walletServices } from '@loopring-web/web3-provider';
 import { useSystem } from 'stores/system';
+import { myLog } from '../../utils/log_tools';
 
 export const ModalWalletConnectPanel = withTranslation('common')(({
                                                                       onClose,
@@ -68,9 +69,8 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
 
     const [processingCallback, setProcessingCallback] = React.useState< {callback:() => Promise<void> } | undefined>(undefined)
     useEffect(() => {
-        if (stateCheck === true && [SagaStatus.DONE].findIndex((ele: string) => ele === accountStatus)!==-1) {
-            
-            statusAccountUnset();
+        if (stateCheck === true && [SagaStatus.UNSET].findIndex((ele: string) => ele === accountStatus)!==-1) {
+            myLog('clear cache connect done')
             setStateCheck(false)
             if (processingCallback !== undefined) {
                 processingCallback.callback()
@@ -86,22 +86,22 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
                 if (account.connectName === DefaultGatewayList[ 0 ].key) {
                     setShowConnect({isShow: false});
                 } else {
-                    resetAccount({shouldUpdateProvider: true});
+                    walletServices.sendDisconnect('','should new provider')
                     setShowConnect({isShow: true, step: WalletConnectStep.MetaMaskProcessing});
                     setProcessingCallback({callback:metaMaskCallback});
                     setStateCheck(true)
                 }
 
-            }, [])
+            }, [account])
         },
         {
             ...DefaultGatewayList[ 1 ],
             handleSelect: React.useCallback(async () => {
-                resetAccount({shouldUpdateProvider: true});
+                walletServices.sendDisconnect('','should new provider')
                 setShowConnect({isShow: true, step: WalletConnectStep.WalletConnectProcessing});
                 setProcessingCallback({callback:walletConnectCallback});
                 setStateCheck(true)
-            }, [])
+            }, [account])
         },
 
     ]
