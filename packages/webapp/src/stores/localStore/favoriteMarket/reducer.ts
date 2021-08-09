@@ -2,7 +2,6 @@ import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { FavoriteMarketStates } from './interface';
 import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice';
 
-
 const favoriteMarketSlice: Slice<FavoriteMarketStates> = createSlice<FavoriteMarketStates,SliceCaseReducers<FavoriteMarketStates>,'favoriteMarket'>({
     name: 'favoriteMarket',
     initialState:[],
@@ -24,7 +23,6 @@ const favoriteMarketSlice: Slice<FavoriteMarketStates> = createSlice<FavoriteMar
             if (pair && state.findIndex((_pair: string) => _pair === pair) === -1) {
                 state = [...state, pair]
             }
-
         },
         addMarkets(state:FavoriteMarketStates, action: PayloadAction<string[]>) {
             let pairs = action.payload

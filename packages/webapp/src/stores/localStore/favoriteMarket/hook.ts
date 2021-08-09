@@ -11,7 +11,7 @@ export const useFavoriteMarket = ():  {
     addMarket:(pair:string)=>void,
     addMarkets:(pair:string[])=>void,
 } => {
-    const favoriteMarket: FavoriteMarketStates = useSelector((state: any) => state.favoriteMarket)
+    const favoriteMarket: FavoriteMarketStates = useSelector((state: any) => state.localStore.favoriteMarket)
     const dispatch = useDispatch();
     return {
         favoriteMarket: favoriteMarket ,
