@@ -1,7 +1,7 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import styled from '@emotion/styled/macro'
 
-import { MarketBlock, QuoteTable, TablePaddingX, QuoteTableRawDataItem } from '@loopring-web/component-lib'
+import { MarketBlock, QuoteTable, TablePaddingX, QuoteTableRawDataItem, InputSearch } from '@loopring-web/component-lib'
 import { OutlinedInputProps } from '@material-ui/core/OutlinedInput/OutlinedInput';
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
@@ -12,12 +12,20 @@ import { useQuote, useCandlestickList } from './hook'
 import { LoopringAPI } from 'stores/apis/api'
 import { TradingInterval } from 'loopring-sdk/dist'
 import { TableWrapStyled } from 'pages/styled'
+import { useFavoriteMarket } from 'stores/localStore/favoriteMarket'
+import store from 'stores'
 
-const  RowStyled = styled(Grid)`
+const RowStyled = styled(Grid)`
       & .MuiGrid-root:not(:last-of-type) > div{
         margin-right: ${({theme}) => theme.unit * 2}px;
       }
 ` as typeof Grid
+
+const SearchWrapperStyled = styled(Box)`
+      position: absolute;
+      top: 1.3rem;
+      right: ${({theme}) => theme.unit * 2}px;
+    `
 
 const TabsWrapperStyled = styled(Box)`
       position: relative;
@@ -32,11 +40,21 @@ export type CandlestickItem = {
   }[]
 }
 
+export enum TableFilterParams {
+  all = 'all',
+  favourite = 'favourite',
+  ranking = 'ranking'
+}
+
 const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const [candlestickList, setCandlestickList] = React.useState<any[]>([])
     const [ammPoolBalances, setAmmPoolBalances] = React.useState<any[]>([])
     const [tableTabValue, setTableTabValue] = React.useState('all')
+    const [filteredData, setFilteredData] = React.useState<QuoteTableRawDataItem[]>([])
+    const [searchValue, setSearchValue] = React.useState<string>('')
 
+    const {favoriteMarket, removeMarket, addMarket} = useFavoriteMarket()
+    
     const { t } = rest
 
     const getCandlestick = React.useCallback(async (market: string) => {
@@ -106,34 +124,6 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
 
     let history = useHistory()
 
-    const SearchWrap = () => {
-      const inputProps: OutlinedInputProps = {
-          placeholder: 'Search',
-          value: '',
-          onChange: (value: any) => {
-              console.log('FilterString', value);
-              //setFilterString(value);
-          },
-      }
-      return <OutlinedInput
-          // ref={inputEle}
-          {...inputProps}
-          key={'search'}
-          // placeholder={'search'}
-          className={'search'}
-          aria-label={'search'}
-          startAdornment={<InputAdornment position="start">
-              <SearchIcon/>
-          </InputAdornment>}
-      />
-    }
-
-    const SearchWrapperStyled = styled(Box)`
-      position: absolute;
-      top: 1.3rem;
-      right: ${({theme}) => theme.unit * 2}px;
-    `
-
     // prevent amm risky pair
     const getFilteredTickList = useCallback(() => {
       if (!!ammPoolBalances.length && tickList && !!tickList.length) {
@@ -148,6 +138,28 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
       return []
     }, [tickList, ammPoolBalances])
 
+    useEffect(() => {
+      const data = getFilteredTickList()
+      setFilteredData(data)
+    }, [getFilteredTickList])
+
+    const handleTableFilterChange = useCallback(({type = TableFilterParams.all, keyword = '' }: {
+      type?: TableFilterParams;
+      keyword?: string;
+    }) => {
+      const data = getFilteredTickList()
+      const filteredData = data.filter((o: any) => {
+        const formattedKeyword = keyword?.toLocaleLowerCase()
+        const coinA = o.pair.coinA.toLowerCase()
+        const coinB = o.pair.coinB.toLowerCase()
+        if (keyword === '') {
+          return true
+        }
+        return coinA.includes(formattedKeyword) || coinB.includes(formattedKeyword)
+      })
+      setFilteredData(filteredData)
+    }, [getFilteredTickList])
+
     const handleRowClick = useCallback((row: QuoteTableRawDataItem) => {
       const { coinA, coinB } = row.pair
       const tradePair = `${coinA}-${coinB}`
@@ -158,8 +170,17 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
 
     const handleTabChange = useCallback((_event: any, newValue: string) => {
       setTableTabValue(newValue)
-    }, [])
+      handleTableFilterChange({
+        type: newValue === 'favourite' ? TableFilterParams.favourite : newValue === 'tradeRanking' ? TableFilterParams.ranking : TableFilterParams.all,
+        keyword: searchValue
+      })
+    }, [handleTableFilterChange, searchValue])
     
+    const handleSearchChange = React.useCallback((value: string) => {
+      setSearchValue(value)
+      const type = tableTabValue === 'favourite' ? TableFilterParams.favourite : tableTabValue === 'tradeRanking' ? TableFilterParams.ranking : TableFilterParams.all
+      handleTableFilterChange({keyword: value, type: type})
+    }, [handleTableFilterChange, tableTabValue])
 
     return <Box display={'flex'} flexDirection={'column'} flex={1} >
 
@@ -184,8 +205,6 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
             } 
             )}
 
-
-
         </RowStyled>
         <TableWrapStyled container marginY={3}  paddingBottom={2} flex={1}>
             <Grid item xs={12}>
@@ -200,13 +219,13 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                       <Tab label={t('labelQuotePageTradeRanking')} value="ranking"/>
                   </Tabs>
                   <SearchWrapperStyled>
-                    <SearchWrap />
+                    <InputSearch value={searchValue} onChange={handleSearchChange} />
                   </SearchWrapperStyled>
                 </TabsWrapperStyled>
                 <Divider />
                 <QuoteTable /* onVisibleRowsChange={onVisibleRowsChange} */ onRowClick={(index, row, col) => 
                   handleRowClick(row)
-                } rawData={getFilteredTickList()} {...{ showLoading: tickList && !tickList.length, ...rest }} />
+                } rawData={filteredData} {...{ showLoading: tickList && !tickList.length, ...rest }} />
             </Grid>
         </TableWrapStyled>
     </Box>
