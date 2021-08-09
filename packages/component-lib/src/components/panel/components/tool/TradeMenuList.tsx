@@ -40,8 +40,8 @@ export const TradeMenuList = <T extends IBData<I>,
                 coinMap: coinMap, //swapData.type === 'sell' ? tradeCalcData?.sellCoinInfoMap : tradeCalcData?.buyCoinInfoMap as any,
                 filterBy,
                 height: _height ? typeof _height === 'number' ?
-                    `calc(${_height + 'px'}  - 2 * var(--toolbar-row-height) )`
-                    : `calc(${_height}  - 2 * var(--toolbar-row-height) )` : '410px',
+                    `calc(${_height + 'px'}  - 2 * var(--toolbar-row-padding) )`
+                    : `calc(${_height}  - 2 * var(--toolbar-row-padding) )` : '410px',
                 filterString: value,
                 handleSelect,
                 walletMap: walletMap,//tradeCalcData?.walletMap as any,   // TODO get form parents Data
