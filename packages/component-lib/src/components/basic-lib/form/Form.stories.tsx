@@ -21,7 +21,8 @@ import {
     InputButtonProps,
     InputSelect,
     InputSelectProps,
-    TextField
+    TextField,
+    InputSearch
 } from "./input";
 import { CheckBoxIcon, CheckedIcon, CoinInfo, CoinKey, DropDownIcon, IBData, SearchIcon } from '@loopring-web/common-resources';
 import { DateRange } from '@material-ui/lab';
@@ -260,29 +261,35 @@ const MyDatePicker = (props: any) => {
         </Grid> </>
 
 }
-const SearchWrap = () => {
-    const inputProps: OutlinedInputProps = {
-        placeholder: 'Search Coin',
-        value: '',
-        onChange: (value: any) => {
-            console.log('FilterString', value);
-            //setFilterString(value);
-        },
-    }
-    return <OutlinedInput
-        // ref={inputEle}
-        {...inputProps}
-        key={'search'}
-        // placeholder={'search'}
-        className={'search'}
-        aria-label={'search'}
-        startAdornment={<InputAdornment position="start">
-            <SearchIcon/>
-        </InputAdornment>}
-    />
-}
+// const SearchWrap = () => {
+//     const inputProps: OutlinedInputProps = {
+//         placeholder: 'Search Coin',
+//         value: '',
+//         onChange: (value: any) => {
+//             console.log('FilterString', value);
+//             //setFilterString(value);
+//         },
+//     }
+//     return <OutlinedInput
+//         // ref={inputEle}
+//         {...inputProps}
+//         key={'search'}
+//         // placeholder={'search'}
+//         className={'search'}
+//         aria-label={'search'}
+//         startAdornment={<InputAdornment position="start">
+//             <SearchIcon/>
+//         </InputAdornment>}
+//     />
+// }
 const Template: Story<any> = withTranslation()((props: any) => {
     const [value, setValue] = React.useState('');
+    const [searchValue, setSeachValue] = React.useState('');
+
+    const handleSearchChange = React.useCallback((value: string) => {
+        console.log(value)
+        setSeachValue(value)
+    }, [])
 
     return <Style>
         <h4>Select token ground btn and input value</h4>
@@ -329,7 +336,8 @@ const Template: Story<any> = withTranslation()((props: any) => {
                                                      color="default"/>} label="Label"/>
             </Grid> */}
             <Grid item xs={3}>
-                <SearchWrap/>
+                {/* <SearchWrap/> */}
+                <InputSearch value={searchValue} onChange={handleSearchChange} />
             </Grid>
             <MyDatePicker {...props} />
         </Grid>
