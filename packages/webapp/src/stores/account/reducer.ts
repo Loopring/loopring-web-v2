@@ -43,6 +43,7 @@ const initialState: AccountState = {
     publicKey: {},
     level: '',
     nonce: undefined,
+    keyNonce: undefined,
     connectName: ConnectProviders.Unknown,
     _chainId: 1,
     status: 'PENDING',

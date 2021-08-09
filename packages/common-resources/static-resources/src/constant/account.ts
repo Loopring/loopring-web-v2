@@ -31,6 +31,7 @@ export type Account = {
     eddsaKey: any,
     publicKey: any,
     nonce:number|undefined,
+    keyNonce: number|undefined,
     connectName: keyof typeof ConnectProviders,
     wrongChain?: boolean|undefined,
     _chainId?: 1 | 5 | 'Unknown',
