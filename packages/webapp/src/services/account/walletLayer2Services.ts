@@ -111,6 +111,7 @@ export const walletLayer2Services = {
         })
     },
     sendNeedUpdateAccount: async(accInfo: sdk.AccountInfo) => {
+        myLog('sendNeedUpdateAccount accInfo:', accInfo)
         store.dispatch(updateAccountStatus({readyState:AccountStatus.DEPOSITING, }))
         subject.next({
             status: Commands.ProcessDeposit,
