@@ -1,5 +1,5 @@
 export enum ConnectProviders {
-    UnKnown = 'UnKnown',
+    unKnown = 'unKnown',
     MetaMask = 'MetaMask',
     WalletConnect = 'WalletConnect',
 }
