@@ -17,6 +17,7 @@ export type SwitchPanelProps<T extends string> = {
     index: number,
     // defaultIndex: number,
     panelList: Array<PanelContent<T>>,
+    size?: string,
     // onChangeIndex?: (index: number,data:any) => void,
     // onTransitionEnd?: () => void,
     _height?: number | string;
@@ -44,8 +45,8 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps &
     .react-swipeable-view-container {
         & > div {  
             height: ${_height ? typeof _height === 'number' ?
-                    `calc(${_height + 'px'}  - 2 * var(--toolbar-row-height) )`
-                    : `calc(${_height}  - 2 * var(--toolbar-row-height) )` : 'auto'};
+          `calc(${_height + 'px'}  - 2 * var(--toolbar-row-padding) )`
+          : `calc(${_height}  - 2 * var(--toolbar-row-padding) )` : 'auto'};
             padding: 0 0 ${theme.unit * 3}px;
             background: ${theme.colorBase.background().swap}; 
             .container{
@@ -74,9 +75,14 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps &
     justify-content: flex-end;
     padding: 0 ${({theme}) => theme.unit / 2 * 5}px ${({theme}) => theme.unit / 2}px;
     box-sizing: border-box;
-    height: var(--toolbar-row-height);
-    min-height: var(--toolbar-row-height);
-    max-height: var(--toolbar-row-height);
+    height: var(--toolbar-row-);
+    min-height: var(--toolbar-row-padding);
+
+    &.large {
+      height: var(--toolbar-row-height);
+      min-height: var(--toolbar-row-height);
+    }
+
 
     .MuiIconButton-root {
       height: var(--btn-icon-size);
@@ -99,7 +105,7 @@ function _SwitchPanel<T extends string>({
                                             panelList,
                                             _height,
                                             _width,
-
+                                            size
                                             // ...rest
                                         }: SwitchPanelProps<T> & WithTranslation, _ref: React.ForwardedRef<any>) {
     const theme = useTheme();
@@ -108,7 +114,7 @@ function _SwitchPanel<T extends string>({
         {panelList.map((panel: PanelContent<T>) => {
             return <Grid container key={panel.key} className={'container'} direction={'column'}
                          justifyContent={"start"} flexWrap={'nowrap'}>
-                <Toolbar variant={'dense'}>
+                <Toolbar className={size} variant={'dense'}>
                     {panel.toolBarItem()}
                 </Toolbar>
                 <Grid item flex={1}>{panel.element()}</Grid>
