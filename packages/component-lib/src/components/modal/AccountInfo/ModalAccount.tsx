@@ -52,7 +52,7 @@ export const ModalAccount = withTranslation('common', {withRef: true})((
                                   index={step}
                                   {...{_height: h ? h : 'var(--modal-height)', _width: w ? w : 'var(--modal-width)'}}>
                 {panelList.map((panel, index) => {
-                    return <Box flex={1} display={'flex'}  key={index} >
+                    return <Box flex={1} display={'flex'} alignItems={'stretch'} key={index} >
                         {panel}
                     </Box>
                 })}

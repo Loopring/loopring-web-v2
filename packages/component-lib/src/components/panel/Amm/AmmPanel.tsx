@@ -157,7 +157,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
     return <SwipeableViewsStyled height={height} width={width}>
         <Grid container className={'container'} flex={1} direction={'column'}
               justifyContent={"start"} flexWrap={'nowrap'}>
-            <Toolbar variant={'dense'}>
+            <Toolbar className={'large'} variant={'dense'}>
                 <Box alignSelf={'center'}>
                     <TabPanelBtn {...{t, value: index, handleChange: handleTabChange, ...rest}} />
                 </Box>

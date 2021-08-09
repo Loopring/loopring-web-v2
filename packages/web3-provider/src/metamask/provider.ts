@@ -41,16 +41,16 @@ export const MetaMaskSubscribe = (provider: any, web3: Web3) => {
         provider.on("disconnect", (code: number, reason: string) => {
 
             walletServices.sendDisconnect(code, reason);
-            MetaMaskUnsubscribe(provider)
+
         });
     }
 }
 
-export const MetaMaskUnsubscribe = (provider: any) => {
+export const MetaMaskUnsubscribe = async (provider: any) => {
     if (provider && typeof provider.removeAllListeners === 'function') {
         // provider.removeAllListeners('accountsChanged');
         // provider.removeAllListeners('chainChanged');
         // provider.removeAllListeners('disconnect');
-        provider.removeAllListeners();
+        await provider.removeAllListeners();
     }
 }

@@ -1,5 +1,5 @@
 export enum WsState {
-    Unknown = 'Unknown',
+    unknown = 'unknown',
     Inited = 'Inited',
     HasError = 'HasError',
     Closed = 'Closed',
@@ -13,11 +13,11 @@ export enum StatusChangeEvent {
     ForceQuit = 'ForceQuit',
 }
 
-export const WebsocketMachineSpec = (initialState: WsState = WsState.Unknown) => {
+export const WebsocketMachineSpec = (initialState: WsState = WsState.unknown) => {
     return {
         initialState: initialState,
         states: {
-            Unknown: {
+            unknown: {
                 Initializing: WsState.Inited,
                 ForceQuit: WsState.Finished,
                 Closing: WsState.Closed,

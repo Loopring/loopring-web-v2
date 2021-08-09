@@ -1,4 +1,6 @@
+import { TxStatus } from "loopring-sdk";
 import { myLog } from "utils/log_tools"
+import { Account } from "@loopring-web/common-resources";
 
 export enum CONSTANTS {
     Handler = 'handler',
@@ -11,7 +13,7 @@ export enum CONSTANTS {
     HardwareAddresses = 'hardware_addresses',
     ConnectorName = 'connector_name',
 
-    DepositHash = 'deposit_hash',
+    DepositHash = '__loopring__.depositsHash',
 
     WalletConnect = 'walletconnect',
 }
@@ -19,6 +21,36 @@ export enum CONSTANTS {
 const SESSION_TIMEOUT_SECONDS = 600
 
 export class UserStorage {
+
+    public static getLocalDepositHash(account: Account): { [key: string]: any } | undefined {
+        let depositsHash = window.localStorage.getItem(CONSTANTS.DepositHash);
+        if (depositsHash) {
+            depositsHash = JSON.parse(depositsHash);
+            if (depositsHash && account.accAddress && depositsHash[account.accAddress]) {
+                return depositsHash[account.accAddress]
+            }
+        }
+        return undefined
+    }
+
+    public static clearDepositHash(account: Account, value: string) {
+        // @ts-ignore
+        let depositsHash: { [key: string]: object } = window.localStorage.getItem(CONSTANTS.DepositHash);
+        depositsHash = depositsHash ? JSON.parse(depositsHash as any) : {};
+        if (depositsHash[account.accAddress] && depositsHash[account.accAddress][value]) {
+            delete depositsHash[account.accAddress][value];
+        }
+    }
+
+    public static setLocalDepositHash(account: Account, value: string, status: TxStatus): void {
+        // @ts-ignore
+        let depositsHash: { [key: string]: object } = window.localStorage.getItem(CONSTANTS.DepositHash);
+        depositsHash = depositsHash ? JSON.parse(depositsHash as any) : {};
+        depositsHash[account.accAddress] = {
+            ...depositsHash[account.accAddress],
+            [value]: status,
+        }
+    }
 
     public static clearWalletConnect() {
         myLog('try to clearWalletConnect....')
@@ -56,14 +88,14 @@ export class UserStorage {
         sessionStorage.removeItem(CONSTANTS.Handler)
     }
 
-    public static checkTimeout(reset: boolean = false) : boolean {
+    public static checkTimeout(reset: boolean = false): boolean {
         let dateTimeStr = localStorage.getItem(CONSTANTS.ActiveTime)
         let now = new Date().getTime()
 
         if (dateTimeStr !== null && !reset) {
             let tmpDt = new Date(parseInt(dateTimeStr))
 
-            if(now - tmpDt.getTime() > SESSION_TIMEOUT_SECONDS * 1000) {
+            if (now - tmpDt.getTime() > SESSION_TIMEOUT_SECONDS * 1000) {
                 myLog(`TIMEOUT! now:${now} dateTimeStr:${dateTimeStr} delta:${now - tmpDt.getTime()}`)
                 sessionStorage.clear()
                 localStorage.setItem(CONSTANTS.ActiveTime, now.toString())
@@ -126,19 +158,6 @@ export class UserStorage {
 
     public static clearAmmOrder() {
         localStorage.removeItem(CONSTANTS.AmmOrder)
-    }
-
-    public static getDepositHash(): string {
-        var orderHash = localStorage.getItem(CONSTANTS.DepositHash)
-        return orderHash ? orderHash : ''
-    }
-
-    public static setDepositHash(depositHash: string) {
-        localStorage.setItem(CONSTANTS.DepositHash, depositHash)
-    }
-
-    public static clearDepositHash() {
-        localStorage.removeItem(CONSTANTS.DepositHash)
     }
 
     public static isHardwareAddress(address: string) {

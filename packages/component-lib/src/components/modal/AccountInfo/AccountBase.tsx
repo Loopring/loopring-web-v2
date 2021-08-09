@@ -5,7 +5,6 @@ import styled from '@emotion/styled';
 import { AccountBaseProps } from './Interface';
 import { VipStyled } from '../../../';
 
-
 const BoxStyled = styled(Box)`
   // .MuiLink-root {
   //   height: 2rem;
@@ -45,7 +44,6 @@ const BoxStyled = styled(Box)`
 ` as typeof Box
 
 export const AccountBase = ({
-
                                 onSwitch,
                                 onDisconnect,
                                 accAddress,
@@ -58,7 +56,7 @@ export const AccountBase = ({
                             }: AccountBaseProps & WithTranslation) => {
     const addressShort = getShortAddr(accAddress)
     const etherscanLink = etherscanUrl + accAddress;
-    const connectBy= connectName === 'UnKnown' ?  t('labelWrongNetwork'): connectName;
+    const connectBy = connectName === 'unknown' ?  t('labelWrongNetwork'): connectName;
     return <Box display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
         <Typography  variant={'body2'} color={'textSecondary'} marginTop={1}>
             <Trans i18nKey="labelConnectBy" tOptions={{connectBy}}  >

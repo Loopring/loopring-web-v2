@@ -20,7 +20,7 @@ export const ProcessBasic = ({t, label,providerName, describe}: { describe: JSX.
         }
 
     }, [providerName])
-    return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-evenly'}
+    return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
                 flexDirection={'column'}>
         <Typography component={'h3'} variant={'h2'} marginBottom={3}>{t(label)}</Typography>
         <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>

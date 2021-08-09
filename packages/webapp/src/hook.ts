@@ -5,11 +5,8 @@ import { ChainId, sleep } from 'loopring-sdk';
 import { useAmmMap } from './stores/Amm/AmmMap';
 import { SagaStatus } from '@loopring-web/common-resources';
 import { useTokenMap } from './stores/token';
-import { useWalletLayer1 } from './stores/walletLayer1';
 import { useAccount } from './stores/account/hook';
 import { connectProvides, walletServices } from '@loopring-web/web3-provider';
-import { useWalletLayer2 } from './stores/walletLayer2';
-import store from './stores';
 import { useAccountInit } from './hookAccountInit';
 import { useAmmActivityMap } from './stores/Amm/AmmActivityMap';
 import { useTicker } from './stores/ticker';
@@ -40,34 +37,28 @@ export function useInit() {
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
 
-        if (account.accAddress !== '' && account.connectName && account.connectName !== 'UnKnown') {
+        if (account.accAddress !== '' && account.connectName && account.connectName !== 'unknown') {
             try {
                 await connectProvides[ account.connectName ](account.accAddress);
                 updateAccount({})
                 if (connectProvides.usedProvide && connectProvides.usedWeb3) {
+
                     // @ts-ignore
-                    let chainId = Number(connectProvides.usedProvide.chainId) ??  Number(await connectProvides.usedWeb3.eth.getChainId())
-                    // if(account.connectName === "MetaMask"){
-                    //     chainId = ;
-                    // }else if (account.connectName === "WalletConnect"){
-                    //     // chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
-                    //     //@ts-ignore
-                    //
-                    //
-                    // } else{
-                    //     chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
-                    // }
+                    let chainId = Number(connectProvides.usedProvide?.connector?.chainId) ??  Number(await connectProvides.usedWeb3.eth.getChainId())
+                    if( ChainId[chainId] === undefined) {
+                        chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
+                    }
                     updateSystem({chainId:chainId as any})
                     return
                 }
             } catch (error) {
-                console.log(error)
-                resetAccount();
+                //await resetAccount({shouldUpdateProvider:true});
+                walletServices.sendDisconnect('',`error at init loading  ${error}, disconnect`)
                 const chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
                 updateSystem({chainId})
             }
         } else  {
-            if(account.accAddress === '' ||  account.connectName === 'UnKnown' ){
+            if(account.accAddress === '' ||  account.connectName === 'unknown' ){
                 resetAccount() 
             }
             const chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET

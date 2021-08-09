@@ -1,33 +1,11 @@
 import store from '../../stores';
-import { WalletMap,WalletCoin,CoinKey } from '@loopring-web/common-resources';
-import * as fm from 'loopring-sdk';
-import { UserBalanceInfo } from 'loopring-sdk';
+import { WalletCoin,CoinKey } from '@loopring-web/common-resources';
+import * as sdk from 'loopring-sdk';
 export type WalletMapExtend<C> =    {
     [K in CoinKey<C>]?: WalletCoin<C> & {
-    detail:UserBalanceInfo
+    detail: sdk.UserBalanceInfo
 }
 }
-
-// export const makeWalletLayer1 = <C extends { [ key: string ]: any }>():{ walletMap: WalletMapExtend<C> | undefined } => {
-//     const {walletLayer1} = store.getState().walletLayer1;
-//     const {tokenMap} = store.getState().tokenMap;
-//     let walletMap: WalletMapExtend<C> | undefined;
-//     if (walletLayer1) {
-//         walletMap = Reflect.ownKeys(walletLayer1).reduce((prev, item) => {
-//             const {total, locked, pending: {withdraw}} = walletLayer1[ item as string ];
-//             const countBig = fm.toBig(total).minus(fm.toBig(locked)).minus(fm.toBig(withdraw)).toString()
-//             return {
-//                 ...prev, [ item ]: {
-//                     belong: item,
-//                     count: fromWEI(tokenMap, item, countBig),
-//                     detail: walletLayer1[ item as string ]
-//                 }
-//             }
-//         }, {} as  WalletMapExtend<C> )
-//     }
-//
-//     return {walletMap}
-// }
 
 export const makeWalletLayer2 = <C extends { [ key: string ]: any }>():{ walletMap: WalletMapExtend<C> | undefined } => {
     const {walletLayer2} = store.getState().walletLayer2;
@@ -38,11 +16,11 @@ export const makeWalletLayer2 = <C extends { [ key: string ]: any }>():{ walletM
     if (walletLayer2) {
         walletMap = Reflect.ownKeys(walletLayer2).reduce((prev, item) => {
             const {total, locked, pending: { withdraw }} = walletLayer2[ item as string ];
-            const countBig = fm.toBig(total).minus(fm.toBig(locked)).toString()
+            const countBig = sdk.toBig(total).minus(sdk.toBig(locked)).toString()
             return {
                 ...prev, [ item ]: {
                     belong: item,
-                    count: fm.fromWEI(tokenMap, item, countBig),
+                    count: sdk.fromWEI(tokenMap, item, countBig),
                     detail: walletLayer2[ item as string ]
                 }
             }

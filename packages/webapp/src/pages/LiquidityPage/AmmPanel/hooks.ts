@@ -199,7 +199,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
             const {fees: feesJoin} = await LoopringAPI.userAPI.getOffchainFeeAmt(requestJoin, account.apiKey)
             setJoinFees(feesJoin)
 
-            const feeJoin = sdk.toBig(feesJoin[ pair.coinBInfo.simpleName ]?.fee as string).div(BIG10.pow(feeToken.decimals)).toString()
+            const feeJoin = sdk.toBig(feesJoin[ pair.coinBInfo.simpleName ]?.fee as string).div('1e' + feeToken.decimals).toString()
                 + ' ' + pair.coinBInfo.simpleName
 
             const requestExit: GetOffchainFeeAmtRequest = {
@@ -211,7 +211,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
             setExitfees(feesExit)
 
-            const feeExit = sdk.toBig(feesExit[ pair.coinBInfo.simpleName ].fee as string).div(BIG10.pow(feeToken.decimals)).toString()
+            const feeExit = sdk.toBig(feesExit[ pair.coinBInfo.simpleName ].fee as string).div('1e' + feeToken.decimals).toString()
                 + ' ' + pair.coinBInfo.simpleName
 
             myLog('-> feeJoin:', feeJoin, ' feeExit:', feeExit)

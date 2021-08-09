@@ -37,6 +37,7 @@ import { account, coinMap, CoinType, walletMap } from '../../static';
 import { DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../index';
 import { WalletConnectBtn } from '../header';
 import { DepositWrap } from '../panel/components';
+import { Box } from '@material-ui/core/';
 
 
 const Style = styled.div`
@@ -178,9 +179,9 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                     </Grid>
                     <Grid container spacing={2}>
                         {walletList.map((panel, index) => {
-                            return <Grid item key={index} width={400} padding={2}>
+                            return <Box  key={index}  width={480} height={400} padding={2} justifyContent={'center'} alignItems={'stretch'}>
                                 {panel}
-                            </Grid>
+                            </Box>
                         })}
                     </Grid>
                     <Button variant={'outlined'} size={'small'} color={'primary'} style={{marginRight: 8}}
@@ -192,9 +193,9 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                     <Grid container spacing={2}>
 
                         {accountList.map((panel, index) => {
-                            return <Grid item key={index} width={400} padding={2}>
+                            return <Box  key={index}  width={480} height={400} padding={2} justifyContent={'center'} alignItems={'stretch'}>
                                 {panel}
-                            </Grid>
+                            </Box>
                         })}
                     </Grid>
                     <Button variant={'outlined'} size={'small'} color={'primary'} style={{marginRight: 8}}
