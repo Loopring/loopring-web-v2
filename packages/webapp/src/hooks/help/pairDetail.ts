@@ -50,22 +50,7 @@ export const pairDetailDone = <C>({coinKey, market,ammPoolsBalance, fee, tokenMa
     }
     if(isNaN(stob) && ammPoolsBalance){
         const {base, quote} = getBaseQuote(coinKey)
-
-        // const baseToken: TokenInfo = getToken(tokenMap, base)
-        // const quoteToken: TokenInfo = getToken(tokenMap, quote)
-        // const baseVol = (fm.toBig(poolBaseTokenVol.volume).div(BIG10.pow(baseToken.decimals)))
-        // const quoteVol = (fm.toBig(quoteBaseTokenVol.volume).div(BIG10.pow(quoteToken.decimals)))
-        //
-        // stob = volumeToCountAsBigNumber(base,poolBaseTokenVol.volume)?.div(
-        //     volumeToCountAsBigNumber(quote,quoteBaseTokenVol.volume) || 1
-        // ) .toNumber()
-        // console.log('1', base, poolBaseTokenVol, quote, quoteBaseTokenVol)
-        //baseToken.tokenId === quoteBaseTokenVol.tokenId && quoteToken.tokenId === poolBaseTokenVol.tokenId) {
-        // const quoteVol = (fm.toBig(quoteBaseTokenVol.volume).div(BIG10.pow(baseToken.decimals)))
-        // const baseVol = (fm.toBig(poolBaseTokenVol.volume).div(BIG10.pow(quoteToken.decimals)))
-        //baseVol.div(quoteVol).toNumber()
-        // console.log('2', base, poolBaseTokenVol, quote, quoteBaseTokenVol)
-        //ErrorMap.NOTS
+        
         const poolBaseTokenVol: TokenVolumeV3 = ammPoolsBalance.pooled[0];
         const quoteBaseTokenVol: TokenVolumeV3 = ammPoolsBalance.pooled[1];
         let poolVolumn:[baseVol:any, quoteVol:any];

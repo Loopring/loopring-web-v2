@@ -1,10 +1,6 @@
-import { BIG10 } from 'defs/swap_defs'
-import { flatMap } from 'lodash'
-import { LoopringMap, MarketInfo, toBig } from 'loopring-sdk'
-
 import store from 'stores'
 
-import * as fm from 'loopring-sdk'
+import * as sdk from 'loopring-sdk'
 
 const getTokenInfo = (symbol: string) => {
     const tokenMap = store.getState().tokenMap.tokenMap
@@ -37,7 +33,7 @@ export function StringToNumberWithPrecision(rawVal: string, symbol: string) {
         return undefined
     }
 
-    return parseFloat(toBig(rawVal).toFixed(tokenInfo.precision, 0))
+    return parseFloat(sdk.toBig(rawVal).toFixed(tokenInfo.precision, 0))
 }
 
 /*
@@ -54,7 +50,7 @@ export function VolToNumberWithPrecision(rawVal: string, symbol: string) {
     if (rawVal === undefined || rawVal === null || rawVal.trim() === '')
         return 0
 
-    return toBig(rawVal).div('1e' + tokenInfo.decimals).toFixed(tokenInfo.precision, 0)
+    return sdk.toBig(rawVal).div('1e' + tokenInfo.decimals).toFixed(tokenInfo.precision, 0)
 }
 
 /*
@@ -71,7 +67,7 @@ export function FormatValWithPrecision(rawVal: string, symbol: string) {
     if (rawVal === undefined || rawVal === null || rawVal.trim() === '')
         return 0
 
-    return toBig(rawVal).toFixed(tokenInfo.precision, 0)
+    return sdk.toBig(rawVal).toFixed(tokenInfo.precision, 0)
 }
 
 /*
@@ -84,6 +80,6 @@ export function formatPriceWithPrecision(rawVal: string,
         return '0'
     }
 
-    return fm.toBig(rawVal).toFixed(marketInfo.precisionForPrice)
+    return sdk.toBig(rawVal).toFixed(marketInfo.precisionForPrice)
 
 }
