@@ -58,7 +58,7 @@ export const AccountBase = ({
                             }: AccountBaseProps & WithTranslation) => {
     const addressShort = getShortAddr(accAddress)
     const etherscanLink = etherscanUrl + accAddress;
-    const connectBy= connectName === 'unKnown' ?  t('labelWrongNetwork'): connectName;
+    const connectBy = connectName === 'Unknown' ?  t('labelWrongNetwork'): connectName;
     return <Box display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
         <Typography  variant={'body2'} color={'textSecondary'} marginTop={1}>
             <Trans i18nKey="labelConnectBy" tOptions={{connectBy}}  >
