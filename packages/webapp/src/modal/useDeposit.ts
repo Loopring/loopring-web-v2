@@ -47,26 +47,34 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 const req: GetAllowancesRequest = { owner: account.accAddress, token: tokenInfo.symbol}
 
-                const { tokenAllowances } = await LoopringAPI.exchangeAPI.getAllowances(req, tokenMap)
+                if (tokenInfo.symbol.toUpperCase() !== 'ETH') {
 
-                const allowance = sdk.toBig(tokenAllowances[tokenInfo.symbol])
+                    const { tokenAllowances } = await LoopringAPI.exchangeAPI.getAllowances(req, tokenMap)
+    
+                    const allowance = sdk.toBig(tokenAllowances[tokenInfo.symbol])
+    
+                    const curValInWei = sdk.toBig(inputValue.tradeValue).times('1e' + tokenInfo.decimals)
+    
+                    myLog(curValInWei.toString(), allowance.toString())
+    
+                    if (curValInWei.gt(allowance)) {
+                        myLog(curValInWei, allowance, ' need approveMax!')
+                        await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
+                            exchangeInfo?.depositAddress, gasPrice ?? 30, gasLimit, chainId === 'unknown' ? undefined : chainId, nonce, isMetaMask)
+                        nonce += 1
+                    } else {
+                        myLog('allowance is enough! don\'t need approveMax!')
+                    }
 
-                const curValInWei = sdk.toBig(inputValue.tradeValue).times('1e' + tokenInfo.decimals)
-
-                myLog(curValInWei.toString(), allowance.toString())
-
-                if (curValInWei.gt(allowance)) {
-                    myLog(curValInWei, allowance, ' need approveMax!')
-                    await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
-                        exchangeInfo?.depositAddress, gasPrice ?? 30, gasLimit, chainId === 'unknown' ? undefined : chainId, nonce, isMetaMask)
-                    nonce += 1
-                } else {
-                    myLog('allowance is enough! don\'t need approveMax!')
                 }
+
+                myLog('before deposit:', chainId, connectName, isMetaMask)
 
                 const response2 = await sdk.deposit(connectProvides.usedWeb3, account.accAddress,
                     exchangeInfo?.exchangeAddress, tokenInfo, inputValue.tradeValue, fee,
-                    gasPrice ?? 20, gasLimit, chainId === 'unknown' ? 1 : chainId, nonce + 1, isMetaMask)
+                    gasPrice ?? 20, gasLimit, chainId === 'unknown' ? 1 : chainId, nonce, isMetaMask)
+
+                myLog('response2:', response2)
 
                 //TODO check success or failed API
             } catch (e) {

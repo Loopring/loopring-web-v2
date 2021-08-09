@@ -73,7 +73,7 @@ export const ModalAccountInfo = withTranslation('common')(({
         setOpenQRCode(true)
     }, [])
     const onDisconnect = React.useCallback(async () => {
-        resetAccount();
+        resetAccount({shouldUpdateProvider: true});
         await sleep(10);
         statusAccountUnset();
         setShowAccount({ isShow: false })
