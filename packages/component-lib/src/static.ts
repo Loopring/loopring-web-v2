@@ -19,6 +19,7 @@ export const account:Account = {
     publicKey: {},
     level: '',
     nonce: undefined,
+    keyNonce: undefined,
     connectName: ConnectProviders.Unknown,
 }
 export const coinMap: CoinMap<CoinType, CoinInfo<CoinType>> = {
