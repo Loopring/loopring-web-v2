@@ -5,7 +5,6 @@ import styled from '@emotion/styled';
 import { AccountBaseProps } from './Interface';
 import { VipStyled } from '../../../';
 
-
 const BoxStyled = styled(Box)`
   // .MuiLink-root {
   //   height: 2rem;
@@ -45,7 +44,6 @@ const BoxStyled = styled(Box)`
 ` as typeof Box
 
 export const AccountBase = ({
-
                                 onSwitch,
                                 onDisconnect,
                                 accAddress,

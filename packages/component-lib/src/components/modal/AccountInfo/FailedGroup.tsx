@@ -4,7 +4,6 @@ import { CoinInfo, LinkIcon } from '@loopring-web/common-resources';
 import React from 'react';
 import { FailedBasic } from '../FailedBasic';
 
-
 export const FailedDeposit = ({
                                   onRetry,
                                   label = "depositTitle",

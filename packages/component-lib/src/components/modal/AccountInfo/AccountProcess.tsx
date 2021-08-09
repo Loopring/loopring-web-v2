@@ -16,7 +16,6 @@ export const ActiveAccountProcess = ({t, ...rest}: WithTranslation & { providerN
     return <ProcessBasic label={'labelActiveAccount'} describe={ describe} {...{...rest, t}}/>
 }
 
-
 export const DepositApproveProcess = ({
                                           t,
                                           label = "depositTitle",
