@@ -15,7 +15,7 @@ export const Depositing = ({t, goUpdateAccount, label='depositTitle',etherscanLi
         <Link target='_blank'  href={etherscanLink} display={'inline-block'}  marginTop={1 / 2}>
             <Typography variant={'body2'}>  <LinkIcon fontSize={'small'}  style={{verticalAlign:'middle'}} /> {'Etherscan'} </Typography>
         </Link>
-        <Box marginTop={2} alignSelf={'stretch'} paddingX={6}>
+        <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
             <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {
                 if (goUpdateAccount) {
                     goUpdateAccount()

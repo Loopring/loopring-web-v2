@@ -20,7 +20,7 @@ export const FailedBasic= ({onRetry,describe,label,t}: {describe:JSX.Element, on
         {/*        Rejected, Please<Link onClick={onRetry}>retry</Link>*/}
         {/*    </Trans>*/}
         {/*</Typography>*/}
-        <Box marginTop={2} alignSelf={'stretch'} paddingX={6}>
+        <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
             <Button variant={'contained'} fullWidth size={'medium'}  onClick={onRetry}>{t('labelRetry')} </Button>
         </Box>
     </Box>

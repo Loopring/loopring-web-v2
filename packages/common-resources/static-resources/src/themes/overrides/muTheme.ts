@@ -143,7 +143,7 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             MuiInputBase: MuiInputBase({colorBase}),
             MuiMenu: MuiMenu({colorBase}),
             MuiMenuItem: MuiMenuItem({colorBase}),
-            MuiList: MuiList({colorBase}),
+            MuiList: MuiList(),
             MuiListItem: MuiListItem({colorBase}),
             MuiListItemAvatar: MuiListItemAvatar(),
             MuiInputLabel: MuiInputLabel({colorBase}),

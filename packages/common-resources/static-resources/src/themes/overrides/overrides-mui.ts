@@ -244,7 +244,7 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 fontSize: '1.2rem'
             },
             outlined: {
-                height: pxToRem(28),
+                height: pxToRem(32),
                 // boxShadow: '0px 4px 62px rgba(0, 0, 0, 0.25)',
                 fontSize: '1.4rem',
                 fontWeight: 'normal',
@@ -558,7 +558,7 @@ export const MuiFormLabel = ({colorBase}: any) => {
 
     }
 }
-export const MuiList = ({colorBase}: any) => {
+export const MuiList = () => {
     return {
         styleOverrides: {
             root: {

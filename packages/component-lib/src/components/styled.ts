@@ -129,7 +129,7 @@ export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _
                .trade-panel{
                  .react-swipeable-view-container {
                      & > div{
-                          padding: 0 ${theme.unit * 3}px 0;
+                          padding: 0 ${theme.unit * 5/2}px 0;
                      }
                  }
                }
@@ -141,7 +141,7 @@ export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _
         width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : '100%'};
         .react-swipeable-view-container {
             & > div{
-              padding: 0 ${theme.unit * 3}px var(--toolbar-row-padding);
+              padding: 0 ${theme.unit * 5/2}px var(--toolbar-row-padding);
               overflow: unset !important
               .container{
                 height:100%;
