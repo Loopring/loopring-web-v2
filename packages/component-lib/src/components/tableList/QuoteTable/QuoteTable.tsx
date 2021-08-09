@@ -101,7 +101,7 @@ const columnMode = ({t}: WithTranslation, history: any, upColor: 'green' | 'red'
                     <StarIconWrapperStyled
                         onClick={handleStartClick}
                     >
-                        <StarSolidIcon cursor={'pointer'} />
+                        <StarHollowIcon cursor={'pointer'} />
                     </StarIconWrapperStyled>
                     <Typography component={'span'}>
                         {coinA}
