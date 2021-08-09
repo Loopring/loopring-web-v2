@@ -57,7 +57,7 @@ export async function updateAccountFromServer() {
     try {
 
         if (LoopringAPI.userAPI && LoopringAPI.exchangeAPI && system.exchangeInfo && connectProvides.usedWeb3 && account
-            && system.chainId !== 'Unknown' && account.connectName !== 'Unknown') {
+            && system.chainId !== 'unknown' && account.connectName !== 'unknown') {
             const feeMap = {
                 'ETH': '529000000000000',
                 'LRC': '34000000000000000000',
