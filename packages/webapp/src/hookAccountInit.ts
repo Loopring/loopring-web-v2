@@ -39,7 +39,7 @@ export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
                     }
                     break;
                 case 'ACTIVATED':
-                    // debugger
+                    // 
                     if (walletLayer1Status !== SagaStatus.PENDING) {
                         updateWalletLayer1();
                     }

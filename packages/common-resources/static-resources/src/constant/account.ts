@@ -24,7 +24,7 @@ export enum fnType {
 
 export type Account = {
     accAddress: string,
-    readyState: keyof typeof AccountStatus | 'Unknown',
+    readyState: keyof typeof AccountStatus | 'unknown',
     accountId: number,
     level: string,
     apiKey: string,
@@ -33,7 +33,7 @@ export type Account = {
     nonce:number|undefined,
     connectName: keyof typeof ConnectProviders,
     wrongChain?: boolean|undefined,
-    _chainId?: 1 | 5 | 'Unknown',
+    _chainId?: 1 | 5 | 'unknown',
     _userOnModel?: boolean|undefined
 }
 export type AccountState = Account & StateBase;

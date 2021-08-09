@@ -13,7 +13,7 @@ export const buildMachine = <S, E>(spec: any) => (currentState: S, event: E) => 
     // No next state? Error!
     if (nextState === undefined) {
         throw new Error(
-            `Unknown transition for event ${event} in state ${currentState}`
+            `unknown transition for event ${event} in state ${currentState}`
         )
     }
 

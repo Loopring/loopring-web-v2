@@ -24,13 +24,17 @@ export const WalletConnectProvide = async (account?: string): Promise<{ provider
             const uri = connector.uri;
             walletServices.sendProcess('nextStep', {qrCodeUrl: uri});
             await provider.enable();
-            walletServices.sendConnect(web3, provider)
+            walletServices.sendConnect(web3, provider);
 
         } else if (!connector.connected && account !== undefined) {
+            console.log('WalletConnect reconnect connected is failed',account,provider)
             // WalletConnectUnsubscribe(provider);
             // walletServices.sendDisconnect('', 'walletConnect not connect');
             throw new Error('walletConnect not connect');
         } else if (account) {
+            console.log('WalletConnect reconnect connected is true',account,provider)
+
+            // connector.approveSession({accounts:[account], chainId:provider.chainId})
             connector.updateSession({accounts:[account],chainId:provider.chainId})
             walletServices.sendConnect(web3, provider)
 
@@ -76,19 +80,19 @@ export const WalletConnectSubscribe = (provider: any, web3: Web3, account?: stri
             }
             WalletConnectUnsubscribe(provider);
             walletServices.sendDisconnect('', message);
-
+            console.log('WalletConnect on disconnect')
         });
     }
 }
 
-export const WalletConnectUnsubscribe = (provider: any) => {
+export const WalletConnectUnsubscribe = async  (provider: any) => {
     if (provider && provider.connector) {
         const {connector} = provider;
+        console.log('WalletConnect on Unsubscribe')
         connector.off('disconnect');
         connector.off('connect')
         connector.off('session_update');
-        connector.killSession();
-        // connector.removeAllListeners()
+        return
     }
 }
 //)

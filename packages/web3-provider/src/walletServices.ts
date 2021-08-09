@@ -22,8 +22,8 @@ export const walletServices = {
     },
     sendConnect: async (web3: Web3, provider: any) => {
         try {
-            const accounts = await web3.eth.getAccounts();
-            let chainId = await web3.eth.getChainId();
+            const accounts = provider.accounts?? await web3.eth.getAccounts();
+            let chainId = provider.chainId ?? await web3.eth.getChainId();
 
             // console.log('wallet connect:', accounts, chainId);
 
