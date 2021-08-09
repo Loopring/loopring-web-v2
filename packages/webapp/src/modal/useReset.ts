@@ -57,7 +57,7 @@ export const useReset = <R extends IBData<T>, T>(walletMap2:WalletMap<T>,ShowRes
         //                 validUntil: VALID_UNTIL,
         //             },
         //             ConnectProvides.usedWeb3,
-        //             chainId === 'unknown' ? 1 : chainId, connectName  as ConnectorNames,
+        //             chainId === 'Unknown' ? 1 : chainId, connectName  as ConnectorNames,
         //             eddsaKey, apiKey, false)
         //         //TODO check success or failed API
         //     } catch (e) {
@@ -161,7 +161,7 @@ export const useReset = <R extends IBData<T>, T>(walletMap2:WalletMap<T>,ShowRes
 //             validUntil: VALID_UNTIL,
 //         }
 //
-//         const response = await LoopringAPI.userAPI.submitInternalReset(request2, ConnectProvides.usedWeb3, chainId ==='unknown' ? 1 :chainId , walletType,
+//         const response = await LoopringAPI.userAPI.submitInternalReset(request2, ConnectProvides.usedWeb3, chainId ==='Unknown' ? 1 :chainId , walletType,
 //             account.eddsaKey, account.apiKey, false)
 //
 //         myLog('reset r:', response)

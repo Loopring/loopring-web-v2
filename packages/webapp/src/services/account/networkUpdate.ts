@@ -5,11 +5,11 @@ import { updateSystem } from '../../stores/system';
 
 export const networkUpdate = ({chainId}: any): boolean => {
     const _chainId = store.getState().system.chainId;
-    if (chainId === 'unknown') {
+    if (chainId === 'Unknown') {
         store.dispatch(updateAccountStatus({wrongChain: true, _chainId:chainId}));
         goErrorNetWork();
         return false;
-    } else if (chainId !== _chainId && _chainId !== 'unknown' && chainId !== 'unknown') {
+    } else if (chainId !== _chainId && _chainId !== 'Unknown' && chainId !== 'Unknown') {
         store.dispatch(updateAccountStatus({_chainId:chainId}));
         store.dispatch(updateSystem({chainId}));
         cleanLayer2()

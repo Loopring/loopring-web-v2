@@ -60,7 +60,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                     if (curValInWei.gt(allowance)) {
                         myLog(curValInWei, allowance, ' need approveMax!')
                         await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
-                            exchangeInfo?.depositAddress, gasPrice ?? 30, gasLimit, chainId === 'unknown' ? undefined : chainId, nonce, isMetaMask)
+                            exchangeInfo?.depositAddress, gasPrice ?? 30, gasLimit, chainId === 'Unknown' ? undefined : chainId, nonce, isMetaMask)
                         nonce += 1
                     } else {
                         myLog('allowance is enough! don\'t need approveMax!')
@@ -72,7 +72,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 const response2 = await sdk.deposit(connectProvides.usedWeb3, account.accAddress,
                     exchangeInfo?.exchangeAddress, tokenInfo, inputValue.tradeValue, fee,
-                    gasPrice ?? 20, gasLimit, chainId === 'unknown' ? 1 : chainId, nonce, isMetaMask)
+                    gasPrice ?? 20, gasLimit, chainId === 'Unknown' ? 1 : chainId, nonce, isMetaMask)
 
                 myLog('response2:', response2)
 
