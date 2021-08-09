@@ -2,7 +2,7 @@ import { Box, Checkbox, FormControlLabel as MuiFormControlLabel } from '@materia
 import { Trans, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import { ProviderMenuProps } from './Interface';
-import { Grid, Link, Typography } from '@material-ui/core/';
+import {  Link, Typography } from '@material-ui/core/';
 import { Button } from '../../basic-lib';
 import { CheckBoxIcon, CheckedIcon, ConnectProviders, GatewayItem } from '@loopring-web/common-resources';
 import React from 'react';
@@ -62,6 +62,7 @@ const BoxStyle = styled(Box)`
   
 ` as typeof Box;
 const WalletConnectPanelStyled = styled(Box)`
+  height: 100%;
   //width: var(--transfer-modal-width);
 ` as typeof Box;
 
@@ -69,9 +70,9 @@ export const ProviderMenu = ({
                                  t,
                                  gatewayList,
                                  handleSelect,
-                                 providerName = ConnectProviders.UnKnown,
+                                 providerName = ConnectProviders.unknown,
                              }: ProviderMenuProps & WithTranslation) => {
-    // const  !==  ConnectProviders.UnKnown
+    // const  !==  ConnectProviders.unknown
     return <WalletConnectPanelStyled display={'flex'} justifyContent={'space-between'} alignItems={'center'}
                                      flexDirection={'column'}>
         <Typography component={'h3'} variant={'h2'} marginBottom={3}>{t('labelConnectWallet')}</Typography>
@@ -81,13 +82,13 @@ export const ProviderMenu = ({
                                    color="default"/>} label={<Trans i18nKey="labelAgree">I have read, understand, and agree to the <Link component={'a'} href={'./'} target={'_parent'}>Terms of Service</Link>.</Trans>}/>
         </BoxStyle>
 
-        <Grid container maxWidth={'var(--account-modal-box-width)'} display={'flex'} flexDirection={'column'} justifyContent={'space-evenly'}
-              flex={1} alignItems={'stretch'}
-              className="modalContent" marginTop={3} spacing={1}>
+        <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}
+             flex={1} alignItems={'stretch'}   alignSelf={'stretch'}
+             className="modalContent" marginTop={3}>
 
             <>   {gatewayList.map((item: GatewayItem) => (
-                <Grid key={item.key} item xs={12}>
-                    <ProviderBtnStyled variant={'contained'} size={'medium'} className={
+                <Box key={item.key}  marginTop={1}>
+                    <ProviderBtnStyled variant={'contained'} size={'large'} className={
                         providerName === item.key ? 'selected' : ''
                     } fullWidth
                                        endIcon={<img src={item.imgSrc} alt={item.key} height={18}/>}
@@ -98,11 +99,11 @@ export const ProviderMenu = ({
                                        }}>
                         {t(item.key)}
                     </ProviderBtnStyled>
-                </Grid>
+                </Box>
             ))}
             </>
 
-        </Grid>
+        </Box>
     </WalletConnectPanelStyled>
 }
 

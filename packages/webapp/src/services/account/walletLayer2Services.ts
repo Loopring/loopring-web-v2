@@ -5,40 +5,11 @@ import { LoopringAPI } from '../../stores/apis/api';
 import { myLog } from '../../utils/log_tools';
 import store from 'stores';
 import { updateAccountStatus } from 'stores/account';
-import { AccountInfo, generateKeyPair, toBig, toHex } from 'loopring-sdk';
+import * as sdk from 'loopring-sdk'
 import { connectProvides } from '@loopring-web/web3-provider';
+import { ConnectorNames } from 'loopring-sdk';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
-
-function getLocalDepositHash(account: Account): { [ key: string ]: any } | undefined {
-    let depositsHash = window.localStorage.getItem('__loopring__.depositsHash');
-    if (depositsHash) {
-        depositsHash = JSON.parse(depositsHash);
-        if (depositsHash && depositsHash[ account.accAddress ]) {
-            return depositsHash[ account.accAddress ]
-        }
-    }
-    return undefined
-}
-
-function clearDepositHash(account: Account, value: string) {
-    // @ts-ignore
-    let depositsHash: { [ key: string ]: object } = window.localStorage.getItem('__loopring__.depositsHash');
-    depositsHash = depositsHash ? JSON.parse(depositsHash as any) : {};
-    if (depositsHash[ account.accAddress ] && depositsHash[ account.accAddress ][ value ]) {
-        delete depositsHash[ account.accAddress ][ value ];
-    }
-}
-
-function setLocalDepositHash(account: Account, value: string): void {
-    // @ts-ignore
-    let depositsHash: { [ key: string ]: object } = window.localStorage.getItem('__loopring__.depositsHash');
-    depositsHash = depositsHash ? JSON.parse(depositsHash as any) : {};
-    depositsHash[ account.accAddress ] = {
-        ...depositsHash[ account.accAddress ],
-        [ value ]: 1,
-    }
-}
 
 export const walletLayer2Services = {
     //INFO: for update Account and unlock account
@@ -96,7 +67,7 @@ export const walletLayer2Services = {
     },
 
     //INFO: for lock account todo clear the private info, user click or provider on wrong network
-    sendAccountLock: (accInfo?: AccountInfo) => {
+    sendAccountLock: (accInfo?: sdk.AccountInfo) => {
         const updateInfo = accInfo ? {
             readyState:AccountStatus.LOCKED,
             accountId: accInfo.accountId,
@@ -121,8 +92,8 @@ export const walletLayer2Services = {
             apiKey,
             eddsaKey,
             publicKey: {
-                x: toHex(toBig(eddsaKey.keyPair.publicKeyX)),
-                y: toHex(toBig(eddsaKey.keyPair.publicKeyY)),
+                x: sdk.toHex(sdk.toBig(eddsaKey.keyPair.publicKeyX)),
+                y: sdk.toHex(sdk.toBig(eddsaKey.keyPair.publicKeyY)),
             },
             readyState: AccountStatus.ACTIVATED
         }:{readyState:AccountStatus.ACTIVATED}
@@ -137,6 +108,14 @@ export const walletLayer2Services = {
         subject.next({
             status: Commands.NoAccount,
             data: undefined
+        })
+    },
+    sendNeedUpdateAccount: async(accInfo: sdk.AccountInfo) => {
+        myLog('sendNeedUpdateAccount accInfo:', accInfo)
+        store.dispatch(updateAccountStatus({readyState:AccountStatus.DEPOSITING, }))
+        subject.next({
+            status: Commands.ProcessDeposit,
+            data: accInfo
         })
     },
     sendCheckAccount: async (ethAddress: string) => {
@@ -160,7 +139,17 @@ export const walletLayer2Services = {
                 //     data:undefined
                 // })
             } else {
-                walletLayer2Services.sendAccountLock(accInfo)
+                if (accInfo.accountId) {
+                    if (!accInfo.publicKey.x || !accInfo.publicKey.y) {
+                        myLog('-------need update account!')
+                        walletLayer2Services.sendNeedUpdateAccount(accInfo)
+                    } else {
+                        walletLayer2Services.sendAccountLock(accInfo)
+                    }
+                } else {
+                    myLog('unexpected accInfo:', accInfo)
+                    throw Error('unexpected accinfo:' + accInfo)
+                }
             }
         }
 

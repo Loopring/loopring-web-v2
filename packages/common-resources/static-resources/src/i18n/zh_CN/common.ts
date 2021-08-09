@@ -184,4 +184,6 @@ export default {
     labelQuotePageFavourite: '自选',
     labelQuotePageAll: '全部',
     labelQuotePageTradeRanking: '交易竞赛',
+    labelFailedUnlock: '解锁失败',
+    labelFailedUpdateAcc: '更新账号失败',
 }

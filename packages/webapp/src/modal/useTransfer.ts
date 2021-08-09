@@ -11,7 +11,6 @@ import { useSystem } from '../stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { useCustomDCEffect } from '../hooks/common/useCustomDCEffect';
 import { myLog } from 'utils/log_tools';
-import { useWalletLayer1 } from '../stores/walletLayer1';
 import { useWalletLayer2 } from '../stores/walletLayer2';
 import { makeWalletLayer2 } from '../hooks/help';
 // import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';

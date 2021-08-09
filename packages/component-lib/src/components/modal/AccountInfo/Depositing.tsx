@@ -4,7 +4,7 @@ import { WithTranslation } from 'react-i18next';
 import { Link } from '@material-ui/core/';
 import { Button } from '../../basic-lib';
 
-export const Depositing =  ({t,label='depositTitle',etherscanLink,count=30}: WithTranslation & { onDepositSubmit: () => void ,label?:'depositTitle'|'depositTitleAndActive',etherscanLink:string,count?:number}) => {
+export const Depositing = ({t, goUpdateAccount, label='depositTitle',etherscanLink,count=30}: WithTranslation & { goUpdateAccount?: () => void ,label?:'depositTitle'|'depositTitleAndActive',etherscanLink:string,count?:number}) => {
     return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-evenly'}
                 flexDirection={'column'}>
         <Typography component={'h3'} variant={'h2'} marginBottom={3}>{t(label)}</Typography>
@@ -17,7 +17,9 @@ export const Depositing =  ({t,label='depositTitle',etherscanLink,count=30}: Wit
         </Link>
         <Box marginTop={2} alignSelf={'stretch'} paddingX={6}>
             <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {
-                // goActiveAccount();
+                if (goUpdateAccount) {
+                    goUpdateAccount()
+                }
             }}>{t('labelActiveAccount')} </Button>
         </Box>
 

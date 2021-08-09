@@ -103,14 +103,14 @@ export const modalContentBaseStyle = ({theme}: any) => css`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding-top: var(--toolbar-row-height);
+  padding-top: var(--toolbar-row-padding);
   border: 0;
   border-radius: ${theme.unit}px;
 
 `
 // height:100%;
-// margin-top: var(--toolbar-row-height-minus);
-// padding-top: var(--toolbar-row-height);
+// margin-top: var(--toolbar-row-padding-minus);
+// padding-top: var(--toolbar-row-padding);
 export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _width?: number | string } & BoxProps>`
   &&{
     ${({theme}) => modalContentBaseStyle({theme: theme})}
@@ -121,7 +121,7 @@ export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _
            width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : '100%'};
            & > div{
               height:initial;
-              padding-bottom:var(--toolbar-row-height); 
+              padding-bottom:var(--toolbar-row-padding); 
               background: initial;
               .container{
                 height:100%;
@@ -136,12 +136,12 @@ export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _
            }
        }
       .trade-panel{
-        margin-top: var(--toolbar-row-height-minus);
+        margin-top: var(--toolbar-row-padding-minus);                         MuiToolbar-root
         height: ${_height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : '100%'} ;
         width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : '100%'};
         .react-swipeable-view-container {
             & > div{
-              padding: 0 ${theme.unit * 3}px var(--toolbar-row-height);
+              padding: 0 ${theme.unit * 3}px var(--toolbar-row-padding);
               overflow: unset !important
               .container{
                 height:100%;

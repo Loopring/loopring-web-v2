@@ -10,11 +10,16 @@ import { ErrorType, useConnectHook } from '@loopring-web/web3-provider';
 import { SagaStatus } from '@loopring-web/common-resources';
 
 export  function useConnect({state}: { state: keyof typeof SagaStatus }) {
-    const {account, shouldShow, resetAccount, statusUnset: statusAccountUnset, setShouldShow } = useAccount();
+    const {account, shouldShow, resetAccount, statusUnset: statusAccountUnset, setShouldShow,status:accountStatus } = useAccount();
     const {updateSystem, chainId: _chainId, status: systemStatus, statusUnset: systemStatusUnset} = useSystem();
-
     const {setShowConnect} = useOpenModals();
-
+    const [stateAccount,setStateAccount] = React.useState<SagaStatus>(SagaStatus.DONE);
+    React.useEffect(()=>{
+        if(stateAccount === SagaStatus.PENDING && accountStatus === SagaStatus.DONE) {
+            setStateAccount(SagaStatus.DONE)
+            statusAccountUnset();
+        }
+    },[stateAccount,accountStatus])
     const handleConnect = React.useCallback(async ({
                                                        accounts,
                                                        chainId,
@@ -34,24 +39,13 @@ export  function useConnect({state}: { state: keyof typeof SagaStatus }) {
     }, [_chainId, account, shouldShow])
 
     const handleAccountDisconnect = React.useCallback(async () => {
-        // if (account && account.accAddress) {
-        //     resetAccount({shouldUpdateProvider:true});
-        //     statusAccountUnset();
-        //     myLog('Disconnect and clear')
-        // } else {
-            resetAccount({shouldUpdateProvider:true});
-            statusAccountUnset();
-            myLog('Disconnect with no account')
-            const chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
-            updateSystem({chainId})
-        // }
-
+        await resetAccount({shouldUpdateProvider:true});
+        setStateAccount(SagaStatus.PENDING)
     }, [state]);
 
     const handleError = React.useCallback(async ({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
         updateSystem({chainId: account._chainId ? account._chainId : 1})
         resetAccount();
-        await sleep(10);
         statusAccountUnset();
         myLog('Error')
     }, [account]);

@@ -38,6 +38,7 @@ export class ConnectProvides {
                this.usedProvide = obj.provider
                this.usedWeb3 = obj.web3
            }
+           console.log('WalletConnect subScribe')
            this.subScribe(account)
         }catch (e){
             throw e;
@@ -46,23 +47,27 @@ export class ConnectProvides {
     };
 
     public clear = async () => {
-        this.clearProviderSubscribe();
+        return await this.clearProviderSubscribe();
     }
 
-    private clearProviderSubscribe = () => {
+    private clearProviderSubscribe = async () => {
         switch (this._provideName) {
             case  ConnectProviders.WalletConnect:
-                WalletConnectUnsubscribe(this.usedProvide);
+                if (this.usedProvide) {
+                    await (this.usedProvide as WalletConnectProvider).connector.killSession();
+                }
+                await WalletConnectUnsubscribe(this.usedProvide);
                 delete this.usedProvide;
                 delete this.usedWeb3;
                 break;
             case  ConnectProviders.MetaMask:
-                MetaMaskUnsubscribe(this.usedProvide);
+                await MetaMaskUnsubscribe(this.usedProvide);
                 delete this.usedProvide;
                 delete this.usedWeb3;
                 break;
         }
-
+        
+        return
     }
 
     private subScribe = (account?:string) => {

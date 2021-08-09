@@ -5,7 +5,7 @@ import { Commands, ErrorType, ProcessingType } from './command';
 //TODO typeof account State
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
-const AvaiableNetwork = [1,5];
+const AvaiableNetwork = [1, 5];
 export const walletServices = {
     subject,
     sendProcess: async (type: keyof typeof ProcessingType, props?: any) => {
@@ -22,8 +22,8 @@ export const walletServices = {
     },
     sendConnect: async (web3: Web3, provider: any) => {
         try {
-            const accounts = await web3.eth.getAccounts();
-            let chainId = await web3.eth.getChainId();
+            const accounts = provider.accounts?? await web3.eth.getAccounts();
+            let chainId = provider.chainId ?? await web3.eth.getChainId();
 
             // console.log('wallet connect:', accounts, chainId);
 
@@ -40,7 +40,6 @@ export const walletServices = {
     // },
     sendDisconnect: async (code: any, reason: any) => {
         subject.next({status: 'DisConnect', data: {reason: reason, code: code}})
-
     },
 
     // clearMessages: () => subject.next(),
