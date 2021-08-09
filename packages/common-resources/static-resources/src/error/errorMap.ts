@@ -53,8 +53,8 @@ export const ErrorMap = {
         options: {}
     }
 
-
 }
+
 export type ErrorObject = {
     from?: string,
     timestamp?: number,

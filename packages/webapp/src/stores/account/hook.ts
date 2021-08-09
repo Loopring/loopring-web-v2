@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import {
     changeShowModel,
-    cleanAccountStatus, nextAccountStatus,
+    cleanAccountStatus,
     // restAccountStatus,
     statusUnset, updateAccountStatus
 } from './reducer';

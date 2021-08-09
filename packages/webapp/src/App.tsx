@@ -4,13 +4,11 @@ import { GlobalStyles } from '@material-ui/core';
 import { css, Theme, useTheme } from '@emotion/react';
 import { ErrorMap, globalCss, SagaStatus } from '@loopring-web/common-resources';
 // import { GlobalProvider, Web3ReactManager } from './provider/';
-import React, { useEffect } from 'react';
 import { useInit } from './hook';
 // import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
 import { ErrorPage } from './pages/ErrorPage';
 import { LoadingPage } from './pages/LoadingPage';
-import { ModalGroup } from './modal';
-import { GlobalProvider } from 'provider/global';
+import { GlobalProvider } from './provider';
 
 const App = () => {
   const theme: Theme = useTheme();
