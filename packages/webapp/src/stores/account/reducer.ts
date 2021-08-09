@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice';
 import { Account, AccountState, AccountStatus, ConnectProviders, SagaStatus } from '@loopring-web/common-resources';
+import { connectProvides, walletServices } from '@loopring-web/web3-provider';
 
 // import { Lv2Account, } from 'defs/account_defs'
 // import { AccountStatus } from 'state_machine/account_machine_spec'
@@ -21,8 +22,8 @@ import { Account, AccountState, AccountStatus, ConnectProviders, SagaStatus } fr
 //   //   isContractAddress: false,
 //   //   apiKey: defaultApiKey,
 //   //   eddsaKey: defaultEddsaKey,
-//   //   connectName: ConnectorNames.Unknown,
-//   //   connectNameTemp: ConnectorNames.Unknown,
+//   //   connectName: ConnectorNames.unknown,
+//   //   connectNameTemp: ConnectorNames.unknown,
 //   // } as Lv2Account
 //   return {
 //     accAddress: '',
@@ -82,7 +83,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                     _chainId,
                     nonce,
                     connectName,
-                    _userOnModel
+                    // _userOnModel
                 } = action.payload;
                 if (accAddress !== undefined) {
                     state.accAddress = accAddress;
@@ -114,27 +115,11 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                 if (nonce !== undefined) {
                     state.nonce = nonce;
                 }
-
-
                 state.status = SagaStatus.DONE;
             }
         },
         cleanAccountStatus(state: AccountState, action: PayloadAction<{shouldUpdateProvider?:boolean|undefined}>) {
-            state.accAddress = '';
-            state.readyState = AccountStatus.UN_CONNECT;
-            state.accountId = -1;
-            state.apiKey = '';
-            state.eddsaKey = '';
-            state.publicKey = {};
-            state.level = '';
-            state.nonce = undefined;
-            state.status = SagaStatus.DONE;
-            state.errorMessage = null;
-            if(action.payload?.shouldUpdateProvider) {
-                state.connectName = ConnectProviders.Unknown;
-            }
-            //no need update _chainId
-            //no need update _userOnModel
+            state.status = SagaStatus.PENDING
         },
         statusUnset: (state: AccountState) => {
             state.status = SagaStatus.UNSET

@@ -85,7 +85,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                 }
                 const response = await LoopringAPI.userAPI?.submitInternalTransfer(req,
                     connectProvides.usedWeb3,
-                    chainId === 'Unknown' ? 5 : chainId, connectName as ConnectorNames,
+                    chainId === 'unknown' ? 5 : chainId, connectName as ConnectorNames,
                     eddsaKey.sk, apiKey)
 
                     myLog(response)

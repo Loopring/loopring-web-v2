@@ -42,7 +42,7 @@ export  function useConnect({state}: { state: keyof typeof SagaStatus }) {
             resetAccount({shouldUpdateProvider:true});
             statusAccountUnset();
             myLog('Disconnect with no account')
-            const chainId = account._chainId && account._chainId !=='Unknown'? account._chainId  :ChainId.MAINNET
+            const chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
             updateSystem({chainId})
         // }
 
@@ -51,7 +51,6 @@ export  function useConnect({state}: { state: keyof typeof SagaStatus }) {
     const handleError = React.useCallback(async ({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
         updateSystem({chainId: account._chainId ? account._chainId : 1})
         resetAccount();
-        await sleep(10);
         statusAccountUnset();
         myLog('Error')
     }, [account]);
