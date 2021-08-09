@@ -27,7 +27,7 @@ import { useAccount } from 'stores/account';
 import { SHORT_INTERVAL, TOAST_TIME } from 'defs/common_defs';
 import { getShortAddr } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
-import { updateAccountFromServer } from 'services/account/activeAccount';
+import { updateAccountFromServer, UpdateAccountResult } from 'services/account/activeAccount';
 import { lockAccount } from 'services/account/lockAccount';
 import { unlockAccount } from 'services/account/unlockAccount';
 import { useTokenMap } from 'stores/token';
@@ -92,7 +92,20 @@ export const ModalAccountInfo = withTranslation('common')(({
         setShowAccount({ isShow: false })
         setShowAccount({ isShow: true, step: AccountStep.ActiveAccountProcess });
 
-        updateAccountFromServer()
+        const result: UpdateAccountResult = await updateAccountFromServer()
+
+        switch(result) {
+            case UpdateAccountResult.NoError:
+                setShowAccount({ isShow: true, step: AccountStep.SuccessUnlock })
+                setShowAccount({ isShow: false })
+                break
+            case UpdateAccountResult.GetAccError:
+            case UpdateAccountResult.GenEddsaKeyError:
+            case UpdateAccountResult.UpdateAccoutError:
+                break
+            default:
+                break
+        }
 
     }, [account, setShowAccount])
 
@@ -126,7 +139,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             [AccountStep.FailedDeposit]: <FailedDeposit label={"depositTitleAndActive"}
                 etherscanLink={etherscanUrl + account.accAddress}
                 onRetry={() => undefined} {...{ ...rest, t }} />,
-            [AccountStep.SignAccount]: <ApproveAccount   {...{
+            [AccountStep.SignAccount]: <ApproveAccount {...{
                 ...account,
                 etherscanUrl,
                 onSwitch, onCopy,
@@ -160,6 +173,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 ...rest,
                 t
             }} />,
+            [AccountStep.ActiveAccountFailed]: <FailedUnlock onRetry={() => { goUpdateAccount() }} {...{ ...rest, t }} />,
             [AccountStep.FailedTokenAccess]: <FailedTokenAccess onRetry={() => undefined} {...{
                 t, ...rest,
                 coinInfo: coinMap ? coinMap['USTD'] : undefined

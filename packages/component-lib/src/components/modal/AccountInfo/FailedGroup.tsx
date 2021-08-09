@@ -42,7 +42,7 @@ export const FailedTokenAccess = ({
 export const FailedUnlock = ({onRetry, t,...rest}: { onRetry: (event: any) => void } & WithTranslation) => {
     const describe = React.useMemo(() => {
         return   <>
-            <Typography variant={'h6'} color={'textSecondary'} marginTop={1}>{t('labelFailedUnLocK')}</Typography>
+            <Typography variant={'h6'} color={'textSecondary'} marginTop={1}>{t('labelFailedUnlock')}</Typography>
             <Typography component={'p'} marginTop={2}>
                 <Trans i18nKey={'labelRejectOrError'}>
                     Rejected, Please<Link onClick={onRetry}>retry</Link>
@@ -51,5 +51,20 @@ export const FailedUnlock = ({onRetry, t,...rest}: { onRetry: (event: any) => vo
         </>
     }, [])
     return <FailedBasic label={'labelUnLockLayer2'} onRetry={onRetry} describe={describe} {...{...rest, t}}/>
+
+}
+
+export const FailedUpdateAcc = ({onRetry, t,...rest}: { onRetry: (event: any) => void } & WithTranslation) => {
+    const describe = React.useMemo(() => {
+        return   <>
+            <Typography variant={'h6'} color={'textSecondary'} marginTop={1}>{t('labelFailedUpdateAcc')}</Typography>
+            <Typography component={'p'} marginTop={2}>
+                <Trans i18nKey={'labelRejectOrError'}>
+                    Rejected, Please<Link onClick={onRetry}>retry</Link>
+                </Trans>
+            </Typography>
+        </>
+    }, [])
+    return <FailedBasic label={'labelActiveLayer2'} onRetry={onRetry} describe={describe} {...{...rest, t}}/>
 
 }

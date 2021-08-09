@@ -182,4 +182,6 @@ export default {
     labelQuotePageFavourite: 'Favourite',
     labelQuotePageAll: 'All',
     labelQuotePageTradeRanking: 'Trade Ranking',
+    labelFailedUnlock: 'Unlock Failed',
+    labelFailedUpdateAcc: 'Update Account Failed',
 }
