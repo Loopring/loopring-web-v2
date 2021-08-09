@@ -42,7 +42,7 @@ export  function useConnect({state}: { state: keyof typeof SagaStatus }) {
             resetAccount({shouldUpdateProvider:true});
             statusAccountUnset();
             myLog('Disconnect with no account')
-            const chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
+            const chainId = account._chainId && account._chainId !=='Unknown'? account._chainId  :ChainId.MAINNET
             updateSystem({chainId})
         // }
 

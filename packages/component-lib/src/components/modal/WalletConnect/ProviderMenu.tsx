@@ -69,7 +69,7 @@ export const ProviderMenu = ({
                                  t,
                                  gatewayList,
                                  handleSelect,
-                                 providerName = ConnectProviders.unKnown,
+                                 providerName = ConnectProviders.Unknown,
                              }: ProviderMenuProps & WithTranslation) => {
     // const  !==  ConnectProviders.unKnown
     return <WalletConnectPanelStyled display={'flex'} justifyContent={'space-between'} alignItems={'center'}
