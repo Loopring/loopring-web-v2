@@ -1,7 +1,7 @@
 import { WalletConnectBtnProps } from './Interface';
 import { useTranslation } from 'react-i18next';
 import React, { useEffect } from 'react';
-import { AccountStatus, EmbarIcon, getShortAddr, LoadingIcon, LockIcon, } from '@loopring-web/common-resources';
+import { AccountStatus, getShortAddr, LoadingIcon, LockIcon, WrongNetworkIcon, } from '@loopring-web/common-resources';
 // import { debounce } from 'lodash';
 import { Typography } from '@material-ui/core';
 
@@ -15,6 +15,11 @@ const WalletConnectBtnStyled = styled(Button)`
   text-transform: none;
   min-width: 120px;
 
+  &.wallet-btn {
+    //width:;
+    width: var(--walletconnect-width);
+  }
+
   i {
     padding-right: ${({theme}) => theme.unit}px;
     display: flex;
@@ -27,33 +32,68 @@ const WalletConnectBtnStyled = styled(Button)`
     }
   }
 
+  &.no-account {
+    &:after {
+      position: absolute;
+      content: "\u25CF";
+      color: ${({theme}) => theme.colorBase.error};
+      display: flex;
+      left: 0;
+      padding-left: ${({theme}) => theme.unit * 2}px;
+      align-items: center;
+      font-size: ${({theme}) => theme.fontDefault.h5};
+    }
+  }
+
+  &.unlocked {
+    &:after {
+      position: absolute;
+      content: "\u25CF";
+      color: ${({theme}) => theme.colorBase.success};
+      display: flex;
+      left: 0;
+      padding-left: ${({theme}) => theme.unit * 2}px;
+      align-items: center;
+      font-size: ${({theme}) => theme.fontDefault.h5};
+    }
+  }
+
+  &.wrong-network {
+    background: ${({theme}) => theme.colorBase.error};
+    color: ${({theme}) => theme.colorBase.textPrimary};
+  }
+
   // .icon-build{
     //   color: ${({theme}) => theme.colorBase.secondary};
   // }
-  .icon-no-network {
-    color: ${({theme}) => theme.colorBase.error};
-  }
-
-  .icon-pending, .icon-progressing {
-    color: ${({theme}) => theme.colorBase.secondary};
-  }
-
-  .icon-error, .icon-no-account {
-    color: ${({theme}) => theme.colorBase.error};
-  }
-
-
-  .icon-success {
-    color: ${({theme}) => theme.colorBase.success};
-  }
+  // .icon-no-network {
+    //   color: ${({theme}) => theme.colorBase.error};
+  // }
+  //
+  // .icon-pending, .icon-progressing {
+    //   color: ${({theme}) => theme.colorBase.secondary};
+  // }
+  //
+  // .icon-error, .icon-no-account {
+    //   color: ${({theme}) => theme.colorBase.error};
+  // }
+  //
+  //
+  // .icon-success {
+    //   color: ${({theme}) => theme.colorBase.success};
+  // }
 
 `
 const TestNetworkStyle = styled(Typography)`
+  // display: inline-flex;
   position: relative;
-  padding-right: ${({theme}) => theme.unit}px;
+  // padding-right: ${({theme}) => theme.unit}px;
   color: ${({theme}) => theme.colorBase.secondary};
-  cursor:initial;
+  // cursor: initial;
+  height: 3rem;
+
   &:after {
+    content: '';
     position: absolute;
     z-index: -1;
     top: 0;
@@ -61,9 +101,11 @@ const TestNetworkStyle = styled(Typography)`
     right: 0;
     bottom: 0;
     opacity: .1;
-    background: ${({theme}) => theme.colorBase.secondary}px;
+    background: ${({theme}) => theme.colorBase.warning};
     ${({theme}) => theme.border.defaultFrame({d_W: 0, d_R: 1 / 2, c_key: theme.colorBase.backgroundBox})};
-  } ${({theme}) => theme.border.defaultFrame({d_W: 0, d_R: 1 / 2, c_key: theme.colorBase.backgroundBox})};
+  }
+
+  ${({theme}) => theme.border.defaultFrame({d_W: 0, d_R: 1 / 2, c_key: theme.colorBase.backgroundBox})};
 
 ` as typeof Typography
 // const ListStyled = styled(List)`
@@ -74,8 +116,8 @@ const TestNetworkStyle = styled(Typography)`
 export const WalletConnectBtn = ({
                                      accountState,
                                      handleClick,
-                                 }: WalletConnectBtnProps ) => {
-    const {t,i18n} = useTranslation(['layout','common']);
+                                 }: WalletConnectBtnProps) => {
+    const {t, i18n} = useTranslation(['layout', 'common']);
     const [label, setLabel] = React.useState<string>(t('labelConnectWallet'))
     const [networkLabel, setNetworkLabel] = React.useState<string | undefined>(undefined)
     const [btnClassname, setBtnClassname] = React.useState<string | undefined>('');
@@ -90,6 +132,7 @@ export const WalletConnectBtn = ({
             setIcon(undefined)
             switch (account.readyState) {
                 case AccountStatus.UN_CONNECT:
+                    setBtnClassname('un-connect')
                     setLabel('labelConnectWallet');
                     break
                 case AccountStatus.LOCKED:
@@ -98,28 +141,25 @@ export const WalletConnectBtn = ({
                     break
                 case AccountStatus.ACTIVATED:
                     setBtnClassname('unlocked')
-                    setIcon(undefined)
+                    // setIcon(undefined)
                     break
                 case AccountStatus.NO_ACCOUNT:
                     setBtnClassname('no-account')
-                    setIcon(<EmbarIcon color={'secondary'} style={{transform:'rotate(58deg)'}}/>)
+                    // setIcon(<EmbarIcon color={'secondary'} style={{transform: 'rotate(58deg)'}}/>)
                     break
                 case AccountStatus.DEPOSITING:
-                    setBtnClassname('no-depositing')
-                    setIcon(<LoadingIcon/>)
+                    setBtnClassname('depositing')
+                    setIcon(<LoadingIcon color={'primary'}/>)
                     break
                 case AccountStatus.ERROR_NETWORK:
                     setBtnClassname('wrong-network')
                     setLabel('labelWrongNetwork')
-                    setIcon(<EmbarIcon color={'error'} style={{transform:'rotate(58deg)'}}/>)
+                    setIcon(<WrongNetworkIcon/>)
                     break
                 default:
             }
             if (account && account._chainId === 5) {
                 setNetworkLabel('Görli')
-            } else if (account && account._chainId !== 1) {
-                setBtnClassname('wrong-network')
-                setNetworkLabel(undefined)
             }
         } else {
             setLabel('labelConnectWallet')
@@ -135,11 +175,16 @@ export const WalletConnectBtn = ({
 
     const popupState = usePopupState({variant: 'popover', popupId: `popupId: 'wallet-connect-notification'`});
     return <>
-        {networkLabel ? <TestNetworkStyle component={'span'}>{networkLabel}</TestNetworkStyle> : <></>}
-        <WalletConnectBtnStyled variant={'outlined'} size={'medium'} color={'primary'}
-                                className={`wallet-btn ${btnClassname}`}
-                                onClick={_handleClick} {...bindHover(popupState)} >
-            <Typography component={'i'} paddingRight={1}>{icon}</Typography>
+        {networkLabel ?
+            <TestNetworkStyle display={'inline-flex'} alignItems={'center'} justifyContent={'center'} paddingX={1}
+                              component={'span'} color={'warning'} marginRight={1}>{networkLabel}</TestNetworkStyle> : <></>}
+        <WalletConnectBtnStyled
+            variant={['un-connect', 'wrong-network'].findIndex(ele => btnClassname === ele) !== -1 ? 'contained' : 'outlined'}
+            size={['un-connect', 'wrong-network'].findIndex(ele => btnClassname === ele) !== -1 ? 'small' : 'medium'}
+            color={'primary'}
+            className={`wallet-btn ${btnClassname}`}
+            onClick={_handleClick} {...bindHover(popupState)} >
+            {icon ? <Typography component={'i'} paddingRight={1}>{icon}</Typography> : <></>}
             <Typography component={'span'}> {t(label)}  </Typography>
         </WalletConnectBtnStyled>
     </>

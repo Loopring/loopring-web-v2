@@ -67,7 +67,10 @@ let depositProps: DepositProps<any, any> = {
     },
 }
 const accountState: AccountFull = {
-    account,
+    account:{
+        ...account,
+        _chainId:1,
+    },
     status: 'DONE',
     resetAccount: () => undefined,
     updateAccount: () => undefined,
@@ -133,7 +136,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
     const accountList = React.useMemo(() => {
         return Object.values({
             [ AccountStep.NoAccount ]: <NoAccount {...{
-                ...accountInfoProps, goDeposit:  () => {
+                ...accountInfoProps, goDeposit: () => {
                 }
             }}/>,
             [ AccountStep.Deposit ]: <DepositWrap _height={480} _width={400}  {...{...rest, ...depositProps}} />,
@@ -179,7 +182,8 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                     </Grid>
                     <Grid container spacing={2}>
                         {walletList.map((panel, index) => {
-                            return <Box  key={index}  width={480} height={400} padding={2} justifyContent={'center'} alignItems={'stretch'}>
+                            return <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
+                                        justifyContent={'center'} alignItems={'stretch'}>
                                 {panel}
                             </Box>
                         })}
@@ -193,7 +197,8 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                     <Grid container spacing={2}>
 
                         {accountList.map((panel, index) => {
-                            return <Box  key={index}  width={480} height={400} padding={2} justifyContent={'center'} alignItems={'stretch'}>
+                            return <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
+                                        justifyContent={'center'} alignItems={'stretch'}>
                                 {panel}
                             </Box>
                         })}

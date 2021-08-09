@@ -73,10 +73,10 @@ export const ProviderMenu = ({
                                  providerName = ConnectProviders.unknown,
                              }: ProviderMenuProps & WithTranslation) => {
     // const  !==  ConnectProviders.unknown
-    return <WalletConnectPanelStyled display={'flex'} justifyContent={'space-between'} alignItems={'center'}
+    return <WalletConnectPanelStyled display={'flex'} justifyContent={'stretch'} alignItems={'center'}
                                      flexDirection={'column'}>
         <Typography component={'h3'} variant={'h2'} marginBottom={3}>{t('labelConnectWallet')}</Typography>
-        <BoxStyle  maxWidth={'var(--account-modal-box-width)'}  display={'flex'} flexDirection={'row'} alignItems={'flex-start'}>
+        <BoxStyle  maxWidth={'var(--account-modal-box-width)'}  display={'flex'} flexDirection={'row'} justifyContent={'stretch'} alignItems={'flex-start'}>
             <MuiFormControlLabel  
                 control={<Checkbox defaultChecked checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
                                    color="default"/>} label={<Trans i18nKey="labelAgree">I have read, understand, and agree to the <Link component={'a'} href={'./'} target={'_parent'}>Terms of Service</Link>.</Trans>}/>
@@ -84,7 +84,7 @@ export const ProviderMenu = ({
 
         <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}
              flex={1} alignItems={'stretch'}   alignSelf={'stretch'}
-             className="modalContent" marginTop={3}>
+             className="modalContent" marginTop={3} paddingX={5}>
 
             <>   {gatewayList.map((item: GatewayItem) => (
                 <Box key={item.key}  marginTop={1}>

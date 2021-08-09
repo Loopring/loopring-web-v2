@@ -12,7 +12,7 @@ export const NoAccount =  withTranslation('common')(({goDeposit,t,...props}:With
                 {t('labelActivatedAccountDeposit')}
             </Typography>
         </Box>
-        <Box marginTop={2} alignSelf={'stretch'} paddingX={6} display={'flex'} flexDirection={'column'} alignItems={'center'}>
+        <Box marginTop={2} alignSelf={'stretch'} paddingX={5} display={'flex'} flexDirection={'column'} alignItems={'center'}>
             <AnimationArrow className={'arrowCta'}/>
             <Button variant={'contained'} fullWidth size={'medium'}  onClick={() => {
                 goDeposit();

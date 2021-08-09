@@ -27,7 +27,7 @@ export const ProcessBasic = ({t, label,providerName, describe}: { describe: JSX.
             <LoadingIcon color={'primary'} style={{width: 60, height: 60}}/>
         </Typography>
         {describe}
-        <Typography variant={'body2'} color={'textSecondary'} component={'p'} marginTop={3} alignSelf={'flex-start'} paddingX={6} >
+        <Typography variant={'body2'} color={'textSecondary'} component={'p'} marginTop={3} alignSelf={'flex-start'} paddingX={5} >
             {providerDescribe}
         </Typography>
     </Box>

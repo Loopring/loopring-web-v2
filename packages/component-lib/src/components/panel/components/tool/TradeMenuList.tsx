@@ -49,7 +49,7 @@ export const TradeMenuList = <T extends IBData<I>,
             }} ref={ref}></CoinMenu>
         }
         return <>
-            <Box flex={1} height={'100%'} width={'100%'}  > <InputSelect {...{
+            <Box className={'menu-panel'} flex={1} height={'100%'} width={'100%'}  > <InputSelect {...{
                 ...{...inputSelectProps, selected},
                 panelRender: PanelRender, t, ...rest
             }}/> </Box>

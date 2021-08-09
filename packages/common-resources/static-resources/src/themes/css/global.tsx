@@ -175,6 +175,7 @@ export const globalCss = ({theme}: any) => css`
     --account-button-fixed-height: 72px;
     --empty-size: 130px;
     --account-modal-box-width:284px;
+    --walletconnect-width:160px
 
   }
 

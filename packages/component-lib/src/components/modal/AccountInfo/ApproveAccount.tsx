@@ -19,7 +19,7 @@ export const ApproveAccount = ({
 
             <AnimationArrow className={'arrowCta'}/>
         </Box>
-        <Box marginTop={2} alignSelf={'stretch'} paddingX={6}>
+        <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
             <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {
                 goActiveAccount();
             }}>{t('labelActiveAccount')} </Button>
