@@ -119,7 +119,7 @@ export class LoopringSocket {
     // }
 
     public socketSendMessage = async ({socket, apiKey}: {
-        chainId: ChainId | 'unknown',
+        chainId: ChainId | 'Unknown',
         socket: { [ key: string ]: string[] }
         apiKey?: string
     }): Promise<boolean> => {
@@ -266,7 +266,7 @@ export class LoopringSocket {
     }
 
     private socketConnect = async ({ topics, apiKey}: {
-       // chainId: ChainId | 'unknown',
+       // chainId: ChainId | 'Unknown',
         topics: any[],
         apiKey?: string
     }) => {

@@ -88,7 +88,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                         validUntil: VALID_UNTIL,
                     },
                     connectProvides.usedWeb3,
-                    chainId === 'unknown' ? 1 : chainId, connectName as ConnectorNames,
+                    chainId === 'Unknown' ? 1 : chainId, connectName as ConnectorNames,
                     eddsaKey.sk, apiKey)
 
                     myLog('got response:', response)

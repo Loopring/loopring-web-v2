@@ -40,7 +40,7 @@ export function useInit() {
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
 
-        if (account.accAddress !== '' && account.connectName && account.connectName !== 'unKnown') {
+        if (account.accAddress !== '' && account.connectName && account.connectName !== 'Unknown') {
             try {
                 await connectProvides[ account.connectName ](account.accAddress);
                 updateAccount({})
@@ -48,7 +48,7 @@ export function useInit() {
                     // @ts-ignore
                     let chainId = Number(connectProvides.usedProvide.chainId) ??  Number(await connectProvides.usedWeb3.eth.getChainId())
                     if( ChainId[chainId] === undefined) {
-                        chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
+                        chainId = account._chainId && account._chainId !=='Unknown'? account._chainId  :ChainId.MAINNET
                     }
                     updateSystem({chainId:chainId as any})
                     return
@@ -56,14 +56,14 @@ export function useInit() {
             } catch (error) {
                 console.log(error)
                 resetAccount();
-                const chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
+                const chainId = account._chainId && account._chainId !=='Unknown'? account._chainId  :ChainId.MAINNET
                 updateSystem({chainId})
             }
         } else  {
-            if(account.accAddress === '' ||  account.connectName === 'unKnown' ){
+            if(account.accAddress === '' ||  account.connectName === 'Unknown' ){
                 resetAccount() 
             }
-            const chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
+            const chainId = account._chainId && account._chainId !=='Unknown'? account._chainId  :ChainId.MAINNET
             updateSystem({chainId})
         }
 
