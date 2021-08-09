@@ -1,4 +1,4 @@
-import { ErrorObject } from '@loopring-web/common-resources';
+import { ErrorObject } from '../error';
 
 export enum SagaStatus {
     UNSET = 'UNSET',
