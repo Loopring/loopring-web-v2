@@ -24,7 +24,7 @@ import {
 import React, { useCallback, useState } from 'react';
 import { copyToClipBoard } from 'utils/obj_tools';
 import { useAccount } from 'stores/account';
-import { TOAST_TIME } from 'defs/common_defs';
+import { SHORT_INTERVAL, TOAST_TIME } from 'defs/common_defs';
 import { getShortAddr } from '@loopring-web/common-resources';
 import { sleep } from 'loopring-sdk';
 import { lockAccount } from 'services/account/lockAccount';
@@ -74,7 +74,7 @@ export const ModalAccountInfo = withTranslation('common')(({
     }, [])
     const onDisconnect = React.useCallback(async () => {
         resetAccount({shouldUpdateProvider: true});
-        await sleep(10);
+        await sleep(SHORT_INTERVAL);
         statusAccountUnset();
         setShowAccount({ isShow: false })
         // // setShowAccount({isShow: false,step:AccountStep.});

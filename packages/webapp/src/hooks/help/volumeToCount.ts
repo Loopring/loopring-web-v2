@@ -10,7 +10,7 @@ export const volumeToCount = (symbol:string,volumn:string|number|BigNumber,token
 export const volumeToCountAsBigNumber = (symbol:string,volumn:string|number|BigNumber,tokenMap= store.getState().tokenMap.tokenMap):BigNumber|undefined =>{
     if(tokenMap && tokenMap[symbol] && typeof volumn !== 'undefined'){
         try{
-            return toBig(volumn).div( BIG10.pow(tokenMap[symbol].decimals))
+            return toBig(volumn).div('1e' + tokenMap[symbol].decimals)
         }catch (error){
             throw error;
         }
