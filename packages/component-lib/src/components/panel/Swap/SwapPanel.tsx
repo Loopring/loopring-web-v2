@@ -172,7 +172,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
         ],
 
     }
-    return <SwitchPanel {...{...rest, ...props}} />
+    return <SwitchPanel {...{...rest, ...props, size:'large'}} />
 }) as <T extends IBData<I>,
     I,
     TCD extends TradeCalcData<I>> (props: SwapProps<T, I, TCD> & React.RefAttributes<any>) => JSX.Element;
