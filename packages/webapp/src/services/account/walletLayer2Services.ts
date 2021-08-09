@@ -5,7 +5,9 @@ import { LoopringAPI } from '../../stores/apis/api';
 import { myLog } from '../../utils/log_tools';
 import store from 'stores';
 import { updateAccountStatus } from 'stores/account';
-import { AccountInfo, toBig, toHex } from 'loopring-sdk';
+import * as sdk from 'loopring-sdk'
+import { connectProvides } from '@loopring-web/web3-provider';
+import { ConnectorNames } from 'loopring-sdk';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
@@ -65,7 +67,7 @@ export const walletLayer2Services = {
     },
 
     //INFO: for lock account todo clear the private info, user click or provider on wrong network
-    sendAccountLock: (accInfo?: AccountInfo) => {
+    sendAccountLock: (accInfo?: sdk.AccountInfo) => {
         const updateInfo = accInfo ? {
             readyState:AccountStatus.LOCKED,
             accountId: accInfo.accountId,
@@ -90,8 +92,8 @@ export const walletLayer2Services = {
             apiKey,
             eddsaKey,
             publicKey: {
-                x: toHex(toBig(eddsaKey.keyPair.publicKeyX)),
-                y: toHex(toBig(eddsaKey.keyPair.publicKeyY)),
+                x: sdk.toHex(sdk.toBig(eddsaKey.keyPair.publicKeyX)),
+                y: sdk.toHex(sdk.toBig(eddsaKey.keyPair.publicKeyY)),
             },
             readyState: AccountStatus.ACTIVATED
         }:{readyState:AccountStatus.ACTIVATED}
@@ -106,6 +108,14 @@ export const walletLayer2Services = {
         subject.next({
             status: Commands.NoAccount,
             data: undefined
+        })
+    },
+    sendNeedUpdateAccount: async(accInfo: sdk.AccountInfo) => {
+        myLog('sendNeedUpdateAccount accInfo:', accInfo)
+        store.dispatch(updateAccountStatus({readyState:AccountStatus.DEPOSITING, }))
+        subject.next({
+            status: Commands.ProcessDeposit,
+            data: accInfo
         })
     },
     sendCheckAccount: async (ethAddress: string) => {
@@ -129,7 +139,17 @@ export const walletLayer2Services = {
                 //     data:undefined
                 // })
             } else {
-                walletLayer2Services.sendAccountLock(accInfo)
+                if (accInfo.accountId) {
+                    if (!accInfo.publicKey.x || !accInfo.publicKey.y) {
+                        myLog('-------need update account!')
+                        walletLayer2Services.sendNeedUpdateAccount(accInfo)
+                    } else {
+                        walletLayer2Services.sendAccountLock(accInfo)
+                    }
+                } else {
+                    myLog('unexpected accInfo:', accInfo)
+                    throw Error('unexpected accinfo:' + accInfo)
+                }
             }
         }
 
