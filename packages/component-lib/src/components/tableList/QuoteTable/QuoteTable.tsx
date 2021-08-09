@@ -7,6 +7,7 @@ import { Column, Table } from '../../basic-lib/tables/index'
 import { TablePaddingX } from '../../styled'
 import { Typography } from '@material-ui/core/';
 import { useSettings } from '@loopring-web/component-lib/src/stores'
+import { StarHollowIcon, StarSolidIcon } from '@loopring-web/common-resources'
 
 const TableStyled = styled(Box)`
     display: flex;
@@ -57,11 +58,6 @@ export type QuoteTableRawDataItem = {
     volume: number;
 }
 
-// const CoinPairCell: any = styled.span`
-// 	display: flex;
-// 	align-items: center;
-// `
-
 const QuoteTableChangedCell: any = styled.span`
 	color: ${(props: any) => {
     const {theme: {colorBase}, upColor} = props
@@ -79,6 +75,14 @@ const QuoteTableChangedCell: any = styled.span`
 }
 `
 
+const handleStartClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.stopPropagation()
+}
+
+const StarIconWrapperStyled = styled(Box)`
+    margin: ${({theme}) => theme.unit}px ${({theme}) => theme.unit}px 0 0;
+` as typeof Box
+
 // const getColumnModelQuoteTable = (t: TFunction, history: any): Column<Row, unknown>[] => [
 const columnMode = ({t}: WithTranslation, history: any, upColor: 'green' | 'red'): Column<QuoteTableRawDataItem, unknown>[] => [
     {
@@ -93,10 +97,20 @@ const columnMode = ({t}: WithTranslation, history: any, upColor: 'green' | 'red'
             // `
             const {coinA, coinB} = row[ 'pair' ]
             return (
-                <Box className="rdg-cell-value">
-                    {/* <StarIcon/> */}
-                    <Typography component={'span'}> {coinA}<Typography component={'span'}
-                                                                       color={'textSecondary'}> / {coinB}</Typography>
+                <Box className="rdg-cell-value" display={'flex'} alignItems={'center'}>
+                    <StarIconWrapperStyled
+                        onClick={handleStartClick}
+                    >
+                        <StarSolidIcon cursor={'pointer'} />
+                    </StarIconWrapperStyled>
+                    <Typography component={'span'}>
+                        {coinA}
+                        <Typography
+                            component={'span'}
+                            color={'textSecondary'}
+                        >
+                            / {coinB}
+                        </Typography>
                     </Typography>
 
                 </Box>
