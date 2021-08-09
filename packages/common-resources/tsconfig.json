@@ -1,5 +1,4 @@
 {
-  "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "jsx": "react-jsx",
     "noUnusedLocals": true,

@@ -5,40 +5,9 @@ import { LoopringAPI } from '../../stores/apis/api';
 import { myLog } from '../../utils/log_tools';
 import store from 'stores';
 import { updateAccountStatus } from 'stores/account';
-import { AccountInfo, generateKeyPair, toBig, toHex } from 'loopring-sdk';
-import { connectProvides } from '@loopring-web/web3-provider';
+import { AccountInfo, toBig, toHex } from 'loopring-sdk';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
-
-function getLocalDepositHash(account: Account): { [ key: string ]: any } | undefined {
-    let depositsHash = window.localStorage.getItem('__loopring__.depositsHash');
-    if (depositsHash) {
-        depositsHash = JSON.parse(depositsHash);
-        if (depositsHash && depositsHash[ account.accAddress ]) {
-            return depositsHash[ account.accAddress ]
-        }
-    }
-    return undefined
-}
-
-function clearDepositHash(account: Account, value: string) {
-    // @ts-ignore
-    let depositsHash: { [ key: string ]: object } = window.localStorage.getItem('__loopring__.depositsHash');
-    depositsHash = depositsHash ? JSON.parse(depositsHash as any) : {};
-    if (depositsHash[ account.accAddress ] && depositsHash[ account.accAddress ][ value ]) {
-        delete depositsHash[ account.accAddress ][ value ];
-    }
-}
-
-function setLocalDepositHash(account: Account, value: string): void {
-    // @ts-ignore
-    let depositsHash: { [ key: string ]: object } = window.localStorage.getItem('__loopring__.depositsHash');
-    depositsHash = depositsHash ? JSON.parse(depositsHash as any) : {};
-    depositsHash[ account.accAddress ] = {
-        ...depositsHash[ account.accAddress ],
-        [ value ]: 1,
-    }
-}
 
 export const walletLayer2Services = {
     //INFO: for update Account and unlock account

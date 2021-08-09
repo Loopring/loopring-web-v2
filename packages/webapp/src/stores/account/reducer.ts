@@ -43,7 +43,7 @@ const initialState: AccountState = {
     publicKey: {},
     level: '',
     nonce: undefined,
-    connectName: ConnectProviders.unKnown,
+    connectName: ConnectProviders.UnKnown,
     _chainId: 1,
     status: 'PENDING',
     errorMessage: null,
@@ -130,7 +130,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
             state.status = SagaStatus.DONE;
             state.errorMessage = null;
             if(action.payload?.shouldUpdateProvider) {
-                state.connectName = ConnectProviders.unKnown;
+                state.connectName = ConnectProviders.UnKnown;
             }
             //no need update _chainId
             //no need update _userOnModel

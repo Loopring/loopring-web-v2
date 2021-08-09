@@ -1,13 +1,5 @@
-import { ConnectProviders } from './connect';
 import { StateBase } from './sagaStatus';
-
-export type ErrorObject = {
-    from?: string,
-    timestamp?: number,
-    messageKey: string
-    [ key: string ]: any,
-}
-
+import { ConnectProviders } from './connect';
 
 export enum AccountStatus {
     UN_CONNECT = 'UN_CONNECT',
@@ -50,6 +42,7 @@ export type AccountFull = {
     resetAccount:()=>void
     updateAccount:(account: Partial<Account>)=>void
 } & StateBase
+
 // export  enum StorageCommands {
 //     CLEAN= 'CLEAN',
 //     UPDATE='UPDATE'
