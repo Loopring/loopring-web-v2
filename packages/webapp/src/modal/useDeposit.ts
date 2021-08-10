@@ -124,10 +124,6 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
         myLog('onDepositClick depositValue:', depositValue)
         setShowDeposit({isShow:false})
 
-        if (isNewAccount) {
-            setShowAccount({isShow: true, step: AccountStep.Depositing});
-        }
-
         if (depositValue && depositValue.belong) {
             await handleDeposit(depositValue as R)
         }
