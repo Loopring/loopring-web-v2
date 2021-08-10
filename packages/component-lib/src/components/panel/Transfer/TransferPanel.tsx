@@ -28,7 +28,7 @@ export const TransferPanel = withTranslation('common', {withRef: true})(<T exten
     // const [index, setIndex] = React.useState(0);
     const {
         //toolbar UI
-        toolBarItemBack,
+        // toolBarItemBack,
         //Data, panel and function
         onChangeEvent,
         index,
@@ -40,18 +40,18 @@ export const TransferPanel = withTranslation('common', {withRef: true})(<T exten
         index: index, // show default show
         panelList: [{
             key: "trade",
-            element: () => <TransferWrap<T, I> key={"transfer"}
-                                               {...{
-                                                   ...rest,
-                                                   chargeFeeTokenList: chargeFeeTokenList ? chargeFeeTokenList : [],
-                                                   tradeData: switchData.tradeData,
-                                                   onChangeEvent,
-                                                   disabled: rest.disabled ? true : false,
-                                                   onTransferClick,
-                                                   transferBtnStatus,
+            element: React.useMemo(() => <TransferWrap<T, I> key={"transfer"}
+                                                             {...{
+                                                                 ...rest,
+                                                                 chargeFeeTokenList: chargeFeeTokenList ? chargeFeeTokenList : [],
+                                                                 tradeData: switchData.tradeData,
+                                                                 onChangeEvent,
+                                                                 disabled: !!rest.disabled,
+                                                                 onTransferClick,
+                                                                 transferBtnStatus,
 
-                                               }} />,
-            toolBarItem: () => <></>
+                                                             }} />, [onChangeEvent, chargeFeeTokenList, rest, switchData, onTransferClick, transferBtnStatus]),
+            toolBarItem: undefined
         },
             {
                 key: "tradeMenuList",
@@ -59,11 +59,12 @@ export const TransferPanel = withTranslation('common', {withRef: true})(<T exten
                     ...rest,
                     onChangeEvent,
                     //rest.walletMap,
-                    selected: switchData.tradeData.belong as string,
+                    selected: switchData.tradeData.belong,
                     tradeData: switchData.tradeData,
                     //oinMap
                 }}/>,
-                toolBarItem: () => <>{toolBarItemBack}</>
+                toolBarItem: undefined
+                // toolBarItem: toolBarItemBack
             },]
     }
     return <SwitchPanel {...{...rest, ...props}} />

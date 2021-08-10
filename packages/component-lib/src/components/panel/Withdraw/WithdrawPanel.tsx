@@ -28,7 +28,7 @@ export const WithdrawPanel = withTranslation('common', {withRef: true})(<T exten
     // const [index, setIndex] = React.useState(0);
     const {
         //toolbar UI
-        toolBarItemBack,
+        // toolBarItemBack,
         //Data, panel and function
         onChangeEvent,
         index,
@@ -40,30 +40,30 @@ export const WithdrawPanel = withTranslation('common', {withRef: true})(<T exten
         index: index, // show default show
         panelList: [{
             key: "trade",
-            element: () => <WithdrawWrap<T, I> key={"transfer"}
+            element: React.useMemo( () => <WithdrawWrap<T, I> key={"transfer"}
                                                {...{
                                                    ...rest,
                                                    chargeFeeTokenList: chargeFeeTokenList ? chargeFeeTokenList : [],
                                                    tradeData: switchData.tradeData,
                                                    onChangeEvent,
-                                                   disabled: rest.disabled ? true : false,
+                                                   disabled: !!rest.disabled,
                                                    onWithdrawClick,
                                                    withdrawBtnStatus,
 
-                                               }} />,
-            toolBarItem: () => <></>
+                                               }} />,[onChangeEvent,chargeFeeTokenList,rest,switchData,onWithdrawClick,withdrawBtnStatus]),
+            toolBarItem: undefined
         },
             {
                 key: "tradeMenuList",
-                element: () => <TradeMenuList {...{
+                element: React.useMemo( () => <TradeMenuList {...{
                     ...rest,
                     onChangeEvent,
                     //rest.walletMap,
                     selected: switchData.tradeData.belong,
                     tradeData: switchData.tradeData,
                     //oinMap
-                }}/>,
-                toolBarItem: () => <>{toolBarItemBack}</>
+                }}/>,[switchData,rest,onChangeEvent]),
+                toolBarItem: undefined
             },]
     }
     return <SwitchPanel {...{...rest, ...props}} />

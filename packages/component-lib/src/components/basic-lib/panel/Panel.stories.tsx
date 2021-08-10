@@ -57,8 +57,8 @@ const WrapSwitchPanel = (rest: any) => {
         panelList: [
             {
                 key: "trade",
-                element: () => <FistWrap key={"first"} {...{...rest, onChangeIndex, onTransitionEnd}}/>,
-                toolBarItem: () => <Grid container justifyContent={'flex-end'}>
+                element:  <FistWrap key={"first"} {...{...rest, onChangeIndex, onTransitionEnd}}/>,
+                toolBarItem:  <Grid container justifyContent={'flex-end'}>
                     {/*<Grid item >*/}
                     <IconButton edge="end"
                                 className={'switch'}
@@ -79,8 +79,8 @@ const WrapSwitchPanel = (rest: any) => {
             },
             {
                 key: "coinMap",
-                element: () => <SecondWrap key={"second"} {...{...rest, onChangeIndex}}/>,
-                toolBarItem: () => <Grid container justifyContent={'flex-start'}>
+                element:  <SecondWrap key={"second"} {...{...rest, onChangeIndex}}/>,
+                toolBarItem:  <Grid container justifyContent={'flex-start'}>
                     <IconButton edge="start" sx={{transform: 'rotate(90deg)', transformOrigin: '50%'}}
                                 className={'switch'}
                                 color="inherit"
