@@ -56,6 +56,8 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
 
                 if (tokenInfo.symbol.toUpperCase() !== 'ETH') {
 
+                    setShowAccount({isShow: true, step: AccountStep.TokenAccessProcess})
+
                     const req: GetAllowancesRequest = { owner: account.accAddress, token: tokenInfo.symbol}
 
                     const { tokenAllowances } = await LoopringAPI.exchangeAPI.getAllowances(req, tokenMap)
@@ -75,8 +77,13 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
                         } catch(reason) {
                             result.code = ActionResultCode.ApproveFailed
                             result.data = reason
-                            return result
+                            
+                            setShowAccount({isShow: true, step: AccountStep.FailedTokenAccess})
+                            return
                         }
+
+                        setShowAccount({isShow: true, step: AccountStep.Depositing})
+
                     } else {
                         myLog('allowance is enough! don\'t need approveMax!')
                     }
@@ -95,10 +102,14 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
 
                 result.data = response2
 
+                setShowAccount({isShow: true, step: AccountStep.Depositing})
+
             } catch (reason) {
                 dumpError400(reason)
                 result.code = ActionResultCode.DepositFailed
                 result.data = reason
+
+                setShowAccount({isShow: true, step: AccountStep.FailedDeposit})
             }
 
         } else {
@@ -107,32 +118,14 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
 
         return result
 
-    }, [account, tokenMap, chainId, exchangeInfo, gasPrice, LoopringAPI.exchangeAPI])
+    }, [account, tokenMap, chainId, exchangeInfo, gasPrice, LoopringAPI.exchangeAPI, setShowAccount])
 
     const onDepositClick = useCallback(async(depositValue) => {
         myLog('onDepositClick depositValue:', depositValue)
         setShowDeposit({isShow:false})
 
-        if (isNewAccount) {
-            setShowAccount({isShow: true, step: AccountStep.Depositing});
-        }
-
         if (depositValue && depositValue.belong) {
-            const result = await handleDeposit(depositValue as R)
-
-            switch (result.code) {
-                case ActionResultCode.NoError:
-                    setShowAccount({isShow: true, step: AccountStep.Depositing})
-                    myLog(result)
-                    break
-                case ActionResultCode.DepositFailed:
-                case ActionResultCode.ApproveFailed:
-                    setShowAccount({isShow: true, step: AccountStep.Deposit})
-                    myLog(result)
-                    break
-                default:
-                    break
-            }
+            await handleDeposit(depositValue as R)
         }
 
     }, [depositValue, handleDeposit, setShowDeposit, setShowAccount, isNewAccount])
