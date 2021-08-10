@@ -111,49 +111,92 @@ export const modalContentBaseStyle = ({theme}: any) => css`
 // height:100%;
 // margin-top: var(--toolbar-row-padding-minus);
 // padding-top: var(--toolbar-row-padding);
+// .menu-panel{
+//     height: ${_height  ?
+//          typeof _height === 'number' ?
+//              ` calc(${_height + 'px'} -  var(--toolbar-row-padding)  ) `
+//              :` calc(${_height} -  var(--toolbar-row-padding)  )`:'210px'};
+// }        
 export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _width?: number | string } & BoxProps>`
+  .MuiModal-root & {
+    .container{
+        padding-bottom: 0;
+    }
+  }
+  .trade-panel{
+    .react-swipeable-view-container {
+      & > div{
+        padding: 0 ${({theme}) => theme.unit * 5/2}px ${({theme}) => theme.unit * 5}px;
+        .container{
+          height:100%;
+          padding-top:0;
+        }
+      }
+    }
+  }
   &&{
     ${({theme}) => modalContentBaseStyle({theme: theme})}
     ${({_height, _width, theme}) => `
+     
       background: ${theme.colorBase.background().popupBg1};
       .react-swipeable-view-container {
            height: ${_height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : '100%'} ;
            width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : '100%'};
            & > div{
               height:initial;
+              overflow: hidden !important;
               padding-bottom:var(--toolbar-row-padding); 
               background: initial;
-              .container{
-                height:100%;
-              }
-               .trade-panel{
-                 .react-swipeable-view-container {
-                     & > div{
-                          padding: 0 ${theme.unit * 5/2}px 0;
-                     }
-                 }
-               }
            }
        }
+      
       .trade-panel{
-        margin-top: var(--toolbar-row-padding-minus);                         MuiToolbar-root
-        height: ${_height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : '100%'} ;
-        width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : '100%'};
         .react-swipeable-view-container {
-            & > div{
-              padding: 0 ${theme.unit * 5/2}px var(--toolbar-row-padding);
-              overflow: unset !important
-              .container{
-                height:100%;
-              
-              }
-           }
+           & > div{
+              height: calc(100% -  var(--toolbar-row-padding));
+              padding-bottom:0; 
+              overflow: hidden !important   
+          }
         }
       }
       
     `}
   }
+  ${({_height, theme}) => `
+  .MuiModal-root & {
+     .coin-menu {
+          height:${_height  ?
+    typeof _height === 'number' ?
+        ` calc(${_height + 'px'} - ${theme.unit * 4}px - 2 * var(--toolbar-row-padding)  ) `
+        :` calc(${_height} - ${theme.unit * 4}px - 2 * var(--toolbar-row-padding)  )`
+    : '410px'} !important;
+     }
+  }` };
 ` as React.ElementType<{ _height?: number | string, _width?: number | string } & BoxProps>
+
+
+export const toolBarPanel = ({theme}: any) => css`
+  .MuiToolbar-root {
+    align-content: stretch;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    height: var(--toolbar-row-padding-minus);
+    //min-height: var(--toolbar-row-padding);
+    margin-top:  var(--toolbar-row-padding-minus); 
+    .MuiIconButton-root {
+      height: var(--btn-icon-size);
+      width: var(--btn-icon-size);
+      min-width: var(--btn-icon-size);
+      margin: 0;
+      display: flex;
+      padding: 0;
+      justify-content: center;
+      justify-items: center;
+      align-items: center;
+      font-size: ${theme.fontDefault.h4};
+    }
+  }
+`
 
 export const TableFilterStyled = styled(Box)`
   margin-left: 26px;

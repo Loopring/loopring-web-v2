@@ -16,7 +16,7 @@ export const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
 }));
 export const IconClearStyled = styled(IconButton)`
   position: absolute;
-  top: 30px;
+  top: 20px;
   right: 4px;
 ` as typeof IconButton
 
