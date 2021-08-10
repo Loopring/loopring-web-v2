@@ -188,26 +188,14 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                             </Box>
                         })}
                     </Grid>
+                    -----------------------------
                     <Button variant={'outlined'} size={'small'} color={'primary'} style={{marginRight: 8}}
                             onClick={() => setOpenWallet(true)}>Connect wallet</Button>
+
                     <ModalWalletConnect open={openWallet} onClose={() => setOpenWallet(false)} onBack={() => {
                         setOpenWallet(false)
-                    }}
-                                        panelList={walletList} step={WalletConnectStep.WalletConnectQRCode}/>
-                    <Grid container spacing={2}>
-
-                        {accountList.map((panel, index) => {
-                            return <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
-                                        justifyContent={'center'} alignItems={'stretch'}>
-                                {panel}
-                            </Box>
-                        })}
-                    </Grid>
-                    <Button variant={'outlined'} size={'small'} color={'primary'} style={{marginRight: 8}}
-                            onClick={() => setOpenAccount(true)}>Connect wallet</Button>
-                    <ModalAccount open={openAccount} onClose={() => setOpenAccount(false)}
-                                  panelList={accountList} step={AccountStep.Deposit}/>
-
+                    }} panelList={walletList} step={WalletConnectStep.WalletConnectQRCode}/>
+                    -----------------------------
 
                     <Button variant={'outlined'} size={'medium'} color={'primary'} onClick={() => setOpenQRCode(true)}>QR
                         Code</Button>
@@ -229,7 +217,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
 export const ModalListStory = Template.bind({})
 
 export default {
-    title: 'components/ModalList',
+    title: 'components/wallet_list',
     component: ModalWalletConnect,
     argTypes: {},
 } as Meta
