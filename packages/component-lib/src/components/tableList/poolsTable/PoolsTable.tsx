@@ -221,7 +221,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, currency: 'USD' |
         cellClass: () => `action`,
         formatter: ({row}) => {
             return <Button
-                href={`/#/liquidity/pools/coinPair/${row?.coinAInfo?.simpleName + '-' + row?.coinBInfo?.simpleName}`}
+                href={`${window.location.href}/pools/coinPair/${row?.coinAInfo?.simpleName + '-' + row?.coinBInfo?.simpleName}`}
                 className={'btn'} variant={'outlined'} size={'small'}>
                 {t('labelTradePool')}</Button>
         }
@@ -243,7 +243,9 @@ export const PoolsTable = withTranslation('tables')(
         const [filterBy, setFilterBy] = React.useState<string>('');
         const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
         const [totalData, setTotalData] = React.useState<Row<T>[]>(rawData && Array.isArray(rawData) ? rawData : []);
-        let history = useHistory();
+        
+        const history = useHistory()
+
         useDeepCompareEffect(() => {
             setTotalData(rawData)
         }, [rawData])
@@ -282,12 +284,19 @@ export const PoolsTable = withTranslation('tables')(
 
         const handleFilterChange = React.useCallback(debounce(doUpdate, wait), [doUpdate]);
 
-
         const _handlePageChange = React.useCallback((page: number) => {
             setPage(page);
             updateData({TableType: TableType.page, currPage: page})
             handlePageChange(page);
         }, [updateData, handlePageChange])
+
+        const onRowClick = React.useCallback((_rowIdx: any, row: any) => {
+            const pathname = `/liquidity/pools/coinPair/${row?.coinAInfo?.simpleName + '-' + row?.coinBInfo?.simpleName}`
+            console.log('onRowClick:', pathname)
+            history && history.push({
+                pathname,
+            })
+        }, [history])
 
         return <TableStyled flex={1} flexDirection={'column'} display={'flex'}>
             {showFilter && <Box display={'flex'} margin={3}>
@@ -312,9 +321,7 @@ export const PoolsTable = withTranslation('tables')(
             <Table {...{
                 ...defaultArgs, t, i18n, tReady, ...rest,
                 rawData: getRenderData(),
-                onRowClick: (_rowIdx: any, row: any) => {
-                    history && history.push(`/liquidity/pools/coinPair/${row?.coinAInfo?.simpleName + '-' + row?.coinBInfo?.simpleName}`)
-                }
+                onRowClick: (index, row) => onRowClick(index, row),
                 // sortMethod: (sortedRows: Row<T>[], sortColumn) => {
                 //     switch (sortColumn) {
                 //         case 'pools':
