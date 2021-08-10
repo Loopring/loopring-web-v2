@@ -13,7 +13,6 @@ import { LoopringAPI } from 'stores/apis/api'
 import { TradingInterval } from 'loopring-sdk/dist'
 import { TableWrapStyled } from 'pages/styled'
 import { useFavoriteMarket } from 'stores/localStore/favoriteMarket'
-import store from 'stores'
 
 const RowStyled = styled(Grid)`
       & .MuiGrid-root:not(:last-of-type) > div{
@@ -54,7 +53,6 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const [searchValue, setSearchValue] = React.useState<string>('')
 
     const {favoriteMarket, removeMarket, addMarket} = useFavoriteMarket()
-    
     const { t } = rest
 
     const getCandlestick = React.useCallback(async (market: string) => {
@@ -223,9 +221,13 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                   </SearchWrapperStyled>
                 </TabsWrapperStyled>
                 <Divider />
-                <QuoteTable /* onVisibleRowsChange={onVisibleRowsChange} */ onRowClick={(index, row, col) => 
-                  handleRowClick(row)
-                } rawData={filteredData} {...{ showLoading: tickList && !tickList.length, ...rest }} />
+                <QuoteTable /* onVisibleRowsChange={onVisibleRowsChange} */ 
+                  onRowClick={(index, row, col) => handleRowClick(row)} 
+                  rawData={filteredData}
+                  favoriteMarket={favoriteMarket}
+                  addFavoriteMarket={addMarket}
+                  removeFavoriteMarket={removeMarket}
+                  {...{ showLoading: tickList && !tickList.length, ...rest }} />
             </Grid>
         </TableWrapStyled>
     </Box>

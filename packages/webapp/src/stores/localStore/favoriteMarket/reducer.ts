@@ -4,37 +4,32 @@ import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice';
 
 const favoriteMarketSlice: Slice<FavoriteMarketStates> = createSlice<FavoriteMarketStates,SliceCaseReducers<FavoriteMarketStates>,'favoriteMarket'>({
     name: 'favoriteMarket',
-    initialState:[],
+    initialState: [],
     reducers: {
         clearAll(state:FavoriteMarketStates, action: PayloadAction<undefined>) {
-            state = [];
+            state.length = 0;
         },
         removeMarket(state:FavoriteMarketStates, action: PayloadAction<string>) {
             const pair = action.payload
-            if (pair) {
-                state = state.filter((_pair: string) => {
-                    return _pair === pair;
-                });
+            if (pair && state.includes(pair)) {
+                const index = state.findIndex(_pair => _pair === pair)
+                state.splice(index, 1)
             }
-
         },
         addMarket(state:FavoriteMarketStates, action: PayloadAction<string>) {
             const pair = action.payload
             if (pair && state.findIndex((_pair: string) => _pair === pair) === -1) {
-                state = [...state, pair]
+                state.push(pair)
             }
         },
         addMarkets(state:FavoriteMarketStates, action: PayloadAction<string[]>) {
-            let pairs = action.payload
+            const pairs = action.payload
             if (pairs.length) {
-                state = [...state, ...pairs.reduce((prev, pair) => {
+                pairs.forEach(pair => {
                     if (pair && state.findIndex((_pair: string) => _pair === pair) === -1) {
-                        prev.push(pair)
+                        state.push(pair)
                     }
-                    return prev
-                }, [] as string[])]
-
-
+                })
             }
         },
 
