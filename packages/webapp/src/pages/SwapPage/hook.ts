@@ -68,7 +68,7 @@ export const useSwapBtnStatusCheck = () => {
     useEffect(() => {
 
         if (account.readyState !== AccountStatus.ACTIVATED) {
-            setBtnStatus(TradeBtnStatus.AVAILABLE)
+            setBtnStatus(TradeBtnStatus.DISABLED)
         } else {
 
             if (isSwapLoading) {

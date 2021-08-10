@@ -57,7 +57,9 @@ export const ModalAccountInfo = withTranslation('common')(({
         resetAccount,
     } = useAccount();
 
-    const { depositProps } = useDeposit(true)
+    const isNewAccount = true
+
+    const { depositProps } = useDeposit(isNewAccount)
 
     const { modals: { isShowAccount }, setShowConnect, setShowAccount, } = useOpenModals()
 
@@ -84,8 +86,10 @@ export const ModalAccountInfo = withTranslation('common')(({
         setShowAccount({ isShow: false })
     }, [resetAccount, setShowAccount])
 
-    const goDeposit = React.useCallback((token?: any) => {
+    const goDeposit = React.useCallback(() => {
+
         setShowAccount({isShow: true, step: AccountStep.Deposit});
+
     }, [setShowAccount])
 
     const goUpdateAccount = React.useCallback(async() => {

@@ -74,6 +74,7 @@ export type DepositInfoProps = {
     depositBtnStatus?: keyof typeof TradeBtnStatus | undefined,
     title?: string,
     description?: string
+    isNewAccount: boolean
 }
 export type DepositExtendProps<T> = {
     onDepositClick: (data: T) => void,
