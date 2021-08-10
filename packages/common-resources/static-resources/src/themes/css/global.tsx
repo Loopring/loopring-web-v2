@@ -149,7 +149,7 @@ export const globalCss = ({theme}: any) => css`
     --datePicker-width: 320px;
     --datePicker-height: 232px;
     --list-coin-item: 44px;
-    --header-menu-icon-size: 28px;
+    --header-menu-icon-size: 20px;
     --list-menu-coin-size: 24px;
     --chart-title-coin-size: 28px;
     --btn-icon-size-small: 24px;
