@@ -14,10 +14,6 @@ import { useWalletLayer1 } from '../stores/walletLayer1';
 import { useTranslation } from 'react-i18next';
 import { ActionResult, ActionResultCode } from 'defs/common_defs';
 
-export enum DepositResult {
-    No_Error,
-}
-
 export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false): {
     depositProps: DepositProps<R, T>
 } => {
@@ -45,7 +41,8 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
 
         if ((readyState !== AccountStatus.UN_CONNECT
             && inputValue.tradeValue)
-            && tokenMap && exchangeInfo && connectProvides.usedWeb3 && LoopringAPI.exchangeAPI) {
+            && tokenMap && exchangeInfo?.exchangeAddress
+            && connectProvides.usedWeb3 && LoopringAPI.exchangeAPI) {
             try {
                 const tokenInfo = tokenMap[inputValue.belong]
                 const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
@@ -55,9 +52,11 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
                 
                 const isMetaMask = connectName === ConnectProviders.MetaMask
 
-                const req: GetAllowancesRequest = { owner: account.accAddress, token: tokenInfo.symbol}
+                const realGasPrice = gasPrice ?? 30
 
                 if (tokenInfo.symbol.toUpperCase() !== 'ETH') {
+
+                    const req: GetAllowancesRequest = { owner: account.accAddress, token: tokenInfo.symbol}
 
                     const { tokenAllowances } = await LoopringAPI.exchangeAPI.getAllowances(req, tokenMap)
     
@@ -65,15 +64,13 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
     
                     const curValInWei = sdk.toBig(inputValue.tradeValue).times('1e' + tokenInfo.decimals)
     
-                    myLog(curValInWei.toString(), allowance.toString())
-    
                     if (curValInWei.gt(allowance)) {
 
                         myLog(curValInWei, allowance, ' need approveMax!')
 
                         try {
                             await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
-                                exchangeInfo?.depositAddress, gasPrice ?? 30, gasLimit, chainId === 'unknown' ? undefined : chainId, nonce, isMetaMask)
+                                exchangeInfo?.depositAddress, realGasPrice, gasLimit, chainId === 'unknown' ? undefined : chainId, nonce, isMetaMask)
                             nonce += 1
                         } catch(reason) {
                             result.code = ActionResultCode.ApproveFailed
@@ -88,15 +85,16 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
 
                 myLog('before deposit:', chainId, connectName, isMetaMask)
 
+                const realChainId = chainId === 'unknown' ? 1 : chainId
+
                 const response2 = await sdk.deposit(connectProvides.usedWeb3, account.accAddress,
-                    exchangeInfo?.exchangeAddress, tokenInfo, inputValue.tradeValue, fee,
-                    gasPrice ?? 20, gasLimit, chainId === 'unknown' ? 1 : chainId, nonce, isMetaMask)
+                    exchangeInfo.exchangeAddress, tokenInfo, inputValue.tradeValue, fee,
+                    realGasPrice, gasLimit, realChainId, nonce, isMetaMask)
 
                 myLog('response2:', response2)
 
                 result.data = response2
 
-                //TODO check success or failed API
             } catch (reason) {
                 dumpError400(reason)
                 result.code = ActionResultCode.DepositFailed
@@ -147,18 +145,16 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
 
     const title = isNewAccount ? t('labelCreateLayer2Title') : t('depositTitleAndActive')
 
-    const depositProps = {
+    const depositProps: DepositProps<R, T> = {
         title,
         tradeData: {belong: undefined} as any,
         coinMap: coinMap as CoinMap<any>,
         walletMap: walletLayer1 as WalletMap<any>,
         depositBtnStatus: TradeBtnStatus.AVAILABLE,
         onDepositClick,
-        handlePanelEvent,
     }
 
     return {
-        // handleDeposit,
-        depositProps: depositProps as DepositProps<R, T>,
+        depositProps: depositProps,
     }
 }
