@@ -31,16 +31,14 @@ export const useHeader = () => {
                 setShowAccount({isShow: true, step: AccountStep.HadAccount})
             }
         ],
-        [ fnType.CONNECT ]: [
-            function () {
-                setShouldShow(true);
-                setShowAccount({isShow: true, step: AccountStep.HadAccount})
-            }
-        ]
+        // [ fnType.CONNECT ]: [
+        //     function () {
+        //         setShouldShow(true);
+        //         setShowAccount({isShow: true, step: AccountStep.HadAccount})
+        //     }
+        // ]
 
     });
-
-
     const onWalletBtnConnect = React.useCallback(async () => {
         myLog(`onWalletBtnConnect click: ${account.readyState}`);
         setShouldShow(true);
