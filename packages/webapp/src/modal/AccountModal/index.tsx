@@ -179,14 +179,14 @@ export const ModalAccountInfo = withTranslation('common')(({
                 etherscanLink: etherscanUrl + account.accAddress,
                 mainBtn: account.readyState === 'ACTIVATED' ? lockBtn : unlockBtn
             }} />,
-            [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess label={title + ' TokenAccess'}
-                                                                    providerName={account.connectName} {...{
+            [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess label={title}
+                                                    providerName={account.connectName} {...{
                 ...rest,
                 t
             }} />,
             [ AccountStep.DepositApproveProcess ]: <DepositApproveProcess label={title}
-                                                                          etherscanLink={etherscanUrl + account.accAddress}
-                                                                          providerName={account.connectName} {...{
+                                                        etherscanLink={etherscanUrl + account.accAddress}
+                                                        providerName={account.connectName} {...{
                 ...rest,
                 t
             }} />,
