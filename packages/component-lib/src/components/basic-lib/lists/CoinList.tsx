@@ -40,7 +40,8 @@ function _CoinMenu<C, I extends CoinInfo<C>>({
         handleSelect && handleSelect(_event, select);
     }, [handleSelect])
     return <Virtuoso<{ walletCoin: WalletCoin<C>, key: string }> data={list}
-                                                                 style={{minHeight: height, height: height}}
+                                                                 className={'coin-menu'}
+                                                                 style={{minHeight: '210px', height: height}}
                                                                  ref={virtuoso}
                                                                  initialTopMostItemIndex={rowIndex}
                                                                  itemContent={(index, item) => {

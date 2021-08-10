@@ -1,16 +1,19 @@
 import { OutlinedInput, InputAdornment } from '@material-ui/core'
 import { SearchIcon } from '@loopring-web/common-resources'
+import { OutlinedInputProps } from '@material-ui/core/OutlinedInput/OutlinedInput';
 
-export type InputSearchProps = {
+export type InputSearchProps  = {
     value?: string;
-    onChange?: (value: string) => void;
-}
+    // onChange?: (value: string) => void;
+} & OutlinedInputProps
 
 export const InputSearch = ({
     value,
     onChange,
+    ...rest
 }: InputSearchProps) => {
     return <OutlinedInput
+        {...{...rest}}
         className={'search'}
         aria-label={'search'}
         placeholder={'Search'}

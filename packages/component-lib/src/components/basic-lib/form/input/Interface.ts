@@ -45,7 +45,7 @@ export type InputSelectProps<T, I = CoinKey<T>> = {
     inputProps?: InputProps,
     wait?: number,
     disabled?: boolean,
-    // toolbarItem?: (value)=>  React.ElementType<any> | JSX.Element,
+    backElement?: React.ElementType<any> | JSX.Element,
     focusOnInput?: boolean,
     allowScroll?: boolean,
     selected?: string | undefined,

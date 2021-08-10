@@ -185,4 +185,5 @@ export default {
     labelFailedUnlock: 'Unlock Failed',
     labelFailedUpdateAcc: 'Update Account Failed',
     labelCreateLayer2Title: 'Create Layer2 Account',
+    labelCancel:'Cancel',
 }

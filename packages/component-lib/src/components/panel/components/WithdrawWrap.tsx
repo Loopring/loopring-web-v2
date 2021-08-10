@@ -111,7 +111,7 @@ export const WithdrawWrap = <T extends IBData<I>,
                 inputBtnRef: inputBtnRef,
             }} />
         </Grid>
-        <Grid item marginTop={2} alignSelf={"stretch"}>
+        <Grid item marginTop={2} alignSelf={"stretch"} position={'relative'}>
             <TextField
                 value={address}
                 error={addressError && addressError.error ? true : false}
@@ -125,7 +125,7 @@ export const WithdrawWrap = <T extends IBData<I>,
                                         variant={'body2'}>{addressError && addressError.error ? addressError.message : ''}</Typography>}
                 fullWidth={true}
             />
-            {address !== '' ? <IconClearStyled size={'small'} aria-label="Clear" onClick={handleClear}>
+            {address !== '' ? <IconClearStyled size={'small'}   style={{top:'30px'}} aria-label="Clear" onClick={handleClear}>
                 <CloseIcon/>
             </IconClearStyled> : ''}
         </Grid>
@@ -172,11 +172,10 @@ export const WithdrawWrap = <T extends IBData<I>,
             })
             }</TextField>
         </Grid>
-        <Grid item marginTop={2} alignSelf={'center'}>
+        <Grid item marginTop={2} alignSelf={'stretch'}>
             <Button fullWidth variant={'contained'} size={'medium'} color={'primary'} onClick={() => {
                 onWithdrawClick(tradeData)
             }}
-                    style={{width: '200px'}}
                     loading={!getDisabled() && withdrawBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={getDisabled() || withdrawBtnStatus === TradeBtnStatus.DISABLED || withdrawBtnStatus === TradeBtnStatus.LOADING ? true : false}
             >{t(`withdrawLabelBtn`)}
