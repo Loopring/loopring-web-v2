@@ -17,7 +17,6 @@ import { bindPopper } from 'material-ui-popup-state/es';
 import { OutlineSelect, OutlineSelectItem, PopoverPure } from '../../basic-lib';
 import { useSettings } from '../../../stores';
 
-
 export const BtnDownload = ({
                                 t,
                                 url,
