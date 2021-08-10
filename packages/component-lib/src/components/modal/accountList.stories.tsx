@@ -4,18 +4,11 @@ import { Meta, Story } from '@storybook/react/types-6-0'
 import { withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
 import { Button, Grid } from '@material-ui/core'
-import { AccountFull, AccountStatus, ConnectProviders, gatewayList } from '@loopring-web/common-resources'
+import { ConnectProviders, gatewayList } from '@loopring-web/common-resources'
 import {
-    MetaMaskProcess,
     ModalWalletConnect,
-    ProviderMenu,
-    SuccessConnect,
-    WalletConnectProcess,
-    WalletConnectQRCode,
-    WalletConnectStep
 } from './WalletConnect'
-import { ModalQRCode, QRCodePanel } from './QRCode'
-import { FailedConnect } from './WalletConnect/FailedConnect';
+
 import {
     AccountBaseProps,
     AccountStep,
@@ -35,7 +28,6 @@ import {
 } from './AccountInfo';
 import { account, coinMap, CoinType, walletMap } from '../../static';
 import { DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../index';
-import { WalletConnectBtn } from '../header';
 import { DepositWrap } from '../panel/components';
 import { Box } from '@material-ui/core/';
 
@@ -50,6 +42,7 @@ const Style = styled.div`
 
 let tradeData: any = {};
 let depositProps: DepositProps<any, any> = {
+    isNewAccount: true,
     tradeData,
     coinMap,
     walletMap,
@@ -64,47 +57,13 @@ let depositProps: DepositProps<any, any> = {
                 res();
             }, 500)
         })
-    },
+    }
 }
-const accountState: AccountFull = {
-    account:{
-        ...account,
-        _chainId:1,
-    },
-    status: 'DONE',
-    resetAccount: () => undefined,
-    updateAccount: () => undefined,
-}
-const ConnectButtonWrap = withTranslation('common')((_rest: any) => {
-    return <>
-        <Grid item xs={3}><WalletConnectBtn accountState={accountState}
-                                            handleClick={() => undefined}></WalletConnectBtn></Grid>
-        <Grid item xs={3}><WalletConnectBtn
-            accountState={{...accountState, account: {...account, readyState: AccountStatus.NO_ACCOUNT}}}
-            handleClick={() => undefined}></WalletConnectBtn></Grid>
-        <Grid item xs={3}><WalletConnectBtn
-            accountState={{...accountState, account: {...account, readyState: AccountStatus.DEPOSITING}}}
-            handleClick={() => undefined}></WalletConnectBtn></Grid>
-        <Grid item xs={3}><WalletConnectBtn
-            accountState={{...accountState, account: {...account, readyState: AccountStatus.ACTIVATED}}}
-            handleClick={() => undefined}></WalletConnectBtn></Grid>
-        <Grid item xs={3}><WalletConnectBtn
-            accountState={{...accountState, account: {...account, readyState: AccountStatus.ERROR_NETWORK}}}
-            handleClick={() => undefined}></WalletConnectBtn></Grid>
-        <Grid item xs={3}><WalletConnectBtn
-            accountState={{...accountState, account: {...account, readyState: AccountStatus.LOCKED}}}
-            handleClick={() => undefined}></WalletConnectBtn></Grid>
-        <Grid item xs={3}><WalletConnectBtn
-            accountState={{...accountState, account: {...account, readyState: AccountStatus.LOCKED, _chainId: 5}}}
-            handleClick={() => undefined}></WalletConnectBtn></Grid>
-    </>
-})
 
 const coinInfo = coinMap[ 'USDC' ]
 const Template: Story<any> = withTranslation()(({...rest}: any) => {
     const [openAccount, setOpenAccount] = React.useState(false)
-    const [openWallet, setOpenWallet] = React.useState(false)
-    const [openQRCode, setOpenQRCode] = React.useState(false)
+
     gatewayList[ 0 ] = {
         ...gatewayList[ 0 ],
         handleSelect: () => console.log('metaMask 11'),

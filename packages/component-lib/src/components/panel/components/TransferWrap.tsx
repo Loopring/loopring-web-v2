@@ -12,12 +12,12 @@ import { debounce } from 'lodash';
 export const TransferWrap = <T extends IBData<I>,
     I>({
            t, disabled, walletMap, tradeData, coinMap,
-           addressDefault,
            chargeFeeToken = 'ETH',
            chargeFeeTokenList,
            onTransferClick,
            handleFeeChange,
            transferBtnStatus,
+           addressDefault,
            handleOnAddressChange,
            handleAddressError,
            wait = globalSetup.wait,
@@ -25,7 +25,7 @@ export const TransferWrap = <T extends IBData<I>,
        }: TransferViewProps<T, I> & WithTranslation) => {
     // const [_chargeFeeToken, setChargeFeeToken] = React.useState<any | undefined>(
     //     chargeFeeToken && chargeFeeTokenList.length ? chargeFeeTokenList[ chargeFeeToken as any ] : undefined);
-    
+
     const inputBtnRef = React.useRef();
     const getDisabled = () => {
         if (disabled || tradeData === undefined || walletMap === undefined || coinMap === undefined) {
@@ -81,7 +81,7 @@ export const TransferWrap = <T extends IBData<I>,
                  alignItems={"stretch"} flex={1} height={'100%'} flexWrap={'nowrap'}
     >
         <Grid item>
-            <Typography component={'h4'} height={36} textAlign={'center'} variant={'h4'}>
+            <Typography component={'h4'} height={36} textAlign={'center'} variant={'h2'} marginBottom={2}>
                 {t('transferTitle')}
             </Typography>
             <Typography component={'p'} variant="body1">
@@ -120,9 +120,10 @@ export const TransferWrap = <T extends IBData<I>,
                     component={'span'}>{addressError && addressError.error ? addressError.message : ''}</Typography>}
                 fullWidth={true}
             />
-            {address !== '' ? <IconClearStyled size={'small'} style={{top:'30px'}}  aria-label="Clear" onClick={handleClear}>
-                <CloseIcon/>
-            </IconClearStyled> : ''}
+            {address !== '' ?
+                <IconClearStyled size={'small'} style={{top: '30px'}} aria-label="Clear" onClick={handleClear}>
+                    <CloseIcon/>
+                </IconClearStyled> : ''}
         </Grid>
 
         <Grid item marginTop={2} alignSelf={"stretch"}>

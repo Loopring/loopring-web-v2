@@ -86,7 +86,7 @@ export const WithdrawWrap = <T extends IBData<I>,
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}
                   flexWrap={'nowrap'}>
         <Grid item>
-            <Typography component={'h4'} height={36} textAlign={'center'} variant={'h4'}>
+            <Typography component={'h4'} height={36} textAlign={'center'} variant={'h2'} marginBottom={2}>
                 {t('withdrawTitle')}
             </Typography>
             <Typography component={'p'} variant="body1">

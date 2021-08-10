@@ -33,7 +33,7 @@ export const ResetWrap = <T extends IBData<I>,
                  direction={"column"}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
         <Grid item>
-            <Typography component={'h4'} height={36} textAlign={'center'} variant={'h4'}>
+            <Typography component={'h4'} height={36} textAlign={'center'} variant={'h2'} marginBottom={2}>
                 {t('resetTitle')}
             </Typography>
             <Typography component={'p'} variant="body1">

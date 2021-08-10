@@ -2,7 +2,7 @@ import { Box, Checkbox, FormControlLabel as MuiFormControlLabel } from '@materia
 import { Trans, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import { ProviderMenuProps } from './Interface';
-import {  Link, Typography } from '@material-ui/core/';
+import { Link, Typography } from '@material-ui/core/';
 import { Button } from '../../basic-lib';
 import { CheckBoxIcon, CheckedIcon, ConnectProviders, GatewayItem } from '@loopring-web/common-resources';
 import React from 'react';
@@ -11,7 +11,7 @@ import React from 'react';
 const ProviderBtnStyled = styled(Button)`
   background-color: ${({theme}) => theme.colorBase.background().field};
 
-  &:hover {                                
+  &:hover {
     background-color: ${({theme}) => theme.colorBase.background().hover};
   }
 
@@ -48,23 +48,25 @@ const ProviderBtnStyled = styled(Button)`
 //${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2, d_W:1})};
 
 const BoxStyle = styled(Box)`
-  ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2, d_W:0})};
+  ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2, d_W: 0})};
   background-color: ${({theme}) => theme.colorBase.background().fieldOpacity};
 
   padding: 0 ${({theme}) => theme.unit * 5 / 3}px;
-  .MuiFormControlLabel-root{
+
+  .MuiFormControlLabel-root {
     font-size: ${({theme}) => theme.fontDefault.h6};
     align-items: flex-start;
-    .MuiTypography-root{
+
+    .MuiTypography-root {
       padding: ${({theme}) => theme.unit}px 0;
     }
   }
-  
+
 ` as typeof Box;
-const WalletConnectPanelStyled = styled(Box)`
-  height: 100%;
-  //width: var(--transfer-modal-width);
-` as typeof Box;
+// const WalletConnectPanelStyled = styled(Box)`
+//   height: 100%;
+//   //width: var(--transfer-modal-width);
+// ` as typeof Box;
 
 export const ProviderMenu = ({
                                  t,
@@ -73,21 +75,26 @@ export const ProviderMenu = ({
                                  providerName = ConnectProviders.unknown,
                              }: ProviderMenuProps & WithTranslation) => {
     // const  !==  ConnectProviders.unknown
-    return <WalletConnectPanelStyled display={'flex'} justifyContent={'stretch'} alignItems={'center'}
-                                     flexDirection={'column'}>
+    return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
+                flexDirection={'column'}>
         <Typography component={'h3'} variant={'h2'} marginBottom={3}>{t('labelConnectWallet')}</Typography>
-        <BoxStyle  maxWidth={'var(--account-modal-box-width)'}  display={'flex'} flexDirection={'row'} justifyContent={'stretch'} alignItems={'flex-start'}>
-            <MuiFormControlLabel  
+        <BoxStyle maxWidth={'var(--account-modal-box-width)'} paddingX={10} display={'flex'} flexDirection={'row'}
+                  justifyContent={'stretch'} alignItems={'flex-start'}>
+            <MuiFormControlLabel
                 control={<Checkbox defaultChecked checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
-                                   color="default"/>} label={<Trans i18nKey="labelAgree">I have read, understand, and agree to the <Link component={'a'} href={'./'} target={'_parent'}>Terms of Service</Link>.</Trans>}/>
+                                   color="default"/>}
+                label={<Trans i18nKey="labelAgree">I have read, understand, and agree to the <Link component={'a'}
+                                                                                                   href={'./'}
+                                                                                                   target={'_parent'}>Terms
+                    of Service</Link>.</Trans>}/>
         </BoxStyle>
 
         <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}
-             flex={1} alignItems={'stretch'}   alignSelf={'stretch'}
-             className="modalContent" marginTop={3} paddingX={5}>
+             flex={1} alignItems={'stretch'} alignSelf={'stretch'}
+             className="modalContent" marginTop={3} paddingX={10}>
 
             <>   {gatewayList.map((item: GatewayItem) => (
-                <Box key={item.key}  marginTop={1}>
+                <Box key={item.key} marginTop={1}>
                     <ProviderBtnStyled variant={'contained'} size={'large'} className={
                         providerName === item.key ? 'selected' : ''
                     } fullWidth
@@ -104,7 +111,9 @@ export const ProviderMenu = ({
             </>
 
         </Box>
-    </WalletConnectPanelStyled>
+    </Box>
+    {/*</WalletConnectPanelStyled>*/
+    }
 }
 
 // export const ModalWalletConnect = withTranslation('swap', {withRef: true})((

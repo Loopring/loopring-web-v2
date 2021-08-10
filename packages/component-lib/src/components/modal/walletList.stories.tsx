@@ -16,27 +16,9 @@ import {
 } from './WalletConnect'
 import { ModalQRCode, QRCodePanel } from './QRCode'
 import { FailedConnect } from './WalletConnect/FailedConnect';
-import {
-    AccountBaseProps,
-    AccountStep,
-    ActiveAccountProcess,
-    ApproveAccount,
-    DepositApproveProcess,
-    Depositing,
-    FailedDeposit,
-    FailedTokenAccess,
-    FailedUnlock,
-    HadAccount,
-    ModalAccount,
-    NoAccount,
-    ProcessUnlock,
-    SuccessUnlock,
-    TokenAccessProcess,
-} from './AccountInfo';
-import { account, coinMap, CoinType, walletMap } from '../../static';
-import { DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../index';
+
+import { account } from '../../static';
 import { WalletConnectBtn } from '../header';
-import { DepositWrap } from '../panel/components';
 import { Box } from '@material-ui/core/';
 
 
@@ -48,24 +30,6 @@ const Style = styled.div`
 `
 
 
-let tradeData: any = {};
-let depositProps: DepositProps<any, any> = {
-    tradeData,
-    coinMap,
-    walletMap,
-    depositBtnStatus: TradeBtnStatus.AVAILABLE,
-    onDepositClick: (tradeData: SwapTradeData<CoinType>) => {
-        console.log('Swap button click', tradeData);
-    },
-    handlePanelEvent: async (props: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
-        return new Promise((res) => {
-            setTimeout(() => {
-                console.log('wait 100, with props', props, switchType);
-                res();
-            }, 500)
-        })
-    },
-}
 const accountState: AccountFull = {
     account:{
         ...account,
@@ -100,9 +64,7 @@ const ConnectButtonWrap = withTranslation('common')((_rest: any) => {
     </>
 })
 
-const coinInfo = coinMap[ 'USDC' ]
 const Template: Story<any> = withTranslation()(({...rest}: any) => {
-    const [openAccount, setOpenAccount] = React.useState(false)
     const [openWallet, setOpenWallet] = React.useState(false)
     const [openQRCode, setOpenQRCode] = React.useState(false)
     gatewayList[ 0 ] = {
@@ -123,53 +85,45 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
         })
 
     }, [url])
-    const mainBtn = React.useMemo(() => {
-        return <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {
-        }}>{'unlock'} </Button>
-    }, []);
-    const accountInfoProps: AccountBaseProps = {
-        ...account,
-        level: 'VIP 1',
-        etherscanUrl: 'https://material-ui.com/components/material-icons/'
-    }
 
-    const accountList = React.useMemo(() => {
-        return Object.values({
-            [ AccountStep.NoAccount ]: <NoAccount {...{
-                ...accountInfoProps, goDeposit: () => {
-                }
-            }}/>,
-            [ AccountStep.Deposit ]: <DepositWrap _height={480} _width={400}  {...{...rest, ...depositProps}} />,
-            [ AccountStep.Depositing ]: <Depositing {...{
-                providerName: ConnectProviders.MetaMask,
-                etherscanLink: accountInfoProps.etherscanUrl, ...rest
-            }}/>,
-            [ AccountStep.FailedDeposit ]: <FailedDeposit {...rest} label={'depositTitleAndActive'}
-                                                          onRetry={() => undefined}
-                                                          etherscanLink={accountInfoProps.etherscanUrl}/>,
-            [ AccountStep.SignAccount ]: <ApproveAccount  {...{...accountInfoProps, ...rest}}
-                                                          goActiveAccount={() => undefined}/>,
-            [ AccountStep.ProcessUnlock ]: <ProcessUnlock {...{providerName: ConnectProviders.MetaMask, ...rest}}/>,
-            [ AccountStep.SuccessUnlock ]: <SuccessUnlock {...rest}/>,
-            [ AccountStep.FailedUnlock ]: <FailedUnlock {...rest} onRetry={() => undefined}/>,
-            [ AccountStep.HadAccount ]: <HadAccount mainBtn={mainBtn} {...accountInfoProps}/>,
-            [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess {...{
-                ...rest,
-                coinInfo,
-                providerName: ConnectProviders.MetaMask
-            }}/>,
-            [ AccountStep.DepositApproveProcess ]: <DepositApproveProcess {...{
-                ...rest,
-                providerName: ConnectProviders.MetaMask
-            }}/>,
-            [ AccountStep.ActiveAccountProcess ]: <ActiveAccountProcess {...{
-                ...rest,
-                providerName: ConnectProviders.MetaMask
-            }}/>,
-            [ AccountStep.FailedTokenAccess ]: <FailedTokenAccess {...{...rest, coinInfo}}/>,
-        })
 
-    }, [])
+    // const accountList = React.useMemo(() => {
+    //     return Object.values({
+    //         [ AccountStep.NoAccount ]: <NoAccount {...{
+    //             ...accountInfoProps, goDeposit: () => {
+    //             }
+    //         }}/>,
+    //         [ AccountStep.Deposit ]: <DepositWrap _height={480} _width={400}  {...{...rest, ...depositProps}} />,
+    //         [ AccountStep.Depositing ]: <Depositing {...{
+    //             providerName: ConnectProviders.MetaMask,
+    //             etherscanLink: accountInfoProps.etherscanUrl, ...rest
+    //         }}/>,
+    //         [ AccountStep.FailedDeposit ]: <FailedDeposit {...rest} label={'depositTitleAndActive'}
+    //                                                       onRetry={() => undefined}
+    //                                                       etherscanLink={accountInfoProps.etherscanUrl}/>,
+    //         [ AccountStep.SignAccount ]: <ApproveAccount  {...{...accountInfoProps, ...rest}}
+    //                                                       goActiveAccount={() => undefined}/>,
+    //         [ AccountStep.ProcessUnlock ]: <ProcessUnlock {...{providerName: ConnectProviders.MetaMask, ...rest}}/>,
+    //         [ AccountStep.SuccessUnlock ]: <SuccessUnlock {...rest}/>,
+    //         [ AccountStep.FailedUnlock ]: <FailedUnlock {...rest} onRetry={() => undefined}/>,
+    //         [ AccountStep.HadAccount ]: <HadAccount mainBtn={mainBtn} {...accountInfoProps}/>,
+    //         [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess {...{
+    //             ...rest,
+    //             coinInfo,
+    //             providerName: ConnectProviders.MetaMask
+    //         }}/>,
+    //         [ AccountStep.DepositApproveProcess ]: <DepositApproveProcess {...{
+    //             ...rest,
+    //             providerName: ConnectProviders.MetaMask
+    //         }}/>,
+    //         [ AccountStep.ActiveAccountProcess ]: <ActiveAccountProcess {...{
+    //             ...rest,
+    //             providerName: ConnectProviders.MetaMask
+    //         }}/>,
+    //         [ AccountStep.FailedTokenAccess ]: <FailedTokenAccess {...{...rest, coinInfo}}/>,
+    //     })
+    //
+    // }, [])
 
     return (
         <>
