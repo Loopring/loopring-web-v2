@@ -147,18 +147,16 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
 
     const title = isNewAccount ? t('labelCreateLayer2Title') : t('depositTitleAndActive')
 
-    const depositProps = {
+    const depositProps: DepositProps<R, T> = {
         title,
         tradeData: {belong: undefined} as any,
         coinMap: coinMap as CoinMap<any>,
         walletMap: walletLayer1 as WalletMap<any>,
         depositBtnStatus: TradeBtnStatus.AVAILABLE,
         onDepositClick,
-        handlePanelEvent,
     }
 
     return {
-        // handleDeposit,
-        depositProps: depositProps as DepositProps<R, T>,
+        depositProps: depositProps,
     }
 }
