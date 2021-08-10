@@ -3,13 +3,11 @@ import { withTranslation, WithTranslation } from 'react-i18next';
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
-import { DropDownIcon, IBData, TradeCalcData } from '@loopring-web/common-resources';
+import {  IBData, TradeCalcData } from '@loopring-web/common-resources';
 // import { useDeepCompareEffect } from 'react-use';
 // import clockLoading from '@loopring-web/common-resources/assets/svg/clock-loading.svg';
-import {  SwapMenuList, SwapTradeWrap } from '../components';
-import { SwapData } from '../components/SwapWrap/Interface';
+import {  SwapMenuList, SwapTradeWrap,SwapData } from '../components';
 import { CountDownIcon } from '../components/tool/Refresh';
-import { IconButtonStyled } from '..';
 
 export const SwapPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>,
     I,
@@ -121,7 +119,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
         panelList: [
             {
                 key: "trade",
-                element: () => <SwapTradeWrap<T, I, TCD> key={"trade"} {...{
+                element: React.useMemo(  () => <SwapTradeWrap<T, I, TCD> key={"trade"} {...{
                     ...rest,
                     swapData,
                     tradeCalcData,
@@ -132,8 +130,17 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                     tokenSellProps,
                     tokenBuyProps,
                     handleError,
-                }}/>,
-                toolBarItem: () => <Grid container justifyContent={'flex-end'}>
+                }}/>,[ rest,
+                    swapData,
+                    tradeCalcData,
+                    onSwapClick,
+                    onChangeEvent,
+                    disabled,
+                    swapBtnStatus,
+                    tokenSellProps,
+                    tokenBuyProps,
+                    handleError]),
+                toolBarItem: React.useMemo(  () =><Grid container justifyContent={'flex-end'}>
                     {/*<IconButtonStyled edge="end"*/}
                     {/*                  className={'switch outline'}*/}
                     {/*                  color="inherit"*/}
@@ -147,27 +154,17 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                     {/*    <img src={clockLoading} alt={'loading'} width={28} height={28}/>*/}
                     {/*</IconButtonStyled>*/}
                     <CountDownIcon onRefreshData={onRefreshData}/>
-                </Grid>
+                </Grid> ,[onRefreshData])
             },
             {
                 key: "tradeMenuList",
-                element: () => <SwapMenuList<T, I, TCD> key={"tradeMenuList"} {...{
+                element:React.useMemo(  () =><SwapMenuList<T, I, TCD> key={"tradeMenuList"} {...{
                     ...rest,
                     onChangeEvent,
                     tradeCalcData,
                     swapData
-                }}/>,
-                toolBarItem: () => <Grid container justifyContent={'flex-start'}>
-                    <IconButtonStyled edge="start" sx={{transform: 'rotate(90deg)', transformOrigin: '50%'}}
-                                      className={'switch'}
-                                      color="inherit"
-                                      onClick={() => onChangeEvent(0, swapData)}
-                                      aria-label="to Professional">
-
-                        <DropDownIcon/>
-                    </IconButtonStyled>
-
-                </Grid>
+                }}/>,[onChangeEvent,tradeCalcData,swapData,rest]),
+                toolBarItem: undefined
             },
         ],
 
@@ -176,4 +173,3 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
 }) as <T extends IBData<I>,
     I,
     TCD extends TradeCalcData<I>> (props: SwapProps<T, I, TCD> & React.RefAttributes<any>) => JSX.Element;
-

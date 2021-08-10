@@ -120,7 +120,7 @@ export const TransferWrap = <T extends IBData<I>,
                     component={'span'}>{addressError && addressError.error ? addressError.message : ''}</Typography>}
                 fullWidth={true}
             />
-            {address !== '' ? <IconClearStyled size={'small'} aria-label="Clear" onClick={handleClear}>
+            {address !== '' ? <IconClearStyled size={'small'} style={{top:'30px'}}  aria-label="Clear" onClick={handleClear}>
                 <CloseIcon/>
             </IconClearStyled> : ''}
         </Grid>
@@ -155,11 +155,10 @@ export const TransferWrap = <T extends IBData<I>,
             })
             }</TextField>
         </Grid>
-        <Grid item marginTop={2} alignSelf={'center'}>
+        <Grid item marginTop={2} alignSelf={'stretch'}>
             <Button fullWidth variant={'contained'} size={'medium'} color={'primary'} onClick={() => {
                 onTransferClick(tradeData)
             }}
-                    style={{width: '200px'}}
                     loading={!getDisabled() && transferBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={getDisabled() || transferBtnStatus === TradeBtnStatus.DISABLED || transferBtnStatus === TradeBtnStatus.LOADING ? true : false}
             >{t(`transferLabelBtn`)}
