@@ -29,26 +29,17 @@ export type SwitchPanelProps<T extends string> = {
 //           `calc(${_height + 'px'}  - 2 * var(--toolbar-row-padding) )`
 //           : `calc(${_height}  - 2 * var(--toolbar-row-padding) )` : 'auto'};
 export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps & { _height?: number | string, _width?: number | string; }>`
-  ${({_height, _width, theme}) => `       
-    width: ${typeof _width === 'string' ? _width : typeof _width === 'number' ? _width + 'px' : `var(--swap-box-width)`};   
-    height: ${typeof _height === 'string' ? _height : typeof _height === 'number' ? _height + 'px' : `var(--swap-box-height)`};         
-    .react-swipeable-view-container {
-        & > div { 
-            // overflow: overlay !important; 
-            background: ${theme.colorBase.background().swap}; 
-            .container{
-                flex:1;
-            }
-        }       
-    } 
-  `};
+  width: var(--swap-box-width);
+  height: var(--swap-box-height);
   ${({theme}) => toolBarPanel({theme})}
   border-radius: ${({theme}) => theme.unit}px;
-
   .react-swipeable-view-container {
-
     height: 100%;
     & > div {
+      .container{
+        flex:1;
+      }
+      background: ${({theme}) => theme.colorBase.background().swap};
       display: flex;
       flex-direction: column;
       flex-wrap: wrap;

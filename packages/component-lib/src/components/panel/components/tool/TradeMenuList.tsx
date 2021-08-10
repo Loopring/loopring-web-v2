@@ -4,6 +4,7 @@ import React from 'react';
 import { CoinMenu, EmptyDefault, InputSelect, InputSelectProps } from '../../../basic-lib';
 import { Box, Link, Typography } from '@material-ui/core';
 import { TradeMenuListProps } from '../Interface';
+import { useTheme } from '@emotion/react';
 
 
 export const TradeMenuList = <T extends IBData<I>,
@@ -27,7 +28,7 @@ export const TradeMenuList = <T extends IBData<I>,
             </Trans>
         }}/></>
     }
-
+    const theme = useTheme();
     const backElement = React.useMemo(() => <>
         <Typography fontSize={'body1'}>
             <Link color="textSecondary" onClick={() => {
@@ -44,17 +45,21 @@ export const TradeMenuList = <T extends IBData<I>,
             const handleSelect = (_event: any, itemKey: CoinKey<I>) => {
                 onChangeEvent(0, {...{tradeData: {...tradeData, belong: itemKey}}, to: 'button'})
             }
-            return <CoinMenu {...{
+            return <CoinMenu
+                height={_height  ?
+                        typeof _height === 'number' ?
+                            ` calc(${_height + 'px'}  - 2 * var(--toolbar-row-padding) - ${theme.unit * 3}px ) `
+                            :` calc(${_height}  - 2 * var(--toolbar-row-padding) - ${theme.unit * 3}px )`
+                        : '410px'}
+                {...{
                 coinMap: coinMap, //swapData.type === 'sell' ? tradeCalcData?.sellCoinInfoMap : tradeCalcData?.buyCoinInfoMap as any,
                 filterBy,
-                height: _height ? typeof _height === 'number' ?
-                    `calc(${_height + 'px'}  - 2 * var(--toolbar-row-padding) )`
-                    : `calc(${_height}  - 2 * var(--toolbar-row-padding) )` : '410px',
+                // height: '410px',
                 filterString: value,
                 handleSelect,
                 walletMap: walletMap,//tradeCalcData?.walletMap as any,   // TODO get form parents Data
                 selected, t, ...rest
-            }} ref={ref}></CoinMenu>
+            }} ref={ref}  ></CoinMenu>
         }
         return <>
             <Box className={'menu-panel'} flex={1} height={'100%'} width={'100%'}>

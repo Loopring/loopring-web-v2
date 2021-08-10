@@ -35,7 +35,7 @@ const Modal = withTranslation('common')(({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
     >
-        <SwitchPanelStyled {...{_height: height, _width: width}} style={{boxShadow: '24'}}>
+        <SwitchPanelStyled {...{_height: height? height : 520, _width: width}} style={{boxShadow: '24'}}>
             {/*<ModalCloseButton onClose={onClose} {...rest} />*/}
             <Box display={'flex'} width={"100%"} flexDirection={'column'}>
                 <ModalCloseButton onClose={onClose} {...rest} />
