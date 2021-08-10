@@ -54,6 +54,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const [filteredData, setFilteredData] = React.useState<QuoteTableRawDataItem[]>([])
     const [searchValue, setSearchValue] = React.useState<string>('')
     const [swapRankingList, setSwapRankingList] = React.useState<AmmPoolActivityRule[]>([])
+    const [tableHeight, setTableHeight] = React.useState(0);
 
     const { favoriteMarket, removeMarket, addMarket } = useFavoriteMarket()
     const { t } = rest
@@ -103,6 +104,21 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     }, [])
 
     const { recommendations, tickList /* onVisibleRowsChange */ } = useQuote()
+
+    const getCurrentHeight = React.useCallback(() => {
+      const height = window.innerHeight
+      const tableHeight = height - 64 - 117 - 56 - 120 - 20
+      console.log(tableHeight)
+      setTableHeight(tableHeight)
+    }, [])
+
+    React.useEffect(() => {
+      getCurrentHeight()
+      window.addEventListener('resize', getCurrentHeight)
+      return () => {
+        window.removeEventListener('resize', getCurrentHeight)
+      }
+    }, [getCurrentHeight]);
 
     React.useEffect(() => {
       const list = recommendations.map(item => {
@@ -235,7 +251,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
             )}
 
         </RowStyled>
-        <TableWrapStyled container marginY={3}  paddingBottom={2} flex={1}>
+        <TableWrapStyled container marginY={3}  paddingBottom={2} flex={1}> 
             <Grid item xs={12}>
                 <TabsWrapperStyled>
                   <Tabs
@@ -258,6 +274,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                   favoriteMarket={favoriteMarket}
                   addFavoriteMarket={addMarket}
                   removeFavoriteMarket={removeMarket}
+                  currentHeight={tableHeight}
                   {...{ showLoading: tickList && !tickList.length, ...rest }} />
             </Grid>
         </TableWrapStyled>
