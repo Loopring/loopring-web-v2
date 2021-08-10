@@ -1,10 +1,12 @@
 import styled from "@emotion/styled";
-import { Box, debounce, Grid, InputAdornment, OutlinedInput } from "@material-ui/core";
-import { CoinInfo, CoinKey, globalSetup, SearchIcon } from '@loopring-web/common-resources';
+import { Box, debounce,  } from "@material-ui/core";
+import { CloseIcon, CoinInfo, CoinKey, globalSetup } from '@loopring-web/common-resources';
 import React from "react";
 import { InputSelectProps } from "./Interface";
 import { useFocusRef, usePanelRef } from "../hooks";
 import { WithTranslation } from 'react-i18next';
+import { InputSearch } from './InputSearch';
+import { IconClearStyled } from '../../../panel';
 
 
 const WrapStyled = styled(Box)`
@@ -16,16 +18,16 @@ const WrapStyled = styled(Box)`
   display: flex;
 
   .search-wrap {
-    flex-grow: 1;
-    width: 100%;
-    min-width: 100%;
+    //flex-grow: 1;
+    //width: 100%;
+    //min-width: 100%;
     //& label{
     //  display: none;
     //}
     //
     .MuiInputBase-root {
       margin: 0;
-      width: 100%;
+      //width: 100%;
       max-width: inherit;
       height: var(--toolbar-row-height);
 
@@ -45,6 +47,8 @@ function _InputSelect<C, I extends string = CoinKey<C>>({
                                                             inputProps,
                                                             placeholder,
                                                             focusOnInput,
+                                                            backElement,
+
                                                             selected,
                                                         }: InputSelectProps<C, I> & WithTranslation, _ref: React.ForwardedRef<C>
 ) {
@@ -58,9 +62,9 @@ function _InputSelect<C, I extends string = CoinKey<C>>({
             handleContentChange(props)
         }
     }, wait)
-    const _handleContentChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        setValue({...value, selected: event.target.value});
-        debounceContentChange(event.target.value)
+    const _handleContentChange = React.useCallback((value) => {
+        setValue({...value, selected: value});
+        debounceContentChange(value)
     }, [debounceContentChange, value])
 
     const inputEle = useFocusRef({
@@ -75,24 +79,46 @@ function _InputSelect<C, I extends string = CoinKey<C>>({
         //   width = current.offsetWidth;
         // }
     });
+
+    const handleClear = React.useCallback(() => {
+        // @ts-ignore
+        // addressInput?.current?.value = "";
+        setValue({...value, selected: ''})
+    }, [])
     return <WrapStyled flexDirection={'column'} alignItems={'stretch'} justifyContent={"flex-start"} ref={_ref}>
-        <Grid container paddingBottom={2} paddingLeft={5 / 2} paddingRight={5 / 2}>
-            {/*<Grid item xs={12} flex={1}>*/}
-            <OutlinedInput
-                ref={inputEle}
-                {...inputProps}
-                key={'search'}
-                value={value.selected}
-                placeholder={t(selected ? selected : placeholder)}
-                onChange={_handleContentChange}
-                className={'search-wrap'}
-                aria-label={t(placeholder)}
-                startAdornment={<InputAdornment position="start">
-                    <SearchIcon/>
-                </InputAdornment>}
-            />
+        <Box display={'flex'} flexWrap={'nowrap'} alignItems={'center'} justifyContent={'space-between'} paddingBottom={2} paddingLeft={5 / 2} paddingRight={5 / 2}>
+            {/*/!*<Grid item xs={12} flex={1}>*!/*/}
+            {/*<OutlinedInput*/}
+            {/*    ref={inputEle}*/}
+            {/*    {...inputProps}*/}
+            {/*    key={'search'}*/}
+            {/*    value={value.selected}*/}
+            {/*    placeholder={t(selected ? selected : placeholder)}*/}
+            {/*    onChange={_handleContentChange}*/}
+            {/*    className={'search-wrap'}*/}
+            {/*    aria-label={t(placeholder)}*/}
+            {/*    startAdornment={<InputAdornment position="start">*/}
+            {/*        <SearchIcon/>*/}
+            {/*    </InputAdornment>}*/}
+            {/*/>*/}
+            <Box alignSelf={"stretch"} position={'relative'} flex={1}>
+                {/* <SearchWrap/> */}
+                <InputSearch key={'search'}
+                             fullWidth
+                             ref={inputEle}
+                             {...inputProps}
+                             aria-label={t(placeholder)}
+                             placeholder={t(selected ? selected : placeholder)}
+                             value={value?.selected}
+                             className={'search-wrap'}
+                             onChange={_handleContentChange} />
+                {value?.selected !== '' ? <IconClearStyled size={'small'}  style={{top:'6px'}} aria-label="Clear" onClick={handleClear}>
+                    <CloseIcon/>
+                </IconClearStyled> : ''}
+            </Box>
+            {backElement?<Box marginLeft={2}>{backElement}</Box>:<></>}
             {/*</Grid>*/}
-        </Grid>
+        </Box>
         <Box flex={1} ref={panelRef}>
 
             {panelRender({selected, value: value.selected})}

@@ -5,12 +5,13 @@ import React, { RefAttributes } from 'react';
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Grid, Toolbar } from "@material-ui/core";
+import { toolBarPanel } from '../../styled';
 
 
 export type PanelContent<T extends string> = {
     key: T,
-    element: () => React.ElementType<any> | JSX.Element,
-    toolBarItem: () => React.ElementType<any> | JSX.Element,
+    element: React.ElementType<any> | JSX.Element,
+    toolBarItem:  React.ElementType<any> | JSX.Element | undefined,
 }
 export type SwitchPanelProps<T extends string> = {
     // swipedBy: T,
@@ -24,18 +25,16 @@ export type SwitchPanelProps<T extends string> = {
     _width?: number | string;
 
 }
-
-export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps & { _height?: number | string, _width?: number | string }>`
+// height: ${_height ? typeof _height === 'number' ?
+//           `calc(${_height + 'px'}  - 2 * var(--toolbar-row-padding) )`
+//           : `calc(${_height}  - 2 * var(--toolbar-row-padding) )` : 'auto'};
+export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps & { _height?: number | string, _width?: number | string; }>`
   ${({_height, _width, theme}) => `       
     width: ${typeof _width === 'string' ? _width : typeof _width === 'number' ? _width + 'px' : `var(--swap-box-width)`};   
     height: ${typeof _height === 'string' ? _height : typeof _height === 'number' ? _height + 'px' : `var(--swap-box-height)`};         
     .react-swipeable-view-container {
         & > div { 
-            overflow: unset !important; 
-            height: ${_height ? typeof _height === 'number' ?
-          `calc(${_height + 'px'}  - 2 * var(--toolbar-row-padding) )`
-          : `calc(${_height}  - 2 * var(--toolbar-row-padding) )` : 'auto'};
-            padding: 0 0 ${theme.unit * 3}px;
+            // overflow: overlay !important; 
             background: ${theme.colorBase.background().swap}; 
             .container{
                 flex:1;
@@ -43,12 +42,12 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps &
         }       
     } 
   `};
+  ${({theme}) => toolBarPanel({theme})}
   border-radius: ${({theme}) => theme.unit}px;
 
   .react-swipeable-view-container {
 
     height: 100%;
-
     & > div {
       display: flex;
       flex-direction: column;
@@ -57,36 +56,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps &
       align-items: stretch;
     }
   }
-
-  .MuiToolbar-root {
-    align-content: stretch;
-    justify-content: flex-end;
-    padding: 0 ${({theme}) => theme.unit / 2 * 5}px ${({theme}) => theme.unit / 2}px;
-    box-sizing: border-box;
-    height: var(--toolbar-row-);
-    min-height: var(--toolbar-row-padding);
-
-    &.large {
-      height: var(--toolbar-row-height);
-      min-height: var(--toolbar-row-height);
-    }
-
-
-    .MuiIconButton-root {
-      height: var(--btn-icon-size);
-      width: var(--btn-icon-size);
-      min-width: var(--btn-icon-size);
-      margin: 0;
-      display: flex;
-      padding: 0;
-      justify-content: center;
-      justify-items: center;
-      align-items: center;
-      font-size: ${({theme}) => theme.fontDefault.h4};
-    }
-
-  }
-` as React.ElementType<SwipeableViewsProps & { _height?: number | string, _width?: number | string }>;
+` as React.ElementType<SwipeableViewsProps & { _height?: number | string, _width?: number | string; }>;
 
 function _SwitchPanel<T extends string>({
                                             index,
@@ -101,14 +71,15 @@ function _SwitchPanel<T extends string>({
                                  index={index} {...{_height, _width}}>
         {panelList.map((panel: PanelContent<T>) => {
             return <Grid container key={panel.key} className={'container'} direction={'column'}
-                         justifyContent={"start"} flexWrap={'nowrap'}>
-                <Toolbar className={size} variant={'dense'}>
-                    {panel.toolBarItem()}
-                </Toolbar>
-                <Grid item flex={1}>{panel.element()}</Grid>
+                         justifyContent={"space-between"} flexWrap={'nowrap'}
+                         paddingTop={'var(--toolbar-row-padding)'}
+                         paddingBottom={3}>
+                {panel.toolBarItem ? <Toolbar className={size} variant={'dense'}>
+                    {panel.toolBarItem}
+                </Toolbar>:<></>}
+                <Grid item flex={1}>{panel.element}</Grid>
             </Grid>;
         })}
     </SwipeableViewsStyled>;
 }
-
 export const SwitchPanel = React.memo(React.forwardRef(_SwitchPanel)) as <T extends string>(props: SwitchPanelProps<T> & WithTranslation & RefAttributes<any>) => JSX.Element;

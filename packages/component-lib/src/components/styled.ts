@@ -155,6 +155,29 @@ export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _
   }
 ` as React.ElementType<{ _height?: number | string, _width?: number | string } & BoxProps>
 
+export const toolBarPanel = ({theme}: any) => css`
+  .MuiToolbar-root {
+    align-content: stretch;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    height: var(--toolbar-row-padding-minus);
+    //min-height: var(--toolbar-row-padding);
+    margin-top:  var(--toolbar-row-padding-minus); 
+    .MuiIconButton-root {
+      height: var(--btn-icon-size);
+      width: var(--btn-icon-size);
+      min-width: var(--btn-icon-size);
+      margin: 0;
+      display: flex;
+      padding: 0;
+      justify-content: center;
+      justify-items: center;
+      align-items: center;
+      font-size: ${({theme}) => theme.fontDefault.h4};
+    }
+  }
+`
+
 export const TableFilterStyled = styled(Box)`
   margin-left: 26px;
   margin-bottom: ${({theme}) => theme.unit * 2}px;

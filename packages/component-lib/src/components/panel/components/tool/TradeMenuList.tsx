@@ -2,7 +2,7 @@ import { CoinInfo, CoinKey, IBData } from '@loopring-web/common-resources';
 import { Trans, WithTranslation } from 'react-i18next';
 import React from 'react';
 import { CoinMenu, EmptyDefault, InputSelect, InputSelectProps } from '../../../basic-lib';
-import { Box } from '@material-ui/core';
+import { Box, Link, Typography } from '@material-ui/core';
 import { TradeMenuListProps } from '../Interface';
 
 
@@ -27,6 +27,14 @@ export const TradeMenuList = <T extends IBData<I>,
             </Trans>
         }}/></>
     }
+
+    const backElement = React.useMemo(() => <>
+        <Typography fontSize={'body1'}>
+            <Link color="textSecondary" onClick={() => {
+                onChangeEvent(0, {tradeData, to: 'button'})
+            }} style={{textAlign: 'right'}}>{t('labelCancel')}</Link>
+        </Typography>
+    </>, [onChangeEvent, tradeData])
     try {
         // const selected: string | undefined = swapData.tradeData[ swapData.type ].belong ? swapData.tradeData[ swapData.type ]?.belong : '';
         const filterBy = (coinInfo: CoinInfo<I>, filterString: string) => {
@@ -49,10 +57,12 @@ export const TradeMenuList = <T extends IBData<I>,
             }} ref={ref}></CoinMenu>
         }
         return <>
-            <Box className={'menu-panel'} flex={1} height={'100%'} width={'100%'}  > <InputSelect {...{
-                ...{...inputSelectProps, selected},
-                panelRender: PanelRender, t, ...rest
-            }}/> </Box>
+            <Box className={'menu-panel'} flex={1} height={'100%'} width={'100%'}>
+                <InputSelect {...{
+                    ...{...inputSelectProps, selected},
+                    backElement,
+                    panelRender: PanelRender, t, ...rest
+                }}/> </Box>
         </>
     } catch (error) {
         //todo: showError Page, reload
@@ -66,4 +76,3 @@ export const TradeMenuList = <T extends IBData<I>,
 
 
 }
-
