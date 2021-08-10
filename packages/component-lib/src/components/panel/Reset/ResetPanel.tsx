@@ -34,22 +34,17 @@ export const ResetPanel = withTranslation('common', {withRef: true})(<T extends 
         index: index, // show default show
         panelList: [{
             key: "trade",
-            element: () => <ResetWrap<T, I> key={"transfer"}
+            element: React.useMemo(  () => <ResetWrap<T, I> key={"transfer"}
                                             {...{
                                                 ...rest,
                                                 tradeData: switchData.tradeData,
                                                 onChangeEvent,
                                                 disabled: rest.disabled ? true : false,
-                                                // onCoinValueChange,
-                                                // coinMap,
-                                                // walletMap,
-                                                // disabled,
-                                                // handleError,
                                                 fee,
                                                 resetBtnStatus,
                                                 onResetClick,
-                                            }} />,
-            toolBarItem: () => <></>
+                                            }} />,[onChangeEvent,onResetClick,rest,switchData,resetBtnStatus,rest]),
+            toolBarItem: undefined
         },
             {
                 key: "tradeMenuList",
@@ -61,7 +56,7 @@ export const ResetPanel = withTranslation('common', {withRef: true})(<T extends 
                     tradeData: switchData.tradeData,
                     //oinMap
                 }}/>,
-                toolBarItem: () => <>{toolBarItemBack}</>
+                toolBarItem: toolBarItemBack
             },]
     }
     return <SwitchPanel {...{...rest, ...props}} />

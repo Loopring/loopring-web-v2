@@ -176,7 +176,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
       })
     }, [handleTableFilterChange, searchValue])
     
-    const handleSearchChange = React.useCallback((value: string) => {
+    const handleSearchChange = React.useCallback((value) => {
       setSearchValue(value)
       const type = tableTabValue === 'favourite' ? TableFilterParams.favourite : tableTabValue === 'tradeRanking' ? TableFilterParams.ranking : TableFilterParams.all
       handleTableFilterChange({keyword: value, type: type})
