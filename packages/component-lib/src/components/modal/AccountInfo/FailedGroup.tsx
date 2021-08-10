@@ -20,50 +20,50 @@ export const FailedDeposit = ({
             </Link>
         </>
     }, [])
-    return <FailedBasic label={label} onRetry={onRetry} describe={describe} {...{...rest, t}}/>
+    return <FailedBasic label={label} onRetry={() => { onRetry(undefined) }} describe={describe} {...{...rest, t}}/>
 
 }
 export const FailedTokenAccess = ({
                                       onRetry,
                                       t,
-                                      label = "depositTitle",
+                                      label = '',
                                       coinInfo,
                                       ...rest
-                                  }: { coinInfo?: CoinInfo<any> | undefined, label?: string, onRetry: (event: any) => void, } & WithTranslation) => {
+                                  }: { coinInfo?: CoinInfo<any> | undefined, label?: string, onRetry: () => void, } & WithTranslation) => {
     const describe = React.useMemo(() => {
         return <Typography variant={'h6'} color={'textSecondary'} marginTop={1}>
             {t('labelFailedTokenAccess', {symbol: coinInfo?.simpleName})}
         </Typography>
     }, [])
-    return <FailedBasic label={label} onRetry={onRetry} describe={describe} {...{...rest, t}}/>
+    return <FailedBasic label={label} onRetry={() => { if (onRetry) onRetry() }} describe={describe} {...{...rest, t}}/>
 }
 
-export const FailedUnlock = ({onRetry, t,...rest}: { onRetry: (event: any) => void } & WithTranslation) => {
+export const FailedUnlock = ({onRetry, t, label, ...rest}: { onRetry: () => void, label?: string } & WithTranslation) => {
     const describe = React.useMemo(() => {
         return   <>
             <Typography variant={'h6'} color={'textSecondary'} marginTop={1}>{t('labelFailedUnlock')}</Typography>
             <Typography component={'p'} marginTop={2}>
                 <Trans i18nKey={'labelRejectOrError'}>
-                    Rejected, Please<Link onClick={onRetry}>retry</Link>
+                    Rejected, Please<Link onClick={() => { if (onRetry) onRetry() }}>retry</Link>
                 </Trans>
             </Typography>
         </>
     }, [])
-    return <FailedBasic label={'labelUnLockLayer2'} onRetry={onRetry} describe={describe} {...{...rest, t}}/>
+    return <FailedBasic label={'labelUnLockLayer2'} onRetry={() => { if (onRetry) onRetry() }} describe={describe} {...{...rest, t}}/>
 
 }
 
-export const FailedUpdateAcc = ({onRetry, t,...rest}: { onRetry: (event: any) => void } & WithTranslation) => {
+export const FailedUpdateAcc = ({onRetry, t,...rest}: { onRetry: () => void } & WithTranslation) => {
     const describe = React.useMemo(() => {
         return   <>
             <Typography variant={'h6'} color={'textSecondary'} marginTop={1}>{t('labelFailedUpdateAcc')}</Typography>
             <Typography component={'p'} marginTop={2}>
                 <Trans i18nKey={'labelRejectOrError'}>
-                    Rejected, Please<Link onClick={onRetry}>retry</Link>
+                    Rejected, Please<Link onClick={() => { if (onRetry) onRetry() }}>retry</Link>
                 </Trans>
             </Typography>
         </>
     }, [])
-    return <FailedBasic label={'labelActiveLayer2'} onRetry={onRetry} describe={describe} {...{...rest, t}}/>
+    return <FailedBasic label={'labelActiveLayer2'} onRetry={() => { if (onRetry) onRetry() }} describe={describe} {...{...rest, t}}/>
 
 }

@@ -8,6 +8,7 @@ import { TablePaddingX } from '../../styled'
 import { Typography } from '@material-ui/core/';
 import { useSettings } from '@loopring-web/component-lib/src/stores'
 import { StarHollowIcon, StarSolidIcon } from '@loopring-web/common-resources'
+import { useDispatch } from 'react-redux'
 
 const TableStyled = styled(Box)`
     display: flex;
@@ -26,23 +27,6 @@ const TableStyled = styled(Box)`
     }
     ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
-
-// interface Row {
-//     price: string
-//     size: string
-//     volume: string
-//     number: string
-//     sortColumn: string
-//     filterColumn: string
-//     cellExpend: {
-//         value: string
-//         children: []
-//         isExpanded: boolean
-//     }
-//     children?: Row[]
-//     isExpanded?: boolean
-//     format?: any
-// }
 
 // export type QuoteTableRawDataItem = (string | number | string[] | number[])[]
 export type QuoteTableRawDataItem = {
@@ -75,160 +59,177 @@ const QuoteTableChangedCell: any = styled.span`
 }
 `
 
-const handleStartClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    event.stopPropagation()
-}
-
 const StarIconWrapperStyled = styled(Box)`
     margin: ${({theme}) => theme.unit}px ${({theme}) => theme.unit}px 0 0;
 ` as typeof Box
 
+type IGetColumnModePros = {
+    t: any,
+    history: any,
+    upColor: 'green' | 'red', 
+    handleStartClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, isFavourite: boolean, pair: string) => void,
+    favoriteMarket: string[]
+}
+
 // const getColumnModelQuoteTable = (t: TFunction, history: any): Column<Row, unknown>[] => [
-const columnMode = ({t}: WithTranslation, history: any, upColor: 'green' | 'red'): Column<QuoteTableRawDataItem, unknown>[] => [
-    {
-        key: 'pair',
-        name: t('labelQuotaPair'),
-        // sortable: true,
-        // resizable: true,
-        sortable: true,
-        formatter: ({row}) => {
-            // const RenderValue = styled.span`
-            // 	color: ${({theme}) => theme.colorBase.textSecondary}
-            // `
-            const {coinA, coinB} = row[ 'pair' ]
-            return (
-                <Box className="rdg-cell-value" display={'flex'} alignItems={'center'}>
-                    <StarIconWrapperStyled
-                        onClick={handleStartClick}
-                    >
-                        <StarHollowIcon cursor={'pointer'} />
-                    </StarIconWrapperStyled>
-                    <Typography component={'span'}>
-                        {coinA}
-                        <Typography
-                            component={'span'}
-                            color={'textSecondary'}
-                        >
-                            / {coinB}
-                        </Typography>
-                    </Typography>
-
-                </Box>
-            )
-        },
-    },
-    {
-        key: 'close',
-        name: t('labelQuotaLastPrice'),
-        sortable: true,
-        // resizable: true,
-        formatter: ({row}) => {
-            const value = row[ 'close' ]
-            // const [valueFirst, valueLast] = value
-            // const getRenderValue = (value: number) => {
-            //     return Number.isFinite(value) ? value.toFixed(2) : EmptyValueTag;
-            // }
-            // const RenderValue = styled.span`
-            // 	color: ${({theme}) => theme.colorBase.textSecondary}
-            // `
-            return (
-                <div className="rdg-cell-value">
-                    <span>{typeof value !== 'undefined' ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
-                </div>
-            )
-        },
-    },
-    {
-        key: 'change',
-        name: t('labelQuota24hChange'),
-        // resizable: true,
-        sortable: true,
-        formatter: ({row}) => {
-            const value = row.change
-
-            // const hasValue = Number.isFinite(value)
-            // const isPositive = value > 0
-            // const sign = isPositive ? '+' : ''
-            // const renderValue = hasValue ? `${sign}${value.toFixed(2)}%` : 'N/A%'
-            return (
-                <div className="rdg-cell-value">
-                    <QuoteTableChangedCell value={value} upColor={upColor}>
-                        {typeof value !== 'undefined' ? (
-                            (row.floatTag === FloatTag.increase ? '+' : '') + Number(getThousandFormattedNumbers(value)).toFixed(2) + '%') : EmptyValueTag}
-                    </QuoteTableChangedCell>
-                </div>
-            )
-        },
-    },
-    {
-        key: 'high',
-        name: t('labelQuota24hHigh'),
-        // resizable: true,
-        sortable: true,
-        formatter: ({row, column}) => {
-            const value = row[ column.key ]
-            // const hasValue = Number.isFinite(value)
-            // const renderValue = hasValue ? value.toFixed(2) : EmptyValueTag
-            return (
-                <div className="rdg-cell-value">
-                    <span>{typeof value !== 'undefined' ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
-                </div>
-            )
-        },
-    },
-    {
-        key: 'low',
-        name: t('labelQuota24hLow'),
-        // resizable: true,
-        sortable: true,
-        formatter: ({row, column}) => {
-            const value = row[ column.key ]
-            // const hasValue = Number.isFinite(value)
-            // const renderValue = hasValue ? value.toFixed(2) : EmptyValueTag
-            return (
-                <div className="rdg-cell-value">
-                    <span>{typeof value !== 'undefined' ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
-                </div>
-            )
-        },
-    },
-    {
-        key: 'volume',
-        name: t('labelQuota24Volume'),
-        // resizable: true,
-        sortable: true,
-        formatter: ({row}) => {
-            const value = row[ 'volume' ]
-            return (
-                <div className="rdg-cell-value">
-                    <span>{typeof value !== 'undefined' ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
-                </div>
-            )
-        },
-    },
-    {
-        key: 'trade',
-        // resizable: true,
-        name: t('labelQuoteAction'),
-        formatter: ({row}) => {
-            const {coinA, coinB} = row[ 'pair' ]
-            const tradePair = `${coinA}-${coinB}`
-            return (
-                <div className="rdg-cell-value">
-                    <Button variant="outlined" onClick={() => history.push({
-                        pathname: `/trading/lite/${tradePair}`
-                    })}>Trade</Button>
-                </div>
-            )
-        }
-    }
-]
+const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem, unknown>[] => {
+    const { t: { t }, history, upColor, handleStartClick, favoriteMarket} = props
+    return (
+        [
+            {
+                key: 'pair',
+                name: t('labelQuotaPair'),
+                // sortable: true,
+                // resizable: true,
+                sortable: true,
+                formatter: ({row}) => {
+                    const {coinA, coinB} = row[ 'pair' ]
+                    const pair = `${coinA}-${coinB}`
+                    const isFavourite = favoriteMarket.includes(pair)
+                    return (
+                        <Box className="rdg-cell-value"
+                            display={'flex'}
+                            alignItems={'center'}
+                            style={{ cursor: 'pointer' }}
+                            width={'max-content'}
+                            onClick={(e) => handleStartClick(e, isFavourite, pair)}>
+                            <StarIconWrapperStyled>
+                                {isFavourite ? (
+                                    <StarSolidIcon cursor={'pointer'} />
+                                ) : (
+                                    <StarHollowIcon cursor={'pointer'} />
+                                )}
+                            </StarIconWrapperStyled>
+                            <Typography component={'span'}>
+                                {coinA}
+                                <Typography
+                                    component={'span'}
+                                    color={'textSecondary'}
+                                >
+                                    / {coinB}
+                                </Typography>
+                            </Typography>
+                        </Box>
+                    )
+                },
+            },
+            {
+                key: 'close',
+                name: t('labelQuotaLastPrice'),
+                sortable: true,
+                // resizable: true,
+                formatter: ({row}) => {
+                    const value = row[ 'close' ]
+                    // const [valueFirst, valueLast] = value
+                    // const getRenderValue = (value: number) => {
+                    //     return Number.isFinite(value) ? value.toFixed(2) : EmptyValueTag;
+                    // }
+                    // const RenderValue = styled.span`
+                    // 	color: ${({theme}) => theme.colorBase.textSecondary}
+                    // `
+                    return (
+                        <div className="rdg-cell-value">
+                            <span>{typeof value !== 'undefined' ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
+                        </div>
+                    )
+                },
+            },
+            {
+                key: 'change',
+                name: t('labelQuota24hChange'),
+                // resizable: true,
+                sortable: true,
+                formatter: ({row}) => {
+                    const value = row.change
+        
+                    // const hasValue = Number.isFinite(value)
+                    // const isPositive = value > 0
+                    // const sign = isPositive ? '+' : ''
+                    // const renderValue = hasValue ? `${sign}${value.toFixed(2)}%` : 'N/A%'
+                    return (
+                        <div className="rdg-cell-value">
+                            <QuoteTableChangedCell value={value} upColor={upColor}>
+                                {typeof value !== 'undefined' ? (
+                                    (row.floatTag === FloatTag.increase ? '+' : '') + Number(getThousandFormattedNumbers(value)).toFixed(2) + '%') : EmptyValueTag}
+                            </QuoteTableChangedCell>
+                        </div>
+                    )
+                },
+            },
+            {
+                key: 'high',
+                name: t('labelQuota24hHigh'),
+                // resizable: true,
+                sortable: true,
+                formatter: ({row, column}) => {
+                    const value = row[ column.key ]
+                    // const hasValue = Number.isFinite(value)
+                    // const renderValue = hasValue ? value.toFixed(2) : EmptyValueTag
+                    return (
+                        <div className="rdg-cell-value">
+                            <span>{typeof value !== 'undefined' ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
+                        </div>
+                    )
+                },
+            },
+            {
+                key: 'low',
+                name: t('labelQuota24hLow'),
+                // resizable: true,
+                sortable: true,
+                formatter: ({row, column}) => {
+                    const value = row[ column.key ]
+                    // const hasValue = Number.isFinite(value)
+                    // const renderValue = hasValue ? value.toFixed(2) : EmptyValueTag
+                    return (
+                        <div className="rdg-cell-value">
+                            <span>{typeof value !== 'undefined' ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
+                        </div>
+                    )
+                },
+            },
+            {
+                key: 'volume',
+                name: t('labelQuota24Volume'),
+                // resizable: true,
+                sortable: true,
+                formatter: ({row}) => {
+                    const value = row[ 'volume' ]
+                    return (
+                        <div className="rdg-cell-value">
+                            <span>{typeof value !== 'undefined' ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
+                        </div>
+                    )
+                },
+            },
+            {
+                key: 'trade',
+                // resizable: true,
+                name: t('labelQuoteAction'),
+                formatter: ({row}) => {
+                    const {coinA, coinB} = row[ 'pair' ]
+                    const tradePair = `${coinA}-${coinB}`
+                    return (
+                        <div className="rdg-cell-value">
+                            <Button variant="outlined" onClick={() => history.push({
+                                pathname: `/trading/lite/${tradePair}`
+                            })}>Trade</Button>
+                        </div>
+                    )
+                }
+            }
+        ]
+    )
+} 
 
 export interface QuoteTableProps {
-    rawData: QuoteTableRawDataItem[],
-    rowHeight?: number
-    onVisibleRowsChange?: (startIndex: number) => void,
-    onRowClick?: (rowIdx: number, row: QuoteTableRawDataItem, column: any) => void,
+    rawData: QuoteTableRawDataItem[];
+    rowHeight?: number;
+    onVisibleRowsChange?: (startIndex: number) => void;
+    onRowClick?: (rowIdx: number, row: QuoteTableRawDataItem, column: any) => void;
+    favoriteMarket: string[];
+    addFavoriteMarket: (pair: string) => void;
+    removeFavoriteMarket: (pair: string) => void;
     // generateColumns: ({
     //                       columnsRaw,
     //                       t,
@@ -248,6 +249,9 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                                                                     rawData,
                                                                     history,
                                                                     onRowClick,
+                                                                    favoriteMarket,
+                                                                    addFavoriteMarket,
+                                                                    removeFavoriteMarket,
                                                                     ...rest
                                                                 }: QuoteTableProps & WithTranslation & RouteComponentProps) => {
     //const formattedRawData = rawData && Array.isArray(rawData) ? rawData : []
@@ -267,10 +271,28 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
     let userSettings = useSettings()
     const upColor = userSettings?.upColor
 
+    const dispatch = useDispatch()
+
+    const handleStartClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, isFavourite: boolean, pair: string) => {
+        // console.log(isFavoourite, pair)
+        event.stopPropagation()
+        if (isFavourite) {
+            dispatch(removeFavoriteMarket(pair))
+            return
+        }
+        dispatch(addFavoriteMarket(pair))
+    }
+
     // const finalData = formattedRawData.map(o => Object.values(o))
     const defaultArgs: any = {
         rawData: [],
-        columnMode: columnMode({t, ...rest}, history, upColor),//getColumnModelQuoteTable(t, history),
+        columnMode: getColumnMode({
+            t: {t},
+            history,
+            upColor,
+            handleStartClick,
+            favoriteMarket,
+        }),//getColumnModelQuoteTable(t, history),
         generateRows: (rawData: any) => rawData,
         onRowClick: onRowClick,
         generateColumns: ({columnsRaw}: any) => columnsRaw as Column<QuoteTableRawDataItem, unknown>[],
