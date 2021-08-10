@@ -20,6 +20,22 @@ export enum MODAL_TYPE {
     WALLET,
 }
 
+
+export enum ActionResultCode {
+    NoError,
+    DataNotReady,
+    GetAccError,
+    GenEddsaKeyError,
+    UpdateAccoutError,
+    ApproveFailed,
+    DepositFailed,
+}
+
+export interface ActionResult {
+    code: ActionResultCode
+    data?: any
+}
+
 export const REFRESH_RATE = 1000
 
 export const REFRESH_RATE_SLOW = 10000
