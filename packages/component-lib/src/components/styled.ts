@@ -112,9 +112,28 @@ export const modalContentBaseStyle = ({theme}: any) => css`
 // margin-top: var(--toolbar-row-padding-minus);
 // padding-top: var(--toolbar-row-padding);
 export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _width?: number | string } & BoxProps>`
+  .MuiModal-root & {
+    .container{
+        padding-bottom: 0;
+    }
+  }                                                        
+  ${({_height, theme}) => `
+  .MuiModal-root & {
+     .coin-menu {
+          height:${_height  ?
+          typeof _height === 'number' ?
+                  ` calc(${_height + 'px'} - ${theme.unit * 4}px - 2 * var(--toolbar-row-padding)  ) `
+                  :` calc(${_height} - ${theme.unit * 4}px - 2 * var(--toolbar-row-padding)  )`
+          : '410px'} !important;
+          }
+     }
+   ` }
+  
+
   &&{
     ${({theme}) => modalContentBaseStyle({theme: theme})}
     ${({_height, _width, theme}) => `
+     
       background: ${theme.colorBase.background().popupBg1};
       .react-swipeable-view-container {
            height: ${_height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : '100%'} ;
@@ -155,6 +174,7 @@ export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _
   }
 ` as React.ElementType<{ _height?: number | string, _width?: number | string } & BoxProps>
 
+
 export const toolBarPanel = ({theme}: any) => css`
   .MuiToolbar-root {
     align-content: stretch;
@@ -173,7 +193,7 @@ export const toolBarPanel = ({theme}: any) => css`
       justify-content: center;
       justify-items: center;
       align-items: center;
-      font-size: ${({theme}) => theme.fontDefault.h4};
+      font-size: ${theme.fontDefault.h4};
     }
   }
 `
