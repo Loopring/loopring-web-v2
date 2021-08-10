@@ -26,7 +26,7 @@ export const FailedDeposit = ({
 export const FailedTokenAccess = ({
                                       onRetry,
                                       t,
-                                      label = "depositTitle",
+                                      label = '',
                                       coinInfo,
                                       ...rest
                                   }: { coinInfo?: CoinInfo<any> | undefined, label?: string, onRetry: (event: any) => void, } & WithTranslation) => {
@@ -38,7 +38,7 @@ export const FailedTokenAccess = ({
     return <FailedBasic label={label} onRetry={onRetry} describe={describe} {...{...rest, t}}/>
 }
 
-export const FailedUnlock = ({onRetry, t,...rest}: { onRetry: (event: any) => void } & WithTranslation) => {
+export const FailedUnlock = ({onRetry, t, label, ...rest}: { onRetry: (event: any) => void, label?: string } & WithTranslation) => {
     const describe = React.useMemo(() => {
         return   <>
             <Typography variant={'h6'} color={'textSecondary'} marginTop={1}>{t('labelFailedUnlock')}</Typography>
