@@ -186,4 +186,5 @@ export default {
     labelQuotePageTradeRanking: '交易竞赛',
     labelFailedUnlock: '解锁失败',
     labelFailedUpdateAcc: '更新账号失败',
+    labelCreateLayer2Title: '创建二层账号',
 }
