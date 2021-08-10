@@ -184,4 +184,5 @@ export default {
     labelQuotePageTradeRanking: 'Trade Ranking',
     labelFailedUnlock: 'Unlock Failed',
     labelFailedUpdateAcc: 'Update Account Failed',
+    labelCreateLayer2Title: 'Create Layer2 Account',
 }
