@@ -22,11 +22,11 @@ export const DepositApproveProcess = ({
                                           // providerName,
                                           etherscanLink,
                                           ...rest
-                                      }: WithTranslation & { label?: 'depositTitle'|'depositTitleAndActive', providerName: string, etherscanLink: string }) => {
+                                      }: WithTranslation & { label?: string, providerName: string, etherscanLink: string }) => {
     const describe = React.useMemo(() => {
         return <>
             <Typography variant={'body1'}>
-                {t('labelDepositApproveProcess')}
+                {label}
             </Typography>
             <Link target='_blank' href={etherscanLink} display={'inline-block'} marginTop={1 / 2}>
                 <Typography variant={'body2'}> <LinkIcon fontSize={'small'}

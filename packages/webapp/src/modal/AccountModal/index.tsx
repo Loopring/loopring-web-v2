@@ -36,6 +36,8 @@ import { walletServices } from '@loopring-web/web3-provider';
 import { useDeposit } from 'modal/useDeposit';
 import { sleep } from 'loopring-sdk';
 
+import { walletLayer2Services } from '../../services/account/walletLayer2Services'
+
 export const ModalAccountInfo = withTranslation('common')(({
                                                                onClose,
                                                                etherscanUrl,
@@ -83,13 +85,17 @@ export const ModalAccountInfo = withTranslation('common')(({
     }, [resetAccount, setShowAccount])
 
     const goDeposit = React.useCallback((token?: any) => {
-        setShowAccount({isShow: false})
         setShowAccount({isShow: true, step: AccountStep.Deposit});
     }, [setShowAccount])
 
     const goUpdateAccount = React.useCallback(async() => {
+
+        if (!account.accAddress) {
+            myLog('account.accAddress is nil')
+            return
+        }
+
         myLog('goActiveAccount....')
-        setShowAccount({isShow: false})
         setShowAccount({isShow: true, step: AccountStep.ActiveAccountProcess});
 
         const result: ActionResult = await updateAccountFromServer()
@@ -99,6 +105,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 setShowAccount({isShow: true, step: AccountStep.SuccessUnlock})
                 await sleep(REFRESH_RATE)
                 setShowAccount({isShow: false})
+                walletLayer2Services.sendCheckAccount(account.accAddress)
                 break
             case ActionResultCode.GetAccError:
             case ActionResultCode.GenEddsaKeyError:
@@ -121,7 +128,9 @@ export const ModalAccountInfo = withTranslation('common')(({
             lockAccount();
         }}>{t('labelLockLayer2')} </Button>
     }, [lockAccount]);
-    // const onSwitch = {onSwitch}
+    
+    const title = t("labelCreateLayer2Title")
+    
     const accountList = React.useMemo(() => {
         return Object.values({
             [ AccountStep.NoAccount ]: <NoAccount {...{
@@ -131,16 +140,16 @@ export const ModalAccountInfo = withTranslation('common')(({
                 onSwitch, onCopy,
                 onViewQRCode, onDisconnect, addressShort,
             }} />,
-            [ AccountStep.Deposit ]: <DepositPanel title={t("labelCreateLayer2Title") + ' 1'} {...{
+            [ AccountStep.Deposit ]: <DepositPanel title={title} {...{
                 ...rest,
                 _height: 'var(--modal-height)',
                 _width: 'var(--modal-width)', ...depositProps,
                 t
             }} />,
-            [ AccountStep.Depositing ]: <Depositing label={t("labelCreateLayer2Title")}
+            [ AccountStep.Depositing ]: <Depositing label={title}
                                                     etherscanLink={etherscanUrl + account.accAddress}
                                                     goUpdateAccount={() => goUpdateAccount()}  {...{...rest, t}} />,
-            [ AccountStep.FailedDeposit ]: <FailedDeposit label={t("labelCreateLayer2Title")}
+            [ AccountStep.FailedDeposit ]: <FailedDeposit label={title}
                                                           etherscanLink={etherscanUrl + account.accAddress}
                                                           onRetry={() => undefined} {...{...rest, t}} />,
             [ AccountStep.SignAccount ]: <ApproveAccount {...{
@@ -166,12 +175,12 @@ export const ModalAccountInfo = withTranslation('common')(({
                 etherscanLink: etherscanUrl + account.accAddress,
                 mainBtn: account.readyState === 'ACTIVATED' ? lockBtn : unlockBtn
             }} />,
-            [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess label={"depositTitleAndActive"}
+            [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess label={title}
                                                                     providerName={account.connectName} {...{
                 ...rest,
                 t
             }} />,
-            [ AccountStep.DepositApproveProcess ]: <DepositApproveProcess label={"depositTitleAndActive"}
+            [ AccountStep.DepositApproveProcess ]: <DepositApproveProcess label={title}
                                                                           etherscanLink={etherscanUrl + account.accAddress}
                                                                           providerName={account.connectName} {...{
                 ...rest,
