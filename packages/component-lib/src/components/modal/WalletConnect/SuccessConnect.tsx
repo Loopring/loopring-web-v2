@@ -1,28 +1,27 @@
-import { Box, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { Trans, WithTranslation } from 'react-i18next';
-import { CheckedIcon } from '@loopring-web/common-resources';
-import { useTheme } from '@emotion/react';
+// import { CheckedIcon } from '@loopring-web/common-resources';
+// import { useTheme } from '@emotion/react';
+// import { Button } from '../../basic-lib';
+import { SuccessBasic } from '../SuccessBasic';
+import React from 'react';
 
-export const SuccessConnect = ({t, providerName}: WithTranslation & { providerName: string }) => {
-    const theme = useTheme();
-    return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-evenly'}
-                flexDirection={'column'}>
-        <Typography component={'h3'} variant={'h2'} marginBottom={3}>
-            {t('labelSuccessConnect', {providerName})}
-            {/*<Trans i18nKey={'labelSuccessConnect'}>*/}
-            {/*    */}
-            {/*</Trans>*/}
-        </Typography>
-        <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'}>
-            <CheckedIcon style={{width: 60, height: 60, color: theme.colorBase.success}}/>
-        </Typography>
-        <Typography component={'p'} marginTop={2}>
-            <Trans i18nKey={'labelSuccessConnectDescribe'}>
-                Congratulation, Success Connected!
-            </Trans>
-        </Typography>
+export const SuccessConnect = ({t, providerName,onClose, ...rest  }: WithTranslation & {onClose:(e:any)=>void, providerName: string }) => {
+    // const theme = useTheme();
 
-    </Box>
+    const describe = React.useMemo(()=>{
+        return    <>
+            <Typography component={'p'} marginTop={2}>
+                <Trans i18nKey={'labelSuccessConnectDescribe'}>
+                    Congratulation, Success Connected!
+                </Trans>
+            </Typography>
+        </>
+
+    },[])
+    return   <SuccessBasic {...{...rest,t}} label={t('labelSuccessConnect', {providerName})} describe={describe} onClose={onClose}  />
+
+
 
 
 }

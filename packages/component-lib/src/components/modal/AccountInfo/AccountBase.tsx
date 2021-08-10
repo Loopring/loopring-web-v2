@@ -58,7 +58,7 @@ export const AccountBase = ({
     const etherscanLink = etherscanUrl + accAddress;
     const connectBy = connectName === 'unknown' ?  t('labelWrongNetwork'): connectName;
     return <Box display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
-        <Typography  variant={'body2'} color={'textSecondary'} marginTop={1}>
+        <Typography  variant={'body2'} color={'textSecondary'} marginTop={3}>
             <Trans i18nKey="labelConnectBy" tOptions={{connectBy}}  >
                 Connected with <Typography variant={'body2'} component={'span'}>{connectName}</Typography>.
             </Trans>
@@ -66,7 +66,7 @@ export const AccountBase = ({
         <Typography marginTop={1} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}>
             <Typography component={'span'} variant={'h1'}>{addressShort}</Typography>
             {level ? <VipStyled component={'span'} variant={'body2'}
-                                alignSelf={'flex-start'}>{level}</VipStyled> : undefined}
+                                >{level}</VipStyled> : undefined}
         </Typography>
         <BoxStyled component={'div'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
                    marginTop={1} alignSelf={'stretch'}>

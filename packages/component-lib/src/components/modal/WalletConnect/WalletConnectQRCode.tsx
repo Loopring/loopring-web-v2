@@ -9,14 +9,16 @@ export const WalletConnectQRCode = ({url,onCopy, t}: { url: string,onCopy:()=>vo
         <Typography component={'h3'} variant={'h2'} marginBottom={3}>
             <img style={{verticalAlign:'middle'}}  src={'static/svg/wallet-connect.svg'} alt={'walletConnect'} height={18}/> WalletConnect
         </Typography>
+        <QRCode value={url} size={240} style={{padding: 5, backgroundColor: '#fff'}} aria-label={`link:${url}`}/>
+
         <Box display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
-            <Typography variant={'body2'} color={'textSecondary'} marginBottom={2}>
+            <Typography variant={'body2'} color={'textSecondary'} marginTop={2}>
                 {t('labelWalletConnectQRCode')}
             </Typography>
-            <QRCode value={url} size={240} style={{padding: 5, backgroundColor: '#fff'}} aria-label={`link:${url}`}/>
+            <Typography variant={'body2'} component={'p'} marginTop={2} >
+                <Link onClick={onCopy}>{t('labelCopyClipBoard')}</Link>
+            </Typography>
         </Box>
-        <Typography variant={'body2'} component={'p'} marginTop={2} >
-        <Link onClick={onCopy}>{t('labelCopyClipBoard')}</Link>
-        </Typography>
+
     </Box>
 }

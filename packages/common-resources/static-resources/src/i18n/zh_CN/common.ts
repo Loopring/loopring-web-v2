@@ -26,6 +26,8 @@ export default {
     depositAndActiveDescription: '完成一次充值来激活您的路印二层账号。您的充值将会在以太坊<1>确认</1>后<3>两分钟</3>内到账。',
     depositLabelBtn: '充值',
     depositLabelLinkRecent: '最近充值记入',
+    depositLabelRefer:'请输入推荐您的ENS，地址，或者账号ID。(选填)',
+    depositLabelPlaceholder:'以太坊地址， 账号ID或ENS',
     withdrawTitle: '提现',
     withdrawLabelEnterToken: '选择提现代币',
     withdrawDescription: '提现操作会被提交到以太坊的下一个区块，一般会在<1>30分钟到2小时</1>内到账。（如果以太坊的GAS价格<5>超过500GWei</5>的话，可能会存在<3>长时间的延迟</3>）',

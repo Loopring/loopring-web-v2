@@ -20,7 +20,7 @@ import { SwitchPanelProps } from '../../basic-lib';
 export type TradeMenuListProps<T, I> = {
     //swapData: SwapData<T>,
     walletMap: WalletMap<I, WalletCoin<I>>,
-    _height?: string|number,
+    _height?: string | number,
     coinMap: CoinMap<I, CoinInfo<I>>,
     onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void,
     selected?: string,
@@ -70,17 +70,21 @@ export type  ResetViewProps<T, I> = BasicACoinTradeViewProps<T, I> & ResetExtend
 /**
  * private props
  */
-export type DepositInfoProps = {
+export type DepositInfoProps<I> = {
     depositBtnStatus?: keyof typeof TradeBtnStatus | undefined,
     title?: string,
     description?: string
     isNewAccount: boolean
+    addressDefault?: string;
+    handleOnAddressChange?: (value: string | undefined | I) => void,
+    handleAddressError?: (address: string) => { error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined,
+    wait?: number
 }
-export type DepositExtendProps<T> = {
+export type DepositExtendProps<T, I> = {
     onDepositClick: (data: T) => void,
-} & DepositInfoProps
+} & DepositInfoProps<I>
 
-export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> & DepositExtendProps<T>
+export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> & DepositExtendProps<T, I>
 
 
 export type WithdrawInfoProps<C> = {

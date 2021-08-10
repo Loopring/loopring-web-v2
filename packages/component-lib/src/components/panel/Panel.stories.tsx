@@ -52,10 +52,10 @@ let depositProps: DepositProps<any, any> = {
         console.log('Swap button click', tradeData);
     },
     handlePanelEvent: async (props: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
-        return new Promise((res) => {
+        return new Promise(() => {
             setTimeout(() => {
                 console.log('wait 100, with props', props, switchType);
-                res();
+                //res();
             }, 500)
         })
     },
@@ -220,11 +220,12 @@ const WrapDepositPanel = (rest: any) => {
     dispatch(setShowDeposit({isShow: false, props: depositProps}));
     const {t} = useTranslation('common');
     return <> <Grid item sm={6}>
-        <DepositPanel  {...{...rest, ...depositProps}} > </DepositPanel>
+        <DepositPanel  {...{...rest,isNewAccount:true, ...depositProps}} > </DepositPanel>
     </Grid>
         <Grid item sm={6}>
             <DepositPanel  {...{
                 ...rest, ...depositProps,
+
                 title: t('depositTitleAndActive'),
                 description: 'depositAndActiveDescription'
             }} > </DepositPanel>

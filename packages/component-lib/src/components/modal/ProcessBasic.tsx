@@ -3,7 +3,11 @@ import { Trans, WithTranslation } from 'react-i18next';
 import { ConnectProviders, LoadingIcon } from '@loopring-web/common-resources';
 import React from 'react';
 
-export const ProcessBasic = ({t, label,providerName, describe}: { describe: JSX.Element, label: string, providerName: string  } & WithTranslation) => {
+export const ProcessBasic = ({
+                                 label,
+                                 providerName,
+                                 describe
+                             }: { describe: JSX.Element, label: string, providerName: string } & WithTranslation) => {
     const providerDescribe = React.useMemo(() => {
         switch (providerName) {
             case  ConnectProviders.MetaMask:
@@ -27,7 +31,8 @@ export const ProcessBasic = ({t, label,providerName, describe}: { describe: JSX.
             <LoadingIcon color={'primary'} style={{width: 60, height: 60}}/>
         </Typography>
         {describe}
-        <Typography variant={'body2'} color={'textSecondary'} component={'p'} marginTop={3} alignSelf={'flex-start'} paddingX={5} >
+        <Typography variant={'body2'} color={'textSecondary'} component={'p'} marginTop={3} alignSelf={'flex-start'}
+                    paddingX={5}>
             {providerDescribe}
         </Typography>
     </Box>

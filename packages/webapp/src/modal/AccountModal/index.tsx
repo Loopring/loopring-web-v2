@@ -147,7 +147,8 @@ export const ModalAccountInfo = withTranslation('common')(({
             [ AccountStep.Deposit ]: <DepositPanel title={title} {...{
                 ...rest,
                 _height: 'var(--modal-height)',
-                _width: 'var(--modal-width)', ...depositProps,
+                _width: 'var(--modal-width)',
+                ...depositProps,
                 t
             }} />,
             [ AccountStep.Depositing ]: <Depositing label={title}

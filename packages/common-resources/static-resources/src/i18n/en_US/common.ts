@@ -26,6 +26,8 @@ export default {
     depositAndActiveDescription: 'Make a deposit to activate your Loopring layer-2 account. Once your deposit is <1>confirmed on Ethereum</1>, it will be added to your balance within <3>2 minutes</3>.',
     depositLabelBtn: 'Deposit',
     depositLabelLinkRecent: 'Recent deposits history',
+    depositLabelRefer:'Please provide referral address, account id or ENS. (Option)',
+    depositLabelPlaceholder:'address, account id or ENS',
     withdrawTitle: 'Withdraw',
     withdrawLabelEnterToken: 'Enter withdraw token',
     withdrawDescription: 'Your withdrawal will be processed in the next batch, which usually takes <1>30 minutes to 2 hours</1>. (There will be <3>a large delay</3> if the Ethereum gas price <5>exceeds 500 GWei</5>.）',
