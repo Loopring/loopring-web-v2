@@ -10,23 +10,26 @@ import { useSettings } from '@loopring-web/component-lib/src/stores'
 import { StarHollowIcon, StarSolidIcon } from '@loopring-web/common-resources'
 import { useDispatch } from 'react-redux'
 
-const TableStyled = styled(Box)`
+const TableWrapperStyled = styled(Box)`
     display: flex;
     flex-direction: column;
     flex: 1;
 
-    .rdg{
-        // height: 750px;
-        height: 100%;
+    ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
+`
+
+const TableStyled = styled(Table)`
+    &.rdg{
+        height: ${(props: any) => props.currentHeight}px;
+        // height: 100%;
         --template-columns: 240px auto auto auto auto auto 92px !important;
         .rdg-cell.action{
-        display: flex;
-        justify-content: center;
-        align-items: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     }
-    ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
-` as typeof Box
+`
 
 // export type QuoteTableRawDataItem = (string | number | string[] | number[])[]
 export type QuoteTableRawDataItem = {
@@ -230,6 +233,7 @@ export interface QuoteTableProps {
     favoriteMarket: string[];
     addFavoriteMarket: (pair: string) => void;
     removeFavoriteMarket: (pair: string) => void;
+    currentHeight?: number;
     // generateColumns: ({
     //                       columnsRaw,
     //                       t,
@@ -244,6 +248,7 @@ export type VisibleDataItem = {
 
 export const QuoteTable = withTranslation('tables')(withRouter(({
                                                                     t,
+                                                                    currentHeight = 350,
                                                                     rowHeight = 44,
                                                                     onVisibleRowsChange,
                                                                     rawData,
@@ -394,9 +399,9 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
     }
 
     return (
-        <TableStyled>
-            <Table className={'scrollable'} {...{...defaultArgs, ...rest, onVisibleRowsChange, rawData, rowHeight}}
+        <TableWrapperStyled>
+            <TableStyled currentHeight={currentHeight} className={'scrollable'} {...{...defaultArgs, ...rest, onVisibleRowsChange, rawData, rowHeight}}
                    /* onScroll={getScrollIndex} */ />
-        </TableStyled>
+        </TableWrapperStyled>
     )
 }))
