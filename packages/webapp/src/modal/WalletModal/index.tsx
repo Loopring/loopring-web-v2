@@ -5,13 +5,14 @@ import {
     ModalWalletConnect,
     ProviderMenu,
     SuccessConnect,
+    Toast,
     useOpenModals,
     WalletConnectProcess,
     WalletConnectQRCode,
     WalletConnectStep
 } from '@loopring-web/component-lib';
 import { ChainId } from 'loopring-sdk'
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     ConnectProviders,
     GatewayItem,
@@ -22,6 +23,8 @@ import { useAccount } from 'stores/account';
 import { connectProvides, ProcessingType, useConnectHook, walletServices } from '@loopring-web/web3-provider';
 import { useSystem } from 'stores/system';
 import { myLog } from '../../utils/log_tools';
+import { copyToClipBoard } from '../../utils/obj_tools';
+import { TOAST_TIME } from '../../defs/common_defs';
 
 export const ModalWalletConnectPanel = withTranslation('common')(({
                                                                       onClose,
@@ -67,9 +70,9 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
         }
     }, []);
 
-    const [processingCallback, setProcessingCallback] = React.useState< {callback:() => Promise<void> } | undefined>(undefined)
+    const [processingCallback, setProcessingCallback] = React.useState<{ callback: () => Promise<void> } | undefined>(undefined)
     useEffect(() => {
-        if (stateCheck === true && [SagaStatus.UNSET].findIndex((ele: string) => ele === accountStatus)!==-1) {
+        if (stateCheck === true && [SagaStatus.UNSET].findIndex((ele: string) => ele === accountStatus) !== -1) {
             myLog('clear cache connect done')
             setStateCheck(false)
             if (processingCallback !== undefined) {
@@ -86,9 +89,9 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
                 if (account.connectName === DefaultGatewayList[ 0 ].key) {
                     setShowConnect({isShow: false});
                 } else {
-                    walletServices.sendDisconnect('','should new provider')
+                    walletServices.sendDisconnect('', 'should new provider')
                     setShowConnect({isShow: true, step: WalletConnectStep.MetaMaskProcessing});
-                    setProcessingCallback({callback:metaMaskCallback});
+                    setProcessingCallback({callback: metaMaskCallback});
                     setStateCheck(true)
                 }
 
@@ -97,9 +100,9 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
         {
             ...DefaultGatewayList[ 1 ],
             handleSelect: React.useCallback(async () => {
-                walletServices.sendDisconnect('','should new provider')
+                walletServices.sendDisconnect('', 'should new provider')
                 setShowConnect({isShow: true, step: WalletConnectStep.WalletConnectProcessing});
-                setProcessingCallback({callback:walletConnectCallback});
+                setProcessingCallback({callback: walletConnectCallback});
                 setStateCheck(true)
             }, [account])
         },
@@ -113,26 +116,35 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
             setShowConnect({isShow: true, step: WalletConnectStep.WalletConnectQRCode});
         }
     }, []);
-
+    const [copyToastOpen, setCopyToastOpen] = useState(false);
     useConnectHook({handleProcessing});
-
+    // const onCopy = React.useCallback(() => {
+    //
+    //     setCopyToastOpen(true)
+    // }, [account])
     const walletList = React.useMemo(() => {
         return Object.values({
             [ WalletConnectStep.Provider ]: <ProviderMenu gatewayList={gatewayList}
                                                           providerName={account.connectName} {...{t, ...rest}}/>,
             [ WalletConnectStep.MetaMaskProcessing ]: <MetaMaskProcess {...{t, ...rest}}/>,
             [ WalletConnectStep.WalletConnectProcessing ]: <WalletConnectProcess {...{t, ...rest}}/>,
-            [ WalletConnectStep.WalletConnectQRCode ]: <WalletConnectQRCode onCopy={() => undefined}
-                                                                            url={qrCodeUrl} {...{t, ...rest}}/>,
+            [ WalletConnectStep.WalletConnectQRCode ]: <WalletConnectQRCode onCopy={() => {
+                copyToClipBoard(qrCodeUrl);
+                setCopyToastOpen(true);
+            }} url={qrCodeUrl} {...{t, ...rest}}/>,
             [ WalletConnectStep.SuccessConnect ]: <SuccessConnect
                 providerName={account.connectName} {...{t, ...rest}}/>,
             [ WalletConnectStep.FailedConnect ]: <FailedConnect{...{t, ...rest}} onRetry={resetAccount}/>,
         })
     }, [qrCodeUrl, account])
-    return <ModalWalletConnect open={isShowConnect.isShow} onClose={(e) => {
-        setShouldShow(false);
-        onClose(e);
-    }} panelList={walletList} step={isShowConnect.step}/>
+    return <>
+        <ModalWalletConnect open={isShowConnect.isShow} onClose={(e) => {
+            setShouldShow(false);
+            onClose(e);
+        }} panelList={walletList} step={isShowConnect.step}/>
+        <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen}
+               autoHideDuration={TOAST_TIME} setOpen={setCopyToastOpen} severity={"success"}/>
+    </>
 })
 
 

@@ -1,5 +1,5 @@
 import {
-    ModalPanel,
+    ModalPanel, Toast,
     useOpenModals
 } from '@loopring-web/component-lib';
 import { ModalWalletConnectPanel } from './WalletModal';
@@ -10,6 +10,8 @@ import { useDeposit } from './useDeposit';
 import { useWithdraw } from './useWithdraw';
 import { useSystem } from '../stores/system';
 import { useAccountModal } from './useAccountModal';
+import { TOAST_TIME } from '../defs/common_defs';
+import React from 'react';
 
 export const ModalGroup = withTranslation('common',{withRef: true})(({...rest}:WithTranslation)=>{
     const {transferProps} = useTransfer();
@@ -19,6 +21,7 @@ export const ModalGroup = withTranslation('common',{withRef: true})(({...rest}:W
     useAccountModal();
     const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals();
     return  <>
+
         <ModalPanel transferProps={transferProps}
                     withDrawProps={withdrawProps}
                     depositProps={depositProps}
