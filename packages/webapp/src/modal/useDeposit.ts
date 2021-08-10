@@ -139,6 +139,7 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
     const title = isNewAccount ? t('labelCreateLayer2Title') : t('depositTitleAndActive')
 
     const depositProps: DepositProps<R, T> = {
+        isNewAccount,
         title,
         tradeData: {belong: undefined} as any,
         coinMap: coinMap as CoinMap<any>,
