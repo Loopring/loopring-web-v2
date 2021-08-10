@@ -22,11 +22,11 @@ export const DepositApproveProcess = ({
                                           // providerName,
                                           etherscanLink,
                                           ...rest
-                                      }: WithTranslation & { label?: 'depositTitle'|'depositTitleAndActive', providerName: string, etherscanLink: string }) => {
+                                      }: WithTranslation & { label?: string, providerName: string, etherscanLink: string }) => {
     const describe = React.useMemo(() => {
         return <>
             <Typography variant={'body1'}>
-                {t('labelDepositApproveProcess')}
+                {label}
             </Typography>
             <Link target='_blank' href={etherscanLink} display={'inline-block'} marginTop={1 / 2}>
                 <Typography variant={'body2'}> <LinkIcon fontSize={'small'}
@@ -40,8 +40,7 @@ export const DepositApproveProcess = ({
 
 export const TokenAccessProcess = ({
                                        t,
-                                       label = "depositTitle",
-                                       // providerName,
+                                       label = '',
                                        coinInfo,
                                        ...rest
                                    }: WithTranslation & { coinInfo?: CoinInfo<any>, label?: string, providerName: string }) => {
@@ -50,7 +49,6 @@ export const TokenAccessProcess = ({
             <Typography variant={'body1'}>
                 {t('labelTokenAccess', {symbol: coinInfo?.simpleName})}
             </Typography>
-
         </>
     }, [])
     return <ProcessBasic label={label} describe={describe} {...{...rest, t}}/>
@@ -64,7 +62,6 @@ export const ProcessUnlock = ({t, ...rest}: WithTranslation & { providerName: st
                 {t('labelProcessing')}
             </Typography>
         </>
-
     }, [])
     return <ProcessBasic label={'labelUnLockLayer2'} describe={describe} {...{...rest, t}}/>
 }
