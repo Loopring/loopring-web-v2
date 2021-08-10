@@ -193,7 +193,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             [ AccountStep.ActiveAccountFailed ]: <FailedUnlock label={title} onRetry={() => {
                 goUpdateAccount()
             }} {...{...rest, t}} />,
-            [ AccountStep.FailedTokenAccess ]: <FailedTokenAccess label={title} onRetry={() => { return undefined }} {...{
+            [ AccountStep.FailedTokenAccess ]: <FailedTokenAccess label={title} onRetry={() => { goDeposit() }} {...{
                 t, ...rest,
                 coinInfo: coinMap ? coinMap[ 'USTD' ] : undefined
             }} />,
