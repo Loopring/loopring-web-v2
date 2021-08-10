@@ -27,7 +27,6 @@ export function* accountUpdateSaga({payload}: PayloadAction<Partial<Account>>) {
 }
 export function* cleanAccountSaga({payload}: PayloadAction<{shouldUpdateProvider?:boolean|undefined}>) {
     try {
-        const {shouldUpdateProvider} = payload;
         let account:Partial<Account> = {
             accAddress : '',
             readyState : AccountStatus.UN_CONNECT,
@@ -39,14 +38,13 @@ export function* cleanAccountSaga({payload}: PayloadAction<{shouldUpdateProvider
             nonce : -1,
         }
 
-        if(shouldUpdateProvider) {
+        if(payload && payload.shouldUpdateProvider) {
             yield call(async ()=> await connectProvides.clear())
             account = {
                 ...account,
                 connectName:ConnectProviders.unknown
             }
         }
-        
         yield put(nextAccountStatus({
             ...account
         }));

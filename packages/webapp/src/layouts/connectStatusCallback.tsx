@@ -30,11 +30,7 @@ export const bntLabel: typeof btnClickMap = {
             return `labelWrongNetwork`
         }
     ],
-    // [ fnType.CONNECT]: [
-    //     function () {
-    //         return `labelConnectWallet`
-    //     }
-    // ],
+
     [ fnType.DEFAULT ]: [
         function () {
             return `depositTitleAndActive`

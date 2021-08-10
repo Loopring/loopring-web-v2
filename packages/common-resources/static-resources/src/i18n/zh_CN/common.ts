@@ -190,5 +190,10 @@ export default {
     labelFailedUpdateAcc: '更新账号失败',
     labelCreateLayer2Title: '创建二层账号',
     labelCancel:'取消',
+    describeTitleNoAccount:'该账户还未开通路印二层，点击充值开通钱包。',
+    describeTitleOpenAccounting:'您的充值已提交以太坊，等待以太坊确认。。。',
+    describeTitleOnErrorNetwork:'您登入的网络，路印暂不支持，请在{{connectName}}切换网络',
+    describeTitleConnectToWallet:'点击按钮，连接路印钱包，开始二层之旅',
+    describeTitleLocked:'已连接您的钱包，点击解锁后查看账户信息',
 
 }

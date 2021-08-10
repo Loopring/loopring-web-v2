@@ -13,12 +13,12 @@ export enum AccountStatus {
 
 export enum fnType {
     UN_CONNECT = 'UN_CONNECT',
-    CONNECT = 'CONNECT',
     NO_ACCOUNT = 'NO_ACCOUNT',
     LOCKED = 'LOCKED',
     ACTIVATED = 'ACTIVATED',
-    DEPOSITING = 'DEPOSITING',
     DEFAULT = 'DEFAULT',
+    DEPOSITING = 'DEPOSITING',
+    CONNECT = 'CONNECT',
     ERROR_NETWORK='ERROR_NETWORK',
 }
 
