@@ -175,7 +175,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 etherscanLink: etherscanUrl + account.accAddress,
                 mainBtn: account.readyState === 'ACTIVATED' ? lockBtn : unlockBtn
             }} />,
-            [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess label={title}
+            [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess label={title + ' TokenAccess'}
                                                                     providerName={account.connectName} {...{
                 ...rest,
                 t
@@ -190,10 +190,10 @@ export const ModalAccountInfo = withTranslation('common')(({
                 ...rest,
                 t
             }} />,
-            [ AccountStep.ActiveAccountFailed ]: <FailedUnlock onRetry={() => {
+            [ AccountStep.ActiveAccountFailed ]: <FailedUnlock label={title} onRetry={() => {
                 goUpdateAccount()
             }} {...{...rest, t}} />,
-            [ AccountStep.FailedTokenAccess ]: <FailedTokenAccess onRetry={() => undefined} {...{
+            [ AccountStep.FailedTokenAccess ]: <FailedTokenAccess label={title} onRetry={() => { return undefined }} {...{
                 t, ...rest,
                 coinInfo: coinMap ? coinMap[ 'USTD' ] : undefined
             }} />,
