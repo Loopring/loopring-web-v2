@@ -14,7 +14,7 @@ export const DepositPanel = withTranslation('common', {withRef: true})(<T extend
     }: DepositProps<T, I> & WithTranslation) => {
 
     const {
-        toolBarItemBack,
+        // toolBarItemBack,
         onChangeEvent,
         index,
         switchData
@@ -46,7 +46,8 @@ export const DepositPanel = withTranslation('common', {withRef: true})(<T extend
                     tradeData: switchData.tradeData,
                     //oinMap
                 }}/>,[switchData,rest,onChangeEvent]),
-                toolBarItem: toolBarItemBack
+                toolBarItem: undefined
+                // toolBarItem: toolBarItemBack
             },]
     }
     return <SwitchPanel {...{...rest, ...props}} />
