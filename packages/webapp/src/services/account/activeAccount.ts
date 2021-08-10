@@ -96,22 +96,22 @@ export async function updateAccountFromServer() {
 
                         await sdk.sleep(REFRESH_RATE)
 
-                        myLog('updateAccountResponse:', updateAccountResponse)
+                        result.data = updateAccountResponse
 
                     } catch (reason) {
                         result.code = ActionResultCode.UpdateAccoutError
+                        result.data = reason
                     }
 
                 } catch (reason) {
                     result.code = ActionResultCode.GenEddsaKeyError
+                    result.data = reason
                 }
-
             }
-
         }
-
     } catch (reason) {
         result.code = ActionResultCode.GetAccError
+        result.data = reason
     }
 
     return result
