@@ -144,14 +144,8 @@ export type BasicACoinTradeProps<T, I> = BasicACoinTradeViewProps<T, I> & {
     inputButtonDefaultProps: inputButtonDefaultProps<I, CoinInfo<I>>
 }
 
-
 export type BasicACoinTradeHookProps<T, I> = DefaultWithMethodProps<T, I> & {
-    handlePanelEvent: (props: SwitchData<T>, switchType: 'Tomenu' | 'Tobutton') => Promise<void>
+    handlePanelEvent?: (props: SwitchData<T>, switchType: 'Tomenu' | 'Tobutton') => Promise<void>
     onChangeEvent?: (index: 0 | 1, data: SwitchData<T>) => SwitchData<T>,
     inputButtonProps?: inputButtonDefaultProps<T, I>
 } & Partial<SwitchPanelProps<any>>
-
-
-
-
-

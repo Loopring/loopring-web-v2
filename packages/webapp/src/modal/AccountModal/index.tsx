@@ -25,7 +25,7 @@ import {
 import React, { useCallback, useState } from 'react';
 import { copyToClipBoard } from 'utils/obj_tools';
 import { useAccount } from 'stores/account';
-import { ActionResult, ActionResultCode, REFRESH_RATE, SHORT_INTERVAL, TOAST_TIME } from 'defs/common_defs';
+import { ActionResult, ActionResultCode, REFRESH_RATE, TOAST_TIME } from 'defs/common_defs';
 import { getShortAddr } from '@loopring-web/common-resources';
 import { updateAccountFromServer } from 'services/account/activeAccount';
 import { lockAccount } from 'services/account/lockAccount';
@@ -55,15 +55,15 @@ export const ModalAccountInfo = withTranslation('common')(({
         resetAccount,
     } = useAccount();
 
-    const {depositProps} = useDeposit(true)
+    const { depositProps } = useDeposit(true)
 
-    const {modals: {isShowAccount}, setShowConnect, setShowAccount, setShowDeposit} = useOpenModals()
+    const { modals: { isShowAccount }, setShowConnect, setShowAccount, } = useOpenModals()
 
     const [openQRCode, setOpenQRCode] = useState(false)
     const addressShort = getShortAddr(account.accAddress)
     
-    const {coinMap} = useTokenMap();
-    // const [accountInfoProps, setAccountBaseProps] = React.useState<undefined | AccountBaseProps>(undefined)
+    const {coinMap} = useTokenMap()
+    
     const [copyToastOpen, setCopyToastOpen] = useState(false);
     const onSwitch = useCallback(() => {
         setShowAccount({isShow: false})
