@@ -5,6 +5,7 @@ import { MarketBlock, QuoteTable, TablePaddingX, QuoteTableRawDataItem, InputSea
 import { OutlinedInputProps } from '@material-ui/core/OutlinedInput/OutlinedInput';
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
+import { cloneDeep } from 'lodash';
 // import { FloatTag } from '@loopring-web/common-resources'
 import { Box, Grid, Tabs, Tab, Divider, OutlinedInput, InputAdornment } from '@material-ui/core'
 import { SearchIcon } from '@loopring-web/common-resources'
@@ -13,6 +14,7 @@ import { LoopringAPI } from 'stores/apis/api'
 import { TradingInterval } from 'loopring-sdk/dist'
 import { TableWrapStyled } from 'pages/styled'
 import { useFavoriteMarket } from 'stores/localStore/favoriteMarket'
+import { AmmPoolActivityRule } from 'loopring-sdk'
 
 const RowStyled = styled(Grid)`
       & .MuiGrid-root:not(:last-of-type) > div{
@@ -51,9 +53,19 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const [tableTabValue, setTableTabValue] = React.useState('all')
     const [filteredData, setFilteredData] = React.useState<QuoteTableRawDataItem[]>([])
     const [searchValue, setSearchValue] = React.useState<string>('')
+    const [swapRankingList, setSwapRankingList] = React.useState<AmmPoolActivityRule[]>([])
 
-    const {favoriteMarket, removeMarket, addMarket} = useFavoriteMarket()
+    const { favoriteMarket, removeMarket, addMarket } = useFavoriteMarket()
     const { t } = rest
+
+    const getSwapRankingList = React.useCallback(async () => {
+      if (LoopringAPI.ammpoolAPI) {
+        const res = await LoopringAPI.ammpoolAPI.getAmmPoolActivityRules()
+        if (res && !!res.groupByRuleType.SWAP_VOLUME_RANKING.length) {
+          setSwapRankingList(res.groupByRuleType.SWAP_VOLUME_RANKING)
+        }
+      }
+    }, [])
 
     const getCandlestick = React.useCallback(async (market: string) => {
       if (LoopringAPI.exchangeAPI) {
@@ -120,6 +132,10 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
       getAmmPoolBalances()
     }, [getAmmPoolBalances])
 
+    React.useEffect(() => {
+      getSwapRankingList()
+    }, [getSwapRankingList])
+
     let history = useHistory()
 
     // prevent amm risky pair
@@ -145,8 +161,20 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
       type?: TableFilterParams;
       keyword?: string;
     }) => {
-      const data = getFilteredTickList()
-      const filteredData = data.filter((o: any) => {
+      let data = cloneDeep(tickList)
+      if (type === TableFilterParams.favourite) {
+        data = data.filter((o: any) => {
+          const pair = `${o.pair.coinA}-${o.pair.coinB}`
+          return favoriteMarket.includes(pair)
+        })
+      }
+      if (type === TableFilterParams.ranking) {
+        data = data.filter((o: any) => {
+          const pair = `${o.pair.coinA}-${o.pair.coinB}`
+          return swapRankingList.find(o => o.market === pair)
+        })
+      }
+      data = data.filter((o: any) => {
         const formattedKeyword = keyword?.toLocaleLowerCase()
         const coinA = o.pair.coinA.toLowerCase()
         const coinB = o.pair.coinB.toLowerCase()
@@ -155,8 +183,11 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
         }
         return coinA.includes(formattedKeyword) || coinB.includes(formattedKeyword)
       })
-      setFilteredData(filteredData)
-    }, [getFilteredTickList])
+      if (type === TableFilterParams.all && !keyword) {
+        data = getFilteredTickList()
+      }
+      setFilteredData(data)
+    }, [getFilteredTickList, favoriteMarket, swapRankingList, tickList])
 
     const handleRowClick = useCallback((row: QuoteTableRawDataItem) => {
       const { coinA, coinB } = row.pair
@@ -214,7 +245,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                   >
                       <Tab label={t('labelQuotePageFavourite')} value="favourite"/>
                       <Tab label={t('labelAll')} value="all"/>
-                      <Tab label={t('labelQuotePageTradeRanking')} value="ranking"/>
+                      <Tab label={t('labelQuotePageTradeRanking')} value="tradeRanking"/>
                   </Tabs>
                   <SearchWrapperStyled>
                     <InputSearch value={searchValue} onChange={handleSearchChange} />
