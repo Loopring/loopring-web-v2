@@ -29,8 +29,10 @@ export type SwitchPanelProps<T extends string> = {
 //           `calc(${_height + 'px'}  - 2 * var(--toolbar-row-padding) )`
 //           : `calc(${_height}  - 2 * var(--toolbar-row-padding) )` : 'auto'};
 export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps & { _height?: number | string, _width?: number | string; }>`
-  width: var(--swap-box-width);
-  height: var(--swap-box-height);
+  ${({_height, _width}) => `       
+    width: ${typeof _width === 'string' ? _width : typeof _width === 'number' ? _width + 'px' : `var(--swap-box-width)`};   
+    height: ${typeof _height === 'string' ? _height : typeof _height === 'number' ? _height + 'px' : `var(--swap-box-height)`};         
+  `}
   ${({theme}) => toolBarPanel({theme})}
   border-radius: ${({theme}) => theme.unit}px;
   .react-swipeable-view-container {
@@ -59,7 +61,7 @@ function _SwitchPanel<T extends string>({
                                         }: SwitchPanelProps<T> & WithTranslation, _ref: React.ForwardedRef<any>) {
     const theme = useTheme();
     return <SwipeableViewsStyled className={'trade-panel'} axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                                 index={index} {...{_height, _width}}>
+                                 index={index}  {...{_height,_width}}>
         {panelList.map((panel: PanelContent<T>) => {
             return <Grid container key={panel.key} className={'container'} direction={'column'}
                          justifyContent={"space-between"} flexWrap={'nowrap'}

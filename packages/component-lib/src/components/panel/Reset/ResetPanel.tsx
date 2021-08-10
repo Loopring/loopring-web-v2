@@ -22,7 +22,7 @@ export const ResetPanel = withTranslation('common', {withRef: true})(<T extends 
     }: ResetProps<T, I> & WithTranslation) => {
     const {
         //toolbar UI
-        toolBarItemBack,
+        // toolBarItemBack,
         //Data, panel and function
         onChangeEvent,
         index,
@@ -56,7 +56,8 @@ export const ResetPanel = withTranslation('common', {withRef: true})(<T extends 
                     tradeData: switchData.tradeData,
                     //oinMap
                 }}/>,
-                toolBarItem: toolBarItemBack
+                toolBarItem: undefined
+                // toolBarItem: toolBarItemBack
             },]
     }
     return <SwitchPanel {...{...rest, ...props}} />

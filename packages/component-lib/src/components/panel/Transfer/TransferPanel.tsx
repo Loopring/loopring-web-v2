@@ -28,7 +28,7 @@ export const TransferPanel = withTranslation('common', {withRef: true})(<T exten
     // const [index, setIndex] = React.useState(0);
     const {
         //toolbar UI
-        toolBarItemBack,
+        // toolBarItemBack,
         //Data, panel and function
         onChangeEvent,
         index,
@@ -63,7 +63,8 @@ export const TransferPanel = withTranslation('common', {withRef: true})(<T exten
                     tradeData: switchData.tradeData,
                     //oinMap
                 }}/>,
-                toolBarItem: toolBarItemBack
+                toolBarItem: undefined
+                // toolBarItem: toolBarItemBack
             },]
     }
     return <SwitchPanel {...{...rest, ...props}} />
