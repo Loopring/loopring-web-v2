@@ -85,6 +85,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                     connectName,
                     // _userOnModel
                 } = action.payload;
+                
                 if (accAddress !== undefined) {
                     state.accAddress = accAddress;
                 }

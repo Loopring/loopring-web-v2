@@ -120,7 +120,8 @@ export const walletLayer2Services = {
     },
     sendCheckAccount: async (ethAddress: string) => {
         const self = this;
-        myLog('After connect >>,checkAccount: step3 processAccountCheck')
+        myLog('After connect >>,checkAccount: step3 processAccountCheck',ethAddress )
+        store.dispatch(updateAccountStatus({accAddress: ethAddress,readyState:AccountStatus.UN_CONNECT}))
         subject.next({
             status: Commands.ProcessAccountCheck,
             data: undefined
