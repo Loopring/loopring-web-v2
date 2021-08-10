@@ -6,7 +6,7 @@ import { myLog } from 'utils/log_tools';
 import { LoopringAPI } from 'stores/apis/api';
 import { connectProvides } from '@loopring-web/web3-provider';
 import * as sdk from 'loopring-sdk'
-import { REFRESH_RATE } from 'defs/common_defs';
+import { ActionResult, ActionResultCode, REFRESH_RATE } from 'defs/common_defs';
 
 export async function activeAccount({ reason, shouldShow }: { reason: any, shouldShow: boolean }) {
     const account = store.getState().account;
@@ -40,19 +40,14 @@ export async function activeAccount({ reason, shouldShow }: { reason: any, shoul
     }
 }
 
-export enum UpdateAccountResult {
-    NoError,
-    GetAccError,
-    GenEddsaKeyError,
-    UpdateAccoutError,
-}
-
 export async function updateAccountFromServer() {
 
     const system = store.getState().system
     const account = store.getState().account
 
     myLog('before check!', account)
+
+    let result: ActionResult = { code: ActionResultCode.NoError, }
 
     try {
 
@@ -104,16 +99,11 @@ export async function updateAccountFromServer() {
                         myLog('updateAccountResponse:', updateAccountResponse)
 
                     } catch (reason) {
-
-                        return UpdateAccountResult.UpdateAccoutError
-
+                        result.code = ActionResultCode.UpdateAccoutError
                     }
 
-
                 } catch (reason) {
-
-                    return UpdateAccountResult.GenEddsaKeyError
-
+                    result.code = ActionResultCode.GenEddsaKeyError
                 }
 
             }
@@ -121,10 +111,8 @@ export async function updateAccountFromServer() {
         }
 
     } catch (reason) {
-
-        return UpdateAccountResult.GetAccError
-
+        result.code = ActionResultCode.GetAccError
     }
 
-    return UpdateAccountResult.NoError
+    return result
 }

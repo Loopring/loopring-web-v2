@@ -4,10 +4,10 @@ import { WithTranslation } from 'react-i18next';
 import { Link } from '@material-ui/core/';
 import { Button } from '../../basic-lib';
 
-export const Depositing = ({t, goUpdateAccount, label='depositTitle',etherscanLink,count=30}: WithTranslation & { goUpdateAccount?: () => void ,label?:'depositTitle'|'depositTitleAndActive',etherscanLink:string,count?:number}) => {
+export const Depositing = ({t, goUpdateAccount, label, etherscanLink, count=30}: WithTranslation & { goUpdateAccount?: () => void ,label?: string,etherscanLink:string,count?:number}) => {
     return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-evenly'}
                 flexDirection={'column'}>
-        <Typography component={'h3'} variant={'h2'} marginBottom={3}>{t(label)}</Typography>
+        <Typography component={'h4'} variant={'h2'} marginBottom={3}>{label}</Typography>
         <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'}>
             <LoadingIcon color={'primary'} style={{width:60,height:60}}/>
         </Typography>
