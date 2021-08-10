@@ -1,13 +1,12 @@
 import React from 'react'
 import { Meta, Story } from '@storybook/react/types-6-0'
 
-import { Box, Breadcrumbs, Grid, Pagination, Typography } from '@material-ui/core'
+import { Box, Breadcrumbs, Grid, Pagination, Typography, Link } from '@material-ui/core'
 import { ButtonProps, TGItemData, TGItemJSXInterface } from './Interface';
 import { BtnPercentage, Button, ModalCloseButton, ToggleButtonGroup } from './index'
 import Switch from '@material-ui/core/Switch';
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
-import { Link } from '@material-ui/core/';
 
 const Styled = styled.div`
   background: ${({theme}) => theme.colorBase.background().bg};
@@ -123,6 +122,9 @@ export const LButton: Story<ButtonProps> = withTranslation()(({t, ...rest}: With
                         <Button variant={'text'} size={'medium'} color={'primary'} disabled>
                             Text Btn
                         </Button>
+                    </Grid>
+                    <Grid item>
+                        <Link underline={'none'}>Teset Link</Link>
                     </Grid>
                 </Grid>
             </Box>

@@ -61,7 +61,9 @@ export const MuiLink = ({colorBase}: any) => {
     return {
         styleOverrides: {
             root: {
-                color: colorBase.primaryLight
+                color: colorBase.textPrimary,
+                fontSize: '1.4rem',
+                borderBottom: '1px dashed'
             }
         }
     }
