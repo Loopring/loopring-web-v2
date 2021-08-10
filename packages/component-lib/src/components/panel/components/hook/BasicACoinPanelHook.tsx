@@ -21,7 +21,9 @@ export const useBasicTrade = <T extends IBData<I>,
         }
     }, [tradeData]);
     const onChangeEvent = React.useCallback(async (_index: 0 | 1, {to, tradeData}: SwitchData<T>) => {
-        await handlePanelEvent({to, tradeData}, `To${to}` as any);
+        if (handlePanelEvent) {
+            await handlePanelEvent({to, tradeData}, `To${to}` as any);
+        }
         if (typeof rest.onChangeEvent == 'function') {
             setSwitchData(rest.onChangeEvent(_index, {to, tradeData}));
         } else {
