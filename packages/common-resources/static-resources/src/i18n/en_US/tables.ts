@@ -37,7 +37,7 @@ export default {
     labelTradeFilterAllTypes: 'All Types',
     labelTradeFilterBuy: 'Buy',
     labelTradeFilterSell: 'Sell',
-    labelTradeSide: 'Order',
+    labelTradeSide: 'Side',
     labelTradeAmount: 'Amount',
     labelTradePrice: 'Price',
     labelTradeFee: 'Fee',

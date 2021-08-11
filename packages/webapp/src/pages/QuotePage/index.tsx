@@ -24,7 +24,7 @@ const RowStyled = styled(Grid)`
 
 const SearchWrapperStyled = styled(Box)`
       position: absolute;
-      top: 1.3rem;
+      top: 0.9rem;
       right: ${({theme}) => theme.unit * 2}px;
     `
 
