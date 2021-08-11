@@ -302,7 +302,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
     ) {
 
         setJoinLoading(true)
-        if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !joinRequest) {
+        if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !joinRequest || !account?.eddsaKey?.sk) {
             myLog(' onAmmJoin ammpoolAPI:', LoopringAPI.ammpoolAPI,
                 'joinRequest:', joinRequest)
 
@@ -321,7 +321,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
             chainId: store.getState().system.chainId as ChainId,
             ammName: ammInfo.__rawConfig__.name,
             poolAddress: ammInfo.address,
-            eddsaKey: account.eddsaKey
+            eddsaKey: account.eddsaKey.sk
         }
 
         try {
@@ -349,9 +349,12 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
             myLog('join ammpool response:', response)
 
-            await delayAndUpdateWalletLayer2()
-
-            setAmmAlertText(t('labelJoinAmmSuccess'))
+            if ((response.joinAmmPoolResult as any)?.resultInfo) {
+                setAmmAlertText(t('labelJoinAmmFailed'))
+            } else {
+                setAmmAlertText(t('labelJoinAmmSuccess'))
+                await delayAndUpdateWalletLayer2()
+            }
 
         } catch (reason) {
 
@@ -458,7 +461,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
         // const { exitRequest } = props
 
-        if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !exitRequest) {
+        if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !exitRequest || !account?.eddsaKey?.sk) {
             myLog(' onExit ammpoolAPI:', LoopringAPI.ammpoolAPI,
                 'exitRequest:', exitRequest)
 
@@ -477,7 +480,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
             chainId: store.getState().system.chainId as ChainId,
             ammName: ammInfo.__rawConfig__.name,
             poolAddress: ammInfo.address,
-            eddsaKey: account.eddsaKey
+            eddsaKey: account.eddsaKey.sk
         }
 
         const burnedReq: GetNextStorageIdRequest = {
@@ -501,9 +504,13 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
             myLog('exit ammpool response:', response)
 
-            await delayAndUpdateWalletLayer2()
+            if ((response.exitAmmPoolResult as any)?.resultInfo) {
+                setAmmAlertText(t('labelExitAmmFailed'))
+            } else {
+                setAmmAlertText(t('labelExitAmmSuccess'))
+                await delayAndUpdateWalletLayer2()
+            }
 
-            setAmmAlertText(t('labelExitAmmSuccess'))
         } catch (reason) {
             dumpError400(reason)
             setAmmAlertText(t('labelExitAmmFailed'))
@@ -511,10 +518,6 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
             setAmmToastOpen(true)
             setExitLoading(false)
         }
-
-        // if (props.__cache__) {
-        //     makeCache(props.__cache__)
-        // }
 
     }, [exitRequest, ammExitData, delayAndUpdateWalletLayer2, account, t])
 
