@@ -26,8 +26,8 @@ const WrapperStyled = styled.div`
             position: relative;
             width: 100%;
             margin-top: ${({theme}) => theme.unit * 4}px;
-            background-color: va;
-            box-shadow: 0 ${({theme}) => theme.unit * 0.5}px ${({theme}) => theme.unit * 0.5}px rgba(0, 0, 0, 0.25);
+            background-color: var(--color-box);
+            box-shadow: var(--shadow);
             border-radius: ${({theme}) => theme.unit}px;
         `
 

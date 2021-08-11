@@ -36,7 +36,6 @@ const Style = styled.div`
   color: #fff;
   flex: 1;
   height: 100%;
-  flex: 1;
 `
 
 
@@ -87,6 +86,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
             }}/>,
             [ AccountStep.Deposit ]: <DepositWrap _height={480} _width={400}  {...{...rest, ...depositProps}} />,
             [ AccountStep.Depositing ]: <Depositing {...{
+                onClose:()=>undefined,
                 providerName: ConnectProviders.MetaMask,
                 etherscanLink: accountInfoProps.etherscanUrl, ...rest
             }}/>,

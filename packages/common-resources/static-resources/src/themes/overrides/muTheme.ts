@@ -76,6 +76,9 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
                 disabled: colorBase.textDisable,
                 active: colorBase.secondaryPressed,
             },
+            warning:{
+                main: colorBase.warning,
+            },
             error: {
                 main: colorBase.error,
                 dark: colorBase.error,
