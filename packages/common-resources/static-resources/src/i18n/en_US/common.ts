@@ -190,7 +190,7 @@ export default {
     labelCancel:'Cancel',
     describeTitleNoAccount:'Make a deposit, start use your loopring account.',
     describeTitleOpenAccounting:'Your deposit have been on the etherscan, please wating',
-    describeTitleOnErrorNetwork:'You current on a network not support by Loopring , please change on {{connectName}}。',
+    describeTitleOnErrorNetwork:'You current on a network not support by Loopring , please change on {{connectName}}.',
     describeTitleConnectToWallet:'Connect wallet to start',
-    describeTitleLocked:'Unlock your account to check your asset。',
+    describeTitleLocked:'Unlock your account to check your asset.',
 }
