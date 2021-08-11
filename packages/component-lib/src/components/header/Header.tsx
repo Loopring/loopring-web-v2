@@ -165,14 +165,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
         })
         // toolbarList.map((item, index) =>);
     };
-    // const Layer2Tab = ({label1,iconBtn,...rest}: any)=>{
-    //     return <Box display={'flex'} justifyContent={'space-around'} justifyItems={'center'} paddingX={2}>
-    //        <Typography variant={'body1'} component={'span'} role={'label'} display={'inline-flex'} alignItems={'center'}>
-    //            {rest.t(label1.id)}
-    //        </Typography>
-    //
-    //     </Box>
-    // }
+    
     const getDrawerChoices = ({
                                   menuList,
                                   layer = 0,

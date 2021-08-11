@@ -5,7 +5,7 @@ import { AccountBase } from './AccountBase';
 
 export const ApproveAccount = ({
                                    t,
-                                   goActiveAccount,
+                                   goActiveAccount: goActivateAccount,
                                    ...props
                                }: WithTranslation & AccountBaseProps & { goActiveAccount: () => void }) => {
     // const theme = useTheme();
@@ -21,8 +21,8 @@ export const ApproveAccount = ({
         </Box>
         <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
             <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {
-                goActiveAccount();
-            }}>{t('labelActiveAccount')} </Button>
+                goActivateAccount();
+            }}>{t('labelActivateAccount')} </Button>
         </Box>
     </Box>
     // <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-evenly'}
