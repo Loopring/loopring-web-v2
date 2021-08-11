@@ -13,9 +13,10 @@ const UP_COLOR = '#00BBA8'
 const DOWN_COLOR = '#fb3838'
 
 const TooltipStyled = styled(Box)`
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: ${({theme}) => theme.unit}px;
-    padding: ${({theme}) => theme.unit * 2}px ${({theme}) => theme.unit * 3}px;
+    background: ${({theme}) => theme.colorBase.borderHover};
+    border: 1px solid ${({theme}) => theme.colorBase.borderColor};
+    border-radius: ${({theme}) => theme.unit * 0.25}px;
+    padding: ${({theme}) => theme.unit * 2}px ${({theme}) => theme.unit * 2}px;
 
     >div: last-of-type {
         color: ${({theme}) => theme.colorBase.textSecondary}

@@ -62,7 +62,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const getSwapRankingList = React.useCallback(async () => {
       if (LoopringAPI.ammpoolAPI) {
         const res = await LoopringAPI.ammpoolAPI.getAmmPoolActivityRules()
-        if (res && !!res.groupByRuleType.SWAP_VOLUME_RANKING.length) {
+        if (res && res.groupByRuleType && res.groupByRuleType.SWAP_VOLUME_RANKING && !!res.groupByRuleType.SWAP_VOLUME_RANKING.length) {
           setSwapRankingList(res.groupByRuleType.SWAP_VOLUME_RANKING)
         }
       }

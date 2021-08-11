@@ -101,7 +101,7 @@ export const TradeTitle = <I extends object>({
             <Grid item xs={12} height={36} display={'flex'} flexDirection={'row'} justifyContent={'flex-start'}
                   alignItems={'center'} className={'float-group'} marginTop={1}>
 
-                <Typography variant={'h2'}>   {tradeFloat.close} {coinBInfo.simpleName}    </Typography>
+                <Typography variant={'h1'}>   {tradeFloat.close} {coinBInfo.simpleName}    </Typography>
                 <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'} justifyContent={'center'}
                      className={'float-chart'}>
                     <Typography variant={'body2'} component={'span'}
@@ -109,8 +109,8 @@ export const TradeTitle = <I extends object>({
                         {' '}
                         {/*{t('labelChange24h', {timeUnit: tradeFloat.timeUnit})}*/}
                     </Typography>
-                    <Typography variant={'h3'} component={'span'} display={'flex'} alignItems={'flex-end'}>
-                        <Typography  variant={'h3'} component={'span'}>
+                    <Typography variant={'h4'} component={'span'} display={'flex'} alignItems={'flex-end'}>
+                        <Typography variant={'h4'} component={'span'}>
                             {/* {`${(tradeFloat.floatTag === 'decrease' ? '-' : '+') + tradeFloat.priceDollar} (${change})`}</Typography> */}
                             {/*{ tradeFloatType === FloatTag.increase ? '+' : '' }*/}
                             {currency === Currency.dollar ? '\u2248 ' + PriceTag.Dollar
@@ -118,7 +118,7 @@ export const TradeTitle = <I extends object>({
                                 : '\u2248 ' + PriceTag.Yuan
                                 + getThousandFormattedNumbers(tradeFloat && tradeFloat.closeYuan ? tradeFloat.closeYuan as number : 0, 2)}
                         </Typography>
-                        <Typography  variant={'h3'} component={'span'} className={`float-tag float-${tradeFloatType}`}>
+                        <Typography variant={'h4'} component={'span'} className={`float-tag float-${tradeFloatType}`}>
                             （{ tradeFloatType === FloatTag.increase ? '+' : '' }{change}）
                         </Typography>
                     </Typography>

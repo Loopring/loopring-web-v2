@@ -16,7 +16,7 @@ const hr = ({theme}: any) => css`
   content: '';
   margin: 0 8px;
   display: block;
-  height: 4px;
+  height: 2px;
   background-color: ${theme.colorBase.primaryLight};
   //margin-bottom: -2px;
   position: absolute;
