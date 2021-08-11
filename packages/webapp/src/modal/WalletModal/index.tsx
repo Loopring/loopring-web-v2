@@ -55,7 +55,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
         // statusAccountUnset();
         if (connectProvides.usedProvide) {
             const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
-            updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
+            updateSystem({chainId: (chainId && chainId === ChainId.GOERLI ? chainId as ChainId : ChainId.MAINNET)})
             return
         }
     }, []);
@@ -65,7 +65,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
         // statusAccountUnset();
         if (connectProvides.usedProvide) {
             const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
-            updateSystem({chainId: (chainId && chainId === ChainId.GORLI ? chainId as ChainId : ChainId.MAINNET)})
+            updateSystem({chainId: (chainId && chainId === ChainId.GOERLI ? chainId as ChainId : ChainId.MAINNET)})
             return
         }
     }, []);
