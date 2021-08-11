@@ -13,7 +13,7 @@ import {
 import { AmmPanelType } from '@loopring-web/component-lib';
 import { IdMap, useTokenMap } from '../../../stores/token';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
-import { accountStaticCallBack, ammPairInit, bntLabel, btnClickMap, makeCache } from '../../../hooks/help';
+import { accountStaticCallBack, ammPairInit, bntLabel, btnClickMap, makeCache, makeWalletLayer2 } from '../../../hooks/help';
 import * as sdk from 'loopring-sdk';
 import {
     AmmPoolRequestPatch,
@@ -52,14 +52,12 @@ import { debug } from "console";
 
 export const useAmmPanel = <C extends { [ key: string ]: any }>({
                                                                     pair,
-                                                                    walletMap,
                                                                     ammType,
                                                                     snapShotData,
                                                                 }
                                                                     : {
     pair: { coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined },
     snapShotData: { tickerData: TickerData | undefined, ammPoolsBalance: AmmPoolSnapshot | undefined } | undefined
-    walletMap: WalletMap<C>
     ammType: keyof typeof AmmPanelType
 }) => {
 
@@ -87,7 +85,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
     const [ammDepositBtnI18nKey, setAmmDepositBtnI18nKey] = React.useState<string | undefined>(undefined);
     const [ammWithdrawBtnI18nKey, setAmmWithdrawBtnI18nKey] = React.useState<string | undefined>(undefined);
 
-    const initAmmData = React.useCallback(async (pair: any) => {
+    const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
         let _ammCalcData = ammPairInit(
             {
                 pair,
@@ -114,10 +112,10 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
                 slippage: 0.5
             })
         }
-    }, [snapShotData, walletMap, coinMap, tokenMap, ammCalcData, ammMap, ammType, setAmmCalcData, setAmmJoinData, setAmmExitData])
+    }, [snapShotData, coinMap, tokenMap, ammCalcData, ammMap, ammType, setAmmCalcData, setAmmJoinData, setAmmExitData])
 
     const [ammPoolSnapshot, setAmmPoolSnapShot] = useState<AmmPoolSnapshot>()
-    const updateAmmPoolSnapshot = React.useCallback(async () => {
+    const updateAmmPoolSnapshot = React.useCallback(async() => {
 
         if (!pair.coinAInfo?.simpleName || !pair.coinBInfo?.simpleName || !LoopringAPI.ammpoolAPI) {
             setAmmAlertText(t('labelAmmJoinFailed'))
@@ -144,13 +142,14 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         const response = await LoopringAPI.ammpoolAPI.getAmmPoolSnapshot(request1)
 
         if (!response) {
+            myLog('err res:', response)
             return
         }
 
         const {ammPoolSnapshot} = response
 
         setAmmPoolSnapShot(ammPoolSnapshot)
-    }, [])
+    }, [pair, ammMap])
 
     React.useEffect( () => {
         if(nodeTimer.current !== -1){
@@ -303,7 +302,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
     ) {
 
         setJoinLoading(true)
-        if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !joinRequest) {
+        if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !joinRequest || !account?.eddsaKey?.sk) {
             myLog(' onAmmJoin ammpoolAPI:', LoopringAPI.ammpoolAPI,
                 'joinRequest:', joinRequest)
 
@@ -316,15 +315,13 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
         //todo add loading
 
-        // const acc: Lv2Account = store.getState().account
-
         const {ammInfo, request} = joinRequest
 
         const patch: AmmPoolRequestPatch = {
             chainId: store.getState().system.chainId as ChainId,
             ammName: ammInfo.__rawConfig__.name,
             poolAddress: ammInfo.address,
-            eddsaKey: account.eddsaKey
+            eddsaKey: account.eddsaKey.sk
         }
 
         try {
@@ -352,9 +349,12 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
             myLog('join ammpool response:', response)
 
-            await delayAndUpdateWalletLayer2()
-
-            setAmmAlertText(t('labelJoinAmmSuccess'))
+            if ((response.joinAmmPoolResult as any)?.resultInfo) {
+                setAmmAlertText(t('labelJoinAmmFailed'))
+            } else {
+                setAmmAlertText(t('labelJoinAmmSuccess'))
+                await delayAndUpdateWalletLayer2()
+            }
 
         } catch (reason) {
 
@@ -461,7 +461,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
         // const { exitRequest } = props
 
-        if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !exitRequest) {
+        if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !exitRequest || !account?.eddsaKey?.sk) {
             myLog(' onExit ammpoolAPI:', LoopringAPI.ammpoolAPI,
                 'exitRequest:', exitRequest)
 
@@ -480,7 +480,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
             chainId: store.getState().system.chainId as ChainId,
             ammName: ammInfo.__rawConfig__.name,
             poolAddress: ammInfo.address,
-            eddsaKey: account.eddsaKey
+            eddsaKey: account.eddsaKey.sk
         }
 
         const burnedReq: GetNextStorageIdRequest = {
@@ -504,9 +504,13 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
             myLog('exit ammpool response:', response)
 
-            await delayAndUpdateWalletLayer2()
+            if ((response.exitAmmPoolResult as any)?.resultInfo) {
+                setAmmAlertText(t('labelExitAmmFailed'))
+            } else {
+                setAmmAlertText(t('labelExitAmmSuccess'))
+                await delayAndUpdateWalletLayer2()
+            }
 
-            setAmmAlertText(t('labelExitAmmSuccess'))
         } catch (reason) {
             dumpError400(reason)
             setAmmAlertText(t('labelExitAmmFailed'))
@@ -514,10 +518,6 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
             setAmmToastOpen(true)
             setExitLoading(false)
         }
-
-        // if (props.__cache__) {
-        //     makeCache(props.__cache__)
-        // }
 
     }, [exitRequest, ammExitData, delayAndUpdateWalletLayer2, account, t])
 
@@ -531,11 +531,15 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         accountStaticCallBack(removeAmmClickMap, [props])
     }, [exitRequest, ammExitData, removeAmmClickMap]);
 
+    const { walletLayer2, status: walletLayer2Status } = useWalletLayer2();
+
     useCustomDCEffect(() => {
-        if (snapShotData) {
-            initAmmData(pair)
+        if (!walletLayer2 || walletLayer2Status !== SagaStatus.UNSET || !pair || !snapShotData) {
+            return
         }
-    }, [snapShotData, pair]);
+        const { walletMap } = makeWalletLayer2()
+        initAmmData(pair, walletMap)
+    }, [walletLayer2, walletLayer2Status, pair, snapShotData]);
 
     return {
         ammAlertText,
