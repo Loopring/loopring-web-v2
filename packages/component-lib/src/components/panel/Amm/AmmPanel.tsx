@@ -23,9 +23,8 @@ enum AmmPanelTypeMap {
 const WrapStyle = styled(Box)<BoxProps & { _height?: number | string, _width?: number | string; }>`
   ${({ _width, _height}) => `       
       width: ${typeof _width === 'string' ? _width : typeof _width === 'number' ? _width + 'px' : `var(--swap-box-width)`};   
-      height: ${typeof _height === 'string' ? _height : typeof _height === 'number' ? _height + 'px' : `var(--swap-box-height)`}; 
-      background: var(--color-box-linear)
-  `}
+      height: ${typeof _height === 'string' ? _height : typeof _height === 'number' ? _height + 'px' : `var(--swap-box-height)`};`}
+  background: var(--color-box-linear);
   border-radius: ${({theme}) => theme.unit}px;
   ${({theme}) => toolBarPanel({theme})}
 
