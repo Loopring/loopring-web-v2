@@ -17,13 +17,13 @@ const Style = styled.div`
 
 // type RawDataItem = (string | number | number[] | string[])[] | {}
 
-const rawDataLastPrice: QuoteTableRawDataItem[] = [
+const rawDatacoinBPrice: QuoteTableRawDataItem[] = [
     {
         pair: {
-            first: 'LRC',
-            last: 'BUSD'
+            coinA: 'LRC',
+            coinB: 'BUSD'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: -0.12,
         high: 123.34,
         low: 23.41,
@@ -31,10 +31,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'BTC',
-            last: 'USDT'
+            coinA: 'BTC',
+            coinB: 'USDT'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: 2.13,
         high: 123.34,
         low: 23.41,
@@ -42,10 +42,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'LRC',
-            last: 'DAI'
+            coinA: 'LRC',
+            coinB: 'DAI'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: 3.44,
         high: 123.34,
         low: 23.41,
@@ -53,10 +53,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'LRC',
-            last: 'USDT'
+            coinA: 'LRC',
+            coinB: 'USDT'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: -0.52,
         high: 123.34,
         low: 23.41,
@@ -64,10 +64,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'LRC',
-            last: 'BUSD'
+            coinA: 'LRC',
+            coinB: 'BUSD'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: 8.12,
         high: 123.34,
         low: 23.41,
@@ -75,10 +75,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'LRC',
-            last: 'BUSD'
+            coinA: 'LRC',
+            coinB: 'BUSD'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: -0.12,
         high: 123.34,
         low: 23.41,
@@ -86,10 +86,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'BTC',
-            last: 'USDT'
+            coinA: 'BTC',
+            coinB: 'USDT'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: 2.13,
         high: 123.34,
         low: 23.41,
@@ -97,10 +97,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'LRC',
-            last: 'DAI'
+            coinA: 'LRC',
+            coinB: 'DAI'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: 3.44,
         high: 123.34,
         low: 23.41,
@@ -108,10 +108,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'LRC',
-            last: 'USDT'
+            coinA: 'LRC',
+            coinB: 'USDT'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: -0.52,
         high: 123.34,
         low: 23.41,
@@ -119,10 +119,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'LRC',
-            last: 'BUSD'
+            coinA: 'LRC',
+            coinB: 'BUSD'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: 8.12,
         high: 123.34,
         low: 23.41,
@@ -130,10 +130,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'LRC',
-            last: 'BUSD'
+            coinA: 'LRC',
+            coinB: 'BUSD'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: -0.12,
         high: 123.34,
         low: 23.41,
@@ -141,10 +141,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'BTC',
-            last: 'USDT'
+            coinA: 'BTC',
+            coinB: 'USDT'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: 2.13,
         high: 123.34,
         low: 23.41,
@@ -152,10 +152,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'LRC',
-            last: 'DAI'
+            coinA: 'LRC',
+            coinB: 'DAI'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: 3.44,
         high: 123.34,
         low: 23.41,
@@ -163,10 +163,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'LRC',
-            last: 'USDT'
+            coinA: 'LRC',
+            coinB: 'USDT'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: -0.52,
         high: 123.34,
         low: 23.41,
@@ -174,10 +174,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'LRC',
-            last: 'BUSD'
+            coinA: 'LRC',
+            coinB: 'BUSD'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: 8.12,
         high: 123.34,
         low: 23.41,
@@ -185,10 +185,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'LRC',
-            last: 'BUSD'
+            coinA: 'LRC',
+            coinB: 'BUSD'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: 8.12,
         high: 123.34,
         low: 23.41,
@@ -196,10 +196,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'LRC',
-            last: 'BUSD'
+            coinA: 'LRC',
+            coinB: 'BUSD'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: 8.12,
         high: 123.34,
         low: 23.41,
@@ -207,10 +207,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'LRC',
-            last: 'BUSD'
+            coinA: 'LRC',
+            coinB: 'BUSD'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: 8.12,
         high: 123.34,
         low: 23.41,
@@ -218,10 +218,10 @@ const rawDataLastPrice: QuoteTableRawDataItem[] = [
     },
     {
         pair: {
-            first: 'LRC',
-            last: 'BUSD'
+            coinA: 'LRC',
+            coinB: 'BUSD'
         },
-        lastPrice: 12.4,
+        close: 12.4, floatTag: 'decrease',
         change: 8.12,
         high: 123.34,
         low: 23.41,
@@ -948,132 +948,146 @@ const rawDataOrderHistory: OrderHistoryRawDataItem[] = [
 
 const rawDataTransaction: RawDataTransactionItem[] = [
     {
-        token: 'LRC',
-        from: '0x5e8cxxxxxe741',
-        to: 'My Loopring',
-        amount: 25987.09324,
+        side: TransactionTradeTypes.deposit,
+        // token?: string,
+        // tradeType: TransactionTradeTypes,
+        // from: string;
+        // to: string;
+        amount: {
+            unit: '$',
+            value: 12312,
+        } ,
         fee: {
-            unit: 'ETH',
-            value: 0.0993
-        },
-        memo: 'NoteNoteNoteNoteNoteNoteNote',
-        time: 3,
-        txnHash: '0x2b21xxxxxxx02',
+            unit: '$',
+            value: 12312,
+        } ,
+        memo: 'xxxxxx',
+        time: 1231,
+        txnHash: '1231231',
         status: TransactionStatus.processed,
-        path: '/hashxxx',
-        tradeType: TransactionTradeTypes.deposit,
+        path: '1111',
     },
     {
-        token: 'ETH',
-        from: 'My Loopring',
-        to: '0x5e8cxxxxxe741',
-        amount: 25987.09324,
+        side: TransactionTradeTypes.deposit,
+        // token?: string,
+        // tradeType: TransactionTradeTypes,
+        // from: string;
+        // to: string;
+        amount: {
+            unit: '$',
+            value: 12312,
+        } ,
         fee: {
-            unit: 'DPR',
-            value: 0.0993
-        },
-        memo: '',
-        time: 1,
-        txnHash: '0x2b21xxxxxxx02',
-        status: TransactionStatus.processing,
-        tradeType: TransactionTradeTypes.transfer,
-    },
-    {
-        token: 'CRV',
-        from: '0x5e8cxxxxxe741',
-        to: 'My Loopring',
-        amount: 25987.09324,
-        fee: {
-            unit: 'LRC',
-            value: 0.0993
-        },
-        memo: 'NoteNoteNoteNoteNoteNoteNote',
-        time: 2,
-        txnHash: '0x2b21xxxxxxx02',
+            unit: '$',
+            value: 12312,
+        } ,
+        memo: 'xxxxxx',
+        time: 1231,
+        txnHash: '1231231',
         status: TransactionStatus.processed,
-        path: '/hashxxx',
-        tradeType: TransactionTradeTypes.withdraw,
+        path: '1111',
     },
     {
-        token: 'CRV',
-        from: '0x5e8cxxxxxe741',
-        to: 'My Loopring',
-        amount: 25987.09324,
+        side: TransactionTradeTypes.deposit,
+        // token?: string,
+        // tradeType: TransactionTradeTypes,
+        // from: string;
+        // to: string;
+        amount: {
+            unit: '$',
+            value: 12312,
+        } ,
         fee: {
-            unit: 'LRC',
-            value: 0.0993
-        },
-        memo: 'NoteNoteNoteNoteNoteNoteNote',
-        time: 2,
-        txnHash: '0x2b21xxxxxxx02',
+            unit: '$',
+            value: 12312,
+        } ,
+        memo: 'xxxxxx',
+        time: 1231,
+        txnHash: '1231231',
         status: TransactionStatus.processed,
-        path: '/hashxxx',
-        tradeType: TransactionTradeTypes.withdraw,
+        path: '1111',
     },
     {
-        token: 'CRV',
-        from: '0x5e8cxxxxxe741',
-        to: 'My Loopring',
-        amount: 25987.09324,
+        side: TransactionTradeTypes.deposit,
+        // token?: string,
+        // tradeType: TransactionTradeTypes,
+        // from: string;
+        // to: string;
+        amount: {
+            unit: '$',
+            value: 12312,
+        } ,
         fee: {
-            unit: 'LRC',
-            value: 0.0993
-        },
-        memo: 'NoteNoteNoteNoteNoteNoteNote',
-        time: 2,
-        txnHash: '0x2b21xxxxxxx02',
-        status: TransactionStatus.failed,
-        path: '/hashxxx',
-        tradeType: TransactionTradeTypes.withdraw,
-    },
-    {
-        token: 'CRV',
-        from: '0x5e8cxxxxxe741',
-        to: 'My Loopring',
-        amount: 25987.09324,
-        fee: {
-            unit: 'LRC',
-            value: 0.0993
-        },
-        memo: 'NoteNoteNoteNoteNoteNoteNote',
-        time: 2,
-        txnHash: '0x2b21xxxxxxx02',
+            unit: '$',
+            value: 12312,
+        } ,
+        memo: 'xxxxxx',
+        time: 1231,
+        txnHash: '1231231',
         status: TransactionStatus.processed,
-        path: '/hashxxx',
-        tradeType: TransactionTradeTypes.withdraw,
+        path: '1111',
     },
     {
-        token: 'CRV',
-        from: '0x5e8cxxxxxe741',
-        to: 'My Loopring',
-        amount: 25987.09324,
+        side: TransactionTradeTypes.deposit,
+        // token?: string,
+        // tradeType: TransactionTradeTypes,
+        // from: string;
+        // to: string;
+        amount: {
+            unit: '$',
+            value: 12312,
+        } ,
         fee: {
-            unit: 'LRC',
-            value: 0.0993
-        },
-        memo: 'NoteNoteNoteNoteNoteNoteNote',
-        time: 2,
-        txnHash: '0x2b21xxxxxxx02',
-        status: TransactionStatus.failed,
-        path: '/hashxxx',
-        tradeType: TransactionTradeTypes.withdraw,
-    },
-    {
-        token: 'CRV',
-        from: '0x5e8cxxxxxe741',
-        to: 'My Loopring',
-        amount: 25987.09324,
-        fee: {
-            unit: 'LRC',
-            value: 0.0993
-        },
-        memo: 'NoteNoteNoteNoteNoteNoteNote',
-        time: 2,
-        txnHash: '0x2b21xxxxxxx02',
+            unit: '$',
+            value: 12312,
+        } ,
+        memo: 'xxxxxx',
+        time: 1231,
+        txnHash: '1231231',
         status: TransactionStatus.processed,
-        path: '/hashxxx',
-        tradeType: TransactionTradeTypes.withdraw,
+        path: '1111',
     },
+    {
+        side: TransactionTradeTypes.deposit,
+        // token?: string,
+        // tradeType: TransactionTradeTypes,
+        // from: string;
+        // to: string;
+        amount: {
+            unit: '$',
+            value: 12312,
+        } ,
+        fee: {
+            unit: '$',
+            value: 12312,
+        } ,
+        memo: 'xxxxxx',
+        time: 1231,
+        txnHash: '1231231',
+        status: TransactionStatus.processed,
+        path: '1111',
+    },
+    {
+        side: TransactionTradeTypes.deposit,
+        // token?: string,
+        // tradeType: TransactionTradeTypes,
+        // from: string;
+        // to: string;
+        amount: {
+            unit: '$',
+            value: 12312,
+        } ,
+        fee: {
+            unit: '$',
+            value: 12312,
+        } ,
+        memo: 'xxxxxx',
+        time: 1231,
+        txnHash: '1231231',
+        status: TransactionStatus.processed,
+        path: '1111',
+    },
+
 ]
 
 const Template: Story<any> = withTranslation()((args: any) => {
@@ -1082,7 +1096,7 @@ const Template: Story<any> = withTranslation()((args: any) => {
         <>
             <Style>
                 <MemoryRouter initialEntries={['/']}>
-                    {type === 'lastPrice' ? <QuoteTable {...args} /> : type === 'orderHistory' ?
+                    {type === 'coinBPrice' ? <QuoteTable {...args} /> : type === 'orderHistory' ?
                         <OrderHistoryTable {...args} /> : <TransactionTable {...args} />}
 
                 </MemoryRouter>
@@ -1096,8 +1110,8 @@ export const Quote = Template.bind({})
 export const Transaction = Template.bind({})
 
 Quote.args = {
-    rawData: rawDataLastPrice,
-    type: 'lastPrice',
+    rawData: rawDatacoinBPrice,
+    type: 'coinBPrice',
     onVisibleRowsChange: (data: any) => {
         console.log(data)
     },

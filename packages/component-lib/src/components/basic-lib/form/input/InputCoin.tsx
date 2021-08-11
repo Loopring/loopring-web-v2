@@ -24,7 +24,7 @@ const IWrap = styled(Box)`
 
   .message-wrap {
     .MuiFormHelperText-root {
-      color: ${({theme}) => theme.colorBase.error};
+      color: var(--color-error);
       text-align: right;
       font-size: ${({theme}) => theme.fontDefault.h6};
     }
@@ -121,7 +121,7 @@ const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
     white-space: nowrap;
     text-overflow: ellipsis;
     font-size: ${({theme}) => theme.fontDefault.h5};
-    color: ${({theme}) => theme.colorBase.textPrimary};
+    color:var(--color-text-primary);
 
     .placeholder {
       color: ${({theme}) => theme.colorBase.textSecondary};
@@ -143,7 +143,7 @@ const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
 ` as React.ComponentType<BoxProps & { logoColor?: any }>;
 const IInput = styled(CurrencyInput)`
 
-  color: ${({theme}) => theme.colorBase.textPrimary};
+  color:var(--color-text-primary);
 
   ::placeholder {
     color: ${({theme}) => theme.colorBase.textSecondary};

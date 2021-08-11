@@ -1,8 +1,7 @@
 import React from 'react'
-import styled from '@emotion/styled'
 import { Checkbox, Grid } from '@material-ui/core'
 import { withTranslation, WithTranslation } from "react-i18next";
-import { FormControlLabel, TextField } from '../../../'
+import { FormControlLabel } from '../../../'
 import { CheckBoxIcon, CheckedIcon } from '@loopring-web/common-resources'
 import { TokenType, RawDataAssetsItem } from '../AssetsTable'
 
@@ -18,15 +17,15 @@ export interface FilterProps {
     handleFilterChange: ({tokenType, hideSmallBalance, hideLPToken}: any) => void;
 }
 
-const StyledTextFiled = styled(TextField)`
-    &.MuiTextField-root {
-        max-width: initial;
-    }
-    .MuiInputBase-root {
-        width: initial;
-        max-width: initial;
-    }
-`
+// const StyledTextFiled = styled(TextField)`
+//     &.MuiTextField-root {
+//         max-width: initial;
+//     }
+//     .MuiInputBase-root {
+//         width: initial;
+//         max-width: initial;
+//     }
+// `
 
 export enum CheckboxType {
     smallBalance = 'smallBalance',

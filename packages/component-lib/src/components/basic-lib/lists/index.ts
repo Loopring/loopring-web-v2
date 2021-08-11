@@ -54,7 +54,7 @@ export const OutlineSelect = styled(Select)`
   }
 
   &:hover {
-    color: ${({theme}) => theme.colorBase.textPrimary};
+    color:var(--color-text-primary);
     border-left-color: transparent;
   }
 
@@ -85,7 +85,7 @@ export const OutlineSelectItem = styled(MenuItem)<any>`
   }
 
   &:hover {
-    color: ${({theme}) => theme.colorBase.textPrimary};
+    color:var(--color-text-primary);
     border-left-color: transparent;
   }
 ` as typeof MenuItem;

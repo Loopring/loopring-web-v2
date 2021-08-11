@@ -25,7 +25,7 @@ const Styled = styled(Box)`
 `
 const InputStyled = styled(CurrencyInput)`
   text-align: right;
-  color: ${({theme}) => theme.colorBase.textPrimary};
+  color:var(--color-text-primary);
 
   ::placeholder {
     color: ${({theme}) => theme.colorBase.textSecondary};

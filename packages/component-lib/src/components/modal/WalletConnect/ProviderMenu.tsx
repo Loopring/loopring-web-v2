@@ -9,7 +9,7 @@ import React from 'react';
 
 
 const ProviderBtnStyled = styled(Button)`
-  background: var( --provider-btn);
+  background: var(--provider-btn);
 
   &:hover {
     background: var(--provider-hover);
@@ -46,12 +46,12 @@ const ProviderBtnStyled = styled(Button)`
   }
 ` as typeof Button;
 //${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2, d_W:1})};
-
+//padding: 0 ${({theme}) => theme.unit * 5 / 3}px;
 const BoxStyle = styled(Box)`
   ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2, d_W: 0})};
   background: var(--color-box-secondary);
 
-  padding: 0 ${({theme}) => theme.unit * 5 / 3}px;
+ 
 
   .MuiFormControlLabel-root {
     font-size: ${({theme}) => theme.fontDefault.h6};
@@ -78,23 +78,26 @@ export const ProviderMenu = ({
     return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
                 flexDirection={'column'}>
         <Typography component={'h3'} variant={'h3'} marginBottom={3}>{t('labelConnectWallet')}</Typography>
-        <BoxStyle maxWidth={'var(--account-modal-box-width)'} paddingX={10} display={'flex'} flexDirection={'row'}
-                  justifyContent={'stretch'} alignItems={'flex-start'}>
-            <MuiFormControlLabel
-                control={<Checkbox defaultChecked checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
-                                   color="default"/>}
-                label={<Trans i18nKey="labelAgree">I have read, understand, and agree to the <Link component={'a'}
-                                                                                                   href={'./'}
-                                                                                                   target={'_parent'}>Terms
-                    of Service</Link>.</Trans>}/>
-        </BoxStyle>
-
+        <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}
+             flex={1} alignItems={'stretch'} alignSelf={'stretch'}
+             className="modalContent"  paddingX={10}>
+            <BoxStyle paddingX={5/3} display={'flex'} flexDirection={'row'}
+                      justifyContent={'stretch'} alignItems={'flex-start'}>
+                <MuiFormControlLabel
+                    control={<Checkbox defaultChecked checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
+                                       color="default"/>}
+                    label={<Trans i18nKey="labelAgree">I have read, understand, and agree to the <Link component={'a'}
+                                                                                                       href={'./'}
+                                                                                                       target={'_parent'}>Terms
+                        of Service</Link>.</Trans>}/>
+            </BoxStyle>
+        </Box>
         <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}
              flex={1} alignItems={'stretch'} alignSelf={'stretch'}
              className="modalContent" marginTop={3} paddingX={10}>
 
             <>   {gatewayList.map((item: GatewayItem) => (
-                <Box key={item.key} marginTop={1}>
+                <Box key={item.key} marginTop={1.5}>
                     <ProviderBtnStyled variant={'contained'} size={'large'} className={
                         providerName === item.key ? 'selected' : ''
                     } fullWidth

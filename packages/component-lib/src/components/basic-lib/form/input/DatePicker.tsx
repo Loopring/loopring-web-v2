@@ -47,7 +47,7 @@ const DateTextField = styled(TextField)`
 
     & svg {
       font-size: 1.8rem;
-      color: ${({theme}) => theme.colorBase.textPrimary}
+      color:var(--color-text-primary)
     }
 
   }

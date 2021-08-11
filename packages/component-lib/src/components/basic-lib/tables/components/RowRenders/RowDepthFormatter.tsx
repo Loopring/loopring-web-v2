@@ -32,7 +32,7 @@ const RowDepthStyled = styled.div`
       background: ${({theme}) => theme.colorBase.success};
 
       &.rgb-depth-red {
-        background: ${({theme}) => theme.colorBase.error};
+        background: var(--color-error);
           //background: ${({theme, style}) => theme.colorBase[ style === 'good' ? 'success' : 'error' ]};;
       }
     }

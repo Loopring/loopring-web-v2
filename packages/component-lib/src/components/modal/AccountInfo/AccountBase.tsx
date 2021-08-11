@@ -32,7 +32,7 @@ const BoxStyled = styled(Box)`
 
   & .unlock {
     svg {
-      color: ${({theme}) => theme.colorBase.error};;
+      color: var(--color-error);;
     }
   }
 
