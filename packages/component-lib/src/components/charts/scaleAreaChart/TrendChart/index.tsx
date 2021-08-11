@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useDeepCompareEffect } from 'react-use';
-import { Area, ComposedChart, Cross, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, } from '@loopring-web/recharts'
+import { Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, } from '@loopring-web/recharts'
 import moment from 'moment'
 import { ScaleAreaChartProps } from '../ScaleAreaChart'
 import { getRenderData } from '../data'
@@ -22,15 +22,15 @@ const TooltipStyled = styled(Box)`
         color: ${({theme}) => theme.colorBase.textSecondary}
     }
 `
-const CustomCursor = (props:any) => {
-    return <Cross {...props} />;
-};
+// const CustomCursor = (props:any) => {
+//     return <Cross {...props} />;
+// };
 const TrendChart = ({
                         type,
                         data,
                         yAxisDomainPercent = DEFAULT_YAXIS_DOMAIN,
                         handleMove,
-                        riseColor = 'green',
+                        // riseColor = 'green',
                         showTooltip = true,
                         showArea = true,
                         extraInfo,
