@@ -230,8 +230,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
     const handlerJoinInDebounce = React.useCallback(debounce(async (data, type, joinFees, ammPoolSnapshot) => {
 
-
-        if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !joinFees) {
+        if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !joinFees || !account?.accAddress) {
             return
         }
 
@@ -293,9 +292,8 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
             ammInfo,
             request
         })
-        // }
 
-    }, globalSetup.wait), [account])
+    }, globalSetup.wait), [account?.accAddress, tokenMap])
 
     const handleJoinAmmPoolEvent = React.useCallback(async (data: AmmData<IBData<any>>, type: 'coinA' | 'coinB') => {
         await handlerJoinInDebounce(data, type, joinFees, ammPoolSnapshot)
@@ -385,15 +383,13 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
     // const handler = React.useCallback(async () =>,[])
     const handleExitInDebounce = React.useCallback(debounce(async (data, type, exitFees, ammPoolSnapshot) => {
 
-        if (!tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !exitFees) {
+        if (!tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !exitFees || !account?.accAddress) {
             return
         }
 
         myLog('handleExitInDebounce', data, type);
 
         const isAtoB = type === 'coinA'
-
-        // const acc: Lv2Account = store.getState().account
 
         const {idIndex, marketArray, marketMap,} = store.getState().tokenMap
 
@@ -446,7 +442,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         })
         // }
 
-    }, globalSetup.wait), [])
+    }, globalSetup.wait), [account?.accAddress, tokenMap])
 
     const handleExitAmmPoolEvent = React.useCallback(async (data: AmmData<IBData<any>>, type: 'coinA' | 'coinB') => {
         await handleExitInDebounce(data, type, exitFees, ammPoolSnapshot)
