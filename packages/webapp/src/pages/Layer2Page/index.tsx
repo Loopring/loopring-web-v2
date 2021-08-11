@@ -16,9 +16,10 @@ import React from 'react';
 import { useAccount } from '../../stores/account';
 import { accountStaticCallBack, bntLabel, btnClickMap } from '../../layouts/connectStatusCallback';
 import { deepClone } from '../../utils/obj_tools';
+import OrderPanel from './OrderPanel'
+import { myLog } from 'utils/log_tools'
 // import { useModalProps } from '../../modal';
 
-export const subMenu = subMenuLayer2;
 const BoxStyle = styled(Box)`
   ${({theme}) => `
     background-color: ${theme.colorBase.background().default};
@@ -82,6 +83,8 @@ export const Layer2Page = () => {
     const selected = match?.params.item ?? 'assets';
     // const {depositProps} = useDeposit()
 
+    myLog('selected:', selected)
+
     const viewTemplate = React.useMemo(() => {
         switch (account.readyState) {
             case AccountStatus.UN_CONNECT:
@@ -124,7 +127,7 @@ export const Layer2Page = () => {
                     <Box width={'200px'} display={'flex'} justifyContent={'stretch'} marginRight={3}
                          marginBottom={2}>
                         <SubMenu>
-                            <SubMenuList selected={selected} subMenu={subMenu as any}/>
+                            <SubMenuList selected={selected} subMenu={subMenuLayer2 as any}/>
                         </SubMenu>
                     </Box>
                     <Box minHeight={420} display={'flex'} alignItems={'stretch'} flexDirection={'column'} marginTop={0}
