@@ -85,8 +85,6 @@ export const Layer2Page = () => {
     const selected = match?.params.item ?? 'assets';
     // const {depositProps} = useDeposit()
 
-    myLog('selected:', selected)
-
     const viewTemplate = React.useMemo(() => {
         switch (account.readyState) {
             case AccountStatus.UN_CONNECT:
