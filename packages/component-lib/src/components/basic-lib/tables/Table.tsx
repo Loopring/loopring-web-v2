@@ -44,6 +44,7 @@ export const DataGridStyled = styled(DataGrid)`
     box-sizing: border-box;
     border: rgba(0, 0, 0, 0) 0px solid;
     //background-color: inherit;
+    font-family: Roboto;
 
     .rdg-header-row {
       color: ${({theme}) => theme.colorBase.checkboxDefault};
