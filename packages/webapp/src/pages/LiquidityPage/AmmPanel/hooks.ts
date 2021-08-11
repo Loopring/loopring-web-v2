@@ -86,6 +86,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
     const [ammWithdrawBtnI18nKey, setAmmWithdrawBtnI18nKey] = React.useState<string | undefined>(undefined);
 
     const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
+        myLog('initAmmData:', account.accAddress, walletMap)
         let _ammCalcData = ammPairInit(
             {
                 pair,
@@ -93,7 +94,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
                 _ammCalcData: {},
                 tokenMap,
                 coinMap,
-                walletMap: walletMap, //walletLayer2State.walletLayer2,
+                walletMap,
                 ammMap,
                 tickerData: snapShotData?.tickerData,
                 ammPoolsBalance: snapShotData?.ammPoolsBalance
@@ -539,7 +540,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         }
         const { walletMap } = makeWalletLayer2()
         initAmmData(pair, walletMap)
-    }, [walletLayer2, walletLayer2Status, pair, snapShotData]);
+    }, [walletLayer2, walletLayer2Status, pair, snapShotData, account?.accAddress, ]);
 
     return {
         ammAlertText,

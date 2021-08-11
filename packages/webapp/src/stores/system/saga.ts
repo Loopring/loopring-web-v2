@@ -40,8 +40,8 @@ const initConfig = function* <R extends { [ key: string ]: any }>(chainId: Chain
 const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) => {
     //TODO get some other reuqired id...... put into system
     // const { chainId } = system
-    const env = window.location.hostname === 'localhost' ? ENV.DEV : ChainId.GORLI === chainId ? ENV.UAT : ENV.PROD
-    chainId = ChainId.GORLI === chainId ? ChainId.GORLI : ChainId.MAINNET === chainId ? ChainId.MAINNET : NETWORKEXTEND.NONETWORK
+    const env = window.location.hostname === 'localhost' ? ENV.DEV : ChainId.GOERLI === chainId ? ENV.UAT : ENV.PROD
+    chainId = ChainId.GOERLI === chainId ? ChainId.GOERLI : ChainId.MAINNET === chainId ? ChainId.MAINNET : NETWORKEXTEND.NONETWORK
 
     if (chainId === NETWORKEXTEND.NONETWORK) {
         throw new CustomError(ErrorMap.NO_NETWORK_ERROR)
