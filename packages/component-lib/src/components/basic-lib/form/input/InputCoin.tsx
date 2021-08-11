@@ -39,7 +39,7 @@ const IWrap = styled(Box)`
       text-decoration: underline dotted;
 
       &:hover {
-        color: ${({theme}) => theme.colorBase.secondary};
+        color: var(--color-secoundary);
       }
     }
 
@@ -121,10 +121,10 @@ const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
     white-space: nowrap;
     text-overflow: ellipsis;
     font-size: ${({theme}) => theme.fontDefault.h5};
-    color:var(--color-text-primary);
+    color: var(--color-text-primary);
 
     .placeholder {
-      color: ${({theme}) => theme.colorBase.textSecondary};
+      color: var(--color-text-secondary);
     }
   }
 
@@ -139,14 +139,14 @@ const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
     padding-right: ${({theme}) => theme.unit / 2 * 3}px;
     align-items: center;
   }
-  
+
 ` as React.ComponentType<BoxProps & { logoColor?: any }>;
 const IInput = styled(CurrencyInput)`
 
-  color:var(--color-text-primary);
+  color: var(--color-text-primary);
 
   ::placeholder {
-    color: ${({theme}) => theme.colorBase.textSecondary};
+    color: var(--color-text-secondary);
   }
 
   width: 100%; //calc(100% - 2rem);
@@ -248,7 +248,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 _handleError(inputData.tradeValue);
             }
         },
-        [inputData,_handleError])
+        [inputData, _handleError])
     const inputEle = useFocusRef({
         callback: inputCallback,
         shouldFocusOn: focusOnInput,
@@ -288,8 +288,8 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
             <Grid item xs={6} className={'sub-label'}>{subLabel && belong ?
                 <FormLabel className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>
-                    <span>{maxAllow? subLabel + ':' : ''}</span>
-                    <span>{balance?getThousandFormattedNumbers(balance):'0'}</span>
+                    <span>{maxAllow ? subLabel + ':' : ''}</span>
+                    <span>{balance ? getThousandFormattedNumbers(balance) : '0'}</span>
                 </FormLabel> : null}</Grid>
         </Grid>
 

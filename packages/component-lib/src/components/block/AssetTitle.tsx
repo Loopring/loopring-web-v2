@@ -8,10 +8,10 @@ import { TradeBtnStatus } from '../panel';
 import { Button, ButtonListRightStyled } from './../';
 
 const BoxStyled = styled(Box)`
-  color: ${({theme}) => theme.colorBase.textSecondary};
+  color: var(--color-text-secondary);
 
   .MuiButtonBase-root {
-    color: ${({theme}) => theme.colorBase.textSecondary};
+    color: var(--color-text-secondary);
   }
 ` as typeof Box
 

@@ -29,7 +29,7 @@ const RowDepthStyled = styled.div`
     .rgb-depth-row {
       float: right;
       height: var(--row-height);
-      background: ${({theme}) => theme.colorBase.success};
+      background: var(--color-success);
 
       &.rgb-depth-red {
         background: var(--color-error);

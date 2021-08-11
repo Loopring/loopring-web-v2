@@ -20,7 +20,7 @@ export const TabItemPlus = styled<any>(MenuItem)`
       svg {
         width: var(--header-menu-icon-size);
         height: var(--header-menu-icon-size);
-        color: var(--color-text-secoundary);
+        color: var(--color-text-secondary);
       }
 
       :hover {
