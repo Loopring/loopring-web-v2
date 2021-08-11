@@ -48,7 +48,6 @@ function _InputSelect<C, I extends string = CoinKey<C>>({
                                                             placeholder,
                                                             focusOnInput,
                                                             backElement,
-
                                                             selected,
                                                         }: InputSelectProps<C, I> & WithTranslation, _ref: React.ForwardedRef<C>
 ) {
