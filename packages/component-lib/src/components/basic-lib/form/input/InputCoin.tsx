@@ -1,14 +1,7 @@
 import { Avatar, Box, BoxProps, FormHelperText, FormLabel, Grid } from "@material-ui/core";
 import styled from "@emotion/styled";
-import { debounce } from "lodash"
 import CurrencyInput from 'react-currency-input-field';
-import {
-    AvatarCoinStyled,
-    CoinInfo,
-    getThousandFormattedNumbers,
-    globalSetup,
-    IBData
-} from '@loopring-web/common-resources';
+import { AvatarCoinStyled, CoinInfo, getThousandFormattedNumbers, IBData } from '@loopring-web/common-resources';
 import { InputCoinProps } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
@@ -214,7 +207,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        label = "Amount",
                                                                        handleError,
                                                                        subLabel = "Available",
-                                                                       wait = globalSetup.wait,
+                                                                       // wait = globalSetup.wait,
                                                                        coinMap,
                                                                        maxAllow,
                                                                        disabled,
@@ -234,10 +227,14 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
     // }
     const _handleError = React.useCallback((value: any) => {
         if (handleError) {
-            let _error = handleError({balance: Number(balance), belong, ...{tradeValue: value}} as T, ref);
+            let _error = handleError({
+                balance: Number(balance),
+                belong, ...{tradeValue: value},
+                maxAllow
+            } as T & { maxAllow?: boolean }, ref);
             setError(_error ? _error : {error: false});
         }
-    }, [handleError, balance, belong, ref])
+    }, [handleError, balance, belong, maxAllow, ref])
     const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
         error: false,
         message: ''
@@ -246,6 +243,8 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
             if (inputData && (inputData.tradeValue !== Number(current?.value))) {
                 setsValue(inputData.tradeValue);
                 _handleError(inputData.tradeValue);
+                // debounceCount({...inputData, ...{tradeValue: inputData.tradeValue}})
+                // _handleContChange(current?.value, name)
             }
         },
         [inputData, _handleError])
@@ -255,28 +254,33 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
         value: tradeValue,
     });
 
-    const debounceCount = debounce(({...props}: any) => {
-        if (handleCountChange) {
-            handleCountChange({...props}, ref)
-        }
-    }, wait)
+    // const debounceCount = debounce(({...props}: any) => {
+    //     if (handleCountChange) {
+    //         handleCountChange({...props}, ref)
+    //     }
+    // }, wait)
     const _handleContChange = React.useCallback((value: any, _name: any) => {
             _handleError(value);
             setsValue(value);
-            debounceCount({...inputData, ...{tradeValue: value}})
+            if (handleCountChange) {
+                handleCountChange({...inputData, ...{tradeValue: value}} as any, ref)
+            }
+            //debounceCount({...inputData, ...{tradeValue: value}})
         }
-        , [debounceCount, _handleError, inputData])
+        , [_handleError, setsValue, inputData, handleCountChange, ref])
+
     // const _handleContChange =
     // const _handleOnClick = React.useCallback((event: React.MouseEvent) => {
     //     if (handleOnClick) handleOnClick(event,ref)
     // }, [])
-    const _handleMaxAllowClick = (_event: React.MouseEvent) => {
+    const _handleMaxAllowClick = React.useCallback((_event: React.MouseEvent) => {
         if (maxAllow) {
-            setsValue(balance);
+            _handleContChange(balance, name)
+            //setsValue(balance);
         }
-    }
+    }, [_handleContChange, balance, name, maxAllow]);
     const {coinJson} = useSettings();
-    const coinIcon: any = coinJson [ belong ];
+    const coinIcon: any = coinJson[ belong ];
 
     // const coinInfo: any = coinMap[ belong ] ? coinMap[ belong ] : {};
     // const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;

@@ -1,5 +1,5 @@
 import { borderFunc, pxToRem } from './utils';
-import {  ComponentsOverrides } from '@material-ui/core/';
+import { ComponentsOverrides } from '@material-ui/core/';
 import { rgba } from 'polished';
 import { fontDefault } from '../css/global';
 
@@ -62,10 +62,10 @@ export const MuiLink = ({colorBase}: any) => {
         styleOverrides: {
             root: {
                 color: colorBase.secondary,
-                '&:hover':{
+                '&:hover': {
                     color: colorBase.secondaryHover,
                 },
-                '&.Mui-selected':{
+                '&.Mui-selected': {
                     color: colorBase.secondaryPressed,
                 }
             }
@@ -361,6 +361,7 @@ export const MuiIconButton = {
             ' svg': {
                 height: 'var(--svg-size-large)',
                 width: 'var(--svg-size-large)',
+                color: 'inherit',
             },
             '&.MuiIconButton-sizeSmall': {
                 height: 'var(--btn-icon-size-small)',
@@ -433,7 +434,7 @@ export const MuiInputBase = ({colorBase}: any): { styleOverrides: ComponentsOver
                 },
                 '& svg': {
                     pointerEvents: 'none',
-                    color:'var(--color-text-secondary)',
+                    color: 'var(--color-text-secondary)',
                 },
                 paddingRight: 0,
                 '&:hover': {
@@ -605,7 +606,7 @@ export const MuiMenu = ({colorBase}: any) => {
                 backgroundColor: colorBase.popBg
             }
         }
-    } 
+    }
 }
 export const MuiMenuItem = ({colorBase}: any) => {
     return {

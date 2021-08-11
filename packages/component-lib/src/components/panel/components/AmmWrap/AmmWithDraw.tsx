@@ -4,7 +4,8 @@ import {
     CoinInfo,
     DropDownIcon,
     EmptyValueTag,
-    IBData, LinkedIcon,
+    IBData,
+    LinkedIcon,
     ReverseIcon,
     SlippageTolerance
 } from '@loopring-web/common-resources';
@@ -139,7 +140,7 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
                 coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
             }}/>
             <Box alignSelf={"center"} marginY={1}>
-                <SvgStyled >
+                <SvgStyled>
                     <LinkedIcon/>
                 </SvgStyled>
             </Box>
@@ -156,7 +157,7 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
         </Grid>
 
         <Grid item>
-            <Typography component={'p'} variant="body1" height={20}>
+            <Typography component={'p'} variant="body1" height={24} lineHeight={'24px'}>
                 {ammData.coinA?.belong && ammData.coinB?.belong && ammCalcData ? <>
                     {_isStoB ? `1${ammData.coinA?.belong} \u2248 ${ammCalcData.AtoB ? ammCalcData.AtoB : EmptyValueTag} ${ammData.coinB?.belong}`
                         : `1${ammData.coinB?.belong} \u2248 ${ammCalcData.AtoB ? (1 / ammCalcData.AtoB) : EmptyValueTag} ${ammData.coinA?.belong}`}

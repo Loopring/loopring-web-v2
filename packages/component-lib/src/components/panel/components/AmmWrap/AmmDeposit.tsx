@@ -47,15 +47,15 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
     const {slippage} = useSettings();
     const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number | string>;
 
-    const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined'? isStob : true);
+    const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined' ? isStob : true);
 
-    const _onSwitchStob = React.useCallback((_event: any)=>{
+    const _onSwitchStob = React.useCallback((_event: any) => {
         console.log('...', _event)
         setIsStoB(!_isStoB)
-        if(typeof switchStobEvent === 'function') {
-            switchStobEvent(!_isStoB) 
+        if (typeof switchStobEvent === 'function') {
+            switchStobEvent(!_isStoB)
         }
-    },[switchStobEvent, _isStoB])
+    }, [switchStobEvent, _isStoB])
 
     const getDisabled = () => {
         if (disabled || ammCalcData === undefined || ammCalcData.coinInfoMap === undefined) {
@@ -119,7 +119,8 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
-        <Grid item marginTop={2} display={'flex'} alignSelf={"stretch"} justifyContent={''} alignItems={"stretch"}  flexDirection={"column"}  >
+        <Grid item marginTop={2} display={'flex'} alignSelf={"stretch"} justifyContent={''} alignItems={"stretch"}
+              flexDirection={"column"}>
             <InputCoin<any, I, any> ref={coinARef} disabled={getDisabled()} {...{
                 ...propsA,
                 order: 'right',
@@ -127,7 +128,7 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
                 coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
             }}/>
             <Box alignSelf={"center"} marginY={1}>
-                <SvgStyled >
+                <SvgStyled>
                     <LinkedIcon/>
                 </SvgStyled>
             </Box>
@@ -140,10 +141,10 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
         </Grid>
 
         <Grid item>
-            <Typography component={'p'} variant="body1" height={20}>
+            <Typography component={'p'} variant={'body1'} height={24} lineHeight={'24px'}>
                 {ammData.coinA?.belong && ammData.coinB?.belong && ammCalcData ? <>
                     {_isStoB ? `1${ammData.coinA?.belong} \u2248 ${ammCalcData.AtoB ? ammCalcData.AtoB : EmptyValueTag} ${ammData.coinB?.belong}`
-                    : `1${ammData.coinB?.belong} \u2248 ${ammCalcData.AtoB ? (1 / ammCalcData.AtoB) : EmptyValueTag} ${ammData.coinA?.belong}`}
+                        : `1${ammData.coinB?.belong} \u2248 ${ammCalcData.AtoB ? (1 / ammCalcData.AtoB) : EmptyValueTag} ${ammData.coinA?.belong}`}
                     <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
                     ><ReverseIcon/></IconButtonStyled>
                 </> : EmptyValueTag}
