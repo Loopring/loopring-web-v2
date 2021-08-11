@@ -1,5 +1,5 @@
-import { WithTranslation, withTranslation } from 'react-i18next'
-import { Box, } from '@material-ui/core'
+import { WithTranslation, withTranslation, } from 'react-i18next'
+import { Box } from '@material-ui/core'
 import styled from '@emotion/styled'
 
 import React from 'react';
@@ -50,7 +50,8 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
                     page,
                     pagination: {
                         pageSize
-                    }
+                    },
+                    showFilter: false
                 }} />
             </StylePaper>
         </>
