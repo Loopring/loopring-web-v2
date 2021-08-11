@@ -13,6 +13,7 @@ import { CheckBoxIcon, CheckedIcon } from '@loopring-web/common-resources'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { RawDataTradeItem, BasicHeaderItem, HeadMenuType } from '@loopring-web/component-lib'
 import { TableWrapStyled } from '../../../styled';
+import { Divider } from '@material-ui/core'
 
 
 const applyProps = (index: number) => {
@@ -21,18 +22,25 @@ const applyProps = (index: number) => {
         'aria-controls': `simple-tabpanel-${index}`,
     }
 }
-const StyledTabsWrapper = styled.div`
-          position: relative;
-          width: 100%;
-          margin-top: ${({theme}) => theme.unit * 4}px;
+const WrapperStyled = styled.div`
+            position: relative;
+            width: 100%;
+            margin-top: ${({theme}) => theme.unit * 4}px;
+            background-color: ${({theme}) => theme.colorBase.background().default};
+            box-shadow: 0 ${({theme}) => theme.unit * 0.5}px ${({theme}) => theme.unit * 0.5}px rgba(0, 0, 0, 0.25);
+            border-radius: ${({theme}) => theme.unit}px;
         `
 
-const StyledFormControlLabel = styled(FormControlLabel)`
-          position: absolute;
-          top: 0;
-          right: ${({theme}) => theme.unit}px;
-          margin: ${({theme}) => theme.unit}px 0 0 0;
-        `
+const TabsStyled = styled(Tabs)`
+    margin-left: ${({theme}) => theme.unit}px;
+`
+
+// const StyledFormControlLabel = styled(FormControlLabel)`
+//             position: absolute;
+//             top: 0;
+//             right: ${({theme}) => theme.unit}px;
+//             margin: ${({theme}) => theme.unit}px 0 0 0;
+//         `
 
 const TradePanel = withTranslation('common')(
    // withRouter(
@@ -50,24 +58,24 @@ const TradePanel = withTranslation('common')(
         // }
 
         return (
-            <StyledTabsWrapper>
+            <WrapperStyled>
                 {/* <StyledFormControlLabel
                     control={<Checkbox checked={isAllTrade} size={'small'} checkedIcon={<CheckedIcon/>}
                                        icon={<CheckBoxIcon/>} color={'default'} onChange={handleCheckboxChange}/>}
                     label={t('labelTradePanelHideOtherPairs')}/> */}
 
-                <Tabs value={value}
+                <TabsStyled value={value}
                       onChange={handleChange}
                       aria-label="tabs switch">
                     <Tab label={t('labelMyTrade')} {...applyProps(0)} />
                     <Tab label={t('labelRecent')}   {...applyProps(1)} />
-                </Tabs>
-
-                <TableWrapStyled marginY={2}  paddingBottom={2} flex={1}>
+                </TabsStyled>
+                <Divider />
+                <TableWrapStyled marginY={2} /* paddingBottom={2} */ flex={1}>
                     {value === 0 ?  <TradeTable rawData={myTradeArray} /> : <TradeTable rawData={tradeArray}/> }
                 </TableWrapStyled>
 
-            </StyledTabsWrapper>
+            </WrapperStyled>
         )
     }
     ) as  (props: { tradeArray: RawDataTradeItem[], myTradeArray: RawDataTradeItem[] }) => JSX.Element;

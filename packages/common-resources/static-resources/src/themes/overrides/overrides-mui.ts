@@ -13,7 +13,7 @@ const hr = ({colorBase}: any) => {
         content: '\"\"',
         margin: `0 ${unit}px`,
         display: 'block',
-        height: '4px',
+        height: `2px`,
         backgroundColor: colorBase.primaryLight,
         position: 'absolute',
         left: 0,
@@ -698,7 +698,7 @@ export const MuiDivider = ({colorBase}: any) => {
         styleOverrides: {
             root: {
                 borderColor: `${colorBase.dividerColor}`,
-                margin: `${unit / 4 * 5}px 0`,
+                // margin: `${unit / 4 * 5}px 0`,
             },
 
         }
