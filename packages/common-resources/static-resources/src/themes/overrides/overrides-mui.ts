@@ -302,6 +302,7 @@ export const MuiPaper = ({colorBase}: any): { styleOverrides: ComponentsOverride
                 backgroundColor: colorBase.background().popupBg2,
                 '&.MuiPopover-paper': {
                     backgroundImage: 'none',
+                    backgroundColor: colorBase.borderHover
                     // backgroundColor: colorBase.background().popupBg2,
                 },
             }
