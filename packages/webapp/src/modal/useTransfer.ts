@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { SwitchData, TradeBtnStatus, TransferProps, useOpenModals } from '@loopring-web/component-lib';
+import { SwitchData, TradeBtnStatus, TransferProps, } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, IBData, SagaStatus, WalletMap } from '@loopring-web/common-resources';
 import { ConnectorNames, dumpError400, OffchainFeeReqType, OriginTransferRequestV3, toBig, VALID_UNTIL } from 'loopring-sdk';
 import { useTokenMap } from '../stores/token';
@@ -13,8 +13,7 @@ import { useCustomDCEffect } from '../hooks/common/useCustomDCEffect';
 import { myLog } from 'utils/log_tools';
 import { useWalletLayer2 } from '../stores/walletLayer2';
 import { makeWalletLayer2 } from '../hooks/help';
-// import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
-// import { useChargeFeeList } from './hook';
+import { debug } from 'console';
 
 export const useTransfer = <R extends IBData<T>, T>(): {
     // handleTransfer: (inputValue:R) => void,
@@ -24,8 +23,8 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const {tokenMap, coinMap} = useTokenMap();
     const {account} = useAccount()
     const {exchangeInfo, chainId} = useSystem();
-    const {walletLayer2,status:walletLayer2Status} = useWalletLayer2();
-    const [walletMap, setWalletMap] = React.useState(makeWalletLayer2().walletMap??{} as WalletMap<R>);
+    const {walletLayer2, status: walletLayer2Status} = useWalletLayer2();
+    const [walletMap, setWalletMap] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
     // const {setShowTransfer}  = useOpenModals();
     const [transferValue, setTransferValue] = React.useState<IBData<T>>({
         belong: undefined,
@@ -37,8 +36,9 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const [tranferFeeInfo, setTransferFeeInfo] = React.useState<any>()
     const [payeeAddr, setPayeeAddr] = React.useState<string>('')
     React.useEffect(()=>{
-        if(walletLayer2Status === SagaStatus.UNSET){
-            setWalletMap(makeWalletLayer2().walletMap??{} as WalletMap<R>)
+        if(walletLayer2Status === SagaStatus.UNSET) {
+            const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
+            setWalletMap(walletMap)
         }
     },[walletLayer2Status])
 
