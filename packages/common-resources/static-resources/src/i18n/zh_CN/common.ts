@@ -195,5 +195,5 @@ export default {
     describeTitleOnErrorNetwork:'您登入的网络，路印暂不支持，请在{{connectName}}切换网络',
     describeTitleConnectToWallet:'点击按钮，连接路印钱包，开始二层之旅',
     describeTitleLocked:'已连接您的钱包，点击解锁后查看账户信息',
-
+    labelLiqudityPageTitle: 'AMM 资金池',
 }
