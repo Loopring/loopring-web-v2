@@ -25,7 +25,7 @@ import {
     MakerRebatesIcon,
     MiningIcon,
     MyLiquidityIcon,
-    NoNetWorkIcon,
+    // NoNetWorkIcon,
     NotificationIcon,
     OrderIcon,
     OrderMinIcon,
@@ -105,7 +105,7 @@ const listIcon = [
     <OrderIcon/>,
     <RewardIcon/>,
     <RedPockIcon/>,
-    <NoNetWorkIcon/>,
+    // <NoNetWorkIcon/>,
     <PowerIcon/>,
     <SettingIcon/>
 ]
