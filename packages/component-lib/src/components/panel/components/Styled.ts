@@ -102,13 +102,14 @@ export const CountDownStyled = styled(Box)`
   ${({theme}) => cssAutoRefresh({theme})}
   width: var(--btn-icon-size);
   height: var(--btn-icon-size);
+  height: var(--btn-icon-size);
   position: relative;
   background-size: 68%;
   background-repeat: no-repeat;
   background-position: center;
 
   &.outline {
-    background: var(--field-opacity);
+    background-color: var(--field-opacity);
     margin: 0 ${({theme}) => theme.unit / 2}px;
     ${({theme}) => theme.border.defaultFrame({c_key: 'transparent'})};
     text-align: center;
@@ -126,10 +127,10 @@ export const CountDownStyled = styled(Box)`
   &.countdown {
     font-size: ${({theme}) => theme.fontDefault.h6};
     display: inline-block;
-    color: var(--color-primary)
+    color: var(--color-primary);
 
     .circle {
-      font-size: ${({theme}) => theme.fontDefault.h3};
+      font-size: ${({theme}) => theme.fontDefault.h4};
       width: 1em;
       height: 1em;
       position: absolute;
