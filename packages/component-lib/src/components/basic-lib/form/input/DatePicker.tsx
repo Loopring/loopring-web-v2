@@ -50,7 +50,6 @@ const DateTextField = styled(TextField)`
       color: ${({theme}) => theme.colorBase.textPrimary}
     }
 
-      //color: ${({theme}) => theme.colorBase.primaryLight}
   }
 
   .MuiInputAdornment-positionEnd.date-range-adornment {

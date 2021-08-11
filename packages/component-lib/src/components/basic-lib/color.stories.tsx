@@ -6,7 +6,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 const Styled = styled.div`
-  background: ${({theme}) => theme.colorBase.background().bg};
+  background: var(--color-global-bg);
   color: #fff;
 
   svg {

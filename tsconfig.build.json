@@ -1,36 +1,35 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "lib": [
-          "dom",
-          "dom.iterable",
-          "esnext",
-          "es2016",
-          "es2017"
-        ],
-        "jsx": "react-jsx",
-        "sourceMap": true,
-        "allowJs": true,
-        "composite": true,  
-        "keyofStringsOnly": true,
-        "noImplicitAny": true,
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "allowSyntheticDefaultImports": true,
-        "suppressImplicitAnyIndexErrors": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "noFallthroughCasesInSwitch": true,
-        "noEmit": true,
-        "module": "esnext",  
-    },
-  
-    "exclude": [
-      "node_modules",
-      "dist"
-    ]
-  }
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext",
+      "es2016",
+      "es2017"
+    ],
+    "jsx": "react-jsx",
+    "sourceMap": true,
+    "allowJs": true,
+    "composite": true,
+    "keyofStringsOnly": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "allowSyntheticDefaultImports": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "noEmit": true,
+    "module": "esnext"
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
   

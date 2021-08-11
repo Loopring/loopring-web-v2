@@ -62,7 +62,7 @@ export const DepositWrap = <T extends IBData<I>,
                  direction={"column"}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
         <Grid item>
-            <Typography component={'h4'} height={36} textAlign={'center'} variant={'h2'} marginBottom={2}>
+            <Typography component={'h4'} textAlign={'center'} variant={'h3'} marginBottom={2}>
                 {title ? title : t('depositTitle')}
             </Typography>
             <Typography component={'p'} variant="body1">

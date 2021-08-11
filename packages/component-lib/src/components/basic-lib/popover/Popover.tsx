@@ -53,7 +53,8 @@ export const Popover: React.FC<PopoverWrapProps> = ({
         height: 0;
         border-top: 8px solid transparent;
         border-right: 8px solid transparent;
-        border-bottom: ${({theme}) => `8px solid ${theme.colorBase.borderHover}`};
+        // border-bottom: ${({theme}) => `8px solid ${theme.colorBase.borderHover}`};
+        border-bottom: 8px solid transparent;;
         border-left: 8px solid transparent;
       }
     `
@@ -124,8 +125,8 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
         top: -5px;
         transform: translateX(-50%);
         left: 50%;
-        border-top: 1px solid ${({theme}) => theme.colorBase.borderColor};
-        border-left: 1px solid ${({theme}) => theme.colorBase.borderColor};
+        border-top: 1px solid ${({theme}) => theme.colorBase.border};
+        border-left: 1px solid ${({theme}) => theme.colorBase.border};
         // border-image-slice: 12 20 15 20 fill;
         // border-image-width: 12px 0px 0px 0px;
         // border-image-repeat: round;
@@ -149,8 +150,8 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
         top: -5px;
         transform: translateX(-50%);
         right: 10%;
-        border-top: 1px solid ${({theme}) => theme.colorBase.borderColor};
-        border-left: 1px solid ${({theme}) => theme.colorBase.borderColor};
+        border-top: 1px solid ${({theme}) => theme.colorBase.border};
+        border-left: 1px solid ${({theme}) => theme.colorBase.border};
         width: 8px;
         height: 8px;
         background-color: ${({theme}) => theme.colorBase.borderHover};
@@ -170,8 +171,8 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
         transform: translateX(-50%);
         top: -5px;
         left: 10%;
-        border-top: 1px solid ${({theme}) => theme.colorBase.borderColor};
-        border-left: 1px solid ${({theme}) => theme.colorBase.borderColor};
+        border-top: 1px solid ${({theme}) => theme.colorBase.border};
+        border-left: 1px solid ${({theme}) => theme.colorBase.border};
         width: 8px;
         height: 8px;
         background-color: ${({theme}) => theme.colorBase.borderHover};

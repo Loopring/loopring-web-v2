@@ -18,7 +18,7 @@ const StyleBox = styled(Box)`
 */
   svg path,
   svg rect{
-    fill: ${({theme}) => theme.colorBase.primaryLight};
+    fill: var(--color-primary)
   }
 ` as typeof Box
 

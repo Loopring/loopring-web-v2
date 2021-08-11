@@ -26,7 +26,7 @@ export const ProcessBasic = ({
     }, [providerName])
     return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
                 flexDirection={'column'}>
-        <Typography component={'h3'} variant={'h2'} marginBottom={3}>{label}</Typography>
+        <Typography component={'h3'} variant={'h3'} marginBottom={3}>{label}</Typography>
         <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
             <LoadingIcon color={'primary'} style={{width: 60, height: 60}}/>
         </Typography>

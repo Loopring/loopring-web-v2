@@ -19,7 +19,7 @@ const EmptyIconStyle = styled(EmptyIcon)`
 
   opacity: .3;
   font-size: ${({theme}) => theme.fontDefault.h1};
-  color: ${({theme}) => theme.colorBase.textHint};
+  color: var(--color-text-disable);
 ` as typeof EmptyIcon
 const WrapStyled = styled(Box)<{ height: number | undefined | string }>`
   display: flex;

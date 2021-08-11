@@ -7,21 +7,25 @@ export const pxToRem = (px: any, oneRemPx = 10) => `${px / oneRemPx}rem`;
 export const unit: number = 8;
 export const borderFunc = (themeMode: ThemeKeys) => {
     const colorBase = themeMode === 'dark' ? ColorDarkDefault : ColorLightDefault
-    const borderColor = colorBase?.border() as any;
+    const borderColor = {
+        default: colorBase.border,
+        primary: colorBase.secondary,
+        selected: colorBase.secondaryPressed,
+        focus: colorBase.borderHover,
+    }
     return {
-        defaultBorder: `1px solid ${borderColor?.default}`,
+        defaultBorder: `1px solid ${borderColor.default}`,
         defaultRadius: `${unit / 2}px`,
         FontDefault: fontDefault,
         defaultFrame: ({
                            d_W = 1,
                            d_R = 1,
                            c_key = 'primary'
-                       }: { d_W?: number, d_R?: number, c_key?: 'primary' | 'selected' | 'blur' | 'focus' | 'outline' | string }) => {
+                       }: { d_W?: number, d_R?: number, c_key?: 'primary' | 'selected' | 'focus' | string }) => {
             let color;
             switch (c_key) {
                 case 'primary':
                 case 'selected':
-                case 'blur':
                 case 'focus':
                     color = borderColor[ c_key ];
                     break;
@@ -36,13 +40,12 @@ export const borderFunc = (themeMode: ThemeKeys) => {
         borderConfig: ({
                            d_W = 1,
                            c_key = 'primary'
-                       }: { d_W?: number, c_key?: 'primary' | 'selected' | 'blur' | 'focus' | string }) => {
+                       }: { d_W?: number, c_key?: 'primary' | 'selected'  | 'focus' | string }) => {
             let color;
             switch (c_key) {
                 case 'primary':
                 case 'selected':
                 case 'focus':
-                case 'blur':
                     color = borderColor[ c_key ];
                     break;
                 default:
@@ -52,3 +55,4 @@ export const borderFunc = (themeMode: ThemeKeys) => {
         }
     }
 }
+

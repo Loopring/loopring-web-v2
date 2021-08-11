@@ -24,12 +24,10 @@ const PointStyled = styled(Box)`
 
   :after {
     content: '';
-
-
     width: 10px;
     height: 10px;
     background: ${({theme}) => theme.colorBase.textSecondary};
-    ${({theme}) => theme.border.defaultFrame({d_W: 1, d_R: 2, c_key: theme.colorBase.backgroundBox})};
+    ${({theme}) => theme.border.defaultFrame({d_W: 1, d_R: 2, c_key: 'var(--opacity)'})};
   }
 ` as typeof Box
 const Track = styled.div`
@@ -37,7 +35,7 @@ const Track = styled.div`
   height: 4px;
   border-radius: 4px;
   position: absolute;
-  background-color: ${({theme}) => theme.colorBase.background().outline};
+  background-color: var(--color-divide);
   z-index: 99;
   left: 1px;
   right: 1px;

@@ -1,4 +1,4 @@
-import { Box, Button, Container, Link, MenuItem, Tab, Typography } from "@material-ui/core";
+import { Box, Button, Container, Link, LinkProps, MenuItem, MenuProps, Tab, Typography } from "@material-ui/core";
 import { Link as RouterLink } from 'react-router-dom';
 import { WithTranslation } from "react-i18next";
 // @ts-ignore
@@ -11,14 +11,16 @@ import { css } from "@emotion/react";
 import Menu from 'material-ui-popup-state/HoverMenu';
 import React, { ForwardedRef, RefAttributes } from "react";
 // import Popover from 'material-ui-popup-state/HoverPopover';
+// background-color: ${theme.colorBase.primaryLight};
+
 const hr = ({theme}: any) => css`
   border-radius: ${theme.unit / 2}px;
   content: '';
   margin: 0 8px;
   display: block;
   height: 2px;
-  background-color: ${theme.colorBase.primaryLight};
-  //margin-bottom: -2px;
+  //margin-bottom: -2px;  
+  background: transparent;
   position: absolute;
   left: 0;
   right: 0;
@@ -44,7 +46,7 @@ export const HeaderMenu = styled(Container)`
   align-items: stretch;
   position: relative;
 ` as typeof Container;
-const StyledHeadMenuItem = styled(Link)`
+const StyledHeadMenuItem = styled(Link)<LinkProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -60,7 +62,7 @@ const StyledHeadMenuItem = styled(Link)`
       opacity: 1;
       color: inherit;
       &:hover{
-        color: ${({theme}) => theme.colorBase.primaryLight};
+        // color: var(--primary);
       }
     }
     
@@ -68,7 +70,7 @@ const StyledHeadMenuItem = styled(Link)`
     
       .MuiTab-root{
         &:hover {
-          color: ${({theme}) => theme.colorBase.textPrimary};
+          //color: var(--primary);
         }
       }
      
@@ -90,7 +92,7 @@ const StyledHeadMenuItem = styled(Link)`
 
   }
 ` as typeof Link;
-const StyledLayer2Item = styled(MenuItem)<any>`
+const StyledLayer2Item = styled(MenuItem)<MenuItemProps<any>>`
   padding: 0 1.2rem;
   border-left-color: transparent;
   height: 100%;
@@ -110,10 +112,10 @@ const StyledLayer2Item = styled(MenuItem)<any>`
     border-left-color: transparent;
 
     h5 {
-      color: ${({theme}) => theme.colorBase.primaryLight};
+      color: var(--color-primary)
     }
 
-    background: ${({theme}) => theme.colorBase.background().hover};
+    //background: var(--color-box-hover);
   }
 
   // .dot {
@@ -122,18 +124,18 @@ const StyledLayer2Item = styled(MenuItem)<any>`
   //   text-indent: .3em;
   //   //font-size:1.1em;
   //   transform: scale(1.2) translateY(5px);
-    //   color: ${({theme}) => theme.colorBase.primaryLight};
+    //   color: var(--color-primary)
   //
   // }
 ` as typeof MenuItem;
 
 
-const StyledHeaderMenuSub = styled(Menu)`
+const StyledHeaderMenuSub = styled(Menu)<MenuProps>`
   && {
     color: ${({theme}) => theme.colorBase.textSecondary};
 
     ul {
-      background-color: ${({theme}) => theme.colorBase.background().default};
+      background-color: var(--color-box-secondary);
       padding: 0;
 
       .layer-1 {
@@ -194,10 +196,9 @@ export const HeadMenuItem = React.memo(React.forwardRef(<I extends BasicHeaderIt
             style: {textDecoration: "none"},
             // ...props
         }} >  {children}</StyledHeadMenuItem>;
-}));
-
-
-export const Layer2Item = <I extends BasicHeaderItem>({t, label}: MenuItemProps<I> & WithTranslation) => {
+})) as <I extends BasicHeaderItem>(props:MenuItemLink<I>)=>JSX.Element;
+//@ts-ignore
+export const Layer2Item = React.memo(<I extends BasicHeaderItem>({t, label}: MenuItemProps<I> & WithTranslation) => {
     return <StyledLayer2Item key={label.id}>
         {/*<Box className={'dot'} paddingTop={0}>&#x25CF;</Box>*/}
         <Box display={"flex"} paddingRight={1.5} flexDirection={"column"} justifyContent={"space-around"}>
@@ -207,7 +208,7 @@ export const Layer2Item = <I extends BasicHeaderItem>({t, label}: MenuItemProps<
                              variant={'body2'}>{label?.description ? t(label.description) : ''}</Typography></Box>
         </Box>
     </StyledLayer2Item>
-}
+}) as <I extends BasicHeaderItem>(props:MenuItemProps<I> & WithTranslation)=>JSX.Element;
 
 
 export const HeaderMenuSub = React.memo(React.forwardRef(<I extends BasicHeaderItem>({

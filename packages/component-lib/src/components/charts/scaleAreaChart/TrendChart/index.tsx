@@ -14,7 +14,7 @@ const DOWN_COLOR = '#fb3838'
 
 const TooltipStyled = styled(Box)`
     background: ${({theme}) => theme.colorBase.borderHover};
-    border: 1px solid ${({theme}) => theme.colorBase.borderColor};
+    border: 1px solid var(--color-border);
     border-radius: ${({theme}) => theme.unit * 0.25}px;
     padding: ${({theme}) => theme.unit * 2}px ${({theme}) => theme.unit * 2}px;
 

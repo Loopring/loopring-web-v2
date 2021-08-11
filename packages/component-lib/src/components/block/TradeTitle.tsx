@@ -86,7 +86,7 @@ export const TradeTitle = <I extends object>({
                         }}
                             // src={sellData?.icon}
                                   src={'static/images/icon-default.png'}/>} </Box>
-                    <Typography variant={'h3'} component={'h3'} paddingRight={1}>
+                    <Typography variant={'h4'} component={'h3'} paddingRight={1}>
                         <Typography component={'span'} title={'sell'} className={'next-coin'}>
                             {coinAInfo?.simpleName}
                         </Typography>
@@ -109,8 +109,8 @@ export const TradeTitle = <I extends object>({
                         {' '}
                         {/*{t('labelChange24h', {timeUnit: tradeFloat.timeUnit})}*/}
                     </Typography>
-                    <Typography variant={'h4'} component={'span'} display={'flex'} alignItems={'flex-end'}>
-                        <Typography variant={'h4'} component={'span'}>
+                    <Typography variant={'h5'} component={'span'} display={'flex'} alignItems={'flex-end'}>
+                        <Typography variant={'h5'} component={'span'}>
                             {/* {`${(tradeFloat.floatTag === 'decrease' ? '-' : '+') + tradeFloat.priceDollar} (${change})`}</Typography> */}
                             {/*{ tradeFloatType === FloatTag.increase ? '+' : '' }*/}
                             {currency === Currency.dollar ? '\u2248 ' + PriceTag.Dollar
@@ -118,7 +118,7 @@ export const TradeTitle = <I extends object>({
                                 : '\u2248 ' + PriceTag.Yuan
                                 + getThousandFormattedNumbers(tradeFloat && tradeFloat.closeYuan ? tradeFloat.closeYuan as number : 0, 2)}
                         </Typography>
-                        <Typography variant={'h4'} component={'span'} className={`float-tag float-${tradeFloatType}`}>
+                        <Typography variant={'h5'} component={'span'} className={`float-tag float-${tradeFloatType}`}>
                             （{ tradeFloatType === FloatTag.increase ? '+' : '' }{change}）
                         </Typography>
                     </Typography>

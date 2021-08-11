@@ -33,7 +33,7 @@ const StyledArrowSort = styled(Box)<BoxProps & { sortdirection: 'ASC' | 'DESC' |
     border-bottom-color: ${({
                               theme,
                               sortdirection
-                            }) => sortdirection === 'ASC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.checkboxDefault}`};
+                            }) => sortdirection === 'ASC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.primary}`};
   }
 
   .down {
@@ -43,7 +43,7 @@ const StyledArrowSort = styled(Box)<BoxProps & { sortdirection: 'ASC' | 'DESC' |
     border-top-color: ${({
                            theme,
                            sortdirection
-                         }) => sortdirection === 'DESC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.checkboxDefault}`};
+                         }) => sortdirection === 'DESC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.primary}`};
     margin-top: ${({theme}) => `${theme.unit / 4}px`};
   }
 ` as (props: BoxProps & { sortdirection: 'ASC' | 'DESC' | undefined }) => JSX.Element;
