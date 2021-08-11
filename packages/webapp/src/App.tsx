@@ -36,8 +36,7 @@ const App = () => {
       }
       body:before {
         ${theme.mode === 'dark' ? `
-            background: #191C30;
-            background: var(--color-box);
+            background: var(--color-global-bg);
        ` : ''}
       }
       //#root{
