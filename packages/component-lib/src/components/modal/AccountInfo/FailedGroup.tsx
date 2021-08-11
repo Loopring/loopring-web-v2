@@ -49,7 +49,7 @@ export const FailedUnlock = ({onRetry, t, label, ...rest}: { onRetry: () => void
             </Typography>
         </>
     }, [])
-    return <FailedBasic label={'labelUnLockLayer2'} onRetry={() => { if (onRetry) onRetry() }} describe={describe} {...{...rest, t}}/>
+    return <FailedBasic label={t('labelUnLockLayer2')} onRetry={() => { if (onRetry) onRetry() }} describe={describe} {...{...rest, t}}/>
 
 }
 
