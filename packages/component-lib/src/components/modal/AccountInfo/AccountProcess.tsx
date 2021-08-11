@@ -13,7 +13,7 @@ export const ActiveAccountProcess = ({t, ...rest}: WithTranslation & { providerN
             </Typography>
         </>
     }, [])
-    return <ProcessBasic label={'labelActiveAccount'} describe={ describe} {...{...rest, t}}/>
+    return <ProcessBasic label={'labelActivateAccount'} describe={ describe} {...{...rest, t}}/>
 }
 
 export const DepositApproveProcess = ({

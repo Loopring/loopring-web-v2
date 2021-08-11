@@ -122,6 +122,7 @@ export const WalletConnectBtn = ({
     const [networkLabel, setNetworkLabel] = React.useState<string | undefined>(undefined)
     const [btnClassname, setBtnClassname] = React.useState<string | undefined>('');
     const [icon, setIcon] = React.useState<JSX.Element | undefined>();
+
     useEffect(() => {
         if (accountState) {// && accountState.status === 'UNSET'){
             const {account} = accountState;
@@ -159,7 +160,9 @@ export const WalletConnectBtn = ({
                 default:
             }
             if (account && account._chainId === 5) {
-                setNetworkLabel('Görli')
+              setNetworkLabel('Görli')
+            } else {
+              setNetworkLabel('')
             }
         } else {
             setLabel('labelConnectWallet')
