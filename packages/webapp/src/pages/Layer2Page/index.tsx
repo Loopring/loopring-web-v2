@@ -20,6 +20,8 @@ import OrderPanel from './OrderPanel'
 import { myLog } from 'utils/log_tools'
 // import { useModalProps } from '../../modal';
 
+export const subMenu = subMenuLayer2
+
 const BoxStyle = styled(Box)`
   ${({theme}) => `
     background-color: ${theme.colorBase.background().default};
@@ -127,7 +129,7 @@ export const Layer2Page = () => {
                     <Box width={'200px'} display={'flex'} justifyContent={'stretch'} marginRight={3}
                          marginBottom={2}>
                         <SubMenu>
-                            <SubMenuList selected={selected} subMenu={subMenuLayer2 as any}/>
+                            <SubMenuList selected={selected} subMenu={subMenu as any}/>
                         </SubMenu>
                     </Box>
                     <Box minHeight={420} display={'flex'} alignItems={'stretch'} flexDirection={'column'} marginTop={0}
@@ -141,11 +143,10 @@ export const Layer2Page = () => {
                         {selected === 'setting' && <SettingPanel/>}
                     </Box>
                 </>
-                break
             default:
+                break
         }
-    }, [])
-
+    }, [t, account.readyState, selected])
 
     return <>
         {viewTemplate}
