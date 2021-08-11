@@ -121,7 +121,6 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     }, [accAddress])
 
     useEffect(() => {
-        console.log(walletLayer2Status)
         if (walletLayer2Status === 'UNSET') {
             const walletMap = makeWalletLayer2()
             const assetsKeyList = walletMap && walletMap.walletMap ? Object.keys(walletMap.walletMap) : []
