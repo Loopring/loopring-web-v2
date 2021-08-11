@@ -55,14 +55,14 @@ export const TransferPanel = withTranslation('common', {withRef: true})(<T exten
         },
             {
                 key: "tradeMenuList",
-                element: () => <TradeMenuList {...{
+                element: React.useMemo( () => <TradeMenuList {...{
                     ...rest,
                     onChangeEvent,
                     //rest.walletMap,
                     selected: switchData.tradeData.belong,
                     tradeData: switchData.tradeData,
                     //oinMap
-                }}/>,
+                }}/>,[switchData,rest,onChangeEvent]),
                 toolBarItem: undefined
                 // toolBarItem: toolBarItemBack
             },]
