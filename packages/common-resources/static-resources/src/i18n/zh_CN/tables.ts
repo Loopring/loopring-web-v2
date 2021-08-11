@@ -37,7 +37,7 @@ export default {
     labelTradeFilterAllTypes: '所有类型',
     labelTradeFilterBuy: '买入',
     labelTradeFilterSell: '卖出',
-    labelTradeSide: '卖/买',
+    labelTradeSide: '兑换',
     labelTradeAmount: '交易总额',
     labelTradePrice: '价格',
     labelTradeFee: '费用',
