@@ -23,16 +23,15 @@ export const SubMenuItem = styled<any>(ListItem)`
     svg {
       width: var(--header-menu-icon-size);
       height: var(--header-menu-icon-size);
-      //color: var(--color-text-secondary);
     }
 
-    :hover {
-      svg {
-        color: var(--color-primary); 
-      }
-
-      color: var(--color-primary);
-    }
+    //:hover {
+    //  svg {
+    //    color: var(--color-primary); 
+    //  }
+    //
+    //  color: var(--color-primary);
+    //}
   }
 
   &.Mui-selected, &.Mui-selected.Mui-focusVisible {

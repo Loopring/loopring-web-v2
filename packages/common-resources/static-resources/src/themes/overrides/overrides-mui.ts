@@ -433,6 +433,7 @@ export const MuiInputBase = ({colorBase}: any): { styleOverrides: ComponentsOver
                 },
                 '& svg': {
                     pointerEvents: 'none',
+                    color:'var(--color-text-secondary)',
                 },
                 paddingRight: 0,
                 '&:hover': {

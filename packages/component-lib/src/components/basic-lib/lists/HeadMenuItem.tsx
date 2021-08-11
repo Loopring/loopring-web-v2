@@ -149,7 +149,6 @@ const StyledTabBtn = styled(Button)`
   && {
     text-transform: capitalize;
     display: flex;
-    padding: initial;
     height: 100%;
     color: ${({theme}) => theme.colorBase.textSecondary};
     font-size: ${({theme}) => theme.fontDefault.h5};
@@ -197,8 +196,10 @@ export const HeadMenuItem = React.memo(React.forwardRef(<I extends BasicHeaderIt
             // ...props
         }} >  {children}</StyledHeadMenuItem>;
 })) as <I extends BasicHeaderItem>(props:MenuItemLink<I>)=>JSX.Element;
-//@ts-ignore
-export const Layer2Item = React.memo(<I extends BasicHeaderItem>({t, label}: MenuItemProps<I> & WithTranslation) => {
+
+
+export let Layer2Item: <I extends BasicHeaderItem>(props: (MenuItemProps<I> & WithTranslation)) => JSX.Element;
+Layer2Item = React.memo(<I extends BasicHeaderItem>({t, label}: MenuItemProps<I> & WithTranslation) => {
     return <StyledLayer2Item key={label.id}>
         {/*<Box className={'dot'} paddingTop={0}>&#x25CF;</Box>*/}
         <Box display={"flex"} paddingRight={1.5} flexDirection={"column"} justifyContent={"space-around"}>
@@ -208,7 +209,7 @@ export const Layer2Item = React.memo(<I extends BasicHeaderItem>({t, label}: Men
                              variant={'body2'}>{label?.description ? t(label.description) : ''}</Typography></Box>
         </Box>
     </StyledLayer2Item>
-}) as <I extends BasicHeaderItem>(props:MenuItemProps<I> & WithTranslation)=>JSX.Element;
+}) as <I extends BasicHeaderItem>(props: MenuItemProps<I> & WithTranslation) => JSX.Element;
 
 
 export const HeaderMenuSub = React.memo(React.forwardRef(<I extends BasicHeaderItem>({

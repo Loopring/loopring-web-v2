@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import { MenuItem } from "@material-ui/core";
 
+// @ts-ignore
 export const TabItemPlus = styled(MenuItem)<any>`
   && {
     &.Mui-focusVisible {

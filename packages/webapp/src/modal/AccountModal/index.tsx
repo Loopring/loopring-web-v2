@@ -152,6 +152,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 t
             }} />,
             [ AccountStep.Depositing ]: <Depositing label={title}
+                                                    onClose={onClose}
                                                     etherscanLink={etherscanUrl + account.accAddress}
                                                     goUpdateAccount={() => goUpdateAccount()}  {...{...rest, t}} />,
             [ AccountStep.FailedDeposit ]: <FailedDeposit label={title}

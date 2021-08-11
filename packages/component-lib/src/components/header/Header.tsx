@@ -44,7 +44,7 @@ const HeaderStyled = styled(AppBar)`
     box-shadow: none;
     &.item-scrolled.MuiAppBar-root.MuiAppBar-positionFixed{
       background-color: var(--color-box);
-
+      box-shadow: var(--shadow);
     }
   }
 `

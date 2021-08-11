@@ -88,8 +88,7 @@ const TestNetworkStyle = styled(Typography)`
   // display: inline-flex;
   position: relative;
   // padding-right: ${({theme}) => theme.unit}px;
-  color: ${({theme}) => theme.colorBase.secondary};
-  // cursor: initial;
+   // cursor: initial;
   height: 3rem;
 
   &:after {
@@ -179,7 +178,7 @@ export const WalletConnectBtn = ({
     return <>
         {networkLabel ?
             <TestNetworkStyle display={'inline-flex'} alignItems={'center'} justifyContent={'center'} paddingX={1}
-                              component={'span'} color={'warning'} marginRight={1}>{networkLabel}</TestNetworkStyle> : <></>}
+                              component={'span'} color={'var(--vip-text)'} marginRight={1}>{networkLabel}</TestNetworkStyle> : <></>}
         <WalletConnectBtnStyled
             variant={['un-connect', 'wrong-network'].findIndex(ele => btnClassname === ele) !== -1 ? 'contained' : 'outlined'}
             size={['un-connect', 'wrong-network'].findIndex(ele => btnClassname === ele) !== -1 ? 'small' : 'medium'}

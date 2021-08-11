@@ -24,8 +24,8 @@ export const InputSearch = ({
             }
         }}
         startAdornment={
-            <InputAdornment position="start">
-                <SearchIcon/>
+            <InputAdornment color={'var(--color-text-secondary)'} position="start">
+                <SearchIcon />
             </InputAdornment>
         }
     />
