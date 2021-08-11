@@ -215,7 +215,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        inputData,
                                                                        handleCountChange,
                                                                        focusOnInput,
-
+                                                                       name,
                                                                    }
                                                                        : InputCoinProps<T, C, I>, ref: React.ForwardedRef<any>) {
     const {balance, belong, tradeValue} = (inputData ? inputData : {}) as IBData<C>;

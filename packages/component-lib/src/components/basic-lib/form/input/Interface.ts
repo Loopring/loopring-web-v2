@@ -35,6 +35,7 @@ export type InputCoinProps<T, R, I> = {
     handleError?: (ibData: T, ref: React.ForwardedRef<any>) => { error: boolean, message?: string | React.ElementType<HTMLElement> },
     focusOnInput?: boolean,
     order?: 'left' | 'right',
+    name?: string
 }
 export type InputSelectProps<T, I = CoinKey<T>> = {
     // coinMap: CoinMap<R,I extends CoinInfo?CoinInfo:CoinInfo>,
