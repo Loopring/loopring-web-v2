@@ -6,10 +6,10 @@ import { Box } from '@material-ui/core/';
 import React from 'react';
 
 export const TypographyStrong = styled(Typography)`
-  color: ${({theme}) => theme.colorBase.secondary};
+  color: var(--color-secoundary);
 ` as typeof Typography
 export const TypographyGood = styled(Typography)`
-  color: ${({theme}) => theme.colorBase.success};
+  color: var(--color-success);
 ` as typeof Typography
 export const TablePaddingX = ({pLeft = 24, pRight = 24}: { pLeft: number, pRight: number }) => css`
   .rdg-row, .rdg-header-row {
@@ -126,7 +126,7 @@ export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _
   .trade-panel{
     .react-swipeable-view-container {
       & > div{
-        padding: 0 ${({theme}) => theme.unit * 5/2}px ${({theme}) => theme.unit * 5}px;
+        padding: 0 ${({theme}) => theme.unit * 5 / 2}px ${({theme}) => theme.unit * 5}px;
         .container{
           height:100%;
           padding-top:0;
@@ -165,13 +165,13 @@ export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _
   ${({_height, theme}) => `
   .MuiModal-root & {
      .coin-menu {
-          height:${_height  ?
+          height:${_height ?
     typeof _height === 'number' ?
         ` calc(${_height + 'px'} - ${theme.unit * 4}px - 2 * var(--toolbar-row-padding)  ) `
-        :` calc(${_height} - ${theme.unit * 4}px - 2 * var(--toolbar-row-padding)  )`
+        : ` calc(${_height} - ${theme.unit * 4}px - 2 * var(--toolbar-row-padding)  )`
     : '410px'} !important;
      }
-  }` };
+  }`};
 ` as React.ElementType<{ _height?: number | string, _width?: number | string } & BoxProps>
 
 
@@ -182,7 +182,8 @@ export const toolBarPanel = ({theme}: any) => css`
     box-sizing: border-box;
     height: var(--toolbar-row-padding-minus);
     //min-height: var(--toolbar-row-padding);
-    margin-top:  var(--toolbar-row-padding-minus); 
+    margin-top: var(--toolbar-row-padding-minus);
+
     .MuiIconButton-root {
       height: var(--btn-icon-size);
       width: var(--btn-icon-size);

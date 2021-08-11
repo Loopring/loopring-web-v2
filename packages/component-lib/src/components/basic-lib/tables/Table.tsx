@@ -25,7 +25,6 @@ const TableWrapperStyled = styled(Box)`
   //   left: 0;
   //   width: 100%;
   //   height: 100%;
-  //   background-color: ${({theme}) => theme.colorBase.box};
   //   opacity: 0.1;
   //   transition: all 0.3s;
   //   content: '';
@@ -39,7 +38,7 @@ export const DataGridStyled = styled(DataGrid)`
 
   &.rdg {
     min-height: 350px;
-    color:var(--color-text-primary);
+    color: var(--color-text-primary);
     //color: inherit;
     box-sizing: border-box;
     border: rgba(0, 0, 0, 0) 0px solid;
@@ -47,13 +46,13 @@ export const DataGridStyled = styled(DataGrid)`
     font-family: Roboto;
 
     .rdg-header-row {
-      color: ${({theme}) => theme.colorBase.textSecondary};
+      color: var(--color-text-secondary);
       width: 100%;
       background-color: inherit;
     }
 
     &.scrollable .rdg-header-row {
-      background:var(--color-box);
+      background: var(--color-box);
     }
 
     .rdg-header-sort-name {
@@ -99,7 +98,7 @@ export const DataGridStyled = styled(DataGrid)`
         background: var(--color-box-hover);
 
         .rdg-cell:first-of-type {
-          // border-left: ${({theme}) => theme.border.borderConfig({d_W: 2, c_key: 'selected'})}
+            // border-left: ${({theme}) => theme.border.borderConfig({d_W: 2, c_key: 'selected'})}
         }
       }
     }
@@ -118,7 +117,7 @@ export const DataGridStyled = styled(DataGrid)`
     }
 
     .rdg-cell.success {
-      color: ${({theme}) => theme.colorBase.success};
+      color: var(--color-success);
     }
 
     .rdg-cell.error {
@@ -178,7 +177,7 @@ export const generateRows = <Row, SR>(rawData: [][], rest: TableProps<Row, SR>):
 };
 
 export type ExtraTableProps = {
-  showLoading?: boolean
+    showLoading?: boolean
 }
 
 //TODO:
@@ -254,35 +253,35 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
 
     /*** sort handle end ***/
     return <TableWrapperStyled>
-      <DataGridStyled
-        {...rest}
-        onScroll={onScroll}
-        columns={loopringColumns as any}
-        style={style}
-        rows={(sortDefaultKey && sortedRows) ? sortedRows : rows}
-        rowKeyGetter={rowKeyGetter}
-        rowClass={row => rowClassFn ? rowClassFn(row, props) : ''}
-        rowHeight={rowHeight ? rowHeight : 44}
-        onRowsChange={setRows}
-        onSortColumnsChange={onSortColumnsChange}
-        // sortDirection={sortDirection}
-        rowRenderer={rowRenderer as any}
-        sortColumns={sortColumns}
-        onRowClick={onRowClick}
-        emptyRowsRenderer={!showLoading ? (() => EmptyRowsRenderer ? EmptyRowsRenderer :
-            <EmptyDefault height={`calc(100% - var(--header-row-height))`} message={() => {
-                return <RenderEmptyMsg>
-                    <Trans i18nKey="labelEmptyDefault">
-                        Content is Empty
-                    </Trans>
-                </RenderEmptyMsg>
-            }}/>) : null}
-      />
-      {showLoading && (
-        <LoadingStyled />
-      )}
+        <DataGridStyled
+            {...rest}
+            onScroll={onScroll}
+            columns={loopringColumns as any}
+            style={style}
+            rows={(sortDefaultKey && sortedRows) ? sortedRows : rows}
+            rowKeyGetter={rowKeyGetter}
+            rowClass={row => rowClassFn ? rowClassFn(row, props) : ''}
+            rowHeight={rowHeight ? rowHeight : 44}
+            onRowsChange={setRows}
+            onSortColumnsChange={onSortColumnsChange}
+            // sortDirection={sortDirection}
+            rowRenderer={rowRenderer as any}
+            sortColumns={sortColumns}
+            onRowClick={onRowClick}
+            emptyRowsRenderer={!showLoading ? (() => EmptyRowsRenderer ? EmptyRowsRenderer :
+                <EmptyDefault height={`calc(100% - var(--header-row-height))`} message={() => {
+                    return <RenderEmptyMsg>
+                        <Trans i18nKey="labelEmptyDefault">
+                            Content is Empty
+                        </Trans>
+                    </RenderEmptyMsg>
+                }}/>) : null}
+        />
+        {showLoading && (
+            <LoadingStyled/>
+        )}
     </TableWrapperStyled>
-    ;
+        ;
     //  <EmptyDefault height={"calc(100% - 35px)"} url={'/path'} message={()=>{
     //  return <>Go to <Link to={'./path'}> link or event</Link> at here</>} } />   }
 }

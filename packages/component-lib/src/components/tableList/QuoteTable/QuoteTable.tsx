@@ -2,12 +2,17 @@ import styled from '@emotion/styled'
 import { Box, Button } from '@material-ui/core'
 import { withTranslation, WithTranslation } from 'react-i18next'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { EmptyValueTag, FloatTag, getThousandFormattedNumbers } from '@loopring-web/common-resources'
+import {
+    EmptyValueTag,
+    FloatTag,
+    getThousandFormattedNumbers,
+    StarHollowIcon,
+    StarSolidIcon
+} from '@loopring-web/common-resources'
 import { Column, Table } from '../../basic-lib/tables/index'
 import { TablePaddingX } from '../../styled'
 import { Typography } from '@material-ui/core/';
 import { useSettings } from '@loopring-web/component-lib/src/stores'
-import { StarHollowIcon, StarSolidIcon } from '@loopring-web/common-resources'
 import { useDispatch } from 'react-redux'
 
 const TableWrapperStyled = styled(Box)`
@@ -50,12 +55,12 @@ const QuoteTableChangedCell: any = styled.span`
     const {theme: {colorBase}, upColor} = props
     const isUpColorGreen = upColor === 'green'
     return props.value > 0
-        ? isUpColorGreen 
-            ? colorBase.success 
+        ? isUpColorGreen
+            ? colorBase.success
             : colorBase.error
         : props.value < 0
-            ? isUpColorGreen 
-                ? colorBase.error 
+            ? isUpColorGreen
+                ? colorBase.error
                 : colorBase.success
             : colorBase.textSecondary
 }
@@ -69,14 +74,14 @@ const StarIconWrapperStyled = styled(Box)`
 type IGetColumnModePros = {
     t: any,
     history: any,
-    upColor: 'green' | 'red', 
+    upColor: 'green' | 'red',
     handleStartClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, isFavourite: boolean, pair: string) => void,
     favoriteMarket: string[]
 }
 
 // const getColumnModelQuoteTable = (t: TFunction, history: any): Column<Row, unknown>[] => [
 const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem, unknown>[] => {
-    const { t: { t }, history, upColor, handleStartClick, favoriteMarket} = props
+    const {t: {t}, history, upColor, handleStartClick, favoriteMarket} = props
     return (
         [
             {
@@ -91,16 +96,16 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                     const isFavourite = favoriteMarket?.includes(pair)
                     return (
                         <Box className="rdg-cell-value"
-                            display={'flex'}
-                            alignItems={'center'}
-                            style={{ cursor: 'pointer' }}
-                            width={'max-content'}
-                            onClick={(e) => handleStartClick(e, isFavourite, pair)}>
+                             display={'flex'}
+                             alignItems={'center'}
+                             style={{cursor: 'pointer'}}
+                             width={'max-content'}
+                             onClick={(e) => handleStartClick(e, isFavourite, pair)}>
                             <StarIconWrapperStyled>
                                 {isFavourite ? (
-                                    <StarSolidIcon cursor={'pointer'} />
+                                    <StarSolidIcon cursor={'pointer'}/>
                                 ) : (
-                                    <StarHollowIcon cursor={'pointer'} />
+                                    <StarHollowIcon cursor={'pointer'}/>
                                 )}
                             </StarIconWrapperStyled>
                             <Typography component={'span'}>
@@ -128,7 +133,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                     //     return Number.isFinite(value) ? value.toFixed(2) : EmptyValueTag;
                     // }
                     // const RenderValue = styled.span`
-                    // 	color: ${({theme}) => theme.colorBase.textSecondary}
+                    // 	color: var(--color-text-secondary)
                     // `
                     return (
                         <div className="rdg-cell-value">
@@ -144,7 +149,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                 sortable: true,
                 formatter: ({row}) => {
                     const value = row.change
-        
+
                     // const hasValue = Number.isFinite(value)
                     // const isPositive = value > 0
                     // const sign = isPositive ? '+' : ''
@@ -223,7 +228,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
             }
         ]
     )
-} 
+}
 
 export interface QuoteTableProps {
     rawData: QuoteTableRawDataItem[];
@@ -312,8 +317,8 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                     break;
                 case 'close':
                     sortedRows = sortedRows.sort((a, b) => {
-                        const valueA = a['close']
-                        const valueB = b['close']
+                        const valueA = a[ 'close' ]
+                        const valueB = b[ 'close' ]
                         if (valueA && valueB) {
                             return valueB - valueA
                         }
@@ -328,8 +333,8 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                     break;
                 case 'change':
                     sortedRows = sortedRows.sort((a, b) => {
-                        const valueA = a['change']
-                        const valueB = b['change']
+                        const valueA = a[ 'change' ]
+                        const valueB = b[ 'change' ]
                         if (valueA && valueB) {
                             return valueB - valueA
                         }
@@ -344,8 +349,8 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                     break;
                 case 'high':
                     sortedRows = sortedRows.sort((a, b) => {
-                        const valueA = a['high']
-                        const valueB = b['high']
+                        const valueA = a[ 'high' ]
+                        const valueB = b[ 'high' ]
                         if (valueA && valueB) {
                             return valueB - valueA
                         }
@@ -360,8 +365,8 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                     break;
                 case 'low':
                     sortedRows = sortedRows.sort((a, b) => {
-                        const valueA = a['low']
-                        const valueB = b['low']
+                        const valueA = a[ 'low' ]
+                        const valueB = b[ 'low' ]
                         if (valueA && valueB) {
                             return valueB - valueA
                         }
@@ -376,8 +381,8 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                     break;
                 case 'volume':
                     sortedRows = sortedRows.sort((a, b) => {
-                        const valueA = a['volume']
-                        const valueB = b['volume']
+                        const valueA = a[ 'volume' ]
+                        const valueB = b[ 'volume' ]
                         if (valueA && valueB) {
                             return valueB - valueA
                         }
@@ -390,7 +395,7 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                         return 0
                     })
                     break;
-                default: 
+                default:
                     return sortedRows
             }
             return sortedRows;
@@ -400,8 +405,13 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
 
     return (
         <TableWrapperStyled>
-            <TableStyled currentHeight={currentHeight} className={'scrollable'} {...{...defaultArgs, ...rest, onVisibleRowsChange, rawData, rowHeight}}
-                   /* onScroll={getScrollIndex} */ />
+            <TableStyled currentHeight={currentHeight} className={'scrollable'} {...{
+                ...defaultArgs, ...rest,
+                onVisibleRowsChange,
+                rawData,
+                rowHeight
+            }}
+                /* onScroll={getScrollIndex} */ />
         </TableWrapperStyled>
     )
 }))

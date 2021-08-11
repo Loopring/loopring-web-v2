@@ -9,7 +9,7 @@ const BoxStyled = styled(Box)`
   // .MuiLink-root {
   //   height: 2rem;
   //   line-height: 2rem;
-    //   color: ${({theme}) => theme.colorBase.textSecondary};
+    //   color: var(--color-text-secondary);
   //
   //  
   // }                                                               
@@ -38,7 +38,7 @@ const BoxStyled = styled(Box)`
 
   & .lock {
     svg {
-      color: ${({theme}) => theme.colorBase.success};;
+      color: var(--color-success);;
     }
   }
 ` as typeof Box
@@ -56,17 +56,17 @@ export const AccountBase = ({
                             }: AccountBaseProps & WithTranslation) => {
     const addressShort = getShortAddr(accAddress)
     const etherscanLink = etherscanUrl + accAddress;
-    const connectBy = connectName === 'unknown' ?  t('labelWrongNetwork'): connectName;
+    const connectBy = connectName === 'unknown' ? t('labelWrongNetwork') : connectName;
     return <Box display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
-        <Typography  variant={'body2'} color={'textSecondary'} marginTop={3}>
-            <Trans i18nKey="labelConnectBy" tOptions={{connectBy}}  >
+        <Typography variant={'body2'} color={'textSecondary'} marginTop={3}>
+            <Trans i18nKey="labelConnectBy" tOptions={{connectBy}}>
                 Connected with <Typography variant={'body2'} component={'span'}>{connectName}</Typography>.
             </Trans>
         </Typography>
         <Typography marginTop={1} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}>
             <Typography component={'span'} variant={'h1'}>{addressShort}</Typography>
             {level ? <VipStyled component={'span'} variant={'body2'}
-                                >{level}</VipStyled> : undefined}
+            >{level}</VipStyled> : undefined}
         </Typography>
         <BoxStyled component={'div'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
                    marginTop={1} alignSelf={'stretch'}>

@@ -33,7 +33,7 @@ const ProviderBtnStyled = styled(Button)`
     &:after {
       position: absolute;
       content: "\u25CF";
-      color: ${({theme}) => theme.colorBase.success};
+      color: var(--color-success);
       //width: 100%;
       display: flex;
       left: 0;
@@ -80,8 +80,8 @@ export const ProviderMenu = ({
         <Typography component={'h3'} variant={'h3'} marginBottom={3}>{t('labelConnectWallet')}</Typography>
         <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}
              flex={1} alignItems={'stretch'} alignSelf={'stretch'}
-             className="modalContent"  paddingX={10}>
-            <BoxStyle paddingX={5/3} display={'flex'} flexDirection={'row'}
+             className="modalContent" paddingX={10}>
+            <BoxStyle paddingX={5 / 3} display={'flex'} flexDirection={'row'}
                       justifyContent={'stretch'} alignItems={'flex-start'}>
                 <MuiFormControlLabel
                     control={<Checkbox defaultChecked checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}

@@ -49,7 +49,7 @@ const WalletConnectBtnStyled = styled(Button)`
     &:after {
       position: absolute;
       content: "\u25CF";
-      color: ${({theme}) => theme.colorBase.success};
+      color: var(--color-success);
       display: flex;
       left: 0;
       padding-left: ${({theme}) => theme.unit * 2}px;
@@ -60,35 +60,35 @@ const WalletConnectBtnStyled = styled(Button)`
 
   &.wrong-network {
     background: var(--color-error);
-    color:var(--color-text-primary);
+    color: var(--color-text-primary);
   }
 
   // .icon-build{
-    //   color: ${({theme}) => theme.colorBase.secondary};
+  //   color: var(--color-secoundary);
   // }
   // .icon-no-network {
-    //   color: var(--color-error);
+  //   color: var(--color-error);
   // }
   //
   // .icon-pending, .icon-progressing {
-    //   color: ${({theme}) => theme.colorBase.secondary};
+  //   color: var(--color-secoundary);
   // }
   //
   // .icon-error, .icon-no-account {
-    //   color: var(--color-error);
+  //   color: var(--color-error);
   // }
   //
   //
   // .icon-success {
-    //   color: ${({theme}) => theme.colorBase.success};
+  //   color: var(--color-success);
   // }
 
 `
 const TestNetworkStyle = styled(Typography)`
   // display: inline-flex;
   position: relative;
-  // padding-right: ${({theme}) => theme.unit}px;
-   // cursor: initial;
+    // padding-right: ${({theme}) => theme.unit}px;
+  // cursor: initial;
   height: 3rem;
 
   &:after {
@@ -158,9 +158,9 @@ export const WalletConnectBtn = ({
                 default:
             }
             if (account && account._chainId === 5) {
-              setNetworkLabel('Görli')
+                setNetworkLabel('Görli')
             } else {
-              setNetworkLabel('')
+                setNetworkLabel('')
             }
         } else {
             setLabel('labelConnectWallet')
@@ -178,7 +178,8 @@ export const WalletConnectBtn = ({
     return <>
         {networkLabel ?
             <TestNetworkStyle display={'inline-flex'} alignItems={'center'} justifyContent={'center'} paddingX={1}
-                              component={'span'} color={'var(--vip-text)'} marginRight={1}>{networkLabel}</TestNetworkStyle> : <></>}
+                              component={'span'} color={'var(--vip-text)'}
+                              marginRight={1}>{networkLabel}</TestNetworkStyle> : <></>}
         <WalletConnectBtnStyled
             variant={['un-connect', 'wrong-network'].findIndex(ele => btnClassname === ele) !== -1 ? 'contained' : 'outlined'}
             size={['un-connect', 'wrong-network'].findIndex(ele => btnClassname === ele) !== -1 ? 'small' : 'medium'}

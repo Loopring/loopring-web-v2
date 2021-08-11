@@ -6,7 +6,7 @@ import React from 'react';
 //backgroundColor: ${theme.colorBase.primaryLight};
 // background-color: ${theme.colorBase.background().hover};
 export const MenuItem = styled(MuiMenuItem)<MuiMenuItemProps>`
-   ${({withNoCheckIcon}) => {
+  ${({withNoCheckIcon}) => {
     return withNoCheckIcon === 'true' ? `        
         &.Mui-selected, &.Mui-selected.Mui-focusVisible {
             color: var(--color-text-primary);
@@ -15,15 +15,15 @@ export const MenuItem = styled(MuiMenuItem)<MuiMenuItemProps>`
             }
         }
      ` : ''
-}}
-  
+  }}
+
 ` as React.ComponentType<MuiMenuItemProps>;
 
 export const OutlineSelect = styled(Select)`
   padding: 0;
   border: transparent;
   background-color: transparent;
-  color: ${({theme}) => theme.colorBase.textSecondary};
+  color: var(--color-text-secondary);
 
   &.MuiInputBase-root {
     min-width: auto;
@@ -32,7 +32,7 @@ export const OutlineSelect = styled(Select)`
 
   svg {
     right: .4rem;
-    top:  ${({theme}) => theme.unit}px;
+    top: ${({theme}) => theme.unit}px;
     position: absolute;
     pointer-events: none;
     transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
@@ -47,6 +47,7 @@ export const OutlineSelect = styled(Select)`
     &:focus {
       background-color: transparent;
     }
+
     &:before {
       content: '';
       display: none;
@@ -54,7 +55,7 @@ export const OutlineSelect = styled(Select)`
   }
 
   &:hover {
-    color:var(--color-text-primary);
+    color: var(--color-text-primary);
     border-left-color: transparent;
   }
 
@@ -85,7 +86,7 @@ export const OutlineSelectItem = styled(MenuItem)<any>`
   }
 
   &:hover {
-    color:var(--color-text-primary);
+    color: var(--color-text-primary);
     border-left-color: transparent;
   }
 ` as typeof MenuItem;

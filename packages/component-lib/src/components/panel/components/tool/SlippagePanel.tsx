@@ -28,7 +28,7 @@ const InputStyled = styled(CurrencyInput)`
   color:var(--color-text-primary);
 
   ::placeholder {
-    color: ${({theme}) => theme.colorBase.textSecondary};
+    color: var(--color-text-secondary);
   }
 ;
   width: 48px; //calc(100% - 2rem);

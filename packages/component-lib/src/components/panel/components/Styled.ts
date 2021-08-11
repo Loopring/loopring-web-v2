@@ -29,7 +29,7 @@ export const IconButtonStyled = styled(IconButton)`
     }
 
     &.outline {
-      background-color: ${({theme}) => theme.colorBase.textDisable};
+      background-color: var(--color-box);
       margin: 0 ${({theme}) => theme.unit / 2}px;
       ${({theme}) => theme.border.defaultFrame({c_key: 'transparent'})};
 

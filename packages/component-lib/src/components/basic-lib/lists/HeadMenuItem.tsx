@@ -30,10 +30,11 @@ const hr = ({theme}: any) => css`
 export const MenuTab = styled(Tab)`
   opacity: 1;
   height: var(--header-height);
+
   &.MuiTab-root.Mui-selected {
     //background-color: chocolate;
 
-    color:var(--color-text-primary);
+    color: var(--color-text-primary);
 
     &:after {
       ${hr}
@@ -54,43 +55,43 @@ const StyledHeadMenuItem = styled(Link)<LinkProps>`
   font-size: ${({theme}) => theme.fontDefault.h5};
   box-shadow: inherit;
   height: var(--header-height);
-  color: ${({theme}) => theme.colorBase.textSecondary};
+  color: var(--color-text-secondary);
   position: relative;
 
   &.layer-0 {
     .MuiButtonBase-root {
       opacity: 1;
       color: inherit;
-      &:hover{
+
+      &:hover {
         // color: var(--primary);
       }
     }
-    
 
-    
-      .MuiTab-root{
-        &:hover {
-          //color: var(--primary);
-        }
+
+    .MuiTab-root {
+      &:hover {
+        //color: var(--primary);
       }
-     
-     
-
-      //.MuiButtonBase-root {
-      //  opacity: 1;
-      //  color: inherit;
-      //}
-    }
-    svg {
-      width: var(--header-menu-icon-size);
-      height: var(--header-menu-icon-size);
     }
 
-    &&.layer-next {
-      display: flex;
-    }
 
+    //.MuiButtonBase-root {
+    //  opacity: 1;
+    //  color: inherit;
+    //}
   }
+
+  svg {
+    width: var(--header-menu-icon-size);
+    height: var(--header-menu-icon-size);
+  }
+
+  &&.layer-next {
+    display: flex;
+  }
+
+}
 ` as typeof Link;
 const StyledLayer2Item = styled(MenuItem)<MenuItemProps<any>>`
   padding: 0 1.2rem;
@@ -103,7 +104,7 @@ const StyledLayer2Item = styled(MenuItem)<MenuItemProps<any>>`
   }
 
   h5 {
-    color:var(--color-text-primary);
+    color: var(--color-text-primary);
     text-transform: capitalize;
     line-height: 2em;
   }
@@ -124,7 +125,7 @@ const StyledLayer2Item = styled(MenuItem)<MenuItemProps<any>>`
   //   text-indent: .3em;
   //   //font-size:1.1em;
   //   transform: scale(1.2) translateY(5px);
-    //   color: var(--color-primary)
+  //   color: var(--color-primary)
   //
   // }
 ` as typeof MenuItem;
@@ -132,7 +133,7 @@ const StyledLayer2Item = styled(MenuItem)<MenuItemProps<any>>`
 
 const StyledHeaderMenuSub = styled(Menu)<MenuProps>`
   && {
-    color: ${({theme}) => theme.colorBase.textSecondary};
+    color: var(--color-text-secondary);
 
     ul {
       background-color: var(--color-box-secondary);
@@ -150,7 +151,7 @@ const StyledTabBtn = styled(Button)`
     text-transform: capitalize;
     display: flex;
     height: 100%;
-    color: ${({theme}) => theme.colorBase.textSecondary};
+    color: var(--color-text-secondary);
     font-size: ${({theme}) => theme.fontDefault.h5};
     padding: 0 16px;
 
@@ -160,7 +161,7 @@ const StyledTabBtn = styled(Button)`
 
     &:hover {
       background-color: inherit;
-      color:var(--color-text-primary);
+      color: var(--color-text-primary);
 
       svg {
         transform: rotate(180deg);
@@ -169,7 +170,7 @@ const StyledTabBtn = styled(Button)`
     }
 
     &.Mui-selected {
-      color:var(--color-text-primary);
+      color: var(--color-text-primary);
 
       &:after {
         ${hr}
@@ -195,7 +196,7 @@ export const HeadMenuItem = React.memo(React.forwardRef(<I extends BasicHeaderIt
             style: {textDecoration: "none"},
             // ...props
         }} >  {children}</StyledHeadMenuItem>;
-})) as <I extends BasicHeaderItem>(props:MenuItemLink<I>)=>JSX.Element;
+})) as <I extends BasicHeaderItem>(props: MenuItemLink<I>) => JSX.Element;
 
 
 export let Layer2Item: <I extends BasicHeaderItem>(props: (MenuItemProps<I> & WithTranslation)) => JSX.Element;

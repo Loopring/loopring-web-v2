@@ -222,7 +222,7 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
     //         const value = row[ column.key ]
     //         const renderValue = value || EmptyValueTag
     //         const Wrapper = styled.div`
-    //             color: ${({theme}) => theme.colorBase.textSecondary};
+    //             color: var(--color-text-secondary);
     //             max-width: 90%;
     //             overflow: hidden;
     //             text-overflow: ellipsis;
@@ -262,7 +262,7 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
             const path = row[ 'path' ] || ''
             const value = row[ 'txnHash' ]
             const RenderValue = styled.div`
-              color: ${({theme}) => theme.colorBase[ value ? 'primaryLight' : 'textSecondary' ]};
+              color: ${({theme}) => theme.colorBase[ value ? 'primary' : 'textSecondary' ]};
               // overflow: hidden;
               // text-overflow: ellipsis;
               // white-space: nowrap;

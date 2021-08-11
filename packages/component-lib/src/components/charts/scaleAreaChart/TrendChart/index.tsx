@@ -13,14 +13,14 @@ const UP_COLOR = '#00BBA8'
 const DOWN_COLOR = '#fb3838'
 
 const TooltipStyled = styled(Box)`
-    background: ${({theme}) => theme.colorBase.borderHover};
-    border: 1px solid var(--color-border);
-    border-radius: ${({theme}) => theme.unit * 0.25}px;
-    padding: ${({theme}) => theme.unit * 2}px ${({theme}) => theme.unit * 2}px;
+  background: var(--color-pop-bg);
+  border: 1px solid var(--color-border);
+  border-radius: ${({theme}) => theme.unit * 0.25}px;
+  padding: ${({theme}) => theme.unit * 2}px ${({theme}) => theme.unit * 2}px;
 
-    >div:last-of-type {
-        color: ${({theme}) => theme.colorBase.textSecondary}
-    }
+  > div:last-of-type {
+    color: var(--color-text-secondary)
+  }
 `
 // const CustomCursor = (props:any) => {
 //     return <Cross {...props} />;
@@ -37,27 +37,27 @@ const TrendChart = ({
                         showXAxis = false,
                     }: ScaleAreaChartProps) => {
     const userSettings = useSettings()
-    const upColor = userSettings ? userSettings.upColor: 'green'
+    const upColor = userSettings ? userSettings.upColor : 'green'
     const renderData = getRenderData(type, data)
-    const [priceTrend, setPriceTrend] = useState<'up' | 'down'>(renderData[renderData.length - 1]?.sign === 1 ? 'up' : 'down')
+    const [priceTrend, setPriceTrend] = useState<'up' | 'down'>(renderData[ renderData.length - 1 ]?.sign === 1 ? 'up' : 'down')
     // current chart xAxis index
     const [currentIndex, setCurrentIndex] = useState(-1)
-    
+
     const trendColor =
         upColor === 'green'
             ? priceTrend === 'up'
-                ? UP_COLOR
-                : DOWN_COLOR
+            ? UP_COLOR
+            : DOWN_COLOR
             : priceTrend === 'up'
-                ? DOWN_COLOR
-                : UP_COLOR
+            ? DOWN_COLOR
+            : UP_COLOR
     const hasData = data && Array.isArray(data) && !!data.length
 
     const handleMousemove = useCallback(
         (props: any) => {
             if (!hasData) return
             const {activeTooltipIndex} = props
-            
+
             // avoid duplicated event
             const isUpdate = activeTooltipIndex !== currentIndex
             if (Number.isFinite(activeTooltipIndex) && isUpdate) {
@@ -97,30 +97,30 @@ const TrendChart = ({
                 <Typography component={'div'} fontSize={12}>
                     {moment(timeStamp).format('HH:mm MMM DD [UTC]Z')}
                 </Typography>
-			</TooltipStyled>
+            </TooltipStyled>
         )
     }, [hasData, extraInfo])
 
     const handleMouseLeave = useCallback(() => {
-        setPriceTrend(renderData[renderData.length - 1]?.sign === 1 ? 'up' : 'down')
+        setPriceTrend(renderData[ renderData.length - 1 ]?.sign === 1 ? 'up' : 'down')
     }, [renderData])
 
     useDeepCompareEffect(() => {
         if (renderData && !!renderData.length) {
-            setPriceTrend(renderData[renderData.length - 1].sign === 1
+            setPriceTrend(renderData[ renderData.length - 1 ].sign === 1
                 ? 'up'
                 : 'down')
         }
     }, [renderData])
 
-    const customTick = ({ x, y, payload }: any) => {
+    const customTick = ({x, y, payload}: any) => {
         if (!renderData || !renderData.length) {
             return <span></span>
         }
         return (
             <g transform={`translate(${x}, ${y})`}>
                 <text x={0} y={0} dy={16} fontSize={12} textAnchor="start" fill="#A1A7BB">
-                {payload.value}
+                    {payload.value}
                 </text>
             </g>
         )
@@ -128,7 +128,8 @@ const TrendChart = ({
 
     return (
         <ResponsiveContainer debounce={1} width={'99%'}>
-            <ComposedChart data={renderData} onMouseMove={showTooltip && handleMousemove} onMouseLeave={handleMouseLeave}>
+            <ComposedChart data={renderData} onMouseMove={showTooltip && handleMousemove}
+                           onMouseLeave={handleMouseLeave}>
                 <defs>
                     <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                         {/* <stop offset="5%" stopColor="rgba(1, 187, 168, 0.4)" stopOpacity={0.8}/> */}
@@ -162,7 +163,7 @@ const TrendChart = ({
                 {hasData && showTooltip && (
                     <Tooltip
                         cursor={{stroke: '#808080', strokeDasharray: '5 5'}}
-                       //  cursor={<CustomCursor/>}
+                        //  cursor={<CustomCursor/>}
                         position={{y: 50}}
                         content={(props) => renderTooltipContent(props)}
                     />

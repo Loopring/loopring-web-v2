@@ -53,7 +53,7 @@ export const Popover: React.FC<PopoverWrapProps> = ({
         height: 0;
         border-top: 8px solid transparent;
         border-right: 8px solid transparent;
-        // border-bottom: ${({theme}) => `8px solid ${theme.colorBase.borderHover}`};
+          // border-bottom: ${({theme}) => `8px solid ${theme.colorBase.borderHover}`};
         border-bottom: 8px solid transparent;;
         border-left: 8px solid transparent;
       }
@@ -105,78 +105,59 @@ export const Popover: React.FC<PopoverWrapProps> = ({
 
 export const PopoverPure = styled(HoverPopover)<PopoverProps>`
   &.MuiModal-root {
-    .MuiBackdrop-root{
+    .MuiBackdrop-root {
       background-color: inherit;
     }
-    &.arrow-center .MuiPopover-paper {
-      // border-image-slice: 12 20 6 20 fill;
-      // border-image-width: 12px 0px 6px 0px;
-      // border-image-repeat:round;
-      border: 1px solid rgba(235, 235, 235, 0.1);
-      border-radius: 4px;
-      margin-top: 12px;
-      border-radius: 4px;
-      overflow: visible;
 
+    &.arrow-center,
+    &.arrow-right,
+    &.arrow-left,
+    &.arrow-left {
+      .MuiPopover-paper {
+        ${({theme}) => theme.border.defaultFrame({d_W: 1, d_R: 1 / 2, c_key: 'var(--color-border-hover)'})};
+        margin-top: ${({theme}) => theme.unit * 2}px;
+        overflow: visible;
+
+        &:before {
+          position: absolute;
+          content: '';
+          display: block;
+          position: absolute;
+          ${({theme}) => theme.border.defaultFrame({d_W: 1, d_R: 1 / 2, c_key: 'var(--color-border)'})};
+          border-bottom: 0;
+          border-right: 0;
+          width: 8px;
+          height: 8px;
+          background: var(--color-border-hover);
+
+        }
+      }
+    }
+
+    &.arrow-center .MuiPopover-paper {
       &:before {
-        content: '';
-        // display: block;
-        position: absolute;
+        transform: rotate(45deg) translateX(-50%) rotate(45deg);
         top: -5px;
-        transform: translateX(-50%);
         left: 50%;
-        border-top: 1px solid ${({theme}) => theme.colorBase.border};
-        border-left: 1px solid ${({theme}) => theme.colorBase.border};
-        // border-image-slice: 12 20 15 20 fill;
-        // border-image-width: 12px 0px 0px 0px;
-        // border-image-repeat: round;
-        // border-image-source: url("./static/images/modalBg.png");
-        width: 8px;
-        height: 8px;
-        background-color: ${({theme}) => theme.colorBase.borderHover};
-        transform: rotate(45deg);
       }
     }
 
     &.arrow-right .MuiPopover-paper {
-      margin-top: 12px;
-      overflow: visible;
-      border: 1px solid rgba(235, 235, 235, 0.1);
-
       &:before {
-        content: '';
-        display: block;
-        position: absolute;
+        transform: rotate(45deg) translateX(-50%) rotate(45deg);
         top: -5px;
-        transform: translateX(-50%);
-        right: 10%;
-        border-top: 1px solid ${({theme}) => theme.colorBase.border};
-        border-left: 1px solid ${({theme}) => theme.colorBase.border};
-        width: 8px;
-        height: 8px;
-        background-color: ${({theme}) => theme.colorBase.borderHover};
-        transform: rotate(45deg);
+        left: 50%;
       }
     }
 
     &.arrow-left .MuiPopover-paper {
-      margin-top: 12px;
-      overflow: visible;
-      border: 1px solid rgba(235, 235, 235, 0.1);
 
       &:before {
-        content: '';
-        display: block;
-        position: absolute;
+
         transform: translateX(-50%);
         top: -5px;
         left: 10%;
-        border-top: 1px solid ${({theme}) => theme.colorBase.border};
-        border-left: 1px solid ${({theme}) => theme.colorBase.border};
-        width: 8px;
-        height: 8px;
-        background-color: ${({theme}) => theme.colorBase.borderHover};
-        transform: rotate(45deg);
+
       }
     }
   }

@@ -25,7 +25,7 @@ const ToolBarStyled = styled(Toolbar)`
   }
 `
 const StyledDiv = styled.div`
-  &.item-scrolled .MuiAppBar-root.MuiAppBar-positionFixed{
+  &.item-scrolled .MuiAppBar-root.MuiAppBar-positionFixed {
     background: var(--color-global-bg);
   }
 `
@@ -33,16 +33,18 @@ const HeaderStyled = styled(AppBar)`
   && {
     .wrap {
       height: var(--header-height);
-      margin: 0 auto;   
+      margin: 0 auto;
       //min-width: 800px;
     }
+
     background-color: var(--color-box);
     backdrop-filter: blur(4px);
     box-sizing: border-box;
-    // border-bottom: ${({theme}) => theme.border.borderConfig({d_W: 1, c_key: 'blur'})};
+      // border-bottom: ${({theme}) => theme.border.borderConfig({d_W: 1, c_key: 'blur'})};
     border-radius: 0;
     box-shadow: none;
-    &.item-scrolled.MuiAppBar-root.MuiAppBar-positionFixed{
+
+    &.item-scrolled.MuiAppBar-root.MuiAppBar-positionFixed {
       background-color: var(--color-box);
       box-shadow: var(--shadow);
     }
@@ -55,14 +57,17 @@ const LogoStyle = styled(Typography)`
     width: auto;
     min-width: auto;
     border-radius: 0;
-    &:hover{
+
+    &:hover {
       background-color: inherit;
+
       span.MuiIconButton-label {
-        background: var(--color-primary); 
+        background: var(--color-primary);
       }
     }
+
     span.MuiIconButton-label {
-      background: ${({theme}) => theme.colorBase.textPrimary};
+      background: var(--color-text-primary);
       mask: url(${logoSVG}) space;
       mask-size: contain;
       mask-position: center;
@@ -70,7 +75,7 @@ const LogoStyle = styled(Typography)`
       width: 105px;
       height: 40px;
       margin-top: -6px;
-      color:transparent;
+      color: transparent;
     }
   }
 ` as typeof Typography
@@ -89,7 +94,7 @@ export const LoopringLogo = (<LogoStyle variant="h6" component="h1">
 
 const ToolBarItem = ({buttonComponent, ...props}: any) => {
     const {themeMode, language} = useSettings()
-    
+
     const render = React.useMemo(() => {
         switch (buttonComponent) {
             case  ButtonComponentsMap.Download:
@@ -105,7 +110,7 @@ const ToolBarItem = ({buttonComponent, ...props}: any) => {
             default:
                 return undefined;
         }
-    },[props,buttonComponent] )
+    }, [props, buttonComponent])
     return <TabItemPlus>{render}</TabItemPlus>;
 }
 
@@ -165,7 +170,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
         })
         // toolbarList.map((item, index) =>);
     };
-    
+
     const getDrawerChoices = ({
                                   menuList,
                                   layer = 0,

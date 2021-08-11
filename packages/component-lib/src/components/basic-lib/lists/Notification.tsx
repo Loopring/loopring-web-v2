@@ -23,7 +23,7 @@ const ListItemStyled = styled(ListItem)`
       position: absolute;
       bottom: 0;
       left: 0;
-      padding: 0  ${({theme}) => theme.unit / 2}px
+      padding: 0 ${({theme}) => theme.unit / 2}px
     }
   }
 
@@ -63,13 +63,13 @@ const ListItemStyled = styled(ListItem)`
 
   &.pending {
     .MuiListItemIcon-root {
-      color: ${({theme}) => theme.colorBase.secondary};
+      color: var(--color-secoundary);
     }
   }
 
   &.success {
     .MuiListItemIcon-root {
-      color: ${({theme}) => theme.colorBase.success};
+      color: var(--color-success);
     }
   }
 
