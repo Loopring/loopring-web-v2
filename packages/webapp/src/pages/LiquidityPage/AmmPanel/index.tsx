@@ -39,7 +39,7 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
         ammWithdrawBtnI18nKey,
     } = useAmmPanel({
         pair,
-        snapShotData, walletMap, ammType: ammType ? ammType : AmmPanelType.Deposit
+        snapShotData, ammType: ammType ? ammType : AmmPanelType.Deposit
     })
 
     // const [index, setIndex] = React.useState(AmmPanelTypeMap[ tabSelected ]);

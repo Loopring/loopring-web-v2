@@ -72,7 +72,7 @@
     "build_dev": "dotenv -e .env.development react-app-rewired build",
     "predocker": "if [ ! -d \"build\" ]; then yarn build; fi",
     "docker": "docker-compose build",
-    "deploy_ghpage": "yarn build_dev; bash ./deploy.sh"
+    "deploy_ghpage": "yarn build; bash ./deploy.sh"
   },
   "browserslist": {
     "production": [
