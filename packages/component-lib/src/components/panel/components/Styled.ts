@@ -21,11 +21,18 @@ export const IconClearStyled = styled(IconButton)`
 ` as typeof IconButton
 
 export const IconButtonStyled = styled(IconButton)`
+  &.MuiButtonBase-root {
+    svg {
+      color: var(--color-text-primary);
+    }
+  }
+
   .MuiToolbar-root &.MuiButtonBase-root {
     svg {
       font-size: ${({theme}) => theme.fontDefault.h4};
-      height: 24px;
-      width: 24px;
+      height: var(--btn-icon-size-small);
+      width: var(--btn-icon-size-small);
+
     }
 
     &.outline {
