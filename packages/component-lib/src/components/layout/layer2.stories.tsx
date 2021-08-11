@@ -54,6 +54,7 @@ const OrderHistoryTable = withTranslation('common', {withRef: true})(OrderHistor
 
 let tradeData: any = {};
 let depositProps: DepositProps<any, any> = {
+    isNewAccount: true,
     tradeData,
     coinMap,
     walletMap,
@@ -279,7 +280,6 @@ const Layer2Wrap = () => {
         ...headerToolBarData[ ButtonComponentsMap.Language ],
         handleChange: onLangBtnClick
     }
-
 
     return <>
         <HideOnScroll>
