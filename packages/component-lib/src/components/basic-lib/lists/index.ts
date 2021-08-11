@@ -4,13 +4,12 @@ import { MuiMenuItemProps } from './Interface';
 import React from 'react';
 
 //backgroundColor: ${theme.colorBase.primaryLight};
+// background-color: ${theme.colorBase.background().hover};
 export const MenuItem = styled(MuiMenuItem)<MuiMenuItemProps>`
- 
-   ${({withNoCheckIcon, theme}) => {
+   ${({withNoCheckIcon}) => {
     return withNoCheckIcon === 'true' ? `        
         &.Mui-selected, &.Mui-selected.Mui-focusVisible {
-            background-color: ${theme.colorBase.background().hover};
-            color: ${theme.colorBase.primaryLight};
+            color: var(--color-text-primary);
             &:after{
              display:none;
             }

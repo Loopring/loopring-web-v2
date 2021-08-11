@@ -118,8 +118,8 @@ const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
     }
 
     const BoxStyled = styled(Box)`
-      ${({theme}) => theme.border.defaultFrame({c_key: 'blur'})};
-      background-color: ${({theme}) => theme.colorBase.background().default};
+      ${({theme}) => theme.border.defaultFrame({c_key:''})};
+      background-color: var(--color-box);
     `;
     const {currency} = useSettings();
 
@@ -142,7 +142,7 @@ const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
                     </Breadcrumbs>
                 </Grid>
                 <Grid item xs={4} alignItems={'center'} justifyContent={'flex-end'} display={'flex'}>
-                    <Link href={''} variant={'h5'}>
+                    <Link href={''} variant={'h6'}>
                         {t('labelBack')}
                     </Link>
                 </Grid>
@@ -238,7 +238,7 @@ const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
                                 </Typography>
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}
                                             justifyContent={'space-between'} marginTop={1} alignItems={'center'}>
-                                    <Typography component={'span'} variant={'h4'} color={'textPrimary'}>
+                                    <Typography component={'span'} variant={'h5'} color={'textPrimary'}>
                                         {currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(titleInfo.tradeFloat.priceDollar)
                                             : PriceTag.Yuan + getThousandFormattedNumbers(titleInfo.tradeFloat.priceYuan)}
                                     </Typography>
@@ -254,7 +254,7 @@ const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
                                                 {titleInfo.feeA}
                                             </Typography>
                                         </Typography>
-                                        <Typography component={'span'} color={'inherit'} variant={'h5'}
+                                        <Typography component={'span'} color={'inherit'} variant={'h6'}
                                                     paddingX={1}>{' + '}</Typography>
                                         <Typography component={'span'} color={'inherit'} variant={'inherit'}
                                                     display={'flex'} flexDirection={'column'}>
@@ -279,14 +279,14 @@ const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
                                     <Typography component={'span'}
                                                 color={'textSecondary'}> {myAmm.balanceA ? myAmm.balanceA : EmptyValueTag} {titleInfo.ammCalcData?.myCoinA.belong} </Typography>
                                     <Typography component={'span'} color={'textSecondary'}
-                                                variant={'h5'}> -- </Typography>
+                                                variant={'h6'}> -- </Typography>
                                 </Typography>
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}
                                             justifyContent={'space-between'} marginTop={1}>
                                     <Typography component={'span'}
                                                 color={'textSecondary'}> {myAmm.balanceB ? myAmm.balanceA : EmptyValueTag} {titleInfo.ammCalcData?.myCoinB.belong}</Typography>
                                     <Typography component={'span'} color={'textSecondary'}
-                                                variant={'h5'}> -- </Typography>
+                                                variant={'h6'}> -- </Typography>
                                 </Typography>
                             </BoxStyled>
                             <BoxStyled paddingY={3} paddingX={1 / 2 * 5} display={'flex'}
@@ -354,8 +354,7 @@ const Template: Story<any> = () => {
 
       body:before {
         ${theme.mode === 'dark' ? ` 
-                        background: #191C30;
-                        background: ${theme.colorBase.background().bg};
+                        background: var(--color-global-bg);
                    ` : ''}
       }
     }

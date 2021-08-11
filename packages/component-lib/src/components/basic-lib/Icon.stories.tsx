@@ -49,7 +49,7 @@ import {
 } from '@loopring-web/common-resources';
 
 const Styled = styled.div`
-  background: ${({theme}) => theme.colorBase.background().bg};
+  background: var(--color-global-bg);
   color: #fff;
 
   svg {

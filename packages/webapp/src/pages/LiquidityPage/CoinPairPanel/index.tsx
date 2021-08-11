@@ -25,7 +25,7 @@ import { StylePaper } from 'pages/styled';
 //  ${({theme}) => theme.border.defaultFrame({c_key: 'blur'})};
 const BoxStyled = styled(Box)`
   flex: 1;
-  background-color: ${({theme}) => theme.colorBase.background().default};
+  background: var(--color-box);
   border-radius: ${({theme}) => theme.unit}px;
   padding: ${({theme}) => theme.unit * 2}px;
   height: 120px;
@@ -38,7 +38,7 @@ const BoxStyled = styled(Box)`
 `;
 
 const BoxTopStyled = styled(Box)`
-  background-color: ${({theme}) => theme.colorBase.background().default};
+  background: var(--color-box);
   border-radius: ${({theme}) => theme.unit}px;
   padding: ${({theme}) => theme.unit * 2}px;
   width: var(--swap-box-width);
@@ -53,7 +53,7 @@ const BoxTopStyled = styled(Box)`
 // const StyleWrapper = styled(Box)`
 //   //position: relative;
 //   //width: 100%;
-//   background-color: ${({theme}) => theme.colorBase.background().default};
+//   background: var(--color-box);
 //   border-radius: ${({theme}) => theme.unit}px;
 // ` as typeof Grid
 
@@ -164,7 +164,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                 }
             </Grid>
             {/*<Grid item xs={4} alignItems={'center'} justifyContent={'flex-end'} display={'flex'}>*/}
-            {/*    <Link href="/#/liquidity/pools" variant={'h5'}>*/}
+            {/*    <Link href="/#/liquidity/pools" variant={'body2'}>*/}
             {/*        {t('labelBack')}*/}
             {/*    </Link>*/}
             {/*</Grid>*/}
@@ -262,7 +262,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         >
                             {t('label24Volume')}
                         </Typography>
-                        <Typography variant={'h4'} marginTop={4}
+                        <Typography variant={'h5'} marginTop={4}
                                     component={'span'}>
                             {currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(tradeFloat && tradeFloat.priceDollar ? tradeFloat.priceDollar as number : 0, 2)
                                 : PriceTag.Yuan + getThousandFormattedNumbers(tradeFloat && tradeFloat.priceYuan ? tradeFloat.priceYuan as number : 0, 2)}
@@ -275,7 +275,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             {t('labelTVL')}
                         </Typography>
 
-                        <Typography variant={'h4'} marginTop={4}
+                        <Typography variant={'h5'} marginTop={4}
                                     component={'span'}> {typeof coinPairInfo.amountDollar === 'undefined' ? EmptyValueTag :
                             currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(coinPairInfo.amountDollar, 2) : PriceTag.Yuan + getThousandFormattedNumbers(coinPairInfo.amountYuan ? coinPairInfo.amountYuan : 0, 2)}
                         </Typography>
@@ -287,7 +287,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         >
                             {t('labelAPY')}
                         </Typography>
-                        <Typography variant={'h4'} marginTop={4}
+                        <Typography variant={'h5'} marginTop={4}
                                     component={'span'}> {coinPairInfo.APY ? coinPairInfo.APY : EmptyValueTag}%
                         </Typography>
                     </BoxStyled>

@@ -25,7 +25,7 @@ const TableWrapperStyled = styled(Box)`
   //   left: 0;
   //   width: 100%;
   //   height: 100%;
-  //   background-color: ${({theme}) => theme.colorBase.backgroundBox};
+  //   background-color: ${({theme}) => theme.colorBase.box};
   //   opacity: 0.1;
   //   transition: all 0.3s;
   //   content: '';
@@ -47,13 +47,13 @@ export const DataGridStyled = styled(DataGrid)`
     font-family: Roboto;
 
     .rdg-header-row {
-      color: ${({theme}) => theme.colorBase.checkboxDefault};
+      color: ${({theme}) => theme.colorBase.box};
       width: 100%;
       background-color: inherit;
     }
 
     &.scrollable .rdg-header-row {
-      background-color: ${({theme}) => theme.colorBase.backgroundBox};
+      background:var(--color-box);
     }
 
     .rdg-header-sort-name {

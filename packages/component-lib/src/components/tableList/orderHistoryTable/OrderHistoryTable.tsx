@@ -363,7 +363,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         generateColumns,
         actionColumns,
         style: {
-            backgroundColor: ({colorBase}: any) => `${colorBase.backgroundBox}`
+            backgroundColor: ({colorBase}: any) => `${colorBase.box}`
         }
     }
 

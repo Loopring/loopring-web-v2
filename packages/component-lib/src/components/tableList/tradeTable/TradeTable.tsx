@@ -188,7 +188,7 @@ export const TradeTable = withTranslation('tables')((props: WithTranslation & Tr
         generateRows: (rawData: any) => rawData,
         generateColumns: ({columnsRaw}: any) => columnsRaw as Column<Row<any>, unknown>[],
         style: {
-            backgroundColor: ({colorBase}: any) => `${colorBase.backgroundBox}`
+            backgroundColor: ({colorBase}: any) => `${colorBase.box}`
         }
     }
     useDeepCompareEffect(() => {

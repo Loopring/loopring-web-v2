@@ -15,7 +15,7 @@ type StyledProps = {
 const MarketBlockStyled = styled(Box)<StyledProps>`
 
   & {
-    background-color: ${({theme}) => theme.colorBase.background().default};
+    background-color: var(--color-box-linear);
 
     border-radius: ${({theme}) => theme.unit}px;
 
@@ -67,7 +67,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                       alignItems={'stretch'} className={'float-group'} marginTop={1}>
                     <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'} justifyContent={'flex-end'}
                          className={'left-block'}>
-                        <Typography variant={'h4'} height={24} component={'span'}
+                        <Typography variant={'h5'} height={24} component={'span'}
                                     className={`float-tag float-${tradeFloat.floatTag}`}>${
                             getThousandFormattedNumbers(tradeFloat.priceDollar, 2, {isAbbreviate: true})
                         } </Typography>

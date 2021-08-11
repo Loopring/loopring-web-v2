@@ -32,7 +32,7 @@ import { useAccount } from '../../../stores/account';
 //   width: 100%;
 //   height: 100%;
 //   flex: 1;
-//   background-color: ${({theme}) => theme.colorBase.background().default};
+//   background: var(--color-box);
 //   border-radius: ${({theme}) => theme.unit}px;
 // //   padding: 20px;
 //
@@ -59,7 +59,7 @@ const StyledChartWrapper = styled(Box)`
         position: relative;
         width: calc(50% - 6px);
         height: 100%;
-        background-color: ${({theme}) => theme.colorBase.background().default};
+        background: var(--color-box);
         border-radius: ${({theme}) => theme.unit}px;
         padding: ${({theme}) => theme.unit * 2.5}px ${({theme}) => theme.unit * 3}px;
     }

@@ -9,10 +9,10 @@ import React from 'react';
 
 
 const ProviderBtnStyled = styled(Button)`
-  background-color: ${({theme}) => theme.colorBase.background().field};
+  background: var( --provider-btn);
 
   &:hover {
-    background-color: ${({theme}) => theme.colorBase.background().hover};
+    background: var(--provider-hover);
   }
 
   // width: var(--gateway-icon-size);
@@ -49,7 +49,7 @@ const ProviderBtnStyled = styled(Button)`
 
 const BoxStyle = styled(Box)`
   ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2, d_W: 0})};
-  background-color: ${({theme}) => theme.colorBase.background().fieldOpacity};
+  background: var(--color-box-secondary);
 
   padding: 0 ${({theme}) => theme.unit * 5 / 3}px;
 
