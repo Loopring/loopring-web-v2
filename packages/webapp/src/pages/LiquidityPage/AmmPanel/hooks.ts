@@ -48,6 +48,7 @@ import { myLog } from "utils/log_tools";
 import { BIG10 } from "defs/swap_defs";
 import { REFRESH_RATE_SLOW } from "defs/common_defs";
 import { useTranslation } from "react-i18next";
+import { debug } from "console";
 
 export const useAmmPanel = <C extends { [ key: string ]: any }>({
                                                                     pair,
@@ -113,7 +114,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
                 slippage: 0.5
             })
         }
-    }, [snapShotData, walletMap, coinMap, tokenMap, ammCalcData, ammMap, ammType])
+    }, [snapShotData, walletMap, coinMap, tokenMap, ammCalcData, ammMap, ammType, setAmmCalcData, setAmmJoinData, setAmmExitData])
 
     const [ammPoolSnapshot, setAmmPoolSnapShot] = useState<AmmPoolSnapshot>()
     const updateAmmPoolSnapshot = React.useCallback(async () => {
@@ -179,8 +180,9 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
     useCustomDCEffect(async () => {
         if (accountStatus === SagaStatus.UNSET) {
+
             const label: string | undefined = accountStaticCallBack(bntLabel)
-            setAmmDepositBtnI18nKey(label);
+            setAmmDepositBtnI18nKey(label)
             setAmmWithdrawBtnI18nKey(label)
 
             if (!LoopringAPI.userAPI || !pair.coinBInfo?.simpleName
@@ -218,7 +220,9 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
             setAmmCalcData({...ammCalcData, feeJoin, feeExit})
         }
-    }, [accountStatus])
+    }, [setJoinFees, setExitfees, setAmmCalcData, setAmmDepositBtnI18nKey, setAmmWithdrawBtnI18nKey,
+        accountStatus, account.readyState, account.apiKey, account.accountId,
+        pair.coinBInfo?.simpleName, tokenMap, ammCalcData])
 
     // join
 
@@ -238,7 +242,6 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         const slippageReal = sdk.toBig(slippage).div(100).toString()
 
         const isAtoB = type === 'coinA'
-
 
         const {idIndex, marketArray, marketMap,} = store.getState().tokenMap
 
@@ -532,12 +535,11 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         accountStaticCallBack(removeAmmClickMap, [props])
     }, [exitRequest, ammExitData, removeAmmClickMap]);
 
-    React.useEffect(() => {
-        console.log('initAmmData--->')
+    useCustomDCEffect(() => {
         if (snapShotData) {
             initAmmData(pair)
         }
-    }, [snapShotData, pair, walletMap]);
+    }, [snapShotData, pair]);
 
     return {
         ammAlertText,
