@@ -88,7 +88,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                 formatter: ({row}) => {
                     const {coinA, coinB} = row[ 'pair' ]
                     const pair = `${coinA}-${coinB}`
-                    const isFavourite = favoriteMarket.includes(pair)
+                    const isFavourite = favoriteMarket?.includes(pair)
                     return (
                         <Box className="rdg-cell-value"
                             display={'flex'}

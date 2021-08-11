@@ -31,7 +31,7 @@ export interface GetSignParams {
 
 // judge trend
 const getSign = ({
-                     type,
+                     // type,
                      data,
                      dataIndex,
                      open,

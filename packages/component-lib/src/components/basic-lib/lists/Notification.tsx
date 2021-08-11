@@ -57,7 +57,7 @@ const ListItemStyled = styled(ListItem)`
 
   &.error {
     .MuiListItemIcon-root {
-      color: ${({theme}) => theme.colorBase.error};
+      color: var(--color-error);
     }
   }
 

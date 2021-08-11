@@ -33,7 +33,7 @@ export const MenuTab = styled(Tab)`
   &.MuiTab-root.Mui-selected {
     //background-color: chocolate;
 
-    color: ${({theme}) => theme.colorBase.textPrimary};
+    color:var(--color-text-primary);
 
     &:after {
       ${hr}
@@ -103,7 +103,7 @@ const StyledLayer2Item = styled(MenuItem)<MenuItemProps<any>>`
   }
 
   h5 {
-    color: ${({theme}) => theme.colorBase.textPrimary};
+    color:var(--color-text-primary);
     text-transform: capitalize;
     line-height: 2em;
   }
@@ -160,7 +160,7 @@ const StyledTabBtn = styled(Button)`
 
     &:hover {
       background-color: inherit;
-      color: ${({theme}) => theme.colorBase.textPrimary};
+      color:var(--color-text-primary);
 
       svg {
         transform: rotate(180deg);
@@ -169,7 +169,7 @@ const StyledTabBtn = styled(Button)`
     }
 
     &.Mui-selected {
-      color: ${({theme}) => theme.colorBase.textPrimary};
+      color:var(--color-text-primary);
 
       &:after {
         ${hr}

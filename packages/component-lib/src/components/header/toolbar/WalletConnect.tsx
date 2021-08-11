@@ -36,7 +36,7 @@ const WalletConnectBtnStyled = styled(Button)`
     &:after {
       position: absolute;
       content: "\u25CF";
-      color: ${({theme}) => theme.colorBase.error};
+      color: var(--color-error);
       display: flex;
       left: 0;
       padding-left: ${({theme}) => theme.unit * 2}px;
@@ -59,15 +59,15 @@ const WalletConnectBtnStyled = styled(Button)`
   }
 
   &.wrong-network {
-    background: ${({theme}) => theme.colorBase.error};
-    color: ${({theme}) => theme.colorBase.textPrimary};
+    background: var(--color-error);
+    color:var(--color-text-primary);
   }
 
   // .icon-build{
     //   color: ${({theme}) => theme.colorBase.secondary};
   // }
   // .icon-no-network {
-    //   color: ${({theme}) => theme.colorBase.error};
+    //   color: var(--color-error);
   // }
   //
   // .icon-pending, .icon-progressing {
@@ -75,7 +75,7 @@ const WalletConnectBtnStyled = styled(Button)`
   // }
   //
   // .icon-error, .icon-no-account {
-    //   color: ${({theme}) => theme.colorBase.error};
+    //   color: var(--color-error);
   // }
   //
   //

@@ -181,7 +181,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
       if (type === TableFilterParams.favourite) {
         data = data.filter((o: any) => {
           const pair = `${o.pair.coinA}-${o.pair.coinB}`
-          return favoriteMarket.includes(pair)
+          return favoriteMarket?.includes(pair)
         })
       }
       if (type === TableFilterParams.ranking) {
@@ -197,7 +197,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
         if (keyword === '') {
           return true
         }
-        return coinA.includes(formattedKeyword) || coinB.includes(formattedKeyword)
+        return coinA?.includes(formattedKeyword) || coinB?.includes(formattedKeyword)
       })
       if (type === TableFilterParams.all && !keyword) {
         data = getFilteredTickList()

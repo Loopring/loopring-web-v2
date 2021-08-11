@@ -24,7 +24,7 @@ const IWrap = styled(Box)`
 
   .message-wrap {
     .MuiFormHelperText-root {
-      color: ${({theme}) => theme.colorBase.error};
+      color: var(--color-error);
       text-align: right;
       font-size: ${({theme}) => theme.fontDefault.h6};
     }
@@ -39,7 +39,7 @@ const IWrap = styled(Box)`
       text-decoration: underline dotted;
 
       &:hover {
-        color: ${({theme}) => theme.colorBase.primary};
+        color: var(--color-primary);
       }
     }
 
@@ -113,7 +113,7 @@ const ISBtn = styled(Button)<ButtonProps & { logoColor?: any }>`
     white-space: nowrap;
     text-overflow: ellipsis;
     font-size: ${({theme}) => theme.fontDefault.h5};
-    color: ${({theme}) => theme.colorBase.textPrimary};
+    color:var(--color-text-primary);
 
     .placeholder {
       color: ${({theme}) => theme.colorBase.textSecondary};
@@ -129,18 +129,18 @@ const ISBtn = styled(Button)<ButtonProps & { logoColor?: any }>`
   //}
 
   .MuiButton-endIcon svg {
-    color: ${({theme}) => theme.colorBase.textPrimary}
+    color:var(--color-text-primary)
       // color: ${({logoColor}) => logoColor}
   }
 
   &:hover, &:active {                                              
-    color: ${({theme}) => theme.colorBase.textPrimary};
+    color:var(--color-text-primary);
     background-color: var(--color-box-hover);
   }
 ` as React.ComponentType<ButtonProps & { logoColor?: any }>;
 const IInput = styled(CurrencyInput)`
   text-align: right;
-  color: ${({theme}) => theme.colorBase.textPrimary};;
+  color:var(--color-text-primary);;
 
   ::placeholder {
     color: ${({theme}) => theme.colorBase.textSecondary};;

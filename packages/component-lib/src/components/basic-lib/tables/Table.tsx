@@ -39,7 +39,7 @@ export const DataGridStyled = styled(DataGrid)`
 
   &.rdg {
     min-height: 350px;
-    color: ${({theme}) => theme.colorBase.textPrimary};
+    color:var(--color-text-primary);
     //color: inherit;
     box-sizing: border-box;
     border: rgba(0, 0, 0, 0) 0px solid;
@@ -47,7 +47,7 @@ export const DataGridStyled = styled(DataGrid)`
     font-family: Roboto;
 
     .rdg-header-row {
-      color: ${({theme}) => theme.colorBase.box};
+      color: ${({theme}) => theme.colorBase.textSecondary};
       width: 100%;
       background-color: inherit;
     }
@@ -122,7 +122,7 @@ export const DataGridStyled = styled(DataGrid)`
     }
 
     .rdg-cell.error {
-      color: ${({theme}) => theme.colorBase.error};
+      color: var(--color-error);
     }
   }
 

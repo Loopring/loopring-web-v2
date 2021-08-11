@@ -117,7 +117,7 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
     // 			color: ${({theme}) => valueFrom && !isMyWallet ? theme.colorBase.primaryLight : theme.colorBase.textPrimary};
 
     // 			// & p:last-child {
-    // 			// 	color: ${({theme}) => theme.colorBase.textPrimary};
+    // 			// 	color:var(--color-text-primary);
     // 			// }
 
     // 			// p {
@@ -150,7 +150,7 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
     // 			color: ${({theme}) => valueTo && !isMyWallet ? theme.colorBase.primaryLight : theme.colorBase.textPrimary};
 
     // 			// & p:last-child {
-    // 			// 	color: ${({theme}) => theme.colorBase.textPrimary};
+    // 			// 	color:var(--color-text-primary);
     // 			// }
 
     // 			// p {

@@ -58,7 +58,7 @@ const LogoStyle = styled(Typography)`
     &:hover{
       background-color: inherit;
       span.MuiIconButton-label {
-        background: ${({theme}) => theme.colorBase.primary}; 
+        background: var(--color-primary); 
       }
     }
     span.MuiIconButton-label {

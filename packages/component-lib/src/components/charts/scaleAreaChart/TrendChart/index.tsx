@@ -18,7 +18,7 @@ const TooltipStyled = styled(Box)`
     border-radius: ${({theme}) => theme.unit * 0.25}px;
     padding: ${({theme}) => theme.unit * 2}px ${({theme}) => theme.unit * 2}px;
 
-    >div: last-of-type {
+    >div:last-of-type {
         color: ${({theme}) => theme.colorBase.textSecondary}
     }
 `
