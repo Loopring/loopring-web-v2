@@ -23,6 +23,7 @@ import { AssetType } from 'loopring-sdk'
 import store from 'stores'
 import { useWalletLayer1 } from 'stores/walletLayer1'
 import { makeWalletLayer2 } from 'hooks/help'
+import { useWalletLayer2 } from '../../../stores/walletLayer2'
 import { EmptyValueTag,unit } from '@loopring-web/common-resources'
 import { StylePaper } from '../../styled'
 import { useAccount } from '../../../stores/account';
@@ -96,17 +97,12 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const [pageSize, setPageSize] = useState(10);
     const [chartPeriod, setChartPeriod] = useState('week')
     const [chartData, setChartData] = useState<TrendDataItem[]>([])
+    const [assetsList, setAssetsList] = useState<any[]>([])
     
     const { account:{accAddress} } = useAccount()
     const { walletLayer2 } = store.getState().walletLayer2;
     const { ammMap } = store.getState().amm.ammMap
-    const walletMap = makeWalletLayer2()
-    const assetsKeyList = walletMap && walletMap.walletMap ? Object.keys(walletMap.walletMap) : []
-    const assetsDetailList = walletMap && walletMap.walletMap ? Object.values(walletMap.walletMap) : []
-    const assetsList = assetsKeyList.map((key, index) => ({
-        token: key,
-        detail: assetsDetailList[index]
-    }))
+    const { status: walletLayer2Status } = useWalletLayer2();
 
     const getUserTotalAssets = useCallback(async (limit: number = 7) => {
         const userAssets = await LoopringAPI.walletAPI?.getUserAssets({
@@ -123,6 +119,19 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
             })))
         }
     }, [accAddress])
+
+    useEffect(() => {
+        if (walletLayer2Status === 'UNSET') {
+            const walletMap = makeWalletLayer2()
+            const assetsKeyList = walletMap && walletMap.walletMap ? Object.keys(walletMap.walletMap) : []
+            const assetsDetailList = walletMap && walletMap.walletMap ? Object.values(walletMap.walletMap) : []
+            const list = assetsKeyList.map((key, index) => ({
+                token: key,
+                detail: assetsDetailList[index]
+            }))
+            setAssetsList(list)
+        }
+    }, [walletLayer2Status])
 
     useEffect(() => {
         if (LoopringAPI && LoopringAPI.walletAPI && walletLayer2) {
