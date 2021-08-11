@@ -23,7 +23,7 @@ export const SubMenuItem = styled<any>(ListItem)`
     svg {
       width: var(--header-menu-icon-size);
       height: var(--header-menu-icon-size);
-      color: var(--color-text-secondary);
+      //color: var(--color-text-secondary);
     }
 
     :hover {
@@ -64,12 +64,12 @@ export const SubMenuList = <I extends any>({
                 </ListItemAvatar>
                 {item.label.description ? <ListItemText
                     primary={<Typography sx={{display: 'block'}} component="span" variant="body1"
-                                         color="text.primary">{t(item.label.i18nKey)}</Typography>}
+                                         >{t(item.label.i18nKey)}</Typography>}
                     secondary={<Typography sx={{display: 'inline'}} component="span" variant="body2"
-                                           color="text.primary">{t(item.label.description)}</Typography>}
+                                          >{t(item.label.description)}</Typography>}
                 /> : <ListItemText
                     primary={<Typography sx={{display: 'block'}} component="span" variant="body1"
-                                         color="text.primary">{t(item.label.i18nKey)}</Typography>}
+                                        >{t(item.label.i18nKey)}</Typography>}
                 />}
             </SubMenuItem>
 

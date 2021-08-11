@@ -8,7 +8,7 @@ export const SuccessUnlock = ({t, providerName}: WithTranslation & { providerNam
     const theme = useTheme();
     return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-evenly'}
                 flexDirection={'column'}>
-        <Typography component={'h3'} variant={'h2'} marginBottom={3}>
+        <Typography component={'h3'} variant={'h3'} marginBottom={3}>
             {t('labelUnLockLayer2', {providerName})}
             {/*<Trans i18nKey={'labelSuccessConnect'}>*/}
             {/*    */}

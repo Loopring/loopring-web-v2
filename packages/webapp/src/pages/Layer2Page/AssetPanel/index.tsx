@@ -46,7 +46,7 @@ import { useAccount } from '../../../stores/account';
 //     display: flex;
 //     flex: 1;
 //     height: 100%;
-//     border: 1px solid ${({theme}) => theme.colorBase.borderColor};
+//     border: 1px solid var(--color-border);
 //     border-radius: ${({theme}) => theme.unit}px;
 //     padding: 26px 0;
 //   }

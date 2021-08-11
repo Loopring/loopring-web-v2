@@ -53,7 +53,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
             <Grid container justifyContent={'space-around'} position={'relative'}>
                 <Grid item xs={12} display={'flex'} flexDirection={'row'} justifyContent={'flex-start'}
                       alignItems={'center'} height={24}>
-                    <Typography variant={'h3'} component={'h3'}>
+                    <Typography variant={'h4'} component={'h3'}>
                         <Typography component={'span'} title={'sell'} color={'textPrimary'}>
                             {coinAInfo?.simpleName}
                         </Typography>

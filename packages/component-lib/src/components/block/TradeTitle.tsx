@@ -86,7 +86,7 @@ export const TradeTitle = <I extends object>({
                         }}
                             // src={sellData?.icon}
                                   src={'static/images/icon-default.png'}/>} </Box>
-                    <Typography variant={'h3'} component={'h3'} paddingRight={1}>
+                    <Typography variant={'h4'} component={'h3'} paddingRight={1}>
                         <Typography component={'span'} title={'sell'} className={'next-coin'}>
                             {coinAInfo?.simpleName}
                         </Typography>
