@@ -8,7 +8,7 @@ import { Header } from '../header/Header';
 import { globalCss, headerMenuData, headerToolBarData } from '@loopring-web/common-resources';
 
 import { tradeCalcData } from '../../static';
-import { SwapPanel } from '../panel';
+import { SwapPanel, SwapProps } from '../panel';
 
 
 const Style = styled.div`
@@ -17,15 +17,16 @@ const Style = styled.div`
 const TradeWrap = () => {
     let tradeData: any = {sell: {belong: undefined}, buy: {belong: undefined}};
     const WrapSwapPanel = () => {
-        let swapProps = {
-            swapTradeData: tradeData,
+        let swapProps:SwapProps<any, any, any> = {
+            tradeData,
+            // swapTradeData: tradeData,
             tradeCalcData,
-            onSwapClick: (tradeData: any) => {
+            'onSwapClick': (tradeData: any) => {
                 console.log('Swap button click', tradeData);
             },
-            handleSwapPanelEvent: async (data: any, switchType: any) => {
+            'handleSwapPanelEvent': async (data: any, switchType: any) => {
                 console.log(data, switchType)
-            },
+            }
         }
 
         return <SwapPanel<any, any, any> {...swapProps} > </SwapPanel>
@@ -58,8 +59,7 @@ const Template: Story<any> = () => {
 
       body:before {
         ${theme.mode === 'dark' ? ` 
-                        background: #191C30;
-                        background: ${theme.colorBase.background().bg};
+                        background: var(--color-global-bg);
                    ` : ''}
       }
     }

@@ -8,7 +8,7 @@ import { Box, Grid } from '@material-ui/core';
 import { FilterMarketPanel } from './FilterMarketsPanel';
 
 const Style = styled.div`
-  background: ${({theme}) => theme.colorBase.background().bg};
+  background: var(--color-global-bg);
   color: #fff;
   height: 100%;
   flex: 1

@@ -38,7 +38,7 @@ import { useExportAccoutInfo } from './hook';
 const StyledPaper = styled(Grid)`
   width: 100%;
   height: 100%;
-  background-color: ${({theme}) => theme.colorBase.background().default};
+  background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
 `
 //${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1})};
@@ -89,7 +89,7 @@ const DividerBlock = styled(Divider)`
   flex: 1;
   width: 1px;
   height: ${({theme}) => theme.unit * 3}px;
-  background: ${({theme}) => theme.colorBase.focus};
+  background: var(--color-divide)
 `
 
 
@@ -116,10 +116,10 @@ export const SettingPanel = withTranslation(['common', 'layout'])(({t,i18n, ...r
     const { exportAccInfo } = useExportAccoutInfo()
 
     return <Grid container direction={'column'} justifyContent={'space-between'} alignItems={'stretch'} flexWrap={'nowrap'}>
-        {/* <Typography variant={'h4'} component={'h3'} paddingLeft={2}>{t('labelTitleSecurity')}</Typography>
+        {/* <Typography variant={'h5'} component={'h3'} paddingLeft={2}>{t('labelTitleSecurity')}</Typography>
         <StyledPaper item xs={12} display={'flex'} flexDirection={'column'} marginY={2}  paddingY={3}>
             <Box component={'section'} display={'flex'} flexDirection={'column'} marginBottom={1}>
-                <Typography variant={'h5'} component={'h4'} paddingX={3}  marginBottom={1}>{t('labelTitleResetL2Keypair')}</Typography>
+                <Typography variant={'body2'} component={'h4'} paddingX={3}  marginBottom={1}>{t('labelTitleResetL2Keypair')}</Typography>
                 <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}
                       alignItems={'flex-start'} paddingX={3} >
                     <Grid item xs={8} display={'flex'} flexDirection={'column'}>
@@ -144,7 +144,7 @@ export const SettingPanel = withTranslation(['common', 'layout'])(({t,i18n, ...r
             </Box>
             <StyledDivider/>
             <Box component={'section'} display={'flex'} flexDirection={'column'}>
-                <Typography variant={'h5'} component={'h4'} paddingX={3} marginY={1}>{t('labelTitleExportAccount')}</Typography>
+                <Typography variant={'body2'} component={'h4'} paddingX={3} marginY={1}>{t('labelTitleExportAccount')}</Typography>
 
                 <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}
                       alignItems={'flex-start'} paddingX={3} marginBottom={2}>
@@ -162,10 +162,10 @@ export const SettingPanel = withTranslation(['common', 'layout'])(({t,i18n, ...r
             </Box>
         </StyledPaper> */}
 
-        <Typography variant={'h4'} component={'h3'} paddingLeft={2}>{t('labelTitlePreferences')}</Typography>
+        <Typography variant={'h5'} component={'h3'} paddingLeft={2}>{t('labelTitlePreferences')}</Typography>
         <StyledPaper item xs={12} display={'flex'} flexDirection={'column'} marginY={2} paddingY={3}>
             <Box component={'section'} display={'flex'} flexDirection={'column'}>
-                {/*<Typography variant={'h5'} component={'h4'} paddingX={2}>{t('labelTitleLayout')}</Typography>*/}
+                {/*<Typography variant={'body2'} component={'h4'} paddingX={2}>{t('labelTitleLayout')}</Typography>*/}
                 {/*<StyledDivider/>*/}
                 <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}
                       alignItems={'flex-start'} paddingX={3} marginBottom={2}>

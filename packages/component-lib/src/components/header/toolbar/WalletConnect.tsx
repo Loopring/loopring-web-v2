@@ -100,12 +100,11 @@ const TestNetworkStyle = styled(Typography)`
     left: 0;
     right: 0;
     bottom: 0;
-    opacity: .1;
-    background: ${({theme}) => theme.colorBase.warning};
-    ${({theme}) => theme.border.defaultFrame({d_W: 0, d_R: 1 / 2, c_key: theme.colorBase.backgroundBox})};
+    background: var(--network-bg);
+    ${({theme}) => theme.border.defaultFrame({d_W: 0, d_R: 1 / 2, c_key: 'var(--opacity)'})};
   }
 
-  ${({theme}) => theme.border.defaultFrame({d_W: 0, d_R: 1 / 2, c_key: theme.colorBase.backgroundBox})};
+  ${({theme}) => theme.border.defaultFrame({d_W: 0, d_R: 1 / 2, c_key: 'var(--opacity)'})};
 
 ` as typeof Typography
 // const ListStyled = styled(List)`

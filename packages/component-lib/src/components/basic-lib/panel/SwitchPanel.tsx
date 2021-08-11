@@ -41,7 +41,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps &
       .container{
         flex:1;
       }
-      background: ${({theme}) => theme.colorBase.background().swap};
+      background: var(--color-box-linear);
       display: flex;
       flex-direction: column;
       flex-wrap: wrap;

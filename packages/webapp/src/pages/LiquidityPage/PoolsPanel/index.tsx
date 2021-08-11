@@ -12,7 +12,7 @@ const StylePaper = styled(Box)`
   width: 100%;
   height: 100%;
   flex: 1;
-  background-color: ${({theme}) => theme.colorBase.background().default};
+  background: var(--color-box);
   border-radius: ${({theme}) => theme.unit}px;
 
   .rdg {

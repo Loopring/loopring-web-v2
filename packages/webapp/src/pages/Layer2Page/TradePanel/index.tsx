@@ -12,7 +12,7 @@ import { useGetTrades } from './hooks'
 //   width: 100%;
 //   height: 100%;
 //   flex: 1;
-//   background-color: ${({ theme }) => theme.colorBase.background().default};
+//   background: var(--color-box);
 //   border-radius: ${({ theme }) => theme.unit}px;
 //   padding: 20px;
 //   margin-bottom: ${({ theme }) => 2* theme.unit}px;

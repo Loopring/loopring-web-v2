@@ -22,7 +22,7 @@ import styled from '@emotion/styled';
 const BoxStyled = styled(Box)`
 ` as typeof Box
 const BoxBg = styled(Box)`
-  background-color: ${({theme}) => theme.colorBase.background().outline};
+  background-color: var(--color-box-linear);
   ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2})};
 ` as typeof Box
 

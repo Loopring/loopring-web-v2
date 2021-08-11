@@ -22,7 +22,7 @@ import {
     WithdrawType,
     WithdrawTypes
 } from '@loopring-web/common-resources';
-import { useTranslation, withTranslation } from 'react-i18next';
+import {  withTranslation } from 'react-i18next';
 import { OrderHistoryTable as OrderHistoryTableUI } from '../tableList/orderHistoryTable'
 import {  AssetTitleProps } from '../block';
 import React from 'react';
@@ -222,7 +222,7 @@ const AssetTitleWrap = (rest: any) => {
     </>
 }
 
-const Layer2Wrap = () => {
+const Layer2Wrap = withTranslation('common')(({t,...rest}:any) => {
     // const _headerMenuData: List<HeaderMenuItemInterface> = headerMenuData as List<HeaderMenuItemInterface>;
     // const _headerToolBarData: List<HeaderToolBarInterface> = headerToolBarData as List<HeaderToolBarInterface>;
     const selected = 'assets';
@@ -230,7 +230,7 @@ const Layer2Wrap = () => {
       width: 100%;
       height: 100%;
       flex: 1;
-      background-color: ${({theme}) => theme.colorBase.background().default};
+      background: var(--color-box);
       border-radius: ${({theme}) => theme.unit}px;
       padding: ${({theme}) => theme.unit * 3}px;
 
@@ -244,11 +244,17 @@ const Layer2Wrap = () => {
       }
     ` as typeof Paper;
     const accountInfoProps: AccountBaseProps = {
-        addressShort: '0x123...8784',
-        address: '0x123567243o24o242423098784',
+        accAddress: '0x123567243o24o242423098784',
+        accountId: 0,
+        apiKey: '',
+        connectName: 'unknown',
+        eddsaKey: undefined,
+        etherscanUrl: 'https://material-ui.com/components/material-icons/',
+        keyNonce: undefined,
+        nonce: undefined,
+        publicKey: undefined,
+        readyState: 'unknown',
         level: 'VIP 1',
-        connectBy: 'MetaMask',
-        etherscanLink: 'https://material-ui.com/components/material-icons/',
         mainBtn: <Button variant={'contained'} size={'small'} color={'primary'} onClick={() => console.log('my event')}>My
             button</Button>
     }
@@ -264,7 +270,6 @@ const Layer2Wrap = () => {
         }
         _event.stopPropagation();
     }
-    const {t} = useTranslation('common');
     const {setLanguage} = useSettings()
     headerMenuData[ NavListIndex.layer2 ].extender = hasAccount ? <IconButton disabled={!hasAccount}
                                                                               onClick={handleClick}
@@ -292,7 +297,7 @@ const Layer2Wrap = () => {
             <Collapse in={showAccountInfo}>
                 <Container maxWidth="lg">
                     <Box marginTop={3}>
-                        <AccountBase  {...accountInfoProps}></AccountBase>
+                        <AccountBase  {...{...accountInfoProps,t,...rest}}/>
                     </Box>
                 </Container>
             </Collapse> : undefined}
@@ -309,7 +314,7 @@ const Layer2Wrap = () => {
                         <AssetTitleWrap/>
                     </Box>
                     <StylePaper>
-                        <Typography variant={'h4'} component={'h3'}>Orders</Typography>
+                        <Typography variant={'h5'} component={'h3'}>Orders</Typography>
                         <Box marginTop={2} className="tableWrapper">
                             <OrderHistoryTable rawData={[]}/>
                         </Box>
@@ -319,7 +324,7 @@ const Layer2Wrap = () => {
         </Container>
         {/*<Footer></Footer>*/}
     </>
-}
+})
 
 const Template: Story<any> = () => {
     const theme: Theme = useTheme();
@@ -330,8 +335,8 @@ const Template: Story<any> = () => {
       body:before {
         ${theme.mode === 'dark' ? `
             color: ${theme.colorBase.textPrimary};        
-            background: #191C30;
-            background: ${theme.colorBase.background().bg};
+           
+            background: var(--color-global-bg);
        ` : ''}
       }
     }

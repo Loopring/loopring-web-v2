@@ -41,8 +41,7 @@ const Template: Story<any> = () => {
 
       body:before {
         ${theme.mode === 'dark' ? ` 
-                        background: #191C30;
-                        background: ${theme.colorBase.background().bg};
+                         background: var(--color-global-bg);
                    ` : ''}
       }
     }

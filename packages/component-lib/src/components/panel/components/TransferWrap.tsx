@@ -81,7 +81,7 @@ export const TransferWrap = <T extends IBData<I>,
                  alignItems={"stretch"} flex={1} height={'100%'} flexWrap={'nowrap'}
     >
         <Grid item>
-            <Typography component={'h4'} height={36} textAlign={'center'} variant={'h2'} marginBottom={2}>
+            <Typography component={'h4'} textAlign={'center'} variant={'h3'} marginBottom={2}>
                 {t('transferTitle')}
             </Typography>
             <Typography component={'p'} variant="body1">
