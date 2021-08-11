@@ -28,7 +28,7 @@ export const ColorDarkDefault = Object.freeze({
     divide: '#444C75',
     box: '#2D2F4B',
     boxSecondary: '#687295',
-    boxHover:  `${hexToRGB('#ffffff', '0.3')}`,
+    boxHover:  `${hexToRGB('#ffffff', '0.03')}`,
     popBg: '#393F64',
     globalBg: '#1F2034',
     boxLinear: 'linear-gradient(194.79deg, #322C53 17.96%, #262B50 44.29%, #32314F 96.93%)',

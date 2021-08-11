@@ -96,7 +96,7 @@ export const DataGridStyled = styled(DataGrid)`
       width: 100%;
 
       &:hover {
-        background: ${({theme}) => theme.colorBase.backgroundMenuListHover};
+        background: var(--color-box-hover);
 
         .rdg-cell:first-of-type {
           // border-left: ${({theme}) => theme.border.borderConfig({d_W: 2, c_key: 'selected'})}

@@ -27,7 +27,7 @@ export const ApproveAccount = ({
     </Box>
     // <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-evenly'}
     //             flexDirection={'column'}>
-    //     <Typography component={'h3'} variant={'h2'} marginBottom={3}>{t('labelDepositApproveProcess')}</Typography>
+    //     <Typography component={'h3'} variant={'h3'} marginBottom={3}>{t('labelDepositApproveProcess')}</Typography>
     //     <Typography color={theme.colorBase.success} component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'}>
     //         {t('labelDepositApproveSuccess')}
     //         <Link target='_blank'  href={etherscanLink} display={'inline-block'}  marginTop={1 / 2}>

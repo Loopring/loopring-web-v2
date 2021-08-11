@@ -134,7 +134,7 @@ export const DoughnutChart = ({data}: DoughnutChartProps) => {
                 <Tooltip
                     formatter={(value: any, name: any) => ([`$${value}`, `${name}`])}
                     contentStyle={{
-                        backgroundColor: 'rgba(0,0,0,.44)',
+                        backgroundColor: 'var(--color-pop-bg)',
                         border: 'none'
                     }}
                     itemStyle={{

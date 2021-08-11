@@ -171,13 +171,13 @@ const Template: Story<any> = withTranslation()(({t, ...rest}: any) => {
         <h4>MenuList list for select</h4>
         <Grid container spacing={2} alignContent={'center'} justifyContent={'flex-start'}>
             <Grid item xs={3}>
-                <Grid item style={{backgroundColor: 'rgba(0,0,0,.44)'}}>
+                <Grid item style={{backgroundColor: 'var(--color-pop-bg)'}}>
                     <MenuItem value={1}><ListItemText>{t('test key')}</ListItemText></MenuItem>
                     <MenuItem value={1} selected={true}><ListItemText>{t('test key')}</ListItemText></MenuItem>
                 </Grid>
             </Grid>
             <Grid item xs={3}>
-                <Box width={200} style={{backgroundColor: 'rgba(0,0,0,.44)'}}>
+                <Box width={200} style={{backgroundColor: 'var(--color-pop-bg)'}}>
                     <WalletNotificationListItem key={1} {...{
                         ...rest, t,
                         label: {id: 'xxxxxxxxxxxx xxxxxxxxx xxxxxxxxxxxxx xxxxxxxxxxxxxxxxxx'},
@@ -201,13 +201,13 @@ const Template: Story<any> = withTranslation()(({t, ...rest}: any) => {
             <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
                 <Grid item xs={6}>
                     <h4>Left tab</h4>
-                    <Box width={200} style={{backgroundColor: 'rgba(0,0,0,.44)'}}>
+                    <Box width={200} style={{backgroundColor: 'var(--color-pop-bg)'}}>
                         <SubMenu></SubMenu>
                     </Box>
                 </Grid>
                 <Grid item xs={6} alignContent={'center'} justifyContent={'space-around'}>
                     <h4>CoinMap Menu</h4>
-                    <Box height={200} display={'flex'} style={{backgroundColor: 'rgba(0,0,0,.44)'}}>
+                    <Box height={200} display={'flex'} style={{backgroundColor: 'var(--color-pop-bg)'}}>
                         <Box flex={1} minWidth={330} height={'100%'}>
                             {<CoinMapMenu t={t} height={200}/>}
                         </Box>

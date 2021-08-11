@@ -579,18 +579,15 @@ export const MuiListItem = ({colorBase}: any) => {
         styleOverrides: {
             root: {
                 height: pxToRem(32),
-                // borderLeft: '1px solid',
-                // borderColor: 'transparent',
                 paddingLeft: pxToRem(20),
                 paddingRight: pxToRem(20),
-                // backgroundColor: colorBase.borderHover,
+                color: colorBase.textSecondary,
                 '&:hover, &.Mui-selected:hover': {
                     color: colorBase.textPrimary,
-                    // borderColor: colorBase.primaryLight,
-                    backgroundColor: colorBase.backgroundMenuListHover,
+                    backgroundColor: colorBase.boxHover,
                 },
                 '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
-                    backgroundColor: 'transparent',
+                    backgroundColor: colorBase.boxHover,
                     color: colorBase.textPrimary,
                     border: 'none',
                 }
@@ -602,7 +599,7 @@ export const MuiMenu = ({colorBase}: any) => {
     return {
         styleOverrides: {
             list: {
-                backgroundColor: colorBase.borderHover
+                backgroundColor: colorBase.popBg
             }
         }
     } 
@@ -620,7 +617,7 @@ export const MuiMenuItem = ({colorBase}: any) => {
                 // backgroundColor: `${colorBase.borderHover} !important`,
                 '&:hover, &.Mui-selected:hover': {
                     // borderColor: colorBase.primaryLight,
-                    backgroundColor: colorBase.backgroundMenuListHover,
+                    backgroundColor: colorBase.boxHover,
                 },
                 '& .MuiListItemText-multiline': {
                     display: 'flex',
@@ -635,7 +632,8 @@ export const MuiMenuItem = ({colorBase}: any) => {
                     }
                 },
                 '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
-                    backgroundColor: 'transparent',
+                    // backgroundColor: 'transparent',
+                    backgroundColor: colorBase.boxHover,
                     color: colorBase.textPrimary,
                     // '&:after': {
                     //     fontSize: '1.6rem',

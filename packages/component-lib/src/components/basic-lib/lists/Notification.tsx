@@ -4,7 +4,7 @@ import { NotificationItem } from './Interface';
 import styled from '@emotion/styled';
 
 // h5 {
-//   color: ${({theme}) => theme.colorBase.primaryLight};
+//   color: var(--color-primary)
 // }
 const ListItemStyled = styled(ListItem)`
   font-size: ${({theme}) => theme.fontDefault.h5};

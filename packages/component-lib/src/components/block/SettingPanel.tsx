@@ -302,13 +302,13 @@ export const SettingPanel = withTranslation(['common', 'layout'])(({t, ...rest}:
                             alignItems={'center'}>
                     <Typography component={'span'} variant={'body1'}
                                 color={'textColorSecondary'}> {t('labelMaker')}  </Typography>
-                    <Typography component={'span'} variant={'h3'}>0.075% </Typography>
+                    <Typography component={'span'} variant={'h4'}>0.075% </Typography>
                 </Typography>
                 <DividerBlock/>
                 <Typography component={'div'} display={'flex'} flexDirection={'column'} width={120}
                             alignItems={'center'}>
                     <Typography component={'span'} variant={'body1'}> {t('labelTaker')}  </Typography>
-                    <Typography component={'span'} variant={'h3'}> 0.075%</Typography>
+                    <Typography component={'span'} variant={'h4'}> 0.075%</Typography>
                 </Typography>
 
             </Typography>

@@ -110,7 +110,7 @@ const StyledLayer2Item = styled(MenuItem)<MenuItemProps<any>>`
     border-left-color: transparent;
 
     h5 {
-      color: ${({theme}) => theme.colorBase.primaryLight};
+      color: var(--color-primary)
     }
 
     //background: var(--color-box-hover);
@@ -122,7 +122,7 @@ const StyledLayer2Item = styled(MenuItem)<MenuItemProps<any>>`
   //   text-indent: .3em;
   //   //font-size:1.1em;
   //   transform: scale(1.2) translateY(5px);
-    //   color: ${({theme}) => theme.colorBase.primaryLight};
+    //   color: var(--color-primary)
   //
   // }
 ` as typeof MenuItem;
@@ -195,7 +195,7 @@ export const HeadMenuItem = React.memo(React.forwardRef(<I extends BasicHeaderIt
             // ...props
         }} >  {children}</StyledHeadMenuItem>;
 })) as <I extends BasicHeaderItem>(props:MenuItemLink<I>)=>JSX.Element;
-
+//@ts-ignore
 export const Layer2Item = React.memo(<I extends BasicHeaderItem>({t, label}: MenuItemProps<I> & WithTranslation) => {
     return <StyledLayer2Item key={label.id}>
         {/*<Box className={'dot'} paddingTop={0}>&#x25CF;</Box>*/}

@@ -51,13 +51,13 @@ export const colorBase = ({theme}: any) => css`
     --shadow: ${theme.colorBase.shadow};
     --opacity: ${hexToRGB(theme.colorBase.white, '0')};
     /********************Case for special*******************/
-    --vip-bg: ${hexToRGB(theme.colorBase.warning, '0.2')}
+    --vip-bg: ${hexToRGB(theme.colorBase.warning, '0.2')};
     --vip-text: ${theme.colorBase.warning};
-    --network-bg: ${hexToRGB(theme.colorBase.warning, '0.2')}
+    --network-bg: ${hexToRGB(theme.colorBase.warning, '0.2')};
     --network-text: ${theme.colorBase.warning};
-    --provider-btn: ${hexToRGB(theme.colorBase.white, '0.1')}
-    --provider-hover: ${hexToRGB(theme.colorBase.white, '0.3')}
-    --field-opacity: ${hexToRGB(theme.colorBase.white, '0.3')}
+    --provider-btn: ${hexToRGB(theme.colorBase.white, '0.1')};
+    --provider-hover: ${hexToRGB(theme.colorBase.white, '0.03')};
+    --field-opacity: ${hexToRGB(theme.colorBase.white, '0.1')};
     --auto-refresh-color: ${theme.colorBase.primary};
   }
 `;
