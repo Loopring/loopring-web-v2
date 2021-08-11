@@ -83,7 +83,7 @@ const TableStyled = styled(Box)`
     flex: 1;
 
     .rdg{
-        --template-columns: 100px 280px auto 160px auto !important;
+        --template-columns: 320px auto 200px 150px !important;
         .rdg-cell.action{
             display: flex;
             justify-content: center;
@@ -97,13 +97,6 @@ const TableStyled = styled(Box)`
 ` as typeof Box
 
 const StyledSideCell: any = styled(Box)`
-    color: ${(props: any) => {
-    const {
-        value,
-        theme: {colorBase},
-    } = props
-    return value === TradeTypes.Buy ? colorBase.success : colorBase.error
-}}
 `
 
 const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<RawDataTradeItem, unknown>[] => [
@@ -111,30 +104,34 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
         key: 'side',
         name: t('labelTradeSide'),
         formatter: ({row}) => {
-            const tradeType = row[ 'side' ] === TradeTypes.Buy ? t('labelBuy') : t('labelSell')
+            // const tradeType = row[ 'side' ] === TradeTypes.Buy ? t('labelBuy') : t('labelSell')
+            const {from, to} = row[ 'amount' ]
+            const fromValue = from.value ? getThousandFormattedNumbers(Number(from.value)) : EmptyValueTag
+            const toValue = to.value ? getThousandFormattedNumbers(Number(to.value)) : EmptyValueTag
+            
             return (
                 <div className="rdg-cell-value">
                     <StyledSideCell value={row[ 'side' ]}>
-                        {tradeType}
+                        {`${fromValue} ${from.key} \u2192 ${toValue} ${to.key}`}
                     </StyledSideCell>
                 </div>
             )
         }
     },
-    {
-        key: 'amount',
-        name: t('labelTradeAmount'),
-        formatter: ({row}) => {
-            const {from, to} = row[ 'amount' ]
-            const fromValue = from.value ? getThousandFormattedNumbers(Number(from.value)) : EmptyValueTag
-            const toValue = to.value ? getThousandFormattedNumbers(Number(to.value)) : EmptyValueTag
-            return (
-                <div className="rdg-cell-value">
-                    {`${fromValue} ${from.key} \u279E ${toValue} ${to.key}`}
-                </div>
-            )
-        }
-    },
+    // {
+    //     key: 'amount',
+    //     name: t('labelTradeAmount'),
+    //     formatter: ({row}) => {
+    //         const {from, to} = row[ 'amount' ]
+    //         const fromValue = from.value ? getThousandFormattedNumbers(Number(from.value)) : EmptyValueTag
+    //         const toValue = to.value ? getThousandFormattedNumbers(Number(to.value)) : EmptyValueTag
+    //         return (
+    //             <div className="rdg-cell-value">
+    //                 {`${fromValue} ${from.key} \u279E ${toValue} ${to.key}`}
+    //             </div>
+    //         )
+    //     }
+    // },
     {
         key: 'price',
         name: t('labelTradePrice'),
