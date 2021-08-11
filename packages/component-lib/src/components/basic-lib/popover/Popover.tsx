@@ -53,7 +53,9 @@ export const Popover: React.FC<PopoverWrapProps> = ({
         height: 0;
         border-top: 8px solid transparent;
         border-right: 8px solid transparent;
-        border-bottom: ${({theme}) => `8px solid ${theme.colorBase.backgroundSecondary}`};
+        // border-bottom: ${({theme}) => `8px solid ${theme.colorBase.backgroundSecondary}`};
+        border-bottom: ${({theme}) => `8px solid ${theme.colorBase.borderHover}`};
+        // border-bottom: 8px solid transparent;;
         border-left: 8px solid transparent;
       }
     `
@@ -119,40 +121,64 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
 
       &:before {
         content: '';
-        display: block;
-        width: 18px;
-        height: 12px;
+        // display: block;
         position: absolute;
-        top: -8px;
+        top: -5px;
         transform: translateX(-50%);
         left: 50%;
-        border-image-slice: 12 20 15 20 fill;
-        border-image-width: 12px 0px 0px 0px;
-        border-image-repeat: round;
-        border-image-source: url("./static/images/modalBg.png");
+        border-top: 1px solid ${({theme}) => theme.colorBase.borderColor};
+        border-left: 1px solid ${({theme}) => theme.colorBase.borderColor};
+        // border-image-slice: 12 20 15 20 fill;
+        // border-image-width: 12px 0px 0px 0px;
+        // border-image-repeat: round;
+        // border-image-source: url("./static/images/modalBg.png");
+        width: 8px;
+        height: 8px;
+        background-color: ${({theme}) => theme.colorBase.borderHover};
+        transform: rotate(45deg);
       }
     }
 
     &.arrow-right .MuiPopover-paper {
+      margin-top: 12px;
+      overflow: visible;
+      border: 1px solid rgba(235, 235, 235, 0.1);
 
-
-      border-image-slice: 12 40 6 6 fill;
-      border-image-width: 12px 40px 6px 6px;
-      border-image-repeat: round;
-      padding-top: 12px;
-      background-color: initial;
-      background-image: none;
-      border-image-source: url("/static/images/modalBg.png");
+      &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: -5px;
+        transform: translateX(-50%);
+        right: 10%;
+        border-top: 1px solid ${({theme}) => theme.colorBase.borderColor};
+        border-left: 1px solid ${({theme}) => theme.colorBase.borderColor};
+        width: 8px;
+        height: 8px;
+        background-color: ${({theme}) => theme.colorBase.borderHover};
+        transform: rotate(45deg);
+      }
     }
 
     &.arrow-left .MuiPopover-paper {
-      border-image-slice: 12 6 6 40 fill;
-      border-image-width: 12px 6px 6px 40px;
-      border-image-repeat: round;
-      padding-top: 12px;
-      background-color: initial;
-      background-image: none;
-      border-image-source: url("/static/images/modalBg.png");
+      margin-top: 12px;
+      overflow: visible;
+      border: 1px solid rgba(235, 235, 235, 0.1);
+
+      &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        transform: translateX(-50%);
+        top: -5px;
+        left: 10%;
+        border-top: 1px solid ${({theme}) => theme.colorBase.borderColor};
+        border-left: 1px solid ${({theme}) => theme.colorBase.borderColor};
+        width: 8px;
+        height: 8px;
+        background-color: ${({theme}) => theme.colorBase.borderHover};
+        transform: rotate(45deg);
+      }
     }
   }
 
