@@ -47,7 +47,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     React.useEffect(()=>{
         if(walletLayer2Status === SagaStatus.UNSET){
-            setWalletMap2(makeWalletLayer2().walletMap??{} as WalletMap<R>)
+            const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
+            setWalletMap2(walletMap)
         }
     },[walletLayer2Status])
     useCustomDCEffect(() => {

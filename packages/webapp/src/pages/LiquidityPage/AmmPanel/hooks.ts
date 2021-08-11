@@ -48,6 +48,7 @@ import { myLog } from "utils/log_tools";
 import { BIG10 } from "defs/swap_defs";
 import { REFRESH_RATE_SLOW } from "defs/common_defs";
 import { useTranslation } from "react-i18next";
+import { debug } from "console";
 
 export const useAmmPanel = <C extends { [ key: string ]: any }>({
                                                                     pair,
@@ -113,7 +114,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
                 slippage: 0.5
             })
         }
-    }, [snapShotData, walletMap, coinMap, tokenMap, ammCalcData, ammMap, ammType])
+    }, [snapShotData, walletMap, coinMap, tokenMap, ammCalcData, ammMap, ammType, setAmmCalcData, setAmmJoinData, setAmmExitData])
 
     const [ammPoolSnapshot, setAmmPoolSnapShot] = useState<AmmPoolSnapshot>()
     const updateAmmPoolSnapshot = React.useCallback(async () => {
@@ -179,8 +180,9 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
     useCustomDCEffect(async () => {
         if (accountStatus === SagaStatus.UNSET) {
+
             const label: string | undefined = accountStaticCallBack(bntLabel)
-            setAmmDepositBtnI18nKey(label);
+            setAmmDepositBtnI18nKey(label)
             setAmmWithdrawBtnI18nKey(label)
 
             if (!LoopringAPI.userAPI || !pair.coinBInfo?.simpleName
@@ -218,7 +220,9 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
             setAmmCalcData({...ammCalcData, feeJoin, feeExit})
         }
-    }, [accountStatus])
+    }, [setJoinFees, setExitfees, setAmmCalcData, setAmmDepositBtnI18nKey, setAmmWithdrawBtnI18nKey,
+        accountStatus, account.readyState, account.apiKey, account.accountId,
+        pair.coinBInfo?.simpleName, tokenMap, ammCalcData])
 
     // join
 
@@ -226,8 +230,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
 
     const handlerJoinInDebounce = React.useCallback(debounce(async (data, type, joinFees, ammPoolSnapshot) => {
 
-
-        if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !joinFees) {
+        if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !joinFees || !account?.accAddress) {
             return
         }
 
@@ -238,7 +241,6 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         const slippageReal = sdk.toBig(slippage).div(100).toString()
 
         const isAtoB = type === 'coinA'
-
 
         const {idIndex, marketArray, marketMap,} = store.getState().tokenMap
 
@@ -290,9 +292,8 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
             ammInfo,
             request
         })
-        // }
 
-    }, globalSetup.wait), [account])
+    }, globalSetup.wait), [account?.accAddress, tokenMap])
 
     const handleJoinAmmPoolEvent = React.useCallback(async (data: AmmData<IBData<any>>, type: 'coinA' | 'coinB') => {
         await handlerJoinInDebounce(data, type, joinFees, ammPoolSnapshot)
@@ -382,15 +383,13 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
     // const handler = React.useCallback(async () =>,[])
     const handleExitInDebounce = React.useCallback(debounce(async (data, type, exitFees, ammPoolSnapshot) => {
 
-        if (!tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !exitFees) {
+        if (!tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !exitFees || !account?.accAddress) {
             return
         }
 
         myLog('handleExitInDebounce', data, type);
 
         const isAtoB = type === 'coinA'
-
-        // const acc: Lv2Account = store.getState().account
 
         const {idIndex, marketArray, marketMap,} = store.getState().tokenMap
 
@@ -443,7 +442,7 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         })
         // }
 
-    }, globalSetup.wait), [])
+    }, globalSetup.wait), [account?.accAddress, tokenMap])
 
     const handleExitAmmPoolEvent = React.useCallback(async (data: AmmData<IBData<any>>, type: 'coinA' | 'coinB') => {
         await handleExitInDebounce(data, type, exitFees, ammPoolSnapshot)
@@ -532,12 +531,11 @@ export const useAmmPanel = <C extends { [ key: string ]: any }>({
         accountStaticCallBack(removeAmmClickMap, [props])
     }, [exitRequest, ammExitData, removeAmmClickMap]);
 
-    React.useEffect(() => {
-        console.log('initAmmData--->')
+    useCustomDCEffect(() => {
         if (snapShotData) {
             initAmmData(pair)
         }
-    }, [snapShotData, pair, walletMap]);
+    }, [snapShotData, pair]);
 
     return {
         ammAlertText,

@@ -20,7 +20,7 @@ export const Depositing = ({t, goUpdateAccount, label, etherscanLink, count=30}:
                 if (goUpdateAccount) {
                     goUpdateAccount()
                 }
-            }}>{t('labelActiveAccount')} </Button>
+            }}>{t('labelActivateAccount')} </Button>
         </Box>
 
     </Box>
