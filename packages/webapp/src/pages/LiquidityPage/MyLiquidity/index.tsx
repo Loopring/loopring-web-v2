@@ -42,7 +42,7 @@ const StylePaper = styled(Box)`
 const StyleWrapper = styled(Grid)`
   position: relative;
   width: 100%;
-  background-color: ${({theme}) => theme.colorBase.background().default};
+  background: var(--color-box);
   border-radius: ${({theme}) => theme.unit}px;
 ` as typeof Grid
 
@@ -84,7 +84,7 @@ export const MyLiquidity = withTranslation('common')(
                     <Grid display={'flex'} flexDirection={'column'} justifyContent={'space-around'} item sm={3}>
                         <Typography variant={'body1'} component={'h5'}
                                     color={'textSecondary'}>{t('labelTotalPositionValue')}</Typography>
-                        <Typography variant={'h4'} marginTop={1}>
+                        <Typography variant={'h5'} marginTop={1}>
                             {summaryReward === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar
                                 + getThousandFormattedNumbers(summaryReward.rewardDollar !== undefined? summaryReward.rewardDollar : 0)
                                 + getThousandFormattedNumbers( summaryReward.feeDollar !== undefined?summaryReward.feeDollar : 0)
@@ -95,7 +95,7 @@ export const MyLiquidity = withTranslation('common')(
                     <Grid display={'flex'} flexDirection={'column'} justifyContent={'space-around'} item sm={3}>
                         <Typography variant={'body1'} component={'h5'}
                                     color={'textSecondary'}>{t('labelFeeRewards')}</Typography>
-                        <Typography variant={'h4'} marginTop={1}>
+                        <Typography variant={'h5'} marginTop={1}>
                             {summaryReward === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar
                                 + getThousandFormattedNumbers(summaryReward.feeDollar ? summaryReward.feeDollar : 0)
                                 : PriceTag.Yuan
@@ -105,7 +105,7 @@ export const MyLiquidity = withTranslation('common')(
                     <Grid display={'flex'} flexDirection={'column'} justifyContent={'space-around'} item sm={3}>
                         <Typography variant={'body1'} component={'h5'}
                                     color={'textSecondary'}>{t('labelMiningRewards')}</Typography>
-                        <Typography variant={'h4'} marginTop={1}>
+                        <Typography variant={'h5'} marginTop={1}>
                             {summaryReward === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar
                                 + getThousandFormattedNumbers(summaryReward.rewardDollar ? summaryReward.rewardDollar : 0)
                                 : PriceTag.Yuan
@@ -129,7 +129,7 @@ export const MyLiquidity = withTranslation('common')(
                 {/*    </StyledBtnGroupWrapper>*/}
                 {/*    <ScaleAreaChart type={ChartType.Trend} data={[]}/>*/}
                 {/*</StyleWrapper>*/}
-                <Typography paddingLeft={2} marginTop={2} variant={'h4'}>{t('labelMyAmm')}</Typography>
+                <Typography paddingLeft={2} marginTop={2} variant={'h5'}>{t('labelMyAmm')}</Typography>
                 <TableWrapStyled container marginY={2} paddingBottom={2} flex={1} height={568}>
                     <Grid item xs={12} display={'flex'} flexDirection={'column'}>
                         <MyPoolTable
@@ -148,7 +148,7 @@ export const MyLiquidity = withTranslation('common')(
                         />
                     </Grid>
                 </TableWrapStyled>
-                <Typography paddingLeft={2} variant={'h4'}>{t('labelMyAmmRecord')}</Typography>
+                <Typography paddingLeft={2} variant={'h5'}>{t('labelMyAmmRecord')}</Typography>
                 <TableWrapStyled container marginTop={2}  paddingBottom={2} flex={1}>
                     <Grid item xs={12} display={'flex'} flexDirection={'column'}>
                         <AmmRecordTable rawData={myAmmMarketArray} handlePageChange={_handlePageChange} page={page}/>

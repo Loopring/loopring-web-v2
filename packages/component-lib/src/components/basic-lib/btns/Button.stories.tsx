@@ -9,7 +9,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 
 const Styled = styled.div`
-  background: ${({theme}) => theme.colorBase.background().bg};
+  background: var(--color-global-bg);
   color: #fff;
 `
 const toggleData: TGItemData[] = [

@@ -24,7 +24,7 @@ export const subMenu = subMenuLayer2
 
 const BoxStyle = styled(Box)`
   ${({theme}) => `
-    background-color: ${theme.colorBase.background().default};
+    background: var(--color-box);
     width: 100%;
     min-width:auto;
     ${theme.border.defaultFrame({c_key: 'blur'})};

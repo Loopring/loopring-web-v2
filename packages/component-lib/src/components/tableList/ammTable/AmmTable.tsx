@@ -184,7 +184,7 @@ export const AmmTable = withTranslation('tables')((props: WithTranslation & AmmT
         generateRows: (rawData: any) => rawData,
         generateColumns: ({columnsRaw}: any) => columnsRaw as Column<Row<any>, unknown>[],
         style: {
-            backgroundColor: ({colorBase}: any) => `${colorBase.backgroundBox}`
+            backgroundColor: ({colorBase}: any) => `${colorBase.box}`
         }
     }
 

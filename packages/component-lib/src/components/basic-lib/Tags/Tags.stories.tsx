@@ -7,7 +7,7 @@ import styled from "@emotion/styled";
 import { NewTagIcon } from './index';
 
 const Styled = styled.div`
-  background: ${({theme}) => theme.colorBase.background().bg};
+  background: var(--color-global-bg);
   color: #fff;
 `
 

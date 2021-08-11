@@ -14,7 +14,7 @@ const hr = ({colorBase}: any) => {
         margin: `0 ${unit}px`,
         display: 'block',
         height: `2px`,
-        backgroundColor: colorBase.primaryLight,
+        backgroundColor: colorBase.primary,
         position: 'absolute',
         left: 0,
         right: 0,
@@ -51,7 +51,7 @@ export const MuiCard = ({colorBase}: any) => {
     return {
         styleOverrides: {
             root: {
-                backgroundColor: colorBase.background().default
+                backgroundColor: colorBase.box
             }
         }
     }
@@ -61,7 +61,13 @@ export const MuiLink = ({colorBase}: any) => {
     return {
         styleOverrides: {
             root: {
-                color: colorBase.primaryLight
+                color: colorBase.secondary,
+                '&:hover':{
+                    color: colorBase.secondaryHover,
+                },
+                '&.Mui-selected':{
+                    color: colorBase.secondaryPressed,
+                }
             }
         }
     }
@@ -90,7 +96,6 @@ export const MuiModal = ({colorBase}: any) => {
                 color: colorBase.textPrimary,
                 ' .MuiBackdrop-root': {
                     zIndex: -1,
-                    // backgroundColor: colorBase.background().backDrop,
                     backgroundColor: colorBase.modalMask,
                 },
             }
@@ -131,19 +136,19 @@ export const MuiSwitch = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                         backgroundColor: 'transparent',
                         opacity: opacity,
                         borderWidth,
-                        border: `solid ${colorBase.primaryLight}`,
+                        border: `solid ${colorBase.primary}`,
                     },
                     '& .MuiSwitch-thumb': {
-                        backgroundColor: colorBase.primaryLight,
+                        backgroundColor: colorBase.primary,
                         opacity: opacity,
                     }
                 },
                 '& .MuiIconButton-root.Mui-disabled': {
                     '&.Mui-checked .MuiSwitch-thumb': {
-                        backgroundColor: colorBase.primaryLight,
+                        backgroundColor: colorBase.primary,
                     },
                     '& + .MuiSwitch-track': {
-                        backgroundColor: colorBase.border().blur,
+                        backgroundColor: colorBase.divide,
                         border: 'none',
                         opacity: 0.6 * opacity,
                     },
@@ -217,7 +222,7 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 },
                 '&.Mui-disabled': {
                     // backgroundColor: colorBase.border().blur,
-                    backgroundColor: colorBase.background().disabled,
+                    backgroundColor: colorBase.defaultDisable,
                     color: colorBase.textBtnDisabled,
                     // backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23FFFFFF33' stroke-width='1' stroke-dasharray='4%25%2c 8%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e")`
 
@@ -249,18 +254,18 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 fontSize: '1.4rem',
                 fontWeight: 'normal',
                 color: colorBase.textSecondary,
-                borderColor: colorBase.border().default,
-                backgroundColor: colorBase.background().default,
+                borderColor: colorBase.border,
+                backgroundColor: colorBase.box,
                 '&:hover': {
                     color: colorBase.textPrimary,
                     borderColor: colorBase.textPrimary,
-                    backgroundColor: colorBase.background().default,
+                    backgroundColor: colorBase.box,
                 },
                 '&.Mui-disabled': {
-                    backgroundColor: colorBase.background().disabled,
+                    backgroundColor: colorBase.defaultDisable,
                     color: colorBase.textBtnDisabled,
                     // border: '1px dashed',
-                    borderColor: colorBase.border().default
+                    borderColor: colorBase.border
                     // backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23FFFFFF33' stroke-width='1' stroke-dasharray='4%25%2c 8%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e")`
                 },
             },
@@ -299,10 +304,10 @@ export const MuiPaper = ({colorBase}: any): { styleOverrides: ComponentsOverride
             root: {
                 borderRadius: pxToRem(8),
                 backgroundImage: 'none',
-                backgroundColor: colorBase.background().popupBg2,
+                backgroundColor: colorBase.popBg,
                 '&.MuiPopover-paper': {
                     backgroundImage: 'none',
-                    // backgroundColor: colorBase.background().popupBg2,
+                    // backgroundColor: colorBase.popBg,
                 },
             }
         }
@@ -405,8 +410,8 @@ export const MuiInputBase = ({colorBase}: any): { styleOverrides: ComponentsOver
                 },
                 position: 'relative',
                 fontSize: '1.4rem',
-                backgroundColor: colorBase.backgroundBox,
-                border: `1px solid ${colorBase.border().default}`,
+                backgroundColor: colorBase.box,
+                border: `1px solid ${colorBase.border}`,
                 borderRadius: 4,
                 '&:not(.MuiFormControl-fullWidth)': {
                     // width: 'var(--btn-min-width)',
@@ -432,8 +437,8 @@ export const MuiInputBase = ({colorBase}: any): { styleOverrides: ComponentsOver
                     borderColor: colorBase.borderInputHover
                 },
                 '&:disabled': {
-                    backgroundColor: colorBase.background().disabled,
-                    borderColor: colorBase.border().default,
+                    backgroundColor: colorBase.defaultDisable,
+                    borderColor: colorBase.border,
                     color: colorBase.textBtnDisabled,
                 },
                 // padding: '10px 12px',
@@ -472,32 +477,32 @@ export const MuiToggleButton = ({colorBase, themeMode}: any) => {
                 margin: '0 8px',
                 fontSize: '1.4rem',
                 color: colorBase.textPrimary,
-                borderColor: colorBase.border().default,
+                borderColor: colorBase.border,
                 '&&:not(:first-of-type), &&:not(:last-child)': {
-                    borderColor: colorBase.border().default,
+                    borderColor: colorBase.border,
                 },
-                backgroundColor: colorBase.background().field,
+                backgroundColor: colorBase.box,
                 '&:hover': {
-                    backgroundColor: colorBase.background().hover,  
+                    backgroundColor: colorBase.box,
                     borderColor: colorBase.textPrimary,
                     '&:not(:last-child), &:not(:first-of-type)': {
                         borderColor: colorBase.textPrimary,
                     },
                     '&.Mui-selected,&.Mui-selected': {
-                        borderColor: colorBase.primaryLight,
+                        borderColor: colorBase.primary,
                     }
                 },
                 '&.Mui-disabled': {
-                    backgroundColor: colorBase.background().disabled,
+                    backgroundColor: colorBase.defaultDisable,
                     color: colorBase.textSecondary,
                     border: '1px dashed',
-                    borderColor: colorBase.border().default
+                    borderColor: colorBase.border
                     // backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23FFFFFF33' stroke-width='1' stroke-dasharray='4%25%2c 8%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e")`
                 },
                 '&&.Mui-selected, &&.Mui-selected + &.Mui-selected': {
-                    color: colorBase.primaryLight,
-                    backgroundColor: rgba(colorBase.primaryLight, 0.1),
-                    border: borderFunc(themeMode).borderConfig({c_key: rgba(colorBase.primaryDark, 0.5)})
+                    color: colorBase.primary,
+                    backgroundColor: rgba(colorBase.primary, 0.1),
+                    border: borderFunc(themeMode).borderConfig({c_key: rgba(colorBase.primary, 0.5)})
                 }
             }
         }
@@ -523,9 +528,9 @@ export const MuiPaginationItem = ({colorBase}: any) => {
             textPrimary: {
                 '&.Mui-selected': {
                     backgroundColor: 'transparent',
-                    color: colorBase.primaryLight,
+                    color: colorBase.secondary,
                     '&:hover': {
-                        backgroundColor: colorBase.background().hover,
+                        //backgroundColor: colorBase.background().hover,
                     }
                 }
 

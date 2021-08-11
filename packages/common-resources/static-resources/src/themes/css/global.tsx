@@ -8,42 +8,80 @@ import DINCondensed from  '../fonts/english/DINCondensed/363123_0_0.ttf'
 // @ts-ignore
 // import DINCondensed2 from  '../fonts/english/DINCondensed/363123_2_0.ttf'
 
-import { ColorDarkDefault, ColorLightDefault } from "./color-lib";
+import { ColorDarkDefault, ColorLightDefault,hexToRGB } from "./color-lib";
 
 export const fontDefault = {
-    h1: '3.0rem',
-    h2: '2.4rem',
-    h3: '2.0rem',
-    h4: '1.6rem',
-    h5: '1.4rem',
-    h6: '1.2rem',
-    body1: '1.4rem'
+    h1: '3.8rem',
+    h2: '3.0rem',
+    h3: '2.4rem',
+    h4: '2.0rem',
+    h5: '1.6rem',
+    h6: '1.4rem',
+    body1: '1.4rem',
+    body2: '1.2rem'
 }
 
 export const
     refreshTime = 10;
-
+export const colorBase = ({theme}: any) => css`
+  html {
+    --color-primary: ${theme.colorBase.primary};
+    --color-primary-hover: ${theme.colorBase.primaryHover};
+    --color-primary-pressed: ${theme.colorBase.primaryPressed};
+    --color-secondary: ${theme.colorBase.secondary};
+    --color-secondary-hover: ${theme.colorBase.secondaryHover};
+    --color-secondary-pressed: ${theme.colorBase.secondaryPressed};
+    --color-success: ${theme.colorBase.success};
+    --color-warning: ${theme.colorBase.warning};
+    --color-error: ${theme.colorBase.error};
+    --color-text-primary: ${theme.colorBase.textPrimary};
+    --color-text-secondary: ${theme.colorBase.textSecondary};
+    --color-text-disable: ${theme.colorBase.textDisable};
+    --color-disable: ${theme.colorBase.disable};
+    --color-border: ${theme.colorBase.border};
+    --color-border-hover: ${theme.colorBase.borderHover};
+    --color-divide: ${theme.colorBase.divide};
+    --color-pop-bg: ${theme.colorBase.popBg};
+    --color-box: ${theme.colorBase.box};
+    --color-box-secondary: ${theme.colorBase.boxSecondary};
+    --color-box-hover: ${theme.colorBase.boxHover};
+    --color-box-linear: ${theme.colorBase.boxLinear};
+    --color-global-bg: ${theme.colorBase.globalBg};
+    /********************Case for shadow*******************/
+    --shadow: ${theme.colorBase.shadow};
+    --opacity: ${hexToRGB(theme.colorBase.white, '0')};
+    /********************Case for special*******************/
+    --vip-bg: ${hexToRGB(theme.colorBase.warning, '0.2')}
+    --vip-text: ${theme.colorBase.warning};
+    --network-bg: ${hexToRGB(theme.colorBase.warning, '0.2')}
+    --network-text: ${theme.colorBase.warning};
+    --provider-btn: ${hexToRGB(theme.colorBase.white, '0.1')}
+    --provider-hover: ${hexToRGB(theme.colorBase.white, '0.3')}
+    --field-opacity: ${hexToRGB(theme.colorBase.white, '0.3')}
+    --auto-refresh-color: ${theme.colorBase.primary};
+  }
+`;
 export const scrollbarDefault = ({theme}: any) => css`
   html {
-    scrollbar-face-color: ${theme.colorBase.backgroundBox};
-    scrollbar-base-color: ${theme.colorBase.backgroundBox};
-    scrollbar-3dlight-color: ${theme.colorBase.backgroundBox};
-    scrollbar-highlight-color: ${theme.colorBase.backgroundBox};
-    scrollbar-track-color: ${theme.colorBase.backgroundBox};
-    scrollbar-arrow-color: ${theme.colorBase.backgroundBox};
-    scrollbar-shadow-color: ${theme.colorBase.backgroundBox};
-    scrollbar-dark-shadow-color: ${theme.colorBase.backgroundBox};
+    scrollbar-face-color: ${theme.colorBase.box};
+    scrollbar-base-color: ${theme.colorBase.box};
+    scrollbar-3dlight-color: ${theme.colorBase.box};
+    scrollbar-highlight-color: ${theme.colorBase.box};
+    scrollbar-track-color: ${theme.colorBase.box};
+    scrollbar-arrow-color: ${theme.colorBase.box};
+    scrollbar-shadow-color: ${theme.colorBase.box};
+    scrollbar-dark-shadow-color: ${theme.colorBase.box};
   }
-
+  
   //::-webkit-scrollbar { width: 8px; height: 3px; position: absolute}
     // ::-webkit-scrollbar-button {  background-color: ${theme.colorBase.textHint};}
   ::-webkit-scrollbar-track {
-    background-color: ${theme.colorBase.backgroundBox};
+    background-color: ${theme.colorBase.box};
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-track-piece {
-    background-color: ${theme.colorBase.backgroundBox};
+    background-color: ${theme.colorBase.box};
     border-radius: 3px;
   }
 
@@ -54,17 +92,16 @@ export const scrollbarDefault = ({theme}: any) => css`
   }
 
   ::-webkit-scrollbar-corner {
-    background-color: ${theme.colorBase.backgroundBox};
+    background-color: ${theme.colorBase.box};
   }
 
   ::-webkit-resizer {
-    background-color: ${theme.colorBase.backgroundBox};
+    background-color: ${theme.colorBase.box};
   }
 `;
-
 export const globalCss = ({theme}: any) => css`
+  ${colorBase({theme})}
   ${scrollbarDefault({theme})};
-
   ${reset}
   html, body {
     @font-face {
@@ -131,9 +168,9 @@ export const globalCss = ({theme}: any) => css`
   }
 
   html {
+   
     overflow-y: scroll;
     --auto-refresh-duration: ${refreshTime-1}s;
-    --auto-refresh-color: ${theme.colorBase.primaryLight};
     --durationInternal: calc(var(--auto-refresh-duration) * 2);
     --delay: calc(var(--auto-refresh-duration) / 2);
     --header-row-height: 44px;

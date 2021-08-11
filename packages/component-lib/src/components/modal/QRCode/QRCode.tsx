@@ -7,7 +7,7 @@ import { ModalCloseButton } from '../../basic-lib';
 
 const ModalContentStyled = styled(Box)`
   & > div {
-    background-color: ${({theme}) => theme.colorBase.background().popupBg2};
+    background: var(--color-pop-bg);
     position: absolute;
     top: 50%;
     left: 50%;

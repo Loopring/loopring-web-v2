@@ -11,7 +11,7 @@ import { SubMenuItem } from '../lists';
 import { SubMenu } from '.';
 
 const Style = styled.div`
-  background: ${({theme}) => theme.colorBase.background().bg};
+  background: var(--color-global-bg);
   color: #fff;
   height: 100%;
   flex: 1

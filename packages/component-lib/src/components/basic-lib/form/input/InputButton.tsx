@@ -39,7 +39,7 @@ const IWrap = styled(Box)`
       text-decoration: underline dotted;
 
       &:hover {
-        color: ${({theme}) => theme.colorBase.primaryLight};
+        color: ${({theme}) => theme.colorBase.primary};
       }
     }
 
@@ -49,8 +49,7 @@ const IWrap = styled(Box)`
   }
 
   .btnInput-wrap {
-    // background-color: ${({theme}) => theme.colorBase.background().field};
-    background-color: ${({theme}) => theme.colorBase.backgroundInputOpacity};
+    background-color: var(--field-opacity);
     border-radius: ${({theme}) => theme.unit / 2}px;
     position: relative;
     margin-top: ${({theme}) => `${theme.unit / 2}px`};
@@ -134,10 +133,9 @@ const ISBtn = styled(Button)<ButtonProps & { logoColor?: any }>`
       // color: ${({logoColor}) => logoColor}
   }
 
-  &:hover, &:active {
-      //color: ${({theme}) => theme.colorBase.primaryLight};
+  &:hover, &:active {                                              
     color: ${({theme}) => theme.colorBase.textPrimary};
-    background-color: ${({theme}) => theme.colorBase.background().hover};
+    background-color: var(--color-box-hover);
   }
 ` as React.ComponentType<ButtonProps & { logoColor?: any }>;
 const IInput = styled(CurrencyInput)`

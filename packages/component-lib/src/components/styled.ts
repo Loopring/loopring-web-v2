@@ -26,10 +26,10 @@ export const VipStyled = styled(Typography)`
   margin-left: ${({theme}) => theme.unit}px;
   padding: ${({theme}) => theme.unit / 4}px ${({theme}) => theme.unit}px;
   ${({theme}) => theme.border.defaultFrame({c_key: 'rgba(0,0,0,0)', d_R: 0.25})};
-  background-color: ${({theme}) => theme.colorBase.vipBgColor};
+  background-color: var(--vip-bg);
   height: 2rem;
   //line-height: 2rem;
-  color: ${({theme}) => theme.colorBase.secondaryDark};
+  color: var(--vip-text);
 ` as typeof Typography
 export const floatTag = ({theme, custom}: any) => css`
   .float-group {
@@ -138,7 +138,7 @@ export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _
     ${({theme}) => modalContentBaseStyle({theme: theme})}
     ${({_height, _width, theme}) => `
      
-      background: ${theme.colorBase.background().popupBg1};
+      background: ${theme.colorBase.popBg};
       .react-swipeable-view-container {
            height: ${_height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : '100%'} ;
            width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : '100%'};

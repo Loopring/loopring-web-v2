@@ -37,13 +37,14 @@ import {
 
 
 const Style = styled.div`
-  background: ${({theme}) => theme.colorBase.background().bg};
+  background: var(--color-global-bg);
   color: #fff;
   height: 100%;
   flex: 1
 `
 let tradeData: any = {};
 let depositProps: DepositProps<any, any> = {
+    isNewAccount: false,
     tradeData,
     coinMap,
     walletMap,
@@ -58,7 +59,7 @@ let depositProps: DepositProps<any, any> = {
                 //res();
             }, 500)
         })
-    },
+    }
 }
 let withdrawProps: WithdrawProps<any, any> = {
 
@@ -220,7 +221,7 @@ const WrapDepositPanel = (rest: any) => {
     dispatch(setShowDeposit({isShow: false, props: depositProps}));
     const {t} = useTranslation('common');
     return <> <Grid item sm={6}>
-        <DepositPanel  {...{...rest,isNewAccount:true, ...depositProps}} > </DepositPanel>
+        <DepositPanel  {...{...rest, ...depositProps,...{isNewAccount:true}}} > </DepositPanel>
     </Grid>
         <Grid item sm={6}>
             <DepositPanel  {...{

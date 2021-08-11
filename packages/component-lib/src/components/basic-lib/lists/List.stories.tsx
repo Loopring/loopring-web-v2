@@ -31,7 +31,7 @@ import { useTheme } from '@emotion/react';
 const BtnDownload = ({t}: any) => <IconButton aria-label={t('downloadApp')}><DownloadIcon/></IconButton>
 
 const Style = styled.div`
-  background: ${({theme}) => theme.colorBase.background().bg};
+  background: var(--color-global-bg);
   color: #fff;
 `
 const Wrap = () => <></>

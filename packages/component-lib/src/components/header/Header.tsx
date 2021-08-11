@@ -26,7 +26,7 @@ const ToolBarStyled = styled(Toolbar)`
 `
 const StyledDiv = styled.div`
   &.item-scrolled .MuiAppBar-root.MuiAppBar-positionFixed{
-    background: ${({theme}) => theme.colorBase.background().bg};
+    background: var(--color-global-bg);
   }
 `
 const HeaderStyled = styled(AppBar)`
@@ -36,14 +36,14 @@ const HeaderStyled = styled(AppBar)`
       margin: 0 auto;   
       //min-width: 800px;
     }
-    background-color: ${({theme}) => theme.mode === 'dark' ? theme.colorBase.background().header : ''};
+    background-color: var(--color-box);
     backdrop-filter: blur(4px);
     box-sizing: border-box;
     // border-bottom: ${({theme}) => theme.border.borderConfig({d_W: 1, c_key: 'blur'})};
     border-radius: 0;
     box-shadow: none;
     &.item-scrolled.MuiAppBar-root.MuiAppBar-positionFixed{
-      background-color: ${({theme}) => theme.colorBase.background().popupBg2};
+      background-color: var(--color-box);
 
     }
   }

@@ -3,6 +3,9 @@ import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { NotificationItem } from './Interface';
 import styled from '@emotion/styled';
 
+// h5 {
+//   color: ${({theme}) => theme.colorBase.primaryLight};
+// }
 const ListItemStyled = styled(ListItem)`
   font-size: ${({theme}) => theme.fontDefault.h5};
 
@@ -17,22 +20,16 @@ const ListItemStyled = styled(ListItem)`
       display: inline-block;
       width: 100%;
       height: 1px;
-      background-color: ${({theme}) => theme.colorBase.blur};
       position: absolute;
       bottom: 0;
-      left: 0px;
+      left: 0;
       padding: 0  ${({theme}) => theme.unit / 2}px
     }
   }
 
   &:hover {
     border-left-color: transparent;
-
-    // h5 {
-      //   color: ${({theme}) => theme.colorBase.primaryLight};
-    // }
-
-    background: ${({theme}) => theme.colorBase.background().hover};
+    background: var(--color-box-hover);
   }
 
   .MuiListItemText-root {
@@ -44,7 +41,7 @@ const ListItemStyled = styled(ListItem)`
       word-break: break-all;
       text-overflow: ellipsis;
       -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
+      //-webkit-line-clamp: 2;
     }
 
     margin: 0;

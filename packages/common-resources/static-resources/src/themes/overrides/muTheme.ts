@@ -42,23 +42,23 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
         palette: {
             mode: themeMode,
             primary: {
-                light: colorBase.primaryLight,
+                light: colorBase.primary,
                 main: colorBase.primary,
-                dark: colorBase.primaryDark,
-                contrastText: "#fff"
+                dark: colorBase.primary,
+                contrastText: themeMode === 'dark'?"#fff":'#000',
             },
             secondary: {
                 light: colorBase.secondary,
                 main: colorBase.secondary,
-                dark: colorBase.primaryDark,
-                contrastText: "#fff",
+                dark: colorBase.secondary,
+                contrastText: themeMode === 'dark'?"#fff":'#000',
                 // light:
             },
             contrastThreshold: 3,
             tonalOffset: 0.2,
             background: {
-                paper: colorBase.background().bg,
-                default: colorBase.background().default,
+                paper: colorBase.box,
+                default: colorBase.globalBg,
             },
             text: {
                 primary: colorBase.textPrimary,
@@ -70,36 +70,41 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             common: {"black": "#000", "white": "#fff"},
             action: {
                 hoverOpacity: 0.05,
-                hover: colorBase.textPrimary,
-                selected: colorBase.textPrimary,
+                hover: colorBase.secondaryHover,
+                selected: colorBase.secondaryPressed,
                 // disabledBackground: "rgba(0, 0, 0, 0.12)",
                 disabled: colorBase.textDisable,
-                active: colorBase.textPrimaryLight,
+                active: colorBase.secondaryPressed,
             },
             error: {
                 main: colorBase.error,
                 dark: colorBase.error,
-                contrastText: "#fff",
+                contrastText: themeMode === 'dark'?"#fff":'#000',
             },
         },
         typography: {
             fontFamily: `DINCondensed, Helvetica, Arial, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif`,
-            fontSize: 12,
+            fontSize: 14,
             h1: {
                 fontSize: fontDefault.h1,
+                lineHeight: '4.6rem'
             },
             h2: {
                 fontSize: fontDefault.h2,
+                lineHeight: '3.8rem'
             },
             h3: {
                 fontSize: fontDefault.h3,
+                lineHeight: '3.2rem'
             },
             h4: {
                 fontSize: fontDefault.h4,
+                lineHeight: '2.8rem',
             },
             h5: {
                 fontSize: fontDefault.h5,
-                margin: 0,
+                lineHeight: '2.4rem',
+                margin:0
             },
             h6: {
                 fontSize: fontDefault.h6,

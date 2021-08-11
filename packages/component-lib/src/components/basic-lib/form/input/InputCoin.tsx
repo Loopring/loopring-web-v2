@@ -39,7 +39,7 @@ const IWrap = styled(Box)`
       text-decoration: underline dotted;
 
       &:hover {
-        color: ${({theme}) => theme.colorBase.primaryLight};
+        color: ${({theme}) => theme.colorBase.secondary};
       }
     }
 
@@ -49,8 +49,7 @@ const IWrap = styled(Box)`
   }
 
   .coinInput-wrap {
-    // background-color: ${({theme}) => theme.colorBase.background().field};
-    background-color: ${({theme}) => theme.colorBase.backgroundInputOpacity};
+    background: var(--field-opacity);
     border-radius: ${({theme}) => theme.unit / 2}px;
     position: relative;
     margin-top: ${({theme}) => `${theme.unit / 2}px`};
@@ -140,21 +139,7 @@ const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
     padding-right: ${({theme}) => theme.unit / 2 * 3}px;
     align-items: center;
   }
-
-  //.MuiAvatar-root {
-  //  width: 24px;
-  //  height: 24px;
-  //}
-
-  // .MuiButton-endIcon svg {
-    //   color: ${({theme}) => theme.colorBase.textPrimary}
-  // }
-
-  // &:hover, &:active {
-    //     //color: ${({theme}) => theme.colorBase.primaryLight};
-    //   color: ${({theme}) => theme.colorBase.textPrimary};
-    //   background-color: ${({theme}) => theme.colorBase.background().hover};
-  // }
+  
 ` as React.ComponentType<BoxProps & { logoColor?: any }>;
 const IInput = styled(CurrencyInput)`
 

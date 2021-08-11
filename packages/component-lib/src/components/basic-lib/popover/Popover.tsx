@@ -53,7 +53,7 @@ export const Popover: React.FC<PopoverWrapProps> = ({
         height: 0;
         border-top: 8px solid transparent;
         border-right: 8px solid transparent;
-        border-bottom: ${({theme}) => `8px solid ${theme.colorBase.backgroundSecondary}`};
+        border-bottom: 8px solid transparent;;
         border-left: 8px solid transparent;
       }
     `
