@@ -26,7 +26,7 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
         balance: 0
     } as IBData<unknown>)
 
-    const {walletLayer1} = useWalletLayer1()
+    const { walletLayer1 } = useWalletLayer1()
     const {setShowDeposit, setShowAccount}  = useOpenModals()
 
     const { t } = useTranslation('common')

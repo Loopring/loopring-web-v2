@@ -62,6 +62,9 @@
   "main": "./public/electron.js",
   "homepage": ".",
   "scripts": {
+    "deploy3": "sh -ac '. .env.deploy; npx ipfs-deploy -p pinata -d cloudflare build'",
+    "deploy2": "sh -ac '. .env.deploy; npx ipfs-deploy -p pinata build > .testfile2'",
+    "update2": "sh -ac '. .env.deploy; cat .testfile2 | xargs -I {} npx ipfs-deploy -p pinata -d cloudflare -c {}'",
     "build": "dotenv -e .env.production react-app-rewired build",
     "deploy_infura": "npx ipfs-deploy build > .testfile",
     "update_pinata": "sh -ac '. .env.deploy; cat .testfile | xargs -I {} npx ipfs-deploy -p pinata -d cloudflare -c {}'",

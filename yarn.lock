@@ -16825,10 +16825,10 @@ loglevel@^1.4.1, loglevel@^1.6.8:
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.7.1.tgz#005fde2f5e6e47068f935ff28573e125ef72f197"
   integrity sha512-Hesni4s5UkWkwCGJMQGAh71PaLUmKFM60dHvq0zi/vDhhrzuk+4GgNbTXJ12YYQJn6ZKBDNIjYcuQGKudvqrIw==
 
-loopring-sdk@^0.0.81:
-  version "0.0.81"
-  resolved "https://registry.yarnpkg.com/loopring-sdk/-/loopring-sdk-0.0.81.tgz#92371c9f8a2b99d93cf5b04f2897d56cefcb4d76"
-  integrity sha512-bqv37zHGGq9+JzuBRi1RpRO9ZV+VQaj7kiTRqLC7KKru+0uW147sxgl1LaIlm4lFbuaGNdiCbyPMvpteib252A==
+loopring-sdk@^0.0.82:
+  version "0.0.82"
+  resolved "https://registry.yarnpkg.com/loopring-sdk/-/loopring-sdk-0.0.82.tgz#2fbcbdc4df26588b0c2eafd0b55dcf9a1cf4a934"
+  integrity sha512-w7DiBdTi9OhixOkWxqTxmYFv9Fyv46t/os2Ug+diQquyw8ILjNY1nMkRWoSABfHxAK0jKRgnjyoJInLNnXBl3Q==
   dependencies:
     async "^3.2.0"
     axios "^0.21.1"

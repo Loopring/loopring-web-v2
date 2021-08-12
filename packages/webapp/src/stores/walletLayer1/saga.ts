@@ -5,6 +5,7 @@ import { exchangeAPI } from '../apis/api';
 import store from '../index';
 import { fromWEI } from 'loopring-sdk';
 import { useAccount } from '../account';
+import { myLog } from "utils/log_tools";
 
 type WalletLayer1Map<R extends {[key:string]:any}> = {
     [key in CoinKey<R>|PairKey<R>]?:WalletCoin<R>
@@ -18,8 +19,9 @@ const getWalletLayer1Balance = async <R extends {[key:string]:any}>()=> {
     const {accAddress} = store.getState().account;
     const {tokenMap,marketCoins} = store.getState().tokenMap;
     if(marketCoins && tokenMap) {
+        
         const {ethBalance} =  await exchangeApi.getEthBalances({owner:accAddress});
-        const {tokenBalances} =  await exchangeApi.getTokenBalances({owner:accAddress,token: marketCoins.join()},tokenMap);
+        const {tokenBalances} =  await exchangeApi.getTokenBalances({owner:accAddress, token: marketCoins.join()},tokenMap);
         tokenBalances['ETH'] = ethBalance;
         let walletLayer1;
         if(tokenBalances) {
