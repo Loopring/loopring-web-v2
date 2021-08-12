@@ -7,7 +7,6 @@ import { SuccessBasic } from '../SuccessBasic';
 
 export const Depositing = ({
                                t,
-                               goUpdateAccount,
                                label,
                                etherscanLink,
                                count = 30,
@@ -15,7 +14,6 @@ export const Depositing = ({
                                ...rest
                            }: WithTranslation & {
     onClose: (e: any) => void,
-    goUpdateAccount?: () => void,
     label?: string,
     etherscanLink: string, count?: number
 }) => {
@@ -27,13 +25,6 @@ export const Depositing = ({
                 <Typography variant={'body2'}> <LinkIcon fontSize={'small'}
                                                          style={{verticalAlign: 'middle'}}/> {'Etherscan'} </Typography>
             </Link>
-            {/*<Box marginTop={2} alignSelf={'stretch'} paddingX={5}>*/}
-            {/*    <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {*/}
-            {/*        if (goUpdateAccount) {*/}
-            {/*            goUpdateAccount()*/}
-            {/*        }*/}
-            {/*    }}>{t('labelActivateAccount')} </Button>*/}
-            {/*</Box>*/}
         </>
     }, [])
     return <SuccessBasic {...{...rest, label:label as any, onClose, describe, t}}/>

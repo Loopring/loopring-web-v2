@@ -31,7 +31,8 @@
     "release:build": "lerna run --parallel --scope \"@loopring-web/*\" build",
     "test": "react-scripts-rewired test",
     "eject": "react-scripts eject",
-    "storybook-lib": "start-storybook -p 6006 -s public",
+    "storybook": "start-storybook -p 6006 -s public",
+    "sb": "yarn storybook",
     "build": "build-storybook --debug-webpack --quiet -o build"
   },
   "eslintConfig": {

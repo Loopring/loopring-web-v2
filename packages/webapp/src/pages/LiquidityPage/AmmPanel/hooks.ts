@@ -538,7 +538,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         accountStaticCallBack(removeAmmClickMap, [props])
     }, [exitRequest, ammExitData, removeAmmClickMap]);
 
-    const { walletLayer2, status: walletLayer2Status } = useWalletLayer2();
+    const { status: walletLayer2Status } = useWalletLayer2();
 
     useCustomDCEffect(() => {
         if (walletLayer2Status !== SagaStatus.UNSET || !pair || !snapShotData) {

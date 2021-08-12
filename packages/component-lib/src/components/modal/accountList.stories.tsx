@@ -78,8 +78,8 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
         etherscanUrl: 'https://material-ui.com/components/material-icons/'
     }
 
-    const accountList = React.useMemo(() => {
-        return Object.values({
+    const {nameList, accountList} = React.useMemo(() => {
+        const accountMap = {
             [ AccountStep.NoAccount ]: <NoAccount {...{
                 ...accountInfoProps, goDeposit: () => {
                 }
@@ -113,7 +113,9 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                 providerName: ConnectProviders.MetaMask
             }}/>,
             [ AccountStep.FailedTokenAccess ]: <FailedTokenAccess {...{...rest, coinInfo}}/>,
-        })
+        }
+
+        return { nameList: Object.keys(accountMap), accountList: Object.values(accountMap) }
 
     }, [])
 
@@ -126,6 +128,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                         {accountList.map((panel, index) => {
                             return <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
                                         justifyContent={'center'} alignItems={'stretch'}>
+                                {AccountStep[nameList[index]]}
                                 {panel}
                             </Box>
                         })}
