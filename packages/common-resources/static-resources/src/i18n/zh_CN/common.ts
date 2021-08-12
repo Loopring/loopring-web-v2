@@ -196,4 +196,5 @@ export default {
     describeTitleConnectToWallet:'点击按钮，连接路印钱包，开始二层之旅',
     describeTitleLocked:'已连接您的钱包，点击解锁后查看账户信息',
     labelLiqudityPageTitle: 'AMM 资金池',
+    labelFilter: '搜索',
 }
