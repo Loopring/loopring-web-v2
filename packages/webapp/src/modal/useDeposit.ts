@@ -56,8 +56,6 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
 
                 if (tokenInfo.symbol.toUpperCase() !== 'ETH') {
 
-                    setShowAccount({isShow: true, step: AccountStep.TokenAccessProcess})
-
                     const req: GetAllowancesRequest = { owner: account.accAddress, token: tokenInfo.symbol}
 
                     const { tokenAllowances } = await LoopringAPI.exchangeAPI.getAllowances(req, tokenMap)
@@ -69,6 +67,8 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
                     if (curValInWei.gt(allowance)) {
 
                         myLog(curValInWei, allowance, ' need approveMax!')
+
+                        setShowAccount({isShow: true, step: AccountStep.TokenAccessProcess})
 
                         try {
                             await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
@@ -82,13 +82,13 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
                             return
                         }
 
-                        setShowAccount({isShow: true, step: AccountStep.Depositing})
-
                     } else {
                         myLog('allowance is enough! don\'t need approveMax!')
                     }
 
                 }
+
+                setShowAccount({isShow: true, step: AccountStep.DepositingProcess})
 
                 myLog('before deposit:', chainId, connectName, isMetaMask)
 
