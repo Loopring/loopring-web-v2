@@ -107,7 +107,6 @@ export const ModalAccountInfo = withTranslation('common')(({
                 setShowAccount({isShow: true, step: AccountStep.SuccessUnlock})
                 await sleep(REFRESH_RATE)
                 setShowAccount({isShow: false})
-                walletLayer2Services.sendCheckAccount(account.accAddress)
                 break
             case ActionResultCode.GetAccError:
             case ActionResultCode.GenEddsaKeyError:
@@ -116,6 +115,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             default:
                 break
         }
+        walletLayer2Services.sendCheckAccount(account.accAddress)
 
     }, [account, setShowAccount])
 
