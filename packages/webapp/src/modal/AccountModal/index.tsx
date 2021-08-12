@@ -7,11 +7,9 @@ import {
     DepositApproveProcess,
     Depositing,
     DepositPanel,
-    DepositProps,
     FailedDeposit,
     FailedTokenAccess,
     FailedUnlock,
-    FailedUpdateAcc,
     HadAccount,
     ModalAccount,
     ModalQRCode,
@@ -99,7 +97,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             return
         }
 
-        myLog('goActiveAccount....')
+        myLog('goUpdateAccount....')
         setShowAccount({isShow: true, step: AccountStep.ActiveAccountProcess});
 
         const result: ActionResult = await updateAccountFromServer()
@@ -153,18 +151,17 @@ export const ModalAccountInfo = withTranslation('common')(({
             }} />,
             [ AccountStep.Depositing ]: <Depositing label={title}
                                                     onClose={onClose}
-                                                    etherscanLink={etherscanUrl + account.accAddress}
-                                                    goUpdateAccount={() => goUpdateAccount()}  {...{...rest, t}} />,
+                                                    etherscanLink={etherscanUrl + account.accAddress} {...{...rest, t}} />,
             [ AccountStep.FailedDeposit ]: <FailedDeposit label={title}
                                                           etherscanLink={etherscanUrl + account.accAddress}
-                                                          onRetry={() => undefined} {...{...rest, t}} />,
+                                                          onRetry={ () => goDeposit() } {...{...rest, t}} />,
             [ AccountStep.SignAccount ]: <ApproveAccount {...{
                 ...account,
                 etherscanUrl,
                 onSwitch, onCopy,
                 onViewQRCode, onDisconnect, addressShort,
-            }} goActiveAccount={() => {
-                return undefined
+            }} goUpdateAccount={() => {
+                goUpdateAccount()
             }}  {...{...rest, t}} />,
             [ AccountStep.ProcessUnlock ]: <ProcessUnlock providerName={account.connectName} {...{...rest, t}} />,
             [ AccountStep.SuccessUnlock ]: <SuccessUnlock providerName={account.connectName} {...{...rest, t}} />,
