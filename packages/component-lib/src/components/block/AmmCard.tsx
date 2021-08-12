@@ -1,6 +1,6 @@
 import { Avatar, Box, Card, CardActions, CardContent } from '@material-ui/core';
 import { Typography } from '@material-ui/core/';
-import { Button } from '../';
+import { boxLiner, Button } from '../';
 import React from 'react';
 import moment from 'moment';
 import { WithTranslation, withTranslation } from 'react-i18next';
@@ -22,7 +22,7 @@ import styled from '@emotion/styled';
 const BoxStyled = styled(Box)`
 ` as typeof Box
 const BoxBg = styled(Box)`
-  background-color: var(--color-box-linear);
+  ${({theme}) => boxLiner({theme})}
   ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2})};
 ` as typeof Box
 

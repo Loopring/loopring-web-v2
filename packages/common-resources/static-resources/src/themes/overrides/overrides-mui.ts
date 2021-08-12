@@ -394,10 +394,11 @@ export const MuiInputBase = ({colorBase,themeMode}: any): { styleOverrides: Comp
                 '& .MuiListItemText-multiline': {
                     display: 'flex',
                     flexDirection: 'row',
-                    alignItems: 'space-between',
+                    alignItems: 'center',
                     flexWrap: 'noWrap',
                     justifyContent: 'space-between',
                     margin: 0,
+                    height:'inherit',
                 },
                 '& fieldset': {
                     display: 'none',
@@ -686,11 +687,11 @@ export const MuiMenuItem = ({colorBase,themeMode}: any) => {
         }
     }
 }
-export const MuiTab = ({colorBase}: any) => {
+export const MuiTab = ({colorBase}: any): { styleOverrides: ComponentsOverrides['MuiTab'] } => {
     return {
         styleOverrides: {
-
             root: {
+                fontWeight: 'normal',
                 padding: `0 ${unit * 2}px`,
                 maxWidth: 'initial',
                 minWidth: 'auto !important',

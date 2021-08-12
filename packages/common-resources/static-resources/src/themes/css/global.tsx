@@ -5,8 +5,6 @@ import InterMedium from '../fonts/english/Inter-Medium.ttf';
 // @ts-ignore
 // import GilroyMedium from '../fonts/english/DINCondensed.ttf';
 import DINCondensed from  '../fonts/english/DINCondensed/363123_0_0.ttf'
-// @ts-ignore
-// import DINCondensed2 from  '../fonts/english/DINCondensed/363123_2_0.ttf'
 
 import { ColorDarkDefault, ColorLightDefault,hexToRGB } from "./color-lib";
 

@@ -1,10 +1,17 @@
 import styled from '@emotion/styled';
 import { BoxProps, Grid, Typography } from '@material-ui/core';
-import { css } from '@emotion/react';
+import { css, Theme } from '@emotion/react';
 import { UpColor } from '@loopring-web/common-resources';
 import { Box } from '@material-ui/core/';
 import React from 'react';
 
+// @ts-ignore
+export const boxLiner = ({theme}: { theme:Theme }) => css`
+  background: var(--color-box-linear);
+  .coinInput-wrap, .btnInput-wrap, .MuiOutlinedInput-root {
+    background: var(--field-opacity);
+  }
+`
 export const TypographyStrong = styled(Typography)`
   color: var(--color-secoundary);
 ` as typeof Typography
@@ -122,23 +129,27 @@ export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _
     .react-swipeable-view-container > div {
       background: var(--opacity);
     }
-    .container{
-        padding-bottom: 0;
-     
+
+    .container {
+      padding-bottom: 0;
+
     }
   }
-  .trade-panel{
+
+  .trade-panel {
     .react-swipeable-view-container {
-      & > div{
+      & > div {
         padding: 0 ${({theme}) => theme.unit * 5 / 2}px ${({theme}) => theme.unit * 5}px;
-        .container{
-          height:100%;
-          padding-top:0;
+
+        .container {
+          height: 100%;
+          padding-top: 0;
         }
       }
     }
   }
-  &&{
+
+  && {
     ${({theme}) => modalContentBaseStyle({theme: theme})}
     ${({_height, _width, theme}) => `
      
@@ -166,14 +177,15 @@ export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _
       
     `}
   }
+
   ${({_height, theme}) => `
   .MuiModal-root & {
      .coin-menu {
           height:${_height ?
-    typeof _height === 'number' ?
-        ` calc(${_height + 'px'} - ${theme.unit * 4}px - 2 * var(--toolbar-row-padding)  ) `
-        : ` calc(${_height} - ${theme.unit * 4}px - 2 * var(--toolbar-row-padding)  )`
-    : '410px'} !important;
+          typeof _height === 'number' ?
+                  ` calc(${_height + 'px'} - ${theme.unit * 4}px - 2 * var(--toolbar-row-padding)  ) `
+                  : ` calc(${_height} - ${theme.unit * 4}px - 2 * var(--toolbar-row-padding)  )`
+          : '410px'} !important;
      }
   }`};
 ` as React.ElementType<{ _height?: number | string, _width?: number | string } & BoxProps>

@@ -33,16 +33,7 @@ const ListItemStyled = styled(ListItem)`
   }
 
   .MuiListItemText-root {
-    .MuiTypography-root {
-      display: -webkit-box;
-      display: -moz-box;
-      line-height: 1em;
-      white-space: normal;
-      word-break: break-all;
-      text-overflow: ellipsis;
-      -webkit-box-orient: vertical;
-      //-webkit-line-clamp: 2;
-    }
+    height: 100%;
 
     margin: 0;
     overflow: hidden;

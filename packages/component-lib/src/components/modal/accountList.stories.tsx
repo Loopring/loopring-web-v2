@@ -3,7 +3,7 @@ import React from 'react'
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
-import { Button, Grid } from '@material-ui/core'
+import { Button, Grid, Typography } from '@material-ui/core'
 import { ConnectProviders, gatewayList } from '@loopring-web/common-resources'
 import {
     ModalWalletConnect,
@@ -30,6 +30,7 @@ import { account, coinMap, CoinType, walletMap } from '../../static';
 import { DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../index';
 import { DepositWrap } from '../panel/components';
 import { Box } from '@material-ui/core/';
+import QRCode from 'qrcode.react';
 
 
 const Style = styled.div`
@@ -77,6 +78,8 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
         level: 'VIP 1',
         etherscanUrl: 'https://material-ui.com/components/material-icons/'
     }
+    const accAddress = '0xcEd11e039a5C50927a17a8D4632616DFa8F72BF6'
+    const etherscanLink =  accAddress;
 
     const {nameList, accountList} = React.useMemo(() => {
         const accountMap = {
@@ -123,6 +126,19 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
         <>
             <Style>
                 <MemoryRouter initialEntries={['/']}>
+                    <Box paddingTop={2} paddingX={2} width={180} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                        {/*<QRCodePanel {...{*/}
+                        {/*    ...rest, t, title: '', description: '',*/}
+                        {/*    url: etherscanLink*/}
+                        {/*}} />*/}
+                        <QRCode value={etherscanLink} size={80} style={{ backgroundColor: '#fff'}} aria-label={`link:${etherscanLink}`}/>
+                        <Typography  marginTop={2} variant={'body2'} color={'textSecondary'}  style={{wordBreak:'break-all'}}>{accAddress}</Typography>
+                        <Button onClick={() => {
+
+                        }}>
+                            <Typography variant={'body2'} > {'labelCopyAddress'} </Typography>
+                        </Button>
+                    </Box>
                     <Grid container spacing={2}>
 
                         {accountList.map((panel, index) => {
