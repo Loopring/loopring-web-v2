@@ -188,7 +188,7 @@ export const globalCss = ({theme}: any) => css`
     --list-coin-item: 44px;
     --header-menu-icon-size: 20px;
     --list-menu-coin-size: 24px;
-    --slippage-pop-width: 196px;
+    --slippage-pop-width: 184px;
     --slippage-pop-height: 88px ;
     --chart-title-coin-size: 28px;
     --btn-icon-size-small: 24px;
