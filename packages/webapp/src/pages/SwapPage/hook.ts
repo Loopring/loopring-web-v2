@@ -37,7 +37,7 @@ import { useAccount } from '../../stores/account/hook';
 import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
 import {
     accountStaticCallBack,
-    bntLabel,
+    btnLabel,
     btnClickMap,
     coinPairInit,
     getUserTrades,
@@ -239,7 +239,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     }, [walletLayer2Status])
 
     React.useEffect(() => {
-        const label: string | undefined = accountStaticCallBack(bntLabel)
+        const label: string | undefined = accountStaticCallBack(btnLabel)
         setSwapBtnI18nKey(label);
     }, [accountStatus]);
 
