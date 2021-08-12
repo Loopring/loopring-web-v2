@@ -6,7 +6,7 @@ import { FailedBasic } from '../FailedBasic';
 
 export const FailedDeposit = ({
                                   onRetry,
-                                  label = "depositTitle",
+                                  label = "FailedDeposit",
                                   etherscanLink,
                                   t,
                                   ...rest

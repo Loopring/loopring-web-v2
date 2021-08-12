@@ -16,9 +16,31 @@ export const ActiveAccountProcess = ({t, ...rest}: WithTranslation & { providerN
     return <ProcessBasic label={t('labelActivateAccount')} describe={ describe} {...{...rest, t}}/>
 }
 
+export const DepositingProcess = ({
+                                          t,
+                                          label = "DepositingProcess",
+                                          // providerName,
+                                          etherscanLink,
+                                          ...rest
+                                      }: WithTranslation & { label?: string, providerName: string, etherscanLink: string }) => {
+    const describe = React.useMemo(() => {
+        return <>
+            <Typography variant={'body1'}>
+                {t('waiting for user action')}
+            </Typography>
+            <Link target='_blank' href={etherscanLink} display={'inline-block'} marginTop={1 / 2}>
+                <Typography variant={'body2'}> <LinkIcon fontSize={'small'}
+                                                         style={{verticalAlign: 'middle'}}/> {'Etherscan'} </Typography>
+            </Link></>
+
+    }, [])
+    return <ProcessBasic label={label} describe={describe} {...{...rest, t}}/>
+
+}
+
 export const DepositApproveProcess = ({
                                           t,
-                                          label = "depositTitle",
+                                          label = "DepositApproveProcess",
                                           // providerName,
                                           etherscanLink,
                                           ...rest
@@ -34,7 +56,7 @@ export const DepositApproveProcess = ({
             </Link></>
 
     }, [])
-    return <ProcessBasic label={label} describe={describe}  {...{...rest, t}}/>
+    return <ProcessBasic label={label} describe={describe} {...{...rest, t}}/>
 
 }
 
