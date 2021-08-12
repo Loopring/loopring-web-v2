@@ -3,7 +3,14 @@ import { SwapPanel } from './Swap/SwapPanel';
 import { Meta, Story } from '@storybook/react/types-6-0';
 import { MemoryRouter } from 'react-router-dom';
 import { Box, Grid } from '@material-ui/core';
-import { AmmData, AmmInData, IBData, WithdrawType, WithdrawTypes } from '@loopring-web/common-resources';
+import {
+    AmmData,
+    AmmInData,
+    IBData,
+    SlippageTolerance,
+    WithdrawType,
+    WithdrawTypes
+} from '@loopring-web/common-resources';
 import { ammCalcData, coinMap, CoinType, tradeCalcData, walletMap } from '../../static';
 import { Button } from '../basic-lib';
 import { ResetPanel } from './Reset';
@@ -34,6 +41,7 @@ import {
     setShowTransfer,
     setShowWithdraw
 } from '../../stores';
+import { SlippagePanel } from './components';
 
 
 const Style = styled.div`
@@ -344,9 +352,20 @@ const ModalPanelWrap = () => {
 
 const Template: Story<any> = () => {
     const dispatch = useDispatch();
-    const {t} = useTranslation('common');
+    const {t,...rest} = useTranslation('common');
+    const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:0.8`) as Array<number | string>;
     return <Style> <MemoryRouter initialEntries={['/']}>
         <Box>
+            <h4>Slippage bloc</h4>
+            <Grid container spacing={2}>
+                <SlippagePanel {...{
+                    ...rest, t, tReady:true,
+                    handleChange: ()=>{},
+                    slippageList: slippageArray,
+                    slippage: 0.5
+                }} />
+            </Grid>
+
             <h4>SwapPanel</h4>
             <Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>
                 <WrapSwapPanel/>
