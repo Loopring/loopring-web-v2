@@ -62,7 +62,7 @@ export const LiquidityPage =  withTranslation('common', { withRef: true })(({ t 
                     fontFamily={'Roboto'}
                     marginTop={2}
                     marginBottom={3}
-                >{t('labelLiqudityPageTitle')}</Typography>
+                >{t('labelLiquidityPageTitle')}</Typography>
                 <Box minHeight={420} display={'flex'} alignItems={'stretch'} justifyContent={'stretch'} /* flexDirection="column" */ marginTop={0} flex={1} marginBottom={3}>
                     {(selected === 'pools' && !symbol ) && <PoolsPanel ammActivityMap={ammActivityMap}/>}
                     {/* {(selected === 'amm-mining' && !symbol ) && <AmmMiningView ammActivityMap={ammActivityMap}/>}
