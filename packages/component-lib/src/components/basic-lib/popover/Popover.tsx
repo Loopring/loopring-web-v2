@@ -108,106 +108,48 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
     .MuiBackdrop-root {
       background-color: inherit;
     }
-
     &.arrow-center,
     &.arrow-right,
     &.arrow-left,
     &.arrow-left {
       .MuiPopover-paper {
-        ${({theme}) => theme.border.defaultFrame({d_W: 1, d_R: 1 / 2, c_key: 'var(--color-border-hover)'})};
+        ${({theme}) => theme.border.defaultFrame({d_W: 1, d_R: 1 / 2, c_key: 'var(--opacity)'})};
         margin-top: ${({theme}) => theme.unit * 2}px;
         overflow: visible;
-
+        box-shadow: var(--shadow);
         &:before {
           position: absolute;
           content: '';
           display: block;
           position: absolute;
-          ${({theme}) => theme.border.defaultFrame({d_W: 1, d_R: 1 / 2, c_key: 'var(--color-border)'})};
+          ${({theme}) => theme.border.defaultFrame({d_W: 1, d_R: 1 / 2, c_key: 'var(--opacity)'})};
+          border-top: ${({theme}) => theme.border.borderConfig({ c_key: 'var(--opacity)'})};
+          border-left: ${({theme}) => theme.border.borderConfig({ c_key: 'var(--opacity)'})};
           border-bottom: 0;
           border-right: 0;
           width: 8px;
           height: 8px;
-          background: var(--color-border-hover);
-
+          background: var(--color-pop-bg);
         }
       }
     }
 
     &.arrow-center .MuiPopover-paper {
       &:before {
-        // transform: rotate(45deg) translateX(-50%) rotate(45deg);
-        // top: -5px;
-        // left: 50%;
-        content: '';
-        // display: block;
-        position: absolute;
-        top: -5px;
-        transform: translateX(-50%);
-        left: 50%;
-        border-top: 1px solid ${({theme}) => theme.colorBase.border};
-        border-left: 1px solid ${({theme}) => theme.colorBase.border};
-        // border-image-slice: 12 20 15 20 fill;
-        // border-image-width: 12px 0px 0px 0px;
-        // border-image-repeat: round;
-        // border-image-source: url("./static/images/modalBg.png");
-        width: 8px;
-        height: 8px;
-        background-color: ${({theme}) => theme.colorBase.borderHover};
-        transform: rotate(45deg);
+       
+       
       }
     }
 
     &.arrow-right .MuiPopover-paper {
-      // &:before {
-      //   transform: rotate(45deg) translateX(-50%) rotate(45deg);
-      //   top: -5px;
-      //   left: 50%;
-      margin-top: 12px;
-      overflow: visible;
-      border: 1px solid rgba(235, 235, 235, 0.1);
-
       &:before {
-        content: '';
-        display: block;
-        position: absolute;
-        top: -5px;
-        transform: translateX(-50%);
-        right: 10%;
-        border-top: 1px solid ${({theme}) => theme.colorBase.border};
-        border-left: 1px solid ${({theme}) => theme.colorBase.border};
-        width: 8px;
-        height: 8px;
-        background-color: ${({theme}) => theme.colorBase.borderHover};
-        transform: rotate(45deg);
+       
       }
     }
 
     &.arrow-left .MuiPopover-paper {
-
-      // &:before {
-
-      //   transform: translateX(-50%);
-      //   top: -5px;
-      //   left: 10%;
-
-      margin-top: 12px;
-      overflow: visible;
-      border: 1px solid rgba(235, 235, 235, 0.1);
-
       &:before {
-        content: '';
-        display: block;
-        position: absolute;
-        transform: translateX(-50%);
-        top: -5px;
-        left: 10%;
-        border-top: 1px solid ${({theme}) => theme.colorBase.border};
-        border-left: 1px solid ${({theme}) => theme.colorBase.border};
-        width: 8px;
-        height: 8px;
-        background-color: ${({theme}) => theme.colorBase.borderHover};
-        transform: rotate(45deg);
+        
       }
     }
   }

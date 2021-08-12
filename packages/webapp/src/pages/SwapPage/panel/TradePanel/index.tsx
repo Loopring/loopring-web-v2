@@ -57,25 +57,16 @@ const TradePanel = withTranslation('common')(
         //     setIsAllTrade((flag: boolean) => !flag)
         // }
 
-        return (
-            <WrapperStyled>
-                {/* <StyledFormControlLabel
-                    control={<Checkbox checked={isAllTrade} size={'small'} checkedIcon={<CheckedIcon/>}
-                                       icon={<CheckBoxIcon/>} color={'default'} onChange={handleCheckboxChange}/>}
-                    label={t('labelTradePanelHideOtherPairs')}/> */}
-
+        return (   <TableWrapStyled item alignSelf={'stretch'} xs={12} marginY={2}  paddingBottom={2}/* paddingBottom={2} */ flex={1}>
                 <TabsStyled value={value}
-                      onChange={handleChange}
-                      aria-label="tabs switch">
+                            onChange={handleChange}
+                            aria-label="tabs switch">
                     <Tab label={t('labelMyTrade')} {...applyProps(0)} />
                     <Tab label={t('labelRecent')}   {...applyProps(1)} />
                 </TabsStyled>
                 <Divider />
-                <TableWrapStyled marginY={2} /* paddingBottom={2} */ flex={1}>
-                    {value === 0 ?  <TradeTable rawData={myTradeArray} /> : <TradeTable rawData={tradeArray}/> }
-                </TableWrapStyled>
-
-            </WrapperStyled>
+                {value === 0 ?  <TradeTable rawData={myTradeArray} /> : <TradeTable rawData={tradeArray}/> }
+            </TableWrapStyled>
         )
     }
     ) as  (props: { tradeArray: RawDataTradeItem[], myTradeArray: RawDataTradeItem[] }) => JSX.Element;
