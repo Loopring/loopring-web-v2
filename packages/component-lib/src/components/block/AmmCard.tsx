@@ -1,4 +1,4 @@
-import { Avatar, Box, Card, CardActions, CardContent } from '@material-ui/core';
+import { Avatar, Box, Card, CardActions, CardContent, Divider } from '@material-ui/core';
 import { Typography } from '@material-ui/core/';
 import { Button } from '../';
 import React from 'react';
@@ -22,10 +22,19 @@ import styled from '@emotion/styled';
 const BoxStyled = styled(Box)`
 ` as typeof Box
 const BoxBg = styled(Box)`
-  background-color: var(--color-box-linear);
-  ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2})};
+    background-color: var(--color-box-linear);
+    ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2})};
 ` as typeof Box
 
+const DetailWrapperStyled = styled(Box)`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: Roboto;
+    margin-bottom: ${({theme}) => theme.unit}px;
+`
+
+const DividerWrapperStyled = styled(Box)``
 
 export const AmmCard = withTranslation('common', {withRef: true})(
     React.memo(React.forwardRef(<T extends { [ key: string ]: any }>(
@@ -39,20 +48,25 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             APY,
             activity: {duration, totalRewards, myRewards, rewardToken, isPass},
             handleClick,
-            // ...rest
+            ...rest
         }: AmmCardProps<T> & WithTranslation, ref: React.ForwardedRef<any>) => {
-
+            console.log(rest)
+            const { rewardValue, rewardValue2, totalLPToken, totalA, totalB } = rest
         // const coinAIconHasLoaded = useImage(coinAInfo?.icon ? coinAInfo?.icon : '').hasLoaded;
         // const coinBIconHasLoaded = useImage(coinBInfo?.icon ? coinBInfo?.icon : '').hasLoaded;
         const {coinJson} = useSettings();
-        const coinAIcon: any = coinJson [ coinAInfo.simpleName ];
-        const coinBIcon: any = coinJson [ coinBInfo.simpleName ];
+        const coinAIcon: any = coinJson[ coinAInfo.simpleName ];
+        const coinBIcon: any = coinJson[ coinBInfo.simpleName ];
+        const pair = `${coinAInfo.simpleName} / ${coinBInfo.simpleName}`
         const {currency} = useSettings();
 
         return <Card ref={ref}>
             <CardContent>
                 <BoxStyled display={'flex'} flexDirection={'row'} justifyContent={'space-between'}
                            alignItems={'center'}>
+                    <Typography variant={'h3'} component={'span'} color={'textPrimary'} fontFamily={'Roboto'}>
+                        {pair}
+                    </Typography>
                     <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-start'} alignItems={'center'}>
                         <Box className={'logo-icon'} height={'var(--chart-title-coin-size)'} position={'relative'}
                              zIndex={20}
@@ -87,7 +101,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                             }}
                                 // src={sellData?.icon}
                                       src={'static/images/icon-default.png'}/>} </Box>
-                        <Typography display={'flex'} flexDirection={'column'} marginLeft={1} component={'div'}>
+                        {/* <Typography display={'flex'} flexDirection={'column'} marginLeft={1} component={'div'}>
                             <Typography variant={'body1'} component={'h3'} color={'textPrimary'} title={'sell'}>
                                 <Typography component={'span'} className={'next-coin'}>
                                     {coinAInfo?.simpleName}
@@ -102,18 +116,82 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                 amountDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(amountDollar as number)
                                     : PriceTag.Yuan + getThousandFormattedNumbers(amountYuan as number)}
                             </Typography>
-                        </Typography>
+                        </Typography> */}
                         {/*{isNew ? <NewTagIcon/> : undefined}*/}
                     </Box>
-                    <Typography display={'flex'} flexDirection={'column'} component={'span'} alignItems={'flex-end'}>
-                        <Typography component={'span'} color={'textSecondary'} variant={'body2'}
-                                    style={{textTransform: 'uppercase'}}>{t('labelAPY')}</Typography>
-                        <Typography component={'span'} variant={'body1'}> {APY}%
-                        </Typography>
-                    </Typography>
                 </BoxStyled>
+                <Typography variant={'body2'} component={'span'} color={'textSecondary'}>
+                                {t('labelLiquidity') + ' ' +
+                                amountDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(amountDollar as number)
+                                    : PriceTag.Yuan + getThousandFormattedNumbers(amountYuan as number)}
+                            </Typography>
+                <Typography display={'flex'} flexDirection={'column'} component={'span'} justifyContent={'center'} alignItems={'center'}>
+                    <Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> {APY}%
+                    </Typography>
+                    <Typography component={'span'} color={'textPrimary'} variant={'h6'}
+                                style={{textTransform: 'uppercase'}}>{t('labelAPY')}</Typography>
+                </Typography>
 
-                <BoxBg display={'flex'} flexDirection={'column'} alignItems={'stretch'} marginTop={2} padding={1}>
+                <DividerWrapperStyled marginTop={3} marginBottom={2}>
+                    <Divider />
+                </DividerWrapperStyled>
+                
+                <DetailWrapperStyled>
+                    <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
+                        {t('labelMiningActiveDate')}
+                    </Typography>
+                    <Typography component={'span'} color={'textPrimary'} variant={'h6'}>
+                        {' ' + moment(duration.from).format('YYYY/MM/DD')} - {moment(duration.to).format('MM/DD')}
+                    </Typography>
+                </DetailWrapperStyled>
+
+                
+                <DetailWrapperStyled>
+                    <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
+                        {t('labelMiningLiqudity')}
+                    </Typography>
+                    <Typography component={'span'} color={'textPrimary'} variant={'h6'}>
+                        {t('labelLiquidity') + ' ' +
+                                amountDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(amountDollar as number)
+                                    : PriceTag.Yuan + getThousandFormattedNumbers(amountYuan as number)}
+                    </Typography>
+                </DetailWrapperStyled>
+                
+                
+                <DetailWrapperStyled>
+                    <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
+                        {t('labelMiningActivityReward')}
+                    </Typography>
+                    <Typography component={'span'} color={'textPrimary'} variant={'h6'}>
+                        ${getThousandFormattedNumbers((rewardValue && Number.isFinite(rewardValue) ? rewardValue : 0) + (rewardValue2 && Number.isFinite(rewardValue2) ? rewardValue2 : 0))}
+                    </Typography>
+                </DetailWrapperStyled>
+                
+                
+                <DetailWrapperStyled>
+                    <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
+                        {t('labelMiningMyShare')}
+                    </Typography>
+                    <Typography component={'span'} color={'textPrimary'} variant={'h6'}>
+                        $300
+                    </Typography>
+                </DetailWrapperStyled>
+
+                
+                <DetailWrapperStyled>
+                    <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
+                        {t('labelMiningMyReward')}
+                    </Typography>
+                    <Typography component={'span'} color={'textPrimary'} variant={'h6'}>
+                        {myRewards === 0 
+                            ? EmptyValueTag
+                            : getThousandFormattedNumbers(myRewards, 6)}
+                        {' ' + rewardToken?.simpleName}
+                    </Typography>
+                </DetailWrapperStyled>
+                
+                
+                {/* <BoxBg display={'flex'} flexDirection={'column'} alignItems={'stretch'} marginTop={2} padding={1}>
                     <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
                         <Typography display={'flex'} flexDirection={'column'} component={'div'}>
                             <Typography variant={'body2'} component={'h5'} color={'textSecondary'}>
@@ -139,7 +217,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                         {t('labelDate')}:
                         {' ' + moment(duration.from).format('L')} - {moment(duration.to).format('L')}
                     </Typography>
-                </BoxBg>
+                </BoxBg> */}
             </CardContent>
             <CardActions>
                 <Button fullWidth variant={'contained'} size={'medium'} disabled={isPass ? true : false}
