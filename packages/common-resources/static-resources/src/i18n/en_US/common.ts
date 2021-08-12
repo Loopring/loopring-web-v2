@@ -174,6 +174,7 @@ export default {
     labelDepositing:'Depositing',
     labelDepositingProcessing:'Depositing, about {{count}} minutes remaining',
     labelFailedConnect:'Connect Failed',
+    labelFailedDeposit:'Deposit Failed',
     labelDepositApproveProcess:'Waiting approve Deposit required',
     labelTokenAccess:'Waiting approve {{symbol}} trade access',
     labelFailedTokenAccess:'Failed approve {{symbol}} trade access',
