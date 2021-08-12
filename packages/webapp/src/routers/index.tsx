@@ -10,8 +10,9 @@ import { Box } from '@material-ui/core'
 import { DevWrapper } from '../provider/'
 import { Layer2Page } from '../pages/Layer2Page'
 import { LiquidityPage } from '../pages/LiquidityPage'
+import { MiningPage } from '../pages/MiningPage'
 import { ModalGroup } from '../modal';
-import React from 'react';
+// import React from 'react';
 
 const RouterView = () => {
 
@@ -27,7 +28,7 @@ const RouterView = () => {
                     <Route exact component={QuotePage} path='/markets'/>
                     <Route component={SwapPage} path='/trading/lite'/>
                     <Route component={SwapPage} path='/trading/lite(/:symbol)'/>
-                    <Route exact path='/mining'/>
+                    <Route exact component={MiningPage} path='/mining'/>
 
                     <Route exact component={Layer2Page} path='/layer2'/>
                     <Route exact component={Layer2Page} path='/layer2/assets'/>

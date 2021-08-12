@@ -198,4 +198,10 @@ export default {
     describeTitleLocked:'已连接您的钱包，点击解锁后查看账户信息',
     labelLiqudityPageTitle: 'AMM 资金池',
     labelFilter: '搜索',
+    labelMiningPageTitle: 'AMM 流动性挖矿',
+    labelMiningActiveDate: '奖励时间',
+    labelMiningLiqudity: '流动性',
+    labelMiningActivityReward: '活动奖励',
+    labelMiningMyShare: '我的占比资金',
+    labelMiningMyReward: '我的奖励',
 }
