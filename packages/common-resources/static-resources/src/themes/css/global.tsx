@@ -235,7 +235,7 @@ export const globalCss = ({theme}: any) => css`
   }
 
   . draggable_panel {
-    border: 1px solid #777777;
+    border: 1px solid var(--color-border);
     height: 100%;
   }
 

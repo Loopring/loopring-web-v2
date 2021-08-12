@@ -15,7 +15,7 @@ type StyledProps = {
 const MarketBlockStyled = styled(Box)<StyledProps>`
 
   & {
-    background-color: var(--color-box-linear);
+    background: var(--color-box);
 
     border-radius: ${({theme}) => theme.unit}px;
 
