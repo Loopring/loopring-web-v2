@@ -53,8 +53,8 @@ export const Popover: React.FC<PopoverWrapProps> = ({
         height: 0;
         border-top: 8px solid transparent;
         border-right: 8px solid transparent;
-          // border-bottom: ${({theme}) => `8px solid ${theme.colorBase.borderHover}`};
-        border-bottom: 8px solid transparent;;
+        border-bottom: ${({theme}) => `8px solid ${theme.colorBase.borderHover}`};
+        // border-bottom: 8px solid transparent;;
         border-left: 8px solid transparent;
       }
     `
@@ -136,28 +136,78 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
 
     &.arrow-center .MuiPopover-paper {
       &:before {
-        transform: rotate(45deg) translateX(-50%) rotate(45deg);
+        // transform: rotate(45deg) translateX(-50%) rotate(45deg);
+        // top: -5px;
+        // left: 50%;
+        content: '';
+        // display: block;
+        position: absolute;
         top: -5px;
+        transform: translateX(-50%);
         left: 50%;
+        border-top: 1px solid ${({theme}) => theme.colorBase.border};
+        border-left: 1px solid ${({theme}) => theme.colorBase.border};
+        // border-image-slice: 12 20 15 20 fill;
+        // border-image-width: 12px 0px 0px 0px;
+        // border-image-repeat: round;
+        // border-image-source: url("./static/images/modalBg.png");
+        width: 8px;
+        height: 8px;
+        background-color: ${({theme}) => theme.colorBase.borderHover};
+        transform: rotate(45deg);
       }
     }
 
     &.arrow-right .MuiPopover-paper {
+      // &:before {
+      //   transform: rotate(45deg) translateX(-50%) rotate(45deg);
+      //   top: -5px;
+      //   left: 50%;
+      margin-top: 12px;
+      overflow: visible;
+      border: 1px solid rgba(235, 235, 235, 0.1);
+
       &:before {
-        transform: rotate(45deg) translateX(-50%) rotate(45deg);
+        content: '';
+        display: block;
+        position: absolute;
         top: -5px;
-        left: 50%;
+        transform: translateX(-50%);
+        right: 10%;
+        border-top: 1px solid ${({theme}) => theme.colorBase.border};
+        border-left: 1px solid ${({theme}) => theme.colorBase.border};
+        width: 8px;
+        height: 8px;
+        background-color: ${({theme}) => theme.colorBase.borderHover};
+        transform: rotate(45deg);
       }
     }
 
     &.arrow-left .MuiPopover-paper {
 
-      &:before {
+      // &:before {
 
+      //   transform: translateX(-50%);
+      //   top: -5px;
+      //   left: 10%;
+
+      margin-top: 12px;
+      overflow: visible;
+      border: 1px solid rgba(235, 235, 235, 0.1);
+
+      &:before {
+        content: '';
+        display: block;
+        position: absolute;
         transform: translateX(-50%);
         top: -5px;
         left: 10%;
-
+        border-top: 1px solid ${({theme}) => theme.colorBase.border};
+        border-left: 1px solid ${({theme}) => theme.colorBase.border};
+        width: 8px;
+        height: 8px;
+        background-color: ${({theme}) => theme.colorBase.borderHover};
+        transform: rotate(45deg);
       }
     }
   }
