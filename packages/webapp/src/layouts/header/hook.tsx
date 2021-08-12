@@ -44,7 +44,7 @@ export const useHeader = () => {
         myLog(`onWalletBtnConnect click: ${account.readyState}`);
         setShouldShow(true);
         accountStaticCallBack(_btnClickMap, []);
-    }, [account, setShouldShow, ])
+    }, [account, setShouldShow,_btnClickMap])
 
     const onThemeBtnClick = React.useCallback((themeMode: ThemeKeys) => {
         if (themeMode === Theme.dark) {
@@ -73,18 +73,20 @@ export const useHeader = () => {
             ...headerToolBarData[ ButtonComponentsMap.Language ],
             handleChange: onLangBtnClick
         }
+    });
 
-    }, []);
-
-    const forceUpdate = React.useReducer(() => ({}), {})[ 1 ] as () => void
+    // const forceUpdate = React.useReducer(() => ({}), {})[ 1 ] as () => void
+    const updateWallet = React.useCallback(()=>{
+        headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
+            ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
+            accountState,
+        }
+    },[headerToolBarData,accountState])
     React.useEffect(() => {
         if (accountStatus && accountStatus === 'UNSET') {
-            headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-                ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-                accountState,
-            }
+            updateWallet()
         }
-        forceUpdate()
+        // forceUpdate()
     }, [accountStatus]);
 
     return {

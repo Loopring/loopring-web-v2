@@ -32,9 +32,6 @@ export function useAccount() {
         dispatch(changeShowModel({_userOnModel: flag}));
     },[dispatch]);
 
-    const statusUnsetFunc = React.useCallback(() => {
-        dispatch(statusUnset(undefined))
-    }, [dispatch])
 
     return {
         account,
@@ -42,7 +39,7 @@ export function useAccount() {
         shouldShow,
         setShouldShow,
         updateAccount,
-        statusUnset: statusUnsetFunc,
+        statusUnset: React.useCallback(() => {dispatch(statusUnset(undefined))}, [dispatch]),
         status,
         errorMessage,
     }

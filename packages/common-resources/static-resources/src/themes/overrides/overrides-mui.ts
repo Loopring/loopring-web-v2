@@ -353,36 +353,6 @@ export const MuiRadio = ({colorBase}: any) => {
 }
 
 
-export const MuiIconButton = {
-    styleOverrides: {
-        root: {
-            height: 'var(--btn-icon-size)',
-            width: 'var(--btn-icon-size)',
-            ' svg': {
-                height: 'var(--svg-size-large)',
-                width: 'var(--svg-size-large)',
-                color: 'inherit',
-            },
-            '&.MuiIconButton-sizeSmall': {
-                height: 'var(--btn-icon-size-small)',
-                width: 'var(--btn-icon-size-small)',
-                ' svg': {
-                    height: 'var(--svg-size)',
-                    width: 'var(--svg-size)',
-                },
-            },
-            // margin: 0,
-            // display: 'flex',
-            // justifyContent: 'center',
-            // justifyItems: 'center',
-            // alignItems: 'center'
-        },
-        label: {
-            width: 'auto'
-        }
-
-    },
-}
 
 
 export const MuiInputLabel = ({colorBase}: any): { styleOverrides: ComponentsOverrides['MuiInputBase'] } => {
@@ -414,7 +384,7 @@ export const MuiInputBase = ({colorBase,themeMode}: any): { styleOverrides: Comp
                 position: 'relative',
                 fontSize: '1.4rem',
                 backgroundColor: colorBase.box,
-                border: borderFunc(themeMode).defaultFrame({c_key:colorBase.border}),//`1px solid ${colorBase.border}`,
+                border: borderFunc(themeMode).borderConfig({c_key:colorBase.border}),//`1px solid ${colorBase.border}`,
                 borderRadius: 4,
                 '&:not(.MuiFormControl-fullWidth)': {
                     // width: 'var(--btn-min-width)',
@@ -438,32 +408,89 @@ export const MuiInputBase = ({colorBase,themeMode}: any): { styleOverrides: Comp
                 },
                 paddingRight: 0,
                 '&:hover': {
-                    borderColor: colorBase.borderInputHover
+                    border: borderFunc(themeMode).borderConfig({c_key:colorBase.borderHover}),//`1px solid ${colorBase.border}`,
                 },
                 '&:disabled': {
                     backgroundColor: colorBase.defaultDisable,
-                    borderColor: colorBase.border,
+                    borderColor: colorBase.defaultDisable,
                     color: colorBase.textBtnDisabled,
                 },
-                // padding: '10px 12px',
-
-                // transition: theme.transitions.create([
-                //                 //     'border-color',
-                //                 //     'background-color',
-                //                 //     'box-shadow',
-                //                 // ]),
-            },
-            input: {
-                padding: '.6rem 2.4rem .6rem .8rem',
-                height: pxToRem(24),
-                lineHeight: pxToRem(24),
-                ' .MuiTypography-root': {
-                    height: pxToRem(24),
-                    lineHeight: pxToRem(24),
+                '.MuiSelect-iconOpen': {
+                    transform: 'rotate(180deg)',
                 },
-                //
-                // lineHeight: 24px;
+                ' .MuiSelect-select': {
+                    padding: 0,
+                    border: 'transparent',
+                    backgroundColor: 'transparent',
+                    color: 'var(--color-text-secondary)',
+                    '&$focused': {
+                        background: 'transparent',
+                    },
+
+                    ' svg': {
+                        right: '.4rem',
+                        top: 1,
+                        position: 'absolute',
+                        pointerEvents: 'none',
+                        transition: 'fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+                        color: 'var(--color-text-secondary)'
+                    },
+                    '&.MuiInputBase-root': {
+                        minWidth: 'auto',
+                        width: 'auto'
+                    }
+                },
+                '&.MuiOutlinedInput-root': {
+                    padding: '.3rem 2.4rem .3rem .8rem',
+                    minWidth: 'auto',
+                    width: 'auto'
+                },
+                ' .MuiOutlinedInput-input': {
+                    padding:0,
+                    height: pxToRem(24),
+                },
+                ' .MuiSelect-outlined': {
+                    // padding: '.3rem 2.4rem .3rem .8rem',
+                    height: pxToRem(24),
+                    lineHeight: pxToRem(24), minWidth: 'auto',
+
+                },
             },
+
+        }
+    }
+}
+
+
+export const MuiIconButton =   ({colorBase}: any): { styleOverrides: ComponentsOverrides['MuiIconButton'] } => {
+    return {
+        styleOverrides: {
+            root: {
+                height: 'var(--btn-icon-size)',
+                width: 'var(--btn-icon-size)',
+                ' svg': {
+                    height: 'var(--svg-size-large)',
+                    width: 'var(--svg-size-large)',
+                    color: 'inherit',
+                },
+                '&.MuiIconButton-sizeSmall': {
+                    height: 'var(--btn-icon-size-small)',
+                    width: 'var(--btn-icon-size-small)',
+                    ' svg': {
+                        height: 'var(--svg-size)',
+                        width: 'var(--svg-size)',
+                    },
+                },
+                '&.MuiIconButton-colorInherit':{
+                    color:colorBase.textSecondary,
+                    '&:hover': {
+                        color:colorBase.textPrimary,
+                    }
+                }
+            },
+            label: {
+                width: 'auto'
+            }
         }
     }
 }
@@ -534,7 +561,7 @@ export const MuiPaginationItem = ({colorBase}: any) => {
                     backgroundColor: 'transparent',
                     color: colorBase.secondary,
                     '&:hover': {
-                        //backgroundColor: colorBase.background().hover,
+                        backgroundColor: colorBase.opacity,
                     }
                 }
 

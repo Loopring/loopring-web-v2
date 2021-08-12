@@ -219,6 +219,7 @@ export const MuPickDate = ({colorBase, themeMode}: { colorBase: typeof ColorDark
                         fontSize: '1.4rem',
                         borderRadius: radius * 2 + 'px',
                         border: borderFunc(themeMode).borderConfig({c_key: "rgba(0,0,0,0)"}),
+                        backgroundColor: colorBase.opacity
                     },
 
                     "&.Mui-selected,&:focus.Mui-selected ": {
