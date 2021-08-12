@@ -18,6 +18,8 @@ const Template: Story<any> = withTranslation()((args: any) => {
     const leftState = usePopupState({variant: 'popover', popupId: `popupId: 'left'`});
     const rightState = usePopupState({variant: 'popover', popupId: `popupId: 'right'`});
     const centerState = usePopupState({variant: 'popover', popupId: `popupId: 'center'`});
+    const topState = usePopupState({variant: 'popover', popupId: `popupId: 'top'`});
+
     return (
         <>
             <Style>
@@ -65,6 +67,23 @@ const Template: Story<any> = withTranslation()((args: any) => {
                                 {...bindPopper(centerState)}
                                 anchorOrigin={{
                                     vertical: 'bottom',
+                                    horizontal: 'center',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'center',
+                                }}>
+                                <Box height={100} width={200}>Content:XXXXXXX</Box>
+                            </PopoverPure>
+
+                        </Grid>
+                        <Grid item xs={3} marginTop={8}>
+                            <Button {...bindTrigger(topState)}> click open </Button>
+                            <PopoverPure
+                                className={'arrow-top-center'}
+                                {...bindPopper(topState)}
+                                anchorOrigin={{
+                                    vertical: 'top',
                                     horizontal: 'center',
                                 }}
                                 transformOrigin={{

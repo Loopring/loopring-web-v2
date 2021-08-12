@@ -49,6 +49,7 @@ export const DataGridStyled = styled(DataGrid)`
       color: var(--color-text-secondary);
       width: 100%;
       background-color: inherit;
+      font-weight: normal,
     }
 
     &.scrollable .rdg-header-row {

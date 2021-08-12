@@ -3,13 +3,16 @@ import { CopyIcon, getShortAddr, LinkIcon, ReverseIcon, } from '@loopring-web/co
 import { Trans, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import { AccountBaseProps } from './Interface';
-import { VipStyled } from '../../../';
+import { PopoverPure, VipStyled } from '../../../';
+import { bindHover, bindPopover } from 'material-ui-popup-state/es';
+import { usePopupState } from 'material-ui-popup-state/hooks';
+import QRCode from 'qrcode.react';
 
 const BoxStyled = styled(Box)`
   // .MuiLink-root {
   //   height: 2rem;
   //   line-height: 2rem;
-    //   color: var(--color-text-secondary);
+  //   color: var(--color-text-secondary);
   //
   //  
   // }                                                               
@@ -52,22 +55,52 @@ export const AccountBase = ({
                                 etherscanUrl,
                                 onCopy,
                                 // onViewQRCode,
-                                t
+                                t,
                             }: AccountBaseProps & WithTranslation) => {
     const addressShort = getShortAddr(accAddress)
     const etherscanLink = etherscanUrl + accAddress;
     const connectBy = connectName === 'unknown' ? t('labelWrongNetwork') : connectName;
+    const popupState = usePopupState({
+        variant: 'popover',
+        popupId: 'myAddress',
+    })
     return <Box display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
         <Typography variant={'body2'} color={'textSecondary'} marginTop={3}>
             <Trans i18nKey="labelConnectBy" tOptions={{connectBy}}>
                 Connected with <Typography variant={'body2'} component={'span'}>{connectName}</Typography>.
             </Trans>
         </Typography>
-        <Typography marginTop={1} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}>
+        <Typography  {...bindHover(popupState)} marginTop={1} display={'flex'} alignItems={'center'}
+                     justifyContent={'flex-start'}>
             <Typography component={'span'} variant={'h1'}>{addressShort}</Typography>
             {level ? <VipStyled component={'span'} variant={'body2'}
             >{level}</VipStyled> : undefined}
         </Typography>
+        <PopoverPure
+            className={'arrow-top-center'}
+            {...bindPopover(popupState)}
+            {...{
+                anchorOrigin: {vertical: 'top', horizontal: 'center'},
+                transformOrigin: {vertical: 'bottom', horizontal: 'center'}
+            }}
+        >
+            <Box paddingTop={2} paddingX={3} width={168} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                {/*<QRCodePanel {...{*/}
+                {/*    ...rest, t, title: '', description: '',*/}
+                {/*    url: etherscanLink*/}
+                {/*}} />*/}
+                <QRCode value={etherscanLink} size={80} style={{ backgroundColor: '#fff'}} aria-label={`link:${etherscanLink}`}/>
+                <Typography marginY={2} variant={'body2'} color={'textSecondary'}>{accAddress}</Typography>
+                <Button onClick={() => {
+                    if (onCopy) onCopy()
+                }}>
+                    <Typography variant={'body2'} > {t('labelCopyAddress')} </Typography>
+                </Button>
+            </Box>
+
+        </PopoverPure>
+
+
         <BoxStyled component={'div'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
                    marginTop={1} alignSelf={'stretch'}>
             <Button formTarget={'_blank'} href={etherscanLink} startIcon={<LinkIcon fontSize={'small'}/>}>

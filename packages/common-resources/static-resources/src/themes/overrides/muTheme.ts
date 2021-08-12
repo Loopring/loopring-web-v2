@@ -137,7 +137,6 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             MuiToolbar: MuiToolbar(),
             MuiSvgIcon: MuiSvgIcon(),
             MuiTabs: MuiTabs(),
-
             MuiTab: MuiTab({colorBase}),
             MuiButtonBase: MuiButtonBase,
             MuiRadio: MuiRadio({colorBase}),

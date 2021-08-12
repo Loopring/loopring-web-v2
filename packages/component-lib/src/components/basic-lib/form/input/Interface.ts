@@ -1,6 +1,10 @@
 import { CoinInfo, CoinKey, CoinMap } from '@loopring-web/common-resources';
 import React from 'react';
-import { InputProps } from "@material-ui/core";
+import {
+    // Box, BoxProps, Button, ButtonProps,
+    InputProps } from "@material-ui/core";
+// import styled from '@emotion/styled';
+// import CurrencyInput from 'react-currency-input-field';
 
 
 export type InputButtonProps<T, R, I> = {
@@ -61,5 +65,8 @@ export type useFocusRefProps<I> = {
     callback?: (props?: any) => void,
 
 }
+
+
+
 
 // export type {IBData, CoinMap, CoinInfo, coinType}

@@ -1,206 +1,16 @@
-import { Avatar, Box, BoxProps, FormHelperText, FormLabel, Grid } from "@material-ui/core";
-import styled from "@emotion/styled";
-import CurrencyInput from 'react-currency-input-field';
+import { Avatar,
+    // Box,
+    // BoxProps,
+    FormHelperText, FormLabel, Grid } from "@material-ui/core";
+// import styled from "@emotion/styled";
+// import CurrencyInput from 'react-currency-input-field';
 import { AvatarCoinStyled, CoinInfo, getThousandFormattedNumbers, IBData } from '@loopring-web/common-resources';
 import { InputCoinProps } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
 import { useSettings } from '../../../../stores';
+import { IInput, CoinWrap, IWrap } from "./style";
 // import { useImage } from '../../resource';
-
-const IWrap = styled(Box)`
-  .label-wrap {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    text-transform: capitalize;
-  }
-
-  .message-wrap {
-    .MuiFormHelperText-root {
-      color: var(--color-error);
-      text-align: right;
-      font-size: ${({theme}) => theme.fontDefault.h6};
-    }
-
-  }
-
-  .sub-label {
-    text-align: right;
-    cursor: pointer;
-
-    .max-allow {
-      text-decoration: underline dotted;
-
-      &:hover {
-        color: var(--color-secoundary);
-      }
-    }
-
-    .no-balance {
-      text-decoration: none;
-    }
-  }
-
-  .coinInput-wrap {
-    background: var(--field-opacity);
-    border-radius: ${({theme}) => theme.unit / 2}px;
-    position: relative;
-    margin-top: ${({theme}) => `${theme.unit / 2}px`};
-    height: var(--btn-Input-height);
-
-    ::before {
-      content: '';
-      display: block;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      box-sizing: border-box;
-      pointer-events: none;
-      z-index: 1;
-      ${({theme}) => `
-            ${theme.border.defaultFrame({c_key: 'blur'})};
-            ${theme.mode === 'dark' ? `border-color: transparent` : ''};
-     `};
-    }
-
-
-    &.error {
-      .input-wrap-right input {
-        ${({theme}) => `
-            ${theme.border.defaultFrame({c_key: theme.colorBase.error, d_R: 0.5})};
-            border-top-left-radius: 0px;
-            border-bottom-left-radius: 0px;
-          `};
-
-      }
-
-      .input-wrap-left input {
-        ${({theme}) => `
-            ${theme.border.defaultFrame({c_key: theme.colorBase.error, d_R: 0.5})};
-            border-top-right-radius: 0px;
-            border-bottom-right-radius: 0px;
-          `};
-
-      }
-    }
-  }
-
-  .input-wrap {
-    //min-width: 128px;
-    // width: 100%;
-    flex: 1;
-    height: 100%
-  }
-
-  .icon-wrap {
-    max-width: var(--btn-max-width);
-    min-width: var(--coin-min-width);
-
-    //.MuiButton-label {
-    //  justify-content: flex-start;
-    //}
-
-  }
-
-` as typeof Box
-const CoinWrap = styled(Box)<BoxProps & { logoColor?: any }>`
-  & {
-
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-right: 1px solid transparent;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-size: ${({theme}) => theme.fontDefault.h5};
-    color: var(--color-text-primary);
-
-    .placeholder {
-      color: var(--color-text-secondary);
-    }
-  }
-
-  &.icon-wrap-right > div {
-    justify-content: flex-start;
-    padding-left: ${({theme}) => theme.unit / 2 * 3}px;
-    align-items: center;
-  }
-
-  &.icon-wrap-left > div {
-    justify-content: flex-end;
-    padding-right: ${({theme}) => theme.unit / 2 * 3}px;
-    align-items: center;
-  }
-
-` as React.ComponentType<BoxProps & { logoColor?: any }>;
-const IInput = styled(CurrencyInput)`
-
-  color: var(--color-text-primary);
-
-  ::placeholder {
-    color: var(--color-text-secondary);
-  }
-
-  width: 100%; //calc(100% - 2rem);
-  height: 100%; //var(--btn-Input-height);
-  border: 0;
-  margin: 0;
-
-
-  font-size: ${({theme}) => theme.fontDefault.h4};
-  display: block;
-  padding: .8rem 1rem;
-  min-width: 0;
-  background: none;
-  box-sizing: border-box;
-  animation-name: mui-auto-fill-cancel;
-  letter-spacing: inherit;
-  animation-duration: 10ms;
-  -webkit-tap-highlight-color: transparent;
-
-  :focus {
-    outline: 0;
-  }
-
-  .input-wrap-right & {
-    text-align: right;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    ${({theme}) => `
-        border-left:  ${theme.border.borderConfig({c_key: 'blur'})};
-        ${theme.mode === 'dark' ? `border-color: transparent` : ''};
-    `};
-
-    :focus {
-      ${({theme}) => `
-        ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
-        border-top-left-radius: 0px;
-        border-bottom-left-radius: 0px;
-     `};
-    }
-  }
-
-  .input-wrap-left & {
-    text-align: left;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    ${({theme}) => `
-        border-right:  ${theme.border.borderConfig({c_key: 'blur'})};
-        ${theme.mode === 'dark' ? `border-color: transparent` : ''};
-    `};
-
-    :focus {
-      ${({theme}) => `
-        ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-     `};
-    }
-  }
-}
-
-` as typeof CurrencyInput
 
 function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        order = 'left',
@@ -300,6 +110,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
         <Grid container className={`coinInput-wrap ${error.error ? 'error' : ''}`} wrap={'nowrap'}
               alignItems={'stretch'}
               alignContent={'stretch'}>
+
             <CoinWrap order={order === 'left' ? 2 : 1}
                       display={'flex'}
                       alignItems={'center'}

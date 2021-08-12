@@ -12,7 +12,7 @@ import { Box } from '@material-ui/core/';
 import { useTheme } from '@emotion/react';
 import { CountDownIcon } from '../components/tool/Refresh';
 import styled from '@emotion/styled';
-import { toolBarPanel } from '../../styled';
+import { boxLiner, toolBarPanel } from '../../styled';
 // import { WithdrawProps } from '../Interface';
 
 enum AmmPanelTypeMap {
@@ -24,10 +24,9 @@ const WrapStyle = styled(Box)<BoxProps & { _height?: number | string, _width?: n
   ${({ _width, _height}) => `       
       width: ${typeof _width === 'string' ? _width : typeof _width === 'number' ? _width + 'px' : `var(--swap-box-width)`};   
       height: ${typeof _height === 'string' ? _height : typeof _height === 'number' ? _height + 'px' : `var(--swap-box-height)`};`}
-  background: var(--color-box-linear);
-  border-radius: ${({theme}) => theme.unit}px;
+  ${({theme}) => boxLiner({theme})}
   ${({theme}) => toolBarPanel({theme})}
-
+  border-radius: ${({theme}) => theme.unit}px;
 ` as (props: BoxProps & { _height?: number | string, _width?: number | string }) => JSX.Element;
 const TabPanelBtn = ({t, value, handleChange}: WithTranslation & any) => {
   return <Tabs

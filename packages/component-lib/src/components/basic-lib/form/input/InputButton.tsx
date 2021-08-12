@@ -1,7 +1,9 @@
-import { Avatar, Box, Button, ButtonProps, FormHelperText, FormLabel, Grid } from "@material-ui/core";
-import styled from "@emotion/styled";
-// import { debounce } from "lodash"
-import CurrencyInput from 'react-currency-input-field';
+import { Avatar,
+    // Box, Button, ButtonProps,
+    FormHelperText, FormLabel, Grid } from "@material-ui/core";
+// import styled from "@emotion/styled";
+// // import { debounce } from "lodash"
+// import CurrencyInput from 'react-currency-input-field';
 import {
     AvatarCoinStyled,
     CoinInfo,
@@ -13,172 +15,138 @@ import { InputButtonProps } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
 import { useSettings } from '../../../../stores';
+import { IInput, ISBtn, IWrap } from "./style";
 // import { useImage } from '../../resource';
 
-const IWrap = styled(Box)`
-  .label-wrap {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    text-transform: capitalize;
-  }
+// const IWrap = styled(Box)`
+//   .label-wrap {
+//     white-space: nowrap;
+//     text-overflow: ellipsis;
+//     text-transform: capitalize;
+//   }
+//
+//   .message-wrap {
+//     .MuiFormHelperText-root {
+//       color: var(--color-error);
+//       text-align: right;
+//       font-size: ${({theme}) => theme.fontDefault.h6};
+//     }
+//
+//   }
+//
+//   .sub-label {
+//     text-align: right;
+//     cursor: pointer;
+//
+//     .max-allow {
+//       text-decoration: underline dotted;
+//
+//       &:hover {
+//         color: var(--color-secoundary);
+//       }
+//     }
+//
+//     .no-balance {
+//       text-decoration: none;
+//     }
+//   }
+//
+//   .btnInput-wrap {
+//     background-color: var(--field-opacity);
+//     border-radius: ${({theme}) => theme.unit / 2}px;
+//     position: relative;
+//     margin-top: ${({theme}) => `${theme.unit / 2}px`};
+//     height: var(--btn-Input-height);
+//
+//     ::before {
+//       content: '';
+//       display: block;
+//       width: 100%;
+//       height: 100%;
+//       position: absolute;
+//       top: 0;
+//       left: 0;
+//       box-sizing: border-box;
+//       pointer-events: none;
+//       z-index: 1;
+//       ${({theme}) => `
+//             ${theme.border.defaultFrame({c_key: 'blur'})};
+//             ${theme.mode === 'dark' ? `border-color: transparent` : ''};
+//      `};
+//     }
+//
+//
+//     &.error {
+//       input {
+//         ${({theme}) => `
+//             ${theme.border.defaultFrame({c_key: theme.colorBase.error})};
+//             border-top-left-radius: 0;
+//             border-bottom-left-radius: 0;
+//           `};
+//
+//       }
+//     }
+//   }
+//
+//   .input-wrap {
+//     //min-width: 128px;
+//     // width: 100%;
+//     flex: 1;
+//     height: 100%
+//   }
+//
+//   .btn-wrap {
+//     max-width: var(--btn-max-width);
+//     min-width: var(--btn-min-width);
+//
+//     .MuiButton-label {
+//       justify-content: flex-start;
+//     }
+//
+//   }
+//
+// ` as typeof Box
+// const IInput = styled(CurrencyInput)`
+//   text-align: right;
+//   color: var(--color-text-primary);;
+//
+//   ::placeholder {
+//     color: var(--color-text-secondary);;
+//   }
+//
+//   width: 100%; //calc(100% - 2rem);
+//   height: 100%; //var(--btn-Input-height);
+//   border: 0;
+//   margin: 0;
+//   border-top-left-radius: 0;
+//   border-bottom-left-radius: 0;
+//   ${({theme}) => `
+//     border-left:  ${theme.border.borderConfig({c_key: 'blur'})};
+//     ${theme.mode === 'dark' ? `border-color: transparent` : ''};
+//   `};
+//   font-size: ${({theme}) => theme.fontDefault.h4};
+//   display: block;
+//   padding: .8rem 1rem;
+//   min-width: 0;
+//   background: none;
+//   box-sizing: border-box;
+//   animation-name: mui-auto-fill-cancel;
+//   letter-spacing: inherit;
+//   animation-duration: 10ms;
+//   -webkit-tap-highlight-color: transparent;
+//
+//   :focus {
+//     outline: 0;
+//
+//     ${({theme}) => `
+//         ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
+//         border-top-left-radius: 0;
+//         border-bottom-left-radius: 0;
+//      `};
+//   }
+// }
+// ` as typeof CurrencyInput
 
-  .message-wrap {
-    .MuiFormHelperText-root {
-      color: var(--color-error);
-      text-align: right;
-      font-size: ${({theme}) => theme.fontDefault.h6};
-    }
-
-  }
-
-  .sub-label {
-    text-align: right;
-    cursor: pointer;
-
-    .max-allow {
-      text-decoration: underline dotted;
-
-      &:hover {
-        color: var(--color-primary);
-      }
-    }
-
-    .no-balance {
-      text-decoration: none;
-    }
-  }
-
-  .btnInput-wrap {
-    background-color: var(--field-opacity);
-    border-radius: ${({theme}) => theme.unit / 2}px;
-    position: relative;
-    margin-top: ${({theme}) => `${theme.unit / 2}px`};
-    height: var(--btn-Input-height);
-
-    ::before {
-      content: '';
-      display: block;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      box-sizing: border-box;
-      pointer-events: none;
-      z-index: 1;
-      ${({theme}) => `
-            ${theme.border.defaultFrame({c_key: 'blur'})};
-            ${theme.mode === 'dark' ? `border-color: transparent` : ''};
-     `};
-    }
-
-
-    &.error {
-      input {
-        ${({theme}) => `
-            ${theme.border.defaultFrame({c_key: theme.colorBase.error})};
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-          `};
-
-      }
-    }
-  }
-
-  .input-wrap {
-    //min-width: 128px;
-    // width: 100%;
-    flex: 1;
-    height: 100%
-  }
-
-  .btn-wrap {
-    max-width: var(--btn-max-width);
-    min-width: var(--btn-min-width);
-
-    .MuiButton-label {
-      justify-content: flex-start;
-    }
-
-  }
-
-` as typeof Box
-const ISBtn = styled(Button)<ButtonProps & { logoColor?: any }>`
-  && {
-    width: 100%;
-    height: 100%;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-right: 1px solid transparent;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-size: ${({theme}) => theme.fontDefault.h5};
-    color: var(--color-text-primary);
-
-    .placeholder {
-      color: var(--color-text-secondary);
-    }
-  }
-
-  // .logo-icon svg {
-    //   color: ${({logoColor}) => logoColor}
-  // }
-  //.MuiAvatar-root {
-  //  width: 24px;
-  //  height: 24px;
-  //}
-
-  .MuiButton-endIcon svg {
-    color: var(--color-text-primary)
-      // color: ${({logoColor}) => logoColor}
-  }
-
-  &:hover, &:active {
-    color: var(--color-text-primary);
-    background-color: var(--color-box-hover);
-  }
-` as React.ComponentType<ButtonProps & { logoColor?: any }>;
-const IInput = styled(CurrencyInput)`
-  text-align: right;
-  color: var(--color-text-primary);;
-
-  ::placeholder {
-    color: var(--color-text-secondary);;
-  }
-;
-  width: 100%; //calc(100% - 2rem);
-  height: 100%; //var(--btn-Input-height);
-  border: 0;
-  margin: 0;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  ${({theme}) => `
-    border-left:  ${theme.border.borderConfig({c_key: 'blur'})};
-    ${theme.mode === 'dark' ? `border-color: transparent` : ''};
-  `};
-  font-size: ${({theme}) => theme.fontDefault.h4};
-  display: block;
-  padding: .8rem 1rem;
-  min-width: 0;
-  background: none;
-  box-sizing: border-box;
-  animation-name: mui-auto-fill-cancel;
-  letter-spacing: inherit;
-  animation-duration: 10ms;
-  -webkit-tap-highlight-color: transparent;
-
-  :focus {
-    outline: 0;
-
-    ${({theme}) => `
-        ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-     `};
-  }
-}
-
-` as typeof CurrencyInput
 
 function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                          label = "Enter token",
@@ -311,7 +279,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                     }
                 </ISBtn>
             </Grid>
-            <Grid item className={'input-wrap'}>
+            <Grid item className={'input-wrap input-wrap-right'}>
                 <IInput ref={inputEle} onValueChange={_handleContChange} value={
                     typeof sValue === 'undefined' ? '' : sValue
                 } allowNegativeValue={false}

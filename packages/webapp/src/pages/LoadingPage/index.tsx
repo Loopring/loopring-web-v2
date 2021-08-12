@@ -1,21 +1,12 @@
-import { Trans, useTranslation } from 'react-i18next';
-import { Box, Container, Link, Slide, Typography } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
+import { Box } from '@material-ui/core';
 import styled from '@emotion/styled';
-import { ErrorObject } from '@loopring-web/common-resources';
-import { getContactInfo } from '../../utils/dt_tools';
+// import { ErrorObject } from '@loopring-web/common-resources';
+// import { getContactInfo } from '../../utils/dt_tools';
+import { boxLiner } from '@loopring-web/component-lib';
 
 const StyleBox = styled(Box)`
-  background: var(--color-box-linear);
-  //background-repeat: no-repeat;
-  //background-size: contain;
-  //background-position: bottom;
-  //white-space: pre-wrap;
-  ////h2{
-  ////  position: relative;
-  ////}
-  /*
-  Set the color of the icon
-*/
+  ${({theme}) => boxLiner({theme})}
   svg path,
   svg rect{
     fill: var(--color-primary)

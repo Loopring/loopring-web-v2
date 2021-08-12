@@ -5,7 +5,7 @@ import React, { RefAttributes } from 'react';
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Grid, Toolbar } from "@material-ui/core";
-import { toolBarPanel } from '../../styled';
+import { boxLiner, toolBarPanel } from '../../styled';
 
 
 export type PanelContent<T extends string> = {
@@ -25,6 +25,7 @@ export type SwitchPanelProps<T extends string> = {
     _width?: number | string;
 
 }
+
 // height: ${_height ? typeof _height === 'number' ?
 //           `calc(${_height + 'px'}  - 2 * var(--toolbar-row-padding) )`
 //           : `calc(${_height}  - 2 * var(--toolbar-row-padding) )` : 'auto'};
@@ -41,7 +42,7 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps &
       .container{
         flex:1;
       }
-      background: var(--color-box-linear);
+      ${({theme}) => boxLiner({theme})}
       display: flex;
       flex-direction: column;
       flex-wrap: wrap;

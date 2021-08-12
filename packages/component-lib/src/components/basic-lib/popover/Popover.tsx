@@ -111,8 +111,10 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
     &.arrow-center,
     &.arrow-right,
     &.arrow-left,
-    &.arrow-left {
+    &.arrow-left,
+    &.arrow-top-center {
       .MuiPopover-paper {
+        background:var(--color-pop-bg);
         overflow: visible;
         box-shadow: var(--shadow);
         border-radius: ${({theme}) => theme.unit * 0.5}px;
@@ -147,7 +149,16 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
         left: ${({theme}) => theme.unit}px;
       }
     }
-  }
+    &.arrow-top-center .MuiPopover-paper {
+      &:before {
+        left: 50%;
+        transform: translateX(-50%) rotate(-180deg);
+        bottom: ${({theme}) => theme.unit * -2}px;
+        top:initial;
+      }
+    }
+  
+}
 
 
 ` as React.ElementType<PopoverProps>
