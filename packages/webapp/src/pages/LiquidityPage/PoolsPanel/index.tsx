@@ -89,7 +89,8 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
                         pagination: {
                             pageSize
                         },
-                        showFilter: false
+                        showFilter: false,
+                        showLoading: !rawData.length
                     }} />
                 </StylePaper>
             </WrapperStyled>
