@@ -42,7 +42,7 @@ export const colorBase = ({theme}: any) => css`
     --color-border-hover: ${theme.colorBase.borderHover};
     --color-divide: ${theme.colorBase.divide};
     --color-pop-bg: ${theme.colorBase.popBg};
-    --color-box: ${theme.colorBase.box};
+    --color-box: ${theme.coorBase.box};
     --color-box-secondary: ${theme.colorBase.boxSecondary};
     --color-box-hover: ${theme.colorBase.boxHover};
     --color-box-linear: ${theme.colorBase.boxLinear};
@@ -235,7 +235,7 @@ export const globalCss = ({theme}: any) => css`
   }
 
   . draggable_panel {
-    border: 1px solid #777777;
+    border: 1px solid var(--color-border);
     height: 100%;
   }
 

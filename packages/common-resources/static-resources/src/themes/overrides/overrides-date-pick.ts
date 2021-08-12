@@ -14,7 +14,7 @@ export const MuPickDate = ({colorBase, themeMode}: { colorBase: typeof ColorDark
                     boxShadow: colorBase.shadow,
                     borderRadius: radius * 2 + 'px',
                     // border: borderFunc(themeMode).borderConfig({c_key: 'blur'}),
-                    border: `1px solid ${colorBase.divide}`,
+                    border: borderFunc(themeMode).defaultFrame({c_key:colorBase.divide}),//`1px solid `,
                     '& svg': {
                         fontSize: '2rem',
                         color: colorBase.textSecondary
@@ -64,7 +64,7 @@ export const MuPickDate = ({colorBase, themeMode}: { colorBase: typeof ColorDark
                     boxShadow: colorBase.shadow,
                     borderRadius: radius * 2 + 'px',
                     // border: borderFunc(themeMode).borderConfig({c_key: 'blur'}),
-                    border: `1px solid ${colorBase.divide}`,
+                    border: borderFunc(themeMode).defaultFrame({c_key:colorBase.divide}),//`1px solid ${colorBase.divide}`,
                     fontSize: 1.6,
                     "& .MuiDateRangePickerViewDesktop-rangeCalendarContainer:not(:last-child)": {
                         borderColor: colorBase.divide,

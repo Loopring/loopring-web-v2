@@ -307,7 +307,7 @@ export const MuiPaper = ({colorBase}: any): { styleOverrides: ComponentsOverride
                 backgroundColor: colorBase.popBg,
                 '&.MuiPopover-paper': {
                     backgroundImage: 'none',
-                    backgroundColor: colorBase.borderHover
+                    // backgroundColor: colorBase.popBg
                     // backgroundColor: colorBase.background().popupBg2,
                     // backgroundColor: colorBase.popBg,
                 },
@@ -404,7 +404,7 @@ export const MuiInputLabel = ({colorBase}: any): { styleOverrides: ComponentsOve
         }
     }
 }
-export const MuiInputBase = ({colorBase}: any): { styleOverrides: ComponentsOverrides['MuiInputBase'] } => {
+export const MuiInputBase = ({colorBase,themeMode}: any): { styleOverrides: ComponentsOverrides['MuiInputBase'] } => {
     return {
         styleOverrides: {
             root: {
@@ -414,7 +414,7 @@ export const MuiInputBase = ({colorBase}: any): { styleOverrides: ComponentsOver
                 position: 'relative',
                 fontSize: '1.4rem',
                 backgroundColor: colorBase.box,
-                border: `1px solid ${colorBase.border}`,
+                border: borderFunc(themeMode).defaultFrame({c_key:colorBase.border}),//`1px solid ${colorBase.border}`,
                 borderRadius: 4,
                 '&:not(.MuiFormControl-fullWidth)': {
                     // width: 'var(--btn-min-width)',
@@ -586,14 +586,19 @@ export const MuiListItem = ({colorBase}: any) => {
                 paddingLeft: pxToRem(20),
                 paddingRight: pxToRem(20),
                 color: colorBase.textSecondary,
-                '&:hover, &.Mui-selected:hover': {
+                '&:hover': {
                     color: colorBase.textPrimary,
-                    backgroundColor: colorBase.boxHover,
+                    background:colorBase.boxHover,
                 },
+                // '&.Mui-selected': {
+                //     color: colorBase.textPrimary,
+                //     background: 'none',//colorBase.boxHover,
+                // },
                 '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
-                    backgroundColor: colorBase.boxHover,
-                    color: colorBase.textPrimary,
-                    border: 'none',
+                    '&:hover, &':{
+                        color: colorBase.textPrimary,
+                        border: 'none',
+                    }
                 }
             },
         }
@@ -608,13 +613,13 @@ export const MuiMenu = ({colorBase}: any) => {
         }
     }
 }
-export const MuiMenuItem = ({colorBase}: any) => {
+export const MuiMenuItem = ({colorBase,themeMode}: any) => {
     return {
         styleOverrides: {
             root: {
                 height: pxToRem(32),
-                borderLeft: '1px solid',
-                borderLeftColor: 'transparent',
+                borderLeft: borderFunc(themeMode).borderConfig({c_key:'var(--opacity)'}), ////`1px solid transparent`,
+                // borderLeftColor: 'transparent',
                 paddingLeft: pxToRem(12),
                 paddingRight: pxToRem(12),
                 color: colorBase.textSecondary,
@@ -630,6 +635,7 @@ export const MuiMenuItem = ({colorBase}: any) => {
                     flexWrap: 'noWrap',
                     justifyContent: 'space-between',
                     '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
+
                         '&:after': {
                             display: 'none'
                         }
@@ -637,7 +643,7 @@ export const MuiMenuItem = ({colorBase}: any) => {
                 },
                 '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
                     // backgroundColor: 'transparent',
-                    backgroundColor: colorBase.boxHover,
+                    background: 'none',
                     color: colorBase.textPrimary,
                     // '&:after': {
                     //     fontSize: '1.6rem',
