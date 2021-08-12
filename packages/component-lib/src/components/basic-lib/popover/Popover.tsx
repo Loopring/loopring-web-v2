@@ -128,7 +128,7 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
           border-right: 0;
           width: 8px;
           height: 8px;
-          background: var(--color-border-hover);
+          background: var(--color-pop-bg);
         }
       }
     }
