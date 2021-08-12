@@ -180,6 +180,7 @@ export default {
     labelSuccessUnlock:'Success Unlock',
     labelDepositApproveSuccess:'Congratulation deposit done, please click button to active your account.',
     labelActivateAccount:'Activate Account',
+    labelClose: 'Close',
     labelRetry:'Retry',
     labelQuotePageFavourite: 'Favourite',
     labelQuotePageAll: 'All',
