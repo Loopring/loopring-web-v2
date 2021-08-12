@@ -35,9 +35,8 @@ export const ColorDarkDefault = Object.freeze({
     white: '#ffffff',
     dark: '#000000',
     /********************Case for provider*******************/
-    shadow: `0px 4px 38px ${hexToRGB('#000000', '.16')}`
+    shadow: ` 0px 4px 4px ${hexToRGB('#000000', '.25')}`
     /********************Case for provider*******************/
-
 })
 export const ColorLightDefault = Object.freeze({...ColorDarkDefault})
 export type ColorBaseInterface = typeof ColorDarkDefault

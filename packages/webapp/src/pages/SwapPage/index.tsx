@@ -52,7 +52,7 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
         <Toast alertText={swapAlertText as string} open={swapToastOpen} 
             autoHideDuration={TOAST_TIME} setOpen={setSwapToastOpen}/>
 
-        <Grid container marginRight={3} alignContent={'flex-start'}>
+        <Grid container marginRight={3} alignContent={'stretch'} direction={'column'} flexWrap={'nowrap'}>
             <BasicInfoPanel {...{
                 ...rest,
                 ...renderPair, marketArray,

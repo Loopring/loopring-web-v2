@@ -38,6 +38,7 @@ export const StylePaper = styled(Box)`
 
 
 export const  TableWrapStyled = styled(Grid)`
+ 
   &{
     background: var(--color-box);
     border-radius: ${({ theme }) => theme.unit}px;

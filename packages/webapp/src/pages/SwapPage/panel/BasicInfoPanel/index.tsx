@@ -27,18 +27,17 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
         bidsAmtTotals: originData.bidsAmtTotals.map((amt: string) => Number(VolToNumberWithPrecision(amt, baseToken))),
     } : []
     return  <>
-        <Grid item xs={8}>
-            <TradeTitle {...{
-                coinAInfo, coinBInfo,
-                ...rest, t, tradeFloat
-            }}></TradeTitle>
+        <Grid item >
+           <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} >
+               <TradeTitle {...{
+                   coinAInfo, coinBInfo,
+                   ...rest, t, tradeFloat
+               }}></TradeTitle>
+               <ToggleButtonGroup exclusive {...{ ...rest, t, tgItemJSXs, value: chartType }}
+                                  handleChange={handleChange} />
+           </Box>  
         </Grid>
-        <Grid item xs={4} display={'flex'} justifyContent={'flex-end'} alignItems={'flex-end'}>
-            <ToggleButtonGroup exclusive {...{ ...rest, t, tgItemJSXs, value: chartType }}
-                handleChange={handleChange} />
-        </Grid>
-
-        <Grid item xs={12} position={'relative'}>
+        <Grid item  position={'relative'}>
             <Box minHeight={256} maxHeight={256} display={'block'} style={{ height: '100%', width: '100%' }}>
                 <ScaleAreaChart 
                     type={chartType} 
