@@ -8,7 +8,6 @@ import {
     globalSetup,
     IBData,
     SagaStatus,
-    WalletMap
 } from '@loopring-web/common-resources';
 import { AmmPanelType } from '@loopring-web/component-lib';
 import { IdMap, useTokenMap } from '../../../stores/token';
@@ -41,14 +40,12 @@ import { useAccount } from '../../../stores/account/hook';
 import store from "stores";
 import { LoopringAPI } from "stores/apis/api";
 import { debounce } from "lodash";
-// import { AccountStatus } from "state_machine/account_machine_spec";
+
 import { deepClone } from '../../../utils/obj_tools';
 import { useWalletLayer2 } from "stores/walletLayer2";
 import { myLog } from "utils/log_tools";
-import { BIG10 } from "defs/swap_defs";
 import { REFRESH_RATE_SLOW } from "defs/common_defs";
 import { useTranslation } from "react-i18next";
-import { debug } from "console";
 
 export const useAmmPanel = <C extends { [key: string]: any }>({
     pair,
@@ -87,6 +84,9 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
     const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
         myLog('initAmmData:', account.accAddress, walletMap)
+
+        myLog('pair:', pair)
+
         let _ammCalcData = ammPairInit(
             {
                 pair,
@@ -541,12 +541,13 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     const { walletLayer2, status: walletLayer2Status } = useWalletLayer2();
 
     useCustomDCEffect(() => {
-        if (!walletLayer2 || walletLayer2Status !== SagaStatus.UNSET || !pair || !snapShotData) {
+        if (walletLayer2Status !== SagaStatus.UNSET || !pair || !snapShotData) {
             return
         }
+
         const { walletMap } = makeWalletLayer2()
         initAmmData(pair, walletMap)
-    }, [walletLayer2, walletLayer2Status, pair, snapShotData, account?.accAddress,]);
+    }, [walletLayer2Status, pair, snapShotData, account?.accAddress,]);
 
     return {
         ammAlertText,

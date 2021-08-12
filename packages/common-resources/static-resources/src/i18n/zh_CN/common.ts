@@ -182,6 +182,7 @@ export default {
     labelSuccessUnlock:'解锁成功',
     labelDepositApproveSuccess:'恭喜充值成功, 最后一步点击开通账户！',
     labelActivateAccount:'激活账户',
+    labelClose: '关闭',
     labelRetry:'重试',
     labelQuotePageFavourite: '自选',
     labelQuotePageAll: '全部',

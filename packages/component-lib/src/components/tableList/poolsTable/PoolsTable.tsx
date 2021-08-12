@@ -292,7 +292,7 @@ export const PoolsTable = withTranslation('tables')(
 
         const onRowClick = React.useCallback((_rowIdx: any, row: any) => {
             const pathname = `/liquidity/pools/coinPair/${row?.coinAInfo?.simpleName + '-' + row?.coinBInfo?.simpleName}`
-            console.log('onRowClick:', pathname)
+            
             history && history.push({
                 pathname,
             })
