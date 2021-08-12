@@ -116,6 +116,7 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
         ${({theme}) => theme.border.defaultFrame({d_W: 1, d_R: 1 / 2, c_key: 'var(--opacity)'})};
         margin-top: ${({theme}) => theme.unit * 2}px;
         overflow: visible;
+        box-shadow: var(--shadow);
         &:before {
           position: absolute;
           content: '';
