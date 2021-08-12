@@ -1,13 +1,13 @@
 import { useRouteMatch } from 'react-router'
 
-import { Box, Typography, OutlinedInput, InputAdornment } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import {
     SubMenu,
     SubMenuList as BasicSubMenuList,
 } from '@loopring-web/component-lib'
 import { withTranslation, WithTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
-import { subMenuLiquidity, SearchIcon } from '@loopring-web/common-resources'
+import { subMenuLiquidity } from '@loopring-web/common-resources'
 import { PoolsPanel } from './PoolsPanel'
 import { CoinPairPanel } from './CoinPairPanel';
 import { AmmMiningView } from './AmmMining';
@@ -47,7 +47,7 @@ export const LiquidityPage =  withTranslation('common', { withRef: true })(({ t 
     return (
         <>
             { symbol && <Box display={'flex'} flexDirection={'column'}  flex={1} alignSelf={'flex-start'}>
-              <CoinPairPanel ammActivityMap={ammActivityMap}/>
+                <CoinPairPanel ammActivityMap={ammActivityMap}/>
             </Box>
             }
             {!symbol && <TableWrapperStyled>  {/* <Box width={'200px'} display={'flex'} justifyContent={'stretch'} marginRight={3} marginBottom={3}>
@@ -62,25 +62,6 @@ export const LiquidityPage =  withTranslation('common', { withRef: true })(({ t 
                     marginTop={2}
                     marginBottom={3}
                 >{t('labelLiqudityPageTitle')}</Typography>
-                <Box marginBottom={3}>
-                    <OutlinedInput // TODO: value && onchange
-                        {...{
-                            placeholder: t('labelFilter'),
-                            // value: filterBy,
-                            // onChange: (event: any) => {
-                            //     setFilterBy(event.currentTarget?.value);
-                            //     handleFilterChange(event.currentTarget?.value);
-                            // }
-                            }
-                        }
-                        key={'search'}
-                        className={'search'}
-                        aria-label={'search'}
-                        startAdornment={<InputAdornment position="start">
-                            <SearchIcon/>
-                        </InputAdornment>}
-                    />
-                </Box>
                 <Box minHeight={420} display={'flex'} alignItems={'stretch'} justifyContent={'stretch'} /* flexDirection="column" */ marginTop={0} flex={1} marginBottom={3}>
                     {(selected === 'pools' && !symbol ) && <PoolsPanel ammActivityMap={ammActivityMap}/>}
                     {/* {(selected === 'amm-mining' && !symbol ) && <AmmMiningView ammActivityMap={ammActivityMap}/>}

@@ -194,4 +194,5 @@ export default {
     describeTitleConnectToWallet:'Connect wallet to start',
     describeTitleLocked:'Unlock your account to check your asset.',
     labelLiqudityPageTitle: 'AMM Pools',
+    labelFilter: 'Search',
 }
