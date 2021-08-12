@@ -25,7 +25,7 @@ const DateTextField = styled(TextField)`
   .MuiIconButton-label {
     width: 100%;
     display: flex;
-    align-items: inherit;
+    align-items: baseline;
     justify-content: inherit;
   }
 

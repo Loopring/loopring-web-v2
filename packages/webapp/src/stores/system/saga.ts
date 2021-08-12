@@ -3,7 +3,6 @@ import { getSystemStatus, updateRealTimeObj, updateSystem } from './reducer'
 import { ENV, NETWORKEXTEND } from "./interface"
 import store from '../index';
 // import { reset } from '../account/reducer';
-import { ChainId } from 'loopring-sdk';
 import { exchangeAPI, LoopringAPI } from '../apis/api';
 import { getAmmMap, updateRealTimeAmmMap } from '../Amm/AmmMap';
 import { getTokenMap } from '../token';
@@ -13,6 +12,7 @@ import { updateWalletLayer1 } from '../walletLayer1';
 import { delay } from 'rxjs/operators';
 import { LoopringSocket } from '../../services/socketUtil';
 import { statusUnset as accountStatusUnset } from '../account';
+import { ChainId } from 'loopring-sdk';
 
 const initConfig = function* <R extends { [ key: string ]: any }>(chainId: ChainId | 'unknown') {
     // store.dispatch(updateAccountStatus());
@@ -46,6 +46,7 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
     if (chainId === NETWORKEXTEND.NONETWORK) {
         throw new CustomError(ErrorMap.NO_NETWORK_ERROR)
     } else {
+
         LoopringAPI.InitApi(chainId as ChainId);
         if (LoopringAPI.exchangeAPI) {
             const {exchangeInfo} = (await LoopringAPI.exchangeAPI.getExchangeInfo())

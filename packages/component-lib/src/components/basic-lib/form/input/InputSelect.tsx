@@ -38,7 +38,6 @@ const WrapStyled = styled(Box)`
 
 ` as typeof Box;
 
-// @ts-ignore TODO
 function _InputSelect<C, I extends string = CoinKey<C>>({
                                                             t,
                                                             handleContentChange,

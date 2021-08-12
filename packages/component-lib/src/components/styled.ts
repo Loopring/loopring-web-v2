@@ -119,8 +119,12 @@ export const modalContentBaseStyle = ({theme}: any) => css`
 // }        
 export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _width?: number | string } & BoxProps>`
   .MuiModal-root & {
+    .react-swipeable-view-container > div {
+      background: var(--opacity);
+    }
     .container{
         padding-bottom: 0;
+     
     }
   }
   .trade-panel{
