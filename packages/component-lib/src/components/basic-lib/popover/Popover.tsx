@@ -118,13 +118,13 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
         border-radius: ${({theme}) => theme.unit * 0.5}px;
         &:before {
           position: absolute;
-          top: ${({theme}) => theme.unit * -1}px;
+          top: ${({theme}) => theme.unit * -2}px;
           content: '';
           display: block;
           width: 0;
           height: 0;
-          border: ${({theme}) => theme.unit * 0.5}px solid transparent;
-          border-bottom: ${({theme}) => theme.unit * 0.5}px solid var(--color-pop-bg);
+          border: ${({theme}) => theme.unit}px solid transparent;
+          border-bottom: ${({theme}) => theme.unit}px solid var(--color-pop-bg);
         }
       }
     }

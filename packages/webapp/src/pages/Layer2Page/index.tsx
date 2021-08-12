@@ -14,10 +14,11 @@ import { SettingPanel } from '../SettingPage';
 // import { useModalProps } from '../../layouts/header/hook';
 import React from 'react';
 import { useAccount } from '../../stores/account';
-import { accountStaticCallBack, bntLabel, btnClickMap } from '../../layouts/connectStatusCallback';
+import { accountStaticCallBack, btnLabel, btnClickMap } from '../../layouts/connectStatusCallback';
 import { deepClone } from '../../utils/obj_tools';
-import OrderPanel from './OrderPanel'
-import { myLog } from 'utils/log_tools'
+
+import { i18n } from "@loopring-web/common-resources"
+
 // import { useModalProps } from '../../modal';
 
 export const subMenu = subMenuLayer2
@@ -43,7 +44,8 @@ const BtnConnect = withTranslation(['common'], {withRef: true})(({t}: any) => {
     const { status: accountStatus} = useAccount();
     // const {setShowAccount} = useOpenModals();
     const [label, setLabel] = React.useState(undefined);
-    const _bntLabel: typeof btnClickMap = Object.assign(deepClone(bntLabel),{
+
+    const _btnLabel: typeof btnClickMap = Object.assign(deepClone(btnLabel), {
         [ fnType.NO_ACCOUNT ]: [
             function () {
                 return `depositTitleAndActive`
@@ -55,11 +57,13 @@ const BtnConnect = withTranslation(['common'], {withRef: true})(({t}: any) => {
             }
         ],
     });
+
     React.useEffect(() => {
         if (accountStatus === SagaStatus.UNSET) {
-            setLabel(accountStaticCallBack(_bntLabel));
+            setLabel(accountStaticCallBack(_btnLabel));
         }
-    }, [accountStatus])
+    }, [accountStatus, i18n.language])
+
     const _btnClickMap: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {});
 
     return <Button variant={'contained'} size={'large'} color={'primary'} fullWidth={true}

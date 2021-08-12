@@ -6,6 +6,7 @@ import { myLog } from '../../utils/log_tools';
 import store from 'stores';
 import { updateAccountStatus } from 'stores/account';
 import * as sdk from 'loopring-sdk'
+import { unlockAccount } from './unlockAccount';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
@@ -118,6 +119,7 @@ export const walletLayer2Services = {
             data: accInfo
         })
     },
+
     sendCheckAcc: async () => {
         const self = this;
         if (store) {
@@ -135,7 +137,8 @@ export const walletLayer2Services = {
                             myLog('-------need update account!')
                             walletLayer2Services.sendNeedUpdateAccount(accInfo)
                         } else {
-                            walletLayer2Services.sendAccountLock(accInfo)
+                            myLog('-------need unlockAccount!')
+                            unlockAccount()
                         }
                     } else {
                         myLog('unexpected accInfo:', accInfo)
