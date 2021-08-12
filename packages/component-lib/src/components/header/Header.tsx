@@ -80,7 +80,6 @@ const LogoStyle = styled(Typography)`
   }
 ` as typeof Typography
 
-
 export const LoopringLogo = (<LogoStyle variant="h6" component="h1">
         <IconButton edge="start" aria-label="menu" component={RouterLink} to="/#" color={"inherit"}>
             Loopring 路印
@@ -90,7 +89,6 @@ export const LoopringLogo = (<LogoStyle variant="h6" component="h1">
         </IconButton>
     </LogoStyle>
 );
-
 
 const ToolBarItem = ({buttonComponent, ...props}: any) => {
     const {themeMode, language} = useSettings()
