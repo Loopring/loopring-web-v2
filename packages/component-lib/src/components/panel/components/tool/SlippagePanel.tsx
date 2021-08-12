@@ -8,16 +8,20 @@ import { WithTranslation } from 'react-i18next';
 import { useFocusRef } from '../../../basic-lib/form/hooks';
 
 const Styled = styled(Box)`
-    .MuiToggleButtonGroup-root {
-      display: flex;
-      flex: 1;
-      flex-wrap: wrap;
-      justify-content: space-evenly;
-      align-content: space-between;
+  .MuiToggleButtonGroup-root {
+    .MuiToggleButtonGroup-grouped:first-of-type {
+      margin-left: -1px;
+    }
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: space-between;
+  }
 `
 const InputStyled = styled(CurrencyInput)`
   text-align: right;
-  color:var(--color-text-primary);
+  color: var(--color-text-primary);
 
   ::placeholder {
     color: var(--color-text-secondary);
@@ -112,9 +116,9 @@ export const SlippagePanel = ({
 
     }
     return <Styled
-                   height={'var(--slippage-pop-height)'}
-                   width={'var(--slippage-pop-width)'} padding={2}
-                   display={'flex'}>  {
+        height={'var(--slippage-pop-height)'}
+        width={'var(--slippage-pop-width)'} padding={2}
+        display={'flex'}>  {
         <ToggleButtonGroup exclusive {...{...rest, tgItemJSXs: toggleData, value: value, size: 'small'}}
                            handleChange={_handleChange}/>
     }
