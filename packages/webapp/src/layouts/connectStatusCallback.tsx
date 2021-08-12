@@ -2,7 +2,8 @@ import store from '../stores';
 import { AccountStep, setShowAccount, setShowConnect, Toast, WalletConnectStep } from '@loopring-web/component-lib';
 import { fnType } from '@loopring-web/common-resources';
 import { Provider } from 'react-redux';
-import { changeShowModel } from '../stores/account';
+import { changeShowModel } from 'stores/account';
+import { walletLayer2Services } from 'services/account/walletLayer2Services'
 
 
 export const accountStaticCallBack = (onclickMap: { [ key: number ]: [fn: (props: any) => any, args?: any[]] }, deps?: any[]) => {
@@ -16,7 +17,6 @@ export const accountStaticCallBack = (onclickMap: { [ key: number ]: [fn: (props
     }
 
 }
-
 
 export const bntLabel: typeof btnClickMap = {
 
@@ -71,7 +71,8 @@ export const btnClickMap: { [ key: string ]: [fn: (props: any) => any, args?: an
     ]
     , [ fnType.DEPOSITING ]: [
         function () {
-            store.dispatch(setShowAccount({isShow: true, step: AccountStep.Depositing}))
+            walletLayer2Services.sendCheckAcc()
+            // store.dispatch(setShowAccount({isShow: true, step: AccountStep.Depositing}))
             // ShowDeposit(true)
         }
     ]
