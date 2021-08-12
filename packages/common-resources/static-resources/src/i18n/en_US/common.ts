@@ -197,4 +197,10 @@ export default {
     describeTitleLocked:'Unlock your account to check your asset.',
     labelLiqudityPageTitle: 'AMM Pools',
     labelFilter: 'Search',
+    labelMiningPageTitle: 'AMM Mining',
+    labelMiningActiveDate: 'Active Date',
+    labelMiningLiqudity: 'Liquidity',
+    labelMiningActivityReward: 'Activity Reward',
+    labelMiningMyShare: 'My Share',
+    labelMiningMyReward: 'My Reward',
 }

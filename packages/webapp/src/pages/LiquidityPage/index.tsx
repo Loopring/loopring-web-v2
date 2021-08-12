@@ -24,7 +24,7 @@ const TableWrapperStyled = styled(Box)`
 
 export const subMenu = subMenuLiquidity
 
-// const SubMenuList = withTranslation(['layout','common'], { withRef: true })(BasicSubMenuList);
+const SubMenuList = withTranslation(['layout','common'], { withRef: true })(BasicSubMenuList);
 export const LiquidityPage =  withTranslation('common', { withRef: true })(({ t }: WithTranslation) => {
 
     // const { ammFee } = useAmmPool('LRC', 'ETH')
@@ -50,7 +50,8 @@ export const LiquidityPage =  withTranslation('common', { withRef: true })(({ t 
                 <CoinPairPanel ammActivityMap={ammActivityMap}/>
             </Box>
             }
-            {!symbol && <TableWrapperStyled>  {/* <Box width={'200px'} display={'flex'} justifyContent={'stretch'} marginRight={3} marginBottom={3}>
+            {!symbol && <TableWrapperStyled>
+                {/* <Box width={'200px'} display={'flex'} justifyContent={'stretch'} marginRight={3} marginBottom={3}>
                     <SubMenu>
                         <SubMenuList selected={selected} subMenu={subMenu as any} />
                     </SubMenu>
@@ -69,7 +70,7 @@ export const LiquidityPage =  withTranslation('common', { withRef: true })(({ t 
                     {selected === 'orderBook-Mining' && <AmmMiningView ammActivityMap={ammActivityMap}/>} */}
                     {/*{selected === 'orders' && <OrderPanel />}*/}
                 </Box>
-             </TableWrapperStyled>
+            </TableWrapperStyled>
             }
         </>
     )
