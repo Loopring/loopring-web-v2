@@ -5,6 +5,8 @@ import {
     MuiButton,
     MuiButtonBase,
     MuiCard,
+    MuiCardContent,
+    MuiCardActions,
     MuiCheckbox,
     MuiDivider, MuiIconButton,
     MuiInputBase,
@@ -129,6 +131,8 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
         },
         components: {
             MuiCard: MuiCard({colorBase}),
+            MuiCardContent: MuiCardContent(),
+            MuiCardActions: MuiCardActions(),
             MuiCheckbox: MuiCheckbox({colorBase}),
             MuiLink: MuiLink({colorBase}),
             MuiModal: MuiModal({colorBase}),
