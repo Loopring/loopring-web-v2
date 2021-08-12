@@ -6,6 +6,7 @@ import {
     Button,
     DepositApproveProcess,
     Depositing,
+    DepositingProcess,
     DepositPanel,
     FailedDeposit,
     FailedTokenAccess,
@@ -107,11 +108,12 @@ export const ModalAccountInfo = withTranslation('common')(({
                 setShowAccount({isShow: true, step: AccountStep.SuccessUnlock})
                 await sleep(REFRESH_RATE)
                 setShowAccount({isShow: false})
-                walletLayer2Services.sendCheckAccount(account.accAddress)
                 break
             case ActionResultCode.GetAccError:
             case ActionResultCode.GenEddsaKeyError:
             case ActionResultCode.UpdateAccoutError:
+                myLog('try to sendCheckAccount...')
+                walletLayer2Services.sendCheckAccount(account.accAddress)
                 break
             default:
                 break
@@ -184,6 +186,12 @@ export const ModalAccountInfo = withTranslation('common')(({
                 t
             }} />,
             [ AccountStep.DepositApproveProcess ]: <DepositApproveProcess label={title}
+                                                        etherscanLink={etherscanUrl + account.accAddress}
+                                                        providerName={account.connectName} {...{
+                ...rest,
+                t
+            }} />,
+            [ AccountStep.DepositingProcess ]: <DepositingProcess label={title}
                                                         etherscanLink={etherscanUrl + account.accAddress}
                                                         providerName={account.connectName} {...{
                 ...rest,

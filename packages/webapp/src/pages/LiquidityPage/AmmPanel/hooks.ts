@@ -12,7 +12,7 @@ import {
 import { AmmPanelType } from '@loopring-web/component-lib';
 import { IdMap, useTokenMap } from '../../../stores/token';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
-import { accountStaticCallBack, ammPairInit, bntLabel, btnClickMap, makeCache, makeWalletLayer2 } from '../../../hooks/help';
+import { accountStaticCallBack, ammPairInit, btnLabel, btnClickMap, makeCache, makeWalletLayer2 } from '../../../hooks/help';
 import * as sdk from 'loopring-sdk';
 import {
     AmmPoolRequestPatch,
@@ -181,7 +181,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     useCustomDCEffect(async () => {
         if (accountStatus === SagaStatus.UNSET) {
 
-            const label: string | undefined = accountStaticCallBack(bntLabel)
+            const label: string | undefined = accountStaticCallBack(btnLabel)
             setAmmDepositBtnI18nKey(label)
             setAmmWithdrawBtnI18nKey(label)
 

@@ -1,17 +1,18 @@
 import { OutlinedInput, InputAdornment } from '@material-ui/core'
 import { SearchIcon } from '@loopring-web/common-resources'
 import { OutlinedInputProps } from '@material-ui/core/OutlinedInput/OutlinedInput';
+import React from 'react';
 
 export type InputSearchProps  = {
     value?: string;
     // onChange?: (value: string) => void;
 } & OutlinedInputProps
 
-export const InputSearch = ({
+export const InputSearch =  React.forwardRef(({
     value,
     onChange,
     ...rest
-}: InputSearchProps) => {
+}: InputSearchProps , _ref: React.ForwardedRef<any>) => {
     return <OutlinedInput
         {...{...rest}}
         className={'search'}
@@ -29,4 +30,4 @@ export const InputSearch = ({
             </InputAdornment>
         }
     />
-}
+} )
