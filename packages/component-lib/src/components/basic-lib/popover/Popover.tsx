@@ -113,43 +113,38 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
     &.arrow-left,
     &.arrow-left {
       .MuiPopover-paper {
-        ${({theme}) => theme.border.defaultFrame({d_W: 1, d_R: 1 / 2, c_key: 'var(--opacity)'})};
-        margin-top: ${({theme}) => theme.unit * 2}px;
         overflow: visible;
         box-shadow: var(--shadow);
+        border-radius: ${({theme}) => theme.unit * 0.5}px;
         &:before {
           position: absolute;
+          top: ${({theme}) => theme.unit * -2}px;
           content: '';
           display: block;
-          position: absolute;
-          ${({theme}) => theme.border.defaultFrame({d_W: 1, d_R: 1 / 2, c_key: 'var(--opacity)'})};
-          border-top: ${({theme}) => theme.border.borderConfig({ c_key: 'var(--opacity)'})};
-          border-left: ${({theme}) => theme.border.borderConfig({ c_key: 'var(--opacity)'})};
-          border-bottom: 0;
-          border-right: 0;
-          width: 8px;
-          height: 8px;
-          background: var(--color-pop-bg);
+          width: 0;
+          height: 0;
+          border: ${({theme}) => theme.unit}px solid transparent;
+          border-bottom: ${({theme}) => theme.unit}px solid var(--color-pop-bg);
         }
       }
     }
 
     &.arrow-center .MuiPopover-paper {
       &:before {
-       
-       
+        left: 50%;
+        transform: translateX(-50%);
       }
     }
 
     &.arrow-right .MuiPopover-paper {
       &:before {
-       
+        right: ${({theme}) => theme.unit}px;
       }
     }
 
     &.arrow-left .MuiPopover-paper {
       &:before {
-        
+        left: ${({theme}) => theme.unit}px;
       }
     }
   }
