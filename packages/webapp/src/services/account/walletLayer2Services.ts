@@ -1,4 +1,4 @@
-import { Account, AccountStatus } from '@loopring-web/common-resources';
+import { AccountStatus, } from '@loopring-web/common-resources';
 import { Subject } from 'rxjs';
 import { Commands } from './command';
 import { LoopringAPI } from '../../stores/apis/api';
@@ -6,14 +6,12 @@ import { myLog } from '../../utils/log_tools';
 import store from 'stores';
 import { updateAccountStatus } from 'stores/account';
 import * as sdk from 'loopring-sdk'
-import { connectProvides } from '@loopring-web/web3-provider';
-import { ConnectorNames } from 'loopring-sdk';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
 export const walletLayer2Services = {
     //INFO: for update Account and unlock account
-    sendSign: async  () => {
+    sendSign: async () => {
         // const account = store.getState().account;
         // const {exchangeInfo} = store.getState().system;
         subject.next({
@@ -37,7 +35,7 @@ export const walletLayer2Services = {
         //
         // }
     },
-    sendErrorUnlock:() => {
+    sendErrorUnlock: () => {
         subject.next({
             status: Commands.ErrorSign,
             data: undefined,
@@ -51,16 +49,16 @@ export const walletLayer2Services = {
             apiKey: '',
             eddsaKey: '',
             publicKey: '',
-            nonce:undefined,
+            nonce: undefined,
         }))
 
-        if(readyState === AccountStatus.ERROR_NETWORK){
+        if (readyState === AccountStatus.ERROR_NETWORK) {
             subject.next({
                 status: Commands.ErrorNetwork,
                 data: undefined,
             })
-        }else{
-            const {accAddress} =store.getState().account
+        } else {
+            const { accAddress } = store.getState().account
             walletLayer2Services.sendCheckAccount(accAddress);
         }
 
@@ -69,15 +67,17 @@ export const walletLayer2Services = {
     //INFO: for lock account todo clear the private info, user click or provider on wrong network
     sendAccountLock: (accInfo?: sdk.AccountInfo) => {
         const updateInfo = accInfo ? {
-            readyState:AccountStatus.LOCKED,
+            readyState: AccountStatus.LOCKED,
             accountId: accInfo.accountId,
             nonce: accInfo.nonce,
             level: accInfo.tags,
-        }:{readyState:AccountStatus.LOCKED,
+        } : {
+            readyState: AccountStatus.LOCKED,
             apiKey: '',
             eddsaKey: '',
             publicKey: '',
-            nonce: undefined,}
+            nonce: undefined,
+        }
         store.dispatch(updateAccountStatus(updateInfo))
         subject.next({
             status: Commands.LockAccount,
@@ -87,8 +87,8 @@ export const walletLayer2Services = {
     sendActiveAccountDeposit: () => {
 
     },
-    sendAccountSigned: (apiKey?:any,eddsaKey?:any) => {
-        const updateInfo = apiKey && eddsaKey ?{
+    sendAccountSigned: (apiKey?: any, eddsaKey?: any) => {
+        const updateInfo = apiKey && eddsaKey ? {
             apiKey,
             eddsaKey,
             publicKey: {
@@ -96,7 +96,7 @@ export const walletLayer2Services = {
                 y: sdk.toHex(sdk.toBig(eddsaKey.keyPair.publicKeyY)),
             },
             readyState: AccountStatus.ACTIVATED
-        }:{readyState:AccountStatus.ACTIVATED}
+        } : { readyState: AccountStatus.ACTIVATED }
         store.dispatch(updateAccountStatus(updateInfo));
         subject.next({
             status: Commands.AccountUnlocked,
@@ -104,41 +104,66 @@ export const walletLayer2Services = {
         })
     },
     sendNoAccount: () => {
-        store.dispatch(updateAccountStatus({readyState:AccountStatus.NO_ACCOUNT, }))
+        store.dispatch(updateAccountStatus({ readyState: AccountStatus.NO_ACCOUNT, }))
         subject.next({
             status: Commands.NoAccount,
             data: undefined
         })
     },
-    sendNeedUpdateAccount: async(accInfo: sdk.AccountInfo) => {
+    sendNeedUpdateAccount: async (accInfo: sdk.AccountInfo) => {
         myLog('sendNeedUpdateAccount accInfo:', accInfo)
-        store.dispatch(updateAccountStatus({readyState:AccountStatus.DEPOSITING, }))
+        store.dispatch(updateAccountStatus({ readyState: AccountStatus.DEPOSITING, }))
         subject.next({
-            status: Commands.ProcessDeposit,
+            status: Commands.SignAccount,
             data: accInfo
         })
     },
+    sendCheckAcc: async () => {
+        const self = this;
+        if (store) {
+            const account = store.getState().account
+            if (LoopringAPI.exchangeAPI) {
+                const { accInfo } = (await LoopringAPI.exchangeAPI.getAccount({
+                    owner: account.accAddress
+                }))
+
+                if (accInfo === undefined) {
+                    walletLayer2Services.sendNoAccount()
+                } else {
+                    if (account.accountId) {
+                        if (!account.publicKey.x || !account.publicKey.y) {
+                            myLog('-------need update account!')
+                            walletLayer2Services.sendNeedUpdateAccount(accInfo)
+                        } else {
+                            walletLayer2Services.sendAccountLock(accInfo)
+                        }
+                    } else {
+                        myLog('unexpected accInfo:', accInfo)
+                        throw Error('unexpected accinfo:' + accInfo)
+                    }
+                }
+            }
+        }
+
+
+    },
     sendCheckAccount: async (ethAddress: string) => {
         const self = this;
-        myLog('After connect >>,checkAccount: step3 processAccountCheck',ethAddress )
-        store.dispatch(updateAccountStatus({accAddress: ethAddress,readyState:AccountStatus.UN_CONNECT}))
+        myLog('After connect >>,checkAccount: step3 processAccountCheck', ethAddress)
+        store.dispatch(updateAccountStatus({ accAddress: ethAddress, readyState: AccountStatus.UN_CONNECT }))
         subject.next({
             status: Commands.ProcessAccountCheck,
             data: undefined
         })
         if (LoopringAPI.exchangeAPI) {
-            const {accInfo} = (await LoopringAPI.exchangeAPI.getAccount({
+            const { accInfo } = (await LoopringAPI.exchangeAPI.getAccount({
                 owner: ethAddress
             }))
-            myLog('After connect >>,checkAccount: step3',accInfo)
+            myLog('After connect >>,checkAccount: step3', accInfo)
 
             //TODO code is notaccount
             if (accInfo === undefined) {
                 walletLayer2Services.sendNoAccount()
-                // subject.next({
-                //     status: Commands.NoAccount,
-                //     data:undefined
-                // })
             } else {
                 if (accInfo.accountId) {
                     if (!accInfo.publicKey.x || !accInfo.publicKey.y) {
