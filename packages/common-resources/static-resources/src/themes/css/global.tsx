@@ -49,7 +49,7 @@ export const colorBase = ({theme}: any) => css`
     --color-global-bg: ${theme.colorBase.globalBg};
     /********************Case for shadow*******************/
     --shadow: ${theme.colorBase.shadow};
-    --opacity: ${hexToRGB(theme.colorBase.white, '0')};
+    --opacity: ${theme.colorBase.opacity};
     /********************Case for special*******************/
     --vip-bg: ${hexToRGB(theme.colorBase.warning, '0.2')};
     --vip-text: ${theme.colorBase.warning};

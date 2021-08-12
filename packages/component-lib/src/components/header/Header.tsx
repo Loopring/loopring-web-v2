@@ -26,7 +26,8 @@ const ToolBarStyled = styled(Toolbar)`
 `
 const StyledDiv = styled.div`
   &.item-scrolled .MuiAppBar-root.MuiAppBar-positionFixed {
-    background: var(--color-global-bg);
+    //background: var(--color-global-bg);
+    box-shadow: var(--shadow);
   }
 `
 const HeaderStyled = styled(AppBar)`

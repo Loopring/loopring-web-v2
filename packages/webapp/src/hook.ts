@@ -48,6 +48,7 @@ export function useInit() {
                     if( ChainId[chainId] === undefined) {
                         chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
                     }
+
                     updateSystem({chainId:chainId as any})
                     return
                 }
@@ -79,7 +80,7 @@ export function useInit() {
             default:
                 break;
         }
-    }, [systemStatus, systemStatusUnset]);
+    }, [systemStatus]);
     React.useEffect(() => {
         switch (tokenMapStatus) {
             case "ERROR":
