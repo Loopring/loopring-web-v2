@@ -17,9 +17,9 @@ const WrapperStyled = styled(Box)`
     flex: 1;
 ` as typeof Box
 
-const AmmListWrapperStyled = styled(Box)`
-    display: flex;
-`
+// const AmmListWrapperStyled = styled(Box)`
+//     display: flex;
+// `
 
 type ClickHandler = {
     handleClick: (pair: string) => void
@@ -68,7 +68,7 @@ export const MiningPage = withTranslation('common')(<T extends AmmData<C extends
     }
     const jointAmmViewMap = [...ammActivityViewMap, ...ammActivityPastViewMap]
 
-    return <WrapperStyled>
+    return  <WrapperStyled>
         {/* <Tabs value={tabIndex}
                 onChange={handleChange}
                 aria-label="tabs switch">
@@ -82,8 +82,8 @@ export const MiningPage = withTranslation('common')(<T extends AmmData<C extends
                     marginTop={2}
                     marginBottom={3}
                 >{t('labelMiningPageTitle')}</Typography>
-            <AmmListWrapperStyled>
+            <Grid container spacing={5}>
                 <AmmList ammActivityViewMap={jointAmmViewMap}/>
-            </AmmListWrapperStyled>
+            </Grid>
     </WrapperStyled>
 })

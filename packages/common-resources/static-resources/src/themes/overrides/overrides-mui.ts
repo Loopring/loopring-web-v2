@@ -51,7 +51,28 @@ export const MuiCard = ({colorBase}: any) => {
     return {
         styleOverrides: {
             root: {
-                backgroundColor: colorBase.box
+                backgroundColor: colorBase.box,
+                padding: pxToRem(24),
+            },
+        }
+    }
+}
+
+export const MuiCardContent = () => {
+    return {
+        styleOverrides: {
+            root: {
+                padding: pxToRem(8),
+            }
+        }
+    }
+}
+
+export const MuiCardActions = () => {
+    return {
+        styleOverrides: {
+            root: {
+                padding: 0,
             }
         }
     }
@@ -72,7 +93,6 @@ export const MuiLink = ({colorBase}: any) => {
         }
     }
 }
-
 
 export const MuiTextField = (): { styleOverrides: ComponentsOverrides['MuiTextField'] } => {
     return {

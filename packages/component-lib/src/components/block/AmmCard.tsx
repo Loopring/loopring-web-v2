@@ -66,7 +66,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography variant={'h3'} component={'span'} color={'textPrimary'} fontFamily={'Roboto'}>
                         {pair}
                     </Typography>
-                    <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-start'} alignItems={'center'}>
+                    <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-start'} alignItems={'center'} marginRight={-1}>
                         <Box className={'logo-icon'} height={'var(--chart-title-coin-size)'} position={'relative'}
                              zIndex={20}
                              width={'var(--chart-title-coin-size)'} alignItems={'center'} justifyContent={'center'}>
@@ -119,15 +119,10 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                         {/*{isNew ? <NewTagIcon/> : undefined}*/}
                     </Box>
                 </BoxStyled>
-                <Typography variant={'body2'} component={'span'} color={'textSecondary'}>
-                                {t('labelLiquidity') + ' ' +
-                                amountDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(amountDollar as number)
-                                    : PriceTag.Yuan + getThousandFormattedNumbers(amountYuan as number)}
-                            </Typography>
-                <Typography display={'flex'} flexDirection={'column'} component={'span'} justifyContent={'center'} alignItems={'center'}>
+                <Typography display={'flex'} flexDirection={'column'} component={'span'} justifyContent={'center'} alignItems={'center'} marginTop={7}>
                     <Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> {APY}%
                     </Typography>
-                    <Typography component={'span'} color={'textPrimary'} variant={'h6'}
+                    <Typography component={'span'} color={'textPrimary'} variant={'h6'} marginTop={1}
                                 style={{textTransform: 'uppercase'}}>{t('labelAPY')}</Typography>
                 </Typography>
 
