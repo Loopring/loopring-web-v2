@@ -1,6 +1,6 @@
 import { Avatar, Box, Card, CardActions, CardContent, Divider } from '@material-ui/core';
 import { Typography } from '@material-ui/core/';
-import { boxLiner, Button } from '../';
+import {  Button } from '../';
 import React from 'react';
 import moment from 'moment';
 import { WithTranslation, withTranslation } from 'react-i18next';
@@ -21,16 +21,15 @@ import styled from '@emotion/styled';
 
 const BoxStyled = styled(Box)`
 ` as typeof Box
-const BoxBg = styled(Box)`
-  ${({theme}) => boxLiner({theme})}
-  ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2})};
-` as typeof Box
+// const BoxBg = styled(Box)`
+//   ${({theme}) => boxLiner({theme})}
+//   ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2})};
+// ` as typeof Box
 
 const DetailWrapperStyled = styled(Box)`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: Roboto;
     margin-bottom: ${({theme}) => theme.unit}px;
 `
 
@@ -46,12 +45,12 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             amountYuan,
             // isNew,
             APY,
-            activity: {duration, totalRewards, myRewards, rewardToken, isPass},
+            activity: {duration, myRewards, rewardToken, isPass},
             handleClick,
             ...rest
         }: AmmCardProps<T> & WithTranslation, ref: React.ForwardedRef<any>) => {
             console.log(rest)
-            const { rewardValue, rewardValue2, totalLPToken, totalA, totalB } = rest
+            const { rewardValue, rewardValue2 } = rest
         // const coinAIconHasLoaded = useImage(coinAInfo?.icon ? coinAInfo?.icon : '').hasLoaded;
         // const coinBIconHasLoaded = useImage(coinBInfo?.icon ? coinBInfo?.icon : '').hasLoaded;
         const {coinJson} = useSettings();
@@ -148,7 +147,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
 
                 <DetailWrapperStyled>
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
-                        {t('labelMiningLiqudity')}
+                        {t('labelMiningLiquidity')}
                     </Typography>
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'}>
                         {t('labelLiquidity') + ' ' +
@@ -220,7 +219,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                 </BoxBg> */}
             </CardContent>
             <CardActions>
-                <Button fullWidth variant={'contained'} size={'medium'} disabled={isPass ? true : false}
+                <Button fullWidth variant={'contained'} size={'medium'} disabled={!!isPass}
                         color={'primary'}
                         onClick={handleClick}>{t(isPass ? 'labelEndLiquidityBtn' : 'labelAddLiquidityBtn')}</Button>
             </CardActions>
