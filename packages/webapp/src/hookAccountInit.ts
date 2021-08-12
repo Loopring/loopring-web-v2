@@ -5,6 +5,7 @@ import { useWalletLayer2 } from './stores/walletLayer2';
 import { useAccount } from './stores/account';
 import { useUserRewards } from './stores/userRewards';
 import { useConnect } from './hookConnect';
+import { myLog } from 'utils/log_tools';
 
 export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
     const {getUserRewards}  = useUserRewards()
@@ -34,6 +35,7 @@ export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
                 case 'DEPOSITING':
                 case 'LOCKED':
                     resetLayer2();
+                    // myLog('walletLayer1Status:', walletLayer1Status, ' account.readyState:', account.readyState)
                     if (walletLayer1Status !== SagaStatus.PENDING) {
                         updateWalletLayer1();
                     }
@@ -52,7 +54,7 @@ export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
             getUserRewards();
         }
 
-    }, [accountStatus, state]);
+    }, [accountStatus, state, account.readyState]);
     React.useEffect(() => {
         switch (walletLayer1Status) {
             case "ERROR":
