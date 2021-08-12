@@ -194,4 +194,6 @@ export default {
     describeTitleOnErrorNetwork:'You current on a network not support by Loopring. Please change network via {{connectName}}.',
     describeTitleConnectToWallet:'Connect wallet to start',
     describeTitleLocked:'Unlock your account to check your asset.',
+    labelLiqudityPageTitle: 'AMM Pools',
+    labelFilter: 'Search',
 }
