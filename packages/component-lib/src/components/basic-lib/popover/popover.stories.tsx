@@ -25,7 +25,7 @@ const Template: Story<any> = withTranslation()((args: any) => {
                     <Popover {...args} />
                     <Grid container>
                         <Grid item xs={3}>
-                            <Button {...bindHover(rightState)}> click open </Button>
+                            <Button {...bindHover(rightState)}> Hover Open Right </Button>
                             <PopoverPure
                                 className={'arrow-right'}
                                 {...bindPopper(rightState)}
@@ -37,7 +37,7 @@ const Template: Story<any> = withTranslation()((args: any) => {
                                     vertical: 'top',
                                     horizontal: 'right',
                                 }}>
-                                <Box height={100} width={200}>Content:XXXXXXX</Box>
+                                <Box height={100} width={120}>Content:XXXXXXX</Box>
                             </PopoverPure>
 
                         </Grid>
@@ -54,7 +54,7 @@ const Template: Story<any> = withTranslation()((args: any) => {
                                     vertical: 'top',
                                     horizontal: 'left',
                                 }}>
-                                <Box height={100} width={200}>Content:XXXXXXX</Box>
+                                <Box height={100} width={120}>Content:XXXXXXX</Box>
                             </PopoverPure>
 
                         </Grid>
