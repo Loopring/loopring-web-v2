@@ -2,7 +2,7 @@ import { combineReducers, configureStore, getDefaultMiddleware } from '@reduxjs/
 
 import { useDispatch } from 'react-redux'
 import { load, save } from 'redux-localstorage-simple'
-
+import { persistReducer } from 'redux-persist'
 import createSagaMiddleware from 'redux-saga'
 import * as imgConfig from '@loopring-web/common-resources/assets/images/coin/loopring.json'
 import { reduxBatch } from '@manaflair/redux-batch'
@@ -19,11 +19,24 @@ import { walletLayer2Slice } from './walletLayer2';
 import { socketSlice } from './socket';
 import { userRewardsMapSlice } from './userRewards';
 import { localStoreReducer } from './localStore';
+// import { DEFAULT_TIMEOUT } from 'loopring-sdk';
 
 const sagaMiddleware = createSagaMiddleware()
 
+const DEFAULT_TIMEOUT = 1000*60*60;
+//
+const persistConfig = {
+    key: 'account',
+    storage:sessionStorage,
+    timeout:DEFAULT_TIMEOUT,
+    whitelist: ['account'] // only navigation will be persisted
+};
+const PERSISTED_KEYS: string[] = ['settings', 'localStore']
+
+const persistedReducer = persistReducer(persistConfig, accountSlice.reducer)
+
 const reducer = combineReducers({
-    account: accountSlice.reducer,
+    account: persistedReducer,
     socket: socketSlice.reducer,
     settings: settingsSlice.reducer,
     system: systemSlice.reducer,
@@ -36,17 +49,6 @@ const reducer = combineReducers({
     tickerMap: tickerMapSlice.reducer,
     localStore: localStoreReducer,
 })
-// const DEFAULT_TIMEOUT = 1000*60*60;
-//
-// const persistConfig = {
-//     key: 'account',
-//     storage: storageSession,
-//     timeout:DEFAULT_TIMEOUT,
-//     whitelist: ['account'] // only navigation will be persisted
-// };
-const PERSISTED_KEYS: string[] = ['settings', 'localStore', 'account']
-
-// const persistedReducer = persistReducer(persistConfig, reducer)
 
 const store = configureStore({
     reducer,
@@ -55,7 +57,7 @@ const store = configureStore({
         thunk: false,
         serializableCheck: false,
     }), save({states: PERSISTED_KEYS}), sagaMiddleware],
-    // middleware: [...getDefaultMiddleware({ thunk: true }), ],
+    //middleware: [...getDefaultMiddleware({ thunk: true }), ],
     devTools: process.env.NODE_ENV !== 'production',
     enhancers: [reduxBatch],
     preloadedState: load({states: PERSISTED_KEYS}) as any
