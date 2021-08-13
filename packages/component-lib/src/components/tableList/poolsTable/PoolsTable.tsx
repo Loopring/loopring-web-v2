@@ -20,6 +20,7 @@ import {  TablePaddingX } from '../../styled';
 import { useDeepCompareEffect } from 'react-use';
 import { useHistory } from 'react-router-dom';
 import { FormatterProps } from 'react-data-grid';
+// import store from '@loopring-web/webapp/src/stores';
 import { useSettings } from '../../../stores';
 
 
@@ -76,11 +77,11 @@ const TableStyled = styled(Box)`
 
 
 export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R }) => {
+    const {coinJson} = useSettings();
     if(!row || !row.coinAInfo || !row.coinBInfo) {
         return <BoxStyled />
     }
     const {coinAInfo, coinBInfo, isNew, isActivity} = row;
-    const {coinJson} = useSettings();
     const coinAIcon: any = coinJson[ coinAInfo.simpleName ];
     const coinBIcon: any = coinJson[ coinBInfo.simpleName ];
     return <BoxStyled display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
