@@ -10,6 +10,10 @@ export const boxLiner = ({theme}: { theme:Theme }) => css`
   background: var(--color-box-linear);
   .coinInput-wrap, .btnInput-wrap, .MuiOutlinedInput-root {
     background: var(--field-opacity);
+    border-color: var(--opacity);
+    :hover{
+      border-color: var(--color-border-hover);
+    }
   }
 `
 export const TypographyStrong = styled(Typography)`
