@@ -46,6 +46,7 @@ export const colorBase = ({theme}: any) => css`
     --color-box-linear: ${theme.colorBase.boxLinear};
     --color-global-bg: ${theme.colorBase.globalBg};
     /********************Case for shadow*******************/
+    --color-mask:  ${theme.colorBase.mask};
     --shadow: ${theme.colorBase.shadow};
     --opacity: ${theme.colorBase.opacity};
     /********************Case for special*******************/
@@ -57,6 +58,7 @@ export const colorBase = ({theme}: any) => css`
     --provider-hover: ${hexToRGB(theme.colorBase.white, '0.03')};
     --field-opacity: ${hexToRGB(theme.colorBase.white, '0.1')};
     --auto-refresh-color: ${theme.colorBase.primary};
+    
   }
 `;
 export const scrollbarDefault = ({theme}: any) => css`
@@ -102,6 +104,7 @@ export const globalCss = ({theme}: any) => css`
   ${scrollbarDefault({theme})};
   ${reset}
   html, body {
+    position: relative;
     @font-face {
       font-family: 'Inter-Medium';
       src: url(${InterMedium}) format('truetype');

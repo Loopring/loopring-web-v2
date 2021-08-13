@@ -116,7 +116,7 @@ export const MuiModal = ({colorBase}: any) => {
                 color: colorBase.textPrimary,
                 ' .MuiBackdrop-root': {
                     zIndex: -1,
-                    backgroundColor: colorBase.modalMask,
+                    backgroundColor: colorBase.mask,
                 },
             }
         }
