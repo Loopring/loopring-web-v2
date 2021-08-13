@@ -83,9 +83,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     const [ammWithdrawBtnI18nKey, setAmmWithdrawBtnI18nKey] = React.useState<string | undefined>(undefined);
 
     const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
-        myLog('initAmmData:', account.accAddress, walletMap)
-
-        myLog('pair:', pair)
+        myLog('initAmmData:', account.accAddress, walletMap, pair)
 
         let _ammCalcData = ammPairInit(
             {
