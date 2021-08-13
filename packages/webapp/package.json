@@ -34,7 +34,6 @@
     "react-device-detect": "^1.17.0",
     "react-grid-layout": "^1.2.0",
     "react-router-dom": "^5.2.0",
-    "redux-localstorage-simple": "^2.4.0",
     "redux-logger": "^3.0.6",
     "redux-saga": "^1.1.3",
     "regenerator-runtime": "^0.13.7",
