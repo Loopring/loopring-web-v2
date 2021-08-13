@@ -9,16 +9,15 @@ export function usePairMatch<C extends { [key: string]: any }>(path: string) {
 
     const [pair, setPair] = useState<{ coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined }>({ coinAInfo: undefined, coinBInfo: undefined})
     const [market, setMarket] = useState('')
+    
     useEffect(() => {
-        if (!match || !coinMap) {
+
+        if (!coinMap) {
             return
         }
 
-        const market = match?.params.market ?? undefined
+        let market = match?.params?.market ?? 'LRC-ETH'
 
-        if (!market) {
-            return
-        }
         const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i)
 
         const coinAInfo = coinMap[coinA]
@@ -29,7 +28,7 @@ export function usePairMatch<C extends { [key: string]: any }>(path: string) {
     }, [])
 
     return {
-        market: match?.params.market,
+        market,
         pair,
         setPair,
     }
