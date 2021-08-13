@@ -78,13 +78,13 @@ const TradePanel = withTranslation('common')((rest:WithTranslation<'common'>) =>
             <div className="title">{t('labelTradePageTitle')}</div>
             <div className="tableWrapper extraTradeClass">
                 <TradeTable {...{
-                  rawData: userTrades,
-                  pagination: {
-                    pageSize: pageSize
-                  },
-                  showFilter: true,
-                  showLoading: showLoading,
-                  ...rest}}/>
+                    rawData: userTrades,
+                    // pagination: {
+                    //     pageSize: pageSize
+                    // },
+                    showFilter: true,
+                    showLoading: showLoading,
+                    ...rest}}/>
             </div>
         </StylePaper>
     )

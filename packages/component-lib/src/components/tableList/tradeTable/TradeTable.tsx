@@ -69,7 +69,8 @@ export type TradeTableProps = {
     pagination?: {
         pageSize: number
     }
-    showFilter?: boolean
+    showFilter?: boolean;
+    currentHeight?: number;
 }
 
 // enum TableType {
@@ -83,6 +84,7 @@ const TableStyled = styled(Box)`
     flex: 1;
 
     .rdg{
+        height: ${(props: any) => props.currentHeight}px;
         --template-columns: 320px auto 200px 150px !important;
         .rdg-cell.action{
             display: flex;
@@ -94,7 +96,7 @@ const TableStyled = styled(Box)`
         }
     }
     ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
-` as typeof Box
+` as any
 
 const StyledSideCell: any = styled(Box)`
 `
@@ -176,7 +178,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
 ]
 
 export const TradeTable = withTranslation('tables')((props: WithTranslation & TradeTableProps) => {
-    const {t, pagination, showFilter, rawData} = props
+    const {t, pagination, showFilter, rawData, currentHeight} = props
     const [filterType, setFilterType] = React.useState(FilterTradeTypes.allTypes)
     const [filterDate, setFilterDate] = React.useState<DateRange<string | Date>>([null, null])
     const [filterPair, setFilterPair] = React.useState('all')
@@ -258,7 +260,7 @@ export const TradeTable = withTranslation('tables')((props: WithTranslation & Tr
         })
     }
 
-    return <TableStyled>
+    return <TableStyled currentHeight={currentHeight}>
         {showFilter && (
             <TableFilterStyled>
                 <Filter {...{
