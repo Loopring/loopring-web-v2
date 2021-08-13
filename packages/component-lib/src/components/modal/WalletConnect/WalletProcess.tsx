@@ -21,7 +21,7 @@ export const WalletConnectProcess = ({t,...rest}:WithTranslation)=>{
         </>
 
     },[])
-    return <ProcessBasic providerName={ConnectProviders.WalletConnect} describe={describe} label={'labelWalletConnectProcessing'} {...{...rest,t}}/>
+    return <ProcessBasic providerName={ConnectProviders.WalletConnect} describe={describe} label={t('labelWalletConnectProcessing')} {...{...rest,t}}/>
 }
 
 export const MetaMaskProcess =  ({t,...rest}:WithTranslation)=>{
@@ -40,5 +40,5 @@ export const MetaMaskProcess =  ({t,...rest}:WithTranslation)=>{
         </>
 
     },[])
-    return <ProcessBasic  providerName={ConnectProviders.MetaMask} describe={describe} label={'labelMetaMaskProcessing'} {...{...rest,t}}/>
+    return <ProcessBasic  providerName={ConnectProviders.MetaMask} describe={describe} label={t('labelMetaMaskProcessing')} {...{...rest,t}}/>
 }
