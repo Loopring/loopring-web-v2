@@ -27,7 +27,7 @@ const Header = withTranslation('common')(({t, ...rest}: any) => {
         </HideOnScroll>
         <Toolbar/>
         <BottomRule isShow={!confirmation?.confirmed} 
-            content={t('agreeLoopringTxt')} btnTxt={t('labelAgree')} 
+            content={t('agreeLoopringTxt')} btnTxt={t('labelCookiesAgree')} 
             clickToConfirm={() => confirmWrapper() } />
 
     </>)
