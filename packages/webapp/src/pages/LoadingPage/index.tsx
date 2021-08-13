@@ -4,9 +4,20 @@ import styled from '@emotion/styled';
 // import { ErrorObject } from '@loopring-web/common-resources';
 // import { getContactInfo } from '../../utils/dt_tools';
 import { boxLiner } from '@loopring-web/component-lib';
-
+// ${({theme}) => boxLiner({theme})}
 const StyleBox = styled(Box)`
+  //background: var(--color-mask);
   ${({theme}) => boxLiner({theme})}
+
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 0;
+  z-index: 500;
+  height: 100%;
+  width: 100%;
   svg path,
   svg rect{
     fill: var(--color-primary)

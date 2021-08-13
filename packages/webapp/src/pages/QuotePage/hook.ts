@@ -199,7 +199,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
             }
             
             const _recommendations = _recommendationsFloat.reduce((prev, item) => {
-                if (coinMap) {
+                if (coinMap && item) {
                     const {coinA, coinB} = item.pair;
                     const _item: MarketBlockProps<C> = {
                         tradeFloat: item as any,

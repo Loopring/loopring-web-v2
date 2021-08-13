@@ -69,6 +69,11 @@ export function useInit() {
     }, [])
     React.useEffect(() => {
         switch (systemStatus) {
+            case "PENDING":
+                if(state!==SagaStatus.PENDING){
+                    setState(SagaStatus.PENDING)
+                }
+                break
             case "ERROR":
                 systemStatusUnset();
                 setState('ERROR')
