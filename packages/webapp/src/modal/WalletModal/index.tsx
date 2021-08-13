@@ -56,7 +56,9 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
         // statusAccountUnset();
         if (connectProvides.usedProvide) {
             const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
-            updateSystem({chainId: (chainId && chainId === ChainId.GOERLI ? chainId as ChainId : ChainId.MAINNET)})
+            if(chainId!==_chainId){
+                updateSystem({chainId: (chainId && chainId === ChainId.GOERLI ? chainId as ChainId : ChainId.MAINNET)})
+            }
             return
         }
     }, []);
@@ -66,7 +68,9 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
         // statusAccountUnset();
         if (connectProvides.usedProvide) {
             const chainId = Number(await connectProvides.usedWeb3?.eth.getChainId());
-            updateSystem({chainId: (chainId && chainId === ChainId.GOERLI ? chainId as ChainId : ChainId.MAINNET)})
+            if(chainId!==_chainId){
+                updateSystem({chainId: (chainId && chainId === ChainId.GOERLI ? chainId as ChainId : ChainId.MAINNET)})
+            }
             return
         }
     }, []);
@@ -149,7 +153,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
                 copyToClipBoard(qrCodeUrl);
                 setCopyToastOpen(true);
             }} url={qrCodeUrl} {...{t, ...rest}}/>, onBack:()=>{
-                    setShowConnect({isShow: false,step:WalletConnectStep.Provider});
+                    setShowConnect({isShow: true,step:WalletConnectStep.Provider});
                 }},
             [ WalletConnectStep.SuccessConnect ]: {view: <SuccessConnect onClose={(e) => {
                 setShouldShow(false);
@@ -157,7 +161,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
             }}
                                                                   providerName={account.connectName} {...{t, ...rest}}/>,},
             [ WalletConnectStep.FailedConnect ]: {view: <FailedConnect{...{t, ...rest}} onRetry={resetAccount}/>,onBack:()=>{
-                    setShowConnect({isShow: false,step:WalletConnectStep.Provider});
+                    setShowConnect({isShow: true,step:WalletConnectStep.Provider});
             }},
         })
     }, [qrCodeUrl, account, t, rest, onClose])

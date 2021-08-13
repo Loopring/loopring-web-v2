@@ -51,6 +51,7 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
     }, [resetAccount]);
 
     const handleError = React.useCallback(async ({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
+        debugger
         updateSystem({chainId: account._chainId ? account._chainId : 1})
         resetAccount();
         statusAccountUnset();
