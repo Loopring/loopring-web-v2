@@ -539,7 +539,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                             // @ts-ignore
                             setTradeFloat(_tradeFloat);
                             setTradeArray(_tradeArray as RawDataTradeItem[])
-                            // setPair(_pair)
                             setTradeData({
                                 sell: {
                                     belong: _tradeCalcData.sellCoinInfoMap ? _tradeCalcData.sellCoinInfoMap[_tradeCalcData.coinSell]?.simpleName : undefined,
