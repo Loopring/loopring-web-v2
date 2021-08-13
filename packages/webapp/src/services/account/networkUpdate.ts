@@ -13,7 +13,7 @@ export const networkUpdate = ({chainId}: any): boolean => {
         store.dispatch(updateAccountStatus({_chainId:chainId}));
         store.dispatch(updateSystem({chainId}));
         cleanLayer2()
-        window.location.reload();
+        // window.location.reload();
         return true;
     }else{
         store.dispatch(updateAccountStatus({wrongChain: false, _chainId:chainId}));
