@@ -25,7 +25,6 @@ export const headerSortName = css`
 `;
 const StyledArrowSort = styled(Box)<BoxProps & { sortdirection: 'ASC' | 'DESC' | undefined }>`
   margin-left: ${({theme}) => `${theme.unit / 2}px`};
-
   .up {
     width: 0;
     height: 0;
@@ -33,7 +32,7 @@ const StyledArrowSort = styled(Box)<BoxProps & { sortdirection: 'ASC' | 'DESC' |
     border-bottom-color: ${({
                               theme,
                               sortdirection
-                            }) => sortdirection === 'ASC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.primary}`};
+                            }) => sortdirection === 'ASC' ? `var(--color-text-primary)` : `var(--color-text-secondary)`};
   }
 
   .down {
@@ -43,7 +42,7 @@ const StyledArrowSort = styled(Box)<BoxProps & { sortdirection: 'ASC' | 'DESC' |
     border-top-color: ${({
                            theme,
                            sortdirection
-                         }) => sortdirection === 'DESC' ? `${theme.colorBase.textPrimary}` : `${theme.colorBase.primary}`};
+                         }) => sortdirection === 'DESC' ? `var(--color-text-primary)` : `var(--color-text-secondary)`};
     margin-top: ${({theme}) => `${theme.unit / 4}px`};
   }
 ` as (props: BoxProps & { sortdirection: 'ASC' | 'DESC' | undefined }) => JSX.Element;
