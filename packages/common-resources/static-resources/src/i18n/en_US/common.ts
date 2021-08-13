@@ -54,7 +54,7 @@ export default {
     label1W: 'W1',
     label1H: 'H1',
     label1D: 'D1',
-    labelCopyAddress: 'Copy address',
+    labelCopyAddress: 'Copy',
     labelDisconnect: 'Disconnect',
     labelLockLayer2: 'Lock',
     labelUnLockLayer2: 'Unlock',
@@ -203,4 +203,6 @@ export default {
     labelMiningActivityReward: 'Activity Reward',
     labelMiningMyShare: 'My Share',
     labelMiningMyReward: 'My Reward',
+    labelCookiesAgree: 'Agree',
+    agreeLoopringTxt: 'Allow Loopring to use Cookies.',
 }

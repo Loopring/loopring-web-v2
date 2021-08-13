@@ -1,19 +1,18 @@
-import styled from '@emotion/styled';
-import { Checkbox } from '@material-ui/core';
-import { useCallback } from 'react';
+import styled from '@emotion/styled'
+import { Button, } from '@material-ui/core'
 
 export interface PopperProps {
   isShow: boolean
   title?: string
   content?: string
-  checkTxt?: string
+  btnTxt?: string
   clickToConfirm? : () => void
 }
 
 const StyledDiv = styled.div<PopperProps>`
-height: 100px;
+height: 80px;
 width: 100%;
-background: #000000;
+background: #393F64;
 position: fixed;
 bottom: 0;
 left: 0;
@@ -33,7 +32,7 @@ display: ${(props: PopperProps) => props.isShow ? 'block' : 'none'};
 }
 `
 
-export const BottomRule = ({ isShow, title, content, checkTxt, clickToConfirm, }: PopperProps) => {
+export const BottomRule = ({ isShow, title, content, btnTxt, clickToConfirm, }: PopperProps) => {
 
   if (!title) {
     title = ''
@@ -43,21 +42,17 @@ export const BottomRule = ({ isShow, title, content, checkTxt, clickToConfirm, }
     content = ''
   }
 
-  if (!checkTxt) {
-    checkTxt = 'Click to Confirm'
+  if (!btnTxt) {
+    btnTxt = 'Agree'
   }
-
-  const onChange = useCallback((event: any) => {
-    if (clickToConfirm && event?.target?.checked) {
-      clickToConfirm()
-    }
-  }, [clickToConfirm])
   
   return (
     <StyledDiv isShow={isShow}>
-      <div className={'title'}>{title}</div>
-      <div className={'content'}>{content}</div>
-      <Checkbox onChange={onChange}/>{checkTxt}
+      { title && <div className={'title'}>{title}</div> }
+      { content && <div className={'content'}>{content}</div> }
+      <Button onClick={() => { if (clickToConfirm) {
+        clickToConfirm()
+      }}} > {btnTxt} </Button>
     </StyledDiv>
   )
 

@@ -132,13 +132,14 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
                 copyToClipBoard(qrCodeUrl);
                 setCopyToastOpen(true);
             }} url={qrCodeUrl} {...{t, ...rest}}/>,
-            [ WalletConnectStep.SuccessConnect ]: <SuccessConnect  onClose={(e) => {
+            [ WalletConnectStep.SuccessConnect ]: <SuccessConnect onClose={(e) => {
                 setShouldShow(false);
-                onClose(e);}}
-                providerName={account.connectName} {...{t, ...rest}}/>,
+                onClose(e);
+            }}
+                                                                  providerName={account.connectName} {...{t, ...rest}}/>,
             [ WalletConnectStep.FailedConnect ]: <FailedConnect{...{t, ...rest}} onRetry={resetAccount}/>,
         })
-    }, [qrCodeUrl, account])
+    }, [qrCodeUrl, account, t, rest, onClose])
     return <>
         <ModalWalletConnect open={isShowConnect.isShow} onClose={(e) => {
             setShouldShow(false);

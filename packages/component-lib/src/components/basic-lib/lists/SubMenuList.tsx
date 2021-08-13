@@ -34,8 +34,14 @@ export const SubMenuItem = styled<any>(ListItem)`
     //}
   }
 
+  &:hover{
+    background-color: var(--color-primary);
+  }
   &.Mui-selected, &.Mui-selected.Mui-focusVisible {
-    background-color: var(--color-box-hover);
+    background-color: var(--color-primary);
+    &:hover{
+      background-color: var(--color-primary);
+    }
     //border-color:var(--primary);
 
   }

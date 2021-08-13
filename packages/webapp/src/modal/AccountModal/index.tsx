@@ -58,21 +58,23 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     const isNewAccount = true
 
-    const { depositProps } = useDeposit(isNewAccount)
+    const {depositProps} = useDeposit(isNewAccount)
 
-    const { modals: { isShowAccount }, setShowConnect, setShowAccount, } = useOpenModals()
+    const {modals: {isShowAccount}, setShowConnect, setShowAccount,} = useOpenModals()
 
     const [openQRCode, setOpenQRCode] = useState(false)
     const addressShort = getShortAddr(account.accAddress)
-    
+
     const {coinMap} = useTokenMap()
-    
+
     const [copyToastOpen, setCopyToastOpen] = useState(false);
+
     const onSwitch = useCallback(() => {
         setShowAccount({isShow: false})
         setShouldShow(true);
         setShowConnect({isShow: shouldShow ?? false})
     }, [setShowConnect, setShowAccount, shouldShow])
+    
     const onCopy = React.useCallback(() => {
         copyToClipBoard(account.accAddress);
         setCopyToastOpen(true)
@@ -82,7 +84,7 @@ export const ModalAccountInfo = withTranslation('common')(({
     }, [])
     const onDisconnect = React.useCallback(async () => {
         walletServices.sendDisconnect('', 'customer click disconnect');
-        setShowAccount({ isShow: false })
+        setShowAccount({isShow: false})
     }, [resetAccount, setShowAccount])
 
     const goDeposit = React.useCallback(() => {
@@ -91,7 +93,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     }, [setShowAccount])
 
-    const goUpdateAccount = React.useCallback(async() => {
+    const goUpdateAccount = React.useCallback(async () => {
 
         if (!account.accAddress) {
             myLog('account.accAddress is nil')
@@ -126,15 +128,15 @@ export const ModalAccountInfo = withTranslation('common')(({
             setShouldShow(true);
             unlockAccount();
         }}>{t('labelUnLockLayer2')} </Button>
-    }, [updateAccount]);
+    }, [updateAccount, t]);
     const lockBtn = React.useMemo(() => {
         return <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {
             lockAccount();
         }}>{t('labelLockLayer2')} </Button>
-    }, [lockAccount]);
-    
+    }, [lockAccount, t]);
+
     const title = t("labelCreateLayer2Title")
-    
+
     const accountList = React.useMemo(() => {
         return Object.values({
             [ AccountStep.NoAccount ]: <NoAccount {...{
@@ -153,10 +155,13 @@ export const ModalAccountInfo = withTranslation('common')(({
             }} />,
             [ AccountStep.Depositing ]: <Depositing label={title}
                                                     onClose={onClose}
-                                                    etherscanLink={etherscanUrl + account.accAddress} {...{...rest, t}} />,
+                                                    etherscanLink={etherscanUrl + account.accAddress} {...{
+                ...rest,
+                t
+            }} />,
             [ AccountStep.FailedDeposit ]: <FailedDeposit label={title}
                                                           etherscanLink={etherscanUrl + account.accAddress}
-                                                          onRetry={ () => goDeposit() } {...{...rest, t}} />,
+                                                          onRetry={() => goDeposit()} {...{...rest, t}} />,
             [ AccountStep.SignAccount ]: <ApproveAccount {...{
                 ...account,
                 etherscanUrl,
@@ -181,19 +186,19 @@ export const ModalAccountInfo = withTranslation('common')(({
                 mainBtn: account.readyState === 'ACTIVATED' ? lockBtn : unlockBtn
             }} />,
             [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess label={title}
-                                                    providerName={account.connectName} {...{
+                                                                    providerName={account.connectName} {...{
                 ...rest,
                 t
             }} />,
             [ AccountStep.DepositApproveProcess ]: <DepositApproveProcess label={title}
-                                                        etherscanLink={etherscanUrl + account.accAddress}
-                                                        providerName={account.connectName} {...{
+                                                                          etherscanLink={etherscanUrl + account.accAddress}
+                                                                          providerName={account.connectName} {...{
                 ...rest,
                 t
             }} />,
             [ AccountStep.DepositingProcess ]: <DepositingProcess label={title}
-                                                        etherscanLink={etherscanUrl + account.accAddress}
-                                                        providerName={account.connectName} {...{
+                                                                  etherscanLink={etherscanUrl + account.accAddress}
+                                                                  providerName={account.connectName} {...{
                 ...rest,
                 t
             }} />,
@@ -204,13 +209,15 @@ export const ModalAccountInfo = withTranslation('common')(({
             [ AccountStep.ActiveAccountFailed ]: <FailedUnlock label={title} onRetry={() => {
                 goUpdateAccount()
             }} {...{...rest, t}} />,
-            [ AccountStep.FailedTokenAccess ]: <FailedTokenAccess label={title} onRetry={() => { goDeposit() }} {...{
+            [ AccountStep.FailedTokenAccess ]: <FailedTokenAccess label={title} onRetry={() => {
+                goDeposit()
+            }} {...{
                 t, ...rest,
                 coinInfo: coinMap ? coinMap[ 'USTD' ] : undefined
             }} />,
 
         })
-    }, [addressShort, account, depositProps, etherscanUrl, onCopy, onSwitch, onDisconnect, onViewQRCode])
+    }, [addressShort, account, depositProps, etherscanUrl, onCopy, onSwitch, onDisconnect, onViewQRCode, t, rest])
 
     return <>
         <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen}
