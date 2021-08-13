@@ -108,7 +108,6 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const getCurrentHeight = React.useCallback(() => {
       const height = window.innerHeight
       const tableHeight = height - 64 - 117 - 56 - 120 - 20
-      console.log(tableHeight)
       setTableHeight(tableHeight)
     }, [])
 
