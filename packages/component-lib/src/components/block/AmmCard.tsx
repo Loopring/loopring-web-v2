@@ -49,8 +49,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             handleClick,
             ...rest
         }: AmmCardProps<T> & WithTranslation, ref: React.ForwardedRef<any>) => {
-            console.log(rest)
-            const { rewardValue, rewardValue2 } = rest
+        const { rewardValue, rewardValue2 } = rest
         // const coinAIconHasLoaded = useImage(coinAInfo?.icon ? coinAInfo?.icon : '').hasLoaded;
         // const coinBIconHasLoaded = useImage(coinBInfo?.icon ? coinBInfo?.icon : '').hasLoaded;
         const {coinJson} = useSettings();
