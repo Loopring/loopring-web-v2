@@ -1,9 +1,10 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import {
+    AccountStep,
     FailedConnect,
     MetaMaskProcess,
     ModalWalletConnect,
-    ProviderMenu,
+    ProviderMenu, setShowAccount,
     SuccessConnect,
     Toast,
     useOpenModals,
@@ -118,33 +119,54 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
     }, []);
     const [copyToastOpen, setCopyToastOpen] = useState(false);
     useConnectHook({handleProcessing});
-    // const onCopy = React.useCallback(() => {
-    //
-    //     setCopyToastOpen(true)
-    // }, [account])
+    const providerBack = React.useMemo(() => {
+            return ['UN_CONNECT','ERROR_NETWORK'].includes(account.readyState)  ? undefined :
+                ()=>{
+                    setShowConnect({isShow: false});
+                    switch (account.readyState){
+                        case 'ACTIVATED':
+                        case 'LOCKED':
+                            setShowAccount({ isShow: true, step:AccountStep.HadAccount })
+                            break
+                        case 'DEPOSITING':
+                            setShowAccount({ isShow: true, step:AccountStep.Depositing })
+                            break
+                        case 'NO_ACCOUNT':
+                            setShowAccount({ isShow: true, step:AccountStep.NoAccount })
+                            break
+                    }
+                }
+
+    },[account,setShowAccount])
     const walletList = React.useMemo(() => {
         return Object.values({
-            [ WalletConnectStep.Provider ]: <ProviderMenu gatewayList={gatewayList}
+            [ WalletConnectStep.Provider ]: {view: <ProviderMenu gatewayList={gatewayList}
                                                           providerName={account.connectName} {...{t, ...rest}}/>,
-            [ WalletConnectStep.MetaMaskProcessing ]: <MetaMaskProcess {...{t, ...rest}}/>,
-            [ WalletConnectStep.WalletConnectProcessing ]: <WalletConnectProcess {...{t, ...rest}}/>,
-            [ WalletConnectStep.WalletConnectQRCode ]: <WalletConnectQRCode onCopy={() => {
+                onBack:providerBack},
+            [ WalletConnectStep.MetaMaskProcessing ]: {view: <MetaMaskProcess {...{t, ...rest}}/>,},
+            [ WalletConnectStep.WalletConnectProcessing ]: {view: <WalletConnectProcess {...{t, ...rest}}/>,},
+            [ WalletConnectStep.WalletConnectQRCode ]: {view: <WalletConnectQRCode onCopy={() => {
                 copyToClipBoard(qrCodeUrl);
                 setCopyToastOpen(true);
-            }} url={qrCodeUrl} {...{t, ...rest}}/>,
-            [ WalletConnectStep.SuccessConnect ]: <SuccessConnect onClose={(e) => {
+            }} url={qrCodeUrl} {...{t, ...rest}}/>, onBack:()=>{
+                    setShowConnect({isShow: false,step:WalletConnectStep.Provider});
+                }},
+            [ WalletConnectStep.SuccessConnect ]: {view: <SuccessConnect onClose={(e) => {
                 setShouldShow(false);
                 onClose(e);
             }}
-                                                                  providerName={account.connectName} {...{t, ...rest}}/>,
-            [ WalletConnectStep.FailedConnect ]: <FailedConnect{...{t, ...rest}} onRetry={resetAccount}/>,
+                                                                  providerName={account.connectName} {...{t, ...rest}}/>,},
+            [ WalletConnectStep.FailedConnect ]: {view: <FailedConnect{...{t, ...rest}} onRetry={resetAccount}/>,onBack:()=>{
+                    setShowConnect({isShow: false,step:WalletConnectStep.Provider});
+            }},
         })
     }, [qrCodeUrl, account, t, rest, onClose])
     return <>
         <ModalWalletConnect open={isShowConnect.isShow} onClose={(e) => {
             setShouldShow(false);
+
             onClose(e);
-        }} panelList={walletList} step={isShowConnect.step}/>
+        }} panelList={walletList} onBack={walletList[ isShowConnect.step ].onBack} step={isShowConnect.step}/>
         <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen}
                autoHideDuration={TOAST_TIME} setOpen={setCopyToastOpen} severity={"success"}/>
     </>
