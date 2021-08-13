@@ -8,8 +8,6 @@ import {
 import React from 'react';
 import { Account, AccountState } from '@loopring-web/common-resources';
 import { RootState } from 'stores';
-import { sleep } from 'loopring-sdk';
-
 
 export function useAccount() {
     const {status, errorMessage, ...account}: AccountState = useSelector((state: RootState) => state.account);

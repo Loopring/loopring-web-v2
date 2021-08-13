@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice';
 import { Account, AccountState, AccountStatus, ConnectProviders, SagaStatus } from '@loopring-web/common-resources';
-import { connectProvides, walletServices } from '@loopring-web/web3-provider';
 
 // import { Lv2Account, } from 'defs/account_defs'
 // import { AccountStatus } from 'state_machine/account_machine_spec'
