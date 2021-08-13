@@ -80,42 +80,42 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
     }
     const accAddress = '0xcEd11e039a5C50927a17a8D4632616DFa8F72BF6'
     const etherscanLink =  accAddress;
-
-    const {nameList, accountList} = React.useMemo(() => {
+    //nameList,
+    const { accountList} = React.useMemo(() => {
         const accountMap = {
-            [ AccountStep.NoAccount ]: <NoAccount {...{
+            [ AccountStep.NoAccount ]: {view: <NoAccount {...{
                 ...accountInfoProps, goDeposit: () => {
                 }
-            }}/>,
-            [ AccountStep.Deposit ]: <DepositWrap _height={480} _width={400}  {...{...rest, ...depositProps}} />,
-            [ AccountStep.Depositing ]: <Depositing {...{
+            }}/>,},
+            [ AccountStep.Deposit ]: {view: <DepositWrap _height={480} _width={400}  {...{...rest, ...depositProps}} />,},
+            [ AccountStep.Depositing ]: {view: <Depositing {...{
                 onClose:()=>undefined,
                 providerName: ConnectProviders.MetaMask,
                 etherscanLink: accountInfoProps.etherscanUrl, ...rest
-            }}/>,
-            [ AccountStep.FailedDeposit ]: <FailedDeposit {...rest} label={'depositTitleAndActive'}
+            }}/>,},
+            [ AccountStep.FailedDeposit ]: {view: <FailedDeposit {...rest} label={'depositTitleAndActive'}
                                                           onRetry={() => undefined}
-                                                          etherscanLink={accountInfoProps.etherscanUrl}/>,
-            [ AccountStep.SignAccount ]: <ApproveAccount  {...{...accountInfoProps, ...rest}}
-                                                          goActiveAccount={() => undefined}/>,
-            [ AccountStep.ProcessUnlock ]: <ProcessUnlock {...{providerName: ConnectProviders.MetaMask, ...rest}}/>,
-            [ AccountStep.SuccessUnlock ]: <SuccessUnlock {...rest}/>,
-            [ AccountStep.FailedUnlock ]: <FailedUnlock {...rest} onRetry={() => undefined}/>,
-            [ AccountStep.HadAccount ]: <HadAccount mainBtn={mainBtn} {...accountInfoProps}/>,
-            [ AccountStep.TokenAccessProcess ]: <TokenAccessProcess {...{
+                                                          etherscanLink={accountInfoProps.etherscanUrl}/>,},
+            [ AccountStep.SignAccount ]: {view: <ApproveAccount  {...{...accountInfoProps, ...rest}}
+                                                          goActiveAccount={() => undefined}/>,},
+            [ AccountStep.ProcessUnlock ]: {view: <ProcessUnlock {...{providerName: ConnectProviders.MetaMask, ...rest}}/>,},
+            [ AccountStep.SuccessUnlock ]: {view: <SuccessUnlock {...rest}/>,},
+            [ AccountStep.FailedUnlock ]: {view: <FailedUnlock {...rest} onRetry={() => undefined}/>,},
+            [ AccountStep.HadAccount ]: {view: <HadAccount mainBtn={mainBtn} {...accountInfoProps}/>,},
+            [ AccountStep.TokenAccessProcess ]: {view: <TokenAccessProcess {...{
                 ...rest,
                 coinInfo,
                 providerName: ConnectProviders.MetaMask
-            }}/>,
-            [ AccountStep.DepositApproveProcess ]: <DepositApproveProcess {...{
+            }}/>,},
+            [ AccountStep.DepositApproveProcess ]: {view: <DepositApproveProcess {...{
                 ...rest,
                 providerName: ConnectProviders.MetaMask
-            }}/>,
-            [ AccountStep.ActiveAccountProcess ]: <ActiveAccountProcess {...{
+            }}/>,},
+            [ AccountStep.ActiveAccountProcess ]: {view: <ActiveAccountProcess {...{
                 ...rest,
                 providerName: ConnectProviders.MetaMask
-            }}/>,
-            [ AccountStep.FailedTokenAccess ]: <FailedTokenAccess {...{...rest, coinInfo}}/>,
+            }}/>,},
+            [ AccountStep.FailedTokenAccess ]: {view: <FailedTokenAccess {...{...rest, coinInfo}}/>,},
         }
 
         return { nameList: Object.keys(accountMap), accountList: Object.values(accountMap) }
@@ -144,8 +144,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                         {accountList.map((panel, index) => {
                             return <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
                                         justifyContent={'center'} alignItems={'stretch'}>
-                                {AccountStep[nameList[index]]}
-                                {panel}
+                                {panel.view}
                             </Box>
                         })}
                     </Grid>

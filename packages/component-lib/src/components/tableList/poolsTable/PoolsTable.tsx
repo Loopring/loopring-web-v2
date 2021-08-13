@@ -76,10 +76,13 @@ const TableStyled = styled(Box)`
 
 
 export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R }) => {
+    if(!row || !row.coinAInfo || !row.coinBInfo) {
+        return <BoxStyled />
+    }
     const {coinAInfo, coinBInfo, isNew, isActivity} = row;
     const {coinJson} = useSettings();
-    const coinAIcon: any = coinJson [ coinAInfo.simpleName ];
-    const coinBIcon: any = coinJson [ coinBInfo.simpleName ];
+    const coinAIcon: any = coinJson[ coinAInfo.simpleName ];
+    const coinBIcon: any = coinJson[ coinBInfo.simpleName ];
     return <BoxStyled display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
 
         <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>

@@ -32,6 +32,7 @@ const StyledDiv = styled.div`
 `
 const HeaderStyled = styled(AppBar)`
   && {
+    z-index: 400;
     .wrap {
       height: var(--header-height);
       margin: 0 auto;
@@ -184,7 +185,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                 //     {rest.extender ? rest.extender : undefined}
                 // </Box> :
                 <MenuTab component='div' label={rest.t(label.i18nKey)} key={label.id}
-                         className={selectedFlag ? 'Mui-selected' : ''}/>
+                        className={selectedFlag ? 'Mui-selected' : ''}/>
             }
             </>
         }

@@ -161,9 +161,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         updateAmmPoolSnapshot()
 
         return () => {
-            if (nodeTimer.current !== -1) {
-                clearInterval(nodeTimer.current as NodeJS.Timeout);
-            }
+            clearInterval(nodeTimer.current as NodeJS.Timeout);
         }
 
     }, [nodeTimer.current])
