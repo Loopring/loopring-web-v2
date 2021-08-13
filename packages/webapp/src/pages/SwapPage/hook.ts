@@ -1,8 +1,5 @@
-import { useRouteMatch } from 'react-router';
 import {
-    AccountState,
     AccountStatus,
-    CoinInfo,
     CustomError,
     ErrorMap,
     fnType,
@@ -54,6 +51,7 @@ import { deepClone } from '../../utils/obj_tools';
 import { myLog } from 'utils/log_tools';
 import { useTranslation } from 'react-i18next';
 import { REFRESH_RATE_SLOW } from 'defs/common_defs';
+import { usePairMatch } from 'hooks/usePairMatch';
 
 export const useSwapBtnStatusCheck = () => {
 
@@ -101,7 +99,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     const [swapAlertText, setSwapAlertText] = useState<string>()
     const wait = globalSetup.wait;
-    const match: any = useRouteMatch(":symbol")
     const { coinMap, tokenMap, marketArray, marketCoins, marketMap, } = useTokenMap()
     const { ammMap } = useAmmMap();
 
@@ -114,10 +111,19 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
     const [myTradeArray, setMyTradeArray] = React.useState<RawDataTradeItem[]>([]);
     const [tradeFloat, setTradeFloat] = React.useState<TradeFloat | undefined>(undefined);
-    const [pair, setPair] = React.useState<{ coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined }>({
-        coinAInfo: undefined,
-        coinBInfo: undefined,
-    });
+    
+    
+    const { pair, setPair, market, } = usePairMatch('/trading/lite')
+
+    //HIGH: get Router info
+    // const symbol = match?.params.symbol ?? undefined;
+    useCustomDCEffect(() => {
+        if (!market) {
+            return
+        }
+        resetSwap(market, undefined, undefined, undefined);
+        // resetSwap(`${pair.coinAInfo}-${pair.coinBInfo}`, undefined, undefined, undefined);
+    }, [market]);
 
     const [ammPoolSnapshot, setAmmPoolSnapshot] = React.useState<AmmPoolSnapshot | undefined>(undefined);
 
@@ -201,15 +207,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     }, [tradeData?.sell.belong, tradeData?.buy.belong, marketArray, ammMap,
     account.readyState, account.apiKey, account.accountId])
 
-    //HIGH: get Router info
-    // const symbol = match?.params.symbol ?? undefined;
-    React.useEffect(() => {
-        const symbol = match?.params.symbol ?? undefined;
-        resetSwap(symbol, undefined, undefined, undefined);
-        // const label: string | undefined = accountStaticCallBack(bntLabel)
-        // setSwapBtnI18nKey(label);
-    }, []);
-
     //HIGH: effect by wallet state update
     React.useEffect(() => {
         if (walletLayer2Status === SagaStatus.UNSET) {
@@ -252,7 +249,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
             setSwapAlertText(t('labelSwapFailed'))
             setSwapToastOpen(true)
-
             setIsSwapLoading(false)
 
             return
@@ -469,7 +465,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     }, wait * 2), [setTradeData, setTradeCalcData, calculateTradeData, takerRate]);
 
-    const resetSwap = async (coinKey: any, type: 'sell' | 'buy' | undefined, _tradeData: SwapTradeData<IBData<C>> | undefined, _ammPoolSnapshot: AmmPoolSnapshot | undefined) => {
+    const resetSwap = (coinKey: any, type: 'sell' | 'buy' | undefined, _tradeData: SwapTradeData<IBData<C>> | undefined, _ammPoolSnapshot: AmmPoolSnapshot | undefined) => {
+        
         if (tradeCalcData
             && coinKey === `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`
             && _tradeData
@@ -483,7 +480,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             let _tradeArray: Array<Partial<RawDataTradeItem>> | undefined = undefined;
             let _tradeCalcData: Partial<TradeCalcData<C>> = coinPairInit({
                 coinKey,
-                _tradeCalcData: {},
+                _tradeCalcData: {coinSell: pair?.coinAInfo, coinBuy: pair?.coinBInfo },
                 tokenMap,
                 coinMap
             })
@@ -500,6 +497,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                     coinBInfo: coinMap[coinB],
                 })
             }
+
             if (walletLayer2) {
                 const { walletMap } = makeWalletLayer2();
                 _tradeCalcData.walletMap = walletMap as WalletMap<any>;
@@ -555,7 +553,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                             } as SwapTradeData<IBData<C>>)
                         }
                     }).catch((error) => {
-                        throw new CustomError({ ...ErrorMap.TRADE_LITE_SET_PAIR_ERROR, options: error })
+                        // throw new CustomError({ ...ErrorMap.TRADE_LITE_SET_PAIR_ERROR, options: error })
                         //TODO solve error
                     })
 
