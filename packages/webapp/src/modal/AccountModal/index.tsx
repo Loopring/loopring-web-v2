@@ -68,11 +68,13 @@ export const ModalAccountInfo = withTranslation('common')(({
     const {coinMap} = useTokenMap()
     
     const [copyToastOpen, setCopyToastOpen] = useState(false);
+
     const onSwitch = useCallback(() => {
         setShowAccount({isShow: false})
         setShouldShow(true);
         setShowConnect({isShow: shouldShow ?? false})
     }, [setShowConnect, setShowAccount, shouldShow])
+    
     const onCopy = React.useCallback(() => {
         copyToClipBoard(account.accAddress);
         setCopyToastOpen(true)

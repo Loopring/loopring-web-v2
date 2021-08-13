@@ -203,4 +203,6 @@ export default {
     labelMiningActivityReward: 'Activity Reward',
     labelMiningMyShare: 'My Share',
     labelMiningMyReward: 'My Reward',
+    labelAgree: 'Agree',
+    agreeLoopringTxt: 'Allow Loopring to use Cookies.',
 }
