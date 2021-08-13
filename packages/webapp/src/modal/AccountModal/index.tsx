@@ -152,9 +152,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 _width: 'var(--modal-width)',
                 ...depositProps,
                 t
-            }} />,onBack:()=>{
-                    setShowAccount({isShow: false,step:AccountStep.NoAccount});
-                }},
+            }} />},
             [ AccountStep.Depositing ]: {view: <Depositing label={title}
                                                     onClose={onClose}
                                                     etherscanLink={etherscanUrl + account.accAddress} {...{
@@ -164,7 +162,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             [ AccountStep.FailedDeposit ]: {view: <FailedDeposit label={title}
                                                           etherscanLink={etherscanUrl + account.accAddress}
                                                           onRetry={() => goDeposit()} {...{...rest, t}} />,onBack:()=>{
-                    setShowAccount({isShow: false,step:AccountStep.Deposit});
+                    setShowAccount({isShow: true,step:AccountStep.Deposit});
                 }},
             [ AccountStep.SignAccount ]: {view: <ApproveAccount {...{
                 ...account,
@@ -194,7 +192,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 ...rest,
                 t
             }} />,onBack:()=>{
-                    setShowAccount({isShow: false,step:AccountStep.Deposit});
+                    setShowAccount({isShow: true,step:AccountStep.Deposit});
                 }},
             [ AccountStep.DepositApproveProcess ]: {view: <DepositApproveProcess label={title}
                                                                           etherscanLink={etherscanUrl + account.accAddress}
@@ -215,7 +213,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             [ AccountStep.ActiveAccountFailed ]: {view: <FailedUnlock label={title} onRetry={() => {
                 goUpdateAccount()
             }} {...{...rest, t}} />,onBack:()=>{
-                    setShowAccount({isShow: false,step:AccountStep.SignAccount});
+                    setShowAccount({isShow: true,step:AccountStep.SignAccount});
                 }},
             [ AccountStep.FailedTokenAccess ]: {view: <FailedTokenAccess label={title} onRetry={() => {
                 goDeposit()
