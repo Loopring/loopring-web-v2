@@ -48,7 +48,11 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps &
       flex-wrap: wrap;
       align-content: stretch;
       align-items: stretch;
+      .MuiToolbar-root{
+        align-items: flex-end;
+      }
     }
+ 
   }
 ` as React.ElementType<SwipeableViewsProps & { _height?: number | string, _width?: number | string; }>;
 

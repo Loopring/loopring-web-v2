@@ -27,6 +27,10 @@ const WrapStyle = styled(Box)<BoxProps & { _height?: number | string, _width?: n
   ${({theme}) => boxLiner({theme})}
   ${({theme}) => toolBarPanel({theme})}
   border-radius: ${({theme}) => theme.unit}px;
+  .MuiToolbar-root{
+    //padding-left:0;
+    justify-content: space-between;
+  }
 ` as (props: BoxProps & { _height?: number | string, _width?: number | string }) => JSX.Element;
 const TabPanelBtn = ({t, value, handleChange}: WithTranslation & any) => {
   return <Tabs
@@ -183,7 +187,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
       {/*      justifyContent={"space-between"} */}
       {/*      // paddingTop={'var(--toolbar-row-padding)'}*/}
       {/*      }>*/}
-          <Toolbar className={'large'} variant={'dense'}   >
+          <Toolbar className={'large'} variant={'regular'}   >
               <Box alignSelf={'center'} justifyContent={'flex-start'} display={'flex'}>
                   <TabPanelBtn {...{t, value: index, handleChange: handleTabChange, ...rest}} />
               </Box>
