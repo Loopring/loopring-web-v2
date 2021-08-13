@@ -74,14 +74,14 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
     const url: string = 'xxxxxx'
     const walletList = React.useMemo(() => {
         return Object.values({
-            [ WalletConnectStep.Provider ]: <ProviderMenu
-                gatewayList={gatewayList} {...{providerName: ConnectProviders.MetaMask, ...rest}}/>,
-            [ WalletConnectStep.MetaMaskProcessing ]: <MetaMaskProcess {...rest}/>,
-            [ WalletConnectStep.WalletConnectProcessing ]: <WalletConnectProcess {...rest}/>,
-            [ WalletConnectStep.WalletConnectQRCode ]: <WalletConnectQRCode  {...rest} url={url}/>,
-            [ WalletConnectStep.SuccessConnect ]: <SuccessConnect {...{...rest, providerName: 'MetaMask'}}/>,
-            [ WalletConnectStep.FailedConnect ]: <FailedConnect {...rest} onRetry={() => {
-            }}/>,
+            [ WalletConnectStep.Provider ]: {view: <ProviderMenu
+                gatewayList={gatewayList} {...{providerName: ConnectProviders.MetaMask, ...rest}}/>,},
+            [ WalletConnectStep.MetaMaskProcessing ]: {view: <MetaMaskProcess {...rest}/>,},
+            [ WalletConnectStep.WalletConnectProcessing ]: {view: <WalletConnectProcess {...rest}/>,},
+            [ WalletConnectStep.WalletConnectQRCode ]: {view: <WalletConnectQRCode  {...rest} url={url}/>,},
+            [ WalletConnectStep.SuccessConnect ]: {view: <SuccessConnect {...{...rest, providerName: 'MetaMask'}}/>,},
+            [ WalletConnectStep.FailedConnect ]: {view: <FailedConnect {...rest} onRetry={() => {
+            }}/>,},
         })
 
     }, [url])
@@ -138,7 +138,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                         {walletList.map((panel, index) => {
                             return <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
                                         justifyContent={'center'} alignItems={'stretch'}>
-                                {panel}
+                                {panel.view}
                             </Box>
                         })}
                     </Grid>

@@ -46,14 +46,14 @@ export const ModalAccount = withTranslation('common', {withRef: true})((
         }}>
             <Box display={'flex'} width={"100%"} flexDirection={'column'}>
                 <ModalCloseButton onClose={onClose} {...rest} />
-                {onBack ? <ModalBackButton onBack={onBack}  {...rest}/> : <></>}
+                {onBack ? <ModalBackButton onBack={onBack}  {...rest}/> :<></>}
             </Box>
             <SwipeableViewsStyled animateTransitions={false} axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                                   index={step}
                                   {...{_height: h ? h : 'var(--modal-height)', _width: w ? w : 'var(--modal-width)'}}>
                 {panelList.map((panel, index) => {
                     return <Box flex={1} display={'flex'} alignItems={'stretch'} key={index} >
-                        {panel}
+                        {panel.view}
                     </Box>
                 })}
             </SwipeableViewsStyled>

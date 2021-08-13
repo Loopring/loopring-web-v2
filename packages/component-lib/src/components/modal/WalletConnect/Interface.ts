@@ -15,7 +15,7 @@ export type  ModalWalletConnectProps = {
     onBack?: ()=>void;
     step: number,
     style?: any, //{w,h}
-    panelList: Array<JSX.Element>
+    panelList: Array<{view:JSX.Element,onBack?: ()=>void|undefined }>
 }
 export type ModalAccountProps = ModalWalletConnectProps;
 
