@@ -1,9 +1,9 @@
 import { combineReducers, configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 
 import { useDispatch } from 'react-redux'
-import { load, save } from 'redux-localstorage-simple'
 import { persistReducer } from 'redux-persist'
 import storageSession from 'redux-persist/lib/storage/session'
+import storage from 'redux-persist/lib/storage'
 import createSagaMiddleware from 'redux-saga'
 import * as imgConfig from '@loopring-web/common-resources/assets/images/coin/loopring.json'
 import { reduxBatch } from '@manaflair/redux-batch'
@@ -26,17 +26,31 @@ const sagaMiddleware = createSagaMiddleware()
 
 const DEFAULT_TIMEOUT = 1000 * 60 * 15
 //
-const persistConfig = {
-    key: 'root',
-    storage:storageSession,
+const persistAccConfig = {
+    key: 'account',
+    storage: storageSession,
     timeout:DEFAULT_TIMEOUT,
-    whitelist: ['account'] // only navigation will be persisted
 };
-const PERSISTED_KEYS: string[] = ['settings', 'localStore']
+
+const persistSettingConfig = {
+    key: 'settings',
+    storage: storage,
+    timeout:DEFAULT_TIMEOUT,
+};
+
+const persistLocalStoreConfig = {
+    key: 'localStore',
+    storage: storage,
+    timeout:DEFAULT_TIMEOUT,
+};
+const persistedAccountReducer = persistReducer(persistAccConfig ,accountSlice.reducer)
+const persistedSettingReducer = persistReducer(persistSettingConfig ,settingsSlice.reducer)
+const persistedLocalStoreReducer = persistReducer(persistLocalStoreConfig ,localStoreReducer)
+
 const reducer = combineReducers({
-    account: accountSlice.reducer,
+    account: persistedAccountReducer,
     socket: socketSlice.reducer,
-    settings: settingsSlice.reducer,
+    settings: persistedSettingReducer,
     system: systemSlice.reducer,
     modals: modalsSlice.reducer,
     userRewardsMap: userRewardsMapSlice.reducer,
@@ -45,22 +59,22 @@ const reducer = combineReducers({
     walletLayer2: walletLayer2Slice.reducer,
     walletLayer1: walletLayer1Slice.reducer,
     tickerMap: tickerMapSlice.reducer,
-    localStore: localStoreReducer,
+    localStore: persistedLocalStoreReducer,
 })
-const persistedReducer = persistReducer(persistConfig ,reducer)
+
+//const persistedReducer = persistReducer(persistConfig ,reducer)
 
 
 const store = configureStore({
-    reducer:persistedReducer,
+    reducer,
     // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
     middleware: [...getDefaultMiddleware({
         thunk: false,
         serializableCheck: false,
-    }), save({states: PERSISTED_KEYS}), sagaMiddleware],
+    }), sagaMiddleware],
     //middleware: [...getDefaultMiddleware({ thunk: true }), ],
     devTools: process.env.NODE_ENV !== 'production',
     enhancers: [reduxBatch],
-    preloadedState: load({states: PERSISTED_KEYS}) as any
 })
 store.dispatch(updateVersion())
 store.dispatch(setLanguage(store.getState().settings.language))
