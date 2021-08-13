@@ -12,14 +12,14 @@ export const ApproveAccount = ({
     return <Box flex={1} display={'flex'} flexDirection={'column'} justifyContent={'space-between'}
                 alignItems={'center'}>
         <AccountBase {...props} t={t}/>
-        <Box display={'flex'} marginTop={3} flexDirection={'column'} alignItems={'center'}>
-            <Typography variant={'body2'} marginBottom={1}>
+        {/*<Box display={'flex'} marginTop={3} flexDirection={'column'} alignItems={'center'}>*/}
+        {/*   */}
+        {/*</Box>*/}
+        <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
+            <Typography variant={'body2'} >
                 {t('labelActivatedAccountDeposit')}
             </Typography>
-
             <AnimationArrow className={'arrowCta'}/>
-        </Box>
-        <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
             <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {
                 if (goUpdateAccount) {
                     goUpdateAccount()
