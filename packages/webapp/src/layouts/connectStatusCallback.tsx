@@ -52,7 +52,7 @@ export const btnClickMap: { [key: string]: [fn: (props: any) => any, args?: any[
     [fnType.ERROR_NETWORK]: [
         function () {
             //TODO toast
-            return
+            myLog('get error network!')
         }
     ],
     [fnType.UN_CONNECT]: [
@@ -64,13 +64,16 @@ export const btnClickMap: { [key: string]: [fn: (props: any) => any, args?: any[
     ]
     , [fnType.NO_ACCOUNT]: [
         function () {
-            store.dispatch(changeShowModel({ _userOnModel: true }));
-            store.dispatch(setShowAccount({ isShow: true, step: AccountStep.NoAccount }))
+            myLog('NO_ACCOUNT! sendCheckAcc', )
+            walletLayer2Services.sendCheckAcc()
+            // store.dispatch(changeShowModel({ _userOnModel: true }));
+            // store.dispatch(setShowAccount({ isShow: true, step: AccountStep.NoAccount }))
             // ShowDeposit(true)
         }
     ]
     , [fnType.DEPOSITING]: [
         function () {
+            myLog('DEPOSITING! sendCheckAcc', )
             walletLayer2Services.sendCheckAcc()
             // store.dispatch(setShowAccount({isShow: true, step: AccountStep.Depositing}))
             // ShowDeposit(true)

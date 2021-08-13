@@ -114,11 +114,11 @@ export const AccountBase = ({
             }}>
                 <Typography variant={'body2'} marginTop={1 / 2}> {t('labelCopyAddress')} </Typography>
             </Button>
-            <Button startIcon={<ReverseIcon fontSize={'small'}/>} onClick={() => {
+            {/* <Button startIcon={<ReverseIcon fontSize={'small'}/>} onClick={() => {
                 if (onSwitch) onSwitch()
             }}>
                 <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelSwitchAccount')} </Typography>
-            </Button>
+            </Button> */}
             <Button startIcon={<ReverseIcon fontSize={'small'}/>} onClick={() => {
                 if (onDisconnect) onDisconnect()
             }}>
