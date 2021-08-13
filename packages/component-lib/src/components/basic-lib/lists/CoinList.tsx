@@ -72,7 +72,12 @@ const StyledCoinItem = styled(ListItem)`
     padding-left: ${({theme}) => theme.unit / 2 * 5}px;
     padding-right: ${({theme}) => theme.unit / 2 * 5}px;
   }
-
+  &.Mui-selected, &.Mui-focusVisible {
+    background:var(--color-box-hover);
+    &:hover {
+      background:var(--color-box-hover);
+    }
+  }
   .MuiListItemIcon-root {
     height: var(--btn-icon-size);
     width: var(--btn-icon-size);
@@ -82,7 +87,7 @@ const StyledCoinItem = styled(ListItem)`
     justify-content: center;
     justify-items: center;
     align-items: center;
-
+    
     .MuiAvatar-root {
       transform-origin: center;
     }
