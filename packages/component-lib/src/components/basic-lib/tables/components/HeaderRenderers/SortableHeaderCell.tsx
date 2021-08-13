@@ -30,7 +30,7 @@ const StyledArrowSort = styled(Box)<BoxProps & { sortdirection: 'ASC' | 'DESC' |
     height: 0;
     border: ${({theme}) => `${theme.unit / 2}px`} solid transparent;
     border-bottom-color: ${({
-                              theme,
+                              // theme,
                               sortdirection
                             }) => sortdirection === 'ASC' ? `var(--color-text-primary)` : `var(--color-text-secondary)`};
   }
@@ -40,7 +40,7 @@ const StyledArrowSort = styled(Box)<BoxProps & { sortdirection: 'ASC' | 'DESC' |
     height: 0;
     border: ${({theme}) => `${theme.unit / 2}px`} solid transparent;
     border-top-color: ${({
-                           theme,
+                           // theme,
                            sortdirection
                          }) => sortdirection === 'DESC' ? `var(--color-text-primary)` : `var(--color-text-secondary)`};
     margin-top: ${({theme}) => `${theme.unit / 4}px`};
