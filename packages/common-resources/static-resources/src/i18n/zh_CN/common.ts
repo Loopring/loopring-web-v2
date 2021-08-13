@@ -54,7 +54,7 @@ export default {
     label1W: '1周',
     label1H: '1小时',
     label1D: '1日',
-    labelCopyAddress: '复制地址到剪切板',
+    labelCopyAddress: '复制地址',
     labelDisconnect: '断开钱包',
     labelLockLayer2: '锁定钱包',
     labelUnLockLayer2: '解锁钱包',
