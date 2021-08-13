@@ -10,6 +10,7 @@ import TxPanel from './TxPanel'
 import AssetPanel from './AssetPanel'
 import TradePanel from './TradePanel'
 import AmmPanel from './AmmPanel'
+import MyLiqudityPanel from './MyLiquidityPanel'
 import { SettingPanel } from '../SettingPage';
 // import { useModalProps } from '../../layouts/header/hook';
 import React from 'react';
@@ -138,6 +139,7 @@ export const Layer2Page = () => {
                          flex={1}>
 
                         {selected === 'assets' && <AssetPanel/>}
+                        {selected === 'my-liquidity' && <MyLiqudityPanel/>}
                         {selected === 'transactions' && <TxPanel/>}
                         {selected === 'trades' && <TradePanel/>}
                         {selected === 'ammRecords' && <AmmPanel/>}
