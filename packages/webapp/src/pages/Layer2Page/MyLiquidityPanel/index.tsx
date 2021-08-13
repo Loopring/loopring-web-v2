@@ -79,7 +79,6 @@ const MyLiquidity: any = withTranslation('common')(
         }, [])
 
         const {myAmmMarketArray, summaryReward, myPoolRow} = useOverview({ammActivityMap});
-        console.log(myPoolRow)
         return (
             <>
                 <Grid container spacing={2}>

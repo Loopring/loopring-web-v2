@@ -34,6 +34,9 @@ const TableStyled = styled(Table)`
             align-items: center;
         }
     }
+    .textAlignRight{
+        text-align: right;
+    }
 `
 
 // export type QuoteTableRawDataItem = (string | number | string[] | number[])[]
@@ -211,8 +214,9 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                 },
             },
             {
-                key: 'trade',
+                key: 'actions',
                 // resizable: true,
+                headerCellClass: 'textAlignRight',
                 name: t('labelQuoteAction'),
                 formatter: ({row}) => {
                     const {coinA, coinB} = row[ 'pair' ]
