@@ -4,7 +4,7 @@ import App from './App'
 import reportWebVitals from './reportWebVitals'
 
 // import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
-import store,{persistor} from 'stores'
+import store, { persistor } from 'stores'
 // import { getLibrary } from 'utils/web3_tools'
 // import { NetworkContextName } from 'loopring-sdk'
 import { getTheme, i18n, provider, ProviderComposer } from "@loopring-web/common-resources"
@@ -17,6 +17,7 @@ import MomentUtils from '@material-ui/lab/AdapterMoment'
 import { ThemeProvider } from "@emotion/react"
 
 import { I18nextProvider } from "react-i18next"
+import { PersistGate } from 'redux-persist/integration/react'
 
 // const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 const providers = [
@@ -24,7 +25,8 @@ const providers = [
     provider(I18nextProvider as any, {i18n: i18n}),
     provider(MuThemeProvider as any, {theme: getTheme('dark')}),
     provider(ThemeProvider as any, {theme: getTheme('dark')}),
-    provider(Provider as any, {store,persistor}),// persistor
+    provider(Provider as any, {store}),
+    provider(PersistGate as any, {persistor, loading: null})
 ]
 
 ReactDOM.render(

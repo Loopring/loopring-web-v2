@@ -21,11 +21,10 @@ import { socketSlice } from './socket';
 import { userRewardsMapSlice } from './userRewards';
 import { localStoreReducer } from './localStore';
 import persistStore from 'redux-persist/es/persistStore';
-// import { DEFAULT_TIMEOUT } from 'loopring-sdk';
 
 const sagaMiddleware = createSagaMiddleware()
 
-const DEFAULT_TIMEOUT = 1000*60*60;
+const DEFAULT_TIMEOUT = 1000 * 60 * 15
 //
 const persistConfig = {
     key: 'root',
@@ -80,6 +79,8 @@ export type AppDispatch = typeof store.dispatch
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 
 export type RootState = ReturnType<typeof reducer>
-export const persistor = persistStore(store);
+export const persistor = persistStore(store)
 
-export default store;
+// persistor.persist()
+
+export default store
