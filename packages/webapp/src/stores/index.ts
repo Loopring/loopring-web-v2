@@ -3,6 +3,7 @@ import { combineReducers, configureStore, getDefaultMiddleware } from '@reduxjs/
 import { useDispatch } from 'react-redux'
 import { load, save } from 'redux-localstorage-simple'
 import { persistReducer } from 'redux-persist'
+import storageSession from 'redux-persist/lib/storage/session'
 import createSagaMiddleware from 'redux-saga'
 import * as imgConfig from '@loopring-web/common-resources/assets/images/coin/loopring.json'
 import { reduxBatch } from '@manaflair/redux-batch'
@@ -19,6 +20,7 @@ import { walletLayer2Slice } from './walletLayer2';
 import { socketSlice } from './socket';
 import { userRewardsMapSlice } from './userRewards';
 import { localStoreReducer } from './localStore';
+import persistStore from 'redux-persist/es/persistStore';
 // import { DEFAULT_TIMEOUT } from 'loopring-sdk';
 
 const sagaMiddleware = createSagaMiddleware()
@@ -26,17 +28,14 @@ const sagaMiddleware = createSagaMiddleware()
 const DEFAULT_TIMEOUT = 1000*60*60;
 //
 const persistConfig = {
-    key: 'account',
-    storage:sessionStorage,
+    key: 'root',
+    storage:storageSession,
     timeout:DEFAULT_TIMEOUT,
     whitelist: ['account'] // only navigation will be persisted
 };
 const PERSISTED_KEYS: string[] = ['settings', 'localStore']
-
-const persistedReducer = persistReducer(persistConfig, accountSlice.reducer)
-
 const reducer = combineReducers({
-    account: persistedReducer,
+    account: accountSlice.reducer,
     socket: socketSlice.reducer,
     settings: settingsSlice.reducer,
     system: systemSlice.reducer,
@@ -49,9 +48,11 @@ const reducer = combineReducers({
     tickerMap: tickerMapSlice.reducer,
     localStore: localStoreReducer,
 })
+const persistedReducer = persistReducer(persistConfig ,reducer)
+
 
 const store = configureStore({
-    reducer,
+    reducer:persistedReducer,
     // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
     middleware: [...getDefaultMiddleware({
         thunk: false,
@@ -65,6 +66,7 @@ const store = configureStore({
 store.dispatch(updateVersion())
 store.dispatch(setLanguage(store.getState().settings.language))
 store.dispatch(setCoinJson(imgConfig.frames))
+
 // @ts-ignore
 sagaMiddleware.run(mySaga, store.dispatch);
 
@@ -78,6 +80,6 @@ export type AppDispatch = typeof store.dispatch
 export const useAppDispatch = () => useDispatch<AppDispatch>()
 
 export type RootState = ReturnType<typeof reducer>
-// export const persistor = persistStore(store)
+export const persistor = persistStore(store);
 
-export default store
+export default store;
