@@ -32,7 +32,7 @@ export const OutlineSelect = styled(Select)`
 
   svg {
     //right: .4rem;
-    top: ${({theme}) => theme.unit}px;
+    top: ${({theme}) => theme.unit -3}px;
     position: absolute;
     //pointer-events: none;
     //transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;

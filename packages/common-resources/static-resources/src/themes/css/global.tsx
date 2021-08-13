@@ -216,11 +216,11 @@ export const globalCss = ({theme}: any) => css`
 
   }
 
-  div {
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-  }
+  //div {
+  //  -moz-user-select: none;
+  //  -webkit-user-select: none;
+  //  user-select: none;
+  //}
 
   select {
 

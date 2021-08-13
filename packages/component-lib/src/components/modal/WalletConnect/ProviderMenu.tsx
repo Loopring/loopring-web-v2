@@ -86,7 +86,7 @@ export const ProviderMenu = ({
                 <MuiFormControlLabel
                     control={<Checkbox defaultChecked checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
                                        color="default"/>}
-                    label={<Trans i18nKey="labelAgree">I have read, understand, and agree to the <Link component={'a'}
+                    label={<Trans i18nKey="labelProviderAgree">I have read, understand, and agree to the <Link component={'a'}
                                                                                                        href={'./'}
                                                                                                        target={'_parent'}>Terms
                         of Service</Link>.</Trans>}/>
