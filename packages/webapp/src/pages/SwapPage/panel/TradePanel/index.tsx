@@ -1,6 +1,6 @@
 
 
-import { RefAttributes, useState } from 'react'
+import { RefAttributes, useState, useCallback, useEffect } from 'react'
 
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
@@ -49,13 +49,24 @@ const TradePanel = withTranslation('common')(
             { tradeArray: RawDataTradeItem[], myTradeArray: RawDataTradeItem[] } & WithTranslation & RouteComponentProps) => {
         // const [isAllTrade, setIsAllTrade] = useState(false)
         const [value, setValue] = useState(1)
+        const [tableHeight, setTableHeight] = useState(0);
         const handleChange = (event: any, newValue: any) => {
             setValue(newValue)
         }
 
-        // const handleCheckboxChange = () => {
-        //     setIsAllTrade((flag: boolean) => !flag)
-        // }
+        const getCurrentHeight = useCallback(() => {
+            const height = window.innerHeight
+            const tableHeight = height - 64 - 117 - 56 - 120 - 20 - 100 - 50 - 15;
+            setTableHeight(tableHeight)
+        }, [])
+        
+        useEffect(() => {
+            getCurrentHeight()
+            window.addEventListener('resize', getCurrentHeight)
+            return () => {
+                window.removeEventListener('resize', getCurrentHeight)
+            }
+        }, [getCurrentHeight]);
 
         return (   <TableWrapStyled item alignSelf={'stretch'} xs={12} marginY={2}  paddingBottom={2}/* paddingBottom={2} */ flex={1}>
                 <TabsStyled value={value}
@@ -65,7 +76,7 @@ const TradePanel = withTranslation('common')(
                     <Tab label={t('labelRecent')}   {...applyProps(1)} />
                 </TabsStyled>
                 <Divider />
-                {value === 0 ?  <TradeTable rawData={myTradeArray} /> : <TradeTable rawData={tradeArray}/> }
+                <TradeTable rawData={value === 0 ? myTradeArray : tradeArray} currentHeight={tableHeight} />
             </TableWrapStyled>
         )
     }
