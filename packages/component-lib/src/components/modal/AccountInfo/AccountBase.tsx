@@ -50,7 +50,6 @@ const BoxStyled = styled(Box)`
 ` as typeof Box
 
 export const AccountBase = ({
-                                onSwitch,
                                 onDisconnect,
                                 accAddress,
                                 level,

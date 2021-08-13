@@ -204,4 +204,6 @@ export default {
     labelMiningActivityReward: '活动奖励',
     labelMiningMyShare: '我的占比资金',
     labelMiningMyReward: '我的奖励',
+    labelAgree: '同意',
+    agreeLoopringTxt: '允许路印使用Cookies。',
 }
