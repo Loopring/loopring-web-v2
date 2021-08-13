@@ -29,6 +29,8 @@ const hr = ({theme}: any) => css`
 
 export const MenuTab = styled(Tab)`
   opacity: 1;
+  font-family: Roboto;
+  font-size: ${({theme}) => theme.fontDefault.h6};
   height: var(--header-height);
 
   &.MuiTab-root.Mui-selected {

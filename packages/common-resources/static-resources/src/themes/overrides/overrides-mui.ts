@@ -116,7 +116,7 @@ export const MuiModal = ({colorBase}: any) => {
                 color: colorBase.textPrimary,
                 ' .MuiBackdrop-root': {
                     zIndex: -1,
-                    backgroundColor: colorBase.modalMask,
+                    backgroundColor: colorBase.mask,
                 },
             }
         }
@@ -214,28 +214,30 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                     // font: 'normal normal 700 0.875rem/1.6875rem Open Sans',
                     // color: 'green'
                 },
+                fontFamily: 'Roboto',
+                fontSize: pxToRem(14),
                 borderRadius: pxToRem(4),
                 fontWeight: 'normal',
                 paddingLeft: pxToRem(12),
                 paddingRight: pxToRem(12),
             },
             text: {
-                color: colorBase.info,
+                color: colorBase.secondary,
                 fontSize: '1.4rem',
                 '&:hover': {
-                    color: colorBase.infoHover,
+                    color: colorBase.secondaryHover,
                     backgroundColor: 'inherit',
                 },
                 '&:active': {
-                    color: colorBase.infoVisited
+                    color: colorBase.secondaryPressed
                 },
                 '&:disabled': {
-                    color: colorBase.backgroundDisabled
+                    color: colorBase.disable
                 }
             },
             contained: {
                 height: pxToRem(40),
-                fontSize: '1.6rem',
+                fontSize: pxToRem(14),
                 backgroundColor: colorBase.primary,
                 '&:hover': {
                     backgroundColor: colorBase.primaryHover,

@@ -32,6 +32,7 @@ export const ColorDarkDefault = Object.freeze({
     popBg: '#393F64',
     globalBg: '#1F2034',
     boxLinear: 'linear-gradient(194.79deg, #322C53 17.96%, #262B50 44.29%, #32314F 96.93%)',
+    mask: `${hexToRGB('#000000', '0.68')}`,
     white: '#ffffff',
     dark: '#000000',
     opacity: `${hexToRGB('#000000', '0')}`,

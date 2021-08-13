@@ -11,8 +11,9 @@ import { useTicker } from '../../../stores/ticker';
 export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>({pageSize}: { pageSize: number }) {
     const [rawData, setRawData] = React.useState<Array<AmmDetail<any>> | []>([]);
     const [page, setPage] = React.useState<number>(1);
-    const [timestamp, setTimestamp] = React.useState<NodeJS.Timer | -1>(-1)
     const {coinMap} = useTokenMap();
+    const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+
     const {ammMap, status: ammMapStatus,} = useAmmMap();
     const {
         tickerMap,
@@ -46,43 +47,38 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
 
     }, [ammMap]);
     const updateTickerLoop = React.useCallback((_keys?: string[]) => {
-
-        if (timestamp !== -1) {
-            clearTimeout(timestamp)
+        updateTickers(_keys as string[]);
+        if (nodeTimer.current  !== -1) {
+            clearTimeout(nodeTimer.current);
         }
-
-        setTimestamp(setTimeout(() => {
-            updateTickerLoop(_keys);
-        }, 60000))
-
-        //console.log(_keys)
-        setImmediate(updateTickers, _keys as string[])
-    },[])
+        nodeTimer.current = setTimeout(() => {
+            updateTickerLoop(_keys)
+        }, 1000)
+    },[updateTickers])
+    React.useEffect(() => {
+        return () => {
+            clearTimeout(nodeTimer.current as NodeJS.Timeout);
+        }
+    }, [nodeTimer.current]);
 
     const updateTickersUI = React.useCallback((_page) => {
         setPage(_page);
         if (ammMap && Object.keys(ammMap).length > 0) {
-            const _keys = []
+            const _keys:string[] = []
             for (let i = (page - 1) * pageSize; i < Object.keys(ammMap).length && i < (page - 1) * pageSize + pageSize; i++) {
                 _keys.push(Object.keys(ammMap)[ i ]);
             }
-            
-            // setKeys(_keys);
-            updateTickerLoop(_keys);
-            // try{
-            //    // socketStart({})
-            // }catch (error){
-            //
-            // }
-
-
+            updateTickerLoop(_keys)
         }
     }, [ammMap, pageSize]);
     React.useEffect(() => {
         if (ammMap && Object.keys(ammMap).length !== 0) {
             updateTickersUI(page)
         }
+
     }, []);
+
+
     React.useEffect(() => {
         if (tickerStatus === SagaStatus.UNSET){
             updateRawData(tickerMap)

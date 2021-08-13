@@ -183,8 +183,8 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
       {/*      justifyContent={"space-between"} */}
       {/*      // paddingTop={'var(--toolbar-row-padding)'}*/}
       {/*      }>*/}
-          <Toolbar className={'large'} variant={'dense'}  >
-              <Box alignSelf={'center'}>
+          <Toolbar className={'large'} variant={'dense'}   >
+              <Box alignSelf={'center'} justifyContent={'flex-start'} display={'flex'}>
                   <TabPanelBtn {...{t, value: index, handleChange: handleTabChange, ...rest}} />
               </Box>
               <Box alignSelf={'center'}>
