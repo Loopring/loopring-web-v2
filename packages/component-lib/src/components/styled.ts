@@ -153,7 +153,7 @@ export const SwitchPanelStyled: any = styled(Box)<{ _height?: number | string, _
     ${({theme}) => modalContentBaseStyle({theme: theme})}
     ${({_height, _width, theme}) => `
      
-      background: ${theme.colorBase.popBg};
+      background: ${theme.colorBase.box};
       .react-swipeable-view-container {
            height: ${_height && Number.isNaN(_height) ? _height + 'px' : _height ? _height : '100%'} ;
            width: ${_width && Number.isNaN(_width) ? _width + 'px' : _width ? _width : '100%'};

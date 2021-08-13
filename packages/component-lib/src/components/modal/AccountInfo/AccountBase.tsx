@@ -2,13 +2,13 @@ import { Box, Button, Typography } from '@material-ui/core/';
 import { CopyIcon, getShortAddr, LinkIcon, ReverseIcon, } from '@loopring-web/common-resources';
 import { Trans, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
-import { AccountBaseProps } from './Interface';
-import { boxLiner, PopoverPure, VipStyled } from '../../../';
+import { AccountBaseProps } from './Interface';                             
+import { PopoverPure, VipStyled } from '../../../';
 import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { usePopupState } from 'material-ui-popup-state/hooks';
 import QRCode from 'qrcode.react';
+// ${({theme})=>boxLiner({theme})}
 const PopStyle = styled(Box)`
-  ${({theme})=>boxLiner({theme})}
   border-radius: ${({theme})=>theme.unit/2}px
 `
 const BoxStyled = styled(Box)`
@@ -19,19 +19,23 @@ const BoxStyled = styled(Box)`
   //
   //  
   // }                                                               
-  // &  .MuiButton-root{
-  //       width: var(--account-button-fixed-width);
-  //       height: var(--account-button-fixed-height);
-  //       text-overflow: ellipsis;
-  //       align-items: flex-end;
-  //       position: relative;
-  //       svg{
-  //         position: absolute;
-    //         top: ${({theme}) => theme.unit}px;
-  //         left: 50%;
-  //         margin-left: calc(var(--svg-size-large) / -2) ;
-  //       }
-  // }
+  &  .MuiButton-root{
+    color: var(--color-text-secondary);
+    &:hover{
+      color: var(--color-text-primary);
+    }
+        // width: var(--account-button-fixed-width);
+        // height: var(--account-button-fixed-height);
+        // text-overflow: ellipsis;
+        // align-items: flex-end;
+        // position: relative;
+        // svg{
+        //   position: absolute;
+        //     top: ${({theme}) => theme.unit}px;
+        //   left: 50%;
+        //   margin-left: calc(var(--svg-size-large) / -2) ;
+        // }
+  }
   & .active {
 
   }
@@ -79,25 +83,25 @@ export const AccountBase = ({
             >{level}</VipStyled> : undefined}
         </Typography>
         <PopoverPure
-            className={'_arrow-top-center'}
+            className={'arrow-center'}
             {...bindPopover(popupState)}
             {...{
-                anchorOrigin: {vertical: 'top', horizontal: 'center'},
-                transformOrigin: {vertical: 'bottom', horizontal: 'center'}
+                anchorOrigin: {vertical: 'bottom', horizontal: 'center'},
+                transformOrigin: {vertical: 'top', horizontal: 'center'}
             }}
         >
-            <PopStyle paddingTop={2} paddingX={2} width={180} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+            <PopStyle paddingY={2} paddingX={2} width={184} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                 {/*<QRCodePanel {...{*/}
                 {/*    ...rest, t, title: '', description: '',*/}
                 {/*    url: etherscanLink*/}
-                {/*}} />*/}
-                <QRCode value={etherscanLink} size={80} style={{ backgroundColor: '#fff'}} aria-label={`link:${etherscanLink}`}/>
+                {/*}} />*/}                                   
+                <QRCode value={etherscanLink} size={120} style={{ backgroundColor: '#fff'}} aria-label={`link:${etherscanLink}`}/>
                 <Typography  marginTop={2}  variant={'body2'} color={'textSecondary'} style={{wordBreak:'break-all'}}>{accAddress}</Typography>
-                <Button onClick={() => {
-                    if (onCopy) onCopy()
-                }}>
-                    <Typography variant={'body2'} > {t('labelCopyAddress')} </Typography>
-                </Button>
+                {/*<Button onClick={() => {*/}
+                {/*    if (onCopy) onCopy()*/}
+                {/*}}>*/}
+                {/*    <Typography variant={'body2'} > {t('labelCopyAddress')} </Typography>*/}
+                {/*</Button>*/}
             </PopStyle>
 
         </PopoverPure>
