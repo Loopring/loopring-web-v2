@@ -99,12 +99,10 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                     const isFavourite = favoriteMarket?.includes(pair)
                     return (
                         <Box className="rdg-cell-value"
-                             display={'flex'}
-                             alignItems={'center'}
-                             style={{cursor: 'pointer'}}
-                             width={'max-content'}
-                             onClick={(e) => handleStartClick(e, isFavourite, pair)}>
-                            <StarIconWrapperStyled>
+                            display={'flex'}
+                            alignItems={'center'}
+                            >
+                            <StarIconWrapperStyled onClick={(e) => handleStartClick(e, isFavourite, pair)}>
                                 {isFavourite ? (
                                     <StarSolidIcon cursor={'pointer'}/>
                                 ) : (
