@@ -15,7 +15,7 @@ export async function activeAccount({ reason, shouldShow }: { reason: any, shoul
         // deposited, but need update account
         console.log('SignAccount')
         store.dispatch(setShowConnect({ isShow: false }));
-        store.dispatch(setShowAccount({ isShow: true, step: AccountStep.SignAccount }));
+        store.dispatch(setShowAccount({ isShow: true, step: AccountStep.UpdateAccount }));
         store.dispatch(updateAccountStatus({ readyState: AccountStatus.DEPOSITING }));
 
     } else {

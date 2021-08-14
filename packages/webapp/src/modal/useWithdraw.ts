@@ -21,14 +21,25 @@ import { connectProvides } from '@loopring-web/web3-provider';
 import { myLog } from 'utils/log_tools';
 import { useWalletLayer2 } from '../stores/walletLayer2';
 import { makeWalletLayer2 } from '../hooks/help';
+import { useTranslation } from 'react-i18next';
 // import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
 // import { useChargeFeeList } from './hook';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     // handleWithdraw: (inputValue:R) => void,
+    withdrawAlertText: string | undefined,
+    withdrawToastOpen: boolean, 
+    setWithdrawToastOpen: any,
     withdrawProps: WithdrawProps<R, T>
     // withdrawValue: R
 } => {
+
+    const { t } = useTranslation('common')
+
+    const [withdrawToastOpen, setWithdrawToastOpen] = useState<boolean>(false)
+
+    const [withdrawAlertText, setWithdrawAlertText] = useState<string>()
+
     const {tokenMap, coinMap} = useTokenMap();
     const {account} = useAccount()
     const {exchangeInfo, chainId} = useSystem();
@@ -43,7 +54,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const [withdrawAddr, setWithdrawAddr] = useState<string>()
     const [withdrawFeeInfo, setWithdrawFeeInfo] = useState<any>(undefined)
     const [withdrawType, setWithdrawType] = useState<OffchainFeeReqType>(OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
-    const {setShowWithdraw}  = useOpenModals();
+    const { setShowWithdraw, }  = useOpenModals()
 
     React.useEffect(()=>{
         if(walletLayer2Status === SagaStatus.UNSET){
@@ -58,6 +69,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     }, [chargeFeeList, setWithdrawFeeInfo])
 
     const handleWithdraw = React.useCallback(async (inputValue: R) => {
+
         const {accountId, accAddress, readyState, apiKey, connectName, eddsaKey} = account
         if (readyState === AccountStatus.ACTIVATED && tokenMap 
             && exchangeInfo && connectProvides.usedWeb3 
@@ -93,10 +105,21 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     eddsaKey.sk, apiKey)
 
                     myLog('got response:', response)
-                //TODO check success or failed API
+
+                    if (response?.hash === undefined && response?.errInfo) {
+                        setWithdrawAlertText(t('labelWithdrawFailed'))
+                    } else {
+                        setWithdrawAlertText(t('labelWithdrawSucess'))
+                    }
+                    
             } catch (e) {
                 dumpError400(e)
+                setWithdrawAlertText(t('labelWithdrawFailed'))
             }
+            
+            setWithdrawToastOpen(true)
+
+            return true
 
         } else {
             return false
@@ -152,6 +175,9 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     }
 
     return {
+        withdrawAlertText,
+        withdrawToastOpen, 
+        setWithdrawToastOpen,
         withdrawProps,
     }
 }

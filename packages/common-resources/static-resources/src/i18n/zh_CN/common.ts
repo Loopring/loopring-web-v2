@@ -208,4 +208,7 @@ export default {
     labelCookiesAgree: '同意',
     labelLimitMin:'最小下单量{{arg}}',
     labelAgreeLoopringTxt: '允许路印使用Cookies。',
+    labelLayer2HistoryTransactions: '充值提现',
+    labelLayer2HistoryTrades: '交易记录',
+    labelLayer2HistoryAmmRecords: 'AMM 记录',
 }
