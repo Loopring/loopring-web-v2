@@ -41,7 +41,10 @@ export const SwapTradeWrap = <T extends IBData<I>,
     const buyRef = React.useRef();
     const {slippage} = useSettings();
     const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number | string>;
-
+    const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
+        error: false,
+        message: ''
+    });
     const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined' ? isStob : true);
 
     const _onSwitchStob = React.useCallback((_event: any) => {
@@ -52,13 +55,13 @@ export const SwapTradeWrap = <T extends IBData<I>,
     }, [switchStobEvent, _isStoB])
 
 
-    const getDisabled = () => {
+    const getDisabled = React.useCallback(() => {
         if (disabled || tradeCalcData === undefined || tradeCalcData.sellCoinInfoMap === undefined) {
             return true
         } else {
             return false
         }
-    };
+    }, [disabled, tradeCalcData]);
     const tradeData = swapData.tradeData
 
     const handleOnClick = React.useCallback((_event: React.MouseEvent, ref: any) => {
@@ -95,8 +98,12 @@ export const SwapTradeWrap = <T extends IBData<I>,
     if (typeof handleError !== 'function') {
         handleError = ({belong, balance, tradeValue}: any) => {
             if (balance < tradeValue || (tradeValue && !balance)) {
-                return {error: true, message: t('tokenNotEnough', {belong: belong})}
+                const _error = {error: true, message: t('tokenNotEnough', {belong: belong})}
+                setError(_error);
+                return _error
+
             }
+            setError({error: false, message: ''});
             return {error: false, message: ''}
         }
     }
@@ -128,6 +135,26 @@ export const SwapTradeWrap = <T extends IBData<I>,
         variant: 'popover',
         popupId: 'slippagePop',
     })
+    const label = React.useMemo(() => {
+        if (error.error) {
+            if (typeof error.message === 'string') {
+                return t(error.message)
+            } else if (error.message !== undefined) {
+                return error.message;
+            } else {
+                return t('labelError')
+            }
+
+        }
+        if (swapBtnI18nKey) {
+            const key = swapBtnI18nKey.split(',');
+            return t(key[ 0 ], key && key[ 1 ] ? {arg: key[ 1 ]} : undefined)
+        } else {
+            return t(`swapBtn`)
+        }
+
+    }, [error,t,swapBtnI18nKey])
+
 
     const priceImpact = (tradeCalcData && tradeCalcData.priceImpact) ? parseFloat(tradeCalcData.priceImpact).toPrecision(3).toString() + ' %' : EmptyValueTag
 
@@ -144,6 +171,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
             {/*    <Grid item>*/}
             <InputButton<any, I, CoinInfo<I>> ref={sellRef} disabled={getDisabled()}  {...{
                 ...propsSell,
+                isHideError: true,
                 inputData: tradeData ? tradeData.sell : {} as any,
                 coinMap: tradeCalcData && tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap : {} as CoinMap<I, CoinInfo<I>>
             }} />
@@ -160,6 +188,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
             <InputButton<any, I, CoinInfo<I>> ref={buyRef} disabled={getDisabled()} {...{
                 ...propsBuy,
                 // maxAllow:false,
+                isHideError: true,
                 inputData: tradeData ? tradeData.buy : {} as any,
                 coinMap: tradeCalcData && tradeCalcData.buyCoinInfoMap ? tradeCalcData.buyCoinInfoMap : {} as CoinMap<I, CoinInfo<I>>
             }} />
@@ -237,8 +266,8 @@ export const SwapTradeWrap = <T extends IBData<I>,
                         onSwapClick(swapData.tradeData)
                     }}
                             loading={!getDisabled() && swapBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-                            disabled={getDisabled() || swapBtnStatus === TradeBtnStatus.DISABLED || swapBtnStatus === TradeBtnStatus.LOADING ? true : false}
-                            fullWidth={true}>{t(swapBtnI18nKey ? swapBtnI18nKey : `swapBtn`)}
+                            disabled={getDisabled() || swapBtnStatus === TradeBtnStatus.DISABLED || swapBtnStatus === TradeBtnStatus.LOADING || error.error ? true : false}
+                            fullWidth={true}>{label}
                     </Button>
                 </Grid>
             </Grid>

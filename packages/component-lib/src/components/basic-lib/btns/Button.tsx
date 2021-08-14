@@ -76,7 +76,7 @@ export const ModalCloseButton = ({onClose, t}: {
         bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void;
     }['bivarianceHack']
 } & WithTranslation) => {
-    return <Box alignSelf={'flex-end'} position={'absolute'} zIndex={99} marginTop={'-28px'} marginRight={'12px'}>
+    return <Box className={'close-button'} alignSelf={'flex-end'} position={'absolute'} zIndex={99} marginTop={'-28px'} marginRight={'12px'}>
         <IconButton aria-label={t('labelClose')} color={'inherit'} size={'small'} onClick={(event) => {
             onClose && onClose(event, 'escapeKeyDown')
         }}>

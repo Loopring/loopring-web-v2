@@ -43,7 +43,7 @@ import {
     makeTickView,
     makeWalletLayer2,
     pairDetailBlock,
-    pairDetailDone
+    pairDetailDone, volumeToCountAsBigNumber
 } from '../../hooks/help';
 import * as _ from 'lodash'
 import store from 'stores';
@@ -52,10 +52,11 @@ import { myLog } from 'utils/log_tools';
 import { useTranslation } from 'react-i18next';
 import { REFRESH_RATE_SLOW } from 'defs/common_defs';
 import { usePairMatch } from 'hooks/usePairMatch';
+import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
 
 export const useSwapBtnStatusCheck = () => {
 
-    const [btnStatus, setBtnStatus] = useState(TradeBtnStatus.DISABLED)
+    const [btnStatus, setBtnStatus] = useState(TradeBtnStatus.AVAILABLE)
 
     const [isSwapLoading, setIsSwapLoading] = useState(false)
 
@@ -66,7 +67,7 @@ export const useSwapBtnStatusCheck = () => {
     useEffect(() => {
 
         if (account.readyState !== AccountStatus.ACTIVATED) {
-            setBtnStatus(TradeBtnStatus.DISABLED)
+            setBtnStatus(TradeBtnStatus.AVAILABLE)
         } else {
 
             if (isSwapLoading) {
@@ -81,7 +82,7 @@ export const useSwapBtnStatusCheck = () => {
 
         }
 
-    }, [isSwapLoading, isValidAmt, account.readyState])
+    }, [isSwapLoading, isValidAmt,account.readyState])
 
     return {
         btnStatus,
@@ -325,7 +326,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     }, [tradeData, output, tokenMap])
 
-    const swapBtnClickArray: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
+    const swapBtnClickArray = Object.assign(deepClone(btnClickMap), {
         [fnType.ACTIVATED]: [swapCalculatorCallback]
     })
 
@@ -450,12 +451,19 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             && sdk.toBig(output?.amountBOut).gte(sdk.toBig(quoteMinAmt))) ? true : false
 
         setIsValidAmt(validAmt)
+        
+        if(validAmt || quoteMinAmt === undefined || tradeData === undefined){
+            setSwapBtnI18nKey(undefined)
+        }else{
+
+            setSwapBtnI18nKey(`labelLimitMin,${VolToNumberWithPrecision(quoteMinAmt,tradeData?.buy.belong) + ' ' + tradeData?.buy.belong}`)
+        }
 
         myLog(output, quoteMinAmt)
 
         myLog('.........validAmt:', validAmt)
 
-    }, [output, quoteMinAmt])
+    }, [output, quoteMinAmt,tradeData?.sell.belong])
 
     const throttleSetValue = React.useCallback(_.debounce(async (type, _tradeData, _ammPoolSnapshot) => {
 

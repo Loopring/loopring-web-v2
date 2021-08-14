@@ -18,7 +18,7 @@ export const accountStaticCallBack = (onclickMap: { [key: number]: [fn: (props: 
 
 }
 
-export const btnLabel: typeof btnClickMap = {
+export const btnLabel = {
 
     [fnType.UN_CONNECT]: [
         function () {
@@ -28,6 +28,10 @@ export const btnLabel: typeof btnClickMap = {
     [fnType.ERROR_NETWORK]: [
         function () {
             return `labelWrongNetwork`
+        }
+    ], [fnType.NO_ACCOUNT]: [
+        function () {
+            return `depositTitleAndActive`
         }
     ],
 
@@ -57,14 +61,16 @@ export const btnClickMap: { [key: string]: [fn: (props: any) => any, args?: any[
     ],
     [fnType.UN_CONNECT]: [
         function () {
-            // setShowConnect({isShow: true})
+            myLog('UN_CONNECT!', );
             store.dispatch(changeShowModel({ _userOnModel: true }));
             store.dispatch(setShowConnect({ isShow: true, step: WalletConnectStep.Provider }))
         }
     ]
     , [fnType.NO_ACCOUNT]: [
         function () {
-            myLog('NO_ACCOUNT! sendCheckAcc', )
+
+            myLog('NO_ACCOUNT! sendCheckAcc', );
+            store.dispatch(changeShowModel({ _userOnModel: true }));
             walletLayer2Services.sendCheckAcc()
             // store.dispatch(changeShowModel({ _userOnModel: true }));
             // store.dispatch(setShowAccount({ isShow: true, step: AccountStep.NoAccount }))
@@ -73,7 +79,8 @@ export const btnClickMap: { [key: string]: [fn: (props: any) => any, args?: any[
     ]
     , [fnType.DEPOSITING]: [
         function () {
-            myLog('DEPOSITING! sendCheckAcc', )
+            myLog('DEPOSITING! sendCheckAcc', );
+            store.dispatch(changeShowModel({ _userOnModel: true }));
             walletLayer2Services.sendCheckAcc()
             // store.dispatch(setShowAccount({isShow: true, step: AccountStep.Depositing}))
             // ShowDeposit(true)

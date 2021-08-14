@@ -24,7 +24,7 @@ export const useHeader = () => {
     const accountState = useAccount();
     const {account, setShouldShow, status: accountStatus} =  useAccount();
     const {setShowAccount} = useOpenModals();
-    const _btnClickMap: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
+    const _btnClickMap = Object.assign(deepClone(btnClickMap), {
         [ fnType.ACTIVATED ]: [
             function () {
                 setShouldShow(true);
@@ -42,7 +42,6 @@ export const useHeader = () => {
 
     const onWalletBtnConnect = React.useCallback(async () => {
         myLog(`onWalletBtnConnect click: ${account.readyState}`);
-        setShouldShow(true);
         accountStaticCallBack(_btnClickMap, []);
     }, [account, setShouldShow,_btnClickMap])
 

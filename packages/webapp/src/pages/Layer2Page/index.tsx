@@ -46,7 +46,7 @@ const BtnConnect = withTranslation(['common'], {withRef: true})(({t}: any) => {
     // const {setShowAccount} = useOpenModals();
     const [label, setLabel] = React.useState(undefined);
 
-    const _btnLabel: typeof btnClickMap = Object.assign(deepClone(btnLabel), {
+    const _btnLabel = Object.assign(deepClone(btnLabel), {
         [ fnType.NO_ACCOUNT ]: [
             function () {
                 return `depositTitleAndActive`
@@ -65,7 +65,7 @@ const BtnConnect = withTranslation(['common'], {withRef: true})(({t}: any) => {
         }
     }, [accountStatus, i18n.language])
 
-    const _btnClickMap: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {});
+    const _btnClickMap = Object.assign(deepClone(btnClickMap), {});
 
     return <Button variant={'contained'} size={'large'} color={'primary'} fullWidth={true}
                    style={{maxWidth: '280px'}} onClick={() => {

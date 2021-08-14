@@ -367,7 +367,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         }
     }, [joinRequest, ammJoinData, account, delayAndUpdateWalletLayer2, t])
 
-    const onAmmDepositClickMap: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
+    const onAmmDepositClickMap = Object.assign(deepClone(btnClickMap), {
         [fnType.ACTIVATED]: [addToAmmCalculator]
     })
     const onAmmAddClick = React.useCallback((props: AmmData<IBData<any>>) => {
@@ -524,7 +524,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
     }, [exitRequest, ammExitData, delayAndUpdateWalletLayer2, account, t])
 
-    const removeAmmClickMap: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
+    const removeAmmClickMap = Object.assign(deepClone(btnClickMap), {
         [fnType.ACTIVATED]: [removeAmmCalculator]
     })
 

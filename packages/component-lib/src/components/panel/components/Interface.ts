@@ -141,6 +141,7 @@ type DefaultWithMethodProps<T, I> = DefaultProps<T, I> & {
 
 export type  BasicACoinTradeViewProps<T, I> = Required<DefaultWithMethodProps<T, I>> & {
     onChangeEvent: (index: 0 | 1, data: SwitchData<T>) => void,
+    // coinInputError:{ error: boolean, message?: string | React.ElementType },
 } & Pick<InputButtonProps<T, I, CoinInfo<I>>, 'handleError'>
 
 export type BasicACoinTradeProps<T, I> = BasicACoinTradeViewProps<T, I> & {
