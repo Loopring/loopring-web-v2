@@ -205,4 +205,7 @@ export default {
     labelMiningMyReward: 'My Reward',
     labelCookiesAgree: 'Agree',
     agreeLoopringTxt: 'Allow Loopring to use Cookies.',
+    labelLayer2HistoryTransactions: 'Transactions',
+    labelLayer2HistoryTrades: 'Transactions',
+    labelLayer2HistoryAmmRecords: 'AMM Records',
 }

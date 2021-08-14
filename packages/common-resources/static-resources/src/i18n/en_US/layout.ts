@@ -24,6 +24,8 @@ export default {
     labelAssets: 'assets',
     labelTransactions: 'transactions',
     labelTrades: 'trades',
+    labelHistory: 'History',
+    labelOrder: 'Order',
     labelAmmRecords: 'Amm records',
     labelAmmRecordsDes: '(Join & Exits)',
     rewards: 'rewards',

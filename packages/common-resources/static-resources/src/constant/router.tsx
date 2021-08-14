@@ -10,6 +10,7 @@ import {
     TransactionsIcon,
     L2MyLiquidityIcon,
     L2HistoryIcon,
+    L2OrderIcon,
 } from '../svg';
 
 import { ThemeType } from '../themes';
@@ -151,7 +152,14 @@ export const subMenuLayer2 = {
         label: {
             id: 'history', i18nKey: 'labelHistory',
         },
-    }, /* {
+    }, {
+        icon: L2OrderIcon,
+        router: {path: '/layer2/order'},
+        label: {
+            id: 'order', i18nKey: 'labelOrder',
+        },
+    },
+    /* {
         icon: TransactionsIcon,
         router: {path: '/layer2/transactions'},
         label: {
