@@ -79,7 +79,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
         etherscanUrl: 'https://material-ui.com/components/material-icons/'
     }
     const accAddress = '0xcEd11e039a5C50927a17a8D4632616DFa8F72BF6'
-    const etherscanLink =  accAddress;
+    const etherscanLink =  accAddress
     //nameList,
     const { accountList} = React.useMemo(() => {
         const accountMap = {
@@ -96,13 +96,13 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
             [ AccountStep.DepositFailed ]: {view: <FailedDeposit {...rest} label={'depositTitleAndActive'}
                                                           onRetry={() => undefined}
                                                           etherscanLink={accountInfoProps.etherscanUrl}/>,},
-            [ AccountStep.SignAccount ]: {view: <ApproveAccount  {...{...accountInfoProps, ...rest}}
+            [ AccountStep.UpdateAccount ]: {view: <ApproveAccount  {...{...accountInfoProps, ...rest}}
                                                           goActiveAccount={() => undefined}/>,},
             [ AccountStep.ProcessUnlock ]: {view: <ProcessUnlock {...{providerName: ConnectProviders.MetaMask, ...rest}}/>,},
             [ AccountStep.SuccessUnlock ]: {view: <SuccessUnlock {...rest}/>,},
             [ AccountStep.FailedUnlock ]: {view: <FailedUnlock {...rest} onRetry={() => undefined}/>,},
             [ AccountStep.HadAccount ]: {view: <HadAccount mainBtn={mainBtn} {...accountInfoProps}/>,},
-            [ AccountStep.TokenAccessProcess ]: {view: <TokenAccessProcess {...{
+            [ AccountStep.TokenApproveInProcess ]: {view: <TokenAccessProcess {...{
                 ...rest,
                 coinInfo,
                 providerName: ConnectProviders.MetaMask
@@ -111,11 +111,11 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                 ...rest,
                 providerName: ConnectProviders.MetaMask
             }}/>,},
-            [ AccountStep.ActiveAccountProcess ]: {view: <ActiveAccountProcess {...{
+            [ AccountStep.UpdateAccountInProcess ]: {view: <ActiveAccountProcess {...{
                 ...rest,
                 providerName: ConnectProviders.MetaMask
             }}/>,},
-            [ AccountStep.FailedTokenAccess ]: {view: <FailedTokenAccess {...{...rest, coinInfo}}/>,},
+            [ AccountStep.TokenApproveFailed ]: {view: <FailedTokenAccess {...{...rest, coinInfo}}/>,},
         }
 
         return { nameList: Object.keys(accountMap), accountList: Object.values(accountMap) }

@@ -44,7 +44,7 @@ export  function useAccountModal() {
     const handleSignAccount = React.useCallback(()=>{
         // updateAccount({readyState:'DEPOSITING'});
         statusAccountUnset();
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.SignAccount});
+        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.UpdateAccount});
     },[shouldShow])
     const handleSignError = React.useCallback(()=>{
         setShowAccount({isShow: shouldShow ?? false,step:AccountStep.FailedUnlock});
