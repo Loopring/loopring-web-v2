@@ -159,7 +159,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 ...rest,
                 t
             }} />,},
-            [ AccountStep.FailedDeposit ]: {view: <FailedDeposit label={title}
+            [ AccountStep.DepositFailed ]: {view: <FailedDeposit label={title}
                                                           etherscanLink={etherscanUrl + account.accAddress}
                                                           onRetry={() => goDeposit()} {...{...rest, t}} />,onBack:()=>{
                     setShowAccount({isShow: true,step:AccountStep.Deposit});
@@ -200,7 +200,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 ...rest,
                 t
             }} />,},
-            [ AccountStep.DepositingProcess ]: {view: <DepositingProcess label={title}
+            [ AccountStep.DepositInProcess ]: {view: <DepositingProcess label={title}
                                                                   etherscanLink={etherscanUrl + account.accAddress}
                                                                   providerName={account.connectName} {...{
                 ...rest,

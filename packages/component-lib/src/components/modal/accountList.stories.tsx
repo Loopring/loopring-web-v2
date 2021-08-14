@@ -93,7 +93,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                 providerName: ConnectProviders.MetaMask,
                 etherscanLink: accountInfoProps.etherscanUrl, ...rest
             }}/>,},
-            [ AccountStep.FailedDeposit ]: {view: <FailedDeposit {...rest} label={'depositTitleAndActive'}
+            [ AccountStep.DepositFailed ]: {view: <FailedDeposit {...rest} label={'depositTitleAndActive'}
                                                           onRetry={() => undefined}
                                                           etherscanLink={accountInfoProps.etherscanUrl}/>,},
             [ AccountStep.SignAccount ]: {view: <ApproveAccount  {...{...accountInfoProps, ...rest}}
