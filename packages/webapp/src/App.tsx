@@ -1,8 +1,8 @@
-import { ModalProvider } from 'styled-react-modal'
+// import { ModalProvider } from 'styled-react-modal'
 import RouterView from './routers'
 import { GlobalStyles } from '@material-ui/core';
 import { css, Theme, useTheme } from '@emotion/react';
-import { ErrorMap, globalCss, SagaStatus } from '@loopring-web/common-resources';
+import { ErrorMap, globalCss } from '@loopring-web/common-resources';
 // import { GlobalProvider, Web3ReactManager } from './provider/';
 import { useInit } from './hook';
 // import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
@@ -44,7 +44,6 @@ const App = () => {
       //  flex-direction: column;
       //}
 }`}></GlobalStyles>
-    <ModalProvider>
       <GlobalProvider>
         {/*<Web3ReactManager>*/}
         {state === 'PENDING' ?
@@ -57,8 +56,7 @@ const App = () => {
             {/*    <ErrorPage {...ErrorMap.LOADING_WHOLE_SITE}/>*/}
           </>}
       </GlobalProvider>
-
-    </ModalProvider></>
+</>
 
 
 }

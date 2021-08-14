@@ -3,11 +3,11 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 import BasicInfoPanel from './panel/BasicInfoPanel'
 import TradePanel from './panel/TradePanel'
-import styled from 'styled-components'
-import { useSwapPage } from './hook';
+import styled from '@emotion/styled'
+import { useSwapPage } from './hook'
 import { SwapPanel, Toast } from '@loopring-web/component-lib'
 import { TradeBtnStatus } from '@loopring-web/component-lib'
-import { useTokenMap } from '../../stores/token';
+import { useTokenMap } from '../../stores/token'
 import { TOAST_TIME } from 'defs/common_defs'
 
 const FixedStyle = styled(Box)`

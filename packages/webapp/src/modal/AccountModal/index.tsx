@@ -101,7 +101,7 @@ export const ModalAccountInfo = withTranslation('common')(({
         }
 
         myLog('goUpdateAccount....')
-        setShowAccount({isShow: true, step: AccountStep.ActiveAccountProcess});
+        setShowAccount({isShow: true, step: AccountStep.UpdateAccountInProcess});
 
         const result: ActionResult = await updateAccountFromServer()
 
@@ -164,7 +164,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                                                           onRetry={() => goDeposit()} {...{...rest, t}} />,onBack:()=>{
                     setShowAccount({isShow: true,step:AccountStep.Deposit});
                 }},
-            [ AccountStep.SignAccount ]: {view: <ApproveAccount {...{
+            [ AccountStep.UpdateAccount ]: {view: <ApproveAccount {...{
                 ...account,
                 etherscanUrl,
                 onSwitch, onCopy,
@@ -187,7 +187,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 etherscanLink: etherscanUrl + account.accAddress,
                 mainBtn: account.readyState === 'ACTIVATED' ? lockBtn : unlockBtn
             }} />,},
-            [ AccountStep.TokenAccessProcess ]: {view: <TokenAccessProcess label={title}
+            [ AccountStep.TokenApproveInProcess ]: {view: <TokenAccessProcess label={title}
                                                                     providerName={account.connectName} {...{
                 ...rest,
                 t
@@ -206,16 +206,16 @@ export const ModalAccountInfo = withTranslation('common')(({
                 ...rest,
                 t
             }} />,},
-            [ AccountStep.ActiveAccountProcess ]: {view: <ActiveAccountProcess providerName={account.connectName} {...{
+            [ AccountStep.UpdateAccountInProcess ]: {view: <ActiveAccountProcess providerName={account.connectName} {...{
                 ...rest,
                 t
             }} />,},
-            [ AccountStep.ActiveAccountFailed ]: {view: <FailedUnlock label={title} onRetry={() => {
+            [ AccountStep.UpdateAccountFailed ]: {view: <FailedUnlock label={title} onRetry={() => {
                 goUpdateAccount()
             }} {...{...rest, t}} />,onBack:()=>{
-                    setShowAccount({isShow: true,step:AccountStep.SignAccount});
+                    setShowAccount({isShow: true,step:AccountStep.UpdateAccount});
                 }},
-            [ AccountStep.FailedTokenAccess ]: {view: <FailedTokenAccess label={title} onRetry={() => {
+            [ AccountStep.TokenApproveFailed ]: {view: <FailedTokenAccess label={title} onRetry={() => {
                 goDeposit()
             }} {...{
                 t, ...rest,
