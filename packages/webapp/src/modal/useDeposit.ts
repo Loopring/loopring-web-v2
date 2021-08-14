@@ -88,7 +88,7 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
 
                 }
 
-                setShowAccount({isShow: true, step: AccountStep.DepositingProcess})
+                setShowAccount({isShow: true, step: AccountStep.DepositInProcess})
 
                 myLog('before deposit:', chainId, connectName, isMetaMask)
 
@@ -104,7 +104,7 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
 
                 if (response?.hash === undefined && response?.errInfo) {
                     // deposit failed
-                    setShowAccount({isShow: true, step: AccountStep.FailedDeposit})
+                    setShowAccount({isShow: true, step: AccountStep.DepositFailed})
                 } else {
                     // deposit sucess
                     setShowAccount({isShow: true, step: AccountStep.Depositing})
@@ -114,9 +114,9 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
                 dumpError400(reason)
                 result.code = ActionResultCode.DepositFailed
                 result.data = reason
-                
+
                 //deposit failed
-                setShowAccount({isShow: true, step: AccountStep.FailedDeposit})
+                setShowAccount({isShow: true, step: AccountStep.DepositFailed})
             }
 
         } else {
