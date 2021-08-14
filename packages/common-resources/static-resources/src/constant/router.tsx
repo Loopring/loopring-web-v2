@@ -151,7 +151,7 @@ export const subMenuLayer2 = {
         label: {
             id: 'history', i18nKey: 'labelHistory',
         },
-    }, {
+    }, /* {
         icon: TransactionsIcon,
         router: {path: '/layer2/transactions'},
         label: {
@@ -171,7 +171,7 @@ export const subMenuLayer2 = {
                 id: 'AmmRecords', i18nKey: 'labelAmmRecords',
                 description: 'labelAmmRecordsDes',
             },
-        }
+        } */
     ],
     // countInfoGroup: [{
     //     icon: OrderIcon,
