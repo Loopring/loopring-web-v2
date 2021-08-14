@@ -89,9 +89,16 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     eddsaKey.sk, apiKey)
 
                     myLog(response)
-                //TODO check success or failed API
+
+                    if (response?.hash === undefined && response?.errInfo) {
+                        // transfer failed
+                    } else {
+                        // transfer sucess
+                    }
+                    
             } catch (e) {
                 dumpError400(e)
+                // transfer failed
             }
 
         } else {
