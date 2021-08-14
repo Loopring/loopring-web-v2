@@ -68,7 +68,7 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
 
                         myLog(curValInWei, allowance, ' need approveMax!')
 
-                        setShowAccount({isShow: true, step: AccountStep.TokenAccessProcess})
+                        setShowAccount({isShow: true, step: AccountStep.TokenApproveInProcess})
 
                         try {
                             await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
@@ -78,7 +78,7 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
                             result.code = ActionResultCode.ApproveFailed
                             result.data = reason
                             
-                            setShowAccount({isShow: true, step: AccountStep.FailedTokenAccess})
+                            setShowAccount({isShow: true, step: AccountStep.TokenApproveFailed})
                             return
                         }
 

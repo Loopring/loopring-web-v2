@@ -53,6 +53,7 @@
     }
   },
   "scripts": {
+    "clean": "yarn autoclean --force",
     "docker": "cd ./packages/webapp; yarn build; cd devops docker-compose build",
     "boot": "echo y | lerna clean; sleep 1; lerna bootstrap --force-local",
     "up_old": "rm -rf ./packages/component-lib/src/assets ./packages/webapp/src/assets; sleep 1; cp -rf ./packages/assets ./packages/component-lib/src ; cp -rf ./packages/assets ./packages/webapp/src ; echo y | lerna clean; yarn",
