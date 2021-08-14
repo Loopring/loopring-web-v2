@@ -68,12 +68,12 @@
     "deploy_infura": "npx ipfs-deploy build > .testfile",
     "update_pinata": "sh -ac '. .env.deploy; cat .testfile | xargs -I {} npx ipfs-deploy -p pinata -d cloudflare -c {}'",
     "deploy:ipfs": "yarn build; yarn deploy_infura; yarn update_pinata",
-    "check_dns": "dig TXT _dnslink.alpha.loopring.pro | grep 'dnslink=/ipfs/' | awk -F '\"' {'print $2'} | awk -F '/' {'print $3'}",
+    "dns": "dig TXT _dnslink.alpha.loopring.pro | grep 'dnslink=/ipfs/' | awk -F '\"' {'print $2'} | awk -F '/' {'print $3'}",
     "dev": "dotenv -e .env.development react-app-rewired start",
     "build_dev": "dotenv -e .env.development react-app-rewired build",
     "predocker": "if [ ! -d \"build\" ]; then yarn build; fi",
     "docker": "docker-compose build",
-    "deploy_ghpage": "yarn build; bash ./deploy.sh"
+    "gh": "yarn build; bash ./deploy.sh"
   },
   "browserslist": {
     "production": [
