@@ -10,6 +10,7 @@ import TxPanel from './TxPanel'
 import AssetPanel from './AssetPanel'
 import TradePanel from './TradePanel'
 import AmmPanel from './AmmPanel'
+import History from './HistoryPanel'
 import MyLiqudityPanel from './MyLiquidityPanel'
 import { SettingPanel } from '../SettingPage';
 // import { useModalProps } from '../../layouts/header/hook';
@@ -130,16 +131,17 @@ export const Layer2Page = () => {
             case AccountStatus.ACTIVATED:
                 return <>
                     <Box width={'200px'} display={'flex'} justifyContent={'stretch'} marginRight={3}
-                         marginBottom={2}>
+                        marginBottom={2}>
                         <SubMenu>
                             <SubMenuList selected={selected} subMenu={subMenu as any}/>
                         </SubMenu>
                     </Box>
                     <Box minHeight={420} display={'flex'} alignItems={'stretch'} flexDirection={'column'} marginTop={0}
-                         flex={1}>
+                        flex={1}>
 
                         {selected === 'assets' && <AssetPanel/>}
                         {selected === 'my-liquidity' && <MyLiqudityPanel/>}
+                        {selected === 'history' && <History/>}
                         {selected === 'transactions' && <TxPanel/>}
                         {selected === 'trades' && <TradePanel/>}
                         {selected === 'ammRecords' && <AmmPanel/>}
