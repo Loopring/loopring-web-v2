@@ -6,13 +6,15 @@ import { StylePaper } from '../../styled'
 import { useGetTxs, useGetTrades, useGetAmmRecord } from './hooks';
 
 const TxPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
-    const container = React.useRef(null);
     const [pageSize, setPageSize] = React.useState(10);
     const [currentTab, setCurrentTab] = React.useState('transactions')
 
     const { txs: txTableData, isLoading } = useGetTxs()
     const { userTrades, showLoading} = useGetTrades()
     const { ammRecordList, showLoading: ammLoading } = useGetAmmRecord()
+
+    const { t } = rest
+    const container = React.useRef(null);
 
     React.useEffect(() => {
         // @ts-ignore
@@ -25,9 +27,9 @@ const TxPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
     return (
         <StylePaper ref={container}>
             <Tabs value={currentTab} onChange={(_event, value) => setCurrentTab(value)} aria-label="l2-history-tabs">
-                <Tab label="Transactions" value="transactions"></Tab>
-                <Tab label="Trades" value="trades"></Tab>
-                <Tab label="AMM Records" value="ammRecords"></Tab>
+                <Tab label={t('labelLayer2HistoryTransactions')} value="transactions"></Tab>
+                <Tab label={t('labelLayer2HistoryTrades')} value="trades"></Tab>
+                <Tab label={t('labelLayer2HistoryAmmRecords')} value="ammRecords"></Tab>
             </Tabs>
             <div className="tableWrapper">
                 {currentTab === 'transactions' ? (

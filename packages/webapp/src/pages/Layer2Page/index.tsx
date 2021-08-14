@@ -11,6 +11,7 @@ import AssetPanel from './AssetPanel'
 import TradePanel from './TradePanel'
 import AmmPanel from './AmmPanel'
 import History from './HistoryPanel'
+import OrderPanel from './OrderPanel'
 import MyLiqudityPanel from './MyLiquidityPanel'
 import { SettingPanel } from '../SettingPage';
 // import { useModalProps } from '../../layouts/header/hook';
@@ -20,6 +21,7 @@ import { accountStaticCallBack, btnLabel, btnClickMap } from '../../layouts/conn
 import { deepClone } from '../../utils/obj_tools';
 
 import { i18n } from "@loopring-web/common-resources"
+
 
 // import { useModalProps } from '../../modal';
 
@@ -145,7 +147,7 @@ export const Layer2Page = () => {
                         {selected === 'transactions' && <TxPanel/>}
                         {selected === 'trades' && <TradePanel/>}
                         {selected === 'ammRecords' && <AmmPanel/>}
-                        {/* {selected === 'orders' && <OrderPanel />} */}
+                        {selected === 'order' && <OrderPanel />}
                         {selected === 'setting' && <SettingPanel/>}
                     </Box>
                 </>

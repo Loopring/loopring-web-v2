@@ -24,6 +24,8 @@ export default {
     labelAssets: '资产信息',
     labelTransactions: '充值提现',
     labelTrades: '交易记录',
+    labelHistory: '交易历史',
+    labelOrder: '挂单记录',
     labelAmmRecords: 'Amm记录',
     labelAmmRecordsDes: '(出金和入金)',
     rewards: '推荐奖励',

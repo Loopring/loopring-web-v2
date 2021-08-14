@@ -206,4 +206,7 @@ export default {
     labelMiningMyReward: '我的奖励',
     labelCookiesAgree: '同意',
     agreeLoopringTxt: '允许路印使用Cookies。',
+    labelLayer2HistoryTransactions: '充值提现',
+    labelLayer2HistoryTrades: '交易记录',
+    labelLayer2HistoryAmmRecords: 'AMM 记录',
 }
