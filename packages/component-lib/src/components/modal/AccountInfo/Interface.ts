@@ -20,8 +20,9 @@ export type AccountBaseProps = {
 export enum AccountStep {
     NoAccount,
     Deposit,
+    DepositInProcess,
     Depositing,
-    FailedDeposit,
+    DepositFailed,
     SignAccount,
     ProcessUnlock,
     SuccessUnlock,
@@ -29,7 +30,6 @@ export enum AccountStep {
     HadAccount,
     TokenAccessProcess,
     DepositApproveProcess,
-    DepositingProcess,
     FailedTokenAccess,
     ActiveAccountProcess,
     ActiveAccountFailed,

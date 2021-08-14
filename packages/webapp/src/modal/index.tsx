@@ -16,11 +16,18 @@ import React from 'react';
 export const ModalGroup = withTranslation('common',{withRef: true})(({...rest}:WithTranslation)=>{
     const {transferProps} = useTransfer();
     const {depositProps} = useDeposit();
-    const {withdrawProps} = useWithdraw();
+    const {
+        withdrawAlertText,
+        withdrawToastOpen, 
+        setWithdrawToastOpen,
+        withdrawProps} = useWithdraw();
     const {etherscanUrl} = useSystem();
     useAccountModal();
     const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals();
     return  <>
+
+        <Toast alertText={withdrawAlertText as string} open={withdrawToastOpen} 
+            autoHideDuration={TOAST_TIME} setOpen={setWithdrawToastOpen}/>
 
         <ModalPanel transferProps={transferProps}
                     withDrawProps={withdrawProps}

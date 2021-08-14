@@ -35,7 +35,7 @@ export  function useAccountModal() {
     },[shouldShow])
     const handleErrorDepositSign = React.useCallback(()=>{
         // updateAccount({readyState:'DEPOSITING'});
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.FailedDeposit});
+        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.DepositFailed});
     },[shouldShow])
     const handleProcessDeposit = React.useCallback(()=>{
         // updateAccount({readyState:'DEPOSITING'});
