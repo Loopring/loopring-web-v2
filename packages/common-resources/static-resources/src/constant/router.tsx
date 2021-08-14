@@ -8,7 +8,8 @@ import {
     SettingIcon,
     TradeIcon,
     TransactionsIcon,
-    L2MyLiquidityIcon
+    L2MyLiquidityIcon,
+    L2HistoryIcon,
 } from '../svg';
 
 import { ThemeType } from '../themes';
@@ -145,6 +146,12 @@ export const subMenuLayer2 = {
         }
     }],
     transactionsGroup: [{
+        icon: L2HistoryIcon,
+        router: {path: '/layer2/history'},
+        label: {
+            id: 'history', i18nKey: 'labelHistory',
+        },
+    }, {
         icon: TransactionsIcon,
         router: {path: '/layer2/transactions'},
         label: {
