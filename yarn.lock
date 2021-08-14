@@ -5887,7 +5887,7 @@
     "@walletconnect/window-metadata" "1.0.0"
     detect-browser "5.2.0"
 
-"@walletconnect/client@^1.4.1", "@walletconnect/client@^1.6.0":
+"@walletconnect/client@^1.6.0":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@walletconnect/client/-/client-1.6.0.tgz#e6094ed2bbe12d36ba06b5a3ccdf7c9debca8396"
   integrity sha512-XSIK9AOHlKt6Sf59PwBph61QBTLK9dqIMWYwXNI3zz5ZYu2GZzchafu2bzR6ENpi0DSA+SBqcx/aKRFMDFh73g==
@@ -5969,7 +5969,7 @@
   resolved "https://registry.yarnpkg.com/@walletconnect/mobile-registry/-/mobile-registry-1.4.0.tgz#502cf8ab87330841d794819081e748ebdef7aee5"
   integrity sha512-ZtKRio4uCZ1JUF7LIdecmZt7FOLnX72RPSY7aUVu7mj7CSfxDwUn6gBuK6WGtH+NZCldBqDl5DenI5fFSvkKYw==
 
-"@walletconnect/qrcode-modal@^1.4.1", "@walletconnect/qrcode-modal@^1.6.0":
+"@walletconnect/qrcode-modal@^1.6.0":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@walletconnect/qrcode-modal/-/qrcode-modal-1.6.0.tgz#24c8eb63900803564fd00a00682ff55975b8243d"
   integrity sha512-gTeDL71r49U08OLiCXM4uUtxrYglQlqXYZuByFnLrJbPgKDq445QUXkv+uNC93Zrhst6CeOXlOp1efOD/fIT7w==
@@ -6022,7 +6022,7 @@
     js-sha3 "0.8.0"
     query-string "6.13.5"
 
-"@walletconnect/web3-provider@^1.4.1":
+"@walletconnect/web3-provider@^1.6.0":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@walletconnect/web3-provider/-/web3-provider-1.6.0.tgz#bfdf7a177350bcc5c867571d168b57c0c69f42e4"
   integrity sha512-tNHoD0RbSkaxLO3gLhK4b7T6dkkbtxyuz1LxEgFrQKsYTomihYsTaC11RNVEahArKSWDtNosIfbSOPbLNYFubg==

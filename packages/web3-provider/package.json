@@ -9,9 +9,9 @@
   "dependencies": {
     "@metamask/detect-provider": "^1.2.0",
     "@reduxjs/toolkit": "^1.6.1",
-    "@walletconnect/client": "^1.4.1",
-    "@walletconnect/qrcode-modal": "^1.4.1",
-    "@walletconnect/web3-provider": "^1.4.1",
+    "@walletconnect/client": "^1.6.0",
+    "@walletconnect/qrcode-modal": "^1.6.0",
+    "@walletconnect/web3-provider": "^1.6.0",
     "react": "^17.0.2",
     "react-redux": "^7.2.4",
     "redux-saga": "^1.1.3",
