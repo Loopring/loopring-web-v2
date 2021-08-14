@@ -46,6 +46,9 @@ import {
     TradeIcon,
     TransactionsIcon,
     ViewIcon,
+    L2HistoryIcon,
+    L2MyLiquidityIcon,
+    L2OrderIcon,
 } from '@loopring-web/common-resources';
 
 const Styled = styled.div`
@@ -107,7 +110,10 @@ const listIcon = [
     <RedPockIcon/>,
     // <NoNetWorkIcon/>,
     <PowerIcon/>,
-    <SettingIcon/>
+    <SettingIcon/>,
+    <L2HistoryIcon/>,
+    <L2MyLiquidityIcon/>,
+    <L2OrderIcon />,
 ]
 
 export const IconList: Story<any> = withTranslation()(({}: WithTranslation & any) => {

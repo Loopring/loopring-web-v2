@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { Box } from '@material-ui/core'
 import { Divider, ListItem, ListItemAvatar, ListItemText, Typography, ListItemProps } from '@material-ui/core';
 import { WithTranslation } from 'react-i18next';
 import { SubMenuListProps } from './Interface';
@@ -8,7 +9,7 @@ import { Link as RouterLink } from 'react-router-dom';
 export const SubMenuItem = styled<any>(ListItem)`
   border-left: 0px solid transparent;
   border-right: 1px solid transparent;
-  padding: 0 0 0 ${({theme}) => theme.unit / 2 * 5}px;
+  padding: 0 0 0 ${({theme}) => theme.unit * 3}px;
   width: var(--sub-menuItem-width);
   min-width: var(--sub-menuItem-width);
   height: var(--sub-menuItem-height);
@@ -19,7 +20,7 @@ export const SubMenuItem = styled<any>(ListItem)`
   }
 
   .MuiListItemAvatar-root {
-
+    margin-left: ${({theme}) => theme.unit * 0.75}px;
     svg {
       width: var(--header-menu-icon-size);
       height: var(--header-menu-icon-size);
@@ -69,7 +70,7 @@ export const SubMenuList = <I extends any>({
                 </ListItemAvatar>
                 {item.label.description ? <ListItemText
                     primary={<Typography sx={{display: 'block'}} component="span" variant="body1"
-                                         >{t(item.label.i18nKey)}</Typography>}
+                                        >{t(item.label.i18nKey)}</Typography>}
                     secondary={<Typography sx={{display: 'inline'}} component="span" variant="body2"
                                           >{t(item.label.description)}</Typography>}
                 /> : <ListItemText
@@ -80,7 +81,10 @@ export const SubMenuList = <I extends any>({
 
         });
         return <div key={`group-${list}`}>{subList} {index + 1 !== Object.keys(subMenu).length ?
-            <Divider/> : ''}</div>
+          <Box marginX={3}>
+            <Divider />
+          </Box>
+          : ''}</div>
     })}</>
 };
 

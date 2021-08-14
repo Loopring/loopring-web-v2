@@ -18,19 +18,20 @@ import { useDeepCompareEffect } from 'react-use';
 // }
 
 const TableStyled = styled(Box)`
-  .rdg {
-    --template-columns: 180px auto 250px auto auto !important;
+    flex: 1;
+    .rdg {
+        --template-columns: 180px auto 250px auto auto !important;
 
-    .rdg-cell.action {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+        .rdg-cell.action {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
     }
-  }
-  .textAlignRight{
-    text-align: right;
-  }
-  ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
+    .textAlignRight{
+        text-align: right;
+    }
+    ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
 
 const columnMode = ({t}: WithTranslation, currency: 'USD' | 'CYN'): Column<Row<any>, unknown>[] => [

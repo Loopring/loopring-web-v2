@@ -68,7 +68,7 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
 
                         myLog(curValInWei, allowance, ' need approveMax!')
 
-                        setShowAccount({isShow: true, step: AccountStep.TokenAccessProcess})
+                        setShowAccount({isShow: true, step: AccountStep.TokenApproveInProcess})
 
                         try {
                             await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
@@ -78,7 +78,7 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
                             result.code = ActionResultCode.ApproveFailed
                             result.data = reason
                             
-                            setShowAccount({isShow: true, step: AccountStep.FailedTokenAccess})
+                            setShowAccount({isShow: true, step: AccountStep.TokenApproveFailed})
                             return
                         }
 
@@ -88,28 +88,35 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
 
                 }
 
-                setShowAccount({isShow: true, step: AccountStep.DepositingProcess})
+                setShowAccount({isShow: true, step: AccountStep.DepositInProcess})
 
                 myLog('before deposit:', chainId, connectName, isMetaMask)
 
                 const realChainId = chainId === 'unknown' ? 1 : chainId
 
-                const response2 = await sdk.deposit(connectProvides.usedWeb3, account.accAddress,
+                const response = await sdk.deposit(connectProvides.usedWeb3, account.accAddress,
                     exchangeInfo.exchangeAddress, tokenInfo, inputValue.tradeValue, fee,
                     realGasPrice, gasLimit, realChainId, nonce, isMetaMask)
 
-                myLog('response2:', response2)
+                myLog('response:', response)
 
-                result.data = response2
+                result.data = response
 
-                setShowAccount({isShow: true, step: AccountStep.Depositing})
+                if (response?.hash === undefined && response?.errInfo) {
+                    // deposit failed
+                    setShowAccount({isShow: true, step: AccountStep.DepositFailed})
+                } else {
+                    // deposit sucess
+                    setShowAccount({isShow: true, step: AccountStep.Depositing})
+                }
 
             } catch (reason) {
                 dumpError400(reason)
                 result.code = ActionResultCode.DepositFailed
                 result.data = reason
 
-                setShowAccount({isShow: true, step: AccountStep.FailedDeposit})
+                //deposit failed
+                setShowAccount({isShow: true, step: AccountStep.DepositFailed})
             }
 
         } else {

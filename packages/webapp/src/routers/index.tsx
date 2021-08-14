@@ -39,9 +39,9 @@ const RouterView = () => {
                     {/* <Route exact component={Layer2Page} path='/layer2/red-packet'/>
                     <Route exact component={Layer2Page} path='/layer2/security'/>
                     <Route exact component={Layer2Page} path='/layer2/vip'/> */}
-                    <Route exact component={Layer2Page} path='/layer2/transactions'/>
+                    {/* <Route exact component={Layer2Page} path='/layer2/transactions'/>
                     <Route exact component={Layer2Page} path='/layer2/trades'/>
-                    <Route exact component={Layer2Page} path='/layer2/ammRecords'/>
+                    <Route exact component={Layer2Page} path='/layer2/ammRecords'/> */}
                     {/* <Route exact component={Layer2Page} path='/layer2/orders'/> */}
                     <Route exact component={Layer2Page} path='/layer2/setting'/>
 

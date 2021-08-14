@@ -8,7 +8,9 @@ import {
     SettingIcon,
     TradeIcon,
     TransactionsIcon,
-    L2MyLiquidityIcon
+    L2MyLiquidityIcon,
+    L2HistoryIcon,
+    L2OrderIcon,
 } from '../svg';
 
 import { ThemeType } from '../themes';
@@ -145,6 +147,19 @@ export const subMenuLayer2 = {
         }
     }],
     transactionsGroup: [{
+        icon: L2HistoryIcon,
+        router: {path: '/layer2/history'},
+        label: {
+            id: 'history', i18nKey: 'labelHistory',
+        },
+    }, {
+        icon: L2OrderIcon,
+        router: {path: '/layer2/order'},
+        label: {
+            id: 'order', i18nKey: 'labelOrder',
+        },
+    },
+    /* {
         icon: TransactionsIcon,
         router: {path: '/layer2/transactions'},
         label: {
@@ -164,7 +179,7 @@ export const subMenuLayer2 = {
                 id: 'AmmRecords', i18nKey: 'labelAmmRecords',
                 description: 'labelAmmRecordsDes',
             },
-        }
+        } */
     ],
     // countInfoGroup: [{
     //     icon: OrderIcon,
