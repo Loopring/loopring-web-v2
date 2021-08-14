@@ -49,7 +49,10 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
     const [_selectedPercentage, setSelectedPercentage] = React.useState(selectedPercentage);
 
     const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined' ? isStob : true);
-
+    const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
+        error: false,
+        message: ''
+    });
     const _onSwitchStob = React.useCallback((_event: any) => {
         setIsStoB(!_isStoB)
         if (typeof switchStobEvent === 'function') {
@@ -67,10 +70,20 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
     if (typeof handleError !== 'function') {
         handleError = ({belong, balance, tradeValue}: any) => {
             if (balance < tradeValue || (tradeValue && !balance)) {
-                return {error: true, message: t('tokenNotEnough', {belong: belong})}
+                const _error = {error: true, message: t('tokenNotEnough', {belong: belong})}
+                setError(_error);
+                return  _error
+
             }
+            setError({error: false, message: ''});
             return {error: false, message: ''}
         }
+        // handleError = ({belong, balance, tradeValue}: any) => {
+        //     if (balance < tradeValue || (tradeValue && !balance)) {
+        //         return {error: true, message: t('tokenNotEnough', {belong: belong})}
+        //     }
+        //     return {error: false, message: ''}
+        // }
     }
     const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any, flag = -1) => {
         let focus: 'coinA' | 'coinB' | 'percentage';
@@ -127,6 +140,25 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
         popupId: 'slippagePop',
     })
 
+    const label = React.useMemo(()=>{
+        if(error.error){
+            if(typeof  error.message === 'string'){
+                return  t(error.message)
+            }else if(error.message !== undefined){
+                return error.message;
+            }else{
+                return t('labelError')
+            }
+
+        }
+        if (ammWithdrawBtnI18nKey) {
+            const key = ammWithdrawBtnI18nKey.split(',');
+            return t(key[ 0 ], key && key[ 1 ] ? {arg: key[ 1 ]} : undefined)
+        } else {
+            return t(`labelRemoveLiquidityBtn`)
+        }
+        // return  t(ammWithdrawBtnI18nKey ? t(ammWithdrawBtnI18nKey) : t(`labelRemoveLiquidityBtn`))
+    },[error,ammWithdrawBtnI18nKey,t])
 
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
@@ -135,6 +167,7 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
               flexDirection={"column"}>
             <InputCoin<IBData<I>, I, CoinInfo<I>> ref={coinARef} disabled={getDisabled()} {...{
                 ...propsA,
+                isHideError:true,
                 order: 'right',
                 inputData: ammData ? ammData.coinA : {} as any,
                 coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
@@ -146,6 +179,7 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
             </Box>
             <InputCoin<IBData<I>, I, CoinInfo<I>> ref={coinBRef} disabled={getDisabled()} {...{
                 ...propsB,
+                isHideError:true,
                 order: 'right',
                 inputData: ammData ? ammData.coinB : {} as any,
                 coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
@@ -218,9 +252,9 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
                         onAmmRemoveClick(ammData)
                     }}
                             loading={!getDisabled() && ammWithdrawBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-                            disabled={getDisabled() || ammWithdrawBtnStatus === TradeBtnStatus.DISABLED || ammWithdrawBtnStatus === TradeBtnStatus.LOADING ? true : false}
+                            disabled={getDisabled() || ammWithdrawBtnStatus === TradeBtnStatus.DISABLED || ammWithdrawBtnStatus === TradeBtnStatus.LOADING || error.error ? true : false}
                             fullWidth={true}>
-                        {ammWithdrawBtnI18nKey ? t(ammWithdrawBtnI18nKey) : t(`labelRemoveLiquidityBtn`)}
+                        {label}
                     </Button>
                 </Grid>
             </Grid>

@@ -1,4 +1,5 @@
 export default {
+    labelError:'错误',
     tokenEnter: '输入币种',
     tokenEnterPaymentToken: '交易支付币种',
     tokenMax: '最大',
@@ -205,5 +206,6 @@ export default {
     labelMiningMyShare: '我的占比资金',
     labelMiningMyReward: '我的奖励',
     labelCookiesAgree: '同意',
-    agreeLoopringTxt: '允许路印使用Cookies。',
+    labelLimitMin:'最小下单量{{arg}}',
+    labelAgreeLoopringTxt: '允许路印使用Cookies。',
 }

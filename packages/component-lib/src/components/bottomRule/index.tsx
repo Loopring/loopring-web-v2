@@ -1,59 +1,53 @@
-import styled from '@emotion/styled'
-import { Button, } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core';
+import { Button, ModalCloseButton } from '@loopring-web/component-lib';
+import styled from '@emotion/styled';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
+const StyledBox= styled(Box)`
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--color-pop-bg);
+  //text-align: center;
+  .close-button{
+    right: ${({theme}) => theme.unit * 3}px;
+    top:50%;
+    transform: translateY(-50%);
+  }
+` as typeof Box;
 export interface PopperProps {
   isShow: boolean
   title?: string
-  content?: string
-  btnTxt?: string
+  content: string
+  btnTxt: string
   clickToConfirm? : () => void
 }
-
-const StyledDiv = styled.div<PopperProps>`
-height: 80px;
-width: 100%;
-background: #393F64;
-position: fixed;
-bottom: 0;
-left: 0;
-z-index: 100;
-text-align: center;
-
-display: ${(props: PopperProps) => props.isShow ? 'block' : 'none'};
-
-.title {
-  margin-top: 5px;
-  font-size: 16px;
-}
-
-.content {
-  margin-top: 10px;
-  font-size: 12px;
-}
-`
-
-export const BottomRule = ({ isShow, title, content, btnTxt, clickToConfirm, }: PopperProps) => {
-
-  if (!title) {
-    title = ''
-  }
-
-  if (!content) {
-    content = ''
-  }
-
-  if (!btnTxt) {
-    btnTxt = 'Agree'
-  }
-  
-  return (
-    <StyledDiv isShow={isShow}>
-      { title && <div className={'title'}>{title}</div> }
-      { content && <div className={'content'}>{content}</div> }
-      <Button onClick={() => { if (clickToConfirm) {
+export const BottomRule = ({ isShow, title, content, btnTxt, clickToConfirm }: PopperProps) => {
+  const [_isShow,setIsShow] = React.useState(isShow)
+  //
+  // if (!title) {
+  //   title = ''
+  // }
+  //
+  // if (!content) {
+  //   content = ''
+  // }
+  //
+  // if (!btnTxt) {
+  //   btnTxt = 'Agree'
+  // }
+  //
+  const trans = useTranslation()
+  return _isShow ? <StyledBox height={80} width={'100%'} flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'row'} position={'fixed'}>
+    {title ? <Typography className={'title'}>{title}</Typography> : <></>}
+    <Typography className={'content'} color={'textSecondary'} variant={'body1'} paddingX={3}>{content}</Typography>
+    <Button variant={'contained'} size={'small'} onClick={() => {
+      if (clickToConfirm) {
         clickToConfirm()
-      }}} > {btnTxt} </Button>
-    </StyledDiv>
-  )
-
+      }
+    }}> {btnTxt} </Button>
+    <ModalCloseButton  onClose={()=>setIsShow(false)} tReady={true}  {...trans}/>
+  </StyledBox> : <></>;
 }

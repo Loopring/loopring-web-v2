@@ -46,7 +46,10 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
     const coinBRef = React.useRef();
     const {slippage} = useSettings();
     const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number | string>;
-
+    const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
+        error: false,
+        message: ''
+    });
     const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined' ? isStob : true);
 
     const _onSwitchStob = React.useCallback((_event: any) => {
@@ -67,10 +70,20 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
     if (typeof handleError !== 'function') {
         handleError = ({belong, balance, tradeValue}: any) => {
             if (balance < tradeValue || (tradeValue && !balance)) {
-                return {error: true, message: t('tokenNotEnough', {belong: belong})}
+                const _error = {error: true, message: t('tokenNotEnough', {belong: belong})}
+                setError(_error);
+                return  _error
+
             }
+            setError({error: false, message: ''});
             return {error: false, message: ''}
         }
+        // handleError = ({belong, balance, tradeValue}: any) => {
+        //     if (balance < tradeValue || (tradeValue && !balance)) {
+        //         return {error: true, message: t('tokenNotEnough', {belong: belong})}
+        //     }
+        //     return {error: false, message: ''}
+        // }
     }
     const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
         const focus: 'coinA' | 'coinB' = _ref?.current === coinARef.current ? 'coinA' : 'coinB';
@@ -113,8 +126,25 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
                 }
             }, type: 'coinA'
         });
-    }, [ammData, onChangeEvent])
+    }, [ammData, onChangeEvent]) ;
+    const label = React.useMemo(()=>{
+        if(error.error){
+            if(typeof  error.message === 'string'){
+                return  t(error.message)
+            }else if(error.message !== undefined){
+                return error.message;
+            }else{
+                return t('labelError')
+            }
 
+        }
+        if (ammDepositBtnI18nKey) {
+            const key = ammDepositBtnI18nKey.split(',');
+            return t(key[ 0 ], key && key[ 1 ] ? {arg: key[ 1 ]} : undefined)
+        } else {
+            return t(`labelAddLiquidityBtn`)
+        }
+    },[error,ammDepositBtnI18nKey,t])
 
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
@@ -123,6 +153,7 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
               flexDirection={"column"}>
             <InputCoin<any, I, any> ref={coinARef} disabled={getDisabled()} {...{
                 ...propsA,
+                isHideError:true,
                 order: 'right',
                 inputData: ammData ? ammData.coinA : {} as any,
                 coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
@@ -134,6 +165,7 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
             </Box>
             <InputCoin<any, I, any> ref={coinBRef} disabled={getDisabled()} {...{
                 ...propsB,
+                isHideError:true,
                 order: 'right',
                 inputData: ammData ? ammData.coinB : {} as any,
                 coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
@@ -204,7 +236,7 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
                             loading={!getDisabled() && ammDepositBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                             disabled={getDisabled() || ammDepositBtnStatus === TradeBtnStatus.DISABLED || ammDepositBtnStatus === TradeBtnStatus.LOADING ? true : false}
                             fullWidth={true}>
-                        {ammDepositBtnI18nKey ? t(ammDepositBtnI18nKey) : t(`labelAddLiquidityBtn`)}
+                        {label}
 
                     </Button>
                 </Grid>

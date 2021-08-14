@@ -12,7 +12,7 @@ export function useFocusRef<T extends HTMLInputElement>({value, shouldFocusOn, c
             ref?.current?.focus()
         }
         callback && callback({current: ref.current});
-    }, [value, shouldFocusOn, callback]);
+    }, [value, shouldFocusOn]);
     return ref;
 }
 

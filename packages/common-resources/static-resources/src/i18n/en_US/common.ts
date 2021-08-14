@@ -1,4 +1,5 @@
 export default {
+    labelError:'Error',
     tokenEnter: 'Enter Token',
     tokenEnterPaymentToken: 'Sell Token',
     tokenMax: 'Max',
@@ -204,5 +205,6 @@ export default {
     labelMiningMyShare: 'My Share',
     labelMiningMyReward: 'My Reward',
     labelCookiesAgree: 'Agree',
-    agreeLoopringTxt: 'Allow Loopring to use Cookies.',
+    labelLimitMin:'Minimum is {{arg}}',
+    labelAgreeLoopringTxt: 'Allow Loopring to use Cookies.',
 }

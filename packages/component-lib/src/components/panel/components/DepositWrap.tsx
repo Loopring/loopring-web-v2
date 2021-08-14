@@ -18,6 +18,7 @@ export const DepositWrap = <T extends IBData<I>,
            depositBtnStatus,
            onDepositClick,
            isNewAccount,
+           handleError,
            addressDefault,
            handleOnAddressChange,
            handleAddressError,
@@ -34,6 +35,10 @@ export const DepositWrap = <T extends IBData<I>,
     };
     const [address, setAddress] = React.useState<string | undefined>(addressDefault ? addressDefault : '');
     const [addressError, setAddressError] = React.useState<{ error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined>();
+    // const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
+    //     error: false,
+    //     message: ''
+    // });
     const debounceAddress = React.useCallback(debounce(({address}: any) => {
         if (handleOnAddressChange) {
             handleOnAddressChange(address)

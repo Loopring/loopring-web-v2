@@ -163,11 +163,16 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                          handleOnClick,
                                                                          focusOnInput,
                                                                          name,
+                                                                         isHideError=false,
                                                                          // isAllowBalanceClick
                                                                      }
                                                                          : InputButtonProps<T, C, I>, ref: React.ForwardedRef<any>) {
     const {balance, belong, tradeValue} = (inputData ? inputData : {}) as IBData<C>;
     const [sValue, setsValue] = React.useState<number | undefined>(tradeValue ? tradeValue : undefined);
+    const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
+        error: false,
+        message: ''
+    });
     // let _error = {error: false, message: ''};
     // if (handleError && inputData) {
     //     let error:any = handleError(inputData, ref);
@@ -183,10 +188,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
             setError(_error ? _error : {error: false});
         }
     }, [handleError, balance, belong, maxAllow, ref])
-    const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
-        error: false,
-        message: ''
-    });
+
     const inputCallback = React.useCallback(({current}) => {
             if (inputData && (inputData.tradeValue !== Number(current?.value))) {
                 setsValue(inputData.tradeValue);
@@ -290,10 +292,11 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
 
             </Grid>
         </Grid>
-        <Grid container className={'message-wrap'} wrap={'nowrap'} alignItems={'stretch'} alignContent={'stretch'}
-              justifyContent={'flex-end'}>
+        {isHideError? <></>: <Grid container className={'message-wrap'} wrap={'nowrap'} alignItems={'stretch'} alignContent={'stretch'}
+                                   justifyContent={'flex-end'}>
             <Grid item><FormHelperText>{error.message}</FormHelperText></Grid>
-        </Grid>
+        </Grid>}
+
 
     </IWrap>
     </>
