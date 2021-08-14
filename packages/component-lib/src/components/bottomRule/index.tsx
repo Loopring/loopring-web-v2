@@ -15,6 +15,7 @@ const StyledBox= styled(Box)`
     right: ${({theme}) => theme.unit * 3}px;
     top:50%;
     transform: translateY(-50%);
+    margin-top:0;
   }
 ` as typeof Box;
 export interface PopperProps {
