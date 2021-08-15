@@ -236,22 +236,6 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
     //     },
     // },
     {
-        key: 'time',
-        name: t('labelTxTime'),
-        formatter: ({row}) => {
-            const value = row[ 'time' ]
-            const hasValue = Number.isFinite(value)
-            const renderValue = hasValue
-                ? moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
-                : EmptyValueTag
-            return (
-                <div className="rdg-cell-value">
-                    <span>{renderValue}</span>
-                </div>
-            )
-        },
-    },
-    {
         key: 'txnHash',
         name: t('labelTxTxnHash'),
         formatter: ({row}) => {
@@ -287,6 +271,22 @@ const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
             </div>
         )
     },
+    {
+        key: 'time',
+        name: t('labelTxTime'),
+        formatter: ({row}) => {
+            const value = row[ 'time' ]
+            const hasValue = Number.isFinite(value)
+            const renderValue = hasValue
+                ? moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
+                : EmptyValueTag
+            return (
+                <div className="rdg-cell-value">
+                    <span>{renderValue}</span>
+                </div>
+            )
+        },
+    },
 ]
 
 const TableStyled = styled(Box)`
@@ -295,7 +295,7 @@ const TableStyled = styled(Box)`
   flex: 1;
 
   .rdg {
-    --template-columns: 120px auto auto auto auto 80px !important;
+    --template-columns: 120px auto auto auto 100px 120px !important;
 
     .rdg-cell.action {
       display: flex;

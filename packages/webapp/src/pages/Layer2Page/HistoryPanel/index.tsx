@@ -1,6 +1,6 @@
 import React from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { Tabs, Tab } from '@material-ui/core'
+import { Tabs, Tab, Box } from '@material-ui/core'
 import { TransactionTable, TradeTable, AmmTable } from '@loopring-web/component-lib'
 import { StylePaper } from '../../styled'
 import { useGetTxs, useGetTrades, useGetAmmRecord } from './hooks';
@@ -26,11 +26,13 @@ const TxPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
 
     return (
         <StylePaper ref={container}>
-            <Tabs value={currentTab} onChange={(_event, value) => setCurrentTab(value)} aria-label="l2-history-tabs">
-                <Tab label={t('labelLayer2HistoryTransactions')} value="transactions"></Tab>
-                <Tab label={t('labelLayer2HistoryTrades')} value="trades"></Tab>
-                <Tab label={t('labelLayer2HistoryAmmRecords')} value="ammRecords"></Tab>
-            </Tabs>
+            <Box marginTop={2} marginLeft={2}>
+                <Tabs value={currentTab} onChange={(_event, value) => setCurrentTab(value)} aria-label="l2-history-tabs">
+                    <Tab label={t('labelLayer2HistoryTransactions')} value="transactions"></Tab>
+                    <Tab label={t('labelLayer2HistoryTrades')} value="trades"></Tab>
+                    <Tab label={t('labelLayer2HistoryAmmRecords')} value="ammRecords"></Tab>
+                </Tabs>
+            </Box>
             <div className="tableWrapper">
                 {currentTab === 'transactions' ? (
                     <TransactionTable {...{
