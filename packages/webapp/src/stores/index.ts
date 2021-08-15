@@ -21,27 +21,29 @@ import { socketSlice } from './socket';
 import { userRewardsMapSlice } from './userRewards';
 import { localStoreReducer } from './localStore';
 import persistStore from 'redux-persist/es/persistStore';
+import { myLog } from 'utils/log_tools'
 
 const sagaMiddleware = createSagaMiddleware()
 
 const DEFAULT_TIMEOUT = 1000 * 60 * 15
+
+myLog('---store DEFAULT_TIMEOUT:', DEFAULT_TIMEOUT)
+
 //
 const persistAccConfig = {
     key: 'account',
     storage: storageSession,
-    timeout:DEFAULT_TIMEOUT,
+    timeout: DEFAULT_TIMEOUT,
 };
 
 const persistSettingConfig = {
     key: 'settings',
     storage: storage,
-    timeout:DEFAULT_TIMEOUT,
 };
 
 const persistLocalStoreConfig = {
     key: 'localStore',
     storage: storage,
-    timeout:DEFAULT_TIMEOUT,
 };
 const persistedAccountReducer = persistReducer(persistAccConfig ,accountSlice.reducer)
 const persistedSettingReducer = persistReducer(persistSettingConfig ,settingsSlice.reducer)
