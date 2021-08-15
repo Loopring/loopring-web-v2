@@ -3,7 +3,6 @@ import { Button, ModalCloseButton } from '@loopring-web/component-lib';
 import styled from '@emotion/styled';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useEffect } from 'react';
 
 const StyledBox= styled(Box)`
   bottom: 0;
@@ -27,22 +26,17 @@ export interface PopperProps {
   clickToConfirm? : () => void
 }
 export const BottomRule = ({ isShow, title, content, btnTxt, clickToConfirm }: PopperProps) => {
-  
-  const [_isShow,setIsShow] = React.useState<boolean>(false)
-
-  useEffect(() => {
-    setIsShow(isShow)
-  }, [isShow])
-
-  const trans = useTranslation()
+  const [_isShow,setIsShow] = React.useState(isShow)
+  const trans = useTranslation();
   return _isShow ? <StyledBox height={80} width={'100%'} flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'row'} position={'fixed'}>
     {title ? <Typography className={'title'}>{title}</Typography> : <></>}
     <Typography className={'content'} color={'textSecondary'} variant={'body1'} paddingX={3}>{content}</Typography>
     <Button variant={'contained'} size={'small'} onClick={() => {
       if (clickToConfirm) {
         clickToConfirm()
+        setIsShow(false)
       }
     }}> {btnTxt} </Button>
-    <ModalCloseButton onClose={()=>setIsShow(false)} tReady={true}  {...trans}/>
+    <ModalCloseButton  onClose={()=>setIsShow(false)} tReady={true}  {...trans}/>
   </StyledBox> : <></>;
 }
