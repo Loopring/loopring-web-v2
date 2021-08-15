@@ -240,17 +240,17 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         const result = item.token.split('-')
         result.splice(0, 1, 'AMM')
         const ammToken = result.join('-')
-        const ammTokenList = Object.keys(ammMap)
-        const ammTokenPrice = ammTokenList.includes(ammToken) && ammMap[ammToken] && ammMap[ammToken].amountDollar ? (ammMap[ammToken].totalLpToken || 0) / ammMap[ammToken].amountDollar : 0
-        const tokenValue =  ammTokenPrice * (item.detail?.count || 0)
-        // jointLPTokenValue += 1
+        // const ammTokenList = Object.keys(ammMap)
+        // const ammTokenPrice = ammTokenList.includes(ammToken) && ammMap[ammToken] && ammMap[ammToken].amountDollar ? (ammMap[ammToken].totalLPToken || 0) / ammMap[ammToken].amountDollar : 0
+        // console.log(ammMap[ammToken])
+        // const tokenValue =  ammTokenPrice * (item.detail?.count || 0)
+        const tokenValue = ammMap[ammToken].totalLPToken || 0
         return ({
             name: item.token,
             value: tokenValue
         })
     })
 
-    
     const lpTotalData = formattedData
         .filter(o => o.name.split('-')[0] === 'LP')
         .reduce((prev, next) => ({
