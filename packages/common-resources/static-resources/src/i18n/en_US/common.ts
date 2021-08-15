@@ -208,6 +208,6 @@ export default {
     labelLimitMin:'Minimum is {{arg}}',
     labelAgreeLoopringTxt: 'Allow Loopring to use Cookies.',
     labelLayer2HistoryTransactions: 'Transactions',
-    labelLayer2HistoryTrades: 'Transactions',
+    labelLayer2HistoryTrades: 'Trades',
     labelLayer2HistoryAmmRecords: 'AMM Records',
 }
