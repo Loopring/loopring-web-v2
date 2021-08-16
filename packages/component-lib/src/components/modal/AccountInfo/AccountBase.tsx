@@ -1,15 +1,15 @@
-import { Box, Button, Typography } from '@material-ui/core/';
-import { CopyIcon, getShortAddr, LinkIcon, ReverseIcon, } from '@loopring-web/common-resources';
+import { Box, Button, IconButton, Typography } from '@material-ui/core/';
+import { CopyIcon, getShortAddr, LinkIcon, QRIcon, ReverseIcon, } from '@loopring-web/common-resources';
 import { Trans, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
-import { AccountBaseProps } from './Interface';                             
+import { AccountBaseProps } from './Interface';
 import { PopoverPure, VipStyled } from '../../../';
 import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { usePopupState } from 'material-ui-popup-state/hooks';
 import QRCode from 'qrcode.react';
 // ${({theme})=>boxLiner({theme})}
 const PopStyle = styled(Box)`
-  border-radius: ${({theme})=>theme.unit/2}px
+  border-radius: ${({theme}) => theme.unit / 2}px
 `
 const BoxStyled = styled(Box)`
   // .MuiLink-root {
@@ -19,23 +19,26 @@ const BoxStyled = styled(Box)`
   //
   //  
   // }                                                               
-  &  .MuiButton-root{
+  & .MuiButton-root {
     color: var(--color-text-secondary);
-    &:hover{
+
+    &:hover {
       color: var(--color-text-primary);
     }
-        // width: var(--account-button-fixed-width);
-        // height: var(--account-button-fixed-height);
-        // text-overflow: ellipsis;
-        // align-items: flex-end;
-        // position: relative;
-        // svg{
-        //   position: absolute;
-        //     top: ${({theme}) => theme.unit}px;
-        //   left: 50%;
-        //   margin-left: calc(var(--svg-size-large) / -2) ;
-        // }
+
+    // width: var(--account-button-fixed-width);
+    // height: var(--account-button-fixed-height);
+    // text-overflow: ellipsis;
+    // align-items: flex-end;
+    // position: relative;
+    // svg{
+    //   position: absolute;
+      //     top: ${({theme}) => theme.unit}px;
+    //   left: 50%;
+    //   margin-left: calc(var(--svg-size-large) / -2) ;
+    // }
   }
+
   & .active {
 
   }
@@ -90,13 +93,16 @@ export const AccountBase = ({
                 transformOrigin: {vertical: 'top', horizontal: 'center'}
             }}
         >
-            <PopStyle paddingY={2} paddingX={2} width={184} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+            <PopStyle paddingY={2} paddingX={2} width={184} display={'flex'} flexDirection={'column'}
+                      alignItems={'center'} justifyContent={'center'}>
                 {/*<QRCodePanel {...{*/}
                 {/*    ...rest, t, title: '', description: '',*/}
                 {/*    url: etherscanLink*/}
-                {/*}} />*/}                                   
-                <QRCode value={etherscanLink} size={120} style={{ backgroundColor: '#fff'}} aria-label={`link:${etherscanLink}`}/>
-                <Typography  marginTop={2}  variant={'body2'} color={'textSecondary'} style={{wordBreak:'break-all'}}>{accAddress}</Typography>
+                {/*}} />*/}
+                <QRCode value={etherscanLink} size={120} style={{backgroundColor: '#fff'}}
+                        aria-label={`link:${etherscanLink}`}/>
+                <Typography marginTop={2} variant={'body2'} color={'textSecondary'}
+                            style={{wordBreak: 'break-all'}}>{accAddress}</Typography>
                 {/*<Button onClick={() => {*/}
                 {/*    if (onCopy) onCopy()*/}
                 {/*}}>*/}
@@ -128,5 +134,9 @@ export const AccountBase = ({
                 <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelDisconnect')} </Typography>
             </Button>
         </BoxStyled>
+
+
     </Box>
+
+
 }

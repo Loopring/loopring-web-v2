@@ -20,7 +20,7 @@ import { myLog } from 'utils/log_tools'
 import { deepClone } from '../../utils/obj_tools';
 
 export const useHeader = () => {
-    const {setTheme, themeMode, setLanguage} = useSettings();
+    // const {setTheme, themeMode, setLanguage} = useSettings();
     const accountState = useAccount();
     const {account, setShouldShow, status: accountStatus} =  useAccount();
     const {setShowAccount} = useOpenModals();
@@ -45,17 +45,17 @@ export const useHeader = () => {
         accountStaticCallBack(_btnClickMap, []);
     }, [account, setShouldShow,_btnClickMap])
 
-    const onThemeBtnClick = React.useCallback((themeMode: ThemeKeys) => {
-        if (themeMode === Theme.dark) {
-            setTheme(Theme.light)
-        } else {
-            setTheme(Theme.dark)
-        }
-    }, [setTheme])
-
-    const onLangBtnClick = (lang: LanguageKeys) => {
-        setLanguage(lang);
-    }
+    // const onThemeBtnClick = React.useCallback((themeMode: ThemeKeys) => {
+    //     if (themeMode === Theme.dark) {
+    //         setTheme(Theme.light)
+    //     } else {
+    //         setTheme(Theme.dark)
+    //     }
+    // }, [setTheme])
+    //
+    // const onLangBtnClick = (lang: LanguageKeys) => {
+    //     setLanguage(lang);
+    // }
 
     React.useEffect(() => {
         headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
@@ -63,15 +63,15 @@ export const useHeader = () => {
             accountState,
             handleClick: onWalletBtnConnect,
         }
-        headerToolBarData[ ButtonComponentsMap.Theme ] = {
-            ...headerToolBarData[ ButtonComponentsMap.Theme ],
-            themeMode,
-            handleClick: onThemeBtnClick
-        }
-        headerToolBarData[ ButtonComponentsMap.Language ] = {
-            ...headerToolBarData[ ButtonComponentsMap.Language ],
-            handleChange: onLangBtnClick
-        }
+        // headerToolBarData[ ButtonComponentsMap.Theme ] = {
+        //     ...headerToolBarData[ ButtonComponentsMap.Theme ],
+        //     themeMode,
+        //     handleClick: onThemeBtnClick
+        // }
+        // headerToolBarData[ ButtonComponentsMap.Language ] = {
+        //     ...headerToolBarData[ ButtonComponentsMap.Language ],
+        //     handleChange: onLangBtnClick
+        // }
     });
 
     // const forceUpdate = React.useReducer(() => ({}), {})[ 1 ] as () => void

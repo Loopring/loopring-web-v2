@@ -30,6 +30,7 @@ export type SwitchPanelProps<T extends string> = {
 //           `calc(${_height + 'px'}  - 2 * var(--toolbar-row-padding) )`
 //           : `calc(${_height}  - 2 * var(--toolbar-row-padding) )` : 'auto'};
 export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps & { _height?: number | string, _width?: number | string; }>`
+  position: relative;
   ${({_height, _width}) => `       
     width: ${typeof _width === 'string' ? _width : typeof _width === 'number' ? _width + 'px' : `var(--swap-box-width)`};   
     height: ${typeof _height === 'string' ? _height : typeof _height === 'number' ? _height + 'px' : `var(--swap-box-height)`};         
