@@ -213,6 +213,7 @@ export const LockIcon = (props: SvgIconProps) => {
     </SvgIcon>
 }
 
+
 export const CheckIcon = (props: SvgIconProps) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M22 5.67972L8.4 20L2 13.261L3.59523 11.5813L8.4 16.6286L20.4048 4L22 5.67972Z" />
