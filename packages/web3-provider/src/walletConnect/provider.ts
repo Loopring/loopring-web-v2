@@ -10,7 +10,7 @@ const RPC_URLS: { [ chainId: number ]: string } = {
     5: process.env.REACT_APP_RPC_URL_5 as string
 }
 const POLLING_INTERVAL = 12000
-export const WalletConnectProvide = async (account?: string): Promise<{ provider: WalletConnectProvider, web3: Web3, } | undefined> => {
+export const WalletConnectProvide = async (account?: string): Promise<{ provider?: WalletConnectProvider, web3?: Web3, } | undefined> => {
     try {
         const provider: WalletConnectProvider = new WalletConnectProvider({
             rpc: RPC_URLS,
@@ -19,24 +19,26 @@ export const WalletConnectProvide = async (account?: string): Promise<{ provider
             qrcode: false,
         });
         const {connector} = provider;
-        let web3: Web3 = new Web3(provider as any);
+        let web3: Web3|undefined
         if (!connector.connected && account === undefined) {
             await connector.createSession();
             const uri = connector.uri;
             walletServices.sendProcess('nextStep', {qrCodeUrl: uri});
             await provider.enable();
+            web3 = new Web3(provider as any);
             walletServices.sendConnect(web3, provider);
 
         } else if (!connector.connected && account !== undefined) {
             console.log('WalletConnect reconnect connected is failed',account,provider)
             // WalletConnectUnsubscribe(provider);
             // walletServices.sendDisconnect('', 'walletConnect not connect');
+            web3=undefined
             throw new Error('walletConnect not connect');
-        } else if (account) {
+        } else if (account && provider.isWalletConnect) {
             console.log('WalletConnect reconnect connected is true',account, provider, connector.session)
-
-            // connector.approveSession({accounts:[account], chainId:provider.chainId})
             connector.updateSession({accounts:[account],chainId:connector.chainId})
+            await provider.getWalletConnector()
+            web3 = new Web3(provider as any);
             walletServices.sendConnect(web3, provider)
 
         }
