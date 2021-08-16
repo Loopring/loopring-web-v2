@@ -1,7 +1,7 @@
 import { AccountStatus, } from '@loopring-web/common-resources';
 import { Subject } from 'rxjs';
 import { Commands } from './command';
-import { LoopringAPI } from '../../stores/apis/api';
+import { LoopringAPI } from 'api_wrapper';
 import { myLog } from '../../utils/log_tools';
 import store from 'stores';
 import { updateAccountStatus } from 'stores/account';

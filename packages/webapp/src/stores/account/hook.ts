@@ -88,7 +88,7 @@ export function useAccount() {
 // import { useTokenMap } from '../token';
 // import _ from 'lodash'
 // import { myLog } from 'utils/log_tools'
-// import { LoopringAPI } from 'reducer/apis/api'
+// import { LoopringAPI } from 'reducer/api_wrapper'
 //
 // export function useWeb3Account() {
 //

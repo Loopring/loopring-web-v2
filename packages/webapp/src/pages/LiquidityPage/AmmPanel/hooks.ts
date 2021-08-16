@@ -38,7 +38,7 @@ import {
 import { useCustomDCEffect } from '../../../hooks/common/useCustomDCEffect';
 import { useAccount } from '../../../stores/account/hook';
 import store from "stores";
-import { LoopringAPI } from "stores/apis/api";
+import { LoopringAPI } from "api_wrapper";
 import { debounce } from "lodash";
 
 import { deepClone } from '../../../utils/obj_tools';

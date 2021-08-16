@@ -4,7 +4,7 @@ import { OrderHistoryTable, OrderHistoryRawDataItem } from '@loopring-web/compon
 import { TradeTypes, TradeStatus } from '@loopring-web/common-resources'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import store from 'stores'
-import { LoopringAPI } from 'stores/apis/api'
+import { LoopringAPI } from 'api_wrapper'
 import { volumeToCount } from 'hooks/help'
 import { StylePaper } from '../../styled'
 import { useAccount } from '../../../stores/account';

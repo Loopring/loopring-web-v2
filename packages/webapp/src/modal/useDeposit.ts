@@ -7,7 +7,7 @@ import { useTokenMap } from '../stores/token';
 import { useAccount } from '../stores/account';
 import { useSystem } from '../stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
-import { LoopringAPI } from 'stores/apis/api';
+import { LoopringAPI } from 'api_wrapper';
 import { dumpError400, GetAllowancesRequest } from 'loopring-sdk';
 import { myLog } from 'utils/log_tools';
 import { useWalletLayer1 } from '../stores/walletLayer1';

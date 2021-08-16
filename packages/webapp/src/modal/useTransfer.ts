@@ -6,7 +6,7 @@ import { ConnectorNames, dumpError400, OffchainFeeReqType, OriginTransferRequest
 import { useTokenMap } from '../stores/token';
 import { useAccount } from '../stores/account';
 import { useChargeFees } from './useChargeFees';
-import { LoopringAPI } from '../stores/apis/api';
+import { LoopringAPI } from 'api_wrapper';
 import { useSystem } from '../stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { useCustomDCEffect } from '../hooks/common/useCustomDCEffect';

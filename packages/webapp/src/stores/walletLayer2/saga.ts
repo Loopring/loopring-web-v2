@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getWalletLayer2Status, updateWalletLayer2 } from './reducer';
 import { CoinKey, PairKey, WalletCoin } from '@loopring-web/common-resources';
-import { userAPI } from '../apis/api';
+import { userAPI } from 'api_wrapper';
 import store from '../index';
 
 type WalletLayer2Map<R extends { [ key: string ]: any }> = {

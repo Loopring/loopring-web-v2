@@ -10,7 +10,7 @@ import { cloneDeep } from 'lodash';
 import { Box, Grid, Tabs, Tab, Divider, OutlinedInput, InputAdornment } from '@material-ui/core'
 import { SearchIcon } from '@loopring-web/common-resources'
 import { useQuote, useCandlestickList } from './hook'
-import { LoopringAPI } from 'stores/apis/api'
+import { LoopringAPI } from 'api_wrapper'
 import { TradingInterval } from 'loopring-sdk/dist'
 import { TableWrapStyled } from 'pages/styled'
 import { useFavoriteMarket } from 'stores/localStore/favoriteMarket'

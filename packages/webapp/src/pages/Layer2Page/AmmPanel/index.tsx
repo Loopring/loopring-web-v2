@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { RawDataAmmItem, AmmTable, AmmSideTypes } from '@loopring-web/component-lib'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import store from 'stores'
-import { LoopringAPI } from 'stores/apis/api'
+import { LoopringAPI } from 'api_wrapper'
 import { AmmTxType } from 'loopring-sdk'
 import { StylePaper } from '../../styled'
 import { volumeToCount } from '../../../hooks/help';

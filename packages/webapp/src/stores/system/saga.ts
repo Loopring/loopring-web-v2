@@ -3,7 +3,7 @@ import { getSystemStatus, updateRealTimeObj, updateSystem } from './reducer'
 import { ENV, NETWORKEXTEND } from "./interface"
 import store from '../index';
 // import { reset } from '../account/reducer';
-import { exchangeAPI, LoopringAPI } from '../apis/api';
+import { exchangeAPI, LoopringAPI } from 'api_wrapper';
 import { getAmmMap, updateRealTimeAmmMap } from '../Amm/AmmMap';
 import { getTokenMap } from '../token';
 import { CustomError, ErrorMap } from '@loopring-web/common-resources';

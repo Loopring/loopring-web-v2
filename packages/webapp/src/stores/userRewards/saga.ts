@@ -2,9 +2,7 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects"
 import { getUserRewards, getUserRewardsStatus } from './reducer'
 
 import store from '../index';
-import { exchangeAPI, LoopringAPI } from '../apis/api';
-import { updateRealTimeAmmMap } from '../Amm/AmmMap';
-import { updateRealTimeObj } from '../system';
+import { LoopringAPI } from 'api_wrapper';
 
 const getUserRewardsApi = async <R extends {[key:string]:any}>(list:Array<keyof R>)=> {
 

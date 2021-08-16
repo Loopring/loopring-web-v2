@@ -3,7 +3,7 @@ import { getTicker, getTickers, getTickerStatus } from './reducer'
 import { CoinKey, CustomError, ErrorMap, PairKey, TradeFloat } from '@loopring-web/common-resources'
 
 
-import { exchangeAPI } from "stores/apis/api"
+import { exchangeAPI } from "api_wrapper"
 import { makeTickerMap } from '../../hooks/help';
 
 
