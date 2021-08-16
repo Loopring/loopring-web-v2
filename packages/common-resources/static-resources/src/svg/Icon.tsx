@@ -160,6 +160,17 @@ export const MenuIcon = (props: SvgIconProps) => {
     ><path d="M21 18L3 18L3 16L21 16L21 18ZM21 13L3 13L3 11L21 11L21 13ZM21 8L3 8L3 6L21 6L21 8Z" />
     </SvgIcon>
 }
+export const QRIcon = (props: SvgIconProps) => {
+    return <SvgIcon {...props} width="10" height="10" viewBox="0 0 24 24" fill="none">
+        <path d="M4 17.3333H6.66667V20H4V17.3333Z" />
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M10.6667 21.3328L7.99951 24H0V13.3333H10.6667V21.3328ZM2.66667 21.3333L2.66667 16H8V21.3333H2.66667Z" />
+        <path d="M20 4L17.3333 4V6.66667H20V4Z" />
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M21.3328 10.6667L24 7.99951V0H13.3333V10.6667H21.3328ZM21.3333 8V2.66667L16 2.66667V8H21.3333Z" />
+        <path d="M17.3333 14.6662V13.3333H13.3333V16H15.9995L17.3333 14.6662Z" />
+        <path d="M6.66667 4H4V6.66667H6.66667V4Z" />
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0V10.6667H10.6667V0H0ZM2.66667 8V2.66667H8V8H2.66667Z" />
+    </SvgIcon>
+}
 export const DoneIcon = (props: SvgIconProps) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none"
     ><path fillRule="evenodd" clipRule="evenodd" d="M22.875 12C22.875 18.0061 18.0061 22.875 12 22.875C5.9939 22.875 1.125 18.0061 1.125 12C1.125 5.9939 5.9939 1.125 12 1.125C18.0061 1.125 22.875 5.9939 22.875 12ZM24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12ZM10.2099 15.7774L16.9716 9.01572L16.1784 8.22259L10.2099 14.1855L7.82101 11.8023L7.02788 12.5954L10.2099 15.7774Z" />
@@ -311,13 +322,8 @@ export const EmptyIcon = (props: SvgIconProps) => {
     </SvgIcon>
 
 }
-export const QRIcon = (props: SvgIconProps) => {
-    return <SvgIcon {...props} width="10" height="10" viewBox="0 0 24 24" fill="none"
-    >
-        <path fillRule="evenodd" clipRule="evenodd"
-              d="M9.66666 19L5 19V14.3333H9.66666V19ZM8.5 15.5H6.16667V17.8333H8.5L8.5 15.5ZM5 5H9.66666V9.66666H5V5ZM6.16667 8.5H8.5V6.16667H6.16667V8.5ZM14.3333 19V14.3333H19V19H14.3333ZM17.8333 15.5H15.5V17.8333H17.8333V15.5ZM14.3333 5H19L19 9.66666H14.3333V5ZM15.5 8.5L17.8333 8.5V6.16667H15.5V8.5ZM11.4167 19H12.5833V17.8333H11.4167V19ZM6.75 12.5833H7.91666V11.4167H6.75V12.5833ZM16.0833 12H17.25V10.8333H16.0833V12ZM14.3333 13.1667H17.25V12H14.3333V13.1667ZM12.5833 16.9583H11.4167V13.75H9.66666V9.66666H10.8333V12.5833H12.5833V13.1667H14.3333V14.3333H12.5833V16.9583ZM10.8333 9.66666H12V6.16667H10.8333V9.66666Z"/>
-    </SvgIcon>
-}
+
+
 export const PoolsIcon = (props: SvgIconProps) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none"
     >
