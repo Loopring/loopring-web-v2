@@ -10,8 +10,9 @@ import {
     CheckIcon,
     EmptyValueTag,
     getFormattedHash,
-    PendingIcon,
-    TableType
+    // PendingIcon,
+    TableType,
+    AssetsIcon, // temporayily replacement
 } from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
@@ -67,7 +68,7 @@ const CellStatus = ({row, column}: any) => {
         height: 28px
       }
     `
-    const svg = status === 'processed' ? <CheckIcon/> : status === 'processing' ? <PendingIcon/> : <AlertIcon/>
+    const svg = status === 'processed' ? <CheckIcon/> : status === 'processing' ? <AssetsIcon/> : <AlertIcon/>
     const RenderValueWrapper =
         <RenderValue>
             {/* {svg}{status} */}
