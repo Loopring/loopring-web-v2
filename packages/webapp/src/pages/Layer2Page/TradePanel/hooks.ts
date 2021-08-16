@@ -6,7 +6,7 @@ import { TransactionStatus, RawDataTransactionItem, RawDataTradeItem } from '@lo
 
 import { FilledType, TxStatus, UserTrade } from 'loopring-sdk'
 import { TransactionTradeTypes } from '@loopring-web/component-lib';
-import { LoopringAPI } from 'stores/apis/api'
+import { LoopringAPI } from 'api_wrapper'
 import store from 'stores'
 import { TradeTypes } from '@loopring-web/common-resources'
 import { toBig, Side } from 'loopring-sdk'

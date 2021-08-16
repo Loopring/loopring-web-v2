@@ -1,6 +1,5 @@
 import { AmmpoolAPI, ChainId, ExchangeAPI, UserAPI, WalletAPI, WsAPI } from "loopring-sdk"
 import store from 'stores'
-import { Chain } from "voca"
 
 export function getChainId(){
     const chainId = store.getState().system.chainId

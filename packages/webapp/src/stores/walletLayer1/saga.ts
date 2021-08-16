@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getWalletLayer1Status, updateWalletLayer1 } from './reducer';
 import { CoinKey, PairKey, WalletCoin } from '@loopring-web/common-resources';
-import { exchangeAPI } from '../apis/api';
+import { exchangeAPI } from 'api_wrapper';
 import store from '../index';
 import { fromWEI } from 'loopring-sdk';
 import { useAccount } from '../account';

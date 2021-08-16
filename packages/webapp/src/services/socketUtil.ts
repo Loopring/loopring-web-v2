@@ -12,7 +12,7 @@ import {
 import { tickerService } from './tickerService';
 import { ammPoolService } from './ammPoolService';
 import { CustomError, ErrorMap } from '@loopring-web/common-resources';
-import { LoopringAPI } from '../stores/apis/api';
+import { LoopringAPI } from 'api_wrapper';
 // import store from '../stores';
 // import { updateSocketURL } from '../stores/system';
 

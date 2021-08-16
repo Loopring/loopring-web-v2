@@ -4,7 +4,7 @@ import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect'
 import { useAccount } from 'stores/account/hook'
 import { TransactionStatus, RawDataTransactionItem } from '@loopring-web/component-lib'
 import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
-import { LoopringAPI } from 'stores/apis/api'
+import { LoopringAPI } from 'api_wrapper'
 
 import { TransactionTradeTypes } from '@loopring-web/component-lib';
 

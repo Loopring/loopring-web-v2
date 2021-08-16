@@ -1,6 +1,6 @@
 import { generateKeyPair, sleep, toBig, toHex } from 'loopring-sdk';
 import { connectProvides } from '@loopring-web/web3-provider';
-import { LoopringAPI } from '../../stores/apis/api';
+import { LoopringAPI } from 'api_wrapper';
 import store from '../../stores';
 import { walletLayer2Services } from './walletLayer2Services';
 import { myLog } from '../../utils/log_tools';

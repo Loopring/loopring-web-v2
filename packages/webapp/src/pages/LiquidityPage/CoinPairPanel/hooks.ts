@@ -14,7 +14,7 @@ import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk/dist/defs/looprin
 import { useSystem } from '../../../stores/system';
 import { makeMyAmmWithSnapshot } from '../../../hooks/help/makeUIAmmActivityMap';
 import { useUserRewards } from '../../../stores/userRewards';
-import { LoopringAPI } from 'stores/apis/api';
+import { LoopringAPI } from 'api_wrapper';
 
 const makeAmmDetailExtendsActivityMap = ({ammMap, coinMap, ammActivityMap, ammKey}: any) => {
 

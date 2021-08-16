@@ -5,7 +5,7 @@ import { MarketBlockProps, QuoteTableRawDataItem, } from '@loopring-web/componen
 import { deepClone } from '../../utils/obj_tools';
 import { useSocket } from '../../stores/socket';
 import { TradingInterval, WsTopicType } from 'loopring-sdk';
-import { LoopringAPI } from 'stores/apis/api'
+import { LoopringAPI } from 'api_wrapper'
 import { tickerService } from '../../services/tickerService';
 import { debounce } from "lodash"
 import { globalSetup } from '@loopring-web/common-resources';

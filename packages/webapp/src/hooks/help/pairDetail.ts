@@ -1,6 +1,6 @@
 import { AmmMap } from '../../stores/Amm/AmmMap';
 import { AmmPoolSnapshot, getBaseQuote, LoopringMap, TickerData, TokenInfo, TokenVolumeV3 } from 'loopring-sdk';
-import { LoopringAPI } from '../../stores/apis/api';
+import { LoopringAPI } from 'api_wrapper';
 import { CoinMap, CustomError, ErrorMap } from '@loopring-web/common-resources';
 import { volumeToCountAsBigNumber } from './volumeToCount';
 

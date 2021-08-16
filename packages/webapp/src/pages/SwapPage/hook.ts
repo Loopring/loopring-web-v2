@@ -1,7 +1,5 @@
 import {
     AccountStatus,
-    CustomError,
-    ErrorMap,
     fnType,
     globalSetup,
     IBData,
@@ -11,8 +9,8 @@ import {
     WalletMap
 } from '@loopring-web/common-resources';
 import React, { useCallback, useEffect, useState } from 'react';
-import { LoopringAPI } from '../../stores/apis/api';
-import { useTokenMap } from '../../stores/token';
+import { LoopringAPI } from 'api_wrapper';
+import { useTokenMap } from 'stores/token';
 import * as sdk from 'loopring-sdk';
 import {
     AmmPoolInfoV3,

@@ -15,7 +15,7 @@ import { useTokenMap } from '../stores/token';
 import { useAccount } from '../stores/account';
 import { useChargeFees } from './useChargeFees';
 import { useCustomDCEffect } from '../hooks/common/useCustomDCEffect';
-import { LoopringAPI } from '../stores/apis/api';
+import { LoopringAPI } from 'api_wrapper';
 import { useSystem } from '../stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { myLog } from 'utils/log_tools';

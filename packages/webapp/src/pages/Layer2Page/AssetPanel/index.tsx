@@ -18,10 +18,9 @@ import {
 import { useModals } from 'modal/useModals'
 
 import { volumeToCount } from 'hooks/help'
-import { LoopringAPI } from 'stores/apis/api'
+import { LoopringAPI } from 'api_wrapper'
 import { AssetType } from 'loopring-sdk'
 import store from 'stores'
-import { useWalletLayer1 } from 'stores/walletLayer1'
 import { makeWalletLayer2 } from 'hooks/help'
 import { useWalletLayer2 } from '../../../stores/walletLayer2'
 import { EmptyValueTag,unit } from '@loopring-web/common-resources'

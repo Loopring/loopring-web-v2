@@ -11,7 +11,7 @@ import { ChartType } from '@loopring-web/component-lib'
 import { TGItemData, TGItemJSXInterface, } from '@loopring-web/component-lib'
 
 import { IGetDepthDataParams } from '@loopring-web/component-lib'
-import { LoopringAPI } from 'stores/apis/api'
+import { LoopringAPI } from 'api_wrapper'
 
 const toggleData: TGItemData[] = [
   {
