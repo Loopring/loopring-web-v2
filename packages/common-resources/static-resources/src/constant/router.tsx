@@ -1,34 +1,28 @@
 import {
-    AmmIcon,
     AssetsIcon,
     MiningIcon,
     MyLiquidityIcon,
     // OrderIcon,
     // PoolsIcon,
     SettingIcon,
-    TradeIcon,
-    TransactionsIcon,
     L2MyLiquidityIcon,
     L2HistoryIcon,
     L2OrderIcon,
 } from '../svg';
 
-import { ThemeType } from '../themes';
 import { HeaderMenuItemInterface, HeaderMenuTabStatus } from '../loopring-interface';
 
 export enum ButtonComponentsMap {
-    Download = 0,
-    Notification = 1,
-    Theme = 2,
-    Language = 3,
-    WalletConnect = 4,
+    Download,
+    Notification ,
+    Setting,
+    WalletConnect,
 }
 
 export const ToolBarAvailableItem = [
     ButtonComponentsMap.Download,
     // ButtonComponentsMap.Notification,
-    // ButtonComponentsMap.Theme,
-    ButtonComponentsMap.Language,
+    ButtonComponentsMap.Setting,
     ButtonComponentsMap.WalletConnect
 ]
 
@@ -40,18 +34,7 @@ export let headerToolBarData: Array<{ buttonComponent: number, handleClick?: (pr
         i18nDescription: 'labelDownloadBtn',
     },
     {buttonComponent: ButtonComponentsMap.Notification, label: 'labelNotification',},
-    {
-        buttonComponent: ButtonComponentsMap.Theme,
-        themeMode: ThemeType.dark,
-        label: 'themeSetting',
-        handleClick: undefined
-    },
-    {
-        buttonComponent: ButtonComponentsMap.Language,
-        // language: LanguageType.en_US,
-        label: 'languageSetting',
-        handleClick: undefined,
-    },
+    {buttonComponent: ButtonComponentsMap.Setting, label: 'labelSetting'},
     {
         buttonComponent: ButtonComponentsMap.WalletConnect,
         label: 'labelConnectWallet',

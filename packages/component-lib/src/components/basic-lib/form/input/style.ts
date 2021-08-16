@@ -5,7 +5,7 @@ import CurrencyInput from 'react-currency-input-field';
 
 export const IWrap = styled(Box)`
   ${({theme}) => theme.border.defaultFrame({c_key: 'var(--opacity)'})};
-            
+ 
   .label-wrap {
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -39,12 +39,13 @@ export const IWrap = styled(Box)`
   }
 
   .coinInput-wrap, .btnInput-wrap {
+    position: relative;
+    box-sizing: border-box;
     background: var(--color-box);
     border-radius: ${({theme}) => theme.unit / 2}px;
-    position: relative;
     margin-top: ${({theme}) => `${theme.unit / 2}px`};
     height: var(--btn-Input-height);
-
+   
     ::before {
       content: '';
       display: block;
@@ -56,31 +57,31 @@ export const IWrap = styled(Box)`
       box-sizing: border-box;
       pointer-events: none;
       z-index: 1;
-      ${({theme}) => `
-            ${theme.border.defaultFrame({c_key: 'blur'})};
-            ${theme.mode === 'dark' ? `border-color: transparent` : ''};
-     `};
+      
     }
 
 
     &.error {
-      input,button,.icon-wrap{
-        ${({theme}) => `
-            ${theme.border.defaultFrame({c_key: theme.colorBase.error, d_R: 0.5})};
-        `};
-      }
-
-      .input-wrap-right input,.icon-wrap-left {
-            border-top-left-radius: 0px;
-            border-bottom-left-radius: 0px;
-            border-left:0
-      }
-
-      .input-wrap-left input,.icon-wrap-right,button {
-          border-top-right-radius: 0px;
-          border-bottom-right-radius: 0px;
-          border-right:0
-      }
+      ${({theme}) => `
+        ${theme.border.defaultFrame({c_key: theme.colorBase.error, d_R: 0.5})};
+      `
+      // input,button,.icon-wrap{
+      //   ${({theme}) => `
+      //       ${theme.border.defaultFrame({c_key: theme.colorBase.error, d_R: 0.5})};
+      //   `};
+      // }
+      //
+      // .input-wrap-right input,.icon-wrap-left {
+      //       border-top-left-radius: 0px;
+      //       border-bottom-left-radius: 0px;
+      //       border-left:0
+      // }
+      //
+      // .input-wrap-left input,.icon-wrap-right,button {
+      //     border-top-right-radius: 0px;
+      //     border-bottom-right-radius: 0px;
+      //     border-right:0
+      // }
     }
   }
 
@@ -190,26 +191,36 @@ export const IInput = styled(CurrencyInput)`
   letter-spacing: inherit;
   animation-duration: 10ms;
   -webkit-tap-highlight-color: transparent;
-
+  + label {
+    height: 0;
+    width: 0;
+  }
   :focus {
     outline: 0;
+    & + label::before {
+      content:'';
+      position: absolute;
+      top:0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      ${({theme}) => `${theme.border.defaultFrame({c_key: 'var(--color-border-hover)',d_R: 0.5})};`};
+    }
+  }
+  .error &:focus {
+    & + label::before {
+      ${({theme}) => `${theme.border.defaultFrame({c_key: 'var(--opacity)',d_R: 0.5})};`}
+    }
   }
 
   .input-wrap-right & {
     text-align: right;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    ${({theme}) => `
-        border-left:  ${theme.border.borderConfig({c_key: 'blur'})};
-        ${theme.mode === 'dark' ? `border-color: transparent` : ''};
-    `};
+   
 
     :focus {
-      ${({theme}) => `
-        ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
-        border-top-left-radius: 0px;
-        border-bottom-left-radius: 0px;
-     `};
+      
     }
   }
 
@@ -217,17 +228,20 @@ export const IInput = styled(CurrencyInput)`
     text-align: left;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    ${({theme}) => `
-        border-right:  ${theme.border.borderConfig({c_key: 'blur'})};
-        ${theme.mode === 'dark' ? `border-color: transparent` : ''};
-    `};
+    
 
     :focus {
-      ${({theme}) => `
-        ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-     `};
+     
     }
   }
 }` as typeof CurrencyInput
+// border-left:  ${theme.border.borderConfig({c_key: 'blur'})};
+// ${theme.mode === 'dark' ? `border-color: transparent` : ''};
+// ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
+// border-top-left-radius: 0px;
+// border-bottom-left-radius: 0px;
+// border-right:  ${theme.border.borderConfig({c_key: 'blur'})};
+// ${theme.mode === 'dark' ? `border-color: transparent` : ''};
+// ${theme.border.defaultFrame({c_key: 'focus', d_R: 0.5})};
+// border-top-right-radius: 0;
+// border-bottom-right-radius: 0;
