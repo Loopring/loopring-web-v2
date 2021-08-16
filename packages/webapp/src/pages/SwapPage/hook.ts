@@ -41,7 +41,7 @@ import {
     makeTickView,
     makeWalletLayer2,
     pairDetailBlock,
-    pairDetailDone, volumeToCountAsBigNumber
+    pairDetailDone,
 } from '../../hooks/help';
 import * as _ from 'lodash'
 import store from 'stores';
@@ -80,7 +80,7 @@ export const useSwapBtnStatusCheck = () => {
 
         }
 
-    }, [isSwapLoading, isValidAmt,account.readyState])
+    }, [isSwapLoading, isValidAmt, account.readyState])
 
     return {
         btnStatus,
@@ -104,7 +104,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const { account, status: accountStatus } = useAccount()
     const { delayAndUpdateWalletLayer2, walletLayer2, status: walletLayer2Status } = useWalletLayer2();
 
-    // const walletLayer2State = useWalletLayer2()
     const [tradeData, setTradeData] = React.useState<SwapTradeData<IBData<C>> | undefined>(undefined);
     const [tradeCalcData, setTradeCalcData] = React.useState<Partial<TradeCalcData<C>>>({});
     const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
@@ -115,7 +114,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const { pair, setPair, market, } = usePairMatch('/trading/lite')
 
     //HIGH: get Router info
-    // const symbol = match?.params.symbol ?? undefined;
+    
     useCustomDCEffect(() => {
         if (!market) {
             return
