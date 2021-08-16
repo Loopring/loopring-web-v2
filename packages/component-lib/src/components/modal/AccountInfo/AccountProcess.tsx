@@ -2,7 +2,7 @@ import {  Typography } from '@material-ui/core';
 import {  WithTranslation } from 'react-i18next';
 import React from 'react';
 import { CoinInfo, LinkIcon } from '@loopring-web/common-resources';
-import { ProcessBasic } from '../ProcessBasic';
+import { InProgressBasic } from '../ModalPanelBase';
 import { Link } from '@material-ui/core/';
 
 export const ActiveAccountProcess = ({t, ...rest}: WithTranslation & { providerName: string }) => {
@@ -13,7 +13,7 @@ export const ActiveAccountProcess = ({t, ...rest}: WithTranslation & { providerN
             </Typography>
         </>
     }, [])
-    return <ProcessBasic label={t('labelActivateAccount')} describe={ describe} {...{...rest, t}}/>
+    return <InProgressBasic label={t('labelActivateAccount')} describe={ describe} {...{...rest, t}}/>
 }
 
 export const DepositingProcess = ({
@@ -34,7 +34,7 @@ export const DepositingProcess = ({
             </Link></>
 
     }, [])
-    return <ProcessBasic label={label} describe={describe} {...{...rest, t}}/>
+    return <InProgressBasic label={label} describe={describe} {...{...rest, t}}/>
 
 }
 
@@ -56,7 +56,7 @@ export const DepositApproveProcess = ({
             </Link></>
 
     }, [])
-    return <ProcessBasic label={label} describe={describe} {...{...rest, t}}/>
+    return <InProgressBasic label={label} describe={describe} {...{...rest, t}}/>
 
 }
 
@@ -73,7 +73,7 @@ export const TokenAccessProcess = ({
             </Typography>
         </>
     }, [])
-    return <ProcessBasic label={label} describe={describe} {...{...rest, t}}/>
+    return <InProgressBasic label={label} describe={describe} {...{...rest, t}}/>
 
 }
 
@@ -85,7 +85,5 @@ export const ProcessUnlock = ({t, ...rest}: WithTranslation & { providerName: st
             </Typography>
         </>
     }, [])
-    return <ProcessBasic label={t('labelUnLockLayer2')} describe={describe} {...{...rest, t}}/>
+    return <InProgressBasic label={t('labelUnLockLayer2')} describe={describe} {...{...rest, t}}/>
 }
-
-

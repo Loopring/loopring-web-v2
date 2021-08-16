@@ -1,7 +1,7 @@
 import { Typography } from '@material-ui/core';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
-import { ProcessBasic } from '../ProcessBasic';
+import { InProgressBasic } from '../ModalPanelBase';
 import {  ConnectProviders } from '@loopring-web/common-resources';
 
 
@@ -21,7 +21,7 @@ export const WalletConnectProcess = ({t,...rest}:WithTranslation)=>{
         </>
 
     },[])
-    return <ProcessBasic providerName={ConnectProviders.WalletConnect} describe={describe} label={t('labelWalletConnectProcessing')} {...{...rest,t}}/>
+    return <InProgressBasic providerName={ConnectProviders.WalletConnect} describe={describe} label={t('labelWalletConnectProcessing')} {...{...rest,t}}/>
 }
 
 export const MetaMaskProcess =  ({t,...rest}:WithTranslation)=>{
@@ -40,5 +40,5 @@ export const MetaMaskProcess =  ({t,...rest}:WithTranslation)=>{
         </>
 
     },[])
-    return <ProcessBasic  providerName={ConnectProviders.MetaMask} describe={describe} label={t('labelMetaMaskProcessing')} {...{...rest,t}}/>
+    return <InProgressBasic providerName={ConnectProviders.MetaMask} describe={describe} label={t('labelMetaMaskProcessing')} {...{...rest,t}}/>
 }

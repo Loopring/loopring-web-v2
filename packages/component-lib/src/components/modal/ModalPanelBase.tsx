@@ -1,9 +1,11 @@
 import { Box, Typography } from '@material-ui/core';
 import { Trans, WithTranslation } from 'react-i18next';
-import { ConnectProviders, LoadingIcon } from '@loopring-web/common-resources';
+import { ConnectProviders, LoadingIcon, CheckedIcon, EmbarIcon, } from '@loopring-web/common-resources';
 import React from 'react';
+import { useTheme } from '@emotion/react';
+import { Button } from '../basic-lib';
 
-export const ProcessBasic = ({
+export const InProgressBasic = ({
                                  label,
                                  providerName,
                                  describe
@@ -36,4 +38,32 @@ export const ProcessBasic = ({
             {providerDescribe}
         </Typography>
     </Box>
+}
+
+export const CompletedBasic = ({ t, label, describe, onClose, }: WithTranslation & {label:string,describe:JSX.Element, onClose:(event:any)=>void }) => {
+    const theme = useTheme();
+    return   <Box flex={1} display={'flex'} alignItems={'center'}  justifyContent={'space-between'} flexDirection={'column'}>
+        <Typography component={'h3'} variant={'h3'} marginBottom={3}>{label}</Typography>
+        <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
+            <CheckedIcon style={{width: 60, height: 60, color: theme.colorBase.success}}/>
+        </Typography>
+        {describe}
+        <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
+            <Button variant={'contained'} fullWidth size={'medium'}  onClick={onClose}>{t('labelClose')} </Button>
+        </Box>
+    </Box>
+}
+
+export const FailedBasic= ({onRetry,describe,label,t}: {describe:JSX.Element, onRetry:(event:any)=>void,label:string } & WithTranslation)=>{
+    return    <Box flex={1} display={'flex'} alignItems={'center'}  justifyContent={'space-between'} flexDirection={'column'}>
+        <Typography component={'h3'} variant={'h3'} marginBottom={3}>{t(label)}</Typography>
+        <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
+            <EmbarIcon color={'error'} style={{width:60,height:60}}></EmbarIcon>
+        </Typography>
+        {describe}
+        <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
+            <Button variant={'contained'} fullWidth size={'medium'}  onClick={onRetry}>{t('labelRetry')} </Button>
+        </Box>
+    </Box>
+
 }

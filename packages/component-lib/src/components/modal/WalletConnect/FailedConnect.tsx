@@ -1,9 +1,8 @@
 import { Typography } from '@material-ui/core';
 import { Trans, WithTranslation } from 'react-i18next';
 import { Link } from '@material-ui/core/';
-import { FailedBasic } from '../FailedBasic';
+import { FailedBasic } from '../ModalPanelBase';
 import React from 'react';
-
 
 export const FailedConnect = ({onRetry,...rest}: { onRetry:(event:any)=>void } & WithTranslation)=>{
     const describe = React.useMemo(()=>{
