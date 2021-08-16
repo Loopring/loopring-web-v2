@@ -333,6 +333,7 @@ const CellStatus = ({row, column, rowIdx}: any) => {
         <Popover
             type={PopoverType.click}
             popupId={popupId}
+            className={'arrow-right'}
             // children={triggerContent}
             popoverContent={popoverContent}
             handleStateChange={setIsOpen}
@@ -343,9 +344,6 @@ const CellStatus = ({row, column, rowIdx}: any) => {
             transformOrigin={{
                 vertical: 'top',
                 horizontal: 'right',
-            }}
-            arrowHorizon={{
-                right: 10
             }}
         >
             {triggerContent}
