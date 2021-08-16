@@ -64,11 +64,11 @@ const CellStatus = ({row, column}: any) => {
       color: ${({theme}) => theme.colorBase[ `${TYPE_COLOR_MAPPING.find(o => o.type === status)?.color}` ]};
 
       & svg {
-        width: 28px;
-        height: 28px
+        width: 20px;
+        height: 20px;
       }
     `
-    const svg = status === 'processed' ? <CheckIcon/> : status === 'processing' ? <AssetsIcon/> : <AlertIcon/>
+    const svg = status === 'processed' ? <CheckIcon width={14} height={14} /> : status === 'processing' ? <AssetsIcon/> : <AlertIcon/>
     const RenderValueWrapper =
         <RenderValue>
             {/* {svg}{status} */}
