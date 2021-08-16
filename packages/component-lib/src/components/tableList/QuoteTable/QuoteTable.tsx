@@ -11,7 +11,7 @@ import {
 } from '@loopring-web/common-resources'
 import { Column, Table } from '../../basic-lib/tables/index'
 import { TablePaddingX } from '../../styled'
-import { Typography } from '@material-ui/core/';
+import { IconButton, Typography } from '@material-ui/core/';
 import { useSettings } from '@loopring-web/component-lib/src/stores'
 import { useDispatch } from 'react-redux'
 
@@ -70,9 +70,10 @@ const QuoteTableChangedCell: any = styled.span`
 }
 `
 
-const StarIconWrapperStyled = styled(Box)`
-    margin: ${({theme}) => theme.unit}px ${({theme}) => theme.unit}px 0 0;
-` as typeof Box
+// const StarIconWrapperStyled = styled(Box)`
+//     color: var(--color-star);
+//     margin: ${({theme}) => theme.unit}px ${({theme}) => theme.unit}px 0 0;
+// ` as typeof Box
 
 type IGetColumnModePros = {
     t: any,
@@ -102,13 +103,15 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                             display={'flex'}
                             alignItems={'center'}
                             >
-                            <StarIconWrapperStyled onClick={(e) => handleStartClick(e, isFavourite, pair)}>
-                                {isFavourite ? (
-                                    <StarSolidIcon cursor={'pointer'}/>
-                                ) : (
-                                    <StarHollowIcon cursor={'pointer'}/>
-                                )}
-                            </StarIconWrapperStyled>
+                            <Typography  marginRight={1}>
+                                <IconButton style={{color:'var(--color-star)'}} size={'medium'} onClick={(e:any) => handleStartClick(e, isFavourite, pair)}>
+                                    {isFavourite ? (
+                                        <StarSolidIcon  cursor={'pointer'}/>
+                                    ) : (
+                                        <StarHollowIcon cursor={'pointer'}/>
+                                    )}
+                                </IconButton>
+                            </Typography>
                             <Typography component={'span'}>
                                 {coinA}
                                 <Typography

@@ -352,13 +352,13 @@ const ModalPanelWrap = () => {
 
 const Template: Story<any> = () => {
     const dispatch = useDispatch();
-    const {t,...rest} = useTranslation('common');
+    const {t,...rest} = useTranslation();
     const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:0.8`) as Array<number | string>;
     return <Style> <MemoryRouter initialEntries={['/']}>
         <Box>
             <h4>Slippage bloc</h4>
             <Grid container spacing={2}>
-                <SlippagePanel<any> {...{
+                <SlippagePanel {...{
                     ...rest, t, tReady:true,
                     handleChange: ()=>{},
                     slippageList: slippageArray,
