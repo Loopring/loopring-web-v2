@@ -12,9 +12,9 @@ import {
     HeaderMenuTabStatus,
     ToolBarAvailableItem
 } from '@loopring-web/common-resources';
-import { BtnDownload, BtnLanguage, BtnNotification, BtnTheme, WalletConnectBtn } from './toolbar';
+import { BtnDownload, BtnNotification, BtnSetting, WalletConnectBtn } from './toolbar';
 import React from 'react';
-import { useSettings } from '../../stores';
+// import { useSettings } from '../../stores';
 
 const ToolBarStyled = styled(Toolbar)`
   && {
@@ -93,7 +93,6 @@ export const LoopringLogo = (<LogoStyle variant="h6" component="h1">
 );
 
 const ToolBarItem = ({buttonComponent, ...props}: any) => {
-    const {themeMode, language} = useSettings()
 
     const render = React.useMemo(() => {
         switch (buttonComponent) {
@@ -101,10 +100,12 @@ const ToolBarItem = ({buttonComponent, ...props}: any) => {
                 return <BtnDownload {...props} />;
             case  ButtonComponentsMap.Notification:
                 return <BtnNotification {...props} />;
-            case  ButtonComponentsMap.Theme:
-                return <BtnTheme {...{...props, themeMode}} />;
-            case  ButtonComponentsMap.Language:
-                return <BtnLanguage {...{...props, language}} />;
+            case  ButtonComponentsMap.Setting:
+                return <BtnSetting {...props} />;
+            // case  ButtonComponentsMap.Theme:
+            //     return <BtnTheme {...{...props, themeMode}} />;
+            // case  ButtonComponentsMap.Language:
+            //     return <BtnLanguage {...{...props, language}} />;
             case  ButtonComponentsMap.WalletConnect:
                 return <WalletConnectBtn {...props} />;
             default:

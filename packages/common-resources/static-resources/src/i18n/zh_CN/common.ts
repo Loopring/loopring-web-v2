@@ -92,6 +92,7 @@ export default {
     labelCurrency: '结算货币',
     currencySetting: '货币设置',
     labelColors: '选择颜色',
+    labelTheme: '暗黑模式',
     labelthemeLight: '明亮模式',
     labelthemeDark: '暗黑模式',
     labelgreen: '绿色',

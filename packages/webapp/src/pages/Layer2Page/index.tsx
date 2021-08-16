@@ -13,7 +13,7 @@ import AmmPanel from './AmmPanel'
 import History from './HistoryPanel'
 import OrderPanel from './OrderPanel'
 import MyLiqudityPanel from './MyLiquidityPanel'
-import { SettingPanel } from '../SettingPage';
+// import { SettingPanel } from '../SettingPage';
 // import { useModalProps } from '../../layouts/header/hook';
 import React from 'react';
 import { useAccount } from '../../stores/account';
@@ -148,7 +148,7 @@ export const Layer2Page = () => {
                         {selected === 'trades' && <TradePanel/>}
                         {selected === 'ammRecords' && <AmmPanel/>}
                         {selected === 'order' && <OrderPanel />}
-                        {selected === 'setting' && <SettingPanel/>}
+                        {/*{selected === 'setting' && <SettingPanel/>}*/}
                     </Box>
                 </>
             default:

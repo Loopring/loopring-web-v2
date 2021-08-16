@@ -158,7 +158,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                         disabled={!(!disabled || belong)}
                         placeholder={placeholderText}
                         aria-placeholder={placeholderText} aria-label={label} decimalsLimit={10000000}/>
-
+                <label></label>
             </Grid>
         </Grid>
         {isHideError? <></>: <Grid container className={'message-wrap'} wrap={'nowrap'} alignItems={'stretch'} alignContent={'stretch'}
