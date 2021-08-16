@@ -1,7 +1,7 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getWalletLayer1Status, updateWalletLayer1 } from './reducer';
 import { CoinKey, PairKey, WalletCoin } from '@loopring-web/common-resources';
-import { exchangeAPI } from 'api_wrapper';
+import { LoopringAPI } from 'api_wrapper';
 import store from '../index';
 import { fromWEI } from 'loopring-sdk';
 import { useAccount } from '../account';
@@ -15,13 +15,12 @@ const getWalletLayer1Balance = async <R extends {[key:string]:any}>()=> {
     //TODO: check is connect and active and assign walletLayer1
     //TODO: if not reject directory, any error happen will clean the
     // await sdk
-    const exchangeApi = exchangeAPI();
     const {accAddress} = store.getState().account;
     const {tokenMap,marketCoins} = store.getState().tokenMap;
-    if(marketCoins && tokenMap) {
+    if(marketCoins && tokenMap && LoopringAPI.exchangeAPI) {
         
-        const {ethBalance} =  await exchangeApi.getEthBalances({owner:accAddress});
-        const {tokenBalances} =  await exchangeApi.getTokenBalances({owner:accAddress, token: marketCoins.join()},tokenMap);
+        const {ethBalance} =  await LoopringAPI.exchangeAPI.getEthBalances({owner:accAddress});
+        const {tokenBalances} =  await LoopringAPI.exchangeAPI.getTokenBalances({owner:accAddress, token: marketCoins.join()},tokenMap);
         tokenBalances['ETH'] = ethBalance;
         let walletLayer1;
         if(tokenBalances) {

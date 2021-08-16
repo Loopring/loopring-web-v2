@@ -10,21 +10,17 @@ export const pairDetailBlock = <C extends { [ key: string ]: any }, I extends { 
                                                                                                            ammMap
                                                                                                        }: { coinKey: string, ammKey: string, ammMap: AmmMap<C, I> }):
     Promise<{
-        ammPoolsBalance: AmmPoolSnapshot,
-        tickMap:  LoopringMap<TickerData>
+        ammPoolsBalance: AmmPoolSnapshot | undefined,
+        tickMap:  LoopringMap<TickerData>,
 }> => {
-    // const exchangeApi = exchangeAPI();
-    // const ammpoolApi = ammpoolAPI();
     return new Promise((resolve, reject) => {
         if(LoopringAPI.ammpoolAPI && LoopringAPI.exchangeAPI ) {
             Promise.all([
-                LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({poolAddress: ammMap[ ammKey ].address}),
+                LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({poolAddress: ammMap[ammKey]?.address}),
                 LoopringAPI.exchangeAPI.getMixTicker({market: coinKey})])
-                // exchangeApi.getMarketTrades({market:coinKey})])
-                //{raw_data},
                 .then(([{ammPoolSnapshot}, {tickMap}]) => {
                     resolve({
-                        ammPoolsBalance: ammPoolSnapshot as AmmPoolSnapshot,
+                        ammPoolsBalance: ammPoolSnapshot,
                         tickMap,
                     })
                 })
