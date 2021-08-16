@@ -105,24 +105,25 @@ export const globalCss = ({theme}: any) => css`
   ${reset}
   html, body {
     position: relative;
-    @font-face {
-      font-family: 'Inter-Medium';
-      src: url(${InterMedium}) format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
-    @font-face {
-      font-family: 'DINCondensed';
-      src: url(${DINCondensed}) format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
+    // @font-face {
+    //   font-family: 'Inter-Medium';
+    //   src: url(${InterMedium}) format('truetype');
+    //   font-weight: normal;
+    //   font-style: normal;
+    // }
+    // @font-face {
+    //   font-family: 'DINCondensed';
+    //   src: url(${DINCondensed}) format('truetype');
+    //   font-weight: normal;
+    //   font-style: normal;
+    // }
     
     height: 100%;
     box-sizing: border-box;
     -moz-box-sizing: border-box; /* Firefox */
     -webkit-box-sizing: border-box; /* Safari */
-    font-family: DINCondensed, Helvetica, Arial, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
+    // font-family: DINCondensed, Helvetica, Arial, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
+    font-family: Roboto;
     font-size: 62.5%; /* 62.5% of 16px = 10px */
 
   }
