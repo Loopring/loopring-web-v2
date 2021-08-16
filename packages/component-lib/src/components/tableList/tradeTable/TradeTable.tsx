@@ -84,7 +84,7 @@ const TableStyled = styled(Box)`
     flex: 1;
 
     .rdg{
-        height: ${(props: any) => props.currentHeight}px;
+        height: ${(props: any) => props.currentheight}px;
         --template-columns: 320px auto 200px 150px !important;
         .rdg-cell.action{
             display: flex;
@@ -260,7 +260,7 @@ export const TradeTable = withTranslation('tables')((props: WithTranslation & Tr
         })
     }
 
-    return <TableStyled currentHeight={currentHeight}>
+    return <TableStyled currentheight={currentHeight}>
         {showFilter && (
             <TableFilterStyled>
                 <Filter {...{
