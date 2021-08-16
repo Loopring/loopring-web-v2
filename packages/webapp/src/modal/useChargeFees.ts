@@ -11,7 +11,6 @@ import { useState } from 'react';
 import { useCustomDCEffect } from '../hooks/common/useCustomDCEffect';
 import { LoopringAPI } from 'api_wrapper';
 import * as sdk from 'loopring-sdk';
-import { BIG10 } from '../defs/swap_defs';
 import { myLog } from '../utils/log_tools';
 
 export function useChargeFees(tokenSymbol: string | undefined, requestType: OffchainFeeReqType,

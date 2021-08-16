@@ -22,8 +22,6 @@ import { myLog } from 'utils/log_tools';
 import { useWalletLayer2 } from '../stores/walletLayer2';
 import { makeWalletLayer2 } from '../hooks/help';
 import { useTranslation } from 'react-i18next';
-// import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
-// import { useChargeFeeList } from './hook';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     // handleWithdraw: (inputValue:R) => void,
