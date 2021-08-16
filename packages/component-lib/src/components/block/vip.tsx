@@ -6,10 +6,11 @@ import {
     SortableHeaderCellProps,
     Table
 } from '../basic-lib';
-import { WithTranslation, withTranslation } from 'react-i18next';
+import { Trans, WithTranslation, withTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
-import { Divider, Grid, Typography } from '@material-ui/core';
-import { VipStyled } from '../styled';
+import { Box, Button, Divider, Grid, Typography } from '@material-ui/core';
+import { TypographyStrong, VipStyled } from '../styled';
+import React from 'react';
 
 interface Row {
     level: string;
@@ -70,6 +71,44 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t, ...rest}: & W
         generateColumns: generateColumns,
     };
     return <StyledPaper item xs={12} display={'flex'} flexDirection={'column'} marginBottom={2} paddingY={2}>
+        <Box component={'section'} display={'flex'} flexDirection={'column'}>
+            <Typography variant={'h6'} component={'h4'} paddingX={2}>{t('labelTitleResetL2Keypair')}</Typography>
+            <StyledDivider/>
+            <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}
+                  alignItems={'flex-start'} paddingX={2} marginBottom={2}>
+                <Grid item xs={8} display={'flex'} flexDirection={'column'}>
+                    <Typography variant={'body1'} component={'p'}>
+                        <Trans i18nKey="resetDescription">
+                            Create a new signing key for layer-2 authentication (no backup needed). This will
+                            <TypographyStrong component={'span'}>cancel all your pending orders</TypographyStrong>.
+                        </Trans>
+                    </Typography>
+                </Grid>
+                <Grid item xs={4} display={'flex'} flexDirection={'column'} justifyContent={'space-evenly'}
+                      alignItems={'flex-end'} alignSelf={'stretch'}>
+                    <Button variant={'outlined'} size={'medium'} color={'primary'}>{t('labelBtnReset')}</Button>
+                    <Typography variant={'body1'} component={'p'}
+                                paddingTop={1}>{t('labelHadChangPassword', {passDay: '14 hours'})}</Typography>
+                </Grid>
+            </Grid>
+        </Box>
+
+
+        <Box component={'section'} display={'flex'} flexDirection={'column'}>
+            <Typography variant={'h6'} component={'h4'} paddingX={2}>{t('labelTitleExportAccount')}</Typography>
+            <StyledDivider/>
+            <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}
+                  alignItems={'flex-start'} paddingX={2} marginBottom={2}>
+                <Grid item xs={7} display={'flex'} flexDirection={'column'}>
+                    <Typography variant={'body1'} component={'p'}>{t('descriptionExportAccount')}</Typography>
+                </Grid>
+                <Grid item xs={5} display={'flex'} flexDirection={'column'} justifyContent={'space-evenly'}
+                      alignItems={'flex-end'} alignSelf={'stretch'}>
+                    <Grid item> <Button variant={'outlined'} size={'medium'}
+                                        color={'primary'}>{t('labelBtnExportAccount')}</Button></Grid>
+                </Grid>
+            </Grid>
+        </Box>
         <Table<Row, unknown> {...{...vipTableArgs, t, ...rest}}  />
         {/*<Typography variant={'body1'} component={'h3'} color={'textColorSecondary'}>*/}
         {/*    {t('typographyVipDescription1')}*/}
