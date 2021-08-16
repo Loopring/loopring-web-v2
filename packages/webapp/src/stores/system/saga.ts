@@ -3,7 +3,7 @@ import { getSystemStatus, updateRealTimeObj, updateSystem } from './reducer'
 import { ENV, NETWORKEXTEND } from "./interface"
 import store from '../index';
 // import { reset } from '../account/reducer';
-import { exchangeAPI, LoopringAPI } from 'api_wrapper';
+import { LoopringAPI } from 'api_wrapper';
 import { getAmmMap, updateRealTimeAmmMap } from '../Amm/AmmMap';
 import { getTokenMap } from '../token';
 import { CustomError, ErrorMap } from '@loopring-web/common-resources';
@@ -52,7 +52,7 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
             const {exchangeInfo} = (await LoopringAPI.exchangeAPI.getExchangeInfo())
             const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'USD'})).fiatPrices
             const faitPricesY = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'CNY'})).fiatPrices
-            const gasPrice = (await exchangeAPI().getGasPrice()).gasPrice / 1e+9;
+            const gasPrice = (await LoopringAPI.exchangeAPI.getGasPrice()).gasPrice / 1e+9;
             // : process.env.REACT_APP_API_URL_UAT;
             const baseURL = ChainId.MAINNET === chainId ? `https://${process.env.REACT_APP_API_URL}` : `https:/${process.env.REACT_APP_API_URL_UAT}`
             const socketURL = ChainId.MAINNET === chainId ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws` : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
@@ -67,11 +67,13 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
                     clearInterval(__timer__);
                 }
                 return setInterval(async () => {
-                    const faitPrices = (await exchangeAPI().getFiatPrice({legal: 'CNY'})).fiatPrices
-                    const gasPrice = (await exchangeAPI().getGasPrice()).gasPrice / 1e+9
-                    const forex = faitPrices[ 'USDT' ]?.price
-                    store.dispatch(updateRealTimeAmmMap(undefined))
-                    store.dispatch(updateRealTimeObj({faitPrices, gasPrice, forex}))
+                    if (LoopringAPI.exchangeAPI) {
+                        const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'CNY'})).fiatPrices
+                        const gasPrice = (await LoopringAPI.exchangeAPI.getGasPrice()).gasPrice / 1e+9
+                        const forex = faitPrices[ 'USDT' ]?.price
+                        store.dispatch(updateRealTimeAmmMap(undefined))
+                        store.dispatch(updateRealTimeObj({faitPrices, gasPrice, forex}))
+                    }
                 }, 300000)   //
 
             })(__timer__);

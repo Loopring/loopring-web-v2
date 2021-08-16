@@ -3,7 +3,7 @@ import { getTicker, getTickers, getTickerStatus } from './reducer'
 import { CoinKey, CustomError, ErrorMap, PairKey, TradeFloat } from '@loopring-web/common-resources'
 
 
-import { exchangeAPI } from "api_wrapper"
+import { LoopringAPI } from "api_wrapper"
 import { makeTickerMap } from '../../hooks/help';
 
 
@@ -17,7 +17,11 @@ type TickerMap<R extends { [ key: string ]: any }> = {
 
 const getTickersApi = async <R extends { [ key: string ]: any }>(list: Array<keyof R>) => {
 
-    const tickers = await exchangeAPI().getMixTicker({market: list.join(',')})
+    if (!LoopringAPI.exchangeAPI) {
+        return undefined
+    }
+
+    const tickers = await LoopringAPI.exchangeAPI.getMixTicker({market: list.join(',')})
     const data = makeTickerMap({tickerMap: tickers.tickMap})
     return {data}
 }

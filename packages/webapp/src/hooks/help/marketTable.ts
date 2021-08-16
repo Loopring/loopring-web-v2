@@ -1,14 +1,16 @@
 import * as sdk from 'loopring-sdk';
 import store from '../../stores';
 import { TradeTypes } from '@loopring-web/common-resources';
-import { LoopringAPI, userAPI } from 'api_wrapper';
+import { LoopringAPI, } from 'api_wrapper';
 import { AmmRecordRow, AmmTradeType,RawDataTradeItem } from '@loopring-web/component-lib';
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
 
-export const getUserTrades = (marketKey: any) => {
-    const userApi = userAPI();
+export const getUserTrades = (market: string) => {
+    if (!LoopringAPI.userAPI) {
+        return undefined
+    }
     const {accountId, apiKey} = store.getState().account
-    return userApi.getUserTrades({accountId}, apiKey).then((response: {
+    return LoopringAPI.userAPI.getUserTrades({accountId, market,}, apiKey).then((response: {
         totalNum: any;
         userTrades: sdk.UserTrade[];
         raw_data: any;
