@@ -1,4 +1,4 @@
-import { Box, IconButton, Link, Paper } from '@material-ui/core';
+import { Box, IconButton, Link, } from '@material-ui/core';
 import {
     DownloadIcon,
     // DropDownIcon,
@@ -10,7 +10,6 @@ import {
     // ThemeType,
 } from '@loopring-web/common-resources';
 // import React from 'react';
-import { QRCodePanel } from '../../modal';
 import { WithTranslation } from 'react-i18next';
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';
 import { bindPopper } from 'material-ui-popup-state/es';
@@ -19,6 +18,7 @@ import {
     // OutlineSelectItem,
     PopoverPure } from '../../basic-lib';
 import { SettingPanel } from '../../block/SettingPanel';
+import { QRCodePanel } from '../../modal';
 // import { useSettings } from '../../../stores';
 
 export const BtnDownload = ({

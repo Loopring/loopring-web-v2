@@ -11,6 +11,7 @@ export * from './SuccessUnlock'
 // export * from './FailedUnlock'
 // export * from './TokenAccessProcess'
 export * from './AccountProcess'
+export * from './QRAddressPanel'
 // export * from './FailedTokenAccess'
 
 

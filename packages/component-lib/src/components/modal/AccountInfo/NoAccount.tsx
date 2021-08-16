@@ -1,7 +1,7 @@
 import { AccountBase } from './AccountBase';
 import { AccountBaseProps } from './Interface';
 import { Box, Typography } from '@material-ui/core/';
-import { Button,AnimationArrow } from '../../../index';
+import { Button, AnimationArrow } from '../../../index';
 import { WithTranslation, withTranslation } from 'react-i18next';
 
 export const NoAccount =  withTranslation('common')(({goDeposit,t,...props}:WithTranslation & AccountBaseProps & { goDeposit:()=>void }) => {
@@ -23,3 +23,4 @@ export const NoAccount =  withTranslation('common')(({goDeposit,t,...props}:With
     </Box>
 
 })
+

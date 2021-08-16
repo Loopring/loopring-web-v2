@@ -1,16 +1,18 @@
-import { Box, Button, IconButton, Typography } from '@material-ui/core/';
-import { CopyIcon, getShortAddr, LinkIcon, QRIcon, ReverseIcon, } from '@loopring-web/common-resources';
+import { Box, Button, Typography } from '@material-ui/core/';
+import { CopyIcon, getShortAddr, LinkIcon, ReverseIcon, } from '@loopring-web/common-resources';
 import { Trans, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import { AccountBaseProps } from './Interface';
-import { PopoverPure, VipStyled } from '../../../';
-import { bindHover, bindPopover } from 'material-ui-popup-state/es';
-import { usePopupState } from 'material-ui-popup-state/hooks';
-import QRCode from 'qrcode.react';
+import {
+    // PopoverPure,
+    VipStyled } from '../../../';
+// import { bindHover, bindPopover } from 'material-ui-popup-state/es';
+// import { usePopupState } from 'material-ui-popup-state/hooks';
+// import QRCode from 'qrcode.react';
 // ${({theme})=>boxLiner({theme})}
-const PopStyle = styled(Box)`
-  border-radius: ${({theme}) => theme.unit / 2}px
-`
+// const PopStyle = styled(Box)`
+//   border-radius: ${({theme}) => theme.unit / 2}px
+// `
 const BoxStyled = styled(Box)`
   // .MuiLink-root {
   //   height: 2rem;
@@ -69,48 +71,23 @@ export const AccountBase = ({
     const addressShort = getShortAddr(accAddress)
     const etherscanLink = etherscanUrl + accAddress;
     const connectBy = connectName === 'unknown' ? t('labelWrongNetwork') : connectName;
-    const popupState = usePopupState({
-        variant: 'popover',
-        popupId: 'myAddress',
-    })
+    // const popupState = usePopupState({
+    //     variant: 'popover',
+    //     popupId: 'myAddress',
+    // })
     return <Box display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
         <Typography variant={'body2'} color={'textSecondary'} marginTop={3}>
             <Trans i18nKey="labelConnectBy" tOptions={{connectBy}}>
                 Connected with <Typography variant={'body2'} component={'span'}>{connectName}</Typography>.
             </Trans>
         </Typography>
-        <Typography  {...bindHover(popupState)} marginTop={1} display={'flex'} alignItems={'center'}
+        <Typography marginTop={1} display={'flex'} alignItems={'center'}
                      justifyContent={'flex-start'}>
             <Typography component={'span'} variant={'h1'}>{addressShort}</Typography>
             {level ? <VipStyled component={'span'} variant={'body2'}
             >{level}</VipStyled> : undefined}
         </Typography>
-        <PopoverPure
-            className={'arrow-center'}
-            {...bindPopover(popupState)}
-            {...{
-                anchorOrigin: {vertical: 'bottom', horizontal: 'center'},
-                transformOrigin: {vertical: 'top', horizontal: 'center'}
-            }}
-        >
-            <PopStyle paddingY={2} paddingX={2} width={184} display={'flex'} flexDirection={'column'}
-                      alignItems={'center'} justifyContent={'center'}>
-                {/*<QRCodePanel {...{*/}
-                {/*    ...rest, t, title: '', description: '',*/}
-                {/*    url: etherscanLink*/}
-                {/*}} />*/}
-                <QRCode value={etherscanLink} size={120} style={{backgroundColor: '#fff'}}
-                        aria-label={`link:${etherscanLink}`}/>
-                <Typography marginTop={2} variant={'body2'} color={'textSecondary'}
-                            style={{wordBreak: 'break-all'}}>{accAddress}</Typography>
-                {/*<Button onClick={() => {*/}
-                {/*    if (onCopy) onCopy()*/}
-                {/*}}>*/}
-                {/*    <Typography variant={'body2'} > {t('labelCopyAddress')} </Typography>*/}
-                {/*</Button>*/}
-            </PopStyle>
 
-        </PopoverPure>
 
 
         <BoxStyled component={'div'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
@@ -121,11 +98,12 @@ export const AccountBase = ({
             <Button startIcon={<CopyIcon fontSize={'small'}/>} onClick={() => {
                 if (onCopy) onCopy()
             }}>
-                <Typography variant={'body2'} marginTop={1 / 2}> {t('labelCopyAddress')} </Typography>
+                <Typography variant={'body2'} marginTop={1 / 2}> {t('labelCopyClipBoard')} </Typography>
             </Button>
+
             {/* <Button startIcon={<ReverseIcon fontSize={'small'}/>} onClick={() => {
                 if (onSwitch) onSwitch()
-            }}>
+            }}>   labelCopyAddress
                 <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelSwitchAccount')} </Typography>
             </Button> */}
             <Button startIcon={<ReverseIcon fontSize={'small'}/>} onClick={() => {

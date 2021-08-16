@@ -19,6 +19,7 @@ export type AccountBaseProps = {
 
 export enum AccountStep {
     NoAccount,
+    QRCode,
     Deposit,
     DepositInProcess,
     Depositing,
