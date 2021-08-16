@@ -21,7 +21,7 @@ import {
     TokenAccessProcess,
     useOpenModals, WalletConnectStep
 } from '@loopring-web/component-lib';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { copyToClipBoard } from 'utils/obj_tools';
 import { useAccount } from 'stores/account';
 import { ActionResult, ActionResultCode, REFRESH_RATE, TOAST_TIME } from 'defs/common_defs';
@@ -69,7 +69,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     const [copyToastOpen, setCopyToastOpen] = useState(false);
 
-    const onSwitch = useCallback(() => {
+    const onSwitch = React.useCallback(() => {
         setShowAccount({isShow: false})
         setShouldShow(true);
         setShowConnect({isShow: shouldShow ?? false})
@@ -122,7 +122,11 @@ export const ModalAccountInfo = withTranslation('common')(({
         }
 
     }, [account, setShowAccount])
-
+    const onQRClick = React.useCallback(() => {
+        // setShowAccount({isShow: false})
+        // setShouldShow(true);
+        // setShowConnect({isShow: shouldShow ?? false})
+    }, [])
     const unlockBtn = React.useMemo(() => {
         return <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {
             setShouldShow(true);
@@ -145,7 +149,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 etherscanUrl,
                 onSwitch, onCopy,
                 onViewQRCode, onDisconnect, addressShort,
-            }} />,},
+            }} />,onQRClick},
             [ AccountStep.Deposit ]: {view: <DepositPanel title={title} {...{
                 ...rest,
                 _height: 'var(--modal-height)',
@@ -171,7 +175,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 onViewQRCode, onDisconnect, addressShort,
             }} goUpdateAccount={() => {
                 goUpdateAccount()
-            }}  {...{...rest, t}} />,},
+            }}  {...{...rest, t}} />,onQRClick},
             [ AccountStep.ProcessUnlock ]: {view: <ProcessUnlock providerName={account.connectName} {...{...rest, t}} />,},
             [ AccountStep.SuccessUnlock ]: {view: <SuccessUnlock providerName={account.connectName} {...{...rest, t}} />,},
             [ AccountStep.FailedUnlock ]: {view: <FailedUnlock onRetry={() => {
@@ -181,12 +185,13 @@ export const ModalAccountInfo = withTranslation('common')(({
                 ...account,
                 onSwitch, onCopy,
                 etherscanUrl,
+
                 // address: account.accAddress,
                 // connectBy: account.connectName,
                 onViewQRCode, onDisconnect, addressShort,
                 etherscanLink: etherscanUrl + account.accAddress,
                 mainBtn: account.readyState === 'ACTIVATED' ? lockBtn : unlockBtn
-            }} />,},
+            }} />,onQRClick},
             [ AccountStep.TokenApproveInProcess ]: {view: <TokenAccessProcess label={title}
                                                                     providerName={account.connectName} {...{
                 ...rest,
@@ -235,6 +240,9 @@ export const ModalAccountInfo = withTranslation('common')(({
         <ModalAccount open={isShowAccount.isShow} onClose={(e) => {
             setShouldShow(false);
             onClose(e);
-        }} panelList={accountList} onBack={accountList[ isShowAccount.step ].onBack} step={isShowAccount.step}/>
+        }} panelList={accountList}
+                      onBack={accountList[ isShowAccount.step ].onBack}
+                      onQRClick={accountList[ isShowAccount.step ].onQRClick}
+                      step={isShowAccount.step}/>
     </>
 })

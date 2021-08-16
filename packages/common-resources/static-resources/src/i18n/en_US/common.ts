@@ -92,6 +92,7 @@ export default {
     labelCurrency: 'Currency',
     currencySetting: 'Currency setting',
     labelColors: 'Colors',
+    labelTheme: 'Dark Modal',
     labelthemeLight: 'light',
     labelthemeDark: 'dark',
     labelgreen: 'green',

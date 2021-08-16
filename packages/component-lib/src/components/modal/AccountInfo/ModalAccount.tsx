@@ -1,12 +1,12 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
-import { Modal } from '@material-ui/core';
+import {  Modal } from '@material-ui/core';
 // import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@emotion/react';
 import { Box } from '@material-ui/core/';
 import {
     ModalAccountProps,
     ModalBackButton,
-    ModalCloseButton,
+    ModalCloseButton, QRButtonStyle,
     SwipeableViewsStyled,
     SwitchPanelStyled
 } from '../../../index';
@@ -28,6 +28,7 @@ export const ModalAccount = withTranslation('common', {withRef: true})((
         step,
         onBack,
         style,
+        onQRClick,
         panelList,
         ...rest
     }: ModalAccountProps & WithTranslation) => {
@@ -47,7 +48,9 @@ export const ModalAccount = withTranslation('common', {withRef: true})((
             <Box display={'flex'} width={"100%"} flexDirection={'column'}>
                 <ModalCloseButton onClose={onClose} {...rest} />
                 {onBack ? <ModalBackButton onBack={onBack}  {...rest}/> :<></>}
+                {onQRClick ? <QRButtonStyle onQRClick={onQRClick}  {...rest}/> :<></>}
             </Box>
+
             <SwipeableViewsStyled animateTransitions={false} axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                                   index={step}
                                   {...{_height: h ? h : 'var(--modal-height)', _width: w ? w : 'var(--modal-width)'}}>

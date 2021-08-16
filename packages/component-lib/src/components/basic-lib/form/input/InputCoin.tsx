@@ -142,7 +142,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                         disabled={!(!disabled || belong)}
                         placeholder={placeholderText}
                         aria-placeholder={placeholderText} aria-label={label} decimalsLimit={10000000}/>
-
+                <label></label>
             </Grid>
         </Grid>
 

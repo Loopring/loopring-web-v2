@@ -249,7 +249,7 @@ const Template: Story<any> = () => {
 
         <h4>Setting Panel</h4>
         <Grid container spacing={2} alignContent={'stretch'} justifyContent={'stretch'} marginBottom={2}>
-            <Grid item xs={10}>
+            <Grid item  width={460}>
                 <SettingPanelWrap/>
             </Grid>
         </Grid>
