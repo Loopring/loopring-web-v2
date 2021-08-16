@@ -82,7 +82,7 @@ const MyLiquidity: any = withTranslation('common')(
         return (
             <>
                 <Grid container spacing={2}>
-                    <Grid item spacing={1} sm={3}>
+                    <Grid item sm={3}>
                         <StyleWrapper container paddingY={3} paddingX={4} margin={0} display={'flex'} flexDirection={'column'}>
                             <Grid display={'flex'} flexDirection={'column'} item>
                                 <Typography variant={'h5'}
