@@ -36,6 +36,7 @@ export const ColorDarkDefault = Object.freeze({
     white: '#ffffff',
     dark: '#000000',
     opacity: `${hexToRGB('#000000', '0')}`,
+    star:`#F0B90B`,
     /********************Case for provider*******************/
     shadow: ` 0px 4px 4px ${hexToRGB('#000000', '.25')}`
     /********************Case for provider*******************/

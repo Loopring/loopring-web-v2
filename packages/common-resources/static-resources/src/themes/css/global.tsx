@@ -45,6 +45,7 @@ export const colorBase = ({theme}: any) => css`
     --color-box-hover: ${theme.colorBase.boxHover};
     --color-box-linear: ${theme.colorBase.boxLinear};
     --color-global-bg: ${theme.colorBase.globalBg};
+    --color-star: ${theme.colorBase.star};  
     /********************Case for shadow*******************/
     --color-mask:  ${theme.colorBase.mask};
     --shadow: ${theme.colorBase.shadow};
