@@ -47,7 +47,6 @@ const TradePanel = withTranslation('common')(
     (
         {tradeArray,  myTradeArray, t}:
             { tradeArray: RawDataTradeItem[], myTradeArray: RawDataTradeItem[] } & WithTranslation & RouteComponentProps) => {
-        // const [isAllTrade, setIsAllTrade] = useState(false)
         const [value, setValue] = useState(1)
         const [tableHeight, setTableHeight] = useState(0);
         const handleChange = (event: any, newValue: any) => {

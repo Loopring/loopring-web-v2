@@ -131,11 +131,12 @@ export const MuiToolbar = () => {
     }
 }
 export const MuiSwitch = ({colorBase}: any): { styleOverrides: ComponentsOverrides['MuiSwitch'] } => {
-    const borderWidth = 3.5;
-    const width = pxToRem(56);
-    const height = pxToRem(34);
-    const size = pxToRem(22);
-    const gap = (34 - 22) / 2;
+    const borderWidth = 2;
+    const padding =  borderWidth + 2;
+    const width = pxToRem(46);
+    const height = pxToRem(24);
+    const size = pxToRem(16);
+    // const gap =  (38 - (borderWidth + padding)*2);
     return {
         styleOverrides: {
             root: {
@@ -145,13 +146,13 @@ export const MuiSwitch = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 margin: pxToRem(8),
                 overflow: 'unset',
                 '& .MuiIconButton-root': {
-                    padding: pxToRem(gap),
+                    padding: pxToRem(padding),
                     height: 'auto',
                     width: 'auto'
                 },
                 '& .Mui-checked': {
                     color: colorBase.textPrimary,
-                    transform: `translateX(calc(${width} - ${size} - ${pxToRem(2 * gap)}))`,
+                    // transform: `translateX(-${gap}px)`,
                     '& + .MuiSwitch-track.MuiSwitch-track': {
                         backgroundColor: 'transparent',
                         opacity: opacity,
