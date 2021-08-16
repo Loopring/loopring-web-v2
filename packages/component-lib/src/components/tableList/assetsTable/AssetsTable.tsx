@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid, MenuItem, ListItemText } from '@material-ui/core'
+import { bindPopper, bindTrigger, bindHover, usePopupState } from 'material-ui-popup-state/hooks';
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 // import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
-import { Button } from '../../basic-lib'
-import { Column,Table } from '../../basic-lib/tables'
+import { Button, PopoverPure, Popover, PopoverType } from '../../basic-lib'
+import { Column, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { Filter } from './components/Filter'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
-import { TableType } from '@loopring-web/common-resources';
+import { TableType, MoreIcon } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores'
 
 const TableStyled = styled(Box)`
@@ -19,7 +20,7 @@ const TableStyled = styled(Box)`
 
   .rdg {
     flex: 1;
-    --template-columns: auto auto auto auto ${(props: any) => props.lan === 'zh_CN' ? '320px' : '370px'} !important;
+    --template-columns: auto auto auto auto 320px !important;
 
     .rdg-cell.action {
       display: flex;
@@ -30,6 +31,21 @@ const TableStyled = styled(Box)`
 
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as any
+
+const IconWrapperStyled = styled(Box)`
+    margin-top: ${({theme}) => theme.unit * 1.1}px;
+    svg {
+        width: ${({theme}) => theme.unit * 2}px;
+        height: ${({theme}) => theme.unit * 2}px;
+    }
+`
+
+const GridStyled = styled(Grid)`
+    .MuiGrid-item {
+        padding: 0;
+        padding-top: ${({theme}) => theme.unit / 4}px;
+    }
+`
 
 interface Row {
     token: {
@@ -119,16 +135,59 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
 
     const {language} = useSettings()
     let history = useHistory()
+    const rightState = usePopupState({variant: 'popover', popupId: `action-popover`});
 
     useEffect(() => {
         setTotalData(rawData && Array.isArray(rawData) ? rawData : [])
     }, [rawData])
 
-    const jumpToTrade = (pair: string) => {
-        history.push({
-            pathname: `/trading/lite/${pair}`
-        })
-    }
+    const getPopoverPopper = useCallback(() => {
+        return (
+            <div style={{ borderRadius: 'inherit' }}>
+                <MenuItem value={1}><ListItemText>{t('test key')}</ListItemText></MenuItem>
+                <MenuItem value={1} selected={true}><ListItemText>{t('test key')}</ListItemText></MenuItem>
+            </div>
+        )
+    }, [])
+
+    // const jumpToTrade = (pair: string) => {
+    //     history.push({
+    //         pathname: `/trading/lite/${pair}`
+    //     })
+    // }
+    const getPopoverTrigger = useCallback(() => {
+        return (
+            // <div {...bindTrigger(rightState)}>
+                <MoreIcon cursor={'pointer'} />
+            // </div>
+        )
+    }, [])
+
+    const popoverTrigger= (
+        <IconWrapperStyled {...bindTrigger(rightState)}>
+            <MoreIcon cursor={'pointer'} />
+        </IconWrapperStyled>
+    )
+
+    const popoverPoper= (
+        <PopoverPure
+            className={'arrow-right'}
+            {...bindPopper(rightState)}
+            anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+            }}
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+            }}>
+        {/* <Grid item style={{backgroundColor: 'var(--color-pop-bg)'}}>
+            <MenuItem value={1}><ListItemText>{t('test key')}</ListItemText></MenuItem>
+            <MenuItem value={1} selected={true}><ListItemText>{t('test key')}</ListItemText></MenuItem>
+        </Grid> */}
+        <Box height={100} width={120}>Content:XXXXXXX</Box>
+    </PopoverPure>
+    )
 
     const getColumnModeAssets = (t: TFunction): Column<Row, unknown>[] => [
         {
@@ -169,8 +228,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                 const tokenValue = token.value
 
                 return (
-                    <Grid container spacing={1} alignItems={'center'}>
-                        <>
+                    <GridStyled container spacing={1} justifyContent={'flex-start'} alignItems={'center'}>
                             <Grid item>
                                 <Button variant={'text'} size={'medium'} color={'primary'}
                                         onClick={() => onShowDeposit(tokenValue)}>{t('labelDeposit')}</Button>
@@ -183,7 +241,31 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                                 <Button variant={'text'} size={'medium'} color={'primary'}
                                         onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
                             </Grid>
-                            {isLp ? (
+                            <Grid item marginTop={1}>
+                                <Popover {...{
+                                    type: PopoverType.click,
+                                    popupId: 'testPopup',
+                                    className: 'arrow-right',
+                                    children: getPopoverTrigger(),
+                                    popoverContent: getPopoverPopper(),
+                                    anchorOrigin: {
+                                        vertical: 'bottom',
+                                        horizontal: 'right',
+                                    },
+                                    transformOrigin: {
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    },
+                                }}></Popover>
+                                {/* <IconWrapperStyled>
+                                    <MoreIcon {...bindTrigger(rightState)} cursor={'pointer'} />
+                                </IconWrapperStyled> */}
+                                {/* {getPopover()} */}
+                                {/* <Button {...bindTrigger(rightState)}>test</Button> */}
+                                {/* {getPopoverContent()} */}
+                            </Grid>
+                            
+                            {/* {isLp ? (
                                 <Grid item>
                                     <Button variant={'outlined'} size={'medium'} color={'primary'}
                                             onClick={() => onLpDeposit(lpPair, LpTokenAction.add)}>{t('labelAMM')}</Button>
@@ -193,8 +275,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                                     <Button variant={'outlined'} size={'medium'} color={'primary'}
                                             onClick={() => jumpToTrade(tokenValue)}>{t('labelTrade')}</Button>
                                 </Grid>
-                            )}
-                        </>
+                            )} */}
                         {/* <Grid item>
                             {isLp
                                 ? <Button variant={'outlined'} color={'primary'} disabled>{t('labelAMM')} </Button>
@@ -219,15 +300,15 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                                 </PopupState>
                             }
                         </Grid> */}
-                    </Grid>
+                    </GridStyled>
                 )
             }
         },
-        {
-            key: 'tradePairList',
-            name: 'tradePairList',
-            hidden: true
-        }
+        // {
+        //     key: 'tradePairList',
+        //     name: 'tradePairList',
+        //     hidden: true
+        // }
     ]
 
     const defaultArgs: any = {
