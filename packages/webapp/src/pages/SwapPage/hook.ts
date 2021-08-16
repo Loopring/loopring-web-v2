@@ -280,7 +280,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
             myLog(response)
 
-            if (response?.hash) {
+            if (!response?.hash) {
                 setSwapAlertText(t('labelSwapFailed'))
                 myError(response?.errInfo)
             } else {
