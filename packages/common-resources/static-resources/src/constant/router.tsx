@@ -4,7 +4,7 @@ import {
     MiningIcon,
     MyLiquidityIcon,
     // OrderIcon,
-    PoolsIcon,
+    // PoolsIcon,
     SettingIcon,
     TradeIcon,
     TransactionsIcon,
@@ -205,7 +205,7 @@ export const subMenuLayer2 = {
 
 export const subMenuLiquidity = {
     poolsGroup: [{
-        icon: PoolsIcon,
+        // icon: PoolsIcon,
         router: {path: '/liquidity/pools'},
         label: {
             id: 'pools',
