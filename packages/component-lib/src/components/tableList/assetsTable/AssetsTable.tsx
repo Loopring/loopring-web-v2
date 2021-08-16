@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Box, Grid, MenuItem, ListItemText } from '@material-ui/core'
-import { bindPopper, bindTrigger, bindHover, usePopupState } from 'material-ui-popup-state/hooks';
+// import { bindPopper, bindTrigger, bindHover, usePopupState } from 'material-ui-popup-state/hooks';
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
-import { useHistory } from 'react-router-dom'
+// import { useHistory } from 'react-router-dom'
 // import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
-import { Button, PopoverPure, Popover, PopoverType } from '../../basic-lib'
+import { Button, PopoverPure, Popover, PopoverType, PopoverWrapProps } from '../../basic-lib'
 import { Column, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { Filter } from './components/Filter'
@@ -134,12 +134,16 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     const pageSize = pagination ? pagination.pageSize : 10;
 
     const {language} = useSettings()
-    let history = useHistory()
-    const rightState = usePopupState({variant: 'popover', popupId: `action-popover`});
+    // let history = useHistory()
+    // const rightState = usePopupState({variant: 'popover', popupId: `action-popover`});
 
     useEffect(() => {
         setTotalData(rawData && Array.isArray(rawData) ? rawData : [])
     }, [rawData])
+
+    const getPopoverTrigger = useCallback(() => (
+        <MoreIcon cursor={'pointer'} />
+    ), [])
 
     const getPopoverPopper = useCallback(() => {
         return (
@@ -148,46 +152,49 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                 <MenuItem value={1} selected={true}><ListItemText>{t('test key')}</ListItemText></MenuItem>
             </div>
         )
-    }, [])
+    }, [t])
+
+    const getPopoverProps: any = useCallback(() => (
+        {
+            type: PopoverType.click,
+            popupId: 'testPopup',
+            className: 'arrow-right',
+            children: getPopoverTrigger(),
+            popoverContent: getPopoverPopper(),
+            anchorOrigin: {
+                vertical: 'bottom',
+                horizontal: 'right',
+            },
+            transformOrigin: {
+                vertical: 'top',
+                horizontal: 'right',
+            },
+        }), [getPopoverTrigger, getPopoverPopper])
 
     // const jumpToTrade = (pair: string) => {
     //     history.push({
     //         pathname: `/trading/lite/${pair}`
     //     })
     // }
-    const getPopoverTrigger = useCallback(() => {
-        return (
-            // <div {...bindTrigger(rightState)}>
-                <MoreIcon cursor={'pointer'} />
-            // </div>
-        )
-    }, [])
 
-    const popoverTrigger= (
-        <IconWrapperStyled {...bindTrigger(rightState)}>
-            <MoreIcon cursor={'pointer'} />
-        </IconWrapperStyled>
-    )
-
-    const popoverPoper= (
-        <PopoverPure
-            className={'arrow-right'}
-            {...bindPopper(rightState)}
-            anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-            }}
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}>
-        {/* <Grid item style={{backgroundColor: 'var(--color-pop-bg)'}}>
-            <MenuItem value={1}><ListItemText>{t('test key')}</ListItemText></MenuItem>
-            <MenuItem value={1} selected={true}><ListItemText>{t('test key')}</ListItemText></MenuItem>
-        </Grid> */}
-        <Box height={100} width={120}>Content:XXXXXXX</Box>
-    </PopoverPure>
-    )
+    // const popoverPoper= (
+    //     <PopoverPure
+    //         className={'arrow-right'}
+    //         {...bindPopper(rightState)}
+    //         anchorOrigin={{
+    //             vertical: 'bottom',
+    //             horizontal: 'right',
+    //         }}
+    //         transformOrigin={{
+    //             vertical: 'top',
+    //             horizontal: 'right',
+    //         }}>
+    //     {/* <Grid item style={{backgroundColor: 'var(--color-pop-bg)'}}>
+    //         <MenuItem value={1}><ListItemText>{t('test key')}</ListItemText></MenuItem>
+    //         <MenuItem value={1} selected={true}><ListItemText>{t('test key')}</ListItemText></MenuItem>
+    //     </Grid> */}
+    // </PopoverPure>
+    // )
 
     const getColumnModeAssets = (t: TFunction): Column<Row, unknown>[] => [
         {
@@ -196,7 +203,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             formatter: ({row, column}) => {
                 const token = row[ column.key ]
                 const StyledToken = styled(Box)`
-                  font-size: 13px;
+                    font-size: 13px;
                 `
                 return <StyledToken>{token.value}</StyledToken>
             }
@@ -242,21 +249,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                                         onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
                             </Grid>
                             <Grid item marginTop={1}>
-                                <Popover {...{
-                                    type: PopoverType.click,
-                                    popupId: 'testPopup',
-                                    className: 'arrow-right',
-                                    children: getPopoverTrigger(),
-                                    popoverContent: getPopoverPopper(),
-                                    anchorOrigin: {
-                                        vertical: 'bottom',
-                                        horizontal: 'right',
-                                    },
-                                    transformOrigin: {
-                                        vertical: 'top',
-                                        horizontal: 'right',
-                                    },
-                                }}></Popover>
+                                <Popover {...getPopoverProps()}></Popover>
                                 {/* <IconWrapperStyled>
                                     <MoreIcon {...bindTrigger(rightState)} cursor={'pointer'} />
                                 </IconWrapperStyled> */}
