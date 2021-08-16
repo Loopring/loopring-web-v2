@@ -189,12 +189,12 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
             const feeToken: TokenInfo = tokenMap[pair.coinBInfo.simpleName]
 
             const requestJoin: GetOffchainFeeAmtRequest = {
-                accountId: account.accountId,
+                accountId,
                 requestType: OffchainFeeReqType.AMM_JOIN,
                 tokenSymbol: pair.coinBInfo.simpleName as string,
             }
 
-            const { fees: feesJoin } = await LoopringAPI.userAPI.getOffchainFeeAmt(requestJoin, account.apiKey)
+            const { fees: feesJoin } = await LoopringAPI.userAPI.getOffchainFeeAmt(requestJoin, apiKey)
             setJoinFees(feesJoin)
 
             const feeJoin = sdk.toBig(feesJoin[pair.coinBInfo.simpleName]?.fee as string).div('1e' + feeToken.decimals).toString()
@@ -205,7 +205,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
                 requestType: OffchainFeeReqType.AMM_EXIT,
                 tokenSymbol: pair.coinBInfo.simpleName as string,
             }
-            const { fees: feesExit } = await LoopringAPI.userAPI.getOffchainFeeAmt(requestExit, account.apiKey)
+            const { fees: feesExit } = await LoopringAPI.userAPI.getOffchainFeeAmt(requestExit, apiKey)
 
             setExitfees(feesExit)
 
@@ -217,7 +217,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
             setAmmCalcData({ ...ammCalcData, feeJoin, feeExit })
         }
     }, [setJoinFees, setExitfees, setAmmCalcData, setAmmDepositBtnI18nKey, setAmmWithdrawBtnI18nKey,
-        accountStatus, account.readyState, account.apiKey, account.accountId,
+        accountStatus, account.readyState, accountId, apiKey,
         pair.coinBInfo?.simpleName, tokenMap, ammCalcData])
 
     // join
@@ -377,12 +377,14 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     // exit
     const [exitRequest, setExitRequest] = useState<{ rawVal: '', ammInfo: any, request: ExitAmmPoolRequest }>()
 
-    // const handler = React.useCallback(async () =>,[])
     const handleExitInDebounce = React.useCallback(debounce(async (data, type, exitFees, ammPoolSnapshot) => {
+
+        const isAtoB = type === 'coinA'
 
         if (!tokenMap || !data.coinA.belong || !data.coinB.belong
             || !ammPoolSnapshot || !exitFees || !account?.accAddress
-            || data.coinA.tradeValue === undefined || data.coinB.tradeValue === undefined) {
+            || (isAtoB && data.coinA.tradeValue === undefined) 
+            || (!isAtoB && data.coinB.tradeValue === undefined)) {
             return
         }
 
@@ -391,8 +393,6 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         const { slippage } = data
 
         const slippageReal = sdk.toBig(slippage).div(100).toString()
-
-        const isAtoB = type === 'coinA'
 
         const { idIndex, marketArray, marketMap, } = store.getState().tokenMap
 
@@ -415,13 +415,14 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         const coinA_TV = ammPoolSnapshot.pooled[0]
         const coinB_TV = ammPoolSnapshot.pooled[1]
 
-        const covertVal = data.coinA.tradeValue ? sdk.toBig(data.coinA.tradeValue)
-            .times('1e' + isAtoB ? coinA.decimals : coinB.decimals).toFixed(0, 0) : '0'
+        const rawVal = isAtoB ? data.coinA.tradeValue : data.coinB.tradeValue
+
+        const rawDecimal = isAtoB ? coinA.decimals : coinB.decimals
+
+        const covertVal = sdk.toBig(rawVal).times('1e' + rawDecimal).toFixed(0, 0)
         const { output, ratio } = sdk.ammPoolCalc(covertVal, isAtoB, coinA_TV, coinB_TV)
 
-        const rawVal = isAtoB ? data.coinA.tradeValue.toString() : data.coinB.tradeValue.toString()
-
-        const { request } = makeExitAmmPoolRequest(rawVal, isAtoB, slippageReal, account.accAddress, exitFees as LoopringMap<OffchainFeeInfo>,
+        const { request } = makeExitAmmPoolRequest(rawVal.toString(), isAtoB, slippageReal, account.accAddress, exitFees as LoopringMap<OffchainFeeInfo>,
             ammMap[amm], ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0)
 
         if (isAtoB) {
