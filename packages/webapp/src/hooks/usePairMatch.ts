@@ -35,11 +35,11 @@ export function usePairMatch<C extends { [key: string]: any }>(path: string) {
                 coinA = matchRes[1]
                 coinB = matchRes[2]
             }
-     
-            myLog('-------> coinA:', coinA, ' coinB:', coinB)
     
             const { market: marketTemp } = getExistedMarket(marketArray, coinA, coinB)
             realMarket = marketTemp
+     
+            myLog('-------> coinA:', coinA, ' coinB:', coinB, ' realMarket:', realMarket)
 
         }
 
