@@ -13,7 +13,6 @@ import { useCustomDCEffect } from '../hooks/common/useCustomDCEffect';
 import { myLog } from 'utils/log_tools';
 import { useWalletLayer2 } from '../stores/walletLayer2';
 import { makeWalletLayer2 } from '../hooks/help';
-import { debug } from 'console';
 
 export const useTransfer = <R extends IBData<T>, T>(): {
     // handleTransfer: (inputValue:R) => void,
