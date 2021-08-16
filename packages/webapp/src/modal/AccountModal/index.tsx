@@ -14,8 +14,9 @@ import {
     HadAccount,
     ModalAccount,
     ModalQRCode,
-    NoAccount,
+    NoAccount, PopoverPure,
     ProcessUnlock,
+    QRAddressPanel,
     SuccessUnlock,
     Toast,
     TokenAccessProcess,
@@ -36,6 +37,8 @@ import { useDeposit } from 'modal/useDeposit';
 import { sleep } from 'loopring-sdk';
 
 import { walletLayer2Services } from '../../services/account/walletLayer2Services'
+import QRCode from 'qrcode.react';
+import { Typography } from '@material-ui/core';
 
 export const ModalAccountInfo = withTranslation('common')(({
                                                                onClose,
@@ -123,9 +126,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     }, [account, setShowAccount])
     const onQRClick = React.useCallback(() => {
-        // setShowAccount({isShow: false})
-        // setShouldShow(true);
-        // setShowConnect({isShow: shouldShow ?? false})
+        setShowAccount({isShow: true, step: AccountStep.QRCode})
     }, [])
     const unlockBtn = React.useMemo(() => {
         return <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {
@@ -138,7 +139,21 @@ export const ModalAccountInfo = withTranslation('common')(({
             lockAccount();
         }}>{t('labelLockLayer2')} </Button>
     }, [lockAccount, t]);
+    const onBack = React.useCallback(() => {
+        switch(account.readyState){
+            case 'NO_ACCOUNT':
+            case 'DEPOSITING':
+                setShowAccount({isShow: true,step:AccountStep.NoAccount});
+                break;
+            case  'LOCKED':
+            case  'ACTIVATED':
+                setShowAccount({isShow: true,step:AccountStep.HadAccount});
+                break;
+            default:
+                setShowAccount({isShow: false});
 
+        }
+    }, [account])
     const title = t("labelCreateLayer2Title")
 
     const accountList = React.useMemo(() => {
@@ -150,6 +165,14 @@ export const ModalAccountInfo = withTranslation('common')(({
                 onSwitch, onCopy,
                 onViewQRCode, onDisconnect, addressShort,
             }} />,onQRClick},
+            [ AccountStep.QRCode ]: {view: <QRAddressPanel  {...{
+                    ...rest,
+                    ...account,
+
+                    etherscanUrl,
+
+                    t
+                }} />,onBack, noClose:true },
             [ AccountStep.Deposit ]: {view: <DepositPanel title={title} {...{
                 ...rest,
                 _height: 'var(--modal-height)',

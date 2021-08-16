@@ -98,7 +98,7 @@ export const ModalBackButton = ({onBack, t}: {
 export const QRButtonStyle = ({onQRClick, t}: {
     onQRClick?:()=>void
 } & WithTranslation) => {
-    return <Box alignSelf={'flex-start'} marginTop={-3} marginLeft={1.5}>
+    return <Box alignSelf={'flex-start'} marginTop={-1/2*7} marginLeft={1.5} position={'absolute'}>
         <IconButton color={'inherit'} aria-label={t('labelBack')} size={'medium'} onClick={() => {
             onQRClick && onQRClick()
         }}>

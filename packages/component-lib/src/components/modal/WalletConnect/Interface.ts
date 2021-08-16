@@ -14,6 +14,7 @@ export type  ModalWalletConnectProps = {
     onClose: { bivarianceHack(event: {}, reason: 'backdropClick' | 'escapeKeyDown'): void; }['bivarianceHack'];
     onBack?: ()=>void;
     step: number,
+    noClose?:boolean,
     style?: any, //{w,h}
     onQRClick ?: ()=>void;
     panelList: Array<{view:JSX.Element,onBack?: undefined|(()=>void) }>
