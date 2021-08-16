@@ -36,11 +36,17 @@ export const WalletConnectProvide = async (account?: string): Promise<{ provider
             throw new Error('walletConnect not connect');
         } else if (account && provider.isWalletConnect) {
             console.log('WalletConnect reconnect connected is true',account, provider, connector.session)
-            connector.updateSession({accounts:[account],chainId:connector.chainId})
-            await provider.getWalletConnector()
-            web3 = new Web3(provider as any);
-            walletServices.sendConnect(web3, provider)
-
+            const wc = await provider.getWalletConnector()
+            if (wc) {
+                await provider.start();
+                provider.subscribeWalletConnector();
+                web3 = new Web3(provider as any);
+                // connector.updateSession({accounts:[account],chainId:connector.chainId})
+                walletServices.sendConnect(web3, provider)
+            }else {
+                web3=undefined
+                throw new Error('walletConnect not connect');
+            }
         }
         return {provider, web3}
     } catch (error) {

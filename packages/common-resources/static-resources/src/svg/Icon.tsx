@@ -168,12 +168,12 @@ export const MenuIcon = (props: SvgIconProps) => {
 export const QRIcon = (props: SvgIconProps) => {
     return <SvgIcon {...props} width="10" height="10" viewBox="0 0 24 24" fill="none">
         <path d="M4 17.3333H6.66667V20H4V17.3333Z" />
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M10.6667 21.3328L7.99951 24H0V13.3333H10.6667V21.3328ZM2.66667 21.3333L2.66667 16H8V21.3333H2.66667Z" />
+        <path fillRule="evenodd" clipRule="evenodd" d="M10.6667 21.3328L7.99951 24H0V13.3333H10.6667V21.3328ZM2.66667 21.3333L2.66667 16H8V21.3333H2.66667Z" />
         <path d="M20 4L17.3333 4V6.66667H20V4Z" />
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M21.3328 10.6667L24 7.99951V0H13.3333V10.6667H21.3328ZM21.3333 8V2.66667L16 2.66667V8H21.3333Z" />
+        <path fillRule="evenodd" clipRule="evenodd" d="M21.3328 10.6667L24 7.99951V0H13.3333V10.6667H21.3328ZM21.3333 8V2.66667L16 2.66667V8H21.3333Z" />
         <path d="M17.3333 14.6662V13.3333H13.3333V16H15.9995L17.3333 14.6662Z" />
         <path d="M6.66667 4H4V6.66667H6.66667V4Z" />
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0V10.6667H10.6667V0H0ZM2.66667 8V2.66667H8V8H2.66667Z" />
+        <path fillRule="evenodd" clipRule="evenodd" d="M0 0V10.6667H10.6667V0H0ZM2.66667 8V2.66667H8V8H2.66667Z" />
     </SvgIcon>
 }
 export const DoneIcon = (props: SvgIconProps) => {
