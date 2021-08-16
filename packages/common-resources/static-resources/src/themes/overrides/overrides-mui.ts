@@ -6,7 +6,7 @@ import { fontDefault } from '../css/global';
 const opacity = 1;
 export const unit = 8;
 export const radius = 4;
-export const checboxSize = 18;
+export const checkBoxSize = 18;
 const hr = ({colorBase}: any) => {
     return {
         borderRadius: `${radius}px`,
@@ -23,8 +23,8 @@ const hr = ({colorBase}: any) => {
 }
 
 export const MuiCheckbox = ({colorBase}: any): { styleOverrides: ComponentsOverrides['MuiCheckbox'] } => {
-    const width = pxToRem(checboxSize);
-    const height = pxToRem(checboxSize);
+    const width = pxToRem(checkBoxSize);
+    const height = pxToRem(checkBoxSize);
     return {
         styleOverrides: {
             root: {
@@ -344,11 +344,11 @@ export const MuiSvgIcon = () => {
             root: {
                 height: 'var(--svg-size)',
                 width: 'var(--svg-size)',
-                margin: '-4px',
+                // margin: '-4px',
                 '&.MuiSvgIcon-fontSizeLarge': {
                     height: 'var(--svg-size-large)',
                     width: 'var(--svg-size-large)',
-                    margin: '-6px',
+                    // margin: '-6px',
                 },
                 '&.tag': {
                     width: 'auto',

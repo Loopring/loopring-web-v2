@@ -4,6 +4,8 @@ import React from 'react';
 import CurrencyInput from 'react-currency-input-field';
 
 export const IWrap = styled(Box)`
+  ${({theme}) => theme.border.defaultFrame({c_key: 'var(--opacity)'})};
+            
   .label-wrap {
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -62,20 +64,22 @@ export const IWrap = styled(Box)`
 
 
     &.error {
-      input{
-        ${({theme}) => `
-            ${theme.border.defaultFrame({c_key: theme.colorBase.error, d_R: 0.5})};
-        `};
-      }
-        .input-wrap-right input  {
-            border-top-left-radius: 0px;
-            border-bottom-left-radius: 0px;
-       }
+      ${({theme}) => theme.border.defaultFrame({c_key: 'var(--color-error)'})};
 
-      .input-wrap-left input {
-          border-top-right-radius: 0px;
-          border-bottom-right-radius: 0px;
-      }
+      // input{
+      //   ${({theme}) => `
+      //       ${theme.border.defaultFrame({c_key: theme.colorBase.error, d_R: 0.5})};
+      //   `};
+      // }
+      //   .input-wrap-right input  {
+      //       border-top-left-radius: 0px;
+      //       border-bottom-left-radius: 0px;
+      //  }
+      //
+      // .input-wrap-left input {
+      //     border-top-right-radius: 0px;
+      //     border-bottom-right-radius: 0px;
+      // }
     }
   }
 
