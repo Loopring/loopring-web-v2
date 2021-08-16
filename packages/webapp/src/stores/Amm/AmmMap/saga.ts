@@ -3,7 +3,7 @@ import { getAmmMap, getAmmMapStatus, updateRealTimeAmmMap } from './reducer';
 import { AmmDetail } from '@loopring-web/common-resources';
 import store from '../../index';
 import { AmmPoolInfoV3, AmmPoolStat, toBig, TokenVolumeV3, } from "loopring-sdk";
-import { ammpoolAPI } from "api_wrapper";
+import { LoopringAPI } from "api_wrapper";
 import { PayloadAction } from '@reduxjs/toolkit';
 import { AmmDetailStore, GetAmmMapParams } from './interface';
 import { volumeToCount, volumeToCountAsBigNumber } from '../../../hooks/help';
@@ -56,8 +56,12 @@ export const setAmmState = ({ammPoolState, keyPair}: { ammPoolState: AmmPoolStat
 }
 const getAmmMapApi = async <R extends { [ key: string ]: any }>({ammpools}: GetAmmMapParams) => {
 
+    if (!LoopringAPI.ammpoolAPI) {
+        return undefined
+    }
+
     let ammMap: AmmMap<R> = {}
-    const {ammPoolStats} = (await ammpoolAPI().getAmmPoolStats());
+    const {ammPoolStats} = (await LoopringAPI.ammpoolAPI?.getAmmPoolStats());
 
     let {__timer__} = store.getState().amm.ammMap
     __timer__ = (() => {
@@ -65,7 +69,12 @@ const getAmmMapApi = async <R extends { [ key: string ]: any }>({ammpools}: GetA
             clearInterval(__timer__)
         }
         return setInterval(async () => {
-            let ammPoolStats: { [key in keyof R]: AmmPoolStat } = (await ammpoolAPI().getAmmPoolStats()).ammPoolStats as { [key in keyof R]: AmmPoolStat }
+
+            if (!LoopringAPI.ammpoolAPI) {
+                return undefined
+            }
+            
+            let ammPoolStats: { [key in keyof R]: AmmPoolStat } = (await LoopringAPI.ammpoolAPI.getAmmPoolStats()).ammPoolStats as { [key in keyof R]: AmmPoolStat }
             store.dispatch(updateRealTimeAmmMap({ammPoolStats}))
         }, 900000)    //15*60*1000 //900000
     })()

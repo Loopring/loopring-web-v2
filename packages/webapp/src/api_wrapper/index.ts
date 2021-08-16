@@ -6,31 +6,6 @@ export function getChainId(){
     return { chainId: chainId as ChainId }
 }
 
-export const walletAPI = () => {
-    const walletApi = new WalletAPI(getChainId())
-    return walletApi
-}
-
-export const userAPI = () => {
-    const userApi = new UserAPI(getChainId())
-    return userApi
-}
-
-export const exchangeAPI = () => {
-    const exchangeApi = new ExchangeAPI(getChainId())
-    return exchangeApi
-}
-
-export const ammpoolAPI = () => {
-    const ammpoolApi = new AmmpoolAPI(getChainId())
-    return  ammpoolApi
-}
-
-export const wsAPI = () => {
-    const wsApi = new WsAPI(getChainId())
-    return wsApi
-}
-
 export class LoopringAPI {
     
     public static userAPI: UserAPI | undefined = undefined
