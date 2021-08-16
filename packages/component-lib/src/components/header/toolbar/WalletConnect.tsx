@@ -1,7 +1,7 @@
 import { WalletConnectBtnProps } from './Interface';
 import { useTranslation } from 'react-i18next';
 import React, { useEffect } from 'react';
-import { AccountStatus, getShortAddr, LoadingIcon, LockIcon, WrongNetworkIcon, } from '@loopring-web/common-resources';
+import { AccountStatus, getShortAddr, LoadingIcon, LockIcon, UnConnectIcon, } from '@loopring-web/common-resources';
 // import { debounce } from 'lodash';
 import { Typography } from '@material-ui/core';
 
@@ -153,7 +153,7 @@ export const WalletConnectBtn = ({
                 case AccountStatus.ERROR_NETWORK:
                     setBtnClassname('wrong-network')
                     setLabel('labelWrongNetwork')
-                    setIcon(<WrongNetworkIcon/>)
+                    setIcon(<UnConnectIcon/>)
                     break
                 default:
             }
