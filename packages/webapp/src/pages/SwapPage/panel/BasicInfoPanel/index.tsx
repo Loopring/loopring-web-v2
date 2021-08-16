@@ -18,7 +18,7 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
     const baseToken = coinAInfo?.name
     const quoteToken = coinBInfo?.name
 
-    // myLog('basicInfo baseToken:', baseToken, ' quoteToken:', quoteToken)
+    myLog('basicInfo baseToken:', baseToken, ' quoteToken:', quoteToken)
 
     const trendChartData = originData && !!originData.length ? originData.sort((a: any, b: any) => a.timeStamp - b.timeStamp) : []
     const depthChartData = originData && coinAInfo && originData.asksAmtTotals ? { 
