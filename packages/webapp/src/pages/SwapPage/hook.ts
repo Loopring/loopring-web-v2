@@ -120,7 +120,10 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             return
         }
         resetSwap(market, undefined, undefined, undefined);
-        // resetSwap(`${pair.coinAInfo}-${pair.coinBInfo}`, undefined, undefined, undefined);
+        getUserTrades(market)?.then((marketTrades) => {
+            let _myTradeArray = makeMarketArray(market, marketTrades) as RawDataTradeItem[]
+            setMyTradeArray(_myTradeArray ? _myTradeArray : [])
+        })
     }, [market]);
 
     const [ammPoolSnapshot, setAmmPoolSnapshot] = React.useState<AmmPoolSnapshot | undefined>(undefined);
@@ -150,8 +153,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         const base = tradeData?.sell.belong
         const quote = tradeData?.buy.belong
 
-        if (!LoopringAPI.userAPI || !base || !quote || !ammMap || !marketArray
-            || account.readyState !== AccountStatus.ACTIVATED || !account.accountId || !account.apiKey) {
+        if (!LoopringAPI.userAPI || !base || !quote || !marketArray
+            || account.readyState !== AccountStatus.ACTIVATED || !ammMap || !market || !account.accountId || !account.apiKey) {
             return
         }
 
@@ -159,21 +162,15 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             amm
         } = getExistedMarket(marketArray, base, quote)
 
-        if (!amm) {
-            return
+        let feeBips = 0
+
+        if (amm && ammMap[amm]) {
+            feeBips = ammMap[amm].__rawConfig__.feeBips
         }
-
-        const ammInfo = ammMap[amm]
-
-        if (!ammInfo) {
-            return
-        }
-
-        const feeBips = ammInfo.__rawConfig__.feeBips
 
         const req: GetMinimumTokenAmtRequest = {
             accountId: account?.accountId,
-            market: amm,
+            market,
         }
 
         const { amountMap } = await LoopringAPI.userAPI.getMinimumTokenAmt(req, account.apiKey)
@@ -222,13 +219,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                     balance: walletMap ? walletMap[tradeCalcData.coinBuy as string]?.count : 0
                 },
             } as SwapTradeData<IBData<C>>)
-            const {
-                market
-            } = getExistedMarket(marketArray, tradeCalcData.coinSell as string, tradeCalcData.coinBuy as string);
-            getUserTrades(market).then((marketTrades) => {
-                let _myTradeArray = makeMarketArray(market, marketTrades) as RawDataTradeItem[]
-                setMyTradeArray(_myTradeArray ? _myTradeArray : [])
-            })
             // }
         }
     }, [walletLayer2Status])
@@ -451,14 +441,11 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         
         if(validAmt || quoteMinAmt === undefined || tradeData === undefined){
             setSwapBtnI18nKey(undefined)
-        }else{
-
-            setSwapBtnI18nKey(`labelLimitMin,${VolToNumberWithPrecision(quoteMinAmt,tradeData?.buy.belong) + ' ' + tradeData?.buy.belong}`)
+        } else {
+            setSwapBtnI18nKey(`labelLimitMin, ${VolToNumberWithPrecision(quoteMinAmt,tradeData?.buy.belong) + ' ' + tradeData?.buy.belong}`)
         }
 
-        myLog(output, quoteMinAmt)
-
-        myLog('.........validAmt:', validAmt)
+        myLog('output:', output, ' quoteMinAmt:', quoteMinAmt, ' validAmt:', validAmt)
 
     }, [output, quoteMinAmt,tradeData?.sell.belong])
 
@@ -506,7 +493,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             if (walletLayer2) {
                 const { walletMap } = makeWalletLayer2();
                 _tradeCalcData.walletMap = walletMap as WalletMap<any>;
-                getUserTrades(market).then((marketTrades) => {
+                getUserTrades(market)?.then((marketTrades) => {
                     let _myTradeArray = makeMarketArray(market, marketTrades) as RawDataTradeItem[]
                     setMyTradeArray(_myTradeArray ? _myTradeArray : [])
                 })
@@ -557,8 +544,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                             } as SwapTradeData<IBData<C>>)
                         }
                     }).catch((error) => {
-                        // throw new CustomError({ ...ErrorMap.TRADE_LITE_SET_PAIR_ERROR, options: error })
-                        //TODO solve error
+                        myLog(error)
                     })
 
             }

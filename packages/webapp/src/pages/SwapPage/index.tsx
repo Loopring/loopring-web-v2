@@ -36,17 +36,6 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
 
     } = useSwapPage();
 
-    const { coinMap } = useTokenMap()
-    const { pathname } = useLocation()
-    const pairNameList = pathname ? pathname.split('/')[pathname.split('/').length - 1].split('-') : ''
-    const coinA = Array.isArray(pairNameList) ? pairNameList[0] : ''
-    const coinB = Array.isArray(pairNameList) ? pairNameList[1] : ''
-    const customPair = {
-        coinAInfo: coinMap ? coinMap[coinA] : '',
-        coinBInfo: coinMap ? coinMap[coinB] : '',
-    }
-    const renderPair = customPair.coinAInfo ? customPair : pair
-
     return <>
 
         <Toast alertText={swapAlertText as string} open={swapToastOpen} 
@@ -55,7 +44,7 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
         <Grid container marginRight={3} alignContent={'stretch'} direction={'column'} flexWrap={'nowrap'}>
             <BasicInfoPanel {...{
                 ...rest,
-                ...renderPair, marketArray,
+                ...pair, marketArray,
                 tradeFloat, tradeArray
             }} />
             <TradePanel tradeArray={tradeArray} myTradeArray={myTradeArray}/>

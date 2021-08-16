@@ -12,44 +12,14 @@ import {
     DoughnutChart,
     ScaleAreaChart,
     ToggleButtonGroup,
-    TokenType,
     LpTokenAction,
 } from '@loopring-web/component-lib'
 import { useModals } from 'modal/useModals'
 
-import { volumeToCount } from 'hooks/help'
-import { LoopringAPI } from 'api_wrapper'
-import { AssetType } from 'loopring-sdk'
 import store from 'stores'
-import { makeWalletLayer2 } from 'hooks/help'
-import { useWalletLayer2 } from '../../../stores/walletLayer2'
-import { EmptyValueTag,unit } from '@loopring-web/common-resources'
+import { unit } from '@loopring-web/common-resources'
 import { StylePaper } from '../../styled'
-import { useAccount } from '../../../stores/account';
-
-// const StylePaper = styled(Box)`
-//   width: 100%;
-//   height: 100%;
-//   flex: 1;
-//   background: var(--color-box);
-//   border-radius: ${({theme}) => theme.unit}px;
-// //   padding: 20px;
-//
-//   .title {
-//     font-family: Gilroy-Medium;
-//     font-size: ${({theme}) => theme.unit * 3}px;
-//     line-height: 19px;
-//   }
-//
-//   .tableWrapper {
-//     display: flex;
-//     flex: 1;
-//     height: 100%;
-//     border: 1px solid var(--color-border);
-//     border-radius: ${({theme}) => theme.unit}px;
-//     padding: 26px 0;
-//   }
-// ` as typeof Box;
+import { useGetAssets } from './hook'
 
 const StyledChartWrapper = styled(Box)`
     height: 225px;
@@ -95,48 +65,9 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const container = useRef(null);
     const [pageSize, setPageSize] = useState(10);
     const [chartPeriod, setChartPeriod] = useState('week')
-    const [chartData, setChartData] = useState<TrendDataItem[]>([])
-    const [assetsList, setAssetsList] = useState<any[]>([])
-    
-    const { account:{accAddress} } = useAccount()
+
+    const { formattedDoughnutData, assetsRawData, formattedData, chartData } = useGetAssets()
     const { walletLayer2 } = store.getState().walletLayer2;
-    const { ammMap } = store.getState().amm.ammMap
-    const { status: walletLayer2Status } = useWalletLayer2();
-
-    const getUserTotalAssets = useCallback(async (limit: number = 7) => {
-        const userAssets = await LoopringAPI.walletAPI?.getUserAssets({
-            wallet: accAddress,
-            assetType: AssetType.DEX,
-            limit: limit // TODO: minium unit is day, discuss with pm later
-        })
-        if (userAssets && userAssets.userAssets.length && !!userAssets.userAssets.length) {
-            // console.log(userAssets.userAssets)
-            setChartData(userAssets.userAssets.map(o => ({
-                timeStamp: Number(o.createdAt),
-                // close: o.amount && o.amount !== NaN ? Number(o.amount) : 0
-                close: Number(o.amount)
-            })))
-        }
-    }, [accAddress])
-
-    useEffect(() => {
-        if (walletLayer2Status === 'UNSET') {
-            const walletMap = makeWalletLayer2()
-            const assetsKeyList = walletMap && walletMap.walletMap ? Object.keys(walletMap.walletMap) : []
-            const assetsDetailList = walletMap && walletMap.walletMap ? Object.values(walletMap.walletMap) : []
-            const list = assetsKeyList.map((key, index) => ({
-                token: key,
-                detail: assetsDetailList[index]
-            }))
-            setAssetsList(list)
-        }
-    }, [walletLayer2Status])
-
-    useEffect(() => {
-        if (LoopringAPI && LoopringAPI.walletAPI && walletLayer2) {
-            getUserTotalAssets()
-        }
-    }, [walletLayer2, getUserTotalAssets])
 
     useEffect(() => {
         // @ts-ignore
@@ -150,15 +81,11 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         showDeposit,
         showTransfer,
         showWithdraw,
-        // ShowResetAccount,
     } = useModals()
-
-    // const { updateWalletLayer1 } = useWalletLayer1()
 
     let history = useHistory();
 
     const onShowDeposit = useCallback((token?: any) => {
-        // updateWalletLayer1()
         showDeposit(true, {
             tradeData: {
                 balance: '',
@@ -191,83 +118,6 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         }
     }, [history])
 
-    const handleChartPeriodChange = useCallback((event: React.MouseEvent<HTMLElement, MouseEvent>, newValue: string) => {
-        const limit = newValue === 'week' ? 7 : 9999
-        getUserTotalAssets(limit)
-    }, [getUserTotalAssets])
-
-    const { faitPrices } = store.getState().system
-
-    const tokenPriceList = faitPrices ? Object.entries(faitPrices).map(o => ({
-        token: o[ 0 ],
-        detail: o[ 1 ]
-    })) as ITokenInfoItem[] : []
-
-    // let jointLPTokenValue = 0
-    // assetsList.filter(o => o.token.split('-')[0] === 'LP').forEach(o => {
-    //     const result = o.token.split('-')
-    //     result.splice(0, 1, 'AMM')
-    //     const ammToken = result.join('-')
-    //     console.log(ammToken)
-    //     const ammTokenList = Object.keys(ammMap)
-    //     const tokenValue = ammTokenList.includes(ammToken) && ammMap[ammToken] && ammMap[ammToken].amountDollar ? Number(ammMap[ammToken].amountDollar) : 0
-    //     console.log(ammMap)
-    //     jointLPTokenValue += tokenValue
-    // });
-
-    // const doughnutData = assetsList.filter(o => o.token.split('-')[0] !== 'LP').map((tokenInfo) => {
-    //     const tokenPriceUSDT = tokenInfo.token === 'DAI'
-    //         ? 1
-    //         : Number(tokenPriceList.find(o => o.token === tokenInfo.token) ? tokenPriceList.find(o => o.token === tokenInfo.token)?.detail.price : 0) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
-    //     return ({
-    //         name: tokenInfo.token,
-    //         value: Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail?.total as string)) * tokenPriceUSDT
-    //     })
-    // })
-    const formattedData = assetsList.map(item => {
-        const isLpToken = item.token.split('-')[0] === 'LP'
-        if (!isLpToken) {
-            const tokenPriceUSDT = item.token === 'DAI'
-                ? 1
-                : Number(tokenPriceList.find(o => o.token === item.token) ? tokenPriceList.find(o => o.token === item.token)?.detail.price : 0) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
-            return ({
-                name: item.token,
-                value: Number(volumeToCount(item.token, item.detail?.detail?.total as string)) * tokenPriceUSDT
-            })
-        }
-        // let jointLPTokenValue = 0
-        const result = item.token.split('-')
-        result.splice(0, 1, 'AMM')
-        const ammToken = result.join('-')
-        // const ammTokenList = Object.keys(ammMap)
-        // const ammTokenPrice = ammTokenList.includes(ammToken) && ammMap[ammToken] && ammMap[ammToken].amountDollar ? (ammMap[ammToken].totalLPToken || 0) / ammMap[ammToken].amountDollar : 0
-        // console.log(ammMap[ammToken])
-        // const tokenValue =  ammTokenPrice * (item.detail?.count || 0)
-        const tokenValue = ammMap[ammToken].totalLPToken || 0
-        return ({
-            name: item.token,
-            value: tokenValue
-        })
-    })
-
-    const lpTotalData = formattedData
-        .filter(o => o.name.split('-')[0] === 'LP')
-        .reduce((prev, next) => ({
-            name: 'LP-Token',
-            value: prev.value + next.value
-        }), {
-            name: 'LP-Token',
-            value: 0
-        })
-    
-    const formattedDoughnutData = formattedData.filter(o => o.name.split('-')[0] === 'LP').length > 0
-        ? [...formattedData.filter(o => o.name.split('-')[0] !== 'LP'), lpTotalData]
-        : formattedData
-
-    // const formattedDoughnutData = [...doughnutData, {
-    //         name: 'LP-Token',
-    //         value: jointLPTokenValue
-    //     }]
     const AssetTitleProps: AssetTitleProps = {
         assetInfo: {
             totalAsset: formattedData.map(o => o.value).reduce((prev, next) => {
@@ -279,21 +129,6 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         onShowTransfer,
         onShowWithdraw,
     }
-
-    const assetsRawData = assetsList.map((tokenInfo) => {
-        
-        const tokenPriceUSDT = Number(tokenPriceList.find(o => o.token === tokenInfo.token)?.detail.price) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
-        return ({
-            token: {
-                type: tokenInfo.token.split('-')[0] === 'LP' ? TokenType.lp : TokenType.single,
-                value: tokenInfo.token
-            },
-            amount: String(Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)).toFixed(6)) || EmptyValueTag,
-            available: String(tokenInfo.detail?.count) || EmptyValueTag,
-            locked: String(tokenInfo.detail?.detail.locked) || EmptyValueTag,
-            smallBalance: tokenPriceUSDT * Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) < 1,
-        })
-    })
 
     return (
         <>
@@ -322,7 +157,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                             data: toggleData,
                             value: chartPeriod,
                             setValue: setChartPeriod,
-                            onChange: handleChartPeriodChange
+                            // onChange: handleChartPeriodChange
                         }} />
                     </StyledBtnGroupWrapper>
                 </Paper>

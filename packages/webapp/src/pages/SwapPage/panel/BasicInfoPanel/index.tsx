@@ -4,22 +4,22 @@ import { Box, Grid } from "@material-ui/core"
 import { WithTranslation } from 'react-i18next'
 import { useBasicInfo } from './hook'
 import { VolToNumberWithPrecision } from 'utils/formatter_tool'
+import { myLog } from 'utils/log_tools'
 
 const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, t, ...rest }: any & WithTranslation) => {
 
     const {
-        // change,
         chartType,
         tgItemJSXs,
-        tgItemJSXsPriceChart,
         handleChange,
         originData,
-        chartUnit,
-        handleChartUnitChange,
     } = useBasicInfo(props, coinAInfo, coinBInfo, marketArray, t)
     const { upColor } = useSettings();
     const baseToken = coinAInfo?.name
     const quoteToken = coinBInfo?.name
+
+    // myLog('basicInfo baseToken:', baseToken, ' quoteToken:', quoteToken)
+
     const trendChartData = originData && !!originData.length ? originData.sort((a: any, b: any) => a.timeStamp - b.timeStamp) : []
     const depthChartData = originData && coinAInfo && originData.asksAmtTotals ? { 
         ...originData,
