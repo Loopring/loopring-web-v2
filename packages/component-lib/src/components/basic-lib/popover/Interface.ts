@@ -25,13 +25,14 @@ type HorizonRight = {
 export type PopoverWrapProps = {
     type: keyof typeof PopoverType;
     // children: React.ReactNode;
+    className: string;
     popupId: string;
     children: JSX.Element | undefined | React.ReactElement;
     popoverContent: React.ReactNode;
-    popoverStyle?: React.CSSProperties;
+    // popoverStyle?: React.CSSProperties;
     anchorOrigin?: PopoverOrigin;
     transformOrigin?: PopoverOrigin;
-    popoverTop?: number;
+    // popoverTop?: number;
     handleStateChange?: (state: boolean) => void;
     // variant: Variant
     parentPopupState?: InjectedProps | null | undefined

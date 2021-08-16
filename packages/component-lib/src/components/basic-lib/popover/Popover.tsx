@@ -17,16 +17,16 @@ const DEFAULT_TRANSFORM_ORIGIN: PopoverOrigin = {
 }
 const POPOVER_TOP = 8;
 
-
 export const Popover: React.FC<PopoverWrapProps> = ({
                                                         type,
                                                         popupId,
+                                                        className,
                                                         children,
                                                         popoverContent,
-                                                        popoverStyle,
+                                                        // popoverStyle,
                                                         anchorOrigin = DEFAULT_ANCHOR_ORIGIN,
                                                         transformOrigin = DEFAULT_TRANSFORM_ORIGIN,
-                                                        popoverTop = POPOVER_TOP,
+                                                        // popoverTop = POPOVER_TOP,
                                                         arrowHorizon = {
                                                             left: 10,
                                                         },
@@ -43,25 +43,69 @@ export const Popover: React.FC<PopoverWrapProps> = ({
         }
     }, [handleStateChange, isOpen])
 
-    const RenderPopover = styled.div`
-      .arrowPopover {
-        position: absolute;
-        top: -16px;
-        right: ${() => arrowRight ? `${arrowRight}px` : undefined};
-        left: ${() => arrowLeft ? `${arrowLeft}px` : undefined};
-        width: 0;
-        height: 0;
-        border-top: 8px solid transparent;
-        border-right: 8px solid transparent;
-        border-bottom: ${({theme}) => `8px solid ${theme.colorBase.borderHover}`};
-        // border-bottom: 8px solid transparent;;
-        border-left: 8px solid transparent;
-      }
-    `
     const isHover = type === 'hover'
     const bindAction = isHover ? bindHover(popupState) : bindTrigger(popupState)
     const bindContent = isHover ? bindMenu(popupState) : bindPopover(popupState)
     const CustomPopover = isHover ? HoverMenu : MuiPopover
+
+    const PopoverStyled = styled(CustomPopover)<PopoverProps>`
+      &.MuiModal-root {
+        .MuiBackdrop-root {
+          background-color: inherit;
+        }
+        &.arrow-center,
+        &.arrow-right,
+        &.arrow-left,
+        &.arrow-left,
+        &.arrow-top-center {
+          .MuiPopover-paper {
+            background: var(--color-pop-bg);
+            margin-top: ${({theme}) => theme.unit * 1.5}px;
+            margin-left: ${({theme}) => theme.unit}px;
+            overflow: visible;
+            box-shadow: var(--shadow);
+            border-radius: ${({theme}) => theme.unit * 0.5}px;
+            &:before {
+              position: absolute;
+              top: ${({theme}) => theme.unit * -2}px;
+              content: '';
+              display: block;
+              width: 0;
+              height: 0;
+              border: ${({theme}) => theme.unit}px solid transparent;
+              border-bottom: ${({theme}) => theme.unit}px solid var(--color-pop-bg);
+            }
+          }
+        }
+
+        &.arrow-center .MuiPopover-paper {
+          &:before {
+            left: 50%;
+            transform: translateX(-50%);
+          }
+        }
+
+        &.arrow-right .MuiPopover-paper {
+          &:before {
+            right: ${({theme}) => theme.unit}px;
+          }
+        }
+
+        &.arrow-left .MuiPopover-paper {
+          &:before {
+            left: ${({theme}) => theme.unit}px;
+          }
+        }
+        &.arrow-top-center .MuiPopover-paper {
+          &:before {
+            left: 50%;
+            transform: translateX(-50%) rotate(-180deg);
+            bottom: ${({theme}) => theme.unit * -2}px;
+            top:initial;
+          }
+        }
+      
+    }` as React.ElementType<PopoverProps>
 
     const getRenderChild = React.useCallback((popoverChildren: React.ReactNode) => {
         if (React.isValidElement(popoverChildren)) {
@@ -75,24 +119,18 @@ export const Popover: React.FC<PopoverWrapProps> = ({
 
     return <>
         {getRenderChild(children)}
-        <CustomPopover
+        <PopoverStyled
             {...bindContent}
             anchorReference='anchorEl'
             anchorOrigin={anchorOrigin}
             transformOrigin={transformOrigin}
-            sx={{
-                '.MuiPopover-paper': {
-                    display: popoverContent ? 'block' : 'none',
-                    overflow: 'unset',
-                    marginTop: `${popoverTop}px`,
-                }
-            }}
+            className={className}
         >
-            <RenderPopover style={popoverStyle}>
-                <div className="arrowPopover"/>
+            {/* <RenderPopover> */}
+                {/* <div className="arrowPopover"/> */}
                 {popoverContent}
-            </RenderPopover>
-        </CustomPopover>
+            {/* </RenderPopover> */}
+        </PopoverStyled>
     </>
 }
 
