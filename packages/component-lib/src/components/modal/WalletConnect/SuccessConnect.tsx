@@ -3,7 +3,7 @@ import { Trans, WithTranslation } from 'react-i18next';
 // import { CheckedIcon } from '@loopring-web/common-resources';
 // import { useTheme } from '@emotion/react';
 // import { Button } from '../../basic-lib';
-import { SuccessBasic } from '../SuccessBasic';
+import { CompletedBasic } from '../ModalPanelBase';
 import React from 'react';
 
 export const SuccessConnect = ({t, providerName,onClose, ...rest  }: WithTranslation & {onClose:(e:any)=>void, providerName: string }) => {
@@ -19,7 +19,7 @@ export const SuccessConnect = ({t, providerName,onClose, ...rest  }: WithTransla
         </>
 
     },[])
-    return   <SuccessBasic {...{...rest,t}} label={t('labelSuccessConnect', {providerName})} describe={describe} onClose={onClose}  />
+    return   <CompletedBasic {...{...rest,t}} label={t('labelSuccessConnect', {providerName})} describe={describe} onClose={onClose}  />
 
 
 

@@ -6,6 +6,3 @@ export * from './WalletProcess'
 export * from './ProviderMenu'
 export * from './SuccessConnect'
 export * from './FailedConnect'
-
-
-

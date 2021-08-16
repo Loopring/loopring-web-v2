@@ -3,7 +3,7 @@ import { LinkIcon } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import { Link } from '@material-ui/core/';
 import React from 'react';
-import { SuccessBasic } from '../SuccessBasic';
+import { CompletedBasic } from '../ModalPanelBase';
 
 export const Depositing = ({
                                t,
@@ -27,5 +27,5 @@ export const Depositing = ({
             </Link>
         </>
     }, [])
-    return <SuccessBasic {...{...rest, label:label as any, onClose, describe, t}}/>
+    return <CompletedBasic {...{...rest, label:label as any, onClose, describe, t}}/>
 }
