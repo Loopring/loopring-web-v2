@@ -11,7 +11,8 @@ const hr = ({colorBase}: any) => {
     return {
         borderRadius: `${radius}px`,
         content: '\"\"',
-        margin: `0 ${unit}px`,
+        margin:`0 ${2*unit}px`,
+        // margin: `0 ${unit}px`,
         display: 'block',
         height: `2px`,
         backgroundColor: colorBase.primary,
@@ -23,22 +24,16 @@ const hr = ({colorBase}: any) => {
 }
 
 export const MuiCheckbox = ({colorBase}: any): { styleOverrides: ComponentsOverrides['MuiCheckbox'] } => {
-    const width = pxToRem(checkBoxSize);
-    const height = pxToRem(checkBoxSize);
+  
     return {
         styleOverrides: {
             root: {
-                height: pxToRem(32),
-                ' svg': {
-                    width,
-                    height,
-                },
                 '&.MuiCheckbox-colorDefault': {
-                    // color: colorBase.textPrimary,
-                    color: colorBase.checkboxDefault,
+                    color: colorBase.textSecondary,
                 },
                 '&:hover': {
                     backgroundColor: 'inherit',
+                    color: colorBase.textPrimary,
                 },
                 '&.Mui-checked': {
                     color: colorBase.textPrimary,
@@ -467,7 +462,6 @@ export const MuiInputBase = ({colorBase,themeMode}: any): { styleOverrides: Comp
                 '&.MuiOutlinedInput-root': {
                     padding: '.3rem 2.4rem .3rem .8rem',
                     minWidth: 'auto',
-                    width: 'auto'
                 },
                 ' .MuiOutlinedInput-input': {
                     padding:0,
