@@ -249,8 +249,8 @@ export const AnimationArrow = styled(Box)`
   }
 
   &.arrowCta:after {
-    border-bottom: 3px solid white;
-    border-right: 3px solid white;
+    border-bottom: 3px solid var(--color-text-primary);
+    border-right: 3px solid var(--color-text-primary);
     top: 0;
     left: 0;
     opacity: 1;
@@ -283,8 +283,8 @@ export const AnimationArrow = styled(Box)`
   &.arrowCta:before {
     top: 0;
     left: 0;
-    border-bottom: 3px solid white;
-    border-right: 3px solid white;
+    border-bottom: 3px solid var(--color-text-primary);
+    border-right: 3px solid var(--color-text-primary);
     animation: top-arrow 1.65s infinite;
   }
 
