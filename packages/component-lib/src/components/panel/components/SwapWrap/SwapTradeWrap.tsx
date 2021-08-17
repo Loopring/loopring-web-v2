@@ -54,7 +54,6 @@ export const SwapTradeWrap = <T extends IBData<I>,
         }
     }, [switchStobEvent, _isStoB])
 
-
     const getDisabled = React.useCallback(() => {
         return disabled || tradeCalcData === undefined || tradeCalcData.sellCoinInfoMap === undefined;
     }, [disabled, tradeCalcData]);
@@ -151,6 +150,14 @@ export const SwapTradeWrap = <T extends IBData<I>,
 
     }, [error,t,swapBtnI18nKey])
 
+    // console.log('tradeData:', tradeData)
+    // console.log('tradeCalcData:', tradeCalcData)
+    // console.log('_isStoB:', _isStoB)
+
+    const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData
+
+    const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${tradeCalcData.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
+    : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData.BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`
 
     const priceImpact = (tradeCalcData && tradeCalcData.priceImpact) ? parseFloat(tradeCalcData.priceImpact).toPrecision(3).toString() + ' %' : EmptyValueTag
 
@@ -193,13 +200,11 @@ export const SwapTradeWrap = <T extends IBData<I>,
         </Grid>
         <Grid item>
             <Typography component={'p'} variant="body1" height={24} lineHeight={'24px'}>
-                {tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData ? <>
-                    {_isStoB ? `1${tradeData.sell?.belong} \u2248 ${tradeCalcData.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
-                        : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData.BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`}
+                { showVal && <> {convertStr}
                     <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
                         // style={{transform: 'rotate(90deg)'}}
                     ><ReverseIcon/></IconButtonStyled>
-                </> : EmptyValueTag}
+                </>}
             </Typography>
         </Grid>
         <Grid item alignSelf={"stretch"}>
