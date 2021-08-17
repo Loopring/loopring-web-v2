@@ -11,7 +11,7 @@ export const HadAccount = withTranslation('common')(({mainBtn, t, ...props }: Wi
         {/*        {t('labelActivatedAccountDeposit')}*/}
         {/*    </Typography>*/}
         {/*</Box>*/}
-        <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
+        <Box display={'flex'}  marginTop={2} alignSelf={'stretch'} paddingX={5} flexDirection={'column'} alignItems={'center'}>
             {mainBtn}
         </Box>
 

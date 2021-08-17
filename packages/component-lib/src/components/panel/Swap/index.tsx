@@ -140,19 +140,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                     tokenSellProps,
                     tokenBuyProps,
                     handleError]),
-                toolBarItem: React.useMemo(  () =><Grid container justifyContent={'flex-end'}>
-                    {/*<IconButtonStyled edge="end"*/}
-                    {/*                  className={'switch outline'}*/}
-                    {/*                  color="inherit"*/}
-                    {/*                  aria-label="to Professional">*/}
-                    {/*    <ProToLiteIcon/>*/}
-                    {/*</IconButtonStyled>*/}
-                    {/*<IconButtonStyled edge="end"*/}
-                    {/*                  className={'clock-loading outline'}*/}
-                    {/*                  color="inherit"*/}
-                    {/*                  aria-label="3' price update">*/}
-                    {/*    <img src={clockLoading} alt={'loading'} width={28} height={28}/>*/}
-                    {/*</IconButtonStyled>*/}
+                toolBarItem: React.useMemo(  () =><Grid container justifyContent={'flex-end'} >
                     <CountDownIcon onRefreshData={onRefreshData}/>
                 </Grid> ,[onRefreshData])
             },
