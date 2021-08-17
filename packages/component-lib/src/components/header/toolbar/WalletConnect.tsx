@@ -153,7 +153,7 @@ export const WalletConnectBtn = ({
                 case AccountStatus.ERROR_NETWORK:
                     setBtnClassname('wrong-network')
                     setLabel('labelWrongNetwork')
-                    setIcon(<UnConnectIcon/>)
+                    setIcon(<UnConnectIcon style={{width:16,height:16}}/>)
                     break
                 default:
             }
