@@ -32,7 +32,7 @@ const BtnDownload = ({t}: any) => <IconButton aria-label={t('downloadApp')}><Dow
 
 const Style = styled.div`
   background: var(--color-global-bg);
-  color: #fff;
+  
 `
 const Wrap = () => <></>
 export default {

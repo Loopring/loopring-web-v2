@@ -6,7 +6,7 @@ import { RawDataTradeItem, TradeTable } from './index'
 import { TradeTypes } from '@loopring-web/common-resources';
 
 const Style = styled.div`
-	color: #fff;
+	
 	flex: 1;
 	height: 100%;
 	flex: 1;

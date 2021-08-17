@@ -47,7 +47,7 @@ import { AccountBaseProps } from '../modal/AccountInfo';
 import { AccountBase } from '../modal/AccountInfo/AccountBase';
 
 const Style = styled.div`
-  color: #fff;
+  
 `
 const SubMenuList = withTranslation('layout', {withRef: true})(BasicSubMenuList);
 const OrderHistoryTable = withTranslation('common', {withRef: true})(OrderHistoryTableUI);

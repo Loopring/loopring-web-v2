@@ -69,8 +69,8 @@ export const decorators = [
     return <ProviderComposer providers={[
       provider(LocalizationProvider, {dateAdapter: MomentUtils}),
       provider(I18nextProvider, {i18n: i18n}),
-      provider(MuThemeProvider, {theme: getTheme('dark')}),
-      provider(ThemeProvider, {theme: getTheme('dark')}),
+      provider(MuThemeProvider, {theme: theme}),
+      provider(ThemeProvider, {theme: theme}),
       provider(Provider, {store}),
     ]}>
       <style type="text/css">

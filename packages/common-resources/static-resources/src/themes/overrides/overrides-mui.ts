@@ -232,6 +232,7 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 }
             },
             contained: {
+                color: colorBase.textButton,
                 height: pxToRem(40),
                 fontSize: pxToRem(14),
                 backgroundColor: colorBase.primary,
@@ -239,10 +240,8 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                     backgroundColor: colorBase.primaryHover,
                 },
                 '&.Mui-disabled': {
-                    // backgroundColor: colorBase.border().blur,
                     backgroundColor: colorBase.defaultDisable,
-                    color: colorBase.textBtnDisabled,
-                    // backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23FFFFFF33' stroke-width='1' stroke-dasharray='4%25%2c 8%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e")`
+                    color: colorBase.textDisable,
 
                 },
             },

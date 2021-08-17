@@ -1,17 +1,22 @@
 // import { ModalProvider } from 'styled-react-modal'
 import RouterView from './routers'
 import { GlobalStyles } from '@material-ui/core';
-import { css, Theme, useTheme } from '@emotion/react';
-import { ErrorMap, globalCss } from '@loopring-web/common-resources';
+import { css, Theme, ThemeProvider, useTheme } from '@emotion/react';
+import { ErrorMap, getTheme, globalCss, provider, ProviderComposer } from '@loopring-web/common-resources';
 // import { GlobalProvider, Web3ReactManager } from './provider/';
 import { useInit } from './hook';
 // import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
 import { ErrorPage } from './pages/ErrorPage';
 import { LoadingPage } from './pages/LoadingPage';
 import { GlobalProvider } from './provider';
+import { ThemeProvider as MuThemeProvider } from '@material-ui/core/styles';
+import store from './stores';
+import { useSettings } from '@loopring-web/component-lib';
+import React from 'react';
 
 const App = () => {
   const theme: Theme = useTheme();
+
   const { state } = useInit();
   // const [status, setStatus] = React.useState<keyof typeof SagaStatus>('PENDING');
   // check all status be
@@ -27,7 +32,8 @@ const App = () => {
   //     }
   // }, [state, setStatus])
 
-  return <><GlobalStyles styles={css` 
+
+    return <><GlobalStyles styles={css` 
       ${globalCss({ theme })};
       body{
           ${theme.mode === 'dark' ? `
@@ -56,7 +62,7 @@ const App = () => {
             {/*    <ErrorPage {...ErrorMap.LOADING_WHOLE_SITE}/>*/}
           </>}
       </GlobalProvider>
-</>
+      </>
 
 
 }

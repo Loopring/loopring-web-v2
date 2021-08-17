@@ -7,7 +7,7 @@ import React from 'react';
 
 const Styled = styled.div`
   background: var(--color-global-bg);
-  color: #fff;
+  
 
   svg {
     height: 24px;
@@ -49,10 +49,10 @@ export const ColorList: Story<any> = withTranslation()(({}: WithTranslation & an
             {/*<MemoryRouter initialEntries={['/']}>*/}
             <Styled>
                 {/*<MemoryRouter initialEntries={['/']}>*/}
-                <Grid container style={{background: '#fff'}}>
-                    {view}
-                </Grid>
                 <Grid container style={{background: '#000'}}>
+                    {dark}
+                </Grid>
+                <Grid container style={{background: '#1F2034'}}>
                     {light}
                 </Grid>
 
