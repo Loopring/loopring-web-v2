@@ -142,6 +142,7 @@ export const subMenuLayer2 = {
             id: 'order', i18nKey: 'labelOrder',
         },
     },
+]
     /* {
         icon: TransactionsIcon,
         router: {path: '/layer2/transactions'},
@@ -162,7 +163,7 @@ export const subMenuLayer2 = {
                 id: 'AmmRecords', i18nKey: 'labelAmmRecords',
                 description: 'labelAmmRecordsDes',
             },
-        } */
+        } 
     ],
     // countInfoGroup: [{
     //     icon: OrderIcon,
@@ -173,16 +174,16 @@ export const subMenuLayer2 = {
     // },
 
     // ],
-    settingGroup: [{
-        icon: SettingIcon,
-        router: {path: '/layer2/setting'},
-        label: {
-            id: 'setting',
-            i18nKey: 'labelSetting',
-        },
-    },
-
-    ]
+    // settingGroup: [{
+    //     icon: SettingIcon,
+    //     router: {path: '/layer2/setting'},
+    //     label: {
+    //         id: 'setting',
+    //         i18nKey: 'labelSetting',
+    //     },
+    // },
+    //]
+    */
 }
 
 
