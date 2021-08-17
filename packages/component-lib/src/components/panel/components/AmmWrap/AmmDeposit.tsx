@@ -186,9 +186,9 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
                         {ammCalcData ? <>
                             <Typography {...bindHover(popupState)}
                                         component={'span'} variant="body1">
-                                <>
+                                <LinkActionStyle>
                                     {ammData.slippage ? ammData.slippage : ammCalcData.slippage ? ammCalcData.slippage : 0.5}%
-                                </>
+                                </LinkActionStyle>
                                 <PopoverPure
                                     className={'arrow-right'}
                                     {...bindPopover(popupState)}

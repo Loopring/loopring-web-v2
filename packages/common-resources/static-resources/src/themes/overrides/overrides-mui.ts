@@ -520,7 +520,7 @@ export const MuiToggleButton = ({colorBase, themeMode}: any) => {
                     fontSize: '1.2rem'
                 },
                 height: pxToRem(28),
-                boxShadow: '0px 4px 62px rgba(0, 0, 0, 0.25)',
+                // boxShadow: '0px 4px 62px rgba(0, 0, 0, 0.25)',
                 borderRadius: '4px !important',
                 margin: '0 8px',
                 fontSize: '1.4rem',
@@ -631,7 +631,7 @@ export const MuiListItem = ({colorBase}: any) => {
                 paddingRight: pxToRem(20),
                 color: colorBase.textSecondary,
                 '&:hover': {
-                    color: colorBase.textPrimary,
+                    color: colorBase.textButtonSelect,
                     background:colorBase.boxHover,
                 },
                 // '&.Mui-selected': {
@@ -640,7 +640,7 @@ export const MuiListItem = ({colorBase}: any) => {
                 // },
                 '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
                     '&:hover, &':{
-                        color: colorBase.textPrimary,
+                        color: colorBase.textButtonSelect,
                         border: 'none',
                     }
                 }
@@ -750,19 +750,6 @@ export const MuiTabs = () => {
         }
     }
 }
-export const MuiDivider = ({colorBase}: any) => {
-    return {
-        styleOverrides: {
-            root: {
-                borderColor: `${colorBase.dividerColor}`,
-                // margin: `${unit / 4 * 5}px 0`,
-            },
-
-        }
-    }
-}
-
-
 export const MuiListItemAvatar = () => {
     return {
         styleOverrides: {
@@ -782,3 +769,16 @@ export const MuiListItemAvatar = () => {
         }
     }
 }
+export const MuiDivider = ({colorBase}: any) => {
+    return {
+        styleOverrides: {
+            root: {
+                borderColor: `${colorBase.dividerColor}`,
+                // margin: `${unit / 4 * 5}px 0`,
+            },
+
+        }
+    }
+}
+
+
