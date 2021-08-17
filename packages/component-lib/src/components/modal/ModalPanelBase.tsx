@@ -60,7 +60,7 @@ export const CompletedBasic = ({ t, label, describe, onClose, }: WithTranslation
 
 export const FailedBasic= ({onRetry,describe,label,t}: {describe:JSX.Element, onRetry:(event:any)=>void,label:string } & WithTranslation)=>{
     return    <Box flex={1} display={'flex'} alignItems={'center'}  justifyContent={'space-between'} flexDirection={'column'}>
-        <Typography component={'h3'} variant={'h3'} marginBottom={3}>{t(label)}</Typography>
+        <Typography component={'h3'} variant={'h3'} marginBottom={3}>{label}</Typography>
         <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
             <FailedIcon color={'error'} style={{width:60,height:60}}/>
         </Typography>

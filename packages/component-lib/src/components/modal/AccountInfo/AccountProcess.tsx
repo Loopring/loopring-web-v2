@@ -5,7 +5,7 @@ import { CoinInfo, LinkIcon } from '@loopring-web/common-resources';
 import { InProgressBasic } from '../ModalPanelBase';
 import { Link } from '@material-ui/core/';
 
-export const ActiveAccountProcess = ({t, ...rest}: WithTranslation & { providerName: string }) => {
+export const ActiveAccountProcess = ({t, label, ...rest}: WithTranslation & { label: string, providerName: string }) => {
     const describe = React.useMemo(() => {
         return <>
             <Typography variant={'body1'}>
@@ -13,7 +13,7 @@ export const ActiveAccountProcess = ({t, ...rest}: WithTranslation & { providerN
             </Typography>
         </>
     }, [])
-    return <InProgressBasic label={t('labelActivateAccount')} describe={ describe} {...{...rest, t}}/>
+    return <InProgressBasic label={label} describe={describe} {...{...rest, t}}/>
 }
 
 export const DepositingProcess = ({

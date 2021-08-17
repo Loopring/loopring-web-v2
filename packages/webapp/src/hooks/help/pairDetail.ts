@@ -61,9 +61,6 @@ export const pairDetailDone = <C>({coinKey, market, ammPoolsBalance, fee, tokenM
         }
         let [baseVol, quoteVol] = poolVolume
         if(baseVol && quoteVol) {
-            // stob = volumeToCountAsBigNumber(baseVol[0],baseVol[1])?.div(
-            //     volumeToCountAsBigNumber(quoteVol[0],quoteVol[1]) || 1
-            // ) .toNumber()
             stob = parseFloat(volumeToCountAsBigNumber(quoteVol[0], quoteVol[1])?.div(
                 volumeToCountAsBigNumber(baseVol[0], baseVol[1]) || 1).toFixed(7, 0) as string)
 
