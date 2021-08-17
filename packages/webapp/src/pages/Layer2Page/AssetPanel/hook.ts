@@ -31,6 +31,7 @@ export const useGetAssets = () => {
     const { walletLayer2 } = store.getState().walletLayer2;
     const { ammMap } = store.getState().amm.ammMap
     const { status: walletLayer2Status } = useWalletLayer2();
+    const { marketArray } = store.getState().tokenMap
 
     const getUserTotalAssets = React.useCallback(async (limit: number = 7) => {
         const userAssets = await LoopringAPI.walletAPI?.getUserAssets({
@@ -132,5 +133,6 @@ export const useGetAssets = () => {
         formattedData,
         formattedDoughnutData,
         assetsRawData,
+        marketArray,
     }
 }

@@ -66,7 +66,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const [pageSize, setPageSize] = useState(10);
     const [chartPeriod, setChartPeriod] = useState('week')
 
-    const { formattedDoughnutData, assetsRawData, formattedData, chartData } = useGetAssets()
+    const { formattedDoughnutData, assetsRawData, formattedData, chartData, marketArray } = useGetAssets()
     const { walletLayer2 } = store.getState().walletLayer2;
 
     useEffect(() => {
@@ -76,6 +76,14 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
             setPageSize(Math.floor((height - 120) / 44) - 1);
         }
     }, [container, pageSize]);
+
+    const getTokenRelatedMarketArray = useCallback((token: string) => {
+        if (!marketArray) return []
+        return marketArray.filter(market => {
+            const [coinA, coinB] = market.split('-')
+            return (token === coinA) || (token === coinB)
+        })
+    }, [marketArray])
 
     const {
         showDeposit,
@@ -175,6 +183,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                         onShowWithdraw: onShowWithdraw,
                         onLpDeposit: lpTokenJump,
                         onLpWithdraw: lpTokenJump,
+                        getMakretArrayListCallback: getTokenRelatedMarketArray,
                         ...rest
                     }} />
                 </div>
