@@ -119,7 +119,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         if (!market) {
             return
         }
-        resetSwap(market, undefined, undefined, undefined);
+        resetSwap(undefined);
         getUserTrades(market)?.then((marketTrades) => {
             let _myTradeArray = makeMarketArray(market, marketTrades) as RawDataTradeItem[]
             setMyTradeArray(_myTradeArray ? _myTradeArray : [])
@@ -335,13 +335,17 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 case SwapType.BUY_CLICK:
                     break
                 case SwapType.SELL_SELECTED:
-                    resetSwap(`${tradeData.sell.belong}-${tradeData.buy.belong}`, 'sell', tradeData, ammPoolSnapshot)
+                    myLog('SELL_SELECTED:', tradeData.sell.belong)
+                    myLog('SELL_SELECTED:', tradeData.buy.belong)
+                    myLog('SELL_SELECTED coinSell:', tradeCalcData.coinSell)
+                    myLog('SELL_SELECTED coinBuy:', tradeCalcData.coinBuy)
+                    resetSwap('sell')
                     break
                 case SwapType.BUY_SELECTED:
-                    resetSwap(`${tradeData.sell.belong}-${tradeData.buy.belong}`, 'buy', tradeData, ammPoolSnapshot)
+                    resetSwap('buy')
                     break
                 case SwapType.EXCHANGE_CLICK:
-                    resetSwap(`${tradeData.sell.belong}-${tradeData.buy.belong}`, undefined, undefined, ammPoolSnapshot)
+                    resetSwap(undefined)
                     break
                 default:
                     break
@@ -460,7 +464,13 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     }, wait * 2), [setTradeData, setTradeCalcData, calculateTradeData, takerRate]);
 
-    const resetSwap = (coinKey: any, type: 'sell' | 'buy' | undefined, _tradeData: SwapTradeData<IBData<C>> | undefined, _ammPoolSnapshot: AmmPoolSnapshot | undefined) => {
+    const resetSwap = (type: 'sell' | 'buy' | undefined) => {
+
+        const coinKey = `${tradeData?.sell.belong}-${tradeData?.buy.belong}`
+
+        const _tradeData = tradeData
+
+        const _ammPoolSnapshot = ammPoolSnapshot
         
         if (tradeCalcData
             && coinKey === `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`
@@ -471,6 +481,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             throttleSetValue(type, _tradeData, _ammPoolSnapshot)
 
         } else {
+            myLog('aaa tradeCalcData:', tradeCalcData)
             let _tradeFloat: Partial<TradeFloat> = {}
             let _tradeArray: Array<Partial<RawDataTradeItem>> | undefined = undefined;
             let _tradeCalcData: Partial<TradeCalcData<C>> = coinPairInit({

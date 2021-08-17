@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Box, Grid, MenuItem, ListItemText } from '@material-ui/core'
-// import { bindPopper, bindTrigger, bindHover, usePopupState } from 'material-ui-popup-state/hooks';
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
-// import { useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 // import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
-import { Button, PopoverPure, Popover, PopoverType, PopoverWrapProps } from '../../basic-lib'
+import { Button, Popover, PopoverType } from '../../basic-lib'
 import { Column, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { Filter } from './components/Filter'
@@ -20,7 +19,7 @@ const TableStyled = styled(Box)`
 
   .rdg {
     flex: 1;
-    --template-columns: auto auto auto auto 320px !important;
+    --template-columns: auto auto auto 150px ${(props: any) => props.lan === 'en_US' ? '275px' : '240px'} !important;
 
     .rdg-cell.action {
       display: flex;
@@ -28,6 +27,9 @@ const TableStyled = styled(Box)`
       align-items: center;
     }
   }
+  .textAlignRight{
+    text-align: right;
+    }
 
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as any
@@ -134,33 +136,44 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     const pageSize = pagination ? pagination.pageSize : 10;
 
     const {language} = useSettings()
-    // let history = useHistory()
+    let history = useHistory()
     // const rightState = usePopupState({variant: 'popover', popupId: `action-popover`});
 
     useEffect(() => {
         setTotalData(rawData && Array.isArray(rawData) ? rawData : [])
     }, [rawData])
 
+    const jumpToAmm = useCallback((type: LpTokenAction, market: string) => {
+        const pathname = `/liquidity/pools/coinPair/${market}`
+            
+        history && history.push({
+            pathname,
+            search: `type=${type}`
+        })
+    }, [history])
+
     const getPopoverTrigger = useCallback(() => (
         <MoreIcon cursor={'pointer'} />
     ), [])
 
-    const getPopoverPopper = useCallback(() => {
-        return (
-            <div style={{ borderRadius: 'inherit' }}>
-                <MenuItem value={1}><ListItemText>{t('test key')}</ListItemText></MenuItem>
-                <MenuItem value={1} selected={true}><ListItemText>{t('test key')}</ListItemText></MenuItem>
-            </div>
-        )
-    }, [t])
+    const getPopoverPopper = useCallback((market: string) => (
+            <Box borderRadius={'inherit'} minWidth={110}>
+                <MenuItem onClick={() => jumpToAmm(LpTokenAction.add, market)}>
+                    <ListItemText>{t('labelPoolTableAddLiqudity')}</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => jumpToAmm(LpTokenAction.remove, market)}>
+                    <ListItemText>{t('labelPoolTableRemoveLiqudity')}</ListItemText>
+                </MenuItem>
+            </Box>
+    ), [t, jumpToAmm])
 
-    const getPopoverProps: any = useCallback(() => (
+    const getPopoverProps: any = useCallback((market: string) => (
         {
             type: PopoverType.click,
             popupId: 'testPopup',
             className: 'arrow-right',
             children: getPopoverTrigger(),
-            popoverContent: getPopoverPopper(),
+            popoverContent: getPopoverPopper(market),
             anchorOrigin: {
                 vertical: 'bottom',
                 horizontal: 'right',
@@ -225,6 +238,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         {
             key: 'actions',
             name: t('labelActions'),
+            headerCellClass: 'textAlignRight',
             // minWidth: 280,
             formatter: ({row}) => {
                 const token = row[ 'token' ]
@@ -249,7 +263,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                                         onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
                             </Grid>
                             <Grid item marginTop={1}>
-                                <Popover {...getPopoverProps()}></Popover>
+                                <Popover {...getPopoverProps(lpPair)}></Popover>
                                 {/* <IconWrapperStyled>
                                     <MoreIcon {...bindTrigger(rightState)} cursor={'pointer'} />
                                 </IconWrapperStyled> */}
