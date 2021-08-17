@@ -3,7 +3,7 @@ import { Modal } from '@material-ui/core';
 import {
     ModalBackButton,
     ModalCloseButton,
-    ModalWalletConnectProps,
+    ModalWalletConnectProps, shake,
     SwipeableViewsStyled,
     SwitchPanelStyled
 } from '../../../index';

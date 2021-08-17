@@ -2,7 +2,7 @@ import { SwitchData } from '../../Interface';
 import { IBData, TradeCalcData } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
-import { TradeMenuList } from '../tool/TradeMenuList';
+import { TradeMenuList } from '../tool';
 import { SwapMenuListProps } from './Interface';
 
 export const SwapMenuList = <T extends IBData<I>,
