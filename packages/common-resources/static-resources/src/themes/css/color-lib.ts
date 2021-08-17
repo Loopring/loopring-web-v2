@@ -9,6 +9,7 @@ export const hexToRGB = (hex:string, alpha?:string|number)=> {
         return "rgb(" + r + ", " + g + ", " + b + ")";
     }
 }
+
 export const ColorDarkDefault = Object.freeze({
     primary: '#3B5AF4',
     primaryHover: '#627BF6',
@@ -19,10 +20,11 @@ export const ColorDarkDefault = Object.freeze({
     success: '#00BBA8',
     warning: '#FBA95C',
     error: '#FF5677',
-    textButton:'#FFFFFF',
     textPrimary: '#FFFFFF',
     textSecondary: '#A4ABC1',
     textThird: '#687295',
+    textButton:'#FFFFFF',
+    textButtonSelect:'#3B5AF4',
     textDisable: `${hexToRGB('#ffffff', '0.25')}`,
     disable:'#404871',
     border: '#49527D',
@@ -41,8 +43,14 @@ export const ColorDarkDefault = Object.freeze({
     opacity: `${hexToRGB('#000000', '0')}`,
     star:`#F0B90B`,
     /********************Case for provider*******************/
-    shadow: `0px 10px 20px rgba(87, 102, 236, 0.15)`
-    /********************Case for provider*******************/
+    shadow: `0px 10px 20px rgba(87, 102, 236, 0.15)`,
+    fieldOpacity:`${hexToRGB('#ffffff', '0.1')}`,
+    providerBtn:`${hexToRGB('#ffffff', '0.1')}`,
+    providerBtnHover:`${hexToRGB('#ffffff', '0.03')}`,
+    buttonIcon:'#A4ABC1',
+    // @ts-ignore
+    // textMenu:this.textSecondary,
+/********************Case for provider*******************/
 })
 export const ColorLightDefault = Object.freeze({...ColorDarkDefault,
     primary: '#3B5AF4',
@@ -54,11 +62,12 @@ export const ColorLightDefault = Object.freeze({...ColorDarkDefault,
     success: '#00BBA8',
     warning: '#FBA95C',
     error: '#FF5677',
-    textButton:'#FFFFFF',
     textPrimary: '#15162B',
     textSecondary: '#4E5395',
     textThird: '#A3A8CA',
-    textDisable: `${hexToRGB('#ffffff', '0.25')}`,
+    textButton:'#FFFFFF',
+    textButtonSelect:'#15162B',
+    textDisable: `${hexToRGB('#000000', '0.25')}`,
     disable:'#F4F5F9',
     border: '#E9EAF2',
     borderHover: '#627BF6',
@@ -66,8 +75,8 @@ export const ColorLightDefault = Object.freeze({...ColorDarkDefault,
     divide: '#E9EAF2',
     box: '#FFFFFF',
     boxSecondary: '#A3A8CA',
-    boxHover:  `${hexToRGB('#ffffff', '0.03')}`,
-    popBg: '#293EAA',
+    boxHover:  `${hexToRGB('#4E5395', '0.1')}`,
+    popBg: '#FFFFFF',
     globalBg: '#F6F7FB',
     boxLinear: '#FFFFFF',
     mask: `${hexToRGB('#000000', '0.68')}`,
@@ -76,7 +85,14 @@ export const ColorLightDefault = Object.freeze({...ColorDarkDefault,
     opacity: `${hexToRGB('#FFFFFF', '0')}`,
     star:`#F0B90B`,
     /********************Case for provider*******************/
-    shadow: ` 0px 4px 4px ${hexToRGB('#000000', '.25')}`
+    shadow: ` 0px 4px 4px ${hexToRGB('#000000', '.25')}`,
+    fieldOpacity:`#EEF1FA`,
+    providerBtn:`${hexToRGB('#15162B', '0.8')}`,
+    providerBtnHover:`${hexToRGB('#15162B', '0.5')}`,
+    buttonIcon:'#A3A8CA',
+    //${hexToRGB('#4E5395', '0.1')}
+
+    // textMenu:this.textButton,
     /********************Case for provider*******************/
 })
 export type ColorBaseInterface = typeof ColorDarkDefault

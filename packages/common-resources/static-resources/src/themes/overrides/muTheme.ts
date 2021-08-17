@@ -120,6 +120,7 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             },
             button: {
                 fontSize: 20,
+                fontColor: colorBase.textButton,
             },
             body1: {
                 fontSize: fontDefault.body1,

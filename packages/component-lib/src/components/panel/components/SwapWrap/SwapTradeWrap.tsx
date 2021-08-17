@@ -156,7 +156,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
 
     const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData
 
-    const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${tradeCalcData.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
+    const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${tradeCalcData?.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
     : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData.BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`
 
     const priceImpact = (tradeCalcData && tradeCalcData.priceImpact) ? parseFloat(tradeCalcData.priceImpact).toPrecision(3).toString() + ' %' : EmptyValueTag
