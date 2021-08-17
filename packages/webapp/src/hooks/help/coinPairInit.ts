@@ -5,7 +5,7 @@ export function coinPairInit({coinKey, _tradeCalcData, tokenMap, coinMap}: any) 
         if (sell && coinMap && coinMap[ sell ]) {
             _tradeCalcData.coinSell = sell;
         }// @ts-ignore
-        if (sell!==buy && buy && -1 !== tokenMap[ sell ].tradePairs.findIndex(ele => ele === buy)) {
+        if (sell !== buy && buy && -1 !== tokenMap[ sell ].tradePairs.findIndex(ele => ele === buy)) {
             _tradeCalcData.coinBuy = buy;
             return _tradeCalcData
         }
