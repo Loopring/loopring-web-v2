@@ -136,7 +136,7 @@ export const WalletConnectBtn = ({
                     break
                 case AccountStatus.LOCKED:
                     setBtnClassname('locked')
-                    setIcon(<LockIcon/>)
+                    setIcon(<LockIcon color={'error'} style={{width:16,height:16}}/>)
                     break
                 case AccountStatus.ACTIVATED:
                     setBtnClassname('unlocked')
@@ -148,7 +148,7 @@ export const WalletConnectBtn = ({
                     break
                 case AccountStatus.DEPOSITING:
                     setBtnClassname('depositing')
-                    setIcon(<LoadingIcon color={'primary'}/>)
+                    setIcon(<LoadingIcon color={'primary'} style={{width: 18, height: 18}}/>)
                     break
                 case AccountStatus.ERROR_NETWORK:
                     setBtnClassname('wrong-network')
@@ -187,7 +187,7 @@ export const WalletConnectBtn = ({
             className={`wallet-btn ${btnClassname}`}
             onClick={_handleClick} {...bindHover(popupState)} >
             {icon ? <Typography component={'i'} paddingRight={1}>{icon}</Typography> : <></>}
-            <Typography component={'span'}> {t(label)}  </Typography>
+            <Typography component={'span'} variant={'body1'} lineHeight={20}> {t(label)}  </Typography>
         </WalletConnectBtnStyled>
     </>
 

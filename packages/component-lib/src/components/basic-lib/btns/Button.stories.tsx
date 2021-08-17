@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/react/types-6-0'
 
 import { Box, Breadcrumbs, Grid, Pagination, Typography, Link } from '@material-ui/core'
 import { ButtonProps, TGItemData, TGItemJSXInterface } from './Interface';
-import { BtnPercentage, Button, ModalCloseButton, ToggleButtonGroup } from './index'
+import { BtnPercentage, Button, LinkActionStyle, ModalCloseButton, ToggleButtonGroup } from './index'
 import Switch from '@material-ui/core/Switch';
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
@@ -110,8 +110,14 @@ export const LButton: Story<ButtonProps> = withTranslation()(({t, ...rest}: With
                                                 disabled={true}>outline default 32</Button></Grid>
                         </Grid>
                     </Grid>
-                    <Grid item> <Button variant={'outlined'} size={'small'} color={'primary'}>outline small
-                        28</Button></Grid>
+                    <Grid item>
+                        <Button variant={'outlined'} size={'small'} color={'primary'}>outline small
+                        28</Button>
+                    </Grid>
+                    <Grid item>
+                       <Typography color={'textPrimary'} variant={'body1'} >
+                           <LinkActionStyle color={'textPrimary'} >xxxxxxxxxxx</LinkActionStyle></Typography>
+                    </Grid>
                     <Grid item>
                         <ModalCloseButton {...{t, ...rest}}/>
                     </Grid>
