@@ -80,14 +80,14 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
   });
   const [ammChgWithdrawData, setAmmChgWithdrawData] = React.useState<Pick<AmmChgData<T>, 'tradeData'> & { type?: 'coinA' | 'coinB' | 'percentage' }>({tradeData: ammWithdrawData});
   let routerLocation = useLocation()
-  const search = routerLocation?.search
-  const customType = qs.parse(search)?.type
 
   useEffect(() => {
-      if (customType) {
-          setIndex(customType === 'remove' ? AmmPanelTypeMap.WithDraw : AmmPanelTypeMap.Deposit)
-      }
-  }, [customType])
+    if (routerLocation) {
+        const search = routerLocation?.search
+        const customType = qs.parse(search)?.type
+        setIndex(customType === 'remove' ? AmmPanelTypeMap.WithDraw : AmmPanelTypeMap.Deposit)
+    }
+  }, [routerLocation])
   //
   useDeepCompareEffect(() => {
       if (ammDepositData !== ammChgDepositData.tradeData) {
