@@ -477,9 +477,11 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             let _tradeFloat: Partial<TradeFloat> = {}
             let _tradeArray: Array<Partial<RawDataTradeItem>> | undefined = undefined
 
+            const hasInitialPair = pair?.coinAInfo?.simpleName && pair?.coinBInfo?.simpleName
+
             let _tradeCalcData: Partial<TradeCalcData<C>> = { 
-                coinSell: 'LRC', 
-                coinBuy: 'ETH' 
+                coinSell: hasInitialPair ? pair?.coinAInfo?.simpleName : 'LRC', 
+                coinBuy: hasInitialPair ? pair?.coinBInfo?.simpleName : 'ETH' 
             }
 
             const sellSymbol = _tradeData?.sell.belong as string
