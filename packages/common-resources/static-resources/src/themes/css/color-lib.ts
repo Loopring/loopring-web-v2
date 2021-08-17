@@ -21,10 +21,12 @@ export const ColorDarkDefault = Object.freeze({
     error: '#FF5677',
     textPrimary: '#FFFFFF',
     textSecondary: '#A4ABC1',
+    textThird: '#687295',
     textDisable: `${hexToRGB('#ffffff', '0.25')}`,
     disable:'#404871',
     border: '#49527D',
     borderHover: '#828BA7',
+    borderDark: '#393F64',
     divide: '#444C75',
     box: '#2D2F4B',
     boxSecondary: '#687295',
@@ -38,10 +40,43 @@ export const ColorDarkDefault = Object.freeze({
     opacity: `${hexToRGB('#000000', '0')}`,
     star:`#F0B90B`,
     /********************Case for provider*******************/
+    shadow: `0px 10px 20px rgba(87, 102, 236, 0.15)`
+    /********************Case for provider*******************/
+})
+export const ColorLightDefault = Object.freeze({...ColorDarkDefault,
+    primary: '#3B5AF4',
+    primaryHover: '#627BF6',
+    primaryPressed: '#293EAA',
+    secondary: '#1890FF',
+    secondaryHover: '#46A6FF',
+    secondaryPressed: '#1064B2',
+    success: '#00BBA8',
+    warning: '#FBA95C',
+    error: '#FF5677',
+    textPrimary: '#15162B',
+    textSecondary: '#4E5395',
+    textThird: '#A3A8CA',
+    textDisable: `${hexToRGB('#ffffff', '0.25')}`,
+    disable:'#F4F5F9',
+    border: '#E9EAF2',
+    borderHover: '#627BF6',
+    borderDark: '#293EAA',
+    divide: '#E9EAF2',
+    box: '#FFFFFF',
+    boxSecondary: '#A3A8CA',
+    boxHover:  `${hexToRGB('#ffffff', '0.03')}`,
+    popBg: '#293EAA',
+    globalBg: '#1F2034',
+    boxLinear: 'linear-gradient(194.79deg, #322C53 17.96%, #262B50 44.29%, #32314F 96.93%)',
+    mask: `${hexToRGB('#000000', '0.68')}`,
+    white: '#ffffff',
+    dark: '#000000',
+    opacity: `${hexToRGB('#FFFFFF', '0')}`,
+    star:`#F0B90B`,
+    /********************Case for provider*******************/
     shadow: ` 0px 4px 4px ${hexToRGB('#000000', '.25')}`
     /********************Case for provider*******************/
 })
-export const ColorLightDefault = Object.freeze({...ColorDarkDefault})
 export type ColorBaseInterface = typeof ColorDarkDefault
 
 //provider
