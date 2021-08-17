@@ -34,7 +34,6 @@ import {
     accountStaticCallBack,
     btnLabel,
     btnClickMap,
-    coinPairInit,
     getUserTrades,
     makeCache,
     makeMarketArray,
@@ -457,6 +456,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 type = 'buy'
                 break
             case SwapType.EXCHANGE_CLICK:
+                myLog('Exchange Click')
                 break
             default:
                 break
@@ -484,6 +484,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
             const sellSymbol = _tradeData?.sell.belong as string
             const buySymbol = _tradeData?.buy.belong as string
+            // myLog('sellSymbol:', sellSymbol, ' buySymbol:', buySymbol )
 
             if (sellSymbol && buySymbol) {
                 _tradeCalcData.coinSell = sellSymbol
@@ -492,21 +493,25 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                     _tradeCalcData.coinBuy = buySymbol
                 } else {
                     if (tokenMap && tokenMap[sellSymbol]) {
-                        const newBuy = tokenMap[sellSymbol].tradePairs[0]
-                        if (newBuy) {
-                            _tradeCalcData.coinBuy = newBuy
+                        // myLog(' tradePairs:', tokenMap[sellSymbol].tradePairs )
+                        if (tokenMap[sellSymbol].tradePairs.indexOf(buySymbol) >= 0) {
+                            _tradeCalcData.coinBuy = buySymbol
                         } else {
-                            throw Error('no such symbol!')
+                            const newBuy = tokenMap[sellSymbol].tradePairs[0]
+                            if (newBuy) {
+                                _tradeCalcData.coinBuy = newBuy
+                            } else {
+                                throw Error('no such symbol!')
+                            }
                         }
                     } else {
-                        // debugger
                         // throw Error('no such symbol!')
                     }
                 }
 
             }
 
-            // myLog('_tradeCalcData:', _tradeCalcData)
+            myLog('_tradeCalcData:', _tradeCalcData)
 
             let {
                 amm,
