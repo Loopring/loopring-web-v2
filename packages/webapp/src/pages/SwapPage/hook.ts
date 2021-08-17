@@ -186,10 +186,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         setBaseMinAmt(baseMinAmtInfo.userOrderInfo.minAmount)
         setQuoteMinAmt(quoteMinAmtInfo.userOrderInfo.minAmount)
 
-        myLog('---------------------------- amountMap:', amountMap)
-
-        myLog('totalFee:', totalFee)
-        myLog('takerRate:', takerRate)
+        // myLog('-------------- amountMap:', amountMap, 'totalFee:', totalFee, ' takerRate:', takerRate)
 
         setFeeBips(totalFee)
         setTakerRate(takerRate.toString())
@@ -325,6 +322,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const handleSwapPanelEvent = async (swapData: SwapData<SwapTradeData<IBData<C>>>, swapType: any): Promise<void> => {
 
         const { tradeData } = swapData
+
         return new Promise((resolve) => {
             resetSwap(swapType, tradeData)
             resolve(undefined)
@@ -428,7 +426,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             setSwapBtnI18nKey(`labelLimitMin, ${VolToNumberWithPrecision(quoteMinAmt,tradeData?.buy.belong) + ' ' + tradeData?.buy.belong}`)
         }
 
-        myLog('output:', output, ' quoteMinAmt:', quoteMinAmt, ' validAmt:', validAmt)
+        // myLog('output:', output, ' quoteMinAmt:', quoteMinAmt, ' validAmt:', validAmt)
 
     }, [output, quoteMinAmt, tradeData?.sell.belong])
 
@@ -440,17 +438,13 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     }, wait * 2), [setTradeData, setTradeCalcData, calculateTradeData, takerRate]);
 
-    const resetSwap = (swapType: SwapType | undefined, tradeData: SwapTradeData<IBData<C>> | undefined) => {
+    const resetSwap = (swapType: SwapType | undefined, _tradeData: SwapTradeData<IBData<C>> | undefined) => {
 
         let type = undefined
 
-        let coinKey = `${tradeData?.sell.belong}-${tradeData?.buy.belong}`
-
-        let _tradeData = undefined
+        let coinKey = `${_tradeData?.sell.belong}-${_tradeData?.buy.belong}`
 
         let _ammPoolSnapshot = ammPoolSnapshot
-        // myLog('tradeCalc:', tradeCalcData)
-        // myLog('pair:', pair)
 
         switch(swapType) {
             case SwapType.SEll_CLICK:
@@ -458,25 +452,28 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 return
             case SwapType.SELL_SELECTED:
                 type = 'sell'
-                _tradeData = tradeData
                 break
             case SwapType.BUY_SELECTED:
                 type = 'buy'
-                _tradeData = tradeData
                 break
             case SwapType.EXCHANGE_CLICK:
                 break
             default:
                 break
         }
+
+        // myLog('*******', tradeCalcData !== undefined, coinKey === `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
+        // _tradeData !== undefined, type !== undefined, !tradeData, _tradeData)
+        // myLog('tradeData:', tradeData, )
         
         if (tradeCalcData
             && coinKey === `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`
-            && _tradeData
             && type
-            && (!tradeData || (tradeData[type].tradeValue !== _tradeData[type].tradeValue))) {
+            && _tradeData
+            && (!tradeData || (tradeData[type]?.tradeValue !== _tradeData[type]?.tradeValue))) {
             throttleSetValue(type, _tradeData, _ammPoolSnapshot)
         } else {
+
             let _tradeFloat: Partial<TradeFloat> = {}
             let _tradeArray: Array<Partial<RawDataTradeItem>> | undefined = undefined
 
@@ -485,8 +482,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 coinBuy: 'ETH' 
             }
 
-            const sellSymbol = tradeData?.sell.belong as string
-            const buySymbol = tradeData?.buy.belong as string
+            const sellSymbol = _tradeData?.sell.belong as string
+            const buySymbol = _tradeData?.buy.belong as string
 
             if (sellSymbol && buySymbol) {
                 _tradeCalcData.coinSell = sellSymbol
@@ -498,6 +495,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                         const newBuy = tokenMap[sellSymbol].tradePairs[0]
                         if (newBuy) {
                             _tradeCalcData.coinBuy = newBuy
+                        } else {
+                            throw Error('no such symbol!')
                         }
                     } else {
                         // debugger
@@ -507,8 +506,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
             }
 
-            myLog('coinKey:', coinKey)
-            myLog('_tradeCalcData:', _tradeCalcData)
+            // myLog('_tradeCalcData:', _tradeCalcData)
 
             let {
                 amm,
