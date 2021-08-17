@@ -57,7 +57,6 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
                            onSwapClick={onSwapClick}
                            swapBtnI18nKey={swapBtnI18nKey}
                            swapBtnStatus={btnStatus}
-                    // handleError={}
                            {...{handleSwapPanelEvent, ...rest}}
                 />
             </FixedStyle>
