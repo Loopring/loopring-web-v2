@@ -1,6 +1,10 @@
 import { Box, Typography } from '@material-ui/core';
 import { Trans, WithTranslation } from 'react-i18next';
-import { ConnectProviders, LoadingIcon, CheckedIcon, EmbarIcon, } from '@loopring-web/common-resources';
+import {
+    ConnectProviders,
+    LoadingIcon,
+    DoneIcon, FailedIcon,
+} from '@loopring-web/common-resources';
 import React from 'react';
 import { useTheme } from '@emotion/react';
 import { Button } from '../basic-lib';
@@ -30,7 +34,7 @@ export const InProgressBasic = ({
                 flexDirection={'column'}>
         <Typography component={'h3'} variant={'h3'} marginBottom={3}>{label}</Typography>
         <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
-            <LoadingIcon color={'primary'} style={{width: 60, height: 60}}/>
+            <LoadingIcon color={'primary'} style={{width: 72, height: 72}}/>
         </Typography>
         {describe}
         <Typography variant={'body2'} color={'textSecondary'} component={'p'} marginTop={3} alignSelf={'flex-start'}
@@ -45,7 +49,7 @@ export const CompletedBasic = ({ t, label, describe, onClose, }: WithTranslation
     return   <Box flex={1} display={'flex'} alignItems={'center'}  justifyContent={'space-between'} flexDirection={'column'}>
         <Typography component={'h3'} variant={'h3'} marginBottom={3}>{label}</Typography>
         <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
-            <CheckedIcon style={{width: 60, height: 60, color: theme.colorBase.success}}/>
+            <DoneIcon style={{width: 60, height: 60, color: theme.colorBase.success}}/>
         </Typography>
         {describe}
         <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
@@ -58,7 +62,7 @@ export const FailedBasic= ({onRetry,describe,label,t}: {describe:JSX.Element, on
     return    <Box flex={1} display={'flex'} alignItems={'center'}  justifyContent={'space-between'} flexDirection={'column'}>
         <Typography component={'h3'} variant={'h3'} marginBottom={3}>{t(label)}</Typography>
         <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
-            <EmbarIcon color={'error'} style={{width:60,height:60}}></EmbarIcon>
+            <FailedIcon color={'error'} style={{width:60,height:60}}/>
         </Typography>
         {describe}
         <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>

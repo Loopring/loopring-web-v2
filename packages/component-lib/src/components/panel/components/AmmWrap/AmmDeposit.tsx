@@ -1,7 +1,6 @@
 import {
     AmmData,
     AmmInData,
-    DropDownIcon,
     EmptyValueTag,
     IBData,
     LinkedIcon,
@@ -10,7 +9,7 @@ import {
 } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import { AmmDepositWrapProps } from './Interface';
-import { Button, InputCoin, PopoverPure } from '../../../basic-lib';
+import { Button, InputCoin, LinkActionStyle, PopoverPure } from '../../../basic-lib';
 import React from 'react';
 import { usePopupState } from 'material-ui-popup-state/hooks';
 import { Grid, Typography } from '@material-ui/core';
@@ -185,34 +184,29 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
                           height={24}>
                         <Typography component={'p'} variant="body1">{t('swapTolerance')}</Typography>
                         {ammCalcData ? <>
-                                <span>
-                                    <IconButtonStyled
-                                        {...bindHover(popupState)}
-                                        sx={{fontSize: '1.4rem', height: '24px', minWidth: '24px', width: '24px'}}
-                                        className={'clock-loading'}
-                                        color="inherit"
-                                        aria-label="3' price update">
-                                        <DropDownIcon/>
-                                    </IconButtonStyled>
-                                    <PopoverPure
-                                        className={'arrow-right'}
-                                        {...bindPopover(popupState)}
-                                        {...{
-                                            anchorOrigin: {vertical: 'bottom', horizontal: 'right'},
-                                            transformOrigin: {vertical: 'top', horizontal: 'right'}
-                                        }}
-                                    >
-                                        <SlippagePanel {...{
-                                            ...rest, t,
-                                            handleChange: _onSlippageChange,
-                                            slippageList: slippageArray,
-                                            slippage: ammData.slippage ? ammData.slippage : ammCalcData.slippage ? ammCalcData.slippage : 0.5
-                                        }} />
-                                    </PopoverPure>
-                                </span>
+                            <Typography {...bindHover(popupState)}
+                                        component={'span'} variant="body1">
+                                <>
+                                    {ammData.slippage ? ammData.slippage : ammCalcData.slippage ? ammCalcData.slippage : 0.5}%
+                                </>
+                                <PopoverPure
+                                    className={'arrow-right'}
+                                    {...bindPopover(popupState)}
+                                    {...{
+                                        anchorOrigin: {vertical: 'bottom', horizontal: 'right'},
+                                        transformOrigin: {vertical: 'top', horizontal: 'right'}
+                                    }}
+                                >
+                                    <SlippagePanel {...{
+                                        ...rest, t,
+                                        handleChange: _onSlippageChange,
+                                        slippageList: slippageArray,
+                                        slippage: ammData.slippage ? ammData.slippage : ammCalcData.slippage ? ammCalcData.slippage : 0.5
+                                    }} />
+                                </PopoverPure>
+                            </Typography>
+                        </> : EmptyValueTag
 
-                            <Typography
-                                component={'span'}>{ammData.slippage ? ammData.slippage : ammCalcData.slippage ? ammCalcData.slippage : 0.5}%</Typography></> : EmptyValueTag
                         }
                     </Grid>
 

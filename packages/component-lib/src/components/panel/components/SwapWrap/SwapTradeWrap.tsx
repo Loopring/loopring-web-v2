@@ -13,14 +13,14 @@ import {
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
 import { Grid, Typography } from '@material-ui/core';
-import { Button, InputButton, PopoverPure } from '../../../basic-lib';
+import { Button, InputButton, LinkActionStyle, PopoverPure } from '../../../basic-lib';
 import { usePopupState } from 'material-ui-popup-state/hooks';
 import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { SwapTradeProps } from './Interface';
 import { useSettings } from '../../../../stores';
 import { IconButtonStyled } from '../Styled';
 import { SlippagePanel } from '../tool';
-import { Box, Link } from '@material-ui/core/';
+import { Box } from '@material-ui/core/';
 
 export const SwapTradeWrap = <T extends IBData<I>,
     I,
@@ -212,9 +212,9 @@ export const SwapTradeWrap = <T extends IBData<I>,
                             {tradeCalcData ? <>
                               <Typography {...bindHover(popupState)}
                                                 component={'span'}>
-                                  <Link>
+                                  <LinkActionStyle>
                                       {tradeData.slippage ? tradeData.slippage : tradeCalcData.slippage ? tradeCalcData.slippage : 0.5}%
-                                  </Link>
+                                  </LinkActionStyle>
                                 <PopoverPure
                                     className={'arrow-right'}
                                     {...bindPopover(popupState)}
