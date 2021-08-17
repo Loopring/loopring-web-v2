@@ -156,6 +156,7 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
         overflow: visible;
         box-shadow: var(--shadow);
         border-radius: ${({theme}) => theme.unit * 0.5}px;
+        margin-top: ${({theme}) => theme.unit}px;
         &:before {
           position: absolute;
           top: ${({theme}) => theme.unit * -2}px;
@@ -165,6 +166,14 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
           height: 0;
           border: ${({theme}) => theme.unit}px solid transparent;
           border-bottom: ${({theme}) => theme.unit}px solid var(--color-pop-bg);
+        }
+        &:after {
+          content: '';
+          position: absolute;
+          top: ${({theme}) => -theme.unit}px;
+          width: 100%;
+          height: ${({theme}) => theme.unit}px;
+          background-color: transparent;
         }
       }
     }
@@ -193,6 +202,14 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
         transform: translateX(-50%) rotate(-180deg);
         bottom: ${({theme}) => theme.unit * -2}px;
         top:initial;
+      }
+      &:after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        width: 100%;
+        height: ${({theme}) => theme.unit}px;
+        background-color: transparent;
       }
     }
   
