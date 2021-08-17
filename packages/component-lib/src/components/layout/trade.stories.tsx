@@ -12,7 +12,7 @@ import { SwapPanel, SwapProps } from '../panel';
 
 
 const Style = styled.div`
-  color: #fff;
+  
 `
 const TradeWrap = () => {
     let tradeData: any = {sell: {belong: undefined}, buy: {belong: undefined}};

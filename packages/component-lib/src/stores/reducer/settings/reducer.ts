@@ -23,6 +23,7 @@ export const settingsSlice:Slice<SettingsState> = createSlice({
         setTheme(state, action: PayloadAction<ThemeKeys>) {
             // localStore.setItem('ThemeType',action.payload)
             state.themeMode = action.payload
+            
         },
         setLanguage(state, action: PayloadAction<LanguageKeys>) {
             i18n.changeLanguage(action.payload);

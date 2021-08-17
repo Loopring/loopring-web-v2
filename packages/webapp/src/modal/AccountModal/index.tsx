@@ -234,10 +234,10 @@ export const ModalAccountInfo = withTranslation('common')(({
                 ...rest,
                 t
             }} />,},
-            [ AccountStep.UpdateAccountInProcess ]: {view: <ActiveAccountProcess providerName={account.connectName} {...{
-                ...rest,
-                t
-            }} />,},
+            [ AccountStep.UpdateAccountInProcess ]: {view: <ActiveAccountProcess label={title}  providerName={account.connectName} {...{
+                    ...rest,
+                    t
+                }} />,},
             [ AccountStep.UpdateAccountFailed ]: {view: <FailedUnlock label={title} onRetry={() => {
                 goUpdateAccount()
             }} {...{...rest, t}} />,onBack:()=>{

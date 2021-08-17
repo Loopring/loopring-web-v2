@@ -32,15 +32,8 @@ const BtnDownload = ({t}: any) => <IconButton aria-label={t('downloadApp')}><Dow
 
 const Style = styled.div`
   background: var(--color-global-bg);
-  color: #fff;
+  
 `
-const Wrap = () => <></>
-export default {
-    title: 'basic-lib/List',
-    component: Wrap,
-    argTypes: {},
-} as Meta
-
 const SubMenu = withTranslation('layout')((rest: any) => {
     return <>
         <MuiList>
@@ -52,7 +45,7 @@ const SubMenu = withTranslation('layout')((rest: any) => {
                     sx={{display: 'block'}}
                     component="span"
                     variant="body1"
-                    color="text.primary"
+                    color="text.button"
                 >Assets</Typography>}/>
             </SubMenuItem>
             <SubMenuItem button  {...rest}>
@@ -63,7 +56,7 @@ const SubMenu = withTranslation('layout')((rest: any) => {
                     sx={{display: 'block'}}
                     component="span"
                     variant="body1"
-                    color="text.primary"
+                    color="text.button"
                 >Assets</Typography>}/>
             </SubMenuItem>
             <SubMenuItem button selected={true} alignItems={'flex-start'}  {...rest}>
@@ -74,12 +67,12 @@ const SubMenu = withTranslation('layout')((rest: any) => {
                     sx={{display: 'block'}}
                     component="span"
                     variant="body1"
-                    color="text.primary"
+                    color="text.button"
                 >AMM Records</Typography>} secondary={<Typography
                     sx={{display: 'inline'}}
                     component="span"
                     variant="body2"
-                    color="text.primary"
+                    color="text.button"
                 >(Joins & Exits )</Typography>}/>
             </SubMenuItem>
             <Divider/>
@@ -91,12 +84,12 @@ const SubMenu = withTranslation('layout')((rest: any) => {
                     sx={{display: 'block'}}
                     component="span"
                     variant="body1"
-                    color="text.primary"
+                    color="text.button"
                 >AMM Records</Typography>} secondary={<Typography
                     sx={{display: 'inline'}}
                     component="span"
                     variant="body2"
-                    color="text.primary"
+                    color="text.button"
                 >(Joins & Exits )</Typography>}/>
             </SubMenuItem>
         </MuiList>
@@ -112,11 +105,11 @@ const LoopringHeader = (wrap: any) => {
             <HeaderMenu className={'wrap'} maxWidth='lg'>
                 <HeadMenuItem value={'markets'} layer={0} key={'markets-0'}
                               label={{id: 'markets', icon: ""}} {...wrap} >
-                    <MenuTab component='div' label={wrap.t('markets')} key={'markets'}></MenuTab>
+                    <MenuTab component='div' label={wrap.t('markets')} key={'markets'}/>
                 </HeadMenuItem>
                 <HeadMenuItem value={'layer2'} layer={0} key={'layer-0'} label={{id: 'layer 2', icon: ""}} {...wrap} >
                     <MenuTab component='div' className={'Mui-selected'} label={wrap.t('layer 2')}
-                             key={'layer 2'}></MenuTab>
+    key={'layer 2'}/>
                 </HeadMenuItem>
                 <HeaderMenuSub className={'layer-0'} renderList={() => layer2ItemDemo} layer={0} key={'trade-0'}
                                label={{id: 'trade', icon: ""}} {...wrap} >
@@ -139,10 +132,10 @@ const LoopringHeader = (wrap: any) => {
 }
 const CoinMapMenu = (rest: any) => {
     return <CoinMenu<CoinType, CoinInfo<CoinType>> {...{
-        coinMap, walletMap, handleListItemClick: (_event: any) => {
-            // console.log('handleListItemClick', key)
-        }, ...rest
-    }}></CoinMenu>
+    coinMap, walletMap, handleListItemClick: (_event: any) => {
+        // console.log('handleListItemClick', key)
+    }, ...rest
+}}/>
 }
 const TabPanelBtn = () => {
     const [value, setValue] = React.useState('one');
@@ -162,11 +155,11 @@ const TabPanelBtn = () => {
 const Template: Story<any> = withTranslation()(({t, ...rest}: any) => {
     const theme = useTheme();
     return <Style> <MemoryRouter initialEntries={['/']}>
-        <GlobalStyles styles={globalCss({theme})}></GlobalStyles>
+        <GlobalStyles styles={globalCss({theme})}/>
         <h4>Tabs List </h4>
         <Grid container spacing={2} alignContent={'center'} justifyContent={'flex-start'}>
             <LoopringHeader t={t}/>
-            <Grid item sm={2}> <TabPanelBtn></TabPanelBtn></Grid>
+            <Grid item sm={2}> <TabPanelBtn/></Grid>
         </Grid>
         <h4>MenuList list for select</h4>
         <Grid container spacing={2} alignContent={'center'} justifyContent={'flex-start'}>
@@ -202,7 +195,7 @@ const Template: Story<any> = withTranslation()(({t, ...rest}: any) => {
                 <Grid item xs={6}>
                     <h4>Left tab</h4>
                     <Box width={200} style={{backgroundColor: 'var(--color-pop-bg)'}}>
-                        <SubMenu></SubMenu>
+                        <SubMenu/>
                     </Box>
                 </Grid>
                 <Grid item xs={6} alignContent={'center'} justifyContent={'space-around'}>
@@ -225,3 +218,8 @@ const Template: Story<any> = withTranslation()(({t, ...rest}: any) => {
 
 export const ListItem = Template.bind({});
 ListItem.args = {}
+export default {
+    title: 'basic-lib/ListItem',
+    component: ListItem,
+    argTypes: {},
+} as Meta

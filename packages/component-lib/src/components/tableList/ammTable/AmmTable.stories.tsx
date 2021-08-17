@@ -6,7 +6,7 @@ import { AmmTable, RawDataAmmItem } from './index'
 import { AmmSideTypes } from './interface'
 
 const Style = styled.div`
-	color: #fff;
+	
 	flex: 1;
 	height: 100%;
 	flex: 1;

@@ -33,7 +33,7 @@ import { Header } from '../header';
 
 
 const Style = styled.div`
-  color: #fff;
+  
 `
 const tradeData: any = {
     coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},

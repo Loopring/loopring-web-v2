@@ -34,7 +34,7 @@ import QRCode from 'qrcode.react';
 
 
 const Style = styled.div`
-  color: #fff;
+  
   flex: 1;
   height: 100%;
 `
@@ -80,8 +80,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
     }
     const accAddress = '0xcEd11e039a5C50927a17a8D4632616DFa8F72BF6'
     const etherscanLink =  accAddress
-    //nameList,
-    const { accountList} = React.useMemo(() => {
+    const { nameList, accountList, } = React.useMemo(() => {
         const accountMap = {
             [ AccountStep.NoAccount ]: {view: <NoAccount {...{
                 ...accountInfoProps, goDeposit: () => {
@@ -102,20 +101,20 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
             [ AccountStep.SuccessUnlock ]: {view: <SuccessUnlock {...{...rest, onClose: () => undefined}}/>,},
             [ AccountStep.FailedUnlock ]: {view: <FailedUnlock {...rest} onRetry={() => undefined}/>,},
             [ AccountStep.HadAccount ]: {view: <HadAccount mainBtn={mainBtn} {...accountInfoProps}/>,},
-            [ AccountStep.TokenApproveInProcess ]: {view: <TokenAccessProcess  label={rest.t('depositTitleAndActive')} {...{
+            [ AccountStep.TokenApproveInProcess ]: {view: <TokenAccessProcess label={rest.t('depositTitleAndActive')} {...{
                 ...rest,
                 coinInfo,
                 providerName: ConnectProviders.MetaMask
             }}/>,},
-            [ AccountStep.DepositApproveProcess ]: {view: <DepositApproveProcess  label={rest.t('depositTitleAndActive')} {...{
+            [ AccountStep.DepositApproveProcess ]: {view: <DepositApproveProcess label={rest.t('depositTitleAndActive')} {...{
                 ...rest,
                 providerName: ConnectProviders.MetaMask
             }}/>,},
-            [ AccountStep.UpdateAccountInProcess ]: {view: <ActiveAccountProcess label={'depositTitleAndActive'} {...{
+            [ AccountStep.UpdateAccountInProcess ]: {view: <ActiveAccountProcess label={rest.t('depositTitleAndActive')} {...{
                 ...rest,
                 providerName: ConnectProviders.MetaMask
             }}/>,},
-            [ AccountStep.TokenApproveFailed ]: {view: <FailedTokenAccess label={'depositTitleAndActive'} {...{...rest, coinInfo}}/>,},
+            [ AccountStep.TokenApproveFailed ]: {view: <FailedTokenAccess label={rest.t('depositTitleAndActive')} {...{...rest, coinInfo}}/>,},
         }
 
         return { nameList: Object.keys(accountMap), accountList: Object.values(accountMap) }
@@ -142,10 +141,14 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                     <Grid container spacing={2}>
 
                         {accountList.map((panel, index) => {
-                            return <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
+                            return (<>
+                                <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
                                         justifyContent={'center'} alignItems={'stretch'}>
+                                <Typography  marginTop={2} variant={'body2'} color={'textSecondary'}  style={{wordBreak:'break-all'}}>{AccountStep[nameList[index]]}</Typography>
+                                            
                                 {panel.view}
                             </Box>
+                            </>)
                         })}
                     </Grid>
                     <Button variant={'outlined'} size={'small'} color={'primary'} style={{marginRight: 8}}

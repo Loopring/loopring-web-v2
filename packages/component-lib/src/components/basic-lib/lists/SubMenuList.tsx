@@ -13,39 +13,32 @@ export const SubMenuItem = styled<any>(ListItem)`
   width: var(--sub-menuItem-width);
   min-width: var(--sub-menuItem-width);
   height: var(--sub-menuItem-height);
-
-  .MuiTypography-body1 {
-    line-height: 1.6em;
-    text-transform: capitalize;
-  }
-
+  color: var(--color-text-secondary);
   .MuiListItemAvatar-root {
     margin-left: ${({theme}) => theme.unit * 0.75}px;
+    color: var(--color-button-icon);
     svg {
       width: var(--header-menu-icon-size);
       height: var(--header-menu-icon-size);
     }
-
-    //:hover {
-    //  svg {
-    //    color: var(--color-primary); 
-    //  }
-    //
-    //  color: var(--color-primary);
-    //}
   }
-
-  &:hover{
+  &:hover, &.Mui-selected, &.Mui-selected.Mui-focusVisible, &.Mui-selected:hover {
     background-color: var(--color-primary);
   }
-  &.Mui-selected, &.Mui-selected.Mui-focusVisible {
-    background-color: var(--color-primary);
-    &:hover{
-      background-color: var(--color-primary);
-    }
-    //border-color:var(--primary);
 
+  &:hover, &:hover .MuiListItemAvatar-root, &.Mui-selected, &.Mui-selected.Mui-focusVisible {
+    color: var(--color-text-button);
   }
+  //&.Mui-selected, &.Mui-selected.Mui-focusVisible {
+  //  background-color: var(--color-primary);
+  //  color: var(--color-text-button);
+  //  &:hover{
+  //    background-color: var(--color-primary);
+  //    color: var(--color-text-button);
+  //  }
+  //  //border-color:var(--primary);
+  //
+  //}
 ` as (props:ListItemProps<any>)=>JSX.Element;
 export const SubMenuList = <I extends any>({
                                                t,
@@ -66,7 +59,7 @@ export const SubMenuList = <I extends any>({
                                 }}
             >
                 <ListItemAvatar>
-                    <item.icon></item.icon>
+                    <item.icon/>
                 </ListItemAvatar>
                 {item.label.description ? <ListItemText
                     primary={<Typography sx={{display: 'block'}} component="span" variant="body1"
@@ -74,7 +67,7 @@ export const SubMenuList = <I extends any>({
                     secondary={<Typography sx={{display: 'inline'}} component="span" variant="body2"
                                           >{t(item.label.description)}</Typography>}
                 /> : <ListItemText
-                    primary={<Typography sx={{display: 'block'}} component="span" variant="body1"
+                    primary={<Typography sx={{display: 'block'}} color={'text.button'} component="span" variant="body1"
                                         >{t(item.label.i18nKey)}</Typography>}
                 />}
             </SubMenuItem>
