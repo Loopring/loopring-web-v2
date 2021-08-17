@@ -386,8 +386,8 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         const tokenSymbol = currFilterToken === 'All Tokens' 
             ? '' 
             : currFilterToken
-            const formattedType = currFilterType.toUpperCase()
-        const types = formattedType === TransactionTradeTypes.allTypes 
+        const formattedType = currFilterType.toUpperCase()
+        const types = currFilterType === TransactionTradeTypes.allTypes 
             ? '' 
             : formattedType === TransactionTradeTypes.deposit
                 ? 'deposit'
