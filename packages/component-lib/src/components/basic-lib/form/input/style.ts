@@ -27,7 +27,6 @@ export const IWrap = styled(Box)`
 
     .max-allow {
       text-decoration: underline dotted;
-
       &:hover {
         color: var(--color-secoundary);
       }

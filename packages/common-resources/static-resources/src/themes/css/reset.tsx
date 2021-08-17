@@ -175,6 +175,7 @@ textarea {
 a {
   text-decoration: none;
   cursor: pointer;
+  
 }
 button {
   padding: 0;
@@ -184,5 +185,6 @@ button {
   html{
     overscroll-behavior-x:none;
     overscroll-behavior-y:none;
+    text-underline-offset:3px;
   }
 `
