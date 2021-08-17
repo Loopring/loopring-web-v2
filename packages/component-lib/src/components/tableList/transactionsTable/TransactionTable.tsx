@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { Box, Link } from '@material-ui/core'
+import { Box, Link, Modal } from '@material-ui/core'
 import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
 import { useDeepCompareEffect } from 'react-use'
@@ -15,6 +15,7 @@ import {
     AssetsIcon, // temporayily replacement
 } from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
+import { TxnDetailPanel } from './components/modal'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes } from './Interface'
 import { DateRange } from '@material-ui/lab'
@@ -69,15 +70,15 @@ const CellStatus = ({row, column}: any) => {
     //     final transaction price.
     // </div>
     const RenderValue = styled.div`
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      color: ${({theme}) => theme.colorBase[ `${TYPE_COLOR_MAPPING.find(o => o.type === status)?.color}` ]};
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        color: ${({theme}) => theme.colorBase[ `${TYPE_COLOR_MAPPING.find(o => o.type === status)?.color}` ]};
 
-      & svg {
-        width: 20px;
-        height: 20px;
-      }
+        & svg {
+            width: 20px;
+            height: 20px;
+        }
     `
     const svg = status === 'processed' ? <CheckIcon width={14} height={14} /> : status === 'processing' ? <AssetsIcon/> : <AlertIcon/>
     const RenderValueWrapper =
@@ -109,217 +110,28 @@ const CellStatus = ({row, column}: any) => {
     </>
 }
 
-const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
-    // {
-    //     key: 'token',
-    //     name: t('labelTxToken'),
-    // },
-    // {
-    //     key: 'from',
-    //     name: t('labelTxFrom'),
-    //     formatter: ({row}) => {
-    //         const valueFrom = row['from']
-    //         const isMyWallet = valueFrom === 'My Loopring'
-    //         const actualValue = isMyWallet ? valueFrom : getFormattedHash(valueFrom)
-    //         const RenderValue = styled.div`
-    // 			height: 100%;
-    // 			display: flex;
-    // 			flex-direction: column;
-    // 			justify-content: center;
-    // 			color: ${({theme}) => valueFrom && !isMyWallet ? theme.colorBase.primaryLight : theme.colorBase.textPrimary};
-
-    // 			// & p:last-child {
-    // 			// 	color:var(--color-text-primary);
-    // 			// }
-
-    // 			// p {
-    // 			// 	line-height: 100%;
-    // 			// }
-
-    // 		`
-
-    //         return (
-    //             <>
-    //                 <RenderValue title={valueFrom}>
-    //                     {actualValue || EmptyValueTag}
-    //                 </RenderValue>
-    //             </>
-    //         )
-    //     },
-    // },
-    // {
-    //     key: 'to',
-    //     name: t('labelTxTo'),
-    //     formatter: ({row}) => {
-    //         const valueTo = row['to']
-    //         const isMyWallet = valueTo === 'My Loopring'
-    //         const actualValue = isMyWallet ? valueTo : getFormattedHash(valueTo)
-    //         const RenderValue = styled.div`
-    // 			height: 100%;
-    // 			display: flex;
-    // 			flex-direction: column;
-    // 			justify-content: center;
-    // 			color: ${({theme}) => valueTo && !isMyWallet ? theme.colorBase.primaryLight : theme.colorBase.textPrimary};
-
-    // 			// & p:last-child {
-    // 			// 	color:var(--color-text-primary);
-    // 			// }
-
-    // 			// p {
-    // 			// 	line-height: 100%;
-    // 			// }
-
-    // 		`
-    //         // const value = typeof to === 'string'
-    //         //     ? <p>{to}</p>
-    //         //     : <>
-    //         //         <p>{to.address}</p>
-    //         //         <p>/ {to.env}</p>
-    //         //     </>
-
-    //         return (
-    //             <>
-    //                 <RenderValue title={valueTo}>
-    //                     {actualValue || EmptyValueTag}
-    //                 </RenderValue>
-    //             </>
-    //         )
-    //     },
-    // },
-    {
-        key: 'side',
-        name: t('labelTxSide'),
-        formatter: ({row}) => {
-            const value = row[ 'side' ]
-            const renderValue = value === TransactionTradeTypes.deposit ? t('labelDeposit') : value === TransactionTradeTypes.transfer ? t('labelTransfer') : t('labelWithdraw');
-            return (
-                <div className="rdg-cell-value">
-                    {renderValue}
-                </div>
-            )
-        }
-    },
-    {
-        key: 'amount',
-        name: t('labelTxAmount'),
-        formatter: ({row}) => {
-            const {unit, value} = row[ 'amount' ]
-            const hasValue = Number.isFinite(value)
-            const renderValue = hasValue ? `${getThousandFormattedNumbers(Number(value), 5)}` : EmptyValueTag
-            return (
-                <div className="rdg-cell-value">
-                    {renderValue} {unit || ''}
-                </div>
-            )
-        },
-    },
-    {
-        key: 'fee',
-        name: t('labelTxFee'),
-        formatter: ({row}) => {
-            const fee = row[ 'fee' ]
-            const hasValue = fee ? Number.isFinite(fee.value) : ''
-            const renderValue = hasValue && fee.value !== 0 ? `${fee.value.toFixed(6)} ${fee.unit}` : EmptyValueTag
-            return (
-                <div className="rdg-cell-value">
-                    <span>{renderValue}</span>
-                </div>
-            )
-        },
-    },
-    // {
-    //     key: 'memo',
-    //     name: t('labelTxMemo'),
-    //     formatter: ({row, column}) => {
-    //         const value = row[ column.key ]
-    //         const renderValue = value || EmptyValueTag
-    //         const Wrapper = styled.div`
-    //             color: var(--color-text-secondary);
-    //             max-width: 90%;
-    //             overflow: hidden;
-    //             text-overflow: ellipsis;
-    //             white-space: nowrap;
-    //         `
-    //         return (
-    //             <div className="rdg-cell-value">
-    //                 <Wrapper title={renderValue}>{renderValue}</Wrapper>
-    //             </div>
-    //         )
-    //     },
-    // },
-    {
-        key: 'txnHash',
-        name: t('labelTxTxnHash'),
-        formatter: ({row}) => {
-            // let path = ''
-            // if ((row as any)._rawData.length === 9) {
-            //     path = ((row as any)._rawData[ 8 ])
-            // }
-            const path = row[ 'path' ] || ''
-            const value = row[ 'txnHash' ]
-            const RenderValue = styled.div`
-              color: ${({theme}) => theme.colorBase[ value ? 'primary' : 'textSecondary' ]};
-              // overflow: hidden;
-              // text-overflow: ellipsis;
-              // white-space: nowrap;
-              // max-width: 90%;
-            `
-            return (
-                <div className="rdg-cell-value">
-                    {path ? <Link href={path}>
-                            <RenderValue title={value}>{value || EmptyValueTag}</RenderValue>
-                        </Link> :
-                        <RenderValue title={value}>{value ? getFormattedHash(value) : EmptyValueTag}</RenderValue>}
-                </div>
-            )
-        }
-    },
-    {
-        key: 'status',
-        name: t('labelTxStatus'),
-        formatter: ({row, column, rowIdx}) => (
-            <div className="rdg-cell-value">
-                <CellStatus {...{row, column, rowIdx}} />
-            </div>
-        )
-    },
-    {
-        key: 'time',
-        name: t('labelTxTime'),
-        formatter: ({row}) => {
-            const value = row[ 'time' ]
-            const hasValue = Number.isFinite(value)
-            const renderValue = hasValue
-                ? moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
-                : EmptyValueTag
-            return (
-                <div className="rdg-cell-value">
-                    <span>{renderValue}</span>
-                </div>
-            )
-        },
-    },
-]
-
 const TableStyled = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-
-  .rdg {
-    --template-columns: 120px auto auto auto 100px 120px !important;
-
-    .rdg-cell.action {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  }
-
-  .rdg-cell {
     display: flex;
-    align-items: center;
-  }
+    flex-direction: column;
+    flex: 1;
+
+    .rdg {
+        --template-columns: 120px auto auto auto 100px 120px !important;
+
+        // .rdg-cell.action {
+        // display: flex;
+        // justify-content: center;
+        // align-items: center;
+        // }
+        .rdg-cell {
+            display: flex;
+            align-items: center;
+        }
+    }
+    // .textAlignRight {
+    //     text-align: right;
+    // }
+    
 
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
@@ -336,19 +148,13 @@ export interface TransactionTableProps {
 }
 
 export const TransactionTable = withTranslation('tables')((props: TransactionTableProps & WithTranslation) => {
-    const defaultArgs: any = {
-        // rawData: [],
-        columnMode: getColumnModeTransaction(props.t).filter(o => !o.hidden),
-        generateRows: (rawData: any) => rawData,
-        generateColumns: ({columnsRaw}: any) => columnsRaw as Column<any, unknown>[],
-    }
     const {rawData, pagination, showFilter, getTxnList, showLoading} = props
     const [page, setPage] = React.useState(1)
     const [totalData, setTotalData] = React.useState<RawDataTransactionItem[]>(rawData)
     const [filterType, setFilterType] = React.useState(TransactionTradeTypes.allTypes)
     const [filterDate, setFilterDate] = React.useState<DateRange<Date | string>>(['', ''])
     const [filterToken, setFilterToken] = React.useState<string>('All Tokens')
-    
+    const [modalState, setModalState] = React.useState(false)
 
     const pageSize = pagination ? pagination.pageSize : 10;
 
@@ -380,9 +186,11 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         // if (currFilterToken !== 'All Tokens') {
         //     resultData = resultData.filter(o => o.amount.unit === currFilterToken)
         // }
-        // if (TableType === 'filter') {
-        //     setPage(1)
-        // }
+        let actualPage = currPage
+        if (TableType === 'filter') {
+            actualPage = 1
+            setPage(1)
+        }
         const tokenSymbol = currFilterToken === 'All Tokens' 
             ? '' 
             : currFilterToken
@@ -398,7 +206,7 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         const end = Number(moment(currFilterDate[ 1 ]).format('x'))
         getTxnList({
             limit: pageSize,
-            offset: (currPage - 1) * pageSize,
+            offset: (actualPage - 1) * pageSize,
             types: types,
             tokenSymbol: tokenSymbol,
             start: Number.isNaN(start) ? -1 : start,
@@ -435,6 +243,107 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         updateData({TableType: TableType.page, currPage: page})
     }, [updateData])
 
+    const handleTxnDetail = React.useCallback(() => {
+        setModalState(true)
+    }, [])
+
+    const getColumnModeTransaction = React.useCallback((t: TFunction): Column<Row, unknown>[] => [
+        {
+            key: 'side',
+            name: t('labelTxSide'),
+            formatter: ({row}) => {
+                const value = row[ 'side' ]
+                const renderValue = value === TransactionTradeTypes.deposit ? t('labelDeposit') : value === TransactionTradeTypes.transfer ? t('labelTransfer') : t('labelWithdraw');
+                return (
+                    <div className="rdg-cell-value">
+                        {renderValue}
+                    </div>
+                )
+            }
+        },
+        {
+            key: 'amount',
+            name: t('labelTxAmount'),
+            formatter: ({row}) => {
+                const {unit, value} = row[ 'amount' ]
+                const hasValue = Number.isFinite(value)
+                const renderValue = hasValue ? `${getThousandFormattedNumbers(Number(value), 5)}` : EmptyValueTag
+                return (
+                    <div className="rdg-cell-value">
+                        {renderValue} {unit || ''}
+                    </div>
+                )
+            },
+        },
+        {
+            key: 'fee',
+            name: t('labelTxFee'),
+            formatter: ({row}) => {
+                const fee = row[ 'fee' ]
+                const hasValue = fee ? Number.isFinite(fee.value) : ''
+                const renderValue = hasValue && fee.value !== 0 ? `${fee.value.toFixed(6)} ${fee.unit}` : EmptyValueTag
+                return (
+                    <div className="rdg-cell-value">
+                        <span>{renderValue}</span>
+                    </div>
+                )
+            },
+        },
+        {
+            key: 'txnHash',
+            name: t('labelTxTxnHash'),
+            formatter: ({row}) => {
+                const path = row[ 'path' ] || ''
+                // console.log(row)
+                const value = row[ 'txnHash' ]
+                const RenderValue = styled(Box)`
+                    color: ${({theme}) => theme.colorBase[ value ? 'primary' : 'textSecondary' ]};
+                    cursor: pointer;
+                `
+                return (
+                    <div className="rdg-cell-value">
+                        {path ? <Link href={path}>
+                                <RenderValue title={value}>{value || EmptyValueTag}</RenderValue>
+                            </Link> :
+                            <RenderValue onClick={handleTxnDetail} title={value}>{value ? getFormattedHash(value) : EmptyValueTag}</RenderValue>}
+                    </div>
+                )
+            }
+        },
+        {
+            key: 'status',
+            name: t('labelTxStatus'),
+            formatter: ({row, column, rowIdx}) => (
+                <div className="rdg-cell-value">
+                    <CellStatus {...{row, column, rowIdx}} />
+                </div>
+            )
+        },
+        {
+            key: 'time',
+            name: t('labelTxTime'),
+            formatter: ({row}) => {
+                const value = row[ 'time' ]
+                const hasValue = Number.isFinite(value)
+                const renderValue = hasValue
+                    ? moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
+                    : EmptyValueTag
+                return (
+                    <div className="rdg-cell-value">
+                        <span>{renderValue}</span>
+                    </div>
+                )
+            },
+        },
+    ], [handleTxnDetail])
+
+    const defaultArgs: any = {
+        // rawData: [],
+        columnMode: getColumnModeTransaction(props.t).filter(o => !o.hidden),
+        generateRows: (rawData: any) => rawData,
+        generateColumns: ({columnsRaw}: any) => columnsRaw as Column<any, unknown>[],
+    }
+
     return <TableStyled>
         {showFilter && (
             <TableFilterStyled>
@@ -448,6 +357,14 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
                 />
             </TableFilterStyled>
         )}
+        <Modal
+            open={modalState}
+            onClose={() => setModalState(false)}
+        >
+            <div>
+                {TxnDetailPanel}
+            </div>
+        </Modal>
         {/* <Table {...{...defaultArgs, ...props, rawData: getRenderData()}}/> */}
         <Table {...{...defaultArgs, ...props, rawData: rawData, showLoading: showLoading}}/>
         {pagination && (
