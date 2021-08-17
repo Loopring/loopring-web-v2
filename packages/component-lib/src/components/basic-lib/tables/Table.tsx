@@ -9,28 +9,29 @@ import { Column, DataGridProps, SortableHeaderCell, SortableHeaderCellProps, Tab
 import { EmptyDefault } from '../empty';
 // import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
 import { LoadingIcon } from '@loopring-web/common-resources'
-import { Box } from '@material-ui/core';
+import { Box, IconButton } from '@material-ui/core';
 
 const TableWrapperStyled = styled(Box)`
   display: flex;
   position: relative;
   flex: 1;
 
-  // &::after {
-  //   position: absolute;
-  //   z-index: 20;
-  //   top: 0;
-  //   right: 0;
-  //   bottom: 0;
-  //   left: 0;
-  //   width: 100%;
-  //   height: 100%;
-  //   opacity: 0.1;
-  //   transition: all 0.3s;
-  //   content: '';
-  //   pointer-events: auto;
-  // }
-`
+  &::after {
+    visibility: ${(props: any) => props.showloading ? 'visible' : 'hidden'};
+    position: absolute;
+    z-index: 20;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.2;
+    background-color: var(--color-global-bg);
+    content: '';
+    pointer-events: auto;
+  }
+` as any
 
 export const DataGridStyled = styled(DataGrid)`
   width: 100%;
@@ -128,7 +129,7 @@ export const DataGridStyled = styled(DataGrid)`
 
 ` as typeof DataGrid;
 
-const LoadingStyled = styled(LoadingIcon)`
+const LoadingStyled = styled(IconButton)`
   position: absolute;
   z-index: 21;
   top: 40%;
@@ -253,7 +254,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
     `
 
     /*** sort handle end ***/
-    return <TableWrapperStyled>
+    return <TableWrapperStyled showloading={showLoading}>
         <DataGridStyled
             {...rest}
             onScroll={onScroll}
@@ -279,7 +280,9 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
                 }}/>) : null}
         />
         {showLoading && (
-            <LoadingStyled/>
+            <LoadingStyled color={'inherit'}>
+              <LoadingIcon />
+            </LoadingStyled>
         )}
     </TableWrapperStyled>
         ;

@@ -7,16 +7,27 @@ import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
 import { LoopringAPI } from 'api_wrapper'
 import store from 'stores'
 import { TradeTypes } from '@loopring-web/common-resources'
-import { toBig, Side, AmmTxType } from 'loopring-sdk'
+import { toBig, Side, AmmTxType, UserTxTypes } from 'loopring-sdk'
 
 import { TransactionTradeTypes } from '@loopring-web/component-lib';
+
+export type TxsFilterProps = {
+    // accountId: number;
+    tokenSymbol?: string;
+    start?: number;
+    end?: number;
+    offset?: number;
+    limit?: number;
+    types?: UserTxTypes[] | string;
+}
 
 export function useGetTxs() {
 
     const { account: {accountId, apiKey} } = useAccount()
 
     const [txs, setTxs] = useState<RawDataTransactionItem[]>([])
-    const [isLoading, setIsLoading] = useState(true)
+    const [txsTotal, setTxsTotal] = useState(0)
+    const [showLoading, setShowLoading] = useState(false)
 
     const getTxnStatus = (status: string) => 
         status === ''
@@ -29,24 +40,39 @@ export function useGetTxs() {
                     ? TransactionStatus.received 
                     : TransactionStatus.failed
 
-    const getUserTxnList = useCallback(async () => {
+    const getUserTxnList = useCallback(async ({
+        tokenSymbol,
+        start,
+        end,
+        limit,
+        offset,
+        types,
+    }: TxsFilterProps) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
-            const userTxnList = await Promise.all([
-                LoopringAPI.userAPI.getUserTranferList({
-                    accountId,
-                }, apiKey),
-                LoopringAPI.userAPI.getUserDepositHistory({
-                    accountId,
-                }, apiKey),
-                LoopringAPI.userAPI.getUserOnchainWithdrawalHistory({
-                    accountId,
-                }, apiKey)
-            ])
-            const userTransferMapped = userTxnList[0].userTransfers?.map(o => ({
-                side: TransactionTradeTypes.transfer,
-                // token: o.symbol,
-                // from: o.senderAddress,
-                // to: o.receiverAddress,
+            // const userTxnList = await Promise.all([
+            //     LoopringAPI.userAPI.getUserTranferList({
+            //         accountId,
+            //     }, apiKey),
+            //     LoopringAPI.userAPI.getUserDepositHistory({
+            //         accountId,
+            //     }, apiKey),
+            //     LoopringAPI.userAPI.getUserOnchainWithdrawalHistory({
+            //         accountId,
+            //     }, apiKey)
+            // ])
+            setShowLoading(true)
+            const userTxnList = await LoopringAPI.userAPI.getUserTxs({
+                accountId,
+                limit,
+                tokenSymbol,
+                start,
+                end,
+                offset,
+                types,
+            }, apiKey)
+            
+            const formattedList = userTxnList.userTxs.map(o => ({
+                side: o.txType as any,
                 amount: {
                     unit: o.symbol || '',
                     value: Number(volumeToCount(o.symbol, o.amount))
@@ -59,62 +85,86 @@ export function useGetTxs() {
                 time: o.timestamp,
                 txnHash: o.hash,
                 status: getTxnStatus(o.status),
-                // tradeType: TransactionTradeTypes.transfer
             }))
-            const userDepositMapped = userTxnList[1].userDepositHistory?.map(o => ({
-                side: TransactionTradeTypes.deposit,
-                symbol: o.symbol,
-                // token: o.symbol,
-                // from: o.hash,
-                // to: 'My Loopring',
-                // amount: Number(volumeToCount(o.symbol, o.amount)),
-                amount: {
-                    unit: o.symbol || '',
-                    value: Number(volumeToCount(o.symbol, o.amount))
-                },
-                fee: {
-                    unit: '',
-                    value: 0
-                },
-                memo: '',
-                time: o.timestamp,
-                txnHash: o.txHash,
-                status: getTxnStatus(o.status),
-                // tradeType: TransactionTradeTypes.deposit
-            }))
-            const userWithdrawMapped = userTxnList[2].userOnchainWithdrawalHistory?.map((o => ({
-                side: TransactionTradeTypes.withdraw,
-                // token: o.symbol,
-                // from: 'My Loopring',
-                // to: o.distributeHash,
-                amount: {
-                    unit: o.symbol || '',
-                    value: Number(volumeToCount(o.symbol, o.amount))
-                },
-                fee: {
-                    unit: o.feeTokenSymbol || '',
-                    value: Number(volumeToCount(o.feeTokenSymbol, o.feeAmount || 0)?.toFixed(6))
-                },
-                memo: '',
-                time: o.timestamp,
-                txnHash: o.txHash,
-                status: getTxnStatus(o.status),
-                // tradeType: TransactionTradeTypes.withdraw
-            })))
-            const mappingList = [...userTransferMapped??[], ...userDepositMapped??[], ...userWithdrawMapped??[]]
-            const sortedMappingList = mappingList.sort((a, b) => b.time - a.time)
-            setTxs(sortedMappingList)
-            setIsLoading(false)
+            setTxs(formattedList)
+            setTxsTotal(userTxnList.totalNum)
+            setShowLoading(false)
+        //     const userTransferMapped = userTxnList[0].userTransfers?.map(o => ({
+        //         side: TransactionTradeTypes.transfer,
+        //         // token: o.symbol,
+        //         // from: o.senderAddress,
+        //         // to: o.receiverAddress,
+        //         amount: {
+        //             unit: o.symbol || '',
+        //             value: Number(volumeToCount(o.symbol, o.amount))
+        //         },
+        //         fee: {
+        //             unit: o.feeTokenSymbol || '',
+        //             value: Number(volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0))
+        //         },
+        //         memo: o.memo || '',
+        //         time: o.timestamp,
+        //         txnHash: o.hash,
+        //         status: getTxnStatus(o.status),
+        //         // tradeType: TransactionTradeTypes.transfer
+        //     }))
+        //     const userDepositMapped = userTxnList[1].userDepositHistory?.map(o => ({
+        //         side: TransactionTradeTypes.deposit,
+        //         symbol: o.symbol,
+        //         // token: o.symbol,
+        //         // from: o.hash,
+        //         // to: 'My Loopring',
+        //         // amount: Number(volumeToCount(o.symbol, o.amount)),
+        //         amount: {
+        //             unit: o.symbol || '',
+        //             value: Number(volumeToCount(o.symbol, o.amount))
+        //         },
+        //         fee: {
+        //             unit: '',
+        //             value: 0
+        //         },
+        //         memo: '',
+        //         time: o.timestamp,
+        //         txnHash: o.txHash,
+        //         status: getTxnStatus(o.status),
+        //         // tradeType: TransactionTradeTypes.deposit
+        //     }))
+        //     const userWithdrawMapped = userTxnList[2].userOnchainWithdrawalHistory?.map((o => ({
+        //         side: TransactionTradeTypes.withdraw,
+        //         // token: o.symbol,
+        //         // from: 'My Loopring',
+        //         // to: o.distributeHash,
+        //         amount: {
+        //             unit: o.symbol || '',
+        //             value: Number(volumeToCount(o.symbol, o.amount))
+        //         },
+        //         fee: {
+        //             unit: o.feeTokenSymbol || '',
+        //             value: Number(volumeToCount(o.feeTokenSymbol, o.feeAmount || 0)?.toFixed(6))
+        //         },
+        //         memo: '',
+        //         time: o.timestamp,
+        //         txnHash: o.txHash,
+        //         status: getTxnStatus(o.status),
+        //         // tradeType: TransactionTradeTypes.withdraw
+        //     })))
+        //     const mappingList = [...userTransferMapped??[], ...userDepositMapped??[], ...userWithdrawMapped??[]]
+        //     const sortedMappingList = mappingList.sort((a, b) => b.time - a.time)
+        //     setTxs(sortedMappingList)
+        //     setIsLoading(false)
+        // }
         }
     }, [accountId, apiKey])
 
-    useCustomDCEffect(() => {
-        getUserTxnList()
-    }, [getUserTxnList])
+    // useCustomDCEffect(() => {
+    //     getUserTxnList()
+    // }, [getUserTxnList])
 
     return {
         txs,
-        isLoading
+        txsTotal,
+        showLoading,
+        getUserTxnList
     }
 }
 
