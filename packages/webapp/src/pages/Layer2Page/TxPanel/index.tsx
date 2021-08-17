@@ -26,10 +26,12 @@ const TxPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
                 <TransactionTable {...{
                     rawData: txTableData,
                     pagination: {
-                        pageSize: pageSize
+                        pageSize: pageSize,
+                        total: txTableData.length
                     },
                     showFilter: true,
                     showLoading: isLoading,
+                    getTxnList: (): any => {},
                     ...rest
                 }} />
             </div>

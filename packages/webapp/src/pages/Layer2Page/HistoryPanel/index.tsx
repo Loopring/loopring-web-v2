@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { Tabs, Tab, Box } from '@material-ui/core'
 import { TransactionTable, TradeTable, AmmTable } from '@loopring-web/component-lib'
@@ -6,11 +6,11 @@ import { StylePaper } from '../../styled'
 import { useGetTxs, useGetTrades, useGetAmmRecord } from './hooks';
 
 const TxPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
-    const [pageSize, setPageSize] = React.useState(10);
+    const [pageSize, setPageSize] = React.useState(0);
     const [currentTab, setCurrentTab] = React.useState('transactions')
 
-    const { txs: txTableData, isLoading } = useGetTxs()
-    const { userTrades, showLoading} = useGetTrades()
+    const { txs: txTableData, txsTotal, showLoading: showTxsLoading, getUserTxnList } = useGetTxs()
+    const { userTrades, showLoading: showTradesLoading} = useGetTrades()
     const { ammRecordList, showLoading: ammLoading } = useGetAmmRecord()
 
     const { t } = rest
@@ -23,6 +23,14 @@ const TxPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
             setPageSize(Math.floor((height - 120) / 44) - 2);
         }
     }, [container, pageSize]);
+
+    useEffect(() => {
+        if (pageSize) {
+            getUserTxnList({
+                limit: pageSize,
+            })
+        }
+    }, [getUserTxnList, pageSize])
 
     return (
         <StylePaper ref={container}>
@@ -38,10 +46,12 @@ const TxPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
                     <TransactionTable {...{
                         rawData: txTableData,
                         pagination: {
-                            pageSize: pageSize
+                            pageSize: pageSize,
+                            total: txsTotal,
                         },
                         showFilter: true,
-                        showLoading: isLoading,
+                        showLoading: showTxsLoading,
+                        getTxnList: getUserTxnList,
                         ...rest
                     }} />
                 ) : currentTab === 'trades' ? (
@@ -51,7 +61,7 @@ const TxPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
                         //     pageSize: pageSize
                         // },
                         showFilter: true,
-                        showLoading: showLoading,
+                        showLoading: showTradesLoading,
                         ...rest}}/>
                 ) : (
                     // <AmmRecordTable rawData={myAmmMarketArray} handlePageChange={_handlePageChange} page={page}/>

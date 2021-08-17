@@ -18,6 +18,17 @@ import { Filter } from './components/Filter'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes } from './Interface'
 import { DateRange } from '@material-ui/lab'
+import { UserTxTypes } from 'loopring-sdk'
+
+export type TxsFilterProps = {
+    // accountId: number;
+    tokenSymbol?: string;
+    start?: number;
+    end?: number;
+    offset?: number;
+    limit?: number;
+    types?: UserTxTypes[] | string;
+}
 
 interface Row extends RawDataTransactionItem {
     filterColumn: string
@@ -317,10 +328,12 @@ export interface TransactionTableProps {
     rawData: RawDataTransactionItem[];
     pagination?: {
         pageSize: number;
-    }
+        total: number;
+    };
+    getTxnList: ({ tokenSymbol, start, end, limit, offset, types }: TxsFilterProps) => Promise<void>;
     showFilter?: boolean;
+    showLoading: boolean;
 }
-
 
 export const TransactionTable = withTranslation('tables')((props: TransactionTableProps & WithTranslation) => {
     const defaultArgs: any = {
@@ -329,12 +342,13 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         generateRows: (rawData: any) => rawData,
         generateColumns: ({columnsRaw}: any) => columnsRaw as Column<any, unknown>[],
     }
-    const {rawData, pagination, showFilter} = props
+    const {rawData, pagination, showFilter, getTxnList, showLoading} = props
     const [page, setPage] = React.useState(1)
     const [totalData, setTotalData] = React.useState<RawDataTransactionItem[]>(rawData)
     const [filterType, setFilterType] = React.useState(TransactionTradeTypes.allTypes)
     const [filterDate, setFilterDate] = React.useState<DateRange<Date | string>>(['', ''])
     const [filterToken, setFilterToken] = React.useState<string>('All Tokens')
+    
 
     const pageSize = pagination ? pagination.pageSize : 10;
 
@@ -342,34 +356,55 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         setTotalData(rawData);
     }, [rawData])
 
-    const getRenderData = React.useCallback(() => pagination
-        ? totalData.slice((page - 1) * pageSize, page * pageSize)
-        : totalData
-        , [page, pagination, pageSize, totalData])
+    // const getRenderData = React.useCallback(() => pagination
+    //     ? totalData.slice((page - 1) * pageSize, page * pageSize)
+    //     : totalData
+    //     , [page, pagination, pageSize, totalData])
 
-    const updateData = React.useCallback(({
+    const updateData = React.useCallback(async ({
                                               TableType,
                                               currFilterType = filterType,
                                               currFilterDate = filterDate,
                                               currFilterToken = filterToken,
+                                              currPage = page,
                                           }) => {
-        let resultData = rawData || []
-        if (currFilterType !== TransactionTradeTypes.allTypes) {
-            resultData = resultData.filter(o => o.side === currFilterType)
-        }
-        if (currFilterDate[ 0 ] && currFilterDate[ 1 ]) {
-            const startTime = Number(moment(currFilterDate[ 0 ]).format('x'))
-            const endTime = Number(moment(currFilterDate[ 1 ]).format('x'))
-            resultData = resultData.filter(o => o.time < endTime && o.time > startTime)
-        }
-        if (currFilterToken !== 'All Tokens') {
-            resultData = resultData.filter(o => o.amount.unit === currFilterToken)
-        }
-        if (TableType === 'filter') {
-            setPage(1)
-        }
-        setTotalData(resultData)
-    }, [rawData, filterDate, filterType, filterToken])
+        // let resultData = rawData || []
+        // if (currFilterType !== TransactionTradeTypes.allTypes) {
+        //     resultData = resultData.filter(o => o.side === currFilterType)
+        // }
+        // if (currFilterDate[ 0 ] && currFilterDate[ 1 ]) {
+        //     const startTime = Number(moment(currFilterDate[ 0 ]).format('x'))
+        //     const endTime = Number(moment(currFilterDate[ 1 ]).format('x'))
+        //     resultData = resultData.filter(o => o.time < endTime && o.time > startTime)
+        // }
+        // if (currFilterToken !== 'All Tokens') {
+        //     resultData = resultData.filter(o => o.amount.unit === currFilterToken)
+        // }
+        // if (TableType === 'filter') {
+        //     setPage(1)
+        // }
+        const tokenSymbol = currFilterToken === 'All Tokens' 
+            ? '' 
+            : currFilterToken
+            const formattedType = currFilterType.toUpperCase()
+        const types = formattedType === TransactionTradeTypes.allTypes 
+            ? '' 
+            : formattedType === TransactionTradeTypes.deposit
+                ? 'deposit'
+                : formattedType === TransactionTradeTypes.transfer
+                    ? 'transfer'
+                    : 'offchain_withdrawal'
+        const start = Number(moment(currFilterDate[ 0 ]).format('x'))
+        const end = Number(moment(currFilterDate[ 1 ]).format('x'))
+        getTxnList({
+            limit: pageSize,
+            offset: (currPage - 1) * pageSize,
+            types: types,
+            tokenSymbol: tokenSymbol,
+            start: Number.isNaN(start) ? -1 : start,
+            end: Number.isNaN(end) ? -1 : end,
+        })
+    }, [filterDate, filterType, filterToken, getTxnList, page, pageSize])
 
     const handleFilterChange = React.useCallback(({type = filterType, date = filterDate, token = filterToken}) => {
         setFilterType(type)
@@ -413,9 +448,10 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
                 />
             </TableFilterStyled>
         )}
-        <Table {...{...defaultArgs, ...props, rawData: getRenderData()}}/>
+        {/* <Table {...{...defaultArgs, ...props, rawData: getRenderData()}}/> */}
+        <Table {...{...defaultArgs, ...props, rawData: rawData, showLoading: showLoading}}/>
         {pagination && (
-            <TablePagination page={page} pageSize={pageSize} total={totalData.length} onPageChange={handlePageChange}/>
+            <TablePagination page={page} pageSize={pageSize} total={pagination.total} onPageChange={handlePageChange}/>
         )}
     </TableStyled>
 })
