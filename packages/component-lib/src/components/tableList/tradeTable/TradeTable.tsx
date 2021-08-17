@@ -139,7 +139,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
         name: t('labelTradePrice'),
         formatter: ({row}) => {
             const {value} = row[ 'price' ]
-            const renderValue = value ? `$ ${getThousandFormattedNumbers(value)}` : EmptyValueTag
+            const renderValue = value ? `${getThousandFormattedNumbers(value)}` : EmptyValueTag
             return (
                 <div className="rdg-cell-value">
                     {renderValue}
