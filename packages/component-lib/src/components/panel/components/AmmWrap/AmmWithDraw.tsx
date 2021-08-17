@@ -12,8 +12,16 @@ import { AmmWithdrawWrapProps } from './Interface';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
 import { usePopupState } from 'material-ui-popup-state/hooks';
-import { Grid, Link, Typography } from '@material-ui/core';
-import { BtnPercentage, Button, IconButtonStyled, InputCoin, PopoverPure, TradeBtnStatus } from '../../../index';
+import { Grid, Typography } from '@material-ui/core';
+import {
+    BtnPercentage,
+    Button,
+    IconButtonStyled,
+    InputCoin,
+    LinkActionStyle,
+    PopoverPure,
+    TradeBtnStatus
+} from '../../../index';
 import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { SlippagePanel } from '../tool';
 import { useSettings } from '../../../../stores';
@@ -204,10 +212,10 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
                         <Typography component={'p'} variant="body1">
                             {ammCalcData ? <>
                                 <Typography {...bindHover(popupState)}
-                                            component={'span'}>
-                                    <Link>
+                                            component={'span'} variant="body1">
+                                    <LinkActionStyle>
                                         {ammData.slippage ? ammData.slippage : ammCalcData.slippage ? ammCalcData.slippage : 0.5}%
-                                    </Link>
+                                    </LinkActionStyle>
                                     <PopoverPure
                                         className={'arrow-right'}
                                         {...bindPopover(popupState)}

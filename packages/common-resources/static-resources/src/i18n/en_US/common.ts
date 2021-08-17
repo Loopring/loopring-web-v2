@@ -180,6 +180,7 @@ export default {
     labelDepositApproveProcess:'Waiting approve Deposit required',
     labelTokenAccess:'Waiting approve {{symbol}} trade access',
     labelFailedTokenAccess:'Failed approve {{symbol}} trade access',
+    labelSuccessUnlockDescribe:'Congratulation, Success Unlocked',
     labelSuccessUnlock:'Success Unlock',
     labelDepositApproveSuccess:'Congratulation deposit done, please click button to active your account.',
     labelActivateAccount:'Activate Account',
