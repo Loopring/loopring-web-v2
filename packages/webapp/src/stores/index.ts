@@ -45,9 +45,9 @@ const persistLocalStoreConfig = {
     key: 'localStore',
     storage: storage,
 };
-const persistedAccountReducer = persistReducer(persistAccConfig ,accountSlice.reducer)
-const persistedSettingReducer = persistReducer(persistSettingConfig ,settingsSlice.reducer)
-const persistedLocalStoreReducer = persistReducer(persistLocalStoreConfig ,localStoreReducer)
+const persistedAccountReducer = persistReducer(persistAccConfig, accountSlice.reducer)
+const persistedSettingReducer = persistReducer(persistSettingConfig, settingsSlice.reducer)
+const persistedLocalStoreReducer = persistReducer(persistLocalStoreConfig, localStoreReducer)
 
 const reducer = combineReducers({
     account: persistedAccountReducer,
