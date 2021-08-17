@@ -188,7 +188,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
       {/*      // paddingTop={'var(--toolbar-row-padding)'}*/}
       {/*      }>*/}
           <Toolbar className={'large'} variant={'regular'}   >
-              <Box alignSelf={'center'} justifyContent={'flex-start'} display={'flex'}>
+              <Box alignSelf={'center'} justifyContent={'flex-start'} display={'flex'} marginLeft={-2}>
                   <TabPanelBtn {...{t, value: index, handleChange: handleTabChange, ...rest}} />
               </Box>
               <Box alignSelf={'center'}>

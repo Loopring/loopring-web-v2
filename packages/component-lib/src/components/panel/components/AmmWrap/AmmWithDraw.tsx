@@ -2,7 +2,6 @@ import {
     AmmData,
     AmmInData,
     CoinInfo,
-    DropDownIcon,
     EmptyValueTag,
     IBData,
     LinkedIcon,
@@ -13,7 +12,7 @@ import { AmmWithdrawWrapProps } from './Interface';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
 import { usePopupState } from 'material-ui-popup-state/hooks';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Link, Typography } from '@material-ui/core';
 import { BtnPercentage, Button, IconButtonStyled, InputCoin, PopoverPure, TradeBtnStatus } from '../../../index';
 import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { SlippagePanel } from '../tool';
@@ -61,18 +60,14 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
     }, [switchStobEvent, _isStoB])
 
     const getDisabled = () => {
-        if (disabled || ammCalcData === undefined || ammCalcData.coinInfoMap === undefined) {
-            return true
-        } else {
-            return false
-        }
+        return disabled || ammCalcData === undefined || ammCalcData.coinInfoMap === undefined;
     };
     if (typeof handleError !== 'function') {
         handleError = ({belong, balance, tradeValue}: any) => {
             if (balance < tradeValue || (tradeValue && !balance)) {
                 const _error = {error: true, message: t('tokenNotEnough', {belong: belong})}
                 setError(_error);
-                return  _error
+                return _error
 
             }
             setError({error: false, message: ''});
@@ -86,14 +81,13 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
         // }
     }
     const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any, flag = -1) => {
-        let focus: 'coinA' | 'coinB' | 'percentage';
         if (flag !== _selectedPercentage) {
             setSelectedPercentage(flag)
         }
         if (_ref) {
-            focus = _ref?.current === coinARef.current ? 'coinA' : 'coinB';
+            let focus = _ref?.current === coinARef.current ? 'coinA' : 'coinB';
             if (ammData[ focus ].tradeValue !== ibData.tradeValue) {
-                onChangeEvent({tradeData: {...ammData, [ focus ]: ibData}, type: focus});
+                onChangeEvent({tradeData: {...ammData, [ focus ]: ibData}, type: focus as any});
             }
         } else {
             onChangeEvent({tradeData: {...ammData, [ 'coinA' ]: ibData}, type: 'percentage'});
@@ -107,14 +101,15 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
         popupState.close();
         onChangeEvent({
             tradeData: {
-                ...ammData, slippage: slippage,
+                ...ammData,
+                slippage: slippage,
                 __cache__: {
                     ...ammData.__cache__,
                     customSlippage: customSlippage
                 }
             }, type: 'coinA'
         });
-    }, [ammData, onChangeEvent])
+    }, [ammData, onChangeEvent]);
     const propsA: any = {
         label: t('labelTokenAmount'),
         subLabel: t('labelAvailable'),
@@ -140,13 +135,13 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
         popupId: 'slippagePop',
     })
 
-    const label = React.useMemo(()=>{
-        if(error.error){
-            if(typeof  error.message === 'string'){
-                return  t(error.message)
-            }else if(error.message !== undefined){
+    const label = React.useMemo(() => {
+        if (error.error) {
+            if (typeof error.message === 'string') {
+                return t(error.message)
+            } else if (error.message !== undefined) {
                 return error.message;
-            }else{
+            } else {
                 return t('labelError')
             }
 
@@ -158,16 +153,16 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
             return t(`labelRemoveLiquidityBtn`)
         }
         // return  t(ammWithdrawBtnI18nKey ? t(ammWithdrawBtnI18nKey) : t(`labelRemoveLiquidityBtn`))
-    },[error,ammWithdrawBtnI18nKey,t])
+    }, [error, ammWithdrawBtnI18nKey, t])
 
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
-        <Grid item marginTop={2} display={'flex'} alignSelf={"stretch"} justifyContent={''} alignItems={"stretch"}
+        <Grid item marginTop={3} display={'flex'} alignSelf={"stretch"} justifyContent={''} alignItems={"stretch"}
               flexDirection={"column"}>
             <InputCoin<IBData<I>, I, CoinInfo<I>> ref={coinARef} disabled={getDisabled()} {...{
                 ...propsA,
-                isHideError:true,
+                isHideError: true,
                 order: 'right',
                 inputData: ammData ? ammData.coinA : {} as any,
                 coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
@@ -179,14 +174,14 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
             </Box>
             <InputCoin<IBData<I>, I, CoinInfo<I>> ref={coinBRef} disabled={getDisabled()} {...{
                 ...propsB,
-                isHideError:true,
+                isHideError: true,
                 order: 'right',
                 inputData: ammData ? ammData.coinB : {} as any,
                 coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
             }}/>
             <Grid item alignSelf={'stretch'} marginTop={2}>
                 <BtnPercentage selected={_selectedPercentage} anchors={anchors}
-                               handleChanged={onPercentage}></BtnPercentage>
+                               handleChanged={onPercentage}/>
             </Grid>
         </Grid>
 
@@ -207,17 +202,12 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
                           height={24}>
                         <Typography component={'p'} variant="body1">{t('swapTolerance')}</Typography>
                         <Typography component={'p'} variant="body1">
-
                             {ammCalcData ? <>
-                                <span>
-                                    <IconButtonStyled
-                                        {...bindHover(popupState)}
-                                        sx={{fontSize: '1.4rem', height: '24px', minWidth: '24px', width: '24px'}}
-                                        className={'clock-loading'}
-                                        color="inherit"
-                                        aria-label="3' price update">
-                                        <DropDownIcon/>
-                                    </IconButtonStyled>
+                                <Typography {...bindHover(popupState)}
+                                            component={'span'}>
+                                    <Link>
+                                        {ammData.slippage ? ammData.slippage : ammCalcData.slippage ? ammCalcData.slippage : 0.5}%
+                                    </Link>
                                     <PopoverPure
                                         className={'arrow-right'}
                                         {...bindPopover(popupState)}
@@ -233,12 +223,12 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
                                             slippage: ammData.slippage ? ammData.slippage : ammCalcData.slippage ? ammCalcData.slippage : 0.5
                                         }} />
                                     </PopoverPure>
-                                </span>
+                                </Typography>
+                            </> : EmptyValueTag
 
-                                <Typography
-                                    component={'span'}>{ammData.slippage ? ammData.slippage : ammCalcData.slippage ? ammCalcData.slippage : 0.5}%</Typography></> : EmptyValueTag
                             }
                         </Typography>
+
                     </Grid>
 
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
@@ -252,7 +242,7 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
                         onAmmRemoveClick(ammData)
                     }}
                             loading={!getDisabled() && ammWithdrawBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-                            disabled={getDisabled() || ammWithdrawBtnStatus === TradeBtnStatus.DISABLED || ammWithdrawBtnStatus === TradeBtnStatus.LOADING || error.error ? true : false}
+                            disabled={getDisabled() || ammWithdrawBtnStatus === TradeBtnStatus.DISABLED || ammWithdrawBtnStatus === TradeBtnStatus.LOADING || error.error}
                             fullWidth={true}>
                         {label}
                     </Button>

@@ -6,6 +6,7 @@ import { Link, Typography } from '@material-ui/core/';
 import { Button } from '../../basic-lib';
 import { CheckBoxIcon, CheckedIcon, ConnectProviders, GatewayItem } from '@loopring-web/common-resources';
 import React from 'react';
+import { shake } from '../../styled';
 
 
 const ProviderBtnStyled = styled(Button)`
@@ -84,7 +85,7 @@ export const ProviderMenu = ({
             <BoxStyle paddingX={5 / 3} display={'flex'} flexDirection={'row'}
                       justifyContent={'stretch'} alignItems={'flex-start'}>
                 <MuiFormControlLabel
-                    control={<Checkbox defaultChecked checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
+                    control={<Checkbox  defaultChecked checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
                                        color="default"/>}
                     label={<Trans i18nKey="labelProviderAgree">I have read, understand, and agree to the <Link component={'a'}
                                                                                                        href={'./'}

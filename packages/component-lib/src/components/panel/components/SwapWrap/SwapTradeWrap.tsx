@@ -2,7 +2,7 @@ import { SwapTradeData, TradeBtnStatus } from '../../Interface';
 import {
     CoinInfo,
     CoinMap,
-    DropDownIcon,
+    // DropDownIcon,
     EmptyValueTag,
     ExchangeIcon,
     IBData,
@@ -20,7 +20,7 @@ import { SwapTradeProps } from './Interface';
 import { useSettings } from '../../../../stores';
 import { IconButtonStyled } from '../Styled';
 import { SlippagePanel } from '../tool';
-import { Box } from '@material-ui/core/';
+import { Box, Link } from '@material-ui/core/';
 
 export const SwapTradeWrap = <T extends IBData<I>,
     I,
@@ -56,11 +56,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
 
 
     const getDisabled = React.useCallback(() => {
-        if (disabled || tradeCalcData === undefined || tradeCalcData.sellCoinInfoMap === undefined) {
-            return true
-        } else {
-            return false
-        }
+        return disabled || tradeCalcData === undefined || tradeCalcData.sellCoinInfoMap === undefined;
     }, [disabled, tradeCalcData]);
     const tradeData = swapData.tradeData
 
@@ -165,7 +161,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
     return <Grid className={tradeCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"} flexWrap={'nowrap'}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
-        <Grid item marginTop={2} display={'flex'} alignSelf={"stretch"} justifyContent={'flex-start'}
+        <Grid item marginTop={3} display={'flex'} alignSelf={"stretch"} justifyContent={'flex-start'}
               alignItems={"center"} flexDirection={"column"} flexBasis={'initial'}>
             {/*<Grid container direction={"column"} spacing={1} alignItems={"center"} alignContent={"center"}>*/}
             {/*    <Grid item>*/}
@@ -214,34 +210,29 @@ export const SwapTradeWrap = <T extends IBData<I>,
                         <Typography component={'p'} variant="body1">{t('swapTolerance')}</Typography>
                         <Typography component={'p'} variant="body1">
                             {tradeCalcData ? <>
-                                <span>
-                                    <IconButtonStyled
-                                        {...bindHover(popupState)}
-                                        size={'small'}
-                                        sx={{fontSize: '1.4rem', height: '24px', minWidth: '24px', width: '24px'}}
-                                        className={'clock-loading'}
-                                        color="inherit"
-                                        aria-label="3' price update">
-                                        <DropDownIcon/>
-                                    </IconButtonStyled>
-                                    <PopoverPure
-                                        className={'arrow-right'}
-                                        {...bindPopover(popupState)}
-                                        {...{
-                                            anchorOrigin: {vertical: 'bottom', horizontal: 'right'},
-                                            transformOrigin: {vertical: 'top', horizontal: 'right'}
-                                        }}
-                                    >
-                                        <SlippagePanel {...{
-                                            ...rest, t,
-                                            handleChange: _onSlippageChange,
-                                            slippageList: slippageArray,
-                                            slippage: tradeData.slippage ? tradeData.slippage : tradeCalcData.slippage ? tradeCalcData.slippage : 0.5
-                                        }} />
-                                    </PopoverPure>
-                                </span>
-                                <Typography
-                                    component={'span'}>{tradeData.slippage ? tradeData.slippage : tradeCalcData.slippage ? tradeCalcData.slippage : 0.5}%</Typography></> : EmptyValueTag
+                              <Typography {...bindHover(popupState)}
+                                                component={'span'}>
+                                  <Link>
+                                      {tradeData.slippage ? tradeData.slippage : tradeCalcData.slippage ? tradeCalcData.slippage : 0.5}%
+                                  </Link>
+                                <PopoverPure
+                                    className={'arrow-right'}
+                                    {...bindPopover(popupState)}
+                                    {...{
+                                        anchorOrigin: {vertical: 'bottom', horizontal: 'right'},
+                                        transformOrigin: {vertical: 'top', horizontal: 'right'}
+                                    }}
+                                >
+                                    <SlippagePanel {...{
+                                        ...rest, t,
+                                        handleChange: _onSlippageChange,
+                                        slippageList: slippageArray,
+                                        slippage: tradeData.slippage ? tradeData.slippage : tradeCalcData.slippage ? tradeCalcData.slippage : 0.5
+                                    }} />
+                                </PopoverPure>
+                              </Typography>
+                            </>: EmptyValueTag
+
                             }
                         </Typography>
                     </Grid>
@@ -266,7 +257,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                         onSwapClick(swapData.tradeData)
                     }}
                             loading={!getDisabled() && swapBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-                            disabled={getDisabled() || swapBtnStatus === TradeBtnStatus.DISABLED || swapBtnStatus === TradeBtnStatus.LOADING || error.error ? true : false}
+                            disabled={getDisabled() || swapBtnStatus === TradeBtnStatus.DISABLED || swapBtnStatus === TradeBtnStatus.LOADING || error.error}
                             fullWidth={true}>{label}
                     </Button>
                 </Grid>
