@@ -42,7 +42,7 @@ import { IconClearStyled } from '../../panel';
 
 const Style = styled.div`
   background: var(--color-global-bg);
-  color: #fff;
+  
 `
 export default {
     title: 'basic-lib/Form',

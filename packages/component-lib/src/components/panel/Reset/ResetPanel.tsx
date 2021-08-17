@@ -39,7 +39,7 @@ export const ResetPanel = withTranslation('common', {withRef: true})(<T extends 
                                                 ...rest,
                                                 tradeData: switchData.tradeData,
                                                 onChangeEvent,
-                                                disabled: rest.disabled ? true : false,
+                                                disabled: !!rest.disabled,
                                                 fee,
                                                 resetBtnStatus,
                                                 onResetClick,

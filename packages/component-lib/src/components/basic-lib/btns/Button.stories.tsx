@@ -10,7 +10,7 @@ import styled from "@emotion/styled";
 
 const Styled = styled.div`
   background: var(--color-global-bg);
-  color: #fff;
+  
 `
 const toggleData: TGItemData[] = [
     {value: '15M', key: '15m'},

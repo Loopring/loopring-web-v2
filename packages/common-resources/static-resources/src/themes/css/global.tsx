@@ -33,6 +33,7 @@ export const colorBase = ({theme}: any) => css`
     --color-warning: ${theme.colorBase.warning};
     --color-error: ${theme.colorBase.error};
     --color-text-primary: ${theme.colorBase.textPrimary};
+    --color-text-button: ${theme.colorBase.textButton};
     --color-text-secondary: ${theme.colorBase.textSecondary};
     --color-text-disable: ${theme.colorBase.textDisable};
     --color-disable: ${theme.colorBase.disable};
@@ -47,6 +48,8 @@ export const colorBase = ({theme}: any) => css`
     --color-global-bg: ${theme.colorBase.globalBg};
     --color-star: ${theme.colorBase.star};  
     /********************Case for shadow*******************/
+    --color-button-icon: ${theme.colorBase.buttonIcon};
+    --color-text-button-select: ${theme.colorBase.textButtonSelect};
     --color-mask:  ${theme.colorBase.mask};
     --shadow: ${theme.colorBase.shadow};
     --opacity: ${theme.colorBase.opacity};
@@ -55,11 +58,11 @@ export const colorBase = ({theme}: any) => css`
     --vip-text: ${theme.colorBase.warning};
     --network-bg: ${hexToRGB(theme.colorBase.warning, '0.2')};
     --network-text: ${theme.colorBase.warning};
-    --provider-btn: ${hexToRGB(theme.colorBase.white, '0.1')};
-    --provider-hover: ${hexToRGB(theme.colorBase.white, '0.03')};
-    --field-opacity: ${hexToRGB(theme.colorBase.white, '0.1')};
+    --provider-btn:${theme.colorBase.providerBtn};
+    --provider-hover: ${theme.colorBase.providerBtnHover};
+    --field-opacity: ${theme.colorBase.fieldOpacity};
     --auto-refresh-color: ${theme.colorBase.primary};
-    
+   
   }
 `;
 export const scrollbarDefault = ({theme}: any) => css`
@@ -106,6 +109,8 @@ export const globalCss = ({theme}: any) => css`
   ${reset}
   html, body {
     position: relative;
+    color:var( --color-text-primary);
+    background:var(--color-global-bg) ;
     // @font-face {
     //   font-family: 'Inter-Medium';
     //   src: url(${InterMedium}) format('truetype');

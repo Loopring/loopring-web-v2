@@ -8,7 +8,6 @@ import { ButtonProps } from '../btns';
 
 const Styled = styled.div`
   background: var(--color-global-bg);
-  color: #fff;
 `
 
 
