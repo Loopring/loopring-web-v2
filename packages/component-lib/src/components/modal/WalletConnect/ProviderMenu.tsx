@@ -74,6 +74,15 @@ export const ProviderMenu = ({
                                  handleSelect,
                                  providerName = ConnectProviders.unknown,
                              }: ProviderMenuProps & WithTranslation) => {
+    const [checkboxValue, setCheckboxValue] = React.useState(false)
+    React.useEffect(() => {
+      const isAgreed = localStorage.getItem('userTermsAgreed')
+      setCheckboxValue(isAgreed === 'true')
+    }, [])
+    const handleCheckboxChange = React.useCallback((_event: any, state: boolean) => {
+      setCheckboxValue(state)
+      localStorage.setItem('userTermsAgreed', String(state))
+    }, [])
     // const  !==  ConnectProviders.unknown
     return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
                 flexDirection={'column'}>
@@ -84,7 +93,7 @@ export const ProviderMenu = ({
             <BoxStyle paddingX={5 / 3} display={'flex'} flexDirection={'row'}
                       justifyContent={'stretch'} alignItems={'flex-start'}>
                 <MuiFormControlLabel
-                    control={<Checkbox defaultChecked checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
+                    control={<Checkbox checked={checkboxValue} onChange={handleCheckboxChange} defaultChecked checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
                                        color="default"/>}
                     label={<Trans i18nKey="labelProviderAgree">I have read, understand, and agree to the <Link component={'a'}
                                                                                                        href={'./'}
@@ -98,7 +107,7 @@ export const ProviderMenu = ({
 
             <>   {gatewayList.map((item: GatewayItem) => (
                 <Box key={item.key} marginTop={1.5}>
-                    <ProviderBtnStyled variant={'contained'} size={'large'} className={
+                    <ProviderBtnStyled disabled={!checkboxValue} variant={'contained'} size={'large'} className={
                         providerName === item.key ? 'selected' : ''
                     } fullWidth
                                        endIcon={<img src={item.imgSrc} alt={item.key} height={18}/>}
