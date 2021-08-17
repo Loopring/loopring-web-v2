@@ -1,8 +1,8 @@
 export enum TransactionTradeTypes {
     allTypes = 'All Types',
-    deposit = 'Deposit',
-    withdraw = 'Withdraw',
-    transfer = 'Transfer'
+    deposit = 'DEPOSIT',
+    withdraw = 'WITHDRAW',
+    transfer = 'TRANSFER'
 }
 
 // export type TransactionSide = {
