@@ -2,8 +2,8 @@ import { AmmpoolAPI, ChainId, ExchangeAPI, UserAPI, WalletAPI, WsAPI } from "loo
 import store from 'stores'
 
 export function getChainId() {
-    const chainId = store.getState().system.chainId
-    return { chainId: chainId as ChainId }
+    const chainId = store.getState().system.chainId as ChainId
+    return { chainId, }
 }
 
 export class LoopringAPI {
