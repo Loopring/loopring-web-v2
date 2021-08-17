@@ -10,6 +10,7 @@ import { WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
 import { CloseIcon, DropDownIcon, QRIcon } from '@loopring-web/common-resources';
+import { Link } from '@material-ui/core/';
 
 export const Button = styled(MuButton)<ButtonProps>`
   && {
@@ -106,7 +107,10 @@ export const QRButtonStyle = ({onQRClick, t}: {
         </IconButton>
     </Box>
 }
-
+export const LinkActionStyle = styled(Link)`
+  text-decoration: underline dotted;
+  color: inherit;
+` as typeof Link
 
 
 
