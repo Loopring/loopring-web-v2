@@ -13,7 +13,7 @@ export const  CountDownIcon = React.memo(({onRefreshData,wait=globalSetup.wait}:
         if(countDownRef && countDownRef.current) {
             countDownRef.current?.classList.add('countdown');
             countDownRef.current?.classList?.remove('logo');
-            setRefreshCount(refreshTime-1);
+            // setRefreshCount(refreshTime-1);
             if(nodeTimer.current !== -1){
                 clearInterval(nodeTimer.current as NodeJS.Timeout);
             }
@@ -22,7 +22,7 @@ export const  CountDownIcon = React.memo(({onRefreshData,wait=globalSetup.wait}:
     }, [countDownRef,nodeTimer])
     const _refresh = React.useCallback(debounce(() => {
         if(countDownRef && countDownRef.current) {
-            setRefreshCount(0)
+            // setRefreshCount(0)
             if(nodeTimer.current !== -1){
                 clearInterval(nodeTimer.current as NodeJS.Timeout);
             }
@@ -71,7 +71,9 @@ export const  CountDownIcon = React.memo(({onRefreshData,wait=globalSetup.wait}:
     return <CountDownStyled ref={countDownRef}
                             className={'clock-loading outline logo'}
                             onClick={_refresh}>
-        <Typography component={'span'} className={'text-count'}>{refreshCount>0?refreshCount:''}</Typography>
+        <Typography component={'span'} className={'text-count'}>
+            {/*{refreshCount>0?refreshCount:''}*/}
+        </Typography>
         <Box className={'circle'}/>
     </CountDownStyled>
 })
