@@ -62,7 +62,7 @@ export const IWrap = styled(Box)`
 
     &.error {
       ${({theme}) => `
-        ${theme.border.defaultFrame({c_key: theme.colorBase.error, d_R: 0.5})};
+        ${theme.border.defaultFrame({c_key: theme.colorBase.error, d_R: 0.5})} !important;
       `
       // input,button,.icon-wrap{
       //   ${({theme}) => `
