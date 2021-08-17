@@ -108,6 +108,7 @@ export const globalCss = ({theme}: any) => css`
   html, body {
     position: relative;
     color:var( --color-text-primary);
+    background:var(--color-global-bg) ;
     // @font-face {
     //   font-family: 'Inter-Medium';
     //   src: url(${InterMedium}) format('truetype');
