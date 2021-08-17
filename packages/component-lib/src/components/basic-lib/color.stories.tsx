@@ -1,7 +1,7 @@
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { WithTranslation, withTranslation } from "react-i18next";
 import { Box, Grid, Typography } from '@material-ui/core/';
-import { ColorDarkDefault } from '@loopring-web/common-resources';
+import { ColorDarkDefault, ColorLightDefault } from '@loopring-web/common-resources';
 import styled from '@emotion/styled';
 import React from 'react';
 
@@ -17,7 +17,20 @@ const Styled = styled.div`
 
 
 export const ColorList: Story<any> = withTranslation()(({}: WithTranslation & any) => {
-    const view = Object.keys(ColorDarkDefault).map((key, indx) => {
+    const dark = Object.keys(ColorDarkDefault).map((key, indx) => {
+        if (key !== 'background' && key !== 'border') {
+            return <Grid item width={120} key={indx} padding={2} display={'flex'} flexDirection={'column'}
+                         alignItems={'center'}>
+                <Box width={60} height={60}
+                     style={{background: ColorDarkDefault[ key ], border: '1px solid #fff'}}></Box>
+                <Typography padding={1} variant={'body2'} color={'rgb(104 107 208)'}>{key}</Typography>
+            </Grid>
+        } else {
+            return <React.Fragment key={indx}></React.Fragment>
+        }
+
+    })
+    const light = Object.keys(ColorLightDefault).map((key, indx) => {
         if (key !== 'background' && key !== 'border') {
             return <Grid item width={120} key={indx} padding={2} display={'flex'} flexDirection={'column'}
                          alignItems={'center'}>
@@ -40,7 +53,7 @@ export const ColorList: Story<any> = withTranslation()(({}: WithTranslation & an
                     {view}
                 </Grid>
                 <Grid container style={{background: '#000'}}>
-                    {view}
+                    {light}
                 </Grid>
 
             </Styled>
