@@ -20,7 +20,7 @@ export const fontDefault = {
 }
 
 export const
-    refreshTime = 10;
+    refreshTime = 15;
 export const colorBase = ({theme}: any) => css`
   html {
     --color-primary: ${theme.colorBase.primary};
