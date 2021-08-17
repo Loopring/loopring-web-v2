@@ -7,7 +7,12 @@ import { Button } from '../../basic-lib';
 import { CheckBoxIcon, CheckedIcon, ConnectProviders, GatewayItem } from '@loopring-web/common-resources';
 import React from 'react';
 import { shake } from '../../styled';
-
+const CheckboxStyled = styled(Checkbox)`
+   &.shake{
+     animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+   }
+   ${shake}
+` as typeof Checkbox;
 
 const ProviderBtnStyled = styled(Button)`
   background: var(--provider-btn);
@@ -76,14 +81,29 @@ export const ProviderMenu = ({
                                  providerName = ConnectProviders.unknown,
                              }: ProviderMenuProps & WithTranslation) => {
     const [checkboxValue, setCheckboxValue] = React.useState(false)
+    const [isShake, setIsShake] = React.useState(false)
     React.useEffect(() => {
       const isAgreed = localStorage.getItem('userTermsAgreed')
       setCheckboxValue(isAgreed === 'true')
+      setIsShake(false);
     }, [])
     const handleCheckboxChange = React.useCallback((_event: any, state: boolean) => {
       setCheckboxValue(state)
       localStorage.setItem('userTermsAgreed', String(state))
     }, [])
+    const _handleSelect = React.useCallback( (event,key:string,handleSelect?:(event: React.MouseEvent, key: string) => void) => {
+        if (handleSelect && checkboxValue) {
+            handleSelect(event, key);
+            setIsShake(false);
+        }else if(!checkboxValue){
+            setIsShake(true);
+            setTimeout(()=>{
+                if(isShake){
+                    setIsShake(false)
+                };
+            },80)
+        }
+    },[checkboxValue,isShake])
     // const  !==  ConnectProviders.unknown
     return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
                 flexDirection={'column'}>
@@ -94,7 +114,7 @@ export const ProviderMenu = ({
             <BoxStyle paddingX={5 / 3} display={'flex'} flexDirection={'row'}
                       justifyContent={'stretch'} alignItems={'flex-start'}>
                 <MuiFormControlLabel
-                    control={<Checkbox checked={checkboxValue} onChange={handleCheckboxChange} checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
+                    control={<CheckboxStyled className={isShake?'shake':''} checked={checkboxValue} onChange={handleCheckboxChange} checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
                                        color="default"/>}
                     label={<Trans i18nKey="labelProviderAgree">I have read, understand, and agree to the <Link component={'a'}
                                                                                                        href={'./'}
@@ -108,15 +128,11 @@ export const ProviderMenu = ({
 
             <>   {gatewayList.map((item: GatewayItem) => (
                 <Box key={item.key} marginTop={1.5}>
-                    <ProviderBtnStyled disabled={!checkboxValue} variant={'contained'} size={'large'} className={
+                    <ProviderBtnStyled variant={'contained'} size={'large'} className={
                         providerName === item.key ? 'selected' : ''
                     } fullWidth
                                        endIcon={<img src={item.imgSrc} alt={item.key} height={18}/>}
-                                       onClick={item.handleSelect ? item.handleSelect : (event: React.MouseEvent) => {
-                                           if (handleSelect) {
-                                               handleSelect(event, item.key);
-                                           }
-                                       }}>
+                                       onClick={(e)=>{_handleSelect(e,item.key,item.handleSelect ? item.handleSelect : handleSelect )}}>
                         {t(item.key)}
                     </ProviderBtnStyled>
                 </Box>

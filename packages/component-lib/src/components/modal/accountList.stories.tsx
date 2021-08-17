@@ -93,29 +93,29 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                 providerName: ConnectProviders.MetaMask,
                 etherscanLink: accountInfoProps.etherscanUrl, ...rest
             }}/>,},
-            [ AccountStep.DepositFailed ]: {view: <FailedDeposit {...rest} label={'depositTitleAndActive'}
+            [ AccountStep.DepositFailed ]: {view: <FailedDeposit {...rest} label={rest.t('depositTitleAndActive')}
                                                           onRetry={() => undefined}
                                                           etherscanLink={accountInfoProps.etherscanUrl}/>,},
             [ AccountStep.UpdateAccount ]: {view: <ApproveAccount  {...{...accountInfoProps, ...rest}}
                                                           goActiveAccount={() => undefined}/>,},
             [ AccountStep.ProcessUnlock ]: {view: <ProcessUnlock {...{providerName: ConnectProviders.MetaMask, ...rest}}/>,},
-            [ AccountStep.SuccessUnlock ]: {view: <SuccessUnlock {...rest}/>,},
+            [ AccountStep.SuccessUnlock ]: {view: <SuccessUnlock {...{...rest, onClose: () => undefined}}/>,},
             [ AccountStep.FailedUnlock ]: {view: <FailedUnlock {...rest} onRetry={() => undefined}/>,},
             [ AccountStep.HadAccount ]: {view: <HadAccount mainBtn={mainBtn} {...accountInfoProps}/>,},
-            [ AccountStep.TokenApproveInProcess ]: {view: <TokenAccessProcess {...{
+            [ AccountStep.TokenApproveInProcess ]: {view: <TokenAccessProcess  label={rest.t('depositTitleAndActive')} {...{
                 ...rest,
                 coinInfo,
                 providerName: ConnectProviders.MetaMask
             }}/>,},
-            [ AccountStep.DepositApproveProcess ]: {view: <DepositApproveProcess {...{
+            [ AccountStep.DepositApproveProcess ]: {view: <DepositApproveProcess  label={rest.t('depositTitleAndActive')} {...{
                 ...rest,
                 providerName: ConnectProviders.MetaMask
             }}/>,},
-            [ AccountStep.UpdateAccountInProcess ]: {view: <ActiveAccountProcess {...{
+            [ AccountStep.UpdateAccountInProcess ]: {view: <ActiveAccountProcess label={'depositTitleAndActive'} {...{
                 ...rest,
                 providerName: ConnectProviders.MetaMask
             }}/>,},
-            [ AccountStep.TokenApproveFailed ]: {view: <FailedTokenAccess {...{...rest, coinInfo}}/>,},
+            [ AccountStep.TokenApproveFailed ]: {view: <FailedTokenAccess label={'depositTitleAndActive'} {...{...rest, coinInfo}}/>,},
         }
 
         return { nameList: Object.keys(accountMap), accountList: Object.values(accountMap) }

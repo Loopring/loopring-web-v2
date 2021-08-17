@@ -10,7 +10,7 @@ export const NoAccount =  withTranslation('common')(({goDeposit,t,...props}:With
         {/*<Box display={'flex'} marginTop={3} flexDirection={'column'} alignItems={'center'}>*/}
         {/*    */}
         {/*</Box>*/}
-        <Box marginTop={2} alignSelf={'stretch'} paddingX={5} display={'flex'} flexDirection={'column'} alignItems={'center'}>
+        <Box display={'flex'}  marginTop={2} alignSelf={'stretch'} paddingX={5} flexDirection={'column'} alignItems={'center'}>
             <Typography variant={'body2'}>
                 {t('labelActivatedAccountDeposit')}
             </Typography>

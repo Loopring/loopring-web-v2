@@ -15,7 +15,7 @@ export const ApproveAccount = ({
         {/*<Box display={'flex'} marginTop={3} flexDirection={'column'} alignItems={'center'}>*/}
         {/*   */}
         {/*</Box>*/}
-        <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
+        <Box display={'flex'}  marginTop={2} alignSelf={'stretch'} paddingX={5} flexDirection={'column'} alignItems={'center'}>
             <Typography variant={'body2'} >
                 {t('labelActivatedAccountDeposit')}
             </Typography>
