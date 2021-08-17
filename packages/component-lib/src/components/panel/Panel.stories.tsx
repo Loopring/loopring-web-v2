@@ -46,7 +46,7 @@ import { SlippagePanel } from './components';
 
 const Style = styled.div`
   background: var(--color-global-bg);
-  color: #fff;
+  
   height: 100%;
   flex: 1
 `

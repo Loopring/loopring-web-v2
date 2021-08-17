@@ -18,26 +18,37 @@ import { ThemeProvider } from "@emotion/react"
 
 import { I18nextProvider } from "react-i18next"
 import { PersistGate } from 'redux-persist/integration/react'
+import { useSettings } from '@loopring-web/component-lib';
+import React, { Provider as TProvider } from 'react';
 
 // const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
-const providers = [
-    provider(LocalizationProvider as any, {dateAdapter: MomentUtils}),
-    provider(I18nextProvider as any, {i18n: i18n}),
-    provider(MuThemeProvider as any, {theme: getTheme('dark')}),
-    provider(ThemeProvider as any, {theme: getTheme('dark')}),
-    provider(Provider as any, {store}),
-    provider(PersistGate as any, {persistor, loading: null})
-]
+
+
+const ProviderApp = React.memo(({children}:{children:JSX.Element})=>{
+    const providers:Array<[TProvider<any>, any]> = [
+        provider(LocalizationProvider as any, {dateAdapter: MomentUtils}),
+        provider(I18nextProvider as any, {i18n: i18n}),
+        provider(Provider as any, {store}),
+    ] as any
+    return  <ProviderComposer providers={providers}>{children}</ProviderComposer>
+})
+const ProviderThen =   React.memo(({children}:{children:JSX.Element})=>{
+    const {themeMode} = useSettings();
+    const providers:Array<[TProvider<any>, any]> = [
+        provider(MuThemeProvider as any, {theme: getTheme(themeMode)}),
+        provider(ThemeProvider as any, {theme: getTheme(themeMode)}),
+        provider(PersistGate as any, {persistor, loading: null})
+    ] as any
+    return  <ProviderComposer providers={providers}>{children}</ProviderComposer>
+})
+
 
 ReactDOM.render(
-// @ts-ignore
-    <ProviderComposer providers={providers}>
-        {/*<Web3ReactProvider getLibrary={getLibrary}>*/}
-        {/*    <Web3ProviderNetwork getLibrary={getLibrary}>*/}
-        <App/>
-        {/*</Web3ProviderNetwork>*/}
-        {/*</Web3ReactProvider>*/}
-    </ProviderComposer>,
+        <ProviderApp>
+            <ProviderThen>
+                <App/>
+            </ProviderThen>
+        </ProviderApp>,
     document.getElementById('root')
 )
 

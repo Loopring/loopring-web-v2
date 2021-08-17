@@ -71,7 +71,6 @@ import {
 
 const Styled = styled.div`
   background: var(--color-global-bg);
-  color: #fff;
 
   svg {
     height: 24px;

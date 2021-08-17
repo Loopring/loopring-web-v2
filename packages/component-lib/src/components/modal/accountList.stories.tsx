@@ -34,7 +34,7 @@ import QRCode from 'qrcode.react';
 
 
 const Style = styled.div`
-  color: #fff;
+  
   flex: 1;
   height: 100%;
 `

@@ -33,6 +33,7 @@ export const colorBase = ({theme}: any) => css`
     --color-warning: ${theme.colorBase.warning};
     --color-error: ${theme.colorBase.error};
     --color-text-primary: ${theme.colorBase.textPrimary};
+    --color-text-button: ${theme.colorBase.Button};
     --color-text-secondary: ${theme.colorBase.textSecondary};
     --color-text-disable: ${theme.colorBase.textDisable};
     --color-disable: ${theme.colorBase.disable};
@@ -106,6 +107,7 @@ export const globalCss = ({theme}: any) => css`
   ${reset}
   html, body {
     position: relative;
+    color:var( --color-text-primary);
     // @font-face {
     //   font-family: 'Inter-Medium';
     //   src: url(${InterMedium}) format('truetype');

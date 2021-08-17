@@ -8,7 +8,7 @@ import { bindPopper, bindTrigger, usePopupState } from 'material-ui-popup-state/
 import { bindHover } from 'material-ui-popup-state/es';
 
 const Style = styled.div`
-  color: #fff;
+  
   flex: 1;
   height: 100%;
   flex: 1;
