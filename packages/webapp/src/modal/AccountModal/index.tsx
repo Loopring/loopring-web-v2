@@ -14,13 +14,13 @@ import {
     HadAccount,
     ModalAccount,
     ModalQRCode,
-    NoAccount, PopoverPure,
+    NoAccount,
     ProcessUnlock,
     QRAddressPanel,
     SuccessUnlock,
     Toast,
     TokenAccessProcess,
-    useOpenModals, WalletConnectStep
+    useOpenModals,
 } from '@loopring-web/component-lib';
 import React, { useState } from 'react';
 import { copyToClipBoard } from 'utils/obj_tools';
@@ -200,7 +200,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 goUpdateAccount()
             }}  {...{...rest, t}} />,onQRClick},
             [ AccountStep.ProcessUnlock ]: {view: <ProcessUnlock providerName={account.connectName} {...{...rest, t}} />,},
-            [ AccountStep.SuccessUnlock ]: {view: <SuccessUnlock providerName={account.connectName} {...{...rest, t}} />,},
+            [ AccountStep.SuccessUnlock ]: {view: <SuccessUnlock providerName={account.connectName} onClose={onClose} {...{...rest, t}} />,},
             [ AccountStep.FailedUnlock ]: {view: <FailedUnlock onRetry={() => {
                 unlockAccount()
             }} {...{...rest, t}} />,},

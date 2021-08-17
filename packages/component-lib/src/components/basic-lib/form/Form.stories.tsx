@@ -119,7 +119,7 @@ const InputIconWrap = () => {
     const handleCountChange = React.useCallback((ibData: IBData<CoinType>) => {
         setData(ibData)
     }, [])
-
+                                
 
     let _inputProps: InputCoinProps<IBData<CoinType>, CoinType, CoinInfo<CoinType>> = {
         handleCountChange,

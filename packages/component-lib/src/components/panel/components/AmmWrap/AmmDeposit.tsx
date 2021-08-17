@@ -61,11 +61,7 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
     }, [switchStobEvent, _isStoB])
 
     const getDisabled = () => {
-        if (disabled || ammCalcData === undefined || ammCalcData.coinInfoMap === undefined) {
-            return true
-        } else {
-            return false
-        }
+        return disabled || ammCalcData === undefined || ammCalcData.coinInfoMap === undefined;
     };
     if (typeof handleError !== 'function') {
         handleError = ({belong, balance, tradeValue}: any) => {
@@ -149,7 +145,7 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
-        <Grid item marginTop={2} display={'flex'} alignSelf={"stretch"} justifyContent={''} alignItems={"stretch"}
+        <Grid item marginTop={3} display={'flex'} alignSelf={"stretch"} justifyContent={''} alignItems={"stretch"}
               flexDirection={"column"}>
             <InputCoin<any, I, any> ref={coinARef} disabled={getDisabled()} {...{
                 ...propsA,
@@ -188,9 +184,7 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
                           height={24}>
                         <Typography component={'p'} variant="body1">{t('swapTolerance')}</Typography>
-                        <Typography component={'p'} variant="body1">
-
-                            {ammCalcData ? <>
+                        {ammCalcData ? <>
                                 <span>
                                     <IconButtonStyled
                                         {...bindHover(popupState)}
@@ -217,10 +211,9 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
                                     </PopoverPure>
                                 </span>
 
-                                <Typography
-                                    component={'span'}>{ammData.slippage ? ammData.slippage : ammCalcData.slippage ? ammCalcData.slippage : 0.5}%</Typography></> : EmptyValueTag
-                            }
-                        </Typography>
+                            <Typography
+                                component={'span'}>{ammData.slippage ? ammData.slippage : ammCalcData.slippage ? ammCalcData.slippage : 0.5}%</Typography></> : EmptyValueTag
+                        }
                     </Grid>
 
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
@@ -234,7 +227,7 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
                         onAmmAddClick(ammData)
                     }}
                             loading={!getDisabled() && ammDepositBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-                            disabled={getDisabled() || ammDepositBtnStatus === TradeBtnStatus.DISABLED || ammDepositBtnStatus === TradeBtnStatus.LOADING ? true : false}
+                            disabled={getDisabled() || ammDepositBtnStatus === TradeBtnStatus.DISABLED || ammDepositBtnStatus === TradeBtnStatus.LOADING}
                             fullWidth={true}>
                         {label}
 

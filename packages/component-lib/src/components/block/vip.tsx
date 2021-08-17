@@ -10,7 +10,6 @@ import { Trans, WithTranslation, withTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import { Box, Button, Divider, Grid, Typography } from '@material-ui/core';
 import { TypographyStrong, VipStyled } from '../styled';
-import React from 'react';
 
 interface Row {
     level: string;
@@ -73,7 +72,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t, ...rest}: & W
     return <StyledPaper item xs={12} display={'flex'} flexDirection={'column'} marginBottom={2} paddingY={2}>
         <Box component={'section'} display={'flex'} flexDirection={'column'}>
             <Typography variant={'h6'} component={'h4'} paddingX={2}>{t('labelTitleResetL2Keypair')}</Typography>
-            <StyledDivider/>
+            {/*<StyledDivider/>*/}
             <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}
                   alignItems={'flex-start'} paddingX={2} marginBottom={2}>
                 <Grid item xs={8} display={'flex'} flexDirection={'column'}>
@@ -96,7 +95,7 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t, ...rest}: & W
 
         <Box component={'section'} display={'flex'} flexDirection={'column'}>
             <Typography variant={'h6'} component={'h4'} paddingX={2}>{t('labelTitleExportAccount')}</Typography>
-            <StyledDivider/>
+            {/*<StyledDivider/>*/}
             <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}
                   alignItems={'flex-start'} paddingX={2} marginBottom={2}>
                 <Grid item xs={7} display={'flex'} flexDirection={'column'}>
@@ -150,4 +149,5 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t, ...rest}: & W
         </Typography>
 
     </StyledPaper>
-}
+
+})

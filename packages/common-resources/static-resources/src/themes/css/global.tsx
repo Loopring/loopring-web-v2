@@ -198,7 +198,7 @@ export const globalCss = ({theme}: any) => css`
     --btn-icon-size: 36px;
     --svg-size: 14px;
     --svg-size-large: 24px;
-    --swap-box-height: 540px; /** js used also **/
+    --swap-box-height: 580px; /** js used also **/
     --panel-setting-height: 680px;
     --panel-setting-width: 800px;
     --modal-width: 480px;
