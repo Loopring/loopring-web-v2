@@ -27,7 +27,7 @@ import {
 } from 'loopring-sdk';
 import { useAmmMap } from '../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../stores/walletLayer2';
-import { RawDataTradeItem, SwapData, SwapTradeData, SwapType, TradeBtnStatus } from '@loopring-web/component-lib';
+import { RawDataTradeItem, SwapData, SwapTradeData, SwapType, SwitchType, TradeBtnStatus } from '@loopring-web/component-lib';
 import { useAccount } from '../../stores/account/hook';
 import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
 import {
@@ -99,7 +99,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const [swapAlertText, setSwapAlertText] = useState<string>()
     const wait = globalSetup.wait;
     const { coinMap, tokenMap, marketArray, marketCoins, marketMap, } = useTokenMap()
-    const { ammMap } = useAmmMap();
+    const { ammMap } = useAmmMap()
 
     const { account, status: accountStatus } = useAccount()
     const { delayAndUpdateWalletLayer2, walletLayer2, status: walletLayer2Status } = useWalletLayer2();
@@ -110,16 +110,13 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const [myTradeArray, setMyTradeArray] = React.useState<RawDataTradeItem[]>([]);
     const [tradeFloat, setTradeFloat] = React.useState<TradeFloat | undefined>(undefined);
     
-    
     const { pair, setPair, market, } = usePairMatch('/trading/lite')
-
-    //HIGH: get Router info
     
     useCustomDCEffect(() => {
         if (!market) {
             return
         }
-        resetSwap(undefined);
+        resetSwap(undefined, undefined);
         getUserTrades(market)?.then((marketTrades) => {
             let _myTradeArray = makeMarketArray(market, marketTrades) as RawDataTradeItem[]
             setMyTradeArray(_myTradeArray ? _myTradeArray : [])
@@ -325,32 +322,11 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         accountStaticCallBack(swapBtnClickArray, [{ sell, buy, slippage, ...rest }])
     }, [swapBtnClickArray])
 
-    const handleSwapPanelEvent = async (swapData: SwapData<SwapTradeData<IBData<C>>>, switchType: any): Promise<void> => {
+    const handleSwapPanelEvent = async (swapData: SwapData<SwapTradeData<IBData<C>>>, swapType: any): Promise<void> => {
 
         const { tradeData } = swapData
         return new Promise((resolve) => {
-            switch (switchType) {
-                case SwapType.SEll_CLICK:
-                    break
-                case SwapType.BUY_CLICK:
-                    break
-                case SwapType.SELL_SELECTED:
-                    myLog('SELL_SELECTED:', tradeData.sell.belong)
-                    myLog('SELL_SELECTED:', tradeData.buy.belong)
-                    myLog('SELL_SELECTED coinSell:', tradeCalcData.coinSell)
-                    myLog('SELL_SELECTED coinBuy:', tradeCalcData.coinBuy)
-                    resetSwap('sell')
-                    break
-                case SwapType.BUY_SELECTED:
-                    resetSwap('buy')
-                    break
-                case SwapType.EXCHANGE_CLICK:
-                    resetSwap(undefined)
-                    break
-                default:
-                    break
-            }
-
+            resetSwap(swapType, tradeData)
             resolve(undefined)
         })
 
@@ -464,48 +440,90 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     }, wait * 2), [setTradeData, setTradeCalcData, calculateTradeData, takerRate]);
 
-    const resetSwap = (type: 'sell' | 'buy' | undefined) => {
+    const resetSwap = (swapType: SwapType | undefined, tradeData: SwapTradeData<IBData<C>> | undefined) => {
 
-        const coinKey = `${tradeData?.sell.belong}-${tradeData?.buy.belong}`
+        let type = undefined
 
-        const _tradeData = tradeData
+        let coinKey = `${tradeData?.sell.belong}-${tradeData?.buy.belong}`
 
-        const _ammPoolSnapshot = ammPoolSnapshot
+        let _tradeData = undefined
+
+        let _ammPoolSnapshot = ammPoolSnapshot
+        // myLog('tradeCalc:', tradeCalcData)
+        // myLog('pair:', pair)
+
+        switch(swapType) {
+            case SwapType.SEll_CLICK:
+            case SwapType.BUY_CLICK:
+                return
+            case SwapType.SELL_SELECTED:
+                type = 'sell'
+                _tradeData = tradeData
+                break
+            case SwapType.BUY_SELECTED:
+                type = 'buy'
+                _tradeData = tradeData
+                break
+            case SwapType.EXCHANGE_CLICK:
+                break
+            default:
+                break
+        }
         
         if (tradeCalcData
             && coinKey === `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`
             && _tradeData
             && type
             && (!tradeData || (tradeData[type].tradeValue !== _tradeData[type].tradeValue))) {
-
             throttleSetValue(type, _tradeData, _ammPoolSnapshot)
-
         } else {
-            myLog('aaa tradeCalcData:', tradeCalcData)
             let _tradeFloat: Partial<TradeFloat> = {}
-            let _tradeArray: Array<Partial<RawDataTradeItem>> | undefined = undefined;
-            let _tradeCalcData: Partial<TradeCalcData<C>> = coinPairInit({
-                coinKey,
-                _tradeCalcData: {coinSell: pair?.coinAInfo?.simpleName, coinBuy: pair?.coinBInfo?.simpleName },
-                tokenMap,
-                coinMap
-            })
+            let _tradeArray: Array<Partial<RawDataTradeItem>> | undefined = undefined
+
+            let _tradeCalcData: Partial<TradeCalcData<C>> = { 
+                coinSell: 'LRC', 
+                coinBuy: 'ETH' 
+            }
+
+            const sellSymbol = tradeData?.sell.belong as string
+            const buySymbol = tradeData?.buy.belong as string
+
+            if (sellSymbol && buySymbol) {
+                _tradeCalcData.coinSell = sellSymbol
+    
+                if (marketMap && marketMap[coinKey]) {
+                    _tradeCalcData.coinBuy = buySymbol
+                } else {
+                    if (tokenMap && tokenMap[sellSymbol]) {
+                        const newBuy = tokenMap[sellSymbol].tradePairs[0]
+                        if (newBuy) {
+                            _tradeCalcData.coinBuy = newBuy
+                        }
+                    } else {
+                        // debugger
+                        // throw Error('no such symbol!')
+                    }
+                }
+
+            }
+
+            myLog('coinKey:', coinKey)
+            myLog('_tradeCalcData:', _tradeCalcData)
+
             let {
                 amm,
-                market: market2
+                market: market2,
+                baseShow,
+                quoteShow,
             } = getExistedMarket(marketArray, _tradeCalcData.coinSell as string, _tradeCalcData.coinBuy as string);
-            myLog('_tradeCalcData:', _tradeCalcData, market, market2)
-
-            const marketTemp = market2 ?? market
-
-            if (marketTemp) {
-                const [, coinA, coinB] = marketTemp.match(/(\w+)-(\w+)/i)
+            
+            if (market2) {
     
                 setTradeCalcData({ ...tradeCalcData, fee: feeBips, ..._tradeCalcData } as TradeCalcData<C>);
                 if (coinMap) {
                     setPair({
-                        coinAInfo: coinMap[coinA],
-                        coinBInfo: coinMap[coinB],
+                        coinAInfo: coinMap[baseShow],
+                        coinBInfo: coinMap[quoteShow],
                     })
                 }
     

@@ -111,6 +111,7 @@ export interface AssetsTableProps {
     onShowWithdraw: (token: string) => void,
     onLpDeposit: (token: string, type: LpTokenAction ) => void,
     onLpWithdraw: (token: string, type: LpTokenAction) => void,
+    getMakretArrayListCallback: (token: string) => string[]
 }
 
 export const AssetsTable = withTranslation('tables')((props: WithTranslation & AssetsTableProps) => {
@@ -124,6 +125,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         onShowTransfer,
         onShowWithdraw,
         onLpDeposit,
+        getMakretArrayListCallback,
         // onLpWithdraw,
     } = props
     // const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
@@ -152,28 +154,57 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         })
     }, [history])
 
+    const jumpToSwapPanel = useCallback((pair: string) => {
+        history && history.push({
+            pathname: `/trading/lite/${pair}`
+        })
+    }, [history])
+
+    // const getPairList = useCallback((pair) => {
+    //     if (pair) {
+    //         return getMakretArrayListCallback(pair)
+    //     }
+    //     return []
+    // }, [getMakretArrayListCallback])
+
     const getPopoverTrigger = useCallback(() => (
         <MoreIcon cursor={'pointer'} />
     ), [])
 
-    const getPopoverPopper = useCallback((market: string) => (
+    const getPopoverPopper = useCallback((market: string, isLp: boolean) => {
+        const list = isLp ? [] : getMakretArrayListCallback(market)
+        
+        return (
             <Box borderRadius={'inherit'} minWidth={110}>
-                <MenuItem onClick={() => jumpToAmm(LpTokenAction.add, market)}>
-                    <ListItemText>{t('labelPoolTableAddLiqudity')}</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={() => jumpToAmm(LpTokenAction.remove, market)}>
-                    <ListItemText>{t('labelPoolTableRemoveLiqudity')}</ListItemText>
-                </MenuItem>
+                {isLp ? (
+                    <>
+                    <MenuItem onClick={() => jumpToAmm(LpTokenAction.add, market)}>
+                        <ListItemText>{t('labelPoolTableAddLiqudity')}</ListItemText>
+                    </MenuItem>
+                    <MenuItem onClick={() => jumpToAmm(LpTokenAction.remove, market)}>
+                        <ListItemText>{t('labelPoolTableRemoveLiqudity')}</ListItemText>
+                    </MenuItem>
+                </>
+                ) : (
+                    list.map(pair => {
+                        const formattedPair = pair.replace('-', '/')
+                        return (
+                            <MenuItem key={pair} onClick={() => jumpToSwapPanel(pair)}>
+                                <ListItemText>{formattedPair}</ListItemText>
+                            </MenuItem>
+                        )
+                    })
+                )}
             </Box>
-    ), [t, jumpToAmm])
+    )} , [t, jumpToAmm, jumpToSwapPanel, getMakretArrayListCallback])
 
-    const getPopoverProps: any = useCallback((market: string) => (
+    const getPopoverProps: any = useCallback((market: string, isLp: boolean) => (
         {
             type: PopoverType.click,
             popupId: 'testPopup',
             className: 'arrow-right',
             children: getPopoverTrigger(),
-            popoverContent: getPopoverPopper(market),
+            popoverContent: getPopoverPopper(market, isLp),
             anchorOrigin: {
                 vertical: 'bottom',
                 horizontal: 'right',
@@ -247,6 +278,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                 lpPairList.splice(0, 1)
                 const lpPair = lpPairList.join('-')
                 const tokenValue = token.value
+                const renderMarket = isLp ? lpPair : tokenValue
 
                 return (
                     <GridStyled container spacing={1} justifyContent={'flex-start'} alignItems={'center'}>
@@ -263,7 +295,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                                         onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
                             </Grid>
                             <Grid item marginTop={1}>
-                                <Popover {...getPopoverProps(lpPair)}></Popover>
+                                <Popover {...getPopoverProps(renderMarket, isLp)}></Popover>
                                 {/* <IconWrapperStyled>
                                     <MoreIcon {...bindTrigger(rightState)} cursor={'pointer'} />
                                 </IconWrapperStyled> */}
