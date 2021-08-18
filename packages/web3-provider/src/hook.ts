@@ -36,10 +36,10 @@ export function useConnectHook(
                         provider: undefined,
                         chainId: 1
                     };
-                    handleConnect ? handleConnect({accounts, provider, chainId}) : undefined
+                    !!handleConnect ? handleConnect({accounts, provider, chainId}) : undefined
                     break
                 case 'DisConnect':
-                    handleAccountDisconnect ? handleAccountDisconnect() : undefined
+                    !!handleAccountDisconnect ? handleAccountDisconnect() : undefined
                     //TODO reset
                     console.log(data)
 

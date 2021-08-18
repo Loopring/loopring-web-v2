@@ -4,7 +4,7 @@ import { WalletLayer2States } from './interface';
 import { myLog } from 'utils/log_tools';
 import _ from 'lodash'
 import React from 'react';
-import { TOAST_TIME, UPDATE_ACC_DELAY } from 'defs/common_defs';
+import { UPDATE_ACC_DELAY } from 'defs/common_defs';
 
 export function useWalletLayer2(): WalletLayer2States & {
     delayAndUpdateWalletLayer2: () => Promise<void>,

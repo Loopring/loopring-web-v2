@@ -1,13 +1,16 @@
-import { useAccount } from './stores/account';
-import { useSystem } from './stores/system';
-import { useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
 import React from 'react';
-import { ChainId, sleep } from 'loopring-sdk';
-import { myLog } from './utils/log_tools';
-import { networkUpdate } from './services/account/networkUpdate';
-import { checkAccount } from './services/account/checkAccount';
+import { useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
 import { ErrorType, useConnectHook } from '@loopring-web/web3-provider';
 import { SagaStatus } from '@loopring-web/common-resources';
+import { ChainId, sleep } from 'loopring-sdk';
+
+import { useAccount } from 'stores/account';
+import { useSystem } from 'stores/system';
+import { myLog } from 'utils/log_tools';
+import { networkUpdate } from 'services/account/networkUpdate';
+import { checkAccount } from 'services/account/checkAccount';
+import { REFRESH_RATE } from 'defs/common_defs';
+import { useWalletLayer2 } from 'stores/walletLayer2';
 
 export function useConnect({state}: { state: keyof typeof SagaStatus }) {
     const {
@@ -18,7 +21,9 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
         setShouldShow,
         status: accountStatus
     } = useAccount();
-    const {updateSystem, chainId: _chainId} = useSystem();
+    const { updateWalletLayer2 } = useWalletLayer2()
+
+    const {updateSystem, chainId: _chainId } = useSystem();
     const {setShowConnect} = useOpenModals();
     const [stateAccount, setStateAccount] = React.useState<SagaStatus>(SagaStatus.DONE);
     React.useEffect(() => {
@@ -39,23 +44,24 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
             checkAccount(accAddress);
         }
         setShouldShow(false)
-        setShowConnect({isShow: shouldShow ?? false, step: WalletConnectStep.SuccessConnect});
-        await sleep(1000)
+        setShowConnect({isShow: !!shouldShow ?? false, step: WalletConnectStep.SuccessConnect});
+        await sleep(REFRESH_RATE)
         setShowConnect({isShow: false, step: WalletConnectStep.SuccessConnect});
 
     }, [shouldShow, setShowConnect, setShouldShow])
 
     const handleAccountDisconnect = React.useCallback(async () => {
-        await resetAccount({shouldUpdateProvider: true});
+        resetAccount({shouldUpdateProvider: true});
         setStateAccount(SagaStatus.PENDING)
-    }, [resetAccount]);
+        await sleep(REFRESH_RATE)
+        updateWalletLayer2()
+        // resetLayer2()
+    }, [resetAccount, setStateAccount]);
 
-    const handleError = React.useCallback(async ({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
-        debugger
-        updateSystem({chainId: account._chainId ? account._chainId : 1})
+    const handleError = React.useCallback(({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
+        updateSystem({chainId: account._chainId === 1 ||  account._chainId === 5 ? account._chainId : 5})
         resetAccount();
         statusAccountUnset();
-        myLog('Error')
     }, [resetAccount, statusAccountUnset, updateSystem, account._chainId]);
 
     useConnectHook({handleAccountDisconnect, handleError, handleConnect});
