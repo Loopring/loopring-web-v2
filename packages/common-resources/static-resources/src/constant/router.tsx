@@ -228,4 +228,4 @@ export const subMenuLiquidity = {
     // }
     // ]
 }
-export const headerRoot = 'trade'
+export const headerRoot = 'Trading'

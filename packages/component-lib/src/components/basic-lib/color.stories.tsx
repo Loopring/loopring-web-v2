@@ -52,7 +52,7 @@ export const ColorList: Story<any> = withTranslation()(({}: WithTranslation & an
                 <Grid container style={{background: '#000'}}>
                     {dark}
                 </Grid>
-                <Grid container style={{background: '#1F2034'}}>
+                <Grid container style={{background: '#cccccc'}}>
                     {light}
                 </Grid>
 

@@ -168,9 +168,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             [ AccountStep.QRCode ]: {view: <QRAddressPanel  {...{
                     ...rest,
                     ...account,
-
                     etherscanUrl,
-
                     t
                 }} />,onBack, noClose:true },
             [ AccountStep.Deposit ]: {view: <DepositPanel title={title} {...{

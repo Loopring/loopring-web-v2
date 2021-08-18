@@ -44,6 +44,18 @@ const WalletConnectBtnStyled = styled(Button)`
       font-size: ${({theme}) => theme.fontDefault.h5};
     }
   }
+  &.not-active{
+    &:after {
+      position: absolute;
+      content: "\u25CF";
+      color: var(--color-warning);
+      display: flex;
+      left: 0;
+      padding-left: ${({theme}) => theme.unit * 2}px;
+      align-items: center;
+      font-size: ${({theme}) => theme.fontDefault.h5};
+    }
+  }
 
   &.unlocked {
     &:after {
@@ -149,6 +161,10 @@ export const WalletConnectBtn = ({
                 case AccountStatus.DEPOSITING:
                     setBtnClassname('depositing')
                     setIcon(<LoadingIcon color={'primary'} style={{width: 18, height: 18}}/>)
+                    break
+                case AccountStatus.NOT_ACTIVE:
+                    setBtnClassname('not-active')
+                    // setIcon(<LoadingIcon color={'primary'} style={{width: 18, height: 18}}/>)
                     break
                 case AccountStatus.ERROR_NETWORK:
                     setBtnClassname('wrong-network')
