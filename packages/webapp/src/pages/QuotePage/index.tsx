@@ -226,6 +226,21 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
       handleTableFilterChange({keyword: value, type: type})
     }, [handleTableFilterChange, tableTabValue])
 
+    const formattedRecommendations = recommendations.map(item => {
+      const market = `${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}`
+      return ({
+        ...item,
+        market,
+        chartData: candlestickList.find(o => o.market === market)?.data.sort((a: any, b: any) => a.timeStamp - b.timeStamp)
+      })
+    })
+
+    const handleRecommendationJump = React.useCallback((market: string) => {
+      history && history.push({
+        pathname: `/trading/lite/${market}`
+      })
+    }, [history])
+
     return <Box display={'flex'} flexDirection={'column'} flex={1} >
 
         <RowStyled container >
@@ -234,7 +249,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                     <MarketBlock {...{...item, ...rest}}></MarketBlock>
                 </Grid>
             )} */}
-            {recommendations.map((item,index)=> {
+            {/* {recommendations.map((item,index)=> {
               const market = `${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}`
               const chartData = candlestickList.find(o => o.market === market)?.data.sort((a: any, b: any) => a.timeStamp - b.timeStamp)
               return (
@@ -247,7 +262,19 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                 </Grid>
               )
             } 
-            )}
+            )} */}
+            <Grid item xs={3} onClick={() => handleRecommendationJump(formattedRecommendations[0].market)}>
+                <MarketBlock {...{...formattedRecommendations[0], chartData: formattedRecommendations[0] ? formattedRecommendations[0].chartData : [], ...rest}}></MarketBlock>
+            </Grid>
+            <Grid item xs={3} onClick={() => handleRecommendationJump(formattedRecommendations[1].market)}>
+                <MarketBlock {...{...formattedRecommendations[1], chartData: formattedRecommendations[1] ? formattedRecommendations[1].chartData : [], ...rest}}></MarketBlock>
+            </Grid>
+            <Grid item xs={3} onClick={() => handleRecommendationJump(formattedRecommendations[2].market)}>
+                <MarketBlock {...{...formattedRecommendations[2], chartData: formattedRecommendations[2] ? formattedRecommendations[2].chartData : [], ...rest}}></MarketBlock>
+            </Grid>
+            <Grid item xs={3} onClick={() => handleRecommendationJump(formattedRecommendations[3].market)}>
+                <MarketBlock {...{...formattedRecommendations[3], chartData: formattedRecommendations[3] ? formattedRecommendations[3].chartData : [], ...rest}}></MarketBlock>
+            </Grid>
 
         </RowStyled>
         <TableWrapStyled container marginY={3}  paddingBottom={2} flex={1}> 
