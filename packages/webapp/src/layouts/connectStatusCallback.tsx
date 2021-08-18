@@ -7,10 +7,9 @@ import { myLog } from 'utils/log_tools';
 
 export const accountStaticCallBack = (onclickMap: { [key: number]: [fn: (props: any) => any, args?: any[]] }, deps?: any[]) => {
     const { readyState } = store.getState().account;
-    // fnType[readyState]
+    
     let fn, args;
     [fn, args] = onclickMap[readyState] ? onclickMap[readyState] : [];
-    myLog('accountStaticCallBack:', readyState)
     if (typeof fn === 'function') {
         args = [...(args ?? []), ...(deps ?? [])] as [props: any]
         return fn.apply(this, args);
@@ -72,9 +71,6 @@ export const btnClickMap: { [key: string]: [fn: (props: any) => any, args?: any[
             myLog('NO_ACCOUNT! sendCheckAcc', );
             store.dispatch(changeShowModel({ _userOnModel: true }));
             walletLayer2Services.sendCheckAcc()
-            // store.dispatch(changeShowModel({ _userOnModel: true }));
-            // store.dispatch(setShowAccount({ isShow: true, step: AccountStep.NoAccount }))
-            // ShowDeposit(true)
         }
     ]
     , [fnType.DEPOSITING]: [
@@ -82,8 +78,6 @@ export const btnClickMap: { [key: string]: [fn: (props: any) => any, args?: any[
             myLog('DEPOSITING! sendCheckAcc', );
             store.dispatch(changeShowModel({ _userOnModel: true }));
             walletLayer2Services.sendCheckAcc()
-            // store.dispatch(setShowAccount({isShow: true, step: AccountStep.Depositing}))
-            // ShowDeposit(true)
         }
     ]
     , [fnType.LOCKED]: [

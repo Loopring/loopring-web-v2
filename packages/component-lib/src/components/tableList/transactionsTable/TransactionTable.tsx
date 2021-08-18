@@ -367,7 +367,7 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
             </div>
         </Modal>
         {/* <Table {...{...defaultArgs, ...props, rawData: getRenderData()}}/> */}
-        <Table {...{...defaultArgs, ...props, rawData: rawData, showLoading: showLoading}}/>
+        <Table {...{...defaultArgs, ...props, rawData, showLoading, }}/>
         {pagination && (
             <TablePagination page={page} pageSize={pageSize} total={pagination.total} onPageChange={handlePageChange}/>
         )}
