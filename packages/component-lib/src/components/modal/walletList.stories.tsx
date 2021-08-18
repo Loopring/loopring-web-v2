@@ -50,6 +50,9 @@ const ConnectButtonWrap = withTranslation('common')((_rest: any) => {
             accountState={{...accountState, account: {...account, readyState: AccountStatus.DEPOSITING}}}
             handleClick={() => undefined}></WalletConnectBtn></Grid>
         <Grid item xs={3}><WalletConnectBtn
+            accountState={{...accountState, account: {...account, readyState: AccountStatus.NOT_ACTIVE}}}
+            handleClick={() => undefined}></WalletConnectBtn></Grid>
+        <Grid item xs={3}><WalletConnectBtn
             accountState={{...accountState, account: {...account, readyState: AccountStatus.ACTIVATED}}}
             handleClick={() => undefined}></WalletConnectBtn></Grid>
         <Grid item xs={3}><WalletConnectBtn
