@@ -22,12 +22,22 @@ export const SubMenuItem = styled<any>(ListItem)`
       height: var(--header-menu-icon-size);
     }
   }
-  &:hover, &.Mui-selected, &.Mui-selected.Mui-focusVisible, &.Mui-selected:hover {
-    background-color: var(--color-primary);
-  }
+  //&:hover,
+  //&.Mui-selected,
+  //&.Mui-selected.Mui-focusVisible,
+  //&.Mui-selected:hover {
+  //}
 
-  &:hover, &:hover .MuiListItemAvatar-root, &.Mui-selected, &.Mui-selected.Mui-focusVisible {
-    color: var(--color-text-button);
+  &:hover,
+  &.Mui-selected,
+  &.Mui-selected:hover,
+  &.Mui-selected.Mui-focusVisible,
+  &.Mui-selected.Mui-focusVisible:hover {
+    background-color: var(--color-primary);
+    &&, .MuiListItemAvatar-root{
+      color: var(--color-text-button);
+    }
+    
   }
   //&.Mui-selected, &.Mui-selected.Mui-focusVisible {
   //  background-color: var(--color-primary);
