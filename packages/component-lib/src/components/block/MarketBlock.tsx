@@ -13,7 +13,7 @@ type StyledProps = {
 }
 //${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1})};
 const MarketBlockStyled = styled(Box)<StyledProps>`
-
+  min-height: ${({theme}) => theme.unit * 14.625}px;
   & {
     background: var(--color-box);
 

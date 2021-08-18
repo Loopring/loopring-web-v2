@@ -21,7 +21,7 @@ export default {
     labelMyTrades: 'my trades',
     labelRecentTrades: 'Recent Trades',
     // layer2 submenu
-    labelAssets: 'assets',
+    labelAssets: 'Assets',
     labelTransactions: 'transactions',
     labelTrades: 'trades',
     labelHistory: 'History',
