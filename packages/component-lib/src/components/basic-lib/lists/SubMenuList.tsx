@@ -14,6 +14,7 @@ export const SubMenuItem = styled<any>(ListItem)`
   min-width: var(--sub-menuItem-width);
   height: var(--sub-menuItem-height);
   color: var(--color-text-secondary);
+  text-transform: capitalize;
   .MuiListItemAvatar-root {
     margin-left: ${({theme}) => theme.unit * 0.75}px;
     color: var(--color-button-icon);
