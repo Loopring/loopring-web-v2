@@ -109,6 +109,13 @@ export const Layer2Page = () => {
                     <BtnConnect/>
                 </Box>
                 break
+            case AccountStatus.NO_ACCOUNT:
+                return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'}
+                >
+                    <Typography marginY={3} variant={'h1'}>{t('describeTitleNotActive')}</Typography>
+                    <BtnConnect/>
+                </Box>
+                break
             case AccountStatus.DEPOSITING:
                 return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'}
                 >
@@ -125,6 +132,7 @@ export const Layer2Page = () => {
                     {/*<BtnConnect/>*/}
                 </Box>
                 break
+
             case AccountStatus.ACTIVATED:
                 return <>
                     <Box width={'200px'} display={'flex'} justifyContent={'stretch'} marginRight={3}
