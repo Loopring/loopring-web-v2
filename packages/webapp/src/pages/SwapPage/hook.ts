@@ -128,7 +128,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const [myTradeArray, setMyTradeArray] = React.useState<RawDataTradeItem[]>([]);
     const [tradeFloat, setTradeFloat] = React.useState<TradeFloat | undefined>(undefined);
 
-    const { pair, setPair, market, } = usePairMatch('/trading/lite')
+    const { pair, setPair, market, setMarket, } = usePairMatch('/trading/lite')
 
     useCustomDCEffect(() => {
         if (!market) {
@@ -166,7 +166,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         const quote = tradeData?.buy.belong
 
         if (!LoopringAPI.userAPI || !base || !quote || !marketArray
-            || account.readyState !== AccountStatus.ACTIVATED || !ammMap || !market || !account.accountId || !account.apiKey) {
+            || account.readyState !== AccountStatus.ACTIVATED 
+            || !ammMap || !market || !account.accountId || !account.apiKey) {
             return
         }
 
@@ -201,7 +202,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         setBaseMinAmt(baseMinAmtInfo.userOrderInfo.minAmount)
         setQuoteMinAmt(quoteMinAmtInfo.userOrderInfo.minAmount)
 
-        // myLog('-------------- amountMap:', amountMap, 'totalFee:', totalFee, ' takerRate:', takerRate)
+        myLog('-------------- amountMap:', amountMap, 'totalFee:', totalFee, ' takerRate:', takerRate)
 
         setFeeBips(totalFee)
         setTakerRate(takerRate.toString())
@@ -210,6 +211,9 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     }, [tradeData?.sell.belong, tradeData?.buy.belong, marketArray, ammMap,
     account.readyState, account.apiKey, account.accountId])
+
+    // myLog('tradeData?.sell.belong:', tradeData?.sell.belong)
+    // myLog('tradeData?.buy.belong:', tradeData?.buy.belong)
 
     //HIGH: effect by wallet state update
     React.useEffect(() => {
@@ -332,11 +336,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const handleSwapPanelEvent = async (swapData: SwapData<SwapTradeData<IBData<C>>>, swapType: any): Promise<void> => {
 
         const { tradeData } = swapData
-
-        return new Promise((resolve) => {
-            resetSwap(swapType, tradeData)
-            resolve(undefined)
-        })
+        resetSwap(swapType, tradeData)
 
     }
 
@@ -369,7 +369,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: AmmPoolSnapshot | undefined)
         : Promise<{ _tradeCalcData: TradeCalcData<C>, _tradeData: SwapTradeData<IBData<C>> }> => {
 
-        if (!marketArray || !tokenMap || !marketMap || !depth || !ammMap || !tradeCalcData || !market) {
+        if (!marketArray || !tokenMap || !marketMap || !ammMap || !tradeCalcData || !market
+            || !depth || depth.symbol !== market) {
             let _tradeCalcData = { ...tradeCalcData } as TradeCalcData<C>
             return { _tradeData, _tradeCalcData }
         }
@@ -385,6 +386,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         } else {
             input = '0'
         }
+
+        myLog('input val:', input)
 
         const base = _tradeData.sell.belong as string
         const quote = _tradeData.buy.belong as string
@@ -521,6 +524,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                         coinAInfo: coinMap[baseShow],
                         coinBInfo: coinMap[quoteShow],
                     })
+                    setMarket(market2)
                 }
 
                 if (walletLayer2) {
