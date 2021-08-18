@@ -28,22 +28,28 @@ export const btnLabel = {
         function () {
             return `labelWrongNetwork`
         }
-    ], [fnType.NO_ACCOUNT]: [
+    ],
+    [fnType.NO_ACCOUNT]: [
         function () {
             return `depositTitleAndActive`
         }
     ],
-
     [fnType.DEFAULT]: [
         function () {
             return `depositTitleAndActive`
         }
-    ], [fnType.ACTIVATED]: [
+    ],
+    [fnType.NOT_ACTIVE]: [
+        function () {
+            return `depositTitleActive`
+        }
+    ],
+    [fnType.ACTIVATED]: [
         function () {
             return undefined
         }
-    ]
-    , [fnType.LOCKED]: [
+    ],
+    [fnType.LOCKED]: [
         function () {
             return `labelUnLockLayer2`
         }

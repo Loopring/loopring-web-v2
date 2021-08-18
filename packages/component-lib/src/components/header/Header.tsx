@@ -190,7 +190,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
             router,
             child,
             layer,
-            selected:new RegExp(label.id, 'ig').test(selected.split('/')[ 1 ] ? selected.split('/')[ 1 ] : selected),
+            selected:new RegExp(label.id, 'ig').test(selected.split('/')[ 1 ] ? selected.split('/')[ 1 ] : selected)?true:false,
             // className: new RegExp(label.id, 'ig').test(selected.split('/')[ 1 ] ? selected.split('/')[ 1 ] : selected) ? 'Mui-selected' : '',
             renderList: ({handleListKeyDown}: { handleListKeyDown: ({...rest}) => any }) => {
                 return getDrawerChoices({menuList: child, layer: layer + 1, handleListKeyDown, ...rest})

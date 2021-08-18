@@ -82,7 +82,7 @@ export default {
     descriptionForceWithdraw: 'xxxxxxxxxxxxxxxxxxxx,xxxxxxxxxxxxxxxx,xxxxxxxxxx,xxxxxxxxxx',
     labelBtnForceWithdraw: '强制提现',
     labelTitleExportAccount: '导出账号',
-    descriptionExportAccount: 'xxxxxxxxxxxxxxxxxxxx,xxxxxxxxxxxxxxxx,xxxxxxxxxx,xxxxxxxxxx',
+    descriptionExportAccount: '你可以导出你的API密钥，在脚本中使用。',
     labelBtnExportAccount: '导出账号',
     labelTitlePreferences: '设置选项',
     labelTitleLayout: '个性化设置',
