@@ -1,10 +1,9 @@
 const path = require("path")
 const nodePath = '../../'
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const toPath = (filePath) => path.join(process.cwd(), nodePath + filePath)
-const toResolvedPath = targetPath => path.resolve(__dirname, targetPath);
 const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier');
-const shouldUseReactRefresh = true;
 const hasJsxRuntime = (() => {
   if (process.env.DISABLE_NEW_JSX_TRANSFORM === 'true') {
     return false;
@@ -17,30 +16,18 @@ const hasJsxRuntime = (() => {
     return false;
   }
 })();
-module.exports = {
-  "stories": [
-    "../src/**/*.stories.mdx",
-    "../src/**/*.stories.@(js|jsx|ts|tsx)"
-  ],
-  "addons": [
-    "@storybook/addon-links",
-    "@storybook/addon-essentials",
-    "@storybook/preset-create-react-app"
-  ],
-  typescript: {
-    reactDocgen: 'none',
-  },
-  webpackFinal: async (config) => {
-
-    const modules = [
-      ...config.resolve.modules,
-      path.resolve(__dirname, "..", "src"),
-      "node_modules/@loopring-web/common-resources",
-      //static-resources/src/loopring-interface/CoinInterface.ts
-      // path.resolve(__dirname, '..', '..', 'common-resources', "static-resources"),
-      // path.resolve(__dirname,'./'),
-    ]
-    config.module.rules.push({
+module.exports = function ({config, mode = 'DEV'}) {
+  console.log(mode)
+  const isProd = mode === 'PRODUCTION';
+  const modules = [
+    ...config.resolve.modules,
+    path.resolve(__dirname, "..", "src"),
+    "node_modules/@loopring-web/common-resources",
+    //static-resources/src/loopring-interface/CoinInterface.ts
+    // path.resolve(__dirname, '..', '..', 'common-resources', "static-resources"),
+    // path.resolve(__dirname,'./'),
+  ]
+  config.module.rules.push({
       test: /\.(mjs|js|jsx|tsx|ts)$/,
       // exclude: [/node_modules/, /dist/],
       include: [path.resolve(__dirname, '..', '..', 'common-resources', "static-resources")],
@@ -100,42 +87,70 @@ module.exports = {
         cacheCompression: false,
         compact: 'auto',
       },
+    }, {
+      test: /\.tsx?$/,
+      exclude: /node_modules/,
+      use: [
+        {
+          loader: 'babel-loader',
+          options: {cacheDirectory: !isProd}
+        }
+      ]
+      //   {
+      //     loader: '@linaria/webpack-loader',
+      //     options: {sourceMap: !isProd}
+      //   }
+      // ]
+    },
+    {
+      test: /\.css$/,
+      use: [MiniCssExtractPlugin.loader, 'css-loader']
     });
-    // const rules = [
-    //   ...config.rules,
+  {
 
-    //   }
-    // ];
-    // console.log(config.module.rules)
-    return {
-      ...config,
-      // rules,
-      plugins: [
-        ...config.plugins,
-        new CopyWebpackPlugin({
-          patterns: [{
-            from: path.resolve(__dirname, '..', '..', 'common-resources', "assets"),
-            to: './static',
-            toType: "dir"
-          }],
-        })
-      ],
-
-
-      resolve: {
-        ...config.resolve,
-        modules,
-        alias: {
-          ...config.resolve.alias,
-          //"@loopring-web/static-resource" : path.resolve(__dirname, '..', 'src/static-resource'),
-          //toPath("node_modules/@loopring-web/static-resource"),
-          //path.resolve(__dirname, '..', 'node_modules/@loopring-web/static-resource'),
-          // "@loopring-web/static-resource":path.resolve(__dirname, '..', 'node_modules/@loopring-web/static-resource'),
-          "@emotion/core": toPath("node_modules/@emotion/react"),
-          "emotion-theming": toPath("node_modules/@emotion/react"),
-          "@emotion/styled-base": toPath("node_modules/@emotion/styled/base"),
-        },
+  }
+  return {
+    "stories": [
+      "../src/**/*.stories.mdx",
+      "../src/**/*.stories.@(js|jsx|ts|tsx)"
+    ],
+    "addons": [
+      "@storybook/addon-links",
+      "@storybook/addon-essentials",
+      "@storybook/preset-create-react-app"
+    ],
+    typescript: {
+      reactDocgen: 'none',
+    },
+    ...config,
+    plugins: [
+      ...config.plugins,
+      new MiniCssExtractPlugin({
+        filename: isProd ? '[name].[contenthash].css' : '[name].css',
+        chunkFilename: isProd ? '[id].[contenthash].css' : '[id].css',
+        ignoreOrder: true
+      }),
+      new CopyWebpackPlugin({
+        patterns: [{
+          from: path.resolve(__dirname, '..', '..', 'common-resources', "assets"),
+          to: './static',
+          toType: "dir"
+        }],
+      })
+    ],
+    resolve: {
+      ...config.resolve,
+      modules,
+      alias: {
+        ...config.resolve.alias,
+        "@emotion/core": toPath("node_modules/@emotion/react"),
+        "emotion-theming": toPath("node_modules/@emotion/react"),
+        "@emotion/styled-base": toPath("node_modules/@emotion/styled/base"),
       },
-    }
-  },
+    },
+    webpackFinal: async (config) => {
+      return config
+    },
+  }
+
 }
