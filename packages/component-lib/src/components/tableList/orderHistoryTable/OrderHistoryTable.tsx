@@ -1,24 +1,16 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import styled from '@emotion/styled'
 import { Box } from '@material-ui/core'
+import { DateRange } from '@material-ui/lab'
 import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
-import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes } from '@loopring-web/common-resources'
-import { Column, generateColumns, generateRows, Popover, PopoverType, Table, TablePagination } from '../../basic-lib'
+import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes, getThousandFormattedNumbers } from '@loopring-web/common-resources'
+import { Column, Popover, PopoverType, Table, TablePagination } from '../../basic-lib'
 import { SingleOrderHistoryTable } from './SingleOrderHistoryTable'
-import { Filter, FilterTradeTypes } from './components/Filter'
+import { Filter, FilterOrderTypes } from './components/Filter'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
-
-// export enum OrderSide {
-//     sell = 'Sell',
-//     buy = 'Buy'
-// }
-
-
-// enum ActionType {
-//     filter = 'filter',
-//     page = 'page'
-// }
+import { useSettings } from '../../../stores';
+import { GetOrdersRequest, Side } from 'loopring-sdk'
 
 export type OrderPair = {
     from: {
@@ -36,7 +28,10 @@ export interface OrderHistoryRow {
     amount: OrderPair
     average: number
     filledAmount: OrderPair
-    filledPrice: number
+    filledPrice: {
+        key: string;
+        value: number;
+    };
     time: number
     status: keyof typeof TradeStatus;
     sortColumn: string
@@ -47,7 +42,10 @@ export interface OrderHistoryRow {
 export type OrderHistoryTableDetailItem = {
     amount: OrderPair;
     tradingPrice: number;
-    filledPrice: number;
+    filledPrice: {
+        key: string;
+        value: number;
+    };
     time: number;
     total: {
         key: string;
@@ -59,8 +57,8 @@ export type OrderHistoryRawDataItem = {
     side: TradeTypes;
     amount: OrderPair;
     average: number;
-    filledAmount: OrderPair;
-    filledPrice: {
+    // filledAmount: OrderPair;
+    price: {
         key: string;
         value: number;
     }
@@ -70,29 +68,29 @@ export type OrderHistoryRawDataItem = {
 }
 
 const LastDayPriceChangedCell: any = styled(Box)`
-  color: ${(props: any) => {
-    const {
-      value,
-      theme: {colorBase},
-    } = props
-    return value === TradeTypes.Buy ? colorBase.success : colorBase.error
-  }};
+    color: ${(props: any) => {
+        const {
+        value,
+        theme: {colorBase},
+        } = props
+        return value === TradeTypes.Buy ? colorBase.success : colorBase.error
+    }};
 `
 
 const TableStyled = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 
-  .rdg {
-    --template-columns: 80px 150px auto 150px auto auto 130px !important;
+    .rdg {
+        --template-columns: 90px 260px auto 120px auto 150px !important;
 
-    .rdg-cell.action {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+        .rdg-cell.action {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
     }
-  }
 
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
@@ -101,20 +99,28 @@ export interface OrderHistoryTableProps {
     rawData: OrderHistoryRawDataItem[];
     pagination?: {
         pageSize: number;
-    }
-    showFilter?: boolean
+        total: number;
+    };
+    showFilter?: boolean;
+    getOrderList: (props: Omit<GetOrdersRequest, "accountId">) => Promise<void>;
+    showLoading?: boolean;
 }
 
-const getColumnModeOrderHistory = (t: TFunction): Column<OrderHistoryRow, unknown>[] => [
+const getColumnModeOrderHistory = (t: TFunction, lan: 'en_US' | 'zh_CN'): Column<OrderHistoryRow, unknown>[] => [
     {
         key: 'side',
         name: t('labelOrderSide'),
         formatter: ({row, column}) => {
             const value = row[ column.key ]
+            const renderValue = lan === 'en_US'
+                ? value 
+                : value === 'Buy'
+                    ? '买'
+                    : '卖'
             return (
                 <div className="rdg-cell-value">
                     <LastDayPriceChangedCell value={value}>
-                        {value}
+                        {renderValue}
                     </LastDayPriceChangedCell>
                 </div>
             )
@@ -127,7 +133,7 @@ const getColumnModeOrderHistory = (t: TFunction): Column<OrderHistoryRow, unknow
             const {from, to} = row[ column.key ]
             const {key: keyFrom, value: valueFrom} = from
             const {key: keyTo, value: valueTo} = to
-            const renderValue = `${valueFrom} ${keyFrom}->${valueTo} ${keyTo}`
+            const renderValue = `${Number(getThousandFormattedNumbers(valueFrom)).toFixed(6)} ${keyFrom} \u2192 ${Number(getThousandFormattedNumbers(valueTo)).toFixed(6)} ${keyTo}`
             return <div className="rdg-cell-value">{renderValue}</div>
         },
     },
@@ -141,25 +147,24 @@ const getColumnModeOrderHistory = (t: TFunction): Column<OrderHistoryRow, unknow
             return <div className="rdg-cell-value">{renderValue}</div>
         },
     },
+    // {
+    //     key: 'filledAmount',
+    //     name: t('labelOrderFilledAmount'),
+    //     formatter: ({row, column}) => {
+    //         const {from, to} = row[ column.key ]
+    //         const {key: keyFrom, value: valueFrom} = from
+    //         const {key: keyTo, value: valueTo} = to
+    //         const renderValue = `${valueFrom} ${keyFrom}->${valueTo} ${keyTo}`
+    //         return <div className="rdg-cell-value">{renderValue}</div>
+    //     },
+    // },
     {
-        key: 'filledAmount',
-        name: t('labelOrderFilledAmount'),
-        formatter: ({row, column}) => {
-            const {from, to} = row[ column.key ]
-            const {key: keyFrom, value: valueFrom} = from
-            const {key: keyTo, value: valueTo} = to
-            const renderValue = `${valueFrom} ${keyFrom}->${valueTo} ${keyTo}`
-            return <div className="rdg-cell-value">{renderValue}</div>
-        },
-    },
-    {
-        key: 'filledPrice',
-        name: t('labelOrderFilledPrice'),
-        formatter: ({row, column}) => {
-            const {value, key} = row[ column.key ]
-            // const unit = (row as any).amount[ 0 ].key;
+        key: 'price',
+        name: t('labelOrderPrice'),
+        formatter: ({row}) => {
+            const value = row['price'].value
             const hasValue = Number.isFinite(value)
-            const renderValue = hasValue ? `${value.toFixed(6)} ${key}` : EmptyValueTag
+            const renderValue = hasValue ? value.toFixed(6) : EmptyValueTag
             return (
                 <div className="rdg-cell-value">
                     <span>{renderValue}</span>
@@ -221,74 +226,74 @@ const CellStatus = ({row, column, rowIdx}: any) => {
       }
     `
     const popupContent = [
-        {
-            amount: {
-                from: {
-                    key: 'ETH',
-                    value: 1.05
-                },
-                to: {
-                    key: 'LRC',
-                    value: 2454.33
-                }
-            },
-            tradingPrice: 2934.07,
-            filledPrice: 2935.00,
-            time: 1,
-            total: {
-                key: 'LRC',
-                value: 850
-            }
-        },
-        {
-            amount: {
-                from: {
-                    key: 'ETH',
-                    value: 1.05
-                },
-                to: {
-                    key: 'LRC',
-                    value: 2454.33
-                }
-            },
-            tradingPrice: 2934.07,
-            filledPrice: 2935.00,
-            time: 1,
-            total: {
-                key: 'LRC',
-                value: 850
-            }
-        },
-        {
-            amount: {
-                from: {
-                    key: 'ETH',
-                    value: 1.05
-                },
-                to: {
-                    key: 'LRC',
-                    value: 2454.33
-                }
-            },
-            tradingPrice: 2934.07,
-            filledPrice: 2935.00,
-            time: 1,
-            total: {
-                key: 'LRC',
-                value: 850
-            }
-        },
+        // {
+        //     amount: {
+        //         from: {
+        //             key: 'ETH',
+        //             value: 1.05
+        //         },
+        //         to: {
+        //             key: 'LRC',
+        //             value: 2454.33
+        //         }
+        //     },
+        //     tradingPrice: 2934.07,
+        //     filledPrice: 2935.00,
+        //     time: 1,
+        //     total: {
+        //         key: 'LRC',
+        //         value: 850
+        //     }
+        // },
+        // {
+        //     amount: {
+        //         from: {
+        //             key: 'ETH',
+        //             value: 1.05
+        //         },
+        //         to: {
+        //             key: 'LRC',
+        //             value: 2454.33
+        //         }
+        //     },
+        //     tradingPrice: 2934.07,
+        //     filledPrice: 2935.00,
+        //     time: 1,
+        //     total: {
+        //         key: 'LRC',
+        //         value: 850
+        //     }
+        // },
+        // {
+        //     amount: {
+        //         from: {
+        //             key: 'ETH',
+        //             value: 1.05
+        //         },
+        //         to: {
+        //             key: 'LRC',
+        //             value: 2454.33
+        //         }
+        //     },
+        //     tradingPrice: 2934.07,
+        //     filledPrice: 2935.00,
+        //     time: 1,
+        //     total: {
+        //         key: 'LRC',
+        //         value: 850
+        //     }
+        // },
     ]
 
     const RenderPopover = styled.div`
-      width: 700px;
-      margin: 12px;
-      max-height: 250px;
-
-      .contentWrapper {
+        width: 700px;
+        margin: 12px;
         max-height: 250px;
-        overflow: scroll;
-      }
+
+        .contentWrapper {
+            max-height: 250px;
+            overflow: scroll;
+        }
     `
     let actualValue = ''
     switch (value) {
@@ -325,7 +330,7 @@ const CellStatus = ({row, column, rowIdx}: any) => {
         <RenderPopover>
             <div className="arrowPopover"/>
             <div className="contentWrapper">
-                <SingleOrderHistoryTable rawData={popupContent}/>
+                <SingleOrderHistoryTable rawData={[]}/>
             </div>
         </RenderPopover>
 
@@ -352,80 +357,98 @@ const CellStatus = ({row, column, rowIdx}: any) => {
 }
 
 export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryTableProps & WithTranslation) => {
-    const {t, rawData, pagination, showFilter} = props
+    const {t, rawData, pagination, showFilter, getOrderList, showLoading} = props
     const actionColumns = ['status']
+    const { language } = useSettings()
     const defaultArgs: any = {
-        rawData: [],
-        columnMode: getColumnModeOrderHistory(t).filter(o => !o.hidden),
-        generateRows,
-        generateColumns,
+        // rawData: [],
+        columnMode: getColumnModeOrderHistory(t, language).filter(o => !o.hidden),
+        generateRows: (rawData: any) => rawData,
+        generateColumns: ({columnsRaw}: any) => columnsRaw as Column<OrderHistoryRawDataItem, unknown>[],
         actionColumns,
-        style: {
-            backgroundColor: ({colorBase}: any) => `${colorBase.box}`
-        }
+        // style: {
+        //     backgroundColor: ({colorBase}: any) => `${colorBase.box}`
+        // }
     }
 
-    const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
-    const [filterType, setFilterType] = useState(FilterTradeTypes.allTypes)
-    const [filterDate, setFilterDate] = useState(null)
+    const [filterType, setFilterType] = useState(FilterOrderTypes.allTypes)
+    const [filterDate, setFilterDate] = useState<DateRange<Date | string>>([null, null])
+    const [filterToken, setFilterToken] = useState<string>('All Tokens')
     const [page, setPage] = useState(1)
-    const [totalData, setTotalData] = useState(formattedRawData)
-
-    useEffect(() => {
-        setTotalData(rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : [])
-    }, [rawData])
-
-    const pageSize = pagination ? pagination.pageSize : 10
-
-    const getRenderData = useCallback(() => pagination
-        ? totalData.slice((page - 1) * pageSize, page * pageSize)
-        : totalData
-        , [page, pageSize, pagination, totalData])
+    const pageSize = pagination ? pagination.pageSize : 0
 
     const updateData = useCallback(({
                                         actionType,
                                         currFilterType = filterType,
                                         currFilterDate = filterDate,
+                                        currFilterToken = filterToken,
+                                        currPage = page,
                                     }) => {
-        // let resultData = cloneDeep(formattedRawData)
-        let resultData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
-        // o[0]: tradeType
-        if (currFilterType !== FilterTradeTypes.allTypes) {
-            resultData = resultData.filter(o => o[ 0 ] === currFilterType)
-        }
-        if (currFilterDate) {
-            const diff = moment(moment()).diff(currFilterDate, 'days')
-            // o[5]: date
-            resultData = resultData.filter(o => o[ 5 ] === diff)
-        }
-        if (actionType === 'filter') {
+        let actualPage = currPage
+        if (actionType === TableType.filter) {
+            actualPage = 1
             setPage(1)
         }
-        setTotalData(resultData)
-    }, [rawData, filterDate, filterType])
+        const types = currFilterType === FilterOrderTypes.buy ? 'BUY' : currFilterType === FilterOrderTypes.sell ? 'SELL' : ''
+        const start = Number(moment(currFilterDate[ 0 ]).format('x'))
+        const end = Number(moment(currFilterDate[ 1 ]).format('x'))
+        getOrderList({
+            limit: pageSize,
+            offset: (actualPage - 1) * pageSize,
+            side: [types] as Side[],
+            market: currFilterToken === 'All Tokens' ? '' : currFilterToken,
+            start: Number.isNaN(start) ? -1 : start,
+            end: Number.isNaN(end) ? -1 : end,
+        })
+    }, [filterDate, filterType, filterToken, getOrderList, page, pageSize])
 
-    const handleFilterChange = useCallback(({filterType, filterDate}) => {
-        setFilterType(filterType)
-        setFilterDate(filterDate)
-        updateData({actionType: TableType.filter, currFilterType: filterType, currFilterDate: filterDate})
-    }, [updateData])
+    const handleFilterChange = useCallback(({type = filterType, date = filterDate, token = filterToken, currPage = page}) => {
+        setFilterType(type)
+        setFilterDate(date)
+        setFilterToken(token)
+        updateData({
+            actionType: TableType.filter, 
+            currFilterType: type, 
+            currFilterDate: date,
+            currFilterToken: token,
+            currPage: currPage,
+        })
+    }, [updateData, filterDate, filterType, filterToken, page])
 
     const handlePageChange = useCallback((page: number) => {
         setPage(page)
         updateData({actionType: TableType.page, currPage: page})
     }, [updateData])
 
+    const handleReset = useCallback(() => {
+        setFilterType(FilterOrderTypes.allTypes)
+        setFilterDate([null, null])
+        setFilterToken('All Tokens')
+        updateData({
+            TableType: TableType.filter,
+            currFilterType: FilterOrderTypes.allTypes,
+            currFilterDate: [null, null],
+            currFilterToken: 'All Tokens',
+        })
+    }, [updateData])
+
     return <TableStyled>
         {showFilter && (
             <TableFilterStyled>
-                <Filter handleFilterChange={handleFilterChange}/>
+                <Filter
+                    originalData={rawData}
+                    filterDate={filterDate}
+                    filterType={filterType}
+                    filterToken={filterToken}
+                    handleReset={handleReset}
+                    handleFilterChange={handleFilterChange}/>
             </TableFilterStyled>
         )}
-        <Table {...{...defaultArgs, ...props, rawData: getRenderData()}} />
+        <Table {...{...defaultArgs, ...props, rawData, showLoading}} />
         {
             pagination && (
-                <TablePagination page={page} pageSize={pageSize} total={totalData.length}
-                                 onPageChange={handlePageChange}/>
+                <TablePagination page={page} pageSize={pageSize} total={pagination.total}
+                    onPageChange={handlePageChange}/>
             )
         }
     </TableStyled>
