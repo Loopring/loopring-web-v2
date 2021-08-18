@@ -38,7 +38,7 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
            </Box>  
         </Grid>
         <Box flex={1} alignItems={'stretch'} flexDirection="row" marginTop={3}  position={'relative'} >
-            <Box flex={1} display={'flex'} flexDirection={'column'} minHeight={256} maxHeight={420}  style={{ height: '100%', width: '101%' }}>
+            <Box flex={1} display={'flex'} flexDirection={'column'} minHeight={396} maxHeight={420}  style={{ height: '100%', width: '101%' }}>
                 <ScaleAreaChart 
                     type={chartType} 
                     data={chartType === ChartType.Trend ? trendChartData : depthChartData} 
