@@ -213,4 +213,13 @@ export default {
     labelLayer2HistoryTransactions: '充值提现',
     labelLayer2HistoryTrades: '交易记录',
     labelLayer2HistoryAmmRecords: 'AMM 记录',
+    labelTxnDetailHeader: '充值提现',
+    labelTxnDetailHash: '哈希值',
+    labelTxnDetailStatus: '状态',
+    labelTxnDetailTime: '时间',
+    labelTxnDetailFrom: '付款方',
+    labelTxnDetailTo: '收款方',
+    labelTxnDetailAmount: '数量',
+    labelTxnDetailFee: '费用',
+    labelTxnDetailMemo: '备注',
 }
