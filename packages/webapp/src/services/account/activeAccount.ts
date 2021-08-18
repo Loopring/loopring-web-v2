@@ -94,9 +94,10 @@ export async function updateAccountFromServer() {
                         const updateAccountResponse = await LoopringAPI.userAPI.updateAccount(request,
                             connectProvides.usedWeb3, system.chainId, connectName)
 
-                        await sdk.sleep(REFRESH_RATE)
-
-                        result.data = updateAccountResponse
+                        result.data = {
+                            response: updateAccountResponse,
+                            eddsaKey,
+                        }
 
                     } catch (reason) {
                         result.code = ActionResultCode.UpdateAccoutError

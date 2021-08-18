@@ -39,6 +39,7 @@ import { sleep } from 'loopring-sdk';
 import { walletLayer2Services } from '../../services/account/walletLayer2Services'
 import QRCode from 'qrcode.react';
 import { Typography } from '@material-ui/core';
+import { LoopringAPI } from 'api_wrapper';
 
 export const ModalAccountInfo = withTranslation('common')(({
                                                                onClose,
@@ -96,7 +97,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     }, [setShowAccount])
 
-    const goUpdateAccount = React.useCallback(async () => {
+    const goUpdateAccount = React.useCallback(async() => {
 
         if (!account.accAddress) {
             myLog('account.accAddress is nil')
@@ -110,8 +111,21 @@ export const ModalAccountInfo = withTranslation('common')(({
 
         switch (result.code) {
             case ActionResultCode.NoError:
-                setShowAccount({isShow: true, step: AccountStep.SuccessUnlock})
+                myLog(' after NoError:', result.data.eddsaKey)
                 await sleep(REFRESH_RATE)
+
+                if (LoopringAPI.userAPI && result.data.eddsaKey) {
+
+                    const {apiKey} = (await LoopringAPI.userAPI.getUserApiKey({
+                        accountId: account.accountId
+                    }, result.data.eddsaKey.sk))
+
+                    myLog('After connect >>, get apiKey', apiKey)
+        
+                    walletLayer2Services.sendAccountSigned(apiKey, result.data.eddsaKey)
+
+                }
+                
                 setShowAccount({isShow: false})
                 break
             case ActionResultCode.GetAccError:

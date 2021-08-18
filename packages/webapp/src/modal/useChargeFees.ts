@@ -14,7 +14,7 @@ import * as sdk from 'loopring-sdk';
 import { myLog } from '../utils/log_tools';
 
 export function useChargeFees(tokenSymbol: string | undefined, requestType: OffchainFeeReqType,
-                                 tokenMap: LoopringMap<TokenInfo> | undefined, amount?: number) {
+    tokenMap: LoopringMap<TokenInfo> | undefined, amount?: number) {
 
     const {account} = useAccount()
 
@@ -22,9 +22,12 @@ export function useChargeFees(tokenSymbol: string | undefined, requestType: Offc
 
     useCustomDCEffect(async () => {
 
-        if (account.accountId === -1 || !tokenSymbol || !tokenMap || !LoopringAPI.userAPI) {
+        if (account.accountId === -1 || !tokenSymbol || typeof tokenSymbol !== 'string'
+         || !tokenMap || !LoopringAPI.userAPI) {
             return
         }
+
+        myLog('tokenSymbol:', tokenSymbol, ' requestType:', OffchainFeeReqType[requestType])
 
         let chargeFeeList: any[] = []
 

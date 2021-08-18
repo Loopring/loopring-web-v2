@@ -120,8 +120,7 @@ export const walletLayer2Services = {
         })
     },
 
-    sendCheckAcc: async () => {
-        const self = this;
+    sendCheckAcc: async() => {
         if (store) {
             const account = store.getState().account
             if (LoopringAPI.exchangeAPI) {
