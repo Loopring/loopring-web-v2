@@ -1,25 +1,28 @@
 import React, { useCallback } from 'react';
 
+import { connectProvides } from '@loopring-web/web3-provider';
+
 import { SwitchData, TradeBtnStatus, TransferProps, } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, IBData, SagaStatus, WalletMap } from '@loopring-web/common-resources';
-import { ConnectorNames, dumpError400, OffchainFeeReqType, OriginTransferRequestV3, toBig, VALID_UNTIL } from 'loopring-sdk';
-import { useTokenMap } from '../stores/token';
-import { useAccount } from '../stores/account';
+
+import * as sdk from 'loopring-sdk'
+
+import { useTokenMap } from 'stores/token';
+import { useAccount } from 'stores/account';
 import { useChargeFees } from './useChargeFees';
 import { LoopringAPI } from 'api_wrapper';
-import { useSystem } from '../stores/system';
-import { connectProvides } from '@loopring-web/web3-provider';
-import { useCustomDCEffect } from '../hooks/common/useCustomDCEffect';
+import { useSystem } from 'stores/system';
+import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { myLog } from 'utils/log_tools';
-import { useWalletLayer2 } from '../stores/walletLayer2';
-import { makeWalletLayer2 } from '../hooks/help';
+import { useWalletLayer2 } from 'stores/walletLayer2';
+import { makeWalletLayer2 } from 'hooks/help';
 
 export const useTransfer = <R extends IBData<T>, T>(): {
     // handleTransfer: (inputValue:R) => void,
     transferProps: TransferProps<R, T>
     // transferValue: R
 } => {
-    const {tokenMap, coinMap} = useTokenMap();
+    const {tokenMap, totalCoinMap, } = useTokenMap();
     const {account} = useAccount()
     const {exchangeInfo, chainId} = useSystem();
     const {walletLayer2, status: walletLayer2Status} = useWalletLayer2();
@@ -30,7 +33,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         tradeValue: 0,
         balance: 0
     } as IBData<unknown>)
-    const {chargeFeeList} = useChargeFees(transferValue.belong, OffchainFeeReqType.TRANSFER, tokenMap)
+    const {chargeFeeList} = useChargeFees(transferValue.belong, sdk.OffchainFeeReqType.TRANSFER, tokenMap)
 
     const [tranferFeeInfo, setTransferFeeInfo] = React.useState<any>()
     const [payeeAddr, setPayeeAddr] = React.useState<string>('')
@@ -60,12 +63,12 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             try {
                 const sellToken = tokenMap[ transferValue.belong as string ]
                 const feeToken = tokenMap[ tranferFeeInfo.belong ]
-                const transferVol = toBig(transferValue.tradeValue).times('1e' + sellToken.decimals).toFixed(0, 0)
+                const transferVol = sdk.toBig(transferValue.tradeValue).times('1e' + sellToken.decimals).toFixed(0, 0)
                 const storageId = await LoopringAPI.userAPI?.getNextStorageId({
                     accountId,
                     sellTokenId: sellToken.tokenId
                 }, apiKey)
-                const req: OriginTransferRequestV3 = {
+                const req: sdk.OriginTransferRequestV3 = {
                     exchange: exchangeInfo.exchangeAddress,
                     payerAddr: accAddress,
                     payerId: accountId,
@@ -80,11 +83,11 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                         tokenId: feeToken.tokenId,
                         volume: tranferFeeInfo.__raw__,
                     },
-                    validUntil: VALID_UNTIL,
+                    validUntil: sdk.VALID_UNTIL,
                 }
                 const response = await LoopringAPI.userAPI?.submitInternalTransfer(req,
                     connectProvides.usedWeb3,
-                    chainId === 'unknown' ? 5 : chainId, connectName as ConnectorNames,
+                    chainId === 'unknown' ? 5 : chainId, connectName as sdk.ConnectorNames,
                     eddsaKey.sk, apiKey)
 
                     myLog(response)
@@ -96,7 +99,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     }
                     
             } catch (e) {
-                dumpError400(e)
+                sdk.dumpError400(e)
                 // transfer failed
             }
 
@@ -128,7 +131,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const transferProps = {
         tradeData: { belong: undefined } as any,
-        coinMap: coinMap as CoinMap<T>,
+        coinMap: totalCoinMap as CoinMap<T>,
         walletMap: walletMap as WalletMap<T>, 
         transferBtnStatus: TradeBtnStatus.AVAILABLE,
         onTransferClick,

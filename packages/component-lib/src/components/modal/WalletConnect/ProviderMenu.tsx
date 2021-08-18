@@ -31,7 +31,7 @@ const ProviderBtnStyled = styled(Button)`
     align-items: center;
   }
 
-  padding: 0 ${({theme}) => theme.unit * 5 / 3}px;
+  padding: 0 ${({ theme }) => theme.unit * 5 / 3}px;
 
   &.selected {
     position: relative;
@@ -43,10 +43,10 @@ const ProviderBtnStyled = styled(Button)`
       //width: 100%;
       display: flex;
       left: 0;
-      padding-left: ${({theme}) => theme.unit * 2}px;
+      padding-left: ${({ theme }) => theme.unit * 2}px;
       //justify-content: ;
       align-items: center;
-      font-size: ${({theme}) => theme.fontDefault.h5};
+      font-size: ${({ theme }) => theme.fontDefault.h5};
     }
 
   }
@@ -54,17 +54,17 @@ const ProviderBtnStyled = styled(Button)`
 //${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2, d_W:1})};
 //padding: 0 ${({theme}) => theme.unit * 5 / 3}px;
 const BoxStyle = styled(Box)`
-  ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2, d_W: 0})};
+  ${({ theme }) => theme.border.defaultFrame({ c_key: 'blur', d_R: 1 / 2, d_W: 0 })};
   background: var(--provider-hover);
 
  
 
   .MuiFormControlLabel-root {
-    font-size: ${({theme}) => theme.fontDefault.h6};
+    font-size: ${({ theme }) => theme.fontDefault.h6};
     align-items: flex-start;
 
     .MuiTypography-root {
-      padding: ${({theme}) => theme.unit}px 0;
+      padding: ${({ theme }) => theme.unit}px 0;
     }
   }
 
@@ -75,74 +75,74 @@ const BoxStyle = styled(Box)`
 // ` as typeof Box;
 
 export const ProviderMenu = ({
-                                 t,
-                                 gatewayList,
-                                 handleSelect,
-                                 providerName = ConnectProviders.unknown,
-                             }: ProviderMenuProps & WithTranslation) => {
-    const [checkboxValue, setCheckboxValue] = React.useState(false)
-    const [isShake, setIsShake] = React.useState(false)
-    React.useEffect(() => {
-      const isAgreed = localStorage.getItem('userTermsAgreed')
-      setCheckboxValue(isAgreed === 'true')
+  t,
+  gatewayList,
+  handleSelect,
+  providerName = ConnectProviders.unknown,
+}: ProviderMenuProps & WithTranslation) => {
+  const [checkboxValue, setCheckboxValue] = React.useState(false)
+  const [isShake, setIsShake] = React.useState(false)
+  React.useEffect(() => {
+    const isAgreed = localStorage.getItem('userTermsAgreed')
+    setCheckboxValue(isAgreed === 'true')
+    setIsShake(false);
+  }, [])
+  const handleCheckboxChange = React.useCallback((_event: any, state: boolean) => {
+    setCheckboxValue(state)
+    localStorage.setItem('userTermsAgreed', String(state))
+  }, [])
+  const _handleSelect = React.useCallback((event, key: string, handleSelect?: (event: React.MouseEvent, key: string) => void) => {
+    if (handleSelect && checkboxValue) {
+      handleSelect(event, key);
       setIsShake(false);
-    }, [])
-    const handleCheckboxChange = React.useCallback((_event: any, state: boolean) => {
-      setCheckboxValue(state)
-      localStorage.setItem('userTermsAgreed', String(state))
-    }, [])
-    const _handleSelect = React.useCallback( (event,key:string,handleSelect?:(event: React.MouseEvent, key: string) => void) => {
-        if (handleSelect && checkboxValue) {
-            handleSelect(event, key);
-            setIsShake(false);
-        }else if(!checkboxValue){
-            setIsShake(true);
-            setTimeout(()=>{
-                if(isShake){
-                    setIsShake(false)
-                };
-            },80)
-        }
-    },[checkboxValue,isShake])
-    // const  !==  ConnectProviders.unknown
-    return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
-                flexDirection={'column'}>
-        <Typography component={'h3'} variant={'h3'} marginBottom={3}>{t('labelConnectWallet')}</Typography>
-        <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}
-             flex={1} alignItems={'stretch'} alignSelf={'stretch'}
-             className="modalContent" paddingX={10}>
-            <BoxStyle paddingX={5 / 3} display={'flex'} flexDirection={'row'}
-                      justifyContent={'stretch'} alignItems={'flex-start'}>
-                <MuiFormControlLabel
-                    control={<CheckboxStyled className={isShake?'shake':''} checked={checkboxValue} onChange={handleCheckboxChange} checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
-                                       color="default"/>}
-                    label={<Trans i18nKey="labelProviderAgree">I have read, understand, and agree to the <Link component={'a'}
-                                                                                                       href={'./'}
-                                                                                                       target={'_parent'}>Terms
-                        of Service</Link>.</Trans>}/>
-            </BoxStyle>
-        </Box>
-        <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}
-             flex={1} alignItems={'stretch'} alignSelf={'stretch'}
-             className="modalContent" marginTop={3} paddingX={10}>
-
-            <>   {gatewayList.map((item: GatewayItem) => (
-                <Box key={item.key} marginTop={1.5}>
-                    <ProviderBtnStyled variant={'contained'} size={'large'} className={
-                        providerName === item.key ? 'selected' : ''
-                    } fullWidth
-                                       endIcon={<img src={item.imgSrc} alt={item.key} height={18}/>}
-                                       onClick={(e)=>{_handleSelect(e,item.key,item.handleSelect ? item.handleSelect : handleSelect )}}>
-                        {t(item.key)}
-                    </ProviderBtnStyled>
-                </Box>
-            ))}
-            </>
-
-        </Box>
-    </Box>
-    {/*</WalletConnectPanelStyled>*/
+    } else if (!checkboxValue) {
+      setIsShake(true);
+      setTimeout(() => {
+        if (isShake) {
+          setIsShake(false)
+        };
+      }, 80)
     }
+  }, [checkboxValue, isShake])
+  // const  !==  ConnectProviders.unknown
+  return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
+    flexDirection={'column'}>
+    <Typography component={'h3'} variant={'h3'} marginBottom={3}>{t('labelConnectWallet')}</Typography>
+    <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}
+      flex={1} alignItems={'stretch'} alignSelf={'stretch'}
+      className="modalContent" paddingX={10}>
+      <BoxStyle paddingX={5 / 3} display={'flex'} flexDirection={'row'}
+        justifyContent={'stretch'} alignItems={'flex-start'}>
+        <MuiFormControlLabel
+          control={<CheckboxStyled className={isShake ? 'shake' : ''} checked={checkboxValue} onChange={handleCheckboxChange} checkedIcon={<CheckedIcon />} icon={<CheckBoxIcon />}
+            color="default" />}
+          label={<Trans i18nKey="labelProviderAgree">I have read, understand, and agree to the <Link component={'a'}
+            href={'./'}
+            target={'_parent'}>Terms
+            of Service</Link>.</Trans>} />
+      </BoxStyle>
+    </Box>
+    <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}
+      flex={1} alignItems={'stretch'} alignSelf={'stretch'}
+      className="modalContent" marginTop={3} paddingX={10}>
+
+      <>   {gatewayList.map((item: GatewayItem) => (
+        <Box key={item.key} marginTop={1.5}>
+          <ProviderBtnStyled variant={'contained'} size={'large'} className={
+            providerName === item.key ? 'selected' : ''
+          } fullWidth
+            endIcon={<img src={item.imgSrc} alt={item.key} height={18} />}
+            onClick={(e) => { _handleSelect(e, item.key, item.handleSelect ? item.handleSelect : handleSelect) }}>
+            {t(item.key)}
+          </ProviderBtnStyled>
+        </Box>
+      ))}
+      </>
+
+    </Box>
+  </Box>
+  {/*</WalletConnectPanelStyled>*/
+  }
 }
 
 // export const ModalWalletConnect = withTranslation('swap', {withRef: true})((

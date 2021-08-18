@@ -3,21 +3,21 @@ import React, { useCallback } from 'react';
 import { AccountStep, DepositProps, SwitchData, TradeBtnStatus, useOpenModals } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, ConnectProviders, IBData, WalletMap } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
-import { useTokenMap } from '../stores/token';
-import { useAccount } from '../stores/account';
-import { useSystem } from '../stores/system';
+import { useTokenMap } from 'stores/token';
+import { useAccount } from 'stores/account';
+import { useSystem } from 'stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { LoopringAPI } from 'api_wrapper';
 import { dumpError400, GetAllowancesRequest } from 'loopring-sdk';
 import { myLog } from 'utils/log_tools';
-import { useWalletLayer1 } from '../stores/walletLayer1';
+import { useWalletLayer1 } from 'stores/walletLayer1';
 import { useTranslation } from 'react-i18next';
 import { ActionResult, ActionResultCode } from 'defs/common_defs';
 
 export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false): {
     depositProps: DepositProps<R, T>
 } => {
-    const {tokenMap, coinMap} = useTokenMap()
+    const {tokenMap, totalCoinMap, } = useTokenMap()
     const {account} = useAccount()
     const {exchangeInfo, chainId, gasPrice} = useSystem()
     const [depositValue, setDepositValue] = React.useState<IBData<T>>({
@@ -149,7 +149,7 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
         isNewAccount,
         title,
         tradeData: {belong: undefined} as any,
-        coinMap: coinMap as CoinMap<any>,
+        coinMap: totalCoinMap as CoinMap<any>,
         walletMap: walletLayer1 as WalletMap<any>,
         depositBtnStatus: TradeBtnStatus.AVAILABLE,
         onDepositClick,
