@@ -43,7 +43,7 @@ export const ColorDarkDefault = Object.freeze({
     opacity: `${hexToRGB('#000000', '0')}`,
     star:`#F0B90B`,
     /********************Case for provider*******************/
-    shadow: `0px 10px 20px rgba(87, 102, 236, 0.15)`,
+    shadow: ` 0px 4px 4px ${hexToRGB('#000000', '.25')}`,
     fieldOpacity:`${hexToRGB('#ffffff', '0.1')}`,
     providerBtn:`${hexToRGB('#ffffff', '0.1')}`,
     providerBtnHover:`${hexToRGB('#ffffff', '0.03')}`,
