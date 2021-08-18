@@ -238,10 +238,11 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         })
     }, [updateData])
 
-    const handlePageChange = React.useCallback((page: number) => {
-        setPage(page)
-        updateData({TableType: TableType.page, currPage: page})
-    }, [updateData])
+    const handlePageChange = React.useCallback((currPage: number) => {
+        if (currPage === page) return
+        setPage(currPage)
+        updateData({TableType: TableType.page, currPage: currPage})
+    }, [updateData, page])
 
     const handleTxnDetail = React.useCallback(() => {
         setModalState(true)
