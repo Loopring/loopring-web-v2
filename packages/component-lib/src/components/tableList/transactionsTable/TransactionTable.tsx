@@ -148,7 +148,7 @@ export interface TransactionTableProps {
 }
 
 export const TransactionTable = withTranslation('tables')((props: TransactionTableProps & WithTranslation) => {
-    const {rawData, pagination, showFilter, getTxnList, showLoading} = props
+    const { rawData, pagination, showFilter, getTxnList, showLoading } = props
     const [page, setPage] = React.useState(1)
     const [totalData, setTotalData] = React.useState<RawDataTransactionItem[]>(rawData)
     const [filterType, setFilterType] = React.useState(TransactionTradeTypes.allTypes)
@@ -172,30 +172,13 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         setTotalData(rawData);
     }, [rawData])
 
-    // const getRenderData = React.useCallback(() => pagination
-    //     ? totalData.slice((page - 1) * pageSize, page * pageSize)
-    //     : totalData
-    //     , [page, pagination, pageSize, totalData])
-
-    const updateData = React.useCallback(async ({
+    const updateData = React.useCallback(({
                                               TableType,
                                               currFilterType = filterType,
                                               currFilterDate = filterDate,
                                               currFilterToken = filterToken,
                                               currPage = page,
                                           }) => {
-        // let resultData = rawData || []
-        // if (currFilterType !== TransactionTradeTypes.allTypes) {
-        //     resultData = resultData.filter(o => o.side === currFilterType)
-        // }
-        // if (currFilterDate[ 0 ] && currFilterDate[ 1 ]) {
-        //     const startTime = Number(moment(currFilterDate[ 0 ]).format('x'))
-        //     const endTime = Number(moment(currFilterDate[ 1 ]).format('x'))
-        //     resultData = resultData.filter(o => o.time < endTime && o.time > startTime)
-        // }
-        // if (currFilterToken !== 'All Tokens') {
-        //     resultData = resultData.filter(o => o.amount.unit === currFilterToken)
-        // }
         let actualPage = currPage
         if (TableType === 'filter') {
             actualPage = 1
