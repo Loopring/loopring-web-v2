@@ -1,8 +1,8 @@
-import { useAccount } from '../stores/account';
+import { useAccount } from '../../stores/account';
 import { AccountStep, useOpenModals } from '@loopring-web/component-lib';
 import React from 'react';
 import { sleep } from 'loopring-sdk';
-import { useAccountHook } from '../services/account/useAccountHook';
+import { useAccountHook } from '../../services/account/useAccountHook';
 
 export  function useAccountModal() {
     const { shouldShow, setShouldShow, statusUnset: statusAccountUnset} = useAccount();

@@ -5,13 +5,12 @@ import {
 import { ModalWalletConnectPanel } from './WalletModal';
 import { ModalAccountInfo } from './AccountModal';
 import { withTranslation, WithTranslation } from 'react-i18next';
-import { useTransfer } from './useTransfer';
-import { useDeposit } from './useDeposit';
-import { useWithdraw } from './useWithdraw';
+import { useTransfer } from 'hooks/useractions/useTransfer';
+import { useDeposit } from 'hooks/useractions/useDeposit';
+import { useWithdraw } from 'hooks/useractions/useWithdraw';
 import { useSystem } from '../stores/system';
-import { useAccountModal } from './useAccountModal';
+import { useAccountModal } from 'hooks/useractions/useAccountModal';
 import { TOAST_TIME } from '../defs/common_defs';
-import React from 'react';
 
 export const ModalGroup = withTranslation('common',{withRef: true})(({...rest}:WithTranslation)=>{
     const {transferProps} = useTransfer();

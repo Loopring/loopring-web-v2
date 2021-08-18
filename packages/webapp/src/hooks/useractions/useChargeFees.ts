@@ -6,12 +6,12 @@ import {
     toBig,
     TokenInfo
 } from 'loopring-sdk';
-import { useAccount } from '../stores/account';
+import { useAccount } from 'stores/account';
 import { useState } from 'react';
-import { useCustomDCEffect } from '../hooks/common/useCustomDCEffect';
+import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { LoopringAPI } from 'api_wrapper';
 import * as sdk from 'loopring-sdk';
-import { myLog } from '../utils/log_tools';
+import { myLog } from 'utils/log_tools';
 
 export function useChargeFees(tokenSymbol: string | undefined, requestType: OffchainFeeReqType,
     tokenMap: LoopringMap<TokenInfo> | undefined, amount?: number) {
