@@ -162,64 +162,18 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     useCustomDCEffect(async () => {
 
+        if (walletLayer2Status !== SagaStatus.UNSET) {
+            return
+        }
+
         const base = tradeData?.sell.belong
         const quote = tradeData?.buy.belong
 
-        if (!LoopringAPI.userAPI || !base || !quote || !marketArray
-            || account.readyState !== AccountStatus.ACTIVATED 
-            || !ammMap || !market || !account.accountId || !account.apiKey) {
-            return
-        }
+        if (marketArray && base && quote && market &&
+            LoopringAPI.userAPI && account.readyState === AccountStatus.ACTIVATED 
+            && ammMap && account?.accountId && account?.apiKey) {
 
-        const {
-            amm
-        } = getExistedMarket(marketArray, base, quote)
-
-        let feeBips = 0
-
-        if (amm && ammMap[amm]) {
-            feeBips = ammMap[amm].__rawConfig__.feeBips
-        }
-
-        const req: GetMinimumTokenAmtRequest = {
-            accountId: account?.accountId,
-            market,
-        }
-
-        const { amountMap } = await LoopringAPI.userAPI.getMinimumTokenAmt(req, account.apiKey)
-
-        const baseMinAmtInfo = amountMap[base]
-        const quoteMinAmtInfo = amountMap[quote]
-
-        if (!baseMinAmtInfo || !quoteMinAmtInfo) {
-            return
-        }
-
-        const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
-
-        const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
-
-        setBaseMinAmt(baseMinAmtInfo.userOrderInfo.minAmount)
-        setQuoteMinAmt(quoteMinAmtInfo.userOrderInfo.minAmount)
-
-        myLog('-------------- amountMap:', amountMap, 'totalFee:', totalFee, ' takerRate:', takerRate)
-
-        setFeeBips(totalFee)
-        setTakerRate(takerRate.toString())
-
-        setTradeCalcData({ ...tradeCalcData, fee: totalFee } as TradeCalcData<C>)
-
-    }, [tradeData?.sell.belong, tradeData?.buy.belong, marketArray, ammMap,
-    account.readyState, account.apiKey, account.accountId])
-
-    // myLog('tradeData?.sell.belong:', tradeData?.sell.belong)
-    // myLog('tradeData?.buy.belong:', tradeData?.buy.belong)
-
-    //HIGH: effect by wallet state update
-    React.useEffect(() => {
-        if (walletLayer2Status === SagaStatus.UNSET) {
             const { walletMap } = makeWalletLayer2();
-            // if (tradeCalcData) {
             setTradeCalcData({ ...tradeCalcData, walletMap } as TradeCalcData<C>);
             setTradeData({
                 sell: {
@@ -232,6 +186,66 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                     balance: walletMap ? walletMap[tradeCalcData.coinBuy as string]?.count : 0
                 },
             } as SwapTradeData<IBData<C>>)
+
+            const {
+                amm
+            } = getExistedMarket(marketArray, base, quote)
+    
+            let feeBips = 0
+    
+            if (amm && ammMap[amm]) {
+                feeBips = ammMap[amm].__rawConfig__.feeBips
+            }
+    
+            const req: GetMinimumTokenAmtRequest = {
+                accountId: account.accountId,
+                market,
+            }
+    
+            const { amountMap } = await LoopringAPI.userAPI.getMinimumTokenAmt(req, account.apiKey)
+    
+            const baseMinAmtInfo = amountMap[base]
+            const quoteMinAmtInfo = amountMap[quote]
+    
+            if (!baseMinAmtInfo || !quoteMinAmtInfo) {
+                return
+            }
+    
+            const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
+    
+            const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
+    
+            setBaseMinAmt(baseMinAmtInfo.userOrderInfo.minAmount)
+            setQuoteMinAmt(quoteMinAmtInfo.userOrderInfo.minAmount)
+    
+            // myLog('-------------- amountMap:', amountMap, 'totalFee:', totalFee, ' takerRate:', takerRate)
+    
+            setFeeBips(totalFee)
+            setTakerRate(takerRate.toString())
+    
+            setTradeCalcData({ ...tradeCalcData, fee: totalFee } as TradeCalcData<C>)
+
+        } else {
+
+            // myLog('set fee to 0')
+
+            setFeeBips('0')
+            setTakerRate('0')
+    
+            setTradeCalcData({ ...tradeCalcData, fee: '0' } as TradeCalcData<C>)
+        }
+
+
+    }, [tradeData?.sell.belong, tradeData?.buy.belong, marketArray, ammMap,
+    account.readyState, account.apiKey, account.accountId, walletLayer2Status])
+
+    // myLog('tradeData?.sell.belong:', tradeData?.sell.belong)
+    // myLog('tradeData?.buy.belong:', tradeData?.buy.belong)
+
+    //HIGH: effect by wallet state update
+    React.useEffect(() => {
+        if (walletLayer2Status === SagaStatus.UNSET) {
+            
             // }
         }
     }, [walletLayer2Status])

@@ -7,6 +7,7 @@ import store from 'stores';
 import { updateAccountStatus } from 'stores/account';
 import * as sdk from 'loopring-sdk'
 import { unlockAccount } from './unlockAccount';
+import { updateWalletLayer2 } from 'stores/walletLayer2';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
@@ -80,13 +81,13 @@ export const walletLayer2Services = {
             nonce: undefined,
         }
         store.dispatch(updateAccountStatus(updateInfo))
+        store.dispatch(updateWalletLayer2(undefined))
         subject.next({
             status: Commands.LockAccount,
             data: undefined,
         })
     },
     sendActiveAccountDeposit: () => {
-
     },
     sendAccountSigned: (apiKey?: any, eddsaKey?: any) => {
         const updateInfo = apiKey && eddsaKey ? {
