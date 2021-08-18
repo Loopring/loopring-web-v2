@@ -229,6 +229,9 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 },
                 '&:disabled': {
                     color: colorBase.disable
+                },
+                '& .MuiButton-endIcon,& .MuiButton-startIcon':{
+                    color: colorBase.buttonIcon
                 }
             },
             contained: {
@@ -634,15 +637,17 @@ export const MuiListItem = ({colorBase}: any) => {
                     color: colorBase.textButtonSelect,
                     background:colorBase.boxHover,
                 },
-                // '&.Mui-selected': {
-                //     color: colorBase.textPrimary,
-                //     background: 'none',//colorBase.boxHover,
-                // },
-                '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
-                    '&:hover, &':{
+                '&.Mui-selected, &.Mui-focusVisible': {
+                    backgroundColor: 'transparent',
+                    color: colorBase.textButtonSelect,
+                    border: 'none',
+                    '&:hover':{
                         color: colorBase.textButtonSelect,
                         border: 'none',
                     }
+                },
+                ' .MuiListItemAvatar-root': {
+                    color:colorBase.buttonIcon// "var(--color-button-icon)"
                 }
             },
         }
@@ -679,26 +684,25 @@ export const MuiMenuItem = ({colorBase,themeMode}: any) => {
                     flexWrap: 'noWrap',
                     justifyContent: 'space-between',
                     '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
-
                         '&:after': {
                             display: 'none'
                         }
                     }
                 },
-                '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
-                    // backgroundColor: 'transparent',
-                    background: 'none',
-                    color: colorBase.textPrimary,
-                    // '&:after': {
-                    //     fontSize: '1.6rem',
-                    //     height: '1em',
-                    //     width: '1em',
-                    //     right: '1em',
-                    //     position: 'absolute',
-                    //     display: 'block',
-                    //     content: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 13' fill='` + encodeURIComponent(colorBase.primaryLight) + `'><path fillRule='evenodd' clipRule='evenodd' d='M17.7071 0.292893C18.0976 0.683417 18.0976 1.31658 17.7071 1.70711L6.70711 12.7071C6.31658 13.0976 5.68342 13.0976 5.29289 12.7071L0.292893 7.70711C-0.0976311 7.31658 -0.0976311 6.68342 0.292893 6.29289C0.683417 5.90237 1.31658 5.90237 1.70711 6.29289L6 10.5858L11.1464 5.43934L16.2929 0.292893C16.6834 -0.0976311 17.3166 -0.0976311 17.7071 0.292893Z' /></svg>\")`
-                    // }
-                },
+                // '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
+                //     // backgroundColor: 'transparent',
+                //     background: 'none',
+                //     color: colorBase.textPrimary,
+                //     // '&:after': {
+                //     //     fontSize: '1.6rem',
+                //     //     height: '1em',
+                //     //     width: '1em',
+                //     //     right: '1em',
+                //     //     position: 'absolute',
+                //     //     display: 'block',
+                //     //     content: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 13' fill='` + encodeURIComponent(colorBase.primaryLight) + `'><path fillRule='evenodd' clipRule='evenodd' d='M17.7071 0.292893C18.0976 0.683417 18.0976 1.31658 17.7071 1.70711L6.70711 12.7071C6.31658 13.0976 5.68342 13.0976 5.29289 12.7071L0.292893 7.70711C-0.0976311 7.31658 -0.0976311 6.68342 0.292893 6.29289C0.683417 5.90237 1.31658 5.90237 1.70711 6.29289L6 10.5858L11.1464 5.43934L16.2929 0.292893C16.6834 -0.0976311 17.3166 -0.0976311 17.7071 0.292893Z' /></svg>\")`
+                //     // }
+                // },
             },
         }
     }

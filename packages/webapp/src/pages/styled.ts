@@ -50,5 +50,9 @@ export const  TableWrapStyled = styled(Grid)`
   }
   ${({theme}) => TablePaddingX({pLeft:theme.unit * 3,pRight:theme.unit * 3})}
 ` as typeof Grid
-
+export const FixedStyle = styled(Box)`
+  @media only screen and (min-height: 784px ) and (min-width: 1024px) {
+    position: fixed;
+  }
+` as typeof Box
 //    ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1})};
