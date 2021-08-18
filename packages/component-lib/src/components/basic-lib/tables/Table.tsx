@@ -11,13 +11,17 @@ import { EmptyDefault } from '../empty';
 import { LoadingIcon } from '@loopring-web/common-resources'
 import { Box, IconButton } from '@material-ui/core';
 
-const TableWrapperStyled = styled(Box)`
+interface TableWrapperStyledProps {
+  showloading: 'true' | 'false'
+}
+
+const TableWrapperStyled = styled(Box)<TableWrapperStyledProps>`
   display: flex;
   position: relative;
   flex: 1;
 
   &::after {
-    visibility: ${(props: any) => props.showloading ? 'visible' : 'hidden'};
+    visibility: ${({ showloading }) => showloading === 'true' ? 'visible' : 'hidden'};
     position: absolute;
     z-index: 20;
     top: 0;
@@ -254,7 +258,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
     `
 
     /*** sort handle end ***/
-    return <TableWrapperStyled showloading={showLoading}>
+    return <TableWrapperStyled showloading={!!showLoading ? 'true' : 'false'}>
         <DataGridStyled
             {...rest}
             onScroll={onScroll}
