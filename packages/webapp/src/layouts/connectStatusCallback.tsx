@@ -18,7 +18,6 @@ export const accountStaticCallBack = (onclickMap: { [key: number]: [fn: (props: 
 }
 
 export const btnLabel = {
-
     [fnType.UN_CONNECT]: [
         function () {
             return `labelConnectWallet`
@@ -73,7 +72,6 @@ export const btnClickMap: { [key: string]: [fn: (props: any) => any, args?: any[
     ]
     , [fnType.NO_ACCOUNT]: [
         function () {
-
             myLog('NO_ACCOUNT! sendCheckAcc', );
             store.dispatch(changeShowModel({ _userOnModel: true }));
             walletLayer2Services.sendCheckAcc()
@@ -82,6 +80,13 @@ export const btnClickMap: { [key: string]: [fn: (props: any) => any, args?: any[
     , [fnType.DEPOSITING]: [
         function () {
             myLog('DEPOSITING! sendCheckAcc', );
+            store.dispatch(changeShowModel({ _userOnModel: true }));
+            walletLayer2Services.sendCheckAcc()
+        }
+    ]
+    ,[fnType.NOT_ACTIVE]: [
+        function () {
+            myLog('NOT_ACTIVE! sendCheckAcc', );
             store.dispatch(changeShowModel({ _userOnModel: true }));
             walletLayer2Services.sendCheckAcc()
         }
