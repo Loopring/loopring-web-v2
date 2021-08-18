@@ -15,7 +15,7 @@ import {
     AssetsIcon, // temporayily replacement
 } from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
-import { TxnDetailPanel } from './components/modal'
+import { TxnDetailPanel, TxnDetailProps } from './components/modal'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes } from './Interface'
 import { DateRange } from '@material-ui/lab'
@@ -155,6 +155,16 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
     const [filterDate, setFilterDate] = React.useState<DateRange<Date | string>>(['', ''])
     const [filterToken, setFilterToken] = React.useState<string>('All Tokens')
     const [modalState, setModalState] = React.useState(false)
+    const [txnDetailInfo, setTxnDetailInfo] = React.useState<TxnDetailProps>({
+        hash: '',
+        status: 'processed',
+        time: '',
+        from: '',
+        to: '',
+        amount: '',
+        fee: '',
+        memo: '',
+    })
 
     const pageSize = pagination ? pagination.pageSize : 10;
 
@@ -244,11 +254,12 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
         updateData({TableType: TableType.page, currPage: currPage})
     }, [updateData, page])
 
-    const handleTxnDetail = React.useCallback(() => {
+    const handleTxnDetail = React.useCallback((prop: TxnDetailProps) => {
         setModalState(true)
+        setTxnDetailInfo(prop)
     }, [])
 
-    const getColumnModeTransaction = React.useCallback((t: TFunction): Column<Row, unknown>[] => [
+    const getColumnModeTransaction = React.useCallback((t: TFunction): Column<any, unknown>[] => [
         {
             key: 'side',
             name: t('labelTxSide'),
@@ -298,15 +309,36 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
                 // console.log(row)
                 const value = row[ 'txnHash' ]
                 const RenderValue = styled(Box)`
-                    color: ${({theme}) => theme.colorBase[ value ? 'primary' : 'textSecondary' ]};
+                    color: ${({theme}) => theme.colorBase[ value ? 'secondary' : 'textSecondary' ]};
                     cursor: pointer;
                 `
+                console.log(row)
+                const {
+                    hash,
+                    status,
+                    time,
+                    recipient,
+                    senderAddress,
+                    amount,
+                    fee,
+                    memo,
+                } = row
+                const formattedDetail = {
+                    hash,
+                    status,
+                    time,
+                    from: recipient,
+                    to: senderAddress,
+                    fee: `${fee.value} ${fee.unit}`,
+                    amount: `${amount.value} ${amount.unit}`,
+                    memo,
+                }
                 return (
                     <div className="rdg-cell-value">
                         {path ? <Link href={path}>
                                 <RenderValue title={value}>{value || EmptyValueTag}</RenderValue>
                             </Link> :
-                            <RenderValue onClick={handleTxnDetail} title={value}>{value ? getFormattedHash(value) : EmptyValueTag}</RenderValue>}
+                            <RenderValue onClick={() => handleTxnDetail(formattedDetail)} title={value}>{value ? getFormattedHash(value) : EmptyValueTag}</RenderValue>}
                     </div>
                 )
             }
@@ -362,12 +394,9 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
             open={modalState}
             onClose={() => setModalState(false)}
         >
-            <div>
-                {TxnDetailPanel}
-            </div>
+            <TxnDetailPanel {...txnDetailInfo} />
         </Modal>
-        {/* <Table {...{...defaultArgs, ...props, rawData: getRenderData()}}/> */}
-        <Table {...{...defaultArgs, ...props, rawData, showLoading, }}/>
+        <Table {...{...defaultArgs, ...props, rawData, showLoading }}/>
         {pagination && (
             <TablePagination page={page} pageSize={pageSize} total={pagination.total} onPageChange={handlePageChange}/>
         )}
