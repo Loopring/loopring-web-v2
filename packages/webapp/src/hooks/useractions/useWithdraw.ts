@@ -40,7 +40,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const [withdrawAlertText, setWithdrawAlertText] = useState<string>()
 
-    const {tokenMap, coinMap} = useTokenMap();
+    const {tokenMap, totalCoinMap, } = useTokenMap();
     const {account} = useAccount()
     const {exchangeInfo, chainId} = useSystem();
     const [withdrawValue, setWithdrawValue] = React.useState<IBData<T>>({
@@ -131,7 +131,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const withdrawProps: WithdrawProps<R, T> = {
         tradeData: {belong: undefined} as any,
-        coinMap: coinMap as CoinMap<T>,
+        coinMap: totalCoinMap as CoinMap<T>,
         walletMap: walletMap2 as WalletMap<any>,
         withdrawBtnStatus: TradeBtnStatus.AVAILABLE,
         withdrawType: withdrawType2,

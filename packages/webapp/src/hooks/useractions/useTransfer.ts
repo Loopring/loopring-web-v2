@@ -22,7 +22,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     transferProps: TransferProps<R, T>
     // transferValue: R
 } => {
-    const {tokenMap, coinMap} = useTokenMap();
+    const {tokenMap, totalCoinMap, } = useTokenMap();
     const {account} = useAccount()
     const {exchangeInfo, chainId} = useSystem();
     const {walletLayer2, status: walletLayer2Status} = useWalletLayer2();
@@ -131,7 +131,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const transferProps = {
         tradeData: { belong: undefined } as any,
-        coinMap: coinMap as CoinMap<T>,
+        coinMap: totalCoinMap as CoinMap<T>,
         walletMap: walletMap as WalletMap<T>, 
         transferBtnStatus: TradeBtnStatus.AVAILABLE,
         onTransferClick,

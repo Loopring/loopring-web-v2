@@ -17,7 +17,7 @@ import { ActionResult, ActionResultCode } from 'defs/common_defs';
 export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false): {
     depositProps: DepositProps<R, T>
 } => {
-    const {tokenMap, coinMap} = useTokenMap()
+    const {tokenMap, totalCoinMap, } = useTokenMap()
     const {account} = useAccount()
     const {exchangeInfo, chainId, gasPrice} = useSystem()
     const [depositValue, setDepositValue] = React.useState<IBData<T>>({
@@ -149,7 +149,7 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
         isNewAccount,
         title,
         tradeData: {belong: undefined} as any,
-        coinMap: coinMap as CoinMap<any>,
+        coinMap: totalCoinMap as CoinMap<any>,
         walletMap: walletLayer1 as WalletMap<any>,
         depositBtnStatus: TradeBtnStatus.AVAILABLE,
         onDepositClick,
