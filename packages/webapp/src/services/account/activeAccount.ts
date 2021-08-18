@@ -74,7 +74,7 @@ export async function updateAccountFromServer() {
                             connectProvides.usedWeb3,
                             accInfo.owner,
                             system.exchangeInfo.exchangeAddress,
-                            accInfo.keyNonce as number,
+                            accInfo.nonce,
                             connectName,
                         )
 
