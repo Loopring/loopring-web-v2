@@ -13,17 +13,12 @@ import AmmPanel from './AmmPanel'
 import History from './HistoryPanel'
 import OrderPanel from './OrderPanel'
 import MyLiqudityPanel from './MyLiquidityPanel'
-// import { SettingPanel } from '../SettingPage';
-// import { useModalProps } from '../../layouts/header/hook';
 import React from 'react';
 import { useAccount } from '../../stores/account';
 import { accountStaticCallBack, btnLabel, btnClickMap } from '../../layouts/connectStatusCallback';
 import { deepClone } from '../../utils/obj_tools';
 
 import { i18n } from "@loopring-web/common-resources"
-
-
-// import { useModalProps } from '../../modal';
 
 export const subMenu = subMenuLayer2
 
@@ -45,7 +40,7 @@ const BoxStyle = styled(Box)`
 
 ` as typeof Box
 const BtnConnect = withTranslation(['common'], {withRef: true})(({t}: any) => {
-    const { status: accountStatus} = useAccount();
+    const { status: accountStatus, account } = useAccount();
     // const {setShowAccount} = useOpenModals();
     const [label, setLabel] = React.useState(undefined);
 
@@ -66,7 +61,7 @@ const BtnConnect = withTranslation(['common'], {withRef: true})(({t}: any) => {
         if (accountStatus === SagaStatus.UNSET) {
             setLabel(accountStaticCallBack(_btnLabel));
         }
-    }, [accountStatus, i18n.language])
+    }, [accountStatus, account.readyState, i18n.language])
 
     const _btnClickMap = Object.assign(deepClone(btnClickMap), {});
 
