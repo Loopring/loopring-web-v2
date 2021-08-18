@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
+import { connectProvides } from '@loopring-web/web3-provider';
 import { SwitchData, TradeBtnStatus, useOpenModals, WithdrawProps } from '@loopring-web/component-lib';
 import {
     AccountStatus,
@@ -11,17 +14,16 @@ import {
     WithdrawTypes
 } from '@loopring-web/common-resources';
 import { ConnectorNames, dumpError400, OffchainFeeReqType, toBig, VALID_UNTIL } from 'loopring-sdk';
-import { useTokenMap } from '../stores/token';
-import { useAccount } from '../stores/account';
+
+import { useTokenMap } from 'stores/token';
+import { useAccount } from 'stores/account';
 import { useChargeFees } from './useChargeFees';
-import { useCustomDCEffect } from '../hooks/common/useCustomDCEffect';
+import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { LoopringAPI } from 'api_wrapper';
-import { useSystem } from '../stores/system';
-import { connectProvides } from '@loopring-web/web3-provider';
+import { useSystem } from 'stores/system';
 import { myLog } from 'utils/log_tools';
-import { useWalletLayer2 } from '../stores/walletLayer2';
-import { makeWalletLayer2 } from '../hooks/help';
-import { useTranslation } from 'react-i18next';
+import { useWalletLayer2 } from 'stores/walletLayer2';
+import { makeWalletLayer2 } from 'hooks/help';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     // handleWithdraw: (inputValue:R) => void,

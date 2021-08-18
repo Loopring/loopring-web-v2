@@ -1,10 +1,15 @@
 import React from "react";
 import { useDispatch } from "react-redux"
-
-import { setShowDeposit, setShowResetAccount, setShowTransfer, setShowWithdraw, } from '@loopring-web/component-lib'
 import { useTranslation } from "react-i18next";
-import { useAccount } from '../stores/account';
-import { AccountStatus } from '@loopring-web/common-resources';
+
+import { 
+    setShowDeposit, 
+    setShowResetAccount, 
+    setShowTransfer, 
+    setShowWithdraw, } from '@loopring-web/component-lib'
+import { AccountStatus } from '@loopring-web/common-resources'
+
+import { useAccount } from 'stores/account'
 
 export function useModals() {
     const dispatch = useDispatch()

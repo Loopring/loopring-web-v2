@@ -22,6 +22,9 @@ import {
     TokenAccessProcess,
     useOpenModals,
 } from '@loopring-web/component-lib';
+import { walletServices } from '@loopring-web/web3-provider';
+import { sleep } from 'loopring-sdk';
+
 import React, { useState } from 'react';
 import { copyToClipBoard } from 'utils/obj_tools';
 import { useAccount } from 'stores/account';
@@ -32,13 +35,10 @@ import { lockAccount } from 'services/account/lockAccount';
 import { unlockAccount } from 'services/account/unlockAccount';
 import { useTokenMap } from 'stores/token';
 import { myLog } from 'utils/log_tools';
-import { walletServices } from '@loopring-web/web3-provider';
-import { useDeposit } from 'modal/useDeposit';
-import { sleep } from 'loopring-sdk';
+import { useDeposit } from 'hooks/useractions/useDeposit';
 
 import { walletLayer2Services } from '../../services/account/walletLayer2Services'
-import QRCode from 'qrcode.react';
-import { Typography } from '@material-ui/core';
+
 import { LoopringAPI } from 'api_wrapper';
 
 export const ModalAccountInfo = withTranslation('common')(({
