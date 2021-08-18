@@ -212,4 +212,13 @@ export default {
     labelLayer2HistoryTransactions: 'Transactions',
     labelLayer2HistoryTrades: 'Trades',
     labelLayer2HistoryAmmRecords: 'AMM Records',
+    labelTxnDetailHeader: 'Transaction',
+    labelTxnDetailHash: 'Hash',
+    labelTxnDetailStatus: 'Status',
+    labelTxnDetailTime: 'Time',
+    labelTxnDetailFrom: 'From',
+    labelTxnDetailTo: 'To',
+    labelTxnDetailAmount: 'Amount',
+    labelTxnDetailFee: 'Fee',
+    labelTxnDetailMemo: 'Memo',
 }
