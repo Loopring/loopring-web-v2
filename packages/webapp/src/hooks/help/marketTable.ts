@@ -81,42 +81,43 @@ export const getUserAmmTransaction = () => {
 
 export const makeMyAmmMarketArray = <C extends { [ key: string ]:any }>(coinKey: string|undefined, marketTransaction: sdk.UserAmmPoolTx[]): AmmRecordRow<C>[] => {
 
-    let tradeArray: Array<Partial<AmmRecordRow<C>>> = [];
-    let {tokenMap, coinMap, idIndex} = store.getState().tokenMap;
-    marketTransaction.forEach((item: sdk.UserAmmPoolTx) => {
-        try {
-           // const {base, quote} = getBaseQuote(coinKey)
-            const {forex} = store.getState().system
-            // const {currency} = store.getState().settings
-            if (coinMap && tokenMap && idIndex
-                && !(coinKey && tokenMap['LP-'+coinKey].tokenId !== item.lpToken.tokenId) ) {
-                // @ts-ignore
-                const [, coinA, coinB] = idIndex[item.lpToken.tokenId].match(/LP-(\w+)-(\w+)/i);
-                 
-                tradeArray.push({
-                        type: item.txType === sdk.AmmTxType.JOIN ? AmmTradeType.add : AmmTradeType.remove,
-                        //TODO:
-                        totalDollar: 1000,
-                        totalYuan: 1000 / Number(forex),
-                        amountA: volumeToCount(coinA,item.poolTokens[ 0 ]?.actualAmount),
-                        amountB: volumeToCount(coinA,item.poolTokens[ 1 ]?.actualAmount),
-                        time: Number(item.updatedAt),
-                        // @ts-ignore
-                        coinA: coinMap[ coinA ],
-                        // @ts-ignore
-                        coinB: coinMap[ coinB ],
-                        status: item.txStatus
-                    })
-                }
-                return tradeArray
-            }
-         catch (error) {
-            //CATCHERROR:
-            console.log(error)
-            // new CustomError()
-        }
+    const tradeArray: Array<Partial<AmmRecordRow<C>>> = []
+    const {tokenMap, coinMap, idIndex} = store.getState().tokenMap
+    const { forex } = store.getState().system
 
-    })
+    if (marketTransaction) {
+        marketTransaction.forEach((item: sdk.UserAmmPoolTx) => {
+            try {
+                if (coinMap && tokenMap && idIndex
+                    && !(coinKey && tokenMap['LP-'+coinKey].tokenId !== item.lpToken.tokenId) ) {
+                    // @ts-ignore
+                    const [, coinA, coinB] = idIndex[item.lpToken.tokenId].match(/LP-(\w+)-(\w+)/i);
+                     
+                    tradeArray.push({
+                            type: item.txType === sdk.AmmTxType.JOIN ? AmmTradeType.add : AmmTradeType.remove,
+                            //TODO:
+                            totalDollar: 1000,
+                            totalYuan: 1000 / Number(forex),
+                            amountA: volumeToCount(coinA,item.poolTokens[ 0 ]?.actualAmount),
+                            amountB: volumeToCount(coinA,item.poolTokens[ 1 ]?.actualAmount),
+                            time: Number(item.updatedAt),
+                            // @ts-ignore
+                            coinA: coinMap[ coinA ],
+                            // @ts-ignore
+                            coinB: coinMap[ coinB ],
+                            status: item.txStatus
+                        })
+                    }
+                    return tradeArray
+                }
+             catch (error) {
+                //CATCHERROR:
+                console.log(error)
+                // new CustomError()
+            }
+        })
+
+    }
     // console.log('tradeArray:', tradeArray)
     return tradeArray as AmmRecordRow<C>[];
 
