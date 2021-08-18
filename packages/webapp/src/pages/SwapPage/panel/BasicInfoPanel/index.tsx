@@ -37,8 +37,8 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
                                   handleChange={handleChange} />
            </Box>  
         </Grid>
-        <Grid item  position={'relative'}>
-            <Box minHeight={256} maxHeight={256} display={'block'} style={{ height: '100%', width: '100%' }}>
+        <Box flex={1} alignItems={'stretch'} flexDirection="row" marginTop={3}  position={'relative'} >
+            <Box flex={1} display={'flex'} flexDirection={'column'} minHeight={256} maxHeight={420}  style={{ height: '100%', width: '101%' }}>
                 <ScaleAreaChart 
                     type={chartType} 
                     data={chartType === ChartType.Trend ? trendChartData : depthChartData} 
@@ -57,7 +57,7 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
                         handleChange={handleChartUnitChange} />
                 </Box>
             )} */}
-        </Grid> 
+        </Box>
         {/* <Grid item xs={12} height={24} display={'flex'} justifyContent={'flex-end'}>
             <ToggleButtonGroup exclusive {...{
                 ...rest, t, tgItemJSXs: tgItemJSXsPriceChart,

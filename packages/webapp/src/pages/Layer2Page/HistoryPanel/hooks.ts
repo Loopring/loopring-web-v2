@@ -72,6 +72,7 @@ export function useGetTxs() {
             }, apiKey)
             
             const formattedList = userTxnList.userTxs.map(o => ({
+                ...o,
                 side: o.txType as any,
                 amount: {
                     unit: o.symbol || '',
