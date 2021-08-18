@@ -24,7 +24,7 @@ export const ColorDarkDefault = Object.freeze({
     textSecondary: '#A4ABC1',
     textThird: '#687295',
     textButton:'#FFFFFF',
-    textButtonSelect:'#3B5AF4',
+    textButtonSelect:'#FFFFFF',
     textDisable: `${hexToRGB('#ffffff', '0.25')}`,
     disable:'#404871',
     border: '#49527D',
@@ -43,7 +43,7 @@ export const ColorDarkDefault = Object.freeze({
     opacity: `${hexToRGB('#000000', '0')}`,
     star:`#F0B90B`,
     /********************Case for provider*******************/
-    shadow: `0px 10px 20px rgba(87, 102, 236, 0.15)`,
+    shadow: ` 0px 4px 4px ${hexToRGB('#000000', '.25')}`,
     fieldOpacity:`${hexToRGB('#ffffff', '0.1')}`,
     providerBtn:`${hexToRGB('#ffffff', '0.1')}`,
     providerBtnHover:`${hexToRGB('#ffffff', '0.03')}`,
@@ -66,7 +66,7 @@ export const ColorLightDefault = Object.freeze({...ColorDarkDefault,
     textSecondary: '#4E5395',
     textThird: '#A3A8CA',
     textButton:'#FFFFFF',
-    textButtonSelect:'#15162B',
+    textButtonSelect:'#1890FF',
     textDisable: `${hexToRGB('#000000', '0.25')}`,
     disable:'#F4F5F9',
     border: '#E9EAF2',
@@ -165,4 +165,6 @@ export type ColorBaseInterface = typeof ColorDarkDefault
 //         focus: ColorDarkDefault.focus,
 //     }
 // }
+
+
 
