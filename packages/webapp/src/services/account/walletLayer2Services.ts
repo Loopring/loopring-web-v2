@@ -1,4 +1,6 @@
 import { AccountStatus, } from '@loopring-web/common-resources';
+import { setShowAccount } from '@loopring-web/component-lib';
+
 import { Subject } from 'rxjs';
 import { Commands } from './command';
 import { LoopringAPI } from 'api_wrapper';
@@ -8,6 +10,8 @@ import { updateAccountStatus } from 'stores/account';
 import * as sdk from 'loopring-sdk'
 import { unlockAccount } from './unlockAccount';
 import { updateWalletLayer2 } from 'stores/walletLayer2';
+import { sleep } from 'loopring-sdk';
+import { REFRESH_RATE } from 'defs/common_defs';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
@@ -67,7 +71,7 @@ export const walletLayer2Services = {
     },
 
     //INFO: for lock account todo clear the private info, user click or provider on wrong network
-    sendAccountLock: (accInfo?: sdk.AccountInfo) => {
+    sendAccountLock: async (accInfo?: sdk.AccountInfo) => {
         const updateInfo = accInfo ? {
             readyState: AccountStatus.LOCKED,
             accountId: accInfo.accountId,

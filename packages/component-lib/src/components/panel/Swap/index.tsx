@@ -13,16 +13,18 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
     I,
     TCD extends TradeCalcData<I>>({
                                       disabled,
-                                      handleSwapPanelEvent, tradeCalcData,
-                                      handleError,
-                                      onSwapClick,
-                                      onRefreshData,
+                                      tradeCalcData,
                                       swapBtnStatus,
                                       tokenSellProps,
                                       tokenBuyProps,
+                                      handleSwapPanelEvent, 
+                                      handleError,
+                                      onSwapClick,
+                                      onRefreshData,
                                       ...rest
                                   }: SwapProps<T, I, TCD> & WithTranslation) => {
     // useSettings()
+
     let swapTradeData: SwapTradeData<T>
     if (tradeCalcData && tradeCalcData.sellCoinInfoMap) {
         swapTradeData = ({
