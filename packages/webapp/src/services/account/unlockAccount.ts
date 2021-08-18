@@ -18,10 +18,9 @@ export async function unlockAccount() {
                 account.nonce - 1,
                 account.connectName as any,
             )
-            const sk = toHex(toBig(eddsaKey.keyPair.secretKey))
             const {apiKey} = (await LoopringAPI.userAPI.getUserApiKey({
                 accountId: account.accountId
-            }, sk))
+            }, eddsaKey.sk))
             myLog('After connect >>,unlockAccount: step2 apiKey',apiKey)
 
             walletLayer2Services.sendAccountSigned(apiKey, eddsaKey)

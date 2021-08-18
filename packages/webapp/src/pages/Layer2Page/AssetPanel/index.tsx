@@ -14,11 +14,12 @@ import {
     ToggleButtonGroup,
     LpTokenAction,
 } from '@loopring-web/component-lib'
-import { useModals } from 'modal/useModals'
+import { unit } from '@loopring-web/common-resources'
+
+import { useModals } from 'hooks/useractions/useModals'
 
 import store from 'stores'
-import { unit } from '@loopring-web/common-resources'
-import { StylePaper } from '../../styled'
+import { StylePaper } from 'pages/styled'
 import { useGetAssets } from './hook'
 
 const StyledChartWrapper = styled(Box)`
