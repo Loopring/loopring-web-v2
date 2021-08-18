@@ -397,10 +397,10 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
         slippage = sdk.toBig(slippage).times(100).toString()
 
-        const ammMapRaw = { ['AMM-' + market]: ammMap['AMM-' + market].__rawConfig__ } as LoopringMap<AmmPoolInfoV3>
+        // const ammMapRaw = { ['AMM-' + market]: ammMap['AMM-' + market].__rawConfig__ } as LoopringMap<AmmPoolInfoV3>
 
         const output = sdk.getOutputAmount(input, base, quote, isAtoB, marketArray, tokenMap,
-            marketMap, depth, ammMapRaw, ammPoolSnapshot, takerRate, slippage)
+            marketMap, depth, ammMap as any, ammPoolSnapshot, takerRate, slippage)
 
         setOutput(output)
 
