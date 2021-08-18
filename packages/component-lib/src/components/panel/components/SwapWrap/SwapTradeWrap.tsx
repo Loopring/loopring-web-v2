@@ -163,6 +163,9 @@ export const SwapTradeWrap = <T extends IBData<I>,
 
     const fee = (tradeCalcData && tradeCalcData.fee) ? ((parseFloat(tradeCalcData.fee) / 100).toString() + '%') : EmptyValueTag
 
+    // console.log('----swap tradeCalcData:', tradeCalcData)
+    // console.log('----swap fee:', fee)
+
     const minimumReceived = (tradeCalcData && tradeCalcData.minimumReceived) ? parseFloat(tradeCalcData.minimumReceived).toPrecision(6) : EmptyValueTag
 
     return <Grid className={tradeCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
