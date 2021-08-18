@@ -173,6 +173,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             LoopringAPI.userAPI && account.readyState === AccountStatus.ACTIVATED 
             && ammMap && account?.accountId && account?.apiKey) {
 
+
             const { walletMap } = makeWalletLayer2();
             setTradeCalcData({ ...tradeCalcData, walletMap } as TradeCalcData<C>);
             setTradeData({
@@ -180,7 +181,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                     belong: tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap[tradeCalcData.coinSell]?.simpleName : undefined,
                     balance: walletMap ? walletMap[tradeCalcData.coinSell as string]?.count : 0
                 },
-                // @ts-ignore
                 buy: {
                     belong: tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap[tradeCalcData.coinBuy]?.simpleName : undefined,
                     balance: walletMap ? walletMap[tradeCalcData.coinBuy as string]?.count : 0
@@ -232,7 +232,17 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             setFeeBips('0')
             setTakerRate('0')
     
-            setTradeCalcData({ ...tradeCalcData, fee: '0' } as TradeCalcData<C>)
+            setTradeCalcData({ ...tradeCalcData, walletMap: {}, fee: '0' } as TradeCalcData<C>)
+            setTradeData({
+                sell: {
+                    belong: base,
+                    balance: 0
+                },
+                buy: {
+                    belong: quote,
+                    balance: 0
+                },
+            } as SwapTradeData<IBData<C>>)
         }
 
 
@@ -520,8 +530,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 }
 
             }
-
-            myLog('_tradeCalcData:', _tradeCalcData)
 
             let {
                 amm,
