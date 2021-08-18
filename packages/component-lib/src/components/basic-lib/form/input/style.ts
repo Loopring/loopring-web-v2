@@ -156,10 +156,10 @@ export const ISBtn:React.ComponentType<ButtonProps & { logoColor?: any }> = styl
   //  height: 24px;
   //}
 
-  .MuiButton-endIcon svg {
-    color: var(--color-text-primary)
-      // color: ${({logoColor}) => logoColor}
-  }
+  // .MuiButton-endIcon svg {
+  //   color: var(--color-text-primary)
+  //     // color: ${({logoColor}) => logoColor}
+  // }
 
   &:hover, &:active {
     color: var(--color-text-primary);

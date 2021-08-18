@@ -35,6 +35,7 @@ export type HeadMenuType<I extends BasicHeaderItem> = {
     className?: string,
     renderList?: (props: { handleListKeyDown: ({...rest}) => any }) => any,
     onOpen?: boolean,
+    selected?:boolean,
     setOnOpen?: () => {},
     toggle?: boolean,
     style?: any,

@@ -1,7 +1,7 @@
 import { Meta, Story } from '@storybook/react/types-6-0'
 import styled from "@emotion/styled";
 import { MemoryRouter } from 'react-router-dom'
-import { HeaderMenu, HeaderMenuSub, HeadMenuItem, Layer2Item, MenuTab } from './HeadMenuItem'
+import { HeaderMenu, HeaderMenuSub, HeadMenuItem, Layer2Item } from './HeadMenuItem'
 
 import { withTranslation } from "react-i18next";
 import {
@@ -103,16 +103,15 @@ const LoopringHeader = (wrap: any) => {
     return <><Grid item>
         <Box display="flex" alignContent="center" justifyContent={"flex-start"}>
             <HeaderMenu className={'wrap'} maxWidth='lg'>
-                <HeadMenuItem value={'markets'} layer={0} key={'markets-0'}
-                              label={{id: 'markets', icon: ""}} {...wrap} >
-                    <MenuTab component='div' label={wrap.t('markets')} key={'markets'}/>
+                <HeadMenuItem selected={true} value={'markets'} layer={0} key={'markets-0'}
+                              label={{id: 'markets',i18nKey:'markets',icon: ""}} {...wrap} >
+                    <Typography component='div'  key={'markets'}> {wrap.t('markets')} </Typography>
                 </HeadMenuItem>
-                <HeadMenuItem value={'layer2'} layer={0} key={'layer-0'} label={{id: 'layer 2', icon: ""}} {...wrap} >
-                    <MenuTab component='div' className={'Mui-selected'} label={wrap.t('layer 2')}
-    key={'layer 2'}/>
+                <HeadMenuItem  value={'layer2'} layer={0} key={'layer-0'} label={{id: 'layer 2',i18nKey:'layer', icon: ""}} {...wrap} >
+                    <Typography component='div'  key={'layer 2'}> {wrap.t('layer 2')}  </Typography>
                 </HeadMenuItem>
-                <HeaderMenuSub className={'layer-0'} renderList={() => layer2ItemDemo} layer={0} key={'trade-0'}
-                               label={{id: 'trade', icon: ""}} {...wrap} >
+                <HeaderMenuSub selected={true} className={'layer-0'} renderList={() => layer2ItemDemo} layer={0} key={'trade-0'}
+                               label={{id: 'trade',i18nKey:'trade', icon: ""}} {...wrap} >
                 </HeaderMenuSub>
                 <Box component={'ul'} display="flex" alignItems="center" justifyContent={"flex-end"}
                      color={'textSecondary'}>
