@@ -229,6 +229,9 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 },
                 '&:disabled': {
                     color: colorBase.disable
+                },
+                '& .MuiButton-endIcon,& .MuiButton-startIcon':{
+                    color: colorBase.buttonIcon
                 }
             },
             contained: {
@@ -642,6 +645,9 @@ export const MuiListItem = ({colorBase}: any) => {
                         color: colorBase.textButtonSelect,
                         border: 'none',
                     }
+                },
+                ' .MuiListItemAvatar-root': {
+                    color:colorBase.buttonIcon// "var(--color-button-icon)"
                 }
             },
         }
