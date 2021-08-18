@@ -54,5 +54,6 @@ export function usePairMatch<C extends { [key: string]: any }>(path: string) {
         market,
         pair,
         setPair,
+        setMarket,
     }
 }
