@@ -1,20 +1,15 @@
 import { Box, Grid, } from '@material-ui/core'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { useLocation } from 'react-router-dom'
 import BasicInfoPanel from './panel/BasicInfoPanel'
 import TradePanel from './panel/TradePanel'
 import styled from '@emotion/styled'
 import { useSwapPage } from './hook'
 import { SwapPanel, Toast } from '@loopring-web/component-lib'
-import { TradeBtnStatus } from '@loopring-web/component-lib'
-import { useTokenMap } from '../../stores/token'
-import { TOAST_TIME } from 'defs/common_defs'
 
-const FixedStyle = styled(Box)`
-  @media only screen and (min-height: 780px ) and (min-width: 1024px) {
-    position: fixed;
-  }
-`
+import { TOAST_TIME } from 'defs/common_defs'
+import { FixedStyle } from 'pages/styled'
+
+
 
 export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) => {
 

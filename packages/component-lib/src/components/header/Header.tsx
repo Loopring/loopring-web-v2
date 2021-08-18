@@ -45,7 +45,7 @@ const HeaderStyled = styled(AppBar)`
       // border-bottom: ${({theme}) => theme.border.borderConfig({d_W: 1, c_key: 'blur'})};
     border-radius: 0;
     box-shadow: none;
-
+    box-shadow: var(--shadow);
     &.item-scrolled.MuiAppBar-root.MuiAppBar-positionFixed {
       //background-color: var(--color-box);
       box-shadow: var(--shadow);
