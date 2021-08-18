@@ -69,7 +69,7 @@ const LogoStyle = styled(Typography)`
     }
 
     span.MuiIconButton-label {
-      background: var(--color-text-primary);
+      background: var(--color-primary);
       mask: url(${logoSVG}) space;
       mask-size: contain;
       mask-position: center;
