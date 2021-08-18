@@ -18,7 +18,7 @@ export default {
     labelOrderFilterSell: 'Sell',
     labelFilterReset: 'Reset',
     labelFilterSearch: 'Search',
-    labelOrderSide: 'Order',
+    labelOrderSide: 'Orders',
     labelOrderAmount: 'Amount',
     labelOrderAverage: 'Average',
     labelOrderFilledAmount: 'Filled Amount',
