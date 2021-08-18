@@ -16,13 +16,13 @@ import { myLog } from 'utils/log_tools';
 export function useChargeFees(tokenSymbol: string | undefined, requestType: OffchainFeeReqType,
     tokenMap: LoopringMap<TokenInfo> | undefined, amount?: number) {
 
-    const {account} = useAccount()
+    const { account } = useAccount()
 
     const [chargeFeeList, setChargeFeeList] = useState<any[]>([])
 
     useCustomDCEffect(async () => {
 
-        if (account.accountId === -1 || !tokenSymbol || typeof tokenSymbol !== 'string'
+        if (account.accountId === -1 || !account.apiKey || !tokenSymbol || typeof tokenSymbol !== 'string'
          || !tokenMap || !LoopringAPI.userAPI) {
             return
         }
