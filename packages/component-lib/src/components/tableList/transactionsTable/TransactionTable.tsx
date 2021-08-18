@@ -306,13 +306,11 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
             name: t('labelTxTxnHash'),
             formatter: ({row}) => {
                 const path = row[ 'path' ] || ''
-                // console.log(row)
                 const value = row[ 'txnHash' ]
                 const RenderValue = styled(Box)`
                     color: ${({theme}) => theme.colorBase[ value ? 'secondary' : 'textSecondary' ]};
                     cursor: pointer;
                 `
-                console.log(row)
                 const {
                     hash,
                     status,
