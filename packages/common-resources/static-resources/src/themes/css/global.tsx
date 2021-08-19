@@ -35,6 +35,7 @@ export const colorBase = ({theme}: any) => css`
     --color-text-primary: ${theme.colorBase.textPrimary};
     --color-text-button: ${theme.colorBase.textButton};
     --color-text-secondary: ${theme.colorBase.textSecondary};
+    --color-text-third: ${theme.colorBase.textThird};
     --color-text-disable: ${theme.colorBase.textDisable};
     --color-disable: ${theme.colorBase.disable};
     --color-border: ${theme.colorBase.border};
