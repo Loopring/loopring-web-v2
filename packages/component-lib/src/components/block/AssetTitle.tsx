@@ -55,10 +55,6 @@ export const AssetTitle = withTranslation('common')(({
             </Typography>
         </Grid>
         <ButtonListRightStyled item xs={5} display={'flex'} flexDirection={'row'} justifyContent={'flex-end'}>
-            <Button variant={'contained'} size={'small'} color={'primary'}
-                    loading={btnShowDepositStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-                    disabled={btnShowDepositStatus === TradeBtnStatus.DISABLED ? true : false}
-                    onClick={onShowDeposit}>{t('labelBtnDeposit')}</Button>
             <Button variant={'outlined'} size={'medium'} color={'primary'}
                     loading={btnShowTransferStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={btnShowTransferStatus === TradeBtnStatus.DISABLED ? true : false}
@@ -67,6 +63,10 @@ export const AssetTitle = withTranslation('common')(({
                     loading={btnShowWithdrawStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={btnShowWithdrawStatus === TradeBtnStatus.DISABLED ? true : false}
                     onClick={onShowWithdraw}>{t('labelBtnWithdraw')}</Button>
+            <Button variant={'contained'} size={'small'} color={'primary'}
+                    loading={btnShowDepositStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
+                    disabled={btnShowDepositStatus === TradeBtnStatus.DISABLED ? true : false}
+                    onClick={onShowDeposit}>{t('labelBtnDeposit')}</Button>
         </ButtonListRightStyled>
     </Grid>
 })
