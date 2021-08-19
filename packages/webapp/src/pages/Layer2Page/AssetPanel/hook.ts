@@ -98,8 +98,13 @@ export const useGetAssets = () => {
             value: tokenValue
         })
     })
+    const total = formattedData.map(o => o.value).reduce((a, b) => a + b, 0)
+    const percentList = formattedData.map(o => ({
+        ...o,
+        value: o.value / total,
+    }))
 
-    const lpTotalData = formattedData
+    const lpTotalData = percentList
         .filter(o => o.name.split('-')[0] === 'LP')
         .reduce((prev, next) => ({
             name: 'LP-Token',
@@ -109,9 +114,9 @@ export const useGetAssets = () => {
             value: 0
         })
     
-    const formattedDoughnutData = formattedData.filter(o => o.name.split('-')[0] === 'LP').length > 0
-        ? [...formattedData.filter(o => o.name.split('-')[0] !== 'LP'), lpTotalData]
-        : formattedData
+    const formattedDoughnutData = percentList.filter(o => o.name.split('-')[0] === 'LP').length > 0
+        ? [...percentList.filter(o => o.name.split('-')[0] !== 'LP'), lpTotalData]
+        : percentList
 
     const assetsRawData = assetsList.map((tokenInfo) => {
         const tokenPriceUSDT = Number(tokenPriceList.find(o => o.token === tokenInfo.token)?.detail.price) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
