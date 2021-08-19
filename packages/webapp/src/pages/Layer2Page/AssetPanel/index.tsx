@@ -25,10 +25,10 @@ import { useGetAssets } from './hook'
 const StyledChartWrapper = styled(Box)`
     height: 225px;
 
-    > div {
-        position: relative;
-        width: calc(50% - 6px);
-        height: 100%;
+    > section {
+        //position: relative;
+        //width: calc(50% - 6px);
+        //height: 100%;
         background: var(--color-box);
         border-radius: ${({theme}) => theme.unit}px;
         padding: ${({theme}) => theme.unit * 2.5}px ${({theme}) => theme.unit * 3}px;
@@ -151,13 +151,13 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
             {/*<div className="title">{t('labelAssetsTitle')}</div>*/}
 
-            <StyledChartWrapper display={'flex'} justifyContent={'space-between'} alignItems={'center'} marginTop={2}>
-                <Paper component={'div'}>
-                    <Typography component="span" color="textSecondary" variant="body1">{t('labelAssetsDistribution')}</Typography>
-                    <DoughnutChart data={walletLayer2 ? formattedDoughnutData : []}/>
-                </Paper>
-                <Paper component={'div'}>
-                    <Typography component="span" color="textSecondary" variant="body1">{t('labelTotalAssets')}</Typography>
+            <StyledChartWrapper flexDirection={'row'} display={'flex'} justifyContent={'space-between'} alignItems={'stretch'} marginTop={2}>
+                <Box flex={1}  component={'section'} className={'MuiPaper-elevation2'} marginRight={2}>
+                        <Typography component="span" color="textSecondary" variant="body1">{t('labelAssetsDistribution')}</Typography>
+                        <DoughnutChart data={walletLayer2 ? formattedDoughnutData : []}/>
+                </Box>
+                <Box flex={1} component={'section'} className={'MuiPaper-elevation2'}>
+                    <Typography component="span"  color="textSecondary" variant="body1">{t('labelTotalAssets')}</Typography>
                     <ScaleAreaChart type={ChartType.Trend} data={chartData}/>
                     <StyledBtnGroupWrapper>
                         <ToggleButtonGroup exclusive size="small" {...{
@@ -169,10 +169,10 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                             // onChange: handleChartPeriodChange
                         }} />
                     </StyledBtnGroupWrapper>
-                </Paper>
+                </Box>
             </StyledChartWrapper>
-            <StylePaper style={{marginTop: `${unit*2}px`}}>
-                <div className="tableWrapper" ref={container}>
+            <StylePaper marginTop={2} ref={container} className={'MuiPaper-elevation2'}>
+                <Box className="tableWrapper">ame={'MuiPaper-elevation2'}
                     <AssetsTable {...{
                         rawData: assetsRawData,
                         pagination: {
@@ -187,7 +187,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                         getMakretArrayListCallback: getTokenRelatedMarketArray,
                         ...rest
                     }} />
-                </div>
+                </Box>
             </StylePaper>
         </>
     )
