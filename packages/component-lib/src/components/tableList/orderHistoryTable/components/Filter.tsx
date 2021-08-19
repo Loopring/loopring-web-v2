@@ -2,11 +2,12 @@ import React from 'react'
 import styled from '@emotion/styled'
 import { Box, Grid, MenuItem } from '@material-ui/core'
 import { withTranslation, WithTranslation } from "react-i18next";
-import { DatePicker, TextField, DateRangePicker } from '../../../'
+import { TextField, DateRangePicker } from '../../../'
 import { Button } from '../../../basic-lib/btns'
 import { DropDownIcon } from '@loopring-web/common-resources'
 import { OrderHistoryRawDataItem } from '../OrderHistoryTable'
 import { DateRange } from '@material-ui/lab'
+import { getExistedMarket } from 'loopring-sdk'
 
 export interface FilterProps {
     handleFilterChange: ({filterType, filterDate, filterToken}: any) => void
@@ -15,6 +16,7 @@ export interface FilterProps {
     filterType: FilterOrderTypes;
     filterToken: string;
     handleReset: () => void;
+    marketArray?: string[];
 }
 
 export enum FilterOrderTypes {
@@ -50,6 +52,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                                                                       filterToken,
                                                                       handleFilterChange,
                                                                       handleReset,
+                                                                      marketArray = [],
                                                                   }: FilterProps & WithTranslation) => {
     const FilterOrderTypeList = [
         {
@@ -65,15 +68,16 @@ export const Filter = withTranslation('tables', {withRef: true})(({
             value: 'Sell'
         },
     ]
-
     // de-duplicate
     const getTokenTypeList = React.useCallback(() => {
-        const buyTokenList = originalData.map(o => o.amount && o.amount.from ? o.amount.from.key : '')
-        const sellTokenList = originalData.map(o => o.amount && o.amount.to ? o.amount.to.key : '')
+        // const buyTokenList = originalData.map(o => o.amount && o.amount.from ? o.amount.from.key : '')
+        // const sellTokenList = originalData.map(o => o.amount && o.amount.to ? o.amount.to.key : '')
+        
+        const marketList = originalData.map(o => o.market)
         return [{
-            label: t('labelOrderFilterAllTokens'),
-            value: 'All Tokens',
-        }, ...Array.from(new Set(buyTokenList.concat(sellTokenList)))
+            label: t('labelOrderFilterAllPairs'),
+            value: 'All Pairs',
+        }, ...Array.from(new Set(marketList))
             .map(token => ({
                 label: token,
                 value: token
