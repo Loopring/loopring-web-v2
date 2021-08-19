@@ -7,6 +7,7 @@ import { LoopringAPI } from 'api_wrapper';
 import { connectProvides } from '@loopring-web/web3-provider';
 import * as sdk from 'loopring-sdk'
 import { ActionResult, ActionResultCode, REFRESH_RATE } from 'defs/common_defs';
+import { dumpError400 } from 'loopring-sdk';
 
 export async function activeAccount({ reason, shouldShow }: { reason: any, shouldShow: boolean }) {
     const account = store.getState().account;
@@ -94,6 +95,8 @@ export async function updateAccountFromServer() {
                         const updateAccountResponse = await LoopringAPI.userAPI.updateAccount(request,
                             connectProvides.usedWeb3, system.chainId, connectName)
 
+                        myLog('updateAccountResponse:', updateAccountResponse)
+
                         result.data = {
                             response: updateAccountResponse,
                             eddsaKey,
@@ -102,17 +105,20 @@ export async function updateAccountFromServer() {
                     } catch (reason) {
                         result.code = ActionResultCode.UpdateAccoutError
                         result.data = reason
+                        dumpError400(reason)
                     }
 
                 } catch (reason) {
                     result.code = ActionResultCode.GenEddsaKeyError
                     result.data = reason
+                    dumpError400(reason)
                 }
             }
         }
     } catch (reason) {
         result.code = ActionResultCode.GetAccError
         result.data = reason
+        dumpError400(reason)
     }
 
     return result
