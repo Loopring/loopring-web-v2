@@ -135,11 +135,28 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             return
         }
         resetSwap(undefined, undefined);
-        getUserTrades(market)?.then((marketTrades) => {
-            let _myTradeArray = makeMarketArray(market, marketTrades) as RawDataTradeItem[]
-            setMyTradeArray(_myTradeArray ? _myTradeArray : [])
-        })
     }, [market]);
+
+    useCustomDCEffect(() => {
+
+        if (!market || !LoopringAPI.userAPI) {
+            return
+        }
+
+        if (account.accountId && account.apiKey) {
+            LoopringAPI.userAPI.getUserTrades({accountId: account.accountId, market,}, account.apiKey).then((response: {
+                totalNum: any;
+                userTrades: sdk.UserTrade[];
+                raw_data: any;
+            }) => {
+                let _myTradeArray = makeMarketArray(market, response.userTrades) as RawDataTradeItem[]
+                setMyTradeArray(_myTradeArray ? _myTradeArray : [])
+            })
+        } else {
+            setMyTradeArray([])
+        }
+        
+    }, [market, account.accountId, account.apiKey]);
 
     const [ammPoolSnapshot, setAmmPoolSnapshot] = React.useState<AmmPoolSnapshot | undefined>(undefined);
 
