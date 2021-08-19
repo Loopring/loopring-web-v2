@@ -4,11 +4,20 @@ import React from 'react';
 import { globalSetup, refreshTime } from '@loopring-web/common-resources';
 import { debounce } from 'lodash';
 
-export const  CountDownIcon = React.memo(({onRefreshData,wait=globalSetup.wait}:{wait?:number,onRefreshData?:()=>void})=>{
+export const  CountDownIcon = React.memo(({onRefreshData, wait=globalSetup.wait}:{wait?:number,onRefreshData?:()=>void})=>{
     const countDownRef = React.useRef<any>();
     const [refreshCount, setRefreshCount] = React.useState(0);
     const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
     const logoTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+
+    React.useEffect(() => {
+
+        if (refreshCount === 0 && onRefreshData) {
+            onRefreshData()
+        }
+
+    }, [refreshCount,])
+
     const startCountDown = React.useCallback(() => {
         if(countDownRef && countDownRef.current) {
             countDownRef.current?.classList.add('countdown');
@@ -40,7 +49,7 @@ export const  CountDownIcon = React.memo(({onRefreshData,wait=globalSetup.wait}:
                 onRefreshData();
             }
         }
-    },wait), [onRefreshData, countDownRef,refreshTime,nodeTimer,startCountDown]);
+    },wait), [onRefreshData, countDownRef,refreshTime, nodeTimer, startCountDown]);
 
     const decreaseNum = React.useCallback(() => setRefreshCount((prev) => {
         if (prev > 1) {
@@ -50,16 +59,17 @@ export const  CountDownIcon = React.memo(({onRefreshData,wait=globalSetup.wait}:
             countDownRef?.current?.classList?.remove('countdown');
             //@ts-ignore
             countDownRef?.current?.classList?.add('logo');
-            //_refresh()
+
             return 0
         }else {
             //@ts-ignore
             countDownRef?.current?.classList?.add('countdown');
             //@ts-ignore
             countDownRef?.current?.classList?.remove('logo');
-            return refreshTime-1
+            return refreshTime - 1
         }
-    }), [refreshCount]);
+    }), [setRefreshCount, countDownRef, refreshTime])
+    
     const cleanSubscribe = React.useCallback(()=>{
         clearInterval(nodeTimer.current as NodeJS.Timeout);
         clearTimeout(logoTimer.current as NodeJS.Timeout);
