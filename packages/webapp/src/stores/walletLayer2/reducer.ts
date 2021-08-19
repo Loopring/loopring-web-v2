@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { WalletLayer2Map, WalletLayer2States } from './interface';
 import { SagaStatus } from '@loopring-web/common-resources';
+import * as loopring_defs from 'loopring-sdk';
 
 
 const initialState: WalletLayer2States = {
@@ -8,7 +9,7 @@ const initialState: WalletLayer2States = {
     status: 'DONE',
     errorMessage: null,
 }
-const walletLayer2Slice: Slice = createSlice({
+const walletLayer2Slice: Slice<WalletLayer2States> = createSlice({
     name: 'walletLayer2',
     initialState,
     reducers: {
@@ -18,6 +19,9 @@ const walletLayer2Slice: Slice = createSlice({
         reset(state, action: PayloadAction<string | undefined>) {
             state.walletLayer2 = undefined;
             state.status = SagaStatus.UNSET;
+        },
+        socketUpdateBalance(state, action: PayloadAction<{[key:string ]:loopring_defs.UserBalanceInfo}>) {
+            state.status = SagaStatus.PENDING;
         },
         getWalletLayer2Status(state, action: PayloadAction<{ walletLayer2: WalletLayer2Map<object> }>) {
             // @ts-ignore
@@ -35,4 +39,4 @@ const walletLayer2Slice: Slice = createSlice({
     },
 });
 export { walletLayer2Slice };
-export const {updateWalletLayer2, getWalletLayer2Status, statusUnset, reset} = walletLayer2Slice.actions
+export const {updateWalletLayer2, socketUpdateBalance, getWalletLayer2Status, statusUnset, reset} = walletLayer2Slice.actions

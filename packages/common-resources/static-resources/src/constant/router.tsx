@@ -4,7 +4,7 @@ import {
     MyLiquidityIcon,
     // OrderIcon,
     // PoolsIcon,
-    SettingIcon,
+    // SettingIcon,
     L2MyLiquidityIcon,
     L2HistoryIcon,
     L2OrderIcon,
