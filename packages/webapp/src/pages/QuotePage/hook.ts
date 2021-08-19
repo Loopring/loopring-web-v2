@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react"
+import React, { useCallback, } from "react"
 import store from '../../stores';
 import { TickerMap, useTicker } from '../../stores/ticker';
 import { MarketBlockProps, QuoteTableRawDataItem, } from '@loopring-web/component-lib';
@@ -9,7 +9,7 @@ import { LoopringAPI } from 'api_wrapper'
 import { tickerService } from '../../services/tickerService';
 import { debounce } from "lodash"
 import { globalSetup } from '@loopring-web/common-resources';
-import { myError } from "utils/log_tools";
+import { myError, myLog } from "utils/log_tools";
 
 const amtCol = 5
 const OnePageSize = 16;
@@ -63,6 +63,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     
     React.useEffect(() => {
         const subscription = subject.subscribe(({tickerMap}) => {
+            myLog('tickerMap:', tickerMap)
             if (tickerMap) {
                 Reflect.ownKeys(tickerMap).forEach((key) => {
                     let recommendationIndex = recommendedPairs.findIndex(ele => ele === key)

@@ -1,9 +1,7 @@
 import { Subject } from 'rxjs';
-// import { TradeFloat } from '@loopring-web/common-resources';
-import { LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
-import { TickerData } from 'loopring-sdk';
-import { makeTickerMap } from '../hooks/help';
-import { TickerMap } from '../stores/ticker';
+import { LoopringMap, TickerData } from 'loopring-sdk';
+import { makeTickerMap } from 'hooks/help';
+import { TickerMap } from 'stores/ticker';
 
 const subject = new Subject<{ tickerMap: TickerMap<{ [ key: string ]: any }> }>();
 
