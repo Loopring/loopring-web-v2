@@ -423,9 +423,9 @@ export const MuiInputBase = ({colorBase,themeMode}: any): { styleOverrides: Comp
                 '& fieldset': {
                     display: 'none',
                 },
-                '& svg': {
+                ' .MuiInputAdornment-root': {
                     pointerEvents: 'none',
-                    color: 'var(--color-text-secondary)',
+                    color: 'inherit',
                 },
                 paddingRight: 0,
                 '&:hover': {

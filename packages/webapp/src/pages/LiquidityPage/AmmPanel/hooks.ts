@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     AccountStatus,
     AmmData,
@@ -60,7 +60,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
     const [ammToastOpen, setAmmToastOpen] = useState<boolean>(false)
     const [ammAlertText, setAmmAlertText] = useState<string>()
-    const { delayAndUpdateWalletLayer2 } = useWalletLayer2();
+    const { delayAndUpdateWalletLayer2, status: walletLayer2Status } = useWalletLayer2();
     const { t } = useTranslation('common')
     const { coinMap, tokenMap } = useTokenMap();
     const { ammMap } = useAmmMap();
@@ -114,7 +114,8 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     }, [snapShotData, coinMap, tokenMap, ammCalcData, ammMap, ammType, setAmmCalcData, setAmmJoinData, setAmmExitData])
 
     const [ammPoolSnapshot, setAmmPoolSnapShot] = useState<AmmPoolSnapshot>()
-    const updateAmmPoolSnapshot = React.useCallback(async () => {
+
+    const updateAmmPoolSnapshot = React.useCallback(async() => {
 
         if (!pair.coinAInfo?.simpleName || !pair.coinBInfo?.simpleName || !LoopringAPI.ammpoolAPI) {
             setAmmAlertText(t('labelAmmJoinFailed'))
@@ -148,23 +149,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         const { ammPoolSnapshot } = response
 
         setAmmPoolSnapShot(ammPoolSnapshot)
-    }, [pair, ammMap])
-
-    React.useEffect(() => {
-        if (nodeTimer.current !== -1) {
-            clearInterval(nodeTimer.current as NodeJS.Timeout);
-        }
-        nodeTimer.current = setInterval(() => {
-            updateAmmPoolSnapshot()
-        }, REFRESH_RATE_SLOW)
-
-        updateAmmPoolSnapshot()
-
-        return () => {
-            clearInterval(nodeTimer.current as NodeJS.Timeout);
-        }
-
-    }, [nodeTimer.current])
+    }, [pair, ammMap, setAmmPoolSnapShot])
 
     // set fees
 
@@ -535,8 +520,6 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         accountStaticCallBack(removeAmmClickMap, [props])
     }, [exitRequest, ammExitData, removeAmmClickMap]);
 
-    const { status: walletLayer2Status } = useWalletLayer2();
-
     useCustomDCEffect(() => {
         if (walletLayer2Status !== SagaStatus.UNSET || !pair || !snapShotData) {
             return
@@ -544,9 +527,15 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
         const { walletMap } = makeWalletLayer2()
         initAmmData(pair, walletMap)
+
+        myLog('init snapshot:', snapShotData.ammPoolsBalance)
+        
+        setAmmPoolSnapShot(snapShotData.ammPoolsBalance)
+
     }, [walletLayer2Status, pair, snapShotData, account?.accAddress,]);
 
     return {
+        onRefreshData: updateAmmPoolSnapshot,
         ammAlertText,
         ammToastOpen,
         setAmmToastOpen,

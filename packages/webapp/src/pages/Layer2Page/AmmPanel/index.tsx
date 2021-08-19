@@ -23,7 +23,7 @@ const AmmPanel = withTranslation('common')(({ t, ...rest }: WithTranslation<'com
 
     return (
         <>
-            <StylePaper ref={container}>
+            <StylePaper ref={container} className={'MuiPaper-elevation2'}>
                 <div className="title">{t('labelAmmPageTitle')}</div>
                 <div className="tableWrapper">
                     <AmmTable {...{

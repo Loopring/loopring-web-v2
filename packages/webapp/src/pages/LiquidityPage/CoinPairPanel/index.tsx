@@ -267,7 +267,9 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
             </Grid>
             <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}}>
                 <FixedStyle>
-                    <AmmPanelView pair={pair} walletMap={walletMap} snapShotData={snapShotData}/>
+                    <Box className={'MuiPaper-elevation2'}>
+                        <AmmPanelView pair={pair} walletMap={walletMap} snapShotData={snapShotData}/>
+                    </Box>
                     {typeof coinPairInfo.isActivity === 'undefined' ? '' :
                         <BoxTopStyled paddingY={3} paddingX={1 / 2 * 5} display={'flex'}
                                       flexDirection={'column'}>

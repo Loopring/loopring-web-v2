@@ -10,6 +10,7 @@ const StyledBox= styled(Box)`
   right: 0;
   z-index: 100;
   background: var(--color-pop-bg);
+  border-top: 1px solid var(--color-border);
   //text-align: center;
   .close-button{
     right: ${({theme}) => theme.unit * 3}px;
