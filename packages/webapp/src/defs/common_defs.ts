@@ -38,7 +38,7 @@ export interface ActionResult {
 
 export const REFRESH_RATE = 1000
 
-export const REFRESH_RATE_SLOW = 10000
+export const REFRESH_RATE_SLOW = 15000
 
 export const UPDATE_ACC_DELAY = 2500
 

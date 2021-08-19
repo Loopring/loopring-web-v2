@@ -25,7 +25,6 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
         ammToastOpen,
         setAmmToastOpen,
 
-
         ammCalcData,
         ammJoinData,
         ammExitData,
@@ -37,6 +36,7 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
         isExitLoading,
         ammDepositBtnI18nKey,
         ammWithdrawBtnI18nKey,
+        onRefreshData,
     } = useAmmPanel({
         pair,
         snapShotData, ammType: ammType ? ammType : AmmPanelType.Deposit
@@ -66,6 +66,7 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
 
     {pair ?
         <AmmPanel {...{...rest}}
+                  onRefreshData={()=>{onRefreshData()}}
                   ammDepositData={ammJoinData}
                   ammWithdrawData={ammExitData}
                   ammCalcData={ammCalcData}
