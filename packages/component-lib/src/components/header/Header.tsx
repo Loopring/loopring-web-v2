@@ -27,7 +27,7 @@ const ToolBarStyled = styled(Toolbar)`
 const StyledDiv = styled.div`
   &.item-scrolled .MuiAppBar-root.MuiAppBar-positionFixed {
     //background: var(--color-global-bg);
-    box-shadow: var(--shadow);
+    //box-shadow: var(--shadow);
   }
 `
 const HeaderStyled = styled(AppBar)`
@@ -44,11 +44,10 @@ const HeaderStyled = styled(AppBar)`
     box-sizing: border-box;
       // border-bottom: ${({theme}) => theme.border.borderConfig({d_W: 1, c_key: 'blur'})};
     border-radius: 0;
-    box-shadow: none;
-    box-shadow: var(--shadow);
+    //box-shadow: var(--shadow);
     &.item-scrolled.MuiAppBar-root.MuiAppBar-positionFixed {
       //background-color: var(--color-box);
-      box-shadow: var(--shadow);
+      //box-shadow: var(--shadow);
     }
   }
 `
@@ -221,7 +220,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
     };
 
     return (
-        <HeaderStyled ref={ref} className={rest?.className}>
+        <HeaderStyled elevation={4} ref={ref} className={`${rest?.className}`}>
             <Container className={'wrap'} maxWidth='lg'>
                 {displayDesktop()}
             </Container>

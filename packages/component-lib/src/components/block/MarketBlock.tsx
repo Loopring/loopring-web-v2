@@ -47,7 +47,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                                                          chartData = []
                                                      }: & WithTranslation & MarketBlockProps<C>) => {
     const {upColor} = useSettings();
-    return <MarketBlockStyled custom={{chg: upColor}} padding={0.5 * 5} display={'flex'}
+    return <MarketBlockStyled className={'MuiPaper-elevation2'} custom={{chg: upColor}} padding={0.5 * 5} display={'flex'}
                               justifyContent={'stretch'}>
         {coinAInfo && coinBInfo ?
             <Grid container justifyContent={'space-around'} position={'relative'}>

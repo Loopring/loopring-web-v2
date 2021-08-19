@@ -25,8 +25,8 @@ export const InputSearch =  React.forwardRef(({
             }
         }}
         startAdornment={
-            <InputAdornment color={'var(--color-text-secondary)'} position="start">
-                <SearchIcon />
+            <InputAdornment position="start">
+                <SearchIcon color={'inherit'} />
             </InputAdornment>
         }
     />
