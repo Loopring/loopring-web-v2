@@ -13,6 +13,7 @@ import { tickerService } from './tickerService';
 import { ammPoolService } from './ammPoolService';
 import { CustomError, ErrorMap } from '@loopring-web/common-resources';
 import { LoopringAPI } from 'api_wrapper';
+import { accountService } from './accountService';
 // import store from '../stores';
 // import { updateSocketURL } from '../stores/system';
 
@@ -41,8 +42,14 @@ export type SocketEventMap = {
 
 export class LoopringSocket {
     private static SocketEventMap: SocketEventMap = {
-        [ SocketEventType.account ]: (_e: any) => {
-
+        [ SocketEventType.account ]: (data: {[key:string]:any}) => {
+            const {accountId, totalAmount,tokenId,amountLocked,pending} = data;
+            accountService.sendAccount({
+                tokenId,
+                locked:amountLocked,
+                total:totalAmount,
+                pending,
+            })
         },
         [ SocketEventType.order ]: (_e: any) => {
 
@@ -279,7 +286,7 @@ export class LoopringSocket {
                 this._loopringSocket.onopen = function () {
                     console.warn('Socket>>Socket', "WebSocket is open now.");
                     if(self._loopringSocket && self._loopringSocket.readyState === WebSocket.OPEN){
-                        self._loopringSocket.send(self.makeTopics(topics))
+                        self._loopringSocket.send(self.makeTopics(topics,apiKey))
                     }
 
                 };

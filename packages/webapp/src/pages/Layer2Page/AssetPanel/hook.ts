@@ -6,8 +6,11 @@ import { useWalletLayer2 } from 'stores/walletLayer2'
 import { useAccount } from 'stores/account';
 import { LoopringAPI } from 'api_wrapper'
 import { makeWalletLayer2 } from 'hooks/help'
-import { AssetType } from 'loopring-sdk'
+import { AssetType, WsTopicType } from 'loopring-sdk'
 import { volumeToCount } from 'hooks/help'
+import { accountService } from '../../../services/accountService';
+import { useAmmMap } from '../../../stores/Amm/AmmMap';
+import { useSocket } from '../../../stores/socket';
 
 export type TrendDataItem = {
     timeStamp: number;
@@ -27,11 +30,25 @@ export const useGetAssets = () => {
     const [chartData, setChartData] = React.useState<TrendDataItem[]>([])
     const [assetsList, setAssetsList] = React.useState<any[]>([])
     
-    const { account: { accAddress } } = useAccount()
-    const { walletLayer2 } = store.getState().walletLayer2;
-    const { ammMap } = store.getState().amm.ammMap
-    const { status: walletLayer2Status } = useWalletLayer2();
+    const { account: { accAddress }, } = useAccount();
+    const {sendSocketTopic} = useSocket();
+    // const {  } = store.getState().walletLayer2;
+    const { ammMap } = useAmmMap()//store.getState().amm.ammMap
+    const { status: walletLayer2Status, walletLayer2,socketUpdateBalance } = useWalletLayer2();
     const { marketArray } = store.getState().tokenMap
+    const subject = React.useMemo(() => accountService.onSocket(), []);
+    React.useEffect(() => {
+        sendSocketTopic({[ WsTopicType.account ]: true});
+    }, []);
+
+    React.useEffect(() => {
+        const subscription = subject.subscribe((balance) => {
+            if (balance) {
+                socketUpdateBalance(balance)
+            }
+        });
+        return () => subscription.unsubscribe();
+    }, [subject]);
 
     const getUserTotalAssets = React.useCallback(async (limit: number = 7) => {
         const userAssets = await LoopringAPI.walletAPI?.getUserAssets({
@@ -92,7 +109,10 @@ export const useGetAssets = () => {
         // const ammTokenList = Object.keys(ammMap)
         // const ammTokenPrice = ammTokenList.includes(ammToken) && ammMap[ammToken] && ammMap[ammToken].amountDollar ? (ammMap[ammToken].totalLPToken || 0) / ammMap[ammToken].amountDollar : 0
         // const tokenValue =  ammTokenPrice * (item.detail?.count || 0)
-        const tokenValue = ammMap[ammToken].totalLPToken || 0
+        let tokenValue:number  = 0;
+        if(ammMap){
+            tokenValue = ammMap[ammToken].totalLPToken as any;
+        }
         return ({
             name: item.token,
             value: tokenValue
@@ -126,6 +146,7 @@ export const useGetAssets = () => {
             smallBalance: tokenPriceUSDT * Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) < 1,
         })
     })
+
 
     return {
         chartData,
