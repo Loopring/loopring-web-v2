@@ -273,12 +273,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     // myLog('tradeData?.buy.belong:', tradeData?.buy.belong)
 
     //HIGH: effect by wallet state update
-    React.useEffect(() => {
-        if (walletLayer2Status === SagaStatus.UNSET) {
-            
-            // }
-        }
-    }, [walletLayer2Status])
 
     const swapCalculatorCallback = useCallback(async ({ sell, buy, slippage, ...rest }: any) => {
 

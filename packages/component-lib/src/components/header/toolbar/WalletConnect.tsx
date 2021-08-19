@@ -9,6 +9,7 @@ import { Typography } from '@material-ui/core';
 import styled from '@emotion/styled';
 import { Button } from '../../basic-lib';
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';
+import { ChainId } from 'loopring-sdk';
 // import { getShortAddr } from '@loopring-web/webapp/src/utils/web3_tools';
 // import Popover from 'material-ui-popup-state/HoverPopover';
 const WalletConnectBtnStyled = styled(Button)`
@@ -21,14 +22,14 @@ const WalletConnectBtnStyled = styled(Button)`
   }
 
   i {
-    padding-right: ${({theme}) => theme.unit}px;
+    padding-right: ${({ theme }) => theme.unit}px;
     display: flex;
     justify-content: center;
     align-content: space-between;
 
     svg {
       height: auto;
-      font-size: ${({theme}) => theme.fontDefault.h5};
+      font-size: ${({ theme }) => theme.fontDefault.h5};
     }
   }
 
@@ -39,9 +40,9 @@ const WalletConnectBtnStyled = styled(Button)`
       color: var(--color-error);
       display: flex;
       left: 0;
-      padding-left: ${({theme}) => theme.unit * 2}px;
+      padding-left: ${({ theme }) => theme.unit * 2}px;
       align-items: center;
-      font-size: ${({theme}) => theme.fontDefault.h5};
+      font-size: ${({ theme }) => theme.fontDefault.h5};
     }
   }
   &.not-active{
@@ -51,9 +52,9 @@ const WalletConnectBtnStyled = styled(Button)`
       color: var(--color-warning);
       display: flex;
       left: 0;
-      padding-left: ${({theme}) => theme.unit * 2}px;
+      padding-left: ${({ theme }) => theme.unit * 2}px;
       align-items: center;
-      font-size: ${({theme}) => theme.fontDefault.h5};
+      font-size: ${({ theme }) => theme.fontDefault.h5};
     }
   }
 
@@ -64,9 +65,9 @@ const WalletConnectBtnStyled = styled(Button)`
       color: var(--color-success);
       display: flex;
       left: 0;
-      padding-left: ${({theme}) => theme.unit * 2}px;
+      padding-left: ${({ theme }) => theme.unit * 2}px;
       align-items: center;
-      font-size: ${({theme}) => theme.fontDefault.h5};
+      font-size: ${({ theme }) => theme.fontDefault.h5};
     }
   }
 
@@ -99,7 +100,7 @@ const WalletConnectBtnStyled = styled(Button)`
 const TestNetworkStyle = styled(Typography)`
   // display: inline-flex;
   position: relative;
-    // padding-right: ${({theme}) => theme.unit}px;
+    // padding-right: ${({ theme }) => theme.unit}px;
   // cursor: initial;
   height: 3rem;
 
@@ -112,10 +113,10 @@ const TestNetworkStyle = styled(Typography)`
     right: 0;
     bottom: 0;
     background: var(--network-bg);
-    ${({theme}) => theme.border.defaultFrame({d_W: 0, d_R: 1 / 2, c_key: 'var(--opacity)'})};
+    ${({ theme }) => theme.border.defaultFrame({ d_W: 0, d_R: 1 / 2, c_key: 'var(--opacity)' })};
   }
 
-  ${({theme}) => theme.border.defaultFrame({d_W: 0, d_R: 1 / 2, c_key: 'var(--opacity)'})};
+  ${({ theme }) => theme.border.defaultFrame({ d_W: 0, d_R: 1 / 2, c_key: 'var(--opacity)' })};
 
 ` as typeof Typography
 // const ListStyled = styled(List)`
@@ -124,87 +125,88 @@ const TestNetworkStyle = styled(Typography)`
 // `
 
 export const WalletConnectBtn = ({
-                                     accountState,
-                                     handleClick,
-                                 }: WalletConnectBtnProps) => {
-    const {t, i18n} = useTranslation(['layout', 'common']);
-    const [label, setLabel] = React.useState<string>(t('labelConnectWallet'))
-    const [networkLabel, setNetworkLabel] = React.useState<string | undefined>(undefined)
-    const [btnClassname, setBtnClassname] = React.useState<string | undefined>('');
-    const [icon, setIcon] = React.useState<JSX.Element | undefined>();
+  accountState,
+  handleClick,
+}: WalletConnectBtnProps) => {
+  const { t, i18n } = useTranslation(['layout', 'common']);
+  const [label, setLabel] = React.useState<string>(t('labelConnectWallet'))
+  const [networkLabel, setNetworkLabel] = React.useState<string | undefined>(undefined)
+  const [btnClassname, setBtnClassname] = React.useState<string | undefined>('');
+  const [icon, setIcon] = React.useState<JSX.Element | undefined>();
 
-    useEffect(() => {
-        if (accountState) {// && accountState.status === 'UNSET'){
-            const {account} = accountState;
-            const addressShort = account.accAddress ? getShortAddr(account?.accAddress) : undefined;
-            if (addressShort) {
-                setLabel(addressShort);
-            }
-            setIcon(undefined)
-            switch (account.readyState) {
-                case AccountStatus.UN_CONNECT:
-                    setBtnClassname('un-connect')
-                    setLabel('labelConnectWallet');
-                    break
-                case AccountStatus.LOCKED:
-                    setBtnClassname('locked')
-                    setIcon(<LockIcon color={'error'} style={{width:16,height:16}}/>)
-                    break
-                case AccountStatus.ACTIVATED:
-                    setBtnClassname('unlocked')
-                    // setIcon(undefined)
-                    break
-                case AccountStatus.NO_ACCOUNT:
-                    setBtnClassname('no-account')
-                    // setIcon(<EmbarIcon color={'secondary'} style={{transform: 'rotate(58deg)'}}/>)
-                    break
-                case AccountStatus.DEPOSITING:
-                    setBtnClassname('depositing')
-                    setIcon(<LoadingIcon color={'primary'} style={{width: 18, height: 18}}/>)
-                    break
-                case AccountStatus.NOT_ACTIVE:
-                    setBtnClassname('not-active')
-                    // setIcon(<LoadingIcon color={'primary'} style={{width: 18, height: 18}}/>)
-                    break
-                case AccountStatus.ERROR_NETWORK:
-                    setBtnClassname('wrong-network')
-                    setLabel('labelWrongNetwork')
-                    setIcon(<UnConnectIcon style={{width:16,height:16}}/>)
-                    break
-                default:
-            }
-            if (account && account._chainId === 5) {
-                setNetworkLabel('Görli')
-            } else {
-                setNetworkLabel('')
-            }
-        } else {
-            setLabel('labelConnectWallet')
-        }
+  useEffect(() => {
+    if (accountState) {// && accountState.status === 'UNSET'){
+      const { account } = accountState;
+      const addressShort = account.accAddress ? getShortAddr(account?.accAddress) : undefined;
+      if (addressShort) {
+        setLabel(addressShort);
+      }
+      setIcon(undefined)
+      switch (account.readyState) {
+        case AccountStatus.UN_CONNECT:
+          setBtnClassname('un-connect')
+          setLabel('labelConnectWallet');
+          break
+        case AccountStatus.LOCKED:
+          setBtnClassname('locked')
+          setIcon(<LockIcon color={'error'} style={{ width: 16, height: 16 }} />)
+          break
+        case AccountStatus.ACTIVATED:
+          setBtnClassname('unlocked')
+          // setIcon(undefined)
+          break
+        case AccountStatus.NO_ACCOUNT:
+          setBtnClassname('no-account')
+          // setIcon(<EmbarIcon color={'secondary'} style={{transform: 'rotate(58deg)'}}/>)
+          break
+        case AccountStatus.DEPOSITING:
+          setBtnClassname('depositing')
+          setIcon(<LoadingIcon color={'primary'} style={{ width: 18, height: 18 }} />)
+          break
+        case AccountStatus.NOT_ACTIVE:
+          setBtnClassname('not-active')
+          // setIcon(<LoadingIcon color={'primary'} style={{width: 18, height: 18}}/>)
+          break
+        case AccountStatus.ERROR_NETWORK:
+          setBtnClassname('wrong-network')
+          setLabel('labelWrongNetwork')
+          setIcon(<UnConnectIcon style={{ width: 16, height: 16 }} />)
+          break
+        default:
+      }
 
-    }, [accountState, i18n])
-
-
-    const _handleClick = (event: React.MouseEvent) => {
-        // debounceCount(event)
-        handleClick(event)
+      if (account && account._chainId === ChainId.GOERLI) {
+        setNetworkLabel('Görli')
+      } else {
+        setNetworkLabel('')
+      }
+    } else {
+      setLabel('labelConnectWallet')
     }
 
-    const popupState = usePopupState({variant: 'popover', popupId: `popupId: 'wallet-connect-notification'`});
-    return <>
-        {networkLabel ?
-            <TestNetworkStyle display={'inline-flex'} alignItems={'center'} justifyContent={'center'} paddingX={1}
-                              component={'span'} color={'var(--vip-text)'}
-                              marginRight={1}>{networkLabel}</TestNetworkStyle> : <></>}
-        <WalletConnectBtnStyled
-            variant={['un-connect', 'wrong-network'].findIndex(ele => btnClassname === ele) !== -1 ? 'contained' : 'outlined'}
-            size={['un-connect', 'wrong-network'].findIndex(ele => btnClassname === ele) !== -1 ? 'small' : 'medium'}
-            color={'primary'}
-            className={`wallet-btn ${btnClassname}`}
-            onClick={_handleClick} {...bindHover(popupState)} >
-            {icon ? <Typography component={'i'} paddingRight={1}>{icon}</Typography> : <></>}
-            <Typography component={'span'} variant={'body1'} lineHeight={1}> {t(label)}  </Typography>
-        </WalletConnectBtnStyled>
-    </>
+  }, [accountState, i18n])
+
+
+  const _handleClick = (event: React.MouseEvent) => {
+    // debounceCount(event)
+    handleClick(event)
+  }
+
+  const popupState = usePopupState({ variant: 'popover', popupId: `popupId: 'wallet-connect-notification'` });
+  return <>
+    {networkLabel ?
+      <TestNetworkStyle display={'inline-flex'} alignItems={'center'} justifyContent={'center'} paddingX={1}
+        component={'span'} color={'var(--vip-text)'}
+        marginRight={1}>{networkLabel}</TestNetworkStyle> : <></>}
+    <WalletConnectBtnStyled
+      variant={['un-connect', 'wrong-network'].findIndex(ele => btnClassname === ele) !== -1 ? 'contained' : 'outlined'}
+      size={['un-connect', 'wrong-network'].findIndex(ele => btnClassname === ele) !== -1 ? 'small' : 'medium'}
+      color={'primary'}
+      className={`wallet-btn ${btnClassname}`}
+      onClick={_handleClick} {...bindHover(popupState)} >
+      {icon ? <Typography component={'i'} paddingRight={1}>{icon}</Typography> : <></>}
+      <Typography component={'span'} variant={'body1'} lineHeight={1}> {t(label)}  </Typography>
+    </WalletConnectBtnStyled>
+  </>
 
 }
