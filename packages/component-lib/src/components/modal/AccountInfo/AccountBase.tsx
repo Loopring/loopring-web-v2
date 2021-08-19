@@ -88,11 +88,9 @@ export const AccountBase = ({
             >{level}</VipStyled> : undefined}
         </Typography>
 
-
-
         <BoxStyled component={'div'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
                    marginTop={1} alignSelf={'stretch'}>
-            <Button formTarget={'_blank'} href={etherscanLink} startIcon={<LinkIcon fontSize={'small'}/>}>
+            <Button target={'_blank'} href={etherscanLink} startIcon={<LinkIcon fontSize={'small'}/>}>
                 <Typography variant={'body2'} marginTop={1 / 2}> {'Etherscan'} </Typography>
             </Button>
             <Button startIcon={<CopyIcon fontSize={'small'}/>} onClick={() => {
