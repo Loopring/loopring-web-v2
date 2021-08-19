@@ -136,7 +136,7 @@ export const Layer2Page = () => {
             case AccountStatus.ACTIVATED:
                 return <>
                     <Box width={'200px'} display={'flex'} justifyContent={'stretch'} marginRight={3}
-                        marginBottom={2}>
+                        marginBottom={2} className={'MuiPaper-elevation2'}>
                         <SubMenu>
                             <SubMenuList selected={selected} subMenu={subMenu as any}/>
                         </SubMenu>

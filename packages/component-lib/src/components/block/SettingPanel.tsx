@@ -91,7 +91,7 @@ export const BtnLanguage = ({t, label, handleChange}: any) => {
 }
 
 
-export const SettingPanel = withTranslation(['common', 'layout'])(({t, ...rest}: & WithTranslation) => {
+export const SettingPanel = withTranslation(['common', 'layout'],{withRef:true})(({t, ...rest}: & WithTranslation) => {
     // const theme = useTheme();
     const {setUpColor, setCurrency, setLanguage, currency, upColor, setTheme, themeMode} = useSettings()
 
@@ -114,6 +114,21 @@ export const SettingPanel = withTranslation(['common', 'layout'])(({t, ...rest}:
             setTheme(ThemeType.light);
         }
     }, [themeMode])
+    const updown = React.useCallback(({key})=>{
+      return  <Trans i18nKey="whichColorIsUp" tOptions={{
+          up: (key === UpColor.green ? t('labelgreen') : t('labelred')),
+          down: (key === UpColor.green ? t('labelred') : t('labelgreen'))
+      }} >
+            <Typography component={'span'} variant={'body2'} style={{
+                textTransform: 'capitalize',
+                // color: key === UpColor.green ? theme.colorBase.success : theme.colorBase.error
+            }}>color up</Typography>
+            and <Typography component={'span'} variant={'body2'} style={{
+            textTransform: 'capitalize',
+            // color: key === UpColor.green ? theme.colorBase.error : theme.colorBase.success
+        }}>color down</Typography>
+        </Trans>
+    },[UpColor])
 
     return         <BoxStyle component={'section'} display={'flex'} flexDirection={'column'} width={'var(--swap-box-width)'}>
         {/*<Typography variant={'h6'} component={'h4'} paddingX={2}>{t('labelTitleLayout')}</Typography>*/}
@@ -169,16 +184,7 @@ export const SettingPanel = withTranslation(['common', 'layout'])(({t, ...rest}:
                                 onChange={handleColorChange}>
                         {Object.keys(UpColor).map((key) => {
                             return <FormControlLabel key={key} value={key} control={<Radio/>}
-                                                     label={<Trans i18nKey="whichColorIsUp">
-                                <Typography component={'span'} variant={'body2'} style={{
-                                    textTransform: 'capitalize',
-                                    // color: key === UpColor.green ? theme.colorBase.success : theme.colorBase.error
-                                }}>{{up: key === UpColor.green ? t('labelgreen') : t('labelred')}} up</Typography>
-                                                         and <Typography component={'span'} variant={'body2'} style={{
-                                                         textTransform: 'capitalize',
-                                                         // color: key === UpColor.green ? theme.colorBase.error : theme.colorBase.success
-                                                     }}>{{down: key === UpColor.green ? t('labelred') : t('labelgreen')}} down</Typography>
-                                                     </Trans>}></FormControlLabel>
+                                                     label={updown({key})}/>
                         })}
                     </RadioGroupStyle>
                     {/*<ToggleButtonGroup exclusive {...{*/}
