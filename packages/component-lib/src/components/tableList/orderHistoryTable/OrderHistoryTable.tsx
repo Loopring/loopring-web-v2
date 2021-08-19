@@ -440,7 +440,6 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             <TableFilterStyled>
                 <Filter
                     marketArray={marketArray}
-                    originalData={rawData}
                     filterDate={filterDate}
                     filterType={filterType}
                     filterToken={filterToken}
