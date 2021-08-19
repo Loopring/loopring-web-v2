@@ -148,8 +148,6 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
         const { ammPoolSnapshot } = response
 
-        myLog('update ammPoolSnapshot:', ammPoolSnapshot)
-
         setAmmPoolSnapShot(ammPoolSnapshot)
     }, [pair, ammMap, setAmmPoolSnapShot])
 
