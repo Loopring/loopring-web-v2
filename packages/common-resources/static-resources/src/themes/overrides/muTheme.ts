@@ -34,10 +34,16 @@ import {
 import { MuPickDate } from './overrides-date-pick';
 import { fontDefault } from "../css/global";
 import { LoopringTheme, ThemeKeys } from '../interface';
+import shadows from '@material-ui/core/styles/shadows';
+import * as _ from "lodash"
 
 export { unit };
 export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
-    const colorBase: typeof ColorDarkDefault = themeMode === 'dark' ? ColorDarkDefault : ColorLightDefault
+    const colorBase: typeof ColorDarkDefault = themeMode === 'dark' ? ColorDarkDefault : ColorLightDefault;
+    // @ts-ignore
+    let _shadows =_.cloneDeep(shadows);
+    // _shadows[1] = colorBase.shadow;
+    // _shadows[2] = colorBase.shadow2;
     const theme = createMuiTheme({
         spacing: unit,
         palette: {
@@ -131,6 +137,7 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
                 fontColor: colorBase.textSecondary,
             },
         },
+        // shadows:,
         components: {
             MuiCard: MuiCard({colorBase}),
             MuiCardContent: MuiCardContent(),

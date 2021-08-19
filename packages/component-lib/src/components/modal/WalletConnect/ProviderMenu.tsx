@@ -7,6 +7,7 @@ import { Button } from '../../basic-lib';
 import { CheckBoxIcon, CheckedIcon, ConnectProviders, GatewayItem } from '@loopring-web/common-resources';
 import React from 'react';
 import { shake } from '../../styled';
+// import { useTheme } from '@emotion/react';
 const CheckboxStyled = styled(Checkbox)`
    &.shake{
      animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
@@ -15,10 +16,13 @@ const CheckboxStyled = styled(Checkbox)`
 ` as typeof Checkbox;
 
 const ProviderBtnStyled = styled(Button)`
-  background: var(--provider-btn);
-
+  
+  background: var(--opacity);
+  color: var(--color-text-secondary);
   &:hover {
     background: var(--provider-hover);
+    border-color: var(--opacity);
+    color: var(--color-text-button-select);
   }
 
   // width: var(--gateway-icon-size);
@@ -35,7 +39,9 @@ const ProviderBtnStyled = styled(Button)`
 
   &.selected {
     position: relative;
-
+    background: var(--provider-hover);
+    border-color: var(--opacity);
+    color: var(--color-text-button-select);
     &:after {
       position: absolute;
       content: "\u25CF";
@@ -43,14 +49,26 @@ const ProviderBtnStyled = styled(Button)`
       //width: 100%;
       display: flex;
       left: 0;
-      padding-left: ${({ theme }) => theme.unit * 2}px;
+      padding-left: ${({ theme }) => theme.unit * 3/2}px;
       //justify-content: ;
       align-items: center;
       font-size: ${({ theme }) => theme.fontDefault.h5};
     }
 
   }
+
+
+  
 ` as typeof Button;
+// ${({ theme }) =>{
+//   if(theme.palette.mode === ThemeType.light){
+//     return`
+//        &:hover {
+//       }
+//     `
+//   }
+//   return ``
+// }}
 //${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1 / 2, d_W:1})};
 //padding: 0 ${({theme}) => theme.unit * 5 / 3}px;
 const BoxStyle = styled(Box)`
@@ -82,6 +100,7 @@ export const ProviderMenu = ({
 }: ProviderMenuProps & WithTranslation) => {
   const [checkboxValue, setCheckboxValue] = React.useState(false)
   const [isShake, setIsShake] = React.useState(false)
+  // const theme = useTheme();
   React.useEffect(() => {
     const isAgreed = localStorage.getItem('userTermsAgreed')
     setCheckboxValue(isAgreed === 'true')
@@ -128,7 +147,7 @@ export const ProviderMenu = ({
 
       <>   {gatewayList.map((item: GatewayItem) => (
         <Box key={item.key} marginTop={1.5}>
-          <ProviderBtnStyled variant={'contained'} size={'large'} className={
+          <ProviderBtnStyled variant={'outlined'} size={'large'} className={
             providerName === item.key ? 'selected' : ''
           } fullWidth
             endIcon={<img src={item.imgSrc} alt={item.key} height={18} />}

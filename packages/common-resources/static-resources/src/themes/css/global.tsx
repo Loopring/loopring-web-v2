@@ -35,6 +35,7 @@ export const colorBase = ({theme}: any) => css`
     --color-text-primary: ${theme.colorBase.textPrimary};
     --color-text-button: ${theme.colorBase.textButton};
     --color-text-secondary: ${theme.colorBase.textSecondary};
+    --color-text-third: ${theme.colorBase.textThird};
     --color-text-disable: ${theme.colorBase.textDisable};
     --color-disable: ${theme.colorBase.disable};
     --color-border: ${theme.colorBase.border};
@@ -52,6 +53,7 @@ export const colorBase = ({theme}: any) => css`
     --color-text-button-select: ${theme.colorBase.textButtonSelect};
     --color-mask:  ${theme.colorBase.mask};
     --shadow: ${theme.colorBase.shadow};
+    --shadow2: ${theme.colorBase.shadoww};
     --opacity: ${theme.colorBase.opacity};
     /********************Case for special*******************/
     --vip-bg: ${hexToRGB(theme.colorBase.warning, '0.2')};
@@ -64,6 +66,7 @@ export const colorBase = ({theme}: any) => css`
     --auto-refresh-color: ${theme.colorBase.primary};
    
   }
+ 
 `;
 export const scrollbarDefault = ({theme}: any) => css`
   html {
@@ -75,6 +78,12 @@ export const scrollbarDefault = ({theme}: any) => css`
     scrollbar-arrow-color: ${theme.colorBase.box};
     scrollbar-shadow-color: ${theme.colorBase.box};
     scrollbar-dark-shadow-color: ${theme.colorBase.box};
+  }
+  .MuiPaper-elevation2{
+    box-shadow:var(--shadow)
+  }
+  .MuiPaper-elevation4{
+    box-shadow:var(--shadow2)
   }
   
   //::-webkit-scrollbar { width: 8px; height: 3px; position: absolute}

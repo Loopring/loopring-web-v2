@@ -44,6 +44,8 @@ export const ColorDarkDefault = Object.freeze({
     star:`#F0B90B`,
     /********************Case for provider*******************/
     shadow: ` 0px 4px 4px ${hexToRGB('#000000', '.25')}`,
+    shadow2: `0px 4px 8px 0px rgba(87, 102, 236, 0.08)`,
+
     fieldOpacity:`${hexToRGB('#ffffff', '0.1')}`,
     providerBtn:`${hexToRGB('#ffffff', '0.1')}`,
     providerBtnHover:`${hexToRGB('#ffffff', '0.03')}`,
@@ -85,10 +87,11 @@ export const ColorLightDefault = Object.freeze({...ColorDarkDefault,
     opacity: `${hexToRGB('#FFFFFF', '0')}`,
     star:`#F0B90B`,
     /********************Case for provider*******************/
-    shadow: ` 0px 4px 4px ${hexToRGB('#000000', '.25')}`,
+    shadow: `0px 10px 20px rgba(87, 129, 236, 0.08)`,
+    shadow2: `0px 4px 8px 0px rgba(87, 102, 236, 0.08)`,
     fieldOpacity:`#EEF1FA`,
-    providerBtn:`${hexToRGB('#15162B', '0.8')}`,
-    providerBtnHover:`${hexToRGB('#15162B', '0.5')}`,
+    providerBtn:`${hexToRGB('#ffffff', '0.1')}`,
+    providerBtnHover:`${hexToRGB('#627BF6', '0.1')}`,
     buttonIcon:'#A3A8CA',
     //${hexToRGB('#4E5395', '0.1')}
 

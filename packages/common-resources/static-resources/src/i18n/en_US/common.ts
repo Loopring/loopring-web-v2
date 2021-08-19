@@ -210,6 +210,7 @@ export default {
     labelMiningMyReward: 'My Reward',
     labelCookiesAgree: 'Agree',
     labelLimitMin:'Minimum is {{arg}}',
+    labelEnterAmount:'Enter an amount',
     labelAgreeLoopringTxt: 'Allow Loopring to use Cookies.',
     labelLayer2HistoryTransactions: 'Transactions',
     labelLayer2HistoryTrades: 'Trades',

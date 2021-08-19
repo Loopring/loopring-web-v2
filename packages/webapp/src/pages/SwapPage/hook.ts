@@ -80,10 +80,13 @@ export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
 
                 const validAmt = (output?.amountBOut && quoteMinAmt
                     && sdk.toBig(output?.amountBOut).gte(sdk.toBig(quoteMinAmt))) ? true : false
+                if (validAmt || quoteMinAmt === undefined ) {
+                        setBtnStatus(TradeBtnStatus.AVAILABLE)
+                        setSwapBtnI18nKey(undefined)
 
-                if (validAmt || quoteMinAmt === undefined || tradeData === undefined) {
-                    setBtnStatus(TradeBtnStatus.AVAILABLE)
-                    setSwapBtnI18nKey(undefined)
+                }else if(tradeData === undefined || tradeData?.buy.tradeValue === undefined){
+                    setBtnStatus(TradeBtnStatus.DISABLED)
+                    setSwapBtnI18nKey('labelEnterAmount')
                 } else {
                     const minOrderSize = VolToNumberWithPrecision(quoteMinAmt, tradeData?.buy.belong) + ' ' + tradeData?.buy.belong
                     setSwapBtnI18nKey(`labelLimitMin, ${minOrderSize}`)
@@ -94,7 +97,7 @@ export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
         }
 
     }, [isSwapLoading, account.readyState,
-        output, quoteMinAmt, tradeData?.buy.belong, setSwapBtnI18nKey])
+        output, quoteMinAmt, tradeData, setSwapBtnI18nKey])
 
     return {
         btnStatus,
@@ -135,11 +138,28 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             return
         }
         resetSwap(undefined, undefined);
-        getUserTrades(market)?.then((marketTrades) => {
-            let _myTradeArray = makeMarketArray(market, marketTrades) as RawDataTradeItem[]
-            setMyTradeArray(_myTradeArray ? _myTradeArray : [])
-        })
     }, [market]);
+
+    useCustomDCEffect(() => {
+
+        if (!market || !LoopringAPI.userAPI) {
+            return
+        }
+
+        if (account.accountId && account.apiKey) {
+            LoopringAPI.userAPI.getUserTrades({accountId: account.accountId, market,}, account.apiKey).then((response: {
+                totalNum: any;
+                userTrades: sdk.UserTrade[];
+                raw_data: any;
+            }) => {
+                let _myTradeArray = makeMarketArray(market, response.userTrades) as RawDataTradeItem[]
+                setMyTradeArray(_myTradeArray ? _myTradeArray : [])
+            })
+        } else {
+            setMyTradeArray([])
+        }
+        
+    }, [market, account.accountId, account.apiKey]);
 
     const [ammPoolSnapshot, setAmmPoolSnapshot] = React.useState<AmmPoolSnapshot | undefined>(undefined);
 
@@ -366,29 +386,23 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     const [depth, setDepth] = useState<DepthData>()
 
-    useEffect(() => {
+    const updateDepth = useCallback(async() => {
 
-        const updateDepth = async () => {
-            if (!market || !LoopringAPI.exchangeAPI) {
-                return
-            }
-
-            const { depth } = await LoopringAPI.exchangeAPI.getMixDepth({ market })
-            setDepth(depth)
+        if (!market || !LoopringAPI.exchangeAPI) {
+            return
         }
 
+        const { depth } = await LoopringAPI.exchangeAPI.getMixDepth({ market })
+
+        setDepth(depth)
+
+    }, [market, setDepth])
+
+    useCustomDCEffect(async() => {
+        
         updateDepth()
 
-        const handler = setInterval(() => {
-            updateDepth()
-        }, REFRESH_RATE_SLOW)
-
-        return () => {
-            if (handler) {
-                clearInterval(handler)
-            }
-        }
-    }, [market])
+    }, [market, setDepth])
 
     const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: AmmPoolSnapshot | undefined)
         : Promise<{ _tradeCalcData: TradeCalcData<C>, _tradeData: SwapTradeData<IBData<C>> }> => {
@@ -627,7 +641,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         marketArray,
         onSwapClick,
         swapBtnI18nKey,
-        handleSwapPanelEvent
+        handleSwapPanelEvent,
+        updateDepth,
     }
 
 }

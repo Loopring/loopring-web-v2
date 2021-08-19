@@ -24,7 +24,7 @@ export const StylePaper = styled(Box)`
     display: flex;
     margin-top: ${({ theme }) => 3 * theme.unit}px;
     flex: 1;
-    .rdg {
+    .rdg {                                                   
       flex: 1;
     }
   }
@@ -34,7 +34,7 @@ export const StylePaper = styled(Box)`
       background-color: inherit !important;
     }
   }
-` as typeof Paper;
+` as typeof Box;
 
 
 export const  TableWrapStyled = styled(Grid)`

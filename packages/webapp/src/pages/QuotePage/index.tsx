@@ -277,7 +277,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
             </Grid>
 
         </RowStyled>
-        <TableWrapStyled container marginY={3}  paddingBottom={2} flex={1}> 
+        <TableWrapStyled container marginY={3}  paddingBottom={2} flex={1} className={'MuiPaper-elevation2'}>
             <Grid item xs={12}>
                 <TabsWrapperStyled>
                   <Tabs
