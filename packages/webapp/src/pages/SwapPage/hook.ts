@@ -135,11 +135,28 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             return
         }
         resetSwap(undefined, undefined);
-        getUserTrades(market)?.then((marketTrades) => {
-            let _myTradeArray = makeMarketArray(market, marketTrades) as RawDataTradeItem[]
-            setMyTradeArray(_myTradeArray ? _myTradeArray : [])
-        })
     }, [market]);
+
+    useCustomDCEffect(() => {
+
+        if (!market || !LoopringAPI.userAPI) {
+            return
+        }
+
+        if (account.accountId && account.apiKey) {
+            LoopringAPI.userAPI.getUserTrades({accountId: account.accountId, market,}, account.apiKey).then((response: {
+                totalNum: any;
+                userTrades: sdk.UserTrade[];
+                raw_data: any;
+            }) => {
+                let _myTradeArray = makeMarketArray(market, response.userTrades) as RawDataTradeItem[]
+                setMyTradeArray(_myTradeArray ? _myTradeArray : [])
+            })
+        } else {
+            setMyTradeArray([])
+        }
+        
+    }, [market, account.accountId, account.apiKey]);
 
     const [ammPoolSnapshot, setAmmPoolSnapshot] = React.useState<AmmPoolSnapshot | undefined>(undefined);
 
@@ -366,29 +383,23 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     const [depth, setDepth] = useState<DepthData>()
 
-    useEffect(() => {
+    const updateDepth = useCallback(async() => {
 
-        const updateDepth = async () => {
-            if (!market || !LoopringAPI.exchangeAPI) {
-                return
-            }
-
-            const { depth } = await LoopringAPI.exchangeAPI.getMixDepth({ market })
-            setDepth(depth)
+        if (!market || !LoopringAPI.exchangeAPI) {
+            return
         }
 
+        const { depth } = await LoopringAPI.exchangeAPI.getMixDepth({ market })
+
+        setDepth(depth)
+
+    }, [market, setDepth])
+
+    useCustomDCEffect(async() => {
+        
         updateDepth()
 
-        const handler = setInterval(() => {
-            updateDepth()
-        }, REFRESH_RATE_SLOW)
-
-        return () => {
-            if (handler) {
-                clearInterval(handler)
-            }
-        }
-    }, [market])
+    }, [market, setDepth])
 
     const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: AmmPoolSnapshot | undefined)
         : Promise<{ _tradeCalcData: TradeCalcData<C>, _tradeData: SwapTradeData<IBData<C>> }> => {
@@ -627,7 +638,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         marketArray,
         onSwapClick,
         swapBtnI18nKey,
-        handleSwapPanelEvent
+        handleSwapPanelEvent,
+        updateDepth,
     }
 
 }
