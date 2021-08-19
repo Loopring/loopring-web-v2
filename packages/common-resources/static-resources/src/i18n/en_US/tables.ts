@@ -24,7 +24,7 @@ export default {
     labelOrderPrice: 'Price',
     labelOrderFilledAmount: 'Filled Amount',
     labelOrderFilledPrice: 'Filled Price',
-    labelOrderFilterAllTokens: 'All Tokens',
+    labelOrderFilterAllPairs: 'All Pairs',
     labelOrderTime: 'Time',
     labelOrderStatus: 'Status',
     labelOrderTradingPrice: 'Trading Price',
