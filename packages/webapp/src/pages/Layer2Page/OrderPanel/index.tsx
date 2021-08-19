@@ -21,7 +21,7 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
     return (
         <>
             <StylePaper ref={container}>
-                <div className="title">Order History</div>
+                {/*<div className="title">{rest.t('Orders History')}</div>*/}
                 <div className="tableWrapper">
                     <OrderHistoryTable {...{
                         pagination: {
