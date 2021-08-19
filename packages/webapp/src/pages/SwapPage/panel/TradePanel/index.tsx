@@ -67,7 +67,7 @@ const TradePanel = withTranslation('common')(
             }
         }, [getCurrentHeight]);
 
-        return (   <TableWrapStyled item alignSelf={'stretch'} xs={12} marginY={2}  paddingBottom={2}/* paddingBottom={2} */ flex={1}>
+        return (   <TableWrapStyled item alignSelf={'stretch'} xs={12} marginY={2}  paddingBottom={2} flex={1} className={'MuiPaper-elevation2'}>
                 <TabsStyled value={value}
                             onChange={handleChange}
                             aria-label="tabs switch">

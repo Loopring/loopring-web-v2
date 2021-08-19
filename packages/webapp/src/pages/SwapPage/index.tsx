@@ -45,15 +45,18 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
             <TradePanel tradeArray={tradeArray} myTradeArray={myTradeArray}/>
         </Grid>
 
-        <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}}>
+        <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}} >
             <FixedStyle>
-                <SwapPanel tradeData={tradeData as any}
-                           tradeCalcData={tradeCalcData as any}
-                           onSwapClick={onSwapClick}
-                           swapBtnI18nKey={swapBtnI18nKey}
-                           swapBtnStatus={btnStatus}
-                           {...{handleSwapPanelEvent, ...rest}}
-                />
+                <Box className={'MuiPaper-elevation2'}>
+                    <SwapPanel  tradeData={tradeData as any}
+                                tradeCalcData={tradeCalcData as any}
+                                onSwapClick={onSwapClick}
+                                swapBtnI18nKey={swapBtnI18nKey}
+                                swapBtnStatus={btnStatus}
+                                {...{handleSwapPanelEvent, ...rest}}
+                    />
+                </Box>
+
             </FixedStyle>
 
         </Box>
