@@ -80,10 +80,13 @@ export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
 
                 const validAmt = (output?.amountBOut && quoteMinAmt
                     && sdk.toBig(output?.amountBOut).gte(sdk.toBig(quoteMinAmt))) ? true : false
+                if (validAmt || quoteMinAmt === undefined ) {
+                        setBtnStatus(TradeBtnStatus.AVAILABLE)
+                        setSwapBtnI18nKey(undefined)
 
-                if (validAmt || quoteMinAmt === undefined || tradeData === undefined) {
-                    setBtnStatus(TradeBtnStatus.AVAILABLE)
-                    setSwapBtnI18nKey(undefined)
+                }else if(tradeData === undefined || tradeData?.buy.tradeValue === undefined){
+                    setBtnStatus(TradeBtnStatus.DISABLED)
+                    setSwapBtnI18nKey('labelEnterAmount')
                 } else {
                     const minOrderSize = VolToNumberWithPrecision(quoteMinAmt, tradeData?.buy.belong) + ' ' + tradeData?.buy.belong
                     setSwapBtnI18nKey(`labelLimitMin, ${minOrderSize}`)
@@ -94,7 +97,7 @@ export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
         }
 
     }, [isSwapLoading, account.readyState,
-        output, quoteMinAmt, tradeData?.buy.belong, setSwapBtnI18nKey])
+        output, quoteMinAmt, tradeData, setSwapBtnI18nKey])
 
     return {
         btnStatus,
