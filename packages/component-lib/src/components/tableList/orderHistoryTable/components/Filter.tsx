@@ -5,13 +5,10 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { TextField, DateRangePicker } from '../../../'
 import { Button } from '../../../basic-lib/btns'
 import { DropDownIcon } from '@loopring-web/common-resources'
-import { OrderHistoryRawDataItem } from '../OrderHistoryTable'
 import { DateRange } from '@material-ui/lab'
-import { getExistedMarket } from 'loopring-sdk'
 
 export interface FilterProps {
     handleFilterChange: ({filterType, filterDate, filterToken}: any) => void
-    originalData: OrderHistoryRawDataItem[];
     filterDate: DateRange<Date | string>;
     filterType: FilterOrderTypes;
     filterToken: string;
@@ -46,7 +43,6 @@ const StyledBtnBox = styled(Box)`
 
 export const Filter = withTranslation('tables', {withRef: true})(({
                                                                       t,
-                                                                      originalData,
                                                                       filterDate,
                                                                       filterType,
                                                                       filterToken,
@@ -54,7 +50,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                                                                       handleReset,
                                                                       marketArray = [],
                                                                   }: FilterProps & WithTranslation) => {
-    const FilterOrderTypeList = [
+                                                                    const FilterOrderTypeList = [
         {
             label: t('labelOrderFilterAllTypes'),
             value: 'All Types'
@@ -70,19 +66,15 @@ export const Filter = withTranslation('tables', {withRef: true})(({
     ]
     // de-duplicate
     const getTokenTypeList = React.useCallback(() => {
-        // const buyTokenList = originalData.map(o => o.amount && o.amount.from ? o.amount.from.key : '')
-        // const sellTokenList = originalData.map(o => o.amount && o.amount.to ? o.amount.to.key : '')
-        
-        const marketList = originalData.map(o => o.market)
         return [{
             label: t('labelOrderFilterAllPairs'),
             value: 'All Pairs',
-        }, ...Array.from(new Set(marketList))
+        }, ...Array.from(new Set(marketArray))
             .map(token => ({
                 label: token,
                 value: token
             }))]
-    }, [originalData, t])
+    }, [t, marketArray])
 
     return (
         <Grid container spacing={2}>
@@ -108,7 +100,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                     handleFilterChange({date: date})
                 }} />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={2} minWidth={200}>
                 <StyledTextFiled
                     id="table-order-token-types"
                     select

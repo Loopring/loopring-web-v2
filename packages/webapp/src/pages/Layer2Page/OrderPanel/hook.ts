@@ -13,6 +13,12 @@ export const useOrderList = () => {
     const [showLoading, setShowLoading] = React.useState(false)
     const { account: {accountId, apiKey} } = useAccount()
     const { tokenMap: { marketArray } } = store.getState()
+    const { ammMap: { ammMap } } = store.getState().amm
+
+    const ammPairList = ammMap 
+        ? Object.keys(ammMap)
+        : []
+    const jointPairs = (marketArray || []).concat(ammPairList)
 
     const getOrderList = React.useCallback(async (props: Omit<GetOrdersRequest, 'accountId'> ) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
@@ -76,7 +82,7 @@ export const useOrderList = () => {
     }, [getOrderList])
 
     return {
-        marketArray,
+        marketArray: jointPairs,
         getOrderList,
         rawData: orderOriginalData,
         totalNum,
