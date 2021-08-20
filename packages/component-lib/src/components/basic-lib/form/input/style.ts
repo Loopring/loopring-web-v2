@@ -61,15 +61,10 @@ export const IWrap = styled(Box)`
 
 
     &.error {
-      ${({theme}) => `
-        ${theme.border.defaultFrame({c_key: theme.colorBase.error, d_R: 0.5})} !important;
-      `
-      // input,button,.icon-wrap{
-      //   ${({theme}) => `
-      //       ${theme.border.defaultFrame({c_key: theme.colorBase.error, d_R: 0.5})};
-      //   `};
-      // }
-      //
+      border: 1px solid var(--color-error) !important;
+      border-radius:  ${({theme}) => theme.unit / 2}px;
+     
+     
       // .input-wrap-right input,.icon-wrap-left {
       //       border-top-left-radius: 0px;
       //       border-bottom-left-radius: 0px;
