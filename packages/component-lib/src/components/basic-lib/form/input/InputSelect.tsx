@@ -55,15 +55,15 @@ function _InputSelect<C, I extends string = CoinKey<C>>({
         selected: '',
         focusOnInput: focusOnInput ? focusOnInput : false
     })
-    const debounceContentChange = _.debounce((props: any) => {
+    const debounceContentChange = React.useCallback(_.debounce(({value,handleContentChange}: any) => {
         if (handleContentChange) {
-            handleContentChange(props)
+            handleContentChange(value)
         }
-    }, wait)
+    }, wait),[])
     const _handleContentChange = React.useCallback((value) => {
         setValue({...value, selected: value});
-        debounceContentChange(value)
-    }, [debounceContentChange, value])
+        debounceContentChange({value,handleContentChange})
+    }, [debounceContentChange, value, handleContentChange])
 
     const inputEle = useFocusRef({
         shouldFocusOn: value.focusOnInput,

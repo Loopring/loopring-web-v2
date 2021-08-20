@@ -39,11 +39,11 @@ export const DepositWrap = <T extends IBData<I>,
     //     error: false,
     //     message: ''
     // });
-    const debounceAddress = React.useCallback(debounce(({address}: any) => {
+    const debounceAddress = React.useCallback(debounce(({address,handleOnAddressChange}: any) => {
         if (handleOnAddressChange) {
             handleOnAddressChange(address)
         }
-    }, wait), [handleOnAddressChange, debounce])
+    }, wait), [])
     const handleClear = React.useCallback(() => {
         // @ts-ignore
         // addressInput?.current?.value = "";
@@ -58,8 +58,8 @@ export const DepositWrap = <T extends IBData<I>,
             }
         }
         setAddress(address);
-        debounceAddress({address})
-    }, [debounce, wait, handleAddressError])
+        debounceAddress({address,handleOnAddressChange})
+    }, [handleAddressError,handleOnAddressChange])
     const inputButtonDefaultProps = {
         label: t('depositLabelEnterToken'),
     }

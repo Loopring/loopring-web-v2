@@ -2,7 +2,7 @@ import store from '../stores';
 import { AccountStep, setShowAccount, setShowConnect, Toast, WalletConnectStep } from '@loopring-web/component-lib';
 import { fnType } from '@loopring-web/common-resources';
 import { changeShowModel } from 'stores/account';
-import { walletLayer2Services } from 'services/account/walletLayer2Services'
+import { accountServices } from 'services/account/accountServices'
 import { myLog } from 'utils/log_tools';
 
 export const accountStaticCallBack = (onclickMap: { [key: number]: [fn: (props: any) => any, args?: any[]] }, deps?: any[]) => {
@@ -74,21 +74,21 @@ export const btnClickMap: { [key: string]: [fn: (props: any) => any, args?: any[
         function () {
             myLog('NO_ACCOUNT! sendCheckAcc', );
             store.dispatch(changeShowModel({ _userOnModel: true }));
-            walletLayer2Services.sendCheckAcc()
+            accountServices.sendCheckAcc()
         }
     ]
     , [fnType.DEPOSITING]: [
         function () {
             myLog('DEPOSITING! sendCheckAcc', );
             store.dispatch(changeShowModel({ _userOnModel: true }));
-            walletLayer2Services.sendCheckAcc()
+            accountServices.sendCheckAcc()
         }
     ]
     ,[fnType.NOT_ACTIVE]: [
         function () {
             myLog('NOT_ACTIVE! sendCheckAcc', );
             store.dispatch(changeShowModel({ _userOnModel: true }));
-            walletLayer2Services.sendCheckAcc()
+            accountServices.sendCheckAcc()
         }
     ]
     , [fnType.LOCKED]: [

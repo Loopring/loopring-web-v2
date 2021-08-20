@@ -16883,7 +16883,7 @@ loglevel@^1.4.1, loglevel@^1.6.8:
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.7.1.tgz#005fde2f5e6e47068f935ff28573e125ef72f197"
   integrity sha512-Hesni4s5UkWkwCGJMQGAh71PaLUmKFM60dHvq0zi/vDhhrzuk+4GgNbTXJ12YYQJn6ZKBDNIjYcuQGKudvqrIw==
 
-loopring-sdk@0.0.90:
+loopring-sdk@^0.0.90:
   version "0.0.90"
   resolved "https://registry.yarnpkg.com/loopring-sdk/-/loopring-sdk-0.0.90.tgz#9b923364899ed2528cf8a68f058e903862b37d16"
   integrity sha512-Zcckk8w2RsvaX7gb9SgnTUjYKoM2E+4m/u7b1ENq8DVrvuyKJDGfZ73cny54YDMC0ChoFRmJBVcUwazxrIaLcA==

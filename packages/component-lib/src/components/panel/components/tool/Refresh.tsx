@@ -29,7 +29,7 @@ export const  CountDownIcon = React.memo(({onRefreshData, wait=globalSetup.wait}
             nodeTimer.current = setInterval(decreaseNum, 1000)
         }
     }, [countDownRef,nodeTimer])
-    const _refresh = React.useCallback(debounce(() => {
+    const _refresh = React.useCallback(debounce((onRefreshData, countDownRef, nodeTimer, startCountDown) => {
         if(countDownRef && countDownRef.current) {
             // setRefreshCount(0)
             if(nodeTimer.current !== -1){
@@ -49,7 +49,7 @@ export const  CountDownIcon = React.memo(({onRefreshData, wait=globalSetup.wait}
                 onRefreshData();
             }
         }
-    },wait), [onRefreshData, countDownRef,refreshTime, nodeTimer, startCountDown]);
+    },wait), []);
 
     const decreaseNum = React.useCallback(() => setRefreshCount((prev) => {
         if (prev > 1) {
@@ -75,12 +75,12 @@ export const  CountDownIcon = React.memo(({onRefreshData, wait=globalSetup.wait}
         clearTimeout(logoTimer.current as NodeJS.Timeout);
     },[nodeTimer,logoTimer] )
     React.useEffect(() => {
-        _refresh();
+        _refresh(onRefreshData, countDownRef, nodeTimer, startCountDown);
         return cleanSubscribe;
     }, []);
     return <CountDownStyled ref={countDownRef}
                             className={'clock-loading outline logo'}
-                            onClick={_refresh}>
+                            onClick={()=>_refresh(onRefreshData, countDownRef, nodeTimer, startCountDown)}>
         <Typography component={'span'} className={'text-count'}>
             {/*{refreshCount>0?refreshCount:''}*/}
         </Typography>

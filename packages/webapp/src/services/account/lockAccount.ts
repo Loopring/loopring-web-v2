@@ -1,14 +1,14 @@
 import { AccountStatus } from '@loopring-web/common-resources';
-import { walletLayer2Services } from './walletLayer2Services';
+import { accountServices } from './accountServices';
 
 export function lockAccount() {
-    walletLayer2Services.sendAccountLock()
+    accountServices.sendAccountLock()
 }
 
 export function goErrorNetWork(){
-    walletLayer2Services.sendUpdateAccStatusAndReset(AccountStatus.ERROR_NETWORK)
+    accountServices.sendUpdateAccStatusAndReset(AccountStatus.ERROR_NETWORK)
 }
 
 export function cleanLayer2() {
-    walletLayer2Services.sendUpdateAccStatusAndReset(AccountStatus.UN_CONNECT)
+    accountServices.sendUpdateAccStatusAndReset(AccountStatus.UN_CONNECT)
 }
