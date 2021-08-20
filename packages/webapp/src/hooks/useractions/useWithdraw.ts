@@ -13,7 +13,10 @@ import {
     WithdrawType,
     WithdrawTypes
 } from '@loopring-web/common-resources';
-import { ConnectorNames, dumpError400, OffchainFeeReqType, toBig, VALID_UNTIL } from 'loopring-sdk';
+import {
+    ConnectorNames, dumpError400, OffchainFeeReqType, toBig, VALID_UNTIL,
+    OffChainWithdrawalRequestV3,
+} from 'loopring-sdk';
 
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
@@ -28,7 +31,7 @@ import { makeWalletLayer2 } from 'hooks/help';
 export const useWithdraw = <R extends IBData<T>, T>(): {
     // handleWithdraw: (inputValue:R) => void,
     withdrawAlertText: string | undefined,
-    withdrawToastOpen: boolean, 
+    withdrawToastOpen: boolean,
     setWithdrawToastOpen: any,
     withdrawProps: WithdrawProps<R, T>
     // withdrawValue: R
@@ -40,28 +43,28 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const [withdrawAlertText, setWithdrawAlertText] = useState<string>()
 
-    const {tokenMap, totalCoinMap, } = useTokenMap();
-    const {account} = useAccount()
-    const {exchangeInfo, chainId} = useSystem();
+    const { tokenMap, totalCoinMap, } = useTokenMap();
+    const { account } = useAccount()
+    const { exchangeInfo, chainId } = useSystem();
     const [withdrawValue, setWithdrawValue] = React.useState<IBData<T>>({
         belong: undefined,
         tradeValue: 0,
         balance: 0
     } as IBData<unknown>)
-    const {status:walletLayer2Status} = useWalletLayer2();
-    const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap??{} as WalletMap<R>);
-    const {chargeFeeList} = useChargeFees(withdrawValue.belong, OffchainFeeReqType.OFFCHAIN_WITHDRAWAL, tokenMap)
+    const { status: walletLayer2Status } = useWalletLayer2();
+    const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
+    const { chargeFeeList } = useChargeFees(withdrawValue.belong, OffchainFeeReqType.OFFCHAIN_WITHDRAWAL, tokenMap)
     const [withdrawAddr, setWithdrawAddr] = useState<string>()
     const [withdrawFeeInfo, setWithdrawFeeInfo] = useState<any>(undefined)
     const [withdrawType, setWithdrawType] = useState<OffchainFeeReqType>(OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
-    const { setShowWithdraw, }  = useOpenModals()
+    const { setShowWithdraw, } = useOpenModals()
 
-    React.useEffect(()=>{
-        if(walletLayer2Status === SagaStatus.UNSET){
+    React.useEffect(() => {
+        if (walletLayer2Status === SagaStatus.UNSET) {
             const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
             setWalletMap2(walletMap)
         }
-    },[walletLayer2Status])
+    }, [walletLayer2Status])
     useCustomDCEffect(() => {
         if (chargeFeeList.length > 0) {
             setWithdrawFeeInfo(chargeFeeList[0])
@@ -70,53 +73,60 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const handleWithdraw = React.useCallback(async (inputValue: R) => {
 
-        const {accountId, accAddress, readyState, apiKey, connectName, eddsaKey} = account
-        if (readyState === AccountStatus.ACTIVATED && tokenMap 
-            && exchangeInfo && connectProvides.usedWeb3 
+        const { accountId, accAddress, readyState, apiKey, connectName, eddsaKey } = account
+        if (readyState === AccountStatus.ACTIVATED && tokenMap
+            && exchangeInfo && connectProvides.usedWeb3
             && withdrawAddr && withdrawFeeInfo?.belong && eddsaKey?.sk) {
             try {
-                const withdrawToken = tokenMap[ inputValue.belong as string ]
-                const feeToken = tokenMap[ withdrawFeeInfo.belong ]
+                const withdrawToken = tokenMap[inputValue.belong as string]
+                const feeToken = tokenMap[withdrawFeeInfo.belong]
                 const withdrawVol = toBig(inputValue.tradeValue).times('1e' + withdrawToken.decimals).toFixed(0, 0)
                 const storageId = await LoopringAPI.userAPI?.getNextStorageId({
                     accountId: accountId,
                     sellTokenId: withdrawToken.tokenId
                 }, apiKey)
-                const response = await LoopringAPI.userAPI?.submitOffchainWithdraw({
-                        exchange: exchangeInfo.exchangeAddress,
-                        owner: accAddress,
-                        to: withdrawAddr,
-                        accountId: account.accountId,
-                        storageId: storageId?.offchainId,
-                        token: {
-                            tokenId: withdrawToken.tokenId,
-                            volume: withdrawVol,
-                        },
-                        maxFee: {
-                            tokenId: feeToken.tokenId,
-                            volume: withdrawFeeInfo.__raw__,
-                        },
-                        extraData: '',
-                        minGas: 0,
-                        validUntil: VALID_UNTIL,
+
+                const request: OffChainWithdrawalRequestV3 = {
+                    exchange: exchangeInfo.exchangeAddress,
+                    owner: accAddress,
+                    to: withdrawAddr,
+                    accountId: account.accountId,
+                    storageId: storageId?.offchainId,
+                    token: {
+                        tokenId: withdrawToken.tokenId,
+                        volume: withdrawVol,
                     },
-                    connectProvides.usedWeb3,
-                    chainId === 'unknown' ? 1 : chainId, connectName as ConnectorNames,
-                    eddsaKey.sk, apiKey)
+                    maxFee: {
+                        tokenId: feeToken.tokenId,
+                        volume: withdrawFeeInfo.__raw__,
+                    },
+                    extraData: '',
+                    minGas: 0,
+                    validUntil: VALID_UNTIL,
+                }
 
-                    myLog('got response:', response)
+                const response = await LoopringAPI.userAPI?.submitOffchainWithdraw({
+                    request,
+                    web3: connectProvides.usedWeb3,
+                    chainId: chainId === 'unknown' ? 1 : chainId,
+                    walletType: connectName as ConnectorNames,
+                    eddsaKey: eddsaKey.sk,
+                    apiKey,
+                })
 
-                    if (response?.hash === undefined && response?.errInfo) {
-                        setWithdrawAlertText(t('labelWithdrawFailed'))
-                    } else {
-                        setWithdrawAlertText(t('labelWithdrawSucess'))
-                    }
-                    
+                myLog('got response:', response)
+
+                if (response?.hash === undefined && response?.errInfo) {
+                    setWithdrawAlertText(t('labelWithdrawFailed'))
+                } else {
+                    setWithdrawAlertText(t('labelWithdrawSucess'))
+                }
+
             } catch (e) {
                 dumpError400(e)
                 setWithdrawAlertText(t('labelWithdrawFailed'))
             }
-            
+
             setWithdrawToastOpen(true)
 
             return true
@@ -130,7 +140,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const withdrawType2 = withdrawType === OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
 
     const withdrawProps: WithdrawProps<R, T> = {
-        tradeData: {belong: undefined} as any,
+        tradeData: { belong: undefined } as any,
         coinMap: totalCoinMap as CoinMap<T>,
         walletMap: walletMap2 as WalletMap<any>,
         withdrawBtnStatus: TradeBtnStatus.AVAILABLE,
@@ -140,7 +150,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             if (withdrawValue && withdrawValue.belong) {
                 handleWithdraw(withdrawValue as R)
             }
-            setShowWithdraw({isShow:false})
+            setShowWithdraw({ isShow: false })
         },
         handleFeeChange(value: { belong: any; fee: number | string; __raw__?: any }): void {
             setWithdrawFeeInfo(value as any)
@@ -157,7 +167,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                         setWithdrawValue(data.tradeData)
                     }
                 } else {
-                    setWithdrawValue({belong: undefined, tradeValue: 0, balance: 0} as IBData<unknown>)
+                    setWithdrawValue({ belong: undefined, tradeValue: 0, balance: 0 } as IBData<unknown>)
                 }
 
                 res();
@@ -170,13 +180,13 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             setWithdrawAddr(value)
         },
         handleAddressError: (_value: any) => {
-            return {error: false, message: ''}
+            return { error: false, message: '' }
         }
     }
 
     return {
         withdrawAlertText,
-        withdrawToastOpen, 
+        withdrawToastOpen,
         setWithdrawToastOpen,
         withdrawProps,
     }
