@@ -66,7 +66,7 @@ export default {
     label24TradeVolume: '24h Trade Volume',
     label24Reward: '24h Reward',
     labelAPY: 'APY',
-    labelTradePool: 'Add Liqudity',
+    labelTradePool: 'Add',
     labelAction: 'Action',
     labelFilter: 'Filter',
     labelFilterAllPairs: 'All pairs',

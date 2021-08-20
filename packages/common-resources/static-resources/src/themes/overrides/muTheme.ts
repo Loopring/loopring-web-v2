@@ -28,6 +28,7 @@ import {
     MuiTabs,
     MuiTextField,
     MuiToggleButton,
+    MuiToggleButtonGroup,
     MuiToolbar,
     radius,
 } from "./overrides-mui";
@@ -155,6 +156,7 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             MuiRadio: MuiRadio({colorBase}),
             MuiButton: MuiButton({colorBase, themeMode}),
             MuiToggleButton: MuiToggleButton({colorBase}),
+            MuiToggleButtonGroup: MuiToggleButtonGroup({colorBase}),
             MuiSwitch: MuiSwitch({colorBase}),
             MuiIconButton: MuiIconButton({colorBase}),
             MuiPaginationItem: MuiPaginationItem({colorBase}),

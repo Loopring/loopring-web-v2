@@ -130,7 +130,7 @@ export const LButton: Story<ButtonProps> = withTranslation()(({t, ...rest}: With
                         </Button>
                     </Grid>
                     <Grid item>
-                        <Link underline={'none'}>Teset Link</Link>
+                        <Link underline={'none'}>Test Link</Link>
                     </Grid>
                 </Grid>
             </Box>
