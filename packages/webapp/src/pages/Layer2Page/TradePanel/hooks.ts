@@ -30,16 +30,18 @@ export function useGetTrades() {
                 setUserTrades(userTrades.userTrades.map(o => {
                     const marketList = o.market.split('-')
                     // due to AMM case, we cannot use first index
-                    const baseToken = marketList[marketList.length - 2]
-                    const quoteToken = marketList[marketList.length - 1]
+                    const side = o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
+                    const tokenFirst = marketList[marketList.length - 2]
+                    const tokenLast = marketList[marketList.length - 1]
+                    const baseToken = side === TradeTypes.Buy ? tokenFirst : tokenLast
+                    const quoteToken = side === TradeTypes.Buy ? tokenLast : tokenFirst
 
                     // const amt = toBig(o.volume).times(o.price).toString()
 
                     const feeKey = o.side === Side.Buy ? baseToken : quoteToken
 
-
                     return ({
-                        side: o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell ,
+                        side: side,
                         price: {
                             key: baseToken,
                             // value: StringToNumberWithPrecision(o.price, baseToken)
