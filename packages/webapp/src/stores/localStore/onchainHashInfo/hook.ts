@@ -1,6 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { clearAll, clearDepositHash, OnchainHashInfo, updateDepositHash } from './reducer'
+import { OnchainHashInfo } from './interface'
+import { clearAll, clearDepositHash, updateDepositHash } from './reducer'
 
 export const useOnchainInfo = ():  {
     onchainInfo: OnchainHashInfo,

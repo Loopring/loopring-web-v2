@@ -1,7 +1,8 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'stores'
-import { confirm, Confirmation } from './reducer'
+import { Confirmation } from './interface'
+import { confirm } from './reducer'
 
 export const useConfirmation = ():  {
     confirmation: Confirmation,
