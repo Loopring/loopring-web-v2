@@ -1,6 +1,6 @@
 import React from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { debounce } from 'lodash'
+import * as _ from 'lodash'
 import { Button, Column, NewTagIcon, Table, TablePagination, TableProps } from '../../basic-lib'
 import {
     AmmDetail, AvatarCoinStyled,
@@ -282,17 +282,16 @@ export const PoolsTable = withTranslation('tables')(
             })
             setTotalData(newData);
         }, [rawData]);
-        const doUpdate =React.useCallback((filterBy: string) => {
+
+        const handleFilterChange = React.useCallback(_.debounce((filterBy: string) => {
             updateData({TableType: TableType.filter, filterBy})
-        },[])
+        }, wait), []);
 
-        const handleFilterChange = React.useCallback(debounce(doUpdate, wait), []);
-
-        const _handlePageChange = React.useCallback((page: number) => {
+        const _handlePageChange =(page: number) => {
             setPage(page);
             updateData({TableType: TableType.page, currPage: page})
             handlePageChange(page);
-        }, [updateData, handlePageChange])
+        }
 
         const onRowClick = React.useCallback((_rowIdx: any, row: any) => {
             const pathname = `/liquidity/pools/coinPair/${row?.coinAInfo?.simpleName + '-' + row?.coinBInfo?.simpleName}`

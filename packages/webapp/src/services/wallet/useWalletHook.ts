@@ -14,30 +14,11 @@ export const useWalletHook=({throttleWait = globalSetup.throttleWait,walletLayer
     const { updateWalletLayer1,status:walletLayer1Status, } = useWalletLayer1();
     const { updateWalletLayer2,status:walletLayer2Status, } = useWalletLayer2();
     const subject = React.useMemo(() => walletService.onSocket(), []);
-    
-    //_.throttle(({updateWalletLayer1,updateWalletLayer2,walletLayer1Status,walletLayer2Status})=>{
-    //         if(walletLayer1Status!== SagaStatus.PENDING){
-    //             updateWalletLayer1()
-    //         }
-    //         if(walletLayer2Status!== SagaStatus.PENDING){
-    //             console.log('xxxxxxxxxxxxx')
-    //             updateWalletLayer2()
-    //         }
-    //     },throttleWait)
-    // const _socketUpdate = () => {
-    //     debugger
-    //     if(walletLayer1Status!== SagaStatus.PENDING){
-    //         updateWalletLayer1()
-    //     }
-    //     if(walletLayer2Status!== SagaStatus.PENDING){
-    //         console.log('xxxxxxxxxxxxx')
-    //         updateWalletLayer2()
-    //     }
-    //     // the event uses `prop` and `value`
-    // };
+        
     const socketUpdate = React.useCallback(
         _.throttle(({walletLayer1Status, walletLayer2Status})=>{
-            if(walletLayer1Status!== SagaStatus.PENDING){
+            console.log('xxxxxx',Date.now())
+            if(walletLayer1Status!== SagaStatus.PENDING){                           
                 updateWalletLayer1()
             }
             if(walletLayer2Status!== SagaStatus.PENDING){
@@ -45,13 +26,16 @@ export const useWalletHook=({throttleWait = globalSetup.throttleWait,walletLayer
             }
         },throttleWait)
     ,[])
+    const  _socketUpdate = ({walletLayer2Status,walletLayer1Status}:any)=>{
+        socketUpdate({walletLayer2Status,walletLayer1Status})
+    }
 
     // const  _socketUpdate = React.useCallback(socketUpdate({updateWalletLayer1,updateWalletLayer2,walletLayer1Status,walletLayer2Status}),[]);
     React.useEffect(() => {
         const subscription = subject.subscribe(()=>{
            const walletLayer2Status = store.getState().walletLayer2.status;
            const walletLayer1Status = store.getState().walletLayer2.status;
-           socketUpdate({walletLayer2Status,walletLayer1Status})
+            _socketUpdate({walletLayer2Status,walletLayer1Status})
         });
         return () => subscription.unsubscribe();
     }, [subject]);

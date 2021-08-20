@@ -6,7 +6,7 @@ import { TradeBtnStatus } from '../Interface';
 import { Button, IconClearStyled, MenuItem, TextField,TypographyGood, TypographyStrong } from '../../../index';
 import { WithdrawViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
-import { debounce } from 'lodash';
+import * as _ from 'lodash'
 
 export const WithdrawWrap = <T extends IBData<I>,
     I>({
@@ -57,12 +57,12 @@ export const WithdrawWrap = <T extends IBData<I>,
         }
     }, [chargeFeeTokenList, handleFeeChange])
 
-    const debounceAddress = React.useCallback(debounce(({address,handleOnAddressChange}: any) => {
+    const debounceAddress = React.useCallback(_.debounce(({address,handleOnAddressChange}: any) => {
         if (handleOnAddressChange) {
             handleOnAddressChange(address)
         }
     }, wait), [])
-    const _handleOnAddressChange = React.useCallback((event) => {
+    const _handleOnAddressChange = (event:ChangeEvent<HTMLInputElement>) => {
         const address = event.target.value;
         if (handleAddressError) {
             const error = handleAddressError(address)
@@ -71,9 +71,9 @@ export const WithdrawWrap = <T extends IBData<I>,
             }
         }
         setAddress(address);
-        debounceAddress({address,handleOnAddressChange})
+        debounceAddress({address})
 
-    }, [handleAddressError,handleOnAddressChange])
+    }
 
     const handleClear = React.useCallback(() => {
         // @ts-ignore

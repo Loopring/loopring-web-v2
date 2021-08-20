@@ -35,7 +35,6 @@ export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
                 case 'DEPOSITING':
                 case 'LOCKED':
                     resetLayer2();
-                    // myLog('walletLayer1Status:', walletLayer1Status, ' account.readyState:', account.readyState)
                     if (walletLayer1Status !== SagaStatus.PENDING) {
                         updateWalletLayer1();
                     }

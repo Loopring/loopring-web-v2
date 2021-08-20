@@ -347,7 +347,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const [depth, setDepth] = useState<sdk.DepthData>()
 
     const updateDepth = useCallback(async() => {
-
+        myLog('swap page updateDepth',market)
         if (!market || !LoopringAPI.exchangeAPI) {
             return
         }

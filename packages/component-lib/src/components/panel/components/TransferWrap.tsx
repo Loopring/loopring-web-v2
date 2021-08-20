@@ -6,7 +6,7 @@ import { CloseIcon, DropDownIcon, globalSetup, IBData } from '@loopring-web/comm
 import { Button, IconClearStyled, MenuItem, TextField, TradeBtnStatus, TypographyGood } from '../../index';
 import { TransferViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
-import { debounce } from 'lodash';
+import * as _ from 'lodash'
 
 
 export const TransferWrap = <T extends IBData<I>,
@@ -43,12 +43,12 @@ export const TransferWrap = <T extends IBData<I>,
     const [addressError, setAddressError] = React.useState<{ error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined>();
     const [feeIndex, setFeeIndex] = React.useState<any | undefined>(0);
 
-    const debounceAddress = React.useCallback(debounce(({address,handleOnAddressChange}: any) => {
+    const debounceAddress = React.useCallback(_.debounce(({address}: any) => {
         if (handleOnAddressChange) {
             handleOnAddressChange(address)
         }
     }, wait), [])
-    const _handleOnAddressChange = React.useCallback((event) => {
+    const _handleOnAddressChange = (event:ChangeEvent<HTMLInputElement>) => {
         const address = event.target.value;
         if (handleAddressError) {
             const error = handleAddressError(address)
@@ -57,8 +57,8 @@ export const TransferWrap = <T extends IBData<I>,
             }
         }
         setAddress(address);
-        debounceAddress({address,handleOnAddressChange})
-    }, [handleAddressError,handleOnAddressChange])
+        debounceAddress({address})
+    }
 
     const _handleFeeChange = React.useCallback((e: ChangeEvent<HTMLInputElement>) => {
         const index = e.target ? Number(e.target.value) : 0;

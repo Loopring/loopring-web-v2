@@ -7,8 +7,6 @@ import { useSocket } from '../../stores/socket';
 import { TradingInterval, WsTopicType } from 'loopring-sdk';
 import { LoopringAPI } from 'api_wrapper'
 import { tickerService } from '../../services/tickerService';
-import { debounce } from "lodash"
-import { globalSetup } from '@loopring-web/common-resources';
 import { myError, myLog } from "utils/log_tools";
 
 const amtCol = 5
@@ -46,21 +44,21 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     // const _marketArrayWithOutRecommend = marketArray ? marketArray.filter(item => recommendedPairs.findIndex(m => m === item) === -1) : [];
     const [tickList, setTickList] = React.useState<any>([]);
     const [recommendations, setRecommendations] = React.useState<MarketBlockProps<C>[]>([]);
-    const [, setTickerKeys] = React.useState<string[]>([]);
-    const [focusRowFrom, setFocusRowFrom] = React.useState<[start: number, end: number]>([0, 2]);
-    const [startIndex, setStartIndex] = React.useState<number>(-1);
+    // const [, setTickerKeys] = React.useState<string[]>([]);
+    // const [focusRowFrom, setFocusRowFrom] = React.useState<[start: number, end: number]>([0, 2]);
+    // const [startIndex, setStartIndex] = React.useState<number>(-1);
     // const recommendMarkets: string[] = marketArray ? marketArray.slice(0, 4) : ['LRC-ETH', 'LRC-ETH', 'LRC-ETH', 'LRC-ETH']
-    
+
     const subject = React.useMemo(() => tickerService.onSocket(), []);
 
     const updateRecommendation = React.useCallback((recommendationIndex, ticker) => {
         if (recommendations.length) {
-          //  let _recommendations = deepClone(recommendations)
+            //  let _recommendations = deepClone(recommendations)
             recommendations[ recommendationIndex ].tradeFloat = ticker
             setRecommendations(recommendations)
         }
     }, [recommendations]);
-    
+
     React.useEffect(() => {
         const subscription = subject.subscribe(({tickerMap}) => {
             myLog('tickerMap:', tickerMap)
@@ -78,10 +76,10 @@ export function useQuote<C extends { [ key: string ]: string }>() {
         return () => subscription.unsubscribe();
     }, [subject, recommendedPairs]);
 
-    const getRecommandPairs = useCallback(async() => {
+    const getRecommandPairs = useCallback(async () => {
         if (LoopringAPI.exchangeAPI) {
             try {
-                const { recommended } = await LoopringAPI.exchangeAPI.getRecommendedMarkets()
+                const {recommended} = await LoopringAPI.exchangeAPI.getRecommendedMarkets()
                 setRecommendedPairs(recommended)
                 return recommended || []
             } catch (e) {
@@ -113,13 +111,13 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     //     }
     // }, [socketStatus, socketStatusUnset]);
     React.useEffect(() => {
-        const [from, to] = focusRowFrom
-        getTicker(from, to);
-        socketSendTicker(from * OnePageSize,startIndex);
+        // const [from, to] = focusRowFrom
+        getTicker();
+        socketSendTicker();
         return () => {
             socketEnd()
         }
-    }, [startIndex]);
+    }, []);
     React.useEffect(() => {
         switch (tickerStatus) {
             case "ERROR":
@@ -137,15 +135,15 @@ export function useQuote<C extends { [ key: string ]: string }>() {
         }
     }, [tickerStatus, tickerStatusUnset]);
 
-    const getTicker = React.useCallback((from: number, to: number) => {
+    const getTicker = React.useCallback(() => {
         // if (_marketArrayWithOutRecommend) {
-            // let array = _marketArrayWithOutRecommend.slice(from * OnePageSize, to * OnePageSize);
-            // let array = _marketArrayWithOutRecommend; // 暂时获取全量数据
-            //High: add recommendations market first time is 36个数据
-            // if (from === 0) {
-            //     array = recommendMarkets.concat(array)
-            // }
-            // updateTickers(array);
+        // let array = _marketArrayWithOutRecommend.slice(from * OnePageSize, to * OnePageSize);
+        // let array = _marketArrayWithOutRecommend; // 暂时获取全量数据
+        //High: add recommendations market first time is 36个数据
+        // if (from === 0) {
+        //     array = recommendMarkets.concat(array)
+        // }
+        // updateTickers(array);
         // }
         updateTickers(marketArray || []);
 
@@ -175,48 +173,48 @@ export function useQuote<C extends { [ key: string ]: string }>() {
             prev.push(_item);
             return prev
         }, [] as QuoteTableRawDataItem[]) : []
-        
+
         setTickList([...tickList, ..._tickList])
         //setTickList
         // if (focusRowFrom[ 0 ] === 0 && _recommendationsFloat.length > 0) {
-        if (focusRowFrom[ 0 ] === 0) {
-            _recommendationsFloat = _recommendationsFloat.filter(o => {
-                const { coinA, coinB } = o.pair
-                return (coinMap && coinMap[coinA] && coinMap[coinB])
+        // if (focusRowFrom[ 0 ] === 0) {
+        _recommendationsFloat = _recommendationsFloat.filter(o => {
+            const {coinA, coinB} = o.pair
+            return (coinMap && coinMap[ coinA ] && coinMap[ coinB ])
+        })
+
+        //FIX: fix in uat env not enough pair_recommendations
+        if (_recommendationsFloat.length < 4) {
+            const filteredFloat = defaultRecommendationsFloat.filter(o => {
+                const pair = `${o.pair.coinA}-${o.pair.coinB}`
+                return !marketPairs.includes(pair)
             })
-
-            //FIX: fix in uat env not enough pair_recommendations
-            if (_recommendationsFloat.length < 4) {
-                const filteredFloat = defaultRecommendationsFloat.filter(o => {
-                    const pair = `${o.pair.coinA}-${o.pair.coinB}`
-                    return !marketPairs.includes(pair)
-                })
-                _recommendationsFloat = _recommendationsFloat.concat(filteredFloat.slice(0, 4 - _recommendationsFloat.length));
-            }
-
-            // case uat only
-            while(_recommendationsFloat.length < 4) {
-                _recommendationsFloat.push(deepClone(_recommendationsFloat[0]))
-            }
-            
-            const _recommendations = _recommendationsFloat.reduce((prev, item) => {
-                if (coinMap && item) {
-                    const {coinA, coinB} = item.pair;
-                    const _item: MarketBlockProps<C> = {
-                        tradeFloat: item as any,
-                        // @ts-ignore
-                        coinAInfo: coinMap[ coinA ],
-                        // @ts-ignore
-                        coinBInfo: coinMap[ coinB ]
-                    } as MarketBlockProps<C>
-                    prev.push(_item)
-                }
-                return prev
-            }, [] as MarketBlockProps<C>[])
-
-            setRecommendations(_recommendations)
+            _recommendationsFloat = _recommendationsFloat.concat(filteredFloat.slice(0, 4 - _recommendationsFloat.length));
         }
-    }, [tickList, focusRowFrom])
+
+        // case uat only
+        while (_recommendationsFloat.length < 4) {
+            _recommendationsFloat.push(deepClone(_recommendationsFloat[ 0 ]))
+        }
+
+        const _recommendations = _recommendationsFloat.reduce((prev, item) => {
+            if (coinMap && item) {
+                const {coinA, coinB} = item.pair;
+                const _item: MarketBlockProps<C> = {
+                    tradeFloat: item as any,
+                    // @ts-ignore
+                    coinAInfo: coinMap[ coinA ],
+                    // @ts-ignore
+                    coinBInfo: coinMap[ coinB ]
+                } as MarketBlockProps<C>
+                prev.push(_item)
+            }
+            return prev
+        }, [] as MarketBlockProps<C>[])
+
+        setRecommendations(_recommendations)
+        // }
+    }, [tickList])
 
 
     // const  = (startIndex: number) => {
@@ -227,28 +225,9 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     //     getTicker(from, to)
     // }, globalSetup.wait), [])
 
-    const socketSendTicker = React.useCallback(debounce((_startIndex: number,oldStartIndex, pageSize = OnePageSize) => {
-        if(_startIndex !== oldStartIndex)  {
-            //High:
-            sendSocketTopic({[ WsTopicType.ticker ]: marketArray});
-        }
-    }, globalSetup.wait * 2), [])
-
-    // const onVisibleRowsChange = React.useCallback(async (startIndex: number) => {
-    //     //TODO isBottom and is On prev tickerCall
-    //     // if (!isAtBottom(startIndex,focusRowFrom[1],_marketArrayWithOutRecommend.length,OnePageSize)
-    //     //     && tickerStatus !== 'PENDING'){
-    //     // }
-    //     //TODO load more
-    //     const [, to] = focusRowFrom
-    //     if (isNeedCallMore(startIndex, to, _marketArrayWithOutRecommend.length, tickList.length, OnePageSize)) {
-    //         console.log('getNextPage.......')
-    //         setFocusRowFrom([to, to + 1]);
-    //         debounceGetTicker(to, to + 1);
-    //     }
-    //     setStartIndex(startIndex);
-    //     socketSendTicker(startIndex, OnePageSize)
-    // }, [focusRowFrom, OnePageSize, tickerStatus, marketArray, tickList])
+    const socketSendTicker = React.useCallback(() => {
+        sendSocketTopic({[ WsTopicType.ticker ]: marketArray});
+    }, [])
 
     return {
         tickList,
