@@ -25,10 +25,10 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
 
     const {updateSystem, chainId: _chainId } = useSystem();
     const {setShowConnect} = useOpenModals();
-    const [stateAccount, setStateAccount] = React.useState<SagaStatus>(SagaStatus.DONE);
+    const [stateAccount, setStateAccount] = React.useState< keyof typeof SagaStatus>('DONE');
     React.useEffect(() => {
         if (stateAccount === SagaStatus.PENDING && accountStatus === SagaStatus.DONE) {
-            setStateAccount(SagaStatus.DONE)
+            setStateAccount('DONE')
             statusAccountUnset();
         }
     }, [stateAccount,accountStatus])

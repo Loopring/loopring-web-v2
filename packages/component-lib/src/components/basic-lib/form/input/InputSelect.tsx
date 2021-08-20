@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box, debounce,  } from "@material-ui/core";
+import { Box  } from "@material-ui/core";
 import { CloseIcon, CoinInfo, CoinKey, globalSetup } from '@loopring-web/common-resources';
 import React from "react";
 import { InputSelectProps } from "./Interface";
@@ -7,7 +7,7 @@ import { useFocusRef, usePanelRef } from "../hooks";
 import { WithTranslation } from 'react-i18next';
 import { InputSearch } from './InputSearch';
 import { IconClearStyled } from '../../../panel';
-
+import * as _ from 'lodash'
 
 const WrapStyled = styled(Box)`
   padding: 0;
@@ -55,7 +55,7 @@ function _InputSelect<C, I extends string = CoinKey<C>>({
         selected: '',
         focusOnInput: focusOnInput ? focusOnInput : false
     })
-    const debounceContentChange = debounce((props: any) => {
+    const debounceContentChange = _.debounce((props: any) => {
         if (handleContentChange) {
             handleContentChange(props)
         }

@@ -1,16 +1,16 @@
 import React from 'react'
 import store from 'stores'
 import { TokenType } from '@loopring-web/component-lib'
-import { EmptyValueTag } from '@loopring-web/common-resources'
+import { EmptyValueTag, globalSetup, SagaStatus } from '@loopring-web/common-resources'
 import { useWalletLayer2 } from 'stores/walletLayer2'
 import { useAccount } from 'stores/account';
 import { LoopringAPI } from 'api_wrapper'
 import { makeWalletLayer2 } from 'hooks/help'
 import { AssetType, WsTopicType } from 'loopring-sdk'
 import { volumeToCount } from 'hooks/help'
-import { accountService } from '../../../services/accountService';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
 import { useSocket } from '../../../stores/socket';
+import { useWalletHook } from '../../../services/wallet/useWalletHook';
 
 export type TrendDataItem = {
     timeStamp: number;
@@ -34,22 +34,11 @@ export const useGetAssets = () => {
     const {sendSocketTopic} = useSocket();
     // const {  } = store.getState().walletLayer2;
     const { ammMap } = useAmmMap()//store.getState().amm.ammMap
-    const { status: walletLayer2Status, walletLayer2,socketUpdateBalance } = useWalletLayer2();
+    const { walletLayer2 } = useWalletLayer2();
     const { marketArray } = store.getState().tokenMap
-    const subject = React.useMemo(() => accountService.onSocket(), []);
     React.useEffect(() => {
         sendSocketTopic({[ WsTopicType.account ]: true});
     }, []);
-
-    React.useEffect(() => {
-        const subscription = subject.subscribe((balance) => {
-            if (balance) {
-                socketUpdateBalance(balance)
-            }
-        });
-        return () => subscription.unsubscribe();
-    }, [subject]);
-
     const getUserTotalAssets = React.useCallback(async (limit: number = 7) => {
         const userAssets = await LoopringAPI.walletAPI?.getUserAssets({
             wallet: accAddress,
@@ -66,24 +55,23 @@ export const useGetAssets = () => {
         }
     }, [accAddress])
 
-    React.useEffect(() => {
-        if (walletLayer2Status === 'UNSET') {
-            const walletMap = makeWalletLayer2()
-            const assetsKeyList = walletMap && walletMap.walletMap ? Object.keys(walletMap.walletMap) : []
-            const assetsDetailList = walletMap && walletMap.walletMap ? Object.values(walletMap.walletMap) : []
-            const list = assetsKeyList.map((key, index) => ({
-                token: key,
-                detail: assetsDetailList[index]
-            }))
-            setAssetsList(list)
-        }
-    }, [walletLayer2Status])
+    const walletLayer2Callback = React.useCallback(()=>{
+        const walletMap = makeWalletLayer2()
+        const assetsKeyList = walletMap && walletMap.walletMap ? Object.keys(walletMap.walletMap) : []
+        const assetsDetailList = walletMap && walletMap.walletMap ? Object.values(walletMap.walletMap) : []
+        const list = assetsKeyList.map((key, index) => ({
+            token: key,
+            detail: assetsDetailList[index]
+        }))
+        setAssetsList(list)
+    },[])
+    useWalletHook({walletLayer2Callback})
 
     React.useEffect(() => {
         if (LoopringAPI && LoopringAPI.walletAPI && walletLayer2) {
             getUserTotalAssets()
         }
-    }, [walletLayer2, getUserTotalAssets])
+    }, [walletLayer2])
 
     const { faitPrices } = store.getState().system
 
