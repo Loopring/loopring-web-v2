@@ -92,8 +92,12 @@ export async function updateAccountFromServer() {
 
                         myLog('req:', request)
 
-                        const updateAccountResponse = await LoopringAPI.userAPI.updateAccount(request,
-                            connectProvides.usedWeb3, system.chainId, connectName)
+                        const updateAccountResponse = await LoopringAPI.userAPI.updateAccount({
+                            request,
+                            web3: connectProvides.usedWeb3, 
+                            chainId: system.chainId, 
+                            walletType: connectName
+                        })
 
                         myLog('updateAccountResponse:', updateAccountResponse)
 
