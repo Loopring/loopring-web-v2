@@ -1,12 +1,12 @@
 import { CloseIcon, globalSetup, IBData } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../Interface';
 import { Trans, WithTranslation } from 'react-i18next';
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { Grid, Typography } from '@material-ui/core';
 import { Button, IconClearStyled, TextField, TypographyGood } from '../../../index';
 import { DepositViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
-import { debounce } from 'lodash';
+import * as _ from 'lodash'
 
 
 //SelectReceiveCoin
@@ -39,7 +39,7 @@ export const DepositWrap = <T extends IBData<I>,
     //     error: false,
     //     message: ''
     // });
-    const debounceAddress = React.useCallback(debounce(({address,handleOnAddressChange}: any) => {
+    const debounceAddress = React.useCallback(_.debounce(({address}: any) => {
         if (handleOnAddressChange) {
             handleOnAddressChange(address)
         }
@@ -49,7 +49,7 @@ export const DepositWrap = <T extends IBData<I>,
         // addressInput?.current?.value = "";
         setAddress('')
     }, [])
-    const _handleOnAddressChange = React.useCallback((event) => {
+    const _handleOnAddressChange = (event:ChangeEvent<HTMLInputElement>) => {
         const address = event.target.value;
         if (handleAddressError) {
             const error = handleAddressError(address)
@@ -58,8 +58,8 @@ export const DepositWrap = <T extends IBData<I>,
             }
         }
         setAddress(address);
-        debounceAddress({address,handleOnAddressChange})
-    }, [handleAddressError,handleOnAddressChange])
+        debounceAddress({address})
+    }
     const inputButtonDefaultProps = {
         label: t('depositLabelEnterToken'),
     }

@@ -7,7 +7,6 @@ import { SwapPage } from 'pages/SwapPage'
 
 import Container from '@material-ui/core/Container'
 import { Box } from '@material-ui/core'
-import { DevWrapper } from '../provider/'
 import { Layer2Page } from '../pages/Layer2Page'
 import { LiquidityPage } from '../pages/LiquidityPage'
 import { MiningPage } from '../pages/MiningPage'
@@ -53,11 +52,6 @@ const RouterView = () => {
                     <Route exact component={LiquidityPage} path='/liquidity/my-liquidity'/>
                     {/* <Route exact component={LiquidityPage} path='/liquidity/orderBook-Mining'/>
                     <Route exact component={LiquidityPage} path='/liquidity/maker-rebates'/> */}
-
-                    <DevWrapper>
-                        <Route exact path='/debug'>
-                        </Route>
-                    </DevWrapper>
 
                 </Switch>
             </Box>

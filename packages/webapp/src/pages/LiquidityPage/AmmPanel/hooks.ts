@@ -39,8 +39,6 @@ import { useCustomDCEffect } from '../../../hooks/common/useCustomDCEffect';
 import { useAccount } from '../../../stores/account/hook';
 import store from "stores";
 import { LoopringAPI } from "api_wrapper";
-import { debounce } from "lodash";
-
 import { deepClone } from '../../../utils/obj_tools';
 import { useWalletLayer2 } from "stores/walletLayer2";
 import { myLog } from "utils/log_tools";
@@ -49,7 +47,7 @@ import { useTranslation } from "react-i18next";
 import { useWalletHook } from '../../../services/wallet/useWalletHook';
 import { useSocket } from '../../../stores/socket';
 import { walletService } from '../../../services/wallet/walletService';
-
+import * as _ from 'lodash'
 export const useAmmPanel = <C extends { [key: string]: any }>({
     pair,
     ammType,
@@ -225,7 +223,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     // join
 
     const [joinRequest, setJoinRequest] = useState<{ ammInfo: any, request: JoinAmmPoolRequest }>()
-    const handlerJoinInDebounce = React.useCallback(debounce(async (data, type, joinFees, ammPoolSnapshot,tokenMap,account) => {
+    const handlerJoinInDebounce = React.useCallback(_.debounce(async (data, type, joinFees, ammPoolSnapshot,tokenMap,account) => {
 
         if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !joinFees || !account?.accAddress) {
             return
@@ -292,9 +290,9 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
     }, globalSetup.wait), [])
 
-    const handleJoinAmmPoolEvent = React.useCallback(async (data: AmmData<IBData<any>>, type: 'coinA' | 'coinB') => {
-        await handlerJoinInDebounce(data, type, joinFees, ammPoolSnapshot,tokenMap,account)
-    }, [joinFees, handlerJoinInDebounce, ammPoolSnapshot,tokenMap,account]);
+    const handleJoinAmmPoolEvent =  (data: AmmData<IBData<any>>, type: 'coinA' | 'coinB') => {
+        handlerJoinInDebounce(data, type, joinFees, ammPoolSnapshot,tokenMap,account)
+    };
 
     const addToAmmCalculator = React.useCallback(async function (props
     ) {
@@ -379,7 +377,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     // exit
     const [exitRequest, setExitRequest] = useState<{ rawVal: '', ammInfo: any, request: ExitAmmPoolRequest }>()
 
-    const handleExitInDebounce = React.useCallback(debounce(async (data, type, exitFees, ammPoolSnapshot,tokenMap,account) => {
+    const handleExitInDebounce = React.useCallback(_.debounce(async (data, type, exitFees, ammPoolSnapshot,tokenMap,account) => {
 
         const isAtoB = type === 'coinA'
 
@@ -450,9 +448,9 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
     }, globalSetup.wait), [])
 
-    const handleExitAmmPoolEvent = React.useCallback(async (data: AmmData<IBData<any>>, type: 'coinA' | 'coinB') => {
-        await handleExitInDebounce(data, type, exitFees, ammPoolSnapshot,tokenMap,account)
-    }, [exitFees, ammPoolSnapshot, handleExitInDebounce,tokenMap,account]);
+    const handleExitAmmPoolEvent = (data: AmmData<IBData<any>>, type: 'coinA' | 'coinB') => {
+        handleExitInDebounce(data, type, exitFees, ammPoolSnapshot,tokenMap,account)
+    };
 
 
     const [isJoinLoading, setJoinLoading] = useState(false)

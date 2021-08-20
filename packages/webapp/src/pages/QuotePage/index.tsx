@@ -5,7 +5,7 @@ import { MarketBlock, QuoteTable, TablePaddingX, QuoteTableRawDataItem, InputSea
 import { OutlinedInputProps } from '@material-ui/core/OutlinedInput/OutlinedInput';
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
-import { cloneDeep } from 'lodash';
+import * as _ from 'lodash'
 // import { FloatTag } from '@loopring-web/common-resources'
 import { Box, Grid, Tabs, Tab, Divider, OutlinedInput, InputAdornment } from '@material-ui/core'
 import { SearchIcon } from '@loopring-web/common-resources'
@@ -176,7 +176,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
       type?: TableFilterParams;
       keyword?: string;
     }) => {
-      let data = cloneDeep(tickList)
+      let data =  _.cloneDeep(tickList)
       if (type === TableFilterParams.favourite) {
         data = data.filter((o: any) => {
           const pair = `${o.pair.coinA}-${o.pair.coinB}`
