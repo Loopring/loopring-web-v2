@@ -48,6 +48,7 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
   const [originData, setOriginData] = useState<any>(undefined)
 
   const handleChange = useCallback((_e: React.MouseEvent, value: any) => {
+    if (value === null) return
     // Settings.setChartType(value)
     // console.log('useBasicInfo handleChange:', value)
     setOriginData(undefined)
