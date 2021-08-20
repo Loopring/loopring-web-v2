@@ -62,7 +62,7 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
     return <> 
     
     <Toast alertText={ammAlertText as string} open={ammToastOpen} 
-            autoHideDuration={TOAST_TIME} setOpen={setAmmToastOpen}/>
+            autoHideDuration={TOAST_TIME} onClose={()=>{setAmmToastOpen(false)}}/>
 
     {pair ?
         <AmmPanel {...{...rest}}

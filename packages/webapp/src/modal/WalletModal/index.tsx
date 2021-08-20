@@ -172,7 +172,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
             onClose(e);
         }} panelList={walletList} onBack={walletList[ isShowConnect.step ].onBack} step={isShowConnect.step}/>
         <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen}
-               autoHideDuration={TOAST_TIME} setOpen={setCopyToastOpen} severity={"success"}/>
+               autoHideDuration={TOAST_TIME} onClose={()=>{setCopyToastOpen(false)}} severity={"success"}/>
     </>
 })
 

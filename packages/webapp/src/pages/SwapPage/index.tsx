@@ -8,6 +8,7 @@ import { SwapPanel, Toast } from '@loopring-web/component-lib'
 
 import { TOAST_TIME } from 'defs/common_defs'
 import { FixedStyle } from 'pages/styled'
+import React, { useCallback } from 'react';
 
 
 
@@ -24,19 +25,22 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
         onSwapClick,
         pair,
         swapBtnI18nKey,
-        btnStatus,
+        swapBtnStatus,
+
         swapToastOpen,
         setSwapToastOpen,
-        swapAlertText,
 
         updateDepth,
 
     } = useSwapPage();
 
+    const onClose = React.useCallback(() => {
+        setSwapToastOpen(undefined)
+    }, [])
     return <>
 
-        <Toast alertText={swapAlertText as string} open={swapToastOpen}
-            autoHideDuration={TOAST_TIME} setOpen={setSwapToastOpen} />
+        <Toast alertText={swapToastOpen?.label?? ''} severity={swapToastOpen?.type} open={swapToastOpen?.flag??false}
+               autoHideDuration={TOAST_TIME} onClose={onClose} />
 
         <Grid container marginRight={3} alignContent={'stretch'} direction={'column'} flexWrap={'nowrap'}>
             <BasicInfoPanel {...{
@@ -55,7 +59,7 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
                     tradeCalcData={tradeCalcData as any}
                     onSwapClick={onSwapClick}
                     swapBtnI18nKey={swapBtnI18nKey}
-                    swapBtnStatus={btnStatus}
+                    swapBtnStatus={swapBtnStatus}
                     {...{ handleSwapPanelEvent, ...rest }}
                 />
             </FixedStyle>

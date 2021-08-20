@@ -6,10 +6,11 @@ import { Commands } from './command';
 import { LoopringAPI } from 'api_wrapper';
 import { myLog } from '../../utils/log_tools';
 import store from 'stores';
-import { updateAccountStatus } from 'stores/account';
+import { statusUnset, updateAccountStatus } from 'stores/account';
 import * as sdk from 'loopring-sdk'
 import { unlockAccount } from './unlockAccount';
 import { reset as resetWalletLayer2 } from 'stores/walletLayer2';
+import { sleep } from 'loopring-sdk';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
@@ -84,6 +85,7 @@ export const accountServices = {
         }
         store.dispatch(updateAccountStatus(updateInfo))
         store.dispatch(resetWalletLayer2(undefined))
+        await sleep(100)
         subject.next({
             status: Commands.LockAccount,
             data: undefined,
