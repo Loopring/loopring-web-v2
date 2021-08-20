@@ -6,8 +6,9 @@ import { myLog } from 'utils/log_tools';
 import { LoopringAPI } from 'api_wrapper';
 import { connectProvides } from '@loopring-web/web3-provider';
 import * as sdk from 'loopring-sdk'
-import { ActionResult, ActionResultCode, REFRESH_RATE } from 'defs/common_defs';
+import { ActionResult, ActionResultCode, DAYS, REFRESH_RATE } from 'defs/common_defs';
 import { dumpError400 } from 'loopring-sdk';
+import { getTimestampDaysLater } from 'utils/dt_tools';
 
 export async function activeAccount({ reason, shouldShow }: { reason: any, shouldShow: boolean }) {
     const account = store.getState().account;
@@ -86,7 +87,7 @@ export async function updateAccountFromServer() {
                             accountId: accInfo.accountId,
                             publicKey: { x: eddsaKey.formatedPx, y: eddsaKey.formatedPy },
                             maxFee: { tokenId: 0, volume: feeMap['ETH'] },
-                            validUntil: sdk.VALID_UNTIL,
+                            validUntil: getTimestampDaysLater(DAYS),
                             nonce: accInfo.nonce as number,
                         }
 

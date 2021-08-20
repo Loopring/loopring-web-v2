@@ -28,6 +28,8 @@ import { myLog } from 'utils/log_tools';
 import { useWalletLayer2 } from 'stores/walletLayer2';
 import { makeWalletLayer2 } from 'hooks/help';
 import { useWalletHook } from '../../services/wallet/useWalletHook';
+import { getTimestampDaysLater } from 'utils/dt_tools';
+import { DAYS } from 'defs/common_defs';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     // handleWithdraw: (inputValue:R) => void,
@@ -108,7 +110,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     },
                     extraData: '',
                     minGas: 0,
-                    validUntil: VALID_UNTIL,
+                    validUntil: getTimestampDaysLater(DAYS),
                 }
 
                 const response = await LoopringAPI.userAPI?.submitOffchainWithdraw({
