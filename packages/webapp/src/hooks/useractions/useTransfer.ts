@@ -16,6 +16,7 @@ import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { myLog } from 'utils/log_tools';
 import { useWalletLayer2 } from 'stores/walletLayer2';
 import { makeWalletLayer2 } from 'hooks/help';
+import { ChainId } from 'loopring-sdk';
 import { useWalletHook } from '../../services/wallet/useWalletHook';
 
 export const useTransfer = <R extends IBData<T>, T>(): {
@@ -90,10 +91,15 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     },
                     validUntil: sdk.VALID_UNTIL,
                 }
-                const response = await LoopringAPI.userAPI?.submitInternalTransfer(req,
-                    connectProvides.usedWeb3,
-                    chainId === 'unknown' ? 5 : chainId, connectName as sdk.ConnectorNames,
-                    eddsaKey.sk, apiKey)
+
+                const response = await LoopringAPI.userAPI?.submitInternalTransfer({
+                    request: req,
+                    web3: connectProvides.usedWeb3,
+                    chainId: chainId !== ChainId.GOERLI ? ChainId.MAINNET : chainId, 
+                    walletType: connectName as sdk.ConnectorNames,
+                    eddsaKey: eddsaKey.sk, 
+                    apiKey,
+                })
 
                     myLog(response)
 

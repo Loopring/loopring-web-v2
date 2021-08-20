@@ -47,7 +47,6 @@ import store from 'stores';
 import { deepClone } from '../../utils/obj_tools';
 import { myError, myLog } from 'utils/log_tools';
 import { useTranslation } from 'react-i18next';
-import { REFRESH_RATE_SLOW } from 'defs/common_defs';
 import { usePairMatch } from 'hooks/usePairMatch';
 import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
 import { useWalletHook } from '../../services/wallet/useWalletHook';
@@ -295,7 +294,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 validUntil: VALID_UNTIL,
                 maxFeeBips: parseInt(feeBips),
                 fillAmountBOrS: false, // amm only false
-                orderType: OrderType.ClassAmm,
+                orderType: OrderType.LimitOrder,
                 eddsaSignature: '',
             }
 
