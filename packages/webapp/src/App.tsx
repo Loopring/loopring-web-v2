@@ -3,6 +3,7 @@ import RouterView from './routers'
 import { GlobalStyles } from '@material-ui/core';
 import { css, Theme, ThemeProvider, useTheme } from '@emotion/react';
 import { ErrorMap, getTheme, globalCss, provider, ProviderComposer } from '@loopring-web/common-resources';
+import { setLanguage } from '@loopring-web/component-lib'
 // import { GlobalProvider, Web3ReactManager } from './provider/';
 import { useInit } from './hook';
 // import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
@@ -13,9 +14,19 @@ import { ThemeProvider as MuThemeProvider } from '@material-ui/core/styles';
 import store from './stores';
 import { useSettings } from '@loopring-web/component-lib';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const App = () => {
   const theme: Theme = useTheme();
+  const { i18n: { language } } = useTranslation()
+  const storeLan = store.getState().settings.language
+  
+
+  React.useEffect(() => {
+    if (storeLan !== language) {
+      store.dispatch(setLanguage(language));
+    }
+  }, [])
 
   const { state } = useInit();
   // const [status, setStatus] = React.useState<keyof typeof SagaStatus>('PENDING');
