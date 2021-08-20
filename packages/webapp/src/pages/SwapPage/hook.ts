@@ -17,7 +17,6 @@ import { useAmmMap } from 'stores/Amm/AmmMap';
 import { useWalletLayer2 } from 'stores/walletLayer2';
 import { RawDataTradeItem, SwapData, SwapTradeData, SwapType, TradeBtnStatus } from '@loopring-web/component-lib';
 import { useAccount } from 'stores/account/hook';
-import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import {
     accountStaticCallBack,
     btnLabel,
@@ -91,7 +90,7 @@ export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
         output, quoteMinAmt, tradeData, setSwapBtnI18nKey])
     React.useEffect(() => {
         btnLabelCallback()
-    }, [accountStatus,quoteMinAmt,output])
+    }, [accountStatus,tradeData])
 
     return {
         btnStatus,
@@ -178,7 +177,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     // --- end of btn status check.
     React.useEffect(()=>{
         walletLayer2Callback()
-    },[walletLayer2,tradeData?.sell.belong, tradeData?.buy.belong, account.apiKey])
+    },[accountStatus, tradeData?.sell.belong, tradeData?.buy.belong])
     const walletLayer2Callback = React.useCallback(async ()=>{
         const base = tradeData?.sell.belong
         const quote = tradeData?.buy.belong
@@ -363,9 +362,17 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         updateDepth()
     }, [market])
 
-    const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined)
-        : Promise<{ _tradeCalcData: TradeCalcData<C>, _tradeData: SwapTradeData<IBData<C>> }> => {
+    // const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined)
+    //     : Promise<{ _tradeCalcData: TradeCalcData<C>, _tradeData: SwapTradeData<IBData<C>> }> => {
+    //
+    //
+    //     return { _tradeData, _tradeCalcData }
+    //
+    // }
 
+    const throttleSetValue = React.useCallback(async (type,_tradeData) => {
+
+        // const { _tradeData: td, _tradeCalcData } = await calculateTradeData(type, _tradeData, _ammPoolSnapshot)//.then(()=>{
         if (!marketArray || !tokenMap || !marketMap || !ammMap || !tradeCalcData || !market
             || !depth || depth.symbol !== market) {
             let _tradeCalcData = { ...tradeCalcData } as TradeCalcData<C>
@@ -416,17 +423,10 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         //TODO: renew  tradeCalcData
         let _tradeCalcData = { ...tradeCalcData } as TradeCalcData<C>;
 
-        return { _tradeData, _tradeCalcData }
-
-    }
-
-    const throttleSetValue = React.useCallback(_.debounce(async (type, _tradeData, _ammPoolSnapshot,calculateTradeData) => {
-
-        const { _tradeData: td, _tradeCalcData } = await calculateTradeData(type, _tradeData, _ammPoolSnapshot)//.then(()=>{
-        setTradeData(td)
+        setTradeData(_tradeData)
         setTradeCalcData({ ..._tradeCalcData, fee: feeBips })
 
-    }, wait * 2), []);
+    }, [ tradeData, ammPoolSnapshot]);
 
     const resetSwap = (swapType: SwapType | undefined, _tradeData: SwapTradeData<IBData<C>> | undefined) => {
 
@@ -462,7 +462,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             && type
             && _tradeData
             && (!tradeData || (tradeData[type]?.tradeValue !== _tradeData[type]?.tradeValue))) {
-            throttleSetValue(type, _tradeData, _ammPoolSnapshot,calculateTradeData)
+            throttleSetValue(type, _tradeData)
         } else {
 
             let _tradeFloat: Partial<TradeFloat> = {}
