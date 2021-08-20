@@ -28,13 +28,13 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
     } : []
     return  <>
         <Grid item >
-           <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} >
+           <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
                <TradeTitle {...{
                    coinAInfo, coinBInfo,
                    ...rest, t, tradeFloat
                }}></TradeTitle>
                <ToggleButtonGroup exclusive {...{ ...rest, t, tgItemJSXs, value: chartType }}
-                                  handleChange={handleChange} />
+                                handleChange={handleChange} />
            </Box>  
         </Grid>
         <Box flex={1} alignItems={'stretch'} flexDirection="row" marginTop={3}  position={'relative'} >
