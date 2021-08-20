@@ -24,7 +24,7 @@ export default {
     labelOrderPrice: '挂单价格',
     labelOrderFilledAmount: '成交部分',
     labelOrderFilledPrice: '成交价格',
-    labelOrderFilterAllTokens: '所有代币',
+    labelOrderFilterAllPairs: '所有交易对',
     labelOrderTime: '成交时间',
     labelOrderStatus: '状态',
     labelOrderTradingPrice: '交易价格',

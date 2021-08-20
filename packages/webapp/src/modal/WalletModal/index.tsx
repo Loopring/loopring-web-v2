@@ -144,7 +144,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
     },[account,setShowAccount])
     const walletList = React.useMemo(() => {
         return Object.values({
-            [ WalletConnectStep.Provider ]: {view: <ProviderMenu gatewayList={gatewayList}
+            [ WalletConnectStep.Provider ]: {view: <ProviderMenu termUrl={'./'} gatewayList={gatewayList}
                                                           providerName={account.connectName} {...{t, ...rest}}/>,
                 onBack:providerBack},
             [ WalletConnectStep.MetaMaskProcessing ]: {view: <MetaMaskProcess {...{t, ...rest}}/>,},

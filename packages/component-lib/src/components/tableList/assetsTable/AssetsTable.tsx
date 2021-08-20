@@ -124,13 +124,10 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         onShowDeposit,
         onShowTransfer,
         onShowWithdraw,
-        onLpDeposit,
         getMakretArrayListCallback,
         // onLpWithdraw,
     } = props
-    // const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
-    // const formattedRawData = rawData && Array.isArray(rawData) ? rawData : []
-    // const [filterTokenType, setFilterTokenType] = useState('All Tokens')
+    const [searchValue, setSearchValue] = useState('')
     const [hideSmallBalance, setHideSmallBalance] = useState(false)
     const [hideLPToken, setHideLPToken] = useState(false)
     const [totalData, setTotalData] = useState<RawDataAssetsItem[]>([])
@@ -159,13 +156,6 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             pathname: `/trading/lite/${pair}`
         })
     }, [history])
-
-    // const getPairList = useCallback((pair) => {
-    //     if (pair) {
-    //         return getMakretArrayListCallback(pair)
-    //     }
-    //     return []
-    // }, [getMakretArrayListCallback])
 
     const getPopoverTrigger = useCallback(() => (
         <MoreIcon cursor={'pointer'} />
@@ -214,31 +204,6 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                 horizontal: 'right',
             },
         }), [getPopoverTrigger, getPopoverPopper])
-
-    // const jumpToTrade = (pair: string) => {
-    //     history.push({
-    //         pathname: `/trading/lite/${pair}`
-    //     })
-    // }
-
-    // const popoverPoper= (
-    //     <PopoverPure
-    //         className={'arrow-right'}
-    //         {...bindPopper(rightState)}
-    //         anchorOrigin={{
-    //             vertical: 'bottom',
-    //             horizontal: 'right',
-    //         }}
-    //         transformOrigin={{
-    //             vertical: 'top',
-    //             horizontal: 'right',
-    //         }}>
-    //     {/* <Grid item style={{backgroundColor: 'var(--color-pop-bg)'}}>
-    //         <MenuItem value={1}><ListItemText>{t('test key')}</ListItemText></MenuItem>
-    //         <MenuItem value={1} selected={true}><ListItemText>{t('test key')}</ListItemText></MenuItem>
-    //     </Grid> */}
-    // </PopoverPure>
-    // )
 
     const getColumnModeAssets = (t: TFunction): Column<Row, unknown>[] => [
         {
@@ -296,58 +261,11 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                             </Grid>
                             <Grid item marginTop={1}>
                                 <Popover {...getPopoverProps(renderMarket, isLp)}></Popover>
-                                {/* <IconWrapperStyled>
-                                    <MoreIcon {...bindTrigger(rightState)} cursor={'pointer'} />
-                                </IconWrapperStyled> */}
-                                {/* {getPopover()} */}
-                                {/* <Button {...bindTrigger(rightState)}>test</Button> */}
-                                {/* {getPopoverContent()} */}
                             </Grid>
-                            
-                            {/* {isLp ? (
-                                <Grid item>
-                                    <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                            onClick={() => onLpDeposit(lpPair, LpTokenAction.add)}>{t('labelAMM')}</Button>
-                                </Grid>
-                            ) : (
-                                <Grid item>
-                                    <Button variant={'outlined'} size={'medium'} color={'primary'}
-                                            onClick={() => jumpToTrade(tokenValue)}>{t('labelTrade')}</Button>
-                                </Grid>
-                            )} */}
-                        {/* <Grid item>
-                            {isLp
-                                ? <Button variant={'outlined'} color={'primary'} disabled>{t('labelAMM')} </Button>
-                                : <PopupState variant="popover" popupId="demo-popup-menu">
-                                    {(popupState) => (
-                                        <>
-                                            <Button variant={'outlined'} size={'medium'}
-                                                    color="primary" {...bindTrigger(popupState)}>
-                                                Trade
-                                            </Button>
-                                            <Menu {...bindMenu(popupState)}>
-                                                {tradePairs.map(({first, last}) => {
-                                                    const value = `${first}/${last}`;
-                                                    return (
-                                                        <MenuItem onClick={popupState.close} key={value}
-                                                                value={value}>{value}</MenuItem>
-                                                    )
-                                                })}
-                                            </Menu>
-                                        </>
-                                    )}
-                                </PopupState>
-                            }
-                        </Grid> */}
                     </GridStyled>
                 )
             }
         },
-        // {
-        //     key: 'tradePairList',
-        //     name: 'tradePairList',
-        //     hidden: true
-        // }
     ]
 
     const defaultArgs: any = {
@@ -364,17 +282,11 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
 
     const updateData = useCallback(({
                                         TableType,
-                                        // currFilterTokenType = filterTokenType,
-                                        currHideSmallBalance = hideSmallBalance,
-                                        currHideLPToken = hideLPToken
+                                        currHideSmallBalance,
+                                        currHideLPToken,
+                                        currSearchValue,
                                     }) => {
-        // let resultData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
         let resultData = (rawData && !!rawData.length) ? rawData : []
-        // if (currFilterTokenType !== 'All Tokens') {
-        //     resultData = resultData.filter(o =>
-        //         (o[ 0 ] as TokenTypeCol).value === currFilterTokenType
-        //     )
-        // }
         if (currHideSmallBalance) {
             resultData = resultData.filter(o => !o.smallBalance)
         }
@@ -384,15 +296,18 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         if (TableType === 'filter') {
             setPage(1)
         }
+        if (currSearchValue) {
+            resultData = resultData.filter(o => o.token.value.toLowerCase().includes(currSearchValue.toLowerCase()))
+        }
         setTotalData(resultData)
-    }, [rawData, /* filterTokenType,  */hideSmallBalance, hideLPToken])
+    }, [rawData])
 
-    const handleFilterChange = useCallback(({/* tokenType,  */currHideSmallBalance, currHideLPToken}) => {
-        // setFilterTokenType(tokenType)
+    const handleFilterChange = useCallback(({currHideSmallBalance = hideSmallBalance, currHideLPToken = hideLPToken, currSearchValue = searchValue}) => {
         setHideSmallBalance(currHideSmallBalance)
         setHideLPToken(currHideLPToken)
-        updateData({TableType: TableType.filter, /* currFilterTokenType: tokenType, */ currHideSmallBalance, currHideLPToken})
-    }, [updateData])
+        setSearchValue(currSearchValue)
+        updateData({TableType: TableType.filter, currHideSmallBalance, currHideLPToken, currSearchValue})
+    }, [updateData, hideSmallBalance, hideLPToken, searchValue])
 
     const handlePageChange = useCallback((page: number) => {
         setPage(page)
@@ -410,7 +325,13 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     return <TableStyled lan={language}>
         {showFiliter && (
             <TableFilterStyled>
-                <Filter originalData={rawData} handleFilterChange={handleFilterChange}/>
+                <Filter 
+                    originalData={rawData} 
+                    handleFilterChange={handleFilterChange}
+                    searchValue={searchValue}
+                    hideSmallBalance={hideSmallBalance}
+                    hideLpToken={hideLPToken}
+                />
             </TableFilterStyled>
         )}
         <Table {...{...defaultArgs, ...props, rawData: getRenderData()}} onScroll={getScrollIndex}/>

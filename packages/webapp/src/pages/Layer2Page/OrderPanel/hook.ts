@@ -5,12 +5,20 @@ import { useAccount } from 'stores/account';
 import { LoopringAPI } from 'api_wrapper'
 import { volumeToCount } from 'hooks/help'
 import { GetOrdersRequest } from 'loopring-sdk'
+import store from 'stores'
 
 export const useOrderList = () => {
     const [orderOriginalData, setOrderOriginalData] = React.useState<OrderHistoryRawDataItem[]>([])
     const [totalNum, setTotalNum] = React.useState(0)
     const [showLoading, setShowLoading] = React.useState(false)
     const { account: {accountId, apiKey} } = useAccount()
+    const { tokenMap: { marketArray } } = store.getState()
+    const { ammMap: { ammMap } } = store.getState().amm
+
+    const ammPairList = ammMap 
+        ? Object.keys(ammMap)
+        : []
+    const jointPairs = (marketArray || []).concat(ammPairList)
 
     const getOrderList = React.useCallback(async (props: Omit<GetOrdersRequest, 'accountId'> ) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
@@ -29,6 +37,7 @@ export const useOrderList = () => {
                     const { baseAmount, quoteAmount, baseFilled, quoteFilled } = o.volumes
 
                     return ({
+                        market: o.market,
                         side: o.side === 'BUY' ? TradeTypes.Buy : TradeTypes.Sell,
                         amount: {
                             from: {
@@ -73,6 +82,7 @@ export const useOrderList = () => {
     }, [getOrderList])
 
     return {
+        marketArray: jointPairs,
         getOrderList,
         rawData: orderOriginalData,
         totalNum,
