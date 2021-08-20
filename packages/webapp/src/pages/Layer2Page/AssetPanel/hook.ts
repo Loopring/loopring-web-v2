@@ -42,6 +42,9 @@ export const useGetAssets = () => {
         }else{
             socketEnd()
         }
+        return ()=>{
+            socketEnd()
+        }
     }, [account.readyState]);
     const getUserTotalAssets = React.useCallback(async (limit: number = 7) => {
         const userAssets = await LoopringAPI.walletAPI?.getUserAssets({

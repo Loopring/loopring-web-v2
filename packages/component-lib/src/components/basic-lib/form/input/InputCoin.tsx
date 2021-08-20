@@ -138,7 +138,9 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 </Grid>
             </CoinWrap>
             <Grid order={order === 'left' ? 1 : 2} flex={1} item className={`input-wrap input-wrap-${order}`}>
-                <IInput ref={inputEle} onValueChange={_handleContChange} value={sValue} allowNegativeValue={false}
+                <IInput ref={inputEle} onValueChange={_handleContChange} value={
+                    typeof sValue === 'undefined' ? '' : sValue
+                } allowNegativeValue={false}
                         disabled={!(!disabled || belong)}
                         placeholder={placeholderText}
                         aria-placeholder={placeholderText} aria-label={label} decimalsLimit={10000000}/>

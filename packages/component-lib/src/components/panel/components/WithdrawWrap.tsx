@@ -57,11 +57,11 @@ export const WithdrawWrap = <T extends IBData<I>,
         }
     }, [chargeFeeTokenList, handleFeeChange])
 
-    const debounceAddress = React.useCallback(debounce(({address}: any) => {
+    const debounceAddress = React.useCallback(debounce(({address,handleOnAddressChange}: any) => {
         if (handleOnAddressChange) {
             handleOnAddressChange(address)
         }
-    }, wait), [handleOnAddressChange, debounce])
+    }, wait), [])
     const _handleOnAddressChange = React.useCallback((event) => {
         const address = event.target.value;
         if (handleAddressError) {
@@ -71,9 +71,9 @@ export const WithdrawWrap = <T extends IBData<I>,
             }
         }
         setAddress(address);
-        debounceAddress({address})
+        debounceAddress({address,handleOnAddressChange})
 
-    }, [debounce, wait, handleAddressError])
+    }, [handleAddressError,handleOnAddressChange])
 
     const handleClear = React.useCallback(() => {
         // @ts-ignore

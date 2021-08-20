@@ -282,11 +282,11 @@ export const PoolsTable = withTranslation('tables')(
             })
             setTotalData(newData);
         }, [rawData]);
-        const doUpdate = (filterBy: string) => {
+        const doUpdate =React.useCallback((filterBy: string) => {
             updateData({TableType: TableType.filter, filterBy})
-        }
+        },[])
 
-        const handleFilterChange = React.useCallback(debounce(doUpdate, wait), [doUpdate]);
+        const handleFilterChange = React.useCallback(debounce(doUpdate, wait), []);
 
         const _handlePageChange = React.useCallback((page: number) => {
             setPage(page);

@@ -9,13 +9,11 @@ import store from 'stores';
 import { updateAccountStatus } from 'stores/account';
 import * as sdk from 'loopring-sdk'
 import { unlockAccount } from './unlockAccount';
-import { updateWalletLayer2 } from 'stores/walletLayer2';
-import { sleep } from 'loopring-sdk';
-import { REFRESH_RATE } from 'defs/common_defs';
+import { reset as resetWalletLayer2 } from 'stores/walletLayer2';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
-export const walletLayer2Services = {
+export const accountServices = {
     //INFO: for update Account and unlock account
     sendSign: async () => {
         // const account = store.getState().account;
@@ -65,7 +63,7 @@ export const walletLayer2Services = {
             })
         } else {
             const { accAddress } = store.getState().account
-            walletLayer2Services.sendCheckAccount(accAddress);
+            accountServices.sendCheckAccount(accAddress);
         }
 
     },
@@ -85,7 +83,7 @@ export const walletLayer2Services = {
             nonce: undefined,
         }
         store.dispatch(updateAccountStatus(updateInfo))
-        store.dispatch(updateWalletLayer2(undefined))
+        store.dispatch(resetWalletLayer2(undefined))
         subject.next({
             status: Commands.LockAccount,
             data: undefined,
@@ -135,12 +133,12 @@ export const walletLayer2Services = {
                 }))
 
                 if (accInfo === undefined) {
-                    walletLayer2Services.sendNoAccount()
+                    accountServices.sendNoAccount()
                 } else {
                     if (account.accountId) {
                         if (!account.publicKey.x || !account.publicKey.y) {
                             myLog('-------need update account!')
-                            walletLayer2Services.sendNeedUpdateAccount(accInfo)
+                            accountServices.sendNeedUpdateAccount(accInfo)
                         } else {
                             myLog('-------need unlockAccount!')
                             unlockAccount()
@@ -171,14 +169,14 @@ export const walletLayer2Services = {
 
             //TODO code is notaccount
             if (accInfo === undefined) {
-                walletLayer2Services.sendNoAccount()
+                accountServices.sendNoAccount()
             } else {
                 if (accInfo.accountId) {
                     if (!accInfo.publicKey.x || !accInfo.publicKey.y) {
                         myLog('-------need update account!')
-                        walletLayer2Services.sendNeedUpdateAccount(accInfo)
+                        accountServices.sendNeedUpdateAccount(accInfo)
                     } else {
-                        walletLayer2Services.sendAccountLock(accInfo)
+                        accountServices.sendAccountLock(accInfo)
                     }
                 } else {
                     myLog('unexpected accInfo:', accInfo)
