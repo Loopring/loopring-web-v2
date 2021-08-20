@@ -23,6 +23,7 @@ import {
     LoopringMap,
     OrderType,
     SubmitOrderRequestV3,
+    TradeChannel,
     VALID_UNTIL
 } from 'loopring-sdk';
 import { useAmmMap } from '../../stores/Amm/AmmMap';
@@ -50,6 +51,8 @@ import { useTranslation } from 'react-i18next';
 import { usePairMatch } from 'hooks/usePairMatch';
 import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
 import { useWalletHook } from '../../services/wallet/useWalletHook';
+import { getTimestampDaysLater } from 'utils/dt_tools';
+import { DAYS } from 'defs/common_defs';
 
 export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
 
@@ -296,6 +299,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
         try {
 
+            const tradeChannel = output.exceedDepth ? TradeChannel.AMM_POOL : TradeChannel.MIXED
+
             const request: SubmitOrderRequestV3 = {
                 exchange: exchangeInfo.exchangeAddress,
                 accountId: account.accountId,
@@ -309,10 +314,11 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                     volume: output.amountBOutSlip.minReceived
                 },
                 allOrNone: false,
-                validUntil: VALID_UNTIL,
+                validUntil: getTimestampDaysLater(DAYS),
                 maxFeeBips: parseInt(feeBips),
                 fillAmountBOrS: false, // amm only false
-                orderType: OrderType.LimitOrder,
+                orderType: OrderType.TakerOnly,
+                tradeChannel,
                 eddsaSignature: '',
             }
 

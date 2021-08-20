@@ -45,3 +45,5 @@ export const UPDATE_ACC_DELAY = 2500
 export const TOAST_TIME = 3000
 
 export const SHORT_INTERVAL = 200
+
+export const DAYS = 30

@@ -18,6 +18,8 @@ import { useWalletLayer2 } from 'stores/walletLayer2';
 import { makeWalletLayer2 } from 'hooks/help';
 import { ChainId } from 'loopring-sdk';
 import { useWalletHook } from '../../services/wallet/useWalletHook';
+import { getTimestampDaysLater } from 'utils/dt_tools';
+import { DAYS } from 'defs/common_defs';
 
 export const useTransfer = <R extends IBData<T>, T>(): {
     // handleTransfer: (inputValue:R) => void,
@@ -89,7 +91,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                         tokenId: feeToken.tokenId,
                         volume: tranferFeeInfo.__raw__,
                     },
-                    validUntil: sdk.VALID_UNTIL,
+                    validUntil: getTimestampDaysLater(DAYS),
                 }
 
                 const response = await LoopringAPI.userAPI?.submitInternalTransfer({
