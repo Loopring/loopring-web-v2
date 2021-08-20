@@ -23,7 +23,7 @@ export async function unlockAccount() {
             }, eddsaKey.sk))
             myLog('After connect >>,unlockAccount: step2 apiKey',apiKey)
 
-            walletLayer2Services.sendAccountSigned(apiKey, eddsaKey)
+            walletLayer2Services.sendAccountSigned(account.accountId, apiKey, eddsaKey)
         }catch (e){
             walletLayer2Services.sendErrorUnlock()
 
