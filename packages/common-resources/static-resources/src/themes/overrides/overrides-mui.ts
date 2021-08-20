@@ -514,46 +514,62 @@ export const MuiIconButton =   ({colorBase}: any): { styleOverrides: ComponentsO
         }
     }
 }
+export const MuiToggleButtonGroup = ({colorBase}: any) => {
+    return {
+        styleOverrides: {
+            root: {
+                backgroundColor: colorBase.borderDark,
+                padding: pxToRem(4),
+                paddingRight: pxToRem(2),
+            }
+        }
+    }
+}
 export const MuiToggleButton = ({colorBase, themeMode}: any) => {
     return {
         styleOverrides: {
             root: {
                 '&.MuiToggleButton-sizeSmall': {
                     height: pxToRem(24),
-                    fontSize: '1.2rem'
+                    fontSize: '1.4rem'
                 },
                 height: pxToRem(28),
                 // boxShadow: '0px 4px 62px rgba(0, 0, 0, 0.25)',
                 borderRadius: '4px !important',
-                margin: '0 8px',
-                fontSize: '1.4rem',
-                color: colorBase.textPrimary,
-                borderColor: colorBase.border,
+                marginRight: pxToRem(2),
+                fontSize: '1.6rem',
+                color: colorBase.textSecondary,
+                border: 'none',
+                // borderColor: colorBase.border,
                 '&&:not(:first-of-type), &&:not(:last-child)': {
-                    borderColor: colorBase.border,
+                    // borderColor: colorBase.border,
                 },
-                backgroundColor: colorBase.box,
+                backgroundColor: 'inherit',
                 '&:hover': {
-                    backgroundColor: colorBase.box,
-                    borderColor: colorBase.textPrimary,
+                    backgroundColor: 'inherit',
+                    color: colorBase.textPrimary,
+                    // borderColor: colorBase.textPrimary,
+                    border: 'none',
                     '&:not(:last-child), &:not(:first-of-type)': {
-                        borderColor: colorBase.textPrimary,
+                        // borderColor: colorBase.textPrimary,
                     },
                     '&.Mui-selected,&.Mui-selected': {
-                        borderColor: colorBase.primary,
+                        // borderColor: colorBase.primary,
                     }
                 },
                 '&.Mui-disabled': {
-                    backgroundColor: colorBase.defaultDisable,
-                    color: colorBase.textSecondary,
-                    border: '1px dashed',
-                    borderColor: colorBase.border
+                    // backgroundColor: colorBase.defaultDisable,
+                    color: colorBase.textDisable,
+                    border: 'none'
+                    // border: '1px dashed',
+                    // borderColor: colorBase.border
                     // backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23FFFFFF33' stroke-width='1' stroke-dasharray='4%25%2c 8%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e")`
                 },
                 '&&.Mui-selected, &&.Mui-selected + &.Mui-selected': {
-                    color: colorBase.primary,
-                    backgroundColor: rgba(colorBase.primary, 0.1),
-                    border: borderFunc(themeMode).borderConfig({c_key: rgba(colorBase.primary, 0.5)})
+                    color: colorBase.textPrimary,
+                    backgroundColor: colorBase.primary,
+                    // border: 'none'
+                    // border: borderFunc(themeMode).borderConfig({c_key: rgba(colorBase.primary, 0.5)})
                 }
             }
         }
