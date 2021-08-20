@@ -1,7 +1,7 @@
 import React from 'react'
 import store from 'stores'
 import { TokenType } from '@loopring-web/component-lib'
-import { EmptyValueTag, globalSetup, SagaStatus } from '@loopring-web/common-resources'
+import { AccountStatus, EmptyValueTag, globalSetup, SagaStatus } from '@loopring-web/common-resources'
 import { useWalletLayer2 } from 'stores/walletLayer2'
 import { useAccount } from 'stores/account';
 import { LoopringAPI } from 'api_wrapper'
@@ -30,18 +30,22 @@ export const useGetAssets = () => {
     const [chartData, setChartData] = React.useState<TrendDataItem[]>([])
     const [assetsList, setAssetsList] = React.useState<any[]>([])
     
-    const { account: { accAddress }, } = useAccount();
-    const {sendSocketTopic} = useSocket();
+    const { account } = useAccount();
+    const {sendSocketTopic,socketEnd} = useSocket();
     // const {  } = store.getState().walletLayer2;
     const { ammMap } = useAmmMap()//store.getState().amm.ammMap
     const { walletLayer2 } = useWalletLayer2();
     const { marketArray } = store.getState().tokenMap
     React.useEffect(() => {
-        sendSocketTopic({[ WsTopicType.account ]: true});
-    }, []);
+        if(account.readyState === AccountStatus.ACTIVATED){
+            sendSocketTopic({[ WsTopicType.account ]: true});
+        }else{
+            socketEnd()
+        }
+    }, [account.readyState]);
     const getUserTotalAssets = React.useCallback(async (limit: number = 7) => {
         const userAssets = await LoopringAPI.walletAPI?.getUserAssets({
-            wallet: accAddress,
+            wallet: account.accAddress,
             assetType: AssetType.DEX,
             limit: limit // TODO: minium unit is day, discuss with pm later
         })
@@ -53,7 +57,7 @@ export const useGetAssets = () => {
                 close: Number(o.amount)
             })))
         }
-    }, [accAddress])
+    }, [account.accAddress])
 
     const walletLayer2Callback = React.useCallback(()=>{
         const walletMap = makeWalletLayer2()
