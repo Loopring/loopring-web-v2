@@ -26,7 +26,9 @@ export const ModalGroup = withTranslation('common',{withRef: true})(({...rest}:W
     return  <>
 
         <Toast alertText={withdrawAlertText as string} open={withdrawToastOpen} 
-            autoHideDuration={TOAST_TIME} setOpen={setWithdrawToastOpen}/>
+            autoHideDuration={TOAST_TIME}  onClose={()=> {
+            setWithdrawToastOpen(false)
+        }}/>
 
         <ModalPanel transferProps={transferProps}
                     withDrawProps={withdrawProps}

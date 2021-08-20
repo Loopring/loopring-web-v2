@@ -1,4 +1,4 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import { useRouteMatch } from "react-router-dom"
 import { useTokenMap } from "stores/token"
 import { CoinInfo } from "@loopring-web/common-resources"
@@ -13,7 +13,8 @@ export function usePairMatch<C extends { [key: string]: any }>(path: string) {
     const [pair, setPair] = useState<{ coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined }>({ coinAInfo: undefined, coinBInfo: undefined})
     const [market, setMarket] = useState('')
     
-    useCustomDCEffect(() => {
+
+    React.useEffect(()=>{
 
         if (!coinMap || !tokenMap || !marketArray) {
             return
@@ -30,15 +31,15 @@ export function usePairMatch<C extends { [key: string]: any }>(path: string) {
         if (market) {
 
             const matchRes = market.match(/(\w+)-(\w+)/i)
-    
+
             if (matchRes && matchRes.length >= 3 && coinMap[matchRes[1]] && coinMap[matchRes[2]]) {
                 coinA = matchRes[1]
                 coinB = matchRes[2]
             }
-    
+
             const { market: marketTemp } = getExistedMarket(marketArray, coinA, coinB)
             realMarket = marketTemp
-     
+
             myLog('-------> coinA:', coinA, ' coinB:', coinB, ' realMarket:', realMarket)
 
         }
@@ -48,8 +49,7 @@ export function usePairMatch<C extends { [key: string]: any }>(path: string) {
 
         setPair({ coinAInfo, coinBInfo, })
         setMarket(realMarket)
-    }, [coinMap, tokenMap, marketArray, match])
-
+    },[])
     return {
         market,
         pair,

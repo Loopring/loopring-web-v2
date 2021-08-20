@@ -275,7 +275,9 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     return <>
         <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen}
-               autoHideDuration={TOAST_TIME} setOpen={setCopyToastOpen} severity={"success"}/>
+               autoHideDuration={TOAST_TIME} onClose={()=> {
+            setCopyToastOpen(false)
+        }} severity={"success"}/>
 
         <ModalQRCode open={openQRCode} onClose={() => setOpenQRCode(false)} title={'ETH Address'}
                      description={account?.accAddress} url={account?.accAddress}/>
