@@ -46,6 +46,7 @@ import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS } from 'defs/common_defs';
 import { MarketTradeInfo } from 'loopring-sdk/dist/defs/loopring_defs';
 import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
+import { useWalletLayer1 } from '../../stores/walletLayer1';
 
 const useSwapSocket = ()=>{
     const {sendSocketTopic,socketEnd} = useSocket();
@@ -69,6 +70,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const { slippage } = useSettings()
     const { walletLayer2 } = useWalletLayer2();
     const { ammMap } = useAmmMap()
+    const { status:walletLayer2Status } = useWalletLayer2();
+
 
 
     /*** api prepare ***/
@@ -118,14 +121,14 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             resetSwap(undefined, undefined)
         }
 
-    }, [pair?.coinBInfo?.simpleName]);
+    }, [pair?.coinBInfo?.simpleName])
 
     React.useEffect(() => {
-        if(market && accountStatus === SagaStatus.UNSET){
+        if(accountStatus === SagaStatus.UNSET && walletLayer2Status === SagaStatus.UNSET){
             myTradeTableCallback();
         }
-    },[market, accountStatus]);
-
+    },[account.readyState,market,accountStatus,walletLayer2Status] );
+    
     //table marketTrade
     const marketTradeTableCallback = React.useCallback(()=>{
         if ( LoopringAPI.exchangeAPI) {
@@ -147,6 +150,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     const updateDepth = React.useCallback(async() => {
         if (market && LoopringAPI.exchangeAPI) {
+            myLog('swap page updateDepth',market)
             const { depth } = await LoopringAPI.exchangeAPI.getMixDepth({ market })
             setDepth(depth)
         }
@@ -282,10 +286,14 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         }
 
     }, [tradeData, output, tokenMap])
-
     const swapBtnClickArray = Object.assign(deepClone(btnClickMap), {
         [fnType.ACTIVATED]: [swapCalculatorCallback]
     })
+    const onSwapClick = React.useCallback(({ sell, buy, slippage, ...rest }: SwapTradeData<IBData<C>>) => {
+        accountStaticCallBack(swapBtnClickArray, [{ sell, buy, slippage, ...rest }])
+    }, [swapBtnClickArray])
+    //Btn related end
+
 
     React.useEffect(()=>{
         if(accountStatus === SagaStatus.UNSET) {
@@ -351,10 +359,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     // myLog('tradeData?.buy.belong:', tradeData?.buy.belong)
 
     //HIGH: effect by wallet state update
-
-    const onSwapClick = React.useCallback(({ sell, buy, slippage, ...rest }: SwapTradeData<IBData<C>>) => {
-        accountStaticCallBack(swapBtnClickArray, [{ sell, buy, slippage, ...rest }])
-    }, [swapBtnClickArray])
 
     const handleSwapPanelEvent = async (swapData: SwapData<SwapTradeData<IBData<C>>>, swapType: any): Promise<void> => {
 

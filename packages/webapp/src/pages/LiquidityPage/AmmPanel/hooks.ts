@@ -159,6 +159,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         const { ammPoolSnapshot } = response
 
         setAmmPoolSnapShot(ammPoolSnapshot)
+        myLog('updateAmmPoolSnapshot',pair)
     }, [pair, ammMap, setAmmPoolSnapShot])
 
     // set fees
