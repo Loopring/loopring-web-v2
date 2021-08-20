@@ -198,10 +198,18 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         if (marketArray && base && quote && market &&
             LoopringAPI.userAPI && account.readyState === AccountStatus.ACTIVATED
             && ammMap && account?.accountId && account?.apiKey) {
-
-
             const { walletMap } = makeWalletLayer2();
-            setTradeCalcData({ ...tradeCalcData, walletMap } as TradeCalcData<C>);
+            const {amm} = getExistedMarket(marketArray, base, quote)
+            const req: GetMinimumTokenAmtRequest = {
+                accountId: account.accountId,
+                market,
+            }
+            const { amountMap } = await LoopringAPI.userAPI.getMinimumTokenAmt(req, account.apiKey)
+            const baseMinAmtInfo = amountMap[base]
+            const quoteMinAmtInfo = amountMap[quote]
+            const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
+            const feeBips = amm && ammMap[amm]? ammMap[amm].__rawConfig__.feeBips: 0
+            const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
             setTradeData({
                 sell: {
                     belong: tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap[tradeCalcData.coinSell]?.simpleName : undefined,
@@ -212,45 +220,11 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                     balance: walletMap ? walletMap[tradeCalcData.coinBuy as string]?.count : 0
                 },
             } as SwapTradeData<IBData<C>>)
-
-            const {
-                amm
-            } = getExistedMarket(marketArray, base, quote)
-
-            let feeBips = 0
-
-            if (amm && ammMap[amm]) {
-                feeBips = ammMap[amm].__rawConfig__.feeBips
-            }
-
-            const req: GetMinimumTokenAmtRequest = {
-                accountId: account.accountId,
-                market,
-            }
-
-            const { amountMap } = await LoopringAPI.userAPI.getMinimumTokenAmt(req, account.apiKey)
-
-            const baseMinAmtInfo = amountMap[base]
-            const quoteMinAmtInfo = amountMap[quote]
-
-            if (!baseMinAmtInfo || !quoteMinAmtInfo) {
-                return
-            }
-
-            const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
-
-            const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
-
-            setBaseMinAmt(baseMinAmtInfo.userOrderInfo.minAmount)
-            setQuoteMinAmt(quoteMinAmtInfo.userOrderInfo.minAmount)
-
-            // myLog('-------------- amountMap:', amountMap, 'totalFee:', totalFee, ' takerRate:', takerRate)
-
+            setBaseMinAmt(baseMinAmtInfo?.userOrderInfo.minAmount)
+            setQuoteMinAmt(quoteMinAmtInfo?.userOrderInfo.minAmount)
             setFeeBips(totalFee)
             setTakerRate(takerRate.toString())
-
-            setTradeCalcData({ ...tradeCalcData, fee: totalFee } as TradeCalcData<C>)
-
+            setTradeCalcData({ ...tradeCalcData,walletMap, fee: totalFee } as TradeCalcData<C>)
         } else {
 
             // myLog('set fee to 0')
