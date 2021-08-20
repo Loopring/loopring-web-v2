@@ -27,6 +27,7 @@ import { useSystem } from 'stores/system';
 import { myLog } from 'utils/log_tools';
 import { useWalletLayer2 } from 'stores/walletLayer2';
 import { makeWalletLayer2 } from 'hooks/help';
+import { useWalletHook } from '../../services/wallet/useWalletHook';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     // handleWithdraw: (inputValue:R) => void,
@@ -51,20 +52,25 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         tradeValue: 0,
         balance: 0
     } as IBData<unknown>)
-    const { status: walletLayer2Status } = useWalletLayer2();
-    const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
-    const { chargeFeeList } = useChargeFees(withdrawValue.belong, OffchainFeeReqType.OFFCHAIN_WITHDRAWAL, tokenMap)
+    // const {status:walletLayer2Status} = useWalletLayer2();
+    const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap??{} as WalletMap<R>);
+    const {chargeFeeList} = useChargeFees(withdrawValue.belong, OffchainFeeReqType.OFFCHAIN_WITHDRAWAL, tokenMap)
     const [withdrawAddr, setWithdrawAddr] = useState<string>()
     const [withdrawFeeInfo, setWithdrawFeeInfo] = useState<any>(undefined)
     const [withdrawType, setWithdrawType] = useState<OffchainFeeReqType>(OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
     const { setShowWithdraw, } = useOpenModals()
 
-    React.useEffect(() => {
-        if (walletLayer2Status === SagaStatus.UNSET) {
-            const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
-            setWalletMap2(walletMap)
-        }
-    }, [walletLayer2Status])
+    // React.useEffect(()=>{
+    //     if(walletLayer2Status === SagaStatus.UNSET){
+    //         const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
+    //         setWalletMap2(walletMap)
+    //     }
+    // },[walletLayer2Status])
+    const  walletLayer2Callback= React.useCallback(()=>{
+        const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
+         setWalletMap2(walletMap)
+    },[])
+    useWalletHook({walletLayer2Callback})
     useCustomDCEffect(() => {
         if (chargeFeeList.length > 0) {
             setWithdrawFeeInfo(chargeFeeList[0])

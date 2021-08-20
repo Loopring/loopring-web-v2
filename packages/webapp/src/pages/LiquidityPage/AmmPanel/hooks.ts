@@ -7,7 +7,7 @@ import {
     fnType,
     globalSetup,
     IBData,
-    SagaStatus,
+    SagaStatus, WalletMap,
 } from '@loopring-web/common-resources';
 import { AmmPanelType } from '@loopring-web/component-lib';
 import { IdMap, useTokenMap } from '../../../stores/token';
@@ -46,6 +46,7 @@ import { useWalletLayer2 } from "stores/walletLayer2";
 import { myLog } from "utils/log_tools";
 import { REFRESH_RATE_SLOW } from "defs/common_defs";
 import { useTranslation } from "react-i18next";
+import { useWalletHook } from '../../../services/wallet/useWalletHook';
 
 export const useAmmPanel = <C extends { [key: string]: any }>({
     pair,
@@ -60,7 +61,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
     const [ammToastOpen, setAmmToastOpen] = useState<boolean>(false)
     const [ammAlertText, setAmmAlertText] = useState<string>()
-    const { delayAndUpdateWalletLayer2, status: walletLayer2Status } = useWalletLayer2();
+    const { delayAndUpdateWalletLayer2,status: walletLayer2Status  } = useWalletLayer2();
     const { t } = useTranslation('common')
     const { coinMap, tokenMap } = useTokenMap();
     const { ammMap } = useAmmMap();
@@ -520,20 +521,37 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         accountStaticCallBack(removeAmmClickMap, [props])
     }, [exitRequest, ammExitData, removeAmmClickMap]);
 
-    useCustomDCEffect(() => {
-        if (walletLayer2Status !== SagaStatus.UNSET || !pair || !snapShotData) {
-            return
+    // useCustomDCEffect(() => {
+    //     if (walletLayer2Status !== SagaStatus.UNSET || !pair || !snapShotData) {
+    //         return
+    //     }
+    //
+    //     const { walletMap } = makeWalletLayer2()
+    //     initAmmData(pair, walletMap)
+    //
+    //     myLog('init snapshot:', snapShotData.ammPoolsBalance)
+    //
+    //     setAmmPoolSnapShot(snapShotData.ammPoolsBalance)
+    //
+    // }, [walletLayer2Status, pair, snapShotData, account?.accAddress,]);
+    const  walletLayer2Callback= React.useCallback(()=>{
+        // const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
+        // setWalletMap2(walletMap)
+        if(pair && snapShotData){
+            const { walletMap } = makeWalletLayer2()
+            initAmmData(pair, walletMap)
+            myLog('init snapshot:', snapShotData.ammPoolsBalance)
+            setAmmPoolSnapShot(snapShotData.ammPoolsBalance)
         }
+    },[ pair, snapShotData])
 
-        const { walletMap } = makeWalletLayer2()
-        initAmmData(pair, walletMap)
-
-        myLog('init snapshot:', snapShotData.ammPoolsBalance)
-        
-        setAmmPoolSnapShot(snapShotData.ammPoolsBalance)
-
-    }, [walletLayer2Status, pair, snapShotData, account?.accAddress,]);
-
+    useWalletHook({walletLayer2Callback})
+    React.useEffect(()=>{
+        walletLayer2Callback()
+        // if(walletLayer2Status === SagaStatus.UNSET){
+        //
+        // }
+    },[pair, snapShotData])
     return {
         onRefreshData: updateAmmPoolSnapshot,
         ammAlertText,

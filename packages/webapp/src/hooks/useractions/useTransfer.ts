@@ -17,6 +17,7 @@ import { myLog } from 'utils/log_tools';
 import { useWalletLayer2 } from 'stores/walletLayer2';
 import { makeWalletLayer2 } from 'hooks/help';
 import { ChainId } from 'loopring-sdk';
+import { useWalletHook } from '../../services/wallet/useWalletHook';
 
 export const useTransfer = <R extends IBData<T>, T>(): {
     // handleTransfer: (inputValue:R) => void,
@@ -26,7 +27,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const {tokenMap, totalCoinMap, } = useTokenMap();
     const {account} = useAccount()
     const {exchangeInfo, chainId} = useSystem();
-    const {walletLayer2, status: walletLayer2Status} = useWalletLayer2();
+    // const {walletLayer2, status: walletLayer2Status} = useWalletLayer2();
     const [walletMap, setWalletMap] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
     // const {setShowTransfer}  = useOpenModals();
     const [transferValue, setTransferValue] = React.useState<IBData<T>>({
@@ -38,12 +39,16 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const [tranferFeeInfo, setTransferFeeInfo] = React.useState<any>()
     const [payeeAddr, setPayeeAddr] = React.useState<string>('')
-    React.useEffect(()=>{
-        if(walletLayer2Status === SagaStatus.UNSET) {
-            const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
-            setWalletMap(walletMap)
-        }
-    },[walletLayer2Status])
+    // React.useEffect(()=>{
+    //     if(walletLayer2Status === SagaStatus.UNSET) {
+    //
+    //     }
+    // },[walletLayer2Status])
+    const  walletLayer2Callback= React.useCallback(()=>{
+        const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
+        setWalletMap(walletMap)
+    },[])
+    useWalletHook({walletLayer2Callback})
 
     useCustomDCEffect(() => {
 
@@ -86,7 +91,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     },
                     validUntil: sdk.VALID_UNTIL,
                 }
-                
+
                 const response = await LoopringAPI.userAPI?.submitInternalTransfer({
                     request: req,
                     web3: connectProvides.usedWeb3,

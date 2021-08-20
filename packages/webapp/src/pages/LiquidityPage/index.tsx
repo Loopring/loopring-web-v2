@@ -10,8 +10,7 @@ import styled from '@emotion/styled'
 import { subMenuLiquidity } from '@loopring-web/common-resources'
 import { PoolsPanel } from './PoolsPanel'
 import { CoinPairPanel } from './CoinPairPanel';
-import { AmmMiningView } from './AmmMining';
-import { MyLiquidity } from './MyLiquidity'
+
 import { useAmmPool } from './hook';
 
 const TableWrapperStyled = styled(Box)`

@@ -50,6 +50,7 @@ import { useTranslation } from 'react-i18next';
 import { REFRESH_RATE_SLOW } from 'defs/common_defs';
 import { usePairMatch } from 'hooks/usePairMatch';
 import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
+import { useWalletHook } from '../../services/wallet/useWalletHook';
 
 export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
 
@@ -123,7 +124,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const { ammMap } = useAmmMap()
 
     const { account, status: accountStatus } = useAccount()
-    const { delayAndUpdateWalletLayer2, walletLayer2, status: walletLayer2Status } = useWalletLayer2();
+    const { delayAndUpdateWalletLayer2, walletLayer2 } = useWalletLayer2();
 
     const [tradeData, setTradeData] = React.useState<SwapTradeData<IBData<C>> | undefined>(undefined);
     const [tradeCalcData, setTradeCalcData] = React.useState<Partial<TradeCalcData<C>>>({});
@@ -179,18 +180,15 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         setIsSwapLoading,
     } = useSwapBtnStatusCheck(output, tradeData)
     // --- end of btn status check.
-
-    useCustomDCEffect(async () => {
-
-        if (walletLayer2Status !== SagaStatus.UNSET) {
-            return
-        }
-
+    React.useEffect(()=>{
+        walletLayer2Callback()
+    },[walletLayer2,tradeData?.sell.belong, tradeData?.buy.belong, account.apiKey])
+    const walletLayer2Callback = React.useCallback(async ()=>{
         const base = tradeData?.sell.belong
         const quote = tradeData?.buy.belong
 
         if (marketArray && base && quote && market &&
-            LoopringAPI.userAPI && account.readyState === AccountStatus.ACTIVATED 
+            LoopringAPI.userAPI && account.readyState === AccountStatus.ACTIVATED
             && ammMap && account?.accountId && account?.apiKey) {
 
 
@@ -210,39 +208,39 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             const {
                 amm
             } = getExistedMarket(marketArray, base, quote)
-    
+
             let feeBips = 0
-    
+
             if (amm && ammMap[amm]) {
                 feeBips = ammMap[amm].__rawConfig__.feeBips
             }
-    
+
             const req: GetMinimumTokenAmtRequest = {
                 accountId: account.accountId,
                 market,
             }
-    
+
             const { amountMap } = await LoopringAPI.userAPI.getMinimumTokenAmt(req, account.apiKey)
-    
+
             const baseMinAmtInfo = amountMap[base]
             const quoteMinAmtInfo = amountMap[quote]
-    
+
             if (!baseMinAmtInfo || !quoteMinAmtInfo) {
                 return
             }
-    
+
             const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
-    
+
             const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
-    
+
             setBaseMinAmt(baseMinAmtInfo.userOrderInfo.minAmount)
             setQuoteMinAmt(quoteMinAmtInfo.userOrderInfo.minAmount)
-    
+
             // myLog('-------------- amountMap:', amountMap, 'totalFee:', totalFee, ' takerRate:', takerRate)
-    
+
             setFeeBips(totalFee)
             setTakerRate(takerRate.toString())
-    
+
             setTradeCalcData({ ...tradeCalcData, fee: totalFee } as TradeCalcData<C>)
 
         } else {
@@ -251,7 +249,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
             setFeeBips('0')
             setTakerRate('0')
-    
+
             setTradeCalcData({ ...tradeCalcData, walletMap: {}, fee: '0' } as TradeCalcData<C>)
             setTradeData({
                 sell: {
@@ -264,10 +262,9 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 },
             } as SwapTradeData<IBData<C>>)
         }
-
-
-    }, [tradeData?.sell.belong, tradeData?.buy.belong, marketArray, ammMap,
-    account.readyState, account.apiKey, account.accountId, walletLayer2Status])
+    },[tradeData?.sell.belong, tradeData?.buy.belong, marketArray, ammMap,
+        account.readyState, account.apiKey, account.accountId])
+    useWalletHook({walletLayer2Callback})
 
     // myLog('tradeData?.sell.belong:', tradeData?.sell.belong)
     // myLog('tradeData?.buy.belong:', tradeData?.buy.belong)
