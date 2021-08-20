@@ -1,14 +1,10 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice'
-
-export interface OnchainHashInfo {
-    depositHash: string | undefined
-    withdrawHash: string[]
-}
+import { TxInfo, OnchainHashInfo, } from './interface'
 
 const initialState: OnchainHashInfo = {
-    depositHash: undefined,
-    withdrawHash: [],
+    depositHashes: {},
+    withdrawHashes: {},
 }
 
 const onchainHashInfoSlice: Slice<OnchainHashInfo> = createSlice<OnchainHashInfo, SliceCaseReducers<OnchainHashInfo>, 'onchainHashInfo'>({
@@ -18,14 +14,22 @@ const onchainHashInfoSlice: Slice<OnchainHashInfo> = createSlice<OnchainHashInfo
         clearAll(state: OnchainHashInfo, action: PayloadAction<undefined>) {
             state = initialState
         },
-        clearDepositHash(state: OnchainHashInfo, action: PayloadAction<string>) {
-            state.depositHash = undefined
+        clearDepositHash(state: OnchainHashInfo) {
+            state.depositHashes = {}
         },
-        updateDepositHash(state: OnchainHashInfo, action: PayloadAction<string>) {
-            state.depositHash = action.payload
+        clearWithdrawHash(state: OnchainHashInfo) {
+            state.withdrawHashes = {}
+        },
+        updateDepositHash(state: OnchainHashInfo, action: PayloadAction<TxInfo>) {
+            const txInfo = action.payload
+            state.depositHashes[txInfo.hash] = txInfo 
+        },
+        updateWithdrawHash(state: OnchainHashInfo, action: PayloadAction<TxInfo>) {
+            const txInfo = action.payload
+            state.withdrawHashes[txInfo.hash] = txInfo 
         }
     },
-});
+})
 
 export { onchainHashInfoSlice }
-export const {clearAll, clearDepositHash, updateDepositHash} = onchainHashInfoSlice.actions
+export const {clearAll, clearDepositHash, updateDepositHash, clearWithdrawHash, updateWithdrawHash} = onchainHashInfoSlice.actions

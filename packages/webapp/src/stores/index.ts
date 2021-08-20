@@ -1,15 +1,19 @@
-import { combineReducers, configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
+import { CombinedState, combineReducers, configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
 
 import { useDispatch } from 'react-redux'
+
 import { persistReducer } from 'redux-persist'
 import storageSession from 'redux-persist/lib/storage/session'
 import storage from 'redux-persist/lib/storage'
+import persistStore from 'redux-persist/es/persistStore'
+import hardSet from 'redux-persist/lib/stateReconciler/hardSet'
+
 import createSagaMiddleware from 'redux-saga'
 import * as imgConfig from '@loopring-web/common-resources/assets/images/coin/loopring.json'
 import { reduxBatch } from '@manaflair/redux-batch'
 import { updateVersion } from './global/actions'
 import accountSlice from './account/reducer'
-import { modalsSlice, setCoinJson, setLanguage, settingsSlice } from '@loopring-web/component-lib';
+import { modalsSlice, setCoinJson, setLanguage, settingsSlice, SettingsState, } from '@loopring-web/component-lib';
 import { ammReducer } from './Amm';
 import { tokenMapSlice } from './token';
 import mySaga from './rootSaga';
@@ -20,8 +24,11 @@ import { walletLayer2Slice } from './walletLayer2';
 import { socketSlice } from './socket';
 import { userRewardsMapSlice } from './userRewards';
 import { localStoreReducer } from './localStore';
-import persistStore from 'redux-persist/es/persistStore';
 import { myLog } from 'utils/log_tools'
+import { FavoriteMarketStates } from './localStore/favoriteMarket'
+import { confirmationSlice } from './localStore/confirmation'
+import { OnchainHashInfo } from './localStore/onchainHashInfo'
+import { Confirmation } from './localStore/confirmation/interface'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -39,15 +46,23 @@ const persistAccConfig = {
 const persistSettingConfig = {
     key: 'settings',
     storage: storage,
+    stateReconciler: hardSet,
 };
 
 const persistLocalStoreConfig = {
     key: 'localStore',
     storage: storage,
+    stateReconciler: hardSet,
 };
 const persistedAccountReducer = persistReducer(persistAccConfig, accountSlice.reducer)
-const persistedSettingReducer = persistReducer(persistSettingConfig, settingsSlice.reducer)
-const persistedLocalStoreReducer = persistReducer(persistLocalStoreConfig, localStoreReducer)
+
+const persistedSettingReducer = persistReducer<SettingsState>(persistSettingConfig, settingsSlice.reducer)
+
+const persistedLocalStoreReducer = persistReducer<CombinedState<{
+    favoriteMarket: FavoriteMarketStates,
+    onchainHashInfo: OnchainHashInfo,
+    confirmation: Confirmation,
+}>>(persistLocalStoreConfig, localStoreReducer)
 
 const reducer = combineReducers({
     account: persistedAccountReducer,
@@ -79,7 +94,9 @@ const store = configureStore({
     enhancers: [reduxBatch],
 })
 store.dispatch(updateVersion())
+
 store.dispatch(setLanguage(store.getState().settings.language))
+
 store.dispatch(setCoinJson(imgConfig.frames))
 
 // @ts-ignore
