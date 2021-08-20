@@ -139,8 +139,7 @@ export class LoopringSocket {
                 if (!this.isConnectSocket() ) {
                     await this.socketConnect({ topics, apiKey})
                 } else {
-
-                    this._loopringSocket?.send(this.makeTopics(topics))
+                    this._loopringSocket?.send(this.makeTopics(topics,apiKey))
 
                 }
                 return true
@@ -243,7 +242,7 @@ export class LoopringSocket {
     }
 
     private isConnectSocket = () => {
-        return !!(this._loopringSocket && this._loopringSocket.send);
+        return !!(this._loopringSocket && this._loopringSocket.readyState === 1 );
     }
 
     private makeTopics = (topics: any, apiKey?: string) => {

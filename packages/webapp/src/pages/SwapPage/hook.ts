@@ -23,7 +23,7 @@ import {
     LoopringMap,
     OrderType,
     SubmitOrderRequestV3,
-    VALID_UNTIL
+    VALID_UNTIL, WsTopicType
 } from 'loopring-sdk';
 import { useAmmMap } from '../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../stores/walletLayer2';
@@ -51,6 +51,7 @@ import { REFRESH_RATE_SLOW } from 'defs/common_defs';
 import { usePairMatch } from 'hooks/usePairMatch';
 import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
 import { useWalletHook } from '../../services/wallet/useWalletHook';
+import { useSocket } from '../../stores/socket';
 
 export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
 
@@ -115,6 +116,7 @@ export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
 export const useSwapPage = <C extends { [key: string]: any }>() => {
     /*** api prepare ***/
     const { t } = useTranslation('common')
+    const {sendSocketTopic,socketEnd} = useSocket();
 
     const [swapToastOpen, setSwapToastOpen] = useState<boolean>(false)
 
@@ -133,7 +135,13 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const [tradeFloat, setTradeFloat] = React.useState<TradeFloat | undefined>(undefined);
 
     const { pair, setPair, market, setMarket, } = usePairMatch('/trading/lite')
-
+    React.useEffect(() => {
+        if(account.readyState === AccountStatus.ACTIVATED){
+            sendSocketTopic({[ WsTopicType.account ]: true});
+        }else{
+            socketEnd()
+        }
+    }, [account.readyState]);
     useCustomDCEffect(() => {
         if (!market) {
             return
