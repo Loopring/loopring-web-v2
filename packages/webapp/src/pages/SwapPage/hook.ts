@@ -23,7 +23,7 @@ import {
     LoopringMap,
     OrderType,
     SubmitOrderRequestV3,
-    VALID_UNTIL
+    VALID_UNTIL, WsTopicType
 } from 'loopring-sdk';
 import { useAmmMap } from '../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../stores/walletLayer2';
@@ -50,6 +50,7 @@ import { useTranslation } from 'react-i18next';
 import { usePairMatch } from 'hooks/usePairMatch';
 import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
 import { useWalletHook } from '../../services/wallet/useWalletHook';
+import { useSocket } from '../../stores/socket';
 
 export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
 
@@ -114,6 +115,7 @@ export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
 export const useSwapPage = <C extends { [key: string]: any }>() => {
     /*** api prepare ***/
     const { t } = useTranslation('common')
+    const {sendSocketTopic,socketEnd} = useSocket();
 
     const [swapToastOpen, setSwapToastOpen] = useState<boolean>(false)
 
@@ -132,7 +134,13 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const [tradeFloat, setTradeFloat] = React.useState<TradeFloat | undefined>(undefined);
 
     const { pair, setPair, market, setMarket, } = usePairMatch('/trading/lite')
-
+    React.useEffect(() => {
+        if(account.readyState === AccountStatus.ACTIVATED){
+            sendSocketTopic({[ WsTopicType.account ]: true});
+        }else{
+            socketEnd()
+        }
+    }, [account.readyState]);
     useCustomDCEffect(() => {
         if (!market) {
             return
@@ -189,10 +197,18 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         if (marketArray && base && quote && market &&
             LoopringAPI.userAPI && account.readyState === AccountStatus.ACTIVATED
             && ammMap && account?.accountId && account?.apiKey) {
-
-
             const { walletMap } = makeWalletLayer2();
-            setTradeCalcData({ ...tradeCalcData, walletMap } as TradeCalcData<C>);
+            const {amm} = getExistedMarket(marketArray, base, quote)
+            const req: GetMinimumTokenAmtRequest = {
+                accountId: account.accountId,
+                market,
+            }
+            const { amountMap } = await LoopringAPI.userAPI.getMinimumTokenAmt(req, account.apiKey)
+            const baseMinAmtInfo = amountMap[base]
+            const quoteMinAmtInfo = amountMap[quote]
+            const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
+            const feeBips = amm && ammMap[amm]? ammMap[amm].__rawConfig__.feeBips: 0
+            const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
             setTradeData({
                 sell: {
                     belong: tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap[tradeCalcData.coinSell]?.simpleName : undefined,
@@ -203,45 +219,11 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                     balance: walletMap ? walletMap[tradeCalcData.coinBuy as string]?.count : 0
                 },
             } as SwapTradeData<IBData<C>>)
-
-            const {
-                amm
-            } = getExistedMarket(marketArray, base, quote)
-
-            let feeBips = 0
-
-            if (amm && ammMap[amm]) {
-                feeBips = ammMap[amm].__rawConfig__.feeBips
-            }
-
-            const req: GetMinimumTokenAmtRequest = {
-                accountId: account.accountId,
-                market,
-            }
-
-            const { amountMap } = await LoopringAPI.userAPI.getMinimumTokenAmt(req, account.apiKey)
-
-            const baseMinAmtInfo = amountMap[base]
-            const quoteMinAmtInfo = amountMap[quote]
-
-            if (!baseMinAmtInfo || !quoteMinAmtInfo) {
-                return
-            }
-
-            const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
-
-            const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
-
-            setBaseMinAmt(baseMinAmtInfo.userOrderInfo.minAmount)
-            setQuoteMinAmt(quoteMinAmtInfo.userOrderInfo.minAmount)
-
-            // myLog('-------------- amountMap:', amountMap, 'totalFee:', totalFee, ' takerRate:', takerRate)
-
+            setBaseMinAmt(baseMinAmtInfo?.userOrderInfo.minAmount)
+            setQuoteMinAmt(quoteMinAmtInfo?.userOrderInfo.minAmount)
             setFeeBips(totalFee)
             setTakerRate(takerRate.toString())
-
-            setTradeCalcData({ ...tradeCalcData, fee: totalFee } as TradeCalcData<C>)
-
+            setTradeCalcData({ ...tradeCalcData,walletMap, fee: totalFee } as TradeCalcData<C>)
         } else {
 
             // myLog('set fee to 0')
