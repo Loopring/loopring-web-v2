@@ -38,10 +38,10 @@ import { useTranslation } from 'react-i18next';
 import { usePairMatch } from 'hooks/usePairMatch';
 import { VolToNumberWithPrecision } from 'utils/formatter_tool';
 import { useWalletHook } from 'services/wallet/useWalletHook';
-import { getTimestampDaysLater } from 'utils/dt_tools';
-import { DAYS } from 'defs/common_defs';
 import { useSocket } from 'stores/socket';
 import { walletService } from 'services/wallet/walletService';
+import { getTimestampDaysLater } from 'utils/dt_tools';
+import { DAYS } from 'defs/common_defs';
 
 export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
 
@@ -55,9 +55,8 @@ export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
 
     const [isSwapLoading, setIsSwapLoading] = useState(false)
 
-    const { account } = useAccount()
-
-    useCustomDCEffect(() => {
+    const { account,status:accountStatus } = useAccount()
+    const  btnLabelCallback = React.useCallback(()=>{
 
         const label: string | undefined = accountStaticCallBack(btnLabel)
         setSwapBtnI18nKey(label)
@@ -73,8 +72,8 @@ export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
                 const validAmt = (output?.amountBOut && quoteMinAmt
                     && sdk.toBig(output?.amountBOut).gte(sdk.toBig(quoteMinAmt))) ? true : false
                 if (validAmt || quoteMinAmt === undefined ) {
-                        setBtnStatus(TradeBtnStatus.AVAILABLE)
-                        setSwapBtnI18nKey(undefined)
+                    setBtnStatus(TradeBtnStatus.AVAILABLE)
+                    setSwapBtnI18nKey(undefined)
 
                 }else if(tradeData === undefined || tradeData?.buy.tradeValue === undefined){
                     setBtnStatus(TradeBtnStatus.DISABLED)
@@ -88,8 +87,11 @@ export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
 
         }
 
-    }, [isSwapLoading, account.readyState,
+    },[isSwapLoading, account.readyState,
         output, quoteMinAmt, tradeData, setSwapBtnI18nKey])
+    React.useEffect(() => {
+        btnLabelCallback()
+    }, [accountStatus,quoteMinAmt,output])
 
     return {
         btnStatus,
@@ -135,20 +137,10 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             socketEnd()
         }
     }, [account.readyState]);
-    useCustomDCEffect(() => {
-        if (!market) {
-            return
-        }
+
+    const tradeCallback = React.useCallback(()=>{
         resetSwap(undefined, undefined);
-    }, [market]);
-
-    useCustomDCEffect(() => {
-
-        if (!market || !LoopringAPI.userAPI) {
-            return
-        }
-
-        if (account.accountId && account.apiKey) {
+        if (account.accountId && account.apiKey && LoopringAPI.userAPI) {
             LoopringAPI.userAPI.getUserTrades({accountId: account.accountId, market,}, account.apiKey).then((response: {
                 totalNum: any;
                 userTrades: sdk.UserTrade[];
@@ -160,8 +152,11 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         } else {
             setMyTradeArray([])
         }
-        
-    }, [market, account.accountId, account.apiKey]);
+
+    },[market, account.accountId, account.apiKey])
+    React.useEffect(() => {
+        tradeCallback();
+    },[market,accountStatus] );
 
     const [ammPoolSnapshot, setAmmPoolSnapshot] = React.useState<sdk.AmmPoolSnapshot | undefined>(undefined);
 
@@ -364,11 +359,9 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     }, [market, setDepth])
 
-    useCustomDCEffect(async() => {
-        
+    React.useEffect(() => {
         updateDepth()
-
-    }, [market, setDepth])
+    }, [market])
 
     const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined)
         : Promise<{ _tradeCalcData: TradeCalcData<C>, _tradeData: SwapTradeData<IBData<C>> }> => {
