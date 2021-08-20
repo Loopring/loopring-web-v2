@@ -12,24 +12,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { LoopringAPI } from 'api_wrapper';
 import { useTokenMap } from 'stores/token';
 import * as sdk from 'loopring-sdk';
-import {
-    AmmPoolInfoV3,
-    AmmPoolSnapshot,
-    DepthData,
-    dumpError400,
-    getExistedMarket,
-    GetMinimumTokenAmtRequest,
-    GetNextStorageIdRequest,
-    LoopringMap,
-    OrderType,
-    SubmitOrderRequestV3,
-    VALID_UNTIL, WsTopicType
-} from 'loopring-sdk';
-import { useAmmMap } from '../../stores/Amm/AmmMap';
-import { useWalletLayer2 } from '../../stores/walletLayer2';
+
+import { useAmmMap } from 'stores/Amm/AmmMap';
+import { useWalletLayer2 } from 'stores/walletLayer2';
 import { RawDataTradeItem, SwapData, SwapTradeData, SwapType, TradeBtnStatus } from '@loopring-web/component-lib';
-import { useAccount } from '../../stores/account/hook';
-import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
+import { useAccount } from 'stores/account/hook';
+import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import {
     accountStaticCallBack,
     btnLabel,
@@ -41,16 +29,18 @@ import {
     makeWalletLayer2,
     pairDetailBlock,
     pairDetailDone,
-} from '../../hooks/help';
+} from 'hooks/help';
 import * as _ from 'lodash'
 import store from 'stores';
-import { deepClone } from '../../utils/obj_tools';
+import { deepClone } from 'utils/obj_tools';
 import { myError, myLog } from 'utils/log_tools';
 import { useTranslation } from 'react-i18next';
 import { usePairMatch } from 'hooks/usePairMatch';
-import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
-import { useWalletHook } from '../../services/wallet/useWalletHook';
-import { useSocket } from '../../stores/socket';
+import { VolToNumberWithPrecision } from 'utils/formatter_tool';
+import { useWalletHook } from 'services/wallet/useWalletHook';
+import { getTimestampDaysLater } from 'utils/dt_tools';
+import { DAYS } from 'defs/common_defs';
+import { useSocket } from 'stores/socket';
 
 export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
 
@@ -136,7 +126,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const { pair, setPair, market, setMarket, } = usePairMatch('/trading/lite')
     React.useEffect(() => {
         if(account.readyState === AccountStatus.ACTIVATED){
-            sendSocketTopic({[ WsTopicType.account ]: true});
+            sendSocketTopic({[ sdk.WsTopicType.account ]: true});
         }else{
             socketEnd()
         }
@@ -169,7 +159,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         
     }, [market, account.accountId, account.apiKey]);
 
-    const [ammPoolSnapshot, setAmmPoolSnapshot] = React.useState<AmmPoolSnapshot | undefined>(undefined);
+    const [ammPoolSnapshot, setAmmPoolSnapshot] = React.useState<sdk.AmmPoolSnapshot | undefined>(undefined);
 
     const [output, setOutput] = useState<any>()
 
@@ -198,8 +188,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             LoopringAPI.userAPI && account.readyState === AccountStatus.ACTIVATED
             && ammMap && account?.accountId && account?.apiKey) {
             const { walletMap } = makeWalletLayer2();
-            const {amm} = getExistedMarket(marketArray, base, quote)
-            const req: GetMinimumTokenAmtRequest = {
+            const {amm} = sdk.getExistedMarket(marketArray, base, quote)
+            const req: sdk.GetMinimumTokenAmtRequest = {
                 accountId: account.accountId,
                 market,
             }
@@ -269,7 +259,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         const baseToken = tokenMap[sell.belong as string]
         const quoteToken = tokenMap[buy.belong as string]
 
-        const request: GetNextStorageIdRequest = {
+        const request: sdk.GetNextStorageIdRequest = {
             accountId: account.accountId,
             sellTokenId: baseToken.tokenId
         }
@@ -278,7 +268,9 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
         try {
 
-            const request: SubmitOrderRequestV3 = {
+            const tradeChannel = output.exceedDepth ? sdk.TradeChannel.AMM_POOL : sdk.TradeChannel.MIXED
+
+            const request: sdk.SubmitOrderRequestV3 = {
                 exchange: exchangeInfo.exchangeAddress,
                 accountId: account.accountId,
                 storageId: storageId.orderId,
@@ -291,10 +283,11 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                     volume: output.amountBOutSlip.minReceived
                 },
                 allOrNone: false,
-                validUntil: VALID_UNTIL,
+                validUntil: getTimestampDaysLater(DAYS),
                 maxFeeBips: parseInt(feeBips),
                 fillAmountBOrS: false, // amm only false
-                orderType: OrderType.LimitOrder,
+                orderType: sdk.OrderType.TakerOnly,
+                tradeChannel,
                 eddsaSignature: '',
             }
 
@@ -325,7 +318,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
         } catch (reason) {
             setIsSwapLoading(false);
-            dumpError400(reason)
+            sdk.dumpError400(reason)
 
             setSwapAlertText(t('labelSwapFailed'))
             setSwapToastOpen(true)
@@ -356,7 +349,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     }
 
-    const [depth, setDepth] = useState<DepthData>()
+    const [depth, setDepth] = useState<sdk.DepthData>()
 
     const updateDepth = useCallback(async() => {
 
@@ -376,7 +369,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     }, [market, setDepth])
 
-    const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: AmmPoolSnapshot | undefined)
+    const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined)
         : Promise<{ _tradeCalcData: TradeCalcData<C>, _tradeData: SwapTradeData<IBData<C>> }> => {
 
         if (!marketArray || !tokenMap || !marketMap || !ammMap || !tradeCalcData || !market
@@ -522,7 +515,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 market: market2,
                 baseShow,
                 quoteShow,
-            } = getExistedMarket(marketArray, _tradeCalcData.coinSell as string, _tradeCalcData.coinBuy as string);
+            } = sdk.getExistedMarket(marketArray, _tradeCalcData.coinSell as string, _tradeCalcData.coinBuy as string);
 
             if (market2) {
 
