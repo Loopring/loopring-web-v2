@@ -101,15 +101,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     //table myTrade
     const myTradeTableCallback = React.useCallback(()=>{
         if (account.accountId && account.apiKey && LoopringAPI.userAPI) {
-            // getUserTrades(market)?.then(marketTrades=>)
-            // LoopringAPI.userAPI.getUserTrades({accountId: account.accountId, market,}, account.apiKey).then((response: {
-            //     totalNum: any;
-            //     userTrades: sdk.UserTrade[];
-            //     raw_data: any;
-            // }) => {
-            //     let _myTradeArray = makeMarketArray(market, response.userTrades) as RawDataTradeItem[]
-            //     setMyTradeArray(_myTradeArray ? _myTradeArray : [])
-            // })
             getUserTrades(market)?.then((marketTrades) => {
                 let _myTradeArray = makeMarketArray(market, marketTrades) as RawDataTradeItem[]
                 setMyTradeArray(_myTradeArray ? _myTradeArray : [])
@@ -123,7 +114,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         if(accountStatus === SagaStatus.UNSET){
             myTradeTableCallback();
         }
-    },[market,accountStatus] );
+    },[account.readyState,market,accountStatus] );
     //table marketTrade
     const marketTradeTableCallback = React.useCallback(()=>{
         if ( LoopringAPI.exchangeAPI) {
