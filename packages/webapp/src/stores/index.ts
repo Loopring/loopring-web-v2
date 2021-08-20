@@ -26,7 +26,6 @@ import { userRewardsMapSlice } from './userRewards';
 import { localStoreReducer } from './localStore';
 import { myLog } from 'utils/log_tools'
 import { FavoriteMarketStates } from './localStore/favoriteMarket'
-import { confirmationSlice } from './localStore/confirmation'
 import { OnchainHashInfo } from './localStore/onchainHashInfo'
 import { Confirmation } from './localStore/confirmation/interface'
 
