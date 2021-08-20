@@ -6,11 +6,6 @@ import store from '../../stores';
 //CoinKey<any>
 const subject = new Subject<{[key:string ]:loopring_defs.UserBalanceInfo}>();
 
-// export type TickerMap<R> = {
-//     [key in keyof R]:TradeFloat
-// }
-// <R extends {[key:string]:any}>
-  //<R>
 export const walletService = {
     sendAccount: (account:loopring_defs.UserBalanceInfo) => {
         const {idIndex} = store.getState().tokenMap;

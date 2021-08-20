@@ -33,7 +33,7 @@ import {
     OffchainFeeReqType,
     TickerData,
     toBig,
-    TokenInfo
+    TokenInfo, WsTopicType
 } from 'loopring-sdk';
 import { useCustomDCEffect } from '../../../hooks/common/useCustomDCEffect';
 import { useAccount } from '../../../stores/account/hook';
@@ -47,6 +47,7 @@ import { myLog } from "utils/log_tools";
 import { REFRESH_RATE_SLOW } from "defs/common_defs";
 import { useTranslation } from "react-i18next";
 import { useWalletHook } from '../../../services/wallet/useWalletHook';
+import { useSocket } from '../../../stores/socket';
 
 export const useAmmPanel = <C extends { [key: string]: any }>({
     pair,
@@ -58,11 +59,11 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         snapShotData: { tickerData: TickerData | undefined, ammPoolsBalance: AmmPoolSnapshot | undefined } | undefined
         ammType: keyof typeof AmmPanelType
     }) => {
-
-    const [ammToastOpen, setAmmToastOpen] = useState<boolean>(false)
-    const [ammAlertText, setAmmAlertText] = useState<string>()
+    const { t } = useTranslation('common');
+    const {sendSocketTopic,socketEnd} = useSocket();
+    const [ammToastOpen, setAmmToastOpen] = useState<boolean>(false);
+    const [ammAlertText, setAmmAlertText] = useState<string>();
     const { delayAndUpdateWalletLayer2,status: walletLayer2Status  } = useWalletLayer2();
-    const { t } = useTranslation('common')
     const { coinMap, tokenMap } = useTokenMap();
     const { ammMap } = useAmmMap();
     const { account, status: accountStatus } = useAccount();
@@ -83,6 +84,13 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     const [ammDepositBtnI18nKey, setAmmDepositBtnI18nKey] = React.useState<string | undefined>(undefined);
     const [ammWithdrawBtnI18nKey, setAmmWithdrawBtnI18nKey] = React.useState<string | undefined>(undefined);
 
+    React.useEffect(() => {
+        if(account.readyState === AccountStatus.ACTIVATED){
+            sendSocketTopic({[ WsTopicType.account ]: true});
+        }else{
+            socketEnd()
+        }
+    }, [account.readyState]);
     const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
         myLog('initAmmData:', account.accAddress, walletMap, pair)
 

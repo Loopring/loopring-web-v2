@@ -12,25 +12,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { LoopringAPI } from 'api_wrapper';
 import { useTokenMap } from 'stores/token';
 import * as sdk from 'loopring-sdk';
-import {
-    AmmPoolInfoV3,
-    AmmPoolSnapshot,
-    DepthData,
-    dumpError400,
-    getExistedMarket,
-    GetMinimumTokenAmtRequest,
-    GetNextStorageIdRequest,
-    LoopringMap,
-    OrderType,
-    SubmitOrderRequestV3,
-    TradeChannel,
-    VALID_UNTIL
-} from 'loopring-sdk';
-import { useAmmMap } from '../../stores/Amm/AmmMap';
-import { useWalletLayer2 } from '../../stores/walletLayer2';
+
+import { useAmmMap } from 'stores/Amm/AmmMap';
+import { useWalletLayer2 } from 'stores/walletLayer2';
 import { RawDataTradeItem, SwapData, SwapTradeData, SwapType, TradeBtnStatus } from '@loopring-web/component-lib';
-import { useAccount } from '../../stores/account/hook';
-import { useCustomDCEffect } from '../../hooks/common/useCustomDCEffect';
+import { useAccount } from 'stores/account/hook';
+import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import {
     accountStaticCallBack,
     btnLabel,
@@ -42,17 +29,18 @@ import {
     makeWalletLayer2,
     pairDetailBlock,
     pairDetailDone,
-} from '../../hooks/help';
+} from 'hooks/help';
 import * as _ from 'lodash'
 import store from 'stores';
-import { deepClone } from '../../utils/obj_tools';
+import { deepClone } from 'utils/obj_tools';
 import { myError, myLog } from 'utils/log_tools';
 import { useTranslation } from 'react-i18next';
 import { usePairMatch } from 'hooks/usePairMatch';
-import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
-import { useWalletHook } from '../../services/wallet/useWalletHook';
+import { VolToNumberWithPrecision } from 'utils/formatter_tool';
+import { useWalletHook } from 'services/wallet/useWalletHook';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS } from 'defs/common_defs';
+import { useSocket } from 'stores/socket';
 
 export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
 
@@ -117,6 +105,7 @@ export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
 export const useSwapPage = <C extends { [key: string]: any }>() => {
     /*** api prepare ***/
     const { t } = useTranslation('common')
+    const {sendSocketTopic,socketEnd} = useSocket();
 
     const [swapToastOpen, setSwapToastOpen] = useState<boolean>(false)
 
@@ -135,7 +124,13 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const [tradeFloat, setTradeFloat] = React.useState<TradeFloat | undefined>(undefined);
 
     const { pair, setPair, market, setMarket, } = usePairMatch('/trading/lite')
-
+    React.useEffect(() => {
+        if(account.readyState === AccountStatus.ACTIVATED){
+            sendSocketTopic({[ sdk.WsTopicType.account ]: true});
+        }else{
+            socketEnd()
+        }
+    }, [account.readyState]);
     useCustomDCEffect(() => {
         if (!market) {
             return
@@ -164,7 +159,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         
     }, [market, account.accountId, account.apiKey]);
 
-    const [ammPoolSnapshot, setAmmPoolSnapshot] = React.useState<AmmPoolSnapshot | undefined>(undefined);
+    const [ammPoolSnapshot, setAmmPoolSnapshot] = React.useState<sdk.AmmPoolSnapshot | undefined>(undefined);
 
     const [output, setOutput] = useState<any>()
 
@@ -192,10 +187,18 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         if (marketArray && base && quote && market &&
             LoopringAPI.userAPI && account.readyState === AccountStatus.ACTIVATED
             && ammMap && account?.accountId && account?.apiKey) {
-
-
             const { walletMap } = makeWalletLayer2();
-            setTradeCalcData({ ...tradeCalcData, walletMap } as TradeCalcData<C>);
+            const {amm} = sdk.getExistedMarket(marketArray, base, quote)
+            const req: sdk.GetMinimumTokenAmtRequest = {
+                accountId: account.accountId,
+                market,
+            }
+            const { amountMap } = await LoopringAPI.userAPI.getMinimumTokenAmt(req, account.apiKey)
+            const baseMinAmtInfo = amountMap[base]
+            const quoteMinAmtInfo = amountMap[quote]
+            const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
+            const feeBips = amm && ammMap[amm]? ammMap[amm].__rawConfig__.feeBips: 0
+            const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
             setTradeData({
                 sell: {
                     belong: tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap[tradeCalcData.coinSell]?.simpleName : undefined,
@@ -206,45 +209,11 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                     balance: walletMap ? walletMap[tradeCalcData.coinBuy as string]?.count : 0
                 },
             } as SwapTradeData<IBData<C>>)
-
-            const {
-                amm
-            } = getExistedMarket(marketArray, base, quote)
-
-            let feeBips = 0
-
-            if (amm && ammMap[amm]) {
-                feeBips = ammMap[amm].__rawConfig__.feeBips
-            }
-
-            const req: GetMinimumTokenAmtRequest = {
-                accountId: account.accountId,
-                market,
-            }
-
-            const { amountMap } = await LoopringAPI.userAPI.getMinimumTokenAmt(req, account.apiKey)
-
-            const baseMinAmtInfo = amountMap[base]
-            const quoteMinAmtInfo = amountMap[quote]
-
-            if (!baseMinAmtInfo || !quoteMinAmtInfo) {
-                return
-            }
-
-            const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
-
-            const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
-
-            setBaseMinAmt(baseMinAmtInfo.userOrderInfo.minAmount)
-            setQuoteMinAmt(quoteMinAmtInfo.userOrderInfo.minAmount)
-
-            // myLog('-------------- amountMap:', amountMap, 'totalFee:', totalFee, ' takerRate:', takerRate)
-
+            setBaseMinAmt(baseMinAmtInfo?.userOrderInfo.minAmount)
+            setQuoteMinAmt(quoteMinAmtInfo?.userOrderInfo.minAmount)
             setFeeBips(totalFee)
             setTakerRate(takerRate.toString())
-
-            setTradeCalcData({ ...tradeCalcData, fee: totalFee } as TradeCalcData<C>)
-
+            setTradeCalcData({ ...tradeCalcData,walletMap, fee: totalFee } as TradeCalcData<C>)
         } else {
 
             // myLog('set fee to 0')
@@ -290,7 +259,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         const baseToken = tokenMap[sell.belong as string]
         const quoteToken = tokenMap[buy.belong as string]
 
-        const request: GetNextStorageIdRequest = {
+        const request: sdk.GetNextStorageIdRequest = {
             accountId: account.accountId,
             sellTokenId: baseToken.tokenId
         }
@@ -299,9 +268,9 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
         try {
 
-            const tradeChannel = output.exceedDepth ? TradeChannel.AMM_POOL : TradeChannel.MIXED
+            const tradeChannel = output.exceedDepth ? sdk.TradeChannel.AMM_POOL : sdk.TradeChannel.MIXED
 
-            const request: SubmitOrderRequestV3 = {
+            const request: sdk.SubmitOrderRequestV3 = {
                 exchange: exchangeInfo.exchangeAddress,
                 accountId: account.accountId,
                 storageId: storageId.orderId,
@@ -317,7 +286,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 validUntil: getTimestampDaysLater(DAYS),
                 maxFeeBips: parseInt(feeBips),
                 fillAmountBOrS: false, // amm only false
-                orderType: OrderType.TakerOnly,
+                orderType: sdk.OrderType.TakerOnly,
                 tradeChannel,
                 eddsaSignature: '',
             }
@@ -349,7 +318,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
         } catch (reason) {
             setIsSwapLoading(false);
-            dumpError400(reason)
+            sdk.dumpError400(reason)
 
             setSwapAlertText(t('labelSwapFailed'))
             setSwapToastOpen(true)
@@ -380,7 +349,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     }
 
-    const [depth, setDepth] = useState<DepthData>()
+    const [depth, setDepth] = useState<sdk.DepthData>()
 
     const updateDepth = useCallback(async() => {
 
@@ -400,7 +369,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     }, [market, setDepth])
 
-    const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: AmmPoolSnapshot | undefined)
+    const calculateTradeData = async (type: 'sell' | 'buy', _tradeData: SwapTradeData<IBData<C>>, ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined)
         : Promise<{ _tradeCalcData: TradeCalcData<C>, _tradeData: SwapTradeData<IBData<C>> }> => {
 
         if (!marketArray || !tokenMap || !marketMap || !ammMap || !tradeCalcData || !market
@@ -546,7 +515,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 market: market2,
                 baseShow,
                 quoteShow,
-            } = getExistedMarket(marketArray, _tradeCalcData.coinSell as string, _tradeCalcData.coinBuy as string);
+            } = sdk.getExistedMarket(marketArray, _tradeCalcData.coinSell as string, _tradeCalcData.coinBuy as string);
 
             if (market2) {
 
