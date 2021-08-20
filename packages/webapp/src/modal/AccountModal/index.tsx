@@ -37,7 +37,7 @@ import { useTokenMap } from 'stores/token';
 import { myLog } from 'utils/log_tools';
 import { useDeposit } from 'hooks/useractions/useDeposit';
 
-import { walletLayer2Services } from '../../services/account/walletLayer2Services'
+import { accountServices } from '../../services/account/accountServices'
 
 import { LoopringAPI } from 'api_wrapper';
 
@@ -122,13 +122,13 @@ export const ModalAccountInfo = withTranslation('common')(({
 
                     if (!error && accInfo) {
 
-                        const { apiKey } = (await LoopringAPI.userAPI.getUserApiKey({
-                            accountId: accInfo.accountId
-                        }, eddsaKey.sk))
-    
-                        myLog('After connect >>, get apiKey', apiKey)
-            
-                        walletLayer2Services.sendAccountSigned(accInfo.accountId, apiKey, eddsaKey)
+                    const {apiKey} = (await LoopringAPI.userAPI.getUserApiKey({
+                        accountId: accInfo.accountId
+                    }, eddsaKey.sk))
+
+                    myLog('After connect >>, get apiKey', apiKey)
+        
+                    accountServices.sendAccountSigned(accInfo.accountId,apiKey, eddsaKey)
 
                     }
 
@@ -140,7 +140,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             case ActionResultCode.GenEddsaKeyError:
             case ActionResultCode.UpdateAccoutError:
                 myLog('try to sendCheckAccount...')
-                walletLayer2Services.sendCheckAccount(account.accAddress)
+                accountServices.sendCheckAccount(account.accAddress)
                 break
             default:
                 break

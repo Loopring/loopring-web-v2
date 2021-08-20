@@ -1,7 +1,7 @@
 import React from 'react';
 // import { walletLa } from './walletServices';
 import { Commands } from './command';
-import { walletLayer2Services } from './walletLayer2Services';
+import { accountServices } from './accountServices';
 
 export function useAccountHook(
     {
@@ -23,7 +23,7 @@ export function useAccountHook(
     }
 
         : any) {
-    const subject = React.useMemo(() => walletLayer2Services.onSocket(), []);
+    const subject = React.useMemo(() => accountServices.onSocket(), []);
     React.useEffect(() => {
         const subscription = subject.subscribe(({data, status}: { status: keyof typeof Commands, data?: any }) => {
             switch (status) {

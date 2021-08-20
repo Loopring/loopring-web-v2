@@ -34,7 +34,6 @@ export function useInit() {
     const {updateSystem, status: systemStatus, statusUnset: systemStatusUnset} = useSystem();
     const {status:ammActivityMapStatus,statusUnset:ammActivityMapStatusUnset}  = useAmmActivityMap();
     const {status: userRewardsStatus, statusUnset: userRewardsUnset}  = useUserRewards();
-
     const {status: tickerStatus,statusUnset: tickerStatusUnset} = useTicker();
 
     useCustomDCEffect(async () => {
@@ -116,7 +115,6 @@ export function useInit() {
             setState('DONE')
         }
     }, [tokenMapStatus,ammMapStatus])
-
     React.useEffect(() => {
         switch (ammActivityMapStatus) {
             case SagaStatus.ERROR:

@@ -115,11 +115,11 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     React.useEffect(() => {
         const [from, to] = focusRowFrom
         getTicker(from, to);
-        socketSendTicker(from * OnePageSize);
+        socketSendTicker(from * OnePageSize,startIndex);
         return () => {
             socketEnd()
         }
-    }, []);
+    }, [startIndex]);
     React.useEffect(() => {
         switch (tickerStatus) {
             case "ERROR":
@@ -227,15 +227,12 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     //     getTicker(from, to)
     // }, globalSetup.wait), [])
 
-    const socketSendTicker = React.useCallback(debounce((_startIndex: number, pageSize = OnePageSize) => {
-        if(_startIndex !== startIndex)  {
-            // let marketArray: string[] = _marketArrayWithOutRecommend.slice(_startIndex, _startIndex + pageSize);
-            // marketArray = [...recommendMarkets, ...marketArray];
-            // setTickerKeys(marketArray || []);
+    const socketSendTicker = React.useCallback(debounce((_startIndex: number,oldStartIndex, pageSize = OnePageSize) => {
+        if(_startIndex !== oldStartIndex)  {
             //High:
             sendSocketTopic({[ WsTopicType.ticker ]: marketArray});
         }
-    }, globalSetup.wait * 2), [startIndex])
+    }, globalSetup.wait * 2), [])
 
     // const onVisibleRowsChange = React.useCallback(async (startIndex: number) => {
     //     //TODO isBottom and is On prev tickerCall

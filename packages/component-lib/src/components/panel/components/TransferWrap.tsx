@@ -43,11 +43,11 @@ export const TransferWrap = <T extends IBData<I>,
     const [addressError, setAddressError] = React.useState<{ error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined>();
     const [feeIndex, setFeeIndex] = React.useState<any | undefined>(0);
 
-    const debounceAddress = React.useCallback(debounce(({address}: any) => {
+    const debounceAddress = React.useCallback(debounce(({address,handleOnAddressChange}: any) => {
         if (handleOnAddressChange) {
             handleOnAddressChange(address)
         }
-    }, wait), [handleOnAddressChange, debounce])
+    }, wait), [])
     const _handleOnAddressChange = React.useCallback((event) => {
         const address = event.target.value;
         if (handleAddressError) {
@@ -57,8 +57,8 @@ export const TransferWrap = <T extends IBData<I>,
             }
         }
         setAddress(address);
-        debounceAddress({address})
-    }, [debounce, wait, handleAddressError])
+        debounceAddress({address,handleOnAddressChange})
+    }, [handleAddressError,handleOnAddressChange])
 
     const _handleFeeChange = React.useCallback((e: ChangeEvent<HTMLInputElement>) => {
         const index = e.target ? Number(e.target.value) : 0;
