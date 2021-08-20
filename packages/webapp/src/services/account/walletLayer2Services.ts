@@ -93,8 +93,9 @@ export const walletLayer2Services = {
     },
     sendActiveAccountDeposit: () => {
     },
-    sendAccountSigned: (apiKey?: any, eddsaKey?: any) => {
-        const updateInfo = apiKey && eddsaKey ? {
+    sendAccountSigned: (accountId?: number, apiKey?: string, eddsaKey?: any) => {
+        const updateInfo = accountId && apiKey && eddsaKey ? {
+            accountId,
             apiKey,
             eddsaKey,
             publicKey: {
