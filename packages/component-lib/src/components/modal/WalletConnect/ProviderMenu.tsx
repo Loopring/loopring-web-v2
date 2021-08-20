@@ -95,6 +95,7 @@ const BoxStyle = styled(Box)`
 export const ProviderMenu = ({
   t,
   gatewayList,
+  termUrl,
   handleSelect,
   providerName = ConnectProviders.unknown,
 }: ProviderMenuProps & WithTranslation) => {
@@ -136,9 +137,8 @@ export const ProviderMenu = ({
           control={<CheckboxStyled className={isShake ? 'shake' : ''} checked={checkboxValue} onChange={handleCheckboxChange} checkedIcon={<CheckedIcon />} icon={<CheckBoxIcon />}
             color="default" />}
           label={<Trans i18nKey="labelProviderAgree">I have read, understand, and agree to the <Link component={'a'}
-            href={'./'}
-            target={'_parent'}>Terms
-            of Service</Link>.</Trans>} />
+            href={termUrl}
+            target={'_blank'}>Terms of Service</Link>.</Trans>} />
       </BoxStyle>
     </Box>
     <Box display={'flex'} flexDirection={'column'} justifyContent={'center'}

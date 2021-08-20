@@ -54,6 +54,7 @@ export type OrderHistoryTableDetailItem = {
 }
 
 export type OrderHistoryRawDataItem = {
+    market: string;
     side: TradeTypes;
     amount: OrderPair;
     average: number;
@@ -104,6 +105,7 @@ export interface OrderHistoryTableProps {
     showFilter?: boolean;
     getOrderList: (props: Omit<GetOrdersRequest, "accountId">) => Promise<void>;
     showLoading?: boolean;
+    marketArray?: string[];
 }
 
 const getColumnModeOrderHistory = (t: TFunction, lan: 'en_US' | 'zh_CN'): Column<OrderHistoryRow, unknown>[] => [
@@ -357,7 +359,7 @@ const CellStatus = ({row, column, rowIdx}: any) => {
 }
 
 export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryTableProps & WithTranslation) => {
-    const {t, rawData, pagination, showFilter, getOrderList, showLoading} = props
+    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray } = props
     const actionColumns = ['status']
     const { language } = useSettings()
     const defaultArgs: any = {
@@ -373,7 +375,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
 
     const [filterType, setFilterType] = useState(FilterOrderTypes.allTypes)
     const [filterDate, setFilterDate] = useState<DateRange<Date | string>>([null, null])
-    const [filterToken, setFilterToken] = useState<string>('All Tokens')
+    const [filterToken, setFilterToken] = useState<string>('All Pairs')
     const [page, setPage] = useState(1)
     const pageSize = pagination ? pagination.pageSize : 0
 
@@ -389,6 +391,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             actualPage = 1
             setPage(1)
         }
+        console.log(currFilterToken)
         const types = currFilterType === FilterOrderTypes.buy ? 'BUY' : currFilterType === FilterOrderTypes.sell ? 'SELL' : ''
         const start = Number(moment(currFilterDate[ 0 ]).format('x'))
         const end = Number(moment(currFilterDate[ 1 ]).format('x'))
@@ -396,7 +399,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             limit: pageSize,
             offset: (actualPage - 1) * pageSize,
             side: [types] as Side[],
-            market: currFilterToken === 'All Tokens' ? '' : currFilterToken,
+            market: currFilterToken === 'All Pairs' ? '' : currFilterToken,
             start: Number.isNaN(start) ? -1 : start,
             end: Number.isNaN(end) ? -1 : end,
         })
@@ -423,12 +426,12 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
     const handleReset = useCallback(() => {
         setFilterType(FilterOrderTypes.allTypes)
         setFilterDate([null, null])
-        setFilterToken('All Tokens')
+        setFilterToken('All Pairs')
         updateData({
             TableType: TableType.filter,
             currFilterType: FilterOrderTypes.allTypes,
             currFilterDate: [null, null],
-            currFilterToken: 'All Tokens',
+            currFilterToken: 'All Pairs',
         })
     }, [updateData])
 
@@ -436,7 +439,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         {showFilter && (
             <TableFilterStyled>
                 <Filter
-                    originalData={rawData}
+                    marketArray={marketArray}
                     filterDate={filterDate}
                     filterType={filterType}
                     filterToken={filterToken}
