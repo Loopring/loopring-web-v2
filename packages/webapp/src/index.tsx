@@ -26,9 +26,9 @@ import React, { Provider as TProvider } from 'react';
 
 const ProviderApp = React.memo(({children}:{children:JSX.Element})=>{
     const providers:Array<[TProvider<any>, any]> = [
+        provider(Provider as any, {store}),
         provider(LocalizationProvider as any, {dateAdapter: MomentUtils}),
         provider(I18nextProvider as any, {i18n: i18n}),
-        provider(Provider as any, {store}),
     ] as any
     return  <ProviderComposer providers={providers}>{children}</ProviderComposer>
 })

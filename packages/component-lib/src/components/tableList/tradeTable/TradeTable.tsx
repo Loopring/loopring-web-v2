@@ -85,7 +85,7 @@ const TableStyled = styled(Box)`
 
     .rdg{
         height: ${(props: any) => props.currentheight}px;
-        --template-columns: 320px auto 200px 150px !important;
+        --template-columns: 320px auto auto auto !important;
         .rdg-cell.action{
             display: flex;
             justify-content: center;

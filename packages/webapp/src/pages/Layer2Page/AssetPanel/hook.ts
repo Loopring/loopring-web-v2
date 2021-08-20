@@ -5,7 +5,7 @@ import { AccountStatus, EmptyValueTag, globalSetup, SagaStatus } from '@loopring
 import { useWalletLayer2 } from 'stores/walletLayer2'
 import { useAccount } from 'stores/account';
 import { LoopringAPI } from 'api_wrapper'
-import { makeWalletLayer2 } from 'hooks/help'
+import { makeWalletLayer2, volumeToCountAsBigNumber } from 'hooks/help'
 import { AssetType, WsTopicType } from 'loopring-sdk'
 import { volumeToCount } from 'hooks/help'
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
@@ -142,7 +142,7 @@ export const useGetAssets = () => {
             },
             amount: String(Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)).toFixed(6)) || EmptyValueTag,
             available: String(tokenInfo.detail?.count) || EmptyValueTag,
-            locked: String(tokenInfo.detail?.detail.locked) || EmptyValueTag,
+            locked: String(volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail.locked)) || EmptyValueTag,
             smallBalance: tokenPriceUSDT * Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) < 1,
         })
     })
