@@ -51,6 +51,7 @@ import { usePairMatch } from 'hooks/usePairMatch';
 import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
 import { useWalletHook } from '../../services/wallet/useWalletHook';
 import { useSocket } from '../../stores/socket';
+import { walletService } from '../../services/wallet/walletService';
 
 export const useSwapBtnStatusCheck = (output: any, tradeData: any) => {
 
@@ -125,7 +126,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const { ammMap } = useAmmMap()
 
     const { account, status: accountStatus } = useAccount()
-    const { delayAndUpdateWalletLayer2, walletLayer2 } = useWalletLayer2();
+    const {  walletLayer2 } = useWalletLayer2();
 
     const [tradeData, setTradeData] = React.useState<SwapTradeData<IBData<C>> | undefined>(undefined);
     const [tradeCalcData, setTradeCalcData] = React.useState<Partial<TradeCalcData<C>>>({});
@@ -138,6 +139,9 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         if(account.readyState === AccountStatus.ACTIVATED){
             sendSocketTopic({[ WsTopicType.account ]: true});
         }else{
+            socketEnd()
+        }
+        return ()=>{
             socketEnd()
         }
     }, [account.readyState]);
@@ -193,7 +197,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const walletLayer2Callback = React.useCallback(async ()=>{
         const base = tradeData?.sell.belong
         const quote = tradeData?.buy.belong
-
         if (marketArray && base && quote && market &&
             LoopringAPI.userAPI && account.readyState === AccountStatus.ACTIVATED
             && ammMap && account?.accountId && account?.apiKey) {
@@ -243,6 +246,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 },
             } as SwapTradeData<IBData<C>>)
         }
+        setIsSwapLoading(false)
     },[tradeData?.sell.belong, tradeData?.buy.belong, marketArray, ammMap,
         account.readyState, account.apiKey, account.accountId])
     useWalletHook({walletLayer2Callback})
@@ -307,10 +311,10 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             if (!response?.hash) {
                 setSwapAlertText(t('labelSwapFailed'))
                 myError(response?.errInfo)
+                setIsSwapLoading(false);
             } else {
                 setSwapAlertText(t('labelSwapSuccess'))
-                await delayAndUpdateWalletLayer2()
-
+                walletService.sendUserUpdate()
                 setTradeData({
                     ...tradeData,
                     ...{
@@ -319,10 +323,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                     }
                 } as SwapTradeData<IBData<C>>)
             }
-
             setSwapToastOpen(true)
-            setIsSwapLoading(false)
-
         } catch (reason) {
             setIsSwapLoading(false);
             dumpError400(reason)
@@ -433,13 +434,13 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     }
 
-    const throttleSetValue = React.useCallback(_.debounce(async (type, _tradeData, _ammPoolSnapshot) => {
+    const throttleSetValue = React.useCallback(_.debounce(async (type, _tradeData, _ammPoolSnapshot,calculateTradeData) => {
 
         const { _tradeData: td, _tradeCalcData } = await calculateTradeData(type, _tradeData, _ammPoolSnapshot)//.then(()=>{
         setTradeData(td)
         setTradeCalcData({ ..._tradeCalcData, fee: feeBips })
 
-    }, wait * 2), [setTradeData, setTradeCalcData, calculateTradeData, takerRate]);
+    }, wait * 2), []);
 
     const resetSwap = (swapType: SwapType | undefined, _tradeData: SwapTradeData<IBData<C>> | undefined) => {
 
@@ -475,7 +476,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             && type
             && _tradeData
             && (!tradeData || (tradeData[type]?.tradeValue !== _tradeData[type]?.tradeValue))) {
-            throttleSetValue(type, _tradeData, _ammPoolSnapshot)
+            throttleSetValue(type, _tradeData, _ammPoolSnapshot,calculateTradeData)
         } else {
 
             let _tradeFloat: Partial<TradeFloat> = {}

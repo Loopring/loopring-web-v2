@@ -48,6 +48,7 @@ import { REFRESH_RATE_SLOW } from "defs/common_defs";
 import { useTranslation } from "react-i18next";
 import { useWalletHook } from '../../../services/wallet/useWalletHook';
 import { useSocket } from '../../../stores/socket';
+import { walletService } from '../../../services/wallet/walletService';
 
 export const useAmmPanel = <C extends { [key: string]: any }>({
     pair,
@@ -63,7 +64,6 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     const {sendSocketTopic,socketEnd} = useSocket();
     const [ammToastOpen, setAmmToastOpen] = useState<boolean>(false);
     const [ammAlertText, setAmmAlertText] = useState<string>();
-    const { delayAndUpdateWalletLayer2,status: walletLayer2Status  } = useWalletLayer2();
     const { coinMap, tokenMap } = useTokenMap();
     const { ammMap } = useAmmMap();
     const { account, status: accountStatus } = useAccount();
@@ -88,6 +88,9 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         if(account.readyState === AccountStatus.ACTIVATED){
             sendSocketTopic({[ WsTopicType.account ]: true});
         }else{
+            socketEnd()
+        }
+        return ()=>{
             socketEnd()
         }
     }, [account.readyState]);
@@ -167,8 +170,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     const { account: { accountId, apiKey } } = useAccount()
 
     // const { status } = useSelector((state: RootState) => state.account)
-
-    useCustomDCEffect(async () => {
+    const calculateCallback = React.useCallback(async ()=>{
         if (accountStatus === SagaStatus.UNSET) {
 
             const label: string | undefined = accountStaticCallBack(btnLabel)
@@ -210,15 +212,20 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
             setAmmCalcData({ ...ammCalcData, feeJoin, feeExit })
         }
-    }, [setJoinFees, setExitfees, setAmmCalcData, setAmmDepositBtnI18nKey, setAmmWithdrawBtnI18nKey,
+
+    },[
+        setJoinFees, setExitfees, setAmmCalcData, setAmmDepositBtnI18nKey, setAmmWithdrawBtnI18nKey,
         accountStatus, account.readyState, accountId, apiKey,
-        pair.coinBInfo?.simpleName, tokenMap, ammCalcData])
+        pair.coinBInfo?.simpleName, tokenMap, ammCalcData
+    ])
+    React.useEffect( () => {
+        calculateCallback()
+    }, [accountStatus,pair,ammJoinData])
 
     // join
 
     const [joinRequest, setJoinRequest] = useState<{ ammInfo: any, request: JoinAmmPoolRequest }>()
-
-    const handlerJoinInDebounce = React.useCallback(debounce(async (data, type, joinFees, ammPoolSnapshot) => {
+    const handlerJoinInDebounce = React.useCallback(debounce(async (data, type, joinFees, ammPoolSnapshot,tokenMap,account) => {
 
         if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !joinFees || !account?.accAddress) {
             return
@@ -283,11 +290,11 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
             request
         })
 
-    }, globalSetup.wait), [account?.accAddress, tokenMap])
+    }, globalSetup.wait), [])
 
     const handleJoinAmmPoolEvent = React.useCallback(async (data: AmmData<IBData<any>>, type: 'coinA' | 'coinB') => {
-        await handlerJoinInDebounce(data, type, joinFees, ammPoolSnapshot)
-    }, [joinFees, handlerJoinInDebounce, ammPoolSnapshot]);
+        await handlerJoinInDebounce(data, type, joinFees, ammPoolSnapshot,tokenMap,account)
+    }, [joinFees, handlerJoinInDebounce, ammPoolSnapshot,tokenMap,account]);
 
     const addToAmmCalculator = React.useCallback(async function (props
     ) {
@@ -342,24 +349,25 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
             if ((response.joinAmmPoolResult as any)?.resultInfo) {
                 setAmmAlertText(t('labelJoinAmmFailed'))
+                setJoinLoading(false)
             } else {
                 setAmmAlertText(t('labelJoinAmmSuccess'))
-                await delayAndUpdateWalletLayer2()
+                walletService.sendUserUpdate()
             }
 
         } catch (reason) {
 
             dumpError400(reason)
-
+            setJoinLoading(false)
             setAmmAlertText(t('labelJoinAmmFailed'))
         } finally {
             setAmmToastOpen(true)
-            setJoinLoading(false)
+
         }
         if (props.__cache__) {
             makeCache(props.__cache__)
         }
-    }, [joinRequest, ammJoinData, account, delayAndUpdateWalletLayer2, t])
+    }, [joinRequest, ammJoinData, account, t])
 
     const onAmmDepositClickMap = Object.assign(deepClone(btnClickMap), {
         [fnType.ACTIVATED]: [addToAmmCalculator]
@@ -371,7 +379,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     // exit
     const [exitRequest, setExitRequest] = useState<{ rawVal: '', ammInfo: any, request: ExitAmmPoolRequest }>()
 
-    const handleExitInDebounce = React.useCallback(debounce(async (data, type, exitFees, ammPoolSnapshot) => {
+    const handleExitInDebounce = React.useCallback(debounce(async (data, type, exitFees, ammPoolSnapshot,tokenMap,account) => {
 
         const isAtoB = type === 'coinA'
 
@@ -440,11 +448,11 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         })
         // }
 
-    }, globalSetup.wait), [account?.accAddress, tokenMap])
+    }, globalSetup.wait), [])
 
     const handleExitAmmPoolEvent = React.useCallback(async (data: AmmData<IBData<any>>, type: 'coinA' | 'coinB') => {
-        await handleExitInDebounce(data, type, exitFees, ammPoolSnapshot)
-    }, [exitFees, ammPoolSnapshot, handleExitInDebounce]);
+        await handleExitInDebounce(data, type, exitFees, ammPoolSnapshot,tokenMap,account)
+    }, [exitFees, ammPoolSnapshot, handleExitInDebounce,tokenMap,account]);
 
 
     const [isJoinLoading, setJoinLoading] = useState(false)
@@ -465,7 +473,6 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
             setAmmAlertText(t('labelExitAmmFailed'))
             setAmmToastOpen(true)
-
             setExitLoading(false);
             return
         }
@@ -506,18 +513,19 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
                 setAmmAlertText(t('labelExitAmmFailed'))
             } else {
                 setAmmAlertText(t('labelExitAmmSuccess'))
-                await delayAndUpdateWalletLayer2()
+                walletService.sendUserUpdate()
+                // await delayAndUpdateWalletLayer2()
             }
 
         } catch (reason) {
             dumpError400(reason)
+            setExitLoading(false)
             setAmmAlertText(t('labelExitAmmFailed'))
         } finally {
             setAmmToastOpen(true)
-            setExitLoading(false)
         }
 
-    }, [exitRequest, ammExitData, delayAndUpdateWalletLayer2, account, t])
+    }, [exitRequest, ammExitData, account, t])
 
     const removeAmmClickMap = Object.assign(deepClone(btnClickMap), {
         [fnType.ACTIVATED]: [removeAmmCalculator]
@@ -545,12 +553,16 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     const  walletLayer2Callback= React.useCallback(()=>{
         // const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
         // setWalletMap2(walletMap)
+        // debugger
         if(pair && snapShotData){
             const { walletMap } = makeWalletLayer2()
             initAmmData(pair, walletMap)
             myLog('init snapshot:', snapShotData.ammPoolsBalance)
             setAmmPoolSnapShot(snapShotData.ammPoolsBalance)
+            setExitLoading(false)
+            setJoinLoading(false)
         }
+
     },[ pair, snapShotData])
 
     useWalletHook({walletLayer2Callback})
