@@ -105,7 +105,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
                     myLog(response)
 
-                    if (response?.hash === undefined && response?.errInfo) {
+                    if (response?.errorInfo) {
                         // transfer failed
                     } else {
                         // transfer sucess

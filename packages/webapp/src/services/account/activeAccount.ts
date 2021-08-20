@@ -98,10 +98,6 @@ export async function updateAccountFromServer() {
                             web3: connectProvides.usedWeb3, 
                             chainId: system.chainId, 
                             walletType: connectName,
-                            callback: () => {
-                                myLog('---> first sig method failed! try another one!')
-                                return true
-                            }
                         })
 
                         myLog('updateAccountResponse:', updateAccountResponse)

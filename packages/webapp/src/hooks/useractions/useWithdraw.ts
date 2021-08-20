@@ -124,7 +124,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
                 myLog('got response:', response)
 
-                if (response?.hash === undefined && response?.errInfo) {
+                if (response?.errorInfo) {
                     setWithdrawAlertText(t('labelWithdrawFailed'))
                 } else {
                     setWithdrawAlertText(t('labelWithdrawSucess'))
