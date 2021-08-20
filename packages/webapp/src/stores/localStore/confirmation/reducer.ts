@@ -1,9 +1,6 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice'
-
-export interface Confirmation {
-    confirmed: boolean
-}
+import { Confirmation } from './interface';
 
 const initialState: Confirmation = {
     confirmed: false,

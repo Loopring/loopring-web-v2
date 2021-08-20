@@ -111,18 +111,26 @@ export const ModalAccountInfo = withTranslation('common')(({
 
         switch (result.code) {
             case ActionResultCode.NoError:
-                myLog(' after NoError:', result.data.eddsaKey)
+
+                const eddsaKey = result.data.eddsaKey
+                myLog(' after NoError:', eddsaKey)
                 await sleep(REFRESH_RATE)
 
-                if (LoopringAPI.userAPI && result.data.eddsaKey) {
+                if (LoopringAPI.userAPI && LoopringAPI.exchangeAPI && eddsaKey) {
+
+                    const { accInfo, error } = await LoopringAPI.exchangeAPI.getAccount({owner: account.accAddress})
+
+                    if (!error && accInfo) {
 
                     const {apiKey} = (await LoopringAPI.userAPI.getUserApiKey({
-                        accountId: account.accountId
-                    }, result.data.eddsaKey.sk))
+                        accountId: accInfo.accountId
+                    }, eddsaKey.sk))
 
                     myLog('After connect >>, get apiKey', apiKey)
         
-                    accountServices.sendAccountSigned(apiKey, result.data.eddsaKey)
+                    accountServices.sendAccountSigned(accInfo.accountId,apiKey, eddsaKey)
+
+                    }
 
                 }
                 

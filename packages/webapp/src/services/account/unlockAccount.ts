@@ -23,7 +23,7 @@ export async function unlockAccount() {
             }, eddsaKey.sk))
             myLog('After connect >>,unlockAccount: step2 apiKey',apiKey)
 
-            accountServices.sendAccountSigned(apiKey, eddsaKey)
+            accountServices.sendAccountSigned(account.accountId,apiKey, eddsaKey)
         }catch (e){
             accountServices.sendErrorUnlock()
 
