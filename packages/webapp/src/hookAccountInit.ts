@@ -57,12 +57,12 @@ export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
     }, [accountStatus, state, account.readyState]);
     React.useEffect(() => {
         switch (walletLayer1Status) {
-            case "ERROR":
+            case SagaStatus.ERROR:
                 wallet1statusUnset();
                 // setState('ERROR')
                 //TODO: show error at button page show error  some retry dispath again
                 break;
-            case "DONE":
+            case SagaStatus.DONE:
                 wallet1statusUnset();
                 //setWalletMap1(walletLayer1State.walletLayer1);
                 break;
@@ -73,12 +73,12 @@ export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
     }, [walletLayer1Status]);
     React.useEffect(() => {
         switch (walletLayer2Status) {
-            case "ERROR":
+            case SagaStatus.ERROR:
                 wallet2statusUnset();
                 // setState('ERROR')
                 //TODO: show error at button page show error  some retry dispath again
                 break;
-            case "DONE":
+            case SagaStatus.DONE:
                 wallet2statusUnset();
                 //setWalletMap1(walletLayer1State.walletLayer1);
                 break;

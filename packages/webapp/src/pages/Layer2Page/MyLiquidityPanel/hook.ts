@@ -14,6 +14,7 @@ import { useWalletLayer2 } from '../../../stores/walletLayer2';
 import { useUserRewards } from '../../../stores/userRewards';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
 import { SagaStatus } from '@loopring-web/common-resources';
+import { useWalletHook } from '../../../services/wallet/useWalletHook';
 
 
 export const useOverview = <R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>(
@@ -27,11 +28,10 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     // ammActivityViewMap: Array<AmmCardProps<I>>,
     // ammActivityPastViewMap: Array<AmmCardProps<I>>
 } => {
-    const {walletLayer2, status: walletLayer2Status} = useWalletLayer2();
-    const userRewardsMapState = useUserRewards();
+    // const {walletLayer2, status: walletLayer2Status} = useWalletLayer2();
+    const {status: userRewardsStatus,userRewardsMap} = useUserRewards();
     const {marketArray} = useTokenMap();
-    const ammMapState = useAmmMap();
-    const {ammMap} = ammMapState;
+    const {status: ammMapStatus,ammMap} = useAmmMap();
 
     // const [walletMap, setWalletMap] = React.useState<WalletMapExtend<R> | undefined>(undefined);
     const [summaryReward, setSummaryReward] = React.useState<SummaryMyAmm | undefined>(undefined);
@@ -71,7 +71,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
                             ammDetail: ammMap[ ammKey ],
                             walletMap: _walletMap,
                             market: marketKey,
-                            ammUserRewardMap: userRewardsMapState.userRewardsMap
+                            ammUserRewardMap: userRewardsMap
                         }
                     ) as any
                     if (rowData !== undefined) {
@@ -84,7 +84,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
             return _myPoolRow;
         }
         return [];
-    }, [ammMap, userRewardsMapState.userRewardsMap])
+    }, [ammMap, userRewardsMap])
 
     // React.useEffect(() => {
     //     if (walletLayer2) {
@@ -96,56 +96,29 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     //     }
     // }, []);
     // const {walletLayer2, status: walletLayer2Status} = useWalletLayer2();
-
-    React.useEffect(() => {
-        //ammMapState.ammMap or
-        if (walletLayer2Status === SagaStatus.UNSET && ammMapState.ammMap) {
+    const walletLayer2Callback =React.useCallback(()=>{
+        if(ammMap) {
             const _walletMap = walletLayer2DoIt();
-            // //TODO check AmmMap state or ammSnapshot sockets
-            // //userRewardsMapState is an option but  walletLayer2 amd ammMapState.ammMap is required
-            //     if () {
             const _myPoolRow = makeMyPoolRow(_walletMap);
             setMyPoolRow(_myPoolRow)
-            // }
         }
-        // }
-    }, [walletLayer2Status])
+    },[ammMap])
+    useWalletHook({walletLayer2Callback})
+
 
     React.useEffect(() => {
-        if (ammMapState.status === "ERROR") {
-            //TODO: solve error
-            ammMapState.statusUnset();
-        } else if (ammMapState.status === "DONE") {
-            ammMapState.statusUnset();
-            //TODO check AmmMap state or ammSnapshot sockets when websocket open  ammMapState done should not effect myPoolRow
-            if (walletLayer2) {
-                const _walletMap = walletLayer2DoIt();
-                //userRewardsMapState is an option and walletLayer2 is required
-                const _myPoolRow = makeMyPoolRow(_walletMap);
-                setMyPoolRow(_myPoolRow);
-            }
+        if (ammMapStatus === SagaStatus.UNSET) {
+            walletLayer2Callback()
         }
-    }, [ammMapState.status])
+    }, [ammMapStatus])
 
     React.useEffect(() => {
-        if (userRewardsMapState.status === "ERROR") {
-            //TODO: solve error
-            userRewardsMapState.statusUnset();
-        } else if (userRewardsMapState.status === "DONE") {
-            userRewardsMapState.statusUnset();
-            // setAmmUserRewardMap()
-            const summaryReward = makeSummaryMyAmm({userRewardsMap: userRewardsMapState.userRewardsMap});
+        if (userRewardsStatus === SagaStatus.UNSET) {
+            const summaryReward = makeSummaryMyAmm({userRewardsMap});
             setSummaryReward(summaryReward);
-
-            //TODO check AmmMap state or ammSnapshot sockets
-            if (walletLayer2 && ammMapState.ammMap) {  //  ammMapState.ammMap or websocket
-                //userRewardsMapState is an option and walletLayer2 is required
-                const _myPoolRow = makeMyPoolRow(walletLayer2);
-                setMyPoolRow(_myPoolRow);
-            }
-
+            walletLayer2Callback()
         }
-    }, [userRewardsMapState.status])
+    }, [userRewardsStatus])
     return {
         myAmmMarketArray,
         summaryReward,

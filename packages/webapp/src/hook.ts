@@ -11,6 +11,7 @@ import { useAccountInit } from './hookAccountInit';
 import { useAmmActivityMap } from './stores/Amm/AmmActivityMap';
 import { useTicker } from './stores/ticker';
 import { checkAccount } from './services/account/checkAccount';
+import { useUserRewards } from './stores/userRewards';
 // import { statusUnset as accountStatusUnset } from './stores/account';
 
 /**
@@ -31,7 +32,9 @@ export function useInit() {
     const {status: tokenMapStatus, statusUnset: tokenMapStatusUnset}  = useTokenMap();
     const {status: ammMapStatus, statusUnset: ammMapStatusUnset}  = useAmmMap();
     const {updateSystem, status: systemStatus, statusUnset: systemStatusUnset} = useSystem();
-    const {status:ammActivityMapStatus,statusUnset:ammActivityMapStatusUnset}  = useAmmActivityMap()
+    const {status:ammActivityMapStatus,statusUnset:ammActivityMapStatusUnset}  = useAmmActivityMap();
+    const {status: userRewardsStatus, statusUnset: userRewardsUnset}  = useUserRewards();
+
     const {status: tickerStatus,statusUnset: tickerStatusUnset} = useTicker();
 
     useCustomDCEffect(async () => {
@@ -69,17 +72,17 @@ export function useInit() {
     }, [])
     React.useEffect(() => {
         switch (systemStatus) {
-            case "PENDING":
+            case SagaStatus.PENDING:
                 if(state!==SagaStatus.PENDING){
                     setState(SagaStatus.PENDING)
                 }
                 break
-            case "ERROR":
+            case SagaStatus.ERROR:
                 systemStatusUnset();
                 setState('ERROR')
                 //TODO show error at button page show error  some retry dispat again
                 break;
-            case "DONE":
+            case SagaStatus.DONE:
                 systemStatusUnset();
                 break;
             default:
@@ -88,22 +91,22 @@ export function useInit() {
     }, [systemStatus]);
     React.useEffect(() => {
         switch (tokenMapStatus) {
-            case "ERROR":
+            case SagaStatus.ERROR:
                 tokenMapStatusUnset();
                 setState('ERROR')
                 break;
-            case "DONE":
+            case SagaStatus.DONE:
                 tokenMapStatusUnset();
                 break;
             default:
                 break;
         }
         switch (ammMapStatus) {
-            case "ERROR":
+            case SagaStatus.ERROR:
                 ammMapStatusUnset();
                 setState('ERROR')
                 break;
-            case "DONE":
+            case SagaStatus.DONE:
                 ammMapStatusUnset();
                 break;
             default:
@@ -116,12 +119,12 @@ export function useInit() {
 
     React.useEffect(() => {
         switch (ammActivityMapStatus) {
-            case "ERROR":
+            case SagaStatus.ERROR:
                 ammActivityMapStatusUnset();
                 // setState('ERROR')
                 //TODO: show error at button page show error  some retry dispath again
                 break;
-            case "DONE":
+            case SagaStatus.DONE:
                 ammActivityMapStatusUnset();
                 break;
             default:
@@ -130,19 +133,34 @@ export function useInit() {
     }, [ammActivityMapStatus])
     React.useEffect(() => {
         switch (tickerStatus) {
-            case "ERROR":
+            case SagaStatus.ERROR:
                 console.log("ERROR", 'get ticker error,ui');
                 tickerStatusUnset()
                 break;
-            case "PENDING":
+            case SagaStatus.PENDING:
                 break;
-            case "DONE":
+            case SagaStatus.DONE:
                 tickerStatusUnset();
                 break;
             default:
                 break;
         }
     }, [tickerStatus])
+    React.useEffect(() => {
+        switch (userRewardsStatus) {
+            case SagaStatus.ERROR:
+                console.log("ERROR", 'get userRewards');
+                userRewardsUnset()
+                break;
+            case SagaStatus.PENDING:
+                break;
+            case SagaStatus.DONE:
+                userRewardsUnset();
+                break;
+            default:
+                break;
+        }
+    }, [userRewardsStatus])
 
     useAccountInit({state})
     // React.useEffect(() => {
