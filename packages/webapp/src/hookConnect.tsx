@@ -21,7 +21,7 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
         setShouldShow,
         status: accountStatus
     } = useAccount();
-    const { updateWalletLayer2 } = useWalletLayer2()
+    const { updateWalletLayer2, resetLayer2 } = useWalletLayer2()
 
     const {updateSystem, chainId: _chainId } = useSystem();
     const {setShowConnect} = useOpenModals();
@@ -54,8 +54,8 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
         resetAccount({shouldUpdateProvider: true});
         setStateAccount(SagaStatus.PENDING)
         await sleep(REFRESH_RATE)
-        updateWalletLayer2()
-        // resetLayer2()
+        // updateWalletLayer2()
+        resetLayer2()
     }, [resetAccount, setStateAccount]);
 
     const handleError = React.useCallback(({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
