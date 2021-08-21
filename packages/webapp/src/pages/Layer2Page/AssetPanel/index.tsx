@@ -101,30 +101,15 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     let history = useHistory();
 
     const onShowDeposit = useCallback((token?: any) => {
-        showDeposit(true, {
-            tradeData: {
-                balance: '',
-                belong: token
-            },
-        })
+        showDeposit(true)
     }, [showDeposit])
 
     const onShowTransfer = useCallback((token?: any) => {
-        showTransfer(true, {
-            tradeData: {
-                balance: '',
-                belong: token
-            },
-        })
+        showTransfer(true)
     }, [showTransfer])
 
     const onShowWithdraw = useCallback((token?: any) => {
-        showWithdraw(true, {
-            tradeData: {
-                balance: '',
-                belong: token
-            },
-        })
+        showWithdraw(true)
     }, [showWithdraw])
 
     const lpTokenJump = useCallback((token: string, type: LpTokenAction) => {
