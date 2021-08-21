@@ -102,9 +102,14 @@ export async function updateAccountFromServer() {
 
                         myLog('updateAccountResponse:', updateAccountResponse)
 
-                        result.data = {
-                            response: updateAccountResponse,
-                            eddsaKey,
+                        if (updateAccountResponse.errorInfo) {
+                            result.code = ActionResultCode.UpdateAccoutError
+                            result.data = updateAccountResponse.errorInfo
+                        } else {
+                            result.data = {
+                                response: updateAccountResponse,
+                                eddsaKey,
+                            }
                         }
 
                     } catch (reason) {

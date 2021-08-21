@@ -3,8 +3,8 @@ import { TradeTypes, TradeStatus } from '@loopring-web/common-resources'
 import { OrderHistoryRawDataItem } from '@loopring-web/component-lib'
 import { useAccount } from 'stores/account';
 import { LoopringAPI } from 'api_wrapper'
-import { volumeToCount } from 'hooks/help'
-import { GetOrdersRequest } from 'loopring-sdk'
+import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
+import { GetOrdersRequest, Side } from 'loopring-sdk'
 import store from 'stores'
 
 export const useOrderList = () => {
@@ -30,24 +30,31 @@ export const useOrderList = () => {
             if (userOrders && Array.isArray(userOrders.orders)) {
                 setTotalNum(userOrders.totalNum)
                 setOrderOriginalData(userOrders.orders.map(o => {
+                    const { baseAmount, quoteAmount, baseFilled, quoteFilled } = o.volumes
+
                     const marketList = o.market.split('-')
                     // due to AMM case, we cannot use first index
-                    const baseToken = marketList[marketList.length - 2]
-                    const quoteToken = marketList[marketList.length - 1]
-                    const { baseAmount, quoteAmount, baseFilled, quoteFilled } = o.volumes
+                    const side = o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
+                    const isBuy = side === TradeTypes.Buy
+                    const tokenFirst = marketList[marketList.length - 2]
+                    const tokenLast = marketList[marketList.length - 1]
+                    const baseToken = isBuy ? tokenLast : tokenFirst
+                    const quoteToken = isBuy ? tokenFirst : tokenLast
+                    const baseValue = isBuy ? volumeToCountAsBigNumber(quoteToken, quoteAmount)?.times(o.price).toNumber() : volumeToCountAsBigNumber(baseToken, baseAmount)
+                    const quoteValue = isBuy ? volumeToCountAsBigNumber(quoteToken, quoteAmount) : volumeToCountAsBigNumber(baseToken, baseAmount)?.times(o.price).toNumber()
 
                     return ({
                         market: o.market,
                         side: o.side === 'BUY' ? TradeTypes.Buy : TradeTypes.Sell,
+                        orderType: o.orderType,
                         amount: {
                             from: {
                                 key: baseToken,
-                                // value: Number(baseAmount)
-                                value: Number(volumeToCount(baseToken, baseAmount))
+                                value: Number(baseValue)
                             },
                             to: {
                                 key: quoteToken,
-                                value: Number(volumeToCount(quoteToken, quoteAmount))
+                                value: Number(quoteValue)
                             }
                         },
                         // average: Number(o.price),

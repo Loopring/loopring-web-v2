@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AmmActivity, CoinInfo, MyAmmLP, SagaStatus, TradeFloat } from "@loopring-web/common-resources";
 import { useTokenMap } from "stores/token";
 import { useRouteMatch } from 'react-router';
 import moment from 'moment'
 import { AmmDetailStore, useAmmMap } from '../../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../../stores/walletLayer2';
-import { makeTickView, makeWalletLayer2, pairDetailBlock, WalletMapExtend } from '../../../hooks/help';
+import { makeTickView, makeWalletLayer2, pairDetailBlock, volumeToCount, WalletMapExtend } from '../../../hooks/help';
 import { AmmPoolSnapshot, AmmUserRewardMap, getExistedMarket, TickerData, TradingInterval } from 'loopring-sdk';
 import { deepClone } from '../../../utils/obj_tools';
 import { getUserAmmTransaction, makeMyAmmMarketArray } from '../../../hooks/help/marketTable';
@@ -17,6 +17,8 @@ import { useUserRewards } from '../../../stores/userRewards';
 import { LoopringAPI } from 'api_wrapper';
 import { myLog } from '../../../utils/log_tools';
 import { useWalletHook } from '../../../services/wallet/useWalletHook';
+import store from 'stores'
+import { volumeToCountAsBigNumber } from 'hooks/help'
 
 const makeAmmDetailExtendsActivityMap = ({ammMap, coinMap, ammActivityMap, ammKey}: any) => {
 
@@ -43,12 +45,25 @@ export type ammHistoryItem = {
     timeStamp: number;
 }
 
+export type AwardItme = {
+    start: string,
+    end: string,
+    market: string,
+    accountId: number,
+    awardList: {
+        token?: string,
+        volume?: number,
+    }[]
+}
+
 export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>>) => {
     const match: any = useRouteMatch("/liquidity/pools/coinPair/:symbol")
     const {coinMap, tokenMap, marketArray} = useTokenMap();
     const {faitPrices} = useSystem();
     const {ammMap, getAmmMap, status: ammMapStatus} = useAmmMap();
     const {userRewardsMap, status: useUserRewardsStatus} = useUserRewards()
+    const {accountId} = store.getState().account
+    const tokenMapList = tokenMap ? Object.entries(tokenMap) : []
 
     // const {account} = useAccount();
 
@@ -108,6 +123,39 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
         coinBInfo: undefined,
     });
     const [pairHistory, setPairHistory] = React.useState<ammHistoryItem[]>([])
+    const [awardList, setAwardLsit] = React.useState<AwardItme[]>([])
+
+    const getAwardList = React.useCallback(async () => {
+        if (LoopringAPI.ammpoolAPI) {
+            const result = await LoopringAPI.ammpoolAPI.getLiquidityMiningUserHistory({
+                accountId,
+                start: 0,
+                end: Number(moment()),
+            })
+            if (result && result.userMiningInfos) {
+                const formattedList = result.userMiningInfos.map(o => ({
+                    start: moment(o.start).format('YYYY/MM/DD'),
+                    end: moment(o.end).format('YYYY/MM/DD'),
+                    market: o.market,
+                    accountId: o.account_id,
+                    awardList: o.awards.map(item => {
+                        const market = tokenMapList.find(o => o[1].tokenId === item.tokenId)?.[0];
+                        return ({
+                            token: market,
+                            volume: volumeToCount(market as string, item.volume)
+                        })
+                    })
+                }))
+                setAwardLsit(formattedList)
+            }
+        }
+    }, [accountId])
+
+    useEffect(() => {
+        getAwardList()
+    }, [getAwardList])
+
+    console.log({awardList})
 
     const walletLayer2DoIt = React.useCallback((market) => {
         const {walletMap: _walletMap} = makeWalletLayer2();
@@ -268,5 +316,6 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
         ammMarketArray,
         myAmmMarketArray,
         pairHistory,
+        awardList,
     }
 }
