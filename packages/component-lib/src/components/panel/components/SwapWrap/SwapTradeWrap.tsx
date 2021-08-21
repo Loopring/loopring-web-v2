@@ -89,17 +89,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
             }, type: 'buy',to:'button'
         });
     }, [swapData, onChangeEvent])
-    // const _onSlippageChange = React.useCallback((slippage:
-    //     onChangeEvent({
-    //         tradeData: {
-    //             ...ammData, slippage: slippage,
-    //             __cache__: {
-    //                 ...ammData.__cache__,
-    //                 customSlippage: customSlippage
-    //             }
-    //         }, type: 'coinA'
-    //     });
-    // }, [ammData, onChangeEvent]) ;
+    
     if (typeof handleError !== 'function') {
         handleError = ({belong, balance, tradeValue}: any) => {
             if (balance < tradeValue || (tradeValue && !balance)) {
@@ -226,14 +216,14 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
                           height={24}>
 
-                        <Typography component={'p'} variant="body1">{t('swapTolerance')} {swapData.tradeData.slippage}
+                        <Typography component={'p'} variant="body1">{t('swapTolerance')}
                         </Typography>
                         <Typography component={'p'} variant="body1">
                             {tradeCalcData ? <>
                                 <Typography {...bindHover(popupState)}
                                             component={'span'}>
                                     <LinkActionStyle>
-                                        {swapData.tradeData.slippage ? swapData.tradeData.slippage : tradeCalcData.slippage ? tradeCalcData.slippage : 0.5}%
+                                        {tradeData.slippage ? tradeData.slippage : tradeCalcData.slippage ? tradeCalcData.slippage : 0.5}%
                                     </LinkActionStyle>
                                     <PopoverPure
                                         className={'arrow-right'}
@@ -247,7 +237,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                                             ...rest, t,
                                             handleChange: _onSlippageChange,
                                             slippageList: slippageArray,
-                                            slippage: swapData.tradeData.slippage ? swapData.tradeData.slippage : tradeCalcData.slippage ? tradeCalcData.slippage : 0.5
+                                            slippage: tradeData.slippage ? tradeData.slippage : tradeCalcData.slippage ? tradeCalcData.slippage : 0.5
                                         }} />
                                     </PopoverPure>
                                 </Typography>
