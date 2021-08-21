@@ -35,6 +35,12 @@ const StyledChartWrapper = styled(Box)`
     }
 `
 
+const ChartWrapper = styled(Box)`
+    // background: no-repeat center;
+    // background-color: red;
+    // background-image: url('chartsDefaultDark.png');
+`
+
 const StyledBtnGroupWrapper = styled(Box)`
     position: absolute;
     z-index: 10;
@@ -156,9 +162,10 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                         <Typography component="span" color="textSecondary" variant="body1">{t('labelAssetsDistribution')}</Typography>
                         <DoughnutChart data={walletLayer2 ? formattedDoughnutData : []}/>
                 </Box>
-                <Box flex={1} component={'section'} className={'MuiPaper-elevation2'}>
+                <Box display={'flex'} flexDirection={'column'} flex={1} component={'section'} className={'MuiPaper-elevation2'}>
                     <Typography component="span"  color="textSecondary" variant="body1">{t('labelTotalAssets')}</Typography>
-                    <ScaleAreaChart type={ChartType.Trend} data={chartData}/>
+                    <ChartWrapper flex={1} component={'div'} />
+                    {/* <ScaleAreaChart type={ChartType.Trend} data={chartData}/>
                     <StyledBtnGroupWrapper>
                         <ToggleButtonGroup exclusive size="small" {...{
                             ...rest,
@@ -168,7 +175,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                             setValue: setChartPeriod,
                             // onChange: handleChartPeriodChange
                         }} />
-                    </StyledBtnGroupWrapper>
+                    </StyledBtnGroupWrapper> */}
                 </Box>
             </StyledChartWrapper>
             <StylePaper marginTop={2} ref={container} className={'MuiPaper-elevation2'}>
