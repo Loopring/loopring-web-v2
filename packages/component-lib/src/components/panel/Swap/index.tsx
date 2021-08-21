@@ -67,11 +67,9 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
 
 
     React.useEffect(() => {
-        if (rest.tradeData && (rest.tradeData.sell !== swapData.tradeData.sell ||  rest.tradeData.buy !== swapData.tradeData.buy)
-            // && (rest.tradeData.sell.tradeValue !== swapData.tradeData.sell.tradeValue
-            //     || rest.tradeData.buy.tradeValue !== swapData.tradeData.buy.tradeValue)
-        ) {
-            // setSwapData({tradeData: _tradeData, to, type});
+        if (rest.tradeData &&
+            (rest.tradeData.sell !== swapData.tradeData.sell
+                ||  rest.tradeData.buy !== swapData.tradeData.buy)) {
             setSwapData({
                 ...swapData, tradeData: {
                     ...swapData.tradeData,
