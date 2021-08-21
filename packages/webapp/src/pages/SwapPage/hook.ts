@@ -5,9 +5,8 @@ import {
     SagaStatus,
     TradeCalcData,
     TradeFloat,
-    WalletMap
 } from '@loopring-web/common-resources';
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { LoopringAPI } from 'api_wrapper';
 import { useTokenMap } from 'stores/token';
 import * as sdk from 'loopring-sdk';
@@ -26,7 +25,6 @@ import { useAccount } from 'stores/account/hook';
 import {
     accountStaticCallBack,
     btnClickMap, btnLabel,
-    getUserTrades,
     makeCache,
     makeMarketArray,
     makeTickView,
@@ -44,9 +42,8 @@ import { useSocket } from 'stores/socket';
 import { walletService } from 'services/wallet/walletService';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS, REFRESH_RATE } from 'defs/common_defs';
-import { MarketTradeInfo } from 'loopring-sdk/dist/defs/loopring_defs';
+
 import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
-import { useWalletLayer1 } from '../../stores/walletLayer1';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { sleep } from 'loopring-sdk';
 
@@ -67,6 +64,8 @@ const useSwapSocket = ()=>{
 export const useSwapPage = <C extends { [key: string]: any }>() => {
     useSwapSocket()
     /** get store value **/
+    const [debugInfo, setDebugInfo] = React.useState()
+
     const { account, status: accountStatus } = useAccount()
     const { coinMap, tokenMap, marketArray, marketCoins, marketMap, } = useTokenMap()
     const { slippage } = useSettings()
@@ -82,7 +81,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     const [swapBtnStatus, setSwapBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE)
     const [isSwapLoading,setIsSwapLoading] = React.useState(false)
     const [quoteMinAmt,setQuoteMinAmt]  =  React.useState<string>()
-    const [swapToastOpen, setSwapToastOpen] = useState<{ flag:boolean,type:any,label:string }|undefined>(undefined)
+    const [swapToastOpen, setSwapToastOpen] = React.useState<{ flag:boolean,type:any,label:string }|undefined>(undefined)
     const [tradeData, setTradeData] = React.useState<SwapTradeData<IBData<C>> | undefined>(undefined);
     const [tradeCalcData, setTradeCalcData] = React.useState<Partial<TradeCalcData<C>>>({});
     const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
@@ -92,20 +91,20 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     const [ammPoolSnapshot, setAmmPoolSnapshot] = React.useState<sdk.AmmPoolSnapshot | undefined>(undefined);
 
-    const [output, setOutput] = useState<any>()
+    const [output, setOutput] = React.useState<any>()
 
-    const [takerRate, setTakerRate] = useState<string>('0')
+    const [takerRate, setTakerRate] = React.useState<string>('0')
 
-    const [feeBips, setFeeBips] = useState<string>('0')
+    const [feeBips, setFeeBips] = React.useState<string>('0')
 
-    const [depth, setDepth] = useState<sdk.DepthData>()
+    const [depth, setDepth] = React.useState<sdk.DepthData>()
 
     const [amountMap, setAmountMap] = React.useState<any>()
 
     //table myTrade
     const myTradeTableCallback = React.useCallback(()=>{
         if (market && account.accountId && account.apiKey && LoopringAPI.userAPI) {
-            LoopringAPI.userAPI.getUserTrades({accountId: account.accountId, market,}, account.apiKey).then((response: {
+            LoopringAPI.userAPI.getUserTrades({accountId: account.accountId, market: market,}, account.apiKey).then((response: {
                 totalNum: any;
                 userTrades: sdk.UserTrade[];
                 raw_data: any;
@@ -138,7 +137,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         if ( LoopringAPI.exchangeAPI) {
             LoopringAPI.exchangeAPI.getMarketTrades({ market }).then(({marketTrades}:{
                 totalNum: any;
-                marketTrades: MarketTradeInfo[];
+                marketTrades: sdk.MarketTradeInfo[];
                 raw_data: any;
             })=>{
                 const _tradeArray = makeMarketArray(market, marketTrades)
@@ -147,7 +146,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
         } else {
             setTradeArray([])
-
         }
 
     }, [market, setTradeArray, ]);
@@ -205,7 +203,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         }
     }, [account.readyState, accountStatus, isSwapLoading, tradeData?.sell.tradeValue])
 
-    const swapCalculatorCallback = useCallback(async ({ sell, buy, slippage, ...rest }: any) => {
+    const swapCalculatorCallback = React.useCallback(async ({ sell, buy, slippage, ...rest }: any) => {
 
         const { exchangeInfo } = store.getState().system
         setIsSwapLoading(true);
@@ -629,6 +627,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         swapBtnStatus:swapBtnStatus,
         handleSwapPanelEvent,
         updateDepth,
+
+        debugInfo,
     }
 
 }

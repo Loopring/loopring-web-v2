@@ -32,6 +32,8 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
 
         updateDepth,
 
+        debugInfo,
+
     } = useSwapPage();
 
     const onClose = React.useCallback(() => {
@@ -62,8 +64,12 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
                     swapBtnStatus={swapBtnStatus}
                     {...{ handleSwapPanelEvent, ...rest }}
                 />
-            </FixedStyle>
 
+                { process.env.NODE_ENV === 'production' && <>
+                {debugInfo}
+                </>}
+
+            </FixedStyle>
         </Box>
 
     </>
