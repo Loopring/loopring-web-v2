@@ -30,10 +30,10 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     const {setShowDeposit, setShowAccount} = useOpenModals()
     const {t} = useTranslation('common')
 
-    const isNewAccount = account.readyState === AccountStatus.NO_ACCOUNT ? true : false;
+
     // walletMap1: WalletMap<T> | undefined, ShowDeposit: (isShow: boolean, defaultProps?: any) => void
     const handleDeposit = React.useCallback(async (inputValue: any) => {
-        const {accountId, accAddress, readyState, apiKey, connectName, eddsaKey} = account
+        const {readyState, connectName} = account
 
         console.log(LoopringAPI.exchangeAPI, connectProvides.usedWeb3)
 
@@ -134,7 +134,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             await handleDeposit(depositValue as R)
         }
 
-    }, [depositValue, handleDeposit, setShowDeposit, setShowAccount, isNewAccount])
+    }, [depositValue, handleDeposit, setShowDeposit, setShowAccount])
 
     const handlePanelEvent = useCallback(async (data: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {
@@ -142,17 +142,22 @@ export const useDeposit = <R extends IBData<T>, T>(): {
         })
     }, [depositValue, setDepositValue])
 
-    // const depositProps: DepositProps<R, T> =
 
-    return {
-        depositProps: {
+    const depositProps = React.useMemo(() => {
+        const isNewAccount = account.readyState === AccountStatus.NO_ACCOUNT ? true : false;
+        const title = account.readyState === AccountStatus.NO_ACCOUNT ? t('labelCreateLayer2Title') : t('depositTitle');
+        return {
             isNewAccount,
-            title: isNewAccount ? t('labelCreateLayer2Title') : t('depositTitleAndActive'),
+            title,
             tradeData: {belong: undefined} as any,
             coinMap: totalCoinMap as CoinMap<any>,
             walletMap: walletLayer1 as WalletMap<any>,
             depositBtnStatus: TradeBtnStatus.AVAILABLE,
             onDepositClick,
-        },
+        }
+    }, [account.readyState, totalCoinMap, walletLayer1,onDepositClick])
+
+    return {
+        depositProps,
     }
 }
