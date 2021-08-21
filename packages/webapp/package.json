@@ -38,6 +38,7 @@
   "main": "./public/electron.js",
   "homepage": ".",
   "scripts": {
+    "me": "yarn build; yarn deploy_me; sleep 3; yarn dns",
     "deploy_lrc": "sh -ac '. .env.deploy; npx ipfs-deploy -p pinata -d cloudflare -t webapp_dex build'",
     "deploy_me": "sh -ac '. .env.deploy.me; npx ipfs-deploy -t webapp_dex -p pinata -d cloudflare build'",
     "build": "dotenv -e .env.production react-app-rewired build",

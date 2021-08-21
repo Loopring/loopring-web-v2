@@ -140,7 +140,7 @@ export const TransferWrap = <T extends IBData<I>,
                 fullWidth={true}
             >{chargeFeeTokenList.map(({belong, fee}, index) => {
                 // @ts-ignore
-                return <MenuItem key={index} value={index} withNoCheckIcon={'true'}>
+                return <MenuItem key={index} value={index} withnocheckicon={'true'}>
                     <ListItemText primary={<Typography
                         sx={{display: 'inline'}}
                         component="span"

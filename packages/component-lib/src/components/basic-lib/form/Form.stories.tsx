@@ -336,7 +336,7 @@ const Template: Story<any> = withTranslation()((props: any) => {
                     inputProps={{IconComponent: DropDownIcon}}
                     fullWidth={true}
                 >{[{belong: 'eth', fee: '0.1'}, {belong: 'lrc', fee: '1000'}].map(({belong, fee}) => {
-                    return <MenuItem key={belong} value={fee} withNoCheckIcon={'true'}>
+                    return <MenuItem key={belong} value={fee} withnocheckicon={'true'}>
                         <ListItemText primary={<Typography
                             sx={{display: 'inline'}}
                             component="span"

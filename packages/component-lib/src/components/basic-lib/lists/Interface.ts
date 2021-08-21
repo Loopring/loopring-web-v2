@@ -5,7 +5,7 @@ import { ListProps } from 'react-virtualized';
 import { List } from 'immutable';
 
 export type MuiMenuItemProps = muMenuItemProps & {
-    withNoCheckIcon?: 'true' | 'false' | undefined
+    withnocheckicon?: 'true' | 'false' | undefined
 }
 
 export type BasicListItem = {
