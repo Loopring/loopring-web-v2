@@ -283,7 +283,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         setOutput(undefined)
 
         await sleep(REFRESH_RATE)
-        
+
         setIsSwapLoading(false)
 
         if (rest.__cache__) {
@@ -337,8 +337,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         const base = tradeData?.sell.belong
         const quote = tradeData?.buy.belong
 
-        myLog(`enter walletLayer2Callback: base:${base} quote:${quote}`)
-
         if (marketArray && amountMap && base && quote && market &&
             LoopringAPI.userAPI && account.readyState === AccountStatus.ACTIVATED
             && ammMap && account?.accountId && account?.apiKey) {
@@ -348,6 +346,12 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             const realMarket = amm && ammMap[amm] ? amm : market
             
             const quoteMinAmtInfo = amountMap[quote]
+
+            if (!quoteMinAmtInfo) {
+                return
+            }
+
+            myLog(`enter walletLayer2Callback: base:${base} quote:${quote} `, amountMap)
 
             const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
             const feeBips = amm && ammMap[amm] ? ammMap[amm].__rawConfig__.feeBips: 0
