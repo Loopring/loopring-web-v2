@@ -11,7 +11,6 @@ import { networkUpdate } from 'services/account/networkUpdate';
 import { checkAccount } from 'services/account/checkAccount';
 import { REFRESH_RATE } from 'defs/common_defs';
 import { useWalletLayer2 } from 'stores/walletLayer2';
-import { systemForks } from './stores/system/saga';
 
 export function useConnect({state}: { state: keyof typeof SagaStatus }) {
     const {
@@ -55,6 +54,7 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
         resetAccount({shouldUpdateProvider: true});
         setStateAccount(SagaStatus.PENDING)
         await sleep(REFRESH_RATE)
+        // updateWalletLayer2()
         resetLayer2()
     }, [resetAccount, setStateAccount]);
 

@@ -20,7 +20,6 @@ import { useCoinPair } from './hooks';
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
 import { FixedStyle, StylePaper } from 'pages/styled';
 
-
 //******************** page code ************************//
 //  ${({theme}) => theme.border.defaultFrame({c_key: 'blur'})};
 const BoxStyled = styled(Box)`
@@ -57,6 +56,11 @@ const BoxTopStyled = styled(Box)`
 //   border-radius: ${({theme}) => theme.unit}px;
 // ` as typeof Grid
 
+const AwardWrapperStyled = styled(Box)`
+    padding: ${({theme}) => theme.unit * 2}px;
+    background-color: var(--color-box);
+    border-radius: ${({theme}) => theme.unit}px;
+`
 
 const applyProps = (index: number) => {
     return {
@@ -79,6 +83,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         myAmmMarketArray,
         myAmm,
         pairHistory,
+        awardList,
     } = useCoinPair({ammActivityMap});
     const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
     const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
@@ -315,8 +320,22 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             </Typography>
                         </BoxTopStyled>
                     }
+                    <Box></Box>
+                    {awardList.map(o => (
+                        <AwardWrapperStyled display={'flex'} className={'MuiPaper-elevation2'}>
+                            {o.awardList.map(item => (
+                                <Box display={'flex'} alignItems={'center'}>
+                                    <Box width={'80'} height={'75'} marginRight={2}>test</Box>
+                                    <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
+                                        <Typography variant={'h6'} color={'var(--color-text-secondary)'}>Rewards</Typography>
+                                        <Typography variant={'h3'}>{item.volume}{item.token}</Typography>
+                                        <Typography variant={'body2'} color={'var(--color-text-third)'}>{o.start}{o.end}</Typography>
+                                    </Box>
+                                </Box>
+                            ))}
+                        </AwardWrapperStyled>
+                    ))}
                 </FixedStyle>
-
             </Box>
         </Box>
     </>

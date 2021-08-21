@@ -78,7 +78,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs={2}>
+            {/* <Grid item xs={2}>
                 <StyledTextFiled
                     id="table-order-filter-types"
                     select
@@ -93,7 +93,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                     // > {Object.values(FilterTradeTypes).map(type => <MenuItem key={type} value={type}>{t(type)}</MenuItem>)}
                 > {FilterOrderTypeList.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
                 </StyledTextFiled>
-            </Grid>
+            </Grid> */}
             <Grid item>
                 {/* <StyledDatePicker value={filterDate} onChange={(newValue: any) => setFilterDate(newValue)}/> */}
                 <DateRangePicker value={filterDate} onChange={(date: any) => {

@@ -10,7 +10,7 @@ import { SingleOrderHistoryTable } from './SingleOrderHistoryTable'
 import { Filter, FilterOrderTypes } from './components/Filter'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
 import { useSettings } from '../../../stores';
-import { GetOrdersRequest, Side } from 'loopring-sdk'
+import { GetOrdersRequest, Side, OrderType } from 'loopring-sdk'
 
 export type OrderPair = {
     from: {
@@ -25,6 +25,7 @@ export type OrderPair = {
 
 export interface OrderHistoryRow {
     side: keyof typeof TradeTypes
+    orderType: keyof typeof OrderType
     amount: OrderPair
     average: number
     filledAmount: OrderPair
@@ -84,7 +85,7 @@ const TableStyled = styled(Box)`
     flex: 1;
 
     .rdg {
-        --template-columns: 90px 260px auto 120px auto 150px !important;
+        --template-columns: 300px auto auto auto 150px !important;
 
         .rdg-cell.action {
         display: flex;
@@ -109,25 +110,42 @@ export interface OrderHistoryTableProps {
 }
 
 const getColumnModeOrderHistory = (t: TFunction, lan: 'en_US' | 'zh_CN'): Column<OrderHistoryRow, unknown>[] => [
-    {
-        key: 'side',
-        name: t('labelOrderSide'),
-        formatter: ({row, column}) => {
-            const value = row[ column.key ]
-            const renderValue = lan === 'en_US'
-                ? value 
-                : value === 'Buy'
-                    ? '买'
-                    : '卖'
-            return (
-                <div className="rdg-cell-value">
-                    <LastDayPriceChangedCell value={value}>
-                        {renderValue}
-                    </LastDayPriceChangedCell>
-                </div>
-            )
-        },
-    },
+    // {
+    //     key: 'side',
+    //     name: t('labelOrderSide'),
+    //     formatter: ({row, column}) => {
+    //         const value = row[ column.key ]
+    //         const renderValue = lan === 'en_US'
+    //             ? value 
+    //             : value === 'Buy'
+    //                 ? '买'
+    //                 : '卖'
+    //         return (
+    //             <div className="rdg-cell-value">
+    //                 <LastDayPriceChangedCell value={value}>
+    //                     {renderValue}
+    //                 </LastDayPriceChangedCell>
+    //             </div>
+    //         )
+    //     },
+    // },
+    // {
+    //     key: 'type',
+    //     name: t('labelOrderType'),
+    //     formatter: ({row}) => {
+    //         const value = row.orderType as string
+    //         const renderValue = value === 'LIMIT_ORDER'
+    //             ? t('labelOrderTypeLimit') 
+    //             : value === 'AMM_POOL'
+    //                 ? t('labelOrderTypeAmm')
+    //                 : t('labelOrderType')
+    //         return (
+    //             <div className="rdg-cell-value">
+    //                 {renderValue}
+    //             </div>
+    //         )
+    //     },
+    // },
     {
         key: 'amount',
         name: t('labelOrderAmount'),
@@ -332,7 +350,6 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             actualPage = 1
             setPage(1)
         }
-        console.log(currFilterToken)
         const types = currFilterType === FilterOrderTypes.buy ? 'BUY' : currFilterType === FilterOrderTypes.sell ? 'SELL' : ''
         const start = Number(moment(currFilterDate[ 0 ]).format('x'))
         const end = Number(moment(currFilterDate[ 1 ]).format('x'))
