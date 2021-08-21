@@ -40,6 +40,7 @@ export const colorBase = ({theme}: any) => css`
     --color-disable: ${theme.colorBase.disable};
     --color-border: ${theme.colorBase.border};
     --color-border-hover: ${theme.colorBase.borderHover};
+    --color-border-dark: ${theme.colorBase.borderDark};
     --color-divide: ${theme.colorBase.divide};
     --color-pop-bg: ${theme.colorBase.popBg};
     --color-box: ${theme.colorBase.box};

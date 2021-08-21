@@ -29,16 +29,16 @@ const ToggleButtonDefault = withTranslation()(({...rest}: any) => {
         setCValues(value);
     }
     return <Grid container direction={"column"} spacing={2}>
-        <Grid item> <ToggleButtonGroup exclusive {...{...rest, data: toggleData, value, setValue}}/></Grid>
-        <Grid item> <ToggleButtonGroup {...{...rest, ata: toggleData, value: values, setValue: setValues}}/></Grid>
-        <Grid item> <ToggleButtonGroup exclusive {...{
+        <Grid item> <ToggleButtonGroup exclusive size={'large'} {...{...rest, data: toggleData, value, setValue}}/></Grid>
+        <Grid item> <ToggleButtonGroup size={'medium'} {...{...rest, ata: toggleData, value: values, setValue: setValues}}/></Grid>
+        <Grid item> <ToggleButtonGroup size={'small'}  exclusive {...{
             ...rest,
             data: toggleData,
             value,
             setValue,
             size: 'small'
         }}/></Grid>
-        <Grid item> <ToggleButtonGroup exclusive {...{
+        <Grid item> <ToggleButtonGroup size={'small'}   exclusive {...{
             ...rest,
             tgItemJSXs,
             value: cValue,

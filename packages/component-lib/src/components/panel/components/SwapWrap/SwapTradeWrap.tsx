@@ -2,7 +2,6 @@ import { SwapTradeData, TradeBtnStatus } from '../../Interface';
 import {
     CoinInfo,
     CoinMap,
-    // DropDownIcon,
     EmptyValueTag,
     ExchangeIcon,
     IBData,
@@ -40,6 +39,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
     const sellRef = React.useRef();
     const buyRef = React.useRef();
     const {slippage} = useSettings();
+    let tradeData = swapData.tradeData;
     const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number | string>;
     const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
         error: false,
@@ -57,7 +57,6 @@ export const SwapTradeWrap = <T extends IBData<I>,
     const getDisabled = React.useCallback(() => {
         return disabled || tradeCalcData === undefined || tradeCalcData.sellCoinInfoMap === undefined;
     }, [disabled, tradeCalcData]);
-    const tradeData = swapData.tradeData
 
     const handleOnClick = React.useCallback((_event: React.MouseEvent, ref: any) => {
         const focus: 'buy' | 'sell' = ref.current === buyRef.current ? 'buy' : 'sell';
@@ -87,9 +86,20 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     ...swapData.tradeData.__cache__,
                     customSlippage: customSlippage
                 }
-            }
+            }, type: 'buy',to:'button'
         });
     }, [swapData, onChangeEvent])
+    // const _onSlippageChange = React.useCallback((slippage:
+    //     onChangeEvent({
+    //         tradeData: {
+    //             ...ammData, slippage: slippage,
+    //             __cache__: {
+    //                 ...ammData.__cache__,
+    //                 customSlippage: customSlippage
+    //             }
+    //         }, type: 'coinA'
+    //     });
+    // }, [ammData, onChangeEvent]) ;
     if (typeof handleError !== 'function') {
         handleError = ({belong, balance, tradeValue}: any) => {
             if (balance < tradeValue || (tradeValue && !balance)) {
@@ -148,7 +158,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
             return t(`swapBtn`)
         }
 
-    }, [error,t,swapBtnI18nKey])
+    }, [error, t, swapBtnI18nKey])
 
     // console.log('tradeData:', tradeData)
     // console.log('tradeCalcData:', tradeCalcData)
@@ -157,7 +167,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
     const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData
 
     const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${tradeCalcData?.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
-    : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData.BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`
+        : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData.BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`
 
     const priceImpact = (tradeCalcData && tradeCalcData.priceImpact) ? parseFloat(tradeCalcData.priceImpact).toPrecision(3).toString() + ' %' : EmptyValueTag
 
@@ -203,10 +213,10 @@ export const SwapTradeWrap = <T extends IBData<I>,
         </Grid>
         <Grid item>
             <Typography component={'p'} variant="body1" height={24} lineHeight={'24px'}>
-                { showVal && <> {convertStr}
-                    <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
-                        // style={{transform: 'rotate(90deg)'}}
-                    ><ReverseIcon/></IconButtonStyled>
+                {showVal && <> {convertStr}
+                  <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
+                      // style={{transform: 'rotate(90deg)'}}
+                  ><ReverseIcon/></IconButtonStyled>
                 </>}
             </Typography>
         </Grid>
@@ -215,31 +225,33 @@ export const SwapTradeWrap = <T extends IBData<I>,
                 <Grid item paddingBottom={3} sx={{color: 'text.secondary'}}>
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
                           height={24}>
-                        <Typography component={'p'} variant="body1">{t('swapTolerance')}</Typography>
+
+                        <Typography component={'p'} variant="body1">{t('swapTolerance')} {swapData.tradeData.slippage}
+                        </Typography>
                         <Typography component={'p'} variant="body1">
                             {tradeCalcData ? <>
-                              <Typography {...bindHover(popupState)}
-                                                component={'span'}>
-                                  <LinkActionStyle>
-                                      {tradeData.slippage ? tradeData.slippage : tradeCalcData.slippage ? tradeCalcData.slippage : 0.5}%
-                                  </LinkActionStyle>
-                                <PopoverPure
-                                    className={'arrow-right'}
-                                    {...bindPopover(popupState)}
-                                    {...{
-                                        anchorOrigin: {vertical: 'bottom', horizontal: 'right'},
-                                        transformOrigin: {vertical: 'top', horizontal: 'right'}
-                                    }}
-                                >
-                                    <SlippagePanel {...{
-                                        ...rest, t,
-                                        handleChange: _onSlippageChange,
-                                        slippageList: slippageArray,
-                                        slippage: tradeData.slippage ? tradeData.slippage : tradeCalcData.slippage ? tradeCalcData.slippage : 0.5
-                                    }} />
-                                </PopoverPure>
-                              </Typography>
-                            </>: EmptyValueTag
+                                <Typography {...bindHover(popupState)}
+                                            component={'span'}>
+                                    <LinkActionStyle>
+                                        {swapData.tradeData.slippage ? swapData.tradeData.slippage : tradeCalcData.slippage ? tradeCalcData.slippage : 0.5}%
+                                    </LinkActionStyle>
+                                    <PopoverPure
+                                        className={'arrow-right'}
+                                        {...bindPopover(popupState)}
+                                        {...{
+                                            anchorOrigin: {vertical: 'bottom', horizontal: 'right'},
+                                            transformOrigin: {vertical: 'top', horizontal: 'right'}
+                                        }}
+                                    >
+                                        <SlippagePanel {...{
+                                            ...rest, t,
+                                            handleChange: _onSlippageChange,
+                                            slippageList: slippageArray,
+                                            slippage: swapData.tradeData.slippage ? swapData.tradeData.slippage : tradeCalcData.slippage ? tradeCalcData.slippage : 0.5
+                                        }} />
+                                    </PopoverPure>
+                                </Typography>
+                            </> : EmptyValueTag
 
                             }
                         </Typography>

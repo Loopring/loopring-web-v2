@@ -15,7 +15,7 @@ const DEFAULT_TRANSFORM_ORIGIN: PopoverOrigin = {
     vertical: 'top',
     horizontal: 'left',
 }
-const POPOVER_TOP = 8;
+// const POPOVER_TOP = 8;
 
 export const Popover: React.FC<PopoverWrapProps> = ({
                                                         type,
@@ -27,13 +27,13 @@ export const Popover: React.FC<PopoverWrapProps> = ({
                                                         anchorOrigin = DEFAULT_ANCHOR_ORIGIN,
                                                         transformOrigin = DEFAULT_TRANSFORM_ORIGIN,
                                                         // popoverTop = POPOVER_TOP,
-                                                        arrowHorizon = {
-                                                            left: 10,
-                                                        },
+                                                        // arrowHorizon = {
+                                                        //     left: 10,
+                                                        // },
                                                         handleStateChange
                                                     }) => {
-    const arrowLeft = arrowHorizon?.left
-    const arrowRight = arrowHorizon?.right
+    // const arrowLeft = arrowHorizon?.left
+    // const arrowRight = arrowHorizon?.right
     const popupState = usePopupState({variant: 'popover', popupId})
     const {isOpen} = popupState
 

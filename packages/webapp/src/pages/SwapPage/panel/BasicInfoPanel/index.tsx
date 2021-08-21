@@ -34,7 +34,7 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
                    ...rest, t, tradeFloat
                }}></TradeTitle>
                <ToggleButtonGroup exclusive {...{ ...rest, t, tgItemJSXs, value: chartType }}
-                                handleChange={handleChange} />
+                                onChange={handleChange} size={'large'} />
            </Box>  
         </Grid>
         <Box flex={1} alignItems={'stretch'} flexDirection="row" marginTop={3}  position={'relative'} >
@@ -48,23 +48,9 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
                     showXAxis
                 />
             </Box>
-            {/* {chartType === ChartType.Trend && (
-                <Box height={24} display={'flex'} justifyContent={'flex-end'} position={'absolute'} right={0} bottom={0}>
-                    <ToggleButtonGroup exclusive {...{
-                        ...rest, t, tgItemJSXs: tgItemJSXsPriceChart,
-                        value: chartUnit, size: 'small'
-                    }}
-                        handleChange={handleChartUnitChange} />
-                </Box>
-            )} */}
+
         </Box>
-        {/* <Grid item xs={12} height={24} display={'flex'} justifyContent={'flex-end'}>
-            <ToggleButtonGroup exclusive {...{
-                ...rest, t, tgItemJSXs: tgItemJSXsPriceChart,
-                value: chartUnit, size: 'small'
-            }}
-                handleChange={handleChartUnitChange} />
-        </Grid> */}
+
     </>
 
 };
