@@ -4,6 +4,7 @@ import { TradeTypes } from '@loopring-web/common-resources';
 import { LoopringAPI, } from 'api_wrapper';
 import { AmmRecordRow, AmmTradeType,RawDataTradeItem } from '@loopring-web/component-lib';
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
+import { debug } from 'console';
 
 export const getUserTrades = (market: string) => {
     if (!LoopringAPI.userAPI) {
@@ -22,12 +23,11 @@ export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[
 
     let tradeArray: Array<Partial<RawDataTradeItem>> = []
 
+    const {tokenMap} = store.getState().tokenMap
+
     marketTrades.forEach((item: sdk.MarketTradeInfo) => {
         try {
             const {base, quote} = sdk.getBaseQuote(item.market)
-            const {forex} = store.getState().system
-            const {currency} = store.getState().settings
-            const {tokenMap} = store.getState().tokenMap
             if (tokenMap) {
                 // const baseToken = tokenMap[ base as string ]
                 // const quoteToken = tokenMap[ quote as string ]
