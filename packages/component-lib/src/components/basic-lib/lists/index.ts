@@ -6,8 +6,8 @@ import React from 'react';
 //backgroundColor: ${theme.colorBase.primaryLight};
 // background-color: ${theme.colorBase.background().hover};
 export const MenuItem = styled(MuiMenuItem)<MuiMenuItemProps>`
-  ${({withNoCheckIcon}) => {
-    return withNoCheckIcon === 'true' ? `        
+  ${({withnocheckicon}) => {
+    return withnocheckicon === 'true' ? `        
         &.Mui-selected, &.Mui-selected.Mui-focusVisible {
             color: var(--color-text-primary);
             &:after{
