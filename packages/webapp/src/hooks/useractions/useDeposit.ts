@@ -3,21 +3,21 @@ import React, { useCallback } from 'react';
 import { AccountStep, DepositProps, SwitchData, TradeBtnStatus, useOpenModals } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, ConnectProviders, IBData, WalletMap } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
+import { dumpError400, GetAllowancesRequest } from 'loopring-sdk';
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
 import { useSystem } from 'stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { LoopringAPI } from 'api_wrapper';
-import { dumpError400, GetAllowancesRequest } from 'loopring-sdk';
 import { myLog } from 'utils/log_tools';
 import { useWalletLayer1 } from 'stores/walletLayer1';
 import { useTranslation } from 'react-i18next';
 import { ActionResult, ActionResultCode } from 'defs/common_defs';
 
-export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false): {
+export const useDeposit = <R extends IBData<T>, T>(): {
     depositProps: DepositProps<R, T>
 } => {
-    const {tokenMap, totalCoinMap, } = useTokenMap()
+    const {tokenMap, totalCoinMap,} = useTokenMap()
     const {account} = useAccount()
     const {exchangeInfo, chainId, gasPrice} = useSystem()
     const [depositValue, setDepositValue] = React.useState<IBData<T>>({
@@ -26,44 +26,44 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
         balance: 0
     } as IBData<unknown>)
 
-    const { walletLayer1 } = useWalletLayer1()
-    const {setShowDeposit, setShowAccount}  = useOpenModals()
+    const {walletLayer1} = useWalletLayer1()
+    const {setShowDeposit, setShowAccount} = useOpenModals()
+    const {t} = useTranslation('common')
 
-    const { t } = useTranslation('common')
-
+    const isNewAccount = account.readyState === AccountStatus.NO_ACCOUNT ? true : false;
     // walletMap1: WalletMap<T> | undefined, ShowDeposit: (isShow: boolean, defaultProps?: any) => void
     const handleDeposit = React.useCallback(async (inputValue: any) => {
         const {accountId, accAddress, readyState, apiKey, connectName, eddsaKey} = account
 
         console.log(LoopringAPI.exchangeAPI, connectProvides.usedWeb3)
 
-        let result: ActionResult = { code: ActionResultCode.NoError }
+        let result: ActionResult = {code: ActionResultCode.NoError}
 
         if ((readyState !== AccountStatus.UN_CONNECT
             && inputValue.tradeValue)
             && tokenMap && exchangeInfo?.exchangeAddress
             && connectProvides.usedWeb3 && LoopringAPI.exchangeAPI) {
             try {
-                const tokenInfo = tokenMap[inputValue.belong]
+                const tokenInfo = tokenMap[ inputValue.belong ]
                 const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
                 let nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
 
                 const fee = 0
-                
+
                 const isMetaMask = connectName === ConnectProviders.MetaMask
 
                 const realGasPrice = gasPrice ?? 30
 
                 if (tokenInfo.symbol.toUpperCase() !== 'ETH') {
 
-                    const req: GetAllowancesRequest = { owner: account.accAddress, token: tokenInfo.symbol}
+                    const req: GetAllowancesRequest = {owner: account.accAddress, token: tokenInfo.symbol}
 
-                    const { tokenAllowances } = await LoopringAPI.exchangeAPI.getAllowances(req, tokenMap)
-    
-                    const allowance = sdk.toBig(tokenAllowances[tokenInfo.symbol])
-    
+                    const {tokenAllowances} = await LoopringAPI.exchangeAPI.getAllowances(req, tokenMap)
+
+                    const allowance = sdk.toBig(tokenAllowances[ tokenInfo.symbol ])
+
                     const curValInWei = sdk.toBig(inputValue.tradeValue).times('1e' + tokenInfo.decimals)
-    
+
                     if (curValInWei.gt(allowance)) {
 
                         myLog(curValInWei, allowance, ' need approveMax!')
@@ -74,10 +74,10 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
                             await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
                                 exchangeInfo?.depositAddress, realGasPrice, gasLimit, chainId === 'unknown' ? undefined : chainId, nonce, isMetaMask)
                             nonce += 1
-                        } catch(reason) {
+                        } catch (reason) {
                             result.code = ActionResultCode.ApproveFailed
                             result.data = reason
-                            
+
                             setShowAccount({isShow: true, step: AccountStep.TokenApproveFailed})
                             return
                         }
@@ -126,10 +126,9 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
         return result
 
     }, [account, tokenMap, chainId, exchangeInfo, gasPrice, LoopringAPI.exchangeAPI, setShowAccount])
-
-    const onDepositClick = useCallback(async(depositValue) => {
+    const onDepositClick = useCallback(async (depositValue) => {
         myLog('onDepositClick depositValue:', depositValue)
-        setShowDeposit({isShow:false})
+        setShowDeposit({isShow: false})
 
         if (depositValue && depositValue.belong) {
             await handleDeposit(depositValue as R)
@@ -137,25 +136,23 @@ export const useDeposit = <R extends IBData<T>, T>(isNewAccount: boolean = false
 
     }, [depositValue, handleDeposit, setShowDeposit, setShowAccount, isNewAccount])
 
-    const handlePanelEvent = useCallback(async(data: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
+    const handlePanelEvent = useCallback(async (data: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {
             res();
         })
     }, [depositValue, setDepositValue])
 
-    const title = isNewAccount ? t('labelCreateLayer2Title') : t('depositTitleAndActive')
-
-    const depositProps: DepositProps<R, T> = {
-        isNewAccount,
-        title,
-        tradeData: {belong: undefined} as any,
-        coinMap: totalCoinMap as CoinMap<any>,
-        walletMap: walletLayer1 as WalletMap<any>,
-        depositBtnStatus: TradeBtnStatus.AVAILABLE,
-        onDepositClick,
-    }
+    // const depositProps: DepositProps<R, T> =
 
     return {
-        depositProps: depositProps,
+        depositProps: {
+            isNewAccount,
+            title: isNewAccount ? t('labelCreateLayer2Title') : t('depositTitleAndActive'),
+            tradeData: {belong: undefined} as any,
+            coinMap: totalCoinMap as CoinMap<any>,
+            walletMap: walletLayer1 as WalletMap<any>,
+            depositBtnStatus: TradeBtnStatus.AVAILABLE,
+            onDepositClick,
+        },
     }
 }

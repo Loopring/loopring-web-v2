@@ -229,7 +229,7 @@ const WrapDepositPanel = (rest: any) => {
     dispatch(setShowDeposit({isShow: false}));
     const {t} = useTranslation('common');
     return <> <Grid item sm={6}>
-        <DepositPanel  {...{...rest, ...depositProps,...{isNewAccount:true}}} > </DepositPanel>
+        <DepositPanel  {...{...rest, ...depositProps,...{v:true}}} > </DepositPanel>
     </Grid>
         <Grid item sm={6}>
             <DepositPanel  {...{

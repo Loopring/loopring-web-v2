@@ -60,12 +60,8 @@ export const ModalAccountInfo = withTranslation('common')(({
         resetAccount,
     } = useAccount();
 
-    const isNewAccount = true
-
-    const {depositProps} = useDeposit(isNewAccount)
-
+    const {depositProps} = useDeposit()
     const {modals: {isShowAccount}, setShowConnect, setShowAccount,} = useOpenModals()
-
     const [openQRCode, setOpenQRCode] = useState(false)
     const addressShort = getShortAddr(account.accAddress)
 
