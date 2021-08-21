@@ -82,37 +82,19 @@ export const SlippagePanel = ({
     const [value, setValue] = React.useState(slippage);
     const _handleChange =(event: React.MouseEvent<HTMLElement>, newValue: number | string) => {
         if (event.target !== inputEle.current && newValue!== undefined) {
-             console.log('_handleChange',newValue)
-            // @ts-ignore
             if(newValue && newValue !== 'N' ){
-                // @ts-ignore
-                // newValue = event.currentTarget?.value
                 setValue(newValue)
                 handleChange(newValue, customSlippage !== 0.1 && customSlippage !== 0.5 && customSlippage !== 1 ? customSlippage : undefined)
             }
-        // else if(customSlippage & Number(customSlippage)>0){
-        //         console.log('customSlippage',customSlippage)
-        //         setValue('N')
-        //         handleChange(customSlippage, customSlippage !== 0.1 && customSlippage !== 0.5 && customSlippage !== 1 ? customSlippage : undefined)
-        //     }
-
         } else if(event.target === inputEle.current){
             var _value = inputEle.current?.value??''
             _value = _value.replace(suffix,'')
-            // if(_value&&_value !== 'N'){
-            //     // setValue('N')
-            //     // handleChange(customSlippage, customSlippage !== 0.1 && customSlippage !== 0.5 && customSlippage !== 1 ? customSlippage : undefined)
-            // }
             setCustomSlippage(_value)
-            console.log('_handleChange event.target !== inputEle.current',_value)
         }else{
-            console.log('_handleChange else',newValue,value,inputEle.current?.value)
-            // newValue = value
         }
 
 
     }
-     console.log('customSlippage',customSlippage)
 
     const toggleData =React.useMemo(()=> slippageList.reduce((pre, value, index) => {
         let item: TGItemJSXInterface;
