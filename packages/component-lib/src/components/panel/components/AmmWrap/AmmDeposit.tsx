@@ -52,7 +52,6 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
     const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined' ? isStob : true);
 
     const _onSwitchStob = React.useCallback((_event: any) => {
-        console.log('...', _event)
         setIsStoB(!_isStoB)
         if (typeof switchStobEvent === 'function') {
             switchStobEvent(!_isStoB)
@@ -114,7 +113,8 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
         popupState.close();
         onChangeEvent({
             tradeData: {
-                ...ammData, slippage: slippage,
+                ...ammData,
+                slippage: slippage,
                 __cache__: {
                     ...ammData.__cache__,
                     customSlippage: customSlippage

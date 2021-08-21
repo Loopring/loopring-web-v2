@@ -150,17 +150,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                 <Box display={'flex'} flexDirection={'column'} flex={1} component={'section'} className={'MuiPaper-elevation2'}>
                     <Typography component="span"  color="textSecondary" variant="body1">{t('labelTotalAssets')}</Typography>
                     <ChartWrapper flex={1} component={'div'} />
-                    {/* <ScaleAreaChart type={ChartType.Trend} data={chartData}/>
-                    <StyledBtnGroupWrapper>
-                        <ToggleButtonGroup exclusive size="small" {...{
-                            ...rest,
-                            t,
-                            data: toggleData,
-                            value: chartPeriod,
-                            setValue: setChartPeriod,
-                            // onChange: handleChartPeriodChange
-                        }} />
-                    </StyledBtnGroupWrapper> */}
+
                 </Box>
             </StyledChartWrapper>
             <StylePaper marginTop={2} ref={container} className={'MuiPaper-elevation2'}>

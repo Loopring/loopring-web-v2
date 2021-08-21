@@ -106,6 +106,7 @@ const children = <Button style={{margin: 12}} variant="outlined">btnContent</But
 
 const popoverContent = 'Because the pool price changes dynamically, the price you see when placing an order may be inconsistent with the final transaction price.'
 
+// @ts-ignore
 export const PopoverStory = Template.bind({})
 PopoverStory.args = {
     type: PopoverType.click,

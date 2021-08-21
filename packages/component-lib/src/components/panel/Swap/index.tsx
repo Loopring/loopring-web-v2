@@ -3,10 +3,10 @@ import { withTranslation, WithTranslation } from 'react-i18next';
 import React from 'react';
 import { Grid } from '@material-ui/core';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
-import {  IBData, TradeCalcData } from '@loopring-web/common-resources';
+import { IBData, TradeCalcData } from '@loopring-web/common-resources';
 // import { useDeepCompareEffect } from 'react-use';
 // import clockLoading from '@loopring-web/common-resources/assets/svg/clock-loading.svg';
-import {  SwapMenuList, SwapTradeWrap,SwapData } from '../components';
+import { SwapData, SwapMenuList, SwapTradeWrap } from '../components';
 import { CountDownIcon } from '../components/tool/Refresh';
 
 export const SwapPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>,
@@ -17,7 +17,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                                       swapBtnStatus,
                                       tokenSellProps,
                                       tokenBuyProps,
-                                      handleSwapPanelEvent, 
+                                      handleSwapPanelEvent,
                                       handleError,
                                       onSwapClick,
                                       onRefreshData,
@@ -67,11 +67,18 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
 
 
     React.useEffect(() => {
-        if (rest.tradeData && rest.tradeData !== swapData.tradeData
+        if (rest.tradeData && (rest.tradeData.sell !== swapData.tradeData.sell ||  rest.tradeData.buy !== swapData.tradeData.buy)
             // && (rest.tradeData.sell.tradeValue !== swapData.tradeData.sell.tradeValue
             //     || rest.tradeData.buy.tradeValue !== swapData.tradeData.buy.tradeValue)
         ) {
-            setSwapData({...swapData, tradeData: rest.tradeData});
+            // setSwapData({tradeData: _tradeData, to, type});
+            setSwapData({
+                ...swapData, tradeData: {
+                    ...swapData.tradeData,
+                    sell: rest.tradeData.sell,
+                    buy: rest.tradeData.buy
+                }
+            });
         }
     }, [rest.tradeData, swapData])
     const onChangeEvent = React.useCallback(async (_index: 0 | 1, {
@@ -121,7 +128,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
         panelList: [
             {
                 key: "trade",
-                element: React.useMemo(  () => <SwapTradeWrap<T, I, TCD> key={"trade"} {...{
+                element: React.useMemo(() => <SwapTradeWrap<T, I, TCD> key={"trade"} {...{
                     ...rest,
                     swapData,
                     tradeCalcData,
@@ -132,7 +139,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                     tokenSellProps,
                     tokenBuyProps,
                     handleError,
-                }}/>,[ rest,
+                }}/>, [rest,
                     swapData,
                     tradeCalcData,
                     onSwapClick,
@@ -142,24 +149,24 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                     tokenSellProps,
                     tokenBuyProps,
                     handleError]),
-                toolBarItem: React.useMemo(  () =><Grid container justifyContent={'flex-end'} >
+                toolBarItem: React.useMemo(() => <Grid container justifyContent={'flex-end'}>
                     <CountDownIcon onRefreshData={onRefreshData}/>
-                </Grid> ,[onRefreshData])
+                </Grid>, [onRefreshData])
             },
             {
                 key: "tradeMenuList",
-                element:React.useMemo(  () =><SwapMenuList<T, I, TCD> key={"tradeMenuList"} {...{
+                element: React.useMemo(() => <SwapMenuList<T, I, TCD> key={"tradeMenuList"} {...{
                     ...rest,
                     onChangeEvent,
                     tradeCalcData,
                     swapData
-                }}/>,[onChangeEvent,tradeCalcData,swapData,rest]),
+                }}/>, [onChangeEvent, tradeCalcData, swapData, rest]),
                 toolBarItem: undefined
             },
         ],
 
     }
-    return <SwitchPanel {...{...rest, ...props, size:'large'}} />
+    return <SwitchPanel {...{...rest, ...props, size: 'large'}} />
 }) as <T extends IBData<I>,
     I,
     TCD extends TradeCalcData<I>> (props: SwapProps<T, I, TCD> & React.RefAttributes<any>) => JSX.Element;

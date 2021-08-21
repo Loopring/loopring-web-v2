@@ -6,6 +6,7 @@ import styled from '@emotion/styled';
 import { Box } from '@material-ui/core';
 import { WithTranslation } from 'react-i18next';
 import { useFocusRef } from '../../../basic-lib/form/hooks';
+import { useSettings } from '../../../../stores';
 
 const Styled = styled(Box)`
   .MuiToggleButtonGroup-root {
@@ -15,10 +16,16 @@ const Styled = styled(Box)`
     display: flex;
     flex: 1;
     flex-wrap: wrap;
+    
     justify-content: flex-start;
     align-content: space-between;
   }
+  //background: var(--color-global-bg);
 `
+// ${({ theme }) => theme.border.defaultFrame({ c_key: 'var(--color-box-secondary)',d_R:1/2, d_W: 1 })};
+
+// ${({ theme }) => theme.border.defaultFrame({ c_key: 'blur', d_W: 1 })};
+
 const InputStyled = styled(CurrencyInput)`
   text-align: right;
   color: var(--color-text-primary);
@@ -64,30 +71,63 @@ export const SlippagePanel = ({
     slippage: number | string, wait?: number,
     handleChange: (newValue: any, customValue: any) => void
 }) => {
-    const [cValue, setcValue] = React.useState<number | undefined>(0.3);
+    let {slippage:_slippage} = useSettings()
+    const [customSlippage, setCustomSlippage] = React.useState<string|number | 'N'>(_slippage);
+    // const [cValue, setCValue] = React.useState<number | 'N'>(_slippage);
     const inputEle = useFocusRef({
         shouldFocusOn: false,
-        value: cValue,
+        value: _slippage,
     });
-    const handleContChange = React.useCallback((value: any, _name: any) => {
-            setcValue(value);
+    const suffix = '%';
+    const [value, setValue] = React.useState(slippage);
+    const _handleChange =(event: React.MouseEvent<HTMLElement>, newValue: number | string) => {
+        if (event.target !== inputEle.current && newValue!== undefined) {
+             console.log('_handleChange',newValue)
+            // @ts-ignore
+            if(newValue && newValue !== 'N' ){
+                // @ts-ignore
+                // newValue = event.currentTarget?.value
+                setValue(newValue)
+                handleChange(newValue, customSlippage !== 0.1 && customSlippage !== 0.5 && customSlippage !== 1 ? customSlippage : undefined)
+            }
+        // else if(customSlippage & Number(customSlippage)>0){
+        //         console.log('customSlippage',customSlippage)
+        //         setValue('N')
+        //         handleChange(customSlippage, customSlippage !== 0.1 && customSlippage !== 0.5 && customSlippage !== 1 ? customSlippage : undefined)
+        //     }
+
+        } else if(event.target === inputEle.current){
+            var _value = inputEle.current?.value??''
+            _value = _value.replace(suffix,'')
+            // if(_value&&_value !== 'N'){
+            //     // setValue('N')
+            //     // handleChange(customSlippage, customSlippage !== 0.1 && customSlippage !== 0.5 && customSlippage !== 1 ? customSlippage : undefined)
+            // }
+            setCustomSlippage(_value)
+            console.log('_handleChange event.target !== inputEle.current',_value)
+        }else{
+            console.log('_handleChange else',newValue,value,inputEle.current?.value)
+            // newValue = value
         }
-        , []);
-    const toggleData = slippageList.reduce((pre, value, index) => {
+
+
+    }
+     console.log('customSlippage',customSlippage)
+
+    const toggleData =React.useMemo(()=> slippageList.reduce((pre, value, index) => {
         let item: TGItemJSXInterface;
         if (RegExp('slippage:').test(value.toString())) {
-            value = value.toString().replace('slippage:', '');
-            if (!isNaN(Number(value)) && Number(value) !== cValue) {
-                setcValue(Number(value))
-            }
             item = {
-                value: cValue,
+                value: customSlippage,
                 JSX: <>{rest.t('labelCustomer')} : <InputStyled ref={inputEle} placeholder={'N%'} allowDecimals={true}
                                                                 decimalsLimit={2}
-                                                                onValueChange={handleContChange} value={cValue}
-                                                                maxLength={3} suffix="%"/></>,
-                tlabel: cValue + '%',
-                key: cValue + '-' + index,
+                                                                // onValueChange={(value, name) => _handleChange(InputEvent,value)}
+                                                                onChange={_handleChange as any}
+                                                                defaultValue={customSlippage === 'N'? '':customSlippage}
+                                                                // value={customSlippage === 'N'? '':customSlippage}
+                                                                maxLength={3} suffix={suffix}/></>,
+                tlabel:'custom Slippage',
+                key: 'custom'+ '-' + index,
             }
         } else {
             item = {
@@ -100,27 +140,14 @@ export const SlippagePanel = ({
 
         pre.push(item);
         return pre;
-    }, [] as TGItemJSXInterface[])
-    const [value, setValue] = React.useState(slippage);
-    const _handleChange = (event: React.MouseEvent<HTMLElement>, newValue: number | string) => {
-        if (event.target !== inputEle.current) {
-            setValue(newValue);
-            if (cValue !== 0.1 && cValue !== 0.5 && cValue !== 1)
-                if (handleChange) {
-                    handleChange(newValue, cValue !== 0.1 && cValue !== 0.5 && cValue !== 1 ? cValue : undefined)
-                }
-            //TODO close
-        } else {
+    }, [] as TGItemJSXInterface[]) ,[customSlippage,_handleChange])
 
-        }
-
-    }
-    return <Styled
+    return <Styled  className={'MuiPaper-elevation2'}
         height={'var(--slippage-pop-height)'}
         width={'var(--slippage-pop-width)'} padding={2}
         display={'flex'}>  {
         <ToggleButtonGroup exclusive {...{...rest, tgItemJSXs: toggleData, value: value, size: 'small'}}
-                           handleChange={_handleChange}/>
+                           onChange={_handleChange}/>
     }
     </Styled>
 }

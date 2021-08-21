@@ -109,7 +109,7 @@ export const Layer2Page = () => {
                     <BtnConnect/>
                 </Box>
                 break
-            case AccountStatus.NO_ACCOUNT:
+            case AccountStatus.NOT_ACTIVE:
                 return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'}
                 >
                     <Typography marginY={3} variant={'h1'}>{t('describeTitleNotActive')}</Typography>
