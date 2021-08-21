@@ -452,7 +452,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
         // myLog('*******', tradeCalcData !== undefined, coinKey === `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
         // _tradeData !== undefined, type !== undefined, !tradeData, _tradeData)
-        // myLog('tradeData:', tradeData, )
 
         if (tradeCalcData
             && coinKey === `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`
@@ -468,30 +467,37 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 coinSell: hasInitialPair ? pair?.coinAInfo?.simpleName : 'LRC',
                 coinBuy: hasInitialPair ? pair?.coinBInfo?.simpleName : 'ETH'
             }
-            const sellSymbol = _tradeCalcData.coinSell as string; //_tradeData?.sell.belong as string
-            const buySymbol = _tradeCalcData.coinBuy as string; //_tradeData?.buy.belong as string
+            const sellSymbol = _tradeData?.sell.belong as string; //_tradeData?.sell.belong as string
+            const buySymbol = _tradeData?.buy.belong as string; //_tradeData?.buy.belong as string
             
             let coinKey = `${sellSymbol}-${buySymbol}`
-            if (marketMap && marketMap[coinKey]) {
-                _tradeCalcData.coinBuy = buySymbol
-            } else {
-                if (tokenMap && tokenMap[sellSymbol]) {
-                    // myLog(' tradePairs:', tokenMap[sellSymbol].tradePairs )
-                    if (tokenMap[sellSymbol].tradePairs.indexOf(buySymbol) >= 0) {
-                        _tradeCalcData.coinBuy = buySymbol
-                    } else {
-                        const newBuy = tokenMap[sellSymbol].tradePairs[0]
-                        if (newBuy) {
-                            _tradeCalcData.coinBuy = newBuy
-                        } else {
-                            throw Error('no such symbol!')
-                        }
-                    }
+
+            if (sellSymbol && buySymbol) {
+                _tradeCalcData.coinSell = sellSymbol
+
+                if (marketMap && marketMap[coinKey]) {
+                    _tradeCalcData.coinBuy = buySymbol
                 } else {
-                    _tradeCalcData.coinSell='LRC'
-                    _tradeCalcData.coinBuy='ETH'
+                    if (tokenMap && tokenMap[sellSymbol]) {
+                        // myLog(' tradePairs:', tokenMap[sellSymbol].tradePairs )
+                        if (tokenMap[sellSymbol].tradePairs.indexOf(buySymbol) >= 0) {
+                            _tradeCalcData.coinBuy = buySymbol
+                        } else {
+                            const newBuy = tokenMap[sellSymbol].tradePairs[0]
+                            if (newBuy) {
+                                _tradeCalcData.coinBuy = newBuy
+                            } else {
+                                throw Error('no such symbol!')
+                            }
+                        }
+                    } else {
+                        _tradeCalcData.coinSell='LRC'
+                        _tradeCalcData.coinBuy='ETH'
+                    }
                 }
             }
+
+            // myLog('_tradeCalcData:', _tradeCalcData)
 
             let {
                 amm,
