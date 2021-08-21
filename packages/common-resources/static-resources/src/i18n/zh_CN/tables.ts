@@ -89,8 +89,8 @@ export default {
     labelAmmFilterTypes: '所有类型',
     labelAmmFilterJoin: '入金',
     labelAmmFilterExit: '出金',
-    labelPoolTableAddLiqudity: '放入',
-    labelPoolTableRemoveLiqudity: '移出',
+    labelPoolTableAddLiqudity: '入金',
+    labelPoolTableRemoveLiqudity: '出金',
     labelEmptyDefault: '记录是空的',
 
 }
