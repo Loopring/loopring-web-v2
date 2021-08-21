@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react'
 import styled from '@emotion/styled/macro'
 
-import { MarketBlock, QuoteTable, TablePaddingX, QuoteTableRawDataItem, InputSearch } from '@loopring-web/component-lib'
+import { MarketBlock, QuoteTable, TablePaddingX, QuoteTableRawDataItem, InputSearch, MarketBlockProps } from '@loopring-web/component-lib'
 import { OutlinedInputProps } from '@material-ui/core/OutlinedInput/OutlinedInput';
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
@@ -235,10 +235,20 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
       })
     })
 
-    const handleRecommendationJump = React.useCallback((market: string) => {
-      history && history.push({
-        pathname: `/trading/lite/${market}`
-      })
+    // const handleRecommendationJump = React.useCallback((market: string) => {
+    //   if (!market) {
+    //     return
+    //   }
+    //   history && history.push({
+    //     pathname: `/trading/lite/${market}`
+    //   })
+    // }, [history])
+    const handleRecommendBoxClick = React.useCallback((recommendation: any) => {
+      if (recommendation && recommendation.market) {
+        history && history.push({
+          pathname: `/trading/lite/${recommendation.market}`
+        })
+      }
     }, [history])
 
     return <Box display={'flex'} flexDirection={'column'} flex={1} >
@@ -263,16 +273,16 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
               )
             } 
             )} */}
-            <Grid item xs={3} onClick={() => handleRecommendationJump(formattedRecommendations[0].market)}>
+            <Grid item xs={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[0])}>
                 <MarketBlock {...{...formattedRecommendations[0], chartData: formattedRecommendations[0] ? formattedRecommendations[0].chartData : [], ...rest}}></MarketBlock>
             </Grid>
-            <Grid item xs={3} onClick={() => handleRecommendationJump(formattedRecommendations[1].market)}>
+            <Grid item xs={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[1])}>
                 <MarketBlock {...{...formattedRecommendations[1], chartData: formattedRecommendations[1] ? formattedRecommendations[1].chartData : [], ...rest}}></MarketBlock>
             </Grid>
-            <Grid item xs={3} onClick={() => handleRecommendationJump(formattedRecommendations[2].market)}>
+            <Grid item xs={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[2])}>
                 <MarketBlock {...{...formattedRecommendations[2], chartData: formattedRecommendations[2] ? formattedRecommendations[2].chartData : [], ...rest}}></MarketBlock>
             </Grid>
-            <Grid item xs={3} onClick={() => handleRecommendationJump(formattedRecommendations[3].market)}>
+            <Grid item xs={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[3])}>
                 <MarketBlock {...{...formattedRecommendations[3], chartData: formattedRecommendations[3] ? formattedRecommendations[3].chartData : [], ...rest}}></MarketBlock>
             </Grid>
 

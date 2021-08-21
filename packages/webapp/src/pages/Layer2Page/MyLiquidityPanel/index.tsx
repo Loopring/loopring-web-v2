@@ -89,10 +89,11 @@ const MyLiquidity: any = withTranslation('common')(
                                             color={'textSecondary'} fontFamily={'Roboto'}>{t('labelTotalPositionValue')}</Typography>
                                 <Typography variant={'h3'} marginTop={1} fontFamily={'Roboto'}>
                                     {summaryReward === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar
-                                        + getThousandFormattedNumbers(summaryReward.rewardDollar !== undefined? summaryReward.rewardDollar : 0)
-                                        + getThousandFormattedNumbers( summaryReward.feeDollar !== undefined?summaryReward.feeDollar : 0)
-                                        : PriceTag.Yuan + getThousandFormattedNumbers(summaryReward.rewardYuan ? summaryReward.rewardYuan : 0)
-                                            +  getThousandFormattedNumbers(summaryReward.feeYuan ? summaryReward.feeYuan : 0)}
+                                        + getThousandFormattedNumbers((summaryReward.rewardDollar ?? 0) + 
+                                        (summaryReward.feeDollar ?? 0))
+
+                                        : PriceTag.Yuan + getThousandFormattedNumbers(summaryReward.rewardYuan ?? 0
+                                            + Number(summaryReward.feeYuan) ?? 0)}
                                 </Typography>
                             </Grid>
                             <Grid display={'flex'} flexDirection={'column'} marginTop={5} item>
