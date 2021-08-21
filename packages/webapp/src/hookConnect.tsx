@@ -11,6 +11,7 @@ import { networkUpdate } from 'services/account/networkUpdate';
 import { checkAccount } from 'services/account/checkAccount';
 import { REFRESH_RATE } from 'defs/common_defs';
 import { useWalletLayer2 } from 'stores/walletLayer2';
+import { systemForks } from './stores/system/saga';
 
 export function useConnect({state}: { state: keyof typeof SagaStatus }) {
     const {
@@ -21,7 +22,7 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
         setShouldShow,
         status: accountStatus
     } = useAccount();
-    const { updateWalletLayer2 } = useWalletLayer2()
+    const { updateWalletLayer2,resetLayer2 } = useWalletLayer2()
 
     const {updateSystem, chainId: _chainId } = useSystem();
     const {setShowConnect} = useOpenModals();
@@ -54,15 +55,18 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
         resetAccount({shouldUpdateProvider: true});
         setStateAccount(SagaStatus.PENDING)
         await sleep(REFRESH_RATE)
-        updateWalletLayer2()
-        // resetLayer2()
+        resetLayer2()
     }, [resetAccount, setStateAccount]);
 
     const handleError = React.useCallback(({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
-        updateSystem({chainId: account._chainId === 1 ||  account._chainId === 5 ? account._chainId : 5})
+        const  chainId = account._chainId === ChainId.MAINNET ||  account._chainId === ChainId.GOERLI ? account._chainId : ChainId.MAINNET
+        if(_chainId !== chainId ) {
+            updateSystem({chainId})
+        }
+        setShowConnect({isShow: !!shouldShow ?? false, step: WalletConnectStep.FailedConnect});
         resetAccount();
         statusAccountUnset();
-    }, [resetAccount, statusAccountUnset, updateSystem, account._chainId]);
+    }, [resetAccount, statusAccountUnset, updateSystem, account._chainId,_chainId]);
 
     useConnectHook({handleAccountDisconnect, handleError, handleConnect});
 

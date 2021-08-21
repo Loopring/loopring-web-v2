@@ -9,15 +9,16 @@ import {
     ThemeKeys,
 } from '@loopring-web/common-resources'
 
-import { useAccount, } from 'stores/account'
+import { changeShowModel, useAccount, } from 'stores/account'
 
 import { Theme, } from 'defs/common_defs'
 
-import { AccountStep, useOpenModals, useSettings, } from '@loopring-web/component-lib'
+import { AccountStep, setShowAccount, useOpenModals, useSettings, } from '@loopring-web/component-lib'
 
 import { accountStaticCallBack, btnClickMap } from 'hooks/help'
 import { myLog } from 'utils/log_tools'
 import { deepClone } from '../../utils/obj_tools';
+import store from '../../stores';
 
 export const useHeader = () => {
     // const {setTheme, themeMode, setLanguage} = useSettings();
@@ -31,13 +32,12 @@ export const useHeader = () => {
                 setShowAccount({isShow: true, step: AccountStep.HadAccount})
             }
         ],
-        // [ fnType.CONNECT ]: [
-        //     function () {
-        //         setShouldShow(true);
-        //         setShowAccount({isShow: true, step: AccountStep.HadAccount})
-        //     }
-        // ]
-
+        [fnType.LOCKED]: [
+            function () {
+                store.dispatch(changeShowModel({ _userOnModel: true }));
+                store.dispatch(setShowAccount({ isShow: true, step: AccountStep.HadAccount }))
+            }
+        ]
     });
 
     const onWalletBtnConnect = React.useCallback(async () => {

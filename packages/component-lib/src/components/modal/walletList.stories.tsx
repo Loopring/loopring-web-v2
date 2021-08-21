@@ -171,6 +171,7 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
     )
 }) as Story<any>
 
+// @ts-ignore
 export const ModalListStory = Template.bind({})
 
 export default {

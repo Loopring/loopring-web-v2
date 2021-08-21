@@ -8,13 +8,11 @@ import { Button, SubMenu, SubMenuList as BasicSubMenuList } from '../basic-lib';
 import {
     AmmData,
     AmmInData,
-    ButtonComponentsMap,
     globalCss,
     headerMenuData,
     headerToolBarData,
     HideIcon,
     IBData,
-    LanguageKeys,
     NavListIndex,
     PriceTag,
     subMenuLayer2,
@@ -39,7 +37,7 @@ import {
     TransferProps,
     WithdrawProps
 } from '../';
-import { setShowDeposit, setShowTransfer, setShowWithdraw, useSettings } from '../../stores';
+import { setShowDeposit, setShowTransfer, setShowWithdraw } from '../../stores';
 import { ammCalcData, coinMap, CoinType, tradeCalcData, walletMap } from '../../static';
 import { useDispatch } from 'react-redux';
 import { Typography } from '@material-ui/core/';
@@ -204,11 +202,7 @@ const AssetTitleWrap = (rest: any) => {
             totalAsset: 123456.789,
             priceTag: PriceTag.Dollar,
         },
-        onShowWithdraw: () => dispatch(setShowDeposit({
-            isShow: true, props: {
-                title: 'Demo change title props'
-            }
-        })),
+        onShowWithdraw: () => dispatch(setShowDeposit({isShow: true})),
         onShowTransfer: () => dispatch(setShowTransfer({isShow: true})),
         onShowDeposit: () => dispatch(setShowWithdraw({isShow: true})),
     }
@@ -270,21 +264,14 @@ const Layer2Wrap = withTranslation('common')(({t,...rest}:any) => {
         }
         _event.stopPropagation();
     }
-    const {setLanguage} = useSettings()
     headerMenuData[ NavListIndex.layer2 ].extender = hasAccount ? <IconButton disabled={!hasAccount}
                                                                               onClick={handleClick}
                                                                               aria-label={t('labelShowAccountInfo')}
                                                                               color="primary">
         {showAccountInfo ? <HideIcon/> : <ViewIcon/>}
     </IconButton> : undefined
-    const onLangBtnClick = (lang: LanguageKeys) => {
-        //i18n.changeLanguage(lang);
-        setLanguage(lang);
-    }
-    headerToolBarData[ ButtonComponentsMap.Language ] = {
-        ...headerToolBarData[ ButtonComponentsMap.Language ],
-        handleChange: onLangBtnClick
-    }
+
+
 
     return <>
         <HideOnScroll>
@@ -316,7 +303,7 @@ const Layer2Wrap = withTranslation('common')(({t,...rest}:any) => {
                     <StylePaper>
                         <Typography variant={'h5'} component={'h3'}>Orders</Typography>
                         <Box marginTop={2} className="tableWrapper">
-                            <OrderHistoryTable rawData={[]}/>
+                            <OrderHistoryTable rawData={[]} pageSize={0} {...rest}/>
                         </Box>
                     </StylePaper>
                 </Box>
