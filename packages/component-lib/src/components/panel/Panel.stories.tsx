@@ -321,22 +321,22 @@ const WrapAmmPanel = (rest: any) => {
 
 
     return <> <Grid item sm={6}>
-        <AmmPanel {...{...ammProps, tabSelected: AmmPanelType.Deposit}} {...rest} > </AmmPanel>
+        <AmmPanel {...{...ammProps, tabSelected: AmmPanelType.Join}} {...rest} > </AmmPanel>
     </Grid>
         <Grid item sm={6}>
             <AmmPanel {...{
                 ...ammProps,
-                tabSelected: AmmPanelType.Deposit,
+                tabSelected: AmmPanelType.Join,
                 ammDepositBtnStatus: TradeBtnStatus.LOADING
             }} {...rest} > </AmmPanel>
         </Grid>
         <Grid item sm={6}>
-            <AmmPanel {...{...ammProps, tabSelected: AmmPanelType.WithDraw}} {...rest} > </AmmPanel>
+            <AmmPanel {...{...ammProps, tabSelected: AmmPanelType.Exit}} {...rest} > </AmmPanel>
         </Grid>
         <Grid item sm={6}>
             <AmmPanel {...{
                 ...ammProps,
-                tabSelected: AmmPanelType.WithDraw,
+                tabSelected: AmmPanelType.Exit,
                 ammWithdrawBtnStatus: TradeBtnStatus.DISABLED
             }} {...rest} > </AmmPanel>
         </Grid>
@@ -421,7 +421,7 @@ const Template: Story<any> = () => {
                     <Button variant={'contained'} size={'small'} color={'primary'}
                             onClick={() => dispatch(setShowAmm({
                                 isShow: true,
-                                props: {tabSelected: AmmPanelType.WithDraw}
+                                props: {tabSelected: AmmPanelType.Exit}
                             }))}>Open Amm WithDraw</Button>
                 </Grid>
                 <Grid item xs={2}>
