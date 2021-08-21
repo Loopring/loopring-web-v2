@@ -1,7 +1,4 @@
-import {
-    ModalPanel, Toast,
-    useOpenModals
-} from '@loopring-web/component-lib';
+import { ModalPanel, Toast, useOpenModals } from '@loopring-web/component-lib';
 import { ModalWalletConnectPanel } from './WalletModal';
 import { ModalAccountInfo } from './AccountModal';
 import { withTranslation, WithTranslation } from 'react-i18next';
@@ -12,21 +9,33 @@ import { useSystem } from '../stores/system';
 import { useAccountModal } from 'hooks/useractions/useAccountModal';
 import { TOAST_TIME } from '../defs/common_defs';
 
-export const ModalGroup = withTranslation('common',{withRef: true})(({...rest}:WithTranslation)=>{
+export const ModalGroup = withTranslation('common', {
+    withRef: true,
+
+})(({
+        onAccountInfoPanelClose,
+        onWalletConnectPanelClose,
+        ...rest
+    }:
+        WithTranslation & {
+        onWalletConnectPanelClose?: (event: MouseEvent) => void
+        onAccountInfoPanelClose?: (event: MouseEvent) => void
+    }) => {
     const {transferProps} = useTransfer();
     const {depositProps} = useDeposit();
     const {
         withdrawAlertText,
-        withdrawToastOpen, 
+        withdrawToastOpen,
         setWithdrawToastOpen,
-        withdrawProps} = useWithdraw();
+        withdrawProps
+    } = useWithdraw();
     const {etherscanUrl} = useSystem();
     useAccountModal();
     const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals();
-    return  <>
+    return <>
 
-        <Toast alertText={withdrawAlertText as string} open={withdrawToastOpen} 
-            autoHideDuration={TOAST_TIME}  onClose={()=> {
+        <Toast alertText={withdrawAlertText as string} open={withdrawToastOpen}
+               autoHideDuration={TOAST_TIME} onClose={() => {
             setWithdrawToastOpen(false)
         }}/>
 
@@ -42,16 +51,16 @@ export const ModalGroup = withTranslation('common',{withRef: true})(({...rest}:W
         <ModalWalletConnectPanel {...{
             ...rest,
             open: isShowConnect.isShow,
-            onClose: () => setShowConnect({isShow: false})
+            onClose: onWalletConnectPanelClose
         }} />
         <ModalAccountInfo
             {...{
                 ...rest,
                 etherscanUrl,
                 open: isShowAccount.isShow,
-                onClose: () => setShowAccount({isShow: false})
+                onClose: onAccountInfoPanelClose
             }}
         ></ModalAccountInfo>
     </>
 
-} )
+})

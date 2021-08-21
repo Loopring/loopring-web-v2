@@ -14,5 +14,5 @@ export enum WalletStatus {
 export interface GatewayItem {
     key: keyof typeof ConnectProviders
     imgSrc: string
-    handleSelect?: (event: React.MouseEvent) => void
+    handleSelect?: (event?: React.MouseEvent) => void
 }

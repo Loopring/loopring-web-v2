@@ -192,11 +192,7 @@ const AssetTitleWrap = (rest: any) => {
             totalAsset: 123456.789,
             priceTag: PriceTag.Dollar,
         },
-        onShowWithdraw: () => dispatch(setShowDeposit({
-            isShow: true, props: {
-                title: 'Demo change title props'
-            }
-        })),
+        onShowWithdraw: () => dispatch(setShowDeposit({isShow: true})),
         onShowTransfer: () => dispatch(setShowTransfer({isShow: true})),
         onShowDeposit: () => dispatch(setShowWithdraw({isShow: true})),
     }

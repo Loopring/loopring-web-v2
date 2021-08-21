@@ -49,7 +49,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                                                                ...rest
                                                            }: {
     open: boolean,
-    onClose: (e: any) => void,
+    onClose?: (e: MouseEvent) => void,
     etherscanUrl: string
 } & WithTranslation) => {
     const {
@@ -78,7 +78,7 @@ export const ModalAccountInfo = withTranslation('common')(({
         setShouldShow(true);
         setShowConnect({isShow: shouldShow ?? false})
     }, [setShowConnect, setShowAccount, shouldShow])
-    
+
     const onCopy = React.useCallback(() => {
         copyToClipBoard(account.accAddress);
         setCopyToastOpen(true)
@@ -97,7 +97,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     }, [setShowAccount])
 
-    const goUpdateAccount = React.useCallback(async() => {
+    const goUpdateAccount = React.useCallback(async () => {
 
         if (!account.accAddress) {
             myLog('account.accAddress is nil')
@@ -118,22 +118,22 @@ export const ModalAccountInfo = withTranslation('common')(({
 
                 if (LoopringAPI.userAPI && LoopringAPI.exchangeAPI && eddsaKey) {
 
-                    const { accInfo, error } = await LoopringAPI.exchangeAPI.getAccount({owner: account.accAddress})
+                    const {accInfo, error} = await LoopringAPI.exchangeAPI.getAccount({owner: account.accAddress})
 
                     if (!error && accInfo) {
 
-                    const {apiKey} = (await LoopringAPI.userAPI.getUserApiKey({
-                        accountId: accInfo.accountId
-                    }, eddsaKey.sk))
+                        const {apiKey} = (await LoopringAPI.userAPI.getUserApiKey({
+                            accountId: accInfo.accountId
+                        }, eddsaKey.sk))
 
-                    myLog('After connect >>, get apiKey', apiKey)
-        
-                    accountServices.sendAccountSigned(accInfo.accountId,apiKey, eddsaKey)
+                        myLog('After connect >>, get apiKey', apiKey)
+
+                        accountServices.sendAccountSigned(accInfo.accountId, apiKey, eddsaKey)
 
                     }
 
                 }
-                
+
                 setShowAccount({isShow: false})
                 break
             case ActionResultCode.GetAccError:
@@ -161,15 +161,22 @@ export const ModalAccountInfo = withTranslation('common')(({
             lockAccount();
         }}>{t('labelLockLayer2')} </Button>
     }, [lockAccount, t]);
+    const _onClose = React.useCallback((e: any) => {
+        setShouldShow(false);
+        setShowAccount({isShow: false})
+        if (onClose) {
+            onClose(e);
+        }
+    }, [])
     const onBack = React.useCallback(() => {
-        switch(account.readyState){
+        switch (account.readyState) {
             case 'NO_ACCOUNT':
             case 'DEPOSITING':
-                setShowAccount({isShow: true,step:AccountStep.NoAccount});
+                setShowAccount({isShow: true, step: AccountStep.NoAccount});
                 break;
             case  'LOCKED':
             case  'ACTIVATED':
-                setShowAccount({isShow: true,step:AccountStep.HadAccount});
+                setShowAccount({isShow: true, step: AccountStep.HadAccount});
                 break;
             default:
                 setShowAccount({isShow: false});
@@ -180,112 +187,144 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     const accountList = React.useMemo(() => {
         return Object.values({
-            [ AccountStep.NoAccount ]: {view: <NoAccount {...{
-                goDeposit,
-                ...account,
-                etherscanUrl,
-                onSwitch, onCopy,
-                onViewQRCode, onDisconnect, addressShort,
-            }} />,onQRClick},
-            [ AccountStep.QRCode ]: {view: <QRAddressPanel  {...{
+            [ AccountStep.NoAccount ]: {
+                view: <NoAccount {...{
+                    goDeposit,
+                    ...account,
+                    etherscanUrl,
+                    onSwitch, onCopy,
+                    onViewQRCode, onDisconnect, addressShort,
+                }} />, onQRClick
+            },
+            [ AccountStep.QRCode ]: {
+                view: <QRAddressPanel  {...{
                     ...rest,
                     ...account,
                     etherscanUrl,
                     t
-                }} />,onBack, noClose:true },
-            [ AccountStep.Deposit ]: {view: <DepositPanel title={title} {...{
-                ...rest,
-                _height: 'var(--modal-height)',
-                _width: 'var(--modal-width)',
-                ...depositProps,
-                t
-            }} />},
-            [ AccountStep.Depositing ]: {view: <Depositing label={title}
-                                                    onClose={onClose}
-                                                    etherscanLink={etherscanUrl + account.accAddress} {...{
-                ...rest,
-                t
-            }} />,},
-            [ AccountStep.DepositFailed ]: {view: <FailedDeposit label={title}
-                                                          etherscanLink={etherscanUrl + account.accAddress}
-                                                          onRetry={() => goDeposit()} {...{...rest, t}} />,onBack:()=>{
-                    setShowAccount({isShow: true,step:AccountStep.Deposit});
-                }},
-            [ AccountStep.UpdateAccount ]: {view: <ApproveAccount {...{
-                ...account,
-                etherscanUrl,
-                onSwitch, onCopy,
-                onViewQRCode, onDisconnect, addressShort,
-            }} goUpdateAccount={() => {
-                goUpdateAccount()
-            }}  {...{...rest, t}} />,onQRClick},
-            [ AccountStep.ProcessUnlock ]: {view: <ProcessUnlock providerName={account.connectName} {...{...rest, t}} />,},
-            [ AccountStep.SuccessUnlock ]: {view: <SuccessUnlock providerName={account.connectName} onClose={onClose} {...{...rest, t}} />,},
-            [ AccountStep.FailedUnlock ]: {view: <FailedUnlock onRetry={() => {
-                unlockAccount()
-            }} {...{...rest, t}} />,},
-            [ AccountStep.HadAccount ]: {view: <HadAccount {...{
-                ...account,
-                onSwitch, onCopy,
-                etherscanUrl,
-
-                // address: account.accAddress,
-                // connectBy: account.connectName,
-                onViewQRCode, onDisconnect, addressShort,
-                etherscanLink: etherscanUrl + account.accAddress,
-                mainBtn: account.readyState === 'ACTIVATED' ? lockBtn : unlockBtn
-            }} />,onQRClick},
-            [ AccountStep.TokenApproveInProcess ]: {view: <TokenAccessProcess label={title}
-                                                                    providerName={account.connectName} {...{
-                ...rest,
-                t
-            }} />,onBack:()=>{
-                    setShowAccount({isShow: true,step:AccountStep.Deposit});
-                }},
-            [ AccountStep.DepositApproveProcess ]: {view: <DepositApproveProcess label={title}
-                                                                          etherscanLink={etherscanUrl + account.accAddress}
-                                                                          providerName={account.connectName} {...{
-                ...rest,
-                t
-            }} />,},
-            [ AccountStep.DepositInProcess ]: {view: <DepositingProcess label={title}
-                                                                  etherscanLink={etherscanUrl + account.accAddress}
-                                                                  providerName={account.connectName} {...{
-                ...rest,
-                t
-            }} />,},
-            [ AccountStep.UpdateAccountInProcess ]: {view: <ActiveAccountProcess label={title}  providerName={account.connectName} {...{
+                }} />, onBack, noClose: true
+            },
+            [ AccountStep.Deposit ]: {
+                view: <DepositPanel title={title} {...{
+                    ...rest,
+                    _height: 'var(--modal-height)',
+                    _width: 'var(--modal-width)',
+                    ...depositProps,
+                    t
+                }} />
+            },
+            [ AccountStep.Depositing ]: {
+                view: <Depositing label={title}
+                                  onClose={_onClose}
+                                  etherscanLink={etherscanUrl + account.accAddress} {...{
                     ...rest,
                     t
-                }} />,},
-            [ AccountStep.UpdateAccountFailed ]: {view: <FailedUnlock label={title} onRetry={() => {
-                goUpdateAccount()
-            }} {...{...rest, t}} />,onBack:()=>{
-                    setShowAccount({isShow: true,step:AccountStep.UpdateAccount});
-                }},
-            [ AccountStep.TokenApproveFailed ]: {view: <FailedTokenAccess label={title} onRetry={() => {
-                goDeposit()
-            }} {...{
-                t, ...rest,
-                coinInfo: coinMap ? coinMap[ 'USTD' ] : undefined
-            }} />,},
+                }} />,
+            },
+            [ AccountStep.DepositFailed ]: {
+                view: <FailedDeposit label={title}
+                                     etherscanLink={etherscanUrl + account.accAddress}
+                                     onRetry={() => goDeposit()} {...{...rest, t}} />, onBack: () => {
+                    setShowAccount({isShow: true, step: AccountStep.Deposit});
+                }
+            },
+            [ AccountStep.UpdateAccount ]: {
+                view: <ApproveAccount {...{
+                    ...account,
+                    etherscanUrl,
+                    onSwitch, onCopy,
+                    onViewQRCode, onDisconnect, addressShort,
+                }} goUpdateAccount={() => {
+                    goUpdateAccount()
+                }}  {...{...rest, t}} />, onQRClick
+            },
+            [ AccountStep.ProcessUnlock ]: {
+                view: <ProcessUnlock providerName={account.connectName} {...{
+                    ...rest,
+                    t
+                }} />,
+            },
+            [ AccountStep.SuccessUnlock ]: {
+                view: <SuccessUnlock providerName={account.connectName} onClose={_onClose} {...{...rest, t}} />,
+            },
+            [ AccountStep.FailedUnlock ]: {
+                view: <FailedUnlock onRetry={() => {
+                    unlockAccount()
+                }} {...{...rest, t}} />,
+            },
+            [ AccountStep.HadAccount ]: {
+                view: <HadAccount {...{
+                    ...account,
+                    onSwitch, onCopy,
+                    etherscanUrl,
+
+                    // address: account.accAddress,
+                    // connectBy: account.connectName,
+                    onViewQRCode, onDisconnect, addressShort,
+                    etherscanLink: etherscanUrl + account.accAddress,
+                    mainBtn: account.readyState === 'ACTIVATED' ? lockBtn : unlockBtn
+                }} />, onQRClick
+            },
+            [ AccountStep.TokenApproveInProcess ]: {
+                view: <TokenAccessProcess label={title}
+                                          providerName={account.connectName} {...{
+                    ...rest,
+                    t
+                }} />, onBack: () => {
+                    setShowAccount({isShow: true, step: AccountStep.Deposit});
+                }
+            },
+            [ AccountStep.DepositApproveProcess ]: {
+                view: <DepositApproveProcess label={title}
+                                             etherscanLink={etherscanUrl + account.accAddress}
+                                             providerName={account.connectName} {...{
+                    ...rest,
+                    t
+                }} />,
+            },
+            [ AccountStep.DepositInProcess ]: {
+                view: <DepositingProcess label={title}
+                                         etherscanLink={etherscanUrl + account.accAddress}
+                                         providerName={account.connectName} {...{
+                    ...rest,
+                    t
+                }} />,
+            },
+            [ AccountStep.UpdateAccountInProcess ]: {
+                view: <ActiveAccountProcess label={title} providerName={account.connectName} {...{
+                    ...rest,
+                    t
+                }} />,
+            },
+            [ AccountStep.UpdateAccountFailed ]: {
+                view: <FailedUnlock label={title} onRetry={() => {
+                    goUpdateAccount()
+                }} {...{...rest, t}} />, onBack: () => {
+                    setShowAccount({isShow: true, step: AccountStep.UpdateAccount});
+                }
+            },
+            [ AccountStep.TokenApproveFailed ]: {
+                view: <FailedTokenAccess label={title} onRetry={() => {
+                    goDeposit()
+                }} {...{
+                    t, ...rest,
+                    coinInfo: coinMap ? coinMap[ 'USTD' ] : undefined
+                }} />,
+            },
 
         })
     }, [addressShort, account, depositProps, etherscanUrl, onCopy, onSwitch, onDisconnect, onViewQRCode, t, rest])
 
     return <>
         <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen}
-               autoHideDuration={TOAST_TIME} onClose={()=> {
+               autoHideDuration={TOAST_TIME} onClose={() => {
             setCopyToastOpen(false)
         }} severity={"success"}/>
 
         <ModalQRCode open={openQRCode} onClose={() => setOpenQRCode(false)} title={'ETH Address'}
                      description={account?.accAddress} url={account?.accAddress}/>
 
-        <ModalAccount open={isShowAccount.isShow} onClose={(e) => {
-            setShouldShow(false);
-            onClose(e);
-        }} panelList={accountList}
+        <ModalAccount open={isShowAccount.isShow} onClose={_onClose} panelList={accountList}
                       onBack={accountList[ isShowAccount.step ].onBack}
                       onQRClick={accountList[ isShowAccount.step ].onQRClick}
                       step={isShowAccount.step}/>

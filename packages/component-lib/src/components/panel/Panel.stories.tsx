@@ -193,7 +193,7 @@ let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
 
 const WrapTransferPanel = (rest: any) => {
     const dispatch = useDispatch();
-    dispatch(setShowTransfer({isShow: false, props: transferProps}));
+    dispatch(setShowTransfer({isShow: false}));
     return <> <Grid item sm={6}>
         <TransferPanel {...transferProps} {...rest}> </TransferPanel>
     </Grid>
@@ -209,7 +209,7 @@ const WrapTransferPanel = (rest: any) => {
 }
 const WrapWithdrawPanel = (rest: any) => {
     const dispatch = useDispatch();
-    dispatch(setShowDeposit({isShow: false, props: withdrawProps}));
+    dispatch(setShowDeposit({isShow: false}));
 
     return <> <Grid item sm={6}>
         <WithdrawPanel {...withdrawProps} {...rest}> </WithdrawPanel>
@@ -226,7 +226,7 @@ const WrapWithdrawPanel = (rest: any) => {
 const WrapDepositPanel = (rest: any) => {
     // const [open, setOpen] = useState(false)
     const dispatch = useDispatch();
-    dispatch(setShowDeposit({isShow: false, props: depositProps}));
+    dispatch(setShowDeposit({isShow: false}));
     const {t} = useTranslation('common');
     return <> <Grid item sm={6}>
         <DepositPanel  {...{...rest, ...depositProps,...{isNewAccount:true}}} > </DepositPanel>
@@ -251,7 +251,7 @@ const WrapResetPanel = (rest: any) => {
 
 
     const dispatch = useDispatch();
-    dispatch(setShowResetAccount({isShow: false, props: resetProps}));
+    dispatch(setShowResetAccount({isShow: false}));
     return <> <Grid item sm={6}>
         <ResetPanel {...resetProps} {...rest}> </ResetPanel>
     </Grid>

@@ -4,6 +4,7 @@ import { fnType } from '@loopring-web/common-resources';
 import { changeShowModel } from 'stores/account';
 import { accountServices } from 'services/account/accountServices'
 import { myLog } from 'utils/log_tools';
+import { unlockAccount } from '../services/account/unlockAccount';
 
 export const accountStaticCallBack = (onclickMap: { [key: number]: [fn: (props: any) => any, args?: any[]] }, deps?: any[]) => {
     const { readyState } = store.getState().account;
@@ -93,8 +94,10 @@ export const btnClickMap: { [key: string]: [fn: (props: any) => any, args?: any[
     ]
     , [fnType.LOCKED]: [
         function () {
+            unlockAccount();
             store.dispatch(changeShowModel({ _userOnModel: true }));
-            store.dispatch(setShowAccount({ isShow: true, step: AccountStep.HadAccount }))
+            store.dispatch(setShowAccount({ isShow: true, step: AccountStep.ProcessUnlock }))
+
         }
     ]
 };

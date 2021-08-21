@@ -227,65 +227,6 @@ const CellStatus = ({row, column, rowIdx}: any) => {
         transform: ${() => isOpen ? 'rotate(180deg)' : ''};
       }
     `
-    const popupContent = [
-        // {
-        //     amount: {
-        //         from: {
-        //             key: 'ETH',
-        //             value: 1.05
-        //         },
-        //         to: {
-        //             key: 'LRC',
-        //             value: 2454.33
-        //         }
-        //     },
-        //     tradingPrice: 2934.07,
-        //     filledPrice: 2935.00,
-        //     time: 1,
-        //     total: {
-        //         key: 'LRC',
-        //         value: 850
-        //     }
-        // },
-        // {
-        //     amount: {
-        //         from: {
-        //             key: 'ETH',
-        //             value: 1.05
-        //         },
-        //         to: {
-        //             key: 'LRC',
-        //             value: 2454.33
-        //         }
-        //     },
-        //     tradingPrice: 2934.07,
-        //     filledPrice: 2935.00,
-        //     time: 1,
-        //     total: {
-        //         key: 'LRC',
-        //         value: 850
-        //     }
-        // },
-        // {
-        //     amount: {
-        //         from: {
-        //             key: 'ETH',
-        //             value: 1.05
-        //         },
-        //         to: {
-        //             key: 'LRC',
-        //             value: 2454.33
-        //         }
-        //     },
-        //     tradingPrice: 2934.07,
-        //     filledPrice: 2935.00,
-        //     time: 1,
-        //     total: {
-        //         key: 'LRC',
-        //         value: 850
-        //     }
-        // },
-    ]
 
     const RenderPopover = styled.div`
         width: 700px;
