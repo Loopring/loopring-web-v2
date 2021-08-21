@@ -338,7 +338,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             setQuoteMinAmt(quoteMinAmtInfo?.userOrderInfo.minAmount)
             setFeeBips(totalFee)
             myLog(`${realMarket} totalFee: ${totalFee}`)
-            
+
             setTakerRate(takerRate.toString())
             setTradeCalcData({ ...tradeCalcData,walletMap, fee: totalFee } as TradeCalcData<C>)
         } else {
@@ -432,7 +432,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         setTradeData(_tradeData)
         setTradeCalcData({ ..._tradeCalcData, fee: feeBips })
 
-    }, [ tradeData, ammPoolSnapshot]);
+    }, [ depth, tradeData, tradeCalcData, ammPoolSnapshot]);
 
     const resetSwap = (swapType: SwapType | undefined, _tradeData: SwapTradeData<IBData<C>> | undefined) => {
 
