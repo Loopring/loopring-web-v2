@@ -272,69 +272,68 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
             </Grid>
             <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}}>
                 <FixedStyle>
-                    <Box className={'MuiPaper-elevation2'}>
+                    <Box >
                         <AmmPanelView pair={pair} walletMap={walletMap} snapShotData={snapShotData}/>
                     </Box>
-                    {typeof coinPairInfo.isActivity === 'undefined' ? '' :
-                        <BoxTopStyled paddingY={3} paddingX={1 / 2 * 5} display={'flex'}
-                                      flexDirection={'column'}>
-                            <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
-                                <Typography display={'flex'} flexDirection={'column'} component={'div'}>
-                                    <Typography variant={'body2'} component={'h5'} color={'textSecondary'}>
-                                        {t('labelReward')}
-                                    </Typography>
-                                    <Typography variant={'body1'} component={'span'} color={'textPrimary'}>
-                                        {typeof coinPairInfo.isActivity === 'undefined' ? EmptyValueTag : <>
-                                            <Typography
-                                                component={'span'}>{coinPairInfo.activity ? getThousandFormattedNumbers(coinPairInfo.activity.totalRewards) : EmptyValueTag} </Typography>
-                                            <Typography
-                                                component={'span'}>{coinPairInfo.activity?.rewardToken?.simpleName}</Typography>
-                                        </>}
-                                    </Typography>
-                                </Typography>
-                                <Typography display={'flex'} flexDirection={'column'} alignItems={'flex-end'}
-                                            component={'div'}>
-                                    <Typography variant={'body2'} component={'h5'} color={'textSecondary'}>
-                                        {t('labelMyReward')}
-                                    </Typography>
-                                    <Typography variant={'body1'} component={'span'} color={'textPrimary'}>
-                                        {/*{typeof coinPairInfo.isActivity === 'undefined' ? EmptyValueTag : <>*/}
-                                        {typeof myAmm.reward === 'undefined' ? EmptyValueTag : <>
-
-                                            <Typography
-                                                component={'span'}> {getThousandFormattedNumbers(myAmm.reward)} </Typography>
-                                            <Typography
-                                                component={'span'}> {coinPairInfo.activity?.rewardToken?.simpleName}</Typography></>}
-
-                                    </Typography>
-                                </Typography>
-                            </Box>
-                            <Typography alignSelf={'flex-start'} variant={'body2'} color={'textSecondary'}
-                                        component="span" marginTop={1}>
-                                {typeof coinPairInfo.isActivity === 'undefined' ? t('labelNoActiveEvent')
-                                    : <>
-                                        {t('labelDate')} :
-                                        <> {' ' + moment(coinPairInfo.activity?.duration.from).format('L') + ' - ' + moment(coinPairInfo.activity?.duration.to).format('L')}</>
-                                    </>
-                                }
-                            </Typography>
-                        </BoxTopStyled>
-                    }
-                    <Box></Box>
-                    {awardList.map(o => (
-                        <AwardWrapperStyled display={'flex'} className={'MuiPaper-elevation2'}>
-                            {o.awardList.map(item => (
-                                <Box display={'flex'} alignItems={'center'}>
-                                    <Box width={'80'} height={'75'} marginRight={2}>test</Box>
-                                    <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
-                                        <Typography variant={'h6'} color={'var(--color-text-secondary)'}>Rewards</Typography>
-                                        <Typography variant={'h3'}>{item.volume}{item.token}</Typography>
-                                        <Typography variant={'body2'} color={'var(--color-text-third)'}>{o.start}{o.end}</Typography>
+                    {/*{typeof coinPairInfo.isActivity === 'undefined' ? '' :*/}
+                    {/*    <BoxTopStyled paddingY={3} paddingX={1 / 2 * 5} display={'flex'}*/}
+                    {/*                  flexDirection={'column'}>*/}
+                    {/*        <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>*/}
+                    {/*            <Typography display={'flex'} flexDirection={'column'} component={'div'}>*/}
+                    {/*                <Typography variant={'body2'} component={'h5'} color={'textSecondary'}>*/}
+                    {/*                    {t('labelReward')}*/}
+                    {/*                </Typography>*/}
+                    {/*                <Typography variant={'body1'} component={'span'} color={'textPrimary'}>*/}
+                    {/*                    {typeof coinPairInfo.isActivity === 'undefined' ? EmptyValueTag : <>*/}
+                    {/*                        <Typography*/}
+                    {/*                            component={'span'}>{coinPairInfo.activity ? getThousandFormattedNumbers(coinPairInfo.activity.totalRewards) : EmptyValueTag} </Typography>*/}
+                    {/*                        <Typography*/}
+                    {/*                            component={'span'}>{coinPairInfo.activity?.rewardToken?.simpleName}</Typography>*/}
+                    {/*                    </>}*/}
+                    {/*                </Typography>*/}
+                    {/*            </Typography>*/}
+                    {/*            <Typography display={'flex'} flexDirection={'column'} alignItems={'flex-end'}*/}
+                    {/*                        component={'div'}>*/}
+                    {/*                <Typography variant={'body2'} component={'h5'} color={'textSecondary'}>*/}
+                    {/*                    {t('labelMyReward')}*/}
+                    {/*                </Typography>*/}
+                    {/*                <Typography variant={'body1'} component={'span'} color={'textPrimary'}>*/}
+                    {/*                    /!*{typeof coinPairInfo.isActivity === 'undefined' ? EmptyValueTag : <>*!/*/}
+                    {/*                    {typeof myAmm.reward === 'undefined' ? EmptyValueTag : <>*/}
+                    {/*                        <Typography*/}
+                    {/*                            component={'span'}> {getThousandFormattedNumbers(myAmm.reward)} </Typography>*/}
+                    {/*                        <Typography*/}
+                    {/*                            component={'span'}> {coinPairInfo.activity?.rewardToken?.simpleName}</Typography></>}*/}
+                    {/*                </Typography>*/}
+                    {/*            </Typography>*/}
+                    {/*        </Box>*/}
+                    {/*        <Typography alignSelf={'flex-start'} variant={'body2'} color={'textSecondary'}*/}
+                    {/*                    component="span" marginTop={1}>*/}
+                    {/*            {typeof coinPairInfo.isActivity === 'undefined' ? t('labelNoActiveEvent')*/}
+                    {/*                : <>*/}
+                    {/*                    {t('labelDate')} :*/}
+                    {/*                    <> {' ' + moment(coinPairInfo.activity?.duration.from).format('L') + ' - ' + moment(coinPairInfo.activity?.duration.to).format('L')}</>*/}
+                    {/*                </>*/}
+                    {/*            }*/}
+                    {/*        </Typography>*/}
+                    {/*    </BoxTopStyled>*/}
+                    {/*}*/}
+                    <Box marginTop={3}>
+                        {awardList.map(o => (
+                            <AwardWrapperStyled display={'flex'} className={'MuiPaper-elevation2'} marginTop={2}>
+                                {o.awardList.map(item => (
+                                    <Box display={'flex'} alignItems={'center'} >
+                                        <Box width={'80'} height={'75'} marginRight={2}>test</Box>
+                                        <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
+                                            <Typography variant={'h6'} color={'var(--color-text-secondary)'}>Rewards</Typography>
+                                            <Typography variant={'h3'}>{item.volume}{item.token}</Typography>
+                                            <Typography variant={'body2'} color={'var(--color-text-third)'}>{o.start}{o.end}</Typography>
+                                        </Box>
                                     </Box>
-                                </Box>
-                            ))}
-                        </AwardWrapperStyled>
-                    ))}
+                                ))}
+                            </AwardWrapperStyled>
+                        ))}
+                    </Box>
                 </FixedStyle>
             </Box>
         </Box>
