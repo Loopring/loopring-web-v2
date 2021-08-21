@@ -112,7 +112,7 @@ const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
     //TODO: checkRouter
     const WrapAmmPanel = (rest: any) => {
         return <>
-            <AmmPanel {...{...ammProps, tabSelected: AmmPanelType.Deposit}} {...rest} > </AmmPanel>
+            <AmmPanel {...{...ammProps, tabSelected: AmmPanelType.Join}} {...rest} > </AmmPanel>
         </>
 
     }
