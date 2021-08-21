@@ -162,7 +162,13 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     ), [])
 
     const getPopoverPopper = useCallback((market: string, isLp: boolean) => {
-        const list = isLp ? [] : getMakretArrayListCallback(market)
+        const marketList = isLp ? [] : getMakretArrayListCallback(market).filter(pair => {
+            const [first, last] = pair.split('-')
+            if (first === 'USDT' || last === 'USDT') {
+                return true
+            }
+            return first === market
+        })
         
         return (
             <Box borderRadius={'inherit'} minWidth={110}>
@@ -176,8 +182,8 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                     </MenuItem>
                 </>
                 ) : (
-                    list.map(pair => {
-                        const formattedPair = pair.replace('-', '/')
+                    marketList.map(pair => {
+                        const formattedPair = pair.replace('-', ' / ')
                         return (
                             <MenuItem key={pair} onClick={() => jumpToSwapPanel(pair)}>
                                 <ListItemText>{formattedPair}</ListItemText>
