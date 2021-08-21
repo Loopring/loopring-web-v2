@@ -21,8 +21,7 @@ export const ModalGroup = withTranslation('common', {
         onWalletConnectPanelClose?: (event: MouseEvent) => void
         onAccountInfoPanelClose?: (event: MouseEvent) => void
     }) => {
-    const {transferProps} = useTransfer();
-    const {depositProps} = useDeposit();
+
     const {
         withdrawAlertText,
         withdrawToastOpen,
@@ -30,6 +29,8 @@ export const ModalGroup = withTranslation('common', {
         withdrawProps
     } = useWithdraw();
     const {etherscanUrl} = useSystem();
+    const {depositProps} = useDeposit();
+    const {transferProps} = useTransfer();
     useAccountModal();
     const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals();
     return <>
