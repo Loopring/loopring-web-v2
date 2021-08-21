@@ -128,7 +128,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
                     myLog('After connect >>, get apiKey', apiKey)
         
-                    accountServices.sendAccountSigned(accInfo.accountId,apiKey, eddsaKey)
+                    accountServices.sendAccountSigned(accInfo.accountId, apiKey, eddsaKey)
 
                     }
 
