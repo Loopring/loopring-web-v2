@@ -308,17 +308,23 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             LoopringAPI.userAPI && account.readyState === AccountStatus.ACTIVATED
             && ammMap && account?.accountId && account?.apiKey) {
             const { walletMap } = makeWalletLayer2();
-            const {amm} = sdk.getExistedMarket(marketArray, base, quote)
+            const { amm, } = sdk.getExistedMarket(marketArray, base, quote)
+
+            const realMarket = amm && ammMap[amm] ? amm : market
+
             const req: sdk.GetMinimumTokenAmtRequest = {
                 accountId: account.accountId,
-                market,
+                market: realMarket,
             }
+
             const { amountMap } = await LoopringAPI.userAPI.getMinimumTokenAmt(req, account.apiKey)
-            const baseMinAmtInfo = amountMap[base]
+            
             const quoteMinAmtInfo = amountMap[quote]
+
             const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
-            const feeBips = amm && ammMap[amm]? ammMap[amm].__rawConfig__.feeBips: 0
+            const feeBips = amm && ammMap[amm] ? ammMap[amm].__rawConfig__.feeBips: 0
             const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
+
             setTradeData({
                 sell: {
                     belong: tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap[tradeCalcData.coinSell]?.simpleName : undefined,
@@ -331,6 +337,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             } as SwapTradeData<IBData<C>>)
             setQuoteMinAmt(quoteMinAmtInfo?.userOrderInfo.minAmount)
             setFeeBips(totalFee)
+            myLog(`${realMarket} totalFee: ${totalFee}`)
+            
             setTakerRate(takerRate.toString())
             setTradeCalcData({ ...tradeCalcData,walletMap, fee: totalFee } as TradeCalcData<C>)
         } else {
