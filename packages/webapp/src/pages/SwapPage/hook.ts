@@ -353,6 +353,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
 
             setTradeData({
+                ...tradeData,
                 sell: {
                     belong: tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap[ tradeCalcData.coinSell ]?.simpleName : undefined,
                     balance: walletMap ? walletMap[ tradeCalcData.coinSell as string ]?.count : 0
@@ -375,6 +376,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
             setTradeCalcData({...tradeCalcData, walletMap: {}, fee: '0'} as TradeCalcData<C>)
             setTradeData({
+                ...tradeData,
                 sell: {
                     belong: base,
                     balance: 0
@@ -386,8 +388,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             } as SwapTradeData<IBData<C>>)
         }
 
-    }, [tradeData?.sell.belong, amountMap, tradeData?.buy.belong, marketArray, ammMap,
-        account.readyState, account.apiKey, account.accountId])
+    }, [tradeData, amountMap, marketArray, ammMap, account])
 
     useWalletHook({walletLayer2Callback})
 
@@ -522,7 +523,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 myLog('coinA,coinB', coinA, coinB);
 
                 _tradeData = {
-
                     sell: {
                         belong: coinA,// _tradeCalcData.sellCoinInfoMap ? _tradeCalcData.sellCoinInfoMap[_tradeCalcData.coinSell]?.simpleName : undefined,
                         // balance: tradeCalcData.walletMap ? tradeCalcData.walletMap[ coinA ]?.count : 0
