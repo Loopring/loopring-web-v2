@@ -533,18 +533,20 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                         // balance: tradeCalcData.walletMap ? tradeCalcData.walletMap[ coinB ]?.count : 0
                     }
                 }
+                let {amm: ammKey, market: _market} = sdk.getExistedMarket(marketArray, coinA, coinB);
+                let apiList = [pairDetailBlock({coinKey: _market, ammKey: ammKey as string, ammMap})];
+                myLog('tradeData,tradeCalcData', _tradeData, tradeCalcData);
+                Promise.all([...apiList])
+                    .then(([{ammPoolsBalance, tickMap}]: any[])=>apiCallback({ammPoolsBalance,tickMap,coinA,coinB,_tradeData}))
+                    .catch((error) => {
+                        myLog(error)
+                    })
             }
             tradeCalcData.fee = feeBips;
             setTradeData({...tradeData,..._tradeData} as SwapTradeData<IBData<C>>)
             setTradeCalcData(tradeCalcData)
-            let {amm: ammKey, market: _market} = sdk.getExistedMarket(marketArray, coinA, coinB);
-            let apiList = [pairDetailBlock({coinKey: _market, ammKey: ammKey as string, ammMap})];
-            myLog('tradeData,tradeCalcData', _tradeData, tradeCalcData);
-            Promise.all([...apiList])
-                .then(([{ammPoolsBalance, tickMap}]: any[])=>apiCallback({ammPoolsBalance,tickMap,coinA,coinB,_tradeData}))
-                .catch((error) => {
-                    myLog(error)
-                })
+
+
         }
 
 
