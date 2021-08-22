@@ -319,18 +319,41 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                     {/*    </BoxTopStyled>*/}
                     {/*}*/}
                     <Box marginTop={3}>
-                        {awardList.map(o => (
-                            <AwardWrapperStyled display={'flex'} className={'MuiPaper-elevation2'} marginTop={2}>
-                                {o.awardList.map(item => (
-                                    <Box display={'flex'} alignItems={'center'} >
-                                        <Box width={'80'} height={'75'} marginRight={2}>test</Box>
-                                        <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
-                                            <Typography variant={'h6'} color={'var(--color-text-secondary)'}>Rewards</Typography>
-                                            <Typography variant={'h3'}>{item.volume}{item.token}</Typography>
-                                            <Typography variant={'body2'} color={'var(--color-text-third)'}>{o.start}{o.end}</Typography>
+                        {awardList.map((o, index) => (
+                            <AwardWrapperStyled key={`${o.accountId}-${index}}`} display={'flex'} className={'MuiPaper-elevation2'} marginTop={2}>
+                                {o.awardList.map(item => {
+                                    const rewardIcon: any = item.token ? coinJson[item.token] : undefined
+                                    const renderReward = Number.isFinite(item.volume) ? `${getThousandFormattedNumbers(Number((item.volume as any).toFixed(2)))} ${item.token}` : '--'
+                                    const end = moment(o.end).format('MM/DD')
+                                    return (
+                                        <Box display={'flex'} alignItems={'center'}>
+                                            <Box component={'span'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
+                                                width={'var(--list-menu-coin-size)'} alignItems={'center'}
+                                                justifyContent={'center'} marginRight={2}>
+                                            {coinAIcon ?
+                                                <AvatarCoinStyled imgx={rewardIcon.x} imgy={rewardIcon.y}
+                                                                imgheight={rewardIcon.height}
+                                                                imgwidth={rewardIcon.width} size={24}
+                                                                variant="circular"
+                                                                alt={item.token as string}
+                                                                src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
+                                                : <Avatar variant="circular" alt={item.token as string}
+                                                        style={{
+                                                            height: 'var(--list-menu-coin-size))',
+                                                            width: 'var(--list-menu-coin-size)'
+                                                        }}
+                                                    // src={sellData?.icon}
+                                                        src={'static/images/icon-default.png'}/>
+                                            }    
+                                            </Box>  
+                                            <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
+                                                <Typography variant={'h6'} color={'var(--color-text-secondary)'}>Rewards</Typography>
+                                                <Typography variant={'h3'}>{renderReward}</Typography>
+                                                <Typography variant={'body2'} color={'var(--color-text-third)'}>{o.start} - {end}</Typography>
+                                            </Box>
                                         </Box>
-                                    </Box>
-                                ))}
+                                    )
+                                })}
                             </AwardWrapperStyled>
                         ))}
                     </Box>
