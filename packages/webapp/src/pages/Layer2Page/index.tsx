@@ -93,26 +93,26 @@ export const Layer2Page = () => {
             case AccountStatus.UN_CONNECT:
                 return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'}
                 >
-                    <Typography marginY={3} variant={'h1'}>{t('describeTitleConnectToWallet')}</Typography>
+                    <Typography marginY={3} variant={'h1'} textAlign={'center'}>{t('describeTitleConnectToWallet')}</Typography>
                     <BtnConnect/>
                 </Box>
                 break
             case AccountStatus.LOCKED:
                 return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'}>
-                    <Typography marginY={3} variant={'h1'}>{t('describeTitleLocked')}</Typography>
+                    <Typography marginY={3} variant={'h1'} textAlign={'center'}>{t('describeTitleLocked')}</Typography>
                     <BtnConnect/>
                 </Box>
                 break
             case AccountStatus.NO_ACCOUNT:
                 return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'}>
-                    <Typography marginY={3} variant={'h1'}>{t('describeTitleNoAccount')}</Typography>
+                    <Typography marginY={3} variant={'h1'} textAlign={'center'}>{t('describeTitleNoAccount')}</Typography>
                     <BtnConnect/>
                 </Box>
                 break
             case AccountStatus.NOT_ACTIVE:
                 return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'}
                 >
-                    <Typography marginY={3} variant={'h1'}>{t('describeTitleNotActive')}</Typography>
+                    <Typography marginY={3} variant={'h1'} textAlign={'center'}>{t('describeTitleNotActive')}</Typography>
                     <BtnConnect/>
                 </Box>
                 break
@@ -120,7 +120,7 @@ export const Layer2Page = () => {
                 return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'}
                 >
                     <LoadingIcon color={'primary'} style={{width: 60, height: 60}}/>
-                    <Typography marginY={3} variant={'h1'}>{t('describeTitleOpenAccounting')}</Typography>
+                    <Typography marginY={3} variant={'h1'} textAlign={'center'}>{t('describeTitleOpenAccounting')}</Typography>
                     {/*<BtnConnect/>*/}
                 </Box>
                 break
@@ -128,7 +128,7 @@ export const Layer2Page = () => {
                 return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'}
                 >
                     <Typography marginY={3}
-                                variant={'h1'}>{t('describeTitleOnErrorNetwork', {connectName: account.connectName})}</Typography>
+                                variant={'h1'} textAlign={'center'}>{t('describeTitleOnErrorNetwork', {connectName: account.connectName})}</Typography>
                     {/*<BtnConnect/>*/}
                 </Box>
                 break

@@ -86,15 +86,22 @@ export const SlippagePanel = ({
                 setValue(newValue)
                 handleChange(newValue, customSlippage !== 0.1 && customSlippage !== 0.5 && customSlippage !== 1 ? customSlippage : undefined)
             }
-        } else if(event.target === inputEle.current){
+        } else if(event.target === inputEle.current && event.type === 'change'){
+            console.log('SlippagePanel event.type',event.type,inputEle.current?.value)
             var _value = inputEle.current?.value??''
             _value = _value.replace(suffix,'')
+            setValue(_value)
             setCustomSlippage(_value)
         }else{
+
         }
-
-
     }
+    const handleOnBlur = React.useCallback(()=>{
+        console.log('SlippagePanel inputBlur ',customSlippage,value)
+        if(customSlippage !== 'N' && value !== 'N'){
+              handleChange(value, customSlippage !== 0.1 && customSlippage !== 0.5 && customSlippage !== 1 ? customSlippage : undefined)
+          }
+    },[value,customSlippage])
 
     const toggleData =React.useMemo(()=> slippageList.reduce((pre, value, index) => {
         let item: TGItemJSXInterface;
@@ -105,6 +112,8 @@ export const SlippagePanel = ({
                                                                 decimalsLimit={2}
                                                                 // onValueChange={(value, name) => _handleChange(InputEvent,value)}
                                                                 onChange={_handleChange as any}
+                                                                onMouseOut={handleOnBlur}
+                                                                onBlur={handleOnBlur}
                                                                 defaultValue={customSlippage === 'N'? '':customSlippage}
                                                                 // value={customSlippage === 'N'? '':customSlippage}
                                                                 maxLength={3} suffix={suffix}/></>,
