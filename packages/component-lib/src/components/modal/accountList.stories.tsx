@@ -25,6 +25,8 @@ import {
     ProcessUnlock,
     SuccessUnlock,
     TokenAccessProcess,
+    UpdateAccSigWarning,
+    UpdateAccUserDenied,
 } from './AccountInfo';
 import { account, coinMap, CoinType, walletMap } from '../../static';
 import { DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../index';
@@ -114,7 +116,10 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                 ...rest,
                 providerName: ConnectProviders.MetaMask
             }}/>,},
-            [ AccountStep.TokenApproveFailed ]: {view: <FailedTokenAccess label={rest.t('depositTitleAndActive')} {...{...rest, coinInfo}}/>,},
+            [ AccountStep.TokenApproveFailed ]: {view: <FailedTokenAccess {...{...rest, coinInfo}}/>,},
+
+            [ AccountStep.UpdateAccountUserDenied ]: {view: <UpdateAccUserDenied {...{...rest, coinInfo}}/>,},
+            [ AccountStep.UpdateAccountSigWarning ]: {view: <UpdateAccSigWarning {...{...rest, coinInfo}}/>,},
         }
 
         return { nameList: Object.keys(accountMap), accountList: Object.values(accountMap) }
