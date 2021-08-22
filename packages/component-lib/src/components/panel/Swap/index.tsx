@@ -8,7 +8,7 @@ import { IBData, TradeCalcData } from '@loopring-web/common-resources';
 // import clockLoading from '@loopring-web/common-resources/assets/svg/clock-loading.svg';
 import { SwapData, SwapMenuList, SwapTradeWrap } from '../components';
 import { CountDownIcon } from '../components/tool/Refresh';
-
+import * as _ from 'lodash'
 export const SwapPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>,
     I,
     TCD extends TradeCalcData<I>>({
@@ -70,13 +70,22 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
         if (rest.tradeData &&
             (rest.tradeData.sell !== swapData.tradeData.sell
                 ||  rest.tradeData.buy !== swapData.tradeData.buy)) {
-            setSwapData({
-                ...swapData, tradeData: {
-                    ...swapData.tradeData,
-                    sell: rest.tradeData.sell,
-                    buy: rest.tradeData.buy
-                }
-            });
+
+            if( !_.isEqual(rest.tradeData.sell,swapData.tradeData.sell )){
+                // myLog('swap sell useEffect',rest.tradeData.sell,swapData.tradeData.sell)
+                swapData.tradeData.sell =  rest.tradeData.sell
+            }
+            if(!_.isEqual(rest.tradeData.buy,swapData.tradeData.buy )){
+                swapData.tradeData.buy =  rest.tradeData.buy
+             }
+            setSwapData(swapData)
+            // setSwapData({
+            //     ...swapData, tradeData: {
+            //         ...swapData.tradeData,
+            //         sell: rest.tradeData.sell,
+            //         buy: rest.tradeData.buy
+            //     }
+            // });
         }
     }, [rest.tradeData, swapData])
     const onChangeEvent = React.useCallback(async (_index: 0 | 1, {
