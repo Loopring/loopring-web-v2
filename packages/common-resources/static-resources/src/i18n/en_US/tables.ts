@@ -79,7 +79,7 @@ export default {
     labelFeeEarned: 'Fees Earned',
     labelBuy: 'Buy',
     labelSell: 'Sell',
-    labelAmmSide: 'Orders',
+    labelAmmSide: 'Join/Exit',
     labelAmmAmount: 'Amount',
     labelAmmLpTokenAmount: 'LP Token Amount',
     labelAmmFee: 'Fee',
