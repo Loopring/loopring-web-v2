@@ -339,7 +339,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                                                 src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
                                                 : <Avatar variant="circular" alt={item.token as string}
                                                         style={{
-                                                            height: 'var(--list-menu-coin-size))',
+                                                            height: 'var(--list-menu-coin-size)',
                                                             width: 'var(--list-menu-coin-size)'
                                                         }}
                                                     // src={sellData?.icon}

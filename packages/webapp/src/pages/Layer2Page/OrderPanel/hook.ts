@@ -29,7 +29,6 @@ export const useOrderList = () => {
             }, apiKey)
             if (userOrders && Array.isArray(userOrders.orders)) {
                 setTotalNum(userOrders.totalNum)
-                console.log(userOrders.orders[0])
                 setOrderOriginalData(userOrders.orders.map(o => {
                     const { baseAmount, quoteAmount, baseFilled, quoteFilled } = o.volumes
 
