@@ -26,6 +26,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        handleCountChange,
                                                                        focusOnInput,
                                                                        name,
+                                                                       isHideError=false,
                                                                    }
                                                                        : InputCoinProps<T, C, I>, ref: React.ForwardedRef<any>) {
     const {balance, belong, tradeValue} = (inputData ? inputData : {}) as IBData<C>;
@@ -148,10 +149,10 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
             </Grid>
         </Grid>
 
-        <Grid container className={'message-wrap'} wrap={'nowrap'} alignItems={'stretch'} alignContent={'stretch'}
+        {isHideError? <></>: <Grid container className={'message-wrap'} wrap={'nowrap'} alignItems={'stretch'} alignContent={'stretch'}
               justifyContent={'flex-end'}>
             <Grid item><FormHelperText>{error.message}</FormHelperText></Grid>
-        </Grid>
+        </Grid> }
 
     </IWrap>
     </>
