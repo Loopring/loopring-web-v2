@@ -2,7 +2,7 @@ import { Trans, WithTranslation } from 'react-i18next';
 import { Link, Typography } from '@material-ui/core';
 import { CoinInfo, LinkIcon } from '@loopring-web/common-resources';
 import React from 'react';
-import { FailedBasic } from '../ModalPanelBase';
+import { FailedBasic, WarningBasic } from '../ModalPanelBase';
 
 export const FailedDeposit = ({
                                   onRetry,
@@ -64,6 +64,33 @@ export const FailedUpdateAcc = ({onRetry, t,...rest}: { onRetry: () => void } & 
             </Typography>
         </>
     }, [])
-    return <FailedBasic label={'labelActiveLayer2'} onRetry={() => { if (onRetry) onRetry() }} describe={describe} {...{...rest, t}}/>
+    return <FailedBasic label={t('labelActiveLayer2')} onRetry={() => { if (onRetry) onRetry() }} describe={describe} {...{...rest, t}}/>
+
+}
+
+export const UpdateAccSigWarning = ({onTryAnother, t,...rest}: { onTryAnother: () => void } & WithTranslation) => {
+    const describe = React.useMemo(() => {
+        return   <>
+            <Typography component={'p'} marginTop={2}>
+                <Trans i18nKey={'labelUpdateAccSigWarning'}>
+                </Trans>
+            </Typography>
+        </>
+    }, [])
+    return <WarningBasic label={t('labelActiveLayer2')} callback={() => { if (onTryAnother) onTryAnother() }} describe={describe} {...{...rest, t}}/>
+
+}
+
+export const UpdateAccUserDenied = ({onRetry, t,...rest}: { onRetry: () => void } & WithTranslation) => {
+    const describe = React.useMemo(() => {
+        return   <>
+            <Typography component={'p'} marginTop={2}>
+                <Trans i18nKey={'labelUpdateAccUserDenied'}>
+                    Rejected, Please<Link onClick={() => { if (onRetry) onRetry() }}>retry</Link>
+                </Trans>
+            </Typography>
+        </>
+    }, [])
+    return <WarningBasic label={t('labelActiveLayer2')} callback={() => { if (onRetry) onRetry() }} describe={describe} {...{...rest, t}}/>
 
 }
