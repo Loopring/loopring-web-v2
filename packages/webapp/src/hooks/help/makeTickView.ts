@@ -25,7 +25,7 @@ export const makeTickView = (tick: TickerData) => {
 
         // APY: 0,
     }
-    if (faitPrices && forex) {
+    if (faitPrices && forex && tick.close) {
         const volume = VolToNumberWithPrecision(tick.base_token_volume, tick.base as string)
         // const priceDollar = toBig(tiem).times(faitPrices[ tick.base as string ] ? faitPrices[ tick.base as string ].price : 0);
         // const priceYuan = priceDollar.times(forex);

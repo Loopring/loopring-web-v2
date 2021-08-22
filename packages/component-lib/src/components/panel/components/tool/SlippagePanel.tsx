@@ -87,7 +87,6 @@ export const SlippagePanel = ({
                 handleChange(newValue, customSlippage !== 0.1 && customSlippage !== 0.5 && customSlippage !== 1 ? customSlippage : undefined)
             }
         } else if(event.target === inputEle.current && event.type === 'change'){
-            console.log('SlippagePanel event.type',event.type,inputEle.current?.value)
             var _value = inputEle.current?.value??''
             _value = _value.replace(suffix,'')
             setValue(_value)
@@ -97,7 +96,6 @@ export const SlippagePanel = ({
         }
     }
     const handleOnBlur = React.useCallback(()=>{
-        console.log('SlippagePanel inputBlur ',customSlippage,value)
         if(customSlippage !== 'N' && value !== 'N'){
               handleChange(value, customSlippage !== 0.1 && customSlippage !== 0.5 && customSlippage !== 1 ? customSlippage : undefined)
           }
