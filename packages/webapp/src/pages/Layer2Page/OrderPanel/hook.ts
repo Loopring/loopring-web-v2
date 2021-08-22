@@ -29,6 +29,7 @@ export const useOrderList = () => {
             }, apiKey)
             if (userOrders && Array.isArray(userOrders.orders)) {
                 setTotalNum(userOrders.totalNum)
+                console.log(userOrders.orders[0])
                 setOrderOriginalData(userOrders.orders.map(o => {
                     const { baseAmount, quoteAmount, baseFilled, quoteFilled } = o.volumes
 
@@ -40,8 +41,8 @@ export const useOrderList = () => {
                     const tokenLast = marketList[marketList.length - 1]
                     const baseToken = isBuy ? tokenLast : tokenFirst
                     const quoteToken = isBuy ? tokenFirst : tokenLast
-                    const baseValue = isBuy ? volumeToCountAsBigNumber(quoteToken, quoteAmount)?.times(o.price).toNumber() : volumeToCountAsBigNumber(baseToken, baseAmount)
-                    const quoteValue = isBuy ? volumeToCountAsBigNumber(quoteToken, quoteAmount) : volumeToCountAsBigNumber(baseToken, baseAmount)?.times(o.price).toNumber()
+                    const baseValue = isBuy ? volumeToCountAsBigNumber(quoteToken, quoteAmount)?.times(o.price) : volumeToCountAsBigNumber(baseToken, baseAmount)
+                    const quoteValue = isBuy ? volumeToCountAsBigNumber(quoteToken, quoteAmount) : volumeToCountAsBigNumber(baseToken, baseAmount)?.times(o.price)
 
                     return ({
                         market: o.market,
@@ -50,11 +51,11 @@ export const useOrderList = () => {
                         amount: {
                             from: {
                                 key: baseToken,
-                                value: Number(baseValue)
+                                value: baseValue as any
                             },
                             to: {
                                 key: quoteToken,
-                                value: Number(quoteValue)
+                                value: quoteValue as any
                             }
                         },
                         // average: Number(o.price),
