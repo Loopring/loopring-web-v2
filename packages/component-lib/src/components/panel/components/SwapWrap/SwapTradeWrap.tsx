@@ -86,7 +86,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     ...swapData.tradeData.__cache__,
                     customSlippage: customSlippage
                 }
-            }, type: 'buy',to:'button'
+            }, type: 'sell',to:'button'
         });
     }, [swapData, onChangeEvent])
     
