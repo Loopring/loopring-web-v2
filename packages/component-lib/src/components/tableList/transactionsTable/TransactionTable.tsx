@@ -13,6 +13,9 @@ import {
     // PendingIcon,
     TableType,
     AssetsIcon, // temporayily replacement
+    WaitingIcon,
+    WarningIcon,
+    CompleteIcon,
 } from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
 import { TxnDetailPanel, TxnDetailProps } from './components/modal'
@@ -76,11 +79,15 @@ const CellStatus = ({row, column}: any) => {
         color: ${({theme}) => theme.colorBase[ `${TYPE_COLOR_MAPPING.find(o => o.type === status)?.color}` ]};
 
         & svg {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
         }
     `
-    const svg = status === 'processed' ? <CheckIcon width={14} height={14} /> : status === 'processing' ? <AssetsIcon/> : <AlertIcon/>
+    const svg = status === 'processed' 
+        ? <CompleteIcon /> 
+        : status === 'processing' 
+            ? <WaitingIcon /> 
+            : <WarningIcon />
     const RenderValueWrapper =
         <RenderValue>
             {/* {svg}{status} */}

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Box, Grid, MenuItem, ListItemText } from '@material-ui/core'
+import { Box, Grid, MenuItem, ListItemText, Avatar, Typography } from '@material-ui/core'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
@@ -9,7 +9,7 @@ import { Column, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { Filter } from './components/Filter'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
-import { TableType, MoreIcon } from '@loopring-web/common-resources';
+import { TableType, MoreIcon, AvatarCoinStyled } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores'
 
 const TableStyled = styled(Box)`
@@ -19,7 +19,13 @@ const TableStyled = styled(Box)`
 
   .rdg {
     flex: 1;
-    --template-columns: auto auto auto 150px ${(props: any) => props.lan === 'en_US' ? '275px' : '240px'} !important;
+    --template-columns: 200px auto auto 150px ${(props: any) => props.lan === 'en_US' ? '275px' : '240px'} !important;
+
+    .rdg-cell:first-of-type {
+        display: flex;
+        align-items: center;
+        margin-top: ${({theme}) => theme.unit / 8}px;
+    }
 
     .rdg-cell.action {
       display: flex;
@@ -136,6 +142,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
 
     const {language} = useSettings()
     let history = useHistory()
+    const {coinJson} = useSettings();
     // const rightState = usePopupState({variant: 'popover', popupId: `action-popover`});
 
     useEffect(() => {
@@ -217,10 +224,35 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             name: t('labelToken'),
             formatter: ({row, column}) => {
                 const token = row[ column.key ]
-                const StyledToken = styled(Box)`
-                    font-size: 13px;
-                `
-                return <StyledToken>{token.value}</StyledToken>
+                // const StyledToken = styled(Box)`
+                //     font-size: 13px;
+                // `
+                const tokenIcon: any = token.value ? coinJson[token.value] : undefined
+                console.log(coinJson, token.value)
+                return <>
+                    <Box display={'flex'} alignItems={'center'}>
+                        <Box component={'span'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
+                                                    width={'var(--list-menu-coin-size)'} alignItems={'center'}
+                                                    justifyContent={'center'} marginRight={2}>
+                                                {tokenIcon ?
+                            <AvatarCoinStyled imgx={tokenIcon.x} imgy={tokenIcon.y}
+                                            imgheight={tokenIcon.height}
+                                            imgwidth={tokenIcon.width} size={24}
+                                            variant="circular"
+                                            alt={token.value as string}
+                                            src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
+                            : <Avatar variant="circular" alt={token.value as string}
+                                    style={{
+                                        width: 'var(--list-menu-coin-size)',
+                                        height: 'var(--list-menu-coin-size)',
+                                    }}
+                                // src={sellData?.icon}
+                                    src={'static/images/icon-default.png'}/>
+                        }    
+                        </Box> 
+                        <Typography variant={'h6'}>{token.value}</Typography>
+                    </Box>
+                </>
             }
         },
         {
