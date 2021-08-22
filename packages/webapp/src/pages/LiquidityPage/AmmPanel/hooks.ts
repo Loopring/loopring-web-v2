@@ -95,8 +95,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
         myLog('initAmmData:', account.accAddress, walletMap, pair)
 
-        let _ammCalcData = ammPairInit(
-            {
+        const _ammCalcData = ammPairInit({
                 pair,
                 ammType,
                 _ammCalcData: {},
@@ -106,7 +105,9 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
                 ammMap,
                 tickerData: snapShotData?.tickerData,
                 ammPoolsBalance: snapShotData?.ammPoolsBalance
-            })
+        })
+        
+        myLog('_ammCalcData:', _ammCalcData)
 
         setAmmCalcData({ ...ammCalcData, ..._ammCalcData });
         if (_ammCalcData.myCoinA) {
@@ -139,7 +140,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         const { market, amm } = getExistedMarket(marketArray, pair.coinAInfo.simpleName as string,
             pair.coinBInfo.simpleName as string)
 
-        if (!market || !amm || !marketMap) {
+        if (!market || !amm || !marketMap || !ammMap || !ammMap[amm as string]) {
             return
         }
 
@@ -159,7 +160,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         const { ammPoolSnapshot } = response
 
         setAmmPoolSnapShot(ammPoolSnapshot)
-        myLog('updateAmmPoolSnapshot',pair)
+        
     }, [pair, ammMap, setAmmPoolSnapShot])
 
     // set fees
@@ -217,9 +218,10 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         accountStatus, account.readyState, accountId, apiKey,
         pair.coinBInfo?.simpleName, tokenMap, ammCalcData
     ])
-    React.useEffect( () => {
+    
+    React.useEffect(() => {
         calculateCallback()
-    }, [accountStatus,pair,ammJoinData])
+    }, [accountStatus, pair, ammJoinData])
 
     // join
 

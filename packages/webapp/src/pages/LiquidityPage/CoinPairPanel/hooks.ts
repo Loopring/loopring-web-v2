@@ -155,8 +155,6 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
         getAwardList()
     }, [getAwardList])
 
-    console.log({awardList})
-
     const walletLayer2DoIt = React.useCallback((market) => {
         const {walletMap: _walletMap} = makeWalletLayer2();
 

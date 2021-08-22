@@ -47,7 +47,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
   C = IBData<I>>(
   {
       t,
-      tabSelected = AmmPanelType.Deposit,
+      tabSelected = AmmPanelType.Join,
       ammDepositData,
       ammWithdrawData,
       disableDeposit,
@@ -127,10 +127,10 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
       }
 
   }, [index]);
-  const panelList: Pick<PanelContent<"ammDeposit" | "ammWithdraw">, 'key' | 'element'>[] = [
+  const panelList: Pick<PanelContent<"ammJoin" | "ammExit">, 'key' | 'element'>[] = [
       {
-          key: "ammDeposit",
-          element: React.useMemo(() => <AmmDepositWrap<T, I, ACD, C> key={"ammDeposit"} {...{
+          key: "ammJoin",
+          element: React.useMemo(() => <AmmDepositWrap<T, I, ACD, C> key={"ammJoin"} {...{
               t,
               ...rest,
               disableDeposit,
@@ -152,8 +152,8 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
               handleError]),
       },
       {
-          key: "ammWithdraw",
-          element: React.useMemo(() => <AmmWithdrawWrap<T, I, ACD, C> key={"ammWithdraw"} {...{
+          key: "ammExit",
+          element: React.useMemo(() => <AmmWithdrawWrap<T, I, ACD, C> key={"ammExit"} {...{
               t,
               ...rest,
               anchors,
@@ -197,14 +197,12 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
 
           </Toolbar>
           <SwipeableViewsStyled  axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'} index={index} >
-              {panelList.map((panel) => {
+              {panelList.map((panel, index) => {
                   return <Grid item justifyContent={'space-evenly'} alignItems={'stretch'} height={'100%'}
-                               key={panel.key}>{panel.element}</Grid>
+                               key={index}>{panel.element}</Grid>
               })}
           </SwipeableViewsStyled>
 
-
-      {/*</Grid>*/}
   </WrapStyle>
 }) as <T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
   ACD extends AmmInData<I>,
