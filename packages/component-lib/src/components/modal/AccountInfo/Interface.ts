@@ -33,5 +33,7 @@ export enum AccountStep {
     DepositApproveProcess,
     TokenApproveFailed,
     UpdateAccountInProcess,
+    UpdateAccountSigWarning,
+    UpdateAccountUserDenied,
     UpdateAccountFailed,
 }

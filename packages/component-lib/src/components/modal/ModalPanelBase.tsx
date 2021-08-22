@@ -3,7 +3,7 @@ import { Trans, WithTranslation } from 'react-i18next';
 import {
     ConnectProviders,
     LoadingIcon,
-    DoneIcon, FailedIcon,
+    DoneIcon, FailedIcon, RefuseIcon,
 } from '@loopring-web/common-resources';
 import React from 'react';
 import { useTheme } from '@emotion/react';
@@ -67,6 +67,20 @@ export const FailedBasic= ({onRetry,describe,label,t}: {describe:JSX.Element, on
         {describe}
         <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
             <Button variant={'contained'} fullWidth size={'medium'}  onClick={onRetry}>{t('labelRetry')} </Button>
+        </Box>
+    </Box>
+
+}
+
+export const WarningBasic= ({callback, describe,label,t}: {describe:JSX.Element, callback:(event:any)=>void,label:string } & WithTranslation)=>{
+    return    <Box flex={1} display={'flex'} alignItems={'center'}  justifyContent={'space-between'} flexDirection={'column'}>
+        <Typography component={'h3'} variant={'h3'} marginBottom={3}>{label}</Typography>
+        <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
+            <RefuseIcon color={'error'} style={{width:60,height:60}}/>
+        </Typography>
+        {describe}
+        <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
+            <Button variant={'contained'} fullWidth size={'medium'}  onClick={callback}>{t('labelRetry')} </Button>
         </Box>
     </Box>
 
