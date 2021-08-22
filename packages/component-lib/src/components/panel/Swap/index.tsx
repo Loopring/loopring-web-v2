@@ -113,7 +113,8 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                         balance: count ? count : 0,
                     }
                 };
-               
+
+                
                 setSwapData({tradeData: _tradeData, to, type});
             }
         }
