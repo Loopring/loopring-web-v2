@@ -39,7 +39,7 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
         onRefreshData,
     } = useAmmPanel({
         pair,
-        snapShotData, ammType: ammType ? ammType : AmmPanelType.Deposit
+        snapShotData, ammType: ammType ? ammType : AmmPanelType.Join
     })
 
     // const [index, setIndex] = React.useState(AmmPanelTypeMap[ tabSelected ]);
@@ -74,7 +74,7 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
                   handleAmmRemoveChangeEvent={handleExitAmmPoolEvent}
                   onAmmRemoveClick={onAmmRemoveClick}
                   onAmmAddClick={onAmmAddClick}
-                  tabSelected={ammType ? ammType : AmmPanelType.Deposit}
+                  tabSelected={ammType ? ammType : AmmPanelType.Join}
                   ammDepositBtnI18nKey={ammDepositBtnI18nKey}
                   ammWithdrawBtnI18nKey={ammWithdrawBtnI18nKey}
                   ammDepositBtnStatus={isLoading()?TradeBtnStatus.LOADING:TradeBtnStatus.AVAILABLE}
