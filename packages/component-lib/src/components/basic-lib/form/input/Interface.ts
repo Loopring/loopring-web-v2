@@ -36,6 +36,7 @@ export type InputCoinProps<T, R, I> = {
     disabled?: boolean,
     logoColor?: string,
     wait?: number,
+    isHideError?:boolean,
     handleCountChange?: (ibData: T, ref: React.ForwardedRef<any>) => void,
     handleError?: (ibData: T, ref: React.ForwardedRef<any>) => { error: boolean, message?: string | React.ElementType<HTMLElement> },
     focusOnInput?: boolean,
