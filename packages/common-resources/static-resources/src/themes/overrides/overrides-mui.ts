@@ -512,7 +512,7 @@ export const MuiIconButton = ({colorBase}: any): { styleOverrides: ComponentsOve
     }
 }
 
-export const MuiToggleButton = ({colorBase}: any) => {
+export const MuiToggleButton = ({colorBase}: any): { styleOverrides: ComponentsOverrides['MuiToggleButton'] } => {
     return {
         styleOverrides: {
             root: {
@@ -523,9 +523,10 @@ export const MuiToggleButton = ({colorBase}: any) => {
                 // boxShadow: '0px 4px 62px rgba(0, 0, 0, 0.25)',
                 borderRadius: '4px !important',
                 marginRight: pxToRem(2),
-                fontSize: '1.6rem',
+                fontSize: '1.4rem',
                 color: colorBase.textThird,
                 border: 'none',
+                textTransform: 'none',
                 // borderColor: colorBase.border,
                 '&&:not(:first-of-type), &&:not(:last-child)': {
                     // borderColor: colorBase.border,
