@@ -42,10 +42,12 @@ export async function activeAccount({ reason, shouldShow }: { reason: any, shoul
     }
 }
 
-export async function updateAccountFromServer() {
+export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolean, }) {
 
     const system = store.getState().system
     const account = store.getState().account
+
+    let eddsaKey = account.eddsaKey
 
     myLog('before check!', account)
 
@@ -55,12 +57,6 @@ export async function updateAccountFromServer() {
 
         if (LoopringAPI.userAPI && LoopringAPI.exchangeAPI && system.exchangeInfo && connectProvides.usedWeb3 && account
             && system.chainId !== 'unknown' && account.connectName !== 'unknown') {
-            const feeMap = {
-                'ETH': '529000000000000',
-                'LRC': '34000000000000000000',
-                'USDT': '7850000',
-                'DAI': '98100000000000000000',
-            }
 
             const { accInfo } = (await LoopringAPI.exchangeAPI.getAccount({
                 owner: account.accAddress
@@ -71,21 +67,33 @@ export async function updateAccountFromServer() {
                 const connectName = account.connectName as sdk.ConnectorNames
 
                 try {
-                    const eddsaKey = await sdk
-                        .generateKeyPair(
-                            connectProvides.usedWeb3,
-                            accInfo.owner,
-                            system.exchangeInfo.exchangeAddress,
-                            accInfo.nonce,
-                            connectName,
-                        )
+                        if (!eddsaKey) {
+                            myLog('no eddsaKey!')
+                            eddsaKey = await sdk
+                            .generateKeyPair(
+                                connectProvides.usedWeb3,
+                                accInfo.owner,
+                                system.exchangeInfo.exchangeAddress,
+                                accInfo.nonce,
+                                connectName,
+                            )
+                            myLog('no eddsaKey! after generateKeyPair')
+                        }
 
                     try {
+
+                        const feeMap = {
+                            'ETH': '529000000000000',
+                            'LRC': '34000000000000000000',
+                            'USDT': '7850000',
+                            'DAI': '98100000000000000000',
+                        }
+
                         const request: sdk.UpdateAccountRequestV3 = {
                             exchange: system.exchangeInfo.exchangeAddress,
                             owner: accInfo.owner,
                             accountId: accInfo.accountId,
-                            publicKey: { x: eddsaKey.formatedPx, y: eddsaKey.formatedPy },
+                            publicKey: { x: eddsaKey.formatedPx, y: eddsaKey.formatedPy, },
                             maxFee: { tokenId: 0, volume: feeMap['ETH'] },
                             validUntil: getTimestampDaysLater(DAYS),
                             nonce: accInfo.nonce as number,
@@ -98,13 +106,17 @@ export async function updateAccountFromServer() {
                             web3: connectProvides.usedWeb3, 
                             chainId: system.chainId, 
                             walletType: connectName,
+                            isHWAddr,
                         })
 
                         myLog('updateAccountResponse:', updateAccountResponse)
 
                         if (updateAccountResponse.errorInfo) {
                             result.code = ActionResultCode.UpdateAccoutError
-                            result.data = updateAccountResponse.errorInfo
+                            result.data = {
+                                eddsaKey,
+                                errorInfo: updateAccountResponse.errorInfo,
+                            }
                         } else {
                             result.data = {
                                 response: updateAccountResponse,
@@ -119,6 +131,9 @@ export async function updateAccountFromServer() {
                     }
 
                 } catch (reason) {
+
+                    myLog('GenEddsaKeyError!!!!!! ')
+
                     result.code = ActionResultCode.GenEddsaKeyError
                     result.data = reason
                     dumpError400(reason)

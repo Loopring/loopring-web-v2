@@ -35,14 +35,11 @@ import {
     toBig,
     TokenInfo, WsTopicType
 } from 'loopring-sdk';
-import { useCustomDCEffect } from '../../../hooks/common/useCustomDCEffect';
 import { useAccount } from '../../../stores/account/hook';
 import store from "stores";
 import { LoopringAPI } from "api_wrapper";
 import { deepClone } from '../../../utils/obj_tools';
-import { useWalletLayer2 } from "stores/walletLayer2";
 import { myLog } from "utils/log_tools";
-import { REFRESH_RATE_SLOW } from "defs/common_defs";
 import { useTranslation } from "react-i18next";
 import { useWalletHook } from '../../../services/wallet/useWalletHook';
 import { useSocket } from '../../../stores/socket';

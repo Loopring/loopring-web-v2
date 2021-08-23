@@ -20,6 +20,11 @@ const path = require('path')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const gitRevisionPlugin = new GitRevisionPlugin()
 
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer")
+const CompressionWebpackPlugin = require("compression-webpack-plugin")
+
+const isEnvProduction = process.env.NODE_ENV === "production"
+
 // Deployment on Heroku
 // During Heroku builds, the SOURCE_VERSION and STACK environment variables are set:
 var onHeroku = process.env.SOURCE_VERSION && process.env.STACK
@@ -133,15 +138,47 @@ module.exports = override(
     config.output.publicPath = ASSET_PATH;
     // 增加处理less module配置 customize-cra 不提供 less.module 只提供css.module
      //console.log(path.resolve(__dirname, "..", "assets/"))
-    // console.log('enter config!!!!!!!', config.module.rules[1].oneOf[2])
+    console.log('-----> enter config!!!!!!!')
 
     const setConfig = (index) => {
+      console.log('-----> enter setConfig!!!!!!! index:', index)
       let babelLoader = config.module.rules[1].oneOf[index];
       babelLoader.include = babelLoader.include.replace('/webapp/src', '');
       config.module.rules[1].oneOf[index] = babelLoader;
     }
 
-    setConfig(2);
+    const addCompression = () => {
+      console.log('enter prod addCompression......')
+      if (isEnvProduction) {
+        console.log('prod addCompression...... isEnvProduction isEnvProduction')
+        config.plugins.push(
+          // gzip压缩
+          new CompressionWebpackPlugin({
+            test: /\.(css|js)$/,
+            // 只处理比1kb大的资源
+            threshold: 1024,
+            // 只处理压缩率低于90%的文件
+            minRatio: 0.9
+          })
+        );
+      }
+    
+    };
+    
+    // 查看打包后各包大小
+    const addAnalyzer = () => {
+      if (process.env.ANALYZER) {
+        config.plugins.push(new BundleAnalyzerPlugin());
+      }
+  
+    };
+
+    setConfig(2)
+    
+    addCompression()
+
+    addAnalyzer()
+
     // setConfig(3);
     
     /*

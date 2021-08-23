@@ -27,7 +27,8 @@ import { localStoreReducer } from './localStore';
 import { myLog } from 'utils/log_tools'
 import { FavoriteMarketStates } from './localStore/favoriteMarket'
 import { OnchainHashInfo } from './localStore/onchainHashInfo'
-import { Confirmation } from './localStore/confirmation/interface'
+import { Confirmation } from './localStore/confirmation'
+import { WalletInfo } from './localStore/walletInfo'
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -61,6 +62,7 @@ const persistedLocalStoreReducer = persistReducer<CombinedState<{
     favoriteMarket: FavoriteMarketStates,
     onchainHashInfo: OnchainHashInfo,
     confirmation: Confirmation,
+    walletInfo: WalletInfo,
 }>>(persistLocalStoreConfig, localStoreReducer)
 
 const reducer = combineReducers({
