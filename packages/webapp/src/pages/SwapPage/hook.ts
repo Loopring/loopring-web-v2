@@ -5,7 +5,7 @@ import {
     IBData,
     SagaStatus,
     TradeCalcData,
-    TradeFloat,
+    TradeFloat, WalletMap,
 } from '@loopring-web/common-resources';
 import React from 'react';
 import { LoopringAPI } from 'api_wrapper';
@@ -70,7 +70,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     const {account, status: accountStatus} = useAccount()
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap, idIndex} = useTokenMap()
-    const {slippage} = useSettings()
+    const {setSlippage:_setSlippage} = useSettings()
     const {walletLayer2} = useWalletLayer2();
     const {ammMap} = useAmmMap()
     const {status: walletLayer2Status} = useWalletLayer2();
@@ -79,6 +79,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     /*** api prepare ***/
     const {t} = useTranslation('common')
     const {pair, setPair, market, setMarket, } = usePairMatch('/trading/lite');
+    const [slippage,setSlippage] = React.useState<string | undefined>(undefined);
     const [swapBtnI18nKey, setSwapBtnI18nKey] = React.useState<string | undefined>(undefined)
     const [swapBtnStatus, setSwapBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE)
     const [isSwapLoading, setIsSwapLoading] = React.useState(false)
@@ -105,6 +106,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const [depth, setDepth] = React.useState<sdk.DepthData>()
 
     const [amountMap, setAmountMap] = React.useState<any>()
+    
 
     //table myTrade
     const myTradeTableCallback = React.useCallback(() => {
@@ -471,73 +473,54 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const resetTradeCalcData = React.useCallback((_tradeData, market?, depth?, type?) => {
         if (coinMap && tokenMap && marketMap && marketArray && ammMap) {
             let coinA: string, coinB: string;
-            if (type === 'exchange' && _tradeData ) {
-                coinA = _tradeData.sell;
-                coinB = _tradeData.buy;
-            } else if (type && _tradeData) {
-                coinA = _tradeData.sell.belong
-                coinB = _tradeData.buy.belong
-                myLog('coinA,coinB', coinA, coinB);
-                let input: any = (type === 'sell' ? _tradeData.sell.tradeValue : _tradeData.buy.tradeValue)
-                input = input === undefined || isNaN(Number(input)) ? 0 : Number(input);
-                let slippage = sdk.toBig(_tradeData.slippage && !isNaN(_tradeData.slippage) ? _tradeData.slippage : '0.5').times(100).toString();
-                myLog('input,slippage', input, slippage);
-                const output = sdk.getOutputAmount(input.toString(), coinA, coinB, type === 'sell', marketArray, tokenMap,
-                    marketMap, depth, ammMap as any, ammPoolSnapshot, takerRate, slippage);
-                setOutput(output);
-                tradeCalcData.priceImpact = output?.priceImpact as string;
-                tradeCalcData.minimumReceived = output?.amountBOutSlip.minReceivedVal as string;
-                myLog(`${type === 'sell' ? 'buy' : 'sell'} output:priceImpact,minimumReceived,tradeValue`, output?.priceImpact, output?.amountBOutSlip, output?.output);
-                _tradeData[ type === 'sell' ? 'buy' : 'sell' ].tradeValue = output?.output ? parseFloat(output?.output) : 0
+            if (market) {
+                [, coinA, coinB] = market.match(/([\w,#]+)-([\w,#]+)/i);
             } else {
-                if (market) {
-                    [, coinA, coinB] = market.match(/([\w,#]+)-([\w,#]+)/i);
-                } else {
-                    coinA = '#null'
-                    coinB = '#null'
-                }
-                let whichCoinIndex = [coinA, coinB].findIndex(item => item !== '#null');
-
-                if (whichCoinIndex !== -1 && coinMap[ [coinA, coinB][ whichCoinIndex ] ] === undefined ) {
-                    whichCoinIndex == 0?coinA  = 'LRC':coinB  = 'LRC';
-                }
-                if( whichCoinIndex === -1){
-                    whichCoinIndex = 0;
-                    coinA = 'LRC';
-                }
-                if (!tokenMap[ [coinA, coinB][ whichCoinIndex ] ].tradePairs.includes([coinA, coinB][ whichCoinIndex ^ 1 ])) {
-                    whichCoinIndex == 0? coinB  = tokenMap[ [coinA, coinB][ whichCoinIndex ] ].tradePairs[ 0 ]
-                        :coinA  = tokenMap[ [coinA, coinB][ whichCoinIndex ] ].tradePairs[ 0 ];
-                }
-
-
-
-                _tradeData = {
-                    // ...tradeData,
-                    sell: {
-                        belong: coinA,// _tradeCalcData.sellCoinInfoMap ? _tradeCalcData.sellCoinInfoMap[_tradeCalcData.coinSell]?.simpleName : undefined,
-                        // balance: tradeCalcData.walletMap ? tradeCalcData.walletMap[ coinA ]?.count : 0
-                    },
-                    buy: {
-                        // ...tradeData?.buy,
-                        belong: coinB,
-                        // balance: tradeCalcData.walletMap ? tradeCalcData.walletMap[ coinB ]?.count : 0
-                    }
-                }
-                // setTradeData({..._tradeData} as SwapTradeData<IBData<C>>)
-                // tradeCalcData.fee = feeBips;
-                // setTradeCalcData(tradeCalcData)
-                let {amm: ammKey, market: _market} = sdk.getExistedMarket(marketArray, coinA, coinB);
-                setMarket(_market);
-                setPair({ coinAInfo: coinMap[coinA], coinBInfo: coinMap[coinB]})
-                let apiList = [pairDetailBlock({coinKey: _market, ammKey: ammKey as string, ammMap})];
-                Promise.all([...apiList])
-                    .then(([{ammPoolsBalance, tickMap}]: any[])=>apiCallback({ammPoolsBalance,tickMap}))
-                    .catch((error) => {
-                        myLog(error,'go to LER-ETH');
-                        resetTradeCalcData(undefined, market, depth)
-                    })
+                coinA = '#null'
+                coinB = '#null'
             }
+
+            let whichCoinIndex = [coinA, coinB].findIndex(item => item !== '#null');
+
+            if (whichCoinIndex !== -1 && coinMap[ [coinA, coinB][ whichCoinIndex ] ] === undefined) {
+                whichCoinIndex == 0 ? coinA = 'LRC' : coinB = 'LRC';
+            }
+            if (whichCoinIndex === -1) {
+                whichCoinIndex = 0;
+                coinA = 'LRC';
+            }
+            if(type === 'sell' && coinB!=='#null' ){
+                if(!tokenMap[coinA].tradePairs.includes(coinB)){
+                    coinB =  tokenMap[coinA].tradePairs[0]
+                }
+            }else if(coinB === '#null' || coinA === '#null'){
+                if (!tokenMap[ [coinA, coinB][ whichCoinIndex ] ].tradePairs.includes([coinA, coinB][ whichCoinIndex ^ 1 ])) {
+                    whichCoinIndex == 0 ? coinB = tokenMap[ [coinA, coinB][ whichCoinIndex ] ].tradePairs[ 0 ]
+                        : coinA = tokenMap[ [coinA, coinB][ whichCoinIndex ] ].tradePairs[ 0 ];
+                }
+            }
+            let walletMap;
+            console.log((tradeCalcData.walletMap === {} || tradeCalcData.walletMap ),  account.readyState === AccountStatus.ACTIVATED
+                      ,walletLayer2Status === SagaStatus.UNSET)
+            if (account.readyState === AccountStatus.ACTIVATED
+                && walletLayer2Status === SagaStatus.UNSET) {
+                if( tradeCalcData.walletMap == {})  {
+                    debugger
+                    tradeCalcData.walletMap = makeWalletLayer2().walletMap as WalletMap<any>;
+                }
+                walletMap = tradeCalcData.walletMap;
+            }
+            _tradeData = {
+                sell: {
+                    belong: coinA,
+                    balance: walletMap ? walletMap[ coinA ]?.count : 0
+                }, buy: {
+                    belong: coinB,
+                    balance: walletMap ? walletMap[ coinB ]?.count : 0
+
+                }
+            }
+
             tradeCalcData.coinSell = coinA;
             tradeCalcData.coinBuy = coinB;
             tradeCalcData.sellCoinInfoMap =  tokenMap[ coinB ].tradePairs?.reduce((prev: any, item: string | number) => {
@@ -546,15 +529,61 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             tradeCalcData.buyCoinInfoMap = tokenMap[ coinA ].tradePairs?.reduce((prev: any, item: string | number) => {
                 return {...prev, [ item ]: coinMap[ item ]}
             }, {} as CoinMap<C>);
-            myLog('tradeData,_tradeData,tradeCalcData',tradeData, _tradeData, tradeCalcData);
-            myLog('coinA,coinB', coinA, coinB);
-            setTradeData({...tradeData,..._tradeData} as SwapTradeData<IBData<C>>)
-            tradeCalcData.fee = feeBips;
-            setTradeCalcData(tradeCalcData)
+            myLog('resetTradeCalcData,tradeCalcData',tradeCalcData);
+            setTradeCalcData({...tradeCalcData})
+            setTradeData({...tradeData,..._tradeData})
+            let {amm: ammKey, market: _market} = sdk.getExistedMarket(marketArray, coinA, coinB);
+            setMarket(_market);
+            setPair({ coinAInfo: coinMap[coinA], coinBInfo: coinMap[coinB]})
+
+            
+            let apiList = [pairDetailBlock({coinKey: _market, ammKey: ammKey as string, ammMap})];
+            Promise.all([...apiList])
+                .then(([{ammPoolsBalance, tickMap}]: any[])=>apiCallback({ammPoolsBalance,tickMap}))
+                .catch((error) => {
+                    myLog(error,'go to LER-ETH');
+                    resetTradeCalcData(undefined, market, depth)
+                })
+
+        }
+        return {
+            _tradeData,
+            _tradeCalcData:tradeCalcData,
         }
 
-
     }, [tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray, ammMap, feeBips])
+    const reCalculateDataWhenValueChange = React.useCallback((_tradeData, market?, depth?, type?)=>{
+        if(marketArray && tokenMap && marketMap && ammMap && ammPoolSnapshot && takerRate){
+            const coinA = _tradeData.sell.belong
+            const coinB = _tradeData.buy.belong
+            myLog('coinA,coinB', coinA, coinB);
+            let input: any = (type === 'sell' ? _tradeData.sell.tradeValue : _tradeData.buy.tradeValue)
+            input = input === undefined || isNaN(Number(input)) ? 0 : Number(input);
+            let slippage = sdk.toBig(_tradeData.slippage && !isNaN(_tradeData.slippage) ? _tradeData.slippage : '0.5').times(100).toString();
+            setSlippage(slippage);
+            if(_tradeData&& _tradeData.__cache__?.slippage && _tradeData.__cache__.slippage !== 'N'){
+                _setSlippage(_tradeData.__cache__.slippage as any);
+            }
+
+            myLog('input,slippage', input, slippage);
+            const output = sdk.getOutputAmount(input.toString(), coinA, coinB, type === 'sell', marketArray, tokenMap,
+                marketMap, depth, ammMap as any, ammPoolSnapshot, takerRate, slippage);
+            setOutput(output);
+            tradeCalcData.priceImpact = output?.priceImpact as string;
+            tradeCalcData.minimumReceived = output?.amountBOutSlip.minReceivedVal as string;
+            myLog(`${type === 'sell' ? 'buy' : 'sell'} output:priceImpact,minimumReceived,tradeValue`, output?.priceImpact, output?.amountBOutSlip, output?.output);
+            myLog(`${type === 'sell' ? 'buy' : 'sell'} output:priceImpact,minimumReceived,tradeValue`, output?.priceImpact, output?.amountBOutSlip, output?.output);
+            _tradeData[ type === 'sell' ? 'buy' : 'sell' ].tradeValue = output?.output ? parseFloat(output?.output) : 0
+            myLog('reCalculateDataWhenValueChange,tradeCalcData',tradeCalcData);
+            setTradeCalcData({...tradeCalcData})
+            setTradeData({...tradeData,..._tradeData})
+            // return {
+            //     _tradeData,
+            //     _tradeCalcData:tradeCalcData,
+            // }
+        }
+        return {}
+    },[tradeCalcData, tradeData,ammPoolSnapshot, coinMap, tokenMap, marketMap, marketArray, ammMap, feeBips])
     const resetSwap = (swapType: SwapType | undefined, _tradeData: SwapTradeData<IBData<C>> | undefined) => {
         switch (swapType) {
             case SwapType.SEll_CLICK:
@@ -564,10 +593,9 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 //type = 'sell'
                 myLog(`${_tradeData?.sell.belong}-#null`)
                 if(_tradeData?.sell.belong !== tradeData?.sell.belong){
-                    resetTradeCalcData(undefined, `${_tradeData?.sell.belong}-#null`, depth, 'sell')
-
+                   resetTradeCalcData(_tradeData, `${_tradeData?.sell?.belong??`#null`}-${_tradeData?.buy?.belong??`#null`}`, depth, 'sell')
                 }else{
-                    resetTradeCalcData(_tradeData, `${_tradeData?.sell.belong}-${_tradeData?.buy.belong}`, depth, 'sell')
+                   reCalculateDataWhenValueChange(_tradeData, `${_tradeData?.sell.belong}-${_tradeData?.buy.belong}`, depth, 'sell')
                 }
                 // throttleSetValue('sell', _tradeData)
                 break
@@ -575,20 +603,30 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 //type = 'buy'
                 myLog(`#null-${_tradeData?.buy.belong}`)
                 if(_tradeData?.buy.belong !== tradeData?.buy.belong){
-                    resetTradeCalcData(undefined, `#null-${_tradeData?.buy.belong}`, depth, 'buy')
+                    resetTradeCalcData(_tradeData, `${_tradeData?.sell?.belong??`#null`}-${_tradeData?.buy?.belong??`#null`}`, depth, 'buy')
+
                 }else{
-                    resetTradeCalcData(_tradeData, `${_tradeData?.sell.belong}-${_tradeData?.buy.belong}`, depth, 'buy')
+                    reCalculateDataWhenValueChange(_tradeData, `${_tradeData?.sell.belong}-${_tradeData?.buy.belong}`, depth, 'buy')
+
                 }
                 break
             case SwapType.EXCHANGE_CLICK:
-                myLog('Exchange Click')
-                resetTradeCalcData(undefined, `${_tradeData?.sell.belong}-${_tradeData?.buy.belong}`, depth)
-                break
+                let _coin = tradeCalcData.coinSell,map = tradeCalcData.sellCoinInfoMap;
+                tradeCalcData.coinSell = tradeCalcData.coinBuy;
+                tradeCalcData.coinBuy = _coin;
+                tradeCalcData.sellCoinInfoMap =  tradeCalcData.buyCoinInfoMap
+                tradeCalcData.buyCoinInfoMap = map
+                tradeCalcData.StoB = tradeCalcData.BtoS
+                tradeCalcData.BtoS = tradeCalcData.StoB? 1/tradeCalcData.StoB: 0;
+                myLog('Exchange,tradeCalcData',tradeCalcData);
+                setTradeCalcData({...tradeCalcData})
+                break;
             default:
                 myLog('resetSwap default')
                 resetTradeCalcData(undefined, market, depth)
                 break
         }
+
 
     }
     // const resetSwap = (swapType: SwapType | undefined, _tradeData: SwapTradeData<IBData<C>> | undefined) => {
