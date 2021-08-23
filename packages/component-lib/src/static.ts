@@ -163,6 +163,7 @@ export const tradeCalcData: TradeCalcData<CoinType> = {
     coinBuy: 'LRC',
     BtoS: 0,
     StoB: 0,
+    coinInfoMap: coinMap,
     sellCoinInfoMap: coinMap,
     buyCoinInfoMap: coinMap,
     walletMap: walletMap as WalletMap<CoinType, WalletCoin<CoinType>>,
