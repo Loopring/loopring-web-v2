@@ -20,6 +20,7 @@ import { useSettings } from '../../../../stores';
 import { IconButtonStyled } from '../Styled';
 import { SlippagePanel } from '../tool';
 import { Box } from '@material-ui/core/';
+import { toBig } from 'loopring-sdk';
 
 export const SwapTradeWrap = <T extends IBData<I>,
     I,
@@ -158,7 +159,9 @@ export const SwapTradeWrap = <T extends IBData<I>,
 
     const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${tradeCalcData?.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
         : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData.BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`
-
+    debugger;
+    const priceImpactColor =  tradeCalcData.priceImpact === EmptyValueTag || (toBig(tradeCalcData.priceImpact).gt(1) && toBig(tradeCalcData.priceImpact).lt(3))?''
+        :  toBig(tradeCalcData.priceImpact).lte(1) ? 'success': ( toBig(tradeCalcData.priceImpact).lte(5))? 'warning': 'error';
     const priceImpact = (tradeCalcData && tradeCalcData.priceImpact) ? parseFloat(tradeCalcData.priceImpact).toPrecision(3).toString() + ' %' : EmptyValueTag
 
     const fee = (tradeCalcData && tradeCalcData.fee) ? ((parseFloat(tradeCalcData.fee) / 100).toString() + '%') : EmptyValueTag
@@ -248,7 +251,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     </Grid>
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapPriceImpact')}</Typography>
-                        <Typography component={'p'}
+                        <Typography component={'p'}  color={priceImpactColor}
                                     variant="body1"> {priceImpact}  </Typography>
                     </Grid>
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
