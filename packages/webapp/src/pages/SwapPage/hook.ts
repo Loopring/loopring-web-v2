@@ -69,7 +69,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const [debugInfo, setDebugInfo] = React.useState()
 
     const {account, status: accountStatus} = useAccount()
-    const {coinMap, tokenMap, marketArray, marketCoins, marketMap,} = useTokenMap()
+    const {coinMap, tokenMap, marketArray, marketCoins, marketMap, idIndex} = useTokenMap()
     const {slippage} = useSettings()
     const {walletLayer2} = useWalletLayer2();
     const {ammMap} = useAmmMap()
@@ -78,7 +78,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     /*** api prepare ***/
     const {t} = useTranslation('common')
-    const {pair, setPair, market, setMarket,} = usePairMatch('/trading/lite');
+    const {pair, setPair, market, setMarket, } = usePairMatch('/trading/lite');
     const [swapBtnI18nKey, setSwapBtnI18nKey] = React.useState<string | undefined>(undefined)
     const [swapBtnStatus, setSwapBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE)
     const [isSwapLoading, setIsSwapLoading] = React.useState(false)
@@ -428,7 +428,9 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             setTickMap(tickMap)
     },[])
     React.useEffect(()=>{
-        if(ammPoolSnapshot && tickMap && market && (
+        if(ammPoolSnapshot && idIndex
+            && idIndex[ammPoolSnapshot.lp.tokenId].replace('LP-') === market
+            && tickMap && market && (
             `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market ||
             `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market) ) {
             refreshAmmPoolSnapshot()
