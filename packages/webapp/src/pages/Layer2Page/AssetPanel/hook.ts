@@ -127,11 +127,11 @@ export const useGetAssets = () => {
         }
         const price = getLpTokenPrice(item.token)
         const balance = Object.entries(walletLayer2 || {}).find(([token]) => token === item.token)?.[1].total
-        const lpTokenValue = (price || 0) * (Number.isFinite(balance) ? Number(balance) : 0)
+        const formattedBalance = volumeToCount(item.token, (balance || 0))
         let tokenValue: number = 0;
-        if (ammMap){
+        if (balance && price){
             // tokenValue = ammMap[ammToken].totalLPToken as any;
-            tokenValue = lpTokenValue as any;
+            tokenValue = (formattedBalance || 0) * price as any;
         }
         return ({
             name: item.token,
