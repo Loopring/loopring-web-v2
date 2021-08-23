@@ -232,6 +232,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
                             tickerData: tickMap[ market ],
                             ammPoolsBalance: ammPoolsBalance,
                         }
+
                         _tradeFloat = makeTickView(tickMap[ market ] ? tickMap[ market ] : {})
                         setTradeFloat(_tradeFloat as TradeFloat);
                         setCoinPairInfo({..._coinPairInfo})
