@@ -237,6 +237,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
         try {
 
+            const orderType = output.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
             const tradeChannel = output.exceedDepth ? sdk.TradeChannel.AMM_POOL : sdk.TradeChannel.MIXED
 
             const request: sdk.SubmitOrderRequestV3 = {
@@ -255,7 +256,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 validUntil: getTimestampDaysLater(DAYS),
                 maxFeeBips: parseInt(feeBips),
                 fillAmountBOrS: false, // amm only false
-                orderType: sdk.OrderType.TakerOnly,
+                orderType,
                 tradeChannel,
                 eddsaSignature: '',
             }
@@ -484,6 +485,9 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 myLog('input,slippage', input, slippage);
                 const output = sdk.getOutputAmount(input.toString(), coinA, coinB, type === 'sell', marketArray, tokenMap,
                     marketMap, depth, ammMap as any, ammPoolSnapshot, takerRate, slippage);
+
+                myLog('output:', output)
+
                 setOutput(output);
                 tradeCalcData.priceImpact = output?.priceImpact as string;
                 tradeCalcData.minimumReceived = output?.amountBOutSlip.minReceivedVal as string;
