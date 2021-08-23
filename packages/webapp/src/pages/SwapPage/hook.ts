@@ -393,12 +393,15 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             setTradeData({
                 ...tradeData,
                 sell: {
+                    ...tradeData?.sell,
                     belong: tradeCalcData.coinSell,
-                    balance: 0
+                    tradeValue:0
                 },
                 buy: {
+                    ...tradeData?.buy,
                     belong: tradeCalcData.coinBuy,
-                    balance: 0
+                    tradeValue:0
+
                 },
             } as SwapTradeData<IBData<C>>)
             myLog('walletLayer2Callback,tradeCalcData',tradeData, tradeCalcData);
@@ -498,7 +501,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 }
             }
             let walletMap;
-            console.log(account.readyState === AccountStatus.ACTIVATED, walletLayer2Status === SagaStatus.UNSET,Object.keys(tradeCalcData.walletMap??{}).length)
             if (account.readyState === AccountStatus.ACTIVATED && walletLayer2Status === SagaStatus.UNSET) {
                 if( !Object.keys(tradeCalcData.walletMap??{}).length)  {
 
