@@ -556,9 +556,24 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             const coinA = _tradeData.sell.belong
             const coinB = _tradeData.buy.belong
             myLog('coinA,coinB', coinA, coinB);
-            setTradeData({...tradeData,..._tradeData} as SwapTradeData<IBData<C>>)
+            let input: any = (type === 'sell' ? _tradeData.sell.tradeValue : _tradeData.buy.tradeValue)
+            input = input === undefined || isNaN(Number(input)) ? 0 : Number(input);
+            let slippage = sdk.toBig(_tradeData.slippage && !isNaN(_tradeData.slippage) ? _tradeData.slippage : '0.5').times(100).toString();
+            myLog('input,slippage', input, slippage);
+            const output = sdk.getOutputAmount(input.toString(), coinA, coinB, type === 'sell', marketArray, tokenMap,
+                marketMap, depth, ammMap as any, ammPoolSnapshot, takerRate, slippage);
+
+            myLog('output:', output)
+
+            setOutput(output);
+            tradeCalcData.priceImpact = output?.priceImpact as string;
+            tradeCalcData.minimumReceived = output?.amountBOutSlip.minReceivedVal as string;
             tradeCalcData.fee = feeBips;
-            setTradeCalcData(tradeCalcData)
+            myLog(`${type === 'sell' ? 'buy' : 'sell'} output:priceImpact,minimumReceived,tradeValue`, output?.priceImpact, output?.amountBOutSlip, output?.output);
+            _tradeData[ type === 'sell' ? 'buy' : 'sell' ].tradeValue = output?.output ? parseFloat(output?.output) : 0
+            setTradeCalcData(tradeCalcData);
+            setTradeCalcData(_tradeData);
+            tradeCalcData.fee = feeBips;
         }
 
 
