@@ -75,7 +75,7 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
             </FixedStyle>
         </Box>
         <AlertImpact handleClose={handleClose} open={false}/>
-z       <ConfirmImpact handleClose={handleClose} open={false}/>
+        <ConfirmImpact handleClose={handleClose} open={false}/>
     </>
 });
 
