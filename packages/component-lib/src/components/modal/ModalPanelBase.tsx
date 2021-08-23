@@ -75,8 +75,8 @@ export const FailedBasic= ({onRetry,describe,label,t}: {describe:JSX.Element, on
 export const WarningBasic= ({callback, describe,label,t}: {describe:JSX.Element, callback:(event:any)=>void,label:string } & WithTranslation)=>{
     return    <Box flex={1} display={'flex'} alignItems={'center'}  justifyContent={'space-between'} flexDirection={'column'}>
         <Typography component={'h3'} variant={'h3'} marginBottom={3}>{label}</Typography>
-        <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
-            <RefuseIcon color={'error'} style={{width:60,height:60}}/>
+        <Typography color={'var(--color-warning)'} component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
+            <RefuseIcon style = {{ width:60, height:60, }}/>
         </Typography>
         {describe}
         <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
