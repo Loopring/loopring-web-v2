@@ -192,7 +192,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
 
     React.useEffect(() => {
         const coinKey = match?.params.symbol ?? undefined;
-        let _tradeFloat: Partial<TradeFloat> = {}
+        let _tradeFloat: Partial<TradeFloat>|undefined = {}
         const [, coinA, coinB] = coinKey.match(/(\w+)-(\w+)/i)
         let {
             amm,
@@ -227,7 +227,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
                 ([{ammPoolsBalance, tickMap}
                      //  ,ammUserRewardMap
                  ]: any[]) => {
-                    if (tokenMap) {
+                    if (tokenMap && tickMap) {
                         const _snapShotData = {
                             tickerData: tickMap[ market ],
                             ammPoolsBalance: ammPoolsBalance,
