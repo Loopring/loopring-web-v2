@@ -99,13 +99,14 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const [takerRate, setTakerRate] = React.useState<string>('0')
 
     const [feeBips, setFeeBips] = React.useState<string>('0')
+    const [totalFee, setTotalFee] = React.useState<string>('0')
 
     const [depth, setDepth] = React.useState<sdk.DepthData>()
 
     const [amountMap, setAmountMap] = React.useState<any>()
 
     const debugInfo = process.env.NODE_ENV !== 'production' ? { tradeData, 
-        tradeCalcData: { coinBuy: tradeCalcData?.coinBuy, coinSell: tradeCalcData?.coinSell }, } : ''
+        tradeCalcData: { coinBuy: tradeCalcData?.coinBuy, coinSell: tradeCalcData?.coinSell }, priceImpact: output?.priceImpact, } : ''
 
     //table myTrade
     const myTradeTableCallback = React.useCallback(() => {
@@ -255,7 +256,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 },
                 allOrNone: false,
                 validUntil: getTimestampDaysLater(DAYS),
-                maxFeeBips: parseInt(feeBips),
+                maxFeeBips: parseInt(totalFee),
                 fillAmountBOrS: false, // amm only false
                 orderType,
                 tradeChannel,
@@ -390,18 +391,19 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             const feeBips = amm && ammMap[ amm ] ? ammMap[ amm ].__rawConfig__.feeBips : 0
             const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
 
-
             myLog('walletLayer2Callback,tradeCalcData',tradeData, tradeCalcData);
 
             setQuoteMinAmt(quoteMinAmtInfo?.userOrderInfo.minAmount)
-            setFeeBips(totalFee)
-            myLog(`${realMarket} totalFee: ${totalFee}`)
+            setFeeBips(feeBips.toString())
+            setTotalFee(totalFee)
+            myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
 
             setTakerRate(takerRate.toString())
             setTradeCalcData({...tradeCalcData, walletMap, fee: totalFee} as TradeCalcData<C>)
         } else  {
             myLog(`setFeeBips('0')`)
             setFeeBips('0')
+            setTotalFee('0')
             setTakerRate('0')
 
             setTradeCalcData({...tradeCalcData, fee: '0'} as TradeCalcData<C>)
@@ -455,12 +457,12 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 _tradeCalcData: tradeCalcData,
                 coinMap,
                 marketCoins,
-                fee: feeBips,
+                fee: totalFee,
             })
             let _tradeFloat = makeTickView(tickMap[ market ] ? tickMap[ market ] : {})
             setTradeFloat(_tradeFloat as TradeFloat);
             tradeCalcData.StoB = stob
-            tradeCalcData.BtoS = 1/stob
+            tradeCalcData.BtoS = 1 / stob
             myLog('ammPoolSnapshot tradeCalcData', tradeCalcData);
             setTradeCalcData(tradeCalcData);
         }
@@ -472,7 +474,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         //     myLog('tradeData',tradeData,_tradeData)
         //     setTradeData({...tradeData,..._tradeData});
         // }
-    },[ammPoolSnapshot,market,tickMap,tradeCalcData,setTradeCalcData])
+    },[ammPoolSnapshot, market, tickMap, totalFee, tradeCalcData, setTradeCalcData])
 
 
     const resetTradeCalcData = React.useCallback((_tradeData, market?, depth?, type?) => {
@@ -554,33 +556,36 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             _tradeCalcData:tradeCalcData,
         }
 
-    }, [tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray, ammMap, feeBips])
+    }, [tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray, ammMap, totalFee])
     const reCalculateDataWhenValueChange = React.useCallback((_tradeData, market?, depth?, type?)=>{
         if(marketArray && tokenMap && marketMap && ammMap && ammPoolSnapshot && takerRate){
             const coinA = _tradeData.sell.belong
             const coinB = _tradeData.buy.belong
-            myLog('coinA,coinB', coinA, coinB);
+            
             let input: any = (type === 'sell' ? _tradeData.sell.tradeValue : _tradeData.buy.tradeValue)
             input = input === undefined || isNaN(Number(input)) ? 0 : Number(input);
             let slippage = sdk.toBig(_tradeData.slippage && !isNaN(_tradeData.slippage) ? _tradeData.slippage : '0.5').times(100).toString();
-            myLog('input,slippage', input, slippage);
+            
+            myLog(ammMap)
+            myLog('---> before output:', coinA, coinB, input, slippage, depth, totalFee);
             const output = sdk.getOutputAmount(input.toString(), coinA, coinB, type === 'sell', marketArray, tokenMap,
                 marketMap, depth, ammMap as any, ammPoolSnapshot, takerRate, slippage);
             myLog('output:', output)
             setOutput(output);
             tradeCalcData.priceImpact = output?.priceImpact as string;
             tradeCalcData.minimumReceived = output?.amountBOutSlip.minReceivedVal as string;
-            tradeCalcData.fee = feeBips;
+            tradeCalcData.fee = totalFee;
             myLog(`${type === 'sell' ? 'buy' : 'sell'} output:priceImpact,minimumReceived,tradeValue`, output?.priceImpact, output?.amountBOutSlip, output?.output);
             _tradeData[ type === 'sell' ? 'buy' : 'sell' ].tradeValue = output?.output ? parseFloat(output?.output) : 0
             setTradeCalcData(tradeCalcData);
             setTradeData({...tradeData, ..._tradeData});
-            tradeCalcData.fee = feeBips;
+            tradeCalcData.fee = totalFee;
 
         }
 
 
-    }, [tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray, ammMap, feeBips])
+    }, [tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray, ammMap, totalFee])
+
     const resetSwap = (swapType: SwapType | undefined, _tradeData: SwapTradeData<IBData<C>> | undefined) => {
         switch (swapType) {
             case SwapType.SEll_CLICK:
