@@ -66,7 +66,6 @@ const useSwapSocket = () => {
 export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     useSwapSocket()
     /** get store value **/
-    const [debugInfo, setDebugInfo] = React.useState()
 
     const {account, status: accountStatus} = useAccount()
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap, idIndex} = useTokenMap()
@@ -105,6 +104,9 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const [depth, setDepth] = React.useState<sdk.DepthData>()
 
     const [amountMap, setAmountMap] = React.useState<any>()
+
+    const debugInfo = process.env.NODE_ENV !== 'production' ? { tradeData, 
+        tradeCalcData: { coinBuy: tradeCalcData?.coinBuy, coinSell: tradeCalcData?.coinSell }, } : ''
 
     //table myTrade
     const myTradeTableCallback = React.useCallback(() => {
@@ -345,7 +347,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         // const base = tradeData?.sell.belong
         // const quote = tradeData?.buy.belong
         let walletMap
-        if(account.readyState === AccountStatus.ACTIVATED){
+        if(account.readyState === AccountStatus.ACTIVATED) {
             walletMap = makeWalletLayer2().walletMap;
             setTradeData({
                 ...tradeData,
@@ -371,7 +373,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         }
 
         if (marketArray && amountMap && tradeCalcData.coinSell && tradeCalcData.coinBuy && market &&
-            LoopringAPI.userAPI && ammMap && account?.accountId && account?.apiKey) {
+            LoopringAPI.userAPI && ammMap) {
 
             const {amm,} = sdk.getExistedMarket(marketArray, tradeCalcData.coinSell, tradeCalcData.coinBuy)
 
@@ -607,13 +609,13 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 }
                 break
             case SwapType.EXCHANGE_CLICK:
-                let _coin = tradeCalcData.coinSell,map = tradeCalcData.sellCoinInfoMap;
+                let _coin = tradeCalcData.coinSell, map = tradeCalcData.sellCoinInfoMap;
                 tradeCalcData.coinSell = tradeCalcData.coinBuy;
                 tradeCalcData.coinBuy = _coin;
                 tradeCalcData.sellCoinInfoMap =  tradeCalcData.buyCoinInfoMap
                 tradeCalcData.buyCoinInfoMap = map
                 tradeCalcData.StoB = tradeCalcData.BtoS
-                tradeCalcData.BtoS = tradeCalcData.StoB? 1/tradeCalcData.StoB: 0;
+                tradeCalcData.BtoS = tradeCalcData.StoB ? 1 / tradeCalcData.StoB : 0;
                 myLog('Exchange,tradeCalcData',tradeCalcData);
                 setTradeCalcData({...tradeCalcData})
                 break;

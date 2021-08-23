@@ -65,8 +65,8 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
                     {...{ handleSwapPanelEvent, ...rest }}
                 />
 
-                { process.env.NODE_ENV === 'production' && <>
-                {debugInfo}
+                { process.env.NODE_ENV !== 'production' && <>
+                {JSON.stringify(debugInfo)}
                 </>}
 
             </FixedStyle>
