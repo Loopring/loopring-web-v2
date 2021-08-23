@@ -39,7 +39,7 @@ export function StringToNumberWithPrecision(rawVal: string, symbol: string) {
 /*
 * format volume to real number
 */
-export function VolToNumberWithPrecision(rawVal: string, symbol: string) {
+export function VolToNumberWithPrecision(rawVal: string|number, symbol: string) {
 
     const tokenInfo = getTokenInfo(symbol)
 
@@ -47,7 +47,7 @@ export function VolToNumberWithPrecision(rawVal: string, symbol: string) {
         return undefined
     }
 
-    if (rawVal === undefined || rawVal === null || rawVal.trim() === '')
+    if (rawVal === undefined || rawVal === null || isNaN(Number(rawVal)))
         return 0
 
     return sdk.toBig(rawVal).div('1e' + tokenInfo.decimals).toFixed(tokenInfo.precision, 0)

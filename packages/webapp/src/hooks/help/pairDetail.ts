@@ -69,21 +69,9 @@ export const pairDetailDone = <C>({coinKey, market, ammPoolsBalance, fee, tokenM
     }
 
     const isValidS2B = (stob !== 0 && stob !== undefined && !isNaN(stob))
-    _tradeCalcData.coinSell = coinSell
-    _tradeCalcData.coinBuy= coinBuy
-    _tradeCalcData.StoB = isValidS2B ? stob: 0
-    _tradeCalcData.BtoS =  isValidS2B ? 1 / (stob * 1.0) : 0;
-    _tradeCalcData.sellCoinInfoMap = marketCoins?.reduce((prev: any, item: string | number) => {
-        return {...prev, [ item ]: coinMap[ item ]}
-    }, {} as CoinMap<C>)
-    _tradeCalcData.buyCoinInfoMap = tokenMap[ coinSell ].tradePairs?.reduce((prev: any, item: string | number) => {
-        return {...prev, [ item ]: coinMap[ item ]}
-    }, {} as CoinMap<C>);
-
-    _tradeCalcData.fee = fee
 
     return {
-        _tradeCalcData
+        stob:isValidS2B ? stob: 0
     }
     //setPair();
 }

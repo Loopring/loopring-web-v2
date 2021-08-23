@@ -26,16 +26,16 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
     // useSettings()
 
     let swapTradeData: SwapTradeData<T>
-    if (tradeCalcData && tradeCalcData.sellCoinInfoMap) {
+    if (tradeCalcData && tradeCalcData.coinInfoMap) {
         swapTradeData = ({
             // @ts-ignore
             sell: {
-                belong: tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap[ tradeCalcData.coinSell ]?.simpleName : undefined,
+                belong: tradeCalcData.coinInfoMap ? tradeCalcData.coinInfoMap[ tradeCalcData.coinSell ]?.simpleName : undefined,
                 balance: tradeCalcData.walletMap ? tradeCalcData.walletMap[ tradeCalcData.coinSell ]?.count : 0
             },
             // @ts-ignore
             buy: {
-                belong: tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap[ tradeCalcData.coinBuy ]?.simpleName : undefined,
+                belong: tradeCalcData.coinInfoMap ? tradeCalcData.coinInfoMap[ tradeCalcData.coinBuy ]?.simpleName : undefined,
                 balance: tradeCalcData.walletMap ? tradeCalcData.walletMap[ tradeCalcData.coinBuy ]?.count : 0
             },
             slippage: tradeCalcData.slippage,
