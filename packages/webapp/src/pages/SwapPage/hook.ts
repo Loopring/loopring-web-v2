@@ -429,7 +429,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     },[])
     React.useEffect(()=>{
         if(ammPoolSnapshot && idIndex
-            && idIndex[ammPoolSnapshot.lp.tokenId].replace('LP-') === market
+            && idIndex[ammPoolSnapshot.lp.tokenId].replace('LP-','') === market
             && tickMap && market && (
             `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market ||
             `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market) ) {
