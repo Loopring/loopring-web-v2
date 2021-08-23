@@ -30,9 +30,12 @@ export const makeTickView = (tick: Partial<TickerData>) => {
             const volume = VolToNumberWithPrecision((tick.base_token_volume??0), tick.base as string)
             // const priceDollar = toBig(tiem).times(faitPrices[ tick.base as string ] ? faitPrices[ tick.base as string ].price : 0);
             // const priceYuan = priceDollar.times(forex);
-            const closeDollar = toBig(tick.close).times(faitPrices[ tick.quote as string ] ? faitPrices[ tick.quote as string ].price : 0);
+
+            const qPrice = tick.quote === 'DAI' ? 1 : faitPrices[tick.quote as string]?.price ? faitPrices[tick.quote as string].price : 0;
+
+            const closeDollar = toBig(tick.close).times(qPrice);
             const closeYuan = closeDollar.times(forex);
-            const qPrice = faitPrices[tick.quote as string].price?    faitPrices[tick.quote as string].price:0;
+
             _tradeFloat = {
                 ..._tradeFloat,
                 changeDollar: toBig(tick.close - (tick.open??0)).times( qPrice ).toNumber(),
