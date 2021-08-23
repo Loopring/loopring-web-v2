@@ -115,7 +115,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                 setSwapData({tradeData, to, type});
             } else if (to === 'button') {
                 const count = (tradeData[ type ].belong && tradeCalcData.walletMap) ? tradeCalcData.walletMap[ tradeData[ type ].belong ]?.count : 0;
-                let _tradeData = {
+                const _tradeData = {
                     ...tradeData,
                     [ type ]: {
                         ...tradeData[ type ],
@@ -123,7 +123,6 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                     }
                 };
 
-                
                 setSwapData({tradeData: _tradeData, to, type});
             }
         }
@@ -132,6 +131,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
         }
 
     }, [handleSwapPanelEvent, tradeCalcData, rest, index, swapData]);
+    
     const props: SwitchPanelProps<'tradeMenuList' | 'trade'> = {
         index: index, // show default show
         panelList: [
