@@ -196,7 +196,7 @@ export function useGetTrades() {
                     const feeKey = isBuy ? quoteToken : baseToken
                     const baseValue = isBuy ? volumeToCountAsBigNumber(quoteToken, o.volume)?.times(o.price).toNumber() : volumeToCountAsBigNumber(baseToken, o.volume)
                     const quoteValue = isBuy ? volumeToCountAsBigNumber(quoteToken, o.volume) : volumeToCountAsBigNumber(baseToken, o.volume)?.times(o.price).toNumber()
-                    const feeValue = volumeToCountAsBigNumber(feeKey, o.fee)?.toFixed(6)
+                    const feeValue = volumeToCountAsBigNumber(feeKey, o.fee)
 
                     return ({
                         side: o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell ,
@@ -209,21 +209,23 @@ export function useGetTrades() {
                             key: feeKey,
                             // value: VolToNumberWithPrecision(o.fee, quoteToken),
                             // value: feeKey ? volumeToCount(feeKey, o.fee)?.toFixed(6) : undefined
-                            value: feeKey ? feeValue : undefined
+                            value: feeKey 
+                                ? Number(feeValue) > 1 ? feeValue?.toFixed(6) : feeValue?.toPrecision(2) as any
+                                : '--'
                         },
                         time: Number(o.tradeTime),
                         amount: {
                             from: {
-                            key: baseToken,
-                            // value: VolToNumberWithPrecision(o.volume, baseToken),
-                            // value: baseToken ? volumeToCount(baseToken, o.volume) : undefined
-                            value: baseToken ? baseValue : undefined
+                                key: baseToken,
+                                // value: VolToNumberWithPrecision(o.volume, baseToken),
+                                // value: baseToken ? volumeToCount(baseToken, o.volume) : undefined
+                                value: baseToken ? baseValue : undefined
                             },
                             to: {
-                            key: quoteToken,
-                            // value: VolToNumberWithPrecision(amt, quoteToken)
-                            // value: baseToken ? volumeToCountAsBigNumber(baseToken, o.volume)?.times(o.price).toNumber() : undefined
-                            value: baseToken ? quoteValue : undefined
+                                key: quoteToken,
+                                // value: VolToNumberWithPrecision(amt, quoteToken)
+                                // value: baseToken ? volumeToCountAsBigNumber(baseToken, o.volume)?.times(o.price).toNumber() : undefined
+                                value: baseToken ? quoteValue : undefined
                             }
                         }
                     })
