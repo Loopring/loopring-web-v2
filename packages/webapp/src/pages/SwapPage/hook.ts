@@ -69,8 +69,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     const {account, status: accountStatus} = useAccount()
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap, idIndex} = useTokenMap()
-    const {slippage} = useSettings()
-    const {walletLayer2} = useWalletLayer2();
+    
     const {ammMap} = useAmmMap()
     const {status: walletLayer2Status} = useWalletLayer2();
 
@@ -126,7 +125,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             setMyTradeArray([])
         }
 
-    }, [market, account.accountId, account.apiKey])
+    }, [market, account.accountId, account.apiKey, setMyTradeArray])
 
     React.useEffect(() => {
 
@@ -137,10 +136,10 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     }, [pair?.coinBInfo?.simpleName])
 
     React.useEffect(() => {
-        if (accountStatus === SagaStatus.UNSET && walletLayer2Status === SagaStatus.UNSET) {
+        if (market && accountStatus === SagaStatus.UNSET && walletLayer2Status === SagaStatus.UNSET) {
             myTradeTableCallback();
         }
-    }, [account.readyState, market, accountStatus, walletLayer2Status]);
+    }, [market, accountStatus, walletLayer2Status]);
 
     //table marketTrade
     const marketTradeTableCallback = React.useCallback(() => {
