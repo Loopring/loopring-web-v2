@@ -1,5 +1,5 @@
 import { Snackbar, Alert, AlertTitle, Typography } from '@material-ui/core'
-import { GoodIcon, AlertIcon, ErrorIcon, InfoIcon, colorBase } from '@loopring-web/common-resources'
+import { GoodIcon, AlertIcon, ErrorIcon, InfoIcon } from '@loopring-web/common-resources'
 import styled from '@emotion/styled'
 
 export interface ToastProps {
@@ -18,15 +18,15 @@ const AlertStyled = styled(Alert)`
     }
 `
 
-export const Toast = ({ open, severity, alertText, autoHideDuration, onClose }: ToastProps) => {
+export const Toast = ({ open, severity = 'success', alertText, autoHideDuration = 2000, onClose }: ToastProps) => {
     
-    if (severity === undefined) {
-        severity = 'success'
-    }
+    // if (severity === undefined) {
+    //     severity = 'success'
+    // }
 
-    if (autoHideDuration === undefined) {
-        autoHideDuration = 2000
-    }
+    // if (autoHideDuration === undefined) {
+    //     autoHideDuration = 2000
+    // }
 
     const renderTitle = severity === 'success' 
         ? 'Successfully'
