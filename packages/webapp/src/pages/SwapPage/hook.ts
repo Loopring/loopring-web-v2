@@ -126,13 +126,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     }, [market, account.accountId, account.apiKey])
 
-    React.useEffect(() => {
 
-        if (!!pair?.coinBInfo?.simpleName) {
-            resetSwap(undefined, undefined)
-        }
-
-    }, [pair?.coinBInfo?.simpleName])
 
     React.useEffect(() => {
         if (accountStatus === SagaStatus.UNSET && walletLayer2Status === SagaStatus.UNSET) {
@@ -170,6 +164,10 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         if (market) {
             marketTradeTableCallback();
             updateDepth();
+            if((tradeData && tradeData.sell.belong == undefined)||tradeData === undefined){
+                //use for router init !important not move 
+                resetSwap(undefined, undefined)
+            }
         }
     }, [market]);
 
