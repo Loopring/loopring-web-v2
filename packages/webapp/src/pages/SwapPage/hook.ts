@@ -388,7 +388,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             setFeeBips('0')
             setTakerRate('0')
 
-            setTradeCalcData({...tradeCalcData, walletMap: {}, fee: '0'} as TradeCalcData<C>)
+            setTradeCalcData({...tradeCalcData, fee: '0'} as TradeCalcData<C>)
 
             setTradeData({
                 ...tradeData,
@@ -498,15 +498,14 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 }
             }
             let walletMap;
-            console.log((tradeCalcData.walletMap === {} || tradeCalcData.walletMap ),  account.readyState === AccountStatus.ACTIVATED
-                      ,walletLayer2Status === SagaStatus.UNSET)
-            if (account.readyState === AccountStatus.ACTIVATED
-                && walletLayer2Status === SagaStatus.UNSET) {
-                if( tradeCalcData.walletMap == {})  {
-                    debugger
+            console.log(account.readyState === AccountStatus.ACTIVATED, walletLayer2Status === SagaStatus.UNSET,Object.keys(tradeCalcData.walletMap??{}).length)
+            if (account.readyState === AccountStatus.ACTIVATED && walletLayer2Status === SagaStatus.UNSET) {
+                if( !Object.keys(tradeCalcData.walletMap??{}).length)  {
+
                     tradeCalcData.walletMap = makeWalletLayer2().walletMap as WalletMap<any>;
                 }
                 walletMap = tradeCalcData.walletMap;
+
             }
             _tradeData = {
                 sell: {
