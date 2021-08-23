@@ -572,8 +572,9 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             myLog(`${type === 'sell' ? 'buy' : 'sell'} output:priceImpact,minimumReceived,tradeValue`, output?.priceImpact, output?.amountBOutSlip, output?.output);
             _tradeData[ type === 'sell' ? 'buy' : 'sell' ].tradeValue = output?.output ? parseFloat(output?.output) : 0
             setTradeCalcData(tradeCalcData);
-            setTradeCalcData(_tradeData);
+            setTradeData({...tradeData, ..._tradeData});
             tradeCalcData.fee = feeBips;
+
         }
 
 
