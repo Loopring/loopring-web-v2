@@ -228,7 +228,6 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                 //     font-size: 13px;
                 // `
                 const tokenIcon: any = token.value ? coinJson[token.value] : undefined
-                console.log(coinJson, token.value)
                 return <>
                     <Box display={'flex'} alignItems={'center'}>
                         <Box component={'span'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
