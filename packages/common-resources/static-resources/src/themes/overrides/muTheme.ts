@@ -30,6 +30,8 @@ import {
     MuiToggleButton,
     // MuiToggleButtonGroup,
     MuiToolbar,
+    MuiAlert,
+    MuiSnackbar,
     radius,
 } from "./overrides-mui";
 import { MuPickDate } from './overrides-date-pick';
@@ -171,6 +173,8 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             // MuiPopover: MuiPopover({colorBase, themeMode}),
             MuiPaper: MuiPaper({colorBase, themeMode}),
             MuiDivider: MuiDivider({colorBase}),
+            MuiAlert: MuiAlert({colorBase}),
+            MuiSnackbar: MuiSnackbar(),
             ...MuPickDate({colorBase, themeMode})
         },
         shape: {borderRadius: radius}

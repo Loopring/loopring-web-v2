@@ -787,4 +787,35 @@ export const MuiDivider = ({colorBase}: any) => {
     }
 }
 
+export const MuiAlert = ({colorBase}: any) => {
+    return {
+        styleOverrides: {
+            root: {
+                backgroundColor: colorBase.borderDark,
+                height: `${unit * 10}px`,
+                '.MuiAlertTitle-root': {
+                    color: colorBase.textPrimary,
+                    fontSize: pxToRem(16),
+                }
+            },
+            
+        }
+    }
+}
 
+export const MuiSnackbar = () => {
+    return {
+        styleOverrides: {
+            root: {
+                '@media (min-width: 600px)': {
+                    top: `${unit * 10}px`,
+                    right: `${unit * 2}px`,
+                },
+                top: `${unit * 10}px`,
+                right: `${unit * 2}px`,
+                justifyContent: 'flex-end',
+                alignItems: 'flex-start'
+            },
+        }
+    }
+}
