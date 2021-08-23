@@ -133,15 +133,21 @@ module.exports = override(
     config.output.publicPath = ASSET_PATH;
     // 增加处理less module配置 customize-cra 不提供 less.module 只提供css.module
      //console.log(path.resolve(__dirname, "..", "assets/"))
-    // console.log('enter config!!!!!!!', config.module.rules[1].oneOf[2])
+    console.log('-----> enter config!!!!!!!')
 
     const setConfig = (index) => {
+      console.log('-----> enter setConfig!!!!!!! index:', index)
       let babelLoader = config.module.rules[1].oneOf[index];
       babelLoader.include = babelLoader.include.replace('/webapp/src', '');
       config.module.rules[1].oneOf[index] = babelLoader;
     }
 
-    setConfig(2);
+    setConfig(2)
+    
+    // addCompression()
+
+    // addAnalyzer()
+
     // setConfig(3);
     
     /*
