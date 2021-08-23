@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import store from 'stores'
 import { TokenType } from '@loopring-web/component-lib'
 import { AccountStatus, EmptyValueTag, globalSetup, SagaStatus } from '@loopring-web/common-resources'
@@ -35,7 +35,23 @@ export const useGetAssets = () => {
     // const {  } = store.getState().walletLayer2;
     const { ammMap } = useAmmMap()//store.getState().amm.ammMap
     const { walletLayer2 } = useWalletLayer2();
-    const { marketArray } = store.getState().tokenMap
+    const { marketArray, addressIndex } = store.getState().tokenMap
+    const [lpTokenList, setLpTokenList] = React.useState<{addr: string; price: number}[]>([])
+
+    const getLpTokenList = React.useCallback(async () => {
+        if (LoopringAPI.walletAPI) {
+            const result = await LoopringAPI.walletAPI.getLatestTokenPrices()
+            const list = Object.entries(result.tokenPrices).map(([addr, price]) => ({
+                addr,
+                price,
+            }))
+            setLpTokenList(list)
+        }
+    }, [])
+
+    React.useEffect(() => {
+        getLpTokenList()
+    }, [getLpTokenList])
     React.useEffect(() => {
         if(account.readyState === AccountStatus.ACTIVATED){
             sendSocketTopic({[ WsTopicType.account ]: true});
@@ -52,8 +68,8 @@ export const useGetAssets = () => {
             assetType: AssetType.DEX,
             limit: limit // TODO: minium unit is day, discuss with pm later
         })
+        
         if (userAssets && userAssets.userAssets.length && !!userAssets.userAssets.length) {
-            // console.log(userAssets.userAssets)
             setChartData(userAssets.userAssets.map(o => ({
                 timeStamp: Number(o.createdAt),
                 // close: o.amount && o.amount !== NaN ? Number(o.amount) : 0
@@ -87,6 +103,17 @@ export const useGetAssets = () => {
         detail: o[ 1 ]
     })) as ITokenInfoItem[] : []
 
+    const getLpTokenPrice = useCallback((market: string) => {
+        if (addressIndex) {
+            const address = Object.entries(addressIndex).find(([_, token]) => token === market)?.[0]
+            if (address && lpTokenList) {
+                return lpTokenList.find((o) => o.addr === address)?.price
+            }
+            return undefined
+        }
+        return undefined
+    }, [addressIndex, lpTokenList])
+
     const formattedData = assetsList.map(item => {
         const isLpToken = item.token.split('-')[0] === 'LP'
         if (!isLpToken) {
@@ -98,15 +125,13 @@ export const useGetAssets = () => {
                 value: Number(volumeToCount(item.token, item.detail?.detail?.total as string)) * tokenPriceUSDT
             })
         }
-        const result = item.token.split('-')
-        result.splice(0, 1, 'AMM')
-        const ammToken = result.join('-')
-        // const ammTokenList = Object.keys(ammMap)
-        // const ammTokenPrice = ammTokenList.includes(ammToken) && ammMap[ammToken] && ammMap[ammToken].amountDollar ? (ammMap[ammToken].totalLPToken || 0) / ammMap[ammToken].amountDollar : 0
-        // const tokenValue =  ammTokenPrice * (item.detail?.count || 0)
-        let tokenValue:number  = 0;
-        if(ammMap){
-            tokenValue = ammMap[ammToken].totalLPToken as any;
+        const price = getLpTokenPrice(item.token)
+        const balance = Object.entries(walletLayer2 || {}).find(([token]) => token === item.token)?.[1].total
+        const lpTokenValue = (price || 0) * (Number.isFinite(balance) ? Number(balance) : 0)
+        let tokenValue: number = 0;
+        if (ammMap){
+            // tokenValue = ammMap[ammToken].totalLPToken as any;
+            tokenValue = lpTokenValue as any;
         }
         return ({
             name: item.token,
