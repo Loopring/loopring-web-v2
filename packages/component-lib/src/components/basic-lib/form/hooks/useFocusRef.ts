@@ -4,7 +4,7 @@ export function useFocusRef<T extends HTMLInputElement>({value, shouldFocusOn, c
     value?: any,
     shouldFocusOn?: boolean | undefined,
     // ref: React.RefObject<T>,
-    callback?: (prorps: { current: any },) => void
+    callback?: (prorps: { current: any }) => void
 }) {
     const ref = React.useRef<T>(null);
     React.useEffect(() => {

@@ -63,6 +63,7 @@ const useSwapSocket = () => {
         }
     }, [account.readyState]);
 }
+
 export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     useSwapSocket()
     /** get store value **/
@@ -71,9 +72,8 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const {account, status: accountStatus} = useAccount()
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap, idIndex} = useTokenMap()
     const {slippage} = useSettings()
-    const {walletLayer2} = useWalletLayer2();
     const {ammMap} = useAmmMap()
-    const {status: walletLayer2Status} = useWalletLayer2();
+    const {status: walletLayer2Status,walletLayer2} = useWalletLayer2();
 
 
     /*** api prepare ***/
