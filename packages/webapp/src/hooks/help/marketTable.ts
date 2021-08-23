@@ -27,22 +27,42 @@ export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[
 
     marketTrades.forEach((item: sdk.MarketTradeInfo) => {
         try {
-            const {base, quote} = sdk.getBaseQuote(item.market)
+            // const {base, quote} = sdk.getBaseQuote(item.market)
             if (tokenMap) {
+
+
+                // const marketList = o.market.split('-')
+                // due to AMM case, we cannot use first index
+                // const side = item.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
+                const isBuy = item.side === sdk.Side.Buy
+                const [tokenFirst, tokenLast] = item.market.split('-')
+                // const tokenFirst = marketList[marketList.length - 2]
+                // const tokenLast = marketList[marketList.length - 1]
+                const baseToken = isBuy ? tokenLast : tokenFirst
+                const quoteToken = isBuy ? tokenFirst : tokenLast
+                const feeKey = isBuy ? quoteToken : baseToken
+                const baseValue = isBuy ? volumeToCountAsBigNumber(quoteToken, item.volume)?.times(item.price).toNumber() : volumeToCountAsBigNumber(baseToken, item.volume)
+                const quoteValue = isBuy ? volumeToCountAsBigNumber(quoteToken, item.volume) : volumeToCountAsBigNumber(baseToken, item.volume)?.times(item.price).toNumber()
+                const feeValue = volumeToCountAsBigNumber(feeKey, item.fee)
+
                 // const baseToken = tokenMap[ base as string ]
                 // const quoteToken = tokenMap[ quote as string ]
-                const feeKey = item.side === sdk.Side.Buy ? base : quote
+                // const feeKey = item.side === sdk.Side.Buy ? base : quote
                 // @ts-ignore
                 tradeArray.push({
                     side: item.side === sdk.Side.Sell ? TradeTypes.Sell : TradeTypes.Buy,
                     amount: {
                         from: {
-                            key: base as string,
-                            value: base ? volumeToCount(base, item.volume) : undefined
+                            // key: base as string,
+                            // value: base ? volumeToCount(base, item.volume) : undefined
+                            key: baseToken as string,
+                            value: baseValue as number,
                         },
                         to: {
-                            key: quote as string,
-                            value: base ? volumeToCountAsBigNumber(base, item.volume)?.times(item.price).toNumber():undefined
+                            // key: quote as string,
+                            // value: base ? volumeToCountAsBigNumber(base, item.volume)?.times(item.price).toNumber():undefined
+                            key: quoteToken as string,
+                            value: quoteValue as number,
                         },
 
                     },
@@ -52,7 +72,8 @@ export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[
                     },
                     fee: {
                         key: feeKey || '--',
-                        value: feeKey ? volumeToCountAsBigNumber(feeKey, item.fee)?.toNumber() : undefined, 
+                        // value: feeKey ? volumeToCountAsBigNumber(feeKey, item.fee)?.toNumber() : undefined, 
+                        value: feeValue && Number(feeValue) > 1 ? feeValue?.toFixed(6) : feeValue?.toPrecision(2) as any
                     },
                     time: parseInt(item.tradeTime.toString()),
                 })
