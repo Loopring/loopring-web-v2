@@ -161,7 +161,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
         : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData.BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`
 
     const priceImpact = (tradeCalcData && tradeCalcData.priceImpact) ? toBig(tradeCalcData.priceImpact).times(100).toFixed(2) + ' %' : EmptyValueTag
-
+    const priceImpactColor = 'error'//'var(--color-warning)','var(--color-success)','inherit'
     const fee = (tradeCalcData && tradeCalcData.fee) ? ((parseFloat(tradeCalcData.fee) / 100).toString() + '%') : EmptyValueTag
 
     // console.log('----swap tradeCalcData:', tradeCalcData)
@@ -249,8 +249,8 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     </Grid>
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapPriceImpact')}</Typography>
-                        <Typography component={'p'}
-                                    variant="body1"> {priceImpact}  </Typography>
+                        <Typography component={'p'}  color={priceImpactColor}
+                                    variant="body1" > {priceImpact}  </Typography>
                     </Grid>
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapMinReceive')}</Typography>
