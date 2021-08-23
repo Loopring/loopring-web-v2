@@ -34,7 +34,7 @@ const BasicInfoPanel = ({ props, coinAInfo, coinBInfo, tradeFloat, marketArray, 
                    ...rest, t, tradeFloat
                }}></TradeTitle>
                <ToggleButtonGroup exclusive {...{ ...rest, t, tgItemJSXs, value: chartType }}
-                                onChange={handleChange} size={'large'} />
+                                onChange={handleChange} size={'medium'} />
            </Box>  
         </Grid>
         <Box flex={1} alignItems={'stretch'} flexDirection="row" marginTop={3}  position={'relative'} >
