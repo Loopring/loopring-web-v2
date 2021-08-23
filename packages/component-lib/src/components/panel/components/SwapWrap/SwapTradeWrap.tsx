@@ -55,7 +55,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
     }, [switchStobEvent, _isStoB])
 
     const getDisabled = React.useCallback(() => {
-        return disabled || tradeCalcData === undefined || tradeCalcData.sellCoinInfoMap === undefined;
+        return disabled || tradeCalcData === undefined || tradeCalcData.coinInfoMap === undefined;
     }, [disabled, tradeCalcData]);
 
     const handleOnClick = React.useCallback((_event: React.MouseEvent, ref: any) => {
@@ -179,7 +179,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                 ...propsSell,
                 isHideError: true,
                 inputData: tradeData ? tradeData.sell : {} as any,
-                coinMap: tradeCalcData && tradeCalcData.sellCoinInfoMap ? tradeCalcData.sellCoinInfoMap : {} as CoinMap<I, CoinInfo<I>>
+                coinMap: tradeCalcData && tradeCalcData.coinInfoMap ? tradeCalcData.coinInfoMap : {} as CoinMap<I, CoinInfo<I>>
             }} />
             {/*</Grid>*/}
             {/*<Grid item>*/}
@@ -196,7 +196,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                 // maxAllow:false,
                 isHideError: true,
                 inputData: tradeData ? tradeData.buy : {} as any,
-                coinMap: tradeCalcData && tradeCalcData.buyCoinInfoMap ? tradeCalcData.buyCoinInfoMap : {} as CoinMap<I, CoinInfo<I>>
+                coinMap: tradeCalcData && tradeCalcData.coinInfoMap ? tradeCalcData.coinInfoMap : {} as CoinMap<I, CoinInfo<I>>
             }} />
             {/*</Grid>*/}
             {/*</Grid>*/}

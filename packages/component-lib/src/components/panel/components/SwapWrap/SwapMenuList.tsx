@@ -15,7 +15,7 @@ export const SwapMenuList = <T extends IBData<I>,
                                   }: SwapMenuListProps<T, TCD> & WithTranslation) => {
     const selected: string | undefined = swapData.tradeData[ swapData.type ].belong ? swapData.tradeData[ swapData.type ]?.belong : '';
     const tradeData = swapData.tradeData[ swapData.type ];
-    const coinMap = swapData.type === 'sell' ? tradeCalcData?.sellCoinInfoMap : tradeCalcData?.buyCoinInfoMap as any;
+    const coinMap = swapData.type === 'sell' ? tradeCalcData?.coinInfoMap : tradeCalcData?.buyCoinInfoMap as any;
     const walletMap = tradeCalcData?.walletMap as any;   //IBData<I>
     const handleOnChangeIndex = React.useCallback((index: 0 | 1, {tradeData, to}: SwitchData<IBData<I>>) => {
         onChangeEvent(index, {
