@@ -1,4 +1,4 @@
-import { AmmpoolAPI, ChainId, ExchangeAPI, UserAPI, WalletAPI, WsAPI } from "loopring-sdk"
+import { AmmpoolAPI, ChainId, ExchangeAPI, UserAPI, WalletAPI, WsAPI } from 'loopring-sdk';
 import store from 'stores'
 
 export function getChainId() {

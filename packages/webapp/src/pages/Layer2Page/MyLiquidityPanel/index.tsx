@@ -19,7 +19,7 @@ import {
     PriceTag
 } from '@loopring-web/common-resources';
 
-import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
+import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 import { useOverview } from './hook';
 import { TableWrapStyled } from 'pages/styled'
 import { useAmmActivityMap } from 'stores/Amm/AmmActivityMap'

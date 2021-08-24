@@ -7,7 +7,7 @@ import { useAmmMiningUI } from './hook';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { Trans, withTranslation } from 'react-i18next';
-import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
+import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 
 type ClickHandler = {
     handleClick: (pair: string) => void

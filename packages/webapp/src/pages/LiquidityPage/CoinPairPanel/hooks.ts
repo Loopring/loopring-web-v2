@@ -10,7 +10,7 @@ import { AmmPoolSnapshot, AmmUserRewardMap, getExistedMarket, TickerData, Tradin
 import { deepClone } from '../../../utils/obj_tools';
 import { getUserAmmTransaction, makeMyAmmMarketArray } from '../../../hooks/help/marketTable';
 import { AmmRecordRow } from '@loopring-web/component-lib';
-import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
+import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 import { useSystem } from '../../../stores/system';
 import { makeMyAmmWithSnapshot } from '../../../hooks/help/makeUIAmmActivityMap';
 import { useUserRewards } from '../../../stores/userRewards';
