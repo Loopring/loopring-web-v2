@@ -70,8 +70,11 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
         setWalletMap(walletMap)
 
-    }, [symbol])
+    }, [])
     useWalletHook({walletLayer2Callback})
+    React.useEffect(() => {
+        resetDefault();
+    }, [symbol])
     const resetDefault = React.useCallback(() => {
         if (symbol) {
             setTransferValue({
@@ -89,7 +92,6 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             })
         }
     },[])
-    useWalletHook({walletLayer2Callback})
 
     useCustomDCEffect(() => {
 
