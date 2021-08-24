@@ -11,7 +11,7 @@ import { Box, Grid, Tabs, Tab, Divider, OutlinedInput, InputAdornment } from '@m
 import { SearchIcon } from '@loopring-web/common-resources'
 import { useQuote, useCandlestickList } from './hook'
 import { LoopringAPI } from 'api_wrapper'
-import { TradingInterval } from 'loopring-sdk/dist'
+import { TradingInterval } from 'loopring-sdk'
 import { TableWrapStyled } from 'pages/styled'
 import { useFavoriteMarket } from 'stores/localStore/favoriteMarket'
 import { AmmPoolActivityRule } from 'loopring-sdk'

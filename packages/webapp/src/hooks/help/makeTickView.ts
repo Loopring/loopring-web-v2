@@ -3,7 +3,7 @@ import store from '../../stores';
 import { FloatTag,TradeFloat } from '@loopring-web/common-resources';
 import { volumeToCountAsBigNumber } from './volumeToCount';
 import { Ticker, TickerMap } from '../../stores/ticker';
-import { LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
+import { LoopringMap } from 'loopring-sdk';
 import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
 
 export const makeTickView = (tick: Partial<TickerData>) => {

@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useSelector } from "react-redux"
 
 import { useCustomDCEffect } from "hooks/common/useCustomDCEffect"
-import { getExistedMarket, toBig } from "loopring-sdk"
+import { getExistedMarket, toBig } from 'loopring-sdk'
 import { RootState } from "stores"
 
 import store from 'stores'

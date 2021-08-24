@@ -7,7 +7,7 @@ import { useAmmMapUI } from './hook';
 
 import { PoolsTable } from '@loopring-web/component-lib';
 import { SearchIcon } from '@loopring-web/common-resources'
-import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
+import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 
 const WrapperStyled = styled(Box)`
     flex: 1;

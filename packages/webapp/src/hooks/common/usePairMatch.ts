@@ -1,8 +1,8 @@
-import React, { useState } from "react"
-import { useRouteMatch } from "react-router-dom"
-import { useTokenMap } from "stores/token"
-import { CoinInfo } from "@loopring-web/common-resources"
-import { getExistedMarket } from "loopring-sdk"
+import React, { useState } from 'react'
+import { useRouteMatch } from 'react-router-dom'
+import { useTokenMap } from 'stores/token'
+import { CoinInfo } from '@loopring-web/common-resources'
+import { getExistedMarket } from 'loopring-sdk'
 
 export function usePairMatch<C extends { [key: string]: any }>(path: string) {
     const { coinMap, tokenMap, marketArray, } = useTokenMap()

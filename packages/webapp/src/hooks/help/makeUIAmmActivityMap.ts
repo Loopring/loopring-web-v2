@@ -9,7 +9,7 @@ import {
 import { AmmActivity, AmmCardProps, MyAmmLP } from '@loopring-web/common-resources';
 import store from '../../stores';
 import { deepClone } from '../../utils/obj_tools';
-import { AmmUserReward, AmmUserRewardMap } from 'loopring-sdk/dist/defs/loopring_defs';
+import { AmmUserReward, AmmUserRewardMap } from 'loopring-sdk';
 import BigNumber from 'bignumber.js';
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
 import { coinMap } from '@loopring-web/component-lib';
