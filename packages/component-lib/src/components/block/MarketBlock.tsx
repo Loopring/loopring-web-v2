@@ -46,7 +46,8 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                                                          tradeFloat,
                                                          chartData = []
                                                      }: & WithTranslation & MarketBlockProps<C>) => {
-    const {upColor} = useSettings();
+    const {upColor, currency} = useSettings();
+    const isDollar = currency === 'USD'
     return <MarketBlockStyled className={'MuiPaper-elevation2'} custom={{chg: upColor}} padding={0.5 * 5} display={'flex'}
                               justifyContent={'stretch'}>
         {coinAInfo && coinBInfo ?
@@ -54,11 +55,11 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                 <Grid item xs={12} display={'flex'} flexDirection={'row'} justifyContent={'flex-start'}
                       alignItems={'center'} height={24}>
                     <Typography variant={'h4'} component={'h3'}>
-                        <Typography component={'span'} title={'sell'} color={'textPrimary'}>
+                        <Typography variant={'h5'} component={'span'} title={'sell'} color={'textPrimary'}>
                             {coinAInfo?.simpleName}
                         </Typography>
-                        <Typography component={'i'}>/</Typography>
-                        <Typography component={'span'} title={'buy'} color={'textPrimary'}>
+                        <Typography variant={'h5'} component={'i'}> / </Typography>
+                        <Typography variant={'h5'} component={'span'} title={'buy'} color={'textPrimary'}>
                             {coinBInfo.simpleName}
                         </Typography>
                     </Typography>
@@ -66,30 +67,42 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                 <Grid item xs={12} display={'flex'} flexDirection={'row'} justifyContent={'flex-start'}
                       alignItems={'stretch'} className={'float-group'} marginTop={1}>
                     <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'} justifyContent={'flex-end'}
-                         className={'left-block'}>
-                        <Typography variant={'h5'} height={24} component={'span'}
-                                    className={`float-tag float-${tradeFloat.floatTag}`}>${
-                            getThousandFormattedNumbers(tradeFloat.priceDollar, 2, {isAbbreviate: true})
-                        } </Typography>
-                        <Typography variant={'body2'} component={'span'} marginTop={1 / 2}
-                                    className={`float-tag float-${tradeFloat.floatTag}`}>{
-                            tradeFloat.change
-                              ? `${tradeFloat.change > 0 ? '+' : ''}${getThousandFormattedNumbers(tradeFloat.change, 2)}%`
-                              : EmptyValueTag
-                        }</Typography>
+                        className={'left-block'}>
+                        {tradeFloat.priceDollar ? (
+                            <Box height={24} display={'flex'} alignItems={'center'}
+                                        className={`float-tag float-${tradeFloat.floatTag}`}>
+                                <Typography variant={'h4'}>{getThousandFormattedNumbers(tradeFloat.priceDollar, 2, {isAbbreviate: true})}
+                                </Typography>
+                              <Typography color={'var(--color-text-secondary)'} marginX={1 / 4}>&#8776;</Typography>
+                              <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
+                            ￥{getThousandFormattedNumbers(tradeFloat.priceYuan, 2, {isAbbreviate: true})}</Typography>
+                            </Box>) : ''}
+                        <Box display={'flex'} alignItems={'center'}>
+                          <Typography variant={'body2'} component={'span'} marginTop={1 / 2} marginRight={1}
+                                      className={`float-tag float-${tradeFloat.floatTag}`}>{
+                              tradeFloat.change
+                                ? `${tradeFloat.change > 0 ? '+' : ''}${getThousandFormattedNumbers(tradeFloat.change, 2)}%`
+                                : EmptyValueTag + '%'
+                                
+                          }
+                          </Typography>
+                            <Typography variant={'body2'} component={'div'} textOverflow={'ellipsis'} overflow={'hidden'} whiteSpace={'nowrap'}
+                                    marginTop={1 / 2}>{t('labelVolume')} : {(tradeFloat.volume ? getThousandFormattedNumbers(tradeFloat.volume, 3) : '--')}</Typography>
+                        </Box>
                     </Box>
-                    <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'}
+                    {/* <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'}
                          justifyContent={'flex-end'}>
                         <Typography variant={'body2'} component={'span'} textOverflow={'ellipsis'}
-                                    height={24}> ￥{
-                                      tradeFloat.priceYuan ? abbreviateNumber(tradeFloat.priceYuan) : '--'
+                                    height={24}> {isDollar 
+                                      ? (tradeFloat && Number.isFinite(tradeFloat.priceDollar) ? '$ ' + abbreviateNumber(tradeFloat.priceDollar) : '--')
+                                      : (tradeFloat && Number.isFinite(tradeFloat.priceYuan) ? '￥ ' + abbreviateNumber(tradeFloat.priceYuan) : '--')
                         } </Typography>
                         <Typography variant={'body2'} component={'div'} textOverflow={'ellipsis'} overflow={'hidden'} whiteSpace={'nowrap'}
                                     marginTop={1 / 2}>{t('labelVolume')} : {(tradeFloat.volume ? getThousandFormattedNumbers(tradeFloat.volume, 3) : '--')}</Typography>
-                    </Box>
+                    </Box> */}
 
                 </Grid>
-                <Grid item position={'absolute'} top={0} right={0} width={120} height={42}>
+                <Grid item position={'absolute'} top={0} right={0} width={120} height={52}>
                     <ScaleAreaChart showTooltip={false} showArea={false} type={ChartType.Trend} data={chartData}/>
                 </Grid>
             </Grid> : <></>
