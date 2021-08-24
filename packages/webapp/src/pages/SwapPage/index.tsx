@@ -80,8 +80,8 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
 
             </FixedStyle>
         </Box>
-        <AlertImpact handleClose={alertCloseFunc} open={alertOpen}/>
-        <ConfirmImpact handleClose={confirmCloseFunc} open={confirmOpen}/>
+        <AlertImpact handleClose={alertCloseFunc} open={alertOpen} value={10}/>
+        <ConfirmImpact handleClose={confirmCloseFunc} open={confirmOpen} value={10}/>
     </>
 });
 
