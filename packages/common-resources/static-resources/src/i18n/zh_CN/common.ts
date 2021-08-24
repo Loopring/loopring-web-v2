@@ -225,4 +225,9 @@ export default {
     labelTxnDetailAmount: '数量',
     labelTxnDetailFee: '费用',
     labelTxnDetailMemo: '备注',
+    labelAgreeConfirm: '确认',
+    labelDisAgreeConfirm: '取消',
+    labelImpactAgree:'请输入大写<>"AGREE"</>再次确认',
+    labelImpactTitle : '兑换二次确认',
+    labelImpactExtraGreat: '您的交易金额将影响池子价格<1>{{value}}%</1>，您确定执行此操作吗'
 }
