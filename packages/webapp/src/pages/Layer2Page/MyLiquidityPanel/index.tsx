@@ -86,6 +86,8 @@ const MyLiquidity: any = withTranslation('common')(
             setPage(page);
         }, [])
         const {myAmmMarketArray, summaryReward, myPoolRow} = useOverview({ammActivityMap});
+        const renderPositionValueYuan = PriceTag.Yuan + getThousandFormattedNumbers(summaryReward?.feeYuan?? 0 + (Number.isFinite(summaryReward) ? Number(summaryReward?.feeYuan) : 0))
+        
         return (
             <>
                 <Grid container spacing={2}>
@@ -99,8 +101,7 @@ const MyLiquidity: any = withTranslation('common')(
                                         + getThousandFormattedNumbers((summaryReward.rewardDollar ?? 0) + 
                                         (summaryReward.feeDollar ?? 0))
 
-                                        : PriceTag.Yuan + getThousandFormattedNumbers(summaryReward.rewardYuan ?? 0
-                                            + Number(summaryReward.feeYuan) ?? 0)}
+                                        : renderPositionValueYuan}
                                 </Typography>
                             </Grid>
                             <Grid item marginRight={6}>
