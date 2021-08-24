@@ -74,7 +74,7 @@ const InfoValueStyled = styled(Box)`
     color: ${(props: any) => props.hash ? 'var(--color-secondary)' : 'var(--color-text-primary)'}
 ` as any
 
-export const TxnDetailPanel = withTranslation('common')((
+export const TxnDetailPanel = withTranslation('common', { withRef: true })((
     {
         t,
         hash,
