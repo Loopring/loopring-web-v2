@@ -228,8 +228,8 @@ export default {
     labelTxnDetailMemo: 'Memo',
     labelAgreeConfirm: 'Agree',
     labelDisAgreeConfirm: 'Disagree',
-    labelImpactAgree:'Please enter uppercase "AGREE" to confirm again.',
+    labelImpactAgree:'Please enter uppercase <1>"AGREE"</1> to confirm again.',
     labelImpactTitle : 'Swap Requires Confirmation',
-    labelImpactExtraGreat: ' Your transaction amount will affect the pool price格<1>{{value}}</1>%. Are you sure to swap?'
+    labelImpactExtraGreat: ' Your transaction amount will affect the pool price格<1>{{value}}%</1>. Are you sure to swap?'
 }
 
