@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { Box, Grid, Typography } from '@material-ui/core'
+import { Box, Divider, Grid, Typography } from '@material-ui/core'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import {
@@ -22,6 +22,7 @@ import {
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
 import { useOverview } from './hook';
 import { TableWrapStyled } from 'pages/styled'
+import { useAmmActivityMap } from 'stores/Amm/AmmActivityMap'
 
 
 //TODO: FIXED:  demo data
@@ -59,14 +60,21 @@ const StyledBtnGroupWrapper = styled(Box)`
 
 const MyLiquidity: any = withTranslation('common')(
     <R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>
-    ({t, ammActivityMap, ...rest}:
+    ({t, /* ammActivityMap, */ ...rest}:
          WithTranslation &
          { ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined }
     ) => {
+        const {ammActivityMap, status: ammActivityMapStatus}  = useAmmActivityMap()
         const [chartPeriod, setChartPeriod] = React.useState('ALL');
         const [page, setPage] = React.useState(1);
         const {currency} = useSettings();
         const history = useHistory()
+
+        // React.useEffect(() => {
+        //     if(ammActivityMapStatus === SagaStatus.UNSET){
+        //         setAmmActivityMap(ammActivityMap)
+        //     }
+        // }, [ammActivityMapStatus])
 
         const JumpToLiqudity = React.useCallback((pair, type) => {
             if (history) {
@@ -77,14 +85,13 @@ const MyLiquidity: any = withTranslation('common')(
         const _handlePageChange = React.useCallback((page: number) => {
             setPage(page);
         }, [])
-
         const {myAmmMarketArray, summaryReward, myPoolRow} = useOverview({ammActivityMap});
         return (
             <>
                 <Grid container spacing={2}>
-                    <Grid item sm={3}>
-                        <StyleWrapper container paddingY={3} paddingX={4} margin={0} display={'flex'} flexDirection={'column'}>
-                            <Grid display={'flex'} flexDirection={'column'} item>
+                    <Grid item sm={12}>
+                        <StyleWrapper container paddingY={3} paddingX={4} margin={0} display={'flex'}>
+                            <Grid item display={'flex'} flexDirection={'column'} sm={3}>
                                 <Typography variant={'h5'}
                                             color={'textSecondary'} fontFamily={'Roboto'}>{t('labelTotalPositionValue')}</Typography>
                                 <Typography variant={'h3'} marginTop={1} fontFamily={'Roboto'}>
@@ -96,7 +103,10 @@ const MyLiquidity: any = withTranslation('common')(
                                             + Number(summaryReward.feeYuan) ?? 0)}
                                 </Typography>
                             </Grid>
-                            <Grid display={'flex'} flexDirection={'column'} marginTop={5} item>
+                            <Grid item marginRight={6}>
+                                <Divider orientation={'vertical'} />
+                            </Grid>
+                            <Grid item display={'flex'} flexDirection={'column'} sm={3}>
                                 <Typography variant={'h5'} component={'h3'} fontFamily={'Roboto'}
                                             color={'textSecondary'}>{t('labelFeeRewards')}</Typography>
                                 <Typography variant={'h3'} marginTop={1} fontFamily={'Roboto'}>
@@ -106,7 +116,7 @@ const MyLiquidity: any = withTranslation('common')(
                                         + getThousandFormattedNumbers(summaryReward.feeYuan ? summaryReward.feeYuan : 0)}
                                 </Typography>
                             </Grid>
-                            <Grid display={'flex'} flexDirection={'column'} marginTop={5} item>
+                            {/* <Grid display={'flex'} flexDirection={'column'} marginTop={5} item>
                                 <Typography variant={'h5'} component={'h3'} fontFamily={'Roboto'}
                                             color={'textSecondary'}>{t('labelMiningRewards')}</Typography>
                                 <Typography variant={'h3'} marginTop={1} fontFamily={'Roboto'}>
@@ -115,12 +125,12 @@ const MyLiquidity: any = withTranslation('common')(
                                         : PriceTag.Yuan
                                         + getThousandFormattedNumbers(summaryReward.rewardYuan ? summaryReward.rewardYuan : 0)}
                                 </Typography>
-                            </Grid>
+                            </Grid> */}
                         </StyleWrapper>
                     </Grid>
-                    <Grid item xs={9}>
+                    {/* <Grid item xs={9}>
                         <StylePaper />
-                    </Grid>
+                    </Grid> */}
                 </Grid>
 
                 {/*<StyleWrapper container marginY={2} height={340}>*/}
@@ -141,11 +151,11 @@ const MyLiquidity: any = withTranslation('common')(
                 {/*</StyleWrapper>*/}
                 
                 <TableWrapStyled marginY={2} paddingY={2} paddingX={3} flex={1}>
-                    <Grid item xs={12} display={'flex'} flexDirection={'column'}>
+                    <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1}>
                         <Typography variant={'h5'} marginBottom={3}>{t('labelMyAmm')}</Typography>
                         <MyPoolTable
                             rawData={myPoolRow}
-                            // pagination={{pageSize: 10}}
+                            pagination={{pageSize: 10}}
                             handleDeposit={(row: any) => {
                                 const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`
                                 JumpToLiqudity(pair, 'add')
