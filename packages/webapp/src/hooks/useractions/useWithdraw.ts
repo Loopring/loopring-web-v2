@@ -13,10 +13,8 @@ import {
     WithdrawType,
     WithdrawTypes
 } from '@loopring-web/common-resources';
-import {
-    ConnectorNames, dumpError400, OffchainFeeReqType, toBig, VALID_UNTIL,
-    OffChainWithdrawalRequestV3,
-} from 'loopring-sdk';
+
+import * as sdk from 'loopring-sdk'
 
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
@@ -56,10 +54,11 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     } as IBData<unknown>)
     // const {status:walletLayer2Status} = useWalletLayer2();
     const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap??{} as WalletMap<R>);
-    const {chargeFeeList} = useChargeFees(withdrawValue.belong, OffchainFeeReqType.OFFCHAIN_WITHDRAWAL, tokenMap)
     const [withdrawAddr, setWithdrawAddr] = useState<string>()
     const [withdrawFeeInfo, setWithdrawFeeInfo] = useState<any>(undefined)
-    const [withdrawType, setWithdrawType] = useState<OffchainFeeReqType>(OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
+    const [withdrawType, setWithdrawType] = useState<sdk.OffchainFeeReqType>(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
+
+    const {chargeFeeList} = useChargeFees(withdrawValue.belong, withdrawType, tokenMap, withdrawValue.tradeValue)
     const { setShowWithdraw, } = useOpenModals()
 
     // React.useEffect(()=>{
@@ -88,13 +87,13 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             try {
                 const withdrawToken = tokenMap[inputValue.belong as string]
                 const feeToken = tokenMap[withdrawFeeInfo.belong]
-                const withdrawVol = toBig(inputValue.tradeValue).times('1e' + withdrawToken.decimals).toFixed(0, 0)
+                const withdrawVol = sdk.toBig(inputValue.tradeValue).times('1e' + withdrawToken.decimals).toFixed(0, 0)
                 const storageId = await LoopringAPI.userAPI?.getNextStorageId({
                     accountId: accountId,
                     sellTokenId: withdrawToken.tokenId
                 }, apiKey)
 
-                const request: OffChainWithdrawalRequestV3 = {
+                const request: sdk.OffChainWithdrawalRequestV3 = {
                     exchange: exchangeInfo.exchangeAddress,
                     owner: accAddress,
                     to: withdrawAddr,
@@ -117,7 +116,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     request,
                     web3: connectProvides.usedWeb3,
                     chainId: chainId === 'unknown' ? 1 : chainId,
-                    walletType: connectName as ConnectorNames,
+                    walletType: connectName as sdk.ConnectorNames,
                     eddsaKey: eddsaKey.sk,
                     apiKey,
                 })
@@ -131,7 +130,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                 }
 
             } catch (e) {
-                dumpError400(e)
+                sdk.dumpError400(e)
                 setWithdrawAlertText(t('labelWithdrawFailed'))
             }
 
@@ -145,7 +144,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     }, [account, tokenMap, withdrawFeeInfo])
 
-    const withdrawType2 = withdrawType === OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
+    const withdrawType2 = withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
 
     const withdrawProps: WithdrawProps<R, T> = {
         tradeData: { belong: undefined } as any,
@@ -165,7 +164,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         },
         handleWithdrawTypeChange: (value: 'Fast' | 'Standard') => {
             myLog('handleWithdrawTypeChange', value)
-            const offchainType = value === WithdrawType.Fast ? OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL : OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
+            const offchainType = value === WithdrawType.Fast ? sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL : sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
             setWithdrawType(offchainType)
         },
         handlePanelEvent: async (data: SwitchData<R>, switchType: 'Tomenu' | 'Tobutton') => {
