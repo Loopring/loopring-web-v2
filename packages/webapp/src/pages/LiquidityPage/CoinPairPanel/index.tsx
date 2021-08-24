@@ -320,13 +320,13 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                     {/*}*/}
                     <Box marginTop={3}>
                         {awardList.map((o, index) => (
-                            <AwardWrapperStyled key={`${o.accountId}-${index}}`} display={'flex'} className={'MuiPaper-elevation2'} marginTop={2}>
+                            <AwardWrapperStyled key={`${o.market}-${index}}`} display={'flex'} className={'MuiPaper-elevation2'} marginTop={2}>
                                 {o.awardList.map(item => {
                                     const rewardIcon: any = item.token ? coinJson[item.token] : undefined
                                     const renderReward = Number.isFinite(item.volume) ? `${getThousandFormattedNumbers(Number((item.volume as any).toFixed(2)))} ${item.token}` : '--'
                                     const end = moment(o.end).format('MM/DD')
                                     return (
-                                        <Box display={'flex'} alignItems={'center'}>
+                                        <Box key={`${item.token}-${item.volume}`} display={'flex'} alignItems={'center'}>
                                             <Box component={'span'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
                                                 width={'var(--list-menu-coin-size)'} alignItems={'center'}
                                                 justifyContent={'center'} marginRight={2}>
