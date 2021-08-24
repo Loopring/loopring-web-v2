@@ -54,18 +54,18 @@ export type QuoteTableRawDataItem = {
 }
 
 const QuoteTableChangedCell: any = styled.span`
-	color: ${(props: any) => {
-    const {theme: {colorBase}, upColor} = props
+	color: ${({theme: {colorBase}, upColor, value}: any) => {
+    // const {theme: {colorBase}, upColor} = props
     const isUpColorGreen = upColor === 'green'
-    return props.value > 0
+    return value > 0
         ? isUpColorGreen
             ? colorBase.success
             : colorBase.error
-        : props.value < 0
+        : value < 0
             ? isUpColorGreen
                 ? colorBase.error
                 : colorBase.success
-            : colorBase.textSecondary
+            : colorBase.textPrimary
 }
 }
 `
@@ -141,7 +141,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                     // `
                     return (
                         <div className="rdg-cell-value">
-                            <span>{typeof value !== 'undefined' ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
+                            <span>{Number.isFinite(value) ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
                         </div>
                     )
                 },
@@ -179,7 +179,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                     // const renderValue = hasValue ? value.toFixed(2) : EmptyValueTag
                     return (
                         <div className="rdg-cell-value">
-                            <span>{typeof value !== 'undefined' ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
+                            <span>{Number.isFinite(value) ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
                         </div>
                     )
                 },
@@ -195,7 +195,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                     // const renderValue = hasValue ? value.toFixed(2) : EmptyValueTag
                     return (
                         <div className="rdg-cell-value">
-                            <span>{typeof value !== 'undefined' ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
+                            <span>{Number.isFinite(value) ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
                         </div>
                     )
                 },
@@ -209,7 +209,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                     const value = row[ 'volume' ]
                     return (
                         <div className="rdg-cell-value">
-                            <span>{typeof value !== 'undefined' ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
+                            <span>{Number.isFinite(value) ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
                         </div>
                     )
                 },
