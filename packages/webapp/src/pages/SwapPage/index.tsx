@@ -4,7 +4,7 @@ import BasicInfoPanel from './panel/BasicInfoPanel'
 import TradePanel from './panel/TradePanel'
 import styled from '@emotion/styled'
 import { useSwapPage } from './hook'
-import { SwapPanel, Toast } from '@loopring-web/component-lib'
+import { SwapPanel, Toast,ConfirmImpact,AlertImpact } from '@loopring-web/component-lib'
 
 import { TOAST_TIME } from 'defs/common_defs'
 import { FixedStyle } from 'pages/styled'
@@ -39,6 +39,9 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
     const onClose = React.useCallback(() => {
         setSwapToastOpen(undefined)
     }, [])
+    const  handleClose =  React.useCallback((e,isAgree) => {
+       console.log('isAgree',isAgree)
+    }, [])
     return <>
 
         <Toast alertText={swapToastOpen?.label?? ''} severity={swapToastOpen?.type} open={swapToastOpen?.flag??false}
@@ -65,13 +68,14 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
                     {...{ handleSwapPanelEvent, ...rest }}
                 />
 
-                { process.env.NODE_ENV === 'production' && <>
-                {debugInfo}
+                { process.env.NODE_ENV !== 'production' && <>
+                {JSON.stringify(debugInfo)}
                 </>}
 
             </FixedStyle>
         </Box>
-
+        <AlertImpact handleClose={handleClose} open={false}/>
+        <ConfirmImpact handleClose={handleClose} open={false}/>
     </>
 });
 
