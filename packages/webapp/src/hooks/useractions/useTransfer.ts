@@ -28,12 +28,8 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     // transferValue: R
 } => {
 
-    const {
-        address,
-        setAddress,
-        addrStatus,
-    } = useAddressCheck()
     const {modals: {isShowTransfer: {symbol}}} = useOpenModals()
+
     const { tokenMap, totalCoinMap, } = useTokenMap();
     const { account } = useAccount()
     const { exchangeInfo, chainId } = useSystem();
@@ -48,6 +44,12 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const { chargeFeeList } = useChargeFees(transferValue.belong, sdk.OffchainFeeReqType.TRANSFER, tokenMap)
 
     const [tranferFeeInfo, setTransferFeeInfo] = React.useState<any>()
+
+    const {
+        address,
+        setAddress,
+        addrStatus,
+    } = useAddressCheck()
 
     const [btnStatus, setBtnStatus,] = React.useState<TradeBtnStatus>(TradeBtnStatus.AVAILABLE)
 
