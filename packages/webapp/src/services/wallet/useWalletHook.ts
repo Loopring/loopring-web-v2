@@ -6,7 +6,7 @@ import { walletService } from './walletService';
 import { useWalletLayer2 } from '../../stores/walletLayer2';
 import store from '../../stores';
 
-export const useWalletHook=({throttleWait = globalSetup.throttleWait,walletLayer2Callback,walletLayer1Callback}:{
+export const useWalletHook=({throttleWait = globalSetup.throttleWait, walletLayer2Callback,walletLayer1Callback}:{
     throttleWait?:number,
     walletLayer2Callback?:()=>void,
     walletLayer1Callback?:()=>void,

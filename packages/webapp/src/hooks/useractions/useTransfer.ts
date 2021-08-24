@@ -26,6 +26,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     transferProps: TransferProps<R, T>
     // transferValue: R
 } => {
+
     const {tokenMap, totalCoinMap, } = useTokenMap();
     const {account} = useAccount()
     const {exchangeInfo, chainId} = useSystem();
@@ -49,6 +50,24 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const  walletLayer2Callback= React.useCallback(()=>{
         const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
         setWalletMap(walletMap)
+
+        if (walletMap) {
+            const keys = Reflect.ownKeys(walletMap)
+            for (var key in keys) {
+                const keyVal = keys[key]
+                const walletInfo = walletMap[keyVal]
+                if (sdk.toBig(walletInfo.count).gt(0)) {
+                    
+                    setTransferValue({
+                       belong: keyVal as any,
+                       tradeValue: 0,
+                       balance: walletInfo.count,
+                   })
+
+                   return
+                }
+            }
+        }
     },[])
     useWalletHook({walletLayer2Callback})
 
@@ -143,7 +162,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     }, [setTransferFeeInfo])
 
     const transferProps = {
-        tradeData: { belong: undefined } as any,
+        tradeData: transferValue as any,
         coinMap: totalCoinMap as CoinMap<T>,
         walletMap: walletMap as WalletMap<T>, 
         transferBtnStatus: TradeBtnStatus.AVAILABLE,

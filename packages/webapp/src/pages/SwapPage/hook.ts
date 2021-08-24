@@ -536,11 +536,9 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             myLog('resetTradeCalcData:', coinA, ' / ', coinB,);
             myLog('tradeDataTmp:', tradeDataTmp,);
 
-            const sellCoinInfoMap = coinMap
-
-            // const sellCoinInfoMap = tokenMap[coinB].tradePairs?.reduce((prev: any, item: string | number) => {
-            //     return { ...prev, [item]: coinMap[item] }
-            // }, {} as CoinMap<C>)
+            const sellCoinInfoMap = tokenMap[coinB].tradePairs?.reduce((prev: any, item: string | number) => {
+                return { ...prev, [item]: coinMap[item] }
+            }, {} as CoinMap<C>)
 
             const buyCoinInfoMap = tokenMap[coinA].tradePairs?.reduce((prev: any, item: string | number) => {
                 return { ...prev, [item]: coinMap[item] }
