@@ -20,7 +20,6 @@ import { useSettings } from '../../../../stores';
 import { IconButtonStyled } from '../Styled';
 import { SlippagePanel } from '../tool';
 import { Box } from '@material-ui/core/';
-import { toBig } from 'loopring-sdk';
 
 export const SwapTradeWrap = <T extends IBData<I>,
     I,

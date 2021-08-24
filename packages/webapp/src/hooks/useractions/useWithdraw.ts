@@ -38,6 +38,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 } => {
 
     const { t } = useTranslation('common')
+    const {modals:{isShowWithdraw:{symbol}}} = useOpenModals()
 
     const [withdrawToastOpen, setWithdrawToastOpen] = useState<boolean>(false)
 
@@ -69,26 +70,27 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const  walletLayer2Callback= React.useCallback(()=>{
         const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
          setWalletMap2(walletMap)
+    }, [setWalletMap2])
+    const resetDefault = React.useCallback(() => {
+        if (symbol) {
+            setWithdrawValue({
+                belong: symbol as any,
+                balance: walletMap2[ symbol ]?.count,
+                tradeValue: undefined,
+            })
 
-         if (walletMap) {
-             const keys = Reflect.ownKeys(walletMap)
-             for (var key in keys) {
-                 const keyVal = keys[key]
-                 const walletInfo = walletMap[keyVal]
-                 if (sdk.toBig(walletInfo.count).gt(0)) {
-                     
-                    setWithdrawValue({
-                        belong: keyVal as any,
-                        tradeValue: 0,
-                        balance: walletInfo.count,
-                    })
-
-                    return
-                 }
-             }
-         }
-    }, [setWalletMap2, setWithdrawValue])
-
+        } else {
+            const balance = walletMap2 ? walletMap2[ Object.keys(walletMap2)[ 0 ] ] : {}
+            setWithdrawValue({
+                belong: balance?.belong,
+                balance: balance?.count,
+                tradeValue: undefined,
+            })
+        }
+    }, [symbol, walletMap2,setWithdrawValue])
+    React.useEffect(() => {
+        resetDefault();
+    }, [symbol])
     useWalletHook({walletLayer2Callback})
     useCustomDCEffect(() => {
         if (chargeFeeList.length > 0) {

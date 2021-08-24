@@ -126,7 +126,7 @@ export const WithdrawWrap = <T extends IBData<I>,
                 fullWidth={true}
             />
             {address !== '' ? <IconClearStyled size={'small'}   style={{top:'30px'}} aria-label="Clear" onClick={handleClear}>
-                <CloseIcon/>
+                <CloseIcon  color={'inherit'}/>
             </IconClearStyled> : ''}
         </Grid>
         <Grid item marginTop={2} alignSelf={'stretch'}>

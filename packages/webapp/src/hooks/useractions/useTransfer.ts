@@ -4,7 +4,7 @@ import * as sdk from 'loopring-sdk'
 
 import { connectProvides } from '@loopring-web/web3-provider';
 
-import { SwitchData, TradeBtnStatus, TransferProps, } from '@loopring-web/component-lib';
+import { SwitchData, TradeBtnStatus, TransferProps, useOpenModals, } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
 
 import { useTokenMap } from 'stores/token';
@@ -15,12 +15,12 @@ import { useSystem } from 'stores/system';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { myLog } from 'utils/log_tools';
 import { makeWalletLayer2 } from 'hooks/help';
-import { ChainId } from 'loopring-sdk';
 import { useWalletHook } from '../../services/wallet/useWalletHook';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS } from 'defs/common_defs';
 import { useTranslation } from 'react-i18next';
 import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
+import { ChainId } from 'loopring-sdk';
 
 export const useTransfer = <R extends IBData<T>, T>(): {
     // handleTransfer: (inputValue:R) => void,
@@ -33,7 +33,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         setAddress,
         addrStatus,
     } = useAddressCheck()
-
+    const {modals: {isShowTransfer: {symbol}}} = useOpenModals()
     const { tokenMap, totalCoinMap, } = useTokenMap();
     const { account } = useAccount()
     const { exchangeInfo, chainId } = useSystem();
@@ -53,7 +53,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     React.useEffect(() => {
 
-        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && transferValue 
+        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && transferValue
             && addrStatus === AddressError.NoError) {
             //valid
             //todo add amt check.
@@ -70,25 +70,26 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
         setWalletMap(walletMap)
 
-        if (walletMap) {
-            const keys = Reflect.ownKeys(walletMap)
-            for (var key in keys) {
-                const keyVal = keys[key]
-                const walletInfo = walletMap[keyVal]
-                if (sdk.toBig(walletInfo.count).gt(0)) {
+    }, [symbol])
+    useWalletHook({walletLayer2Callback})
+    const resetDefault = React.useCallback(() => {
+        if (symbol) {
+            setTransferValue({
+                belong: symbol as any,
+                balance: walletMap[ symbol ]?.count,
+                tradeValue: undefined,
+            })
 
-                    setTransferValue({
-                        belong: keyVal as any,
-                        tradeValue: 0,
-                        balance: walletInfo.count,
-                    })
-
-                    return
-                }
-            }
+        } else {
+            const balance = walletMap ? walletMap[ Object.keys(walletMap)[ 0 ] ] : {}
+            setTransferValue({
+                belong: balance?.belong,
+                balance: balance?.count,
+                tradeValue: undefined,
+            })
         }
-    }, [])
-    useWalletHook({ walletLayer2Callback })
+    },[])
+    useWalletHook({walletLayer2Callback})
 
     useCustomDCEffect(() => {
 

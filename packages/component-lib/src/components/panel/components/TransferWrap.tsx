@@ -122,7 +122,7 @@ export const TransferWrap = <T extends IBData<I>,
             />
             {address !== '' ?
                 <IconClearStyled size={'small'} style={{top: '30px'}} aria-label="Clear" onClick={handleClear}>
-                    <CloseIcon/>
+                    <CloseIcon color={'inherit'}/>
                 </IconClearStyled> : ''}
         </Grid>
 
