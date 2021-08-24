@@ -72,9 +72,6 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     }, [])
     useWalletHook({walletLayer2Callback})
-    React.useEffect(() => {
-        resetDefault();
-    }, [symbol])
     const resetDefault = React.useCallback(() => {
         if (symbol) {
             setTransferValue({
@@ -86,13 +83,16 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         } else {
             const balance = walletMap ? walletMap[ Object.keys(walletMap)[ 0 ] ] : {}
             setTransferValue({
-                belong: balance?.belong,
+                belong: balance?.belong as any,
                 balance: balance?.count,
                 tradeValue: undefined,
             })
         }
-    },[])
+    }, [symbol, walletMap,setTransferValue])
 
+    React.useEffect(() => {
+        resetDefault();
+    }, [symbol])
     useCustomDCEffect(() => {
 
         if (chargeFeeList.length > 0) {
