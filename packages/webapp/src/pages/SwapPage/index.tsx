@@ -2,13 +2,12 @@ import { Box, Grid, } from '@material-ui/core'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import BasicInfoPanel from './panel/BasicInfoPanel'
 import TradePanel from './panel/TradePanel'
-import styled from '@emotion/styled'
 import { useSwapPage } from './hook'
 import { SwapPanel, Toast,ConfirmImpact,AlertImpact } from '@loopring-web/component-lib'
 
 import { TOAST_TIME } from 'defs/common_defs'
 import { FixedStyle } from 'pages/styled'
-import React, { useCallback } from 'react';
+import React  from 'react';
 
 
 
