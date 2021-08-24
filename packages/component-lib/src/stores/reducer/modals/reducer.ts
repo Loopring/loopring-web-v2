@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import { ModalState, ModalStatePlayLoad } from './interface';
+import { ModalState, ModalStatePlayLoad, Transaction } from './interface';
 
 const initialState: ModalState = {
-    isShowTransfer: {isShow: false},
-    isShowWithdraw: {isShow: false},
-    isShowDeposit: {isShow: false},
+    isShowTransfer: {isShow: false,symbol:undefined},
+    isShowWithdraw: {isShow: false,symbol:undefined},
+    isShowDeposit: {isShow: false,symbol:undefined},
     isShowResetAccount: {isShow: false},
     isShowSwap: {isShow: false},
     isShowAmm: {isShow: false},
@@ -26,20 +26,26 @@ export const modalsSlice: Slice<ModalState> = createSlice({
             state.isShowSwap.isShow = isShow;
 
         },
-        setShowTransfer(state, action: PayloadAction<ModalStatePlayLoad>) {
-            const {isShow} = action.payload;
-            state.isShowTransfer.isShow = isShow;
-
+        setShowTransfer(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
+            const {isShow,symbol} = action.payload;
+            state.isShowTransfer= {
+                isShow,
+                symbol,
+            };
         },
-        setShowWithdraw(state, action: PayloadAction<ModalStatePlayLoad>) {
-            const {isShow} = action.payload;
-            state.isShowWithdraw.isShow = isShow;
-
+        setShowWithdraw(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
+            const {isShow,symbol} = action.payload;
+            state.isShowWithdraw = {
+                isShow,
+                symbol,
+            };
         },
-        setShowDeposit(state, action: PayloadAction<ModalStatePlayLoad>) {
-            const {isShow} = action.payload;
-            state.isShowDeposit.isShow = isShow;
-
+        setShowDeposit(state, action: PayloadAction<ModalStatePlayLoad & Transaction>) {
+            const {isShow,symbol} = action.payload;
+            state.isShowDeposit = {
+                isShow,
+                symbol,
+            };
         },
         setShowResetAccount(state, action: PayloadAction<ModalStatePlayLoad>) {
             const {isShow} = action.payload;

@@ -27,6 +27,7 @@ import { makeWalletLayer2 } from 'hooks/help';
 import { useWalletHook } from '../../services/wallet/useWalletHook';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS } from 'defs/common_defs';
+import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     // handleWithdraw: (inputValue:R) => void,
@@ -38,6 +39,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 } => {
 
     const { t } = useTranslation('common')
+    const {modals:{isShowWithdraw:{symbol,isShow}}} = useOpenModals()
 
     const [withdrawToastOpen, setWithdrawToastOpen] = useState<boolean>(false)
 
@@ -53,42 +55,73 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     } as IBData<unknown>)
     // const {status:walletLayer2Status} = useWalletLayer2();
     const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap??{} as WalletMap<R>);
-    const [withdrawAddr, setWithdrawAddr] = useState<string>()
+    
     const [withdrawFeeInfo, setWithdrawFeeInfo] = useState<any>(undefined)
     const [withdrawType, setWithdrawType] = useState<sdk.OffchainFeeReqType>(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
 
     const {chargeFeeList} = useChargeFees(withdrawValue.belong, withdrawType, tokenMap, withdrawValue.tradeValue)
     const { setShowWithdraw, } = useOpenModals()
 
-    // React.useEffect(()=>{
-    //     if(walletLayer2Status === SagaStatus.UNSET){
-    //         const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
-    //         setWalletMap2(walletMap)
-    //     }
-    // },[walletLayer2Status])
+    const {
+        address,
+        setAddress,
+        addrStatus,
+    } = useAddressCheck()
+
+    const [btnStatus, setBtnStatus,] = React.useState<TradeBtnStatus>(TradeBtnStatus.AVAILABLE)
+
+    React.useEffect(() => {
+
+        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && withdrawValue 
+            && addrStatus === AddressError.NoError) {
+            //valid
+            //todo add amt check.
+            myLog('try to AVAILABLE')
+            setBtnStatus(TradeBtnStatus.AVAILABLE)
+        } else {
+            myLog('try to DISABLED')
+            setBtnStatus(TradeBtnStatus.DISABLED)
+        }
+
+    }, [setBtnStatus, chargeFeeList, address, addrStatus, withdrawValue])
+
     const  walletLayer2Callback= React.useCallback(()=>{
         const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
          setWalletMap2(walletMap)
+    }, [setWalletMap2])
+    const resetDefault = React.useCallback(() => {
+        if (symbol) {
+            setWithdrawValue({
+                belong: symbol as any,
+                balance: walletMap2[ symbol ]?.count,
+                tradeValue: undefined,
+            })
 
-         if (walletMap) {
-             const keys = Reflect.ownKeys(walletMap)
-             for (var key in keys) {
-                 const keyVal = keys[key]
-                 const walletInfo = walletMap[keyVal]
-                 if (sdk.toBig(walletInfo.count).gt(0)) {
-                     
+        } else {
+            const keys = Reflect.ownKeys(walletMap2)
+            for (var key in keys) {
+                const keyVal = keys[key]
+                const walletInfo = walletMap2[keyVal]
+                if (sdk.toBig(walletInfo.count).gt(0)) {
                     setWithdrawValue({
                         belong: keyVal as any,
                         tradeValue: 0,
                         balance: walletInfo.count,
                     })
-
-                    return
-                 }
-             }
-         }
-    }, [setWalletMap2, setWithdrawValue])
-
+                    break
+                }
+            }
+            // const balance = walletMap2 ? walletMap2[ Object.keys(walletMap2)[ 0 ] ] : {}
+            // setWithdrawValue({
+            //     belong: balance?.belong,
+            //     balance: balance?.count,
+            //     tradeValue: undefined,
+            // })
+        }
+    }, [symbol, walletMap2,setWithdrawValue])
+    React.useEffect(() => {
+        resetDefault();
+    }, [isShow])
     useWalletHook({walletLayer2Callback})
     useCustomDCEffect(() => {
         if (chargeFeeList.length > 0) {
@@ -101,7 +134,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         const { accountId, accAddress, readyState, apiKey, connectName, eddsaKey } = account
         if (readyState === AccountStatus.ACTIVATED && tokenMap
             && exchangeInfo && connectProvides.usedWeb3
-            && withdrawAddr && withdrawFeeInfo?.belong && eddsaKey?.sk) {
+            && address && withdrawFeeInfo?.belong && eddsaKey?.sk) {
             try {
                 const withdrawToken = tokenMap[inputValue.belong as string]
                 const feeToken = tokenMap[withdrawFeeInfo.belong]
@@ -114,7 +147,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                 const request: sdk.OffChainWithdrawalRequestV3 = {
                     exchange: exchangeInfo.exchangeAddress,
                     owner: accAddress,
-                    to: withdrawAddr,
+                    to: address,
                     accountId: account.accountId,
                     storageId: storageId?.offchainId,
                     token: {
@@ -202,7 +235,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         chargeFeeTokenList: chargeFeeList,
         handleOnAddressChange: (value: any) => {
             // myLog('withdraw handleOnAddressChange', value);
-            setWithdrawAddr(value)
+            setAddress(value)
         },
         handleAddressError: (_value: any) => {
             return { error: false, message: '' }

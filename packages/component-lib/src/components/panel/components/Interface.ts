@@ -36,6 +36,7 @@ export type SwitchData<T> = {
 }
 
 export type TransferInfoProps<C> = {
+    transferI18nKey?: string,
     transferBtnStatus?: keyof typeof TradeBtnStatus | undefined,
     chargeFeeTokenList: Array<{ belong: C | string, fee: number | string, __raw__?: any }>,
     chargeFeeToken?: C | string,

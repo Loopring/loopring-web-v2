@@ -10,11 +10,14 @@ export type ModalTypeKeys = keyof typeof ModalType
 export type ModalStatePlayLoad = {
     isShow: boolean,
 }
+export type Transaction = {
+    symbol?: undefined|string,
+}
 
 export interface ModalState {
-    isShowTransfer: ModalStatePlayLoad,
-    isShowWithdraw: ModalStatePlayLoad,
-    isShowDeposit: ModalStatePlayLoad,
+    isShowTransfer: ModalStatePlayLoad & Transaction,
+    isShowWithdraw: ModalStatePlayLoad & Transaction,
+    isShowDeposit: ModalStatePlayLoad & Transaction,
     isShowResetAccount: ModalStatePlayLoad,
     isShowSwap: ModalStatePlayLoad,
     isShowAmm: ModalStatePlayLoad,
