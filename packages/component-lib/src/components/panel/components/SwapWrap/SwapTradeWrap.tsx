@@ -167,7 +167,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
     // console.log('----swap tradeCalcData:', tradeCalcData)
     // console.log('----swap fee:', fee)
 
-    const minimumReceived = (tradeCalcData && tradeCalcData.minimumReceived) ? parseFloat(tradeCalcData.minimumReceived).toPrecision(6) : EmptyValueTag
+    const minimumReceived = (tradeCalcData && tradeCalcData.minimumReceived) ? parseFloat(tradeCalcData.minimumReceived).toFixed(6) : EmptyValueTag
 
     return <Grid className={tradeCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"} flexWrap={'nowrap'}
