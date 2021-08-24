@@ -4,8 +4,6 @@ import React from 'react';
 import { Grid } from '@material-ui/core';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
 import { IBData, TradeCalcData } from '@loopring-web/common-resources';
-// import { useDeepCompareEffect } from 'react-use';
-// import clockLoading from '@loopring-web/common-resources/assets/svg/clock-loading.svg';
 import { SwapData, SwapMenuList, SwapTradeWrap } from '../components';
 import { CountDownIcon } from '../components/tool/Refresh';
 import * as _ from 'lodash'
@@ -79,13 +77,6 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                 swapData.tradeData.buy =  rest.tradeData.buy
              }
             setSwapData(swapData)
-            // setSwapData({
-            //     ...swapData, tradeData: {
-            //         ...swapData.tradeData,
-            //         sell: rest.tradeData.sell,
-            //         buy: rest.tradeData.buy
-            //     }
-            // });
         }
     }, [rest.tradeData, swapData])
     const onChangeEvent = React.useCallback(async (_index: 0 | 1, {
