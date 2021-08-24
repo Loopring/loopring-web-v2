@@ -39,7 +39,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 } => {
 
     const { t } = useTranslation('common')
-    const {modals:{isShowWithdraw:{symbol}}} = useOpenModals()
+    const {modals:{isShowWithdraw:{symbol,isShow}}} = useOpenModals()
 
     const [withdrawToastOpen, setWithdrawToastOpen] = useState<boolean>(false)
 
@@ -98,17 +98,30 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             })
 
         } else {
-            const balance = walletMap2 ? walletMap2[ Object.keys(walletMap2)[ 0 ] ] : {}
-            setWithdrawValue({
-                belong: balance?.belong,
-                balance: balance?.count,
-                tradeValue: undefined,
-            })
+            const keys = Reflect.ownKeys(walletMap2)
+            for (var key in keys) {
+                const keyVal = keys[key]
+                const walletInfo = walletMap2[keyVal]
+                if (sdk.toBig(walletInfo.count).gt(0)) {
+                    setWithdrawValue({
+                        belong: keyVal as any,
+                        tradeValue: 0,
+                        balance: walletInfo.count,
+                    })
+                    break
+                }
+            }
+            // const balance = walletMap2 ? walletMap2[ Object.keys(walletMap2)[ 0 ] ] : {}
+            // setWithdrawValue({
+            //     belong: balance?.belong,
+            //     balance: balance?.count,
+            //     tradeValue: undefined,
+            // })
         }
     }, [symbol, walletMap2,setWithdrawValue])
     React.useEffect(() => {
         resetDefault();
-    }, [symbol])
+    }, [isShow])
     useWalletHook({walletLayer2Callback})
     useCustomDCEffect(() => {
         if (chargeFeeList.length > 0) {

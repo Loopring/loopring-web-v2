@@ -5,7 +5,7 @@ import * as sdk from 'loopring-sdk'
 import { connectProvides } from '@loopring-web/web3-provider';
 
 import { SwitchData, TradeBtnStatus, TransferProps, useOpenModals, } from '@loopring-web/component-lib';
-import { AccountStatus, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
+import { AccountStatus, CoinInfo, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
 
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
@@ -28,7 +28,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     // transferValue: R
 } => {
 
-    const {modals: {isShowTransfer: {symbol}}} = useOpenModals()
+    const {modals: {isShowTransfer: {symbol,isShow}}} = useOpenModals()
 
     const { tokenMap, totalCoinMap, } = useTokenMap();
     const { account } = useAccount()
@@ -83,18 +83,32 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             })
 
         } else {
-            const balance = walletMap ? walletMap[ Object.keys(walletMap)[ 0 ] ] : {}
-            setTransferValue({
-                belong: balance?.belong as any,
-                balance: balance?.count,
-                tradeValue: undefined,
-            })
+            const keys = Reflect.ownKeys(walletMap)
+            for (var key in keys) {
+                const keyVal = keys[key]
+                const walletInfo = walletMap[keyVal]
+                if (sdk.toBig(walletInfo.count).gt(0)) {
+                    setTransferValue({
+                        belong: keyVal as any,
+                        tradeValue: 0,
+                        balance: walletInfo.count,
+                    })
+                    break
+                }
+            }
+            // }
+            // const balance:CoinInfo<any> = walletMap ? walletMap[ Object.keys(walletMap)[ 0 ] ] : {}
+            // setTransferValue({
+            //     belong: balance.belong as any,
+            //     balance: balance.count,
+            //     tradeValue: undefined,
+            // })
         }
-    }, [symbol, walletMap,setTransferValue])
+    }, [symbol, walletMap, setTransferValue])
 
     React.useEffect(() => {
         resetDefault();
-    }, [symbol])
+    }, [isShow])
     useCustomDCEffect(() => {
 
         if (chargeFeeList.length > 0) {

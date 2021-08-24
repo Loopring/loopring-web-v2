@@ -1,4 +1,3 @@
-import { MouseEventHandler } from 'react';
 import { CoinInfo, PriceTag, TradeFloat } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../panel';
 
@@ -20,9 +19,9 @@ export type AssetTitleProps = {
         priceTag: typeof PriceTag[keyof typeof PriceTag],
         [ key: string ]: any,
     },
-    onShowWithdraw: MouseEventHandler<any>,
-    onShowTransfer: MouseEventHandler<any>,
-    onShowDeposit: MouseEventHandler<any>,
+    onShowWithdraw: (token?:string)=>void,
+    onShowTransfer:(token?:string)=>void,
+    onShowDeposit: (token?:string)=>void,
     btnShowDepositStatus?: keyof typeof TradeBtnStatus,
     btnShowTransferStatus?: keyof typeof TradeBtnStatus,
     btnShowWithdrawStatus?: keyof typeof TradeBtnStatus,
