@@ -34,6 +34,13 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
 
         debugInfo,
 
+        alertOpen,
+        alertCloseFunc,
+
+        confirmOpen,
+        confirmCloseFunc,
+
+
     } = useSwapPage();
 
     const onClose = React.useCallback(() => {
@@ -74,8 +81,8 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
 
             </FixedStyle>
         </Box>
-        <AlertImpact handleClose={handleClose} open={false}/>
-        <ConfirmImpact handleClose={handleClose} open={false}/>
+        <AlertImpact handleClose={alertCloseFunc} open={alertOpen}/>
+        <ConfirmImpact handleClose={confirmCloseFunc} open={confirmOpen}/>
     </>
 });
 
