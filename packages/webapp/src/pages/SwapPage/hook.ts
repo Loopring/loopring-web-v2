@@ -11,7 +11,7 @@ import React from 'react';
 import { LoopringAPI } from 'api_wrapper';
 import { useTokenMap } from 'stores/token';
 import * as sdk from 'loopring-sdk';
-import { sleep } from 'loopring-sdk';
+import { sleep, TradeChannel } from 'loopring-sdk';
 
 import { useAmmMap } from 'stores/Amm/AmmMap';
 import { useWalletLayer2 } from 'stores/walletLayer2';
@@ -38,7 +38,7 @@ import store from 'stores';
 import { deepClone } from 'utils/obj_tools';
 import { myError, myLog } from 'utils/log_tools';
 import { useTranslation } from 'react-i18next';
-import { usePairMatch } from 'hooks/usePairMatch';
+import { usePairMatch } from 'hooks/common/usePairMatch';
 import { useWalletHook } from 'services/wallet/useWalletHook';
 import { useSocket } from 'stores/socket';
 import { walletService } from 'services/wallet/walletService';
@@ -103,6 +103,22 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     const [amountMap, setAmountMap] = React.useState<any>()
 
+    const [alertOpen, setAlertOpen] = React.useState<boolean>(false)
+
+    const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false)
+
+    const alertCloseFunc = React.useCallback(() => {
+    }, [setAlertOpen])
+
+    const confirmCloseFunc = React.useCallback(() => {
+    }, [setConfirmOpen])
+
+    React.useEffect(() => {
+        if (!output) {
+            
+        }
+    }, [output])
+
     const debugInfo = process.env.NODE_ENV !== 'production' ? {
         tradeData,
         tradeCalcData: { coinBuy: tradeCalcData?.coinBuy, coinSell: tradeCalcData?.coinSell }, priceImpact: output?.priceImpact,
@@ -114,7 +130,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         if (market && account.accountId && account.apiKey && LoopringAPI.userAPI) {
             LoopringAPI.userAPI.getUserTrades({
                 accountId: account.accountId,
-                market: market,
+                market,
             }, account.apiKey).then((response: {
                 totalNum: any;
                 userTrades: sdk.UserTrade[];
@@ -239,7 +255,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         try {
 
             const orderType = output.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
-            const tradeChannel = output.exceedDepth ? sdk.TradeChannel.AMM_POOL : sdk.TradeChannel.MIXED
+            const tradeChannel = output.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
 
             const request: sdk.SubmitOrderRequestV3 = {
                 exchange: exchangeInfo.exchangeAddress,
@@ -694,6 +710,12 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         swapBtnStatus: swapBtnStatus,
         handleSwapPanelEvent,
         updateDepth,
+
+        alertOpen,
+        alertCloseFunc,
+
+        confirmOpen,
+        confirmCloseFunc,
 
         debugInfo,
     }

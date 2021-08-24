@@ -58,15 +58,15 @@ export const AssetTitle = withTranslation('common')(({
             <Button variant={'outlined'} size={'medium'} color={'primary'}
                     loading={btnShowTransferStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={btnShowTransferStatus === TradeBtnStatus.DISABLED ? true : false}
-                    onClick={onShowTransfer}>{t('labelBtnTransfer')}</Button>
+                    onClick={()=>onShowTransfer()}>{t('labelBtnTransfer')}</Button>
             <Button variant={'outlined'} size={'medium'} color={'secondary'}
                     loading={btnShowWithdrawStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={btnShowWithdrawStatus === TradeBtnStatus.DISABLED ? true : false}
-                    onClick={onShowWithdraw}>{t('labelBtnWithdraw')}</Button>
+                    onClick={()=>onShowWithdraw()}>{t('labelBtnWithdraw')}</Button>
             <Button variant={'contained'} size={'small'} color={'primary'}
                     loading={btnShowDepositStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={btnShowDepositStatus === TradeBtnStatus.DISABLED ? true : false}
-                    onClick={onShowDeposit}>{t('labelBtnDeposit')}</Button>
+                    onClick={()=>onShowDeposit()}>{t('labelBtnDeposit')}</Button>
         </ButtonListRightStyled>
     </Grid>
 })

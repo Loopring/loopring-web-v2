@@ -28,33 +28,45 @@ export const useDeposit = <R extends IBData<T>, T>(): {
         tradeValue: 0,
         balance: 0
     } as IBData<unknown>)
+    const {modals:{isShowDeposit:{symbol,isShow}}} = useOpenModals()
 
     const { walletLayer1 } = useWalletLayer1()
     const {setShowDeposit, setShowAccount} = useOpenModals()
     const {t} = useTranslation('common')
 
     const  walletLayer1Callback = React.useCallback(()=>{
+        if(symbol && walletLayer1){
+            setDepositValue({
+                belong:symbol as any,
+                balance: walletLayer1[symbol]?.count,
+                tradeValue:undefined,
+            })
 
-        if (walletLayer1) {
-            const keys = Reflect.ownKeys(walletLayer1)
-            for (var key in keys) {
-                const keyVal = keys[key] as any
-                const walletInfo = walletLayer1[keyVal]
-                if (sdk.toBig(walletInfo.count).gt(0)) {
-                    
-                    setDepositValue({
-                       belong: keyVal as any,
-                       tradeValue: 0,
-                       balance: walletInfo.count,
-                   })
+        }else{
+            if (walletLayer1) {
+                const keys = Reflect.ownKeys(walletLayer1)
+                for (var key in keys) {
+                    const keyVal = keys[key] as any
+                    const walletInfo = walletLayer1[keyVal]
+                    if (sdk.toBig(walletInfo.count).gt(0)) {
 
-                   return
+                        setDepositValue({
+                            belong: keyVal as any,
+                            tradeValue: 0,
+                            balance: walletInfo.count,
+                        })
+
+                        return
+                    }
                 }
             }
         }
-    },[walletLayer1, setDepositValue, ])
+    },[walletLayer1, symbol, setDepositValue])
+    React.useEffect(()=>{
+        walletLayer1Callback()
+    },[isShow])
 
-    useWalletHook({ walletLayer1Callback })
+    // useWalletHook({ walletLayer1Callback })
 
     // walletMap1: WalletMap<T> | undefined, ShowDeposit: (isShow: boolean, defaultProps?: any) => void
     const handleDeposit = React.useCallback(async (inputValue: any) => {
