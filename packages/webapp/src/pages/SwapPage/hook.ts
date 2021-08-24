@@ -103,6 +103,22 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     const [amountMap, setAmountMap] = React.useState<any>()
 
+    const [alertOpen, setAlertOpen] = React.useState<boolean>(false)
+
+    const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false)
+
+    const alertCloseFunc = React.useCallback(() => {
+    }, [setAlertOpen])
+
+    const confirmCloseFunc = React.useCallback(() => {
+    }, [setConfirmOpen])
+
+    React.useEffect(() => {
+        if (!output) {
+            
+        }
+    }, [output])
+
     const debugInfo = process.env.NODE_ENV !== 'production' ? {
         tradeData,
         tradeCalcData: { coinBuy: tradeCalcData?.coinBuy, coinSell: tradeCalcData?.coinSell }, priceImpact: output?.priceImpact,
@@ -114,7 +130,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         if (market && account.accountId && account.apiKey && LoopringAPI.userAPI) {
             LoopringAPI.userAPI.getUserTrades({
                 accountId: account.accountId,
-                market: market,
+                market,
             }, account.apiKey).then((response: {
                 totalNum: any;
                 userTrades: sdk.UserTrade[];
@@ -843,6 +859,12 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         swapBtnStatus: swapBtnStatus,
         handleSwapPanelEvent,
         updateDepth,
+
+        alertOpen,
+        alertCloseFunc,
+
+        confirmOpen,
+        confirmCloseFunc,
 
         debugInfo,
     }
