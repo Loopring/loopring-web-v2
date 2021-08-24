@@ -169,6 +169,7 @@ export const tradeCalcData: TradeCalcData<CoinType> = {
     walletMap: walletMap as WalletMap<CoinType, WalletCoin<CoinType>>,
     slippage: 0.5,
     priceImpact: '12',
+    priceImpactColor: 'var(--color-success)',
     minimumReceived: '1%',
     fee: '1%'
 }

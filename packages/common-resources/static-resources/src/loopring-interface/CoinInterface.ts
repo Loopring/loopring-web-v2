@@ -47,6 +47,7 @@ export type TradeCalcData<T> = {
     slippage: number | string
     // slippageTolerance: Array<number | string>,
     priceImpact: string,
+    priceImpactColor: string,
     minimumReceived: string,
     fee: string
 }

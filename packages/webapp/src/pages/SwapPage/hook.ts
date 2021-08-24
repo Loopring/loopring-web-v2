@@ -62,6 +62,29 @@ const useSwapSocket = () => {
         }
     }, [account.readyState]);
 }
+
+export const getPriceImpactInfo = (output: any) => {
+    const priceImpact = output?.priceImpact ? parseFloat(output?.priceImpact) * 100 : 0
+    let priceImpactColor = 'var(--color-success)'
+    
+    if (priceImpact > 0.1 && priceImpact <= 1) {
+        priceImpactColor = 'var(--color-success)'
+    } else if (priceImpact > 1 && priceImpact <= 3) {
+        priceImpactColor = 'var(--color-textPrimary)'
+    }  else if (priceImpact > 3 && priceImpact <= 5) {
+        priceImpactColor = 'var(--color-warning)'
+    }  else if (priceImpact > 5 && priceImpact <= 10) {
+        priceImpactColor = 'var(--color-error)'
+    }  else if (priceImpact > 10) {
+        priceImpactColor = 'var(--color-error)'
+    }
+
+    return {
+        priceImpact: priceImpact.toPrecision(4),
+        priceImpactColor,
+    }
+}
+
 export const useSwapPage = <C extends { [key: string]: any }>() => {
     useSwapSocket()
     /** get store value **/
@@ -117,7 +140,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         if (output && output.priceImpact) {
             
         } else {
-            
+
         }
     }, [output])
 
@@ -442,7 +465,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     const handleSwapPanelEvent = async (swapData: SwapData<SwapTradeData<IBData<C>>>, swapType: any): Promise<void> => {
 
-        myLog('handleSwapPanelEvent...')
+        // myLog('handleSwapPanelEvent...')
 
         const { tradeData } = swapData
         resetSwap(swapType, tradeData)
@@ -486,8 +509,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 BtoS: stob ? 1 / stob : 0,
             }
             
-            myLog('ammPoolSnapshot tradeCalcData', _tradeCalcData);
-
             setTradeCalcData({...tradeCalcData, ..._tradeCalcData} as TradeCalcData<C>);
         }
 
@@ -551,9 +572,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 }
             }
 
-            myLog('resetTradeCalcData:', coinA, ' / ', coinB,);
-            myLog('tradeDataTmp:', tradeDataTmp,);
-
             const sellCoinInfoMap = tokenMap[coinB].tradePairs?.reduce((prev: any, item: string | number) => {
                 return { ...prev, [item]: coinMap[item] }
             }, {} as CoinMap<C>)
@@ -570,15 +588,10 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 buyCoinInfoMap,
             }
 
-            // myLog('resetTradeCalcData, tradeData:', tradeData);
-            // myLog('resetTradeCalcData, _tradeCalcData:', _tradeCalcData);
-            // myLog('resetTradeCalcData, sellCoinInfoMap:', sellCoinInfoMap);
-            // myLog('resetTradeCalcData, buyCoinInfoMap:', buyCoinInfoMap);
             setTradeCalcData({ ...tradeCalcData, ..._tradeCalcData, } as TradeCalcData<C>)
             setTradeData({ ...tradeDataTmp })
             let { amm: ammKey, market: _market } = sdk.getExistedMarket(marketArray, coinA, coinB);
 
-            myLog('resetTradeCalcData, _market:', _market);
             setMarket(_market);
             setPair({ coinAInfo: coinMap[coinA], coinBInfo: coinMap[coinB] })
 
@@ -625,15 +638,15 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 slipBips: slippage
             }
 
-            // myLog('---> before inputParam:', inputParam);
-            // myLog('---> before inputParam:', coinA, coinB, input, slippage, depth, totalFee);
-
             const output = sdk.getOutputAmount(inputParam)
 
-            // myLog('output:', output)
+            myLog('output:', output)
+
+            const priceImpact = getPriceImpactInfo(output)
 
             const _tradeCalcData = {
-                priceImpact: output?.priceImpact as string,
+                priceImpact: priceImpact.priceImpact,
+                priceImpactColor: priceImpact.priceImpactColor,
                 minimumReceived: output?.amountBOutSlip.minReceivedVal as string,
                 fee: totalFee,
             }
