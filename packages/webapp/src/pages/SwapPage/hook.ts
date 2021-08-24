@@ -11,7 +11,7 @@ import React from 'react';
 import { LoopringAPI } from 'api_wrapper';
 import { useTokenMap } from 'stores/token';
 import * as sdk from 'loopring-sdk';
-import { sleep } from 'loopring-sdk';
+import { sleep, TradeChannel } from 'loopring-sdk';
 
 import { useAmmMap } from 'stores/Amm/AmmMap';
 import { useWalletLayer2 } from 'stores/walletLayer2';
@@ -38,7 +38,7 @@ import store from 'stores';
 import { deepClone } from 'utils/obj_tools';
 import { myError, myLog } from 'utils/log_tools';
 import { useTranslation } from 'react-i18next';
-import { usePairMatch } from 'hooks/usePairMatch';
+import { usePairMatch } from 'hooks/common/usePairMatch';
 import { useWalletHook } from 'services/wallet/useWalletHook';
 import { useSocket } from 'stores/socket';
 import { walletService } from 'services/wallet/walletService';
@@ -255,7 +255,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         try {
 
             const orderType = output.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
-            const tradeChannel = output.exceedDepth ? sdk.TradeChannel.AMM_POOL : sdk.TradeChannel.MIXED
+            const tradeChannel = output.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
 
             const request: sdk.SubmitOrderRequestV3 = {
                 exchange: exchangeInfo.exchangeAddress,

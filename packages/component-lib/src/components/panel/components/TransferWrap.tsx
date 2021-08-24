@@ -11,7 +11,7 @@ import * as _ from 'lodash'
 
 export const TransferWrap = <T extends IBData<I>,
     I>({
-           t, disabled, walletMap, tradeData, coinMap,
+           t, disabled, walletMap, tradeData, coinMap, transferI18nKey,
            chargeFeeToken = 'ETH',
            chargeFeeTokenList,
            onTransferClick,
@@ -162,7 +162,7 @@ export const TransferWrap = <T extends IBData<I>,
             }}
                     loading={!getDisabled() && transferBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={getDisabled() || transferBtnStatus === TradeBtnStatus.DISABLED || transferBtnStatus === TradeBtnStatus.LOADING ? true : false}
-            >{t(`transferLabelBtn`)}
+            >{t(transferI18nKey ?? `transferLabelBtn`)}
             </Button>
             {/* TODO: link to last deposit history */}
             {/*<Box marginTop={2} display={'flex'} justifyContent={'center'}>*/}
