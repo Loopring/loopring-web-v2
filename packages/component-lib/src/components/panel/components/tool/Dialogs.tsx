@@ -55,7 +55,7 @@ export const AlertImpact = withTranslation('common', {withRef: true})(({  t,
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
                         <Trans i18nKey={'labelImpactPirceisuge'}>
-                            xxxxxxx   type Agree, capture 
+                            xxxxxxx   type AGREE, capture
                         </Trans>
                     </DialogContentText>
                     <TextField
@@ -71,7 +71,7 @@ export const AlertImpact = withTranslation('common', {withRef: true})(({  t,
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={(e)=>handleClose(e as any)}> {t('labelDisagree')}</Button>
-                    <Button disabled={value.trim() !== 'Agree'} onClick={(e) => {
+                    <Button disabled={value.trim() !== 'AGREE'} onClick={(e) => {
                         handleClose(e as any, true)
                     }}>{t('labelAgree')}</Button>
                 </DialogActions>
