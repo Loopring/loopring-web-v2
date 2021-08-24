@@ -159,15 +159,15 @@ export const SwapTradeWrap = <T extends IBData<I>,
 
     const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${tradeCalcData?.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
         : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData.BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`
+    const priceImpactColor =  'var(--color-success)'|| 'var(--color-warning)'||'error'||'inherit';
+    const priceImpact = (tradeCalcData && tradeCalcData.priceImpact) ? parseFloat(tradeCalcData.priceImpact).toPrecision(3).toString() + ' %' : EmptyValueTag
 
-    const priceImpact = (tradeCalcData && tradeCalcData.priceImpact) ? toBig(tradeCalcData.priceImpact).times(100).toFixed(2) + ' %' : EmptyValueTag
-    const priceImpactColor = 'error'//'var(--color-warning)','var(--color-success)','inherit'
     const fee = (tradeCalcData && tradeCalcData.fee) ? ((parseFloat(tradeCalcData.fee) / 100).toString() + '%') : EmptyValueTag
 
     // console.log('----swap tradeCalcData:', tradeCalcData)
     // console.log('----swap fee:', fee)
 
-    const minimumReceived = (tradeCalcData && tradeCalcData.minimumReceived) ? parseFloat(tradeCalcData.minimumReceived).toFixed(6) : EmptyValueTag
+    const minimumReceived = (tradeCalcData && tradeCalcData.minimumReceived) ? parseFloat(tradeCalcData.minimumReceived).toPrecision(6) : EmptyValueTag
 
     return <Grid className={tradeCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"} flexWrap={'nowrap'}
@@ -250,7 +250,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapPriceImpact')}</Typography>
                         <Typography component={'p'}  color={priceImpactColor}
-                                    variant="body1" > {priceImpact}  </Typography>
+                                    variant="body1"> {priceImpact}  </Typography>
                     </Grid>
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapMinReceive')}</Typography>
