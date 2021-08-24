@@ -72,18 +72,18 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     React.useEffect(() => {
 
-        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && withdrawValue 
+        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && withdrawValue?.tradeValue
             && addrStatus === AddressError.NoError) {
             //valid
             //todo add amt check.
-            myLog('try to AVAILABLE')
+            myLog('try to AVAILABLE: ', withdrawValue?.tradeValue)
             setBtnStatus(TradeBtnStatus.AVAILABLE)
         } else {
             myLog('try to DISABLED')
             setBtnStatus(TradeBtnStatus.DISABLED)
         }
 
-    }, [setBtnStatus, chargeFeeList, address, addrStatus, withdrawValue])
+    }, [setBtnStatus, chargeFeeList, address, addrStatus, withdrawValue?.tradeValue])
 
     const  walletLayer2Callback= React.useCallback(()=>{
         const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
@@ -201,7 +201,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         tradeData: withdrawValue as any,
         coinMap: totalCoinMap as CoinMap<T>,
         walletMap: walletMap2 as WalletMap<any>,
-        withdrawBtnStatus: TradeBtnStatus.AVAILABLE,
+        withdrawBtnStatus: btnStatus,
         withdrawType: withdrawType2,
         withdrawTypes: WithdrawTypes,
         onWithdrawClick: () => {
@@ -221,6 +221,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         handlePanelEvent: async (data: SwitchData<R>, switchType: 'Tomenu' | 'Tobutton') => {
             return new Promise((res: any) => {
                 if (data?.tradeData?.belong) {
+                    myLog('handlePanelEvent', data.tradeData)
                     if (withdrawValue !== data.tradeData) {
                         setWithdrawValue(data.tradeData)
                     }
@@ -235,9 +236,9 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         chargeFeeTokenList: chargeFeeList,
         handleOnAddressChange: (value: any) => {
             // myLog('withdraw handleOnAddressChange', value);
-            setAddress(value)
         },
         handleAddressError: (_value: any) => {
+            setAddress(_value)
             return { error: false, message: '' }
         }
     }
