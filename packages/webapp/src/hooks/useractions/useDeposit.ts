@@ -28,7 +28,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
         tradeValue: 0,
         balance: 0
     } as IBData<unknown>)
-    const {modals:{isShowDeposit:{symbol}}} = useOpenModals()
+    const {modals:{isShowDeposit:{symbol,isShow}}} = useOpenModals()
 
     const { walletLayer1 } = useWalletLayer1()
     const {setShowDeposit, setShowAccount} = useOpenModals()
@@ -43,23 +43,28 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             })
 
         }else{
-            if(walletLayer1){
-                const balance = walletLayer1?walletLayer1[Object.keys(walletLayer1)[0]]:{
-                    belong: '',
-                    count: 0
-                };
-                setDepositValue({
-                    belong:balance?.belong as any,
-                    balance:balance?.count,
-                    tradeValue:undefined,
-                })
-            }
+            if (walletLayer1) {
+                const keys = Reflect.ownKeys(walletLayer1)
+                for (var key in keys) {
+                    const keyVal = keys[key] as any
+                    const walletInfo = walletLayer1[keyVal]
+                    if (sdk.toBig(walletInfo.count).gt(0)) {
 
+                        setDepositValue({
+                            belong: keyVal as any,
+                            tradeValue: 0,
+                            balance: walletInfo.count,
+                        })
+
+                        return
+                    }
+                }
+            }
         }
     },[walletLayer1, symbol, setDepositValue])
     React.useEffect(()=>{
         walletLayer1Callback()
-    },[symbol])
+    },[isShow])
 
     // useWalletHook({ walletLayer1Callback })
 
