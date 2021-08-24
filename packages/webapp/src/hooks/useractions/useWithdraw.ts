@@ -23,7 +23,6 @@ import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { LoopringAPI } from 'api_wrapper';
 import { useSystem } from 'stores/system';
 import { myLog } from 'utils/log_tools';
-import { useWalletLayer2 } from 'stores/walletLayer2';
 import { makeWalletLayer2 } from 'hooks/help';
 import { useWalletHook } from '../../services/wallet/useWalletHook';
 import { getTimestampDaysLater } from 'utils/dt_tools';
@@ -70,7 +69,26 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const  walletLayer2Callback= React.useCallback(()=>{
         const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
          setWalletMap2(walletMap)
-    },[])
+
+         if (walletMap) {
+             const keys = Reflect.ownKeys(walletMap)
+             for (var key in keys) {
+                 const keyVal = keys[key]
+                 const walletInfo = walletMap[keyVal]
+                 if (sdk.toBig(walletInfo.count).gt(0)) {
+                     
+                    setWithdrawValue({
+                        belong: keyVal as any,
+                        tradeValue: 0,
+                        balance: walletInfo.count,
+                    })
+
+                    return
+                 }
+             }
+         }
+    }, [setWalletMap2, setWithdrawValue])
+
     useWalletHook({walletLayer2Callback})
     useCustomDCEffect(() => {
         if (chargeFeeList.length > 0) {
@@ -147,7 +165,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const withdrawType2 = withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
 
     const withdrawProps: WithdrawProps<R, T> = {
-        tradeData: { belong: undefined } as any,
+        tradeData: withdrawValue as any,
         coinMap: totalCoinMap as CoinMap<T>,
         walletMap: walletMap2 as WalletMap<any>,
         withdrawBtnStatus: TradeBtnStatus.AVAILABLE,
