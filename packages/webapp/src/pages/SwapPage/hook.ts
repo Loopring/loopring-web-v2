@@ -114,7 +114,9 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     }, [setConfirmOpen])
 
     React.useEffect(() => {
-        if (!output) {
+        if (output && output.priceImpact) {
+            
+        } else {
             
         }
     }, [output])
