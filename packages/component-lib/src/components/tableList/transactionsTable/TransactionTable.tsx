@@ -154,8 +154,8 @@ export interface TransactionTableProps {
     showLoading: boolean;
 }
 
-export const TransactionTable = withTranslation('tables')((props: TransactionTableProps & WithTranslation) => {
-    const { rawData, pagination, showFilter, getTxnList, showLoading } = props
+export const TransactionTable = withTranslation(['tables', 'common'])((props: TransactionTableProps & WithTranslation) => {
+    const { rawData, pagination, showFilter, getTxnList, showLoading, ...rest } = props
     const [page, setPage] = React.useState(1)
     const [totalData, setTotalData] = React.useState<RawDataTransactionItem[]>(rawData)
     const [filterType, setFilterType] = React.useState(TransactionTradeTypes.allTypes)
@@ -382,7 +382,7 @@ export const TransactionTable = withTranslation('tables')((props: TransactionTab
             open={modalState}
             onClose={() => setModalState(false)}
         >
-            <TxnDetailPanel {...txnDetailInfo} />
+            <TxnDetailPanel {...{...txnDetailInfo}} />
         </Modal>
         <Table {...{...defaultArgs, ...props, rawData, showLoading }}/>
         {pagination && (

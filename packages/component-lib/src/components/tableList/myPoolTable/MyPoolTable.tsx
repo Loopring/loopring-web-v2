@@ -83,12 +83,12 @@ const columnMode = ({
             if (!row) {
                 return <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}></Box>
             }
-            const {balanceA, balanceB, balanceYuan, balanceDollar} = row;
+            const {balanceA, balanceB, balanceYuan, balanceDollar, ammValue} = row as any;
             const formattedYuan = (balanceYuan && Number.isNaN(balanceYuan)) ? balanceYuan : 0
             const formattedDollar = (balanceDollar && Number.isNaN(balanceYuan)) ? balanceDollar : 0
             return <Box height={'100%'} display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
                 <TypogStyle variant={'body1'} component={'span'} color={'textPrimary'} fontFamily={'Roboto'}>
-                    {balanceDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(formattedDollar)
+                    {balanceDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(ammValue)
                         : PriceTag.Yuan + getThousandFormattedNumbers(formattedYuan)}
                 </TypogStyle>
                 {/* <Typography variant={'body2'} component={'p'} color={'textSecondary'} marginTop={1 / 2}>
@@ -210,6 +210,7 @@ export const MyPoolTable = withTranslation('tables')(<T extends { [ key: string 
         <Table
             rowHeight={rowHeight}
             headerRowHeight={44}
+            showLoading={!totalData.length}
             {...{
                 ...defaultArgs, t, i18n, tReady, ...rest,
                 rawData: getRenderData()
