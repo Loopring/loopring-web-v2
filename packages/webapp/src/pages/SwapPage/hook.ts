@@ -41,7 +41,7 @@ import { useTranslation } from 'react-i18next';
 import { usePairMatch } from 'hooks/common/usePairMatch';
 import { useWalletHook } from 'services/wallet/useWalletHook';
 import { useSocket } from 'stores/socket';
-import { walletService } from 'services/wallet/walletService';
+import { walletLayer2Service } from 'services/wallet/walletLayer2Service';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS, REFRESH_RATE } from 'defs/common_defs';
 
@@ -63,10 +63,18 @@ const useSwapSocket = () => {
     }, [account.readyState]);
 }
 
+enum PriceLevel {
+    Normal,
+    Lv1,
+    Lv2,
+}
+
 const getPriceImpactInfo = (output: any) => {
     let priceImpact: any = output?.priceImpact ? parseFloat(output?.priceImpact) * 100 : undefined
     let priceImpactColor = 'var(--color-success)'
-    
+
+    let priceLevel = PriceLevel.Normal
+
     if (priceImpact) {
 
         if (priceImpact > 0.1 && priceImpact <= 1) {
@@ -77,8 +85,10 @@ const getPriceImpactInfo = (output: any) => {
             priceImpactColor = 'var(--color-warning)'
         }  else if (priceImpact > 5 && priceImpact <= 10) {
             priceImpactColor = 'var(--color-error)'
+            priceLevel = PriceLevel.Lv1
         }  else if (priceImpact > 10) {
             priceImpactColor = 'var(--color-error)'
+            priceLevel = PriceLevel.Lv2
         }
 
         priceImpact = priceImpact.toPrecision(4)
@@ -90,6 +100,7 @@ const getPriceImpactInfo = (output: any) => {
     return {
         priceImpact,
         priceImpactColor,
+        priceLevel,
     }
 }
 
@@ -138,25 +149,104 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false)
 
-    const alertCloseFunc = React.useCallback(() => {
-    }, [setAlertOpen])
-
-    const confirmCloseFunc = React.useCallback(() => {
-    }, [setConfirmOpen])
-
-    React.useEffect(() => {
-        if (output && output.priceImpact) {
-            
-        } else {
-
-        }
-    }, [output])
-
     const debugInfo = process.env.NODE_ENV !== 'production' ? {
         tradeData,
         tradeCalcData: { coinBuy: tradeCalcData?.coinBuy, coinSell: tradeCalcData?.coinSell }, priceImpact: output?.priceImpact,
         market,
     } : ''
+
+    const swapFunc = React.useCallback(async(event: MouseEvent, isAgree?: boolean) => {
+
+        setAlertOpen(false)
+        setConfirmOpen(false)
+
+        if (isAgree) {
+            const { exchangeInfo } = store.getState().system
+        setIsSwapLoading(true);
+        if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo || !output
+            || account.readyState !== AccountStatus.ACTIVATED) {
+
+            setSwapToastOpen({ flag: true, type: 'error', label: t('labelSwapFailed') })
+            setIsSwapLoading(false)
+
+            return
+        }
+
+        const sell = tradeData?.sell.belong as string
+        const buy = tradeData?.buy.belong as string
+
+        const baseToken = tokenMap[sell]
+        const quoteToken = tokenMap[buy]
+
+        const request: sdk.GetNextStorageIdRequest = {
+            accountId: account.accountId,
+            sellTokenId: baseToken.tokenId
+        }
+
+        const storageId = await LoopringAPI.userAPI.getNextStorageId(request, account.apiKey)
+
+        try {
+
+            const orderType = output.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
+            const tradeChannel = output.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
+
+            const request: sdk.SubmitOrderRequestV3 = {
+                exchange: exchangeInfo.exchangeAddress,
+                accountId: account.accountId,
+                storageId: storageId.orderId,
+                sellToken: {
+                    tokenId: baseToken.tokenId,
+                    volume: output.amountS
+                },
+                buyToken: {
+                    tokenId: quoteToken.tokenId,
+                    volume: output.amountBOutSlip.minReceived
+                },
+                allOrNone: false,
+                validUntil: getTimestampDaysLater(DAYS),
+                maxFeeBips: parseInt(totalFee),
+                fillAmountBOrS: false, // amm only false
+                orderType,
+                tradeChannel,
+                eddsaSignature: '',
+            }
+
+            myLog(request)
+
+            const response = await LoopringAPI.userAPI.submitOrder(request, account.eddsaKey.sk, account.apiKey)
+
+            myLog(response)
+
+            if (!response?.hash) {
+                setSwapToastOpen({ flag: true, type: 'error', label: t('labelSwapFailed') })
+                myError(response?.errInfo)
+            } else {
+                setSwapToastOpen({ flag: true, type: 'success', label: t('labelSwapSuccess') })
+                walletLayer2Service.sendUserUpdate()
+                setTradeData({
+                    ...tradeData,
+                    ...{
+                        sell: { ...tradeData?.sell, tradeValue: 0 },
+                        buy: { ...tradeData?.buy, tradeValue: 0 },
+                    }
+                } as SwapTradeData<IBData<C>>)
+            }
+        } catch (reason) {
+            sdk.dumpError400(reason)
+
+            setSwapToastOpen({ flag: true, type: 'error', label: t('labelSwapFailed') })
+
+        }
+
+        setOutput(undefined)
+
+        await sleep(REFRESH_RATE)
+
+        setIsSwapLoading(false)
+
+        }
+
+    }, [account.readyState, output, tokenMap, tradeData, setOutput, setIsSwapLoading, setSwapToastOpen, setTradeData])
 
     //table myTrade
     const myTradeTableCallback = React.useCallback(() => {
@@ -264,91 +354,24 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     const swapCalculatorCallback = React.useCallback(async ({ sell, buy, slippage, ...rest }: any) => {
 
-        const { exchangeInfo } = store.getState().system
-        setIsSwapLoading(true);
-        if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo || !output
-            || account.readyState !== AccountStatus.ACTIVATED) {
 
-            setSwapToastOpen({ flag: true, type: 'error', label: t('labelSwapFailed') })
-            setIsSwapLoading(false)
+        const { priceLevel } = getPriceImpactInfo(output)
 
-            return
+        switch(priceLevel) {
+            case PriceLevel.Lv1:
+                setAlertOpen(true)
+                break
+            case PriceLevel.Lv2:
+                setConfirmOpen(true)
+                break
+            default:
+                break
         }
 
-        const baseToken = tokenMap[sell.belong as string]
-        const quoteToken = tokenMap[buy.belong as string]
+        myLog('swap directly')
 
-        const request: sdk.GetNextStorageIdRequest = {
-            accountId: account.accountId,
-            sellTokenId: baseToken.tokenId
-        }
+    }, [output])
 
-        const storageId = await LoopringAPI.userAPI.getNextStorageId(request, account.apiKey)
-
-        try {
-
-            const orderType = output.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
-            const tradeChannel = output.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
-
-            const request: sdk.SubmitOrderRequestV3 = {
-                exchange: exchangeInfo.exchangeAddress,
-                accountId: account.accountId,
-                storageId: storageId.orderId,
-                sellToken: {
-                    tokenId: baseToken.tokenId,
-                    volume: output.amountS
-                },
-                buyToken: {
-                    tokenId: quoteToken.tokenId,
-                    volume: output.amountBOutSlip.minReceived
-                },
-                allOrNone: false,
-                validUntil: getTimestampDaysLater(DAYS),
-                maxFeeBips: parseInt(totalFee),
-                fillAmountBOrS: false, // amm only false
-                orderType,
-                tradeChannel,
-                eddsaSignature: '',
-            }
-
-            myLog(request)
-
-            const response = await LoopringAPI.userAPI.submitOrder(request, account.eddsaKey.sk, account.apiKey)
-
-            myLog(response)
-
-            if (!response?.hash) {
-                setSwapToastOpen({ flag: true, type: 'error', label: t('labelSwapFailed') })
-                myError(response?.errInfo)
-            } else {
-                setSwapToastOpen({ flag: true, type: 'success', label: t('labelSwapSuccess') })
-                walletService.sendUserUpdate()
-                setTradeData({
-                    ...tradeData,
-                    ...{
-                        sell: { ...tradeData?.sell, tradeValue: 0 },
-                        buy: { ...tradeData?.buy, tradeValue: 0 },
-                    }
-                } as SwapTradeData<IBData<C>>)
-            }
-        } catch (reason) {
-            sdk.dumpError400(reason)
-
-            setSwapToastOpen({ flag: true, type: 'error', label: t('labelSwapFailed') })
-
-        }
-
-        setOutput(undefined)
-
-        await sleep(REFRESH_RATE)
-
-        setIsSwapLoading(false)
-
-        if (rest.__cache__) {
-            makeCache(rest.__cache__)
-        }
-
-    }, [tradeData, output, tokenMap])
     const swapBtnClickArray = Object.assign(deepClone(btnClickMap), {
         [fnType.ACTIVATED]: [swapCalculatorCallback]
     })
@@ -380,7 +403,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
             setAmountMap(amountMap)
 
-            myLog('amountMap:', amountMap)
         }
 
     }, [setAmountMap, market, marketArray, ammMap, accountStatus, account.apiKey, pair?.coinAInfo?.simpleName, pair?.coinBInfo?.simpleName,])
@@ -411,6 +433,35 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                     balance: walletMap ? walletMap[tradeCalcData.coinBuy as string]?.count : 0
                 },
             } as SwapTradeData<IBData<C>>)
+            if (marketArray && amountMap && tradeCalcData.coinSell && tradeCalcData.coinBuy && market &&
+                LoopringAPI.userAPI && ammMap) {
+
+                const { amm, } = sdk.getExistedMarket(marketArray, tradeCalcData.coinSell, tradeCalcData.coinBuy)
+
+                const realMarket = amm && ammMap[amm] ? amm : market
+
+                const quoteMinAmtInfo = amountMap[tradeCalcData.coinBuy]
+
+                if (!quoteMinAmtInfo) {
+                    return
+                }
+
+                myLog(`enter walletLayer2Callback: base:${tradeCalcData.coinSell} quote:${tradeCalcData.coinBuy} `, amountMap)
+
+                const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
+                const feeBips = amm && ammMap[amm] ? ammMap[amm].__rawConfig__.feeBips : 0
+                const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
+
+                myLog('walletLayer2Callback,tradeCalcData', tradeData, tradeCalcData);
+
+                setQuoteMinAmt(quoteMinAmtInfo?.userOrderInfo.minAmount)
+                setFeeBips(feeBips.toString())
+                setTotalFee(totalFee)
+                myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
+
+                setTakerRate(takerRate.toString())
+                setTradeCalcData({ ...tradeCalcData, walletMap, fee: totalFee } as TradeCalcData<C>)
+            }
         } else {
             setTradeData({
                 ...tradeData,
@@ -421,46 +472,13 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                     belong: tradeCalcData.coinBuy,
                 },
             } as SwapTradeData<IBData<C>>)
-        }
-
-        if (marketArray && amountMap && tradeCalcData.coinSell && tradeCalcData.coinBuy && market &&
-            LoopringAPI.userAPI && ammMap) {
-
-            const { amm, } = sdk.getExistedMarket(marketArray, tradeCalcData.coinSell, tradeCalcData.coinBuy)
-
-            const realMarket = amm && ammMap[amm] ? amm : market
-
-            const quoteMinAmtInfo = amountMap[tradeCalcData.coinBuy]
-
-            if (!quoteMinAmtInfo) {
-                return
-            }
-
-            myLog(`enter walletLayer2Callback: base:${tradeCalcData.coinSell} quote:${tradeCalcData.coinBuy} `, amountMap)
-
-            const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
-            const feeBips = amm && ammMap[amm] ? ammMap[amm].__rawConfig__.feeBips : 0
-            const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
-
-            myLog('walletLayer2Callback,tradeCalcData', tradeData, tradeCalcData);
-
-            setQuoteMinAmt(quoteMinAmtInfo?.userOrderInfo.minAmount)
-            setFeeBips(feeBips.toString())
-            setTotalFee(totalFee)
-            myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
-
-            setTakerRate(takerRate.toString())
-            setTradeCalcData({ ...tradeCalcData, walletMap, fee: totalFee } as TradeCalcData<C>)
-        } else {
             setFeeBips('0')
             setTotalFee('0')
             setTakerRate('0')
-
             setTradeCalcData({ ...tradeCalcData, fee: '0' } as TradeCalcData<C>)
-
-            // myLog('walletLayer2Callback,tradeCalcData', tradeData, tradeCalcData);
-
         }
+
+
 
     }, [tradeData, tradeCalcData, amountMap, marketArray, ammMap, account.readyState])
 
@@ -512,20 +530,15 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             let _tradeFloat = makeTickView(tickMap[market] ? tickMap[market] : {})
             setTradeFloat(_tradeFloat as TradeFloat);
 
-            const _tradeCalcData = {
-                StoB: stob,
-                BtoS: stob ? 1 / stob : 0,
-            }
-            
-            setTradeCalcData({...tradeCalcData, ..._tradeCalcData} as TradeCalcData<C>);
+
+            setTradeCalcData((state)=>{
+                state.StoB = stob;
+                state.BtoS = stob ? 1 / stob : 0
+                return state
+            })
+            //({...tradeCalcData, ..._tradeCalcData} as TradeCalcData<C>);
         }
 
-        // if(_tradeData && _tradeData.sell && _tradeData.buy){
-        //     _tradeData.sell ={..._tradeData.sell, balance : tradeCalcData.walletMap ? tradeCalcData.walletMap[ coinA ]?.count : 0} ;
-        //     _tradeData.buy ={..._tradeData.buy, balance : tradeCalcData.walletMap ? tradeCalcData.walletMap[ coinB ]?.count : 0} ;
-        //     myLog('tradeData',tradeData,_tradeData)
-        //     setTradeData({...tradeData,..._tradeData});
-        // }
     }, [ammPoolSnapshot, market, tickMap, totalFee, tradeData, tradeCalcData, setTradeCalcData])
 
     const resetTradeCalcData = React.useCallback((_tradeData, market?, depth?, type?) => {
@@ -612,11 +625,6 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 })
 
         }
-
-        // return {
-        //     _tradeData,
-        //     _tradeCalcData: tradeCalcData,
-        // }
 
     }, [tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray, ammMap, totalFee, setTradeCalcData, setTradeData, setMarket, setPair, ])
 
@@ -735,12 +743,11 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         updateDepth,
 
         alertOpen,
-        alertCloseFunc,
-
         confirmOpen,
-        confirmCloseFunc,
+        swapFunc,
 
         debugInfo,
+
     }
 
 }
