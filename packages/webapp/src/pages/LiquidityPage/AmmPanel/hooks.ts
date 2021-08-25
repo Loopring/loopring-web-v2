@@ -90,6 +90,13 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
             socketEnd()
         }
     }, [account.readyState]);
+    React.useEffect(() => {
+        myLog('refreshRef');
+        if(refreshRef.current ) {
+            // @ts-ignore
+            refreshRef.current.firstElementChild.click();
+        }
+    }, []);
     const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
         myLog('initAmmData:', account.accAddress, walletMap, pair)
 

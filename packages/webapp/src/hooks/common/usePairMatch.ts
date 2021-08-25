@@ -1,54 +1,52 @@
-import React, { useState } from 'react'
 import { useRouteMatch } from 'react-router-dom'
 import { useTokenMap } from 'stores/token'
-import { CoinInfo } from '@loopring-web/common-resources'
 import { getExistedMarket } from 'loopring-sdk'
 
-export function usePairMatch<C extends { [key: string]: any }>(path: string) {
-    const { coinMap, tokenMap, marketArray, } = useTokenMap()
+export function usePairMatch<C extends { [ key: string ]: any }>(path: string):{realMarket:string,realPair:any} {
+    const {coinMap, tokenMap, marketArray,} = useTokenMap()
     const match: any = useRouteMatch(`${path}/:market`)
 
-    const [pair, setPair] = useState<{ coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined }>({ coinAInfo: undefined, coinBInfo: undefined})
-    const [market, setMarket] = useState('')
-    
-    React.useEffect(()=>{
+    // const [pair, setPair] = useState<{ coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined }>({ coinAInfo: undefined, coinBInfo: undefined})
+    // const [realMarket, setRealMarket] = useState('')
 
-        if (!coinMap || !tokenMap || !marketArray) {
-            return
+    // React.useEffect(()=>{
+
+    if (!coinMap || !tokenMap || !marketArray) {
+         return {realMarket:'',realPair:undefined}
+    }
+
+    let market = match?.params?.market
+
+    let coinA = 'LRC'
+
+    let coinB = 'ETH'
+
+    let realMarket = `${coinA}-${coinB}`
+
+    if (market) {
+
+        const matchRes = market.match(/(\w+)-(\w+)/i)
+
+        if (matchRes && matchRes.length >= 3 && coinMap[ matchRes[ 1 ] ] && coinMap[ matchRes[ 2 ] ]) {
+            coinA = matchRes[ 1 ]
+            coinB = matchRes[ 2 ]
         }
 
-        let market = match?.params?.market
+        const {market: marketTemp} = getExistedMarket(marketArray, coinA, coinB)
+        realMarket = marketTemp
 
-        let coinA = 'LRC'
+    }
 
-        let coinB = 'ETH'
+    const coinAInfo = coinMap[ coinA ]
+    const coinBInfo = coinMap[ coinB ]
 
-        let realMarket = `${coinA}-${coinB}`
-
-        if (market) {
-
-            const matchRes = market.match(/(\w+)-(\w+)/i)
-
-            if (matchRes && matchRes.length >= 3 && coinMap[matchRes[1]] && coinMap[matchRes[2]]) {
-                coinA = matchRes[1]
-                coinB = matchRes[2]
-            }
-
-            const { market: marketTemp } = getExistedMarket(marketArray, coinA, coinB)
-            realMarket = marketTemp
-
-        }
-
-        const coinAInfo = coinMap[coinA]
-        const coinBInfo = coinMap[coinB]
-
-        setPair({ coinAInfo, coinBInfo, })
-        setMarket(realMarket)
-    },[])
+    // setPair({ coinAInfo, coinBInfo, })
+    // setRealMarket(realMarket)
+    // },[])
     return {
-        market,
-        pair,
-        setPair,
-        setMarket,
+        realMarket,
+        realPair: {coinAInfo, coinBInfo,},
+        // setPair,
+        // setMarket,
     }
 }

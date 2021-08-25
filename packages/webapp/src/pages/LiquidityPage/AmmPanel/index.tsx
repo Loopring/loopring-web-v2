@@ -37,6 +37,7 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
         ammDepositBtnI18nKey,
         ammWithdrawBtnI18nKey,
         onRefreshData,
+        refreshRef,
     } = useAmmPanel({
         pair,
         snapShotData, ammType: ammType ? ammType : AmmPanelType.Join
