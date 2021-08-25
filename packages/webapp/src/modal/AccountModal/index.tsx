@@ -369,6 +369,24 @@ export const ModalAccountInfo = withTranslation('common')(({
                 }} />,
             },
 
+            [AccountStep.DepositInProcess_WITH_ACC]: {
+                view: <DepositingProcess label={'depositTitle'}
+                    etherscanLink={etherscanUrl + account.accAddress}
+                    providerName={account.connectName} {...{
+                        ...rest,
+                        t
+                    }} />,
+            },
+
+            [AccountStep.WithdrawInProgress]: {
+                view: <DepositingProcess label={'withdrawTitle'}
+                    etherscanLink={etherscanUrl + account.accAddress}
+                    providerName={account.connectName} {...{
+                        ...rest,
+                        t
+                    }} />,
+            },
+
         })
     }, [addressShort, account, depositProps, etherscanUrl, onCopy, onSwitch, onDisconnect, onViewQRCode, t, rest])
 

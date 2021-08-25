@@ -24,9 +24,16 @@ import { ChainId } from 'loopring-sdk';
 
 export const useTransfer = <R extends IBData<T>, T>(): {
     // handleTransfer: (inputValue:R) => void,
+        transferToastOpen: boolean,
+        transferAlertText: any,
+        setTransferToastOpen: any,
     transferProps: TransferProps<R, T>
     // transferValue: R
 } => {
+
+    const [transferToastOpen, setTransferToastOpen] = React.useState<boolean>(false)
+
+    const [transferAlertText, setTransferAlertText] = React.useState<string>()
 
     const {modals: {isShowTransfer: {symbol,isShow}}} = useOpenModals()
 
@@ -224,8 +231,11 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             return { error: false, message: '' }
         }
     }
-
+    
     return {
+        transferToastOpen,
+        transferAlertText,
+        setTransferToastOpen,
         transferProps,
     }
 }

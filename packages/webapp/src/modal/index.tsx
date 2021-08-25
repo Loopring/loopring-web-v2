@@ -30,10 +30,18 @@ export const ModalGroup = withTranslation('common', {
     } = useWithdraw();
     const {etherscanUrl} = useSystem();
     const {depositProps} = useDeposit();
-    const {transferProps} = useTransfer();
+    const {
+        transferAlertText,
+        transferToastOpen,
+        setTransferToastOpen, transferProps} = useTransfer();
     useAccountModal();
     const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals();
     return <>
+
+        <Toast alertText={withdrawAlertText as string} open={withdrawToastOpen}
+               autoHideDuration={TOAST_TIME} onClose={() => {
+            setWithdrawToastOpen(false)
+        }}/>
 
         <Toast alertText={withdrawAlertText as string} open={withdrawToastOpen}
                autoHideDuration={TOAST_TIME} onClose={() => {

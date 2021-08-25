@@ -27,8 +27,8 @@ export const AlertImpact = withTranslation('common', {withRef: true})(({
         <DialogTitle> {t('labelImpactTitle')}</DialogTitle>
         <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">
-                <Trans i18nKey={'labelImpactGreat'} tOptions={{value}}>
-                    Your transaction amount will affect the pool price<Typography component={'span'} color={'var(--color-warning)'}>{value}%</Typography>. Are you sure to swap?
+                <Trans i18nKey={'labelImpactExtraGreat'} tOptions={{value}}>
+                    Your transaction amount will affect the pool price<Typography component={'span'} color={'error'}> {{value}}% </Typography>. Are you sure to swap?
                 </Trans>
             </DialogContentText>
         </DialogContent>
@@ -69,8 +69,8 @@ export const ConfirmImpact = withTranslation('common', {withRef: true})(({
         <DialogTitle> {t('labelImpactTitle')}</DialogTitle>
         <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">
-                <Trans i18nKey={'labelImpactGreat'} tOptions={{value}}>
-                    Your transaction amount will affect the pool price<Typography component={'span'} color={'var(--color-warning)'}>{value}%</Typography>. Are you sure to swap?
+                <Trans i18nKey={'labelImpactExtraGreat'} tOptions={{value}}>
+                    Your transaction amount will affect the pool price<Typography component={'span'} color={'error'}> {{value}}% </Typography>. Are you sure to swap?
                 </Trans>
             </DialogContentText>
             <DialogContentText id="alert-dialog-slide-description">
