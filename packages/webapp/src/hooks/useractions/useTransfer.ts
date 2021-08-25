@@ -185,7 +185,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                 } else if (response?.resultInfo) {
                     setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Failed })
                 } else {
-                    // transfer sucess
+                    // transfer success
                     setShowAccount({ isShow: true, step: AccountStepNew.Transfer_In_Progress })
                     await sleep(TOAST_TIME)
                     setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Success })
@@ -194,6 +194,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             } catch (e) {
                 sdk.dumpError400(e)
                 // transfer failed
+                setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Failed })
             }
 
         } else {

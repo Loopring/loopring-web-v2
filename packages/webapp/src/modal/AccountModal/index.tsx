@@ -36,6 +36,12 @@ import {
     Transfer_In_Progress,
     Transfer_Success,
     Transfer_Failed,
+
+    Withdraw_WaitForAuth,
+    Withdraw_Refused,
+    Withdraw_In_Progress,
+    Withdraw_Success,
+    Withdraw_Failed,
 } from '@loopring-web/component-lib';
 import { walletServices } from '@loopring-web/web3-provider';
 import { ConnectorError, sleep } from 'loopring-sdk';
@@ -254,6 +260,17 @@ export const ModalAccountInfo = withTranslation('common')(({
         }
     }, [])
 
+    const backToWithdrawBtnInfo = React.useMemo(() => {
+        return {
+            btnTxt: t('labelRetry'),
+            callback: () => {
+                setShowAccount({ isShow: false, })
+                setShowWithdraw({ isShow: true, })
+                return true
+            }
+        }
+    }, [])
+
     const closeBtnInfo = React.useMemo(() => {
         return {
             btnTxt: t('labelClose'),
@@ -440,6 +457,34 @@ export const ModalAccountInfo = withTranslation('common')(({
             },
             [AccountStep.Transfer_Failed]: {
                 view: <Transfer_Failed btnInfo={closeBtnInfo} {...{
+                        ...rest, t
+                    }} />,
+            },
+
+            // withdraw
+            [AccountStep.Withdraw_WaitForAuth]: {
+                view: <Withdraw_WaitForAuth
+                    providerName={account.connectName} {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.Withdraw_Refused]: {
+                view: <Withdraw_Refused btnInfo={backToWithdrawBtnInfo} {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.Withdraw_In_Progress]: {
+                view: <Withdraw_In_Progress {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.Withdraw_Success]: {
+                view: <Withdraw_Success btnInfo={closeBtnInfo} {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.Withdraw_Failed]: {
+                view: <Withdraw_Failed btnInfo={closeBtnInfo} {...{
                         ...rest, t
                     }} />,
             },
