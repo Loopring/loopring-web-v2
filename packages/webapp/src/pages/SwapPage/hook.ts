@@ -300,19 +300,21 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         if (market && LoopringAPI.exchangeAPI) {
             myLog('swap page updateDepth', market)
             const { depth } = await LoopringAPI.exchangeAPI.getMixDepth({ market: `AMM-${market}` })
-            setDepth(depth)
+            setDepth(()=>{
+                return depth
+            })
         }
     }, [market, setDepth])
 
     const should15sRefresh= React.useCallback(()=>{
-        callPairDetailInfoAPIs()
         updateDepth()
+        callPairDetailInfoAPIs()
+        marketTradeTableCallback();
     },[market,setDepth,market,ammMap])
 
     React.useEffect(() => {
         if (market) {
-            marketTradeTableCallback();
-            updateDepth();
+            should15sRefresh()
             if ((tradeData && tradeData.sell.belong == undefined) || tradeData === undefined) {
                 //use for router init !important not move 
                 resetSwap(undefined, undefined)
@@ -558,11 +560,11 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     }, [ammPoolSnapshot, market, tickMap, totalFee, tradeData, tradeCalcData, setTradeCalcData])
 
-    const resetTradeCalcData = React.useCallback((_tradeData, market?, depth?, type?) => {
+    const resetTradeCalcData = React.useCallback((_tradeData, _market?, type?) => {
         if (coinMap && tokenMap && marketMap && marketArray && ammMap) {
             let coinA: string, coinB: string;
-            if (market) {
-                [, coinA, coinB] = market.match(/([\w,#]+)-([\w,#]+)/i);
+            if (_market) {
+                [, coinA, coinB] = _market.match(/([\w,#]+)-([\w,#]+)/i);
             } else {
                 coinA = '#null'
                 coinB = '#null'
@@ -631,9 +633,9 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
             setTradeCalcData({ ...tradeCalcData, ..._tradeCalcData, } as TradeCalcData<C>)
             setTradeData({ ...tradeDataTmp })
-            let { amm: ammKey, market: _market } = sdk.getExistedMarket(marketArray, coinA, coinB);
+            let { amm: ammKey, market: market } = sdk.getExistedMarket(marketArray, coinA, coinB);
 
-            setMarket(_market);
+            setMarket(market);
             setPair({ coinAInfo: coinMap[coinA], coinBInfo: coinMap[coinB] })
             callPairDetailInfoAPIs();
 
@@ -648,13 +650,20 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 .then(([{ ammPoolsBalance, tickMap }]: any[]) => apiCallback({ ammPoolsBalance, tickMap }))
                 .catch((error) => {
                     myLog(error, 'go to LER-ETH');
-                    resetTradeCalcData(undefined, market, depth)
+                    resetTradeCalcData(undefined, market)
                 })
         }
 
     },[market,ammMap])
-    const reCalculateDataWhenValueChange = React.useCallback((_tradeData, market?, depth?, type?) => {
-        if (marketArray && tokenMap && marketMap && depth && takerRate) {
+    const reCalculateDataWhenValueChange = React.useCallback((_tradeData, _market?, type?) => {
+        if (marketArray
+            && tokenMap
+            && marketMap
+            && depth
+            && ammPoolSnapshot && idIndex
+            && idIndex[ammPoolSnapshot.lp.tokenId].replace('LP-', '') === market
+            && [`AMM-${market}`,market].includes(depth.symbol) && takerRate) {
+            myLog('reCalculateDataWhenValueChange depth:', depth.symbol)
             const coinA = _tradeData.sell.belong
             const coinB = _tradeData.buy.belong
 
@@ -703,7 +712,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         }
 
 
-    }, [tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray, totalFee, ammPoolSnapshot])
+    }, [depth,tradeCalcData,market, tradeData, coinMap, tokenMap, marketMap, marketArray, totalFee, ammPoolSnapshot])
 
     const resetSwap = (swapType: SwapType | undefined, _tradeData: SwapTradeData<IBData<C>> | undefined) => {
         switch (swapType) {
@@ -713,18 +722,18 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             case SwapType.SELL_SELECTED:
                 //type = 'sell'
                 if (_tradeData?.sell.belong !== tradeData?.sell.belong) {
-                    resetTradeCalcData(_tradeData, `${_tradeData?.sell?.belong ?? `#null`}-${_tradeData?.buy?.belong ?? `#null`}`, depth, 'sell')
+                    resetTradeCalcData(_tradeData, `${_tradeData?.sell?.belong ?? `#null`}-${_tradeData?.buy?.belong ?? `#null`}`, 'sell')
                 } else {
-                    reCalculateDataWhenValueChange(_tradeData, `${_tradeData?.sell.belong}-${_tradeData?.buy.belong}`, depth, 'sell')
+                    reCalculateDataWhenValueChange(_tradeData, `${_tradeData?.sell.belong}-${_tradeData?.buy.belong}`, 'sell')
                 }
                 // throttleSetValue('sell', _tradeData)
                 break
             case SwapType.BUY_SELECTED:
                 //type = 'buy'
                 if (_tradeData?.buy.belong !== tradeData?.buy.belong) {
-                    resetTradeCalcData(_tradeData, `${_tradeData?.sell?.belong ?? `#null`}-${_tradeData?.buy?.belong ?? `#null`}`, depth, 'buy')
+                    resetTradeCalcData(_tradeData, `${_tradeData?.sell?.belong ?? `#null`}-${_tradeData?.buy?.belong ?? `#null`}`, 'buy')
                 } else {
-                    reCalculateDataWhenValueChange(_tradeData, `${_tradeData?.sell.belong}-${_tradeData?.buy.belong}`, depth, 'buy')
+                    reCalculateDataWhenValueChange(_tradeData, `${_tradeData?.sell.belong}-${_tradeData?.buy.belong}`, 'buy')
                 }
                 break
             case SwapType.EXCHANGE_CLICK:
@@ -749,7 +758,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 break;
             default:
                 myLog('resetSwap default')
-                resetTradeCalcData(undefined, market, depth)
+                resetTradeCalcData(undefined, market)
                 break
         }
 

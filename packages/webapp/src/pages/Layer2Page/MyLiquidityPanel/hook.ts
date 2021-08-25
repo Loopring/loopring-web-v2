@@ -76,8 +76,8 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
         const {walletMap: _walletMap} = makeWalletLayer2();
         // setWalletMap(_walletMap as WalletMapExtend<any>)
         if (_walletMap) {
-            getUserAmmTransaction()?.then((marketTrades) => {
-                let _myTradeArray = makeMyAmmMarketArray(undefined, marketTrades)
+            getUserAmmTransaction({})?.then((marketTrades) => {
+                let _myTradeArray = makeMyAmmMarketArray(undefined, marketTrades.userAmmPoolTxs)
                 setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
             })
         }
