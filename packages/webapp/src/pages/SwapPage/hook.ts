@@ -149,6 +149,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false)
 
+    const [priceImpact, setPriceImpact] = React.useState<number>(0)
+
     const debugInfo = process.env.NODE_ENV !== 'production' ? {
         tradeData,
         tradeCalcData: { coinBuy: tradeCalcData?.coinBuy, coinSell: tradeCalcData?.coinSell }, priceImpact: output?.priceImpact,
@@ -670,6 +672,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
             const priceImpact = getPriceImpactInfo(output)
 
+            setPriceImpact(priceImpact.priceImpact ?? 0)
+
             const _tradeCalcData = {
                 priceImpact: priceImpact.priceImpact,
                 priceImpactColor: priceImpact.priceImpactColor,
@@ -755,6 +759,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         alertOpen,
         confirmOpen,
         swapFunc,
+        priceImpact,
 
         debugInfo,
 
