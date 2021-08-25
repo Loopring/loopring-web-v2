@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { AmmActivity, CoinInfo, MyAmmLP, SagaStatus, TradeFloat } from "@loopring-web/common-resources";
 import { useTokenMap } from "stores/token";
-import { useRouteMatch } from 'react-router';
+import { useRouteMatch, useLocation } from 'react-router';
 import moment from 'moment'
 import { AmmDetailStore, useAmmMap } from '../../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../../stores/walletLayer2';
@@ -64,6 +64,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
     const {userRewardsMap, status: useUserRewardsStatus} = useUserRewards()
     const {accountId} = store.getState().account
     const tokenMapList = tokenMap ? Object.entries(tokenMap) : []
+    let routerLocation = useLocation()
 
     // const {account} = useAccount();
 
@@ -155,18 +156,36 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
         getAwardList()
     }, [getAwardList])
 
+    const getUserAmmPoolTxs = React.useCallback(() => {
+        if (ammMap) {
+            const url = routerLocation.pathname
+            const list = url.split('/')
+            const market = list[list.length - 1]
+            const addr = ammMap['AMM-' + market].address
+            getUserAmmTransaction(addr)?.then((marketTrades) => {
+                let _myTradeArray = makeMyAmmMarketArray(market, marketTrades)
+                setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
+            })
+        }
+    }, [ammMap, routerLocation.pathname])
+
+    useEffect(() => {
+        getUserAmmPoolTxs()
+    }, [getUserAmmPoolTxs])
+
     const walletLayer2DoIt = React.useCallback((market) => {
         const {walletMap: _walletMap} = makeWalletLayer2();
 
         setWalletMap(_walletMap as WalletMapExtend<any>)
         if (_walletMap) {
-            getUserAmmTransaction()?.then((marketTrades) => {
-                let _myTradeArray = makeMyAmmMarketArray(market, marketTrades)
-                setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
-            })
+            // getUserAmmTransaction('0xfEB069407df0e1e4B365C10992F1bc16c078E34b')?.then((marketTrades) => {
+            //     let _myTradeArray = makeMyAmmMarketArray(market, marketTrades)
+            //     setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
+            // })
+            getUserAmmPoolTxs()
         }
         return _walletMap
-    }, [makeWalletLayer2, getUserAmmTransaction, makeMyAmmMarketArray, marketArray, pair])
+    }, [makeWalletLayer2, getUserAmmPoolTxs, makeMyAmmMarketArray, marketArray, pair])
 
     const getPairList = React.useCallback(async () => {
         if (LoopringAPI.exchangeAPI && coinPairInfo.coinA && coinPairInfo.coinB) {
@@ -301,7 +320,6 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
 
         }
     }, [ammMapStatus])
-
 
     return {
         walletMap,
