@@ -26,7 +26,6 @@ export type SwapTradeBaseProps<T, I, TCD> = {
     tokenBuyProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>
 }
 export type SwapTradeBaseEventProps<T, I> = {
-    onRefreshData?:()=>void;
     onSwapClick: (tradeData: SwapTradeData<T>) => void | any,
 } & Partial<Pick<InputButtonProps<T, I, unknown>, 'handleError'>>
 

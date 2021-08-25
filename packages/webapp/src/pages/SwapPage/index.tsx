@@ -3,16 +3,14 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 import BasicInfoPanel from './panel/BasicInfoPanel'
 import TradePanel from './panel/TradePanel'
 import { useSwapPage } from './hook'
-import { SwapPanel, Toast,ConfirmImpact,AlertImpact } from '@loopring-web/component-lib'
+import { AlertImpact, ConfirmImpact, SwapPanel, Toast } from '@loopring-web/component-lib'
 
 import { TOAST_TIME } from 'defs/common_defs'
 import { FixedStyle } from 'pages/styled'
-import React  from 'react';
-import { validateTime } from '@material-ui/lab/internal/pickers/time-utils'
+import React from 'react';
 
 
-
-export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation) => {
+export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) => {
 
     const {
         tradeCalcData,
@@ -26,16 +24,13 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
         pair,
         swapBtnI18nKey,
         swapBtnStatus,
-
         swapToastOpen,
         setSwapToastOpen,
-
         should15sRefresh,
-        // swapDisableFlag,
         debugInfo,
-
         alertOpen,
         confirmOpen,
+        refreshRef,
         swapFunc,
 
         priceImpact,
@@ -44,9 +39,6 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
 
     const onClose = React.useCallback(() => {
         setSwapToastOpen(undefined)
-    }, [])
-    const  handleClose =  React.useCallback((e,isAgree) => {
-       console.log('isAgree',isAgree)
     }, [])
     return <>
 
@@ -59,24 +51,24 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
                 ...pair, marketArray,
                 tradeFloat, tradeArray
             }} />
-            <TradePanel tradeArray={tradeArray} myTradeArray={myTradeArray} />
+            <TradePanel tradeArray={tradeArray} myTradeArray={myTradeArray}/>
         </Grid>
 
-        <Box display={'flex'} style={{ minWidth: 'var(--swap-box-width)' }}>
+        <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}}>
             <FixedStyle>
                 <SwapPanel
                     onRefreshData={should15sRefresh}
+                    refreshRef={refreshRef}
                     tradeData={tradeData as any}
                     tradeCalcData={tradeCalcData as any}
                     onSwapClick={onSwapClick}
                     swapBtnI18nKey={swapBtnI18nKey}
                     swapBtnStatus={swapBtnStatus}
-                    // disabled={swapDisableFlag}
                     {...{ handleSwapPanelEvent, ...rest }}
                 />
 
-                { process.env.NODE_ENV !== 'production' && <>
-                {JSON.stringify(debugInfo)}
+                {process.env.NODE_ENV !== 'production' && <>
+                    {JSON.stringify(debugInfo)}
                 </>}
 
             </FixedStyle>

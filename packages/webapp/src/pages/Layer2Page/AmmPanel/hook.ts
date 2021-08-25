@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react'
 import { RawDataAmmItem, AmmSideTypes } from '@loopring-web/component-lib'
-import store from 'stores'
 import { LoopringAPI } from 'api_wrapper'
 import { AmmTxType } from 'loopring-sdk'
 import { volumeToCount } from '../../../hooks/help';
+import { useAccount } from '../../../stores/account';
+import { useTokenMap } from '../../../stores/token';
 
 export function useGetAmmRecord() {
     const [ammRecordList, setAmmRecordList] = React.useState<RawDataAmmItem[]>([])
     const [showLoading, setShowLoading] = React.useState(true)
-    const { accountId,apiKey } = store.getState().account;
-    const { tokenMap } = store.getState().tokenMap
+    const { account:{accountId,apiKey} } =  useAccount()
+    const { tokenMap } = useTokenMap()
 
     const getTokenName = React.useCallback((tokenId?: number) => {
         if (tokenMap) {

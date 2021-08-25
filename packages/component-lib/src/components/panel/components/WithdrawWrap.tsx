@@ -125,8 +125,8 @@ export const WithdrawWrap = <T extends IBData<I>,
                                         variant={'body2'}>{addressError && addressError.error ? addressError.message : ''}</Typography>}
                 fullWidth={true}
             />
-            {address !== '' ? <IconClearStyled size={'small'}   style={{top:'30px'}} aria-label="Clear" onClick={handleClear}>
-                <CloseIcon  color={'inherit'}/>
+            {address !== '' ? <IconClearStyled size={'small'} color={'inherit'}  style={{top:'28px'}} aria-label="Clear" onClick={handleClear}>
+                <CloseIcon />
             </IconClearStyled> : ''}
         </Grid>
         <Grid item marginTop={2} alignSelf={'stretch'}>
