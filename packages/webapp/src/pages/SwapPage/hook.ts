@@ -301,10 +301,11 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             setDepth(depth)
         }
     }, [market, setDepth])
+
     const should15sRefresh= React.useCallback(()=>{
         callPairDetailInfoAPIs()
         updateDepth()
-    },[])
+    },[market,setDepth,market,ammMap])
 
     React.useEffect(() => {
         if (market) {
