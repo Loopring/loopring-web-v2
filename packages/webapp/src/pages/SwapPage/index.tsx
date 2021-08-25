@@ -31,7 +31,7 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
         setSwapToastOpen,
 
         should15sRefresh,
-
+        // swapDisableFlag,
         debugInfo,
 
         alertOpen,
@@ -71,6 +71,7 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
                     onSwapClick={onSwapClick}
                     swapBtnI18nKey={swapBtnI18nKey}
                     swapBtnStatus={swapBtnStatus}
+                    // disabled={swapDisableFlag}
                     {...{ handleSwapPanelEvent, ...rest }}
                 />
 
