@@ -57,6 +57,17 @@ export const Deposit_Refused = (props: PanelProps & WithTranslation) => {
 }
 
 // value symbol
+export const Deposit_Failed = (props: PanelProps & WithTranslation) => {
+    const propsPatch = {
+        iconType: IconType.FailedIcon,
+        describe1: <Trans i18nKey={'label_Deposit_Failed'}>
+        {props.value} {props.symbol} Deposit Failed.
+    </Trans>
+    }
+    return <DepositBase {...propsPatch} {...props} />
+}
+
+// value symbol
 export const Deposit_Submited = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.SubmitIcon,

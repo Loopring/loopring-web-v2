@@ -22,7 +22,6 @@ export enum AccountStepNew {
     QRCode,
     Deposit,
     
-    DepositFailed,
     UpdateAccount,
     ProcessUnlock,
     SuccessUnlock,
@@ -39,6 +38,7 @@ export enum AccountStepNew {
     Deposit_Approve_Submited,
     Deposit_WaitForAuth,
     Deposit_Refused,
+    Deposit_Failed,
     Deposit_Submited,
 
     Transfer_WaitForAuth,
