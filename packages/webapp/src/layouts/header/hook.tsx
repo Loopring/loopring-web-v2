@@ -72,7 +72,7 @@ export const useHeader = () => {
         //     ...headerToolBarData[ ButtonComponentsMap.Language ],
         //     handleChange: onLangBtnClick
         // }
-    });
+    },[]);
 
     // const forceUpdate = React.useReducer(() => ({}), {})[ 1 ] as () => void
     const updateWallet = React.useCallback(()=>{
