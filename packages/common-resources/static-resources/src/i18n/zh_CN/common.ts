@@ -115,7 +115,7 @@ export default {
     labelTradePanelHideOtherPairs: '隐藏其他交易对',
     labelLPTokens: '权益代币',
     labelTrade: '兑换',
-    labelAmmList: 'Amm 列表',
+    labelAmmList: 'AMM 列表',
     labelMyPoolShare: '我的份额',
     labelFee: '费用',
     labelLPTotal: '总资金池',
@@ -135,8 +135,8 @@ export default {
     labelMe: '我的',
     labelMyTrade: '我的交易',
     labelRecent: '最近交易',
-    labelMyAmm: '我的Amm',
-    labelMyAmmRecord: '我的Amm记录',
+    labelMyAmm: '我的AMM',
+    labelMyAmmRecord: '我的AMM记录',
     labelCurrentActivities: '当前活动',
     labelPastActivities: '往期活动',
     labelTotalPositionValue: '我的流动性总价值',
@@ -229,5 +229,5 @@ export default {
     labelDisAgreeConfirm: '取消',
     labelImpactAgree:'请输入大写<>"AGREE"</>再次确认',
     labelImpactTitle : '兑换二次确认',
-    labelImpactExtraGreat: '您的交易金额将影响池子价格<1>{{value}}%</1>，您确定执行此操作吗'
+    labelImpactExtraGreat: '您的交易金额将影响池子价格<1> {{value}}</1>，您确定执行此操作吗'
 }
