@@ -102,7 +102,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                         myLog(curValInWei, allowance, ' need approveMax!')
 
-                        setShowAccount({isShow: true, step: AccountStep.TokenApproveInProcess})
+                        setShowAccount({isShow: true, step: AccountStep.Deposit_Approve_WaitForAuth})
 
                         try {
                             await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
@@ -112,7 +112,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                             result.code = ActionResultCode.ApproveFailed
                             result.data = reason
 
-                            setShowAccount({isShow: true, step: AccountStep.TokenApproveFailed})
+                            setShowAccount({isShow: true, step: AccountStep.Deposit_Approve_Refused})
                             return
                         }
 
@@ -123,9 +123,9 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 }
 
                 if (readyState === AccountStatus.ACTIVATED) {
-                    setShowAccount({isShow: true, step: AccountStep.Deposit_Approve_WaitForAuth})
+                    setShowAccount({isShow: true, step: AccountStep.Deposit_WaitForAuth})
                 } else {
-                    setShowAccount({isShow: true, step: AccountStep.DepositInProcess})
+                    setShowAccount({isShow: true, step: AccountStep.Deposit_WaitForAuth})
                 }
 
                 myLog('before deposit:', chainId, connectName, isMetaMask)
@@ -145,7 +145,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                     setShowAccount({isShow: true, step: AccountStep.DepositFailed})
                 } else {
                     // deposit sucess
-                    setShowAccount({isShow: true, step: AccountStep.Depositing})
+                    setShowAccount({isShow: true, step: AccountStep.DepositFailed})
                 }
 
             } catch (reason) {

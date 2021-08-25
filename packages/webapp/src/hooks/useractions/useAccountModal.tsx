@@ -23,15 +23,15 @@ export  function useAccountModal() {
     },[shouldShow])
     const handleDepositingAccount = React.useCallback(async ()=>{
         // updateAccount({readyState:'DEPOSITING'});
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.Depositing});
-        await sleep(5000)
+        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.Deposit_Submited});
+        await sleep(3000)
         setShouldShow(false)
         setShowAccount({isShow: false});
         statusAccountUnset();
     },[shouldShow])
     const handleErrorApproveToken = React.useCallback(()=>{
         // updateAccount({readyState:'DEPOSITING'});
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.Depositing});
+        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.Deposit_WaitForAuth});
     },[shouldShow])
     const handleErrorDepositSign = React.useCallback(()=>{
         // updateAccount({readyState:'DEPOSITING'});
