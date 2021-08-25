@@ -90,10 +90,22 @@ export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[
 
 }
 
-export const getUserAmmTransaction = (ammPoolAddress?: string) => {
+export const getUserAmmTransaction = ({
+    address,
+    offset,
+    limit
+}: any) => {
     const {accountId, apiKey} = store.getState().account
-    return LoopringAPI.ammpoolAPI?.getUserAmmPoolTxs({accountId, ammPoolAddress}, apiKey).then(({userAmmPoolTxs}) => {
-        return userAmmPoolTxs
+    return LoopringAPI.ammpoolAPI?.getUserAmmPoolTxs({
+        accountId, 
+        ammPoolAddress: address,
+        limit,
+        offset,
+    }, apiKey).then(({userAmmPoolTxs, totalNum}) => {
+        return {
+            userAmmPoolTxs,
+            totalNum
+        }
     })
     // }
 

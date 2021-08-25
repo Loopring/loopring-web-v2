@@ -77,7 +77,8 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
     const [walletMap, setWalletMap] = React.useState<WalletMapExtend<C> | undefined>(undefined);
     // const [ammRecordArray, setAmmRecordArray] = React.useState<AmmRecordRow<C>[]>([]);
     const [ammMarketArray, setAmmMarketArray] = React.useState<AmmRecordRow<C>[]>([]);
-
+    const [ammTotal, setAmmTotal] = React.useState(0)
+    const [ammUserTotal, setAmmUserTotal] = React.useState(0)
 
     const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<AmmRecordRow<C>[]>([]);
     const [ammUserRewardMap, setAmmUserRewardMap] = React.useState<AmmUserRewardMap | undefined>(undefined);
@@ -125,6 +126,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
     });
     const [pairHistory, setPairHistory] = React.useState<ammHistoryItem[]>([])
     const [awardList, setAwardLsit] = React.useState<AwardItme[]>([])
+    const [isLoading, setIsLoading] = React.useState(false)
 
     const getAwardList = React.useCallback(async () => {
         if (LoopringAPI.ammpoolAPI) {
@@ -156,21 +158,31 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
         getAwardList()
     }, [getAwardList])
 
-    const getUserAmmPoolTxs = React.useCallback(() => {
+    const getUserAmmPoolTxs = React.useCallback(({
+        limit = 7,
+        offset = 0,
+    }) => {
         if (ammMap) {
             const url = routerLocation.pathname
             const list = url.split('/')
             const market = list[list.length - 1]
             const addr = ammMap['AMM-' + market].address
-            getUserAmmTransaction(addr)?.then((marketTrades) => {
-                let _myTradeArray = makeMyAmmMarketArray(market, marketTrades)
+            setIsLoading(true)
+            getUserAmmTransaction({
+                address: addr,
+                limit: limit,
+                offset,
+            })?.then((res) => {
+                let _myTradeArray = makeMyAmmMarketArray(market, res.userAmmPoolTxs)
                 setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
+                setAmmUserTotal(res.totalNum)
+                setIsLoading(false)
             })
         }
     }, [ammMap, routerLocation.pathname])
 
     useEffect(() => {
-        getUserAmmPoolTxs()
+        getUserAmmPoolTxs({})
     }, [getUserAmmPoolTxs])
 
     const walletLayer2DoIt = React.useCallback((market) => {
@@ -182,7 +194,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
             //     let _myTradeArray = makeMyAmmMarketArray(market, marketTrades)
             //     setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
             // })
-            getUserAmmPoolTxs()
+            getUserAmmPoolTxs({})
         }
         return _walletMap
     }, [makeWalletLayer2, getUserAmmPoolTxs, makeMyAmmMarketArray, marketArray, pair])
@@ -334,5 +346,9 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
         myAmmMarketArray,
         pairHistory,
         awardList,
+        getUserAmmPoolTxs,
+        showAmmPoolLoading: isLoading,
+        ammTotal,
+        ammUserTotal,
     }
 }
