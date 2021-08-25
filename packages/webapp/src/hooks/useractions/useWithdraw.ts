@@ -3,12 +3,11 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { connectProvides } from '@loopring-web/web3-provider';
-import { SwitchData, TradeBtnStatus, useOpenModals, WithdrawProps } from '@loopring-web/component-lib';
+import { AccountStepNew, SwitchData, TradeBtnStatus, useOpenModals, WithdrawProps } from '@loopring-web/component-lib';
 import {
     AccountStatus,
     CoinMap,
     IBData,
-    SagaStatus,
     WalletMap,
     WithdrawType,
     WithdrawTypes
@@ -26,8 +25,9 @@ import { myLog } from 'utils/log_tools';
 import { makeWalletLayer2 } from 'hooks/help';
 import { useWalletHook } from '../../services/wallet/useWalletHook';
 import { getTimestampDaysLater } from 'utils/dt_tools';
-import { DAYS } from 'defs/common_defs';
+import { DAYS, TOAST_TIME } from 'defs/common_defs';
 import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
+import { ConnectorError } from 'loopring-sdk';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     // handleWithdraw: (inputValue:R) => void,
@@ -39,7 +39,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 } => {
 
     const { t } = useTranslation('common')
-    const {modals:{isShowWithdraw:{symbol,isShow}}} = useOpenModals()
+    const {modals:{isShowWithdraw:{symbol,isShow}}, setShowAccount, setShowWithdraw, } = useOpenModals()
 
     const [withdrawToastOpen, setWithdrawToastOpen] = useState<boolean>(false)
 
@@ -60,7 +60,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const [withdrawType, setWithdrawType] = useState<sdk.OffchainFeeReqType>(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
 
     const {chargeFeeList} = useChargeFees(withdrawValue.belong, withdrawType, tokenMap, withdrawValue.tradeValue)
-    const { setShowWithdraw, } = useOpenModals()
 
     const {
         address,
@@ -136,6 +135,10 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             && exchangeInfo && connectProvides.usedWeb3
             && address && withdrawFeeInfo?.belong && eddsaKey?.sk) {
             try {
+
+                setShowWithdraw({ isShow: false})
+                setShowAccount({isShow: true, step: AccountStepNew.Withdraw_WaitForAuth})
+
                 const withdrawToken = tokenMap[inputValue.belong as string]
                 const feeToken = tokenMap[withdrawFeeInfo.belong]
                 const withdrawVol = sdk.toBig(inputValue.tradeValue).times('1e' + withdrawToken.decimals).toFixed(0, 0)
@@ -175,17 +178,25 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                 myLog('got response:', response)
 
                 if (response?.errorInfo) {
-                    setWithdrawAlertText(t('labelWithdrawFailed'))
+                    // Withdraw failed
+                    if (response.errorInfo.errMsg && ConnectorError[response.errorInfo.errMsg]) {
+                        setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Refused })
+                    } else {
+                        setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
+                    }
+                } else if (response?.resultInfo) {
+                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
                 } else {
-                    setWithdrawAlertText(t('labelWithdrawSucess'))
+                    // Withdraw success
+                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_In_Progress })
+                    await sdk.sleep(TOAST_TIME)
+                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Success })
                 }
 
             } catch (e) {
                 sdk.dumpError400(e)
-                setWithdrawAlertText(t('labelWithdrawFailed'))
+                setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
             }
-
-            setWithdrawToastOpen(true)
 
             return true
 

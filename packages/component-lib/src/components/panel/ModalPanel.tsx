@@ -21,7 +21,6 @@ import { IBData } from '@loopring-web/common-resources';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { useTheme } from '@emotion/react';
 
-
 const Modal = withTranslation('common')(({
                                              open,
                                              onClose,
