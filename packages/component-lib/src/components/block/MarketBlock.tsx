@@ -47,7 +47,6 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                                                          chartData = []
                                                      }: & WithTranslation & MarketBlockProps<C>) => {
     const {upColor, currency} = useSettings();
-    const isDollar = currency === 'USD'
     return <MarketBlockStyled className={'MuiPaper-elevation2'} custom={{chg: upColor}} padding={0.5 * 5} display={'flex'}
                               justifyContent={'stretch'}>
         {coinAInfo && coinBInfo ?
