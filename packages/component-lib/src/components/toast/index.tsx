@@ -20,14 +20,6 @@ const AlertStyled = styled(Alert)`
 
 export const Toast = ({ open, severity = 'success', alertText, autoHideDuration = 2000, onClose }: ToastProps) => {
     
-    // if (severity === undefined) {
-    //     severity = 'success'
-    // }
-
-    // if (autoHideDuration === undefined) {
-    //     autoHideDuration = 2000
-    // }
-
     const renderTitle = severity === 'success' 
         ? 'Successfully'
         : severity === 'warning'
@@ -46,7 +38,7 @@ export const Toast = ({ open, severity = 'success', alertText, autoHideDuration 
 
     return (
         <Snackbar open={open} autoHideDuration={autoHideDuration} onClose={onClose}>
-            <AlertStyled icon={renderIcon} onClose={onClose} severity={severity}>
+            <AlertStyled icon={renderIcon} severity={severity}>
                 <AlertTitle>{renderTitle}</AlertTitle>
                 <Typography variant={'h6'} color={'var(--color-text-secondary)'}>{alertText}</Typography>
             </AlertStyled>
