@@ -27,6 +27,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     myAmmMarketArray: AmmRecordRow<R>[],
     summaryReward: SummaryMyAmm | undefined,
     myPoolRow: MyPoolRow<R>[],
+    showLoading: boolean,
     // ammActivityViewMap: Array<AmmCardProps<I>>,
     // ammActivityPastViewMap: Array<AmmCardProps<I>>
 } => {
@@ -41,6 +42,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     const [myPoolRow, setMyPoolRow] = React.useState<MyPoolRow<R>[]>([])
     const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<AmmRecordRow<R>[]>([])
     const [lpTokenList, setLpTokenList] = React.useState<{addr: string; price: number}[]>([])
+    const [showLoading, setShowLoading] = React.useState(false)
 
     React.useEffect(() => {
         
@@ -55,16 +57,16 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
         }
     }, [ammMapStatus,userRewardsStatus])
 
-    const getLpTokenList = React.useCallback(async () => {
-        if (LoopringAPI.walletAPI) {
-            const result = await LoopringAPI.walletAPI.getLatestTokenPrices()
-            const list = Object.entries(result.tokenPrices).map(([addr, price]) => ({
-                addr,
-                price,
-            }))
-            setLpTokenList(list)
-        }
-    }, [])
+    // const getLpTokenList = React.useCallback(async () => {
+    //     if (LoopringAPI.walletAPI) {
+    //         const result = await LoopringAPI.walletAPI.getLatestTokenPrices()
+    //         const list = Object.entries(result.tokenPrices).map(([addr, price]) => ({
+    //             addr,
+    //             price,
+    //         }))
+    //         setLpTokenList(list)
+    //     }
+    // }, [])
 
     // React.useEffect(() => {
     //     getLpTokenList()
@@ -78,9 +80,11 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
         const {walletMap: _walletMap} = makeWalletLayer2();
         // setWalletMap(_walletMap as WalletMapExtend<any>)
         if (_walletMap) {
+            setShowLoading(true)
             getUserAmmTransaction({})?.then((marketTrades) => {
                 let _myTradeArray = makeMyAmmMarketArray(undefined, marketTrades.userAmmPoolTxs)
                 setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
+                setShowLoading(false)
             })
         }
         return _walletMap
@@ -110,7 +114,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     // }, [walletLayer2, getLpTokenPrice])
 
     const makeMyPoolRow = React.useCallback(async (_walletMap): Promise<MyPoolRow<R>[]> => {
-        await getLpTokenList()
+        // await getLpTokenList()
         if (_walletMap && ammMap && userRewardsMap) {
             // @ts-ignore
             const _myPoolRow: MyPoolRow<R>[] = Reflect.ownKeys(_walletMap).reduce((prev: MyPoolRow<R>[], walletKey: string) => {
@@ -185,6 +189,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
         myAmmMarketArray,
         summaryReward,
         myPoolRow,
+        showLoading,
         // ammActivityViewMap,
         // ammActivityPastViewMap
     }

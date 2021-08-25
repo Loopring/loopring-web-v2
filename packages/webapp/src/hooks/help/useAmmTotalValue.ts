@@ -27,20 +27,21 @@ export const useAmmTotalValue = () => {
     }, [addressIndex])
     
     type GetAmmLiquidityProps = {
-        market: string, 
-        balance?: number, 
+        market: string;
+        balance?: number;
         currency?: 'USD' | 'CNY'
     }
 
     const getAmmLiquidity = React.useCallback(async ({market, balance, currency = 'USD'}: GetAmmLiquidityProps) => {
         const price = await getLpTokenPrice(market)
-        let curBalance: any
+        let curBalance = 0
         if (balance) {
             curBalance = balance
         } else {
-            curBalance = Object.entries(walletLayer2 || {}).find(([token]) => token === market)?.[1].total
+            // if balance is not given, use walletl2 total lp token balance instead
+            curBalance = Number(Object.entries(walletLayer2 || {}).find(([token]) => token === market)?.[1].total || 0)
         }
-        const formattedBalance = volumeToCount(market, (curBalance || 0))
+        const formattedBalance = volumeToCount(market, curBalance)
         const unit = currency && currency === 'CNY' ? forex : 1
         return (price || 0) * (formattedBalance || 0) * (unit as number)
     }, [walletLayer2, getLpTokenPrice, forex])

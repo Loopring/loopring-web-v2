@@ -128,6 +128,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
     const [awardList, setAwardLsit] = React.useState<AwardItme[]>([])
     const [isLoading, setIsLoading] = React.useState(false)
     const { getAmmLiquidity } = useAmmTotalValue()
+    const { forex } = store.getState().system
 
     const getAwardList = React.useCallback(async () => {
         if (LoopringAPI.ammpoolAPI) {
@@ -163,7 +164,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
         limit = 7,
         offset = 0,
     }) => {
-        if (ammMap) {
+        if (ammMap && forex) {
             const url = routerLocation.pathname
             const list = url.split('/')
             const market = list[list.length - 1]
@@ -178,7 +179,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
                 const formattedArray = _myTradeArray.map(async (o: any) => {
                     const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`
                     const totalDollar = await getAmmLiquidity({market: market, balance: o.totalBalance})
-                    const totalYuan = await getAmmLiquidity({market: market, balance: o.totalBalance, currency: 'CNY'})
+                    const totalYuan = totalDollar * forex
                     return ({
                         ...o,
                         totalDollar,
@@ -192,7 +193,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
                 setIsLoading(false)
             })
         }
-    }, [ammMap, routerLocation.pathname])
+    }, [ammMap, routerLocation.pathname, forex, getAmmLiquidity])
 
     useEffect(() => {
         getUserAmmPoolTxs({})

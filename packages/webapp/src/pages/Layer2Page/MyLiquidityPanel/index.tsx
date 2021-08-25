@@ -85,7 +85,7 @@ const MyLiquidity: any = withTranslation('common')(
         const _handlePageChange = React.useCallback((page: number) => {
             setPage(page);
         }, [])
-        const {myAmmMarketArray, summaryReward, myPoolRow} = useOverview({ammActivityMap});
+        const {myAmmMarketArray, summaryReward, myPoolRow, showLoading} = useOverview({ammActivityMap});
         const renderPositionValueYuan = PriceTag.Yuan + getThousandFormattedNumbers(summaryReward?.feeYuan?? 0 + (Number.isFinite(summaryReward) ? Number(summaryReward?.feeYuan) : 0))
         
         return (
@@ -157,6 +157,7 @@ const MyLiquidity: any = withTranslation('common')(
                         <MyPoolTable
                             rawData={myPoolRow}
                             pagination={{pageSize: 10}}
+                            showLoading={showLoading}
                             handleDeposit={(row: any) => {
                                 const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`
                                 JumpToLiqudity(pair, 'add')
