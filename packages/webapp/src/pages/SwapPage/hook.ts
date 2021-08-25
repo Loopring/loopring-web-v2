@@ -433,6 +433,35 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                     balance: walletMap ? walletMap[tradeCalcData.coinBuy as string]?.count : 0
                 },
             } as SwapTradeData<IBData<C>>)
+            if (marketArray && amountMap && tradeCalcData.coinSell && tradeCalcData.coinBuy && market &&
+                LoopringAPI.userAPI && ammMap) {
+
+                const { amm, } = sdk.getExistedMarket(marketArray, tradeCalcData.coinSell, tradeCalcData.coinBuy)
+
+                const realMarket = amm && ammMap[amm] ? amm : market
+
+                const quoteMinAmtInfo = amountMap[tradeCalcData.coinBuy]
+
+                if (!quoteMinAmtInfo) {
+                    return
+                }
+
+                myLog(`enter walletLayer2Callback: base:${tradeCalcData.coinSell} quote:${tradeCalcData.coinBuy} `, amountMap)
+
+                const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
+                const feeBips = amm && ammMap[amm] ? ammMap[amm].__rawConfig__.feeBips : 0
+                const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
+
+                myLog('walletLayer2Callback,tradeCalcData', tradeData, tradeCalcData);
+
+                setQuoteMinAmt(quoteMinAmtInfo?.userOrderInfo.minAmount)
+                setFeeBips(feeBips.toString())
+                setTotalFee(totalFee)
+                myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
+
+                setTakerRate(takerRate.toString())
+                setTradeCalcData({ ...tradeCalcData, walletMap, fee: totalFee } as TradeCalcData<C>)
+            }
         } else {
             setTradeData({
                 ...tradeData,
@@ -443,46 +472,13 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                     belong: tradeCalcData.coinBuy,
                 },
             } as SwapTradeData<IBData<C>>)
-        }
-
-        if (marketArray && amountMap && tradeCalcData.coinSell && tradeCalcData.coinBuy && market &&
-            LoopringAPI.userAPI && ammMap) {
-
-            const { amm, } = sdk.getExistedMarket(marketArray, tradeCalcData.coinSell, tradeCalcData.coinBuy)
-
-            const realMarket = amm && ammMap[amm] ? amm : market
-
-            const quoteMinAmtInfo = amountMap[tradeCalcData.coinBuy]
-
-            if (!quoteMinAmtInfo) {
-                return
-            }
-
-            myLog(`enter walletLayer2Callback: base:${tradeCalcData.coinSell} quote:${tradeCalcData.coinBuy} `, amountMap)
-
-            const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
-            const feeBips = amm && ammMap[amm] ? ammMap[amm].__rawConfig__.feeBips : 0
-            const totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString()
-
-            myLog('walletLayer2Callback,tradeCalcData', tradeData, tradeCalcData);
-
-            setQuoteMinAmt(quoteMinAmtInfo?.userOrderInfo.minAmount)
-            setFeeBips(feeBips.toString())
-            setTotalFee(totalFee)
-            myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
-
-            setTakerRate(takerRate.toString())
-            setTradeCalcData({ ...tradeCalcData, walletMap, fee: totalFee } as TradeCalcData<C>)
-        } else {
             setFeeBips('0')
             setTotalFee('0')
             setTakerRate('0')
-
             setTradeCalcData({ ...tradeCalcData, fee: '0' } as TradeCalcData<C>)
-
-            // myLog('walletLayer2Callback,tradeCalcData', tradeData, tradeCalcData);
-
         }
+
+
 
     }, [tradeData, tradeCalcData, amountMap, marketArray, ammMap, account.readyState])
 
@@ -534,12 +530,13 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             let _tradeFloat = makeTickView(tickMap[market] ? tickMap[market] : {})
             setTradeFloat(_tradeFloat as TradeFloat);
 
-            const _tradeCalcData = {
-                StoB: stob,
-                BtoS: stob ? 1 / stob : 0,
-            }
-            
-            setTradeCalcData({...tradeCalcData, ..._tradeCalcData} as TradeCalcData<C>);
+
+            setTradeCalcData((state)=>{
+                state.StoB = stob;
+                state.BtoS = stob ? 1 / stob : 0
+                return state
+            })
+            //({...tradeCalcData, ..._tradeCalcData} as TradeCalcData<C>);
         }
 
     }, [ammPoolSnapshot, market, tickMap, totalFee, tradeData, tradeCalcData, setTradeCalcData])
