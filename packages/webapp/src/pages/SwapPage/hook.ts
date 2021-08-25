@@ -64,23 +64,31 @@ const useSwapSocket = () => {
 }
 
 const getPriceImpactInfo = (output: any) => {
-    const priceImpact = output?.priceImpact ? parseFloat(output?.priceImpact) * 100 : 0
+    let priceImpact: any = output?.priceImpact ? parseFloat(output?.priceImpact) * 100 : undefined
     let priceImpactColor = 'var(--color-success)'
     
-    if (priceImpact > 0.1 && priceImpact <= 1) {
-        priceImpactColor = 'var(--color-success)'
-    } else if (priceImpact > 1 && priceImpact <= 3) {
+    if (priceImpact) {
+
+        if (priceImpact > 0.1 && priceImpact <= 1) {
+            priceImpactColor = 'var(--color-success)'
+        } else if (priceImpact > 1 && priceImpact <= 3) {
+            priceImpactColor = 'var(--color-textPrimary)'
+        }  else if (priceImpact > 3 && priceImpact <= 5) {
+            priceImpactColor = 'var(--color-warning)'
+        }  else if (priceImpact > 5 && priceImpact <= 10) {
+            priceImpactColor = 'var(--color-error)'
+        }  else if (priceImpact > 10) {
+            priceImpactColor = 'var(--color-error)'
+        }
+
+        priceImpact = priceImpact.toPrecision(4)
+
+    } else {
         priceImpactColor = 'var(--color-textPrimary)'
-    }  else if (priceImpact > 3 && priceImpact <= 5) {
-        priceImpactColor = 'var(--color-warning)'
-    }  else if (priceImpact > 5 && priceImpact <= 10) {
-        priceImpactColor = 'var(--color-error)'
-    }  else if (priceImpact > 10) {
-        priceImpactColor = 'var(--color-error)'
     }
 
     return {
-        priceImpact: priceImpact.toPrecision(4),
+        priceImpact,
         priceImpactColor,
     }
 }
