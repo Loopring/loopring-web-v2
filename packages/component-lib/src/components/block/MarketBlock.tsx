@@ -29,7 +29,7 @@ const MarketBlockStyled = styled(Box)<StyledProps>`
 
   .left-block {
     min-width: 76px;
-    max-width: 84px;
+    // max-width: 84px;
   }
 
   .float-group span {
