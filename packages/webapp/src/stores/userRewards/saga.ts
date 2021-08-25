@@ -1,5 +1,5 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects"
-import { getUserRewards, getUserRewardsStatus } from './reducer'
+import { getUserRewards, getUserRewardsStatus, resetUserRewards } from './reducer'
 
 import store from '../index';
 import { LoopringAPI } from 'api_wrapper';
@@ -55,13 +55,29 @@ export function* getPostsSaga({payload}:any) {
         yield put(getUserRewardsStatus(err));
     }
 }
+export function* getResetsSaga({payload}:any){
+    try {
+        // @ts-ignore
+        let {__timer__} = store.getState().userRewardsMap;
+        if (__timer__ && __timer__ !== -1) {
+            clearInterval(__timer__);
+        }
+        yield put(getUserRewardsStatus({userRewardsMap:[],__timer__:-1}));
+    } catch (err) {
+        yield put(getUserRewardsStatus(err));
+    }
+}
 
 function* userRewardsSaga() {
     yield all([takeLatest(getUserRewards, getPostsSaga)]);
 }
+function* resetRewardsSaga() {
+    yield all([takeLatest(resetUserRewards, getResetsSaga)]);
+}
 
 export const userRewardsForks = [
     fork(userRewardsSaga),
+    fork(resetRewardsSaga),
     // fork(userRewardssSaga),
 ]
  

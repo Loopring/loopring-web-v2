@@ -6,11 +6,12 @@ import { Commands } from './command';
 import { LoopringAPI } from 'api_wrapper';
 import { myLog } from '../../utils/log_tools';
 import store from 'stores';
-import { statusUnset, updateAccountStatus } from 'stores/account';
+import {  updateAccountStatus } from 'stores/account';
 import * as sdk from 'loopring-sdk'
 import { unlockAccount } from './unlockAccount';
-import { reset as resetWalletLayer2 } from 'stores/walletLayer2';
+
 import { sleep } from 'loopring-sdk';
+import { resetLayer12Data, resetLayer2Data } from './resetAccount';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
@@ -58,6 +59,7 @@ export const accountServices = {
         }))
 
         if (readyState === AccountStatus.ERROR_NETWORK) {
+            resetLayer12Data();
             subject.next({
                 status: Commands.ErrorNetwork,
                 data: undefined,
@@ -84,7 +86,7 @@ export const accountServices = {
             nonce: undefined,
         }
         store.dispatch(updateAccountStatus(updateInfo))
-        store.dispatch(resetWalletLayer2(undefined))
+        resetLayer2Data()
         await sleep(100)
         subject.next({
             status: Commands.LockAccount,
