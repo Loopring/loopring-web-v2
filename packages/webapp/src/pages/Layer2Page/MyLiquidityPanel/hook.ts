@@ -1,6 +1,6 @@
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 import React from 'react';
-import { AmmRecordRow, MyPoolRow } from '@loopring-web/component-lib';
+import { AmmRecordRow, MyPoolRow, useSettings } from '@loopring-web/component-lib';
 import { makeWalletLayer2, WalletMapExtend } from '../../../hooks/help/makeWallet';
 import { LoopringAPI } from 'api_wrapper'
 import {
@@ -18,6 +18,7 @@ import { useUserRewards } from '../../../stores/userRewards';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
 import { SagaStatus } from '@loopring-web/common-resources';
 import { useWalletHook } from '../../../services/wallet/useWalletHook';
+import { useSystem } from 'stores/system';
 
 export const useOverview = <R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>(
     {
@@ -36,6 +37,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     const {marketArray, addressIndex} = useTokenMap();
     const {status: ammMapStatus, ammMap, getAmmMap} = useAmmMap();
     const { getAmmLiquidity } = useAmmTotalValue()
+    const { forex } = useSystem()
 
     // const [walletMap, setWalletMap] = React.useState<WalletMapExtend<R> | undefined>(undefined);
     const [summaryReward, setSummaryReward] = React.useState<SummaryMyAmm | undefined>(undefined);
@@ -115,7 +117,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
 
     const makeMyPoolRow = React.useCallback(async (_walletMap): Promise<MyPoolRow<R>[]> => {
         // await getLpTokenList()
-        if (_walletMap && ammMap && userRewardsMap) {
+        if (_walletMap && ammMap && userRewardsMap && forex) {
             // @ts-ignore
             const _myPoolRow: MyPoolRow<R>[] = Reflect.ownKeys(_walletMap).reduce((prev: MyPoolRow<R>[], walletKey: string) => {
                 if (/LP-/i.test(walletKey)) {
@@ -144,10 +146,12 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
 
             const promises = _myPoolRow.map(async (o) => {
                 const market = `LP-${o.ammDetail?.coinAInfo.simpleName}-${o.ammDetail?.coinBInfo.simpleName}`
-                const ammValue = await getAmmLiquidity({market})
+                const totalAmmValueDollar = await getAmmLiquidity({market})
+                const totalAmmValueYuan = totalAmmValueDollar * forex
                 return ({
                     ...o,
-                    ammValue,
+                    totalAmmValueDollar,
+                    totalAmmValueYuan,
                 })
             })
             const formattedPoolRow = await Promise.all(promises)
@@ -155,7 +159,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
             return formattedPoolRow as any;
         }
         return [];
-    }, [ammMap, userRewardsMap, getAmmLiquidity])
+    }, [ammMap, userRewardsMap, getAmmLiquidity, forex])
 
     
 

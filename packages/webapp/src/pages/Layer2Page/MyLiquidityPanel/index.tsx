@@ -86,7 +86,8 @@ const MyLiquidity: any = withTranslation('common')(
             setPage(page);
         }, [])
         const {myAmmMarketArray, summaryReward, myPoolRow, showLoading} = useOverview({ammActivityMap});
-        const renderPositionValueYuan = PriceTag.Yuan + getThousandFormattedNumbers(summaryReward?.feeYuan?? 0 + (Number.isFinite(summaryReward) ? Number(summaryReward?.feeYuan) : 0))
+        const renderPositionValueDollar = PriceTag.Dollar + Number(getThousandFormattedNumbers(Number((summaryReward?.rewardDollar || 0).toFixed(2)) + (summaryReward?.feeDollar || 0))).toFixed(2)
+        const renderPositionValueYuan = PriceTag.Yuan + Number(getThousandFormattedNumbers(summaryReward?.feeYuan?? 0 + (Number.isFinite(summaryReward) ? Number((summaryReward?.feeYuan || 0).toFixed(2)) : 0))).toFixed(2)
         
         return (
             <>
@@ -97,10 +98,8 @@ const MyLiquidity: any = withTranslation('common')(
                                 <Typography variant={'h5'}
                                             color={'textSecondary'} fontFamily={'Roboto'}>{t('labelTotalPositionValue')}</Typography>
                                 <Typography variant={'h3'} marginTop={1} fontFamily={'Roboto'}>
-                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar
-                                        + getThousandFormattedNumbers((summaryReward.rewardDollar ?? 0) + 
-                                        (summaryReward.feeDollar ?? 0))
-
+                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.dollar 
+                                        ? renderPositionValueDollar
                                         : renderPositionValueYuan}
                                 </Typography>
                             </Grid>
@@ -112,9 +111,9 @@ const MyLiquidity: any = withTranslation('common')(
                                             color={'textSecondary'}>{t('labelFeeRewards')}</Typography>
                                 <Typography variant={'h3'} marginTop={1} fontFamily={'Roboto'}>
                                     {summaryReward === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar
-                                        + getThousandFormattedNumbers(summaryReward.feeDollar ? summaryReward.feeDollar : 0)
+                                        + Number(getThousandFormattedNumbers(summaryReward.feeDollar ? summaryReward.feeDollar : 0)).toFixed(2)
                                         : PriceTag.Yuan
-                                        + getThousandFormattedNumbers(summaryReward.feeYuan ? summaryReward.feeYuan : 0)}
+                                        + Number(getThousandFormattedNumbers(summaryReward.feeYuan ? summaryReward.feeYuan : 0)).toFixed(2)}
                                 </Typography>
                             </Grid>
                             {/* <Grid display={'flex'} flexDirection={'column'} marginTop={5} item>
@@ -158,6 +157,7 @@ const MyLiquidity: any = withTranslation('common')(
                             rawData={myPoolRow}
                             pagination={{pageSize: 10}}
                             showLoading={showLoading}
+                            currency={currency}
                             handleDeposit={(row: any) => {
                                 const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`
                                 JumpToLiqudity(pair, 'add')
