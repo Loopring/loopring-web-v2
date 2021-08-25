@@ -26,7 +26,7 @@ export default {
     labelTrades: '交易记录',
     labelHistory: '交易历史',
     labelOrder: '挂单记录',
-    labelAmmRecords: 'Amm记录',
+    labelAmmRecords: 'AMM记录',
     labelAmmRecordsDes: '(出金和入金)',
     rewards: '推荐奖励',
     labelOrders: '挂单记录',
