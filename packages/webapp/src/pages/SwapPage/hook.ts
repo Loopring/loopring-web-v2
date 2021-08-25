@@ -381,6 +381,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 setConfirmOpen(true)
                 break
             default:
+                swapFunc(undefined as any, true);
                 break
         }
 
