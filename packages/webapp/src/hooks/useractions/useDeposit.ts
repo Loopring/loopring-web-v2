@@ -142,10 +142,10 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 if (response?.hash === undefined && response?.errInfo) {
                     // deposit failed
-                    setShowAccount({isShow: true, step: AccountStep.DepositFailed})
+                    setShowAccount({isShow: true, step: AccountStep.Deposit_Submited})
                 } else {
                     // deposit sucess
-                    setShowAccount({isShow: true, step: AccountStep.DepositFailed})
+                    setShowAccount({isShow: true, step: AccountStep.Deposit_Failed})
                 }
 
             } catch (reason) {
@@ -154,7 +154,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 result.data = reason
 
                 //deposit failed
-                setShowAccount({isShow: true, step: AccountStep.DepositFailed})
+                setShowAccount({isShow: true, step: AccountStep.Deposit_Approve_Refused})
             }
 
         } else {
