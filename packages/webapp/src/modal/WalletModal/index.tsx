@@ -162,7 +162,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
                         setShowAccount({isShow: true, step: AccountStep.HadAccount})
                         break
                     case 'DEPOSITING':
-                        setShowAccount({isShow: true, step: AccountStep.Depositing})
+                        setShowAccount({isShow: true, step: AccountStep.Deposit_Submited})
                         break
                     case 'NO_ACCOUNT':
                         setShowAccount({isShow: true, step: AccountStep.NoAccount})

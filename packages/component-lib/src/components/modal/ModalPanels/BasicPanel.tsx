@@ -51,6 +51,11 @@ export const BasicPanel = ({
     link,
 }: PanelProps & WithTranslation) => {
 
+    if (iconType) {
+        console.log(title)
+        console.log(IconType[iconType])
+    }
+
     const iconDiv = React.useMemo(() => {
         switch (iconType) {
             case IconType.LoadingIcon:
