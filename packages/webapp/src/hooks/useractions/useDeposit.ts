@@ -13,9 +13,6 @@ import { myLog } from 'utils/log_tools';
 import { useWalletLayer1 } from 'stores/walletLayer1';
 import { useTranslation } from 'react-i18next';
 import { ActionResult, ActionResultCode } from 'defs/common_defs';
-import { makeWalletLayer2 } from 'hooks/help';
-import { useWalletHook } from 'services/wallet/useWalletHook';
-import store from 'stores';
 
 export const useDeposit = <R extends IBData<T>, T>(): {
     depositProps: DepositProps<R, T>
@@ -125,7 +122,11 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 }
 
-                setShowAccount({isShow: true, step: AccountStep.DepositInProcess})
+                if (readyState === AccountStatus.ACTIVATED) {
+                    setShowAccount({isShow: true, step: AccountStep.DepositFailed_WITH_ACC})
+                } else {
+                    setShowAccount({isShow: true, step: AccountStep.DepositInProcess})
+                }
 
                 myLog('before deposit:', chainId, connectName, isMetaMask)
 
