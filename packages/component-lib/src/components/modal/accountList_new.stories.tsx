@@ -21,6 +21,7 @@ import {
     Deposit_Approve_Submited,
     Deposit_WaitForAuth,
     Deposit_Refused,
+    Deposit_Failed,
     Deposit_Submited,
 
     Transfer_WaitForAuth,
@@ -90,30 +91,55 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
         const accountMap = {
             [AccountStep.Deposit_Approve_WaitForAuth]: {
                 view: <Deposit_Approve_WaitForAuth
-                    providerName={account.connectName} {...{
+                    providerName={ConnectProviders.MetaMask} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_Approve_Refused]: {
-                view: <Deposit_Approve_Refused
+                view: <Deposit_Approve_Refused btnInfo={{
+                    btnTxt: 'retry',
+                    callback: () => {
+                        return true
+                    }
+                }}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_Approve_Submited]: {
-                view: <Deposit_Approve_Submited
+                view: <Deposit_Approve_Submited btnInfo={{
+                    btnTxt: 'close',
+                    callback: () => {
+                        return true
+                    }
+                }}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_WaitForAuth]: {
                 view: <Deposit_WaitForAuth
-                    providerName={account.connectName} {...{
+                providerName={ConnectProviders.WalletConnect} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_Refused]: {
-                view: <Deposit_Refused
+                view: <Deposit_Refused btnInfo={{
+                    btnTxt: 'retry',
+                    callback: () => {
+                        return true
+                    }
+                }} {...{
+                        ...rest
+                    }} />,
+            },
+            [AccountStep.Deposit_Failed]: {
+                view: <Deposit_Failed btnInfo={{
+                    btnTxt: 'close',
+                    callback: () => {
+                        return true
+                    }
+                }}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
