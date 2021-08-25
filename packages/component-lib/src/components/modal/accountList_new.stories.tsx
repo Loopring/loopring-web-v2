@@ -21,6 +21,7 @@ import {
     Deposit_Approve_Submited,
     Deposit_WaitForAuth,
     Deposit_Refused,
+    Deposit_Failed,
     Deposit_Submited,
 
     Transfer_WaitForAuth,
@@ -114,6 +115,12 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
             },
             [AccountStep.Deposit_Refused]: {
                 view: <Deposit_Refused
+                    providerName={account.connectName} {...{
+                        ...rest
+                    }} />,
+            },
+            [AccountStep.Deposit_Failed]: {
+                view: <Deposit_Failed
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,

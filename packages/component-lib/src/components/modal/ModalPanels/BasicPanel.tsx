@@ -51,10 +51,7 @@ export const BasicPanel = ({
     link,
 }: PanelProps & WithTranslation) => {
 
-    if (iconType) {
-        console.log(title)
-        console.log(IconType[iconType])
-    }
+    console.log('providerName:', providerName)
 
     const iconDiv = React.useMemo(() => {
         switch (iconType) {
@@ -85,8 +82,11 @@ export const BasicPanel = ({
                 case ConnectProviders.WalletConnect:
                     return <Trans i18nKey={'labelWalletConnectProcessDescribe2'}>
                         Please click approve on your device.</Trans>
+                default:
+                    break
             }
         }
+        return <></>
     }, [providerName])
 
     return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-between'}

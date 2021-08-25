@@ -28,6 +28,7 @@ import {
     Deposit_Approve_Submited,
     Deposit_WaitForAuth,
     Deposit_Refused,
+    Deposit_Failed,
     Deposit_Submited,
 } from '@loopring-web/component-lib';
 import { walletServices } from '@loopring-web/web3-provider';
@@ -259,13 +260,6 @@ export const ModalAccountInfo = withTranslation('common')(({
                     t
                 }} />
             },
-            [AccountStep.DepositFailed]: {
-                view: <FailedDeposit label={title}
-                    etherscanLink={etherscanUrl + account.accAddress}
-                    onRetry={() => goDeposit()} {...{ ...rest, t }} />, onBack: () => {
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
-                    }
-            },
             [AccountStep.UpdateAccount]: {
                 view: <ApproveAccount {...{
                     ...account,
@@ -343,16 +337,14 @@ export const ModalAccountInfo = withTranslation('common')(({
                     }} />,
             },
             [AccountStep.Deposit_Approve_Refused]: {
-                view: <Deposit_Approve_Refused
-                    providerName={account.connectName} {...{
+                view: <Deposit_Approve_Refused {...{
                         ...rest, t
                     }} />,onBack: () => {
                         setShowAccount({ isShow: true, step: AccountStep.Deposit });
                     }
             },
             [AccountStep.Deposit_Approve_Submited]: {
-                view: <Deposit_Approve_Submited
-                    providerName={account.connectName} {...{
+                view: <Deposit_Approve_Submited {...{
                         ...rest, t
                     }} />,onBack: () => {
                         setShowAccount({ isShow: true, step: AccountStep.Deposit });
@@ -367,16 +359,21 @@ export const ModalAccountInfo = withTranslation('common')(({
                     }
             },
             [AccountStep.Deposit_Refused]: {
-                view: <Deposit_Refused
-                    providerName={account.connectName} {...{
+                view: <Deposit_Refused {...{
+                        ...rest, t
+                    }} />,onBack: () => {
+                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                    }
+            },
+            [AccountStep.Deposit_Failed]: {
+                view: <Deposit_Failed {...{
                         ...rest, t
                     }} />,onBack: () => {
                         setShowAccount({ isShow: true, step: AccountStep.Deposit });
                     }
             },
             [AccountStep.Deposit_Submited]: {
-                view: <Deposit_Submited
-                    providerName={account.connectName} {...{
+                view: <Deposit_Submited {...{
                         ...rest, t
                     }} />,onBack: () => {
                         setShowAccount({ isShow: true, step: AccountStep.Deposit });
