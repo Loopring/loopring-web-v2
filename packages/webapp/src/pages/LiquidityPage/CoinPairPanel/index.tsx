@@ -84,6 +84,10 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         myAmm,
         pairHistory,
         awardList,
+        getUserAmmPoolTxs,
+        showAmmPoolLoading,
+        ammTotal,
+        ammUserTotal,
     } = useCoinPair({ammActivityMap});
     const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
     const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
@@ -91,14 +95,32 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         setTabIndex(newValue);
         setPage(1);
     }
-    const _handlePageChange = React.useCallback((page: number) => {
-        setPage(page);
-    }, [])
+    // const _handlePageChange = React.useCallback((page: number) => {
+    //     setPage(page);
+    // }, [])
     // const sellIconHasLoaded = useImage(coinPairInfo.myCoinA?.icon ? coinPairInfo.myCoinA?.icon : '').hasLoaded;
     // const buyIconHasLoaded = useImage(coinPairInfo.myCoinB?.icon ? coinPairInfo.myCoinB?.icon : '').hasLoaded;
     const {coinJson} = useSettings();
     const coinAIcon: any = coinJson [ coinPairInfo.myCoinA?.simpleName ];
     const coinBIcon: any = coinJson [ coinPairInfo.myCoinB?.simpleName ];
+    const [pageSize, setPageSize] = React.useState(0)
+    const container = React.useRef(null);
+
+    React.useEffect(() => {
+        // @ts-ignore
+        let height = container?.current?.offsetHeight;
+        if (height) {
+            setPageSize(Math.floor((height - 30) / 44) - 1);
+        }
+    }, [container, pageSize]);
+
+    // useEffect(() => {
+    //     if (pageSize) {
+    //         getUserTxnList({
+    //             limit: pageSize,
+    //         })
+    //     }
+    // }, [getUserTxnList, pageSize])
 
     return <>
         <Box marginBottom={2}>
@@ -255,13 +277,22 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             {/* <Tab label={t('labelAll')} {...applyProps(0)} /> */}
                             <Tab label={t('labelMe')} {...applyProps(1)} />
                         </Tabs>
-                        <StylePaper style={{marginTop: `${unit * 2}px`}}>
+                        <StylePaper ref={container} style={{marginTop: `${unit * 2}px`}}>
                             {/*ammRecordArray*/}
                             {tabIndex === 1 ? <AmmRecordTable
                                 rawData={ammMarketArray}
-                                handlePageChange={_handlePageChange} page={page}
-                            /> : <AmmRecordTable rawData={myAmmMarketArray} handlePageChange={_handlePageChange}
-                                                 page={page}/>}
+                                handlePageChange={getUserAmmPoolTxs} page={page}
+                                getUserAmmPoolTxs={() => {}}
+                            /> : <AmmRecordTable
+                                rawData={myAmmMarketArray}
+                                handlePageChange={getUserAmmPoolTxs}
+                                pagination={{
+                                    pageSize,
+                                    total: ammUserTotal
+                                }}
+                                showLoading={showAmmPoolLoading}
+                                getUserAmmPoolTxs={getUserAmmPoolTxs as any}
+                            />}
                         </StylePaper>
                     </Box>
                 </Grid>

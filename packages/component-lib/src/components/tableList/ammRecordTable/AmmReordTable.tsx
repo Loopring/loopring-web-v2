@@ -155,11 +155,11 @@ export const AmmRecordTable = withTranslation('tables')(<T extends { [ key: stri
                                                                                                  wait = globalSetup.wait,
                                                                                                  ...rest
                                                                                              }: AmmRecordTableProps<T> & WithTranslation) => {
-    const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
-    const [totalData, setTotalData] = React.useState<Row<T>[]>(rawData && Array.isArray(rawData) ? rawData : []);
-    useDeepCompareEffect(() => {
-        setTotalData(rawData)
-    }, [rawData])
+    const [page, setPage] = React.useState(1);
+    // const [totalData, setTotalData] = React.useState<Row<T>[]>(rawData && Array.isArray(rawData) ? rawData : []);
+    // useDeepCompareEffect(() => {
+    //     setTotalData(rawData)
+    // }, [rawData])
 
     const defaultArgs: TableProps<any, any> = {
         rawData,
@@ -171,24 +171,28 @@ export const AmmRecordTable = withTranslation('tables')(<T extends { [ key: stri
 
     const pageSize = pagination ? pagination.pageSize : 10;
 
-    const getRenderData = React.useCallback(() => pagination
-        ? totalData.slice((page - 1) * pageSize, page * pageSize)
-        : totalData
-        , [page, pageSize, pagination, totalData])
+    // const getRenderData = React.useCallback(() => pagination
+    //     ? totalData.slice((page - 1) * pageSize, page * pageSize)
+    //     : totalData
+    //     , [page, pageSize, pagination, totalData])
 
-    const _handlePageChange = React.useCallback((page: number) => {
-        setPage(page);
+    const _handlePageChange = React.useCallback((currPage: number) => {
+        if (currPage === page) return
+        setPage(currPage);
         // updateData({actionType: ActionType.page, currPage: page})
-        handlePageChange(page);
-    }, [handlePageChange])
+        handlePageChange({
+            limit: pageSize,
+            offset: (currPage - 1) * pageSize,
+        });
+    }, [handlePageChange, page, pageSize])
 
     return <TableStyled>
-        <Table className={'scrollable'}  {...{
+        <Table /* className={'scrollable'}  */ {...{
             ...defaultArgs, t, i18n, tReady, ...rest,
-            rawData: getRenderData()
+            rawData: rawData
         }}/>
         {pagination && (
-            <TablePagination page={page} pageSize={pageSize} total={totalData.length} onPageChange={_handlePageChange}/>
+            <TablePagination page={page} pageSize={pageSize} total={pagination.total} onPageChange={_handlePageChange}/>
         )}
     </TableStyled>
 })
