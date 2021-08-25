@@ -73,7 +73,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const [pageSize, setPageSize] = useState(10);
     const [chartPeriod, setChartPeriod] = useState('week')
 
-    const { formattedDoughnutData, assetsRawData, formattedData, chartData, marketArray } = useGetAssets()
+    const { formattedDoughnutData, assetsRawData, formattedData, marketArray } = useGetAssets()
     const { walletLayer2 } = store.getState().walletLayer2;
 
     useEffect(() => {
