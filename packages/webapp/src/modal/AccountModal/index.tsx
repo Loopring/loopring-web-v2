@@ -1,10 +1,9 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import {
-    AccountStep,
+    AccountStepNew as AccountStep,
     ActiveAccountProcess,
     ApproveAccount,
     Button,
-    DepositApproveProcess,
     Depositing,
     DepositingProcess,
     DepositPanel,
@@ -23,6 +22,13 @@ import {
     UpdateAccSigWarning,
     UpdateAccUserDenied,
     useOpenModals,
+
+    Deposit_Approve_WaitForAuth,
+    Deposit_Approve_Refused,
+    Deposit_Approve_Submited,
+    Deposit_WaitForAuth,
+    Deposit_Refused,
+    Deposit_Submited,
 } from '@loopring-web/component-lib';
 import { walletServices } from '@loopring-web/web3-provider';
 import { ConnectorError, sleep } from 'loopring-sdk';
@@ -222,6 +228,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
         }
     }, [account])
+
     const title = t("labelCreateLayer2Title")
 
     const accountList = React.useMemo(() => {
@@ -251,14 +258,6 @@ export const ModalAccountInfo = withTranslation('common')(({
                     ...depositProps,
                     t
                 }} />
-            },
-            [AccountStep.Depositing]: {
-                view: <Depositing label={title}
-                    onClose={_onClose}
-                    etherscanLink={etherscanUrl + account.accAddress} {...{
-                        ...rest,
-                        t
-                    }} />,
             },
             [AccountStep.DepositFailed]: {
                 view: <FailedDeposit label={title}
@@ -304,31 +303,6 @@ export const ModalAccountInfo = withTranslation('common')(({
                     mainBtn: account.readyState === 'ACTIVATED' ? lockBtn : unlockBtn
                 }} />, onQRClick
             },
-            [AccountStep.TokenApproveInProcess]: {
-                view: <TokenAccessProcess label={title}
-                    providerName={account.connectName} {...{
-                        ...rest,
-                        t
-                    }} />, onBack: () => {
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
-                    }
-            },
-            [AccountStep.DepositApproveProcess]: {
-                view: <DepositApproveProcess label={title}
-                    etherscanLink={etherscanUrl + account.accAddress}
-                    providerName={account.connectName} {...{
-                        ...rest,
-                        t
-                    }} />,
-            },
-            [AccountStep.DepositInProcess]: {
-                view: <DepositingProcess label={title}
-                    etherscanLink={etherscanUrl + account.accAddress}
-                    providerName={account.connectName} {...{
-                        ...rest,
-                        t
-                    }} />,
-            },
             [AccountStep.UpdateAccountInProcess]: {
                 view: <ActiveAccountProcess label={title} providerName={account.connectName} {...{
                     ...rest,
@@ -341,14 +315,6 @@ export const ModalAccountInfo = withTranslation('common')(({
                 }} {...{ ...rest, t }} />, onBack: () => {
                     setShowAccount({ isShow: true, step: AccountStep.UpdateAccount });
                 }
-            },
-            [AccountStep.TokenApproveFailed]: {
-                view: <FailedTokenAccess label={title} onRetry={() => {
-                    goDeposit()
-                }} {...{
-                    t, ...rest,
-                    coinInfo: coinMap ? coinMap['USTD'] : undefined
-                }} />,
             },
             [AccountStep.UpdateAccountSigWarning]: {
                 view: <UpdateAccSigWarning onTryAnother={ () => {
@@ -369,26 +335,59 @@ export const ModalAccountInfo = withTranslation('common')(({
                 }} />,
             },
 
-            [AccountStep.DepositInProcess_WITH_ACC]: {
-                view: <DepositingProcess label={'depositTitle'}
-                    etherscanLink={etherscanUrl + account.accAddress}
+            // new 
+            [AccountStep.Deposit_Approve_WaitForAuth]: {
+                view: <Deposit_Approve_WaitForAuth
                     providerName={account.connectName} {...{
-                        ...rest,
-                        t
+                        ...rest, t
                     }} />,
             },
-
-            [AccountStep.WithdrawInProgress]: {
-                view: <DepositingProcess label={'withdrawTitle'}
-                    etherscanLink={etherscanUrl + account.accAddress}
+            [AccountStep.Deposit_Approve_Refused]: {
+                view: <Deposit_Approve_Refused
                     providerName={account.connectName} {...{
-                        ...rest,
-                        t
-                    }} />,
+                        ...rest, t
+                    }} />,onBack: () => {
+                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                    }
+            },
+            [AccountStep.Deposit_Approve_Submited]: {
+                view: <Deposit_Approve_Submited
+                    providerName={account.connectName} {...{
+                        ...rest, t
+                    }} />,onBack: () => {
+                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                    }
+            },
+            [AccountStep.Deposit_WaitForAuth]: {
+                view: <Deposit_WaitForAuth
+                    providerName={account.connectName} {...{
+                        ...rest, t
+                    }} />,onBack: () => {
+                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                    }
+            },
+            [AccountStep.Deposit_Refused]: {
+                view: <Deposit_Refused
+                    providerName={account.connectName} {...{
+                        ...rest, t
+                    }} />,onBack: () => {
+                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                    }
+            },
+            [AccountStep.Deposit_Submited]: {
+                view: <Deposit_Submited
+                    providerName={account.connectName} {...{
+                        ...rest, t
+                    }} />,onBack: () => {
+                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                    }
             },
 
         })
     }, [addressShort, account, depositProps, etherscanUrl, onCopy, onSwitch, onDisconnect, onViewQRCode, t, rest])
+
+    const current = accountList[isShowAccount.step]
+    myLog('isShowAccount.step:', isShowAccount.step, ' ', AccountStep[isShowAccount.step])
 
     return <>
         <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen}
@@ -400,8 +399,8 @@ export const ModalAccountInfo = withTranslation('common')(({
             description={account?.accAddress} url={account?.accAddress} />
 
         <ModalAccount open={isShowAccount.isShow} onClose={_onClose} panelList={accountList}
-            onBack={accountList[isShowAccount.step].onBack}
-            onQRClick={accountList[isShowAccount.step].onQRClick}
+            onBack={current?.onBack}
+            onQRClick={current?.onQRClick}
             step={isShowAccount.step} />
     </>
 })

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { AccountStep, DepositProps, SwitchData, TradeBtnStatus, useOpenModals } from '@loopring-web/component-lib';
+import { AccountStepNew as AccountStep, DepositProps, SwitchData, TradeBtnStatus, useOpenModals } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, ConnectProviders, IBData, WalletMap } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
 import { dumpError400, GetAllowancesRequest } from 'loopring-sdk';
@@ -102,7 +102,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                         myLog(curValInWei, allowance, ' need approveMax!')
 
-                        setShowAccount({isShow: true, step: AccountStep.TokenApproveInProcess})
+                        setShowAccount({isShow: true, step: AccountStep.Deposit_Approve_WaitForAuth})
 
                         try {
                             await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
@@ -112,7 +112,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                             result.code = ActionResultCode.ApproveFailed
                             result.data = reason
 
-                            setShowAccount({isShow: true, step: AccountStep.TokenApproveFailed})
+                            setShowAccount({isShow: true, step: AccountStep.Deposit_Approve_Refused})
                             return
                         }
 
@@ -123,9 +123,9 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 }
 
                 if (readyState === AccountStatus.ACTIVATED) {
-                    setShowAccount({isShow: true, step: AccountStep.DepositFailed_WITH_ACC})
+                    setShowAccount({isShow: true, step: AccountStep.Deposit_WaitForAuth})
                 } else {
-                    setShowAccount({isShow: true, step: AccountStep.DepositInProcess})
+                    setShowAccount({isShow: true, step: AccountStep.Deposit_WaitForAuth})
                 }
 
                 myLog('before deposit:', chainId, connectName, isMetaMask)
@@ -145,7 +145,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                     setShowAccount({isShow: true, step: AccountStep.DepositFailed})
                 } else {
                     // deposit sucess
-                    setShowAccount({isShow: true, step: AccountStep.Depositing})
+                    setShowAccount({isShow: true, step: AccountStep.DepositFailed})
                 }
 
             } catch (reason) {
