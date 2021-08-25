@@ -3,7 +3,7 @@ import { Trans, WithTranslation } from 'react-i18next';
 import {
     ConnectProviders,
     LoadingIcon,
-    DoneIcon, FailedIcon, RefuseIcon, GoodIcon,
+    DoneIcon, FailedIcon, RefuseIcon, SubmitIcon,
 } from '@loopring-web/common-resources';
 import React from 'react';
 
@@ -14,7 +14,7 @@ export enum IconType {
     DoneIcon,
     FailedIcon,
     RefuseIcon,
-    GoodIcon,
+    SubmitIcon,
 }
 
 export interface PanelProps {
@@ -57,8 +57,8 @@ export const BasicPanel = ({
                 return <LoadingIcon color={'primary'} style={{ width: 72, height: 72 }} />
             case IconType.FailedIcon:
                 return <FailedIcon color={'primary'} style={{ width: 72, height: 72 }} />
-            case IconType.GoodIcon:
-                return <GoodIcon color={'primary'} style={{ width: 72, height: 72 }} />
+            case IconType.SubmitIcon:
+                return <SubmitIcon color={'primary'} style={{ width: 72, height: 72 }} />
             case IconType.RefuseIcon:
                 return <RefuseIcon style={{ color: 'var(--color-warning)', width: 60, height: 60 }} />
             case IconType.DoneIcon:
