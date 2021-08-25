@@ -18,9 +18,11 @@ export enum IconType {
 }
 
 export interface PanelProps {
-    title: string,
-    iconType: IconType,
-    describe1: string,
+    title?: string,
+    iconType?: IconType,
+    value?: number,
+    symbol?: string,
+    describe1?: any,
     describe2?: string,
     txCheck?: {
         route: string,
@@ -30,7 +32,7 @@ export interface PanelProps {
         btnTxt: string,
         callback: () => boolean,
     }
-    providerName?: ConnectProviders,
+    providerName?: 'MetaMask' | 'WalletConnect' | 'unknown'
     link?: {
         name: string,
         url: string,
@@ -51,14 +53,14 @@ export const BasicPanel = ({
 
     const iconDiv = React.useMemo(() => {
         switch (iconType) {
-            case IconType.DoneIcon:
+            case IconType.LoadingIcon:
                 return <LoadingIcon color={'primary'} style={{ width: 72, height: 72 }} />
             case IconType.FailedIcon:
                 return <FailedIcon color={'primary'} style={{ width: 72, height: 72 }} />
             case IconType.GoodIcon:
                 return <GoodIcon color={'primary'} style={{ width: 72, height: 72 }} />
             case IconType.RefuseIcon:
-                return <RefuseIcon color={'primary'} style={{ width: 72, height: 72 }} />
+                return <RefuseIcon style={{ color: 'var(--color-warning)', width: 60, height: 60 }} />
             case IconType.DoneIcon:
                 return <DoneIcon color={'primary'} style={{ width: 72, height: 72 }} />
         }
@@ -84,11 +86,11 @@ export const BasicPanel = ({
 
     return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
         flexDirection={'column'}>
-        <Typography component={'h3'} variant={'h3'} marginBottom={3}>{t(title)}</Typography>
+        <Typography component={'h3'} variant={'h3'} marginBottom={3}>{t(title as string)}</Typography>
         <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
             {iconDiv}
         </Typography>
-        {describe1} { txCheck && <>check the tx.</> }
+        {describe1 && describe1} { txCheck && <>check the tx.</> }
         {describe2 && <>{describe2}</>}
         {providerName &&
             <Typography variant={'body2'} color={'textSecondary'} component={'p'} marginTop={3} alignSelf={'flex-start'}
@@ -105,26 +107,57 @@ export const BasicPanel = ({
 }
 
 export const ConnectBase = (props: PanelProps & WithTranslation) => {
-    props.title = 'labelConnect'
-    return <BasicPanel {...props} />
+    const propsPatch = {
+        title: 'labelConnect'
+    }
+    return <BasicPanel {...propsPatch} {...props} />
 }
 
 export const CreateAccountBase = (props: PanelProps & WithTranslation) => {
-    props.title = 'labelCreateAccount'
-    return <BasicPanel {...props} />
+    const propsPatch = {
+        title: 'labelCreateAccount'
+    }
+    return <BasicPanel {...propsPatch} {...props} />
 }
 
 export const RetrieveAccountBase = (props: PanelProps & WithTranslation) => {
-    props.title = 'labelRetrieveAccount'
-    return <BasicPanel {...props} />
+    const propsPatch = {
+        title: 'labelRetrieveAccount'
+    }
+    return <BasicPanel {...propsPatch} {...props} />
 }
 
 export const UnlockAccountBase = (props: PanelProps & WithTranslation) => {
-    props.title = 'labelRetrieveAccount'
-    return <BasicPanel {...props} />
+    const propsPatch = {
+        title: 'labelCreateAccount'
+    }
+    return <BasicPanel {...propsPatch} {...props} />
 }
 
 export const ActivateAccountBase = (props: PanelProps & WithTranslation) => {
-    props.title = 'labelActivateAccount'
-    return <BasicPanel {...props} />
+    const propsPatch = {
+        title: 'labelActivateAccount'
+    }
+    return <BasicPanel {...propsPatch} {...props} />
+}
+
+export const DepositBase = (props: PanelProps & WithTranslation) => {
+    const propsPatch = {
+        title: 'labelDeposit'
+    }
+    return <BasicPanel {...props} {...propsPatch} />
+}
+
+export const TransferBase = (props: PanelProps & WithTranslation) => {
+    const propsPatch = {
+        title: 'labelTransfer'
+    }
+    return <BasicPanel {...propsPatch} {...props} />
+}
+
+export const WithdrawBase = (props: PanelProps & WithTranslation) => {
+    const propsPatch = {
+        title: 'labelWithdraw'
+    }
+    return <BasicPanel {...propsPatch} {...props} />
 }

@@ -13,7 +13,7 @@ import { changeShowModel, useAccount, } from 'stores/account'
 
 import { Theme, } from 'defs/common_defs'
 
-import { AccountStep, setShowAccount, useOpenModals, useSettings, } from '@loopring-web/component-lib'
+import { AccountStepNew as AccountStep, setShowAccount, useOpenModals, useSettings, } from '@loopring-web/component-lib'
 
 import { accountStaticCallBack, btnClickMap } from 'hooks/help'
 import { myLog } from 'utils/log_tools'

@@ -1,7 +1,7 @@
 import { ButtonProps } from '../../basic-lib';
 import { Account } from '@loopring-web/common-resources';
 
-export type AccountBaseProps = {
+export type AccountBaseNewProps = {
 
     // addressShort: string
     // address: string,
@@ -17,7 +17,7 @@ export type AccountBaseProps = {
 } & Account
 
 
-export enum AccountStep {
+export enum AccountStepNew {
     NoAccount,
     QRCode,
     Deposit,
@@ -30,7 +30,6 @@ export enum AccountStep {
     FailedUnlock,
     HadAccount,
     TokenApproveInProcess,
-    DepositApproveProcess,
     TokenApproveFailed,
     UpdateAccountInProcess,
     UpdateAccountSigWarning,
@@ -40,4 +39,13 @@ export enum AccountStep {
     DepositFailed_WITH_ACC,
     WithdrawInProgress,
     WithdrawFailed,
+
+    // new
+    Deposit_Approve_WaitForAuth,
+    Deposit_Approve_Refused,
+    Deposit_Approve_Submited,
+    Deposit_WaitForAuth,
+    Deposit_Refused,
+    Deposit_Submited,
+
 }

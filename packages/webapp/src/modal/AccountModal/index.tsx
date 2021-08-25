@@ -1,10 +1,10 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import {
-    AccountStep,
+    AccountStepNew as AccountStep,
     ActiveAccountProcess,
     ApproveAccount,
     Button,
-    DepositApproveProcess,
+    Deposit_Approve_WaitForAuth,
     Depositing,
     DepositingProcess,
     DepositPanel,
@@ -313,13 +313,14 @@ export const ModalAccountInfo = withTranslation('common')(({
                         setShowAccount({ isShow: true, step: AccountStep.Deposit });
                     }
             },
-            [AccountStep.DepositApproveProcess]: {
-                view: <DepositApproveProcess label={title}
-                    etherscanLink={etherscanUrl + account.accAddress}
+            [AccountStep.Deposit_Approve_WaitForAuth]: {
+                view: <Deposit_Approve_WaitForAuth 
                     providerName={account.connectName} {...{
                         ...rest,
                         t
-                    }} />,
+                    }} />,onBack: () => {
+                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                    }
             },
             [AccountStep.DepositInProcess]: {
                 view: <DepositingProcess label={title}
@@ -390,6 +391,8 @@ export const ModalAccountInfo = withTranslation('common')(({
         })
     }, [addressShort, account, depositProps, etherscanUrl, onCopy, onSwitch, onDisconnect, onViewQRCode, t, rest])
 
+    myLog('isShowAccount.step:', isShowAccount.step, ' ', AccountStep[isShowAccount.step])
+
     return <>
         <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen}
             autoHideDuration={TOAST_TIME} onClose={() => {
@@ -400,8 +403,8 @@ export const ModalAccountInfo = withTranslation('common')(({
             description={account?.accAddress} url={account?.accAddress} />
 
         <ModalAccount open={isShowAccount.isShow} onClose={_onClose} panelList={accountList}
-            onBack={accountList[isShowAccount.step].onBack}
-            onQRClick={accountList[isShowAccount.step].onQRClick}
+            onBack={accountList[isShowAccount.step]?.onBack}
+            onQRClick={accountList[isShowAccount.step]?.onQRClick}
             step={isShowAccount.step} />
     </>
 })
