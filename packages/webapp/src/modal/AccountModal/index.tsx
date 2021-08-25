@@ -89,10 +89,10 @@ export const ModalAccountInfo = withTranslation('common')(({
         setShowConnect({ isShow: shouldShow ?? false })
     }, [setShowConnect, setShowAccount, shouldShow])
 
-    const onCopy = React.useCallback(async() => {
+    const onCopy = React.useCallback(async () => {
         copyToClipBoard(account.accAddress);
         setCopyToastOpen(true)
-    }, [account, setCopyToastOpen, ])
+    }, [account, setCopyToastOpen,])
     const onViewQRCode = React.useCallback(() => {
         setOpenQRCode(true)
     }, [])
@@ -107,7 +107,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     }, [setShowAccount])
 
-    const goUpdateAccount = React.useCallback(async(isFirstTime: boolean = true) => {
+    const goUpdateAccount = React.useCallback(async (isFirstTime: boolean = true) => {
 
         if (!account.accAddress) {
             myLog('account.accAddress is nil')
@@ -169,7 +169,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                         store.dispatch(updateAccountStatus({ eddsaKey: eddsaKey2, }))
                     }
 
-                    switch(errMsg) {
+                    switch (errMsg) {
                         case 'NOT_SUPPORT_ERROR':
                             myLog(' 00000---- got NOT_SUPPORT_ERROR')
                             setShowAccount({ isShow: true, step: AccountStep.UpdateAccountSigWarning })
@@ -180,7 +180,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                             return
                         default:
                             accountServices.sendCheckAccount(account.accAddress)
-                        break
+                            break
                     }
                     break
                 default:
@@ -231,6 +231,26 @@ export const ModalAccountInfo = withTranslation('common')(({
     }, [account])
 
     const title = t("labelCreateLayer2Title")
+
+    const backToDepositBtnInfo = React.useMemo(() => {
+        return {
+            btnTxt: t('labelRetry'),
+            callback: () => {
+                setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                return true
+            }
+        }
+    }, [])
+
+    const closeBtnInfo = React.useMemo(() => {
+        return {
+            btnTxt: t('labelClose'),
+            callback: () => {
+                setShowAccount({ isShow: false, });
+                return true
+            }
+        }
+    }, [])
 
     const accountList = React.useMemo(() => {
         return Object.values({
@@ -311,7 +331,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 }
             },
             [AccountStep.UpdateAccountSigWarning]: {
-                view: <UpdateAccSigWarning onTryAnother={ () => {
+                view: <UpdateAccSigWarning onTryAnother={() => {
                     myLog('.......UpdateAccountSigWarning..............')
                     goUpdateAccount(false)
                 }} {...{
@@ -337,54 +357,55 @@ export const ModalAccountInfo = withTranslation('common')(({
                     }} />,
             },
             [AccountStep.Deposit_Approve_Refused]: {
-                view: <Deposit_Approve_Refused {...{
-                        ...rest, t
-                    }} />,onBack: () => {
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
-                    }
+                view: <Deposit_Approve_Refused btnInfo={backToDepositBtnInfo} {...{
+                    ...rest, t
+                }} />, onBack: () => {
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                }
             },
             [AccountStep.Deposit_Approve_Submited]: {
-                view: <Deposit_Approve_Submited {...{
-                        ...rest, t
-                    }} />,onBack: () => {
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
-                    }
+                view: <Deposit_Approve_Submited btnInfo={closeBtnInfo} {...{
+                    ...rest, t
+                }} />, onBack: () => {
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                }
             },
             [AccountStep.Deposit_WaitForAuth]: {
                 view: <Deposit_WaitForAuth
                     providerName={account.connectName} {...{
                         ...rest, t
-                    }} />,onBack: () => {
+                    }} />, onBack: () => {
                         setShowAccount({ isShow: true, step: AccountStep.Deposit });
                     }
             },
             [AccountStep.Deposit_Refused]: {
-                view: <Deposit_Refused {...{
-                        ...rest, t
-                    }} />,onBack: () => {
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
-                    }
+                view: <Deposit_Refused btnInfo={backToDepositBtnInfo} {...{
+                    ...rest, t
+                }} />, onBack: () => {
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                }
             },
             [AccountStep.Deposit_Failed]: {
-                view: <Deposit_Failed {...{
-                        ...rest, t
-                    }} />,onBack: () => {
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
-                    }
+                view: <Deposit_Failed btnInfo={closeBtnInfo} {...{
+                    ...rest, t
+                }} />, onBack: () => {
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                }
             },
             [AccountStep.Deposit_Submited]: {
-                view: <Deposit_Submited {...{
-                        ...rest, t
-                    }} />,onBack: () => {
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
-                    }
+                view: <Deposit_Submited btnInfo={closeBtnInfo} {...{
+                    ...rest, t
+                }} />, onBack: () => {
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                }
             },
 
         })
     }, [addressShort, account, depositProps, etherscanUrl, onCopy, onSwitch, onDisconnect, onViewQRCode, t, rest])
 
     const current = accountList[isShowAccount.step]
-    myLog('isShowAccount.step:', isShowAccount.step, ' ', AccountStep[isShowAccount.step])
+
+    // myLog('isShowAccount.step:', isShowAccount.step, ' ', AccountStep[isShowAccount.step])
 
     return <>
         <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen}

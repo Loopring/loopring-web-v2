@@ -73,6 +73,7 @@ export default {
     labelLevel: 'VIP Level',
     labelOrderbook: 'Orderbook',
     labelDeposit: 'Deposit',
+    labelTransfer: 'Transfer',
     labelWithdraw: 'Withdraw',
     labelSetPublicKey: 'Set EdDSA Public Key',
     labelTitleSecurity: 'Security',
