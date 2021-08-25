@@ -37,8 +37,8 @@ const StyledBtnBox = styled(Box)`
 `
 
 export enum FilterTradeTypes {
-    join = 'Join',
-    exit = 'Exit',
+    join = 'Add',
+    exit = 'Remove',
     allTypes = 'All Types'
 }
 
@@ -57,11 +57,11 @@ export const Filter = withTranslation('tables', {withRef: true})(({
             value: 'All Types'
         },
         {
-            label: t('labelAmmFilterJoin'),
+            label: t('labelAmmJoin'),
             value: 'Join'
         },
         {
-            label: t('labelAmmFilterExit'),
+            label: t('labelAmmExit'),
             value: 'Exit'
         },
     ]
