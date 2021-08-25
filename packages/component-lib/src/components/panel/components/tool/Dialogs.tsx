@@ -53,6 +53,12 @@ export const ConfirmImpact = withTranslation('common', {withRef: true})(({
 }) => {
     const [agree, setAgree] = React.useState('')
 
+    React.useEffect(() => {
+        if (!open) {
+            setAgree('')
+        }
+    }, [open])
+
     return <Dialog
         open={open}
         // TransitionComponent={Transition}
