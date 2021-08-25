@@ -41,7 +41,7 @@ import { useTranslation } from 'react-i18next';
 import { usePairMatch } from 'hooks/common/usePairMatch';
 import { useWalletHook } from 'services/wallet/useWalletHook';
 import { useSocket } from 'stores/socket';
-import { walletService } from 'services/wallet/walletService';
+import { walletLayer2Service } from 'services/wallet/walletLayer2Service';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS, REFRESH_RATE } from 'defs/common_defs';
 
@@ -314,7 +314,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 myError(response?.errInfo)
             } else {
                 setSwapToastOpen({ flag: true, type: 'success', label: t('labelSwapSuccess') })
-                walletService.sendUserUpdate()
+                walletLayer2Service.sendUserUpdate()
                 setTradeData({
                     ...tradeData,
                     ...{

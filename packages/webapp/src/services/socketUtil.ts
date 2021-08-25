@@ -13,7 +13,7 @@ import { tickerService } from './tickerService';
 import { ammPoolService } from './ammPoolService';
 import { CustomError, ErrorMap } from '@loopring-web/common-resources';
 import { LoopringAPI } from 'api_wrapper';
-import { walletService } from './wallet/walletService';
+import { walletLayer2Service } from './wallet/walletLayer2Service';
 // import store from '../stores';
 // import { updateSocketURL } from '../stores/system';
 
@@ -44,7 +44,7 @@ export class LoopringSocket {
     private static SocketEventMap: SocketEventMap = {
         [ SocketEventType.account ]: (data: {[key:string]:any}) => {
             const {accountId, totalAmount,tokenId,amountLocked,pending} = data;
-            walletService.sendAccount({
+            walletLayer2Service.sendAccount({
                 tokenId,
                 locked:amountLocked,
                 total:totalAmount,

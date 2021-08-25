@@ -1,5 +1,5 @@
 import React from 'react';
-import { SagaStatus } from '@loopring-web/common-resources';
+import { AccountStatus, SagaStatus } from '@loopring-web/common-resources';
 import { useWalletLayer1 } from './stores/walletLayer1';
 import { useWalletLayer2 } from './stores/walletLayer2';
 import { useAccount } from './stores/account';
@@ -8,7 +8,6 @@ import { useConnect } from './hookConnect';
 import { myLog } from 'utils/log_tools';
 
 export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
-    const {getUserRewards}  = useUserRewards()
     useConnect({state})
     const {
         updateWalletLayer1,
@@ -16,6 +15,7 @@ export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
         status: walletLayer1Status,
         statusUnset: wallet1statusUnset
     } = useWalletLayer1()
+    const {getUserRewards,status:userRewardsStatus}  = useUserRewards()
     const {
         updateWalletLayer2,
         resetLayer2,
@@ -27,20 +27,23 @@ export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
     React.useEffect(() => {
         if (accountStatus === SagaStatus.UNSET && state === SagaStatus.DONE) {
             switch (account.readyState) {
-                case 'UN_CONNECT':
-                case 'ERROR_NETWORK':
-                    resetLayer1();
+                case AccountStatus.UN_CONNECT:
+                case AccountStatus.ERROR_NETWORK:
+                    // resetLayer1();
                     break;
-                case 'NO_ACCOUNT':
-                case 'DEPOSITING':
-                case 'LOCKED':
-                    resetLayer2();
+                case AccountStatus.NO_ACCOUNT:
+                case AccountStatus.DEPOSITING:
+                case AccountStatus.LOCKED:
+                    // resetLayer2();
                     if (walletLayer1Status !== SagaStatus.PENDING) {
                         updateWalletLayer1();
                     }
                     break;
-                case 'ACTIVATED':
-                    // 
+                case AccountStatus.ACTIVATED:
+                    //
+                    if(userRewardsStatus !== SagaStatus.PENDING) {
+                        getUserRewards();
+                    }
                     if (walletLayer1Status !== SagaStatus.PENDING) {
                         updateWalletLayer1();
                     }
@@ -50,7 +53,7 @@ export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
                     break;
 
             }
-            getUserRewards();
+
         }
 
     }, [accountStatus, state, account.readyState]);
