@@ -1,5 +1,5 @@
 import { CoinKey, CoinMap, StateBase } from '@loopring-web/common-resources';
-import { MarketInfo, TokenInfo, TokenRelatedInfo } from 'loopring-sdk/dist/defs/loopring_defs';
+import { MarketInfo, TokenInfo, TokenRelatedInfo } from 'loopring-sdk';
 import { LoopringMap } from 'loopring-sdk';
 
 export type TokenMap<R extends { [ key: string ]: any }> = LoopringMap<TokenInfo & { tradePairs: Array<CoinKey<R>> }>

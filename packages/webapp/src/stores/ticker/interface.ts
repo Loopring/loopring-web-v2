@@ -1,5 +1,5 @@
 import { StateBase, TradeFloat } from '@loopring-web/common-resources';
-import { TickerData } from 'loopring-sdk/dist/defs/loopring_defs';
+import { TickerData } from 'loopring-sdk';
 
 export type Ticker = TradeFloat & {
     open: number,
