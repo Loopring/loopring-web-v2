@@ -36,6 +36,5 @@ export type AmmRecordTableProps<T, R = AmmRecordRow<T>> = {
     handlePageChange: (props: any) => void,
     showFilter?: boolean,
     wait?: number;
-    getUserAmmPoolTxs: () => void;
     showLoading?: boolean;
 }

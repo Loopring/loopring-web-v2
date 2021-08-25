@@ -159,7 +159,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
     }, [getAwardList])
 
     const getUserAmmPoolTxs = React.useCallback(({
-        limit,
+        limit = 7,
         offset = 0,
     }) => {
         if (ammMap) {

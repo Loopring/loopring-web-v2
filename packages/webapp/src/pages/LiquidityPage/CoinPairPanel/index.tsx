@@ -282,7 +282,6 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             {tabIndex === 1 ? <AmmRecordTable
                                 rawData={ammMarketArray}
                                 handlePageChange={getUserAmmPoolTxs} page={page}
-                                getUserAmmPoolTxs={() => {}}
                             /> : <AmmRecordTable
                                 rawData={myAmmMarketArray}
                                 handlePageChange={getUserAmmPoolTxs}
@@ -291,7 +290,6 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                     total: ammUserTotal
                                 }}
                                 showLoading={showAmmPoolLoading}
-                                getUserAmmPoolTxs={getUserAmmPoolTxs as any}
                             />}
                         </StylePaper>
                     </Box>
