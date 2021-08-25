@@ -43,7 +43,7 @@ import { myLog } from "utils/log_tools";
 import { useTranslation } from "react-i18next";
 import { useWalletHook } from '../../../services/wallet/useWalletHook';
 import { useSocket } from '../../../stores/socket';
-import { walletService } from '../../../services/wallet/walletService';
+import { walletLayer2Service } from '../../../services/wallet/walletLayer2Service';
 import * as _ from 'lodash'
 export const useAmmPanel = <C extends { [key: string]: any }>({
     pair,
@@ -350,7 +350,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
                 setJoinLoading(false)
             } else {
                 setAmmAlertText(t('labelJoinAmmSuccess'))
-                walletService.sendUserUpdate()
+                walletLayer2Service.sendUserUpdate()
             }
 
         } catch (reason) {
@@ -511,7 +511,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
                 setAmmAlertText(t('labelExitAmmFailed'))
             } else {
                 setAmmAlertText(t('labelExitAmmSuccess'))
-                walletService.sendUserUpdate()
+                walletLayer2Service.sendUserUpdate()
                 // await delayAndUpdateWalletLayer2()
             }
 

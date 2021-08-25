@@ -11,6 +11,7 @@ import { networkUpdate } from 'services/account/networkUpdate';
 import { checkAccount } from 'services/account/checkAccount';
 import { REFRESH_RATE } from 'defs/common_defs';
 import { useWalletLayer2 } from 'stores/walletLayer2';
+import { resetLayer12Data } from './services/account/resetAccount';
 
 export function useConnect({state}: { state: keyof typeof SagaStatus }) {
     const {
@@ -53,9 +54,10 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
     const handleAccountDisconnect = React.useCallback(async () => {
         resetAccount({shouldUpdateProvider: true});
         setStateAccount(SagaStatus.PENDING)
+        resetLayer12Data()
         await sleep(REFRESH_RATE)
         // updateWalletLayer2()
-        resetLayer2()
+        
     }, [resetAccount, setStateAccount]);
 
     const handleError = React.useCallback(({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {

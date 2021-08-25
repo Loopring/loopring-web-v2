@@ -2,7 +2,7 @@ import React from 'react';
 import * as _ from 'lodash';
 import { globalSetup, SagaStatus } from '@loopring-web/common-resources';
 import { useWalletLayer1 } from '../../stores/walletLayer1';
-import { walletService } from './walletService';
+import { walletLayer2Service } from './walletLayer2Service';
 import { useWalletLayer2 } from '../../stores/walletLayer2';
 import store from '../../stores';
 
@@ -13,7 +13,7 @@ export const useWalletHook=({throttleWait = globalSetup.throttleWait, walletLaye
 })=>{
     const { updateWalletLayer1,status:walletLayer1Status, } = useWalletLayer1();
     const { updateWalletLayer2,status:walletLayer2Status, } = useWalletLayer2();
-    const subject = React.useMemo(() => walletService.onSocket(), []);
+    const subject = React.useMemo(() => walletLayer2Service.onSocket(), []);
         
     const socketUpdate = React.useCallback(
         _.throttle(({walletLayer1Status, walletLayer2Status})=>{
