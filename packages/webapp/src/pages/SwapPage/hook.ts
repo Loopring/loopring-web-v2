@@ -110,12 +110,12 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     const { account, status: accountStatus } = useAccount()
     const { coinMap, tokenMap, marketArray, marketCoins, marketMap, idIndex } = useTokenMap()
-
     const { ammMap } = useAmmMap()
     const { status: walletLayer2Status } = useWalletLayer2();
 
     /*** api prepare ***/
     const { t } = useTranslation('common')
+    const refreshRef = React.createRef();
     const { pair, setPair, market, setMarket, } = usePairMatch('/trading/lite');
     const [swapBtnI18nKey, setSwapBtnI18nKey] = React.useState<string | undefined>(undefined)
     const [swapBtnStatus, setSwapBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE)
@@ -780,7 +780,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         swapBtnStatus: swapBtnStatus,
         handleSwapPanelEvent,
         should15sRefresh,
-
+       refreshRef,
         alertOpen,
         confirmOpen,
         swapFunc,

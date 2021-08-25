@@ -401,5 +401,6 @@ const Template: Story<any> = withTranslation()((props: any) => {
     </Style>
 }) as Story<any>;
 
+// @ts-ignore
 export const FormItem = Template.bind({});
 FormItem.args = {}

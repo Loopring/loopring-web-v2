@@ -11,6 +11,7 @@ export enum AmmPanelType {
  *
  */
 export type AmmPanelBaseProps<T, I, ACD, C> = {
+
     ammDepositData: T,
     ammWithdrawData: T,
     tabSelected?: keyof typeof AmmPanelType,
@@ -33,6 +34,7 @@ export type AmmProps<T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I, 
     handleAmmAddChangeEvent: (data: T, focusOn: 'coinA' | 'coinB') => void,
     handleAmmRemoveChangeEvent: (data: T, focusOn: 'coinA' | 'coinB') => void,
     onChangeEvent?: (data: AmmChgData<T>) => AmmChgData<T>,
+    refreshRef:React.Ref<any>,
     onRefreshData?:()=>void,
 }
     & AmmWithdrawBaseProps<T, I>

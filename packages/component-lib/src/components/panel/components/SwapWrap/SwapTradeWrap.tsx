@@ -86,10 +86,10 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     ...swapData.tradeData.__cache__,
                     customSlippage: customSlippage
                 }
-            }, type: 'sell',to:'button'
+            }, type: 'sell', to: 'button'
         });
     }, [swapData, onChangeEvent])
-    
+
     if (typeof handleError !== 'function') {
         handleError = ({belong, balance, tradeValue}: any) => {
             if (balance < tradeValue || (tradeValue && !balance)) {

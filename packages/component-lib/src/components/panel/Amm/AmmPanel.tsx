@@ -64,6 +64,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
       ammDepositBtnI18nKey,
       ammWithdrawBtnI18nKey,
       onRefreshData,
+      refreshRef,
       onAmmAddClick,
       onAmmRemoveClick,
       onChangeEvent,
@@ -192,7 +193,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
                   <TabPanelBtn {...{t, value: index, handleChange: handleTabChange, ...rest}} />
               </Box>
               <Box alignSelf={'center'}>
-                  <CountDownIcon onRefreshData={onRefreshData}/>
+                  <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef}/>
               </Box>
 
           </Toolbar>
