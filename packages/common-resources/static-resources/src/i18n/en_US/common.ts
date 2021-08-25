@@ -73,6 +73,7 @@ export default {
     labelLevel: 'VIP Level',
     labelOrderbook: 'Orderbook',
     labelDeposit: 'Deposit',
+    labelTransfer: 'Transfer',
     labelWithdraw: 'Withdraw',
     labelSetPublicKey: 'Set EdDSA Public Key',
     labelTitleSecurity: 'Security',
@@ -230,6 +231,7 @@ export default {
     labelDisAgreeConfirm: 'Disagree',
     labelImpactAgree:'Please enter uppercase <1>"AGREE"</1> to confirm again.',
     labelImpactTitle : 'Swap Requires Confirmation',
-    labelImpactExtraGreat: ' Your transaction amount will affect the pool price <1>{{value}}</1>. Are you sure to swap?'
+    labelImpactExtraGreat: ' Your transaction amount will affect the pool price <1>{{value}}</1>. Are you sure to swap?',
+    labelCalculating:'Calculating...'
 }
 

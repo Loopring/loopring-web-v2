@@ -24,11 +24,11 @@ export const Transfer_Refused = (props: PanelProps & WithTranslation) => {
 }
 
 // value symbol
-export const Transfer_Submited = (props: PanelProps & WithTranslation) => {
+export const Transfer_In_Progress = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
-        iconType: IconType.SubmitIcon,
-        describe1: <Trans i18nKey={'label_Transfer_Submited'}>
-        { props.value } {props.symbol} Transfer Submited.
+        iconType: IconType.LoadingIcon,
+        describe1: <Trans i18nKey={'label_Transfer_In_Progress'}>
+        Transfer In Progress.
     </Trans>
     }
     return <TransferBase {...propsPatch} {...props} />

@@ -72,6 +72,7 @@ export default {
     labelLevel: 'VIP等级',
     labelOrderbook: '订单本',
     labelDeposit: '充值',
+    labelTransfer: '转账',
     labelWithdraw: '提现',
     labelSetPublicKey: '设置 EdDSA 公钥',
     labelTitleSecurity: '安全设置',
@@ -229,5 +230,6 @@ export default {
     labelDisAgreeConfirm: '取消',
     labelImpactAgree:'请输入大写<>"AGREE"</>再次确认',
     labelImpactTitle : '兑换二次确认',
-    labelImpactExtraGreat: '您的交易金额将影响池子价格<1> {{value}}</1>，您确定执行此操作吗'
+    labelImpactExtraGreat: '您的交易金额将影响池子价格<1> {{value}}</1>，您确定执行此操作吗',
+    labelCalculating:'计算中...'
 }

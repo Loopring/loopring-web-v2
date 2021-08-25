@@ -24,11 +24,11 @@ export const Withdraw_Refused = (props: PanelProps & WithTranslation) => {
 }
 
 // value symbol
-export const Withdraw_Submited = (props: PanelProps & WithTranslation) => {
+export const Withdraw_In_Progress = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
-        iconType: IconType.SubmitIcon,
-        describe1: <Trans i18nKey={'label_Withdraw_Submited'}>
-        { props.value } {props.symbol} Withdraw Submited.
+        iconType: IconType.LoadingIcon,
+        describe1: <Trans i18nKey={'label_Withdraw_In_Progress'}>
+        { props.value } {props.symbol} Withdraw In Progress.
     </Trans>
     }
     return <WithdrawBase {...propsPatch} {...props} />
