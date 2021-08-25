@@ -29,10 +29,13 @@ export interface AmmRecordRow<C> {
 export type AmmRecordTableProps<T, R = AmmRecordRow<T>> = {
     rawData: R[];
     pagination?: {
-        pageSize: number
+        pageSize: number,
+        total: number,
     },
     page?: number,
-    handlePageChange: (page: number) => void,
+    handlePageChange: (props: any) => void,
     showFilter?: boolean,
-    wait?: number
+    wait?: number;
+    getUserAmmPoolTxs: () => void;
+    showLoading?: boolean;
 }
