@@ -8,7 +8,7 @@ import {
     TradeFloat,
     WalletMap,
 } from '@loopring-web/common-resources';
-import React, { useState } from 'react';
+import React from 'react';
 import { LoopringAPI } from 'api_wrapper';
 import { useTokenMap } from 'stores/token';
 import * as sdk from 'loopring-sdk';
@@ -293,22 +293,9 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     }, [market, setTradeArray,]);
 
-    const updateDepth = React.useCallback( async () => {
-        if (market && LoopringAPI.exchangeAPI) {
-            myLog('swap page updateDepth', market)
-            const {depth} = await LoopringAPI.exchangeAPI.getMixDepth({market: `AMM-${market}`})
-            setDepth(depth)
-        }
-    }, [market, setDepth])
 
-    const should15sRefresh = React.useCallback(() => {
-        console.log('should15sRefresh',market);
-        if (market) {
-            updateDepth()
-            callPairDetailInfoAPIs()
-            marketTradeTableCallback();
-        }
-    }, [market, setDepth, ammMap])
+
+
 
     React.useEffect(() => {
         if (market) {
@@ -327,11 +314,11 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         }
 
     }, [market]);
-    React.useEffect(()=>{
-        if (market) {
-            should15sRefresh()
-        }
-    },[])
+    // React.useEffect(()=>{
+    //     if (market) {
+    //         should15sRefresh()
+    //     }
+    // },[])
 
     //Btn related function
     const btnLabelAccountActive = React.useCallback((): string | undefined => {
@@ -527,10 +514,13 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     }
 
-    const apiCallback = React.useCallback(({ammPoolsBalance, tickMap}) => {
+
+    const apiCallback = React.useCallback(({depth,ammPoolsBalance, tickMap}) => {
         setAmmPoolSnapshot(ammPoolsBalance)
         setTickMap(tickMap)
-    }, [setAmmPoolSnapshot, setTickMap])
+        setDepth(depth)
+        setIsSwapLoading(false)
+    }, [setAmmPoolSnapshot, setTickMap,setDepth])
 
     React.useEffect(() => {
         if (ammPoolSnapshot && idIndex
@@ -648,6 +638,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             setTickMap(()=>undefined);
             setDepth(()=>undefined);
             setMarket(market);
+            setIsSwapLoading(true);
             setPair({coinAInfo: coinMap[ coinA ], coinBInfo: coinMap[ coinB ]})
             callPairDetailInfoAPIs();
 
@@ -655,11 +646,21 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     }, [tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray, ammMap, totalFee, setTradeCalcData, setTradeData, setMarket, setPair,])
 
+    const should15sRefresh = React.useCallback(() => {
+        console.log('should15sRefresh',market);
+        if (market) {
+            // updateDepth()
+            callPairDetailInfoAPIs()
+            marketTradeTableCallback();
+        }
+    }, [market, setDepth, ammMap])
     const callPairDetailInfoAPIs = React.useCallback(() => {
-        if (market && ammMap) {
-            pairDetailBlock({coinKey: market, ammKey: `AMM-${market}` as string, ammMap})
-                .then(({ammPoolsBalance, tickMap}) => {
-                    apiCallback({ammPoolsBalance, tickMap})
+        if (market && ammMap && LoopringAPI.exchangeAPI) {
+            Promise.all([
+                LoopringAPI.exchangeAPI.getMixDepth({market: `AMM-${market}`}),
+                pairDetailBlock({coinKey: market, ammKey: `AMM-${market}` as string, ammMap})])
+                .then(([{depth},{ammPoolsBalance, tickMap}]) => {
+                    apiCallback({depth,ammPoolsBalance, tickMap})
                 }).catch((error) => {
                 myLog(error, 'go to LER-ETH');
                 resetTradeCalcData(undefined, market)
