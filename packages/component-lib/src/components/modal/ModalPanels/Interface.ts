@@ -48,4 +48,16 @@ export enum AccountStepNew {
     Deposit_Refused,
     Deposit_Submited,
 
+    Transfer_WaitForAuth,
+    Transfer_Refused,
+    Transfer_Submited,
+    Transfer_Success,
+    Transfer_Failed,
+
+    Withdraw_WaitForAuth,
+    Withdraw_Refused,
+    Withdraw_Submited,
+    Withdraw_Success,
+    Withdraw_Failed,
+
 }
