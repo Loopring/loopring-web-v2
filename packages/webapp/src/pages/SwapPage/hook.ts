@@ -101,7 +101,7 @@ const getPriceImpactInfo = (output: any) => {
 export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     useSwapSocket()
     //High: No not Move!!!!!!
-    const {realPair,realMarket} = usePairMatch('/trading/lite');
+    const {realPair, realMarket} = usePairMatch('/trading/lite');
     /** get store value **/
 
     const {account, status: accountStatus} = useAccount()
@@ -219,7 +219,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
                 if (!response?.hash) {
                     setSwapToastOpen({flag: true, type: 'error', label: t('labelSwapFailed')})
-                    myError(response?.errInfo)
+                    myError(response?.resultInfo)
                 } else {
                     setSwapToastOpen({flag: true, type: 'success', label: t('labelSwapSuccess')})
                     walletLayer2Service.sendUserUpdate()
