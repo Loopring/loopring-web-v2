@@ -48,7 +48,7 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
         // @ts-ignore
         let height = container?.current?.offsetHeight;
         if (height) {
-            setPageSize(Math.floor((height - 120) / 44) - 1);
+            setPageSize(Math.floor((height - 20) / 44) - 1);
         }
     }, [container, pageSize]);
 

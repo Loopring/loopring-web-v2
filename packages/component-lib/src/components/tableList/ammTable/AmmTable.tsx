@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import moment from 'moment'
@@ -77,7 +77,11 @@ const TableStyled = styled(Box)`
   flex: 1;
 
   .rdg {
-    --template-columns: 130px 250px auto auto auto !important;
+    --template-columns: 300px auto auto auto !important;
+    .rdg-row .rdg-cell:first-of-type {
+        display: flex;
+        align-items: center;
+    }
     .rdg-cell.action {
       display: flex;
       justify-content: center;
@@ -88,7 +92,7 @@ const TableStyled = styled(Box)`
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
 
-const StyledSideCell: any = styled(Box)`
+const StyledSideCell: any = styled(Typography)`
   color: ${(props: any) => {
     const {
       value,
@@ -98,33 +102,48 @@ const StyledSideCell: any = styled(Box)`
   }}
 `
 
+const getValuePrecisioned = (rawValue?: string | number) => {
+    if (!rawValue) return '--'
+    let data = Number(rawValue)
+    if (data < 1) {
+        return data.toPrecision(2)
+    }
+    return data.toFixed(4)
+}
+
 const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<RawDataAmmItem, unknown>[] => [
     {
         key: 'side',
         name: t('labelAmmSide'),
         formatter: ({row}) => {
-            const tradeType = row[ 'side' ] === AmmSideTypes.Exit ? t('labelAmmExit') : t('labelAmmJoin')
+            const tradeType = row[ 'side' ] === AmmSideTypes.Join ? t('labelAmmJoin') : t('labelAmmExit')
+            const {from, to} = row[ 'amount' ]
+            const renderFromValue = Number.isFinite(Number(from.value)) ? getValuePrecisioned(Number(from.value)): 0
+            const renderToValue = Number.isFinite(Number(to.value)) ? getValuePrecisioned(Number(to.value)): 0
             return (
-                <div className="rdg-cell-value">
+                <>
                     <StyledSideCell value={row[ 'side' ]}>
                         {tradeType}
                     </StyledSideCell>
-                </div>
+                    <Typography marginLeft={1 / 2}>
+                        {`${renderFromValue} ${from.key} + ${renderToValue} ${to.key}`}
+                    </Typography>
+                </>
             )
         }
     },
-    {
-        key: 'amount',
-        name: t('labelAmmAmount'),
-        formatter: ({row}) => {
-            const {from, to} = row[ 'amount' ]
-            return (
-                <div className="rdg-cell-value">
-                    {`${from.value} ${from.key} + ${to.value} ${to.key}`}
-                </div>
-            )
-        }
-    },
+    // {
+    //     key: 'amount',
+    //     name: t('labelAmmAmount'),
+    //     formatter: ({row}) => {
+    //         const {from, to} = row[ 'amount' ]
+    //         return (
+    //             <div className="rdg-cell-value">
+    //                 {`${from.value} ${from.key} + ${to.value} ${to.key}`}
+    //             </div>
+    //         )
+    //     }
+    // },
     {
         key: 'lpTokenAmount',
         name: t('labelAmmLpTokenAmount'),
@@ -150,7 +169,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
             const {key, value} = row[ 'fee' ]
             return (
                 <div className="rdg-cell-value">
-                    {`${value} ${key}`}
+                    {`${Number.isFinite(Number(value)) ? getValuePrecisioned(Number(value)) : 0} ${key}`}
                 </div>
             )
         }
