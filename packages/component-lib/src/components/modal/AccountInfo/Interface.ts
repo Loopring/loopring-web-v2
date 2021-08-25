@@ -36,4 +36,8 @@ export enum AccountStep {
     UpdateAccountSigWarning,
     UpdateAccountUserDenied,
     UpdateAccountFailed,
+    DepositInProcess_WITH_ACC,
+    DepositFailed_WITH_ACC,
+    WithdrawInProgress,
+    WithdrawFailed,
 }
