@@ -9,7 +9,7 @@ import { useAmmMiningUI } from './hook';
 // import Tab from '@material-ui/core/Tab';
 import { useAmmPool } from '../LiquidityPage/hook'
 import { Trans, withTranslation } from 'react-i18next';
-import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
+import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 
 const WrapperStyled = styled(Box)`
     display: flex;

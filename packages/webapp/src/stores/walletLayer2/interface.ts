@@ -1,5 +1,5 @@
 import { StateBase } from '@loopring-web/common-resources';
-import * as loopring_defs from 'loopring-sdk/dist/defs/loopring_defs';
+import * as loopring_defs from 'loopring-sdk';
 
 export type WalletLayer2Map<R extends { [ key: string ]: any }> = {
     [key in keyof R]: loopring_defs.UserBalanceInfo;

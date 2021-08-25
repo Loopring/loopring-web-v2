@@ -2,16 +2,11 @@ import { WalletConnectBtnProps } from './Interface';
 import { useTranslation } from 'react-i18next';
 import React, { useEffect } from 'react';
 import { AccountStatus, getShortAddr, LoadingIcon, LockIcon, UnConnectIcon, } from '@loopring-web/common-resources';
-// import { debounce } from 'lodash';
 import { Typography } from '@material-ui/core';
-
-// import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg';
-import styled from '@emotion/styled';
 import { Button } from '../../basic-lib';
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';
 import { ChainId } from 'loopring-sdk';
-// import { getShortAddr } from '@loopring-web/webapp/src/utils/web3_tools';
-// import Popover from 'material-ui-popup-state/HoverPopover';
+import styled from '@emotion/styled';
 const WalletConnectBtnStyled = styled(Button)`
   text-transform: none;
   min-width: 120px;
