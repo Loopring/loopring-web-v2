@@ -100,6 +100,8 @@ const getPriceImpactInfo = (output: any) => {
 
 export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     useSwapSocket()
+    //High: No not Move!!!!!!
+    const {realPair,realMarket} = usePairMatch('/trading/lite');
     /** get store value **/
 
     const {account, status: accountStatus} = useAccount()
@@ -109,7 +111,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     /*** api prepare ***/
     const {t} = useTranslation('common')
     const refreshRef = React.createRef();
-    const {realPair,realMarket} = usePairMatch('/trading/lite');
     const [pair,setPair] =  React.useState(realPair);
     const [market, setMarket] = React.useState(realMarket);
 
