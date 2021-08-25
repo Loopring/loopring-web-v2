@@ -589,13 +589,13 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                         : coinA = tokenMap[ [coinA, coinB][ whichCoinIndex ] ].tradePairs[ 0 ];
                 }
             }
-            let walletMap;
+            let walletMap:WalletMap<any>|undefined;
 
             if (account.readyState === AccountStatus.ACTIVATED && walletLayer2Status === SagaStatus.UNSET) {
                 if (!Object.keys(tradeCalcData.walletMap ?? {}).length) {
                     walletMap = makeWalletLayer2().walletMap as WalletMap<any>;
                 }
-                walletMap = tradeCalcData.walletMap;
+                walletMap = tradeCalcData.walletMap as WalletMap<any>;
 
             }
 
@@ -620,18 +620,35 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 return {...prev, [ item ]: coinMap[ item ]}
             }, {} as CoinMap<C>)
 
-            const _tradeCalcData = {
-                walletMap,
-                coinSell: coinA,
-                coinBuy: coinB,
-                sellCoinInfoMap,
-                buyCoinInfoMap,
-                priceImpact: '',
-                priceImpactColor: 'inherit',
-                minimumReceived: '',
-            }
+            // const _tradeCalcData = {
+            //     walletMap,
+            //     coinSell: coinA,
+            //     coinBuy: coinB,
+            //     sellCoinInfoMap,
+            //     buyCoinInfoMap,
+            //     priceImpact: '',
+            //     priceImpactColor: 'inherit',
+            //     minimumReceived: '',
+            //     StoB:undefined,
+            //     BtoS:undefined,
+            // }
+            //{...tradeCalcData, ..._tradeCalcData,} as TradeCalcData<C>
+            setTradeCalcData((state)=>{
+                return {
+                    ...state,
+                       walletMap,
+                       coinSell: coinA,
+                       coinBuy: coinB,
+                       sellCoinInfoMap,
+                       buyCoinInfoMap,
+                       priceImpact: '',
+                       priceImpactColor: 'inherit',
+                       minimumReceived: '',
+                       StoB:undefined,
+                       BtoS:undefined,
 
-            setTradeCalcData({...tradeCalcData, ..._tradeCalcData,} as TradeCalcData<C>)
+                }
+            })
             setTradeData({...tradeDataTmp})
             let {amm: ammKey, market: market} = sdk.getExistedMarket(marketArray, coinA, coinB);
             setAmmPoolSnapshot(()=>undefined);

@@ -154,10 +154,10 @@ export const SwapTradeWrap = <T extends IBData<I>,
     // console.log('tradeCalcData:', tradeCalcData)
     // console.log('_isStoB:', _isStoB)
 
-    const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData
+    const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB
 
     const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${tradeCalcData?.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
-        : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData.BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`
+        : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData .BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`;
     const priceImpactColor =  tradeCalcData?.priceImpactColor ? tradeCalcData.priceImpactColor : 'var(--color-textPrimary)'
     const priceImpact = tradeCalcData?.priceImpact ?  tradeCalcData.priceImpact + ' %' : EmptyValueTag
 
@@ -203,11 +203,11 @@ export const SwapTradeWrap = <T extends IBData<I>,
         </Grid>
         <Grid item>
             <Typography component={'p'} variant="body1" height={24} lineHeight={'24px'}>
-                {showVal && <> {convertStr}
+                {showVal ? <> {convertStr}
                   <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
                       // style={{transform: 'rotate(90deg)'}}
                   ><ReverseIcon/></IconButtonStyled>
-                </>}
+                </>:t('labelCalculating')}
             </Typography>
         </Grid>
         <Grid item alignSelf={"stretch"}>
