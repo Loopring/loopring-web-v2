@@ -3,11 +3,12 @@ import { Trans, WithTranslation } from 'react-i18next';
 import {
     ConnectProviders,
     LoadingIcon,
-    DoneIcon, FailedIcon, RefuseIcon, SubmitIcon,
+    DoneIcon, FailedIcon, RefuseIcon, SubmitIcon, LinkIcon,
 } from '@loopring-web/common-resources';
 import React from 'react';
 
 import { Button } from '../../basic-lib';
+import { Link } from '@material-ui/core/';
 
 export enum IconType {
     LoadingIcon,
@@ -26,11 +27,11 @@ export interface PanelProps {
     describe2?: string,
     txCheck?: {
         route: string,
-        callback: () => boolean,
+        callback: (e?: any) => void,
     },
     btnInfo?: {
-        btnTxt: string,
-        callback: () => boolean,
+        btnTxt: any,
+        callback: (e?: any) => void,
     }
     providerName?: 'MetaMask' | 'WalletConnect' | 'unknown'
     link?: {
@@ -51,23 +52,18 @@ export const BasicPanel = ({
     link,
 }: PanelProps & WithTranslation) => {
 
-    if (iconType) {
-        console.log(title)
-        console.log(IconType[iconType])
-    }
-
     const iconDiv = React.useMemo(() => {
         switch (iconType) {
             case IconType.LoadingIcon:
                 return <LoadingIcon color={'primary'} style={{ width: 72, height: 72 }} />
             case IconType.FailedIcon:
-                return <FailedIcon color={'primary'} style={{ width: 72, height: 72 }} />
+                return <FailedIcon style={{ color: 'var(--color-error)', width: 72, height: 72 }} />
             case IconType.SubmitIcon:
                 return <SubmitIcon color={'primary'} style={{ width: 72, height: 72 }} />
             case IconType.RefuseIcon:
                 return <RefuseIcon style={{ color: 'var(--color-warning)', width: 60, height: 60 }} />
             case IconType.DoneIcon:
-                return <DoneIcon color={'primary'} style={{ width: 72, height: 72 }} />
+                return <DoneIcon style={{ color: 'var(--color-success)', width: 72, height: 72 }} />
         }
     }, [iconType])
 
@@ -85,8 +81,11 @@ export const BasicPanel = ({
                 case ConnectProviders.WalletConnect:
                     return <Trans i18nKey={'labelWalletConnectProcessDescribe2'}>
                         Please click approve on your device.</Trans>
+                default:
+                    break
             }
         }
+        return <></>
     }, [providerName])
 
     return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
@@ -95,7 +94,11 @@ export const BasicPanel = ({
         <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
             {iconDiv}
         </Typography>
-        {describe1 && describe1} { txCheck && <>check the tx.</> }
+        {describe1 && describe1} {txCheck && <>check the tx.</>}
+        {txCheck &&
+            <Link target='_blank' href={txCheck.route} display={'inline-block'} marginTop={1 / 2}>
+                <LinkIcon color={'primary'} fontSize={'small'} style={{ verticalAlign: 'middle' }} />
+            </Link>}
         {describe2 && <>{describe2}</>}
         {providerName &&
             <Typography variant={'body2'} color={'textSecondary'} component={'p'} marginTop={3} alignSelf={'flex-start'}
@@ -105,7 +108,7 @@ export const BasicPanel = ({
         }
         {btnInfo &&
             <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
-                <Button variant={'contained'} fullWidth size={'medium'} onClick={btnInfo.callback}>{t(btnInfo.btnTxt)} </Button>
+                <Button variant={'contained'} fullWidth size={'medium'} onClick={(e?: any) => { if (btnInfo?.callback) { btnInfo.callback(e) } }}>{btnInfo?.btnTxt} </Button>
             </Box>}
         {link && <>{JSON.stringify(link)}</>}
     </Box>

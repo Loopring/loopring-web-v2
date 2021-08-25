@@ -28,7 +28,14 @@ import {
     Deposit_Approve_Submited,
     Deposit_WaitForAuth,
     Deposit_Refused,
+    Deposit_Failed,
     Deposit_Submited,
+
+    Transfer_WaitForAuth,
+    Transfer_Refused,
+    Transfer_In_Progress,
+    Transfer_Success,
+    Transfer_Failed,
 } from '@loopring-web/component-lib';
 import { walletServices } from '@loopring-web/web3-provider';
 import { ConnectorError, sleep } from 'loopring-sdk';
@@ -88,10 +95,10 @@ export const ModalAccountInfo = withTranslation('common')(({
         setShowConnect({ isShow: shouldShow ?? false })
     }, [setShowConnect, setShowAccount, shouldShow])
 
-    const onCopy = React.useCallback(async() => {
+    const onCopy = React.useCallback(async () => {
         copyToClipBoard(account.accAddress);
         setCopyToastOpen(true)
-    }, [account, setCopyToastOpen, ])
+    }, [account, setCopyToastOpen,])
     const onViewQRCode = React.useCallback(() => {
         setOpenQRCode(true)
     }, [])
@@ -106,7 +113,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     }, [setShowAccount])
 
-    const goUpdateAccount = React.useCallback(async(isFirstTime: boolean = true) => {
+    const goUpdateAccount = React.useCallback(async (isFirstTime: boolean = true) => {
 
         if (!account.accAddress) {
             myLog('account.accAddress is nil')
@@ -168,7 +175,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                         store.dispatch(updateAccountStatus({ eddsaKey: eddsaKey2, }))
                     }
 
-                    switch(errMsg) {
+                    switch (errMsg) {
                         case 'NOT_SUPPORT_ERROR':
                             myLog(' 00000---- got NOT_SUPPORT_ERROR')
                             setShowAccount({ isShow: true, step: AccountStep.UpdateAccountSigWarning })
@@ -179,7 +186,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                             return
                         default:
                             accountServices.sendCheckAccount(account.accAddress)
-                        break
+                            break
                     }
                     break
                 default:
@@ -206,13 +213,6 @@ export const ModalAccountInfo = withTranslation('common')(({
             lockAccount();
         }}>{t('labelLockLayer2')} </Button>
     }, [lockAccount, t]);
-    const _onClose = React.useCallback((e: any) => {
-        setShouldShow(false);
-        setShowAccount({ isShow: false })
-        if (onClose) {
-            onClose(e);
-        }
-    }, [])
     const onBack = React.useCallback(() => {
         switch (account.readyState) {
             case 'NO_ACCOUNT':
@@ -230,6 +230,29 @@ export const ModalAccountInfo = withTranslation('common')(({
     }, [account])
 
     const title = t("labelCreateLayer2Title")
+
+    const backToDepositBtnInfo = React.useMemo(() => {
+        return {
+            btnTxt: t('labelRetry'),
+            callback: () => {
+                setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                return true
+            }
+        }
+    }, [])
+
+    const closeBtnInfo = React.useMemo(() => {
+        return {
+            btnTxt: t('labelClose'),
+            callback: (e: any) => {
+                setShouldShow(false);
+                setShowAccount({ isShow: false })
+                if (onClose) {
+                    onClose(e)
+                }
+            }
+        }
+    }, [])
 
     const accountList = React.useMemo(() => {
         return Object.values({
@@ -259,13 +282,6 @@ export const ModalAccountInfo = withTranslation('common')(({
                     t
                 }} />
             },
-            [AccountStep.DepositFailed]: {
-                view: <FailedDeposit label={title}
-                    etherscanLink={etherscanUrl + account.accAddress}
-                    onRetry={() => goDeposit()} {...{ ...rest, t }} />, onBack: () => {
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
-                    }
-            },
             [AccountStep.UpdateAccount]: {
                 view: <ApproveAccount {...{
                     ...account,
@@ -283,7 +299,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 }} />,
             },
             [AccountStep.SuccessUnlock]: {
-                view: <SuccessUnlock providerName={account.connectName} onClose={_onClose} {...{ ...rest, t }} />,
+                view: <SuccessUnlock providerName={account.connectName} onClose={closeBtnInfo.callback} {...{ ...rest, t }} />,
             },
             [AccountStep.FailedUnlock]: {
                 view: <FailedUnlock onRetry={() => {
@@ -317,7 +333,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 }
             },
             [AccountStep.UpdateAccountSigWarning]: {
-                view: <UpdateAccSigWarning onTryAnother={ () => {
+                view: <UpdateAccSigWarning onTryAnother={() => {
                     myLog('.......UpdateAccountSigWarning..............')
                     goUpdateAccount(false)
                 }} {...{
@@ -336,6 +352,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             },
 
             // new 
+            // deposit
             [AccountStep.Deposit_Approve_WaitForAuth]: {
                 view: <Deposit_Approve_WaitForAuth
                     providerName={account.connectName} {...{
@@ -343,51 +360,83 @@ export const ModalAccountInfo = withTranslation('common')(({
                     }} />,
             },
             [AccountStep.Deposit_Approve_Refused]: {
-                view: <Deposit_Approve_Refused
-                    providerName={account.connectName} {...{
-                        ...rest, t
-                    }} />,onBack: () => {
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
-                    }
+                view: <Deposit_Approve_Refused btnInfo={backToDepositBtnInfo} {...{
+                    ...rest, t
+                }} />, onBack: () => {
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                }
             },
             [AccountStep.Deposit_Approve_Submited]: {
-                view: <Deposit_Approve_Submited
-                    providerName={account.connectName} {...{
-                        ...rest, t
-                    }} />,onBack: () => {
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
-                    }
+                view: <Deposit_Approve_Submited btnInfo={closeBtnInfo} {...{
+                    ...rest, t
+                }} />, onBack: () => {
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                }
             },
             [AccountStep.Deposit_WaitForAuth]: {
                 view: <Deposit_WaitForAuth
                     providerName={account.connectName} {...{
                         ...rest, t
-                    }} />,onBack: () => {
+                    }} />, onBack: () => {
                         setShowAccount({ isShow: true, step: AccountStep.Deposit });
                     }
             },
             [AccountStep.Deposit_Refused]: {
-                view: <Deposit_Refused
-                    providerName={account.connectName} {...{
-                        ...rest, t
-                    }} />,onBack: () => {
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
-                    }
+                view: <Deposit_Refused btnInfo={backToDepositBtnInfo} {...{
+                    ...rest, t
+                }} />, onBack: () => {
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                }
+            },
+            [AccountStep.Deposit_Failed]: {
+                view: <Deposit_Failed btnInfo={closeBtnInfo} {...{
+                    ...rest, t
+                }} />, onBack: () => {
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                }
             },
             [AccountStep.Deposit_Submited]: {
-                view: <Deposit_Submited
+                view: <Deposit_Submited btnInfo={closeBtnInfo} {...{
+                    ...rest, t
+                }} />, onBack: () => {
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                }
+            },
+
+            // transfer
+            [AccountStep.Transfer_WaitForAuth]: {
+                view: <Transfer_WaitForAuth
                     providerName={account.connectName} {...{
                         ...rest, t
-                    }} />,onBack: () => {
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit });
-                    }
+                    }} />,
+            },
+            [AccountStep.Transfer_Refused]: {
+                view: <Transfer_Refused {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.Transfer_In_Progress]: {
+                view: <Transfer_In_Progress {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.Transfer_Success]: {
+                view: <Transfer_Success btnInfo={closeBtnInfo} {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.Transfer_Failed]: {
+                view: <Transfer_Failed btnInfo={closeBtnInfo} {...{
+                        ...rest, t
+                    }} />,
             },
 
         })
     }, [addressShort, account, depositProps, etherscanUrl, onCopy, onSwitch, onDisconnect, onViewQRCode, t, rest])
 
     const current = accountList[isShowAccount.step]
-    myLog('isShowAccount.step:', isShowAccount.step, ' ', AccountStep[isShowAccount.step])
+
+    // myLog('isShowAccount.step:', isShowAccount.step, ' ', AccountStep[isShowAccount.step])
 
     return <>
         <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen}
@@ -398,7 +447,7 @@ export const ModalAccountInfo = withTranslation('common')(({
         <ModalQRCode open={openQRCode} onClose={() => setOpenQRCode(false)} title={'ETH Address'}
             description={account?.accAddress} url={account?.accAddress} />
 
-        <ModalAccount open={isShowAccount.isShow} onClose={_onClose} panelList={accountList}
+        <ModalAccount open={isShowAccount.isShow} onClose={closeBtnInfo.callback} panelList={accountList}
             onBack={current?.onBack}
             onQRClick={current?.onQRClick}
             step={isShowAccount.step} />

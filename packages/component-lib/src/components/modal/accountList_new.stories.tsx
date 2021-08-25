@@ -10,10 +10,6 @@ import {
 } from './WalletConnect'
 
 import {
-    ModalAccount,
-} from './AccountInfo'
-
-import {
     AccountBaseNewProps,
     AccountStepNew as AccountStep,
     Deposit_Approve_WaitForAuth,
@@ -21,23 +17,25 @@ import {
     Deposit_Approve_Submited,
     Deposit_WaitForAuth,
     Deposit_Refused,
+    Deposit_Failed,
     Deposit_Submited,
 
     Transfer_WaitForAuth,
     Transfer_Refused,
-    Transfer_Submited,
+    Transfer_In_Progress,
     Transfer_Success,
     Transfer_Failed,
 
     Withdraw_WaitForAuth,
     Withdraw_Refused,
-    Withdraw_Submited,
+    Withdraw_In_Progress,
     Withdraw_Success,
     Withdraw_Failed,
 } from './ModalPanels';
 import { account, coinMap, CoinType, walletMap } from '../../static';
 import { DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../index';
 import { Box } from '@material-ui/core/';
+
 import QRCode from 'qrcode.react';
 
 const Style = styled.div`
@@ -90,36 +88,75 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
         const accountMap = {
             [AccountStep.Deposit_Approve_WaitForAuth]: {
                 view: <Deposit_Approve_WaitForAuth
-                    providerName={account.connectName} {...{
+                    providerName={ConnectProviders.MetaMask} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_Approve_Refused]: {
-                view: <Deposit_Approve_Refused
+                view: <Deposit_Approve_Refused btnInfo={{
+                    btnTxt: 'retry',
+                    callback: () => {
+                        return true
+                    }
+                }}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_Approve_Submited]: {
-                view: <Deposit_Approve_Submited
+                view: <Deposit_Approve_Submited btnInfo={{
+                    btnTxt: 'close',
+                    callback: () => {
+                        return true
+                    }
+                }} txCheck={
+                    {
+                        route: '',
+                        callback: () => {
+                            
+                        }
+                    }}
+
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_WaitForAuth]: {
                 view: <Deposit_WaitForAuth
-                    providerName={account.connectName} {...{
+                providerName={ConnectProviders.WalletConnect} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_Refused]: {
-                view: <Deposit_Refused
+                view: <Deposit_Refused btnInfo={{
+                    btnTxt: 'retry',
+                    callback: () => {
+                        return true
+                    }
+                }} {...{
+                        ...rest
+                    }} />,
+            },
+            [AccountStep.Deposit_Failed]: {
+                view: <Deposit_Failed btnInfo={{
+                    btnTxt: 'close',
+                    callback: () => {
+                        return true
+                    }
+                }}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_Submited]: {
-                view: <Deposit_Submited
+                view: <Deposit_Submited txCheck={
+                    {
+                        route: '',
+                        callback: () => {
+
+                        }
+                    }
+                }
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
@@ -144,9 +181,8 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                         ...rest
                     }} />,
             },
-            [AccountStep.Transfer_Submited]: {
-                view: <Transfer_Submited
-                    providerName={account.connectName} {...{
+            [AccountStep.Transfer_In_Progress]: {
+                view: <Transfer_In_Progress {...{
                         ...rest
                     }} />,
             },
@@ -182,8 +218,8 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                         ...rest
                     }} />,
             },
-            [AccountStep.Withdraw_Submited]: {
-                view: <Withdraw_Submited
+            [AccountStep.Withdraw_In_Progress]: {
+                view: <Withdraw_In_Progress
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
