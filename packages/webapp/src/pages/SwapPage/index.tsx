@@ -8,6 +8,7 @@ import { SwapPanel, Toast,ConfirmImpact,AlertImpact } from '@loopring-web/compon
 import { TOAST_TIME } from 'defs/common_defs'
 import { FixedStyle } from 'pages/styled'
 import React  from 'react';
+import { validateTime } from '@material-ui/lab/internal/pickers/time-utils'
 
 
 
@@ -29,13 +30,15 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
         swapToastOpen,
         setSwapToastOpen,
 
-        updateDepth,
+        should15sRefresh,
 
         debugInfo,
 
         alertOpen,
         confirmOpen,
         swapFunc,
+
+        priceImpact,
 
     } = useSwapPage();
 
@@ -62,7 +65,7 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
         <Box display={'flex'} style={{ minWidth: 'var(--swap-box-width)' }}>
             <FixedStyle>
                 <SwapPanel
-                    onRefreshData={updateDepth}
+                    onRefreshData={should15sRefresh}
                     tradeData={tradeData as any}
                     tradeCalcData={tradeCalcData as any}
                     onSwapClick={onSwapClick}
@@ -77,8 +80,8 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
 
             </FixedStyle>
         </Box>
-        <AlertImpact handleClose={swapFunc} open={alertOpen} value={10} />
-        <ConfirmImpact handleClose={swapFunc} open={confirmOpen} value={10}/>
+        <AlertImpact handleClose={swapFunc} open={alertOpen} value={priceImpact} />
+        <ConfirmImpact handleClose={swapFunc} open={confirmOpen} value={priceImpact}/>
     </>
 });
 

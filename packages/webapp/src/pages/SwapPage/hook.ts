@@ -149,6 +149,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false)
 
+    const [priceImpact, setPriceImpact] = React.useState<number>(0)
+
     const debugInfo = process.env.NODE_ENV !== 'production' ? {
         tradeData,
         tradeCalcData: { coinBuy: tradeCalcData?.coinBuy, coinSell: tradeCalcData?.coinSell }, priceImpact: output?.priceImpact,
@@ -301,6 +303,11 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             setDepth(depth)
         }
     }, [market, setDepth])
+
+    const should15sRefresh= React.useCallback(()=>{
+        callPairDetailInfoAPIs()
+        updateDepth()
+    },[market,setDepth,market,ammMap])
 
     React.useEffect(() => {
         if (market) {
@@ -615,19 +622,24 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
             setMarket(_market);
             setPair({ coinAInfo: coinMap[coinA], coinBInfo: coinMap[coinB] })
+            callPairDetailInfoAPIs();
 
-            let apiList = [pairDetailBlock({ coinKey: _market, ammKey: ammKey as string, ammMap })];
+        }
+
+    }, [tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray, ammMap, totalFee, setTradeCalcData, setTradeData, setMarket, setPair, ])
+
+    const callPairDetailInfoAPIs = React.useCallback(() =>{
+        if(market && ammMap){
+            let apiList = [pairDetailBlock({ coinKey: market, ammKey: `AMM-${market}` as string, ammMap })];
             Promise.all([...apiList])
                 .then(([{ ammPoolsBalance, tickMap }]: any[]) => apiCallback({ ammPoolsBalance, tickMap }))
                 .catch((error) => {
                     myLog(error, 'go to LER-ETH');
                     resetTradeCalcData(undefined, market, depth)
                 })
-
         }
 
-    }, [tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray, ammMap, totalFee, setTradeCalcData, setTradeData, setMarket, setPair, ])
-
+    },[market,ammMap])
     const reCalculateDataWhenValueChange = React.useCallback((_tradeData, market?, depth?, type?) => {
         if (marketArray && tokenMap && marketMap && depth && takerRate) {
             const coinA = _tradeData.sell.belong
@@ -659,6 +671,8 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             myLog('output:', output)
 
             const priceImpact = getPriceImpactInfo(output)
+
+            setPriceImpact(priceImpact.priceImpact ?? 0)
 
             const _tradeCalcData = {
                 priceImpact: priceImpact.priceImpact,
@@ -740,11 +754,12 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         swapBtnI18nKey,
         swapBtnStatus: swapBtnStatus,
         handleSwapPanelEvent,
-        updateDepth,
+        should15sRefresh,
 
         alertOpen,
         confirmOpen,
         swapFunc,
+        priceImpact,
 
         debugInfo,
 
