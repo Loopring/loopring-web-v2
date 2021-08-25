@@ -3,11 +3,12 @@ import { Trans, WithTranslation } from 'react-i18next';
 import {
     ConnectProviders,
     LoadingIcon,
-    DoneIcon, FailedIcon, RefuseIcon, SubmitIcon,
+    DoneIcon, FailedIcon, RefuseIcon, SubmitIcon, LinkIcon,
 } from '@loopring-web/common-resources';
 import React from 'react';
 
 import { Button } from '../../basic-lib';
+import { Link } from '@material-ui/core/';
 
 export enum IconType {
     LoadingIcon,
@@ -26,11 +27,11 @@ export interface PanelProps {
     describe2?: string,
     txCheck?: {
         route: string,
-        callback: () => boolean,
+        callback: (e?: any) => void,
     },
     btnInfo?: {
         btnTxt: any,
-        callback: () => boolean,
+        callback: (e?: any) => void,
     }
     providerName?: 'MetaMask' | 'WalletConnect' | 'unknown'
     link?: {
@@ -93,7 +94,11 @@ export const BasicPanel = ({
         <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
             {iconDiv}
         </Typography>
-        {describe1 && describe1} { txCheck && <>check the tx.</> }
+        {describe1 && describe1} {txCheck && <>check the tx.</>}
+        {txCheck &&
+            <Link target='_blank' href={txCheck.route} display={'inline-block'} marginTop={1 / 2}>
+                <LinkIcon color={'primary'} fontSize={'small'} style={{ verticalAlign: 'middle' }} />
+            </Link>}
         {describe2 && <>{describe2}</>}
         {providerName &&
             <Typography variant={'body2'} color={'textSecondary'} component={'p'} marginTop={3} alignSelf={'flex-start'}
@@ -103,7 +108,7 @@ export const BasicPanel = ({
         }
         {btnInfo &&
             <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
-                <Button variant={'contained'} fullWidth size={'medium'} onClick={() => { if (btnInfo?.callback) { btnInfo.callback() }}}>{btnInfo?.btnTxt} </Button>
+                <Button variant={'contained'} fullWidth size={'medium'} onClick={(e?: any) => { if (btnInfo?.callback) { btnInfo.callback(e) } }}>{btnInfo?.btnTxt} </Button>
             </Box>}
         {link && <>{JSON.stringify(link)}</>}
     </Box>

@@ -30,6 +30,12 @@ import {
     Deposit_Refused,
     Deposit_Failed,
     Deposit_Submited,
+
+    Transfer_WaitForAuth,
+    Transfer_Refused,
+    Transfer_In_Progress,
+    Transfer_Success,
+    Transfer_Failed,
 } from '@loopring-web/component-lib';
 import { walletServices } from '@loopring-web/web3-provider';
 import { ConnectorError, sleep } from 'loopring-sdk';
@@ -207,13 +213,6 @@ export const ModalAccountInfo = withTranslation('common')(({
             lockAccount();
         }}>{t('labelLockLayer2')} </Button>
     }, [lockAccount, t]);
-    const _onClose = React.useCallback((e: any) => {
-        setShouldShow(false);
-        setShowAccount({ isShow: false })
-        if (onClose) {
-            onClose(e);
-        }
-    }, [])
     const onBack = React.useCallback(() => {
         switch (account.readyState) {
             case 'NO_ACCOUNT':
@@ -245,9 +244,12 @@ export const ModalAccountInfo = withTranslation('common')(({
     const closeBtnInfo = React.useMemo(() => {
         return {
             btnTxt: t('labelClose'),
-            callback: () => {
-                setShowAccount({ isShow: false, });
-                return true
+            callback: (e: any) => {
+                setShouldShow(false);
+                setShowAccount({ isShow: false })
+                if (onClose) {
+                    onClose(e)
+                }
             }
         }
     }, [])
@@ -297,7 +299,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 }} />,
             },
             [AccountStep.SuccessUnlock]: {
-                view: <SuccessUnlock providerName={account.connectName} onClose={_onClose} {...{ ...rest, t }} />,
+                view: <SuccessUnlock providerName={account.connectName} onClose={closeBtnInfo.callback} {...{ ...rest, t }} />,
             },
             [AccountStep.FailedUnlock]: {
                 view: <FailedUnlock onRetry={() => {
@@ -350,6 +352,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             },
 
             // new 
+            // deposit
             [AccountStep.Deposit_Approve_WaitForAuth]: {
                 view: <Deposit_Approve_WaitForAuth
                     providerName={account.connectName} {...{
@@ -400,6 +403,34 @@ export const ModalAccountInfo = withTranslation('common')(({
                 }
             },
 
+            // transfer
+            [AccountStep.Transfer_WaitForAuth]: {
+                view: <Transfer_WaitForAuth
+                    providerName={account.connectName} {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.Transfer_Refused]: {
+                view: <Transfer_Refused {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.Transfer_In_Progress]: {
+                view: <Transfer_In_Progress {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.Transfer_Success]: {
+                view: <Transfer_Success btnInfo={closeBtnInfo} {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.Transfer_Failed]: {
+                view: <Transfer_Failed btnInfo={closeBtnInfo} {...{
+                        ...rest, t
+                    }} />,
+            },
+
         })
     }, [addressShort, account, depositProps, etherscanUrl, onCopy, onSwitch, onDisconnect, onViewQRCode, t, rest])
 
@@ -416,7 +447,7 @@ export const ModalAccountInfo = withTranslation('common')(({
         <ModalQRCode open={openQRCode} onClose={() => setOpenQRCode(false)} title={'ETH Address'}
             description={account?.accAddress} url={account?.accAddress} />
 
-        <ModalAccount open={isShowAccount.isShow} onClose={_onClose} panelList={accountList}
+        <ModalAccount open={isShowAccount.isShow} onClose={closeBtnInfo.callback} panelList={accountList}
             onBack={current?.onBack}
             onQRClick={current?.onQRClick}
             step={isShowAccount.step} />
