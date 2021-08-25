@@ -72,6 +72,7 @@ export default {
     labelLevel: 'VIP等级',
     labelOrderbook: '订单本',
     labelDeposit: '充值',
+    labelTransfer: '转账',
     labelWithdraw: '提现',
     labelSetPublicKey: '设置 EdDSA 公钥',
     labelTitleSecurity: '安全设置',

@@ -29,7 +29,7 @@ export interface PanelProps {
         callback: () => boolean,
     },
     btnInfo?: {
-        btnTxt: string,
+        btnTxt: any,
         callback: () => boolean,
     }
     providerName?: 'MetaMask' | 'WalletConnect' | 'unknown'
@@ -51,20 +51,18 @@ export const BasicPanel = ({
     link,
 }: PanelProps & WithTranslation) => {
 
-    console.log('providerName:', providerName)
-
     const iconDiv = React.useMemo(() => {
         switch (iconType) {
             case IconType.LoadingIcon:
                 return <LoadingIcon color={'primary'} style={{ width: 72, height: 72 }} />
             case IconType.FailedIcon:
-                return <FailedIcon color={'primary'} style={{ width: 72, height: 72 }} />
+                return <FailedIcon style={{ color: 'var(--color-error)', width: 72, height: 72 }} />
             case IconType.SubmitIcon:
                 return <SubmitIcon color={'primary'} style={{ width: 72, height: 72 }} />
             case IconType.RefuseIcon:
                 return <RefuseIcon style={{ color: 'var(--color-warning)', width: 60, height: 60 }} />
             case IconType.DoneIcon:
-                return <DoneIcon color={'primary'} style={{ width: 72, height: 72 }} />
+                return <DoneIcon style={{ color: 'var(--color-success)', width: 72, height: 72 }} />
         }
     }, [iconType])
 
@@ -105,7 +103,7 @@ export const BasicPanel = ({
         }
         {btnInfo &&
             <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
-                <Button variant={'contained'} fullWidth size={'medium'} onClick={btnInfo.callback}>{t(btnInfo.btnTxt)} </Button>
+                <Button variant={'contained'} fullWidth size={'medium'} onClick={() => { if (btnInfo?.callback) { btnInfo.callback() }}}>{btnInfo?.btnTxt} </Button>
             </Box>}
         {link && <>{JSON.stringify(link)}</>}
     </Box>
