@@ -4,22 +4,28 @@ import React from 'react';
 import { globalSetup, refreshTime } from '@loopring-web/common-resources';
 import * as _ from 'lodash'
 
-export const CountDownIcon = React.memo(({
+export const CountDownIcon = React.memo(React.forwardRef(({
                                              onRefreshData,
                                              wait = globalSetup.wait
-                                         }: { wait?: number, onRefreshData?: () => void }) => {
-    const countDownRef = React.useRef<any>();
+                                         }: { wait?: number, onRefreshData?: () => void },ref) => {
+    const countDownRef = React.useRef<any>(ref);
     const [refreshCount, setRefreshCount] = React.useState(0);
     const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
     const logoTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+    // const [triggerRefresh,setTriggerRefresh]  = React.useState(false);
+    const refresh = () => {_refresh()}
 
     React.useEffect(() => {
 
-        if (refreshCount === 0 && onRefreshData) {
+        if ((refreshCount === 0) && onRefreshData) {
             onRefreshData()
+
         }
 
     }, [refreshCount])
+    // React.useEffect(()=>{
+    //
+    // },[shouldRefresh])
 
     const startCountDown = React.useCallback(() => {
         if (countDownRef && countDownRef.current) {
@@ -49,9 +55,6 @@ export const CountDownIcon = React.memo(({
             }, 1000 - wait);
         }
     }, wait), []);
-    const refresh = () => {
-        _refresh()
-    }
 
     const decreaseNum = React.useCallback(() => setRefreshCount((prev) => {
         if (prev > 1) {
@@ -88,4 +91,4 @@ export const CountDownIcon = React.memo(({
         </Typography>
         <Box className={'circle'}/>
     </CountDownStyled>
-})
+}))

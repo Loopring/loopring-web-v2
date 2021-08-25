@@ -69,6 +69,8 @@ export  type  AmmInfoProps<T, I, ACD, C = IBData<I>> = AmmPanelBaseProps<T, I, A
 
 
 export type SwapProps<T, I, TCD> = {
+    refreshRef:React.Ref<any>;
+    onRefreshData?:()=>void;
     tradeData: SwapTradeData<T> | undefined,
     handleSwapPanelEvent: (data: SwapData<SwapTradeData<T>>, switchType: 'buyTomenu' | 'sellTomenu' | 'exchange' | 'buyTobutton' | 'sellTobutton') => Promise<void>,
     onChangeEvent?: (index: 0 | 1, data: SwapData<SwapTradeData<T>>) => SwapData<SwapTradeData<T>>,

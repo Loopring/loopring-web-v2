@@ -57,6 +57,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     }) => {
     const { t } = useTranslation('common');
     const {sendSocketTopic,socketEnd} = useSocket();
+    const refreshRef = React.createRef();
     const [ammToastOpen, setAmmToastOpen] = useState<boolean>(false);
     const [ammAlertText, setAmmAlertText] = useState<string>();
     const { coinMap, tokenMap } = useTokenMap();
@@ -575,7 +576,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         ammAlertText,
         ammToastOpen,
         setAmmToastOpen,
-
+        refreshRef,
         ammCalcData,
         ammJoinData,
         ammExitData,

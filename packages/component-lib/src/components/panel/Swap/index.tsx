@@ -7,6 +7,7 @@ import { IBData, TradeCalcData } from '@loopring-web/common-resources';
 import { SwapData, SwapMenuList, SwapTradeWrap } from '../components';
 import { CountDownIcon } from '../components/tool/Refresh';
 import * as _ from 'lodash'
+
 export const SwapPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>,
     I,
     TCD extends TradeCalcData<I>>({
@@ -19,6 +20,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                                       handleError,
                                       onSwapClick,
                                       onRefreshData,
+                                      refreshRef,
                                       ...rest
                                   }: SwapProps<T, I, TCD> & WithTranslation) => {
     // useSettings()
@@ -67,15 +69,15 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
     React.useEffect(() => {
         if (rest.tradeData &&
             (rest.tradeData.sell !== swapData.tradeData.sell
-                ||  rest.tradeData.buy !== swapData.tradeData.buy)) {
+                || rest.tradeData.buy !== swapData.tradeData.buy)) {
 
-            if( !_.isEqual(rest.tradeData.sell,swapData.tradeData.sell )){
+            if (!_.isEqual(rest.tradeData.sell, swapData.tradeData.sell)) {
                 // myLog('swap sell useEffect',rest.tradeData.sell,swapData.tradeData.sell)
-                swapData.tradeData.sell =  rest.tradeData.sell
+                swapData.tradeData.sell = rest.tradeData.sell
             }
-            if(!_.isEqual(rest.tradeData.buy,swapData.tradeData.buy )){
-                swapData.tradeData.buy =  rest.tradeData.buy
-             }
+            if (!_.isEqual(rest.tradeData.buy, swapData.tradeData.buy)) {
+                swapData.tradeData.buy = rest.tradeData.buy
+            }
             setSwapData(swapData)
         }
     }, [rest.tradeData, swapData])
@@ -122,7 +124,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
         }
 
     }, [handleSwapPanelEvent, tradeCalcData, rest, index, swapData]);
-    
+
     const props: SwitchPanelProps<'tradeMenuList' | 'trade'> = {
         index: index, // show default show
         panelList: [
@@ -150,7 +152,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                     tokenBuyProps,
                     handleError]),
                 toolBarItem: React.useMemo(() => <Grid container justifyContent={'flex-end'}>
-                    <CountDownIcon onRefreshData={onRefreshData}/>
+                    <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef}/>
                 </Grid>, [onRefreshData])
             },
             {

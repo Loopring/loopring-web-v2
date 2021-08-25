@@ -105,8 +105,8 @@ export const DepositWrap = <T extends IBData<I>,
                 fullWidth={true}
             />
             {address !== '' ?
-                <IconClearStyled size={'small'} style={{top: '30px'}} aria-label="Clear" onClick={handleClear}>
-                    <CloseIcon  color={'inherit'}/>
+                <IconClearStyled  color={'inherit'} size={'small'} style={{top: '28px'}} aria-label="Clear" onClick={handleClear}>
+                    <CloseIcon />
                 </IconClearStyled> : ''}
         </Grid> : <></>}
         <Grid item marginTop={2} alignSelf={'stretch'}>
