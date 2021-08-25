@@ -4,7 +4,7 @@ import * as sdk from 'loopring-sdk'
 
 import { connectProvides } from '@loopring-web/web3-provider';
 
-import { SwitchData, TradeBtnStatus, TransferProps, useOpenModals, } from '@loopring-web/component-lib';
+import { AccountStepNew, SwitchData, TradeBtnStatus, TransferProps, useOpenModals, } from '@loopring-web/component-lib';
 import { AccountStatus, CoinInfo, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
 
 import { useTokenMap } from 'stores/token';
@@ -17,10 +17,10 @@ import { myLog } from 'utils/log_tools';
 import { makeWalletLayer2 } from 'hooks/help';
 import { useWalletHook } from '../../services/wallet/useWalletHook';
 import { getTimestampDaysLater } from 'utils/dt_tools';
-import { DAYS } from 'defs/common_defs';
+import { DAYS, REFRESH_RATE, TOAST_TIME } from 'defs/common_defs';
 import { useTranslation } from 'react-i18next';
 import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
-import { ChainId } from 'loopring-sdk';
+import { ChainId, ConnectorError, sleep } from 'loopring-sdk';
 
 export const useTransfer = <R extends IBData<T>, T>(): {
     // handleTransfer: (inputValue:R) => void,
@@ -30,6 +30,8 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     transferProps: TransferProps<R, T>
     // transferValue: R
 } => {
+
+    const { setShowAccount, setShowTransfer, } = useOpenModals()
 
     const [transferToastOpen, setTransferToastOpen] = React.useState<boolean>(false)
 
@@ -133,6 +135,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             && transferValue?.belong && tranferFeeInfo?.belong && eddsaKey?.sk) {
 
             try {
+
+                setShowTransfer({ isShow: false})
+                setShowAccount({isShow: true, step: AccountStepNew.Transfer_WaitForAuth})
+
                 const sellToken = tokenMap[transferValue.belong as string]
                 const feeToken = tokenMap[tranferFeeInfo.belong]
                 const transferVol = sdk.toBig(transferValue.tradeValue).times('1e' + sellToken.decimals).toFixed(0, 0)
@@ -171,8 +177,18 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
                 if (response?.errorInfo) {
                     // transfer failed
+                    if (response.errorInfo.errMsg && ConnectorError[response.errorInfo.errMsg]) {
+                        setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Refused })
+                    } else {
+                        setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Failed })
+                    }
+                } else if (response?.resultInfo) {
+                    setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Failed })
                 } else {
                     // transfer sucess
+                    setShowAccount({ isShow: true, step: AccountStepNew.Transfer_In_Progress })
+                    await sleep(TOAST_TIME)
+                    setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Success })
                 }
 
             } catch (e) {
