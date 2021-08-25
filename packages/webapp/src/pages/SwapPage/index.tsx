@@ -34,11 +34,8 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
         debugInfo,
 
         alertOpen,
-        alertCloseFunc,
-
         confirmOpen,
-        confirmCloseFunc,
-
+        swapFunc,
 
     } = useSwapPage();
 
@@ -80,8 +77,8 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
 
             </FixedStyle>
         </Box>
-        <AlertImpact handleClose={alertCloseFunc} open={alertOpen} value={10} />
-        <ConfirmImpact handleClose={confirmCloseFunc} open={confirmOpen} value={10}/>
+        <AlertImpact handleClose={swapFunc} open={alertOpen} value={10} />
+        <ConfirmImpact handleClose={swapFunc} open={confirmOpen} value={10}/>
     </>
 });
 
