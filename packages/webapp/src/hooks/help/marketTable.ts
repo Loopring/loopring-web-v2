@@ -4,7 +4,7 @@ import { TradeTypes } from '@loopring-web/common-resources';
 import { LoopringAPI, } from 'api_wrapper';
 import { AmmRecordRow, AmmTradeType,RawDataTradeItem } from '@loopring-web/component-lib';
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
-import { debug } from 'console';
+import { useAmmTotalValue } from './useAmmTotalValue'
 
 export const getUserTrades = (market: string) => {
     if (!LoopringAPI.userAPI) {
@@ -114,9 +114,10 @@ export const getUserAmmTransaction = ({
 
 export const makeMyAmmMarketArray = <C extends { [ key: string ]:any }>(coinKey: string|undefined, marketTransaction: sdk.UserAmmPoolTx[]): AmmRecordRow<C>[] => {
 
-    const tradeArray: Array<Partial<AmmRecordRow<C>>> = []
+    const tradeArray: Array<Partial<AmmRecordRow<C>> & {totalBalance: number}> = []
     const {tokenMap, coinMap, idIndex} = store.getState().tokenMap
     const { forex } = store.getState().system
+    
 
     // if (ammpool && ammpool.userAmmPoolTxs) {
     //     const result = ammpool.userAmmPoolTxs.map(o => ({
@@ -149,11 +150,14 @@ export const makeMyAmmMarketArray = <C extends { [ key: string ]:any }>(coinKey:
                     /* && !(coinKey && tokenMap['LP-'+coinKey].tokenId !== item.lpToken.tokenId) */ ) {
                     // @ts-ignore
                     const [, coinA, coinB] = idIndex[item.lpToken.tokenId].match(/LP-(\w+)-(\w+)/i);
+                    const balance = item.lpToken.actualAmount
+                    
                     tradeArray.push({
                             type: item.txType === sdk.AmmTxType.JOIN ? AmmTradeType.add : AmmTradeType.remove,
                             //TODO:
                             totalDollar: 1000,
                             totalYuan: 1000 / Number(forex),
+                            totalBalance: Number(balance),
                             amountA: volumeToCount(coinA,item.poolTokens[ 0 ]?.actualAmount),
                             amountB: volumeToCount(coinA,item.poolTokens[ 1 ]?.actualAmount),
                             time: Number(item.updatedAt),

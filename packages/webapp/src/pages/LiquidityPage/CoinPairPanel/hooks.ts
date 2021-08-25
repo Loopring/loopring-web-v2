@@ -5,7 +5,7 @@ import { useRouteMatch, useLocation } from 'react-router';
 import moment from 'moment'
 import { AmmDetailStore, useAmmMap } from '../../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../../stores/walletLayer2';
-import { makeTickView, makeWalletLayer2, pairDetailBlock, volumeToCount, WalletMapExtend } from '../../../hooks/help';
+import { makeTickView, makeWalletLayer2, pairDetailBlock, volumeToCount, WalletMapExtend, useAmmTotalValue } from '../../../hooks/help';
 import { AmmPoolSnapshot, AmmUserRewardMap, getExistedMarket, TickerData, TradingInterval } from 'loopring-sdk';
 import { deepClone } from '../../../utils/obj_tools';
 import { getUserAmmTransaction, makeMyAmmMarketArray } from '../../../hooks/help/marketTable';
@@ -127,6 +127,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
     const [pairHistory, setPairHistory] = React.useState<ammHistoryItem[]>([])
     const [awardList, setAwardLsit] = React.useState<AwardItme[]>([])
     const [isLoading, setIsLoading] = React.useState(false)
+    const { getAmmLiquidity } = useAmmTotalValue()
 
     const getAwardList = React.useCallback(async () => {
         if (LoopringAPI.ammpoolAPI) {
@@ -172,9 +173,21 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
                 address: addr,
                 limit: limit,
                 offset,
-            })?.then((res) => {
+            })?.then(async (res) => {
                 let _myTradeArray = makeMyAmmMarketArray(market, res.userAmmPoolTxs)
-                setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
+                const formattedArray = _myTradeArray.map(async (o: any) => {
+                    const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`
+                    const totalDollar = await getAmmLiquidity({market: market, balance: o.totalBalance})
+                    const totalYuan = await getAmmLiquidity({market: market, balance: o.totalBalance, currency: 'CNY'})
+                    return ({
+                        ...o,
+                        totalDollar,
+                        totalYuan,
+                    })
+                })
+                const result = await Promise.all(formattedArray)
+                // setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
+                setMyAmmMarketArray(result || [])
                 setAmmUserTotal(res.totalNum)
                 setIsLoading(false)
             })

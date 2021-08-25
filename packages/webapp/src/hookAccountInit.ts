@@ -41,9 +41,9 @@ export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
                     break;
                 case AccountStatus.ACTIVATED:
                     //
-                    if(userRewardsStatus !== SagaStatus.PENDING) {
+                    // if(userRewardsStatus) {
                         getUserRewards();
-                    }
+                    // }
                     if (walletLayer1Status !== SagaStatus.PENDING) {
                         updateWalletLayer1();
                     }
