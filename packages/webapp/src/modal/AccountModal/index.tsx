@@ -82,10 +82,10 @@ export const ModalAccountInfo = withTranslation('common')(({
         setShowConnect({ isShow: shouldShow ?? false })
     }, [setShowConnect, setShowAccount, shouldShow])
 
-    const onCopy = React.useCallback(() => {
+    const onCopy = React.useCallback(async() => {
         copyToClipBoard(account.accAddress);
         setCopyToastOpen(true)
-    }, [account])
+    }, [account, setCopyToastOpen, ])
     const onViewQRCode = React.useCallback(() => {
         setOpenQRCode(true)
     }, [])

@@ -63,7 +63,7 @@ const useSwapSocket = () => {
     }, [account.readyState]);
 }
 
-export const getPriceImpactInfo = (output: any) => {
+const getPriceImpactInfo = (output: any) => {
     const priceImpact = output?.priceImpact ? parseFloat(output?.priceImpact) * 100 : 0
     let priceImpactColor = 'var(--color-success)'
     
