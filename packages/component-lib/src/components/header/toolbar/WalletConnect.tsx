@@ -184,7 +184,10 @@ export const WalletConnectBtn = ({
 
   const _handleClick = (event: React.MouseEvent) => {
     // debounceCount(event)
-    handleClick(event)
+    if(handleClick) {
+      handleClick(event)
+    }
+
   }
 
   const popupState = usePopupState({ variant: 'popover', popupId: `popupId: 'wallet-connect-notification'` });

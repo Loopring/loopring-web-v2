@@ -90,9 +90,9 @@ export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[
 
 }
 
-export const getUserAmmTransaction = () => {
+export const getUserAmmTransaction = (ammPoolAddress?: string) => {
     const {accountId, apiKey} = store.getState().account
-    return LoopringAPI.ammpoolAPI?.getUserAmmPoolTxs({accountId}, apiKey).then(({userAmmPoolTxs}) => {
+    return LoopringAPI.ammpoolAPI?.getUserAmmPoolTxs({accountId, ammPoolAddress}, apiKey).then(({userAmmPoolTxs}) => {
         return userAmmPoolTxs
     })
     // }
@@ -106,14 +106,37 @@ export const makeMyAmmMarketArray = <C extends { [ key: string ]:any }>(coinKey:
     const {tokenMap, coinMap, idIndex} = store.getState().tokenMap
     const { forex } = store.getState().system
 
+    // if (ammpool && ammpool.userAmmPoolTxs) {
+    //     const result = ammpool.userAmmPoolTxs.map(o => ({
+    //         side: o.txType === AmmTxType.JOIN ? AmmSideTypes.Join : AmmSideTypes.Exit,
+    //         amount: {
+    //             from: {
+    //                 key: getTokenName(o.poolTokens[0]?.tokenId),
+    //                 value: String(volumeToCount(getTokenName(o.poolTokens[0]?.tokenId), o.poolTokens[0]?.actualAmount))
+    //             },
+    //             to: {
+    //                 key: getTokenName(o.poolTokens[1]?.tokenId),
+    //                 value: String(volumeToCount(getTokenName(o.poolTokens[1]?.tokenId), o.poolTokens[1]?.actualAmount))
+    //             }
+    //         },
+    //         lpTokenAmount: String(volumeToCount(getTokenName(o.lpToken?.tokenId), o.lpToken?.actualAmount)),
+    //         fee: {
+    //             key: getTokenName(o.poolTokens[1]?.tokenId),
+    //             value: volumeToCount(getTokenName(o.poolTokens[1]?.tokenId), o.poolTokens[1]?.feeAmount)?.toFixed(6)
+    //         },
+    //         time: o.updatedAt
+    //     }))
+    //     setAmmRecordList(result)
+    //     setShowLoading(false)
+    // }
+
     if (marketTransaction) {
         marketTransaction.forEach((item: sdk.UserAmmPoolTx) => {
             try {
                 if (coinMap && tokenMap && idIndex
-                    && !(coinKey && tokenMap['LP-'+coinKey].tokenId !== item.lpToken.tokenId) ) {
+                    /* && !(coinKey && tokenMap['LP-'+coinKey].tokenId !== item.lpToken.tokenId) */ ) {
                     // @ts-ignore
                     const [, coinA, coinB] = idIndex[item.lpToken.tokenId].match(/LP-(\w+)-(\w+)/i);
-                     
                     tradeArray.push({
                             type: item.txType === sdk.AmmTxType.JOIN ? AmmTradeType.add : AmmTradeType.remove,
                             //TODO:

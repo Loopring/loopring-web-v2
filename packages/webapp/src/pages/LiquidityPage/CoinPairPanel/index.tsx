@@ -257,7 +257,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         </Tabs>
                         <StylePaper style={{marginTop: `${unit * 2}px`}}>
                             {/*ammRecordArray*/}
-                            {tabIndex === 0 ? <AmmRecordTable
+                            {tabIndex === 1 ? <AmmRecordTable
                                 rawData={ammMarketArray}
                                 handlePageChange={_handlePageChange} page={page}
                             /> : <AmmRecordTable rawData={myAmmMarketArray} handlePageChange={_handlePageChange}

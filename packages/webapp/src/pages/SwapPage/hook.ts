@@ -303,10 +303,11 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             setDepth(depth)
         }
     }, [market, setDepth])
+
     const should15sRefresh= React.useCallback(()=>{
         callPairDetailInfoAPIs()
         updateDepth()
-    },[])
+    },[market,setDepth,market,ammMap])
 
     React.useEffect(() => {
         if (market) {
@@ -321,30 +322,38 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
     //Btn related function
     const btnLabelAccountActive = React.useCallback((): string | undefined => {
-
         const validAmt = (output?.amountBOut && quoteMinAmt
             && sdk.toBig(output?.amountBOut).gte(sdk.toBig(quoteMinAmt))) ? true : false;
         if (isSwapLoading) {
             setSwapBtnStatus(TradeBtnStatus.LOADING)
             return undefined
         } else {
-            if (validAmt || quoteMinAmt === undefined) {
-                setSwapBtnStatus(TradeBtnStatus.AVAILABLE)
-                return undefined
+           if(account.readyState === AccountStatus.ACTIVATED){
+               if ( tradeData === undefined
+                   || tradeData?.sell.tradeValue === undefined
+                   || tradeData?.buy.tradeValue === undefined
+                   || tradeData?.sell.tradeValue === 0
+                   || tradeData?.buy.tradeValue === 0) {
+                   setSwapBtnStatus(TradeBtnStatus.DISABLED)
+                   return 'labelEnterAmount';
+               } else if (validAmt || quoteMinAmt === undefined) {
+                   setSwapBtnStatus(TradeBtnStatus.AVAILABLE)
+                   return undefined
 
-            } else if (tradeData === undefined || tradeData?.sell.tradeValue === undefined || tradeData?.buy.tradeValue === undefined) {
-                setSwapBtnStatus(TradeBtnStatus.DISABLED)
-                return 'labelEnterAmount';
-            } else {
-                const quote = tradeData?.buy.belong;
-                const minOrderSize = VolToNumberWithPrecision(quoteMinAmt, quote) + ' ' + tradeData?.buy.belong;
-                setSwapBtnStatus(TradeBtnStatus.DISABLED)
-                return `labelLimitMin, ${minOrderSize}`
+               } else {
+                   const quote = tradeData?.buy.belong;
+                   const minOrderSize = VolToNumberWithPrecision(quoteMinAmt, quote as any) + ' ' + tradeData?.buy.belong;
+                   setSwapBtnStatus(TradeBtnStatus.DISABLED)
+                   return `labelLimitMin, ${minOrderSize}`
 
-            }
+               }
+
+           }else{
+               setSwapBtnStatus(TradeBtnStatus.AVAILABLE)
+           }
 
         }
-    }, [quoteMinAmt, tradeData, isSwapLoading, setSwapBtnStatus])
+    }, [account.readyState, quoteMinAmt, tradeData, isSwapLoading, setSwapBtnStatus])
 
     const _btnLabel = Object.assign(deepClone(btnLabel), {
         [fnType.ACTIVATED]: [
@@ -353,10 +362,11 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
     });
 
     React.useEffect(() => {
-        if (accountStatus === SagaStatus.UNSET) {
+        if (accountStatus === SagaStatus.UNSET ) {
+            setSwapBtnStatus(TradeBtnStatus.AVAILABLE)
             setSwapBtnI18nKey(accountStaticCallBack(_btnLabel));
         }
-    }, [account.readyState, accountStatus, isSwapLoading, tradeData?.sell.tradeValue])
+    }, [accountStatus, isSwapLoading, tradeData?.sell.tradeValue])
 
     const swapCalculatorCallback = React.useCallback(async ({ sell, buy, slippage, ...rest }: any) => {
 
@@ -371,6 +381,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 setConfirmOpen(true)
                 break
             default:
+                swapFunc(undefined as any, true);
                 break
         }
 
@@ -613,6 +624,9 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                 coinBuy: coinB,
                 sellCoinInfoMap,
                 buyCoinInfoMap,
+                priceImpact: '',
+                priceImpactColor: 'inherit',
+                minimumReceived: '',
             }
 
             setTradeCalcData({ ...tradeCalcData, ..._tradeCalcData, } as TradeCalcData<C>)
@@ -723,6 +737,9 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
                     buyCoinInfoMap: tradeCalcData.sellCoinInfoMap,
                     StoB: tradeCalcData.BtoS,
                     BtoS: tradeCalcData.StoB,
+                    priceImpact: '',
+                    priceImpactColor: 'inherit',
+                    minimumReceived: '',
                 }
                 
                 myLog('Exchange,tradeCalcData', tradeCalcData);
