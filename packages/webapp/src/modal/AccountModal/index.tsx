@@ -79,7 +79,9 @@ export const ModalAccountInfo = withTranslation('common')(({
     } = useAccount();
 
     const { depositProps } = useDeposit()
-    const { modals: { isShowAccount }, setShowConnect, setShowAccount, } = useOpenModals()
+    const { modals: { isShowAccount }, setShowConnect, setShowAccount, 
+    setShowDeposit, setShowTransfer, setShowWithdraw } = useOpenModals()
+
     const [openQRCode, setOpenQRCode] = useState(false)
     const addressShort = getShortAddr(account.accAddress)
 
@@ -236,6 +238,17 @@ export const ModalAccountInfo = withTranslation('common')(({
             btnTxt: t('labelRetry'),
             callback: () => {
                 setShowAccount({ isShow: true, step: AccountStep.Deposit });
+                return true
+            }
+        }
+    }, [])
+
+    const backToTransferBtnInfo = React.useMemo(() => {
+        return {
+            btnTxt: t('labelRetry'),
+            callback: () => {
+                setShowAccount({ isShow: false, })
+                setShowTransfer({ isShow: true, })
                 return true
             }
         }
@@ -411,7 +424,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                     }} />,
             },
             [AccountStep.Transfer_Refused]: {
-                view: <Transfer_Refused {...{
+                view: <Transfer_Refused btnInfo={backToTransferBtnInfo} {...{
                         ...rest, t
                     }} />,
             },
