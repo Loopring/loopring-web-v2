@@ -9,7 +9,6 @@ import {
     setShowTransfer,
     setShowWithdraw, Transaction,
 } from '@loopring-web/component-lib'
-import { AccountStatus } from '@loopring-web/common-resources'
 
 import { useAccount } from 'stores/account'
 
