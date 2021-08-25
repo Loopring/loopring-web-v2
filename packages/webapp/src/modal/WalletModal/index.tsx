@@ -1,6 +1,6 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import {
-    AccountStep,
+    AccountStepNew as AccountStep,
     FailedConnect,
     MetaMaskProcess,
     ModalWalletConnect,

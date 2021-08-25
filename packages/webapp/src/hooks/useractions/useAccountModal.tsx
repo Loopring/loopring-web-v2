@@ -1,5 +1,5 @@
 import { useAccount } from '../../stores/account';
-import { AccountStep, useOpenModals } from '@loopring-web/component-lib';
+import { AccountStepNew as AccountStep, useOpenModals } from '@loopring-web/component-lib';
 import React from 'react';
 import { sleep } from 'loopring-sdk';
 import { useAccountHook } from '../../services/account/useAccountHook';
@@ -39,7 +39,7 @@ export  function useAccountModal() {
     },[shouldShow])
     const handleProcessDeposit = React.useCallback(()=>{
         // updateAccount({readyState:'DEPOSITING'});
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.DepositApproveProcess});
+        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.Deposit_Approve_WaitForAuth});
     },[shouldShow])
     const handleSignAccount = React.useCallback(()=>{
         // updateAccount({readyState:'DEPOSITING'});

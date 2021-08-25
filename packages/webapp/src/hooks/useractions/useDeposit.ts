@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { AccountStep, DepositProps, SwitchData, TradeBtnStatus, useOpenModals } from '@loopring-web/component-lib';
+import { AccountStepNew as AccountStep, DepositProps, SwitchData, TradeBtnStatus, useOpenModals } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, ConnectProviders, IBData, WalletMap } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
 import { dumpError400, GetAllowancesRequest } from 'loopring-sdk';
@@ -123,7 +123,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 }
 
                 if (readyState === AccountStatus.ACTIVATED) {
-                    setShowAccount({isShow: true, step: AccountStep.DepositFailed_WITH_ACC})
+                    setShowAccount({isShow: true, step: AccountStep.Deposit_Approve_WaitForAuth})
                 } else {
                     setShowAccount({isShow: true, step: AccountStep.DepositInProcess})
                 }
