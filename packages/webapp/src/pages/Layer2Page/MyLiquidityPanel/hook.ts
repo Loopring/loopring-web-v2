@@ -8,7 +8,9 @@ import {
     makeMyAmmMarketArray,
     makeMyPoolRowWithPoolState,
     makeSummaryMyAmm,
-    SummaryMyAmm
+    SummaryMyAmm,
+    volumeToCount,
+    useAmmTotalValue,
 } from '../../../hooks/help';
 import { useTokenMap } from '../../../stores/token';
 import { useWalletLayer2 } from '../../../stores/walletLayer2';
@@ -16,7 +18,6 @@ import { useUserRewards } from '../../../stores/userRewards';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
 import { SagaStatus } from '@loopring-web/common-resources';
 import { useWalletHook } from '../../../services/wallet/useWalletHook';
-import { volumeToCount } from 'hooks/help'
 
 export const useOverview = <R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>(
     {
@@ -33,6 +34,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     const {status: userRewardsStatus, userRewardsMap, getUserRewards} = useUserRewards();
     const {marketArray, addressIndex} = useTokenMap();
     const {status: ammMapStatus, ammMap, getAmmMap} = useAmmMap();
+    const { getAmmLiquidity } = useAmmTotalValue()
 
     // const [walletMap, setWalletMap] = React.useState<WalletMapExtend<R> | undefined>(undefined);
     const [summaryReward, setSummaryReward] = React.useState<SummaryMyAmm | undefined>(undefined);
@@ -84,28 +86,28 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
         return _walletMap
     }, [makeWalletLayer2, getUserAmmTransaction, makeMyAmmMarketArray, marketArray])
 
-    const getLpTokenPrice = React.useCallback(async (market: string) => {
-        if (addressIndex && LoopringAPI.walletAPI) {
-            const result = await LoopringAPI.walletAPI.getLatestTokenPrices()
-            const list = Object.entries(result.tokenPrices).map(([addr, price]) => ({
-                addr,
-                price,
-            }))
-            const address = Object.entries(addressIndex).find(([_, token]) => token === market)?.[0]
-            if (address && !!list.length) {
-                return list.find((o) => o.addr === address)?.price
-            }
-            return undefined
-        }
-        return undefined
-    }, [addressIndex])
+    // const getLpTokenPrice = React.useCallback(async (market: string) => {
+    //     if (addressIndex && LoopringAPI.walletAPI) {
+    //         const result = await LoopringAPI.walletAPI.getLatestTokenPrices()
+    //         const list = Object.entries(result.tokenPrices).map(([addr, price]) => ({
+    //             addr,
+    //             price,
+    //         }))
+    //         const address = Object.entries(addressIndex).find(([_, token]) => token === market)?.[0]
+    //         if (address && !!list.length) {
+    //             return list.find((o) => o.addr === address)?.price
+    //         }
+    //         return undefined
+    //     }
+    //     return undefined
+    // }, [addressIndex])
 
-    const getAmmLiquidity = React.useCallback(async (market: string) => {
-        const price = await getLpTokenPrice(market)
-        const balance = Object.entries(walletLayer2 || {}).find(([token]) => token === market)?.[1].total
-        const formattedBalance = volumeToCount(market, (balance || 0))
-        return (price || 0) * (formattedBalance || 0)
-    }, [walletLayer2, getLpTokenPrice])
+    // const getAmmLiquidity = React.useCallback(async (market: string) => {
+    //     const price = await getLpTokenPrice(market)
+    //     const balance = Object.entries(walletLayer2 || {}).find(([token]) => token === market)?.[1].total
+    //     const formattedBalance = volumeToCount(market, (balance || 0))
+    //     return (price || 0) * (formattedBalance || 0)
+    // }, [walletLayer2, getLpTokenPrice])
 
     const makeMyPoolRow = React.useCallback(async (_walletMap): Promise<MyPoolRow<R>[]> => {
         await getLpTokenList()
@@ -138,7 +140,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
 
             const promises = _myPoolRow.map(async (o) => {
                 const market = `LP-${o.ammDetail?.coinAInfo.simpleName}-${o.ammDetail?.coinBInfo.simpleName}`
-                const ammValue = await getAmmLiquidity(market)
+                const ammValue = await getAmmLiquidity({market})
                 return ({
                     ...o,
                     ammValue,

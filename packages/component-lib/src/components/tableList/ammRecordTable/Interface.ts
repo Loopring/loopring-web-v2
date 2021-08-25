@@ -37,4 +37,5 @@ export type AmmRecordTableProps<T, R = AmmRecordRow<T>> = {
     showFilter?: boolean,
     wait?: number;
     showLoading?: boolean;
+    currency?: 'USD' | 'CYN';
 }

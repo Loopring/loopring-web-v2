@@ -290,6 +290,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                     total: ammUserTotal
                                 }}
                                 showLoading={showAmmPoolLoading}
+                                currency={currency}
                             />}
                         </StylePaper>
                     </Box>

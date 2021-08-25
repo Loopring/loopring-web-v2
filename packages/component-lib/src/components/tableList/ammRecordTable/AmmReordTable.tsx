@@ -10,7 +10,7 @@ import { FormatterProps } from 'react-data-grid';
 import styled from '@emotion/styled';
 import { TablePaddingX } from '../../styled';
 import { useDeepCompareEffect } from 'react-use';
-
+import { getValuePrecision } from '@loopring-web/common-resources'
 
 // enum ActionType {
 //     // filter = 'filter',
@@ -20,7 +20,7 @@ import { useDeepCompareEffect } from 'react-use';
 const TableStyled = styled(Box)`
     flex: 1;
     .rdg {
-        --template-columns: 180px auto 250px auto auto !important;
+        --template-columns: 420px auto auto !important;
 
         .rdg-cell.action {
         display: flex;
@@ -42,42 +42,22 @@ const columnMode = ({t}: WithTranslation, currency: 'USD' | 'CYN'): Column<Row<a
         minWidth: 240,
         name: t('labelPool'),
         formatter: ({row}: FormatterProps<Row<any>, unknown>) => {
-            const {type, coinA, coinB} = row
-            if (type === AmmTradeType.add) {
-                return <Trans i18nKey={'valueAddTOAMM'}>
-                    Add &nbsp;
+            const {type, coinA, coinB, amountA, amountB} = row
+            const isAdd = type === AmmTradeType.add
+            const side = isAdd ? 'Add' : 'Remove'
+            return (
+                <Box display={'flex'} alignItems={'center'}>
+                    <Typography color={isAdd ? 'var(--color-success)' : 'var(--color-error)'}>{side}</Typography>
+                    &nbsp;
                     <Typography component={'span'}>
-                        {coinA.simpleName}
+                        {`${getValuePrecision(amountA, 4)} ${coinA.simpleName}`}
                     </Typography>
-                    &nbsp;  and  &nbsp;
+                    &nbsp;  +  &nbsp;
                     <Typography component={'span'}>
-                        {coinB.simpleName}
+                        {`${getValuePrecision(amountB, 4)} ${coinB.simpleName}`}
                     </Typography>
-                </Trans>
-            } else if (type === AmmTradeType.swap) {
-                return <Trans i18nKey={'valueSwapForAMM'}>
-                    Swap &nbsp;
-                    <Typography component={'span'}>
-                        {coinA.simpleName}
-                    </Typography>
-                    &nbsp; for &nbsp;
-                    <Typography component={'span'}>
-                        {coinB.simpleName}
-                    </Typography>
-                </Trans>
-            } else {
-                return <Trans i18nKey={'valueRemoveTOAMM'}>
-                    Swap &nbsp;
-                    <Typography component={'span'}>
-                        {coinA.simpleName}
-                    </Typography>
-                    &nbsp; remove  &nbsp;
-                    <Typography component={'span'}>
-                        {coinB.simpleName}
-                    </Typography>
-                </Trans>
-            }
-
+                </Box>
+            )
         }
     },
     {
@@ -95,31 +75,31 @@ const columnMode = ({t}: WithTranslation, currency: 'USD' | 'CYN'): Column<Row<a
 
         }
     },
-    {
-        key: 'tokenAmount',
-        sortable: false,
-        width: 'auto',
-        name: t('labelAmmTokenAmount'),
-        formatter: ({row}: FormatterProps<Row<any>, unknown>) => {
-            const {amountA, amountB, coinA, coinB} = row;
-            return <Typography component={'span'}>
-                {typeof amountA === 'undefined' ? EmptyValueTag : amountA} {coinA.simpleName} + {typeof amountB === 'undefined' ? EmptyValueTag : amountA} {coinB.simpleName}
-            </Typography>
-        }
-    },
-    {
-        key: 'status',
-        sortable: false,
-        width: 'auto',
-        name: t('labelStatus'),
-        formatter: ({row}: FormatterProps<Row<any>, unknown>) => {
-            // const {amountA, amountB, coinA, coinB} = row;
-            return <Typography component={'span'}>
-                {row.status}
-                {/*{ typeof amountA === 'undefined'? EmptyValueTag : amountA } {coinA.simpleName} + { typeof amountB === 'undefined'? EmptyValueTag : amountA } {coinB.simpleName}*/}
-            </Typography>
-        }
-    },
+    // {
+    //     key: 'tokenAmount',
+    //     sortable: false,
+    //     width: 'auto',
+    //     name: t('labelAmmTokenAmount'),
+    //     formatter: ({row}: FormatterProps<Row<any>, unknown>) => {
+    //         const {amountA, amountB, coinA, coinB} = row;
+    //         return <Typography component={'span'}>
+    //             {typeof amountA === 'undefined' ? EmptyValueTag : amountA} {coinA.simpleName} + {typeof amountB === 'undefined' ? EmptyValueTag : amountA} {coinB.simpleName}
+    //         </Typography>
+    //     }
+    // },
+    // {
+    //     key: 'status',
+    //     sortable: false,
+    //     width: 'auto',
+    //     name: t('labelStatus'),
+    //     formatter: ({row}: FormatterProps<Row<any>, unknown>) => {
+    //         // const {amountA, amountB, coinA, coinB} = row;
+    //         return <Typography component={'span'}>
+    //             {row.status}
+    //             {/*{ typeof amountA === 'undefined'? EmptyValueTag : amountA } {coinA.simpleName} + { typeof amountB === 'undefined'? EmptyValueTag : amountA } {coinB.simpleName}*/}
+    //         </Typography>
+    //     }
+    // },
     {
         key: 'time',
         sortable: false,
@@ -153,6 +133,7 @@ export const AmmRecordTable = withTranslation('tables')(<T extends { [ key: stri
                                                                                                  showFilter = true,
                                                                                                  rawData,
                                                                                                  wait = globalSetup.wait,
+                                                                                                 currency = 'USD',
                                                                                                  ...rest
                                                                                              }: AmmRecordTableProps<T> & WithTranslation) => {
     const [page, setPage] = React.useState(1);
@@ -163,7 +144,7 @@ export const AmmRecordTable = withTranslation('tables')(<T extends { [ key: stri
 
     const defaultArgs: TableProps<any, any> = {
         rawData,
-        columnMode: columnMode({t, i18n, tReady}, Currency.dollar),
+        columnMode: columnMode({t, i18n, tReady}, currency),
         generateRows: (rawData: any) => rawData,
         generateColumns: ({columnsRaw}) => columnsRaw as Column<Row<any>, unknown>[],
     }
