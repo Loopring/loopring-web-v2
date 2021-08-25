@@ -301,6 +301,10 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
             setDepth(depth)
         }
     }, [market, setDepth])
+    const should15sRefresh= React.useCallback(()=>{
+        callPairDetailInfoAPIs()
+        updateDepth()
+    },[])
 
     React.useEffect(() => {
         if (market) {
@@ -615,19 +619,24 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
 
             setMarket(_market);
             setPair({ coinAInfo: coinMap[coinA], coinBInfo: coinMap[coinB] })
+            callPairDetailInfoAPIs();
 
-            let apiList = [pairDetailBlock({ coinKey: _market, ammKey: ammKey as string, ammMap })];
+        }
+
+    }, [tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray, ammMap, totalFee, setTradeCalcData, setTradeData, setMarket, setPair, ])
+
+    const callPairDetailInfoAPIs = React.useCallback(() =>{
+        if(market && ammMap){
+            let apiList = [pairDetailBlock({ coinKey: market, ammKey: `AMM-${market}` as string, ammMap })];
             Promise.all([...apiList])
                 .then(([{ ammPoolsBalance, tickMap }]: any[]) => apiCallback({ ammPoolsBalance, tickMap }))
                 .catch((error) => {
                     myLog(error, 'go to LER-ETH');
                     resetTradeCalcData(undefined, market, depth)
                 })
-
         }
 
-    }, [tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray, ammMap, totalFee, setTradeCalcData, setTradeData, setMarket, setPair, ])
-
+    },[market,ammMap])
     const reCalculateDataWhenValueChange = React.useCallback((_tradeData, market?, depth?, type?) => {
         if (marketArray && tokenMap && marketMap && depth && takerRate) {
             const coinA = _tradeData.sell.belong
@@ -740,7 +749,7 @@ export const useSwapPage = <C extends { [key: string]: any }>() => {
         swapBtnI18nKey,
         swapBtnStatus: swapBtnStatus,
         handleSwapPanelEvent,
-        updateDepth,
+        should15sRefresh,
 
         alertOpen,
         confirmOpen,

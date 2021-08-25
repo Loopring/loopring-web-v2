@@ -29,7 +29,7 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
         swapToastOpen,
         setSwapToastOpen,
 
-        updateDepth,
+        should15sRefresh,
 
         debugInfo,
 
@@ -62,7 +62,7 @@ export const SwapPage = withTranslation('common')(({ ...rest }: WithTranslation)
         <Box display={'flex'} style={{ minWidth: 'var(--swap-box-width)' }}>
             <FixedStyle>
                 <SwapPanel
-                    onRefreshData={updateDepth}
+                    onRefreshData={should15sRefresh}
                     tradeData={tradeData as any}
                     tradeCalcData={tradeCalcData as any}
                     onSwapClick={onSwapClick}
