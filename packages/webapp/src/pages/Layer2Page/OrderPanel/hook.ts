@@ -6,6 +6,7 @@ import { LoopringAPI } from 'api_wrapper'
 import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
 import { GetOrdersRequest, Side } from 'loopring-sdk'
 import store from 'stores'
+import { getValuePrecision } from '@loopring-web/common-resources'
 
 export const useOrderList = () => {
     const [orderOriginalData, setOrderOriginalData] = React.useState<OrderHistoryRawDataItem[]>([])
@@ -22,6 +23,8 @@ export const useOrderList = () => {
 
     const getOrderList = React.useCallback(async (props: Omit<GetOrdersRequest, 'accountId'> ) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
+            console.log(volumeToCount('USDT', 1216405000000000000000))
+            console.log(volumeToCount('USDT', 556140366))
             setShowLoading(true)
             const userOrders = await LoopringAPI.userAPI.getOrders({
                 ...props,
@@ -36,12 +39,13 @@ export const useOrderList = () => {
                     // due to AMM case, we cannot use first index
                     const side = o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
                     const isBuy = side === TradeTypes.Buy
-                    const tokenFirst = marketList[marketList.length - 2]
-                    const tokenLast = marketList[marketList.length - 1]
+                    // const tokenFirst = marketList[marketList.length - 2]
+                    // const tokenLast = marketList[marketList.length - 1]
+                    const [tokenFirst, tokenLast] = marketList
                     const baseToken = isBuy ? tokenLast : tokenFirst
                     const quoteToken = isBuy ? tokenFirst : tokenLast
-                    const baseValue = isBuy ? volumeToCountAsBigNumber(quoteToken, quoteAmount)?.times(o.price) : volumeToCountAsBigNumber(baseToken, baseAmount)
-                    const quoteValue = isBuy ? volumeToCountAsBigNumber(quoteToken, quoteAmount) : volumeToCountAsBigNumber(baseToken, baseAmount)?.times(o.price)
+                    const baseValue = isBuy ? volumeToCount(baseToken, quoteAmount) : volumeToCount(baseToken, baseAmount)
+                    const quoteValue = isBuy ? volumeToCount(quoteToken, baseAmount) : (volumeToCount(baseToken, baseAmount) || 0) * Number(o.price || 0)
 
                     return ({
                         market: o.market,
@@ -50,11 +54,11 @@ export const useOrderList = () => {
                         amount: {
                             from: {
                                 key: baseToken,
-                                value: baseValue as any
+                                value: baseValue?.toFixed(2) as any
                             },
                             to: {
                                 key: quoteToken,
-                                value: quoteValue as any
+                                value: quoteValue?.toFixed(2) as any
                             }
                         },
                         // average: Number(o.price),
