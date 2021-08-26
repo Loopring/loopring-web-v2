@@ -28,6 +28,8 @@ export const Toast = ({ open, severity = 'success', alertText, autoHideDuration 
                 ? 'Failure'
                 : 'Prompt'
 
+    console.log(severity, ' renderTitle:', renderTitle)
+
     const renderIcon = severity === 'success' 
         ? (<GoodIcon htmlColor={'var(--color-success)'} />)
         : severity === 'warning'
