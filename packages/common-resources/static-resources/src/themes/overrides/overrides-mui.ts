@@ -620,7 +620,7 @@ export const MuiFormLabel = ({colorBase}: any) => {
 
     }
 }
-export const MuiList = ({colorBase}: any) => {
+export const MuiList = () => {
     return {
         styleOverrides: {
             root: {

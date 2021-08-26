@@ -166,7 +166,7 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             MuiInputBase: MuiInputBase({colorBase,themeMode}),
             MuiMenu: MuiMenu({colorBase}),
             MuiMenuItem: MuiMenuItem({colorBase,themeMode}),
-            MuiList: MuiList({colorBase}),
+            MuiList: MuiList(),
             MuiListItem: MuiListItem({colorBase}),
             MuiListItemAvatar: MuiListItemAvatar(),
             MuiInputLabel: MuiInputLabel({colorBase}),

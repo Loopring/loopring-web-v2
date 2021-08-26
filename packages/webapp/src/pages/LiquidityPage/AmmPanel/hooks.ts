@@ -64,6 +64,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     const { coinMap, tokenMap } = useTokenMap();
     const { ammMap } = useAmmMap();
     const { account, status: accountStatus } = useAccount();
+    const { marketArray, marketMap, } = useTokenMap()
     const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<C> | undefined>();
     const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
     const [ammJoinData, setAmmJoinData] = React.useState<AmmData<IBData<C>, C>>({
@@ -92,14 +93,15 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         }
     }, [account.readyState]);
     React.useEffect(() => {
-        myLog('refreshRef');
-        if(refreshRef.current ) {
+        if(refreshRef.current && pair ) {
             // @ts-ignore
             refreshRef.current.firstElementChild.click();
         }
+
     }, []);
     const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
         myLog('initAmmData:', account.accAddress, walletMap, pair)
+        myLog('refreshRef',refreshRef.current);
 
         const _ammCalcData = ammPairInit({
                 pair,
@@ -139,9 +141,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
             return
         }
 
-        const { marketArray, marketMap, } = store.getState().tokenMap
 
-        const { ammMap } = store.getState().amm.ammMap
 
         const { market, amm } = getExistedMarket(marketArray, pair.coinAInfo.simpleName as string,
             pair.coinBInfo.simpleName as string)
@@ -565,9 +565,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     //
     // }, [walletLayer2Status, pair, snapShotData, account?.accAddress,]);
     const  walletLayer2Callback= React.useCallback(()=>{
-        // const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
-        // setWalletMap2(walletMap)
-        // debugger
+       
         if(pair && snapShotData){
             const { walletMap } = makeWalletLayer2()
             initAmmData(pair, walletMap)
