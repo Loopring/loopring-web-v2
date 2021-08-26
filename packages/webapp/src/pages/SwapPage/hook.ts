@@ -574,7 +574,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         //     refreshAmmPoolSnapshot()
         // }
 
-    }, [depth, ammPoolSnapshot, tradeCalcData.coinBuy])
+    }, [depth, tradeCalcData.coinBuy])
 
     const refreshAmmPoolSnapshot = React.useCallback((ammPoolSnapshot,tickMap,_market,depth) => {
         //@ts-ignore
