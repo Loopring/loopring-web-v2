@@ -69,15 +69,23 @@ export const useHeader = () => {
     },[]);
 
     React.useEffect(() => {
+        myLog( 'HeaderBtn status',accountStatus);
         if (accountStatus && accountStatus === 'UNSET') {
-            //updateWallet()
+            myLog( 'HeaderBtn status',accountState);
+
             setHeaderToolBarData((headerToolBarData)=>{
-                headerToolBarData[ ButtonComponentsMap.WalletConnect ].accountState = accountState;
-                return  headerToolBarData;
+                return {
+                    ...headerToolBarData,
+                    [ ButtonComponentsMap.WalletConnect ]:{
+                        ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
+                        accountState,
+                    }
+
+                } as HeaderToolBarInterface[]
             })
         }
         // forceUpdate()
-    }, [accountStatus]);
+    }, [accountStatus, account.readyState]);
 
     return {
         headerToolBarData,
