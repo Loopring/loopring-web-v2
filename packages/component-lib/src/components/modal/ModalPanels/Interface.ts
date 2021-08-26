@@ -20,19 +20,13 @@ export type AccountBaseNewProps = {
 export enum AccountStepNew {
     NoAccount,
     QRCode,
-    Deposit,
-    
-    UpdateAccount,
     ProcessUnlock,
     SuccessUnlock,
     FailedUnlock,
     HadAccount,
-    UpdateAccountInProcess,
-    UpdateAccountSigWarning,
-    UpdateAccountUserDenied,
-    UpdateAccountFailed,
 
     // new
+    Deposit,
     Deposit_Approve_WaitForAuth,
     Deposit_Approve_Refused,
     Deposit_Approve_Submited,
@@ -60,7 +54,8 @@ export enum AccountStepNew {
     CreateAccount_Refused,
     CreateAccount_Failed,
     CreateAccount_Submited,
-
+    
+    UpdateAccount,
     UpdateAccount_Approve_WaitForAuth,
     UpdateAccount_First_Method_Refused,
     UpdateAccount_User_Refused,

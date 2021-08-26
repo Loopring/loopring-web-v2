@@ -198,6 +198,7 @@ export default {
     labelCreateLayer2Title: 'Create Layer2 Account',
     labelCreateAccount: 'Create Layer2 Account',
     labelUpdateAccount: 'Update Layer2 Account',
+    labelTryAnother: 'Try Another Sig Method',
     labelCancel:'Cancel',
     describeTitleNoAccount:'You need to activate Loopring Layer2. Please make a deposit to create L2 wallet',
     describeTitleOpenAccounting:'Your deposit has been submitted to Ethereum. Please wait...',
