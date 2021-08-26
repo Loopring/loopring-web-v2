@@ -24,8 +24,8 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
         pair,
         swapBtnI18nKey,
         swapBtnStatus,
-        swapToastOpen,
-        setSwapToastOpen,
+        toastOpen,
+        closeToast,
         should15sRefresh,
         debugInfo,
         alertOpen,
@@ -37,13 +37,10 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
 
     } = useSwapPage();
 
-    const onClose = React.useCallback(() => {
-        setSwapToastOpen(undefined)
-    }, [])
     return <>
 
-        <Toast alertText={swapToastOpen?.label?? ''} severity={swapToastOpen?.type} open={swapToastOpen?.flag??false}
-               autoHideDuration={TOAST_TIME} onClose={onClose} />
+        <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'} open={toastOpen?.open ?? false}
+               autoHideDuration={TOAST_TIME} onClose={closeToast} />
 
         <Grid container marginRight={3} alignContent={'stretch'} direction={'column'} flexWrap={'nowrap'}>
             <BasicInfoPanel {...{
