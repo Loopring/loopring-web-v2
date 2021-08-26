@@ -532,27 +532,20 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         setIsSwapLoading(false)
     }, [setAmmPoolSnapshot, setTickMap, setDepth])
 
-    const checkMarketDataValid = React.useCallback(() => {
-
-        if (!marketArray) {
-            return false
-        }
-
+    const checkMarketDataValid = React.useCallback((ammPoolSnapshot,tickMap,market) => {
         const hasAmm = (ammMap && ammMap['AMM' + market]) ?? false
-
         const checkCalcData = () => {
             const { market: marketTmp } = getExistedMarket(marketArray, tradeCalcData.coinSell, tradeCalcData.coinBuy)
-            return marketTmp === market
+            return marketTmp === market && ammPoolSnapshot && idIndex && idIndex[ ammPoolSnapshot.lp.tokenId ].replace('LP-', '') === market
         }
-
         return (hasAmm && ammPoolSnapshot !== undefined && checkCalcData()) || (!hasAmm && tickMap !== undefined)
 
-    }, [ammMap, market, marketArray, tickMap, tradeCalcData.coinSell, tradeCalcData.coinBuy, ammPoolSnapshot, ])
+    }, [ammMap, marketArray, tickMap, tradeCalcData.coinSell, tradeCalcData.coinBuy, ammPoolSnapshot, ])
 
     React.useEffect(() => {
 
-        if (checkMarketDataValid()) {
-            refreshAmmPoolSnapshot()
+        if (checkMarketDataValid(ammPoolSnapshot,tickMap,market)) {
+            refreshAmmPoolSnapshot(ammPoolSnapshot,tickMap,market)
         }
 
         // if (ammPoolSnapshot && idIndex
@@ -563,23 +556,28 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         //     refreshAmmPoolSnapshot()
         // }
 
-    }, [ ammMap, marketArray, tickMap, ammPoolSnapshot, tradeCalcData.coinBuy, tradeCalcData.coinSell])
+    }, [ ammPoolSnapshot, tradeCalcData.coinBuy])
 
-    const refreshAmmPoolSnapshot = React.useCallback(() => {
-        myLog('ammPoolSnapshot')
-        if ((tickMap || ammPoolSnapshot) && market) {
+    const refreshAmmPoolSnapshot = React.useCallback((ammPoolSnapshot,tickMap,_market) => {
+        //@ts-ignore
+        myLog('ammPoolSnapshot',ammPoolSnapshot && idIndex[ ammPoolSnapshot.lp.tokenId ].replace('LP-', ''),market,tickMap)
+        if ((tickMap || ammPoolSnapshot  )
+            && market === _market
+            && (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market
+                || `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market  )
+         ) {
             let {stob} = pairDetailDone({
                 coinKey: tradeData ? `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` : market,
                 market,
-                ammPoolsBalance: ammPoolSnapshot,
-                tickerData: tickMap && tickMap[ market ] ? tickMap[ market ] : {},
+                ammPoolsBalance: (ammPoolSnapshot && idIndex && idIndex[ ammPoolSnapshot.lp.tokenId ].replace('LP-', '') === market)?  ammPoolSnapshot:undefined,
+                tickerData: tickMap && tickMap[ _market ] ? tickMap[ _market ] : {},
                 tokenMap,
                 _tradeCalcData: tradeCalcData,
                 coinMap,
                 marketCoins,
                 fee: totalFee,
             })
-            let _tradeFloat = makeTickView(tickMap && tickMap[ market ] ? tickMap[ market ] : {})
+            let _tradeFloat = makeTickView(tickMap && tickMap[ _market ] ? tickMap[ _market ] : {})
             setTradeFloat(_tradeFloat as TradeFloat);
 
 
@@ -591,7 +589,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             //({...tradeCalcData, ..._tradeCalcData} as TradeCalcData<C>);
         }
 
-    }, [ammPoolSnapshot, market, tickMap, totalFee, tradeData, tradeCalcData, setTradeCalcData])
+    }, [ market, totalFee, tradeData, tradeCalcData, setTradeCalcData])
 
     const resetTradeCalcData = React.useCallback((_tradeData, _market?, type?) => {
         if (coinMap && tokenMap && marketMap && marketArray && ammMap) {
@@ -713,7 +711,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                     apiCallback({depth, ammPoolsBalance, tickMap })
                 }, (reason: any) => {
                     myLog(reason)
-                    debugger
                     throw Error(reason)
                 }).catch((error) => {
                 myLog(error, 'go to LER-ETH');
@@ -725,8 +722,8 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     }, [market, ammMap])
     const reCalculateDataWhenValueChange = React.useCallback((_tradeData, _market?, type?) => {
         // @ts-ignore
-        myLog('reCalculateDataWhenValueChange depth:', depth,  takerRate, checkMarketDataValid())
-        if (checkMarketDataValid() && depth && takerRate) {
+        myLog('reCalculateDataWhenValueChange depth:', depth,  takerRate, checkMarketDataValid(ammPoolSnapshot,tickMap))
+        if (checkMarketDataValid(ammPoolSnapshot,tickMap,market) && depth && takerRate) {
 
             const coinA = _tradeData.sell.belong
             const coinB = _tradeData.buy.belong
