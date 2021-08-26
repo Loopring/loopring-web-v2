@@ -188,6 +188,7 @@ export default {
     labelActivateAccount:'激活账户',
     labelClose: '关闭',
     labelRetry:'重试',
+    labelTryNext: '尝试另一种签名',
     labelQuotePageFavourite: '自选',
     labelQuotePageAll: '全部',
     labelQuotePageTradeRanking: '交易竞赛',

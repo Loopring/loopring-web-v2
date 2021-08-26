@@ -188,6 +188,7 @@ export default {
     labelActivateAccount:'Activate Account',
     labelClose: 'Close',
     labelRetry:'Retry',
+    labelTryNext: 'Try Next',
     labelQuotePageFavourite: 'Favourites',
     labelQuotePageAll: 'All',
     labelQuotePageTradeRanking: 'Tournaments',
