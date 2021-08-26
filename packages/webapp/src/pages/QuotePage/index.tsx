@@ -24,7 +24,7 @@ const RowStyled = styled(Grid)`
 
 const SearchWrapperStyled = styled(Box)`
       position: absolute;
-      top: 0.9rem;
+      top: ${({theme}) => theme.unit * 1.5}px;
       right: ${({theme}) => theme.unit * 2}px;
     `
 
@@ -107,7 +107,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
 
     const getCurrentHeight = React.useCallback(() => {
       const height = window.innerHeight
-      const tableHeight = height - 64 - 117 - 56 - 120 - 20
+      const tableHeight = height - 64 - 117 - 56 - 20
       setTableHeight(tableHeight)
     }, [])
 
@@ -287,7 +287,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
             </Grid>
 
         </RowStyled>
-        <TableWrapStyled container marginY={3}  paddingBottom={2} flex={1} className={'MuiPaper-elevation2'}>
+        <TableWrapStyled container marginY={3} paddingBottom={1} flex={1} className={'MuiPaper-elevation2'}>
             <Grid item xs={12}>
                 <TabsWrapperStyled>
                   <Tabs

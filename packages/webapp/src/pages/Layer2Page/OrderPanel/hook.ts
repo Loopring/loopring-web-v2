@@ -34,6 +34,9 @@ export const useOrderList = () => {
                     const { baseAmount, quoteAmount, baseFilled, quoteFilled } = o.volumes
 
                     const marketList = o.market.split('-')
+                    if (marketList.length === 3) {
+                        marketList.shift()
+                    }
                     // due to AMM case, we cannot use first index
                     const side = o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
                     const isBuy = side === TradeTypes.Buy
