@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from 'stores'
 import { WalletInfo } from './interface'
 import { clearAll, updateWallet, } from './reducer'
 
 export const useWalletInfo = () => {
     
-    const walletInfo: WalletInfo = useSelector((state: any) => state.walletInfo)
+    const walletInfo: WalletInfo = useSelector((state: RootState) => state.localStore.walletInfo)
     const dispatch = useDispatch()
 
     const clearAllWrapper = React.useCallback(() => {
@@ -16,10 +17,13 @@ export const useWalletInfo = () => {
         dispatch(updateWallet({wallet, isHWAddr}))
     },  [dispatch])
 
-    const checkHWAddr = (address: string, isFirstTime: boolean = true) => {
+    const checkHWAddr = React.useCallback((address: string) => {
+        if (!address) {
+            return false
+        }
         const wInfo = walletInfo.walletTypeMap[address]
-        return isFirstTime ? !!wInfo : !wInfo
-    }
+        return !!wInfo
+    }, [walletInfo])
 
     return {
         checkHWAddr,

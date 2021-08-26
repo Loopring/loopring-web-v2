@@ -94,13 +94,6 @@ export const ModalAccountInfo = withTranslation('common')(({
         setShowDeposit, setShowTransfer, setShowWithdraw } = useOpenModals()
 
     const {
-        withdrawAlertText,
-        withdrawToastOpen,
-        setWithdrawToastOpen,
-        withdrawProps
-    } = useWithdraw()
-
-    const {
         account,
         addressShort,
         shouldShow,
@@ -108,6 +101,16 @@ export const ModalAccountInfo = withTranslation('common')(({
         setShouldShow,
         resetAccount,
     } = useAccount();
+
+    const { walletInfo, updateDepositHashWrapper, checkHWAddr, } = useWalletInfo()
+
+    const {
+        withdrawAlertText,
+        withdrawToastOpen,
+        setWithdrawToastOpen,
+        withdrawProps,
+        handleWithdraw,
+    } = useWithdraw()
 
     const { depositProps } = useDeposit()
 
@@ -121,8 +124,6 @@ export const ModalAccountInfo = withTranslation('common')(({
     const { coinMap } = useTokenMap()
 
     const [copyToastOpen, setCopyToastOpen] = useState(false);
-
-    const { walletInfo, updateDepositHashWrapper, checkHWAddr, } = useWalletInfo()
 
     const onSwitch = React.useCallback(() => {
         setShowAccount({ isShow: false })
@@ -159,11 +160,11 @@ export const ModalAccountInfo = withTranslation('common')(({
 
         setShowAccount({ isShow: true, step: AccountStep.UpdateAccount_Approve_WaitForAuth });
 
-        const isHWAddr = checkHWAddr(account.accAddress, isFirstTime)
+        const isHWAddr = checkHWAddr(account.accAddress)
 
         myLog('goUpdateAccount.... isHWAddr:', isHWAddr)
 
-        const updateAccAndCheck = async (isHWAddr: boolean) => {
+        const updateAccAndCheck = async () => {
             const result: ActionResult = await updateAccountFromServer({ isHWAddr })
 
             switch (result.code) {
@@ -232,7 +233,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
         }
 
-        updateAccAndCheck(isHWAddr)
+        updateAccAndCheck()
 
     }, [account, setShowAccount, walletInfo])
 
@@ -290,12 +291,21 @@ export const ModalAccountInfo = withTranslation('common')(({
         }
     }, [])
 
+    const TryNewAuthBtnInfo = React.useMemo(() => {
+        return {
+            btnTxt: t('labelTryNext'),
+            callback: () => {
+                myLog('...labelTryNext...')
+                handleWithdraw(withdrawProps.tradeData, false)
+            }
+        }
+    }, [])
+
     const backToWithdrawBtnInfo = React.useMemo(() => {
         return {
             btnTxt: t('labelRetry'),
             callback: () => {
-                setShowAccount({ isShow: false, })
-                setShowWithdraw({ isShow: true, })
+                setShowWithdraw( { isShow: true })
             }
         }
     }, [])
@@ -471,7 +481,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                     }} />,
             },
             [AccountStep.Withdraw_First_Method_Refused]: {
-                view: <Withdraw_First_Method_Refused btnInfo={backToWithdrawBtnInfo} {...{
+                view: <Withdraw_First_Method_Refused btnInfo={TryNewAuthBtnInfo} {...{
                     ...rest, t
                 }} />,
             },

@@ -27,6 +27,7 @@ import { useWalletHook } from '../../services/wallet/useWalletHook';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS, TOAST_TIME } from 'defs/common_defs';
 import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
+import { useWalletInfo } from 'stores/localStore/walletInfo';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     // handleWithdraw: (inputValue:R) => void,
@@ -34,11 +35,12 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawToastOpen: boolean,
     setWithdrawToastOpen: any,
     withdrawProps: WithdrawProps<R, T>
+    handleWithdraw: any,
     // withdrawValue: R
 } => {
 
     const { t } = useTranslation('common')
-    const {modals:{isShowWithdraw:{symbol,isShow}}, setShowAccount, setShowWithdraw, } = useOpenModals()
+    const { modals: { isShowWithdraw: { symbol, isShow } }, setShowAccount, setShowWithdraw, } = useOpenModals()
 
     const [withdrawToastOpen, setWithdrawToastOpen] = useState<boolean>(false)
 
@@ -53,12 +55,12 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         balance: 0
     } as IBData<unknown>)
     // const {status:walletLayer2Status} = useWalletLayer2();
-    const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap??{} as WalletMap<R>);
-    
+    const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
+
     const [withdrawFeeInfo, setWithdrawFeeInfo] = useState<any>(undefined)
     const [withdrawType, setWithdrawType] = useState<sdk.OffchainFeeReqType>(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
 
-    const {chargeFeeList} = useChargeFees(withdrawValue.belong, withdrawType, tokenMap, withdrawValue.tradeValue)
+    const { chargeFeeList } = useChargeFees(withdrawValue.belong, withdrawType, tokenMap, withdrawValue.tradeValue)
 
     const {
         address,
@@ -83,15 +85,16 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     }, [setBtnStatus, chargeFeeList, address, addrStatus, withdrawValue?.tradeValue])
 
-    const  walletLayer2Callback= React.useCallback(()=>{
+    const walletLayer2Callback = React.useCallback(() => {
         const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
-         setWalletMap2(walletMap)
+        setWalletMap2(walletMap)
     }, [setWalletMap2])
+
     const resetDefault = React.useCallback(() => {
         if (symbol) {
             setWithdrawValue({
                 belong: symbol as any,
-                balance: walletMap2[ symbol ]?.count,
+                balance: walletMap2[symbol]?.count,
                 tradeValue: undefined,
             })
 
@@ -116,27 +119,36 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             //     tradeValue: undefined,
             // })
         }
-    }, [symbol, walletMap2,setWithdrawValue])
+    }, [symbol, walletMap2, setWithdrawValue])
     React.useEffect(() => {
         resetDefault();
     }, [isShow])
-    useWalletHook({walletLayer2Callback})
+    useWalletHook({ walletLayer2Callback })
     useCustomDCEffect(() => {
         if (chargeFeeList.length > 0) {
             setWithdrawFeeInfo(chargeFeeList[0])
         }
     }, [chargeFeeList, setWithdrawFeeInfo])
 
-    const handleWithdraw = React.useCallback(async (inputValue: R) => {
+    const { checkHWAddr, updateDepositHashWrapper, } = useWalletInfo()
+
+    const handleWithdraw = React.useCallback(async (inputValue: R, isFirstTime: boolean = true) => {
+
+        myLog('enter ....handleWithdraw', account)
+        myLog('withdrawValue:', withdrawValue)
+        myLog('withdrawFeeInfo:', withdrawFeeInfo)
 
         const { accountId, accAddress, readyState, apiKey, connectName, eddsaKey } = account
         if (readyState === AccountStatus.ACTIVATED && tokenMap
             && exchangeInfo && connectProvides.usedWeb3
             && address && withdrawFeeInfo?.belong && eddsaKey?.sk) {
+            myLog('enter ....handleWithdraw 2')
             try {
 
+                const isHWAddr = checkHWAddr(account.accAddress)
+
                 setShowWithdraw({ isShow: false, })
-                setShowAccount({isShow: true, step: AccountStepNew.Withdraw_WaitForAuth, })
+                setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_WaitForAuth, })
 
                 const withdrawToken = tokenMap[inputValue.belong as string]
                 const feeToken = tokenMap[withdrawFeeInfo.belong]
@@ -165,6 +177,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     validUntil: getTimestampDaysLater(DAYS),
                 }
 
+                myLog('submitOffchainWithdraw, isHWAddr:', isHWAddr)
+
                 const response = await LoopringAPI.userAPI?.submitOffchainWithdraw({
                     request,
                     web3: connectProvides.usedWeb3,
@@ -172,13 +186,17 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     walletType: connectName as sdk.ConnectorNames,
                     eddsaKey: eddsaKey.sk,
                     apiKey,
+                    isHWAddr,
                 })
 
                 myLog('got response:', response)
 
                 if (response?.errorInfo) {
                     // Withdraw failed
-                    if (response.errorInfo?.errMsg === 'NOT_SUPPORT_ERROR') {
+                    if (response.errorInfo?.errMsg === 'USER_DENIED') {
+                        setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_User_Refused })
+                    } else if (isFirstTime && response.errorInfo?.errMsg === 'NOT_SUPPORT_ERROR') {
+                        updateDepositHashWrapper({ wallet: account.accAddress, isHWAddr: !isHWAddr })
                         setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_First_Method_Refused })
                     } else {
                         setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
@@ -203,11 +221,12 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             return false
         }
 
-    }, [account, tokenMap, withdrawFeeInfo])
+    }, [account, tokenMap, exchangeInfo, withdrawFeeInfo, setShowAccount])
 
     const withdrawType2 = withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
 
     const withdrawProps: WithdrawProps<R, T> = {
+        addressDefault: account.accAddress,
         tradeData: withdrawValue as any,
         coinMap: totalCoinMap as CoinMap<T>,
         walletMap: walletMap2 as WalletMap<any>,
@@ -221,6 +240,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             setShowWithdraw({ isShow: false })
         },
         handleFeeChange(value: { belong: any; fee: number | string; __raw__?: any }): void {
+            myLog('handleFeeChange', value)
             setWithdrawFeeInfo(value as any)
         },
         handleWithdrawTypeChange: (value: 'Fast' | 'Standard') => {
@@ -235,9 +255,10 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     if (withdrawValue !== data.tradeData) {
                         setWithdrawValue(data.tradeData)
                     }
-                } else {
-                    setWithdrawValue({ belong: undefined, tradeValue: 0, balance: 0 } as IBData<unknown>)
                 }
+                // else {
+                //     setWithdrawValue({ belong: undefined, tradeValue: 0, balance: 0 } as IBData<unknown>)
+                // }
 
                 res();
             })
@@ -258,5 +279,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         withdrawToastOpen,
         setWithdrawToastOpen,
         withdrawProps,
+        handleWithdraw,
     }
 }
