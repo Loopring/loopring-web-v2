@@ -39,7 +39,7 @@ import { walletLayer2Service } from 'services/wallet/walletLayer2Service';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS, REFRESH_RATE } from 'defs/common_defs';
 
-import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
+import { getShowStr, VolToNumberWithPrecision } from '../../utils/formatter_tool';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { useToast } from 'hooks/common/useToast';
 import { debug } from 'console';
@@ -763,7 +763,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             const _tradeCalcData = {
                 priceImpact: priceImpact.priceImpact,
                 priceImpactColor: priceImpact.priceImpactColor,
-                minimumReceived: output?.amountBOutSlip.minReceivedVal as string,
+                minimumReceived: getShowStr(output?.amountBOutSlip.minReceivedVal),
                 fee: totalFee,
             }
 
