@@ -46,6 +46,12 @@ export function getShortAddr(address: string):string|'' {
     return convertAddr
 }
 
+/**
+ * 
+ * @param rawValue 
+ * @param precision 
+ * @returns 
+ */
 export const getValuePrecision = (rawValue?: number | string, precision = 6) => {
     if (!rawValue) return '--'
     if (typeof rawValue === 'string') {

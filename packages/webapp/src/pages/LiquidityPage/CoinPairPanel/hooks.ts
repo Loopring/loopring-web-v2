@@ -20,6 +20,7 @@ import { myLog } from '../../../utils/log_tools';
 import { useWalletHook } from '../../../services/wallet/useWalletHook';
 import store from 'stores'
 import { volumeToCountAsBigNumber } from 'hooks/help'
+import { getValuePrecision, getThousandFormattedNumbers } from "@loopring-web/common-resources";
 
 const makeAmmDetailExtendsActivityMap = ({ammMap, coinMap, ammActivityMap, ammKey}: any) => {
 
@@ -214,8 +215,8 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
                     const totalYuan = totalDollar * forex
                     return ({
                         ...o,
-                        totalDollar,
-                        totalYuan,
+                        totalDollar: getThousandFormattedNumbers(totalDollar.toFixed(2)),
+                        totalYuan: getThousandFormattedNumbers(Number((totalYuan).toFixed(2))),
                     })
                 })
                 // setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
