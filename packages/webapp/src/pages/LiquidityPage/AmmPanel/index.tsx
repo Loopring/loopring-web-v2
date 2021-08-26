@@ -21,9 +21,8 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
     ammType?: keyof typeof AmmPanelType
 } & any) => {
     const {
-        ammAlertText,
-        ammToastOpen,
-        setAmmToastOpen,
+        toastOpen,
+        closeToast,
 
         ammCalcData,
         ammJoinData,
@@ -60,10 +59,9 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
     },[snapShotData,ammWithdrawBtnI18nKey,ammWithdrawBtnI18nKey,isJoinLoading,isExitLoading])
 
 
-    return <> 
-    
-    <Toast alertText={ammAlertText as string} open={ammToastOpen} 
-            autoHideDuration={TOAST_TIME} onClose={()=>{setAmmToastOpen(false)}}/>
+    return <>
+    <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'} open={toastOpen?.open ?? false}
+            autoHideDuration={TOAST_TIME} onClose={closeToast}/>
 
     {pair ?
         <AmmPanel {...{...rest}}
