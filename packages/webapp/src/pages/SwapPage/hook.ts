@@ -12,7 +12,7 @@ import React from 'react';
 import { LoopringAPI } from 'api_wrapper';
 import { useTokenMap } from 'stores/token';
 import * as sdk from 'loopring-sdk';
-import { getExistedMarket, sleep, TradeChannel } from 'loopring-sdk';
+import { getExistedMarket, OrderStatus, sleep, TradeChannel } from 'loopring-sdk';
 
 import { useAmmMap } from 'stores/Amm/AmmMap';
 import { useWalletLayer2 } from 'stores/walletLayer2';
@@ -37,7 +37,7 @@ import { useWalletHook } from 'services/wallet/useWalletHook';
 import { useSocket } from 'stores/socket';
 import { walletLayer2Service } from 'services/wallet/walletLayer2Service';
 import { getTimestampDaysLater } from 'utils/dt_tools';
-import { DAYS, REFRESH_RATE } from 'defs/common_defs';
+import { DAYS, REFRESH_RATE, TOAST_TIME } from 'defs/common_defs';
 
 import { getShowStr, VolToNumberWithPrecision } from '../../utils/formatter_tool';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
@@ -87,7 +87,7 @@ const getPriceImpactInfo = (output: any) => {
             priceLevel = PriceLevel.Lv2
         }
 
-        priceImpact = priceImpact.toPrecision(4)
+        priceImpact = getShowStr(priceImpact)
 
     } else {
         priceImpactColor = 'var(--color-textPrimary)'
@@ -227,7 +227,25 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                     setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                     myError(response?.resultInfo)
                 } else {
-                    setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
+                    await sleep(TOAST_TIME)
+
+                    const resp = await LoopringAPI.userAPI.getOrderDetails({ accountId: account.accountId, 
+                        orderHash: response.hash}, account.apiKey)
+
+                        myLog('-----> resp:', resp)
+
+                    if (resp.orderDetail?.status !== undefined) {
+                        switch(resp.orderDetail?.status) {
+                            case OrderStatus.cancelled:
+                                setToastOpen({open: true, type: 'warning', content: t('labelSwapCancelled')})
+                                break
+                            case OrderStatus.processed:
+                                setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
+                                break
+                            default:
+                                setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
+                        }
+                    }
                     walletLayer2Service.sendUserUpdate()
                     setTradeData((state)=>{
                         return {
@@ -751,7 +769,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
             const output = sdk.getOutputAmount(inputParam)
 
-            myLog('output:', output)
+            // myLog('output:', output)
 
             const priceImpact = getPriceImpactInfo(output)
 
@@ -764,7 +782,9 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 fee: totalFee,
             }
 
-            _tradeData[ isAtoB ? 'buy' : 'sell' ].tradeValue = output?.output ? parseFloat(output?.output) : 0
+            const tradeValue = getShowStr(output?.output)
+
+            _tradeData[ isAtoB ? 'buy' : 'sell' ].tradeValue = tradeValue
 
             setOutput(output)
             setTradeCalcData({...tradeCalcData, ..._tradeCalcData});

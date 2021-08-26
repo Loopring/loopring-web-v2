@@ -20,7 +20,7 @@ export const makeTickView = (tick: Partial<TickerData>) => {
             priceDollar: 0,
             floatTag,
             reward: 0,
-            close: (tick.close??0) ? undefined : tick.close,
+            close: (tick.close ?? 0) ? Number(tick.close?.toFixed(6)) : undefined,
             high: tick.high === 0 ? undefined : tick.high,
             low: tick.low === 0 ? undefined : tick.low,
 
@@ -32,7 +32,7 @@ export const makeTickView = (tick: Partial<TickerData>) => {
             // const priceYuan = priceDollar.times(forex);
 
             const qPrice = tick.quote === 'DAI' ? 1 : faitPrices[tick.quote as string]?.price ? faitPrices[tick.quote as string].price : 0;
-
+            console.log({tick})
             const closeDollar = toBig(tick.close).times(qPrice);
             const closeYuan = closeDollar.times(forex);
 

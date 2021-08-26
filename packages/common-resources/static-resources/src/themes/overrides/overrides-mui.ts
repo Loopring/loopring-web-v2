@@ -795,7 +795,8 @@ export const MuiAlert = ({colorBase}: any) => {
     return {
         styleOverrides: {
             root: {
-                backgroundColor: colorBase.borderDark,
+                // backgroundColor: colorBase.borderDark,
+                backgroundColor: 'var(--color-pop-bg)',
                 height: `${unit * 10}px`,
                 '.MuiAlertTitle-root': {
                     color: colorBase.textPrimary,
@@ -817,6 +818,8 @@ export const MuiSnackbar = () => {
                 },
                 top: `${unit * 10}px`,
                 right: `${unit * 2}px`,
+                width: 'auto',
+                height: `${unit * 10}px`,
                 justifyContent: 'flex-end',
                 alignItems: 'flex-start'
             },
