@@ -53,4 +53,19 @@ export enum AccountStepNew {
     Withdraw_Success,
     Withdraw_Failed,
 
+    CreateAccount_Approve_WaitForAuth,
+    CreateAccount_Approve_Refused,
+    CreateAccount_Approve_Submited,
+    CreateAccount_WaitForAuth,
+    CreateAccount_Refused,
+    CreateAccount_Failed,
+    CreateAccount_Submited,
+
+    UpdateAccount_Approve_WaitForAuth,
+    UpdateAccount_First_Method_Refused,
+    UpdateAccount_User_Refused,
+    UpdateAccount_Success,
+    UpdateAccount_Submited,
+    UpdateAccount_Failed,
+
 }

@@ -196,6 +196,8 @@ export default {
     labelUpdateAccSigWarning: 'Your Wallet does not support current sig function, it will try another one.',
     labelUpdateAccUserDenied: 'Your signature is Denied',
     labelCreateLayer2Title: 'Create Layer2 Account',
+    labelCreateAccount: 'Create Layer2 Account',
+    labelUpdateAccount: 'Update Layer2 Account',
     labelCancel:'Cancel',
     describeTitleNoAccount:'You need to activate Loopring Layer2. Please make a deposit to create L2 wallet',
     describeTitleOpenAccounting:'Your deposit has been submitted to Ethereum. Please wait...',

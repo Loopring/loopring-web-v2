@@ -128,7 +128,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const onTransferClick = useCallback(async (transferValue) => {
         const { accountId, accAddress, readyState, apiKey, connectName, eddsaKey } = account
-        console.log('useCallback tranferFeeInfo:', tranferFeeInfo)
+        myLog('useCallback tranferFeeInfo:', tranferFeeInfo)
 
         if (readyState === AccountStatus.ACTIVATED && tokenMap && LoopringAPI.userAPI
             && exchangeInfo && connectProvides.usedWeb3
