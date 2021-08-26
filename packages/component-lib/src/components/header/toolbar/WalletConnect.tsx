@@ -131,6 +131,7 @@ export const WalletConnectBtn = ({
 
   useEffect(() => {
     if (accountState) {// && accountState.status === 'UNSET'){
+      // console.log('HeaderBtn status WalletConnectBtn',accountState.account.readyState)
       const { account } = accountState;
       const addressShort = account.accAddress ? getShortAddr(account?.accAddress) : undefined;
       if (addressShort) {
@@ -179,7 +180,7 @@ export const WalletConnectBtn = ({
       setLabel('labelConnectWallet')
     }
 
-  }, [accountState, i18n])
+  }, [accountState?.account, i18n])
 
 
   const _handleClick = (event: React.MouseEvent) => {
