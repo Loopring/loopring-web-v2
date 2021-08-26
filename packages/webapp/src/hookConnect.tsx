@@ -55,7 +55,7 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
         resetAccount({shouldUpdateProvider: true});
         setStateAccount(SagaStatus.PENDING)
         resetLayer12Data()
-        await sleep(REFRESH_RATE)
+        // await sleep(REFRESH_RATE)
         // updateWalletLayer2()
         
     }, [resetAccount, setStateAccount]);
