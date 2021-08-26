@@ -731,7 +731,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                     apiCallback({depth, ammPoolsBalance, tickMap })
                 }, (reason: any) => {
                     myLog(reason)
-                    debugger
                     throw Error(reason)
                 }).catch((error) => {
                 myLog(error, 'go to LER-ETH');
@@ -772,7 +771,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
             const output = sdk.getOutputAmount(inputParam)
 
-            myLog('output:', output)
+            // myLog('output:', output)
 
             const priceImpact = getPriceImpactInfo(output)
 
@@ -785,7 +784,9 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 fee: totalFee,
             }
 
-            _tradeData[ isAtoB ? 'buy' : 'sell' ].tradeValue = output?.output ? parseFloat(output?.output) : 0
+            const tradeValue = getShowStr(output?.output)
+
+            _tradeData[ isAtoB ? 'buy' : 'sell' ].tradeValue = tradeValue
 
             setOutput(output)
             setTradeCalcData({...tradeCalcData, ..._tradeCalcData});
