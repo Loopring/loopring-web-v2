@@ -55,9 +55,8 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
         resetAccount({shouldUpdateProvider: true});
         setStateAccount(SagaStatus.PENDING)
         resetLayer12Data()
-        await sleep(REFRESH_RATE)
-        // updateWalletLayer2()
-        
+        // await sleep(REFRESH_RATE)
+
     }, [resetAccount, setStateAccount]);
 
     const handleError = React.useCallback(({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {

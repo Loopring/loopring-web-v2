@@ -145,21 +145,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                                                                                                    ...rest
                                                                                                }: HeaderProps & WithTranslation, ref: React.ForwardedRef<any>) => {
 
-    const displayDesktop = () => {
-        return (
-            <ToolBarStyled>
-                <Box display="flex" alignContent="center" justifyContent={"flex-start"}
-                     alignItems={"stretch"}>
-                    {LoopringLogo}
-                    {getDrawerChoices({menuList: headerMenuData, i18n, ...rest})}
-                </Box>
-                <Box component={'ul'} display="flex" alignItems="center" justifyContent={"flex-end"}
-                     color={'textColorSecondary'}>
-                    {getMenuButtons({toolbarList: headerToolBarData, i18n, ...rest})}
-                </Box>
-            </ToolBarStyled>
-        );
-    };
+
 
     const getMenuButtons = ({
                                 toolbarList,
@@ -218,11 +204,26 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
             }
         });
     };
+    const displayDesktop = React.useMemo(() => {
+        return (
+            <ToolBarStyled>
+                <Box display="flex" alignContent="center" justifyContent={"flex-start"}
+                     alignItems={"stretch"}>
+                    {LoopringLogo}
+                    {getDrawerChoices({menuList: headerMenuData, i18n, ...rest})}
+                </Box>
+                <Box component={'ul'} display="flex" alignItems="center" justifyContent={"flex-end"}
+                     color={'textColorSecondary'}>
+                    {getMenuButtons({toolbarList: headerToolBarData, i18n, ...rest})}
+                </Box>
+            </ToolBarStyled>
+        );
+    },[headerToolBarData,headerMenuData,getDrawerChoices,getMenuButtons,i18n,rest]);
 
     return (
         <HeaderStyled elevation={4} ref={ref} className={`${rest?.className}`}>
             <Container className={'wrap'} maxWidth='lg'>
-                {displayDesktop()}
+                {displayDesktop}
             </Container>
         </HeaderStyled>
 

@@ -4,7 +4,7 @@ import {
     ButtonComponentsMap,
     fnType,
     headerMenuData,
-    headerToolBarData,
+    headerToolBarData as _initHeaderToolBarData,
     LanguageKeys,
     ThemeKeys,
 } from '@loopring-web/common-resources'
@@ -13,7 +13,13 @@ import { changeShowModel, useAccount, } from 'stores/account'
 
 import { Theme, } from 'defs/common_defs'
 
-import { AccountStepNew as AccountStep, setShowAccount, useOpenModals, useSettings, } from '@loopring-web/component-lib'
+import {
+    AccountStepNew as AccountStep,
+    HeaderToolBarInterface,
+    setShowAccount,
+    useOpenModals,
+    useSettings,
+} from '@loopring-web/component-lib'
 
 import { accountStaticCallBack, btnClickMap } from 'hooks/help'
 import { myLog } from 'utils/log_tools'
@@ -22,9 +28,13 @@ import store from '../../stores';
 
 export const useHeader = () => {
     // const {setTheme, themeMode, setLanguage} = useSettings();
-    const accountState = useAccount();
-    const {account, setShouldShow, status: accountStatus} =  useAccount();
+    const accountTotal = useAccount();
+    const {account, setShouldShow, status: accountStatus} = accountTotal;
     const {setShowAccount} = useOpenModals();
+    const accountState = React.useMemo(()=>{
+       return {account}
+    },[account])
+    const [headerToolBarData,setHeaderToolBarData] = React.useState<typeof _initHeaderToolBarData>(_initHeaderToolBarData);
     const _btnClickMap = Object.assign(deepClone(btnClickMap), {
         [ fnType.ACTIVATED ]: [
             function () {
@@ -44,49 +54,38 @@ export const useHeader = () => {
         myLog(`onWalletBtnConnect click: ${account.readyState}`);
         accountStaticCallBack(_btnClickMap, []);
     }, [account, setShouldShow,_btnClickMap])
-
-    // const onThemeBtnClick = React.useCallback((themeMode: ThemeKeys) => {
-    //     if (themeMode === Theme.dark) {
-    //         setTheme(Theme.light)
-    //     } else {
-    //         setTheme(Theme.dark)
-    //     }
-    // }, [setTheme])
-    //
-    // const onLangBtnClick = (lang: LanguageKeys) => {
-    //     setLanguage(lang);
-    // }
-
     React.useEffect(() => {
-        headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-            ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-            accountState,
-            handleClick: onWalletBtnConnect,
-        }
-        // headerToolBarData[ ButtonComponentsMap.Theme ] = {
-        //     ...headerToolBarData[ ButtonComponentsMap.Theme ],
-        //     themeMode,
-        //     handleClick: onThemeBtnClick
-        // }
-        // headerToolBarData[ ButtonComponentsMap.Language ] = {
-        //     ...headerToolBarData[ ButtonComponentsMap.Language ],
-        //     handleChange: onLangBtnClick
-        // }
+        setHeaderToolBarData((headerToolBarData)=>{
+            return {
+                ...headerToolBarData,
+                [ ButtonComponentsMap.WalletConnect ]:{
+                    ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
+                    accountState,
+                    handleClick: onWalletBtnConnect,
+                }
+
+            } as HeaderToolBarInterface[]
+        })
     },[]);
 
-    // const forceUpdate = React.useReducer(() => ({}), {})[ 1 ] as () => void
-    const updateWallet = React.useCallback(()=>{
-        headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-            ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-            accountState,
-        }
-    },[headerToolBarData,accountState])
     React.useEffect(() => {
+        myLog( 'HeaderBtn status',accountStatus);
         if (accountStatus && accountStatus === 'UNSET') {
-            updateWallet()
+            myLog( 'HeaderBtn status',accountState);
+
+            setHeaderToolBarData((headerToolBarData)=>{
+                return {
+                    ...headerToolBarData,
+                    [ ButtonComponentsMap.WalletConnect ]:{
+                        ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
+                        accountState,
+                    }
+
+                } as HeaderToolBarInterface[]
+            })
         }
         // forceUpdate()
-    }, [accountStatus]);
+    }, [accountStatus, account.readyState]);
 
     return {
         headerToolBarData,
