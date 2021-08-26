@@ -15,6 +15,7 @@ import { myLog } from 'utils/log_tools';
 import React from 'react';
 import * as _ from 'lodash'
 import { globalSetup } from '@loopring-web/common-resources'
+import { getShowStr } from 'utils/formatter_tool';
 
 export function useChargeFees(tokenSymbol: string | undefined, requestType: OffchainFeeReqType,
     tokenMap: LoopringMap<TokenInfo> | undefined, amount?: number) {
@@ -56,7 +57,7 @@ export function useChargeFees(tokenSymbol: string | undefined, requestType: Offc
                     response.raw_data.fees.forEach((item: any) => {
                         const feeRaw = item.fee
                         const tokenInfo = tokenMap[item.token]
-                        const fee = sdk.toBig(item.fee).div('1e' + tokenInfo.decimals).toNumber()
+                        const fee = getShowStr(sdk.toBig(item.fee).div('1e' + tokenInfo.decimals).toNumber())
                         chargeFeeList.push({ belong: item.token, fee, __raw__: feeRaw })
                     })
                 }
