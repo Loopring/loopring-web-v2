@@ -31,8 +31,10 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
         handleExitAmmPoolEvent,
         onAmmRemoveClick,
         onAmmAddClick,
-        isJoinLoading,
-        isExitLoading,
+        // isJoinLoading,
+        // isExitLoading,
+        addBtnStatus,
+        removeBtnStatus,
         ammDepositBtnI18nKey,
         ammWithdrawBtnI18nKey,
         onRefreshData,
@@ -43,20 +45,20 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
     })
 
     // const [index, setIndex] = React.useState(AmmPanelTypeMap[ tabSelected ]);
-    const isLoading = React.useCallback(()=>{
-        
-        if((!snapShotData || !snapShotData.tickerData || !snapShotData.ammPoolsBalance)
-            &&  ammDepositBtnI18nKey === undefined
-            &&  ammWithdrawBtnI18nKey === undefined
-        ) {
-          return true
-        }
-    
-        if(isJoinLoading || isExitLoading){
-            return true   
-            
-        }
-    },[snapShotData,ammWithdrawBtnI18nKey,ammWithdrawBtnI18nKey,isJoinLoading,isExitLoading])
+    // const isLoading = React.useCallback(()=>{
+    //
+    //     if((!snapShotData || !snapShotData.tickerData || !snapShotData.ammPoolsBalance)
+    //         &&  ammDepositBtnI18nKey === undefined
+    //         &&  ammWithdrawBtnI18nKey === undefined
+    //     ) {
+    //       return true
+    //     }
+    //
+    //     if(isJoinLoading || isExitLoading){
+    //         return true
+    //
+    //     }
+    // },[snapShotData,ammWithdrawBtnI18nKey,ammWithdrawBtnI18nKey,isJoinLoading,isExitLoading])
 
 
     return <>
@@ -77,8 +79,8 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
                   tabSelected={ammType ? ammType : AmmPanelType.Join}
                   ammDepositBtnI18nKey={ammDepositBtnI18nKey}
                   ammWithdrawBtnI18nKey={ammWithdrawBtnI18nKey}
-                  ammDepositBtnStatus={isLoading()?TradeBtnStatus.LOADING:TradeBtnStatus.AVAILABLE}
-                  ammWithdrawBtnStatus={isLoading()?TradeBtnStatus.LOADING:TradeBtnStatus.AVAILABLE}
+                  ammDepositBtnStatus={addBtnStatus}
+                  ammWithdrawBtnStatus={removeBtnStatus}
 
         /> : <Box width={'var(--swap-box-width)'}/>}
     </>

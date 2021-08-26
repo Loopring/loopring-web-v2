@@ -9,7 +9,7 @@ import {
     IBData,
     SagaStatus, WalletMap,
 } from '@loopring-web/common-resources';
-import { AmmPanelType } from '@loopring-web/component-lib';
+import { AmmPanelType, TradeBtnStatus } from '@loopring-web/component-lib';
 import { IdMap, useTokenMap } from '../../../stores/token';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
 import { accountStaticCallBack, ammPairInit, btnLabel, btnClickMap, makeCache, makeWalletLayer2 } from '../../../hooks/help';
@@ -46,6 +46,7 @@ import { useSocket } from '../../../stores/socket';
 import { walletLayer2Service } from '../../../services/wallet/walletLayer2Service';
 import * as _ from 'lodash'
 import { useToast } from "hooks/common/useToast";
+import { VolToNumberWithPrecision } from '../../../utils/formatter_tool';
 export const useAmmPanel = <C extends { [key: string]: any }>({
     pair,
     ammType,
@@ -59,13 +60,22 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     const { t } = useTranslation('common');
     const {sendSocketTopic,socketEnd} = useSocket();
     const refreshRef = React.createRef();
-    
+
+    const [isJoinLoading, setJoinLoading] = useState(false)
+
+    const [isExitLoading, setExitLoading] = useState(false)
     const { toastOpen, setToastOpen, closeToast, } = useToast()
 
     const { coinMap, tokenMap } = useTokenMap();
     const { ammMap } = useAmmMap();
     const { account, status: accountStatus } = useAccount();
-    const { marketArray, marketMap, } = useTokenMap()
+    const { marketArray, marketMap, } = useTokenMap();
+    const [addBtnStatus, setAddBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE);
+    const [removeBtnStatus, setRemoveBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE);
+    //TODO:
+    const [addMinAmt,setAddMinAmt] =  useState('test');
+    const [removeMinAmt,setRemoveMinAmt] =  useState('test');
+    
     const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<C> | undefined>();
     const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
     const [ammJoinData, setAmmJoinData] = React.useState<AmmData<IBData<C>, C>>({
@@ -173,16 +183,99 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     // set fees
 
     const [joinFees, setJoinFees] = useState<LoopringMap<OffchainFeeInfo>>()
-    const [exitFees, setExitfees] = useState<LoopringMap<OffchainFeeInfo>>()
+    const [exitFees, setExitFees] = useState<LoopringMap<OffchainFeeInfo>>()
     const { account: { accountId, apiKey } } = useAccount()
+    // const [addBtnStatus, setAddBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE);
+    // const [removeBtnStatus, setRemoveBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE)
+   
+   
+    const addBtnLabelActive = React.useCallback((): string | undefined => {
+        //TODO:
+        // const validAmt = (output?.amountBOut && quoteMinAmt
+        //     && sdk.toBig(output?.amountBOut).gte(sdk.toBig(quoteMinAmt))) ? true : false;
+        const validAmt = false;
+        const addMinAmt = '100';
+        if (isJoinLoading) {
+            setAmmDepositBtnI18nKey(TradeBtnStatus.LOADING)
+            return undefined
+        } else {
+            if (account.readyState === AccountStatus.ACTIVATED) {
+                if (ammJoinData === undefined
+                    || ammJoinData?.coinA.tradeValue === undefined
+                    || ammJoinData?.coinB.tradeValue === undefined
+                    || ammJoinData?.coinA.tradeValue === 0
+                    || ammJoinData?.coinB.tradeValue === 0) {
+                    setAddBtnStatus(TradeBtnStatus.DISABLED)
+                    return 'labelEnterAmount';
+                } else if (validAmt || addMinAmt === undefined) {
+                    setAddBtnStatus(TradeBtnStatus.AVAILABLE)
+                    return undefined
 
-    // const { status } = useSelector((state: RootState) => state.account)
+                } else {
+                    const quote = ammJoinData?.coinA.belong;
+                    const minOrderSize = VolToNumberWithPrecision(addMinAmt, quote as any) + ' ' + ammJoinData?.coinA.belong;
+                    setAddBtnStatus(TradeBtnStatus.DISABLED)
+                    return `labelLimitMin, ${minOrderSize}`
+
+                }
+
+            } else {
+                setAddBtnStatus(TradeBtnStatus.AVAILABLE)
+            }
+
+        }
+    }, [
+        account.readyState, addMinAmt, ammJoinData, isJoinLoading, setAddBtnStatus])
+    const removeBtnLabelActive = React.useCallback((): string | undefined => {
+        //TODO:
+        // const validAmt = (output?.amountBOut && quoteMinAmt
+        //     && sdk.toBig(output?.amountBOut).gte(sdk.toBig(quoteMinAmt))) ? true : false;
+        const validAmt = false;
+        const removeMinAmt = '100';
+        if (isExitLoading) {
+            setAmmDepositBtnI18nKey(TradeBtnStatus.LOADING)
+            return undefined
+        } else {
+            if (account.readyState === AccountStatus.ACTIVATED) {
+                if (ammExitData === undefined
+                    || ammExitData?.coinA.tradeValue === undefined
+                    || ammExitData?.coinB.tradeValue === undefined
+                    || ammExitData?.coinA.tradeValue === 0
+                    || ammExitData?.coinB.tradeValue === 0) {
+                    setRemoveBtnStatus(TradeBtnStatus.DISABLED)
+                    return 'labelEnterAmount';
+                } else if (validAmt || removeMinAmt === undefined) {
+                    setRemoveBtnStatus(TradeBtnStatus.AVAILABLE)
+                    return undefined
+
+                } else {
+                    const quote = ammExitData?.coinA.belong;
+                    const minOrderSize = VolToNumberWithPrecision(removeMinAmt, quote as any) + ' ' + ammExitData?.coinA.belong;
+                    setRemoveBtnStatus(TradeBtnStatus.DISABLED)
+                    return `labelLimitMin, ${minOrderSize}`
+
+                }
+
+            } else {
+                setRemoveBtnStatus(TradeBtnStatus.AVAILABLE)
+            }
+
+        }
+    }, [
+        account.readyState, removeMinAmt, ammExitData, isExitLoading, setRemoveBtnStatus])
+    const _removeBtnLabel = Object.assign(deepClone(btnLabel), {
+        [ fnType.ACTIVATED ]: [removeBtnLabelActive]
+    });
+    const _addBtnLabel = Object.assign(deepClone(btnLabel), {
+        [ fnType.ACTIVATED ]: [addBtnLabelActive]
+    });
     const calculateCallback = React.useCallback(async ()=>{
         if (accountStatus === SagaStatus.UNSET) {
 
-            const label: string | undefined = accountStaticCallBack(btnLabel)
-            setAmmDepositBtnI18nKey(label)
-            setAmmWithdrawBtnI18nKey(label)
+            setAddBtnStatus(TradeBtnStatus.AVAILABLE)
+            setAmmDepositBtnI18nKey(accountStaticCallBack(_addBtnLabel))
+            setRemoveBtnStatus(TradeBtnStatus.AVAILABLE)
+            setAmmWithdrawBtnI18nKey(accountStaticCallBack(_removeBtnLabel))
 
             if (!LoopringAPI.userAPI || !pair.coinBInfo?.simpleName
                 || account.readyState !== AccountStatus.ACTIVATED
@@ -210,7 +303,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
             }
             const { fees: feesExit } = await LoopringAPI.userAPI.getOffchainFeeAmt(requestExit, apiKey)
 
-            setExitfees(feesExit)
+            setExitFees(feesExit)
 
             const feeExit = sdk.toBig(feesExit[pair.coinBInfo.simpleName].fee as string).div('1e' + feeToken.decimals).toString()
                 + ' ' + pair.coinBInfo.simpleName
@@ -221,7 +314,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         }
 
     },[
-        setJoinFees, setExitfees, setAmmCalcData, setAmmDepositBtnI18nKey, setAmmWithdrawBtnI18nKey,
+        setJoinFees, setExitFees, setAmmCalcData, setAmmDepositBtnI18nKey, setAmmWithdrawBtnI18nKey,
         accountStatus, account.readyState, accountId, apiKey,
         pair.coinBInfo?.simpleName, tokenMap, ammCalcData
     ])
@@ -458,9 +551,6 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     };
 
 
-    const [isJoinLoading, setJoinLoading] = useState(false)
-
-    const [isExitLoading, setExitLoading] = useState(false)
 
     const removeAmmCalculator = React.useCallback(async function (props
     ) {
@@ -581,6 +671,8 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         isExitLoading,
         handleJoinAmmPoolEvent,
         handleExitAmmPoolEvent,
+        addBtnStatus,
+        removeBtnStatus,
         onAmmRemoveClick,
         onAmmAddClick,
         ammDepositBtnI18nKey,

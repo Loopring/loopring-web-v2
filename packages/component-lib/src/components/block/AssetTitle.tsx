@@ -48,10 +48,10 @@ export const AssetTitle = withTranslation('common')(({
             <Typography component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}
                         marginTop={1}>
                 <Typography component={'span'} paddingRight={1} variant={'h1'}> {assetInfo.priceTag} </Typography>
-                {isShow ? <Typography component={'span'}
+                {isShow && assetInfo.totalAsset ? <Typography component={'span'}
                                       variant={'h1'}>{assetInfo.totalAsset ? getThousandFormattedNumbers(Number(assetInfo.totalAsset.toFixed(2))) : 0.00}</Typography> :
                     <Typography component={'span'}
-                                variant={'h1'}>&#10033;&#10033;&#10033;&#10033;.&#10033;&#10033;&#10033;</Typography>}
+                                variant={'h1'}>&#10033;&#10033;&#10033;&#10033;.&#10033;&#10033;</Typography>}
             </Typography>
         </Grid>
         <ButtonListRightStyled item xs={5} display={'flex'} flexDirection={'row'} justifyContent={'flex-end'}>
