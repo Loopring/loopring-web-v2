@@ -17,7 +17,6 @@ import {
     FailedDeposit,
     FailedTokenAccess,
     FailedUnlock,
-    HadAccount,
     ModalAccount,
     ProcessUnlock,
     SuccessUnlock,
@@ -88,7 +87,6 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
             [ AccountStep.ProcessUnlock ]: {view: <ProcessUnlock {...{providerName: ConnectProviders.MetaMask, ...rest}}/>,},
             [ AccountStep.SuccessUnlock ]: {view: <SuccessUnlock {...{...rest, onClose: () => undefined}}/>,},
             [ AccountStep.FailedUnlock ]: {view: <FailedUnlock {...rest} onRetry={() => undefined}/>,},
-            [ AccountStep.HadAccount ]: {view: <HadAccount mainBtn={mainBtn} {...accountInfoProps}/>,},
             [ AccountStep.TokenApproveInProcess ]: {view: <TokenAccessProcess label={rest.t('depositTitleAndActive')} {...{
                 ...rest,
                 coinInfo,

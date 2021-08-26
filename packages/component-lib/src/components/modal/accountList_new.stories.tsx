@@ -15,6 +15,7 @@ import {
 
     NoAccount,
     UpdateAccount,
+    HadAccount,
 
     Deposit_Approve_WaitForAuth,
     Deposit_Approve_Refused,
@@ -54,8 +55,6 @@ import {
 import { account, coinMap, CoinType, walletMap } from '../../static';
 import { DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../index';
 import { Box } from '@material-ui/core/';
-
-import QRCode from 'qrcode.react';
 
 const Style = styled.div`
   
@@ -122,12 +121,17 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
 
     const { nameList0, accountList0, } = React.useMemo(() => {
         const accountMap = {
-            [ AccountStep.NoAccount ]: {view: <NoAccount {...{
-                ...accountInfoProps, goDeposit: () => {
-                }
-            }}/>,},
-            [ AccountStep.UpdateAccount ]: {view: <UpdateAccount  {...{...accountInfoProps, ...rest}}
-                                                          goActiveAccount={() => undefined}/>,},
+            [AccountStep.NoAccount]: {
+                view: <NoAccount {...{
+                    ...accountInfoProps, goDeposit: () => {
+                    }
+                }} />,
+            },
+            [AccountStep.UpdateAccount]: {
+                view: <UpdateAccount  {...{ ...accountInfoProps, ...rest }}
+                    goActiveAccount={() => undefined} />,
+            },
+            [AccountStep.HadAccount]: { view: <HadAccount mainBtn={mainBtn} {...accountInfoProps} />, },
         }
 
         return { nameList0: Object.keys(accountMap), accountList0: Object.values(accountMap) }
@@ -136,10 +140,6 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
 
     const { nameList, accountList, } = React.useMemo(() => {
         const accountMap = {
-            [ AccountStep.NoAccount ]: {view: <NoAccount {...{
-                ...accountInfoProps, goDeposit: () => {
-                }
-            }}/>,},
 
             [AccountStep.Deposit_Approve_WaitForAuth]: {
                 view: <Deposit_Approve_WaitForAuth
@@ -336,29 +336,29 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                     }} />,
             },
             [AccountStep.UpdateAccount_First_Method_Refused]: {
-                view: <UpdateAccount_First_Method_Refused btnInfo = {retryBtn} {...{
-                        ...rest
-                    }} />,
+                view: <UpdateAccount_First_Method_Refused btnInfo={retryBtn} {...{
+                    ...rest
+                }} />,
             },
             [AccountStep.UpdateAccount_User_Refused]: {
-                view: <UpdateAccount_User_Refused btnInfo = {retryBtn} {...{
-                        ...rest
-                    }} />,
+                view: <UpdateAccount_User_Refused btnInfo={retryBtn} {...{
+                    ...rest
+                }} />,
             },
             [AccountStep.UpdateAccount_Success]: {
-                view: <UpdateAccount_Success btnInfo = {closeBtn}  {...{
-                        ...rest
-                    }} />,
+                view: <UpdateAccount_Success btnInfo={closeBtn}  {...{
+                    ...rest
+                }} />,
             },
             [AccountStep.UpdateAccount_Submited]: {
-                view: <UpdateAccount_Submited btnInfo = {closeBtn} {...{
-                        ...rest
-                    }} />,
+                view: <UpdateAccount_Submited btnInfo={closeBtn} {...{
+                    ...rest
+                }} />,
             },
             [AccountStep.UpdateAccount_Failed]: {
-                view: <UpdateAccount_Failed btnInfo = {closeBtn} {...{
-                        ...rest
-                    }} />,
+                view: <UpdateAccount_Failed btnInfo={closeBtn} {...{
+                    ...rest
+                }} />,
             },
         }
 
