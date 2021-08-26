@@ -157,6 +157,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         tradeCalcData: {coinBuy: tradeCalcData?.coinBuy, coinSell: tradeCalcData?.coinSell},
         priceImpact: output?.priceImpact,
         exceedDepth: output?.exceedDepth ?? false,
+        amountBOutSlip: output?.amountBOutSlip ? JSON.stringify(output.amountBOutSlip) : '',
         market,
     } : ''
 
