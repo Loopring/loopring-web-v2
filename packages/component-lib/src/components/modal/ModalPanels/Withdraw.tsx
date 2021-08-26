@@ -13,10 +13,21 @@ export const Withdraw_WaitForAuth = (props: PanelProps & WithTranslation) => {
 }
 
 // value symbol
-export const Withdraw_Refused = (props: PanelProps & WithTranslation) => {
+export const Withdraw_First_Method_Refused = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_Withdraw_Refused'}>
+        describe1: <Trans i18nKey={'label_Withdraw_First_Method_Refused'}>
+        Withdraw_First_Method_Refused.
+    </Trans>
+    }
+    return <WithdrawBase {...propsPatch} {...props} />
+}
+
+// value symbol
+export const Withdraw_User_Refused = (props: PanelProps & WithTranslation) => {
+    const propsPatch = {
+        iconType: IconType.RefuseIcon,
+        describe1: <Trans i18nKey={'label_Withdraw_User_Refused'}>
         {props.value} {props.symbol} Withdraw User Refused.
     </Trans>
     }

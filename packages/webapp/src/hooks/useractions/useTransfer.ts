@@ -177,8 +177,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
                 if (response?.errorInfo) {
                     // transfer failed
+                    myLog('NOT_SUPPORT_ERROR:', ConnectorError.NOT_SUPPORT_ERROR.toString())
+
                     if (response.errorInfo.errMsg && ConnectorError[response.errorInfo.errMsg]) {
-                        setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Refused })
+                        setShowAccount({ isShow: true, step: AccountStepNew.Transfer_First_Method_Refused })
                     } else {
                         setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Failed })
                     }
