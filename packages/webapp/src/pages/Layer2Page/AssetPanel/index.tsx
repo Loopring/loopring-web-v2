@@ -73,8 +73,28 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const [pageSize, setPageSize] = useState(10);
     const [chartPeriod, setChartPeriod] = useState('week')
 
-    const { formattedDoughnutData, assetsRawData, formattedData, marketArray } = useGetAssets()
+    const { formattedData, marketArray, assetsRawData } = useGetAssets()
     const { walletLayer2 } = store.getState().walletLayer2;
+
+    const total = formattedData.map(o => o.value).reduce((a, b) => a + b, 0)
+    const percentList = formattedData.map(o => ({
+        ...o,
+        value: o.value / total,
+    }))
+
+    const lpTotalData = percentList
+        .filter(o => o.name.split('-')[0] === 'LP')
+        .reduce((prev, next) => ({
+            name: 'LP-Token',
+            value: prev.value + next.value
+        }), {
+            name: 'LP-Token',
+            value: 0
+        })
+    
+    const formattedDoughnutData = percentList.filter(o => o.name.split('-')[0] === 'LP').length > 0
+        ? [...percentList.filter(o => o.name.split('-')[0] !== 'LP'), lpTotalData]
+        : percentList
 
     useEffect(() => {
         // @ts-ignore
