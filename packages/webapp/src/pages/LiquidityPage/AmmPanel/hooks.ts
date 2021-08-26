@@ -47,6 +47,7 @@ import { walletLayer2Service } from '../../../services/wallet/walletLayer2Servic
 import * as _ from 'lodash'
 import { useToast } from "hooks/common/useToast";
 import { VolToNumberWithPrecision } from '../../../utils/formatter_tool';
+import { BaseAPI } from "../../../../../../../loopring_sdk/js_sdk/dist/api/base_api";
 export const useAmmPanel = <C extends { [key: string]: any }>({
     pair,
     ammType,
@@ -72,9 +73,12 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     const { marketArray, marketMap, } = useTokenMap();
     const [addBtnStatus, setAddBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE);
     const [removeBtnStatus, setRemoveBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE);
+
     //TODO:
-    const [addMinAmt,setAddMinAmt] =  useState('test');
-    const [removeMinAmt,setRemoveMinAmt] =  useState('test');
+    const [baseToken, setBaseToken] =  useState<TokenInfo>();
+    const [quoteToken, setQuoteToken] =  useState<TokenInfo>(); 
+    const [baseMinAmt, setBaseMinAmt,] = useState<any>()
+    const [quoteMinAmt, setQuoteMinAmt,] = useState<any>()
     
     const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<C> | undefined>();
     const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
@@ -110,6 +114,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         }
 
     }, []);
+
     const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
         myLog('initAmmData:', account.accAddress, walletMap, pair)
         myLog('refreshRef',refreshRef.current);
@@ -130,6 +135,17 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
         setAmmCalcData({ ...ammCalcData, ..._ammCalcData });
         if (_ammCalcData.myCoinA) {
+
+            const baseT = tokenMap?.[_ammCalcData.myCoinA.belong]
+
+            const quoteT = tokenMap?.[_ammCalcData.myCoinB.belong]
+
+            setBaseToken(baseT)
+            setQuoteToken(quoteT)
+
+            setBaseMinAmt(baseT ? sdk.toBig(baseT.orderAmounts.minimum).div('1e' + baseT.decimals).toNumber() : undefined)
+            setQuoteMinAmt(quoteT ? sdk.toBig(quoteT.orderAmounts.minimum).div('1e' + quoteT.decimals).toNumber() : undefined)
+
             setAmmJoinData({
                 coinA: { ..._ammCalcData.myCoinA, tradeValue: undefined },
                 coinB: { ..._ammCalcData.myCoinB, tradeValue: undefined },
@@ -184,30 +200,35 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     const [exitFees, setExitFees] = useState<LoopringMap<OffchainFeeInfo>>()
     const { account: { accountId, apiKey } } = useAccount()
 
+    const times = 5
+
     const addBtnLabelActive = React.useCallback((): string | undefined => {
         //TODO:
-        // const validAmt = (output?.amountBOut && quoteMinAmt
-        //     && sdk.toBig(output?.amountBOut).gte(sdk.toBig(quoteMinAmt))) ? true : false;
-        const validAmt = false;
-        const addMinAmt = '100';
+        const validAmt1 = ammJoinData?.coinA?.tradeValue ? ammJoinData?.coinA?.tradeValue > times * baseMinAmt : false
+        const validAmt2 = ammJoinData?.coinB?.tradeValue ? ammJoinData?.coinB?.tradeValue > times * quoteMinAmt : false
+
+        myLog('validAmt1:', validAmt1, baseMinAmt, ' tradeValue', ammJoinData?.coinA?.tradeValue)
+        myLog('validAmt2:', validAmt2, quoteMinAmt, ' tradeValue', ammJoinData?.coinB?.tradeValue)
+
         if (isJoinLoading) {
             setAmmDepositBtnI18nKey(TradeBtnStatus.LOADING)
             return undefined
         } else {
+            myLog('ammJoinData:', ammJoinData)
             if (account.readyState === AccountStatus.ACTIVATED) {
-                if (ammJoinData === undefined
+                if (validAmt1 || validAmt2) {
+                    setAddBtnStatus(TradeBtnStatus.AVAILABLE)
+                    return undefined
+                } else if (ammJoinData === undefined
                     || ammJoinData?.coinA.tradeValue === undefined
                     || ammJoinData?.coinB.tradeValue === undefined
                     || ammJoinData?.coinA.tradeValue === 0
                     || ammJoinData?.coinB.tradeValue === 0) {
                     setAddBtnStatus(TradeBtnStatus.DISABLED)
                     return 'labelEnterAmount';
-                } else if (validAmt || addMinAmt === undefined) {
-                    setAddBtnStatus(TradeBtnStatus.AVAILABLE)
-                    return undefined
-                } else {
+                }  else {
                     const quote = ammJoinData?.coinA.belong;
-                    const minOrderSize = VolToNumberWithPrecision(addMinAmt, quote as any) + ' ' + ammJoinData?.coinA.belong;
+                    const minOrderSize = 0 + ' ' + ammJoinData?.coinA.belong;
                     setAddBtnStatus(TradeBtnStatus.DISABLED)
                     return `labelLimitMin, ${minOrderSize}`
                 }
@@ -218,33 +239,34 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
         }
     }, [
-        account.readyState, addMinAmt, ammJoinData, isJoinLoading, setAddBtnStatus])
+        account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, ammJoinData, isJoinLoading, setAddBtnStatus])
         
     const removeBtnLabelActive = React.useCallback((): string | undefined => {
         //TODO:
         // const validAmt = (output?.amountBOut && quoteMinAmt
         //     && sdk.toBig(output?.amountBOut).gte(sdk.toBig(quoteMinAmt))) ? true : false;
-        const validAmt = false;
-        const removeMinAmt = '100';
+
+        const validAmt1 = ammExitData?.coinA?.tradeValue ? ammExitData?.coinA?.tradeValue > times * baseMinAmt : false
+        const validAmt2 = ammExitData?.coinB?.tradeValue ? ammExitData?.coinB?.tradeValue > times * quoteMinAmt : false
+
         if (isExitLoading) {
             setAmmDepositBtnI18nKey(TradeBtnStatus.LOADING)
             return undefined
         } else {
             if (account.readyState === AccountStatus.ACTIVATED) {
-                if (ammExitData === undefined
+                if (true) {
+                    setRemoveBtnStatus(TradeBtnStatus.AVAILABLE)
+                    return undefined
+                } else if (ammExitData === undefined
                     || ammExitData?.coinA.tradeValue === undefined
                     || ammExitData?.coinB.tradeValue === undefined
                     || ammExitData?.coinA.tradeValue === 0
                     || ammExitData?.coinB.tradeValue === 0) {
                     setRemoveBtnStatus(TradeBtnStatus.DISABLED)
                     return 'labelEnterAmount';
-                } else if (validAmt || removeMinAmt === undefined) {
-                    setRemoveBtnStatus(TradeBtnStatus.AVAILABLE)
-                    return undefined
-
                 } else {
                     const quote = ammExitData?.coinA.belong;
-                    const minOrderSize = VolToNumberWithPrecision(removeMinAmt, quote as any) + ' ' + ammExitData?.coinA.belong;
+                    const minOrderSize = 0 + ' ' + ammExitData?.coinA.belong;
                     setRemoveBtnStatus(TradeBtnStatus.DISABLED)
                     return `labelLimitMin, ${minOrderSize}`
 
@@ -255,14 +277,16 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
             }
 
         }
-    }, [
-        account.readyState, removeMinAmt, ammExitData, isExitLoading, setRemoveBtnStatus])
+    }, [account.readyState, , baseToken, quoteToken, ammExitData, isExitLoading, setRemoveBtnStatus])
+
     const _removeBtnLabel = Object.assign(deepClone(btnLabel), {
         [ fnType.ACTIVATED ]: [removeBtnLabelActive]
-    });
+    })
+
     const _addBtnLabel = Object.assign(deepClone(btnLabel), {
         [ fnType.ACTIVATED ]: [addBtnLabelActive]
     });
+
     const calculateCallback = React.useCallback(async ()=>{
         if (accountStatus === SagaStatus.UNSET) {
 
@@ -373,6 +397,9 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
             data.coinA.tradeValue = parseFloat(toBig(request.joinTokens.pooled[0].volume)
                 .div('1e' + coinA.decimals).toFixed(marketInfo.precisionForPrice))
         }
+
+        console.log('coinA:', data.coinA)
+        console.log('coinB:', data.coinB)
 
         setAmmJoinData({
             coinA: data.coinA as IBData<C>,
