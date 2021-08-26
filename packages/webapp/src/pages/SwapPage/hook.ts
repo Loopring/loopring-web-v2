@@ -223,13 +223,13 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 } else {
                     setSwapToastOpen({flag: true, type: 'success', label: t('labelSwapSuccess')})
                     walletLayer2Service.sendUserUpdate()
-                    setTradeData({
-                        ...tradeData,
-                        ...{
-                            sell: {...tradeData?.sell, tradeValue: 0},
-                            buy: {...tradeData?.buy, tradeValue: 0},
-                        }
-                    } as SwapTradeData<IBData<C>>)
+                    setTradeData((state)=>{
+                        return {
+                            ...state,
+                            sell: {...state?.sell, tradeValue: 0},
+                            buy: {...state?.buy, tradeValue: 0},
+                        } as SwapTradeData<IBData<C>>
+                    } )
                 }
             } catch (reason) {
                 sdk.dumpError400(reason)
@@ -480,19 +480,24 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 setTradeCalcData({...tradeCalcData, walletMap, fee: totalFee} as TradeCalcData<C>)
             }
         } else {
-            setTradeData({
-                ...tradeData,
-                sell: {
-                    belong: tradeCalcData.coinSell,
-                },
-                buy: {
-                    belong: tradeCalcData.coinBuy,
-                },
-            } as SwapTradeData<IBData<C>>)
+            if(tradeCalcData.coinSell && tradeCalcData.coinBuy) {
+                setTradeData((state)=>{
+                    return {
+                        ...state,
+                        sell: {belong: tradeCalcData.coinSell},
+                        buy: {belong: tradeCalcData.coinBuy},
+                    } as SwapTradeData<IBData<C>>
+                } )
+            }
             setFeeBips('0')
             setTotalFee('0')
             setTakerRate('0')
-            setTradeCalcData({...tradeCalcData, fee: '0'} as TradeCalcData<C>)
+            setTradeCalcData((state)=>{
+                return  {...state,
+                    minimumReceived: undefined,
+                    priceImpact: undefined,
+                    fee: undefined} 
+            })
         }
 
 
