@@ -86,7 +86,6 @@ const columnMode = ({
             const {balanceDollar, totalAmmValueDollar, totalAmmValueYuan} = row as any;
             // const formattedYuan = (balanceYuan && Number.isNaN(balanceYuan)) ? balanceYuan : 0
             // const formattedDollar = (balanceDollar && Number.isNaN(balanceYuan)) ? balanceDollar : 0
-            console.log(getThousandFormattedNumbers(totalAmmValueDollar))
             return <Box height={'100%'} display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
                 <TypogStyle variant={'body1'} component={'span'} color={'textPrimary'} fontFamily={'Roboto'}>
                     {balanceDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(totalAmmValueDollar.toFixed(2))
