@@ -152,8 +152,6 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
             return
         }
 
-
-
         const { market, amm } = getExistedMarket(marketArray, pair.coinAInfo.simpleName as string,
             pair.coinBInfo.simpleName as string)
 
@@ -221,6 +219,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         }
     }, [
         account.readyState, addMinAmt, ammJoinData, isJoinLoading, setAddBtnStatus])
+        
     const removeBtnLabelActive = React.useCallback((): string | undefined => {
         //TODO:
         // const validAmt = (output?.amountBOut && quoteMinAmt
@@ -405,8 +404,6 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
             return
         }
 
-        //todo add loading
-
         const { ammInfo, request } = joinRequest
 
         const patch: AmmPoolRequestPatch = {
@@ -550,7 +547,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     const removeAmmCalculator = React.useCallback(async function (props
     ) {
         setExitLoading(true);
-        //TODO: onExit
+        
         myLog('removeAmmCalculator props:', props)
 
         // const { exitRequest } = props
