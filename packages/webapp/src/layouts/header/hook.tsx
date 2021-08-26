@@ -54,25 +54,7 @@ export const useHeader = () => {
         myLog(`onWalletBtnConnect click: ${account.readyState}`);
         accountStaticCallBack(_btnClickMap, []);
     }, [account, setShouldShow,_btnClickMap])
-
-    // const onThemeBtnClick = React.useCallback((themeMode: ThemeKeys) => {
-    //     if (themeMode === Theme.dark) {
-    //         setTheme(Theme.light)
-    //     } else {
-    //         setTheme(Theme.dark)
-    //     }
-    // }, [setTheme])
-    //
-    // const onLangBtnClick = (lang: LanguageKeys) => {
-    //     setLanguage(lang);
-    // }
-
     React.useEffect(() => {
-        // headerToolBarData[ ButtonComponentsMap.WalletConnect ] = {
-        //     ...headerToolBarData[ ButtonComponentsMap.WalletConnect ],
-        //     accountState,
-        //     handleClick: onWalletBtnConnect,
-        // }
         setHeaderToolBarData((headerToolBarData)=>{
             return {
                 ...headerToolBarData,
