@@ -41,6 +41,7 @@ import { DAYS, REFRESH_RATE } from 'defs/common_defs';
 
 import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
+import { useToast } from 'hooks/common/useToast';
 
 const useSwapSocket = () => {
     const {sendSocketTopic, socketEnd} = useSocket();
@@ -118,7 +119,9 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const [swapBtnStatus, setSwapBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE)
     const [isSwapLoading, setIsSwapLoading] = React.useState(false)
     const [quoteMinAmt, setQuoteMinAmt] = React.useState<string>()
-    const [swapToastOpen, setSwapToastOpen] = React.useState<{ flag: boolean, type: any, label: string } | undefined>(undefined)
+    
+    const { toastOpen, setToastOpen, closeToast, } = useToast()
+
     const [tradeData, setTradeData] = React.useState<SwapTradeData<IBData<C>> | undefined>(undefined);
     const [tradeCalcData, setTradeCalcData] = React.useState<Partial<TradeCalcData<C>>>({
         coinInfoMap: marketCoins?.reduce((prev: any, item: string | number) => {
@@ -166,7 +169,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo || !output
                 || account.readyState !== AccountStatus.ACTIVATED) {
 
-                setSwapToastOpen({flag: true, type: 'error', label: t('labelSwapFailed')})
+                setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                 setIsSwapLoading(false)
 
                 return
@@ -218,10 +221,10 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 myLog(response)
 
                 if (!response?.hash) {
-                    setSwapToastOpen({flag: true, type: 'error', label: t('labelSwapFailed')})
+                    setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                     myError(response?.resultInfo)
                 } else {
-                    setSwapToastOpen({flag: true, type: 'success', label: t('labelSwapSuccess')})
+                    setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
                     walletLayer2Service.sendUserUpdate()
                     setTradeData((state)=>{
                         return {
@@ -233,8 +236,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 }
             } catch (reason) {
                 sdk.dumpError400(reason)
-
-                setSwapToastOpen({flag: true, type: 'error', label: t('labelSwapFailed')})
+                setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
 
             }
 
@@ -246,7 +248,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
         }
 
-    }, [account.readyState, output, tokenMap, tradeData, setOutput, setIsSwapLoading, setSwapToastOpen, setTradeData])
+    }, [account.readyState, output, tokenMap, tradeData, setOutput, setIsSwapLoading, setToastOpen, setTradeData])
 
     //table myTrade
     const myTradeTableCallback = React.useCallback(() => {
@@ -406,7 +408,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const updateAmtMap = React.useCallback(async () => {
 
         if (LoopringAPI.userAPI && market && pair?.coinAInfo?.simpleName
-            && pair?.coinBInfo?.simpleName && ammMap && accountStatus === SagaStatus.UNSET) {
+            && pair?.coinBInfo?.simpleName && ammMap && account.readyState === AccountStatus.ACTIVATED) {
             const {amm,} = sdk.getExistedMarket(marketArray, pair?.coinAInfo?.simpleName, pair?.coinBInfo?.simpleName)
 
             const realMarket = amm && ammMap[ amm ] ? amm : market
@@ -424,11 +426,11 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     }, [setAmountMap, market, marketArray, ammMap, accountStatus, account.apiKey, pair?.coinAInfo?.simpleName, pair?.coinBInfo?.simpleName,])
 
-    useCustomDCEffect(() => {
+    React.useEffect(() => {
 
         updateAmtMap()
 
-    }, [market, pair?.coinAInfo?.simpleName, pair?.coinBInfo?.simpleName, accountStatus])
+    }, [market, accountStatus])
 
     const walletLayer2Callback = React.useCallback(async () => {
         // const base = tradeData?.sell.belong
@@ -669,7 +671,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     }, [tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray, ammMap, totalFee, setTradeCalcData, setTradeData, setMarket, setPair,])
 
     const should15sRefresh = React.useCallback(() => {
-        console.log('should15sRefresh',market);
+        myLog('should15sRefresh',market);
         if (market) {
             // updateDepth()
             callPairDetailInfoAPIs()
@@ -804,8 +806,8 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     }
     return {
-        swapToastOpen,
-        setSwapToastOpen,
+        toastOpen,
+        closeToast,
 
         tradeCalcData,
         tradeFloat,
