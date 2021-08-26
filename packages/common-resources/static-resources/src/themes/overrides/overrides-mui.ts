@@ -472,6 +472,9 @@ export const MuiInputBase = ({colorBase, themeMode}: any): { styleOverrides: Com
                     lineHeight: pxToRem(24), minWidth: 'auto',
 
                 },
+                ' .MuiSelect-icon':{
+                    color: colorBase.textThird
+                }
             },
 
         }
@@ -617,13 +620,13 @@ export const MuiFormLabel = ({colorBase}: any) => {
 
     }
 }
-export const MuiList = () => {
+export const MuiList = ({colorBase}: any) => {
     return {
         styleOverrides: {
             root: {
                 '&.MuiList-padding': {
                     padding: '0.8rem 0'
-                }
+                },
             }
         }
     }

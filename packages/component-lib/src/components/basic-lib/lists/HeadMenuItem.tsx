@@ -210,7 +210,7 @@ export const HeaderMenuSub = React.memo(React.forwardRef(<I extends BasicHeaderI
     return <><StyledTabBtn selected={selected} {...bindHover(popupState)} key={label.id} className={className} ref={ref}>
         <Typography component={'span'} variant={'body1'} paddingRight={1}>
             {t(label.i18nKey)}</Typography>
-            <ListItemAvatar><DropDownIcon/></ListItemAvatar>
+            <ListItemAvatar color={'inherit'}><DropDownIcon/></ListItemAvatar>
         </StyledTabBtn>
         <StyledHeaderMenuSub key={`menu-${layer}-${label.id}`}
                              {...bindMenu(popupState)}
