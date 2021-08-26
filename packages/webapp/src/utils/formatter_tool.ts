@@ -75,6 +75,7 @@ export function FormatValWithPrecision(rawVal: string, symbol: string) {
 */
 export function formatPriceWithPrecision(rawVal: string, 
     symbol: string) {
+
     const marketInfo = getMarketInfo(symbol)
     if (!rawVal || !marketInfo || !symbol) {
         return '0'
@@ -82,4 +83,17 @@ export function formatPriceWithPrecision(rawVal: string,
 
     return sdk.toBig(rawVal).toFixed(marketInfo.precisionForPrice)
 
+}
+
+export function getShowStr(_minimumReceived: string | undefined, fixed: number = 2, precision: number = 4) {
+        let minimumReceived: any = undefined
+        if (_minimumReceived) {
+            minimumReceived = parseFloat(_minimumReceived)
+            if (minimumReceived > 10) {
+                minimumReceived = minimumReceived.toFixed(fixed)
+            } else {
+                minimumReceived = sdk.toBig(minimumReceived).toPrecision(precision)
+            }
+        }
+        return minimumReceived
 }
