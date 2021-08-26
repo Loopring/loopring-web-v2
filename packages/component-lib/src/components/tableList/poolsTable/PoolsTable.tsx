@@ -144,7 +144,7 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
 const columnMode = <R extends Row<T>, T>({t}: WithTranslation, currency: 'USD' | 'CYN'): Column<R, unknown>[] => [
     {
         key: 'pools',
-        sortable: false,
+        sortable: true,
         width: 'auto',
         minWidth: 240,
         name: t('labelPool'),
@@ -157,7 +157,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, currency: 'USD' |
     },
     {
         key: 'liquidity',
-        sortable: false,
+        sortable: true,
         width: 'auto',
         name: t('labelLiquidity'),
         formatter: ({row}) => {
@@ -172,7 +172,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, currency: 'USD' |
     },
     {
         key: 'volume24',
-        sortable: false,
+        sortable: true,
         width: 'auto',
         minWidth: 156,
         name: t('label24TradeVolume'),
@@ -183,7 +183,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, currency: 'USD' |
 
             const {volume} = row.tradeFloat && row.tradeFloat.volume ? row.tradeFloat : {volume: EmptyValueTag};
             return <Typography
-                component={'span'}> {volume} {row.tradeFloat && row.tradeFloat.volume ? row.coinAInfo.simpleName : ''}
+                component={'span'}> {volume && Number.isFinite(volume) ? getThousandFormattedNumbers(Number(volume || 0), 2) : volume} {row.tradeFloat && row.tradeFloat.volume ? row.coinAInfo.simpleName : ''}
             </Typography>
         }
     },
@@ -347,6 +347,54 @@ export const PoolsTable = withTranslation('tables')(
                 //     }
                 //     return sortedRows;
                 // }
+                sortMethod: (sortedRows: any[], sortColumn: string) => {
+                    switch (sortColumn) {
+                        case 'pools':
+                            sortedRows = sortedRows.sort((a, b) => {
+                                const valueA = a.coinA
+                                const valueB = b.coinA
+                                return valueA.localeCompare(valueB)
+                            })
+                            break;
+                        case 'liquidity':
+                            sortedRows = sortedRows.sort((a, b) => {
+                                const valueA = a[ 'amountDollar' ]
+                                const valueB = b[ 'amountDollar' ]
+                                if (valueA && valueB) {
+                                    return valueB - valueA
+                                }
+                                if (valueA && !valueB) {
+                                    return -1
+                                }
+                                if (!valueA && valueB) {
+                                    return 1
+                                }
+                                return 0
+                            })
+                            break;
+                        case 'volume24':
+                            sortedRows = sortedRows.sort((a, b) => {
+                                console.log(a, b)
+                                const valueA = a.tradeFloat.volume
+                                const valueB = b.tradeFloat.volume
+                                if (valueA && valueB) {
+                                    return valueB - valueA
+                                }
+                                if (valueA && !valueB) {
+                                    return -1
+                                }
+                                if (!valueA && valueB) {
+                                    return 1
+                                }
+                                return 0
+                            })
+                            break;
+                        default:
+                            return sortedRows
+                    }
+                    return sortedRows;
+                },
+                sortDefaultKey: 'liquidity',
             }}/>
             {pagination && rawData && rawData.length > 0 && (
                 <TablePagination page={page} pageSize={pageSize} total={totalData.length}

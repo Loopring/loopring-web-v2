@@ -128,7 +128,7 @@ export default {
     labelBack: 'Back',
     labelAPY: 'APY',
     label24Volume: '24h Trade Volume',
-    labelTVL: 'TVL',
+    labelTVL: 'Total Volume Locked',
     labelAmmTotalToken: 'Tokens in AMM',
     labelNoActiveEvent: 'No event',
     labelNew: 'New',
@@ -238,5 +238,6 @@ export default {
     labelImpactExtraGreat: ' Your transaction amount will affect the pool price <1>{{value}}</1>. Are you sure to swap?',
     labelCalculating:'Calculating...',
     labelAmmMyTransactions: 'My Transactions',
+    labelAmmAllTransactions: 'All Transactions',
 }
 

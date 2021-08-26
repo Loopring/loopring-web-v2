@@ -22,19 +22,32 @@ import { FixedStyle, StylePaper } from 'pages/styled';
 
 //******************** page code ************************//
 //  ${({theme}) => theme.border.defaultFrame({c_key: 'blur'})};
-const BoxStyled = styled(Box)`
-  flex: 1;
-  background: var(--color-box);
-  border-radius: ${({theme}) => theme.unit}px;
-  padding: ${({theme}) => theme.unit * 2}px;
-  height: 120px;
-  // min-width: 160px;
-  max-width: 210px;
-  // & .MuiAvatar-root {
-    //     height: ${({theme}) => theme.fontDefault.h4};
-    //     width: ${({theme}) => theme.fontDefault.h4};
-  // }
+const BoxWrapperStyled = styled(Grid)`
+    background: var(--color-box);
+    border-radius: ${({theme}) => theme.unit}px;
+`
+
+const BoxStyled = styled(Grid)`
+    // flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    // background: var(--color-box);
+    // border-radius: ${({theme}) => theme.unit}px;
+    // padding: ${({theme}) => theme.unit * 2}px;
+    height: ${({theme}) => theme.unit * 13}px;
+    min-width: 170px;
+    max-width: 210px;
+    // & .MuiAvatar-root {
+        //     height: ${({theme}) => theme.fontDefault.h4};
+        //     width: ${({theme}) => theme.fontDefault.h4};
+    // }
 `;
+
+const TypographValueStyled = styled(Typography)`
+    
+`
 
 const BoxTopStyled = styled(Box)`
   background: var(--color-box);
@@ -159,15 +172,18 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             showXAxis
                         />
                     </Box>
-                    <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
-                        <BoxStyled paddingX={2} display={'flex'} flexDirection={'column'}>
-                            <Typography component={'p'} color={'textSecondary'} display={'flex'}
+                    <BoxWrapperStyled container className={'MuiPaper-elevation2'} display={'flex'} alignItems={'center'}>
+                        <BoxStyled item sm={3} marginLeft={2.5}>
+                            {/* <Typography component={'p'} color={'textSecondary'} display={'flex'}
                                         marginBottom={1 / 2 * 3}
                             >
                                 {t('labelAmmTotalToken')}
-                            </Typography>
+                            </Typography> */}
+                            <Box>
+
+                            
                             <Typography component={'span'} display={'flex'} flexDirection={'row'}
-                                        justifyContent={'space-between'} alignItems={'center'}
+                                        justifyContent={'flex-start'} alignItems={'center'}
                                         style={{textTransform: 'capitalize'}} color={'textPrimary'}>
                                 <Box component={'span'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
                                      width={'var(--list-menu-coin-size)'} alignItems={'center'}
@@ -175,8 +191,9 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                     {coinAIcon ?
                                         <AvatarCoinStyled imgx={coinAIcon.x} imgy={coinAIcon.y}
                                                           imgheight={coinAIcon.height}
-                                                          imgwidth={coinAIcon.width} size={24}
+                                                          imgwidth={coinAIcon.width} size={20}
                                                           variant="circular"
+                                                          style={{ marginTop: 2 }}
                                                           alt={coinPairInfo?.myCoinA?.simpleName as string}
                                             // src={sellData?.icon}
                                                           src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
@@ -188,10 +205,10 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                             // src={sellData?.icon}
                                                   src={'static/images/icon-default.png'}/>
                                     }</Box>
-                                <Typography justifyContent={'center'} display={'flex'}>
-                                    <Typography component={'span'} alignSelf={'right'} height={24} lineHeight={'24px'}>
-                                        {getThousandFormattedNumbers(coinPairInfo.totalA, 6)}</Typography>
-                                    <Typography component={'span'} marginLeft={1} alignSelf={'right'} height={24}
+                                <Typography marginLeft={1 / 2} justifyContent={'center'} display={'flex'}>
+                                    <Typography component={'span'} alignSelf={'right'} variant={'h5'} height={24} lineHeight={'24px'}>
+                                        {getThousandFormattedNumbers(coinPairInfo.totalA, 4)}</Typography>
+                                    <Typography component={'span'} variant={'h5'} marginLeft={1} alignSelf={'right'} height={24}
                                                 lineHeight={'24px'}>
                                         {/*<HiddenHidden>{t('labelLPTotal')}</Hidden>*/}
                                         {coinPairInfo.myCoinA?.simpleName}
@@ -201,7 +218,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
 
                             </Typography>
                             <Typography component={'span'} display={'flex'} flexDirection={'row'}
-                                        justifyContent={'space-between'} alignItems={'center'} marginTop={1}
+                                        justifyContent={'flex-start'} alignItems={'center'} marginTop={1}
                                         style={{textTransform: 'capitalize'}}>
                                 {/*<Typography component={'span'} marginRight={1 / 2}*/}
                                 {/*            color={'textSecondary'}>*/}
@@ -213,8 +230,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                 <Box component={'span'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
                                      width={'var(--list-menu-coin-size)'} alignItems={'center'}
                                      justifyContent={'center'}>{coinBIcon ?
-                                    <AvatarCoinStyled imgx={coinBIcon.x} imgy={coinBIcon.y} imgheight={coinBIcon.height}
-                                                      imgwidth={coinBIcon.width} size={24}
+                                    <AvatarCoinStyled style={{ marginTop: 2 }} imgx={coinBIcon.x} imgy={coinBIcon.y} imgheight={coinBIcon.height}
+                                                      imgwidth={coinBIcon.width} size={20}
                                                       variant="circular"
                                                       alt={coinPairInfo?.myCoinB?.simpleName as string}
                                         // src={sellData?.icon}
@@ -226,10 +243,10 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                               }}
                                         // src={sellData?.icon}
                                               src={'static/images/icon-default.png'}/>}</Box>
-                                <Typography justifyContent={'center'} display={'flex'}>
-                                    <Typography component={'span'} alignSelf={'right'} height={24} lineHeight={'24px'}>
-                                        {getThousandFormattedNumbers(coinPairInfo.totalB, 6)}</Typography>
-                                    <Typography component={'span'} marginLeft={1} alignSelf={'right'} height={24}
+                                <Typography marginLeft={1 / 2} justifyContent={'center'} display={'flex'}>
+                                    <Typography variant={'h5'} component={'span'} alignSelf={'right'} height={24} lineHeight={'24px'}>
+                                        {getThousandFormattedNumbers(coinPairInfo.totalB, 4)}</Typography>
+                                    <Typography variant={'h5'} component={'span'} marginLeft={1} alignSelf={'right'} height={24}
                                                 lineHeight={'24px'}>
                                         {/*<Hidden>{t('labelLPTotal')}</Hidden>*/}
                                         {coinPairInfo.myCoinB?.simpleName}
@@ -238,50 +255,52 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                 </Typography>
 
                             </Typography>
-
+                            </Box>
                         </BoxStyled>
-                        <BoxStyled paddingX={2} display={'flex'} flexDirection={'column'}>
-                            <Typography component={'p'} color={'textSecondary'} display={'flex'}
-                            >
-                                {t('label24Volume')}
-                            </Typography>
-                            <Typography variant={'h5'} marginTop={4}
-                                        component={'span'}>
-                                {currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(tradeFloat && tradeFloat.priceDollar ? tradeFloat.priceDollar as number : 0, 2)
-                                    : PriceTag.Yuan + getThousandFormattedNumbers(tradeFloat && tradeFloat.priceYuan ? tradeFloat.priceYuan as number : 0, 2)}
+
+                        <Divider style={{ height: '50%', marginLeft: 32 }} orientation={'vertical'} />
+                        
+                        <BoxStyled item sm={2}>
+                            <Box>
+                            <Typography variant={'h3'}
+                                        component={'span'}> {typeof coinPairInfo.amountDollar === 'undefined' ? EmptyValueTag :
+                                currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(coinPairInfo.amountDollar, 2, {isAbbreviate: true}) : PriceTag.Yuan + getThousandFormattedNumbers(coinPairInfo.amountYuan ? coinPairInfo.amountYuan : 0, 2, {isAbbreviate: true})}
                             </Typography>
 
-                        </BoxStyled>
-                        <BoxStyled paddingX={2} display={'flex'} flexDirection={'column'}>
-                            <Typography component={'p'} color={'textSecondary'} display={'flex'}
-                            >
+                            <Typography component={'p'} color={'textSecondary'} display={'flex'}>
                                 {t('labelTVL')}
                             </Typography>
-
-                            <Typography variant={'h5'} marginTop={4}
-                                        component={'span'}> {typeof coinPairInfo.amountDollar === 'undefined' ? EmptyValueTag :
-                                currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(coinPairInfo.amountDollar, 2) : PriceTag.Yuan + getThousandFormattedNumbers(coinPairInfo.amountYuan ? coinPairInfo.amountYuan : 0, 2)}
-                            </Typography>
-
-
+                            </Box>
                         </BoxStyled>
-                        <BoxStyled paddingX={2} display={'flex'} flexDirection={'column'}>
-                            <Typography component={'p'} color={'textSecondary'} display={'flex'}
-                            >
+
+                        <BoxStyled item sm={3}>
+                            <Box>
+                            <Typography variant={'h3'} component={'span'}>
+                                {getThousandFormattedNumbers(tradeFloat && tradeFloat.volume ? tradeFloat.volume : 0.00, 2, {isAbbreviate: true})}
+                            </Typography>
+                            <Typography component={'p'} color={'textSecondary'} display={'flex'}>
+                                {t('label24Volume')}
+                            </Typography>
+                            </Box>
+                        </BoxStyled>
+
+                        <BoxStyled item sm={2}>
+                            <Box>
+                            <Typography variant={'h3'} component={'span'}> {coinPairInfo.APY ? coinPairInfo.APY : EmptyValueTag}%
+                            </Typography>
+                            <Typography component={'p'} color={'textSecondary'} display={'flex'}>
                                 {t('labelAPY')}
                             </Typography>
-                            <Typography variant={'h5'} marginTop={4}
-                                        component={'span'}> {coinPairInfo.APY ? coinPairInfo.APY : EmptyValueTag}%
-                            </Typography>
+                            </Box>
                         </BoxStyled>
-                    </Box>
+                    </BoxWrapperStyled>
                     <Box>
                         
                         <StylePaper ref={container} style={{marginTop: `${unit * 2}px`}}>
                             <TabsStyled value={tabIndex}
-                                //   onChange={handleChange}
+                                // onChange={handleChange}
                                 aria-label="tabs switch">
-                                {/* <Tab label={t('labelAll')} {...applyProps(0)} /> */}
+                                {/* <Tab label={t('labelAmmAllTransactions')} {...applyProps(0)} /> */}
                                 <Tab label={t('labelAmmMyTransactions')} {...applyProps(1)} />
                             </TabsStyled>
                             <Divider />
