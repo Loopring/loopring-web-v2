@@ -85,10 +85,12 @@ export function formatPriceWithPrecision(rawVal: string,
 
 }
 
-export function getShowStr(_minimumReceived: string | undefined, fixed: number = 2, precision: number = 4) {
+export function getShowStr(_minimumReceived: string | number | undefined, fixed: number = 2, precision: number = 4) {
+        if (_minimumReceived === '0' || _minimumReceived === 0)
+            return '0'
         let minimumReceived: any = undefined
         if (_minimumReceived) {
-            minimumReceived = parseFloat(_minimumReceived)
+            minimumReceived = typeof(_minimumReceived) === 'number' ? _minimumReceived : parseFloat(_minimumReceived)
             if (minimumReceived > 10) {
                 minimumReceived = minimumReceived.toFixed(fixed)
             } else {
