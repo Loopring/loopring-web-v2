@@ -12,6 +12,7 @@ import {
 import {
     AccountBaseNewProps,
     AccountStepNew as AccountStep,
+
     Deposit_Approve_WaitForAuth,
     Deposit_Approve_Refused,
     Deposit_Approve_Submited,
@@ -31,6 +32,21 @@ import {
     Withdraw_In_Progress,
     Withdraw_Success,
     Withdraw_Failed,
+
+    CreateAccount_Approve_WaitForAuth,
+    CreateAccount_Approve_Refused,
+    CreateAccount_Approve_Submited,
+    CreateAccount_WaitForAuth,
+    CreateAccount_Refused,
+    CreateAccount_Failed,
+    CreateAccount_Submited,
+
+    UpdateAccount_Approve_WaitForAuth,
+    UpdateAccount_First_Method_Refused,
+    UpdateAccount_User_Refused,
+    UpdateAccount_Success,
+    UpdateAccount_Submited,
+    UpdateAccount_Failed,
 } from './ModalPanels';
 import { account, coinMap, CoinType, walletMap } from '../../static';
 import { DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../index';
@@ -84,6 +100,23 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
     }
     const accAddress = '0xcEd11e039a5C50927a17a8D4632616DFa8F72BF6'
     const etherscanLink = accAddress
+
+    const retryBtn = React.useMemo(() => {
+        return {
+            btnTxt: 'retry',
+            callback: () => {
+            }
+        }
+    }, [])
+
+    const closeBtn = React.useMemo(() => {
+        return {
+            btnTxt: 'close',
+            callback: () => {
+            }
+        }
+    }, [])
+
     const { nameList, accountList, } = React.useMemo(() => {
         const accountMap = {
             [AccountStep.Deposit_Approve_WaitForAuth]: {
@@ -93,27 +126,17 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                     }} />,
             },
             [AccountStep.Deposit_Approve_Refused]: {
-                view: <Deposit_Approve_Refused btnInfo={{
-                    btnTxt: 'retry',
-                    callback: () => {
-                        return true
-                    }
-                }}
+                view: <Deposit_Approve_Refused btnInfo={retryBtn}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_Approve_Submited]: {
-                view: <Deposit_Approve_Submited btnInfo={{
-                    btnTxt: 'close',
-                    callback: () => {
-                        return true
-                    }
-                }} txCheck={
+                view: <Deposit_Approve_Submited btnInfo={closeBtn} txCheck={
                     {
                         route: '',
                         callback: () => {
-                            
+
                         }
                     }}
 
@@ -123,27 +146,17 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
             },
             [AccountStep.Deposit_WaitForAuth]: {
                 view: <Deposit_WaitForAuth
-                providerName={ConnectProviders.WalletConnect} {...{
+                    providerName={ConnectProviders.WalletConnect} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_Refused]: {
-                view: <Deposit_Refused btnInfo={{
-                    btnTxt: 'retry',
-                    callback: () => {
-                        return true
-                    }
-                }} {...{
-                        ...rest
-                    }} />,
+                view: <Deposit_Refused btnInfo={retryBtn} {...{
+                    ...rest
+                }} />,
             },
             [AccountStep.Deposit_Failed]: {
-                view: <Deposit_Failed btnInfo={{
-                    btnTxt: 'close',
-                    callback: () => {
-                        return true
-                    }
-                }}
+                view: <Deposit_Failed btnInfo={closeBtn}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
@@ -183,8 +196,8 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
             },
             [AccountStep.Transfer_In_Progress]: {
                 view: <Transfer_In_Progress {...{
-                        ...rest
-                    }} />,
+                    ...rest
+                }} />,
             },
             [AccountStep.Transfer_Success]: {
                 view: <Transfer_Success
@@ -242,14 +255,104 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
 
     }, [])
 
+    const { nameList4, accountList4, } = React.useMemo(() => {
+        const accountMap = {
+            [AccountStep.CreateAccount_Approve_WaitForAuth]: {
+                view: <CreateAccount_Approve_WaitForAuth
+                    providerName={account.connectName} {...{
+                        ...rest
+                    }} />,
+            },
+            [AccountStep.CreateAccount_Approve_Refused]: {
+                view: <CreateAccount_Approve_Refused
+                    providerName={account.connectName} {...{
+                        ...rest
+                    }} />,
+            },
+            [AccountStep.CreateAccount_Approve_Submited]: {
+                view: <CreateAccount_Approve_Submited
+                    providerName={account.connectName} {...{
+                        ...rest
+                    }} />,
+            },
+            [AccountStep.CreateAccount_WaitForAuth]: {
+                view: <CreateAccount_WaitForAuth
+                    providerName={account.connectName} {...{
+                        ...rest
+                    }} />,
+            },
+            [AccountStep.CreateAccount_Refused]: {
+                view: <CreateAccount_Refused
+                    providerName={account.connectName} {...{
+                        ...rest
+                    }} />,
+            },
+            [AccountStep.CreateAccount_Failed]: {
+                view: <CreateAccount_Failed
+                    providerName={account.connectName} {...{
+                        ...rest
+                    }} />,
+            },
+            [AccountStep.CreateAccount_Submited]: {
+                view: <CreateAccount_Submited
+                    providerName={account.connectName} {...{
+                        ...rest
+                    }} />,
+            },
+        }
+
+        return { nameList4: Object.keys(accountMap), accountList4: Object.values(accountMap) }
+
+    }, [])
+
+    const { nameList5, accountList5, } = React.useMemo(() => {
+        const accountMap = {
+            [AccountStep.UpdateAccount_Approve_WaitForAuth]: {
+                view: <UpdateAccount_Approve_WaitForAuth
+                    providerName={ConnectProviders.MetaMask} {...{
+                        ...rest
+                    }} />,
+            },
+            [AccountStep.UpdateAccount_First_Method_Refused]: {
+                view: <UpdateAccount_First_Method_Refused btnInfo = {retryBtn} {...{
+                        ...rest
+                    }} />,
+            },
+            [AccountStep.UpdateAccount_User_Refused]: {
+                view: <UpdateAccount_User_Refused btnInfo = {retryBtn} {...{
+                        ...rest
+                    }} />,
+            },
+            [AccountStep.UpdateAccount_Success]: {
+                view: <UpdateAccount_Success btnInfo = {closeBtn}  {...{
+                        ...rest
+                    }} />,
+            },
+            [AccountStep.UpdateAccount_Submited]: {
+                view: <UpdateAccount_Submited btnInfo = {closeBtn} {...{
+                        ...rest
+                    }} />,
+            },
+            [AccountStep.UpdateAccount_Failed]: {
+                view: <UpdateAccount_Failed btnInfo = {closeBtn} {...{
+                        ...rest
+                    }} />,
+            },
+        }
+
+        return { nameList5: Object.keys(accountMap), accountList5: Object.values(accountMap) }
+
+    }, [])
+
     const fontSize = '30px'
     const color = 'red'
+    const width = 400
 
     return (
         <>
             <Style>
                 <MemoryRouter initialEntries={['/']}>
-                    <Box paddingTop={2} paddingX={2} width={180} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                    <Box paddingTop={2} paddingX={2} width={width} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                         <Typography fontSize={fontSize} color={color} variant={'body2'} > Deposit</Typography>
                     </Box>
                     <Grid container spacing={2}>
@@ -266,7 +369,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                         })}
                     </Grid>
 
-                    <Box paddingTop={2} paddingX={2} width={180} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                    <Box paddingTop={2} paddingX={2} width={width} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                         <Typography fontSize={fontSize} color={color} variant={'body2'} > Transfer </Typography>
                     </Box>
 
@@ -284,7 +387,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                         })}
                     </Grid>
 
-                    <Box paddingTop={2} paddingX={2} width={180} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                    <Box paddingTop={2} paddingX={2} width={width} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                         <Typography fontSize={fontSize} color={color} variant={'body2'} > Withdraw </Typography>
                     </Box>
 
@@ -295,6 +398,42 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                                 <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
                                     justifyContent={'center'} alignItems={'stretch'}>
                                     <Typography marginTop={2} variant={'body2'} color={'textSecondary'} style={{ wordBreak: 'break-all' }}>{AccountStep[nameList3[index]]}</Typography>
+
+                                    {panel.view}
+                                </Box>
+                            </>)
+                        })}
+                    </Grid>
+
+                    <Box paddingTop={2} paddingX={2} width={width} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                        <Typography fontSize={fontSize} color={color} variant={'body2'} > Create Layer2 Account </Typography>
+                    </Box>
+
+                    <Grid container spacing={2}>
+
+                        {accountList4.map((panel, index) => {
+                            return (<>
+                                <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
+                                    justifyContent={'center'} alignItems={'stretch'}>
+                                    <Typography marginTop={2} variant={'body2'} color={'textSecondary'} style={{ wordBreak: 'break-all' }}>{AccountStep[nameList4[index]]}</Typography>
+
+                                    {panel.view}
+                                </Box>
+                            </>)
+                        })}
+                    </Grid>
+
+                    <Box paddingTop={2} paddingX={2} width={width} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                        <Typography fontSize={fontSize} color={color} variant={'body2'} > Update Layer2 Account </Typography>
+                    </Box>
+
+                    <Grid container spacing={2}>
+
+                        {accountList5.map((panel, index) => {
+                            return (<>
+                                <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
+                                    justifyContent={'center'} alignItems={'stretch'}>
+                                    <Typography marginTop={2} variant={'body2'} color={'textSecondary'} style={{ wordBreak: 'break-all' }}>{AccountStep[nameList5[index]]}</Typography>
 
                                     {panel.view}
                                 </Box>

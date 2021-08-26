@@ -416,6 +416,6 @@ export const WarningIcon = (props: SvgIconProps) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none"
     >
         <path opacity="0.1" d="M2 12C2 17.5228 6.47715 22 12 22C17.5203 21.9939 21.9939 17.5203 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z" fill="#FF5677"/>
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M13 7L11 7L11 13L13 13L13 7ZM13 15L11 15L11 17L13 17L13 15Z" fill="#FF5677"/>
+        <path fillRule="evenodd" clipRule="evenodd" d="M13 7L11 7L11 13L13 13L13 7ZM13 15L11 15L11 17L13 17L13 15Z" fill="#FF5677"/>
     </SvgIcon>
 }
