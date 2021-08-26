@@ -92,4 +92,5 @@ export default {
     labelPoolTableAddLiqudity: 'Add',
     labelPoolTableRemoveLiqudity: 'Remove',
     labelEmptyDefault: 'Empty',
+    labelAmmTableType: 'Type',
 }
