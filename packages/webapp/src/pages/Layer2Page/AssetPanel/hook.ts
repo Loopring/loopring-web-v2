@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import store from 'stores'
-import { TokenType } from '@loopring-web/component-lib'
+import { TokenType, useSettings } from '@loopring-web/component-lib'
 import { AccountStatus, EmptyValueTag, globalSetup, SagaStatus } from '@loopring-web/common-resources'
 import { useWalletLayer2 } from 'stores/walletLayer2'
 import { useAccount } from 'stores/account';
@@ -11,6 +11,8 @@ import { volumeToCount } from 'hooks/help'
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
 import { useSocket } from '../../../stores/socket';
 import { useWalletHook } from '../../../services/wallet/useWalletHook';
+import { useSystem } from 'stores/system'
+import { getValuePrecision } from '@loopring-web/common-resources'
 
 export type TrendDataItem = {
     timeStamp: number;
@@ -26,15 +28,31 @@ export type ITokenInfoItem = {
     }
 }
 
+export type AssetsRawDataItem = {
+    token: {
+        type: TokenType;
+        value: string;
+    },
+    amount: string;
+    available: string;
+    locked: string;
+    smallBalance: boolean;
+    tokenValueDollar: number;
+    name: string;
+    tokenValueYuan: number;
+}
+
 export const useGetAssets = () => {
-    const [chartData, setChartData] = React.useState<TrendDataItem[]>([])
+    // const [chartData, setChartData] = React.useState<TrendDataItem[]>([])
     const [assetsList, setAssetsList] = React.useState<any[]>([])
-    const [formattedData, setFormattedData] = React.useState<{name: string; value: number}[]>([])
+    const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>([])
+    // const [formattedData, setFormattedData] = React.useState<{name: string; value: number}[]>([])
     const { account } = useAccount();
     const {sendSocketTopic,socketEnd} = useSocket();
+    const { forex } = useSystem()
     // const {  } = store.getState().walletLayer2;
-    const { ammMap } = useAmmMap()//store.getState().amm.ammMap
-    const { walletLayer2 } = useWalletLayer2();
+    // const { ammMap } = useAmmMap()//store.getState().amm.ammMap
+    // const { walletLayer2 } = useWalletLayer2();
     const { marketArray, addressIndex } = store.getState().tokenMap
     const [lpTokenList, setLpTokenList] = React.useState<{addr: string; price: number}[]>([])
 
@@ -62,6 +80,7 @@ export const useGetAssets = () => {
             socketEnd()
         }
     }, [account.readyState]);
+
     // const getUserTotalAssets = React.useCallback(async (limit: number = 7) => {
     //     const userAssets = await LoopringAPI.walletAPI?.getUserAssets({
     //         wallet: account.accAddress,
@@ -108,117 +127,49 @@ export const useGetAssets = () => {
         return undefined
     }, [addressIndex, lpTokenList])
 
-    const getFormattedData = React.useCallback(() => {
+    const getAssetsRawData = React.useCallback(() => {
         if (!!assetsList.length && !!lpTokenList.length) {
-            const data = assetsList.map(item => {
-                const isLpToken = item.token.split('-')[0] === 'LP'
+            const data = assetsList.map((tokenInfo) => {
+                const isLpToken = tokenInfo.token.split('-')[0] === 'LP'
+                let tokenValueDollar = 0
                 if (!isLpToken) {
-                    const tokenPriceUSDT = item.token === 'DAI'
+                    const tokenPriceUSDT = tokenInfo.token === 'DAI'
                         ? 1
-                        : Number(tokenPriceList.find(o => o.token === item.token) ? tokenPriceList.find(o => o.token === item.token)?.detail.price : 0) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
-                    return ({
-                        name: item.token,
-                        value: Number(volumeToCount(item.token, item.detail?.detail?.total as string)) * tokenPriceUSDT
-                    })
+                        : Number(tokenPriceList.find(o => o.token === tokenInfo.token) ? tokenPriceList.find(o => o.token === tokenInfo.token)?.detail.price : 0) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
+                    tokenValueDollar = Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail?.total as string)) * tokenPriceUSDT
                 }
-                const formattedBalance = Number(volumeToCount(item.token, item.detail?.detail.total))
-                // const tokenValue = await getAmmLiquidity({ market: item.token, balance: balance })
-                const price = getLpTokenPrice(item.token)
-                // const balance = Object.entries(walletLayer2 || {}).find(([token]) => token === item.token)?.[1].total
-                // const formattedBalance = volumeToCount(item.token, (balance || 0))
-                let tokenValue: number = 0;
+                const formattedBalance = Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total))
+                const price = getLpTokenPrice(tokenInfo.token)
                 if (formattedBalance && price){
-                    // tokenValue = ammMap[ammToken].totalLPToken as any;
-                    tokenValue = (formattedBalance || 0) * price as any;
+                    tokenValueDollar = (formattedBalance || 0) * price as any;
                 }
+                const isSmallBalance = tokenValueDollar < 1
                 return ({
-                    name: item.token,
-                    value: tokenValue
+                    token: {
+                        type: tokenInfo.token.split('-')[0] === 'LP' ? TokenType.lp : TokenType.single,
+                        value: tokenInfo.token
+                    },
+                    amount: getValuePrecision(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) || EmptyValueTag,
+                    available: getValuePrecision(Number(tokenInfo.detail?.count)) || EmptyValueTag,
+                    locked: String(volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail.locked)) || EmptyValueTag,
+                    smallBalance: isSmallBalance,
+                    tokenValueDollar,
+                    name: tokenInfo.token,
+                    tokenValueYuan: tokenValueDollar * (forex || 6.5)
                 })
             })
-            setFormattedData(data)
+            setAssetsRawData(data)
         }
-    }, [getLpTokenPrice, assetsList, lpTokenList])
+    }, [assetsList, getLpTokenPrice])
 
     React.useEffect(() => {
-        getFormattedData()
-    }, [getFormattedData])
-
-    // React.useEffect(() => {
-    //     if (LoopringAPI && LoopringAPI.walletAPI && walletLayer2) {
-    //          getUserTotalAssets()
-    //     }
-    // }, [walletLayer2, getFormattedData])
-
-    // React.useEffect(() => {
-    //     getFormattedData()
-    // }, [getFormattedData])
-
-    // const formattedData = assetsList.map(item => {
-    //     const isLpToken = item.token.split('-')[0] === 'LP'
-    //     if (!isLpToken) {
-    //         const tokenPriceUSDT = item.token === 'DAI'
-    //             ? 1
-    //             : Number(tokenPriceList.find(o => o.token === item.token) ? tokenPriceList.find(o => o.token === item.token)?.detail.price : 0) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
-    //         return ({
-    //             name: item.token,
-    //             value: Number(volumeToCount(item.token, item.detail?.detail?.total as string)) * tokenPriceUSDT
-    //         })
-    //     }
-    //     const formattedBalance = Number(volumeToCount(item.token, item.detail?.detail.total))
-    //     // const tokenValue = await getAmmLiquidity({ market: item.token, balance: balance })
-    //     const price = getLpTokenPrice(item.token)
-    //     // const balance = Object.entries(walletLayer2 || {}).find(([token]) => token === item.token)?.[1].total
-    //     // const formattedBalance = volumeToCount(item.token, (balance || 0))
-    //     let tokenValue: number = 0;
-    //     if (formattedBalance && price){
-    //         // tokenValue = ammMap[ammToken].totalLPToken as any;
-    //         tokenValue = (formattedBalance || 0) * price as any;
-    //     }
-    //     return ({
-    //         name: item.token,
-    //         value: tokenValue
-    //     })
-    // })
-    // const formattedData = await Promise.all(promises)
-    // const total = formattedData.map(o => o.value).reduce((a, b) => a + b, 0)
-    // const percentList = formattedData.map(o => ({
-    //     ...o,
-    //     value: o.value / total,
-    // }))
-
-    // const lpTotalData = percentList
-    //     .filter(o => o.name.split('-')[0] === 'LP')
-    //     .reduce((prev, next) => ({
-    //         name: 'LP-Token',
-    //         value: prev.value + next.value
-    //     }), {
-    //         name: 'LP-Token',
-    //         value: 0
-    //     })
-    
-    // const formattedDoughnutData = percentList.filter(o => o.name.split('-')[0] === 'LP').length > 0
-    //     ? [...percentList.filter(o => o.name.split('-')[0] !== 'LP'), lpTotalData]
-    //     : percentList
-
-    const assetsRawData = assetsList.map((tokenInfo) => {
-        const tokenPriceUSDT = Number(tokenPriceList.find(o => o.token === tokenInfo.token)?.detail.price) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
-        return ({
-            token: {
-                type: tokenInfo.token.split('-')[0] === 'LP' ? TokenType.lp : TokenType.single,
-                value: tokenInfo.token
-            },
-            amount: String(Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)).toFixed(6)) || EmptyValueTag,
-            available: String(tokenInfo.detail?.count) || EmptyValueTag,
-            locked: String(volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail.locked)) || EmptyValueTag,
-            smallBalance: tokenPriceUSDT * Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) < 1,
-        })
-    })
+        getAssetsRawData()
+    }, [getAssetsRawData])
 
     return {
         // chartData,
         // assetsList,
-        formattedData,
+        // formattedData,
         // formattedDoughnutData,
         assetsRawData,
         marketArray,

@@ -13,6 +13,7 @@ import {
     ScaleAreaChart,
     ToggleButtonGroup,
     LpTokenAction,
+    useSettings,
 } from '@loopring-web/component-lib'
 import { unit } from '@loopring-web/common-resources'
 
@@ -21,6 +22,7 @@ import { useModals } from 'hooks/useractions/useModals'
 import store from 'stores'
 import { StylePaper } from 'pages/styled'
 import { useGetAssets } from './hook'
+import { useSystem } from 'stores/system'
 
 const StyledChartWrapper = styled(Box)`
     height: 225px;
@@ -71,19 +73,20 @@ export type TrendDataItem = {
 const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => {
     const container = useRef(null);
     const [pageSize, setPageSize] = useState(10);
-    const [chartPeriod, setChartPeriod] = useState('week')
+    // const [chartPeriod, setChartPeriod] = useState('week')
 
-    const { formattedData, marketArray, assetsRawData } = useGetAssets()
+    const { marketArray, assetsRawData } = useGetAssets()
+    const { currency } = useSettings()
     const { walletLayer2 } = store.getState().walletLayer2;
 
-    const total = formattedData.map(o => o.value).reduce((a, b) => a + b, 0)
-    const percentList = formattedData.map(o => ({
+    const total = assetsRawData.map(o => o.tokenValueDollar).reduce((a, b) => a + b, 0)
+    const percentList = assetsRawData.map(o => ({
         ...o,
-        value: o.value / total,
+        value: o.tokenValueDollar / total,
     }))
 
     const lpTotalData = percentList
-        .filter(o => o.name.split('-')[0] === 'LP')
+        .filter(o => o.token.value.split('-')[0] === 'LP')
         .reduce((prev, next) => ({
             name: 'LP-Token',
             value: prev.value + next.value
@@ -92,8 +95,8 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
             value: 0
         })
     
-    const formattedDoughnutData = percentList.filter(o => o.name.split('-')[0] === 'LP').length > 0
-        ? [...percentList.filter(o => o.name.split('-')[0] !== 'LP'), lpTotalData]
+    const formattedDoughnutData = percentList.filter(o => o.token.value.split('-')[0] === 'LP').length > 0
+        ? [...percentList.filter(o => o.token.value.split('-')[0] !== 'LP'), lpTotalData]
         : percentList
 
     useEffect(() => {
@@ -140,10 +143,10 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
     const AssetTitleProps: AssetTitleProps = {
         assetInfo: {
-            totalAsset: formattedData.map(o => o.value).reduce((prev, next) => {
+            totalAsset: assetsRawData.map(o => currency === 'USD' ? o.tokenValueDollar : o.tokenValueYuan).reduce((prev, next) => {
                 return prev + next
             }, 0),
-            priceTag: PriceTag.Dollar,
+            priceTag: currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan,
         },
         onShowDeposit,
         onShowTransfer,

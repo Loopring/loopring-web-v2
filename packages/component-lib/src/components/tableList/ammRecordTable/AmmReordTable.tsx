@@ -48,7 +48,7 @@ const columnMode = ({t}: WithTranslation, currency: 'USD' | 'CYN'): Column<Row<a
             return (
                 <Box display={'flex'} alignItems={'center'}>
                     <Typography color={isAdd ? 'var(--color-success)' : 'var(--color-error)'}>{side}</Typography>
-                    &nbsp;
+                    &nbsp;&nbsp;
                     <Typography component={'span'}>
                         {`${getValuePrecision(amountA, 4)} ${coinA.simpleName}`}
                     </Typography>
