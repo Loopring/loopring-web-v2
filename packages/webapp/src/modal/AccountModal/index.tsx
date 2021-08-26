@@ -2,13 +2,8 @@ import { WithTranslation, withTranslation } from 'react-i18next';
 import {
     AccountStepNew as AccountStep,
     ActiveAccountProcess,
-    ApproveAccount,
     Button,
-    Depositing,
-    DepositingProcess,
     DepositPanel,
-    FailedDeposit,
-    FailedTokenAccess,
     FailedUnlock,
     HadAccount,
     ModalAccount,
@@ -18,10 +13,11 @@ import {
     QRAddressPanel,
     SuccessUnlock,
     Toast,
-    TokenAccessProcess,
     UpdateAccSigWarning,
     UpdateAccUserDenied,
     useOpenModals,
+
+    UpdateAccount,
 
     Deposit_Approve_WaitForAuth,
     Deposit_Approve_Refused,
@@ -42,6 +38,21 @@ import {
     Withdraw_In_Progress,
     Withdraw_Success,
     Withdraw_Failed,
+
+    CreateAccount_Approve_WaitForAuth,
+    CreateAccount_Approve_Refused,
+    CreateAccount_Approve_Submited,
+    CreateAccount_WaitForAuth,
+    CreateAccount_Refused,
+    CreateAccount_Failed,
+    CreateAccount_Submited,
+
+    UpdateAccount_Approve_WaitForAuth,
+    UpdateAccount_First_Method_Refused,
+    UpdateAccount_User_Refused,
+    UpdateAccount_Success,
+    UpdateAccount_Submited,
+    UpdateAccount_Failed,
 } from '@loopring-web/component-lib';
 import { walletServices } from '@loopring-web/web3-provider';
 import { ConnectorError, sleep } from 'loopring-sdk';
@@ -313,7 +324,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 }} />
             },
             [AccountStep.UpdateAccount]: {
-                view: <ApproveAccount {...{
+                view: <UpdateAccount {...{
                     ...account,
                     etherscanUrl,
                     onSwitch, onCopy,

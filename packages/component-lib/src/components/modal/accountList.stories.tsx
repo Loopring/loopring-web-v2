@@ -13,15 +13,12 @@ import {
     AccountBaseProps,
     AccountStep,
     ActiveAccountProcess,
-    ApproveAccount,
     DepositApproveProcess,
-    Depositing,
     FailedDeposit,
     FailedTokenAccess,
     FailedUnlock,
     HadAccount,
     ModalAccount,
-    NoAccount,
     ProcessUnlock,
     SuccessUnlock,
     TokenAccessProcess,
@@ -84,21 +81,10 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
     const etherscanLink =  accAddress
     const { nameList, accountList, } = React.useMemo(() => {
         const accountMap = {
-            [ AccountStep.NoAccount ]: {view: <NoAccount {...{
-                ...accountInfoProps, goDeposit: () => {
-                }
-            }}/>,},
             [ AccountStep.Deposit ]: {view: <DepositWrap _height={480} _width={400}  {...{...rest, ...depositProps}} />,},
-            [ AccountStep.Depositing ]: {view: <Depositing {...{
-                onClose:()=>undefined,
-                providerName: ConnectProviders.MetaMask,
-                etherscanLink: accountInfoProps.etherscanUrl, ...rest
-            }}/>,},
             [ AccountStep.DepositFailed ]: {view: <FailedDeposit {...rest} label={rest.t('depositTitleAndActive')}
                                                           onRetry={() => undefined}
                                                           etherscanLink={accountInfoProps.etherscanUrl}/>,},
-            [ AccountStep.UpdateAccount ]: {view: <ApproveAccount  {...{...accountInfoProps, ...rest}}
-                                                          goActiveAccount={() => undefined}/>,},
             [ AccountStep.ProcessUnlock ]: {view: <ProcessUnlock {...{providerName: ConnectProviders.MetaMask, ...rest}}/>,},
             [ AccountStep.SuccessUnlock ]: {view: <SuccessUnlock {...{...rest, onClose: () => undefined}}/>,},
             [ AccountStep.FailedUnlock ]: {view: <FailedUnlock {...rest} onRetry={() => undefined}/>,},
