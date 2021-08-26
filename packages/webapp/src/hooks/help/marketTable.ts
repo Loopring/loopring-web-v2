@@ -117,6 +117,24 @@ export const getUserAmmTransaction = ({
 
 }
 
+export const getRecentAmmTransaction = ({
+    address,
+    offset,
+    limit
+}: any) => {
+    // const {apiKey} = store.getState().account
+    return LoopringAPI.ammpoolAPI?.getAmmPoolTrades({
+        ammPoolAddress: address,
+        limit,
+        offset,
+    }).then(({ammPoolTrades, totalNum}) => {
+        return {
+            ammPoolTrades,
+            totalNum
+        }
+    })
+}
+
 
 export const makeMyAmmMarketArray = <C extends { [ key: string ]:any }>(coinKey: string|undefined, marketTransaction: sdk.UserAmmPoolTx[]): AmmRecordRow<C>[] => {
 
@@ -189,57 +207,62 @@ export const makeMyAmmMarketArray = <C extends { [ key: string ]:any }>(coinKey:
 
 }
 
+// export const makeMarketAmmArray = <C extends object>(coinKey: any, marketTransaction: sdk.AmmPoolTx[]): AmmRecordRow<C>[] => {
 
-export const makeMarketAmmArray = <C extends object>(coinKey: any, marketTransaction: sdk.AmmPoolTx[]): AmmRecordRow<C>[] => {
+//     let tradeArray: Array<Partial<AmmRecordRow<C>>> = [];
+//     const {tokenMap, coinMap, idIndex} = store.getState().tokenMap
+//     const { forex } = store.getState().system
 
-    let tradeArray: Array<Partial<AmmRecordRow<C>>> = [];
+//     marketTransaction.forEach((item: AmmPoolTx) => {
+//         try {
+//             // const {base, quote} = getBaseQuote(coinKey)
+//             const {forex} = store.getState().system
+//             // const {currency} = store.getState().settings
+//             const coinMap = store.getState().tokenMap.coinMap as CoinMap<C>
+//             // if (coinMap) {
+//             if (coinMap && tokenMap && idIndex) {
+//                 const [, coinA, coinB] = item.token.split('-')
+//                 const balance = item.lpToken.actualAmount
+//             }
+    
+//                 // id: number;
+//                 // from: string;
+//                 // to: string;
+//                 // token: string;
+//                 // amount: string;
+//                 // tokenF: string;
+//                 // amountF: string;
+//                 // status: TxStatus;
+//                 // txHash: string;
+//                 // billType: BillType;
+//                 // income: boolean;
+//                 // timestamp: number;
+//                 // memo: string;
+//                 // price: string;
+//                 // transferType: TransferType;
+//                 // label: string;
+//                 tradeArray.push({
+//                     // type: item.billType === BillType.ORDER ?
+//                     //     AmmTradeType.swap : item.billType === BillType.TRANSFER && item.income ?
+//                     //         AmmTradeType.add : AmmTradeType.remove,
+//                     // // //TODO:
+//                     // totalDollar: 1000,
+//                     // totalYuan: 1000 / Number(forex),
+//                     // amountA: Number(item.poolTokens[ 0 ].amount),
+//                     // amountB: Number(item.poolTokens[ 1 ].amount),
+//                     // time: Number(item.updatedAt),
+//                     // coinA: coinMap[ base as keyof C],
+//                     // coinB: coinMap[ quote as keyof C ],
+//                 })
+//             }
+//         } catch (error) {
+//             //CATCHERROR:
+//             console.log(error)
+//             // new CustomError()
+//         }
+    
+//     })
+//     // console.log('tradeArray:', tradeArray)
+//     return tradeArray as AmmRecordRow<C>[];
 
-    // marketTransaction.forEach((item: AmmPoolTx) => {
-    //     try {
-    //         const {base, quote} = getBaseQuote(coinKey)
-    //         const {forex} = store.getState().system
-    //         // const {currency} = store.getState().settings
-    //         const coinMap = store.getState().tokenMap.coinMap as CoinMap<C>
-    //         if (coinMap) {
-    //
-    //             // id: number;
-    //             // from: string;
-    //             // to: string;
-    //             // token: string;
-    //             // amount: string;
-    //             // tokenF: string;
-    //             // amountF: string;
-    //             // status: TxStatus;
-    //             // txHash: string;
-    //             // billType: BillType;
-    //             // income: boolean;
-    //             // timestamp: number;
-    //             // memo: string;
-    //             // price: string;
-    //             // transferType: TransferType;
-    //             // label: string;
-    //             tradeArray.push({
-    //                 // type: item.billType === BillType.ORDER ?
-    //                 //     AmmTradeType.swap : item.billType === BillType.TRANSFER && item.income ?
-    //                 //         AmmTradeType.add : AmmTradeType.remove,
-    //                 // // //TODO:
-    //                 // totalDollar: 1000,
-    //                 // totalYuan: 1000 / Number(forex),
-    //                 // amountA: Number(item.poolTokens[ 0 ].amount),
-    //                 // amountB: Number(item.poolTokens[ 1 ].amount),
-    //                 // time: Number(item.updatedAt),
-    //                 // coinA: coinMap[ base as keyof C],
-    //                 // coinB: coinMap[ quote as keyof C ],
-    //             })
-    //         }
-    //     } catch (error) {
-    //         //CATCHERROR:
-    //         console.log(error)
-    //         // new CustomError()
-    //     }
-    //
-    // })
-    // console.log('tradeArray:', tradeArray)
-    return tradeArray as AmmRecordRow<C>[];
-
-}
+// }
