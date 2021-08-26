@@ -48,7 +48,8 @@ export const TradeTitle = <I extends object>({
 
     const tradeFloatType = tradeFloat?.changeDollar === 0 ? FloatTag.none : tradeFloat && tradeFloat.changeDollar && tradeFloat.changeDollar < 0 ? FloatTag.decrease : FloatTag.increase;
     const {currency,upColor} = useSettings();
-    const change = (tradeFloat?.change && tradeFloat?.change !== Number.NaN) ? (tradeFloat.change * 100).toFixed(2) + '%' : '0.00%'
+    // console.log({tradeFloat})
+    const change = (tradeFloat?.change && !Number.isNaN(tradeFloat?.change)) ? (tradeFloat.change).toFixed(2) + '%' : '0.00%'
     return <TradeTitleStyled custom={{chg: upColor}}>{coinBInfo && coinAInfo ?
         <Grid container height={72}>
             <Grid item xs={12} height={28}>
@@ -116,12 +117,12 @@ export const TradeTitle = <I extends object>({
                             {/* {`${(tradeFloat.floatTag === 'decrease' ? '-' : '+') + tradeFloat.priceDollar} (${change})`}</Typography> */}
                             {/*{ tradeFloatType === FloatTag.increase ? '+' : '' }*/}
                             {currency === Currency.dollar ? '\u2248 ' + PriceTag.Dollar
-                                + getThousandFormattedNumbers(tradeFloat && tradeFloat.closeDollar ? tradeFloat.closeDollar as number : 0, 2)
+                                + getThousandFormattedNumbers(tradeFloat && tradeFloat.closeDollar ? Number(tradeFloat.closeDollar.toFixed(2)) : 0)
                                 : '\u2248 ' + PriceTag.Yuan
-                                + getThousandFormattedNumbers(tradeFloat && tradeFloat.closeYuan ? tradeFloat.closeYuan as number : 0, 2)}
+                                + getThousandFormattedNumbers(tradeFloat && tradeFloat.closeYuan ? Number(tradeFloat.closeYuan.toFixed(2)) : 0)}
                         </Typography>
                         <Typography variant={'h5'} component={'span'} className={`float-tag float-${tradeFloatType}`}>
-                            （{ tradeFloatType === FloatTag.increase ? '+' : '' }{change}）
+                            （{ tradeFloatType === FloatTag.increase ? '+' : '-' }{change}）
                         </Typography>
                     </Typography>
                 </Box>

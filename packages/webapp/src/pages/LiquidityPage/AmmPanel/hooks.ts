@@ -185,10 +185,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     const [joinFees, setJoinFees] = useState<LoopringMap<OffchainFeeInfo>>()
     const [exitFees, setExitFees] = useState<LoopringMap<OffchainFeeInfo>>()
     const { account: { accountId, apiKey } } = useAccount()
-    // const [addBtnStatus, setAddBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE);
-    // const [removeBtnStatus, setRemoveBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE)
-   
-   
+
     const addBtnLabelActive = React.useCallback((): string | undefined => {
         //TODO:
         // const validAmt = (output?.amountBOut && quoteMinAmt
@@ -210,13 +207,11 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
                 } else if (validAmt || addMinAmt === undefined) {
                     setAddBtnStatus(TradeBtnStatus.AVAILABLE)
                     return undefined
-
                 } else {
                     const quote = ammJoinData?.coinA.belong;
                     const minOrderSize = VolToNumberWithPrecision(addMinAmt, quote as any) + ' ' + ammJoinData?.coinA.belong;
                     setAddBtnStatus(TradeBtnStatus.DISABLED)
                     return `labelLimitMin, ${minOrderSize}`
-
                 }
 
             } else {
@@ -326,13 +321,11 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     // join
 
     const [joinRequest, setJoinRequest] = useState<{ ammInfo: any, request: JoinAmmPoolRequest }>()
-    const handlerJoinInDebounce = React.useCallback(_.debounce(async (data, type, joinFees, ammPoolSnapshot,tokenMap,account) => {
+    const handleJoinInDebounce = React.useCallback(_.debounce(async (data, type, joinFees, ammPoolSnapshot,tokenMap,account) => {
 
         if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !joinFees || !account?.accAddress) {
             return
         }
-
-        myLog('handlerJoinInDebounce', data, type);
 
         const { slippage } = data
 
@@ -350,6 +343,8 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         if (!market || !amm || !marketMap) {
             return
         }
+
+        myLog('handleJoinInDebounce', data, type);
 
         const marketInfo: MarketInfo = marketMap[market]
 
@@ -394,7 +389,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     }, globalSetup.wait), [])
 
     const handleJoinAmmPoolEvent =  (data: AmmData<IBData<any>>, type: 'coinA' | 'coinB') => {
-        handlerJoinInDebounce(data, type, joinFees, ammPoolSnapshot,tokenMap,account)
+        handleJoinInDebounce(data, type, joinFees, ammPoolSnapshot,tokenMap,account)
     };
 
     const addToAmmCalculator = React.useCallback(async function (props
