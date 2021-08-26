@@ -1,7 +1,6 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import {
     AccountStepNew as AccountStep,
-    ActiveAccountProcess,
     Button,
     DepositPanel,
     FailedUnlock,
@@ -13,8 +12,6 @@ import {
     QRAddressPanel,
     SuccessUnlock,
     Toast,
-    UpdateAccSigWarning,
-    UpdateAccUserDenied,
     useOpenModals,
 
     UpdateAccount,
@@ -28,13 +25,15 @@ import {
     Deposit_Submited,
 
     Transfer_WaitForAuth,
-    Transfer_Refused,
+    Transfer_First_Method_Refused,
+    Transfer_User_Refused,
     Transfer_In_Progress,
     Transfer_Success,
     Transfer_Failed,
 
     Withdraw_WaitForAuth,
-    Withdraw_Refused,
+    Withdraw_First_Method_Refused,
+    Withdraw_User_Refused,
     Withdraw_In_Progress,
     Withdraw_Success,
     Withdraw_Failed,
@@ -53,9 +52,10 @@ import {
     UpdateAccount_Success,
     UpdateAccount_Submited,
     UpdateAccount_Failed,
+    ModalPanel,
 } from '@loopring-web/component-lib';
 import { walletServices } from '@loopring-web/web3-provider';
-import { ConnectorError, sleep } from 'loopring-sdk';
+import { sleep } from 'loopring-sdk';
 
 import React, { useState } from 'react';
 import { copyToClipBoard } from 'utils/obj_tools';
@@ -75,6 +75,8 @@ import { LoopringAPI } from 'api_wrapper';
 import { useWalletInfo } from 'stores/localStore/walletInfo';
 
 import store from 'stores'
+import { useTransfer } from 'hooks/useractions/useTransfer';
+import { useWithdraw } from 'hooks/useractions/useWithdraw';
 
 export const ModalAccountInfo = withTranslation('common')(({
     onClose,
@@ -87,8 +89,20 @@ export const ModalAccountInfo = withTranslation('common')(({
     onClose?: (e: MouseEvent) => void,
     etherscanUrl: string
 } & WithTranslation) => {
+
+    const { modals: { isShowAccount }, setShowConnect, setShowAccount,
+        setShowDeposit, setShowTransfer, setShowWithdraw } = useOpenModals()
+
+    const {
+        withdrawAlertText,
+        withdrawToastOpen,
+        setWithdrawToastOpen,
+        withdrawProps
+    } = useWithdraw()
+
     const {
         account,
+        addressShort,
         shouldShow,
         updateAccount,
         setShouldShow,
@@ -96,17 +110,19 @@ export const ModalAccountInfo = withTranslation('common')(({
     } = useAccount();
 
     const { depositProps } = useDeposit()
-    const { modals: { isShowAccount }, setShowConnect, setShowAccount, 
-    setShowDeposit, setShowTransfer, setShowWithdraw } = useOpenModals()
+
+    const {
+        transferAlertText,
+        transferToastOpen,
+        setTransferToastOpen, transferProps } = useTransfer()
 
     const [openQRCode, setOpenQRCode] = useState(false)
-    const addressShort = getShortAddr(account.accAddress)
 
     const { coinMap } = useTokenMap()
 
     const [copyToastOpen, setCopyToastOpen] = useState(false);
 
-    const { walletInfo, updateDepositHashWrapper, } = useWalletInfo()
+    const { walletInfo, updateDepositHashWrapper, checkHWAddr, } = useWalletInfo()
 
     const onSwitch = React.useCallback(() => {
         setShowAccount({ isShow: false })
@@ -118,9 +134,11 @@ export const ModalAccountInfo = withTranslation('common')(({
         copyToClipBoard(account.accAddress);
         setCopyToastOpen(true)
     }, [account, setCopyToastOpen,])
+
     const onViewQRCode = React.useCallback(() => {
         setOpenQRCode(true)
     }, [])
+
     const onDisconnect = React.useCallback(async () => {
         walletServices.sendDisconnect('', 'customer click disconnect');
         setShowAccount({ isShow: false })
@@ -141,7 +159,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
         setShowAccount({ isShow: true, step: AccountStep.UpdateAccount_Approve_WaitForAuth });
 
-        const isHWAddr = isFirstTime ? !!walletInfo?.walletTypeMap[account.accAddress] : !walletInfo?.walletTypeMap[account.accAddress]
+        const isHWAddr = checkHWAddr(account.accAddress, isFirstTime)
 
         myLog('goUpdateAccount.... isHWAddr:', isHWAddr)
 
@@ -221,17 +239,20 @@ export const ModalAccountInfo = withTranslation('common')(({
     const onQRClick = React.useCallback(() => {
         setShowAccount({ isShow: true, step: AccountStep.QRCode })
     }, [])
+
     const unlockBtn = React.useMemo(() => {
         return <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {
             setShouldShow(true);
             unlockAccount();
         }}>{t('labelUnLockLayer2')} </Button>
     }, [updateAccount, t]);
+
     const lockBtn = React.useMemo(() => {
         return <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {
             lockAccount();
         }}>{t('labelLockLayer2')} </Button>
     }, [lockAccount, t]);
+
     const onBack = React.useCallback(() => {
         switch (account.readyState) {
             case 'NO_ACCOUNT':
@@ -416,25 +437,30 @@ export const ModalAccountInfo = withTranslation('common')(({
                         ...rest, t
                     }} />,
             },
-            [AccountStep.Transfer_Refused]: {
-                view: <Transfer_Refused btnInfo={backToTransferBtnInfo} {...{
-                        ...rest, t
-                    }} />,
+            [AccountStep.Transfer_First_Method_Refused]: {
+                view: <Transfer_First_Method_Refused btnInfo={backToTransferBtnInfo} {...{
+                    ...rest, t
+                }} />,
+            },
+            [AccountStep.Transfer_User_Refused]: {
+                view: <Transfer_User_Refused btnInfo={backToTransferBtnInfo} {...{
+                    ...rest, t
+                }} />,
             },
             [AccountStep.Transfer_In_Progress]: {
                 view: <Transfer_In_Progress {...{
-                        ...rest, t
-                    }} />,
+                    ...rest, t
+                }} />,
             },
             [AccountStep.Transfer_Success]: {
                 view: <Transfer_Success btnInfo={closeBtnInfo} {...{
-                        ...rest, t
-                    }} />,
+                    ...rest, t
+                }} />,
             },
             [AccountStep.Transfer_Failed]: {
                 view: <Transfer_Failed btnInfo={closeBtnInfo} {...{
-                        ...rest, t
-                    }} />,
+                    ...rest, t
+                }} />,
             },
 
             // withdraw
@@ -444,25 +470,30 @@ export const ModalAccountInfo = withTranslation('common')(({
                         ...rest, t
                     }} />,
             },
-            [AccountStep.Withdraw_Refused]: {
-                view: <Withdraw_Refused btnInfo={backToWithdrawBtnInfo} {...{
-                        ...rest, t
-                    }} />,
+            [AccountStep.Withdraw_First_Method_Refused]: {
+                view: <Withdraw_First_Method_Refused btnInfo={backToWithdrawBtnInfo} {...{
+                    ...rest, t
+                }} />,
+            },
+            [AccountStep.Withdraw_User_Refused]: {
+                view: <Withdraw_User_Refused btnInfo={backToWithdrawBtnInfo} {...{
+                    ...rest, t
+                }} />,
             },
             [AccountStep.Withdraw_In_Progress]: {
                 view: <Withdraw_In_Progress {...{
-                        ...rest, t
-                    }} />,
+                    ...rest, t
+                }} />,
             },
             [AccountStep.Withdraw_Success]: {
                 view: <Withdraw_Success btnInfo={closeBtnInfo} {...{
-                        ...rest, t
-                    }} />,
+                    ...rest, t
+                }} />,
             },
             [AccountStep.Withdraw_Failed]: {
                 view: <Withdraw_Failed btnInfo={closeBtnInfo} {...{
-                        ...rest, t
-                    }} />,
+                    ...rest, t
+                }} />,
             },
 
             //create account
@@ -529,36 +560,36 @@ export const ModalAccountInfo = withTranslation('common')(({
                     }} />,
             },
             [AccountStep.UpdateAccount_First_Method_Refused]: {
-                view: <UpdateAccount_First_Method_Refused btnInfo = {{
+                view: <UpdateAccount_First_Method_Refused btnInfo={{
                     btnTxt: t('labelTryAnother'),
                     callback: (e?: any) => {
                         goUpdateAccount(false)
                     }
                 }} {...{
-                        ...rest, t
-                    }} />, onBack: () => {
-                        backToUpdateAccountBtnInfo.callback()
-                    }
+                    ...rest, t
+                }} />, onBack: () => {
+                    backToUpdateAccountBtnInfo.callback()
+                }
             },
             [AccountStep.UpdateAccount_User_Refused]: {
-                view: <UpdateAccount_User_Refused btnInfo = {backToUpdateAccountBtnInfo} {...{
-                        ...rest, t
-                    }} />,
+                view: <UpdateAccount_User_Refused btnInfo={backToUpdateAccountBtnInfo} {...{
+                    ...rest, t
+                }} />,
             },
             [AccountStep.UpdateAccount_Success]: {
-                view: <UpdateAccount_Success btnInfo = {closeBtnInfo}  {...{
-                        ...rest, t
-                    }} />,
+                view: <UpdateAccount_Success btnInfo={closeBtnInfo}  {...{
+                    ...rest, t
+                }} />,
             },
             [AccountStep.UpdateAccount_Submited]: {
-                view: <UpdateAccount_Submited btnInfo = {closeBtnInfo} {...{
-                        ...rest, t
-                    }} />,
+                view: <UpdateAccount_Submited btnInfo={closeBtnInfo} {...{
+                    ...rest, t
+                }} />,
             },
             [AccountStep.UpdateAccount_Failed]: {
-                view: <UpdateAccount_Failed btnInfo = {closeBtnInfo} {...{
-                        ...rest, t
-                    }} />,
+                view: <UpdateAccount_Failed btnInfo={closeBtnInfo} {...{
+                    ...rest, t
+                }} />,
             },
 
         })
@@ -569,6 +600,26 @@ export const ModalAccountInfo = withTranslation('common')(({
     // myLog('isShowAccount.step:', isShowAccount.step, ' ', AccountStep[isShowAccount.step])
 
     return <>
+
+        <Toast alertText={withdrawAlertText as string} open={withdrawToastOpen}
+            autoHideDuration={TOAST_TIME} onClose={() => {
+                setWithdrawToastOpen(false)
+            }} />
+
+        <Toast alertText={withdrawAlertText as string} open={withdrawToastOpen}
+            autoHideDuration={TOAST_TIME} onClose={() => {
+                setWithdrawToastOpen(false)
+            }} />
+
+        <ModalPanel transferProps={transferProps}
+            withDrawProps={withdrawProps}
+            depositProps={depositProps}
+            resetProps={{} as any}
+            ammProps={{} as any}
+            swapProps={{} as any}
+            {...{ _height: 'var(--modal-height)', _width: 'var(--modal-width)' }}
+        />
+
         <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen}
             autoHideDuration={TOAST_TIME} onClose={() => {
                 setCopyToastOpen(false)

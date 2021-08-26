@@ -21,41 +21,10 @@ export const ModalGroup = withTranslation('common', {
         onWalletConnectPanelClose?: (event: MouseEvent) => void
         onAccountInfoPanelClose?: (event: MouseEvent) => void
     }) => {
-
-    const {
-        withdrawAlertText,
-        withdrawToastOpen,
-        setWithdrawToastOpen,
-        withdrawProps
-    } = useWithdraw();
     const {etherscanUrl} = useSystem();
-    const {depositProps} = useDeposit();
-    const {
-        transferAlertText,
-        transferToastOpen,
-        setTransferToastOpen, transferProps} = useTransfer();
     useAccountModal();
     const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals();
     return <>
-
-        <Toast alertText={withdrawAlertText as string} open={withdrawToastOpen}
-               autoHideDuration={TOAST_TIME} onClose={() => {
-            setWithdrawToastOpen(false)
-        }}/>
-
-        <Toast alertText={withdrawAlertText as string} open={withdrawToastOpen}
-               autoHideDuration={TOAST_TIME} onClose={() => {
-            setWithdrawToastOpen(false)
-        }}/>
-
-        <ModalPanel transferProps={transferProps}
-                    withDrawProps={withdrawProps}
-                    depositProps={depositProps}
-                    resetProps={{} as any}
-                    ammProps={{} as any}
-                    swapProps={{} as any}
-                    {...{_height: 'var(--modal-height)', _width: 'var(--modal-width)'}}
-        />
 
         <ModalWalletConnectPanel {...{
             ...rest,
