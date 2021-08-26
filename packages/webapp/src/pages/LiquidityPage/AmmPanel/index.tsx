@@ -68,6 +68,7 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
     {pair ?
         <AmmPanel {...{...rest}}
                   onRefreshData={onRefreshData}
+                  refreshRef={refreshRef}
                   ammDepositData={ammJoinData}
                   ammWithdrawData={ammExitData}
                   ammCalcData={ammCalcData}
