@@ -13,6 +13,9 @@ import {
     AccountBaseNewProps,
     AccountStepNew as AccountStep,
 
+    NoAccount,
+    UpdateAccount,
+
     Deposit_Approve_WaitForAuth,
     Deposit_Approve_Refused,
     Deposit_Approve_Submited,
@@ -117,8 +120,27 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
         }
     }, [])
 
+    const { nameList0, accountList0, } = React.useMemo(() => {
+        const accountMap = {
+            [ AccountStep.NoAccount ]: {view: <NoAccount {...{
+                ...accountInfoProps, goDeposit: () => {
+                }
+            }}/>,},
+            [ AccountStep.UpdateAccount ]: {view: <UpdateAccount  {...{...accountInfoProps, ...rest}}
+                                                          goActiveAccount={() => undefined}/>,},
+        }
+
+        return { nameList0: Object.keys(accountMap), accountList0: Object.values(accountMap) }
+
+    }, [])
+
     const { nameList, accountList, } = React.useMemo(() => {
         const accountMap = {
+            [ AccountStep.NoAccount ]: {view: <NoAccount {...{
+                ...accountInfoProps, goDeposit: () => {
+                }
+            }}/>,},
+
             [AccountStep.Deposit_Approve_WaitForAuth]: {
                 view: <Deposit_Approve_WaitForAuth
                     providerName={ConnectProviders.MetaMask} {...{
@@ -352,6 +374,23 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
         <>
             <Style>
                 <MemoryRouter initialEntries={['/']}>
+                    <Box paddingTop={2} paddingX={2} width={width} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
+                        <Typography fontSize={fontSize} color={color} variant={'body2'} > Old Version </Typography>
+                    </Box>
+                    <Grid container spacing={2}>
+
+                        {accountList0.map((panel, index) => {
+                            return (<>
+                                <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
+                                    justifyContent={'center'} alignItems={'stretch'}>
+                                    <Typography marginTop={2} variant={'body2'} color={'textSecondary'} style={{ wordBreak: 'break-all' }}>{AccountStep[nameList0[index]]}</Typography>
+
+                                    {panel.view}
+                                </Box>
+                            </>)
+                        })}
+                    </Grid>
+
                     <Box paddingTop={2} paddingX={2} width={width} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                         <Typography fontSize={fontSize} color={color} variant={'body2'} > Deposit</Typography>
                     </Box>
