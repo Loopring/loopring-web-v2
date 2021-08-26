@@ -601,11 +601,10 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
 
             setTradeCalcData((state) => {
-                state.StoB = stob
-                state.BtoS = stob ? 1 / stob : 0
+                state.StoB = getShowStr(stob)
+                state.BtoS = getShowStr(stob ? 1 / stob : 0)
                 return state
             })
-            //({...tradeCalcData, ..._tradeCalcData} as TradeCalcData<C>);
         }
 
     }, [ market, totalFee, tradeData, tradeCalcData, setTradeCalcData])
