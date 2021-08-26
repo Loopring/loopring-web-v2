@@ -40,7 +40,7 @@ const columnMode = ({t}: WithTranslation, currency: 'USD' | 'CYN'): Column<Row<a
         sortable: false,
         width: 'auto',
         minWidth: 240,
-        name: t('labelPool'),
+        name: t('labelAmmTableType'),
         formatter: ({row}: FormatterProps<Row<any>, unknown>) => {
             const {type, coinA, coinB, amountA, amountB} = row
             const isAdd = type === AmmTradeType.add

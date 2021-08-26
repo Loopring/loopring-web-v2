@@ -92,5 +92,5 @@ export default {
     labelPoolTableAddLiqudity: '入金',
     labelPoolTableRemoveLiqudity: '出金',
     labelEmptyDefault: '记录是空的',
-
+    labelAmmTableType: '交易类型',
 }
