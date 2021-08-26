@@ -153,7 +153,7 @@ const getColumnModeOrderHistory = (t: TFunction, lan: 'en_US' | 'zh_CN'): Column
             const {from, to} = row[ column.key ]
             const {key: keyFrom, value: valueFrom} = from
             const {key: keyTo, value: valueTo} = to
-            const renderValue = `${Number(getThousandFormattedNumbers(valueFrom)).toFixed(6)} ${keyFrom} \u2192 ${Number(getThousandFormattedNumbers(valueTo)).toFixed(6)} ${keyTo}`
+            const renderValue = `${valueFrom} ${keyFrom} \u2192 ${valueTo} ${keyTo}`
             return <div className="rdg-cell-value">{renderValue}</div>
         },
     },
