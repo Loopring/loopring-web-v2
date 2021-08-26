@@ -198,6 +198,7 @@ export default {
     labelCreateLayer2Title: '创建二层账号',
     labelCreateAccount: '创建二层账号',
     labelUpdateAccount: '激活二层账号',
+    labelTryAnother: '尝试另一种签名方式',
     labelCancel:'取消',
     describeTitleNoAccount:'该账户还未开通路印二层，点击充值开通钱包。',
     describeTitleOpenAccounting:'您的充值已提交以太坊，等待以太坊确认。。。',

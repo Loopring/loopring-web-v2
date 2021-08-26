@@ -139,7 +139,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             return
         }
 
-        setShowAccount({ isShow: true, step: AccountStep.UpdateAccountInProcess });
+        setShowAccount({ isShow: true, step: AccountStep.UpdateAccount_Approve_WaitForAuth });
 
         const isHWAddr = isFirstTime ? !!walletInfo?.walletTypeMap[account.accAddress] : !walletInfo?.walletTypeMap[account.accAddress]
 
@@ -197,11 +197,11 @@ export const ModalAccountInfo = withTranslation('common')(({
                     switch (errMsg) {
                         case 'NOT_SUPPORT_ERROR':
                             myLog(' 00000---- got NOT_SUPPORT_ERROR')
-                            setShowAccount({ isShow: true, step: AccountStep.UpdateAccountSigWarning })
+                            setShowAccount({ isShow: true, step: AccountStep.UpdateAccount_First_Method_Refused })
                             return
                         case 'USER_DENIED':
                             myLog(' 11111---- got USER_DENIED')
-                            setShowAccount({ isShow: true, step: AccountStep.UpdateAccountUserDenied })
+                            setShowAccount({ isShow: true, step: AccountStep.UpdateAccount_User_Refused })
                             return
                         default:
                             accountServices.sendCheckAccount(account.accAddress)
@@ -255,7 +255,6 @@ export const ModalAccountInfo = withTranslation('common')(({
             btnTxt: t('labelRetry'),
             callback: () => {
                 setShowAccount({ isShow: true, step: AccountStep.Deposit });
-                return true
             }
         }
     }, [])
@@ -266,7 +265,6 @@ export const ModalAccountInfo = withTranslation('common')(({
             callback: () => {
                 setShowAccount({ isShow: false, })
                 setShowTransfer({ isShow: true, })
-                return true
             }
         }
     }, [])
@@ -277,7 +275,15 @@ export const ModalAccountInfo = withTranslation('common')(({
             callback: () => {
                 setShowAccount({ isShow: false, })
                 setShowWithdraw({ isShow: true, })
-                return true
+            }
+        }
+    }, [])
+
+    const backToUpdateAccountBtnInfo = React.useMemo(() => {
+        return {
+            btnTxt: t('labelRetry'),
+            callback: () => {
+                setShowAccount({ isShow: true, step: AccountStep.UpdateAccount })
             }
         }
     }, [])
@@ -307,31 +313,12 @@ export const ModalAccountInfo = withTranslation('common')(({
                 }} />, onQRClick
             },
             [AccountStep.QRCode]: {
-                view: <QRAddressPanel  {...{
+                view: <QRAddressPanel {...{
                     ...rest,
                     ...account,
                     etherscanUrl,
                     t
                 }} />, onBack, noClose: true
-            },
-            [AccountStep.Deposit]: {
-                view: <DepositPanel title={title} {...{
-                    ...rest,
-                    _height: 'var(--modal-height)',
-                    _width: 'var(--modal-width)',
-                    ...depositProps,
-                    t
-                }} />
-            },
-            [AccountStep.UpdateAccount]: {
-                view: <UpdateAccount {...{
-                    ...account,
-                    etherscanUrl,
-                    onSwitch, onCopy,
-                    onViewQRCode, onDisconnect, addressShort,
-                }} goUpdateAccount={() => {
-                    goUpdateAccount()
-                }}  {...{ ...rest, t }} />, onQRClick
             },
             [AccountStep.ProcessUnlock]: {
                 view: <ProcessUnlock providerName={account.connectName} {...{
@@ -360,40 +347,18 @@ export const ModalAccountInfo = withTranslation('common')(({
                     mainBtn: account.readyState === 'ACTIVATED' ? lockBtn : unlockBtn
                 }} />, onQRClick
             },
-            [AccountStep.UpdateAccountInProcess]: {
-                view: <ActiveAccountProcess label={title} providerName={account.connectName} {...{
-                    ...rest,
-                    t
-                }} />,
-            },
-            [AccountStep.UpdateAccountFailed]: {
-                view: <FailedUnlock label={title} onRetry={() => {
-                    goUpdateAccount()
-                }} {...{ ...rest, t }} />, onBack: () => {
-                    setShowAccount({ isShow: true, step: AccountStep.UpdateAccount });
-                }
-            },
-            [AccountStep.UpdateAccountSigWarning]: {
-                view: <UpdateAccSigWarning onTryAnother={() => {
-                    myLog('.......UpdateAccountSigWarning..............')
-                    goUpdateAccount(false)
-                }} {...{
-                    ...rest,
-                    t
-                }} />,
-            },
-            [AccountStep.UpdateAccountUserDenied]: {
-                view: <UpdateAccUserDenied onRetry={() => {
-                    myLog('.......UpdateAccountUserDenied..............')
-                    goUpdateAccount()
-                }} {...{
-                    ...rest,
-                    t
-                }} />,
-            },
 
             // new 
             // deposit
+            [AccountStep.Deposit]: {
+                view: <DepositPanel title={title} {...{
+                    ...rest,
+                    _height: 'var(--modal-height)',
+                    _width: 'var(--modal-width)',
+                    ...depositProps,
+                    t
+                }} />
+            },
             [AccountStep.Deposit_Approve_WaitForAuth]: {
                 view: <Deposit_Approve_WaitForAuth
                     providerName={account.connectName} {...{
@@ -496,6 +461,102 @@ export const ModalAccountInfo = withTranslation('common')(({
             },
             [AccountStep.Withdraw_Failed]: {
                 view: <Withdraw_Failed btnInfo={closeBtnInfo} {...{
+                        ...rest, t
+                    }} />,
+            },
+
+            //create account
+
+            [AccountStep.CreateAccount_Approve_WaitForAuth]: {
+                view: <CreateAccount_Approve_WaitForAuth
+                    providerName={account.connectName} {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.CreateAccount_Approve_Refused]: {
+                view: <CreateAccount_Approve_Refused
+                    providerName={account.connectName} {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.CreateAccount_Approve_Submited]: {
+                view: <CreateAccount_Approve_Submited
+                    providerName={account.connectName} {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.CreateAccount_WaitForAuth]: {
+                view: <CreateAccount_WaitForAuth
+                    providerName={account.connectName} {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.CreateAccount_Refused]: {
+                view: <CreateAccount_Refused
+                    providerName={account.connectName} {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.CreateAccount_Failed]: {
+                view: <CreateAccount_Failed
+                    providerName={account.connectName} {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.CreateAccount_Submited]: {
+                view: <CreateAccount_Submited
+                    providerName={account.connectName} {...{
+                        ...rest, t
+                    }} />,
+            },
+
+            //update account
+
+            [AccountStep.UpdateAccount]: {
+                view: <UpdateAccount {...{
+                    ...account,
+                    etherscanUrl,
+                    onSwitch, onCopy,
+                    onViewQRCode, onDisconnect, addressShort,
+                }} goUpdateAccount={() => {
+                    goUpdateAccount()
+                }}  {...{ ...rest, t }} />, onQRClick
+            },
+            [AccountStep.UpdateAccount_Approve_WaitForAuth]: {
+                view: <UpdateAccount_Approve_WaitForAuth
+                    providerName={account.connectName} {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.UpdateAccount_First_Method_Refused]: {
+                view: <UpdateAccount_First_Method_Refused btnInfo = {{
+                    btnTxt: t('labelTryAnother'),
+                    callback: (e?: any) => {
+                        goUpdateAccount(false)
+                    }
+                }} {...{
+                        ...rest, t
+                    }} />, onBack: () => {
+                        backToUpdateAccountBtnInfo.callback()
+                    }
+            },
+            [AccountStep.UpdateAccount_User_Refused]: {
+                view: <UpdateAccount_User_Refused btnInfo = {backToUpdateAccountBtnInfo} {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.UpdateAccount_Success]: {
+                view: <UpdateAccount_Success btnInfo = {closeBtnInfo}  {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.UpdateAccount_Submited]: {
+                view: <UpdateAccount_Submited btnInfo = {closeBtnInfo} {...{
+                        ...rest, t
+                    }} />,
+            },
+            [AccountStep.UpdateAccount_Failed]: {
+                view: <UpdateAccount_Failed btnInfo = {closeBtnInfo} {...{
                         ...rest, t
                     }} />,
             },
