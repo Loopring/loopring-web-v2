@@ -406,7 +406,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const updateAmtMap = React.useCallback(async () => {
 
         if (LoopringAPI.userAPI && market && pair?.coinAInfo?.simpleName
-            && pair?.coinBInfo?.simpleName && ammMap && accountStatus === SagaStatus.UNSET) {
+            && pair?.coinBInfo?.simpleName && ammMap && account.readyState === AccountStatus.ACTIVATED) {
             const {amm,} = sdk.getExistedMarket(marketArray, pair?.coinAInfo?.simpleName, pair?.coinBInfo?.simpleName)
 
             const realMarket = amm && ammMap[ amm ] ? amm : market
@@ -424,11 +424,11 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     }, [setAmountMap, market, marketArray, ammMap, accountStatus, account.apiKey, pair?.coinAInfo?.simpleName, pair?.coinBInfo?.simpleName,])
 
-    useCustomDCEffect(() => {
+    React.useEffect(() => {
 
         updateAmtMap()
 
-    }, [market, pair?.coinAInfo?.simpleName, pair?.coinBInfo?.simpleName, accountStatus])
+    }, [market, accountStatus])
 
     const walletLayer2Callback = React.useCallback(async () => {
         // const base = tradeData?.sell.belong
@@ -669,7 +669,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     }, [tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray, ammMap, totalFee, setTradeCalcData, setTradeData, setMarket, setPair,])
 
     const should15sRefresh = React.useCallback(() => {
-        console.log('should15sRefresh',market);
+        myLog('should15sRefresh',market);
         if (market) {
             // updateDepth()
             callPairDetailInfoAPIs()
