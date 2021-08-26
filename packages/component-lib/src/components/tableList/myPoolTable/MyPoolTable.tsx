@@ -83,13 +83,14 @@ const columnMode = ({
             if (!row) {
                 return <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}></Box>
             }
-            const {balanceA, balanceB, balanceYuan, balanceDollar, ammValue} = row as any;
-            const formattedYuan = (balanceYuan && Number.isNaN(balanceYuan)) ? balanceYuan : 0
-            const formattedDollar = (balanceDollar && Number.isNaN(balanceYuan)) ? balanceDollar : 0
+            const {balanceDollar, totalAmmValueDollar, totalAmmValueYuan} = row as any;
+            // const formattedYuan = (balanceYuan && Number.isNaN(balanceYuan)) ? balanceYuan : 0
+            // const formattedDollar = (balanceDollar && Number.isNaN(balanceYuan)) ? balanceDollar : 0
+            console.log(getThousandFormattedNumbers(totalAmmValueDollar))
             return <Box height={'100%'} display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
                 <TypogStyle variant={'body1'} component={'span'} color={'textPrimary'} fontFamily={'Roboto'}>
-                    {balanceDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(ammValue)
-                        : PriceTag.Yuan + getThousandFormattedNumbers(formattedYuan)}
+                    {balanceDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(totalAmmValueDollar.toFixed(2))
+                        : PriceTag.Yuan + getThousandFormattedNumbers(totalAmmValueYuan.toFixed(2))}
                 </TypogStyle>
                 {/* <Typography variant={'body2'} component={'p'} color={'textSecondary'} marginTop={1 / 2}>
 
@@ -177,6 +178,8 @@ export const MyPoolTable = withTranslation('tables')(<T extends { [ key: string 
                                                                                               handleWithdraw,
                                                                                               handleDeposit,
                                                                                               wait = globalSetup.wait,
+                                                                                              currency = 'USD',
+                                                                                              showLoading,
                                                                                               ...rest
                                                                                           }: MyPoolTableProps<T> & WithTranslation) => {
     const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
@@ -187,7 +190,7 @@ export const MyPoolTable = withTranslation('tables')(<T extends { [ key: string 
 
     const defaultArgs: TableProps<any, any> = {
         rawData,
-        columnMode: columnMode({t, i18n, tReady, handleWithdraw, handleDeposit}, Currency.dollar),
+        columnMode: columnMode({t, i18n, tReady, handleWithdraw, handleDeposit}, currency),
         generateRows: (rawData: any) => rawData,
         generateColumns: ({columnsRaw}) => columnsRaw as Column<Row<any>, unknown>[],
     }
@@ -195,10 +198,10 @@ export const MyPoolTable = withTranslation('tables')(<T extends { [ key: string 
 
     const pageSize = pagination ? pagination.pageSize : 10;
 
-    const getRenderData = React.useCallback(() => pagination
-        ? totalData.slice((page - 1) * pageSize, page * pageSize)
-        : totalData
-        , [page, pageSize, pagination, totalData])
+    // const getRenderData = React.useCallback(() => pagination
+    //     ? totalData.slice((page - 1) * pageSize, page * pageSize)
+    //     : totalData
+    //     , [page, pageSize, pagination, totalData])
 
     const _handlePageChange = React.useCallback((page: number) => {
         setPage(page);
@@ -210,10 +213,10 @@ export const MyPoolTable = withTranslation('tables')(<T extends { [ key: string 
         <Table
             rowHeight={rowHeight}
             headerRowHeight={44}
-            showLoading={!totalData.length}
+            showLoading={showLoading}
             {...{
                 ...defaultArgs, t, i18n, tReady, ...rest,
-                rawData: getRenderData()
+                rawData: rawData
             }}/>
         {pagination && (
             <TablePagination page={page} pageSize={pageSize} total={totalData.length} onPageChange={_handlePageChange}/>
