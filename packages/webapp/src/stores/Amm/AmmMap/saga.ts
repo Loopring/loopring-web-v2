@@ -17,7 +17,7 @@ export const setAmmState = ({ammPoolState, keyPair}: { ammPoolState: AmmPoolStat
     if (idIndex && coinA && coinB && faitPrices && forex) {
         let result =  {
             amountDollar: parseFloat(ammPoolState.liquidityUSD),
-            amountYuan: (parseFloat(ammPoolState.liquidityUSD) / (forex ? forex : 6.5)),
+            amountYuan: (parseFloat(ammPoolState.liquidityUSD) * (forex ? forex : 6.5)),
             totalLPToken: volumeToCount('LP-' + keyPair, ammPoolState.lpLiquidity),
             totalA: volumeToCount(coinA, ammPoolState.liquidity[ 0 ]),//parseInt(ammPoolState.liquidity[ 0 ]),
             totalB: volumeToCount(coinB, ammPoolState.liquidity[ 1 ]),//parseInt(ammPoolState.liquidity[ 1 ]),
