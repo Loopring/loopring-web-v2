@@ -58,6 +58,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     const { t } = useTranslation('common');
     const {sendSocketTopic,socketEnd} = useSocket();
     const refreshRef = React.createRef();
+    const [severity, setSeverity] = useState<"success" | "error" | "warning" | "info" | undefined>('success')
     const [ammToastOpen, setAmmToastOpen] = useState<boolean>(false);
     const [ammAlertText, setAmmAlertText] = useState<string>();
     const { coinMap, tokenMap } = useTokenMap();
@@ -354,21 +355,24 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
             myLog('join ammpool response:', response)
 
             if ((response.joinAmmPoolResult as any)?.resultInfo) {
+                setSeverity('error')
                 setAmmAlertText(t('labelJoinAmmFailed'))
                 setJoinLoading(false)
             } else {
+                setSeverity('success')
                 setAmmAlertText(t('labelJoinAmmSuccess'))
                 walletLayer2Service.sendUserUpdate()
             }
 
         } catch (reason) {
+            debugger
 
             dumpError400(reason)
             setJoinLoading(false)
+            setSeverity('error')
             setAmmAlertText(t('labelJoinAmmFailed'))
         } finally {
             setAmmToastOpen(true)
-
         }
         if (props.__cache__) {
             makeCache(props.__cache__)
@@ -477,6 +481,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
             myLog(' onExit ammpoolAPI:', LoopringAPI.ammpoolAPI,
                 'exitRequest:', exitRequest)
 
+            setSeverity('error')
             setAmmAlertText(t('labelExitAmmFailed'))
             setAmmToastOpen(true)
             setExitLoading(false);
@@ -516,8 +521,10 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
             myLog('exit ammpool response:', response)
 
             if ((response.exitAmmPoolResult as any)?.resultInfo) {
+                setSeverity('error')
                 setAmmAlertText(t('labelExitAmmFailed'))
             } else {
+                setSeverity('success')
                 setAmmAlertText(t('labelExitAmmSuccess'))
                 walletLayer2Service.sendUserUpdate()
                 // await delayAndUpdateWalletLayer2()
@@ -526,6 +533,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         } catch (reason) {
             dumpError400(reason)
             setExitLoading(false)
+            setSeverity('error')
             setAmmAlertText(t('labelExitAmmFailed'))
         } finally {
             setAmmToastOpen(true)
@@ -580,6 +588,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     },[pair, snapShotData])
     return {
         onRefreshData: updateAmmPoolSnapshot,
+        severity,
         ammAlertText,
         ammToastOpen,
         setAmmToastOpen,
