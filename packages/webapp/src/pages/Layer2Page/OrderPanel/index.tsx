@@ -14,7 +14,7 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
         // @ts-ignore
         let height = container?.current?.offsetHeight;
         if (height) {
-            setPageSize(Math.floor((height - 120) / 44) - 2);
+            setPageSize(Math.floor((height - 100) / 44) - 1);
         }
     }, [container, pageSize]);
 
