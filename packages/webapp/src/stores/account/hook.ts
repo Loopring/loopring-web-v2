@@ -5,7 +5,7 @@ import {
     statusUnset, updateAccountStatus
 } from './reducer';
 import React from 'react';
-import { Account, AccountState } from '@loopring-web/common-resources';
+import { Account, AccountState, getShortAddr } from '@loopring-web/common-resources';
 import { RootState } from 'stores';
 
 export function useAccount() {
@@ -29,9 +29,11 @@ export function useAccount() {
         dispatch(changeShowModel({_userOnModel: flag}));
     },[dispatch]);
 
+    const addressShort = getShortAddr(account.accAddress)
 
     return {
         account,
+        addressShort,
         resetAccount,
         shouldShow,
         setShouldShow,

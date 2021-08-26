@@ -27,7 +27,6 @@ import { useWalletHook } from '../../services/wallet/useWalletHook';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS, TOAST_TIME } from 'defs/common_defs';
 import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
-import { ConnectorError } from 'loopring-sdk';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     // handleWithdraw: (inputValue:R) => void,
@@ -136,8 +135,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             && address && withdrawFeeInfo?.belong && eddsaKey?.sk) {
             try {
 
-                setShowWithdraw({ isShow: false})
-                setShowAccount({isShow: true, step: AccountStepNew.Withdraw_WaitForAuth})
+                setShowWithdraw({ isShow: false, })
+                setShowAccount({isShow: true, step: AccountStepNew.Withdraw_WaitForAuth, })
 
                 const withdrawToken = tokenMap[inputValue.belong as string]
                 const feeToken = tokenMap[withdrawFeeInfo.belong]
@@ -179,8 +178,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
                 if (response?.errorInfo) {
                     // Withdraw failed
-                    if (response.errorInfo.errMsg && ConnectorError[response.errorInfo.errMsg]) {
-                        setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Refused })
+                    if (response.errorInfo?.errMsg === 'NOT_SUPPORT_ERROR') {
+                        setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_First_Method_Refused })
                     } else {
                         setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
                     }

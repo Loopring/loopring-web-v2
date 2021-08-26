@@ -36,13 +36,15 @@ export enum AccountStepNew {
     Deposit_Submited,
 
     Transfer_WaitForAuth,
-    Transfer_Refused,
+    Transfer_First_Method_Refused,
+    Transfer_User_Refused,
     Transfer_In_Progress,
     Transfer_Success,
     Transfer_Failed,
 
     Withdraw_WaitForAuth,
-    Withdraw_Refused,
+    Withdraw_First_Method_Refused,
+    Withdraw_User_Refused,
     Withdraw_In_Progress,
     Withdraw_Success,
     Withdraw_Failed,

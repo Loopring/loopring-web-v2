@@ -5,7 +5,7 @@ import { clearAll, updateWallet, } from './reducer'
 
 export const useWalletInfo = () => {
     
-    const walletInfo: WalletInfo = useSelector((state: any) => state.walletTypeMap)
+    const walletInfo: WalletInfo = useSelector((state: any) => state.walletInfo)
     const dispatch = useDispatch()
 
     const clearAllWrapper = React.useCallback(() => {
@@ -16,7 +16,13 @@ export const useWalletInfo = () => {
         dispatch(updateWallet({wallet, isHWAddr}))
     },  [dispatch])
 
+    const checkHWAddr = (address: string, isFirstTime: boolean = true) => {
+        const wInfo = walletInfo.walletTypeMap[address]
+        return isFirstTime ? !!wInfo : !wInfo
+    }
+
     return {
+        checkHWAddr,
         walletInfo,
         clearAllWrapper,
         updateDepositHashWrapper,
