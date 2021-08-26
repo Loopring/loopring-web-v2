@@ -23,8 +23,6 @@ export const useOrderList = () => {
 
     const getOrderList = React.useCallback(async (props: Omit<GetOrdersRequest, 'accountId'> ) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
-            console.log(volumeToCount('USDT', 1216405000000000000000))
-            console.log(volumeToCount('USDT', 556140366))
             setShowLoading(true)
             const userOrders = await LoopringAPI.userAPI.getOrders({
                 ...props,

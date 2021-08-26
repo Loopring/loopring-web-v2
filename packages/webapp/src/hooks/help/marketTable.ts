@@ -35,7 +35,11 @@ export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[
                 // due to AMM case, we cannot use first index
                 // const side = item.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
                 const isBuy = item.side === sdk.Side.Buy
-                const [tokenFirst, tokenLast] = item.market.split('-')
+                const market = item.market.split('-')
+                if (market.length === 3) {
+                    market.shift()
+                }
+                const [tokenFirst, tokenLast] = market
                 // const tokenFirst = marketList[marketList.length - 2]
                 // const tokenLast = marketList[marketList.length - 1]
                 const baseToken = isBuy ? tokenLast : tokenFirst
