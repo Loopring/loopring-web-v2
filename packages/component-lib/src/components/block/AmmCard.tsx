@@ -119,7 +119,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     </Box>
                 </BoxStyled>
                 <Typography display={'flex'} flexDirection={'column'} component={'span'} justifyContent={'center'} alignItems={'center'} marginTop={7}>
-                    <Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> {APY}%
+                    <Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> {APY || EmptyValueTag}%
                     </Typography>
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'} marginTop={1}
                                 style={{textTransform: 'uppercase'}}>{t('labelAPY')}</Typography>

@@ -9,7 +9,7 @@ import {
     PriceTag,
     unit
 } from '@loopring-web/common-resources';
-import { Avatar, Box, Breadcrumbs, Grid, Link, Typography } from '@material-ui/core';
+import { Avatar, Box, Breadcrumbs, Divider, Grid, Link, Typography } from '@material-ui/core';
 import { AmmPanelView } from '../AmmPanel';
 import moment from 'moment';
 import styled from '@emotion/styled/';
@@ -60,6 +60,11 @@ const AwardWrapperStyled = styled(Box)`
     padding: ${({theme}) => theme.unit * 2}px;
     background-color: var(--color-box);
     border-radius: ${({theme}) => theme.unit}px;
+`
+
+const TabsStyled = styled(Tabs)`
+    padding: ${({theme}) => theme.unit}px;
+    padding-bottom: 0;
 `
 
 const applyProps = (index: number) => {
@@ -271,13 +276,15 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         </BoxStyled>
                     </Box>
                     <Box>
-                        <Tabs value={tabIndex}
-                            //   onChange={handleChange}
-                              aria-label="tabs switch">
-                            {/* <Tab label={t('labelAll')} {...applyProps(0)} /> */}
-                            <Tab label={t('labelMe')} {...applyProps(1)} />
-                        </Tabs>
+                        
                         <StylePaper ref={container} style={{marginTop: `${unit * 2}px`}}>
+                            <TabsStyled value={tabIndex}
+                                //   onChange={handleChange}
+                                aria-label="tabs switch">
+                                {/* <Tab label={t('labelAll')} {...applyProps(0)} /> */}
+                                <Tab label={t('labelAmmMyTransactions')} {...applyProps(1)} />
+                            </TabsStyled>
+                            <Divider />
                             {/*ammRecordArray*/}
                             {tabIndex === 1 ? <AmmRecordTable
                                 rawData={ammMarketArray}
@@ -392,10 +399,3 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         </Box>
     </>
 })
-
-
-
-
-
-
-

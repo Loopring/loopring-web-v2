@@ -1,6 +1,7 @@
 import * as sdk from 'loopring-sdk';
+import bigNumber from 'bignumber.js'
 import store from '../../stores';
-import { TradeTypes } from '@loopring-web/common-resources';
+import { getThousandFormattedNumbers, getValuePrecision, TradeTypes } from '@loopring-web/common-resources';
 import { LoopringAPI, } from 'api_wrapper';
 import { AmmRecordRow, AmmTradeType,RawDataTradeItem } from '@loopring-web/component-lib';
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
@@ -60,24 +61,25 @@ export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[
                             // key: base as string,
                             // value: base ? volumeToCount(base, item.volume) : undefined
                             key: baseToken as string,
-                            value: baseValue as number,
+                            value: getValuePrecision(getThousandFormattedNumbers(new bigNumber(baseValue || 0) as any)) as any,
                         },
                         to: {
                             // key: quote as string,
                             // value: base ? volumeToCountAsBigNumber(base, item.volume)?.times(item.price).toNumber():undefined
                             key: quoteToken as string,
-                            value: quoteValue as number,
+                            value: getValuePrecision(getThousandFormattedNumbers(new bigNumber(quoteValue || 0) as any)) as any,
                         },
 
                     },
                     price: {
                         key: '',
-                        value: sdk.toBig(item.price).toNumber(),
+                        value: new bigNumber(sdk.toBig(item.price).toNumber()).toPrecision(2) as any,
                     },
                     fee: {
                         key: feeKey || '--',
                         // value: feeKey ? volumeToCountAsBigNumber(feeKey, item.fee)?.toNumber() : undefined, 
-                        value: feeValue && Number(feeValue) > 1 ? feeValue?.toFixed(6) : feeValue?.toPrecision(2) as any
+                        // value: feeValue && Number(feeValue) > 1 ? feeValue?.toFixed(6) : feeValue?.toPrecision(2) as any
+                        value: getValuePrecision(getThousandFormattedNumbers(new bigNumber(feeValue || 0) as any)) as any,
                     },
                     time: parseInt(item.tradeTime.toString()),
                 })
@@ -159,11 +161,11 @@ export const makeMyAmmMarketArray = <C extends { [ key: string ]:any }>(coinKey:
                     tradeArray.push({
                             type: item.txType === sdk.AmmTxType.JOIN ? AmmTradeType.add : AmmTradeType.remove,
                             //TODO:
-                            totalDollar: 1000,
-                            totalYuan: 1000 / Number(forex),
+                            totalDollar: 0,
+                            totalYuan: 0 / Number(forex),
                             totalBalance: Number(balance),
                             amountA: volumeToCount(coinA,item.poolTokens[ 0 ]?.actualAmount),
-                            amountB: volumeToCount(coinA,item.poolTokens[ 1 ]?.actualAmount),
+                            amountB: volumeToCount(coinB,item.poolTokens[ 1 ]?.actualAmount),
                             time: Number(item.updatedAt),
                             // @ts-ignore
                             coinA: coinMap[ coinA ],

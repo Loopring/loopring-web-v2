@@ -1,4 +1,4 @@
-
+import { BigNumber } from 'bignumber.js'
 /**
  *
  * @param value
@@ -61,5 +61,5 @@ export const getValuePrecision = (rawValue?: number | string, precision = 6) => 
     if (rawValue >= 1) {
         return rawValue.toFixed(precision)
     }
-    return rawValue.toPrecision(2)
+    return new BigNumber(rawValue).toPrecision(2) as string
 }
