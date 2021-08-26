@@ -33,7 +33,7 @@ export const pairDetailBlock = <C extends { [ key: string ]: any }, I extends { 
     })
 }
 
-export const pairDetailDone = <C>({coinKey, market, ammPoolsBalance, fee, tokenMap,tickerData, _tradeCalcData, coinMap, marketCoins}:any)=>{
+export const pairDetailDone = <C>({coinKey, market, ammPoolsBalance, fee, tokenMap,tickerData, _tradeCalcData, coinMap, marketCoins,depth}:any)=>{
 
     const [, coinSell, coinBuy] = coinKey.match(/(\w+)-(\w+)/i)
     let stob:number|undefined = NaN;
@@ -66,6 +66,9 @@ export const pairDetailDone = <C>({coinKey, market, ammPoolsBalance, fee, tokenM
 
                 myLog('pairDetailDone stob from amm:', stob)
         }
+    }
+    if(isNaN(stob) && depth) {
+        stob = coinKey === depth.symbol? depth.mid_price:1/depth.mid_price
     }
 
     const isValidS2B = (stob !== 0 && stob !== undefined && !isNaN(stob))
