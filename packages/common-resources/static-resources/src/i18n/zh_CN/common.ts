@@ -127,7 +127,7 @@ export default {
     labelBack: '返回',
     labelAPY: 'APY',
     label24Volume: '24h 交易量',
-    labelTVL: 'TVL',
+    labelTVL: '总锁仓量',
     labelAmmTotalToken: '池子中的代币',
     labelNoActiveEvent: '暂时没有活动',
     labelNew: '新的',
@@ -236,4 +236,5 @@ export default {
     labelImpactExtraGreat: '您的交易金额将影响池子价格<1> {{value}}</1>，您确定执行此操作吗',
     labelCalculating:'计算中...',
     labelAmmMyTransactions: '我的交易',
+    labelAmmAllTransactions: '所有交易',
 }

@@ -9,7 +9,7 @@ import { useWalletLayer2 } from '../../../stores/walletLayer2';
 import { makeTickView, makeWalletLayer2, pairDetailBlock, volumeToCount, WalletMapExtend, useAmmTotalValue } from '../../../hooks/help';
 import { AmmPoolSnapshot, AmmUserRewardMap, getExistedMarket, TickerData, TradingInterval } from 'loopring-sdk';
 import { deepClone } from '../../../utils/obj_tools';
-import { getUserAmmTransaction, makeMyAmmMarketArray } from '../../../hooks/help/marketTable';
+import { getUserAmmTransaction, makeMyAmmMarketArray, getRecentAmmTransaction } from '../../../hooks/help/marketTable';
 import { AmmRecordRow } from '@loopring-web/component-lib';
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 import { useSystem } from '../../../stores/system';
@@ -81,8 +81,10 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
     const [ammMarketArray, setAmmMarketArray] = React.useState<AmmRecordRow<C>[]>([]);
     const [ammTotal, setAmmTotal] = React.useState(0)
     const [ammUserTotal, setAmmUserTotal] = React.useState(0)
+    // const [recentTxnTotal, setRecentTxnTotal] = React.useState(0)
 
     const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<AmmRecordRow<C>[]>([]);
+    // const [recentMarketArray, setRecentMarketArray] = React.useState<any[]>([])
     const [ammUserRewardMap, setAmmUserRewardMap] = React.useState<AmmUserRewardMap | undefined>(undefined);
     const [snapShotData, setSnapShotData] = React.useState<{
         tickerData: TickerData | undefined
@@ -226,6 +228,48 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
             })
         }
     }, [ammMap, routerLocation.pathname, forex, getLpTokenPrice])
+    
+    // const getRecentAmmPoolTxs = React.useCallback(({
+    //     limit = 7,
+    //     offset = 0,
+    // }) => {
+    //     if (ammMap && forex) {
+    //         const url = routerLocation.pathname
+    //         const list = url.split('/')
+    //         const market = list[list.length - 1]
+    //         const addr = ammMap['AMM-' + market].address
+    //         setIsLoading(true)
+    //         getRecentAmmTransaction({
+    //             address: addr,
+    //             limit: limit,
+    //             offset,
+    //         })?.then(({ammPoolTrades, totalNum}) => {
+    //             const formattedTrades = ammPoolTrades.map(o => ({
+    //                 ...o,
+    //                 hash: o.orderHash,
+    //                 txType: '',
+    //             }))
+    //             let _myTradeArray = makeMyAmmMarketArray(market, formattedTrades)
+
+    //             const formattedArray = _myTradeArray.map((o: any) => {
+    //                 const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`
+    //                 const formattedBalance = Number(volumeToCount(market, o.totalBalance))
+    //                 const price = getLpTokenPrice(market)
+    //                 const totalDollar = (formattedBalance || 0) * (price || 0) as any;
+    //                 const totalYuan = totalDollar * forex
+    //                 return ({
+    //                     ...o,
+    //                     totalDollar: getThousandFormattedNumbers(totalDollar.toFixed(2)),
+    //                     totalYuan: getThousandFormattedNumbers(Number((totalYuan).toFixed(2))),
+    //                 })
+    //             })
+    //             // setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
+    //             setRecentMarketArray(formattedArray || [])
+    //             setRecentTxnTotal(totalNum)
+    //             setIsLoading(false)
+    //         })
+    //     }
+    // }, [ammMap, routerLocation.pathname, forex, getLpTokenPrice])
 
     useDeepCompareEffect(() => {
         if (!!lpTokenList.length) {
