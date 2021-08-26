@@ -87,7 +87,7 @@ const getPriceImpactInfo = (output: any) => {
             priceLevel = PriceLevel.Lv2
         }
 
-        priceImpact = priceImpact.toPrecision(4)
+        priceImpact = getShowStr(priceImpact)
 
     } else {
         priceImpactColor = 'var(--color-textPrimary)'
