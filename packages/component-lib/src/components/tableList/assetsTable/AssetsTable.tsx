@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Grid, MenuItem, ListItemText, Avatar, Typography } from '@material-ui/core'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
@@ -9,7 +9,7 @@ import { Column, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { Filter } from './components/Filter'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
-import { TableType, MoreIcon, AvatarCoinStyled } from '@loopring-web/common-resources';
+import { TableType, MoreIcon, AvatarCoinStyled, PriceTag } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores'
 
 const TableStyled = styled(Box)`
@@ -103,6 +103,8 @@ export type RawDataAssetsItem = {
     locked: string;
     tradePairList?: TradePairItem[];
     smallBalance: boolean;
+    tokenValueDollar: number;
+    tokenValueYuan: number;
 }
 
 export interface AssetsTableProps {
@@ -142,9 +144,9 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
 
     const {language} = useSettings()
     let history = useHistory()
-    const {coinJson} = useSettings();
+    const {coinJson, currency} = useSettings();
     // const rightState = usePopupState({variant: 'popover', popupId: `action-popover`});
-
+    const isUSD = currency === 'USD'
     useEffect(() => {
         setTotalData(rawData && Array.isArray(rawData) ? rawData : [])
     }, [rawData])
@@ -257,16 +259,33 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         {
             key: 'amount',
             name: t('labelAmount'),
-            // minWidth: 120,
         },
-        {
-            key: 'available',
-            name: t('labelAvailable'),
-        },
+        // {
+        //     key: 'available',
+        //     name: t('labelAvailable'),
+        // },
         {
             key: 'locked',
             name: t('labelLocked'),
-            // minWidth: 120,
+            formatter: ({row}) => {
+                const value = row['locked']
+                return <>
+                    {Number(value).toFixed(2)}
+                </>
+
+            }
+        },
+        {
+            key: 'value',
+            name: t('labelAssetsTableValue'),
+            formatter: ({row}) => {
+                const tokenValueDollar = row['tokenValueDollar']
+                const tokenValueYuan = row['tokenValueYuan']
+                const renderValue = isUSD ? tokenValueDollar : tokenValueYuan
+                return <>
+                    {isUSD ? PriceTag.Dollar : PriceTag.Yuan}{Number(renderValue).toFixed(2)}
+                </>
+            }
         },
         {
             key: 'actions',
