@@ -83,7 +83,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                           <Typography variant={'body2'} component={'span'} marginTop={1 / 2} marginRight={1}
                                       className={`float-tag float-${tradeFloat.floatTag}`}>{
                               tradeFloat.change
-                                ? `${tradeFloat.change > 0 ? '+' : ''}${getThousandFormattedNumbers(tradeFloat.change, 2)}%`
+                                ? `${tradeFloat.change > 0 ? '+' : ''}${Number(tradeFloat.change).toFixed(2)}%`
                                 : EmptyValueTag + '%'
                                 
                           }
