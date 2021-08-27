@@ -35,7 +35,7 @@ export default {
     labelQuota24hHigh: '24h 最高',
     labelQuota24hLow: '24h 最低',
     labelQuoteAction: '操作',
-    labelQuota24Volume: '24h 交易量',
+    labelQuota24hAmount: '24h 交易量',
     labelTradeFilterAllTypes: '所有类型',
     labelTradeFilterBuy: '买入',
     labelTradeFilterSell: '卖出',
