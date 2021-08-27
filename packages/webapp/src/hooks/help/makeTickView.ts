@@ -1,7 +1,7 @@
 import { TickerData, toBig } from 'loopring-sdk';
 import store from '../../stores';
 import { FloatTag,TradeFloat } from '@loopring-web/common-resources';
-import { volumeToCountAsBigNumber } from './volumeToCount';
+import { volumeToCount } from './volumeToCount';
 import { Ticker, TickerMap } from '../../stores/ticker';
 import { LoopringMap } from 'loopring-sdk';
 import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
@@ -54,7 +54,8 @@ export  const makeTickerMap =  <R extends {[key:string]:any}>({tickerMap}:{ticke
     return Reflect.ownKeys(tickerMap).reduce((prev, key) => {
         const item: TickerData = tickerMap[ key as any ];
         if (item && item.base && forex && faitPrices && (faitPrices[ item.base ] || faitPrices[ 'USDT' ])) {
-            const volume = VolToNumberWithPrecision(item.base_token_volume, item.base as string)
+            // const volume = VolToNumberWithPrecision(item.base_token_volume, item.base as string)
+            const volume = volumeToCount(item.symbol.split('-')[1], item.quote_token_volume)
             //FIX: DIE is not in faitPrices
             const priceDollar = toBig(volume?volume:0).times(faitPrices[ item.base ] ? faitPrices[ item.base ].price : faitPrices[ 'USDT' ].price);
             const priceYuan = priceDollar?.times(forex);
@@ -65,7 +66,7 @@ export  const makeTickerMap =  <R extends {[key:string]:any}>({tickerMap}:{ticke
                 timeUnit: '24h',
                 priceDollar: priceDollar?.toNumber() === 0 ? undefined : priceDollar?.toNumber(),
                 priceYuan: priceYuan?.toNumber() === 0 ? undefined : priceYuan?.toNumber(),
-                volume: volume?Number(volume):undefined,
+                volume: volume ? Number(volume) : undefined,
                 floatTag: item.close > item.open ? 'increase' : 'decrease',
                 change: change,
                 close: isNaN(item.close) ? undefined : item.close,
