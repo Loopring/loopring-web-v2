@@ -48,7 +48,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                                                      }: & WithTranslation & MarketBlockProps<C>) => {
     const {upColor, currency} = useSettings();
     const isUSD = currency === 'USD'
-    const { priceDollar, priceYuan, volume } = tradeFloat
+    const { volume } = tradeFloat
     const currencyUnit = isUSD ? PriceTag.Dollar : PriceTag.Yuan
     return <MarketBlockStyled className={'MuiPaper-elevation2'} custom={{chg: upColor}} padding={0.5 * 5} display={'flex'}
                               justifyContent={'stretch'}>
@@ -89,7 +89,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                           }
                           </Typography>
                             <Typography variant={'body2'} color={'var(--color-text-secondary)'} component={'div'} textOverflow={'ellipsis'} overflow={'hidden'} whiteSpace={'nowrap'}
-                                    marginTop={1 / 2}>{t('labelAmount')} : {getThousandFormattedNumbers((volume))}&nbsp;{coinBInfo.simpleName}</Typography>
+                                    marginTop={1 / 2}>{t('labelAmount')} : {getThousandFormattedNumbers(volume)}&nbsp;{coinBInfo.simpleName}</Typography>
                         </Box>
                     </Box>
                     {/* <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'}
