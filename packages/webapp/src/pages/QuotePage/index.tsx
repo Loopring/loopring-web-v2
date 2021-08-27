@@ -256,7 +256,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const getTradeFloatVolumeToCount = React.useCallback((tradeFloat: any) => {
       return {
         ...tradeFloat,
-        volume: tradeFloat ? volumeToCountAsBigNumber(tradeFloat.pair.coinB, tradeFloat.volume)?.toFixed(12) : 0
+        volume: tradeFloat ? tradeFloat.volume : 0
       }
     }, [])
 
