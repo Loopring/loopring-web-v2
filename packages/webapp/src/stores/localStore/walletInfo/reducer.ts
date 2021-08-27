@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice'
+import { myLog } from 'utils/log_tools'
 import { WalletInfo, } from './interface'
 
 const initialState: WalletInfo = {
@@ -15,7 +16,7 @@ const walletInfoSlice: Slice<WalletInfo> = createSlice<WalletInfo, SliceCaseRedu
         },
         updateWallet(state: WalletInfo, action: PayloadAction<{ address: string, isHW: boolean }>) {
             const walletInfo = action.payload
-            state.walletTypeMap[walletInfo.address] = walletInfo.isHW 
+            state.walletTypeMap[walletInfo.address] = walletInfo.isHW
         },
     },
 })

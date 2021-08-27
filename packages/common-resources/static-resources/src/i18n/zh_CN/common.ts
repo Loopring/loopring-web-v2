@@ -106,6 +106,7 @@ export default {
     labelTaker: '吃单',
     labelAssetsTitle: '资产清单',
     labelVolume: '总量',
+    labelAmount: '交易量',
     labelLiquidityDeposit: '放入',
     labelLiquidityWithdraw: '移出',
     labelAvailable: '可用',
