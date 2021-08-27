@@ -61,19 +61,19 @@ export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[
                             // key: base as string,
                             // value: base ? volumeToCount(base, item.volume) : undefined
                             key: baseToken as string,
-                            value: getValuePrecision(getThousandFormattedNumbers(new bigNumber(baseValue || 0) as any)) as any,
+                            value: getValuePrecision(getThousandFormattedNumbers(new bigNumber(baseValue || 0) as any), 4) as any,
                         },
                         to: {
                             // key: quote as string,
                             // value: base ? volumeToCountAsBigNumber(base, item.volume)?.times(item.price).toNumber():undefined
                             key: quoteToken as string,
-                            value: getValuePrecision(getThousandFormattedNumbers(new bigNumber(quoteValue || 0) as any)) as any,
+                            value: getValuePrecision(getThousandFormattedNumbers(new bigNumber(quoteValue || 0) as any), 4) as any,
                         },
 
                     },
                     price: {
                         key: '',
-                        value: new bigNumber(sdk.toBig(item.price).toNumber()).toPrecision(2) as any,
+                        value: getValuePrecision(sdk.toBig(item.price).toNumber(), 4) as any,
                     },
                     fee: {
                         key: feeKey || '--',

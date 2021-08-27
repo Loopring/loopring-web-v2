@@ -172,7 +172,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                 key: 'high',
                 name: t('labelQuota24hHigh'),
                 // resizable: true,
-                sortable: true,
+                // sortable: true,
                 formatter: ({row, column}) => {
                     const value = row[ column.key ]
                     // const hasValue = Number.isFinite(value)
@@ -188,7 +188,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                 key: 'low',
                 name: t('labelQuota24hLow'),
                 // resizable: true,
-                sortable: true,
+                // sortable: true,
                 formatter: ({row, column}) => {
                     const value = row[ column.key ]
                     // const hasValue = Number.isFinite(value)
@@ -202,7 +202,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
             },
             {
                 key: 'volume',
-                name: t('labelQuota24Volume'),
+                name: t('labelQuota24hAmount'),
                 // resizable: true,
                 sortable: true,
                 formatter: ({row}) => {
