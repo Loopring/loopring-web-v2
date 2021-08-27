@@ -62,9 +62,7 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
                     swapBtnI18nKey={swapBtnI18nKey}
                     swapBtnStatus={swapBtnStatus}
                     {...{ handleSwapPanelEvent, ...rest }}
-                />
-
-                {process.env.NODE_ENV !== 'production' && <>
+                />{process.env.NODE_ENV !== 'production' && <>
                     {JSON.stringify(debugInfo)}
                 </>}
 
