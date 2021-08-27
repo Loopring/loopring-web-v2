@@ -114,6 +114,13 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         }
 
     }, []);
+    React.useEffect(()=>{
+        if( account.readyState !== AccountStatus.ACTIVATED){
+            setAddBtnStatus(TradeBtnStatus.AVAILABLE)
+            setAmmDepositBtnI18nKey(accountStaticCallBack(_addBtnLabel))
+        }
+
+    },[account.readyState])
 
     const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
         myLog('initAmmData:', account.accAddress, walletMap, pair)
@@ -202,13 +209,15 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
     const times = 5
 
-    const addBtnLabelActive = React.useCallback((): string | undefined => {
+    const addBtnLabelActive = React.useCallback(({ammJoinData}): string | undefined => {
         //TODO:
         const validAmt1 = ammJoinData?.coinA?.tradeValue ? ammJoinData?.coinA?.tradeValue > times * baseMinAmt : false
         const validAmt2 = ammJoinData?.coinB?.tradeValue ? ammJoinData?.coinB?.tradeValue > times * quoteMinAmt : false
-
-        myLog('validAmt1:', validAmt1, baseMinAmt, ' tradeValue', ammJoinData?.coinA?.tradeValue)
-        myLog('validAmt2:', validAmt2, quoteMinAmt, ' tradeValue', ammJoinData?.coinB?.tradeValue)
+        myLog('addBtnLabelActive ammJoinData', ammJoinData)
+        //         // myLog('validAmt2:', validAmt2, quoteMinAmt, ' tradeValue', ammJoinData?.coinB?.tradeValue)
+        // mymyLog('validAmt1:', validAmt1, baseMinAmt, ' tradeValue', ammJoinData?.coinA?.tradeValue)
+        //         // myLog('validAmt2:', validAmt2, quoteMinAmt, ' tradeValue', ammJoinData?.coinB?.tradeValue)Log('validAmt1:', validAmt1, baseMinAmt, ' tradeValue', ammJoinData?.coinA?.tradeValue)
+        // myLog('validAmt2:', validAmt2, quoteMinAmt, ' tradeValue', ammJoinData?.coinB?.tradeValue)
 
         if (isJoinLoading) {
             setAmmDepositBtnI18nKey(TradeBtnStatus.LOADING)
@@ -239,9 +248,9 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
         }
     }, [
-        account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, ammJoinData, isJoinLoading, setAddBtnStatus])
+        account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, isJoinLoading, setAddBtnStatus])
         
-    const removeBtnLabelActive = React.useCallback((): string | undefined => {
+    const removeBtnLabelActive = React.useCallback(({ammExitData}): string | undefined => {
         //TODO:
         // const validAmt = (output?.amountBOut && quoteMinAmt
         //     && sdk.toBig(output?.amountBOut).gte(sdk.toBig(quoteMinAmt))) ? true : false;
@@ -279,9 +288,10 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         }
     }, [account.readyState, , baseToken, quoteToken, ammExitData, isExitLoading, setRemoveBtnStatus])
 
-    const _removeBtnLabel = Object.assign(deepClone(btnLabel), {
-        [ fnType.ACTIVATED ]: [removeBtnLabelActive]
-    })
+    const _removeBtnLabel =  Object.assign(deepClone(btnLabel), {
+            [ fnType.ACTIVATED ]: [removeBtnLabelActive]
+        })
+
 
     const _addBtnLabel = Object.assign(deepClone(btnLabel), {
         [ fnType.ACTIVATED ]: [addBtnLabelActive]
@@ -289,12 +299,6 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
     const calculateCallback = React.useCallback(async ()=>{
         if (accountStatus === SagaStatus.UNSET) {
-
-            setAddBtnStatus(TradeBtnStatus.AVAILABLE)
-            setAmmDepositBtnI18nKey(accountStaticCallBack(_addBtnLabel))
-            setRemoveBtnStatus(TradeBtnStatus.AVAILABLE)
-            setAmmWithdrawBtnI18nKey(accountStaticCallBack(_removeBtnLabel))
-
             if (!LoopringAPI.userAPI || !pair.coinBInfo?.simpleName
                 || account.readyState !== AccountStatus.ACTIVATED
                 || !ammCalcData || !tokenMap) {
@@ -343,8 +347,10 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
     // join
 
-    const [joinRequest, setJoinRequest] = useState<{ ammInfo: any, request: JoinAmmPoolRequest }>()
-    const handleJoinInDebounce = React.useCallback(_.debounce(async (data, type, joinFees, ammPoolSnapshot,tokenMap,account) => {
+    const [joinRequest, setJoinRequest] = useState<{ ammInfo: any, request: JoinAmmPoolRequest }>();
+
+    const handleJoinIn = React.useCallback(async (data, type, joinFees, ammPoolSnapshot,tokenMap,account) => {
+        setAmmDepositBtnI18nKey(accountStaticCallBack(_addBtnLabel,[{ammJoinData}]))
 
         if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !joinFees || !account?.accAddress) {
             return
@@ -398,24 +404,27 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
                 .div('1e' + coinA.decimals).toFixed(marketInfo.precisionForPrice))
         }
 
-        console.log('coinA:', data.coinA)
-        console.log('coinB:', data.coinB)
+
+
 
         setAmmJoinData({
             coinA: data.coinA as IBData<C>,
             coinB: data.coinB as IBData<C>,
             slippage,
         })
+        myLog('handleJoinInDebounce',data)
+        setAmmDepositBtnI18nKey(accountStaticCallBack(_addBtnLabel,[{ammJoinData:data}]))
+
 
         setJoinRequest({
             ammInfo,
             request
         })
 
-    }, globalSetup.wait), [])
+    },[])
 
     const handleJoinAmmPoolEvent =  (data: AmmData<IBData<any>>, type: 'coinA' | 'coinB') => {
-        handleJoinInDebounce(data, type, joinFees, ammPoolSnapshot,tokenMap,account)
+        handleJoinIn(data, type, joinFees, ammPoolSnapshot,tokenMap,account)
     };
 
     const addToAmmCalculator = React.useCallback(async function (props
@@ -495,6 +504,8 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     const [exitRequest, setExitRequest] = useState<{ rawVal: '', ammInfo: any, request: ExitAmmPoolRequest }>()
 
     const handleExitInDebounce = React.useCallback(_.debounce(async (data, type, exitFees, ammPoolSnapshot,tokenMap,account) => {
+        setRemoveBtnStatus(TradeBtnStatus.AVAILABLE)
+        setAmmWithdrawBtnI18nKey(accountStaticCallBack(_removeBtnLabel,[{ammExitData}]))
 
         const isAtoB = type === 'coinA'
 
