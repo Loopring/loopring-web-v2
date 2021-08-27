@@ -107,6 +107,7 @@ export default {
     labelTaker: 'Taker',
     labelAssetsTitle: 'Assets',
     labelVolume: 'volume',
+    labelAmount: 'Amount',
     labelLiquidityDeposit: 'Add',
     labelLiquidityWithdraw: 'Remove',
     labelAvailable: 'Available',
