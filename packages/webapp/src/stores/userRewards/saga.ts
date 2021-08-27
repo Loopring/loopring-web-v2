@@ -13,21 +13,21 @@ const getUserRewardsApi = async <R extends {[key:string]:any}>(list:Array<keyof 
     let {__timer__} = store.getState().userRewardsMap;
     
     if(LoopringAPI.ammpoolAPI && accountId ) {
-        __timer__ = ((__timer__) => {
-            if (__timer__ && __timer__ !== -1) {
-                clearTimeout(__timer__);
-            }
-            return setTimeout(async () => {
-                store.dispatch(getUserRewards(undefined))
-            }, 300000 * 4)   //
+        // __timer__ = ((__timer__) => {
+        if (__timer__ && __timer__ !== -1) {
+            clearInterval(__timer__);
+        }
+        setInterval(async () => {
+            store.dispatch(getUserRewards(undefined))
+        }, 300000 * 4)   //
 
-        })(__timer__);
+        // })(__timer__);
         return  LoopringAPI.ammpoolAPI.getAmmPoolUserRewards({owner:accountId}).then(({ammUserRewardMap}) => {
             return {data:ammUserRewardMap,__timer__}
         })
     }else{
         if (__timer__ && __timer__ !== -1) {
-            clearTimeout(__timer__);
+            clearInterval(__timer__);
         }
         return Promise.resolve({data:undefined,__timer__:-1})
         // if(accountId) {
@@ -61,7 +61,7 @@ export function* getResetsSaga({payload}:any){
         // @ts-ignore
         let {__timer__} = store.getState().userRewardsMap;
         if (__timer__ && __timer__ !== -1) {
-            clearTimeout(__timer__);
+            clearInterval(__timer__);
         }
         yield put(getUserRewardsStatus({userRewardsMap:[],__timer__:-1}));
     } catch (err) {
