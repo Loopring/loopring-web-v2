@@ -109,7 +109,7 @@ export const ModalAccountInfo = withTranslation('common')(({
         withdrawToastOpen,
         setWithdrawToastOpen,
         withdrawProps,
-        handleWithdraw,
+        processRequest,
         lastWithdrawValue,
     } = useWithdraw()
 
@@ -297,19 +297,21 @@ export const ModalAccountInfo = withTranslation('common')(({
             btnTxt: t('labelTryNext'),
             callback: () => {
                 myLog('...labelTryNext...')
-                handleWithdraw(lastWithdrawValue.inputValue, lastWithdrawValue.address, false)
+                setShowAccount({ isShow: true, step: AccountStep.Withdraw_WaitForAuth })
+                processRequest(lastWithdrawValue.request, false)
             }
         }
-    }, [handleWithdraw, lastWithdrawValue])
+    }, [processRequest, lastWithdrawValue])
 
     const backToWithdrawBtnInfo = React.useMemo(() => {
         return {
             btnTxt: t('labelRetry'),
             callback: () => {
-                setShowWithdraw( { isShow: true })
+                setShowAccount({ isShow: false })
+                setShowWithdraw({ isShow: true })
             }
         }
-    }, [])
+    }, [setShowWithdraw, ])
 
     const backToUpdateAccountBtnInfo = React.useMemo(() => {
         return {
@@ -318,7 +320,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 setShowAccount({ isShow: true, step: AccountStep.UpdateAccount })
             }
         }
-    }, [])
+    }, [setShowAccount, ])
 
     const closeBtnInfo = React.useMemo(() => {
         return {

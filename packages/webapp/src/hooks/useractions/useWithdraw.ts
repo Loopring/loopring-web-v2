@@ -35,9 +35,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawToastOpen: boolean,
     setWithdrawToastOpen: any,
     withdrawProps: WithdrawProps<R, T>
-    handleWithdraw: any,
+    processRequest: any,
     lastWithdrawValue: any,
-    address: string,
     // withdrawValue: R
 } => {
 
@@ -117,12 +116,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     break
                 }
             }
-            // const balance = walletMap2 ? walletMap2[ Object.keys(walletMap2)[ 0 ] ] : {}
-            // setWithdrawValue({
-            //     belong: balance?.belong,
-            //     balance: balance?.count,
-            //     tradeValue: undefined,
-            // })
         }
     }, [symbol, walletMap2, setWithdrawValue])
     React.useEffect(() => {
@@ -137,17 +130,63 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const { checkHWAddr, updateDepositHashWrapper, } = useWalletInfo()
 
+    const processRequest = React.useCallback(async (request: sdk.OffChainWithdrawalRequestV3, isFirstTime: boolean= true) => {
+
+        const { accountId, accAddress, readyState, apiKey, connectName, eddsaKey } = account
+
+        if (connectProvides.usedWeb3) {
+
+            let isHWAddr = checkHWAddr(account.accAddress)
+
+            isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
+
+            const response = await LoopringAPI.userAPI?.submitOffchainWithdraw({
+                request,
+                web3: connectProvides.usedWeb3,
+                chainId: chainId === 'unknown' ? 1 : chainId,
+                walletType: connectName as sdk.ConnectorNames,
+                eddsaKey: eddsaKey.sk,
+                apiKey,
+                isHWAddr,
+            })
+
+            myLog('submitOffchainWithdraw:', response)
+    
+            if (response?.errorInfo) {
+                // Withdraw failed
+                if (response.errorInfo?.errMsg === 'USER_DENIED' || (response.errorInfo.message 
+                    && (response.errorInfo.message as string).startsWith('personalSign last'))) {
+                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_User_Refused })
+                } else if (isFirstTime && response.errorInfo?.errMsg === 'NOT_SUPPORT_ERROR') {
+                    setLastWithdrawValue({ request })
+                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_First_Method_Refused })
+                } else {
+                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
+                }
+            } else if (response?.resultInfo) {
+                setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
+            } else {
+                // Withdraw success
+                setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_In_Progress })
+                await sdk.sleep(TOAST_TIME)
+                setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Success })
+                if (isHWAddr) {
+                    myLog('......try to set isHWAddr', isHWAddr)
+                    updateDepositHashWrapper({ wallet: account.accAddress, isHWAddr })
+                }
+            }
+
+        }
+    }, [setLastWithdrawValue, setShowAccount, ])
+
     const handleWithdraw = React.useCallback(async (inputValue: R, address, isFirstTime: boolean = true) => {
 
         const { accountId, accAddress, readyState, apiKey, connectName, eddsaKey } = account
+
         if (readyState === AccountStatus.ACTIVATED && tokenMap
             && exchangeInfo && connectProvides.usedWeb3
             && address && withdrawFeeInfo?.belong && eddsaKey?.sk) {
             try {
-
-                let isHWAddr = checkHWAddr(account.accAddress)
-
-                isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
 
                 setShowWithdraw({ isShow: false, })
                 setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_WaitForAuth, })
@@ -182,40 +221,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
                 myLog('submitOffchainWithdraw:', request)
 
-                const response = await LoopringAPI.userAPI?.submitOffchainWithdraw({
-                    request,
-                    web3: connectProvides.usedWeb3,
-                    chainId: chainId === 'unknown' ? 1 : chainId,
-                    walletType: connectName as sdk.ConnectorNames,
-                    eddsaKey: eddsaKey.sk,
-                    apiKey,
-                    isHWAddr,
-                })
-
-                myLog('submitOffchainWithdraw:', response)
-
-                if (response?.errorInfo) {
-                    // Withdraw failed
-                    if (response.errorInfo?.errMsg === 'USER_DENIED') {
-                        setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_User_Refused })
-                    } else if (isFirstTime && response.errorInfo?.errMsg === 'NOT_SUPPORT_ERROR') {
-                        setLastWithdrawValue({ inputValue, address, })
-                        setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_First_Method_Refused })
-                    } else {
-                        setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
-                    }
-                } else if (response?.resultInfo) {
-                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
-                } else {
-                    // Withdraw success
-                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_In_Progress })
-                    await sdk.sleep(TOAST_TIME)
-                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Success })
-                    if (isHWAddr) {
-                        myLog('......try to set isHWAddr', isHWAddr)
-                        updateDepositHashWrapper({ wallet: account.accAddress, isHWAddr })
-                    }
-                }
+                processRequest(request)
 
             } catch (e) {
                 sdk.dumpError400(e)
@@ -283,8 +289,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         withdrawToastOpen,
         setWithdrawToastOpen,
         withdrawProps,
-        handleWithdraw,
+        processRequest,
         lastWithdrawValue,
-        address,
     }
 }
