@@ -3,7 +3,7 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 import BasicInfoPanel from './panel/BasicInfoPanel'
 import TradePanel from './panel/TradePanel'
 import { useSwapPage } from './hook'
-import { AlertImpact, ConfirmImpact, SwapPanel, Toast } from '@loopring-web/component-lib'
+import { AlertImpact, ConfirmImpact, SwapPanel, Toast, TradeBtnStatus } from '@loopring-web/component-lib'
 
 import { TOAST_TIME } from 'defs/common_defs'
 import { FixedStyle } from 'pages/styled'
@@ -32,9 +32,8 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
         confirmOpen,
         refreshRef,
         swapFunc,
-
+        isSwapLoading,
         priceImpact,
-
     } = useSwapPage();
 
     return <>
@@ -54,6 +53,9 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
         <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}}>
             <FixedStyle>
                 <SwapPanel
+                    //disabled={isSwapLoading}
+                    tokenBuyProps={{disabled: isSwapLoading}}
+                    tokenSellProps={{disabled: isSwapLoading}}
                     onRefreshData={should15sRefresh}
                     refreshRef={refreshRef}
                     tradeData={tradeData as any}

@@ -11,7 +11,6 @@ import {
 
 import { changeShowModel, useAccount, } from 'stores/account'
 
-import { Theme, } from 'defs/common_defs'
 
 import {
     AccountStepNew as AccountStep,
