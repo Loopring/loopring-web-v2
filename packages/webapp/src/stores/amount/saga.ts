@@ -15,15 +15,16 @@ const getAmountApi = async <R extends { [ key: string ]: any }>(market: string):
     let __timer__ = (__timerMap__ && __timerMap__[ market ]) ? __timerMap__[ market ] : -1;
 
     if (LoopringAPI.userAPI && accountId && apiKey) {
-        __timer__ = ((__timer__, market) => {
-            if (__timer__ && __timer__ !== -1) {
-                clearTimeout(__timer__);
-            }
-            return setTimeout(async () => {
-                store.dispatch(getAmount(market))
-            }, 300000 * 4)   //
+        // __timer__ = ((__timer__, market) => {
+        if (__timer__ && __timer__ !== -1) {
+            clearInterval(__timer__);
+        }
+        __timer__  = setInterval(async () => {
+            // debugger
+            store.dispatch(getAmount(market))
+        }, 1000*15*60)//   //
 
-        })(__timer__, market);
+        // })(__timer__, market);
         const req: sdk.GetMinimumTokenAmtRequest = {
             accountId: accountId,
             market: market,
@@ -33,7 +34,7 @@ const getAmountApi = async <R extends { [ key: string ]: any }>(market: string):
 
     } else {
         if (__timer__ && __timer__ !== -1) {
-            clearTimeout(__timer__);
+            clearInterval(__timer__);
         }
         return Promise.resolve({pairMap: {}, __timer__: -1})
     }
@@ -68,7 +69,7 @@ export function* getResetsSaga({payload}: any) {
             Reflect.ownKeys(__timerMap__).map((market) => {
                 let __timer__ = __timerMap__ && __timerMap__[ market as string ];
                 if (__timer__ && __timer__ !== -1) {
-                    clearTimeout(__timer__);
+                    clearInterval(__timer__);
                 }
             })
         }
