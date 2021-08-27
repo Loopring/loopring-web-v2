@@ -110,7 +110,7 @@ export const ModalAccountInfo = withTranslation('common')(({
         setWithdrawToastOpen,
         withdrawProps,
         processRequest,
-        lastWithdrawValue,
+        lastRequest,
     } = useWithdraw()
 
     const { depositProps } = useDeposit()
@@ -118,7 +118,11 @@ export const ModalAccountInfo = withTranslation('common')(({
     const {
         transferAlertText,
         transferToastOpen,
-        setTransferToastOpen, transferProps } = useTransfer()
+        setTransferToastOpen,
+        transferProps,
+        lastRequest: transferLastRequest,
+        processRequest: transferProcessRequest,
+     } = useTransfer()
 
     const [openQRCode, setOpenQRCode] = useState(false)
 
@@ -139,7 +143,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     const onViewQRCode = React.useCallback(() => {
         setOpenQRCode(true)
-    }, [])
+    }, [setOpenQRCode])
 
     const onDisconnect = React.useCallback(async () => {
         walletServices.sendDisconnect('', 'customer click disconnect');
@@ -292,17 +296,6 @@ export const ModalAccountInfo = withTranslation('common')(({
         }
     }, [])
 
-    const TryNewAuthBtnInfo = React.useMemo(() => {
-        return {
-            btnTxt: t('labelTryNext'),
-            callback: () => {
-                myLog('...labelTryNext...')
-                setShowAccount({ isShow: true, step: AccountStep.Withdraw_WaitForAuth })
-                processRequest(lastWithdrawValue.request, false)
-            }
-        }
-    }, [processRequest, lastWithdrawValue])
-
     const backToWithdrawBtnInfo = React.useMemo(() => {
         return {
             btnTxt: t('labelRetry'),
@@ -322,11 +315,35 @@ export const ModalAccountInfo = withTranslation('common')(({
         }
     }, [setShowAccount, ])
 
+    const TryNewTransferAuthBtnInfo = React.useMemo(() => {
+        return {
+            btnTxt: t('labelTryNext'),
+            callback: () => {
+                myLog('...labelTryNext...')
+                setShowAccount({ isShow: true, step: AccountStep.Transfer_WaitForAuth })
+                transferProcessRequest(transferLastRequest.request, false)
+            }
+        }
+    }, [transferProcessRequest, transferLastRequest])
+
+    const TryNewWithdrawAuthBtnInfo = React.useMemo(() => {
+        return {
+            btnTxt: t('labelTryNext'),
+            callback: () => {
+                myLog('...labelTryNext...')
+                setShowAccount({ isShow: true, step: AccountStep.Withdraw_WaitForAuth })
+                processRequest(lastRequest.request, false)
+            }
+        }
+    }, [processRequest, lastRequest])
+
     const closeBtnInfo = React.useMemo(() => {
         return {
             btnTxt: t('labelClose'),
             callback: (e: any) => {
                 setShouldShow(false);
+                setShowTransfer({ isShow: false })
+                setShowWithdraw({ isShow: false })
                 setShowAccount({ isShow: false })
                 if (onClose) {
                     onClose(e)
@@ -451,7 +468,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                     }} />,
             },
             [AccountStep.Transfer_First_Method_Refused]: {
-                view: <Transfer_First_Method_Refused btnInfo={backToTransferBtnInfo} {...{
+                view: <Transfer_First_Method_Refused btnInfo={TryNewTransferAuthBtnInfo} {...{
                     ...rest, t
                 }} />,
             },
@@ -484,7 +501,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                     }} />,
             },
             [AccountStep.Withdraw_First_Method_Refused]: {
-                view: <Withdraw_First_Method_Refused btnInfo={TryNewAuthBtnInfo} {...{
+                view: <Withdraw_First_Method_Refused btnInfo={TryNewWithdrawAuthBtnInfo} {...{
                     ...rest, t
                 }} />,
             },

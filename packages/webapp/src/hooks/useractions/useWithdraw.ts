@@ -28,6 +28,8 @@ import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS, TOAST_TIME } from 'defs/common_defs';
 import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
 import { useWalletInfo } from 'stores/localStore/walletInfo';
+import { checkErrorInfo } from './utils';
+import { ConnectorError, } from 'loopring-sdk';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     // handleWithdraw: (inputValue:R) => void,
@@ -36,7 +38,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     setWithdrawToastOpen: any,
     withdrawProps: WithdrawProps<R, T>
     processRequest: any,
-    lastWithdrawValue: any,
+    lastRequest: any,
     // withdrawValue: R
 } => {
 
@@ -55,9 +57,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         tradeValue: 0,
         balance: 0
     } as IBData<unknown>)
-
-    const [lastWithdrawValue, setLastWithdrawValue] = React.useState<any>({
-    })
 
     // const {status:walletLayer2Status} = useWalletLayer2();
     const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
@@ -130,7 +129,9 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const { checkHWAddr, updateDepositHashWrapper, } = useWalletInfo()
 
-    const processRequest = React.useCallback(async (request: sdk.OffChainWithdrawalRequestV3, isFirstTime: boolean= true) => {
+    const [lastRequest, setLastRequest] = React.useState<any>({})
+
+    const processRequest = React.useCallback(async (request: sdk.OffChainWithdrawalRequestV3, isFirstTime: boolean) => {
 
         const { accountId, accAddress, readyState, apiKey, connectName, eddsaKey } = account
 
@@ -154,11 +155,11 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     
             if (response?.errorInfo) {
                 // Withdraw failed
-                if (response.errorInfo?.errMsg === 'USER_DENIED' || (response.errorInfo.message 
-                    && (response.errorInfo.message as string).startsWith('personalSign last'))) {
+                const code = checkErrorInfo(response.errorInfo, isFirstTime)
+                if (code === ConnectorError.USER_DENIED) {
                     setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_User_Refused })
-                } else if (isFirstTime && response.errorInfo?.errMsg === 'NOT_SUPPORT_ERROR') {
-                    setLastWithdrawValue({ request })
+                } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
+                    setLastRequest({ request })
                     setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_First_Method_Refused })
                 } else {
                     setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
@@ -177,11 +178,11 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             }
 
         }
-    }, [setLastWithdrawValue, setShowAccount, ])
+    }, [setLastRequest, setShowAccount, updateDepositHashWrapper, ])
 
     const handleWithdraw = React.useCallback(async (inputValue: R, address, isFirstTime: boolean = true) => {
 
-        const { accountId, accAddress, readyState, apiKey, connectName, eddsaKey } = account
+        const { accountId, accAddress, readyState, apiKey, eddsaKey } = account
 
         if (readyState === AccountStatus.ACTIVATED && tokenMap
             && exchangeInfo && connectProvides.usedWeb3
@@ -221,7 +222,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
                 myLog('submitOffchainWithdraw:', request)
 
-                processRequest(request)
+                processRequest(request, isFirstTime)
 
             } catch (e) {
                 sdk.dumpError400(e)
@@ -290,6 +291,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         setWithdrawToastOpen,
         withdrawProps,
         processRequest,
-        lastWithdrawValue,
+        lastRequest,
     }
 }
