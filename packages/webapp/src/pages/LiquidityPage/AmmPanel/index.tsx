@@ -39,6 +39,8 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
         ammWithdrawBtnI18nKey,
         onRefreshData,
         refreshRef,
+
+        debugInfo,
     } = useAmmPanel({
         pair,
         snapShotData, ammType: ammType ? ammType : AmmPanelType.Join
@@ -64,6 +66,7 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
     return <>
     <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'} open={toastOpen?.open ?? false}
             autoHideDuration={TOAST_TIME} onClose={closeToast}/>
+            <>{debugInfo}</>
 
     {pair ?
         <AmmPanel {...{...rest}}

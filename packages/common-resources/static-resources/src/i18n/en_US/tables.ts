@@ -9,6 +9,7 @@ export default {
     labelAmount: 'Amount',
     labelAvailable: 'Available',
     labelLocked: 'Locked',
+    labelAssetsTableValue: 'Value',
     labelActions: 'Actions',
     labelAllToken: 'All Tokens',
     labelHideSmallBalances: 'Hide Small Balances',

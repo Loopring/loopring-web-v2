@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useDebugValue, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -28,6 +28,8 @@ import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS, TOAST_TIME } from 'defs/common_defs';
 import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
 import { useWalletInfo } from 'stores/localStore/walletInfo';
+import { checkErrorInfo } from './utils';
+import { ConnectorError, } from 'loopring-sdk';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     // handleWithdraw: (inputValue:R) => void,
@@ -35,7 +37,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawToastOpen: boolean,
     setWithdrawToastOpen: any,
     withdrawProps: WithdrawProps<R, T>
-    handleWithdraw: any,
+    processRequest: any,
+    lastRequest: any,
     // withdrawValue: R
 } => {
 
@@ -54,10 +57,11 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         tradeValue: 0,
         balance: 0
     } as IBData<unknown>)
+
     // const {status:walletLayer2Status} = useWalletLayer2();
     const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
 
-    const [withdrawFeeInfo, setWithdrawFeeInfo] = useState<any>(undefined)
+    const [withdrawFeeInfo, setWithdrawFeeInfo] = useState<any>()
     const [withdrawType, setWithdrawType] = useState<sdk.OffchainFeeReqType>(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
 
     const { chargeFeeList } = useChargeFees(withdrawValue.belong, withdrawType, tokenMap, withdrawValue.tradeValue)
@@ -79,7 +83,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             myLog('try to AVAILABLE: ', withdrawValue?.tradeValue)
             setBtnStatus(TradeBtnStatus.AVAILABLE)
         } else {
-            myLog('try to DISABLED')
             setBtnStatus(TradeBtnStatus.DISABLED)
         }
 
@@ -112,12 +115,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     break
                 }
             }
-            // const balance = walletMap2 ? walletMap2[ Object.keys(walletMap2)[ 0 ] ] : {}
-            // setWithdrawValue({
-            //     belong: balance?.belong,
-            //     balance: balance?.count,
-            //     tradeValue: undefined,
-            // })
         }
     }, [symbol, walletMap2, setWithdrawValue])
     React.useEffect(() => {
@@ -132,20 +129,65 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const { checkHWAddr, updateDepositHashWrapper, } = useWalletInfo()
 
-    const handleWithdraw = React.useCallback(async (inputValue: R, isFirstTime: boolean = true) => {
+    const [lastRequest, setLastRequest] = React.useState<any>({})
 
-        myLog('enter ....handleWithdraw', account)
-        myLog('withdrawValue:', withdrawValue)
-        myLog('withdrawFeeInfo:', withdrawFeeInfo)
+    const processRequest = React.useCallback(async (request: sdk.OffChainWithdrawalRequestV3, isFirstTime: boolean) => {
 
-        const { accountId, accAddress, readyState, apiKey, connectName, eddsaKey } = account
+        const { apiKey, connectName, eddsaKey } = account
+
+        if (connectProvides.usedWeb3) {
+
+            let isHWAddr = checkHWAddr(account.accAddress)
+
+            isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
+
+            const response = await LoopringAPI.userAPI?.submitOffchainWithdraw({
+                request,
+                web3: connectProvides.usedWeb3,
+                chainId: chainId === 'unknown' ? 1 : chainId,
+                walletType: connectName as sdk.ConnectorNames,
+                eddsaKey: eddsaKey.sk,
+                apiKey,
+                isHWAddr,
+            })
+
+            myLog('submitOffchainWithdraw:', response)
+    
+            if (response?.errorInfo) {
+                // Withdraw failed
+                const code = checkErrorInfo(response.errorInfo, isFirstTime)
+                if (code === ConnectorError.USER_DENIED) {
+                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_User_Refused })
+                } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
+                    setLastRequest({ request })
+                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_First_Method_Refused })
+                } else {
+                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
+                }
+            } else if (response?.resultInfo) {
+                setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
+            } else {
+                // Withdraw success
+                setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_In_Progress })
+                await sdk.sleep(TOAST_TIME)
+                setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Success })
+                if (isHWAddr) {
+                    myLog('......try to set isHWAddr', isHWAddr)
+                    updateDepositHashWrapper({ wallet: account.accAddress, isHWAddr })
+                }
+            }
+
+        }
+    }, [setLastRequest, setShowAccount, updateDepositHashWrapper, account])
+
+    const handleWithdraw = React.useCallback(async (inputValue: R, address, isFirstTime: boolean = true) => {
+
+        const { accountId, accAddress, readyState, apiKey, eddsaKey } = account
+
         if (readyState === AccountStatus.ACTIVATED && tokenMap
             && exchangeInfo && connectProvides.usedWeb3
             && address && withdrawFeeInfo?.belong && eddsaKey?.sk) {
-            myLog('enter ....handleWithdraw 2')
             try {
-
-                const isHWAddr = checkHWAddr(account.accAddress)
 
                 setShowWithdraw({ isShow: false, })
                 setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_WaitForAuth, })
@@ -153,6 +195,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                 const withdrawToken = tokenMap[inputValue.belong as string]
                 const feeToken = tokenMap[withdrawFeeInfo.belong]
                 const withdrawVol = sdk.toBig(inputValue.tradeValue).times('1e' + withdrawToken.decimals).toFixed(0, 0)
+
                 const storageId = await LoopringAPI.userAPI?.getNextStorageId({
                     accountId: accountId,
                     sellTokenId: withdrawToken.tokenId
@@ -177,38 +220,9 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     validUntil: getTimestampDaysLater(DAYS),
                 }
 
-                myLog('submitOffchainWithdraw, isHWAddr:', isHWAddr)
+                myLog('submitOffchainWithdraw:', request)
 
-                const response = await LoopringAPI.userAPI?.submitOffchainWithdraw({
-                    request,
-                    web3: connectProvides.usedWeb3,
-                    chainId: chainId === 'unknown' ? 1 : chainId,
-                    walletType: connectName as sdk.ConnectorNames,
-                    eddsaKey: eddsaKey.sk,
-                    apiKey,
-                    isHWAddr,
-                })
-
-                myLog('got response:', response)
-
-                if (response?.errorInfo) {
-                    // Withdraw failed
-                    if (response.errorInfo?.errMsg === 'USER_DENIED') {
-                        setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_User_Refused })
-                    } else if (isFirstTime && response.errorInfo?.errMsg === 'NOT_SUPPORT_ERROR') {
-                        updateDepositHashWrapper({ wallet: account.accAddress, isHWAddr: !isHWAddr })
-                        setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_First_Method_Refused })
-                    } else {
-                        setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
-                    }
-                } else if (response?.resultInfo) {
-                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
-                } else {
-                    // Withdraw success
-                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_In_Progress })
-                    await sdk.sleep(TOAST_TIME)
-                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Success })
-                }
+                processRequest(request, isFirstTime)
 
             } catch (e) {
                 sdk.dumpError400(e)
@@ -221,7 +235,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             return false
         }
 
-    }, [account, tokenMap, exchangeInfo, withdrawFeeInfo, setShowAccount])
+    }, [account, tokenMap, exchangeInfo, withdrawFeeInfo, withdrawValue, setShowAccount])
 
     const withdrawType2 = withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
 
@@ -235,7 +249,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         withdrawTypes: WithdrawTypes,
         onWithdrawClick: () => {
             if (withdrawValue && withdrawValue.belong) {
-                handleWithdraw(withdrawValue as R)
+                handleWithdraw(withdrawValue as R, address)
             }
             setShowWithdraw({ isShow: false })
         },
@@ -251,14 +265,11 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         handlePanelEvent: async (data: SwitchData<R>, switchType: 'Tomenu' | 'Tobutton') => {
             return new Promise((res: any) => {
                 if (data?.tradeData?.belong) {
-                    myLog('handlePanelEvent', data.tradeData)
+                    // myLog('handlePanelEvent', data.tradeData)
                     if (withdrawValue !== data.tradeData) {
                         setWithdrawValue(data.tradeData)
                     }
                 }
-                // else {
-                //     setWithdrawValue({ belong: undefined, tradeValue: 0, balance: 0 } as IBData<unknown>)
-                // }
 
                 res();
             })
@@ -279,6 +290,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         withdrawToastOpen,
         setWithdrawToastOpen,
         withdrawProps,
-        handleWithdraw,
+        processRequest,
+        lastRequest,
     }
 }

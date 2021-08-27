@@ -9,6 +9,7 @@ export default {
     labelAmount: '总量',
     labelAvailable: '可用额度',
     labelLocked: '冻结',
+    labelAssetsTableValue: '金额',
     labelActions: '操作',
     labelAllToken: '所有币种',
     labelHideSmallBalances: '隐藏小额资产',

@@ -1,5 +1,5 @@
 import { WithTranslation } from 'react-i18next';
-import { CoinKey, EmptyValueTag, getThousandFormattedNumbers, abbreviateNumber } from '@loopring-web/common-resources';
+import { CoinKey, EmptyValueTag, getThousandFormattedNumbers, abbreviateNumber, PriceTag } from '@loopring-web/common-resources';
 import { Box, BoxProps, Grid } from '@material-ui/core';
 import { Typography } from '@material-ui/core/';
 import styled from '@emotion/styled';
@@ -47,6 +47,9 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                                                          chartData = []
                                                      }: & WithTranslation & MarketBlockProps<C>) => {
     const {upColor, currency} = useSettings();
+    const isUSD = currency === 'USD'
+    const { priceDollar, priceYuan, volume } = tradeFloat
+    const currencyUnit = isUSD ? PriceTag.Dollar : PriceTag.Yuan
     return <MarketBlockStyled className={'MuiPaper-elevation2'} custom={{chg: upColor}} padding={0.5 * 5} display={'flex'}
                               justifyContent={'stretch'}>
         {coinAInfo && coinBInfo ?
@@ -67,14 +70,14 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                       alignItems={'stretch'} className={'float-group'} marginTop={1}>
                     <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'} justifyContent={'flex-end'}
                         className={'left-block'}>
-                        {tradeFloat.priceDollar ? (
+                        {tradeFloat.close ? (
                             <Box height={24} display={'flex'} alignItems={'center'}
                                         className={`float-tag float-${tradeFloat.floatTag}`}>
-                                <Typography variant={'h4'}>{getThousandFormattedNumbers(tradeFloat.priceDollar, 2, {isAbbreviate: true})}
+                                <Typography variant={'h4'}>{getThousandFormattedNumbers(tradeFloat?.close || 0, 4)}
                                 </Typography>
-                              <Typography color={'var(--color-text-secondary)'} marginX={1 / 4}>&#8776;</Typography>
+                              <Typography color={'var(--color-text-secondary)'} marginX={1 / 4}>&nbsp;&#8776;</Typography>
                               <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
-                            ￥{getThousandFormattedNumbers(tradeFloat.priceYuan, 2, {isAbbreviate: true})}</Typography>
+                            {currencyUnit}{getThousandFormattedNumbers(isUSD ? tradeFloat.priceDollar : tradeFloat.priceYuan, 2, {isAbbreviate: true})}</Typography>
                             </Box>) : ''}
                         <Box display={'flex'} alignItems={'center'}>
                           <Typography variant={'body2'} component={'span'} marginTop={1 / 2} marginRight={1}
@@ -85,12 +88,12 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                                 
                           }
                           </Typography>
-                            <Typography variant={'body2'} component={'div'} textOverflow={'ellipsis'} overflow={'hidden'} whiteSpace={'nowrap'}
-                                    marginTop={1 / 2}>{t('labelVolume')} : {(tradeFloat.volume ? getThousandFormattedNumbers(tradeFloat.volume, 3) : '--')}</Typography>
+                            <Typography variant={'body2'} color={'var(--color-text-secondary)'} component={'div'} textOverflow={'ellipsis'} overflow={'hidden'} whiteSpace={'nowrap'}
+                                    marginTop={1 / 2}>{t('labelAmount')} : {getThousandFormattedNumbers((volume))}&nbsp;{coinBInfo.simpleName}</Typography>
                         </Box>
                     </Box>
                     {/* <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'}
-                         justifyContent={'flex-end'}>
+                        justifyContent={'flex-end'}>
                         <Typography variant={'body2'} component={'span'} textOverflow={'ellipsis'}
                                     height={24}> {isDollar 
                                       ? (tradeFloat && Number.isFinite(tradeFloat.priceDollar) ? '$ ' + abbreviateNumber(tradeFloat.priceDollar) : '--')
