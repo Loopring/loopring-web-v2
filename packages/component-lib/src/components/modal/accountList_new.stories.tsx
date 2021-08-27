@@ -26,13 +26,15 @@ import {
     Deposit_Submited,
 
     Transfer_WaitForAuth,
-    Transfer_Refused,
+    Transfer_First_Method_Refused,
+    Transfer_User_Refused,
     Transfer_In_Progress,
     Transfer_Success,
     Transfer_Failed,
 
     Withdraw_WaitForAuth,
-    Withdraw_Refused,
+    Withdraw_First_Method_Refused,
+    Withdraw_User_Refused,
     Withdraw_In_Progress,
     Withdraw_Success,
     Withdraw_Failed,
@@ -210,8 +212,14 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                         ...rest
                     }} />,
             },
-            [AccountStep.Transfer_Refused]: {
-                view: <Transfer_Refused
+            [AccountStep.Transfer_First_Method_Refused]: {
+                view: <Transfer_First_Method_Refused
+                    providerName={account.connectName} {...{
+                        ...rest
+                    }} />,
+            },
+            [AccountStep.Transfer_User_Refused]: {
+                view: <Transfer_User_Refused
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
@@ -247,8 +255,14 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                         ...rest
                     }} />,
             },
-            [AccountStep.Withdraw_Refused]: {
-                view: <Withdraw_Refused
+            [AccountStep.Withdraw_First_Method_Refused]: {
+                view: <Withdraw_First_Method_Refused
+                    providerName={account.connectName} {...{
+                        ...rest
+                    }} />,
+            },
+            [AccountStep.Withdraw_User_Refused]: {
+                view: <Withdraw_User_Refused
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
