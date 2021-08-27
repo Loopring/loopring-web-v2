@@ -19,7 +19,7 @@ const TableStyled = styled(Box)`
 
   .rdg {
     flex: 1;
-    --template-columns: 200px auto auto 150px ${(props: any) => props.lan === 'en_US' ? '275px' : '240px'} !important;
+    --template-columns: 200px auto auto 200px ${(props: any) => props.lan === 'en_US' ? '275px' : '240px'} !important;
 
     .rdg-cell:first-of-type {
         display: flex;
