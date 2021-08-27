@@ -25,7 +25,7 @@ const userRewardsMapSlice: Slice<UserRewardsStates> = createSlice({
                 // @ts-ignore
                 state.errorMessage = action.error
             }
-            state.userRewardsMap = {...state.userRewardsMap, ...action.payload.userRewardsMap};
+            state.userRewardsMap = action.payload.userRewardsMap;//{...state.userRewardsMap, ...action.payload.userRewardsMap};
             if (action.payload.__timer__) {
                 state.__timer__ = action.payload.__timer__
             }
