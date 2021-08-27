@@ -180,6 +180,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     validUntil: getTimestampDaysLater(DAYS),
                 }
 
+                myLog('submitOffchainWithdraw:', request)
+
                 const response = await LoopringAPI.userAPI?.submitOffchainWithdraw({
                     request,
                     web3: connectProvides.usedWeb3,
@@ -189,6 +191,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     apiKey,
                     isHWAddr,
                 })
+
+                myLog('submitOffchainWithdraw:', response)
 
                 if (response?.errorInfo) {
                     // Withdraw failed
