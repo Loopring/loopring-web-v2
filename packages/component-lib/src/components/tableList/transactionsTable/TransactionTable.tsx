@@ -123,7 +123,7 @@ const TableStyled = styled(Box)`
     flex: 1;
 
     .rdg {
-        --template-columns: 120px auto auto auto 100px 120px !important;
+        --template-columns: 120px auto auto auto 120px 170px !important;
 
         // .rdg-cell.action {
         // display: flex;
