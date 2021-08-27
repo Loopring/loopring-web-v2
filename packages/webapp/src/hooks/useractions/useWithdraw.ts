@@ -181,6 +181,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         }
     }, [setLastRequest, setShowAccount, updateDepositHashWrapper, account])
 
+    const withdrawType2 = withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
+
     const handleWithdraw = React.useCallback(async (inputValue: R, address, isFirstTime: boolean = true) => {
 
         const { accountId, accAddress, readyState, apiKey, eddsaKey } = account
@@ -216,6 +218,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                         tokenId: feeToken.tokenId,
                         volume: withdrawFeeInfo.__raw__,
                     },
+                    fastWithdrawalMode: withdrawType2 === WithdrawType.Fast,
                     extraData: '',
                     minGas: 0,
                     validUntil: getTimestampDaysLater(DAYS),
@@ -236,9 +239,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             return false
         }
 
-    }, [account, tokenMap, exchangeInfo, withdrawFeeInfo, withdrawValue, setShowAccount])
-
-    const withdrawType2 = withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
+    }, [account, tokenMap, exchangeInfo, withdrawType2, withdrawFeeInfo, withdrawValue, setShowAccount])
 
     React.useEffect(() => {
         if (accountStatus === SagaStatus.UNSET) {
