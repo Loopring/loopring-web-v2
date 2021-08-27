@@ -133,7 +133,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const processRequest = React.useCallback(async (request: sdk.OffChainWithdrawalRequestV3, isFirstTime: boolean) => {
 
-        const { accountId, accAddress, readyState, apiKey, connectName, eddsaKey } = account
+        const { apiKey, connectName, eddsaKey } = account
 
         if (connectProvides.usedWeb3) {
 
@@ -178,7 +178,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             }
 
         }
-    }, [setLastRequest, setShowAccount, updateDepositHashWrapper, ])
+    }, [setLastRequest, setShowAccount, updateDepositHashWrapper, account])
 
     const handleWithdraw = React.useCallback(async (inputValue: R, address, isFirstTime: boolean = true) => {
 
