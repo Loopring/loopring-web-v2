@@ -15,7 +15,7 @@ const getUserRewardsApi = async <R extends {[key:string]:any}>(list:Array<keyof 
     if(LoopringAPI.ammpoolAPI && accountId ) {
         __timer__ = ((__timer__) => {
             if (__timer__ && __timer__ !== -1) {
-                clearInterval(__timer__);
+                clearTimeout(__timer__);
             }
             return setTimeout(async () => {
                 store.dispatch(getUserRewards(undefined))
@@ -27,13 +27,14 @@ const getUserRewardsApi = async <R extends {[key:string]:any}>(list:Array<keyof 
         })
     }else{
         if (__timer__ && __timer__ !== -1) {
-            clearInterval(__timer__);
+            clearTimeout(__timer__);
         }
-        if(accountId) {
-            return  Promise.reject({data:undefined,__timer__:-1})
-        }else{
-            return Promise.resolve({data:undefined,__timer__:-1})
-        }
+        return Promise.resolve({data:undefined,__timer__:-1})
+        // if(accountId) {
+        //     return  Promise.reject({data:undefined,__timer__:-1})
+        // }else{
+        //
+        // }
 
     }
 
@@ -60,7 +61,7 @@ export function* getResetsSaga({payload}:any){
         // @ts-ignore
         let {__timer__} = store.getState().userRewardsMap;
         if (__timer__ && __timer__ !== -1) {
-            clearInterval(__timer__);
+            clearTimeout(__timer__);
         }
         yield put(getUserRewardsStatus({userRewardsMap:[],__timer__:-1}));
     } catch (err) {
@@ -71,13 +72,13 @@ export function* getResetsSaga({payload}:any){
 function* userRewardsSaga() {
     yield all([takeLatest(getUserRewards, getPostsSaga)]);
 }
-function* resetRewardsSaga() {
+function* resetUserRewardsSaga() {
     yield all([takeLatest(resetUserRewards, getResetsSaga)]);
 }
 
 export const userRewardsForks = [
     fork(userRewardsSaga),
-    fork(resetRewardsSaga),
+    fork(resetUserRewardsSaga),
     // fork(userRewardssSaga),
 ]
  
