@@ -8,6 +8,7 @@ import {
     AccountStatus,
     CoinMap,
     IBData,
+    SagaStatus,
     WalletMap,
     WithdrawType,
     WithdrawTypes
@@ -50,7 +51,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const [withdrawAlertText, setWithdrawAlertText] = useState<string>()
 
     const { tokenMap, totalCoinMap, } = useTokenMap();
-    const { account } = useAccount()
+    const { account, status: accountStatus } = useAccount()
     const { exchangeInfo, chainId } = useSystem();
     const [withdrawValue, setWithdrawValue] = React.useState<IBData<T>>({
         belong: undefined,
@@ -152,7 +153,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             })
 
             myLog('submitOffchainWithdraw:', response)
-    
+
             if (response?.errorInfo) {
                 // Withdraw failed
                 const code = checkErrorInfo(response.errorInfo, isFirstTime)
@@ -239,8 +240,20 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const withdrawType2 = withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
 
+    React.useEffect(() => {
+        if (accountStatus === SagaStatus.UNSET) {
+            if (account.readyState === AccountStatus.ACTIVATED) {
+                if (account.accAddress) {
+                    setAddress(account.accAddress)
+                }
+            } else {
+                setShowWithdraw({ isShow: false })
+            }
+        }
+    }, [accountStatus, account.readyState])
+
     const withdrawProps: WithdrawProps<R, T> = {
-        addressDefault: account.accAddress,
+        addressDefault: address,
         tradeData: withdrawValue as any,
         coinMap: totalCoinMap as CoinMap<T>,
         walletMap: walletMap2 as WalletMap<any>,
