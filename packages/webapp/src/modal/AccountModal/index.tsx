@@ -165,9 +165,11 @@ export const ModalAccountInfo = withTranslation('common')(({
 
         setShowAccount({ isShow: true, step: AccountStep.UpdateAccount_Approve_WaitForAuth });
 
-        const isHWAddr = checkHWAddr(account.accAddress)
+        let isHWAddr = checkHWAddr(account.accAddress)
 
-        myLog('goUpdateAccount.... isHWAddr:', isHWAddr)
+        isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
+
+        myLog('goUpdateAccount.... isFirstTime:', isFirstTime, ' isHWAddr:', isHWAddr)
 
         const updateAccAndCheck = async () => {
             const result: ActionResult = await updateAccountFromServer({ isHWAddr })

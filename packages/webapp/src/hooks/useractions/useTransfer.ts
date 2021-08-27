@@ -129,7 +129,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const processRequest = React.useCallback(async (request: sdk.OriginTransferRequestV3, isFirstTime: boolean) => {
 
-        const { accountId, accAddress, readyState, apiKey, connectName, eddsaKey } = account
+        const { apiKey, connectName, eddsaKey } = account
 
         if (connectProvides.usedWeb3) {
 
@@ -144,9 +144,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                 walletType: connectName as sdk.ConnectorNames,
                 eddsaKey: eddsaKey.sk,
                 apiKey,
+                isHWAddr,
             })
 
-            myLog('submitOffchainWithdraw:', response)
+            myLog('submitInternalTransfer:', response)
     
             if (response?.errorInfo) {
                 // Withdraw failed
@@ -173,7 +174,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             }
 
         }
-    }, [setLastRequest, setShowAccount, updateDepositHashWrapper, ])
+    }, [setLastRequest, setShowAccount, updateDepositHashWrapper, account, ])
 
 
     const onTransferClick = useCallback(async (transferValue, isFirstTime: boolean = true) => {
