@@ -93,7 +93,8 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
             high: o.high,
             open: o.open,
             close: o.close,
-            volume: o.baseVol,
+            // volume: o.baseVol,
+            volume: o.quoteVol,
             sign: o.close < o.open ? -1 : 1,
           }))
           setCandlestickList(prev => [...prev, {
@@ -255,7 +256,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const getTradeFloatVolumeToCount = React.useCallback((tradeFloat: any) => {
       return {
         ...tradeFloat,
-        volume: tradeFloat ? volumeToCountAsBigNumber(tradeFloat.pair.coinA, tradeFloat.volume)?.toFixed(12) : 0
+        volume: tradeFloat ? volumeToCountAsBigNumber(tradeFloat.pair.coinB, tradeFloat.volume)?.toFixed(12) : 0
       }
     }, [])
 
