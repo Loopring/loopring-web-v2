@@ -97,6 +97,8 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
     const [ammDepositBtnI18nKey, setAmmDepositBtnI18nKey] = React.useState<string | undefined>(undefined);
     const [ammWithdrawBtnI18nKey, setAmmWithdrawBtnI18nKey] = React.useState<string | undefined>(undefined);
 
+    const debugInfo = 'abc'
+
     React.useEffect(() => {
         if(account.readyState === AccountStatus.ACTIVATED){
             sendSocketTopic({[ WsTopicType.account ]: true});
@@ -696,5 +698,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
         onAmmAddClick,
         ammDepositBtnI18nKey,
         ammWithdrawBtnI18nKey,
+
+        debugInfo,
     }
 }
