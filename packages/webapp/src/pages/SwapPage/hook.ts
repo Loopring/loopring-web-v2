@@ -647,19 +647,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
                 return {...prev, [ item ]: coinMap[ item ]}
             }, {} as CoinMap<C>)
 
-            // const _tradeCalcData = {
-            //     walletMap,
-            //     coinSell: coinA,
-            //     coinBuy: coinB,
-            //     sellCoinInfoMap,
-            //     buyCoinInfoMap,
-            //     priceImpact: '',
-            //     priceImpactColor: 'inherit',
-            //     minimumReceived: '',
-            //     StoB:undefined,
-            //     BtoS:undefined,
-            // }
-            //{...tradeCalcData, ..._tradeCalcData,} as TradeCalcData<C>
+
             setTradeCalcData((state)=>{
                 return {
                     ...state,
@@ -686,7 +674,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             if(account.readyState === AccountStatus.ACTIVATED){
                 getAmount({market})
             }
-
             setIsSwapLoading(true);
             setPair({coinAInfo: coinMap[ coinA ], coinBInfo: coinMap[ coinB ]})
             callPairDetailInfoAPIs();
@@ -871,7 +858,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         swapFunc,
         priceImpact,
         debugInfo,
-
+        isSwapLoading,
     }
 
 }
