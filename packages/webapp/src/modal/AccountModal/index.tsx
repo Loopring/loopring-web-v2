@@ -110,6 +110,7 @@ export const ModalAccountInfo = withTranslation('common')(({
         setWithdrawToastOpen,
         withdrawProps,
         handleWithdraw,
+        lastWithdrawValue,
     } = useWithdraw()
 
     const { depositProps } = useDeposit()
@@ -296,10 +297,10 @@ export const ModalAccountInfo = withTranslation('common')(({
             btnTxt: t('labelTryNext'),
             callback: () => {
                 myLog('...labelTryNext...')
-                handleWithdraw(withdrawProps.tradeData, false)
+                handleWithdraw(lastWithdrawValue.inputValue, lastWithdrawValue.address, false)
             }
         }
-    }, [])
+    }, [handleWithdraw, lastWithdrawValue])
 
     const backToWithdrawBtnInfo = React.useMemo(() => {
         return {

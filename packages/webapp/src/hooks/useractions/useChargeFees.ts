@@ -33,7 +33,7 @@ export function useChargeFees(tokenSymbol: string | undefined, requestType: Offc
                 return
             }
 
-            myLog('tokenSymbol:', tokenSymbol, ' requestType:', OffchainFeeReqType[requestType])
+            // myLog('tokenSymbol:', tokenSymbol, ' requestType:', OffchainFeeReqType[requestType])
 
             let chargeFeeList: any[] = []
 
@@ -47,11 +47,11 @@ export function useChargeFees(tokenSymbol: string | undefined, requestType: Offc
                     amount: amount ? toBig(amount).times('1e' + tokenInfo.decimals).toFixed(0, 0) : '0'
                 }
 
-                myLog('request:', request)
+                // myLog('request:', request)
 
                 const response = await LoopringAPI.userAPI.getOffchainFeeAmt(request, apiKey)
 
-                myLog('response:', response)
+                // myLog('response:', response)
 
                 if (response?.raw_data?.fees instanceof Array) {
                     response.raw_data.fees.forEach((item: any) => {
