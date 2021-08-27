@@ -8,13 +8,14 @@ import { useHistory } from 'react-router-dom'
 import * as _ from 'lodash'
 // import { FloatTag } from '@loopring-web/common-resources'
 import { Box, Grid, Tabs, Tab, Divider, OutlinedInput, InputAdornment } from '@material-ui/core'
-import { SearchIcon } from '@loopring-web/common-resources'
+import { getThousandFormattedNumbers, getValuePrecision, SearchIcon } from '@loopring-web/common-resources'
 import { useQuote, useCandlestickList } from './hook'
 import { LoopringAPI } from 'api_wrapper'
 import { TradingInterval } from 'loopring-sdk'
 import { TableWrapStyled } from 'pages/styled'
 import { useFavoriteMarket } from 'stores/localStore/favoriteMarket'
 import { AmmPoolActivityRule } from 'loopring-sdk'
+import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help';
 
 const RowStyled = styled(Grid)`
       & .MuiGrid-root:not(:last-of-type) > div{
@@ -251,6 +252,13 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
       }
     }, [history])
 
+    const getTradeFloatVolumeToCount = React.useCallback((tradeFloat: any) => {
+      return {
+        ...tradeFloat,
+        volume: tradeFloat ? volumeToCountAsBigNumber(tradeFloat.pair.coinA, tradeFloat.volume)?.toFixed(12) : 0
+      }
+    }, [])
+
     return <Box display={'flex'} flexDirection={'column'} flex={1} >
 
         <RowStyled container >
@@ -274,16 +282,16 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
             } 
             )} */}
             <Grid item xs={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[0])}>
-                <MarketBlock {...{...formattedRecommendations[0], chartData: formattedRecommendations[0] ? formattedRecommendations[0].chartData : [], ...rest}}></MarketBlock>
+                <MarketBlock {...{...formattedRecommendations[0], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[0]?.tradeFloat), chartData: formattedRecommendations[0] ? formattedRecommendations[0].chartData : [], ...rest}}></MarketBlock>
             </Grid>
             <Grid item xs={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[1])}>
-                <MarketBlock {...{...formattedRecommendations[1], chartData: formattedRecommendations[1] ? formattedRecommendations[1].chartData : [], ...rest}}></MarketBlock>
+                <MarketBlock {...{...formattedRecommendations[1], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[1]?.tradeFloat), chartData: formattedRecommendations[1] ? formattedRecommendations[1].chartData : [], ...rest}}></MarketBlock>
             </Grid>
             <Grid item xs={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[2])}>
-                <MarketBlock {...{...formattedRecommendations[2], chartData: formattedRecommendations[2] ? formattedRecommendations[2].chartData : [], ...rest}}></MarketBlock>
+                <MarketBlock {...{...formattedRecommendations[2], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[2]?.tradeFloat), chartData: formattedRecommendations[2] ? formattedRecommendations[2].chartData : [], ...rest}}></MarketBlock>
             </Grid>
             <Grid item xs={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[3])}>
-                <MarketBlock {...{...formattedRecommendations[3], chartData: formattedRecommendations[3] ? formattedRecommendations[3].chartData : [], ...rest}}></MarketBlock>
+                <MarketBlock {...{...formattedRecommendations[3], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[3]?.tradeFloat), chartData: formattedRecommendations[3] ? formattedRecommendations[3].chartData : [], ...rest}}></MarketBlock>
             </Grid>
 
         </RowStyled>
