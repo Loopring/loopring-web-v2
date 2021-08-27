@@ -71,7 +71,6 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             myLog('try to AVAILABLE')
             setBtnStatus(TradeBtnStatus.AVAILABLE)
         } else {
-            myLog('try to DISABLED')
             setBtnStatus(TradeBtnStatus.DISABLED)
         }
 
