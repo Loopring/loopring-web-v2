@@ -21,13 +21,17 @@ import { DAYS, REFRESH_RATE, TOAST_TIME } from 'defs/common_defs';
 import { useTranslation } from 'react-i18next';
 import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
 import { ChainId, ConnectorError, sleep } from 'loopring-sdk';
+import { useWalletInfo } from 'stores/localStore/walletInfo';
+import { checkErrorInfo } from './utils';
 
 export const useTransfer = <R extends IBData<T>, T>(): {
     // handleTransfer: (inputValue:R) => void,
         transferToastOpen: boolean,
         transferAlertText: any,
         setTransferToastOpen: any,
-    transferProps: TransferProps<R, T>
+    transferProps: TransferProps<R, T>,
+    processRequest: any,
+    lastRequest: any,
     // transferValue: R
 } => {
 
@@ -104,13 +108,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     break
                 }
             }
-            // }
-            // const balance:CoinInfo<any> = walletMap ? walletMap[ Object.keys(walletMap)[ 0 ] ] : {}
-            // setTransferValue({
-            //     belong: balance.belong as any,
-            //     balance: balance.count,
-            //     tradeValue: undefined,
-            // })
+            
         }
     }, [symbol, walletMap, setTransferValue])
 
@@ -125,8 +123,61 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     }, [chargeFeeList, setTransferFeeInfo])
 
-    const onTransferClick = useCallback(async (transferValue) => {
+    const { checkHWAddr, updateDepositHashWrapper, } = useWalletInfo()
+
+    const [lastRequest, setLastRequest] = React.useState<any>({})
+
+    const processRequest = React.useCallback(async (request: sdk.OriginTransferRequestV3, isFirstTime: boolean) => {
+
         const { accountId, accAddress, readyState, apiKey, connectName, eddsaKey } = account
+
+        if (connectProvides.usedWeb3) {
+
+            let isHWAddr = checkHWAddr(account.accAddress)
+
+            isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
+            
+            const response = await LoopringAPI.userAPI?.submitInternalTransfer({
+                request,
+                web3: connectProvides.usedWeb3,
+                chainId: chainId !== ChainId.GOERLI ? ChainId.MAINNET : chainId,
+                walletType: connectName as sdk.ConnectorNames,
+                eddsaKey: eddsaKey.sk,
+                apiKey,
+            })
+
+            myLog('submitOffchainWithdraw:', response)
+    
+            if (response?.errorInfo) {
+                // Withdraw failed
+                const code = checkErrorInfo(response.errorInfo, isFirstTime)
+                if (code === ConnectorError.USER_DENIED) {
+                    setShowAccount({ isShow: true, step: AccountStepNew.Transfer_User_Refused })
+                } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
+                    setLastRequest({ request })
+                    setShowAccount({ isShow: true, step: AccountStepNew.Transfer_First_Method_Refused })
+                } else {
+                    setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Failed })
+                }
+            } else if (response?.resultInfo) {
+                setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Failed })
+            } else {
+                // Withdraw success
+                setShowAccount({ isShow: true, step: AccountStepNew.Transfer_In_Progress })
+                await sdk.sleep(TOAST_TIME)
+                setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Success })
+                if (isHWAddr) {
+                    myLog('......try to set isHWAddr', isHWAddr)
+                    updateDepositHashWrapper({ wallet: account.accAddress, isHWAddr })
+                }
+            }
+
+        }
+    }, [setLastRequest, setShowAccount, updateDepositHashWrapper, ])
+
+
+    const onTransferClick = useCallback(async (transferValue, isFirstTime: boolean = true) => {
+        const { accountId, accAddress, readyState, apiKey, eddsaKey } = account
         myLog('useCallback tranferFeeInfo:', tranferFeeInfo)
 
         if (readyState === AccountStatus.ACTIVATED && tokenMap && LoopringAPI.userAPI
@@ -163,34 +214,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     validUntil: getTimestampDaysLater(DAYS),
                 }
 
-                const response = await LoopringAPI.userAPI.submitInternalTransfer({
-                    request: req,
-                    web3: connectProvides.usedWeb3,
-                    chainId: chainId !== ChainId.GOERLI ? ChainId.MAINNET : chainId,
-                    walletType: connectName as sdk.ConnectorNames,
-                    eddsaKey: eddsaKey.sk,
-                    apiKey,
-                })
-
-                myLog(response)
-
-                if (response?.errorInfo) {
-                    // transfer failed
-                    myLog('NOT_SUPPORT_ERROR:', ConnectorError.NOT_SUPPORT_ERROR.toString())
-
-                    if (response.errorInfo.errMsg && ConnectorError[response.errorInfo.errMsg]) {
-                        setShowAccount({ isShow: true, step: AccountStepNew.Transfer_First_Method_Refused })
-                    } else {
-                        setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Failed })
-                    }
-                } else if (response?.resultInfo) {
-                    setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Failed })
-                } else {
-                    // transfer success
-                    setShowAccount({ isShow: true, step: AccountStepNew.Transfer_In_Progress })
-                    await sleep(TOAST_TIME)
-                    setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Success })
-                }
+                processRequest(req, isFirstTime)
 
             } catch (e) {
                 sdk.dumpError400(e)
@@ -202,7 +226,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             return false
         }
 
-    }, [account, tokenMap, tranferFeeInfo?.belong, transferValue, address])
+    }, [processRequest, account, tokenMap, tranferFeeInfo?.belong, transferValue, address])
 
     const handlePanelEvent = useCallback(async (data: SwitchData<R>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {
@@ -255,5 +279,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         transferAlertText,
         setTransferToastOpen,
         transferProps,
+        processRequest,
+        lastRequest,
     }
 }
