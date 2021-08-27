@@ -374,7 +374,6 @@ export const PoolsTable = withTranslation('tables')(
                             break;
                         case 'volume24':
                             sortedRows = sortedRows.sort((a, b) => {
-                                console.log(a, b)
                                 const valueA = a.tradeFloat.volume
                                 const valueB = b.tradeFloat.volume
                                 if (valueA && valueB) {

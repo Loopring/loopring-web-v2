@@ -46,8 +46,6 @@ import { useSocket } from '../../../stores/socket';
 import { walletLayer2Service } from '../../../services/wallet/walletLayer2Service';
 import * as _ from 'lodash'
 import { useToast } from "hooks/common/useToast";
-import { VolToNumberWithPrecision } from '../../../utils/formatter_tool';
-import { BaseAPI } from "../../../../../../../loopring_sdk/js_sdk/dist/api/base_api";
 export const useAmmPanel = <C extends { [key: string]: any }>({
     pair,
     ammType,
