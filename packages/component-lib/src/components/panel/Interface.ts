@@ -12,7 +12,7 @@ import {
     WithdrawInfoProps as _WithdrawInfoProps,
 } from './components/Interface';
 import { SwapData, SwapTradeBaseEventProps, SwapTradeBaseProps, } from './components/SwapWrap/Interface';
-import { AmmPanelBaseProps } from './Amm';
+import { AmmPanelBasePropsNew } from './AmmNew';
 
 export type SwapTradeData<T> = {
     sell: T,
@@ -43,7 +43,7 @@ export  type  WithdrawInfoProps<T, I> = DefaultProps<T, I> & _WithdrawInfoProps<
 export  type  TransferInfoProps<T, I> = DefaultProps<T, I> & _TransferInfoProps<CoinKey<I>>;
 
 export  type  SwapInfoProps<T, I, TCD> = SwapTradeBaseProps<T, I, TCD>;
-export  type  AmmInfoProps<T, I, ACD, C = IBData<I>> = AmmPanelBaseProps<T, I, ACD, C>;
+export  type  AmmInfoProps<T, I, ACD, C = IBData<I>> = AmmPanelBasePropsNew<T, I, ACD, C>;
 
 
 /**

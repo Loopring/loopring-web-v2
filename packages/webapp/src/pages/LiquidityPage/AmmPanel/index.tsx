@@ -1,4 +1,4 @@
-import { AmmPanel, AmmPanelType, Toast } from '@loopring-web/component-lib';
+import { AmmPanelNew, AmmPanelType, Toast } from '@loopring-web/component-lib';
 import { AmmData, AmmInData, CoinInfo, IBData, WalletMap } from '@loopring-web/common-resources';
 import { useAmmPanel } from './hooks';
 import { Box } from '@material-ui/core';
@@ -48,7 +48,7 @@ export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<
             <>{debugInfo}</>
 
     {pair ?
-        <AmmPanel {...{...rest}}
+        <AmmPanelNew {...{...rest}}
                   onRefreshData={onRefreshData}
                   refreshRef={refreshRef}
                   ammDepositData={ammJoinData}

@@ -1,6 +1,6 @@
 import {
     AmmData,
-    AmmInData,
+    AmmInDataNew,
     CoinInfo,
     EmptyValueTag,
     IBData,
@@ -30,7 +30,7 @@ import { SvgStyled } from './styled';
 
 export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBData<I>>,
     I,
-    ACD extends AmmInData<I>,
+    ACD extends AmmInDataNew<I>,
     C = IBData<I>>({
                        t,
                        disabled,
@@ -242,7 +242,7 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapFee')} </Typography>
                         <Typography component={'p'}
-                                    variant="body1">{t(ammCalcData ? ammCalcData.feeExit : EmptyValueTag)}</Typography>
+                                    variant="body1">{t(ammCalcData ? ammCalcData.fee : EmptyValueTag)}</Typography>
                     </Grid>
                 </Grid>
                 <Grid item>

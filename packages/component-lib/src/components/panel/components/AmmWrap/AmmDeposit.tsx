@@ -1,6 +1,6 @@
 import {
     AmmData,
-    AmmInData,
+    AmmInDataNew,
     EmptyValueTag,
     IBData,
     LinkedIcon,
@@ -24,7 +24,7 @@ import { Box } from '@material-ui/core/';
 
 export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBData<I>>,
     I,
-    ACD extends AmmInData<I>,
+    ACD extends AmmInDataNew<I>,
     C = IBData<I>>({
                        t,
                        disabled,
@@ -213,7 +213,7 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapFee')} </Typography>
                         <Typography component={'p'}
-                                    variant="body1">{t(ammCalcData ? ammCalcData.feeJoin : EmptyValueTag)}</Typography>
+                                    variant="body1">{t(ammCalcData ? ammCalcData.fee : EmptyValueTag)}</Typography>
                     </Grid>
                 </Grid>
                 <Grid item>
