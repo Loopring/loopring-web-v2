@@ -5,7 +5,6 @@ export * from './Withdraw'
 export * from './Interface'
 export * from './Transfer'
 export * from './ModalPanel'
-export * from './Amm'
 export * from './components/Styled'
 export * from './components/tool/Dialogs'
 
