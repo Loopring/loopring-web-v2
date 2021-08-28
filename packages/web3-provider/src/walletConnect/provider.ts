@@ -5,6 +5,8 @@ import { ErrorType } from '../command';
 import { ConnectProviders } from '@loopring-web/common-resources';
 import { MetaMaskUnsubscribe } from '../metamask';
 
+const BRIDGE_URL = process.env.REACT_APP_WALLET_CONNECT_BRIDGE ?? 'https://bridge.walletconnect.org'
+
 const RPC_URLS: { [ chainId: number ]: string } = {
     1: process.env.REACT_APP_RPC_URL_1 as string,
     5: process.env.REACT_APP_RPC_URL_5 as string
@@ -14,7 +16,7 @@ export const WalletConnectProvide = async (account?: string): Promise<{ provider
     try {
         const provider: WalletConnectProvider = new WalletConnectProvider({
             rpc: RPC_URLS,
-            bridge: 'https://bridge.walletconnect.org',
+            bridge: BRIDGE_URL,
             pollingInterval: POLLING_INTERVAL,
             qrcode: false,
         });

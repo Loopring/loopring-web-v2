@@ -68,7 +68,7 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
 
                 try {
                         if (!eddsaKey) {
-                            myLog('no eddsaKey!')
+                            myLog('no eddsaKey 111111!')
                             eddsaKey = await sdk
                             .generateKeyPair(
                                 connectProvides.usedWeb3,
@@ -89,6 +89,8 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
                             'DAI': '98100000000000000000',
                         }
 
+                        myLog('fee:', sdk.toBig(feeMap['ETH']).div('1e18').toNumber())
+
                         const request: sdk.UpdateAccountRequestV3 = {
                             exchange: system.exchangeInfo.exchangeAddress,
                             owner: accInfo.owner,
@@ -99,7 +101,7 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
                             nonce: accInfo.nonce as number,
                         }
 
-                        myLog('req:', request)
+                        myLog('updateAccountFromServer req:', request)
 
                         const updateAccountResponse = await LoopringAPI.userAPI.updateAccount({
                             request,

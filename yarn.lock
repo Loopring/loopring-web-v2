@@ -16940,10 +16940,10 @@ loglevel@^1.4.1, loglevel@^1.6.8:
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.7.1.tgz#005fde2f5e6e47068f935ff28573e125ef72f197"
   integrity sha512-Hesni4s5UkWkwCGJMQGAh71PaLUmKFM60dHvq0zi/vDhhrzuk+4GgNbTXJ12YYQJn6ZKBDNIjYcuQGKudvqrIw==
 
-loopring-sdk@0.0.109:
-  version "0.0.109"
-  resolved "https://registry.yarnpkg.com/loopring-sdk/-/loopring-sdk-0.0.109.tgz#5ea4195d9483c8ab456c69ac62864cccbfcdaa7d"
-  integrity sha512-nKzWUToCxMZCTJdIDyXLp/B+Jhspm+dnZ5h/AvfamANY+uU7bwQprl56LE5O07ALy/sEBK9fryufdVgqOWPw6A==
+loopring-sdk@0.0.110:
+  version "0.0.110"
+  resolved "https://registry.yarnpkg.com/loopring-sdk/-/loopring-sdk-0.0.110.tgz#bc5ad901fc3f93c81178c48dfa61914a1ec9910d"
+  integrity sha512-X5WNAsF8ayzUdEUUrRZnNFS/GKBEXeOr+SHoiJfR852UjB0d+ZlV7ipR9sV0T73I5EUGc8IWYKomik+M3Eo9UQ==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -26129,11 +26129,6 @@ xregexp@4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/xregexp/-/xregexp-4.0.0.tgz#e698189de49dd2a18cc5687b05e17c8e43943020"
   integrity sha512-PHyM+sQouu7xspQQwELlGwwd05mXUFqwFYfqPO0cC7x4fxyHnnuetmQr6CjJiafIDoH4MogHb9dOoJzR/Y4rFg==
-
-xstate@^4.23.1:
-  version "4.23.1"
-  resolved "https://registry.yarnpkg.com/xstate/-/xstate-4.23.1.tgz#a85ce0ca4ad9737f1497e2da7a3abc6a5697fbcd"
-  integrity sha512-8ZoCe8d6wDSPfkep+GBgi+fKAdMyXcaizoNf5FKceEhlso4+9n1TeK6oviaDsXZ3Z5O8xKkJOxXPNuD4cA9LCw==
 
 xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.0, xtend@~4.0.1:
   version "4.0.2"
