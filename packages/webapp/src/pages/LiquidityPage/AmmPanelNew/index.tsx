@@ -4,6 +4,7 @@ import { useAmmCalc, useAmmCommon } from './hooks'
 import { Box } from '@material-ui/core';
 import { AmmPoolSnapshot, TickerData, } from 'loopring-sdk';
 import { TOAST_TIME } from 'defs/common_defs';
+import { myLog } from 'utils/log_tools';
 
 export const AmmPanelView = ({
         pair,
@@ -27,7 +28,7 @@ export const AmmPanelView = ({
         refreshRef,
         ammPoolSnapshot,
         updateAmmPoolSnapshot,
-    } = useAmmCommon(pair)
+    } = useAmmCommon({ pair, snapShotData })
 
     const {
 
