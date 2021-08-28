@@ -1,84 +1,75 @@
 import { AmmPanelNew, AmmPanelType, Toast } from '@loopring-web/component-lib';
-import { AmmData, AmmInData, CoinInfo, IBData, WalletMap } from '@loopring-web/common-resources';
-import { useAmmJoin } from './hook_join';
+import { CoinInfo, WalletMap } from '@loopring-web/common-resources';
+import { useAmmCalc, useAmmCommon } from './hooks'
 import { Box } from '@material-ui/core';
-import { AmmPoolSnapshot, TickerData } from 'loopring-sdk';
+import { AmmPoolSnapshot, TickerData, } from 'loopring-sdk';
 import { TOAST_TIME } from 'defs/common_defs';
-import React from 'react';
-import { useAmmExit } from './hook_exit';
 
-export const AmmPanelView = <T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
-    ACD extends AmmInData<I>,
-    C = IBData<I>>({
+export const AmmPanelView = ({
         pair,
         walletMap,
         ammType, snapShotData,
         ...rest
     }: {
-        pair: { coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined },
+        pair: { coinAInfo: CoinInfo<string> | undefined, coinBInfo: CoinInfo<string> | undefined },
         snapShotData: {
             tickerData: TickerData | undefined,
             ammPoolsBalance: AmmPoolSnapshot | undefined
         } | undefined
-        walletMap: WalletMap<C>
+        walletMap: WalletMap<string>
         ammType?: keyof typeof AmmPanelType
     } & any) => {
 
     const {
-        toastOpen: toastOpenJoin,
-        closeToast: closeToastJoin,
+        toastOpen,
+        setToastOpen,
+        closeToast,
+        refreshRef,
+        ammPoolSnapshot,
+        updateAmmPoolSnapshot,
+    } = useAmmCommon(pair)
+
+    const {
 
         ammCalcData: ammCalcDataDeposit,
-        ammJoinData,
-        handleJoinAmmPoolEvent,
-        onAmmAddClick,
-        addBtnStatus,
-        ammDepositBtnI18nKey,
-        onRefreshData: onRefreshDataJoin,
+        ammData: ammJoinData,
+        handleAmmPoolEvent: handleJoinAmmPoolEvent,
+        onAmmClick: onAmmAddClick,
+        btnStatus: addBtnStatus,
+        btnI18nKey: ammDepositBtnI18nKey,
 
-    } = useAmmJoin({
+    } = useAmmCalc({
+        ammPoolSnapshot,
+        setToastOpen,
+        type: AmmPanelType.Join,
         pair,
         snapShotData,
     })
 
     const {
-        toastOpen: toastOpenExit,
-        closeToast: closeToastExit,
-        ammCalcData: ammCalcDataWithdraw,
-        ammExitData,
-        handleExitAmmPoolEvent,
-        removeBtnStatus,
-        onAmmRemoveClick,
-        ammWithdrawBtnI18nKey,
-        onRefreshData: onRefreshDataExit,
 
-    } = useAmmExit({
+        ammCalcData: ammCalcDataWithdraw,
+        ammData: ammExitData,
+        handleAmmPoolEvent: handleExitAmmPoolEvent,
+        onAmmClick: onAmmRemoveClick,
+        btnStatus: removeBtnStatus,
+        btnI18nKey: ammWithdrawBtnI18nKey,
+
+    } = useAmmCalc({
+        ammPoolSnapshot,
+        setToastOpen,
+        type: AmmPanelType.Exit,
         pair,
         snapShotData,
     })
 
-    const refreshRef = React.createRef()
-
-    React.useEffect(() => {
-        if (refreshRef.current && pair) {
-            // @ts-ignore
-            refreshRef.current.firstElementChild.click();
-        }
-
-    }, []);
-
     return <>
-        <Toast alertText={toastOpenJoin?.content ?? ''} severity={toastOpenJoin?.type ?? 'success'} open={toastOpenJoin?.open ?? false}
-            autoHideDuration={TOAST_TIME} onClose={closeToastJoin} />
-        <Toast alertText={toastOpenExit?.content ?? ''} severity={toastOpenExit?.type ?? 'success'} open={toastOpenExit?.open ?? false}
-            autoHideDuration={TOAST_TIME} onClose={closeToastExit} />
+        <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'} open={toastOpen?.open ?? false}
+            autoHideDuration={TOAST_TIME} onClose={closeToast} />
 
         {pair ?
             <AmmPanelNew {...{ ...rest }}
-                onRefreshData={() => {
-                    onRefreshDataJoin()
-                    onRefreshDataExit()
-                }}
+                onRefreshData={updateAmmPoolSnapshot}
                 refreshRef={refreshRef}
 
                 ammDepositData={ammJoinData}

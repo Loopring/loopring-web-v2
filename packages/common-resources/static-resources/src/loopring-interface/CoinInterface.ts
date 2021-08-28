@@ -83,6 +83,21 @@ export type AmmInData<T> = {
     feeExit: string,
 }
 
+export type AmmInDataNew<T> = {
+    myCoinA: IBData<T>,
+    myCoinB: IBData<T>,
+    lpCoinA: IBData<T>,
+    lpCoinB: IBData<T>,
+    lpCoin: IBData<T>,
+    AtoB: number,
+    coinInfoMap: CoinMap<T, CoinInfo<T>>,
+    // walletMap: WalletMap<T, WalletCoin<T>>,
+    // AmmWalletMap: WalletMap<T, WalletCoin<T>>,
+    slippage: number | string
+    // slippageTolerance: Array<number | string>,
+    fee: string,
+}
+
 
 export type AmmDetailBase<T> = {
     // name?: string,
