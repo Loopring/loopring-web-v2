@@ -10,7 +10,7 @@ import { AssetType, WsTopicType } from 'loopring-sdk'
 import { volumeToCount } from 'hooks/help'
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
 import { useSocket } from '../../../stores/socket';
-import { useWalletHook } from '../../../services/wallet/useWalletHook';
+import { useWalletLayer2Socket } from 'services/socket/';
 import { useSystem } from 'stores/system'
 import { getValuePrecision } from '@loopring-web/common-resources'
 
@@ -107,7 +107,7 @@ export const useGetAssets = () => {
         }))
         setAssetsList(list)
     },[])
-    useWalletHook({walletLayer2Callback})
+    useWalletLayer2Socket({walletLayer2Callback})
 
     const { faitPrices } = store.getState().system
 

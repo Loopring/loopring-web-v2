@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
     AccountStatus,
     AmmData,
@@ -40,8 +40,9 @@ import { LoopringAPI } from "api_wrapper";
 import { deepClone } from '../../../utils/obj_tools';
 import { myLog } from "utils/log_tools";
 import { useTranslation } from "react-i18next";
-import { useWalletHook } from '../../../services/wallet/useWalletHook';
-import { walletLayer2Service } from '../../../services/wallet/walletLayer2Service';
+
+import { useWalletLayer2Socket,walletLayer2Service } from 'services/socket';
+
 import * as _ from 'lodash'
 import { useSocket, } from "stores/socket";
 import { useToast } from "hooks/common/useToast";
@@ -59,7 +60,7 @@ export const useAmmCommon = ({ pair, snapShotData, }: {
 
     const { account } = useAccount()
 
-    const [ammPoolSnapshot, setAmmPoolSnapShot] = useState<AmmPoolSnapshot>()
+    const [ammPoolSnapshot, setAmmPoolSnapShot] = React.useState<AmmPoolSnapshot>()
 
     const { marketArray, marketMap, } = useTokenMap();
     const { ammMap } = useAmmMap();
@@ -158,17 +159,17 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
     }) => {
     const { t } = useTranslation('common');
 
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = React.useState(false)
 
     const { coinMap, tokenMap } = useTokenMap();
     const { ammMap } = useAmmMap();
     const { account, status: accountStatus } = useAccount();
     const [btnStatus, setBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE);
 
-    const [baseToken, setBaseToken] = useState<TokenInfo>();
-    const [quoteToken, setQuoteToken] = useState<TokenInfo>();
-    const [baseMinAmt, setBaseMinAmt,] = useState<any>()
-    const [quoteMinAmt, setQuoteMinAmt,] = useState<any>()
+    const [baseToken, setBaseToken] = React.useState<TokenInfo>();
+    const [quoteToken, setQuoteToken] = React.useState<TokenInfo>();
+    const [baseMinAmt, setBaseMinAmt,] = React.useState<any>()
+    const [quoteMinAmt, setQuoteMinAmt,] = React.useState<any>()
 
     const [ammCalcData, setAmmCalcData] = React.useState<AmmInDataNew<C> | undefined>();
 
@@ -182,7 +183,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
 
     const [btnI18nKey, setBtnI18nKey] = React.useState<string | undefined>(undefined);
 
-    const [fees, setFees] = useState<LoopringMap<OffchainFeeInfo>>()
+    const [fees, setFees] = React.useState<LoopringMap<OffchainFeeInfo>>()
 
     const { account: { accountId, apiKey } } = useAccount()
 
@@ -311,7 +312,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
         calculateCallback()
     }, [accountStatus, pair, ammData])
 
-    const [request, setRequest] = useState<{ ammInfo: any, request: JoinAmmPoolRequest | ExitAmmPoolRequest }>();
+    const [request, setRequest] = React.useState<{ ammInfo: any, request: JoinAmmPoolRequest | ExitAmmPoolRequest }>();
 
     const handleJoin = React.useCallback(async (data, type, joinFees, ammPoolSnapshot, tokenMap, account) => {
         setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammJoinData: ammData }]))
@@ -576,7 +577,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
 
     }, [pair, snapShotData])
 
-    useWalletHook({ walletLayer2Callback })
+    useWalletLayer2Socket({ walletLayer2Callback })
 
     return {
         ammCalcData,
