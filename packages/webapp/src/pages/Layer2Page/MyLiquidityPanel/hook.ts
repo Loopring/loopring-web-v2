@@ -17,7 +17,7 @@ import { useWalletLayer2 } from '../../../stores/walletLayer2';
 import { useUserRewards } from '../../../stores/userRewards';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
 import { SagaStatus } from '@loopring-web/common-resources';
-import { useWalletHook } from '../../../services/wallet/useWalletHook';
+import { useWalletLayer2Socket } from '../../../services/socket/';
 import { useSystem } from 'stores/system';
 
 export const useOverview = <R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>(
@@ -180,7 +180,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
             setMyPoolRow(_myPoolRow)         
         }
     },[ammMap])
-    useWalletHook({walletLayer2Callback})
+    useWalletLayer2Socket({walletLayer2Callback})
 
     React.useEffect(() => {
         if (userRewardsStatus === SagaStatus.UNSET) {

@@ -1,4 +1,4 @@
-import { LoopringSocket } from './services/socketUtil';
+import { LoopringSocket } from './services/socket/socketUtil';
 
 declare global {
     interface Window {
