@@ -35,15 +35,14 @@ import {
     toBig,
     TokenInfo, WsTopicType
 } from 'loopring-sdk';
-import { useAccount } from '../../../stores/account/hook';
+import { useAccount } from 'stores/account/hook';
 import store from "stores";
 import { LoopringAPI } from "api_wrapper";
 import { deepClone } from '../../../utils/obj_tools';
 import { myLog } from "utils/log_tools";
 import { useTranslation } from "react-i18next";
-import { useWalletHook } from '../../../services/wallet/useWalletHook';
-import { useSocket } from '../../../stores/socket';
-import { walletLayer2Service } from '../../../services/wallet/walletLayer2Service';
+import { useWalletLayer2Socket,walletLayer2Service } from 'services/socket';
+import { useSocket } from 'stores/socket';
 import * as _ from 'lodash'
 import { useToast } from "hooks/common/useToast";
 
@@ -424,7 +423,7 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
     },[ pair, snapShotData])
 
-    useWalletHook({walletLayer2Callback})
+    useWalletLayer2Socket({walletLayer2Callback})
 
     React.useEffect(()=>{
         walletLayer2Callback()

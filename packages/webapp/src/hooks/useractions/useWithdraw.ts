@@ -24,7 +24,7 @@ import { LoopringAPI } from 'api_wrapper';
 import { useSystem } from 'stores/system';
 import { myLog } from 'utils/log_tools';
 import { makeWalletLayer2 } from 'hooks/help';
-import { useWalletHook } from '../../services/wallet/useWalletHook';
+import { useWalletLayer2Socket } from '../../services/socket';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS, TOAST_TIME } from 'defs/common_defs';
 import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
@@ -121,7 +121,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     React.useEffect(() => {
         resetDefault();
     }, [isShow])
-    useWalletHook({ walletLayer2Callback })
+    useWalletLayer2Socket({ walletLayer2Callback })
     useCustomDCEffect(() => {
         if (chargeFeeList.length > 0) {
             setWithdrawFeeInfo(chargeFeeList[0])

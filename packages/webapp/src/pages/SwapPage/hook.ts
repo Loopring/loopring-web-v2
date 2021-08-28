@@ -35,7 +35,7 @@ import { useTranslation } from 'react-i18next';
 import { usePairMatch } from 'hooks/common/usePairMatch';
 import { useWalletLayer2Socket } from 'services/socket/';
 import { useSocket } from 'stores/socket';
-import { walletLayer2Service } from 'services/socket/services/walletLayer2Service';
+import { walletLayer2Service } from 'services/socket';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS, REFRESH_RATE, TOAST_TIME } from 'defs/common_defs';
 

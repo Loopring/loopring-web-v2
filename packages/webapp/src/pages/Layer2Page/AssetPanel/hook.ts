@@ -10,7 +10,7 @@ import { AssetType, WsTopicType } from 'loopring-sdk'
 import { volumeToCount } from 'hooks/help'
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
 import { useSocket } from '../../../stores/socket';
-import { useWalletLayer2Socket } from '../../../services/socket/';
+import { useWalletLayer2Socket } from 'services/socket/';
 import { useSystem } from 'stores/system'
 import { getValuePrecision } from '@loopring-web/common-resources'
 
