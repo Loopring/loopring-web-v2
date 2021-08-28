@@ -2,7 +2,6 @@ import { useRouteMatch } from 'react-router'
 
 import { Box, Typography } from '@material-ui/core'
 import {
-    SubMenu,
     SubMenuList as BasicSubMenuList,
 } from '@loopring-web/component-lib'
 import { withTranslation, WithTranslation } from 'react-i18next'

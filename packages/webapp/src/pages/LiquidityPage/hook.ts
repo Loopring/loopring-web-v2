@@ -24,11 +24,6 @@ export const useAmmPool = <R extends {[key:string]:any},I extends {[key:string]:
             setAmmActivityMap(ammActivityMap)
         }
     }, [ammActivityMapStatus])
-    // React.useEffect(() => {
-    //     if(accountStatus === SagaStatus.UNSET){
-    //
-    //     }
-    // }, [accountStatus])
 
     return {
         ammActivityMap:_ammActivityMap
