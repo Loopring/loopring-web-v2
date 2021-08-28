@@ -4,8 +4,6 @@ import { volumeToCountAsBigNumber } from './volumeToCount';
 export const ammPairInit = ({
                                    pair,
                                    _ammCalcData,
-                                   ammType,
-                                   tokenMap,
                                    coinMap,
                                    walletMap,
                                    ammMap,

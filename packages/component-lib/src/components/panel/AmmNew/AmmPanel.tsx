@@ -5,7 +5,6 @@ import { useLocation } from 'react-router-dom'
 import qs from 'query-string'
 import { AmmData, AmmInData, IBData } from '@loopring-web/common-resources';
 import { WithTranslation, withTranslation } from 'react-i18next';
-import { AmmPanelType, AmmProps } from './Interface';
 import React, { useEffect } from 'react';
 import { useDeepCompareEffect } from 'react-use';
 import { Box } from '@material-ui/core/';
@@ -13,6 +12,8 @@ import { useTheme } from '@emotion/react';
 import { CountDownIcon } from '../components/tool/Refresh';
 import styled from '@emotion/styled';
 import { boxLiner, toolBarPanel } from '../../styled';
+import { AmmPanelType, } from '../Amm/Interface';
+import { AmmPropsNew } from './Interface';
 
 const WrapStyle = styled(Box) <BoxProps & { _height?: number | string, _width?: number | string; }>`
   ${({ _width, _height }) => `       
@@ -36,7 +37,7 @@ const TabPanelBtn = ({ t, value, handleChange }: WithTranslation & any) => {
         <Tab label={t('labelLiquidityWithdraw')} value={1} />
     </Tabs>
 }
-export const AmmPanel = withTranslation('common', { withRef: true })(<T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
+export const AmmPanelNew = withTranslation('common', { withRef: true })(<T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
     ACD extends AmmInData<I>,
     C = IBData<I>>(
         {
@@ -48,7 +49,8 @@ export const AmmPanel = withTranslation('common', { withRef: true })(<T extends 
             disableWithdraw,
             handleAmmAddChangeEvent,
             handleAmmRemoveChangeEvent,
-            ammCalcData,
+            ammCalcDataDeposit,
+            ammCalcDataWithDraw,
             tokenDepositAProps,
             tokenDepositBProps,
             tokenWithDrawAProps,
@@ -67,7 +69,7 @@ export const AmmPanel = withTranslation('common', { withRef: true })(<T extends 
             width,
             anchors,
             ...rest
-        }: AmmProps<T, I, ACD, C> & WithTranslation) => {
+        }: AmmPropsNew<T, I, ACD, C> & WithTranslation) => {
 
     const [index, setIndex] = React.useState(tabSelected)
     const [ammChgDepositData, setAmmChgDepositData] = React.useState<AmmChgData<T>>({
@@ -136,7 +138,7 @@ export const AmmPanel = withTranslation('common', { withRef: true })(<T extends 
                 disableDeposit,
                 ammDepositBtnStatus,
                 ammDepositBtnI18nKey,
-                ammCalcData,
+                ammCalcData: ammCalcDataDeposit,
                 onAmmAddClick,
                 handleError,
                 onChangeEvent: _onChangeAddEvent,
@@ -149,7 +151,7 @@ export const AmmPanel = withTranslation('common', { withRef: true })(<T extends 
                 disableDeposit,
                 ammDepositBtnStatus,
                 ammDepositBtnI18nKey,
-                ammCalcData,
+                ammCalcDataDeposit,
                 onAmmAddClick,
                 handleError,
             ]),
@@ -163,7 +165,7 @@ export const AmmPanel = withTranslation('common', { withRef: true })(<T extends 
                 disableWithdraw,
                 ammWithdrawBtnStatus,
                 ammWithdrawBtnI18nKey,
-                ammCalcData,
+                ammCalcData: ammCalcDataWithDraw,
                 onAmmRemoveClick,
                 handleError,
                 selectedPercentage: -1,
@@ -177,7 +179,7 @@ export const AmmPanel = withTranslation('common', { withRef: true })(<T extends 
                 disableWithdraw,
                 ammWithdrawBtnStatus,
                 ammWithdrawBtnI18nKey,
-                ammCalcData,
+                ammCalcDataWithDraw,
                 onAmmRemoveClick,
                 handleError,
             ]),
@@ -210,4 +212,4 @@ export const AmmPanel = withTranslation('common', { withRef: true })(<T extends 
 
 }) as <T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
         ACD extends AmmInData<I>,
-        C = IBData<I>>(props: AmmProps<T, I, ACD, C> & React.RefAttributes<any>) => JSX.Element;
+        C = IBData<I>>(props: AmmPropsNew<T, I, ACD, C> & React.RefAttributes<any>) => JSX.Element;

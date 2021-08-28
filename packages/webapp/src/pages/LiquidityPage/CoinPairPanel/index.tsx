@@ -10,7 +10,7 @@ import {
     unit
 } from '@loopring-web/common-resources';
 import { Avatar, Box, Breadcrumbs, Divider, Grid, Link, Typography } from '@material-ui/core';
-import { AmmPanelView } from '../AmmPanel';
+import { AmmPanelView } from '../AmmPanelNew';
 import moment from 'moment';
 import styled from '@emotion/styled/';
 import Tabs from '@material-ui/core/Tabs';

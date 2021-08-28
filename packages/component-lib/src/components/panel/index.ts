@@ -8,3 +8,5 @@ export * from './ModalPanel'
 export * from './Amm'
 export * from './components/Styled'
 export * from './components/tool/Dialogs'
+
+export * from './AmmNew'
