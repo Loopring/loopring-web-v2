@@ -9,11 +9,11 @@ import {
     getTradeArg,
     toBig,
 } from 'loopring-sdk';
-import { tickerService } from './tickerService';
-import { ammPoolService } from './ammPoolService';
+import { tickerService } from './services/tickerService';
+import { ammPoolService } from './services/ammPoolService';
 import { CustomError, ErrorMap } from '@loopring-web/common-resources';
 import { LoopringAPI } from 'api_wrapper';
-import { walletLayer2Service } from './wallet/walletLayer2Service';
+import { walletLayer2Service } from './services/walletLayer2Service';
 // import store from '../stores';
 // import { updateSocketURL } from '../stores/system';
 

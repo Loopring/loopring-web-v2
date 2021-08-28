@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 
 import * as loopring_defs from 'loopring-sdk';
-import store from '../../stores';
+import store from '../../../stores';
 // import { CoinKey } from '@loopring-web/common-resources';
 //CoinKey<any>
 const subject = new Subject<{[key:string ]:loopring_defs.UserBalanceInfo}|undefined>();
