@@ -1,12 +1,12 @@
 import React from 'react';
 import * as _ from 'lodash';
 import { globalSetup, SagaStatus } from '@loopring-web/common-resources';
-import { useWalletLayer1 } from '../../stores/walletLayer1';
-import { walletLayer2Service } from './walletLayer2Service';
-import { useWalletLayer2 } from '../../stores/walletLayer2';
-import store from '../../stores';
+import { useWalletLayer1 } from '../../../stores/walletLayer1';
+import { walletLayer2Service } from '../services/walletLayer2Service';
+import { useWalletLayer2 } from '../../../stores/walletLayer2';
+import store from '../../../stores';
 
-export const useWalletHook=({throttleWait = globalSetup.throttleWait, walletLayer2Callback,walletLayer1Callback}:{
+export const useWalletLayer2Socket=({throttleWait = globalSetup.throttleWait, walletLayer2Callback,walletLayer1Callback}:{
     throttleWait?:number,
     walletLayer2Callback?:()=>void,
     walletLayer1Callback?:()=>void,
