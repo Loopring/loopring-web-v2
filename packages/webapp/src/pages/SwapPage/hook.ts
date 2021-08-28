@@ -33,9 +33,9 @@ import { deepClone } from 'utils/obj_tools';
 import { myError, myLog } from 'utils/log_tools';
 import { useTranslation } from 'react-i18next';
 import { usePairMatch } from 'hooks/common/usePairMatch';
-import { useWalletHook } from 'services/wallet/useWalletHook';
+import { useWalletLayer2Socket } from 'services/socket/';
 import { useSocket } from 'stores/socket';
-import { walletLayer2Service } from 'services/wallet/walletLayer2Service';
+import { walletLayer2Service } from 'services/socket/services/walletLayer2Service';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS, REFRESH_RATE, TOAST_TIME } from 'defs/common_defs';
 
@@ -490,7 +490,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     }, [tradeData, tradeCalcData, marketArray, ammMap, account.readyState])
 
-    useWalletHook({walletLayer2Callback})
+    useWalletLayer2Socket({walletLayer2Callback})
 
     // myLog('tradeData?.sell.belong:', tradeData?.sell.belong)
     // myLog('tradeData?.buy.belong:', tradeData?.buy.belong)

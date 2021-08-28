@@ -28,4 +28,4 @@ npm run dev
 
 ##Framwork Design
 
-![](../../Downloads/Loopring framwork.png)
+![](docs/Loopring framwork.png)

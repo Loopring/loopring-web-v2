@@ -41,9 +41,9 @@ import { LoopringAPI } from "api_wrapper";
 import { deepClone } from '../../../utils/obj_tools';
 import { myLog } from "utils/log_tools";
 import { useTranslation } from "react-i18next";
-import { useWalletHook } from '../../../services/wallet/useWalletHook';
+import { useWalletLayer2Socket } from '../../../services/socket/';
 import { useSocket } from '../../../stores/socket';
-import { walletLayer2Service } from '../../../services/wallet/walletLayer2Service';
+import { walletLayer2Service } from '../../../services/socket/services/walletLayer2Service';
 import * as _ from 'lodash'
 import { useToast } from "hooks/common/useToast";
 export const useAmmPanel = <C extends { [key: string]: any }>({
@@ -682,7 +682,7 @@ export const useAmmPanel = <C extends { [key: string]: any }>({
 
     },[ pair, snapShotData])
 
-    useWalletHook({walletLayer2Callback})
+    useWalletLayer2Socket({walletLayer2Callback})
     React.useEffect(()=>{
         walletLayer2Callback()
         // if(walletLayer2Status === SagaStatus.UNSET){

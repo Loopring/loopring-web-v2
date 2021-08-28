@@ -17,7 +17,7 @@ import { makeMyAmmWithSnapshot } from '../../../hooks/help/makeUIAmmActivityMap'
 import { useUserRewards } from '../../../stores/userRewards';
 import { LoopringAPI } from 'api_wrapper';
 import { myLog } from '../../../utils/log_tools';
-import { useWalletHook } from '../../../services/wallet/useWalletHook';
+import { useWalletLayer2Socket } from '../../../services/socket/';
 import store from 'stores'
 import { volumeToCountAsBigNumber } from 'hooks/help'
 import { getValuePrecision, getThousandFormattedNumbers } from "@loopring-web/common-resources";
@@ -394,7 +394,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
             setMyAmm(_myAmm);
         }
     },[])
-    useWalletHook({walletLayer2Callback})
+    useWalletLayer2Socket({walletLayer2Callback})
 
 
     React.useEffect(() => {

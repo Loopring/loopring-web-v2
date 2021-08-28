@@ -10,7 +10,7 @@ import { CustomError, ErrorMap } from '@loopring-web/common-resources';
 import { getAmmActivityMap } from '../Amm/AmmActivityMap';
 import { updateWalletLayer1 } from '../walletLayer1';
 import { delay } from 'rxjs/operators';
-import { LoopringSocket } from '../../services/socketUtil';
+import { LoopringSocket } from '../../services/socket/socketUtil';
 import { statusUnset as accountStatusUnset } from '../account';
 import { ChainId } from 'loopring-sdk';
 
