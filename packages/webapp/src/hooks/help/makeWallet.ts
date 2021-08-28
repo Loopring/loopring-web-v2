@@ -14,7 +14,6 @@ export const makeWalletLayer2 = <C extends { [ key: string ]: any }>():{ walletM
     const {tokenMap} = store.getState().tokenMap;
     let walletMap: WalletMapExtend<C> | undefined;
 
-    myLog('makeWalletLayer2 walletMap',walletLayer2)
     if (walletLayer2) {
         walletMap = Reflect.ownKeys(walletLayer2).reduce((prev, item) => {
             const {total, locked, pending: { withdraw }} = walletLayer2[ item as string ];

@@ -128,7 +128,9 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
 
                     } catch (reason) {
                         result.code = ActionResultCode.UpdateAccoutError
-                        result.data = reason
+                        result.data = {
+                            errorInfo: reason
+                        }
                         dumpError400(reason)
                     }
 
@@ -137,7 +139,9 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
                     myLog('GenEddsaKeyError!!!!!! ')
 
                     result.code = ActionResultCode.GenEddsaKeyError
-                    result.data = reason
+                    result.data = {
+                        errorInfo: reason
+                    }
                     dumpError400(reason)
                 }
             }
