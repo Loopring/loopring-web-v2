@@ -51,8 +51,9 @@ export const useAmmCommon = ({ pair, snapShotData, }: {
     pair: {
         coinAInfo: CoinInfo<string> | undefined,
         coinBInfo: CoinInfo<string> | undefined
-    }, snapShotData: any
-}) => {
+    }, 
+    snapShotData: any,
+    }) => {
 
     const { toastOpen, setToastOpen, closeToast, } = useToast()
 
@@ -121,6 +122,7 @@ export const useAmmCommon = ({ pair, snapShotData, }: {
     const walletLayer2Callback = React.useCallback(() => {
 
         if (snapShotData) {
+            myLog('-------------setAmmPoolSnapShot:', snapShotData.ammPoolsBalance)
             setAmmPoolSnapShot(snapShotData.ammPoolsBalance)
         }
 
@@ -314,10 +316,12 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
 
     const [request, setRequest] = React.useState<{ ammInfo: any, request: JoinAmmPoolRequest | ExitAmmPoolRequest }>();
 
-    const handleJoin = React.useCallback(async (data, type, joinFees, ammPoolSnapshot, tokenMap, account) => {
+    const handleJoin = React.useCallback(async ({data, ammData, type, fees, ammPoolSnapshot, tokenMap, account}) => {
         setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammJoinData: ammData }]))
 
-        if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !joinFees || !account?.accAddress) {
+        myLog(data, ammData, type, fees, ammPoolSnapshot, tokenMap, account)
+
+        if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !fees || !account?.accAddress) {
             return
         }
 
@@ -352,7 +356,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
         const rawVal = isAtoB ? rawA : rawB;
 
         const { request } = makeJoinAmmPoolRequest(rawVal,
-            isAtoB, slippageReal, account.accAddress, joinFees as LoopringMap<OffchainFeeInfo>,
+            isAtoB, slippageReal, account.accAddress, fees as LoopringMap<OffchainFeeInfo>,
             ammMap[amm], ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0, 0)
 
         if (isAtoB) {
@@ -378,20 +382,22 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
 
     }, [])
 
-    const handleExit = React.useCallback(async (data, type, exitFees, ammPoolSnapshot, tokenMap, account) => {
+    const handleExit = React.useCallback(async ({
+        data, ammData, type, fees, ammPoolSnapshot, tokenMap, account
+        }) => {
         setBtnStatus(TradeBtnStatus.AVAILABLE)
         setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammExitData: ammData }]))
 
         const isAtoB = type === 'coinA'
 
         if (!tokenMap || !data.coinA.belong || !data.coinB.belong
-            || !ammPoolSnapshot || !exitFees || !account?.accAddress
+            || !ammPoolSnapshot || !fees || !account?.accAddress
             || (isAtoB && data.coinA.tradeValue === undefined)
             || (!isAtoB && data.coinB.tradeValue === undefined)) {
             return
         }
 
-        myLog('handleExitInDebounce', data, type);
+        myLog('handleExit', data, type);
 
         const { slippage } = data
 
@@ -417,7 +423,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
 
         const rawVal = isAtoB ? data.coinA.tradeValue : data.coinB.tradeValue
 
-        const { request } = makeExitAmmPoolRequest(rawVal.toString(), isAtoB, slippageReal, account.accAddress, exitFees as LoopringMap<OffchainFeeInfo>,
+        const { request } = makeExitAmmPoolRequest(rawVal.toString(), isAtoB, slippageReal, account.accAddress, fees as LoopringMap<OffchainFeeInfo>,
             ammMap[amm], ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0)
 
         if (isAtoB) {
@@ -443,15 +449,17 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
     }, [])
 
     const handleAmmPoolEvent = (data: AmmData<IBData<any>>, _type: 'coinA' | 'coinB') => {
+
+        myLog('enter handleAmmPoolEvent', type, fees)
+
         if (type === AmmPanelType.Join) {
-            handleJoin(data, type, fees, ammPoolSnapshot, tokenMap, account)
+            handleJoin({data, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account})
         } else if (type === AmmPanelType.Exit) {
-            handleExit(data, type, fees, ammPoolSnapshot, tokenMap, account)
+            handleExit({data, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account})
         }
     }
 
-    const ammCalculator = React.useCallback(async function (props
-    ) {
+    const ammCalculator = React.useCallback(async function (props) {
 
         setIsLoading(true)
         if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !request || !account?.eddsaKey?.sk) {
