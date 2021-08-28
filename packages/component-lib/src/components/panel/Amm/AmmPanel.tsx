@@ -13,7 +13,6 @@ import { useTheme } from '@emotion/react';
 import { CountDownIcon } from '../components/tool/Refresh';
 import styled from '@emotion/styled';
 import { boxLiner, toolBarPanel } from '../../styled';
-// import { WithdrawProps } from '../Interface';
 
 enum AmmPanelTypeMap {
     Deposit = 0,
@@ -107,6 +106,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
           setAmmChgDepositData({tradeData, type})
       }
   }, [handleAmmAddChangeEvent, onChangeEvent])
+
   const _onChangeRemoveEvent = React.useCallback(async ({
                                                             tradeData,
                                                             type,
@@ -121,19 +121,21 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
       }
 
   }, [handleAmmRemoveChangeEvent, onChangeEvent]);
-  // const [tab, setTab] = React.useState(0);
+  
   const handleTabChange = React.useCallback((_event: any, newValue: any) => {
       if (index !== newValue) {
           setIndex(newValue);
       }
 
   }, [index]);
+
   const panelList: Pick<PanelContent<"ammJoin" | "ammExit">, 'key' | 'element'>[] = [
       {
           key: "ammJoin",
           element: React.useMemo(() => <AmmDepositWrap<T, I, ACD, C> key={"ammJoin"} {...{
               t,
               ...rest,
+              anchors,
               disableDeposit,
               ammDepositBtnStatus,
               ammDepositBtnI18nKey,
@@ -144,13 +146,16 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
               ammData: ammChgDepositData.tradeData,
               tokenAProps: {...tokenDepositAProps},
               tokenBProps: {...tokenDepositBProps},
-          }}/>, [rest, ammChgDepositData, tokenDepositAProps, tokenDepositBProps, disableDeposit,
+          }}/>, [
+              rest, ammChgDepositData, 
+              tokenDepositAProps, tokenDepositBProps, anchors,
+              disableDeposit,
               ammDepositBtnStatus,
               ammDepositBtnI18nKey,
-              rest,
               ammCalcData,
               onAmmAddClick,
-              handleError]),
+              handleError,
+            ]),
       },
       {
           key: "ammExit",
@@ -158,7 +163,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
               t,
               ...rest,
               anchors,
-              disableDeposit,
+              disableWithdraw,
               ammWithdrawBtnStatus,
               ammWithdrawBtnI18nKey,
               ammCalcData,
@@ -170,24 +175,24 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
               tokenAProps: {...tokenWithDrawAProps},
               tokenBProps: {...tokenWithDrawBProps},
           }}/>, [
-              rest,
+              rest, ammChgWithdrawData,
               tokenWithDrawAProps, tokenWithDrawBProps, anchors,
-              disableDeposit,
+              disableWithdraw,
               ammWithdrawBtnStatus,
               ammWithdrawBtnI18nKey,
               ammCalcData,
               onAmmRemoveClick,
-              handleError,]),
+              handleError,
+            ]),
       },
   ];
+
   const theme = useTheme();
+
   return <WrapStyle display={'flex'} className={'trade-panel container'}
                     paddingTop={'var(--toolbar-row-padding)'}
                     paddingBottom={3} flexDirection={'column'} flexWrap={'nowrap'}>
-      {/*<Grid container className={''} direction={'column'}*/}
-      {/*      justifyContent={"space-between"} */}
-      {/*      // paddingTop={'var(--toolbar-row-padding)'}*/}
-      {/*      }>*/}
+
           <Toolbar className={'large'} variant={'regular'}   >
               <Box alignSelf={'center'} justifyContent={'flex-start'} display={'flex'} marginLeft={-2}>
                   <TabPanelBtn {...{t, value: index, handleChange: handleTabChange, ...rest}} />
@@ -195,8 +200,8 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
               <Box alignSelf={'center'}>
                   <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef}/>
               </Box>
-
           </Toolbar>
+
           <SwipeableViewsStyled  axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'} index={index} >
               {panelList.map((panel, index) => {
                   return <Grid item justifyContent={'space-evenly'} alignItems={'stretch'} height={'100%'}
@@ -205,8 +210,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
           </SwipeableViewsStyled>
 
   </WrapStyle>
+
 }) as <T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
   ACD extends AmmInData<I>,
   C = IBData<I>>(props: AmmProps<T, I, ACD, C> & React.RefAttributes<any>) => JSX.Element;
-
-
