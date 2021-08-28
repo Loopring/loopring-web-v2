@@ -63,7 +63,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
         walletLayer1Callback()
     },[isShow])
 
-    // useWalletHook({ walletLayer1Callback })
+    // useWalletLayer2Socket({ walletLayer1Callback })
 
     // walletMap1: WalletMap<T> | undefined, ShowDeposit: (isShow: boolean, defaultProps?: any) => void
     const handleDeposit = React.useCallback(async (inputValue: any) => {

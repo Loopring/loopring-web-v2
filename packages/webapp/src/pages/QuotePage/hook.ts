@@ -6,7 +6,7 @@ import { deepClone } from '../../utils/obj_tools';
 import { useSocket } from '../../stores/socket';
 import { TradingInterval, WsTopicType } from 'loopring-sdk';
 import { LoopringAPI } from 'api_wrapper'
-import { tickerService } from '../../services/tickerService';
+import { tickerService } from 'services/socket';
 import { myError, myLog } from "utils/log_tools";
 
 const amtCol = 5
