@@ -141,7 +141,7 @@ export const accountServices = {
                 } else {
                     if (account.accountId) {
                         if (!account.publicKey.x || !account.publicKey.y) {
-                            myLog('-------need update account!')
+                            myLog('-------sendCheckAcc need update account!')
                             accountServices.sendNeedUpdateAccount(accInfo)
                         } else {
                             myLog('-------need unlockAccount!')
@@ -177,7 +177,7 @@ export const accountServices = {
             } else {
                 if (accInfo.accountId) {
                     if (!accInfo.publicKey.x || !accInfo.publicKey.y) {
-                        myLog('-------need update account!')
+                        myLog('-------sendCheckAccount need update account!')
                         accountServices.sendNeedUpdateAccount(accInfo)
                     } else {
                         accountServices.sendAccountLock(accInfo)
