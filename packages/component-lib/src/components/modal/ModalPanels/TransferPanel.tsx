@@ -1,8 +1,8 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
-import { TransferProps } from '../Interface';
+import { TransferProps } from '../../panel/Interface';
 import { IBData } from '@loopring-web/common-resources';
-import { TradeMenuList, TransferWrap, useBasicTrade } from '../components';
+import { TradeMenuList, TransferWrap, useBasicTrade } from '../../panel/components';
 import React from 'react';
 
 export const TransferPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>, I>(

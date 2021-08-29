@@ -1,10 +1,9 @@
-import { DepositProps } from '../Interface';
+import { DepositProps } from '../../panel/Interface';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { IBData } from '@loopring-web/common-resources';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
-import { DepositWrap, TradeMenuList, useBasicTrade } from '../components';
+import { DepositWrap, TradeMenuList, useBasicTrade } from '../../panel/components';
 import React from 'react';
-
 
 export const DepositPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>, I>(
     {
