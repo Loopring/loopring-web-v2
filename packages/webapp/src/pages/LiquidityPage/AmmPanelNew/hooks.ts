@@ -205,7 +205,6 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
     const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
 
         const _ammCalcData = ammPairInit({
-            type,
             fee,
             pair,
             _ammCalcData: {},
@@ -235,7 +234,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
                 slippage: initSlippage,
             })
         }
-    }, [isJoin, type, fee, snapShotData, coinMap, tokenMap, ammCalcData, ammMap,
+    }, [isJoin, fee, snapShotData, coinMap, tokenMap, ammCalcData, ammMap,
         setAmmCalcData, setAmmData, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt,])
 
     const btnLabelActiveCheck = React.useCallback(({ ammData }): string | undefined => {
