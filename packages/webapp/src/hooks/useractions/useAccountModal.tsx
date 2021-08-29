@@ -47,15 +47,15 @@ export  function useAccountModal() {
         setShowAccount({isShow: shouldShow ?? false,step:AccountStep.UpdateAccount});
     },[shouldShow])
     const handleSignError = React.useCallback(()=>{
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.FailedUnlock});
+        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.UnlockAccount_Failed});
     },[shouldShow])
     const handleProcessSign = React.useCallback(()=>{
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.ProcessUnlock});
+        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.UnlockAccount_WaitForAuth});
     },[shouldShow])
     const handleAccountActive  = React.useCallback(async ()=>{
 
         //updateAccount({readyState:'ACTIVATED'});
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.SuccessUnlock});
+        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.UnlockAccount_Success});
         await sleep(1000)
         setShouldShow(false)
         setShowAccount({isShow: false});
