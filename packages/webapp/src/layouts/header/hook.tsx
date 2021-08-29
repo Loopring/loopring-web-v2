@@ -68,9 +68,7 @@ export const useHeader = () => {
     },[]);
 
     React.useEffect(() => {
-        myLog( 'HeaderBtn status',accountStatus);
         if (accountStatus && accountStatus === 'UNSET') {
-            myLog( 'HeaderBtn status',accountState);
 
             setHeaderToolBarData((headerToolBarData)=>{
                 return {

@@ -55,7 +55,7 @@ import {
     ModalPanel,
 } from '@loopring-web/component-lib';
 import { walletServices } from '@loopring-web/web3-provider';
-import { sleep } from 'loopring-sdk';
+import { ConnectorError, sleep } from 'loopring-sdk';
 
 import React, { useState } from 'react';
 import { copyToClipBoard } from 'utils/obj_tools';
@@ -77,6 +77,7 @@ import { useWalletInfo } from 'stores/localStore/walletInfo';
 import store from 'stores'
 import { useTransfer } from 'hooks/useractions/useTransfer';
 import { useWithdraw } from 'hooks/useractions/useWithdraw';
+import { checkErrorInfo } from 'hooks/useractions/utils';
 
 export const ModalAccountInfo = withTranslation('common')(({
     onClose,
@@ -209,9 +210,6 @@ export const ModalAccountInfo = withTranslation('common')(({
                 case ActionResultCode.GenEddsaKeyError:
                 case ActionResultCode.UpdateAccoutError:
 
-                    let errMsg = result.data?.errorInfo?.errMsg
-
-                    myLog('----------UpdateAccoutError errMsg:', errMsg)
 
                     const eddsaKey2 = result?.data?.eddsaKey
 
@@ -220,16 +218,22 @@ export const ModalAccountInfo = withTranslation('common')(({
                         store.dispatch(updateAccountStatus({ eddsaKey: eddsaKey2, }))
                     }
 
+                    const errMsg = checkErrorInfo(result?.data?.errorInfo, isFirstTime)
+
+                    myLog('----------UpdateAccoutError errMsg:', errMsg)
+
                     switch (errMsg) {
-                        case 'NOT_SUPPORT_ERROR':
+                        case ConnectorError.NOT_SUPPORT_ERROR:
                             myLog(' 00000---- got NOT_SUPPORT_ERROR')
                             setShowAccount({ isShow: true, step: AccountStep.UpdateAccount_First_Method_Refused })
                             return
-                        case 'USER_DENIED':
+                        case ConnectorError.USER_DENIED:
                             myLog(' 11111---- got USER_DENIED')
                             setShowAccount({ isShow: true, step: AccountStep.UpdateAccount_User_Refused })
                             return
                         default:
+                            myLog(' 11111---- got UpdateAccount_Success')
+                            setShowAccount({ isShow: true, step: AccountStep.UpdateAccount_Success })
                             accountServices.sendCheckAccount(account.accAddress)
                             break
                     }
