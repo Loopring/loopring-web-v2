@@ -40,9 +40,7 @@ import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS, REFRESH_RATE, TOAST_TIME } from 'defs/common_defs';
 
 import { getShowStr, VolToNumberWithPrecision } from '../../utils/formatter_tool';
-import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { useToast } from 'hooks/common/useToast';
-import { debug } from 'console';
 import { useAmount } from '../../stores/amount';
 
 const useSwapSocket = () => {
@@ -145,8 +143,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     const [depth, setDepth] = React.useState<sdk.DepthData>()
 
-    // const [amountMap, setAmountMap] = React.useState<any>()
-
     const [alertOpen, setAlertOpen] = React.useState<boolean>(false)
 
     const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false)
@@ -160,6 +156,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         exceedDepth: output?.exceedDepth ?? false,
         amountBOutSlip: output?.amountBOutSlip ? JSON.stringify(output.amountBOutSlip) : '',
         market,
+        quoteMinAmt,
     } : ''
 
     const swapFunc = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
@@ -739,8 +736,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             }
 
             const output = sdk.getOutputAmount(inputParam)
-
-
 
             const priceImpact = getPriceImpactInfo(output)
 
