@@ -21,6 +21,7 @@ const StylePaper = styled(Box)`
     flex: 1;
     background: var(--color-box);
     border-radius: ${({theme}) => theme.unit}px;
+    padding-bottom: ${({theme}) => theme.unit}px;
 
     .rdg {
         flex: 1;
@@ -42,15 +43,30 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
     const container = React.useRef(null);
     const [pageSize, setPageSize] = React.useState(10);
     const [filterValue, setFilterValue] = React.useState('');
+    const [tableHeight, setTableHeight] = React.useState(0)
     const {updateTickersUI, rawData, page} = useAmmMapUI({pageSize});
 
+    const getCurrentHeight = React.useCallback(() => {
+        const height = window.innerHeight
+        const tableHeight = height - 64 - 117
+        setTableHeight(tableHeight)
+      }, [])
+
     React.useEffect(() => {
-        // @ts-ignore
-        let height = container?.current?.offsetHeight;
-        if (height) {
-            setPageSize(Math.floor((height - 20) / 44) - 1);
+        getCurrentHeight()
+        window.addEventListener('resize', getCurrentHeight)
+        return () => {
+            window.removeEventListener('resize', getCurrentHeight)
         }
-    }, [container, pageSize]);
+    }, [getCurrentHeight])
+
+    // React.useEffect(() => {
+    //     // @ts-ignore
+    //     let height = container?.current?.offsetHeight;
+    //     if (height) {
+    //         setPageSize(Math.floor((height - 20) / 44) - 1);
+    //     }
+    // }, [container, pageSize]);
 
     const getFilteredData = React.useCallback(() => {
         if (!filterValue) {
@@ -92,11 +108,12 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
                         rawData: getFilteredData(),
                         handlePageChange,
                         page,
-                        pagination: {
-                            pageSize
-                        },
+                        // pagination: {
+                        //     pageSize
+                        // },
                         showFilter: false,
-                        showLoading: !rawData.length
+                        showLoading: !rawData.length,
+                        tableHeight: tableHeight
                     }} />
                 </StylePaper>
             </WrapperStyled>
