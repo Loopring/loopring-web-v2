@@ -233,7 +233,8 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
                 slippage: initSlippage,
             })
         }
-    }, [snapShotData, coinMap, tokenMap, ammCalcData, ammMap, setAmmCalcData, setAmmData,])
+    }, [snapShotData, coinMap, tokenMap, ammCalcData, ammMap, 
+        setAmmCalcData, setAmmData, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt, ])
 
     const btnLabelActiveCheck = React.useCallback(({ ammData }): string | undefined => {
         //TODO:
@@ -577,15 +578,19 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
 
     const walletLayer2Callback = React.useCallback(() => {
 
-        if (pair && snapShotData) {
+        if (pair?.coinAInfo?.simpleName && snapShotData?.tickerData && snapShotData?.ammPoolsBalance) {
             const { walletMap } = makeWalletLayer2()
             initAmmData(pair, walletMap)
             setIsLoading(false)
         }
 
-    }, [pair, snapShotData])
+    }, [pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolsBalance])
 
     useWalletLayer2Socket({ walletLayer2Callback })
+
+    React.useEffect(() => {
+        walletLayer2Callback()
+    }, [pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolsBalance])
 
     return {
         ammCalcData,
