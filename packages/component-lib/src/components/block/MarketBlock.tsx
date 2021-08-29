@@ -18,7 +18,8 @@ const MarketBlockStyled = styled(Box)<StyledProps>`
     background: var(--color-box);
 
     border-radius: ${({theme}) => theme.unit}px;
-
+    border: 1px solid var(--color-box);
+    cursor: pointer;
   }
 
   // &:not(:last-of-type){
@@ -38,7 +39,8 @@ const MarketBlockStyled = styled(Box)<StyledProps>`
   }
 
   &:hover {
-    box-shadow: var(--shadow);
+    // box-shadow: var(--shadow);
+    border: 1px solid var(--color-border);
   }
 
 ` as React.ElementType<StyledProps & BoxProps>;
@@ -57,7 +59,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
     const currencyUnit = isUSD ? PriceTag.Dollar : PriceTag.Yuan
     const baseFaitPriceDollar = Number((priceDollar / (volume || 1)).toFixed(2))
     const baseFaitPriceYuan = Number((priceYuan / (volume || 1)).toFixed(2))
-    return <MarketBlockStyled onClick={handleBlockClick} /* className={'MuiPaper-elevation2'} */ custom={{chg: upColor}} padding={0.5 * 5} display={'flex'}
+    return <MarketBlockStyled onClick={handleBlockClick} className={'MuiPaper-elevation2'} custom={{chg: upColor}} padding={0.5 * 5} display={'flex'}
                               justifyContent={'stretch'}>
         {coinAInfo && coinBInfo ?
             <Grid container justifyContent={'space-around'} position={'relative'}>
