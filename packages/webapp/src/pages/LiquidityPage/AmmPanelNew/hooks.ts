@@ -238,9 +238,10 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
 
     const btnLabelActiveCheck = React.useCallback(({ ammData }): string | undefined => {
         //TODO:
-        const validAmt1 = ammData?.coinA?.tradeValue ? ammData?.coinA?.tradeValue > times * baseMinAmt : false
-        const validAmt2 = ammData?.coinB?.tradeValue ? ammData?.coinB?.tradeValue > times * quoteMinAmt : false
-        myLog('btnLabelActiveCheck ammData', ammData)
+        const validAmt1 = ammData?.coinA?.tradeValue ? ammData?.coinA?.tradeValue >= times * baseMinAmt : false
+        const validAmt2 = ammData?.coinB?.tradeValue ? ammData?.coinB?.tradeValue >= times * quoteMinAmt : false
+        myLog('btnLabelActiveCheck ammData', ammData?.coinA?.tradeValue, ammData?.coinB?.tradeValue,
+         baseMinAmt, quoteMinAmt)
 
         if (isLoading) {
             setBtnI18nKey(TradeBtnStatus.LOADING)
@@ -254,14 +255,14 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
                     || ammData?.coinB.tradeValue === 0) {
                     setBtnStatus(TradeBtnStatus.DISABLED)
                     return 'labelEnterAmount';
-                } else if (validAmt1 || validAmt2) {
+                } else if (validAmt1 && validAmt2) {
                     setBtnStatus(TradeBtnStatus.AVAILABLE)
                     return undefined
                 }  else {
-                    const quote = ammData?.coinA.belong;
-                    const minOrderSize = 0 + ' ' + ammData?.coinA.belong;
+                    // const symbol = !validAmt1 ? ammData?.coinA.belong : !validAmt2 ? ammData?.coinB.belong : ''
+                    // const minOrderSize = !validAmt1 ? times * baseMinAmt : !validAmt2 ? times * quoteMinAmt : 0
                     setBtnStatus(TradeBtnStatus.DISABLED)
-                    return `labelLimitMin, ${minOrderSize}`
+                    return `labelLimitMin, ${times * baseMinAmt} ${ammData?.coinA.belong} / ${times * quoteMinAmt} ${ammData?.coinB.belong}`
                 }
 
             } else {
@@ -319,7 +320,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
     const handleJoin = React.useCallback(async ({data, ammData, type, fees, ammPoolSnapshot, tokenMap, account}) => {
         setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, }]))
 
-        myLog(data, ammData, type, fees, ammPoolSnapshot, tokenMap, account)
+        // myLog(data, ammData, type, fees, ammPoolSnapshot, tokenMap, account)
 
         if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !fees || !account?.accAddress) {
             return
@@ -342,7 +343,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
             return
         }
 
-        myLog('handleJoin:', data, type);
+        // myLog('handleJoin:', data, type);
 
         const marketInfo: MarketInfo = marketMap[market]
 
@@ -395,7 +396,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
             return
         }
 
-        myLog('handleExit', data, type);
+        // myLog('handleExit', data, type);
 
         const { slippage } = data
 
