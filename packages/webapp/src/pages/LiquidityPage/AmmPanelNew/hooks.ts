@@ -145,6 +145,10 @@ export const useAmmCommon = ({ pair, snapShotData, }: {
 
 // ----------calc hook -------
 
+const times = 5
+
+const initSlippage = 0.5
+
 export const useAmmCalc = <C extends { [key: string]: any }>({
     setToastOpen,
     type,
@@ -175,8 +179,6 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
 
     const [ammCalcData, setAmmCalcData] = React.useState<AmmInDataNew<C> | undefined>();
 
-    const initSlippage = 0.5
-
     const [ammData, setAmmData] = React.useState<AmmData<IBData<C>, C>>({
         coinA: { belong: undefined } as unknown as IBData<C>,
         coinB: { belong: undefined } as unknown as IBData<C>,
@@ -188,8 +190,6 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
     const [fees, setFees] = React.useState<LoopringMap<OffchainFeeInfo>>()
 
     const { account: { accountId, apiKey } } = useAccount()
-
-    const times = 5
 
     React.useEffect(() => {
         if (account.readyState !== AccountStatus.ACTIVATED) {
@@ -247,17 +247,17 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
             return undefined
         } else {
             if (account.readyState === AccountStatus.ACTIVATED) {
-                if (validAmt1 || validAmt2) {
-                    setBtnStatus(TradeBtnStatus.AVAILABLE)
-                    return undefined
-                } else if (ammData === undefined
+                if (ammData === undefined
                     || ammData?.coinA.tradeValue === undefined
                     || ammData?.coinB.tradeValue === undefined
                     || ammData?.coinA.tradeValue === 0
                     || ammData?.coinB.tradeValue === 0) {
                     setBtnStatus(TradeBtnStatus.DISABLED)
                     return 'labelEnterAmount';
-                } else {
+                } else if (validAmt1 || validAmt2) {
+                    setBtnStatus(TradeBtnStatus.AVAILABLE)
+                    return undefined
+                }  else {
                     const quote = ammData?.coinA.belong;
                     const minOrderSize = 0 + ' ' + ammData?.coinA.belong;
                     setBtnStatus(TradeBtnStatus.DISABLED)
@@ -269,8 +269,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
             }
 
         }
-    }, [
-        account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, isLoading, setBtnStatus])
+    }, [account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, isLoading, setBtnStatus])
 
     const btnLabelNew = Object.assign(deepClone(btnLabel), {
         [fnType.ACTIVATED]: [btnLabelActiveCheck]
@@ -318,7 +317,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
     const [request, setRequest] = React.useState<{ ammInfo: any, request: JoinAmmPoolRequest | ExitAmmPoolRequest }>();
 
     const handleJoin = React.useCallback(async ({data, ammData, type, fees, ammPoolSnapshot, tokenMap, account}) => {
-        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammJoinData: ammData }]))
+        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, }]))
 
         myLog(data, ammData, type, fees, ammPoolSnapshot, tokenMap, account)
 
@@ -368,13 +367,13 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
                 .div('1e' + coinA.decimals).toFixed(marketInfo.precisionForPrice))
         }
 
+        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData: data }]))
+
         setAmmData({
             coinA: data.coinA as IBData<C>,
             coinB: data.coinB as IBData<C>,
             slippage,
         })
-
-        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammJoinData: data }]))
 
         setRequest({
             ammInfo,
@@ -383,11 +382,9 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
 
     }, [])
 
-    const handleExit = React.useCallback(async ({
-        data, ammData, type, fees, ammPoolSnapshot, tokenMap, account
-        }) => {
+    const handleExit = React.useCallback(async ({data, ammData, type, fees, ammPoolSnapshot, tokenMap, account}) => {
         setBtnStatus(TradeBtnStatus.AVAILABLE)
-        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammExitData: ammData }]))
+        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, }]))
 
         const isAtoB = type === 'coinA'
 
@@ -434,6 +431,8 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
             data.coinA.tradeValue = parseFloat(toBig(request.exitTokens.unPooled[0].volume)
                 .div('1e' + coinA.decimals).toFixed(marketInfo.precisionForPrice))
         }
+
+        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData: data }]))
 
         setAmmData({
             coinA: data.coinA as IBData<C>,
