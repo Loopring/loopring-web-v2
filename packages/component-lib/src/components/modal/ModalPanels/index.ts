@@ -12,3 +12,7 @@ export * from './QRAddressPanel'
 export * from './NoAccount'
 export * from './HadAccount'
 export * from './ModalAccount'
+
+export * from './DepositPanel'
+export * from './TransferPanel'
+export * from './WithdrawPanel'
