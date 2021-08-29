@@ -238,7 +238,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
 
     const btnLabelActiveCheck = React.useCallback(({ ammData }): string | undefined => {
 
-        const times = type === AmmPanelType.Join ? 5 : 1
+        const times = type === AmmPanelType.Join ? 10 : 1
 
         switch(type) {
             case AmmPanelType.Join:
