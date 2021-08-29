@@ -68,7 +68,7 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
 
                 try {
                         if (!eddsaKey) {
-                            myLog('no eddsaKey 111111!')
+                            myLog('no eddsaKey ！!')
                             eddsaKey = await sdk
                             .generateKeyPair(
                                 connectProvides.usedWeb3,
@@ -147,6 +147,8 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
             }
         }
     } catch (reason) {
+
+        myLog('other error!!!!!!! ')
         result.code = ActionResultCode.GetAccError
         result.data = reason
         dumpError400(reason)
