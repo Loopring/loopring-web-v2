@@ -159,6 +159,15 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         quoteMinAmt,
     } : ''
 
+    React.useEffect(() => {
+
+        if (amountMap && amountMap[market] && pair?.coinBInfo?.simpleName) {
+            const quoteMinAmtInfo = amountMap[market][ pair?.coinBInfo?.simpleName as string ]
+            setQuoteMinAmt(quoteMinAmtInfo?.userOrderInfo.minAmount)
+        }
+        
+    }, [amountMap, market, pair?.coinBInfo?.simpleName, setQuoteMinAmt])
+
     const swapFunc = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
 
         setAlertOpen(false)
@@ -705,6 +714,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         }
 
     }, [market, ammMap])
+
     const reCalculateDataWhenValueChange = React.useCallback((_tradeData, _market?, type?) => {
         // @ts-ignore
         myLog('reCalculateDataWhenValueChange depth:', depth,  takerRate, checkMarketDataValid(ammPoolSnapshot,tickMap))
