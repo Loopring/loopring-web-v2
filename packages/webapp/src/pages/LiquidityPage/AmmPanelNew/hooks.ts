@@ -145,8 +145,6 @@ export const useAmmCommon = ({ pair, snapShotData, }: {
 
 // ----------calc hook -------
 
-const times = 5
-
 const initSlippage = 0.5
 
 export const useAmmCalc = <C extends { [key: string]: any }>({
@@ -170,7 +168,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
     const { coinMap, tokenMap } = useTokenMap();
     const { ammMap } = useAmmMap();
     const { account, status: accountStatus } = useAccount();
-    const [btnStatus, setBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE);
+    const [btnStatus, setBtnStatus] = React.useState(TradeBtnStatus.DISABLED);
 
     const [baseToken, setBaseToken] = React.useState<TokenInfo>();
     const [quoteToken, setQuoteToken] = React.useState<TokenInfo>();
@@ -195,9 +193,11 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
         if (account.readyState !== AccountStatus.ACTIVATED) {
             setBtnStatus(TradeBtnStatus.AVAILABLE)
             setBtnI18nKey(accountStaticCallBack(btnLabelNew))
+        } else {
+            setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData }]))
         }
 
-    }, [account.readyState])
+    }, [account.readyState, ammData])
 
     const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
         myLog('initAmmData:', account.accAddress, walletMap, pair)
@@ -215,11 +215,11 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
         myLog('_ammCalcData:', _ammCalcData)
 
         setAmmCalcData({ ...ammCalcData, ..._ammCalcData });
-        if (_ammCalcData.myCoinA) {
+        if (_ammCalcData.myCoinA && tokenMap) {
 
-            const baseT = tokenMap?.[_ammCalcData.myCoinA.belong]
+            const baseT = tokenMap[_ammCalcData.myCoinA.belong]
 
-            const quoteT = tokenMap?.[_ammCalcData.myCoinB.belong]
+            const quoteT = tokenMap[_ammCalcData.myCoinB.belong]
 
             setBaseToken(baseT)
             setQuoteToken(quoteT)
@@ -237,40 +237,53 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
         setAmmCalcData, setAmmData, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt, ])
 
     const btnLabelActiveCheck = React.useCallback(({ ammData }): string | undefined => {
-        //TODO:
-        const validAmt1 = ammData?.coinA?.tradeValue ? ammData?.coinA?.tradeValue >= times * baseMinAmt : false
-        const validAmt2 = ammData?.coinB?.tradeValue ? ammData?.coinB?.tradeValue >= times * quoteMinAmt : false
-        myLog('btnLabelActiveCheck ammData', ammData?.coinA?.tradeValue, ammData?.coinB?.tradeValue,
-         baseMinAmt, quoteMinAmt)
 
-        if (isLoading) {
-            setBtnI18nKey(TradeBtnStatus.LOADING)
-            return undefined
-        } else {
-            if (account.readyState === AccountStatus.ACTIVATED) {
-                if (ammData === undefined
-                    || ammData?.coinA.tradeValue === undefined
-                    || ammData?.coinB.tradeValue === undefined
-                    || ammData?.coinA.tradeValue === 0
-                    || ammData?.coinB.tradeValue === 0) {
-                    setBtnStatus(TradeBtnStatus.DISABLED)
-                    return 'labelEnterAmount';
-                } else if (validAmt1 && validAmt2) {
-                    setBtnStatus(TradeBtnStatus.AVAILABLE)
+        const times = type === AmmPanelType.Join ? 5 : 1
+
+        switch(type) {
+            case AmmPanelType.Join:
+            case AmmPanelType.Exit:
+                const validAmt1 = ammData?.coinA?.tradeValue ? ammData?.coinA?.tradeValue >= times * baseMinAmt : false
+                const validAmt2 = ammData?.coinB?.tradeValue ? ammData?.coinB?.tradeValue >= times * quoteMinAmt : false
+                myLog('btnLabelActiveCheck ammData', ammData?.coinA?.tradeValue, ammData?.coinB?.tradeValue,
+                 baseMinAmt, quoteMinAmt)
+        
+                if (isLoading) {
+                    setBtnI18nKey(TradeBtnStatus.LOADING)
                     return undefined
-                }  else {
-                    // const symbol = !validAmt1 ? ammData?.coinA.belong : !validAmt2 ? ammData?.coinB.belong : ''
-                    // const minOrderSize = !validAmt1 ? times * baseMinAmt : !validAmt2 ? times * quoteMinAmt : 0
-                    setBtnStatus(TradeBtnStatus.DISABLED)
-                    return `labelLimitMin, ${times * baseMinAmt} ${ammData?.coinA.belong} / ${times * quoteMinAmt} ${ammData?.coinB.belong}`
+                } else {
+                    if (account.readyState === AccountStatus.ACTIVATED) {
+                        if (ammData === undefined
+                            || ammData?.coinA.tradeValue === undefined
+                            || ammData?.coinB.tradeValue === undefined
+                            || ammData?.coinA.tradeValue === 0
+                            || ammData?.coinB.tradeValue === 0) {
+                            setBtnStatus(TradeBtnStatus.DISABLED)
+                            return 'labelEnterAmount';
+                        } else if (validAmt1 && validAmt2) {
+                            setBtnStatus(TradeBtnStatus.AVAILABLE)
+                            return undefined
+                        }  else {
+                            // const symbol = !validAmt1 ? ammData?.coinA.belong : !validAmt2 ? ammData?.coinB.belong : ''
+                            // const minOrderSize = !validAmt1 ? times * baseMinAmt : !validAmt2 ? times * quoteMinAmt : 0
+                            setBtnStatus(TradeBtnStatus.DISABLED)
+                            return `labelLimitMin, ${times * baseMinAmt} ${ammData?.coinA.belong} / ${times * quoteMinAmt} ${ammData?.coinB.belong}`
+                        }
+        
+                    } else {
+                        setBtnStatus(TradeBtnStatus.AVAILABLE)
+                    }
+        
                 }
-
-            } else {
-                setBtnStatus(TradeBtnStatus.AVAILABLE)
-            }
+                break
+            default:
+                break
 
         }
-    }, [account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, isLoading, setBtnStatus])
+
+        return undefined
+
+    }, [account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, isLoading, setBtnStatus, type])
 
     const btnLabelNew = Object.assign(deepClone(btnLabel), {
         [fnType.ACTIVATED]: [btnLabelActiveCheck]
@@ -384,7 +397,6 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
     }, [])
 
     const handleExit = React.useCallback(async ({data, ammData, type, fees, ammPoolSnapshot, tokenMap, account}) => {
-        setBtnStatus(TradeBtnStatus.AVAILABLE)
         setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, }]))
 
         const isAtoB = type === 'coinA'
@@ -450,8 +462,6 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
     }, [])
 
     const handleAmmPoolEvent = (data: AmmData<IBData<any>>, _type: 'coinA' | 'coinB') => {
-
-        myLog('enter handleAmmPoolEvent', type, fees)
 
         if (type === AmmPanelType.Join) {
             handleJoin({data, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account})
@@ -578,19 +588,19 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
 
     const walletLayer2Callback = React.useCallback(() => {
 
-        if (pair?.coinAInfo?.simpleName && snapShotData?.tickerData && snapShotData?.ammPoolsBalance) {
+        if (pair?.coinAInfo?.simpleName && snapShotData?.ammPoolsBalance && tokenMap) {
             const { walletMap } = makeWalletLayer2()
             initAmmData(pair, walletMap)
             setIsLoading(false)
         }
 
-    }, [pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolsBalance])
+    }, [pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolsBalance, tokenMap])
 
     useWalletLayer2Socket({ walletLayer2Callback })
 
     React.useEffect(() => {
         walletLayer2Callback()
-    }, [pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolsBalance])
+    }, [pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolsBalance, tokenMap])
 
     return {
         ammCalcData,
