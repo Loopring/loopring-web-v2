@@ -262,7 +262,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
 
     return <Box display={'flex'} flexDirection={'column'} flex={1} >
 
-        <RowStyled container spacing={1}>
+        <RowStyled container spacing={2}>
             {/* give default value to have empty block render */}
             {(!!recommendations.length ? recommendations : [{
               coinAInfo: {
@@ -292,8 +292,12 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                   }}] as MarketBlockProps<{
               [key: string]: string;
           }>[]).map((item,index) => (
-              <Grid key={`${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}-${index}`} item xs={12} sm={6} lg={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[index])}>
-                <MarketBlock {...{...formattedRecommendations[index], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[index]?.tradeFloat), chartData: formattedRecommendations[index] ? formattedRecommendations[index].chartData : [], ...rest}}></MarketBlock>
+              <Grid key={`${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}-${index}`} item xs={12} sm={6} lg={3}>
+                <MarketBlock {...{...formattedRecommendations[index], 
+                  tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[index]?.tradeFloat), 
+                  chartData: formattedRecommendations[index] ? formattedRecommendations[index].chartData : [], 
+                  handleBlockClick: () => handleRecommendBoxClick(formattedRecommendations[index]),
+                  ...rest}}></MarketBlock>
               </Grid>
               )
             )}
