@@ -41,7 +41,7 @@ import { deepClone } from '../../../utils/obj_tools';
 import { myLog } from "utils/log_tools";
 import { useTranslation } from "react-i18next";
 
-import { useWalletLayer2Socket,walletLayer2Service } from 'services/socket';
+import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
 
 import * as _ from 'lodash'
 import { useSocket, } from "stores/socket";
@@ -51,9 +51,9 @@ export const useAmmCommon = ({ pair, snapShotData, }: {
     pair: {
         coinAInfo: CoinInfo<string> | undefined,
         coinBInfo: CoinInfo<string> | undefined
-    }, 
+    },
     snapShotData: any,
-    }) => {
+}) => {
 
     const { toastOpen, setToastOpen, closeToast, } = useToast()
 
@@ -163,6 +163,8 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
     }) => {
     const { t } = useTranslation('common');
 
+    const isJoin = type === AmmPanelType.Join
+
     const [isLoading, setIsLoading] = React.useState(false)
 
     const { coinMap, tokenMap } = useTokenMap();
@@ -186,6 +188,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
     const [btnI18nKey, setBtnI18nKey] = React.useState<string | undefined>(undefined);
 
     const [fees, setFees] = React.useState<LoopringMap<OffchainFeeInfo>>()
+    const [fee, setFee] = React.useState<number>(0)
 
     const { account: { accountId, apiKey } } = useAccount()
 
@@ -200,9 +203,10 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
     }, [account.readyState, ammData])
 
     const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
-        myLog('initAmmData:', account.accAddress, walletMap, pair)
 
         const _ammCalcData = ammPairInit({
+            type,
+            fee,
             pair,
             _ammCalcData: {},
             coinMap,
@@ -211,8 +215,6 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
             tickerData: snapShotData?.tickerData,
             ammPoolsBalance: snapShotData?.ammPoolsBalance
         })
-
-        myLog('_ammCalcData:', _ammCalcData)
 
         setAmmCalcData({ ...ammCalcData, ..._ammCalcData });
         if (_ammCalcData.myCoinA && tokenMap) {
@@ -228,26 +230,26 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
             setQuoteMinAmt(quoteT ? sdk.toBig(quoteT.orderAmounts.minimum).div('1e' + quoteT.decimals).toNumber() : undefined)
 
             setAmmData({
-                coinA: { ..._ammCalcData.myCoinA, tradeValue: undefined },
-                coinB: { ..._ammCalcData.myCoinB, tradeValue: undefined },
+                coinA: { ...isJoin ? _ammCalcData.myCoinA: _ammCalcData.lpCoinA, tradeValue: undefined },
+                coinB: { ...isJoin ? _ammCalcData.myCoinB: _ammCalcData.lpCoinB, tradeValue: undefined },
                 slippage: initSlippage,
             })
         }
-    }, [snapShotData, coinMap, tokenMap, ammCalcData, ammMap, 
-        setAmmCalcData, setAmmData, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt, ])
+    }, [isJoin, type, fee, snapShotData, coinMap, tokenMap, ammCalcData, ammMap,
+        setAmmCalcData, setAmmData, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt,])
 
     const btnLabelActiveCheck = React.useCallback(({ ammData }): string | undefined => {
 
-        const times = type === AmmPanelType.Join ? 10 : 1
+        const times = isJoin ? 10 : 1
 
-        switch(type) {
+        switch (type) {
             case AmmPanelType.Join:
             case AmmPanelType.Exit:
                 const validAmt1 = ammData?.coinA?.tradeValue ? ammData?.coinA?.tradeValue >= times * baseMinAmt : false
                 const validAmt2 = ammData?.coinB?.tradeValue ? ammData?.coinB?.tradeValue >= times * quoteMinAmt : false
                 myLog('btnLabelActiveCheck ammData', ammData?.coinA?.tradeValue, ammData?.coinB?.tradeValue,
-                 times * baseMinAmt, times * quoteMinAmt)
-        
+                    times * baseMinAmt, times * quoteMinAmt)
+
                 if (isLoading) {
                     setBtnI18nKey(TradeBtnStatus.LOADING)
                     return undefined
@@ -263,17 +265,17 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
                         } else if (validAmt1 && validAmt2) {
                             setBtnStatus(TradeBtnStatus.AVAILABLE)
                             return undefined
-                        }  else {
+                        } else {
                             // const symbol = !validAmt1 ? ammData?.coinA.belong : !validAmt2 ? ammData?.coinB.belong : ''
                             // const minOrderSize = !validAmt1 ? times * baseMinAmt : !validAmt2 ? times * quoteMinAmt : 0
                             setBtnStatus(TradeBtnStatus.DISABLED)
                             return `labelLimitMin, ${times * baseMinAmt} ${ammData?.coinA.belong} / ${times * quoteMinAmt} ${ammData?.coinB.belong}`
                         }
-        
+
                     } else {
                         setBtnStatus(TradeBtnStatus.AVAILABLE)
                     }
-        
+
                 }
                 break
             default:
@@ -289,7 +291,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
         [fnType.ACTIVATED]: [btnLabelActiveCheck]
     });
 
-    const calculateCallback = React.useCallback(async () => {
+    const calculateCallback = React.useCallback(async() => {
         if (accountStatus === SagaStatus.UNSET) {
             if (!LoopringAPI.userAPI || !pair.coinBInfo?.simpleName
                 || account.readyState !== AccountStatus.ACTIVATED
@@ -298,7 +300,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
             }
             const feeToken: TokenInfo = tokenMap[pair.coinBInfo.simpleName]
 
-            const requestType = type === AmmPanelType.Join ? OffchainFeeReqType.AMM_JOIN : OffchainFeeReqType.AMM_EXIT
+            const requestType = isJoin ? OffchainFeeReqType.AMM_JOIN : OffchainFeeReqType.AMM_EXIT
 
             const request: GetOffchainFeeAmtRequest = {
                 accountId,
@@ -310,16 +312,18 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
             setFees(fees)
 
             const fee = sdk.toBig(fees[pair.coinBInfo.simpleName]?.fee as string)
-                .div('1e' + feeToken.decimals).toString()
-                + ' ' + pair.coinBInfo.simpleName
+                .div('1e' + feeToken.decimals)
 
-            myLog('-> feeJoin:', fee)
+            setFee(fee.toNumber())
 
-            setAmmCalcData({ ...ammCalcData, fee, })
+            setAmmCalcData({
+                ...ammCalcData, fee: fee.toString()
+                    + ' ' + pair.coinBInfo.simpleName,
+            })
         }
 
     }, [
-        setFees, setAmmCalcData, setBtnI18nKey,
+        setFees, setAmmCalcData, setBtnI18nKey, isJoin,
         accountStatus, account.readyState, accountId, apiKey,
         pair.coinBInfo?.simpleName, tokenMap, ammCalcData
     ])
@@ -330,7 +334,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
 
     const [request, setRequest] = React.useState<{ ammInfo: any, request: JoinAmmPoolRequest | ExitAmmPoolRequest }>();
 
-    const handleJoin = React.useCallback(async ({data, ammData, type, fees, ammPoolSnapshot, tokenMap, account}) => {
+    const handleJoin = React.useCallback(async ({ data, ammData, type, fees, ammPoolSnapshot, tokenMap, account }) => {
         setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, }]))
 
         // myLog(data, ammData, type, fees, ammPoolSnapshot, tokenMap, account)
@@ -396,7 +400,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
 
     }, [])
 
-    const handleExit = React.useCallback(async ({data, ammData, type, fees, ammPoolSnapshot, tokenMap, account}) => {
+    const handleExit = React.useCallback(async ({ data, ammData, type, fees, ammPoolSnapshot, tokenMap, account }) => {
         setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, }]))
 
         const isAtoB = type === 'coinA'
@@ -407,8 +411,6 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
             || (!isAtoB && data.coinB.tradeValue === undefined)) {
             return
         }
-
-        // myLog('handleExit', data, type);
 
         const { slippage } = data
 
@@ -463,10 +465,10 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
 
     const handleAmmPoolEvent = (data: AmmData<IBData<any>>, _type: 'coinA' | 'coinB') => {
 
-        if (type === AmmPanelType.Join) {
-            handleJoin({data, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account})
+        if (isJoin) {
+            handleJoin({ data, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account })
         } else if (type === AmmPanelType.Exit) {
-            handleExit({data, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account})
+            handleExit({ data, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account })
         }
     }
 
@@ -588,19 +590,19 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
 
     const walletLayer2Callback = React.useCallback(() => {
 
-        if (pair?.coinAInfo?.simpleName && snapShotData?.ammPoolsBalance && tokenMap) {
+        if (pair?.coinAInfo?.simpleName && snapShotData?.ammPoolsBalance) {
             const { walletMap } = makeWalletLayer2()
             initAmmData(pair, walletMap)
             setIsLoading(false)
         }
 
-    }, [pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolsBalance, tokenMap])
+    }, [type, fee, pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolsBalance])
 
     useWalletLayer2Socket({ walletLayer2Callback })
 
     React.useEffect(() => {
         walletLayer2Callback()
-    }, [pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolsBalance, tokenMap])
+    }, [fee, pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolsBalance, tokenMap])
 
     return {
         ammCalcData,
