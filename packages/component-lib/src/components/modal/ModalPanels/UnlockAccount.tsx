@@ -12,10 +12,10 @@ export const UnlockAccount_WaitForAuth = (props: PanelProps & WithTranslation) =
     return <UnlockAccountBase {...props} {...propsPatch} />
 }
 
-export const UnlockAccount_User_Refused = (props: PanelProps & WithTranslation) => {
+export const UnlockAccount_User_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_UnlockAccount_User_Refused'}>
+        describe1: <Trans i18nKey={'label_UnlockAccount_User_Denied'}>
             Sig User Denied.
         </Trans>
     }

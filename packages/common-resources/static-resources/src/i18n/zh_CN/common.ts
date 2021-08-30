@@ -242,15 +242,15 @@ export default {
 
     
     label_WaitForAuth: '等待钱包签名',
-    label_Refused: '签名已被用户拒绝',
-    label_First_Method_Refused: '您的钱包不支持当前签名方法',
+    label_Denied: '签名已被用户拒绝',
+    label_First_Method_Denied: '您的钱包不支持当前签名方法',
 
     label_Approve_WaitForAuth: '等待钱包<1>{{symbol}}</1>授权',
-    label_Approve_Refused: '<0>{{symbol}}</0>授权用户拒绝',
+    label_Approve_Denied: '<0>{{symbol}}</0>授权用户拒绝',
     label_Approve_Submited: '<0>{{symbol}}</0>授权已提交',
 
     label_Deposit_WaitForAuth: '请确认充值 <1>{{value}}</1><2>{{symbol}}</2>',
-    label_Deposit_Refused:'充值 <1>{{value}}</1><2>{{symbol}}</2> 已被用户拒绝',
+    label_Deposit_Denied:'充值 <1>{{value}}</1><2>{{symbol}}</2> 已被用户拒绝',
     label_Deposit_Failed:'充值 <1>{{value}}</1><2>{{symbol}}</2> 失败',
     label_Deposit_Submited: '充值 <1>{{value}}</1><2>{{symbol}}</2> 已提交',
 
@@ -262,6 +262,9 @@ export default {
     label_Transfer_Failed:'转账 <1>{{value}}</1><2>{{symbol}}</2> 失败!',
     label_Transfer_Success: '转账 <1>{{value}}</1><2>{{symbol}}</2> 成功!',
 
+    label_UpdateAccount_Success: '恭喜你!',
+    label_UpdateAccount_Success2: '您已经成功激活路印二层账号!',
+
     label_CreateAccount_Approve_WaitForAuth: '等待 <1>{{symbol}}</1> 的授权...',
-    label_CreateAccount_Approve_Refused: '<1>{{symbol}}</1>授权用户拒绝',
+    label_CreateAccount_Approve_Denied: '<0>{{symbol}}</0>授权用户拒绝',
 }

@@ -117,7 +117,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                             result.code = ActionResultCode.ApproveFailed
                             result.data = reason
 
-                            setShowAccount({isShow: true, step: AccountStep.Deposit_Approve_Refused})
+                            setShowAccount({isShow: true, step: AccountStep.Deposit_Approve_Denied})
                             return
                         }
 
@@ -159,7 +159,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 result.data = reason
 
                 //deposit failed
-                setShowAccount({isShow: true, step: AccountStep.Deposit_Approve_Refused})
+                setShowAccount({isShow: true, step: AccountStep.Deposit_Approve_Denied})
             }
 
         } else {

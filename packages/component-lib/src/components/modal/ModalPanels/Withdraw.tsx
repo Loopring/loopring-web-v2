@@ -12,20 +12,20 @@ export const Withdraw_WaitForAuth = (props: PanelProps & WithTranslation) => {
 }
 
 // value symbol
-export const Withdraw_First_Method_Refused = (props: PanelProps & WithTranslation) => {
+export const Withdraw_First_Method_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_First_Method_Refused'}>
+        describe1: <Trans i18nKey={'label_First_Method_Denied'}>
     </Trans>
     }
     return <WithdrawBase {...propsPatch} {...props} />
 }
 
 // value symbol
-export const Withdraw_User_Refused = (props: PanelProps & WithTranslation) => {
+export const Withdraw_User_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_Refused'}>
+        describe1: <Trans i18nKey={'label_Denied'}>
     </Trans>
     }
     return <WithdrawBase {...propsPatch} {...props} />

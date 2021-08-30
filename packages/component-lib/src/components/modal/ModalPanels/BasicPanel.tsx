@@ -24,7 +24,7 @@ export interface PanelProps {
     value?: number,
     symbol?: string,
     describe1?: any,
-    describe2?: string,
+    describe2?: any,
     txCheck?: {
         route: string,
         callback: (e?: any) => void,
@@ -99,7 +99,7 @@ export const BasicPanel = ({
             <Link target='_blank' href={txCheck.route} display={'inline-block'} marginTop={1 / 2}>
                 <LinkIcon color={'primary'} fontSize={'small'} style={{ verticalAlign: 'middle' }} />
             </Link>}
-        {describe2 && <>{describe2}</>}
+        {describe2 && describe2}
         {providerName &&
             <Typography variant={'body2'} color={'textSecondary'} component={'p'} marginTop={3} alignSelf={'flex-start'}
                 paddingX={5}>
