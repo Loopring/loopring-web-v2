@@ -7,7 +7,7 @@ export type AmmChgData<AT> = {
     type: 'coinA' | 'coinB',
     tradeData: AT,
 }
-export type AmmWithdrawChgData<AT> = {
+export type AmmWithdrawData<AT> = {
     type: 'lp',
     tradeData: AT,
 }
@@ -22,7 +22,7 @@ export type AmmDepositExtendProps<T, I, C, ACD> = {
     isStob?: boolean,
     switchStobEvent?: (_isStoB: boolean) => void,
     disabled?: boolean,
-    onAddChangeEvent: (data: AmmChgData<T>) => void,
+    onChangeEvent: (data: AmmChgData<T>) => void,
     tokenAProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>,
     tokenBProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>,
     ammCalcData: ACD,
@@ -31,7 +31,7 @@ export type AmmDepositWrapProps<T, I, ACD, C> = AmmDepositBaseProps<T, I> & AmmD
     ammData: T
 }
 
-export type AmmWithdrawBaseProps<T, I > = {
+export type AmmWithdrawBaseProps<T, I, > = {
     ammWithdrawBtnStatus?: keyof typeof TradeBtnStatus | undefined,
     onAmmRemoveClick: (AmmSendData: T) => void | any,
     ammWithdrawBtnI18nKey?: string,
@@ -41,9 +41,9 @@ export type AmmWithdrawExtendProps<T, I, C, ACD> = {
     disabled?: boolean,
     isStob?: boolean,
     switchStobEvent?: (_isStoB: boolean) => void,
-    onRemoveChangeEvent: (data: AmmWithdrawChgData<T>) => void,
-    tokenLPProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>,
-    // tokenBProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>,
+    onChangeEvent: (data: AmmWithdrawData<T>) => void,
+    tokenAProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>,
+    tokenBProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>,
     ammCalcData: ACD,
 }
 export type AmmWithdrawWrapProps<T, I, ACD, C> = AmmWithdrawBaseProps<T, I> & AmmWithdrawExtendProps<T, I, C, ACD> & {
