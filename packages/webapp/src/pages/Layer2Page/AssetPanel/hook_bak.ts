@@ -14,7 +14,6 @@ import { useWalletLayer2Socket } from 'services/socket/';
 import { useSystem } from 'stores/system'
 import { getValuePrecision } from '@loopring-web/common-resources'
 import { myLog } from 'utils/log_tools'
-import { debug } from 'console'
 
 export type TrendDataItem = {
     timeStamp: number;
@@ -91,7 +90,6 @@ export const useGetAssets = () => {
             token: key,
             detail: assetsDetailList[index]
         }))
-
         setAssetsMap(map)
     }, [])
     useWalletLayer2Socket({ walletLayer2Callback })
@@ -138,7 +136,6 @@ export const useGetAssets = () => {
                         tokenValueDollar = (formattedBalance || 0) * price as any;
                     }
                     const isSmallBalance = tokenValueDollar < 1
-
                     item = {
                         token: {
                             type: tokenInfo.token.split('-')[0] === 'LP' ? TokenType.lp : TokenType.single,
@@ -161,7 +158,7 @@ export const useGetAssets = () => {
                         },
                         amount: EmptyValueTag,
                         available: EmptyValueTag,
-                        locked: 0,
+                        locked: EmptyValueTag,
                         smallBalance: true,
                         tokenValueDollar: 0,
                         name: key,
@@ -169,12 +166,7 @@ export const useGetAssets = () => {
                     }
 
                 }
-                if (item) {
-                    data.push(item)
-                }
             })
-
-            data.sort((a, b) => { return b.tokenValueDollar - a.tokenValueDollar })
             setAssetsRawData(data)
         } else {
             myLog('emmmmmmmpty')
