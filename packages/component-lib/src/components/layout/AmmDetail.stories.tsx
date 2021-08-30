@@ -23,13 +23,15 @@ import {
 } from '@loopring-web/common-resources';
 
 import { ammCalcData, coinMap, tradeCalcData, } from '../../static';
-import { AmmPanel, AmmPanelType, AmmProps } from '../panel';
 import { withTranslation } from 'react-i18next';
 // import { PoolDetailTitle } from '../block/PoolDetailTitle';
 import { useSettings } from '../../stores';
 import moment from 'moment';
 import { TradeTitle } from '../block';
 import { Header } from '../header';
+import React from 'react';
+import { AmmPanelType, AmmProps } from '../tradePanel';
+import { AmmPanel } from '../tradePanel';
 
 
 const Style = styled.div`
@@ -39,24 +41,6 @@ const tradeData: any = {
     coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
     coinB: {belong: 'LRC', balance: 1000, tradeValue: 0}
 };
-let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
-    ammDepositData: tradeData,
-    ammWithdrawData: tradeData,
-    // tradeCalcData,
-    ammCalcData: ammCalcData,
-    handleAmmAddChangeEvent: (data, type) => {
-        console.log('handleAmmAddChangeEvent', data, type);
-    },
-    handleAmmRemoveChangeEvent: (data, type) => {
-        console.log('handleAmmRemoveChangeEvent', data, type);
-    },
-    onAmmRemoveClick: (data) => {
-        console.log('onAmmRemoveClick', data);
-    },
-    onAmmAddClick: (data) => {
-        console.log('onAmmAddClick', data);
-    }
-}
 // let btnShowTradeStatus: keyof typeof TradeBtnStatus = TradeBtnStatus.AVAILABLE;
 // const onShowTrade = () => {
 // };
@@ -110,6 +94,27 @@ const myAmm: MyAmmLP<any> = {
 }
 const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
     //TODO: checkRouter
+    const ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
+        ammCalcDataDeposit: ammCalcData,
+        ammCalcDataWithDraw: ammCalcData,
+        refreshRef: React.createRef(),
+        ammDepositData: tradeData,
+        ammWithdrawData: tradeData,
+        // tradeCalcData,
+        handleAmmAddChangeEvent: (data, type) => {
+            console.log('handleAmmAddChangeEvent', data, type);
+        },
+        handleAmmRemoveChangeEvent: (data, type) => {
+            console.log('handleAmmRemoveChangeEvent', data, type);
+        },
+        onAmmRemoveClick: (data) => {
+            console.log('onAmmRemoveClick', data);
+        },
+        onAmmAddClick: (data) => {
+            console.log('onAmmAddClick', data);
+        }
+    }
+
     const WrapAmmPanel = (rest: any) => {
         return <>
             <AmmPanel {...{...ammProps, tabSelected: AmmPanelType.Join}} {...rest} > </AmmPanel>

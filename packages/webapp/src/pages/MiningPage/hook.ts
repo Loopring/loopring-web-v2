@@ -27,6 +27,8 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
     // const [ammUserRewardMap, setAmmUserRewardMap] = React.useState<AmmUserRewardMap>(
     //     {});
 
+    console.log(ammActivityViewMap, ammActivityPastViewMap)
+
 
     // );
     React.useEffect(() => {

@@ -4,7 +4,7 @@ import React from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { AssetTitleProps } from './Interface';
 import styled from '@emotion/styled';
-import { TradeBtnStatus } from '../panel';
+import { TradeBtnStatus } from '../tradePanel';
 import { Button, ButtonListRightStyled } from './../';
 
 const BoxStyled = styled(Box)`

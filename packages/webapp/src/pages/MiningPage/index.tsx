@@ -1,4 +1,4 @@
-import { AmmCard, AmmPropsNew, EmptyDefault } from '@loopring-web/component-lib';
+import { AmmCard, AmmProps, EmptyDefault } from '@loopring-web/component-lib';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { AmmCardProps, AmmData, AmmInData, IBData } from '@loopring-web/common-resources';
@@ -54,7 +54,7 @@ const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap}: { amm
 export const MiningPage = withTranslation('common')(<T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
     ACD extends AmmInData<I>,
     C = IBData<I>>({ammProps, t, ...rest}: {
-    ammProps: AmmPropsNew<T, I, ACD>,
+    ammProps: AmmProps<T, I, ACD>,
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined,
 } & any) => {
     const {ammActivityMap} = useAmmPool();
@@ -62,10 +62,10 @@ export const MiningPage = withTranslation('common')(<T extends AmmData<C extends
         ammActivityViewMap,
         ammActivityPastViewMap
     } = useAmmMiningUI({ammActivityMap});
-    const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
-    const handleChange = (event: any, newValue: 0 | 1) => {
-        setTabIndex(newValue);
-    }
+    // const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
+    // const handleChange = (event: any, newValue: 0 | 1) => {
+    //     setTabIndex(newValue);
+    // }
     const jointAmmViewMap = [...ammActivityViewMap, ...ammActivityPastViewMap]
 
     return  <WrapperStyled>

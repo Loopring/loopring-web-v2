@@ -137,7 +137,7 @@ export const RetrieveAccountBase = (props: PanelProps & WithTranslation) => {
 
 export const UnlockAccountBase = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
-        title: 'labelCreateAccount'
+        title: 'labelUnlockAccount'
     }
     return <BasicPanel {...propsPatch} {...props} />
 }
