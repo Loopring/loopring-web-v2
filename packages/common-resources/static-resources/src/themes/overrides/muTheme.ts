@@ -101,23 +101,29 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             fontSize: 14,
             h1: {
                 fontSize: fontDefault.h1,
-                lineHeight: '4.6rem'
+                lineHeight: '4.6rem',
+                fontWidth:'500'
             },
             h2: {
                 fontSize: fontDefault.h2,
-                lineHeight: '3.8rem'
+                lineHeight: '3.8rem',
+                fontWidth:'500'
             },
             h3: {
                 fontSize: fontDefault.h3,
-                lineHeight: '3.2rem'
+                lineHeight: '3.2rem',
+                fontWidth:'500'
             },
             h4: {
                 fontSize: fontDefault.h4,
                 lineHeight: '2.8rem',
+                fontWidth:'400'
+
             },
             h5: {
                 fontSize: fontDefault.h5,
                 lineHeight: '2.4rem',
+                fontWidth:'400',
                 margin:0
             },
             h6: {
@@ -125,15 +131,19 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
                 margin: 0,
             },
             subtitle1: {
-                fontSize: 24,
+                fontSize: 16,
+                lineHeight: '2.4rem',
+                fontWidth:'500'
             },
             button: {
                 fontSize: 20,
                 fontColor: colorBase.textButton,
+                fontWidth:'400'
             },
             body1: {
                 fontSize: fontDefault.body1,
                 fontColor: colorBase.textPrimary,
+                fontWidth:'400'
             },
             body2: {
                 fontSize: 12,

@@ -1,6 +1,6 @@
 import { InputButtonProps } from '../../basic-lib';
-import { AmmData, CoinInfo, IBData } from '@loopring-web/common-resources';
-import { AmmChgData, AmmDepositBaseProps, AmmWithdrawBaseProps } from '../components';
+import { AmmData, AmmWithdrawData, CoinInfo, IBData } from '@loopring-web/common-resources';
+import { AmmChgData, AmmDepositBaseProps, AmmWithdrawBaseProps, AmmWithdrawChgData } from '../components';
 
 export enum AmmPanelType {
     Join = 0,
@@ -10,10 +10,10 @@ export enum AmmPanelType {
 /**
  *
  */
-export type AmmPanelBaseProps<T, I, ACD, C> = {
+export type AmmPanelBaseProps<T, TW, I, ACD, C> = {
 
     ammDepositData: T,
-    ammWithdrawData: T,
+    ammWithdrawData: TW,
     tabSelected?: AmmPanelType,
     disableDeposit?: boolean,
     disableWithdraw?: boolean,
@@ -29,15 +29,18 @@ export type AmmPanelBaseProps<T, I, ACD, C> = {
     width?: number,
 }
 
-export type AmmProps<T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I, ACD, C = IBData<I>> =
-AmmPanelBaseProps<T, I, ACD, C>
+export type AmmProps<T extends AmmData<C extends IBData<I> ? C : IBData<I>>,
+    TW extends AmmWithdrawData<C extends IBData<I> ? C : IBData<I>>,
+    I, ACD, C = IBData<I>> =
+    AmmPanelBaseProps<T, TW, I, ACD, C>
     & {
-        handleAmmAddChangeEvent: (data: T, focusOn: 'coinA' | 'coinB') => void,
-        handleAmmRemoveChangeEvent: (data: T, focusOn: 'coinA' | 'coinB') => void,
-        onChangeEvent?: (data: AmmChgData<T>) => AmmChgData<T>,
-        refreshRef: React.Ref<any>,
-        onRefreshData?: () => void,
-    }
-    & AmmWithdrawBaseProps<T, I>
+    handleAmmAddChangeEvent: (data: T, focusOn: 'coinA' | 'coinB') => void,
+    handleAmmRemoveChangeEvent: (data: TW) => void,
+    onAmmAddChangeEvent?: (data: AmmChgData<T>) => AmmChgData<T>,
+    onRemoveChangeEvent?: (data: AmmWithdrawChgData<TW>) => AmmWithdrawChgData<TW>,
+    refreshRef: React.Ref<any>,
+    onRefreshData?: () => void,
+}
+    & AmmWithdrawBaseProps<TW, I>
     & AmmDepositBaseProps<T, I>
 

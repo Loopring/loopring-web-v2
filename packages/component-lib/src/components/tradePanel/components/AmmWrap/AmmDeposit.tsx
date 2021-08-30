@@ -36,7 +36,7 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
                        onAmmAddClick,
                        tokenAProps,
                        tokenBProps,
-                       onChangeEvent,
+                       onAddChangeEvent,
                        handleError,
                        ammData,
                        ...rest
@@ -82,9 +82,9 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
     const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
         const focus: 'coinA' | 'coinB' = _ref?.current === coinARef.current ? 'coinA' : 'coinB';
         if (ammData[ focus ].tradeValue !== ibData.tradeValue) {
-            onChangeEvent({tradeData: {...ammData, [ focus ]: ibData}, type: focus});
+            onAddChangeEvent({tradeData: {...ammData, [ focus ]: ibData}, type: focus});
         }
-    }, [ammData, onChangeEvent]);
+    }, [ammData, onAddChangeEvent]);
     const propsA: any = {
         label: t('labelTokenAmount'),
         subLabel: t('labelAvailable'),
@@ -111,7 +111,7 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
     })
     const _onSlippageChange = React.useCallback((slippage: number | string, customSlippage: number | string | undefined) => {
         popupState.close();
-        onChangeEvent({
+        onAddChangeEvent({
             tradeData: {
                 ...ammData,
                 slippage: slippage,
@@ -121,7 +121,7 @@ export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBDat
                 }
             }, type: 'coinA'
         });
-    }, [ammData, onChangeEvent]) ;
+    }, [ammData, onAddChangeEvent]) ;
     const label = React.useMemo(()=>{
         if(error.error){
             if(typeof  error.message === 'string'){

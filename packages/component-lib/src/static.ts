@@ -177,7 +177,7 @@ export const ammCalcData: AmmInData<CoinType> = {
     myCoinA: {belong: 'ETH', balance: 1000, tradeValue: 0},
     myCoinB: {belong: 'LRC', balance: 1000, tradeValue: 0},
     lpCoinA: {belong: 'ETH', balance: 1000, tradeValue: 0},
-    lpCoinB: {belong: 'ETH', balance: 1000, tradeValue: 0},
+    lpCoinB: {belong: 'LRC', balance: 122, tradeValue: 0},
     lpCoin: {belong: 'ETH', balance: 1000, tradeValue: 0},
     AtoB: 50,
     coinInfoMap: coinMap,

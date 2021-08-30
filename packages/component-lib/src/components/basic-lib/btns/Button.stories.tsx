@@ -194,12 +194,15 @@ export const LButton: Story<ButtonProps> = withTranslation()(({t, ...rest}: With
             </Grid>
             <h4>Font</h4>
             <Grid container spacing={2} alignContent={'left'} justifyContent={'flex-start'} direction={"column"}>
-                <Grid item><h1>Font size h1 48</h1></Grid>
-                <Grid item><h2>Font size h2 36</h2></Grid>
-                <Grid item><h3>Font size h3 24</h3></Grid>
-                <Grid item><h4>Font size h4 20</h4></Grid>
-                <Grid item><h5>Font size h5 14</h5></Grid>
-                <Grid item><h6>Font size h6 12</h6></Grid>
+                <Grid item><Typography variant={'h1'}>Font size h1 48</Typography></Grid>
+                <Grid item><Typography variant={'h2'}>Font size h2 36</Typography></Grid>
+                <Grid item><Typography variant={'h3'}>Font size h3 24</Typography></Grid>
+                <Grid item><Typography variant={'h4'}>Font size h4 20</Typography></Grid>
+                <Grid item><Typography variant={'h5'}>Font size h5 14</Typography></Grid>
+                <Grid item><Typography variant={'h6'}>Font size h6 12</Typography></Grid>
+                <Grid item><Typography variant={'subtitle1'}>Font size subtitle1</Typography></Grid>
+                <Grid item><Typography variant={'body1'}>Font size body1</Typography></Grid>
+                <Grid item><Typography variant={'body2'}>Font size body2</Typography></Grid>
             </Grid>
             {/*<Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>*/}
             {/*    /!*<Grid item> <Button variant={'outlined'} size={'large'} color={'primary'}>Large primary outlined</Button>*!/*/}
