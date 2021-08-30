@@ -41,6 +41,12 @@ export const accountServices = {
         //
         // }
     },
+    sendSignDeniedByUser: () => {
+        subject.next({
+            status: Commands.SignDeniedByUser,
+            data: undefined,
+        })
+    },
     sendErrorUnlock: () => {
         subject.next({
             status: Commands.ErrorSign,

@@ -288,7 +288,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     const backToDepositBtnInfo = React.useMemo(() => {
         return {
-            btnTxt: t('labelRetry'),
+            btnTxt: 'labelRetry',
             callback: () => {
                 setShowAccount({ isShow: true, step: AccountStep.Deposit });
             }
@@ -297,7 +297,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     const backToTransferBtnInfo = React.useMemo(() => {
         return {
-            btnTxt: t('labelRetry'),
+            btnTxt: 'labelRetry',
             callback: () => {
                 setShowAccount({ isShow: false, })
                 setShowTransfer({ isShow: true, })
@@ -307,7 +307,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     const backToWithdrawBtnInfo = React.useMemo(() => {
         return {
-            btnTxt: t('labelRetry'),
+            btnTxt: 'labelRetry',
             callback: () => {
                 setShowAccount({ isShow: false })
                 setShowWithdraw({ isShow: true })
@@ -317,16 +317,16 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     const backToUnlockAccountBtnInfo = React.useMemo(() => {
         return {
-            btnTxt: t('labelRetry'),
+            btnTxt: 'labelRetry',
             callback: () => {
-                debugger
+                setShowAccount({ isShow: true, step: AccountStep.HadAccount })
             }
         }
     }, [setShowAccount, ])
 
     const backToUpdateAccountBtnInfo = React.useMemo(() => {
         return {
-            btnTxt: t('labelRetry'),
+            btnTxt: 'labelRetry',
             callback: () => {
                 setShowAccount({ isShow: true, step: AccountStep.UpdateAccount })
             }
@@ -335,7 +335,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     const TryNewTransferAuthBtnInfo = React.useMemo(() => {
         return {
-            btnTxt: t('labelTryNext'),
+            btnTxt: 'labelTryNext',
             callback: () => {
                 myLog('...labelTryNext...')
                 setShowAccount({ isShow: true, step: AccountStep.Transfer_WaitForAuth })
@@ -346,7 +346,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     const TryNewWithdrawAuthBtnInfo = React.useMemo(() => {
         return {
-            btnTxt: t('labelTryNext'),
+            btnTxt: 'labelTryNext',
             callback: () => {
                 myLog('...labelTryNext...')
                 setShowAccount({ isShow: true, step: AccountStep.Withdraw_WaitForAuth })
@@ -357,7 +357,7 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     const closeBtnInfo = React.useMemo(() => {
         return {
-            btnTxt: t('labelClose'),
+            btnTxt: 'labelClose',
             callback: (e: any) => {
                 setShouldShow(false);
                 setShowTransfer({ isShow: false })
@@ -395,8 +395,6 @@ export const ModalAccountInfo = withTranslation('common')(({
                     onSwitch, onCopy,
                     etherscanUrl,
 
-                    // address: account.accAddress,
-                    // connectBy: account.connectName,
                     onViewQRCode, onDisconnect, addressShort,
                     etherscanLink: etherscanUrl + account.accAddress,
                     mainBtn: account.readyState === 'ACTIVATED' ? lockBtn : unlockBtn

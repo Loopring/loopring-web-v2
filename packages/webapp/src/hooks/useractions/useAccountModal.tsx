@@ -46,6 +46,9 @@ export  function useAccountModal() {
         statusAccountUnset();
         setShowAccount({isShow: shouldShow ?? false,step:AccountStep.UpdateAccount});
     },[shouldShow])
+    const handleSignDeniedByUser = React.useCallback(()=>{
+        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.UnlockAccount_User_Denied});
+    },[shouldShow])
     const handleSignError = React.useCallback(()=>{
         setShowAccount({isShow: shouldShow ?? false,step:AccountStep.UnlockAccount_Failed});
     },[shouldShow])
@@ -75,6 +78,7 @@ export  function useAccountModal() {
         handleSignAccount, //unlock or update account  sgin
         handleProcessSign,
         handleSignError,
+        handleSignDeniedByUser,
         // handleProcessAccountCheck,
         handleAccountActive: handleAccountActive,
     })
