@@ -17,11 +17,13 @@ export const resources = {
     zh_CN: {...zhCN},
 };
 
+const initLng = JSON.parse(localStorage.getItem('persist:settings') as string)?.language === `"${LanguageType.zh_CN}"` ? LanguageType.zh_CN : LanguageType.en_US
+
 i18n.use(initReactI18next).init({
     resources,
     ns: ['common', 'layout', 'tables', 'error'],
     defaultNS: 'common',
-    lng: LanguageType.en_US,
+    lng: initLng,
     load: 'currentOnly',
     fallbackLng: LanguageType.en_US,
     supportedLngs: [LanguageType.en_US, LanguageType.zh_CN],
