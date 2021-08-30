@@ -2,13 +2,13 @@ import { Trans, WithTranslation } from "react-i18next"
 import { UpdateAccountBase, IconType, PanelProps } from "./BasicPanel"
 import { Box, Typography } from '@material-ui/core/';
 import { AnimationArrow, Button } from '../../../index';
-import { AccountBasePanel, AccountBaseNewProps, } from './index';
+import { AccountBasePanel,AccountBaseProps, } from './index';
 
 export const UpdateAccount = ({
     t,
     goUpdateAccount,
     ...props
-}: WithTranslation & AccountBaseNewProps & { goUpdateAccount?: () => void }) => {
+}: WithTranslation &AccountBaseProps & { goUpdateAccount?: () => void }) => {
     return <Box flex={1} display={'flex'} flexDirection={'column'} justifyContent={'space-between'}
         alignItems={'center'}>
         <AccountBasePanel {...props} t={t} />

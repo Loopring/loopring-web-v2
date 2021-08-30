@@ -23,7 +23,7 @@ import {
 } from '@loopring-web/common-resources';
 
 import { ammCalcData, coinMap, tradeCalcData, } from '../../static';
-import { AmmPanel, AmmPanelType, AmmProps } from '../panel';
+import { AmmPanelType, AmmProps } from '../panel';
 import { withTranslation } from 'react-i18next';
 // import { PoolDetailTitle } from '../block/PoolDetailTitle';
 import { useSettings } from '../../stores';
