@@ -96,8 +96,7 @@ export const btnClickMap: { [key: string]: [fn: (props: any) => any, args?: any[
         function () {
             unlockAccount();
             store.dispatch(changeShowModel({ _userOnModel: true }));
-            store.dispatch(setShowAccount({ isShow: true, step: AccountStep.ProcessUnlock }))
-
+            store.dispatch(setShowAccount({ isShow: true, step: AccountStep.UnlockAccount_WaitForAuth }))
         }
     ]
 };

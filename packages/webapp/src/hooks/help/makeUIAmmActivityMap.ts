@@ -31,7 +31,7 @@ export const makeUIAmmActivityMap = <R extends { [ key: string ]: any }, I exten
     let ammActivityViewMap: AmmActivityViewMap<R, I> = {}
     if (ammActivityMap && ammActivityMap[ type ]) {
 
-
+        console.log(ammActivityMap)
         // @ts-ignore
         ammPoolActivityStatus.forEach((status: AmmPoolActivityStatus) => {
 

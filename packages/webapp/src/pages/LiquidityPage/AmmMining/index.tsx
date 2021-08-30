@@ -1,4 +1,4 @@
-import { AmmCard, AmmPropsNew, EmptyDefault } from '@loopring-web/component-lib';
+import { AmmCard, AmmProps, EmptyDefault } from '@loopring-web/component-lib';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { AmmCardProps, AmmData, AmmInData, IBData } from '@loopring-web/common-resources';
@@ -42,7 +42,7 @@ const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap}: { amm
 export const AmmMiningView = withTranslation('common')(<T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
     ACD extends AmmInData<I>,
     C = IBData<I>>({ammProps, t, ammActivityMap, ...rest}: {
-    ammProps: AmmPropsNew<T, I, ACD>,
+    ammProps: AmmProps<T, I, ACD>,
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined,
 } & any) => {
     const {

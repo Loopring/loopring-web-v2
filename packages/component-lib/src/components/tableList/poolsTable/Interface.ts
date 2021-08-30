@@ -12,5 +12,6 @@ export type PoolTableProps<T, R = Row<T>> = {
     page?: number,
     handlePageChange: (page: number) => void,
     showFilter?: boolean,
-    wait?: number
+    wait?: number;
+    tableHeight?: number;
 }

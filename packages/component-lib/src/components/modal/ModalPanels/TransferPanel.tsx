@@ -1,11 +1,11 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
-import { WithdrawProps } from '../Interface';
 import { IBData } from '@loopring-web/common-resources';
-import { TradeMenuList, useBasicTrade, WithdrawWrap } from '../components';
 import React from 'react';
+import { TransferProps } from '../../tradePanel';
+import { TradeMenuList, TransferWrap, useBasicTrade } from '../../tradePanel/components';
 
-export const WithdrawPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>, I>(
+export const TransferPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>, I>(
     {
         // tradeData,
         // disabled,
@@ -16,10 +16,10 @@ export const WithdrawPanel = withTranslation('common', {withRef: true})(<T exten
         // walletMap,
         // coinMap,
         chargeFeeTokenList,
-        onWithdrawClick,
-        withdrawBtnStatus,
+        onTransferClick,
+        transferBtnStatus,
         ...rest
-    }: WithdrawProps<T, I> & WithTranslation) => {
+    }: TransferProps<T, I> & WithTranslation) => {
 
     // const [transferData, setTransferData] = React.useState<SwitchData<T>>({
     //     to: 'button',
@@ -40,17 +40,17 @@ export const WithdrawPanel = withTranslation('common', {withRef: true})(<T exten
         index: index, // show default show
         panelList: [{
             key: "trade",
-            element: React.useMemo( () => <WithdrawWrap<T, I> key={"transfer"}
-                                               {...{
-                                                   ...rest,
-                                                   chargeFeeTokenList: chargeFeeTokenList ? chargeFeeTokenList : [],
-                                                   tradeData: switchData.tradeData,
-                                                   onChangeEvent,
-                                                   disabled: !!rest.disabled,
-                                                   onWithdrawClick,
-                                                   withdrawBtnStatus,
+            element: React.useMemo(() => <TransferWrap<T, I> key={"transfer"}
+                                                             {...{
+                                                                 ...rest,
+                                                                 chargeFeeTokenList: chargeFeeTokenList ? chargeFeeTokenList : [],
+                                                                 tradeData: switchData.tradeData,
+                                                                 onChangeEvent,
+                                                                 disabled: !!rest.disabled,
+                                                                 onTransferClick,
+                                                                 transferBtnStatus,
 
-                                               }} />,[onChangeEvent,chargeFeeTokenList,rest,switchData,onWithdrawClick,withdrawBtnStatus]),
+                                                             }} />, [onChangeEvent, chargeFeeTokenList, rest, switchData, onTransferClick, transferBtnStatus]),
             toolBarItem: undefined
         },
             {
@@ -64,7 +64,8 @@ export const WithdrawPanel = withTranslation('common', {withRef: true})(<T exten
                     //oinMap
                 }}/>,[switchData,rest,onChangeEvent]),
                 toolBarItem: undefined
+                // toolBarItem: toolBarItemBack
             },]
     }
     return <SwitchPanel {...{...rest, ...props}} />
-}) as <T, I>(props: WithdrawProps<T, I> & React.RefAttributes<any>) => JSX.Element;
+}) as <T, I>(props: TransferProps<T, I> & React.RefAttributes<any>) => JSX.Element;

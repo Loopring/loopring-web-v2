@@ -26,6 +26,8 @@ import {  AssetTitleProps } from '../block';
 import React from 'react';
 import { AssetTitle } from '../block/AssetTitle';
 import {
+    AccountBasePanel,
+    AccountBaseProps,
     AmmProps,
     DepositProps,
     ModalPanel,
@@ -41,8 +43,7 @@ import { setShowDeposit, setShowTransfer, setShowWithdraw } from '../../stores';
 import { ammCalcData, coinMap, CoinType, tradeCalcData, walletMap } from '../../static';
 import { useDispatch } from 'react-redux';
 import { Typography } from '@material-ui/core/';
-import { AccountBaseProps } from '../modal/AccountInfo';
-import { AccountBase } from '../modal/AccountInfo/AccountBase';
+
 
 const Style = styled.div`
   
@@ -151,6 +152,7 @@ let resetProps: ResetProps<any, any> = {
     fee: {count: 234, price: 123}
 }
 let swapProps: SwapProps<IBData<string>, string, any> = {
+    refreshRef: React.createRef(),
     tradeData: {sell: {belong: undefined}, buy: {belong: undefined}, slippage: ''} as any,
     tradeCalcData,
     onSwapClick: (tradeData) => {
@@ -161,6 +163,7 @@ let swapProps: SwapProps<IBData<string>, string, any> = {
     }
 };
 let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
+    refreshRef: React.createRef(),
     ammDepositData: {
         coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
         coinB: {belong: 'LRC', balance: 1000, tradeValue: 0},
@@ -172,7 +175,8 @@ let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
         slippage: '',
     },
     // tradeCalcData,
-    ammCalcData: ammCalcData,
+    ammCalcDataDeposit: ammCalcData,
+    ammCalcDataWithDraw: ammCalcData,
     handleAmmAddChangeEvent: (data, type) => {
         console.log('handleAmmAddChangeEvent', data, type);
     },
@@ -284,7 +288,7 @@ const Layer2Wrap = withTranslation('common')(({t,...rest}:any) => {
             <Collapse in={showAccountInfo}>
                 <Container maxWidth="lg">
                     <Box marginTop={3}>
-                        <AccountBase  {...{...accountInfoProps,t,...rest}}/>
+                        <AccountBasePanel  {...{...accountInfoProps,t,...rest}}/>
                     </Box>
                 </Container>
             </Collapse> : undefined}

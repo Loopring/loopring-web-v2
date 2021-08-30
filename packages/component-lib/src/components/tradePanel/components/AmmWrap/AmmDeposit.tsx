@@ -1,6 +1,6 @@
 import {
     AmmData,
-    AmmInDataNew,
+    AmmInData,
     EmptyValueTag,
     IBData,
     LinkedIcon,
@@ -24,7 +24,7 @@ import { Box } from '@material-ui/core/';
 
 export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBData<I>>,
     I,
-    ACD extends AmmInDataNew<I>,
+    ACD extends AmmInData<I>,
     C = IBData<I>>({
                        t,
                        disabled,

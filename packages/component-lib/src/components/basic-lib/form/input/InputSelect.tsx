@@ -6,7 +6,7 @@ import { InputSelectProps } from "./Interface";
 import { useFocusRef, usePanelRef } from "../hooks";
 import { WithTranslation } from 'react-i18next';
 import { InputSearch } from './InputSearch';
-import { IconClearStyled } from '../../../panel';
+import { IconClearStyled } from '../../../tradePanel';
 import * as _ from 'lodash'
 
 const WrapStyled = styled(Box)`
