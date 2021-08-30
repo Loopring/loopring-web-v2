@@ -10,7 +10,7 @@ export enum AmmPanelType {
 /**
  *
  */
-export type AmmPanelBasePropsNew<T, I, ACD, C> = {
+export type AmmPanelBaseProps<T, I, ACD, C> = {
 
     ammDepositData: T,
     ammWithdrawData: T,
@@ -30,7 +30,7 @@ export type AmmPanelBasePropsNew<T, I, ACD, C> = {
 }
 
 export type AmmProps<T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I, ACD, C = IBData<I>> =
-AmmPanelBasePropsNew<T, I, ACD, C>
+AmmPanelBaseProps<T, I, ACD, C>
     & {
         handleAmmAddChangeEvent: (data: T, focusOn: 'coinA' | 'coinB') => void,
         handleAmmRemoveChangeEvent: (data: T, focusOn: 'coinA' | 'coinB') => void,

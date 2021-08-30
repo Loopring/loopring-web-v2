@@ -3,7 +3,7 @@ import { AmmChgData, AmmDepositWrap, AmmWithdrawWrap } from '../components';
 import { BoxProps, Grid, Tab, Tabs, Toolbar } from '@material-ui/core';
 import { useLocation } from 'react-router-dom'
 import qs from 'query-string'
-import { AmmData, AmmInDataNew, IBData } from '@loopring-web/common-resources';
+import { AmmData, AmmInData, IBData } from '@loopring-web/common-resources';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import React, { useEffect } from 'react';
 import { useDeepCompareEffect } from 'react-use';
@@ -13,7 +13,7 @@ import { CountDownIcon } from '../components/tool/Refresh';
 import styled from '@emotion/styled';
 import { boxLiner, toolBarPanel } from '../../styled';
 import { AmmPanelType, } from './Interface';
-import { AmmPropsNew } from './Interface';
+import { AmmProps } from './Interface';
 
 const WrapStyle = styled(Box) <BoxProps & { _height?: number | string, _width?: number | string; }>`
   ${({ _width, _height }) => `       
@@ -38,8 +38,8 @@ const TabPanelBtn = ({ t, value, handleChange }: WithTranslation & any) => {
         <Tab label={t('labelLiquidityWithdraw')} value={1} />
     </Tabs>
 }
-export const AmmPanelNew = withTranslation('common', { withRef: true })(<T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
-    ACD extends AmmInDataNew<I>,
+export const AmmPanel = withTranslation('common', { withRef: true })(<T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
+    ACD extends AmmInData<I>,
     C = IBData<I>>(
         {
             t,
@@ -70,7 +70,7 @@ export const AmmPanelNew = withTranslation('common', { withRef: true })(<T exten
             width,
             anchors,
             ...rest
-        }: AmmPropsNew<T, I, ACD, C> & WithTranslation) => {
+        }: AmmProps<T, I, ACD, C> & WithTranslation) => {
 
     const [index, setIndex] = React.useState(tabSelected)
     const [ammChgDepositData, setAmmChgDepositData] = React.useState<AmmChgData<T>>({
@@ -212,5 +212,5 @@ export const AmmPanelNew = withTranslation('common', { withRef: true })(<T exten
     </WrapStyle>
 
 }) as <T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
-        ACD extends AmmInDataNew<I>,
-        C = IBData<I>>(props: AmmPropsNew<T, I, ACD, C> & React.RefAttributes<any>) => JSX.Element;
+        ACD extends AmmInData<I>,
+        C = IBData<I>>(props: AmmProps<T, I, ACD, C> & React.RefAttributes<any>) => JSX.Element;
