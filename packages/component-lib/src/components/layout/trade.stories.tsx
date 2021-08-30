@@ -8,7 +8,8 @@ import { Header } from '../header/Header';
 import { globalCss, headerMenuData, headerToolBarData } from '@loopring-web/common-resources';
 
 import { tradeCalcData } from '../../static';
-import { SwapPanel, SwapProps } from '../panel';
+import { SwapPanel, SwapProps } from '../tradePanel';
+import React from 'react';
 
 
 const Style = styled.div`
@@ -17,7 +18,8 @@ const Style = styled.div`
 const TradeWrap = () => {
     let tradeData: any = {sell: {belong: undefined}, buy: {belong: undefined}};
     const WrapSwapPanel = () => {
-        let swapProps:SwapProps<any, any, any> = {
+        let swapProps: SwapProps<any, any, any> = {
+            refreshRef: React.createRef(),
             tradeData,
             // swapTradeData: tradeData,
             tradeCalcData,
@@ -27,7 +29,7 @@ const TradeWrap = () => {
             'handleSwapPanelEvent': async (data: any, switchType: any) => {
                 console.log(data, switchType)
             }
-        }
+        };
 
         return <SwapPanel<any, any, any> {...swapProps} > </SwapPanel>
     };

@@ -1,5 +1,5 @@
 export * from './basic-lib'
-export * from './panel'
+export * from './tradePanel'
 export * from './tableList'
 export * from './header'
 export * from './basic-lib/popover'
@@ -9,3 +9,4 @@ export * from './styled'
 export * from './charts'
 export * from './toast'
 export * from './bottomRule'
+
