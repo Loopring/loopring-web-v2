@@ -1,6 +1,6 @@
 import { accountServices } from './accountServices';
 import store from '../../stores';
-import { cleanAccountStatus, updateAccountStatus } from '../../stores/account';
+import { cleanAccountStatus } from '../../stores/account';
 import { myLog } from '../../utils/log_tools';
 
 export const checkAccount = (newAccAddress: string) => {
@@ -15,7 +15,7 @@ export const checkAccount = (newAccAddress: string) => {
             myLog('After connect >>,checkAccount: step1 no account Id')
             accountServices.sendCheckAccount(newAccAddress)
         } else if (account.accountId && account.apiKey && account.eddsaKey) {
-            myLog('After connect >>,checkAccount: step1 have activate account from store, account:', account)
+            myLog('After connect >>,checkAccount: step1 have activate account from store')
             accountServices.sendAccountSigned();
         } else {
             myLog('After connect >>,checkAccount: step1 account locked')

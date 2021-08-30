@@ -28,9 +28,6 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
     // const [ammUserRewardMap, setAmmUserRewardMap] = React.useState<AmmUserRewardMap>(
     //     {});
 
-    myLog(ammActivityViewMap, ammActivityPastViewMap)
-
-
     // );
     React.useEffect(() => {
         if(ammActivityMap && Object.keys(ammActivityMap).length>0 ){
