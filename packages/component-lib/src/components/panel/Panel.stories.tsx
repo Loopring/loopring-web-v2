@@ -180,7 +180,8 @@ let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
         slippage: '',
     },
     // tradeCalcData,
-    ammCalcData: ammCalcData,
+    ammCalcDataDeposit: ammCalcData,
+    ammCalcDataWithDraw: ammCalcData,
     handleAmmAddChangeEvent: (data, type) => {
         console.log('handleAmmAddChangeEvent', data, type);
     },
@@ -308,7 +309,8 @@ const WrapAmmPanel = (rest: any) => {
         ammDepositData: tradeData,
         ammWithdrawData: tradeData,
         // tradeCalcData,
-        ammCalcData: ammCalcData,
+        ammCalcDataDeposit: ammCalcData,
+        ammCalcDataWithDraw: ammCalcData,
         handleAmmAddChangeEvent: (data, type) => {
             console.log('handleAmmAddChangeEvent', data, type);
         },
