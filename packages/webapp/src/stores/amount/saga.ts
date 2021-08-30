@@ -6,7 +6,7 @@ import { LoopringAPI } from 'api_wrapper';
 import * as sdk from 'loopring-sdk';
 
 const getAmountApi = async <R extends { [ key: string ]: any }>(market: string): Promise<{
-    pairMap: object | undefined,
+    newAmountMap: object | undefined,
     __timer__: NodeJS.Timer | -1
 }> => {
 
@@ -30,13 +30,18 @@ const getAmountApi = async <R extends { [ key: string ]: any }>(market: string):
             market: market,
         }
         const {amountMap: _pairMap} = await LoopringAPI.userAPI.getMinimumTokenAmt(req, apiKey)
-        return {pairMap: _pairMap, __timer__}
+        const reqAmm: sdk.GetMinimumTokenAmtRequest = {
+            accountId: accountId,
+            market: 'AMM-' + market,
+        }
+        const {amountMap: _pairMapAmm} = await LoopringAPI.userAPI.getMinimumTokenAmt(reqAmm, apiKey)
+        return {newAmountMap: { [market]:_pairMap, [ 'AMM-' + market]:_pairMapAmm},__timer__}
 
     } else {
         if (__timer__ && __timer__ !== -1) {
             clearInterval(__timer__);
         }
-        return Promise.resolve({pairMap: {}, __timer__: -1})
+        return Promise.resolve({newAmountMap: {}, __timer__: -1})
     }
 
 }
@@ -46,10 +51,10 @@ export function* getPostsSaga({payload: {market}}: any) {
 
         const {amountMap, __timerMap__} = store.getState().amountMap;
         if (market) {
-            const {pairMap, __timer__} = yield call(getAmountApi, market)
+            const {newAmountMap, __timer__} = yield call(getAmountApi, market)
             yield put(getAmountStatus({
                 amountMap:
-                    {...amountMap, [ market ]: pairMap},
+                    {...amountMap, ...newAmountMap},
                 __timerMap__:
                     {...__timerMap__, [ market ]: __timer__}
             }));
