@@ -246,12 +246,12 @@ export default {
     label_Denied: 'Signing denied by user',
     label_First_Method_Denied: 'Your wallet doesn\'t support this signature method',
 
-    label_Approve_WaitForAuth: 'Waiting for <1>{symbol}</1> Approve',
-    label_Approve_Denied: '<0>{{symbol}}</0> Approve denied by user',
-    label_Approve_Submited: '<0>{{symbol}}</0> Approve submitted',
+    label_Approve_WaitForAuth: 'Waiting for <1>{symbol}</1> Approve.',
+    label_Approve_Denied: '<0>{{symbol}}</0> Approve denied by user.',
+    label_Approve_Submited: '<0>{{symbol}}</0> Approve submitted.',
     
-    label_Deposit_WaitForAuth: 'Please Confirm to Deposit <1>{{value}}</1><2>{{symbol}}</2>',
-    label_Deposit_Denied:'Deposit <1>{{value}}</1><2>{{symbol}}</2> denied by user',
+    label_Deposit_WaitForAuth: 'Please Confirm to Deposit <1>{{value}}</1><2>{{symbol}}</2>.',
+    label_Deposit_Denied:'Deposit <1>{{value}}</1><2>{{symbol}}</2> denied by user.',
     label_Deposit_Failed:'Deposit <1>{{value}}</1><2>{{symbol}}</2> failed!',
     label_Deposit_Submited: 'Deposit <1>{{value}}</1><2>{{symbol}}</2> submitted.',
 
@@ -265,7 +265,10 @@ export default {
 
     label_UpdateAccount_Success: 'Congratulations!',
     label_UpdateAccount_Success2: 'You have been successfully activated Loopring Layer2 account!',
-    label_UpdateAccount_Submited: 'Activating Tx submitted',
+    label_UpdateAccount_Submited: 'Activating Tx submitted.',
+
+    label_UnlockAccount_Success: 'Unlock successfully!',
+    label_UnlockAccount_Failed: 'Unlock failed!',
 
     label_CreateAccount_Approve_WaitForAuth: 'Waiting for <1>{{symbol}}</1> Approve...',
     label_CreateAccount_Approve_Denied: '<0>{{symbol}}</0> Approve Denied by user.',

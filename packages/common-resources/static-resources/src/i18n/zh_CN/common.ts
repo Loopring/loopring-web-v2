@@ -265,6 +265,9 @@ export default {
     label_UpdateAccount_Success: '恭喜你!',
     label_UpdateAccount_Success2: '您已经成功激活路印二层账号!',
 
+    label_UnlockAccount_Success: '解锁成功!',
+    label_UnlockAccount_Failed: '解锁失败!',
+
     label_CreateAccount_Approve_WaitForAuth: '等待 <1>{{symbol}}</1> 的授权...',
     label_CreateAccount_Approve_Denied: '<0>{{symbol}}</0>授权用户拒绝',
 }
