@@ -1,9 +1,10 @@
-import { generateKeyPair, sleep, toBig, toHex } from 'loopring-sdk';
+import { ConnectorError, generateKeyPair, sleep, toBig, toHex } from 'loopring-sdk';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { LoopringAPI } from 'api_wrapper';
 import store from '../../stores';
 import { accountServices } from './accountServices';
 import { myLog } from '../../utils/log_tools';
+import { checkErrorInfo } from 'hooks/useractions/utils';
 
 export async function unlockAccount() {
     const account = store.getState().account;
@@ -24,12 +25,17 @@ export async function unlockAccount() {
             myLog('After connect >>,unlockAccount: step2 apiKey',apiKey)
 
             accountServices.sendAccountSigned(account.accountId,apiKey, eddsaKey)
-        }catch (e){
+        }catch (e) {
+            const errType = checkErrorInfo(e, true)
+            switch(errType) {
+                case ConnectorError.USER_DENIED:
+                    accountServices.sendSignDeniedByUser()
+                    return
+                default:
+                    break
+            }
             accountServices.sendErrorUnlock()
-
         }
-
-
 
     }
 }

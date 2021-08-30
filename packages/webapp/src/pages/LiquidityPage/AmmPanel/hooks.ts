@@ -246,8 +246,8 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
             case AmmPanelType.Exit:
                 const validAmt1 = ammData?.coinA?.tradeValue ? ammData?.coinA?.tradeValue >= times * baseMinAmt : false
                 const validAmt2 = ammData?.coinB?.tradeValue ? ammData?.coinB?.tradeValue >= times * quoteMinAmt : false
-                myLog('btnLabelActiveCheck ammData', ammData?.coinA?.tradeValue, ammData?.coinB?.tradeValue,
-                    times * baseMinAmt, times * quoteMinAmt)
+                // myLog('btnLabelActiveCheck ammData', ammData?.coinA?.tradeValue, ammData?.coinB?.tradeValue,
+                //     times * baseMinAmt, times * quoteMinAmt)
 
                 if (isLoading) {
                     setBtnI18nKey(TradeBtnStatus.LOADING)
