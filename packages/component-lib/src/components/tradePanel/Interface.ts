@@ -32,7 +32,7 @@ export type ModalProps = {
 }
 
 export type ResetProps<T, I> = BasicACoinTradeHookProps<T, I> & Required<ResetExtendProps<T>>
-export type DepositProps<T, I> = BasicACoinTradeHookProps<T, I> & DepositExtendProps<T,I>;
+export type DepositProps<T, I> = BasicACoinTradeHookProps<T, I> & DepositExtendProps<T, I>;
 export type WithdrawProps<T, I> = BasicACoinTradeHookProps<T, I> & WithdrawExtendProps<T, I, CoinKey<I>>;
 export type TransferProps<T, I> = BasicACoinTradeHookProps<T, I> & TransferExtendProps<T, I, CoinKey<I>>;
 
@@ -43,7 +43,7 @@ export  type  WithdrawInfoProps<T, I> = DefaultProps<T, I> & _WithdrawInfoProps<
 export  type  TransferInfoProps<T, I> = DefaultProps<T, I> & _TransferInfoProps<CoinKey<I>>;
 
 export  type  SwapInfoProps<T, I, TCD> = SwapTradeBaseProps<T, I, TCD>;
-export  type  AmmInfoProps<T, I, ACD, C = IBData<I>> = AmmPanelBaseProps<T, I, ACD, C>;
+export  type  AmmInfoProps<T, TW, I, ACD, C = IBData<I>> = AmmPanelBaseProps<T, TW, I, ACD, C>;
 
 /**
  *  @type SwapProps
@@ -68,8 +68,8 @@ export  type  AmmInfoProps<T, I, ACD, C = IBData<I>> = AmmPanelBaseProps<T, I, A
 
 
 export type SwapProps<T, I, TCD> = {
-    refreshRef:React.Ref<any>;
-    onRefreshData?:()=>void;
+    refreshRef: React.Ref<any>;
+    onRefreshData?: () => void;
     tradeData: SwapTradeData<T> | undefined,
     handleSwapPanelEvent: (data: SwapData<SwapTradeData<T>>, switchType: 'buyTomenu' | 'sellTomenu' | 'exchange' | 'buyTobutton' | 'sellTobutton') => Promise<void>,
     onChangeEvent?: (index: 0 | 1, data: SwapData<SwapTradeData<T>>) => SwapData<SwapTradeData<T>>,

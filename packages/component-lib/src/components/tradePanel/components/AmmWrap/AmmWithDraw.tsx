@@ -1,10 +1,10 @@
 import {
     AmmData,
-    AmmInData,
+    AmmInData, AmmWithdrawData, AvatarCoinStyled,
     CoinInfo,
     EmptyValueTag,
     IBData,
-    LinkedIcon,
+    ExchangeIcon,
     ReverseIcon,
     SlippageTolerance
 } from '@loopring-web/common-resources';
@@ -12,7 +12,7 @@ import { AmmWithdrawWrapProps } from './Interface';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
 import { usePopupState } from 'material-ui-popup-state/hooks';
-import { Grid, Typography } from '@material-ui/core';
+import { Avatar, Grid, Typography } from '@material-ui/core';
 import {
     BtnPercentage,
     Button,
@@ -25,10 +25,10 @@ import {
 import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { SlippagePanel } from '../tool';
 import { useSettings } from '../../../../stores';
-import { Box } from '@material-ui/core/';
+import { Box, Link } from '@material-ui/core/';
 import { SvgStyled } from './styled';
 
-export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBData<I>>,
+export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? C : IBData<I>>,
     I,
     ACD extends AmmInData<I>,
     C = IBData<I>>({
@@ -39,22 +39,23 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
                        ammWithdrawBtnStatus,
                        ammCalcData,
                        onAmmRemoveClick,
-                       tokenAProps,
-                       tokenBProps,
+                       tokenLPProps,
+                       // tokenBProps,
                        anchors,
                        ammWithdrawBtnI18nKey,
-                       onChangeEvent,
+                       onRemoveChangeEvent,
                        handleError,
                        ammData,
                        selectedPercentage = -1,
                        ...rest
                    }: AmmWithdrawWrapProps<T, I, ACD, C> & WithTranslation) => {
-    const coinARef = React.useRef();
-    const coinBRef = React.useRef();
-    const {slippage} = useSettings();
+    const {coinJson,slippage} = useSettings();
+    const coinLPRef = React.useRef();
+    const tokenAIcon: any = coinJson[ammCalcData?.lpCoinA.belong];
+    const tokenBIcon: any = coinJson[ammCalcData?.lpCoinB.belong];
     const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number | string>;
+    const [isPercentage,setIsPercentage] = React.useState(true);
     const [_selectedPercentage, setSelectedPercentage] = React.useState(selectedPercentage);
-
     const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined' ? isStob : true);
     const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
         error: false,
@@ -89,25 +90,25 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
         // }
     }
     const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any, flag = -1) => {
-        if (flag !== _selectedPercentage) {
-            setSelectedPercentage(flag)
-        }
-        if (_ref) {
-            let focus = _ref?.current === coinARef.current ? 'coinA' : 'coinB';
-            if (ammData[ focus ].tradeValue !== ibData.tradeValue) {
-                onChangeEvent({tradeData: {...ammData, [ focus ]: ibData}, type: focus as any});
-            }
-        } else {
-            onChangeEvent({tradeData: {...ammData, [ 'coinA' ]: ibData}, type: 'percentage'});
-        }
-    }, [ammData, onChangeEvent]);
+        // if (flag !== _selectedPercentage) {
+        //     setSelectedPercentage(flag)
+        // }
+        // if (_ref) {
+        //     let focus = _ref?.current === coinARef.current ? 'lpCoinA' : 'coinB';
+        //     if (ammData[ focus ].tradeValue !== ibData.tradeValue) {
+        //         onRemoveChangeEvent({tradeData: {...ammData, [ focus ]: ibData}, type: focus as any});
+        //     }
+        // } else {
+        //     onRemoveChangeEvent({tradeData: {...ammData, [ 'lpCoinA' ]: ibData}, type: 'percentage'});
+        // }
+    }, [ammData, onRemoveChangeEvent]);
     const onPercentage = (value: any) => {
-        ammData[ 'coinA' ].tradeValue = ammData[ 'coinA' ].balance * value / 100;
-        handleCountChange(ammData[ 'coinA' ], null, value)
+        ammData[ 'coinLP' ].tradeValue = ammData[ 'coinLP' ].balance * value / 100;
+        handleCountChange(ammData[ 'coinLP' ], null, value)
     }
     const _onSlippageChange = React.useCallback((slippage: number | string, customSlippage: number | string | undefined) => {
         popupState.close();
-        onChangeEvent({
+        onRemoveChangeEvent({
             tradeData: {
                 ...ammData,
                 slippage: slippage,
@@ -115,29 +116,29 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
                     ...ammData.__cache__,
                     customSlippage: customSlippage
                 }
-            }, type: 'coinA'
+            }, type: 'lp'
         });
-    }, [ammData, onChangeEvent]);
-    const propsA: any = {
+    }, [ammData, onRemoveChangeEvent]);
+    const propsLP: any = {
         label: t('labelTokenAmount'),
         subLabel: t('labelAvailable'),
         placeholderText: '0.00',
         maxAllow: true,
-        ...tokenAProps,
+        ...tokenLPProps,
         handleError,
         handleCountChange,
         ...rest
     }
-    const propsB: any = {
-        label: t('labelTokenAmount'),
-        subLabel: t('labelAvailable'),
-        placeholderText: '0.00',
-        maxAllow: true,
-        ...tokenBProps,
-        handleError,
-        handleCountChange,
-        ...rest
-    }
+    // const propsB: any = {
+    //     label: t('labelTokenAmount'),
+    //     subLabel: t('labelAvailable'),
+    //     placeholderText: '0.00',
+    //     maxAllow: true,
+    //     ...tokenBProps,
+    //     handleError,
+    //     handleCountChange,
+    //     ...rest
+    // }
     const popupState = usePopupState({
         variant: 'popover',
         popupId: 'slippagePop',
@@ -163,41 +164,110 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
         // return  t(ammWithdrawBtnI18nKey ? t(ammWithdrawBtnI18nKey) : t(`labelRemoveLiquidityBtn`))
     }, [error, ammWithdrawBtnI18nKey, t])
 
+
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
-        <Grid item marginTop={3} display={'flex'} alignSelf={"stretch"} justifyContent={''} alignItems={"stretch"}
+        <Grid item display={'flex'} alignSelf={"stretch"} justifyContent={''} alignItems={"stretch"}
               flexDirection={"column"}>
-            <InputCoin<IBData<I>, I, CoinInfo<I>> ref={coinARef} disabled={getDisabled()} {...{
-                ...propsA,
-                isHideError: true,
-                order: 'right',
-                inputData: ammData ? ammData.coinA : {} as any,
-                coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
-            }}/>
+            <Typography alignSelf={'flex-end'}>
+                <Link onClick={()=>setIsPercentage(!isPercentage)}>{t('labelPercentage')}</Link>
+            </Typography>
+            <Typography alignSelf={'center'} variant={'h2'} >
+                {_selectedPercentage}%
+            </Typography>
+            <Typography alignSelf={'center'} variant={'body1'}  marginTop={1} hidden={isPercentage} lineHeight={'22px'}>
+                {ammData?.coinLP?.tradeValue??EmptyValueTag}
+            </Typography>
+            <Grid item alignSelf={'stretch'} marginTop={1} marginX={1} hidden={isPercentage} height={48}>
+                <BtnPercentage selected={_selectedPercentage} anchors={[{
+                    value: 0, label: '0'
+                }, {
+                    value: 25, label: ''
+                }, {
+                    value: 50, label: ''
+                }, {
+                    value: 75, label: ''
+                }, {
+                    value: 100, label: t('labelAvaiable:') + '100%'
+                }]} handleChanged={onPercentage}/>
+            </Grid>
+            <Grid item alignSelf={'stretch'} marginTop={1} hidden={!isPercentage}>
+                <InputCoin<IBData<I>, I, CoinInfo<I>> ref={coinLPRef} disabled={getDisabled()} {...{
+                    ...propsLP,
+                    isHideError: true,
+                    order: 'right',
+                    inputData: ammData ? ammData.coinLP : {} as any,
+                    coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
+                }}/>
+            </Grid>
+           
             <Box alignSelf={"center"} marginY={1}>
                 <SvgStyled>
-                    <LinkedIcon/>
+                    <ExchangeIcon/>
                 </SvgStyled>
             </Box>
-            <InputCoin<IBData<I>, I, CoinInfo<I>> ref={coinBRef} disabled={getDisabled()} {...{
-                ...propsB,
-                isHideError: true,
-                order: 'right',
-                inputData: ammData ? ammData.coinB : {} as any,
-                coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
-            }}/>
-            <Grid item alignSelf={'stretch'} marginTop={2}>
-                <BtnPercentage selected={_selectedPercentage} anchors={anchors}
-                               handleChanged={onPercentage}/>
-            </Grid>
+            <Box borderRadius={1} style={{background:'var(--color-pop-bg)'}}
+                 alignItems={'stretch'} display={'flex'}
+                 paddingY={1} paddingX={2} flexDirection={'column'}>
+                <Typography variant={'body1'} color={'textSecondary'} alignSelf={'flex-start'} >{t('labelMinEeceive')}</Typography>
+                <Box marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'} justifyContent={'space-between'}>
+                    <Box component={'span'}  display={'flex'} flexDirection={'row'}  alignItems={'center'}
+                         className={'logo-icon'} height={'var(--withdraw-coin-size)'} justifyContent={'flex-start'}
+                          marginRight={1/2}>
+                        {tokenAIcon ?
+                            <AvatarCoinStyled imgx={tokenAIcon.x} imgy={tokenAIcon.y}
+                                              imgheight={tokenAIcon.height}
+                                              imgwidth={tokenAIcon.width} size={16}
+                                              variant="circular"
+                                              style={{marginLeft:'-8px'}}
+                                              alt={ammCalcData?.lpCoinA.belong as string}
+                                              src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
+                            : <Avatar variant="circular" alt={ammCalcData?.lpCoinA.belong as string}
+                                      style={{
+                                          width: 'var(--withdraw-coin-size)',
+                                          height: 'var(--withdraw-coin-size)',
+                                      }}
+                                // src={sellData?.icon}
+                                      src={'static/images/icon-default.png'}/>
+                        }
+                        <Typography  variant={'h6'}>{ammCalcData?.lpCoinA.belong}</Typography>
+                    </Box>
+                    <Typography variant={'h6'}>{ammCalcData?.lpCoinA.tradeValue}</Typography>
+                </Box>
+                <Box marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'} justifyContent={'space-between'}>
+                    <Box component={'span'}  display={'flex'} flexDirection={'row'} alignItems={'center'}
+                         className={'logo-icon'} height={'var(--withdraw-coin-size'} justifyContent={'flex-start'}
+                         width={'var(--withdraw-coin-size)'}  marginRight={1/2}>
+                        {tokenBIcon ?
+                            <AvatarCoinStyled imgx={tokenBIcon.x} imgy={tokenBIcon.y}
+                                              imgheight={tokenBIcon.height}
+                                              imgwidth={tokenBIcon.width} size={16}
+                                              variant="circular"
+                                              style={{marginLeft:'-8px'}}
+                                              alt={ammCalcData?.lpCoinB.belong as string}
+                                              src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
+                            : <Avatar variant="circular" alt={ammCalcData?.lpCoinB.belong as string}
+                                      style={{
+                                          width: 'var(--list-menu-coin-size)',
+                                          height: 'var(--list-menu-coin-size)',
+                                      }}
+                                // src={sellData?.icon}
+                                      src={'static/images/icon-default.png'}/>
+                        }
+                        <Typography variant={'h6'}>{ammCalcData?.lpCoinB.belong}</Typography>
+                    </Box>
+                    <Typography variant={'h6'}>{ammCalcData?.lpCoinB.tradeValue}</Typography>
+                </Box>
+            </Box>
         </Grid>
+
 
         <Grid item>
             <Typography component={'p'} variant="body1" height={24} lineHeight={'24px'}>
-                {ammData.coinA?.belong && ammData.coinB?.belong && ammCalcData ? <>
-                    {_isStoB ? `1${ammData.coinA?.belong} \u2248 ${ammCalcData.AtoB ? ammCalcData.AtoB : EmptyValueTag} ${ammData.coinB?.belong}`
-                        : `1${ammData.coinB?.belong} \u2248 ${ammCalcData.AtoB ? (1 / ammCalcData.AtoB) : EmptyValueTag} ${ammData.coinA?.belong}`}
+                {ammCalcData && ammCalcData?.lpCoinA && ammCalcData?.lpCoinB  && ammCalcData.AtoB ?
+                    <>{_isStoB ? `1${ammCalcData?.lpCoinA?.belong} \u2248 ${ammCalcData?.AtoB ? ammCalcData?.AtoB : EmptyValueTag} ${ammCalcData?.lpCoinB?.belong}`
+                        : `1${ammCalcData?.lpCoinB?.belong} \u2248 ${ammCalcData?.AtoB ? (1 / ammCalcData?.AtoB??1) : EmptyValueTag} ${ammCalcData?.lpCoinA?.belong}`}
                     <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
                     ><ReverseIcon/></IconButtonStyled>
                 </> : EmptyValueTag}
@@ -214,7 +284,7 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
                                 <Typography {...bindHover(popupState)}
                                             component={'span'} variant="body1">
                                     <LinkActionStyle>
-                                        {ammData.slippage ? ammData.slippage : ammCalcData.slippage ? ammCalcData.slippage : 0.5}%
+                                        {ammData.slippage ? ammData.slippage : ammCalcData?.slippage ? ammCalcData?.slippage : 0.5}%
                                     </LinkActionStyle>
                                     <PopoverPure
                                         className={'arrow-right'}
@@ -228,7 +298,7 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
                                             ...rest, t,
                                             handleChange: _onSlippageChange,
                                             slippageList: slippageArray,
-                                            slippage: ammData.slippage ? ammData.slippage : ammCalcData.slippage ? ammCalcData.slippage : 0.5
+                                            slippage: ammCalcData?.slippage ? ammCalcData?.slippage : ammCalcData?.slippage ? ammCalcData?.slippage : 0.5
                                         }} />
                                     </PopoverPure>
                                 </Typography>
@@ -242,7 +312,7 @@ export const AmmWithdrawWrap = <T extends AmmData<C extends IBData<I> ? C : IBDa
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapFee')} </Typography>
                         <Typography component={'p'}
-                                    variant="body1">{t(ammCalcData ? ammCalcData.fee : EmptyValueTag)}</Typography>
+                                    variant="body1">{t(ammCalcData ? ammCalcData?.fee : EmptyValueTag)}</Typography>
                     </Grid>
                 </Grid>
                 <Grid item>

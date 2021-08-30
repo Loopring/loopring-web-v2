@@ -1,7 +1,7 @@
 import { AmmCard, AmmProps, EmptyDefault } from '@loopring-web/component-lib';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { AmmCardProps, AmmData, AmmInData, IBData } from '@loopring-web/common-resources';
+import { AmmCardProps, AmmData, AmmInData, AmmWithdrawData, IBData } from '@loopring-web/common-resources';
 import { Box, Grid, Typography } from '@material-ui/core';
 import styled from '@emotion/styled'
 import { useAmmMiningUI } from './hook';
@@ -12,9 +12,9 @@ import { Trans, withTranslation } from 'react-i18next';
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 
 const WrapperStyled = styled(Box)`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 ` as typeof Box
 
 // const AmmListWrapperStyled = styled(Box)`
@@ -43,7 +43,8 @@ const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap}: { amm
             <AmmCardWrap handleClick={jumpTo} {...item as any} />
         </Grid>
     ) : <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
-        <EmptyDefault height={"calc(100% - 35px)"} marginTop={10} display={'flex'} flexWrap={'nowrap'} alignItems={'center'} justifyContent={'center'}
+        <EmptyDefault height={"calc(100% - 35px)"} marginTop={10} display={'flex'} flexWrap={'nowrap'}
+                      alignItems={'center'} justifyContent={'center'}
                       flexDirection={'column'} message={() => {
             return <Trans i18nKey="labelEmptyDefault">
                 Content is Empty
@@ -52,9 +53,10 @@ const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap}: { amm
 }
 
 export const MiningPage = withTranslation('common')(<T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
+    TW extends AmmWithdrawData<C extends IBData<I> ? C : IBData<I>>,
     ACD extends AmmInData<I>,
     C = IBData<I>>({ammProps, t, ...rest}: {
-    ammProps: AmmProps<T, I, ACD>,
+    ammProps: AmmProps<T, TW, I, ACD>,
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined,
 } & any) => {
     const {ammActivityMap} = useAmmPool();
@@ -68,22 +70,22 @@ export const MiningPage = withTranslation('common')(<T extends AmmData<C extends
     // }
     const jointAmmViewMap = [...ammActivityViewMap, ...ammActivityPastViewMap]
 
-    return  <WrapperStyled>
+    return <WrapperStyled>
         {/* <Tabs value={tabIndex}
                 onChange={handleChange}
                 aria-label="tabs switch">
             <Tab label={t('labelCurrentActivities')}/>
             <Tab label={t('labelPastActivities')}/>
         </Tabs> */}
-            <Typography
-                    variant={'h2'}
-                    component={'div'}
-                    fontFamily={'Roboto'}
-                    marginTop={2}
-                    marginBottom={3}
-                >{t('labelMiningPageTitle')}</Typography>
-            <Grid container spacing={5}>
-                <AmmList ammActivityViewMap={jointAmmViewMap}/>
-            </Grid>
+        <Typography
+            variant={'h2'}
+            component={'div'}
+            fontFamily={'Roboto'}
+            marginTop={2}
+            marginBottom={3}
+        >{t('labelMiningPageTitle')}</Typography>
+        <Grid container spacing={5}>
+            <AmmList ammActivityViewMap={jointAmmViewMap}/>
+        </Grid>
     </WrapperStyled>
 })
