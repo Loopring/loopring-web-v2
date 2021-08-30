@@ -1,7 +1,7 @@
 import { ButtonProps } from '../../basic-lib';
 import { Account } from '@loopring-web/common-resources';
 
-export type AccountBaseNewProps = {
+export type AccountBaseProps = {
 
     // addressShort: string
     // address: string,

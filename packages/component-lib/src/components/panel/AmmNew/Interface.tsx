@@ -29,7 +29,7 @@ export type AmmPanelBasePropsNew<T, I, ACD, C> = {
     width?: number,
 }
 
-export type AmmPropsNew<T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I, ACD, C = IBData<I>> =
+export type AmmProps<T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I, ACD, C = IBData<I>> =
 AmmPanelBasePropsNew<T, I, ACD, C>
     & {
         handleAmmAddChangeEvent: (data: T, focusOn: 'coinA' | 'coinB') => void,

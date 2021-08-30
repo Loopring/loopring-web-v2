@@ -12,7 +12,7 @@ import React from 'react';
 import { LoopringAPI } from 'api_wrapper';
 import { useTokenMap } from 'stores/token';
 import * as sdk from 'loopring-sdk';
-import { getExistedMarket, OrderStatus, sleep, TradeChannel, TradesData } from 'loopring-sdk';
+import { getExistedMarket, OrderStatus, sleep, TradeChannel } from 'loopring-sdk';
 
 import { useAmmMap } from 'stores/Amm/AmmMap';
 import { useWalletLayer2 } from 'stores/walletLayer2';
@@ -302,12 +302,13 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     React.useEffect(() => {
         if (market && accountStatus === SagaStatus.UNSET && walletLayer2Status === SagaStatus.UNSET) {
             myTradeTableCallback();
-        }
 
-    }, [market, accountStatus, walletLayer2Status]);
+        }
+    }, [market, walletLayer2Status]);
     React.useEffect(() => {
         if(account.readyState === AccountStatus.ACTIVATED && accountStatus === SagaStatus.UNSET){
             getAmount({market})
+            myTradeTableCallback();
         }
     },[accountStatus])
 
@@ -634,6 +635,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             myLog('Market change getAmount',market)
             if(account.readyState === AccountStatus.ACTIVATED){
                 getAmount({market})
+                myTradeTableCallback();
             }
             setIsSwapLoading(true);
             setPair({coinAInfo: coinMap[ coinA ], coinBInfo: coinMap[ coinB ]})

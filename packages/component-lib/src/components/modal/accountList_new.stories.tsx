@@ -10,7 +10,7 @@ import {
 } from './WalletConnect'
 
 import {
-    AccountBaseNewProps,
+   AccountBaseProps,
     AccountStepNew as AccountStep,
 
     NoAccount,
@@ -97,7 +97,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
         return <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {
         }}>{'unlock'} </Button>
     }, []);
-    const accountInfoProps: AccountBaseNewProps = {
+    const accountInfoProps:AccountBaseProps = {
         ...account,
         level: 'VIP 1',
         etherscanUrl: 'https://material-ui.com/components/material-icons/'
