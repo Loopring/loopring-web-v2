@@ -94,13 +94,13 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         ? [...percentList.filter(o => o.token.value.split('-')[0] !== 'LP'), lpTotalData]
         : percentList
 
-    useEffect(() => {
-        // @ts-ignore
-        let height = container?.current?.offsetHeight;
-        if (height) {
-            setPageSize(Math.floor((height - 120) / 44) - 1);
-        }
-    }, [container, pageSize]);
+    // useEffect(() => {
+    //     // @ts-ignore
+    //     let height = container?.current?.offsetHeight;
+    //     if (height) {
+    //         setPageSize(Math.floor((height - 120) / 44) - 1);
+    //     }
+    // }, [container, pageSize]);
 
     const getTokenRelatedMarketArray = useCallback((token: string) => {
         if (!marketArray) return []

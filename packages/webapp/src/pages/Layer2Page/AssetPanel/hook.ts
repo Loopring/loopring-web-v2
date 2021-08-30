@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import store from 'stores'
 import { TokenType, useSettings } from '@loopring-web/component-lib'
-import { AccountStatus, EmptyValueTag, globalSetup, SagaStatus } from '@loopring-web/common-resources'
+import { AccountStatus, EmptyValueTag, getThousandFormattedNumbers, globalSetup, SagaStatus } from '@loopring-web/common-resources'
 import { useWalletLayer2 } from 'stores/walletLayer2'
 import { useAccount } from 'stores/account';
 import { LoopringAPI } from 'api_wrapper'
@@ -115,44 +115,42 @@ export const useGetAssets = () => {
     }, [addressIndex, lpTokenList])
 
     const getAssetsRawData = React.useCallback(() => {
-        if (tokenMap && assetsMap) {
+        if (tokenMap && !!Object.keys(tokenMap).length && !!Object.keys(assetsMap).length && !!tokenPriceList.length && !!lpTokenList.length) {
             const tokenKeys = Object.keys(tokenMap)
             let data: any[] = []
             tokenKeys.forEach((key, index) => {
                 let item = undefined
-                if (assetsMap[key]) {
-
+                if (assetsMap[key]) {              
                     const tokenInfo = assetsMap[key]
-
                     const isLpToken = tokenInfo.token.split('-')[0] === 'LP'
                     let tokenValueDollar = 0
                     if (!isLpToken) {
                         const tokenPriceUSDT = tokenInfo.token === 'DAI'
                             ? 1
                             : Number(tokenPriceList.find(o => o.token === tokenInfo.token) ? tokenPriceList.find(o => o.token === tokenInfo.token)?.detail.price : 0) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
-                        tokenValueDollar = Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail?.total as string)) * tokenPriceUSDT
-                    }
-                    const formattedBalance = Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total))
-                    const price = getLpTokenPrice(tokenInfo.token)
-                    if (formattedBalance && price) {
-                        tokenValueDollar = (formattedBalance || 0) * price as any;
+                        const rawData = Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail?.total)) * tokenPriceUSDT
+                        tokenValueDollar = Number(getValuePrecision(rawData, 2)) || 0
+                    } else {
+                        const formattedBalance = Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total))
+                        const price = getLpTokenPrice(tokenInfo.token)
+                        if (formattedBalance && price) {
+                            tokenValueDollar = Number(getValuePrecision((formattedBalance || 0) * price, 2)) || 0 as any;
+                        }
                     }
                     const isSmallBalance = tokenValueDollar < 1
-
                     item = {
                         token: {
                             type: tokenInfo.token.split('-')[0] === 'LP' ? TokenType.lp : TokenType.single,
                             value: tokenInfo.token
                         },
-                        amount: getValuePrecision(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) || EmptyValueTag,
-                        available: getValuePrecision(Number(tokenInfo.detail?.count)) || EmptyValueTag,
+                        amount: getThousandFormattedNumbers(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) || EmptyValueTag,
+                        available: getThousandFormattedNumbers(Number(tokenInfo.detail?.count)) || EmptyValueTag,
                         locked: String(volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail.locked)) || EmptyValueTag,
                         smallBalance: isSmallBalance,
                         tokenValueDollar,
                         name: tokenInfo.token,
-                        tokenValueYuan: tokenValueDollar * (forex || 6.5)
+                        tokenValueYuan: Number((tokenValueDollar * (Number(forex) || 6.5)).toFixed(2))
                     }
-
                 } else {
                     item = {
                         token: {
@@ -167,23 +165,26 @@ export const useGetAssets = () => {
                         name: key,
                         tokenValueYuan: 0,
                     }
-
                 }
                 if (item) {
                     data.push(item)
                 }
             })
-
             data.sort((a, b) => {
                 const deltaDollar = b.tokenValueDollar - a.tokenValueDollar
+                const deltaAmount = ((b.amount && Number(b.amount)) ? Number(b.amount) : 0) - (a.amount && Number(a.amount) ? Number(a.amount) : 0)
                 const deltaName = b.token.value < a.token.value ? 1 : -1
-                return deltaDollar !== 0 ? deltaDollar : deltaName
+                return deltaDollar !== 0
+                    ? deltaDollar 
+                    : deltaAmount !== 0
+                        ? deltaAmount
+                        : deltaName
             })
             setAssetsRawData(data)
         } else {
             myLog('emmmmmmmpty')
         }
-    }, [assetsMap, getLpTokenPrice, tokenMap])
+    }, [assetsMap, tokenMap, lpTokenList])
 
     React.useEffect(() => {
         getAssetsRawData()
