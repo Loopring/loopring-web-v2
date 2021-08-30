@@ -17,6 +17,7 @@ export function useAccountHook(
         handleProcessDeposit,// two or one step
         handleSignAccount, //unlock or update account  assgin
         handleProcessSign,
+        handleSignDeniedByUser,
         handleSignError,
         handleProcessAccountCheck,
         handleAccountActive,
@@ -54,6 +55,9 @@ export function useAccountHook(
                 case 'ProcessSign':
                     handleProcessSign(data);
                     break;
+                case Commands.SignDeniedByUser:
+                    handleSignDeniedByUser(data)
+                    break
                 case 'ErrorSign':
                     handleSignError(data);
                     break;
@@ -72,5 +76,6 @@ export function useAccountHook(
         handleProcessDeposit,// two or one step
         handleSignAccount, //unlock or update account  assgin
         handleProcessSign,
+        handleSignDeniedByUser,
         handleProcessAccountCheck,]);
 }

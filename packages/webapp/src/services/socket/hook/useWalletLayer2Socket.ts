@@ -21,7 +21,6 @@ export const useWalletLayer2Socket = ({
 
     const socketUpdate = React.useCallback(
         _.throttle(({walletLayer1Status, walletLayer2Status}) => {
-            console.log('xxxxxx', Date.now())
             if (walletLayer1Status !== SagaStatus.PENDING) {
                 updateWalletLayer1()
             }

@@ -7,6 +7,7 @@ export enum Commands {
     ErrorDepositSign='ErrorDepositSign',
     ProcessDeposit='ProcessDeposit',// two or one step
     SignAccount='SignAccount', //unlock or update account  assgin
+    SignDeniedByUser='SignDeniedByUser',
     ErrorSign='ErrorSign',
     ProcessSign='ProcessSign',
     ProcessAccountCheck='ProcessAccountCheck',
