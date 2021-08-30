@@ -1,5 +1,5 @@
 import { Box, Typography } from '@material-ui/core';
-import { Trans, WithTranslation } from 'react-i18next';
+import { Trans, withTranslation, WithTranslation } from 'react-i18next';
 import {
     ConnectProviders,
     LoadingIcon,
@@ -40,7 +40,7 @@ export interface PanelProps {
     }
 }
 
-export const BasicPanel = ({
+export const BasicPanel = withTranslation('common', {withRef: true})(({
     t,
     title,
     iconType,
@@ -108,11 +108,11 @@ export const BasicPanel = ({
         }
         {btnInfo &&
             <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
-                <Button variant={'contained'} fullWidth size={'medium'} onClick={(e?: any) => { if (btnInfo?.callback) { btnInfo.callback(e) } }}>{btnInfo?.btnTxt} </Button>
+                <Button variant={'contained'} fullWidth size={'medium'} onClick={(e?: any) => { if (btnInfo?.callback) { btnInfo.callback(e) } }}>{t(btnInfo?.btnTxt)} </Button>
             </Box>}
         {link && <>{JSON.stringify(link)}</>}
     </Box>
-}
+})
 
 export const ConnectBase = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
