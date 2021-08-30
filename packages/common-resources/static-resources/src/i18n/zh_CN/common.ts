@@ -240,12 +240,27 @@ export default {
     labelAmmMyTransactions: '我的交易',
     labelAmmAllTransactions: '所有交易',
 
+    
+    label_WaitForAuth: '等待钱包签名',
+    label_Refused: '签名已被用户拒绝',
+    label_First_Method_Refused: '您的钱包不支持当前签名方法',
+
     label_Approve_WaitForAuth: '等待钱包<1>{{symbol}}</1>授权',
     label_Approve_Refused: '<0>{{symbol}}</0>授权用户拒绝',
     label_Approve_Submited: '<0>{{symbol}}</0>授权已提交',
 
-    label_Deposit_WaitForAuth: '请确认充值<1>{{value}}</1><2>{{symbol}}</2>',
-    label_Deposit_Refused:'充值<1>{{value}}</1><2>{{symbol}}</2>已被用户拒绝',
+    label_Deposit_WaitForAuth: '请确认充值 <1>{{value}}</1><2>{{symbol}}</2>',
+    label_Deposit_Refused:'充值 <1>{{value}}</1><2>{{symbol}}</2> 已被用户拒绝',
+    label_Deposit_Failed:'充值 <1>{{value}}</1><2>{{symbol}}</2> 失败',
+    label_Deposit_Submited: '充值 <1>{{value}}</1><2>{{symbol}}</2> 已提交',
+
+    label_Withdraw_In_Progress: '正在提现中...',
+    label_Withdraw_Failed:'提现 <1>{{value}}</1><2>{{symbol}}</2> 失败!',
+    label_Withdraw_Success: '提现 <1>{{value}}</1><2>{{symbol}}</2> 成功!',
+
+    label_Transfer_In_Progress: '正在转账中...',
+    label_Transfer_Failed:'转账 <1>{{value}}</1><2>{{symbol}}</2> 失败!',
+    label_Transfer_Success: '转账 <1>{{value}}</1><2>{{symbol}}</2> 成功!',
 
     label_CreateAccount_Approve_WaitForAuth: '等待 <1>{{symbol}}</1> 的授权...',
     label_CreateAccount_Approve_Refused: '<1>{{symbol}}</1>授权用户拒绝',

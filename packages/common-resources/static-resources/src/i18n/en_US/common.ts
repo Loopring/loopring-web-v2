@@ -241,12 +241,27 @@ export default {
     labelAmmMyTransactions: 'My Transactions',
     labelAmmAllTransactions: 'All Transactions',
 
+
+    label_WaitForAuth: 'Waiting for Wallet to sign',
+    label_Refused: 'Signing has been refused by user',
+    label_First_Method_Refused: 'Your wallet doesn\'t support this signature method',
+
     label_Approve_WaitForAuth: 'Waiting for <1>{symbol}</1> Approve',
-    label_Approve_Refused: '<0>{{symbol}}</0> Approve Refused by user',
-    label_Approve_Submited: '<0>{{symbol}}</0> Approve Submitted',
+    label_Approve_Refused: '<0>{{symbol}}</0> Approve has been refused by user',
+    label_Approve_Submited: '<0>{{symbol}}</0> Approve submitted',
     
-    label_Deposit_WaitForAuth: 'Please Confirm to Deposit<1>{{value}}</1><2>{{symbol}}</2>',
-    label_Deposit_Refused:'Deposit<1>{{value}}</1><2>{{symbol}}</2> has been refused by user',
+    label_Deposit_WaitForAuth: 'Please Confirm to Deposit <1>{{value}}</1><2>{{symbol}}</2>',
+    label_Deposit_Refused:'Deposit <1>{{value}}</1><2>{{symbol}}</2> has been refused by user',
+    label_Deposit_Failed:'Deposit <1>{{value}}</1><2>{{symbol}}</2> failed!',
+    label_Deposit_Submited: 'Deposit <1>{{value}}</1><2>{{symbol}}</2> submitted.',
+
+    label_Withdraw_In_Progress: 'Withdraw for now...',
+    label_Withdraw_Failed:'Withdraw <1>{{value}}</1><2>{{symbol}}</2> failed!',
+    label_Withdraw_Success: 'Withdraw <1>{{value}}</1><2>{{symbol}}</2> successfully!',
+
+    label_Transfer_In_Progress: 'Transfer for now...',
+    label_Transfer_Failed:'Transfer <1>{{value}}</1><2>{{symbol}}</2> failed!',
+    label_Transfer_Success: 'Transfer <1>{{value}}</1><2>{{symbol}}</2> successfully!',
 
     label_CreateAccount_Approve_WaitForAuth: 'Waiting for <1>{{symbol}}</1> Approve...',
     label_CreateAccount_Approve_Refused: '<1>{{symbol}}</1> Approve Refused by user.',

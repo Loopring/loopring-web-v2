@@ -50,7 +50,7 @@ export const Deposit_Refused = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
         describe1: <Trans i18nKey={'label_Deposit_Refused'}>
-            Deposit{props.value} {props.symbol} has been refused by user
+            Deposit{props.value}{props.symbol} has been refused by user
         </Trans>
     }
     return <DepositBase {...propsPatch} {...props} />
@@ -61,7 +61,7 @@ export const Deposit_Failed = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.FailedIcon,
         describe1: <Trans i18nKey={'label_Deposit_Failed'}>
-            {props.value} {props.symbol} Deposit Failed.
+            Deposit {props.value}{props.symbol} failed
         </Trans>
     }
     return <DepositBase {...propsPatch} {...props} />
@@ -72,7 +72,7 @@ export const Deposit_Submited = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.SubmitIcon,
         describe1: <Trans i18nKey={'label_Deposit_Submited'}>
-            {props.value} {props.symbol} Deposit Submited.
+            Deposit {props.value}{props.symbol} submitted
         </Trans>
     }
     return <DepositBase {...propsPatch} {...props} />

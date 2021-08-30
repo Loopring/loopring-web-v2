@@ -180,13 +180,13 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                 }} />,
             },
             [AccountStep.Deposit_Failed]: {
-                view: <Deposit_Failed btnInfo={closeBtn}
+                view: <Deposit_Failed btnInfo={closeBtn} value={'100'} symbol={'USDT'}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_Submited]: {
-                view: <Deposit_Submited txCheck={
+                view: <Deposit_Submited value={'100'} symbol={'USDT'} txCheck={
                     {
                         route: '',
                         callback: () => {
@@ -230,13 +230,13 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                 }} />,
             },
             [AccountStep.Transfer_Success]: {
-                view: <Transfer_Success
+                view: <Transfer_Success value={'100'} symbol={'USDT'}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Transfer_Failed]: {
-                view: <Transfer_Failed
+                view: <Transfer_Failed value={'100'} symbol={'USDT'}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
@@ -274,13 +274,13 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                     }} />,
             },
             [AccountStep.Withdraw_Success]: {
-                view: <Withdraw_Success
+                view: <Withdraw_Success value={'100'} symbol={'USDT'}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Withdraw_Failed]: {
-                view: <Withdraw_Failed
+                view: <Withdraw_Failed value={'100'} symbol={'USDT'}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
