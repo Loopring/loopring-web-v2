@@ -1,7 +1,7 @@
 import { ButtonProps } from '../../basic-lib';
 import { Account } from '@loopring-web/common-resources';
 
-export type AccountBaseNewProps = {
+export type AccountBaseProps = {
 
     // addressShort: string
     // address: string,
@@ -20,9 +20,6 @@ export type AccountBaseNewProps = {
 export enum AccountStepNew {
     NoAccount,
     QRCode,
-    ProcessUnlock,
-    SuccessUnlock,
-    FailedUnlock,
     HadAccount,
 
     // new
@@ -64,5 +61,13 @@ export enum AccountStepNew {
     UpdateAccount_Success,
     UpdateAccount_Submited,
     UpdateAccount_Failed,
+    
+    // UnlockAccount,
+    UnlockAccount_WaitForAuth,
+    UnlockAccount_User_Refused,
+    UnlockAccount_Success,
+    UnlockAccount_Failed,
+
+
 
 }

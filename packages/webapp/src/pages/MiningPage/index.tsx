@@ -62,10 +62,10 @@ export const MiningPage = withTranslation('common')(<T extends AmmData<C extends
         ammActivityViewMap,
         ammActivityPastViewMap
     } = useAmmMiningUI({ammActivityMap});
-    const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
-    const handleChange = (event: any, newValue: 0 | 1) => {
-        setTabIndex(newValue);
-    }
+    // const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
+    // const handleChange = (event: any, newValue: 0 | 1) => {
+    //     setTabIndex(newValue);
+    // }
     const jointAmmViewMap = [...ammActivityViewMap, ...ammActivityPastViewMap]
 
     return  <WrapperStyled>

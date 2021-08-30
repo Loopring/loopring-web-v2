@@ -1,5 +1,5 @@
 import { CoinInfo, PriceTag, TradeFloat } from '@loopring-web/common-resources';
-import { TradeBtnStatus } from '../panel';
+import { TradeBtnStatus } from '../tradePanel';
 
 export type MarketBlockProps<C> = {
     coinAInfo: CoinInfo<C>,

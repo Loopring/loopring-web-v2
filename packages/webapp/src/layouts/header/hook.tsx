@@ -11,7 +11,6 @@ import {
 
 import { changeShowModel, useAccount, } from 'stores/account'
 
-import { Theme, } from 'defs/common_defs'
 
 import {
     AccountStepNew as AccountStep,
@@ -69,9 +68,7 @@ export const useHeader = () => {
     },[]);
 
     React.useEffect(() => {
-        myLog( 'HeaderBtn status',accountStatus);
         if (accountStatus && accountStatus === 'UNSET') {
-            myLog( 'HeaderBtn status',accountState);
 
             setHeaderToolBarData((headerToolBarData)=>{
                 return {

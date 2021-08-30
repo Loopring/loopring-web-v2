@@ -3,14 +3,11 @@ import {
     AccountStepNew as AccountStep,
     Button,
     DepositPanel,
-    FailedUnlock,
     HadAccount,
     ModalAccount,
     ModalQRCode,
     NoAccount,
-    ProcessUnlock,
     QRAddressPanel,
-    SuccessUnlock,
     Toast,
     useOpenModals,
 
@@ -52,10 +49,16 @@ import {
     UpdateAccount_Success,
     UpdateAccount_Submited,
     UpdateAccount_Failed,
+
+    UnlockAccount_WaitForAuth,
+    UnlockAccount_User_Refused,
+    UnlockAccount_Success,
+    UnlockAccount_Failed,
+
     ModalPanel,
 } from '@loopring-web/component-lib';
 import { walletServices } from '@loopring-web/web3-provider';
-import { sleep } from 'loopring-sdk';
+import { ConnectorError, sleep } from 'loopring-sdk';
 
 import React, { useState } from 'react';
 import { copyToClipBoard } from 'utils/obj_tools';
@@ -77,6 +80,7 @@ import { useWalletInfo } from 'stores/localStore/walletInfo';
 import store from 'stores'
 import { useTransfer } from 'hooks/useractions/useTransfer';
 import { useWithdraw } from 'hooks/useractions/useWithdraw';
+import { checkErrorInfo } from 'hooks/useractions/utils';
 
 export const ModalAccountInfo = withTranslation('common')(({
     onClose,
@@ -209,9 +213,6 @@ export const ModalAccountInfo = withTranslation('common')(({
                 case ActionResultCode.GenEddsaKeyError:
                 case ActionResultCode.UpdateAccoutError:
 
-                    let errMsg = result.data?.errorInfo?.errMsg
-
-                    myLog('----------UpdateAccoutError errMsg:', errMsg)
 
                     const eddsaKey2 = result?.data?.eddsaKey
 
@@ -220,16 +221,22 @@ export const ModalAccountInfo = withTranslation('common')(({
                         store.dispatch(updateAccountStatus({ eddsaKey: eddsaKey2, }))
                     }
 
+                    const errMsg = checkErrorInfo(result?.data?.errorInfo, isFirstTime)
+
+                    myLog('----------UpdateAccoutError errMsg:', errMsg)
+
                     switch (errMsg) {
-                        case 'NOT_SUPPORT_ERROR':
+                        case ConnectorError.NOT_SUPPORT_ERROR:
                             myLog(' 00000---- got NOT_SUPPORT_ERROR')
                             setShowAccount({ isShow: true, step: AccountStep.UpdateAccount_First_Method_Refused })
                             return
-                        case 'USER_DENIED':
+                        case ConnectorError.USER_DENIED:
                             myLog(' 11111---- got USER_DENIED')
                             setShowAccount({ isShow: true, step: AccountStep.UpdateAccount_User_Refused })
                             return
                         default:
+                            myLog(' 11111---- got UpdateAccount_Success')
+                            setShowAccount({ isShow: true, step: AccountStep.UpdateAccount_Success })
                             accountServices.sendCheckAccount(account.accAddress)
                             break
                     }
@@ -308,6 +315,15 @@ export const ModalAccountInfo = withTranslation('common')(({
         }
     }, [setShowWithdraw, ])
 
+    const backToUnlockAccountBtnInfo = React.useMemo(() => {
+        return {
+            btnTxt: t('labelRetry'),
+            callback: () => {
+                debugger
+            }
+        }
+    }, [setShowAccount, ])
+
     const backToUpdateAccountBtnInfo = React.useMemo(() => {
         return {
             btnTxt: t('labelRetry'),
@@ -372,20 +388,6 @@ export const ModalAccountInfo = withTranslation('common')(({
                     etherscanUrl,
                     t
                 }} />, onBack, noClose: true
-            },
-            [AccountStep.ProcessUnlock]: {
-                view: <ProcessUnlock providerName={account.connectName} {...{
-                    ...rest,
-                    t
-                }} />,
-            },
-            [AccountStep.SuccessUnlock]: {
-                view: <SuccessUnlock providerName={account.connectName} onClose={closeBtnInfo.callback} {...{ ...rest, t }} />,
-            },
-            [AccountStep.FailedUnlock]: {
-                view: <FailedUnlock onRetry={() => {
-                    unlockAccount()
-                }} {...{ ...rest, t }} />,
             },
             [AccountStep.HadAccount]: {
                 view: <HadAccount {...{
@@ -620,6 +622,27 @@ export const ModalAccountInfo = withTranslation('common')(({
             },
             [AccountStep.UpdateAccount_Failed]: {
                 view: <UpdateAccount_Failed btnInfo={closeBtnInfo} {...{
+                    ...rest, t
+                }} />,
+            },
+
+            [AccountStep.UnlockAccount_WaitForAuth]: {
+                view: <UnlockAccount_WaitForAuth {...{
+                    ...rest, t
+                }} />,
+            },
+            [AccountStep.UnlockAccount_User_Refused]: {
+                view: <UnlockAccount_User_Refused btnInfo={backToUnlockAccountBtnInfo}  {...{
+                    ...rest, t
+                }} />,
+            },
+            [AccountStep.UnlockAccount_Success]: {
+                view: <UnlockAccount_Success btnInfo={closeBtnInfo} {...{
+                    ...rest, t
+                }} />,
+            },
+            [AccountStep.UnlockAccount_Failed]: {
+                view: <UnlockAccount_Failed btnInfo={closeBtnInfo} {...{
                     ...rest, t
                 }} />,
             },

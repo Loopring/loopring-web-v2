@@ -37,7 +37,7 @@ import { coinMap, CoinType, inputProps, walletMap } from '../../../static';
 import { CoinMenu } from '../lists';
 import { InputCoin } from './input/InputCoin';
 import { Link } from '@material-ui/core/';
-import { IconClearStyled } from '../../panel';
+import { IconClearStyled } from '../../tradePanel';
 
 
 const Style = styled.div`

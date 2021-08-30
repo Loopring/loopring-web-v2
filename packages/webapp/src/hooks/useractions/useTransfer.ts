@@ -15,7 +15,7 @@ import { useSystem } from 'stores/system';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { myLog } from 'utils/log_tools';
 import { makeWalletLayer2 } from 'hooks/help';
-import { useWalletHook } from '../../services/wallet/useWalletHook';
+import { useWalletLayer2Socket } from '../../services/socket';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS, REFRESH_RATE, TOAST_TIME } from 'defs/common_defs';
 import { useTranslation } from 'react-i18next';
@@ -85,7 +85,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         setWalletMap(walletMap)
 
     }, [])
-    useWalletHook({walletLayer2Callback})
+    useWalletLayer2Socket({walletLayer2Callback})
     const resetDefault = React.useCallback(() => {
         if (symbol) {
             setTransferValue({

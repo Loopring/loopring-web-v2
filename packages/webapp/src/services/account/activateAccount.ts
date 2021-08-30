@@ -68,7 +68,7 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
 
                 try {
                         if (!eddsaKey) {
-                            myLog('no eddsaKey!')
+                            myLog('no eddsaKey ！!')
                             eddsaKey = await sdk
                             .generateKeyPair(
                                 connectProvides.usedWeb3,
@@ -89,6 +89,8 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
                             'DAI': '98100000000000000000',
                         }
 
+                        myLog('fee:', sdk.toBig(feeMap['ETH']).div('1e18').toNumber())
+
                         const request: sdk.UpdateAccountRequestV3 = {
                             exchange: system.exchangeInfo.exchangeAddress,
                             owner: accInfo.owner,
@@ -99,7 +101,7 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
                             nonce: accInfo.nonce as number,
                         }
 
-                        myLog('req:', request)
+                        myLog('updateAccountFromServer req:', request)
 
                         const updateAccountResponse = await LoopringAPI.userAPI.updateAccount({
                             request,
@@ -126,7 +128,9 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
 
                     } catch (reason) {
                         result.code = ActionResultCode.UpdateAccoutError
-                        result.data = reason
+                        result.data = {
+                            errorInfo: reason
+                        }
                         dumpError400(reason)
                     }
 
@@ -135,12 +139,16 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
                     myLog('GenEddsaKeyError!!!!!! ')
 
                     result.code = ActionResultCode.GenEddsaKeyError
-                    result.data = reason
+                    result.data = {
+                        errorInfo: reason
+                    }
                     dumpError400(reason)
                 }
             }
         }
     } catch (reason) {
+
+        myLog('other error!!!!!!! ')
         result.code = ActionResultCode.GetAccError
         result.data = reason
         dumpError400(reason)

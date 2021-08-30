@@ -135,12 +135,13 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         getMakretArrayListCallback,
         // onLpWithdraw,
     } = props
+
     const [searchValue, setSearchValue] = useState('')
     const [hideSmallBalance, setHideSmallBalance] = useState(false)
     const [hideLPToken, setHideLPToken] = useState(false)
     const [totalData, setTotalData] = useState<RawDataAssetsItem[]>([])
     const [page, setPage] = useState(1)
-    const pageSize = pagination ? pagination.pageSize : 10;
+    // const pageSize = pagination ? pagination.pageSize : 10;
 
     const {language} = useSettings()
     let history = useHistory()
@@ -331,10 +332,10 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         generateColumns: ({columnsRaw}: any) => columnsRaw as Column<any, unknown>[],
     }
 
-    const getRenderData = useCallback(() => pagination
-        ? totalData.slice((page - 1) * pageSize, page * pageSize)
-        : totalData
-        , [page, pageSize, pagination, totalData])
+    // const getRenderData = useCallback(() => pagination
+    //     ? totalData.slice((page - 1) * pageSize, page * pageSize)
+    //     : totalData
+    //     , [page, pageSize, pagination, totalData])
 
     const updateData = useCallback(({
                                         TableType,
@@ -390,9 +391,9 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                 />
             </TableFilterStyled>
         )}
-        <Table {...{...defaultArgs, ...props, rawData: getRenderData()}} onScroll={getScrollIndex}/>
+        <Table className={'scrollable'} {...{...defaultArgs, ...props, rawData: totalData}} onScroll={getScrollIndex}/>
         {pagination && (
-            <TablePagination page={page} pageSize={pageSize} total={totalData.length} onPageChange={handlePageChange}/>
+            <TablePagination page={page} pageSize={1} total={totalData.length} onPageChange={handlePageChange}/>
         )}
     </TableStyled>
 })

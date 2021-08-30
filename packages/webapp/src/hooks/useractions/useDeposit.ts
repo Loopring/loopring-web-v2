@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { AccountStepNew as AccountStep, DepositProps, SwitchData, TradeBtnStatus, useOpenModals } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, ConnectProviders, IBData, WalletMap } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
-import { dumpError400, GetAllowancesRequest } from 'loopring-sdk';
+import { ChainId, dumpError400, GetAllowancesRequest } from 'loopring-sdk';
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
 import { useSystem } from 'stores/system';
@@ -63,7 +63,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
         walletLayer1Callback()
     },[isShow])
 
-    // useWalletHook({ walletLayer1Callback })
+    // useWalletLayer2Socket({ walletLayer1Callback })
 
     // walletMap1: WalletMap<T> | undefined, ShowDeposit: (isShow: boolean, defaultProps?: any) => void
     const handleDeposit = React.useCallback(async (inputValue: any) => {
@@ -84,9 +84,14 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 const fee = 0
 
-                const isMetaMask = connectName === ConnectProviders.MetaMask
+                // const isMetaMask = connectName === ConnectProviders.MetaMask
+                //    || connectName === ConnectProviders.WalletConnect
+
+                const isMetaMask = true
 
                 const realGasPrice = gasPrice ?? 30
+
+                const _chainId = chainId === 'unknown' ? ChainId.MAINNET : chainId
 
                 if (tokenInfo.symbol.toUpperCase() !== 'ETH') {
 
@@ -106,7 +111,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                         try {
                             await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
-                                exchangeInfo?.depositAddress, realGasPrice, gasLimit, chainId === 'unknown' ? undefined : chainId, nonce, isMetaMask)
+                                exchangeInfo?.depositAddress, realGasPrice, gasLimit, _chainId, nonce, isMetaMask)
                             nonce += 1
                         } catch (reason) {
                             result.code = ActionResultCode.ApproveFailed
