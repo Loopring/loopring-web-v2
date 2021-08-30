@@ -1,7 +1,9 @@
-import { Avatar,
+import {
+    Avatar,
     // Box,
     // BoxProps,
-    FormHelperText, FormLabel, Grid } from "@material-ui/core";
+    FormHelperText, FormLabel, Grid, Typography
+} from "@material-ui/core";
 // import styled from "@emotion/styled";
 // import CurrencyInput from 'react-currency-input-field';
 import { AvatarCoinStyled, CoinInfo, getThousandFormattedNumbers, IBData } from '@loopring-web/common-resources';
@@ -117,7 +119,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                       alignItems={'center'}
                       className={`icon-wrap icon-wrap-${order}`}>
                 <Grid container align-items={'center'} display={'flex'}>
-                    <Grid item order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}
+                    <Grid item display={'flex'} order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}
                           className={'logo-icon'}
                           height={'var(--list-menu-coin-size)'} width={'var(--list-menu-coin-size)'}
                           alignItems={'center'} justifyContent={'center'}>
@@ -135,7 +137,8 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                       src={'static/images/icon-default.png'}/>}
                     </Grid>
                     <Grid item order={order === 'left' ? 1 : 2}
-                          paddingLeft={order === 'left' ? 0 : 1}>{coinMap[ belong ]?.simpleName}</Grid>
+                          paddingLeft={order === 'left' ? 0 : 1}>
+                        <Typography variant={'h4'}>{coinMap[ belong ]?.simpleName}</Typography></Grid>
                 </Grid>
             </CoinWrap>
             <Grid order={order === 'left' ? 1 : 2} flex={1} item className={`input-wrap input-wrap-${order}`}>

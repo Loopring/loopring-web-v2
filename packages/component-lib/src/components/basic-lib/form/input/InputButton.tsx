@@ -1,6 +1,8 @@
-import { Avatar,
+import {
+    Avatar,
     // Box, Button, ButtonProps,
-    FormHelperText, FormLabel, Grid } from "@material-ui/core";
+    FormHelperText, FormLabel, Grid, Typography
+} from "@material-ui/core";
 // import styled from "@emotion/styled";
 // // import { debounce } from "lodash"
 // import CurrencyInput from 'react-currency-input-field';
@@ -129,7 +131,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 <ISBtn variant={'text'} onClick={(event) => handleOnClick(event, ref)} endIcon={<DropDownIcon color={"inherit"}/>} disabled={disabled}>
                     {belong ?
                         <Grid container align-items={'center'} display={'flex'}>
-                            <Grid item className={'logo-icon'} height={'var(--list-menu-coin-size)'}
+                            <Grid item display={'flex'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
                                   width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
                                 {coinIcon ?
                                     <AvatarCoinStyled imgx={coinIcon.x} imgy={coinIcon.y} imgheight={coinIcon.height}
@@ -144,7 +146,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                         // src={sellData?.icon}
                                               src={'static/images/icon-default.png'}/>}
                             </Grid>
-                            <Grid item paddingLeft={1}>{coinMap[ belong ]?.simpleName}</Grid>
+                            <Grid item paddingLeft={1}><Typography variant={'h4'}>{coinMap[ belong ]?.simpleName}</Typography></Grid>
                         </Grid>
                         : <span className={'placeholder'}>{emptyText}</span>
                     }

@@ -204,10 +204,11 @@ export const globalCss = ({theme}: any) => css`
     --datePicker-width: 320px;
     --datePicker-height: 232px;
     --list-coin-item: 44px;
+    --withdraw-coin-size: 16px;
     --header-menu-icon-size: 20px;
     --list-menu-coin-size: 24px;
-    --slippage-pop-width: 184px;
-    --slippage-pop-height: 88px ;
+    --slippage-pop-width: 308px;
+    //--slippage-pop-height: 88px ;
     --chart-title-coin-size: 28px;
     --btn-icon-size-small: 24px;
     --btn-icon-size: 36px;

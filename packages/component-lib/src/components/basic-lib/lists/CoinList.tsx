@@ -145,7 +145,7 @@ export const CoinItem = React.memo(React.forwardRef(<C extends any>({
         </ListItemIcon>
         <ListItemText primary={simpleName} secondary={
             <>
-                <Typography sx={{display: 'block'}} component="span" color="textSecondary" variant="body1">
+                <Typography sx={{display: 'block'}} component="span" color="textSecondary" variant={'h5'}>
                     {walletCoin.count}
                 </Typography>
             </>

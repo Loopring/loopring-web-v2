@@ -170,13 +170,6 @@ const StyledSlider = styled(Slider)`
     & .MuiSlider-thumb {
       z-index: 30;
       transform: translate(-50%,-50%) ;
-      //width: 24px;
-      //height: 24px;
-      //box-sizing: border-box;
-      //display: flex;
-      //justify-content: center;
-      //align-items: center;
-      //cursor: pointer;
       width: 18px;
       height: 18px;
       color: var(--color-text-primary);
@@ -185,21 +178,11 @@ const StyledSlider = styled(Slider)`
       ${({theme}) => theme.border.defaultFrame({d_W: 2, d_R: 12, c_key: 'var(--color-secondary)'})};
 
       input {
-
-        //opacity:1;
-        //width: 16px;
-        //height: 16px;
-        //box-sizing: border-box;
         cursor: pointer;
-        //background: var(--color-text-primary); //var(--color-text-secondary);
-        ////transform: translate(-50%,-50%) ;
-          //${({theme}) => theme.border.defaultFrame({d_W: 1, d_R: 12, c_key: 'var(--color-secondary)'})};
-
       }
       .MuiSlider-valueLabelCircle{
         background: var(--color-pop-bg);
-        // margin-top: ${({theme}) => theme.unit * 1.5}px;
-        // margin-left: ${({theme}) => theme.unit}px;
+        background: var(--color-pop-bg);
         overflow: visible;
         box-shadow: var(--shadow);
         border-radius: ${({theme}) => theme.unit * 0.5}px;
@@ -221,13 +204,6 @@ const StyledSlider = styled(Slider)`
         }
       }
 
-      //height: 4px;
-      //border-radius: 4px;
-      //background-color: var(--color-secondary); //var(--color-text-secondary);
-      //z-index: 102;
-      //left: 1px;
-      //transform: translateY(-50%);
-      //top: 50%;
     }
   }
 ` as typeof Slider;

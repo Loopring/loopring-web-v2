@@ -170,7 +170,7 @@ let swapProps: SwapProps<IBData<string>, string, any> = {
         console.log(data, switchType)
     }
 };
-let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
+let _ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
     refreshRef: React.createRef(),
     ammDepositData: {
         coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
@@ -178,8 +178,8 @@ let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
         slippage: '',
     },
     ammWithdrawData: {
-        coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
-        coinB: {belong: 'LRC', balance: 1000, tradeValue: 0},
+        coinLP: {belong: 'LP-ETH-LRC', balance: 0.3, tradeValue: 0},
+        // coinB: {belong: 'LRC', balance: 1000, tradeValue: 0},
         slippage: '',
     },
     // tradeCalcData,
@@ -310,24 +310,25 @@ const WrapAmmPanel = (rest: any) => {
         coinB: {belong: 'LRC', balance: 1000, tradeValue: 0}
     };
     let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
-        refreshRef: React.createRef(),
-        ammDepositData: tradeData,
-        ammWithdrawData: tradeData,
-        // tradeCalcData,
-        ammCalcDataDeposit: ammCalcData,
-        ammCalcDataWithDraw: ammCalcData,
-        handleAmmAddChangeEvent: (data, type) => {
-            console.log('handleAmmAddChangeEvent', data, type);
-        },
-        handleAmmRemoveChangeEvent: (data, type) => {
-            console.log('handleAmmRemoveChangeEvent', data, type);
-        },
-        onAmmRemoveClick: (data) => {
-            console.log('onAmmRemoveClick', data);
-        },
-        onAmmAddClick: (data) => {
-            console.log('onAmmAddClick', data);
-        }
+        ..._ammProps
+        // refreshRef: React.createRef(),
+        // ammDepositData: tradeData,
+        // ammWithdrawData: {coinLP:{belong: 'ETH', balance: 0.3, tradeValue: 0}},
+        // // tradeCalcData,
+        // ammCalcDataDeposit: ammCalcData,
+        // ammCalcDataWithDraw: ammCalcData,
+        // handleAmmAddChangeEvent: (data, type) => {
+        //     console.log('handleAmmAddChangeEvent', data, type);
+        // },
+        // handleAmmRemoveChangeEvent: (data, type) => {
+        //     console.log('handleAmmRemoveChangeEvent', data, type);
+        // },
+        // onAmmRemoveClick: (data) => {
+        //     console.log('onAmmRemoveClick', data);
+        // },
+        // onAmmAddClick: (data) => {
+        //     console.log('onAmmAddClick', data);
+        // }
     }
 
 
@@ -357,7 +358,7 @@ const WrapAmmPanel = (rest: any) => {
 
 const ModalPanelWrap = () => {
     return <ModalPanel transferProps={transferProps} withDrawProps={withdrawProps} depositProps={depositProps}
-                       resetProps={resetProps} ammProps={ammProps} swapProps={swapProps}/>
+                       resetProps={resetProps} ammProps={_ammProps} swapProps={swapProps}/>
 }
 
 

@@ -42,10 +42,10 @@ const Modal = withTranslation('common')(({
         {/*<>*/}
 
         <SwitchPanelStyled style={{boxShadow: '24'}} position={'relative'}
-            {...{
-                _width: `calc(var(--modal-width)`,
-                _height: _height
-            }}
+                           {...{
+                               _width: `calc(var(--modal-width)`,
+                               _height: _height
+                           }}
                            flex={1} display={'flex'}>
             <Box display={'flex'} width={"100%"} flexDirection={'column'}>
                 <ModalCloseButton onClose={onClose} {...rest} />
@@ -77,7 +77,7 @@ export const ModalPanel = <T extends IBData<I>, I>({
     withDrawProps: WithdrawProps<T, I>,
     depositProps: DepositProps<T, I>,
     resetProps: ResetProps<T, I>
-    ammProps: AmmProps<any, T, any>
+    ammProps: AmmProps<any, any, T, any>
     swapProps: SwapProps<T, I, any>
 }) => {
     const {
@@ -101,37 +101,37 @@ export const ModalPanel = <T extends IBData<I>, I>({
     return <>
         <Modal open={isShowTransfer.isShow} onClose={() => setShowTransfer({isShow: false})}
                content={<TransferPanel<any, any> {...{
-                   ...rest, _width: `calc(var(--modal-width) - ${theme.unit*5/2}px)`,
+                   ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
                    _height: 'var(--lage-modal-height)', ...transferProps,
                }}> </TransferPanel>}/>
         <Modal open={isShowWithdraw.isShow} onClose={() => setShowWithdraw({isShow: false})}
                content={<WithdrawPanel<any, any> {...{
-                   ...rest, _width: `calc(var(--modal-width) - ${theme.unit*5/2}px)`,
+                   ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
                    _height: 'var(--lage-modal-height)', ...withDrawProps,
                }}  > </WithdrawPanel>}/>
         <Modal open={isShowDeposit.isShow}
                onClose={() => setShowDeposit({isShow: false})}
                content={<DepositPanel<any, any> {...{
-                   ...rest, _width: `calc(var(--modal-width) - ${theme.unit*5/2}px)`,
-                   _height: 'var(--modal-height)', ...depositProps, 
+                   ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
+                   _height: 'var(--modal-height)', ...depositProps,
                }} > </DepositPanel>}/>
         <Modal open={isShowResetAccount.isShow}
                onClose={() => setShowResetAccount({...isShowResetAccount, isShow: false})}
                content={<ResetPanel<any, any> {...{
-                   ...rest, _width: `calc(var(--modal-width) - ${theme.unit*5/2}px)`,
+                   ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
                    _height: 'var(--modal-height)', ...resetProps,
                }} > </ResetPanel>}/>
         <Modal open={isShowAmm.isShow}
                onClose={() => setShowAmm({...isShowAmm, isShow: false} as any)}
-               content={<AmmPanel<any, any, any> {...{
+               content={<AmmPanel<any, any, any, any> {...{
                    ...rest,
-                   _width: `calc(var(--modal-width) - ${theme.unit*5/2}px)`,
+                   _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
                    _height: 'var(--modal-height)', ...ammProps,
                }} > </AmmPanel>}/>
         <Modal open={isShowSwap.isShow}
                onClose={() => setShowSwap({...isShowSwap, isShow: false} as any)}
                content={<SwapPanel<any, any, any> {...{
-                   ...rest, _width: `calc(var(--modal-width) - ${theme.unit*5/2}px)`,
+                   ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
                    _height: 'var(--modal-height)', ...swapProps,
                }} > </SwapPanel>}/>
     </>
