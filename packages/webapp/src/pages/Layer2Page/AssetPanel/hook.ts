@@ -174,7 +174,11 @@ export const useGetAssets = () => {
                 }
             })
 
-            data.sort((a, b) => { return b.tokenValueDollar - a.tokenValueDollar })
+            data.sort((a, b) => {
+                const deltaDollar = b.tokenValueDollar - a.tokenValueDollar
+                const deltaName = b.token.value < a.token.value ? 1 : -1
+                return deltaDollar !== 0 ? deltaDollar : deltaName
+            })
             setAssetsRawData(data)
         } else {
             myLog('emmmmmmmpty')
