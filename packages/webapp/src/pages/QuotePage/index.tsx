@@ -325,7 +325,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                   >
                       <Tab label={t('labelQuotePageFavourite')} value="favourite"/>
                       <Tab label={t('labelAll')} value="all"/>
-                      <Tab label={t('labelQuotePageTradeRanking')} value="tradeRanking"/>
+                      {/* <Tab label={t('labelQuotePageTradeRanking')} value="tradeRanking"/> */}
                   </Tabs>
                   <SearchWrapperStyled>
                     <InputSearch value={searchValue} onChange={handleSearchChange} />
