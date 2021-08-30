@@ -66,6 +66,14 @@ export type AmmData<C extends IBData<I>, I = any> = {
         [ key: string ]: any
     }
 }
+export type AmmWithdrawData<C extends IBData<I>, I = any> = {
+    coinLP: C,
+    slippage: number | string,
+    __cache__?: {
+        [ key: string ]: any
+    }
+}
+
 
 export type AmmInData<T> = {
     myCoinA: IBData<T>,

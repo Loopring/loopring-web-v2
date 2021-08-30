@@ -165,6 +165,12 @@ export const LButton: Story<ButtonProps> = withTranslation()(({t, ...rest}: With
                         }
 
                         }/>
+                        {/*<BtnPercentageDraggable selected={selected} maxValue={'Available:1001.111'} handleChanged={(value: any) => {*/}
+
+                        {/*    console.log(value)*/}
+                        {/*    setSelected(value)*/}
+                        {/*}  }/>*/}
+
                         {/*< selected={0} handleChanged={(value:any)=>console.log(value)}/>*/}
                     </Grid>
                 </Grid>
