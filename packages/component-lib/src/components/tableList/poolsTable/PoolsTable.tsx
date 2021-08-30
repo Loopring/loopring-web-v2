@@ -8,7 +8,7 @@ import {
     EmptyValueTag,
     getThousandFormattedNumbers,
     globalSetup,
-    MiningIcon,
+    // MiningIcon,
     PriceTag,
     SearchIcon,
     TableType,
@@ -135,7 +135,7 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
                 {/*        : PriceTag.Yuan + getThousandFormattedNumbers(amountYuan)}*/}
                 {/*</Typography>*/}
             </Typography>
-            {isActivity ? <Typography component={'span'} paddingRight={1}><MiningIcon/> </Typography> : undefined}
+            {isActivity ? <Typography component={'span'} paddingRight={1}> </Typography> : undefined}
             {isNew ? <NewTagIcon/> : undefined}
         </Box>
     </BoxStyled>

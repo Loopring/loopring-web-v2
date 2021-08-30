@@ -1,12 +1,9 @@
 import { useRouteMatch } from 'react-router'
 
 import { Box, Typography } from '@material-ui/core'
-import {
-    SubMenuList as BasicSubMenuList,
-} from '@loopring-web/component-lib'
+
 import { withTranslation, WithTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
-import { subMenuLiquidity } from '@loopring-web/common-resources'
 import { PoolsPanel } from './PoolsPanel'
 import { CoinPairPanel } from './CoinPairPanel';
 
@@ -20,9 +17,8 @@ const TableWrapperStyled = styled(Box)`
     flex: 1;
 `
 
-export const subMenu = subMenuLiquidity
+// export const subMenu = subMenuLiquidity
 
-const SubMenuList = withTranslation(['layout','common'], { withRef: true })(BasicSubMenuList);
 export const LiquidityPage =  withTranslation('common', { withRef: true })(({ t }: WithTranslation) => {
 
     // const { ammFee } = useAmmPool('LRC', 'ETH')

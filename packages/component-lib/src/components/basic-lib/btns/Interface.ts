@@ -1,4 +1,4 @@
-import { ButtonProps as MuButtonPros, ToggleButtonGroupProps as MuToggleButtonGroupProps } from "@material-ui/core";
+import { Mark,ButtonProps as MuButtonPros, ToggleButtonGroupProps as MuToggleButtonGroupProps } from "@material-ui/core";
 import { XOR } from "../../../types/lib";
 
 export type ButtonProps = MuButtonPros & {
@@ -9,11 +9,18 @@ export type ButtonProps = MuButtonPros & {
     loading?: 'true' | 'false'
 }
 
-export interface BtnPercentageProps {
-    anchors?: number[], //0 --100    default 0,20,40,60,80,100
+export interface BtnPercentageProps  {
+    anchors?:  Mark[], //0 --100    default 0,20,40,60,80,100
     selected: number,
+    valueLabelDisplay?: 'on' | 'auto' | 'off',
+    valuetext?: ((value:any)=>string),
     handleChanged: (item: any) => void
+    step?:number,
 }
+export interface BtnPercentageDraggableProps extends BtnPercentageProps{
+    maxValue: string|number,
+}
+
 
 export interface TGItemJSXInterface {
     value: any,
