@@ -15,7 +15,7 @@ export async function activeAccount({ reason, shouldShow }: { reason: any, shoul
     // const {exchangeInfo} = store.getState().system;
     if (reason?.response?.data?.resultInfo?.code === 100001) {
         // deposited, but need update account
-        console.log('SignAccount')
+        myLog('SignAccount')
         store.dispatch(setShowConnect({ isShow: false }));
         store.dispatch(setShowAccount({ isShow: true, step: AccountStep.UpdateAccount }));
         store.dispatch(updateAccountStatus({ readyState: AccountStatus.DEPOSITING }));
@@ -27,13 +27,13 @@ export async function activeAccount({ reason, shouldShow }: { reason: any, shoul
             activeDeposit = JSON.stringify(activeDeposit);
         }
         if (activeDeposit && activeDeposit[account.accAddress]) {
-            console.log('DEPOSITING')
+            myLog('DEPOSITING')
             store.dispatch(setShowConnect({ isShow: false }));
             store.dispatch(setShowAccount({ isShow: shouldShow, step: AccountStep.Deposit_Submited }));
             store.dispatch(updateAccountStatus({ readyState: AccountStatus.DEPOSITING }));
             // store.dispatch(statusAccountUnset(undefined))
         } else {
-            console.log('NO_ACCOUNT')
+            myLog('NO_ACCOUNT')
             setShowConnect({ isShow: false });
             setShowAccount({ isShow: shouldShow, step: AccountStep.NoAccount });
             store.dispatch(updateAccountStatus({ readyState: AccountStatus.NO_ACCOUNT }));

@@ -32,7 +32,6 @@ export const makeTickView = (tick: Partial<TickerData>) => {
             // const priceYuan = priceDollar.times(forex);
 
             const qPrice = tick.quote === 'DAI' ? 1 : faitPrices[tick.quote as string]?.price ? faitPrices[tick.quote as string].price : 0;
-            console.log({tick})
             const closeDollar = toBig(tick.close).times(qPrice);
             const closeYuan = closeDollar.times(forex);
 

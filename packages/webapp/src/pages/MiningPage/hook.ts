@@ -1,6 +1,7 @@
 import { AmmCardProps } from '@loopring-web/common-resources';
 import { AmmPoolActivityRule, AmmPoolActivityStatus,LoopringMap } from 'loopring-sdk';
 import React from 'react';
+import { myLog } from 'utils/log_tools';
 import {
     makeUIAmmActivityMap
 } from '../../hooks/help';
@@ -27,7 +28,7 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
     // const [ammUserRewardMap, setAmmUserRewardMap] = React.useState<AmmUserRewardMap>(
     //     {});
 
-    console.log(ammActivityViewMap, ammActivityPastViewMap)
+    myLog(ammActivityViewMap, ammActivityPastViewMap)
 
 
     // );

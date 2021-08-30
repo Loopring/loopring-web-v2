@@ -6,6 +6,7 @@ import { LoopringAPI, } from 'api_wrapper';
 import { AmmRecordRow, AmmTradeType,RawDataTradeItem } from '@loopring-web/component-lib';
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
 import { useAmmTotalValue } from './useAmmTotalValue'
+import { myError } from 'utils/log_tools';
 
 export const getUserTrades = (market: string) => {
     if (!LoopringAPI.userAPI) {
@@ -85,9 +86,7 @@ export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[
                 })
             }
         } catch (error) {
-            //CATCHERROR:
-            console.log(error)
-            // new CustomError()
+            myError(error)
         }
 
     })
