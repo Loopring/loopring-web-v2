@@ -104,7 +104,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     //High: No not Move!!!!!!
     const {realPair, realMarket} = usePairMatch('/trading/lite');
     /** get store value **/
-    const {amountMap,getAmount} =  useAmount();
+    const {amountMap, getAmount} =  useAmount();
     const {account, status: accountStatus} = useAccount()
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap, idIndex} = useTokenMap()
     const {ammMap} = useAmmMap()
@@ -158,15 +158,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         market,
         quoteMinAmt,
     } : ''
-
-    // React.useEffect(() => {
-
-    //     if (amountMap && amountMap[market] && pair?.coinBInfo?.simpleName) {
-    //         const quoteMinAmtInfo = amountMap[market][ pair?.coinBInfo?.simpleName as string ]
-    //         setQuoteMinAmt(quoteMinAmtInfo?.userOrderInfo.minAmount)
-    //     }
-
-    // }, [amountMap, market, pair?.coinBInfo?.simpleName, setQuoteMinAmt])
 
     const swapFunc = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
 
@@ -712,13 +703,13 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             setPriceImpact(priceImpact.priceImpact ?? 0)
 
             let totalFee = undefined;
+            const ammMarket = `AMM-${market}`
 
-            if (amountMap && amountMap[market] && ammMap) {
-
-                // const {amm,} = sdk.getExistedMarket(marketArray, tradeCalcData.coinSell, tradeCalcData.coinBuy)
-                const ammMarket = `AMM-${market}`
-                const quoteMinAmtInfo = amountMap[market][ _tradeData['buy'].belong as string ]
-                myLog(`quoteMinAmtInfo: AMM-${market}, ${_tradeData['buy'].belong}`, amountMap[market])
+            if (amountMap && (amountMap[ammMarket] || amountMap[market]) && ammMap) {
+                const amount = ammMap[ ammMarket ] ? amountMap[ammMarket] : amountMap[market]
+                const quoteMinAmtInfo = amount[ _tradeData['buy'].belong as string ]
+                myLog(`quoteMinAmtInfo: ${ammMarket}, ${_tradeData['buy'].belong}`)
+                myLog(amountMap[ammMarket], amountMap[market])
 
                 const takerRate = quoteMinAmtInfo.userOrderInfo.takerRate
                 const feeBips = ammMap[ ammMarket ]? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
