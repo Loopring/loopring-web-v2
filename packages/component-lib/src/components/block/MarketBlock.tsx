@@ -18,7 +18,8 @@ const MarketBlockStyled = styled(Box)<StyledProps>`
     background: var(--color-box);
 
     border-radius: ${({theme}) => theme.unit}px;
-
+    border: 1px solid var(--color-box);
+    cursor: pointer;
   }
 
   // &:not(:last-of-type){
@@ -37,6 +38,11 @@ const MarketBlockStyled = styled(Box)<StyledProps>`
     align-items: flex-end;
   }
 
+  &:hover {
+    // box-shadow: var(--shadow);
+    border: 1px solid var(--color-border);
+  }
+
 ` as React.ElementType<StyledProps & BoxProps>;
 
 export const MarketBlock = <C extends CoinKey<I>, I>({
@@ -44,13 +50,16 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                                                          t,
                                                          coinBInfo,
                                                          tradeFloat,
-                                                         chartData = []
-                                                     }: & WithTranslation & MarketBlockProps<C>) => {
+                                                         chartData = [],
+                                                         handleBlockClick,
+                                                     }: & WithTranslation & MarketBlockProps<C> & { handleBlockClick: () => void }) => {
     const {upColor, currency} = useSettings();
     const isUSD = currency === 'USD'
-    const { volume } = tradeFloat
+    const { volume, priceDollar, priceYuan } = tradeFloat
     const currencyUnit = isUSD ? PriceTag.Dollar : PriceTag.Yuan
-    return <MarketBlockStyled className={'MuiPaper-elevation2'} custom={{chg: upColor}} padding={0.5 * 5} display={'flex'}
+    const baseFaitPriceDollar = Number((priceDollar / (volume || 1)).toFixed(2))
+    const baseFaitPriceYuan = Number((priceYuan / (volume || 1)).toFixed(2))
+    return <MarketBlockStyled onClick={handleBlockClick} className={'MuiPaper-elevation2'} custom={{chg: upColor}} padding={0.5 * 5} display={'flex'}
                               justifyContent={'stretch'}>
         {coinAInfo && coinBInfo ?
             <Grid container justifyContent={'space-around'} position={'relative'}>
@@ -73,11 +82,11 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                         {tradeFloat.close ? (
                             <Box height={24} display={'flex'} alignItems={'center'}
                                         className={`float-tag float-${tradeFloat.floatTag}`}>
-                                <Typography variant={'h4'}>{getThousandFormattedNumbers(tradeFloat?.close || 0, 4)}
+                                <Typography variant={'h4'}>{getThousandFormattedNumbers(tradeFloat?.close || 0)}
                                 </Typography>
-                              <Typography color={'var(--color-text-secondary)'} marginX={1 / 4}>&nbsp;&#8776;</Typography>
+                              <Typography color={'var(--color-text-secondary)'} marginX={1 / 4}>&#8776;</Typography>
                               <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
-                            {currencyUnit}{getThousandFormattedNumbers(isUSD ? tradeFloat.priceDollar : tradeFloat.priceYuan, 2, {isAbbreviate: true})}</Typography>
+                            {currencyUnit}{getThousandFormattedNumbers(isUSD ? baseFaitPriceDollar : baseFaitPriceYuan, 2)}</Typography>
                             </Box>) : ''}
                         <Box display={'flex'} alignItems={'center'}>
                           <Typography variant={'body2'} component={'span'} marginTop={1 / 2} marginRight={1}
@@ -104,7 +113,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                     </Box> */}
 
                 </Grid>
-                <Grid item position={'absolute'} top={0} right={0} width={120} height={52}>
+                <Grid item position={'absolute'} top={0} right={0} width={90} height={52}>
                     <ScaleAreaChart showTooltip={false} showArea={false} type={ChartType.Trend} data={chartData}/>
                 </Grid>
             </Grid> : <></>
