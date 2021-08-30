@@ -13,11 +13,11 @@ export const Deposit_Approve_WaitForAuth = (props: PanelProps & WithTranslation)
 }
 
 // symbol
-export const Deposit_Approve_Refused = (props: PanelProps & WithTranslation) => {
+export const Deposit_Approve_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_Approve_Refused'}>
-            {props.symbol} Approve Refused by user.
+        describe1: <Trans i18nKey={'label_Approve_Denied'}>
+            {props.symbol} Approve Denied by user.
         </Trans>
     }
     return <DepositBase {...propsPatch} {...props} />
@@ -46,11 +46,11 @@ export const Deposit_WaitForAuth = (props: PanelProps & WithTranslation) => {
 }
 
 // value symbol
-export const Deposit_Refused = (props: PanelProps & WithTranslation) => {
+export const Deposit_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_Deposit_Refused'}>
-            Deposit{props.value}{props.symbol} has been refused by user
+        describe1: <Trans i18nKey={'label_Deposit_Denied'}>
+            Deposit{props.value}{props.symbol} has been denied by user
         </Trans>
     }
     return <DepositBase {...propsPatch} {...props} />

@@ -37,21 +37,19 @@ export const UpdateAccount_Approve_WaitForAuth = (props: PanelProps & WithTransl
     return <UpdateAccountBase {...props} {...propsPatch} />
 }
 
-export const UpdateAccount_First_Method_Refused = (props: PanelProps & WithTranslation) => {
+export const UpdateAccount_First_Method_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_UpdateAccount_First_Method_Refused'}>
-            First Sig Method Failed.
+        describe1: <Trans i18nKey={'label_First_Method_Denied'}>
         </Trans>
     }
     return <UpdateAccountBase {...propsPatch} {...props} />
 }
 
-export const UpdateAccount_User_Refused = (props: PanelProps & WithTranslation) => {
+export const UpdateAccount_User_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_UpdateAccount_User_Refused'}>
-            Sig User Denied.
+        describe1: <Trans i18nKey={'label_Denied'}>
         </Trans>
     }
     return <UpdateAccountBase {...propsPatch} {...props} />
@@ -62,7 +60,8 @@ export const UpdateAccount_Success = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.DoneIcon,
         describe1: <Trans i18nKey={'label_UpdateAccount_Success'}>
-            Update Account Successfully!
+        </Trans>,
+        describe2: <Trans i18nKey={'label_UpdateAccount_Success2'}>
         </Trans>
     }
     return <UpdateAccountBase {...propsPatch} {...props} />
@@ -73,7 +72,6 @@ export const UpdateAccount_Submited = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.SubmitIcon,
         describe1: <Trans i18nKey={'label_UpdateAccount_Submited'}>
-            Update Account Tx Submited.
         </Trans>
     }
     return <UpdateAccountBase {...propsPatch} {...props} />

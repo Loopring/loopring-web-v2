@@ -14,44 +14,44 @@ import {
     UpdateAccount,
 
     Deposit_Approve_WaitForAuth,
-    Deposit_Approve_Refused,
+    Deposit_Approve_Denied,
     Deposit_Approve_Submited,
     Deposit_WaitForAuth,
-    Deposit_Refused,
+    Deposit_Denied,
     Deposit_Failed,
     Deposit_Submited,
 
     Transfer_WaitForAuth,
-    Transfer_First_Method_Refused,
-    Transfer_User_Refused,
+    Transfer_First_Method_Denied,
+    Transfer_User_Denied,
     Transfer_In_Progress,
     Transfer_Success,
     Transfer_Failed,
 
     Withdraw_WaitForAuth,
-    Withdraw_First_Method_Refused,
-    Withdraw_User_Refused,
+    Withdraw_First_Method_Denied,
+    Withdraw_User_Denied,
     Withdraw_In_Progress,
     Withdraw_Success,
     Withdraw_Failed,
 
     CreateAccount_Approve_WaitForAuth,
-    CreateAccount_Approve_Refused,
+    CreateAccount_Approve_Denied,
     CreateAccount_Approve_Submited,
     CreateAccount_WaitForAuth,
-    CreateAccount_Refused,
+    CreateAccount_Denied,
     CreateAccount_Failed,
     CreateAccount_Submited,
 
     UpdateAccount_Approve_WaitForAuth,
-    UpdateAccount_First_Method_Refused,
-    UpdateAccount_User_Refused,
+    UpdateAccount_First_Method_Denied,
+    UpdateAccount_User_Denied,
     UpdateAccount_Success,
     UpdateAccount_Submited,
     UpdateAccount_Failed,
 
     UnlockAccount_WaitForAuth,
-    UnlockAccount_User_Refused,
+    UnlockAccount_User_Denied,
     UnlockAccount_Success,
     UnlockAccount_Failed,
 
@@ -228,11 +228,11 @@ export const ModalAccountInfo = withTranslation('common')(({
                     switch (errMsg) {
                         case ConnectorError.NOT_SUPPORT_ERROR:
                             myLog(' 00000---- got NOT_SUPPORT_ERROR')
-                            setShowAccount({ isShow: true, step: AccountStep.UpdateAccount_First_Method_Refused })
+                            setShowAccount({ isShow: true, step: AccountStep.UpdateAccount_First_Method_Denied })
                             return
                         case ConnectorError.USER_DENIED:
                             myLog(' 11111---- got USER_DENIED')
-                            setShowAccount({ isShow: true, step: AccountStep.UpdateAccount_User_Refused })
+                            setShowAccount({ isShow: true, step: AccountStep.UpdateAccount_User_Denied })
                             return
                         default:
                             myLog(' 11111---- got UpdateAccount_Success')
@@ -420,8 +420,8 @@ export const ModalAccountInfo = withTranslation('common')(({
                         ...rest, t
                     }} />,
             },
-            [AccountStep.Deposit_Approve_Refused]: {
-                view: <Deposit_Approve_Refused btnInfo={backToDepositBtnInfo} {...{
+            [AccountStep.Deposit_Approve_Denied]: {
+                view: <Deposit_Approve_Denied btnInfo={backToDepositBtnInfo} {...{
                     ...rest, t
                 }} />, onBack: () => {
                     setShowAccount({ isShow: true, step: AccountStep.Deposit });
@@ -442,8 +442,8 @@ export const ModalAccountInfo = withTranslation('common')(({
                         setShowAccount({ isShow: true, step: AccountStep.Deposit });
                     }
             },
-            [AccountStep.Deposit_Refused]: {
-                view: <Deposit_Refused btnInfo={backToDepositBtnInfo} {...{
+            [AccountStep.Deposit_Denied]: {
+                view: <Deposit_Denied btnInfo={backToDepositBtnInfo} {...{
                     ...rest, t
                 }} />, onBack: () => {
                     setShowAccount({ isShow: true, step: AccountStep.Deposit });
@@ -471,13 +471,13 @@ export const ModalAccountInfo = withTranslation('common')(({
                         ...rest, t
                     }} />,
             },
-            [AccountStep.Transfer_First_Method_Refused]: {
-                view: <Transfer_First_Method_Refused btnInfo={TryNewTransferAuthBtnInfo} {...{
+            [AccountStep.Transfer_First_Method_Denied]: {
+                view: <Transfer_First_Method_Denied btnInfo={TryNewTransferAuthBtnInfo} {...{
                     ...rest, t
                 }} />,
             },
-            [AccountStep.Transfer_User_Refused]: {
-                view: <Transfer_User_Refused btnInfo={backToTransferBtnInfo} {...{
+            [AccountStep.Transfer_User_Denied]: {
+                view: <Transfer_User_Denied btnInfo={backToTransferBtnInfo} {...{
                     ...rest, t
                 }} />,
             },
@@ -504,13 +504,13 @@ export const ModalAccountInfo = withTranslation('common')(({
                         ...rest, t
                     }} />,
             },
-            [AccountStep.Withdraw_First_Method_Refused]: {
-                view: <Withdraw_First_Method_Refused btnInfo={TryNewWithdrawAuthBtnInfo} {...{
+            [AccountStep.Withdraw_First_Method_Denied]: {
+                view: <Withdraw_First_Method_Denied btnInfo={TryNewWithdrawAuthBtnInfo} {...{
                     ...rest, t
                 }} />,
             },
-            [AccountStep.Withdraw_User_Refused]: {
-                view: <Withdraw_User_Refused btnInfo={backToWithdrawBtnInfo} {...{
+            [AccountStep.Withdraw_User_Denied]: {
+                view: <Withdraw_User_Denied btnInfo={backToWithdrawBtnInfo} {...{
                     ...rest, t
                 }} />,
             },
@@ -538,8 +538,8 @@ export const ModalAccountInfo = withTranslation('common')(({
                         ...rest, t
                     }} />,
             },
-            [AccountStep.CreateAccount_Approve_Refused]: {
-                view: <CreateAccount_Approve_Refused
+            [AccountStep.CreateAccount_Approve_Denied]: {
+                view: <CreateAccount_Approve_Denied
                     providerName={account.connectName} {...{
                         ...rest, t
                     }} />,
@@ -556,8 +556,8 @@ export const ModalAccountInfo = withTranslation('common')(({
                         ...rest, t
                     }} />,
             },
-            [AccountStep.CreateAccount_Refused]: {
-                view: <CreateAccount_Refused
+            [AccountStep.CreateAccount_Denied]: {
+                view: <CreateAccount_Denied
                     providerName={account.connectName} {...{
                         ...rest, t
                     }} />,
@@ -593,8 +593,8 @@ export const ModalAccountInfo = withTranslation('common')(({
                         ...rest, t
                     }} />,
             },
-            [AccountStep.UpdateAccount_First_Method_Refused]: {
-                view: <UpdateAccount_First_Method_Refused btnInfo={{
+            [AccountStep.UpdateAccount_First_Method_Denied]: {
+                view: <UpdateAccount_First_Method_Denied btnInfo={{
                     btnTxt: t('labelTryAnother'),
                     callback: (e?: any) => {
                         goUpdateAccount(false)
@@ -605,8 +605,8 @@ export const ModalAccountInfo = withTranslation('common')(({
                     backToUpdateAccountBtnInfo.callback()
                 }
             },
-            [AccountStep.UpdateAccount_User_Refused]: {
-                view: <UpdateAccount_User_Refused btnInfo={backToUpdateAccountBtnInfo} {...{
+            [AccountStep.UpdateAccount_User_Denied]: {
+                view: <UpdateAccount_User_Denied btnInfo={backToUpdateAccountBtnInfo} {...{
                     ...rest, t
                 }} />,
             },
@@ -631,8 +631,8 @@ export const ModalAccountInfo = withTranslation('common')(({
                     ...rest, t
                 }} />,
             },
-            [AccountStep.UnlockAccount_User_Refused]: {
-                view: <UnlockAccount_User_Refused btnInfo={backToUnlockAccountBtnInfo}  {...{
+            [AccountStep.UnlockAccount_User_Denied]: {
+                view: <UnlockAccount_User_Denied btnInfo={backToUnlockAccountBtnInfo}  {...{
                     ...rest, t
                 }} />,
             },
