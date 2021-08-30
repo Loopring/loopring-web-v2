@@ -30,6 +30,8 @@ import { useSettings } from '../../stores';
 import moment from 'moment';
 import { TradeTitle } from '../block';
 import { Header } from '../header';
+import React from 'react';
+import AmmPanel from '@loopring-web/webapp/src/pages/Layer2Page/AmmPanel';
 
 
 const Style = styled.div`
@@ -40,10 +42,12 @@ const tradeData: any = {
     coinB: {belong: 'LRC', balance: 1000, tradeValue: 0}
 };
 let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
+    ammCalcDataDeposit: ammCalcData,
+    ammCalcDataWithDraw: ammCalcData,
+    refreshRef: React.createRef(),
     ammDepositData: tradeData,
     ammWithdrawData: tradeData,
     // tradeCalcData,
-    ammCalcData: ammCalcData,
     handleAmmAddChangeEvent: (data, type) => {
         console.log('handleAmmAddChangeEvent', data, type);
     },
