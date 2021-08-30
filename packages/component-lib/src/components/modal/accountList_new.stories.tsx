@@ -274,7 +274,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                     }} />,
             },
             [AccountStep.Withdraw_Success]: {
-                view: <Withdraw_Success value={'100'} symbol={'USDT'}
+                view: <Withdraw_Success
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
