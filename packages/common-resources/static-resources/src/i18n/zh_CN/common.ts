@@ -239,4 +239,14 @@ export default {
     labelCalculating:'计算中...',
     labelAmmMyTransactions: '我的交易',
     labelAmmAllTransactions: '所有交易',
+
+    label_Approve_WaitForAuth: '等待钱包<1>{{symbol}}</1>授权',
+    label_Approve_Refused: '<0>{{symbol}}</0>授权用户拒绝',
+    label_Approve_Submited: '<0>{{symbol}}</0>授权已提交',
+
+    label_Deposit_WaitForAuth: '请确认充值<1>{{value}}</1><2>{{symbol}}</2>',
+    label_Deposit_Refused:'充值<1>{{value}}</1><2>{{symbol}}</2>已被用户拒绝',
+
+    label_CreateAccount_Approve_WaitForAuth: '等待 <1>{{symbol}}</1> 的授权...',
+    label_CreateAccount_Approve_Refused: '<1>{{symbol}}</1>授权用户拒绝',
 }

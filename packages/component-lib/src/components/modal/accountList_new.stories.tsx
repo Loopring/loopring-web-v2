@@ -144,19 +144,19 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
         const accountMap = {
 
             [AccountStep.Deposit_Approve_WaitForAuth]: {
-                view: <Deposit_Approve_WaitForAuth
+                view: <Deposit_Approve_WaitForAuth symbol={'DAI'}
                     providerName={ConnectProviders.MetaMask} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_Approve_Refused]: {
-                view: <Deposit_Approve_Refused btnInfo={retryBtn}
+                view: <Deposit_Approve_Refused btnInfo={retryBtn} symbol={'DAI'}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_Approve_Submited]: {
-                view: <Deposit_Approve_Submited btnInfo={closeBtn} txCheck={
+                view: <Deposit_Approve_Submited btnInfo={closeBtn} symbol={'DAI'} txCheck={
                     {
                         route: '',
                         callback: () => {
@@ -169,13 +169,13 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                     }} />,
             },
             [AccountStep.Deposit_WaitForAuth]: {
-                view: <Deposit_WaitForAuth
+                view: <Deposit_WaitForAuth value={'100'} symbol={'USDT'}
                     providerName={ConnectProviders.WalletConnect} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_Refused]: {
-                view: <Deposit_Refused btnInfo={retryBtn} {...{
+                view: <Deposit_Refused value={'100'} symbol={'USDT'} btnInfo={retryBtn} {...{
                     ...rest
                 }} />,
             },
@@ -294,13 +294,13 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
     const { nameList4, accountList4, } = React.useMemo(() => {
         const accountMap = {
             [AccountStep.CreateAccount_Approve_WaitForAuth]: {
-                view: <CreateAccount_Approve_WaitForAuth
+                view: <CreateAccount_Approve_WaitForAuth symbol={'USDT'}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.CreateAccount_Approve_Refused]: {
-                view: <CreateAccount_Approve_Refused
+                view: <CreateAccount_Approve_Refused symbol={'USDT'}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
@@ -381,7 +381,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
     }, [])
 
     const fontSize = '30px'
-    const color = 'red'
+    const color = 'white'
     const width = 400
 
     return (

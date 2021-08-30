@@ -73,12 +73,6 @@ export const AccountBasePanel = ({
             }}>
                 <Typography variant={'body2'} marginTop={1 / 2}> {t('labelCopyClipBoard')} </Typography>
             </Button>
-
-            {/* <Button startIcon={<ReverseIcon fontSize={'small'}/>} onClick={() => {
-                if (onSwitch) onSwitch()
-            }}>   labelCopyAddress
-                <Typography variant={'body2'} marginTop={1 / 2}>  {t('labelSwitchAccount')} </Typography>
-            </Button> */}
             <Button startIcon={<ReverseIcon fontSize={'small'}/>} onClick={() => {
                 if (onDisconnect) onDisconnect()
             }}>
