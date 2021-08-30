@@ -1,4 +1,4 @@
-import {AccountBaseProps } from './Interface'
+import { AccountBaseProps } from './Interface'
 import { AccountBasePanel } from './AccountBase'
 import { Box } from '@material-ui/core';
 import { WithTranslation, withTranslation } from 'react-i18next';

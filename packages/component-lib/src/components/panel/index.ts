@@ -5,4 +5,4 @@ export * from './ModalPanel'
 export * from './components/Styled'
 export * from './components/tool/Dialogs'
 
-export * from './AmmNew'
+export * from './Amm'

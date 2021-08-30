@@ -2,7 +2,7 @@ import React from "react";
 import {
     AccountStatus,
     AmmData,
-    AmmInDataNew,
+    AmmInData,
     CoinInfo,
     fnType,
     IBData,
@@ -177,7 +177,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
     const [baseMinAmt, setBaseMinAmt,] = React.useState<any>()
     const [quoteMinAmt, setQuoteMinAmt,] = React.useState<any>()
 
-    const [ammCalcData, setAmmCalcData] = React.useState<AmmInDataNew<C> | undefined>();
+    const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<C> | undefined>();
 
     const [ammData, setAmmData] = React.useState<AmmData<IBData<C>, C>>({
         coinA: { belong: undefined } as unknown as IBData<C>,

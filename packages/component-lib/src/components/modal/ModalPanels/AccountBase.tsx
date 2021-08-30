@@ -2,7 +2,7 @@ import { Box, Button, Typography } from '@material-ui/core/';
 import { CopyIcon, getShortAddr, LinkIcon, ReverseIcon, } from '@loopring-web/common-resources';
 import { Trans, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
-import {AccountBaseProps } from './Interface';
+import { AccountBaseProps } from './Interface';
 import {
     VipStyled 
 } from '../../../';

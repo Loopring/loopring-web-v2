@@ -1,7 +1,7 @@
 import { Box, Modal as MuiModal } from '@material-ui/core';
 import {
-    AmmPanelNew,
-    AmmPropsNew,
+    AmmPanel,
+    AmmProps,
     DepositPanel,
     DepositProps,
     ModalCloseButton,
@@ -77,7 +77,7 @@ export const ModalPanel = <T extends IBData<I>, I>({
     withDrawProps: WithdrawProps<T, I>,
     depositProps: DepositProps<T, I>,
     resetProps: ResetProps<T, I>
-    ammProps: AmmPropsNew<any, T, any>
+    ammProps: AmmProps<any, T, any>
     swapProps: SwapProps<T, I, any>
 }) => {
     const {
@@ -123,11 +123,11 @@ export const ModalPanel = <T extends IBData<I>, I>({
                }} > </ResetPanel>}/>
         <Modal open={isShowAmm.isShow}
                onClose={() => setShowAmm({...isShowAmm, isShow: false} as any)}
-               content={<AmmPanelNew<any, any, any> {...{
+               content={<AmmPanel<any, any, any> {...{
                    ...rest,
                    _width: `calc(var(--modal-width) - ${theme.unit*5/2}px)`,
                    _height: 'var(--modal-height)', ...ammProps,
-               }} > </AmmPanelNew>}/>
+               }} > </AmmPanel>}/>
         <Modal open={isShowSwap.isShow}
                onClose={() => setShowSwap({...isShowSwap, isShow: false} as any)}
                content={<SwapPanel<any, any, any> {...{

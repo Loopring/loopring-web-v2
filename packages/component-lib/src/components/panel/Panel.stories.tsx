@@ -19,7 +19,6 @@ import {
     AmmPanel,
     AmmPanelType,
     AmmProps,
-    DepositPanel,
     DepositProps,
     ModalPanel,
     ResetProps,
@@ -27,11 +26,16 @@ import {
     SwapTradeData,
     SwitchData,
     TradeBtnStatus,
-    TransferPanel,
     TransferProps,
-    WithdrawPanel,
     WithdrawProps
 } from './index';
+
+import {
+    DepositPanel,
+    TransferPanel,
+    WithdrawPanel,
+} from '../modal'
+
 import { useDispatch } from 'react-redux';
 import {
     setShowAmm,
