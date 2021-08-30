@@ -8,6 +8,7 @@ import {
     AccountStatus,
     CoinMap,
     IBData,
+    SagaStatus,
     WalletMap,
     WithdrawType,
     WithdrawTypes
@@ -23,7 +24,7 @@ import { LoopringAPI } from 'api_wrapper';
 import { useSystem } from 'stores/system';
 import { myLog } from 'utils/log_tools';
 import { makeWalletLayer2 } from 'hooks/help';
-import { useWalletHook } from '../../services/wallet/useWalletHook';
+import { useWalletLayer2Socket } from '../../services/socket';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS, TOAST_TIME } from 'defs/common_defs';
 import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
@@ -50,7 +51,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const [withdrawAlertText, setWithdrawAlertText] = useState<string>()
 
     const { tokenMap, totalCoinMap, } = useTokenMap();
-    const { account } = useAccount()
+    const { account, status: accountStatus } = useAccount()
     const { exchangeInfo, chainId } = useSystem();
     const [withdrawValue, setWithdrawValue] = React.useState<IBData<T>>({
         belong: undefined,
@@ -120,7 +121,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     React.useEffect(() => {
         resetDefault();
     }, [isShow])
-    useWalletHook({ walletLayer2Callback })
+    useWalletLayer2Socket({ walletLayer2Callback })
     useCustomDCEffect(() => {
         if (chargeFeeList.length > 0) {
             setWithdrawFeeInfo(chargeFeeList[0])
@@ -152,7 +153,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             })
 
             myLog('submitOffchainWithdraw:', response)
-    
+
             if (response?.errorInfo) {
                 // Withdraw failed
                 const code = checkErrorInfo(response.errorInfo, isFirstTime)
@@ -179,6 +180,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
         }
     }, [setLastRequest, setShowAccount, updateDepositHashWrapper, account])
+
+    const withdrawType2 = withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
 
     const handleWithdraw = React.useCallback(async (inputValue: R, address, isFirstTime: boolean = true) => {
 
@@ -215,6 +218,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                         tokenId: feeToken.tokenId,
                         volume: withdrawFeeInfo.__raw__,
                     },
+                    fastWithdrawalMode: withdrawType2 === WithdrawType.Fast,
                     extraData: '',
                     minGas: 0,
                     validUntil: getTimestampDaysLater(DAYS),
@@ -235,12 +239,22 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             return false
         }
 
-    }, [account, tokenMap, exchangeInfo, withdrawFeeInfo, withdrawValue, setShowAccount])
+    }, [account, tokenMap, exchangeInfo, withdrawType2, withdrawFeeInfo, withdrawValue, setShowAccount])
 
-    const withdrawType2 = withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
+    React.useEffect(() => {
+        if (accountStatus === SagaStatus.UNSET) {
+            if (account.readyState === AccountStatus.ACTIVATED) {
+                if (account.accAddress) {
+                    setAddress(account.accAddress)
+                }
+            } else {
+                setShowWithdraw({ isShow: false })
+            }
+        }
+    }, [accountStatus, account.readyState])
 
     const withdrawProps: WithdrawProps<R, T> = {
-        addressDefault: account.accAddress,
+        addressDefault: address,
         tradeData: withdrawValue as any,
         coinMap: totalCoinMap as CoinMap<T>,
         walletMap: walletMap2 as WalletMap<any>,

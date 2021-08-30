@@ -19,7 +19,7 @@ import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help';
 
 const RowStyled = styled(Grid)`
       & .MuiGrid-root:not(:last-of-type) > div{
-        margin-right: ${({theme}) => theme.unit * 2}px;
+        // margin-right: ${({theme}) => theme.unit * 2}px;
       }
 ` as typeof Grid
 
@@ -262,38 +262,57 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
 
     return <Box display={'flex'} flexDirection={'column'} flex={1} >
 
-        <RowStyled container >
-
-            {/* {recommendations.map((item,index)=> <Grid key={item.coinAInfo+item.coinBInfo+index} item xs={3} >
-                    <MarketBlock {...{...item, ...rest}}></MarketBlock>
-                </Grid>
-            )} */}
-            {/* {recommendations.map((item,index)=> {
-              const market = `${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}`
-              const chartData = candlestickList.find(o => o.market === market)?.data.sort((a: any, b: any) => a.timeStamp - b.timeStamp)
-              return (
-                <Grid key={index} item xs={3} onClick={() => {
-                  history && history.push({
-                    pathname: `/trading/lite/${market}`
-                  })
-                }}>
-                    <MarketBlock {...{...item, chartData: chartData ? chartData : [], ...rest}}></MarketBlock>
-                </Grid>
+        <RowStyled container spacing={2}>
+            {/* give default value to have empty block render */}
+            {(!!recommendations.length ? recommendations : [{
+              coinAInfo: {
+                simpleName: ''
+              },
+              coinBInfo: {
+                simpleName: ''
+              },
+            }, {
+              coinAInfo: {
+                simpleName: ''
+              },
+              coinBInfo: {
+                simpleName: ''
+              }}, {
+                coinAInfo: {
+                  simpleName: ''
+                },
+                coinBInfo: {
+                  simpleName: ''
+                }}, {
+                  coinAInfo: {
+                    simpleName: ''
+                  },
+                  coinBInfo: {
+                    simpleName: ''
+                  }}] as MarketBlockProps<{
+              [key: string]: string;
+          }>[]).map((item,index) => (
+              <Grid key={`${item.coinAInfo.simpleName}-${item.coinBInfo.simpleName}-${index}`} item xs={12} sm={6} lg={3}>
+                <MarketBlock {...{...formattedRecommendations[index], 
+                  tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[index]?.tradeFloat), 
+                  chartData: formattedRecommendations[index] ? formattedRecommendations[index].chartData : [], 
+                  handleBlockClick: () => handleRecommendBoxClick(formattedRecommendations[index]),
+                  ...rest}}></MarketBlock>
+              </Grid>
               )
-            } 
-            )} */}
-            <Grid item xs={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[0])}>
-                <MarketBlock {...{...formattedRecommendations[0], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[0]?.tradeFloat), chartData: formattedRecommendations[0] ? formattedRecommendations[0].chartData : [], ...rest}}></MarketBlock>
-            </Grid>
-            <Grid item xs={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[1])}>
-                <MarketBlock {...{...formattedRecommendations[1], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[1]?.tradeFloat), chartData: formattedRecommendations[1] ? formattedRecommendations[1].chartData : [], ...rest}}></MarketBlock>
-            </Grid>
-            <Grid item xs={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[2])}>
-                <MarketBlock {...{...formattedRecommendations[2], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[2]?.tradeFloat), chartData: formattedRecommendations[2] ? formattedRecommendations[2].chartData : [], ...rest}}></MarketBlock>
-            </Grid>
-            <Grid item xs={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[3])}>
-                <MarketBlock {...{...formattedRecommendations[3], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[3]?.tradeFloat), chartData: formattedRecommendations[3] ? formattedRecommendations[3].chartData : [], ...rest}}></MarketBlock>
-            </Grid>
+            )}
+            {/* // <Grid item xs={12} sm={6} lg={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[0])}>
+            //     <MarketBlock {...{...formattedRecommendations[0], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[0]?.tradeFloat), chartData: formattedRecommendations[0] ? formattedRecommendations[0].chartData : [], ...rest}}></MarketBlock>
+            // </Grid>
+            // <Grid item xs={12} sm={6} lg={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[1])}>
+            //     <MarketBlock {...{...formattedRecommendations[1], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[1]?.tradeFloat), chartData: formattedRecommendations[1] ? formattedRecommendations[1].chartData : [], ...rest}}></MarketBlock>
+            // </Grid>
+            // <Grid item xs={12} sm={6} lg={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[2])}>
+            //     <MarketBlock {...{...formattedRecommendations[2], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[2]?.tradeFloat), chartData: formattedRecommendations[2] ? formattedRecommendations[2].chartData : [], ...rest}}></MarketBlock>
+            // </Grid>
+            // <Grid item xs={12} sm={6} lg={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[3])}>
+            //     <MarketBlock {...{...formattedRecommendations[3], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[3]?.tradeFloat), chartData: formattedRecommendations[3] ? formattedRecommendations[3].chartData : [], ...rest}}></MarketBlock>
+            // </Grid> */}
 
         </RowStyled>
         <TableWrapStyled container marginY={3} paddingBottom={1} flex={1} className={'MuiPaper-elevation2'}>
@@ -306,7 +325,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                   >
                       <Tab label={t('labelQuotePageFavourite')} value="favourite"/>
                       <Tab label={t('labelAll')} value="all"/>
-                      <Tab label={t('labelQuotePageTradeRanking')} value="tradeRanking"/>
+                      {/* <Tab label={t('labelQuotePageTradeRanking')} value="tradeRanking"/> */}
                   </Tabs>
                   <SearchWrapperStyled>
                     <InputSearch value={searchValue} onChange={handleSearchChange} />

@@ -62,15 +62,16 @@ const BoxStyled = styled(Box)`
 
 ` as typeof Box
 const TableStyled = styled(Box)`
-  .rdg {
-    --template-columns: 300px auto auto auto 130px !important;
+    .rdg {
+        border-radius: ${({theme}) => theme.unit}px;
+        --template-columns: 300px auto auto auto 130px !important;
 
-    .rdg-cell.action {
-      display: flex;
-      justify-content: center;                    
-      align-items: center;
+        .rdg-cell.action {
+        display: flex;
+        justify-content: center;                    
+        align-items: center;
+        }
     }
-  }
 
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
@@ -242,6 +243,7 @@ export const PoolsTable = withTranslation('tables')(
                                              showFilter = true,
                                              rawData,
                                              wait = globalSetup.wait,
+                                             tableHeight = 350,
                                              ...rest
                                          }: WithTranslation & PoolTableProps<T>) => {
         const [filterBy, setFilterBy] = React.useState<string>('');
@@ -321,7 +323,7 @@ export const PoolsTable = withTranslation('tables')(
                   </InputAdornment>}
               />
             </Box>}
-            <Table {...{
+            <Table style={{ height: tableHeight }} className={'scrollable'} {...{
                 ...defaultArgs, t, i18n, tReady, ...rest,
                 rawData: getRenderData(),
                 onRowClick: (index, row) => onRowClick(index, row),
