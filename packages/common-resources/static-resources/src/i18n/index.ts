@@ -19,7 +19,7 @@ export const resources = {
 
 i18n.use(initReactI18next).init({
     resources,
-    ns: ['common', 'layout', 'tables', 'error'],
+    ns: ['common', 'layout', 'tables', 'error', 'modal'],
     defaultNS: 'common',
     lng: LanguageType.en_US,
     load: 'currentOnly',
