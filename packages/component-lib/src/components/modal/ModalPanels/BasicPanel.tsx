@@ -57,13 +57,13 @@ export const BasicPanel = ({
             case IconType.LoadingIcon:
                 return <LoadingIcon color={'primary'} style={{ width: 72, height: 72 }} />
             case IconType.FailedIcon:
-                return <FailedIcon style={{ color: 'var(--color-error)', width: 72, height: 72 }} />
+                return <FailedIcon style={{ color: 'var(--color-error)', width: 60, height: 60 }} />
             case IconType.SubmitIcon:
-                return <SubmitIcon color={'primary'} style={{ width: 72, height: 72 }} />
+                return <SubmitIcon color={'primary'} style={{ width: 60, height: 60 }} />
             case IconType.RefuseIcon:
                 return <RefuseIcon style={{ color: 'var(--color-warning)', width: 60, height: 60 }} />
             case IconType.DoneIcon:
-                return <DoneIcon style={{ color: 'var(--color-success)', width: 72, height: 72 }} />
+                return <DoneIcon style={{ color: 'var(--color-success)', width: 60, height: 60 }} />
         }
     }, [iconType])
 
@@ -94,7 +94,7 @@ export const BasicPanel = ({
         <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
             {iconDiv}
         </Typography>
-        {describe1 && describe1} {txCheck && <>check the tx.</>}
+        {describe1 && describe1}
         {txCheck &&
             <Link target='_blank' href={txCheck.route} display={'inline-block'} marginTop={1 / 2}>
                 <LinkIcon color={'primary'} fontSize={'small'} style={{ verticalAlign: 'middle' }} />
