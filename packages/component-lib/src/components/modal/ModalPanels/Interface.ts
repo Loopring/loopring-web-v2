@@ -17,7 +17,7 @@ export type AccountBaseProps = {
 } & Account
 
 
-export enum AccountStepNew {
+export enum AccountStep {
     NoAccount,
     QRCode,
     HadAccount,
@@ -67,7 +67,5 @@ export enum AccountStepNew {
     UnlockAccount_User_Denied,
     UnlockAccount_Success,
     UnlockAccount_Failed,
-
-
 
 }

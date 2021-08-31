@@ -37,7 +37,7 @@ export const useWalletLayer2Socket = ({
     React.useEffect(() => {
         const subscription = subject.subscribe(() => {
             const walletLayer2Status = store.getState().walletLayer2.status;
-            const walletLayer1Status = store.getState().walletLayer2.status;
+            const walletLayer1Status = store.getState().walletLayer1.status;
             _socketUpdate({walletLayer2Status, walletLayer1Status})
         });
         return () => subscription.unsubscribe();

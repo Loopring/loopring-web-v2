@@ -1,5 +1,5 @@
 import { useAccount } from '../../stores/account';
-import { AccountStepNew as AccountStep, useOpenModals } from '@loopring-web/component-lib';
+import { AccountStep, useOpenModals } from '@loopring-web/component-lib';
 import React from 'react';
 import { sleep } from 'loopring-sdk';
 import { useAccountHook } from '../../services/account/useAccountHook';

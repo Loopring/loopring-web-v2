@@ -3,7 +3,7 @@ import { Modal } from '@material-ui/core';
 import {
     ModalBackButton,
     ModalCloseButton,
-    ModalWalletConnectProps, shake,
+    ModalWalletConnectProps,
     SwipeableViewsStyled,
     SwitchPanelStyled
 } from '../../../index';
@@ -37,9 +37,6 @@ export const ModalWalletConnect = withTranslation('common', {withRef: true})((
         }}>
             <Box display={'flex'} width={"100%"} flexDirection={'column'}>
                 <ModalCloseButton onClose={onClose} {...rest} />
-                {/*{panelList.map((panel) => {*/}
-                {/*    return panel.onBack ? <ModalBackButton  onBack={panel.onBack}  {...rest}/> : <></>*/}
-                {/*})}*/}
                 {onBack ? <ModalBackButton onBack={onBack}  {...rest}/> :<></>}
             </Box>
             <SwipeableViewsStyled animateTransitions={false} axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}

@@ -304,8 +304,8 @@ export class LoopringSocket {
                             // console.log('Socket>>Socket topics first return', topics);
                         }
                         if (topic && topic.topic && self._socketCallbackMap) {
-                            const {topic: {topic}, data} = result
-                            self._socketCallbackMap[ topic.topic ]?.fn.call(self, data, ...self._socketCallbackMap[ topic.topic ].deps);
+                            const {topic: {topic:_topic}, data} = result
+                            self._socketCallbackMap[ _topic ]?.fn.call(self, data, ...self._socketCallbackMap[ _topic ].deps);
 
                         }
 

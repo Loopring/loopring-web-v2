@@ -1,5 +1,5 @@
 import { updateAccountStatus } from '../../stores/account';
-import { AccountStepNew as AccountStep, setShowAccount, setShowConnect } from '@loopring-web/component-lib';
+import { AccountStep, setShowAccount, setShowConnect } from '@loopring-web/component-lib';
 import store from '../../stores';
 import { AccountStatus } from '@loopring-web/common-resources';
 import { myLog } from 'utils/log_tools';

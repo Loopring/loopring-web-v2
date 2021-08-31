@@ -1,5 +1,4 @@
 import { AccountStatus, } from '@loopring-web/common-resources';
-import { setShowAccount } from '@loopring-web/component-lib';
 
 import { Subject } from 'rxjs';
 import { Commands } from './command';

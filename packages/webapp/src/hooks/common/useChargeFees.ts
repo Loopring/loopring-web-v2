@@ -11,7 +11,6 @@ import { useState } from 'react';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { LoopringAPI } from 'api_wrapper';
 import * as sdk from 'loopring-sdk';
-import { myLog } from 'utils/log_tools';
 import React from 'react';
 import * as _ from 'lodash'
 import { globalSetup } from '@loopring-web/common-resources'

@@ -40,7 +40,7 @@ export interface PanelProps {
     }
 }
 
-export const BasicPanel = withTranslation('common', {withRef: true})(({
+export const BasicPanel = withTranslation('common', { withRef: true })(({
     t,
     title,
     iconType,
@@ -52,18 +52,32 @@ export const BasicPanel = withTranslation('common', {withRef: true})(({
     link,
 }: PanelProps & WithTranslation) => {
 
+    const isLoading = iconType === IconType.LoadingIcon
+
+    const size = isLoading ? 72 : 60
+
+    const marginTopIcon = isLoading ? 7 : 8
+
+    const marginTopDescribe1 = isLoading ? 2 : 3
+
+    const marginProvider = 9
+
+    const marginTopBtn = link ? 8 : 11
+
+    const marginToplink = 2
+
     const iconDiv = React.useMemo(() => {
         switch (iconType) {
             case IconType.LoadingIcon:
-                return <LoadingIcon color={'primary'} style={{ width: 72, height: 72 }} />
+                return <LoadingIcon color={'primary'} style={{ width: size, height: size }} />
             case IconType.FailedIcon:
-                return <FailedIcon style={{ color: 'var(--color-error)', width: 60, height: 60 }} />
+                return <FailedIcon style={{ color: 'var(--color-error)', width: size, height: size }} />
             case IconType.SubmitIcon:
-                return <SubmitIcon color={'primary'} style={{ width: 60, height: 60 }} />
+                return <SubmitIcon color={'primary'} style={{ width: size, height: size }} />
             case IconType.RefuseIcon:
-                return <RefuseIcon style={{ color: 'var(--color-warning)', width: 60, height: 60 }} />
+                return <RefuseIcon style={{ color: 'var(--color-warning)', width: size, height: size }} />
             case IconType.DoneIcon:
-                return <DoneIcon style={{ color: 'var(--color-success)', width: 60, height: 60 }} />
+                return <DoneIcon style={{ color: 'var(--color-success)', width: size, height: size }} />
         }
     }, [iconType])
 
@@ -72,7 +86,6 @@ export const BasicPanel = withTranslation('common', {withRef: true})(({
             switch (providerName) {
                 case ConnectProviders.MetaMask:
                     return <Trans i18nKey={'labelMetaMaskProcessDescribe'}>
-                        {/*Please adding MetaMask to your browser,*/}
                         Please click approve button on MetaMask popup window.
                         When MetaMask dialog is dismiss,
                         please manually click <img alt="MetaMask" style={{ verticalAlign: 'text-bottom' }}
@@ -90,27 +103,50 @@ export const BasicPanel = withTranslation('common', {withRef: true})(({
 
     return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
         flexDirection={'column'}>
-        <Typography component={'h3'} variant={'h3'} marginBottom={3}>{t(title as string)}</Typography>
-        <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
+        <Typography component={'h3'} variant={'h3'}>{t(title as string)}</Typography>
+        <Typography marginTop={marginTopIcon} component={'p'} display={'flex'} alignItems={'flex-start'} flexDirection={'column'}>
             {iconDiv}
         </Typography>
-        {describe1 && describe1}
-        {txCheck &&
-            <Link target='_blank' href={txCheck.route} display={'inline-block'} marginTop={1 / 2}>
-                <LinkIcon color={'primary'} fontSize={'small'} style={{ verticalAlign: 'middle' }} />
-            </Link>}
-        {describe2 && describe2}
+
+        {describe1 && <Box display={'flex'} marginTop={marginTopDescribe1} alignItems={'flex-center'}>
+            <Typography variant={'h5'} color={'textPrimary'} component={'p'} marginTop={0} alignSelf={'flex-center'}
+                paddingRight={1}>
+                {describe1}
+            </Typography>
+            {txCheck &&
+                <Link target='_blank' href={txCheck.route} display={'inline-block'} marginTop={1 / 4}>
+                    <LinkIcon color={'primary'} fontSize={'small'} style={{ verticalAlign: 'middle' }} />
+                </Link>}
+        </Box>}
+
+        {describe2 && <Box flex={1} display={'flex'} marginTop={0} alignItems={'flex-center'}>
+            <Typography variant={'h5'} color={'textPrimary'} component={'p'} marginTop={0} alignSelf={'flex-center'}
+                paddingX={1}>
+                {describe2}
+            </Typography>
+        </Box>}
+
         {providerName &&
-            <Typography variant={'body2'} color={'textSecondary'} component={'p'} marginTop={3} alignSelf={'flex-start'}
-                paddingX={5}>
+            <Typography variant={'body2'} color={'textSecondary'} component={'p'} paddingX={5}
+            marginTop={marginProvider} alignSelf={'flex-start'}>
                 {providerDescribe}
             </Typography>
         }
+
         {btnInfo &&
-            <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
-                <Button variant={'contained'} fullWidth size={'medium'} onClick={(e?: any) => { if (btnInfo?.callback) { btnInfo.callback(e) } }}>{t(btnInfo?.btnTxt)} </Button>
-            </Box>}
-        {link && <>{JSON.stringify(link)}</>}
+            <Box marginTop={marginTopBtn} alignSelf={'stretch'} paddingX={5}>
+                <Button variant={'contained'} fullWidth size={'medium'} onClick={(e?: any) => {
+                    if (btnInfo?.callback) { btnInfo.callback(e) }
+                }}>{t(btnInfo?.btnTxt)} </Button>
+            </Box>
+        }
+
+        {link && <Box marginTop={marginToplink} alignSelf={'flex-center'} paddingX={0}>
+            <Typography variant={'body2'} color={'textSecondary'} component={'p'} alignSelf={'flex-center'}>
+                <Link color={'textSecondary'} href={link.url}>{link.name}</Link>
+            </Typography>
+        </Box>}
+
     </Box>
 })
 
