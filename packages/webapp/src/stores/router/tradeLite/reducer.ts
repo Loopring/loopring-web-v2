@@ -1,17 +1,20 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import { PageTradeLite } from './interface';
+import { PageTradeLite, PageTradeLiteStatus } from './interface';
 import * as sdk from 'loopring-sdk';
 import { TradeChannel } from 'loopring-sdk';
 
-const initialState: PageTradeLite = {
-    market: undefined,
-    tradePair: undefined,
-    calcTradeParams: undefined,
-    priceImpactObj: undefined,
+const initialState:PageTradeLiteStatus = {
+    pageTradeLite:{
+        market: undefined,
+        tradePair: undefined,
+        calcTradeParams: undefined,
+        priceImpactObj: undefined,
+    },
+
     __SUBMIT_LOCK_TIMER__: 1000,
     __TOAST_AUTO_CLOSE_TIMER__: 3000,
 };
-const pageTradeLiteSlice: Slice<PageTradeLite> = createSlice({
+const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
     name: 'pageTradeLite',
     initialState,
     reducers: {
@@ -31,8 +34,8 @@ const pageTradeLiteSlice: Slice<PageTradeLite> = createSlice({
                 buyMinAmtInfo,
                 sellMinAmtInfo
             } = action.payload;
-            if (market !== state.market) {
-                state = {
+            if (market !== state.pageTradeLite.market) {
+                state.pageTradeLite = {
                     market,
                     tradePair,  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
                     calcTradeParams,
@@ -48,45 +51,43 @@ const pageTradeLiteSlice: Slice<PageTradeLite> = createSlice({
                     quoteMinAmtInfo,
                     buyMinAmtInfo,
                     sellMinAmtInfo,
-                    __SUBMIT_LOCK_TIMER__: 1000,
-                    __TOAST_AUTO_CLOSE_TIMER__: 3000,
                 }
 
             } else {
+                if(tradePair){
+                    state.pageTradeLite.tradePair = tradePair;
+                }
                 if (depth) {
-                    state.depth = depth;
+                    state.pageTradeLite.depth = depth;
                 }
                 if (tickMap) {
-                    state.tickMap = tickMap;
+                     state.pageTradeLite.tickMap = tickMap;
                 }
                 if (ammPoolsBalance) {
-                    state.ammPoolsBalance = ammPoolsBalance;
-                }
-                if (tradePair) {
-                    state.tradePair = tradePair;
+                     state.pageTradeLite.ammPoolsBalance = ammPoolsBalance;
                 }
                 if (calcTradeParams) {
-                    state.calcTradeParams = calcTradeParams;
-                    state.orderType = calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
-                    state.tradeChannel = calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
+                     state.pageTradeLite.calcTradeParams = calcTradeParams;
+                     state.pageTradeLite.orderType = calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
+                     state.pageTradeLite.tradeChannel = calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
                 }
                 if (priceImpactObj) {
-                    state.priceImpactObj = priceImpactObj;
+                     state.pageTradeLite.priceImpactObj = priceImpactObj;
                 }
                 if (feeBips) {
-                    state.feeBips = feeBips;
+                     state.pageTradeLite.feeBips = feeBips;
                 }
                 if (totalFee) {
-                    state.totalFee = totalFee;
+                     state.pageTradeLite.totalFee = totalFee;
                 }
                 if (takerRate) {
-                    state.takerRate = takerRate;
+                     state.pageTradeLite.takerRate = takerRate;
                 }
                 if (sellMinAmtInfo) {
-                    state.sellMinAmtInfo = sellMinAmtInfo;
+                     state.pageTradeLite.sellMinAmtInfo = sellMinAmtInfo;
                 }
                 if (buyMinAmtInfo) {
-                    state.buyMinAmtInfo = buyMinAmtInfo;
+                     state.pageTradeLite.buyMinAmtInfo = buyMinAmtInfo;
                 }
 
             }
