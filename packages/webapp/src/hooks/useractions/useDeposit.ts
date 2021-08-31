@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react';
 
 import { AccountStepNew as AccountStep, DepositProps, SwitchData, TradeBtnStatus, useOpenModals } from '@loopring-web/component-lib';
-import { AccountStatus, CoinMap, ConnectProviders, IBData, WalletMap } from '@loopring-web/common-resources';
+import { AccountStatus, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
-import { ChainId, dumpError400, GetAllowancesRequest } from 'loopring-sdk';
+import { ChainId, ConnectorError, dumpError400, GetAllowancesRequest } from 'loopring-sdk';
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
 import { useSystem } from 'stores/system';
@@ -13,6 +13,7 @@ import { myLog } from 'utils/log_tools';
 import { useWalletLayer1 } from 'stores/walletLayer1';
 import { useTranslation } from 'react-i18next';
 import { ActionResult, ActionResultCode } from 'defs/common_defs';
+import { checkErrorInfo } from './utils';
 
 export const useDeposit = <R extends IBData<T>, T>(): {
     depositProps: DepositProps<R, T>
@@ -64,8 +65,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     },[isShow])
 
     // useWalletLayer2Socket({ walletLayer1Callback })
-
-    // walletMap1: WalletMap<T> | undefined, ShowDeposit: (isShow: boolean, defaultProps?: any) => void
+    
     const handleDeposit = React.useCallback(async (inputValue: any) => {
         const {readyState, connectName} = account
 
@@ -146,10 +146,10 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 result.data = response
 
                 if (response) {
-                    // deposit failed
+                    // deposit sucess
                     setShowAccount({isShow: true, step: AccountStep.Deposit_Submited})
                 } else {
-                    // deposit sucess
+                    // deposit failed
                     setShowAccount({isShow: true, step: AccountStep.Deposit_Failed})
                 }
 
@@ -159,7 +159,19 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 result.data = reason
 
                 //deposit failed
-                setShowAccount({isShow: true, step: AccountStep.Deposit_Approve_Denied})
+                const err = checkErrorInfo(reason, true)
+
+                myLog('---- deposit reason:', reason?.message.indexOf('User denied transaction'))
+                myLog('---- deposit err:', err)
+
+                switch(err) {
+                    case ConnectorError.USER_DENIED:
+                        setShowAccount({isShow: true, step: AccountStep.Deposit_Denied})
+                        break
+                    default:
+                        setShowAccount({isShow: true, step: AccountStep.Deposit_Failed})
+                        break
+                }
             }
 
         } else {
