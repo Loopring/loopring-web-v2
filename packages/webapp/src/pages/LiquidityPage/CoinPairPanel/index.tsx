@@ -185,7 +185,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             <Typography component={'span'} display={'flex'} flexDirection={'row'}
                                         justifyContent={'flex-start'} alignItems={'center'}
                                         style={{textTransform: 'capitalize'}} color={'textPrimary'}>
-                                <Box component={'span'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
+                                <Box component={'span'} className={'logo-icon'} display={'flex'} height={'var(--list-menu-coin-size)'}
                                      width={'var(--list-menu-coin-size)'} alignItems={'center'}
                                      justifyContent={'center'}>
                                     {coinAIcon ?
@@ -227,7 +227,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                 {/*    /!*    // src={coinBInfo?.icon}*!/*/}
                                 {/*    /!*        src={buyIconHasLoaded ? coinPairInfo?.myCoinB?.icon : 'static/images/icon-default.png'}/>*!/*/}
                                 {/*</Typography>*/}
-                                <Box component={'span'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
+                                <Box component={'span'} className={'logo-icon'} display={'flex'} height={'var(--list-menu-coin-size)'}
                                      width={'var(--list-menu-coin-size)'} alignItems={'center'}
                                      justifyContent={'center'}>{coinBIcon ?
                                     <AvatarCoinStyled style={{ marginTop: 2 }} imgx={coinBIcon.x} imgy={coinBIcon.y} imgheight={coinBIcon.height}
@@ -383,7 +383,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                     const end = moment(o.end).format('MM/DD')
                                     return (
                                         <Box key={`${item.token}-${item.volume}`} display={'flex'} alignItems={'center'}>
-                                            <Box component={'span'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
+                                            <Box component={'span'} className={'logo-icon'} display={'flex'} height={'var(--list-menu-coin-size)'}
                                                 width={'var(--list-menu-coin-size)'} alignItems={'center'}
                                                 justifyContent={'center'} marginRight={2}>
                                             {coinAIcon ?

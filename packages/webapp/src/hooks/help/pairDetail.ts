@@ -33,7 +33,7 @@ export const pairDetailBlock = <C extends { [ key: string ]: any }, I extends { 
     })
 }
 
-export const pairDetailDone = <C>({coinKey, market, ammPoolsBalance, fee, tokenMap,tickerData, _tradeCalcData, coinMap, marketCoins,depth}:any)=>{
+export const pairDetailDone = <C>({coinKey, ammPoolsBalance, tokenMap, tickerData, _tradeCalcData, depth}:any)=>{
 
     const [, coinSell, coinBuy] = coinKey.match(/(\w+)-(\w+)/i)
     let stob:number|undefined = NaN;

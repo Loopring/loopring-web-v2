@@ -698,9 +698,9 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
             const output = sdk.getOutputAmount(inputParam)
 
-            const priceImpact = getPriceImpactInfo(output)
+            const priceImpactObj = getPriceImpactInfo(output)
 
-            setPriceImpact(priceImpact.priceImpact ?? 0)
+            setPriceImpact(priceImpactObj.priceImpact ?? 0)
 
             let totalFee = undefined;
             const ammMarket = `AMM-${market}`
@@ -723,8 +723,8 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
             }
             const _tradeCalcData = {
-                priceImpact: priceImpact.priceImpact,
-                priceImpactColor: priceImpact.priceImpactColor,
+                priceImpact: priceImpactObj.priceImpact,
+                priceImpactColor: priceImpactObj.priceImpactColor,
                 minimumReceived: getShowStr(output?.amountBOutSlip.minReceivedVal),
                 fee: totalFee,
             }
