@@ -1,9 +1,9 @@
-import React, { useDebugValue, useState } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { connectProvides } from '@loopring-web/web3-provider';
-import { AccountStepNew, SwitchData, TradeBtnStatus, useOpenModals, WithdrawProps } from '@loopring-web/component-lib';
+import { AccountStepNew, SwitchData, useOpenModals, WithdrawProps } from '@loopring-web/component-lib';
 import {
     AccountStatus,
     CoinMap,
@@ -18,7 +18,7 @@ import * as sdk from 'loopring-sdk'
 
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
-import { useChargeFees } from './useChargeFees';
+import { useChargeFees } from '../common/useChargeFees';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { LoopringAPI } from 'api_wrapper';
 import { useSystem } from 'stores/system';
@@ -31,6 +31,7 @@ import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
 import { useWalletInfo } from 'stores/localStore/walletInfo';
 import { checkErrorInfo } from './utils';
 import { ConnectorError, } from 'loopring-sdk';
+import { useBtnStatus } from 'hooks/common/useBtnStatus';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     // handleWithdraw: (inputValue:R) => void,
@@ -46,9 +47,9 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const { t } = useTranslation('common')
     const { modals: { isShowWithdraw: { symbol, isShow } }, setShowAccount, setShowWithdraw, } = useOpenModals()
 
-    const [withdrawToastOpen, setWithdrawToastOpen] = useState<boolean>(false)
+    const [withdrawToastOpen, setWithdrawToastOpen] = React.useState<boolean>(false)
 
-    const [withdrawAlertText, setWithdrawAlertText] = useState<string>()
+    const [withdrawAlertText, setWithdrawAlertText] = React.useState<string>()
 
     const { tokenMap, totalCoinMap, } = useTokenMap();
     const { account, status: accountStatus } = useAccount()
@@ -62,8 +63,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     // const {status:walletLayer2Status} = useWalletLayer2();
     const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
 
-    const [withdrawFeeInfo, setWithdrawFeeInfo] = useState<any>()
-    const [withdrawType, setWithdrawType] = useState<sdk.OffchainFeeReqType>(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
+    const [withdrawFeeInfo, setWithdrawFeeInfo] = React.useState<any>()
+    const [withdrawType, setWithdrawType] = React.useState<sdk.OffchainFeeReqType>(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
 
     const { chargeFeeList } = useChargeFees(withdrawValue.belong, withdrawType, tokenMap, withdrawValue.tradeValue)
 
@@ -73,21 +74,18 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         addrStatus,
     } = useAddressCheck()
 
-    const [btnStatus, setBtnStatus,] = React.useState<TradeBtnStatus>(TradeBtnStatus.AVAILABLE)
+    const { btnStatus, enableBtn, disableBtn, }  = useBtnStatus()
 
     React.useEffect(() => {
 
         if (chargeFeeList && chargeFeeList?.length > 0 && !!address && withdrawValue?.tradeValue
             && addrStatus === AddressError.NoError) {
-            //valid
-            //todo add amt check.
-            myLog('try to AVAILABLE: ', withdrawValue?.tradeValue)
-            setBtnStatus(TradeBtnStatus.AVAILABLE)
+            enableBtn()
         } else {
-            setBtnStatus(TradeBtnStatus.DISABLED)
+            disableBtn()
         }
 
-    }, [setBtnStatus, chargeFeeList, address, addrStatus, withdrawValue?.tradeValue])
+    }, [enableBtn, disableBtn, chargeFeeList, address, addrStatus, withdrawValue?.tradeValue])
 
     const walletLayer2Callback = React.useCallback(() => {
         const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
@@ -136,13 +134,13 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
         const { apiKey, connectName, eddsaKey } = account
 
-        if (connectProvides.usedWeb3) {
+        if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
 
             let isHWAddr = checkHWAddr(account.accAddress)
 
             isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
 
-            const response = await LoopringAPI.userAPI?.submitOffchainWithdraw({
+            const response = await LoopringAPI.userAPI.submitOffchainWithdraw({
                 request,
                 web3: connectProvides.usedWeb3,
                 chainId: chainId === 'unknown' ? 1 : chainId,
