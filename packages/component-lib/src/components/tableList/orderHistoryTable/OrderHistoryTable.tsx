@@ -4,12 +4,15 @@ import { Box } from '@material-ui/core'
 import { DateRange } from '@material-ui/lab'
 import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
+import { bindHover } from 'material-ui-popup-state/es';
+import { bindPopper, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
+import { PopoverPure } from '../../basic-lib'
 import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes, getThousandFormattedNumbers } from '@loopring-web/common-resources'
 import { Column, Popover, PopoverType, Table, TablePagination } from '../../basic-lib'
 import { SingleOrderHistoryTable } from './SingleOrderHistoryTable'
 import { Filter, FilterOrderTypes } from './components/Filter'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
-import { useSettings } from '../../../stores';
+// import { useSettings } from '../../../stores';
 import { GetOrdersRequest, Side, OrderType } from 'loopring-sdk'
 
 export type OrderPair = {
@@ -29,29 +32,33 @@ export interface OrderHistoryRow {
     amount: OrderPair
     average: number
     filledAmount: OrderPair
-    filledPrice: {
-        key: string;
-        value: number;
-    };
-    time: number
+    // filledPrice: {
+    //     key: string;
+    //     value: number;
+    // };
+    time: number;
+    hash: string;
     status: keyof typeof TradeStatus;
     sortColumn: string
     filterColumn: string
     actionsStatus: object
 }
 
+export enum DetailRole {
+    maker = 'maker',
+    taker = 'taker'
+}
+
 export type OrderHistoryTableDetailItem = {
     amount: OrderPair;
-    tradingPrice: number;
-    filledPrice: {
+    // tradingPrice: number;
+    filledPrice: string;
+    fee: {
         key: string;
-        value: number;
-    };
-    time: number;
-    total: {
-        key: string;
-        value: number;
+        value: string;
     }
+    role: string;
+    time: number;
 }
 
 export type OrderHistoryRawDataItem = {
@@ -66,7 +73,7 @@ export type OrderHistoryRawDataItem = {
     }
     time: number;
     status: TradeStatus;
-    detailTable: OrderHistoryTableDetailItem[]
+    hash: string;
 }
 
 const LastDayPriceChangedCell: any = styled(Box)`
@@ -107,236 +114,212 @@ export interface OrderHistoryTableProps {
     getOrderList: (props: Omit<GetOrdersRequest, "accountId">) => Promise<void>;
     showLoading?: boolean;
     marketArray?: string[];
+    showDetailLoading?: boolean;
+    getOrderDetail: (orderHash: string) => Promise<void>;
+    orderDetailList: OrderHistoryTableDetailItem[];
 }
 
-const getColumnModeOrderHistory = (t: TFunction, lan: 'en_US' | 'zh_CN'): Column<OrderHistoryRow, unknown>[] => [
-    // {
-    //     key: 'side',
-    //     name: t('labelOrderSide'),
-    //     formatter: ({row, column}) => {
-    //         const value = row[ column.key ]
-    //         const renderValue = lan === 'en_US'
-    //             ? value 
-    //             : value === 'Buy'
-    //                 ? '买'
-    //                 : '卖'
-    //         return (
-    //             <div className="rdg-cell-value">
-    //                 <LastDayPriceChangedCell value={value}>
-    //                     {renderValue}
-    //                 </LastDayPriceChangedCell>
-    //             </div>
-    //         )
-    //     },
-    // },
-    // {
-    //     key: 'type',
-    //     name: t('labelOrderType'),
-    //     formatter: ({row}) => {
-    //         const value = row.orderType as string
-    //         const renderValue = value === 'LIMIT_ORDER'
-    //             ? t('labelOrderTypeLimit') 
-    //             : value === 'AMM_POOL'
-    //                 ? t('labelOrderTypeAmm')
-    //                 : t('labelOrderType')
-    //         return (
-    //             <div className="rdg-cell-value">
-    //                 {renderValue}
-    //             </div>
-    //         )
-    //     },
-    // },
-    {
-        key: 'amount',
-        name: t('labelOrderAmount'),
-        formatter: ({row, column}) => {
-            const {from, to} = row[ column.key ]
-            const {key: keyFrom, value: valueFrom} = from
-            const {key: keyTo, value: valueTo} = to
-            const renderValue = `${valueFrom} ${keyFrom} \u2192 ${valueTo} ${keyTo}`
-            return <div className="rdg-cell-value">{renderValue}</div>
-        },
-    },
-    {
-        key: 'average',
-        name: t('labelOrderAverage'),
-        formatter: ({row, column}) => {
-            const value = row[ column.key ]
-            const hasValue = Number.isFinite(value)
-            const renderValue = hasValue ? value.toFixed(6) : EmptyValueTag
-            return <div className="rdg-cell-value">{renderValue}</div>
-        },
-    },
-    // {
-    //     key: 'filledAmount',
-    //     name: t('labelOrderFilledAmount'),
-    //     formatter: ({row, column}) => {
-    //         const {from, to} = row[ column.key ]
-    //         const {key: keyFrom, value: valueFrom} = from
-    //         const {key: keyTo, value: valueTo} = to
-    //         const renderValue = `${valueFrom} ${keyFrom}->${valueTo} ${keyTo}`
-    //         return <div className="rdg-cell-value">{renderValue}</div>
-    //     },
-    // },
-    {
-        key: 'price',
-        name: t('labelOrderPrice'),
-        formatter: ({row}) => {
-            const value = row['price'].value
-            const hasValue = Number.isFinite(value)
-            const renderValue = hasValue ? value.toFixed(6) : EmptyValueTag
-            return (
-                <div className="rdg-cell-value">
-                    <span>{renderValue}</span>
-                </div>
-            )
-        },
-    },
-    {
-        key: 'time',
-        name: t('labelOrderTime'),
-        formatter: ({row, column}) => {
-            const value = row[ column.key ]
-            const renderValue = Number.isFinite(value)
-                ? moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
-                : EmptyValueTag
-            return (
-                <div className="rdg-cell-value">
-                    <span>{renderValue}</span>
-                </div>
-            )
-        },
-    },
-    {
-        key: 'status',
-        name: t('labelOrderStatus'),
-        formatter: ({row, column, rowIdx}) => <>
-            <CellStatus {...{row, column, rowIdx}} />
-        </>
-    }, {
-        key: 'detail',
-        name: '',
-        hidden: true
-    }
-]
 
-const CellStatus = ({row, column, rowIdx}: any) => {
-    const value = row[ column.key ]
-    const popupId = `${column.key}-${rowIdx}`
-    const [isOpen, setIsOpen] = useState(false)
-    const RenderValue: any = styled.span`
-      position: relative;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: ${({theme}) => {
-        const {colorBase} = theme
-        return value === TradeStatus.Processed
-                ? colorBase.success
-                : value === TradeStatus.Expired ? colorBase.textSecondary
-                        : colorBase.textPrimary
-      }};
-      width: 110px;
-      padding-right: 10px;
-
-      & svg {
-        font-size: 14px;
-        transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-        transform: ${() => isOpen ? 'rotate(180deg)' : ''};
-      }
-    `
-
-    const RenderPopover = styled.div`
-        width: 700px;
-        margin: 12px;
-        max-height: 250px;
-
-        .contentWrapper {
-            max-height: 250px;
-            overflow: scroll;
-        }
-    `
-    let actualValue = ''
-    switch (value) {
-        case TradeStatus.Processing:
-            actualValue = 'Processing';
-            break;
-        case TradeStatus.Processed:
-            actualValue = 'Processed';
-            break;
-        case TradeStatus.Cancelling:
-            actualValue = 'Cancelling';
-            break;
-        case TradeStatus.Cancelled:
-            actualValue = 'Cancelled';
-            break;
-        case TradeStatus.Expired:
-            actualValue = 'Expired'
-            break;
-        case TradeStatus.Waiting:
-            actualValue = 'Waiting'
-            break;
-        default:
-            actualValue = ''
-    }
-    const triggerContent =
-        <div style={{width: 110}}>
-            <RenderValue>
-                {actualValue}
-                <DropDownIcon/>
-            </RenderValue>
-        </div>
-
-    const popoverContent =
-        <RenderPopover>
-            <div className="arrowPopover"/>
-            <div className="contentWrapper">
-                <SingleOrderHistoryTable rawData={[]}/>
-            </div>
-        </RenderPopover>
-
-    return <div className="rdg-cell-value">
-        <Popover
-            type={PopoverType.click}
-            popupId={popupId}
-            className={'arrow-right'}
-            // children={triggerContent}
-            popoverContent={popoverContent}
-            handleStateChange={setIsOpen}
-            anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-            }}
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-        >
-            {triggerContent}
-        </Popover>
-    </div>
-}
 
 export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryTableProps & WithTranslation) => {
-    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray } = props
+    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray, showDetailLoading, getOrderDetail, orderDetailList } = props
     const actionColumns = ['status']
-    const { language } = useSettings()
-    const defaultArgs: any = {
-        // rawData: [],
-        columnMode: getColumnModeOrderHistory(t, language).filter(o => !o.hidden),
-        generateRows: (rawData: any) => rawData,
-        generateColumns: ({columnsRaw}: any) => columnsRaw as Column<OrderHistoryRawDataItem, unknown>[],
-        actionColumns,
-        // style: {
-        //     backgroundColor: ({colorBase}: any) => `${colorBase.box}`
-        // }
-    }
-
+    // const { language } = useSettings()
+    // const [orderDetail, setOrderDetail] = useState([]);
     const [filterType, setFilterType] = useState(FilterOrderTypes.allTypes)
     const [filterDate, setFilterDate] = useState<DateRange<Date | string>>([null, null])
     const [filterToken, setFilterToken] = useState<string>('All Pairs')
     const [page, setPage] = useState(1)
     const pageSize = pagination ? pagination.pageSize : 0
+
+    const getColumnModeOrderHistory = (): Column<OrderHistoryRow, unknown>[] => [
+        {
+            key: 'amount',
+            name: t('labelOrderAmount'),
+            formatter: ({row, column}) => {
+                const {from, to} = row[ column.key ]
+                const {key: keyFrom, value: valueFrom} = from
+                const {key: keyTo, value: valueTo} = to
+                const renderValue = `${valueFrom} ${keyFrom} \u2192 ${valueTo} ${keyTo}`
+                return <div className="rdg-cell-value">{renderValue}</div>
+            },
+        },
+        {
+            key: 'average',
+            name: t('labelOrderAverage'),
+            formatter: ({row, column}) => {
+                const value = row[ column.key ]
+                const hasValue = Number.isFinite(value)
+                const renderValue = hasValue ? value.toFixed(6) : EmptyValueTag
+                return <div className="rdg-cell-value">{renderValue}</div>
+            },
+        },
+        // {
+        //     key: 'filledAmount',
+        //     name: t('labelOrderFilledAmount'),
+        //     formatter: ({row, column}) => {
+        //         const {from, to} = row[ column.key ]
+        //         const {key: keyFrom, value: valueFrom} = from
+        //         const {key: keyTo, value: valueTo} = to
+        //         const renderValue = `${valueFrom} ${keyFrom}->${valueTo} ${keyTo}`
+        //         return <div className="rdg-cell-value">{renderValue}</div>
+        //     },
+        // },
+        {
+            key: 'price',
+            name: t('labelOrderPrice'),
+            formatter: ({row}) => {
+                const value = row['price'].value
+                const hasValue = Number.isFinite(value)
+                const renderValue = hasValue ? value.toFixed(6) : EmptyValueTag
+                return (
+                    <div className="rdg-cell-value">
+                        <span>{renderValue}</span>
+                    </div>
+                )
+            },
+        },
+        {
+            key: 'time',
+            name: t('labelOrderTime'),
+            formatter: ({row, column}) => {
+                const value = row[ column.key ]
+                const renderValue = Number.isFinite(value)
+                    ? moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
+                    : EmptyValueTag
+                return (
+                    <div className="rdg-cell-value">
+                        <span>{renderValue}</span>
+                    </div>
+                )
+            },
+        },
+        {
+            key: 'status',
+            name: t('labelOrderStatus'),
+            formatter: ({row, column, rowIdx}) => <>
+                <CellStatus {...{row, column, rowIdx, hash: row['hash']}} />
+            </>
+        }, {
+            key: 'detail',
+            name: '',
+            hidden: true
+        }
+    ]
+    
+    const CellStatus = ({row, column, rowIdx, hash}: any) => {
+        const [isOpen, setIsOpen] = useState(false)
+        const value = row[ column.key ]
+        const popupId = `${column.key}-${rowIdx}`
+        const RenderValue: any = styled.span`
+          position: relative;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          color: ${({theme}) => {
+            const {colorBase} = theme
+            return value === TradeStatus.Processed
+                    ? colorBase.success
+                    : value === TradeStatus.Expired ? colorBase.textSecondary
+                            : colorBase.textPrimary
+          }};
+          width: 110px;
+          padding-right: 10px;
+    
+          & svg {
+            font-size: 14px;
+            transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+            transform: ${() => isOpen ? 'rotate(180deg)' : ''};
+          }
+        `
+    
+        const RenderPopover = styled.div`
+            width: 700px;
+            margin: 12px;
+            max-height: 250px;
+    
+            .contentWrapper {
+                max-height: 250px;
+                overflow: scroll;
+            }
+        `
+        let actualValue = ''
+        switch (value) {
+            case TradeStatus.Processing:
+                actualValue = 'Processing';
+                break;
+            case TradeStatus.Processed:
+                actualValue = 'Processed';
+                break;
+            case TradeStatus.Cancelling:
+                actualValue = 'Cancelling';
+                break;
+            case TradeStatus.Cancelled:
+                actualValue = 'Cancelled';
+                break;
+            case TradeStatus.Expired:
+                actualValue = 'Expired'
+                break;
+            case TradeStatus.Waiting:
+                actualValue = 'Waiting'
+                break;
+            default:
+                actualValue = ''
+        }
+        // const triggerContent =
+        //     <div style={{width: 110}}>
+        //         <RenderValue>
+        //             {actualValue}
+        //             <DropDownIcon/>
+        //         </RenderValue>
+        //     </div>
+    
+        const popoverContent =
+            <RenderPopover>
+                <div className="arrowPopover"/>
+                <div className="contentWrapper">
+                    <SingleOrderHistoryTable showLoading={showDetailLoading} rawData={orderDetailList}/>
+                </div>
+            </RenderPopover>
+
+        // const handleStateChange = useCallback((state: boolean, hash: string) => {
+        //     console.log(state)
+        //     setIsOpen(state)
+        //     if (state === true) {
+        //         getOrderDetail(hash)
+        //     }
+        // }, [])
+        const rightState = usePopupState({variant: 'popover', popupId: `popupId-${rowIdx}`});
+
+        return <div className="rdg-cell-value">
+            {/* <Button {...bindHover(rightState)}> Hover Open Right </Button> */}
+            <div {...bindHover(rightState)} style={{width: 110}}>
+                <RenderValue>
+                    {actualValue}
+                    <DropDownIcon/>
+                </RenderValue>
+            </div>
+            <PopoverPure
+                className={'arrow-right'}
+                {...bindPopper(rightState)}
+                // popupId={popupId}
+                // children={triggerContent}
+                // popoverContent={popoverContent}
+                // handleStateChange={(state) => handleStateChange(state, hash)}
+                // handleStateChange={setIsOpen}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+            >
+                {popoverContent}
+            </PopoverPure>
+        </div>
+    }
 
     const updateData = useCallback(({
                                         actionType,
@@ -392,6 +375,18 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             currFilterToken: 'All Pairs',
         })
     }, [updateData])
+
+    const defaultArgs: any = {
+        // rawData: [],
+        // columnMode: getColumnModeOrderHistory(t, showDetailLoading, getOrderDetail).filter(o => !o.hidden),
+        columnMode: getColumnModeOrderHistory().filter(o => !o.hidden),
+        generateRows: (rawData: any) => rawData,
+        generateColumns: ({columnsRaw}: any) => columnsRaw as Column<OrderHistoryRawDataItem, unknown>[],
+        actionColumns,
+        // style: {
+        //     backgroundColor: ({colorBase}: any) => `${colorBase.box}`
+        // }
+    }
 
     return <TableStyled>
         {showFilter && (
