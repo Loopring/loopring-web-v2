@@ -13,11 +13,9 @@ import { changeShowModel, useAccount, } from 'stores/account'
 
 
 import {
-    AccountStepNew as AccountStep,
+    AccountStep,
     HeaderToolBarInterface,
-    setShowAccount,
     useOpenModals,
-    useSettings,
 } from '@loopring-web/component-lib'
 
 import { accountStaticCallBack, btnClickMap } from 'hooks/help'

@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { connectProvides } from '@loopring-web/web3-provider';
-import { AccountStepNew, SwitchData, useOpenModals, WithdrawProps } from '@loopring-web/component-lib';
+import { AccountStep, SwitchData, useOpenModals, WithdrawProps } from '@loopring-web/component-lib';
 import {
     AccountStatus,
     CoinMap,
@@ -156,20 +156,20 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                 // Withdraw failed
                 const code = checkErrorInfo(response.errorInfo, isFirstTime)
                 if (code === ConnectorError.USER_DENIED) {
-                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_User_Denied })
+                    setShowAccount({ isShow: true, step: AccountStep.Withdraw_User_Denied })
                 } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
                     setLastRequest({ request })
-                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_First_Method_Denied })
+                    setShowAccount({ isShow: true, step: AccountStep.Withdraw_First_Method_Denied })
                 } else {
-                    setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
+                    setShowAccount({ isShow: true, step: AccountStep.Withdraw_Failed })
                 }
             } else if (response?.resultInfo) {
-                setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
+                setShowAccount({ isShow: true, step: AccountStep.Withdraw_Failed })
             } else {
                 // Withdraw success
-                setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_In_Progress })
+                setShowAccount({ isShow: true, step: AccountStep.Withdraw_In_Progress })
                 await sdk.sleep(TOAST_TIME)
-                setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Success })
+                setShowAccount({ isShow: true, step: AccountStep.Withdraw_Success })
                 if (isHWAddr) {
                     myLog('......try to set isHWAddr', isHWAddr)
                     updateDepositHashWrapper({ wallet: account.accAddress, isHWAddr })
@@ -193,7 +193,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             try {
 
                 setShowWithdraw({ isShow: false, })
-                setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_WaitForAuth, })
+                setShowAccount({ isShow: true, step: AccountStep.Withdraw_WaitForAuth, })
 
                 const withdrawToken = tokenMap[inputValue.belong as string]
                 const feeToken = tokenMap[withdrawFeeInfo.belong]
@@ -230,7 +230,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
             } catch (e) {
                 sdk.dumpError400(e)
-                setShowAccount({ isShow: true, step: AccountStepNew.Withdraw_Failed })
+                setShowAccount({ isShow: true, step: AccountStep.Withdraw_Failed })
             }
 
             return true

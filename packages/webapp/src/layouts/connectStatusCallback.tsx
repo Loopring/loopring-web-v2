@@ -1,5 +1,5 @@
 import store from '../stores';
-import { AccountStepNew as AccountStep, setShowAccount, setShowConnect, Toast, WalletConnectStep } from '@loopring-web/component-lib';
+import { AccountStep, setShowAccount, setShowConnect, Toast, WalletConnectStep } from '@loopring-web/component-lib';
 import { fnType } from '@loopring-web/common-resources';
 import { changeShowModel } from 'stores/account';
 import { accountServices } from 'services/account/accountServices'

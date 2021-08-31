@@ -4,7 +4,7 @@ import * as sdk from 'loopring-sdk'
 
 import { connectProvides } from '@loopring-web/web3-provider';
 
-import { AccountStepNew, SwitchData, TradeBtnStatus, TransferProps, useOpenModals, } from '@loopring-web/component-lib';
+import { AccountStep, SwitchData, TradeBtnStatus, TransferProps, useOpenModals, } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
 
 import { useTokenMap } from 'stores/token';
@@ -151,20 +151,20 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                 // Withdraw failed
                 const code = checkErrorInfo(response.errorInfo, isFirstTime)
                 if (code === ConnectorError.USER_DENIED) {
-                    setShowAccount({ isShow: true, step: AccountStepNew.Transfer_User_Denied })
+                    setShowAccount({ isShow: true, step: AccountStep.Transfer_User_Denied })
                 } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
                     setLastRequest({ request })
-                    setShowAccount({ isShow: true, step: AccountStepNew.Transfer_First_Method_Denied })
+                    setShowAccount({ isShow: true, step: AccountStep.Transfer_First_Method_Denied })
                 } else {
-                    setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Failed })
+                    setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed })
                 }
             } else if (response?.resultInfo) {
-                setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Failed })
+                setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed })
             } else {
                 // Withdraw success
-                setShowAccount({ isShow: true, step: AccountStepNew.Transfer_In_Progress })
+                setShowAccount({ isShow: true, step: AccountStep.Transfer_In_Progress })
                 await sdk.sleep(TOAST_TIME)
-                setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Success })
+                setShowAccount({ isShow: true, step: AccountStep.Transfer_Success })
                 if (isHWAddr) {
                     myLog('......try to set isHWAddr', isHWAddr)
                     updateDepositHashWrapper({ wallet: account.accAddress, isHWAddr })
@@ -188,7 +188,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             try {
 
                 setShowTransfer({ isShow: false})
-                setShowAccount({isShow: true, step: AccountStepNew.Transfer_WaitForAuth})
+                setShowAccount({isShow: true, step: AccountStep.Transfer_WaitForAuth})
 
                 const sellToken = tokenMap[transferValue.belong as string]
                 const feeToken = tokenMap[tranferFeeInfo.belong]
@@ -220,7 +220,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             } catch (e) {
                 sdk.dumpError400(e)
                 // transfer failed
-                setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Failed })
+                setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed })
             }
 
         } else {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
 import { ErrorType, ProcessingType, useConnectHook } from '@loopring-web/web3-provider';
-import { SagaStatus } from '@loopring-web/common-resources';
+import { AccountStatus, SagaStatus } from '@loopring-web/common-resources';
 import { ChainId, sleep } from 'loopring-sdk';
 
 import { updateAccountStatus, useAccount } from 'stores/account';
@@ -54,12 +54,13 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
     }, [shouldShow, setShowConnect, setShouldShow])
 
     const handleAccountDisconnect = React.useCallback(async () => {
+        myLog('account:', account)
         resetAccount({shouldUpdateProvider: true});
         setStateAccount(SagaStatus.PENDING)
         resetLayer12Data()
         // await sleep(REFRESH_RATE)
 
-    }, [resetAccount, setStateAccount]);
+    }, [account, resetAccount, setStateAccount]);
 
     const handleProcessing = React.useCallback(({type, opts}: { type: keyof typeof ProcessingType, opts: any }) => {
         const {qrCodeUrl} = opts;
@@ -73,13 +74,20 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
 
         const  chainId = account._chainId === ChainId.MAINNET ||  account._chainId === ChainId.GOERLI ? account._chainId : ChainId.MAINNET
         
+        myLog('chainId:', chainId)
+
         if(store.getState().system.chainId !== chainId ) {
             updateSystem({chainId})
         }
+
         setShowConnect({isShow: !!shouldShow ?? false, step: WalletConnectStep.FailedConnect});
-        resetAccount();
+
+        if (!!account.accAddress) {
+            resetAccount()
+        }
+
         statusAccountUnset();
-    }, [resetAccount, statusAccountUnset, updateSystem, account._chainId]);
+    }, [resetAccount, statusAccountUnset, updateSystem, account]);
 
     useConnectHook({handleAccountDisconnect, handleProcessing, handleError, handleConnect});
 

@@ -1,6 +1,6 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import {
-    AccountStepNew as AccountStep,
+    AccountStep,
     Button,
     DepositPanel,
     HadAccount,

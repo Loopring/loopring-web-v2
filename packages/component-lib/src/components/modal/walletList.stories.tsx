@@ -6,20 +6,22 @@ import { MemoryRouter } from 'react-router-dom'
 import { Button, Grid } from '@material-ui/core'
 import { AccountFull, AccountStatus, ConnectProviders, gatewayList } from '@loopring-web/common-resources'
 import {
-    MetaMaskProcess,
     ModalWalletConnect,
     ProviderMenu,
-    SuccessConnect,
-    WalletConnectProcess,
     WalletConnectQRCode,
     WalletConnectStep
 } from './WalletConnect'
 import { ModalQRCode, QRCodePanel } from './QRCode'
-import { FailedConnect } from './WalletConnect/FailedConnect';
 
 import { account } from '../../static';
 import { WalletConnectBtn } from '../header';
 import { Box } from '@material-ui/core/';
+
+import { MetaMask_Connect_In_Progress, 
+    WalletConnect_Connect_In_Progress, 
+    Connect_Success, 
+    Connect_Failed,
+ } from 'index'
 
 
 const Style = styled.div`
@@ -79,11 +81,11 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
         return Object.values({
             [ WalletConnectStep.Provider ]: {view: <ProviderMenu
                 gatewayList={gatewayList} {...{providerName: ConnectProviders.MetaMask, ...rest}}/>,},
-            [ WalletConnectStep.MetaMaskProcessing ]: {view: <MetaMaskProcess {...rest}/>,},
-            [ WalletConnectStep.WalletConnectProcessing ]: {view: <WalletConnectProcess {...rest}/>,},
+            [ WalletConnectStep.MetaMaskProcessing ]: {view: <MetaMask_Connect_In_Progress {...rest}/>,},
+            [ WalletConnectStep.WalletConnectProcessing ]: {view: <WalletConnect_Connect_In_Progress {...rest}/>,},
             [ WalletConnectStep.WalletConnectQRCode ]: {view: <WalletConnectQRCode  {...rest} url={url}/>,},
-            [ WalletConnectStep.SuccessConnect ]: {view: <SuccessConnect {...{...rest, providerName: 'MetaMask'}}/>,},
-            [ WalletConnectStep.FailedConnect ]: {view: <FailedConnect {...rest} onRetry={() => {
+            [ WalletConnectStep.SuccessConnect ]: {view: <Connect_Success {...{...rest, providerName: 'MetaMask'}}/>,},
+            [ WalletConnectStep.FailedConnect ]: {view: <Connect_Failed {...rest} onRetry={() => {
             }}/>,},
         })
 
