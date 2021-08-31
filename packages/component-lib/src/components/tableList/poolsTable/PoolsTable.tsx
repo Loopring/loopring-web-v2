@@ -88,7 +88,7 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
     return <BoxStyled display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
 
         <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
-            <Box className={'logo-icon'} height={'var(--list-menu-coin-size)'}  position={'relative'}  zIndex={20}
+            <Box className={'logo-icon'} display={'flex'} height={'var(--list-menu-coin-size)'}  position={'relative'}  zIndex={20}
                  width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
                 {coinAIcon ?
                     <AvatarCoinStyled imgx={coinAIcon.x} imgy={coinAIcon.y}
@@ -105,7 +105,7 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
                               src={'static/images/icon-default.png'}/>
                 }</Box>
 
-            <Box className={'logo-icon'} height={'var(--list-menu-coin-size)'}   position={'relative'}  zIndex={18}   left={-8}
+            <Box className={'logo-icon'} display={'flex'} height={'var(--list-menu-coin-size)'}   position={'relative'}  zIndex={18}   left={-8}
                  width={'var(--list-menu-coin-size)'} alignItems={'center'}
                  justifyContent={'center'}>{coinBIcon ?
                 <AvatarCoinStyled imgx={coinBIcon.x} imgy={coinBIcon.y} imgheight={coinBIcon.height}
