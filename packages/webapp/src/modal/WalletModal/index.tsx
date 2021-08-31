@@ -27,6 +27,8 @@ import { useSystem } from 'stores/system';
 import { myLog } from '../../utils/log_tools';
 import { copyToClipBoard } from '../../utils/obj_tools';
 import { REFRESH_RATE, TOAST_TIME } from '../../defs/common_defs';
+import { useSelector } from 'react-redux';
+import { RootState } from 'stores';
 
 export const ModalWalletConnectPanel = withTranslation('common')(({
                                                                       onClose,
@@ -52,7 +54,9 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
     } = useAccount();
     const {updateSystem, chainId: _chainId, exchangeInfo} = useSystem();
     const {modals: {isShowConnect}, setShowConnect, setShowAccount} = useOpenModals();
-    const [qrCodeUrl, setQrCodeUrl] = React.useState<string>('');
+
+    const qrCodeUrl = useSelector((state: RootState) => state.account.qrCodeUrl)
+
     const [stateCheck, setStateCheck] = React.useState<boolean>(false);
     const metaMaskCallback = React.useCallback(async () => {
         updateAccount({connectName: ConnectProviders.MetaMask});
@@ -131,13 +135,6 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
 
     ]
 
-    const handleProcessing = React.useCallback(({type, opts}: { type: keyof typeof ProcessingType, opts: any }) => {
-        const {qrCodeUrl} = opts;
-        if (qrCodeUrl) {
-            setQrCodeUrl(qrCodeUrl)
-            setShowConnect({isShow: true, step: WalletConnectStep.WalletConnectQRCode});
-        }
-    }, []);
     const [copyToastOpen, setCopyToastOpen] = useState(false);
     const onRetry = React.useCallback(async () => {
         const index = gatewayList.findIndex((item) => {
@@ -151,7 +148,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
             setShowConnect({isShow: true, step: WalletConnectStep.Provider});
         }
     }, [gatewayList, account]);
-    useConnectHook({handleProcessing});
+    // useConnectHook({handleProcessing});
     const providerBack = React.useMemo(() => {
         return ['UN_CONNECT', 'ERROR_NETWORK'].includes(account.readyState) ? undefined :
             () => {
