@@ -26,6 +26,7 @@ export enum fnType {
 
 export type Account = {
     accAddress: string,
+    qrCodeUrl: string,
     readyState: keyof typeof AccountStatus | 'unknown',
     accountId: number,
     level: string,

@@ -19,7 +19,7 @@ export const MetaMaskProvide = async (): Promise<{ provider: IpcProvider, web3: 
         }
 
     } catch (error) {
-        console.log('Error happen at connect wallet with MetaMask:', error)
+        console.error('Error happen at connect wallet with MetaMask:', error)
         walletServices.sendError(ErrorType.FailedConnect, {connectName: ConnectProviders.MetaMask, error})
     }
 }

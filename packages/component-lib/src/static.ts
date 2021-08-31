@@ -12,6 +12,7 @@ import {
 import { List } from 'immutable';
 export const account:Account = {
     accAddress: 'xxxxxxxxxxxxxxxxxxx',
+    qrCodeUrl: '',
     readyState: AccountStatus.UN_CONNECT,
     accountId: -1,
     apiKey: '',
