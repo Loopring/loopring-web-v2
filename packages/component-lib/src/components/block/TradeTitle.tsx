@@ -31,7 +31,8 @@ export const TradeTitle = <I extends object>({
                                                      timeUnit: '24h',
                                                      priceYuan: 0,
                                                      priceDollar: 0,
-                                                     floatTag: FloatTag.none
+                                                     floatTag: FloatTag.none,
+                                                     close:0,
                                                  }
                                                  , isNew
                                              }: WithTranslation & { coinAInfo: CoinInfo<I>, coinBInfo: CoinInfo<I>, tradeFloat: TradeFloat, isNew: boolean }) => {
