@@ -8,7 +8,7 @@ import { StylePaper } from '../../styled'
 const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
     const container = React.useRef(null);
     const [pageSize, setPageSize] = React.useState(10);
-    const { rawData, getOrderList, totalNum, showLoading, marketArray } = useOrderList()
+    const { rawData, getOrderList, totalNum, showLoading, marketArray, showDetailLoading, getOrderDetail, orderDetailList } = useOrderList()
 
     React.useEffect(() => {
         // @ts-ignore
@@ -33,6 +33,9 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
                         getOrderList,
                         showLoading,
                         marketArray,
+                        showDetailLoading,
+                        getOrderDetail,
+                        orderDetailList,
                         ...rest
                     }} />
                 </div>

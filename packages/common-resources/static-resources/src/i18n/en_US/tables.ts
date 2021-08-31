@@ -26,6 +26,8 @@ export default {
     labelOrderFilledAmount: 'Filled Amount',
     labelOrderFilledPrice: 'Filled Price',
     labelOrderFilterAllPairs: 'All Pairs',
+    labelOrderFee: 'Fee',
+    labelOrderRole: 'Role',
     labelOrderTime: 'Time',
     labelOrderStatus: 'Status',
     labelOrderTradingPrice: 'Trading Price',
