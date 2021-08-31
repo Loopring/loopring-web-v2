@@ -1,10 +1,10 @@
 import React from 'react';
 import { useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
-import { ErrorType, useConnectHook } from '@loopring-web/web3-provider';
+import { ErrorType, ProcessingType, useConnectHook } from '@loopring-web/web3-provider';
 import { SagaStatus } from '@loopring-web/common-resources';
 import { ChainId, sleep } from 'loopring-sdk';
 
-import { useAccount } from 'stores/account';
+import { updateAccountStatus, useAccount } from 'stores/account';
 import { useSystem } from 'stores/system';
 import { myLog } from 'utils/log_tools';
 import { networkUpdate } from 'services/account/networkUpdate';
@@ -12,6 +12,8 @@ import { checkAccount } from 'services/account/checkAccount';
 import { REFRESH_RATE } from 'defs/common_defs';
 import { useWalletLayer2 } from 'stores/walletLayer2';
 import { resetLayer12Data } from './services/account/resetAccount';
+
+import store from 'stores'
 
 export function useConnect({state}: { state: keyof typeof SagaStatus }) {
     const {
@@ -24,7 +26,7 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
     } = useAccount();
     const { updateWalletLayer2,resetLayer2 } = useWalletLayer2()
 
-    const {updateSystem, chainId: _chainId } = useSystem();
+    const {updateSystem} = useSystem();
     const {setShowConnect} = useOpenModals();
     const [stateAccount, setStateAccount] = React.useState< keyof typeof SagaStatus>('DONE');
     React.useEffect(() => {
@@ -59,16 +61,26 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
 
     }, [resetAccount, setStateAccount]);
 
+    const handleProcessing = React.useCallback(({type, opts}: { type: keyof typeof ProcessingType, opts: any }) => {
+        const {qrCodeUrl} = opts;
+        if (qrCodeUrl) {
+            store.dispatch(updateAccountStatus({qrCodeUrl}))
+            setShowConnect({isShow: true, step: WalletConnectStep.WalletConnectQRCode});
+        }
+    }, []);
+
     const handleError = React.useCallback(({type, errorObj}: { type: keyof typeof ErrorType, errorObj: any }) => {
+
         const  chainId = account._chainId === ChainId.MAINNET ||  account._chainId === ChainId.GOERLI ? account._chainId : ChainId.MAINNET
-        if(_chainId !== chainId ) {
+        
+        if(store.getState().system.chainId !== chainId ) {
             updateSystem({chainId})
         }
         setShowConnect({isShow: !!shouldShow ?? false, step: WalletConnectStep.FailedConnect});
         resetAccount();
         statusAccountUnset();
-    }, [resetAccount, statusAccountUnset, updateSystem, account._chainId,_chainId]);
+    }, [resetAccount, statusAccountUnset, updateSystem, account._chainId]);
 
-    useConnectHook({handleAccountDisconnect, handleError, handleConnect});
+    useConnectHook({handleAccountDisconnect, handleProcessing, handleError, handleConnect});
 
 }
