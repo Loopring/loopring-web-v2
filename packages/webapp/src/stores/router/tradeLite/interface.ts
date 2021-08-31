@@ -28,7 +28,10 @@ export type PageTradeLite = {
         value:number|string,
         priceImpactColor:string,
         priceLevel:number|string,
-    }
+    },
+    depth?:sdk.DepthData| undefined
+    tickMap?:sdk.LoopringMap<sdk.TickerData> | undefined,
+    ammPoolsBalance?:sdk.AmmPoolSnapshot | undefined,
     tradeChannel?:undefined|TradeChannel
     orderType? :undefined|sdk.OrderType
     feeBips?:number|string,
