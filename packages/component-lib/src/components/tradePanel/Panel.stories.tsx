@@ -5,7 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { Box, Grid } from '@material-ui/core';
 import {
     AmmData,
-    AmmInData,
+    AmmInData, AmmWithdrawData,
     IBData,
     SlippageTolerance,
     WithdrawType,
@@ -170,7 +170,7 @@ let swapProps: SwapProps<IBData<string>, string, any> = {
         console.log(data, switchType)
     }
 };
-let _ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
+let _ammProps: AmmProps<AmmData<IBData<any>>, AmmWithdrawData<IBData<any>>, any, AmmInData<any>> = {
     refreshRef: React.createRef(),
     ammDepositData: {
         coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
@@ -188,8 +188,8 @@ let _ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
     handleAmmAddChangeEvent: (data, type) => {
         console.log('handleAmmAddChangeEvent', data, type);
     },
-    handleAmmRemoveChangeEvent: (data, type) => {
-        console.log('handleAmmRemoveChangeEvent', data, type);
+    handleAmmRemoveChangeEvent: (data,type) => {
+        return console.log('handleAmmRemoveChangeEvent', data, type);
     },
     onAmmRemoveClick: (data) => {
         console.log('onAmmRemoveClick', data);

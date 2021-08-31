@@ -462,7 +462,8 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                     } as SwapTradeData<IBData<C>>
                 } )
             }
-            updatePageTradeLite({market:market,
+            updatePageTradeLite({
+                market:market,
                 feeBips:0,
                 totalFee:0,
                 takerRate:0,

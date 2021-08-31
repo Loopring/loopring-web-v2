@@ -10,7 +10,7 @@ import {
     ListItemText,
     Typography
 } from '@material-ui/core'
-import {  InputCoinProps, MenuItem } from '../../basic-lib'
+import { InputCoinProps, MenuItem, OutlineSelect, OutlineSelectItem } from '../../basic-lib'
 import { Trans, withTranslation } from "react-i18next";
 import {
     DatePicker,
@@ -28,8 +28,8 @@ import {
     CloseIcon,
     CoinInfo,
     CoinKey,
-    DropDownIcon,
-    IBData,
+    DropDownIcon, i18n,
+    IBData, LanguageType,
 } from '@loopring-web/common-resources';
 import { DateRange } from '@material-ui/lab';
 import { EmptyDefault } from '../empty';
@@ -102,6 +102,21 @@ const InputButtonWrap = () => {
             <InputButton<IBData<CoinType>, CoinType, CoinInfo<CoinType>> {...{..._inputProps, ...{inputData: data}}}></InputButton>
         </Grid>
     </>
+}
+export const BtnLanguage = ({t, label, handleChange}: any) => {
+    const _handleChange = React.useCallback((event: React.ChangeEvent<any>) => {
+        if (handleChange) {
+            handleChange(event.target.value);
+        }
+    }, [handleChange]);
+    return <OutlineSelect aria-label={t(label)} IconComponent={DropDownIcon}
+                          labelId="language-selected"
+                          id="language-selected"
+                          value={i18n.language}
+                          onChange={_handleChange}>
+        <OutlineSelectItem value={LanguageType.en_US}>EN</OutlineSelectItem>
+        <OutlineSelectItem value={LanguageType.zh_CN}>中文</OutlineSelectItem>
+    </OutlineSelect>
 }
 const InputIconWrap = () => {
     const ref = React.createRef<HTMLInputElement>();
@@ -350,6 +365,9 @@ const Template: Story<any> = withTranslation()((props: any) => {
                         >{fee}</Typography>}/>
                     </MenuItem>
                 })}</TextField>
+            </Grid>
+            <Grid item xs={3}>
+            <BtnLanguage {...props} handleChange={(value:any)=>console.log(value)}  />
             </Grid>
             <Grid item xs={3}>
                 <MuiFormControlLabel

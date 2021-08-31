@@ -21,15 +21,16 @@ export const MenuItem = styled(MuiMenuItem)<MuiMenuItemProps>`
 
 export const OutlineSelect = styled(Select)`
   //padding: 0;
-  
+  min-width: var(--btn-min-width);
   //background-color: transparent;
   color: var(--color-text-secondary);
-  padding: .3rem 1.2rem .3rem .8rem;
   //&.MuiInputBase-root {
   //  min-width: auto;
   //  width: auto;
   //}
-
+  .MuiInput-input{
+    padding: .3rem 1.2rem .3rem .8rem;
+  }
   svg {
     //right: .4rem;
     top: ${({theme}) => theme.unit -3}px;
@@ -38,6 +39,9 @@ export const OutlineSelect = styled(Select)`
     //transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     //color: var(--color-text-secondary)
   }
+ 
+  
+
 
   //.MuiSelect-iconOpen {
   //  transform: rotate(180deg)
@@ -52,6 +56,7 @@ export const OutlineSelect = styled(Select)`
     &:before {
       content: '';
       display: none;
+      pointer-events: none;
     }
   }
 
@@ -70,6 +75,7 @@ export const OutlineSelect = styled(Select)`
     margin: 0 auto;
     width: 60%;
     border: 0;
+    pointer-events: none;
   }
 ` as React.ComponentType<SelectProps>;
 

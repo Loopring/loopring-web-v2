@@ -29,6 +29,7 @@ import { OnchainHashInfo } from './localStore/onchainHashInfo'
 import { Confirmation } from './localStore/confirmation'
 import { WalletInfo } from './localStore/walletInfo'
 import { amountMapSlice, AmountStates } from './amount';
+import { pageTradeLiteSlice } from './router';
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -78,7 +79,8 @@ const reducer = combineReducers({
     walletLayer1: walletLayer1Slice.reducer,
     tickerMap: tickerMapSlice.reducer,
     localStore: persistedLocalStoreReducer,
-    amountMap: amountMapSlice.reducer
+    amountMap: amountMapSlice.reducer,
+    pageTradeLite: pageTradeLiteSlice.reducer
 })
 
 //const persistedReducer = persistReducer(persistConfig ,reducer)

@@ -47,10 +47,10 @@ const TradeTitleWrap = withTranslation('common')((rest) => {
         <Grid item>
             <TradeTitle  {...{
                 ...rest,
-                ...props, tradeFloat: {priceDollar: +123, priceYuan: 2343232, change: '+15%', timeUnit: "24h"}
+                ...props, tradeFloat: {priceDollar: +123, priceYuan: 2343232,  timeUnit: "24h", change:100,close:121}
             }} /></Grid>
         <Grid item> <TradeTitle  {...{
-            ...rest, ...props, tradeFloat: {priceDollar: -123, priceYuan: -2343232, change: '-15%', timeUnit: "24h"}
+            ...rest, ...props, tradeFloat: {priceDollar: -123, priceYuan: -2343232,  timeUnit: "24h", change:100,close:121}
         }} /></Grid>
 
     </>
