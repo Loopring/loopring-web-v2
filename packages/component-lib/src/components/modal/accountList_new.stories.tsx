@@ -11,7 +11,7 @@ import {
 
 import {
    AccountBaseProps,
-    AccountStepNew as AccountStep,
+    AccountStep as AccountStep,
 
     NoAccount,
     UpdateAccount,

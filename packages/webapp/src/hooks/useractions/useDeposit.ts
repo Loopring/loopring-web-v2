@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { AccountStepNew as AccountStep, DepositProps, SwitchData, TradeBtnStatus, useOpenModals } from '@loopring-web/component-lib';
+import { AccountStep, DepositProps, SwitchData, useOpenModals } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
 import { ChainId, ConnectorError, dumpError400, GetAllowancesRequest } from 'loopring-sdk';
