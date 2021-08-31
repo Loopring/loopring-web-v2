@@ -246,7 +246,7 @@ export default {
     label_First_Method_Denied: '您的钱包不支持当前签名方法',
 
     label_Approve_WaitForAuth: '等待钱包<1>{{symbol}}</1>授权',
-    label_Approve_Denied: '<0>{{symbol}}</0>授权用户拒绝',
+    label_Approve_Denied: '<0>{{symbol}}</0>授权已被用户拒绝',
     label_Approve_Submited: '<0>{{symbol}}</0>授权已提交',
 
     label_Deposit_WaitForAuth: '请确认充值 <1>{{value}}</1><2>{{symbol}}</2>',

@@ -417,7 +417,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                 />
             </TableFilterStyled>
         )}
-        <Table className={'scrollable'} {...{...defaultArgs, ...props, rawData: totalData}} onScroll={getScrollIndex}/>
+        <Table showLoading={!totalData.length} className={'scrollable'} {...{...defaultArgs, ...props, rawData: totalData}} onScroll={getScrollIndex}/>
         {pagination && (
             <TablePagination page={page} pageSize={1} total={totalData.length} onPageChange={handlePageChange}/>
         )}

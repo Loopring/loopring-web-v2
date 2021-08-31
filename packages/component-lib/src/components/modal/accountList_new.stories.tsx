@@ -11,7 +11,7 @@ import {
 
 import {
    AccountBaseProps,
-    AccountStepNew as AccountStep,
+    AccountStep as AccountStep,
 
     NoAccount,
     UpdateAccount,
@@ -84,9 +84,7 @@ let depositProps: DepositProps<any, any> = {
     }
 }
 
-const coinInfo = coinMap['USDC']
 const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
-    const [openAccount, setOpenAccount] = React.useState(false)
 
     gatewayList[0] = {
         ...gatewayList[0],
@@ -103,7 +101,6 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
         etherscanUrl: 'https://material-ui.com/components/material-icons/'
     }
     const accAddress = '0xcEd11e039a5C50927a17a8D4632616DFa8F72BF6'
-    const etherscanLink = accAddress
 
     const retryBtn = React.useMemo(() => {
         return {
@@ -162,7 +159,12 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                         callback: () => {
 
                         }
-                    }}
+                    }} link = {
+                        {
+                            name: '最近充值记录',
+                            url: 'http://demo.com',
+                        }
+                    }
 
                     providerName={account.connectName} {...{
                         ...rest
@@ -384,6 +386,9 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
     const color = 'white'
     const width = 400
 
+    const w = 540
+    const h = 600
+
     return (
         <>
             <Style>
@@ -391,11 +396,11 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                     <Box paddingTop={2} paddingX={2} width={width} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'}>
                         <Typography fontSize={fontSize} color={color} variant={'body2'} > Old Version </Typography>
                     </Box>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={0}>
 
                         {accountList0.map((panel, index) => {
                             return (<>
-                                <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
+                                <Box key={index} display={'flex'} flexDirection={'column'} width={w} height={h} padding={2}
                                     justifyContent={'center'} alignItems={'stretch'}>
                                     <Typography marginTop={2} variant={'body2'} color={'textSecondary'} style={{ wordBreak: 'break-all' }}>{AccountStep[nameList0[index]]}</Typography>
 
@@ -412,7 +417,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
 
                         {accountList.map((panel, index) => {
                             return (<>
-                                <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
+                                <Box key={index} display={'flex'} flexDirection={'column'} width={w} height={h}  padding={2}
                                     justifyContent={'center'} alignItems={'stretch'}>
                                     <Typography marginTop={2} variant={'body2'} color={'textSecondary'} style={{ wordBreak: 'break-all' }}>{AccountStep[nameList[index]]}</Typography>
 
@@ -430,7 +435,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
 
                         {accountList2.map((panel, index) => {
                             return (<>
-                                <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
+                                <Box key={index} display={'flex'} flexDirection={'column'} width={w} height={h}  padding={2}
                                     justifyContent={'center'} alignItems={'stretch'}>
                                     <Typography marginTop={2} variant={'body2'} color={'textSecondary'} style={{ wordBreak: 'break-all' }}>{AccountStep[nameList2[index]]}</Typography>
 
@@ -448,7 +453,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
 
                         {accountList3.map((panel, index) => {
                             return (<>
-                                <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
+                                <Box key={index} display={'flex'} flexDirection={'column'} width={w} height={h}  padding={2}
                                     justifyContent={'center'} alignItems={'stretch'}>
                                     <Typography marginTop={2} variant={'body2'} color={'textSecondary'} style={{ wordBreak: 'break-all' }}>{AccountStep[nameList3[index]]}</Typography>
 
@@ -466,7 +471,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
 
                         {accountList4.map((panel, index) => {
                             return (<>
-                                <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
+                                <Box key={index} display={'flex'} flexDirection={'column'} width={w} height={h}  padding={2}
                                     justifyContent={'center'} alignItems={'stretch'}>
                                     <Typography marginTop={2} variant={'body2'} color={'textSecondary'} style={{ wordBreak: 'break-all' }}>{AccountStep[nameList4[index]]}</Typography>
 
@@ -484,7 +489,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
 
                         {accountList5.map((panel, index) => {
                             return (<>
-                                <Box key={index} display={'flex'} flexDirection={'column'} width={480} height={400} padding={2}
+                                <Box key={index} display={'flex'} flexDirection={'column'} width={w} height={h} padding={2}
                                     justifyContent={'center'} alignItems={'stretch'}>
                                     <Typography marginTop={2} variant={'body2'} color={'textSecondary'} style={{ wordBreak: 'break-all' }}>{AccountStep[nameList5[index]]}</Typography>
 

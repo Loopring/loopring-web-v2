@@ -33,10 +33,9 @@ const StyledChartWrapper = styled(Box)`
 `
 
 const ChartWrapper = styled(Box)`
-    // background: no-repeat center;
-    // background-color: red;
-    // background-image: url('chartsDefaultDark.png');
-`
+    background-image: url('./static/images/${({dark}: any) => dark ? 'noDataDark' : 'noDataLight'}.png');
+    background-repeat: no-repeat;
+` as any
 
 const StyledBtnGroupWrapper = styled(Box)`
     position: absolute;
@@ -71,7 +70,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     // const [chartPeriod, setChartPeriod] = useState('week')
 
     const { marketArray, assetsRawData } = useGetAssets()
-    const { currency } = useSettings()
+    const { currency, themeMode } = useSettings()
     const { walletLayer2 } = store.getState().walletLayer2;
 
     const total = assetsRawData.map(o => o.tokenValueDollar).reduce((a, b) => a + b, 0)
@@ -167,8 +166,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                 </Box>
                 <Box display={'flex'} flexDirection={'column'} flex={1} component={'section'} className={'MuiPaper-elevation2'}>
                     <Typography component="span"  color="textSecondary" variant="body1">{t('labelTotalAssets')}</Typography>
-                    <ChartWrapper flex={1} component={'div'} />
-
+                    <ChartWrapper marginTop={2} dark={themeMode === 'dark'} flex={1} component={'div'} />
                 </Box>
             </StyledChartWrapper>
             <StylePaper marginTop={2} ref={container} className={'MuiPaper-elevation2'}>
