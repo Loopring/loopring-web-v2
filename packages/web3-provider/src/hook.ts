@@ -46,5 +46,5 @@ export function useConnectHook(
             }
         });
         return () => subscription.unsubscribe();
-    }, [subject, handleConnect, handleAccountDisconnect, handleError, handleProcessing]);
+    }, [subject, ]);
 }

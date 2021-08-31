@@ -2,40 +2,9 @@ import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice';
 import { Account, AccountState, AccountStatus, ConnectProviders, SagaStatus } from '@loopring-web/common-resources';
 
-// import { Lv2Account, } from 'defs/account_defs'
-// import { AccountStatus } from 'state_machine/account_machine_spec'
-// import { UserStorage } from 'storage'
-// const initialState = (initState:Partial<AccountState>) => {
-//   // const defaultAccId = process.env.REACT_APP_TEST_ACCOUND_ID ? process.env.REACT_APP_TEST_ACCOUND_ID : UserStorage.getAccountId()
-//   // const defaultApiKey = process.env.REACT_APP_TEST_API_KEY ? process.env.REACT_APP_TEST_API_KEY : UserStorage.getApikey()
-//   // const defaultOwner = process.env.REACT_APP_TEST_OWNER ? process.env.REACT_APP_TEST_OWNER : UserStorage.getAccount()
-//   // const defaultEddsaKey = process.env.REACT_APP_TEST_EDDSA_KEY ? process.env.REACT_APP_TEST_EDDSA_KEY : UserStorage.getEddsakey()
-//
-//   // const defaultStatus = AccountStatus.UNCONNNECTED
-//   // return {
-//   //   accAddr: defaultOwner,
-//   //   status: defaultStatus,
-//   //   accountId: defaultAccId,
-//   //   publicKey: {},
-//   //   nonce: 0,
-//   //   isContractAddress: false,
-//   //   apiKey: defaultApiKey,
-//   //   eddsaKey: defaultEddsaKey,
-//   //   connectName: ConnectorNames.unknown,
-//   //   connectNameTemp: ConnectorNames.unknown,
-//   // } as Lv2Account
-//   return {
-//     accAddress: '',
-//     status: AccountStatus.UN_CONNECT,
-//     accountId: '',
-//     apiKey: '',
-//     eddsaKey: '',
-//     connectName: ConnectProviders.UnKnow,
-//     // ...initState,
-//   }
-// }
 const initialState: AccountState = {
     accAddress: '',
+    qrCodeUrl: '',
     readyState: AccountStatus.UN_CONNECT,
     accountId: -1,
     apiKey: '',
@@ -73,6 +42,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
             } else {
                 const {
                     accAddress,
+                    qrCodeUrl,
                     readyState,
                     accountId,
                     wrongChain,
@@ -88,6 +58,11 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                 if (accAddress !== undefined) {
                     state.accAddress = accAddress;
                 }
+                
+                if (qrCodeUrl !== undefined) {
+                    state.qrCodeUrl = qrCodeUrl;
+                }
+                
                 if(wrongChain !== undefined){
                     state.wrongChain = wrongChain
                 }
