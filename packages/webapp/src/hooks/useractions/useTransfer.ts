@@ -5,11 +5,11 @@ import * as sdk from 'loopring-sdk'
 import { connectProvides } from '@loopring-web/web3-provider';
 
 import { AccountStepNew, SwitchData, TradeBtnStatus, TransferProps, useOpenModals, } from '@loopring-web/component-lib';
-import { AccountStatus, CoinInfo, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
+import { AccountStatus, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
 
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
-import { useChargeFees } from './useChargeFees';
+import { useChargeFees } from '../common/useChargeFees';
 import { LoopringAPI } from 'api_wrapper';
 import { useSystem } from 'stores/system';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
@@ -17,10 +17,10 @@ import { myLog } from 'utils/log_tools';
 import { makeWalletLayer2 } from 'hooks/help';
 import { useWalletLayer2Socket } from '../../services/socket';
 import { getTimestampDaysLater } from 'utils/dt_tools';
-import { DAYS, REFRESH_RATE, TOAST_TIME } from 'defs/common_defs';
+import { DAYS, TOAST_TIME } from 'defs/common_defs';
 import { useTranslation } from 'react-i18next';
 import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
-import { ChainId, ConnectorError, sleep } from 'loopring-sdk';
+import { ChainId, ConnectorError, } from 'loopring-sdk';
 import { useWalletInfo } from 'stores/localStore/walletInfo';
 import { checkErrorInfo } from './utils';
 
