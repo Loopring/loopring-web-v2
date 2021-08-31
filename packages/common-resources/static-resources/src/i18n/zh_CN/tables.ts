@@ -82,7 +82,7 @@ export default {
     labelSell: '卖',
     labelAmmSide: '入金/出金',
     labelAmmAmount: '交易总额',
-    labelAmmLpTokenAmount: '流动性资产价格',
+    labelAmmLpTokenAmount: '流动性资产变化',
     labelAmmFee: '费用',
     labelAmmRecordTime: '交易时间',
     labelAmmExit: '出金',

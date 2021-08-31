@@ -64,8 +64,8 @@ export default {
     labelViewEth: '跳转至Etherscan',
     labelQRCode: '查看二维码',
     labelShowAccountInfo: '查看,设置账号信息',
-    labelAssetTitle: '资产总量 ( 路印二层 )',
-    labelShowAccount: '显示或隐藏资产总量',
+    labelAssetTitle: '总资产(路印二层)',
+    labelShowAccount: '显示或隐藏总资产',
     labelBtnDeposit: '充值',
     labelBtnTransfer: '转账',
     labelBtnWithdraw: '提现',
@@ -239,4 +239,35 @@ export default {
     labelCalculating:'计算中...',
     labelAmmMyTransactions: '我的交易',
     labelAmmAllTransactions: '所有交易',
+
+    
+    label_WaitForAuth: '等待钱包签名',
+    label_Denied: '签名已被用户拒绝',
+    label_First_Method_Denied: '您的钱包不支持当前签名方法',
+
+    label_Approve_WaitForAuth: '等待钱包<1>{{symbol}}</1>授权',
+    label_Approve_Denied: '<0>{{symbol}}</0>授权用户拒绝',
+    label_Approve_Submited: '<0>{{symbol}}</0>授权已提交',
+
+    label_Deposit_WaitForAuth: '请确认充值 <1>{{value}}</1><2>{{symbol}}</2>',
+    label_Deposit_Denied:'充值 <1>{{value}}</1><2>{{symbol}}</2> 已被用户拒绝',
+    label_Deposit_Failed:'充值 <1>{{value}}</1><2>{{symbol}}</2> 失败',
+    label_Deposit_Submited: '充值 <1>{{value}}</1><2>{{symbol}}</2> 已提交',
+
+    label_Withdraw_In_Progress: '正在提现中...',
+    label_Withdraw_Failed:'提现 <1>{{value}}</1><2>{{symbol}}</2> 失败!',
+    label_Withdraw_Success: '提现 <1>{{value}}</1><2>{{symbol}}</2> 成功!',
+
+    label_Transfer_In_Progress: '正在转账中...',
+    label_Transfer_Failed:'转账 <1>{{value}}</1><2>{{symbol}}</2> 失败!',
+    label_Transfer_Success: '转账 <1>{{value}}</1><2>{{symbol}}</2> 成功!',
+
+    label_UpdateAccount_Success: '恭喜你!',
+    label_UpdateAccount_Success2: '您已经成功激活路印二层账号!',
+
+    label_UnlockAccount_Success: '解锁成功!',
+    label_UnlockAccount_Failed: '解锁失败!',
+
+    label_CreateAccount_Approve_WaitForAuth: '等待 <1>{{symbol}}</1> 的授权...',
+    label_CreateAccount_Approve_Denied: '<0>{{symbol}}</0>授权用户拒绝',
 }

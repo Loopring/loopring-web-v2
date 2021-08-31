@@ -1,4 +1,5 @@
 import { REFRESH_RATE } from "defs/common_defs"
+import { myLog } from "./log_tools"
 
 export function PromiseJob(fetchPromise: any, setFunc: any, field?: string, prefix: any = 'PromiseJob') {
 
@@ -10,7 +11,7 @@ export function PromiseJob(fetchPromise: any, setFunc: any, field?: string, pref
                 if (mounted) {
                     setFunc(field ? data[field] : data)
                 } else {
-                    console.log(prefix + ' unmounted!')
+                    myLog(prefix + ' unmounted!')
                 }
             }).catch((reason: any) => {
                 console.error(reason)

@@ -1,5 +1,5 @@
 import { Box, Typography } from '@material-ui/core';
-import { Trans, WithTranslation } from 'react-i18next';
+import { Trans, withTranslation, WithTranslation } from 'react-i18next';
 import {
     ConnectProviders,
     LoadingIcon,
@@ -24,7 +24,7 @@ export interface PanelProps {
     value?: number,
     symbol?: string,
     describe1?: any,
-    describe2?: string,
+    describe2?: any,
     txCheck?: {
         route: string,
         callback: (e?: any) => void,
@@ -40,7 +40,7 @@ export interface PanelProps {
     }
 }
 
-export const BasicPanel = ({
+export const BasicPanel = withTranslation('common', {withRef: true})(({
     t,
     title,
     iconType,
@@ -57,13 +57,13 @@ export const BasicPanel = ({
             case IconType.LoadingIcon:
                 return <LoadingIcon color={'primary'} style={{ width: 72, height: 72 }} />
             case IconType.FailedIcon:
-                return <FailedIcon style={{ color: 'var(--color-error)', width: 72, height: 72 }} />
+                return <FailedIcon style={{ color: 'var(--color-error)', width: 60, height: 60 }} />
             case IconType.SubmitIcon:
-                return <SubmitIcon color={'primary'} style={{ width: 72, height: 72 }} />
+                return <SubmitIcon color={'primary'} style={{ width: 60, height: 60 }} />
             case IconType.RefuseIcon:
                 return <RefuseIcon style={{ color: 'var(--color-warning)', width: 60, height: 60 }} />
             case IconType.DoneIcon:
-                return <DoneIcon style={{ color: 'var(--color-success)', width: 72, height: 72 }} />
+                return <DoneIcon style={{ color: 'var(--color-success)', width: 60, height: 60 }} />
         }
     }, [iconType])
 
@@ -94,12 +94,12 @@ export const BasicPanel = ({
         <Typography component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'} marginBottom={2}>
             {iconDiv}
         </Typography>
-        {describe1 && describe1} {txCheck && <>check the tx.</>}
+        {describe1 && describe1}
         {txCheck &&
             <Link target='_blank' href={txCheck.route} display={'inline-block'} marginTop={1 / 2}>
                 <LinkIcon color={'primary'} fontSize={'small'} style={{ verticalAlign: 'middle' }} />
             </Link>}
-        {describe2 && <>{describe2}</>}
+        {describe2 && describe2}
         {providerName &&
             <Typography variant={'body2'} color={'textSecondary'} component={'p'} marginTop={3} alignSelf={'flex-start'}
                 paddingX={5}>
@@ -108,11 +108,11 @@ export const BasicPanel = ({
         }
         {btnInfo &&
             <Box marginTop={2} alignSelf={'stretch'} paddingX={5}>
-                <Button variant={'contained'} fullWidth size={'medium'} onClick={(e?: any) => { if (btnInfo?.callback) { btnInfo.callback(e) } }}>{btnInfo?.btnTxt} </Button>
+                <Button variant={'contained'} fullWidth size={'medium'} onClick={(e?: any) => { if (btnInfo?.callback) { btnInfo.callback(e) } }}>{t(btnInfo?.btnTxt)} </Button>
             </Box>}
         {link && <>{JSON.stringify(link)}</>}
     </Box>
-}
+})
 
 export const ConnectBase = (props: PanelProps & WithTranslation) => {
     const propsPatch = {

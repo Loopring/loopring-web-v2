@@ -5,19 +5,19 @@ import { CreateAccountBase, IconType, PanelProps } from "./BasicPanel"
 export const CreateAccount_Approve_WaitForAuth = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.LoadingIcon,
-        describe1: <Trans i18nKey={'label_CreateAccount_Approve_WaitForAuth'}>
-        Waiting for {props.symbol} Auth.
+        describe1: <Trans i18nKey={'label_Approve_WaitForAuth'}>
+        Waiting for {props.symbol} Approve.
         </Trans>
     }
     return <CreateAccountBase {...props} {...propsPatch} />
 }
 
 // symbol
-export const CreateAccount_Approve_Refused = (props: PanelProps & WithTranslation) => {
+export const CreateAccount_Approve_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_CreateAccount_Approve_Refused'}>
-        {props.symbol} Auth User Refused.
+        describe1: <Trans i18nKey={'label_Approve_Denied'}>
+        {props.symbol} Approve Denied by user.
     </Trans>
     }
     return <CreateAccountBase {...propsPatch} {...props} />
@@ -46,11 +46,11 @@ export const CreateAccount_WaitForAuth = (props: PanelProps & WithTranslation) =
 }
 
 // value symbol
-export const CreateAccount_Refused = (props: PanelProps & WithTranslation) => {
+export const CreateAccount_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_CreateAccount_Refused'}>
-        {props.value} {props.symbol} CreateAccount User Refused.
+        describe1: <Trans i18nKey={'label_CreateAccount_Denied'}>
+        {props.value} {props.symbol} CreateAccount User Denied.
     </Trans>
     }
     return <CreateAccountBase {...propsPatch} {...props} />

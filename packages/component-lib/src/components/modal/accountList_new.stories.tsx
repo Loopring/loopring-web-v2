@@ -18,38 +18,38 @@ import {
     HadAccount,
 
     Deposit_Approve_WaitForAuth,
-    Deposit_Approve_Refused,
+    Deposit_Approve_Denied,
     Deposit_Approve_Submited,
     Deposit_WaitForAuth,
-    Deposit_Refused,
+    Deposit_Denied,
     Deposit_Failed,
     Deposit_Submited,
 
     Transfer_WaitForAuth,
-    Transfer_First_Method_Refused,
-    Transfer_User_Refused,
+    Transfer_First_Method_Denied,
+    Transfer_User_Denied,
     Transfer_In_Progress,
     Transfer_Success,
     Transfer_Failed,
 
     Withdraw_WaitForAuth,
-    Withdraw_First_Method_Refused,
-    Withdraw_User_Refused,
+    Withdraw_First_Method_Denied,
+    Withdraw_User_Denied,
     Withdraw_In_Progress,
     Withdraw_Success,
     Withdraw_Failed,
 
     CreateAccount_Approve_WaitForAuth,
-    CreateAccount_Approve_Refused,
+    CreateAccount_Approve_Denied,
     CreateAccount_Approve_Submited,
     CreateAccount_WaitForAuth,
-    CreateAccount_Refused,
+    CreateAccount_Denied,
     CreateAccount_Failed,
     CreateAccount_Submited,
 
     UpdateAccount_Approve_WaitForAuth,
-    UpdateAccount_First_Method_Refused,
-    UpdateAccount_User_Refused,
+    UpdateAccount_First_Method_Denied,
+    UpdateAccount_User_Denied,
     UpdateAccount_Success,
     UpdateAccount_Submited,
     UpdateAccount_Failed,
@@ -144,19 +144,19 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
         const accountMap = {
 
             [AccountStep.Deposit_Approve_WaitForAuth]: {
-                view: <Deposit_Approve_WaitForAuth
+                view: <Deposit_Approve_WaitForAuth symbol={'DAI'}
                     providerName={ConnectProviders.MetaMask} {...{
                         ...rest
                     }} />,
             },
-            [AccountStep.Deposit_Approve_Refused]: {
-                view: <Deposit_Approve_Refused btnInfo={retryBtn}
+            [AccountStep.Deposit_Approve_Denied]: {
+                view: <Deposit_Approve_Denied btnInfo={retryBtn} symbol={'DAI'}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_Approve_Submited]: {
-                view: <Deposit_Approve_Submited btnInfo={closeBtn} txCheck={
+                view: <Deposit_Approve_Submited btnInfo={closeBtn} symbol={'DAI'} txCheck={
                     {
                         route: '',
                         callback: () => {
@@ -169,24 +169,24 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                     }} />,
             },
             [AccountStep.Deposit_WaitForAuth]: {
-                view: <Deposit_WaitForAuth
+                view: <Deposit_WaitForAuth value={'100'} symbol={'USDT'}
                     providerName={ConnectProviders.WalletConnect} {...{
                         ...rest
                     }} />,
             },
-            [AccountStep.Deposit_Refused]: {
-                view: <Deposit_Refused btnInfo={retryBtn} {...{
+            [AccountStep.Deposit_Denied]: {
+                view: <Deposit_Denied value={'100'} symbol={'USDT'} btnInfo={retryBtn} {...{
                     ...rest
                 }} />,
             },
             [AccountStep.Deposit_Failed]: {
-                view: <Deposit_Failed btnInfo={closeBtn}
+                view: <Deposit_Failed btnInfo={closeBtn} value={'100'} symbol={'USDT'}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Deposit_Submited]: {
-                view: <Deposit_Submited txCheck={
+                view: <Deposit_Submited value={'100'} symbol={'USDT'} txCheck={
                     {
                         route: '',
                         callback: () => {
@@ -212,14 +212,14 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                         ...rest
                     }} />,
             },
-            [AccountStep.Transfer_First_Method_Refused]: {
-                view: <Transfer_First_Method_Refused
+            [AccountStep.Transfer_First_Method_Denied]: {
+                view: <Transfer_First_Method_Denied
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
-            [AccountStep.Transfer_User_Refused]: {
-                view: <Transfer_User_Refused
+            [AccountStep.Transfer_User_Denied]: {
+                view: <Transfer_User_Denied
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
@@ -230,13 +230,13 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                 }} />,
             },
             [AccountStep.Transfer_Success]: {
-                view: <Transfer_Success
+                view: <Transfer_Success value={'100'} symbol={'USDT'}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
             [AccountStep.Transfer_Failed]: {
-                view: <Transfer_Failed
+                view: <Transfer_Failed value={'100'} symbol={'USDT'}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
@@ -255,14 +255,14 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                         ...rest
                     }} />,
             },
-            [AccountStep.Withdraw_First_Method_Refused]: {
-                view: <Withdraw_First_Method_Refused
+            [AccountStep.Withdraw_First_Method_Denied]: {
+                view: <Withdraw_First_Method_Denied
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
-            [AccountStep.Withdraw_User_Refused]: {
-                view: <Withdraw_User_Refused
+            [AccountStep.Withdraw_User_Denied]: {
+                view: <Withdraw_User_Denied
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
@@ -280,7 +280,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                     }} />,
             },
             [AccountStep.Withdraw_Failed]: {
-                view: <Withdraw_Failed
+                view: <Withdraw_Failed value={'100'} symbol={'USDT'}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
@@ -294,13 +294,13 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
     const { nameList4, accountList4, } = React.useMemo(() => {
         const accountMap = {
             [AccountStep.CreateAccount_Approve_WaitForAuth]: {
-                view: <CreateAccount_Approve_WaitForAuth
+                view: <CreateAccount_Approve_WaitForAuth symbol={'USDT'}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
             },
-            [AccountStep.CreateAccount_Approve_Refused]: {
-                view: <CreateAccount_Approve_Refused
+            [AccountStep.CreateAccount_Approve_Denied]: {
+                view: <CreateAccount_Approve_Denied symbol={'USDT'}
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
@@ -317,8 +317,8 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                         ...rest
                     }} />,
             },
-            [AccountStep.CreateAccount_Refused]: {
-                view: <CreateAccount_Refused
+            [AccountStep.CreateAccount_Denied]: {
+                view: <CreateAccount_Denied
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
@@ -349,13 +349,13 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                         ...rest
                     }} />,
             },
-            [AccountStep.UpdateAccount_First_Method_Refused]: {
-                view: <UpdateAccount_First_Method_Refused btnInfo={retryBtn} {...{
+            [AccountStep.UpdateAccount_First_Method_Denied]: {
+                view: <UpdateAccount_First_Method_Denied btnInfo={retryBtn} {...{
                     ...rest
                 }} />,
             },
-            [AccountStep.UpdateAccount_User_Refused]: {
-                view: <UpdateAccount_User_Refused btnInfo={retryBtn} {...{
+            [AccountStep.UpdateAccount_User_Denied]: {
+                view: <UpdateAccount_User_Denied btnInfo={retryBtn} {...{
                     ...rest
                 }} />,
             },
@@ -381,7 +381,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
     }, [])
 
     const fontSize = '30px'
-    const color = 'red'
+    const color = 'white'
     const width = 400
 
     return (
