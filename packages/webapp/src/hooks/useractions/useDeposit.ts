@@ -14,6 +14,7 @@ import { useWalletLayer1 } from 'stores/walletLayer1';
 import { useTranslation } from 'react-i18next';
 import { ActionResult, ActionResultCode } from 'defs/common_defs';
 import { checkErrorInfo } from './utils';
+import { useBtnStatus } from 'hooks/common/useBtnStatus';
 
 export const useDeposit = <R extends IBData<T>, T>(): {
     depositProps: DepositProps<R, T>
@@ -31,6 +32,18 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     const { walletLayer1 } = useWalletLayer1()
     const {setShowDeposit, setShowAccount} = useOpenModals()
     const {t} = useTranslation('common')
+
+    const { btnStatus, enableBtn, disableBtn, }  = useBtnStatus()
+
+    React.useEffect(() => {
+
+        if (depositValue?.tradeValue) {
+                enableBtn()
+        } else {
+            disableBtn()
+        }
+
+    }, [enableBtn, disableBtn, depositValue?.tradeValue])
 
     const  walletLayer1Callback = React.useCallback(()=>{
         if(symbol && walletLayer1){
@@ -208,7 +221,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             tradeData: depositValue as any,
             coinMap: totalCoinMap as CoinMap<any>,
             walletMap: walletLayer1 as WalletMap<any>,
-            depositBtnStatus: TradeBtnStatus.AVAILABLE,
+            depositBtnStatus: btnStatus,
             onDepositClick,
         }
     }, [account.readyState, totalCoinMap, walletLayer1, onDepositClick])

@@ -15,7 +15,7 @@ import { useSystem } from 'stores/system';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { myLog } from 'utils/log_tools';
 import { makeWalletLayer2 } from 'hooks/help';
-import { useWalletLayer2Socket } from '../../services/socket';
+import { useWalletLayer2Socket, walletLayer2Service } from '../../services/socket';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS, TOAST_TIME } from 'defs/common_defs';
 import { useTranslation } from 'react-i18next';
@@ -23,6 +23,7 @@ import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
 import { ChainId, ConnectorError, } from 'loopring-sdk';
 import { useWalletInfo } from 'stores/localStore/walletInfo';
 import { checkErrorInfo } from './utils';
+import { useBtnStatus } from 'hooks/common/useBtnStatus';
 
 export const useTransfer = <R extends IBData<T>, T>(): {
     // handleTransfer: (inputValue:R) => void,
@@ -64,21 +65,18 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         addrStatus,
     } = useAddressCheck()
 
-    const [btnStatus, setBtnStatus,] = React.useState<TradeBtnStatus>(TradeBtnStatus.AVAILABLE)
+    const { btnStatus, enableBtn, disableBtn, }  = useBtnStatus()
 
     React.useEffect(() => {
 
-        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && transferValue
+        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && transferValue?.tradeValue
             && addrStatus === AddressError.NoError) {
-            //valid
-            //todo add amt check.
-            myLog('try to AVAILABLE')
-            setBtnStatus(TradeBtnStatus.AVAILABLE)
+                enableBtn()
         } else {
-            setBtnStatus(TradeBtnStatus.DISABLED)
+            disableBtn()
         }
 
-    }, [setBtnStatus, chargeFeeList, address, addrStatus, transferValue])
+    }, [enableBtn, disableBtn, chargeFeeList, address, addrStatus, transferValue?.tradeValue])
 
     const walletLayer2Callback = React.useCallback(() => {
         const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
@@ -172,6 +170,8 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     updateDepositHashWrapper({ wallet: account.accAddress, isHWAddr })
                 }
             }
+            
+            walletLayer2Service.sendUserUpdate()
 
         }
     }, [setLastRequest, setShowAccount, updateDepositHashWrapper, account, ])
