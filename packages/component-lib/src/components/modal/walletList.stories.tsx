@@ -83,8 +83,8 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
                 gatewayList={gatewayList} {...{providerName: ConnectProviders.MetaMask, ...rest}}/>,},
             [ WalletConnectStep.MetaMaskProcessing ]: {view: <MetaMask_Connect_In_Progress {...rest}/>,},
             [ WalletConnectStep.WalletConnectProcessing ]: {view: <WalletConnect_Connect_In_Progress {...rest}/>,},
-            [ WalletConnectStep.WalletConnectQRCode ]: {view: <WalletConnectQRCode  {...rest} url={url}/>,},
-            [ WalletConnectStep.SuccessConnect ]: {view: <Connect_Success {...{...rest, providerName: 'MetaMask'}}/>,},
+            [ WalletConnectStep.WalletConnectQRCode ]: {view: <WalletConnectQRCode {...rest} url={url}/>,},
+            [ WalletConnectStep.SuccessConnect ]: {view: <Connect_Success {...{...rest }}/>,},
             [ WalletConnectStep.FailedConnect ]: {view: <Connect_Failed {...rest} onRetry={() => {
             }}/>,},
         })

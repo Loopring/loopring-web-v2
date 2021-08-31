@@ -273,4 +273,9 @@ export default {
     label_CreateAccount_Approve_WaitForAuth: 'Waiting for <1>{{symbol}}</1> Approve...',
     label_CreateAccount_Approve_Denied: '<0>{{symbol}}</0> Approve Denied by user.',
 
+    label_MetaMask_Connect_In_Progress: 'MetaMask Connecting...',
+    label_WalletConnect_Connect_In_Progress: 'WallConnect Connecting...',
+    label_Connect_Success: 'Connect successfully!',
+    label_Connect_Failed: 'Connect failed!',
+
 }
