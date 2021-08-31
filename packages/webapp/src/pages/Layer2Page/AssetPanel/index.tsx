@@ -8,21 +8,16 @@ import {
     AssetsTable,
     AssetTitle,
     AssetTitleProps,
-    ChartType,
     DoughnutChart,
-    ScaleAreaChart,
-    ToggleButtonGroup,
     LpTokenAction,
     useSettings,
 } from '@loopring-web/component-lib'
-import { unit } from '@loopring-web/common-resources'
 
 import { useModals } from 'hooks/useractions/useModals'
 
 import store from 'stores'
 import { StylePaper } from 'pages/styled'
 import { useGetAssets } from './hook'
-import { useSystem } from 'stores/system'
 
 const StyledChartWrapper = styled(Box)`
     height: 225px;
@@ -99,13 +94,13 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         ? [...percentList.filter(o => o.token.value.split('-')[0] !== 'LP'), lpTotalData]
         : percentList
 
-    useEffect(() => {
-        // @ts-ignore
-        let height = container?.current?.offsetHeight;
-        if (height) {
-            setPageSize(Math.floor((height - 120) / 44) - 1);
-        }
-    }, [container, pageSize]);
+    // useEffect(() => {
+    //     // @ts-ignore
+    //     let height = container?.current?.offsetHeight;
+    //     if (height) {
+    //         setPageSize(Math.floor((height - 120) / 44) - 1);
+    //     }
+    // }, [container, pageSize]);
 
     const getTokenRelatedMarketArray = useCallback((token: string) => {
         if (!marketArray) return []
@@ -180,9 +175,9 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                 <Box className="tableWrapper">
                     <AssetsTable {...{
                         rawData: assetsRawData,
-                        pagination: {
-                            pageSize: pageSize
-                        },
+                        // pagination: {
+                        //     pageSize: pageSize
+                        // },
                         showFiliter: true,
                         onShowDeposit: onShowDeposit,
                         onShowTransfer: onShowTransfer,

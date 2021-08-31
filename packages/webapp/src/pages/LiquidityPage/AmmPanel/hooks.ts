@@ -246,11 +246,12 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
             case AmmPanelType.Exit:
                 const validAmt1 = ammData?.coinA?.tradeValue ? ammData?.coinA?.tradeValue >= times * baseMinAmt : false
                 const validAmt2 = ammData?.coinB?.tradeValue ? ammData?.coinB?.tradeValue >= times * quoteMinAmt : false
-                myLog('btnLabelActiveCheck ammData', ammData?.coinA?.tradeValue, ammData?.coinB?.tradeValue,
-                    times * baseMinAmt, times * quoteMinAmt)
+                // myLog('btnLabelActiveCheck ammData', ammData?.coinA?.tradeValue, ammData?.coinB?.tradeValue,
+                //     times * baseMinAmt, times * quoteMinAmt)
 
                 if (isLoading) {
                     setBtnI18nKey(TradeBtnStatus.LOADING)
+                    myLog('set LOADING')
                     return undefined
                 } else {
                     if (account.readyState === AccountStatus.ACTIVATED) {
@@ -358,8 +359,6 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
         if (!market || !amm || !marketMap) {
             return
         }
-
-        // myLog('handleJoin:', data, type);
 
         const marketInfo: MarketInfo = marketMap[market]
 
@@ -474,12 +473,15 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
     const ammCalculator = React.useCallback(async function (props) {
 
         setIsLoading(true)
+        setBtnStatus(TradeBtnStatus.LOADING)
+
         if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !request || !account?.eddsaKey?.sk) {
             myLog(' onAmmJoin ammpoolAPI:', LoopringAPI.ammpoolAPI,
                 'joinRequest:', request)
 
             setToastOpen({ open: true, type: 'success', content: t('labelJoinAmmFailed') })
             setIsLoading(false)
+            walletLayer2Service.sendUserUpdate()
             return
         }
 
@@ -522,16 +524,15 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
 
                     if ((response.joinAmmPoolResult as any)?.resultInfo) {
                         setToastOpen({ open: true, type: 'error', content: t('labelJoinAmmFailed') })
-                        setIsLoading(false)
                     } else {
                         setToastOpen({ open: true, type: 'success', content: t('labelJoinAmmSuccess') })
-                        walletLayer2Service.sendUserUpdate()
                     }
                 } catch (reason) {
                     dumpError400(reason)
-                    setIsLoading(false)
                     setToastOpen({ open: true, type: 'error', content: t('labelJoinAmmFailed') })
                 } finally {
+                    setIsLoading(false)
+                    walletLayer2Service.sendUserUpdate()
                 }
                 break
             case AmmPanelType.Exit:
@@ -562,13 +563,14 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
                         setToastOpen({ open: true, type: 'error', content: t('labelExitAmmFailed') })
                     } else {
                         setToastOpen({ open: true, type: 'success', content: t('labelExitAmmSuccess') })
-                        walletLayer2Service.sendUserUpdate()
                     }
 
                 } catch (reason) {
                     dumpError400(reason)
-                    setIsLoading(false)
                     setToastOpen({ open: true, type: 'error', content: t('labelExitAmmFailed') })
+                } finally {
+                    setIsLoading(false)
+                    walletLayer2Service.sendUserUpdate()
                 }
                 break
             default:
@@ -578,6 +580,7 @@ export const useAmmCalc = <C extends { [key: string]: any }>({
         if (props.__cache__) {
             makeCache(props.__cache__)
         }
+
     }, [type, request, ammData, account, t])
 
     const onAmmClickMap = Object.assign(deepClone(btnClickMap), {

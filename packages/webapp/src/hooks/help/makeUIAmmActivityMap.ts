@@ -16,6 +16,7 @@ import { coinMap } from '@loopring-web/component-lib';
 import { AmmDetailStore } from '../../stores/Amm/AmmMap';
 import { WalletMapExtend } from './makeWallet';
 import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
+import { myError } from 'utils/log_tools';
 
 export type AmmActivityViewMap<R, I> = {
     [key in keyof R]?: AmmActivity<I>[] | undefined
@@ -31,7 +32,6 @@ export const makeUIAmmActivityMap = <R extends { [ key: string ]: any }, I exten
     let ammActivityViewMap: AmmActivityViewMap<R, I> = {}
     if (ammActivityMap && ammActivityMap[ type ]) {
 
-        console.log(ammActivityMap)
         // @ts-ignore
         ammPoolActivityStatus.forEach((status: AmmPoolActivityStatus) => {
 
@@ -109,7 +109,7 @@ const makeAsCard = <R extends { [ key: string ]: any }, I extends { [ key: strin
             return [] as Array<AmmCardProps<I>>
         }
     } catch (error) {
-        console.log(error)
+        myError(error)
         return []
     }
 }

@@ -153,10 +153,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                 // Withdraw failed
                 const code = checkErrorInfo(response.errorInfo, isFirstTime)
                 if (code === ConnectorError.USER_DENIED) {
-                    setShowAccount({ isShow: true, step: AccountStepNew.Transfer_User_Refused })
+                    setShowAccount({ isShow: true, step: AccountStepNew.Transfer_User_Denied })
                 } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
                     setLastRequest({ request })
-                    setShowAccount({ isShow: true, step: AccountStepNew.Transfer_First_Method_Refused })
+                    setShowAccount({ isShow: true, step: AccountStepNew.Transfer_First_Method_Denied })
                 } else {
                     setShowAccount({ isShow: true, step: AccountStepNew.Transfer_Failed })
                 }
