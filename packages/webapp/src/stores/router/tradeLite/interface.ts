@@ -6,23 +6,23 @@ export type PageTradeLite = {
     market?:string // eg: ETH-LRC, Pair from loopring market
     tradePair?: string  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
     calcTradeParams?: {
-        exceedDepth: boolean,
-        isReverse: boolean,
-        isAtoB: boolean,
-        slipBips: string|number,
-        takerRate: string|number,
-        feeBips: string|number,
-        output: string|number,
-        baseAmt: string|number,
-        quoteAmt: string|number,
-        amountS: string|number,
-        amountBOut: string|number,
-        amountBOutWithoutFee: string|number,
+        exceedDepth: boolean;
+        isReverse: boolean;
+        isAtoB: boolean;
+        slipBips: string;
+        takerRate: string|number;
+        feeBips: string|number;
+        output: string;
+        baseAmt: string;
+        quoteAmt: string;
+        amountS: string;
+        amountBOut: string;
+        amountBOutWithoutFee: string;
         amountBOutSlip: {
-            minReceived: string|number,
-            minReceivedVal: string|number,
-        },
-        priceImpact: string|number,
+            minReceived: string;
+            minReceivedVal: string;
+        };
+        priceImpact: string;
     },
     priceImpactObj?:undefined|{    // account has activated or undefined
         value:number|string,
@@ -40,11 +40,15 @@ export type PageTradeLite = {
     quoteMinAmtInfo?:number|string,
     buyMinAmtInfo?: undefined|OrderInfo;
     sellMinAmtInfo?: undefined|OrderInfo;
-    __SUBMIT_LOCK_TIMER__:1000;
-    __TOAST_AUTO_CLOSE_TIMER__:3000;
+
 
 }
 
+export type PageTradeLiteStatus =  {
+    pageTradeLite: PageTradeLite,
+    __SUBMIT_LOCK_TIMER__:1000;
+    __TOAST_AUTO_CLOSE_TIMER__:3000
+}
 
 
 
