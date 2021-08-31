@@ -20,7 +20,7 @@ const TableStyled = styled(Box)`
 
   .rdg {
     flex: 1;
-    --template-columns: 200px auto auto 200px ${(props: any) => props.lan === 'en_US' ? '275px' : '240px'} !important;
+    --template-columns: 220px 150px auto auto ${(props: any) => props.lan === 'en_US' ? '275px' : '240px'} !important;
 
     .rdg-cell:first-of-type {
         display: flex;
@@ -228,33 +228,58 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             name: t('labelToken'),
             formatter: ({row, column}) => {
                 const token = row[ column.key ]
-                // const StyledToken = styled(Box)`
-                //     font-size: 13px;
-                // `
-                const tokenIcon: any = token.value ? coinJson[token.value] : undefined
+                let tokenIcon: any = undefined
+                const [head, middle, tail] = token.value.split('-')
+                if (token.type === 'lp' && middle && tail) {
+                    tokenIcon = coinJson[middle] && coinJson[tail] ? [coinJson[middle], coinJson[tail]] : [undefined, undefined]
+                }
+                if (token.type !== 'lp' && head && head !== 'lp') {
+                    tokenIcon = coinJson[head] ? [coinJson[head], undefined] : [undefined, undefined]
+                }
+                const [coinAInfo, coinBInfo] = tokenIcon
                 return <>
-                    <Box display={'flex'} alignItems={'center'}>
-                        <Box component={'span'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
-                                                    width={'var(--list-menu-coin-size)'} alignItems={'center'}
-                                                    justifyContent={'center'} marginRight={2}>
-                                                {tokenIcon ?
-                            <AvatarCoinStyled imgx={tokenIcon.x} imgy={tokenIcon.y}
-                                            imgheight={tokenIcon.height}
-                                            imgwidth={tokenIcon.width} size={24}
-                                            variant="circular"
-                                            alt={token.value as string}
-                                            src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
-                            : <Avatar variant="circular" alt={token.value as string}
-                                    style={{
-                                        width: 'var(--list-menu-coin-size)',
-                                        height: 'var(--list-menu-coin-size)',
-                                    }}
-                                // src={sellData?.icon}
-                                    src={'static/images/icon-default.png'}/>
-                        }    
-                        </Box> 
-                        <Typography variant={'h6'}>{token.value}</Typography>
-                    </Box>
+                        <Box className={'logo-icon'} height={'var(--list-menu-coin-size)'}  position={'relative'}  zIndex={20}
+                            width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
+                            {coinAInfo ?
+                                <AvatarCoinStyled imgx={coinAInfo.x} imgy={coinAInfo.y}
+                                                imgheight={coinAInfo.height}
+                                                imgwidth={coinAInfo.width} size={24}
+                                                variant="circular" alt={coinAInfo?.simpleName as string}
+                                    // src={sellData?.icon}
+                                                src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
+                                : <Avatar variant="circular" alt={coinAInfo?.simpleName as string} style={{
+                                    height: 'var(--list-menu-coin-size)',
+                                    width: 'var(--list-menu-coin-size)'
+                                }}
+                                    // src={sellData?.icon}
+                                        src={'static/images/icon-default.png'}/>
+                            }
+                        </Box>
+                        {coinBInfo && (
+                            <Box className={'logo-icon'} height={'var(--list-menu-coin-size)'}   position={'relative'}  zIndex={18}   left={-8}
+                                width={'var(--list-menu-coin-size)'} alignItems={'center'}
+                                justifyContent={'center'}>{coinBInfo ?
+                                <AvatarCoinStyled imgx={coinBInfo.x} imgy={coinBInfo.y} imgheight={coinBInfo.height}
+                                                imgwidth={coinBInfo.width} size={24}
+                                                variant="circular" alt={coinBInfo?.simpleName as string}
+                                    // src={sellData?.icon}
+                                                src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
+                                : <Avatar variant="circular" alt={coinBInfo?.simpleName as string} style={{
+                                    height: 'var(--list-menu-coin-size)',
+                                    width: 'var(--list-menu-coin-size)'
+                                }}
+                                    // src={sellData?.icon}
+                                        src={'static/images/icon-default.png'}/>} 
+                            </Box>
+                        )}
+                        <Typography variant={'inherit'} display={'flex'} flexDirection={'column'} marginLeft={1} component={'div'}
+                                    paddingRight={1}>
+                            <Typography component={'h3'} color={'textPrimary'} title={'sell'}>
+                                <Typography component={'span'} className={'next-coin'}>
+                                    {token.value}
+                                </Typography>
+                            </Typography>
+                        </Typography>
                 </>
             }
         },
