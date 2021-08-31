@@ -104,7 +104,7 @@ export const BasicPanel = withTranslation('common', { withRef: true })(({
     return <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
         flexDirection={'column'}>
         <Typography component={'h3'} variant={'h3'}>{t(title as string)}</Typography>
-        <Typography marginBottom={marginTopIcon} component={'p'} display={'flex'} alignItems={'center'} flexDirection={'column'}>
+        <Typography marginTop={marginTopIcon} component={'p'} display={'flex'} alignItems={'flex-start'} flexDirection={'column'}>
             {iconDiv}
         </Typography>
 

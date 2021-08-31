@@ -372,7 +372,6 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
 
     const swapCalculatorCallback = React.useCallback(async ({sell, buy, slippage, ...rest}: any) => {
 
-
         const {priceLevel} = getPriceImpactInfo(output)
 
         switch (priceLevel) {
