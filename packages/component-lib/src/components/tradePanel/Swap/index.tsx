@@ -141,7 +141,8 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                     tokenSellProps,
                     tokenBuyProps,
                     handleError,
-                }}/>, [rest,
+                }}/>, [
+                    rest,
                     swapData,
                     tradeCalcData,
                     onSwapClick,

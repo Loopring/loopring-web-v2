@@ -2,12 +2,12 @@ import { Box, Grid, } from '@material-ui/core'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import BasicInfoPanel from './panel/BasicInfoPanel'
 import TradePanel from './panel/TradePanel'
-import { useSwapPage } from './hook'
 import { AlertImpact, ConfirmImpact, SwapPanel, Toast, TradeBtnStatus } from '@loopring-web/component-lib'
 
 import { TOAST_TIME } from 'defs/common_defs'
 import { FixedStyle } from 'pages/styled'
 import React from 'react';
+import { useSwap } from './hookSwap';
 
 
 export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) => {
@@ -27,14 +27,14 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
         toastOpen,
         closeToast,
         should15sRefresh,
-        debugInfo,
+        // debugInfo,
         alertOpen,
         confirmOpen,
         refreshRef,
         swapFunc,
         isSwapLoading,
         priceImpact,
-    } = useSwapPage();
+    } = useSwap();
 
     return <>
 
@@ -64,9 +64,7 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
                     swapBtnI18nKey={swapBtnI18nKey}
                     swapBtnStatus={swapBtnStatus}
                     {...{ handleSwapPanelEvent, ...rest }}
-                />{process.env.NODE_ENV !== 'production' && <>
-                    {JSON.stringify(debugInfo)}
-                </>}
+                />
 
             </FixedStyle>
         </Box>
