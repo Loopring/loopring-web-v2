@@ -238,7 +238,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                 }
                 const [coinAInfo, coinBInfo] = tokenIcon
                 return <>
-                        <Box className={'logo-icon'} height={'var(--list-menu-coin-size)'}  position={'relative'}  zIndex={20}
+                        <Box className={'logo-icon'} display={'flex'}   height={'var(--list-menu-coin-size)'}  position={'relative'}  zIndex={20}
                             width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
                             {coinAInfo ?
                                 <AvatarCoinStyled imgx={coinAInfo.x} imgy={coinAInfo.y}
@@ -256,7 +256,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                             }
                         </Box>
                         {coinBInfo && (
-                            <Box className={'logo-icon'} height={'var(--list-menu-coin-size)'}   position={'relative'}  zIndex={18}   left={-8}
+                            <Box className={'logo-icon'} display={'flex'} height={'var(--list-menu-coin-size)'}   position={'relative'}  zIndex={18}   left={-8}
                                 width={'var(--list-menu-coin-size)'} alignItems={'center'}
                                 justifyContent={'center'}>{coinBInfo ?
                                 <AvatarCoinStyled imgx={coinBInfo.x} imgy={coinBInfo.y} imgheight={coinBInfo.height}

@@ -66,7 +66,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                         {pair}
                     </Typography>
                     <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-start'} alignItems={'center'} marginRight={-1}>
-                        <Box className={'logo-icon'} height={'var(--chart-title-coin-size)'} position={'relative'}
+                        <Box className={'logo-icon'} display={'flex'}  height={'var(--chart-title-coin-size)'} position={'relative'}
                              zIndex={20}
                              width={'var(--chart-title-coin-size)'} alignItems={'center'} justifyContent={'center'}>
                             {coinAIcon ?
@@ -84,7 +84,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                           src={'static/images/icon-default.png'}/>
                             }</Box>
 
-                        <Box className={'logo-icon'} height={'var(--chart-title-coin-size)'} position={'relative'}
+                        <Box className={'logo-icon'} display={'flex'} height={'var(--chart-title-coin-size)'} position={'relative'}
                              zIndex={18} left={-8}
                              width={'var(--chart-title-coin-size)'} alignItems={'center'}
                              justifyContent={'center'}>{coinBIcon ?

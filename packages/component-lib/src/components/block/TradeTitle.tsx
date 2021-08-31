@@ -54,7 +54,7 @@ export const TradeTitle = <I extends object>({
         <Grid container height={72}>
             <Grid item xs={12} height={28}>
                 <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-start'} alignItems={'center'}>
-                    <Box className={'logo-icon'} height={'var(--chart-title-coin-size)'} position={'relative'}
+                    <Box className={'logo-icon'} display={'flex'} height={'var(--chart-title-coin-size)'} position={'relative'}
                          zIndex={20}
                          width={'var(--chart-title-coin-size)'} alignItems={'center'} justifyContent={'center'}>
                         {sellCoinIcon ?
@@ -72,7 +72,7 @@ export const TradeTitle = <I extends object>({
                                       src={'static/images/icon-default.png'}/>
                         }</Box>
 
-                    <Box className={'logo-icon'} height={'var(--chart-title-coin-size)'} position={'relative'}
+                    <Box className={'logo-icon'} display={'flex'} height={'var(--chart-title-coin-size)'} position={'relative'}
                          zIndex={18} left={-8}
                          width={'var(--chart-title-coin-size)'} alignItems={'center'}
                          justifyContent={'center'}>{buyCoinIcon ?

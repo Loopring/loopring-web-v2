@@ -1,5 +1,4 @@
 import {
-    AmmData,
     AmmInData, AmmWithdrawData, AvatarCoinStyled,
     CoinInfo,
     EmptyValueTag,
@@ -89,22 +88,24 @@ export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? 
         //     return {error: false, message: ''}
         // }
     }
-    const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any, flag = -1) => {
+    const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
         // if (flag !== _selectedPercentage) {
         //     setSelectedPercentage(flag)
         // }
-        // if (_ref) {
-        //     let focus = _ref?.current === coinARef.current ? 'lpCoinA' : 'coinB';
-        //     if (ammData[ focus ].tradeValue !== ibData.tradeValue) {
-        //         onRemoveChangeEvent({tradeData: {...ammData, [ focus ]: ibData}, type: focus as any});
-        //     }
-        // } else {
-        //     onRemoveChangeEvent({tradeData: {...ammData, [ 'lpCoinA' ]: ibData}, type: 'percentage'});
-        // }
+        if (_ref) {
+            // let focus = _ref?.current === coinLPRef.current ? 'lp' ;
+            if (ammData[ 'coinLP' ].tradeValue !== ibData.tradeValue) {
+                const percentageValue = Number(ammData[ 'coinLP' ].tradeValue) /(ammData[ 'coinLP' ].balance/100)
+                setSelectedPercentage( percentageValue )
+                onRemoveChangeEvent({tradeData: {...ammData, [ 'coinLP'  ]: ibData}, type: 'lp'});
+            }
+        } else {
+            onRemoveChangeEvent({tradeData: {...ammData, [ 'coinLP' ]: ibData}, type:'lp'});
+        }
     }, [ammData, onRemoveChangeEvent]);
     const onPercentage = (value: any) => {
-        ammData[ 'coinLP' ].tradeValue = ammData[ 'coinLP' ].balance * value / 100;
-        handleCountChange(ammData[ 'coinLP' ], null, value)
+        ammData[ 'coinLP' ].tradeValue = (ammData[ 'coinLP' ].balance  / 100) *  value;
+        handleCountChange(ammData[ 'coinLP' ], null)
     }
     const _onSlippageChange = React.useCallback((slippage: number | string, customSlippage: number | string | undefined) => {
         popupState.close();
@@ -163,6 +164,22 @@ export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? 
         }
         // return  t(ammWithdrawBtnI18nKey ? t(ammWithdrawBtnI18nKey) : t(`labelRemoveLiquidityBtn`))
     }, [error, ammWithdrawBtnI18nKey, t])
+    const stob = React.useMemo(()=>{
+        if(ammCalcData && ammCalcData?.lpCoinA && ammCalcData?.lpCoinB  && ammCalcData.AtoB ) {
+           let price = ``;
+            if(_isStoB){
+                price = `1${ammCalcData?.lpCoinA?.belong} \u2248 ${ ammCalcData.AtoB } ${ammCalcData?.lpCoinB?.belong}`;
+
+            } else{
+                price = `1${ammCalcData?.lpCoinB?.belong} \u2248 ${1/ammCalcData.AtoB} ${ammCalcData?.lpCoinA?.belong}`;
+            }
+            return  <> {price} <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
+            ><ReverseIcon/></IconButtonStyled></>
+        } else {
+            return EmptyValueTag
+        }
+
+    },[_isStoB,ammCalcData])
 
 
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
@@ -176,10 +193,10 @@ export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? 
             <Typography alignSelf={'center'} variant={'h2'} >
                 {_selectedPercentage}%
             </Typography>
-            <Typography alignSelf={'center'} variant={'body1'}  marginTop={1} hidden={isPercentage} lineHeight={'22px'}>
+            <Typography alignSelf={'center'} variant={'body1'}  marginTop={1} hidden={!isPercentage} lineHeight={'22px'}>
                 {ammData?.coinLP?.tradeValue??EmptyValueTag}
             </Typography>
-            <Grid item alignSelf={'stretch'} marginTop={1} marginX={1} hidden={isPercentage} height={48}>
+            <Grid item alignSelf={'stretch'} marginTop={1} marginX={1} hidden={!isPercentage} height={48}>
                 <BtnPercentage selected={_selectedPercentage} anchors={[{
                     value: 0, label: '0'
                 }, {
@@ -192,7 +209,7 @@ export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? 
                     value: 100, label: t('labelAvaiable:') + '100%'
                 }]} handleChanged={onPercentage}/>
             </Grid>
-            <Grid item alignSelf={'stretch'} marginTop={1} hidden={!isPercentage}>
+            <Grid item alignSelf={'stretch'} marginTop={1} hidden={isPercentage}>
                 <InputCoin<IBData<I>, I, CoinInfo<I>> ref={coinLPRef} disabled={getDisabled()} {...{
                     ...propsLP,
                     isHideError: true,
@@ -265,12 +282,7 @@ export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? 
 
         <Grid item>
             <Typography component={'p'} variant="body1" height={24} lineHeight={'24px'}>
-                {ammCalcData && ammCalcData?.lpCoinA && ammCalcData?.lpCoinB  && ammCalcData.AtoB ?
-                    <>{_isStoB ? `1${ammCalcData?.lpCoinA?.belong} \u2248 ${ammCalcData?.AtoB ? ammCalcData?.AtoB : EmptyValueTag} ${ammCalcData?.lpCoinB?.belong}`
-                        : `1${ammCalcData?.lpCoinB?.belong} \u2248 ${ammCalcData?.AtoB ? (1 / ammCalcData?.AtoB??1) : EmptyValueTag} ${ammCalcData?.lpCoinA?.belong}`}
-                    <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
-                    ><ReverseIcon/></IconButtonStyled>
-                </> : EmptyValueTag}
+                {stob}
             </Typography>
         </Grid>
         <Grid item alignSelf={"stretch"}>
@@ -298,7 +310,7 @@ export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? 
                                             ...rest, t,
                                             handleChange: _onSlippageChange,
                                             slippageList: slippageArray,
-                                            slippage: ammCalcData?.slippage ? ammCalcData?.slippage : ammCalcData?.slippage ? ammCalcData?.slippage : 0.5
+                                            slippage:(ammCalcData && ammCalcData.slippage) ? ammCalcData.slippage : 0.5
                                         }} />
                                     </PopoverPure>
                                 </Typography>
@@ -312,7 +324,7 @@ export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? 
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
                         <Typography component={'p'} variant="body1"> {t('swapFee')} </Typography>
                         <Typography component={'p'}
-                                    variant="body1">{t(ammCalcData ? ammCalcData?.fee : EmptyValueTag)}</Typography>
+                                    variant="body1">{ammCalcData ? ammCalcData?.fee : EmptyValueTag}</Typography>
                     </Grid>
                 </Grid>
                 <Grid item>

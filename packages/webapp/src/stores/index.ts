@@ -7,16 +7,15 @@ import storageSession from 'redux-persist/lib/storage/session'
 import storage from 'redux-persist/lib/storage'
 import persistStore from 'redux-persist/es/persistStore'
 import hardSet from 'redux-persist/lib/stateReconciler/hardSet'
-
+import mySaga from './rootSaga';
+import { updateVersion } from './global/actions'
 import createSagaMiddleware from 'redux-saga'
 import * as imgConfig from '@loopring-web/common-resources/assets/images/coin/loopring.json'
 import { reduxBatch } from '@manaflair/redux-batch'
-import { updateVersion } from './global/actions'
 import accountSlice from './account/reducer'
 import { modalsSlice, setCoinJson, setLanguage, settingsSlice, SettingsState, } from '@loopring-web/component-lib';
 import { ammReducer } from './Amm';
 import { tokenMapSlice } from './token';
-import mySaga from './rootSaga';
 import { tickerMapSlice } from './ticker';
 import { systemSlice } from './system';
 import { walletLayer1Slice } from './walletLayer1';
