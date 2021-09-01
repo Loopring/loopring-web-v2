@@ -266,8 +266,8 @@ export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? 
                                               src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
                             : <Avatar variant="circular" alt={ammCalcData?.lpCoinB.belong as string}
                                       style={{
-                                          width: 'var(--list-menu-coin-size)',
-                                          height: 'var(--list-menu-coin-size)',
+                                          width: 'var(--withdraw-coin-size)',
+                                          height: 'var(--withdraw-coin-size)',
                                       }}
                                 // src={sellData?.icon}
                                       src={'static/images/icon-default.png'}/>
