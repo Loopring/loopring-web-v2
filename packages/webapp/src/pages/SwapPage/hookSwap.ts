@@ -296,7 +296,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
             btnLabelAccountActive
         ]
     });
-    const swapCalculatorCallback = React.useCallback(async ({sell, buy, slippage}: any) => {
+    const swapCalculatorCallback = React.useCallback(async () => {
 
 
         const {priceLevel} = getPriceImpactInfo(pageTradeLite.calcTradeParams)
