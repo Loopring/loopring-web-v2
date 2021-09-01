@@ -1,0 +1,153 @@
+import { CloseIcon, globalSetup, IBData } from '@loopring-web/common-resources';
+import { TradeBtnStatus } from '../Interface';
+import { Trans, WithTranslation } from 'react-i18next';
+import { bindHover } from 'material-ui-popup-state/es';
+import { bindPopper, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
+import React, { ChangeEvent } from 'react';
+import { Box, Grid, Typography } from '@material-ui/core';
+import { PopoverPure } from '../../'
+import { Button, IconClearStyled, TextField, TypographyGood } from '../../../index';
+import { DepositViewProps } from './Interface';
+import { BasicACoinTrade } from './BasicACoinTrade';
+import * as _ from 'lodash'
+import { HelpIcon } from '@loopring-web/common-resources'
+
+//SelectReceiveCoin
+export const DepositWrapNew = <T extends IBData<I>,
+    I>({
+           t, disabled, walletMap, tradeData, coinMap,
+           //  onTransferClick,
+           title, description,
+           depositBtnStatus,
+           onDepositClick,
+           isNewAccount,
+           handleError,
+           addressDefault,
+           handleOnAddressChange,
+           handleAddressError,
+           wait = globalSetup.wait,
+           ...rest
+       }: DepositViewProps<T, I> & WithTranslation) => {
+    const inputBtnRef = React.useRef();
+    const popupState = usePopupState({variant: 'popover', popupId: `popupId-deposit`});
+    const getDisabled = () => {
+        if (disabled || tradeData === undefined || walletMap === undefined || coinMap === undefined) {
+            return true
+        } else {
+            return false
+        }
+    };
+    const [address, setAddress] = React.useState<string | undefined>(addressDefault ? addressDefault : '');
+    const [addressError, setAddressError] = React.useState<{ error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined>();
+    // const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
+    //     error: false,
+    //     message: ''
+    // });
+    const debounceAddress = React.useCallback(_.debounce(({address}: any) => {
+        if (handleOnAddressChange) {
+            handleOnAddressChange(address)
+        }
+    }, wait), [])
+    const handleClear = React.useCallback(() => {
+        // @ts-ignore
+        // addressInput?.current?.value = "";
+        setAddress('')
+    }, [])
+    const _handleOnAddressChange = (event:ChangeEvent<HTMLInputElement>) => {
+        const address = event.target.value;
+        if (handleAddressError) {
+            const error = handleAddressError(address)
+            if (error?.error) {
+                setAddressError(error)
+            }
+        }
+        setAddress(address);
+        debounceAddress({address})
+    }
+    const inputButtonDefaultProps = {
+        label: t('depositLabelEnterToken'),
+    }
+    return <Grid className={walletMap ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
+                 direction={"column"}
+                 justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
+        <Grid item>
+            <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'} /* textAlign={'center'} */ marginBottom={2}>
+                <Typography component={'h4'} variant={'h3'} marginRight={1}>{title ? title : t('depositTitle')}</Typography>
+                <HelpIcon {...bindHover(popupState)} fontSize={'large'} htmlColor={'var(--color-text-third)'} />
+            </Box>
+            {/* <Typography component={'p'} variant="body1">
+                <Trans i18nKey={description ? description : 'depositDescription'}>
+                    Once your deposit is <TypographyGood component={'span'}>confirmed on Ethereum</TypographyGood>, it
+                    will be added to your balance within <TypographyGood component={'span'}>2 minutes</TypographyGood>.
+                </Trans>
+            </Typography> */}
+            <PopoverPure
+                className={'arrow-center'}
+                {...bindPopper(popupState)}
+                // popupId={popupId}
+                // children={triggerContent}
+                // popoverContent={popoverContent}
+                // handleStateChange={(state) => handleStateChange(state, hash)}
+                // handleStateChange={setIsOpen}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+            >
+                <Box padding={2}>
+                    <Trans i18nKey={description ? description : 'depositDescription'}>
+                        Once your deposit is <TypographyGood component={'span'}>confirmed on Ethereum</TypographyGood>, it
+                        will be added to your balance within <TypographyGood component={'span'}>2 minutes</TypographyGood>.
+                    </Trans>
+                </Box>
+            </PopoverPure>
+        </Grid>
+        <Grid item marginTop={2} alignSelf={"stretch"}>
+            <BasicACoinTrade {...{
+                ...rest,
+                t,
+                disabled,
+                walletMap,
+                tradeData,
+                coinMap,
+                inputButtonDefaultProps,
+                inputBtnRef: inputBtnRef,
+            }} />
+        </Grid>
+        {isNewAccount ? <Grid item marginTop={2} alignSelf={"stretch"} position={'relative'}>
+            <TextField
+                value={address}
+                error={addressError && addressError.error ? true : false}
+                label={t('depositLabelRefer')}
+                placeholder={t('depositLabelPlaceholder')}
+                onChange={_handleOnAddressChange}
+                // SelectProps={{IconComponent: DropDownIcon}}
+                // required={true}
+                // inputRef={addressInput}
+                helperText={<Typography
+                    variant={'body2'}
+                    component={'span'}>{addressError && addressError.error ? addressError.message : ''}</Typography>}
+                fullWidth={true}
+            />
+            {address !== '' ?
+                <IconClearStyled  color={'inherit'} size={'small'} style={{top: '28px'}} aria-label="Clear" onClick={handleClear}>
+                    <CloseIcon />
+                </IconClearStyled> : ''}
+        </Grid> : <></>}
+        <Grid item marginTop={2} alignSelf={'stretch'}>
+            <Button fullWidth variant={'contained'} size={'medium'} color={'primary'} onClick={() => {
+                onDepositClick(tradeData)
+            }}
+                // style={{width: '200px'}}
+                    loading={!getDisabled() && depositBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
+                    disabled={getDisabled() || depositBtnStatus === TradeBtnStatus.DISABLED || depositBtnStatus === TradeBtnStatus.LOADING ? true : false}
+            >{t(`depositLabelBtn`)}
+            </Button>
+
+        </Grid>
+    </Grid>
+}

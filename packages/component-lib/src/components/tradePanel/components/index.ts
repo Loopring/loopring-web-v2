@@ -3,6 +3,7 @@
 
 // please do not export this index to global
 export * from './DepositWrap'
+export * from './DepositWrapNew'
 export * from './ResetWrap'
 export * from './WithdrawWrap'
 export * from './TransferWrap'
