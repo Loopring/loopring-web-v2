@@ -616,36 +616,34 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                     sellMinAmtInfo = amount[ _tradeData[ 'sell' ].belong as string ];
                     myLog(`buyMinAmtInfo,sellMinAmtInfo: AMM-${market}, ${_tradeData[ 'buy' ].belong}`, buyMinAmtInfo, sellMinAmtInfo)
 
-                    takerRate = buyMinAmtInfo.userOrderInfo.takerRate
-                    feeBips = ammMap[ ammMarket ] ? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
-                    totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString();
-                    setSellMinAmt(buyMinAmtInfo?.userOrderInfo.minAmount)
-                    myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
-                }
-                const calcTradeParams = sdk.getOutputAmount({
-                    sell: coinA,
-                    buy: coinB,
-                    input: input.toString(),
-                    // base: coinA,
-                    // quote: coinB,
-                    isAtoB,
-                    marketArr: marketArray as string[],
-                    tokenMap: tokenMap as any,
-                    marketMap: marketMap as any,
-                    depth,
-                    ammPoolSnapshot: ammPoolSnapshot,
-                    feeBips: feeBips ? feeBips.toString() : '',
-                    takerRate: takerRate ? takerRate : '',
-                    slipBips: slippage
-                })
-                const priceImpactObj = getPriceImpactInfo(calcTradeParams)
-                // setPriceImpact(priceImpactObj.value ?? 0)
-                const _tradeCalcData = {
-                    priceImpact: priceImpactObj.value,
-                    priceImpactColor: priceImpactObj.priceImpactColor,
-                    minimumReceived: getShowStr(calcTradeParams?.amountBOutSlip.minReceivedVal),
-                    fee: totalFee,
-                }
+                takerRate = buyMinAmtInfo.userOrderInfo.takerRate
+                feeBips = ammMap[ ammMarket ] ? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
+                totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString();
+                setSellMinAmt(buyMinAmtInfo?.userOrderInfo.minAmount)
+                myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
+            }
+            const calcTradeParams = sdk.getOutputAmount({
+                input: input.toString(),
+                sell: coinA,
+                buy: coinB,
+                isAtoB,
+                marketArr: marketArray as string[],
+                tokenMap: tokenMap as any,
+                marketMap: marketMap as any,
+                depth,
+                ammPoolSnapshot: ammPoolSnapshot,
+                feeBips: feeBips ? feeBips.toString() : '',
+                takerRate: takerRate ? takerRate : '',
+                slipBips: slippage
+            })
+            const priceImpactObj = getPriceImpactInfo(calcTradeParams)
+            // setPriceImpact(priceImpactObj.value ?? 0)
+            const _tradeCalcData = {
+                priceImpact: priceImpactObj.value,
+                priceImpactColor: priceImpactObj.priceImpactColor,
+                minimumReceived: getShowStr(calcTradeParams?.amountBOutSlip.minReceivedVal),
+                fee: totalFee,
+            }
 
                 const tradeValue = getShowStr(calcTradeParams?.output)
 
