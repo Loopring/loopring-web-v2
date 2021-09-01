@@ -6,7 +6,7 @@ import { useRouteMatch, useLocation } from 'react-router';
 import moment from 'moment'
 import { AmmDetailStore, useAmmMap } from '../../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../../stores/walletLayer2';
-import { makeTickView, makeWalletLayer2, pairDetailBlock, volumeToCount, WalletMapExtend, useAmmTotalValue } from '../../../hooks/help';
+import { makeTickView, makeWalletLayer2, volumeToCount, WalletMapExtend, useAmmTotalValue } from '../../../hooks/help';
 import { AmmPoolSnapshot, AmmUserRewardMap, getExistedMarket, TickerData, TradingInterval } from 'loopring-sdk';
 import { deepClone } from '../../../utils/obj_tools';
 import { getUserAmmTransaction, makeMyAmmMarketArray, getRecentAmmTransaction } from '../../../hooks/help/marketTable';
@@ -21,6 +21,7 @@ import { useWalletLayer2Socket } from 'services/socket/';
 import store from 'stores'
 import { volumeToCountAsBigNumber } from 'hooks/help'
 import { getValuePrecision, getThousandFormattedNumbers } from "@loopring-web/common-resources";
+import { calcPriceByAmmTickMapDepth, swapDependAsync } from '../../SwapPage/help';
 
 const makeAmmDetailExtendsActivityMap = ({ammMap, coinMap, ammActivityMap, ammKey}: any) => {
 
@@ -340,24 +341,20 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
         if (amm && market && ammMap) {
             //TODO should add it into websocket
             getAmmMap();
-            let apiList = [
-                pairDetailBlock({coinKey: market, ammKey: amm, ammMap}),
-                // LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({poolAddress: ammMap[ ammKey ].address}),
-                // LoopringAPI.exchangeAPI.getMixTicker({market: coinKey})])
-            ];
-            // @ts-ignore
-            Promise.all([...apiList]).then(
-                ([{ammPoolsBalance, tickMap}
-                     //  ,ammUserRewardMap
-                 ]: any[]) => {
+            swapDependAsync(market).then(
+                ({ammPoolsBalance, tickMap,depth}) => {
                     if (tokenMap && tickMap) {
                         const _snapShotData = {
                             tickerData: tickMap[ market ],
                             ammPoolsBalance: ammPoolsBalance,
                         }
+                        const {close} = calcPriceByAmmTickMapDepth({
+                            market,
+                            tradePair:market,
+                            dependencyData:{ammPoolsBalance, tickMap,depth}})
 
                         _tradeFloat = makeTickView(tickMap[ market ] ? tickMap[ market ] : {})
-                        setTradeFloat(_tradeFloat as TradeFloat);
+                        setTradeFloat({..._tradeFloat,close:close} as TradeFloat);
                         setCoinPairInfo({..._coinPairInfo})
                         setSnapShotData(_snapShotData)
 
