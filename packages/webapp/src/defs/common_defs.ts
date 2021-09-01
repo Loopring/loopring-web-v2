@@ -1,5 +1,3 @@
-
-
 export enum ActionResultCode {
     NoError,
     DataNotReady,

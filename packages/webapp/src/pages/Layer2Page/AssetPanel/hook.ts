@@ -1,20 +1,20 @@
 import React, { useCallback } from 'react'
 import store from 'stores'
-import { TokenType, useSettings } from '@loopring-web/component-lib'
-import { AccountStatus, EmptyValueTag, getThousandFormattedNumbers, globalSetup, SagaStatus } from '@loopring-web/common-resources'
-import { useWalletLayer2 } from 'stores/walletLayer2'
+import { TokenType } from '@loopring-web/component-lib'
+import {
+    AccountStatus,
+    EmptyValueTag,
+    getThousandFormattedNumbers,
+    getValuePrecision
+} from '@loopring-web/common-resources'
 import { useAccount } from 'stores/account';
 import { LoopringAPI } from 'api_wrapper'
-import { makeWalletLayer2, volumeToCountAsBigNumber, useAmmTotalValue } from 'hooks/help'
-import { AssetType, WsTopicType } from 'loopring-sdk'
-import { volumeToCount } from 'hooks/help'
-import { useAmmMap } from '../../../stores/Amm/AmmMap';
+import { makeWalletLayer2, volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
+import { WsTopicType } from 'loopring-sdk'
 import { useSocket } from '../../../stores/socket';
 import { useWalletLayer2Socket } from 'services/socket/';
 import { useSystem } from 'stores/system'
-import { getValuePrecision } from '@loopring-web/common-resources'
 import { myLog } from 'utils/log_tools'
-import { debug } from 'console'
 
 export type TrendDataItem = {
     timeStamp: number;
@@ -46,14 +46,14 @@ export type AssetsRawDataItem = {
 
 export const useGetAssets = () => {
     // const [chartData, setChartData] = React.useState<TrendDataItem[]>([])
-    const [assetsMap, setAssetsMap] = React.useState<{ [key: string]: any }>({})
+    const [assetsMap, setAssetsMap] = React.useState<{ [ key: string ]: any }>({})
     const [assetsRawData, setAssetsRawData] = React.useState<AssetsRawDataItem[]>([])
     // const [formattedData, setFormattedData] = React.useState<{name: string; value: number}[]>([])
-    const { account } = useAccount();
-    const { sendSocketTopic, socketEnd } = useSocket();
-    const { forex } = useSystem()
+    const {account} = useAccount();
+    const {sendSocketTopic, socketEnd} = useSocket();
+    const {forex} = useSystem()
 
-    const { marketArray, addressIndex, tokenMap, } = store.getState().tokenMap
+    const {marketArray, addressIndex, tokenMap,} = store.getState().tokenMap
     const [lpTokenList, setLpTokenList] = React.useState<{ addr: string; price: number }[]>([])
 
     const getLpTokenList = React.useCallback(async () => {
@@ -72,7 +72,7 @@ export const useGetAssets = () => {
     }, [getLpTokenList])
     React.useEffect(() => {
         if (account.readyState === AccountStatus.ACTIVATED) {
-            sendSocketTopic({ [WsTopicType.account]: true });
+            sendSocketTopic({[ WsTopicType.account ]: true});
         } else {
             socketEnd()
         }
@@ -85,27 +85,27 @@ export const useGetAssets = () => {
         const walletMap = makeWalletLayer2()
         const assetsKeyList = walletMap && walletMap.walletMap ? Object.keys(walletMap.walletMap) : []
         const assetsDetailList = walletMap && walletMap.walletMap ? Object.values(walletMap.walletMap) : []
-        let map: { [key: string]: any } = {}
+        let map: { [ key: string ]: any } = {}
 
-        assetsKeyList.forEach((key, index) => (map[key] = {
+        assetsKeyList.forEach((key, index) => (map[ key ] = {
             token: key,
-            detail: assetsDetailList[index]
+            detail: assetsDetailList[ index ]
         }))
 
         setAssetsMap(map)
     }, [])
-    useWalletLayer2Socket({ walletLayer2Callback })
+    useWalletLayer2Socket({walletLayer2Callback})
 
-    const { faitPrices } = store.getState().system
+    const {faitPrices} = store.getState().system
 
     const tokenPriceList = faitPrices ? Object.entries(faitPrices).map(o => ({
-        token: o[0],
-        detail: o[1]
+        token: o[ 0 ],
+        detail: o[ 1 ]
     })) as ITokenInfoItem[] : []
 
     const getLpTokenPrice = useCallback((market: string) => {
         if (addressIndex) {
-            const address = Object.entries(addressIndex).find(([_, token]) => token === market)?.[0]
+            const address = Object.entries(addressIndex).find(([_, token]) => token === market)?.[ 0 ]
             if (address && lpTokenList) {
                 return lpTokenList.find((o) => o.addr === address)?.price
             }
@@ -120,9 +120,9 @@ export const useGetAssets = () => {
             let data: any[] = []
             tokenKeys.forEach((key, index) => {
                 let item = undefined
-                if (assetsMap[key]) {              
-                    const tokenInfo = assetsMap[key]
-                    const isLpToken = tokenInfo.token.split('-')[0] === 'LP'
+                if (assetsMap[ key ]) {
+                    const tokenInfo = assetsMap[ key ]
+                    const isLpToken = tokenInfo.token.split('-')[ 0 ] === 'LP'
                     let tokenValueDollar = 0
                     if (!isLpToken) {
                         const tokenPriceUSDT = tokenInfo.token === 'DAI'
@@ -140,7 +140,7 @@ export const useGetAssets = () => {
                     const isSmallBalance = tokenValueDollar < 1
                     item = {
                         token: {
-                            type: tokenInfo.token.split('-')[0] === 'LP' ? TokenType.lp : TokenType.single,
+                            type: tokenInfo.token.split('-')[ 0 ] === 'LP' ? TokenType.lp : TokenType.single,
                             value: tokenInfo.token
                         },
                         amount: getThousandFormattedNumbers(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) || EmptyValueTag,
@@ -154,7 +154,7 @@ export const useGetAssets = () => {
                 } else {
                     item = {
                         token: {
-                            type: key.split('-')[0] === 'LP' ? TokenType.lp : TokenType.single,
+                            type: key.split('-')[ 0 ] === 'LP' ? TokenType.lp : TokenType.single,
                             value: key
                         },
                         amount: EmptyValueTag,
@@ -175,7 +175,7 @@ export const useGetAssets = () => {
                 const deltaAmount = ((b.amount && Number(b.amount)) ? Number(b.amount) : 0) - (a.amount && Number(a.amount) ? Number(a.amount) : 0)
                 const deltaName = b.token.value < a.token.value ? 1 : -1
                 return deltaDollar !== 0
-                    ? deltaDollar 
+                    ? deltaDollar
                     : deltaAmount !== 0
                         ? deltaAmount
                         : deltaName

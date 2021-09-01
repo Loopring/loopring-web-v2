@@ -1,13 +1,13 @@
 import React from 'react'
-import {  AmmTable } from '@loopring-web/component-lib'
+import { AmmTable } from '@loopring-web/component-lib'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { StylePaper } from '../../styled'
-import { useGetAmmRecord } from'./hook'
+import { useGetAmmRecord } from './hook'
 
-const AmmPanel = withTranslation('common')(({ t, ...rest }: WithTranslation<'common'>) => {
+const AmmPanel = withTranslation('common')(({t, ...rest}: WithTranslation<'common'>) => {
     const container = React.useRef(null);
     const [pageSize, setPageSize] = React.useState(10);
-    const { ammRecordList, showLoading } = useGetAmmRecord()
+    const {ammRecordList, showLoading} = useGetAmmRecord()
 
     React.useEffect(() => {
         // @ts-ignore
@@ -29,7 +29,8 @@ const AmmPanel = withTranslation('common')(({ t, ...rest }: WithTranslation<'com
                         },
                         showFilter: true,
                         showLoading: showLoading,
-                        ...rest}}/>
+                        ...rest
+                    }}/>
                 </div>
             </StylePaper>
         </>

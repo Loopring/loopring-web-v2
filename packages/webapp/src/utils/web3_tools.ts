@@ -10,125 +10,125 @@ import { ChainId } from 'loopring-sdk'
 import ms from 'ms.macro'
 
 export function getLibrary(provider: any): Web3Provider {
-  const library = new Web3Provider(
-    provider,
-    typeof provider.chainId === 'number'
-      ? provider.chainId
-      : typeof provider.chainId === 'string'
-      ? parseInt(provider.chainId)
-      : 'any'
-  )
-  library.pollingInterval = ms`15s`
+    const library = new Web3Provider(
+        provider,
+        typeof provider.chainId === 'number'
+            ? provider.chainId
+            : typeof provider.chainId === 'string'
+            ? parseInt(provider.chainId)
+            : 'any'
+    )
+    library.pollingInterval = ms`15s`
 
-  return library
+    return library
 }
 
 export function transactionChecker(web3: any, address: string) {
-  const account = address.toLowerCase()
+    const account = address.toLowerCase()
 
-  const subscription = web3.eth.subscribe('pendingTransactions', (err: any, res: any) => {
-    if (err) {
-      console.error(err)
-    }
-  })
-
-  return function watchTransactions() {
-    console.log('Watch Transactions...')
-    subscription.on('data', (txHash: any) => {
-      setTimeout(async () => {
-        try {
-          let tx = await web3.eth.getTransaction(txHash)
-          if (tx.to && tx.to.toLowerCase() === account) {
-            const value = web3.utils.fromWei(tx.value, 'ether')
-            if (value > 0) {
-              console.log('watchTransactions value:', value)
-            }
-          }
-        } catch (err) {
-          console.error(err)
+    const subscription = web3.eth.subscribe('pendingTransactions', (err: any, res: any) => {
+        if (err) {
+            console.error(err)
         }
-      }, 60 * 1000)
     })
-  }
+
+    return function watchTransactions() {
+        console.log('Watch Transactions...')
+        subscription.on('data', (txHash: any) => {
+            setTimeout(async () => {
+                try {
+                    let tx = await web3.eth.getTransaction(txHash)
+                    if (tx.to && tx.to.toLowerCase() === account) {
+                        const value = web3.utils.fromWei(tx.value, 'ether')
+                        if (value > 0) {
+                            console.log('watchTransactions value:', value)
+                        }
+                    }
+                } catch (err) {
+                    console.error(err)
+                }
+            }, 60 * 1000)
+        })
+    }
 }
 
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: any): string | false {
-  try {
-    return getAddress(value)
-  } catch {
-    return false
-  }
+    try {
+        return getAddress(value)
+    } catch {
+        return false
+    }
 }
 
-const ETHERSCAN_PREFIXES: { [key: number]: string } = {
-  1: '',
-  5: 'goerli.',
+const ETHERSCAN_PREFIXES: { [ key: number ]: string } = {
+    1: '',
+    5: 'goerli.',
 }
 
 export function getEtherscanLink(
-  chainId: ChainId,
-  data: string,
-  type: 'transaction' | 'token' | 'address' | 'block'
+    chainId: ChainId,
+    data: string,
+    type: 'transaction' | 'token' | 'address' | 'block'
 ): string {
-  const prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
+    const prefix = `https://${ETHERSCAN_PREFIXES[ chainId ] || ETHERSCAN_PREFIXES[ 1 ]}etherscan.io`
 
-  switch (type) {
-    case 'transaction': {
-      return `${prefix}/tx/${data}`
+    switch (type) {
+        case 'transaction': {
+            return `${prefix}/tx/${data}`
+        }
+        case 'token': {
+            return `${prefix}/token/${data}`
+        }
+        case 'block': {
+            return `${prefix}/block/${data}`
+        }
+        case 'address':
+        default: {
+            return `${prefix}/address/${data}`
+        }
     }
-    case 'token': {
-      return `${prefix}/token/${data}`
-    }
-    case 'block': {
-      return `${prefix}/block/${data}`
-    }
-    case 'address':
-    default: {
-      return `${prefix}/address/${data}`
-    }
-  }
 }
 
 // shorten the checksummed version of the input address to have 0x + 4 characters at start and end
 export function shortenAddress(address: string, chars = 4): string {
-  const parsed = isAddress(address)
-  if (!parsed) {
-    throw Error(`Invalid 'address' parameter '${address}'.`)
-  }
-  return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`
+    const parsed = isAddress(address)
+    if (!parsed) {
+        throw Error(`Invalid 'address' parameter '${address}'.`)
+    }
+    return `${parsed.substring(0, chars + 2)}...${parsed.substring(42 - chars)}`
 }
 
 // add 10%
 export function calculateGasMargin(value: BigNumber): BigNumber {
-  return value.mul(BigNumber.from(10000).add(BigNumber.from(1000))).div(BigNumber.from(10000))
+    return value.mul(BigNumber.from(10000).add(BigNumber.from(1000))).div(BigNumber.from(10000))
 }
 
 // account is not optional
 export function getSigner(library: Web3Provider, account: string): JsonRpcSigner {
-  return library.getSigner(account).connectUnchecked()
+    return library.getSigner(account).connectUnchecked()
 }
 
 // account is optional
 export function getProviderOrSigner(library: Web3Provider, account?: string): Web3Provider | JsonRpcSigner {
-  return account ? getSigner(library, account) : library
+    return account ? getSigner(library, account) : library
 }
 
 // account is optional
 export function getContract(address: string, ABI: any, library: Web3Provider, account?: string): Contract {
-  if (!isAddress(address) || address === AddressZero) {
-    throw Error(`Invalid 'address' parameter '${address}'.`)
-  }
+    if (!isAddress(address) || address === AddressZero) {
+        throw Error(`Invalid 'address' parameter '${address}'.`)
+    }
 
-  return new Contract(address, ABI, getProviderOrSigner(library, account) as any)
+    return new Contract(address, ABI, getProviderOrSigner(library, account) as any)
 }
 
 export function escapeRegExp(string: string): string {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
 }
 
 export async function isContract(web3: any, address: string) {
-  const code = await web3.eth.getCode(address)
-  return code && code.length > 2
+    const code = await web3.eth.getCode(address)
+    return code && code.length > 2
 }
 

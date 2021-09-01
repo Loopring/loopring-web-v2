@@ -27,7 +27,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
         updateAccountStatus(state: AccountState, action: PayloadAction<Partial<Account>>) {
             state.status = SagaStatus.PENDING
         },
-        changeShowModel(state: AccountState, action: PayloadAction<{_userOnModel:boolean|undefined}>) {
+        changeShowModel(state: AccountState, action: PayloadAction<{ _userOnModel: boolean | undefined }>) {
             const {
                 _userOnModel
             } = action.payload;
@@ -54,16 +54,16 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                     connectName,
                     // _userOnModel
                 } = action.payload;
-                
+
                 if (accAddress !== undefined) {
                     state.accAddress = accAddress;
                 }
-                
+
                 if (qrCodeUrl !== undefined) {
                     state.qrCodeUrl = qrCodeUrl;
                 }
-                
-                if(wrongChain !== undefined){
+
+                if (wrongChain !== undefined) {
                     state.wrongChain = wrongChain
                 }
                 if (readyState) {
@@ -93,7 +93,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                 state.status = SagaStatus.DONE;
             }
         },
-        cleanAccountStatus(state: AccountState, action: PayloadAction<{shouldUpdateProvider?:boolean|undefined}>) {
+        cleanAccountStatus(state: AccountState, action: PayloadAction<{ shouldUpdateProvider?: boolean | undefined }>) {
             state.status = SagaStatus.PENDING
         },
         statusUnset: (state: AccountState) => {

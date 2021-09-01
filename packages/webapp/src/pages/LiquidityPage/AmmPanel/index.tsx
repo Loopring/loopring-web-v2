@@ -6,19 +6,19 @@ import { AmmPoolSnapshot, TickerData, } from 'loopring-sdk';
 import { TOAST_TIME } from 'defs/common_defs';
 
 export const AmmPanelView = ({
-        pair,
-        walletMap,
-        ammType, snapShotData,
-        ...rest
-    }: {
-        pair: { coinAInfo: CoinInfo<string> | undefined, coinBInfo: CoinInfo<string> | undefined },
-        snapShotData: {
-            tickerData: TickerData | undefined,
-            ammPoolsBalance: AmmPoolSnapshot | undefined
-        } | undefined
-        walletMap: WalletMap<string>
-        ammType?: keyof typeof AmmPanelType
-    } & any) => {
+                                 pair,
+                                 walletMap,
+                                 ammType, snapShotData,
+                                 ...rest
+                             }: {
+    pair: { coinAInfo: CoinInfo<string> | undefined, coinBInfo: CoinInfo<string> | undefined },
+    snapShotData: {
+        tickerData: TickerData | undefined,
+        ammPoolsBalance: AmmPoolSnapshot | undefined
+    } | undefined
+    walletMap: WalletMap<string>
+    ammType?: keyof typeof AmmPanelType
+} & any) => {
 
     const {
         toastOpen,
@@ -27,7 +27,7 @@ export const AmmPanelView = ({
         refreshRef,
         ammPoolSnapshot,
         updateAmmPoolSnapshot,
-    } = useAmmCommon({ pair, snapShotData })
+    } = useAmmCommon({pair, snapShotData})
 
     const {
 
@@ -64,30 +64,31 @@ export const AmmPanelView = ({
     })
 
     return <>
-        <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'} open={toastOpen?.open ?? false}
-            autoHideDuration={TOAST_TIME} onClose={closeToast} />
+        <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'}
+               open={toastOpen?.open ?? false}
+               autoHideDuration={TOAST_TIME} onClose={closeToast}/>
 
         {pair ?
-            <AmmPanel {...{ ...rest }}
-                onRefreshData={updateAmmPoolSnapshot}
-                refreshRef={refreshRef}
+            <AmmPanel {...{...rest}}
+                      onRefreshData={updateAmmPoolSnapshot}
+                      refreshRef={refreshRef}
 
-                ammDepositData={ammJoinData}
-                ammCalcDataDeposit={ammCalcDataDeposit}
-                handleAmmAddChangeEvent={handleJoinAmmPoolEvent}
-                onAmmAddClick={onAmmAddClick}
-                tabSelected={ammType ? ammType : AmmPanelType.Join}
-                ammDepositBtnI18nKey={ammDepositBtnI18nKey}
-                ammDepositBtnStatus={addBtnStatus}
+                      ammDepositData={ammJoinData}
+                      ammCalcDataDeposit={ammCalcDataDeposit}
+                      handleAmmAddChangeEvent={handleJoinAmmPoolEvent}
+                      onAmmAddClick={onAmmAddClick}
+                      tabSelected={ammType ? ammType : AmmPanelType.Join}
+                      ammDepositBtnI18nKey={ammDepositBtnI18nKey}
+                      ammDepositBtnStatus={addBtnStatus}
 
-                ammWithdrawData={ammExitData}
-                ammCalcDataWithDraw={ ammCalcDataWithdraw }
-                handleAmmRemoveChangeEvent={handleExitAmmPoolEvent}
-                onAmmRemoveClick={onAmmRemoveClick}
-                ammWithdrawBtnI18nKey={ammWithdrawBtnI18nKey}
-                ammWithdrawBtnStatus={removeBtnStatus}
+                      ammWithdrawData={ammExitData}
+                      ammCalcDataWithDraw={ammCalcDataWithdraw}
+                      handleAmmRemoveChangeEvent={handleExitAmmPoolEvent}
+                      onAmmRemoveClick={onAmmRemoveClick}
+                      ammWithdrawBtnI18nKey={ammWithdrawBtnI18nKey}
+                      ammWithdrawBtnStatus={removeBtnStatus}
 
-            /> : <Box width={'var(--swap-box-width)'} />}
+            /> : <Box width={'var(--swap-box-width)'}/>}
     </>
 
 }

@@ -1,10 +1,10 @@
 import { useRouteMatch } from 'react-router'
 
 import { Box, Typography } from '@material-ui/core'
-import { Button, SubMenu, SubMenuList as BasicSubMenuList, useOpenModals, } from '@loopring-web/component-lib'
+import { Button, SubMenu, SubMenuList as BasicSubMenuList, } from '@loopring-web/component-lib'
 import { useTranslation, withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
-import { AccountStatus, fnType, LoadingIcon, SagaStatus, subMenuLayer2 } from '@loopring-web/common-resources'
+import { AccountStatus, fnType, i18n, LoadingIcon, SagaStatus, subMenuLayer2 } from '@loopring-web/common-resources'
 
 import TxPanel from './TxPanel'
 import AssetPanel from './AssetPanel'
@@ -15,10 +15,8 @@ import OrderPanel from './OrderPanel'
 import MyLiqudityPanel from './MyLiquidityPanel'
 import React from 'react';
 import { useAccount } from '../../stores/account';
-import { accountStaticCallBack, btnLabel, btnClickMap } from '../../layouts/connectStatusCallback';
+import { accountStaticCallBack, btnClickMap, btnLabel } from '../../layouts/connectStatusCallback';
 import { deepClone } from '../../utils/obj_tools';
-
-import { i18n } from "@loopring-web/common-resources"
 
 export const subMenu = subMenuLayer2
 
@@ -36,11 +34,11 @@ const BoxStyle = styled(Box)`
       max-width: 520px;
     }
     `
-  }
+}
 
 ` as typeof Box
 const BtnConnect = withTranslation(['common'], {withRef: true})(({t}: any) => {
-    const { status: accountStatus, account } = useAccount();
+    const {status: accountStatus, account} = useAccount();
     // const {setShowAccount} = useOpenModals();
     const [label, setLabel] = React.useState(undefined);
 
@@ -91,44 +89,55 @@ export const Layer2Page = () => {
     const viewTemplate = React.useMemo(() => {
         switch (account.readyState) {
             case AccountStatus.UN_CONNECT:
-                return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'}
+                return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'}
+                            alignItems={'center'}
                 >
-                    <Typography marginY={3} variant={'h1'} textAlign={'center'}>{t('describeTitleConnectToWallet')}</Typography>
+                    <Typography marginY={3} variant={'h1'}
+                                textAlign={'center'}>{t('describeTitleConnectToWallet')}</Typography>
                     <BtnConnect/>
                 </Box>
                 break
             case AccountStatus.LOCKED:
-                return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'}>
+                return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'}
+                            alignItems={'center'}>
                     <Typography marginY={3} variant={'h1'} textAlign={'center'}>{t('describeTitleLocked')}</Typography>
                     <BtnConnect/>
                 </Box>
                 break
             case AccountStatus.NO_ACCOUNT:
-                return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'}>
-                    <Typography marginY={3} variant={'h1'} textAlign={'center'}>{t('describeTitleNoAccount')}</Typography>
+                return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'}
+                            alignItems={'center'}>
+                    <Typography marginY={3} variant={'h1'}
+                                textAlign={'center'}>{t('describeTitleNoAccount')}</Typography>
                     <BtnConnect/>
                 </Box>
                 break
             case AccountStatus.NOT_ACTIVE:
-                return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'}
+                return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'}
+                            alignItems={'center'}
                 >
-                    <Typography marginY={3} variant={'h1'} textAlign={'center'}>{t('describeTitleNotActive')}</Typography>
+                    <Typography marginY={3} variant={'h1'}
+                                textAlign={'center'}>{t('describeTitleNotActive')}</Typography>
                     <BtnConnect/>
                 </Box>
                 break
             case AccountStatus.DEPOSITING:
-                return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'}
+                return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'}
+                            alignItems={'center'}
                 >
                     <LoadingIcon color={'primary'} style={{width: 60, height: 60}}/>
-                    <Typography marginY={3} variant={'h1'} textAlign={'center'}>{t('describeTitleOpenAccounting')}</Typography>
+                    <Typography marginY={3} variant={'h1'}
+                                textAlign={'center'}>{t('describeTitleOpenAccounting')}</Typography>
                     {/*<BtnConnect/>*/}
                 </Box>
                 break
             case AccountStatus.ERROR_NETWORK:
-                return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'} alignItems={'center'}
+                return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'}
+                            alignItems={'center'}
                 >
                     <Typography marginY={3}
-                                variant={'h1'} textAlign={'center'}>{t('describeTitleOnErrorNetwork', {connectName: account.connectName})}</Typography>
+                                variant={'h1'}
+                                textAlign={'center'}>{t('describeTitleOnErrorNetwork', {connectName: account.connectName})}</Typography>
                     {/*<BtnConnect/>*/}
                 </Box>
                 break
@@ -136,13 +145,13 @@ export const Layer2Page = () => {
             case AccountStatus.ACTIVATED:
                 return <>
                     <Box width={'200px'} display={'flex'} justifyContent={'stretch'} marginRight={3}
-                        marginBottom={2} className={'MuiPaper-elevation2'}>
+                         marginBottom={2} className={'MuiPaper-elevation2'}>
                         <SubMenu>
                             <SubMenuList selected={selected} subMenu={subMenu as any}/>
                         </SubMenu>
                     </Box>
                     <Box minHeight={420} display={'flex'} alignItems={'stretch'} flexDirection={'column'} marginTop={0}
-                        flex={1}>
+                         flex={1}>
 
                         {selected === 'assets' && <AssetPanel/>}
                         {selected === 'my-liquidity' && <MyLiqudityPanel/>}
@@ -150,7 +159,7 @@ export const Layer2Page = () => {
                         {selected === 'transactions' && <TxPanel/>}
                         {selected === 'trades' && <TradePanel/>}
                         {selected === 'ammRecords' && <AmmPanel/>}
-                        {selected === 'order' && <OrderPanel />}
+                        {selected === 'order' && <OrderPanel/>}
                         {/*{selected === 'setting' && <SettingPanel/>}*/}
                     </Box>
                 </>

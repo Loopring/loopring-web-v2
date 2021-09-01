@@ -48,15 +48,15 @@ export function* getPostsSaga() {
 }
 
 
-
 export function* walletLayer2Saga() {
     yield all([takeLatest(updateWalletLayer2, getPostsSaga)]);
 }
-export function* getSocketSaga({payload}: any){
+
+export function* getSocketSaga({payload}: any) {
 
     try {
-        let {walletLayer2} =  store.getState().walletLayer2;
-        walletLayer2 = {...walletLayer2,...payload}
+        let {walletLayer2} = store.getState().walletLayer2;
+        walletLayer2 = {...walletLayer2, ...payload}
         yield put(getWalletLayer2Status({walletLayer2}));
     } catch (err) {
         yield put(getWalletLayer2Status(err));
@@ -66,7 +66,6 @@ export function* getSocketSaga({payload}: any){
 export function* walletLayerSocketSaga() {
     yield all([takeLatest(socketUpdateBalance, getSocketSaga)]);
 }
-
 
 
 export const walletLayer2Fork = [

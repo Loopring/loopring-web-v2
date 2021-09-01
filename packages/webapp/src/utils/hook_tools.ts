@@ -9,7 +9,7 @@ export function PromiseJob(fetchPromise: any, setFunc: any, field?: string, pref
         if (fetchPromise()) {
             fetchPromise().then((data: any) => {
                 if (mounted) {
-                    setFunc(field ? data[field] : data)
+                    setFunc(field ? data[ field ] : data)
                 } else {
                     myLog(prefix + ' unmounted!')
                 }
@@ -43,7 +43,7 @@ export function PromiseJobInTimer(fetchPromise: any, setFunc: any, field?: strin
             if (fetchPromise()) {
                 fetchPromise().then((data: any) => {
                     if (mounted) {
-                        setFunc(field ? data[field] : data)
+                        setFunc(field ? data[ field ] : data)
                     } else {
                         console.log(prefix + ' unmounted!')
                     }

@@ -28,7 +28,7 @@ import { FavoriteMarketStates } from './localStore/favoriteMarket'
 import { OnchainHashInfo } from './localStore/onchainHashInfo'
 import { Confirmation } from './localStore/confirmation'
 import { WalletInfo } from './localStore/walletInfo'
-import { amountMapSlice, AmountStates } from './amount';
+import { amountMapSlice } from './amount';
 import { pageTradeLiteSlice } from './router';
 
 const sagaMiddleware = createSagaMiddleware()

@@ -1,10 +1,7 @@
 import { AmmCardProps } from '@loopring-web/common-resources';
-import { AmmPoolActivityRule, AmmPoolActivityStatus,LoopringMap } from 'loopring-sdk';
+import { AmmPoolActivityRule, AmmPoolActivityStatus, LoopringMap } from 'loopring-sdk';
 import React from 'react';
-import { myLog } from 'utils/log_tools';
-import {
-    makeUIAmmActivityMap
-} from '../../hooks/help';
+import { makeUIAmmActivityMap } from '../../hooks/help';
 
 import { useUserRewards } from '../../stores/userRewards';
 
@@ -16,7 +13,7 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
     ammActivityViewMap: Array<AmmCardProps<I>>,
     ammActivityPastViewMap: Array<AmmCardProps<I>>
 } => {
-    const  userRewardsMapState =  useUserRewards();// store.getState().userRewardsMap
+    const userRewardsMapState = useUserRewards();// store.getState().userRewardsMap
     // const {coinMap} = useTokenMap();
     // const ammMapState = useAmmMap();
     // const walletLayer2State = useWalletLayer2();
@@ -30,29 +27,29 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
 
     // );
     React.useEffect(() => {
-        if(ammActivityMap && Object.keys(ammActivityMap).length>0 ){
+        if (ammActivityMap && Object.keys(ammActivityMap).length > 0) {
 
-           // getAmmPoolUserRewards().then((ammUserRewardMap)=>{
-                // setAmmUserRewardMap(ammUserRewardMap as AmmUserRewardMap);
-                setAmmActivityViewMap(makeUIAmmActivityMap(
+            // getAmmPoolUserRewards().then((ammUserRewardMap)=>{
+            // setAmmUserRewardMap(ammUserRewardMap as AmmUserRewardMap);
+            setAmmActivityViewMap(makeUIAmmActivityMap(
+                {
+                    ammActivityMap,
+                    type: 'AMM_MINING',
+                    ammPoolActivityStatus: [AmmPoolActivityStatus.NotStarted, AmmPoolActivityStatus.InProgress]
+                }, userRewardsMapState.userRewardsMap
+            ));
+            setAmmActivityPastViewMap(
+                makeUIAmmActivityMap(
                     {
                         ammActivityMap,
                         type: 'AMM_MINING',
-                        ammPoolActivityStatus: [AmmPoolActivityStatus.NotStarted, AmmPoolActivityStatus.InProgress]
+                        ammPoolActivityStatus: [AmmPoolActivityStatus.EndOfGame]
                     }, userRewardsMapState.userRewardsMap
-                ));
-                setAmmActivityPastViewMap(
-                    makeUIAmmActivityMap(
-                        {
-                            ammActivityMap,
-                            type: 'AMM_MINING',
-                            ammPoolActivityStatus: [AmmPoolActivityStatus.EndOfGame]
-                        }, userRewardsMapState.userRewardsMap
-                    ))
-          //  })
+                ))
+            //  })
         }
 
-    },[ammActivityMap])
+    }, [ammActivityMap])
     React.useEffect(() => {
             if (userRewardsMapState.status === "ERROR") {
                 //TODO: solve error
@@ -61,12 +58,12 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
                 userRewardsMapState.statusUnset();
                 setAmmActivityViewMap(
                     makeUIAmmActivityMap(
-                    {
-                        ammActivityMap,
-                        type: 'AMM_MINING',
-                        ammPoolActivityStatus: [AmmPoolActivityStatus.NotStarted, AmmPoolActivityStatus.InProgress]
-                    }, userRewardsMapState.userRewardsMap
-                ));
+                        {
+                            ammActivityMap,
+                            type: 'AMM_MINING',
+                            ammPoolActivityStatus: [AmmPoolActivityStatus.NotStarted, AmmPoolActivityStatus.InProgress]
+                        }, userRewardsMapState.userRewardsMap
+                    ));
                 setAmmActivityPastViewMap(
                     makeUIAmmActivityMap(
                         {

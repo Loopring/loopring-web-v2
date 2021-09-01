@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { OnchainHashInfo } from './interface'
 import { clearAll, clearDepositHash, updateDepositHash } from './reducer'
 
-export const useOnchainInfo = ():  {
+export const useOnchainInfo = (): {
     onchainInfo: OnchainHashInfo,
     clearAllWrapper: () => void,
     clearDepositHashWrapper: () => void,
-    updateDepositHashWrapper:(depositHash: string) => void,
+    updateDepositHashWrapper: (depositHash: string) => void,
 } => {
     const onchainInfo: OnchainHashInfo = useSelector((state: any) => state.favoriteMarket)
     const dispatch = useDispatch()

@@ -19,10 +19,10 @@ const getAmountApi = async <R extends { [ key: string ]: any }>(market: string):
         if (__timer__ && __timer__ !== -1) {
             clearInterval(__timer__);
         }
-        __timer__  = setInterval(async () => {
+        __timer__ = setInterval(async () => {
             // debugger
             store.dispatch(getAmount(market))
-        }, 1000*15*60)//   //
+        }, 1000 * 15 * 60)//   //
 
         // })(__timer__, market);
         const req: sdk.GetMinimumTokenAmtRequest = {
@@ -35,7 +35,7 @@ const getAmountApi = async <R extends { [ key: string ]: any }>(market: string):
             market: 'AMM-' + market,
         }
         const {amountMap: _pairMapAmm} = await LoopringAPI.userAPI.getMinimumTokenAmt(reqAmm, apiKey)
-        return {newAmountMap: { [market]:_pairMap, [ 'AMM-' + market]:_pairMapAmm},__timer__}
+        return {newAmountMap: {[ market ]: _pairMap, [ 'AMM-' + market ]: _pairMapAmm}, __timer__}
 
     } else {
         if (__timer__ && __timer__ !== -1) {

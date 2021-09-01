@@ -13,18 +13,6 @@ export function useSocket(): StateBase & {
 } {
     const socket: StateBase & { socket: SocketMap } = useSelector((state: any) => state.socket)
     const dispatch = useDispatch();
-    // const socketStart = () => {
-    //     dispatch(socketSlice.actions.socketStart(undefined))
-    // }
-    // const sendSocketTopic = (socket: SocketMap) => {
-    //     dispatch(socketSlice.actions.sendSocketTopic({socket}))
-    // }
-    // const socketEnd = () => {
-    //     dispatch(socketSlice.actions.socketEnd(undefined))
-    // }
-    // const statusUnset = () => {
-    //     dispatch(socketSlice.actions.statusUnset(undefined))
-    // }
     return {
         ...socket,
         statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),

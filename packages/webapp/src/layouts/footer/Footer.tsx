@@ -28,7 +28,7 @@ const Footer = () => {
     return (
         <FooterDiv>
             <div>
-                <div className={'footer_internal'}>Copyright (c) 2017-{new Date().getFullYear()}. </div>
+                <div className={'footer_internal'}>Copyright (c) 2017-{new Date().getFullYear()}.</div>
                 <div className={'footer_internal'}>All Rights Reversed by Loopring.</div>
             </div>
         </FooterDiv>

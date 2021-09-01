@@ -1,5 +1,5 @@
 import { WithTranslation, withTranslation, } from 'react-i18next'
-import { Box, OutlinedInput, InputAdornment } from '@material-ui/core'
+import { Box, InputAdornment, OutlinedInput } from '@material-ui/core'
 import styled from '@emotion/styled'
 
 import React from 'react';
@@ -39,7 +39,8 @@ const StylePaper = styled(Box)`
 export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>
 ({t, ammActivityMap, ...rest}: WithTranslation
     & {
-    ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined }) => {
+    ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined
+}) => {
     const container = React.useRef(null);
     const [pageSize, setPageSize] = React.useState(10);
     const [filterValue, setFilterValue] = React.useState('');
@@ -50,7 +51,7 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
         const height = window.innerHeight
         const tableHeight = height - 64 - 117
         setTableHeight(tableHeight)
-      }, [])
+    }, [])
 
     React.useEffect(() => {
         getCurrentHeight()
@@ -76,7 +77,7 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
             const coinA = o.coinAInfo.name.toLowerCase()
             const coinB = o.coinBInfo.name.toLowerCase()
             const formattedValue = filterValue.toLowerCase()
-            return coinA.includes(formattedValue) || coinB.includes(formattedValue) 
+            return coinA.includes(formattedValue) || coinB.includes(formattedValue)
         })
     }, [filterValue, rawData])
 

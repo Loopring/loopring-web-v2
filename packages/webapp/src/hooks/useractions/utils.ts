@@ -8,6 +8,6 @@ export const checkErrorInfo = (errorInfo: any, isFirstTime: boolean) => {
     } else if (isFirstTime && errorInfo?.errMsg === 'NOT_SUPPORT_ERROR') {
         return ConnectorError.NOT_SUPPORT_ERROR
     }
-    
+
     return 'OK'
 }

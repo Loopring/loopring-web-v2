@@ -1,11 +1,10 @@
 import React from 'react';
 
-import {  ResetProps } from '@loopring-web/component-lib';
-import { IBData,WalletMap } from '@loopring-web/common-resources';
+import { ResetProps } from '@loopring-web/component-lib';
+import { IBData, WalletMap } from '@loopring-web/common-resources';
 
 
-
-export const useReset = <R extends IBData<T>, T>(walletMap2:WalletMap<T>,ShowReset: (isShow: boolean, defaultProps?: any)=>void): {
+export const useReset = <R extends IBData<T>, T>(walletMap2: WalletMap<T>, ShowReset: (isShow: boolean, defaultProps?: any) => void): {
     // handleReset: (inputValue:R) => void,
     resetProps: ResetProps<R, T>
     // resetValue: R

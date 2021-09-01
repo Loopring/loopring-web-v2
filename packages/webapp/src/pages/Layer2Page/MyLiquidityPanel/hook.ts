@@ -1,15 +1,13 @@
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 import React from 'react';
-import { AmmRecordRow, MyPoolRow, useSettings } from '@loopring-web/component-lib';
-import { makeWalletLayer2, WalletMapExtend } from '../../../hooks/help/makeWallet';
-import { LoopringAPI } from 'api_wrapper'
+import { AmmRecordRow, MyPoolRow } from '@loopring-web/component-lib';
+import { makeWalletLayer2 } from '../../../hooks/help/makeWallet';
 import {
     getUserAmmTransaction,
     makeMyAmmMarketArray,
     makeMyPoolRowWithPoolState,
     makeSummaryMyAmm,
     SummaryMyAmm,
-    volumeToCount,
     useAmmTotalValue,
 } from '../../../hooks/help';
 import { useTokenMap } from '../../../stores/token';
@@ -36,28 +34,28 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     const {status: userRewardsStatus, userRewardsMap, getUserRewards} = useUserRewards();
     const {marketArray, addressIndex} = useTokenMap();
     const {status: ammMapStatus, ammMap, getAmmMap} = useAmmMap();
-    const { getAmmLiquidity } = useAmmTotalValue()
-    const { forex } = useSystem()
+    const {getAmmLiquidity} = useAmmTotalValue()
+    const {forex} = useSystem()
 
     // const [walletMap, setWalletMap] = React.useState<WalletMapExtend<R> | undefined>(undefined);
     const [summaryReward, setSummaryReward] = React.useState<SummaryMyAmm | undefined>(undefined);
     const [myPoolRow, setMyPoolRow] = React.useState<MyPoolRow<R>[]>([])
     const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<AmmRecordRow<R>[]>([])
-    const [lpTokenList, setLpTokenList] = React.useState<{addr: string; price: number}[]>([])
+    const [lpTokenList, setLpTokenList] = React.useState<{ addr: string; price: number }[]>([])
     const [showLoading, setShowLoading] = React.useState(false)
 
     React.useEffect(() => {
-        
-        if (ammMapStatus === SagaStatus.UNSET && userRewardsStatus === SagaStatus.UNSET && walletLayer2Status === SagaStatus.UNSET ) {
+
+        if (ammMapStatus === SagaStatus.UNSET && userRewardsStatus === SagaStatus.UNSET && walletLayer2Status === SagaStatus.UNSET) {
             walletLayer2Callback()
         }
-    }, []) 
+    }, [])
 
     React.useEffect(() => {
         if (ammMapStatus === SagaStatus.UNSET && userRewardsStatus === SagaStatus.UNSET) {
             walletLayer2Callback()
         }
-    }, [ammMapStatus,userRewardsStatus])
+    }, [ammMapStatus, userRewardsStatus])
 
     // const getLpTokenList = React.useCallback(async () => {
     //     if (LoopringAPI.walletAPI) {
@@ -140,7 +138,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
                         prev.push(rowData);
                     }
                 }
-                    
+
                 return prev
             }, [] as MyPoolRow<R>[])
 
@@ -161,7 +159,6 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
         return [];
     }, [ammMap, userRewardsMap, getAmmLiquidity, forex])
 
-    
 
     // React.useEffect(() => {
     //     if (walletLayer2) {
@@ -173,13 +170,13 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     //     }
     // }, []);
     // const {walletLayer2, status: walletLayer2Status} = useWalletLayer2();
-    const walletLayer2Callback = React.useCallback(async ()=>{
-        if(ammMap ) {
+    const walletLayer2Callback = React.useCallback(async () => {
+        if (ammMap) {
             const _walletMap = walletLayer2DoIt();
             const _myPoolRow = await makeMyPoolRow(_walletMap);
-            setMyPoolRow(_myPoolRow)         
+            setMyPoolRow(_myPoolRow)
         }
-    },[ammMap])
+    }, [ammMap])
     useWalletLayer2Socket({walletLayer2Callback})
 
     React.useEffect(() => {

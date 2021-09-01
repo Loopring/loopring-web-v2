@@ -3,9 +3,8 @@ import bigNumber from 'bignumber.js'
 import store from '../../stores';
 import { getThousandFormattedNumbers, getValuePrecision, TradeTypes } from '@loopring-web/common-resources';
 import { LoopringAPI, } from 'api_wrapper';
-import { AmmRecordRow, AmmTradeType,RawDataTradeItem } from '@loopring-web/component-lib';
+import { AmmRecordRow, AmmTradeType, RawDataTradeItem } from '@loopring-web/component-lib';
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
-import { useAmmTotalValue } from './useAmmTotalValue'
 import { myError } from 'utils/log_tools';
 
 export const getUserTrades = (market: string) => {
@@ -96,13 +95,13 @@ export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[
 }
 
 export const getUserAmmTransaction = ({
-    address,
-    offset,
-    limit
-}: any) => {
+                                          address,
+                                          offset,
+                                          limit
+                                      }: any) => {
     const {accountId, apiKey} = store.getState().account
     return LoopringAPI.ammpoolAPI?.getUserAmmPoolTxs({
-        accountId, 
+        accountId,
         ammPoolAddress: address,
         limit,
         offset,
@@ -117,10 +116,10 @@ export const getUserAmmTransaction = ({
 }
 
 export const getRecentAmmTransaction = ({
-    address,
-    offset,
-    limit
-}: any) => {
+                                            address,
+                                            offset,
+                                            limit
+                                        }: any) => {
     // const {apiKey} = store.getState().account
     return LoopringAPI.ammpoolAPI?.getAmmPoolTrades({
         ammPoolAddress: address,
@@ -135,12 +134,12 @@ export const getRecentAmmTransaction = ({
 }
 
 
-export const makeMyAmmMarketArray = <C extends { [ key: string ]:any }>(coinKey: string|undefined, marketTransaction: sdk.UserAmmPoolTx[]): AmmRecordRow<C>[] => {
+export const makeMyAmmMarketArray = <C extends { [ key: string ]: any }>(coinKey: string | undefined, marketTransaction: sdk.UserAmmPoolTx[]): AmmRecordRow<C>[] => {
 
-    const tradeArray: Array<Partial<AmmRecordRow<C>> & {totalBalance: number}> = []
+    const tradeArray: Array<Partial<AmmRecordRow<C>> & { totalBalance: number }> = []
     const {tokenMap, coinMap, idIndex} = store.getState().tokenMap
-    const { forex } = store.getState().system
-    
+    const {forex} = store.getState().system
+
 
     // if (ammpool && ammpool.userAmmPoolTxs) {
     //     const result = ammpool.userAmmPoolTxs.map(o => ({
@@ -170,30 +169,29 @@ export const makeMyAmmMarketArray = <C extends { [ key: string ]:any }>(coinKey:
         marketTransaction.forEach((item: sdk.UserAmmPoolTx) => {
             try {
                 if (coinMap && tokenMap && idIndex
-                    /* && !(coinKey && tokenMap['LP-'+coinKey].tokenId !== item.lpToken.tokenId) */ ) {
+                    /* && !(coinKey && tokenMap['LP-'+coinKey].tokenId !== item.lpToken.tokenId) */) {
                     // @ts-ignore
-                    const [, coinA, coinB] = idIndex[item.lpToken.tokenId].match(/LP-(\w+)-(\w+)/i);
+                    const [, coinA, coinB] = idIndex[ item.lpToken.tokenId ].match(/LP-(\w+)-(\w+)/i);
                     const balance = item.lpToken.actualAmount
-                    
+
                     tradeArray.push({
-                            type: item.txType === sdk.AmmTxType.JOIN ? AmmTradeType.add : AmmTradeType.remove,
-                            //TODO:
-                            totalDollar: 0,
-                            totalYuan: 0 / Number(forex),
-                            totalBalance: Number(balance),
-                            amountA: volumeToCount(coinA,item.poolTokens[ 0 ]?.actualAmount),
-                            amountB: volumeToCount(coinB,item.poolTokens[ 1 ]?.actualAmount),
-                            time: Number(item.updatedAt),
-                            // @ts-ignore
-                            coinA: coinMap[ coinA ],
-                            // @ts-ignore
-                            coinB: coinMap[ coinB ],
-                            status: item.txStatus
-                        })
-                    }
-                    return tradeArray
+                        type: item.txType === sdk.AmmTxType.JOIN ? AmmTradeType.add : AmmTradeType.remove,
+                        //TODO:
+                        totalDollar: 0,
+                        totalYuan: 0 / Number(forex),
+                        totalBalance: Number(balance),
+                        amountA: volumeToCount(coinA, item.poolTokens[ 0 ]?.actualAmount),
+                        amountB: volumeToCount(coinB, item.poolTokens[ 1 ]?.actualAmount),
+                        time: Number(item.updatedAt),
+                        // @ts-ignore
+                        coinA: coinMap[ coinA ],
+                        // @ts-ignore
+                        coinB: coinMap[ coinB ],
+                        status: item.txStatus
+                    })
                 }
-             catch (error) {
+                return tradeArray
+            } catch (error) {
                 //CATCHERROR:
                 console.log(error)
                 // new CustomError()
@@ -223,7 +221,7 @@ export const makeMyAmmMarketArray = <C extends { [ key: string ]:any }>(coinKey:
 //                 const [, coinA, coinB] = item.token.split('-')
 //                 const balance = item.lpToken.actualAmount
 //             }
-    
+
 //                 // id: number;
 //                 // from: string;
 //                 // to: string;
@@ -259,7 +257,7 @@ export const makeMyAmmMarketArray = <C extends { [ key: string ]:any }>(coinKey:
 //             console.log(error)
 //             // new CustomError()
 //         }
-    
+
 //     })
 //     // console.log('tradeArray:', tradeArray)
 //     return tradeArray as AmmRecordRow<C>[];

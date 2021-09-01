@@ -1,7 +1,7 @@
 import React from 'react';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { useSystem } from './stores/system';
-import { ChainId, sleep } from 'loopring-sdk';
+import { ChainId } from 'loopring-sdk';
 import { useAmmMap } from './stores/Amm/AmmMap';
 import { SagaStatus } from '@loopring-web/common-resources';
 import { useTokenMap } from './stores/token';
@@ -10,8 +10,8 @@ import { connectProvides, walletServices } from '@loopring-web/web3-provider';
 import { useAccountInit } from './hookAccountInit';
 import { useAmmActivityMap } from './stores/Amm/AmmActivityMap';
 import { useTicker } from './stores/ticker';
-import { checkAccount } from './services/account/checkAccount';
 import { useUserRewards } from './stores/userRewards';
+
 // import { statusUnset as accountStatusUnset } from './stores/account';
 
 /**
@@ -28,13 +28,13 @@ export function useInit() {
     const [state, setState] = React.useState<keyof typeof SagaStatus>('PENDING')
     // const {updateWalletLayer1, resetLayer1, status:walletLayer1Status,statusUnset:wallet1statusUnset} = useWalletLayer1()
     // const {updateWalletLayer2, resetLayer2, status:walletLayer2Status,statusUnset:wallet2statusUnset } = useWalletLayer2();
-    const {account, updateAccount, resetAccount, status:accountStatus,statusUnset:accountStatusUnset} = useAccount();
-    const {status: tokenMapStatus, statusUnset: tokenMapStatusUnset}  = useTokenMap();
-    const {status: ammMapStatus, statusUnset: ammMapStatusUnset}  = useAmmMap();
+    const {account, updateAccount, resetAccount, status: accountStatus, statusUnset: accountStatusUnset} = useAccount();
+    const {status: tokenMapStatus, statusUnset: tokenMapStatusUnset} = useTokenMap();
+    const {status: ammMapStatus, statusUnset: ammMapStatusUnset} = useAmmMap();
     const {updateSystem, status: systemStatus, statusUnset: systemStatusUnset} = useSystem();
-    const {status:ammActivityMapStatus,statusUnset:ammActivityMapStatusUnset}  = useAmmActivityMap();
-    const {status: userRewardsStatus, statusUnset: userRewardsUnset}  = useUserRewards();
-    const {status: tickerStatus,statusUnset: tickerStatusUnset} = useTicker();
+    const {status: ammActivityMapStatus, statusUnset: ammActivityMapStatusUnset} = useAmmActivityMap();
+    const {status: userRewardsStatus, statusUnset: userRewardsUnset} = useUserRewards();
+    const {status: tickerStatus, statusUnset: tickerStatusUnset} = useTicker();
 
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
@@ -46,25 +46,25 @@ export function useInit() {
                 if (connectProvides.usedProvide && connectProvides.usedWeb3) {
 
                     // @ts-ignore
-                    let chainId = Number(connectProvides.usedProvide?.connector?.chainId) ??  Number(await connectProvides.usedWeb3.eth.getChainId())
-                    if( ChainId[chainId] === undefined) {
-                        chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
+                    let chainId = Number(connectProvides.usedProvide?.connector?.chainId) ?? Number(await connectProvides.usedWeb3.eth.getChainId())
+                    if (ChainId[ chainId ] === undefined) {
+                        chainId = account._chainId && account._chainId !== 'unknown' ? account._chainId : ChainId.MAINNET
                     }
 
-                    updateSystem({chainId:chainId as any})
+                    updateSystem({chainId: chainId as any})
                     return
                 }
             } catch (error) {
                 //await resetAccount({shouldUpdateProvider:true});
-                walletServices.sendDisconnect('',`error at init loading  ${error}, disconnect`)
-                const chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
+                walletServices.sendDisconnect('', `error at init loading  ${error}, disconnect`)
+                const chainId = account._chainId && account._chainId !== 'unknown' ? account._chainId : ChainId.MAINNET
                 updateSystem({chainId})
             }
-        } else  {
-            if(account.accAddress === '' ||  account.connectName === 'unknown' ){
-                resetAccount() 
+        } else {
+            if (account.accAddress === '' || account.connectName === 'unknown') {
+                resetAccount()
             }
-            const chainId = account._chainId && account._chainId !=='unknown'? account._chainId  :ChainId.MAINNET
+            const chainId = account._chainId && account._chainId !== 'unknown' ? account._chainId : ChainId.MAINNET
             updateSystem({chainId})
         }
 
@@ -72,7 +72,7 @@ export function useInit() {
     React.useEffect(() => {
         switch (systemStatus) {
             case SagaStatus.PENDING:
-                if(state!==SagaStatus.PENDING){
+                if (state !== SagaStatus.PENDING) {
                     setState(SagaStatus.PENDING)
                 }
                 break
@@ -111,10 +111,10 @@ export function useInit() {
             default:
                 break;
         }
-        if(tokenMapStatus === SagaStatus.UNSET && ammMapStatus ===  SagaStatus.UNSET ){
+        if (tokenMapStatus === SagaStatus.UNSET && ammMapStatus === SagaStatus.UNSET) {
             setState('DONE')
         }
-    }, [tokenMapStatus,ammMapStatus])
+    }, [tokenMapStatus, ammMapStatus])
     React.useEffect(() => {
         switch (ammActivityMapStatus) {
             case SagaStatus.ERROR:

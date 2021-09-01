@@ -2,7 +2,7 @@ import { Box, Grid, } from '@material-ui/core'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import BasicInfoPanel from './panel/BasicInfoPanel'
 import TradePanel from './panel/TradePanel'
-import { AlertImpact, ConfirmImpact, SwapPanel, Toast, TradeBtnStatus } from '@loopring-web/component-lib'
+import { AlertImpact, ConfirmImpact, SwapPanel, Toast } from '@loopring-web/component-lib'
 
 import { TOAST_TIME } from 'defs/common_defs'
 import { FixedStyle } from 'pages/styled'
@@ -38,8 +38,9 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
 
     return <>
 
-        <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'} open={toastOpen?.open ?? false}
-               autoHideDuration={TOAST_TIME} onClose={closeToast} />
+        <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'}
+               open={toastOpen?.open ?? false}
+               autoHideDuration={TOAST_TIME} onClose={closeToast}/>
 
         <Grid container marginRight={3} alignContent={'stretch'} direction={'column'} flexWrap={'nowrap'}>
             <BasicInfoPanel {...{
@@ -63,12 +64,12 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
                     onSwapClick={onSwapClick}
                     swapBtnI18nKey={swapBtnI18nKey}
                     swapBtnStatus={swapBtnStatus}
-                    {...{ handleSwapPanelEvent, ...rest }}
+                    {...{handleSwapPanelEvent, ...rest}}
                 />
 
             </FixedStyle>
         </Box>
-        <AlertImpact handleClose={swapFunc} open={alertOpen} value={pageTradeLite?.priceImpactObj?.value as any} />
+        <AlertImpact handleClose={swapFunc} open={alertOpen} value={pageTradeLite?.priceImpactObj?.value as any}/>
         <ConfirmImpact handleClose={swapFunc} open={confirmOpen} value={pageTradeLite?.priceImpactObj?.value as any}/>
     </>
 });

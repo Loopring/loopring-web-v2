@@ -20,7 +20,7 @@ const walletLayer2Slice: Slice<WalletLayer2States> = createSlice({
             state.walletLayer2 = undefined;
             state.status = SagaStatus.UNSET;
         },
-        socketUpdateBalance(state, action: PayloadAction<{[key:string ]:loopring_defs.UserBalanceInfo}>) {
+        socketUpdateBalance(state, action: PayloadAction<{ [ key: string ]: loopring_defs.UserBalanceInfo }>) {
             state.status = SagaStatus.PENDING;
         },
         getWalletLayer2Status(state, action: PayloadAction<{ walletLayer2: WalletLayer2Map<object> }>) {
@@ -39,4 +39,10 @@ const walletLayer2Slice: Slice<WalletLayer2States> = createSlice({
     },
 });
 export { walletLayer2Slice };
-export const {updateWalletLayer2, socketUpdateBalance, getWalletLayer2Status, statusUnset, reset} = walletLayer2Slice.actions
+export const {
+    updateWalletLayer2,
+    socketUpdateBalance,
+    getWalletLayer2Status,
+    statusUnset,
+    reset
+} = walletLayer2Slice.actions
