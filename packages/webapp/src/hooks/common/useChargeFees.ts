@@ -16,12 +16,18 @@ import * as _ from 'lodash'
 import { globalSetup } from '@loopring-web/common-resources'
 import { getShowStr } from 'utils/formatter_tool';
 
+export interface FeeInfo {
+    belong: string,
+    fee: number,
+    __raw__?: any,
+}
+
 export function useChargeFees(tokenSymbol: string | undefined, requestType: OffchainFeeReqType,
     tokenMap: LoopringMap<TokenInfo> | undefined, amount?: number) {
 
     const { account } = useAccount()
 
-    const [chargeFeeList, setChargeFeeList] = useState<any[]>([])
+    const [chargeFeeList, setChargeFeeList] = useState<FeeInfo[]>([])
 
     const getFeeList = React.useCallback(
         _.debounce(async (accountId: number, apiKey: string, tokenSymbol: string | undefined, requestType: OffchainFeeReqType, 
@@ -34,7 +40,7 @@ export function useChargeFees(tokenSymbol: string | undefined, requestType: Offc
 
             // myLog('tokenSymbol:', tokenSymbol, ' requestType:', OffchainFeeReqType[requestType])
 
-            let chargeFeeList: any[] = []
+            let chargeFeeList: FeeInfo[] = []
 
             try {
                 const tokenInfo = tokenMap[tokenSymbol]
