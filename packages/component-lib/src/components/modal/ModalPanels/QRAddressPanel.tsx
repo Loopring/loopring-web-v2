@@ -12,7 +12,7 @@ export const QRAddressPanel = withTranslation('common')(({
     const etherscanLink = etherscanUrl + accAddress;
     return <Box flex={1} paddingY={2} paddingX={2}  display={'flex'} flexDirection={'column'}
                 alignItems={'center'} justifyContent={'center'} >
-        <QRCode value={etherscanLink} size={200} style={{backgroundColor: '#fff'}}
+        <QRCode value={etherscanLink} size={240} style={{padding: 8,backgroundColor: '#fff'}}
                 aria-label={`link:${etherscanLink}`}/>
         <Typography marginTop={3} variant={'body2'} color={'textSecondary'}
                     style={{wordBreak: 'break-all'}}>{accAddress}</Typography>

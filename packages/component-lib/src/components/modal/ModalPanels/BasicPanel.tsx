@@ -152,7 +152,7 @@ export const BasicPanel = withTranslation('common', { withRef: true })(({
 
 export const ConnectBase = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
-        title: 'labelConnect'
+        title: 'labelConnectWallet'
     }
     return <BasicPanel {...propsPatch} {...props} />
 }

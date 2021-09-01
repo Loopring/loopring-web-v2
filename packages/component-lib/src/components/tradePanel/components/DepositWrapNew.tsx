@@ -2,7 +2,7 @@ import { CloseIcon, globalSetup, IBData } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../Interface';
 import { Trans, WithTranslation } from 'react-i18next';
 import { bindHover } from 'material-ui-popup-state/es';
-import { bindPopper, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
+import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import React, { ChangeEvent } from 'react';
 import { Box, Grid, Typography } from '@material-ui/core';
 import { PopoverPure } from '../../'
@@ -83,11 +83,6 @@ export const DepositWrapNew = <T extends IBData<I>,
             <PopoverPure
                 className={'arrow-center'}
                 {...bindPopper(popupState)}
-                // popupId={popupId}
-                // children={triggerContent}
-                // popoverContent={popoverContent}
-                // handleStateChange={(state) => handleStateChange(state, hash)}
-                // handleStateChange={setIsOpen}
                 anchorOrigin={{
                     vertical: 'bottom',
                     horizontal: 'center',

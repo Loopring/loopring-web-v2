@@ -19,11 +19,11 @@ import {
 
     Deposit_Approve_WaitForAuth,
     Deposit_Approve_Denied,
-    Deposit_Approve_Submited,
+    Deposit_Approve_Submit,
     Deposit_WaitForAuth,
     Deposit_Denied,
     Deposit_Failed,
-    Deposit_Submited,
+    Deposit_Submit,
 
     Transfer_WaitForAuth,
     Transfer_First_Method_Denied,
@@ -41,17 +41,17 @@ import {
 
     CreateAccount_Approve_WaitForAuth,
     CreateAccount_Approve_Denied,
-    CreateAccount_Approve_Submited,
+    CreateAccount_Approve_Submit,
     CreateAccount_WaitForAuth,
     CreateAccount_Denied,
     CreateAccount_Failed,
-    CreateAccount_Submited,
+    CreateAccount_Submit,
 
     UpdateAccount_Approve_WaitForAuth,
     UpdateAccount_First_Method_Denied,
     UpdateAccount_User_Denied,
     UpdateAccount_Success,
-    UpdateAccount_Submited,
+    UpdateAccount_Submit,
     UpdateAccount_Failed,
 } from './ModalPanels';
 import { account, coinMap, CoinType, walletMap } from '../../static';
@@ -152,8 +152,8 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                         ...rest
                     }} />,
             },
-            [AccountStep.Deposit_Approve_Submited]: {
-                view: <Deposit_Approve_Submited btnInfo={closeBtn} symbol={'DAI'} txCheck={
+            [AccountStep.Deposit_Approve_Submit]: {
+                view: <Deposit_Approve_Submit btnInfo={closeBtn} symbol={'DAI'} txCheck={
                     {
                         route: '',
                         callback: () => {
@@ -187,8 +187,8 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                         ...rest
                     }} />,
             },
-            [AccountStep.Deposit_Submited]: {
-                view: <Deposit_Submited value={'100'} symbol={'USDT'} txCheck={
+            [AccountStep.Deposit_Submit]: {
+                view: <Deposit_Submit value={'100'} symbol={'USDT'} txCheck={
                     {
                         route: '',
                         callback: () => {
@@ -307,8 +307,8 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                         ...rest
                     }} />,
             },
-            [AccountStep.CreateAccount_Approve_Submited]: {
-                view: <CreateAccount_Approve_Submited
+            [AccountStep.CreateAccount_Approve_Submit]: {
+                view: <CreateAccount_Approve_Submit
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
@@ -331,8 +331,8 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                         ...rest
                     }} />,
             },
-            [AccountStep.CreateAccount_Submited]: {
-                view: <CreateAccount_Submited
+            [AccountStep.CreateAccount_Submit]: {
+                view: <CreateAccount_Submit
                     providerName={account.connectName} {...{
                         ...rest
                     }} />,
@@ -366,8 +366,8 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                     ...rest
                 }} />,
             },
-            [AccountStep.UpdateAccount_Submited]: {
-                view: <UpdateAccount_Submited btnInfo={closeBtn} {...{
+            [AccountStep.UpdateAccount_Submit]: {
+                view: <UpdateAccount_Submit btnInfo={closeBtn} {...{
                     ...rest
                 }} />,
             },
