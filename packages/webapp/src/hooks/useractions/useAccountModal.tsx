@@ -23,7 +23,7 @@ export function useAccountModal() {
     }, [shouldShow])
     const handleDepositingAccount = React.useCallback(async () => {
         // updateAccount({readyState:'DEPOSITING'});
-        setShowAccount({isShow: shouldShow ?? false, step: AccountStep.Deposit_Submited});
+        setShowAccount({isShow: shouldShow ?? false, step: AccountStep.Deposit_Submit});
         await sleep(3000)
         setShouldShow(false)
         setShowAccount({isShow: false});
