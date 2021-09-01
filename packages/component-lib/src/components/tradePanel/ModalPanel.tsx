@@ -2,7 +2,8 @@ import { Box, Modal as MuiModal } from '@material-ui/core';
 import {
     AmmPanel,
     AmmProps,
-    DepositPanel,
+    // DepositPanel,
+    DepositPanelNew,
     DepositProps,
     ModalCloseButton,
     ModalPanelProps,
@@ -20,6 +21,8 @@ import {
 import { IBData } from '@loopring-web/common-resources';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { useTheme } from '@emotion/react';
+
+const DEFAULT_DEPOSIT_HEIGHT = 300;
 
 const Modal = withTranslation('common')(({
                                              open,
@@ -111,10 +114,10 @@ export const ModalPanel = <T extends IBData<I>, I>({
                }}  > </WithdrawPanel>}/>
         <Modal open={isShowDeposit.isShow}
                onClose={() => setShowDeposit({isShow: false})}
-               content={<DepositPanel<any, any> {...{
+               content={<DepositPanelNew<any, any> {...{
                    ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
-                   _height: 'var(--modal-height)', ...depositProps,
-               }} > </DepositPanel>}/>
+                   _height: DEFAULT_DEPOSIT_HEIGHT, ...depositProps,
+               }} > </DepositPanelNew>}/>
         <Modal open={isShowResetAccount.isShow}
                onClose={() => setShowResetAccount({...isShowResetAccount, isShow: false})}
                content={<ResetPanel<any, any> {...{
