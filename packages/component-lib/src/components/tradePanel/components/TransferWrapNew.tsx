@@ -11,6 +11,7 @@ import { TransferViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import * as _ from 'lodash'
 import { HelpIcon } from '@loopring-web/common-resources'
+import { ToggleButtonGroup } from '../../basic-lib';
 
 
 export const TransferWrapNew = <T extends IBData<I>,
@@ -47,6 +48,7 @@ export const TransferWrapNew = <T extends IBData<I>,
     const [addressError, setAddressError] = React.useState<{ error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined>();
     const [feeIndex, setFeeIndex] = React.useState<any | undefined>(0);
     const [memo, setMemo] = React.useState('');
+    const [feeToken, setFeeToken] = React.useState('')
     const popupState = usePopupState({variant: 'popover', popupId: `popupId-transfer`});
     const debounceAddress = React.useCallback(_.debounce(({address}: any) => {
         if (handleOnAddressChange) {
@@ -84,6 +86,11 @@ export const TransferWrapNew = <T extends IBData<I>,
         setAddress('')
     }, [])
 
+    const toggleData: any[] = chargeFeeTokenList.map(({belong, fee}, index) => ({
+        key: belong,
+        value: belong,
+    }))
+
     return <Grid className={walletMap ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
                 //  justifyContent={'space-between'}
@@ -106,7 +113,7 @@ export const TransferWrapNew = <T extends IBData<I>,
                     horizontal: 'center',
                 }}
             >
-                <Box padding={6}>
+                <Box padding={2}>
                     <Trans i18nKey="transferDescription">
                         Transfer to any valid Ethereum addresses instantly. Please <TypographyGood component={'span'}>make
                         sure</TypographyGood> the recipient address <TypographyGood component={'span'}>accepts Loopring
@@ -164,7 +171,7 @@ export const TransferWrapNew = <T extends IBData<I>,
                 placeholder={t('transferLabelMemoPlaceholder')}
                 onChange={_handleOnMemoChange}
                 // disabled={chargeFeeTokenList.length ? false : true}
-                SelectProps={{IconComponent: DropDownIcon}}
+                // SelectProps={{IconComponent: DropDownIcon}}
                 // required={true}
                 // inputRef={addressInput}
                 // helperText={<Typography
@@ -175,7 +182,9 @@ export const TransferWrapNew = <T extends IBData<I>,
         </Grid>
 
         <Grid item marginTop={4} alignSelf={"stretch"}>
-            <TextField
+            <ToggleButtonGroup size={'large'} {...{data: toggleData, value: feeToken, setValue: setFeeToken, t, ...rest}} />
+
+            {/* <TextField
                 id="transferFeeType"
                 select
                 label={t('transferLabelFee')}
@@ -202,9 +211,9 @@ export const TransferWrapNew = <T extends IBData<I>,
                     >{fee}</Typography>}/>
                 </MenuItem>
             })
-            }</TextField>
+            }</TextField> */}
         </Grid>
-        <Grid item marginTop={4} alignSelf={'stretch'}>
+        <Grid item marginTop={6} alignSelf={'stretch'}>
             <Button fullWidth variant={'contained'} size={'medium'} color={'primary'} onClick={() => {
                 onTransferClick(tradeData)
             }}
