@@ -100,7 +100,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
     const [ammUserRewardMap, setAmmUserRewardMap] = React.useState<AmmUserRewardMap | undefined>(undefined);
     const [snapShotData, setSnapShotData] = React.useState<{
         tickerData: TickerData | undefined
-        ammPoolsBalance: AmmPoolSnapshot | undefined
+        ammPoolSnapshot: AmmPoolSnapshot | undefined
     } | undefined>(undefined);
 
     const [myAmm, setMyAmm] = React.useState<MyAmmLP<C>>(
@@ -116,7 +116,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
             balanceYuan: 0,
             balanceDollar: 0,
         })
-    // const [ammPoolsBalance, setAmmpoolsbalance] = React.useState<AmmPoolSnapshot|undefined>(undefined);
+    // const [ammPoolSnapshot, setammPoolSnapshot] = React.useState<AmmPoolSnapshot|undefined>(undefined);
     const [coinPairInfo, setCoinPairInfo] = React.useState<PgAmmDetail<C>>({
         myCoinA: undefined,
         myCoinB: undefined,
@@ -353,16 +353,16 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
             //TODO should add it into websocket
             getAmmMap();
             swapDependAsync(market).then(
-                ({ammPoolsBalance, tickMap, depth}) => {
+                ({ammPoolSnapshot, tickMap, depth}) => {
                     if (tokenMap && tickMap) {
                         const _snapShotData = {
                             tickerData: tickMap[ market ],
-                            ammPoolsBalance: ammPoolsBalance,
+                            ammPoolSnapshot: ammPoolSnapshot,
                         }
                         const {close} = calcPriceByAmmTickMapDepth({
                             market,
                             tradePair: market,
-                            dependencyData: {ammPoolsBalance, tickMap, depth}
+                            dependencyData: {ammPoolSnapshot, tickMap, depth}
                         })
 
                         _tradeFloat = makeTickView(tickMap[ market ] ? tickMap[ market ] : {})
@@ -381,7 +381,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
 
     // React.useEffect(() => {
     //     const {market} = getExistedMarket(marketArray, pair.coinAInfo?.simpleName as string, pair.coinBInfo?.simpleName as string);
-    //     if (market && snapShotData && snapShotData.ammPoolsBalance && walletLayer2Status === SagaStatus.UNSET) {
+    //     if (market && snapShotData && snapShotData.ammPoolSnapshot && walletLayer2Status === SagaStatus.UNSET) {
     //         const _walletMap = walletLayer2DoIt(market);
     //         const _myAmm: MyAmmLP<C> = makeMyAmmWithSnapshot(market, _walletMap, ammUserRewardMap, snapShotData);
     //         setMyAmm(_myAmm)
@@ -397,7 +397,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
     // }, [walletLayer2Status])
     const walletLayer2Callback = React.useCallback(() => {
         const {market} = getExistedMarket(marketArray, pair.coinAInfo?.simpleName as string, pair.coinBInfo?.simpleName as string);
-        if (market && snapShotData && snapShotData.ammPoolsBalance) {
+        if (market && snapShotData && snapShotData.ammPoolSnapshot) {
             const _walletMap = walletLayer2DoIt(market);
             const _myAmm: MyAmmLP<C> = makeMyAmmWithSnapshot(market, _walletMap, ammUserRewardMap, snapShotData);
             setMyAmm(_myAmm);
@@ -440,7 +440,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
         // tickerData,
         coinPairInfo,
         snapShotData,
-        // ammPoolsBalance,                       App.tsx
+        // ammPoolSnapshot,                       App.tsx
         pair,
         tradeFloat,
         ammMarketArray,

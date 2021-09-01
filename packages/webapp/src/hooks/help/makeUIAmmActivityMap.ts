@@ -188,9 +188,9 @@ const getOneRewardInfo = <C>({
     let balanceA, balanceB, balanceDollar, balanceYuan;
     if (walletMap && walletMap[ 'LP-' + coinA + '-' + coinB ] && snapShotData) {
         // @ts-ignore
-        const ratio = new BigNumber(walletMap[ 'LP-' + coinA + '-' + coinB ].count).div(snapShotData.ammPoolsBalance.lp.volume);
-        balanceA = ratio.times(volumeToCountAsBigNumber(coinA, snapShotData.ammPoolsBalance.pooled[ 0 ].volume) || 1);
-        balanceB = ratio.times(volumeToCountAsBigNumber(coinB, snapShotData.ammPoolsBalance.pooled[ 1 ].volume) || 1);
+        const ratio = new BigNumber(walletMap[ 'LP-' + coinA + '-' + coinB ].count).div(snapShotData.ammPoolSnapshot.lp.volume);
+        balanceA = ratio.times(volumeToCountAsBigNumber(coinA, snapShotData.ammPoolSnapshot.pooled[ 0 ].volume) || 1);
+        balanceB = ratio.times(volumeToCountAsBigNumber(coinB, snapShotData.ammPoolSnapshot.pooled[ 1 ].volume) || 1);
         // @ts-ignore
         balanceDollar = balanceA.times(faitPrices[ coinA ].price).plus(balanceB.times(faitPrices[ coinB ].price))
         balanceYuan = balanceDollar.times(forex)
@@ -220,14 +220,14 @@ const getOneRewardInfo = <C>({
 
 export const makeMyAmmWithSnapshot = <C extends { [ key: string ]: any }>(market: any, _walletMap: WalletMapExtend<C> | undefined, ammUserRewardMap: LoopringMap<AmmUserReward> | undefined, snapShotData?: {
     tickerData?: TickerData | undefined
-    ammPoolsBalance: AmmPoolSnapshot | undefined
+    ammPoolSnapshot: AmmPoolSnapshot | undefined
 } | undefined) => {
     const {coinMap, idIndex, tokenMap} = store.getState().tokenMap;
     const {faitPrices, forex} = store.getState().system;
     const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
     let _myAmm: Partial<MyAmmLP<C>> = {};
     if (ammUserRewardMap && ammUserRewardMap[ 'AMM-' + market ]
-        && snapShotData && snapShotData.ammPoolsBalance) {
+        && snapShotData && snapShotData.ammPoolSnapshot) {
         const ammUserReward: AmmUserReward = ammUserRewardMap[ 'AMM-' + market ];
         // @ts-ignore
         if (coinMap && tokenMap && idIndex && forex && faitPrices) {
@@ -362,11 +362,11 @@ export const makeMyAmmWithStat = <C extends { [ key: string ]: any }>
 //
 // if (_walletMap && _walletMap[ 'LP-' + market ]) {
 //     // @ts-ignore
-//     const ratio = new BigNumber(_walletMap[ 'LP-' + market ].detail.total).div(snapShotData.ammPoolsBalance.lp.volume);
+//     const ratio = new BigNumber(_walletMap[ 'LP-' + market ].detail.total).div(snapShotData.ammPoolSnapshot.lp.volume);
 //     _myAmm = {
-//         ..._myAmm,  //snapShotData.ammPoolsBalance.pooled[ 0 ].volume).div(BIG10.pow(tokenMap[coinA].decimals)
-//         balanceA: ratio.times(volumeToCountAsBigNumber(coinA, snapShotData.ammPoolsBalance.pooled[ 0 ].volume) || 1).toNumber(),
-//         balanceB: ratio.times(volumeToCountAsBigNumber(coinB, snapShotData.ammPoolsBalance.pooled[ 1 ].volume) || 1).toNumber(),
+//         ..._myAmm,  //snapShotData.ammPoolSnapshot.pooled[ 0 ].volume).div(BIG10.pow(tokenMap[coinA].decimals)
+//         balanceA: ratio.times(volumeToCountAsBigNumber(coinA, snapShotData.ammPoolSnapshot.pooled[ 0 ].volume) || 1).toNumber(),
+//         balanceB: ratio.times(volumeToCountAsBigNumber(coinB, snapShotData.ammPoolSnapshot.pooled[ 1 ].volume) || 1).toNumber(),
 //     }
 //     // @ts-ignore
 //     _myAmm.balanceDollar = _myAmm.balanceA * faitPrices[ coinA ].price + _myAmm.balanceB * faitPrices[ coinB ].price
