@@ -22,7 +22,7 @@
     "dotenv-webpack": "^7.0.3",
     "ffjavascript": "^0.1.0",
     "i18next": "^20.1.0",
-    "loopring-sdk": "0.0.112",
+    "loopring-sdk": "0.0.113",
     "qrcode.react": "^1.0.1",
     "query-string": "^7.0.1",
     "react": "^17.0.2",

@@ -8,21 +8,22 @@ import { PairFormat } from '../../stores/router';
 import BigNumber from 'bignumber.js';
 
 export const swapDependAsync = (market: PairFormat): Promise<{
-    ammPoolsBalance: AmmPoolSnapshot | undefined,
+    ammPoolSnapshot: AmmPoolSnapshot | undefined,
     tickMap: LoopringMap<TickerData>,
     depth: DepthData
 }> => {
-    const {ammMap} = store.getState().amm
+    const { ammMap } = store.getState().amm.ammMap
 
     return new Promise((resolve, reject) => {
+        const poolAddress = ammMap[ 'AMM-' + market ]?.address
         if (LoopringAPI.ammpoolAPI && LoopringAPI.exchangeAPI) {
             Promise.all([
                 LoopringAPI.exchangeAPI.getMixDepth({market}),
-                LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({poolAddress: ammMap[ 'AMM-' + market ]?.address}),
+                LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({ poolAddress, }),
                 LoopringAPI.exchangeAPI.getMixTicker({market: market})])
                 .then(([{depth}, {ammPoolSnapshot}, {tickMap}]) => {
                     resolve({
-                        ammPoolsBalance: ammPoolSnapshot,
+                        ammPoolSnapshot: ammPoolSnapshot,
                         tickMap,
                         depth,
                     })
@@ -39,11 +40,11 @@ export const calcPriceByAmmTickMapDepth = <C>(
     {
         market,
         tradePair,
-        dependencyData: {tickMap, ammPoolsBalance, depth}
+        dependencyData: {tickMap, ammPoolSnapshot, depth}
     }: {
         market: PairFormat,
         tradePair: PairFormat
-        dependencyData: { tickMap: any, ammPoolsBalance: any, depth: any },
+        dependencyData: { tickMap: any, ammPoolSnapshot: any, depth: any },
     }): { stob: number | undefined, close: number | undefined } => {
     const {tokenMap, idIndex} = store.getState().tokenMap
     // const  = store.getState().pageTradeLite.pageTradeLite;
@@ -54,10 +55,10 @@ export const calcPriceByAmmTickMapDepth = <C>(
     let stob: number | undefined | BigNumber = undefined,
         close: number | undefined = undefined;
     if (coinA && coinB && tokenMap && idIndex) {
-        //first getValue from  ammPoolsBalance
-        if (ammPoolsBalance) {
-            const poolATokenVol: TokenVolumeV3 = ammPoolsBalance.pooled[ 0 ];
-            const poolBTokenVol: TokenVolumeV3 = ammPoolsBalance.pooled[ 1 ];
+        //first getValue from  ammPoolSnapshot
+        if (ammPoolSnapshot) {
+            const poolATokenVol: TokenVolumeV3 = ammPoolSnapshot.pooled[ 0 ];
+            const poolBTokenVol: TokenVolumeV3 = ammPoolSnapshot.pooled[ 1 ];
             stob = volumeToCountAsBigNumber(idIndex[ poolBTokenVol.tokenId ], poolBTokenVol.volume)?.div(
                 volumeToCountAsBigNumber(idIndex[ poolATokenVol.tokenId ], poolATokenVol.volume) || 1
             )//.toFixed(tokenMap[])

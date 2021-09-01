@@ -9,15 +9,15 @@ export const ammPairInit = ({
                                 walletMap,
                                 ammMap,
                                 tickerData,
-                                ammPoolsBalance
+                                ammPoolSnapshot
                             }: any) => {
     _ammCalcData.coinInfoMap = coinMap;
     if (tickerData) {
         _ammCalcData.AtoB = Number(tickerData.close)
     }
-    if (isNaN(_ammCalcData.AtoB) && ammPoolsBalance) {
-        const baseVol = volumeToCountAsBigNumber(pair.coinAInfo.simpleName, ammPoolsBalance.pooled[ 0 ].volume);
-        const quoteVol = volumeToCountAsBigNumber(pair.coinBInfo.simpleName, ammPoolsBalance.pooled[ 1 ].volume);
+    if (isNaN(_ammCalcData.AtoB) && ammPoolSnapshot) {
+        const baseVol = volumeToCountAsBigNumber(pair.coinAInfo.simpleName, ammPoolSnapshot.pooled[ 0 ].volume);
+        const quoteVol = volumeToCountAsBigNumber(pair.coinBInfo.simpleName, ammPoolSnapshot.pooled[ 1 ].volume);
         _ammCalcData.AtoB = quoteVol && baseVol && parseFloat(quoteVol.div(baseVol).toFixed(7, 0) as string)
     }
     if (pair.coinAInfo) {

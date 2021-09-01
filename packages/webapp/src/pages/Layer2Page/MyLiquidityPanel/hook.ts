@@ -74,7 +74,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     // const [ammUserRewardMap, setAmmUserRewardMap] = React.useState<AmmUserRewardMap|undefined>(undefined);
     // const [snapShotData,setSnapShotData] = React.useState<{
     //     tickerData: TickerData|undefined
-    //     ammPoolsBalance: AmmPoolSnapshot|undefined
+    //     ammPoolSnapshot: AmmPoolSnapshot|undefined
     // }|undefined>(undefined);
     const walletLayer2DoIt = React.useCallback(() => {
         const {walletMap: _walletMap} = makeWalletLayer2();
