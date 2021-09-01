@@ -17,6 +17,7 @@ export const DepositWrapNew = <T extends IBData<I>,
     I>({
            t, disabled, walletMap, tradeData, coinMap,
            title, description,
+           btnInfo,
            depositBtnStatus,
            onDepositClick,
            isNewAccount,
@@ -139,7 +140,7 @@ export const DepositWrapNew = <T extends IBData<I>,
                 // style={{width: '200px'}}
                     loading={!getDisabled() && depositBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={getDisabled() || depositBtnStatus === TradeBtnStatus.DISABLED || depositBtnStatus === TradeBtnStatus.LOADING ? true : false}
-            >{t(`depositLabelBtn`)}
+            >{ btnInfo ? t(btnInfo.label, btnInfo.params) : t(`depositLabelBtn`) }
             </Button>
 
         </Grid>

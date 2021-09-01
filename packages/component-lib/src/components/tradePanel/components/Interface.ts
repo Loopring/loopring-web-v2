@@ -11,7 +11,7 @@ import {
 } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../Interface';
 import React from 'react';
-import { SwitchPanelProps } from '../../basic-lib';
+import { BtnInfoProps, SwitchPanelProps } from '../../basic-lib';
 
 
 /**
@@ -80,7 +80,8 @@ export type DepositInfoProps<I> = {
     handleOnAddressChange?: (value: string | undefined | I) => void,
     handleAddressError?: (address: string) => { error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined,
     wait?: number
-}
+} & BtnInfoProps
+
 export type DepositExtendProps<T, I> = {
     onDepositClick: (data: T) => void,
 } & DepositInfoProps<I>

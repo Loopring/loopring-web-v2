@@ -9,6 +9,17 @@ export type ButtonProps = MuButtonPros & {
     loading?: 'true' | 'false'
 }
 
+export type BtnInfo = {
+    label: string,
+    params: {
+        [key: string]: string,
+    }
+}
+
+export type BtnInfoProps = {
+    btnInfo? : BtnInfo
+}
+
 export interface BtnPercentageProps  {
     anchors?:  Mark[], //0 --100    default 0,20,40,60,80,100
     selected: number,
