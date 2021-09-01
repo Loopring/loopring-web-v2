@@ -107,7 +107,7 @@ export const Layer2Page = () => {
             case AccountStatus.NO_ACCOUNT:
                 return <Box flex={1} display={'flex'} justifyContent={'center'} flexDirection={'column'}
                             alignItems={'center'}>
-                    <Typography marginY={3} variant={'h1'}
+                    <Typography marginY={3} variant={'h1'} whiteSpace={'pre-line'}
                                 textAlign={'center'}>{t('describeTitleNoAccount')}</Typography>
                     <BtnConnect/>
                 </Box>

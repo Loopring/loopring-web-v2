@@ -202,7 +202,7 @@ export default {
     labelUpdateAccount: 'Update Layer2 Account',
     labelTryAnother: 'Try Another Sig Method',
     labelCancel:'Cancel',
-    describeTitleNoAccount:'You need to activate Loopring Layer2. Please make a deposit to create L2 wallet',
+    describeTitleNoAccount:'You need to activate Loopring Layer2.\n Please make a deposit to create L2 wallet',
     describeTitleOpenAccounting:'Your deposit has been submitted to Ethereum. Please wait...',
     describeTitleOnErrorNetwork:'Your current network is not supported by Loopring! Please change network via {{connectName}}.',
     describeTitleNotActive:'Connect your wallet, make a deposit, and enjoy Loopring L2.',

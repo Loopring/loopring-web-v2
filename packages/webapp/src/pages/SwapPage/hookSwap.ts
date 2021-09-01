@@ -458,6 +458,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
     React.useEffect(() => {
         if (pageTradeLite.depth) {
             refreshAmmPoolSnapshot()
+            setIsSwapLoading(false);
         }
     }, [pageTradeLite.depth, tradeCalcData.coinBuy])
 
@@ -496,6 +497,8 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                 state.BtoS = getShowStr(stob ? 1 / stob : 0)
                 return state
             })
+
+
         }
 
     }, [market, pageTradeLite, tradeData, tradeCalcData, setTradeCalcData])
