@@ -536,7 +536,6 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                 return {...prev, [ item ]: coinMap[ item ]}
             }, {} as CoinMap<C>)
 
-
             setTradeCalcData((state) => {
                 return {
                     ...state,
@@ -550,10 +549,11 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                     minimumReceived: '',
                     StoB: undefined,
                     BtoS: undefined,
-
+                    fee: undefined,
                 }
             })
             setTradeData({...tradeDataTmp})
+
             let {amm: ammKey, market: market} = sdk.getExistedMarket(marketArray, coinA, coinB);
             setMarket(market);
             updatePageTradeLite({market, tradePair})
@@ -695,17 +695,17 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                     buyCoinInfoMap: tradeCalcData.sellCoinInfoMap,
                     StoB: tradeCalcData.BtoS,
                     BtoS: tradeCalcData.StoB,
-                    priceImpact: '',
+                    priceImpact: undefined,
                     priceImpactColor: 'inherit',
-                    minimumReceived: '',
-                    fee: ''
+                    minimumReceived: undefined,
+                    fee:undefined,
                 }
 
                 myLog('Exchange,tradeCalcData', tradeCalcData);
                 myLog('Exchange,_tradeCalcData', _tradeCalcData);
                 callPairDetailInfoAPIs()
                 updatePageTradeLite({market, tradePair: `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`})
-                setTradeCalcData({..._tradeCalcData} as TradeCalcData<C>)
+                setTradeCalcData({..._tradeCalcData})
                 break;
             default:
                 myLog('resetSwap default')
