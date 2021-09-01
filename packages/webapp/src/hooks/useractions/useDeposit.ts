@@ -34,27 +34,28 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     const { setShowDeposit, setShowAccount } = useOpenModals()
     const { t } = useTranslation('common')
 
-    const { btnStatus, enableBtn, disableBtn, } = useBtnStatus()
+    const { btnStatus, btnInfo, enableBtn, disableBtn, setLabelAndParams, } = useBtnStatus()
 
     const { allowanceInfo } = useAllowances({ owner: account.accAddress, symbol: depositValue.belong, })
 
-    React.useEffect(() => {
-
+    const updateBtnStatus = React.useCallback(() => {
         myLog(allowanceInfo?.allowance.toNumber(), allowanceInfo?.needCheck)
 
         if (depositValue?.tradeValue && allowanceInfo) {
-
             const curValInWei = sdk.toBig(depositValue?.tradeValue).times('1e' + allowanceInfo?.tokenInfo.decimals)
             if (curValInWei.gt(allowanceInfo.allowance)) {
+                setLabelAndParams( 'labelNeedApprove', { symbol: depositValue.belong })
             } else {
                 enableBtn()
             }
-
         } else {
             disableBtn()
         }
+    }, [enableBtn, disableBtn, setLabelAndParams, depositValue, allowanceInfo])
 
-    }, [enableBtn, disableBtn, depositValue?.tradeValue, allowanceInfo])
+    React.useEffect(() => {
+        updateBtnStatus()
+    }, [depositValue?.tradeValue, allowanceInfo])
 
     const walletLayer1Callback = React.useCallback(() => {
         if (symbol && walletLayer1) {
@@ -87,8 +88,6 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     React.useEffect(() => {
         walletLayer1Callback()
     }, [isShow])
-
-    // useWalletLayer2Socket({ walletLayer1Callback })
 
     const handleDeposit = React.useCallback(async (inputValue: any) => {
         const { readyState, connectName } = account
@@ -228,6 +227,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
         const isNewAccount = account.readyState === AccountStatus.NO_ACCOUNT ? true : false;
         const title = account.readyState === AccountStatus.NO_ACCOUNT ? t('labelCreateLayer2Title') : t('depositTitle');
         return {
+            btnInfo,
             isNewAccount,
             title,
             tradeData: depositValue as any,
@@ -237,7 +237,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             handlePanelEvent,
             onDepositClick,
         }
-    }, [account.readyState, totalCoinMap, walletLayer1, onDepositClick])
+    }, [account.readyState, btnInfo, totalCoinMap, walletLayer1, onDepositClick])
 
     return {
         depositProps,
