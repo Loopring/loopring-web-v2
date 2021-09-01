@@ -496,7 +496,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
     const refreshAmmPoolSnapshot = React.useCallback(() => {
         const {ammPoolsBalance, tickMap, market: _market, depth} = pageTradeLite;
         //@ts-ignore
-        myLog('ammPoolSnapshot', ammPoolsBalance && idIndex[ ammPoolsBalance.lp.tokenId ].replace('LP-', ''), market, tickMap)
+        // myLog('ammPoolSnapshot', ammPoolsBalance && idIndex[ ammPoolsBalance.lp.tokenId ].replace('LP-', ''), market, tickMap)
         if ((tickMap || ammPoolsBalance)
             && market === _market
             && (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market
