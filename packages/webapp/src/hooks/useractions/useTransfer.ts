@@ -9,7 +9,7 @@ import { AccountStatus, CoinMap, IBData, WalletMap } from '@loopring-web/common-
 
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
-import { useChargeFees } from '../common/useChargeFees';
+import { FeeInfo, useChargeFees } from '../common/useChargeFees';
 import { LoopringAPI } from 'api_wrapper';
 import { useSystem } from 'stores/system';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
@@ -57,7 +57,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     } as IBData<unknown>)
     const { chargeFeeList } = useChargeFees(transferValue.belong, sdk.OffchainFeeReqType.TRANSFER, tokenMap)
 
-    const [tranferFeeInfo, setTransferFeeInfo] = React.useState<any>()
+    const [tranferFeeInfo, setTransferFeeInfo] = React.useState<FeeInfo>()
 
     const {
         address,
@@ -81,9 +81,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const walletLayer2Callback = React.useCallback(() => {
         const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
         setWalletMap(walletMap)
-
     }, [])
+
     useWalletLayer2Socket({walletLayer2Callback})
+
     const resetDefault = React.useCallback(() => {
         if (symbol) {
             setTransferValue({
@@ -112,13 +113,12 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     React.useEffect(() => {
         resetDefault();
-    }, [isShow])
-    useCustomDCEffect(() => {
+    }, [isShow, tranferFeeInfo])
 
+    useCustomDCEffect(() => {
         if (chargeFeeList.length > 0) {
             setTransferFeeInfo(chargeFeeList[0])
         }
-
     }, [chargeFeeList, setTransferFeeInfo])
 
     const { checkHWAddr, updateDepositHashWrapper, } = useWalletInfo()
@@ -241,8 +241,8 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     }, [setTransferValue, transferValue])
 
     const handleFeeChange = useCallback((value: {
-        belong: any;
-        fee: number | string;
+        belong: string;
+        fee: number;
         __raw__?: any
     }): void => {
         myLog('handleFeeChange:', value)
@@ -259,7 +259,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         onTransferClick,
         handleFeeChange,
         handlePanelEvent,
-        chargeFeeToken: 'ETH',
+        chargeFeeToken: transferValue.belong,
         chargeFeeTokenList: chargeFeeList,
         handleOnAddressChange: (value: any) => {
         },

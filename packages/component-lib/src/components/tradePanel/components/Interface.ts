@@ -38,14 +38,14 @@ export type SwitchData<T> = {
 export type TransferInfoProps<C> = {
     transferI18nKey?: string,
     transferBtnStatus?: keyof typeof TradeBtnStatus | undefined,
-    chargeFeeTokenList: Array<{ belong: C | string, fee: number | string, __raw__?: any }>,
+    chargeFeeTokenList: Array<{ belong: C | string, fee: number, __raw__?: any }>,
     chargeFeeToken?: C | string,
 }
 
 export type TransferExtendProps<T, I, C> = {
     addressDefault?: string;
     onTransferClick: (data: T) => void,
-    handleFeeChange: (value: { belong: C | string, fee: number | string, __raw__?: any }) => void,
+    handleFeeChange: (value: { belong: C | string, fee: number, __raw__?: any }) => void,
     handleOnAddressChange: (value: string | undefined | I) => void,
     handleAddressError: (address: string) => { error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined,
     wait?: number
