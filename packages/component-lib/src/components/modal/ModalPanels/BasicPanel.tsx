@@ -21,7 +21,7 @@ export enum IconType {
 export interface PanelProps {
     title?: string,
     iconType?: IconType,
-    value?: number,
+    value?: number|string,
     symbol?: string,
     describe1?: any,
     describe2?: any,
@@ -109,7 +109,7 @@ export const BasicPanel = withTranslation('common', { withRef: true })(({
         </Typography>
 
         {describe1 && <Box display={'flex'} marginTop={marginTopDescribe1} alignItems={'flex-center'}>
-            <Typography variant={'h5'} color={'textPrimary'} component={'p'} marginTop={0} alignSelf={'flex-center'}
+            <Typography variant={'h5'} whiteSpace={'pre-line'} textAlign={'center'} color={'textPrimary'} component={'p'} marginTop={0} alignSelf={'flex-center'}
                 paddingRight={1}>
                 {describe1}
             </Typography>
@@ -120,7 +120,7 @@ export const BasicPanel = withTranslation('common', { withRef: true })(({
         </Box>}
 
         {describe2 && <Box flex={1} display={'flex'} marginTop={0} alignItems={'flex-center'}>
-            <Typography variant={'h5'} color={'textPrimary'} component={'p'} marginTop={0} alignSelf={'flex-center'}
+            <Typography whiteSpace={'pre-line'} variant={'h5'} color={'textPrimary'} component={'p'} marginTop={0} alignSelf={'flex-center'}
                 paddingX={1}>
                 {describe2}
             </Typography>

@@ -593,75 +593,79 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
         // @ts-ignore
         myLog('reCalculateDataWhenValueChange depth:_tradePair,market', pageTradeLite, _tradePair, market)
         //checkMarketDataValid(ammPoolSnapshot, tickMap, market, depth) &&
-        if (depth && market && _tradePair === tradePair) {
+        if (depth && market) {
+            if (_tradePair === tradePair) {
 
-            const coinA = _tradeData.sell.belong
-            const coinB = _tradeData.buy.belong
+                const coinA = _tradeData.sell.belong
+                const coinB = _tradeData.buy.belong
 
-            const isAtoB = type === 'sell'
+                const isAtoB = type === 'sell'
 
-            let input: any = (isAtoB ? _tradeData.sell.tradeValue : _tradeData.buy.tradeValue)
-            input = input === undefined || isNaN(Number(input)) ? 0 : Number(input);
-            let slippage = sdk.toBig(_tradeData.slippage && !isNaN(_tradeData.slippage) ? _tradeData.slippage : '0.5').times(100).toString();
-            let totalFee = undefined;
-            let feeBips = undefined;
-            let takerRate = undefined;
-            let buyMinAmtInfo = undefined;
-            let sellMinAmtInfo = undefined;
-            if (amountMap && amountMap[ market as string ] && ammMap) {
-                const ammMarket = `AMM-${market}`
-                const amount = ammMap[ ammMarket ] ? amountMap[ ammMarket ] : amountMap[ market as string ]
-                buyMinAmtInfo = amount[ _tradeData[ 'buy' ].belong as string ];
-                sellMinAmtInfo = amount[ _tradeData[ 'sell' ].belong as string ];
-                myLog(`buyMinAmtInfo,sellMinAmtInfo: AMM-${market}, ${_tradeData[ 'buy' ].belong}`, buyMinAmtInfo, sellMinAmtInfo)
+                let input: any = (isAtoB ? _tradeData.sell.tradeValue : _tradeData.buy.tradeValue)
+                input = input === undefined || isNaN(Number(input)) ? 0 : Number(input);
+                let slippage = sdk.toBig(_tradeData.slippage && !isNaN(_tradeData.slippage) ? _tradeData.slippage : '0.5').times(100).toString();
+                let totalFee = undefined;
+                let feeBips = undefined;
+                let takerRate = undefined;
+                let buyMinAmtInfo = undefined;
+                let sellMinAmtInfo = undefined;
+                if (amountMap && amountMap[ market as string ] && ammMap) {
+                    const ammMarket = `AMM-${market}`
+                    const amount = ammMap[ ammMarket ] ? amountMap[ ammMarket ] : amountMap[ market as string ]
+                    buyMinAmtInfo = amount[ _tradeData[ 'buy' ].belong as string ];
+                    sellMinAmtInfo = amount[ _tradeData[ 'sell' ].belong as string ];
+                    myLog(`buyMinAmtInfo,sellMinAmtInfo: AMM-${market}, ${_tradeData[ 'buy' ].belong}`, buyMinAmtInfo, sellMinAmtInfo)
 
-                takerRate = buyMinAmtInfo.userOrderInfo.takerRate
-                feeBips = ammMap[ ammMarket ] ? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
-                totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString();
-                setSellMinAmt(buyMinAmtInfo?.userOrderInfo.minAmount)
-                myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
+                    takerRate = buyMinAmtInfo.userOrderInfo.takerRate
+                    feeBips = ammMap[ ammMarket ] ? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
+                    totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString();
+                    setSellMinAmt(buyMinAmtInfo?.userOrderInfo.minAmount)
+                    myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
+                }
+                const calcTradeParams = sdk.getOutputAmount({
+                    sell: coinA,
+                    buy: coinB,
+                    input: input.toString(),
+                    // base: coinA,
+                    // quote: coinB,
+                    isAtoB,
+                    marketArr: marketArray as string[],
+                    tokenMap: tokenMap as any,
+                    marketMap: marketMap as any,
+                    depth,
+                    ammPoolSnapshot: ammPoolSnapshot,
+                    feeBips: feeBips ? feeBips.toString() : '',
+                    takerRate: takerRate ? takerRate : '',
+                    slipBips: slippage
+                })
+                const priceImpactObj = getPriceImpactInfo(calcTradeParams)
+                // setPriceImpact(priceImpactObj.value ?? 0)
+                const _tradeCalcData = {
+                    priceImpact: priceImpactObj.value,
+                    priceImpactColor: priceImpactObj.priceImpactColor,
+                    minimumReceived: getShowStr(calcTradeParams?.amountBOutSlip.minReceivedVal),
+                    fee: totalFee,
+                }
+
+                const tradeValue = getShowStr(calcTradeParams?.output)
+
+                _tradeData[ isAtoB ? 'buy' : 'sell' ].tradeValue = tradeValue
+                updatePageTradeLite({
+                    market,
+                    calcTradeParams: {
+                        ...calcTradeParams,
+                        feeBips: feeBips ? feeBips : 0,
+                        takerRate: takerRate ? takerRate : 0,
+                    } as any,
+                    priceImpactObj,
+                    lastStepAt: type,
+                    feeBips, totalFee, takerRate, sellMinAmtInfo, buyMinAmtInfo
+                })
+                //setOutput(calcTradeParams)
+                setTradeCalcData({...tradeCalcData, ..._tradeCalcData});
+                setTradeData({...tradeData, ..._tradeData});
+
             }
-            const calcTradeParams = sdk.getOutputAmount({
-                input: input.toString(),
-                base: coinA,
-                quote: coinB,
-                isAtoB,
-                marketArr: marketArray as string[],
-                tokenMap: tokenMap as any,
-                marketMap: marketMap as any,
-                depth,
-                ammPoolSnapshot: ammPoolSnapshot,
-                feeBips: feeBips ? feeBips.toString() : '',
-                takerRate: takerRate ? takerRate : '',
-                slipBips: slippage
-            })
-            const priceImpactObj = getPriceImpactInfo(calcTradeParams)
-            // setPriceImpact(priceImpactObj.value ?? 0)
-            const _tradeCalcData = {
-                priceImpact: priceImpactObj.value,
-                priceImpactColor: priceImpactObj.priceImpactColor,
-                minimumReceived: getShowStr(calcTradeParams?.amountBOutSlip.minReceivedVal),
-                fee: totalFee,
-            }
-
-            const tradeValue = getShowStr(calcTradeParams?.output)
-
-            _tradeData[ isAtoB ? 'buy' : 'sell' ].tradeValue = tradeValue
-            updatePageTradeLite({
-                market,
-                calcTradeParams: {
-                    ...calcTradeParams,
-                    feeBips: feeBips ? feeBips : 0,
-                    takerRate: takerRate ? takerRate : 0,
-                } as any,
-                priceImpactObj,
-                lastStepAt:type,
-                feeBips, totalFee, takerRate, sellMinAmtInfo, buyMinAmtInfo
-            })
-            //setOutput(calcTradeParams)
-            setTradeCalcData({...tradeCalcData, ..._tradeCalcData});
-            setTradeData({...tradeData, ..._tradeData});
-
         }
 
 
