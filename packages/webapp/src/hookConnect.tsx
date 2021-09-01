@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
+import { setShowAccount, useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
 import { ErrorType, ProcessingType, useConnectHook } from '@loopring-web/web3-provider';
 import { AccountStatus, SagaStatus } from '@loopring-web/common-resources';
 import { ChainId, sleep } from 'loopring-sdk';
@@ -74,20 +74,24 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
 
         const  chainId = account._chainId === ChainId.MAINNET ||  account._chainId === ChainId.GOERLI ? account._chainId : ChainId.MAINNET
         
-        myLog('chainId:', chainId)
-
+        myLog('---> shouldShow:', shouldShow)
+        
         if(store.getState().system.chainId !== chainId ) {
+            myLog('try to updateSystem...')
             updateSystem({chainId})
         }
 
-        setShowConnect({isShow: !!shouldShow ?? false, step: WalletConnectStep.FailedConnect});
-
         if (!!account.accAddress) {
+            myLog('try to resetAccount...')
             resetAccount()
         }
 
         statusAccountUnset();
-    }, [resetAccount, statusAccountUnset, updateSystem, account]);
+
+        setShowAccount({isShow: false})
+        setShowConnect({isShow: !!shouldShow ?? false, step: WalletConnectStep.FailedConnect});
+
+    }, [resetAccount, setShowAccount, setShowConnect, statusAccountUnset, updateSystem, account]);
 
     useConnectHook({handleAccountDisconnect, handleProcessing, handleError, handleConnect});
 

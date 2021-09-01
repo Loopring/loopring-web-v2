@@ -26,6 +26,8 @@ export default {
     labelOrderFilledAmount: '成交部分',
     labelOrderFilledPrice: '成交价格',
     labelOrderFilterAllPairs: '所有交易对',
+    labelOrderFee: '手续费',
+    labelOrderRole: '订单类型',
     labelOrderTime: '成交时间',
     labelOrderStatus: '状态',
     labelOrderTradingPrice: '交易价格',
