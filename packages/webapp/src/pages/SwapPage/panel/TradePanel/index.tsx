@@ -45,8 +45,8 @@ const TabsStyled = styled(Tabs)`
 const TradePanel = withTranslation('common')(
    // withRouter(
     (
-        {tradeArray,  myTradeArray, t}:
-            { tradeArray: RawDataTradeItem[], myTradeArray: RawDataTradeItem[] } & WithTranslation & RouteComponentProps) => {
+        {tradeArray,  myTradeArray, myTradeTotalNum, t}:
+            { tradeArray: RawDataTradeItem[], myTradeArray: RawDataTradeItem[], myTradeTotalNum: number } & WithTranslation & RouteComponentProps) => {
         const [value, setValue] = useState(1)
         const [tableHeight, setTableHeight] = useState(0);
         const handleChange = (event: any, newValue: any) => {
@@ -79,7 +79,7 @@ const TradePanel = withTranslation('common')(
             </TableWrapStyled>
         )
     }
-    ) as  (props: { tradeArray: RawDataTradeItem[], myTradeArray: RawDataTradeItem[] }) => JSX.Element;
+    ) as  (props: { tradeArray: RawDataTradeItem[], myTradeArray: RawDataTradeItem[], myTradeTotalNum: number }) => JSX.Element;
 //)
 
 export default TradePanel
