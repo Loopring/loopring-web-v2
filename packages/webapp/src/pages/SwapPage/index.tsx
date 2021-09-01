@@ -33,7 +33,7 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
         refreshRef,
         swapFunc,
         isSwapLoading,
-        priceImpact,
+        pageTradeLite,
     } = useSwap();
 
     return <>
@@ -68,8 +68,8 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
 
             </FixedStyle>
         </Box>
-        <AlertImpact handleClose={swapFunc} open={alertOpen} value={priceImpact} />
-        <ConfirmImpact handleClose={swapFunc} open={confirmOpen} value={priceImpact}/>
+        <AlertImpact handleClose={swapFunc} open={alertOpen} value={pageTradeLite?.priceImpactObj?.value as any} />
+        <ConfirmImpact handleClose={swapFunc} open={confirmOpen} value={pageTradeLite?.priceImpactObj?.value as any}/>
     </>
 });
 

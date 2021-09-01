@@ -1,10 +1,10 @@
 import { OrderStatus, TradeChannel } from 'loopring-sdk';
 import * as sdk from 'loopring-sdk';
 import { OrderInfo } from 'loopring-sdk/dist/defs/loopring_defs';
-
+export type PairFormat = `${string}-${string}`;
 export type PageTradeLite = {
-    market?:string // eg: ETH-LRC, Pair from loopring market
-    tradePair?: string  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
+    market?: PairFormat  // eg: ETH-LRC, Pair from loopring market
+    tradePair?: PairFormat  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
     calcTradeParams?: {
         exceedDepth: boolean;
         isReverse: boolean;
