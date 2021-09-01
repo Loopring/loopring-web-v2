@@ -17,10 +17,10 @@ import { account } from '../../static';
 import { WalletConnectBtn } from '../header';
 import { Box } from '@material-ui/core/';
 
-import { MetaMask_Connect_In_Progress, 
-    WalletConnect_Connect_In_Progress, 
-    Connect_Success, 
-    Connect_Failed,
+import { MetaMaskConnectInProgress, 
+    WalletConnectConnectInProgress, 
+    ConnectSuccess, 
+    ConnectFailed,
  } from 'index'
 
 
@@ -81,11 +81,11 @@ const Template: Story<any> = withTranslation()(({...rest}: any) => {
         return Object.values({
             [ WalletConnectStep.Provider ]: {view: <ProviderMenu
                 gatewayList={gatewayList} {...{providerName: ConnectProviders.MetaMask, ...rest}}/>,},
-            [ WalletConnectStep.MetaMaskProcessing ]: {view: <MetaMask_Connect_In_Progress {...rest}/>,},
-            [ WalletConnectStep.WalletConnectProcessing ]: {view: <WalletConnect_Connect_In_Progress {...rest}/>,},
+            [ WalletConnectStep.MetaMaskProcessing ]: {view: <MetaMaskConnectInProgress {...rest}/>,},
+            [ WalletConnectStep.WalletConnectProcessing ]: {view: <WalletConnectConnectInProgress {...rest}/>,},
             [ WalletConnectStep.WalletConnectQRCode ]: {view: <WalletConnectQRCode {...rest} url={url}/>,},
-            [ WalletConnectStep.SuccessConnect ]: {view: <Connect_Success {...{...rest }}/>,},
-            [ WalletConnectStep.FailedConnect ]: {view: <Connect_Failed {...rest} onRetry={() => {
+            [ WalletConnectStep.SuccessConnect ]: {view: <ConnectSuccess {...{...rest }}/>,},
+            [ WalletConnectStep.FailedConnect ]: {view: <ConnectFailed {...rest} onRetry={() => {
             }}/>,},
         })
 

@@ -29,7 +29,7 @@ export async function activeAccount({reason, shouldShow}: { reason: any, shouldS
         if (activeDeposit && activeDeposit[ account.accAddress ]) {
             myLog('DEPOSITING')
             store.dispatch(setShowConnect({isShow: false}));
-            store.dispatch(setShowAccount({isShow: shouldShow, step: AccountStep.Deposit_Submited}));
+            store.dispatch(setShowAccount({isShow: shouldShow, step: AccountStep.Deposit_Submit}));
             store.dispatch(updateAccountStatus({readyState: AccountStatus.DEPOSITING}));
             // store.dispatch(statusAccountUnset(undefined))
         } else {

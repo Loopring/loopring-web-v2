@@ -87,7 +87,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
         let result: ActionResult = {code: ActionResultCode.NoError}
 
         if ((readyState !== AccountStatus.UN_CONNECT
-            && inputValue.tradeValue)
+                && inputValue.tradeValue)
             && tokenMap && exchangeInfo?.exchangeAddress
             && connectProvides.usedWeb3 && LoopringAPI.exchangeAPI) {
             try {
@@ -160,7 +160,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 if (response) {
                     // deposit sucess
-                    setShowAccount({isShow: true, step: AccountStep.Deposit_Submited})
+                    setShowAccount({isShow: true, step: AccountStep.Deposit_Submit})
                 } else {
                     // deposit failed
                     setShowAccount({isShow: true, step: AccountStep.Deposit_Failed})
