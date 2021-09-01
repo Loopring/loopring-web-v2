@@ -1,6 +1,10 @@
 import { CoinInfo, CoinKey, CoinMap } from '@loopring-web/common-resources';
 import React from 'react';
-import { InputProps } from "@material-ui/core";
+import {
+    // Box, BoxProps, Button, ButtonProps,
+    InputProps } from "@material-ui/core";
+// import styled from '@emotion/styled';
+// import CurrencyInput from 'react-currency-input-field';
 
 
 export type InputButtonProps<T, R, I> = {
@@ -15,6 +19,7 @@ export type InputButtonProps<T, R, I> = {
     disabled?: boolean,
     logoColor?: string,
     wait?: number,
+    isHideError?:boolean,
     handleCountChange?: (ibData: T, ref: React.ForwardedRef<any>) => void,
     handleOnClick: (event: React.MouseEvent, ref: React.ForwardedRef<any>) => void,
     handleError?: (ibData: T & { maxAllow?: boolean }, ref: React.ForwardedRef<any>) => { error: boolean, message?: string | React.ElementType<HTMLElement> },
@@ -31,10 +36,12 @@ export type InputCoinProps<T, R, I> = {
     disabled?: boolean,
     logoColor?: string,
     wait?: number,
+    isHideError?:boolean,
     handleCountChange?: (ibData: T, ref: React.ForwardedRef<any>) => void,
     handleError?: (ibData: T, ref: React.ForwardedRef<any>) => { error: boolean, message?: string | React.ElementType<HTMLElement> },
     focusOnInput?: boolean,
     order?: 'left' | 'right',
+    name?: string
 }
 export type InputSelectProps<T, I = CoinKey<T>> = {
     // coinMap: CoinMap<R,I extends CoinInfo?CoinInfo:CoinInfo>,
@@ -45,7 +52,7 @@ export type InputSelectProps<T, I = CoinKey<T>> = {
     inputProps?: InputProps,
     wait?: number,
     disabled?: boolean,
-    // toolbarItem?: (value)=>  React.ElementType<any> | JSX.Element,
+    backElement?: React.ElementType<any> | JSX.Element,
     focusOnInput?: boolean,
     allowScroll?: boolean,
     selected?: string | undefined,
@@ -60,5 +67,8 @@ export type useFocusRefProps<I> = {
     callback?: (props?: any) => void,
 
 }
+
+
+
 
 // export type {IBData, CoinMap, CoinInfo, coinType}

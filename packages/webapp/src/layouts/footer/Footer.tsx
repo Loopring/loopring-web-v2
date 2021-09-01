@@ -7,8 +7,8 @@ const FooterDiv = styled.div`
     div {
         & .footer_internal {
             text-align: center;
-            color: white;
-            width: 1280px
+            color: var(--color-text-primary);
+            width: 1280px;
             margin: 0 auto;
             line-height: 35px;
         }

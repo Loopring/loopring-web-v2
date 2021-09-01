@@ -1,9 +1,9 @@
 import React from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { debounce } from 'lodash'
-import { Button, Column, NewTagIcon, Table, TablePagination, TableProps, useImage } from '../../basic-lib'
+import * as _ from 'lodash'
+import { Button, Column, NewTagIcon, Table, TablePagination, TableProps } from '../../basic-lib'
 import {
-    AmmDetail,
+    AmmDetail, AvatarCoinStyled,
     Currency,
     EmptyValueTag,
     getThousandFormattedNumbers,
@@ -16,10 +16,12 @@ import {
 import { Avatar, Box, InputAdornment, OutlinedInput, Typography } from '@material-ui/core/';
 import { PoolTableProps, Row } from './Interface';
 import styled from '@emotion/styled';
-import { AvatarIconPair, TablePaddingX } from '../../styled';
+import {  TablePaddingX } from '../../styled';
 import { useDeepCompareEffect } from 'react-use';
 import { useHistory } from 'react-router-dom';
 import { FormatterProps } from 'react-data-grid';
+// import store from '@loopring-web/webapp/src/stores';
+import { useSettings } from '../../../stores';
 
 
 // export enum TradeTypes {
@@ -55,39 +57,68 @@ import { FormatterProps } from 'react-data-grid';
 //     filter = 'filter',
 //     page = 'page'
 // }
-
+//  ${({theme}) => AvatarIconPair({theme})}
 const BoxStyled = styled(Box)`
-  ${({theme}) => AvatarIconPair({theme})}
 
 ` as typeof Box
 const TableStyled = styled(Box)`
-  .rdg {
-    --template-columns: 240px auto auto  68px 120px !important;
+    .rdg {
+        border-radius: ${({theme}) => theme.unit}px;
+        --template-columns: 300px auto auto auto 130px !important;
 
-    .rdg-cell.action {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+        .rdg-cell.action {
+        display: flex;
+        justify-content: center;                    
+        align-items: center;
+        }
     }
-  }
 
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
 
 
 export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R }) => {
+    const {coinJson} = useSettings();
+    if(!row || !row.coinAInfo || !row.coinBInfo) {
+        return <BoxStyled />
+    }
     const {coinAInfo, coinBInfo, isNew, isActivity} = row;
-    const coinAIconHasLoaded = useImage(coinAInfo?.icon ? coinAInfo?.icon : '').hasLoaded;
-    const coinBIconHasLoaded = useImage(coinBInfo?.icon ? coinBInfo?.icon : '').hasLoaded;
+    const coinAIcon: any = coinJson[ coinAInfo.simpleName ];
+    const coinBIcon: any = coinJson[ coinBInfo.simpleName ];
     return <BoxStyled display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
 
         <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
-            <Avatar variant="square" alt={coinAInfo?.simpleName}
-                // src={sellData?.icon}
-                    src={coinAIconHasLoaded ? coinAInfo?.icon : 'static/images/icon-default.png'}/>
-            <Avatar variant="square" alt={coinBInfo?.simpleName} className={'icon-next'}
-                // src={buyData?.icon}
-                    src={coinBIconHasLoaded ? coinBInfo?.icon : 'static/images/icon-default.png'}/>
+            <Box className={'logo-icon'} height={'var(--list-menu-coin-size)'}  position={'relative'}  zIndex={20}
+                 width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
+                {coinAIcon ?
+                    <AvatarCoinStyled imgx={coinAIcon.x} imgy={coinAIcon.y}
+                                      imgheight={coinAIcon.height}
+                                      imgwidth={coinAIcon.width} size={24}
+                                      variant="circular" alt={coinAInfo?.simpleName as string}
+                        // src={sellData?.icon}
+                                      src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
+                    : <Avatar variant="circular" alt={coinAInfo?.simpleName as string} style={{
+                        height: 'var(--list-menu-coin-size)',
+                        width: 'var(--list-menu-coin-size)'
+                    }}
+                        // src={sellData?.icon}
+                              src={'static/images/icon-default.png'}/>
+                }</Box>
+
+            <Box className={'logo-icon'} height={'var(--list-menu-coin-size)'}   position={'relative'}  zIndex={18}   left={-8}
+                 width={'var(--list-menu-coin-size)'} alignItems={'center'}
+                 justifyContent={'center'}>{coinBIcon ?
+                <AvatarCoinStyled imgx={coinBIcon.x} imgy={coinBIcon.y} imgheight={coinBIcon.height}
+                                  imgwidth={coinBIcon.width} size={24}
+                                  variant="circular" alt={coinBInfo?.simpleName as string}
+                    // src={sellData?.icon}
+                                  src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
+                : <Avatar variant="circular" alt={coinBInfo?.simpleName as string} style={{
+                    height: 'var(--list-menu-coin-size)',
+                    width: 'var(--list-menu-coin-size)'
+                }}
+                    // src={sellData?.icon}
+                          src={'static/images/icon-default.png'}/>} </Box>
             <Typography variant={'inherit'} display={'flex'} flexDirection={'column'} marginLeft={1} component={'div'}
                         paddingRight={1}>
                 <Typography component={'h3'} color={'textPrimary'} title={'sell'}>
@@ -114,7 +145,7 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
 const columnMode = <R extends Row<T>, T>({t}: WithTranslation, currency: 'USD' | 'CYN'): Column<R, unknown>[] => [
     {
         key: 'pools',
-        sortable: false,
+        sortable: true,
         width: 'auto',
         minWidth: 240,
         name: t('labelPool'),
@@ -127,7 +158,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, currency: 'USD' |
     },
     {
         key: 'liquidity',
-        sortable: false,
+        sortable: true,
         width: 'auto',
         name: t('labelLiquidity'),
         formatter: ({row}) => {
@@ -142,7 +173,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, currency: 'USD' |
     },
     {
         key: 'volume24',
-        sortable: false,
+        sortable: true,
         width: 'auto',
         minWidth: 156,
         name: t('label24TradeVolume'),
@@ -151,9 +182,9 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, currency: 'USD' |
             // typeof priceDollar === 'undefined' ? EmptyValueTag :
             //     currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(Number(priceDollar)) : PriceTag.Yuan + getThousandFormattedNumbers(Number(priceYuan))}
 
-            const {volume} = row.tradeFloat ? row.tradeFloat : {volume: EmptyValueTag};
+            const {volume} = row.tradeFloat && row.tradeFloat.volume ? row.tradeFloat : {volume: EmptyValueTag};
             return <Typography
-                component={'span'}> {volume} {row.coinAInfo.simpleName}
+                component={'span'}> {volume && Number.isFinite(volume) ? getThousandFormattedNumbers(Number(volume || 0), 2) : volume} {row.tradeFloat && row.tradeFloat.volume ? row.coinAInfo.simpleName : ''}
             </Typography>
         }
     },
@@ -189,13 +220,13 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, currency: 'USD' |
     {
         key: 'trade',
         name: t('labelAction'),
-        maxWidth: 120,
+        // maxWidth: 120,
         width: 'auto',
         headerCellClass: `action`,
         cellClass: () => `action`,
         formatter: ({row}) => {
             return <Button
-                href={`/#/liquidity/pools/coinPair/${row?.coinAInfo?.simpleName + '-' + row?.coinBInfo?.simpleName}`}
+                href={`${window.location.href}/pools/coinPair/${row?.coinAInfo?.simpleName + '-' + row?.coinBInfo?.simpleName}`}
                 className={'btn'} variant={'outlined'} size={'small'}>
                 {t('labelTradePool')}</Button>
         }
@@ -212,12 +243,15 @@ export const PoolsTable = withTranslation('tables')(
                                              showFilter = true,
                                              rawData,
                                              wait = globalSetup.wait,
+                                             tableHeight = 350,
                                              ...rest
                                          }: WithTranslation & PoolTableProps<T>) => {
         const [filterBy, setFilterBy] = React.useState<string>('');
         const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
         const [totalData, setTotalData] = React.useState<Row<T>[]>(rawData && Array.isArray(rawData) ? rawData : []);
-        let history = useHistory();
+        
+        const history = useHistory()
+
         useDeepCompareEffect(() => {
             setTotalData(rawData)
         }, [rawData])
@@ -250,18 +284,24 @@ export const PoolsTable = withTranslation('tables')(
             })
             setTotalData(newData);
         }, [rawData]);
-        const doUpdate = (filterBy: string) => {
+
+        const handleFilterChange = React.useCallback(_.debounce((filterBy: string) => {
             updateData({TableType: TableType.filter, filterBy})
-        }
+        }, wait), []);
 
-        const handleFilterChange = React.useCallback(debounce(doUpdate, wait), [doUpdate]);
-
-
-        const _handlePageChange = React.useCallback((page: number) => {
+        const _handlePageChange =(page: number) => {
             setPage(page);
             updateData({TableType: TableType.page, currPage: page})
             handlePageChange(page);
-        }, [updateData, handlePageChange])
+        }
+
+        const onRowClick = React.useCallback((_rowIdx: any, row: any) => {
+            const pathname = `/liquidity/pools/coinPair/${row?.coinAInfo?.simpleName + '-' + row?.coinBInfo?.simpleName}`
+            
+            history && history.push({
+                pathname,
+            })
+        }, [history])
 
         return <TableStyled flex={1} flexDirection={'column'} display={'flex'}>
             {showFilter && <Box display={'flex'} margin={3}>
@@ -283,12 +323,10 @@ export const PoolsTable = withTranslation('tables')(
                   </InputAdornment>}
               />
             </Box>}
-            <Table {...{
+            <Table style={{ height: tableHeight }} className={'scrollable'} {...{
                 ...defaultArgs, t, i18n, tReady, ...rest,
                 rawData: getRenderData(),
-                onRowClick: (_rowIdx: any, row: any) => {
-                    history && history.push(`/liquidity/pools/coinPair/${row?.coinAInfo?.simpleName + '-' + row?.coinBInfo?.simpleName}`)
-                }
+                onRowClick: (index, row) => onRowClick(index, row),
                 // sortMethod: (sortedRows: Row<T>[], sortColumn) => {
                 //     switch (sortColumn) {
                 //         case 'pools':
@@ -311,6 +349,53 @@ export const PoolsTable = withTranslation('tables')(
                 //     }
                 //     return sortedRows;
                 // }
+                sortMethod: (sortedRows: any[], sortColumn: string) => {
+                    switch (sortColumn) {
+                        case 'pools':
+                            sortedRows = sortedRows.sort((a, b) => {
+                                const valueA = a.coinA
+                                const valueB = b.coinA
+                                return valueA.localeCompare(valueB)
+                            })
+                            break;
+                        case 'liquidity':
+                            sortedRows = sortedRows.sort((a, b) => {
+                                const valueA = a[ 'amountDollar' ]
+                                const valueB = b[ 'amountDollar' ]
+                                if (valueA && valueB) {
+                                    return valueB - valueA
+                                }
+                                if (valueA && !valueB) {
+                                    return -1
+                                }
+                                if (!valueA && valueB) {
+                                    return 1
+                                }
+                                return 0
+                            })
+                            break;
+                        case 'volume24':
+                            sortedRows = sortedRows.sort((a, b) => {
+                                const valueA = a.tradeFloat.volume
+                                const valueB = b.tradeFloat.volume
+                                if (valueA && valueB) {
+                                    return valueB - valueA
+                                }
+                                if (valueA && !valueB) {
+                                    return -1
+                                }
+                                if (!valueA && valueB) {
+                                    return 1
+                                }
+                                return 0
+                            })
+                            break;
+                        default:
+                            return sortedRows
+                    }
+                    return sortedRows;
+                },
+                sortDefaultKey: 'liquidity',
             }}/>
             {pagination && rawData && rawData.length > 0 && (
                 <TablePagination page={page} pageSize={pageSize} total={totalData.length}

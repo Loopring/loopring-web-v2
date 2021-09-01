@@ -7,25 +7,58 @@ import { WithT } from "i18next";
 import React from "react";
 import { Column, DataGridProps, SortableHeaderCell, SortableHeaderCellProps, TableProps } from './';
 import { EmptyDefault } from '../empty';
+// import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
+import { LoadingIcon } from '@loopring-web/common-resources'
+import { Box, IconButton } from '@material-ui/core';
+
+interface TableWrapperStyledProps {
+  showloading: 'true' | 'false'
+}
+
+const TableWrapperStyled = styled(Box)<TableWrapperStyledProps>`
+  display: flex;
+  position: relative;
+  flex: 1;
+
+  &::after {
+    visibility: ${({ showloading }) => showloading === 'true' ? 'visible' : 'hidden'};
+    position: absolute;
+    z-index: 20;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.2;
+    background-color: var(--color-global-bg);
+    content: '';
+    pointer-events: auto;
+  }
+` as any
 
 export const DataGridStyled = styled(DataGrid)`
+  width: 100%;
+  height: 100%;
 
   &.rdg {
     min-height: 350px;
-    color: ${({theme}) => theme.colorBase.textPrimary};
+    color: var(--color-text-primary);
     //color: inherit;
     box-sizing: border-box;
     border: rgba(0, 0, 0, 0) 0px solid;
     //background-color: inherit;
+    font-family: Roboto;
 
     .rdg-header-row {
-      color: ${({theme}) => theme.colorBase.textSecondary};
+      color: var(--color-text-secondary);
       width: 100%;
       background-color: inherit;
+      font-weight: normal;
     }
 
     &.scrollable .rdg-header-row {
-      background-color: ${({theme}) => theme.colorBase.backgroundHeader};
+      background: var(--color-box);
     }
 
     .rdg-header-sort-name {
@@ -68,10 +101,10 @@ export const DataGridStyled = styled(DataGrid)`
       width: 100%;
 
       &:hover {
-        background: ${({theme}) => theme.colorBase.background().hover};
+        background: var(--color-box-hover);
 
         .rdg-cell:first-of-type {
-          border-left: ${({theme}) => theme.border.borderConfig({d_W: 2, c_key: 'selected'})}
+            // border-left: ${({theme}) => theme.border.borderConfig({d_W: 2, c_key: 'selected'})}
         }
       }
     }
@@ -90,15 +123,23 @@ export const DataGridStyled = styled(DataGrid)`
     }
 
     .rdg-cell.success {
-      color: ${({theme}) => theme.colorBase.success};
+      color: var(--color-success);
     }
 
     .rdg-cell.error {
-      color: ${({theme}) => theme.colorBase.error};
+      color: var(--color-error);
     }
   }
 
 ` as typeof DataGrid;
+
+const LoadingStyled = styled(IconButton)`
+  position: absolute;
+  z-index: 21;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`
 
 // interface Action {
 //     type: 'toggleSubRow' | 'deleteSubRow' | 'refresh' | 'sort';
@@ -141,9 +182,13 @@ export const generateRows = <Row, SR>(rawData: [][], rest: TableProps<Row, SR>):
     }, {_rawData: row}) as Row)
 };
 
+export type ExtraTableProps = {
+    showLoading?: boolean
+}
+
 //TODO:
 // {isLoading && <div className={loadMoreRowsClassname}>Loading more rows...</div>
-export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation) => {
+export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & ExtraTableProps) => {
     const {
         EmptyRowsRenderer,
         generateRows,
@@ -159,7 +204,11 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation) => {
         rowKeyGetter,
         columnMode,
         onScroll,
-        rowHeight, t, ...rest
+        onRowClick,
+        rowHeight,
+        showLoading,
+        t,
+        ...rest
     } = props;
 
     const columns = generateColumns({columnsRaw: columnMode, t});
@@ -209,29 +258,38 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation) => {
     `
 
     /*** sort handle end ***/
-    return <DataGridStyled
-        {...rest}
-        onScroll={onScroll}
-        columns={loopringColumns as any}
-        style={style}
-        rows={(sortDefaultKey && sortedRows) ? sortedRows : rows}
-        rowKeyGetter={rowKeyGetter}
-        rowClass={row => rowClassFn ? rowClassFn(row, props) : ''}
-        rowHeight={rowHeight ? rowHeight : 44}
-        onRowsChange={setRows}
-        onSortColumnsChange={onSortColumnsChange}
-        // sortDirection={sortDirection}
-        rowRenderer={rowRenderer as any}
-        sortColumns={sortColumns}
-        emptyRowsRenderer={() => EmptyRowsRenderer ? EmptyRowsRenderer :
-            <EmptyDefault height={`calc(100% - var(--header-row-height))`} message={() => {
-                return <RenderEmptyMsg>
-                    <Trans i18nKey="labelEmptyDefault">
-                        Content is Empty
-                    </Trans>
-                </RenderEmptyMsg>
-            }}/>}
-    />;
+    return <TableWrapperStyled showloading={!!showLoading ? 'true' : 'false'}>
+        <DataGridStyled
+            {...rest}
+            onScroll={onScroll}
+            columns={loopringColumns as any}
+            style={style}
+            rows={(sortDefaultKey && sortedRows) ? sortedRows : rows}
+            rowKeyGetter={rowKeyGetter}
+            rowClass={row => rowClassFn ? rowClassFn(row, props) : ''}
+            rowHeight={rowHeight ? rowHeight : 44}
+            onRowsChange={setRows}
+            onSortColumnsChange={onSortColumnsChange}
+            // sortDirection={sortDirection}
+            rowRenderer={rowRenderer as any}
+            sortColumns={sortColumns}
+            onRowClick={onRowClick}
+            emptyRowsRenderer={!showLoading ? (() => EmptyRowsRenderer ? EmptyRowsRenderer :
+                <EmptyDefault height={`calc(100% - var(--header-row-height))`} message={() => {
+                    return <RenderEmptyMsg>
+                        <Trans i18nKey="labelEmptyDefault">
+                            Content is Empty
+                        </Trans>
+                    </RenderEmptyMsg>
+                }}/>) : null}
+        />
+        {showLoading && (
+            <LoadingStyled color={'inherit'}>
+              <LoadingIcon />
+            </LoadingStyled>
+        )}
+    </TableWrapperStyled>
+        ;
     //  <EmptyDefault height={"calc(100% - 35px)"} url={'/path'} message={()=>{
     //  return <>Go to <Link to={'./path'}> link or event</Link> at here</>} } />   }
 }

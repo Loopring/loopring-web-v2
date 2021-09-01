@@ -9,7 +9,7 @@ import { DepthRow, RowBefore } from "./components/RowRenders";
 import { useTranslation } from 'react-i18next';
 
 const Style = styled.div`
-  background: ${({theme}) => theme.colorBase.background().bg};
+  background: var(--color-global-bg);
 `
 
 interface Row {

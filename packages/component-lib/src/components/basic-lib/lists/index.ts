@@ -4,46 +4,47 @@ import { MuiMenuItemProps } from './Interface';
 import React from 'react';
 
 //backgroundColor: ${theme.colorBase.primaryLight};
+// background-color: ${theme.colorBase.background().hover};
 export const MenuItem = styled(MuiMenuItem)<MuiMenuItemProps>`
- 
-   ${({withNoCheckIcon, theme}) => {
-    return withNoCheckIcon === 'true' ? `        
+  ${({withnocheckicon}) => {
+    return withnocheckicon === 'true' ? `        
         &.Mui-selected, &.Mui-selected.Mui-focusVisible {
-            background-color: ${theme.colorBase.background().hover};
-            color: ${theme.colorBase.primaryLight};
+            color: var(--color-text-primary);
             &:after{
              display:none;
             }
         }
      ` : ''
-}}
-  
+  }}
+
 ` as React.ComponentType<MuiMenuItemProps>;
 
 export const OutlineSelect = styled(Select)`
-  padding: 0;
-  border: transparent;
-  background-color: transparent;
-  color: ${({theme}) => theme.colorBase.textSecondary};
-
-  &.MuiInputBase-root {
-    min-width: auto;
-    width: auto;
-  }
+  //padding: 0;
+  
+  //background-color: transparent;
+  color: var(--color-text-secondary);
+  padding: .3rem 1.2rem .3rem .8rem;
+  //&.MuiInputBase-root {
+  //  min-width: auto;
+  //  width: auto;
+  //}
 
   svg {
-    right: .4rem;
-    top:  ${({theme}) => theme.unit}px;
+    //right: .4rem;
+    top: ${({theme}) => theme.unit -3}px;
     position: absolute;
-    pointer-events: none;
-    transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    //pointer-events: none;
+    //transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    //color: var(--color-text-secondary)
   }
 
-  .MuiSelect-iconOpen {
-    transform: rotate(180deg)
-  }
-
+  //.MuiSelect-iconOpen {
+  //  transform: rotate(180deg)
+  //}
+  border: transparent;
   .MuiSelect-select, &.Mui-selected.Mui-focusVisible {
+    border: transparent;
     &:focus {
       background-color: transparent;
     }
@@ -55,8 +56,9 @@ export const OutlineSelect = styled(Select)`
   }
 
   &:hover {
-    color: ${({theme}) => theme.colorBase.textPrimary};
-    border-left-color: transparent;
+    color: var(--color-text-primary);
+    border: transparent;
+    //border-left-color: transparent;
   }
 
   input {
@@ -72,9 +74,16 @@ export const OutlineSelect = styled(Select)`
 ` as React.ComponentType<SelectProps>;
 
 
-export const OutlineSelectItem = styled(MenuItem)<any>`
-  padding: ${({theme}) => `0 ${theme.unit * 1} $0 ${theme.unit * 1} `};
-  padding-right: ${({theme}) => `${theme.unit * 2}`};
+export const OutlineSelectItem = styled(MenuItem)<any>`   
+  &.MuiSelect-root{
+    padding: ${({theme}) => `0 ${theme.unit * 1} $0 ${theme.unit * 1} `};
+    padding-right: ${({theme}) => `${theme.unit * 2}`};
+    &:hover {
+      color: var(--color-text-primary);
+      border-left-color: transparent;
+    }
+  }
+ 
 
   &.Mui-selected, &.Mui-selected.Mui-focusVisible {
     padding: ${({theme}) => `${theme.unit * 1} ${theme.unit * 1} 0 ${theme.unit * 1} `};
@@ -85,10 +94,7 @@ export const OutlineSelectItem = styled(MenuItem)<any>`
     }
   }
 
-  &:hover {
-    color: ${({theme}) => theme.colorBase.textPrimary};
-    border-left-color: transparent;
-  }
+  
 ` as typeof MenuItem;
 
 export * from './HeadMenuItem'

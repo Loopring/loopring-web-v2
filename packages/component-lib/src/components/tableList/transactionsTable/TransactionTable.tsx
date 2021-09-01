@@ -1,24 +1,40 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styled from '@emotion/styled'
-import { Box, Link } from '@material-ui/core'
+import { Box, Link, Modal } from '@material-ui/core'
 import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
-import { Popover, PopoverType, TablePagination } from '../../basic-lib'
-import { Column, generateColumns, generateRows, Table } from '../../basic-lib/tables/index'
-import { AlertIcon, CheckIcon, EmptyValueTag, PendingIcon, TableType } from '@loopring-web/common-resources'
+import { useDeepCompareEffect } from 'react-use'
+import { Column, Table, TablePagination } from '../../basic-lib'
+import {
+    AlertIcon,
+    CheckIcon,
+    EmptyValueTag,
+    getFormattedHash,
+    // PendingIcon,
+    TableType,
+    AssetsIcon, // temporayily replacement
+    WaitingIcon,
+    WarningIcon,
+    CompleteIcon,
+} from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
-import { TablePaddingX, TableFilterStyled } from '../../styled';
+import { TxnDetailPanel, TxnDetailProps } from './components/modal'
+import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes } from './Interface'
+import { DateRange } from '@material-ui/lab'
+import { UserTxTypes } from 'loopring-sdk'
 
-interface Row {
-    from: string
-    to: string
-    amount: string
-    fee: string
-    memo: string
-    time: number
-    txnHash: string
-    status: string
+export type TxsFilterProps = {
+    // accountId: number;
+    tokenSymbol?: string;
+    start?: number;
+    end?: number;
+    offset?: number;
+    limit?: number;
+    types?: UserTxTypes[] | string;
+}
+
+interface Row extends RawDataTransactionItem {
     filterColumn: string
     cellExpend: {
         value: string
@@ -49,34 +65,37 @@ const TYPE_COLOR_MAPPING = [
     {type: TransactionStatus.failed, color: 'error'},
 ]
 
-const CellStatus = ({row, column, rowIdx}: any) => {
+const CellStatus = ({row, column}: any) => {
     const status = row[ column.key ]
-    const popupId = `${column.key}-${rowIdx}`
-    const popoverContent = <div style={{padding: 12}}>
-        Because the pool price changes dynamically, the price you see when placing an order may be inconsistent with the
-        final transaction price.
-    </div>
+    // const popupId = `${column.key}-${rowIdx}`
+    // const popoverContent = <div style={{padding: 12}}>
+    //     Because the pool price changes dynamically, the price you see when placing an order may be inconsistent with the
+    //     final transaction price.
+    // </div>
     const RenderValue = styled.div`
         display: flex;
         align-items: center;
-		cursor: pointer;
-		color: ${({theme}) => theme.colorBase[ `${TYPE_COLOR_MAPPING.find(o => o.type === status)?.color}` ]};
-        // width: 150px;
+        cursor: pointer;
+        color: ${({theme}) => theme.colorBase[ `${TYPE_COLOR_MAPPING.find(o => o.type === status)?.color}` ]};
 
-		& svg {
-			font-size: 14px;
-			margin: 0 5px 3px 0;
-		}
-	`
-    const svg = status === 'processed' ? <CheckIcon/> : status === 'processing' ? <PendingIcon/> : <AlertIcon/>
-    const RenderValueWrapper = <div style={{width: 150}}>
+        & svg {
+            width: 24px;
+            height: 24px;
+        }
+    `
+    const svg = status === 'processed' 
+        ? <CompleteIcon /> 
+        : status === 'processing' 
+            ? <WaitingIcon /> 
+            : <WarningIcon />
+    const RenderValueWrapper =
         <RenderValue>
-            {svg}{status}
+            {/* {svg}{status} */}
+            {svg}
         </RenderValue>
-    </div>
 
-    return <div className="rdg-cell-value">
-        <Popover
+    return <>
+        {/* <Popover
             type={PopoverType.hover}
             popupId={popupId}
             popoverContent={popoverContent}
@@ -93,298 +112,281 @@ const CellStatus = ({row, column, rowIdx}: any) => {
             }}
         >
             {RenderValueWrapper}
-        </Popover>
-    </div>
+        </Popover> */}
+        {RenderValueWrapper}
+    </>
 }
-
-const getColumnModeTransaction = (t: TFunction): Column<Row, unknown>[] => [
-    {
-        key: 'token',
-        name: t('labelTxToken'),
-    },
-    {
-        key: 'from',
-        name: t('labelTxFrom'),
-        formatter: ({row, column}) => {
-            const valueFrom = row[ column.key ]
-            const isMyWallet = valueFrom === 'My Loopring'
-            const RenderValue = styled.div`
-				height: 100%;
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				color: ${({theme}) => isMyWallet ? theme.colorBase.textPrimary : theme.colorBase.primaryLight};
-
-				// & p:last-child {
-				// 	color: ${({theme}) => theme.colorBase.textPrimary};
-				// }
-
-				// p {
-				// 	line-height: 100%;
-				// }
-				
-			`
-
-            return (
-                <>
-                    <RenderValue>
-                        {valueFrom}
-                    </RenderValue>
-                </>
-            )
-        },
-    },
-    {
-        key: 'to',
-        name: t('labelTxTo'),
-        formatter: ({row, column}) => {
-            const valueTo = row[ column.key ]
-            const isMyWallet = valueTo === 'My Loopring'
-            const RenderValue = styled.div`
-				height: 100%;
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				color: ${({theme}) => isMyWallet ? theme.colorBase.textPrimary : theme.colorBase.primaryLight};
-
-				// & p:last-child {
-				// 	color: ${({theme}) => theme.colorBase.textPrimary};
-				// }
-
-				// p {
-				// 	line-height: 100%;
-				// }
-				
-			`
-            // const value = typeof to === 'string'
-            //     ? <p>{to}</p>
-            //     : <>
-            //         <p>{to.address}</p>
-            //         <p>/ {to.env}</p>
-            //     </>
-
-            return (
-                <>
-                    <RenderValue>
-                        {valueTo}
-                    </RenderValue>
-                </>
-            )
-        },
-    },
-    {
-        key: 'amount',
-        name: t('labelTxAmount'),
-        formatter: ({row, column}) => {
-            const value = row[ column.key ]
-            const hasValue = Number.isFinite(value)
-            const renderValue = hasValue ? `${getThousandFormattedNumbers(value, 5)}` : EmptyValueTag
-            return (
-                <div className="rdg-cell-value">
-                    {renderValue}
-                </div>
-            )
-        },
-    },
-    {
-        key: 'fee',
-        name: t('labelTxFee'),
-        formatter: ({row, column}) => {
-            const fee = row[ column.key ]
-            const hasValue = Number.isFinite(fee.value)
-            const renderValue = hasValue ? `${fee.value.toFixed(4)} ${fee.unit}` : EmptyValueTag
-            return (
-                <div className="rdg-cell-value">
-                    <span>{renderValue}</span>
-                </div>
-            )
-        },
-    },
-    {
-        key: 'memo',
-        name: t('labelTxMemo'),
-        formatter: ({row, column}) => {
-            const value = row[ column.key ]
-            const renderValue = value || '--'
-            const Wrapper = styled.div`
-                color: ${({theme}) => theme.colorBase.textSecondary};
-                max-width: 90%;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            `
-            return (
-                <div className="rdg-cell-value">
-                    <Wrapper title={renderValue}>{renderValue}</Wrapper>
-                </div>
-            )
-        },
-    },
-    {
-        key: 'time',
-        name: t('labelTxTime'),
-        formatter: ({row, column}) => {
-            const value = row[ column.key ]
-            const hasValue = Number.isFinite(value)
-            const renderValue = hasValue
-                ? moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
-                : EmptyValueTag
-            return (
-                <div className="rdg-cell-value">
-                    <span>{renderValue}</span>
-                </div>
-            )
-        },
-    },
-    {
-        key: 'txnHash',
-        name: t('labelTxTxnHash'),
-        minWidth: 130,
-        formatter: ({row, column}) => {
-            let path = ''
-            if ((row as any)._rawData.length === 9) {
-                path = ((row as any)._rawData[ 8 ])
-            }
-            const value = row[ column.key ]
-            const RenderValue = styled.div`
-				color: ${({theme}) => theme.colorBase[ value ? 'primaryLight' : 'textSecondary' ]};
-				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space: nowrap;
-				max-width: 90%;
-			`
-            return (
-                <div className="rdg-cell-value">
-                    {path ? <Link href={path}>
-                        <RenderValue title={value}>{value || EmptyValueTag}</RenderValue>
-                    </Link> : <RenderValue title={value}>{value || EmptyValueTag}</RenderValue>}
-                </div>
-            )
-        }
-    },
-    {
-        key: 'status',
-        name: t('labelTxStatus'),
-        // minWidth: 150,
-        formatter: ({row, column, rowIdx}) => (
-            <div className="rdg-cell-value">
-                <CellStatus {...{row, column, rowIdx}} />
-            </div>
-        )
-    },
-    {
-        key: 'tradeType',
-        name: 'TradeType',
-        hidden: true
-    },
-]
 
 const TableStyled = styled(Box)`
     display: flex;
     flex-direction: column;
     flex: 1;
 
-    .rdg{
-        --template-columns: 80px auto auto auto auto auto auto auto 130px !important;
-        .rdg-cell.action{
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    .rdg {
+        --template-columns: 120px auto auto auto 120px 170px !important;
+
+        // .rdg-cell.action {
+        // display: flex;
+        // justify-content: center;
+        // align-items: center;
+        // }
+        .rdg-cell {
+            display: flex;
+            align-items: center;
         }
     }
-    ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
+    // .textAlignRight {
+    //     text-align: right;
+    // }
+    
+
+  ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
 
 export interface TransactionTableProps {
     rawData: RawDataTransactionItem[];
     pagination?: {
         pageSize: number;
-    }
+        total: number;
+    };
+    getTxnList: ({ tokenSymbol, start, end, limit, offset, types }: TxsFilterProps) => Promise<void>;
     showFilter?: boolean;
+    showLoading: boolean;
 }
 
-
-export const TransactionTable = withTranslation('tables')((props: TransactionTableProps & WithTranslation) => {
-    const defaultArgs: any = {
-        rawData: [],
-        columnMode: getColumnModeTransaction(props.t).filter(o => !o.hidden),
-        generateRows,
-        generateColumns,
-    }
-    const {rawData, pagination, showFilter} = props
+export const TransactionTable = withTranslation(['tables', 'common'])((props: TransactionTableProps & WithTranslation) => {
+    const { rawData, pagination, showFilter, getTxnList, showLoading, ...rest } = props
     const [page, setPage] = React.useState(1)
-    const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
-    // const [totalData, setTotalData] = React.useState(formattedRawData)
-    const [totalData, setTotalData] = React.useState<any[]>([])
+    const [totalData, setTotalData] = React.useState<RawDataTransactionItem[]>(rawData)
     const [filterType, setFilterType] = React.useState(TransactionTradeTypes.allTypes)
-    const [filterDate, setFilterDate] = React.useState(null)
-    const [filterToken, setFilterToken] = React.useState('All Tokens')
+    const [filterDate, setFilterDate] = React.useState<DateRange<Date | string>>(['', ''])
+    const [filterToken, setFilterToken] = React.useState<string>('All Tokens')
+    const [modalState, setModalState] = React.useState(false)
+    const [txnDetailInfo, setTxnDetailInfo] = React.useState<TxnDetailProps>({
+        hash: '',
+        status: 'processed',
+        time: '',
+        from: '',
+        to: '',
+        amount: '',
+        fee: '',
+        memo: '',
+    })
 
     const pageSize = pagination ? pagination.pageSize : 10;
 
-    useEffect(() => {
-        setTotalData(rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : [])
+    useDeepCompareEffect(() => {
+        setTotalData(rawData);
     }, [rawData])
-
-    const getRenderData = React.useCallback(() => pagination
-        ? totalData.slice((page - 1) * pageSize, page * pageSize)
-        : totalData
-        , [page, pagination, pageSize, totalData])
 
     const updateData = React.useCallback(({
                                               TableType,
                                               currFilterType = filterType,
                                               currFilterDate = filterDate,
                                               currFilterToken = filterToken,
-                                              // currPage = page
+                                              currPage = page,
                                           }) => {
-        // let resultData = cloneDeep(formattedRawData)
-        let resultData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
-        // o[10]: tradeType
-        if (currFilterType !== TransactionTradeTypes.allTypes) {
-            resultData = resultData.filter(o => o[ 10 ] === currFilterType)
-        }
-        if (currFilterDate) {
-            const diff = moment(moment()).diff(currFilterDate, 'days')
-            // o[6]: date
-            resultData = resultData.filter(o => o[ 6 ] === diff)
-        }
-        // o[0]: token
-        if (currFilterToken !== 'All Tokens') {
-            resultData = resultData.filter(o => o[ 0 ] === currFilterToken)
-        }
+        let actualPage = currPage
         if (TableType === 'filter') {
+            actualPage = 1
             setPage(1)
         }
-        setTotalData(resultData)
-    }, [rawData, filterDate, filterToken, filterType])
+        const tokenSymbol = currFilterToken === 'All Tokens' 
+            ? '' 
+            : currFilterToken
+        const formattedType = currFilterType.toUpperCase()
+        const types = currFilterType === TransactionTradeTypes.allTypes 
+            ? '' 
+            : formattedType === TransactionTradeTypes.deposit
+                ? 'deposit'
+                : formattedType === TransactionTradeTypes.transfer
+                    ? 'transfer'
+                    : 'offchain_withdrawal'
+        const start = Number(moment(currFilterDate[ 0 ]).format('x'))
+        const end = Number(moment(currFilterDate[ 1 ]).format('x'))
+        getTxnList({
+            limit: pageSize,
+            offset: (actualPage - 1) * pageSize,
+            types: types,
+            tokenSymbol: tokenSymbol,
+            start: Number.isNaN(start) ? -1 : start,
+            end: Number.isNaN(end) ? -1 : end,
+        })
+    }, [filterDate, filterType, filterToken, getTxnList, page, pageSize])
 
-    const handleFilterChange = React.useCallback(({filterType, filterDate, filterToken}) => {
-        setFilterType(filterType)
-        setFilterDate(filterDate)
-        setFilterToken(filterToken)
+    const handleFilterChange = React.useCallback(({type = filterType, date = filterDate, token = filterToken}) => {
+        setFilterType(type)
+        setFilterDate(date)
+        setFilterToken(token)
         updateData({
             TableType: TableType.filter,
-            currFilterType: filterType,
-            currFilterDate: filterDate,
-            currFilterToken: filterToken
+            currFilterType: type,
+            currFilterDate: date,
+            currFilterToken: token
+        })
+    }, [updateData, filterDate, filterType, filterToken])
+
+    const handleReset = React.useCallback(() => {
+        setFilterType(TransactionTradeTypes.allTypes)
+        setFilterDate([null, null])
+        setFilterToken('All Tokens')
+        updateData({
+            TableType: TableType.filter,
+            currFilterType: TransactionTradeTypes.allTypes,
+            currFilterDate: [null, null],
+            currFilterToken: 'All Tokens',
         })
     }, [updateData])
 
-    const handlePageChange = React.useCallback((page: number) => {
-        setPage(page)
-        updateData({TableType: TableType.page, currPage: page})
-    }, [updateData])
+    const handlePageChange = React.useCallback((currPage: number) => {
+        if (currPage === page) return
+        setPage(currPage)
+        updateData({TableType: TableType.page, currPage: currPage})
+    }, [updateData, page])
+
+    const handleTxnDetail = React.useCallback((prop: TxnDetailProps) => {
+        setModalState(true)
+        setTxnDetailInfo(prop)
+    }, [])
+
+    const getColumnModeTransaction = React.useCallback((t: TFunction): Column<any, unknown>[] => [
+        {
+            key: 'side',
+            name: t('labelTxSide'),
+            formatter: ({row}) => {
+                const value = row[ 'side' ]
+                const renderValue = value === TransactionTradeTypes.deposit ? t('labelDeposit') : value === TransactionTradeTypes.transfer ? t('labelTransfer') : t('labelWithdraw');
+                return (
+                    <div className="rdg-cell-value">
+                        {renderValue}
+                    </div>
+                )
+            }
+        },
+        {
+            key: 'amount',
+            name: t('labelTxAmount'),
+            formatter: ({row}) => {
+                const {unit, value} = row[ 'amount' ]
+                const hasValue = Number.isFinite(value)
+                const renderValue = hasValue ? `${getThousandFormattedNumbers(Number(value), 5)}` : EmptyValueTag
+                return (
+                    <div className="rdg-cell-value">
+                        {renderValue} {unit || ''}
+                    </div>
+                )
+            },
+        },
+        {
+            key: 'fee',
+            name: t('labelTxFee'),
+            formatter: ({row}) => {
+                const fee = row[ 'fee' ]
+                const hasValue = fee ? Number.isFinite(fee.value) : ''
+                const renderValue = hasValue && fee.value !== 0 ? `${fee.value.toFixed(6)} ${fee.unit}` : EmptyValueTag
+                return (
+                    <div className="rdg-cell-value">
+                        <span>{renderValue}</span>
+                    </div>
+                )
+            },
+        },
+        {
+            key: 'txnHash',
+            name: t('labelTxTxnHash'),
+            formatter: ({row}) => {
+                const path = row[ 'path' ] || ''
+                const value = row[ 'txnHash' ]
+                const RenderValue = styled(Box)`
+                    color: ${({theme}) => theme.colorBase[ value ? 'secondary' : 'textSecondary' ]};
+                    cursor: pointer;
+                `
+                const {
+                    hash,
+                    status,
+                    time,
+                    recipient,
+                    senderAddress,
+                    amount,
+                    fee,
+                    memo,
+                } = row
+                const formattedDetail = {
+                    hash,
+                    status,
+                    time,
+                    from: recipient,
+                    to: senderAddress,
+                    fee: `${fee.value} ${fee.unit}`,
+                    amount: `${amount.value} ${amount.unit}`,
+                    memo,
+                }
+                return (
+                    <div className="rdg-cell-value">
+                        {path ? <Link href={path}>
+                                <RenderValue title={value}>{value || EmptyValueTag}</RenderValue>
+                            </Link> :
+                            <RenderValue onClick={() => handleTxnDetail(formattedDetail)} title={value}>{value ? getFormattedHash(value) : EmptyValueTag}</RenderValue>}
+                    </div>
+                )
+            }
+        },
+        {
+            key: 'status',
+            name: t('labelTxStatus'),
+            formatter: ({row, column, rowIdx}) => (
+                <div className="rdg-cell-value">
+                    <CellStatus {...{row, column, rowIdx}} />
+                </div>
+            )
+        },
+        {
+            key: 'time',
+            name: t('labelTxTime'),
+            formatter: ({row}) => {
+                const value = row[ 'time' ]
+                const hasValue = Number.isFinite(value)
+                const renderValue = hasValue
+                    ? moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
+                    : EmptyValueTag
+                return (
+                    <div className="rdg-cell-value">
+                        <span>{renderValue}</span>
+                    </div>
+                )
+            },
+        },
+    ], [handleTxnDetail])
+
+    const defaultArgs: any = {
+        // rawData: [],
+        columnMode: getColumnModeTransaction(props.t).filter(o => !o.hidden),
+        generateRows: (rawData: any) => rawData,
+        generateColumns: ({columnsRaw}: any) => columnsRaw as Column<any, unknown>[],
+    }
 
     return <TableStyled>
         {showFilter && (
             <TableFilterStyled>
-                <Filter originalData={formattedRawData} handleFilterChange={handleFilterChange}/>
+                <Filter
+                    originalData={rawData}
+                    filterDate={filterDate}
+                    filterType={filterType}
+                    filterToken={filterToken}
+                    handleFilterChange={handleFilterChange}
+                    handleReset={handleReset}
+                />
             </TableFilterStyled>
         )}
-        <Table {...{...defaultArgs, ...props, rawData: getRenderData()}}/>
+        <Modal
+            open={modalState}
+            onClose={() => setModalState(false)}
+        >
+            <TxnDetailPanel {...{...txnDetailInfo}} />
+        </Modal>
+        <Table {...{...defaultArgs, ...props, rawData, showLoading }}/>
         {pagination && (
-            <TablePagination page={page} pageSize={pageSize} total={totalData.length} onPageChange={handlePageChange}/>
+            <TablePagination page={page} pageSize={pageSize} total={pagination.total} onPageChange={handlePageChange}/>
         )}
     </TableStyled>
 })

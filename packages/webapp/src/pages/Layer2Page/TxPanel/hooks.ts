@@ -1,58 +1,118 @@
-import { useState } from 'react'
-
-import { useAmmpoolAPI, useUserAPI } from "hooks/exchange/useApi"
+import { useState, useCallback } from 'react'
+// import { useAmmpoolAPI, useUserAPI } from "hooks/exchange/useApi"
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect'
 import { useAccount } from 'stores/account/hook'
 import { TransactionStatus, RawDataTransactionItem } from '@loopring-web/component-lib'
+import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
+import { LoopringAPI } from 'api_wrapper'
 
 import { TransactionTradeTypes } from '@loopring-web/component-lib';
 
 export function useGetTxs() {
 
-    const { accountId, apiKey } = useAccount()
+    const { account: {accountId, apiKey} } = useAccount()
 
-    const userApi = useUserAPI()
+    // const userApi = useUserAPI()
 
-    const [txs, setTxs] = useState<RawDataTransactionItem[]>()
+    const [txs, setTxs] = useState<RawDataTransactionItem[]>([])
+    const [isLoading, setIsLoading] = useState(true)
 
-    useCustomDCEffect(async() => {
+    const getTxnStatus = (status: string) => 
+        status === ''
+        ? TransactionStatus.processing :
+        status === 'processed'
+            ? TransactionStatus.processed
+            : status === 'processing'
+                ? TransactionStatus.processing 
+                : status === 'received' 
+                    ? TransactionStatus.received 
+                    : TransactionStatus.failed
 
-        if (!userApi || !accountId || !apiKey) {
-            return
-        }
-
-        const txs = await userApi.getUserTranferList({ accountId }, apiKey)
-
-        let tmpTx: RawDataTransactionItem[] = []
-
-        txs.userTransfers.forEach((item: any, index: number) => {
-            tmpTx.push({from: {
-                    address: item.senderAddress,
-                    env: ''
+    const getUserTxnList = useCallback(async () => {
+        if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
+            const userTxnList = await Promise.all([
+                LoopringAPI.userAPI.getUserTranferList({
+                    accountId,
+                }, apiKey),
+                LoopringAPI.userAPI.getUserDepositHistory({
+                    accountId,
+                }, apiKey),
+                LoopringAPI.userAPI.getUserOnchainWithdrawalHistory({
+                    accountId,
+                }, apiKey)
+            ])
+            const userTransferMapped = userTxnList[0].userTransfers?.map(o => ({
+                side: TransactionTradeTypes.transfer,
+                // token: o.symbol,
+                // from: o.senderAddress,
+                // to: o.receiverAddress,
+                amount: {
+                    unit: o.symbol || '',
+                    value: Number(volumeToCount(o.symbol, o.amount))
                 },
-                to: {
-                    address: item.receiverAddress,
-                    env: ''
-                },
-                amount: item.amount,
                 fee: {
-                    unit: item.feeTokenSymbol,
-                    value: item.feeAmount
+                    unit: o.feeTokenSymbol || '',
+                    value: Number(volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0))
                 },
-                memo: item.symbol,
-                time: item.timestamp,
-                txnHash: item.hash,
-                status: item.status,
-                token:item.token,
-                tradeType:TransactionTradeTypes.allTypes,
-            })
-        })
+                memo: o.memo || '',
+                time: o.timestamp,
+                txnHash: o.hash,
+                status: getTxnStatus(o.status),
+                // tradeType: TransactionTradeTypes.transfer
+            }))
+            const userDepositMapped = userTxnList[1].userDepositHistory?.map(o => ({
+                side: TransactionTradeTypes.deposit,
+                symbol: o.symbol,
+                // token: o.symbol,
+                // from: o.hash,
+                // to: 'My Loopring',
+                // amount: Number(volumeToCount(o.symbol, o.amount)),
+                amount: {
+                    unit: o.symbol || '',
+                    value: Number(volumeToCount(o.symbol, o.amount))
+                },
+                fee: {
+                    unit: '',
+                    value: 0
+                },
+                memo: '',
+                time: o.timestamp,
+                txnHash: o.txHash,
+                status: getTxnStatus(o.status),
+                // tradeType: TransactionTradeTypes.deposit
+            }))
+            const userWithdrawMapped = userTxnList[2].userOnchainWithdrawalHistory?.map((o => ({
+                side: TransactionTradeTypes.withdraw,
+                // token: o.symbol,
+                // from: 'My Loopring',
+                // to: o.distributeHash,
+                amount: {
+                    unit: o.symbol || '',
+                    value: Number(volumeToCount(o.symbol, o.amount))
+                },
+                fee: {
+                    unit: o.feeTokenSymbol || '',
+                    value: Number(volumeToCount(o.feeTokenSymbol, o.feeAmount || 0)?.toFixed(6))
+                },
+                memo: '',
+                time: o.timestamp,
+                txnHash: o.txHash,
+                status: getTxnStatus(o.status),
+                // tradeType: TransactionTradeTypes.withdraw
+            })))
+            const mappingList = [...userTransferMapped??[], ...userDepositMapped??[], ...userWithdrawMapped??[]]
+            const sortedMappingList = mappingList.sort((a, b) => b.time - a.time)
+            setTxs(sortedMappingList)
+            setIsLoading(false)
+        }
+    }, [accountId, apiKey])
 
-        setTxs(tmpTx)
-
-    }, [accountId, apiKey, userApi])
+    useCustomDCEffect(() => {
+        getUserTxnList()
+    }, [getUserTxnList])
 
     return {
         txs,
+        isLoading
     }
 }

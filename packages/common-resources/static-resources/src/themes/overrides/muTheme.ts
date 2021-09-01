@@ -5,14 +5,17 @@ import {
     MuiButton,
     MuiButtonBase,
     MuiCard,
+    MuiCardContent,
+    MuiCardActions,
     MuiCheckbox,
-    MuiDivider,
-    MuiIconButton,
+    MuiDivider, MuiIconButton,
     MuiInputBase,
     MuiInputLabel,
     MuiLink,
+    MuiList,
     MuiListItem,
     MuiListItemAvatar,
+    MuiMenu,
     MuiMenuItem,
     MuiModal,
     MuiPaginationItem,
@@ -25,38 +28,47 @@ import {
     MuiTabs,
     MuiTextField,
     MuiToggleButton,
+    // MuiToggleButtonGroup,
     MuiToolbar,
+    MuiAlert,
+    MuiSnackbar,
     radius,
 } from "./overrides-mui";
 import { MuPickDate } from './overrides-date-pick';
 import { fontDefault } from "../css/global";
 import { LoopringTheme, ThemeKeys } from '../interface';
+import shadows from '@material-ui/core/styles/shadows';
+import * as _ from "lodash"
 
 export { unit };
 export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
-    const colorBase: typeof ColorDarkDefault = themeMode === 'dark' ? ColorDarkDefault : ColorLightDefault
+    const colorBase: typeof ColorDarkDefault = themeMode === 'dark' ? ColorDarkDefault : ColorLightDefault;
+    // @ts-ignore
+    let _shadows =_.cloneDeep(shadows);
+    // _shadows[1] = colorBase.shadow;
+    // _shadows[2] = colorBase.shadow2;
     const theme = createMuiTheme({
         spacing: unit,
         palette: {
             mode: themeMode,
             primary: {
-                light: colorBase.primaryLight,
+                light: colorBase.primary,
                 main: colorBase.primary,
-                dark: colorBase.primaryDark,
-                contrastText: "#fff"
+                dark: colorBase.primary,
+                contrastText: themeMode === 'dark'?"#fff":'#000',
             },
             secondary: {
                 light: colorBase.secondary,
                 main: colorBase.secondary,
-                dark: colorBase.primaryDark,
-                contrastText: "#fff",
+                dark: colorBase.secondary,
+                contrastText: themeMode === 'dark'?"#fff":'#000',
                 // light:
             },
             contrastThreshold: 3,
             tonalOffset: 0.2,
             background: {
-                paper: colorBase.background().bg,
-                default: colorBase.background().default,
+                paper: colorBase.box,
+                default: colorBase.globalBg,
             },
             text: {
                 primary: colorBase.textPrimary,
@@ -68,39 +80,48 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             common: {"black": "#000", "white": "#fff"},
             action: {
                 hoverOpacity: 0.05,
-                hover: colorBase.textPrimary,
-                selected: colorBase.textPrimary,
+                hover: colorBase.secondaryHover,
+                selected: colorBase.secondaryPressed,
                 // disabledBackground: "rgba(0, 0, 0, 0.12)",
                 disabled: colorBase.textDisable,
-                active: colorBase.textPrimaryLight,
+                active: colorBase.secondaryPressed,
+            },
+            warning:{
+                main: colorBase.warning,
             },
             error: {
                 main: colorBase.error,
                 dark: colorBase.error,
-                contrastText: "#fff",
+                contrastText: themeMode === 'dark'?"#fff":'#000',
             },
         },
         typography: {
-            fontFamily: `Gilroy-Medium, Helvetica, Arial, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif`,
-            fontSize: 12,
+            // fontFamily: `DINCondensed, Helvetica, Arial, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif`,
+            fontFamily: 'Roboto',
+            fontSize: 14,
             h1: {
-                fontSize: 48,
+                fontSize: fontDefault.h1,
+                lineHeight: '4.6rem'
             },
             h2: {
-                fontSize: 36,
+                fontSize: fontDefault.h2,
+                lineHeight: '3.8rem'
             },
             h3: {
-                fontSize: 16,
+                fontSize: fontDefault.h3,
+                lineHeight: '3.2rem'
             },
             h4: {
-                fontSize: 20,
+                fontSize: fontDefault.h4,
+                lineHeight: '2.8rem',
             },
             h5: {
-                fontSize: 14,
-                margin: 0,
+                fontSize: fontDefault.h5,
+                lineHeight: '2.4rem',
+                margin:0
             },
             h6: {
-                fontSize: 12,
+                fontSize: fontDefault.h6,
                 margin: 0,
             },
             subtitle1: {
@@ -108,9 +129,10 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             },
             button: {
                 fontSize: 20,
+                fontColor: colorBase.textButton,
             },
             body1: {
-                fontSize: 14,
+                fontSize: fontDefault.body1,
                 fontColor: colorBase.textPrimary,
             },
             body2: {
@@ -118,8 +140,11 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
                 fontColor: colorBase.textSecondary,
             },
         },
+        // shadows:,
         components: {
             MuiCard: MuiCard({colorBase}),
+            MuiCardContent: MuiCardContent(),
+            MuiCardActions: MuiCardActions(),
             MuiCheckbox: MuiCheckbox({colorBase}),
             MuiLink: MuiLink({colorBase}),
             MuiModal: MuiModal({colorBase}),
@@ -128,24 +153,28 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             MuiToolbar: MuiToolbar(),
             MuiSvgIcon: MuiSvgIcon(),
             MuiTabs: MuiTabs(),
-
             MuiTab: MuiTab({colorBase}),
             MuiButtonBase: MuiButtonBase,
             MuiRadio: MuiRadio({colorBase}),
             MuiButton: MuiButton({colorBase, themeMode}),
             MuiToggleButton: MuiToggleButton({colorBase}),
+            // MuiToggleButtonGroup: MuiToggleButtonGroup({colorBase}),
             MuiSwitch: MuiSwitch({colorBase}),
-            MuiIconButton: MuiIconButton,
+            MuiIconButton: MuiIconButton({colorBase}),
             MuiPaginationItem: MuiPaginationItem({colorBase}),
             MuiTextField: MuiTextField(),
-            MuiInputBase: MuiInputBase({colorBase}),
-            MuiMenuItem: MuiMenuItem({colorBase}),
+            MuiInputBase: MuiInputBase({colorBase,themeMode}),
+            MuiMenu: MuiMenu({colorBase}),
+            MuiMenuItem: MuiMenuItem({colorBase,themeMode}),
+            MuiList: MuiList(),
             MuiListItem: MuiListItem({colorBase}),
             MuiListItemAvatar: MuiListItemAvatar(),
             MuiInputLabel: MuiInputLabel({colorBase}),
             // MuiPopover: MuiPopover({colorBase, themeMode}),
             MuiPaper: MuiPaper({colorBase, themeMode}),
             MuiDivider: MuiDivider({colorBase}),
+            MuiAlert: MuiAlert({colorBase}),
+            MuiSnackbar: MuiSnackbar(),
             ...MuPickDate({colorBase, themeMode})
         },
         shape: {borderRadius: radius}

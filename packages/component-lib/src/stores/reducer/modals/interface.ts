@@ -1,12 +1,3 @@
-import {
-    AmmInfoProps,
-    DepositInfoProps,
-    ResetInfoProps,
-    SwapInfoProps,
-    TransferInfoProps,
-    WithdrawInfoProps
-} from '../../../components';
-import { AmmData, IBData } from '@loopring-web/common-resources';
 
 export enum ModalType {
     transfer = 'transfer',
@@ -19,14 +10,17 @@ export type ModalTypeKeys = keyof typeof ModalType
 export type ModalStatePlayLoad = {
     isShow: boolean,
 }
+export type Transaction = {
+    symbol?: undefined|string,
+}
 
-export interface ModalState<T, I, A = AmmData<IBData<string>>, C = unknown> {
-    isShowTransfer: ModalStatePlayLoad & { props: Partial<TransferInfoProps<T, I>> },
-    isShowWithdraw: ModalStatePlayLoad & { props: Partial<WithdrawInfoProps<T, I>> },
-    isShowDeposit: ModalStatePlayLoad & { props: Partial<DepositInfoProps<T, I>> },
-    isShowResetAccount: ModalStatePlayLoad & { props: Partial<ResetInfoProps<T, I>> },
-    isShowSwap: ModalStatePlayLoad & { props: Partial<SwapInfoProps<T, I, C>> },
-    isShowAmm: ModalStatePlayLoad & { props: Partial<AmmInfoProps<A, I, C>> },
-    isShowConnect: ModalStatePlayLoad,
-    isShowAccountInfo: ModalStatePlayLoad
+export interface ModalState {
+    isShowTransfer: ModalStatePlayLoad & Transaction,
+    isShowWithdraw: ModalStatePlayLoad & Transaction,
+    isShowDeposit: ModalStatePlayLoad & Transaction,
+    isShowResetAccount: ModalStatePlayLoad,
+    isShowSwap: ModalStatePlayLoad,
+    isShowAmm: ModalStatePlayLoad,
+    isShowConnect: ModalStatePlayLoad & { step: number },
+    isShowAccount: ModalStatePlayLoad & { step: number },
 }

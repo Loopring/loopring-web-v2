@@ -5,9 +5,7 @@
     
     "paths": {
       "@loopring-web/webapp": ["./packages/webapp/src"],
-      "@loopring-web/webapp/*": ["./packages/webapp/src/*"],
-      "@loopring-web/sdk": ["./packages/sdk/src"],
-      "@loopring-web/sdk/*": ["./packages/sdk/src/*"]
+      "@loopring-web/webapp/*": ["./packages/webapp/src/*"]
     }
     
   },
@@ -17,5 +15,6 @@
   "exclude": [
     "node_modules",
     "dist",
+    "../*.stories.*"
   ]
 }

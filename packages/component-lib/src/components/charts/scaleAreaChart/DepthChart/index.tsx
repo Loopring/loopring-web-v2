@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 // import { ScaleAreaChartProps } from '../ScaleAreaChart'
 import { getDepthData } from '../data'
-import { Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, } from 'recharts'
+import { Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, } from '@loopring-web/recharts'
 
 const ASKS_COLOR = '#fb3838'
 const BIDS_COLOR = '#00BBA8'
@@ -143,6 +143,7 @@ const DepthChart = ({
                     stroke={asksColor}
                     dot={false}
                     animationDuration={500}
+                    isAnimationActive={false}
                 />
                 <Line
                     type="step"
@@ -150,6 +151,7 @@ const DepthChart = ({
                     stroke={bidsColor}
                     dot={false}
                     animationDuration={500}
+                    isAnimationActive={false}
                 />
                 <Area
                     type="step"
@@ -157,6 +159,7 @@ const DepthChart = ({
                     stroke="false"
                     fill="url(#colorAsks)"
                     animationDuration={500}
+                    isAnimationActive={false}
                 />
                 <Area
                     type="step"
@@ -164,6 +167,7 @@ const DepthChart = ({
                     stroke="false"
                     fill="url(#colorBids)"
                     animationDuration={500}
+                    isAnimationActive={false}
                 />
             </ComposedChart>
         </ResponsiveContainer>

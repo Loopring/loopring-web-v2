@@ -13,7 +13,9 @@ export function useWalletLayer1(): WalletLayer1States & {
 
     return {
         ...walletLayer1,
-        resetLayer1:React.useCallback(()=>dispatch(reset(undefined)),[dispatch]),
+        resetLayer1:React.useCallback(()=>{
+            dispatch(reset(undefined))
+        },[dispatch]),
         statusUnset:React.useCallback(()=>dispatch(statusUnset(undefined)),[dispatch]),
         updateWalletLayer1:React.useCallback(()=>dispatch(updateWalletLayer1(undefined)),[dispatch]),
     }

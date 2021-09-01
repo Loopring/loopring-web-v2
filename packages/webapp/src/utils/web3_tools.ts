@@ -5,36 +5,22 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 
-import { UnsupportedChainIdError } from '@web3-react/core'
-
-import {
-  NoEthereumProviderError,
-  UserRejectedRequestError as UserRejectedRequestErrorInjected
-} from '@web3-react/injected-connector'
-import { UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from '@web3-react/walletconnect-connector'
-
 import { ChainId } from 'loopring-sdk'
 
-export function getLibrary(provider: any): Web3Provider {
-  const library = new Web3Provider(provider)
-  library.pollingInterval = 10000
-  return library
-}
+import ms from 'ms.macro'
 
-export function getErrorMessage(error: Error) {
-  if (error instanceof NoEthereumProviderError) {
-    return 'No Ethereum browser extension detected, install MetaMask on desktop or visit from a dApp browser on mobile.'
-  } else if (error instanceof UnsupportedChainIdError) {
-    return 'You\'re connected to an unsupported network.'
-  } else if (
-    error instanceof UserRejectedRequestErrorInjected ||
-    error instanceof UserRejectedRequestErrorWalletConnect
-  ) {
-    return 'Please authorize this website to access your Ethereum account.'
-  } else {
-    console.error(error)
-    return 'An unknown error occurred. Check the console for more details.'
-  }
+export function getLibrary(provider: any): Web3Provider {
+  const library = new Web3Provider(
+    provider,
+    typeof provider.chainId === 'number'
+      ? provider.chainId
+      : typeof provider.chainId === 'string'
+      ? parseInt(provider.chainId)
+      : 'any'
+  )
+  library.pollingInterval = ms`15s`
+
+  return library
 }
 
 export function transactionChecker(web3: any, address: string) {
@@ -146,11 +132,3 @@ export async function isContract(web3: any, address: string) {
   return code && code.length > 2
 }
 
-export function getShortAddr(address: string) {
-    if (!address || address === undefined || address === null || address.trim() === '') {
-        console.log('getShortAddr got empty!')
-        return undefined
-    }
-    const convertAddr = address.substr(0, 6) + '...' + address.substr(address.length - 4)
-    return convertAddr
-}

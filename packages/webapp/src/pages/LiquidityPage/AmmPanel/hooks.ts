@@ -1,10 +1,17 @@
-import React, { useState } from "react";
-import { AmmData, AmmInData, CoinInfo, globalSetup, IBData } from '@loopring-web/common-resources';
-import { AmmPanelType } from '@loopring-web/component-lib';
+import React from "react";
+import {
+    AccountStatus,
+    AmmData,
+    AmmInData,
+    CoinInfo,
+    fnType,
+    IBData,
+    SagaStatus,
+} from '@loopring-web/common-resources';
+import { AmmPanelType, TradeBtnStatus } from '@loopring-web/component-lib';
 import { IdMap, useTokenMap } from '../../../stores/token';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
-import { accountStaticCallBack, ammPairInit, bntLabel, btnClickMap, fnType, makeCache } from '../../../hooks/help';
-import { WalletMap } from '@loopring-web/common-resources';
+import { accountStaticCallBack, ammPairInit, btnLabel, btnClickMap, makeCache, makeWalletLayer2 } from '../../../hooks/help';
 import * as sdk from 'loopring-sdk';
 import {
     AmmPoolRequestPatch,
@@ -24,469 +31,588 @@ import {
     OffchainFeeInfo,
     OffchainFeeReqType,
     TickerData,
-    toBig
+    toBig,
+    TokenInfo, WsTopicType
 } from 'loopring-sdk';
-import { useCustomDCEffect } from '../../../hooks/common/useCustomDCEffect';
 import { useAccount } from '../../../stores/account/hook';
 import store from "stores";
-import { LoopringAPI } from "stores/apis/api";
-import { debounce } from "lodash";
-import { AccountStatus } from "state_machine/account_machine_spec";
-import { Lv2Account } from "defs/account_defs";
+import { LoopringAPI } from "api_wrapper";
 import { deepClone } from '../../../utils/obj_tools';
-import { useWalletLayer2 } from "stores/walletLayer2";
 import { myLog } from "utils/log_tools";
+import { useTranslation } from "react-i18next";
 
-export const useAmmPanel = <C extends { [ key: string ]: any }>({
-                                                                    pair,
-                                                                    walletMap,
-                                                                    ammType,
-                                                                    snapShotData,
-                                                                }
-                                                                    : {
-    pair: { coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined },
-    snapShotData: { tickerData: TickerData | undefined, ammPoolsBalance: AmmPoolSnapshot | undefined } | undefined
-    walletMap: WalletMap<C>
-    ammType: keyof typeof AmmPanelType
+import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
+
+import * as _ from 'lodash'
+import { useSocket, } from "stores/socket";
+import { useToast } from "hooks/common/useToast";
+
+export const useAmmCommon = ({ pair, snapShotData, }: {
+    pair: {
+        coinAInfo: CoinInfo<string> | undefined,
+        coinBInfo: CoinInfo<string> | undefined
+    },
+    snapShotData: any,
 }) => {
-    // const walletLayer2State = useWalletLayer2();
-    const {coinMap, tokenMap} = useTokenMap();
-    const {ammMap} = useAmmMap();
-    const {account} = useAccount();
-    const {delayAndUpdateWalletLayer2} = useWalletLayer2();
+
+    const { toastOpen, setToastOpen, closeToast, } = useToast()
+
+    const { sendSocketTopic, socketEnd } = useSocket()
+
+    const { account } = useAccount()
+
+    const [ammPoolSnapshot, setAmmPoolSnapShot] = React.useState<AmmPoolSnapshot>()
+
+    const { marketArray, marketMap, } = useTokenMap();
+    const { ammMap } = useAmmMap();
+
+    const updateAmmPoolSnapshot = React.useCallback(async () => {
+
+        if (!pair?.coinAInfo?.simpleName || !pair?.coinBInfo?.simpleName || !LoopringAPI.ammpoolAPI) {
+            return
+        }
+
+        const { market, amm } = getExistedMarket(marketArray, pair.coinAInfo.simpleName as string,
+            pair.coinBInfo.simpleName as string)
+
+        if (!market || !amm || !marketMap || !ammMap || !ammMap[amm as string]) {
+            return
+        }
+
+        const ammInfo: any = ammMap[amm as string]
+
+        const request1: GetAmmPoolSnapshotRequest = {
+            poolAddress: ammInfo.address
+        }
+
+        const response = await LoopringAPI.ammpoolAPI.getAmmPoolSnapshot(request1)
+
+        if (!response) {
+            myLog('err res:', response)
+            return
+        }
+
+        const { ammPoolSnapshot } = response
+
+        setAmmPoolSnapShot(ammPoolSnapshot)
+
+    }, [pair, marketArray, ammMap, setAmmPoolSnapShot])
+
+    React.useEffect(() => {
+        if (account.readyState === AccountStatus.ACTIVATED) {
+            sendSocketTopic({ [WsTopicType.account]: true });
+        } else {
+            socketEnd()
+        }
+        return () => {
+            socketEnd()
+        }
+    }, [account.readyState]);
+
+    const refreshRef = React.createRef()
+
+    React.useEffect(() => {
+        if (refreshRef.current && pair) {
+            // @ts-ignore
+            refreshRef.current.firstElementChild.click();
+        }
+
+    }, []);
+
+    const walletLayer2Callback = React.useCallback(() => {
+
+        if (snapShotData) {
+            myLog('-------------setAmmPoolSnapShot:', snapShotData.ammPoolsBalance)
+            setAmmPoolSnapShot(snapShotData.ammPoolsBalance)
+        }
+
+    }, [snapShotData, setAmmPoolSnapShot])
+
+    React.useEffect(() => {
+        walletLayer2Callback()
+    }, [snapShotData])
+
+    return {
+        toastOpen,
+        setToastOpen,
+        closeToast,
+        refreshRef,
+        ammPoolSnapshot,
+        updateAmmPoolSnapshot,
+    }
+
+}
+
+// ----------calc hook -------
+
+const initSlippage = 0.5
+
+export const useAmmCalc = <C extends { [key: string]: any }>({
+    setToastOpen,
+    type,
+    pair,
+    ammPoolSnapshot,
+    snapShotData,
+}
+    : {
+        ammPoolSnapshot: AmmPoolSnapshot | undefined,
+        setToastOpen: any,
+        type: AmmPanelType,
+        pair: { coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined },
+        snapShotData: { tickerData: TickerData | undefined, ammPoolsBalance: AmmPoolSnapshot | undefined } | undefined
+    }) => {
+    const { t } = useTranslation('common');
+
+    const isJoin = type === AmmPanelType.Join
+
+    const [isLoading, setIsLoading] = React.useState(false)
+
+    const { coinMap, tokenMap } = useTokenMap();
+    const { ammMap } = useAmmMap();
+    const { account, status: accountStatus } = useAccount();
+    const [btnStatus, setBtnStatus] = React.useState(TradeBtnStatus.DISABLED);
+
+    const [baseToken, setBaseToken] = React.useState<TokenInfo>();
+    const [quoteToken, setQuoteToken] = React.useState<TokenInfo>();
+    const [baseMinAmt, setBaseMinAmt,] = React.useState<any>()
+    const [quoteMinAmt, setQuoteMinAmt,] = React.useState<any>()
+
     const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<C> | undefined>();
 
-    const [ammJoinData, setAmmJoinData] = React.useState<AmmData<IBData<C>, C>>({
-        coinA: {belong: undefined} as unknown as IBData<C>,
-        coinB: {belong: undefined} as unknown as IBData<C>,
-        slippage: 0.001
+    const [ammData, setAmmData] = React.useState<AmmData<IBData<C>, C>>({
+        coinA: { belong: undefined } as unknown as IBData<C>,
+        coinB: { belong: undefined } as unknown as IBData<C>,
+        slippage: initSlippage
     } as AmmData<IBData<C>, C>);
 
-    const [ammExitData, setAmmExitData] = React.useState({
-        coinA: {belong: undefined} as unknown as IBData<C>,
-        coinB: {belong: undefined} as unknown as IBData<C>,
-        slippage: 0.001
-    } as AmmData<IBData<C>, C>);
+    const [btnI18nKey, setBtnI18nKey] = React.useState<string | undefined>(undefined);
 
-    const [ammDepositBtnI18nKey, setAmmDepositBtnI18nKey] = React.useState<string | undefined>(undefined);
-    const [ammWithdrawBtnI18nKey, setAmmWithdrawBtnI18nKey] = React.useState<string | undefined>(undefined);
+    const [fees, setFees] = React.useState<LoopringMap<OffchainFeeInfo>>()
+    const [fee, setFee] = React.useState<number>(0)
 
-    const initAmmData = React.useCallback(async (pair: any) => {
-        // @ts-ignore
-        let _ammCalcData: Partial<AmmInData<C>> = ammPairInit(
-            {
-                pair,
-                ammType,
-                _ammCalcData: {},
-                tokenMap,
-                coinMap,
-                walletMap: walletMap, //walletLayer2State.walletLayer2,
-                ammMap,
-                tickerData: snapShotData?.tickerData,
-                ammPoolsBalance: snapShotData?.ammPoolsBalance
-            })
+    const { account: { accountId, apiKey } } = useAccount()
 
-        setAmmCalcData({...ammCalcData, ..._ammCalcData} as AmmInData<C>);
-        if (_ammCalcData.myCoinA) {
-            setAmmJoinData({
-                coinA: {..._ammCalcData.myCoinA, tradeValue: undefined} as IBData<C>,
-                coinB: {..._ammCalcData.myCoinB, tradeValue: undefined} as IBData<C>,
-                slippage: 0.001
-            })
-            setAmmExitData({
-                coinA: {..._ammCalcData.lpCoinA, tradeValue: undefined} as IBData<C>,
-                coinB: {..._ammCalcData.lpCoinB, tradeValue: undefined} as IBData<C>,
-                slippage: 0.001
+    React.useEffect(() => {
+        if (account.readyState !== AccountStatus.ACTIVATED) {
+            setBtnStatus(TradeBtnStatus.AVAILABLE)
+            setBtnI18nKey(accountStaticCallBack(btnLabelNew))
+        } else {
+            setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData }]))
+        }
+
+    }, [account.readyState, ammData])
+
+    const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
+
+        const _ammCalcData = ammPairInit({
+            fee,
+            pair,
+            _ammCalcData: {},
+            coinMap,
+            walletMap,
+            ammMap,
+            tickerData: snapShotData?.tickerData,
+            ammPoolsBalance: snapShotData?.ammPoolsBalance
+        })
+
+        setAmmCalcData({ ...ammCalcData, ..._ammCalcData });
+        if (_ammCalcData.myCoinA && tokenMap) {
+
+            const baseT = tokenMap[_ammCalcData.myCoinA.belong]
+
+            const quoteT = tokenMap[_ammCalcData.myCoinB.belong]
+
+            setBaseToken(baseT)
+            setQuoteToken(quoteT)
+
+            setBaseMinAmt(baseT ? sdk.toBig(baseT.orderAmounts.minimum).div('1e' + baseT.decimals).toNumber() : undefined)
+            setQuoteMinAmt(quoteT ? sdk.toBig(quoteT.orderAmounts.minimum).div('1e' + quoteT.decimals).toNumber() : undefined)
+
+            setAmmData({
+                coinA: { ...isJoin ? _ammCalcData.myCoinA: _ammCalcData.lpCoinA, tradeValue: undefined },
+                coinB: { ...isJoin ? _ammCalcData.myCoinB: _ammCalcData.lpCoinB, tradeValue: undefined },
+                slippage: initSlippage,
             })
         }
-    }, [snapShotData, walletMap, ammJoinData, ammExitData])
+    }, [isJoin, fee, snapShotData, coinMap, tokenMap, ammCalcData, ammMap,
+        setAmmCalcData, setAmmData, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt,])
 
-    // const [snapShot, setSnapShot] = useState<AmmPoolSnapshot>()
+    const btnLabelActiveCheck = React.useCallback(({ ammData }): string | undefined => {
 
-    const [joinRequest, setJoinRequest] = useState<{ ammInfo: any, request: JoinAmmPoolRequest }>()
+        const times = isJoin ? 10 : 1
 
-    const [joinFees, setJoinFees] = useState<LoopringMap<OffchainFeeInfo>>()
+        switch (type) {
+            case AmmPanelType.Join:
+            case AmmPanelType.Exit:
+                const validAmt1 = ammData?.coinA?.tradeValue ? ammData?.coinA?.tradeValue >= times * baseMinAmt : false
+                const validAmt2 = ammData?.coinB?.tradeValue ? ammData?.coinB?.tradeValue >= times * quoteMinAmt : false
+                // myLog('btnLabelActiveCheck ammData', ammData?.coinA?.tradeValue, ammData?.coinB?.tradeValue,
+                //     times * baseMinAmt, times * quoteMinAmt)
 
-    useCustomDCEffect(async () => {
-        if (!LoopringAPI.userAPI || !pair.coinBInfo?.simpleName
-            || store.getState().account.status !== AccountStatus.ACTIVATED) {
+                if (isLoading) {
+                    setBtnI18nKey(TradeBtnStatus.LOADING)
+                    myLog('set LOADING')
+                    return undefined
+                } else {
+                    if (account.readyState === AccountStatus.ACTIVATED) {
+                        if (ammData === undefined
+                            || ammData?.coinA.tradeValue === undefined
+                            || ammData?.coinB.tradeValue === undefined
+                            || ammData?.coinA.tradeValue === 0
+                            || ammData?.coinB.tradeValue === 0) {
+                            setBtnStatus(TradeBtnStatus.DISABLED)
+                            return 'labelEnterAmount';
+                        } else if (validAmt1 && validAmt2) {
+                            setBtnStatus(TradeBtnStatus.AVAILABLE)
+                            return undefined
+                        } else {
+                            // const symbol = !validAmt1 ? ammData?.coinA.belong : !validAmt2 ? ammData?.coinB.belong : ''
+                            // const minOrderSize = !validAmt1 ? times * baseMinAmt : !validAmt2 ? times * quoteMinAmt : 0
+                            setBtnStatus(TradeBtnStatus.DISABLED)
+                            return `labelLimitMin, ${times * baseMinAmt} ${ammData?.coinA.belong} / ${times * quoteMinAmt} ${ammData?.coinB.belong}`
+                        }
+
+                    } else {
+                        setBtnStatus(TradeBtnStatus.AVAILABLE)
+                    }
+
+                }
+                break
+            default:
+                break
+
+        }
+
+        return undefined
+
+    }, [account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, isLoading, setBtnStatus, type])
+
+    const btnLabelNew = Object.assign(deepClone(btnLabel), {
+        [fnType.ACTIVATED]: [btnLabelActiveCheck]
+    });
+
+    const calculateCallback = React.useCallback(async() => {
+        if (accountStatus === SagaStatus.UNSET) {
+            if (!LoopringAPI.userAPI || !pair.coinBInfo?.simpleName
+                || account.readyState !== AccountStatus.ACTIVATED
+                || !ammCalcData || !tokenMap) {
+                return
+            }
+            const feeToken: TokenInfo = tokenMap[pair.coinBInfo.simpleName]
+
+            const requestType = isJoin ? OffchainFeeReqType.AMM_JOIN : OffchainFeeReqType.AMM_EXIT
+
+            const request: GetOffchainFeeAmtRequest = {
+                accountId,
+                requestType,
+                tokenSymbol: pair.coinBInfo.simpleName as string,
+            }
+
+            const { fees } = await LoopringAPI.userAPI.getOffchainFeeAmt(request, apiKey)
+            setFees(fees)
+
+            const fee = sdk.toBig(fees[pair.coinBInfo.simpleName]?.fee as string)
+                .div('1e' + feeToken.decimals)
+
+            setFee(fee.toNumber())
+
+            setAmmCalcData({
+                ...ammCalcData, fee: fee.toString()
+                    + ' ' + pair.coinBInfo.simpleName,
+            })
+        }
+
+    }, [
+        setFees, setAmmCalcData, setBtnI18nKey, isJoin,
+        accountStatus, account.readyState, accountId, apiKey,
+        pair.coinBInfo?.simpleName, tokenMap, ammCalcData
+    ])
+
+    React.useEffect(() => {
+        calculateCallback()
+    }, [accountStatus, pair, ammData])
+
+    const [request, setRequest] = React.useState<{ ammInfo: any, request: JoinAmmPoolRequest | ExitAmmPoolRequest }>();
+
+    const handleJoin = React.useCallback(async ({ data, ammData, type, fees, ammPoolSnapshot, tokenMap, account }) => {
+        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, }]))
+
+        // myLog(data, ammData, type, fees, ammPoolSnapshot, tokenMap, account)
+
+        if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !fees || !account?.accAddress) {
             return
         }
 
-        const acc = store.getState().account
+        const { slippage } = data
 
-        const request2: GetOffchainFeeAmtRequest = {
-            accountId: acc.accountId,
-            requestType: OffchainFeeReqType.AMM_JOIN,
-            tokenSymbol: pair.coinBInfo.simpleName as string,
-        }
-
-        const {fees} = await LoopringAPI.userAPI.getOffchainFeeAmt(request2, acc.apiKey)
-        setJoinFees(fees)
-
-        myLog('joinFees:', fees)
-
-    }, [LoopringAPI.userAPI, pair.coinBInfo?.simpleName, store.getState().account.status])
-
-    // const handler = React.useCallback(async () =>,[])
-    const handlerJoinInDebounce = React.useCallback(debounce(async (data, type, joinFees) => {
-
-        // {
-            myLog('handlerJoinInDebounce', data, type);
-
-        if (!tokenMap || !data.coinA.belong || !data.coinB.belong) {
-            return
-        }
+        const slippageReal = sdk.toBig(slippage).div(100).toString()
 
         const isAtoB = type === 'coinA'
 
-        const acc: Lv2Account = store.getState().account
+        const { idIndex, marketArray, marketMap, } = store.getState().tokenMap
 
-        const {idIndex, marketArray, marketMap,} = store.getState().tokenMap
+        const { ammMap } = store.getState().amm.ammMap
 
-        const {ammMap} = store.getState().amm.ammMap
-
-        const {market, amm} = getExistedMarket(marketArray, data.coinA.belong as string,
+        const { market, amm } = getExistedMarket(marketArray, data.coinA.belong as string,
             data.coinB.belong as string)
 
         if (!market || !amm || !marketMap) {
             return
         }
 
-        const marketInfo: MarketInfo = marketMap[ market ]
+        const marketInfo: MarketInfo = marketMap[market]
 
-        const ammInfo: any = ammMap[ amm as string ]
+        const ammInfo: any = ammMap[amm as string]
 
-        const request1: GetAmmPoolSnapshotRequest = {
-            poolAddress: ammInfo.address
-        }
+        const coinA = tokenMap[data.coinA.belong as string]
+        const coinB = tokenMap[data.coinB.belong as string]
 
-        const response = await LoopringAPI.ammpoolAPI?.getAmmPoolSnapshot(request1)
-
-        if (!response) {
-            return
-        }
-
-        const {ammPoolSnapshot} = response
-
-        const coinA = tokenMap[ data.coinA.belong as string ]
-        const coinB = tokenMap[ data.coinB.belong as string ]
-
-        const coinA_TV = ammPoolSnapshot.pooled[ 0 ]
-        const coinB_TV = ammPoolSnapshot.pooled[ 1 ]
-
-        const covertVal = data.coinA.tradeValue ? sdk.toBig(data.coinA.tradeValue)
-            .times('1e' + isAtoB ? coinA.decimals : coinB.decimals).toFixed(0, 0) : '0'
-        const {output, ratio} = sdk.ammPoolCalc(covertVal, isAtoB, coinA_TV, coinB_TV)
         const rawA = data.coinA.tradeValue ? data.coinA.tradeValue.toString() : 0;
         const rawB = data.coinB.tradeValue ? data.coinB.tradeValue.toString() : 0;
         const rawVal = isAtoB ? rawA : rawB;
 
-        const {request} = makeJoinAmmPoolRequest(rawVal,
-            isAtoB, '0.001', acc.accAddr, joinFees as LoopringMap<OffchainFeeInfo>,
-            ammMap[ amm ], response.ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0, 0)
+        const { request } = makeJoinAmmPoolRequest(rawVal,
+            isAtoB, slippageReal, account.accAddress, fees as LoopringMap<OffchainFeeInfo>,
+            ammMap[amm], ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0, 0)
 
         if (isAtoB) {
-            data.coinB.tradeValue = parseFloat(toBig(request.joinTokens.pooled[ 1 ].volume)
+            data.coinB.tradeValue = parseFloat(toBig(request.joinTokens.pooled[1].volume)
                 .div('1e' + coinB.decimals).toFixed(marketInfo.precisionForPrice))
         } else {
-            data.coinA.tradeValue = parseFloat(toBig(request.joinTokens.pooled[ 0 ].volume)
+            data.coinA.tradeValue = parseFloat(toBig(request.joinTokens.pooled[0].volume)
                 .div('1e' + coinA.decimals).toFixed(marketInfo.precisionForPrice))
         }
 
-        setAmmJoinData({
+        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData: data }]))
+
+        setAmmData({
             coinA: data.coinA as IBData<C>,
             coinB: data.coinB as IBData<C>,
-            slippage: 0.001
+            slippage,
         })
 
-        setJoinRequest({
+        setRequest({
             ammInfo,
             request
         })
-        // }
 
-    }, globalSetup.wait), [joinFees])
+    }, [])
 
-    const handleJoinAmmPoolEvent = React.useCallback(async (data: AmmData<IBData<C>>, type: 'coinA' | 'coinB') => {
-        await handlerJoinInDebounce(data, type, joinFees)
-    }, [joinFees]);
-
-    const [exitRequest, setExitRequest] = useState<{ rawVal: '', ammInfo: any, request: ExitAmmPoolRequest }>()
-
-    const [exitFees, setExitfees] = useState<LoopringMap<OffchainFeeInfo>>()
-
-    useCustomDCEffect(async () => {
-        if (!LoopringAPI.userAPI || !pair.coinBInfo?.simpleName
-            || store.getState().account.status !== AccountStatus.ACTIVATED) {
-            return
-        }
-
-        const acc = store.getState().account
-
-        const request2: GetOffchainFeeAmtRequest = {
-            accountId: acc.accountId,
-            requestType: OffchainFeeReqType.AMM_EXIT,
-            tokenSymbol: pair.coinBInfo.simpleName as string,
-        }
-
-        const {fees} = await LoopringAPI.userAPI.getOffchainFeeAmt(request2, acc.apiKey)
-
-        myLog('setExitfees:', fees)
-
-        setExitfees(fees)
-
-    }, [LoopringAPI.userAPI, pair.coinBInfo?.simpleName, store.getState().account.status])
-
-    // const handler = React.useCallback(async () =>,[])
-    const handleExitInDebounce = React.useCallback(debounce(async (data, type, exitFees) => {
-
-        myLog('handleExitInDebounce', data, type);
-
-        if (!tokenMap || !data.coinA.belong || !data.coinB.belong) {
-            return
-        }
+    const handleExit = React.useCallback(async ({ data, ammData, type, fees, ammPoolSnapshot, tokenMap, account }) => {
+        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, }]))
 
         const isAtoB = type === 'coinA'
 
-        const acc: Lv2Account = store.getState().account
+        if (!tokenMap || !data.coinA.belong || !data.coinB.belong
+            || !ammPoolSnapshot || !fees || !account?.accAddress
+            || (isAtoB && data.coinA.tradeValue === undefined)
+            || (!isAtoB && data.coinB.tradeValue === undefined)) {
+            return
+        }
 
-        const {idIndex, marketArray, marketMap,} = store.getState().tokenMap
+        const { slippage } = data
 
-        const {ammMap} = store.getState().amm.ammMap
+        const slippageReal = sdk.toBig(slippage).div(100).toString()
 
-        const {market, amm} = getExistedMarket(marketArray, data.coinA.belong as string,
+        const { idIndex, marketArray, marketMap, } = store.getState().tokenMap
+
+        const { ammMap } = store.getState().amm.ammMap
+
+        const { market, amm } = getExistedMarket(marketArray, data.coinA.belong as string,
             data.coinB.belong as string)
 
         if (!market || !amm || !marketMap) {
             return
         }
 
-        const marketInfo: MarketInfo = marketMap[ market ]
+        const marketInfo: MarketInfo = marketMap[market]
 
-        const ammInfo: any = ammMap[ amm as string ]
+        const ammInfo: any = ammMap[amm as string]
 
-        const request1: GetAmmPoolSnapshotRequest = {
-            poolAddress: ammInfo.address
-        }
+        const coinA = tokenMap[data.coinA.belong as string]
+        const coinB = tokenMap[data.coinB.belong as string]
 
-        const response = await LoopringAPI.ammpoolAPI?.getAmmPoolSnapshot(request1)
+        const rawVal = isAtoB ? data.coinA.tradeValue : data.coinB.tradeValue
 
-        if (!response) {
-            return
-        }
-
-        const {ammPoolSnapshot} = response
-
-        const coinA = tokenMap[ data.coinA.belong as string ]
-        const coinB = tokenMap[ data.coinB.belong as string ]
-
-        const coinA_TV = ammPoolSnapshot.pooled[ 0 ]
-        const coinB_TV = ammPoolSnapshot.pooled[ 1 ]
-
-        const covertVal = data.coinA.tradeValue ? sdk.toBig(data.coinA.tradeValue)
-            .times('1e' + isAtoB ? coinA.decimals : coinB.decimals).toFixed(0, 0) : '0'
-        const {output, ratio} = sdk.ammPoolCalc(covertVal, isAtoB, coinA_TV, coinB_TV)
-
-        const rawVal = isAtoB ? data.coinA.tradeValue.toString() : data.coinB.tradeValue.toString()
-
-        const {request} = makeExitAmmPoolRequest(rawVal, isAtoB, '0.001', acc.accAddr, exitFees as LoopringMap<OffchainFeeInfo>,
-            ammMap[ amm ], response.ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0)
+        const { request } = makeExitAmmPoolRequest(rawVal.toString(), isAtoB, slippageReal, account.accAddress, fees as LoopringMap<OffchainFeeInfo>,
+            ammMap[amm], ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0)
 
         if (isAtoB) {
-            data.coinB.tradeValue = parseFloat(toBig(request.exitTokens.unPooled[ 1 ].volume)
+            data.coinB.tradeValue = parseFloat(toBig(request.exitTokens.unPooled[1].volume)
                 .div('1e' + coinB.decimals).toFixed(marketInfo.precisionForPrice))
         } else {
-            data.coinA.tradeValue = parseFloat(toBig(request.exitTokens.unPooled[ 0 ].volume)
+            data.coinA.tradeValue = parseFloat(toBig(request.exitTokens.unPooled[0].volume)
                 .div('1e' + coinA.decimals).toFixed(marketInfo.precisionForPrice))
         }
 
-        setAmmExitData({
+        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData: data }]))
+
+        setAmmData({
             coinA: data.coinA as IBData<C>,
             coinB: data.coinB as IBData<C>,
-            slippage: 0.001
+            slippage,
         })
 
-        setExitRequest({
-            rawVal,
+        setRequest({
             ammInfo,
             request,
         })
         // }
 
-    }, globalSetup.wait), [exitFees])
+    }, [])
 
-    const handleExitAmmPoolEvent = React.useCallback(async (data: AmmData<IBData<C>>, type: 'coinA' | 'coinB') => {
-        await handleExitInDebounce(data, type, exitFees)
-    }, [exitFees]);
-    // console.log(account.status)
-    useCustomDCEffect(() => {
+    const handleAmmPoolEvent = (data: AmmData<IBData<any>>, _type: 'coinA' | 'coinB') => {
 
-        const label: string | undefined = accountStaticCallBack(bntLabel)
-        setAmmDepositBtnI18nKey(label);
-        setAmmWithdrawBtnI18nKey(label)
-    }, [account.status, bntLabel])
+        if (isJoin) {
+            handleJoin({ data, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account })
+        } else if (type === AmmPanelType.Exit) {
+            handleExit({ data, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account })
+        }
+    }
 
-    const [isJoinLoading, setJoinLoading] = useState(false)
+    const ammCalculator = React.useCallback(async function (props) {
 
-    const [isExitLoading, setExitLoading] = useState(false)
+        setIsLoading(true)
+        setBtnStatus(TradeBtnStatus.LOADING)
 
-    const addToAmmCalculator = React.useCallback(async function (props
-    ) {
-
-        setJoinLoading(true);
-        if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !joinRequest) {
+        if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !request || !account?.eddsaKey?.sk) {
             myLog(' onAmmJoin ammpoolAPI:', LoopringAPI.ammpoolAPI,
-                'joinRequest:', joinRequest)
-            setJoinLoading(true);
+                'joinRequest:', request)
+
+            setToastOpen({ open: true, type: 'success', content: t('labelJoinAmmFailed') })
+            setIsLoading(false)
+            walletLayer2Service.sendUserUpdate()
             return
         }
 
-        //todo add loading
-
-        const acc: Lv2Account = store.getState().account
-
-        const {ammInfo, request} = joinRequest
+        const { ammInfo, request: reqTmp } = request
 
         const patch: AmmPoolRequestPatch = {
             chainId: store.getState().system.chainId as ChainId,
             ammName: ammInfo.__rawConfig__.name,
             poolAddress: ammInfo.address,
-            eddsaKey: acc.eddsaKey
+            eddsaKey: account.eddsaKey.sk
         }
 
-        try {
+        switch (type) {
+            case AmmPanelType.Join:
+                const req: JoinAmmPoolRequest = reqTmp as JoinAmmPoolRequest
+                try {
 
-            const request2: GetNextStorageIdRequest = {
-                accountId: acc.accountId,
-                sellTokenId: request.joinTokens.pooled[ 0 ].tokenId as number
-            }
-            const storageId0 = await LoopringAPI.userAPI.getNextStorageId(request2, acc.apiKey)
+                    const request2: GetNextStorageIdRequest = {
+                        accountId: account.accountId,
+                        sellTokenId: req.joinTokens.pooled[0].tokenId as number
+                    }
+                    const storageId0 = await LoopringAPI.userAPI.getNextStorageId(request2, account.apiKey)
 
-            const request_1: GetNextStorageIdRequest = {
-                accountId: acc.accountId,
-                sellTokenId: request.joinTokens.pooled[ 1 ].tokenId as number
-            }
-            const storageId1 = await LoopringAPI.userAPI.getNextStorageId(request_1, acc.apiKey)
+                    const request_1: GetNextStorageIdRequest = {
+                        accountId: account.accountId,
+                        sellTokenId: req.joinTokens.pooled[1].tokenId as number
+                    }
+                    const storageId1 = await LoopringAPI.userAPI.getNextStorageId(request_1, account.apiKey)
 
-            request.storageIds = [storageId0.offchainId, storageId1.offchainId]
-            setAmmJoinData({
-                ...ammJoinData, ...{
-                    coinA: {...ammJoinData.coinA, tradeValue: 0},
-                    coinB: {...ammJoinData.coinB, tradeValue: 0},
+                    req.storageIds = [storageId0.offchainId, storageId1.offchainId]
+                    setAmmData({
+                        ...ammData, ...{
+                            coinA: { ...ammData.coinA, tradeValue: 0 },
+                            coinB: { ...ammData.coinB, tradeValue: 0 },
+                        }
+                    })
+                    const response = await LoopringAPI.ammpoolAPI.joinAmmPool(req, patch, account.apiKey)
+
+                    myLog('join ammpool response:', response)
+
+                    if ((response.joinAmmPoolResult as any)?.resultInfo) {
+                        setToastOpen({ open: true, type: 'error', content: t('labelJoinAmmFailed') })
+                    } else {
+                        setToastOpen({ open: true, type: 'success', content: t('labelJoinAmmSuccess') })
+                    }
+                } catch (reason) {
+                    dumpError400(reason)
+                    setToastOpen({ open: true, type: 'error', content: t('labelJoinAmmFailed') })
+                } finally {
+                    setIsLoading(false)
+                    walletLayer2Service.sendUserUpdate()
                 }
-            })
-            const response = await LoopringAPI.ammpoolAPI.joinAmmPool(request, patch, acc.apiKey)
+                break
+            case AmmPanelType.Exit:
+                const reqExit: ExitAmmPoolRequest = reqTmp as ExitAmmPoolRequest
 
-            myLog('join ammpool response:', response)
+                const burnedReq: GetNextStorageIdRequest = {
+                    accountId: account.accountId,
+                    sellTokenId: reqExit.exitTokens.burned.tokenId as number
+                }
+                const storageId0 = await LoopringAPI.userAPI.getNextStorageId(burnedReq, account.apiKey)
 
-            await delayAndUpdateWalletLayer2();
-            setJoinLoading(false);
+                reqExit.storageId = storageId0.offchainId
 
-        } catch (reason) {
-            setJoinLoading(false);
-            dumpError400(reason)
+                try {
+
+                    myLog('exit req:', request)
+                    setAmmData({
+                        ...ammData, ...{
+                            coinA: { ...ammData.coinA, tradeValue: 0 },
+                            coinB: { ...ammData.coinB, tradeValue: 0 },
+                        }
+                    })
+                    const response = await LoopringAPI.ammpoolAPI.exitAmmPool(reqExit, patch, account.apiKey)
+
+                    myLog('exit ammpool response:', response)
+
+                    if ((response.exitAmmPoolResult as any)?.resultInfo) {
+                        setToastOpen({ open: true, type: 'error', content: t('labelExitAmmFailed') })
+                    } else {
+                        setToastOpen({ open: true, type: 'success', content: t('labelExitAmmSuccess') })
+                    }
+
+                } catch (reason) {
+                    dumpError400(reason)
+                    setToastOpen({ open: true, type: 'error', content: t('labelExitAmmFailed') })
+                } finally {
+                    setIsLoading(false)
+                    walletLayer2Service.sendUserUpdate()
+                }
+                break
+            default:
+                break
         }
+
         if (props.__cache__) {
             makeCache(props.__cache__)
         }
-    }, [joinRequest, ammJoinData])
 
-    const onAmmDepositClickMap: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
-        [ fnType.ACTIVATED ]: [addToAmmCalculator]
+    }, [type, request, ammData, account, t])
+
+    const onAmmClickMap = Object.assign(deepClone(btnClickMap), {
+        [fnType.ACTIVATED]: [ammCalculator]
     })
-    const onAmmAddClick = React.useCallback((props: AmmData<IBData<C>>) => {
-        accountStaticCallBack(onAmmDepositClickMap, [props])
-    }, [onAmmDepositClickMap]);
+    const onAmmClick = React.useCallback((props: AmmData<IBData<any>>) => {
+        accountStaticCallBack(onAmmClickMap, [props])
+    }, [onAmmClickMap]);
 
-    const removeAmmCalculator = React.useCallback(async function (props
-    ) {
-        setExitLoading(true);
-        //TODO: onExit
-        myLog('removeAmmCalculator props:', props)
+    const walletLayer2Callback = React.useCallback(() => {
 
-        // const { exitRequest } = props
-
-        if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !exitRequest) {
-            myLog(' onExit ammpoolAPI:', LoopringAPI.ammpoolAPI,
-                'exitRequest:', exitRequest)
-            setExitLoading(false);
-            return
+        if (pair?.coinAInfo?.simpleName && snapShotData?.ammPoolsBalance) {
+            const { walletMap } = makeWalletLayer2()
+            initAmmData(pair, walletMap)
+            setIsLoading(false)
         }
 
-        const acc: Lv2Account = store.getState().account
+    }, [type, fee, pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolsBalance])
 
-        const {ammInfo, request} = exitRequest
-
-        const patch: AmmPoolRequestPatch = {
-            chainId: store.getState().system.chainId as ChainId,
-            ammName: ammInfo.__rawConfig__.name,
-            poolAddress: ammInfo.address,
-            eddsaKey: acc.eddsaKey
-        }
-
-        const burnedReq: GetNextStorageIdRequest = {
-            accountId: acc.accountId,
-            sellTokenId: request.exitTokens.burned.tokenId as number
-        }
-        const storageId0 = await LoopringAPI.userAPI.getNextStorageId(burnedReq, acc.apiKey)
-
-        request.storageId = storageId0.offchainId
-
-        try {
-
-            myLog('exit req:', request)
-            setAmmExitData({
-                ...ammExitData, ...{
-                    coinA: {...ammExitData.coinA, tradeValue: 0},
-                    coinB: {...ammExitData.coinB, tradeValue: 0},
-                }
-            })
-            const response = await LoopringAPI.ammpoolAPI.exitAmmPool(request, patch, acc.apiKey)
-
-            myLog('exit ammpool response:', response)
-
-            await delayAndUpdateWalletLayer2()
-            setExitLoading(false);
-        } catch (reason) {
-            dumpError400(reason)
-            setExitLoading(false);
-        }
-
-        // if (props.__cache__) {
-        //     makeCache(props.__cache__)
-        // }
-
-    }, [exitRequest, ammExitData])
-
-    const removeAmmClickMap: typeof btnClickMap = Object.assign(deepClone(btnClickMap), {
-        [ fnType.ACTIVATED ]: [removeAmmCalculator]
-    })
-
-    const onAmmRemoveClick = React.useCallback((props: AmmData<IBData<C>>) => {
-
-        myLog('onAmmRemoveClick, exitRequest:', exitRequest, ' ammExitData:', ammExitData)
-        accountStaticCallBack(removeAmmClickMap, [props])
-    }, [exitRequest, ammExitData]);
+    useWalletLayer2Socket({ walletLayer2Callback })
 
     React.useEffect(() => {
-        if (snapShotData) {
-            initAmmData(pair)
-        }
-    }, [snapShotData, pair, walletMap]);
-
+        walletLayer2Callback()
+    }, [fee, pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolsBalance, tokenMap])
 
     return {
         ammCalcData,
-        ammJoinData,
-        ammExitData,
-        isJoinLoading,
-        isExitLoading,
-        handleJoinAmmPoolEvent,
-        handleExitAmmPoolEvent,
-        onAmmRemoveClick,
-        onAmmAddClick,
-        ammDepositBtnI18nKey,
-        ammWithdrawBtnI18nKey,
+        ammData,
+        handleAmmPoolEvent,
+        btnStatus,
+        onAmmClick,
+        btnI18nKey,
+
     }
 }

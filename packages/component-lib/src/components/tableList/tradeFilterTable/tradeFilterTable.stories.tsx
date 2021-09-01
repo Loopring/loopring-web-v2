@@ -7,8 +7,8 @@ import { TradeFilterTable } from './TradeFilterTable';
 
 
 const Style = styled.div`
-  background: ${({theme}) => theme.colorBase.background().bg};
-  color: #fff;
+  background: var(--color-global-bg);
+  
   height: 100%;
   flex: 1
 `

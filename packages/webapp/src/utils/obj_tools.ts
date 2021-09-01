@@ -1,4 +1,5 @@
 import { debug } from "console"
+import { myLog } from "./log_tools"
 
 export function deepClone(data: any) {
     if (!data || !(data instanceof Object) || (typeof data == "function")) {
@@ -32,7 +33,7 @@ export async function copyToClipBoard(text: string){ //复制到剪切板
 	if((window as any).clipboardData) {
         (window as any).clipboardData.setData("Text", text)
 
-        console.log('clipboardData:', text)
+        myLog('clipboardData:', text)
         return true
     }
 	return false

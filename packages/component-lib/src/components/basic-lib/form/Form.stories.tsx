@@ -7,12 +7,10 @@ import {
     FormControl,
     FormControlLabel as MuiFormControlLabel,
     Grid,
-    InputAdornment,
     ListItemText,
-    OutlinedInput,
     Typography
 } from '@material-ui/core'
-import { FormControlLabel, InputCoinProps, MenuItem } from '../../basic-lib'
+import {  InputCoinProps, MenuItem } from '../../basic-lib'
 import { Trans, withTranslation } from "react-i18next";
 import {
     DatePicker,
@@ -21,20 +19,30 @@ import {
     InputButtonProps,
     InputSelect,
     InputSelectProps,
-    TextField
+    TextField,
+    InputSearch
 } from "./input";
-import { CheckBoxIcon, CheckedIcon, CoinInfo, CoinKey, DropDownIcon, IBData, SearchIcon } from '@loopring-web/common-resources';
+import {
+    CheckBoxIcon,
+    CheckedIcon,
+    CloseIcon,
+    CoinInfo,
+    CoinKey,
+    DropDownIcon,
+    IBData,
+} from '@loopring-web/common-resources';
 import { DateRange } from '@material-ui/lab';
 import { EmptyDefault } from '../empty';
 import { coinMap, CoinType, inputProps, walletMap } from '../../../static';
 import { CoinMenu } from '../lists';
-import { OutlinedInputProps } from '@material-ui/core/OutlinedInput/OutlinedInput';
 import { InputCoin } from './input/InputCoin';
+import { Link } from '@material-ui/core/';
+import { IconClearStyled } from '../../tradePanel';
 
 
 const Style = styled.div`
-  background: ${({theme}) => theme.colorBase.background().bg};
-  color: #fff;
+  background: var(--color-global-bg);
+  
 `
 export default {
     title: 'basic-lib/Form',
@@ -78,6 +86,7 @@ const InputButtonWrap = () => {
         <Grid item xs={4}>
             <InputButton<IBData<CoinType>, CoinType, CoinInfo<CoinType>> {..._inputProps}></InputButton>
         </Grid>
+
         <Grid item xs={4}>
             <InputButton<IBData<CoinType>, CoinType, CoinInfo<CoinType>> {...{
                 ..._inputProps, ...{
@@ -110,7 +119,7 @@ const InputIconWrap = () => {
     const handleCountChange = React.useCallback((ibData: IBData<CoinType>) => {
         setData(ibData)
     }, [])
-
+                                
 
     let _inputProps: InputCoinProps<IBData<CoinType>, CoinType, CoinInfo<CoinType>> = {
         handleCountChange,
@@ -176,12 +185,21 @@ const SimpleSelect = ({t}: any) => {
 const InputSelectWrap = (rest: any) => {
     const ref = React.useRef<any>(null);
     const selected: CoinKey<CoinType> = "TEST3";
+    const backElement = React.useMemo(() => <>
+        {/*<Button variant={'text'} size={'medium'} color={'primary'}*/}
+        {/*       */}
+        {/*></Button>*/}
+        <Typography fontSize={'body1'}>
+            <Link color="textSecondary" onClick={() => {}} style={{textAlign:'right'}}>Cancel</Link>
+        </Typography>
+    </>, [])
     const inputSelectProps: InputSelectProps<CoinType> = {
         placeholder: 'Search Coin',
         focusOnInput: true,
         allowScroll: true,
         selected: '',
         panelRender: () => <></>,
+        backElement,
         handleContentChange: (value) => {
             console.log('FilterString', value);
             //setFilterString(value);
@@ -260,29 +278,45 @@ const MyDatePicker = (props: any) => {
         </Grid> </>
 
 }
-const SearchWrap = () => {
-    const inputProps: OutlinedInputProps = {
-        placeholder: 'Search Coin',
-        value: '',
-        onChange: (value: any) => {
-            console.log('FilterString', value);
-            //setFilterString(value);
-        },
-    }
-    return <OutlinedInput
-        // ref={inputEle}
-        {...inputProps}
-        key={'search'}
-        // placeholder={'search'}
-        className={'search'}
-        aria-label={'search'}
-        startAdornment={<InputAdornment position="start">
-            <SearchIcon/>
-        </InputAdornment>}
-    />
-}
+// const SearchWrap = () => {
+//     const inputProps: OutlinedInputProps = {
+//         placeholder: 'Search Coin',
+//         value: '',
+//         onChange: (value: any) => {
+//             console.log('FilterString', value);
+//             //setFilterString(value);
+//         },
+//     }
+//     return <OutlinedInput
+//         // ref={inputEle}
+//         {...inputProps}
+//         key={'search'}
+//         // placeholder={'search'}
+//         className={'search'}
+//         aria-label={'search'}
+//         startAdornment={<InputAdornment position="start">
+//             <SearchIcon/>
+//         </InputAdornment>}
+//     />
+// }
 const Template: Story<any> = withTranslation()((props: any) => {
     const [value, setValue] = React.useState('');
+    const [searchValue, setSearchValue] = React.useState('');
+
+    const handleSearchChange = React.useCallback((value) => {
+        setSearchValue(value)
+    }, [])
+    const handleClear = React.useCallback(() => {
+        // @ts-ignore
+        // addressInput?.current?.value = "";
+        setSearchValue('')
+    }, [])
+    // const handleClear = React.useCallback(() => {
+    //     // @ts-ignore
+    //     // addressInput?.current?.value = "";
+    //     setAddress('')
+    // }, [])
+
 
     return <Style>
         <h4>Select token ground btn and input value</h4>
@@ -302,7 +336,7 @@ const Template: Story<any> = withTranslation()((props: any) => {
                     inputProps={{IconComponent: DropDownIcon}}
                     fullWidth={true}
                 >{[{belong: 'eth', fee: '0.1'}, {belong: 'lrc', fee: '1000'}].map(({belong, fee}) => {
-                    return <MenuItem key={belong} value={fee} withNoCheckIcon={'true'}>
+                    return <MenuItem key={belong} value={fee} withnocheckicon={'true'}>
                         <ListItemText primary={<Typography
                             sx={{display: 'inline'}}
                             component="span"
@@ -323,12 +357,32 @@ const Template: Story<any> = withTranslation()((props: any) => {
                                        color="default"/>} label="Label"/>
             </Grid>
 
-            <Grid item xs={3}>
-                <FormControlLabel control={<Checkbox defaultChecked checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
-                                                     color="default"/>} label="Label"/>
+            <Grid item xs={3} marginTop={2} alignSelf={"stretch"} position={'relative'}>
+                {/* <SearchWrap/> */}
+                <InputSearch value={searchValue} fullWidth onChange={handleSearchChange} />
+                {searchValue !== '' ? <IconClearStyled size={'small'}  style={{top:'22px'}} aria-label="Clear" onClick={handleClear}>
+                    <CloseIcon/>
+                </IconClearStyled> : ''}
             </Grid>
-            <Grid item xs={3}>
-                <SearchWrap/>
+            <Grid item xs={3} marginTop={2} alignSelf={"stretch"} position={'relative'}>
+                <TextField
+                    value={searchValue}
+                    // error={addressError && addressError.error ? true : false}
+                    label={'input'}
+                    placeholder={'input'}
+                    onChange={()=>{handleSearchChange(searchValue)}}
+                    // disabled={chargeFeeTokenList.length ? false : true}
+                    SelectProps={{IconComponent: DropDownIcon}}
+                    // required={true}
+                    // inputRef={addressInput}
+                    // helperText={<Typography
+                    //     variant={'body2'}
+                    //     component={'span'}>{addressError && addressError.error ? addressError.message : ''}</Typography>}
+                    fullWidth={true}
+                />
+                {searchValue !== '' ? <IconClearStyled size={'small'} style={{top:'46px'}} aria-label="Clear" onClick={handleClear}>
+                    <CloseIcon/>
+                </IconClearStyled> : ''}
             </Grid>
             <MyDatePicker {...props} />
         </Grid>
@@ -347,5 +401,6 @@ const Template: Story<any> = withTranslation()((props: any) => {
     </Style>
 }) as Story<any>;
 
+// @ts-ignore
 export const FormItem = Template.bind({});
 FormItem.args = {}

@@ -7,7 +7,7 @@ import styled from '@emotion/styled'
 
 const Styled = styled.div`
   flex: 1;
-  color: #fff;
+  
   width: 1000px;
   height: 500px;
 `

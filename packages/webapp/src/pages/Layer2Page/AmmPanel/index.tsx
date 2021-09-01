@@ -1,66 +1,13 @@
-import React, { useEffect } from 'react'
-import { RawDataAmmItem, AmmTable, AmmSideTypes } from '@loopring-web/component-lib'
+import React from 'react'
+import {  AmmTable } from '@loopring-web/component-lib'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import store from 'stores'
-import { LoopringAPI } from 'stores/apis/api'
-import { AmmTxType } from 'loopring-sdk'
 import { StylePaper } from '../../styled'
-import { volumeToCount } from '../../../hooks/help';
+import { useGetAmmRecord } from'./hook'
 
-const AmmPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
+const AmmPanel = withTranslation('common')(({ t, ...rest }: WithTranslation<'common'>) => {
     const container = React.useRef(null);
     const [pageSize, setPageSize] = React.useState(10);
-    const [originalData, setOriginalData] = React.useState<RawDataAmmItem[]>([])
-
-    const { accountId,apiKey } = store.getState().account;
-    const { tokenMap } = store.getState().tokenMap
-    
-    const getTokenName = React.useCallback((tokenId?: number) => {
-        if (tokenMap) {
-            const keys = Object.keys(tokenMap)
-            const values = Object.values(tokenMap)
-            const index = values.findIndex(o => o.tokenId === tokenId)
-            if (index > -1) {
-                return keys[index]
-            }
-            return ''
-        }
-        return ''
-    }, [tokenMap])
-
-    const getAmmpoolList = React.useCallback(async () => {
-        if (LoopringAPI.ammpoolAPI && accountId && apiKey) {
-            const ammpool = await LoopringAPI.ammpoolAPI.getUserAmmPoolTxs({
-                accountId,
-            }, apiKey)
-            if (ammpool && ammpool.userAmmPoolTxs) {
-                const result = ammpool.userAmmPoolTxs.map(o => ({
-                    side: o.txType === AmmTxType.JOIN ? AmmSideTypes.Join : AmmSideTypes.Exit,
-                    amount: {
-                        from: {
-                            key: getTokenName(o.poolTokens[0]?.tokenId),
-                            value: String(volumeToCount(getTokenName(o.poolTokens[0]?.tokenId), o.poolTokens[0]?.actualAmount))
-                        },
-                        to: {
-                            key: getTokenName(o.poolTokens[1]?.tokenId),
-                            value: String(volumeToCount(getTokenName(o.poolTokens[1]?.tokenId), o.poolTokens[1]?.actualAmount))
-                        }
-                    },
-                    lpTokenAmount: String(volumeToCount(getTokenName(o.lpToken?.tokenId), o.lpToken?.actualAmount)),
-                    fee: {
-                        key: getTokenName(o.poolTokens[1]?.tokenId),
-                        value: String(volumeToCount(getTokenName(o.poolTokens[1]?.tokenId), o.poolTokens[1]?.feeAmount))
-                    },
-                    time: o.updatedAt
-                }))
-                setOriginalData(result)
-            }
-        }
-    }, [accountId, apiKey, getTokenName])
-
-    useEffect(() => {
-        getAmmpoolList()
-    }, [getAmmpoolList])
+    const { ammRecordList, showLoading } = useGetAmmRecord()
 
     React.useEffect(() => {
         // @ts-ignore
@@ -72,15 +19,16 @@ const AmmPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
 
     return (
         <>
-            <StylePaper ref={container}>
-                <div className="title">AMM Records</div>
+            <StylePaper ref={container} className={'MuiPaper-elevation2'}>
+                <div className="title">{t('labelAmmPageTitle')}</div>
                 <div className="tableWrapper">
                     <AmmTable {...{
-                        rawData: originalData,
+                        rawData: ammRecordList,
                         pagination: {
                             pageSize: pageSize
                         },
                         showFilter: true,
+                        showLoading: showLoading,
                         ...rest}}/>
                 </div>
             </StylePaper>

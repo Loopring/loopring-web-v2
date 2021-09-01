@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 /**
  *
  * @param value
@@ -27,4 +28,38 @@ export function abbreviateNumber(value: number) {
 
     result += suffixes[ suffixNum ];
     return result;
+}
+
+export const getFormattedHash = (hash?: string) => {
+    if (!hash) return hash
+    const firstSix = hash.slice(0, 6)
+    const lastFour = hash.slice(hash.length - 4)
+    return `${firstSix}****${lastFour}`
+}
+
+export function getShortAddr(address: string):string|'' {
+    if (!address || address === undefined || address === null || address.trim() === '') {
+        // console.log('getShortAddr got empty!')
+        return ''
+    }
+    const convertAddr = address.substr(0, 6) + '...' + address.substr(address.length - 4)
+    return convertAddr
+}
+
+/**
+ * 
+ * @param rawValue 
+ * @param precision 
+ * @returns 
+ */
+export const getValuePrecision = (rawValue?: number | string, precision = 6) => {
+    if (!rawValue) return '--'
+    if (typeof rawValue === 'string') {
+        rawValue = Number(rawValue)
+    }
+    if (rawValue === 0) return 0.00
+    if (rawValue >= 1) {
+        return rawValue.toFixed(precision)
+    }
+    return new BigNumber(rawValue).toPrecision(2) as string
 }

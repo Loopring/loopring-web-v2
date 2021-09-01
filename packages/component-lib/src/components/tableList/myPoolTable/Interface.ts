@@ -19,5 +19,7 @@ export type MyPoolTableProps<T, R = MyPoolRow<T>> = {
     page?: number,
     handlePageChange: (page: number) => void,
     showFilter?: boolean,
-    wait?: number
+    wait?: number;
+    showLoading?: boolean;
+    currency?: 'USD' | 'CYN'
 } & Method<R>

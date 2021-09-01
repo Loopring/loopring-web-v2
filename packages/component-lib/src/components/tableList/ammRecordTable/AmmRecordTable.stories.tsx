@@ -7,7 +7,7 @@ import { CoinInfo } from '@loopring-web/common-resources';
 import moment from 'moment';
 
 const Style = styled.div`
-  color: #fff;
+  
   flex: 1;
   height: 100%;
   flex: 1;

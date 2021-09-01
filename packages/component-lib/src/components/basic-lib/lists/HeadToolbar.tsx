@@ -1,15 +1,15 @@
 import styled from "@emotion/styled";
-import { MenuItem } from "@material-ui/core";
+import { MenuItem, MenuItemProps } from "@material-ui/core";
 
-export const TabItemPlus = styled(MenuItem)<any>`
+
+export const TabItemPlus = styled<any>(MenuItem)`
   && {
     &.Mui-focusVisible {
       background-color: transparent;
     }
 
-    padding: 0;
     margin: 0;
-    padding-left: 1.6rem;
+    padding: 0 0 0 1.6rem;
 
     &:hover {
       background-color: transparent;
@@ -20,19 +20,19 @@ export const TabItemPlus = styled(MenuItem)<any>`
       svg {
         width: var(--header-menu-icon-size);
         height: var(--header-menu-icon-size);
-        color: ${({theme}) => theme.colorBase.textPrimaryLight};
+        color: var(--color-text-secondary);
       }
 
       :hover {
         svg {
-          color: ${({theme}) => theme.colorBase.textPrimary};
+          color: var(--color-text-primary);
         }
 
-        color: ${({theme}) => theme.colorBase.textPrimary};
+        color: var(--color-text-primary);
       }
     }
 
   }
-` as typeof MenuItem;
+` as React.ElementType<MenuItemProps>;
 
 

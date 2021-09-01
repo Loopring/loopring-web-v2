@@ -1,35 +1,35 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { AmmActivityMapStates } from './interface';
-import { STATUS } from '../../constant';
+import { SagaStatus } from '@loopring-web/common-resources';
 
 
-const initialState:Required<AmmActivityMapStates>  = {
-    ammActivityMap:{},
-    status:'UNSET',
-    errorMessage:null,
+const initialState: Required<AmmActivityMapStates> = {
+    ammActivityMap: {},
+    status: 'PENDING',
+    errorMessage: null,
 }
-const ammActivityMapSlice:Slice = createSlice({
+const ammActivityMapSlice: Slice = createSlice({
     name: 'ammActivityMap',
     initialState,
     reducers: {
-        getAmmActivityMap(state, action:PayloadAction<string | undefined>) {
-            state.status = STATUS.PENDING
+        getAmmActivityMap(state, action: PayloadAction<string | undefined>) {
+            state.status = SagaStatus.PENDING
         },
         getAmmActivityMapStatus(state, action: PayloadAction<AmmActivityMapStates>) {
             // @ts-ignore
             if (action.error) {
-                state.status =  STATUS.ERROR
+                state.status = SagaStatus.ERROR
                 // @ts-ignore
                 state.errorMessage = action.error
             }
             state.ammActivityMap = {...action.payload.ammActivityMap};
-            state.status = STATUS.DONE
+            state.status = SagaStatus.DONE
         },
         statusUnset: state => {
-            state.status = STATUS.UNSET
+            state.status = SagaStatus.UNSET
         }
 
     },
 });
 export { ammActivityMapSlice };
-export const { getAmmActivityMap, getAmmActivityMapStatus, statusUnset } = ammActivityMapSlice.actions
+export const {getAmmActivityMap, getAmmActivityMapStatus, statusUnset} = ammActivityMapSlice.actions
