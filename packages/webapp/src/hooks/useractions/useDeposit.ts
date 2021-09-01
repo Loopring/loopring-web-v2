@@ -15,41 +15,52 @@ import { useTranslation } from 'react-i18next';
 import { ActionResult, ActionResultCode } from 'defs/common_defs';
 import { checkErrorInfo } from './utils';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
+import { useAllowances } from 'hooks/common/useAllowances';
 
 export const useDeposit = <R extends IBData<T>, T>(): {
     depositProps: DepositProps<R, T>
 } => {
-    const {tokenMap, totalCoinMap,} = useTokenMap()
-    const {account} = useAccount()
-    const {exchangeInfo, chainId, gasPrice} = useSystem()
+    const { tokenMap, totalCoinMap, } = useTokenMap()
+    const { account } = useAccount()
+    const { exchangeInfo, chainId, gasPrice } = useSystem()
     const [depositValue, setDepositValue] = React.useState<IBData<T>>({
         belong: undefined,
         tradeValue: 0,
         balance: 0
     } as IBData<unknown>)
-    const {modals: {isShowDeposit: {symbol, isShow}}} = useOpenModals()
+    const { modals: { isShowDeposit: { symbol, isShow } } } = useOpenModals()
 
-    const {walletLayer1} = useWalletLayer1()
-    const {setShowDeposit, setShowAccount} = useOpenModals()
-    const {t} = useTranslation('common')
+    const { walletLayer1 } = useWalletLayer1()
+    const { setShowDeposit, setShowAccount } = useOpenModals()
+    const { t } = useTranslation('common')
 
-    const {btnStatus, enableBtn, disableBtn,} = useBtnStatus()
+    const { btnStatus, enableBtn, disableBtn, } = useBtnStatus()
+
+    const { allowanceInfo } = useAllowances({ owner: account.accAddress, symbol: depositValue.belong, })
 
     React.useEffect(() => {
 
-        if (depositValue?.tradeValue) {
-            enableBtn()
+        myLog(allowanceInfo?.allowance.toNumber(), allowanceInfo?.needCheck)
+
+        if (depositValue?.tradeValue && allowanceInfo) {
+
+            const curValInWei = sdk.toBig(depositValue?.tradeValue).times('1e' + allowanceInfo?.tokenInfo.decimals)
+            if (curValInWei.gt(allowanceInfo.allowance)) {
+            } else {
+                enableBtn()
+            }
+
         } else {
             disableBtn()
         }
 
-    }, [enableBtn, disableBtn, depositValue?.tradeValue])
+    }, [enableBtn, disableBtn, depositValue?.tradeValue, allowanceInfo])
 
     const walletLayer1Callback = React.useCallback(() => {
         if (symbol && walletLayer1) {
             setDepositValue({
                 belong: symbol as any,
-                balance: walletLayer1[ symbol ]?.count,
+                balance: walletLayer1[symbol]?.count,
                 tradeValue: undefined,
             })
 
@@ -57,8 +68,8 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             if (walletLayer1) {
                 const keys = Reflect.ownKeys(walletLayer1)
                 for (var key in keys) {
-                    const keyVal = keys[ key ] as any
-                    const walletInfo = walletLayer1[ keyVal ]
+                    const keyVal = keys[key] as any
+                    const walletInfo = walletLayer1[keyVal]
                     if (sdk.toBig(walletInfo.count).gt(0)) {
 
                         setDepositValue({
@@ -80,18 +91,18 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     // useWalletLayer2Socket({ walletLayer1Callback })
 
     const handleDeposit = React.useCallback(async (inputValue: any) => {
-        const {readyState, connectName} = account
+        const { readyState, connectName } = account
 
         console.log(LoopringAPI.exchangeAPI, connectProvides.usedWeb3)
 
-        let result: ActionResult = {code: ActionResultCode.NoError}
+        let result: ActionResult = { code: ActionResultCode.NoError }
 
         if ((readyState !== AccountStatus.UN_CONNECT
             && inputValue.tradeValue)
             && tokenMap && exchangeInfo?.exchangeAddress
             && connectProvides.usedWeb3 && LoopringAPI.exchangeAPI) {
             try {
-                const tokenInfo = tokenMap[ inputValue.belong ]
+                const tokenInfo = tokenMap[inputValue.belong]
                 const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
                 let nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
 
@@ -108,11 +119,11 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 if (tokenInfo.symbol.toUpperCase() !== 'ETH') {
 
-                    const req: GetAllowancesRequest = {owner: account.accAddress, token: tokenInfo.symbol}
+                    const req: GetAllowancesRequest = { owner: account.accAddress, token: tokenInfo.symbol }
 
-                    const {tokenAllowances} = await LoopringAPI.exchangeAPI.getAllowances(req, tokenMap)
+                    const { tokenAllowances } = await LoopringAPI.exchangeAPI.getAllowances(req, tokenMap)
 
-                    const allowance = sdk.toBig(tokenAllowances[ tokenInfo.symbol ])
+                    const allowance = sdk.toBig(tokenAllowances[tokenInfo.symbol])
 
                     const curValInWei = sdk.toBig(inputValue.tradeValue).times('1e' + tokenInfo.decimals)
 
@@ -120,7 +131,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                         myLog(curValInWei, allowance, ' need approveMax!')
 
-                        setShowAccount({isShow: true, step: AccountStep.Deposit_Approve_WaitForAuth})
+                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Approve_WaitForAuth })
 
                         try {
                             await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
@@ -130,7 +141,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                             result.code = ActionResultCode.ApproveFailed
                             result.data = reason
 
-                            setShowAccount({isShow: true, step: AccountStep.Deposit_Approve_Denied})
+                            setShowAccount({ isShow: true, step: AccountStep.Deposit_Approve_Denied })
                             return
                         }
 
@@ -141,9 +152,9 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 }
 
                 if (readyState === AccountStatus.ACTIVATED) {
-                    setShowAccount({isShow: true, step: AccountStep.Deposit_WaitForAuth})
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit_WaitForAuth })
                 } else {
-                    setShowAccount({isShow: true, step: AccountStep.Deposit_WaitForAuth})
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit_WaitForAuth })
                 }
 
                 myLog('before deposit:', chainId, connectName, isMetaMask)
@@ -160,10 +171,10 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 if (response) {
                     // deposit sucess
-                    setShowAccount({isShow: true, step: AccountStep.Deposit_Submited})
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit_Submited })
                 } else {
                     // deposit failed
-                    setShowAccount({isShow: true, step: AccountStep.Deposit_Failed})
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
                 }
 
             } catch (reason) {
@@ -179,10 +190,10 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 switch (err) {
                     case ConnectorError.USER_DENIED:
-                        setShowAccount({isShow: true, step: AccountStep.Deposit_Denied})
+                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Denied })
                         break
                     default:
-                        setShowAccount({isShow: true, step: AccountStep.Deposit_Failed})
+                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
                         break
                 }
             }
@@ -197,7 +208,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
     const onDepositClick = useCallback(async (depositValue) => {
         myLog('onDepositClick depositValue:', depositValue)
-        setShowDeposit({isShow: false})
+        setShowDeposit({ isShow: false })
 
         if (depositValue && depositValue.belong) {
             await handleDeposit(depositValue as R)

@@ -16,7 +16,6 @@ import { HelpIcon } from '@loopring-web/common-resources'
 export const DepositWrapNew = <T extends IBData<I>,
     I>({
            t, disabled, walletMap, tradeData, coinMap,
-           //  onTransferClick,
            title, description,
            depositBtnStatus,
            onDepositClick,
