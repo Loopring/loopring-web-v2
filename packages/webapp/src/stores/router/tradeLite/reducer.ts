@@ -32,7 +32,8 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                 totalFee,
                 takerRate,
                 buyMinAmtInfo,
-                sellMinAmtInfo
+                sellMinAmtInfo,
+                lastStepAt
             } = action.payload;
             if (market !== state.pageTradeLite.market) {
                 state.pageTradeLite = {
@@ -51,15 +52,21 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                     quoteMinAmtInfo,
                     buyMinAmtInfo,
                     sellMinAmtInfo,
+                    lastStepAt:undefined,
                 }
 
             } else {
+                if(lastStepAt){
+                    state.pageTradeLite.lastStepAt = lastStepAt;
+                }
                 if (tradePair) {
                     state.pageTradeLite.tradePair = tradePair;
+                    state.pageTradeLite.lastStepAt = undefined
                 }
                 if (depth) {
                     state.pageTradeLite.depth = depth;
                 }
+
                 if (tickMap) {
                     state.pageTradeLite.tickMap = tickMap;
                 }

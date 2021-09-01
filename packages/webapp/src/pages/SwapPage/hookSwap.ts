@@ -459,6 +459,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
         if (pageTradeLite.depth) {
             refreshAmmPoolSnapshot()
             setIsSwapLoading(false);
+
         }
     }, [pageTradeLite.depth, tradeCalcData.coinBuy])
 
@@ -477,7 +478,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
 
     }, [market]);
     const refreshAmmPoolSnapshot = React.useCallback(() => {
-        const {tickMap, ammPoolSnapshot, depth,} = pageTradeLite;
+        const {tickMap, ammPoolSnapshot, depth, lastStepAt,tradePair} = pageTradeLite;
         //@ts-ignore
         //(tickMap || ammPoolSnapshot) &&
         if (pageTradeLite.market && (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market
@@ -497,9 +498,11 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                 state.BtoS = getShowStr(stob ? 1 / stob : 0)
                 return state
             })
-
-
         }
+        if(tradeData && lastStepAt && tradeData[lastStepAt].tradeValue && tradeData[lastStepAt].tradeValue !== 0) {
+            reCalculateDataWhenValueChange(tradeData,tradePair,lastStepAt);
+        }
+
 
     }, [market, pageTradeLite, tradeData, tradeCalcData, setTradeCalcData])
 
@@ -652,6 +655,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                     takerRate: takerRate ? takerRate : 0,
                 } as any,
                 priceImpactObj,
+                lastStepAt:type,
                 feeBips, totalFee, takerRate, sellMinAmtInfo, buyMinAmtInfo
             })
             //setOutput(calcTradeParams)

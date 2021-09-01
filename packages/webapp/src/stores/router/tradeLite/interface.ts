@@ -41,8 +41,7 @@ export type PageTradeLite = {
     quoteMinAmtInfo?: number | string,
     buyMinAmtInfo?: undefined | OrderInfo;
     sellMinAmtInfo?: undefined | OrderInfo;
-
-
+    lastStepAt?:'sell'|'buy'|undefined,
 }
 
 export type PageTradeLiteStatus = {
