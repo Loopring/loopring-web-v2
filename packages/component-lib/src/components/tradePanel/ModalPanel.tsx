@@ -13,7 +13,6 @@ import {
     SwapProps,
     SwitchPanelStyled,
     TransferPanel,
-    TransferPanelNew,
     TransferProps,
     useOpenModals,
     WithdrawPanel,
@@ -104,10 +103,10 @@ export const ModalPanel = <T extends IBData<I>, I>({
     const theme = useTheme();
     return <>
         <Modal open={isShowTransfer.isShow} onClose={() => setShowTransfer({isShow: false})}
-               content={<TransferPanelNew<any, any> {...{
+               content={<TransferPanel<any, any> {...{
                    ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
                    _height: 'var(--lage-modal-height)', ...transferProps,
-               }}> </TransferPanelNew>}/>
+               }}> </TransferPanel>}/>
         <Modal open={isShowWithdraw.isShow} onClose={() => setShowWithdraw({isShow: false})}
                content={<WithdrawPanel<any, any> {...{
                    ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
