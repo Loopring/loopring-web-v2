@@ -61,7 +61,7 @@ export const CreateAccount_Failed = (props: PanelProps & WithTranslation) => {
 export const CreateAccount_Submit = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.SubmitIcon,
-        describe1: props.t('labelCreateAccountSubmit',{value:props.value,symbol:props.symbol})
+        describe1: props.t('labelCreateAccountSubmit',{value:props.value,symbol:props.symbol,count:30})
 
     }
     return <CreateAccountBase {...propsPatch} {...props} />
