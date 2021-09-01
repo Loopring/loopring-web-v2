@@ -23,7 +23,7 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                 market,
                 depth,
                 tickMap,
-                ammPoolsBalance,
+                ammPoolSnapshot,
                 tradePair,
                 quoteMinAmtInfo,
                 calcTradeParams,
@@ -41,7 +41,7 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                     calcTradeParams,
                     depth,
                     tickMap,
-                    ammPoolsBalance,
+                    ammPoolSnapshot,
                     priceImpactObj,
                     tradeChannel: calcTradeParams ? (calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined,
                     orderType: calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly) : undefined,
@@ -63,8 +63,8 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                 if (tickMap) {
                     state.pageTradeLite.tickMap = tickMap;
                 }
-                if (ammPoolsBalance) {
-                    state.pageTradeLite.ammPoolsBalance = ammPoolsBalance;
+                if (ammPoolSnapshot) {
+                    state.pageTradeLite.ammPoolSnapshot = ammPoolSnapshot;
                 }
                 if (calcTradeParams) {
                     state.pageTradeLite.calcTradeParams = calcTradeParams;

@@ -16,7 +16,7 @@ export const makeMyPoolRowWithSnapShot = <T extends { [ key: string ]: any }>({
 }) => {
 
     return makeMyAmmWithSnapshot(market, walletMap, ammUserRewardMap, {
-        ammPoolsBalance: ammSnapShot
+        ammPoolSnapshot: ammSnapShot
     })
 }
 

@@ -128,8 +128,7 @@ export const useAmmCommon = ({pair, snapShotData,}: {
     const walletLayer2Callback = React.useCallback(() => {
 
         if (snapShotData) {
-            myLog('-------------setAmmPoolSnapShot:', snapShotData.ammPoolsBalance)
-            setAmmPoolSnapShot(snapShotData.ammPoolsBalance)
+            setAmmPoolSnapShot(snapShotData.ammPoolSnapshot)
         }
 
     }, [snapShotData, setAmmPoolSnapShot])
@@ -165,7 +164,7 @@ export const useAmmCalc = <C extends { [ key: string ]: any }>({
     setToastOpen: any,
     type: AmmPanelType,
     pair: { coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined },
-    snapShotData: { tickerData: TickerData | undefined, ammPoolsBalance: AmmPoolSnapshot | undefined } | undefined
+    snapShotData: { tickerData: TickerData | undefined, ammPoolSnapshot: AmmPoolSnapshot | undefined } | undefined
 }) => {
     const {t} = useTranslation('common');
 
@@ -218,7 +217,7 @@ export const useAmmCalc = <C extends { [ key: string ]: any }>({
             walletMap,
             ammMap,
             tickerData: snapShotData?.tickerData,
-            ammPoolsBalance: snapShotData?.ammPoolsBalance
+            ammPoolSnapshot: snapShotData?.ammPoolSnapshot
         })
 
         setAmmCalcData({...ammCalcData, ..._ammCalcData});
@@ -598,19 +597,19 @@ export const useAmmCalc = <C extends { [ key: string ]: any }>({
 
     const walletLayer2Callback = React.useCallback(() => {
 
-        if (pair?.coinAInfo?.simpleName && snapShotData?.ammPoolsBalance) {
+        if (pair?.coinAInfo?.simpleName && snapShotData?.ammPoolSnapshot) {
             const {walletMap} = makeWalletLayer2()
             initAmmData(pair, walletMap)
             setIsLoading(false)
         }
 
-    }, [type, fee, pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolsBalance])
+    }, [type, fee, pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolSnapshot])
 
     useWalletLayer2Socket({walletLayer2Callback})
 
     React.useEffect(() => {
         walletLayer2Callback()
-    }, [fee, pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolsBalance, tokenMap])
+    }, [fee, pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolSnapshot, tokenMap])
 
     return {
         ammCalcData,

@@ -477,15 +477,15 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
 
     }, [market]);
     const refreshAmmPoolSnapshot = React.useCallback(() => {
-        const {tickMap, ammPoolsBalance, depth,} = pageTradeLite;
+        const {tickMap, ammPoolSnapshot, depth,} = pageTradeLite;
         //@ts-ignore
-        //(tickMap || ammPoolsBalance) &&
+        //(tickMap || ammPoolSnapshot) &&
         if (pageTradeLite.market && (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market
             || `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market)
         ) {
             let {stob, close} = calcPriceByAmmTickMapDepth({
                 market: market as any, tradePair: `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
-                dependencyData: {tickMap, ammPoolsBalance, depth}
+                dependencyData: {tickMap, ammPoolSnapshot, depth}
             })
             let _tradeFloat = makeTickView(tickMap && tickMap[ pageTradeLite.market ] ? tickMap[ pageTradeLite.market ] : {})
             setTradeFloat({
@@ -575,8 +575,8 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
     const callPairDetailInfoAPIs = React.useCallback(async () => {
         if (market && ammMap && LoopringAPI.exchangeAPI) {
             try {
-                const {depth, ammPoolsBalance, tickMap} = await swapDependAsync(market);
-                updatePageTradeLite({market, depth, ammPoolsBalance, tickMap})
+                const {depth, ammPoolSnapshot, tickMap} = await swapDependAsync(market);
+                updatePageTradeLite({market, depth, ammPoolSnapshot, tickMap})
             } catch (error) {
                 myLog(error, 'go to LER-ETH');
                 resetTradeCalcData(undefined, market)
@@ -585,11 +585,11 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
 
     }, [market, ammMap])
     const reCalculateDataWhenValueChange = React.useCallback((_tradeData, _tradePair?, type?) => {
-        const {ammPoolsBalance, depth, tradePair} = pageTradeLite;
+        const {ammPoolSnapshot, depth, tradePair} = pageTradeLite;
 
         // @ts-ignore
         myLog('reCalculateDataWhenValueChange depth:_tradePair,market', pageTradeLite, _tradePair, market)
-        //checkMarketDataValid(ammPoolsBalance, tickMap, market, depth) &&
+        //checkMarketDataValid(ammPoolSnapshot, tickMap, market, depth) &&
         if (depth && market && _tradePair === tradePair) {
 
             const coinA = _tradeData.sell.belong
@@ -627,7 +627,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                 tokenMap: tokenMap as any,
                 marketMap: marketMap as any,
                 depth,
-                ammPoolSnapshot: ammPoolsBalance,
+                ammPoolSnapshot: ammPoolSnapshot,
                 feeBips: feeBips ? feeBips.toString() : '',
                 takerRate: takerRate ? takerRate : '',
                 slipBips: slippage

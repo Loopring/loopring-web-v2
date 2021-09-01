@@ -14,7 +14,7 @@ export const AmmPanelView = ({
     pair: { coinAInfo: CoinInfo<string> | undefined, coinBInfo: CoinInfo<string> | undefined },
     snapShotData: {
         tickerData: TickerData | undefined,
-        ammPoolsBalance: AmmPoolSnapshot | undefined
+        ammPoolSnapshot: AmmPoolSnapshot | undefined
     } | undefined
     walletMap: WalletMap<string>
     ammType?: keyof typeof AmmPanelType
