@@ -32,7 +32,7 @@ export type PageTradeLite = {
     },
     depth?: sdk.DepthData | undefined
     tickMap?: sdk.LoopringMap<sdk.TickerData> | undefined,
-    ammPoolsBalance?: sdk.AmmPoolSnapshot | undefined,
+    ammPoolSnapshot?: sdk.AmmPoolSnapshot | undefined,
     tradeChannel?: undefined | TradeChannel
     orderType?: undefined | sdk.OrderType
     feeBips?: number | string,
