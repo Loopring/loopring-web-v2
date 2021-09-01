@@ -8,14 +8,13 @@ export const StylePaper = styled(Box)`
   width: 100%;
   //height: 100%;
   flex: 1;
-  background-color: ${({ theme }) => theme.colorBase.background().default};
+  background: var(--color-box);
   border-radius: ${({ theme }) => theme.unit}px;
   // padding: ${({ theme }) => 3 * theme.unit}px  0;
   margin-bottom: ${({ theme }) => 2* theme.unit}px;
   .title {
-    font-family: Gilroy-Medium;
     font-size: ${({ theme }) => theme.unit * 3}px;
-    line-height: 19px;
+    //line-height: 19px;
     margin-left: ${({ theme }) => 3 * theme.unit}px;
     margin-top: ${({ theme }) => 3 * theme.unit}px;
     // margin-bottom: ${({ theme }) => 2 * theme.unit}px;
@@ -25,16 +24,23 @@ export const StylePaper = styled(Box)`
     display: flex;
     margin-top: ${({ theme }) => 3 * theme.unit}px;
     flex: 1;
-    .rdg {
+    .rdg {                                                   
       flex: 1;
     }
   }
-` as typeof Paper;
+
+  .extraTradeClass {
+    .rdg-header-row {
+      background-color: inherit !important;
+    }
+  }
+` as typeof Box;
 
 
 export const  TableWrapStyled = styled(Grid)`
+ 
   &{
-    background-color: ${({theme}) => theme.colorBase.background().default};
+    background: var(--color-box);
     border-radius: ${({ theme }) => theme.unit}px;
     .rdg{
       .rdg-header-row {
@@ -44,5 +50,9 @@ export const  TableWrapStyled = styled(Grid)`
   }
   ${({theme}) => TablePaddingX({pLeft:theme.unit * 3,pRight:theme.unit * 3})}
 ` as typeof Grid
-
+export const FixedStyle = styled(Box)`
+  @media only screen and (min-height: 784px ) and (min-width: 1024px) {
+    position: fixed;
+  }
+` as typeof Box
 //    ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1})};

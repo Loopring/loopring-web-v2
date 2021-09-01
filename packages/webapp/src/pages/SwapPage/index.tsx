@@ -2,16 +2,13 @@ import { Box, Grid, } from '@material-ui/core'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import BasicInfoPanel from './panel/BasicInfoPanel'
 import TradePanel from './panel/TradePanel'
-import styled from 'styled-components'
-import { useSwapPage } from './hook';
-import { SwapPanel } from '@loopring-web/component-lib'
-import { TradeBtnStatus } from '@loopring-web/component-lib'
+import { useSwapPage } from './hook'
+import { AlertImpact, ConfirmImpact, SwapPanel, Toast, TradeBtnStatus } from '@loopring-web/component-lib'
 
-const FixedStyle = styled(Box)`
-  @media only screen and (min-height: 680px ) and (min-width: 1024px) {
-    position: fixed;
-  }
-`
+import { TOAST_TIME } from 'defs/common_defs'
+import { FixedStyle } from 'pages/styled'
+import React from 'react';
+
 
 export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) => {
 
@@ -26,35 +23,55 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
         onSwapClick,
         pair,
         swapBtnI18nKey,
-        isSwapLoading
+        swapBtnStatus,
+        toastOpen,
+        closeToast,
+        should15sRefresh,
+        debugInfo,
+        alertOpen,
+        confirmOpen,
+        refreshRef,
+        swapFunc,
+        isSwapLoading,
+        priceImpact,
     } = useSwapPage();
 
     return <>
-        <Grid container marginRight={3} alignContent={'flex-start'}>
+
+        <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'} open={toastOpen?.open ?? false}
+               autoHideDuration={TOAST_TIME} onClose={closeToast} />
+
+        <Grid container marginRight={3} alignContent={'stretch'} direction={'column'} flexWrap={'nowrap'}>
             <BasicInfoPanel {...{
                 ...rest,
                 ...pair, marketArray,
                 tradeFloat, tradeArray
             }} />
             <TradePanel tradeArray={tradeArray} myTradeArray={myTradeArray}/>
-
-            {/**/}
         </Grid>
 
         <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}}>
             <FixedStyle>
-                <SwapPanel tradeData={tradeData as any}
-                           tradeCalcData={tradeCalcData as any}
-                           onSwapClick={onSwapClick}
-                           swapBtnI18nKey={swapBtnI18nKey}
-                           swapBtnStatus={isSwapLoading ? TradeBtnStatus.LOADING : TradeBtnStatus.AVAILABLE}
-                    // handleError={}
-                           {...{handleSwapPanelEvent, ...rest}}
-                />
+                <SwapPanel
+                    //disabled={isSwapLoading}
+                    tokenBuyProps={{disabled: isSwapLoading}}
+                    tokenSellProps={{disabled: isSwapLoading}}
+                    onRefreshData={should15sRefresh}
+                    refreshRef={refreshRef}
+                    tradeData={tradeData as any}
+                    tradeCalcData={tradeCalcData as any}
+                    onSwapClick={onSwapClick}
+                    swapBtnI18nKey={swapBtnI18nKey}
+                    swapBtnStatus={swapBtnStatus}
+                    {...{ handleSwapPanelEvent, ...rest }}
+                />{process.env.NODE_ENV !== 'production' && <>
+                    {JSON.stringify(debugInfo)}
+                </>}
+
             </FixedStyle>
-
         </Box>
-
+        <AlertImpact handleClose={swapFunc} open={alertOpen} value={priceImpact} />
+        <ConfirmImpact handleClose={swapFunc} open={confirmOpen} value={priceImpact}/>
     </>
 });
 

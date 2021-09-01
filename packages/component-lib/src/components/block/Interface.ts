@@ -1,7 +1,5 @@
-import { MouseEventHandler } from 'react';
 import { CoinInfo, PriceTag, TradeFloat } from '@loopring-web/common-resources';
-import { TradeBtnStatus } from '../panel';
-import { ButtonProps } from '../basic-lib';
+import { TradeBtnStatus } from '../tradePanel';
 
 export type MarketBlockProps<C> = {
     coinAInfo: CoinInfo<C>,
@@ -13,19 +11,6 @@ export type MarketBlockProps<C> = {
     }[]
 }
 
-export type AccountInfoProps = {
-    addressShort: string
-    address: string,
-    level?: string,
-    etherscanLink: string,
-    mainBtn?: JSX.Element | React.ElementType<ButtonProps>
-    connectBy: string,
-    onDisconnect?: any,
-    onSwitch?: any,
-    onLock?: any,
-    onCopy?: any,
-    onViewQRCode?: any,
-}
 
 export type AssetTitleProps = {
     assetInfo: {
@@ -34,9 +19,9 @@ export type AssetTitleProps = {
         priceTag: typeof PriceTag[keyof typeof PriceTag],
         [ key: string ]: any,
     },
-    onShowWithdraw: MouseEventHandler<any>,
-    onShowTransfer: MouseEventHandler<any>,
-    onShowDeposit: MouseEventHandler<any>,
+    onShowWithdraw: (token?:string)=>void,
+    onShowTransfer:(token?:string)=>void,
+    onShowDeposit: (token?:string)=>void,
     btnShowDepositStatus?: keyof typeof TradeBtnStatus,
     btnShowTransferStatus?: keyof typeof TradeBtnStatus,
     btnShowWithdrawStatus?: keyof typeof TradeBtnStatus,

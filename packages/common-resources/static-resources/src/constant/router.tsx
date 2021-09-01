@@ -1,31 +1,28 @@
 import {
-    AmmIcon,
     AssetsIcon,
     MiningIcon,
     MyLiquidityIcon,
-    OrderIcon,
-    PoolsIcon,
-    SettingIcon,
-    TradeIcon,
-    TransactionsIcon
+    // OrderIcon,
+    // PoolsIcon,
+    // SettingIcon,
+    L2MyLiquidityIcon,
+    L2HistoryIcon,
+    L2OrderIcon,
 } from '../svg';
 
-import { ThemeType } from '../themes';
 import { HeaderMenuItemInterface, HeaderMenuTabStatus } from '../loopring-interface';
 
 export enum ButtonComponentsMap {
-    Download = 0,
-    Notification = 1,
-    Theme = 2,
-    Language = 3,
-    WalletConnect = 4,
+    Download,
+    Notification ,
+    Setting,
+    WalletConnect,
 }
 
 export const ToolBarAvailableItem = [
     ButtonComponentsMap.Download,
     // ButtonComponentsMap.Notification,
-    ButtonComponentsMap.Theme,
-    ButtonComponentsMap.Language,
+    ButtonComponentsMap.Setting,
     ButtonComponentsMap.WalletConnect
 ]
 
@@ -37,18 +34,7 @@ export let headerToolBarData: Array<{ buttonComponent: number, handleClick?: (pr
         i18nDescription: 'labelDownloadBtn',
     },
     {buttonComponent: ButtonComponentsMap.Notification, label: 'labelNotification',},
-    {
-        buttonComponent: ButtonComponentsMap.Theme,
-        themeMode: ThemeType.dark,
-        label: 'themeSetting',
-        handleClick: undefined
-    },
-    {
-        buttonComponent: ButtonComponentsMap.Language,
-        // language: LanguageType.en_US,
-        label: 'languageSetting',
-        handleClick: undefined,
-    },
+    {buttonComponent: ButtonComponentsMap.Setting, label: 'labelSetting'},
     {
         buttonComponent: ButtonComponentsMap.WalletConnect,
         label: 'labelConnectWallet',
@@ -100,8 +86,7 @@ export let headerMenuData: Array<HeaderMenuItemInterface> = [
         label: {
             id: 'Trading', i18nKey: 'labelTrade',
         },
-        router: {path: '/trading'},
-        child: layer2ItemData,
+        router: {path: '/trading/lite/LRC-ETH'},
         status: HeaderMenuTabStatus.default,
     },
     {
@@ -109,6 +94,13 @@ export let headerMenuData: Array<HeaderMenuItemInterface> = [
             id: 'Liquidity', i18nKey: 'labelLiquidity',
         },
         router: {path: '/liquidity'},
+        status: HeaderMenuTabStatus.default,
+    },
+    {
+        label: {
+            id: 'Mining', i18nKey: 'labelMining',
+        },
+        router: {path: '/mining'},
         status: HeaderMenuTabStatus.default,
     },
     {
@@ -128,8 +120,28 @@ export const subMenuLayer2 = {
         label: {
             id: 'assets', i18nKey: 'labelAssets',
         },
+    }, {
+        icon: L2MyLiquidityIcon,
+        router: {path: '/layer2/my-liquidity'},
+        label: {
+            id: 'my-liquidity', i18nKey: 'labelMyLiquidity',
+        }
     }],
     transactionsGroup: [{
+        icon: L2HistoryIcon,
+        router: {path: '/layer2/history'},
+        label: {
+            id: 'history', i18nKey: 'labelHistory',
+        },
+    }, {
+        icon: L2OrderIcon,
+        router: {path: '/layer2/order'},
+        label: {
+            id: 'order', i18nKey: 'labelOrder',
+        },
+    },
+]
+    /* {
         icon: TransactionsIcon,
         router: {path: '/layer2/transactions'},
         label: {
@@ -149,33 +161,33 @@ export const subMenuLayer2 = {
                 id: 'AmmRecords', i18nKey: 'labelAmmRecords',
                 description: 'labelAmmRecordsDes',
             },
-        }
+        } 
     ],
-    countInfoGroup: [{
-        icon: OrderIcon,
-        router: {path: '/layer2/orders'},
-        label: {
-            id: 'orders', i18nKey: 'labelOrders',
-        },
-    },
+    // countInfoGroup: [{
+    //     icon: OrderIcon,
+    //     router: {path: '/layer2/orders'},
+    //     label: {
+    //         id: 'orders', i18nKey: 'labelOrders',
+    //     },
+    // },
 
-    ],
-    settingGroup: [{
-        icon: SettingIcon,
-        router: {path: '/layer2/setting'},
-        label: {
-            id: 'setting',
-            i18nKey: 'labelSetting',
-        },
-    },
-
-    ]
+    // ],
+    // settingGroup: [{
+    //     icon: SettingIcon,
+    //     router: {path: '/layer2/setting'},
+    //     label: {
+    //         id: 'setting',
+    //         i18nKey: 'labelSetting',
+    //     },
+    // },
+    //]
+    */
 }
 
 
 export const subMenuLiquidity = {
     poolsGroup: [{
-        icon: PoolsIcon,
+        // icon: PoolsIcon,
         router: {path: '/liquidity/pools'},
         label: {
             id: 'pools',
@@ -214,4 +226,4 @@ export const subMenuLiquidity = {
     // }
     // ]
 }
-export const headerRoot = 'trade'
+export const headerRoot = 'Trading'

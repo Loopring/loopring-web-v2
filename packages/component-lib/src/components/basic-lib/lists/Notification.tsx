@@ -3,6 +3,9 @@ import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { NotificationItem } from './Interface';
 import styled from '@emotion/styled';
 
+// h5 {
+//   color: var(--color-primary)
+// }
 const ListItemStyled = styled(ListItem)`
   font-size: ${({theme}) => theme.fontDefault.h5};
 
@@ -17,35 +20,20 @@ const ListItemStyled = styled(ListItem)`
       display: inline-block;
       width: 100%;
       height: 1px;
-      background-color: ${({theme}) => theme.colorBase.blur};
       position: absolute;
       bottom: 0;
-      left: 0px;
-      padding: 0  ${({theme}) => theme.unit / 2}px
+      left: 0;
+      padding: 0 ${({theme}) => theme.unit / 2}px
     }
   }
 
   &:hover {
     border-left-color: transparent;
-
-    // h5 {
-      //   color: ${({theme}) => theme.colorBase.primaryLight};
-    // }
-
-    background: ${({theme}) => theme.colorBase.background().hover};
+    background: var(--color-box-hover);
   }
 
   .MuiListItemText-root {
-    .MuiTypography-root {
-      display: -webkit-box;
-      display: -moz-box;
-      line-height: 1em;
-      white-space: normal;
-      word-break: break-all;
-      text-overflow: ellipsis;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-    }
+    height: 100%;
 
     margin: 0;
     overflow: hidden;
@@ -60,19 +48,19 @@ const ListItemStyled = styled(ListItem)`
 
   &.error {
     .MuiListItemIcon-root {
-      color: ${({theme}) => theme.colorBase.error};
+      color: var(--color-error);
     }
   }
 
   &.pending {
     .MuiListItemIcon-root {
-      color: ${({theme}) => theme.colorBase.secondary};
+      color: var(--color-secoundary);
     }
   }
 
   &.success {
     .MuiListItemIcon-root {
-      color: ${({theme}) => theme.colorBase.success};
+      color: var(--color-success);
     }
   }
 

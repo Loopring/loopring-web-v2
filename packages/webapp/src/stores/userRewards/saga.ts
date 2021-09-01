@@ -1,10 +1,8 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects"
-import { getUserRewards, getUserRewardsStatus } from './reducer'
+import { getUserRewards, getUserRewardsStatus, resetUserRewards } from './reducer'
 
 import store from '../index';
-import { exchangeAPI, LoopringAPI } from '../apis/api';
-import { updateRealTimeAmmMap } from '../Amm/AmmMap';
-import { updateRealTimeObj } from '../system';
+import { LoopringAPI } from 'api_wrapper';
 
 const getUserRewardsApi = async <R extends {[key:string]:any}>(list:Array<keyof R>)=> {
 
@@ -14,23 +12,30 @@ const getUserRewardsApi = async <R extends {[key:string]:any}>(list:Array<keyof 
     const {accountId} = store.getState().account
     let {__timer__} = store.getState().userRewardsMap;
     
-    if(LoopringAPI.ammpoolAPI) {
-        __timer__ = ((__timer__) => {
-            if (__timer__ && __timer__ !== -1) {
-                clearInterval(__timer__);
-            }
-            return setTimeout(async () => {
-                store.dispatch(getUserRewards(undefined))
-            }, 300000 * 4)   //
+    if(LoopringAPI.ammpoolAPI && accountId ) {
+        // __timer__ = ((__timer__) => {
+        if (__timer__ && __timer__ !== -1) {
+            clearInterval(__timer__);
+        }
+        setInterval(async () => {
+            store.dispatch(getUserRewards(undefined))
+        }, 300000 * 4)   //
 
-        })(__timer__);
+        // })(__timer__);
         return  LoopringAPI.ammpoolAPI.getAmmPoolUserRewards({owner:accountId}).then(({ammUserRewardMap}) => {
             return {data:ammUserRewardMap,__timer__}
         })
-
-
     }else{
-        return  Promise.reject({data:undefined,__timer__})
+        if (__timer__ && __timer__ !== -1) {
+            clearInterval(__timer__);
+        }
+        return Promise.resolve({data:undefined,__timer__:-1})
+        // if(accountId) {
+        //     return  Promise.reject({data:undefined,__timer__:-1})
+        // }else{
+        //
+        // }
+
     }
 
 }
@@ -51,13 +56,29 @@ export function* getPostsSaga({payload}:any) {
         yield put(getUserRewardsStatus(err));
     }
 }
+export function* getResetsSaga({payload}:any){
+    try {
+        // @ts-ignore
+        let {__timer__} = store.getState().userRewardsMap;
+        if (__timer__ && __timer__ !== -1) {
+            clearInterval(__timer__);
+        }
+        yield put(getUserRewardsStatus({userRewardsMap:[],__timer__:-1}));
+    } catch (err) {
+        yield put(getUserRewardsStatus(err));
+    }
+}
 
 function* userRewardsSaga() {
     yield all([takeLatest(getUserRewards, getPostsSaga)]);
 }
+function* resetUserRewardsSaga() {
+    yield all([takeLatest(resetUserRewards, getResetsSaga)]);
+}
 
 export const userRewardsForks = [
     fork(userRewardsSaga),
+    fork(resetUserRewardsSaga),
     // fork(userRewardssSaga),
 ]
  

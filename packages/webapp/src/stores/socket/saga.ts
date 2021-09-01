@@ -1,12 +1,11 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 import { getSocketStatus, sendSocketTopic, socketEnd } from './reducer'
-import {
-    socketClose, socketSendMessage,
-} from '../../services/socketUtil';
 import store from '../index';
 export function* closeSocket(){
     try {
-        yield call(socketClose)
+        if (window.loopringSocket){
+            yield call(window.loopringSocket.socketClose)
+        }
         yield put(getSocketStatus(undefined));
         //TODO check wallect store
     } catch (err) {
@@ -15,11 +14,11 @@ export function* closeSocket(){
 }
 export function* sendMessage({payload}: any){
     try {
-        const { chainId } = store.getState().system;
         const { apiKey } = store.getState().account;
         const { socket } = payload;
-        // @ts-ignore
-        yield call(socketSendMessage, { chainId, socket, apiKey })
+        if (window.loopringSocket){
+            yield call(window.loopringSocket.socketSendMessage, { socket, apiKey })
+        }
         yield put(getSocketStatus(undefined));
     } catch (err) {
         yield put(getSocketStatus(err));
@@ -29,9 +28,7 @@ export function* sendMessage({payload}: any){
 function* socketEndSaga(){
     yield all([takeLatest(socketEnd, closeSocket)]);
 }
-// function* socketSaga() {
-//     yield all([takeLatest(socketStart, startSocket)]);
-// }
+
 function* socketSendMessageSaga() {
     yield all([takeLatest(sendSocketTopic, sendMessage)]);
 }

@@ -1,6 +1,6 @@
 import { all, takeLatest, call, put } from "redux-saga/effects"
 import { getAmmActivityMap, getAmmActivityMapStatus } from './reducer'
-import { LoopringAPI } from '../../apis/api';
+import { LoopringAPI } from 'api_wrapper';
 const getAmmActivityMapApi = async () => {
 
     if(LoopringAPI.ammpoolAPI){

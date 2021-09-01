@@ -1,14 +1,13 @@
 import { Meta, Story } from '@storybook/react/types-6-0'
 
 import { Box, Grid } from '@material-ui/core'
-import { ButtonProps } from './Interface';
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import { NewTagIcon } from './index';
+import { ButtonProps } from '../btns';
 
 const Styled = styled.div`
-  background: ${({theme}) => theme.colorBase.background().bg};
-  color: #fff;
+  background: var(--color-global-bg);
 `
 
 

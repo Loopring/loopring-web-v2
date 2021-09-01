@@ -31,17 +31,17 @@ export interface GetSignParams {
 
 // judge trend
 const getSign = ({
-                     type,
+                     // type,
                      data,
                      dataIndex,
                      open,
                      close,
                      closeDimIdx,
                  }: GetSignParams): IDataItem['sign'] => {
-    if (type === ChartType.Trend) {
-        // compare with last day's close
-        return close >= data[ data.length - 1 ].close ? 1 : -1
-    }
+    // if (type === ChartType.Trend) {
+    //     // compare with last day's close
+    //     return close >= data[ data.length - 1 ].close ? 1 : -1
+    // }
     let sign
     if (open > close) {
         sign = -1

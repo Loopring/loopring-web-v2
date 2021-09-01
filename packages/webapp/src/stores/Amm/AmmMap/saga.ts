@@ -2,8 +2,8 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getAmmMap, getAmmMapStatus, updateRealTimeAmmMap } from './reducer';
 import { AmmDetail } from '@loopring-web/common-resources';
 import store from '../../index';
-import { AmmPoolInfoV3, AmmPoolStat, toBig, TokenVolumeV3, } from "loopring-sdk";
-import { ammpoolAPI } from "stores/apis/api";
+import { AmmPoolInfoV3, AmmPoolStat, toBig, TokenVolumeV3, } from 'loopring-sdk';
+import { LoopringAPI } from "api_wrapper";
 import { PayloadAction } from '@reduxjs/toolkit';
 import { AmmDetailStore, GetAmmMapParams } from './interface';
 import { volumeToCount, volumeToCountAsBigNumber } from '../../../hooks/help';
@@ -17,7 +17,7 @@ export const setAmmState = ({ammPoolState, keyPair}: { ammPoolState: AmmPoolStat
     if (idIndex && coinA && coinB && faitPrices && forex) {
         let result =  {
             amountDollar: parseFloat(ammPoolState.liquidityUSD),
-            amountYuan: (parseFloat(ammPoolState.liquidityUSD) / (forex ? forex : 6.5)),
+            amountYuan: (parseFloat(ammPoolState.liquidityUSD) * (forex ? forex : 6.5)),
             totalLPToken: volumeToCount('LP-' + keyPair, ammPoolState.lpLiquidity),
             totalA: volumeToCount(coinA, ammPoolState.liquidity[ 0 ]),//parseInt(ammPoolState.liquidity[ 0 ]),
             totalB: volumeToCount(coinB, ammPoolState.liquidity[ 1 ]),//parseInt(ammPoolState.liquidity[ 1 ]),
@@ -56,8 +56,12 @@ export const setAmmState = ({ammPoolState, keyPair}: { ammPoolState: AmmPoolStat
 }
 const getAmmMapApi = async <R extends { [ key: string ]: any }>({ammpools}: GetAmmMapParams) => {
 
+    if (!LoopringAPI.ammpoolAPI) {
+        return undefined
+    }
+
     let ammMap: AmmMap<R> = {}
-    const {ammPoolStats} = (await ammpoolAPI().getAmmPoolStats());
+    const {ammPoolStats} = (await LoopringAPI.ammpoolAPI?.getAmmPoolStats());
 
     let {__timer__} = store.getState().amm.ammMap
     __timer__ = (() => {
@@ -65,7 +69,12 @@ const getAmmMapApi = async <R extends { [ key: string ]: any }>({ammpools}: GetA
             clearInterval(__timer__)
         }
         return setInterval(async () => {
-            let ammPoolStats: { [key in keyof R]: AmmPoolStat } = (await ammpoolAPI().getAmmPoolStats()).ammPoolStats as { [key in keyof R]: AmmPoolStat }
+
+            if (!LoopringAPI.ammpoolAPI) {
+                return undefined
+            }
+            
+            let ammPoolStats: { [key in keyof R]: AmmPoolStat } = (await LoopringAPI.ammpoolAPI.getAmmPoolStats()).ammPoolStats as { [key in keyof R]: AmmPoolStat }
             store.dispatch(updateRealTimeAmmMap({ammPoolStats}))
         }, 900000)    //15*60*1000 //900000
     })()
@@ -147,7 +156,7 @@ export function* ammMapRealTimeSaga() {
 }
 
 export const ammMapSaga = [
-    fork(ammMapInitSaga),
-    fork(ammMapRealTimeSaga),
+        fork(ammMapInitSaga),
+        fork(ammMapRealTimeSaga),
 ]
 

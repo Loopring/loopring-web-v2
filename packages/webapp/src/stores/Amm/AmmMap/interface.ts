@@ -1,5 +1,4 @@
-import { AmmDetailBase, CoinKey, TradeFloat } from '@loopring-web/common-resources';
-import { StateBase } from '../../interface';
+import { AmmDetailBase, CoinKey, StateBase, TradeFloat } from '@loopring-web/common-resources';
 import { AmmPoolInfoV3, LoopringMap } from 'loopring-sdk';
 
 
@@ -11,7 +10,7 @@ export type AmmDetailStore<T> = AmmDetailBase<T> & {
     coinB: CoinKey<T> | undefined,
     address: string,
     tradeFloat: Partial<TradeFloat>,
-    __rawConfig__:AmmPoolInfoV3
+    __rawConfig__: AmmPoolInfoV3
 
 }
 export type AmmMap<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }> = {

@@ -1,5 +1,4 @@
 import { ButtonProps as MuButtonPros, ToggleButtonGroupProps as MuToggleButtonGroupProps } from "@material-ui/core";
-import { Dispatch, SetStateAction } from "react";
 import { XOR } from "../../../types/lib";
 
 export type ButtonProps = MuButtonPros & {
@@ -37,6 +36,6 @@ export type ToggleButtonGroupProps =
     & {
     value: Array<string | number> | string | number,
 }
-    & XOR<{ setValue: Dispatch<SetStateAction<any>> }, { handleChange: (event: React.MouseEvent<HTMLElement>, newValue: string) => void }>
+    // & { handleChange: (event: MouseEvent|InputEvent, newValue: string) => void }
     & XOR<{ tgItemJSXs: TGItemJSXInterface[] }, { data: TGItemData[] }>
 

@@ -3,5 +3,4 @@ export default {
     errorBase: '奥哦! 遇到了一些问题',
     errorLoading: '不要着急, 不要着急马上就好',
     error404: '四〇四! 这是页面不存在呢.'
-
 }

@@ -23,40 +23,24 @@ import {
 } from '@loopring-web/common-resources';
 
 import { ammCalcData, coinMap, tradeCalcData, } from '../../static';
-import { AmmPanel, AmmPanelType, AmmProps } from '../panel';
 import { withTranslation } from 'react-i18next';
 // import { PoolDetailTitle } from '../block/PoolDetailTitle';
 import { useSettings } from '../../stores';
 import moment from 'moment';
 import { TradeTitle } from '../block';
 import { Header } from '../header';
+import React from 'react';
+import { AmmPanelType, AmmProps } from '../tradePanel';
+import { AmmPanel } from '../tradePanel';
 
 
 const Style = styled.div`
-  color: #fff;
+  
 `
 const tradeData: any = {
     coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
     coinB: {belong: 'LRC', balance: 1000, tradeValue: 0}
 };
-let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
-    ammDepositData: tradeData,
-    ammWithdrawData: tradeData,
-    // tradeCalcData,
-    ammCalcData: ammCalcData,
-    handleAmmAddChangeEvent: (data, type) => {
-        console.log('handleAmmAddChangeEvent', data, type);
-    },
-    handleAmmRemoveChangeEvent: (data, type) => {
-        console.log('handleAmmRemoveChangeEvent', data, type);
-    },
-    onAmmRemoveClick: (data) => {
-        console.log('onAmmRemoveClick', data);
-    },
-    onAmmAddClick: (data) => {
-        console.log('onAmmAddClick', data);
-    }
-}
 // let btnShowTradeStatus: keyof typeof TradeBtnStatus = TradeBtnStatus.AVAILABLE;
 // const onShowTrade = () => {
 // };
@@ -110,16 +94,37 @@ const myAmm: MyAmmLP<any> = {
 }
 const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
     //TODO: checkRouter
+    const ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
+        ammCalcDataDeposit: ammCalcData,
+        ammCalcDataWithDraw: ammCalcData,
+        refreshRef: React.createRef(),
+        ammDepositData: tradeData,
+        ammWithdrawData: tradeData,
+        // tradeCalcData,
+        handleAmmAddChangeEvent: (data, type) => {
+            console.log('handleAmmAddChangeEvent', data, type);
+        },
+        handleAmmRemoveChangeEvent: (data, type) => {
+            console.log('handleAmmRemoveChangeEvent', data, type);
+        },
+        onAmmRemoveClick: (data) => {
+            console.log('onAmmRemoveClick', data);
+        },
+        onAmmAddClick: (data) => {
+            console.log('onAmmAddClick', data);
+        }
+    }
+
     const WrapAmmPanel = (rest: any) => {
         return <>
-            <AmmPanel {...{...ammProps, tabSelected: AmmPanelType.Deposit}} {...rest} > </AmmPanel>
+            <AmmPanel {...{...ammProps, tabSelected: AmmPanelType.Join}} {...rest} > </AmmPanel>
         </>
 
     }
 
     const BoxStyled = styled(Box)`
-      ${({theme}) => theme.border.defaultFrame({c_key: 'blur'})};
-      background-color: ${({theme}) => theme.colorBase.background().default};
+      ${({theme}) => theme.border.defaultFrame({c_key:''})};
+      background-color: var(--color-box);
     `;
     const {currency} = useSettings();
 
@@ -142,7 +147,7 @@ const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
                     </Breadcrumbs>
                 </Grid>
                 <Grid item xs={4} alignItems={'center'} justifyContent={'flex-end'} display={'flex'}>
-                    <Link href={''} variant={'h5'}>
+                    <Link href={''} variant={'h6'}>
                         {t('labelBack')}
                     </Link>
                 </Grid>
@@ -238,7 +243,7 @@ const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
                                 </Typography>
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}
                                             justifyContent={'space-between'} marginTop={1} alignItems={'center'}>
-                                    <Typography component={'span'} variant={'h4'} color={'textPrimary'}>
+                                    <Typography component={'span'} variant={'h5'} color={'textPrimary'}>
                                         {currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(titleInfo.tradeFloat.priceDollar)
                                             : PriceTag.Yuan + getThousandFormattedNumbers(titleInfo.tradeFloat.priceYuan)}
                                     </Typography>
@@ -254,7 +259,7 @@ const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
                                                 {titleInfo.feeA}
                                             </Typography>
                                         </Typography>
-                                        <Typography component={'span'} color={'inherit'} variant={'h5'}
+                                        <Typography component={'span'} color={'inherit'} variant={'h6'}
                                                     paddingX={1}>{' + '}</Typography>
                                         <Typography component={'span'} color={'inherit'} variant={'inherit'}
                                                     display={'flex'} flexDirection={'column'}>
@@ -279,14 +284,14 @@ const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
                                     <Typography component={'span'}
                                                 color={'textSecondary'}> {myAmm.balanceA ? myAmm.balanceA : EmptyValueTag} {titleInfo.ammCalcData?.myCoinA.belong} </Typography>
                                     <Typography component={'span'} color={'textSecondary'}
-                                                variant={'h5'}> -- </Typography>
+                                                variant={'h6'}> -- </Typography>
                                 </Typography>
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}
                                             justifyContent={'space-between'} marginTop={1}>
                                     <Typography component={'span'}
                                                 color={'textSecondary'}> {myAmm.balanceB ? myAmm.balanceA : EmptyValueTag} {titleInfo.ammCalcData?.myCoinB.belong}</Typography>
                                     <Typography component={'span'} color={'textSecondary'}
-                                                variant={'h5'}> -- </Typography>
+                                                variant={'h6'}> -- </Typography>
                                 </Typography>
                             </BoxStyled>
                             <BoxStyled paddingY={3} paddingX={1 / 2 * 5} display={'flex'}
@@ -354,8 +359,7 @@ const Template: Story<any> = () => {
 
       body:before {
         ${theme.mode === 'dark' ? ` 
-                        background: #191C30;
-                        background: ${theme.colorBase.background().bg};
+                        background: var(--color-global-bg);
                    ` : ''}
       }
     }

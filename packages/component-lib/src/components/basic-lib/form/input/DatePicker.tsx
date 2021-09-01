@@ -25,7 +25,7 @@ const DateTextField = styled(TextField)`
   .MuiIconButton-label {
     width: 100%;
     display: flex;
-    align-items: inherit;
+    align-items: baseline;
     justify-content: inherit;
   }
 
@@ -47,10 +47,9 @@ const DateTextField = styled(TextField)`
 
     & svg {
       font-size: 1.8rem;
-      color: ${({theme}) => theme.colorBase.textPrimary}
+      color:var(--color-text-primary)
     }
 
-      //color: ${({theme}) => theme.colorBase.primaryLight}
   }
 
   .MuiInputAdornment-positionEnd.date-range-adornment {
@@ -62,6 +61,10 @@ const DateTextField = styled(TextField)`
   }
 
 `;
+
+const DateRangeDelimiterStyled = styled(DateRangeDelimiter)`
+    margin: 0 ${({theme}) => theme.unit}px !important;
+`
 
 export type DateRangePickerProps = {} & Omit<MuDateRangePickerProps, 'renderInput'>;
 
@@ -94,9 +97,9 @@ export const DateRangePicker = experimentalStyled(({...props}: DateRangePickerPr
                 )
             }
             return (<>
-                <DateTextField {...{...startProps, helperText: null}} placeholder={'YY-MM-DD'}/>
-                <DateRangeDelimiter>TO</DateRangeDelimiter>
-                <DateTextField {...{...endProps, helperText: null}} placeholder={'YY-MM-DD'}/>
+                <DateTextField {...{...startProps, helperText: null, label: undefined}} placeholder={'YY-MM-DD'}/>
+                <DateRangeDelimiterStyled>-</DateRangeDelimiterStyled>
+                <DateTextField {...{...endProps, helperText: null, label: undefined}} placeholder={'YY-MM-DD'}/>
             </>)
         }
         }
