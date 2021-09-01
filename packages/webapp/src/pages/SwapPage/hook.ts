@@ -119,6 +119,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     const [swapBtnStatus, setSwapBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE)
     const [isSwapLoading, setIsSwapLoading] = React.useState(true)
     const [quoteMinAmt, setQuoteMinAmt] = React.useState<string>()
+    const [myTradeTotalNum, setMyTradeTotalNum] = React.useState(0)
     
     const { toastOpen, setToastOpen, closeToast, } = useToast()
 
@@ -282,9 +283,11 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
             }) => {
                 let _myTradeArray = makeMarketArray(market, response.userTrades) as RawDataTradeItem[]
                 setMyTradeArray(_myTradeArray ? _myTradeArray : [])
+                setMyTradeTotalNum(response.totalNum)
             })
         } else {
             setMyTradeArray([])
+            setMyTradeTotalNum(0)
         }
 
     }, [market, account.accountId, account.apiKey, setMyTradeArray])
@@ -306,7 +309,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
     //table marketTrade
     const marketTradeTableCallback = React.useCallback(() => {
         if (LoopringAPI.exchangeAPI) {
-            LoopringAPI.exchangeAPI.getMarketTrades({market}).then(({marketTrades}: {
+            LoopringAPI.exchangeAPI.getMarketTrades({market}).then(({marketTrades, totalNum}: {
                 totalNum: any;
                 marketTrades: sdk.MarketTradeInfo[];
                 raw_data: any;
@@ -806,6 +809,7 @@ export const useSwapPage = <C extends { [ key: string ]: any }>() => {
         tradeFloat,
         tradeArray,
         myTradeArray,
+        myTradeTotalNum,
         tradeData,
         pair,
         marketArray,

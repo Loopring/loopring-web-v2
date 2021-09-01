@@ -34,6 +34,7 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
         swapFunc,
         isSwapLoading,
         priceImpact,
+        myTradeTotalNum,
     } = useSwapPage();
 
     return <>
@@ -47,7 +48,7 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
                 ...pair, marketArray,
                 tradeFloat, tradeArray
             }} />
-            <TradePanel tradeArray={tradeArray} myTradeArray={myTradeArray}/>
+            <TradePanel tradeArray={tradeArray} myTradeArray={myTradeArray} myTradeTotalNum={myTradeTotalNum}/>
         </Grid>
 
         <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}}>
