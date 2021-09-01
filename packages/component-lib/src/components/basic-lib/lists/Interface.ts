@@ -5,7 +5,7 @@ import { ListProps } from 'react-virtualized';
 import { List } from 'immutable';
 
 export type MuiMenuItemProps = muMenuItemProps & {
-    withNoCheckIcon?: 'true' | 'false' | undefined
+    withnocheckicon?: 'true' | 'false' | undefined
 }
 
 export type BasicListItem = {
@@ -35,6 +35,7 @@ export type HeadMenuType<I extends BasicHeaderItem> = {
     className?: string,
     renderList?: (props: { handleListKeyDown: ({...rest}) => any }) => any,
     onOpen?: boolean,
+    selected?:boolean,
     setOnOpen?: () => {},
     toggle?: boolean,
     style?: any,

@@ -8,8 +8,6 @@ if [ $DEPLOY_HOME ];then
 	cd $DEPLOY_HOME
 	git fetch --all && git reset --hard origin/master && git pull
     rm -rf $DEPLOY_HOME/*
-	cd $DIR
-	yarn build
 	sleep 1
 	cp -rf $DIR/build/* $DEPLOY_HOME
 	cd $DEPLOY_HOME

@@ -1,77 +1,113 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
+import { SliceCaseReducers } from '@reduxjs/toolkit/src/createSlice';
+import { Account, AccountState, AccountStatus, ConnectProviders, SagaStatus } from '@loopring-web/common-resources';
 
-import { AccountInfo, ConnectorNames, } from 'loopring-sdk'
-
-import { Lv2Account, } from 'defs/account_defs'
-import { AccountStatus } from 'state_machine/account_machine_spec'
-import { UserStorage } from 'storage'
-
-
-const initialState = () => {
-  const defaultAccId = process.env.REACT_APP_TEST_ACCOUND_ID ? process.env.REACT_APP_TEST_ACCOUND_ID : UserStorage.getAccountId()
-  const defaultApiKey = process.env.REACT_APP_TEST_API_KEY ? process.env.REACT_APP_TEST_API_KEY : UserStorage.getApikey()
-  const defaultOwner = process.env.REACT_APP_TEST_OWNER ? process.env.REACT_APP_TEST_OWNER : UserStorage.getAccount()
-  const defaultEddsaKey = process.env.REACT_APP_TEST_EDDSA_KEY ? process.env.REACT_APP_TEST_EDDSA_KEY : UserStorage.getEddsakey()
-
-  const defaultStatus = AccountStatus.UNCONNNECTED
-  return {
-    accAddr: defaultOwner,
-    status: defaultStatus,
-    accountId: defaultAccId,
+const initialState: AccountState = {
+    accAddress: '',
+    qrCodeUrl: '',
+    readyState: AccountStatus.UN_CONNECT,
+    accountId: -1,
+    apiKey: '',
+    eddsaKey: '',
     publicKey: {},
-    nonce: 0,
-    isContractAddress: false,
-    apiKey: defaultApiKey,
-    eddsaKey: defaultEddsaKey,
-    connectName: ConnectorNames.Unknown,
-    connectNameTemp: ConnectorNames.Unknown,
-  } as Lv2Account
+    level: '',
+    nonce: undefined,
+    keyNonce: undefined,
+    connectName: ConnectProviders.unknown,
+    _chainId: 1,
+    status: 'PENDING',
+    errorMessage: null,
+
 }
 
-const accountSlice:Slice = createSlice({
-  name: 'account',
-  initialState: initialState(),
-  reducers: {
-    reset(state) {
-      const initState = initialState()
-      Object.assign(state, initState)
+const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseReducers<AccountState>>({
+    name: 'account',
+    initialState: initialState,
+    reducers: {
+        updateAccountStatus(state: AccountState, action: PayloadAction<Partial<Account>>) {
+            state.status = SagaStatus.PENDING
+        },
+        changeShowModel(state: AccountState, action: PayloadAction<{_userOnModel:boolean|undefined}>) {
+            const {
+                _userOnModel
+            } = action.payload;
+            state._userOnModel = _userOnModel;
+        },
+        nextAccountStatus(state: AccountState, action: PayloadAction<Partial<Account>>) {
+            // @ts-ignore
+            if (action.error) {
+                state.status = SagaStatus.ERROR
+                // @ts-ignore
+                state.errorMessage = action.error
+            } else {
+                const {
+                    accAddress,
+                    qrCodeUrl,
+                    readyState,
+                    accountId,
+                    wrongChain,
+                    level,
+                    apiKey,
+                    eddsaKey,
+                    _chainId,
+                    nonce,
+                    connectName,
+                    // _userOnModel
+                } = action.payload;
+                
+                if (accAddress !== undefined) {
+                    state.accAddress = accAddress;
+                }
+                
+                if (qrCodeUrl !== undefined) {
+                    state.qrCodeUrl = qrCodeUrl;
+                }
+                
+                if(wrongChain !== undefined){
+                    state.wrongChain = wrongChain
+                }
+                if (readyState) {
+                    state.readyState = readyState;
+                }
+                if (accountId !== undefined) {
+                    state.accountId = accountId;
+                }
+                if (level !== undefined) {
+                    state.level = level;
+                }
+                if (apiKey !== undefined) {
+                    state.apiKey = apiKey;
+                }
+                if (eddsaKey !== undefined) {
+                    state.eddsaKey = eddsaKey;
+                }
+                if (connectName !== undefined) {
+                    state.connectName = connectName;
+                }
+                if (_chainId !== undefined) {
+                    state._chainId = _chainId;
+                }
+                if (nonce !== undefined) {
+                    state.nonce = nonce;
+                }
+                state.status = SagaStatus.DONE;
+            }
+        },
+        cleanAccountStatus(state: AccountState, action: PayloadAction<{shouldUpdateProvider?:boolean|undefined}>) {
+            state.status = SagaStatus.PENDING
+        },
+        statusUnset: (state: AccountState) => {
+            state.status = SagaStatus.UNSET
+        }
     },
-    setAccAddr(state, action: PayloadAction<string>) {
-      state.accAddr = action.payload
-      // UserStorage.setAccount(action.payload)
-    },
-    setAccountInfo(state, action: PayloadAction<AccountInfo>) {
-      state.accAddr = action.payload.owner
-      state.accountId = action.payload.accountId
-      state.nonce = action.payload.nonce
-      state.publicKey = action.payload.publicKey
-
-      // UserStorage.setAccount(state.accAddr)
-      // UserStorage.setAccountId(state.accountId)
-      
-    },
-    setApikey(state, action: PayloadAction<string>) {
-      state.apiKey = action.payload
-      // UserStorage.setApikey(action.payload)
-    },
-    setAccountStatus(state, action: PayloadAction<AccountStatus>) {
-      state.status = action.payload
-    },
-    setEddsaKey(state, action: PayloadAction<any>) {
-      state.eddsaKey = action.payload
-      // UserStorage.setEddsakey(action.payload)
-    },
-    setConnectName(state, action: PayloadAction<ConnectorNames>) {
-      state.connectName = action.payload
-    },
-    setConnectNameTemp(state, action: PayloadAction<ConnectorNames>) {
-      state.connectNameTemp = action.payload
-    },
-    setIsContractAddress(state, action: PayloadAction<boolean>) {
-      state.isContractAddress = action.payload
-    },
-  },
 })
-
-export const { reset, setAccAddr, setApikey, setConnectName, setConnectNameTemp, setAccountInfo, setAccountStatus, setEddsaKey, setIsContractAddress, } = accountSlice.actions
 export default accountSlice
+export const {
+    updateAccountStatus,
+    // restAccountStatus,
+    changeShowModel,
+    cleanAccountStatus,
+    nextAccountStatus,
+    statusUnset
+} = accountSlice.actions
+

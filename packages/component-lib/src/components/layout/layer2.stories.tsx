@@ -8,13 +8,11 @@ import { Button, SubMenu, SubMenuList as BasicSubMenuList } from '../basic-lib';
 import {
     AmmData,
     AmmInData,
-    ButtonComponentsMap,
     globalCss,
     headerMenuData,
     headerToolBarData,
     HideIcon,
     IBData,
-    LanguageKeys,
     NavListIndex,
     PriceTag,
     subMenuLayer2,
@@ -22,12 +20,14 @@ import {
     WithdrawType,
     WithdrawTypes
 } from '@loopring-web/common-resources';
-import { useTranslation, withTranslation } from 'react-i18next';
+import {  withTranslation } from 'react-i18next';
 import { OrderHistoryTable as OrderHistoryTableUI } from '../tableList/orderHistoryTable'
-import { AccountInfo, AccountInfoProps, AssetTitleProps } from '../block';
+import {  AssetTitleProps } from '../block';
 import React from 'react';
 import { AssetTitle } from '../block/AssetTitle';
 import {
+    AccountBasePanel,
+    AccountBaseProps,
     AmmProps,
     DepositProps,
     ModalPanel,
@@ -39,19 +39,21 @@ import {
     TransferProps,
     WithdrawProps
 } from '../';
-import { setShowDeposit, setShowTransfer, setShowWithdraw, useSettings } from '../../stores';
+import { setShowDeposit, setShowTransfer, setShowWithdraw } from '../../stores';
 import { ammCalcData, coinMap, CoinType, tradeCalcData, walletMap } from '../../static';
 import { useDispatch } from 'react-redux';
 import { Typography } from '@material-ui/core/';
 
+
 const Style = styled.div`
-  color: #fff;
+  
 `
 const SubMenuList = withTranslation('layout', {withRef: true})(BasicSubMenuList);
 const OrderHistoryTable = withTranslation('common', {withRef: true})(OrderHistoryTableUI);
 
 let tradeData: any = {};
 let depositProps: DepositProps<any, any> = {
+    isNewAccount: true,
     tradeData,
     coinMap,
     walletMap,
@@ -150,6 +152,7 @@ let resetProps: ResetProps<any, any> = {
     fee: {count: 234, price: 123}
 }
 let swapProps: SwapProps<IBData<string>, string, any> = {
+    refreshRef: React.createRef(),
     tradeData: {sell: {belong: undefined}, buy: {belong: undefined}, slippage: ''} as any,
     tradeCalcData,
     onSwapClick: (tradeData) => {
@@ -160,6 +163,7 @@ let swapProps: SwapProps<IBData<string>, string, any> = {
     }
 };
 let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
+    refreshRef: React.createRef(),
     ammDepositData: {
         coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
         coinB: {belong: 'LRC', balance: 1000, tradeValue: 0},
@@ -171,7 +175,8 @@ let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
         slippage: '',
     },
     // tradeCalcData,
-    ammCalcData: ammCalcData,
+    ammCalcDataDeposit: ammCalcData,
+    ammCalcDataWithDraw: ammCalcData,
     handleAmmAddChangeEvent: (data, type) => {
         console.log('handleAmmAddChangeEvent', data, type);
     },
@@ -201,11 +206,7 @@ const AssetTitleWrap = (rest: any) => {
             totalAsset: 123456.789,
             priceTag: PriceTag.Dollar,
         },
-        onShowWithdraw: () => dispatch(setShowDeposit({
-            isShow: true, props: {
-                title: 'Demo change title props'
-            }
-        })),
+        onShowWithdraw: () => dispatch(setShowDeposit({isShow: true})),
         onShowTransfer: () => dispatch(setShowTransfer({isShow: true})),
         onShowDeposit: () => dispatch(setShowWithdraw({isShow: true})),
     }
@@ -219,7 +220,7 @@ const AssetTitleWrap = (rest: any) => {
     </>
 }
 
-const Layer2Wrap = () => {
+const Layer2Wrap = withTranslation('common')(({t,...rest}:any) => {
     // const _headerMenuData: List<HeaderMenuItemInterface> = headerMenuData as List<HeaderMenuItemInterface>;
     // const _headerToolBarData: List<HeaderToolBarInterface> = headerToolBarData as List<HeaderToolBarInterface>;
     const selected = 'assets';
@@ -227,7 +228,7 @@ const Layer2Wrap = () => {
       width: 100%;
       height: 100%;
       flex: 1;
-      background-color: ${({theme}) => theme.colorBase.background().default};
+      background: var(--color-box);
       border-radius: ${({theme}) => theme.unit}px;
       padding: ${({theme}) => theme.unit * 3}px;
 
@@ -240,12 +241,18 @@ const Layer2Wrap = () => {
         // padding: 26px;
       }
     ` as typeof Paper;
-    const accountInfoProps: AccountInfoProps = {
-        addressShort: '0x123...8784',
-        address: '0x123567243o24o242423098784',
+    const accountInfoProps: AccountBaseProps = {
+        accAddress: '0x123567243o24o242423098784',
+        accountId: 0,
+        apiKey: '',
+        connectName: 'unknown',
+        eddsaKey: undefined,
+        etherscanUrl: 'https://material-ui.com/components/material-icons/',
+        keyNonce: undefined,
+        nonce: undefined,
+        publicKey: undefined,
+        readyState: 'unknown',
         level: 'VIP 1',
-        connectBy: 'MetaMask',
-        etherscanLink: 'https://material-ui.com/components/material-icons/',
         mainBtn: <Button variant={'contained'} size={'small'} color={'primary'} onClick={() => console.log('my event')}>My
             button</Button>
     }
@@ -261,22 +268,13 @@ const Layer2Wrap = () => {
         }
         _event.stopPropagation();
     }
-    const {t} = useTranslation('common');
-    const {setLanguage} = useSettings()
     headerMenuData[ NavListIndex.layer2 ].extender = hasAccount ? <IconButton disabled={!hasAccount}
                                                                               onClick={handleClick}
                                                                               aria-label={t('labelShowAccountInfo')}
                                                                               color="primary">
         {showAccountInfo ? <HideIcon/> : <ViewIcon/>}
     </IconButton> : undefined
-    const onLangBtnClick = (lang: LanguageKeys) => {
-        //i18n.changeLanguage(lang);
-        setLanguage(lang);
-    }
-    headerToolBarData[ ButtonComponentsMap.Language ] = {
-        ...headerToolBarData[ ButtonComponentsMap.Language ],
-        handleChange: onLangBtnClick
-    }
+
 
 
     return <>
@@ -290,7 +288,7 @@ const Layer2Wrap = () => {
             <Collapse in={showAccountInfo}>
                 <Container maxWidth="lg">
                     <Box marginTop={3}>
-                        <AccountInfo  {...accountInfoProps}></AccountInfo>
+                        <AccountBasePanel  {...{...accountInfoProps,t,...rest}}/>
                     </Box>
                 </Container>
             </Collapse> : undefined}
@@ -307,9 +305,9 @@ const Layer2Wrap = () => {
                         <AssetTitleWrap/>
                     </Box>
                     <StylePaper>
-                        <Typography variant={'h4'} component={'h3'}>Orders</Typography>
+                        <Typography variant={'h5'} component={'h3'}>Orders</Typography>
                         <Box marginTop={2} className="tableWrapper">
-                            <OrderHistoryTable rawData={[]}/>
+                            <OrderHistoryTable rawData={[]} pageSize={0} {...rest}/>
                         </Box>
                     </StylePaper>
                 </Box>
@@ -317,7 +315,7 @@ const Layer2Wrap = () => {
         </Container>
         {/*<Footer></Footer>*/}
     </>
-}
+})
 
 const Template: Story<any> = () => {
     const theme: Theme = useTheme();
@@ -328,8 +326,8 @@ const Template: Story<any> = () => {
       body:before {
         ${theme.mode === 'dark' ? `
             color: ${theme.colorBase.textPrimary};        
-            background: #191C30;
-            background: ${theme.colorBase.background().bg};
+           
+            background: var(--color-global-bg);
        ` : ''}
       }
     }

@@ -1,17 +1,16 @@
 import React from 'react'
 import { Meta, Story } from '@storybook/react/types-6-0'
 
-import { Box, Breadcrumbs, Grid, Pagination, Typography } from '@material-ui/core'
+import { Box, Breadcrumbs, Grid, Pagination, Typography, Link } from '@material-ui/core'
 import { ButtonProps, TGItemData, TGItemJSXInterface } from './Interface';
-import { BtnPercentage, Button, ModalCloseButton, ToggleButtonGroup } from './index'
+import { BtnPercentage, Button, LinkActionStyle, ModalCloseButton, ToggleButtonGroup } from './index'
 import Switch from '@material-ui/core/Switch';
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
-import { Link } from '@material-ui/core/';
 
 const Styled = styled.div`
-  background: ${({theme}) => theme.colorBase.background().bg};
-  color: #fff;
+  background: var(--color-global-bg);
+  
 `
 const toggleData: TGItemData[] = [
     {value: '15M', key: '15m'},
@@ -30,16 +29,16 @@ const ToggleButtonDefault = withTranslation()(({...rest}: any) => {
         setCValues(value);
     }
     return <Grid container direction={"column"} spacing={2}>
-        <Grid item> <ToggleButtonGroup exclusive {...{...rest, data: toggleData, value, setValue}}/></Grid>
-        <Grid item> <ToggleButtonGroup {...{...rest, ata: toggleData, value: values, setValue: setValues}}/></Grid>
-        <Grid item> <ToggleButtonGroup exclusive {...{
+        <Grid item> <ToggleButtonGroup exclusive size={'large'} {...{...rest, data: toggleData, value, setValue}}/></Grid>
+        <Grid item> <ToggleButtonGroup size={'medium'} {...{...rest, ata: toggleData, value: values, setValue: setValues}}/></Grid>
+        <Grid item> <ToggleButtonGroup size={'small'}  exclusive {...{
             ...rest,
             data: toggleData,
             value,
             setValue,
             size: 'small'
         }}/></Grid>
-        <Grid item> <ToggleButtonGroup exclusive {...{
+        <Grid item> <ToggleButtonGroup size={'small'}   exclusive {...{
             ...rest,
             tgItemJSXs,
             value: cValue,
@@ -111,10 +110,27 @@ export const LButton: Story<ButtonProps> = withTranslation()(({t, ...rest}: With
                                                 disabled={true}>outline default 32</Button></Grid>
                         </Grid>
                     </Grid>
-                    <Grid item> <Button variant={'outlined'} size={'small'} color={'primary'}>outline small
-                        28</Button></Grid>
+                    <Grid item>
+                        <Button variant={'outlined'} size={'small'} color={'primary'}>outline small
+                        28</Button>
+                    </Grid>
+                    <Grid item>
+                       <Typography color={'textPrimary'} variant={'body1'} >
+                           <LinkActionStyle color={'textPrimary'} >xxxxxxxxxxx</LinkActionStyle></Typography>
+                    </Grid>
                     <Grid item>
                         <ModalCloseButton {...{t, ...rest}}/>
+                    </Grid>
+                    <Grid item>
+                        <Button variant={'text'} size={'medium'} color={'primary'}>
+                            Text Btn
+                        </Button>
+                        <Button variant={'text'} size={'medium'} color={'primary'} disabled>
+                            Text Btn
+                        </Button>
+                    </Grid>
+                    <Grid item>
+                        <Link underline={'none'}>Test Link</Link>
                     </Grid>
                 </Grid>
             </Box>

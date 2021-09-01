@@ -12,10 +12,10 @@ const StyleDepth = styled.div`
 
   .rgb-depth-cell {
     width: 100%;
-    background: ${({theme}) => theme.colorBase.success};
+    background: var(--color-success);
 
     &.rgb-depth-red {
-      background: ${({theme}) => theme.colorBase.error};
+      background: var(--color-error);
         //background: ${({theme, style}) => theme.colorBase[ style === 'good' ? 'success' : 'error' ]};;
     }
   }

@@ -1,14 +1,28 @@
 import {
+    Account,
+    AccountStatus,
     AmmInData,
     CoinInfo,
-    CoinMap,
+    CoinMap, ConnectProviders,
     HeaderMenuItemInterface,
     TradeCalcData,
     WalletCoin,
     WalletMap
 } from '@loopring-web/common-resources';
 import { List } from 'immutable';
-
+export const account:Account = {
+    accAddress: 'xxxxxxxxxxxxxxxxxxx',
+    qrCodeUrl: '',
+    readyState: AccountStatus.UN_CONNECT,
+    accountId: -1,
+    apiKey: '',
+    eddsaKey: '',
+    publicKey: {},
+    level: '',
+    nonce: undefined,
+    keyNonce: undefined,
+    connectName: ConnectProviders.unknown,
+}
 export const coinMap: CoinMap<CoinType, CoinInfo<CoinType>> = {
     ETH: {
         icon: 'https://exchange.loopring.io/assets/images/ethereum/assets/0x9A0aBA393aac4dFbFf4333B06c407458002C6183/logo.png',
@@ -150,11 +164,13 @@ export const tradeCalcData: TradeCalcData<CoinType> = {
     coinBuy: 'LRC',
     BtoS: 0,
     StoB: 0,
+    coinInfoMap: coinMap,
     sellCoinInfoMap: coinMap,
     buyCoinInfoMap: coinMap,
     walletMap: walletMap as WalletMap<CoinType, WalletCoin<CoinType>>,
     slippage: 0.5,
     priceImpact: '12',
+    priceImpactColor: 'var(--color-success)',
     minimumReceived: '1%',
     fee: '1%'
 }
@@ -167,9 +183,8 @@ export const ammCalcData: AmmInData<CoinType> = {
     AtoB: 50,
     coinInfoMap: coinMap,
     slippage: 0.5,
-    fee: '1%'
+    fee: '1%',
 }
-
 
 export const layer2ItemData = List<HeaderMenuItemInterface>([{
     label: {

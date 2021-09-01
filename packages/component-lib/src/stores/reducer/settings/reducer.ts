@@ -2,6 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { PlatFormType, SettingsState } from "./interface";
 import { Currency, i18n, LanguageKeys, ThemeKeys, ThemeType, UpColor } from '@loopring-web/common-resources';
 import moment from 'moment';
+import * as imgConfig  from '@loopring-web/common-resources/assets/images/coin/loopring.json'
+import { Slice } from '@reduxjs/toolkit/src/createSlice';
 // import { localStore } from '@loopring-web/common-resources/src/storage';
 
 const initialState: SettingsState = {
@@ -10,21 +12,64 @@ const initialState: SettingsState = {
     platform: PlatFormType.desktop,
     currency: Currency.dollar,//localStore.getItem('Currency')?localStore.getItem('Currency') as keyof typeof Currency: Currency.dollar,
     upColor: UpColor.green,//localStore.getItem('UpColor')?localStore.getItem('UpColor') as keyof typeof UpColor: UpColor.green,
+    coinJson: imgConfig.frames,
     slippage: 'N',
 }
 
-export const settingsSlice = createSlice({
+export const settingsSlice:Slice<SettingsState> = createSlice({
     name: 'settings',
     initialState,
     reducers: {
         setTheme(state, action: PayloadAction<ThemeKeys>) {
             // localStore.setItem('ThemeType',action.payload)
             state.themeMode = action.payload
+            
         },
         setLanguage(state, action: PayloadAction<LanguageKeys>) {
             i18n.changeLanguage(action.payload);
             if (action.payload) {
-                action.payload === 'en_US' ? moment.locale('en') : moment.locale(action.payload.toLocaleLowerCase());
+                // action.payload === 'en_US' ? moment.locale('en') : moment.locale(action.payload.toLocaleLowerCase());
+                action.payload === 'en_US' 
+                    ? moment.updateLocale('en', {
+                            relativeTime : {
+                                future: "in %s",
+                                past:   "%s ago",
+                                s  : 'a few seconds',
+                                ss : '%d seconds',
+                                m:  "a minute",
+                                mm: "%d minutes",
+                                h:  "an hour",
+                                hh: "%d hours",
+                                d:  "a day",
+                                dd: "%d days",
+                                w:  "a week",
+                                ww: "%d weeks",
+                                M:  "a month",
+                                MM: "%d months",
+                                y:  "a year",
+                                yy: "%d years",
+                            }
+                        })
+                    : moment.updateLocale('zh-cn', {
+                        relativeTime : {
+                            future: "%s后",
+                            past:   "%s前",
+                            s  : '几秒',
+                            ss : '%d 秒',
+                            m:  "1 分钟",
+                            mm: "%d 分钟",
+                            h:  "1 小时",
+                            hh: "%d 小时",
+                            d:  "1 天",
+                            dd: "%d 天",
+                            w:  "1 周",
+                            ww: "%d 周",
+                            M:  "1 个月",
+                            MM: "%d 个月",
+                            y:  "1 年",
+                            yy: "%d 年",
+                        }
+                    });
                 state.language = action.payload
             }
         },
@@ -43,7 +88,11 @@ export const settingsSlice = createSlice({
             // localStore.setItem('UpColor',action.payload)
             state.slippage = action.payload
         },
+        setCoinJson(state, action: PayloadAction<any>) {
+            // localStore.setItem('UpColor',action.payload)
+            state.coinJson = action.payload
+        },
     },
 })
-export const {setTheme, setLanguage, setPlatform, setCurrency, setUpColor, setSlippage} = settingsSlice.actions
+export const {setTheme, setLanguage, setPlatform, setCurrency, setUpColor, setSlippage, setCoinJson} = settingsSlice.actions
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

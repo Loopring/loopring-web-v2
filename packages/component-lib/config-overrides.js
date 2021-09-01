@@ -8,12 +8,6 @@ const {
   addWebpackAlias,
 } = require('customize-cra')
 
-const rewireLess = require('react-app-rewire-less')
-
-const {alias} = require('react-app-rewire-alias')
-
-const path = require('path')
-
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const gitRevisionPlugin = new GitRevisionPlugin()
 
@@ -34,47 +28,21 @@ function getCommitHash() {
   }
 }
 
-const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin')
-
-const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent') // 直接这么引入就可以，他在create-app-react包里 这个就是getLocalIdent属性要设置的值
-
-const getStyleLoaders = (cssOptions, preProcessor, lessOptions) => {
-  const loaders = [
-    require.resolve('style-loader'),
-    {
-      loader: require.resolve('css-loader'),
-      options: cssOptions,
-    },
-    {
-      // Options for PostCSS as we reference these options twice
-      // Adds vendor prefixing based on your specified browser support in
-      // package.json
-      loader: require.resolve('postcss-loader'),
-      options: {
-        // Necessary for external CSS imports to work
-        // https://github.com/facebook/create-react-app/issues/2677
-        ident: 'postcss',
-        plugins: () => [
-          require('postcss-flexbugs-fixes'),
-          require('postcss-preset-env')({
-            autoprefixer: {
-              flexbox: 'no-2009',
-            },
-            stage: 3,
-          }),
-        ],
-      },
-    },
-  ]
-  if (preProcessor) {
-    loaders.push({
-      loader: require.resolve(preProcessor),
-      options: lessOptions,
-    })
+const path = require("path")
+const toPath = (filePath) => path.join(process.cwd(), '../../' + filePath)
+const hasJsxRuntime = (() => {
+  if (process.env.DISABLE_NEW_JSX_TRANSFORM === 'true') {
+    return false;
   }
-  return loaders
-}
 
+  try {
+    require.resolve('react/jsx-runtime');
+    return true;
+  } catch (e) {
+    return false;
+  }
+})();
+const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier');
 module.exports = override(
   addWebpackAlias({}),
 
@@ -89,11 +57,12 @@ module.exports = override(
   */
 
   // addWebpackPlugin(gitRevisionPlugin),
-  addWebpackPlugin(
-    new CopyWebpackPlugin({
-        patterns: [{from: path.resolve(__dirname, "..", "assets"), to: './static', toType: "dir"}],
-      }
-    )),
+  // addWebpackPlugin(
+  //   new CopyWebpackPlugin({
+  //       patterns: [{from: path.resolve(__dirname, "..", "assets"), to: './static', toType: "dir"}],
+  //     }
+  //   )
+  // ),
   addWebpackPlugin(
     new webpack.DefinePlugin({
       'process.env.COMMITHASH': JSON.stringify(getCommitHash()),
@@ -122,23 +91,10 @@ module.exports = override(
       sourceMap: false,
     },
   }),
-  (config) => {
+  (config,mode) => {
     // 增加处理less module配置 customize-cra 不提供 less.module 只提供css.module
     const oneOf_loc = config.module.rules.findIndex((n) => n.oneOf) // 这里的config是全局的
     config.module.rules[oneOf_loc].oneOf = [
-      {
-        test: /\.module\.less$/,
-        use: getStyleLoaders(
-          {
-            importLoaders: 2,
-            modules: {
-              getLocalIdent: getCSSModuleLocalIdent,
-            },
-          },
-
-          'less-loader',
-        ),
-      },
       {
         test: /\.(png|woff|woff2|eot|ttf|svg)$/,
         loader: 'url-loader?limit=10240',
@@ -146,12 +102,87 @@ module.exports = override(
       },
       ...config.module.rules[oneOf_loc].oneOf,
     ]
-
-    alias({
-      "static-resource": path.resolve(__dirname, 'src/static-resource'),
-      "static": path.resolve(__dirname, 'src/static-resource'),
-      //"@loopring-web/static-resource": 'static-resource',
-    })(config)
+    const isProd = mode === 'PRODUCTION';
+    config.resolve = {
+      ...config.resolve,
+      modules: [
+        ...config.resolve.modules,
+        path.resolve(__dirname, "..", "src"),
+        path.resolve(__dirname, '..', '..', 'common-resources', "static-resources"),
+        // path.resolve(__dirname,'./'),
+      ],
+      alias: {
+        ...config.resolve.alias,
+        //"@loopring-web/static-resource" : path.resolve(__dirname, '..', 'src/static-resource'),
+        //toPath("node_modules/@loopring-web/static-resource"),
+        //path.resolve(__dirname, '..', 'node_modules/@loopring-web/static-resource'),
+        // "@loopring-web/static-resource":path.resolve(__dirname, '..', 'node_modules/@loopring-web/static-resource'),
+        "@emotion/core": toPath("node_modules/@emotion/react"),
+        "emotion-theming": toPath("node_modules/@emotion/react"),
+        "@emotion/styled-base": toPath("node_modules/@emotion/styled/base"),
+      },
+    }
+    config.module.rules.push({
+      test: /\.(mjs|js|jsx|tsx|ts)$/,
+      exclude: [/node_modules/, /dist/],
+      include: [path.resolve(__dirname, '..', '..', 'common-resources', "static-resources")],
+      // TODO - this should be handled by the general `resolve.extensions` option
+      // resolve: { fullySpecified: false },
+      loader: 'babel-loader',
+      // loader: require.resolve('babel-loader'),
+      options: {
+        customize: require.resolve(
+          'babel-preset-react-app/webpack-overrides'
+        ),
+        presets: [
+          [
+            require.resolve('babel-preset-react-app'),
+            {
+              runtime: hasJsxRuntime ? 'automatic' : 'classic',
+            },
+          ],
+        ],
+        // @remove-on-eject-begin
+        babelrc: false,
+        configFile: false,
+        // Make sure we have a unique cache identifier, erring on the
+        // side of caution.
+        // We remove this when the user ejects because the default
+        // is sane and uses Babel options. Instead of options, we use
+        // the react-scripts and babel-preset-react-app versions.
+        cacheIdentifier: getCacheIdentifier(
+          'development',
+          [
+            'babel-plugin-named-asset-import',
+            'babel-preset-react-app',
+            'react-dev-utils',
+            'react-scripts',
+          ]
+        ),
+        // @remove-on-eject-end
+        plugins: [
+          [
+            require.resolve('babel-plugin-named-asset-import'),
+            {
+              loaderMap: {
+                svg: {
+                  ReactComponent:
+                    '@svgr/webpack?-svgo,+titleProp,+ref![path]',
+                },
+              },
+            },
+          ],
+          'production' && require.resolve('react-refresh/babel'),
+        ].filter(Boolean),
+        // This is a feature of `babel-loader` for webpack (not Babel itself).
+        // It enables caching results in ./node_modules/.cache/babel-loader/
+        // directory for faster rebuilds.
+        cacheDirectory: true,
+        // See #6846 for context on why cacheCompression is disabled
+        cacheCompression: false,
+        compact: 'auto',
+      },
+    });
 
     return config
   },

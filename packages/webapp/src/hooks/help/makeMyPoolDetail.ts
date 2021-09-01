@@ -1,7 +1,7 @@
 import { AmmDetailStore } from '../../stores/Amm/AmmMap';
 import { AmmPoolSnapshot } from 'loopring-sdk';
 import { makeMyAmmWithSnapshot, makeMyAmmWithStat } from './makeUIAmmActivityMap';
-import { AmmUserRewardMap } from 'loopring-sdk/dist/defs/loopring_defs';
+import { AmmUserRewardMap } from 'loopring-sdk';
 import { WalletMapExtend } from './makeWallet';
 
 export const makeMyPoolRowWithSnapShot = <T extends { [ key: string ]: any }>({market,ammSnapShot,walletMap,ammUserRewardMap}: {

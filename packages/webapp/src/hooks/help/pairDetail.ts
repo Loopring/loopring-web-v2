@@ -1,11 +1,9 @@
 import { AmmMap } from '../../stores/Amm/AmmMap';
 import { AmmPoolSnapshot, getBaseQuote, LoopringMap, TickerData, TokenInfo, TokenVolumeV3 } from 'loopring-sdk';
-import { LoopringAPI } from '../../stores/apis/api';
-import * as fm from 'loopring-sdk';
-import { BIG10 } from '../../defs/swap_defs';
-import { getToken } from 'utils/swap_calc_utils';
+import { LoopringAPI } from 'api_wrapper';
 import { CoinMap, CustomError, ErrorMap } from '@loopring-web/common-resources';
 import { volumeToCountAsBigNumber } from './volumeToCount';
+import { myLog } from 'utils/log_tools';
 
 export const pairDetailBlock = <C extends { [ key: string ]: any }, I extends { [ key: string ]: any }>({
                                                                                                            coinKey,
@@ -13,18 +11,14 @@ export const pairDetailBlock = <C extends { [ key: string ]: any }, I extends { 
                                                                                                            ammMap
                                                                                                        }: { coinKey: string, ammKey: string, ammMap: AmmMap<C, I> }):
     Promise<{
-        ammPoolsBalance: AmmPoolSnapshot,
-        tickMap:  LoopringMap<TickerData>
+        ammPoolsBalance: AmmPoolSnapshot | undefined,
+        tickMap:  LoopringMap<TickerData>,
 }> => {
-    // const exchangeApi = exchangeAPI();
-    // const ammpoolApi = ammpoolAPI();
     return new Promise((resolve, reject) => {
         if(LoopringAPI.ammpoolAPI && LoopringAPI.exchangeAPI ) {
             Promise.all([
-                LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({poolAddress: ammMap[ ammKey ].address}),
+                LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({poolAddress: ammMap[ammKey]?.address}),
                 LoopringAPI.exchangeAPI.getMixTicker({market: coinKey})])
-                // exchangeApi.getMarketTrades({market:coinKey})])
-                //{raw_data},
                 .then(([{ammPoolSnapshot}, {tickMap}]) => {
                     resolve({
                         ammPoolsBalance: ammPoolSnapshot,
@@ -39,67 +33,48 @@ export const pairDetailBlock = <C extends { [ key: string ]: any }, I extends { 
     })
 }
 
-export const pairDetailDone = <C>({coinKey, market,ammPoolsBalance, tokenMap,tickerData, _tradeCalcData, coinMap, marketCoins}:any)=>{
+export const pairDetailDone = <C>({coinKey, market, ammPoolsBalance, fee, tokenMap,tickerData, _tradeCalcData, coinMap, marketCoins,depth}:any)=>{
 
-    const [, coinSell, coinbuy] = coinKey.match(/(\w+)-(\w+)/i)
-    let stob:number|undefined;
-    if (tickerData.base === coinSell) {
-        // const ticker: TickerData = tickMap[market]
-        stob = Number(tickerData.close)
+    const [, coinSell, coinBuy] = coinKey.match(/(\w+)-(\w+)/i)
+    let stob:number|undefined = NaN;
 
-    } else{
-        // const ticker: TickerData = tickMap[market]
-        stob = Number(tickerData.close)!==0? 1/Number(tickerData.close): 0
+    if (coinKey && tickerData?.symbol && coinKey === tickerData.symbol) {
+        if (tickerData.base === coinSell) {
+            stob = Number(tickerData.close)
+        } else {
+            stob = Number(tickerData.close) !== 0 ? 1 / Number(tickerData.close) : 0
+        }
     }
-    if(isNaN(stob) && ammPoolsBalance){
-        const {base, quote} = getBaseQuote(coinKey)
 
-        // const baseToken: TokenInfo = getToken(tokenMap, base)
-        // const quoteToken: TokenInfo = getToken(tokenMap, quote)
-        // const baseVol = (fm.toBig(poolBaseTokenVol.volume).div(BIG10.pow(baseToken.decimals)))
-        // const quoteVol = (fm.toBig(quoteBaseTokenVol.volume).div(BIG10.pow(quoteToken.decimals)))
-        //
-        // stob = volumeToCountAsBigNumber(base,poolBaseTokenVol.volume)?.div(
-        //     volumeToCountAsBigNumber(quote,quoteBaseTokenVol.volume) || 1
-        // ) .toNumber()
-        // console.log('1', base, poolBaseTokenVol, quote, quoteBaseTokenVol)
-        //baseToken.tokenId === quoteBaseTokenVol.tokenId && quoteToken.tokenId === poolBaseTokenVol.tokenId) {
-        // const quoteVol = (fm.toBig(quoteBaseTokenVol.volume).div(BIG10.pow(baseToken.decimals)))
-        // const baseVol = (fm.toBig(poolBaseTokenVol.volume).div(BIG10.pow(quoteToken.decimals)))
-        //baseVol.div(quoteVol).toNumber()
-        // console.log('2', base, poolBaseTokenVol, quote, quoteBaseTokenVol)
-        //ErrorMap.NOTS
+    if(isNaN(stob) && ammPoolsBalance) {
+        const {base, quote} = getBaseQuote(coinKey)
+        
         const poolBaseTokenVol: TokenVolumeV3 = ammPoolsBalance.pooled[0];
         const quoteBaseTokenVol: TokenVolumeV3 = ammPoolsBalance.pooled[1];
-        let poolVolumn:[baseVol:any, quoteVol:any];
-        if ( base && quote && tokenMap[base].tokenId === poolBaseTokenVol.tokenId ) {
-            poolVolumn =  [[base,poolBaseTokenVol.volume],[quote,quoteBaseTokenVol.volume]]
+        let poolVolume: [baseVol:any, quoteVol:any];
+        if (base && quote && tokenMap[base].tokenId === poolBaseTokenVol.tokenId ) {
+            poolVolume =  [[base, poolBaseTokenVol.volume],[quote, quoteBaseTokenVol.volume]]
         } else if (base && quote && tokenMap[base].tokenId === quoteBaseTokenVol.tokenId){
-            poolVolumn =  [[quote,quoteBaseTokenVol.volume],[base,poolBaseTokenVol.volume]]
+            poolVolume =  [[base, quoteBaseTokenVol.volume],[quote, poolBaseTokenVol.volume]]
         } else {
             throw new CustomError(ErrorMap.NO_SUPPORT_PAIR)
         }
-        let [baseVol,quoteVol]  = poolVolumn
-        if(baseVol && quoteVol){
-            // stob = volumeToCountAsBigNumber(baseVol[0],baseVol[1])?.div(
-            //     volumeToCountAsBigNumber(quoteVol[0],quoteVol[1]) || 1
-            // ) .toNumber()
-            stob = volumeToCountAsBigNumber(quoteVol[0],quoteVol[1])?.div(
-                volumeToCountAsBigNumber(baseVol[0],baseVol[1]) || 1).toNumber()
+        let [baseVol, quoteVol] = poolVolume
+        if(baseVol && quoteVol) {
+            stob = parseFloat(volumeToCountAsBigNumber(quoteVol[0], quoteVol[1])?.div(
+                volumeToCountAsBigNumber(baseVol[0], baseVol[1]) || 1).toFixed(7, 0) as string)
+
+                myLog('pairDetailDone stob from amm:', stob)
         }
     }
+    if(isNaN(stob) && depth) {
+        stob = coinKey === depth.symbol? depth.mid_price:1/depth.mid_price
+    }
 
-    _tradeCalcData.StoB = stob;
-    _tradeCalcData.BtoS = stob !== 0 && stob !== undefined? 1 / (stob * 1.0): 0;
-    _tradeCalcData.sellCoinInfoMap = coinMap && marketCoins?.reduce((prev: any, item: string | number) => {
-        return {...prev, [ item ]: coinMap[ item ]}
-    }, {} as CoinMap<C>)
-    _tradeCalcData.buyCoinInfoMap = coinMap && tokenMap && tokenMap[ _tradeCalcData.coinSell as string ].tradePairs?.reduce((prev: any, item: string | number) => {
-        return {...prev, [ item ]: coinMap[ item ]}
-    }, {} as CoinMap<C>);
+    const isValidS2B = (stob !== 0 && stob !== undefined && !isNaN(stob))
 
     return {
-        _tradeCalcData
+        stob:isValidS2B ? stob: 0
     }
     //setPair();
 }

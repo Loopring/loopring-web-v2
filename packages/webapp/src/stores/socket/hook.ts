@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { StateBase } from '../interface';
-import { sendSocketTopic, socketEnd, socketSlice } from './reducer';
+import { sendSocketTopic, socketEnd } from './reducer';
 import { SocketMap } from './interface';
 import React from 'react';
 import { statusUnset } from '../Amm/AmmMap';
+import { StateBase } from '@loopring-web/common-resources';
 
 export function useSocket(): StateBase & {
     // socketStart:()=>void,
@@ -27,9 +27,9 @@ export function useSocket(): StateBase & {
     // }
     return {
         ...socket,
-        statusUnset:React.useCallback(()=>dispatch(statusUnset(undefined)),[dispatch]),
-        sendSocketTopic:React.useCallback((socket: SocketMap)=>dispatch(sendSocketTopic({socket})),[dispatch]),
-        socketEnd:React.useCallback(()=>dispatch(socketEnd(undefined)),[dispatch]),
+        statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),
+        sendSocketTopic: React.useCallback((socket: SocketMap) => dispatch(sendSocketTopic({socket})), [dispatch]),
+        socketEnd: React.useCallback(() => dispatch(socketEnd(undefined)), [dispatch]),
     }
 
 }

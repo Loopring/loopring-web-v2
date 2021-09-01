@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.build.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "noUnusedLocals": true,
+    "resolveJsonModule": true,
+    "noUnusedParameters": true,  
+    "baseUrl": "./static-resources/src",
+    "rootDir": "./static-resources"
+  },
+  "include": [
+    "./static-resources/src",
+    "./static-resources/src/**/*.json",
+    "./static-resources/src/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "dist",
+    "example",
+    "rollup.config.js"
+  ]
+}

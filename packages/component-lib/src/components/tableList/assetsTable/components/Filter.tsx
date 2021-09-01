@@ -1,32 +1,31 @@
 import React from 'react'
-import styled from '@emotion/styled'
-import { Checkbox, Grid, MenuItem } from '@material-ui/core'
+import { Checkbox, Grid } from '@material-ui/core'
 import { withTranslation, WithTranslation } from "react-i18next";
-import { FormControlLabel, TextField } from '../../../'
-import { CheckBoxIcon, CheckedIcon, DropDownIcon } from '@loopring-web/common-resources'
-import { TokenType, TradePairItem } from '../AssetsTable'
+import { FormControlLabel, InputSearch } from '../../../'
+import { CheckBoxIcon, CheckedIcon } from '@loopring-web/common-resources'
+import { TokenType, RawDataAssetsItem } from '../AssetsTable'
 
 export type TokenTypeCol = {
     type: TokenType,
     value: string
 }
-
-export type OriginalDataItem = string | number | TokenTypeCol | TradePairItem[] | boolean | undefined
-
 export interface FilterProps {
-    originalData: OriginalDataItem[][];
+    searchValue: string;
+    originalData: RawDataAssetsItem[];
+    hideSmallBalance: boolean;
+    hideLpToken: boolean;
     handleFilterChange: ({tokenType, hideSmallBalance, hideLPToken}: any) => void;
 }
 
-const StyledTextFiled = styled(TextField)`
-    &.MuiTextField-root {
-        max-width: initial;
-    }
-    .MuiInputBase-root {
-        width: initial;
-        max-width: initial;
-    }
-`
+// const StyledTextFiled = styled(TextField)`
+//     &.MuiTextField-root {
+//         max-width: initial;
+//     }
+//     .MuiInputBase-root {
+//         width: initial;
+//         max-width: initial;
+//     }
+// `
 
 export enum CheckboxType {
     smallBalance = 'smallBalance',
@@ -35,46 +34,64 @@ export enum CheckboxType {
 
 export const Filter = withTranslation('tables', {withRef: true})(({
                                                                       t,
-                                                                      originalData,
-                                                                      handleFilterChange
+                                                                    //   originalData,
+                                                                      handleFilterChange,
+                                                                      searchValue,
+                                                                      hideSmallBalance,
+                                                                      hideLpToken,
                                                                   }: FilterProps & WithTranslation) => {
     // de-duplicate
-    const tokenTypeList = [{
-        label: t('labelAllToken'),
-        value: 'All Tokens'
-    }, ...Array.from(new Set(originalData.map(o => (o[ 0 ] as TokenTypeCol).value))).map(val => ({
-        label: val,
-        value: val
-    }))]
-    const [tokenType, setTokenType] = React.useState<string>('All Tokens')
-    const [hideSmallBalance, setHideSmallBalance] = React.useState(false)
-    const [hideLPToken, setHideLPToken] = React.useState(false)
-    const refTokenType = React.useRef(tokenType)
-    const refHideSmallBalance = React.useRef(hideSmallBalance)
-    const refHideLPToken = React.useRef(hideLPToken)
+    // const tokenTypeList = [{
+    //     label: t('labelAllToken'),
+    //     value: 'All Tokens'
+    // }, ...Array.from(new Set(originalData.map(o => (o[ 0 ] as TokenTypeCol).value))).map(val => ({
+    //     label: val,
+    //     value: val
+    // }))]
+    // const [tokenType, setTokenType] = React.useState<string>('All Tokens')
+    // const [hideSmallBalance, setHideSmallBalance] = React.useState(false)
+    // const [hideLPToken, setHideLPToken] = React.useState(false)
+    // const refTokenType = React.useRef(tokenType)
 
-    const handleCheckboxChange = React.useCallback((type: CheckboxType, event: any) => {
-        if (type === CheckboxType.smallBalance) {
-            setHideSmallBalance(event.target.checked)
-        } else {
-            setHideLPToken(event.target.checked)
-        }
-    }, [])
+    // const refHideSmallBalance = React.useRef(hideSmallBalance)
+    // const refHideLPToken = React.useRef(hideLPToken)
 
-    const handleFilterData = React.useCallback(() => {
-        const valueTokenType = refTokenType.current;
-        const valueHideSmallBalance = refHideSmallBalance.current;
-        const valueHideLPToken = refHideLPToken.current;
-        handleFilterChange({
-            tokenType: valueTokenType,
-            currHideSmallBalance: valueHideSmallBalance,
-            currHideLPToken: valueHideLPToken
-        })
-    }, [handleFilterChange])
+    // const handleCheckboxChange = React.useCallback((type: CheckboxType, event: any) => {
+    //     // if (type === CheckboxType.smallBalance) {
+    //     //     setHideSmallBalance(event.target.checked)
+    //     // } else {
+    //     //     setHideLPToken(event.target.checked)
+    //     // }
+    //     handleFilterChange({
+            
+    //     })
+    // }, [handleFilterChange])
+
+    // const handleFilterData = React.useCallback((type, value) => {
+    //     // const valueTokenType = refTokenType.current;
+    //     // const valueHideSmallBalance = refHideSmallBalance.current;
+    //     // const valueHideLPToken = refHideLPToken.current;
+    //     if (type === 'smallBalance') {
+    //         handleFilterChange({
+    //             hideSmallBalance: value
+    //         })
+    //     }
+    //     if (type === 'lp') {
+    //         handleFilterChange({
+    //             hideLPToken: value
+    //         })
+    //     }
+
+    //     handleFilterChange({
+    //         // tokenType: valueTokenType,
+    //         currHideSmallBalance: valueHideSmallBalance,
+    //         currHideLPToken: valueHideLPToken
+    //     })
+    // }, [handleFilterChange])
 
     return (
-        <Grid container spacing={4}>
-            <Grid item xs={2}>
+        <Grid container spacing={4} justifyContent={'space-between'}>
+            {/* <Grid item xs={2}>
                 <StyledTextFiled
                     id="table-assets-trade-types"
                     select
@@ -89,27 +106,34 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                 > {tokenTypeList.map(token => <MenuItem key={token.value}
                                                         value={token.value}>{token.label}</MenuItem>)}
                 </StyledTextFiled>
-            </Grid>
-
+            </Grid> */}
             <Grid item>
-                <FormControlLabel style={{marginRight: 0}}
-                                  control={<Checkbox checked={hideSmallBalance} checkedIcon={<CheckedIcon/>}
-                                                     icon={<CheckBoxIcon/>}
-                                                     color="default" onChange={(event) => {
-                                      handleCheckboxChange(CheckboxType.smallBalance, event);
-                                      refHideSmallBalance.current = event.target.checked;
-                                      handleFilterData();
-                                  }}/>} label={t('labelHideSmallBalances')}/>
+                <InputSearch value={searchValue} onChange={(value: any) => {
+                    // setSearchValue(value)
+                    handleFilterChange({ currSearchValue: value })
+                }} />
             </Grid>
 
             <Grid item>
                 <FormControlLabel
-                    control={<Checkbox checked={hideLPToken} checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
-                                       color="default" onChange={(event) => {
-                        handleCheckboxChange(CheckboxType.lp, event);
-                        refHideLPToken.current = event.target.checked;
-                        handleFilterData();
+                    control={<Checkbox checked={hideLpToken} checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
+                                color="default" onChange={(event) => {
+                        // handleCheckboxChange(CheckboxType.lp, event);
+                        // refHideLPToken.current = event.target.checked;
+                        handleFilterChange({
+                            currHideLPToken: event.target.checked
+                        });
                     }}/>} label={t('labelHideLPToken')}/>
+                <FormControlLabel style={{marginRight: 0}}
+                    control={<Checkbox checked={hideSmallBalance} checkedIcon={<CheckedIcon/>}
+                                        icon={<CheckBoxIcon/>}
+                                        color="default" onChange={(event) => {
+                        // handleCheckboxChange(CheckboxType.smallBalance, event);
+                        // refHideSmallBalance.current = event.target.checked;
+                        handleFilterChange({
+                            currHideSmallBalance: event.target.checked
+                        });
+                    }}/>} label={t('labelHideSmallBalances')}/>
             </Grid>
         </Grid>
     )

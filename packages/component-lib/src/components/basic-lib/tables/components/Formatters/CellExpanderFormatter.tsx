@@ -1,15 +1,5 @@
-import { useLayoutEffect, useRef } from 'react';
 import styled from "@emotion/styled";
-
-export function useFocusRef<T extends HTMLOrSVGElement>(isCellSelected: boolean | undefined) {
-    const ref = useRef<T>(null);
-    useLayoutEffect(() => {
-        if (!isCellSelected) return;
-        ref.current?.focus({preventScroll: true});
-    }, [isCellSelected]);
-
-    return ref;
-}
+import { useFocusRef } from "../../hook";
 
 const CellExpandClassname = styled.div`
   float: right;

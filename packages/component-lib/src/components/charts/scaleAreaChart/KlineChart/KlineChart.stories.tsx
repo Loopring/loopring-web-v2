@@ -8,7 +8,7 @@ import { testKlineData } from './data'
 
 const Styled = styled.div`
   flex: 1;
-  color: #fff;
+  
   width: 100%;
   height: 100%;
 `

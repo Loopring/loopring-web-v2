@@ -4,11 +4,12 @@
   "author": "Loopring Dex Frontend Team",
   "description": "dexwebapp new version",
   "private": true,
-  "license": "(MIT OR Apache-2.0)",
+  "license": "GPL-3.0",
   "engines": {
     "node": ">=14.x"
   },
   "dependencies": {
+    "@loopring-web/recharts": "^2.0.10",
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^11.1.5",
     "@material-ui/core": "5.0.0-alpha.29",
@@ -18,9 +19,12 @@
     "bignumber.js": "^9.0.1",
     "bn.js": "^5.1.3",
     "dotenv": "^8.2.0",
+    "dotenv-webpack": "^7.0.3",
     "ffjavascript": "^0.1.0",
     "i18next": "^20.1.0",
+    "loopring-sdk": "0.0.112",
     "qrcode.react": "^1.0.1",
+    "query-string": "^7.0.1",
     "react": "^17.0.2",
     "react-data-grid": "^7.0.0-canary.49",
     "react-dom": "^17.0.2",
@@ -33,10 +37,11 @@
     "react-virtuoso": "^1.8.6",
     "redux-actions": "^2.6.5",
     "redux-observable": "^1.2.0",
+    "redux-persist": "^6.0.0",
     "redux-saga": "^1.1.3",
     "rxjs": "^7.1.0",
     "voca": "^1.4.0",
-    "web3": "^1.3.3"
+    "web3": "^1.5.1"
   },
   "build": {
     "files": [
@@ -50,12 +55,15 @@
     }
   },
   "scripts": {
+    "clean": "yarn autoclean --force",
     "docker": "cd ./packages/webapp; yarn build; cd devops docker-compose build",
     "boot": "echo y | lerna clean; sleep 1; lerna bootstrap --force-local",
     "up_old": "rm -rf ./packages/component-lib/src/assets ./packages/webapp/src/assets; sleep 1; cp -rf ./packages/assets ./packages/component-lib/src ; cp -rf ./packages/assets ./packages/webapp/src ; echo y | lerna clean; yarn",
     "reset_old": "rm -rf node_modules/ yarn.lock ./packages/component-lib/src/assets ./packages/webapp/src/assets; sleep 1; cp -rf ./packages/assets ./packages/component-lib/src; cp -rf ./packages/assets ./packages/webapp/src; echo y | lerna clean; yarn",
     "up": "echo y | lerna clean; yarn",
-    "reset": "rm -rf node_modules/ yarn.lock; echo y | lerna clean; yarn",
+    "up2": "yarn unlink \"loopring-sdk'\"; echo y | lerna clean; yarn",
+    "reset": "npm config delete proxy; rm -rf node_modules/ yarn.lock; echo y | lerna clean; yarn",
+    "reset_proxy": "npm config set proxy=http://127.0.0.1:1087; yarn reset",
     "dev": "cd ./packages/webapp; yarn dev",
     "deploy": "cd ./packages/webapp; yarn deploy",
     "deploy:ipfs": "cd ./pacakges/webapp; yarn deploy:ipfs"
@@ -88,12 +96,14 @@
     "@babel/preset-env": "^7.13.12",
     "@babel/preset-react": "^7.13.13",
     "@babel/preset-typescript": "^7.13.0",
+    "@storybook/builder-webpack5": "^6.4.0-alpha.30",
+    "@storybook/manager-webpack5": "^6.4.0-alpha.30",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/react-hooks": "^5.1.0",
     "@testing-library/user-event": "^12.1.10",
-    "@types/ethereumjs-tx": "^2.0.0",
     "@types/ethereumjs-abi": "^0.6.3",
+    "@types/ethereumjs-tx": "^2.0.0",
     "@types/jest": "^26.0.15",
     "@types/lodash": "^4.14.168",
     "@types/node": "^12.0.0",
@@ -111,7 +121,7 @@
     "eslint-plugin-react": "^7.23.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "lerna": "^4.0.0",
-    "node-sass": "^5.0.0",
+    "node-sass": "^6.0.1",
     "truffle-privatekey-provider": "1.3.0",
     "typescript": "^4.1.2"
   }

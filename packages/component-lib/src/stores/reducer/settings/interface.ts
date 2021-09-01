@@ -15,4 +15,5 @@ export interface SettingsState {
     currency: 'USD' | 'CYN'
     upColor: keyof typeof UpColor
     slippage: number | 'N'
+    coinJson: any
 }

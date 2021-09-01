@@ -1,38 +1,38 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { WalletLayer1Map, WalletLayer1States } from './interface';
-import { STATUS } from '../constant';
+import { SagaStatus } from '@loopring-web/common-resources';
 
 
-const initialState:WalletLayer1States  = {
-    walletLayer1:undefined,
-    status:'UNSET',
-    errorMessage:null,
+const initialState: WalletLayer1States = {
+    walletLayer1: undefined,
+    status: 'DONE',
+    errorMessage: null,
 }
-const walletLayer1Slice:Slice = createSlice({
+const walletLayer1Slice: Slice = createSlice({
     name: 'walletLayer1',
     initialState,
     reducers: {
-        updateWalletLayer1(state, action:PayloadAction<string | undefined>) {
-            state.status = STATUS.PENDING
+        updateWalletLayer1(state, action: PayloadAction<string | undefined>) {
+            state.status = SagaStatus.PENDING
         },
-        reset(state, action:PayloadAction<string | undefined>) {
+        reset(state, action: PayloadAction<string | undefined>) {
             state.walletLayer1 = undefined;
-            state.status = STATUS.UNSET;
+            state.status = SagaStatus.UNSET;
         },
-        getWalletLayer1Status(state, action: PayloadAction<{ walletLayer1:WalletLayer1Map<object> }>) {
+        getWalletLayer1Status(state, action: PayloadAction<{ walletLayer1: WalletLayer1Map<object> }>) {
             // @ts-ignore
             if (action.error) {
-                state.status =  STATUS.ERROR
+                state.status = SagaStatus.ERROR
                 // @ts-ignore
                 state.errorMessage = action.error
             }
             state.walletLayer1 = {...action.payload.walletLayer1};
-            state.status = STATUS.DONE
+            state.status = SagaStatus.DONE
         },
         statusUnset: state => {
-            state.status = STATUS.UNSET
+            state.status = SagaStatus.UNSET
         }
     },
 });
 export { walletLayer1Slice };
-export const { updateWalletLayer1, getWalletLayer1Status,statusUnset,reset } = walletLayer1Slice.actions
+export const {updateWalletLayer1, getWalletLayer1Status, statusUnset, reset} = walletLayer1Slice.actions
