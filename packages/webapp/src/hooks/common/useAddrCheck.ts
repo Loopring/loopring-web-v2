@@ -1,8 +1,6 @@
 import React from 'react'
 
 import { utils } from 'ethers'
-import { dumpError400 } from 'loopring-sdk'
-import { myLog } from 'utils/log_tools'
 
 export enum AddressError {
     NoError,
@@ -11,9 +9,9 @@ export enum AddressError {
 
 export const useAddressCheck = () => {
 
-    const [address, setAddress, ] = React.useState<string>('')
+    const [address, setAddress,] = React.useState<string>('')
 
-    const [addrStatus, setAddrStatus, ] = React.useState<AddressError>(AddressError.NoError)
+    const [addrStatus, setAddrStatus,] = React.useState<AddressError>(AddressError.NoError)
 
     React.useEffect(() => {
 
@@ -25,7 +23,7 @@ export const useAddressCheck = () => {
             } catch (reason) {
             }
         }
-        
+
         setAddrStatus(AddressError.InvalidAddr)
 
     }, [address, setAddrStatus])

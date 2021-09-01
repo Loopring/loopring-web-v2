@@ -18,7 +18,7 @@ const amountMapSlice: Slice<AmountStates> = createSlice({
         getAmount(state, action: PayloadAction<{ market: string }>) {
             state.status = SagaStatus.PENDING
         },
-        resetAmount (state, action: PayloadAction<undefined>) {
+        resetAmount(state, action: PayloadAction<undefined>) {
             state.status = SagaStatus.PENDING
         },
         getAmountStatus(state, action: PayloadAction<AmountStates>) {
@@ -40,4 +40,4 @@ const amountMapSlice: Slice<AmountStates> = createSlice({
     },
 });
 export { amountMapSlice };
-export const {getAmount,resetAmount, getAmountStatus, statusUnset} = amountMapSlice.actions;
+export const {getAmount, resetAmount, getAmountStatus, statusUnset} = amountMapSlice.actions;

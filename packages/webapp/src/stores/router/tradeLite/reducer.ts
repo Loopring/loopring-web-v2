@@ -3,8 +3,8 @@ import { PageTradeLite, PageTradeLiteStatus } from './interface';
 import * as sdk from 'loopring-sdk';
 import { TradeChannel } from 'loopring-sdk';
 
-const initialState:PageTradeLiteStatus = {
-    pageTradeLite:{
+const initialState: PageTradeLiteStatus = {
+    pageTradeLite: {
         market: undefined,
         tradePair: undefined,
         calcTradeParams: undefined,
@@ -54,40 +54,40 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                 }
 
             } else {
-                if(tradePair){
+                if (tradePair) {
                     state.pageTradeLite.tradePair = tradePair;
                 }
                 if (depth) {
                     state.pageTradeLite.depth = depth;
                 }
                 if (tickMap) {
-                     state.pageTradeLite.tickMap = tickMap;
+                    state.pageTradeLite.tickMap = tickMap;
                 }
                 if (ammPoolsBalance) {
-                     state.pageTradeLite.ammPoolsBalance = ammPoolsBalance;
+                    state.pageTradeLite.ammPoolsBalance = ammPoolsBalance;
                 }
                 if (calcTradeParams) {
-                     state.pageTradeLite.calcTradeParams = calcTradeParams;
-                     state.pageTradeLite.orderType = calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
-                     state.pageTradeLite.tradeChannel = calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
+                    state.pageTradeLite.calcTradeParams = calcTradeParams;
+                    state.pageTradeLite.orderType = calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
+                    state.pageTradeLite.tradeChannel = calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
                 }
                 if (priceImpactObj) {
-                     state.pageTradeLite.priceImpactObj = priceImpactObj;
+                    state.pageTradeLite.priceImpactObj = priceImpactObj;
                 }
                 if (feeBips) {
-                     state.pageTradeLite.feeBips = feeBips;
+                    state.pageTradeLite.feeBips = feeBips;
                 }
                 if (totalFee) {
-                     state.pageTradeLite.totalFee = totalFee;
+                    state.pageTradeLite.totalFee = totalFee;
                 }
                 if (takerRate) {
-                     state.pageTradeLite.takerRate = takerRate;
+                    state.pageTradeLite.takerRate = takerRate;
                 }
                 if (sellMinAmtInfo) {
-                     state.pageTradeLite.sellMinAmtInfo = sellMinAmtInfo;
+                    state.pageTradeLite.sellMinAmtInfo = sellMinAmtInfo;
                 }
                 if (buyMinAmtInfo) {
-                     state.pageTradeLite.buyMinAmtInfo = buyMinAmtInfo;
+                    state.pageTradeLite.buyMinAmtInfo = buyMinAmtInfo;
                 }
 
             }

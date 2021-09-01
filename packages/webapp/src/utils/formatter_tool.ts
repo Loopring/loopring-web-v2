@@ -5,25 +5,25 @@ import * as sdk from 'loopring-sdk'
 const getTokenInfo = (symbol: string) => {
     const tokenMap = store.getState().tokenMap.tokenMap
 
-    if (!tokenMap || !tokenMap[symbol]) {
+    if (!tokenMap || !tokenMap[ symbol ]) {
         return undefined
     }
 
-    return tokenMap[symbol]
+    return tokenMap[ symbol ]
 }
 
 const getMarketInfo = (symbol: string) => {
     const marketMap = store.getState().tokenMap.marketMap
 
-    if (!marketMap || !marketMap[symbol]) {
+    if (!marketMap || !marketMap[ symbol ]) {
         return undefined
     }
 
-    return marketMap[symbol]
+    return marketMap[ symbol ]
 }
 
 export function StringToNumberWithPrecision(rawVal: string, symbol: string) {
-    
+
     if (rawVal === undefined || rawVal === null || rawVal.trim() === '')
         return 0
 
@@ -39,7 +39,7 @@ export function StringToNumberWithPrecision(rawVal: string, symbol: string) {
 /*
 * format volume to real number
 */
-export function VolToNumberWithPrecision(rawVal: string|number, symbol: string) {
+export function VolToNumberWithPrecision(rawVal: string | number, symbol: string) {
 
     const tokenInfo = getTokenInfo(symbol)
 
@@ -73,8 +73,8 @@ export function FormatValWithPrecision(rawVal: string, symbol: string) {
 /*
 * format order price with precision
 */
-export function formatPriceWithPrecision(rawVal: string, 
-    symbol: string) {
+export function formatPriceWithPrecision(rawVal: string,
+                                         symbol: string) {
 
     const marketInfo = getMarketInfo(symbol)
     if (!rawVal || !marketInfo || !symbol) {
@@ -86,16 +86,16 @@ export function formatPriceWithPrecision(rawVal: string,
 }
 
 export function getShowStr(_minimumReceived: string | number | undefined, fixed: number = 2, precision: number = 4) {
-        if (_minimumReceived === '0' || _minimumReceived === 0)
-            return '0'
-        let minimumReceived: any = undefined
-        if (_minimumReceived) {
-            minimumReceived = typeof(_minimumReceived) === 'number' ? _minimumReceived : parseFloat(_minimumReceived)
-            if (minimumReceived > 10) {
-                minimumReceived = minimumReceived.toFixed(fixed)
-            } else {
-                minimumReceived = sdk.toBig(minimumReceived).toPrecision(precision)
-            }
+    if (_minimumReceived === '0' || _minimumReceived === 0)
+        return '0'
+    let minimumReceived: any = undefined
+    if (_minimumReceived) {
+        minimumReceived = typeof (_minimumReceived) === 'number' ? _minimumReceived : parseFloat(_minimumReceived)
+        if (minimumReceived > 10) {
+            minimumReceived = minimumReceived.toFixed(fixed)
+        } else {
+            minimumReceived = sdk.toBig(minimumReceived).toPrecision(precision)
         }
-        return minimumReceived
+    }
+    return minimumReceived
 }

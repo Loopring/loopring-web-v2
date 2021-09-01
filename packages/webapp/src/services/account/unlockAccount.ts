@@ -1,4 +1,4 @@
-import { ConnectorError, generateKeyPair, sleep, toBig, toHex } from 'loopring-sdk';
+import { ConnectorError, generateKeyPair } from 'loopring-sdk';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { LoopringAPI } from 'api_wrapper';
 import store from '../../stores';
@@ -11,7 +11,7 @@ export async function unlockAccount() {
     const {exchangeInfo} = store.getState().system;
     accountServices.sendSign()
     if (exchangeInfo && LoopringAPI.userAPI && account.nonce !== undefined) {
-        try{
+        try {
             const eddsaKey = await generateKeyPair(
                 connectProvides.usedWeb3,
                 account.accAddress,
@@ -22,12 +22,12 @@ export async function unlockAccount() {
             const {apiKey} = (await LoopringAPI.userAPI.getUserApiKey({
                 accountId: account.accountId
             }, eddsaKey.sk))
-            myLog('After connect >>,unlockAccount: step2 apiKey',apiKey)
+            myLog('After connect >>,unlockAccount: step2 apiKey', apiKey)
 
-            accountServices.sendAccountSigned(account.accountId,apiKey, eddsaKey)
-        }catch (e) {
+            accountServices.sendAccountSigned(account.accountId, apiKey, eddsaKey)
+        } catch (e) {
             const errType = checkErrorInfo(e, true)
-            switch(errType) {
+            switch (errType) {
                 case ConnectorError.USER_DENIED:
                     accountServices.sendSignDeniedByUser()
                     return

@@ -52,7 +52,7 @@ export const calcPriceByAmmTickMapDepth = <C>(
     // @ts-ignore
     const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i)
     let stob: number | undefined | BigNumber = undefined,
-        close: number | undefined  = undefined;
+        close: number | undefined = undefined;
     if (coinA && coinB && tokenMap && idIndex) {
         //first getValue from  ammPoolsBalance
         if (ammPoolsBalance) {

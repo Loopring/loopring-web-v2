@@ -1,9 +1,10 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 import { getSocketStatus, sendSocketTopic, socketEnd } from './reducer'
 import store from '../index';
-export function* closeSocket(){
+
+export function* closeSocket() {
     try {
-        if (window.loopringSocket){
+        if (window.loopringSocket) {
             yield call(window.loopringSocket.socketClose)
         }
         yield put(getSocketStatus(undefined));
@@ -12,12 +13,13 @@ export function* closeSocket(){
         yield put(getSocketStatus(err));
     }
 }
-export function* sendMessage({payload}: any){
+
+export function* sendMessage({payload}: any) {
     try {
-        const { apiKey } = store.getState().account;
-        const { socket } = payload;
-        if (window.loopringSocket){
-            yield call(window.loopringSocket.socketSendMessage, { socket, apiKey })
+        const {apiKey} = store.getState().account;
+        const {socket} = payload;
+        if (window.loopringSocket) {
+            yield call(window.loopringSocket.socketSendMessage, {socket, apiKey})
         }
         yield put(getSocketStatus(undefined));
     } catch (err) {
@@ -25,7 +27,7 @@ export function* sendMessage({payload}: any){
     }
 }
 
-function* socketEndSaga(){
+function* socketEndSaga() {
     yield all([takeLatest(socketEnd, closeSocket)]);
 }
 
@@ -34,12 +36,11 @@ function* socketSendMessageSaga() {
 }
 
 
-
 export const socketForks = [
     // fork(socketSaga),
     fork(socketEndSaga),
     fork(socketSendMessageSaga),
- //   fork(initConfig),
+    //   fork(initConfig),
 ]
 
 

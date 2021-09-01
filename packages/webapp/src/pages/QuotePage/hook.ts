@@ -9,9 +9,7 @@ import { LoopringAPI } from 'api_wrapper'
 import { tickerService } from 'services/socket';
 import { myError, myLog } from "utils/log_tools";
 
-const amtCol = 5
 const OnePageSize = 16;
-const rowHeight = 44;
 
 // 0
 function isNeedCallMore(currentStartIndex: number, to: number, marketArrayLength: number, currentListLength: number, pageSize: number = OnePageSize): boolean {

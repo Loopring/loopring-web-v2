@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, Grid, Paper } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import { TablePaddingX } from '@loopring-web/component-lib';
 
 export const StylePaper = styled(Box)`
@@ -9,20 +9,20 @@ export const StylePaper = styled(Box)`
   //height: 100%;
   flex: 1;
   background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
-  // padding: ${({ theme }) => 3 * theme.unit}px  0;
-  margin-bottom: ${({ theme }) => 2* theme.unit}px;
+  border-radius: ${({theme}) => theme.unit}px;
+  // padding: ${({theme}) => 3 * theme.unit}px  0;
+  margin-bottom: ${({theme}) => 2 * theme.unit}px;
   .title {
-    font-size: ${({ theme }) => theme.unit * 3}px;
+    font-size: ${({theme}) => theme.unit * 3}px;
     //line-height: 19px;
-    margin-left: ${({ theme }) => 3 * theme.unit}px;
-    margin-top: ${({ theme }) => 3 * theme.unit}px;
-    // margin-bottom: ${({ theme }) => 2 * theme.unit}px;
+    margin-left: ${({theme}) => 3 * theme.unit}px;
+    margin-top: ${({theme}) => 3 * theme.unit}px;
+    // margin-bottom: ${({theme}) => 2 * theme.unit}px;
   }
 
   .tableWrapper {
     display: flex;
-    margin-top: ${({ theme }) => 3 * theme.unit}px;
+    margin-top: ${({theme}) => 3 * theme.unit}px;
     flex: 1;
     .rdg {                                                   
       flex: 1;
@@ -37,18 +37,18 @@ export const StylePaper = styled(Box)`
 ` as typeof Box;
 
 
-export const  TableWrapStyled = styled(Grid)`
+export const TableWrapStyled = styled(Grid)`
  
   &{
     background: var(--color-box);
-    border-radius: ${({ theme }) => theme.unit}px;
+    border-radius: ${({theme}) => theme.unit}px;
     .rdg{
       .rdg-header-row {
         border-radius: ${({theme}) => theme.unit}px ${({theme}) => theme.unit}px 0 0;
       }
     }
   }
-  ${({theme}) => TablePaddingX({pLeft:theme.unit * 3,pRight:theme.unit * 3})}
+  ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Grid
 export const FixedStyle = styled(Box)`
   @media only screen and (min-height: 784px ) and (min-width: 1024px) {

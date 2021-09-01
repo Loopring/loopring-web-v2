@@ -18,7 +18,7 @@ const Header = withTranslation('common')(({t, ...rest}: any) => {
         headerMenuData,
     } = useHeader()
 
-    const { confirmWrapper, confirmation } = useConfirmation()
+    const {confirmWrapper, confirmation} = useConfirmation()
 
     return (<>
         <HideOnScroll>
@@ -26,9 +26,9 @@ const Header = withTranslation('common')(({t, ...rest}: any) => {
                       selected={location.pathname === '/' ? headerRoot : location.pathname}></HeaderUI>
         </HideOnScroll>
         <Toolbar/>
-        <BottomRule isShow={!confirmation?.confirmed} 
-            content={t('labelAgreeLoopringTxt')} btnTxt={t('labelCookiesAgree')} 
-            clickToConfirm={ () => confirmWrapper() } />
+        <BottomRule isShow={!confirmation?.confirmed}
+                    content={t('labelAgreeLoopringTxt')} btnTxt={t('labelCookiesAgree')}
+                    clickToConfirm={() => confirmWrapper()}/>
     </>)
 })
 

@@ -4,7 +4,7 @@ import { RootState } from 'stores'
 import { Confirmation } from './interface'
 import { confirm } from './reducer'
 
-export const useConfirmation = ():  {
+export const useConfirmation = (): {
     confirmation: Confirmation,
     confirmWrapper: () => void,
 } => {

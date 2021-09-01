@@ -2,7 +2,7 @@ import { all, call, fork, put, takeLatest } from "redux-saga/effects";
 import { getAmmMap, getAmmMapStatus, updateRealTimeAmmMap } from './reducer';
 import { AmmDetail } from '@loopring-web/common-resources';
 import store from '../../index';
-import { AmmPoolInfoV3, AmmPoolStat, toBig, TokenVolumeV3, } from 'loopring-sdk';
+import { AmmPoolInfoV3, AmmPoolStat, toBig, } from 'loopring-sdk';
 import { LoopringAPI } from "api_wrapper";
 import { PayloadAction } from '@reduxjs/toolkit';
 import { AmmDetailStore, GetAmmMapParams } from './interface';
@@ -13,9 +13,9 @@ export const setAmmState = ({ammPoolState, keyPair}: { ammPoolState: AmmPoolStat
     const {idIndex} = store.getState().tokenMap
     // @ts-ignore
     const [, coinA, coinB] = keyPair.match(/(\w+)-(\w+)/i);
-    const {forex,faitPrices} = store.getState().system;
+    const {forex, faitPrices} = store.getState().system;
     if (idIndex && coinA && coinB && faitPrices && forex) {
-        let result =  {
+        let result = {
             amountDollar: parseFloat(ammPoolState.liquidityUSD),
             amountYuan: (parseFloat(ammPoolState.liquidityUSD) * (forex ? forex : 6.5)),
             totalLPToken: volumeToCount('LP-' + keyPair, ammPoolState.lpLiquidity),
@@ -27,18 +27,18 @@ export const setAmmState = ({ammPoolState, keyPair}: { ammPoolState: AmmPoolStat
             rewardToken2: ammPoolState.rewards[ 1 ] ? idIndex[ ammPoolState.rewards[ 1 ].tokenId as number ] : undefined,
         }
 
-        const feeA =  volumeToCountAsBigNumber(coinA, ammPoolState.fees[ 0 ]);//parseInt(ammPoolState.fees[ 0 ]),
+        const feeA = volumeToCountAsBigNumber(coinA, ammPoolState.fees[ 0 ]);//parseInt(ammPoolState.fees[ 0 ]),
         const feeB = volumeToCountAsBigNumber(coinB, ammPoolState.fees[ 1 ]);//parseInt(ammPoolState.fees[ 1 ]),
-        const feeDollar =  faitPrices[coinA] && faitPrices[coinB]  ?
-            toBig(feeA||0).times(faitPrices[coinA].price).plus(toBig(feeB||0).times(faitPrices[coinB].price)):undefined
+        const feeDollar = faitPrices[ coinA ] && faitPrices[ coinB ] ?
+            toBig(feeA || 0).times(faitPrices[ coinA ].price).plus(toBig(feeB || 0).times(faitPrices[ coinB ].price)) : undefined
         const feeYuan = feeDollar ? feeDollar.times(forex) : undefined;
 
         return {
-             ...result,
-            feeA:feeA?.toNumber(),
-            feeB:feeB?.toNumber(),
-            feeDollar:feeDollar? feeDollar.toNumber(): undefined,
-            feeYuan:feeYuan? feeYuan.toNumber(): undefined,
+            ...result,
+            feeA: feeA?.toNumber(),
+            feeB: feeB?.toNumber(),
+            feeDollar: feeDollar ? feeDollar.toNumber() : undefined,
+            feeYuan: feeYuan ? feeYuan.toNumber() : undefined,
             tradeFloat: {
                 change: undefined,
                 timeUnit: '24h',
@@ -73,7 +73,7 @@ const getAmmMapApi = async <R extends { [ key: string ]: any }>({ammpools}: GetA
             if (!LoopringAPI.ammpoolAPI) {
                 return undefined
             }
-            
+
             let ammPoolStats: { [key in keyof R]: AmmPoolStat } = (await LoopringAPI.ammpoolAPI.getAmmPoolStats()).ammPoolStats as { [key in keyof R]: AmmPoolStat }
             store.dispatch(updateRealTimeAmmMap({ammPoolStats}))
         }, 900000)    //15*60*1000 //900000
@@ -130,12 +130,12 @@ export function* updateRealTimeSaga({payload}: any) {
             //{ ammPoolStats?: { [ key: string ]: AmmPoolStat } }
             Reflect.ownKeys(ammPoolStats).map((key) => {
                 const keyPair = (key as string).replace('AMM-', '')
-                
+
                 // @ts-ignore
                 ammMap[ key ] = {
                     // @ts-ignore
                     ...ammMap[ key ],
-                    ...setAmmState({ammPoolState: ammPoolStats[ key as string ], keyPair, })
+                    ...setAmmState({ammPoolState: ammPoolStats[ key as string ], keyPair,})
                 }
                 return ammMap
             })
@@ -156,7 +156,7 @@ export function* ammMapRealTimeSaga() {
 }
 
 export const ammMapSaga = [
-        fork(ammMapInitSaga),
-        fork(ammMapRealTimeSaga),
+    fork(ammMapInitSaga),
+    fork(ammMapRealTimeSaga),
 ]
 

@@ -1,13 +1,9 @@
-import { ModalPanel, Toast, useOpenModals } from '@loopring-web/component-lib';
+import { useOpenModals } from '@loopring-web/component-lib';
 import { ModalWalletConnectPanel } from './WalletModal';
 import { ModalAccountInfo } from './AccountModal';
 import { withTranslation, WithTranslation } from 'react-i18next';
-import { useTransfer } from 'hooks/useractions/useTransfer';
-import { useDeposit } from 'hooks/useractions/useDeposit';
-import { useWithdraw } from 'hooks/useractions/useWithdraw';
 import { useSystem } from '../stores/system';
 import { useAccountModal } from 'hooks/useractions/useAccountModal';
-import { TOAST_TIME } from '../defs/common_defs';
 
 export const ModalGroup = withTranslation('common', {
     withRef: true,

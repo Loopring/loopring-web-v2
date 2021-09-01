@@ -5,7 +5,6 @@ import { useWalletLayer2 } from './stores/walletLayer2';
 import { useAccount } from './stores/account';
 import { useUserRewards } from './stores/userRewards';
 import { useConnect } from './hookConnect';
-import { myLog } from 'utils/log_tools';
 
 export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
     useConnect({state})
@@ -15,7 +14,7 @@ export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
         status: walletLayer1Status,
         statusUnset: wallet1statusUnset
     } = useWalletLayer1()
-    const {getUserRewards,status:userRewardsStatus}  = useUserRewards()
+    const {getUserRewards, status: userRewardsStatus} = useUserRewards()
     const {
         updateWalletLayer2,
         resetLayer2,
@@ -42,7 +41,7 @@ export function useAccountInit({state}: { state: keyof typeof SagaStatus }) {
                 case AccountStatus.ACTIVATED:
                     //
                     // if(userRewardsStatus) {
-                        getUserRewards();
+                    getUserRewards();
                     // }
                     if (walletLayer1Status !== SagaStatus.PENDING) {
                         updateWalletLayer1();

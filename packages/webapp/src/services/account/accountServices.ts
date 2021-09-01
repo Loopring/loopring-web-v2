@@ -5,11 +5,10 @@ import { Commands } from './command';
 import { LoopringAPI } from 'api_wrapper';
 import { myLog } from '../../utils/log_tools';
 import store from 'stores';
-import {  updateAccountStatus } from 'stores/account';
+import { updateAccountStatus } from 'stores/account';
 import * as sdk from 'loopring-sdk'
+import { sleep } from 'loopring-sdk'
 import { unlockAccount } from './unlockAccount';
-
-import { sleep } from 'loopring-sdk';
 import { resetLayer12Data, resetLayer2Data } from './resetAccount';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
@@ -70,7 +69,7 @@ export const accountServices = {
                 data: undefined,
             })
         } else {
-            const { accAddress } = store.getState().account
+            const {accAddress} = store.getState().account
             accountServices.sendCheckAccount(accAddress);
         }
 
@@ -110,7 +109,7 @@ export const accountServices = {
                 y: sdk.toHex(sdk.toBig(eddsaKey.keyPair.publicKeyY)),
             },
             readyState: AccountStatus.ACTIVATED
-        } : { readyState: AccountStatus.ACTIVATED }
+        } : {readyState: AccountStatus.ACTIVATED}
         store.dispatch(updateAccountStatus(updateInfo));
         subject.next({
             status: Commands.AccountUnlocked,
@@ -118,7 +117,7 @@ export const accountServices = {
         })
     },
     sendNoAccount: () => {
-        store.dispatch(updateAccountStatus({ readyState: AccountStatus.NO_ACCOUNT, }))
+        store.dispatch(updateAccountStatus({readyState: AccountStatus.NO_ACCOUNT,}))
         subject.next({
             status: Commands.NoAccount,
             data: undefined
@@ -126,18 +125,18 @@ export const accountServices = {
     },
     sendNeedUpdateAccount: async (accInfo: sdk.AccountInfo) => {
         myLog('sendNeedUpdateAccount accInfo:', accInfo)
-        store.dispatch(updateAccountStatus({ readyState: AccountStatus.DEPOSITING, }))
+        store.dispatch(updateAccountStatus({readyState: AccountStatus.DEPOSITING,}))
         subject.next({
             status: Commands.SignAccount,
             data: accInfo
         })
     },
 
-    sendCheckAcc: async() => {
+    sendCheckAcc: async () => {
         if (store) {
             const account = store.getState().account
             if (LoopringAPI.exchangeAPI) {
-                const { accInfo } = (await LoopringAPI.exchangeAPI.getAccount({
+                const {accInfo} = (await LoopringAPI.exchangeAPI.getAccount({
                     owner: account.accAddress
                 }))
 
@@ -165,13 +164,13 @@ export const accountServices = {
     sendCheckAccount: async (ethAddress: string) => {
         const self = this;
         myLog('After connect >>,checkAccount: step3 processAccountCheck', ethAddress)
-        store.dispatch(updateAccountStatus({ accAddress: ethAddress, readyState: AccountStatus.UN_CONNECT }))
+        store.dispatch(updateAccountStatus({accAddress: ethAddress, readyState: AccountStatus.UN_CONNECT}))
         subject.next({
             status: Commands.ProcessAccountCheck,
             data: undefined
         })
         if (LoopringAPI.exchangeAPI) {
-            const { accInfo } = (await LoopringAPI.exchangeAPI.getAccount({
+            const {accInfo} = (await LoopringAPI.exchangeAPI.getAccount({
                 owner: ethAddress
             }))
             myLog('After connect >>,checkAccount: step3', accInfo)

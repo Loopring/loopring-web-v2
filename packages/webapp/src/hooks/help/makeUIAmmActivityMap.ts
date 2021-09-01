@@ -2,6 +2,8 @@ import {
     AmmPoolActivityRule,
     AmmPoolActivityStatus,
     AmmPoolSnapshot,
+    AmmUserReward,
+    AmmUserRewardMap,
     LoopringMap,
     TickerData,
     toBig,
@@ -9,7 +11,6 @@ import {
 import { AmmActivity, AmmCardProps, MyAmmLP } from '@loopring-web/common-resources';
 import store from '../../stores';
 import { deepClone } from '../../utils/obj_tools';
-import { AmmUserReward, AmmUserRewardMap } from 'loopring-sdk';
 import BigNumber from 'bignumber.js';
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
 import { coinMap } from '@loopring-web/component-lib';
@@ -42,7 +43,7 @@ export const makeUIAmmActivityMap = <R extends { [ key: string ]: any }, I exten
                     if (coinMap && ammPoolActivityRule.awardRules[ 0 ] && idIndex && tokenMap) {
 
                         const symbol = idIndex[ ammPoolActivityRule.awardRules[ 0 ].tokenId as any ]
-                        const totalRewards = VolToNumberWithPrecision(ammPoolActivityRule.awardRules[ 0 ].volume ,symbol)
+                        const totalRewards = VolToNumberWithPrecision(ammPoolActivityRule.awardRules[ 0 ].volume, symbol)
                         // @ts-ignore
                         const item = {
                             // @ts-ignore
@@ -175,7 +176,7 @@ const getOneRewardInfo = <C>({
         feeB = ammUserReward ? volumeToCountAsBigNumber(coinB, ammUserReward.feeRewards[ 1 ]) : toBig(0);
         feeA = feeA ? feeA : toBig(0);
         feeB = feeB ? feeB : toBig(0);
-        feeDollar = feeA.times(faitPrices[ coinA ]?faitPrices[ coinA ].price:0).plus(feeB.times(faitPrices[ coinB ]?faitPrices[ coinB ].price:0))
+        feeDollar = feeA.times(faitPrices[ coinA ] ? faitPrices[ coinA ].price : 0).plus(feeB.times(faitPrices[ coinB ] ? faitPrices[ coinB ].price : 0))
         feeYuan = feeDollar.times(forex);
         reward = rewardToken ? volumeToCountAsBigNumber(rewardToken, ammUserReward.currentRewards[ 0 ].volume) as BigNumber : toBig(0);
         reward2 = rewardToken2 ? volumeToCountAsBigNumber(rewardToken2, ammUserReward.currentRewards[ 1 ].volume) as BigNumber : toBig(0);
@@ -268,7 +269,7 @@ export const makeMyAmmWithStat = <C extends { [ key: string ]: any }>
         balanceA = ratio.times(volumeToCountAsBigNumber(coinA, ammDetail.totalA ? ammDetail.totalA : 0) || 1);
         balanceB = ratio.times(volumeToCountAsBigNumber(coinB, ammDetail.totalB ? ammDetail.totalB : 0) || 1);
         // @ts-ignore
-        balanceDollar = balanceA.times(faitPrices[ coinA ]?faitPrices[ coinA ].price:0).plus(balanceB.times(faitPrices[ coinB ]?faitPrices[ coinB ].price:0))
+        balanceDollar = balanceA.times(faitPrices[ coinA ] ? faitPrices[ coinA ].price : 0).plus(balanceB.times(faitPrices[ coinB ] ? faitPrices[ coinB ].price : 0))
         balanceYuan = balanceDollar.times(forex);
         _myAmm = {
             // ...ammDetail,
@@ -290,7 +291,7 @@ export const makeMyAmmWithStat = <C extends { [ key: string ]: any }>
             feeB = ammUserReward ? volumeToCountAsBigNumber(coinB, ammUserReward.feeRewards[ 1 ]) : toBig(0);
             feeA = feeA ? feeA : toBig(0);
             feeB = feeB ? feeB : toBig(0);
-            feeDollar = feeA.times(faitPrices[ coinA ]?faitPrices[ coinA ].price:0).plus(feeB.times(faitPrices[ coinB ]?faitPrices[ coinB ].price:0))
+            feeDollar = feeA.times(faitPrices[ coinA ] ? faitPrices[ coinA ].price : 0).plus(feeB.times(faitPrices[ coinB ] ? faitPrices[ coinB ].price : 0))
             feeYuan = feeDollar.times(forex);
             reward = rewardToken ? volumeToCountAsBigNumber(rewardToken, ammUserReward.currentRewards[ 0 ].volume) as BigNumber : toBig(0);
             reward2 = rewardToken2 ? volumeToCountAsBigNumber(rewardToken2, ammUserReward.currentRewards[ 1 ].volume) as BigNumber : toBig(0);

@@ -3,21 +3,8 @@ import styled from '@emotion/styled'
 import { Box, Divider, Grid, Typography } from '@material-ui/core'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
-import {
-    AmmRecordTable,
-    AmmTradeType,
-    ChartType,
-    ScaleAreaChart,
-    TablePaddingX,
-    ToggleButtonGroup,
-    useSettings ,
-    MyPoolTable
-} from '@loopring-web/component-lib'
-import {
-    Currency, EmptyValueTag,
-    getThousandFormattedNumbers,
-    PriceTag
-} from '@loopring-web/common-resources';
+import { MyPoolTable, useSettings } from '@loopring-web/component-lib'
+import { Currency, EmptyValueTag, getThousandFormattedNumbers, PriceTag } from '@loopring-web/common-resources';
 
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 import { useOverview } from './hook';
@@ -49,7 +36,6 @@ const StyleWrapper = styled(Grid)`
 ` as typeof Grid
 
 
-
 const StyledBtnGroupWrapper = styled(Box)`
   position: absolute;
   z-index: 99;
@@ -64,7 +50,7 @@ const MyLiquidity: any = withTranslation('common')(
          WithTranslation &
          { ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined }
     ) => {
-        const {ammActivityMap, status: ammActivityMapStatus}  = useAmmActivityMap()
+        const {ammActivityMap, status: ammActivityMapStatus} = useAmmActivityMap()
         const [chartPeriod, setChartPeriod] = React.useState('ALL');
         const [page, setPage] = React.useState(1);
         const {currency} = useSettings();
@@ -87,8 +73,8 @@ const MyLiquidity: any = withTranslation('common')(
         }, [])
         const {myAmmMarketArray, summaryReward, myPoolRow, showLoading} = useOverview({ammActivityMap});
         const renderPositionValueDollar = PriceTag.Dollar + Number(getThousandFormattedNumbers(Number((summaryReward?.rewardDollar || 0).toFixed(2)) + (summaryReward?.feeDollar || 0))).toFixed(2)
-        const renderPositionValueYuan = PriceTag.Yuan + Number(getThousandFormattedNumbers(summaryReward?.feeYuan?? 0 + (Number.isFinite(summaryReward) ? Number((summaryReward?.feeYuan || 0).toFixed(2)) : 0))).toFixed(2)
-        
+        const renderPositionValueYuan = PriceTag.Yuan + Number(getThousandFormattedNumbers(summaryReward?.feeYuan ?? 0 + (Number.isFinite(summaryReward) ? Number((summaryReward?.feeYuan || 0).toFixed(2)) : 0))).toFixed(2)
+
         return (
             <>
                 <Grid container spacing={2}>
@@ -96,15 +82,16 @@ const MyLiquidity: any = withTranslation('common')(
                         <StyleWrapper container paddingY={3} paddingX={4} margin={0} display={'flex'}>
                             <Grid item display={'flex'} flexDirection={'column'} sm={3}>
                                 <Typography variant={'h5'}
-                                            color={'textSecondary'} fontFamily={'Roboto'}>{t('labelTotalPositionValue')}</Typography>
+                                            color={'textSecondary'}
+                                            fontFamily={'Roboto'}>{t('labelTotalPositionValue')}</Typography>
                                 <Typography variant={'h3'} marginTop={1} fontFamily={'Roboto'}>
-                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.dollar 
+                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.dollar
                                         ? renderPositionValueDollar
                                         : renderPositionValueYuan}
                                 </Typography>
                             </Grid>
                             <Grid item marginRight={6}>
-                                <Divider orientation={'vertical'} />
+                                <Divider orientation={'vertical'}/>
                             </Grid>
                             <Grid item display={'flex'} flexDirection={'column'} sm={3}>
                                 <Typography variant={'h5'} component={'h3'} fontFamily={'Roboto'}
@@ -149,7 +136,7 @@ const MyLiquidity: any = withTranslation('common')(
                 {/*    </StyledBtnGroupWrapper>*/}
                 {/*    <ScaleAreaChart type={ChartType.Trend} data={[]}/>*/}
                 {/*</StyleWrapper>*/}
-                
+
                 <TableWrapStyled marginY={2} paddingY={2} paddingX={3} flex={1}>
                     <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1}>
                         <Typography variant={'h5'} marginBottom={3}>{t('labelMyAmm')}</Typography>
@@ -180,5 +167,5 @@ const MyLiquidity: any = withTranslation('common')(
             </>
         )
     })
-    
+
 export default MyLiquidity

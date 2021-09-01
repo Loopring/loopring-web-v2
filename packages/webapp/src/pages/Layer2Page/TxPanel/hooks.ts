@@ -1,31 +1,29 @@
-import { useState, useCallback } from 'react'
+import { useCallback, useState } from 'react'
 // import { useAmmpoolAPI, useUserAPI } from "hooks/exchange/useApi"
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect'
 import { useAccount } from 'stores/account/hook'
-import { TransactionStatus, RawDataTransactionItem } from '@loopring-web/component-lib'
+import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes } from '@loopring-web/component-lib'
 import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
 import { LoopringAPI } from 'api_wrapper'
 
-import { TransactionTradeTypes } from '@loopring-web/component-lib';
-
 export function useGetTxs() {
 
-    const { account: {accountId, apiKey} } = useAccount()
+    const {account: {accountId, apiKey}} = useAccount()
 
     // const userApi = useUserAPI()
 
     const [txs, setTxs] = useState<RawDataTransactionItem[]>([])
     const [isLoading, setIsLoading] = useState(true)
 
-    const getTxnStatus = (status: string) => 
+    const getTxnStatus = (status: string) =>
         status === ''
-        ? TransactionStatus.processing :
-        status === 'processed'
-            ? TransactionStatus.processed
-            : status === 'processing'
-                ? TransactionStatus.processing 
-                : status === 'received' 
-                    ? TransactionStatus.received 
+            ? TransactionStatus.processing :
+            status === 'processed'
+                ? TransactionStatus.processed
+                : status === 'processing'
+                ? TransactionStatus.processing
+                : status === 'received'
+                    ? TransactionStatus.received
                     : TransactionStatus.failed
 
     const getUserTxnList = useCallback(async () => {
@@ -41,7 +39,7 @@ export function useGetTxs() {
                     accountId,
                 }, apiKey)
             ])
-            const userTransferMapped = userTxnList[0].userTransfers?.map(o => ({
+            const userTransferMapped = userTxnList[ 0 ].userTransfers?.map(o => ({
                 side: TransactionTradeTypes.transfer,
                 // token: o.symbol,
                 // from: o.senderAddress,
@@ -60,7 +58,7 @@ export function useGetTxs() {
                 status: getTxnStatus(o.status),
                 // tradeType: TransactionTradeTypes.transfer
             }))
-            const userDepositMapped = userTxnList[1].userDepositHistory?.map(o => ({
+            const userDepositMapped = userTxnList[ 1 ].userDepositHistory?.map(o => ({
                 side: TransactionTradeTypes.deposit,
                 symbol: o.symbol,
                 // token: o.symbol,
@@ -81,7 +79,7 @@ export function useGetTxs() {
                 status: getTxnStatus(o.status),
                 // tradeType: TransactionTradeTypes.deposit
             }))
-            const userWithdrawMapped = userTxnList[2].userOnchainWithdrawalHistory?.map((o => ({
+            const userWithdrawMapped = userTxnList[ 2 ].userOnchainWithdrawalHistory?.map((o => ({
                 side: TransactionTradeTypes.withdraw,
                 // token: o.symbol,
                 // from: 'My Loopring',
@@ -100,7 +98,7 @@ export function useGetTxs() {
                 status: getTxnStatus(o.status),
                 // tradeType: TransactionTradeTypes.withdraw
             })))
-            const mappingList = [...userTransferMapped??[], ...userDepositMapped??[], ...userWithdrawMapped??[]]
+            const mappingList = [...userTransferMapped ?? [], ...userDepositMapped ?? [], ...userWithdrawMapped ?? []]
             const sortedMappingList = mappingList.sort((a, b) => b.time - a.time)
             setTxs(sortedMappingList)
             setIsLoading(false)

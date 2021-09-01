@@ -9,9 +9,9 @@ export const checkAccount = (newAccAddress: string) => {
         myLog('After connect >>,account part: diff account, clean layer2')
         store.dispatch(cleanAccountStatus(undefined));
         accountServices.sendCheckAccount(newAccAddress);
-    }else if (newAccAddress && newAccAddress !== '') {
-        myLog('After connect >>,checkAccount: step1 address',newAccAddress)
-        if (account &&  account.accountId === -1) {
+    } else if (newAccAddress && newAccAddress !== '') {
+        myLog('After connect >>,checkAccount: step1 address', newAccAddress)
+        if (account && account.accountId === -1) {
             myLog('After connect >>,checkAccount: step1 no account Id')
             accountServices.sendCheckAccount(newAccAddress)
         } else if (account.accountId && account.apiKey && account.eddsaKey) {

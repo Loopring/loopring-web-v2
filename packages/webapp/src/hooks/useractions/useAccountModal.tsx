@@ -4,66 +4,66 @@ import React from 'react';
 import { sleep } from 'loopring-sdk';
 import { useAccountHook } from '../../services/account/useAccountHook';
 
-export  function useAccountModal() {
-    const { shouldShow, setShouldShow, statusUnset: statusAccountUnset} = useAccount();
-    const { setShowAccount } = useOpenModals();
-    const handleErrorAccount = React.useCallback(()=>{
+export function useAccountModal() {
+    const {shouldShow, setShouldShow, statusUnset: statusAccountUnset} = useAccount();
+    const {setShowAccount} = useOpenModals();
+    const handleErrorAccount = React.useCallback(() => {
         // updateAccount({readyState:'NO_ACCOUNT'});
         statusAccountUnset();
-    },[shouldShow])
-    const handleLockAccount = React.useCallback(()=>{
+    }, [shouldShow])
+    const handleLockAccount = React.useCallback(() => {
         // updateAccount({readyState:'NO_ACCOUNT'});
         statusAccountUnset();
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.HadAccount});
-    },[shouldShow])
-    const handleNoAccount = React.useCallback((data: any)=>{
+        setShowAccount({isShow: shouldShow ?? false, step: AccountStep.HadAccount});
+    }, [shouldShow])
+    const handleNoAccount = React.useCallback((data: any) => {
         // updateAccount({readyState:'NO_ACCOUNT'});
         statusAccountUnset();
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.NoAccount});
-    },[shouldShow])
-    const handleDepositingAccount = React.useCallback(async ()=>{
+        setShowAccount({isShow: shouldShow ?? false, step: AccountStep.NoAccount});
+    }, [shouldShow])
+    const handleDepositingAccount = React.useCallback(async () => {
         // updateAccount({readyState:'DEPOSITING'});
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.Deposit_Submited});
+        setShowAccount({isShow: shouldShow ?? false, step: AccountStep.Deposit_Submited});
         await sleep(3000)
         setShouldShow(false)
         setShowAccount({isShow: false});
         statusAccountUnset();
-    },[shouldShow])
-    const handleErrorApproveToken = React.useCallback(()=>{
+    }, [shouldShow])
+    const handleErrorApproveToken = React.useCallback(() => {
         // updateAccount({readyState:'DEPOSITING'});
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.Deposit_WaitForAuth});
-    },[shouldShow])
-    const handleErrorDepositSign = React.useCallback(()=>{
+        setShowAccount({isShow: shouldShow ?? false, step: AccountStep.Deposit_WaitForAuth});
+    }, [shouldShow])
+    const handleErrorDepositSign = React.useCallback(() => {
         // updateAccount({readyState:'DEPOSITING'});
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.Deposit_Failed});
-    },[shouldShow])
-    const handleProcessDeposit = React.useCallback(()=>{
+        setShowAccount({isShow: shouldShow ?? false, step: AccountStep.Deposit_Failed});
+    }, [shouldShow])
+    const handleProcessDeposit = React.useCallback(() => {
         // updateAccount({readyState:'DEPOSITING'});
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.Deposit_Approve_WaitForAuth});
-    },[shouldShow])
-    const handleSignAccount = React.useCallback(()=>{
+        setShowAccount({isShow: shouldShow ?? false, step: AccountStep.Deposit_Approve_WaitForAuth});
+    }, [shouldShow])
+    const handleSignAccount = React.useCallback(() => {
         // updateAccount({readyState:'DEPOSITING'});
         statusAccountUnset();
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.UpdateAccount});
-    },[shouldShow])
-    const handleSignDeniedByUser = React.useCallback(()=>{
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.UnlockAccount_User_Denied});
-    },[shouldShow])
-    const handleSignError = React.useCallback(()=>{
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.UnlockAccount_Failed});
-    },[shouldShow])
-    const handleProcessSign = React.useCallback(()=>{
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.UnlockAccount_WaitForAuth});
-    },[shouldShow])
-    const handleAccountActive  = React.useCallback(async ()=>{
+        setShowAccount({isShow: shouldShow ?? false, step: AccountStep.UpdateAccount});
+    }, [shouldShow])
+    const handleSignDeniedByUser = React.useCallback(() => {
+        setShowAccount({isShow: shouldShow ?? false, step: AccountStep.UnlockAccount_User_Denied});
+    }, [shouldShow])
+    const handleSignError = React.useCallback(() => {
+        setShowAccount({isShow: shouldShow ?? false, step: AccountStep.UnlockAccount_Failed});
+    }, [shouldShow])
+    const handleProcessSign = React.useCallback(() => {
+        setShowAccount({isShow: shouldShow ?? false, step: AccountStep.UnlockAccount_WaitForAuth});
+    }, [shouldShow])
+    const handleAccountActive = React.useCallback(async () => {
 
         //updateAccount({readyState:'ACTIVATED'});
-        setShowAccount({isShow: shouldShow ?? false,step:AccountStep.UnlockAccount_Success});
+        setShowAccount({isShow: shouldShow ?? false, step: AccountStep.UnlockAccount_Success});
         await sleep(1000)
         setShouldShow(false)
         setShowAccount({isShow: false});
         statusAccountUnset();
-    },[shouldShow])
+    }, [shouldShow])
     useAccountHook({
         handleErrorAccount,
         handleLockAccount,// clear private data

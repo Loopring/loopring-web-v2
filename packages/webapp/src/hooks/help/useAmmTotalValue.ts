@@ -8,7 +8,7 @@ import store from 'stores'
 export const useAmmTotalValue = () => {
     const {addressIndex} = useTokenMap();
     const {walletLayer2} = useWalletLayer2();
-    const { forex } = store.getState().system
+    const {forex} = store.getState().system
 
     const getLpTokenPrice = React.useCallback(async (market: string) => {
         if (addressIndex && LoopringAPI.walletAPI) {
@@ -17,7 +17,7 @@ export const useAmmTotalValue = () => {
                 addr,
                 price,
             }))
-            const address = Object.entries(addressIndex).find(([_, token]) => token === market)?.[0]
+            const address = Object.entries(addressIndex).find(([_, token]) => token === market)?.[ 0 ]
             if (address && !!list.length) {
                 return list.find((o) => o.addr === address)?.price
             }
@@ -25,7 +25,7 @@ export const useAmmTotalValue = () => {
         }
         return undefined
     }, [addressIndex])
-    
+
     type GetAmmLiquidityProps = {
         market: string;
         balance?: number;
@@ -39,7 +39,7 @@ export const useAmmTotalValue = () => {
             curBalance = balance
         } else {
             // if balance is not given, use walletl2 total lp token balance instead
-            curBalance = Number(Object.entries(walletLayer2 || {}).find(([token]) => token === market)?.[1].total || 0)
+            curBalance = Number(Object.entries(walletLayer2 || {}).find(([token]) => token === market)?.[ 1 ].total || 0)
         }
         const formattedBalance = volumeToCount(market, curBalance)
         const unit = currency && currency === 'CNY' ? forex : 1

@@ -22,12 +22,12 @@ const SESSION_TIMEOUT_SECONDS = 600
 
 export class UserStorage {
 
-    public static getLocalDepositHash(account: Account): { [key: string]: any } | undefined {
+    public static getLocalDepositHash(account: Account): { [ key: string ]: any } | undefined {
         let depositsHash = window.localStorage.getItem(CONSTANTS.DepositHash);
         if (depositsHash) {
             depositsHash = JSON.parse(depositsHash);
-            if (depositsHash && account.accAddress && depositsHash[account.accAddress]) {
-                return depositsHash[account.accAddress]
+            if (depositsHash && account.accAddress && depositsHash[ account.accAddress ]) {
+                return depositsHash[ account.accAddress ]
             }
         }
         return undefined
@@ -35,20 +35,20 @@ export class UserStorage {
 
     public static clearDepositHash(account: Account, value: string) {
         // @ts-ignore
-        let depositsHash: { [key: string]: object } = window.localStorage.getItem(CONSTANTS.DepositHash);
+        let depositsHash: { [ key: string ]: object } = window.localStorage.getItem(CONSTANTS.DepositHash);
         depositsHash = depositsHash ? JSON.parse(depositsHash as any) : {};
-        if (depositsHash[account.accAddress] && depositsHash[account.accAddress][value]) {
-            delete depositsHash[account.accAddress][value];
+        if (depositsHash[ account.accAddress ] && depositsHash[ account.accAddress ][ value ]) {
+            delete depositsHash[ account.accAddress ][ value ];
         }
     }
 
     public static setLocalDepositHash(account: Account, value: string, status: TxStatus): void {
         // @ts-ignore
-        let depositsHash: { [key: string]: object } = window.localStorage.getItem(CONSTANTS.DepositHash);
+        let depositsHash: { [ key: string ]: object } = window.localStorage.getItem(CONSTANTS.DepositHash);
         depositsHash = depositsHash ? JSON.parse(depositsHash as any) : {};
-        depositsHash[account.accAddress] = {
-            ...depositsHash[account.accAddress],
-            [value]: status,
+        depositsHash[ account.accAddress ] = {
+            ...depositsHash[ account.accAddress ],
+            [ value ]: status,
         }
     }
 

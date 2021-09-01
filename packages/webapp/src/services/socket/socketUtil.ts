@@ -99,28 +99,29 @@ export class LoopringSocket {
             }
         },
     }
-
-    get loopringSocket(): WebSocket | undefined {
-        return this._loopringSocket;
-    }
-
-    get socketCallbackMap(): SocketCallbackMap | undefined {
-        return this._socketCallbackMap;
-    }
-
-    //TODO fill the socket receiver format callback
-
-    private _socketCallbackMap: SocketCallbackMap | undefined;
-    private _loopringSocket: WebSocket | undefined;
     private __wsTimer__: { timer: NodeJS.Timer | -1, count: number } = {
         timer: -1,
         count: 0
     };
     private _baseUrl: string;
 
+    //TODO fill the socket receiver format callback
+
     constructor(url: string) {
         // const url = ChainId.MAINNET === chainId ? process.env.REACT_APP_API_URL : process.env.REACT_APP_API_URL_UAT;
         this._baseUrl = url; // baseSocket: string = `wss://ws.${url}/v3/ws?wsApiKey=${wsKey}`;
+    }
+
+    private _socketCallbackMap: SocketCallbackMap | undefined;
+
+    get socketCallbackMap(): SocketCallbackMap | undefined {
+        return this._socketCallbackMap;
+    }
+
+    private _loopringSocket: WebSocket | undefined;
+
+    get loopringSocket(): WebSocket | undefined {
+        return this._loopringSocket;
     }
 
     // private static PingPong = {
@@ -304,7 +305,7 @@ export class LoopringSocket {
                             // console.log('Socket>>Socket topics first return', topics);
                         }
                         if (topic && topic.topic && self._socketCallbackMap) {
-                            const {topic: {topic:_topic}, data} = result
+                            const {topic: {topic: _topic}, data} = result
                             self._socketCallbackMap[ _topic ]?.fn.call(self, data, ...self._socketCallbackMap[ _topic ].deps);
 
                         }

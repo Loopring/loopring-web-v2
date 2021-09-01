@@ -1,22 +1,21 @@
-import { TickerData, toBig } from 'loopring-sdk';
+import { LoopringMap, TickerData, toBig } from 'loopring-sdk';
 import store from '../../stores';
-import { FloatTag,TradeFloat } from '@loopring-web/common-resources';
+import { FloatTag, TradeFloat } from '@loopring-web/common-resources';
 import { volumeToCount } from './volumeToCount';
 import { Ticker, TickerMap } from '../../stores/ticker';
-import { LoopringMap } from 'loopring-sdk';
 import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
 
 export const makeTickView = (tick: Partial<TickerData>) => {
     // const {forex} = store.getState().system;
 
     const {faitPrices, forex} = store.getState().system;
-    if(tick){
-        const floatTag = ((tick.close??0) ||( tick.open??0))  || tick.open === tick.close ? FloatTag.none :
+    if (tick) {
+        const floatTag = ((tick.close ?? 0) || (tick.open ?? 0)) || tick.open === tick.close ? FloatTag.none :
             tick.close > tick.open ? FloatTag.increase : FloatTag.decrease
         let _tradeFloat: Partial<TradeFloat> = {
-            change: (tick.close??0 - (tick.open??0)) / (tick.open??1),
+            change: (tick.close ?? 0 - (tick.open ?? 0)) / (tick.open ?? 1),
             timeUnit: '24h',
-            priceYuan:  0,
+            priceYuan: 0,
             priceDollar: 0,
             floatTag,
             reward: 0,
@@ -27,40 +26,40 @@ export const makeTickView = (tick: Partial<TickerData>) => {
             // APY: 0,
         }
         if (faitPrices && forex && tick.close) {
-            const volume = VolToNumberWithPrecision((tick.base_token_volume??0), tick.base as string)
+            const volume = VolToNumberWithPrecision((tick.base_token_volume ?? 0), tick.base as string)
             // const priceDollar = toBig(tiem).times(faitPrices[ tick.base as string ] ? faitPrices[ tick.base as string ].price : 0);
             // const priceYuan = priceDollar.times(forex);
 
-            const qPrice = tick.quote === 'DAI' ? 1 : faitPrices[tick.quote as string]?.price ? faitPrices[tick.quote as string].price : 0;
+            const qPrice = tick.quote === 'DAI' ? 1 : faitPrices[ tick.quote as string ]?.price ? faitPrices[ tick.quote as string ].price : 0;
             const closeDollar = toBig(tick.close).times(qPrice);
             const closeYuan = closeDollar.times(forex);
 
             _tradeFloat = {
                 ..._tradeFloat,
-                changeDollar: toBig(tick.close - (tick.open??0)).times( qPrice ).toNumber(),
-                changeYuan: toBig(tick.close - (tick.open??0)).times( qPrice ).times(forex).toNumber(),
-                volume: volume?Number(volume):undefined,
-                closeDollar:closeDollar.toNumber(),
-                closeYuan:closeYuan.toNumber(),
+                changeDollar: toBig(tick.close - (tick.open ?? 0)).times(qPrice).toNumber(),
+                changeYuan: toBig(tick.close - (tick.open ?? 0)).times(qPrice).times(forex).toNumber(),
+                volume: volume ? Number(volume) : undefined,
+                closeDollar: closeDollar.toNumber(),
+                closeYuan: closeYuan.toNumber(),
             }
         }
         return _tradeFloat;
     }
 
 }
-export  const makeTickerMap =  <R extends {[key:string]:any}>({tickerMap}:{tickerMap:LoopringMap<TickerData>}):TickerMap<{[key:string]:any}>=>{
+export const makeTickerMap = <R extends { [ key: string ]: any }>({tickerMap}: { tickerMap: LoopringMap<TickerData> }): TickerMap<{ [ key: string ]: any }> => {
     const {faitPrices, forex} = store.getState().system;
     return Reflect.ownKeys(tickerMap).reduce((prev, key) => {
         const item: TickerData = tickerMap[ key as any ];
         if (item && item.base && forex && faitPrices && (faitPrices[ item.base ] || faitPrices[ 'USDT' ])) {
             // const volume = VolToNumberWithPrecision(item.base_token_volume, item.base as string)
-            const volume = volumeToCount(item.symbol.split('-')[1], item.quote_token_volume)
+            const volume = volumeToCount(item.symbol.split('-')[ 1 ], item.quote_token_volume)
             //FIX: DIE is not in faitPrices
-            const priceDollar = toBig(volume?volume:0).times(faitPrices[ item.base ] ? faitPrices[ item.base ].price : faitPrices[ 'USDT' ].price);
+            const priceDollar = toBig(volume ? volume : 0).times(faitPrices[ item.base ] ? faitPrices[ item.base ].price : faitPrices[ 'USDT' ].price);
             const priceYuan = priceDollar?.times(forex);
             const change = item.change && item.change !== 0 ? item.change * 100 : undefined;
 
-            prev[ key as keyof R] = {
+            prev[ key as keyof R ] = {
                 // ...item,
                 timeUnit: '24h',
                 priceDollar: priceDollar?.toNumber() === 0 ? undefined : priceDollar?.toNumber(),

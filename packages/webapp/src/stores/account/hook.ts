@@ -1,9 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import {
-    changeShowModel,
-    cleanAccountStatus,
-    statusUnset, updateAccountStatus
-} from './reducer';
+import { changeShowModel, cleanAccountStatus, statusUnset, updateAccountStatus } from './reducer';
 import React from 'react';
 import { Account, AccountState, getShortAddr } from '@loopring-web/common-resources';
 import { RootState } from 'stores';
@@ -12,8 +8,8 @@ export function useAccount() {
     const {status, errorMessage, ...account}: AccountState = useSelector((state: RootState) => state.account);
     // const [shouldShow,setShouldShow] = React.useState(account._userOnModel)
     const dispatch = useDispatch();
-    
-    const resetAccount = React.useCallback( (props?:{shouldUpdateProvider?:boolean|undefined}) => {
+
+    const resetAccount = React.useCallback((props?: { shouldUpdateProvider?: boolean | undefined }) => {
         dispatch(cleanAccountStatus(props));
     }, [dispatch])
 
@@ -21,13 +17,13 @@ export function useAccount() {
         dispatch(updateAccountStatus(account))
     }, [dispatch]);
 
-    const shouldShow = React.useMemo(()=>{
-        return  account._userOnModel
+    const shouldShow = React.useMemo(() => {
+        return account._userOnModel
     }, [account]);
 
-    const setShouldShow = React.useCallback((flag:boolean)=>{
+    const setShouldShow = React.useCallback((flag: boolean) => {
         dispatch(changeShowModel({_userOnModel: flag}));
-    },[dispatch]);
+    }, [dispatch]);
 
     const addressShort = getShortAddr(account.accAddress)
 
@@ -38,7 +34,9 @@ export function useAccount() {
         shouldShow,
         setShouldShow,
         updateAccount,
-        statusUnset: React.useCallback(() => {dispatch(statusUnset(undefined))}, [dispatch]),
+        statusUnset: React.useCallback(() => {
+            dispatch(statusUnset(undefined))
+        }, [dispatch]),
         status,
         errorMessage,
     }

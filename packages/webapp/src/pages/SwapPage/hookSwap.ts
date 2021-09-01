@@ -1,5 +1,5 @@
 import * as sdk from 'loopring-sdk';
-import { getExistedMarket, OrderStatus, sleep } from 'loopring-sdk';
+import { OrderStatus, sleep } from 'loopring-sdk';
 import React from 'react';
 import { useSocket } from '../../stores/socket';
 import { useAccount } from '../../stores/account';
@@ -38,7 +38,7 @@ import { PairFormat, usePageTradeLite } from '../../stores/router/tradeLite';
 import { DAYS } from '../../defs/common_defs';
 import { getTimestampDaysLater } from '../../utils/dt_tools';
 import { myLog } from '../../utils/log_tools';
-import { swapDependAsync, marketInitCheck, calcPriceByAmmTickMapDepth } from './help';
+import { calcPriceByAmmTickMapDepth, marketInitCheck, swapDependAsync } from './help';
 
 const useSwapSocket = () => {
     const {sendSocketTopic, socketEnd} = useSocket();
@@ -445,7 +445,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
     /*** account related end ***/
 
     /*** user Action function ***/
-   //HIGH: effect by wallet state update
+        //HIGH: effect by wallet state update
     const handleSwapPanelEvent = async (swapData: SwapData<SwapTradeData<IBData<C>>>, swapType: any): Promise<void> => {
 
             // myLog('handleSwapPanelEvent...')
@@ -453,7 +453,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
             const {tradeData} = swapData
             resetSwap(swapType, tradeData)
 
-    }
+        }
 
     React.useEffect(() => {
         if (pageTradeLite.depth) {
@@ -476,18 +476,21 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
 
     }, [market]);
     const refreshAmmPoolSnapshot = React.useCallback(() => {
-        const {tickMap,ammPoolsBalance,depth,} = pageTradeLite;
+        const {tickMap, ammPoolsBalance, depth,} = pageTradeLite;
         //@ts-ignore
         //(tickMap || ammPoolsBalance) &&
-        if ( pageTradeLite.market && (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market
-                || `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market)
+        if (pageTradeLite.market && (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market
+            || `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market)
         ) {
-            let {stob,close} = calcPriceByAmmTickMapDepth({
-                market: market as any, tradePair:`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
-                dependencyData:{tickMap,ammPoolsBalance,depth}})
+            let {stob, close} = calcPriceByAmmTickMapDepth({
+                market: market as any, tradePair: `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
+                dependencyData: {tickMap, ammPoolsBalance, depth}
+            })
             let _tradeFloat = makeTickView(tickMap && tickMap[ pageTradeLite.market ] ? tickMap[ pageTradeLite.market ] : {})
-            setTradeFloat({..._tradeFloat,
-                close:close} as TradeFloat);
+            setTradeFloat({
+                ..._tradeFloat,
+                close: close
+            } as TradeFloat);
             setTradeCalcData((state) => {
                 state.StoB = getShowStr(stob)
                 state.BtoS = getShowStr(stob ? 1 / stob : 0)
@@ -568,13 +571,13 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
 
     const callPairDetailInfoAPIs = React.useCallback(async () => {
         if (market && ammMap && LoopringAPI.exchangeAPI) {
-           try {
-               const {depth, ammPoolsBalance, tickMap} = await swapDependAsync(market);
-               updatePageTradeLite({market, depth, ammPoolsBalance, tickMap}) 
-           } catch(error)  {
-               myLog(error, 'go to LER-ETH');
-               resetTradeCalcData(undefined, market)
-           }
+            try {
+                const {depth, ammPoolsBalance, tickMap} = await swapDependAsync(market);
+                updatePageTradeLite({market, depth, ammPoolsBalance, tickMap})
+            } catch (error) {
+                myLog(error, 'go to LER-ETH');
+                resetTradeCalcData(undefined, market)
+            }
         }
 
     }, [market, ammMap])

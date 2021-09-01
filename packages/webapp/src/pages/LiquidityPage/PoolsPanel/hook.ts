@@ -48,13 +48,13 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
     }, [ammMap]);
     const updateTickerLoop = React.useCallback((_keys?: string[]) => {
         updateTickers(_keys as string[]);
-        if (nodeTimer.current  !== -1) {
+        if (nodeTimer.current !== -1) {
             clearTimeout(nodeTimer.current);
         }
         nodeTimer.current = setTimeout(() => {
             updateTickerLoop(_keys)
         }, 1000)
-    },[updateTickers])
+    }, [updateTickers])
     React.useEffect(() => {
         return () => {
             clearTimeout(nodeTimer.current as NodeJS.Timeout);
@@ -64,7 +64,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
     const updateTickersUI = React.useCallback((_page) => {
         setPage(_page);
         if (ammMap && Object.keys(ammMap).length > 0) {
-            const _keys:string[] = []
+            const _keys: string[] = []
             for (let i = (page - 1) * pageSize; i < Object.keys(ammMap).length && i < (page - 1) * pageSize + pageSize; i++) {
                 _keys.push(Object.keys(ammMap)[ i ]);
             }
@@ -80,12 +80,12 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
 
 
     React.useEffect(() => {
-        if (tickerStatus === SagaStatus.UNSET){
+        if (tickerStatus === SagaStatus.UNSET) {
             updateRawData(tickerMap)
         }
     }, [tickerStatus]);
     React.useEffect(() => {
-        if(ammMapStatus === SagaStatus.UNSET){
+        if (ammMapStatus === SagaStatus.UNSET) {
             updateTickersUI(1)
         }
     }, [ammMapStatus, updateTickersUI]);

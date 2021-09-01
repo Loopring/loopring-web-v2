@@ -3,7 +3,7 @@ import { TradeBtnStatus } from '@loopring-web/component-lib'
 
 export function useBtnStatus() {
 
-    const [btnStatus, setBtnStatus, ] = React.useState<TradeBtnStatus>(TradeBtnStatus.AVAILABLE)
+    const [btnStatus, setBtnStatus,] = React.useState<TradeBtnStatus>(TradeBtnStatus.AVAILABLE)
 
     const enableBtn = React.useCallback(() => {
         setBtnStatus(TradeBtnStatus.AVAILABLE)

@@ -5,7 +5,7 @@ import { TokenInfo, } from 'loopring-sdk'
 import { CoinInfo, } from '@loopring-web/common-resources'
 
 export function getIcon(symbol: string, tokens: any) {
-    const token: any = tokens[symbol]
+    const token: any = tokens[ symbol ]
     return getIconByTokenInfo(token)
 }
 

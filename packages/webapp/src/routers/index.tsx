@@ -16,12 +16,13 @@ import { ModalGroup } from '../modal';
 const RouterView = () => {
 
     return <Router>
-        <Header />
+        <Header/>
 
         {/*<Box style={{marginTop: `var(--header-height)`}} flex={1} display={'flex'}>*/}
-        <Container maxWidth="lg" style={{minHeight:'calc(100% - 64px - 32px)',display:'flex',flexDirection:'column'}}>
+        <Container maxWidth="lg"
+                   style={{minHeight: 'calc(100% - 64px - 32px)', display: 'flex', flexDirection: 'column'}}>
             {/*style={{height: '100%' }}*/}
-            <Box display={'flex'} flex={1} alignItems={'stretch'} flexDirection={'row'} marginTop={3}  >
+            <Box display={'flex'} flex={1} alignItems={'stretch'} flexDirection={'row'} marginTop={3}>
                 <Switch>
                     <Route exact component={SwapPage} path='/'/>
                     <Route exact component={QuotePage} path='/markets'/>

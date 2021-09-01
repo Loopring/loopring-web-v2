@@ -31,7 +31,8 @@ const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap}: { amm
             <AmmCardWrap handleClick={jumpTo} {...item as any} />
         </Grid>
     ) : <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
-        <EmptyDefault height={"calc(100% - 35px)"} marginTop={10} display={'flex'} flexWrap={'nowrap'} alignItems={'center'} justifyContent={'center'}
+        <EmptyDefault height={"calc(100% - 35px)"} marginTop={10} display={'flex'} flexWrap={'nowrap'}
+                      alignItems={'center'} justifyContent={'center'}
                       flexDirection={'column'} message={() => {
             return <Trans i18nKey="labelEmptyDefault">
                 Content is Empty
@@ -44,7 +45,7 @@ export const AmmMiningView = withTranslation('common')(<T extends AmmData<C exte
     I,
     ACD extends AmmInData<I>,
     C = IBData<I>>({ammProps, t, ammActivityMap, ...rest}: {
-    ammProps: AmmProps<T,TW, I, ACD>,
+    ammProps: AmmProps<T, TW, I, ACD>,
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined,
 } & any) => {
     const {

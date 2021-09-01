@@ -1,17 +1,12 @@
-
-
-import { RefAttributes, useState, useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
-import Checkbox from '@material-ui/core/Checkbox'
 import styled from '@emotion/styled'
 
-import { FormControlLabel, TradeTable, } from '@loopring-web/component-lib'
+import { RawDataTradeItem, TradeTable, } from '@loopring-web/component-lib'
 import { withTranslation, WithTranslation } from 'react-i18next';
-import { CheckBoxIcon, CheckedIcon } from '@loopring-web/common-resources'
-import { RouteComponentProps, withRouter } from 'react-router'
-import { RawDataTradeItem, BasicHeaderItem, HeadMenuType } from '@loopring-web/component-lib'
+import { RouteComponentProps } from 'react-router'
 import { TableWrapStyled } from '../../../styled';
 import { Divider } from '@material-ui/core'
 
@@ -23,16 +18,16 @@ const applyProps = (index: number) => {
     }
 }
 const WrapperStyled = styled.div`
-            position: relative;
-            width: 100%;
-            margin-top: ${({theme}) => theme.unit * 4}px;
-            background-color: var(--color-box);
-            box-shadow: var(--shadow);
-            border-radius: ${({theme}) => theme.unit}px;
-        `
+  position: relative;
+  width: 100%;
+  margin-top: ${({theme}) => theme.unit * 4}px;
+  background-color: var(--color-box);
+  box-shadow: var(--shadow);
+  border-radius: ${({theme}) => theme.unit}px;
+`
 
 const TabsStyled = styled(Tabs)`
-    margin-left: ${({theme}) => theme.unit}px;
+  margin-left: ${({theme}) => theme.unit}px;
 `
 
 // const StyledFormControlLabel = styled(FormControlLabel)`
@@ -43,9 +38,9 @@ const TabsStyled = styled(Tabs)`
 //         `
 
 const TradePanel = withTranslation('common')(
-   // withRouter(
+    // withRouter(
     (
-        {tradeArray,  myTradeArray, t}:
+        {tradeArray, myTradeArray, t}:
             { tradeArray: RawDataTradeItem[], myTradeArray: RawDataTradeItem[] } & WithTranslation & RouteComponentProps) => {
         const [value, setValue] = useState(1)
         const [tableHeight, setTableHeight] = useState(0);
@@ -58,7 +53,7 @@ const TradePanel = withTranslation('common')(
             const tableHeight = height - 64 - 117 - 56 - 120 - 20 - 100 - 50 - 15;
             setTableHeight(tableHeight)
         }, [])
-        
+
         useEffect(() => {
             getCurrentHeight()
             window.addEventListener('resize', getCurrentHeight)
@@ -67,19 +62,20 @@ const TradePanel = withTranslation('common')(
             }
         }, [getCurrentHeight]);
 
-        return (   <TableWrapStyled item alignSelf={'stretch'} xs={12} marginY={2}  paddingBottom={2} flex={1} className={'MuiPaper-elevation2'}>
+        return (<TableWrapStyled item alignSelf={'stretch'} xs={12} marginY={2} paddingBottom={2} flex={1}
+                                 className={'MuiPaper-elevation2'}>
                 <TabsStyled value={value}
                             onChange={handleChange}
                             aria-label="tabs switch">
                     <Tab label={t('labelMyTrade')} {...applyProps(0)} />
                     <Tab label={t('labelRecent')}   {...applyProps(1)} />
                 </TabsStyled>
-                <Divider />
-                <TradeTable rawData={value === 0 ? myTradeArray : tradeArray} currentHeight={tableHeight} />
+                <Divider/>
+                <TradeTable rawData={value === 0 ? myTradeArray : tradeArray} currentHeight={tableHeight}/>
             </TableWrapStyled>
         )
     }
-    ) as  (props: { tradeArray: RawDataTradeItem[], myTradeArray: RawDataTradeItem[] }) => JSX.Element;
+) as (props: { tradeArray: RawDataTradeItem[], myTradeArray: RawDataTradeItem[] }) => JSX.Element;
 //)
 
 export default TradePanel

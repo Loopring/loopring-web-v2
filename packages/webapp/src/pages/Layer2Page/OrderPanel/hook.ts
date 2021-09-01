@@ -1,12 +1,11 @@
 import React from 'react'
-import { TradeTypes, TradeStatus } from '@loopring-web/common-resources'
+import { TradeStatus, TradeTypes } from '@loopring-web/common-resources'
 import { OrderHistoryRawDataItem, OrderHistoryTableDetailItem } from '@loopring-web/component-lib'
 import { useAccount } from 'stores/account';
 import { LoopringAPI } from 'api_wrapper'
-import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
+import { volumeToCount } from 'hooks/help'
 import { GetOrdersRequest, Side } from 'loopring-sdk'
 import store from 'stores'
-import { getValuePrecision } from '@loopring-web/common-resources'
 
 export const useOrderList = () => {
     const [orderOriginalData, setOrderOriginalData] = React.useState<OrderHistoryRawDataItem[]>([])
@@ -14,16 +13,16 @@ export const useOrderList = () => {
     const [totalNum, setTotalNum] = React.useState(0)
     const [showLoading, setShowLoading] = React.useState(false)
     const [showDetailLoading, setShowDetailLoading] = React.useState(false)
-    const { account: {accountId, apiKey} } = useAccount()
-    const { tokenMap: { marketArray } } = store.getState()
-    const { ammMap: { ammMap } } = store.getState().amm
+    const {account: {accountId, apiKey}} = useAccount()
+    const {tokenMap: {marketArray}} = store.getState()
+    const {ammMap: {ammMap}} = store.getState().amm
 
-    const ammPairList = ammMap 
+    const ammPairList = ammMap
         ? Object.keys(ammMap)
         : []
     const jointPairs = (marketArray || []).concat(ammPairList)
 
-    const getOrderList = React.useCallback(async (props: Omit<GetOrdersRequest, 'accountId'> ) => {
+    const getOrderList = React.useCallback(async (props: Omit<GetOrdersRequest, 'accountId'>) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
             setShowLoading(true)
             const userOrders = await LoopringAPI.userAPI.getOrders({
@@ -33,7 +32,7 @@ export const useOrderList = () => {
             if (userOrders && Array.isArray(userOrders.orders)) {
                 setTotalNum(userOrders.totalNum)
                 setOrderOriginalData(userOrders.orders.map(o => {
-                    const { baseAmount, quoteAmount, baseFilled, quoteFilled } = o.volumes
+                    const {baseAmount, quoteAmount, baseFilled, quoteFilled} = o.volumes
 
                     const marketList = o.market.split('-')
                     if (marketList.length === 3) {
@@ -99,7 +98,7 @@ export const useOrderList = () => {
                 orderHash,
             }, apiKey)
             const formattedData = [orderDetail.orderDetail].map(o => {
-                const { baseAmount, quoteAmount, baseFilled, quoteFilled, fee } = o.volumes
+                const {baseAmount, quoteAmount, baseFilled, quoteFilled, fee} = o.volumes
                 const marketList = o.market.split('-')
                 if (marketList.length === 3) {
                     marketList.shift()
