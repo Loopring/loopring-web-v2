@@ -30,9 +30,7 @@ export const UpdateAccount = ({
 export const UpdateAccount_Approve_WaitForAuth = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.LoadingIcon,
-        describe1: <Trans i18nKey={'label_UpdateAccount_Approve_WaitForAuth'}>
-            Waiting for {props.symbol} Auth.
-        </Trans>
+        describe1: props.t('labelTokenAccess',{symbol:props.symbol})
     }
     return <UpdateAccountBase {...props} {...propsPatch} />
 }
@@ -40,7 +38,7 @@ export const UpdateAccount_Approve_WaitForAuth = (props: PanelProps & WithTransl
 export const UpdateAccount_First_Method_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_First_Method_Denied'}>
+        describe1: <Trans i18nKey={'labelFirstSignDenied'}>
         </Trans>
     }
     return <UpdateAccountBase {...propsPatch} {...props} />
@@ -49,7 +47,7 @@ export const UpdateAccount_First_Method_Denied = (props: PanelProps & WithTransl
 export const UpdateAccount_User_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_Denied'}>
+        describe1: <Trans i18nKey={'labelSignDenied'}>
         </Trans>
     }
     return <UpdateAccountBase {...propsPatch} {...props} />
@@ -59,20 +57,19 @@ export const UpdateAccount_User_Denied = (props: PanelProps & WithTranslation) =
 export const UpdateAccount_Success = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.DoneIcon,
-        describe1: <Trans i18nKey={'label_UpdateAccount_Success'}>
+        describe1: <Trans i18nKey={'labelUpdateAccountSuccess'}>
         </Trans>,
-        describe2: <Trans i18nKey={'label_UpdateAccount_Success2'}>
+        describe2: <Trans i18nKey={'labelUpdateAccountSuccess2'}>
         </Trans>
     }
     return <UpdateAccountBase {...propsPatch} {...props} />
 }
 
 // value symbol
-export const UpdateAccount_Submited = (props: PanelProps & WithTranslation) => {
+export const UpdateAccount_Submit = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.SubmitIcon,
-        describe1: <Trans i18nKey={'label_UpdateAccount_Submited'}>
-        </Trans>
+        describe1: props.t('labelUpdateAccountSubmit')
     }
     return <UpdateAccountBase {...propsPatch} {...props} />
 }
@@ -81,7 +78,7 @@ export const UpdateAccount_Submited = (props: PanelProps & WithTranslation) => {
 export const UpdateAccount_Failed = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.FailedIcon,
-        describe1: <Trans i18nKey={'label_UpdateAccount_Failed'}>
+        describe1: <Trans i18nKey={'labelUpdateAccountFailed'}>
             {props.value} {props.symbol} Update Account Failed.
         </Trans>
     }

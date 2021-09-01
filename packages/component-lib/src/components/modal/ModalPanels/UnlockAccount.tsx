@@ -5,8 +5,7 @@ import { UnlockAccountBase, IconType, PanelProps } from "./BasicPanel"
 export const UnlockAccount_WaitForAuth = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.LoadingIcon,
-        describe1: <Trans i18nKey={'label_WaitForAuth'}>
-        </Trans>
+        describe1: props.t('labelWaitForAuth')
     }
     return <UnlockAccountBase {...props} {...propsPatch} />
 }
@@ -14,7 +13,7 @@ export const UnlockAccount_WaitForAuth = (props: PanelProps & WithTranslation) =
 export const UnlockAccount_User_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_Denied'}>
+        describe1: <Trans i18nKey={'labelSignDenied'}>
         </Trans>
     }
     return <UnlockAccountBase {...propsPatch} {...props} />
@@ -24,7 +23,7 @@ export const UnlockAccount_User_Denied = (props: PanelProps & WithTranslation) =
 export const UnlockAccount_Success = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.DoneIcon,
-        describe1: <Trans i18nKey={'label_UnlockAccount_Success'}>
+        describe1: <Trans i18nKey={'labelUnlockAccountSuccess'}>
         </Trans>
     }
     return <UnlockAccountBase {...propsPatch} {...props} />
@@ -34,7 +33,7 @@ export const UnlockAccount_Success = (props: PanelProps & WithTranslation) => {
 export const UnlockAccount_Failed = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.FailedIcon,
-        describe1: <Trans i18nKey={'label_UnlockAccount_Failed'}>
+        describe1: <Trans i18nKey={'labelUnlockAccountFailed'}>
         </Trans>
     }
     return <UnlockAccountBase {...propsPatch} {...props} />
