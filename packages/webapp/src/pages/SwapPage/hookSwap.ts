@@ -34,7 +34,7 @@ import {
 } from '../../hooks/help';
 import { LoopringAPI } from '../../api_wrapper';
 import * as _ from 'lodash'
-import { PairFormat, usePageTradeLite } from '../../stores/router/tradeLite';
+import { PairFormat, usePageTradeLite } from '../../stores/router';
 import { DAYS } from '../../defs/common_defs';
 import { getTimestampDaysLater } from '../../utils/dt_tools';
 import { myLog } from '../../utils/log_tools';
@@ -104,7 +104,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
     const {amountMap, getAmount} = useAmount();
     const {account, status: accountStatus} = useAccount();
     const {toastOpen, setToastOpen, closeToast,} = useToast();
-    const {coinMap, tokenMap, marketArray, marketCoins, marketMap, idIndex} = useTokenMap()
+    const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap()
     const {ammMap} = useAmmMap();
     const {exchangeInfo} = useSystem();
     const {
@@ -259,8 +259,8 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
     }, [account.readyState, pageTradeLite, tokenMap, tradeData, setIsSwapLoading, setToastOpen, setTradeData])
     const btnLabelAccountActive = React.useCallback((): string | undefined => {
         let {calcTradeParams} = pageTradeLite;
-        const validAmt = (calcTradeParams?.amountBOut && sellMinAmt
-            && sdk.toBig(calcTradeParams?.amountBOut).gte(sdk.toBig(sellMinAmt))) ? true : false;
+        const validAmt = !!(calcTradeParams?.amountBOut && sellMinAmt
+            && sdk.toBig(calcTradeParams?.amountBOut).gte(sdk.toBig(sellMinAmt)));
         if (isSwapLoading) {
             setSwapBtnStatus(TradeBtnStatus.LOADING)
             return undefined
@@ -296,7 +296,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
             btnLabelAccountActive
         ]
     });
-    const swapCalculatorCallback = React.useCallback(async ({sell, buy, slippage, ...rest}: any) => {
+    const swapCalculatorCallback = React.useCallback(async () => {
 
 
         const {priceLevel} = getPriceImpactInfo(pageTradeLite.calcTradeParams)
@@ -557,7 +557,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
             })
             setTradeData({...tradeDataTmp})
 
-            let {amm: ammKey, market: market} = sdk.getExistedMarket(marketArray, coinA, coinB);
+            let {market: market} = sdk.getExistedMarket(marketArray, coinA, coinB);
             setMarket(market);
             updatePageTradeLite({market, tradePair})
             // if(market === _market){
@@ -644,9 +644,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                 fee: totalFee,
             }
 
-            const tradeValue = getShowStr(calcTradeParams?.output)
-
-            _tradeData[ isAtoB ? 'buy' : 'sell' ].tradeValue = tradeValue
+            _tradeData[ isAtoB ? 'buy' : 'sell' ].tradeValue = getShowStr(calcTradeParams?.output)
             updatePageTradeLite({
                 market,
                 calcTradeParams: {

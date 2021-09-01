@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import React from 'react'
 import { Meta, Story } from '@storybook/react/types-6-0'
-import { withTranslation } from 'react-i18next'
+import { WithTranslation, withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
 import { Button, Grid, Typography } from '@material-ui/core'
 import { ConnectProviders, gatewayList } from '@loopring-web/common-resources'
@@ -54,8 +54,7 @@ import {
     UpdateAccount_Submit,
     UpdateAccount_Failed,
 } from './ModalPanels';
-import { account, coinMap, CoinType, walletMap } from '../../static';
-import { DepositProps, SwapTradeData, SwitchData, TradeBtnStatus } from '../index';
+import { account } from '../../static';
 import { Box } from '@material-ui/core/';
 
 const Style = styled.div`
@@ -64,28 +63,8 @@ const Style = styled.div`
   height: 100%;
 `
 
-let tradeData: any = {};
-let depositProps: DepositProps<any, any> = {
-    isNewAccount: true,
-    tradeData,
-    coinMap,
-    walletMap,
-    depositBtnStatus: TradeBtnStatus.AVAILABLE,
-    onDepositClick: (tradeData: SwapTradeData<CoinType>) => {
-        console.log('Swap button click', tradeData);
-    },
-    handlePanelEvent: async (props: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
-        return new Promise((res) => {
-            setTimeout(() => {
-                console.log('wait 100, with props', props, switchType);
-                res();
-            }, 500)
-        })
-    }
-}
-
-const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
-
+const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
+   
     gatewayList[0] = {
         ...gatewayList[0],
         handleSelect: () => console.log('metaMask 11'),
@@ -100,7 +79,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
         level: 'VIP 1',
         etherscanUrl: 'https://material-ui.com/components/material-icons/'
     }
-    const accAddress = '0xcEd11e039a5C50927a17a8D4632616DFa8F72BF6'
+    // const accAddress = '0xcEd11e039a5C50927a17a8D4632616DFa8F72BF6'
 
     const retryBtn = React.useMemo(() => {
         return {
@@ -127,8 +106,7 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                 }} />,
             },
             [AccountStep.UpdateAccount]: {
-                view: <UpdateAccount  {...{ ...accountInfoProps, ...rest }}
-                    goActiveAccount={() => undefined} />,
+                view: <UpdateAccount  {...{ ...accountInfoProps, ...rest}} goUpdateAccount={() => undefined} />,
             },
             [AccountStep.HadAccount]: { view: <HadAccount mainBtn={mainBtn} {...accountInfoProps} />, },
         }
@@ -141,19 +119,21 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
         const accountMap = {
 
             [AccountStep.Deposit_Approve_WaitForAuth]: {
-                view: <Deposit_Approve_WaitForAuth symbol={'DAI'}
+                view: <Deposit_Approve_WaitForAuth  
                     providerName={ConnectProviders.MetaMask} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.Deposit_Approve_Denied]: {
-                view: <Deposit_Approve_Denied btnInfo={retryBtn} symbol={'DAI'}
+                view: <Deposit_Approve_Denied btnInfo={retryBtn}  
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.Deposit_Approve_Submit]: {
-                view: <Deposit_Approve_Submit btnInfo={closeBtn} symbol={'DAI'} txCheck={
+                view: <Deposit_Approve_Submit btnInfo={closeBtn}   txCheck={
                     {
                         route: '',
                         callback: () => {
@@ -166,29 +146,34 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                         }
                     }
 
-                    providerName={account.connectName} {...{
-                        ...rest
+                    providerName={account.connectName}
+                                              {...{
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.Deposit_WaitForAuth]: {
-                view: <Deposit_WaitForAuth value={'100'} symbol={'USDT'}
+                view: <Deposit_WaitForAuth 
                     providerName={ConnectProviders.WalletConnect} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.Deposit_Denied]: {
-                view: <Deposit_Denied value={'100'} symbol={'USDT'} btnInfo={retryBtn} {...{
-                    ...rest
+                view: <Deposit_Denied  btnInfo={retryBtn} {...{
+                      ...rest, symbol:'LRC', value:'1.2121'
+        
                 }} />,
             },
             [AccountStep.Deposit_Failed]: {
-                view: <Deposit_Failed btnInfo={closeBtn} value={'100'} symbol={'USDT'}
+                view: <Deposit_Failed btnInfo={closeBtn} 
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.Deposit_Submit]: {
-                view: <Deposit_Submit value={'100'} symbol={'USDT'} txCheck={
+                view: <Deposit_Submit  txCheck={
                     {
                         route: '',
                         callback: () => {
@@ -197,7 +182,8 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
                     }
                 }
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
         }
@@ -211,36 +197,42 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
             [AccountStep.Transfer_WaitForAuth]: {
                 view: <Transfer_WaitForAuth
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.Transfer_First_Method_Denied]: {
                 view: <Transfer_First_Method_Denied
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.Transfer_User_Denied]: {
                 view: <Transfer_User_Denied
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.Transfer_In_Progress]: {
                 view: <Transfer_In_Progress {...{
-                    ...rest
+                      ...rest, symbol:'LRC', value:'1.2121'
+        
                 }} />,
             },
             [AccountStep.Transfer_Success]: {
-                view: <Transfer_Success value={'100'} symbol={'USDT'}
+                view: <Transfer_Success 
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.Transfer_Failed]: {
-                view: <Transfer_Failed value={'100'} symbol={'USDT'}
+                view: <Transfer_Failed 
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
         }
@@ -254,37 +246,43 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
             [AccountStep.Withdraw_WaitForAuth]: {
                 view: <Withdraw_WaitForAuth
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.Withdraw_First_Method_Denied]: {
                 view: <Withdraw_First_Method_Denied
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.Withdraw_User_Denied]: {
                 view: <Withdraw_User_Denied
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.Withdraw_In_Progress]: {
                 view: <Withdraw_In_Progress
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.Withdraw_Success]: {
                 view: <Withdraw_Success
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.Withdraw_Failed]: {
-                view: <Withdraw_Failed value={'100'} symbol={'USDT'}
+                view: <Withdraw_Failed 
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
         }
@@ -296,45 +294,52 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
     const { nameList4, accountList4, } = React.useMemo(() => {
         const accountMap = {
             [AccountStep.CreateAccount_Approve_WaitForAuth]: {
-                view: <CreateAccount_Approve_WaitForAuth symbol={'USDT'}
+                view: <CreateAccount_Approve_WaitForAuth 
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.CreateAccount_Approve_Denied]: {
-                view: <CreateAccount_Approve_Denied symbol={'USDT'}
+                view: <CreateAccount_Approve_Denied 
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.CreateAccount_Approve_Submit]: {
                 view: <CreateAccount_Approve_Submit
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.CreateAccount_WaitForAuth]: {
                 view: <CreateAccount_WaitForAuth
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.CreateAccount_Denied]: {
                 view: <CreateAccount_Denied
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.CreateAccount_Failed]: {
                 view: <CreateAccount_Failed
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
             [AccountStep.CreateAccount_Submit]: {
                 view: <CreateAccount_Submit
                     providerName={account.connectName} {...{
-                        ...rest
+                          ...rest, symbol:'LRC', value:'1.2121'
+        
                     }} />,
             },
         }
@@ -346,34 +351,39 @@ const Template: Story<any> = withTranslation()(({ ...rest }: any) => {
     const { nameList5, accountList5, } = React.useMemo(() => {
         const accountMap = {
             [AccountStep.UpdateAccount_Approve_WaitForAuth]: {
-                view: <UpdateAccount_Approve_WaitForAuth
-                    providerName={ConnectProviders.MetaMask} {...{
-                        ...rest
+                view: <UpdateAccount_Approve_WaitForAuth {...{
+                          ...rest,
+                    providerNam:ConnectProviders.MetaMask
                     }} />,
             },
             [AccountStep.UpdateAccount_First_Method_Denied]: {
                 view: <UpdateAccount_First_Method_Denied btnInfo={retryBtn} {...{
-                    ...rest
+                      ...rest
+
                 }} />,
             },
             [AccountStep.UpdateAccount_User_Denied]: {
                 view: <UpdateAccount_User_Denied btnInfo={retryBtn} {...{
-                    ...rest
+                      ...rest
+
                 }} />,
             },
             [AccountStep.UpdateAccount_Success]: {
                 view: <UpdateAccount_Success btnInfo={closeBtn}  {...{
-                    ...rest
+                      ...rest
+
                 }} />,
             },
             [AccountStep.UpdateAccount_Submit]: {
                 view: <UpdateAccount_Submit btnInfo={closeBtn} {...{
-                    ...rest
+                      ...rest
+
                 }} />,
             },
             [AccountStep.UpdateAccount_Failed]: {
                 view: <UpdateAccount_Failed btnInfo={closeBtn} {...{
-                    ...rest
+                      ...rest
+
                 }} />,
             },
         }

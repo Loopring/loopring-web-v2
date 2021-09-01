@@ -45,9 +45,7 @@ export const Transfer_In_Progress = (props: PanelProps & WithTranslation) => {
 export const Transfer_Success = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.DoneIcon,
-        describe1: <Trans i18nKey={'labelTransferSuccess'}>
-        Transfer {props.value}{props.symbol} successfully!
-        </Trans>
+        describe1: props.t('labelTransferSuccess',{symbol:props.symbol,value:props.value})
     }
     return <TransferBase {...propsPatch} {...props} />
 }
@@ -56,9 +54,7 @@ export const Transfer_Success = (props: PanelProps & WithTranslation) => {
 export const Transfer_Failed = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.FailedIcon,
-        describe1: <Trans i18nKey={'labelTransferFailed'}>
-            Transfer {props.value}{props.symbol} failed!
-        </Trans>
+        describe1:  props.t('labelTransferFailed',{symbol:props.symbol,value:props.value})
     }
     return <TransferBase {...propsPatch} {...props} />
 }
