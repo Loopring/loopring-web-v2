@@ -44,9 +44,7 @@ export const Withdraw_In_Progress = (props: PanelProps & WithTranslation) => {
 export const Withdraw_Success = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.DoneIcon,
-        describe1: <Trans i18nKey={'labelWithdrawSuccess'}>
-        Withdraw {props.value}{props.symbol} successfully!
-    </Trans>
+        describe1:  props.t('labelWithdrawSuccess',{symbol:props.symbol,value:props.value})
     }
     return <WithdrawBase {...propsPatch} {...props} />
 }
@@ -55,9 +53,7 @@ export const Withdraw_Success = (props: PanelProps & WithTranslation) => {
 export const Withdraw_Failed = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.FailedIcon,
-        describe1: <Trans i18nKey={'labelWithdrawFailed'}>
-        Withdraw {props.value}{props.symbol} failed!
-    </Trans>
+        describe1:  props.t('labelWithdrawFailed',{symbol:props.symbol,value:props.value})
     }
     return <WithdrawBase {...propsPatch} {...props} />
 }
