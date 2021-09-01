@@ -661,7 +661,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
         }
 
 
-    }, [pageTradeLite, tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray])
+    }, [amountMap, pageTradeLite, tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray])
 
     const resetSwap = (swapType: SwapType | undefined, _tradeData: SwapTradeData<IBData<C>> | undefined) => {
         switch (swapType) {
