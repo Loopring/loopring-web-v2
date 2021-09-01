@@ -1,14 +1,14 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import {
     AccountStep,
-    Connect_Failed,
-    Connect_Success,
-    MetaMask_Connect_In_Progress,
+    ConnectFailed,
+    ConnectSuccess,
+    MetaMaskConnectInProgress,
     ModalWalletConnect,
     ProviderMenu,
     Toast,
     useOpenModals,
-    WalletConnect_Connect_In_Progress,
+    WalletConnectConnectInProgress,
     WalletConnectQRCode,
     WalletConnectStep,
 } from '@loopring-web/component-lib';
@@ -159,7 +159,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
                         setShowAccount({isShow: true, step: AccountStep.HadAccount})
                         break
                     case 'DEPOSITING':
-                        setShowAccount({isShow: true, step: AccountStep.Deposit_Submited})
+                        setShowAccount({isShow: true, step: AccountStep.Deposit_Submit})
                         break
                     case 'NO_ACCOUNT':
                         setShowAccount({isShow: true, step: AccountStep.NoAccount})
@@ -175,9 +175,9 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
                                     providerName={account.connectName} {...{t, ...rest}} />,
                 onBack: providerBack
             },
-            [ WalletConnectStep.MetaMaskProcessing ]: {view: <MetaMask_Connect_In_Progress {...{t, ...rest}} />,},
+            [ WalletConnectStep.MetaMaskProcessing ]: {view: <MetaMaskConnectInProgress {...{t, ...rest}} />,},
             [ WalletConnectStep.WalletConnectProcessing ]: {
-                view: <WalletConnect_Connect_In_Progress {...{t, ...rest}} />,
+                view: <WalletConnectConnectInProgress {...{t, ...rest}} />,
             },
             [ WalletConnectStep.WalletConnectQRCode ]: {
                 view: <WalletConnectQRCode onCopy={() => {
@@ -188,11 +188,11 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
                 }
             },
             [ WalletConnectStep.SuccessConnect ]: {
-                view: <Connect_Success
+                view: <ConnectSuccess
                     providerName={account.connectName} {...{t, ...rest}} />,
             },
             [ WalletConnectStep.FailedConnect ]: {
-                view: <Connect_Failed {...{t, ...rest}} btnInfo={{btnTxt: 'labelRetry', callback: onRetry}}/>,
+                view: <ConnectFailed {...{t, ...rest}} btnInfo={{btnTxt: 'labelRetry', callback: onRetry}}/>,
                 onBack: () => {
                     walletServices.sendDisconnect('', 'should new provider')
                     setShowConnect({isShow: true, step: WalletConnectStep.Provider});

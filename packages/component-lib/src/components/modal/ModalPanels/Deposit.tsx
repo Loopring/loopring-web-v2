@@ -5,7 +5,7 @@ import { DepositBase, IconType, PanelProps } from "./BasicPanel"
 export const Deposit_Approve_WaitForAuth = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.LoadingIcon,
-        describe1: <Trans i18nKey={'label_Approve_WaitForAuth'}>
+        describe1: <Trans i18nKey={'labelApproveWaitForAuth'}>
             Waiting for {props.symbol} Deposit Approve
         </Trans>
     }
@@ -16,7 +16,7 @@ export const Deposit_Approve_WaitForAuth = (props: PanelProps & WithTranslation)
 export const Deposit_Approve_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_Approve_Denied'}>
+        describe1: <Trans i18nKey={'labelApproveDenied'}>
             {props.symbol} Approve denied by user.
         </Trans>
     }
@@ -24,10 +24,10 @@ export const Deposit_Approve_Denied = (props: PanelProps & WithTranslation) => {
 }
 
 // symbol
-export const Deposit_Approve_Submited = (props: PanelProps & WithTranslation) => {
+export const Deposit_Approve_Submit = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.SubmitIcon,
-        describe1: <Trans i18nKey={'label_Approve_Submited'}>
+        describe1: <Trans i18nKey={'labelApproveSubmit'}>
             {props.symbol} Approve submitted.
         </Trans>
     }
@@ -38,9 +38,7 @@ export const Deposit_Approve_Submited = (props: PanelProps & WithTranslation) =>
 export const Deposit_WaitForAuth = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.LoadingIcon,
-        describe1: <Trans i18nKey={'label_Deposit_WaitForAuth'}>
-            Please Confirm to Deposit {props.value}{props.symbol}
-        </Trans>
+        describe1: props.t('labelDepositWaitForAuth',{symbol:props.symbol})
     }
     return <DepositBase {...propsPatch} {...props} />
 }
@@ -49,9 +47,7 @@ export const Deposit_WaitForAuth = (props: PanelProps & WithTranslation) => {
 export const Deposit_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_Deposit_Denied'}>
-            Deposit {props.value}{props.symbol} denied by user
-        </Trans>
+        describe1: props.t('labelDepositDenied',{symbol:props.symbol})
     }
     return <DepositBase {...propsPatch} {...props} />
 }
@@ -60,7 +56,7 @@ export const Deposit_Denied = (props: PanelProps & WithTranslation) => {
 export const Deposit_Failed = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.FailedIcon,
-        describe1: <Trans i18nKey={'label_Deposit_Failed'}>
+        describe1: <Trans i18nKey={'labelDepositFailed'}>
             Deposit {props.value}{props.symbol} failed
         </Trans>
     }
@@ -68,10 +64,10 @@ export const Deposit_Failed = (props: PanelProps & WithTranslation) => {
 }
 
 // value symbol
-export const Deposit_Submited = (props: PanelProps & WithTranslation) => {
+export const Deposit_Submit = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.SubmitIcon,
-        describe1: <Trans i18nKey={'label_Deposit_Submited'}>
+        describe1: <Trans i18nKey={'labelDepositSubmit'}>
             Deposit {props.value}{props.symbol} submitted
         </Trans>
     }

@@ -3,18 +3,18 @@ import {
     AccountStep,
     Button,
     CreateAccount_Approve_Denied,
-    CreateAccount_Approve_Submited,
+    CreateAccount_Approve_Submit,
     CreateAccount_Approve_WaitForAuth,
     CreateAccount_Denied,
     CreateAccount_Failed,
-    CreateAccount_Submited,
+    CreateAccount_Submit,
     CreateAccount_WaitForAuth,
     Deposit_Approve_Denied,
-    Deposit_Approve_Submited,
+    Deposit_Approve_Submit,
     Deposit_Approve_WaitForAuth,
     Deposit_Denied,
     Deposit_Failed,
-    Deposit_Submited,
+    Deposit_Submit,
     Deposit_WaitForAuth,
     DepositPanel,
     HadAccount,
@@ -38,7 +38,7 @@ import {
     UpdateAccount_Approve_WaitForAuth,
     UpdateAccount_Failed,
     UpdateAccount_First_Method_Denied,
-    UpdateAccount_Submited,
+    UpdateAccount_Submit,
     UpdateAccount_Success,
     UpdateAccount_User_Denied,
     useOpenModals,
@@ -418,8 +418,8 @@ export const ModalAccountInfo = withTranslation('common')(({
                     setShowAccount({isShow: true, step: AccountStep.Deposit});
                 }
             },
-            [ AccountStep.Deposit_Approve_Submited ]: {
-                view: <Deposit_Approve_Submited btnInfo={closeBtnInfo} {...{
+            [ AccountStep.Deposit_Approve_Submit ]: {
+                view: <Deposit_Approve_Submit btnInfo={closeBtnInfo} {...{
                     ...rest, t
                 }} />, onBack: () => {
                     setShowAccount({isShow: true, step: AccountStep.Deposit});
@@ -447,8 +447,8 @@ export const ModalAccountInfo = withTranslation('common')(({
                     setShowAccount({isShow: true, step: AccountStep.Deposit});
                 }
             },
-            [ AccountStep.Deposit_Submited ]: {
-                view: <Deposit_Submited btnInfo={closeBtnInfo} {...{
+            [ AccountStep.Deposit_Submit ]: {
+                view: <Deposit_Submit btnInfo={closeBtnInfo} {...{
                     ...rest, t
                 }} />, onBack: () => {
                     setShowAccount({isShow: true, step: AccountStep.Deposit});
@@ -535,8 +535,8 @@ export const ModalAccountInfo = withTranslation('common')(({
                     ...rest, t
                 }} />,
             },
-            [ AccountStep.CreateAccount_Approve_Submited ]: {
-                view: <CreateAccount_Approve_Submited
+            [ AccountStep.CreateAccount_Approve_Submit ]: {
+                view: <CreateAccount_Approve_Submit
                     providerName={account.connectName} {...{
                     ...rest, t
                 }} />,
@@ -559,8 +559,8 @@ export const ModalAccountInfo = withTranslation('common')(({
                     ...rest, t
                 }} />,
             },
-            [ AccountStep.CreateAccount_Submited ]: {
-                view: <CreateAccount_Submited
+            [ AccountStep.CreateAccount_Submit ]: {
+                view: <CreateAccount_Submit
                     providerName={account.connectName} {...{
                     ...rest, t
                 }} />,
@@ -606,8 +606,8 @@ export const ModalAccountInfo = withTranslation('common')(({
                     ...rest, t
                 }} />,
             },
-            [ AccountStep.UpdateAccount_Submited ]: {
-                view: <UpdateAccount_Submited btnInfo={closeBtnInfo} {...{
+            [ AccountStep.UpdateAccount_Submit ]: {
+                view: <UpdateAccount_Submit btnInfo={closeBtnInfo} {...{
                     ...rest, t
                 }} />,
             },
