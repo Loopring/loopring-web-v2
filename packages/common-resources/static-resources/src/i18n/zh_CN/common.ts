@@ -270,4 +270,10 @@ export default {
 
     label_CreateAccount_Approve_WaitForAuth: '等待 <1>{{symbol}}</1> 的授权...',
     label_CreateAccount_Approve_Denied: '<0>{{symbol}}</0>授权用户拒绝',
+
+    labelConnect: '连接钱包',
+    label_MetaMask_Connect_In_Progress: 'MetaMask 连接钱包中...',
+    label_WalletConnect_Connect_In_Progress: 'WallConnect 连接钱包中...',
+    label_Connect_Success: '连接成功!',
+    label_Connect_Failed: '连接失败!',
 }

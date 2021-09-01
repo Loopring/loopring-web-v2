@@ -30,9 +30,19 @@ const getColumnModeSingleHistory = (t: TFunction): Column<Row, unknown>[] => {
                 return <div className="rdg-cell-value">{renderValue}</div>
             },
         },
+        // {
+        //     key: 'tradingPrice',
+        //     name: t('labelOrderTradingPrice'),
+        //     formatter: ({row, column}) => {
+        //         const value = row[ column.key ]
+        //         const hasValue = Number.isFinite(value)
+        //         const renderValue = hasValue ? value.toFixed(5) : EmptyValueTag
+        //         return <div className="rdg-cell-value">{renderValue}</div>
+        //     },
+        // },
         {
-            key: 'tradingPrice',
-            name: t('labelOrderTradingPrice'),
+            key: 'filledPrice',
+            name: t('labelOrderFilledPrice'),
             formatter: ({row, column}) => {
                 const value = row[ column.key ]
                 const hasValue = Number.isFinite(value)
@@ -41,8 +51,18 @@ const getColumnModeSingleHistory = (t: TFunction): Column<Row, unknown>[] => {
             },
         },
         {
-            key: 'filledPrice',
-            name: t('labelOrderFilledPrice'),
+            key: 'fee',
+            name: t('labelOrderFee'),
+            formatter: ({row, column}) => {
+                const value = row[ column.key ]
+                const hasValue = Number.isFinite(value)
+                const renderValue = hasValue ? value.toFixed(5) : EmptyValueTag
+                return <div className="rdg-cell-value">{renderValue}</div>
+            },
+        },
+        {
+            key: 'role',
+            name: t('labelOrderRole'),
             formatter: ({row, column}) => {
                 const value = row[ column.key ]
                 const hasValue = Number.isFinite(value)
@@ -65,28 +85,29 @@ const getColumnModeSingleHistory = (t: TFunction): Column<Row, unknown>[] => {
                 )
             },
         },
-        {
-            key: 'total',
-            name: t('labelOrderTotal'),
-            formatter: ({row, column}) => {
-                const {key, value} = row[ column.key ]
-                const hasValue = Number.isFinite(value)
-                const renderValue = hasValue ? `${value.toFixed(4)} ${key}` : EmptyValueTag
-                return (
-                    <div className="rdg-cell-value">
-                        <span>{renderValue}</span>
-                    </div>
-                )
-            },
-        },
+        // {
+        //     key: 'total',
+        //     name: t('labelOrderTotal'),
+        //     formatter: ({row, column}) => {
+        //         const {key, value} = row[ column.key ]
+        //         const hasValue = Number.isFinite(value)
+        //         const renderValue = hasValue ? `${value.toFixed(4)} ${key}` : EmptyValueTag
+        //         return (
+        //             <div className="rdg-cell-value">
+        //                 <span>{renderValue}</span>
+        //             </div>
+        //         )
+        //     },
+        // },
     ];
 }
 
 export interface SingleOrderHistoryTableProps {
-    rawData: OrderHistoryTableDetailItem[]
+    rawData: OrderHistoryTableDetailItem[];
+    showLoading?: boolean;
 }
 
-export const SingleOrderHistoryTable = withTranslation()((props: SingleOrderHistoryTableProps & WithTranslation) => {
+export const SingleOrderHistoryTable = withTranslation('tables')((props: SingleOrderHistoryTableProps & WithTranslation) => {
     const defaultArgs: any = {
         rawData: [],
         columnMode: getColumnModeSingleHistory(props.t),
