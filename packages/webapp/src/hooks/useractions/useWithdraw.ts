@@ -30,18 +30,17 @@ import { DAYS, TOAST_TIME } from 'defs/common_defs';
 import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
 import { useWalletInfo } from 'stores/localStore/walletInfo';
 import { checkErrorInfo } from './utils';
-import { ConnectorError, } from 'loopring-sdk';
+import { ConnectorError, GetWithdrawalAgentsRequest, } from 'loopring-sdk';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
+import { flatMap } from 'lodash';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
-    // handleWithdraw: (inputValue:R) => void,
     withdrawAlertText: string | undefined,
     withdrawToastOpen: boolean,
     setWithdrawToastOpen: any,
     withdrawProps: WithdrawProps<R, T>
     processRequest: any,
     lastRequest: any,
-    // withdrawValue: R
 } => {
 
     const { t } = useTranslation('common')
@@ -64,9 +63,18 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
 
     const [withdrawFeeInfo, setWithdrawFeeInfo] = React.useState<any>()
+
     const [withdrawType, setWithdrawType] = React.useState<sdk.OffchainFeeReqType>(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
 
+    const withdrawType2 = withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
+
     const { chargeFeeList } = useChargeFees(withdrawValue.belong, withdrawType, tokenMap, withdrawValue.tradeValue)
+
+    const [withdrawTypes, setWithdrawTypes] = React.useState<any>(WithdrawTypes)
+
+    const { checkHWAddr, updateDepositHashWrapper, } = useWalletInfo()
+
+    const [lastRequest, setLastRequest] = React.useState<any>({})
 
     const {
         address,
@@ -86,6 +94,36 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         }
 
     }, [enableBtn, disableBtn, chargeFeeList, address, addrStatus, withdrawValue?.tradeValue])
+
+    const updateWithdrawTypes = React.useCallback(async() => {
+
+        if (withdrawValue.belong && LoopringAPI.exchangeAPI && tokenMap) {
+
+            const tokenInfo = tokenMap[withdrawValue.belong]
+        
+            const req: GetWithdrawalAgentsRequest = {
+                tokenId: tokenInfo.tokenId,
+                amount: sdk.toBig('1e' + tokenInfo.decimals).toString(),
+            }
+
+            const agent = await LoopringAPI.exchangeAPI.getWithdrawalAgents(req)
+
+            if (agent.supportTokenMap[withdrawValue.belong]) {
+                myLog('------- have agent!')
+                setWithdrawTypes(WithdrawTypes)
+            } else {
+                myLog('------- have NO agent!')
+                setWithdrawTypes({ 'Standard' : '' })
+            }
+        }
+
+    }, [withdrawValue, tokenMap, ])
+
+    React.useEffect(() => {
+
+        updateWithdrawTypes()
+
+    }, [withdrawValue.belong, tokenMap, ])
 
     const walletLayer2Callback = React.useCallback(() => {
         const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
@@ -125,10 +163,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             setWithdrawFeeInfo(chargeFeeList[0])
         }
     }, [chargeFeeList, setWithdrawFeeInfo])
-
-    const { checkHWAddr, updateDepositHashWrapper, } = useWalletInfo()
-
-    const [lastRequest, setLastRequest] = React.useState<any>({})
 
     const processRequest = React.useCallback(async (request: sdk.OffChainWithdrawalRequestV3, isFirstTime: boolean) => {
 
@@ -180,8 +214,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
         }
     }, [setLastRequest, setShowAccount, updateDepositHashWrapper, account])
-
-    const withdrawType2 = withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
 
     const handleWithdraw = React.useCallback(async (inputValue: R, address, isFirstTime: boolean = true) => {
 
@@ -260,7 +292,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         walletMap: walletMap2 as WalletMap<any>,
         withdrawBtnStatus: btnStatus,
         withdrawType: withdrawType2,
-        withdrawTypes: WithdrawTypes,
+        withdrawTypes,
         onWithdrawClick: () => {
             if (withdrawValue && withdrawValue.belong) {
                 handleWithdraw(withdrawValue as R, address)
