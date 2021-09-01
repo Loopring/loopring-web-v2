@@ -1,3 +1,5 @@
+import { ConnectProviders } from '../constant';
+
 export enum WalletStatus {
     disabled = 'disabled',
     loading = 'loading',
@@ -10,7 +12,7 @@ export enum WalletStatus {
 }
 
 export interface GatewayItem {
-    key: string
+    key: keyof typeof ConnectProviders
     imgSrc: string
-    handleSelect?: (event: React.MouseEvent) => void
+    handleSelect?: (event?: React.MouseEvent) => void
 }

@@ -5,8 +5,9 @@ import { FormControlLabel as MuFormControlLabel, TextField as MuTextField } from
 export const FormControlLabel = styled(MuFormControlLabel)`
   && {
     padding-right: ${({theme}) => theme.unit * 2}px;
-    background-color: ${({theme}) => theme.colorBase.background().outline};
+    background-color: inherit;
     border-radius: ${({theme}) => theme.unit / 2}px;
+    color: var(--color-text-secondary);
   }
 `
 export const TextField = styled(MuTextField)`
@@ -20,7 +21,7 @@ export const TextField = styled(MuTextField)`
       position: absolute;
       right: .4rem;
       top:  ${({theme}) => theme.unit}px;
-      color: ${({theme}) => theme.colorBase.textSecondary};
+      color: var(--color-text-secondary);
     }
 
     &:not(.MuiFormControl-fullWidth) {

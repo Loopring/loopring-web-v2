@@ -7,7 +7,7 @@ import { ModalCloseButton } from '../../basic-lib';
 
 const ModalContentStyled = styled(Box)`
   & > div {
-    background-color: ${({theme}) => theme.colorBase.background().secondary};
+    background: var(--color-pop-bg);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -31,7 +31,6 @@ const ModalContentStyled = styled(Box)`
 //     btnAction?: (props?: any) => void;
 // }
 
-
 export const QRCodePanel = ((
     {
         // open,
@@ -42,9 +41,12 @@ export const QRCodePanel = ((
         url = 'https://exchange.loopring.io/',
         // handleClick
     }: QRCodeProps) => {
+    if (url === undefined) {
+        url = ''
+    }
     return <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} flexDirection={'column'}>
         {title && (
-            <Typography variant={'h3'} component='h3' className="modalTitle" marginBottom={3}>{title}</Typography>)}
+            <Typography variant={'h4'} component='h3' className="modalTitle" marginBottom={3}>{title}</Typography>)}
         <QRCode value={url} size={160} style={{padding: 5, backgroundColor: '#fff'}} aria-label={`link:${url}`}/>
         {description && (<Typography variant={'body1'} marginBottom={3} marginTop={1}>{description}</Typography>)}
 

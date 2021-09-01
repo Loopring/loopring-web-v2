@@ -15,25 +15,25 @@ const DEFAULT_TRANSFORM_ORIGIN: PopoverOrigin = {
     vertical: 'top',
     horizontal: 'left',
 }
-const POPOVER_TOP = 8;
-
+// const POPOVER_TOP = 8;
 
 export const Popover: React.FC<PopoverWrapProps> = ({
                                                         type,
                                                         popupId,
+                                                        className,
                                                         children,
                                                         popoverContent,
-                                                        popoverStyle,
+                                                        // popoverStyle,
                                                         anchorOrigin = DEFAULT_ANCHOR_ORIGIN,
                                                         transformOrigin = DEFAULT_TRANSFORM_ORIGIN,
-                                                        popoverTop = POPOVER_TOP,
-                                                        arrowHorizon = {
-                                                            left: 10,
-                                                        },
+                                                        // popoverTop = POPOVER_TOP,
+                                                        // arrowHorizon = {
+                                                        //     left: 10,
+                                                        // },
                                                         handleStateChange
                                                     }) => {
-    const arrowLeft = arrowHorizon?.left
-    const arrowRight = arrowHorizon?.right
+    // const arrowLeft = arrowHorizon?.left
+    // const arrowRight = arrowHorizon?.right
     const popupState = usePopupState({variant: 'popover', popupId})
     const {isOpen} = popupState
 
@@ -43,24 +43,69 @@ export const Popover: React.FC<PopoverWrapProps> = ({
         }
     }, [handleStateChange, isOpen])
 
-    const RenderPopover = styled.div`
-      .arrowPopover {
-        position: absolute;
-        top: -16px;
-        right: ${() => arrowRight ? `${arrowRight}px` : undefined};
-        left: ${() => arrowLeft ? `${arrowLeft}px` : undefined};
-        width: 0;
-        height: 0;
-        border-top: 8px solid transparent;
-        border-right: 8px solid transparent;
-        border-bottom: ${({theme}) => `8px solid ${theme.colorBase.backgroundSecondary}`};
-        border-left: 8px solid transparent;
-      }
-    `
     const isHover = type === 'hover'
     const bindAction = isHover ? bindHover(popupState) : bindTrigger(popupState)
     const bindContent = isHover ? bindMenu(popupState) : bindPopover(popupState)
     const CustomPopover = isHover ? HoverMenu : MuiPopover
+
+    const PopoverStyled = styled(CustomPopover)<PopoverProps>`
+      &.MuiModal-root {
+        .MuiBackdrop-root {
+          background-color: inherit;
+        }
+        &.arrow-center,
+        &.arrow-right,
+        &.arrow-left,
+        &.arrow-left,
+        &.arrow-top-center {
+          .MuiPopover-paper {
+            background: var(--color-pop-bg);
+            margin-top: ${({theme}) => theme.unit * 1.5}px;
+            margin-left: ${({theme}) => theme.unit}px;
+            overflow: visible;
+            box-shadow: var(--shadow);
+            border-radius: ${({theme}) => theme.unit * 0.5}px;
+            &:before {
+              position: absolute;
+              top: ${({theme}) => theme.unit * -2}px;
+              content: '';
+              display: block;
+              width: 0;
+              height: 0;
+              border: ${({theme}) => theme.unit}px solid transparent;
+              border-bottom: ${({theme}) => theme.unit}px solid var(--color-pop-bg);
+            }
+          }
+        }
+
+        &.arrow-center .MuiPopover-paper {
+          &:before {
+            left: 50%;
+            transform: translateX(-50%);
+          }
+        }
+
+        &.arrow-right .MuiPopover-paper {
+          &:before {
+            right: ${({theme}) => theme.unit}px;
+          }
+        }
+
+        &.arrow-left .MuiPopover-paper {
+          &:before {
+            left: ${({theme}) => theme.unit}px;
+          }
+        }
+        &.arrow-top-center .MuiPopover-paper {
+          &:before {
+            left: 50%;
+            transform: translateX(-50%) rotate(-180deg);
+            bottom: ${({theme}) => theme.unit * -2}px;
+            top:initial;
+          }
+        }
+      
+    }` as React.ElementType<PopoverProps>
 
     const getRenderChild = React.useCallback((popoverChildren: React.ReactNode) => {
         if (React.isValidElement(popoverChildren)) {
@@ -74,24 +119,18 @@ export const Popover: React.FC<PopoverWrapProps> = ({
 
     return <>
         {getRenderChild(children)}
-        <CustomPopover
+        <PopoverStyled
             {...bindContent}
             anchorReference='anchorEl'
             anchorOrigin={anchorOrigin}
             transformOrigin={transformOrigin}
-            sx={{
-                '.MuiPopover-paper': {
-                    display: popoverContent ? 'block' : 'none',
-                    overflow: 'unset',
-                    marginTop: `${popoverTop}px`,
-                }
-            }}
+            className={className}
         >
-            <RenderPopover style={popoverStyle}>
-                <div className="arrowPopover"/>
+            {/* <RenderPopover> */}
+                {/* <div className="arrowPopover"/> */}
                 {popoverContent}
-            </RenderPopover>
-        </CustomPopover>
+            {/* </RenderPopover> */}
+        </PopoverStyled>
     </>
 }
 
@@ -100,58 +139,81 @@ export const Popover: React.FC<PopoverWrapProps> = ({
 //     horizontal: 'left' | 'center' | 'right' | number;
 // }
 
+// background-color: ${({theme}) => theme.colorBase.background().secondary};
 
 export const PopoverPure = styled(HoverPopover)<PopoverProps>`
   &.MuiModal-root {
-    &.arrow-center .MuiPopover-paper {
-      // border-image-slice: 12 20 6 20 fill;
-      // border-image-width: 12px 0px 6px 0px;
-      // border-image-repeat:round;
-      border: 1px solid rgba(235, 235, 235, 0.1);
-      border-radius: 4px;
-      margin-top: 12px;
-      border-radius: 4px;
-      overflow: visible;
-      background-color: ${({theme}) => theme.colorBase.background().secondary};
+    .MuiBackdrop-root {
+      background-color: inherit;
+    }
+    &.arrow-center,
+    &.arrow-right,
+    &.arrow-left,
+    &.arrow-left,
+    &.arrow-top-center {
+      .MuiPopover-paper {
+        background:var(--color-pop-bg);
+        overflow: visible;
+        box-shadow: var(--shadow);
+        border-radius: ${({theme}) => theme.unit * 0.5}px;
+        margin-top: ${({theme}) => theme.unit}px;
+        &:before {
+          position: absolute;
+          top: ${({theme}) => theme.unit * -2}px;
+          content: '';
+          display: block;
+          width: 0;
+          height: 0;
+          border: ${({theme}) => theme.unit}px solid transparent;
+          border-bottom: ${({theme}) => theme.unit}px solid var(--color-pop-bg);
+        }
+        &:after {
+          content: '';
+          position: absolute;
+          top: ${({theme}) => -theme.unit}px;
+          width: 100%;
+          height: ${({theme}) => theme.unit}px;
+          background-color: transparent;
+        }
+      }
+    }
 
+    &.arrow-center .MuiPopover-paper {
       &:before {
-        content: '';
-        display: block;
-        width: 18px;
-        height: 12px;
-        position: absolute;
-        top: -8px;
-        transform: translateX(-50%);
         left: 50%;
-        border-image-slice: 12 20 15 20 fill;
-        border-image-width: 12px 0px 0px 0px;
-        border-image-repeat: round;
-        border-image-source: url("./static/images/modalBg.png");
+        transform: translateX(-50%);
       }
     }
 
     &.arrow-right .MuiPopover-paper {
-
-
-      border-image-slice: 12 40 6 6 fill;
-      border-image-width: 12px 40px 6px 6px;
-      border-image-repeat: round;
-      padding-top: 12px;
-      background-color: initial;
-      background-image: none;
-      border-image-source: url("/static/images/modalBg.png");
+      &:before {
+        right: ${({theme}) => theme.unit}px;
+      }
     }
 
     &.arrow-left .MuiPopover-paper {
-      border-image-slice: 12 6 6 40 fill;
-      border-image-width: 12px 6px 6px 40px;
-      border-image-repeat: round;
-      padding-top: 12px;
-      background-color: initial;
-      background-image: none;
-      border-image-source: url("/static/images/modalBg.png");
+      &:before {
+        left: ${({theme}) => theme.unit}px;
+      }
     }
-  }
+    &.arrow-top-center .MuiPopover-paper {
+      &:before {
+        left: 50%;
+        transform: translateX(-50%) rotate(-180deg);
+        bottom: ${({theme}) => theme.unit * -2}px;
+        top:initial;
+      }
+      &:after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        width: 100%;
+        height: ${({theme}) => theme.unit}px;
+        background-color: transparent;
+      }
+    }
+  
+}
 
 
 ` as React.ElementType<PopoverProps>

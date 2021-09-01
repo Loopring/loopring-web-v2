@@ -1,5 +1,5 @@
 import { WithT } from 'i18next';
-import { Column as RdgColumns, DataGridProps as RdgDataGridProps, SortDirection } from 'react-data-grid';
+import { Column as RdgColumns, DataGridProps as RdgDataGridProps, SortDirection, CalculatedColumn } from 'react-data-grid';
 // import { XOR } from '../../../types/lib';
 
 export type DataGridProps<R, SR> = Omit<RdgDataGridProps<R, SR>, "rows" | "columns"> & TableProps<R, unknown>;
@@ -28,6 +28,7 @@ export type  TableProps<R extends { [ key: string ]: any }, SR> = {
     sortMethod?: (rows: R[], sortColumn: string, sortDirection: 'DESC' | 'ASC' | undefined) => R[];
     handleSort?: (columnKey: string, direction: SortDirection) => boolean;
     EmptyRowsRenderer?: '';
+    onRowClick?: (rowIdx: number, row: R, column: CalculatedColumn<R, SR>) => void
 }
 //& XOR<{ rows: R[] }, {generateRows: (rawData: any, ...rest: any[]) => Array<R>}>;
 

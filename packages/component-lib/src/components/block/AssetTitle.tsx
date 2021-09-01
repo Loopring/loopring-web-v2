@@ -4,14 +4,14 @@ import React from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { AssetTitleProps } from './Interface';
 import styled from '@emotion/styled';
-import { TradeBtnStatus } from '../panel';
+import { TradeBtnStatus } from '../tradePanel';
 import { Button, ButtonListRightStyled } from './../';
 
 const BoxStyled = styled(Box)`
-  color: ${({theme}) => theme.colorBase.textSecondary};
+  color: var(--color-text-secondary);
 
   .MuiButtonBase-root {
-    color: ${({theme}) => theme.colorBase.textSecondary};
+    color: var(--color-text-secondary);
   }
 ` as typeof Box
 
@@ -48,25 +48,25 @@ export const AssetTitle = withTranslation('common')(({
             <Typography component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}
                         marginTop={1}>
                 <Typography component={'span'} paddingRight={1} variant={'h1'}> {assetInfo.priceTag} </Typography>
-                {isShow ? <Typography component={'span'}
-                                      variant={'h1'}>{getThousandFormattedNumbers(assetInfo.totalAsset)}</Typography> :
+                {isShow && assetInfo.totalAsset ? <Typography component={'span'}
+                                      variant={'h1'}>{assetInfo.totalAsset ? getThousandFormattedNumbers(Number(assetInfo.totalAsset.toFixed(2))) : 0.00}</Typography> :
                     <Typography component={'span'}
-                                variant={'h1'}>&#10033;&#10033;&#10033;&#10033;.&#10033;&#10033;&#10033;</Typography>}
+                                variant={'h1'}>&#10033;&#10033;&#10033;&#10033;.&#10033;&#10033;</Typography>}
             </Typography>
         </Grid>
         <ButtonListRightStyled item xs={5} display={'flex'} flexDirection={'row'} justifyContent={'flex-end'}>
-            <Button variant={'contained'} size={'small'} color={'primary'}
-                    loading={btnShowDepositStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-                    disabled={btnShowDepositStatus === TradeBtnStatus.DISABLED ? true : false}
-                    onClick={onShowDeposit}>{t('labelBtnDeposit')}</Button>
             <Button variant={'outlined'} size={'medium'} color={'primary'}
                     loading={btnShowTransferStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={btnShowTransferStatus === TradeBtnStatus.DISABLED ? true : false}
-                    onClick={onShowTransfer}>{t('labelBtnTransfer')}</Button>
+                    onClick={()=>onShowTransfer()}>{t('labelBtnTransfer')}</Button>
             <Button variant={'outlined'} size={'medium'} color={'secondary'}
                     loading={btnShowWithdrawStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={btnShowWithdrawStatus === TradeBtnStatus.DISABLED ? true : false}
-                    onClick={onShowWithdraw}>{t('labelBtnWithdraw')}</Button>
+                    onClick={()=>onShowWithdraw()}>{t('labelBtnWithdraw')}</Button>
+            <Button variant={'contained'} size={'small'} color={'primary'}
+                    loading={btnShowDepositStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
+                    disabled={btnShowDepositStatus === TradeBtnStatus.DISABLED ? true : false}
+                    onClick={()=>onShowDeposit()}>{t('labelBtnDeposit')}</Button>
         </ButtonListRightStyled>
     </Grid>
 })

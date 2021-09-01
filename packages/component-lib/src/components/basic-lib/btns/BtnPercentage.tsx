@@ -5,12 +5,13 @@ import React from 'react';
 import { BtnPercentageProps } from './Interface';
 
 const PointOnStyled = styled(Box)`
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   box-sizing: border-box;
   cursor: pointer;
-  background: ${({theme}) => theme.colorBase.textSecondary};
-  ${({theme}) => theme.border.defaultFrame({d_W: 3, d_R: 12, c_key: theme.colorBase.textPrimary})};
+  background: var(--color-text-primary); //var(--color-text-secondary);
+  //background:transparent;
+  ${({theme}) => theme.border.defaultFrame({d_W: 1, d_R: 12, c_key: 'var(--color-secondary)'})};
 
 ` as typeof Box
 const PointStyled = styled(Box)`
@@ -24,12 +25,10 @@ const PointStyled = styled(Box)`
 
   :after {
     content: '';
-
-
-    width: 10px;
-    height: 10px;
-    background: ${({theme}) => theme.colorBase.textSecondary};
-    ${({theme}) => theme.border.defaultFrame({d_W: 1, d_R: 2, c_key: theme.colorBase.backgroundBox})};
+    width: 8px;
+    height: 8px;
+    background: var(--color-box);
+    ${({theme}) => theme.border.defaultFrame({d_W: 1, d_R: 2, c_key: 'var(--color-secondary)'})};
   }
 ` as typeof Box
 const Track = styled.div`
@@ -37,7 +36,7 @@ const Track = styled.div`
   height: 4px;
   border-radius: 4px;
   position: absolute;
-  background-color: ${({theme}) => theme.colorBase.background().outline};
+  background-color: var(--color-divide);
   z-index: 99;
   left: 1px;
   right: 1px;
@@ -50,7 +49,7 @@ const Thumb = styled(Box)`
   height: 4px;
   border-radius: 4px;
   position: absolute;
-  background-color: ${({theme}) => theme.colorBase.textSecondary};
+  background-color: var(--color-secondary); //var(--color-text-secondary);
   z-index: 102;
   left: 1px;
   transform: translateY(-50%);

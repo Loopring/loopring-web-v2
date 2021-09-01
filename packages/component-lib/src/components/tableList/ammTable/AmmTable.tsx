@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box } from '@material-ui/core'
+import { Box, Typography } from '@material-ui/core'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import moment from 'moment'
@@ -77,7 +77,11 @@ const TableStyled = styled(Box)`
   flex: 1;
 
   .rdg {
-    // --template-columns: 240px auto auto auto 68px 120px !important;
+    --template-columns: 300px auto auto auto !important;
+    .rdg-row .rdg-cell:first-of-type {
+        display: flex;
+        align-items: center;
+    }
     .rdg-cell.action {
       display: flex;
       justify-content: center;
@@ -88,7 +92,7 @@ const TableStyled = styled(Box)`
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
 
-const StyledSideCell: any = styled(Box)`
+const StyledSideCell: any = styled(Typography)`
   color: ${(props: any) => {
     const {
       value,
@@ -98,33 +102,48 @@ const StyledSideCell: any = styled(Box)`
   }}
 `
 
+const getValuePrecisioned = (rawValue?: string | number) => {
+    if (!rawValue) return '--'
+    let data = Number(rawValue)
+    if (data < 1) {
+        return data.toPrecision(2)
+    }
+    return data.toFixed(4)
+}
+
 const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<RawDataAmmItem, unknown>[] => [
     {
         key: 'side',
         name: t('labelAmmSide'),
         formatter: ({row}) => {
-            const tradeType = row[ 'side' ] === AmmSideTypes.Exit ? t('labelAmmExit') : t('labelAmmJoin')
+            const tradeType = row[ 'side' ] === AmmSideTypes.Join ? t('labelAmmJoin') : t('labelAmmExit')
+            const {from, to} = row[ 'amount' ]
+            const renderFromValue = Number.isFinite(Number(from.value)) ? getValuePrecisioned(Number(from.value)): 0
+            const renderToValue = Number.isFinite(Number(to.value)) ? getValuePrecisioned(Number(to.value)): 0
             return (
-                <div className="rdg-cell-value">
+                <>
                     <StyledSideCell value={row[ 'side' ]}>
                         {tradeType}
                     </StyledSideCell>
-                </div>
+                    <Typography marginLeft={1 / 2}>
+                        {`${renderFromValue} ${from.key} + ${renderToValue} ${to.key}`}
+                    </Typography>
+                </>
             )
         }
     },
-    {
-        key: 'amount',
-        name: t('labelAmmAmount'),
-        formatter: ({row}) => {
-            const {from, to} = row[ 'amount' ]
-            return (
-                <div className="rdg-cell-value">
-                    {`${from.value} ${from.key} + ${to.value} ${to.key}`}
-                </div>
-            )
-        }
-    },
+    // {
+    //     key: 'amount',
+    //     name: t('labelAmmAmount'),
+    //     formatter: ({row}) => {
+    //         const {from, to} = row[ 'amount' ]
+    //         return (
+    //             <div className="rdg-cell-value">
+    //                 {`${from.value} ${from.key} + ${to.value} ${to.key}`}
+    //             </div>
+    //         )
+    //     }
+    // },
     {
         key: 'lpTokenAmount',
         name: t('labelAmmLpTokenAmount'),
@@ -150,7 +169,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
             const {key, value} = row[ 'fee' ]
             return (
                 <div className="rdg-cell-value">
-                    {`${value} ${key}`}
+                    {`${Number.isFinite(Number(value)) ? getValuePrecisioned(Number(value)) : 0} ${key}`}
                 </div>
             )
         }
@@ -172,21 +191,22 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
 
 export const AmmTable = withTranslation('tables')((props: WithTranslation & AmmTableProps) => {
     const {t, pagination, showFilter, rawData} = props
-    // const formattedRawData = rawData && Array.isArray(rawData) ? rawData.map(o => Object.values(o)) : []
     const [filterType, setFilterType] = React.useState(FilterTradeTypes.allTypes)
-    const [filterDate, setFilterDate] = React.useState(null)
+    const [filterDate, setFilterDate] = React.useState<Date | null>(null)
     const [page, setPage] = React.useState(1)
     const [totalData, setTotalData] = React.useState<RawDataAmmItem[]>(rawData)
+    const [filterPair, setFilterPair] = React.useState('all')
+
     const {currency} = useSettings();
     const defaultArgs: any = {
-        // rawData: rawData,
         columnMode: getColumnModeAssets(t, currency).filter(o => !o.hidden),
         generateRows: (rawData: any) => rawData,
         generateColumns: ({columnsRaw}: any) => columnsRaw as Column<Row<any>, unknown>[],
         style: {
-            backgroundColor: ({colorBase}: any) => `${colorBase.backgroundBox}`
+            backgroundColor: ({colorBase}: any) => `${colorBase.box}`
         }
     }
+
     useDeepCompareEffect(() => {
         setTotalData(rawData);
     }, [rawData])
@@ -199,47 +219,67 @@ export const AmmTable = withTranslation('tables')((props: WithTranslation & AmmT
         , [page, pageSize, pagination, totalData])
 
     const updateData = React.useCallback(({
-                                              TableType,
-                                              currFilterType = filterType,
-                                              currFilterDate = filterDate,
-                                          }) => {
+        TableType,
+        currFilterType = filterType,
+        currFilterDate = filterDate,
+        currFilterPair = filterPair,
+    }) => {
         let resultData = rawData ? rawData : []
         if (currFilterType !== FilterTradeTypes.allTypes) {
             resultData = resultData.filter(o => o.side === currFilterType)
         }
         if (currFilterDate) {
-            // const _diff = moment(moment()).diff(currFilterDate, 'days')
-            resultData = resultData.filter(o => o.time)
+            resultData = resultData.filter(o => {
+                const chosenDate = Number(moment(currFilterDate).format('x'))
+                return chosenDate < o.time
+            })
+        }
+        if (currFilterPair !== 'all') {
+            resultData = resultData.filter(o => {
+                const pair = `${o.amount.from.key} - ${o.amount.to.key}`
+                return pair === currFilterPair
+            })
         }
         if (TableType === 'filter') {
             setPage(1)
         }
         setTotalData(resultData)
-    }, [rawData, filterDate, filterType])
+    }, [rawData, filterDate, filterType, filterPair])
 
-    const setFilterItems = React.useCallback(({filterType, filterDate}) => {
-        setFilterType(filterType)
-        setFilterDate(filterDate)
+    const setFilterItems = React.useCallback(({type, date, pair}) => {
+        setFilterType(type)
+        setFilterDate(date)
+        setFilterPair(pair)
     }, [])
 
-    const handleFilterChange = React.useCallback(({filterType, filterDate}) => {
-        setFilterItems({filterType, filterDate})
-        updateData({TableType: TableType.filter, currFilterType: filterType, currFilterDate: filterDate})
-    }, [updateData, setFilterItems])
+    const handleFilterChange = React.useCallback(({type = filterType, date = filterDate, pair = filterPair}) => {
+        setFilterItems({type, date, pair})
+        updateData({TableType: TableType.filter, currFilterType: type, currFilterDate: date})
+    }, [updateData, setFilterItems, filterType, filterDate, filterPair])
 
     const handlePageChange = React.useCallback((page: number) => {
         setPage(page)
         updateData({TableType: TableType.page, currPage: page})
     }, [updateData])
 
+    const handleReset = React.useCallback(() => {
+        handleFilterChange({
+            type: FilterTradeTypes.allTypes,
+            date: null,
+            pair: 'all'
+        })
+    }, [handleFilterChange])
+
     return <TableStyled>
         {showFilter && (
             <TableFilterStyled>
                 <Filter
+                    rawData={rawData}
                     handleFilterChange={handleFilterChange}
-                    setFilterItems={setFilterItems}
                     filterType={filterType}
                     filterDate={filterDate}
+                    filterPair={filterPair}
+                    handleReset={handleReset}
                 />
             </TableFilterStyled>
         )}

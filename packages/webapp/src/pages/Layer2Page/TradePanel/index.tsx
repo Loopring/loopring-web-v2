@@ -3,13 +3,8 @@ import { TradeTable, TradeFilterTable, RawDataTradeItem } from '@loopring-web/co
 import { WithTranslation, withTranslation } from 'react-i18next'
 // import styled from '@emotion/styled'
 // import { Box, Paper } from '@material-ui/core'
-import store from 'stores'
-import { LoopringAPI } from 'stores/apis/api'
-// import { volumeToCount } from 'hooks/help'
 import { StylePaper } from '../../styled'
-import { TradeTypes } from '@loopring-web/common-resources'
-import { toBig, Side } from 'loopring-sdk'
-import { StringToNumberWithPrecision, VolToNumberWithPrecision, } from 'utils/formatter_tool'
+import { useGetTrades } from './hooks'
 
 // const StylePaper = styled(Box)`
 //   display: flex;
@@ -17,7 +12,7 @@ import { StringToNumberWithPrecision, VolToNumberWithPrecision, } from 'utils/fo
 //   width: 100%;
 //   height: 100%;
 //   flex: 1;
-//   background-color: ${({ theme }) => theme.colorBase.background().default};
+//   background: var(--color-box);
 //   border-radius: ${({ theme }) => theme.unit}px;
 //   padding: 20px;
 //   margin-bottom: ${({ theme }) => 2* theme.unit}px;
@@ -65,56 +60,10 @@ import { StringToNumberWithPrecision, VolToNumberWithPrecision, } from 'utils/fo
 // //     time: number;
 
 const TradePanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
-    const container = React.useRef(null);
     const [pageSize, setPageSize] = React.useState(10);
-    const [originalData, setOriginalData] = React.useState<RawDataTradeItem[]>([])
-
-    const { accountId, apiKey } = store.getState().account;
-    const tokenMap = store.getState().tokenMap.tokenMap
-
-    useEffect(() => {
-        (async function getUserApi () {
-            if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey && tokenMap) {
-                const userTrades = await LoopringAPI.userAPI.getUserTrades({
-                    accountId,
-                }, apiKey)
-
-                if (userTrades && userTrades.userTrades) {
-                  setOriginalData(userTrades.userTrades.map(o => {
-                    const marketList = o.market.split('-')
-                    // due to AMM case, we cannot use first index
-                    const baseToken = marketList[marketList.length - 2]
-                    const quoteToken = marketList[marketList.length - 1]
-
-                    const amt = toBig(o.volume).times(o.price).toString()
-
-                    return ({
-                      side: o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell ,
-                      price: {
-                        key: baseToken,
-                        value: StringToNumberWithPrecision(o.price, baseToken)
-                      },
-                      fee: {
-                        key: quoteToken,
-                        value: VolToNumberWithPrecision(o.fee, quoteToken)
-                      },
-                      time: Number(o.tradeTime),
-                      amount: {
-                        from: {
-                          key: baseToken,
-                          value: VolToNumberWithPrecision(o.volume, baseToken)
-                        },
-                        to: {
-                          key: quoteToken,
-                          value: VolToNumberWithPrecision(amt, quoteToken)
-                        }
-                      }
-                    })
-                  }))
-                }
-            }
-        })()
-    }, [accountId, apiKey, tokenMap])
+    const { userTrades, showLoading } = useGetTrades()
+    const container = React.useRef(null);
+    const { t } = rest
 
     React.useEffect(() => {
         // @ts-ignore
@@ -124,23 +73,20 @@ const TradePanel = withTranslation('common')((rest:WithTranslation<'common'>) =>
         }
     }, [container, pageSize]);
 
-    // const txList: any[] = []
-
     return (
-        <>
-            <StylePaper ref={container}>
-                <div className="title">Trades</div>
-                <div className="tableWrapper">
-                    <TradeTable {...{
-                      rawData: originalData,
-                      pagination: {
-                        pageSize: pageSize
-                      },
-                      showFilter: true,
-                      ...rest}}/>
-                </div>
-            </StylePaper>
-        </>
+        <StylePaper ref={container}>
+            <div className="title">{t('labelTradePageTitle')}</div>
+            <div className="tableWrapper extraTradeClass">
+                <TradeTable {...{
+                    rawData: userTrades,
+                    // pagination: {
+                    //     pageSize: pageSize
+                    // },
+                    showFilter: true,
+                    showLoading: showLoading,
+                    ...rest}}/>
+            </div>
+        </StylePaper>
     )
 })
 

@@ -10,6 +10,8 @@ import { walletLayer1Fork } from './walletLayer1/saga';
 import { walletLayer2Fork } from './walletLayer2/saga';
 import { userRewardsForks } from './userRewards/saga';
 import { socketForks } from './socket/saga';
+import { accountFork } from './account/saga';
+import { amountForks } from './amount/saga';
 
 
 // https://css-tricks.com/finite-state-machines-with-react/
@@ -56,6 +58,8 @@ function* mySaga() {
         ...tickerForks,
         ...userRewardsForks,
         ...socketForks,
+        ...accountFork,
+        ...amountForks,
 
     ]);
 }

@@ -5,7 +5,7 @@ export const SubMenu = styled(List)<ListProps>`
   width: 100%;
   flex: 1;
   padding: ${({theme}) => theme.unit / 2 * 5}px 0;
-  background-color: ${({theme}) => theme.colorBase.background().default};
+  background-color: var(--color-box);
   border-radius: ${({theme}) => theme.unit}px;
 ` as typeof List;
 

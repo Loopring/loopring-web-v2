@@ -27,7 +27,7 @@ export const ErrorPage = ({messageKey}: ErrorObject) => {
                       flexDirection={'column'} marginTop={4} height={680} maxWidth={1200}>
                 {/*<StyleBox>*/}
                 <Box textAlign={'center'} position={'relative'} left={128} top={-64}>
-                    <Typography component={'h2'} variant={'h2'}>
+                    <Typography component={'h2'} variant={'h3'}>
                         {t(messageKey)}
                     </Typography>
                     <Typography marginY={2} component={'p'} variant={'body1'} color={'textSecondary'}>

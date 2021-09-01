@@ -35,6 +35,6 @@ export enum TradeStatus {
     Waiting = 'waiting'
 }
 
-export const EmptyValueTag = 'N/A'
+export const EmptyValueTag = '--'
 
 

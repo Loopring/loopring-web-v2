@@ -8,61 +8,34 @@ import {
     AssetsTable,
     AssetTitle,
     AssetTitleProps,
-    ChartType,
     DoughnutChart,
-    ScaleAreaChart,
-    ToggleButtonGroup,
-    TokenType,
     LpTokenAction,
+    useSettings,
 } from '@loopring-web/component-lib'
-import { useModals } from 'hooks/modal/useModals'
-// import { useGetUserBalances } from 'hooks/exchange/useUserAPI'
-import { useGetTokens } from 'hooks/exchange/useExchangeAPI'
-import { volumeToCount } from 'hooks/help'
-import { LoopringAPI } from 'stores/apis/api'
-import { AssetType } from 'loopring-sdk'
-import store from 'stores'
-import { useWalletLayer1 } from 'stores/walletLayer1'
-import { makeWallet } from 'hooks/help'
-import { EmptyValueTag,unit } from '@loopring-web/common-resources'
-import { StylePaper } from '../../styled'
 
-// const StylePaper = styled(Box)`
-//   width: 100%;
-//   height: 100%;
-//   flex: 1;
-//   background-color: ${({theme}) => theme.colorBase.background().default};
-//   border-radius: ${({theme}) => theme.unit}px;
-// //   padding: 20px;
-//
-//   .title {
-//     font-family: Gilroy-Medium;
-//     font-size: ${({theme}) => theme.unit * 3}px;
-//     line-height: 19px;
-//   }
-//
-//   .tableWrapper {
-//     display: flex;
-//     flex: 1;
-//     height: 100%;
-//     border: 1px solid ${({theme}) => theme.colorBase.borderColor};
-//     border-radius: ${({theme}) => theme.unit}px;
-//     padding: 26px 0;
-//   }
-// ` as typeof Box;
+import { useModals } from 'hooks/useractions/useModals'
+
+import store from 'stores'
+import { StylePaper } from 'pages/styled'
+import { useGetAssets } from './hook'
 
 const StyledChartWrapper = styled(Box)`
     height: 225px;
 
-    > div {
-        position: relative;
-        width: calc(50% - 6px);
-        height: 100%;
-        background-color: ${({theme}) => theme.colorBase.background().default};
+    > section {
+        //position: relative;
+        //width: calc(50% - 6px);
+        //height: 100%;
+        background: var(--color-box);
         border-radius: ${({theme}) => theme.unit}px;
         padding: ${({theme}) => theme.unit * 2.5}px ${({theme}) => theme.unit * 3}px;
     }
 `
+
+const ChartWrapper = styled(Box)`
+    background-image: url('./static/images/${({dark}: any) => dark ? 'noDataDark' : 'noDataLight'}.png');
+    background-repeat: no-repeat;
+` as any
 
 const StyledBtnGroupWrapper = styled(Box)`
     position: absolute;
@@ -94,86 +67,67 @@ export type TrendDataItem = {
 const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => {
     const container = useRef(null);
     const [pageSize, setPageSize] = useState(10);
-    const [chartPeriod, setChartPeriod] = useState('week')
-    const [chartData, setChartData] = useState<TrendDataItem[]>([])
-    
-    const { accAddr } = store.getState().account
+    // const [chartPeriod, setChartPeriod] = useState('week')
+
+    const { marketArray, assetsRawData } = useGetAssets()
+    const { currency, themeMode } = useSettings()
     const { walletLayer2 } = store.getState().walletLayer2;
-    const { ammMap } = store.getState().amm.ammMap
-    const walletMap = makeWallet()
-    const assetsKeyList = walletMap && walletMap.walletMap ? Object.keys(walletMap.walletMap) : []
-    const assetsDetailList = walletMap && walletMap.walletMap ? Object.values(walletMap.walletMap) : []
-    const assetsList = assetsKeyList.map((key, index) => ({
-        token: key,
-        detail: assetsDetailList[index]
+
+    const total = assetsRawData.map(o => o.tokenValueDollar).reduce((a, b) => a + b, 0)
+    const percentList = assetsRawData.map(o => ({
+        ...o,
+        value: o.tokenValueDollar / total,
     }))
 
-    const getUserTotalAssets = useCallback(async (limit: number = 7) => {
-        const userAssets = await LoopringAPI.walletAPI?.getUserAssets({
-            wallet: accAddr,
-            assetType: AssetType.DEX,
-            limit: limit // TODO: minium unit is day, discuss with pm later
+    const lpTotalData = percentList
+        .filter(o => o.token.value.split('-')[0] === 'LP')
+        .reduce((prev, next) => ({
+            name: 'LP-Token',
+            value: prev.value + next.value
+        }), {
+            name: 'LP-Token',
+            value: 0
         })
-        if (userAssets && userAssets.userAssets.length && !!userAssets.userAssets.length) {
-            setChartData(userAssets.userAssets.map(o => ({
-                timeStamp: Number(o.createdAt),
-                close: Number(o.amount)
-            })))
-        }
-    }, [accAddr])
+    
+    const formattedDoughnutData = percentList.filter(o => o.token.value.split('-')[0] === 'LP').length > 0
+        ? [...percentList.filter(o => o.token.value.split('-')[0] !== 'LP'), lpTotalData]
+        : percentList
 
-    useEffect(() => {
-        if (LoopringAPI && LoopringAPI.walletAPI && walletLayer2) {
-            getUserTotalAssets()
-        }
-    }, [walletLayer2, getUserTotalAssets])
+    // useEffect(() => {
+    //     // @ts-ignore
+    //     let height = container?.current?.offsetHeight;
+    //     if (height) {
+    //         setPageSize(Math.floor((height - 120) / 44) - 1);
+    //     }
+    // }, [container, pageSize]);
 
-    useEffect(() => {
-        // @ts-ignore
-        let height = container?.current?.offsetHeight;
-        if (height) {
-            setPageSize(Math.floor((height - 120) / 44) - 1);
-        }
-    }, [container, pageSize]);
+    const getTokenRelatedMarketArray = useCallback((token: string) => {
+        if (!marketArray) return []
+        return marketArray.filter(market => {
+            const [coinA, coinB] = market.split('-')
+            return (token === coinA) || (token === coinB)
+        })
+    }, [marketArray])
 
     const {
-        ShowDeposit,
-        ShowTransfer,
-        ShowWithdraw,
-        ShowResetAccount,
+        showDeposit,
+        showTransfer,
+        showWithdraw,
     } = useModals()
-
-    const { updateWalletLayer1 } = useWalletLayer1()
 
     let history = useHistory();
 
     const onShowDeposit = useCallback((token?: any) => {
-        updateWalletLayer1()
-        ShowDeposit(true, {
-            tradeData: {
-                balance: '',
-                belong: token
-            },
-        })
-    }, [ShowDeposit, updateWalletLayer1])
+        showDeposit({isShow:true,symbol:token})
+    }, [showDeposit])
 
     const onShowTransfer = useCallback((token?: any) => {
-        ShowTransfer(true, {
-            tradeData: {
-                balance: '',
-                belong: token
-            },
-        })
-    }, [ShowTransfer])
+        showTransfer({isShow:true,symbol:token})
+    }, [showTransfer])
 
     const onShowWithdraw = useCallback((token?: any) => {
-        ShowWithdraw(true, {
-            tradeData: {
-                balance: '',
-                belong: token
-            },
-        })
-    }, [ShowWithdraw])
+        showWithdraw({isShow:true,symbol:token})
+    }, [showWithdraw])
 
     const lpTokenJump = useCallback((token: string, type: LpTokenAction) => {
         if (history) {
@@ -181,71 +135,17 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
         }
     }, [history])
 
-    const handleChartPeriodChange = useCallback((event: React.MouseEvent<HTMLElement, MouseEvent>, newValue: string) => {
-        const limit = newValue === 'week' ? 7 : 9999
-        getUserTotalAssets(limit)
-    }, [getUserTotalAssets])
-
-    // const { tokens: tokensAll } = useGetTokens()
-
-    // const tokens = tokensAll?.tokenSymbolMap
-
-    // const { balances } = useGetUserBalances(tokens)
-
-    // const { walletLayer2 } = store.getState().walletLayer2;
-    const { faitPrices } = store.getState().system
-
-    const tokenPriceList = faitPrices ? Object.entries(faitPrices).map(o => ({
-        token: o[ 0 ],
-        detail: o[ 1 ]
-    })) as ITokenInfoItem[] : []
-
-    let jointLPTokenValue = 0
-    assetsList.filter(o => o.token.split('-')[0] === 'LP').forEach(o => {
-        const result = o.token.split('-')
-        result.splice(0, 1, 'AMM')
-        const ammToken = result.join('-')
-        const ammTokenList = Object.keys(ammMap)
-        const tokenValue = ammTokenList.includes(ammToken) && ammMap[ammToken] ? Number(ammMap[ammToken].amountDollar) : 0
-        jointLPTokenValue += tokenValue
-    });
-
-    const doughnutData = assetsList.filter(o => o.token.split('-')[0] !== 'LP').map((tokenInfo) => {
-        const tokenPriceUSDT = tokenInfo.token === 'DAI' ? 1 : Number(tokenPriceList.find(o => o.token === tokenInfo.token)?.detail.price) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
-        return ({
-            name: tokenInfo.token,
-            value: Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail?.total as string)) * tokenPriceUSDT
-        })
-    })
-    const formattedDoughnutData = [...doughnutData, {
-            name: 'LP-Token',
-            value: jointLPTokenValue
-        }]
     const AssetTitleProps: AssetTitleProps = {
         assetInfo: {
-            totalAsset: formattedDoughnutData.map(o => o.value).reduce((prev, next) => {
+            totalAsset: assetsRawData.map(o => currency === 'USD' ? o.tokenValueDollar : o.tokenValueYuan).reduce((prev, next) => {
                 return prev + next
             }, 0),
-            priceTag: PriceTag.Dollar,
+            priceTag: currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan,
         },
         onShowDeposit,
         onShowTransfer,
         onShowWithdraw,
     }
-
-    const assetsRawData = assetsList.map((tokenInfo) => {
-        const tokenPriceUSDT = Number(tokenPriceList.find(o => o.token === tokenInfo.token)?.detail.price) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
-        return ({
-            token: {
-                type: tokenInfo.token.split('-')[0] === 'LP' ? TokenType.lp : TokenType.single,
-                value: tokenInfo.token
-            },
-            amount: String(Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)).toFixed(6)) || EmptyValueTag,
-            available: String(tokenInfo.detail?.count) || EmptyValueTag,
-            locked: String(tokenInfo.detail?.detail.locked) || EmptyValueTag,
-            smallBalance: tokenPriceUSDT * Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) < 1,
-        })
-    })
 
     return (
         <>
@@ -259,42 +159,33 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
             {/*<div className="title">{t('labelAssetsTitle')}</div>*/}
 
-            <StyledChartWrapper display={'flex'} justifyContent={'space-between'} alignItems={'center'} marginTop={2}>
-                <Paper component={'div'}>
-                    <Typography component="span" color="textSecondary" variant="body1">Asset Distribution</Typography>
-                    <DoughnutChart data={walletLayer2 ? formattedDoughnutData : []}/>
-                </Paper>
-                <Paper component={'div'}>
-                    <Typography component="span" color="textSecondary" variant="body1">Total Assets</Typography>
-                    <ScaleAreaChart type={ChartType.Trend} data={chartData}/>
-                    <StyledBtnGroupWrapper>
-                        <ToggleButtonGroup exclusive size="small" {...{
-                            ...rest,
-                            t,
-                            data: toggleData,
-                            value: chartPeriod,
-                            setValue: setChartPeriod,
-                            onChange: handleChartPeriodChange
-                        }} />
-                    </StyledBtnGroupWrapper>
-                </Paper>
+            <StyledChartWrapper flexDirection={'row'} display={'flex'} justifyContent={'space-between'} alignItems={'stretch'} marginTop={2}>
+                <Box flex={1}  component={'section'} className={'MuiPaper-elevation2'} marginRight={2}>
+                        <Typography component="span" color="textSecondary" variant="body1">{t('labelAssetsDistribution')}</Typography>
+                        <DoughnutChart data={walletLayer2 ? formattedDoughnutData : []}/>
+                </Box>
+                <Box display={'flex'} flexDirection={'column'} flex={1} component={'section'} className={'MuiPaper-elevation2'}>
+                    <Typography component="span"  color="textSecondary" variant="body1">{t('labelTotalAssets')}</Typography>
+                    <ChartWrapper marginTop={2} dark={themeMode === 'dark'} flex={1} component={'div'} />
+                </Box>
             </StyledChartWrapper>
-            <StylePaper style={{marginTop: `${unit*2}px`}}>
-                <div className="tableWrapper" ref={container}>
+            <StylePaper marginTop={2} ref={container} className={'MuiPaper-elevation2'}>
+                <Box className="tableWrapper">
                     <AssetsTable {...{
                         rawData: assetsRawData,
-                        pagination: {
-                            pageSize: pageSize
-                        },
+                        // pagination: {
+                        //     pageSize: pageSize
+                        // },
                         showFiliter: true,
                         onShowDeposit: onShowDeposit,
                         onShowTransfer: onShowTransfer,
                         onShowWithdraw: onShowWithdraw,
                         onLpDeposit: lpTokenJump,
                         onLpWithdraw: lpTokenJump,
+                        getMakretArrayListCallback: getTokenRelatedMarketArray,
                         ...rest
                     }} />
-                </div>
+                </Box>
             </StylePaper>
         </>
     )

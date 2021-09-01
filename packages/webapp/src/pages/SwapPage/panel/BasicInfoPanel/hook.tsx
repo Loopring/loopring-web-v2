@@ -1,10 +1,8 @@
 import { useCallback, useState } from 'react'
-
-import { useExchangeAPI } from 'hooks/exchange/useApi'
+import moment from 'moment'
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect'
 
 import { TradingInterval, Candlestick, GetCandlestickRequest, GetDepthRequest, GetTickerRequest, dumpError400, getExistedMarket } from 'loopring-sdk'
-import { fromWEI } from 'utils/swap_calc_utils'
 
 import { ChartUnit, CoinInfo } from '@loopring-web/common-resources'
 
@@ -13,6 +11,7 @@ import { ChartType } from '@loopring-web/component-lib'
 import { TGItemData, TGItemJSXInterface, } from '@loopring-web/component-lib'
 
 import { IGetDepthDataParams } from '@loopring-web/component-lib'
+import { LoopringAPI } from 'api_wrapper'
 
 const toggleData: TGItemData[] = [
   {
@@ -49,18 +48,17 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
   const [originData, setOriginData] = useState<any>(undefined)
 
   const handleChange = useCallback((_e: React.MouseEvent, value: any) => {
+    if (value === null) return
     // Settings.setChartType(value)
     // console.log('useBasicInfo handleChange:', value)
     setOriginData(undefined)
-    setChartType(value)
+    setChartType(value === 'Trend' ? ChartType.Trend : ChartType.Depth)
   }, [setOriginData, setChartType])
 
   const handleChartUnitChange = (event: React.MouseEvent<HTMLElement, MouseEvent>, newValue: string) => {
       const mappedValue = newValue === '1H' ? ChartUnit.H1 : newValue === '1W' ? ChartUnit.W1 : ChartUnit.D1
       setChartUnit(mappedValue)
   }
-
-  const exchangeApi = useExchangeAPI()
 
   // useCustomDCEffect(async () => {
   //
@@ -110,19 +108,19 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
   
     let mounted = true
   
-    if (!exchangeApi || !market || !amm) {
+    if (!LoopringAPI.exchangeAPI || !market || !amm) {
       return
     }
   
     if (chartType === ChartType.Trend) {
       const request: GetCandlestickRequest = {
         market: amm as string,
-        interval: TradingInterval.min15,
-        limit: 96
+        interval: TradingInterval.d1,
+        limit: 30
       }
   
       try {
-        const candlesticks = await exchangeApi.getCandlestick(request)
+        const candlesticks = await LoopringAPI.exchangeAPI.getCandlestick(request)
   
         if (mounted) {
           const originData = candlesticks.candlesticks.map((item: Candlestick) => {
@@ -133,6 +131,8 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
               open: item.open,
               close: item.close,
               volume: item.quoteVol,
+              change: (item.close - item.open) / item.open,
+              date: moment(item.timestamp).format('MMM DD')
             }
           })
           setOriginData(originData)
@@ -149,8 +149,8 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
   
       try {
   
-        const { depth } = await exchangeApi.getMixDepth(request)
-        console.log('useBasicInfo depth:', depth)
+        const { depth } = await LoopringAPI.exchangeAPI.getMixDepth(request)
+        
         if (mounted) {
           const originData: IGetDepthDataParams = {
             bidsPrices: depth.bids_prices,
@@ -171,7 +171,7 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
       mounted = false
     }
   
-  }, [exchangeApi, amm, market, chartType])
+  }, [LoopringAPI.exchangeAPI, amm, market, chartType])
 
   return {
     // change,

@@ -1,38 +1,42 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { WalletLayer2Map, WalletLayer2States } from './interface';
-import { STATUS } from '../constant';
+import { SagaStatus } from '@loopring-web/common-resources';
+import * as loopring_defs from 'loopring-sdk';
 
 
-const initialState:WalletLayer2States  = {
-    walletLayer2:undefined,
-    status:'UNSET',
-    errorMessage:null,
+const initialState: WalletLayer2States = {
+    walletLayer2: undefined,
+    status: 'DONE',
+    errorMessage: null,
 }
-const walletLayer2Slice:Slice = createSlice({
+const walletLayer2Slice: Slice<WalletLayer2States> = createSlice({
     name: 'walletLayer2',
     initialState,
     reducers: {
-        updateWalletLayer2(state, action:PayloadAction<string | undefined>) {
-            state.status = STATUS.PENDING
+        updateWalletLayer2(state, action: PayloadAction<string | undefined>) {
+            state.status = SagaStatus.PENDING
         },
-        reset(state, action:PayloadAction<string | undefined>) {
+        reset(state, action: PayloadAction<string | undefined>) {
             state.walletLayer2 = undefined;
-            state.status = STATUS.UNSET;
+            state.status = SagaStatus.UNSET;
         },
-        getWalletLayer2Status(state, action: PayloadAction<{ walletLayer2:WalletLayer2Map<object> }>) {
+        socketUpdateBalance(state, action: PayloadAction<{[key:string ]:loopring_defs.UserBalanceInfo}>) {
+            state.status = SagaStatus.PENDING;
+        },
+        getWalletLayer2Status(state, action: PayloadAction<{ walletLayer2: WalletLayer2Map<object> }>) {
             // @ts-ignore
             if (action.error) {
-                state.status =  STATUS.ERROR
+                state.status = SagaStatus.ERROR
                 // @ts-ignore
                 state.errorMessage = action.error
             }
             state.walletLayer2 = {...action.payload.walletLayer2};
-            state.status = STATUS.DONE
+            state.status = SagaStatus.DONE
         },
         statusUnset: state => {
-            state.status = STATUS.UNSET
+            state.status = SagaStatus.UNSET
         }
     },
 });
 export { walletLayer2Slice };
-export const {  updateWalletLayer2,getWalletLayer2Status,statusUnset,reset } = walletLayer2Slice.actions
+export const {updateWalletLayer2, socketUpdateBalance, getWalletLayer2Status, statusUnset, reset} = walletLayer2Slice.actions

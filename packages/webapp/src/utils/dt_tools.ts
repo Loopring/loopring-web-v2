@@ -1,5 +1,6 @@
 // import { i18nInstance as i18n  } from "@loopring-web/common-resources"
 import i18n from 'i18next';
+import { VALID_UNTIL } from 'loopring-sdk';
 
 const covertLocale = (rawLocale: string = i18n.language) => {
     return rawLocale.replace('_', '-')
@@ -18,6 +19,11 @@ export function getLocaleDt(dt?: Date, locale: string = i18n.language) {
         return dt.toLocaleString(covertLocale(locale))
     }
     return ''
+}
+
+export function getTimestampDaysLater(days: number, date: Date = new Date()) {
+    const ts = Math.round(date.getTime() / 1000) + days * 86400
+    return ts
 }
 
 export function getContactInfo(subject: string = 'report to loopring website', body: string ='Body Content') {

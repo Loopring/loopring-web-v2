@@ -112,4 +112,6 @@ testkey.txt
 test_datadir
 
 ipfs_deploy.txt
-.env.deploy
+.env.deploy*
+.testfile*
+.DS_Store

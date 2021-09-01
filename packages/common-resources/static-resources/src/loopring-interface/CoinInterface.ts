@@ -40,12 +40,14 @@ export type TradeCalcData<T> = {
     coinBuy: keyof T,
     StoB: number,
     BtoS: number,
+    coinInfoMap?: CoinMap<T, CoinInfo<T>>,
     sellCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
     buyCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
     walletMap?: WalletMap<T, WalletCoin<T>>,
     slippage: number | string
     // slippageTolerance: Array<number | string>,
     priceImpact: string,
+    priceImpactColor: string,
     minimumReceived: string,
     fee: string
 }
@@ -195,6 +197,13 @@ export type TradeFloat = {
     reward?: number,
     rewardToken?: string,
     volume?: number,
+    close?: number,
+    high?: number,
+    low?: number,
+    changeDollar?: number,
+    changeYuan?: number,
+    closeDollar?: number,
+    closeYuan?: number,
     // APY?:number
     // tagNew?: boolean
 }

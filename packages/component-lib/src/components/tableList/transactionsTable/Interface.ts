@@ -1,14 +1,14 @@
 export enum TransactionTradeTypes {
     allTypes = 'All Types',
-    deposit = 'Deposit',
-    withdraw = 'Withdraw',
-    transfer = 'Transfer'
+    deposit = 'DEPOSIT',
+    withdraw = 'WITHDRAW',
+    transfer = 'TRANSFER'
 }
 
-export type TransactionSide = {
-    address: string;
-    env: string;
-}
+// export type TransactionSide = {
+//     address: string;
+//     env: string;
+// }
 
 export enum TransactionStatus {
     processing = "processing",
@@ -18,11 +18,15 @@ export enum TransactionStatus {
 }
 
 export type RawDataTransactionItem = {
-    token?: string,
-    tradeType: TransactionTradeTypes,
-    from: string | TransactionSide;
-    to: string | TransactionSide;
-    amount: number;
+    side: TransactionTradeTypes,
+    // token?: string,
+    // tradeType: TransactionTradeTypes,
+    // from: string;
+    // to: string;
+    amount: {
+        unit: string;
+        value: number;
+    }
     fee: {
         unit: string;
         value: number;
