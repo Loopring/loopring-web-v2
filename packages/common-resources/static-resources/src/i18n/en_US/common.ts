@@ -46,6 +46,8 @@ export default {
     transferLabelBtn: 'Transfer',
     transferLabelAddress: 'Transfer address',
     transferLabelAddressInput: 'Please input the address',
+    transferLabelMemo: 'Memo (not required)',
+    transferLabelMemoPlaceholder: 'Please input the memo',
     transferLabelFee: 'Select payment token',
     transferLabelLinkRecent: 'Recent transfer history',
     labelConnectWallet: 'Connect wallet',
