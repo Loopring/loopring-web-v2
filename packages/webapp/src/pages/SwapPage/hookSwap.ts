@@ -623,8 +623,8 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
             }
             const calcTradeParams = sdk.getOutputAmount({
                 input: input.toString(),
-                base: coinA,
-                quote: coinB,
+                sell: coinA,
+                buy: coinB,
                 isAtoB,
                 marketArr: marketArray as string[],
                 tokenMap: tokenMap as any,
