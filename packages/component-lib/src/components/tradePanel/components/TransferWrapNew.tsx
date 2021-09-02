@@ -300,8 +300,9 @@ export const TransferWrapNew = <T extends IBData<I>,
         </Grid>
         <Grid item marginTop={2} alignSelf={'stretch'}>
             <Button fullWidth variant={'contained'} size={'medium'} color={'primary'} onClick={() => {
-                console.log(tradeData)
-                onTransferClick(tradeData)
+                const tradeDataWithMemo = {...tradeData, memo: memo}
+                // onTransferClick(tradeData)
+                onTransferClick(tradeDataWithMemo)
             }}
                     loading={!getDisabled() && transferBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={getDisabled() || transferBtnStatus === TradeBtnStatus.DISABLED || transferBtnStatus === TradeBtnStatus.LOADING ? true : false}

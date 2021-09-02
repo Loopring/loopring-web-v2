@@ -179,7 +179,6 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
 
     const onTransferClick = useCallback(async (transferValue, isFirstTime: boolean = true) => {
-        console.log(transferValue)
         const {accountId, accAddress, readyState, apiKey, eddsaKey} = account
         myLog('useCallback tranferFeeInfo:', tranferFeeInfo)
 
