@@ -151,10 +151,9 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                 >{pair.coinAInfo?.simpleName}-{pair.coinBInfo?.simpleName}</Typography>
             </Breadcrumbs>
         </Box>
-        <Box display={'flex'} flex={1} flexDirection={'row'}>
-
-            <Grid container marginRight={3} alignContent={'stretch'} direction={'column'} flexWrap={'nowrap'}>
-                <Grid item xs={12} marginTop={2}>
+        <Box flex={1} display={'flex'} flexDirection={'row'}>
+            <Box display={'flex'} marginRight={3} alignContent={'stretch'} flexDirection={'column'} flexWrap={'nowrap'}>
+                <Box marginTop={2}>
                     <TradeTitle {...{
                         baseShow: coinPairInfo.myCoinA?.simpleName,
                         quoteShow: coinPairInfo.myCoinB?.simpleName,
@@ -163,9 +162,9 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         tradeFloat,
                         isNew: false
                     }}></TradeTitle>
-                </Grid>
+                </Box>
                 {/*<Box flex={1} display={'flex'} alignItems={'stretch'} flexDirection="row" marginTop={3}>*/}
-                <Grid item xs={12} display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
+                <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
                     <Box flex={1} width={'101%'} minHeight={396} maxHeight={460}>
                         <ScaleAreaChart
                             type={ChartType.Trend}
@@ -332,60 +331,12 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             />}
                         </StylePaper>
                     </Box>
-                </Grid>
-
-                {/*</Box>*/}
-
-
-            </Grid>
+                </Box>
+            </Box>
             <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}}>
                 {/*<FixedStyle>*/}
-                    <Box>
-                        <AmmPanelView pair={pair} walletMap={walletMap} snapShotData={snapShotData}/>
-                    </Box>
-                    {/*{typeof coinPairInfo.isActivity === 'undefined' ? '' :*/}
-                    {/*    <BoxTopStyled paddingY={3} paddingX={1 / 2 * 5} display={'flex'}*/}
-                    {/*                  flexDirection={'column'}>*/}
-                    {/*        <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>*/}
-                    {/*            <Typography display={'flex'} flexDirection={'column'} component={'div'}>*/}
-                    {/*                <Typography variant={'body2'} component={'h5'} color={'textSecondary'}>*/}
-                    {/*                    {t('labelReward')}*/}
-                    {/*                </Typography>*/}
-                    {/*                <Typography variant={'body1'} component={'span'} color={'textPrimary'}>*/}
-                    {/*                    {typeof coinPairInfo.isActivity === 'undefined' ? EmptyValueTag : <>*/}
-                    {/*                        <Typography*/}
-                    {/*                            component={'span'}>{coinPairInfo.activity ? getThousandFormattedNumbers(coinPairInfo.activity.totalRewards) : EmptyValueTag} </Typography>*/}
-                    {/*                        <Typography*/}
-                    {/*                            component={'span'}>{coinPairInfo.activity?.rewardToken?.simpleName}</Typography>*/}
-                    {/*                    </>}*/}
-                    {/*                </Typography>*/}
-                    {/*            </Typography>*/}
-                    {/*            <Typography display={'flex'} flexDirection={'column'} alignItems={'flex-end'}*/}
-                    {/*                        component={'div'}>*/}
-                    {/*                <Typography variant={'body2'} component={'h5'} color={'textSecondary'}>*/}
-                    {/*                    {t('labelMyReward')}*/}
-                    {/*                </Typography>*/}
-                    {/*                <Typography variant={'body1'} component={'span'} color={'textPrimary'}>*/}
-                    {/*                    /!*{typeof coinPairInfo.isActivity === 'undefined' ? EmptyValueTag : <>*!/*/}
-                    {/*                    {typeof myAmm.reward === 'undefined' ? EmptyValueTag : <>*/}
-                    {/*                        <Typography*/}
-                    {/*                            component={'span'}> {getThousandFormattedNumbers(myAmm.reward)} </Typography>*/}
-                    {/*                        <Typography*/}
-                    {/*                            component={'span'}> {coinPairInfo.activity?.rewardToken?.simpleName}</Typography></>}*/}
-                    {/*                </Typography>*/}
-                    {/*            </Typography>*/}
-                    {/*        </Box>*/}
-                    {/*        <Typography alignSelf={'flex-start'} variant={'body2'} color={'textSecondary'}*/}
-                    {/*                    component="span" marginTop={1}>*/}
-                    {/*            {typeof coinPairInfo.isActivity === 'undefined' ? t('labelNoActiveEvent')*/}
-                    {/*                : <>*/}
-                    {/*                    {t('labelDate')} :*/}
-                    {/*                    <> {' ' + moment(coinPairInfo.activity?.duration.from).format('L') + ' - ' + moment(coinPairInfo.activity?.duration.to).format('L')}</>*/}
-                    {/*                </>*/}
-                    {/*            }*/}
-                    {/*        </Typography>*/}
-                    {/*    </BoxTopStyled>*/}
-                    {/*}*/}
+                <Box>
+                    <AmmPanelView pair={pair} walletMap={walletMap} snapShotData={snapShotData}/>
                     <Box marginTop={3}>
                         {awardList.map((o, index) => (
                             <AwardWrapperStyled key={`${o.market}-${index}}`} display={'flex'}
@@ -431,6 +382,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             </AwardWrapperStyled>
                         ))}
                     </Box>
+                </Box>
+
                 {/*</FixedStyle>*/}
             </Box>
         </Box>
