@@ -609,11 +609,12 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
             if (amountMap && amountMap[ market as string ] && ammMap) {
                 const ammMarket = `AMM-${market}`
                 const amount = ammMap[ ammMarket ] ? amountMap[ ammMarket ] : amountMap[ market as string ]
+
                 buyMinAmtInfo = amount[ _tradeData[ 'buy' ].belong as string ];
                 sellMinAmtInfo = amount[ _tradeData[ 'sell' ].belong as string ];
                 myLog(`buyMinAmtInfo,sellMinAmtInfo: AMM-${market}, ${_tradeData[ 'buy' ].belong}`, buyMinAmtInfo, sellMinAmtInfo)
 
-                takerRate = buyMinAmtInfo.userOrderInfo.takerRate
+                takerRate = buyMinAmtInfo ? buyMinAmtInfo.userOrderInfo.takerRate : 0
                 feeBips = ammMap[ ammMarket ] ? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
                 totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString();
                 setSellMinAmt(buyMinAmtInfo?.userOrderInfo.minAmount)
@@ -629,10 +630,11 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                 marketMap: marketMap as any,
                 depth,
                 ammPoolSnapshot: ammPoolSnapshot,
-                feeBips: feeBips ? feeBips.toString() : '',
-                takerRate: takerRate ? takerRate : '',
+                feeBips: feeBips ? feeBips.toString() : '0',
+                takerRate: takerRate ? takerRate : '0',
                 slipBips: slippage
             })
+
             const priceImpactObj = getPriceImpactInfo(calcTradeParams)
             // setPriceImpact(priceImpactObj.value ?? 0)
             const _tradeCalcData = {
