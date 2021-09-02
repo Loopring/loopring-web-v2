@@ -286,7 +286,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
 
 
         <Grid item>
-            <Typography component={'p'} variant="body1" height={24} lineHeight={'24px'}>
+            <Typography component={'p'} variant="body2" height={24} lineHeight={'24px'}>
                 {stob}
             </Typography>
         </Grid>
@@ -295,11 +295,11 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                 <Grid item paddingBottom={3} sx={{color: 'text.secondary'}}>
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
                           height={24}>
-                        <Typography component={'p'} variant="body1">{t('swapTolerance')}</Typography>
-                        <Typography component={'p'} variant="body1">
+                        <Typography component={'p'} variant="body2" color={'textSecondary'}>{t('swapTolerance')}</Typography>
+                        <Typography component={'p'} variant="body2" color={'textPrimary'}>
                             {ammCalcData ? <>
                                 <Typography {...bindHover(popupState)}
-                                            component={'span'} variant="body1">
+                                            component={'span'} variant="body2" >
                                     <LinkActionStyle>
                                         {ammData.slippage ? ammData.slippage : ammCalcData?.slippage ? ammCalcData?.slippage : 0.5}%
                                     </LinkActionStyle>
@@ -326,10 +326,9 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
 
                     </Grid>
 
-                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
-                        <Typography component={'p'} variant="body1"> {t('swapFee')} </Typography>
-                        <Typography component={'p'}
-                                    variant="body1">{ammCalcData ? ammCalcData?.fee : EmptyValueTag}</Typography>
+                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"} marginTop={1/2}>
+                        <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('swapFee')} </Typography>
+                        <Typography component={'p'} variant="body2" color={'textPrimary'}>{ammCalcData ? ammCalcData?.fee : EmptyValueTag}</Typography>
                     </Grid>
                 </Grid>
                 <Grid item>
