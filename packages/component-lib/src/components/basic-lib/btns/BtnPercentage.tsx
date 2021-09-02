@@ -172,11 +172,11 @@ const StyledSlider = styled(Slider)`
       transform: translate(-50%,-50%) ;
       width: 18px;
       height: 18px;
-      color: var(--color-text-primary);
+      color: var(--color-button-pot);
       margin-top: 0px;
       margin-left: 0px;
       ${({theme}) => theme.border.defaultFrame({d_W: 2, d_R: 12, c_key: 'var(--color-secondary)'})};
-
+      box-shadow:initial;
       input {
         cursor: pointer;
       }
