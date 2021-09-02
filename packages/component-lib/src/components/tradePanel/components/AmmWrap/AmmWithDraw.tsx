@@ -103,6 +103,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
 
     const onPercentage = (value: any) => {
 
+        console.log('--- onPercentage value:', value)
         console.log('--- onPercentage ammData:', ammData)
 
         if (ammData?.coinLP) {
