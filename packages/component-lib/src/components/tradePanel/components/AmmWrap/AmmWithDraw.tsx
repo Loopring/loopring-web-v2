@@ -1,5 +1,5 @@
 import {
-    AmmInData, AmmWithdrawData, AvatarCoinStyled,
+    AmmInData, AmmExitData, AvatarCoinStyled,
     CoinInfo,
     EmptyValueTag,
     IBData,
@@ -27,7 +27,7 @@ import { useSettings } from '../../../../stores';
 import { Box, Link } from '@material-ui/core/';
 import { SvgStyled } from './styled';
 
-export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? C : IBData<I>>,
+export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
     I,
     ACD extends AmmInData<I>,
     C = IBData<I>>({
@@ -88,12 +88,9 @@ export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? 
         //     return {error: false, message: ''}
         // }
     }
+    
     const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
-        // if (flag !== _selectedPercentage) {
-        //     setSelectedPercentage(flag)
-        // }
         if (_ref) {
-            // let focus = _ref?.current === coinLPRef.current ? 'lp' ;
             if (ammData[ 'coinLP' ].tradeValue !== ibData.tradeValue) {
                 const percentageValue = Number(ammData[ 'coinLP' ].tradeValue) /(ammData[ 'coinLP' ].balance/100)
                 setSelectedPercentage( percentageValue )
@@ -103,10 +100,17 @@ export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? 
             onRemoveChangeEvent({tradeData: {...ammData, [ 'coinLP' ]: ibData}, type:'lp'});
         }
     }, [ammData, onRemoveChangeEvent]);
+
     const onPercentage = (value: any) => {
-        ammData[ 'coinLP' ].tradeValue = (ammData[ 'coinLP' ].balance  / 100) *  value;
-        handleCountChange(ammData[ 'coinLP' ], null)
+
+        console.log('--- onPercentage ammData:', ammData)
+
+        if (ammData?.coinLP) {
+            ammData.coinLP.tradeValue = (ammData.coinLP.balance  / 100) *  value;
+            handleCountChange(ammData.coinLP, null)
+        }
     }
+
     const _onSlippageChange = React.useCallback((slippage: number | string, customSlippage: number | string | undefined) => {
         popupState.close();
         onRemoveChangeEvent({

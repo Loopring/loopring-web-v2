@@ -58,7 +58,7 @@ export type TradeCalcData<T> = {
  *      when is withdraw the balance is from ammDeposit balance
  *
  */
-export type AmmData<C extends IBData<I>, I = any> = {
+export type AmmJoinData<C extends IBData<I>, I = any> = {
     coinA: C,
     coinB: C,
     slippage: number | string,
@@ -66,7 +66,7 @@ export type AmmData<C extends IBData<I>, I = any> = {
         [ key: string ]: any
     }
 }
-export type AmmWithdrawData<C extends IBData<I>, I = any> = {
+export type AmmExitData<C extends IBData<I>, I = any> = {
     coinLP: C,
     slippage: number | string,
     __cache__?: {

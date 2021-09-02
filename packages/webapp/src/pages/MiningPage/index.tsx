@@ -1,7 +1,7 @@
 import { AmmCard, AmmProps, EmptyDefault } from '@loopring-web/component-lib';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { AmmCardProps, AmmData, AmmInData, AmmWithdrawData, IBData } from '@loopring-web/common-resources';
+import { AmmCardProps, AmmJoinData, AmmInData, AmmExitData, IBData } from '@loopring-web/common-resources';
 import { Box, Grid, Typography } from '@material-ui/core';
 import styled from '@emotion/styled'
 import { useAmmMiningUI } from './hook';
@@ -52,8 +52,8 @@ const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap}: { amm
         }}/> </Box>}   </>
 }
 
-export const MiningPage = withTranslation('common')(<T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
-    TW extends AmmWithdrawData<C extends IBData<I> ? C : IBData<I>>,
+export const MiningPage = withTranslation('common')(<T extends AmmJoinData<C extends IBData<I> ? C : IBData<I>>, I,
+    TW extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
     ACD extends AmmInData<I>,
     C = IBData<I>>({ammProps, t, ...rest}: {
     ammProps: AmmProps<T, TW, I, ACD>,
