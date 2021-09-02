@@ -40,4 +40,7 @@ export default {
     titleLoopring:'Loopring',
     labelLoopringDescribe:'zkRollup Exchange and Payment Protocol',
     labelWrongNetwork: 'Wrong network',
+    labelYoutube:'Youtube',
+    labelWeibo:'Weibo'
+
 }
