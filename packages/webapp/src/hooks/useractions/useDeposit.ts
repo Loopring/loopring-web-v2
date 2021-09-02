@@ -115,19 +115,13 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 const _chainId = chainId === 'unknown' ? ChainId.MAINNET : chainId
 
-                if (tokenInfo.symbol.toUpperCase() !== 'ETH') {
-
-                    const req: GetAllowancesRequest = { owner: account.accAddress, token: tokenInfo.symbol }
-
-                    const { tokenAllowances } = await LoopringAPI.exchangeAPI.getAllowances(req, tokenMap)
-
-                    const allowance = sdk.toBig(tokenAllowances[tokenInfo.symbol])
+                if (allowanceInfo?.needCheck) {
 
                     const curValInWei = sdk.toBig(inputValue.tradeValue).times('1e' + tokenInfo.decimals)
 
-                    if (curValInWei.gt(allowance)) {
+                    if (curValInWei.gt(allowanceInfo.allowance)) {
 
-                        myLog(curValInWei, allowance, ' need approveMax!')
+                        myLog(curValInWei, allowanceInfo.allowance, ' need approveMax!')
 
                         setShowAccount({ isShow: true, step: AccountStep.Deposit_Approve_WaitForAuth })
 
