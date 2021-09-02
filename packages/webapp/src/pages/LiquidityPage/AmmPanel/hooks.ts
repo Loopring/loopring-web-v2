@@ -314,10 +314,11 @@ export const useAmmCalc = <C extends { [ key: string ]: any }>({
             }
 
             const {fees} = await LoopringAPI.userAPI.getOffchainFeeAmt(request, apiKey)
+            
             setFees(fees)
 
-            const fee = sdk.toBig(fees[ pair.coinBInfo.simpleName ]?.fee as string)
-                .div('1e' + feeToken.decimals)
+            const feeRaw = fees[ pair.coinBInfo.simpleName ] ? fees[ pair.coinBInfo.simpleName ].fee : 0
+            const fee = sdk.toBig(feeRaw).div('1e' + feeToken.decimals)
 
             setFee(fee.toNumber())
 
