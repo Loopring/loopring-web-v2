@@ -46,7 +46,6 @@ export const ammPairInit = ({
             _ammCalcData.lpCoin = balance;
         }
 
-        // debugger
         _ammCalcData.lpCoinA = {
             belong: pair.coinAInfo.simpleName,
             balance: coinACount,
