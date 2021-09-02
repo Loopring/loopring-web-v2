@@ -118,6 +118,18 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     }, [withdrawValue, tokenMap,])
 
+    const updateWithdrawType = React.useCallback(() => {
+        // myLog('withdrawTypes:', withdrawTypes, ' withdrawType2:', withdrawType2)
+        if (!withdrawTypes['Fast']) {
+            // myLog('try to reset setWithdrawType!')
+            setWithdrawType(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
+        }
+    }, [withdrawTypes, withdrawType, setWithdrawType])
+
+    React.useEffect(() => {
+        updateWithdrawType()
+    }, [withdrawTypes, updateWithdrawType])
+
     React.useEffect(() => {
 
         updateWithdrawTypes()
