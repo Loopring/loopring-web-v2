@@ -11,7 +11,7 @@ import { Filter } from './components/Filter'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
 import { TableType, MoreIcon, AvatarCoinStyled, PriceTag } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores'
-import { getThousandFormattedNumbers } from '@loopring-web/common-resources'
+import { getThousandFormattedNumbers, getValuePrecision, getValuePrecisionThousand } from '@loopring-web/common-resources'
 
 const TableStyled = styled(Box)`
   display: flex;
@@ -286,6 +286,12 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         {
             key: 'amount',
             name: t('labelAmount'),
+            formatter: ({row}) => {
+                const value = row['amount']
+                return <>
+                    {getValuePrecisionThousand(value, 6, 2)}
+                </>
+            }
         },
         // {
         //     key: 'available',
@@ -297,7 +303,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             formatter: ({row}) => {
                 const value = row['locked']
                 return <>
-                    {Number(value).toFixed(2)}
+                    {getValuePrecisionThousand(value, 6, 2)}
                 </>
 
             }
@@ -310,7 +316,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                 const tokenValueYuan = row['tokenValueYuan']
                 const renderValue = isUSD ? tokenValueDollar : tokenValueYuan
                 return <>
-                    {isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getThousandFormattedNumbers(Number(renderValue))}
+                    {isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand(renderValue, 2, 2)}
                 </>
             }
         },
