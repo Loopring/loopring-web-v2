@@ -114,10 +114,10 @@ const MyAmmLPAssets = withTranslation('common')(({ammCalcData, t}:
         <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
             <Box display={'flex'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
                  alignItems={'center'} justifyContent={'center'}>
-                <CoinIcon symbol={ammCalcData.lpCoin.belong}/>
+                <CoinIcon symbol={'LP-'+ ammCalcData.lpCoinA.belong + '-' + ammCalcData.lpCoinB.belong}/>
             </Box>
             <Box paddingLeft={1}>
-                <Typography variant={'h4'} component={'h3'} paddingRight={1}>
+                <Typography variant={'h4'} component={'h3'} paddingRight={1} fontWeight={700}>
                     <Typography component={'span'} title={'sell'} className={'next-coin'}>
                         {ammCalcData.lpCoinA.belong}
                     </Typography>
