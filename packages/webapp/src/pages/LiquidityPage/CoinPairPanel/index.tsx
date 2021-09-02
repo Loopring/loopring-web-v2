@@ -6,8 +6,7 @@ import {
     Currency,
     EmptyValueTag,
     getThousandFormattedNumbers,
-    PriceTag,
-    unit
+    PriceTag
 } from '@loopring-web/common-resources';
 import { Avatar, Box, Breadcrumbs, Divider, Grid, Link, Typography } from '@material-ui/core';
 import { AmmPanelView } from '../AmmPanel';
@@ -18,38 +17,36 @@ import Tab from '@material-ui/core/Tab';
 
 import { useCoinPair } from './hooks';
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
-import { FixedStyle, StylePaper } from 'pages/styled';
+import { StylePaper } from 'pages/styled';
 
 //******************** page code ************************//
 //  ${({theme}) => theme.border.defaultFrame({c_key: 'blur'})};
 const BoxWrapperStyled = styled(Grid)`
-    background: var(--color-box);
-    border-radius: ${({theme}) => theme.unit}px;
+  background: var(--color-box);
+  border-radius: ${({theme}) => theme.unit}px;
 `
 
 const BoxStyled = styled(Grid)`
-    // flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    // background: var(--color-box);
+  // flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  // background: var(--color-box);
     // border-radius: ${({theme}) => theme.unit}px;
     // padding: ${({theme}) => theme.unit * 2}px;
-    height: ${({theme}) => theme.unit * 13}px;
-    min-width: 170px;
-    max-width: 210px;
-    // & .MuiAvatar-root {
-        //     height: ${({theme}) => theme.fontDefault.h4};
-        //     width: ${({theme}) => theme.fontDefault.h4};
-    // }
+  height: ${({theme}) => theme.unit * 13}px;
+  min-width: 170px;
+  max-width: 210px;
+  // & .MuiAvatar-root {
+    //     height: ${({theme}) => theme.fontDefault.h4};
+    //     width: ${({theme}) => theme.fontDefault.h4};
+  // }
 `;
+styled(Typography)`
 
-const TypographValueStyled = styled(Typography)`
-    
-`
-
-const BoxTopStyled = styled(Box)`
+`;
+styled(Box)`
   background: var(--color-box);
   border-radius: ${({theme}) => theme.unit}px;
   padding: ${({theme}) => theme.unit * 2}px;
@@ -70,14 +67,14 @@ const BoxTopStyled = styled(Box)`
 // ` as typeof Grid
 
 const AwardWrapperStyled = styled(Box)`
-    padding: ${({theme}) => theme.unit * 2}px;
-    background-color: var(--color-box);
-    border-radius: ${({theme}) => theme.unit}px;
+  padding: ${({theme}) => theme.unit * 2}px;
+  background-color: var(--color-box);
+  border-radius: ${({theme}) => theme.unit}px;
 `
 
 const TabsStyled = styled(Tabs)`
-    padding: ${({theme}) => theme.unit}px;
-    padding-bottom: 0;
+  padding: ${({theme}) => theme.unit}px;
+  padding-bottom: 0;
 `
 
 const applyProps = (index: number) => {
@@ -99,20 +96,18 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         walletMap,
         ammMarketArray,
         myAmmMarketArray,
-        myAmm,
         pairHistory,
         awardList,
         getUserAmmPoolTxs,
         showAmmPoolLoading,
-        ammTotal,
         ammUserTotal,
     } = useCoinPair({ammActivityMap});
     const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
     const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
-    const handleChange = (event: any, newValue: 0 | 1) => {
-        setTabIndex(newValue);
-        setPage(1);
-    }
+    // const handleChange = (event: any, newValue: 0 | 1) => {
+    //     setTabIndex(newValue);
+    //     setPage(1);
+    // }
     // const _handlePageChange = React.useCallback((page: number) => {
     //     setPage(page);
     // }, [])
@@ -152,7 +147,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
             </Breadcrumbs>
         </Box>
         <Box flex={1} display={'flex'} flexDirection={'row'}>
-            <Box display={'flex'} flex={1}  marginRight={3} alignContent={'stretch'} flexDirection={'column'} flexWrap={'nowrap'}>
+            <Box display={'flex'} flex={1} marginRight={3} alignContent={'stretch'} flexDirection={'column'}
+                 flexWrap={'nowrap'}>
                 <Box marginTop={0}>
                     <TradeTitle {...{
                         baseShow: coinPairInfo.myCoinA?.simpleName,
@@ -161,7 +157,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         ...pair,
                         tradeFloat,
                         isNew: false
-                    }}></TradeTitle>
+                    }}/>
                 </Box>
                 {/*<Box flex={1} display={'flex'} alignItems={'stretch'} flexDirection="row" marginTop={3}>*/}
                 <Box marginTop={3} display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
@@ -307,7 +303,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                     </BoxWrapperStyled>
 
                 </Box>
-                <StylePaper className={'MuiPaper-elevation2'} marginTop={3} ref={container} >
+                <StylePaper className={'MuiPaper-elevation2'} marginTop={3} ref={container}>
                     <TabsStyled value={tabIndex}
                         // onChange={handleChange}
                                 aria-label="tabs switch">

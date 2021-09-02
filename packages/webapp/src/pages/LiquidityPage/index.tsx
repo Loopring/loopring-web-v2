@@ -1,8 +1,8 @@
 import { useRouteMatch } from 'react-router'
 
-import { Box, Typography } from '@material-ui/core'
+import { Box} from '@material-ui/core'
 
-import { withTranslation, WithTranslation } from 'react-i18next'
+import { withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import { PoolsPanel } from './PoolsPanel'
 import { CoinPairPanel } from './CoinPairPanel';
@@ -19,7 +19,7 @@ const TableWrapperStyled = styled(Box)`
 
 // export const subMenu = subMenuLiquidity
 
-export const LiquidityPage = withTranslation('common', {withRef: true})(({t}: WithTranslation) => {
+export const LiquidityPage = withTranslation('common', {withRef: true})(() => {
 
         // const { ammFee } = useAmmPool('LRC', 'ETH')
         //
