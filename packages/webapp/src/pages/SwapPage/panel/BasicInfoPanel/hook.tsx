@@ -34,17 +34,9 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
         return {value, tlabel: t(label), key, JSX: <>{t(label)}</>}
     })
 
-    // const { base, quote, market, tokens } = props
-
-    const {market, amm} = getExistedMarket(marketArray, coinAInfo?.name, coinBInfo?.name)
+    const {market, amm, baseShow, quoteShow, } = getExistedMarket(marketArray, coinAInfo?.name, coinBInfo?.name)
 
     const [chartType, setChartType] = useState<ChartType>(ChartType.Trend)
-
-    // console.log('---useBasicInfo market:', market, ' amm:', amm, ' chartType:', chartType)
-    //
-    // const [change, setChange] = useState(0)
-    //
-    // const [volume, setVolume] = useState('')
 
     const [chartUnit, setChartUnit] = useState(ChartUnit.D1)
 
@@ -62,43 +54,6 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
         const mappedValue = newValue === '1H' ? ChartUnit.H1 : newValue === '1W' ? ChartUnit.W1 : ChartUnit.D1
         setChartUnit(mappedValue)
     }
-
-    // useCustomDCEffect(async () => {
-    //
-    //   if (!exchangeApi || !market || !tokens || !quote) {
-    //     return
-    //   }
-    //
-    //   let mounted = true
-    //
-    //   try {
-    //
-    //     const request: GetTickerRequest = {
-    //       market: market.market,
-    //     }
-    //
-    //     const ticker = await exchangeApi.getTicker(request)
-    //     if (mounted) {
-    //
-    //       if (ticker.tickList[0].change) {
-    //         setChange(ticker.tickList[0].change)
-    //       }
-    //
-    //       if (ticker.tickList[0].base_token_volume) {
-    //         const baseVol = fromWEI(tokens.tokenSymbolMap, base, ticker.tickList[0].base_token_volume) as string
-    //         setVolume(baseVol)
-    //       }
-    //     }
-    //   }
-    //   catch (reason) {
-    //     dumpError400(reason, 'ChartPanel getCandlestick')
-    //   }
-    //
-    //   return () => {
-    //     mounted = false
-    //   }
-    //
-    // }, [exchangeApi, market, tokens, base,])
 
     const tgItemJSXsPriceChart: TGItemJSXInterface[] = Object.keys(ChartUnit).reduce((pre, item) => {
         // @ts-ignore
@@ -187,6 +142,8 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
     return {
         // change,
         // volume,
+        baseShow,
+        quoteShow,
         chartUnit,
         chartType,
         tgItemJSXs,

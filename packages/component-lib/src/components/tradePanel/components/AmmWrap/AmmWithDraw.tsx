@@ -1,5 +1,5 @@
 import {
-    AmmInData, AmmWithdrawData, AvatarCoinStyled,
+    AmmInData, AmmExitData, AvatarCoinStyled,
     CoinInfo,
     EmptyValueTag,
     IBData,
@@ -27,7 +27,7 @@ import { useSettings } from '../../../../stores';
 import { Box, Link } from '@material-ui/core/';
 import { SvgStyled } from './styled';
 
-export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? C : IBData<I>>,
+export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
     I,
     ACD extends AmmInData<I>,
     C = IBData<I>>({
@@ -88,12 +88,9 @@ export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? 
         //     return {error: false, message: ''}
         // }
     }
+    
     const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
-        // if (flag !== _selectedPercentage) {
-        //     setSelectedPercentage(flag)
-        // }
         if (_ref) {
-            // let focus = _ref?.current === coinLPRef.current ? 'lp' ;
             if (ammData[ 'coinLP' ].tradeValue !== ibData.tradeValue) {
                 const percentageValue = Number(ammData[ 'coinLP' ].tradeValue) /(ammData[ 'coinLP' ].balance/100)
                 setSelectedPercentage( percentageValue )
@@ -103,10 +100,18 @@ export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? 
             onRemoveChangeEvent({tradeData: {...ammData, [ 'coinLP' ]: ibData}, type:'lp'});
         }
     }, [ammData, onRemoveChangeEvent]);
+
     const onPercentage = (value: any) => {
-        ammData[ 'coinLP' ].tradeValue = (ammData[ 'coinLP' ].balance  / 100) *  value;
-        handleCountChange(ammData[ 'coinLP' ], null)
+
+        console.log('--- onPercentage value:', value)
+        console.log('--- onPercentage ammData:', ammData)
+
+        if (ammData?.coinLP) {
+            ammData.coinLP.tradeValue = (ammData.coinLP.balance  / 100) *  value;
+            handleCountChange(ammData.coinLP, null)
+        }
     }
+
     const _onSlippageChange = React.useCallback((slippage: number | string, customSlippage: number | string | undefined) => {
         popupState.close();
         onRemoveChangeEvent({
@@ -281,7 +286,7 @@ export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? 
 
 
         <Grid item>
-            <Typography component={'p'} variant="body1" height={24} lineHeight={'24px'}>
+            <Typography component={'p'} variant="body2" height={24} lineHeight={'24px'}>
                 {stob}
             </Typography>
         </Grid>
@@ -290,11 +295,11 @@ export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? 
                 <Grid item paddingBottom={3} sx={{color: 'text.secondary'}}>
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
                           height={24}>
-                        <Typography component={'p'} variant="body1">{t('swapTolerance')}</Typography>
-                        <Typography component={'p'} variant="body1">
+                        <Typography component={'p'} variant="body2" color={'textSecondary'}>{t('swapTolerance')}</Typography>
+                        <Typography component={'p'} variant="body2" color={'textPrimary'}>
                             {ammCalcData ? <>
                                 <Typography {...bindHover(popupState)}
-                                            component={'span'} variant="body1">
+                                            component={'span'} variant="body2" >
                                     <LinkActionStyle>
                                         {ammData.slippage ? ammData.slippage : ammCalcData?.slippage ? ammCalcData?.slippage : 0.5}%
                                     </LinkActionStyle>
@@ -321,10 +326,9 @@ export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? 
 
                     </Grid>
 
-                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
-                        <Typography component={'p'} variant="body1"> {t('swapFee')} </Typography>
-                        <Typography component={'p'}
-                                    variant="body1">{ammCalcData ? ammCalcData?.fee : EmptyValueTag}</Typography>
+                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"} marginTop={1/2}>
+                        <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('swapFee')} </Typography>
+                        <Typography component={'p'} variant="body2" color={'textPrimary'}>{ammCalcData ? ammCalcData?.fee : EmptyValueTag}</Typography>
                     </Grid>
                 </Grid>
                 <Grid item>

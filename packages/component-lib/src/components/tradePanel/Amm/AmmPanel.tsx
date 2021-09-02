@@ -3,7 +3,7 @@ import { AmmChgData, AmmDepositWrap, AmmWithdrawChgData, AmmWithdrawWrap } from 
 import { BoxProps, Grid, Tab, Tabs, Toolbar } from '@material-ui/core';
 import { useLocation } from 'react-router-dom'
 import qs from 'query-string'
-import { AmmData, AmmInData, AmmWithdrawData, IBData } from '@loopring-web/common-resources';
+import { AmmJoinData, AmmInData, AmmExitData, IBData } from '@loopring-web/common-resources';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import React, { useEffect } from 'react';
 import { useDeepCompareEffect } from 'react-use';
@@ -37,8 +37,8 @@ const TabPanelBtn = ({t, value, handleChange}: WithTranslation & any) => {
         <Tab label={t('labelLiquidityWithdraw')} value={1}/>
     </Tabs>
 }
-export const AmmPanel = withTranslation('common', {withRef: true})(<T extends AmmData<C extends IBData<I> ? C : IBData<I>>,
-    TW extends AmmWithdrawData<C extends IBData<I> ? C : IBData<I>>,
+export const AmmPanel = withTranslation('common', {withRef: true})(<T extends AmmJoinData<C extends IBData<I> ? C : IBData<I>>,
+    TW extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
     I,
     ACD extends AmmInData<I>,
     C = IBData<I>>(
@@ -218,8 +218,8 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
 
     </WrapStyle>
 
-}) as <T extends AmmData<C extends IBData<I> ? C : IBData<I>>,
-    TW extends AmmWithdrawData<C extends IBData<I> ? C : IBData<I>>,
+}) as <T extends AmmJoinData<C extends IBData<I> ? C : IBData<I>>,
+    TW extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
     I,
     ACD extends AmmInData<I>,
     C = IBData<I>>(props: AmmProps<T, TW, I, ACD, C> & React.RefAttributes<any>) => JSX.Element;

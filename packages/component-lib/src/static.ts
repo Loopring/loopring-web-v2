@@ -183,7 +183,8 @@ export const ammCalcData: AmmInData<CoinType> = {
     AtoB: 50,
     coinInfoMap: coinMap,
     slippage: 0.5,
-    fee: '1%',
+    fee: '0.01',
+    percentage: '0.01',
 }
 
 export const layer2ItemData = List<HeaderMenuItemInterface>([{

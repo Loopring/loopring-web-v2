@@ -1,5 +1,5 @@
 import { InputButtonProps } from '../../basic-lib';
-import { AmmData, AmmWithdrawData, CoinInfo, IBData } from '@loopring-web/common-resources';
+import { AmmJoinData, AmmExitData, CoinInfo, IBData } from '@loopring-web/common-resources';
 import { AmmChgData, AmmDepositBaseProps, AmmWithdrawBaseProps, AmmWithdrawChgData } from '../components';
 
 export enum AmmPanelType {
@@ -29,8 +29,8 @@ export type AmmPanelBaseProps<T, TW, I, ACD, C> = {
     width?: number,
 }
 
-export type AmmProps<T extends AmmData<C extends IBData<I> ? C : IBData<I>>,
-    TW extends AmmWithdrawData<C extends IBData<I> ? C : IBData<I>>,
+export type AmmProps<T extends AmmJoinData<C extends IBData<I> ? C : IBData<I>>,
+    TW extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
     I, ACD, C = IBData<I>> =
     AmmPanelBaseProps<T, TW, I, ACD, C>
     & {
@@ -43,4 +43,3 @@ export type AmmProps<T extends AmmData<C extends IBData<I> ? C : IBData<I>>,
 }
     & AmmWithdrawBaseProps<TW, I>
     & AmmDepositBaseProps<T, I>
-
