@@ -1,5 +1,5 @@
 import {
-    AmmData,
+    AmmJoinData,
     AmmInData,
     EmptyValueTag,
     IBData,
@@ -22,7 +22,7 @@ import { useSettings } from '../../../../stores';
 import { Box } from '@material-ui/core/';
 
 
-export const AmmDepositWrap = <T extends AmmData<C extends IBData<I> ? C : IBData<I>>,
+export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : IBData<I>>,
     I,
     ACD extends AmmInData<I>,
     C = IBData<I>>({
