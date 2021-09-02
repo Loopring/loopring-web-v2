@@ -179,7 +179,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
     }, [error, ammWithdrawBtnI18nKey, t])
     const stob = React.useMemo(() => {
         if (ammCalcData && ammCalcData?.lpCoinA && ammCalcData?.lpCoinB && ammCalcData.AtoB) {
-            let price: string = ``;
+            let price: string;
             if (_isStoB) {
                 price = `1${ammCalcData?.lpCoinA?.belong} \u2248 ${ammCalcData.AtoB} ${ammCalcData?.lpCoinB?.belong}`;
 
