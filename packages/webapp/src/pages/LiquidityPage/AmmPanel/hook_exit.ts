@@ -21,6 +21,7 @@ import {
 } from '../../../hooks/help';
 import * as sdk from 'loopring-sdk';
 import {
+    AmmPoolInfoV3,
     AmmPoolRequestPatch,
     AmmPoolSnapshot,
     ChainId,
@@ -29,13 +30,11 @@ import {
     getExistedMarket,
     GetNextStorageIdRequest,
     GetOffchainFeeAmtRequest,
-    JoinAmmPoolRequest,
     LoopringMap,
     makeExitAmmPoolRequest2,
     OffchainFeeInfo,
     OffchainFeeReqType,
     TickerData,
-    toBig,
     TokenInfo,
 } from 'loopring-sdk';
 import { useAccount } from '../../../stores/account/hook';
@@ -91,6 +90,12 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
     const { btnStatus, enableBtn, disableBtn, setLoadingBtn, } = useBtnStatus()
 
+    const [request, setRequest] = React.useState<{ 
+        volA_show: number,
+        volB_show: number, 
+        ammInfo: any, 
+        request: ExitAmmPoolRequest }>();
+
     React.useEffect(() => {
         if (account.readyState !== AccountStatus.ACTIVATED) {
             enableBtn()
@@ -138,12 +143,15 @@ export const useAmmExit = <C extends { [key: string]: any }>({
     }, [fee, snapShotData, coinMap, tokenMap, ammCalcData, ammMap,
         setAmmCalcData, setAmmData, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt, ])
 
-    const btnLabelActiveCheck = React.useCallback(({ ammData }): string | undefined => {
+    const btnLabelActiveCheck = React.useCallback(({ ammData, request }): string | undefined => {
+
+        myLog('btnLabelActiveCheck ammData:', ammData)
+        myLog('btnLabelActiveCheck req:', request)
 
         const times = 1
 
-        const validAmt1 = ammData?.coinA?.tradeValue ? ammData?.coinA?.tradeValue >= times * baseMinAmt : false
-        const validAmt2 = ammData?.coinB?.tradeValue ? ammData?.coinB?.tradeValue >= times * quoteMinAmt : false
+        const validAmt1 = request?.volA_show ? request?.volA_show >= times * baseMinAmt : false
+        const validAmt2 = request?.volB_show ? request?.volB_show >= times * quoteMinAmt : false
 
         if (isLoading) {
             setBtnI18nKey(TradeBtnStatus.LOADING)
@@ -217,17 +225,18 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
     React.useEffect(() => {
         calculateCallback()
-    }, [accountStatus, account.readyState, pair, ammData])
+    }, [accountStatus, account.readyState, pair, request])
 
-    const [request, setRequest] = React.useState<{ ammInfo: any, request: JoinAmmPoolRequest | ExitAmmPoolRequest }>();
+    const handleExit = React.useCallback(async ({ data, requestOut, ammData, fees, ammPoolSnapshot, tokenMap, account }) => {
 
-    const handleExit = React.useCallback(async ({ data, ammData, fees, ammPoolSnapshot, tokenMap, account }) => {
-        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, }]))
+        myLog('handle exit:', requestOut)
+
+        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, request: requestOut, }]))
 
         myLog('exit data:', data, ammData)
 
         if (!tokenMap || !baseToken || !quoteToken
-            || !ammPoolSnapshot || !fees || !account?.accAddress) {
+            || !ammPoolSnapshot || !account?.accAddress) {
             return
         }
 
@@ -240,31 +249,37 @@ export const useAmmExit = <C extends { [key: string]: any }>({
         const { market, amm } = getExistedMarket(marketArray, baseToken.symbol, quoteToken.symbol)
 
         if (!market || !amm || !marketMap) {
+            debugger
             return
         }
 
-        const ammInfo: any = ammMap[amm as string]
+        const ammInfo: AmmPoolInfoV3 = ammMap[amm as string]
 
         const rawVal = data.coinLP.tradeValue
 
-        const { request } = makeExitAmmPoolRequest2(rawVal.toString(), slippageReal, account.accAddress, fees as LoopringMap<OffchainFeeInfo>,
+        const { volA_show, volB_show ,request } = makeExitAmmPoolRequest2(rawVal.toString(), slippageReal, account.accAddress, fees as LoopringMap<OffchainFeeInfo>,
             ammMap[amm], ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0)
-
-        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData: data }]))
 
         // setAmmCalcData()
 
         myLog('exit req:', request)
 
-        setRequest({
+        const req = {
+            volA_show,
+            volB_show,
             ammInfo,
             request,
-        })
+        }
 
-    }, [idIndex, marketArray, marketMap, baseToken, quoteToken])
+        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData: data, request: req, }]))
+
+        setRequest(req)
+
+    }, [setRequest, idIndex, marketArray, marketMap, baseToken, quoteToken])
 
     const handleAmmPoolEvent = (data: AmmExitData<IBData<any>>, _type: 'coinA' | 'coinB') => {
-        handleExit({ data, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account })
+        myLog('handleAmmPoolEvent request:', request)
+        handleExit({ data, requestOut: request, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account })
     }
 
     const ammCalculator = React.useCallback(async function (props) {
@@ -299,11 +314,13 @@ export const useAmmExit = <C extends { [key: string]: any }>({
         }
         const storageId0 = await LoopringAPI.userAPI.getNextStorageId(burnedReq, account.apiKey)
 
+        myLog('---- try to exit storageId0:', storageId0)
+
         reqExit.storageId = storageId0.offchainId
 
         try {
 
-            myLog('exit req:', request)
+            myLog('---- try to exit req:', reqExit)
             setAmmData({
                 ...ammData, ...{
                     coinLP: { ...ammData.coinLP, tradeValue: 0 },
