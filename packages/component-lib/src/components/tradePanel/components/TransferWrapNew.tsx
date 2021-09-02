@@ -4,15 +4,24 @@ import { Grid, ListItemText, Typography, Box } from '@material-ui/core';
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 // import { Link as RouterLink } from 'react-router-dom';
-import { CloseIcon, DropDownIcon, globalSetup, IBData } from '@loopring-web/common-resources';
+import { CloseIcon, DropDownIcon, globalSetup, IBData, HelpIcon } from '@loopring-web/common-resources';
 import { Button, IconClearStyled, MenuItem, TextField, TradeBtnStatus, TypographyGood } from '../../index';
 import { PopoverPure } from '../../'
 import { TransferViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import * as _ from 'lodash'
-import { HelpIcon } from '@loopring-web/common-resources'
 import { ToggleButtonGroup } from '../../basic-lib';
+import styled from '@emotion/styled'
 
+const FeeTokenItemWrapper = styled(Box)`
+    background-color: var(--color-global-bg);
+`
+
+const DropdownIconStyled = styled(DropDownIcon)`
+    transform: rotate(${({status}: any) => {
+        return status === 'down' ? '0deg': '180deg'
+    }});
+` as any
 
 export const TransferWrapNew = <T extends IBData<I>,
     I>({
@@ -26,14 +35,14 @@ export const TransferWrapNew = <T extends IBData<I>,
            handleOnAddressChange,
            handleAddressError,
            wait = globalSetup.wait,
+           assetsData,
            ...rest
-       }: TransferViewProps<T, I> & WithTranslation) => {
+       }: TransferViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
     // const [_chargeFeeToken, setChargeFeeToken] = React.useState<any | undefined>(
     //     chargeFeeToken && chargeFeeTokenList.length ? chargeFeeTokenList[ chargeFeeToken as any ] : undefined);
-
     const inputBtnRef = React.useRef();
     const getDisabled = () => {
-        if (disabled || tradeData === undefined || walletMap === undefined || coinMap === undefined) {
+        if (disabled || tradeData === undefined || walletMap === undefined || coinMap === undefined || isFeeNotEnough) {
             return true
         } else {
             return false
@@ -46,10 +55,26 @@ export const TransferWrapNew = <T extends IBData<I>,
 
     const [address, setAddress] = React.useState<string | undefined>(addressDefault ? addressDefault : '');
     const [addressError, setAddressError] = React.useState<{ error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined>();
-    const [feeIndex, setFeeIndex] = React.useState<any | undefined>(0);
+    // const [feeIndex, setFeeIndex] = React.useState<any | undefined>(0);
     const [memo, setMemo] = React.useState('');
     const [feeToken, setFeeToken] = React.useState('')
+    const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
+    const [isFeeNotEnough, setIsFeeNotEnough] = React.useState(false)
+
     const popupState = usePopupState({variant: 'popover', popupId: `popupId-transfer`});
+    
+    const toggleData: any[] = chargeFeeTokenList.map(({belong, fee}) => ({
+        key: belong,
+        value: belong,
+        fee,
+    }))
+
+    const getTokenFee = React.useCallback((token: string) => {
+        return toggleData.find(o => o.key === token)?.fee || 0
+    }, [toggleData])
+
+    // const fee = toggleData.find(o => o.key === feeToken)?.fee || '--'
+    
     const debounceAddress = React.useCallback(_.debounce(({address}: any) => {
         if (handleOnAddressChange) {
             handleOnAddressChange(address)
@@ -71,13 +96,13 @@ export const TransferWrapNew = <T extends IBData<I>,
         setMemo(e.target.value)
     }, [])
 
-    const _handleFeeChange = React.useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        const index = e.target ? Number(e.target.value) : 0;
-        setFeeIndex(index)
-        if (handleFeeChange) {
-            handleFeeChange(chargeFeeTokenList[ index ]);
-        }
-    }, [chargeFeeTokenList, handleFeeChange]);
+    // const _handleFeeChange = React.useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    //     const index = e.target ? Number(e.target.value) : 0;
+    //     setFeeIndex(index)
+    //     if (handleFeeChange) {
+    //         handleFeeChange(chargeFeeTokenList[ index ]);
+    //     }
+    // }, [chargeFeeTokenList, handleFeeChange]);
 
     // const addressInput = React.useRef();
     const handleClear = React.useCallback(() => {
@@ -86,14 +111,58 @@ export const TransferWrapNew = <T extends IBData<I>,
         setAddress('')
     }, [])
 
-    const toggleData: any[] = chargeFeeTokenList.map(({belong, fee}, index) => ({
-        key: belong,
-        value: belong,
-    }))
+    // const getTokenFee = React.useCallback(())
+
+    // const getToggleData = React.useCallback(() => {
+    //     if (!!chargeFeeTokenList.length) {
+    //         return chargeFeeTokenList.map(({belong, fee}) => {
+    //             console.log({belong, fee})
+    //             return ({
+    //                 key: belong,
+    //                 value: belong,
+    //             })
+    //         })
+    //     }
+    //     return []
+    // }, [chargeFeeTokenList])
+
+    React.useEffect(() => {
+        if (!!chargeFeeTokenList.length && !feeToken && assetsData) {
+            const defaultToken = chargeFeeTokenList.find(o => assetsData.find(item => item.name === o.belong)?.available > o.fee)?.belong || 'ETH'
+            setFeeToken(defaultToken)
+            const currFee = toggleData.find(o => o.key === defaultToken)?.fee || '--'
+            handleFeeChange({
+                belong: defaultToken,
+                fee: currFee,
+            })
+        }
+    }, [chargeFeeTokenList, feeToken, assetsData, handleFeeChange, toggleData])
+
+    const checkFeeTokenEnough = React.useCallback((token: string, fee: number) => {
+        const tokenAssets = assetsData.find(o => o.name === token)?.available
+        return tokenAssets && Number(tokenAssets) > fee
+    }, [assetsData])
+
+    const handleToggleChange = React.useCallback((e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
+        if (value === null) return
+        setFeeToken(value)
+        handleFeeChange({
+            belong: value,
+            fee: getTokenFee(value),
+        })
+    }, [handleFeeChange, getTokenFee])
+
+    React.useEffect(() => {
+        if (!!chargeFeeTokenList.length && assetsData && !checkFeeTokenEnough(feeToken, Number(getTokenFee(feeToken)))) {
+            setIsFeeNotEnough(true)
+            return
+        }
+        setIsFeeNotEnough(false)
+    }, [chargeFeeTokenList, assetsData, checkFeeTokenEnough, getTokenFee, feeToken])
 
     return <Grid className={walletMap ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
-                //  justifyContent={'space-between'}
+                 justifyContent={'space-between'}
                  alignItems={"stretch"} flex={1} height={'100%'} flexWrap={'nowrap'}
     >
         <Grid item>
@@ -115,9 +184,9 @@ export const TransferWrapNew = <T extends IBData<I>,
             >
                 <Box padding={2}>
                     <Trans i18nKey="transferDescription">
-                        Transfer to any valid Ethereum addresses instantly. Please <TypographyGood component={'span'}>make
-                        sure</TypographyGood> the recipient address <TypographyGood component={'span'}>accepts Loopring
-                        layer-2 </TypographyGood> payments before you proceed.
+                        Transfer to any valid Ethereum addresses instantly. Please make
+                        sure the recipient address accepts Loopring
+                        layer-2 payments before you proceed.
                     </Trans>
                 </Box>
             </PopoverPure>
@@ -129,7 +198,7 @@ export const TransferWrapNew = <T extends IBData<I>,
                 </Trans>
             </Typography> */}
         </Grid>
-        <Grid item marginTop={3} alignSelf={"stretch"}>
+        <Grid item /* marginTop={3} */ alignSelf={"stretch"}>
             <BasicACoinTrade {...{
                 ...rest,
                 t,
@@ -139,9 +208,10 @@ export const TransferWrapNew = <T extends IBData<I>,
                 coinMap,
                 inputButtonDefaultProps,
                 inputBtnRef: inputBtnRef,
+                
             }} />
         </Grid>
-        <Grid item marginTop={4} alignSelf={"stretch"} position={'relative'}>
+        <Grid item /* marginTop={4} */ alignSelf={"stretch"} position={'relative'}>
             <TextField
                 value={address}
                 error={addressError && addressError.error ? true : false}
@@ -163,7 +233,7 @@ export const TransferWrapNew = <T extends IBData<I>,
                 </IconClearStyled> : ''}
         </Grid>
 
-        <Grid item marginTop={4} alignSelf={"stretch"} position={'relative'}>
+        <Grid item /* marginTop={4} */ alignSelf={"stretch"} position={'relative'}>
             <TextField
                 value={memo}
                 // error={addressError && addressError.error ? true : false}
@@ -181,9 +251,24 @@ export const TransferWrapNew = <T extends IBData<I>,
             />
         </Grid>
 
-        <Grid item marginTop={4} alignSelf={"stretch"}>
-            <ToggleButtonGroup size={'large'} {...{data: toggleData, value: feeToken, setValue: setFeeToken, t, ...rest}} />
-
+        <Grid item /* marginTop={4} */ alignSelf={"stretch"} position={'relative'}>
+            <Typography component={'span'} display={'flex'} alignItems={'center'} variant={'body1'} color={'var(--color-text-secondary)'} marginBottom={1}>
+                {t('transferLabelFee')}：
+                <Box component={'span'} display={'flex'} alignItems={'center'} style={{ cursor: 'pointer' }} onClick={() => setDropdownStatus(prev => prev === 'up' ? 'down' : 'up')}>
+                    {getTokenFee(feeToken) || '--'} {feeToken}
+                    <DropdownIconStyled status={dropdownStatus} fontSize={'large'} />
+                    <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
+                        {isFeeNotEnough && t('transferLabelFeeNotEnough')}
+                    </Typography>
+                </Box>
+            </Typography>
+            {dropdownStatus === 'up' && (
+                <FeeTokenItemWrapper padding={2}>
+                    <Typography variant={'body2'} color={'var(--color-text-third)'} marginBottom={1}>{t('transferLabelFeeChoose')}</Typography>
+                    <ToggleButtonGroup exclusive size={'small'} {...{data: toggleData, value: feeToken, t, ...rest}} onChange={handleToggleChange} />
+                </FeeTokenItemWrapper>
+            )}
+            
             {/* <TextField
                 id="transferFeeType"
                 select
@@ -213,8 +298,9 @@ export const TransferWrapNew = <T extends IBData<I>,
             })
             }</TextField> */}
         </Grid>
-        <Grid item marginTop={6} alignSelf={'stretch'}>
+        <Grid item marginTop={2} alignSelf={'stretch'}>
             <Button fullWidth variant={'contained'} size={'medium'} color={'primary'} onClick={() => {
+                console.log(tradeData)
                 onTransferClick(tradeData)
             }}
                     loading={!getDisabled() && transferBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}

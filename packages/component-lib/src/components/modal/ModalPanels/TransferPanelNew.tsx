@@ -18,8 +18,9 @@ export const TransferPanelNew = withTranslation('common', {withRef: true})(<T ex
         chargeFeeTokenList,
         onTransferClick,
         transferBtnStatus,
+        assetsData,
         ...rest
-    }: TransferProps<T, I> & WithTranslation) => {
+    }: TransferProps<T, I> & WithTranslation & { assetsData: any[] }) => {
 
     // const [transferData, setTransferData] = React.useState<SwitchData<T>>({
     //     to: 'button',
@@ -49,8 +50,8 @@ export const TransferPanelNew = withTranslation('common', {withRef: true})(<T ex
                                                                  disabled: !!rest.disabled,
                                                                  onTransferClick,
                                                                  transferBtnStatus,
-
-                                                             }} />, [onChangeEvent, chargeFeeTokenList, rest, switchData, onTransferClick, transferBtnStatus]),
+                                                                 assetsData,
+                                                             }} />, [onChangeEvent, chargeFeeTokenList, rest, switchData, onTransferClick, transferBtnStatus, assetsData]),
             toolBarItem: undefined
         },
             {

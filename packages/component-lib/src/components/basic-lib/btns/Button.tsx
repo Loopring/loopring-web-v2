@@ -73,18 +73,22 @@ const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
 
     &:hover {
       //backgroundColor: var(--color-box);
-      color: var(--color-primary);
-      border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-primary)'})};
+      // color: var(--color-primary);
+      color: var(--color-text-primary);
+      // border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-primary)'})};
+      border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-border-hover)'})};
       background: var(--color-box);
-      &:not(:last-child), &:not(:first-of-type) {
-        border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-primary)'})};
-      }
+      // &:not(:last-child), &:not(:first-of-type) {
+      //   border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-primary)'})};
+      // }
 
       &.Mui-selected, &.Mui-selected {
         //background: var(--opacity);
         background: var(--color-box);
-        color: var(--color-primary);
-        border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-primary)'})};
+        // color: var(--color-primary);
+        color: var(--color-text-primary);
+        // border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-primary)'})};
+        border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-border-hover)'})};
       }
     }
 
@@ -96,10 +100,12 @@ const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
     }
 
     &.Mui-selected, &.Mui-selected + &.Mui-selected {
-      color: var(--color-primary);
-      background: var(--color-box);
+      // color: var(--color-primary);
+      color: var(--color-text-primary);
+      background: var(--color-box) !important;
       //background:  var(--color-disable);
-      border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-primary)'})}
+      // border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-primary)'})}
+      border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-border-hover)'})}
 
     }
   }

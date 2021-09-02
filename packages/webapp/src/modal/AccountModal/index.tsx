@@ -72,6 +72,7 @@ import store from 'stores'
 import { useTransfer } from 'hooks/useractions/useTransfer';
 import { useWithdraw } from 'hooks/useractions/useWithdraw';
 import { checkErrorInfo } from 'hooks/useractions/utils';
+import { useGetAssets } from '../../pages/Layer2Page/AssetPanel/hook'
 
 export const ModalAccountInfo = withTranslation('common')(({
                                                                onClose,
@@ -111,6 +112,8 @@ export const ModalAccountInfo = withTranslation('common')(({
     } = useWithdraw()
 
     const {depositProps} = useDeposit()
+
+    const {assetsRawData} = useGetAssets()
 
     const {
         transferAlertText,
@@ -663,6 +666,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                     resetProps={{} as any}
                     ammProps={{} as any}
                     swapProps={{} as any}
+                    assetsData={assetsRawData}
                     {...{_height: 'var(--modal-height)', _width: 'var(--modal-width)'}}
         />
 

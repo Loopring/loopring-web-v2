@@ -12,8 +12,8 @@ import {
     SwapPanel,
     SwapProps,
     SwitchPanelStyled,
-    TransferPanel,
-    // TransferPanelNew,
+    // TransferPanel,
+    TransferPanelNew,
     TransferProps,
     useOpenModals,
     WithdrawPanel,
@@ -24,6 +24,7 @@ import { WithTranslation, withTranslation } from 'react-i18next';
 import { useTheme } from '@emotion/react';
 
 const DEFAULT_DEPOSIT_HEIGHT = 300;
+const DEFAULT_TRANSFER_HEIGHT = 550;
 
 const Modal = withTranslation('common')(({
                                              open,
@@ -72,7 +73,7 @@ export const ModalPanel = <T extends IBData<I>, I>({
                                                        resetProps,
                                                        ammProps,
                                                        swapProps,
-
+                                                       assetsData,
                                                        ...rest
                                                    }: {
     _width?: number | string,
@@ -82,7 +83,8 @@ export const ModalPanel = <T extends IBData<I>, I>({
     depositProps: DepositProps<T, I>,
     resetProps: ResetProps<T, I>
     ammProps: AmmProps<any, any, T, any>
-    swapProps: SwapProps<T, I, any>
+    swapProps: SwapProps<T, I, any>;
+    assetsData: any[];
 }) => {
     const {
         modals,
@@ -104,10 +106,10 @@ export const ModalPanel = <T extends IBData<I>, I>({
     const theme = useTheme();
     return <>
         <Modal open={isShowTransfer.isShow} onClose={() => setShowTransfer({isShow: false})}
-               content={<TransferPanel<any, any> {...{
+               content={<TransferPanelNew<any, any> {...{
                    ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
-                   _height: '600px', ...transferProps,
-               }}> </TransferPanel>}/>
+                   _height: DEFAULT_TRANSFER_HEIGHT, ...transferProps, assetsData,
+               }}> </TransferPanelNew>}/>
         <Modal open={isShowWithdraw.isShow} onClose={() => setShowWithdraw({isShow: false})}
                content={<WithdrawPanel<any, any> {...{
                    ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
