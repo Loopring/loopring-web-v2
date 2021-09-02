@@ -156,6 +156,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
             <Grid container marginRight={3} alignContent={'stretch'} direction={'column'} flexWrap={'nowrap'}>
                 <Grid item xs={12} marginTop={2}>
                     <TradeTitle {...{
+                        baseShow: coinPairInfo.myCoinA?.simpleName,
+                        quoteShow: coinPairInfo.myCoinB?.simpleName,
                         ...rest, t,
                         ...pair,
                         tradeFloat,
