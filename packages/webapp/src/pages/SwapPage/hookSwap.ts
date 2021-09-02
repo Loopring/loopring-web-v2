@@ -72,7 +72,7 @@ const getPriceImpactInfo = (calcTradeParams: any) => {
         if (priceImpact > 0.1 && priceImpact <= 1) {
             priceImpactColor = 'var(--color-success)'
         } else if (priceImpact > 1 && priceImpact <= 3) {
-            priceImpactColor = 'var(--color-textPrimary)'
+            priceImpactColor = 'textPrimary'
         } else if (priceImpact > 3 && priceImpact <= 5) {
             priceImpactColor = 'var(--color-warning)'
         } else if (priceImpact > 5 && priceImpact <= 10) {
@@ -86,7 +86,7 @@ const getPriceImpactInfo = (calcTradeParams: any) => {
         priceImpact = getShowStr(priceImpact)
 
     } else {
-        priceImpactColor = 'var(--color-textPrimary)'
+        priceImpactColor = 'var(--color-text-primary)'
     }
 
     return {
