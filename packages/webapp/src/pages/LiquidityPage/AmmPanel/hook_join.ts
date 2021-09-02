@@ -233,8 +233,6 @@ export const useAmmJoin = <C extends { [key: string]: any }>({
     const handleJoin = React.useCallback(async ({ data, ammData, type, fees, ammPoolSnapshot, tokenMap, account }) => {
         setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, }]))
 
-        // myLog(data, ammData, type, fees, ammPoolSnapshot, tokenMap, account)
-
         if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !fees || !account?.accAddress) {
             return
         }
