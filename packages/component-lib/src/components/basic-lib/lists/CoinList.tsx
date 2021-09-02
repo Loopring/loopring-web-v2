@@ -6,6 +6,7 @@ import { CoinItemProps, CoinMenuProps } from "./Interface";
 import { AvatarCoinStyled, CoinInfo, CoinKey, WalletCoin } from '@loopring-web/common-resources';
 import { Virtuoso } from 'react-virtuoso';
 import { useSettings } from '../../../stores';
+import { CoinIcon } from '../form';
 
 
 function _CoinMenu<C, I extends CoinInfo<C>>({
@@ -112,8 +113,8 @@ export const CoinItem = React.memo(React.forwardRef(<C extends any>({
                                                                     }: CoinItemProps<C> & WithTranslation, ref: React.ForwardedRef<any>) => {
     const {simpleName} = coinInfo;
     // const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;
-    const {coinJson} = useSettings();
-    const coinIcon: any = coinJson [ simpleName ];
+    // const {coinJson} = useSettings();
+    // const coinIcon: any = coinJson [ simpleName ];
 
     return <StyledCoinItem
         button
@@ -123,25 +124,26 @@ export const CoinItem = React.memo(React.forwardRef(<C extends any>({
         onClick={(event: React.MouseEvent) => handleListItemClick(event, itemKey)}
     >
         <ListItemIcon>
-            {/*<img src={coinInfo.icon} alt={t(simpleName)}/>*/}
-            {/*<Avatar alt={simpleName}*/}
-            {/*        src={coinInfo.icon}*/}
-            {/*        srcSet={`${coinInfo.icon},./images/icon-default.png`}/>*/}
-            {/*<Avatar variant="square" alt={coinInfo?.simpleName}*/}
-            {/*    // src={sellData?.icon}*/}
-            {/*        src={hasLoaded ? coinInfo.icon : 'static/images/icon-default.png'}/>*/}
-            {coinIcon ?
-                <AvatarCoinStyled imgx={coinIcon.x} imgy={coinIcon.y} imgheight={coinIcon.height}
-                                  imgwidth={coinIcon.width}
-                                  variant="circular" alt={simpleName as string}
-                    // src={sellData?.icon}
-                                  src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
-                : <Avatar variant="circular" alt={simpleName as string} style={{
-                    height: 'var(--list-menu-coin-size)',
-                    width: 'var(--list-menu-coin-size)'
-                }}
-                    // src={sellData?.icon}
-                          src={'static/images/icon-default.png'}/>}
+            <CoinIcon symbol={simpleName} size={24} lpSize={24} />
+            {/*/!*<img src={coinInfo.icon} alt={t(simpleName)}/>*!/*/}
+            {/*/!*<Avatar alt={simpleName}*!/*/}
+            {/*/!*        src={coinInfo.icon}*!/*/}
+            {/*/!*        srcSet={`${coinInfo.icon},./images/icon-default.png`}/>*!/*/}
+            {/*/!*<Avatar variant="square" alt={coinInfo?.simpleName}*!/*/}
+            {/*/!*    // src={sellData?.icon}*!/*/}
+            {/*/!*        src={hasLoaded ? coinInfo.icon : 'static/images/icon-default.png'}/>*!/*/}
+            {/*{coinIcon ?*/}
+            {/*    <AvatarCoinStyled imgx={coinIcon.x} imgy={coinIcon.y} imgheight={coinIcon.height}*/}
+            {/*                      imgwidth={coinIcon.width}*/}
+            {/*                      variant="circular" alt={simpleName as string}*/}
+            {/*        // src={sellData?.icon}*/}
+            {/*                      src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>*/}
+            {/*    : <Avatar variant="circular" alt={simpleName as string} style={{*/}
+            {/*        height: 'var(--list-menu-coin-size)',*/}
+            {/*        width: 'var(--list-menu-coin-size)'*/}
+            {/*    }}*/}
+            {/*        // src={sellData?.icon}*/}
+            {/*              src={'static/images/icon-default.png'}/>}*/}
         </ListItemIcon>
         <ListItemText primary={simpleName} secondary={
             <>

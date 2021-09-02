@@ -42,7 +42,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
         if (depositValue?.tradeValue && allowanceInfo && depositValue?.tradeValue <= depositValue?.balance) {
             const curValInWei = sdk.toBig(depositValue?.tradeValue).times('1e' + allowanceInfo?.tokenInfo.decimals)
-            if (curValInWei.gt(allowanceInfo.allowance)) {
+            if (allowanceInfo.needCheck && curValInWei.gt(allowanceInfo.allowance)) {
                 setLabelAndParams( 'labelDepositNeedApprove', { symbol: depositValue.belong })
             } else {
                 enableBtn()

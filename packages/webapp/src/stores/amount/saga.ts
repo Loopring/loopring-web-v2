@@ -20,7 +20,6 @@ const getAmountApi = async <R extends { [ key: string ]: any }>(market: string):
             clearInterval(__timer__);
         }
         __timer__ = setInterval(async () => {
-            // debugger
             store.dispatch(getAmount(market))
         }, 1000 * 15 * 60)//   //
 

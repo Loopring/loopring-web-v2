@@ -1,39 +1,61 @@
 import styled from '@emotion/styled/macro'
+import { Box, Container, Grid, Link, List, ListItem, Typography } from '@material-ui/core';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
-const FooterDiv = styled.div`
-    text-align: center;
-    height: 100px;
-    width: 100%;
-    div {
-        & .footer_internal {
-            text-align: center;
-            color: var(--color-text-primary);
-            width: 1280px;
-            margin: 0 auto;
-            line-height: 35px;
-        }
+const FooterDiv = styled(Box)`
+  @media screen and (max-width: 1280px) {
+    
 
-        @media screen and (max-width: 1280px) {
-        
-          .footer_internal {
-            width: 100%;
-          }
-        
-        }
+  }
+  font-size: 1.4rem;
+  .MuiListItem-root{
+    padding: 0;
+    width: auto;
+    max-width: initial;
+    :hover{
+       background:  var(--opacity);;
     }
+    a{
+      color:var(--color-text-secondary) 
+    }
+  }
 `
 
-const Footer = () => {
-
-    return (
-        <FooterDiv>
-            <div>
-                <div className={'footer_internal'}>Copyright (c) 2017-{new Date().getFullYear()}.</div>
-                <div className={'footer_internal'}>All Rights Reversed by Loopring.</div>
-            </div>
-        </FooterDiv>
-    )
-
-}
+const Footer = withTranslation('layout')(({t}:WithTranslation) => {
+    return <FooterDiv component={'footer'}  fontSize={'body1'}>
+            <Container>
+                <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                    <List style={{display:'flex',alignItems:'center'}} >
+                        <ListItem>
+                            <Link color="textSecondary"href="https://medium.com/loopring-protocol">Medium</Link>
+                            <Typography component={'span'} paddingX={2}>⭑</Typography>
+                        </ListItem>
+                        <ListItem>
+                            <Link color="textSecondary"  href="https://twitter.com/loopringorg">
+                                {'twitter'}
+                            </Link>
+                            <Typography component={'span'} paddingX={2}>⭑</Typography>
+                        </ListItem>
+                        <ListItem>
+                            <Link color="textSecondary" href="https://discord.gg/KkYccYp">Discord</Link>
+                            <Typography component={'span'} paddingX={2}>⭑</Typography>
+                        </ListItem>
+                        <ListItem>
+                            <Link color="textSecondary" href="https://www.youtube.com/c/loopring">{t('labelYoutube')}</Link>
+                            <Typography component={'span'} paddingX={2}>⭑</Typography>
+                        </ListItem>
+                        <ListItem>
+                            <Link color="textSecondary" href="https://weibo.com/loopringfoundation">{t('labelWeibo')}</Link>
+                        </ListItem>
+                    </List> 
+                </Box>
+               
+                <Typography component={'p'}  variant={'body2'} paddingY={2} textAlign={'center'}>
+                    <Typography style={{fontSize:'9px'}} component={'span'}>Copyright (c) 2017-{new Date().getFullYear()}.</Typography>
+                    <Typography style={{fontSize:'9px'}} component={'span'}>All Rights Reversed by Loopring.</Typography>
+                </Typography>
+            </Container>
+    </FooterDiv>
+})
 
 export default Footer

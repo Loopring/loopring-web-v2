@@ -19,14 +19,15 @@ const TableWrapperStyled = styled(Box)`
     display: flex;
     flex-direction: column;
     flex: 1;
-
+    height: 100%;
     ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 `
 
 const TableStyled = styled(Table)`
     &.rdg{
-        height: ${(props: any) => props.currentHeight}px;
-        // height: 100%;
+        //height: ${(props: any) => props.currentHeight?props.currentHeight+'px':'100%'};
+        height: 100%;
+      
         --template-columns: 240px auto auto auto auto auto 92px !important;
         .rdg-cell.action{
             display: flex;
@@ -263,6 +264,7 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                                                                     onVisibleRowsChange,
                                                                     rawData,
                                                                     history,
+
                                                                     onRowClick,
                                                                     favoriteMarket,
                                                                     addFavoriteMarket,
