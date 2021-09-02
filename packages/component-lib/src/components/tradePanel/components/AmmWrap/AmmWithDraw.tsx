@@ -1,9 +1,11 @@
 import {
-    AmmInData, AmmExitData, AvatarCoinStyled,
+    AmmExitData,
+    AmmInData,
+    AvatarCoinStyled,
     CoinInfo,
     EmptyValueTag,
-    IBData,
     ExchangeIcon,
+    IBData,
     ReverseIcon,
     SlippageTolerance
 } from '@loopring-web/common-resources';
@@ -26,6 +28,7 @@ import { SlippagePanel } from '../tool';
 import { useSettings } from '../../../../stores';
 import { Box, Link } from '@material-ui/core/';
 import { SvgStyled } from './styled';
+import { toBig } from 'loopring-sdk';
 
 export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
     I,
@@ -45,16 +48,18 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                        onRemoveChangeEvent,
                        handleError,
                        ammData,
-                       selectedPercentage = -1,
+                       // selectedPercentage = -1,
                        ...rest
                    }: AmmWithdrawWrapProps<T, I, ACD, C> & WithTranslation) => {
-    const {coinJson,slippage} = useSettings();
+    const {coinJson, slippage} = useSettings();
     const coinLPRef = React.useRef();
-    const tokenAIcon: any = coinJson[ammCalcData?.lpCoinA.belong];
-    const tokenBIcon: any = coinJson[ammCalcData?.lpCoinB.belong];
+    const tokenAIcon: any = coinJson[ ammCalcData?.lpCoinA.belong ];
+    const tokenBIcon: any = coinJson[ ammCalcData?.lpCoinB.belong ];
     const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number | string>;
-    const [isPercentage,setIsPercentage] = React.useState(true);
-    const [_selectedPercentage, setSelectedPercentage] = React.useState(selectedPercentage);
+    const [isPercentage, setIsPercentage] = React.useState(true);
+    const [_selectedPercentage, setSelectedPercentage] = React.useState(
+        (ammData.coinLP.tradeValue && ammCalcData.lpCoin.tradeValue) ?
+            (ammData.coinLP.tradeValue / ammCalcData.lpCoin.tradeValue * 100) : 0);
     const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined' ? isStob : true);
     const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
         error: false,
@@ -88,16 +93,18 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
         //     return {error: false, message: ''}
         // }
     }
-    
+
     const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
         if (_ref) {
-            if (ammData[ 'coinLP' ].tradeValue !== ibData.tradeValue) {
-                const percentageValue = Number(ammData[ 'coinLP' ].tradeValue) /(ammData[ 'coinLP' ].balance/100)
-                setSelectedPercentage( percentageValue )
-                onRemoveChangeEvent({tradeData: {...ammData, [ 'coinLP'  ]: ibData}, type: 'lp'});
+            if (ammData[ 'coinLP' ].tradeValue !== ibData.tradeValue && ammData[ 'coinLP' ].balance) {
+                const percentageValue = toBig(ibData.tradeValue).div(ammData[ 'coinLP' ].balance).times(100).toFixed(2)
+                if (!isNaN(Number(percentageValue))) {
+                    setSelectedPercentage(Number(percentageValue))
+                }
+                onRemoveChangeEvent({tradeData: {...ammData, [ 'coinLP' ]: ibData}, type: 'lp'});
             }
         } else {
-            onRemoveChangeEvent({tradeData: {...ammData, [ 'coinLP' ]: ibData}, type:'lp'});
+            onRemoveChangeEvent({tradeData: {...ammData, [ 'coinLP' ]: ibData}, type: 'lp'});
         }
     }, [ammData, onRemoveChangeEvent]);
 
@@ -107,7 +114,8 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
         console.log('--- onPercentage ammData:', ammData)
 
         if (ammData?.coinLP) {
-            ammData.coinLP.tradeValue = (ammData.coinLP.balance  / 100) *  value;
+            setSelectedPercentage(value)
+            ammData.coinLP.tradeValue = (ammData.coinLP.balance / 100) * value;
             handleCountChange(ammData.coinLP, null)
         }
     }
@@ -169,22 +177,22 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
         }
         // return  t(ammWithdrawBtnI18nKey ? t(ammWithdrawBtnI18nKey) : t(`labelRemoveLiquidityBtn`))
     }, [error, ammWithdrawBtnI18nKey, t])
-    const stob = React.useMemo(()=>{
-        if(ammCalcData && ammCalcData?.lpCoinA && ammCalcData?.lpCoinB  && ammCalcData.AtoB ) {
-           let price = ``;
-            if(_isStoB){
-                price = `1${ammCalcData?.lpCoinA?.belong} \u2248 ${ ammCalcData.AtoB } ${ammCalcData?.lpCoinB?.belong}`;
+    const stob = React.useMemo(() => {
+        if (ammCalcData && ammCalcData?.lpCoinA && ammCalcData?.lpCoinB && ammCalcData.AtoB) {
+            let price: string = 0;
+            if (_isStoB) {
+                price = `1${ammCalcData?.lpCoinA?.belong} \u2248 ${ammCalcData.AtoB} ${ammCalcData?.lpCoinB?.belong}`;
 
-            } else{
-                price = `1${ammCalcData?.lpCoinB?.belong} \u2248 ${1/ammCalcData.AtoB} ${ammCalcData?.lpCoinA?.belong}`;
+            } else {
+                price = `1${ammCalcData?.lpCoinB?.belong} \u2248 ${1 / ammCalcData.AtoB} ${ammCalcData?.lpCoinA?.belong}`;
             }
-            return  <> {price} <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
+            return <> {price} <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
             ><ReverseIcon/></IconButtonStyled></>
         } else {
             return EmptyValueTag
         }
 
-    },[_isStoB,ammCalcData])
+    }, [_isStoB, ammCalcData])
 
 
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
@@ -193,13 +201,13 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
         <Grid item display={'flex'} alignSelf={"stretch"} justifyContent={''} alignItems={"stretch"}
               flexDirection={"column"}>
             <Typography alignSelf={'flex-end'}>
-                <Link onClick={()=>setIsPercentage(!isPercentage)}>{t('labelPercentage')}</Link>
+                <Link onClick={() => setIsPercentage(!isPercentage)}>{t('labelPercentage')}</Link>
             </Typography>
-            <Typography alignSelf={'center'} variant={'h2'} >
+            <Typography alignSelf={'center'} variant={'h2'}>
                 {_selectedPercentage}%
             </Typography>
-            <Typography alignSelf={'center'} variant={'body1'}  marginTop={1} hidden={!isPercentage} lineHeight={'22px'}>
-                {ammData?.coinLP?.tradeValue??EmptyValueTag}
+            <Typography alignSelf={'center'} variant={'body1'} marginTop={1} hidden={!isPercentage} lineHeight={'22px'}>
+                {ammData?.coinLP?.tradeValue ?? EmptyValueTag}
             </Typography>
             <Grid item alignSelf={'stretch'} marginTop={1} marginX={1} hidden={!isPercentage} height={48}>
                 <BtnPercentage selected={_selectedPercentage} anchors={[{
@@ -223,26 +231,28 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                     coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
                 }}/>
             </Grid>
-           
+
             <Box alignSelf={"center"} marginY={1}>
                 <SvgStyled>
                     <ExchangeIcon/>
                 </SvgStyled>
             </Box>
-            <Box borderRadius={1} style={{background:'var(--color-pop-bg)'}}
+            <Box borderRadius={1} style={{background: 'var(--color-pop-bg)'}}
                  alignItems={'stretch'} display={'flex'}
                  paddingY={1} paddingX={2} flexDirection={'column'}>
-                <Typography variant={'body1'} color={'textSecondary'} alignSelf={'flex-start'} >{t('labelMinEeceive')}</Typography>
-                <Box marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'} justifyContent={'space-between'}>
-                    <Box component={'span'}  display={'flex'} flexDirection={'row'}  alignItems={'center'}
+                <Typography variant={'body1'} color={'textSecondary'}
+                            alignSelf={'flex-start'}>{t('labelMinEeceive')}</Typography>
+                <Box marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'}
+                     justifyContent={'space-between'}>
+                    <Box component={'span'} display={'flex'} flexDirection={'row'} alignItems={'center'}
                          className={'logo-icon'} height={'var(--withdraw-coin-size)'} justifyContent={'flex-start'}
-                          marginRight={1/2}>
+                         marginRight={1 / 2}>
                         {tokenAIcon ?
                             <AvatarCoinStyled imgx={tokenAIcon.x} imgy={tokenAIcon.y}
                                               imgheight={tokenAIcon.height}
                                               imgwidth={tokenAIcon.width} size={16}
                                               variant="circular"
-                                              style={{marginLeft:'-8px'}}
+                                              style={{marginLeft: '-8px'}}
                                               alt={ammCalcData?.lpCoinA.belong as string}
                                               src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
                             : <Avatar variant="circular" alt={ammCalcData?.lpCoinA.belong as string}
@@ -253,20 +263,21 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                                 // src={sellData?.icon}
                                       src={'static/images/icon-default.png'}/>
                         }
-                        <Typography  variant={'h6'}>{ammCalcData?.lpCoinA.belong}</Typography>
+                        <Typography variant={'h6'}>{ammCalcData?.lpCoinA.belong}</Typography>
                     </Box>
                     <Typography variant={'h6'}>{ammCalcData?.lpCoinA.tradeValue}</Typography>
                 </Box>
-                <Box marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'} justifyContent={'space-between'}>
-                    <Box component={'span'}  display={'flex'} flexDirection={'row'} alignItems={'center'}
+                <Box marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'}
+                     justifyContent={'space-between'}>
+                    <Box component={'span'} display={'flex'} flexDirection={'row'} alignItems={'center'}
                          className={'logo-icon'} height={'var(--withdraw-coin-size'} justifyContent={'flex-start'}
-                         width={'var(--withdraw-coin-size)'}  marginRight={1/2}>
+                         width={'var(--withdraw-coin-size)'} marginRight={1 / 2}>
                         {tokenBIcon ?
                             <AvatarCoinStyled imgx={tokenBIcon.x} imgy={tokenBIcon.y}
                                               imgheight={tokenBIcon.height}
                                               imgwidth={tokenBIcon.width} size={16}
                                               variant="circular"
-                                              style={{marginLeft:'-8px'}}
+                                              style={{marginLeft: '-8px'}}
                                               alt={ammCalcData?.lpCoinB.belong as string}
                                               src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
                             : <Avatar variant="circular" alt={ammCalcData?.lpCoinB.belong as string}
@@ -295,11 +306,12 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                 <Grid item paddingBottom={3} sx={{color: 'text.secondary'}}>
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
                           height={24}>
-                        <Typography component={'p'} variant="body2" color={'textSecondary'}>{t('swapTolerance')}</Typography>
+                        <Typography component={'p'} variant="body2"
+                                    color={'textSecondary'}>{t('swapTolerance')}</Typography>
                         <Typography component={'p'} variant="body2" color={'textPrimary'}>
                             {ammCalcData ? <>
                                 <Typography {...bindHover(popupState)}
-                                            component={'span'} variant="body2" >
+                                            component={'span'} variant="body2">
                                     <LinkActionStyle>
                                         {ammData.slippage ? ammData.slippage : ammCalcData?.slippage ? ammCalcData?.slippage : 0.5}%
                                     </LinkActionStyle>
@@ -315,7 +327,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                                             ...rest, t,
                                             handleChange: _onSlippageChange,
                                             slippageList: slippageArray,
-                                            slippage:(ammCalcData && ammCalcData.slippage) ? ammCalcData.slippage : 0.5
+                                            slippage: (ammCalcData && ammCalcData.slippage) ? ammCalcData.slippage : 0.5
                                         }} />
                                     </PopoverPure>
                                 </Typography>
@@ -326,9 +338,12 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
 
                     </Grid>
 
-                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"} marginTop={1/2}>
-                        <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('swapFee')} </Typography>
-                        <Typography component={'p'} variant="body2" color={'textPrimary'}>{ammCalcData ? ammCalcData?.fee : EmptyValueTag}</Typography>
+                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
+                          marginTop={1 / 2}>
+                        <Typography component={'p'} variant="body2"
+                                    color={'textSecondary'}> {t('swapFee')} </Typography>
+                        <Typography component={'p'} variant="body2"
+                                    color={'textPrimary'}>{ammCalcData ? ammCalcData?.fee : EmptyValueTag}</Typography>
                     </Grid>
                 </Grid>
                 <Grid item>
