@@ -15,6 +15,9 @@ const FooterDiv = styled(Box)`
     :hover{
        background:  var(--opacity);;
     }
+    a{
+      color:var(--color-text-secondary) 
+    }
   }
 `
 
@@ -47,9 +50,9 @@ const Footer = withTranslation('layout')(({t}:WithTranslation) => {
                     </List> 
                 </Box>
                
-                <Typography component={'p'} style={{fontSize:'9px'}} variant={'body2'} paddingY={2} textAlign={'center'}>
-                    <Typography component={'span'}>Copyright (c) 2017-{new Date().getFullYear()}.</Typography>
-                    <Typography component={'span'}>All Rights Reversed by Loopring.</Typography>
+                <Typography component={'p'}  variant={'body2'} paddingY={2} textAlign={'center'}>
+                    <Typography style={{fontSize:'9px'}} component={'span'}>Copyright (c) 2017-{new Date().getFullYear()}.</Typography>
+                    <Typography style={{fontSize:'9px'}} component={'span'}>All Rights Reversed by Loopring.</Typography>
                 </Typography>
             </Container>
     </FooterDiv>
