@@ -39,12 +39,11 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     const { allowanceInfo } = useAllowances({ owner: account.accAddress, symbol: depositValue.belong, })
 
     const updateBtnStatus = React.useCallback(() => {
-        myLog(allowanceInfo?.allowance.toNumber(), allowanceInfo?.needCheck)
 
-        if (depositValue?.tradeValue && allowanceInfo) {
+        if (depositValue?.tradeValue && allowanceInfo && depositValue?.tradeValue <= depositValue?.balance) {
             const curValInWei = sdk.toBig(depositValue?.tradeValue).times('1e' + allowanceInfo?.tokenInfo.decimals)
             if (curValInWei.gt(allowanceInfo.allowance)) {
-                setLabelAndParams( 'labelNeedApprove', { symbol: depositValue.belong })
+                setLabelAndParams( 'labelDepositNeedApprove', { symbol: depositValue.belong })
             } else {
                 enableBtn()
             }
