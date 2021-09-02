@@ -50,6 +50,7 @@ export const colorBase = ({theme}: any) => css`
     --color-global-bg: ${theme.colorBase.globalBg};
     --color-star: ${theme.colorBase.star};  
     /********************Case for shadow*******************/
+    --color-button-pot:  ${theme.colorBase.buttonPot};
     --color-button-icon: ${theme.colorBase.buttonIcon};
     --color-text-button-select: ${theme.colorBase.textButtonSelect};
     --color-mask:  ${theme.colorBase.mask};
