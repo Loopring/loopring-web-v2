@@ -1,7 +1,7 @@
 import React from "react";
 import {
     AccountStatus,
-    AmmData,
+    AmmJoinData,
     AmmInData,
     CoinInfo,
     fnType,
@@ -184,11 +184,11 @@ export const useAmmCalc = <C extends { [ key: string ]: any }>({
 
     const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<C> | undefined>();
 
-    const [ammData, setAmmData] = React.useState<AmmData<IBData<C>, C>>({
+    const [ammData, setAmmData] = React.useState<AmmJoinData<IBData<C>, C>>({
         coinA: {belong: undefined} as unknown as IBData<C>,
         coinB: {belong: undefined} as unknown as IBData<C>,
         slippage: initSlippage
-    } as AmmData<IBData<C>, C>);
+    } as AmmJoinData<IBData<C>, C>);
 
     const [btnI18nKey, setBtnI18nKey] = React.useState<string | undefined>(undefined);
 
@@ -219,6 +219,8 @@ export const useAmmCalc = <C extends { [ key: string ]: any }>({
             tickerData: snapShotData?.tickerData,
             ammPoolSnapshot: snapShotData?.ammPoolSnapshot
         })
+
+        myLog('initAmmData:', _ammCalcData)
 
         setAmmCalcData({...ammCalcData, ..._ammCalcData});
         if (_ammCalcData.myCoinA && tokenMap) {
@@ -314,10 +316,11 @@ export const useAmmCalc = <C extends { [ key: string ]: any }>({
             }
 
             const {fees} = await LoopringAPI.userAPI.getOffchainFeeAmt(request, apiKey)
+            
             setFees(fees)
 
-            const fee = sdk.toBig(fees[ pair.coinBInfo.simpleName ]?.fee as string)
-                .div('1e' + feeToken.decimals)
+            const feeRaw = fees[ pair.coinBInfo.simpleName ] ? fees[ pair.coinBInfo.simpleName ].fee : 0
+            const fee = sdk.toBig(feeRaw).div('1e' + feeToken.decimals)
 
             setFee(fee.toNumber())
 
@@ -466,7 +469,7 @@ export const useAmmCalc = <C extends { [ key: string ]: any }>({
 
     }, [])
 
-    const handleAmmPoolEvent = (data: AmmData<IBData<any>>, _type: 'coinA' | 'coinB') => {
+    const handleAmmPoolEvent = (data: AmmJoinData<IBData<any>>, _type: 'coinA' | 'coinB') => {
 
         if (isJoin) {
             handleJoin({data, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account})
@@ -591,7 +594,7 @@ export const useAmmCalc = <C extends { [ key: string ]: any }>({
     const onAmmClickMap = Object.assign(deepClone(btnClickMap), {
         [ fnType.ACTIVATED ]: [ammCalculator]
     })
-    const onAmmClick = React.useCallback((props: AmmData<IBData<any>>) => {
+    const onAmmClick = React.useCallback((props: AmmJoinData<IBData<any>>) => {
         accountStaticCallBack(onAmmClickMap, [props])
     }, [onAmmClickMap]);
 

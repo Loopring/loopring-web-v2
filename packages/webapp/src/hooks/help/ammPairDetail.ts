@@ -21,7 +21,7 @@ export const ammPairInit = ({
         _ammCalcData.AtoB = quoteVol && baseVol && parseFloat(quoteVol.div(baseVol).toFixed(7, 0) as string)
     }
     if (pair.coinAInfo) {
-        const feeReal = fee ? fee : 0
+        const feeReal = !!fee ? fee : 0
 
         _ammCalcData.myCoinA = {
             belong: pair.coinAInfo.simpleName,
@@ -45,6 +45,8 @@ export const ammPairInit = ({
             }
             _ammCalcData.lpCoin = balance;
         }
+
+        // debugger
         _ammCalcData.lpCoinA = {
             belong: pair.coinAInfo.simpleName,
             balance: coinACount,
