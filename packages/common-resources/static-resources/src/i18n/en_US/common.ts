@@ -123,7 +123,7 @@ export default {
     labelMyLPToken: 'My Liquidity Token',
     labelMyLPAToken: 'My {{symbol}}',
     labelMyLPBToken: 'My {{symbol}}',
-    labelMyLPAmountFor: 'My accounted for',
+    labelMyLPAmountFor: 'My Ratio',
     labelTrade: 'Trade',
     labelAmmList: 'AMM List',
     labelMyPoolShare: 'My Pool Share',

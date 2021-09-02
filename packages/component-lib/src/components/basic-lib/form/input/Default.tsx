@@ -46,7 +46,6 @@ export const CoinIcon = <R extends `${string}-${string}` | string | `LP-${string
     size?:number
 }) => {
     const {coinJson} = useSettings();
-    debugger
     if (symbol && symbol.match(/LP-(\w+)-(\w+)/i) && coinJson) {
         // @ts-ignore
         const [, coinA, coinB] = symbol.match(/LP-(\w+)-(\w+)/i);

@@ -133,23 +133,23 @@ const MyAmmLPAssets = withTranslation('common')(({ammCalcData, t}:
         <Box display={'flex'} flexDirection={'column'}>
 
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}>
-                <Typography component={'p'} variant="body1" color={'textSecondary'}> {t('labelMyLPToken')} </Typography>
-                <Typography component={'p'} variant="body1">{ammCalcData && ammCalcData.lpCoin.balance ? ammCalcData.lpCoin.balance : EmptyValueTag}</Typography>
+                <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('labelMyLPToken')} </Typography>
+                <Typography component={'p'} variant="body2">{ammCalcData && ammCalcData.lpCoin.balance ? ammCalcData.lpCoin.balance : EmptyValueTag}</Typography>
             </Box>
-            <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}>
-                <Typography component={'p'} variant="body1" color={'textSecondary'}> {t('labelMyLPAToken')} </Typography>
+            <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"} marginTop={1/2}>
+                <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('labelMyLPAToken',{symbol:ammCalcData.lpCoinA.belong})} </Typography>
                 <Typography component={'p'}
-                            variant="body1">{ammCalcData && ammCalcData.myCoinA.balance ? ammCalcData.myCoinA.balance : EmptyValueTag}</Typography>
+                            variant="body2">{ammCalcData && ammCalcData.myCoinA.balance ? ammCalcData.myCoinA.balance : EmptyValueTag}</Typography>
             </Box>
-            <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}>
-                <Typography component={'p'} variant="body1" color={'textSecondary'}> {t('labelMyLPBToken')} </Typography>
+            <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"} marginTop={1/2}>
+                <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('labelMyLPBToken',{symbol:ammCalcData.lpCoinB.belong})} </Typography>
                 <Typography component={'p'}
-                            variant="body1">{ammCalcData && ammCalcData.myCoinB.balance ? ammCalcData.myCoinB.balance : EmptyValueTag}</Typography>
+                            variant="body2">{ammCalcData && ammCalcData.myCoinB.balance ? ammCalcData.myCoinB.balance : EmptyValueTag}</Typography>
             </Box>
-            <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}>
-                <Typography component={'p'} variant="body1" color={'textSecondary'}> {t('labelMyLPAmountFor')} </Typography>
+            <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"} marginTop={1/2}>
+                <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('labelMyLPAmountFor')} </Typography>
                 <Typography component={'p'}
-                            variant="body1">{ammCalcData && ammCalcData.percentage ? Number(ammCalcData.percentage) * 100 + '%' : EmptyValueTag}</Typography>
+                            variant="body2">{ammCalcData && ammCalcData.percentage ? Number(ammCalcData.percentage) * 100 + '%' : EmptyValueTag}</Typography>
             </Box>
         </Box>
     </Box>
