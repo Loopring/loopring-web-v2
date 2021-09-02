@@ -38,28 +38,14 @@ export const LiquidityPage = withTranslation('common', {withRef: true})(({t}: Wi
             }
         }
 
-        return (
-            <>
-                {symbol && <Box display={'flex'} flexDirection={'column'} flex={1} alignSelf={'flex-start'}>
-                  <CoinPairPanel ammActivityMap={ammActivityMap}/>
-                </Box>
-                }
-                {!symbol && <TableWrapperStyled>
-                  <Typography
-                    variant={'h2'}
-                    component={'div'}
-                    fontFamily={'Roboto'}
-                    marginTop={2}
-                    marginBottom={3}
-                  >{t('labelLiquidityPageTitle')}</Typography>
-                  <Box minHeight={420} display={'flex'} alignItems={'stretch'}
-                       justifyContent={'stretch'} /* flexDirection="column" */ marginTop={0} flex={1} marginBottom={3}>
-                      {(selected === 'pools' && !symbol) && <PoolsPanel ammActivityMap={ammActivityMap}/>}
-                  </Box>
-                </TableWrapperStyled>
-                }
+        return<>
+            {symbol && <Box display={'flex'} flexDirection={'column'} flex={1} alignSelf={'flex-start'}>
+              <CoinPairPanel ammActivityMap={ammActivityMap}/>
+            </Box>}
+            {!symbol && <TableWrapperStyled>
+                {(selected === 'pools' && !symbol) && <PoolsPanel ammActivityMap={ammActivityMap}/>}
+            </TableWrapperStyled>}
             </>
-        )
 
-    }
-)
+
+    })

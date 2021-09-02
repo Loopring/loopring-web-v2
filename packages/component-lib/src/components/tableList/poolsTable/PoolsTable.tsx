@@ -242,6 +242,7 @@ export const PoolsTable = withTranslation('tables')(
                                              pagination,
                                              showFilter = true,
                                              rawData,
+                                             sortMethod,
                                              wait = globalSetup.wait,
                                              tableHeight = 350,
                                              ...rest
@@ -323,77 +324,13 @@ export const PoolsTable = withTranslation('tables')(
                   </InputAdornment>}
               />
             </Box>}
-            <Table style={{ height: tableHeight }} className={'scrollable'} {...{
+            {/*className={'scrollable'}*/}
+            <Table style={{ height: tableHeight }}  {...{
                 ...defaultArgs, t, i18n, tReady, ...rest,
                 rawData: getRenderData(),
                 onRowClick: (index, row) => onRowClick(index, row),
-                // sortMethod: (sortedRows: Row<T>[], sortColumn) => {
-                //     switch (sortColumn) {
-                //         case 'pools':
-                //             sortedRows = sortedRows.sort((a, b) => a?.coinAInfo?.simpleName.localeCompare(b?.coinAInfo?.simpleName))
-                //             break;
-                //         case 'liquidity':
-                //             sortedRows = sortedRows.sort((a, b) => a.amountDollar - b.amountDollar)
-                //             break;
-                //         case 'volume24':
-                //             sortedRows = sortedRows.sort((a, b) => a.tradeFloat.priceDollar - b.tradeFloat.priceDollar)
-                //             break;
-                //         case 'reward24':
-                //             sortedRows = sortedRows.sort((a, b) => a.tradeFloat.reward - b.tradeFloat.reward)
-                //             break;
-                //         case 'APY':
-                //             sortedRows = sortedRows.sort((a, b) => a.tradeFloat.APY - b.tradeFloat.APY)
-                //             break;
-                //         default:
-                //             break;
-                //     }
-                //     return sortedRows;
-                // }
                 sortMethod: (sortedRows: any[], sortColumn: string) => {
-                    switch (sortColumn) {
-                        case 'pools':
-                            sortedRows = sortedRows.sort((a, b) => {
-                                const valueA = a.coinA
-                                const valueB = b.coinA
-                                return valueA.localeCompare(valueB)
-                            })
-                            break;
-                        case 'liquidity':
-                            sortedRows = sortedRows.sort((a, b) => {
-                                const valueA = a[ 'amountDollar' ]
-                                const valueB = b[ 'amountDollar' ]
-                                if (valueA && valueB) {
-                                    return valueB - valueA
-                                }
-                                if (valueA && !valueB) {
-                                    return -1
-                                }
-                                if (!valueA && valueB) {
-                                    return 1
-                                }
-                                return 0
-                            })
-                            break;
-                        case 'volume24':
-                            sortedRows = sortedRows.sort((a, b) => {
-                                const valueA = a.tradeFloat.volume
-                                const valueB = b.tradeFloat.volume
-                                if (valueA && valueB) {
-                                    return valueB - valueA
-                                }
-                                if (valueA && !valueB) {
-                                    return -1
-                                }
-                                if (!valueA && valueB) {
-                                    return 1
-                                }
-                                return 0
-                            })
-                            break;
-                        default:
-                            return sortedRows
-                    }
-                    return sortedRows;
+                   return  sortMethod(sortedRows,sortColumn)
                 },
                 sortDefaultKey: 'liquidity',
             }}/>

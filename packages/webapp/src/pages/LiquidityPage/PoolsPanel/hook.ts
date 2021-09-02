@@ -1,15 +1,15 @@
 import React from 'react';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
-import { AmmDetail, CustomError, ErrorMap, SagaStatus, } from '@loopring-web/common-resources';
+import { AmmDetail, CustomError, ErrorMap, SagaStatus, TradeFloat, } from '@loopring-web/common-resources';
 import { deepClone } from '../../../utils/obj_tools';
 import { useTokenMap } from '../../../stores/token';
 import { useSocket } from '../../../stores/socket';
 import { useTicker } from '../../../stores/ticker';
 
 // import { tickerService } from '../../../services/tickerService';
-
+type Row<R> = AmmDetail<R> & { tradeFloat: TradeFloat }
 export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>({pageSize}: { pageSize: number }) {
-    const [rawData, setRawData] = React.useState<Array<AmmDetail<any>> | []>([]);
+    const [rawData, setRawData] = React.useState<Array<Row<R>> | []>([]);
     const [page, setPage] = React.useState<number>(1);
     const {coinMap} = useTokenMap();
     const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
@@ -46,6 +46,58 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
         }
 
     }, [ammMap]);
+    const sortMethod = React.useCallback((_sortedRows,sortColumn)=>{
+        let _rawData:Row<R>[]  = [];
+
+        switch (sortColumn) {
+            case 'pools':
+                _rawData = rawData.sort((a, b) => {
+                    const valueA = a.coinAInfo.simpleName
+                    const valueB = b.coinAInfo.simpleName
+                    return valueA.localeCompare(valueB)
+                })
+                break;
+            case 'liquidity':
+                _rawData = rawData.sort((a, b) => {
+                    const valueA = a.amountDollar
+                    const valueB = b.amountDollar
+                    if (valueA && valueB) {
+                        return valueB - valueA
+                    }
+                    if (valueA && !valueB) {
+                        return -1
+                    }
+                    if (!valueA && valueB) {
+                        return 1
+                    }
+                    return 0
+                })
+                break;
+            case 'volume24':
+                _rawData = rawData.sort((a, b) => {
+                    const valueA = a.tradeFloat.volume
+                    const valueB = b.tradeFloat.volume
+                    if (valueA && valueB) {
+                        return valueB - valueA
+                    }
+                    if (valueA && !valueB) {
+                        return -1
+                    }
+                    if (!valueA && valueB) {
+                        return 1
+                    }
+                    return 0
+                })
+                break;
+            default:
+                _rawData = rawData
+        }
+        setPage(1);
+        setRawData((state)=>{
+            return _rawData
+        })
+        return _rawData;
+    },[rawData])
     const updateTickerLoop = React.useCallback((_keys?: string[]) => {
         updateTickers(_keys as string[]);
         if (nodeTimer.current !== -1) {
@@ -93,6 +145,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
         page,
         rawData,
         updateTickersUI,
+        sortMethod
     }
 }
 

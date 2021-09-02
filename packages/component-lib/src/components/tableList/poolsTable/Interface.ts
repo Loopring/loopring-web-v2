@@ -14,4 +14,6 @@ export type PoolTableProps<T, R = Row<T>> = {
     showFilter?: boolean,
     wait?: number;
     tableHeight?: number;
+    sortMethod:( sortedRows: any[], sortColumn: string)=> any[],
 }
+
