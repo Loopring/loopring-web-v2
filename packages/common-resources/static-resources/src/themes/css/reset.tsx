@@ -133,6 +133,7 @@ section {
 html {
   text-size-adjust: 100%;
   box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 body {
   line-height: 1;

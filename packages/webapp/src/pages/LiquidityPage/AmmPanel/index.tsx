@@ -133,7 +133,7 @@ const MyAmmLPAssets = withTranslation('common')(({ammCalcData, t}:
 
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}>
                 <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('labelMyLPToken')} </Typography>
-                <Typography component={'p'} variant="body2">{ammCalcData && ammCalcData.lpCoin.balance ? ammCalcData.lpCoin.balance : EmptyValueTag}</Typography>
+                <Typography component={'p'} variant="body2">{ammCalcData && ammCalcData.lpCoin ? ammCalcData.lpCoin : EmptyValueTag}</Typography>
             </Box>
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"} marginTop={1/2}>
                 <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('labelMyLPAToken',{symbol:ammCalcData.lpCoinA.belong})} </Typography>
