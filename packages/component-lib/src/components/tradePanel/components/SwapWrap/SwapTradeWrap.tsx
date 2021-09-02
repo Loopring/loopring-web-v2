@@ -213,8 +213,8 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
                           height={24}>
 
-                        <Typography component={'p'} variant="body1" color={'textSecondary'}>{t('swapTolerance')}</Typography>
-                        <Typography component={'p'} variant="body1" >
+                        <Typography component={'p'} variant="body2" color={'textSecondary'}>{t('swapTolerance')}</Typography>
+                        <Typography component={'p'} variant="body2" >
                             {tradeCalcData ? <>
                                 <Typography {...bindHover(popupState)}
                                             component={'span'} color={'textPrimary'}>
@@ -242,19 +242,19 @@ export const SwapTradeWrap = <T extends IBData<I>,
                             }
                         </Typography>
                     </Grid>
-                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
-                        <Typography component={'p'} variant="body1" color={'textSecondary'}> {t('swapPriceImpact')}</Typography>
-                        <Typography component={'p'} color={priceImpactColor} variant="body1"> {priceImpact}  </Typography>
+                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"} marginTop={1/2}>
+                        <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('swapPriceImpact')}</Typography>
+                        <Typography component={'p'} color={priceImpactColor} variant="body2"> {priceImpact}  </Typography>
                     </Grid>
-                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
-                        <Typography component={'p'} variant="body1" color={'textSecondary'}> {t('swapMinReceive')}</Typography>
+                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"} marginTop={1/2}>
+                        <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('swapMinReceive')}</Typography>
                         <Typography component={'p'}
-                                    variant="body1" color={'textPrimary'}>{minimumReceived} </Typography>
+                                    variant="body2" color={'textPrimary'}>{minimumReceived} </Typography>
                     </Grid>
-                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
-                        <Typography component={'p'} variant="body1" color={'textSecondary'}> {t('swapFee')} </Typography>
+                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"} marginTop={1/2}>
+                        <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('swapFee')} </Typography>
                         <Typography component={'p'}
-                                    variant="body1" color={'textPrimary'}>{fee}</Typography>
+                                    variant="body2" color={'textPrimary'}>{fee}</Typography>
                     </Grid>
                 </Grid>
                 <Grid item>
