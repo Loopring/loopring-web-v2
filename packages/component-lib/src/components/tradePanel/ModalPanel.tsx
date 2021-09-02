@@ -16,8 +16,9 @@ import {
     TransferPanelNew,
     TransferProps,
     useOpenModals,
-    WithdrawPanel,
-    WithdrawProps
+    // WithdrawPanel,
+    WithdrawPanelNew,
+    WithdrawProps,
 } from '../..';
 import { IBData } from '@loopring-web/common-resources';
 import { WithTranslation, withTranslation } from 'react-i18next';
@@ -25,6 +26,7 @@ import { useTheme } from '@emotion/react';
 
 const DEFAULT_DEPOSIT_HEIGHT = 300;
 const DEFAULT_TRANSFER_HEIGHT = 550;
+const DEFAULT_WITHDRAW_HEIGHT = 550;
 
 const Modal = withTranslation('common')(({
                                              open,
@@ -111,10 +113,10 @@ export const ModalPanel = <T extends IBData<I>, I>({
                    _height: DEFAULT_TRANSFER_HEIGHT, ...transferProps, assetsData,
                }}> </TransferPanelNew>}/>
         <Modal open={isShowWithdraw.isShow} onClose={() => setShowWithdraw({isShow: false})}
-               content={<WithdrawPanel<any, any> {...{
+               content={<WithdrawPanelNew<any, any> {...{
                    ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
-                   _height: 'var(--lage-modal-height)', ...withDrawProps,
-               }}  > </WithdrawPanel>}/>
+                   _height: DEFAULT_WITHDRAW_HEIGHT, ...withDrawProps, assetsData,
+               }}  > </WithdrawPanelNew>}/>
         <Modal open={isShowDeposit.isShow}
                onClose={() => setShowDeposit({isShow: false})}
                content={<DepositPanelNew<any, any> {...{

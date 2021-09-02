@@ -169,11 +169,11 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         resetDefault();
     }, [isShow])
     useWalletLayer2Socket({walletLayer2Callback})
-    useCustomDCEffect(() => {
-        if (chargeFeeList.length > 0) {
-            setWithdrawFeeInfo(chargeFeeList[ 0 ])
-        }
-    }, [chargeFeeList, setWithdrawFeeInfo])
+    // useCustomDCEffect(() => {
+    //     if (chargeFeeList.length > 0) {
+    //         setWithdrawFeeInfo(chargeFeeList[ 0 ])
+    //     }
+    // }, [chargeFeeList, setWithdrawFeeInfo])
 
     const processRequest = React.useCallback(async (request: sdk.OffChainWithdrawalRequestV3, isFirstTime: boolean) => {
 
@@ -312,6 +312,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         },
         handleFeeChange(value: { belong: any; fee: number | string; __raw__?: any }): void {
             myLog('handleFeeChange', value)
+            console.log(value)
             setWithdrawFeeInfo(value as any)
         },
         handleWithdrawTypeChange: (value: 'Fast' | 'Standard') => {
