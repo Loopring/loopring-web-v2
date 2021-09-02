@@ -27,9 +27,11 @@ export const ammPairInit = ({
             belong: pair.coinAInfo.simpleName,
             balance: walletMap ? walletMap[ pair.coinAInfo.simpleName ]?.count : 0,
         }
+
+        const balanceB = walletMap ? walletMap[ pair.coinBInfo.simpleName ]?.count - feeReal : 0
         _ammCalcData.myCoinB = {
             belong: pair.coinBInfo.simpleName,
-            balance: walletMap ? walletMap[ pair.coinBInfo.simpleName ]?.count - feeReal : 0,
+            balance: balanceB < 0 ? 0 : balanceB,
         }
 
         const key = `${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`;

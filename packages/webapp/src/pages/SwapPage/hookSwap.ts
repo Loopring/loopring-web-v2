@@ -386,8 +386,6 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
 
 
     const walletLayer2Callback = React.useCallback(async () => {
-        // const base = tradeData?.sell.belong
-        // const quote = tradeData?.buy.belong
 
         let walletMap: WalletMap<any> | undefined = undefined
         if (account.readyState === AccountStatus.ACTIVATED) {
