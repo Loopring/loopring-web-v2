@@ -63,3 +63,29 @@ export const getValuePrecision = (rawValue?: number | string, precision = 6) => 
     }
     return new BigNumber(rawValue).toPrecision(2) as string
 }
+
+/**
+ * 
+ * @param value 
+ * @param precision default = 6
+ * @param digit default = 2
+ * @returns string
+ */
+export const getValuePrecisionThousand = (value?: number | string, minDigit = 6, precision = 2) => {
+    let result = undefined
+    if (!value || !Number.isFinite(Number(result))) {
+        result = '0.00'
+    }
+    if (Number(value) > 0) {
+        result = Number(value).toLocaleString('en', {
+            minimumFractionDigits: minDigit
+        })
+    }
+    if (Number(value) === 0) {
+        result = '0.00'
+    }
+    if (Number(value) < 0) {
+        result = Number(value).toPrecision(precision)
+    }
+    return result
+}

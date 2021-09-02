@@ -122,6 +122,7 @@ export const useGetAssets = () => {
                 let item = undefined
                 if (assetsMap[ key ]) {
                     const tokenInfo = assetsMap[ key ]
+                    console.log(tokenInfo)
                     const isLpToken = tokenInfo.token.split('-')[ 0 ] === 'LP'
                     let tokenValueDollar = 0
                     if (!isLpToken) {
@@ -138,6 +139,9 @@ export const useGetAssets = () => {
                         }
                     }
                     const isSmallBalance = tokenValueDollar < 1
+                    const lockedAmount = volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail.locked)
+                    const pendingAmount = volumeToCountAsBigNumber(tokenInfo.token, (tokenInfo.detail?.detail.pending.withdraw || 0) + (tokenInfo.detail?.detail.pending.deposit || 0))
+                    const frozenAmount = Number(lockedAmount) + Number(pendingAmount)
                     item = {
                         token: {
                             type: tokenInfo.token.split('-')[ 0 ] === 'LP' ? TokenType.lp : TokenType.single,
@@ -147,7 +151,8 @@ export const useGetAssets = () => {
                         amount: (volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) || EmptyValueTag,
                         // available: getThousandFormattedNumbers(Number(tokenInfo.detail?.count)) || EmptyValueTag,
                         available: (Number(tokenInfo.detail?.count)) || EmptyValueTag,
-                        locked: String(volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail.locked)) || EmptyValueTag,
+                        // locked: String(volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail.locked)) || EmptyValueTag,
+                        locked: String(frozenAmount) || EmptyValueTag,
                         smallBalance: isSmallBalance,
                         tokenValueDollar,
                         name: tokenInfo.token,
