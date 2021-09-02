@@ -34,8 +34,6 @@ export function useBasicInfo(props: any, coinAInfo: any, coinBInfo: any, marketA
         return {value, tlabel: t(label), key, JSX: <>{t(label)}</>}
     })
 
-    // const { base, quote, market, tokens } = props
-
     const {market, amm, baseShow, quoteShow, } = getExistedMarket(marketArray, coinAInfo?.name, coinBInfo?.name)
 
     const [chartType, setChartType] = useState<ChartType>(ChartType.Trend)
