@@ -1,6 +1,8 @@
 import { AmmPanel, AmmPanelType, Toast } from '@loopring-web/component-lib';
 import { CoinInfo, WalletMap } from '@loopring-web/common-resources';
-import { useAmmCalc, useAmmCommon } from './hooks'
+import { useAmmJoin } from './hook_join'
+import { useAmmExit } from './hook_exit'
+import { useAmmCommon } from './hook_common'
 import { Box } from '@material-ui/core';
 import { AmmPoolSnapshot, TickerData, } from 'loopring-sdk';
 import { TOAST_TIME } from 'defs/common_defs';
@@ -38,10 +40,9 @@ export const AmmPanelView = ({
         btnStatus: addBtnStatus,
         btnI18nKey: ammDepositBtnI18nKey,
 
-    } = useAmmCalc({
+    } = useAmmJoin({
         ammPoolSnapshot,
         setToastOpen,
-        type: AmmPanelType.Join,
         pair,
         snapShotData,
     })
@@ -55,7 +56,7 @@ export const AmmPanelView = ({
         btnStatus: removeBtnStatus,
         btnI18nKey: ammWithdrawBtnI18nKey,
 
-    } = useAmmCalc({
+    } = useAmmExit({
         ammPoolSnapshot,
         setToastOpen,
         type: AmmPanelType.Exit,
