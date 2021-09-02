@@ -54,7 +54,6 @@ export const AccountBasePanel = ({
 
     const getImagePath = React.useCallback(() => {
       const path = `static/images/vips/${level.toUpperCase()}.png`
-      console.log('path:', path)
       return path
     }, [level])
 
