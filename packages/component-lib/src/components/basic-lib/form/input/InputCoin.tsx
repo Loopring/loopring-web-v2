@@ -1,18 +1,11 @@
-import {
-    Avatar,
-    // Box,
-    // BoxProps,
-    FormHelperText, FormLabel, Grid, Typography
-} from "@material-ui/core";
-// import styled from "@emotion/styled";
-// import CurrencyInput from 'react-currency-input-field';
-import { AvatarCoinStyled, CoinInfo, getThousandFormattedNumbers, IBData } from '@loopring-web/common-resources';
+import { FormHelperText, FormLabel, Grid, Typography } from "@material-ui/core";
+import { CoinInfo, getThousandFormattedNumbers, IBData } from '@loopring-web/common-resources';
 import { InputCoinProps } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
-import { useSettings } from '../../../../stores';
-import { IInput, CoinWrap, IWrap } from "./style";
-// import { useImage } from '../../resource';
+import { CoinWrap, IInput, IWrap } from "./style";
+import { CoinIcon } from './Default';
+
 
 function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        order = 'left',
@@ -20,7 +13,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        handleError,
                                                                        subLabel = "Available",
                                                                        // wait = globalSetup.wait,
-                                                                       coinMap,
+                                                                       // coinMap,
                                                                        maxAllow,
                                                                        disabled,
                                                                        placeholderText = '0.00',
@@ -28,11 +21,12 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        handleCountChange,
                                                                        focusOnInput,
                                                                        name,
-                                                                       isHideError=false,
+                                                                       isHideError = false,
                                                                    }
                                                                        : InputCoinProps<T, C, I>, ref: React.ForwardedRef<any>) {
     const {balance, belong, tradeValue} = (inputData ? inputData : {}) as IBData<C>;
     const [sValue, setsValue] = React.useState<number | undefined>(tradeValue ? tradeValue : undefined);
+
     // let _error = {error: false, message: ''};
     // if (handleError && inputData) {
     //     let error:any = handleError(inputData, ref);
@@ -92,8 +86,6 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
             //setsValue(balance);
         }
     }, [_handleContChange, balance, name, maxAllow]);
-    const {coinJson} = useSettings();
-    const coinIcon: any = coinJson[ belong ];
 
     // const coinInfo: any = coinMap[ belong ] ? coinMap[ belong ] : {};
     // const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;
@@ -121,24 +113,17 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 <Grid container align-items={'center'} display={'flex'}>
                     <Grid item display={'flex'} order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}
                           className={'logo-icon'}
-                          height={'var(--list-menu-coin-size)'} width={'var(--list-menu-coin-size)'}
+                          height={'var(--list-menu-coin-size)'}
                           alignItems={'center'} justifyContent={'center'}>
-                        {coinIcon ?
-                            <AvatarCoinStyled imgx={coinIcon.x} imgy={coinIcon.y} imgheight={coinIcon.height}
-                                              imgwidth={coinIcon.width}
-                                              variant="circular" alt={coinMap[ belong ]?.simpleName as string}
-                                // src={sellData?.icon}
-                                              src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
-                            : <Avatar variant="circular" alt={coinMap[ belong ]?.simpleName as string} style={{
-                                height: 'var(--list-menu-coin-size)',
-                                width: 'var(--list-menu-coin-size)'
-                            }}
-                                // src={sellData?.icon}
-                                      src={'static/images/icon-default.png'}/>}
+
+                        <CoinIcon symbol={belong}/>
+
                     </Grid>
                     <Grid item order={order === 'left' ? 1 : 2}
                           paddingLeft={order === 'left' ? 0 : 1}>
-                        <Typography variant={'h4'}>{coinMap[ belong ]?.simpleName}</Typography></Grid>
+                        <Typography  variant={(belong && belong.length)>10?'body1':'h4'}>
+                            {belong}
+                        </Typography></Grid>
                 </Grid>
             </CoinWrap>
             <Grid order={order === 'left' ? 1 : 2} flex={1} item className={`input-wrap input-wrap-${order}`}>
@@ -148,14 +133,15 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                         disabled={!(!disabled || belong)}
                         placeholder={placeholderText}
                         aria-placeholder={placeholderText} aria-label={label} decimalsLimit={10000000}/>
-                <label></label>
+                <label/>
             </Grid>
         </Grid>
 
-        {isHideError? <></>: <Grid container className={'message-wrap'} wrap={'nowrap'} alignItems={'stretch'} alignContent={'stretch'}
-              justifyContent={'flex-end'}>
-            <Grid item><FormHelperText>{error.message}</FormHelperText></Grid>
-        </Grid> }
+        {isHideError ? <></> :
+            <Grid container className={'message-wrap'} wrap={'nowrap'} alignItems={'stretch'} alignContent={'stretch'}
+                  justifyContent={'flex-end'}>
+                <Grid item><FormHelperText>{error.message}</FormHelperText></Grid>
+            </Grid>}
 
     </IWrap>
     </>
