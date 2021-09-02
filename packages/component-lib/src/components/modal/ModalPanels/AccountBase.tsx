@@ -47,10 +47,6 @@ export const AccountBasePanel = ({
     const addressShort = getShortAddr(accAddress)
     const etherscanLink = etherscanUrl + accAddress;
     const connectBy = connectName === 'unknown' ? t('labelWrongNetwork') : connectName;
-    // const popupState = usePopupState({
-    //     variant: 'popover',
-    //     popupId: 'myAddress',
-    // })
 
     const getImagePath = React.useCallback(() => {
       const path = `static/images/vips/${level.toUpperCase()}.png`
@@ -65,9 +61,7 @@ export const AccountBasePanel = ({
         </Typography>
         <Typography marginTop={1} display={'flex'} alignItems={'center'}
                      justifyContent={'flex-start'}>
-            <Typography paddingRight={1} component={'span'} variant={'h1'}>{addressShort}</Typography>
-            {/* {level && <VipStyled component={'span'} variant={'body2'}
-            >{level}</VipStyled>} */}
+            <Typography paddingRight={1} component={'span'} fontSize={'3rem'}>{addressShort}</Typography>
             {level && <img alt="VIP" style={{verticalAlign: 'text-bottom' ,width: '32px', height: '16px'}} src={getImagePath()} />}
         </Typography>
 
