@@ -37,7 +37,7 @@ export const StylePaper = styled(Box)`
 ` as typeof Box;
 
 
-export const TableWrapStyled = styled(Grid)`
+export const TableWrapStyled = styled(Box)`
  
   &{
     background: var(--color-box);

@@ -1,8 +1,8 @@
 import { WithTranslation, withTranslation, } from 'react-i18next'
-import { Box, InputAdornment, OutlinedInput } from '@material-ui/core'
+import { Box, InputAdornment, OutlinedInput, Typography } from '@material-ui/core'
 import styled from '@emotion/styled'
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAmmMapUI } from './hook';
 
 import { PoolsTable } from '@loopring-web/component-lib';
@@ -17,7 +17,7 @@ const WrapperStyled = styled(Box)`
 
 const StylePaper = styled(Box)`
     width: 100%;
-    height: 100%;
+    //height: 100%;
     flex: 1;
     background: var(--color-box);
     border-radius: ${({theme}) => theme.unit}px;
@@ -45,12 +45,16 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
     const [pageSize, setPageSize] = React.useState(10);
     const [filterValue, setFilterValue] = React.useState('');
     const [tableHeight, setTableHeight] = React.useState(0)
-    const {updateTickersUI, rawData, page} = useAmmMapUI({pageSize});
+    const {updateTickersUI, rawData, page, sortMethod} = useAmmMapUI({pageSize});
 
     const getCurrentHeight = React.useCallback(() => {
-        const height = window.innerHeight
-        const tableHeight = height - 64 - 117
-        setTableHeight(tableHeight)
+        // const height = window.innerHeight
+        // const tableHeight = height - 64 - 117
+        // @ts-ignore
+        let height = container?.current?.offsetHeight;
+        if(height) {
+            setTableHeight(height-36-44)
+        }
     }, [])
 
     React.useEffect(() => {
@@ -61,13 +65,13 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
         }
     }, [getCurrentHeight])
 
-    // React.useEffect(() => {
-    //     // @ts-ignore
-    //     let height = container?.current?.offsetHeight;
-    //     if (height) {
-    //         setPageSize(Math.floor((height - 20) / 44) - 1);
-    //     }
-    // }, [container, pageSize]);
+    React.useEffect(() => {
+        // @ts-ignore
+        let height = container?.current?.offsetHeight;
+        if (height) {
+            setPageSize(Math.floor((height - 36 ) / 44) - 1);
+        }
+    }, [container]);
 
     const getFilteredData = React.useCallback(() => {
         if (!filterValue) {
@@ -80,14 +84,25 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
             return coinA.includes(formattedValue) || coinB.includes(formattedValue)
         })
     }, [filterValue, rawData])
+    // useEffect(() => {
+    //     if (pageSize) {
+    //         getFilteredData({
+    //             limit: pageSize,
+    //         })
+    //     }
+    // }, [ pageSize])
 
     const handlePageChange = React.useCallback((page) => {
         updateTickersUI(page)
     }, [updateTickersUI]);
     return (
         <>
-            <WrapperStyled>
-                <Box marginBottom={3}>
+            <WrapperStyled flex={1} marginBottom={3}>
+                <Box  marginBottom={3} display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
+                    <Typography
+                        variant={'h2'}
+                        component={'h2'}
+                    >{t('labelLiquidityPageTitle')}</Typography>
                     <OutlinedInput
                         {...{
                             placeholder: t('labelFilter'),
@@ -104,17 +119,18 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
                         </InputAdornment>}
                     />
                 </Box>
-                <StylePaper display={'flex'} flexDirection={'column'} ref={container}>
+                <StylePaper display={'flex'}  flexDirection={'column'} ref={container} >
                     <PoolsTable {...{
                         rawData: getFilteredData(),
                         handlePageChange,
                         page,
-                        // pagination: {
-                        //     pageSize
-                        // },
+                        pagination: {
+                            pageSize
+                        },
                         showFilter: false,
                         showLoading: !rawData.length,
-                        tableHeight: tableHeight
+                        tableHeight: tableHeight,
+                        sortMethod: sortMethod
                     }} />
                 </StylePaper>
             </WrapperStyled>
