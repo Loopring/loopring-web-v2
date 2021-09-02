@@ -143,8 +143,10 @@ export const useGetAssets = () => {
                             type: tokenInfo.token.split('-')[ 0 ] === 'LP' ? TokenType.lp : TokenType.single,
                             value: tokenInfo.token
                         },
-                        amount: getThousandFormattedNumbers(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) || EmptyValueTag,
-                        available: getThousandFormattedNumbers(Number(tokenInfo.detail?.count)) || EmptyValueTag,
+                        // amount: getThousandFormattedNumbers(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) || EmptyValueTag,
+                        amount: (volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) || EmptyValueTag,
+                        // available: getThousandFormattedNumbers(Number(tokenInfo.detail?.count)) || EmptyValueTag,
+                        available: (Number(tokenInfo.detail?.count)) || EmptyValueTag,
                         locked: String(volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail.locked)) || EmptyValueTag,
                         smallBalance: isSmallBalance,
                         tokenValueDollar,

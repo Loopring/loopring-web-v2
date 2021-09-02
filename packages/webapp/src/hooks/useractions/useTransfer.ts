@@ -58,6 +58,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const {chargeFeeList} = useChargeFees(transferValue.belong, sdk.OffchainFeeReqType.TRANSFER, tokenMap)
 
     const [tranferFeeInfo, setTransferFeeInfo] = React.useState<FeeInfo>()
+    const [isExceedMax, setIsExceedMax] = React.useState(false)
 
     const {
         address,
@@ -70,13 +71,13 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     React.useEffect(() => {
 
         if (chargeFeeList && chargeFeeList?.length > 0 && !!address && transferValue?.tradeValue
-            && addrStatus === AddressError.NoError) {
+            && addrStatus === AddressError.NoError && !isExceedMax) {
             enableBtn()
         } else {
             disableBtn()
         }
 
-    }, [enableBtn, disableBtn, chargeFeeList, address, addrStatus, transferValue?.tradeValue])
+    }, [enableBtn, disableBtn, chargeFeeList, address, addrStatus, transferValue?.tradeValue, isExceedMax])
 
     const walletLayer2Callback = React.useCallback(() => {
         const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
@@ -115,11 +116,11 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         resetDefault();
     }, [isShow, tranferFeeInfo])
 
-    useCustomDCEffect(() => {
-        if (chargeFeeList.length > 0) {
-            setTransferFeeInfo(chargeFeeList[ 0 ])
-        }
-    }, [chargeFeeList, setTransferFeeInfo])
+    // useCustomDCEffect(() => {
+    //     if (chargeFeeList.length > 0) {
+    //         setTransferFeeInfo(chargeFeeList[ 0 ])
+    //     }
+    // }, [chargeFeeList, setTransferFeeInfo])
 
     const {checkHWAddr, updateDepositHashWrapper,} = useWalletInfo()
 
@@ -178,6 +179,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
 
     const onTransferClick = useCallback(async (transferValue, isFirstTime: boolean = true) => {
+        console.log(transferValue)
         const {accountId, accAddress, readyState, apiKey, eddsaKey} = account
         myLog('useCallback tranferFeeInfo:', tranferFeeInfo)
 
@@ -210,9 +212,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     },
                     maxFee: {
                         tokenId: feeToken.tokenId,
-                        volume: tranferFeeInfo.__raw__,
+                        volume: String(tranferFeeInfo.fee),
                     },
                     validUntil: getTimestampDaysLater(DAYS),
+                    memo: transferValue.memo,
                 }
 
                 processRequest(req, isFirstTime)
@@ -265,8 +268,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         },
         handleError: ({belong, balance, tradeValue}: any) => {
             if (typeof tradeValue !== 'undefined' && balance < tradeValue || (tradeValue && !balance)) {
+                setIsExceedMax(true)
                 return {error: true, message: t('tokenNotEnough', {belong,})}
             }
+            setIsExceedMax(false)
             return {error: false, message: ''}
         },
         handleAddressError: (_value: any) => {
