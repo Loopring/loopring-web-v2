@@ -252,6 +252,7 @@ export default {
     labelDepositDenied: '充值 {{value}} {{symbol}} 已被用户拒绝',
     labelDepositFailed: '充值 {{value}} {{symbol}} 失败',
     labelDepositSubmit: '充值 {{value}} {{symbol}} 已提交',
+    labelDepositNeedApprove: '允许LOOPRING EXCHANGE授权{{symbol}}',
     labelWithdrawInProgress: '正在提现中...',
     labelWithdrawFailed: '提现 {{value}} {{symbol}} 失败!',
     labelWithdrawSuccess: '提现 {{value}} {{symbol}} 成功!',

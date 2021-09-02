@@ -252,6 +252,7 @@ export default {
     labelDepositDenied:'You refuse to deposit {{value}} {{symbol}}.',
     labelDepositFailed:'Deposit {{value}} {{symbol}} failed!',
     labelDepositSubmit: 'Deposit {{value}} {{symbol}} submitted.',
+    labelDepositNeedApprove: 'Allow LOOPRING EXCHANGE to approve {{symbol}}',
     labelWithdrawInProgress: 'Withdraw for now...',
     labelWithdrawFailed:'Withdraw {{value}} {{symbol}} failed!',
     labelWithdrawSuccess: 'Withdraw {{value}} {{symbol}} successfully!',
