@@ -292,69 +292,6 @@ export const useAmmJoin = <C extends { [key: string]: any }>({
 
     }, [])
 
-    const handleExit = React.useCallback(async ({ data, ammData, type, fees, ammPoolSnapshot, tokenMap, account }) => {
-        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, }]))
-
-        const isAtoB = type === 'coinA'
-
-        if (!tokenMap || !data.coinA.belong || !data.coinB.belong
-            || !ammPoolSnapshot || !fees || !account?.accAddress
-            || (isAtoB && data.coinA.tradeValue === undefined)
-            || (!isAtoB && data.coinB.tradeValue === undefined)) {
-            return
-        }
-
-        const { slippage } = data
-
-        const slippageReal = sdk.toBig(slippage).div(100).toString()
-
-        const { idIndex, marketArray, marketMap, } = store.getState().tokenMap
-
-        const { ammMap } = store.getState().amm.ammMap
-
-        const { market, amm } = getExistedMarket(marketArray, data.coinA.belong as string,
-            data.coinB.belong as string)
-
-        if (!market || !amm || !marketMap) {
-            return
-        }
-
-        const marketInfo: MarketInfo = marketMap[market]
-
-        const ammInfo: any = ammMap[amm as string]
-
-        const coinA = tokenMap[data.coinA.belong as string]
-        const coinB = tokenMap[data.coinB.belong as string]
-
-        const rawVal = isAtoB ? data.coinA.tradeValue : data.coinB.tradeValue
-
-        const { request } = makeExitAmmPoolRequest(rawVal.toString(), isAtoB, slippageReal, account.accAddress, fees as LoopringMap<OffchainFeeInfo>,
-            ammMap[amm], ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0)
-
-        if (isAtoB) {
-            data.coinB.tradeValue = parseFloat(toBig(request.exitTokens.unPooled[1].volume)
-                .div('1e' + coinB.decimals).toFixed(marketInfo.precisionForPrice))
-        } else {
-            data.coinA.tradeValue = parseFloat(toBig(request.exitTokens.unPooled[0].volume)
-                .div('1e' + coinA.decimals).toFixed(marketInfo.precisionForPrice))
-        }
-
-        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData: data }]))
-
-        setAmmData({
-            coinA: data.coinA as IBData<C>,
-            coinB: data.coinB as IBData<C>,
-            slippage,
-        })
-
-        setRequest({
-            ammInfo,
-            request,
-        })
-        // }
-
-    }, [])
-
     const handleAmmPoolEvent = (data: AmmJoinData<IBData<any>>, _type: 'coinA' | 'coinB') => {
         handleJoin({ data, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account })
     }
