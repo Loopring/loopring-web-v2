@@ -152,8 +152,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
             </Breadcrumbs>
         </Box>
         <Box flex={1} display={'flex'} flexDirection={'row'}>
-            <Box display={'flex'} marginRight={3} alignContent={'stretch'} flexDirection={'column'} flexWrap={'nowrap'}>
-                <Box marginTop={2}>
+            <Box display={'flex'} flex={1}  marginRight={3} alignContent={'stretch'} flexDirection={'column'} flexWrap={'nowrap'}>
+                <Box marginTop={0}>
                     <TradeTitle {...{
                         baseShow: coinPairInfo.myCoinA?.simpleName,
                         quoteShow: coinPairInfo.myCoinB?.simpleName,
@@ -164,7 +164,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                     }}></TradeTitle>
                 </Box>
                 {/*<Box flex={1} display={'flex'} alignItems={'stretch'} flexDirection="row" marginTop={3}>*/}
-                <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
+                <Box marginTop={3} display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
                     <Box flex={1} width={'101%'} minHeight={396} maxHeight={460}>
                         <ScaleAreaChart
                             type={ChartType.Trend}
@@ -305,33 +305,31 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             </Box>
                         </BoxStyled>
                     </BoxWrapperStyled>
-                    <Box>
 
-                        <StylePaper ref={container} style={{marginTop: `${unit * 2}px`}}>
-                            <TabsStyled value={tabIndex}
-                                // onChange={handleChange}
-                                        aria-label="tabs switch">
-                                {/* <Tab label={t('labelAmmAllTransactions')} {...applyProps(0)} /> */}
-                                <Tab label={t('labelAmmMyTransactions')} {...applyProps(1)} />
-                            </TabsStyled>
-                            <Divider/>
-                            {/*ammRecordArray*/}
-                            {tabIndex === 1 ? <AmmRecordTable
-                                rawData={ammMarketArray}
-                                handlePageChange={getUserAmmPoolTxs} page={page}
-                            /> : <AmmRecordTable
-                                rawData={myAmmMarketArray}
-                                handlePageChange={getUserAmmPoolTxs}
-                                pagination={{
-                                    pageSize,
-                                    total: ammUserTotal
-                                }}
-                                showLoading={showAmmPoolLoading}
-                                currency={currency}
-                            />}
-                        </StylePaper>
-                    </Box>
                 </Box>
+                <StylePaper className={'MuiPaper-elevation2'} marginTop={3} ref={container} >
+                    <TabsStyled value={tabIndex}
+                        // onChange={handleChange}
+                                aria-label="tabs switch">
+                        {/* <Tab label={t('labelAmmAllTransactions')} {...applyProps(0)} /> */}
+                        <Tab label={t('labelAmmMyTransactions')} {...applyProps(1)} />
+                    </TabsStyled>
+                    <Divider/>
+                    {/*ammRecordArray*/}
+                    {tabIndex === 1 ? <AmmRecordTable
+                        rawData={ammMarketArray}
+                        handlePageChange={getUserAmmPoolTxs} page={page}
+                    /> : <AmmRecordTable
+                        rawData={myAmmMarketArray}
+                        handlePageChange={getUserAmmPoolTxs}
+                        pagination={{
+                            pageSize,
+                            total: ammUserTotal
+                        }}
+                        showLoading={showAmmPoolLoading}
+                        currency={currency}
+                    />}
+                </StylePaper>
             </Box>
             <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}}>
                 {/*<FixedStyle>*/}
