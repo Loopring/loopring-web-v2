@@ -151,7 +151,7 @@ export const AmmPanelView = ({
 
             />
             {ammCalcDataDeposit && ammCalcDataDeposit.lpCoin ?
-                <BoxWrapperStyled marginTop={3}>
+                <BoxWrapperStyled marginTop={5/2}>
                     <MyAmmLPAssets ammCalcData={ammCalcDataDeposit}/>
                 </BoxWrapperStyled> : <></>
 

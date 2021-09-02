@@ -67,7 +67,7 @@ styled(Box)`
 // ` as typeof Grid
 
 const AwardWrapperStyled = styled(Box)`
-  padding: ${({theme}) => theme.unit * 2}px;
+  padding:${({theme}) => theme.unit * 2}px ${({theme}) => theme.unit * 5/2}px;
   background-color: var(--color-box);
   border-radius: ${({theme}) => theme.unit}px;
 `
