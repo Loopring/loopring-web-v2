@@ -1,5 +1,5 @@
 import {
-    AmmInData, AmmWithdrawData, AvatarCoinStyled,
+    AmmInData, AmmExitData, AvatarCoinStyled,
     CoinInfo,
     EmptyValueTag,
     IBData,
@@ -27,7 +27,7 @@ import { useSettings } from '../../../../stores';
 import { Box, Link } from '@material-ui/core/';
 import { SvgStyled } from './styled';
 
-export const AmmWithdrawWrap = <T extends AmmWithdrawData<C extends IBData<I> ? C : IBData<I>>,
+export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
     I,
     ACD extends AmmInData<I>,
     C = IBData<I>>({
