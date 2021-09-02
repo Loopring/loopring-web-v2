@@ -230,6 +230,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     return {
         tickList,
         recommendations,
+        // tableRef,
         // handleScroll,
         // onVisibleRowsChange
     }

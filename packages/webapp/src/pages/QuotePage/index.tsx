@@ -57,7 +57,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const [filteredData, setFilteredData] = React.useState<QuoteTableRawDataItem[]>([])
     const [searchValue, setSearchValue] = React.useState<string>('')
     const [swapRankingList, setSwapRankingList] = React.useState<AmmPoolActivityRule[]>([])
-    const [tableHeight, setTableHeight] = React.useState(0);
+    // const [tableHeight, setTableHeight] = React.useState(0);
 
     const {favoriteMarket, removeMarket, addMarket} = useFavoriteMarket()
     const {t} = rest
@@ -109,19 +109,19 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
 
     const {recommendations, tickList /* onVisibleRowsChange */} = useQuote()
 
-    const getCurrentHeight = React.useCallback(() => {
-        const height = window.innerHeight
-        const tableHeight = height - 64 - 117 - 56 - 20
-        setTableHeight(tableHeight)
-    }, [])
+    // const getCurrentHeight = React.useCallback(() => {
+    //     const height = window.innerHeight
+    //     const tableHeight = height - 64 - 56 - 20
+    //     setTableHeight(tableHeight)
+    // }, [])
 
-    React.useEffect(() => {
-        getCurrentHeight()
-        window.addEventListener('resize', getCurrentHeight)
-        return () => {
-            window.removeEventListener('resize', getCurrentHeight)
-        }
-    }, [getCurrentHeight]);
+    // React.useEffect(() => {
+    //     getCurrentHeight()
+    //     window.addEventListener('resize', getCurrentHeight)
+    //     return () => {
+    //         window.removeEventListener('resize', getCurrentHeight)
+    //     }
+    // }, [getCurrentHeight]);
 
     React.useEffect(() => {
         const list = recommendations.map(item => {
@@ -261,6 +261,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
             volume: tradeFloat ? tradeFloat.volume : 0
         }
     }, [])
+    const tableRef  = React.useRef<HTMLDivElement>();
 
     return <Box display={'flex'} flexDirection={'column'} flex={1}>
 
@@ -323,8 +324,8 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
             // </Grid> */}
 
         </RowStyled>
-        <TableWrapStyled container marginY={3} paddingBottom={1} flex={1} className={'MuiPaper-elevation2'}>
-            <Grid item xs={12}>
+        <TableWrapStyled ref={tableRef as any}  marginY={3} paddingBottom={1} flex={1} className={'MuiPaper-elevation2'}>
+            <Box display={'flex'} flexDirection={'column'} >
                 <TabsWrapperStyled>
                     <Tabs
                         value={tableTabValue}
@@ -346,9 +347,9 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                     favoriteMarket={favoriteMarket}
                     addFavoriteMarket={addMarket}
                     removeFavoriteMarket={removeMarket}
-                    currentHeight={tableHeight}
+                    // currentHeight={tableHeight}
                     {...{showLoading: tickList && !tickList.length, ...rest}} />
-            </Grid>
+            </Box>
         </TableWrapStyled>
     </Box>
 

@@ -337,7 +337,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
 
             </Grid>
             <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}}>
-                <FixedStyle>
+                {/*<FixedStyle>*/}
                     <Box>
                         <AmmPanelView pair={pair} walletMap={walletMap} snapShotData={snapShotData}/>
                     </Box>
@@ -429,7 +429,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             </AwardWrapperStyled>
                         ))}
                     </Box>
-                </FixedStyle>
+                {/*</FixedStyle>*/}
             </Box>
         </Box>
     </>
