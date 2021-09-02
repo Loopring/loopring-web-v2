@@ -1,3 +1,4 @@
+import React from 'react'
 import { Box, Button, Typography } from '@material-ui/core/';
 import { CopyIcon, getShortAddr, LinkIcon, ReverseIcon, } from '@loopring-web/common-resources';
 import { Trans, WithTranslation } from 'react-i18next';
@@ -50,6 +51,13 @@ export const AccountBasePanel = ({
     //     variant: 'popover',
     //     popupId: 'myAddress',
     // })
+
+    const getImagePath = React.useCallback(() => {
+      const path = `static/images/vips/${level.toUpperCase()}.png`
+      console.log('path:', path)
+      return path
+    }, [level])
+
     return <Box display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
         <Typography variant={'body2'} color={'textSecondary'} marginTop={3}>
             <Trans i18nKey="labelConnectBy" tOptions={{connectBy}}>
@@ -58,9 +66,10 @@ export const AccountBasePanel = ({
         </Typography>
         <Typography marginTop={1} display={'flex'} alignItems={'center'}
                      justifyContent={'flex-start'}>
-            <Typography component={'span'} variant={'h1'}>{addressShort}</Typography>
-            {level ? <VipStyled component={'span'} variant={'body2'}
-            >{level}</VipStyled> : undefined}
+            <Typography paddingRight={1} component={'span'} variant={'h1'}>{addressShort}</Typography>
+            {/* {level && <VipStyled component={'span'} variant={'body2'}
+            >{level}</VipStyled>} */}
+            {level && <img alt="VIP" style={{verticalAlign: 'text-bottom' ,width: '32px', height: '16px'}} src={getImagePath()} />}
         </Typography>
 
         <BoxStyled component={'div'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
