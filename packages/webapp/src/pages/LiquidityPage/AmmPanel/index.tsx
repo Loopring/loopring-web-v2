@@ -66,7 +66,6 @@ export const AmmPanelView = ({
     } = useAmmExit({
         ammPoolSnapshot,
         setToastOpen,
-        type: AmmPanelType.Exit,
         pair,
         snapShotData,
     })
