@@ -31,9 +31,7 @@ import {
     GetOffchainFeeAmtRequest,
     JoinAmmPoolRequest,
     LoopringMap,
-    makeExitAmmPoolRequest,
-    makeJoinAmmPoolRequest,
-    MarketInfo,
+    makeExitAmmPoolRequest2,
     OffchainFeeInfo,
     OffchainFeeReqType,
     TickerData,
@@ -68,7 +66,7 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
     const [isLoading, setIsLoading] = React.useState(false)
 
-    const { coinMap, tokenMap } = useTokenMap();
+    const { idIndex, marketArray, marketMap, coinMap, tokenMap } = useTokenMap();
     const { ammMap } = useAmmMap();
     const { account, status: accountStatus } = useAccount();
 
@@ -79,10 +77,10 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
     const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<C> | undefined>();
 
-    const [ammData, setAmmData] = React.useState<AmmExitData<IBData<C>, C>>({
-        coinLP: { belong: undefined } as unknown as IBData<C>,
+    const [ammData, setAmmData] = React.useState<AmmExitData<IBData<string>, string>>({
+        coinLP: { belong: undefined } as unknown as IBData<string>,
         slippage: initSlippage
-    } as AmmExitData<IBData<C>, C>);
+    } as AmmExitData<IBData<string>, string>);
 
     const [btnI18nKey, setBtnI18nKey] = React.useState<string | undefined>(undefined);
 
@@ -119,7 +117,7 @@ export const useAmmExit = <C extends { [key: string]: any }>({
         myLog('exit !!! initAmmData:', _ammCalcData)
 
         setAmmCalcData({ ...ammCalcData, ..._ammCalcData });
-        if (_ammCalcData.myCoinA && tokenMap) {
+        if (_ammCalcData.lpCoin && _ammCalcData.myCoinA && _ammCalcData.myCoinB && tokenMap) {
 
             const baseT = tokenMap[_ammCalcData.myCoinA.belong]
 
@@ -131,15 +129,14 @@ export const useAmmExit = <C extends { [key: string]: any }>({
             setBaseMinAmt(baseT ? sdk.toBig(baseT.orderAmounts.minimum).div('1e' + baseT.decimals).toNumber() : undefined)
             setQuoteMinAmt(quoteT ? sdk.toBig(quoteT.orderAmounts.minimum).div('1e' + quoteT.decimals).toNumber() : undefined)
 
-            //TODO
-            // setAmmData({
-            //     coinA: {...isJoin ? _ammCalcData.myCoinA : _ammCalcData.lpCoinA, tradeValue: undefined},
-            //     coinB: {...isJoin ? _ammCalcData.myCoinB : _ammCalcData.lpCoinB, tradeValue: undefined},
-            //     slippage: initSlippage,
-            // })
+            setAmmData({
+                coinLP: _ammCalcData.lpCoin as any,
+                slippage: initSlippage,
+            })
         }
+
     }, [fee, snapShotData, coinMap, tokenMap, ammCalcData, ammMap,
-        setAmmCalcData, setAmmData, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt,])
+        setAmmCalcData, setAmmData, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt, ])
 
     const btnLabelActiveCheck = React.useCallback(({ ammData }): string | undefined => {
 
@@ -163,7 +160,7 @@ export const useAmmExit = <C extends { [key: string]: any }>({
                     return undefined
                 } else {
                     disableBtn()
-                    return `labelLimitMin, ${times * baseMinAmt} ${ammData?.coinA.belong} / ${times * quoteMinAmt} ${ammData?.coinB.belong}`
+                    return `labelLimitMin, ${times * baseMinAmt} ${baseToken?.symbol} / ${times * quoteMinAmt} ${quoteToken?.symbol}`
                 }
 
             } else {
@@ -220,19 +217,17 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
     React.useEffect(() => {
         calculateCallback()
-    }, [accountStatus, pair, ammData])
+    }, [accountStatus, account.readyState, pair, ammData])
 
     const [request, setRequest] = React.useState<{ ammInfo: any, request: JoinAmmPoolRequest | ExitAmmPoolRequest }>();
 
-    const handleExit = React.useCallback(async ({ data, ammData, type, fees, ammPoolSnapshot, tokenMap, account }) => {
+    const handleExit = React.useCallback(async ({ data, ammData, fees, ammPoolSnapshot, tokenMap, account }) => {
         setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, }]))
 
-        const isAtoB = type === 'coinA'
+        myLog('exit data:', data, ammData)
 
-        if (!tokenMap || !data.coinA.belong || !data.coinB.belong
-            || !ammPoolSnapshot || !fees || !account?.accAddress
-            || (isAtoB && data.coinA.tradeValue === undefined)
-            || (!isAtoB && data.coinB.tradeValue === undefined)) {
+        if (!tokenMap || !baseToken || !quoteToken
+            || !ammPoolSnapshot || !fees || !account?.accAddress) {
             return
         }
 
@@ -240,51 +235,33 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
         const slippageReal = sdk.toBig(slippage).div(100).toString()
 
-        const { idIndex, marketArray, marketMap, } = store.getState().tokenMap
-
         const { ammMap } = store.getState().amm.ammMap
 
-        const { market, amm } = getExistedMarket(marketArray, data.coinA.belong as string,
-            data.coinB.belong as string)
+        const { market, amm } = getExistedMarket(marketArray, baseToken.symbol, quoteToken.symbol)
 
         if (!market || !amm || !marketMap) {
             return
         }
 
-        const marketInfo: MarketInfo = marketMap[market]
-
         const ammInfo: any = ammMap[amm as string]
 
-        const coinA = tokenMap[data.coinA.belong as string]
-        const coinB = tokenMap[data.coinB.belong as string]
+        const rawVal = data.coinLP.tradeValue
 
-        const rawVal = isAtoB ? data.coinA.tradeValue : data.coinB.tradeValue
-
-        const { request } = makeExitAmmPoolRequest(rawVal.toString(), isAtoB, slippageReal, account.accAddress, fees as LoopringMap<OffchainFeeInfo>,
+        const { request } = makeExitAmmPoolRequest2(rawVal.toString(), slippageReal, account.accAddress, fees as LoopringMap<OffchainFeeInfo>,
             ammMap[amm], ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0)
-
-        if (isAtoB) {
-            data.coinB.tradeValue = parseFloat(toBig(request.exitTokens.unPooled[1].volume)
-                .div('1e' + coinB.decimals).toFixed(marketInfo.precisionForPrice))
-        } else {
-            data.coinA.tradeValue = parseFloat(toBig(request.exitTokens.unPooled[0].volume)
-                .div('1e' + coinA.decimals).toFixed(marketInfo.precisionForPrice))
-        }
 
         setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData: data }]))
 
-        setAmmData({
-            coinLP: data as IBData<C>,
-            slippage,
-        })
+        // setAmmCalcData()
+
+        myLog('exit req:', request)
 
         setRequest({
             ammInfo,
             request,
         })
-        // }
 
-    }, [])
+    }, [idIndex, marketArray, marketMap, baseToken, quoteToken])
 
     const handleAmmPoolEvent = (data: AmmExitData<IBData<any>>, _type: 'coinA' | 'coinB') => {
         handleExit({ data, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account })
