@@ -66,6 +66,7 @@ export type AmmJoinData<C extends IBData<I>, I = any> = {
         [ key: string ]: any
     }
 }
+
 export type AmmExitData<C extends IBData<I>, I = any> = {
     coinLP: C,
     slippage: number | string,
@@ -73,7 +74,6 @@ export type AmmExitData<C extends IBData<I>, I = any> = {
         [ key: string ]: any
     }
 }
-
 
 export type AmmInData<T> = {
     myCoinA: IBData<T>,
@@ -88,8 +88,8 @@ export type AmmInData<T> = {
     slippage: number | string
     // slippageTolerance: Array<number | string>,
     fee: string,
+    percentage: string,
 }
-
 
 export type AmmDetailBase<T> = {
     // name?: string,
