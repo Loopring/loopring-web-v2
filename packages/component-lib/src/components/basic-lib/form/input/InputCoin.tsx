@@ -1,5 +1,5 @@
 import { FormHelperText, FormLabel, Grid, Typography } from "@material-ui/core";
-import { CoinInfo, getThousandFormattedNumbers, IBData } from '@loopring-web/common-resources';
+import { CoinInfo, FORMAT_STRING_LEN, getThousandFormattedNumbers, IBData } from '@loopring-web/common-resources';
 import { InputCoinProps } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
@@ -121,7 +121,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                     </Grid>
                     <Grid item order={order === 'left' ? 1 : 2}
                           paddingLeft={order === 'left' ? 0 : 1}>
-                        <Typography  variant={(belong && belong.length)>10?'body1':'h4'}>
+                        <Typography  variant={(belong && belong.length) >= FORMAT_STRING_LEN ? 'body1' : 'h4'}>
                             {belong}
                         </Typography></Grid>
                 </Grid>
