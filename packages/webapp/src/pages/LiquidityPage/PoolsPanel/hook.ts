@@ -5,15 +5,26 @@ import { deepClone } from '../../../utils/obj_tools';
 import { useTokenMap } from '../../../stores/token';
 import { useSocket } from '../../../stores/socket';
 import { useTicker } from '../../../stores/ticker';
+import { QuoteTableRawDataItem } from '@loopring-web/component-lib';
 
+const RowConfig = {
+    rowHeight:44,
+    headerRowHeight:44,
+
+}
 // import { tickerService } from '../../../services/tickerService';
 type Row<R> = AmmDetail<R> & { tradeFloat: TradeFloat }
-export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>({pageSize}: { pageSize: number }) {
+export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>(
+    // {pageSize}: { pageSize: number }
+) {
     const [rawData, setRawData] = React.useState<Array<Row<R>> | []>([]);
-    const [page, setPage] = React.useState<number>(1);
+    const [filteredData, setFilteredData] = React.useState<Array<Row<R>> | []>([])
+
+    // const [page, setPage] = React.useState<number>(1);
     const {coinMap} = useTokenMap();
     const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
-
+    const [filterValue, setFilterValue] = React.useState('');
+    const [tableHeight, setTableHeight] = React.useState(0)
     const {ammMap, status: ammMapStatus,} = useAmmMap();
     const {
         tickerMap,
@@ -21,6 +32,10 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
         updateTickers,
     } = useTicker();
     const {status: socketStatus, statusUnset: socketStatusUnset,} = useSocket();
+    const resetTableData = React.useCallback((tableData)=>{
+        setFilteredData(tableData)
+        setTableHeight(RowConfig.headerRowHeight + tableData.length * RowConfig.rowHeight )
+    },[setFilteredData,setTableHeight])
     const updateRawData = React.useCallback((tickerMap) => {
         try {
             const _ammMap = deepClone(ammMap);
@@ -34,13 +49,15 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
 
                 }
             }
-            setRawData(Object.keys(_ammMap).map((ammKey: string) => {
+            const rawData = Object.keys(_ammMap).map((ammKey: string) => {
                 if (coinMap) {
                     _ammMap[ ammKey ][ 'coinAInfo' ] = coinMap[ _ammMap[ ammKey ][ 'coinA' ] ];
                     _ammMap[ ammKey ][ 'coinBInfo' ] = coinMap[ _ammMap[ ammKey ][ 'coinB' ] ];
                 }
                 return _ammMap[ ammKey ];
-            }))
+            })
+            setRawData(rawData)
+            resetTableData(rawData)
         } catch (error) {
             throw new CustomError({...ErrorMap.NO_TOKEN_MAP, options: error})
         }
@@ -48,17 +65,16 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
     }, [ammMap]);
     const sortMethod = React.useCallback((_sortedRows,sortColumn)=>{
         let _rawData:Row<R>[]  = [];
-
         switch (sortColumn) {
             case 'pools':
-                _rawData = rawData.sort((a, b) => {
+                _rawData = filteredData.sort((a, b) => {
                     const valueA = a.coinAInfo.simpleName
                     const valueB = b.coinAInfo.simpleName
                     return valueA.localeCompare(valueB)
                 })
                 break;
             case 'liquidity':
-                _rawData = rawData.sort((a, b) => {
+                _rawData = filteredData.sort((a, b) => {
                     const valueA = a.amountDollar
                     const valueB = b.amountDollar
                     if (valueA && valueB) {
@@ -74,7 +90,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
                 })
                 break;
             case 'volume24':
-                _rawData = rawData.sort((a, b) => {
+                _rawData = filteredData.sort((a, b) => {
                     const valueA = a.tradeFloat.volume
                     const valueB = b.tradeFloat.volume
                     if (valueA && valueB) {
@@ -92,12 +108,10 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
             default:
                 _rawData = rawData
         }
-        setPage(1);
-        setRawData((state)=>{
-            return _rawData
-        })
+        resetTableData(_rawData)
         return _rawData;
-    },[rawData])
+    },[filteredData])
+
     const updateTickerLoop = React.useCallback((_keys?: string[]) => {
         updateTickers(_keys as string[]);
         if (nodeTimer.current !== -1) {
@@ -113,21 +127,15 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
         }
     }, [nodeTimer.current]);
 
-    const updateTickersUI = React.useCallback((_page) => {
-        setPage(_page);
+    const updateTickersUI = React.useCallback(() => {
         if (ammMap && Object.keys(ammMap).length > 0) {
-            const _keys: string[] = []
-            for (let i = (page - 1) * pageSize; i < Object.keys(ammMap).length && i < (page - 1) * pageSize + pageSize; i++) {
-                _keys.push(Object.keys(ammMap)[ i ]);
-            }
-            updateTickerLoop(_keys)
+            updateTickerLoop(Object.keys(ammMap))
         }
-    }, [ammMap, pageSize]);
+    }, [ammMap]);
     React.useEffect(() => {
         if (ammMap && Object.keys(ammMap).length !== 0) {
-            updateTickersUI(page)
+            updateTickersUI()
         }
-
     }, []);
 
 
@@ -138,12 +146,30 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
     }, [tickerStatus]);
     React.useEffect(() => {
         if (ammMapStatus === SagaStatus.UNSET) {
-            updateTickersUI(1)
+            updateTickersUI()
         }
     }, [ammMapStatus, updateTickersUI]);
+    const getFilteredData = React.useCallback((event) => {
+        setFilterValue(event.currentTarget?.value);
+        if(event.currentTarget?.value) {
+            const _rawData =  rawData.filter(o => {
+                const coinA = o.coinAInfo.name.toLowerCase()
+                const coinB = o.coinBInfo.name.toLowerCase()
+                const formattedValue = event.currentTarget?.value.toLowerCase()
+                return coinA.includes(formattedValue) || coinB.includes(formattedValue)
+            })
+            resetTableData(_rawData)
+        }else{
+            resetTableData(rawData)
+        }
+
+    }, [rawData])
     return {
-        page,
-        rawData,
+        // page,
+        filterValue,
+        tableHeight,
+        getFilteredData,
+        filteredData,
         updateTickersUI,
         sortMethod
     }
