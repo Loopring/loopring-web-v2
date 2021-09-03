@@ -41,17 +41,6 @@ export const WalletConnectProvide = async (account?: string): Promise<{ provider
             await provider.enable();
             web3 = new Web3(provider as any);
             walletServices.sendConnect(web3, provider)
-            // const wc = await provider.getWalletConnector()
-            // if (wc) {
-            //     await provider.start();
-            //     provider.subscribeWalletConnector();
-            //     web3 = new Web3(provider as any);
-            //     // connector.updateSession({accounts:[account],chainId:connector.chainId})
-            //     walletServices.sendConnect(web3, provider)
-            // }else {
-            //     web3=undefined
-            //     throw new Error('walletConnect not connect');
-            // }
         }
         return {provider, web3}
     } catch (error) {
@@ -63,10 +52,6 @@ export const WalletConnectProvide = async (account?: string): Promise<{ provider
 export const WalletConnectSubscribe = (provider: any, web3: Web3, account?: string) => {
     const {connector} = provider;
     if (provider && connector && connector.connected) {
-
-        // if(account) {
-        //     connector.approveSession({accounts:[account], chainId:provider.chainId})
-        // }
 
         connector.on("connect", (error: Error | null, payload: any | null) => {
             if (error) {
