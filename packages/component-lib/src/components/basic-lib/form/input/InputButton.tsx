@@ -1,5 +1,5 @@
 import { FormHelperText, FormLabel, Grid, } from "@material-ui/core";
-import { CoinInfo, DropDownIcon, getThousandFormattedNumbers, IBData } from '@loopring-web/common-resources';
+import { CoinInfo, DropDownIcon, FORMAT_STRING_LEN, getThousandFormattedNumbers, IBData } from '@loopring-web/common-resources';
 import { InputButtonProps } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
@@ -124,7 +124,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                             </Grid>
                             <Grid item paddingLeft={1}>
                                 <Typography
-                                    variant={belong&&belong.length>10?'body1':'h4'}>
+                                    variant={belong&&belong.length >= FORMAT_STRING_LEN ? 'body1' : 'h4'}>
                                     {belong}
                                 </Typography></Grid>
                         </Grid>

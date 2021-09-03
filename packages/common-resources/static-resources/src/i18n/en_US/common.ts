@@ -275,7 +275,7 @@ export default {
     labelUnlockAccountFailed: 'Unlock failed!',
     // labelCreateAccountApproveWaitForAuth: 'Waiting for <1>{{symbol}}</1> Approve...',
     labelCreateAccountApproveDenied: '<0>{{symbol}}</0> Approve Denied by user.',
-    labelPercentage: 'precision',
+    labelAmmSwitch: 'switch',
     labelUpdateAccountFailed: 'Activate layer2 failed!',
     labelCreateAccountDepositDenied:'You refuse to activate layer2 deposit {{value}} {{symbol}}',
     labelCreateAccountSubmit:'Activate layer2, deposit {{value}} {{symbol}} submitted! \n Around {{count}} minutes remaining...\',',
