@@ -25,8 +25,13 @@ const TableWrapperStyled = styled(Box)`
 
 const TableStyled = styled(Table)`
     &.rdg{
-        //height: ${(props: any) => props.currentHeight?props.currentHeight+'px':'100%'};
-        height: 100%;
+        height: ${(props: any) =>   {
+            if(props.currentHeight && props.currentHeight>350) {
+                return props.currentHeight+'px';
+            }else{
+                return '100%'
+            }   
+        }};
       
         --template-columns: 240px auto auto auto auto auto 92px !important;
         .rdg-cell.action{
@@ -239,6 +244,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
 export interface QuoteTableProps {
     rawData: QuoteTableRawDataItem[];
     rowHeight?: number;
+    headerRowHeight?: number;
     onVisibleRowsChange?: (startIndex: number) => void;
     onRowClick?: (rowIdx: number, row: QuoteTableRawDataItem, column: any) => void;
     favoriteMarket: string[];
@@ -261,10 +267,10 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                                                                     t,
                                                                     currentHeight = 350,
                                                                     rowHeight = 44,
+                                                                    headerRowHeight = 44,
                                                                     onVisibleRowsChange,
                                                                     rawData,
                                                                     history,
-
                                                                     onRowClick,
                                                                     favoriteMarket,
                                                                     addFavoriteMarket,
@@ -412,11 +418,14 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
 
     return (
         <TableWrapperStyled>
-            <TableStyled currentHeight={currentHeight} className={'scrollable'} {...{
+            <TableStyled
+                currentHeight={currentHeight}
+                className={'scrollable'} {...{
                 ...defaultArgs, ...rest,
                 onVisibleRowsChange,
                 rawData,
-                rowHeight
+                rowHeight,
+                headerRowHeight
             }}
                 /* onScroll={getScrollIndex} */ />
         </TableWrapperStyled>
