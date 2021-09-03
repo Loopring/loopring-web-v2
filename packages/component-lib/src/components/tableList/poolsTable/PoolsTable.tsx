@@ -325,7 +325,7 @@ export const PoolsTable = withTranslation('tables')(
               />
             </Box>}
             {/*className={'scrollable'}*/}
-            <Table style={{ height: tableHeight }}  {...{
+            <Table className={'scrollable'} style={{ height: tableHeight }}  {...{
                 ...defaultArgs, t, i18n, tReady, ...rest,
                 rawData: getRenderData(),
                 onRowClick: (index, row) => onRowClick(index, row),
@@ -334,9 +334,9 @@ export const PoolsTable = withTranslation('tables')(
                 },
                 sortDefaultKey: 'liquidity',
             }}/>
-            {pagination && rawData && rawData.length > 0 && (
+            {/* {pagination && rawData && rawData.length > 0 && (
                 <TablePagination page={page} pageSize={pageSize} total={totalData.length}
                                  onPageChange={_handlePageChange}/>
-            )}
+            )} */}
         </TableStyled>
     })
