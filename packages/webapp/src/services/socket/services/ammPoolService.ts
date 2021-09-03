@@ -1,10 +1,10 @@
 import { Subject } from 'rxjs';
-import { TradeFloat } from '@loopring-web/common-resources';
+import { AmmPoolSnapshot } from 'loopring-sdk';
 
 const subject = new Subject();
 
 export type AmmPoolMap<R> = {
-    [key in keyof R]: TradeFloat
+    [key in keyof R]: AmmPoolSnapshot
 }
 // <R extends {[key:string]:any}>
 
