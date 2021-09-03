@@ -33,6 +33,7 @@ import { LoopringAPI } from 'api_wrapper';
 import { useWalletLayer2Socket } from 'services/socket/';
 import store from 'stores'
 import { calcPriceByAmmTickMapDepth, swapDependAsync } from '../../SwapPage/help';
+import { myLog } from "utils/log_tools";
 
 const makeAmmDetailExtendsActivityMap = ({ammMap, coinMap, ammActivityMap, ammKey}: any) => {
 
@@ -141,35 +142,43 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
         coinBInfo: undefined,
     });
     const [pairHistory, setPairHistory] = React.useState<ammHistoryItem[]>([])
-    const [awardList, setAwardLsit] = React.useState<AwardItme[]>([])
+    const [awardList, setAwardList] = React.useState<AwardItme[]>([])
     const [isLoading, setIsLoading] = React.useState(false)
     const [lpTokenList, setLpTokenList] = React.useState<{ addr: string; price: number; }[]>([])
     const {getAmmLiquidity} = useAmmTotalValue()
     const {forex} = store.getState().system
 
     const getAwardList = React.useCallback(async () => {
-        if (LoopringAPI.ammpoolAPI) {
-            const result = await LoopringAPI.ammpoolAPI.getLiquidityMiningUserHistory({
-                accountId,
-                start: 0,
-                end: Number(moment()),
-            })
-            if (result && result.userMiningInfos) {
-                const formattedList = result.userMiningInfos.map(o => ({
-                    start: moment(o.start).format('YYYY/MM/DD'),
-                    end: moment(o.end).format('YYYY/MM/DD'),
-                    market: o.market,
-                    accountId: o.account_id,
-                    awardList: o.awards.map(item => {
-                        const market = tokenMapList.find(o => o[ 1 ].tokenId === item.tokenId)?.[ 0 ];
-                        return ({
-                            token: market,
-                            volume: volumeToCount(market as string, item.volume)
+        try {
+            if (LoopringAPI.ammpoolAPI) {
+                const result = await LoopringAPI.ammpoolAPI.getLiquidityMiningUserHistory({
+                    accountId,
+                    start: 0,
+                    end: Number(moment()),
+                })
+                if (result && result.userMiningInfos) {
+                    const formattedList = result.userMiningInfos.map(o => ({
+                        start: moment(o.start).format('YYYY/MM/DD'),
+                        end: moment(o.end).format('YYYY/MM/DD'),
+                        market: o.market,
+                        accountId: o.account_id,
+                        awardList: o.awards.map(item => {
+                            const market = tokenMapList.find(o => o[ 1 ].tokenId === item.tokenId)?.[ 0 ];
+                            return ({
+                                token: market,
+                                volume: volumeToCount(market as string, item.volume)
+                            })
                         })
-                    })
-                }))
-                setAwardLsit(formattedList)
+                    }))
+    
+                    myLog('formattedList:', formattedList)
+    
+                    setAwardList(formattedList)
+                }
             }
+
+        } catch (reason) {
+            
         }
     }, [accountId])
 
