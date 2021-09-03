@@ -12,12 +12,14 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import * as _ from 'lodash'
 // import { FloatTag } from '@loopring-web/common-resources'
-import { Box, Divider, Grid, Tab, Tabs } from '@material-ui/core'
+import { Box, Container, Divider, Grid, Tab, Tabs } from '@material-ui/core'
 import { useQuote } from './hook'
 import { LoopringAPI } from 'api_wrapper'
 import { AmmPoolActivityRule, TradingInterval } from 'loopring-sdk'
 import { TableWrapStyled } from 'pages/styled'
 import { useFavoriteMarket } from 'stores/localStore/favoriteMarket'
+import { LAYOUT } from '../../defs/common_defs';
+import { globalSetup } from '@loopring-web/common-resources';
 
 const RowStyled = styled(Grid)`
       & .MuiGrid-root:not(:last-of-type) > div{
@@ -25,16 +27,16 @@ const RowStyled = styled(Grid)`
       }
 ` as typeof Grid
 
-const SearchWrapperStyled = styled(Box)`
-      position: absolute;
-      top: ${({theme}) => theme.unit * 1.5}px;
-      right: ${({theme}) => theme.unit * 2}px;
-    `
+// const SearchWrapperStyled = styled(Box)`
+//       position: absolute;
+//       top: ${({theme}) => theme.unit * 1.5}px;
+//       right: ${({theme}) => theme.unit * 2}px;
+//     `
 
-const TabsWrapperStyled = styled(Box)`
-      position: relative;
-      padding: 0.8rem 0.8rem 0 1rem;
-`
+// const TabsWrapperStyled = styled(Box)`
+//       position: relative;
+//       padding: 0.8rem 0.8rem 0 1rem;
+// `
 
 export type CandlestickItem = {
     market: string;
@@ -49,6 +51,11 @@ export enum TableFilterParams {
     favourite = 'favourite',
     ranking = 'ranking'
 }
+const RowConfig = {
+    rowHeight:44,
+    headerRowHeight:44,
+
+}
 
 const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const [candlestickList, setCandlestickList] = React.useState<any[]>([])
@@ -57,10 +64,15 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const [filteredData, setFilteredData] = React.useState<QuoteTableRawDataItem[]>([])
     const [searchValue, setSearchValue] = React.useState<string>('')
     const [swapRankingList, setSwapRankingList] = React.useState<AmmPoolActivityRule[]>([])
-    // const [tableHeight, setTableHeight] = React.useState(0);
-
+    const [tableHeight, setTableHeight] = React.useState(0);
     const {favoriteMarket, removeMarket, addMarket} = useFavoriteMarket()
     const {t} = rest
+    const tableRef  = React.useRef<HTMLDivElement>();
+    // const [isFixed,setIsFixed] = React.useState(false);
+    const resetTableData = React.useCallback((tableData)=>{
+        setFilteredData(tableData)
+        setTableHeight(RowConfig.headerRowHeight + tableData.length * RowConfig.rowHeight )
+    },[setFilteredData,setTableHeight])
 
     const getSwapRankingList = React.useCallback(async () => {
         if (LoopringAPI.ammpoolAPI) {
@@ -114,14 +126,30 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     //     const tableHeight = height - 64 - 56 - 20
     //     setTableHeight(tableHeight)
     // }, [])
-
-    // React.useEffect(() => {
-    //     getCurrentHeight()
-    //     window.addEventListener('resize', getCurrentHeight)
-    //     return () => {
-    //         window.removeEventListener('resize', getCurrentHeight)
-    //     }
-    // }, [getCurrentHeight]);
+    // _.debounce(, globalSetup.wait )
+    const handleCurrentScroll =  React.useCallback((currentTarget,tableRef) => {
+        if(currentTarget && tableRef.current){
+            const calcHeight = tableRef.current?.offsetTop  - LAYOUT.HEADER_HEIGHT  - currentTarget.scrollY
+            // const calcStop =  tableRef.current?.offsetHeight + tableRef.current?.offsetTop
+            //     - event?.currentTarget.scrollY
+            //     - event?.currentTarget.innerHeight;
+            //&& calcStop>0
+            if( calcHeight < 2  ) {
+                tableRef.current.classList.add('fixed')
+            }else{
+                tableRef.current.classList.remove('fixed')
+            }
+        }
+    },[])
+    const currentScroll = React.useCallback((event) => {
+       handleCurrentScroll(event.currentTarget,tableRef)
+    },[tableRef] )
+    React.useEffect(() => {
+        window.addEventListener('scroll', currentScroll)
+        return () => {
+            window.removeEventListener('scroll', currentScroll)
+        }
+    }, []);
 
     React.useEffect(() => {
         const list = recommendations.map(item => {
@@ -173,7 +201,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
 
     useEffect(() => {
         const data = getFilteredTickList()
-        setFilteredData(data)
+        resetTableData(data)
     }, [getFilteredTickList])
 
     const handleTableFilterChange = useCallback(({type = TableFilterParams.all, keyword = ''}: {
@@ -205,7 +233,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
         if (type === TableFilterParams.all && !keyword) {
             data = getFilteredTickList()
         }
-        setFilteredData(data)
+        resetTableData(data)
     }, [getFilteredTickList, favoriteMarket, swapRankingList, tickList])
 
     const handleRowClick = useCallback((row: QuoteTableRawDataItem) => {
@@ -261,7 +289,6 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
             volume: tradeFloat ? tradeFloat.volume : 0
         }
     }, [])
-    const tableRef  = React.useRef<HTMLDivElement>();
 
     return <Box display={'flex'} flexDirection={'column'} flex={1}>
 
@@ -324,35 +351,40 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
             // </Grid> */}
 
         </RowStyled>
-        <TableWrapStyled ref={tableRef as any}  marginY={3} paddingBottom={1} flex={1} className={'MuiPaper-elevation2'}>
-            <Box display={'flex'} flexDirection={'column'} >
-                <TabsWrapperStyled>
-                    <Tabs
-                        value={tableTabValue}
-                        onChange={handleTabChange}
-                        aria-label="disabled tabs example"
-                    >
-                        <Tab label={t('labelQuotePageFavourite')} value="favourite"/>
-                        <Tab label={t('labelAll')} value="all"/>
-                        {/* <Tab label={t('labelQuotePageTradeRanking')} value="tradeRanking"/> */}
-                    </Tabs>
-                    <SearchWrapperStyled>
-                        <InputSearch value={searchValue} onChange={handleSearchChange}/>
-                    </SearchWrapperStyled>
-                </TabsWrapperStyled>
-                <Divider/>
+        <TableWrapStyled ref={tableRef as any}
+                         marginY={3}
+                         paddingBottom={1} flex={1}
+                         className={'MuiPaper-elevation2'}>
+            <Box display={'flex'} flexDirection={'column'}  >
+                <Container className={'toolbar'}  >
+                   <Box paddingTop={1/2} paddingLeft={1} paddingRight={2} display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
+                       <Tabs
+                           value={tableTabValue}
+                           onChange={handleTabChange}
+                           aria-label="disabled tabs example"
+                       >
+                           <Tab label={t('labelQuotePageFavourite')} value="favourite"/>
+                           <Tab label={t('labelAll')} value="all"/>
+                           {/* <Tab label={t('labelQuotePageTradeRanking')} value="tradeRanking"/> */}
+                       </Tabs>
+                       <InputSearch value={searchValue} onChange={handleSearchChange}/>
+                   </Box>
+                   <Divider/>
+                </Container>
+
                 <QuoteTable /* onVisibleRowsChange={onVisibleRowsChange} */
                     onRowClick={(index, row, col) => handleRowClick(row)}
                     rawData={filteredData}
                     favoriteMarket={favoriteMarket}
                     addFavoriteMarket={addMarket}
                     removeFavoriteMarket={removeMarket}
-                    // currentHeight={tableHeight}
+                    currentHeight={tableHeight}
+                    rowHeight={RowConfig.rowHeight}
+                    headerRowHeight={RowConfig.headerRowHeight}
                     {...{showLoading: tickList && !tickList.length, ...rest}} />
             </Box>
         </TableWrapStyled>
     </Box>
-
 
 })
 
