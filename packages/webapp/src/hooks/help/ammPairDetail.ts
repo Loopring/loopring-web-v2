@@ -1,4 +1,5 @@
 import { AmmDetailBase, AmmInData } from '@loopring-web/common-resources';
+import { myLog } from 'utils/log_tools';
 import { volumeToCountAsBigNumber } from './volumeToCount';
 
 export function ammPairInit<C>({
@@ -44,12 +45,15 @@ export function ammPairInit<C>({
             const balance = (walletMap && walletMap[ lpCoin ]) ? walletMap[ lpCoin ].count : 0;
             const ammInfo = ammMap[ 'AMM-' + key ]
             const {totalLPToken, totalA, totalB}: AmmDetailBase<any> = ammInfo
+
+            myLog('ammInfo:', ammInfo)
+
             if (totalA && totalLPToken && totalB) {
-                percentage = totalA / totalLPToken
+                percentage = totalLPToken ? balance / totalLPToken : 0
 
-                coinACount = percentage * totalA
+                coinACount = totalA * percentage
 
-                coinBCount = percentage * totalB
+                coinBCount = totalB * percentage
             }
             _ammCalcData.lpCoin = { belong: lpCoin, balance, }
         }
