@@ -69,7 +69,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const {chargeFeeList} = useChargeFees(withdrawValue.belong, withdrawType, tokenMap, withdrawValue.tradeValue)
 
     const [withdrawTypes, setWithdrawTypes] = React.useState<any>(WithdrawTypes)
-
+    const [isExceedMax, setIsExceedMax] = React.useState(false)
     const {checkHWAddr, updateDepositHashWrapper,} = useWalletInfo()
 
     const [lastRequest, setLastRequest] = React.useState<any>({})
@@ -85,7 +85,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     React.useEffect(() => {
 
         if (chargeFeeList && chargeFeeList?.length > 0 && !!address && withdrawValue?.tradeValue
-            && addrStatus === AddressError.NoError) {
+            && addrStatus === AddressError.NoError && !isExceedMax) {
             enableBtn()
         } else {
             disableBtn()
@@ -296,7 +296,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         }
     }, [accountStatus, account.readyState])
 
-    const withdrawProps: WithdrawProps<R, T> = {
+    const withdrawProps: any= {
         addressDefault: address,
         tradeData: withdrawValue as any,
         coinMap: totalCoinMap as CoinMap<T>,
@@ -339,7 +339,15 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         handleAddressError: (_value: any) => {
             setAddress(_value)
             return {error: false, message: ''}
-        }
+        },
+        handleError: ({belong, balance, tradeValue}: any) => {
+            if (typeof tradeValue !== 'undefined' && balance < tradeValue || (tradeValue && !balance)) {
+                setIsExceedMax(true)
+                return {error: true, message: t('tokenNotEnough', {belong,})}
+            }
+            setIsExceedMax(false)
+            return {error: false, message: ''}
+        },
     }
 
     return {
