@@ -486,6 +486,11 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                 market: market as any, tradePair: `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
                 dependencyData: {tickMap, ammPoolSnapshot, depth}
             })
+
+            // myLog('refreshAmmPoolSnapshot ---stob:', close, stob)
+
+            close = Number(getShowStr(close))
+
             let _tradeFloat = makeTickView(tickMap && tickMap[ pageTradeLite.market ] ? tickMap[ pageTradeLite.market ] : {})
             setTradeFloat({
                 ..._tradeFloat,

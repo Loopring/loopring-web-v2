@@ -275,7 +275,7 @@ export default {
     labelUnlockAccountFailed: '解锁失败!',
     // labelCreateAccountApproveWaitForAuth: 'Waiting for <1>{{symbol}}</1> Approve...',
     labelCreateAccountApproveDenied: '<0>{{symbol}}</0> Approve Denied by user.',
-    labelPercentage: '转换',
+    labelAmmSwitch: '切换',
     labelUpdateAccountFailed: '开通二层账户失败',
     labelCreateAccountDepositDenied: '您以拒绝充值 {{value}} {{symbol}}, 账户未激活',
     labelCreateAccountSubmit: '{{value}} {{symbol}} 的充值以提交成功，\n 预计等待{{count}}分钟...',

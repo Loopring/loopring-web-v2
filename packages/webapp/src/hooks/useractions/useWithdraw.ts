@@ -66,11 +66,10 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const [withdrawType, setWithdrawType] = React.useState<sdk.OffchainFeeReqType>(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
 
     const withdrawType2 = withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
-
     const {chargeFeeList} = useChargeFees(withdrawValue.belong, withdrawType, tokenMap, withdrawValue.tradeValue)
 
     const [withdrawTypes, setWithdrawTypes] = React.useState<any>(WithdrawTypes)
-
+    const [isExceedMax, setIsExceedMax] = React.useState(false)
     const {checkHWAddr, updateDepositHashWrapper,} = useWalletInfo()
 
     const [lastRequest, setLastRequest] = React.useState<any>({})
@@ -86,7 +85,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     React.useEffect(() => {
 
         if (chargeFeeList && chargeFeeList?.length > 0 && !!address && withdrawValue?.tradeValue
-            && addrStatus === AddressError.NoError) {
+            && addrStatus === AddressError.NoError && !isExceedMax) {
             enableBtn()
         } else {
             disableBtn()
@@ -124,7 +123,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             // myLog('try to reset setWithdrawType!')
             setWithdrawType(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
         }
-    }, [withdrawTypes, withdrawType, setWithdrawType])
+    }, [withdrawTypes, setWithdrawType])
 
     React.useEffect(() => {
         updateWithdrawType()
@@ -169,11 +168,12 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         resetDefault();
     }, [isShow])
     useWalletLayer2Socket({walletLayer2Callback})
-    // useCustomDCEffect(() => {
-    //     if (chargeFeeList.length > 0) {
-    //         setWithdrawFeeInfo(chargeFeeList[ 0 ])
-    //     }
-    // }, [chargeFeeList, setWithdrawFeeInfo])
+
+    useCustomDCEffect(() => {
+        if (chargeFeeList.length > 0) {
+            setWithdrawFeeInfo(chargeFeeList[ 0 ])
+        }
+    }, [chargeFeeList, setWithdrawFeeInfo])
 
     const processRequest = React.useCallback(async (request: sdk.OffChainWithdrawalRequestV3, isFirstTime: boolean) => {
 
@@ -296,7 +296,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         }
     }, [accountStatus, account.readyState])
 
-    const withdrawProps: WithdrawProps<R, T> = {
+    const withdrawProps: any= {
         addressDefault: address,
         tradeData: withdrawValue as any,
         coinMap: totalCoinMap as CoinMap<T>,
@@ -312,7 +312,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         },
         handleFeeChange(value: { belong: any; fee: number | string; __raw__?: any }): void {
             myLog('handleFeeChange', value)
-            console.log(value)
             setWithdrawFeeInfo(value as any)
         },
         handleWithdrawTypeChange: (value: 'Fast' | 'Standard') => {
@@ -340,7 +339,15 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         handleAddressError: (_value: any) => {
             setAddress(_value)
             return {error: false, message: ''}
-        }
+        },
+        handleError: ({belong, balance, tradeValue}: any) => {
+            if (typeof tradeValue !== 'undefined' && balance < tradeValue || (tradeValue && !balance)) {
+                setIsExceedMax(true)
+                return {error: true, message: t('tokenNotEnough', {belong,})}
+            }
+            setIsExceedMax(false)
+            return {error: false, message: ''}
+        },
     }
 
     return {

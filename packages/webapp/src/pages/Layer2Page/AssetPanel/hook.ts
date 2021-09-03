@@ -122,7 +122,6 @@ export const useGetAssets = () => {
                 let item = undefined
                 if (assetsMap[ key ]) {
                     const tokenInfo = assetsMap[ key ]
-                    console.log(tokenInfo)
                     const isLpToken = tokenInfo.token.split('-')[ 0 ] === 'LP'
                     let tokenValueDollar = 0
                     if (!isLpToken) {
