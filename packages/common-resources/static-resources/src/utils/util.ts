@@ -77,9 +77,14 @@ export const getValuePrecisionThousand = (value?: number | string, minDigit = 6,
         result = '0.00'
     }
     if (Number(value) > 0) {
-        result = Number(value).toLocaleString('en', {
-            minimumFractionDigits: minDigit
-        })
+        // minium digit = 2
+        if (minDigit < 3) {
+            result = Number(Number(value).toFixed(2)).toLocaleString('en')
+        } else {
+            result = Number(value).toLocaleString('en', {
+                minimumFractionDigits: minDigit
+            })
+        }
     }
     if (Number(value) === 0) {
         result = '0.00'
