@@ -34,6 +34,7 @@ import { useWalletLayer2Socket } from 'services/socket/';
 import store from 'stores'
 import { calcPriceByAmmTickMapDepth, swapDependAsync } from '../../SwapPage/help';
 import { myLog } from "utils/log_tools";
+import { getShowStr } from "utils/formatter_tool";
 
 const makeAmmDetailExtendsActivityMap = ({ammMap, coinMap, ammActivityMap, ammKey}: any) => {
 
@@ -221,32 +222,37 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
             const url = routerLocation.pathname
             const list = url.split('/')
             const market = list[ list.length - 1 ]
-            const addr = ammMap[ 'AMM-' + market ].address
-            setIsLoading(true)
-            getUserAmmTransaction({
-                address: addr,
-                limit: limit,
-                offset,
-            })?.then((res) => {
-                let _myTradeArray = makeMyAmmMarketArray(market, res.userAmmPoolTxs)
 
-                const formattedArray = _myTradeArray.map((o: any) => {
-                    const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`
-                    const formattedBalance = Number(volumeToCount(market, o.totalBalance))
-                    const price = getLpTokenPrice(market)
-                    const totalDollar = (formattedBalance || 0) * (price || 0) as any;
-                    const totalYuan = totalDollar * forex
-                    return ({
-                        ...o,
-                        totalDollar: getThousandFormattedNumbers(totalDollar.toFixed(2)),
-                        totalYuan: getThousandFormattedNumbers(Number((totalYuan).toFixed(2))),
+            const ammInfo = ammMap[ 'AMM-' + market ]
+            const addr = ammInfo?.address
+
+            if (addr) {
+                setIsLoading(true)
+                getUserAmmTransaction({
+                    address: addr,
+                    limit: limit,
+                    offset,
+                })?.then((res) => {
+                    let _myTradeArray = makeMyAmmMarketArray(market, res.userAmmPoolTxs)
+    
+                    const formattedArray = _myTradeArray.map((o: any) => {
+                        const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`
+                        const formattedBalance = Number(volumeToCount(market, o.totalBalance))
+                        const price = getLpTokenPrice(market)
+                        const totalDollar = (formattedBalance || 0) * (price || 0) as any;
+                        const totalYuan = totalDollar * forex
+                        return ({
+                            ...o,
+                            totalDollar: getThousandFormattedNumbers(totalDollar.toFixed(2)),
+                            totalYuan: getThousandFormattedNumbers(Number((totalYuan).toFixed(2))),
+                        })
                     })
+                    // setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
+                    setMyAmmMarketArray(formattedArray || [])
+                    setAmmUserTotal(res.totalNum)
+                    setIsLoading(false)
                 })
-                // setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
-                setMyAmmMarketArray(formattedArray || [])
-                setAmmUserTotal(res.totalNum)
-                setIsLoading(false)
-            })
+            }
         }
     }, [ammMap, routerLocation.pathname, forex, getLpTokenPrice])
 
@@ -375,7 +381,8 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
                         })
 
                         _tradeFloat = makeTickView(tickMap[ market ] ? tickMap[ market ] : {})
-                        setTradeFloat({..._tradeFloat, close: close} as TradeFloat);
+                        myLog('........close:', close)
+                        setTradeFloat({..._tradeFloat, close: Number(getShowStr(close))} as TradeFloat);
                         setCoinPairInfo({..._coinPairInfo})
                         setSnapShotData(_snapShotData)
 

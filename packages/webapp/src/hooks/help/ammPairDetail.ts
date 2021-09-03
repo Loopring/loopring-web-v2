@@ -1,4 +1,6 @@
 import { AmmDetailBase, AmmInData } from '@loopring-web/common-resources';
+import { getShowStr } from 'utils/formatter_tool';
+import { myLog } from 'utils/log_tools';
 import { volumeToCountAsBigNumber } from './volumeToCount';
 
 export function ammPairInit<C>({
@@ -18,7 +20,7 @@ export function ammPairInit<C>({
     if (isNaN(_ammCalcData.AtoB) && ammPoolSnapshot) {
         const baseVol = volumeToCountAsBigNumber(pair.coinAInfo.simpleName, ammPoolSnapshot.pooled[ 0 ].volume);
         const quoteVol = volumeToCountAsBigNumber(pair.coinBInfo.simpleName, ammPoolSnapshot.pooled[ 1 ].volume);
-        _ammCalcData.AtoB = quoteVol && baseVol && parseFloat(quoteVol.div(baseVol).toFixed(7, 0) as string)
+        _ammCalcData.AtoB = quoteVol && baseVol && getShowStr(quoteVol.div(baseVol).toString())
     }
 
     let coinACount = 0, coinBCount = 0, percentage = 0
@@ -42,11 +44,17 @@ export function ammPairInit<C>({
         if (walletMap) {
             const lpCoin = 'LP-' + key
             const balance = (walletMap && walletMap[ lpCoin ]) ? walletMap[ lpCoin ].count : 0;
-            const {totalLPToken, totalA, totalB}: AmmDetailBase<any> = ammMap[ 'AMM-' + key ];
+            const ammInfo = ammMap[ 'AMM-' + key ]
+            const {totalLPToken, totalA, totalB}: AmmDetailBase<any> = ammInfo
+
+            myLog('ammInfo:', ammInfo)
+
             if (totalA && totalLPToken && totalB) {
-                percentage = totalA / totalLPToken
-                coinACount = percentage * balance
-                coinBCount = percentage * balance - feeReal
+                percentage = totalLPToken ? balance / totalLPToken : 0
+
+                coinACount = totalA * percentage
+
+                coinBCount = totalB * percentage
             }
             _ammCalcData.lpCoin = { belong: lpCoin, balance, }
         }
