@@ -30,6 +30,8 @@ import { Box, Link } from '@material-ui/core/';
 import { SvgStyled } from './styled';
 import { toBig } from 'loopring-sdk';
 
+import { getShowStr } from '@loopring-web/common-resources'
+
 export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
     I,
     ACD extends AmmInData<I>,
@@ -207,7 +209,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                 {_selectedPercentage}%
             </Typography>
             <Typography alignSelf={'center'} variant={'body1'} marginTop={1} hidden={!isPercentage} lineHeight={'22px'}>
-                {ammData?.coinLP?.tradeValue ?? EmptyValueTag}
+                {ammData?.coinLP?.tradeValue ? getShowStr(ammData?.coinLP?.tradeValue, 2, 6) : EmptyValueTag}
             </Typography>
             <Grid item alignSelf={'stretch'} marginTop={1} marginX={1} hidden={!isPercentage} height={48}>
                 <BtnPercentage selected={_selectedPercentage} anchors={[{
@@ -326,7 +328,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                                             ...rest, t,
                                             handleChange: _onSlippageChange,
                                             slippageList: slippageArray,
-                                            slippage: (ammCalcData && ammCalcData.slippage) ? ammCalcData.slippage : 0.5
+                                            slippage: (ammData && ammData.slippage) ? ammData.slippage : 0.5
                                         }} />
                                     </PopoverPure>
                                 </Typography>

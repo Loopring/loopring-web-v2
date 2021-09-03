@@ -49,6 +49,7 @@ export const colorBase = ({theme}: any) => css`
     --color-box-linear: ${theme.colorBase.boxLinear};
     --color-global-bg: ${theme.colorBase.globalBg};
     --color-star: ${theme.colorBase.star};  
+    --color-logo: ${theme.colorBase.logo};
     /********************Case for shadow*******************/
     --color-button-pot:  ${theme.colorBase.buttonPot};
     --color-button-icon: ${theme.colorBase.buttonIcon};

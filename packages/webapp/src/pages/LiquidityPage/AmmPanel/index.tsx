@@ -1,5 +1,5 @@
 import { AmmPanel, AmmPanelType, CoinIcon, Toast } from '@loopring-web/component-lib';
-import { AmmInData, CoinInfo, EmptyValueTag, WalletMap } from '@loopring-web/common-resources';
+import { AmmInData, CoinInfo, EmptyValueTag, getShowStr, WalletMap } from '@loopring-web/common-resources';
 import { useAmmJoin } from './hook_join'
 import { useAmmExit } from './hook_exit'
 import { useAmmCommon } from './hook_common'
@@ -57,7 +57,7 @@ const MyAmmLPAssets = withTranslation('common')(({ ammCalcData, t }:
                 <Typography component={'p'} variant="body2"
                     color={'textSecondary'}> {t('labelMyLPAmountFor')} </Typography>
                 <Typography component={'p'}
-                    variant="body2">{ammCalcData && ammCalcData.percentage ? Number(ammCalcData.percentage) * 100 + '%' : EmptyValueTag}</Typography>
+                    variant="body2">{ammCalcData && ammCalcData.percentage ? getShowStr(Number(ammCalcData.percentage) * 100) + '%' : EmptyValueTag}</Typography>
             </Box>
         </Box>
     </Box>
