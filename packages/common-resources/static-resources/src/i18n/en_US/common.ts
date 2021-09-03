@@ -222,6 +222,7 @@ export default {
     describeTitleConnectToWallet:'Connect wallet to start',
     describeTitleLocked:'Unlock your account to check your assets.',
     labelLiquidityPageTitle: 'AMM Pools',
+    labelMinReceive: 'Minimum Received Amount',
     labelFilter: 'Search',
     labelMiningPageTitle: 'AMM Mining',
     labelMiningActiveDate: 'Active Date',

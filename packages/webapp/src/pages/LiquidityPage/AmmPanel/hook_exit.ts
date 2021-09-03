@@ -135,7 +135,9 @@ export const useAmmExit = <C extends { [key: string]: any }>({
             setQuoteMinAmt(quoteT ? sdk.toBig(quoteT.orderAmounts.minimum).div('1e' + quoteT.decimals).toNumber() : undefined)
 
             setAmmData({
-                coinLP: _ammCalcData.lpCoin as any,
+                coinA: _ammCalcData.myCoinA,
+                coinB: _ammCalcData.myCoinB,
+                coinLP: _ammCalcData.lpCoin,
                 slippage: initSlippage,
             })
         }
@@ -270,6 +272,17 @@ export const useAmmExit = <C extends { [key: string]: any }>({
             ammInfo,
             request,
         }
+
+        const newAmmData = {
+            coinA: { ...ammData.coinA, tradeValue: volA_show, },
+            coinB: { ...ammData.coinB, tradeValue: volB_show, },
+            coinLP: ammData.coinLP,
+            slippage: ammData.slippage,
+        }
+
+        myLog('newAmmData:', newAmmData)
+
+        setAmmData(newAmmData)
 
         setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData: data, request: req, }]))
 
