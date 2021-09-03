@@ -8,7 +8,7 @@ export default {
     labelToken: 'Token',
     labelAmount: 'Amount',
     labelAvailable: 'Available',
-    labelLocked: 'Locked',
+    labelLocked: 'Frozen',
     labelAssetsTableValue: 'Value',
     labelActions: 'Actions',
     labelAllToken: 'All Tokens',
