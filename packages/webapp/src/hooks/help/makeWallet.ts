@@ -16,7 +16,7 @@ export const makeWalletLayer2 = <C extends { [ key: string ]: any }>(): { wallet
     if (walletLayer2) {
         walletMap = Reflect.ownKeys(walletLayer2).reduce((prev, item) => {
             const {total, locked, pending: {withdraw}} = walletLayer2[ item as string ];
-            const countBig = sdk.toBig(total).minus(sdk.toBig(locked)).toString()
+            const countBig = sdk.toBig(total).minus(sdk.toBig(locked)).minus(sdk.toBig(withdraw)).toString()
             return {
                 ...prev, [ item ]: {
                     belong: item,
