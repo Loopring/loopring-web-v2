@@ -3,3 +3,5 @@ export const globalSetup = Object.freeze({
         throttleWait: 3000
     }
 )
+
+export const FORMAT_STRING_LEN = 10
