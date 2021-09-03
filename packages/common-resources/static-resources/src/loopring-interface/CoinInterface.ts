@@ -68,6 +68,8 @@ export type AmmJoinData<C extends IBData<I>, I = any> = {
 }
 
 export type AmmExitData<C extends IBData<I>, I = any> = {
+    coinA: C,
+    coinB: C,
     coinLP: C,
     slippage: number | string,
     __cache__?: {
