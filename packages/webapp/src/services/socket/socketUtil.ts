@@ -14,6 +14,7 @@ import { tickerService } from './services/tickerService';
 import { ammPoolService } from './services/ammPoolService';
 import { CustomError, ErrorMap } from '@loopring-web/common-resources';
 import { LoopringAPI } from 'api_wrapper';
+import { AmmPoolSnapshot } from 'loopring-sdk/dist/defs/loopring_defs';
 
 
 export type SocketEvent = (e: any, ...props: any[]) => any
@@ -84,19 +85,20 @@ export class LoopringSocket {
         [ SocketEventType.candlestick ]: (data: string) => {
 
         },
-        [ SocketEventType.ammpool ]: (data: string[]) => {
-            // const [market,timestamp,size,volume,open,high,low,close,count,bid,ask] = data;
-            // @ts-ignore
+        [ SocketEventType.ammpool ]: (data: any[]) => {
             const [poolName, poolAddress, pooled, [tokenId, volume], risky] = data;
-            // @ts-ignore
-            ammPoolService.sendAmmPool({poolName, poolAddress, pooled, lp: {tokenId, volume}, risky})
+            ammPoolService.sendAmmPool({[poolName]:{poolName, poolAddress, pooled, lp: {tokenId, volume}, risky} as AmmPoolSnapshot} )
         },
-        // @ts-ignore
-        [ SocketEventType.pingpong ]: (data: string, instance: InstanceType<LoopringSocket>) => {
+        [ SocketEventType.pingpong ]: (data: string, socket:WebSocket  ) => {
 
-            if (data === 'ping') {
-                instance.loopringSocket.send('pong')
+            if (data === 'ping' && socket && socket.send) {
+                socket.send('pong')
+            }else if(window.loopringSocket.isConnectSocket()){
+                //HACK:
+                window.loopringSocket.loopringSocket.send('pong')
+
             }
+
         },
     }
     private __wsTimer__: { timer: NodeJS.Timer | -1, count: number } = {
@@ -359,7 +361,7 @@ export class LoopringSocket {
     }
     private resetSocketEvents = () => {
         this._socketCallbackMap = undefined;
-        this.addSocketEvents(SocketEventType.pingpong, [this])
+        this.addSocketEvents(SocketEventType.pingpong, [this.loopringSocket])
     }
 }
 
