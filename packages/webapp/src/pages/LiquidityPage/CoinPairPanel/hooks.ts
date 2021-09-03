@@ -34,6 +34,7 @@ import { useWalletLayer2Socket } from 'services/socket/';
 import store from 'stores'
 import { calcPriceByAmmTickMapDepth, swapDependAsync } from '../../SwapPage/help';
 import { myLog } from "utils/log_tools";
+import { getShowStr } from "utils/formatter_tool";
 
 const makeAmmDetailExtendsActivityMap = ({ammMap, coinMap, ammActivityMap, ammKey}: any) => {
 
@@ -375,7 +376,8 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
                         })
 
                         _tradeFloat = makeTickView(tickMap[ market ] ? tickMap[ market ] : {})
-                        setTradeFloat({..._tradeFloat, close: close} as TradeFloat);
+                        myLog('........close:', close)
+                        setTradeFloat({..._tradeFloat, close: Number(getShowStr(close))} as TradeFloat);
                         setCoinPairInfo({..._coinPairInfo})
                         setSnapShotData(_snapShotData)
 
