@@ -42,11 +42,14 @@ export function ammPairInit<C>({
         if (walletMap) {
             const lpCoin = 'LP-' + key
             const balance = (walletMap && walletMap[ lpCoin ]) ? walletMap[ lpCoin ].count : 0;
-            const {totalLPToken, totalA, totalB}: AmmDetailBase<any> = ammMap[ 'AMM-' + key ];
+            const ammInfo = ammMap[ 'AMM-' + key ]
+            const {totalLPToken, totalA, totalB}: AmmDetailBase<any> = ammInfo
             if (totalA && totalLPToken && totalB) {
                 percentage = totalA / totalLPToken
-                coinACount = percentage * balance
-                coinBCount = percentage * balance - feeReal
+
+                coinACount = percentage * totalA
+
+                coinBCount = percentage * totalB
             }
             _ammCalcData.lpCoin = { belong: lpCoin, balance, }
         }
