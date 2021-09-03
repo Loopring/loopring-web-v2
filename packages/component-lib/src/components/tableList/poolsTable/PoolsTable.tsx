@@ -1,7 +1,9 @@
 import React from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import * as _ from 'lodash'
-import { Button, Column, NewTagIcon, Table, TablePagination, TableProps } from '../../basic-lib'
+import { Button, Column, NewTagIcon, Table,
+    // TablePagination,
+    TableProps } from '../../basic-lib'
 import {
     AmmDetail, AvatarCoinStyled,
     Currency,
@@ -10,14 +12,16 @@ import {
     globalSetup,
     // MiningIcon,
     PriceTag,
-    SearchIcon,
-    TableType,
+    // SearchIcon,
+    // TableType,
 } from '@loopring-web/common-resources';
-import { Avatar, Box, InputAdornment, OutlinedInput, Typography } from '@material-ui/core/';
+import { Avatar, Box,
+    // InputAdornment, OutlinedInput,
+    Typography } from '@material-ui/core/';
 import { PoolTableProps, Row } from './Interface';
 import styled from '@emotion/styled';
 import {  TablePaddingX } from '../../styled';
-import { useDeepCompareEffect } from 'react-use';
+// import { useDeepCompareEffect } from 'react-use';
 import { useHistory } from 'react-router-dom';
 import { FormatterProps } from 'react-data-grid';
 // import store from '@loopring-web/webapp/src/stores';
@@ -238,8 +242,8 @@ export const PoolsTable = withTranslation('tables')(
     <T extends { [ key: string ]: any }>({
                                              t, i18n,
                                              tReady,
-                                             handlePageChange,
-                                             pagination,
+                                             // handlePageChange,
+                                             // pagination,
                                              showFilter = true,
                                              rawData,
                                              sortMethod,
@@ -247,15 +251,15 @@ export const PoolsTable = withTranslation('tables')(
                                              tableHeight = 350,
                                              ...rest
                                          }: WithTranslation & PoolTableProps<T>) => {
-        const [filterBy, setFilterBy] = React.useState<string>('');
-        const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
-        const [totalData, setTotalData] = React.useState<Row<T>[]>(rawData && Array.isArray(rawData) ? rawData : []);
+        // const [filterBy, setFilterBy] = React.useState<string>('');
+        // const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
+        // const [totalData, setTotalData] = React.useState<Row<T>[]>(rawData && Array.isArray(rawData) ? rawData : []);
         
         const history = useHistory()
 
-        useDeepCompareEffect(() => {
-            setTotalData(rawData)
-        }, [rawData])
+        // useDeepCompareEffect(() => {
+        //     setTotalData(rawData)
+        // }, [rawData])
 
         const defaultArgs: TableProps<any, any> = {
             rawData,
@@ -265,36 +269,36 @@ export const PoolsTable = withTranslation('tables')(
         }
 
 
-        const pageSize = pagination ? pagination.pageSize : 10;
+        // const pageSize = pagination ? pagination.pageSize : 10;
 
-        const getRenderData = React.useCallback(() => pagination
-            ? totalData.slice((page - 1) * pageSize, page * pageSize)
-            : totalData
-            , [page, pageSize, pagination, totalData])
+        // const getRenderData = React.useCallback(() => pagination
+        //     ? totalData.slice((page - 1) * pageSize, page * pageSize)
+        //     : totalData
+        //     , [page, pageSize, pagination, totalData])
 
-        const updateData = React.useCallback(({TableType, filterBy}) => {
-            if (TableType === 'filter') {
-                setPage(1)
-            }
-            // @ts-ignore
-            let newData = rawData.filter((row) => {
-                if (row && row.coinAInfo) {
-                    // @ts-ignore
-                    return RegExp(filterBy, 'ig').test(row.coinAInfo.simpleName) || RegExp(filterBy, 'ig').test(row.coinBInfo.simpleName);
-                }
-            })
-            setTotalData(newData);
-        }, [rawData]);
+        // const updateData = React.useCallback(({ filterBy}) => {
+        //     // if (TableType === 'filter') {
+        //     //     setPage(1)
+        //     // }
+        //     // @ts-ignore
+        //     let newData = rawData.filter((row) => {
+        //         if (row && row.coinAInfo) {
+        //             // @ts-ignore
+        //             return RegExp(filterBy, 'ig').test(row.coinAInfo.simpleName) || RegExp(filterBy, 'ig').test(row.coinBInfo.simpleName);
+        //         }
+        //     })
+        //     setTotalData(newData);
+        // }, [rawData]);
+        //
+        // const handleFilterChange = React.useCallback(_.debounce((filterBy: string) => {
+        //     updateData({TableType: TableType.filter, filterBy})
+        // }, wait), []);
 
-        const handleFilterChange = React.useCallback(_.debounce((filterBy: string) => {
-            updateData({TableType: TableType.filter, filterBy})
-        }, wait), []);
-
-        const _handlePageChange =(page: number) => {
-            setPage(page);
-            updateData({TableType: TableType.page, currPage: page})
-            handlePageChange(page);
-        }
+        // const _handlePageChange =(page: number) => {
+        //     setPage(page);
+        //     updateData({TableType: TableType.page, currPage: page})
+        //     handlePageChange(page);
+        // }
 
         const onRowClick = React.useCallback((_rowIdx: any, row: any) => {
             const pathname = `/liquidity/pools/coinPair/${row?.coinAInfo?.simpleName + '-' + row?.coinBInfo?.simpleName}`
@@ -305,29 +309,29 @@ export const PoolsTable = withTranslation('tables')(
         }, [history])
 
         return <TableStyled flex={1} flexDirection={'column'} display={'flex'}>
-            {showFilter && <Box display={'flex'} margin={3}>
-              <OutlinedInput
-                  {...{
-                      placeholder: t('labelFilter'),
-                      value: filterBy,
-                      onChange: (event: any) => {
-                          setFilterBy(event.currentTarget?.value);
-                          handleFilterChange(event.currentTarget?.value);
-                      }
-                  }
-                  }
-                  key={'search'}
-                  className={'search'}
-                  aria-label={'search'}
-                  startAdornment={<InputAdornment position="start">
-                      <SearchIcon/>
-                  </InputAdornment>}
-              />
-            </Box>}
+            {/*{showFilter && <Box display={'flex'} margin={3}>*/}
+            {/*  <OutlinedInput*/}
+            {/*      {...{*/}
+            {/*          placeholder: t('labelFilter'),*/}
+            {/*          value: filterBy,*/}
+            {/*          onChange: (event: any) => {*/}
+            {/*              setFilterBy(event.currentTarget?.value);*/}
+            {/*              handleFilterChange(event.currentTarget?.value);*/}
+            {/*          }*/}
+            {/*      }*/}
+            {/*      }*/}
+            {/*      key={'search'}*/}
+            {/*      className={'search'}*/}
+            {/*      aria-label={'search'}*/}
+            {/*      startAdornment={<InputAdornment position="start">*/}
+            {/*          <SearchIcon/>*/}
+            {/*      </InputAdornment>}*/}
+            {/*  />*/}
+            {/*</Box>}*/}
             {/*className={'scrollable'}*/}
             <Table className={'scrollable'} style={{ height: tableHeight }}  {...{
                 ...defaultArgs, t, i18n, tReady, ...rest,
-                rawData: getRenderData(),
+                rawData: rawData,// getRenderData(),
                 onRowClick: (index, row) => onRowClick(index, row),
                 sortMethod: (sortedRows: any[], sortColumn: string) => {
                    return  sortMethod(sortedRows,sortColumn)

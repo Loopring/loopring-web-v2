@@ -6,11 +6,11 @@ export type Row<T> = AmmDetail<T> & {
 }
 export type PoolTableProps<T, R = Row<T>> = {
     rawData: R[];
-    pagination?: {
-        pageSize: number
-    },
-    page?: number,
-    handlePageChange: (page: number) => void,
+    // pagination?: {
+    //     pageSize: number
+    // },
+    // page?: number,
+    // handlePageChange: (page: number) => void,
     showFilter?: boolean,
     wait?: number;
     tableHeight?: number;
