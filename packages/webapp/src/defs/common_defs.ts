@@ -12,6 +12,9 @@ export interface ActionResult {
     code: ActionResultCode
     data?: any
 }
+export const LAYOUT = {
+    HEADER_HEIGHT : 64,
+}
 
 export const REFRESH_RATE = 1000
 

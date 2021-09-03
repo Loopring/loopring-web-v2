@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { Box, Grid } from '@material-ui/core';
 import { TablePaddingX } from '@loopring-web/component-lib';
+import { LAYOUT } from '../defs/common_defs';
 
 export const StylePaper = styled(Box)`
   display: flex;
@@ -40,6 +41,9 @@ export const StylePaper = styled(Box)`
 export const TableWrapStyled = styled(Box)`
  
   &{
+    .toolbar{
+      padding: 0;
+    }
     background: var(--color-box);
     border-radius: ${({theme}) => theme.unit}px;
     .rdg{
@@ -48,7 +52,24 @@ export const TableWrapStyled = styled(Box)`
       }
     }
   }
-  ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
+  ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})};
+  &.fixed{
+    position: relative;
+    .toolbar{
+      position: fixed;
+      top: ${LAYOUT.HEADER_HEIGHT}px;
+      @media (min-width: 1280px){
+        max-width: 1232px;
+      }
+      max-width: calc(100% - ${({theme}) => 6*theme.unit}px);
+      // width: calc(100% - ${({theme}) => 6*theme.unit}px);
+      z-index: 209;
+      background: var(--color-box);
+     
+
+    }
+  }
+  
 ` as typeof Grid
 export const FixedStyle = styled(Box)`
   @media only screen and (min-height: 784px ) and (min-width: 1024px) {
