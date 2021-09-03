@@ -52,9 +52,9 @@ export function ammPairInit<C>({
             if (totalA && totalLPToken && totalB) {
                 percentage = totalLPToken ? balance / totalLPToken : 0
 
-                coinACount = totalA * percentage
+                coinACount = getShowStr(totalA * percentage)
 
-                coinBCount = totalB * percentage
+                coinBCount = getShowStr(totalB * percentage)
             }
             _ammCalcData.lpCoin = { belong: lpCoin, balance, }
         }
