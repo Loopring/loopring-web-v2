@@ -1,6 +1,6 @@
 import React from 'react';
 import { setShowAccount, useOpenModals, WalletConnectStep } from '@loopring-web/component-lib';
-import { ErrorType, ProcessingType, useConnectHook } from '@loopring-web/web3-provider';
+import { ErrorType, ProcessingType, useConnectHook, walletServices } from '@loopring-web/web3-provider';
 import { SagaStatus } from '@loopring-web/common-resources';
 import { ChainId, sleep } from 'loopring-sdk';
 
@@ -14,6 +14,7 @@ import { useWalletLayer2 } from 'stores/walletLayer2';
 import { resetLayer12Data } from './services/account/resetAccount';
 
 import store from 'stores'
+import { accountServices } from 'services/account/accountServices';
 
 export function useConnect({state}: { state: keyof typeof SagaStatus }) {
     const {
@@ -44,6 +45,7 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
         const networkFlag = networkUpdate({chainId})
         myLog('After connect >>,network part done: step2 check account')
         if (networkFlag) {
+            resetLayer12Data();
             checkAccount(accAddress);
         }
         setShouldShow(false)
@@ -79,6 +81,7 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
         if (store.getState().system.chainId !== chainId) {
             myLog('try to updateSystem...')
             updateSystem({chainId})
+
         }
 
         if (!!account.accAddress) {
