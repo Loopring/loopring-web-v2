@@ -41,6 +41,7 @@ export const ColorDarkDefault = Object.freeze({
     dark: '#000000',
     opacity: `${hexToRGB('#000000', '0')}`,
     star:`#F0B90B`,
+    logo: '#FFFFFF',
     /********************CSS special buttonr*******************/
     textButton:'#FFFFFF',
     buttonPot:'#FFFFFF',
@@ -87,6 +88,7 @@ export const ColorLightDefault = Object.freeze({...ColorDarkDefault,
     dark: '#000000',
     opacity: `${hexToRGB('#FFFFFF', '0')}`,
     star:`#F0B90B`,
+    logo: '#3B5AF4',
     /********************CSS special buttonr*******************/
     textButton:'#FFFFFF',
     buttonPot:'#FFFFFF',
