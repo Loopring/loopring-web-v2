@@ -101,10 +101,10 @@ export const useAmmExit = <C extends { [key: string]: any }>({
             enableBtn()
             setBtnI18nKey(accountStaticCallBack(btnLabelNew))
         } else {
-            setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData }]))
+            setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, request }]))
         }
 
-    }, [account.readyState, ammData])
+    }, [account.readyState, ammData, request])
 
     const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
 
@@ -147,8 +147,10 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
     const btnLabelActiveCheck = React.useCallback(({ ammData, request }): string | undefined => {
 
-        myLog('btnLabelActiveCheck ammData:', ammData)
+        // myLog('btnLabelActiveCheck ammData:', ammData)
         myLog('btnLabelActiveCheck req:', request)
+        myLog('btnLabelActiveCheck baseMinAmt:', baseMinAmt)
+        myLog('btnLabelActiveCheck quoteMinAmt:', quoteMinAmt)
 
         const times = 1
 
@@ -233,7 +235,7 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
         myLog('handle exit:', requestOut)
 
-        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, request: requestOut, }]))
+        // setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, request: requestOut, }]))
 
         myLog('exit data:', data, ammData)
 
@@ -283,8 +285,6 @@ export const useAmmExit = <C extends { [key: string]: any }>({
         myLog('newAmmData:', newAmmData)
 
         setAmmData(newAmmData)
-
-        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData: data, request: req, }]))
 
         setRequest(req)
 

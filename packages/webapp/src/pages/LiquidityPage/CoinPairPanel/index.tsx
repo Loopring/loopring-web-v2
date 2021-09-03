@@ -104,15 +104,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
     } = useCoinPair({ammActivityMap});
     const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
     const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
-    // const handleChange = (event: any, newValue: 0 | 1) => {
-    //     setTabIndex(newValue);
-    //     setPage(1);
-    // }
-    // const _handlePageChange = React.useCallback((page: number) => {
-    //     setPage(page);
-    // }, [])
-    // const sellIconHasLoaded = useImage(coinPairInfo.myCoinA?.icon ? coinPairInfo.myCoinA?.icon : '').hasLoaded;
-    // const buyIconHasLoaded = useImage(coinPairInfo.myCoinB?.icon ? coinPairInfo.myCoinB?.icon : '').hasLoaded;
+    
     const {coinJson} = useSettings();
     const coinAIcon: any = coinJson [ coinPairInfo.myCoinA?.simpleName ];
     const coinBIcon: any = coinJson [ coinPairInfo.myCoinB?.simpleName ];
@@ -126,14 +118,6 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
             setPageSize(Math.floor((height - 30) / 44) - 1);
         }
     }, [container, pageSize]);
-
-    // useEffect(() => {
-    //     if (pageSize) {
-    //         getUserTxnList({
-    //             limit: pageSize,
-    //         })
-    //     }
-    // }, [getUserTxnList, pageSize])
 
     return <>
         <Box marginBottom={2}>
