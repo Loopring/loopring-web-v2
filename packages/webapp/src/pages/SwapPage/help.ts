@@ -62,13 +62,13 @@ export const calcPriceByAmmTickMapDepth = <C>(
             stob = volumeToCountAsBigNumber(idIndex[poolBTokenVol.tokenId], poolBTokenVol.volume)?.div(
                 volumeToCountAsBigNumber(idIndex[poolATokenVol.tokenId], poolATokenVol.volume) || 1
             )
-            stob = Number(stob?.toFixed(tokenMap[idIndex[poolBTokenVol.tokenId]].precision))
+            stob = stob?.toNumber()
+            // stob = Number(stob?.toFixed(tokenMap[idIndex[poolBTokenVol.tokenId]].precision))
             close = stob;
             if (coinSell !== coinA) {
-                stob = Number((1 / (stob || 1)).toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
+                stob = Number((1 / (stob || 1)))// .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
             }
             myLog('pairDetailDone stob from amm:', stob)
-
         }
 
         //second getValue from tickerData
