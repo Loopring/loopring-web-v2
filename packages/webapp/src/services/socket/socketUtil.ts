@@ -91,9 +91,14 @@ export class LoopringSocket {
         },
         [ SocketEventType.pingpong ]: (data: string, socket:WebSocket  ) => {
 
-            if (data === 'ping' && socket) {
+            if (data === 'ping' && socket && socket.send) {
                 socket.send('pong')
+            }else if(window.loopringSocket.isConnectSocket()){
+                //HACK:
+                window.loopringSocket.loopringSocket.send('pong')
+
             }
+
         },
     }
     private __wsTimer__: { timer: NodeJS.Timer | -1, count: number } = {
