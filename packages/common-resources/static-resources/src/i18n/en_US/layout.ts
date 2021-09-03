@@ -1,7 +1,7 @@
 export default {
     labelMarkets: 'Markets',
     labelTrade: 'Trade',
-    labelLiquidity: 'Pool',
+    labelLiquidity: 'Pools',
     labelMining: 'Farm',
     labelLayer2: 'Layer2',
     loopringDomain: 'Loopring Exchange',
