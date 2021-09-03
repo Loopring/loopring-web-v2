@@ -46,6 +46,7 @@ import { useTranslation } from "react-i18next";
 
 import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
 import { useBtnStatus } from "hooks/common/useBtnStatus";
+import { getShowStr } from "utils/formatter_tool";
 
 const initSlippage = 0.5
 
@@ -215,6 +216,8 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
             setFee(fee.toNumber())
 
+            myLog('calculateCallback fee:', fee)
+
             setAmmCalcData({
                 ...ammCalcData, fee: fee.toString()
                     + ' ' + pair.coinBInfo.simpleName,
@@ -253,40 +256,39 @@ export const useAmmExit = <C extends { [key: string]: any }>({
         const { market, amm } = getExistedMarket(marketArray, baseToken.symbol, quoteToken.symbol)
 
         if (!market || !amm || !marketMap) {
-            debugger
             return
         }
 
         const ammInfo: AmmPoolInfoV3 = ammMap[amm as string]
 
-        const rawVal = data.coinLP.tradeValue
-
-        const { volA_show, volB_show ,request } = makeExitAmmPoolRequest2(rawVal.toString(), slippageReal, account.accAddress, fees as LoopringMap<OffchainFeeInfo>,
-            ammMap[amm], ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0)
-
-        // setAmmCalcData()
-
-        myLog('exit req:', request)
-
-        const req = {
-            volA_show,
-            volB_show,
-            ammInfo,
-            request,
-        }
-
-        const newAmmData = {
-            coinA: { ...ammData.coinA, tradeValue: volA_show, },
-            coinB: { ...ammData.coinB, tradeValue: volB_show, },
-            coinLP: ammData.coinLP,
+        let newAmmData = {
             slippage: ammData.slippage,
         }
 
-        myLog('newAmmData:', newAmmData)
+        const rawVal = data.coinLP.tradeValue
 
-        setAmmData(newAmmData)
+        if (rawVal) {
 
-        setRequest(req)
+            const { volA_show, volB_show ,request } = makeExitAmmPoolRequest2(rawVal.toString(), slippageReal, account.accAddress, fees as LoopringMap<OffchainFeeInfo>,
+                ammMap[amm], ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0)
+
+                newAmmData['coinA'] = { ...ammData.coinA, tradeValue: getShowStr(volA_show), }
+                newAmmData['coinB'] = { ...ammData.coinB, tradeValue: getShowStr(volB_show), }
+    
+            myLog('exit req:', request)
+    
+            const req = {
+                volA_show,
+                volB_show,
+                ammInfo,
+                request,
+            }
+    
+            setRequest(req)
+        }
+    
+        setAmmData({...ammData, ...newAmmData,
+            slippage: data.slippage, })
 
     }, [setRequest, idIndex, marketArray, marketMap, baseToken, quoteToken])
 
