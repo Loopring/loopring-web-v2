@@ -97,12 +97,11 @@ export const DataGridStyled = styled(DataGrid)`
 
     .rdg-row {
       box-sizing: border-box;
-      background-color: inherit;
+      background: inherit;
       width: 100%;
-
+      transition: background 0.4s ease-out;
       &:hover {
         background: var(--color-box-hover);
-
         .rdg-cell:first-of-type {
             // border-left: ${({theme}) => theme.border.borderConfig({d_W: 2, c_key: 'selected'})}
         }
