@@ -9,7 +9,9 @@ import { Column, Table } from '../../basic-lib'
 // import { TablePagination } from '../../basic-lib'
 import { Filter } from './components/Filter'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
-import { TableType, MoreIcon, AvatarCoinStyled, PriceTag } from '@loopring-web/common-resources';
+import {
+    // TableType,
+    MoreIcon, AvatarCoinStyled, PriceTag } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores'
 import {
     // getThousandFormattedNumbers, getValuePrecision,
@@ -144,18 +146,25 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         // tableHeight = 350,
         getMarketArrayListCallback,
         // onLpWithdraw,
+        ...rest
     } = props
 
-    const [searchValue, setSearchValue] = useState('')
-    const [hideSmallBalance, setHideSmallBalance] = useState(false)
-    const [hideLPToken, setHideLPToken] = useState(false)
-    const [totalData, setTotalData] = useState<RawDataAssetsItem[]>([])
+    // const [searchValue, setSearchValue] = useState('')
+    // const [hideSmallBalance, setHideSmallBalance] = useState(false)
+    // const [hideLpToken, sethideLpToken] = useState(false)
+    const [filter,setFilter] = useState({
+        searchValue:'',
+        hideSmallBalance:false,
+        hideLpToken:false
+    })
+    const [totalData, setTotalData] = useState<RawDataAssetsItem[]>(rawData)
+    const [viewData, setViewData] = useState<RawDataAssetsItem[]>(rawData)
     const [tableHeight, setTableHeight] = React.useState(props.tableHeight);
 
-    const resetTableData = React.useCallback((tableData)=>{
-        setTotalData(tableData)
-        setTableHeight(RowConfig.headerRowHeight + tableData.length * RowConfig.rowHeight )
-    },[setTotalData,setTableHeight])
+    const resetTableData = React.useCallback((viewData)=>{
+        setViewData(viewData)
+        setTableHeight(RowConfig.headerRowHeight + viewData.length * RowConfig.rowHeight )
+    },[setViewData,setTableHeight])
     // const [page, setPage] = useState(1)
     // const pageSize = pagination ? pagination.pageSize : 10;
 
@@ -165,8 +174,11 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     // const rightState = usePopupState({variant: 'popover', popupId: `action-popover`});
     const isUSD = currency === 'USD'
     useEffect(() => {
-        resetTableData(rawData);
+        setTotalData(rawData);
     }, [rawData])
+    useEffect(() => {
+        updateData();
+    }, [totalData,filter])
 
     const jumpToAmm = useCallback((type: LpTokenAction, market: string) => {
         const pathname = `/liquidity/pools/coinPair/${market}`
@@ -371,48 +383,44 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             }
         },
     ]
+    //
+    //
+    // const defaultArgs: any = {
+    //     // rawData: [],
+    //     columnMode: getColumnModeAssets(t).filter(o => !o.hidden),
+    //     generateRows:generateRows
+    //     generateColumns: ({columnsRaw}: any) => columnsRaw as Column<any, unknown>[],
+    // }
 
-    const defaultArgs: any = {
-        // rawData: [],
-        columnMode: getColumnModeAssets(t).filter(o => !o.hidden),
-        generateRows: (rawData: any) => rawData,
-        generateColumns: ({columnsRaw}: any) => columnsRaw as Column<any, unknown>[],
-    }
 
     // const getRenderData = useCallback(() => pagination
     //     ? totalData.slice((page - 1) * pageSize, page * pageSize)
     //     : totalData
     //     , [page, pageSize, pagination, totalData])
 
-    const updateData = useCallback(({
-                                        // TableType,
-                                        currHideSmallBalance,
-                                        currHideLPToken,
-                                        currSearchValue,
-                                    }) => {
-        let resultData = (rawData && !!rawData.length) ? rawData : []
-        if (currHideSmallBalance) {
+    const updateData = useCallback(() => {
+        let resultData = (totalData && !!totalData.length) ? totalData : []
+        if (filter.hideSmallBalance) {
             resultData = resultData.filter(o => !o.smallBalance)
         }
-        if (currHideLPToken) {
+        if (filter.hideLpToken) {
             resultData = resultData.filter(o => o.token.type === TokenType.single)
             // debugger
         }
-        // if (TableType === 'filter') {
-        //     setPage(1)
-        // }
-        if (currSearchValue) {
-            resultData = resultData.filter(o => o.token.value.toLowerCase().includes(currSearchValue.toLowerCase()))
+        if (filter.searchValue) {
+            resultData = resultData.filter(o => o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase()))
         }
         resetTableData(resultData)
-    }, [rawData])
+    }, [totalData,filter])
 
-    const handleFilterChange = useCallback(({currHideSmallBalance = hideSmallBalance, currHideLPToken = hideLPToken, currSearchValue = searchValue}) => {
-        setHideSmallBalance(currHideSmallBalance)
-        setHideLPToken(currHideLPToken)
-        setSearchValue(currSearchValue)
-        updateData({TableType: TableType.filter, currHideSmallBalance, currHideLPToken, currSearchValue})
-    }, [updateData, hideSmallBalance, hideLPToken, searchValue])
+    const handleFilterChange = useCallback((filer) => {
+        // setHideSmallBalance(currHideSmallBalance)
+        // sethideLpToken(currhideLpToken)
+        // setSearchValue(currSearchValue)
+        // console.log(filter)
+
+        setFilter(filer)
+    }, [setFilter])
 
     // const handlePageChange = useCallback((page: number) => {
     //     // setPage(page)
@@ -426,27 +434,32 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     //         onVisibleRowsChange(viewportRows)
     //     }
     // }, [onVisibleRowsChange, rawData])
-
     return <TableWrap lan={language}>
         {showFilter && (
             <TableFilterStyled>
-                <Filter 
-                    originalData={rawData} 
+                <Filter
+                    // originalData={rawData}
                     handleFilterChange={handleFilterChange}
-                    searchValue={searchValue}
-                    hideSmallBalance={hideSmallBalance}
-                    hideLpToken={hideLPToken}
+                    filter={filter}
+                    // searchValue={filter.searchValue}
+                    // hideSmallBalance={filter.hideSmallBalance}
+                    // hideLpToken={filter.hideLpToken}
                 />
             </TableFilterStyled>
+
         )}
-        <Table showLoading={!totalData.length}
-               style={{ height: tableHeight }}
-               rowHeight={RowConfig.rowHeight}
-               headerRowHeight={RowConfig.headerRowHeight}
-               rawData={totalData}
-               // className={'scrollable'}
-               {...{...defaultArgs, ...props }}
-               // onScroll={getScrollIndex}
+
+        <Table
+            {...{...rest, t}}
+            showLoading={!viewData.length}
+            style={{ height: tableHeight }}
+            rowHeight={RowConfig.rowHeight}
+            headerRowHeight={RowConfig.headerRowHeight}
+            rawData={viewData}
+            generateRows={(rowData:any) => rowData}
+            generateColumns = {({columnsRaw}: any) => columnsRaw as Column<any, unknown>[]}
+            columnMode={getColumnModeAssets(t).filter(o => !o.hidden)}
+
         />
         {/*{pagination && (*/}
         {/*    <TablePagination page={page} pageSize={1} total={totalData.length} onPageChange={handlePageChange}/>*/}
