@@ -216,7 +216,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
     }, [addressIndex, lpTokenList])
 
     const getUserAmmPoolTxs = React.useCallback(({
-                                                     limit = 7,
+                                                     limit = 14,
                                                      offset = 0,
                                                  }) => {
         if (ammMap && forex) {

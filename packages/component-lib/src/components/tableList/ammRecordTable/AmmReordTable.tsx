@@ -1,16 +1,21 @@
 import React from 'react'
-import { Box, Typography } from '@material-ui/core'
-import { Trans, withTranslation, WithTranslation } from 'react-i18next';
+import { Box, BoxProps, Typography } from '@material-ui/core'
+import { withTranslation, WithTranslation } from 'react-i18next';
 import moment from 'moment'
-import { TablePagination, TableProps } from '../../basic-lib'
+import {  TablePagination, TableProps } from '../../basic-lib'
 import { Column, Table, } from '../../basic-lib/'
-import { Currency, EmptyValueTag, getThousandFormattedNumbers, globalSetup, PriceTag } from '@loopring-web/common-resources'
+import {
+    Currency,
+    EmptyValueTag,
+    getThousandFormattedNumbers,
+    getValuePrecision,
+    globalSetup,
+    PriceTag
+} from '@loopring-web/common-resources'
 import { AmmRecordRow as Row, AmmRecordTableProps, AmmTradeType } from './Interface'
 import { FormatterProps } from 'react-data-grid';
 import styled from '@emotion/styled';
 import { TablePaddingX } from '../../styled';
-import { useDeepCompareEffect } from 'react-use';
-import { getValuePrecision } from '@loopring-web/common-resources'
 
 // enum ActionType {
 //     // filter = 'filter',
@@ -18,21 +23,33 @@ import { getValuePrecision } from '@loopring-web/common-resources'
 // }
 
 const TableStyled = styled(Box)`
-    flex: 1;
-    .rdg {
-        --template-columns: 420px auto auto !important;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 
-        .rdg-cell.action {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        }
+  .rdg {
+    height: ${(props: any) =>   {
+      if(props.currentHeight && props.currentHeight>350) {
+        return props.currentHeight+'px';
+      }else{
+        return '100%'
+      }
+    }};
+    --template-columns: 420px auto auto !important;
+
+    .rdg-cell.action {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    .textAlignRight{
-        text-align: right;
-    }
-    ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
-` as typeof Box
+  }
+
+  .textAlignRight {
+    text-align: right;
+  }
+
+  ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
+` as (props: { currentHeight?:number } & BoxProps) => JSX.Element;
 
 const columnMode = ({t}: WithTranslation, currency: 'USD' | 'CYN'): Column<Row<any>, unknown>[] => [
     {
@@ -130,6 +147,9 @@ export const AmmRecordTable = withTranslation('tables')(<T extends { [ key: stri
                                                                                                  tReady,
                                                                                                  handlePageChange,
                                                                                                  pagination,
+                                                                                                 currentHeight,
+                                                                                                 rowHeight = 44,
+                                                                                                 headerRowHeight = 44,
                                                                                                  showFilter = true,
                                                                                                  rawData,
                                                                                                  wait = globalSetup.wait,
@@ -167,9 +187,12 @@ export const AmmRecordTable = withTranslation('tables')(<T extends { [ key: stri
         });
     }, [handlePageChange, page, pageSize])
 
-    return <TableStyled>
+    return <TableStyled currentHeight={currentHeight}>
         <Table /* className={'scrollable'}  */ {...{
-            ...defaultArgs, t, i18n, tReady, ...rest,
+            ...defaultArgs, t, i18n, tReady,
+            ...rest,
+            rowHeight,
+            headerRowHeight,
             rawData: rawData
         }}/>
         {pagination && (
