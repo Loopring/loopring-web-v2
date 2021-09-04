@@ -20,32 +20,11 @@ import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 import { StylePaper } from 'pages/styled';
 
 //******************** page code ************************//
-//  ${({theme}) => theme.border.defaultFrame({c_key: 'blur'})};
 const BoxWrapperStyled = styled(Grid)`
   background: var(--color-box);
   border-radius: ${({theme}) => theme.unit}px;
 `
 
-const BoxStyled = styled(Grid)`
-  // flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  // background: var(--color-box);
-    // border-radius: ${({theme}) => theme.unit}px;
-    // padding: ${({theme}) => theme.unit * 2}px;
-  height: ${({theme}) => theme.unit * 13}px;
-  min-width: 170px;
-  max-width: 210px;
-  // & .MuiAvatar-root {
-    //     height: ${({theme}) => theme.fontDefault.h4};
-    //     width: ${({theme}) => theme.fontDefault.h4};
-  // }
-`;
-styled(Typography)`
-
-`;
 styled(Box)`
   background: var(--color-box);
   border-radius: ${({theme}) => theme.unit}px;
@@ -59,15 +38,9 @@ styled(Box)`
     //   width: ${({theme}) => theme.fontDefault.h4};
   // }
 `;
-// const StyleWrapper = styled(Box)`
-//   //position: relative;
-//   //width: 100%;
-//   background: var(--color-box);
-//   border-radius: ${({theme}) => theme.unit}px;
-// ` as typeof Grid
 
 const AwardWrapperStyled = styled(Box)`
-  padding:${({theme}) => theme.unit * 2}px ${({theme}) => theme.unit * 5/2}px;
+  padding: ${({theme}) => theme.unit * 2}px ${({theme}) => theme.unit * 5 / 2}px;
   background-color: var(--color-box);
   border-radius: ${({theme}) => theme.unit}px;
 `
@@ -104,7 +77,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
     } = useCoinPair({ammActivityMap});
     const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
     const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
-    
+
     const {coinJson} = useSettings();
     const coinAIcon: any = coinJson [ coinPairInfo.myCoinA?.simpleName ];
     const coinBIcon: any = coinJson [ coinPairInfo.myCoinB?.simpleName ];
@@ -155,7 +128,11 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                     </Box>
                     <BoxWrapperStyled container className={'MuiPaper-elevation2'} display={'flex'}
                                       alignItems={'center'}>
-                        <BoxStyled item sm={3} marginLeft={2.5}>
+                        <Grid item paddingLeft={2} paddingY={3} xs={6} sm={4} lg={3}
+                              display={'flex'}
+                              direction={'row'}
+                              justifyContent={'space-between'}
+                              alignItems={'center'}>
                             {/* <Typography component={'p'} color={'textSecondary'} display={'flex'}
                                         marginBottom={1 / 2 * 3}
                             >
@@ -246,11 +223,11 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
 
                                 </Typography>
                             </Box>
-                        </BoxStyled>
+                            <Divider style={{height: '56px',marginLeft: '8px', borderRight:'1px solid var(--color-divide)'}} orientation={'vertical'}/>
+                        </Grid>
 
-                        <Divider style={{height: '50%', marginLeft: 32}} orientation={'vertical'}/>
 
-                        <BoxStyled item sm={2}>
+                        <Grid item paddingX={2} paddingY={3} xs={6} sm={3} lg={3}>
                             <Box>
                                 <Typography variant={'h3'}
                                             component={'span'}> {typeof coinPairInfo.amountDollar === 'undefined' ? EmptyValueTag :
@@ -261,9 +238,9 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                     {t('labelTVL')}
                                 </Typography>
                             </Box>
-                        </BoxStyled>
+                        </Grid>
 
-                        <BoxStyled item sm={3}>
+                        <Grid item paddingX={2} paddingY={3} xs={6} sm={3} lg={3}>
                             <Box>
                                 <Typography variant={'h3'} component={'span'}>
                                     {getThousandFormattedNumbers(tradeFloat && tradeFloat.volume ? tradeFloat.volume : 0.00, 2, {isAbbreviate: true})}
@@ -272,9 +249,9 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                     {t('label24Volume')}
                                 </Typography>
                             </Box>
-                        </BoxStyled>
+                        </Grid>
 
-                        <BoxStyled item sm={2}>
+                        <Grid item paddingX={2} paddingY={3} xs={6} sm={2} lg={3}>
                             <Box>
                                 <Typography variant={'h3'}
                                             component={'span'}> {coinPairInfo.APY ? coinPairInfo.APY : EmptyValueTag}%
@@ -283,7 +260,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                     {t('labelAPY')}
                                 </Typography>
                             </Box>
-                        </BoxStyled>
+                        </Grid>
                     </BoxWrapperStyled>
 
                 </Box>

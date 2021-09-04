@@ -2,25 +2,36 @@ import React from 'react'
 import { Box, Pagination } from '@material-ui/core'
 import styled from '@emotion/styled'
 
-const StyledPaginationWrapper = styled(Box)`
-    height: 36px;
-    position: relative;
-`
+// const StyledPaginationWrapper = styled(Box)`
+//     height: 44px;
+//     position: relative;
+// `
 
 const StyledPagination = styled(Pagination)`
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
 export type PaginationProps = {
     page: number;
     pageSize: number;
     total: number;
+    height?: number;
+    alignItems?: string;
+    justifyContent?: string;
     onPageChange: (page: number) => void;
 }
 
-export const TablePagination = ({onPageChange, page, pageSize, total}: PaginationProps) => {
+export const TablePagination = ({
+                                    onPageChange,
+                                    page,
+                                    height = 44,
+                                    justifyContent = 'center',
+                                    alignItems = 'center',
+                                    pageSize,
+                                    total
+                                }: PaginationProps) => {
     const getCount = React.useCallback(() => {
         if (!total) return 0
         return total % pageSize > 0
@@ -33,8 +44,8 @@ export const TablePagination = ({onPageChange, page, pageSize, total}: Paginatio
     }, [onPageChange]);
 
     return (
-        <StyledPaginationWrapper>
+        <Box display={'flex'} alignItems={alignItems} height={height} justifyContent={justifyContent}>
             <StyledPagination color={'primary'} count={getCount()} page={page} onChange={handleChange}/>
-        </StyledPaginationWrapper>
+        </Box>
     );
 }

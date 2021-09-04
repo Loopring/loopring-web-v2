@@ -312,7 +312,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                         <Typography component={'p'} variant="body2" color={'textPrimary'}>
                             {ammCalcData ? <>
                                 <Typography {...bindHover(popupState)}
-                                            component={'span'} variant="body2">
+                                            component={'span'} variant="body2" color={'textPrimary'}>
                                     <LinkActionStyle>
                                         {ammData.slippage ? ammData.slippage : ammCalcData?.slippage ? ammCalcData?.slippage : 0.5}%
                                     </LinkActionStyle>

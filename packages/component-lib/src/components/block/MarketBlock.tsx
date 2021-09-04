@@ -1,5 +1,5 @@
 import { WithTranslation } from 'react-i18next';
-import { CoinKey, EmptyValueTag, getThousandFormattedNumbers, abbreviateNumber, PriceTag } from '@loopring-web/common-resources';
+import { CoinKey, EmptyValueTag, getThousandFormattedNumbers, PriceTag } from '@loopring-web/common-resources';
 import { Box, BoxProps, Grid } from '@material-ui/core';
 import { Typography } from '@material-ui/core/';
 import styled from '@emotion/styled';

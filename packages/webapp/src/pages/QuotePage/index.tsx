@@ -19,7 +19,6 @@ import { AmmPoolActivityRule, TradingInterval } from 'loopring-sdk'
 import { TableWrapStyled } from 'pages/styled'
 import { useFavoriteMarket } from 'stores/localStore/favoriteMarket'
 import { LAYOUT } from '../../defs/common_defs';
-import { globalSetup } from '@loopring-web/common-resources';
 
 const RowStyled = styled(Grid)`
       & .MuiGrid-root:not(:last-of-type) > div{
@@ -38,13 +37,13 @@ const RowStyled = styled(Grid)`
 //       padding: 0.8rem 0.8rem 0 1rem;
 // `
 
-export type CandlestickItem = {
-    market: string;
-    data: {
-        close: number;
-        timeStamp: number;
-    }[]
-}
+// export type CandlestickItem = {
+//     market: string;
+//     data: {
+//         close: number;
+//         timeStamp: number;
+//     }[]
+// }
 
 export enum TableFilterParams {
     all = 'all',
