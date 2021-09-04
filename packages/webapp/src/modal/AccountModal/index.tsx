@@ -16,7 +16,6 @@ import {
     Deposit_Failed,
     Deposit_Submit,
     Deposit_WaitForAuth,
-    DepositPanel,
     HadAccount,
     ModalAccount,
     ModalPanel,
@@ -48,6 +47,7 @@ import {
     Withdraw_Success,
     Withdraw_User_Denied,
     Withdraw_WaitForAuth,
+    DepositPanelNew,
 } from '@loopring-web/component-lib';
 import { walletServices } from '@loopring-web/web3-provider';
 import { ConnectorError, sleep } from 'loopring-sdk';
@@ -400,7 +400,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             // new 
             // deposit
             [ AccountStep.Deposit ]: {
-                view: <DepositPanel title={title} {...{
+                view: <DepositPanelNew title={title} {...{
                     ...rest,
                     _height: 'var(--modal-height)',
                     _width: 'var(--modal-width)',
