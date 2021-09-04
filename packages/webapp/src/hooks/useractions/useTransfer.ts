@@ -25,14 +25,12 @@ import { checkErrorInfo } from './utils';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
 
 export const useTransfer = <R extends IBData<T>, T>(): {
-    // handleTransfer: (inputValue:R) => void,
     transferToastOpen: boolean,
     transferAlertText: any,
     setTransferToastOpen: any,
     transferProps: TransferProps<R, T>,
     processRequest: any,
     lastRequest: any,
-    // transferValue: R
 } => {
 
     const {setShowAccount, setShowTransfer,} = useOpenModals()
