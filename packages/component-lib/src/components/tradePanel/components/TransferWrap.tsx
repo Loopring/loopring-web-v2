@@ -38,7 +38,6 @@ export const TransferWrap = <T extends IBData<I>,
         label: t('transferLabelEnterToken'),
     }
 
-
     const [address, setAddress] = React.useState<string | undefined>(addressDefault ? addressDefault : '');
     const [addressError, setAddressError] = React.useState<{ error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined>();
     const [feeIndex, setFeeIndex] = React.useState<any | undefined>(0);
