@@ -46,7 +46,8 @@ import { useTranslation } from "react-i18next";
 
 import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
 import { useBtnStatus } from "hooks/common/useBtnStatus";
-import { getShowStr } from "utils/formatter_tool";
+
+import { getShowStr } from '@loopring-web/common-resources'
 
 const initSlippage = 0.5
 

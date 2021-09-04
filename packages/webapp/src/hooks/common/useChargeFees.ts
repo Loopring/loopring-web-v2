@@ -13,7 +13,8 @@ import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { LoopringAPI } from 'api_wrapper';
 import * as _ from 'lodash'
 import { globalSetup } from '@loopring-web/common-resources'
-import { getShowStr } from 'utils/formatter_tool';
+
+import { getShowStr } from '@loopring-web/common-resources'
 
 export interface FeeInfo {
     belong: string,

@@ -1,6 +1,6 @@
 import { AmmDetailBase, AmmInData } from '@loopring-web/common-resources';
-import { getShowStr } from 'utils/formatter_tool';
-import { myLog } from 'utils/log_tools';
+
+import { getShowStr } from '@loopring-web/common-resources'
 import { volumeToCountAsBigNumber } from './volumeToCount';
 
 export function ammPairInit<C>({
