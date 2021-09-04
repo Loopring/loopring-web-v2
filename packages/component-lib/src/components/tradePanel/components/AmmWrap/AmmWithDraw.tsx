@@ -60,7 +60,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
     const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number | string>;
     const [isPercentage, setIsPercentage] = React.useState(true);
     const [_selectedPercentage, setSelectedPercentage] = React.useState(
-        (ammData.coinLP.tradeValue && ammCalcData.lpCoin.tradeValue) ?
+        (ammData?.coinLP?.tradeValue && ammCalcData?.lpCoin?.tradeValue) ?
             (ammData.coinLP.tradeValue / ammCalcData.lpCoin.tradeValue * 100) : 0);
     const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined' ? isStob : true);
     const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({

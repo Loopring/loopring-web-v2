@@ -97,17 +97,25 @@ export const useAmmExit = <C extends { [key: string]: any }>({
         ammInfo: any, 
         request: ExitAmmPoolRequest }>();
 
+        React.useEffect(() => {
+
+            if (account.readyState !== AccountStatus.ACTIVATED && pair) {
+                enableBtn()
+                setBtnI18nKey(accountStaticCallBack(btnLabelNew))
+                initAmmData(pair, undefined, true)
+            }
+    
+        }, [account.readyState, pair])
+
     React.useEffect(() => {
-        if (account.readyState !== AccountStatus.ACTIVATED) {
-            enableBtn()
-            setBtnI18nKey(accountStaticCallBack(btnLabelNew))
-        } else {
+        
+        if (account.readyState === AccountStatus.ACTIVATED && ammData && request) {
             setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, request }]))
         }
 
     }, [account.readyState, ammData, request])
 
-    const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
+    const initAmmData = React.useCallback(async (pair: any, walletMap: any, isReset: boolean = false) => {
 
         const _ammCalcData = ammPairInit({
             fee,
@@ -122,7 +130,11 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
         myLog('exit !!! initAmmData:', _ammCalcData)
 
-        setAmmCalcData({ ...ammCalcData, ..._ammCalcData });
+        if (isReset) {
+            setAmmCalcData(_ammCalcData)
+        } else {
+            setAmmCalcData({ ...ammCalcData, ..._ammCalcData })
+        }
 
         if (_ammCalcData.lpCoin && _ammCalcData.myCoinA && _ammCalcData.myCoinB && tokenMap) {
 
