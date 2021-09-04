@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef } from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { PriceTag } from '@loopring-web/common-resources'
 import { Box, Typography } from '@material-ui/core'
@@ -37,18 +37,18 @@ const ChartWrapper = styled(Box)`
     background-repeat: no-repeat;
 ` as any
 
-const StyledBtnGroupWrapper = styled(Box)`
-    position: absolute;
-    z-index: 10;
-    right: ${({theme}) => theme.unit * 3}px;
-    bottom: ${({theme}) => theme.unit * 2.5}px;
-`
-
-const toggleData = [
-    // {value: '24 H', key: '24 H'},
-    {value: 'week', key: '1 W'},
-    {value: 'all', key: 'ALL'},
-]
+// const StyledBtnGroupWrapper = styled(Box)`
+//     position: absolute;
+//     z-index: 10;
+//     right: ${({theme}) => theme.unit * 3}px;
+//     bottom: ${({theme}) => theme.unit * 2.5}px;
+// `
+//
+// const toggleData = [
+//     // {value: '24 H', key: '24 H'},
+//     {value: 'week', key: '1 W'},
+//     {value: 'all', key: 'ALL'},
+// ]
 
 export type ITokenInfoItem = {
     token: string,
@@ -66,7 +66,7 @@ export type TrendDataItem = {
 
 const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => {
     const container = useRef(null);
-    const [pageSize, setPageSize] = useState(10);
+    // const [pageSize, setPageSize] = useState(10);
     // const [chartPeriod, setChartPeriod] = useState('week')
 
     const {marketArray, assetsRawData} = useGetAssets()
@@ -180,13 +180,13 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                         // pagination: {
                         //     pageSize: pageSize
                         // },
-                        showFiliter: true,
+                        showFilter: true,
                         onShowDeposit: onShowDeposit,
                         onShowTransfer: onShowTransfer,
                         onShowWithdraw: onShowWithdraw,
                         onLpDeposit: lpTokenJump,
                         onLpWithdraw: lpTokenJump,
-                        getMakretArrayListCallback: getTokenRelatedMarketArray,
+                        getMarketArrayListCallback: getTokenRelatedMarketArray,
                         ...rest
                     }} />
                 </Box>

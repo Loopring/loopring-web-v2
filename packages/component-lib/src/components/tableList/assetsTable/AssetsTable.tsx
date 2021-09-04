@@ -1,19 +1,21 @@
-import { useCallback, useEffect, useState } from 'react'
+    import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Grid, MenuItem, ListItemText, Avatar, Typography } from '@material-ui/core'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 // import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
 import { Button, Popover, PopoverType } from '../../basic-lib'
-import { Column, Table } from '../../basic-lib/tables'
-import { TablePagination } from '../../basic-lib'
+import { Column, Table } from '../../basic-lib'
+// import { TablePagination } from '../../basic-lib'
 import { Filter } from './components/Filter'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
 import { TableType, MoreIcon, AvatarCoinStyled, PriceTag } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores'
-import { getThousandFormattedNumbers, getValuePrecision, getValuePrecisionThousand } from '@loopring-web/common-resources'
+import {
+    // getThousandFormattedNumbers, getValuePrecision,
+    getValuePrecisionThousand } from '@loopring-web/common-resources'
 
-const TableStyled = styled(Box)`
+const TableWrap = styled(Box)`
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -41,13 +43,13 @@ const TableStyled = styled(Box)`
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as any
 
-const IconWrapperStyled = styled(Box)`
-    margin-top: ${({theme}) => theme.unit * 1.1}px;
-    svg {
-        width: ${({theme}) => theme.unit * 2}px;
-        height: ${({theme}) => theme.unit * 2}px;
-    }
-`
+// const IconWrapperStyled = styled(Box)`
+//     margin-top: ${({theme}) => theme.unit * 1.1}px;
+//     svg {
+//         width: ${({theme}) => theme.unit * 2}px;
+//         height: ${({theme}) => theme.unit * 2}px;
+//     }
+// `
 
 const GridStyled = styled(Grid)`
     .MuiGrid-item {
@@ -113,27 +115,34 @@ export interface AssetsTableProps {
     pagination?: {
         pageSize: number
     }
+    tableHeight?:number,
     onVisibleRowsChange?: (props: any) => void
-    showFiliter?: boolean
+    showFilter?: boolean
     onShowDeposit: (token: string) => void,
     onShowTransfer: (token: string) => void,
     onShowWithdraw: (token: string) => void,
     onLpDeposit: (token: string, type: LpTokenAction ) => void,
     onLpWithdraw: (token: string, type: LpTokenAction) => void,
-    getMakretArrayListCallback: (token: string) => string[]
+    getMarketArrayListCallback: (token: string) => string[]
+}
+const RowConfig = {
+    rowHeight:44,
+    headerRowHeight:44,
+
 }
 
 export const AssetsTable = withTranslation('tables')((props: WithTranslation & AssetsTableProps) => {
     const {
         t,
-        pagination,
+        // pagination,
         rawData,
-        onVisibleRowsChange,
-        showFiliter,
+        // onVisibleRowsChange,
+        showFilter,
         onShowDeposit,
         onShowTransfer,
         onShowWithdraw,
-        getMakretArrayListCallback,
+        // tableHeight = 350,
+        getMarketArrayListCallback,
         // onLpWithdraw,
     } = props
 
@@ -141,7 +150,13 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     const [hideSmallBalance, setHideSmallBalance] = useState(false)
     const [hideLPToken, setHideLPToken] = useState(false)
     const [totalData, setTotalData] = useState<RawDataAssetsItem[]>([])
-    const [page, setPage] = useState(1)
+    const [tableHeight, setTableHeight] = React.useState(props.tableHeight);
+
+    const resetTableData = React.useCallback((tableData)=>{
+        setTotalData(tableData)
+        setTableHeight(RowConfig.headerRowHeight + tableData.length * RowConfig.rowHeight )
+    },[setTotalData,setTableHeight])
+    // const [page, setPage] = useState(1)
     // const pageSize = pagination ? pagination.pageSize : 10;
 
     const {language} = useSettings()
@@ -150,7 +165,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     // const rightState = usePopupState({variant: 'popover', popupId: `action-popover`});
     const isUSD = currency === 'USD'
     useEffect(() => {
-        setTotalData(rawData && Array.isArray(rawData) ? rawData : [])
+        resetTableData(rawData);
     }, [rawData])
 
     const jumpToAmm = useCallback((type: LpTokenAction, market: string) => {
@@ -173,7 +188,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     ), [])
 
     const getPopoverPopper = useCallback((market: string, isLp: boolean) => {
-        const marketList = isLp ? [] : getMakretArrayListCallback(market).filter(pair => {
+        const marketList = isLp ? [] : getMarketArrayListCallback(market).filter(pair => {
             const [first, last] = pair.split('-')
             if (first === 'USDT' || last === 'USDT') {
                 return true
@@ -203,7 +218,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                     })
                 )}
             </Box>
-    )} , [t, jumpToAmm, jumpToSwapPanel, getMakretArrayListCallback])
+    )} , [t, jumpToAmm, jumpToSwapPanel, getMarketArrayListCallback])
 
     const getPopoverProps: any = useCallback((market: string, isLp: boolean) => (
         {
@@ -349,7 +364,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                                         onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
                             </Grid>
                             <Grid item marginTop={1}>
-                                <Popover {...getPopoverProps(renderMarket, isLp)}></Popover>
+                                <Popover {...getPopoverProps(renderMarket, isLp)}/>
                             </Grid>
                     </GridStyled>
                 )
@@ -370,7 +385,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     //     , [page, pageSize, pagination, totalData])
 
     const updateData = useCallback(({
-                                        TableType,
+                                        // TableType,
                                         currHideSmallBalance,
                                         currHideLPToken,
                                         currSearchValue,
@@ -381,14 +396,15 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         }
         if (currHideLPToken) {
             resultData = resultData.filter(o => o.token.type === TokenType.single)
+            // debugger
         }
-        if (TableType === 'filter') {
-            setPage(1)
-        }
+        // if (TableType === 'filter') {
+        //     setPage(1)
+        // }
         if (currSearchValue) {
             resultData = resultData.filter(o => o.token.value.toLowerCase().includes(currSearchValue.toLowerCase()))
         }
-        setTotalData(resultData)
+        resetTableData(resultData)
     }, [rawData])
 
     const handleFilterChange = useCallback(({currHideSmallBalance = hideSmallBalance, currHideLPToken = hideLPToken, currSearchValue = searchValue}) => {
@@ -398,21 +414,21 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         updateData({TableType: TableType.filter, currHideSmallBalance, currHideLPToken, currSearchValue})
     }, [updateData, hideSmallBalance, hideLPToken, searchValue])
 
-    const handlePageChange = useCallback((page: number) => {
-        setPage(page)
-        updateData({TableType: TableType.page})
-    }, [updateData])
+    // const handlePageChange = useCallback((page: number) => {
+    //     // setPage(page)
+    //     updateData({TableType: TableType.page})
+    // }, [updateData])
 
-    const getScrollIndex = useCallback((e) => {
-        const startIndex = parseInt(String(e.target.scrollTop / 44))
-        const viewportRows = rawData && Array.isArray(rawData) ? rawData.slice(startIndex, startIndex + 10).map(o => o.token.value) : []
-        if (onVisibleRowsChange) {
-            onVisibleRowsChange(viewportRows)
-        }
-    }, [onVisibleRowsChange, rawData])
+    // const getScrollIndex = useCallback((e) => {
+    //     const startIndex = parseInt(String(e.target.scrollTop / 44))
+    //     const viewportRows = rawData && Array.isArray(rawData) ? rawData.slice(startIndex, startIndex + 10).map(o => o.token.value) : []
+    //     if (onVisibleRowsChange) {
+    //         onVisibleRowsChange(viewportRows)
+    //     }
+    // }, [onVisibleRowsChange, rawData])
 
-    return <TableStyled lan={language}>
-        {showFiliter && (
+    return <TableWrap lan={language}>
+        {showFilter && (
             <TableFilterStyled>
                 <Filter 
                     originalData={rawData} 
@@ -423,9 +439,17 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                 />
             </TableFilterStyled>
         )}
-        <Table showLoading={!totalData.length} className={'scrollable'} {...{...defaultArgs, ...props, rawData: totalData}} onScroll={getScrollIndex}/>
-        {pagination && (
-            <TablePagination page={page} pageSize={1} total={totalData.length} onPageChange={handlePageChange}/>
-        )}
-    </TableStyled>
+        <Table showLoading={!totalData.length}
+               style={{ height: tableHeight }}
+               rowHeight={RowConfig.rowHeight}
+               headerRowHeight={RowConfig.headerRowHeight}
+               rawData={totalData}
+               // className={'scrollable'}
+               {...{...defaultArgs, ...props }}
+               // onScroll={getScrollIndex}
+        />
+        {/*{pagination && (*/}
+        {/*    <TablePagination page={page} pageSize={1} total={totalData.length} onPageChange={handlePageChange}/>*/}
+        {/*)}*/}
+    </TableWrap>
 })
