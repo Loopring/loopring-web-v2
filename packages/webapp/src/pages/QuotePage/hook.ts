@@ -9,19 +9,7 @@ import { LoopringAPI } from 'api_wrapper'
 import { tickerService } from 'services/socket';
 import { myError, myLog } from "utils/log_tools";
 
-const OnePageSize = 16;
-
-// 0
-function isNeedCallMore(currentStartIndex: number, to: number, marketArrayLength: number, currentListLength: number, pageSize: number = OnePageSize): boolean {
-    const pageCurrent = currentStartIndex / OnePageSize
-    if (to - pageCurrent > 1) {
-        return false
-    } else if (pageSize * to < marketArrayLength && currentListLength - 4 < pageSize * (to + 1)) {
-        return true
-    } else {
-        return false
-    }
-}
+// const OnePageSize = 16;
 
 export function useQuote<C extends { [ key: string ]: string }>() {
 
@@ -74,7 +62,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
         return () => subscription.unsubscribe();
     }, [subject, recommendedPairs]);
 
-    const getRecommandPairs = useCallback(async () => {
+    const getRecommendPairs = useCallback(async () => {
         if (LoopringAPI.exchangeAPI) {
             try {
                 const {recommended} = await LoopringAPI.exchangeAPI.getRecommendedMarkets()
@@ -92,8 +80,8 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     }, [])
 
     React.useEffect(() => {
-        getRecommandPairs()
-    }, [getRecommandPairs])
+        getRecommendPairs()
+    }, [getRecommendPairs])
 
 
     //TODO if socket is error throw use recall will pending on it
@@ -145,10 +133,10 @@ export function useQuote<C extends { [ key: string ]: string }>() {
         // }
         updateTickers(marketArray || []);
 
-    }, [marketArray, OnePageSize])
+    }, [marketArray])
 
     const updateRawData = React.useCallback(async (tickerMap: TickerMap<C>) => {
-        const marketPairs: string[] = await getRecommandPairs()
+        const marketPairs: string[] = await getRecommendPairs()
         let _recommendationsFloat: QuoteTableRawDataItem[] = [];
         let defaultRecommendationsFloat: QuoteTableRawDataItem[] = []
         const _tickList = tickerMap && Object.keys(tickerMap) ? Reflect.ownKeys(tickerMap).reduce((prev, key) => {
