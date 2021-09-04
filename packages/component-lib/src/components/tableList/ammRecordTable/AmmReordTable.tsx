@@ -61,7 +61,7 @@ const columnMode = ({t}: WithTranslation, currency: 'USD' | 'CYN'): Column<Row<a
         formatter: ({row}: FormatterProps<Row<any>, unknown>) => {
             const {type, coinA, coinB, amountA, amountB} = row
             const isAdd = type === AmmTradeType.add
-            const side = isAdd ? 'Add' : 'Remove'
+            const side = isAdd ? t('labelAmmJoin') : t('labelAmmExit')
             return (
                 <Box display={'flex'} alignItems={'center'}>
                     <Typography color={isAdd ? 'var(--color-success)' : 'var(--color-error)'}>{side}</Typography>
@@ -181,10 +181,12 @@ export const AmmRecordTable = withTranslation('tables')(<T extends { [ key: stri
         if (currPage === page) return
         setPage(currPage);
         // updateData({actionType: ActionType.page, currPage: page})
-        handlePageChange({
-            limit: pageSize,
-            offset: (currPage - 1) * pageSize,
-        });
+        if (handlePageChange) {
+            handlePageChange({
+                limit: pageSize,
+                offset: (currPage - 1) * pageSize,
+            });
+        }
     }, [handlePageChange, page, pageSize])
 
     return <TableStyled currentHeight={currentHeight}>

@@ -115,19 +115,21 @@ export const getUserAmmTransaction = ({
 
 }
 
+// getAmmPoolTxs
+
 export const getRecentAmmTransaction = ({
                                             address,
                                             offset,
                                             limit
                                         }: any) => {
     // const {apiKey} = store.getState().account
-    return LoopringAPI.ammpoolAPI?.getAmmPoolTrades({
-        ammPoolAddress: address,
+    return LoopringAPI.ammpoolAPI?.getAmmPoolTxs({
+        poolAddress: address,
         limit,
         offset,
-    }).then(({ammPoolTrades, totalNum}) => {
+    }).then(({transactions, totalNum}) => {
         return {
-            ammPoolTrades,
+            ammPoolTrades: transactions,
             totalNum
         }
     })

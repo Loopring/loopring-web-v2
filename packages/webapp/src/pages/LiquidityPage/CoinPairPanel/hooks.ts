@@ -24,7 +24,7 @@ import {
     TradingInterval
 } from 'loopring-sdk';
 import { deepClone } from '../../../utils/obj_tools';
-import { getUserAmmTransaction, makeMyAmmMarketArray } from '../../../hooks/help/marketTable';
+import { getUserAmmTransaction, makeMyAmmMarketArray, getRecentAmmTransaction } from '../../../hooks/help/marketTable';
 import { AmmRecordRow } from '@loopring-web/component-lib';
 import { useSystem } from '../../../stores/system';
 import { makeMyAmmWithSnapshot } from '../../../hooks/help/makeUIAmmActivityMap';
@@ -146,6 +146,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
     const [pairHistory, setPairHistory] = React.useState<ammHistoryItem[]>([])
     const [awardList, setAwardList] = React.useState<AwardItme[]>([])
     const [isLoading, setIsLoading] = React.useState(false)
+    const [isRecentLoading, setIsRecentLoading] = React.useState(false)
     const [lpTokenList, setLpTokenList] = React.useState<{ addr: string; price: number; }[]>([])
     const {getAmmLiquidity} = useAmmTotalValue()
     const {forex} = store.getState().system
@@ -257,53 +258,55 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
         }
     }, [ammMap, routerLocation.pathname, forex, getLpTokenPrice])
 
-    // const getRecentAmmPoolTxs = React.useCallback(({
-    //     limit = 7,
-    //     offset = 0,
-    // }) => {
-    //     if (ammMap && forex) {
-    //         const url = routerLocation.pathname
-    //         const list = url.split('/')
-    //         const market = list[list.length - 1]
-    //         const addr = ammMap['AMM-' + market].address
-    //         setIsLoading(true)
-    //         getRecentAmmTransaction({
-    //             address: addr,
-    //             limit: limit,
-    //             offset,
-    //         })?.then(({ammPoolTrades, totalNum}) => {
-    //             const formattedTrades = ammPoolTrades.map(o => ({
-    //                 ...o,
-    //                 hash: o.orderHash,
-    //                 txType: '',
-    //             }))
-    //             let _myTradeArray = makeMyAmmMarketArray(market, formattedTrades)
+    const getRecentAmmPoolTxs = React.useCallback(({
+        limit = 14,
+        offset = 0,
+    }) => {
+        if (ammMap && forex) {
+            const url = routerLocation.pathname
+            const list = url.split('/')
+            const market = list[list.length - 1]
+            const addr = ammMap['AMM-' + market].address
+            setIsRecentLoading(true)
+            getRecentAmmTransaction({
+                address: addr,
+                limit: limit,
+                offset,
+            })?.then(({ammPoolTrades, totalNum}) => {
+                // let _myTradeArray = makeMyAmmMarketArray(market, res.userAmmPoolTxs)
 
-    //             const formattedArray = _myTradeArray.map((o: any) => {
-    //                 const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`
-    //                 const formattedBalance = Number(volumeToCount(market, o.totalBalance))
-    //                 const price = getLpTokenPrice(market)
-    //                 const totalDollar = (formattedBalance || 0) * (price || 0) as any;
-    //                 const totalYuan = totalDollar * forex
-    //                 return ({
-    //                     ...o,
-    //                     totalDollar: getThousandFormattedNumbers(totalDollar.toFixed(2)),
-    //                     totalYuan: getThousandFormattedNumbers(Number((totalYuan).toFixed(2))),
-    //                 })
-    //             })
-    //             // setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
-    //             setRecentMarketArray(formattedArray || [])
-    //             setRecentTxnTotal(totalNum)
-    //             setIsLoading(false)
-    //         })
-    //     }
-    // }, [ammMap, routerLocation.pathname, forex, getLpTokenPrice])
+                // const formattedTrades = ammPoolTrades.map(o => ({
+                //     ...o,
+                //     // txType: '',
+                // }))
+                let _tradeArray = makeMyAmmMarketArray(market, ammPoolTrades)
+
+                const formattedArray = _tradeArray.map((o: any) => {
+                    const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`
+                    const formattedBalance = Number(volumeToCount(market, o.totalBalance))
+                    const price = getLpTokenPrice(market)
+                    const totalDollar = (formattedBalance || 0) * (price || 0) as any;
+                    const totalYuan = totalDollar * forex
+                    return ({
+                        ...o,
+                        totalDollar: getThousandFormattedNumbers(totalDollar.toFixed(2)),
+                        totalYuan: getThousandFormattedNumbers(Number((totalYuan).toFixed(2))),
+                    })
+                })
+                // setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
+                setAmmMarketArray(formattedArray || [])
+                setAmmTotal(totalNum)
+                setIsRecentLoading(false)
+            })
+        }
+    }, [ammMap, routerLocation.pathname, forex, getLpTokenPrice])
 
     useDeepCompareEffect(() => {
         if (!!lpTokenList.length) {
             getUserAmmPoolTxs({})
+            getRecentAmmPoolTxs({})
         }
-    }, [getUserAmmPoolTxs, lpTokenList])
+    }, [getUserAmmPoolTxs, getRecentAmmPoolTxs, lpTokenList])
 
     const walletLayer2DoIt = React.useCallback((market) => {
         const {walletMap: _walletMap} = makeWalletLayer2();
@@ -315,9 +318,10 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
             //     setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
             // })
             getUserAmmPoolTxs({})
+            getRecentAmmPoolTxs({})
         }
         return _walletMap
-    }, [makeWalletLayer2, getUserAmmPoolTxs, makeMyAmmMarketArray, marketArray, pair])
+    }, [makeWalletLayer2, getUserAmmPoolTxs, makeMyAmmMarketArray, marketArray, pair, getRecentAmmPoolTxs])
 
     const getPairList = React.useCallback(async () => {
         if (LoopringAPI.exchangeAPI && coinPairInfo.coinA && coinPairInfo.coinB) {
@@ -466,7 +470,10 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
         awardList,
         getUserAmmPoolTxs,
         showAmmPoolLoading: isLoading,
+        isRecentLoading,
         ammTotal,
         ammUserTotal,
+        // recentTxnTotal,
+        // recentMarketArray,
     }
 }
