@@ -29,6 +29,7 @@ export function ammPairInit<C>({
         _ammCalcData.myCoinA = {
             belong: pair.coinAInfo.simpleName,
             balance: walletMap ? walletMap[ pair.coinAInfo.simpleName ]?.count : 0,
+            tradeValue: undefined,
         }
 
         const feeReal = !!fee ? fee : 0
@@ -38,12 +39,14 @@ export function ammPairInit<C>({
         _ammCalcData.myCoinB = {
             belong: pair.coinBInfo.simpleName,
             balance: balanceB < 0 ? 0 : balanceB,
+            tradeValue: undefined,
         }
 
         const key = `${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`;
+        const lpCoin = 'LP-' + key
+        let balance = 0
         if (walletMap) {
-            const lpCoin = 'LP-' + key
-            const balance = (walletMap && walletMap[ lpCoin ]) ? walletMap[ lpCoin ].count : 0;
+            balance = (walletMap && walletMap[ lpCoin ]) ? walletMap[ lpCoin ].count : 0;
             const ammInfo = ammMap[ 'AMM-' + key ]
             const {totalLPToken, totalA, totalB}: AmmDetailBase<any> = ammInfo
 
@@ -54,8 +57,9 @@ export function ammPairInit<C>({
 
                 coinBCount = getShowStr(totalB * percentage)
             }
-            _ammCalcData.lpCoin = { belong: lpCoin, balance, }
         }
+
+        _ammCalcData.lpCoin = { belong: lpCoin, balance, }
 
         _ammCalcData.lpCoinA = {
             belong: pair.coinAInfo.simpleName,

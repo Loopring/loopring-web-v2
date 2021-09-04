@@ -108,7 +108,7 @@ export const useAmmExit = <C extends { [key: string]: any }>({
         }, [account.readyState, pair])
 
     React.useEffect(() => {
-        
+
         if (account.readyState === AccountStatus.ACTIVATED && ammData && request) {
             setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, request }]))
         }
@@ -128,7 +128,8 @@ export const useAmmExit = <C extends { [key: string]: any }>({
             ammPoolSnapshot: snapShotData?.ammPoolSnapshot
         })
 
-        myLog('exit !!! initAmmData:', _ammCalcData)
+        myLog('exit !!! ---!!! initAmmData:', _ammCalcData)
+        myLog('exit !!! ---!!! initAmmData:', ammData)
 
         if (isReset) {
             setAmmCalcData(_ammCalcData)
@@ -148,12 +149,19 @@ export const useAmmExit = <C extends { [key: string]: any }>({
             setBaseMinAmt(baseT ? sdk.toBig(baseT.orderAmounts.minimum).div('1e' + baseT.decimals).toNumber() : undefined)
             setQuoteMinAmt(quoteT ? sdk.toBig(quoteT.orderAmounts.minimum).div('1e' + quoteT.decimals).toNumber() : undefined)
 
-            setAmmData({
+            const newAmmData = {
                 coinA: _ammCalcData.myCoinA,
                 coinB: _ammCalcData.myCoinB,
                 coinLP: _ammCalcData.lpCoin,
                 slippage: initSlippage,
-            })
+            }
+
+            myLog('newAmmData: ', newAmmData)
+
+            setAmmData(newAmmData)
+        } else {
+            myLog('check:', (_ammCalcData.lpCoin && _ammCalcData.myCoinA && _ammCalcData.myCoinB))
+            myLog('tokenMap:', tokenMap)
         }
 
     }, [fee, snapShotData, coinMap, tokenMap, ammCalcData, ammMap,
