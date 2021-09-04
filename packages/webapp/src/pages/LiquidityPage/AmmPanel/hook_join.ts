@@ -92,54 +92,23 @@ export const useAmmJoin = <C extends { [key: string]: any }>({
     const [fees, setFees] = React.useState<LoopringMap<OffchainFeeInfo>>()
     const [fee, setFee] = React.useState<number>(0)
 
-    const { account: { accountId, apiKey } } = useAccount()
-
     React.useEffect(() => {
-        if (account.readyState !== AccountStatus.ACTIVATED) {
+        
+        if (account.readyState !== AccountStatus.ACTIVATED && pair) {
             setBtnStatus(TradeBtnStatus.AVAILABLE)
             setBtnI18nKey(accountStaticCallBack(btnLabelNew))
-        } else {
+            initAmmData(pair, undefined, true)
+        }
+
+    }, [account.readyState, pair])
+
+    React.useEffect(() => {
+        
+        if (account.readyState === AccountStatus.ACTIVATED && ammData) {
             setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData }]))
         }
 
     }, [account.readyState, ammData])
-
-    const initAmmData = React.useCallback(async (pair: any, walletMap: any) => {
-
-        const _ammCalcData = ammPairInit({
-            fee,
-            pair,
-            _ammCalcData: {},
-            coinMap,
-            walletMap,
-            ammMap,
-            tickerData: snapShotData?.tickerData,
-            ammPoolSnapshot: snapShotData?.ammPoolSnapshot
-        })
-
-        myLog('initAmmData:', _ammCalcData)
-
-        setAmmCalcData({ ...ammCalcData, ..._ammCalcData });
-        if (_ammCalcData.myCoinA && tokenMap) {
-
-            const baseT = tokenMap[_ammCalcData.myCoinA.belong]
-
-            const quoteT = tokenMap[_ammCalcData.myCoinB.belong]
-
-            setBaseToken(baseT)
-            setQuoteToken(quoteT)
-
-            setBaseMinAmt(baseT ? sdk.toBig(baseT.orderAmounts.minimum).div('1e' + baseT.decimals).toNumber() : undefined)
-            setQuoteMinAmt(quoteT ? sdk.toBig(quoteT.orderAmounts.minimum).div('1e' + quoteT.decimals).toNumber() : undefined)
-
-            setAmmData({
-                coinA: { ..._ammCalcData.myCoinA, tradeValue: undefined },
-                coinB: { ..._ammCalcData.myCoinB, tradeValue: undefined },
-                slippage: initSlippage,
-            })
-        }
-    }, [fee, snapShotData, coinMap, tokenMap, ammCalcData, ammMap,
-        setAmmCalcData, setAmmData, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt,])
 
     const btnLabelActiveCheck = React.useCallback(({ ammData }): string | undefined => {
 
@@ -185,6 +154,48 @@ export const useAmmJoin = <C extends { [key: string]: any }>({
     const btnLabelNew = Object.assign(deepClone(btnLabel), {
         [fnType.ACTIVATED]: [btnLabelActiveCheck]
     });
+
+    const initAmmData = React.useCallback(async (pair: any, walletMap: any, isReset: boolean = false) => {
+
+        const _ammCalcData = ammPairInit({
+            fee,
+            pair,
+            _ammCalcData: {},
+            coinMap,
+            walletMap,
+            ammMap,
+            tickerData: snapShotData?.tickerData,
+            ammPoolSnapshot: snapShotData?.ammPoolSnapshot
+        }, isReset)
+
+        myLog('initAmmData:', _ammCalcData)
+
+        if (isReset) {
+            setAmmCalcData(_ammCalcData)
+        } else {
+            setAmmCalcData({ ...ammCalcData, ..._ammCalcData })
+        }
+
+        if (_ammCalcData.myCoinA && tokenMap) {
+
+            const baseT = tokenMap[_ammCalcData.myCoinA.belong]
+
+            const quoteT = tokenMap[_ammCalcData.myCoinB.belong]
+
+            setBaseToken(baseT)
+            setQuoteToken(quoteT)
+
+            setBaseMinAmt(baseT ? sdk.toBig(baseT.orderAmounts.minimum).div('1e' + baseT.decimals).toNumber() : undefined)
+            setQuoteMinAmt(quoteT ? sdk.toBig(quoteT.orderAmounts.minimum).div('1e' + quoteT.decimals).toNumber() : undefined)
+
+            setAmmData({
+                coinA: { ..._ammCalcData.myCoinA, tradeValue: undefined },
+                coinB: { ..._ammCalcData.myCoinB, tradeValue: undefined },
+                slippage: initSlippage,
+            })
+        }
+    }, [fee, snapShotData, coinMap, tokenMap, ammCalcData, ammMap,
+        setAmmCalcData, setAmmData, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt,])
 
     const calculateCallback = React.useCallback(async () => {
         if (accountStatus === SagaStatus.UNSET) {

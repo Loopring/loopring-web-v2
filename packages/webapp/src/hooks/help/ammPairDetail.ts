@@ -12,7 +12,7 @@ export function ammPairInit<C>({
                                 ammMap,
                                 tickerData,
                                 ammPoolSnapshot
-                            }: any): AmmInData<C> {
+                            }: any, isReset: boolean = false): AmmInData<C> {
     _ammCalcData.coinInfoMap = coinMap;
     if (tickerData) {
         _ammCalcData.AtoB = Number(tickerData.close)
@@ -46,8 +46,6 @@ export function ammPairInit<C>({
             const balance = (walletMap && walletMap[ lpCoin ]) ? walletMap[ lpCoin ].count : 0;
             const ammInfo = ammMap[ 'AMM-' + key ]
             const {totalLPToken, totalA, totalB}: AmmDetailBase<any> = ammInfo
-
-            myLog('ammInfo:', ammInfo)
 
             if (totalA && totalLPToken && totalB) {
                 percentage = totalLPToken ? balance / totalLPToken : 0
