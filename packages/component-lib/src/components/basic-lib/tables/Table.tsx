@@ -12,7 +12,7 @@ import { LoadingIcon } from '@loopring-web/common-resources'
 import { Box, IconButton } from '@material-ui/core';
 
 interface TableWrapperStyledProps {
-  showloading: 'true' | 'false'
+  showLoading: 'true' | 'false'
 }
 
 const TableWrapperStyled = styled(Box)<TableWrapperStyledProps>`
@@ -21,7 +21,7 @@ const TableWrapperStyled = styled(Box)<TableWrapperStyledProps>`
   flex: 1;
 
   &::after {
-    visibility: ${({ showloading }) => showloading === 'true' ? 'visible' : 'hidden'};
+    visibility: ${({ showLoading }) => showLoading === 'true' ? 'visible' : 'hidden'};
     position: absolute;
     z-index: 20;
     top: 0;
@@ -46,10 +46,8 @@ export const DataGridStyled = styled(DataGrid)`
     color: var(--color-text-primary);
     //color: inherit;
     box-sizing: border-box;
-    border: rgba(0, 0, 0, 0) 0px solid;
+    border: rgba(0, 0, 0, 0) 0 solid;
     //background-color: inherit;
-    font-family: Roboto;
-
     .rdg-header-row {
       color: var(--color-text-secondary);
       width: 100%;
@@ -100,8 +98,10 @@ export const DataGridStyled = styled(DataGrid)`
       background: inherit;
       width: 100%;
       transition: background 0.4s ease-out;
+
       &:hover {
         background: var(--color-box-hover);
+
         .rdg-cell:first-of-type {
             // border-left: ${({theme}) => theme.border.borderConfig({d_W: 2, c_key: 'selected'})}
         }
@@ -257,7 +257,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
     `
 
     /*** sort handle end ***/
-    return <TableWrapperStyled showloading={!!showLoading ? 'true' : 'false'}>
+    return <TableWrapperStyled showLoading={!!showLoading ? 'true' : 'false'}>
         <DataGridStyled
             {...rest}
             onScroll={onScroll}
