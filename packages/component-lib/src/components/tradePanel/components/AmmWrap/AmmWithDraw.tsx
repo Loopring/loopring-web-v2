@@ -31,6 +31,7 @@ import { SvgStyled } from './styled';
 import { toBig } from 'loopring-sdk';
 
 import { getShowStr } from '@loopring-web/common-resources'
+import { useAmmViewData } from './ammViewHook';
 
 export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
     I,
@@ -145,57 +146,13 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
         handleCountChange,
         ...rest
     }
-    // const propsB: any = {
-    //     label: t('labelTokenAmount'),
-    //     subLabel: t('labelAvailable'),
-    //     placeholderText: '0.00',
-    //     maxAllow: true,
-    //     ...tokenBProps,
-    //     handleError,
-    //     handleCountChange,
-    //     ...rest
-    // }
+    
     const popupState = usePopupState({
         variant: 'popover',
         popupId: 'slippagePop',
     })
 
-    const label = React.useMemo(() => {
-        if (error.error) {
-            if (typeof error.message === 'string') {
-                return t(error.message)
-            } else if (error.message !== undefined) {
-                return error.message;
-            } else {
-                return t('labelError')
-            }
-
-        }
-        if (ammWithdrawBtnI18nKey) {
-            const key = ammWithdrawBtnI18nKey.split(',');
-            return t(key[ 0 ], key && key[ 1 ] ? {arg: key[ 1 ]} : undefined)
-        } else {
-            return t(`labelRemoveLiquidityBtn`)
-        }
-        // return  t(ammWithdrawBtnI18nKey ? t(ammWithdrawBtnI18nKey) : t(`labelRemoveLiquidityBtn`))
-    }, [error, ammWithdrawBtnI18nKey, t])
-    const stob = React.useMemo(() => {
-        if (ammCalcData && ammCalcData?.lpCoinA && ammCalcData?.lpCoinB && ammCalcData.AtoB) {
-            let price: string;
-            if (_isStoB) {
-                price = `1${ammCalcData?.lpCoinA?.belong} \u2248 ${ammCalcData.AtoB} ${ammCalcData?.lpCoinB?.belong}`;
-
-            } else {
-                price = `1${ammCalcData?.lpCoinB?.belong} \u2248 ${1 / ammCalcData.AtoB} ${ammCalcData?.lpCoinA?.belong}`;
-            }
-            return <> {price} <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
-            ><ReverseIcon/></IconButtonStyled></>
-        } else {
-            return EmptyValueTag
-        }
-
-    }, [_isStoB, ammCalcData])
-
+    const { label, stob, } = useAmmViewData({error, i18nKey: ammWithdrawBtnI18nKey, t, _isStoB, ammCalcData, _onSwitchStob})
 
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
