@@ -10,32 +10,30 @@ import { RouteComponentProps } from 'react-router'
 import { TableWrapStyled } from '../../../styled';
 import { Divider } from '@material-ui/core'
 
-
+const TabsStyled = styled(Tabs)`
+  margin-left: ${({theme}) => theme.unit}px;
+`
 const applyProps = (index: number) => {
     return {
         id: `simple-tab-${index}`,
         'aria-controls': `simple-tabpanel-${index}`,
     }
 }
-const WrapperStyled = styled.div`
-  position: relative;
-  width: 100%;
-  margin-top: ${({theme}) => theme.unit * 4}px;
-  background-color: var(--color-box);
-  box-shadow: var(--shadow);
-  border-radius: ${({theme}) => theme.unit}px;
-`
+// const WrapperStyled = styled.div`
+//   position: relative;
+//   width: 100%;
+//   margin-top: ${({theme}) => theme.unit * 4}px;
+//   background-color: var(--color-box);
+//   box-shadow: var(--shadow);
+//   border-radius: ${({theme}) => theme.unit}px;
+// `
 
-const TabsStyled = styled(Tabs)`
-  margin-left: ${({theme}) => theme.unit}px;
-`
+const RowConfig = {
+    rowHeight:44,
+    headerRowHeight:44,
+}
+const tableHeight = RowConfig.headerRowHeight + 15 *  RowConfig.rowHeight;
 
-// const StyledFormControlLabel = styled(FormControlLabel)`
-//             position: absolute;
-//             top: 0;
-//             right: ${({theme}) => theme.unit}px;
-//             margin: ${({theme}) => theme.unit}px 0 0 0;
-//         `
 
 const TradePanel = withTranslation('common')(
     // withRouter(
@@ -43,24 +41,24 @@ const TradePanel = withTranslation('common')(
         {tradeArray, myTradeArray, t}:
             { tradeArray: RawDataTradeItem[], myTradeArray: RawDataTradeItem[] } & WithTranslation & RouteComponentProps) => {
         const [value, setValue] = useState(1)
-        const [tableHeight, setTableHeight] = useState(0);
+        // const [tableHeight, setTableHeight] = useState(0);
         const handleChange = (event: any, newValue: any) => {
             setValue(newValue)
         }
 
-        const getCurrentHeight = useCallback(() => {
-            const height = window.innerHeight
-            const tableHeight = height - 64 - 117 - 56 - 120 - 20 - 100 - 50 - 15;
-            setTableHeight(tableHeight)
-        }, [])
+        // const getCurrentHeight = useCallback(() => {
+        //     // const height = window.innerHeight
+        //     const tableHeight = height - 64 - 117 - 56 - 120 - 20 - 100 - 50 - 15;
+        //     setTableHeight(tableHeight)
+        // }, [])
 
-        useEffect(() => {
-            getCurrentHeight()
-            window.addEventListener('resize', getCurrentHeight)
-            return () => {
-                window.removeEventListener('resize', getCurrentHeight)
-            }
-        }, [getCurrentHeight]);
+        // useEffect(() => {
+        //     getCurrentHeight()
+        //     window.addEventListener('resize', getCurrentHeight)
+        //     return () => {
+        //         window.removeEventListener('resize', getCurrentHeight)
+        //     }
+        // }, [getCurrentHeight]);
 
         return (<TableWrapStyled item alignSelf={'stretch'} xs={12} marginY={2} paddingBottom={2} flex={1}
                                  className={'MuiPaper-elevation2'}>
@@ -71,7 +69,20 @@ const TradePanel = withTranslation('common')(
                     <Tab label={t('labelRecent')}   {...applyProps(1)} />
                 </TabsStyled>
                 <Divider/>
-                <TradeTable rawData={value === 0 ? myTradeArray : tradeArray} currentHeight={tableHeight}/>
+                {value === 0?
+                    <TradeTable
+                        rowHeight={RowConfig.rowHeight}
+                        headerRowHeight={RowConfig.headerRowHeight}
+                        rawData={myTradeArray}
+                        pagination={{pageSize:14}}
+                        currentHeight={tableHeight - RowConfig.rowHeight}/>:
+                    <TradeTable
+                        rowHeight={RowConfig.rowHeight}
+                        headerRowHeight={RowConfig.headerRowHeight}
+                        rawData={tradeArray}
+                        currentHeight={tableHeight}/>
+                }
+
             </TableWrapStyled>
         )
     }

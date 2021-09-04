@@ -336,6 +336,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
             const {userTrades} = await LoopringAPI.userAPI.getUserTrades({
                 accountId: account.accountId,
                 market,
+                limit:100,
             }, account.apiKey);
             let _myTradeArray = makeMarketArray(market, userTrades) as RawDataTradeItem[]
             setMyTradeArray(_myTradeArray ? _myTradeArray : [])
@@ -353,7 +354,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
 
     const marketTradeTableCallback = React.useCallback(async () => {
         if (LoopringAPI.exchangeAPI && market) {
-            const {marketTrades} = await LoopringAPI.exchangeAPI.getMarketTrades({market});
+            const {marketTrades} = await LoopringAPI.exchangeAPI.getMarketTrades({market,limit:15});
             const _tradeArray = makeMarketArray(market, marketTrades)
             setTradeArray(_tradeArray as RawDataTradeItem[])
         } else {

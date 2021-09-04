@@ -7,7 +7,7 @@ import { Column, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { Filter, FilterTradeTypes } from './components/Filter'
-import { EmptyValueTag, TableType, TradeTypes, getThousandFormattedNumbers } from '@loopring-web/common-resources';
+import { EmptyValueTag, getThousandFormattedNumbers, TableType, TradeTypes } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores';
 import { useDeepCompareEffect } from 'react-use';
 import { Row } from '../poolsTable/Interface';
@@ -71,6 +71,8 @@ export type TradeTableProps = {
     }
     showFilter?: boolean;
     currentHeight?: number;
+    rowHeight?: number;
+    headerRowHeight?: number;
 }
 
 // enum TableType {
@@ -79,23 +81,26 @@ export type TradeTableProps = {
 // }
 
 const TableStyled = styled(Box)`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 
-    .rdg{
-        height: ${(props: any) => props.currentheight}px;
-        --template-columns: 320px auto auto auto !important;
-        .rdg-cell.action{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .rdg-header-row {
-            // background-color: inherit !important;
-        }
+  .rdg {
+    height: ${(props: any) => props.currentheight}px;
+    --template-columns: 320px auto auto auto !important;
+
+    .rdg-cell.action {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
+
+    .rdg-header-row {
+      // background-color: inherit !important;
+    }
+  }
+
+  ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as any
 
 const StyledSideCell: any = styled(Box)`
@@ -110,7 +115,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
             const {from, to} = row[ 'amount' ]
             const fromValue = from.value ? getThousandFormattedNumbers(Number(from.value)) : EmptyValueTag
             const toValue = to.value ? getThousandFormattedNumbers(Number(to.value)) : EmptyValueTag
-            
+
             return (
                 <div className="rdg-cell-value">
                     <StyledSideCell value={row[ 'side' ]}>
@@ -177,8 +182,16 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
     },
 ]
 
-export const TradeTable = withTranslation('tables')((props: WithTranslation & TradeTableProps) => {
-    const {t, pagination, showFilter, rawData, currentHeight} = props
+export const TradeTable = withTranslation('tables')(({
+                                                         t,
+                                                         pagination,
+                                                         showFilter,
+                                                         rawData,
+                                                         currentHeight,
+                                                         rowHeight = 44,
+                                                         headerRowHeight = 44,
+                                                         ...rest
+                                                     }: WithTranslation & TradeTableProps) => {
     const [filterType, setFilterType] = React.useState(FilterTradeTypes.allTypes)
     const [filterDate, setFilterDate] = React.useState<DateRange<string | Date>>([null, null])
     const [filterPair, setFilterPair] = React.useState('all')
@@ -200,23 +213,23 @@ export const TradeTable = withTranslation('tables')((props: WithTranslation & Tr
     const pageSize = pagination ? pagination.pageSize : 10;
 
     const getRenderData = React.useCallback(() => pagination
-        ? totalData.slice((page - 1) * pageSize, page * pageSize)
-        : totalData
+            ? totalData.slice((page - 1) * pageSize, page * pageSize)
+            : totalData
         , [page, pageSize, pagination, totalData])
 
     const updateData = React.useCallback(({
-        TableType,
-        currFilterType = filterType,
-        currFilterDate = filterDate,
-        currFilterPair = filterPair
-    }) => {
+                                              TableType,
+                                              currFilterType = filterType,
+                                              currFilterDate = filterDate,
+                                              currFilterPair = filterPair
+                                          }) => {
         let resultData = rawData ? rawData : []
         if (currFilterType !== FilterTradeTypes.allTypes) {
             resultData = resultData.filter(o => o.side === (currFilterType === TradeTypes.Buy ? TradeTypes.Buy : TradeTypes.Sell))
         }
-        if (currFilterDate[0] && currFilterDate[1]) {
-            const startTime = Number(moment(currFilterDate[0]).format('x'))
-            const endTime = Number(moment(currFilterDate[1]).format('x'))
+        if (currFilterDate[ 0 ] && currFilterDate[ 1 ]) {
+            const startTime = Number(moment(currFilterDate[ 0 ]).format('x'))
+            const endTime = Number(moment(currFilterDate[ 1 ]).format('x'))
             resultData = resultData.filter(o => o.time < endTime && o.time > startTime)
         }
         if (currFilterPair !== 'all') {
@@ -237,7 +250,7 @@ export const TradeTable = withTranslation('tables')((props: WithTranslation & Tr
         setFilterPair(pair)
         updateData({
             TableType: TableType.filter,
-            currFilterType: type, 
+            currFilterType: type,
             currFilterDate: date,
             currFilterPair: pair
         })
@@ -273,9 +286,14 @@ export const TradeTable = withTranslation('tables')((props: WithTranslation & Tr
                 }} />
             </TableFilterStyled>
         )}
-        <Table className={'scrollable'} {...{...defaultArgs, ...props, rawData: getRenderData()}}/>
+        <Table className={'scrollable'} {...{
+            ...defaultArgs,
+            rowHeight,
+            headerRowHeight,
+            ...rest, rawData: getRenderData()
+        }}/>
         {pagination && (
-            <TablePagination page={page} pageSize={pageSize} total={totalData.length} onPageChange={handlePageChange}/>
+            <TablePagination height={rowHeight} page={page} pageSize={pageSize} total={totalData.length} onPageChange={handlePageChange}/>
         )}
     </TableStyled>
 })
