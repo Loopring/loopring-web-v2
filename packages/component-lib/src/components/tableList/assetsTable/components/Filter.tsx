@@ -1,20 +1,27 @@
-import React from 'react'
+// import React from 'react'
 import { Checkbox, Grid } from '@material-ui/core'
 import { withTranslation, WithTranslation } from "react-i18next";
 import { FormControlLabel, InputSearch } from '../../../'
 import { CheckBoxIcon, CheckedIcon } from '@loopring-web/common-resources'
-import { TokenType, RawDataAssetsItem } from '../AssetsTable'
+import { TokenType,
+    // RawDataAssetsItem
+} from '../AssetsTable'
 
 export type TokenTypeCol = {
     type: TokenType,
     value: string
 }
 export interface FilterProps {
-    searchValue: string;
-    originalData: RawDataAssetsItem[];
-    hideSmallBalance: boolean;
-    hideLpToken: boolean;
-    handleFilterChange: ({tokenType, hideSmallBalance, hideLPToken}: any) => void;
+    // searchValue: string;
+    // // originalData: RawDataAssetsItem[];
+    // hideSmallBalance: boolean;
+    // hideLpToken: boolean;
+    filter:{
+        searchValue:string,
+        hideSmallBalance:boolean,
+        hideLpToken:boolean,
+    }
+    handleFilterChange: (props:{searchValue:string, hideSmallBalance:boolean, hideLpToken:boolean}) => void;
 }
 
 // const StyledTextFiled = styled(TextField)`
@@ -36,9 +43,10 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                                                                       t,
                                                                     //   originalData,
                                                                       handleFilterChange,
-                                                                      searchValue,
-                                                                      hideSmallBalance,
-                                                                      hideLpToken,
+                                                                      filter,
+                                                                      // searchValue,
+                                                                      // hideSmallBalance,
+                                                                      // hideLpToken,
                                                                   }: FilterProps & WithTranslation) => {
     // de-duplicate
     // const tokenTypeList = [{
@@ -108,30 +116,32 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                 </StyledTextFiled>
             </Grid> */}
             <Grid item>
-                <InputSearch value={searchValue} onChange={(value: any) => {
+                <InputSearch value={filter.searchValue} onChange={(value: any) => {
                     // setSearchValue(value)
-                    handleFilterChange({ currSearchValue: value })
+                    handleFilterChange({ ...filter, searchValue: value })
                 }} />
             </Grid>
 
             <Grid item>
                 <FormControlLabel
-                    control={<Checkbox checked={hideLpToken} checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
+                    control={<Checkbox checked={filter.hideLpToken} checkedIcon={<CheckedIcon/>} icon={<CheckBoxIcon/>}
                                 color="default" onChange={(event) => {
                         // handleCheckboxChange(CheckboxType.lp, event);
                         // refHideLPToken.current = event.target.checked;
                         handleFilterChange({
-                            currHideLPToken: event.target.checked
+                            ...filter,
+                            hideLpToken: event.target.checked
                         });
                     }}/>} label={t('labelHideLPToken')}/>
                 <FormControlLabel style={{marginRight: 0}}
-                    control={<Checkbox checked={hideSmallBalance} checkedIcon={<CheckedIcon/>}
+                    control={<Checkbox checked={filter.hideSmallBalance} checkedIcon={<CheckedIcon/>}
                                         icon={<CheckBoxIcon/>}
                                         color="default" onChange={(event) => {
                         // handleCheckboxChange(CheckboxType.smallBalance, event);
                         // refHideSmallBalance.current = event.target.checked;
                         handleFilterChange({
-                            currHideSmallBalance: event.target.checked
+                            ...filter,
+                            hideSmallBalance: event.target.checked
                         });
                     }}/>} label={t('labelHideSmallBalances')}/>
             </Grid>
