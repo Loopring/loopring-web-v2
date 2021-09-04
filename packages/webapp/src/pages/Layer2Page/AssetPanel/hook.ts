@@ -193,8 +193,6 @@ export const useGetAssets = () => {
                         : deltaName
             })
             setAssetsRawData(data)
-        } else {
-            myLog('emmmmmmmpty')
         }
     }, [assetsMap, tokenMap, lpTokenList])
 

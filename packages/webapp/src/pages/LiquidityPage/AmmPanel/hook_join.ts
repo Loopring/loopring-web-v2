@@ -198,12 +198,12 @@ export const useAmmJoin = <C extends { [key: string]: any }>({
             const requestType = OffchainFeeReqType.AMM_JOIN
 
             const request: GetOffchainFeeAmtRequest = {
-                accountId,
+                accountId: account.accountId,
                 requestType,
                 tokenSymbol: pair.coinBInfo.simpleName as string,
             }
 
-            const { fees } = await LoopringAPI.userAPI.getOffchainFeeAmt(request, apiKey)
+            const { fees } = await LoopringAPI.userAPI.getOffchainFeeAmt(request, account.apiKey)
 
             setFees(fees)
 
@@ -220,13 +220,12 @@ export const useAmmJoin = <C extends { [key: string]: any }>({
 
     }, [
         setFees, setAmmCalcData, setBtnI18nKey,
-        accountStatus, account.readyState, accountId, apiKey,
-        pair.coinBInfo?.simpleName, tokenMap, ammCalcData
+        accountStatus, account, pair, tokenMap, ammCalcData
     ])
 
     React.useEffect(() => {
         calculateCallback()
-    }, [accountStatus, pair, ammData])
+    }, [accountStatus, pair.coinBInfo?.simpleName, ammData])
 
     const [request, setRequest] = React.useState<{ ammInfo: any, request: JoinAmmPoolRequest | ExitAmmPoolRequest }>();
 
