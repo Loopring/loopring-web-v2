@@ -63,6 +63,9 @@ export const DepositWrap = <T extends IBData<I>,
     const inputButtonDefaultProps = {
         label: t('depositLabelEnterToken'),
     }
+
+    console.log('redender old!!!!!!!')
+
     return <Grid className={walletMap ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>

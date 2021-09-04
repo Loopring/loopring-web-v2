@@ -34,20 +34,22 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     const { setShowDeposit, setShowAccount } = useOpenModals()
     const { t } = useTranslation('common')
 
-    const { btnStatus, btnInfo, enableBtn, disableBtn, setLabelAndParams, } = useBtnStatus()
+    const { btnStatus, btnInfo, enableBtn, disableBtn, setLabelAndParams, resetBtnInfo, } = useBtnStatus()
 
     const { allowanceInfo } = useAllowances({ owner: account.accAddress, symbol: depositValue.belong, })
 
     const updateBtnStatus = React.useCallback(() => {
 
-        myLog('depositValue:', depositValue, allowanceInfo)
+        myLog('!! updateBtnStatus .... depositValue:', depositValue, allowanceInfo)
 
-        setLabelAndParams( 'labelDeposit', {})
+        resetBtnInfo()
 
-        if (depositValue?.tradeValue && allowanceInfo && sdk.toBig(depositValue?.tradeValue).lte(sdk.toBig(depositValue?.balance))) {
+        if (depositValue.belong === allowanceInfo?.tokenInfo.symbol && depositValue?.tradeValue && allowanceInfo 
+            && sdk.toBig(depositValue?.tradeValue).lte(sdk.toBig(depositValue?.balance))) {
             const curValInWei = sdk.toBig(depositValue?.tradeValue).times('1e' + allowanceInfo?.tokenInfo.decimals)
             if (allowanceInfo.needCheck && curValInWei.gt(allowanceInfo.allowance)) {
-                setLabelAndParams( 'labelDepositNeedApprove', { symbol: depositValue.belong })
+                myLog('!!---> set labelDepositNeedApprove!!!! belong:', depositValue.belong)
+                setLabelAndParams('labelDepositNeedApprove', { symbol: depositValue.belong })
             }
             enableBtn()
         } else {
@@ -56,7 +58,6 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     }, [enableBtn, disableBtn, setLabelAndParams, depositValue, allowanceInfo])
 
     React.useEffect(() => {
-        myLog('try to updateBtnStatus! ', depositValue, allowanceInfo)
         updateBtnStatus()
     }, [depositValue?.belong, depositValue?.tradeValue, allowanceInfo?.tokenInfo.symbol])
 
@@ -219,7 +220,6 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             res();
         })
     }, [depositValue, setDepositValue])
-
 
     const depositProps = React.useMemo(() => {
         const isNewAccount = account.readyState === AccountStatus.NO_ACCOUNT ? true : false;
