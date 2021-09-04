@@ -177,7 +177,6 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         setTotalData(rawData);
     }, [rawData])
     useEffect(() => {
-        console.log(filter)
         updateData();
     }, [totalData,filter])
 
@@ -400,7 +399,6 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     //     , [page, pageSize, pagination, totalData])
 
     const updateData = useCallback(() => {
-        console.log('updateData',filter)
         let resultData = (totalData && !!totalData.length) ? totalData : []
         if (filter.hideSmallBalance) {
             resultData = resultData.filter(o => !o.smallBalance)
