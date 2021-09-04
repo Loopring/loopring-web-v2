@@ -123,6 +123,7 @@ export const useAmmExit = <C extends { [key: string]: any }>({
         myLog('exit !!! initAmmData:', _ammCalcData)
 
         setAmmCalcData({ ...ammCalcData, ..._ammCalcData });
+
         if (_ammCalcData.lpCoin && _ammCalcData.myCoinA && _ammCalcData.myCoinB && tokenMap) {
 
             const baseT = tokenMap[_ammCalcData.myCoinA.belong]
@@ -197,17 +198,16 @@ export const useAmmExit = <C extends { [key: string]: any }>({
                 || !ammCalcData || !tokenMap) {
                 return
             }
+            
             const feeToken: TokenInfo = tokenMap[pair.coinBInfo.simpleName]
 
-            const requestType = OffchainFeeReqType.AMM_EXIT
-
             const request: GetOffchainFeeAmtRequest = {
-                accountId,
-                requestType,
+                accountId: account.accountId,
+                requestType: OffchainFeeReqType.AMM_EXIT,
                 tokenSymbol: pair.coinBInfo.simpleName as string,
             }
 
-            const { fees } = await LoopringAPI.userAPI.getOffchainFeeAmt(request, apiKey)
+            const { fees } = await LoopringAPI.userAPI.getOffchainFeeAmt(request, account.apiKey)
 
             setFees(fees)
 
@@ -216,7 +216,7 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
             setFee(fee.toNumber())
 
-            myLog('calculateCallback fee:', fee)
+            myLog('---calculateCallback fee:', fee.toNumber())
 
             setAmmCalcData({
                 ...ammCalcData, fee: fee.toString()
@@ -226,13 +226,12 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
     }, [
         setFees, setAmmCalcData, setBtnI18nKey,
-        accountStatus, account.readyState, accountId, apiKey,
-        pair.coinBInfo?.simpleName, tokenMap, ammCalcData
+        accountStatus, account, pair, tokenMap, ammCalcData
     ])
 
     React.useEffect(() => {
         calculateCallback()
-    }, [accountStatus, account.readyState, pair, request])
+    }, [accountStatus, account.readyState, pair.coinBInfo?.simpleName, ammData, ])
 
     const handleExit = React.useCallback(async ({ data, requestOut, ammData, fees, ammPoolSnapshot, tokenMap, account }) => {
 
@@ -293,7 +292,6 @@ export const useAmmExit = <C extends { [key: string]: any }>({
     }, [setRequest, idIndex, marketArray, marketMap, baseToken, quoteToken])
 
     const handleAmmPoolEvent = (data: AmmExitData<IBData<any>>, _type: 'coinA' | 'coinB') => {
-        myLog('handleAmmPoolEvent request:', request)
         handleExit({ data, requestOut: request, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account })
     }
 
@@ -312,7 +310,7 @@ export const useAmmExit = <C extends { [key: string]: any }>({
             return
         }
 
-        const { ammInfo, request: reqTmp } = request
+        const { ammInfo, request: reqExit } = request
 
         const patch: AmmPoolRequestPatch = {
             chainId: store.getState().system.chainId as ChainId,
@@ -320,8 +318,6 @@ export const useAmmExit = <C extends { [key: string]: any }>({
             poolAddress: ammInfo.address,
             eddsaKey: account.eddsaKey.sk
         }
-
-        const reqExit: ExitAmmPoolRequest = reqTmp as ExitAmmPoolRequest
 
         const burnedReq: GetNextStorageIdRequest = {
             accountId: account.accountId,
