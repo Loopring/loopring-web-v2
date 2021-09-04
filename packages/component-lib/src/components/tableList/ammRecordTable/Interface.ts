@@ -33,7 +33,7 @@ export type AmmRecordTableProps<T, R = AmmRecordRow<T>> = {
         total: number,
     },
     page?: number,
-    handlePageChange: (props: any) => void,
+    handlePageChange?: (props: any) => void,
     showFilter?: boolean,
     wait?: number;
     showLoading?: boolean;

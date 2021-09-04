@@ -80,8 +80,9 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         getUserAmmPoolTxs,
         showAmmPoolLoading,
         ammUserTotal,
+        isRecentLoading,
     } = useCoinPair({ammActivityMap});
-    const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
+    const [tabIndex, setTabIndex] = React.useState<0 | 1>(1);
     const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
 
     const {coinJson} = useSettings();
@@ -97,6 +98,10 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
             setPageSize(Math.floor((height - 30) / 44) - 1);
         }
     }, [container, pageSize]);
+
+    const handleTabsChange = React.useCallback((_: any, value: 0 | 1) => {
+        setTabIndex(value)
+    }, [])
 
     return <>
         <Box marginBottom={2}>
@@ -272,16 +277,22 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                 </Box>
                 <StylePaper className={'MuiPaper-elevation2'} marginTop={3} ref={container}>
                     <TabsStyled value={tabIndex}
-                        // onChange={handleChange}
-                                aria-label="tabs switch">
-                        {/* <Tab label={t('labelAmmAllTransactions')} {...applyProps(0)} /> */}
+                        onChange={handleTabsChange}
+                        aria-label="tabs switch"
+                    >
+                        <Tab label={t('labelAmmAllTransactions')} {...applyProps(0)} />
                         <Tab label={t('labelAmmMyTransactions')} {...applyProps(1)} />
                     </TabsStyled>
                     <Divider/>
                     {/*ammRecordArray*/}
-                    {tabIndex === 1 ? <AmmRecordTable
+                    {tabIndex === 0 ? <AmmRecordTable
                         rawData={ammMarketArray}
-                        handlePageChange={getUserAmmPoolTxs} page={page}
+                        rowHeight={RowConfig.rowHeight}
+                        headerRowHeight={RowConfig.headerRowHeight}
+                        currentHeight={tableHeight}
+                        showLoading={isRecentLoading}
+                        currency={currency}
+                        // handlePageChange={getUserAmmPoolTxs} page={page}
                     /> : <AmmRecordTable
                         rawData={myAmmMarketArray}
                         handlePageChange={getUserAmmPoolTxs}
