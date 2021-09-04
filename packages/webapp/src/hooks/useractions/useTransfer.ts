@@ -85,12 +85,12 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const resetDefault = React.useCallback(() => {
         if (symbol) {
+            myLog('resetDefault symbol:', symbol)
             setTransferValue({
                 belong: symbol as any,
                 balance: walletMap[ symbol ]?.count,
                 tradeValue: undefined,
             })
-
         } else {
             const keys = Reflect.ownKeys(walletMap)
             for (var key in keys) {

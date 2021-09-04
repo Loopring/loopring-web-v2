@@ -5,7 +5,8 @@ import {
     IBData,
     LinkedIcon,
     ReverseIcon,
-    SlippageTolerance
+    SlippageTolerance,
+    getShowStr
 } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import { AmmDepositWrapProps } from './Interface';
@@ -20,6 +21,7 @@ import { TradeBtnStatus } from '../../Interface';
 import { SvgStyled } from './styled';
 import { useSettings } from '../../../../stores';
 import { Box } from '@material-ui/core/';
+import { useAmmViewData } from './ammViewHook';
 
 
 export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : IBData<I>>,
@@ -72,12 +74,6 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
             setError({error: false, message: ''});
             return {error: false, message: ''}
         }
-        // handleError = ({belong, balance, tradeValue}: any) => {
-        //     if (balance < tradeValue || (tradeValue && !balance)) {
-        //         return {error: true, message: t('tokenNotEnough', {belong: belong})}
-        //     }
-        //     return {error: false, message: ''}
-        // }
     }
     const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
         const focus: 'coinA' | 'coinB' = _ref?.current === coinARef.current ? 'coinA' : 'coinB';
@@ -122,24 +118,8 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
             }, type: 'coinA'
         });
     }, [ammData, onAddChangeEvent]) ;
-    const label = React.useMemo(()=>{
-        if(error.error){
-            if(typeof  error.message === 'string'){
-                return  t(error.message)
-            }else if(error.message !== undefined){
-                return error.message;
-            }else{
-                return t('labelError')
-            }
 
-        }
-        if (ammDepositBtnI18nKey) {
-            const key = ammDepositBtnI18nKey.split(',');
-            return t(key[ 0 ], key && key[ 1 ] ? {arg: key[ 1 ]} : undefined)
-        } else {
-            return t(`labelAddLiquidityBtn`)
-        }
-    },[error,ammDepositBtnI18nKey,t])
+    const { label, stob, } = useAmmViewData({error, i18nKey: ammDepositBtnI18nKey, t, _isStoB, ammCalcData, _onSwitchStob})
 
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
@@ -169,12 +149,7 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
 
         <Grid item>
             <Typography component={'p'} variant={'body1'} height={24} lineHeight={'24px'}>
-                {ammData.coinA?.belong && ammData.coinB?.belong && ammCalcData ? <>
-                    {_isStoB ? `1${ammData.coinA?.belong} \u2248 ${ammCalcData.AtoB ? ammCalcData.AtoB : EmptyValueTag} ${ammData.coinB?.belong}`
-                        : `1${ammData.coinB?.belong} \u2248 ${ammCalcData.AtoB ? (1 / ammCalcData.AtoB) : EmptyValueTag} ${ammData.coinA?.belong}`}
-                    <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
-                    ><ReverseIcon/></IconButtonStyled>
-                </> : EmptyValueTag}
+                {stob}
             </Typography>
         </Grid>
         <Grid item alignSelf={"stretch"}>

@@ -16,7 +16,6 @@ import {
     Deposit_Failed,
     Deposit_Submit,
     Deposit_WaitForAuth,
-    DepositPanel,
     HadAccount,
     ModalAccount,
     ModalPanel,
@@ -48,6 +47,7 @@ import {
     Withdraw_Success,
     Withdraw_User_Denied,
     Withdraw_WaitForAuth,
+    DepositPanelNew,
 } from '@loopring-web/component-lib';
 import { walletServices } from '@loopring-web/web3-provider';
 import { ConnectorError, sleep } from 'loopring-sdk';
@@ -126,8 +126,6 @@ export const ModalAccountInfo = withTranslation('common')(({
 
     const [openQRCode, setOpenQRCode] = useState(false)
 
-    const {coinMap} = useTokenMap()
-
     const [copyToastOpen, setCopyToastOpen] = useState(false);
 
     const onSwitch = React.useCallback(() => {
@@ -151,8 +149,10 @@ export const ModalAccountInfo = withTranslation('common')(({
     }, [resetAccount, setShowAccount])
 
     const goDeposit = React.useCallback(() => {
-
-        setShowAccount({isShow: true, step: AccountStep.Deposit});
+        
+        setShowAccount({isShow: false})
+        setShowDeposit({isShow: true})
+        // setShowAccount({isShow: true, step: AccountStep.Deposit});
 
     }, [setShowAccount])
 
@@ -286,7 +286,9 @@ export const ModalAccountInfo = withTranslation('common')(({
         return {
             btnTxt: 'labelRetry',
             callback: () => {
-                setShowAccount({isShow: true, step: AccountStep.Deposit});
+                setShowAccount({isShow: false})
+                setShowDeposit({isShow: true})
+                // setShowAccount({isShow: true, step: AccountStep.Deposit});
             }
         }
     }, [])
@@ -399,15 +401,15 @@ export const ModalAccountInfo = withTranslation('common')(({
 
             // new 
             // deposit
-            [ AccountStep.Deposit ]: {
-                view: <DepositPanel title={title} {...{
-                    ...rest,
-                    _height: 'var(--modal-height)',
-                    _width: 'var(--modal-width)',
-                    ...depositProps,
-                    t
-                }} />
-            },
+            // [ AccountStep.Deposit ]: {
+            //     view: <DepositPanelNew title={title} {...{
+            //         ...rest,
+            //         _height: 'var(--modal-height)',
+            //         _width: 'var(--modal-width)',
+            //         ...depositProps,
+            //         t
+            //     }} />
+            // },
             [ AccountStep.Deposit_Approve_WaitForAuth ]: {
                 view: <Deposit_Approve_WaitForAuth
                     providerName={account.connectName} {...{
@@ -418,14 +420,18 @@ export const ModalAccountInfo = withTranslation('common')(({
                 view: <Deposit_Approve_Denied btnInfo={backToDepositBtnInfo} {...{
                     ...rest, t
                 }} />, onBack: () => {
-                    setShowAccount({isShow: true, step: AccountStep.Deposit});
+                    setShowAccount({isShow: false})
+                    setShowDeposit({isShow: true})
+                    // setShowAccount({isShow: true, step: AccountStep.Deposit});
                 }
             },
             [ AccountStep.Deposit_Approve_Submit ]: {
                 view: <Deposit_Approve_Submit btnInfo={closeBtnInfo} {...{
                     ...rest, t
                 }} />, onBack: () => {
-                    setShowAccount({isShow: true, step: AccountStep.Deposit});
+                    setShowAccount({isShow: false})
+                    setShowDeposit({isShow: true})
+                    // setShowAccount({isShow: true, step: AccountStep.Deposit});
                 }
             },
             [ AccountStep.Deposit_WaitForAuth ]: {
@@ -433,28 +439,36 @@ export const ModalAccountInfo = withTranslation('common')(({
                     providerName={account.connectName} {...{
                     ...rest, t
                 }} />, onBack: () => {
-                    setShowAccount({isShow: true, step: AccountStep.Deposit});
+                    setShowAccount({isShow: false})
+                    setShowDeposit({isShow: true})
+                    // setShowAccount({isShow: true, step: AccountStep.Deposit});
                 }
             },
             [ AccountStep.Deposit_Denied ]: {
                 view: <Deposit_Denied btnInfo={backToDepositBtnInfo} {...{
                     ...rest, t
                 }} />, onBack: () => {
-                    setShowAccount({isShow: true, step: AccountStep.Deposit});
+                    setShowAccount({isShow: false})
+                    setShowDeposit({isShow: true})
+                    // setShowAccount({isShow: true, step: AccountStep.Deposit});
                 }
             },
             [ AccountStep.Deposit_Failed ]: {
                 view: <Deposit_Failed btnInfo={closeBtnInfo} {...{
                     ...rest, t
                 }} />, onBack: () => {
-                    setShowAccount({isShow: true, step: AccountStep.Deposit});
+                    setShowAccount({isShow: false})
+                    setShowDeposit({isShow: true})
+                    // setShowAccount({isShow: true, step: AccountStep.Deposit});
                 }
             },
             [ AccountStep.Deposit_Submit ]: {
                 view: <Deposit_Submit btnInfo={closeBtnInfo} {...{
                     ...rest, t
                 }} />, onBack: () => {
-                    setShowAccount({isShow: true, step: AccountStep.Deposit});
+                    setShowAccount({isShow: false})
+                    setShowDeposit({isShow: true})
+                    // setShowAccount({isShow: true, step: AccountStep.Deposit});
                 }
             },
 

@@ -36,7 +36,7 @@ const MyAmmLPAssets = withTranslation('common')(({ ammCalcData, t }:
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}>
                 <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('labelMyLPToken')} </Typography>
                 <Typography component={'p'}
-                    variant="body2">{ammCalcData && ammCalcData.lpCoin.belong ? ammCalcData.lpCoin.balance : EmptyValueTag}</Typography>
+                    variant="body2">{ammCalcData && ammCalcData?.lpCoin?.balance !== undefined ? ammCalcData.lpCoin.balance : EmptyValueTag}</Typography>
             </Box>
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}
                 marginTop={1 / 2}>
