@@ -4,8 +4,9 @@ import React from 'react'
 import { useTokenMap } from 'stores/token/hook'
 import * as sdk from 'loopring-sdk'
 import { TokenInfo } from 'loopring-sdk'
+import { myLog } from 'utils/log_tools'
 
-export function useAllowances({ owner, symbol }: {owner: string, symbol: string}) {
+export function useAllowances({ owner, symbol, }: {owner: string, symbol: string, }) {
 
     const { tokenMap, } = useTokenMap()
 
@@ -21,6 +22,9 @@ export function useAllowances({ owner, symbol }: {owner: string, symbol: string}
 
                 if (tokenInfo?.symbol.toUpperCase() !== 'ETH') {
                     const req: sdk.GetAllowancesRequest = { owner, token: tokenInfo.symbol }
+
+                    myLog('--> try to got:', req)
+
                     const { tokenAllowances } = await LoopringAPI.exchangeAPI.getAllowances(req, tokenMap)
                     allowance = sdk.toBig(tokenAllowances[tokenInfo.symbol])
                     needCheck = true

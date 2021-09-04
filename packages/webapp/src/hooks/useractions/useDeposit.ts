@@ -40,21 +40,25 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
     const updateBtnStatus = React.useCallback(() => {
 
-        if (depositValue?.tradeValue && allowanceInfo && depositValue?.tradeValue <= depositValue?.balance) {
+        myLog('depositValue:', depositValue, allowanceInfo)
+
+        setLabelAndParams( 'labelDeposit', {})
+
+        if (depositValue?.tradeValue && allowanceInfo && sdk.toBig(depositValue?.tradeValue).lte(sdk.toBig(depositValue?.balance))) {
             const curValInWei = sdk.toBig(depositValue?.tradeValue).times('1e' + allowanceInfo?.tokenInfo.decimals)
             if (allowanceInfo.needCheck && curValInWei.gt(allowanceInfo.allowance)) {
                 setLabelAndParams( 'labelDepositNeedApprove', { symbol: depositValue.belong })
-            } else {
-                enableBtn()
             }
+            enableBtn()
         } else {
             disableBtn()
         }
     }, [enableBtn, disableBtn, setLabelAndParams, depositValue, allowanceInfo])
 
     React.useEffect(() => {
+        myLog('try to updateBtnStatus! ', depositValue, allowanceInfo)
         updateBtnStatus()
-    }, [depositValue?.tradeValue, allowanceInfo])
+    }, [depositValue?.belong, depositValue?.tradeValue, allowanceInfo?.tokenInfo.symbol])
 
     const walletLayer1Callback = React.useCallback(() => {
         if (symbol && walletLayer1) {
@@ -84,6 +88,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             }
         }
     }, [walletLayer1, symbol, setDepositValue])
+
     React.useEffect(() => {
         walletLayer1Callback()
     }, [isShow])
