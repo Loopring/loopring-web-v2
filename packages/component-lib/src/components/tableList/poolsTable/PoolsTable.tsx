@@ -1,6 +1,6 @@
 import React from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import * as _ from 'lodash'
+// import * as _ from 'lodash'
 import { Button, Column, NewTagIcon, Table,
     // TablePagination,
     TableProps } from '../../basic-lib'
@@ -329,7 +329,9 @@ export const PoolsTable = withTranslation('tables')(
             {/*  />*/}
             {/*</Box>}*/}
             {/*className={'scrollable'}*/}
-            <Table className={'scrollable'} style={{ height: tableHeight }}  {...{
+            <Table className={'scrollable'}
+                   style={{ height: tableHeight }}
+                 {...{
                 ...defaultArgs, t, i18n, tReady, ...rest,
                 rawData: rawData,// getRenderData(),
                 onRowClick: (index, row) => onRowClick(index, row),
