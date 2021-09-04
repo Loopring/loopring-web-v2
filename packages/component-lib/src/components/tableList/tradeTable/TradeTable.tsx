@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box } from '@material-ui/core'
+import { Box, BoxProps } from '@material-ui/core'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import moment from 'moment'
@@ -86,7 +86,7 @@ const TableStyled = styled(Box)`
   flex: 1;
 
   .rdg {
-    height: ${(props: any) => props.currentheight}px;
+    height: ${(props: any) => props.currentHeight}px;
     --template-columns: 320px auto auto auto !important;
 
     .rdg-cell.action {
@@ -101,7 +101,7 @@ const TableStyled = styled(Box)`
   }
 
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
-` as any
+` as (props: { currentHeight?:number } & BoxProps) => JSX.Element;
 
 const StyledSideCell: any = styled(Box)`
 `
@@ -273,7 +273,7 @@ export const TradeTable = withTranslation('tables')(({
         })
     }
 
-    return <TableStyled currentheight={currentHeight}>
+    return <TableStyled currentHeight={currentHeight} >
         {showFilter && (
             <TableFilterStyled>
                 <Filter {...{
@@ -286,7 +286,7 @@ export const TradeTable = withTranslation('tables')(({
                 }} />
             </TableFilterStyled>
         )}
-        <Table className={'scrollable'} {...{
+        <Table className={'scrollable'}   {...{
             ...defaultArgs,
             rowHeight,
             headerRowHeight,

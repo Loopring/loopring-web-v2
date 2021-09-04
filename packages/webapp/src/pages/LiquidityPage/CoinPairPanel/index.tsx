@@ -56,6 +56,12 @@ const applyProps = (index: number) => {
         'aria-controls': `tabpanel-${index}`,
     }
 }
+const RowConfig = {
+    rowHeight:44,
+    headerRowHeight:44,
+}
+const tableHeight = RowConfig.headerRowHeight + 15 *  RowConfig.rowHeight;
+
 
 export const CoinPairPanel = withTranslation('common')(<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>
 ({t, ammActivityMap, ...rest}:
@@ -284,6 +290,9 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             total: ammUserTotal
                         }}
                         showLoading={showAmmPoolLoading}
+                        rowHeight={RowConfig.rowHeight}
+                        headerRowHeight={RowConfig.headerRowHeight}
+                        currentHeight={tableHeight}
                         currency={currency}
                     />}
                 </StylePaper>
