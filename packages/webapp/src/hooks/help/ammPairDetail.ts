@@ -44,7 +44,7 @@ export function ammPairInit<C>({
 
         const key = `${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`;
         const lpCoin = 'LP-' + key
-        let balance = 0
+        let balance = undefined
         if (walletMap) {
             balance = (walletMap && walletMap[ lpCoin ]) ? walletMap[ lpCoin ].count : 0;
             const ammInfo = ammMap[ 'AMM-' + key ]
