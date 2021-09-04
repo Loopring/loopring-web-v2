@@ -13,7 +13,6 @@ import { useAccount } from 'stores/account';
 import { FeeInfo, useChargeFees } from '../common/useChargeFees';
 import { LoopringAPI } from 'api_wrapper';
 import { useSystem } from 'stores/system';
-import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { myLog } from 'utils/log_tools';
 import { makeWalletLayer2 } from 'hooks/help';
 import { useWalletLayer2Socket, walletLayer2Service } from '../../services/socket';
@@ -116,12 +115,6 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         resetDefault();
     }, [isShow, tranferFeeInfo])
 
-    // useCustomDCEffect(() => {
-    //     if (chargeFeeList.length > 0) {
-    //         setTransferFeeInfo(chargeFeeList[ 0 ])
-    //     }
-    // }, [chargeFeeList, setTransferFeeInfo])
-
     const {checkHWAddr, updateDepositHashWrapper,} = useWalletInfo()
 
     const [lastRequest, setLastRequest] = React.useState<any>({})
@@ -180,7 +173,6 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const onTransferClick = useCallback(async (transferValue, isFirstTime: boolean = true) => {
         const {accountId, accAddress, readyState, apiKey, eddsaKey} = account
-        myLog('useCallback tranferFeeInfo:', tranferFeeInfo)
 
         if (readyState === AccountStatus.ACTIVATED && tokenMap && LoopringAPI.userAPI
             && exchangeInfo && connectProvides.usedWeb3
@@ -211,11 +203,13 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     },
                     maxFee: {
                         tokenId: feeToken.tokenId,
-                        volume: String(tranferFeeInfo.fee),
+                        volume: String(tranferFeeInfo.__raw__),
                     },
                     validUntil: getTimestampDaysLater(DAYS),
                     memo: transferValue.memo,
                 }
+
+                myLog('transfer req:', req)
 
                 processRequest(req, isFirstTime)
 
@@ -247,7 +241,6 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         fee: number;
         __raw__?: any
     }): void => {
-        myLog('handleFeeChange:', value)
         setTransferFeeInfo(value)
     }, [setTransferFeeInfo])
 

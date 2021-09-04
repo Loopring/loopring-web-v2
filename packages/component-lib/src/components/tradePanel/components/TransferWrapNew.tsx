@@ -63,10 +63,11 @@ export const TransferWrapNew = <T extends IBData<I>,
 
     const popupState = usePopupState({variant: 'popover', popupId: `popupId-transfer`});
     
-    const toggleData: any[] = chargeFeeTokenList.map(({belong, fee}) => ({
+    const toggleData: any[] = chargeFeeTokenList.map(({belong, fee, __raw__, }) => ({
         key: belong,
         value: belong,
         fee,
+        __raw__,
     }))
 
     const getTokenFee = React.useCallback((token: string) => {
@@ -131,9 +132,11 @@ export const TransferWrapNew = <T extends IBData<I>,
             const defaultToken = chargeFeeTokenList.find(o => assetsData.find(item => item.name === o.belong)?.available > o.fee)?.belong || 'ETH'
             setFeeToken(defaultToken)
             const currFee = toggleData.find(o => o.key === defaultToken)?.fee || '--'
+            const currFeeRaw = toggleData.find(o => o.key === defaultToken)?.__raw__ || '--'
             handleFeeChange({
                 belong: defaultToken,
                 fee: currFee,
+                __raw__: currFeeRaw,
             })
         }
     }, [chargeFeeTokenList, feeToken, assetsData, handleFeeChange, toggleData])
