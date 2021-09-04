@@ -1,6 +1,6 @@
 import { AmmDetailBase, AmmInData } from '@loopring-web/common-resources';
-import { getShowStr } from 'utils/formatter_tool';
-import { myLog } from 'utils/log_tools';
+
+import { getShowStr } from '@loopring-web/common-resources'
 import { volumeToCountAsBigNumber } from './volumeToCount';
 
 export function ammPairInit<C>({
@@ -12,7 +12,7 @@ export function ammPairInit<C>({
                                 ammMap,
                                 tickerData,
                                 ammPoolSnapshot
-                            }: any): AmmInData<C> {
+                            }: any, isReset: boolean = false): AmmInData<C> {
     _ammCalcData.coinInfoMap = coinMap;
     if (tickerData) {
         _ammCalcData.AtoB = Number(tickerData.close)
@@ -29,6 +29,7 @@ export function ammPairInit<C>({
         _ammCalcData.myCoinA = {
             belong: pair.coinAInfo.simpleName,
             balance: walletMap ? walletMap[ pair.coinAInfo.simpleName ]?.count : 0,
+            tradeValue: undefined,
         }
 
         const feeReal = !!fee ? fee : 0
@@ -38,16 +39,16 @@ export function ammPairInit<C>({
         _ammCalcData.myCoinB = {
             belong: pair.coinBInfo.simpleName,
             balance: balanceB < 0 ? 0 : balanceB,
+            tradeValue: undefined,
         }
 
         const key = `${pair.coinAInfo.simpleName}-${pair.coinBInfo.simpleName}`;
+        const lpCoin = 'LP-' + key
+        let balance = undefined
         if (walletMap) {
-            const lpCoin = 'LP-' + key
-            const balance = (walletMap && walletMap[ lpCoin ]) ? walletMap[ lpCoin ].count : 0;
+            balance = (walletMap && walletMap[ lpCoin ]) ? walletMap[ lpCoin ].count : 0;
             const ammInfo = ammMap[ 'AMM-' + key ]
             const {totalLPToken, totalA, totalB}: AmmDetailBase<any> = ammInfo
-
-            myLog('ammInfo:', ammInfo)
 
             if (totalA && totalLPToken && totalB) {
                 percentage = totalLPToken ? balance / totalLPToken : 0
@@ -56,8 +57,9 @@ export function ammPairInit<C>({
 
                 coinBCount = getShowStr(totalB * percentage)
             }
-            _ammCalcData.lpCoin = { belong: lpCoin, balance, }
         }
+
+        _ammCalcData.lpCoin = { belong: lpCoin, balance, }
 
         _ammCalcData.lpCoinA = {
             belong: pair.coinAInfo.simpleName,

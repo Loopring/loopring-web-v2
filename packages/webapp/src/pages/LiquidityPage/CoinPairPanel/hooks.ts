@@ -34,7 +34,8 @@ import { useWalletLayer2Socket } from 'services/socket/';
 import store from 'stores'
 import { calcPriceByAmmTickMapDepth, swapDependAsync } from '../../SwapPage/help';
 import { myLog } from "utils/log_tools";
-import { getShowStr } from "utils/formatter_tool";
+
+import { getShowStr } from '@loopring-web/common-resources'
 
 const makeAmmDetailExtendsActivityMap = ({ammMap, coinMap, ammActivityMap, ammKey}: any) => {
 

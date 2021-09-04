@@ -34,19 +34,24 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     const { setShowDeposit, setShowAccount } = useOpenModals()
     const { t } = useTranslation('common')
 
-    const { btnStatus, btnInfo, enableBtn, disableBtn, setLabelAndParams, } = useBtnStatus()
+    const { btnStatus, btnInfo, enableBtn, disableBtn, setLabelAndParams, resetBtnInfo, } = useBtnStatus()
 
     const { allowanceInfo } = useAllowances({ owner: account.accAddress, symbol: depositValue.belong, })
 
     const updateBtnStatus = React.useCallback(() => {
 
-        if (depositValue?.tradeValue && allowanceInfo && depositValue?.tradeValue <= depositValue?.balance) {
+        myLog('!! updateBtnStatus .... depositValue:', depositValue, allowanceInfo)
+
+        resetBtnInfo()
+
+        if (depositValue.belong === allowanceInfo?.tokenInfo.symbol && depositValue?.tradeValue && allowanceInfo 
+            && sdk.toBig(depositValue?.tradeValue).lte(sdk.toBig(depositValue?.balance))) {
             const curValInWei = sdk.toBig(depositValue?.tradeValue).times('1e' + allowanceInfo?.tokenInfo.decimals)
             if (allowanceInfo.needCheck && curValInWei.gt(allowanceInfo.allowance)) {
-                setLabelAndParams( 'labelDepositNeedApprove', { symbol: depositValue.belong })
-            } else {
-                enableBtn()
+                myLog('!!---> set labelDepositNeedApprove!!!! belong:', depositValue.belong)
+                setLabelAndParams('labelDepositNeedApprove', { symbol: depositValue.belong })
             }
+            enableBtn()
         } else {
             disableBtn()
         }
@@ -54,7 +59,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
     React.useEffect(() => {
         updateBtnStatus()
-    }, [depositValue?.tradeValue, allowanceInfo])
+    }, [depositValue?.belong, depositValue?.tradeValue, allowanceInfo?.tokenInfo.symbol])
 
     const walletLayer1Callback = React.useCallback(() => {
         if (symbol && walletLayer1) {
@@ -84,6 +89,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             }
         }
     }, [walletLayer1, symbol, setDepositValue])
+
     React.useEffect(() => {
         walletLayer1Callback()
     }, [isShow])
@@ -214,7 +220,6 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             res();
         })
     }, [depositValue, setDepositValue])
-
 
     const depositProps = React.useMemo(() => {
         const isNewAccount = account.readyState === AccountStatus.NO_ACCOUNT ? true : false;

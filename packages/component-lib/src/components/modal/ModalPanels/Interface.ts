@@ -23,7 +23,7 @@ export enum AccountStep {
     HadAccount,
 
     // new
-    Deposit,
+    // Deposit,
     Deposit_Approve_WaitForAuth,
     Deposit_Approve_Denied,
     Deposit_Approve_Submit,
