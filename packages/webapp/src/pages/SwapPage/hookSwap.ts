@@ -22,7 +22,10 @@ import {
 import { RawDataTradeItem, SwapData, SwapTradeData, SwapType, TradeBtnStatus } from '@loopring-web/component-lib';
 import { useTranslation } from 'react-i18next';
 import { useWalletLayer2Socket, walletLayer2Service } from '../../services/socket';
-import { getShowStr, VolToNumberWithPrecision } from '../../utils/formatter_tool';
+import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
+
+import { getShowStr } from '@loopring-web/common-resources'
+
 import { useToast } from '../../hooks/common/useToast';
 import {
     accountStaticCallBack,
