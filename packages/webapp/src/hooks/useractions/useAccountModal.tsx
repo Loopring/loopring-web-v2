@@ -58,7 +58,7 @@ export function useAccountModal() {
     const handleAccountActive = React.useCallback(async () => {
 
         //updateAccount({readyState:'ACTIVATED'});
-        setShowAccount({isShow: shouldShow ?? false, step: AccountStep.UnlockAccount_Success});
+        // setShowAccount({isShow: shouldShow ?? false, step: AccountStep.UnlockAccount_Success});
         await sleep(1000)
         setShouldShow(false)
         setShowAccount({isShow: false});

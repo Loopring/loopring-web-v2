@@ -47,7 +47,6 @@ import {
     Withdraw_Success,
     Withdraw_User_Denied,
     Withdraw_WaitForAuth,
-    DepositPanelNew,
 } from '@loopring-web/component-lib';
 import { walletServices } from '@loopring-web/web3-provider';
 import { ConnectorError, sleep } from 'loopring-sdk';
