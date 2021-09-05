@@ -12,6 +12,7 @@ import { LoopringAPI } from 'api_wrapper'
 import store from 'stores'
 import { getShowStr, TradeTypes } from '@loopring-web/common-resources'
 import { AmmTxType, Side, toBig, UserTxTypes } from 'loopring-sdk'
+import { tradeItemToTableDataItem } from 'utils/formatter_tool'
 
 export type TxsFilterProps = {
     // accountId: number;
@@ -187,45 +188,7 @@ export function useGetTrades() {
             if (userTrades && userTrades.userTrades) {
                 // @ts-ignore
                 setUserTrades(userTrades.userTrades.map(o => {
-                    const marketList = o.market.split('-')
-                    // due to AMM case, we cannot use first index
-                    const side = o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
-                    const isBuy = side === TradeTypes.Buy
-                    
-                    const base = marketList[ marketList.length - 2 ]
-                    const quote = marketList[ marketList.length - 1 ]
-                    const baseValue = volumeToCountAsBigNumber(base, o.volume)
-                    const quoteValue = baseValue?.times(o.price)
-                    const sellToken = isBuy ? quote : base
-                    const buyToken = isBuy ? base : quote
-                    const sellValue = getShowStr((isBuy ? quoteValue : baseValue)?.toNumber())
-                    const buyValue = getShowStr((isBuy ? baseValue: quoteValue)?.toNumber())
-                    
-                    const feeKey = buyToken
-                    const feeValue = getShowStr(volumeToCountAsBigNumber(feeKey, o.fee)?.toString())
-
-                    return ({
-                        side: o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell,
-                        price: {
-                            key: sellToken,
-                            value: toBig(o.price).toNumber()
-                        },
-                        fee: {
-                            key: feeKey,
-                            value: feeKey && feeValue ? feeValue : '--'
-                        },
-                        time: Number(o.tradeTime),
-                        amount: {
-                            from: {
-                                key: sellToken,
-                                value: sellToken ? sellValue : undefined
-                            },
-                            to: {
-                                key: buyToken,
-                                value: buyValue ? buyValue : undefined
-                            }
-                        }
-                    })
+                    return tradeItemToTableDataItem(o)
                 }))
                 setShowLoading(false)
             }
@@ -235,23 +198,6 @@ export function useGetTrades() {
     React.useEffect(() => {
         getUserTradeList()
     }, [getUserTradeList])
-
-    // useCustomDCEffect(async() => {
-
-    //     if (!LoopringAPI.userAPI || !accountId || !apiKey) {
-    //         return
-    //     }
-
-    //     const response = await LoopringAPI.userAPI.getUserTrades({accountId: accountId}, apiKey)
-
-    //     let userTrades: RawDataTradeItem[] = []
-
-    //     response.userTrades.forEach((item: UserTrade, index: number) => {
-    //     })
-
-    //     setUserTrades(userTrades)
-
-    // }, [accountId, apiKey, LoopringAPI.userAPI])
 
     return {
         userTrades,

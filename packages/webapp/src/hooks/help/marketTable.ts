@@ -6,7 +6,8 @@ import { LoopringAPI, } from 'api_wrapper';
 import { AmmRecordRow, AmmTradeType, RawDataTradeItem } from '@loopring-web/component-lib';
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
 import { myError } from 'utils/log_tools';
-import { Side } from 'loopring-sdk';
+import { Side, toBig } from 'loopring-sdk';
+import { tradeItemToTableDataItem } from 'utils/formatter_tool';
 
 export const getUserTrades = (market: string) => {
     if (!LoopringAPI.userAPI) {
@@ -31,54 +32,7 @@ export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[
         try {
             // const {base, quote} = sdk.getBaseQuote(item.market)
             if (tokenMap) {
-
-
-                // const marketList = o.market.split('-')
-                // due to AMM case, we cannot use first index
-                const market = item.market.split('-')
-                if (market.length === 3) {
-                    market.shift()
-                }
-                
-                const side = item.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
-                const isBuy = side === TradeTypes.Buy
-                
-                const base = market[0]
-                const quote = market[1]
-                const baseValue = volumeToCountAsBigNumber(base, item.volume)
-                const quoteValue = baseValue?.times(item.price)
-                const sellToken = isBuy ? quote : base
-                const buyToken = isBuy ? base : quote
-                const sellValue = getShowStr((isBuy ? quoteValue : baseValue)?.toNumber())
-                const buyValue = getShowStr((isBuy ? baseValue: quoteValue)?.toNumber())
-                    
-                const feeKey = buyToken
-                const feeValue = getShowStr(volumeToCountAsBigNumber(feeKey, item.fee)?.toNumber())
-
-                // @ts-ignore
-                tradeArray.push({
-                    side,
-                    amount: {
-                        from: {
-                            key: sellToken,
-                            value: sellToken ? sellValue : undefined,
-                        },
-                        to: {
-                            key: buyToken,
-                            value: buyValue ? buyValue : undefined,
-                        },
-
-                    },
-                    price: {
-                        key: '',
-                        value: getValuePrecision(sdk.toBig(item.price).toNumber(), 4) as any,
-                    },
-                    fee: {
-                        key: feeKey || '--',
-                        value: feeKey && feeValue !== undefined ? feeValue : 0,
-                    },
-                    time: parseInt(item.tradeTime.toString()),
-                })
+                tradeArray.push(tradeItemToTableDataItem(item))
             }
         } catch (error) {
             myError(error)
