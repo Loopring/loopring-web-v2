@@ -28,8 +28,7 @@ export function useAmmViewData({error, i18nKey, t, _isStoB, ammCalcData, _onSwit
         if (ammCalcData && ammCalcData?.lpCoinA && ammCalcData?.lpCoinB && ammCalcData.AtoB) {
             let price: string;
             if (_isStoB) {
-                price = `1 ${ammCalcData?.lpCoinA?.belong} \u2248 ${ammCalcData.AtoB} ${ammCalcData?.lpCoinB?.belong}`;
-
+                price = `1 ${ammCalcData?.lpCoinA?.belong} \u2248 ${getShowStr(ammCalcData.AtoB)} ${ammCalcData?.lpCoinB?.belong}`;
             } else {
                 price = `1 ${ammCalcData?.lpCoinB?.belong} \u2248 ${getShowStr(1 / ammCalcData.AtoB)} ${ammCalcData?.lpCoinA?.belong}`;
             }

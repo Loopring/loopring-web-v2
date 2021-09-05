@@ -1,6 +1,5 @@
 import { AmmDetailBase, AmmInData } from '@loopring-web/common-resources';
 
-import { getShowStr } from '@loopring-web/common-resources'
 import { volumeToCountAsBigNumber } from './volumeToCount';
 
 export function ammPairInit<C>({
@@ -12,7 +11,7 @@ export function ammPairInit<C>({
                                 ammMap,
                                 tickerData,
                                 ammPoolSnapshot
-                            }: any, isReset: boolean = false): AmmInData<C> {
+                            }: any): AmmInData<C> {
     _ammCalcData.coinInfoMap = coinMap;
     if (tickerData) {
         _ammCalcData.AtoB = Number(tickerData.close)
@@ -20,7 +19,7 @@ export function ammPairInit<C>({
     if (isNaN(_ammCalcData.AtoB) && ammPoolSnapshot) {
         const baseVol = volumeToCountAsBigNumber(pair.coinAInfo.simpleName, ammPoolSnapshot.pooled[ 0 ].volume);
         const quoteVol = volumeToCountAsBigNumber(pair.coinBInfo.simpleName, ammPoolSnapshot.pooled[ 1 ].volume);
-        _ammCalcData.AtoB = quoteVol && baseVol && getShowStr(quoteVol.div(baseVol).toString())
+        _ammCalcData.AtoB = quoteVol && baseVol && quoteVol.div(baseVol).toString()
     }
 
     let coinACount = 0, coinBCount = 0, percentage = 0
@@ -53,9 +52,9 @@ export function ammPairInit<C>({
             if (totalA && totalLPToken && totalB) {
                 percentage = totalLPToken ? balance / totalLPToken : 0
 
-                coinACount = getShowStr(totalA * percentage)
+                coinACount = totalA * percentage
 
-                coinBCount = getShowStr(totalB * percentage)
+                coinBCount = totalB * percentage
             }
         }
 
