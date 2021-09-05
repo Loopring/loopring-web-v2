@@ -1,7 +1,7 @@
 import * as sdk from 'loopring-sdk';
 import bigNumber from 'bignumber.js'
 import store from '../../stores';
-import { getThousandFormattedNumbers, getValuePrecision, TradeTypes } from '@loopring-web/common-resources';
+import { getShowStr, getThousandFormattedNumbers, getValuePrecision, TradeTypes } from '@loopring-web/common-resources';
 import { LoopringAPI, } from 'api_wrapper';
 import { AmmRecordRow, AmmTradeType, RawDataTradeItem } from '@loopring-web/component-lib';
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
@@ -49,11 +49,11 @@ export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[
                 const quoteValue = baseValue?.times(item.price)
                 const sellToken = isBuy ? quote : base
                 const buyToken = isBuy ? base : quote
-                const sellValue = (isBuy ? quoteValue : baseValue)?.toNumber()
-                const buyValue = (isBuy ? baseValue: quoteValue)?.toNumber()
+                const sellValue = getShowStr((isBuy ? quoteValue : baseValue)?.toNumber())
+                const buyValue = getShowStr((isBuy ? baseValue: quoteValue)?.toNumber())
                     
                 const feeKey = buyToken
-                const feeValue = volumeToCountAsBigNumber(feeKey, item.fee)?.toNumber()
+                const feeValue = getShowStr(volumeToCountAsBigNumber(feeKey, item.fee)?.toNumber())
 
                 // @ts-ignore
                 tradeArray.push({
@@ -75,7 +75,7 @@ export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[
                     },
                     fee: {
                         key: feeKey || '--',
-                        value: feeValue !== undefined ? feeValue : 0,
+                        value: feeKey && feeValue !== undefined ? feeValue : 0,
                     },
                     time: parseInt(item.tradeTime.toString()),
                 })

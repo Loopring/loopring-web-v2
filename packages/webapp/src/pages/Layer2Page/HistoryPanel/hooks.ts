@@ -10,7 +10,7 @@ import {
 import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
 import { LoopringAPI } from 'api_wrapper'
 import store from 'stores'
-import { TradeTypes } from '@loopring-web/common-resources'
+import { getShowStr, TradeTypes } from '@loopring-web/common-resources'
 import { AmmTxType, Side, toBig, UserTxTypes } from 'loopring-sdk'
 
 export type TxsFilterProps = {
@@ -198,11 +198,11 @@ export function useGetTrades() {
                     const quoteValue = baseValue?.times(o.price)
                     const sellToken = isBuy ? quote : base
                     const buyToken = isBuy ? base : quote
-                    const sellValue = (isBuy ? quoteValue : baseValue)?.toNumber()
-                    const buyValue = (isBuy ? baseValue: quoteValue)?.toNumber()
+                    const sellValue = getShowStr((isBuy ? quoteValue : baseValue)?.toNumber())
+                    const buyValue = getShowStr((isBuy ? baseValue: quoteValue)?.toNumber())
                     
                     const feeKey = buyToken
-                    const feeValue = volumeToCountAsBigNumber(feeKey, o.fee)
+                    const feeValue = getShowStr(volumeToCountAsBigNumber(feeKey, o.fee)?.toString())
 
                     return ({
                         side: o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell,
@@ -212,9 +212,7 @@ export function useGetTrades() {
                         },
                         fee: {
                             key: feeKey,
-                            value: feeKey
-                                ? Number(feeValue) > 1 ? feeValue?.toFixed(6) : feeValue?.toPrecision(2) as any
-                                : '--'
+                            value: feeKey && feeValue ? feeValue : '--'
                         },
                         time: Number(o.tradeTime),
                         amount: {
