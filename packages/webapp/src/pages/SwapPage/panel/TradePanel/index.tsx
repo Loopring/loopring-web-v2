@@ -65,11 +65,11 @@ const TradePanel = withTranslation('common')(
                 <TabsStyled value={value}
                             onChange={handleChange}
                             aria-label="tabs switch">
-                    <Tab label={t('labelMyTrade')} {...applyProps(0)} />
-                    <Tab label={t('labelRecent')}   {...applyProps(1)} />
+                    <Tab label={t('labelRecent')}   {...applyProps(0)} />
+                    <Tab label={t('labelMyTrade')} {...applyProps(1)} />
                 </TabsStyled>
                 <Divider/>
-                {value === 0?
+                {value === 1?
                     <TradeTable
                         rowHeight={RowConfig.rowHeight}
                         headerRowHeight={RowConfig.headerRowHeight}
