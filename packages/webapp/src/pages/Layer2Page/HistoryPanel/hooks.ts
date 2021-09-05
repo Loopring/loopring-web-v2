@@ -191,26 +191,27 @@ export function useGetTrades() {
                     // due to AMM case, we cannot use first index
                     const side = o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
                     const isBuy = side === TradeTypes.Buy
-                    const tokenFirst = marketList[ marketList.length - 2 ]
-                    const tokenLast = marketList[ marketList.length - 1 ]
-                    const baseToken = isBuy ? tokenLast : tokenFirst
-                    const quoteToken = isBuy ? tokenFirst : tokenLast
-                    const feeKey = isBuy ? quoteToken : baseToken
-                    const baseValue = isBuy ? volumeToCountAsBigNumber(quoteToken, o.volume)?.times(o.price).toNumber() : volumeToCountAsBigNumber(baseToken, o.volume)
-                    const quoteValue = isBuy ? volumeToCountAsBigNumber(quoteToken, o.volume) : volumeToCountAsBigNumber(baseToken, o.volume)?.times(o.price).toNumber()
+                    
+                    const base = marketList[ marketList.length - 2 ]
+                    const quote = marketList[ marketList.length - 1 ]
+                    const baseValue = volumeToCountAsBigNumber(base, o.volume)
+                    const quoteValue = baseValue?.times(o.price)
+                    const sellToken = isBuy ? quote : base
+                    const buyToken = isBuy ? base : quote
+                    const sellValue = (isBuy ? quoteValue : baseValue)?.toNumber()
+                    const buyValue = (isBuy ? baseValue: quoteValue)?.toNumber()
+                    
+                    const feeKey = buyToken
                     const feeValue = volumeToCountAsBigNumber(feeKey, o.fee)
 
                     return ({
                         side: o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell,
                         price: {
-                            key: baseToken,
-                            // value: StringToNumberWithPrecision(o.price, baseToken)
+                            key: sellToken,
                             value: toBig(o.price).toNumber()
                         },
                         fee: {
                             key: feeKey,
-                            // value: VolToNumberWithPrecision(o.fee, quoteToken),
-                            // value: feeKey ? volumeToCount(feeKey, o.fee)?.toFixed(6) : undefined
                             value: feeKey
                                 ? Number(feeValue) > 1 ? feeValue?.toFixed(6) : feeValue?.toPrecision(2) as any
                                 : '--'
@@ -218,16 +219,12 @@ export function useGetTrades() {
                         time: Number(o.tradeTime),
                         amount: {
                             from: {
-                                key: baseToken,
-                                // value: VolToNumberWithPrecision(o.volume, baseToken),
-                                // value: baseToken ? volumeToCount(baseToken, o.volume) : undefined
-                                value: baseToken ? baseValue : undefined
+                                key: sellToken,
+                                value: sellToken ? sellValue : undefined
                             },
                             to: {
-                                key: quoteToken,
-                                // value: VolToNumberWithPrecision(amt, quoteToken)
-                                // value: baseToken ? volumeToCountAsBigNumber(baseToken, o.volume)?.times(o.price).toNumber() : undefined
-                                value: baseToken ? quoteValue : undefined
+                                key: buyToken,
+                                value: buyValue ? buyValue : undefined
                             }
                         }
                     })
