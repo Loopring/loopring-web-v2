@@ -27,25 +27,25 @@ const Footer = withTranslation('layout')(({t}:WithTranslation) => {
                 <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
                     <List style={{display:'flex',alignItems:'center'}} >
                         <ListItem>
-                            <Link color="textSecondary"href="https://medium.com/loopring-protocol">Medium</Link>
+                            <Link color="textSecondary" target={'_blank'} href="https://medium.com/loopring-protocol">Medium</Link>
                             <Typography component={'span'} paddingX={2}>⭑</Typography>
                         </ListItem>
                         <ListItem>
-                            <Link color="textSecondary"  href="https://twitter.com/loopringorg">
+                            <Link color="textSecondary" target={'_blank'} href="https://twitter.com/loopringorg">
                                 {'twitter'}
                             </Link>
                             <Typography component={'span'} paddingX={2}>⭑</Typography>
                         </ListItem>
                         <ListItem>
-                            <Link color="textSecondary" href="https://discord.gg/KkYccYp">Discord</Link>
+                            <Link color="textSecondary" target={'_blank'} href="https://discord.gg/KkYccYp">Discord</Link>
                             <Typography component={'span'} paddingX={2}>⭑</Typography>
                         </ListItem>
                         <ListItem>
-                            <Link color="textSecondary" href="https://www.youtube.com/c/loopring">{t('labelYoutube')}</Link>
+                            <Link color="textSecondary" target={'_blank'} href="https://www.youtube.com/c/loopring">{t('labelYoutube')}</Link>
                             <Typography component={'span'} paddingX={2}>⭑</Typography>
                         </ListItem>
                         <ListItem>
-                            <Link color="textSecondary" href="https://weibo.com/loopringfoundation">{t('labelWeibo')}</Link>
+                            <Link color="textSecondary" target={'_blank'} href="https://weibo.com/loopringfoundation">{t('labelWeibo')}</Link>
                         </ListItem>
                     </List> 
                 </Box>
