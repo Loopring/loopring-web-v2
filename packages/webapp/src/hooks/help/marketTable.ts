@@ -53,7 +53,7 @@ export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[
                 const buyValue = (isBuy ? baseValue: quoteValue)?.toNumber()
                     
                 const feeKey = buyToken
-                const feeValue = volumeToCountAsBigNumber(feeKey, item.fee)
+                const feeValue = volumeToCountAsBigNumber(feeKey, item.fee)?.toNumber()
 
                 // @ts-ignore
                 tradeArray.push({
@@ -61,11 +61,11 @@ export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[
                     amount: {
                         from: {
                             key: sellToken,
-                            value: getValuePrecision(getThousandFormattedNumbers(new bigNumber(sellValue || 0) as any), 4) as any,
+                            value: sellToken ? sellValue : undefined,
                         },
                         to: {
                             key: buyToken,
-                            value: getValuePrecision(getThousandFormattedNumbers(new bigNumber(buyValue || 0) as any), 4) as any,
+                            value: buyValue ? buyValue : undefined,
                         },
 
                     },
@@ -75,7 +75,7 @@ export const makeMarketArray = (coinKey: any, marketTrades: sdk.MarketTradeInfo[
                     },
                     fee: {
                         key: feeKey || '--',
-                        value: getValuePrecision(getThousandFormattedNumbers(new bigNumber(feeValue || 0) as any)) as any,
+                        value: feeValue !== undefined ? feeValue : 0,
                     },
                     time: parseInt(item.tradeTime.toString()),
                 })
