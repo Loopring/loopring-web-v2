@@ -31,7 +31,6 @@ import {
     GetOffchainFeeAmtRequest,
     JoinAmmPoolRequest,
     LoopringMap,
-    makeExitAmmPoolRequest,
     makeJoinAmmPoolRequest,
     MarketInfo,
     OffchainFeeInfo,
@@ -166,7 +165,7 @@ export const useAmmJoin = <C extends { [key: string]: any }>({
             ammMap,
             tickerData: snapShotData?.tickerData,
             ammPoolSnapshot: snapShotData?.ammPoolSnapshot
-        }, isReset)
+        })
 
         myLog('initAmmData:', _ammCalcData)
 

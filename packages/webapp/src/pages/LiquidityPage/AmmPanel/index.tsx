@@ -36,21 +36,21 @@ const MyAmmLPAssets = withTranslation('common')(({ ammCalcData, t }:
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}>
                 <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('labelMyLPToken')} </Typography>
                 <Typography component={'p'}
-                    variant="body2">{ammCalcData && ammCalcData?.lpCoin?.balance !== undefined ? ammCalcData.lpCoin.balance : EmptyValueTag}</Typography>
+                    variant="body2">{ammCalcData && ammCalcData?.lpCoin?.balance !== undefined ? getShowStr(ammCalcData.lpCoin.balance) : EmptyValueTag}</Typography>
             </Box>
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}
                 marginTop={1 / 2}>
                 <Typography component={'p'} variant="body2"
                     color={'textSecondary'}> {t('labelMyLPAToken', { symbol: ammCalcData.lpCoinA.belong })} </Typography>
                 <Typography component={'p'}
-                    variant="body2">{ammCalcData && ammCalcData.lpCoinA.balance ? ammCalcData.lpCoinA.balance : EmptyValueTag}</Typography>
+                    variant="body2">{ammCalcData && ammCalcData.lpCoinA.balance ? getShowStr(ammCalcData.lpCoinA.balance) : EmptyValueTag}</Typography>
             </Box>
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}
                 marginTop={1 / 2}>
                 <Typography component={'p'} variant="body2"
                     color={'textSecondary'}> {t('labelMyLPBToken', { symbol: ammCalcData.lpCoinB.belong })} </Typography>
                 <Typography component={'p'}
-                    variant="body2">{ammCalcData && ammCalcData.lpCoinB.balance ? ammCalcData.lpCoinB.balance : EmptyValueTag}</Typography>
+                    variant="body2">{ammCalcData && ammCalcData.lpCoinB.balance ? getShowStr(ammCalcData.lpCoinB.balance) : EmptyValueTag}</Typography>
             </Box>
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}
                 marginTop={1 / 2}>

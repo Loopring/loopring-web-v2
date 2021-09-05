@@ -224,7 +224,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                         }
                         <Typography variant={'body1'}>{ammData?.coinA?.belong}</Typography>
                     </Box>
-                    <Typography variant={'body1'}>{ammData?.coinA?.tradeValue}</Typography>
+                    <Typography variant={'body1'}>{getShowStr(ammData?.coinA?.tradeValue)}</Typography>
                 </Box>
                 <Box marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'}
                      justifyContent={'space-between'}>
@@ -249,7 +249,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                         }
                         <Typography variant={'body1'}>{ammData?.coinB?.belong}</Typography>
                     </Box>
-                    <Typography variant={'body1'}>{ammData?.coinB?.tradeValue}</Typography>
+                    <Typography variant={'body1'}>{getShowStr(ammData?.coinB?.tradeValue)}</Typography>
                 </Box>
             </Box>
         </Grid>
