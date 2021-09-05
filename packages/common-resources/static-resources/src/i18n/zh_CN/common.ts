@@ -147,7 +147,7 @@ export default {
     labelAll: '所有',
     labelMe: '我的',
     labelMyTrade: '我的交易',
-    labelRecent: '最近交易',
+    labelRecent: '市场交易',
     labelMyAmm: '我的AMM流动性',
     labelMyAmmRecord: '我的AMM记录',
     labelCurrentActivities: '当前活动',

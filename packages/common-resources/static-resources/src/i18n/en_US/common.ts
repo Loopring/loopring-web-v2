@@ -147,7 +147,7 @@ export default {
     labelAll: 'All',
     labelMe: 'My Liquidity',
     labelMyTrade: 'My Trades',
-    labelRecent: 'Recent',
+    labelRecent: 'Market Trades',
     labelMyAmm: 'My AMM Liquidity',
     labelMyAmmRecord: 'My AMM Records',
     labelCurrentActivities: 'Current Activities',
