@@ -46,20 +46,6 @@ const TradePanel = withTranslation('common')(
             setValue(newValue)
         }
 
-        // const getCurrentHeight = useCallback(() => {
-        //     // const height = window.innerHeight
-        //     const tableHeight = height - 64 - 117 - 56 - 120 - 20 - 100 - 50 - 15;
-        //     setTableHeight(tableHeight)
-        // }, [])
-
-        // useEffect(() => {
-        //     getCurrentHeight()
-        //     window.addEventListener('resize', getCurrentHeight)
-        //     return () => {
-        //         window.removeEventListener('resize', getCurrentHeight)
-        //     }
-        // }, [getCurrentHeight]);
-
         return (<TableWrapStyled item alignSelf={'stretch'} xs={12} marginY={2} paddingBottom={2} flex={1}
                                  className={'MuiPaper-elevation2'}>
                 <TabsStyled value={value}
