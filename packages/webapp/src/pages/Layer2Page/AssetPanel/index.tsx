@@ -74,9 +74,10 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const {walletLayer2} = store.getState().walletLayer2;
 
     const total = assetsRawData.map(o => o.tokenValueDollar).reduce((a, b) => a + b, 0)
+    
     const percentList = assetsRawData.map(o => ({
         ...o,
-        value: o.tokenValueDollar / total,
+        value: (o.tokenValueDollar && total) ? o.tokenValueDollar / total : 0,
     }))
 
     const lpTotalData = percentList
