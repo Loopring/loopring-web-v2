@@ -21,7 +21,7 @@ const initLng = JSON.parse(localStorage.getItem('persist:settings') as string)?.
 
 i18n.use(initReactI18next).init({
     resources,
-    ns: ['common', 'layout', 'tables', 'error'],
+    ns: ['common', 'layout', 'tables', 'landPage','error'],
     defaultNS: 'common',
     lng: initLng,
     load: 'currentOnly',
