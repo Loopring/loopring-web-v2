@@ -70,7 +70,7 @@ export type TradeTableProps = {
         pageSize: number
     }
     showFilter?: boolean;
-    currentHeight?: number;
+    currentheight?: number;
     rowHeight?: number;
     headerRowHeight?: number;
 }
@@ -86,7 +86,7 @@ const TableStyled = styled(Box)`
   flex: 1;
 
   .rdg {
-    height: ${(props: any) => props.currentHeight}px;
+    height: ${(props: any) => props.currentheight}px;
     --template-columns: 320px auto auto auto !important;
 
     .rdg-cell.action {
@@ -101,7 +101,7 @@ const TableStyled = styled(Box)`
   }
 
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
-` as (props: { currentHeight?:number } & BoxProps) => JSX.Element;
+` as (props: { currentheight?:number } & BoxProps) => JSX.Element;
 
 const StyledSideCell: any = styled(Box)`
 `
@@ -187,7 +187,7 @@ export const TradeTable = withTranslation('tables')(({
                                                          pagination,
                                                          showFilter,
                                                          rawData,
-                                                         currentHeight,
+                                                         currentheight,
                                                          rowHeight = 44,
                                                          headerRowHeight = 44,
                                                          ...rest
@@ -273,7 +273,7 @@ export const TradeTable = withTranslation('tables')(({
         })
     }
 
-    return <TableStyled currentHeight={currentHeight} >
+    return <TableStyled currentheight={currentheight} >
         {showFilter && (
             <TableFilterStyled>
                 <Filter {...{

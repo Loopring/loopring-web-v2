@@ -12,7 +12,7 @@ import { LoadingIcon } from '@loopring-web/common-resources'
 import { Box, IconButton } from '@material-ui/core';
 
 interface TableWrapperStyledProps {
-  showLoading: 'true' | 'false'
+  showloading: 'true' | 'false'
 }
 
 const TableWrapperStyled = styled(Box)<TableWrapperStyledProps>`
@@ -21,7 +21,7 @@ const TableWrapperStyled = styled(Box)<TableWrapperStyledProps>`
   flex: 1;
 
   &::after {
-    visibility: ${({ showLoading }) => showLoading === 'true' ? 'visible' : 'hidden'};
+    visibility: ${({ showloading }) => showloading === 'true' ? 'visible' : 'hidden'};
     position: absolute;
     z-index: 20;
     top: 0;
@@ -182,7 +182,7 @@ export const generateRows = <Row, SR>(rawData: [][], rest: TableProps<Row, SR>):
 };
 
 export type ExtraTableProps = {
-    showLoading?: boolean
+    showloading?: boolean
 }
 
 //TODO:
@@ -205,7 +205,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
         onScroll,
         onRowClick,
         rowHeight,
-        showLoading,
+        showloading,
         t,
         ...rest
     } = props;
@@ -257,7 +257,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
     `
 
     /*** sort handle end ***/
-    return <TableWrapperStyled showLoading={!!showLoading ? 'true' : 'false'}>
+    return <TableWrapperStyled showloading={!!showloading ? 'true' : 'false'}>
         <DataGridStyled
             {...rest}
             onScroll={onScroll}
@@ -273,7 +273,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
             rowRenderer={rowRenderer as any}
             sortColumns={sortColumns}
             onRowClick={onRowClick}
-            emptyRowsRenderer={!showLoading ? (() => EmptyRowsRenderer ? EmptyRowsRenderer :
+            emptyRowsRenderer={!showloading ? (() => EmptyRowsRenderer ? EmptyRowsRenderer :
                 <EmptyDefault height={`calc(100% - var(--header-row-height))`} message={() => {
                     return <RenderEmptyMsg>
                         <Trans i18nKey="labelEmptyDefault">
@@ -282,7 +282,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
                     </RenderEmptyMsg>
                 }}/>) : null}
         />
-        {showLoading && (
+        {showloading && (
             <LoadingStyled color={'inherit'}>
               <LoadingIcon />
             </LoadingStyled>

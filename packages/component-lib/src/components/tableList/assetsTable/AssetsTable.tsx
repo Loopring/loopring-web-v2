@@ -473,7 +473,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
 
         <Table
             {...{...rest, t}}
-            showLoading={!viewData.length}
+            showloading={!viewData.length}
             style={{ height: tableHeight }}
             rowHeight={RowConfig.rowHeight}
             headerRowHeight={RowConfig.headerRowHeight}

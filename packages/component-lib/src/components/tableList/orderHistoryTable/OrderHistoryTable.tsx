@@ -112,7 +112,7 @@ export interface OrderHistoryTableProps {
     };
     showFilter?: boolean;
     getOrderList: (props: Omit<GetOrdersRequest, "accountId">) => Promise<void>;
-    showLoading?: boolean;
+    showloading?: boolean;
     marketArray?: string[];
     showDetailLoading?: boolean;
     getOrderDetail: (orderHash: string) => Promise<void>;
@@ -122,7 +122,7 @@ export interface OrderHistoryTableProps {
 
 
 export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryTableProps & WithTranslation) => {
-    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray, showDetailLoading, getOrderDetail, orderDetailList } = props
+    const { t, rawData, pagination, showFilter, getOrderList, showloading, marketArray, showDetailLoading, getOrderDetail, orderDetailList } = props
     const actionColumns = ['status']
     // const { language } = useSettings()
     // const [orderDetail, setOrderDetail] = useState([]);
@@ -278,7 +278,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             <RenderPopover>
                 <div className="arrowPopover"/>
                 <div className="contentWrapper">
-                    <SingleOrderHistoryTable showLoading={showDetailLoading} rawData={orderDetailList}/>
+                    <SingleOrderHistoryTable showloading={showDetailLoading} rawData={orderDetailList}/>
                 </div>
             </RenderPopover>
 
@@ -400,7 +400,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                     handleFilterChange={handleFilterChange}/>
             </TableFilterStyled>
         )}
-        <Table {...{...defaultArgs, ...props, rawData, showLoading}} />
+        <Table {...{...defaultArgs, ...props, rawData, showloading}} />
         {
             pagination && (
                 <TablePagination page={page} pageSize={pageSize} total={pagination.total}

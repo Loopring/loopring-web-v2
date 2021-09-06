@@ -3,7 +3,7 @@ import { Box, BoxProps, Typography } from '@material-ui/core'
 import { withTranslation, WithTranslation } from 'react-i18next';
 import moment from 'moment'
 import {  TablePagination, TableProps } from '../../basic-lib'
-import { Column, Table, } from '../../basic-lib/'
+import { Column, Table, } from '../../basic-lib'
 import {
     Currency,
     EmptyValueTag,
@@ -29,8 +29,8 @@ const TableStyled = styled(Box)`
 
   .rdg {
     height: ${(props: any) =>   {
-      if(props.currentHeight && props.currentHeight>350) {
-        return props.currentHeight+'px';
+      if(props.currentheight && props.currentheight>350) {
+        return props.currentheight+'px';
       }else{
         return '100%'
       }
@@ -49,7 +49,7 @@ const TableStyled = styled(Box)`
   }
 
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
-` as (props: { currentHeight?:number } & BoxProps) => JSX.Element;
+` as (props: { currentheight?:number } & BoxProps) => JSX.Element;
 
 const columnMode = ({t}: WithTranslation, currency: 'USD' | 'CYN'): Column<Row<any>, unknown>[] => [
     {
@@ -147,7 +147,7 @@ export const AmmRecordTable = withTranslation('tables')(<T extends { [ key: stri
                                                                                                  tReady,
                                                                                                  handlePageChange,
                                                                                                  pagination,
-                                                                                                 currentHeight,
+                                                                                                 currentheight,
                                                                                                  rowHeight = 44,
                                                                                                  headerRowHeight = 44,
                                                                                                  showFilter = true,
@@ -189,9 +189,9 @@ export const AmmRecordTable = withTranslation('tables')(<T extends { [ key: stri
         }
     }, [handlePageChange, page, pageSize])
 
-    const height = (currentHeight || 0) + (!!rawData.length ? 0 : 44)
+    const height = (currentheight || 0) + (!!rawData.length ? 0 : 44)
 
-    return <TableStyled currentHeight={height}>
+    return <TableStyled currentheight={height}>
         <Table /* className={'scrollable'}  */ {...{
             ...defaultArgs, t, i18n, tReady,
             ...rest,

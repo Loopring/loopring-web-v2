@@ -30,7 +30,7 @@ const TxPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
                         total: txTableData.length
                     },
                     showFilter: true,
-                    showLoading: isLoading,
+                    showloading: isLoading,
                     getTxnList: (): any => {
                     },
                     ...rest

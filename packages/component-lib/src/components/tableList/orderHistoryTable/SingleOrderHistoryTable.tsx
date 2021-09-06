@@ -104,7 +104,7 @@ const getColumnModeSingleHistory = (t: TFunction): Column<Row, unknown>[] => {
 
 export interface SingleOrderHistoryTableProps {
     rawData: OrderHistoryTableDetailItem[];
-    showLoading?: boolean;
+    showloading?: boolean;
 }
 
 export const SingleOrderHistoryTable = withTranslation('tables')((props: SingleOrderHistoryTableProps & WithTranslation) => {

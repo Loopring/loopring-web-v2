@@ -92,8 +92,6 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
         }
     }
 
-    myLog('_selectedPercentage:', _selectedPercentage)
-
     const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
         if (_ref) {
             if (ammData[ 'coinLP' ].tradeValue !== ibData.tradeValue && ammData[ 'coinLP' ].balance) {

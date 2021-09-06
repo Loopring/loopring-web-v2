@@ -178,7 +178,7 @@ export const MyPoolTable = withTranslation('tables')(<T extends { [ key: string 
                                                                                               handleDeposit,
                                                                                               wait = globalSetup.wait,
                                                                                               currency = 'USD',
-                                                                                              showLoading,
+                                                                                              showloading,
                                                                                               ...rest
                                                                                           }: MyPoolTableProps<T> & WithTranslation) => {
     const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
@@ -212,7 +212,7 @@ export const MyPoolTable = withTranslation('tables')(<T extends { [ key: string 
         <Table
             rowHeight={rowHeight}
             headerRowHeight={44}
-            showLoading={showLoading}
+            showloading={showloading}
             {...{
                 ...defaultArgs, t, i18n, tReady, ...rest,
                 rawData: rawData
