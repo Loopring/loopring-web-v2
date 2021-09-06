@@ -6,13 +6,9 @@ import moment from 'moment'
 import { useDeepCompareEffect } from 'react-use'
 import { Column, Table, TablePagination } from '../../basic-lib'
 import {
-    AlertIcon,
-    CheckIcon,
     EmptyValueTag,
     getFormattedHash,
-    // PendingIcon,
     TableType,
-    AssetsIcon, // temporayily replacement
     WaitingIcon,
     WarningIcon,
     CompleteIcon,
