@@ -33,7 +33,7 @@ import { useBtnStatus } from "hooks/common/useBtnStatus";
 
 const initSlippage = 0.5
 
-export const useAmmExit = <C extends { [key: string]: any }>({
+export const useAmmExit = ({
     setToastOpen,
     pair,
     ammPoolSnapshot,
@@ -42,7 +42,7 @@ export const useAmmExit = <C extends { [key: string]: any }>({
     : {
         ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined,
         setToastOpen: any,
-        pair: { coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined },
+        pair: { coinAInfo: CoinInfo<string> | undefined, coinBInfo: CoinInfo<string> | undefined },
         snapShotData: { tickerData: sdk.TickerData | undefined, ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined } | undefined
     }) => {
     const { t } = useTranslation('common');
@@ -58,7 +58,7 @@ export const useAmmExit = <C extends { [key: string]: any }>({
     const [baseMinAmt, setBaseMinAmt,] = React.useState<any>()
     const [quoteMinAmt, setQuoteMinAmt,] = React.useState<any>()
 
-    const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<C> | undefined>();
+    const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<string> | undefined>();
 
     const [ammData, setAmmData] = React.useState<AmmExitData<IBData<string>, string>>({
         coinLP: { belong: undefined } as unknown as IBData<string>,

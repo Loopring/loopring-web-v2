@@ -17,7 +17,7 @@ const initialState: PageTradeLiteStatus = {
     __TOAST_AUTO_CLOSE_TIMER__: 3000,
 };
 const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
-    name: 'pageTradeLite',
+    name: '_router_pageTradeLite',
     initialState,
     reducers: {
         resetSwap(state) {

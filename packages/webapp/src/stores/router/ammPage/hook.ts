@@ -9,7 +9,7 @@ export function usePageAmmPool(): PageAmmPoolStatus & {
     updatePageAmmJoin: (pageAmmPool: RequireOne<PageAmmJoin, never>) => void,
     updatePageAmmExit: (pageAmmPool: RequireOne<PageAmmExit, never>) => void,
 } {
-    const pageAmmPoolStatus: PageAmmPoolStatus = useSelector((state: RootState) => state.pageAmmPool)
+    const pageAmmPoolStatus: PageAmmPoolStatus = useSelector((state: RootState) => state._router_pageAmmPool)
     const dispatch = useDispatch()
     return {
         ...pageAmmPoolStatus,

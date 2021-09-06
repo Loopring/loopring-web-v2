@@ -15,7 +15,7 @@ const initialState: PageAmmPoolStatus = {
 }
 
 const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
-    name: 'pageAmmPool',
+    name: '_router_pageAmmPool',
     initialState,
     reducers: {
         
