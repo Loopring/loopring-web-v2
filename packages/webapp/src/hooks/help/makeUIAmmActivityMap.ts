@@ -10,7 +10,6 @@ import {
 } from 'loopring-sdk';
 import { AmmActivity, AmmCardProps, MyAmmLP } from '@loopring-web/common-resources';
 import store from '../../stores';
-import { deepClone } from '../../utils/obj_tools';
 import BigNumber from 'bignumber.js';
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
 import { coinMap } from '@loopring-web/component-lib';
@@ -18,6 +17,7 @@ import { AmmDetailStore } from '../../stores/Amm/AmmMap';
 import { WalletMapExtend } from './makeWallet';
 import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
 import { myError } from "@loopring-web/common-resources";
+import _ from 'lodash'
 
 export type AmmActivityViewMap<R, I> = {
     [key in keyof R]?: AmmActivity<I>[] | undefined
@@ -94,7 +94,7 @@ const makeAsCard = <R extends { [ key: string ]: any }, I extends { [ key: strin
                     // @ts-ignore
                     const itemArray = ammActivityViewMap[ key ].map((item) => {
                         return {
-                            ...deepClone(_ammInfo),
+                            ..._.cloneDeep(_ammInfo),
                             // @ts-ignore
                             coinAInfo: coinMap[ _ammInfo.coinA ],
                             // @ts-ignore

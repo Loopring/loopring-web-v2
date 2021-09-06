@@ -14,8 +14,9 @@ import { AccountStep, HeaderToolBarInterface, useOpenModals, } from '@loopring-w
 
 import { accountStaticCallBack, btnClickMap } from 'hooks/help'
 import { myLog } from "@loopring-web/common-resources";
-import { deepClone } from '../../utils/obj_tools';
+
 import store from '../../stores';
+import _ from 'lodash'
 
 export const useHeader = () => {
     // const {setTheme, themeMode, setLanguage} = useSettings();
@@ -26,7 +27,7 @@ export const useHeader = () => {
         return {account}
     }, [account])
     const [headerToolBarData, setHeaderToolBarData] = React.useState<typeof _initHeaderToolBarData>(_initHeaderToolBarData);
-    const _btnClickMap = Object.assign(deepClone(btnClickMap), {
+    const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {
         [ fnType.ACTIVATED ]: [
             function () {
                 setShouldShow(true);

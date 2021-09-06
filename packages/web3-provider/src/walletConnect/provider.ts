@@ -7,13 +7,14 @@ import { ConnectProviders, myLog } from '@loopring-web/common-resources';
 const BRIDGE_URL = process.env.REACT_APP_WALLET_CONNECT_BRIDGE ?? 'https://bridge.walletconnect.org'
 
 myLog('---BRIDGE_URL:', BRIDGE_URL)
-console.log('---BRIDGE_URL ag:', BRIDGE_URL)
 
 const RPC_URLS: { [ chainId: number ]: string } = {
     1: process.env.REACT_APP_RPC_URL_1 as string,
     5: process.env.REACT_APP_RPC_URL_5 as string
 }
+
 const POLLING_INTERVAL = 12000
+
 export const WalletConnectProvide = async (account?: string): Promise<{ provider?: WalletConnectProvider, web3?: Web3, } | undefined> => {
     try {
         const provider: WalletConnectProvider = new WalletConnectProvider({

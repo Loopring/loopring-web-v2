@@ -1,4 +1,4 @@
-import { HashRouter as Router, Route, Switch, useLocation, } from 'react-router-dom'
+import { Route, Switch, useLocation, } from 'react-router-dom'
 
 import Header from 'layouts/header'
 
@@ -17,7 +17,8 @@ import Footer from '../layouts/footer';
 import React from 'react';
 import store from 'stores'
 
-import { resetSwap, resetAmmPool } from 'stores/router'
+import { resetAmmPool, resetSwap } from 'stores/router'
+import { MainPage } from '../pages/MainPage/MainPage';
 
 const RouterView = () => {
 
@@ -31,10 +32,15 @@ const RouterView = () => {
     return (<>
         <Header/>
 
-        <Container maxWidth="lg"
-                   style={{minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`, display: 'flex', flexDirection: 'column'}}>
-            <Box display={'flex'} flex={1} alignItems={'stretch'} flexDirection={'row'} marginTop={3}>
-                <Switch>
+        <Switch>
+            <Route exact component={MainPage} path='/landing-page'/>
+            <Container maxWidth="lg"
+                       style={{
+                           minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
+                           display: 'flex',
+                           flexDirection: 'column'
+                       }}>
+                <Box display={'flex'} flex={1} alignItems={'stretch'} flexDirection={'row'} marginTop={3}>
                     <Route exact component={SwapPage} path='/'/>
                     <Route exact component={QuotePage} path='/markets'/>
                     <Route component={SwapPage} path='/trading/lite'/>
@@ -64,10 +70,10 @@ const RouterView = () => {
                     <Route exact component={LiquidityPage} path='/liquidity/my-liquidity'/>
                     {/* <Route exact component={LiquidityPage} path='/liquidity/orderBook-Mining'/>
                     <Route exact component={LiquidityPage} path='/liquidity/maker-rebates'/> */}
+                </Box>
+            </Container>
+        </Switch>
 
-                </Switch>
-            </Box>
-        </Container>
         {/*</Box>*/}
         <ModalGroup/>
         <Footer/>

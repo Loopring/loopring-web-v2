@@ -16,7 +16,7 @@ import MyLiqudityPanel from './MyLiquidityPanel'
 import React from 'react';
 import { useAccount } from '../../stores/account';
 import { accountStaticCallBack, btnClickMap, btnLabel } from '../../layouts/connectStatusCallback';
-import { deepClone } from '../../utils/obj_tools';
+import _ from 'lodash'
 
 export const subMenu = subMenuLayer2
 
@@ -42,7 +42,7 @@ const BtnConnect = withTranslation(['common'], {withRef: true})(({t}: any) => {
     // const {setShowAccount} = useOpenModals();
     const [label, setLabel] = React.useState(undefined);
 
-    const _btnLabel = Object.assign(deepClone(btnLabel), {
+    const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
         [ fnType.NO_ACCOUNT ]: [
             function () {
                 return `depositTitleAndActive`
@@ -61,7 +61,7 @@ const BtnConnect = withTranslation(['common'], {withRef: true})(({t}: any) => {
         }
     }, [accountStatus, account.readyState, i18n.language])
 
-    const _btnClickMap = Object.assign(deepClone(btnClickMap), {});
+    const _btnClickMap = Object.assign(_.cloneDeep(btnClickMap), {});
 
     return <Button variant={'contained'} size={'large'} color={'primary'} fullWidth={true}
                    style={{maxWidth: '280px'}} onClick={() => {
