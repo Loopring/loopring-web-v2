@@ -49,10 +49,10 @@ export const useAmmJoin = <C extends { [key: string]: any }>({
     }) => {
 
     const {
-        pageAmmPool,
+        ammJoin,
+        updatePageAmmJoin,
         __SUBMIT_LOCK_TIMER__,
         __TOAST_AUTO_CLOSE_TIMER__,
-        updatePageAmmPool,
     } = usePageAmmPool()
 
     const { t } = useTranslation('common');

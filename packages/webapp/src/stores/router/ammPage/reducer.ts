@@ -1,13 +1,15 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import { PageAmmPool, PageAmmPoolStatus } from './interface'
+import { PageAmmJoin, PageAmmExit, PageAmmPoolStatus } from './interface'
 
-const initState = {
-    ammJoin: undefined,
-    ammExit: undefined,
+const initJoinState: PageAmmJoin = {
+}
+
+const initExitState: PageAmmExit = {
 }
 
 const initialState: PageAmmPoolStatus = {
-    pageAmmPool: initState,
+    ammJoin: initJoinState,
+    ammExit: initExitState,
     __SUBMIT_LOCK_TIMER__: 1000,
     __TOAST_AUTO_CLOSE_TIMER__: 3000,
 }
@@ -18,10 +20,16 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
     reducers: {
         
         resetAmmPool(state) {
-            state.pageAmmPool = initState
+            state.ammJoin = initJoinState
+            state.ammExit = initExitState
         },
 
-        updatePageAmmPool(state, action: PayloadAction<Partial<PageAmmPool>>) {
+        updatePageAmmJoin(state, action: PayloadAction<Partial<PageAmmJoin>>) {
+            const {
+            } = action.payload;
+        },
+
+        updatePageAmmExit(state, action: PayloadAction<Partial<PageAmmExit>>) {
             const {
             } = action.payload;
         },
@@ -30,4 +38,4 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
 })
 
 export { pageAmmPoolSlice }
-export const { updatePageAmmPool, resetAmmPool, } = pageAmmPoolSlice.actions;
+export const { updatePageAmmJoin, updatePageAmmExit, resetAmmPool, } = pageAmmPoolSlice.actions;

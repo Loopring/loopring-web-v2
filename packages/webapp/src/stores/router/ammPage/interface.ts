@@ -1,8 +1,12 @@
-export type PageAmmPool = {
+export type PageAmmJoin = {
+}
+
+export type PageAmmExit = {
 }
 
 export type PageAmmPoolStatus = {
-    pageAmmPool: PageAmmPool,
+    ammJoin: PageAmmJoin,
+    ammExit: PageAmmExit,
     __SUBMIT_LOCK_TIMER__: 1000;
     __TOAST_AUTO_CLOSE_TIMER__: 3000
 }
