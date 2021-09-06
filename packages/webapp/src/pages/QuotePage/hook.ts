@@ -2,12 +2,12 @@ import React, { useCallback, } from "react"
 import store from '../../stores';
 import { TickerMap, useTicker } from '../../stores/ticker';
 import { MarketBlockProps, QuoteTableRawDataItem, } from '@loopring-web/component-lib';
-import { deepClone } from '../../utils/obj_tools';
 import { useSocket } from '../../stores/socket';
 import { TradingInterval, WsTopicType } from 'loopring-sdk';
 import { LoopringAPI } from 'api_wrapper'
 import { tickerService } from 'services/socket';
 import { myLog, myError, } from "@loopring-web/common-resources";
+import _ from 'lodash'
 
 // const OnePageSize = 16;
 
@@ -151,10 +151,10 @@ export function useQuote<C extends { [ key: string ]: string }>() {
             } as QuoteTableRawDataItem;
 
             if (marketPairs.findIndex(m => m === key) !== -1) {
-                _recommendationsFloat.push(deepClone(_item))
+                _recommendationsFloat.push(_.cloneDeep(_item))
             }
             if (marketArray && marketArray.findIndex(m => m === key) !== -1) {
-                defaultRecommendationsFloat.push(deepClone(_item))
+                defaultRecommendationsFloat.push(_.cloneDeep(_item))
             }
             prev.push(_item);
             return prev
@@ -180,7 +180,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
 
         // case uat only
         while (_recommendationsFloat.length < 4) {
-            _recommendationsFloat.push(deepClone(_recommendationsFloat[ 0 ]))
+            _recommendationsFloat.push(_.cloneDeep(_recommendationsFloat[ 0 ]))
         }
 
         const _recommendations = _recommendationsFloat.reduce((prev, item) => {

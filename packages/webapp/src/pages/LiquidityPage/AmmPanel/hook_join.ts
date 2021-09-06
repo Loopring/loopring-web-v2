@@ -24,12 +24,13 @@ import * as sdk from 'loopring-sdk'
 import { useAccount } from '../../../stores/account/hook';
 import store from "stores";
 import { LoopringAPI } from "api_wrapper";
-import { deepClone } from '../../../utils/obj_tools';
 import { myLog } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 
 import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
 import { usePageAmmPool } from "stores/router";
+
+import _ from 'lodash'
 
 // ----------calc hook -------
 
@@ -38,19 +39,18 @@ const initSlippage = 0.5
 export const useAmmJoin = ({
     setToastOpen,
     pair,
-    ammPoolSnapshot,
     snapShotData,
 }
     : {
-        ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined,
         setToastOpen: any,
         pair: { coinAInfo: CoinInfo<string> | undefined, coinBInfo: CoinInfo<string> | undefined },
         snapShotData: { tickerData: sdk.TickerData | undefined, ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined } | undefined
     }) => {
 
     const {
-        ammJoin,
+        ammJoin: { fee, fees, request, },
         updatePageAmmJoin,
+        common: { ammInfo, ammPoolSnapshot, },
         __SUBMIT_LOCK_TIMER__,
         __TOAST_AUTO_CLOSE_TIMER__,
     } = usePageAmmPool()
@@ -78,9 +78,6 @@ export const useAmmJoin = ({
     } as AmmJoinData<IBData<string>, string>);
 
     const [btnI18nKey, setBtnI18nKey] = React.useState<string | undefined>(undefined);
-
-    const [fees, setFees] = React.useState<sdk.LoopringMap<sdk.OffchainFeeInfo>>()
-    const [fee, setFee] = React.useState<number>(0)
 
     React.useEffect(() => {
         
@@ -137,7 +134,7 @@ export const useAmmJoin = ({
 
     }, [account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, isLoading, setBtnStatus,])
 
-    const btnLabelNew = Object.assign(deepClone(btnLabel), {
+    const btnLabelNew = Object.assign(_.cloneDeep(btnLabel), {
         [fnType.ACTIVATED]: [btnLabelActiveCheck]
     });
 
@@ -190,6 +187,9 @@ export const useAmmJoin = ({
                 || !ammCalcData || !tokenMap) {
                 return
             }
+
+            myLog('calculateCallback......')
+
             const feeToken: sdk.TokenInfo = tokenMap[pair.coinBInfo.simpleName]
 
             const requestType = sdk.OffchainFeeReqType.AMM_JOIN
@@ -202,12 +202,10 @@ export const useAmmJoin = ({
 
             const { fees } = await LoopringAPI.userAPI.getOffchainFeeAmt(request, account.apiKey)
 
-            setFees(fees)
-
             const feeRaw = fees[pair.coinBInfo.simpleName] ? fees[pair.coinBInfo.simpleName].fee : 0
             const fee = sdk.toBig(feeRaw).div('1e' + feeToken.decimals)
 
-            setFee(fee.toNumber())
+            updatePageAmmJoin({ fee: fee.toNumber(), fees })
 
             setAmmCalcData({
                 ...ammCalcData, fee: fee.toString()
@@ -215,16 +213,12 @@ export const useAmmJoin = ({
             })
         }
 
-    }, [
-        setFees, setAmmCalcData, setBtnI18nKey,
-        accountStatus, account, pair, tokenMap, ammCalcData
+    }, [updatePageAmmJoin, setAmmCalcData, setBtnI18nKey, accountStatus, account, pair, tokenMap, ammCalcData
     ])
 
     React.useEffect(() => {
         calculateCallback()
     }, [accountStatus, pair.coinBInfo?.simpleName, ammData])
-
-    const [request, setRequest] = React.useState<{ ammInfo: any, request: sdk.JoinAmmPoolRequest }>();
 
     const handleJoin = React.useCallback(async ({ data, ammData, type, fees, ammPoolSnapshot, tokenMap, account }) => {
         setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, }]))
@@ -281,8 +275,9 @@ export const useAmmJoin = ({
             slippage,
         })
 
-        setRequest({
-            ammInfo,
+        myLog('raw request:', request)
+
+        updatePageAmmJoin({
             request
         })
 
@@ -307,8 +302,6 @@ export const useAmmJoin = ({
             return
         }
 
-        const { ammInfo, request: reqTmp } = request
-
         const patch: sdk.AmmPoolRequestPatch = {
             chainId: store.getState().system.chainId as sdk.ChainId,
             ammName: ammInfo.__rawConfig__.name,
@@ -316,14 +309,17 @@ export const useAmmJoin = ({
             eddsaKey: account.eddsaKey.sk
         }
 
-        const req: sdk.JoinAmmPoolRequest = reqTmp as sdk.JoinAmmPoolRequest
-        try {
+        let req = _.cloneDeep(request)
 
-            const request2: sdk.GetNextStorageIdRequest = {
+        try {
+            myLog('join request.joinTokens:', request.joinTokens)
+            myLog('join joinTokens:', req.joinTokens)
+
+            const request0: sdk.GetNextStorageIdRequest = {
                 accountId: account.accountId,
-                sellTokenId: req.joinTokens.pooled[0].tokenId as number
+                sellTokenId: req.joinTokens.pooled[0].tokenId as number,
             }
-            const storageId0 = await LoopringAPI.userAPI.getNextStorageId(request2, account.apiKey)
+            const storageId0 = await LoopringAPI.userAPI.getNextStorageId(request0, account.apiKey)
 
             const request_1: sdk.GetNextStorageIdRequest = {
                 accountId: account.accountId,
@@ -332,15 +328,21 @@ export const useAmmJoin = ({
             const storageId1 = await LoopringAPI.userAPI.getNextStorageId(request_1, account.apiKey)
 
             req.storageIds = [storageId0.offchainId, storageId1.offchainId]
+
+            myLog('join storageId0:', storageId0)
+            myLog('join storageId1:', storageId1)
+            myLog('join req:', req)
+
+            const response = await LoopringAPI.ammpoolAPI.joinAmmPool(req, patch, account.apiKey)
+
+            myLog('join ammpool response:', response)
+
             setAmmData({
                 ...ammData, ...{
                     coinA: { ...ammData.coinA, tradeValue: 0 },
                     coinB: { ...ammData.coinB, tradeValue: 0 },
                 }
             })
-            const response = await LoopringAPI.ammpoolAPI.joinAmmPool(req, patch, account.apiKey)
-
-            myLog('join ammpool response:', response)
 
             if ((response.joinAmmPoolResult as any)?.resultInfo) {
                 setToastOpen({ open: true, type: 'error', content: t('labelJoinAmmFailed') })
@@ -361,7 +363,7 @@ export const useAmmJoin = ({
 
     }, [request, ammData, account, t])
 
-    const onAmmClickMap = Object.assign(deepClone(btnClickMap), {
+    const onAmmClickMap = Object.assign(_.cloneDeep(btnClickMap), {
         [fnType.ACTIVATED]: [ammCalculator]
     })
     const onAmmClick = React.useCallback((props: AmmJoinData<IBData<any>>) => {
