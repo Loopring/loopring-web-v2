@@ -151,19 +151,19 @@ export const MainPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                             {t('labelTitleDEX')}
                         </TitleTypography>
                         <BoxCard width={320} height={320} top={150} zIndex={44}>
-                            <Typography component={'h4'} margin={4} >{t('labelTradeVolume')}</Typography>
+                            <Typography whiteSpace={'pre-line'} component={'h4'} margin={4} >{t('labelTradeVolume')}</Typography>
                             <Typography component={'span'} marginLeft={4} style={{fontSize:72,fontWeight:700}}>$386B</Typography>
                         </BoxCard>
                         <BoxCard width={340} height={340} top={214} left={394} zIndex={44}>
-                            <Typography component={'h4'} margin={4}>{t('labelTradeUser')}</Typography>
+                            <Typography whiteSpace={'pre-line'} component={'h4'} margin={4}>{t('labelTradeUser')}</Typography>
                             <Typography component={'span'} marginLeft={4} style={{fontSize:100,fontWeight:700}}>$386B</Typography>
                         </BoxCard>
                         <BoxCard width={264} height={264} top={32} left={798} zIndex={44}>
-                            <Typography component={'h4'} margin={4}>{t('labelTradeTVL')}</Typography>
+                            <Typography whiteSpace={'pre-line'} component={'h4'} margin={4}>{t('labelTradeTVL')}</Typography>
                             <Typography component={'span'} marginLeft={4} style={{fontSize:64,fontWeight:700}}>$386B</Typography>
                         </BoxCard>
                         <BoxCard width={400} height={400} top={363} left={798} zIndex={44}>
-                            <Typography component={'h4'} margin={4}>{t('labelTradeNofTrades')}</Typography>
+                            <Typography whiteSpace={'pre-line'} component={'h4'} margin={4}>{t('labelTradeNofTrades')}</Typography>
                             <Typography component={'span'} marginLeft={4} style={{fontSize:140,fontWeight:700}}>$36B</Typography>
                         </BoxCard>
                     </Box>
