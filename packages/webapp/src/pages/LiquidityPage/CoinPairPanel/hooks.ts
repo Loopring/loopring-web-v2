@@ -225,8 +225,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
             const list = url.split('/')
             const market = list[ list.length - 1 ]
 
-            const ammInfo = ammMap[ 'AMM-' + market ]
-            const addr = ammInfo?.address
+            const addr = ammMap[ 'AMM-' + market ]?.address
 
             if (addr) {
                 setIsLoading(true)
@@ -266,38 +265,35 @@ export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: 
             const url = routerLocation.pathname
             const list = url.split('/')
             const market = list[list.length - 1]
-            const addr = ammMap['AMM-' + market].address
-            setIsRecentLoading(true)
-            getRecentAmmTransaction({
-                address: addr,
-                limit: limit,
-                offset,
-            })?.then(({ammPoolTrades, totalNum}) => {
-                // let _myTradeArray = makeMyAmmMarketArray(market, res.userAmmPoolTxs)
+            const addr = ammMap['AMM-' + market]?.address
 
-                // const formattedTrades = ammPoolTrades.map(o => ({
-                //     ...o,
-                //     // txType: '',
-                // }))
-                let _tradeArray = makeMyAmmMarketArray(market, ammPoolTrades)
-
-                const formattedArray = _tradeArray.map((o: any) => {
-                    const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`
-                    const formattedBalance = Number(volumeToCount(market, o.totalBalance))
-                    const price = getLpTokenPrice(market)
-                    const totalDollar = (formattedBalance || 0) * (price || 0) as any;
-                    const totalYuan = totalDollar * forex
-                    return ({
-                        ...o,
-                        totalDollar: getThousandFormattedNumbers(totalDollar.toFixed(2)),
-                        totalYuan: getThousandFormattedNumbers(Number((totalYuan).toFixed(2))),
+            if (addr) {
+                setIsRecentLoading(true)
+                getRecentAmmTransaction({
+                    address: addr,
+                    limit: limit,
+                    offset,
+                })?.then(({ammPoolTrades, totalNum}) => {
+                    let _tradeArray = makeMyAmmMarketArray(market, ammPoolTrades)
+    
+                    const formattedArray = _tradeArray.map((o: any) => {
+                        const market = `LP-${o.coinA.simpleName}-${o.coinB.simpleName}`
+                        const formattedBalance = Number(volumeToCount(market, o.totalBalance))
+                        const price = getLpTokenPrice(market)
+                        const totalDollar = (formattedBalance || 0) * (price || 0) as any;
+                        const totalYuan = totalDollar * forex
+                        return ({
+                            ...o,
+                            totalDollar: getThousandFormattedNumbers(totalDollar.toFixed(2)),
+                            totalYuan: getThousandFormattedNumbers(Number((totalYuan).toFixed(2))),
+                        })
                     })
+                    // setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
+                    setAmmMarketArray(formattedArray || [])
+                    setAmmTotal(totalNum)
+                    setIsRecentLoading(false)
                 })
-                // setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
-                setAmmMarketArray(formattedArray || [])
-                setAmmTotal(totalNum)
-                setIsRecentLoading(false)
-            })
+            }
         }
     }, [ammMap, routerLocation.pathname, forex, getLpTokenPrice])
 
