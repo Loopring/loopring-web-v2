@@ -189,7 +189,9 @@ export const AmmRecordTable = withTranslation('tables')(<T extends { [ key: stri
         }
     }, [handlePageChange, page, pageSize])
 
-    return <TableStyled currentHeight={currentHeight}>
+    const height = (currentHeight || 0) + (!!rawData.length ? 0 : 44)
+
+    return <TableStyled currentHeight={height}>
         <Table /* className={'scrollable'}  */ {...{
             ...defaultArgs, t, i18n, tReady,
             ...rest,
@@ -197,7 +199,7 @@ export const AmmRecordTable = withTranslation('tables')(<T extends { [ key: stri
             headerRowHeight,
             rawData: rawData
         }}/>
-        {pagination && (
+        {pagination && !!rawData.length && (
             <TablePagination page={page} pageSize={pageSize} total={pagination.total} onPageChange={_handlePageChange}/>
         )}
     </TableStyled>
