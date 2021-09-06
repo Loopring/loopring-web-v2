@@ -66,8 +66,11 @@ export const useAmmExit = ({
 
             if (account.readyState !== AccountStatus.ACTIVATED && pair) {
                 const btnInfo = accountStaticCallBack(btnLabelNew)
-                btnInfo.btnStatus = TradeBtnStatus.AVAILABLE
-                updatePageAmmExitBtn(btnInfo)
+
+                if (typeof(btnInfo) === 'string') {
+                    updatePageAmmExitBtn({btnI18nKey: btnInfo})
+                }
+                
                 initAmmData(pair, undefined, true)
             }
     
@@ -216,8 +219,6 @@ export const useAmmExit = ({
 
     const handleExit = React.useCallback(async ({ data, requestOut, ammData, fees, ammPoolSnapshot, tokenMap, account }) => {
 
-        // updatePageAmmExitBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]))
-
         if (!tokenMap || !baseToken || !quoteToken
             || !ammPoolSnapshot || !account?.accAddress) {
             return
@@ -257,8 +258,6 @@ export const useAmmExit = ({
 
         updatePageAmmExit({...ammDataPatch, ammData: {...ammData, ...newAmmData, coinLP: data.coinLP,
             slippage: data.slippage, }})
-
-        // updatePageAmmExitBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]))
 
     }, [updatePageAmmExit, idIndex, marketArray, marketMap, baseToken, quoteToken])
 
@@ -337,7 +336,7 @@ export const useAmmExit = ({
         [fnType.ACTIVATED]: [ammCalculator]
     })
     const onAmmClick = React.useCallback((props: AmmExitData<IBData<any>>) => {
-        updatePageAmmExitBtn(accountStaticCallBack(onAmmClickMap, [props]))
+        accountStaticCallBack(onAmmClickMap, [props])
     }, [onAmmClickMap, updatePageAmmExitBtn]);
 
     const walletLayer2Callback = React.useCallback(() => {
