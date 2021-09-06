@@ -60,8 +60,6 @@ const RowConfig = {
     rowHeight:44,
     headerRowHeight:44,
 }
-const tableHeight = RowConfig.headerRowHeight + 15 *  RowConfig.rowHeight;
-
 
 export const CoinPairPanel = withTranslation('common')(<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>
 ({t, ammActivityMap, ...rest}:
@@ -83,21 +81,22 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         isRecentLoading,
     } = useCoinPair({ammActivityMap});
     const [tabIndex, setTabIndex] = React.useState<0 | 1>(1);
-    const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
+    // const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
 
     const {coinJson} = useSettings();
-    const coinAIcon: any = coinJson [ coinPairInfo.myCoinA?.simpleName ];
-    const coinBIcon: any = coinJson [ coinPairInfo.myCoinB?.simpleName ];
-    const [pageSize, setPageSize] = React.useState(0)
+    const coinAIcon: any = coinJson[ coinPairInfo.myCoinA?.simpleName ];
+    const coinBIcon: any = coinJson[ coinPairInfo.myCoinB?.simpleName ];
+    // const [pageSize, setPageSize] = React.useState(0)
     const container = React.useRef(null);
+    const tableHeight = RowConfig.headerRowHeight + (tabIndex === 0 ? 15: 14) *  RowConfig.rowHeight;
 
-    React.useEffect(() => {
-        // @ts-ignore
-        let height = container?.current?.offsetHeight;
-        if (height) {
-            setPageSize(Math.floor((height - 30) / 44) - 1);
-        }
-    }, [container, pageSize]);
+    // React.useEffect(() => {
+    //     // @ts-ignore
+    //     let height = container?.current?.offsetHeight;
+    //     if (height) {
+    //         setPageSize(Math.floor((height / 44) - 2));
+    //     }
+    // }, [container, pageSize]);
 
     const handleTabsChange = React.useCallback((_: any, value: 0 | 1) => {
         setTabIndex(value)
@@ -297,7 +296,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         rawData={myAmmMarketArray}
                         handlePageChange={getUserAmmPoolTxs}
                         pagination={{
-                            pageSize,
+                            pageSize: 14,
                             total: ammUserTotal
                         }}
                         showLoading={showAmmPoolLoading}
