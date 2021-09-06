@@ -33,7 +33,7 @@ import { LoopringAPI } from 'api_wrapper';
 import { useWalletLayer2Socket } from 'services/socket/';
 import store from 'stores'
 import { calcPriceByAmmTickMapDepth, swapDependAsync } from '../../SwapPage/help';
-import { myLog } from "utils/log_tools";
+import { myLog } from "@loopring-web/common-resources";
 
 import { getShowStr } from '@loopring-web/common-resources'
 

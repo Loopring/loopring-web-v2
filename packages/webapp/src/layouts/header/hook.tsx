@@ -13,7 +13,7 @@ import { changeShowModel, useAccount, } from 'stores/account'
 import { AccountStep, HeaderToolBarInterface, useOpenModals, } from '@loopring-web/component-lib'
 
 import { accountStaticCallBack, btnClickMap } from 'hooks/help'
-import { myLog } from 'utils/log_tools'
+import { myLog } from "@loopring-web/common-resources";
 import { deepClone } from '../../utils/obj_tools';
 import store from '../../stores';
 

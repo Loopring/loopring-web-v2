@@ -3,7 +3,7 @@ import { debounce } from 'lodash'
 import React from 'react'
 import { accountServices } from 'services/account/accountServices'
 import { UserStorage } from 'storage'
-import { myLog } from 'utils/log_tools'
+import { myLog } from "@loopring-web/common-resources";
 import store from './stores'
 
 enum WindowEvent {

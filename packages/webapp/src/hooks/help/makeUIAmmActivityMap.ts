@@ -17,7 +17,7 @@ import { coinMap } from '@loopring-web/component-lib';
 import { AmmDetailStore } from '../../stores/Amm/AmmMap';
 import { WalletMapExtend } from './makeWallet';
 import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
-import { myError } from 'utils/log_tools';
+import { myError } from "@loopring-web/common-resources";
 
 export type AmmActivityViewMap<R, I> = {
     [key in keyof R]?: AmmActivity<I>[] | undefined

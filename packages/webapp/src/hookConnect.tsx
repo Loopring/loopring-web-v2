@@ -6,7 +6,7 @@ import { ChainId, sleep } from 'loopring-sdk';
 
 import { updateAccountStatus, useAccount } from 'stores/account';
 import { useSystem } from 'stores/system';
-import { myLog } from 'utils/log_tools';
+import { myLog } from "@loopring-web/common-resources";
 import { networkUpdate } from 'services/account/networkUpdate';
 import { checkAccount } from 'services/account/checkAccount';
 import { REFRESH_RATE } from 'defs/common_defs';

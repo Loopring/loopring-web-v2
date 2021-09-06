@@ -1,5 +1,5 @@
 import { TxStatus } from 'loopring-sdk';
-import { myLog } from "utils/log_tools"
+import { myLog } from "@loopring-web/common-resources";
 import { Account } from "@loopring-web/common-resources";
 
 export enum CONSTANTS {

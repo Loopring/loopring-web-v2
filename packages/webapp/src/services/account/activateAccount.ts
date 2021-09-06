@@ -2,7 +2,7 @@ import { updateAccountStatus } from '../../stores/account';
 import { AccountStep, setShowAccount, setShowConnect } from '@loopring-web/component-lib';
 import store from '../../stores';
 import { AccountStatus } from '@loopring-web/common-resources';
-import { myLog } from 'utils/log_tools';
+import { myLog } from "@loopring-web/common-resources";
 import { LoopringAPI } from 'api_wrapper';
 import { connectProvides } from '@loopring-web/web3-provider';
 import * as sdk from 'loopring-sdk'

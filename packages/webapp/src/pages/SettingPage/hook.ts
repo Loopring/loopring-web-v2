@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "stores";
 
-import { myLog } from "utils/log_tools";
+import { myLog } from "@loopring-web/common-resources";;
 import { Account, AccountStatus } from '@loopring-web/common-resources';
 import exportFromJSON from 'export-from-json';
 

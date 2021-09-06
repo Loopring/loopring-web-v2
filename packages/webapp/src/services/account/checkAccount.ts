@@ -1,7 +1,7 @@
 import { accountServices } from './accountServices';
 import store from '../../stores';
 import { cleanAccountStatus } from '../../stores/account';
-import { myLog } from '../../utils/log_tools';
+import { myLog } from "@loopring-web/common-resources";
 
 export const checkAccount = (newAccAddress: string) => {
     const account = store.getState().account;

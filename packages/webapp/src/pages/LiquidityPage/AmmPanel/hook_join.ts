@@ -25,7 +25,7 @@ import { useAccount } from '../../../stores/account/hook';
 import store from "stores";
 import { LoopringAPI } from "api_wrapper";
 import { deepClone } from '../../../utils/obj_tools';
-import { myLog } from "utils/log_tools";
+import { myLog } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 
 import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
