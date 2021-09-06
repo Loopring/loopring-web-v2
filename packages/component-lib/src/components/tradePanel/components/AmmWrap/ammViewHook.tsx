@@ -2,8 +2,8 @@ import React from 'react'
 import { EmptyValueTag, getShowStr, ReverseIcon } from '@loopring-web/common-resources'
 import { IconButtonStyled } from '../Styled'
 
-export function useAmmViewData({error, i18nKey, t, _isStoB, ammCalcData, _onSwitchStob}:
-    {error: any, i18nKey: any, t: any, _isStoB: boolean, ammCalcData: any, _onSwitchStob: any}) {
+export function useAmmViewData({error, i18nKey, t, _isStoB, ammCalcData, _onSwitchStob, isAdd, }:
+    {error: any, i18nKey: any, t: any, _isStoB: boolean, ammCalcData: any, _onSwitchStob: any, isAdd: boolean, }) {
 
     const label = React.useMemo(()=>{
         if(error.error){
@@ -20,7 +20,7 @@ export function useAmmViewData({error, i18nKey, t, _isStoB, ammCalcData, _onSwit
             const key = i18nKey.split(',');
             return t(key[ 0 ], key && key[ 1 ] ? {arg: key[ 1 ]} : undefined)
         } else {
-            return t(`labelAddLiquidityBtn`)
+            return isAdd ? t(`labelAddLiquidityBtn`) : t(`labelRemoveLiquidityBtn`)
         }
     },[error, i18nKey, t])
 
