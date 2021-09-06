@@ -39,19 +39,18 @@ const initSlippage = 0.5
 export const useAmmJoin = ({
     setToastOpen,
     pair,
-    ammPoolSnapshot,
     snapShotData,
 }
     : {
-        ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined,
         setToastOpen: any,
         pair: { coinAInfo: CoinInfo<string> | undefined, coinBInfo: CoinInfo<string> | undefined },
         snapShotData: { tickerData: sdk.TickerData | undefined, ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined } | undefined
     }) => {
 
     const {
-        ammJoin: { fee, fees, ammInfo, request, },
+        ammJoin: { fee, fees, request, },
         updatePageAmmJoin,
+        common: { ammInfo, ammPoolSnapshot, },
         __SUBMIT_LOCK_TIMER__,
         __TOAST_AUTO_CLOSE_TIMER__,
     } = usePageAmmPool()
@@ -279,7 +278,6 @@ export const useAmmJoin = ({
         myLog('raw request:', request)
 
         updatePageAmmJoin({
-            ammInfo,
             request
         })
 

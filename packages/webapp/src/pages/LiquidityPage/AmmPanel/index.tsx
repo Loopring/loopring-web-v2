@@ -88,7 +88,6 @@ export const AmmPanelView = ({
         setToastOpen,
         closeToast,
         refreshRef,
-        ammPoolSnapshot,
         updateAmmPoolSnapshot,
     } = useAmmCommon({ pair, })
 
@@ -102,7 +101,6 @@ export const AmmPanelView = ({
         btnI18nKey: ammDepositBtnI18nKey,
 
     } = useAmmJoin({
-        ammPoolSnapshot,
         setToastOpen,
         pair,
         snapShotData,
@@ -118,7 +116,6 @@ export const AmmPanelView = ({
         btnI18nKey: ammWithdrawBtnI18nKey,
 
     } = useAmmExit({
-        ammPoolSnapshot,
         setToastOpen,
         pair,
         snapShotData,
