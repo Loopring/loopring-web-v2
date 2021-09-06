@@ -1,64 +1,22 @@
 import React from "react";
 import {
     AccountStatus,
-    AmmJoinData,
-    AmmInData,
     CoinInfo,
-    fnType,
-    IBData,
-    SagaStatus,
 } from '@loopring-web/common-resources';
-import { AmmPanelType, TradeBtnStatus } from '@loopring-web/component-lib';
-import { IdMap, useTokenMap } from '../../../stores/token';
+import { useTokenMap, } from '../../../stores/token';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
-import {
-    accountStaticCallBack,
-    ammPairInit,
-    btnClickMap,
-    btnLabel,
-    makeCache,
-    makeWalletLayer2
-} from '../../../hooks/help';
 import * as sdk from 'loopring-sdk';
-import {
-    AmmPoolRequestPatch,
-    AmmPoolSnapshot,
-    ChainId,
-    dumpError400,
-    ExitAmmPoolRequest,
-    GetAmmPoolSnapshotRequest,
-    getExistedMarket,
-    GetNextStorageIdRequest,
-    GetOffchainFeeAmtRequest,
-    JoinAmmPoolRequest,
-    LoopringMap,
-    makeExitAmmPoolRequest,
-    makeJoinAmmPoolRequest,
-    MarketInfo,
-    OffchainFeeInfo,
-    OffchainFeeReqType,
-    TickerData,
-    toBig,
-    TokenInfo,
-    WsTopicType
-} from 'loopring-sdk';
 import { useAccount } from '../../../stores/account/hook';
-import store from "stores";
 import { LoopringAPI } from "api_wrapper";
-import { deepClone } from '../../../utils/obj_tools';
 import { myLog } from "utils/log_tools";
-import { useTranslation } from "react-i18next";
-
-import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
 import { useSocket, } from "stores/socket";
 import { useToast } from "hooks/common/useToast";
 
-export const useAmmCommon = ({pair, snapShotData,}: {
+export const useAmmCommon = ({pair,}: {
     pair: {
         coinAInfo: CoinInfo<string> | undefined,
         coinBInfo: CoinInfo<string> | undefined
     },
-    snapShotData: any,
 }) => {
 
     const {toastOpen, setToastOpen, closeToast,} = useToast()
@@ -67,7 +25,7 @@ export const useAmmCommon = ({pair, snapShotData,}: {
 
     const {account} = useAccount()
 
-    const [ammPoolSnapshot, setAmmPoolSnapShot] = React.useState<AmmPoolSnapshot>()
+    const [ammPoolSnapshot, setAmmPoolSnapShot] = React.useState<sdk.AmmPoolSnapshot>()
 
     const {marketArray, marketMap,} = useTokenMap();
     const {ammMap} = useAmmMap();
@@ -78,7 +36,7 @@ export const useAmmCommon = ({pair, snapShotData,}: {
             return
         }
 
-        const {market, amm} = getExistedMarket(marketArray, pair.coinAInfo.simpleName as string,
+        const {market, amm} = sdk.getExistedMarket(marketArray, pair.coinAInfo.simpleName as string,
             pair.coinBInfo.simpleName as string)
 
         if (!market || !amm || !marketMap || !ammMap || !ammMap[ amm as string ]) {
@@ -87,7 +45,7 @@ export const useAmmCommon = ({pair, snapShotData,}: {
 
         const ammInfo: any = ammMap[ amm as string ]
 
-        const request1: GetAmmPoolSnapshotRequest = {
+        const request1: sdk.GetAmmPoolSnapshotRequest = {
             poolAddress: ammInfo.address
         }
 
@@ -106,7 +64,7 @@ export const useAmmCommon = ({pair, snapShotData,}: {
 
     React.useEffect(() => {
         if (account.readyState === AccountStatus.ACTIVATED) {
-            sendSocketTopic({[ WsTopicType.account ]: true});
+            sendSocketTopic({[ sdk.WsTopicType.account ]: true});
         } else {
             socketEnd()
         }
@@ -124,18 +82,6 @@ export const useAmmCommon = ({pair, snapShotData,}: {
         }
 
     }, []);
-
-    const walletLayer2Callback = React.useCallback(() => {
-
-        if (snapShotData) {
-            setAmmPoolSnapShot(snapShotData.ammPoolSnapshot)
-        }
-
-    }, [snapShotData, setAmmPoolSnapShot])
-
-    React.useEffect(() => {
-        walletLayer2Callback()
-    }, [snapShotData])
 
     return {
         toastOpen,

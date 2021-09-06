@@ -9,13 +9,10 @@ export function ammPairInit({
                                 coinMap,
                                 walletMap,
                                 ammMap,
-                                tickerData,
                                 ammPoolSnapshot
                             }: any): AmmInData<string> {
     _ammCalcData.coinInfoMap = coinMap;
-    if (tickerData) {
-        _ammCalcData.AtoB = Number(tickerData.close)
-    }
+    
     if (isNaN(_ammCalcData.AtoB) && ammPoolSnapshot) {
         const baseVol = volumeToCountAsBigNumber(pair.coinAInfo.simpleName, ammPoolSnapshot.pooled[ 0 ].volume);
         const quoteVol = volumeToCountAsBigNumber(pair.coinBInfo.simpleName, ammPoolSnapshot.pooled[ 1 ].volume);
