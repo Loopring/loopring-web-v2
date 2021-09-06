@@ -23,7 +23,7 @@ import { walletLayer2Slice } from './walletLayer2';
 import { socketSlice } from './socket';
 import { userRewardsMapSlice } from './userRewards';
 import { localStoreReducer } from './localStore';
-import { myLog } from 'utils/log_tools'
+import { myLog } from "@loopring-web/common-resources";
 import { FavoriteMarketStates } from './localStore/favoriteMarket'
 import { OnchainHashInfo } from './localStore/onchainHashInfo'
 import { Confirmation } from './localStore/confirmation'

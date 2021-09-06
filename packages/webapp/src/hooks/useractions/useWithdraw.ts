@@ -23,7 +23,7 @@ import { useChargeFees } from '../common/useChargeFees';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { LoopringAPI } from 'api_wrapper';
 import { useSystem } from 'stores/system';
-import { myLog } from 'utils/log_tools';
+import { myLog } from "@loopring-web/common-resources";
 import { makeWalletLayer2 } from 'hooks/help';
 import { useWalletLayer2Socket, walletLayer2Service } from '../../services/socket';
 import { getTimestampDaysLater } from 'utils/dt_tools';

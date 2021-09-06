@@ -9,7 +9,7 @@ import { useAccount } from 'stores/account';
 import { useSystem } from 'stores/system';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { LoopringAPI } from 'api_wrapper';
-import { myLog } from 'utils/log_tools';
+import { myLog } from "@loopring-web/common-resources";
 import { useWalletLayer1 } from 'stores/walletLayer1';
 import { useTranslation } from 'react-i18next';
 import { ActionResult, ActionResultCode } from 'defs/common_defs';
@@ -175,7 +175,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                     setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
                 }
 
-            } catch (reason) {
+            } catch (reason: any) {
                 dumpError400(reason)
                 result.code = ActionResultCode.DepositFailed
                 result.data = reason

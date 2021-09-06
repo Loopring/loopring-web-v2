@@ -2,10 +2,12 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3 from "web3";
 import { walletServices } from '../walletServices';
 import { ErrorType } from '../command';
-import { ConnectProviders } from '@loopring-web/common-resources';
-import { MetaMaskUnsubscribe } from '../metamask';
+import { ConnectProviders, myLog } from '@loopring-web/common-resources';
 
 const BRIDGE_URL = process.env.REACT_APP_WALLET_CONNECT_BRIDGE ?? 'https://bridge.walletconnect.org'
+
+myLog('---BRIDGE_URL:', BRIDGE_URL)
+console.log('---BRIDGE_URL ag:', BRIDGE_URL)
 
 const RPC_URLS: { [ chainId: number ]: string } = {
     1: process.env.REACT_APP_RPC_URL_1 as string,

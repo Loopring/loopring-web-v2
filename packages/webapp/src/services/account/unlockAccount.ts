@@ -3,7 +3,7 @@ import { connectProvides } from '@loopring-web/web3-provider';
 import { LoopringAPI } from 'api_wrapper';
 import store from '../../stores';
 import { accountServices } from './accountServices';
-import { myLog } from '../../utils/log_tools';
+import { myLog } from "@loopring-web/common-resources";
 import { checkErrorInfo } from 'hooks/useractions/utils';
 
 export async function unlockAccount() {

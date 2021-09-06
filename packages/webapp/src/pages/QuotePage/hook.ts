@@ -7,7 +7,7 @@ import { useSocket } from '../../stores/socket';
 import { TradingInterval, WsTopicType } from 'loopring-sdk';
 import { LoopringAPI } from 'api_wrapper'
 import { tickerService } from 'services/socket';
-import { myError, myLog } from "utils/log_tools";
+import { myLog, myError, } from "@loopring-web/common-resources";
 
 // const OnePageSize = 16;
 

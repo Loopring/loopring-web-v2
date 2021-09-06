@@ -4,18 +4,15 @@ import { TokenType } from '@loopring-web/component-lib'
 import {
     AccountStatus,
     EmptyValueTag,
-    getThousandFormattedNumbers,
-    getValuePrecision
 } from '@loopring-web/common-resources'
 import { useAccount } from 'stores/account';
 import { LoopringAPI } from 'api_wrapper'
-import { makeWalletLayer2, volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
+import { makeWalletLayer2, volumeToCountAsBigNumber } from 'hooks/help'
 import { WsTopicType } from 'loopring-sdk'
 import { useSocket } from '../../../stores/socket';
 import { useWalletLayer2Socket } from 'services/socket/';
 import { useSystem } from 'stores/system'
-import { myLog } from 'utils/log_tools'
-import BigNumber from 'bignumber.js';
+import BigNumber from 'bignumber.js'
 
 export type TrendDataItem = {
     timeStamp: number;

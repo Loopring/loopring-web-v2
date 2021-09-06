@@ -1,12 +1,9 @@
 import * as sdk from 'loopring-sdk';
-import bigNumber from 'bignumber.js'
 import store from '../../stores';
-import { getShowStr, getThousandFormattedNumbers, getValuePrecision, TradeTypes } from '@loopring-web/common-resources';
 import { LoopringAPI, } from 'api_wrapper';
 import { AmmRecordRow, AmmTradeType, RawDataTradeItem } from '@loopring-web/component-lib';
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
-import { myError } from 'utils/log_tools';
-import { Side, toBig } from 'loopring-sdk';
+import { myError } from "@loopring-web/common-resources";
 import { tradeItemToTableDataItem } from 'utils/formatter_tool';
 
 export const getUserTrades = (market: string) => {

@@ -3,7 +3,7 @@ import { AmmPoolSnapshot, DepthData, LoopringMap, TickerData, TokenVolumeV3 } fr
 import { LoopringAPI } from '../../api_wrapper';
 import { CustomError, ErrorMap } from '@loopring-web/common-resources';
 import { volumeToCountAsBigNumber } from '../../hooks/help';
-import { myLog } from '../../utils/log_tools';
+import { myLog } from "@loopring-web/common-resources";
 import { PairFormat } from '../../stores/router';
 import BigNumber from 'bignumber.js';
 

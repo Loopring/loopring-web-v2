@@ -1,4 +1,4 @@
-import { myLog } from "./log_tools"
+import { myLog } from "@loopring-web/common-resources";
 
 export function deepClone(data: any) {
     if (!data || !(data instanceof Object) || (typeof data == "function")) {

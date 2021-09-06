@@ -40,7 +40,7 @@ import * as _ from 'lodash'
 import { PairFormat, usePageTradeLite } from '../../stores/router';
 import { DAYS } from '../../defs/common_defs';
 import { getTimestampDaysLater } from '../../utils/dt_tools';
-import { myLog } from '../../utils/log_tools';
+import { myLog } from '@loopring-web/common-resources/static-resources/src/utils/log_tools';
 import { calcPriceByAmmTickMapDepth, marketInitCheck, swapDependAsync } from './help';
 
 const useSwapSocket = () => {

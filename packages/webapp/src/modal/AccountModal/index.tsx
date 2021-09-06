@@ -58,8 +58,7 @@ import { ActionResult, ActionResultCode, REFRESH_RATE, TOAST_TIME } from 'defs/c
 import { updateAccountFromServer } from 'services/account/activateAccount';
 import { lockAccount } from 'services/account/lockAccount';
 import { unlockAccount } from 'services/account/unlockAccount';
-import { useTokenMap } from 'stores/token';
-import { myLog } from 'utils/log_tools';
+import { myLog } from "@loopring-web/common-resources";
 import { useDeposit } from 'hooks/useractions/useDeposit';
 
 import { accountServices } from '../../services/account/accountServices'

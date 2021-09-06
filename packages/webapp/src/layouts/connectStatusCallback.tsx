@@ -3,7 +3,7 @@ import { AccountStep, setShowAccount, setShowConnect, WalletConnectStep } from '
 import { fnType } from '@loopring-web/common-resources';
 import { changeShowModel } from 'stores/account';
 import { accountServices } from 'services/account/accountServices'
-import { myLog } from 'utils/log_tools';
+import { myLog } from "@loopring-web/common-resources";
 import { unlockAccount } from '../services/account/unlockAccount';
 
 export const accountStaticCallBack = (onclickMap: { [ key: number ]: [fn: (props: any) => any, args?: any[]] }, deps?: any[]) => {
