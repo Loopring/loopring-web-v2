@@ -1,4 +1,4 @@
-import { HashRouter as Router, Route, Switch, } from 'react-router-dom'
+import { HashRouter as Router, Route, Switch, useLocation, } from 'react-router-dom'
 
 import Header from 'layouts/header'
 
@@ -14,17 +14,23 @@ import { LAYOUT } from '../defs/common_defs';
 import { Box } from '@material-ui/core';
 import { ModalGroup } from '../modal';
 import Footer from '../layouts/footer';
-// import React from 'react';
+import React from 'react';
+import store from 'stores'
+import { reset as resetPageTradeLite } from 'stores/router/tradeLite/reducer'
 
 const RouterView = () => {
 
-    return <Router>
+    const location = useLocation()
+
+    React.useEffect(() => {
+        store.dispatch(resetPageTradeLite(undefined))
+    }, [location?.pathname])
+
+    return (<>
         <Header/>
 
-        {/*<Box style={{marginTop: `var(--header-height)`}} flex={1} display={'flex'}>*/}
         <Container maxWidth="lg"
                    style={{minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`, display: 'flex', flexDirection: 'column'}}>
-            {/*style={{height: '100%' }}*/}
             <Box display={'flex'} flex={1} alignItems={'stretch'} flexDirection={'row'} marginTop={3}>
                 <Switch>
                     <Route exact component={SwapPage} path='/'/>
@@ -63,7 +69,7 @@ const RouterView = () => {
         {/*</Box>*/}
         <ModalGroup/>
         <Footer/>
-    </Router>
+    </>)
 }
 
 export default RouterView
