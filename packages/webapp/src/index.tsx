@@ -20,6 +20,7 @@ import { I18nextProvider } from "react-i18next"
 import { PersistGate } from 'redux-persist/integration/react'
 import { useSettings } from '@loopring-web/component-lib';
 import React, { Provider as TProvider } from 'react';
+import { TimeoutCheckProvider } from 'TimeoutCheckProvider'
 
 // const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
 
@@ -37,11 +38,11 @@ const ProviderThen = React.memo(({children}: { children: JSX.Element }) => {
     const providers: Array<[TProvider<any>, any]> = [
         provider(MuThemeProvider as any, {theme: getTheme(themeMode)}),
         provider(ThemeProvider as any, {theme: getTheme(themeMode)}),
-        provider(PersistGate as any, {persistor, loading: null})
+        provider(PersistGate as any, {persistor, loading: null}),
+        provider(TimeoutCheckProvider as any),
     ] as any
     return <ProviderComposer providers={providers}>{children}</ProviderComposer>
 })
-
 
 ReactDOM.render(
     <ProviderApp>
