@@ -50,10 +50,11 @@ export const WithdrawWrapNew = <T extends IBData<I>,
 
     const popupState = usePopupState({variant: 'popover', popupId: `popupId-withdraw`});
 
-    const toggleData: any[] = chargeFeeTokenList.map(({belong, fee}) => ({
+    const toggleData: any[] = chargeFeeTokenList.map(({belong, fee, __raw__}) => ({
         key: belong,
         value: belong,
         fee,
+        __raw__
     }))
 
     const getTokenFee = React.useCallback((token: string) => {
@@ -77,9 +78,11 @@ export const WithdrawWrapNew = <T extends IBData<I>,
             const defaultToken = chargeFeeTokenList.find(o => assetsData.find(item => item.name === o.belong)?.available > o.fee)?.belong || 'ETH'
             setFeeToken(defaultToken)
             const currFee = toggleData.find(o => o.key === defaultToken)?.fee || '--'
+            const currFeeRaw = toggleData.find(o => o.key === defaultToken)?.__raw__ || '--'
             handleFeeChange({
                 belong: defaultToken,
                 fee: currFee,
+                __raw__: currFeeRaw,
             })
         }
     }, [chargeFeeTokenList, feeToken, assetsData, handleFeeChange, toggleData])
@@ -100,11 +103,13 @@ export const WithdrawWrapNew = <T extends IBData<I>,
     const handleToggleChange = React.useCallback((e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
         if (value === null) return
         setFeeToken(value)
+        const currFeeRaw = toggleData.find(o => o.key === value)?.__raw__ || '--'
         handleFeeChange({
             belong: value,
             fee: getTokenFee(value),
+            __raw__: currFeeRaw,
         })
-    }, [handleFeeChange, getTokenFee])
+    }, [handleFeeChange, getTokenFee, toggleData])
 
 
     const _handleWithdrawTypeChange = React.useCallback((e: ChangeEvent<HTMLInputElement>) => {
