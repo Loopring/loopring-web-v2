@@ -117,9 +117,9 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
                 }
             }, type: 'coinA'
         });
-    }, [ammData, onAddChangeEvent]) ;
+    }, [ammData, onAddChangeEvent])
 
-    const { label, stob, } = useAmmViewData({error, i18nKey: ammDepositBtnI18nKey, t, _isStoB, ammCalcData, _onSwitchStob})
+    const { label, stob, } = useAmmViewData({error, i18nKey: ammDepositBtnI18nKey, t, _isStoB, ammCalcData, _onSwitchStob, isAdd: true, })
 
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}

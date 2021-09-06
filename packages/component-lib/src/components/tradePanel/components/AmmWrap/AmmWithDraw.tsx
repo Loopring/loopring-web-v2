@@ -89,12 +89,6 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
             setError({error: false, message: ''});
             return {error: false, message: ''}
         }
-        // handleError = ({belong, balance, tradeValue}: any) => {
-        //     if (balance < tradeValue || (tradeValue && !balance)) {
-        //         return {error: true, message: t('tokenNotEnough', {belong: belong})}
-        //     }
-        //     return {error: false, message: ''}
-        // }
     }
 
     const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
@@ -135,7 +129,8 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                 }
             }, type: 'lp'
         });
-    }, [ammData, onRemoveChangeEvent]);
+    }, [ammData, onRemoveChangeEvent])
+
     const propsLP: any = {
         label: t('labelTokenAmount'),
         subLabel: t('labelAvailable'),
@@ -152,7 +147,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
         popupId: 'slippagePop',
     })
 
-    const { label, stob, } = useAmmViewData({error, i18nKey: ammWithdrawBtnI18nKey, t, _isStoB, ammCalcData, _onSwitchStob})
+    const { label, stob, } = useAmmViewData({error, i18nKey: ammWithdrawBtnI18nKey, t, _isStoB, ammCalcData, _onSwitchStob, isAdd: false, })
 
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
