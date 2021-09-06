@@ -82,15 +82,17 @@ const LogoStyle = styled(Typography)`
   }
 ` as typeof Typography
 
-export const LoopringLogo = (<LogoStyle variant="h6" component="h1">
-        <IconButton edge="start" aria-label="menu" component={RouterLink} to="/#" color={"inherit"}>
+export const LoopringLogo = React.memo(()=> {
+    // const history = useHistory();
+    // const url = history.push('/main').
+    return   <LogoStyle variant="h6" component="h1">
+        <IconButton edge="start" aria-label="menu" component={RouterLink} to={'/landing-page'} color={"inherit"}>
             Loopring 路印
-            {/*/!*<SvgIcon>*!/*/}
-            {/*    <img src={logoSVG} alt="" width="104" height="40" />*/}
-            {/*</SvgIcon>*/}
+            loopring protocol 3.6
+            The first Layer2 Decentralized trading Platform
         </IconButton>
     </LogoStyle>
-);
+});
 
 const ToolBarItem = ({buttonComponent, ...props}: any) => {
 
@@ -210,7 +212,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
             <ToolBarStyled>
                 <Box display="flex" alignContent="center" justifyContent={"flex-start"}
                      alignItems={"stretch"}>
-                    {LoopringLogo}
+                    <LoopringLogo/>
                     {getDrawerChoices({menuList: headerMenuData, i18n, ...rest})}
                 </Box>
                 <Box component={'ul'} display="flex" alignItems="center" justifyContent={"flex-end"}
