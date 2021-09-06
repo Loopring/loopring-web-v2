@@ -30,53 +30,55 @@ const RouterView = () => {
     }, [location?.pathname])
 
     return (<>
-        <Header/>
+        <Header />
 
         <Switch>
-            <Route exact component={LandPage} path='/landing-page'/>
-            <Container maxWidth="lg"
-                       style={{
-                           minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
-                           display: 'flex',
-                           flexDirection: 'column'
-                       }}>
-                <Box display={'flex'} flex={1} alignItems={'stretch'} flexDirection={'row'} marginTop={3}>
-                    <Route exact component={SwapPage} path='/'/>
-                    <Route exact component={QuotePage} path='/markets'/>
-                    <Route component={SwapPage} path='/trading/lite'/>
-                    <Route component={SwapPage} path='/trading/lite(/:symbol)'/>
-                    <Route exact component={MiningPage} path='/mining'/>
+            <React.Fragment>
+                <Route exact component={LandPage} path='/landing-page' />
+                <Container maxWidth="lg"
+                    style={{
+                        minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
+                        display: 'flex',
+                        flexDirection: 'column'
+                    }}>
+                    <Box display={'flex'} flex={1} alignItems={'stretch'} flexDirection={'row'} marginTop={3}>
+                        <Route exact component={SwapPage} path='/' />
+                        <Route exact component={QuotePage} path='/markets' />
+                        <Route component={SwapPage} path='/trading/lite' />
+                        <Route component={SwapPage} path='/trading/lite(/:symbol)' />
+                        <Route exact component={MiningPage} path='/mining' />
 
-                    <Route exact component={Layer2Page} path='/layer2'/>
-                    <Route exact component={Layer2Page} path='/layer2/assets'/>
-                    <Route exact component={Layer2Page} path='/layer2/my-liquidity'/>
-                    <Route exact component={Layer2Page} path='/layer2/history'/>
-                    <Route exact component={Layer2Page} path='/layer2/order'/>
-                    <Route exact component={Layer2Page} path='/layer2/rewards'/>
-                    {/* <Route exact component={Layer2Page} path='/layer2/red-packet'/>
+                        <Route exact component={Layer2Page} path='/layer2' />
+                        <Route exact component={Layer2Page} path='/layer2/assets' />
+                        <Route exact component={Layer2Page} path='/layer2/my-liquidity' />
+                        <Route exact component={Layer2Page} path='/layer2/history' />
+                        <Route exact component={Layer2Page} path='/layer2/order' />
+                        <Route exact component={Layer2Page} path='/layer2/rewards' />
+                        {/* <Route exact component={Layer2Page} path='/layer2/red-packet'/>
                     <Route exact component={Layer2Page} path='/layer2/security'/>
                     <Route exact component={Layer2Page} path='/layer2/vip'/> */}
-                    {/* <Route exact component={Layer2Page} path='/layer2/transactions'/>
+                        {/* <Route exact component={Layer2Page} path='/layer2/transactions'/>
                     <Route exact component={Layer2Page} path='/layer2/trades'/>
                     <Route exact component={Layer2Page} path='/layer2/ammRecords'/> */}
-                    {/* <Route exact component={Layer2Page} path='/layer2/orders'/> */}
-                    <Route exact component={Layer2Page} path='/layer2/setting'/>
+                        {/* <Route exact component={Layer2Page} path='/layer2/orders'/> */}
+                        <Route exact component={Layer2Page} path='/layer2/setting' />
 
-                    <Route exact component={LiquidityPage} path='/liquidity'/>
-                    <Route exact component={LiquidityPage} path='/liquidity/pools/*'/>
-                    <Route exact component={LiquidityPage} path='/liquidity/pools'/>
-                    {/*<Route exact component={LiquidityPage} path='/liquidity/pools/coinPair(/:symbol)'/>*/}
-                    <Route exact component={LiquidityPage} path='/liquidity/amm-mining'/>
-                    <Route exact component={LiquidityPage} path='/liquidity/my-liquidity'/>
-                    {/* <Route exact component={LiquidityPage} path='/liquidity/orderBook-Mining'/>
+                        <Route exact component={LiquidityPage} path='/liquidity' />
+                        <Route exact component={LiquidityPage} path='/liquidity/pools/*' />
+                        <Route exact component={LiquidityPage} path='/liquidity/pools' />
+                        {/*<Route exact component={LiquidityPage} path='/liquidity/pools/coinPair(/:symbol)'/>*/}
+                        <Route exact component={LiquidityPage} path='/liquidity/amm-mining' />
+                        <Route exact component={LiquidityPage} path='/liquidity/my-liquidity' />
+                        {/* <Route exact component={LiquidityPage} path='/liquidity/orderBook-Mining'/>
                     <Route exact component={LiquidityPage} path='/liquidity/maker-rebates'/> */}
-                </Box>
-            </Container>
+                    </Box>
+                </Container>
+            </React.Fragment>
         </Switch>
 
         {/*</Box>*/}
-        <ModalGroup/>
-        <Footer/>
+        <ModalGroup />
+        <Footer />
     </>)
 }
 
