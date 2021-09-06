@@ -11,7 +11,7 @@ export interface ToastProps {
 }
 
 const AlertStyled = styled(Alert)`
-    svg:first-child {
+    svg:first-of-type {
         width: 2rem;
         height: 2rem;
         margin-top: 0.2rem;

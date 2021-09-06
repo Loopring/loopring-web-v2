@@ -249,7 +249,7 @@ export const BtnPercentage = withTranslation('common')(({
     return <Box width={'100%'} display={'flex'}>
         <StyledSlider
             aria-label="Always visible"
-            defaultValue={value}
+            value={value}
             getAriaValueText={_valuetext as any}
             valueLabelDisplay={valueLabelDisplay}
             onChange={(_event,value,_activeThumb)=>{_handleChanged(_event,value,_activeThumb)}}
