@@ -6,7 +6,7 @@ import {
     EmptyValueTag,
     ExchangeIcon,
     IBData,
-    ReverseIcon,
+    myLog,
     SlippageTolerance
 } from '@loopring-web/common-resources';
 import { AmmWithdrawWrapProps } from './Interface';
@@ -17,7 +17,6 @@ import { Avatar, Grid, Typography } from '@material-ui/core';
 import {
     BtnPercentage,
     Button,
-    IconButtonStyled,
     InputCoin,
     LinkActionStyle,
     PopoverPure,
@@ -93,10 +92,12 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
         }
     }
 
+    myLog('_selectedPercentage:', _selectedPercentage)
+
     const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
         if (_ref) {
             if (ammData[ 'coinLP' ].tradeValue !== ibData.tradeValue && ammData[ 'coinLP' ].balance) {
-                const percentageValue = toBig(ibData.tradeValue).div(ammData[ 'coinLP' ].balance).times(100).toFixed(2)
+                const percentageValue = toBig(ibData.tradeValue ?? 0).div(ammData[ 'coinLP' ].balance).times(100).toFixed(2)
                 if (!isNaN(Number(percentageValue))) {
                     setSelectedPercentage(Number(percentageValue))
                 }
@@ -109,15 +110,13 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
 
     const onPercentage = (value: any) => {
 
-        console.log('--- onPercentage value:', value)
-        console.log('--- onPercentage ammData:', ammData)
-
         if (ammData?.coinLP) {
             setSelectedPercentage(value)
             const cloneLP = _.cloneDeep(ammData.coinLP)
             cloneLP.tradeValue = (cloneLP.balance / 100) * value;
             handleCountChange(cloneLP, null)
         }
+
     }
 
     const _onSlippageChange = React.useCallback((slippage: number | string, customSlippage: number | string | undefined) => {
