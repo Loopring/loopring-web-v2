@@ -108,7 +108,6 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             try {
                 const tokenInfo = tokenMap[inputValue.belong]
                 const gasLimit = parseInt(tokenInfo.gasAmounts.deposit)
-                let nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
 
                 const fee = 0
 
@@ -121,6 +120,8 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 const _chainId = chainId === 'unknown' ? ChainId.MAINNET : chainId
 
+                let nonce = 0
+
                 if (allowanceInfo?.needCheck) {
 
                     const curValInWei = sdk.toBig(inputValue.tradeValue).times('1e' + tokenInfo.decimals)
@@ -128,8 +129,10 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                     if (curValInWei.gt(allowanceInfo.allowance)) {
 
                         myLog(curValInWei, allowanceInfo.allowance, ' need approveMax!')
-
+                        
                         setShowAccount({ isShow: true, step: AccountStep.Deposit_Approve_WaitForAuth })
+                        
+                        nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
 
                         try {
                             await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
@@ -147,12 +150,14 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                         myLog('allowance is enough! don\'t need approveMax!')
                     }
 
-                }
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit_WaitForAuth })
 
-                if (readyState === AccountStatus.ACTIVATED) {
-                    setShowAccount({ isShow: true, step: AccountStep.Deposit_WaitForAuth })
                 } else {
+
                     setShowAccount({ isShow: true, step: AccountStep.Deposit_WaitForAuth })
+                        
+                    nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
+
                 }
 
                 myLog('before deposit:', chainId, connectName, isMetaMask)
