@@ -24,9 +24,11 @@ export const AssetTitle = withTranslation('common')(({
                                                          btnShowDepositStatus,
                                                          btnShowTransferStatus,
                                                          btnShowWithdrawStatus,
+                                                         hideL2Assets,
+                                                         setHideL2Assets,
                                                      }: AssetTitleProps & WithTranslation) => {
 
-    const [isShow, setIsShow] = React.useState<boolean>(assetInfo.isShow ? assetInfo.isShow : true);
+    // const [isShow, setIsShow] = React.useState<boolean>(assetInfo.isShow ? assetInfo.isShow : true);
     return <Grid container spacing={2} justifyContent={'space-between'} alignItems={'flex-start'}>
         <Grid item xs={7} display={'flex'} flexDirection={'column'}>
             <BoxStyled component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}
@@ -37,9 +39,9 @@ export const AssetTitle = withTranslation('common')(({
                     <IconButton
                         size={'small'}
                         // color={'secondary'}
-                        onClick={() => setIsShow(!isShow)}
+                        onClick={() => setHideL2Assets(!hideL2Assets)}
                         aria-label={t('labelShowAccountInfo')}>
-                        {isShow ? <HideIcon/> : <ViewIcon/>}
+                        {!hideL2Assets ? <ViewIcon/> : <HideIcon/>}
                     </IconButton>
                 </Typography>
 
@@ -48,7 +50,7 @@ export const AssetTitle = withTranslation('common')(({
             <Typography component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}
                         marginTop={1}>
                 <Typography component={'span'} paddingRight={1} variant={'h1'}> {assetInfo.priceTag} </Typography>
-                {isShow && assetInfo.totalAsset ? <Typography component={'span'}
+                {!hideL2Assets && assetInfo.totalAsset ? <Typography component={'span'}
                                       variant={'h1'}>{assetInfo.totalAsset ? getThousandFormattedNumbers(Number(assetInfo.totalAsset.toFixed(2))) : 0.00}</Typography> :
                     <Typography component={'span'}
                                 variant={'h1'}>&#10033;&#10033;&#10033;&#10033;.&#10033;&#10033;</Typography>}

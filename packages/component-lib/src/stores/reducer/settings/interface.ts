@@ -16,4 +16,7 @@ export interface SettingsState {
     upColor: keyof typeof UpColor
     slippage: number | 'N'
     coinJson: any
+    hideL2Assets: boolean
+    hideLpToken: boolean
+    hideSmallBalances: boolean
 }
