@@ -1,4 +1,10 @@
+import * as sdk from 'loopring-sdk'
+
 export type PageAmmJoin = {
+    fees: sdk.LoopringMap<sdk.OffchainFeeInfo>
+    fee: number
+    ammInfo: any
+    request: sdk.JoinAmmPoolRequest | undefined
 }
 
 export type PageAmmExit = {
