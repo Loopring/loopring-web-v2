@@ -48,7 +48,7 @@ export const useAmmJoin = ({
     }) => {
 
     const {
-        ammJoin: { fee, fees, request, },
+        ammJoin: { fee, fees, request, btnStatus, btnI18nKey, },
         updatePageAmmJoin,
         common: { ammInfo, ammPoolSnapshot, },
         __SUBMIT_LOCK_TIMER__,
@@ -62,7 +62,6 @@ export const useAmmJoin = ({
     const { coinMap, tokenMap } = useTokenMap();
     const { ammMap } = useAmmMap();
     const { account, status: accountStatus } = useAccount();
-    const [btnStatus, setBtnStatus] = React.useState(TradeBtnStatus.DISABLED);
 
     const [baseToken, setBaseToken] = React.useState<sdk.TokenInfo>();
     const [quoteToken, setQuoteToken] = React.useState<sdk.TokenInfo>();
@@ -77,13 +76,10 @@ export const useAmmJoin = ({
         slippage: initSlippage
     } as AmmJoinData<IBData<string>, string>);
 
-    const [btnI18nKey, setBtnI18nKey] = React.useState<string | undefined>(undefined);
-
     React.useEffect(() => {
         
         if (account.readyState !== AccountStatus.ACTIVATED && pair) {
-            setBtnStatus(TradeBtnStatus.AVAILABLE)
-            setBtnI18nKey(accountStaticCallBack(btnLabelNew))
+            updatePageAmmJoin({ btnStatus: TradeBtnStatus.AVAILABLE, btnI18nKey: accountStaticCallBack(btnLabelNew) })
             initAmmData(pair, undefined, true)
         }
 
@@ -92,7 +88,7 @@ export const useAmmJoin = ({
     React.useEffect(() => {
         
         if (account.readyState === AccountStatus.ACTIVATED && ammData) {
-            setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData }]))
+            updatePageAmmJoin({ btnStatus: TradeBtnStatus.AVAILABLE, btnI18nKey: accountStaticCallBack(btnLabelNew, [{ ammData }]) })
         }
 
     }, [account.readyState, ammData])
@@ -105,7 +101,7 @@ export const useAmmJoin = ({
         const validAmt2 = ammData?.coinB?.tradeValue ? ammData?.coinB?.tradeValue >= times * quoteMinAmt : false
 
         if (isLoading) {
-            setBtnI18nKey(TradeBtnStatus.LOADING)
+            updatePageAmmJoin({ btnStatus: TradeBtnStatus.LOADING, })
             myLog('set LOADING')
             return undefined
         } else {
@@ -115,24 +111,24 @@ export const useAmmJoin = ({
                     || ammData?.coinB.tradeValue === undefined
                     || ammData?.coinA.tradeValue === 0
                     || ammData?.coinB.tradeValue === 0) {
-                    setBtnStatus(TradeBtnStatus.DISABLED)
+                        updatePageAmmJoin({ btnStatus: TradeBtnStatus.DISABLED, })
                     return 'labelEnterAmount';
                 } else if (validAmt1 && validAmt2) {
-                    setBtnStatus(TradeBtnStatus.AVAILABLE)
+                    updatePageAmmJoin({ btnStatus: TradeBtnStatus.AVAILABLE, })
                     return undefined
                 } else {
-                    setBtnStatus(TradeBtnStatus.DISABLED)
+                    updatePageAmmJoin({ btnStatus: TradeBtnStatus.DISABLED, })
                     return `labelLimitMin, ${times * baseMinAmt} ${ammData?.coinA.belong} / ${times * quoteMinAmt} ${ammData?.coinB.belong}`
                 }
 
             } else {
-                setBtnStatus(TradeBtnStatus.AVAILABLE)
+                updatePageAmmJoin({ btnStatus: TradeBtnStatus.AVAILABLE, })
             }
 
         }
         return undefined
 
-    }, [account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, isLoading, setBtnStatus,])
+    }, [account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, isLoading, updatePageAmmJoin,])
 
     const btnLabelNew = Object.assign(_.cloneDeep(btnLabel), {
         [fnType.ACTIVATED]: [btnLabelActiveCheck]
@@ -213,7 +209,7 @@ export const useAmmJoin = ({
             })
         }
 
-    }, [updatePageAmmJoin, setAmmCalcData, setBtnI18nKey, accountStatus, account, pair, tokenMap, ammCalcData
+    }, [updatePageAmmJoin, setAmmCalcData, accountStatus, account, pair, tokenMap, ammCalcData
     ])
 
     React.useEffect(() => {
@@ -221,8 +217,9 @@ export const useAmmJoin = ({
     }, [accountStatus, pair.coinBInfo?.simpleName, ammData])
 
     const handleJoin = React.useCallback(async ({ data, ammData, type, fees, ammPoolSnapshot, tokenMap, account }) => {
-        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, }]))
-
+        
+        updatePageAmmJoin({ btnI18nKey: accountStaticCallBack(btnLabelNew, [{ ammData }]) })
+        
         if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !fees || !account?.accAddress) {
             return
         }
@@ -267,8 +264,8 @@ export const useAmmJoin = ({
                 .div('1e' + coinA.decimals).toFixed(marketInfo.precisionForPrice))
         }
 
-        setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData: data }]))
-
+        updatePageAmmJoin({ btnI18nKey: accountStaticCallBack(btnLabelNew, [{ ammData }]) })
+        
         setAmmData({
             coinA: data.coinA as IBData<string>,
             coinB: data.coinB as IBData<string>,
@@ -290,7 +287,7 @@ export const useAmmJoin = ({
     const ammCalculator = React.useCallback(async function (props) {
 
         setIsLoading(true)
-        setBtnStatus(TradeBtnStatus.LOADING)
+        updatePageAmmJoin({ btnStatus: TradeBtnStatus.LOADING, })
 
         if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !request || !account?.eddsaKey?.sk) {
             myLog(' onAmmJoin ammpoolAPI:', LoopringAPI.ammpoolAPI,

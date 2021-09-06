@@ -1,3 +1,4 @@
+import { TradeBtnStatus } from '@loopring-web/component-lib'
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { PageAmmCommon } from '.'
 import { PageAmmJoin, PageAmmExit, PageAmmPoolStatus } from './interface'
@@ -6,6 +7,8 @@ const initJoinState: PageAmmJoin = {
     fees: {},
     fee: 0,
     request: undefined,
+    btnI18nKey: undefined,
+    btnStatus: TradeBtnStatus.AVAILABLE,
 }
 
 const initExitState: PageAmmExit = {
@@ -14,6 +17,8 @@ const initExitState: PageAmmExit = {
     fees: {},
     fee: 0,
     request: undefined,
+    btnI18nKey: undefined,
+    btnStatus: TradeBtnStatus.AVAILABLE,
 }
 
 const initCommonState: PageAmmCommon = {
@@ -62,6 +67,8 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
                 fee,
                 fees,
                 request,
+                btnI18nKey,
+                btnStatus,
             } = action.payload;
 
             if (fee) {
@@ -74,6 +81,14 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
 
             if (request) {
                 state.ammJoin.request = request
+            }
+
+            if (btnI18nKey) {
+                state.ammJoin.btnI18nKey = btnI18nKey
+            }
+
+            if (btnStatus) {
+                state.ammJoin.btnStatus = btnStatus
             }
 
         },
