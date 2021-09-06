@@ -311,7 +311,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                 {/*<FixedStyle>*/}
                 <Box>
                     <AmmPanelView pair={pair} walletMap={walletMap} snapShotData={snapShotData}/>
-                    <Box marginTop={3}>
+                    {/* <Box marginTop={3}>
                         {awardList.map((o, index) => (
                             <AwardWrapperStyled key={`${o.market}-${index}}`} display={'flex'}
                                                 className={'MuiPaper-elevation2'} marginTop={2}>
@@ -355,7 +355,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                 })}
                             </AwardWrapperStyled>
                         ))}
-                    </Box>
+                    </Box> */}
                 </Box>
 
                 {/*</FixedStyle>*/}
