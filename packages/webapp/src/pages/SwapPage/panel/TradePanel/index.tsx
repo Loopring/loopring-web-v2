@@ -19,14 +19,6 @@ const applyProps = (index: number) => {
         'aria-controls': `simple-tabpanel-${index}`,
     }
 }
-// const WrapperStyled = styled.div`
-//   position: relative;
-//   width: 100%;
-//   margin-top: ${({theme}) => theme.unit * 4}px;
-//   background-color: var(--color-box);
-//   box-shadow: var(--shadow);
-//   border-radius: ${({theme}) => theme.unit}px;
-// `
 
 const RowConfig = {
     rowHeight:44,
@@ -46,7 +38,7 @@ const TradePanel = withTranslation('common')(
             setValue(newValue)
         }
 
-        return (<TableWrapStyled item alignSelf={'stretch'} xs={12} marginY={2} paddingBottom={2} flex={1}
+        return (<TableWrapStyled alignSelf={'stretch'} xs={12} marginY={2} paddingBottom={2} flex={1}
                                  className={'MuiPaper-elevation2'}>
                 <TabsStyled value={value}
                             onChange={handleChange}
