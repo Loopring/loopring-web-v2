@@ -122,6 +122,8 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 let nonce = 0
 
+                let nonceInit = false
+
                 if (allowanceInfo?.needCheck) {
 
                     const curValInWei = sdk.toBig(inputValue.tradeValue).times('1e' + tokenInfo.decimals)
@@ -133,6 +135,8 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                         setShowAccount({ isShow: true, step: AccountStep.Deposit_Approve_WaitForAuth })
                         
                         nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
+
+                        nonceInit = true
 
                         try {
                             await sdk.approveMax(connectProvides.usedWeb3, account.accAddress, tokenInfo.address,
@@ -150,14 +154,12 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                         myLog('allowance is enough! don\'t need approveMax!')
                     }
 
-                    setShowAccount({ isShow: true, step: AccountStep.Deposit_WaitForAuth })
+                }
 
-                } else {
+                setShowAccount({ isShow: true, step: AccountStep.Deposit_WaitForAuth })
 
-                    setShowAccount({ isShow: true, step: AccountStep.Deposit_WaitForAuth })
-                        
+                if (!nonceInit) {
                     nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
-
                 }
 
                 myLog('before deposit:', chainId, connectName, isMetaMask)
