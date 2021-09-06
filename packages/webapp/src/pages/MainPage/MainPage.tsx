@@ -64,7 +64,9 @@ const BoxCard = styled(Box)`
   background:var(--box-card-background);
   box-shadow:var(--box-card-shadow);
   h4{
+    text-transform: uppercase;
     font-size: 30px;
+    font-weight: 500;
   }
   :before {
     content: '';
