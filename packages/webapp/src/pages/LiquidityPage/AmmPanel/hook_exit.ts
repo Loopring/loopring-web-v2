@@ -47,7 +47,7 @@ export const useAmmExit = ({
     }) => {
 
         const {
-            ammExit: { fee, fees, request, volA_show, volB_show, },
+            ammExit: { fee, fees, request, volA_show, volB_show, btnI18nKey, btnStatus },
             updatePageAmmExit,
             common: { ammInfo, ammPoolSnapshot, },
             __SUBMIT_LOCK_TIMER__,
@@ -74,17 +74,12 @@ export const useAmmExit = ({
         slippage: initSlippage
     } as AmmExitData<IBData<string>, string>);
 
-    const [btnI18nKey, setBtnI18nKey] = React.useState<string | undefined>(undefined);
-
     const { account: { accountId, apiKey } } = useAccount()
-
-    const { btnStatus, enableBtn, disableBtn, setLoadingBtn, } = useBtnStatus()
 
         React.useEffect(() => {
 
             if (account.readyState !== AccountStatus.ACTIVATED && pair) {
-                enableBtn()
-                setBtnI18nKey(accountStaticCallBack(btnLabelNew))
+                updatePageAmmExit({ btnStatus: TradeBtnStatus.AVAILABLE, btnI18nKey: accountStaticCallBack(btnLabelNew), })
                 initAmmData(pair, undefined, true)
             }
     
@@ -93,7 +88,7 @@ export const useAmmExit = ({
     React.useEffect(() => {
 
         if (account.readyState === AccountStatus.ACTIVATED && ammData && request) {
-            setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, request }]))
+            updatePageAmmExit({ btnStatus: TradeBtnStatus.AVAILABLE, btnI18nKey: accountStaticCallBack(btnLabelNew, [{ ammData, request }]) })
         }
 
     }, [account.readyState, ammData, request])
@@ -163,32 +158,32 @@ export const useAmmExit = ({
         const validAmt2 = request?.volB_show ? request?.volB_show >= times * quoteMinAmt : false
 
         if (isLoading) {
-            setBtnI18nKey(TradeBtnStatus.LOADING)
+            updatePageAmmExit({ btnStatus: TradeBtnStatus.LOADING, })
             return undefined
         } else {
             if (account.readyState === AccountStatus.ACTIVATED) {
                 if (ammData === undefined
                     || ammData?.coinLP?.tradeValue === undefined
                     || ammData?.coinLP?.tradeValue === 0) {
-                    disableBtn()
+                        updatePageAmmExit({ btnStatus: TradeBtnStatus.DISABLED, })
                     return 'labelEnterAmount';
                 } else if (validAmt1 && validAmt2) {
-                    enableBtn()
+                    updatePageAmmExit({ btnStatus: TradeBtnStatus.AVAILABLE, })
                     return undefined
                 } else {
-                    disableBtn()
+                    updatePageAmmExit({ btnStatus: TradeBtnStatus.DISABLED, })
                     return `labelLimitMin, ${times * baseMinAmt} ${baseToken?.symbol} / ${times * quoteMinAmt} ${quoteToken?.symbol}`
                 }
 
             } else {
-                enableBtn()
+                updatePageAmmExit({ btnStatus: TradeBtnStatus.AVAILABLE, })
             }
 
         }
 
         return undefined
 
-    }, [account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, isLoading, enableBtn, disableBtn,])
+    }, [account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, isLoading, updatePageAmmExit,])
 
     const btnLabelNew = Object.assign(_.cloneDeep(btnLabel), {
         [fnType.ACTIVATED]: [btnLabelActiveCheck]
@@ -225,8 +220,7 @@ export const useAmmExit = ({
             })
         }
 
-    }, [updatePageAmmExit, setAmmCalcData, setBtnI18nKey,
-        accountStatus, account, pair, tokenMap, ammCalcData
+    }, [updatePageAmmExit, setAmmCalcData, accountStatus, account, pair, tokenMap, ammCalcData
     ])
 
     React.useEffect(() => {
@@ -290,7 +284,7 @@ export const useAmmExit = ({
     const ammCalculator = React.useCallback(async function (props) {
 
         setIsLoading(true)
-        setLoadingBtn()
+        updatePageAmmExit({ btnStatus: TradeBtnStatus.LOADING })
 
         if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !request || !account?.eddsaKey?.sk) {
             myLog(' onAmmJoin ammpoolAPI:', LoopringAPI.ammpoolAPI,
@@ -350,7 +344,7 @@ export const useAmmExit = ({
             makeCache(props.__cache__)
         }
 
-    }, [request, ammData, account, t, setLoadingBtn,])
+    }, [request, ammData, account, t, updatePageAmmExit,])
 
     const onAmmClickMap = Object.assign(_.cloneDeep(btnClickMap), {
         [fnType.ACTIVATED]: [ammCalculator]

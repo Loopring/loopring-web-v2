@@ -1,3 +1,4 @@
+import { TradeBtnStatus } from '@loopring-web/component-lib'
 import * as sdk from 'loopring-sdk'
 
 export type PageAmmCommon = {
@@ -5,11 +6,16 @@ export type PageAmmCommon = {
     ammInfo: any,
 }
 
+type PageAmmBase = {
+    btnStatus: TradeBtnStatus
+    btnI18nKey: string | undefined
+}
+
 export type PageAmmJoin = {
     fees: sdk.LoopringMap<sdk.OffchainFeeInfo>
     fee: number
     request: sdk.JoinAmmPoolRequest | undefined
-}
+} & PageAmmBase
 
 export type PageAmmExit = {
     volA_show: number | undefined
@@ -17,7 +23,7 @@ export type PageAmmExit = {
     fees: sdk.LoopringMap<sdk.OffchainFeeInfo>
     fee: number
     request: sdk.ExitAmmPoolRequest | undefined
-}
+} & PageAmmBase
 
 export type PageAmmPoolStatus = {
     ammJoin: PageAmmJoin,
