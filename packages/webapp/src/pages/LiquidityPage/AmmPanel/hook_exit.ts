@@ -65,19 +65,22 @@ export const useAmmExit = ({
         React.useEffect(() => {
 
             if (account.readyState !== AccountStatus.ACTIVATED && pair) {
-                updatePageAmmExitBtn(accountStaticCallBack(btnLabelNew))
+                const btnInfo = accountStaticCallBack(btnLabelNew)
+                btnInfo.btnStatus = TradeBtnStatus.AVAILABLE
+                updatePageAmmExitBtn(btnInfo)
                 initAmmData(pair, undefined, true)
             }
     
-        }, [account.readyState, pair])
+        }, [account.readyState, pair, updatePageAmmExitBtn])
 
     React.useEffect(() => {
 
         if (account.readyState === AccountStatus.ACTIVATED && ammData && request) {
-            updatePageAmmExitBtn(accountStaticCallBack(btnLabelNew, [{ ammData, request }]))
+            const btnInfo = accountStaticCallBack(btnLabelNew, [{ ammData, request }])
+            updatePageAmmExitBtn(btnInfo)
         }
 
-    }, [account.readyState, ammData, request])
+    }, [account.readyState, ammData, request, updatePageAmmExitBtn])
 
     const initAmmData = React.useCallback(async (pair: any, walletMap: any, isReset: boolean = false) => {
 
