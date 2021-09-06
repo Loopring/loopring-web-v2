@@ -274,7 +274,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                     </BoxWrapperStyled>
 
                 </Box>
-                <StylePaper className={'MuiPaper-elevation2'} marginTop={3} ref={container}>
+                <StylePaper className={'MuiPaper-elevation2'} marginTop={3} paddingBottom={1} ref={container}>
                     <TabsStyled value={tabIndex}
                         onChange={handleTabsChange}
                         aria-label="tabs switch"
@@ -302,7 +302,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         showLoading={showAmmPoolLoading}
                         rowHeight={RowConfig.rowHeight}
                         headerRowHeight={RowConfig.headerRowHeight}
-                        currentHeight={tableHeight}
+                        currentHeight={tableHeight-44}
                         currency={currency}
                     />}
                 </StylePaper>
