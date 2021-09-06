@@ -235,8 +235,6 @@ export const useAmmJoin = ({
 
         const marketInfo: sdk.MarketInfo = marketMap[market]
 
-        const ammInfo: any = ammMap[amm as string]
-
         const coinA = tokenMap[data.coinA.belong as string]
         const coinB = tokenMap[data.coinB.belong as string]
 
@@ -248,22 +246,24 @@ export const useAmmJoin = ({
             isAtoB, slippageReal, account.accAddress, fees as sdk.LoopringMap<sdk.OffchainFeeInfo>,
             ammMap[amm], ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0, 0)
 
+        const newData = _.cloneDeep(data)
+
         if (isAtoB) {
-            data.coinB.tradeValue = parseFloat(sdk.toBig(request.joinTokens.pooled[1].volume)
+            newData.coinB.tradeValue = parseFloat(sdk.toBig(request.joinTokens.pooled[1].volume)
                 .div('1e' + coinB.decimals).toFixed(marketInfo.precisionForPrice))
         } else {
-            data.coinA.tradeValue = parseFloat(sdk.toBig(request.joinTokens.pooled[0].volume)
+            newData.coinA.tradeValue = parseFloat(sdk.toBig(request.joinTokens.pooled[0].volume)
                 .div('1e' + coinA.decimals).toFixed(marketInfo.precisionForPrice))
         }
 
         myLog('raw request:', request)
 
-        updatePageAmmJoin({ 
+        updatePageAmmJoin({
             request,
             btnI18nKey: accountStaticCallBack(btnLabelNew, [{ ammData }]),
             ammData: {
-                coinA: data.coinA as IBData<string>,
-                coinB: data.coinB as IBData<string>,
+                coinA: newData.coinA as IBData<string>,
+                coinB: newData.coinB as IBData<string>,
                 slippage,
             }
         })
