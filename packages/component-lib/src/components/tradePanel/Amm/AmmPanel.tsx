@@ -150,7 +150,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
                 onAmmAddClick,
                 handleError,
                 onAddChangeEvent: _onChangeAddEvent,
-                ammData: ammChgDepositData.tradeData,
+                ammData: ammDepositData,
                 tokenAProps: {...tokenDepositAProps},
                 tokenBProps: {...tokenDepositBProps},
             }} />, [
@@ -178,7 +178,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
                 handleError,
                 selectedPercentage: -1,
                 onRemoveChangeEvent: _onChangeRemoveEvent,
-                ammData: ammChgWithdrawData.tradeData,
+                ammData: ammWithdrawData,
                 tokenAProps: {...tokenWithDrawAProps},
                 tokenBProps: {...tokenWithDrawBProps},
             }} />, [
