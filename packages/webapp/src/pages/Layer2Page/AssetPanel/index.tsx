@@ -33,7 +33,7 @@ const StyledChartWrapper = styled(Box)`
 `
 
 const ChartWrapper = styled(Box)`
-    background-image: url('./static/images/${({dark}: any) => dark ? 'noDataDark' : 'noDataLight'}.png');
+    background-image: url('./static/images/${({ dark }: any) => dark === 'true' ? 'noDataDark' : 'noDataLight'}.png');
     background-repeat: no-repeat;
 ` as any
 
@@ -174,7 +174,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                      className={'MuiPaper-elevation2'}>
                     <Typography component="span" color="textSecondary"
                                 variant="body1">{t('labelTotalAssets')}</Typography>
-                    <ChartWrapper marginTop={2} dark={themeMode === 'dark'} flex={1} component={'div'}/>
+                    <ChartWrapper marginTop={2} dark={themeMode === 'dark' ? 'true' : 'false'} flex={1} component={'div'}/>
                 </Box>
             </StyledChartWrapper>
             <StylePaper marginTop={2} ref={container} className={'MuiPaper-elevation2'}>
