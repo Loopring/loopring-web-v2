@@ -28,13 +28,11 @@ import { myLog } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 
 import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
-import { usePageAmmPool } from "stores/router";
+import { initSlippage, usePageAmmPool } from "stores/router";
 
 import _ from 'lodash'
 
 // ----------calc hook -------
-
-const initSlippage = 0.5
 
 export const useAmmJoin = ({
     setToastOpen,
@@ -48,7 +46,7 @@ export const useAmmJoin = ({
     }) => {
 
     const {
-        ammJoin: { fee, fees, request, btnStatus, btnI18nKey, },
+        ammJoin: { fee, fees, request, btnStatus, btnI18nKey, ammCalcData, ammData, },
         updatePageAmmJoin,
         common: { ammInfo, ammPoolSnapshot, },
         __SUBMIT_LOCK_TIMER__,
@@ -67,14 +65,6 @@ export const useAmmJoin = ({
     const [quoteToken, setQuoteToken] = React.useState<sdk.TokenInfo>();
     const [baseMinAmt, setBaseMinAmt,] = React.useState<any>()
     const [quoteMinAmt, setQuoteMinAmt,] = React.useState<any>()
-
-    const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<string> | undefined>();
-
-    const [ammData, setAmmData] = React.useState<AmmJoinData<IBData<string>, string>>({
-        coinA: { belong: undefined } as unknown as IBData<string>,
-        coinB: { belong: undefined } as unknown as IBData<string>,
-        slippage: initSlippage
-    } as AmmJoinData<IBData<string>, string>);
 
     React.useEffect(() => {
         
@@ -150,9 +140,9 @@ export const useAmmJoin = ({
         myLog('initAmmData:', _ammCalcData)
 
         if (isReset) {
-            setAmmCalcData(_ammCalcData)
+            updatePageAmmJoin({ammCalcData: _ammCalcData})
         } else {
-            setAmmCalcData({ ...ammCalcData, ..._ammCalcData })
+            updatePageAmmJoin({ammCalcData: { ...ammCalcData, ..._ammCalcData }})
         }
 
         if (_ammCalcData.myCoinA && tokenMap) {
@@ -167,14 +157,14 @@ export const useAmmJoin = ({
             setBaseMinAmt(baseT ? sdk.toBig(baseT.orderAmounts.minimum).div('1e' + baseT.decimals).toNumber() : undefined)
             setQuoteMinAmt(quoteT ? sdk.toBig(quoteT.orderAmounts.minimum).div('1e' + quoteT.decimals).toNumber() : undefined)
 
-            setAmmData({
+            updatePageAmmJoin({ammData: {
                 coinA: { ..._ammCalcData.myCoinA, tradeValue: undefined },
                 coinB: { ..._ammCalcData.myCoinB, tradeValue: undefined },
                 slippage: initSlippage,
-            })
+            }})
         }
     }, [fee, snapShotData, coinMap, tokenMap, ammCalcData, ammMap,
-        setAmmCalcData, setAmmData, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt,])
+        updatePageAmmJoin, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt,])
 
     const calculateCallback = React.useCallback(async () => {
         if (accountStatus === SagaStatus.UNSET) {
@@ -201,15 +191,15 @@ export const useAmmJoin = ({
             const feeRaw = fees[pair.coinBInfo.simpleName] ? fees[pair.coinBInfo.simpleName].fee : 0
             const fee = sdk.toBig(feeRaw).div('1e' + feeToken.decimals)
 
-            updatePageAmmJoin({ fee: fee.toNumber(), fees })
-
-            setAmmCalcData({
+            const newAmmCalcData = {
                 ...ammCalcData, fee: fee.toString()
                     + ' ' + pair.coinBInfo.simpleName,
-            })
+            }
+
+            updatePageAmmJoin({ fee: fee.toNumber(), fees, ammCalcData: newAmmCalcData})
         }
 
-    }, [updatePageAmmJoin, setAmmCalcData, accountStatus, account, pair, tokenMap, ammCalcData
+    }, [updatePageAmmJoin, accountStatus, account, pair, tokenMap, ammCalcData
     ])
 
     React.useEffect(() => {
@@ -264,18 +254,16 @@ export const useAmmJoin = ({
                 .div('1e' + coinA.decimals).toFixed(marketInfo.precisionForPrice))
         }
 
-        updatePageAmmJoin({ btnI18nKey: accountStaticCallBack(btnLabelNew, [{ ammData }]) })
-        
-        setAmmData({
-            coinA: data.coinA as IBData<string>,
-            coinB: data.coinB as IBData<string>,
-            slippage,
-        })
-
         myLog('raw request:', request)
 
-        updatePageAmmJoin({
-            request
+        updatePageAmmJoin({ 
+            request,
+            btnI18nKey: accountStaticCallBack(btnLabelNew, [{ ammData }]),
+            ammData: {
+                coinA: data.coinA as IBData<string>,
+                coinB: data.coinB as IBData<string>,
+                slippage,
+            }
         })
 
     }, [])
@@ -334,10 +322,12 @@ export const useAmmJoin = ({
 
             myLog('join ammpool response:', response)
 
-            setAmmData({
-                ...ammData, ...{
-                    coinA: { ...ammData.coinA, tradeValue: 0 },
-                    coinB: { ...ammData.coinB, tradeValue: 0 },
+            updatePageAmmJoin({ 
+                ammData: {
+                    ...ammData, ...{
+                        coinA: { ...ammData.coinA, tradeValue: 0 },
+                        coinB: { ...ammData.coinB, tradeValue: 0 },
+                    }
                 }
             })
 
