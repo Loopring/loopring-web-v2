@@ -28,12 +28,9 @@ import { myLog } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 
 import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
-import { useBtnStatus } from "hooks/common/useBtnStatus";
 
 import _ from 'lodash'
-import { usePageAmmPool } from "stores/router";
-
-const initSlippage = 0.5
+import { initSlippage, usePageAmmPool, } from "stores/router";
 
 export const useAmmExit = ({
     setToastOpen,
@@ -47,7 +44,7 @@ export const useAmmExit = ({
     }) => {
 
         const {
-            ammExit: { fee, fees, request, volA_show, volB_show, btnI18nKey, btnStatus },
+            ammExit: { fee, fees, request, volA_show, volB_show, btnI18nKey, btnStatus, ammCalcData, ammData, },
             updatePageAmmExit,
             common: { ammInfo, ammPoolSnapshot, },
             __SUBMIT_LOCK_TIMER__,
@@ -66,15 +63,6 @@ export const useAmmExit = ({
     const [quoteToken, setQuoteToken] = React.useState<sdk.TokenInfo>();
     const [baseMinAmt, setBaseMinAmt,] = React.useState<any>()
     const [quoteMinAmt, setQuoteMinAmt,] = React.useState<any>()
-
-    const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<string> | undefined>();
-
-    const [ammData, setAmmData] = React.useState<AmmExitData<IBData<string>, string>>({
-        coinLP: { belong: undefined } as unknown as IBData<string>,
-        slippage: initSlippage
-    } as AmmExitData<IBData<string>, string>);
-
-    const { account: { accountId, apiKey } } = useAccount()
 
         React.useEffect(() => {
 
@@ -109,10 +97,11 @@ export const useAmmExit = ({
         myLog('exit !!! ---!!! initAmmData:', _ammCalcData)
         myLog('exit !!! ---!!! initAmmData:', ammData)
 
+
         if (isReset) {
-            setAmmCalcData(_ammCalcData)
+            updatePageAmmExit({ammCalcData: _ammCalcData})
         } else {
-            setAmmCalcData({ ...ammCalcData, ..._ammCalcData })
+            updatePageAmmExit({ammCalcData: { ...ammCalcData, ..._ammCalcData }})
         }
 
         if (_ammCalcData.lpCoin && _ammCalcData.myCoinA && _ammCalcData.myCoinB && tokenMap) {
@@ -134,16 +123,15 @@ export const useAmmExit = ({
                 slippage: initSlippage,
             }
 
-            myLog('newAmmData: ', newAmmData)
+            updatePageAmmExit({ammData: newAmmData})
 
-            setAmmData(newAmmData)
         } else {
             myLog('check:', (_ammCalcData.lpCoin && _ammCalcData.myCoinA && _ammCalcData.myCoinB))
             myLog('tokenMap:', tokenMap)
         }
 
     }, [fee, snapShotData, coinMap, tokenMap, ammCalcData, ammMap,
-        setAmmCalcData, setAmmData, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt, ])
+        updatePageAmmExit, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt, ])
 
     const btnLabelActiveCheck = React.useCallback(({ ammData, request }): string | undefined => {
 
@@ -214,13 +202,15 @@ export const useAmmExit = ({
 
             myLog('---calculateCallback fee:', fee.toNumber())
 
-            setAmmCalcData({
+            const newAmmCalcData = {
                 ...ammCalcData, fee: fee.toString()
                     + ' ' + pair.coinBInfo.simpleName,
-            })
+            }
+
+            updatePageAmmExit({ fee: fee.toNumber(), fees, ammCalcData: newAmmCalcData})
         }
 
-    }, [updatePageAmmExit, setAmmCalcData, accountStatus, account, pair, tokenMap, ammCalcData
+    }, [updatePageAmmExit, accountStatus, account, pair, tokenMap, ammCalcData
     ])
 
     React.useEffect(() => {
@@ -228,12 +218,6 @@ export const useAmmExit = ({
     }, [accountStatus, account.readyState, pair.coinBInfo?.simpleName, ammData, ])
 
     const handleExit = React.useCallback(async ({ data, requestOut, ammData, fees, ammPoolSnapshot, tokenMap, account }) => {
-
-        myLog('handle exit:', requestOut)
-
-        // setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, request: requestOut, }]))
-
-        myLog('exit data:', data, ammData)
 
         if (!tokenMap || !baseToken || !quoteToken
             || !ammPoolSnapshot || !account?.accAddress) {
@@ -271,9 +255,9 @@ export const useAmmExit = ({
 
             updatePageAmmExit({ request, volA_show, volB_show, })
         }
-    
-        setAmmData({...ammData, ...newAmmData,
-            slippage: data.slippage, })
+
+        updatePageAmmExit({ammData: {...ammData, ...newAmmData,
+            slippage: data.slippage, }})
 
     }, [updatePageAmmExit, idIndex, marketArray, marketMap, baseToken, quoteToken])
 
@@ -317,11 +301,13 @@ export const useAmmExit = ({
         try {
 
             myLog('---- try to exit req:', req)
-            setAmmData({
+
+            updatePageAmmExit({ammData: {
                 ...ammData, ...{
                     coinLP: { ...ammData.coinLP, tradeValue: 0 },
                 }
-            })
+            }})
+            
             const response = await LoopringAPI.ammpoolAPI.exitAmmPool(req, patch, account.apiKey)
 
             myLog('exit ammpool response:', response)

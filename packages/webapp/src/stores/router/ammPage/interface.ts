@@ -1,5 +1,8 @@
 import { TradeBtnStatus } from '@loopring-web/component-lib'
 import * as sdk from 'loopring-sdk'
+import {
+    AmmInData, AmmExitData, AmmJoinData, IBData,
+} from '@loopring-web/common-resources'
 
 export type PageAmmCommon = {
     ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined,
@@ -9,12 +12,14 @@ export type PageAmmCommon = {
 type PageAmmBase = {
     btnStatus: TradeBtnStatus
     btnI18nKey: string | undefined
+    ammCalcData: AmmInData<string> | undefined
 }
 
 export type PageAmmJoin = {
     fees: sdk.LoopringMap<sdk.OffchainFeeInfo>
     fee: number
     request: sdk.JoinAmmPoolRequest | undefined
+    ammData: AmmJoinData<IBData<string>, string>
 } & PageAmmBase
 
 export type PageAmmExit = {
@@ -23,6 +28,7 @@ export type PageAmmExit = {
     fees: sdk.LoopringMap<sdk.OffchainFeeInfo>
     fee: number
     request: sdk.ExitAmmPoolRequest | undefined
+    ammData: AmmExitData<IBData<string>, string>
 } & PageAmmBase
 
 export type PageAmmPoolStatus = {

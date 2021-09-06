@@ -1,7 +1,10 @@
+import { AmmJoinData, AmmExitData, IBData } from '@loopring-web/common-resources'
 import { TradeBtnStatus } from '@loopring-web/component-lib'
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { PageAmmCommon } from '.'
 import { PageAmmJoin, PageAmmExit, PageAmmPoolStatus } from './interface'
+
+export const initSlippage = 0.5
 
 const initJoinState: PageAmmJoin = {
     fees: {},
@@ -9,6 +12,12 @@ const initJoinState: PageAmmJoin = {
     request: undefined,
     btnI18nKey: undefined,
     btnStatus: TradeBtnStatus.AVAILABLE,
+    ammCalcData: undefined,
+    ammData: {
+        coinA: { belong: undefined } as unknown as IBData<string>,
+        coinB: { belong: undefined } as unknown as IBData<string>,
+        slippage: initSlippage
+    } as AmmJoinData<IBData<string>, string>,
 }
 
 const initExitState: PageAmmExit = {
@@ -19,6 +28,11 @@ const initExitState: PageAmmExit = {
     request: undefined,
     btnI18nKey: undefined,
     btnStatus: TradeBtnStatus.AVAILABLE,
+    ammCalcData: undefined,
+    ammData: {
+        coinLP: { belong: undefined } as unknown as IBData<string>,
+        slippage: initSlippage
+    } as AmmExitData<IBData<string>, string>,
 }
 
 const initCommonState: PageAmmCommon = {
@@ -69,6 +83,7 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
                 request,
                 btnI18nKey,
                 btnStatus,
+                ammCalcData,
             } = action.payload;
 
             if (fee) {
@@ -89,6 +104,10 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
 
             if (btnStatus) {
                 state.ammJoin.btnStatus = btnStatus
+            }
+
+            if (ammCalcData) {
+                state.ammJoin.ammCalcData = ammCalcData
             }
 
         },
