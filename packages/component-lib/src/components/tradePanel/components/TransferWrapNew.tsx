@@ -148,12 +148,14 @@ export const TransferWrapNew = <T extends IBData<I>,
 
     const handleToggleChange = React.useCallback((e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
         if (value === null) return
+        const currFeeRaw = toggleData.find(o => o.key === value)?.__raw__ || '--'
         setFeeToken(value)
         handleFeeChange({
             belong: value,
             fee: getTokenFee(value),
+            __raw__: currFeeRaw,
         })
-    }, [handleFeeChange, getTokenFee])
+    }, [handleFeeChange, getTokenFee, toggleData])
 
     React.useEffect(() => {
         if (!!chargeFeeTokenList.length && assetsData && !checkFeeTokenEnough(feeToken, Number(getTokenFee(feeToken)))) {
