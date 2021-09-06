@@ -1,12 +1,10 @@
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core';
-// import React from 'react';
+
 import { Trans, WithTranslation, withTranslation } from 'react-i18next';
 import { Button } from '../../../basic-lib'
 import React from 'react';
 import { Typography } from '@material-ui/core/';
-// const Transition = React.forwardRef(function Transition(props, ref) {
-//     return <Slide direction="up" ref={ref} {...props} />;
-// });
+
 export const AlertImpact = withTranslation('common', {withRef: true})(({
                                                                            t,
                                                                            value,
@@ -19,7 +17,6 @@ export const AlertImpact = withTranslation('common', {withRef: true})(({
 }) => {
     return <Dialog
         open={open}
-        // TransitionComponent={Transition}
         keepMounted
         onClose={(e: MouseEvent) => handleClose(e)}
         aria-describedby="alert-dialog-slide-description"
@@ -28,7 +25,7 @@ export const AlertImpact = withTranslation('common', {withRef: true})(({
         <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">
                 <Trans i18nKey={'labelImpactExtraGreat'} tOptions={{value}}>
-                    Your transaction amount will affect the pool price<Typography component={'span'} color={'error'}> {{value}}% </Typography>. Are you sure to swap?
+                    Your transaction amount will affect the pool price<Typography component={'span'} color={'error'}> {<>{value}</>}% </Typography>. Are you sure to swap?
                 </Trans>
             </DialogContentText>
         </DialogContent>
@@ -61,7 +58,6 @@ export const ConfirmImpact = withTranslation('common', {withRef: true})(({
 
     return <Dialog
         open={open}
-        // TransitionComponent={Transition}
         keepMounted
         onClose={(e: MouseEvent) => handleClose(e)}
         aria-describedby="alert-dialog-slide-description"
@@ -70,12 +66,12 @@ export const ConfirmImpact = withTranslation('common', {withRef: true})(({
         <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">
                 <Trans i18nKey={'labelImpactExtraGreat'} tOptions={{value}}>
-                    Your transaction amount will affect the pool price<Typography component={'span'} color={'error'}> {{value}}% </Typography>. Are you sure to swap?
+                    Your transaction amount will affect the pool price<Typography component={'span'} color={'error'}> {<>{value}</>}% </Typography>. Are you sure to swap?
                 </Trans>
             </DialogContentText>
             <DialogContentText id="alert-dialog-slide-description">
                 <Trans i18nKey={'labelImpactAgree'} tOptions={value}>
-                    Please enter uppercase <Typography component={'span'} color={'textPrimary'}>\"AGREE\" </Typography>to confirm again.
+                    Please enter uppercase <Typography component={'span'} color={'textPrimary'}>\"AGREE\"</Typography>to confirm again.
                 </Trans>
             </DialogContentText>
             <TextField
@@ -86,7 +82,6 @@ export const ConfirmImpact = withTranslation('common', {withRef: true})(({
                 }}
                 margin="dense"
                 id="agree"
-                // label="Agree"
                 type="text"
                 fullWidth
             />
