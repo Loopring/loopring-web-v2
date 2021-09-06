@@ -33,6 +33,8 @@ import { toBig } from 'loopring-sdk';
 import { getShowStr } from '@loopring-web/common-resources'
 import { useAmmViewData } from './ammViewHook';
 
+import _ from 'lodash'
+
 export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
     I,
     ACD extends AmmInData<I>,
@@ -112,8 +114,9 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
 
         if (ammData?.coinLP) {
             setSelectedPercentage(value)
-            ammData.coinLP.tradeValue = (ammData.coinLP.balance / 100) * value;
-            handleCountChange(ammData.coinLP, null)
+            const cloneLP = _.cloneDeep(ammData.coinLP)
+            cloneLP.tradeValue = (cloneLP.balance / 100) * value;
+            handleCountChange(cloneLP, null)
         }
     }
 

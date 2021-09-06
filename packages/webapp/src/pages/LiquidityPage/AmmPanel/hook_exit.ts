@@ -44,11 +44,9 @@ export const useAmmExit = ({
     }) => {
 
         const {
-            ammExit: { fee, fees, request, volA_show, volB_show, btnI18nKey, btnStatus, ammCalcData, ammData, },
+            ammExit: { fee, fees, request, btnI18nKey, btnStatus, ammCalcData, ammData, },
             updatePageAmmExit,
             common: { ammInfo, ammPoolSnapshot, },
-            __SUBMIT_LOCK_TIMER__,
-            __TOAST_AUTO_CLOSE_TIMER__,
         } = usePageAmmPool()
 
     const { t } = useTranslation('common');
