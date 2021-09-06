@@ -11,6 +11,8 @@ import store from './stores';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { HashRouter as Router } from 'react-router-dom'
+
 const App = () => {
     const theme: Theme = useTheme();
     const {i18n: {language}} = useTranslation()
@@ -24,19 +26,6 @@ const App = () => {
     }, [])
 
     const {state} = useInit();
-    // const [status, setStatus] = React.useState<keyof typeof SagaStatus>('PENDING');
-    // check all status be
-    //TODO  demo if  tokenMapStatus is unset and tokenMap is empty. show error
-    //TODO tokenMapObj.status is pending, show global loading
-    //console.log(tokenMapObj.tokenMap && Object.keys(tokenMapObj.tokenMap).length>0,tokenMapObj.status, tokenMapObj.errorMessage)
-
-    // useEffect(() => {
-    //     if (state === SagaStatus.PENDING || state === SagaStatus.ERROR) {
-    //         setStatus(state)
-    //     } else {
-    //         setStatus('DONE')
-    //     }
-    // }, [state, setStatus])
 
 
     return <><GlobalStyles styles={css`
@@ -60,15 +49,12 @@ const App = () => {
       //}
     }`}></GlobalStyles>
 
-        {/*<Web3ReactManager>*/}
         {state === 'PENDING' ?
             <LoadingPage/>
-            // <ErrorPage {...ErrorMap.LOADING_WHOLE_SITE}/>
-            // <Avatar src={loadingSvg}/>
             : state === 'ERROR' ? <ErrorPage {...ErrorMap.NO_NETWORK_ERROR} /> : <>
+            <Router>
                 <RouterView/>
-
-                {/*    <ErrorPage {...ErrorMap.LOADING_WHOLE_SITE}/>*/}
+                </Router>
             </>}
     </>
 
