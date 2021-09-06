@@ -15,6 +15,7 @@ import { useSocket } from '../../../stores/socket';
 import { useWalletLayer2Socket } from 'services/socket/';
 import { useSystem } from 'stores/system'
 import { myLog } from 'utils/log_tools'
+import BigNumber from 'bignumber.js';
 
 export type TrendDataItem = {
     timeStamp: number;
@@ -124,28 +125,26 @@ export const useGetAssets = () => {
                     const tokenInfo = assetsMap[ key ]
                     const isLpToken = tokenInfo.token.split('-')[ 0 ] === 'LP'
                     let tokenValueDollar = 0
-                    const totalAmount = volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail?.total)
+                    const withdrawAmount = volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail.pending.withdraw)
                     const depositAmount = volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail.pending.deposit)
+                    const totalAmount = volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail?.total)?.plus(depositAmount || 0).plus(withdrawAmount || 0)
                     if (!isLpToken) {
                         const tokenPriceUSDT = tokenInfo.token === 'DAI'
                             ? 1
                             : Number(tokenPriceList.find(o => o.token === tokenInfo.token) ? tokenPriceList.find(o => o.token === tokenInfo.token)?.detail.price : 0) / Number(tokenPriceList.find(o => o.token === 'USDT')?.detail.price)
                         // const rawData = Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail?.total)) * tokenPriceUSDT
-                        const rawData = (totalAmount?.plus(depositAmount || 0))?.times(tokenPriceUSDT)
+                        const rawData = (totalAmount as BigNumber).times(tokenPriceUSDT)
                         tokenValueDollar = rawData?.toNumber() || 0
                     } else {
                         // const formattedBalance = Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total))
-                        const formattedBalance = totalAmount?.plus(depositAmount || 0)
                         const price = getLpTokenPrice(tokenInfo.token)
-                        if (formattedBalance && price) {
+                        if (totalAmount && price) {
                             // tokenValueDollar = Number(getValuePrecision((formattedBalance || 0) * price, 2)) || 0 as any;
-                            tokenValueDollar = formattedBalance.times(price).toNumber()
+                            tokenValueDollar = totalAmount.times(price).toNumber()
                         }
                     }
                     const isSmallBalance = tokenValueDollar < 1
                     const lockedAmount = volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail.locked)
-                    const withdrawAmount = volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail.pending.withdraw)
-                    
                     const frozenAmount = lockedAmount?.plus(withdrawAmount || 0).plus(depositAmount || 0)
                     item = {
                         token: {
@@ -153,7 +152,7 @@ export const useGetAssets = () => {
                             value: tokenInfo.token
                         },
                         // amount: getThousandFormattedNumbers(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) || EmptyValueTag,
-                        amount: (volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total as string)) || EmptyValueTag,
+                        amount: totalAmount?.toNumber() || EmptyValueTag,
                         // available: getThousandFormattedNumbers(Number(tokenInfo.detail?.count)) || EmptyValueTag,
                         available: (Number(tokenInfo.detail?.count)) || EmptyValueTag,
                         // locked: String(volumeToCountAsBigNumber(tokenInfo.token, tokenInfo.detail?.detail.locked)) || EmptyValueTag,
