@@ -23,7 +23,6 @@ import {
     TickerData,
     TradingInterval
 } from 'loopring-sdk';
-import { deepClone } from '../../../utils/obj_tools';
 import { getUserAmmTransaction, makeMyAmmMarketArray, getRecentAmmTransaction } from '../../../hooks/help/marketTable';
 import { AmmRecordRow } from '@loopring-web/component-lib';
 import { useSystem } from '../../../stores/system';
@@ -36,11 +35,12 @@ import { calcPriceByAmmTickMapDepth, swapDependAsync } from '../../SwapPage/help
 import { myLog } from "@loopring-web/common-resources";
 
 import { getShowStr } from '@loopring-web/common-resources'
+import _ from 'lodash'
 
 const makeAmmDetailExtendsActivityMap = ({ammMap, coinMap, ammActivityMap, ammKey}: any) => {
 
     if (ammMap && coinMap) {
-        let ammDetail = deepClone(ammMap[ ammKey as string ]);
+        let ammDetail = _.cloneDeep(ammMap[ ammKey as string ]);
         const ammActivity = ammActivityMap [ ammKey as string ];
 
         if (ammDetail && ammDetail.coinA) {

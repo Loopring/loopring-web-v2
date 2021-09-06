@@ -24,12 +24,13 @@ import * as sdk from 'loopring-sdk'
 import { useAccount } from '../../../stores/account/hook';
 import store from "stores";
 import { LoopringAPI } from "api_wrapper";
-import { deepClone } from '../../../utils/obj_tools';
 import { myLog } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 
 import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
 import { useBtnStatus } from "hooks/common/useBtnStatus";
+
+import _ from 'lodash'
 
 const initSlippage = 0.5
 
@@ -190,7 +191,7 @@ export const useAmmExit = ({
 
     }, [account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, isLoading, enableBtn, disableBtn,])
 
-    const btnLabelNew = Object.assign(deepClone(btnLabel), {
+    const btnLabelNew = Object.assign(_.cloneDeep(btnLabel), {
         [fnType.ACTIVATED]: [btnLabelActiveCheck]
     });
 
@@ -365,7 +366,7 @@ export const useAmmExit = ({
 
     }, [request, ammData, account, t, setLoadingBtn,])
 
-    const onAmmClickMap = Object.assign(deepClone(btnClickMap), {
+    const onAmmClickMap = Object.assign(_.cloneDeep(btnClickMap), {
         [fnType.ACTIVATED]: [ammCalculator]
     })
     const onAmmClick = React.useCallback((props: AmmExitData<IBData<any>>) => {
