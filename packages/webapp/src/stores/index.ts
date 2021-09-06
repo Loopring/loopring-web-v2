@@ -29,7 +29,7 @@ import { OnchainHashInfo } from './localStore/onchainHashInfo'
 import { Confirmation } from './localStore/confirmation'
 import { WalletInfo } from './localStore/walletInfo'
 import { amountMapSlice } from './amount';
-import { pageTradeLiteSlice } from './router';
+import { pageTradeLiteSlice, pageAmmPoolSlice, } from './router';
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -80,7 +80,10 @@ const reducer = combineReducers({
     tickerMap: tickerMapSlice.reducer,
     localStore: persistedLocalStoreReducer,
     amountMap: amountMapSlice.reducer,
-    pageTradeLite: pageTradeLiteSlice.reducer
+
+    // router redux
+    pageTradeLite: pageTradeLiteSlice.reducer,
+    pageAmmPool: pageAmmPoolSlice.reducer,
 })
 
 //const persistedReducer = persistReducer(persistConfig ,reducer)

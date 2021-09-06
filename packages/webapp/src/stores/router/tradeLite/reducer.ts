@@ -20,7 +20,7 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
     name: 'pageTradeLite',
     initialState,
     reducers: {
-        reset(state) {
+        resetSwap(state) {
             state.pageTradeLite = initState
         },
         updatePageTradeLite(state, action: PayloadAction<Partial<PageTradeLite>>) {
@@ -113,4 +113,4 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
     },
 });
 export { pageTradeLiteSlice };
-export const {updatePageTradeLite, reset, } = pageTradeLiteSlice.actions;
+export const {updatePageTradeLite, resetSwap, } = pageTradeLiteSlice.actions;

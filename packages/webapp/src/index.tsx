@@ -22,9 +22,6 @@ import { useSettings } from '@loopring-web/component-lib';
 import React, { Provider as TProvider } from 'react';
 import { TimeoutCheckProvider } from 'TimeoutCheckProvider'
 
-// const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName)
-
-
 const ProviderApp = React.memo(({children}: { children: JSX.Element }) => {
     const providers: Array<[TProvider<any>, any]> = [
         provider(Provider as any, {store}),
