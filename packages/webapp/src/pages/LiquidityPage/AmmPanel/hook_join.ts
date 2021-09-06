@@ -68,8 +68,11 @@ export const useAmmJoin = ({
 
         if (account.readyState !== AccountStatus.ACTIVATED && pair) {
             const btnInfo = accountStaticCallBack(btnLabelNew)
-            btnInfo.btnStatus = TradeBtnStatus.AVAILABLE
-            updatePageAmmJoinBtn(btnInfo)
+
+            if (typeof(btnInfo) === 'string') {
+                updatePageAmmJoinBtn({btnStatus: TradeBtnStatus.AVAILABLE, btnI18nKey: btnInfo})
+            }
+            
             initAmmData(pair, undefined, true)
         }
 
@@ -207,8 +210,6 @@ export const useAmmJoin = ({
 
     const handleJoin = React.useCallback(async ({ data, ammData, type, fees, ammPoolSnapshot, tokenMap, account }) => {
 
-        // updatePageAmmJoinBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]))
-
         if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !fees || !account?.accAddress) {
             return
         }
@@ -265,8 +266,6 @@ export const useAmmJoin = ({
                 slippage,
             }
         })
-
-        // updatePageAmmJoinBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]))
 
     }, [])
 
@@ -355,7 +354,7 @@ export const useAmmJoin = ({
         [fnType.ACTIVATED]: [ammCalculator]
     })
     const onAmmClick = React.useCallback((props: AmmJoinData<IBData<any>>) => {
-        updatePageAmmJoinBtn(accountStaticCallBack(onAmmClickMap, [props]))
+        accountStaticCallBack(onAmmClickMap, [props])
     }, [onAmmClickMap, updatePageAmmJoinBtn]);
 
     const walletLayer2Callback = React.useCallback(() => {
