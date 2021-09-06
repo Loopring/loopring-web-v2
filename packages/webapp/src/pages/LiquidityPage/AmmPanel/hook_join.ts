@@ -157,11 +157,13 @@ export const useAmmJoin = ({
             setBaseMinAmt(baseT ? sdk.toBig(baseT.orderAmounts.minimum).div('1e' + baseT.decimals).toNumber() : undefined)
             setQuoteMinAmt(quoteT ? sdk.toBig(quoteT.orderAmounts.minimum).div('1e' + quoteT.decimals).toNumber() : undefined)
 
-            updatePageAmmJoin({ammData: {
+            const newAmmData = {
                 coinA: { ..._ammCalcData.myCoinA, tradeValue: undefined },
                 coinB: { ..._ammCalcData.myCoinB, tradeValue: undefined },
                 slippage: initSlippage,
-            }})
+            }
+
+            updatePageAmmJoin({ ammData: newAmmData, })
         }
     }, [fee, snapShotData, coinMap, tokenMap, ammCalcData, ammMap,
         updatePageAmmJoin, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt,])
