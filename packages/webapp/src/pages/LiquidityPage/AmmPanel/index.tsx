@@ -90,7 +90,7 @@ export const AmmPanelView = ({
         refreshRef,
         ammPoolSnapshot,
         updateAmmPoolSnapshot,
-    } = useAmmCommon({ pair, snapShotData })
+    } = useAmmCommon({ pair, })
 
     const {
 

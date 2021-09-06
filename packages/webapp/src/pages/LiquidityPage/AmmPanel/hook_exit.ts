@@ -380,13 +380,13 @@ export const useAmmExit = ({
             setIsLoading(false)
         }
 
-    }, [fee, pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolSnapshot])
+    }, [fee, pair?.coinAInfo?.simpleName, snapShotData?.ammPoolSnapshot])
 
     useWalletLayer2Socket({ walletLayer2Callback })
 
     React.useEffect(() => {
         walletLayer2Callback()
-    }, [fee, pair?.coinAInfo?.simpleName, snapShotData?.tickerData, snapShotData?.ammPoolSnapshot, tokenMap])
+    }, [fee, pair?.coinAInfo?.simpleName, snapShotData?.ammPoolSnapshot, tokenMap])
 
     return {
         ammCalcData,
