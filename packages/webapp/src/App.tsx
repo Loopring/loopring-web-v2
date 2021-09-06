@@ -11,6 +11,8 @@ import store from './stores';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { HashRouter as Router } from 'react-router-dom'
+
 const App = () => {
     const theme: Theme = useTheme();
     const {i18n: {language}} = useTranslation()
@@ -50,7 +52,9 @@ const App = () => {
         {state === 'PENDING' ?
             <LoadingPage/>
             : state === 'ERROR' ? <ErrorPage {...ErrorMap.NO_NETWORK_ERROR} /> : <>
+            <Router>
                 <RouterView/>
+                </Router>
             </>}
     </>
 
