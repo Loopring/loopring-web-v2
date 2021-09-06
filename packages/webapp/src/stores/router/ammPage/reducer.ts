@@ -2,10 +2,8 @@ import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { PageAmmPool, PageAmmPoolStatus } from './interface'
 
 const initState = {
-    market: undefined,
-    tradePair: undefined,
-    calcTradeParams: undefined,
-    priceImpactObj: undefined,
+    ammJoin: undefined,
+    ammExit: undefined,
 }
 
 const initialState: PageAmmPoolStatus = {
