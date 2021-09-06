@@ -49,7 +49,7 @@ export const useAmmJoin = ({
     }) => {
 
     const {
-        ammJoin,
+        ammJoin: { fee, fees, ammInfo, request, },
         updatePageAmmJoin,
         __SUBMIT_LOCK_TIMER__,
         __TOAST_AUTO_CLOSE_TIMER__,
@@ -78,9 +78,6 @@ export const useAmmJoin = ({
     } as AmmJoinData<IBData<string>, string>);
 
     const [btnI18nKey, setBtnI18nKey] = React.useState<string | undefined>(undefined);
-
-    const [fees, setFees] = React.useState<sdk.LoopringMap<sdk.OffchainFeeInfo>>()
-    const [fee, setFee] = React.useState<number>(0)
 
     React.useEffect(() => {
         
@@ -190,6 +187,9 @@ export const useAmmJoin = ({
                 || !ammCalcData || !tokenMap) {
                 return
             }
+
+            myLog('calculateCallback......')
+
             const feeToken: sdk.TokenInfo = tokenMap[pair.coinBInfo.simpleName]
 
             const requestType = sdk.OffchainFeeReqType.AMM_JOIN
@@ -202,12 +202,10 @@ export const useAmmJoin = ({
 
             const { fees } = await LoopringAPI.userAPI.getOffchainFeeAmt(request, account.apiKey)
 
-            setFees(fees)
-
             const feeRaw = fees[pair.coinBInfo.simpleName] ? fees[pair.coinBInfo.simpleName].fee : 0
             const fee = sdk.toBig(feeRaw).div('1e' + feeToken.decimals)
 
-            setFee(fee.toNumber())
+            updatePageAmmJoin({ fee: fee.toNumber(), fees })
 
             setAmmCalcData({
                 ...ammCalcData, fee: fee.toString()
@@ -215,16 +213,12 @@ export const useAmmJoin = ({
             })
         }
 
-    }, [
-        setFees, setAmmCalcData, setBtnI18nKey,
-        accountStatus, account, pair, tokenMap, ammCalcData
+    }, [updatePageAmmJoin, setAmmCalcData, setBtnI18nKey, accountStatus, account, pair, tokenMap, ammCalcData
     ])
 
     React.useEffect(() => {
         calculateCallback()
     }, [accountStatus, pair.coinBInfo?.simpleName, ammData])
-
-    const [request, setRequest] = React.useState<{ ammInfo: any, request: sdk.JoinAmmPoolRequest }>();
 
     const handleJoin = React.useCallback(async ({ data, ammData, type, fees, ammPoolSnapshot, tokenMap, account }) => {
         setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData, }]))
@@ -281,7 +275,7 @@ export const useAmmJoin = ({
             slippage,
         })
 
-        setRequest({
+        updatePageAmmJoin({
             ammInfo,
             request
         })
@@ -307,8 +301,6 @@ export const useAmmJoin = ({
             return
         }
 
-        const { ammInfo, request: reqTmp } = request
-
         const patch: sdk.AmmPoolRequestPatch = {
             chainId: store.getState().system.chainId as sdk.ChainId,
             ammName: ammInfo.__rawConfig__.name,
@@ -316,7 +308,7 @@ export const useAmmJoin = ({
             eddsaKey: account.eddsaKey.sk
         }
 
-        const req: sdk.JoinAmmPoolRequest = reqTmp as sdk.JoinAmmPoolRequest
+        const req: sdk.JoinAmmPoolRequest = request as sdk.JoinAmmPoolRequest
         try {
 
             const request2: sdk.GetNextStorageIdRequest = {

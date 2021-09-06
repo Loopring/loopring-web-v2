@@ -2,6 +2,10 @@ import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { PageAmmJoin, PageAmmExit, PageAmmPoolStatus } from './interface'
 
 const initJoinState: PageAmmJoin = {
+    fees: {},
+    fee: 0,
+    ammInfo: undefined,
+    request: undefined,
 }
 
 const initExitState: PageAmmExit = {
@@ -26,7 +30,28 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
 
         updatePageAmmJoin(state, action: PayloadAction<Partial<PageAmmJoin>>) {
             const {
+                fee,
+                fees,
+                ammInfo,
+                request,
             } = action.payload;
+
+            if (fee) {
+                state.ammJoin.fee = fee
+            }
+
+            if (fees) {
+                state.ammJoin.fees = fees
+            }
+
+            if (ammInfo) {
+                state.ammJoin.ammInfo = ammInfo
+            }
+
+            if (request) {
+                state.ammJoin.request = request
+            }
+
         },
 
         updatePageAmmExit(state, action: PayloadAction<Partial<PageAmmExit>>) {
