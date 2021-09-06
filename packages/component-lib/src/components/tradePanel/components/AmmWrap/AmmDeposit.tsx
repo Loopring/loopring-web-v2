@@ -45,10 +45,16 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
     const coinBRef = React.useRef();
     const {slippage} = useSettings();
     const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number | string>;
-    const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
+    
+    const [errorA, setErrorA] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
         error: false,
         message: ''
     });
+    const [errorB, setErrorB] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
+        error: false,
+        message: ''
+    });
+
     const [_isStoB, setIsStoB] = React.useState(typeof isStob !== 'undefined' ? isStob : true);
 
     const _onSwitchStob = React.useCallback((_event: any) => {
@@ -63,13 +69,24 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
     };
     if (typeof handleError !== 'function') {
         handleError = ({belong, balance, tradeValue}: any) => {
-            if (balance < tradeValue || (tradeValue && !balance)) {
-                const _error = {error: true, message: t('tokenNotEnough', {belong: belong})}
-                setError(_error);
-                return  _error
-
+            if (ammCalcData?.myCoinA?.belong && ammCalcData?.myCoinB?.belong) {
+                const isCoinA = belong === ammCalcData.myCoinA.belong
+                if (balance < tradeValue || (tradeValue && !balance)) {
+                    const _error = {error: true, message: t('tokenNotEnough', {belong: belong})}
+                    if (isCoinA) {
+                        setErrorA(_error);
+                    } else {
+                        setErrorB(_error);
+                    }
+                    return  _error
+                }
+    
+                if (isCoinA) {
+                    setErrorA({error: false, message: ''});
+                } else {
+                    setErrorB({error: false, message: ''});
+                }
             }
-            setError({error: false, message: ''});
             return {error: false, message: ''}
         }
     }
@@ -117,7 +134,7 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
         });
     }, [ammData, onAddChangeEvent])
 
-    const { label, stob, } = useAmmViewData({error, i18nKey: ammDepositBtnI18nKey, t, _isStoB, ammCalcData, _onSwitchStob, isAdd: true, })
+    const { label, stob, } = useAmmViewData({error: { errorA, errorB, }, i18nKey: ammDepositBtnI18nKey, t, _isStoB, ammCalcData, _onSwitchStob, isAdd: true, })
 
     // myLog('amm deposit ammData:', ammData)
 
@@ -196,7 +213,7 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
                         onAmmAddClick(ammData)
                     }}
                             loading={!getDisabled() && ammDepositBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-                            disabled={getDisabled() || ammDepositBtnStatus === TradeBtnStatus.DISABLED || ammDepositBtnStatus === TradeBtnStatus.LOADING || error.error}
+                            disabled={getDisabled() || ammDepositBtnStatus === TradeBtnStatus.DISABLED || ammDepositBtnStatus === TradeBtnStatus.LOADING || errorA.error || errorB.error}
                             fullWidth={true}>
                         {label}
 

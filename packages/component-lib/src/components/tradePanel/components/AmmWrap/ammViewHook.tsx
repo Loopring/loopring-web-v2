@@ -5,19 +5,21 @@ import { IconButtonStyled } from '../Styled'
 export function useAmmViewData({error, i18nKey, t, _isStoB, ammCalcData, _onSwitchStob, isAdd, }:
     {error: any, i18nKey: any, t: any, _isStoB: boolean, ammCalcData: any, _onSwitchStob: any, isAdd: boolean, }) {
 
-    const label = React.useMemo(()=>{
-        if(error.error){
-            if(typeof  error.message === 'string'){
-                return  t(error.message)
-            }else if(error.message !== undefined){
-                return error.message;
-            }else {
-                return t('labelError')
-            }
+    const label = React.useMemo(()=> {
+        if (isAdd) {
+            if(error.errorA.error || error.errorB.error) {
+                const errorTmp = error.errorA.error ? error.errorA : error.errorB
 
+                if(typeof  errorTmp.message === 'string'){
+                    return  t(errorTmp.message)
+                }else if(errorTmp.message !== undefined){
+                    return errorTmp.message;
+                }else {
+                    return t('labelError')
+                }
+            }
         }
         if (i18nKey) {
-            myLog('i18nKey:', i18nKey)
             const key = i18nKey.split(',');
             return t(key[ 0 ], key && key[ 1 ] ? {arg: key[ 1 ]} : undefined)
         } else {
