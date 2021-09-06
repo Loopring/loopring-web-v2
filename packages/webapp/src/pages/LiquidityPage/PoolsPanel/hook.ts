@@ -1,11 +1,10 @@
 import React from 'react';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
 import { AmmDetail, CustomError, ErrorMap, SagaStatus, TradeFloat, } from '@loopring-web/common-resources';
-import { deepClone } from '../../../utils/obj_tools';
 import { useTokenMap } from '../../../stores/token';
 import { useSocket } from '../../../stores/socket';
 import { useTicker } from '../../../stores/ticker';
-import { QuoteTableRawDataItem } from '@loopring-web/component-lib';
+import _ from 'lodash'
 
 const RowConfig = {
     rowHeight:44,
@@ -38,26 +37,28 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
     },[setFilteredData,setTableHeight])
     const updateRawData = React.useCallback((tickerMap) => {
         try {
-            const _ammMap = deepClone(ammMap);
-            for (let tickerMapKey in tickerMap) {
-                if (_ammMap[ 'AMM-' + tickerMapKey ]) {
-                    _ammMap[ 'AMM-' + tickerMapKey ].tradeFloat = {
-                        ..._ammMap[ 'AMM-' + tickerMapKey ].tradeFloat,
-                        ...tickerMap[ tickerMapKey ],
-                        // APY: _ammMap['AMM-' + tickerMapKey ].APY
+            const _ammMap: any = _.cloneDeep(ammMap);
+            if (_ammMap) {
+                for (let tickerMapKey in tickerMap) {
+                    if (_ammMap[ 'AMM-' + tickerMapKey ]) {
+                        _ammMap[ 'AMM-' + tickerMapKey ].tradeFloat = {
+                            ..._ammMap[ 'AMM-' + tickerMapKey ].tradeFloat,
+                            ...tickerMap[ tickerMapKey ],
+                            // APY: _ammMap['AMM-' + tickerMapKey ].APY
+                        }
+    
                     }
-
                 }
+                const rawData = Object.keys(_ammMap).map((ammKey: string) => {
+                    if (coinMap) {
+                        _ammMap[ ammKey ][ 'coinAInfo' ] = coinMap[ _ammMap[ ammKey ][ 'coinA' ] ];
+                        _ammMap[ ammKey ][ 'coinBInfo' ] = coinMap[ _ammMap[ ammKey ][ 'coinB' ] ];
+                    }
+                    return _ammMap[ ammKey ];
+                })
+                setRawData(rawData)
+                resetTableData(rawData)
             }
-            const rawData = Object.keys(_ammMap).map((ammKey: string) => {
-                if (coinMap) {
-                    _ammMap[ ammKey ][ 'coinAInfo' ] = coinMap[ _ammMap[ ammKey ][ 'coinA' ] ];
-                    _ammMap[ ammKey ][ 'coinBInfo' ] = coinMap[ _ammMap[ ammKey ][ 'coinB' ] ];
-                }
-                return _ammMap[ ammKey ];
-            })
-            setRawData(rawData)
-            resetTableData(rawData)
         } catch (error) {
             throw new CustomError({...ErrorMap.NO_TOKEN_MAP, options: error})
         }

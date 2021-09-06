@@ -1,7 +1,7 @@
 import { WalletConnectBtnProps } from './Interface';
 import { useTranslation } from 'react-i18next';
 import React, { useEffect } from 'react';
-import { AccountStatus, getShortAddr, LoadingIcon, LockIcon, UnConnectIcon, } from '@loopring-web/common-resources';
+import { AccountStatus, getShortAddr, LoadingIcon, LockIcon, UnConnectIcon, CircleIcon} from '@loopring-web/common-resources';
 import { Typography } from '@material-ui/core';
 import { Button } from '../../basic-lib';
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';
@@ -148,20 +148,20 @@ export const WalletConnectBtn = ({
           setIcon(<LockIcon color={'error'} style={{ width: 16, height: 16 }} />)
           break
         case AccountStatus.ACTIVATED:
-          setBtnClassname('unlocked')
-          // setIcon(undefined)
+          // setBtnClassname('unlocked')
+          setIcon(<CircleIcon htmlColor={'var(--color-success)'} style={{ marginTop: 1 }} />)
           break
         case AccountStatus.NO_ACCOUNT:
-          setBtnClassname('no-account')
-          // setIcon(<EmbarIcon color={'secondary'} style={{transform: 'rotate(58deg)'}}/>)
+          // setBtnClassname('no-account')
+          setIcon(<CircleIcon color={'error'} style={{ marginTop: 1 }}/>)
           break
         case AccountStatus.DEPOSITING:
           setBtnClassname('depositing')
           setIcon(<LoadingIcon color={'primary'} style={{ width: 18, height: 18 }} />)
           break
         case AccountStatus.NOT_ACTIVE:
-          setBtnClassname('not-active')
-          // setIcon(<LoadingIcon color={'primary'} style={{width: 18, height: 18}}/>)
+          // setBtnClassname('not-active')
+          setIcon(<LoadingIcon htmlColor={'var(--color-warning)'} style={{ marginTop: 1 }}/>)
           break
         case AccountStatus.ERROR_NETWORK:
           setBtnClassname('wrong-network')

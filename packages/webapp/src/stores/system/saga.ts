@@ -68,9 +68,11 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
                 }
                 return setInterval(async () => {
                     if (LoopringAPI.exchangeAPI) {
-                        const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'CNY'})).fiatPrices
+                        // const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'CNY'})).fiatPrices
+                        const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'USD'})).fiatPrices
+                        const faitPricesY = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'CNY'})).fiatPrices
                         const gasPrice = (await LoopringAPI.exchangeAPI.getGasPrice()).gasPrice / 1e+9
-                        const forex = faitPrices[ 'USDT' ]?.price
+                        const forex = faitPricesY[ 'USDT' ]?.price
                         store.dispatch(updateRealTimeAmmMap(undefined))
                         store.dispatch(updateRealTimeObj({faitPrices, gasPrice, forex}))
                     }

@@ -24,27 +24,36 @@ import * as sdk from 'loopring-sdk'
 import { useAccount } from '../../../stores/account/hook';
 import store from "stores";
 import { LoopringAPI } from "api_wrapper";
-import { deepClone } from '../../../utils/obj_tools';
 import { myLog } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 
 import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
 import { useBtnStatus } from "hooks/common/useBtnStatus";
 
+import _ from 'lodash'
+import { usePageAmmPool } from "stores/router";
+
 const initSlippage = 0.5
 
 export const useAmmExit = ({
     setToastOpen,
     pair,
-    ammPoolSnapshot,
     snapShotData,
 }
     : {
-        ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined,
         setToastOpen: any,
         pair: { coinAInfo: CoinInfo<string> | undefined, coinBInfo: CoinInfo<string> | undefined },
         snapShotData: { tickerData: sdk.TickerData | undefined, ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined } | undefined
     }) => {
+
+        const {
+            ammExit: { fee, fees, request, volA_show, volB_show, },
+            updatePageAmmExit,
+            common: { ammInfo, ammPoolSnapshot, },
+            __SUBMIT_LOCK_TIMER__,
+            __TOAST_AUTO_CLOSE_TIMER__,
+        } = usePageAmmPool()
+
     const { t } = useTranslation('common');
 
     const [isLoading, setIsLoading] = React.useState(false)
@@ -67,18 +76,9 @@ export const useAmmExit = ({
 
     const [btnI18nKey, setBtnI18nKey] = React.useState<string | undefined>(undefined);
 
-    const [fees, setFees] = React.useState<sdk.LoopringMap<sdk.OffchainFeeInfo>>()
-    const [fee, setFee] = React.useState<number>(0)
-
     const { account: { accountId, apiKey } } = useAccount()
 
     const { btnStatus, enableBtn, disableBtn, setLoadingBtn, } = useBtnStatus()
-
-    const [request, setRequest] = React.useState<{ 
-        volA_show: number,
-        volB_show: number, 
-        ammInfo: any, 
-        request: sdk.ExitAmmPoolRequest }>();
 
         React.useEffect(() => {
 
@@ -190,7 +190,7 @@ export const useAmmExit = ({
 
     }, [account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, isLoading, enableBtn, disableBtn,])
 
-    const btnLabelNew = Object.assign(deepClone(btnLabel), {
+    const btnLabelNew = Object.assign(_.cloneDeep(btnLabel), {
         [fnType.ACTIVATED]: [btnLabelActiveCheck]
     });
 
@@ -212,12 +212,10 @@ export const useAmmExit = ({
 
             const { fees } = await LoopringAPI.userAPI.getOffchainFeeAmt(request, account.apiKey)
 
-            setFees(fees)
-
             const feeRaw = fees[pair.coinBInfo.simpleName] ? fees[pair.coinBInfo.simpleName].fee : 0
             const fee = sdk.toBig(feeRaw).div('1e' + feeToken.decimals)
 
-            setFee(fee.toNumber())
+            updatePageAmmExit({ fee: fee.toNumber(), fees })
 
             myLog('---calculateCallback fee:', fee.toNumber())
 
@@ -227,8 +225,7 @@ export const useAmmExit = ({
             })
         }
 
-    }, [
-        setFees, setAmmCalcData, setBtnI18nKey,
+    }, [updatePageAmmExit, setAmmCalcData, setBtnI18nKey,
         accountStatus, account, pair, tokenMap, ammCalcData
     ])
 
@@ -261,8 +258,6 @@ export const useAmmExit = ({
             return
         }
 
-        const ammInfo: sdk.AmmPoolInfoV3 = ammMap[amm as string]
-
         let newAmmData = {
             slippage: ammData.slippage,
         }
@@ -279,21 +274,14 @@ export const useAmmExit = ({
                 newAmmData['coinB'] = { ...ammData.coinB, tradeValue: volB_show, }
     
             myLog('exit req:', request)
-    
-            const req = {
-                volA_show,
-                volB_show,
-                ammInfo,
-                request,
-            }
-    
-            setRequest(req)
+
+            updatePageAmmExit({ request, volA_show, volB_show, })
         }
     
         setAmmData({...ammData, ...newAmmData,
             slippage: data.slippage, })
 
-    }, [setRequest, idIndex, marketArray, marketMap, baseToken, quoteToken])
+    }, [updatePageAmmExit, idIndex, marketArray, marketMap, baseToken, quoteToken])
 
     const handleAmmPoolEvent = (data: AmmExitData<IBData<any>>, _type: 'coinA' | 'coinB') => {
         handleExit({ data, requestOut: request, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account })
@@ -314,7 +302,8 @@ export const useAmmExit = ({
             return
         }
 
-        const { ammInfo, request: reqExit } = request
+        
+        let req = _.cloneDeep(request)
 
         const patch: sdk.AmmPoolRequestPatch = {
             chainId: store.getState().system.chainId as sdk.ChainId,
@@ -325,23 +314,21 @@ export const useAmmExit = ({
 
         const burnedReq: sdk.GetNextStorageIdRequest = {
             accountId: account.accountId,
-            sellTokenId: reqExit.exitTokens.burned.tokenId as number
+            sellTokenId: req.exitTokens.burned.tokenId as number
         }
         const storageId0 = await LoopringAPI.userAPI.getNextStorageId(burnedReq, account.apiKey)
 
-        myLog('---- try to exit storageId0:', storageId0)
-
-        reqExit.storageId = storageId0.offchainId
+        req.storageId = storageId0.offchainId
 
         try {
 
-            myLog('---- try to exit req:', reqExit)
+            myLog('---- try to exit req:', req)
             setAmmData({
                 ...ammData, ...{
                     coinLP: { ...ammData.coinLP, tradeValue: 0 },
                 }
             })
-            const response = await LoopringAPI.ammpoolAPI.exitAmmPool(reqExit, patch, account.apiKey)
+            const response = await LoopringAPI.ammpoolAPI.exitAmmPool(req, patch, account.apiKey)
 
             myLog('exit ammpool response:', response)
 
@@ -365,7 +352,7 @@ export const useAmmExit = ({
 
     }, [request, ammData, account, t, setLoadingBtn,])
 
-    const onAmmClickMap = Object.assign(deepClone(btnClickMap), {
+    const onAmmClickMap = Object.assign(_.cloneDeep(btnClickMap), {
         [fnType.ACTIVATED]: [ammCalculator]
     })
     const onAmmClick = React.useCallback((props: AmmExitData<IBData<any>>) => {

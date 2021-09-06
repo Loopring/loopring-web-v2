@@ -11,6 +11,7 @@ import { LoopringAPI } from "api_wrapper";
 import { myLog } from "@loopring-web/common-resources";
 import { useSocket, } from "stores/socket";
 import { useToast } from "hooks/common/useToast";
+import { usePageAmmPool } from "stores/router";
 
 export const useAmmCommon = ({pair,}: {
     pair: {
@@ -25,10 +26,12 @@ export const useAmmCommon = ({pair,}: {
 
     const {account} = useAccount()
 
-    const [ammPoolSnapshot, setAmmPoolSnapShot] = React.useState<sdk.AmmPoolSnapshot>()
-
     const {marketArray, marketMap,} = useTokenMap();
     const {ammMap} = useAmmMap();
+
+    const {
+        updatePageAmmCommon,
+    } = usePageAmmPool()
 
     const updateAmmPoolSnapshot = React.useCallback(async () => {
 
@@ -58,9 +61,17 @@ export const useAmmCommon = ({pair,}: {
 
         const {ammPoolSnapshot} = response
 
-        setAmmPoolSnapShot(ammPoolSnapshot)
+        updatePageAmmCommon({
+            ammInfo, ammPoolSnapshot,
+        })
 
-    }, [pair, marketArray, ammMap, setAmmPoolSnapShot])
+    }, [pair, marketArray, ammMap, updatePageAmmCommon])
+
+    React.useEffect(() => {
+        if (pair?.coinBInfo?.simpleName) {
+            updateAmmPoolSnapshot()
+        }
+    }, [updateAmmPoolSnapshot, pair?.coinBInfo?.simpleName])
 
     React.useEffect(() => {
         if (account.readyState === AccountStatus.ACTIVATED) {
@@ -88,7 +99,6 @@ export const useAmmCommon = ({pair,}: {
         setToastOpen,
         closeToast,
         refreshRef,
-        ammPoolSnapshot,
         updateAmmPoolSnapshot,
     }
 
