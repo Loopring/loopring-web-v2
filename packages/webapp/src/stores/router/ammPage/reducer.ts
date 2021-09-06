@@ -76,13 +76,27 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
 
         },
 
+        updatePageAmmJoinBtn(state, action: PayloadAction<Partial<PageAmmJoin>>) {
+            const {
+                btnI18nKey,
+                btnStatus,
+            } = action.payload;
+
+            if (btnI18nKey) {
+                state.ammJoin.btnI18nKey = btnI18nKey
+            }
+
+            if (btnStatus) {
+                state.ammJoin.btnStatus = btnStatus
+            }
+
+        },
+
         updatePageAmmJoin(state, action: PayloadAction<Partial<PageAmmJoin>>) {
             const {
                 fee,
                 fees,
                 request,
-                btnI18nKey,
-                btnStatus,
                 ammCalcData,
                 ammData,
             } = action.payload;
@@ -99,14 +113,6 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
                 state.ammJoin.request = request
             }
 
-            if (btnI18nKey) {
-                state.ammJoin.btnI18nKey = btnI18nKey
-            }
-
-            if (btnStatus) {
-                state.ammJoin.btnStatus = btnStatus
-            }
-
             if (ammCalcData) {
                 state.ammJoin.ammCalcData = ammCalcData
             }
@@ -117,13 +123,27 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
 
         },
 
+        updatePageAmmExitBtn(state, action: PayloadAction<Partial<PageAmmExit>>) {
+            const {
+                btnI18nKey,
+                btnStatus,
+            } = action.payload;
+
+            if (btnI18nKey) {
+                state.ammExit.btnI18nKey = btnI18nKey
+            }
+
+            if (btnStatus) {
+                state.ammExit.btnStatus = btnStatus
+            }
+
+        },
+
         updatePageAmmExit(state, action: PayloadAction<Partial<PageAmmExit>>) {
             const {
                 fee,
                 fees,
                 request,
-                btnI18nKey,
-                btnStatus,
                 ammCalcData,
                 ammData,
                 
@@ -141,14 +161,6 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
 
             if (request) {
                 state.ammExit.request = request
-            }
-
-            if (btnI18nKey) {
-                state.ammExit.btnI18nKey = btnI18nKey
-            }
-
-            if (btnStatus) {
-                state.ammExit.btnStatus = btnStatus
             }
 
             if (ammCalcData) {
@@ -172,4 +184,12 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
 })
 
 export { pageAmmPoolSlice }
-export const { updatePageAmmJoin, updatePageAmmExit, updatePageAmmCommon, resetAmmPool, } = pageAmmPoolSlice.actions;
+
+export const { 
+    updatePageAmmJoin, 
+    updatePageAmmJoinBtn,
+    updatePageAmmExit,
+    updatePageAmmExitBtn,
+    updatePageAmmCommon, 
+    resetAmmPool, 
+} = pageAmmPoolSlice.actions;
