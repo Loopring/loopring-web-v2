@@ -11,7 +11,7 @@ import { Filter } from './components/Filter'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
 import {
     // TableType,
-    MoreIcon, AvatarCoinStyled, PriceTag } from '@loopring-web/common-resources';
+    MoreIcon, AvatarCoinStyled, PriceTag, myLog } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores'
 import {
     // getThousandFormattedNumbers, getValuePrecision,
@@ -125,7 +125,13 @@ export interface AssetsTableProps {
     onShowWithdraw: (token: string) => void,
     onLpDeposit: (token: string, type: LpTokenAction ) => void,
     onLpWithdraw: (token: string, type: LpTokenAction) => void,
-    getMarketArrayListCallback: (token: string) => string[]
+    getMarketArrayListCallback: (token: string) => string[],
+    // hideL2Assets: boolean,
+    hideLpToken: boolean,
+    hideSmallBalances: boolean,
+    // setHideL2Assets: (value: boolean) => void,
+    setHideLpToken: (value: boolean) => void,
+    setHideSmallBalances: (value: boolean) => void,
 }
 const RowConfig = {
     rowHeight:44,
@@ -146,16 +152,22 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         // tableHeight = 350,
         getMarketArrayListCallback,
         // onLpWithdraw,
+        // hideL2Assets,
+        hideLpToken,
+        hideSmallBalances,
+        // setHideL2Assets,
+        setHideLpToken,
+        setHideSmallBalances,
         ...rest
     } = props
 
     // const [searchValue, setSearchValue] = useState('')
     // const [hideSmallBalance, setHideSmallBalance] = useState(false)
     // const [hideLpToken, sethideLpToken] = useState(false)
-    const [filter,setFilter] = useState({
+    const [filter, setFilter] = useState({
         searchValue:'',
-        hideSmallBalance:false,
-        hideLpToken:false
+        // hideSmallBalance:false,
+        // hideLpToken:false
     })
     const [totalData, setTotalData] = useState<RawDataAssetsItem[]>(rawData)
     const [viewData, setViewData] = useState<RawDataAssetsItem[]>(rawData)
@@ -178,7 +190,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     }, [rawData])
     useEffect(() => {
         updateData();
-    }, [totalData,filter])
+    }, [totalData, filter, hideLpToken, hideSmallBalances])
 
     const jumpToAmm = useCallback((type: LpTokenAction, market: string) => {
         const pathname = `/liquidity/pools/coinPair/${market}`
@@ -400,10 +412,12 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
 
     const updateData = useCallback(() => {
         let resultData = (totalData && !!totalData.length) ? totalData : []
-        if (filter.hideSmallBalance) {
+        // if (filter.hideSmallBalance) {
+        if (hideSmallBalances) {
             resultData = resultData.filter(o => !o.smallBalance)
         }
-        if (filter.hideLpToken) {
+        // if (filter.hideLpToken) {
+        if (hideLpToken) {
             resultData = resultData.filter(o => o.token.type === TokenType.single)
             // debugger
         }
@@ -411,15 +425,15 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             resultData = resultData.filter(o => o.token.value.toLowerCase().includes(filter.searchValue.toLowerCase()))
         }
         resetTableData(resultData)
-    }, [totalData,filter])
+    }, [totalData, filter, hideSmallBalances, hideLpToken, resetTableData])
 
-    const handleFilterChange = useCallback((filer) => {
+    const handleFilterChange = useCallback((filter) => {
         // setHideSmallBalance(currHideSmallBalance)
         // sethideLpToken(currhideLpToken)
         // setSearchValue(currSearchValue)
         // console.log(filter)
 
-        setFilter(filer)
+        setFilter(filter)
     }, [setFilter])
 
     // const handlePageChange = useCallback((page: number) => {
@@ -438,9 +452,17 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         {showFilter && (
             <TableFilterStyled>
                 <Filter
+                    {...{
+                        handleFilterChange,
+                        filter,
+                        hideLpToken,
+                        hideSmallBalances,
+                        setHideLpToken,
+                        setHideSmallBalances,
+                    }}
                     // originalData={rawData}
-                    handleFilterChange={handleFilterChange}
-                    filter={filter}
+                    // handleFilterChange={handleFilterChange}
+                    // filter={filter}
                     // searchValue={filter.searchValue}
                     // hideSmallBalance={filter.hideSmallBalance}
                     // hideLpToken={filter.hideLpToken}

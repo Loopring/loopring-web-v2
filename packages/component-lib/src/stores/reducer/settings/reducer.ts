@@ -14,6 +14,9 @@ const initialState: SettingsState = {
     upColor: UpColor.green,//localStore.getItem('UpColor')?localStore.getItem('UpColor') as keyof typeof UpColor: UpColor.green,
     coinJson: imgConfig.frames,
     slippage: 'N',
+    hideL2Assets: false,
+    hideLpToken: false,
+    hideSmallBalances: false,
 }
 
 export const settingsSlice:Slice<SettingsState> = createSlice({
@@ -92,7 +95,16 @@ export const settingsSlice:Slice<SettingsState> = createSlice({
             // localStore.setItem('UpColor',action.payload)
             state.coinJson = action.payload
         },
+        setHideL2Assets(state, action: PayloadAction<boolean>) {
+            state.hideL2Assets = action.payload
+        },
+        setHideLpToken(state, action: PayloadAction<boolean>) {
+            state.hideLpToken = action.payload
+        },
+        setHideSmallBalances(state, action: PayloadAction<boolean>) {
+            state.hideSmallBalances = action.payload
+        },
     },
 })
-export const {setTheme, setLanguage, setPlatform, setCurrency, setUpColor, setSlippage, setCoinJson} = settingsSlice.actions
+export const {setTheme, setLanguage, setPlatform, setCurrency, setUpColor, setSlippage, setCoinJson, setHideL2Assets, setHideLpToken, setHideSmallBalances} = settingsSlice.actions
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions
