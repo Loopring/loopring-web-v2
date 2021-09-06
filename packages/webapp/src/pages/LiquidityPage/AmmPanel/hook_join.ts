@@ -67,11 +67,13 @@ export const useAmmJoin = ({
     React.useEffect(() => {
         
         if (account.readyState !== AccountStatus.ACTIVATED && pair) {
-            updatePageAmmJoinBtn(accountStaticCallBack(btnLabelNew))
+            const btnInfo = accountStaticCallBack(btnLabelNew)
+            btnInfo.btnStatus = TradeBtnStatus.AVAILABLE
+            updatePageAmmJoinBtn(btnInfo)
             initAmmData(pair, undefined, true)
         }
 
-    }, [account.readyState, pair])
+    }, [account.readyState, pair, updatePageAmmJoinBtn])
 
     React.useEffect(() => {
         
@@ -79,7 +81,7 @@ export const useAmmJoin = ({
             updatePageAmmJoinBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]))
         }
 
-    }, [account.readyState, ammData])
+    }, [account.readyState, ammData, updatePageAmmJoinBtn])
 
     const btnLabelActiveCheck = React.useCallback(({ ammData }):
      { btnStatus?: TradeBtnStatus, btnI18nKey: string | undefined } => {

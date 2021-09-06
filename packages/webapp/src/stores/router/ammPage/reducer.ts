@@ -82,9 +82,7 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
                 btnStatus,
             } = action.payload;
 
-            if (btnI18nKey) {
-                state.ammJoin.btnI18nKey = btnI18nKey
-            }
+            state.ammJoin.btnI18nKey = btnI18nKey
 
             if (btnStatus) {
                 state.ammJoin.btnStatus = btnStatus
@@ -129,9 +127,7 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
                 btnStatus,
             } = action.payload;
 
-            if (btnI18nKey) {
-                state.ammExit.btnI18nKey = btnI18nKey
-            }
+            state.ammExit.btnI18nKey = btnI18nKey
 
             if (btnStatus) {
                 state.ammExit.btnStatus = btnStatus
