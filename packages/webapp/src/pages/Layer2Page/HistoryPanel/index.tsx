@@ -51,7 +51,7 @@ const TxPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
                             total: txsTotal,
                         },
                         showFilter: true,
-                        showLoading: showTxsLoading,
+                        showloading: showTxsLoading,
                         getTxnList: getUserTxnList,
                         ...rest
                     }} />
@@ -62,7 +62,7 @@ const TxPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
                         //     pageSize: pageSize
                         // },
                         showFilter: true,
-                        showLoading: showTradesLoading,
+                        showloading: showTradesLoading,
                         ...rest
                     }}/>
                 ) : (

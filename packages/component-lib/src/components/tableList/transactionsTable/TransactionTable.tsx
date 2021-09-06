@@ -147,11 +147,11 @@ export interface TransactionTableProps {
     };
     getTxnList: ({ tokenSymbol, start, end, limit, offset, types }: TxsFilterProps) => Promise<void>;
     showFilter?: boolean;
-    showLoading: boolean;
+    showloading: boolean;
 }
 
 export const TransactionTable = withTranslation(['tables', 'common'])((props: TransactionTableProps & WithTranslation) => {
-    const { rawData, pagination, showFilter, getTxnList, showLoading, ...rest } = props
+    const { rawData, pagination, showFilter, getTxnList, showloading, ...rest } = props
     const [page, setPage] = React.useState(1)
     const [totalData, setTotalData] = React.useState<RawDataTransactionItem[]>(rawData)
     const [filterType, setFilterType] = React.useState(TransactionTradeTypes.allTypes)
@@ -380,7 +380,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
         >
             <TxnDetailPanel {...{...txnDetailInfo}} />
         </Modal>
-        <Table {...{...defaultArgs, ...props, rawData, showLoading }}/>
+        <Table {...{...defaultArgs, ...props, rawData, showloading }}/>
         {pagination && (
             <TablePagination page={page} pageSize={pageSize} total={pagination.total} onPageChange={handlePageChange}/>
         )}

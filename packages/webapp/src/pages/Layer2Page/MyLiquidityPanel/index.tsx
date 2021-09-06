@@ -143,7 +143,7 @@ const MyLiquidity: any = withTranslation('common')(
                         <MyPoolTable
                             rawData={myPoolRow}
                             pagination={{pageSize: 10}}
-                            showLoading={showLoading}
+                            showloading={showLoading}
                             currency={currency}
                             handleDeposit={(row: any) => {
                                 const pair = `${row.ammDetail.coinAInfo.name}-${row.ammDetail.coinBInfo.name}`

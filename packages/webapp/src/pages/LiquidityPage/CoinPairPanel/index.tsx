@@ -288,8 +288,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         rawData={ammMarketArray}
                         rowHeight={RowConfig.rowHeight}
                         headerRowHeight={RowConfig.headerRowHeight}
-                        currentHeight={tableHeight}
-                        showLoading={isRecentLoading}
+                        currentheight={tableHeight}
+                        showloading={isRecentLoading}
                         currency={currency}
                         // handlePageChange={getUserAmmPoolTxs} page={page}
                     /> : <AmmRecordTable
@@ -299,10 +299,10 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             pageSize: 14,
                             total: ammUserTotal
                         }}
-                        showLoading={showAmmPoolLoading}
+                        showloading={showAmmPoolLoading}
                         rowHeight={RowConfig.rowHeight}
                         headerRowHeight={RowConfig.headerRowHeight}
-                        currentHeight={tableHeight-44}
+                        currentheight={tableHeight-44}
                         currency={currency}
                     />}
                 </StylePaper>

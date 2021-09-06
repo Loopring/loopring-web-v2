@@ -120,7 +120,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
 
     const {recommendations, tickList /* onVisibleRowsChange */} = useQuote()
 
-    // const getCurrentHeight = React.useCallback(() => {
+    // const getcurrentheight = React.useCallback(() => {
     //     const height = window.innerHeight
     //     const tableHeight = height - 64 - 56 - 20
     //     setTableHeight(tableHeight)
@@ -377,7 +377,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                     favoriteMarket={favoriteMarket}
                     addFavoriteMarket={addMarket}
                     removeFavoriteMarket={removeMarket}
-                    currentHeight={tableHeight}
+                    currentheight={tableHeight}
                     rowHeight={RowConfig.rowHeight}
                     headerRowHeight={RowConfig.headerRowHeight}
                     {...{showLoading: tickList && !tickList.length, ...rest}} />

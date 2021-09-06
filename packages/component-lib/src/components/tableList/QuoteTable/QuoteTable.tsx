@@ -26,8 +26,8 @@ const TableWrapperStyled = styled(Box)`
 const TableStyled = styled(Table)`
     &.rdg{
         height: ${(props: any) =>   {
-            if(props.currentHeight && props.currentHeight>350) {
-                return props.currentHeight+'px';
+            if(props.currentheight && props.currentheight>350) {
+                return props.currentheight+'px';
             }else{
                 return '100%'
             }   
@@ -250,7 +250,7 @@ export interface QuoteTableProps {
     favoriteMarket: string[];
     addFavoriteMarket: (pair: string) => void;
     removeFavoriteMarket: (pair: string) => void;
-    currentHeight?: number;
+    currentheight?: number;
     // generateColumns: ({
     //                       columnsRaw,
     //                       t,
@@ -265,7 +265,7 @@ export type VisibleDataItem = {
 
 export const QuoteTable = withTranslation('tables')(withRouter(({
                                                                     t,
-                                                                    currentHeight = 350,
+                                                                    currentheight = 350,
                                                                     rowHeight = 44,
                                                                     headerRowHeight = 44,
                                                                     onVisibleRowsChange,
@@ -419,7 +419,7 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
     return (
         <TableWrapperStyled>
             <TableStyled
-                currentHeight={currentHeight}
+                currentheight={currentheight}
                 className={'scrollable'} {...{
                 ...defaultArgs, ...rest,
                 onVisibleRowsChange,

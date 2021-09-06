@@ -36,12 +36,12 @@ export type AmmRecordTableProps<T, R = AmmRecordRow<T>> = {
     handlePageChange?: (props: any) => void,
     showFilter?: boolean,
     wait?: number;
-    showLoading?: boolean;
-    currentHeight?: number;
+    showloading?: boolean;
+    currentheight?: number;
     rowHeight?: number;
     headerRowHeight?: number;
     currency?: 'USD' | 'CYN';
 }
 // rowHeight={RowConfig.rowHeight}
 // headerRowHeight={RowConfig.headerRowHeight}
-// currentHeight={tableHeight}
+// currentheight={tableHeight}
