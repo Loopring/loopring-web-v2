@@ -65,7 +65,7 @@ export const useAmmJoin = ({
     const [quoteMinAmt, setQuoteMinAmt,] = React.useState<any>()
 
     React.useEffect(() => {
-        
+
         if (account.readyState !== AccountStatus.ACTIVATED && pair) {
             const btnInfo = accountStaticCallBack(btnLabelNew)
             btnInfo.btnStatus = TradeBtnStatus.AVAILABLE
@@ -76,15 +76,14 @@ export const useAmmJoin = ({
     }, [account.readyState, pair, updatePageAmmJoinBtn])
 
     React.useEffect(() => {
-        
+
         if (account.readyState === AccountStatus.ACTIVATED && ammData?.coinA.belong && ammData.coinB.belong) {
             updatePageAmmJoinBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]))
         }
 
     }, [account.readyState, ammData, updatePageAmmJoinBtn])
 
-    const btnLabelActiveCheck = React.useCallback(({ ammData }):
-     { btnStatus?: TradeBtnStatus, btnI18nKey: string | undefined } => {
+    const btnLabelActiveCheck = React.useCallback(({ ammData }): { btnStatus?: TradeBtnStatus, btnI18nKey: string | undefined } => {
 
         const times = 10
 
@@ -142,9 +141,9 @@ export const useAmmJoin = ({
         myLog('initAmmData:', _ammCalcData)
 
         if (isReset) {
-            updatePageAmmJoin({ammCalcData: _ammCalcData})
+            updatePageAmmJoin({ ammCalcData: _ammCalcData })
         } else {
-            updatePageAmmJoin({ammCalcData: { ...ammCalcData, ..._ammCalcData }})
+            updatePageAmmJoin({ ammCalcData: { ...ammCalcData, ..._ammCalcData } })
         }
 
         if (_ammCalcData.myCoinA && tokenMap) {
@@ -211,9 +210,9 @@ export const useAmmJoin = ({
     }, [accountStatus, pair.coinBInfo?.simpleName, ammData])
 
     const handleJoin = React.useCallback(async ({ data, ammData, type, fees, ammPoolSnapshot, tokenMap, account }) => {
-        
-        updatePageAmmJoinBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]))
-        
+
+        // updatePageAmmJoinBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]))
+
         if (!data || !tokenMap || !data.coinA.belong || !data.coinB.belong || !ammPoolSnapshot || !fees || !account?.accAddress) {
             return
         }
@@ -269,7 +268,7 @@ export const useAmmJoin = ({
             }
         })
 
-        updatePageAmmJoinBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]))
+        // updatePageAmmJoinBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]))
 
     }, [])
 
@@ -324,7 +323,7 @@ export const useAmmJoin = ({
 
             myLog('join ammpool response:', response)
 
-            updatePageAmmJoin({ 
+            updatePageAmmJoin({
                 ammData: {
                     ...ammData, ...{
                         coinA: { ...ammData.coinA, tradeValue: 0 },

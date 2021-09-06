@@ -43,7 +43,7 @@ export const useAmmExit = ({
     }) => {
 
         const {
-            ammExit: { fee, fees, request, btnI18nKey, btnStatus, ammCalcData, ammData, },
+            ammExit: { fee, fees, request, btnI18nKey, btnStatus, ammCalcData, ammData, volA_show, volB_show, },
             updatePageAmmExit,
             updatePageAmmExitBtn,
             common: { ammInfo, ammPoolSnapshot, },
@@ -75,12 +75,12 @@ export const useAmmExit = ({
 
     React.useEffect(() => {
 
-        if (account.readyState === AccountStatus.ACTIVATED && ammData && request) {
-            const btnInfo = accountStaticCallBack(btnLabelNew, [{ ammData, request }])
+        if (account.readyState === AccountStatus.ACTIVATED && ammData && volA_show && volB_show) {
+            const btnInfo = accountStaticCallBack(btnLabelNew, [{ ammData, volA_show, volB_show, }])
             updatePageAmmExitBtn(btnInfo)
         }
 
-    }, [account.readyState, ammData, request, updatePageAmmExitBtn])
+    }, [account.readyState, ammData, volA_show, volB_show, updatePageAmmExitBtn])
 
     const initAmmData = React.useCallback(async (pair: any, walletMap: any, isReset: boolean = false) => {
 
@@ -94,9 +94,6 @@ export const useAmmExit = ({
             tickerData: snapShotData?.tickerData,
             ammPoolSnapshot: snapShotData?.ammPoolSnapshot
         })
-
-        myLog('exit !!! ---!!! initAmmData:', _ammCalcData)
-        myLog('exit !!! ---!!! initAmmData:', ammData)
 
 
         if (isReset) {
@@ -134,13 +131,13 @@ export const useAmmExit = ({
     }, [fee, snapShotData, coinMap, tokenMap, ammCalcData, ammMap,
         updatePageAmmExit, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt, ])
 
-    const btnLabelActiveCheck = React.useCallback(({ ammData, request }):
+    const btnLabelActiveCheck = React.useCallback(({ ammData, volA_show, volB_show }):
          { btnStatus?: TradeBtnStatus, btnI18nKey: string | undefined } => {
 
         const times = 1
 
-        const validAmt1 = request?.volA_show ? request?.volA_show >= times * baseMinAmt : false
-        const validAmt2 = request?.volB_show ? request?.volB_show >= times * quoteMinAmt : false
+        const validAmt1 = volA_show ? volA_show >= times * baseMinAmt : false
+        const validAmt2 = volB_show ? volB_show >= times * quoteMinAmt : false
 
         if (isLoading) {
             return { btnStatus: TradeBtnStatus.LOADING, btnI18nKey: undefined }
@@ -149,6 +146,8 @@ export const useAmmExit = ({
                 if (ammData === undefined
                     || ammData?.coinLP?.tradeValue === undefined
                     || ammData?.coinLP?.tradeValue === 0) {
+                        myLog('will DISABLED! ', ammData)
+
                         return { btnStatus: TradeBtnStatus.DISABLED, btnI18nKey: 'labelEnterAmount' }
                 } else if (validAmt1 && validAmt2) {
                     return { btnStatus: TradeBtnStatus.AVAILABLE, btnI18nKey: undefined }
@@ -217,6 +216,8 @@ export const useAmmExit = ({
 
     const handleExit = React.useCallback(async ({ data, requestOut, ammData, fees, ammPoolSnapshot, tokenMap, account }) => {
 
+        // updatePageAmmExitBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]))
+
         if (!tokenMap || !baseToken || !quoteToken
             || !ammPoolSnapshot || !account?.accAddress) {
             return
@@ -240,6 +241,8 @@ export const useAmmExit = ({
 
         const rawVal = data.coinLP.tradeValue
 
+        let ammDataPatch = {}
+
         if (rawVal) {
 
             const { volA_show, volB_show ,request } = sdk.makeExitAmmPoolRequest2(rawVal.toString(), 
@@ -248,14 +251,14 @@ export const useAmmExit = ({
 
                 newAmmData['coinA'] = { ...ammData.coinA, tradeValue: volA_show, }
                 newAmmData['coinB'] = { ...ammData.coinB, tradeValue: volB_show, }
-    
-            myLog('exit req:', request)
 
-            updatePageAmmExit({ request, volA_show, volB_show, })
+            ammDataPatch = { request, volA_show, volB_show, }
         }
 
-        updatePageAmmExit({ammData: {...ammData, ...newAmmData,
+        updatePageAmmExit({...ammDataPatch, ammData: {...ammData, ...newAmmData, coinLP: data.coinLP,
             slippage: data.slippage, }})
+
+        // updatePageAmmExitBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]))
 
     }, [updatePageAmmExit, idIndex, marketArray, marketMap, baseToken, quoteToken])
 
