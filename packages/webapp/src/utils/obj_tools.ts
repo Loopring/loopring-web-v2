@@ -1,18 +1,18 @@
 import { myLog } from "@loopring-web/common-resources";
 
-export function deepClone(data: any) {
-    if (!data || !(data instanceof Object) || (typeof data == "function")) {
-        return data || undefined
-    }
-    let constructor = data.constructor
-    let result = new constructor()
-    for (let key in data) {
-        if (data.hasOwnProperty(key)) {
-            result[ key ] = deepClone(data[ key ])
-        }
-    }
-    return result
-}
+// export function deepClone(data: any) {
+//     if (!data || !(data instanceof Object) || (typeof data == "function")) {
+//         return data || undefined
+//     }
+//     let constructor = data.constructor
+//     let result = new constructor()
+//     for (let key in data) {
+//         if (data.hasOwnProperty(key)) {
+//             result[ key ] = deepClone(data[ key ])
+//         }
+//     }
+//     return result
+// }
 
 export async function copyToClipBoard(text: string) { //复制到剪切板
 

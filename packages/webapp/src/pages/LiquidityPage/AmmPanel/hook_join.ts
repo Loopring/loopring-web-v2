@@ -24,12 +24,13 @@ import * as sdk from 'loopring-sdk'
 import { useAccount } from '../../../stores/account/hook';
 import store from "stores";
 import { LoopringAPI } from "api_wrapper";
-import { deepClone } from '../../../utils/obj_tools';
 import { myLog } from "@loopring-web/common-resources";
 import { useTranslation } from "react-i18next";
 
 import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
 import { usePageAmmPool } from "stores/router";
+
+import _ from 'lodash'
 
 // ----------calc hook -------
 
@@ -134,7 +135,7 @@ export const useAmmJoin = ({
 
     }, [account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, isLoading, setBtnStatus,])
 
-    const btnLabelNew = Object.assign(deepClone(btnLabel), {
+    const btnLabelNew = Object.assign(_.cloneDeep(btnLabel), {
         [fnType.ACTIVATED]: [btnLabelActiveCheck]
     });
 
@@ -275,6 +276,8 @@ export const useAmmJoin = ({
             slippage,
         })
 
+        myLog('raw request:', request)
+
         updatePageAmmJoin({
             ammInfo,
             request
@@ -308,14 +311,17 @@ export const useAmmJoin = ({
             eddsaKey: account.eddsaKey.sk
         }
 
-        const req: sdk.JoinAmmPoolRequest = request as sdk.JoinAmmPoolRequest
-        try {
+        let req = _.cloneDeep(request)
 
-            const request2: sdk.GetNextStorageIdRequest = {
+        try {
+            myLog('join request.joinTokens:', request.joinTokens)
+            myLog('join joinTokens:', req.joinTokens)
+
+            const request0: sdk.GetNextStorageIdRequest = {
                 accountId: account.accountId,
-                sellTokenId: req.joinTokens.pooled[0].tokenId as number
+                sellTokenId: req.joinTokens.pooled[0].tokenId as number,
             }
-            const storageId0 = await LoopringAPI.userAPI.getNextStorageId(request2, account.apiKey)
+            const storageId0 = await LoopringAPI.userAPI.getNextStorageId(request0, account.apiKey)
 
             const request_1: sdk.GetNextStorageIdRequest = {
                 accountId: account.accountId,
@@ -324,15 +330,21 @@ export const useAmmJoin = ({
             const storageId1 = await LoopringAPI.userAPI.getNextStorageId(request_1, account.apiKey)
 
             req.storageIds = [storageId0.offchainId, storageId1.offchainId]
+
+            myLog('join storageId0:', storageId0)
+            myLog('join storageId1:', storageId1)
+            myLog('join req:', req)
+
+            const response = await LoopringAPI.ammpoolAPI.joinAmmPool(req, patch, account.apiKey)
+
+            myLog('join ammpool response:', response)
+
             setAmmData({
                 ...ammData, ...{
                     coinA: { ...ammData.coinA, tradeValue: 0 },
                     coinB: { ...ammData.coinB, tradeValue: 0 },
                 }
             })
-            const response = await LoopringAPI.ammpoolAPI.joinAmmPool(req, patch, account.apiKey)
-
-            myLog('join ammpool response:', response)
 
             if ((response.joinAmmPoolResult as any)?.resultInfo) {
                 setToastOpen({ open: true, type: 'error', content: t('labelJoinAmmFailed') })
@@ -353,7 +365,7 @@ export const useAmmJoin = ({
 
     }, [request, ammData, account, t])
 
-    const onAmmClickMap = Object.assign(deepClone(btnClickMap), {
+    const onAmmClickMap = Object.assign(_.cloneDeep(btnClickMap), {
         [fnType.ACTIVATED]: [ammCalculator]
     })
     const onAmmClick = React.useCallback((props: AmmJoinData<IBData<any>>) => {

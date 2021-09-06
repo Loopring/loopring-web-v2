@@ -63,6 +63,12 @@ export const useAmmCommon = ({pair,}: {
     }, [pair, marketArray, ammMap, setAmmPoolSnapShot])
 
     React.useEffect(() => {
+        if (pair?.coinBInfo?.simpleName) {
+            updateAmmPoolSnapshot()
+        }
+    }, [updateAmmPoolSnapshot, pair?.coinBInfo?.simpleName])
+
+    React.useEffect(() => {
         if (account.readyState === AccountStatus.ACTIVATED) {
             sendSocketTopic({[ sdk.WsTopicType.account ]: true});
         } else {
