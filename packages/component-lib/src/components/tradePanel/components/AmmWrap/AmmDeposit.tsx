@@ -4,9 +4,8 @@ import {
     EmptyValueTag,
     IBData,
     LinkedIcon,
-    ReverseIcon,
     SlippageTolerance,
-    getShowStr
+    myLog
 } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import { AmmDepositWrapProps } from './Interface';
@@ -14,7 +13,6 @@ import { Button, InputCoin, LinkActionStyle, PopoverPure } from '../../../basic-
 import React from 'react';
 import { usePopupState } from 'material-ui-popup-state/hooks';
 import { Grid, Typography } from '@material-ui/core';
-import { IconButtonStyled } from '../Styled';
 import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { SlippagePanel } from '../tool';
 import { TradeBtnStatus } from '../../Interface';
@@ -120,6 +118,8 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
     }, [ammData, onAddChangeEvent])
 
     const { label, stob, } = useAmmViewData({error, i18nKey: ammDepositBtnI18nKey, t, _isStoB, ammCalcData, _onSwitchStob, isAdd: true, })
+
+    // myLog('amm deposit ammData:', ammData)
 
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}

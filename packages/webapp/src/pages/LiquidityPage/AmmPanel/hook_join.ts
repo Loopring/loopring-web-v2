@@ -138,8 +138,6 @@ export const useAmmJoin = ({
             ammPoolSnapshot: snapShotData?.ammPoolSnapshot
         })
 
-        myLog('initAmmData:', _ammCalcData)
-
         if (isReset) {
             updatePageAmmJoin({ ammCalcData: _ammCalcData })
         } else {
@@ -176,8 +174,6 @@ export const useAmmJoin = ({
                 || !ammCalcData || !tokenMap) {
                 return
             }
-
-            myLog('calculateCallback......')
 
             const feeToken: sdk.TokenInfo = tokenMap[pair.coinBInfo.simpleName]
 
@@ -257,6 +253,8 @@ export const useAmmJoin = ({
                 .div('1e' + coinA.decimals).toFixed(marketInfo.precisionForPrice))
         }
 
+        // myLog('newData:', newData)
+
         myLog('raw request:', request)
 
         updatePageAmmJoin({
@@ -271,6 +269,8 @@ export const useAmmJoin = ({
         // updatePageAmmJoinBtn(accountStaticCallBack(btnLabelNew, [{ ammData }]))
 
     }, [])
+
+    // myLog('ammData in hook:', ammData)
 
     const handleAmmPoolEvent = (data: AmmJoinData<IBData<any>>, _type: 'coinA' | 'coinB') => {
         handleJoin({ data, ammData, type: _type, fees, ammPoolSnapshot, tokenMap, account })
