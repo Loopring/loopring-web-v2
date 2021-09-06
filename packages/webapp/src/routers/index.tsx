@@ -18,7 +18,7 @@ import React from 'react';
 import store from 'stores'
 
 import { resetAmmPool, resetSwap } from 'stores/router'
-import { MainPage } from '../pages/MainPage/MainPage';
+import { LandPage } from '../pages/LandPage/LandPage';
 
 const RouterView = () => {
 
@@ -33,7 +33,7 @@ const RouterView = () => {
         <Header/>
 
         <Switch>
-            <Route exact component={MainPage} path='/landing-page'/>
+            <Route exact component={LandPage} path='/landing-page'/>
             <Container maxWidth="lg"
                        style={{
                            minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
