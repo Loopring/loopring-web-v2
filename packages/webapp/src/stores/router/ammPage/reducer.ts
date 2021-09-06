@@ -144,19 +144,19 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
             }
 
             if (btnI18nKey) {
-                state.ammJoin.btnI18nKey = btnI18nKey
+                state.ammExit.btnI18nKey = btnI18nKey
             }
 
             if (btnStatus) {
-                state.ammJoin.btnStatus = btnStatus
+                state.ammExit.btnStatus = btnStatus
             }
 
             if (ammCalcData) {
-                state.ammJoin.ammCalcData = ammCalcData
+                state.ammExit.ammCalcData = ammCalcData
             }
 
             if (ammData) {
-                state.ammJoin.ammData = ammData
+                state.ammExit.ammData = ammData
             }
 
             if (volA_show) {

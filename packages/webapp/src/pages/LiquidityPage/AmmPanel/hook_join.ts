@@ -49,8 +49,6 @@ export const useAmmJoin = ({
         ammJoin: { fee, fees, request, btnStatus, btnI18nKey, ammCalcData, ammData, },
         updatePageAmmJoin,
         common: { ammInfo, ammPoolSnapshot, },
-        __SUBMIT_LOCK_TIMER__,
-        __TOAST_AUTO_CLOSE_TIMER__,
     } = usePageAmmPool()
 
     const { t } = useTranslation('common');
@@ -77,7 +75,7 @@ export const useAmmJoin = ({
 
     React.useEffect(() => {
         
-        if (account.readyState === AccountStatus.ACTIVATED && ammData) {
+        if (account.readyState === AccountStatus.ACTIVATED && ammData?.coinA.belong && ammData.coinB.belong) {
             updatePageAmmJoin({ btnStatus: TradeBtnStatus.AVAILABLE, btnI18nKey: accountStaticCallBack(btnLabelNew, [{ ammData }]) })
         }
 
@@ -92,7 +90,6 @@ export const useAmmJoin = ({
 
         if (isLoading) {
             updatePageAmmJoin({ btnStatus: TradeBtnStatus.LOADING, })
-            myLog('set LOADING')
             return undefined
         } else {
             if (account.readyState === AccountStatus.ACTIVATED) {
