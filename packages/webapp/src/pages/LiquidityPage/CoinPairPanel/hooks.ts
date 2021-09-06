@@ -36,6 +36,7 @@ import { myLog } from "@loopring-web/common-resources";
 
 import { getShowStr } from '@loopring-web/common-resources'
 import _ from 'lodash'
+import { useAmmPool } from "../hook";
 
 const makeAmmDetailExtendsActivityMap = ({ammMap, coinMap, ammActivityMap, ammKey}: any) => {
 
@@ -73,7 +74,10 @@ export type AwardItme = {
     }[]
 }
 
-export const useCoinPair = <C extends { [ key: string ]: any }>(ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>>) => {
+export const useCoinPair = <C extends { [ key: string ]: any }>() => {
+    
+    const { ammActivityMap } = useAmmPool();
+
     const match: any = useRouteMatch("/liquidity/pools/coinPair/:symbol")
     const {coinMap, tokenMap, marketArray, addressIndex} = useTokenMap();
     const {faitPrices} = useSystem();
