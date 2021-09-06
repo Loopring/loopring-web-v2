@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { setCoinJson, setCurrency, setLanguage, setPlatform, setSlippage, setTheme, setUpColor, } from './reducer'
+import { setCoinJson, setCurrency, setLanguage, setPlatform, setSlippage, setTheme, setUpColor, setHideL2Assets, setHideLpToken, setHideSmallBalances } from './reducer'
 import { PlatFormType, SettingsState } from "./interface";
 import { LanguageKeys, LanguageType, ThemeKeys, ThemeType, UpColor } from '@loopring-web/common-resources';
 import React from 'react';
@@ -11,7 +11,10 @@ export function useSettings(): SettingsState & {
     setCurrency(value: 'USD' | 'CYN'): void,
     setLanguage(value: LanguageKeys): void,
     setSlippage(value: 'N' | number): void,
-    setCoinJson(value: any): void
+    setCoinJson(value: any): void,
+    setHideL2Assets(value: boolean): void,
+    setHideLpToken(value: boolean): void,
+    setHideSmallBalances(value: boolean): void,
 } {
     const settings: SettingsState = useSelector((state: any) => state.settings)
     const dispatch = useDispatch();
@@ -24,6 +27,8 @@ export function useSettings(): SettingsState & {
         setUpColor: React.useCallback((value: keyof typeof UpColor) => dispatch(setUpColor(value)), [dispatch]),
         setSlippage: React.useCallback((value: 'N' | number) => dispatch(setSlippage(value)), [dispatch]),
         setCoinJson: React.useCallback((value: any) => dispatch(setCoinJson(value)), [dispatch]),
+        setHideL2Assets: React.useCallback((value: boolean) => dispatch(setHideL2Assets(value)), [dispatch]),
+        setHideLpToken: React.useCallback((value: boolean) => dispatch(setHideLpToken(value)), [dispatch]),
+        setHideSmallBalances: React.useCallback((value: boolean) => dispatch(setHideSmallBalances(value)), [dispatch]),
     }
-
 }

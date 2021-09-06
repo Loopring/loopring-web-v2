@@ -25,4 +25,6 @@ export type AssetTitleProps = {
     btnShowDepositStatus?: keyof typeof TradeBtnStatus,
     btnShowTransferStatus?: keyof typeof TradeBtnStatus,
     btnShowWithdrawStatus?: keyof typeof TradeBtnStatus,
+    hideL2Assets: boolean,
+    setHideL2Assets: (value: boolean) => void, 
 }
