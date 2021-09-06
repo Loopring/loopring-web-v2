@@ -30,16 +30,14 @@ const StylePaper = styled(Box)`
 ` as typeof Box;
 
 export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>
-({t, ammActivityMap, ...rest}: WithTranslation
-    & {
-    ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined
-}) => {
+({t, ...rest}: WithTranslation
+    & {}) => {
     const container = React.useRef(null);
-    const {filteredData, sortMethod,tableHeight,getFilteredData,filterValue} = useAmmMapUI();
+    const {filteredData, sortMethod, tableHeight, getFilteredData, filterValue, } = useAmmMapUI();
     return (
         <>
             <WrapperStyled flex={1} marginBottom={3}>
-                <Box  marginBottom={3} display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
+                <Box marginBottom={3} display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
                     <Typography
                         variant={'h2'}
                         component={'h2'}
@@ -64,12 +62,6 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
                 <StylePaper display={'flex'}  flexDirection={'column'} ref={container} >
                     <PoolsTable {...{
                         rawData:filteredData,
-                        // handlePageChange,
-                        // page,
-                        // pagination: {
-                        //     pageSize
-                        // },
-                        // showFilter: false,
                         showLoading: !filteredData.length,
                         tableHeight: tableHeight,
                         sortMethod: sortMethod

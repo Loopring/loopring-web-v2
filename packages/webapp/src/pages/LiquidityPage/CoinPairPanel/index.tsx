@@ -62,8 +62,8 @@ const RowConfig = {
 }
 
 export const CoinPairPanel = withTranslation('common')(<R extends { [key: string]: any }, I extends { [key: string]: any }>
-    ({ t, ammActivityMap, ...rest }:
-        WithTranslation & { ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined } & any) => {    //ActivityMap<I, I>
+    ({ t, ...rest }:
+        WithTranslation & any) => {    //ActivityMap<I, I>
     const { currency } = useSettings();
     const {
         tradeFloat,
@@ -79,7 +79,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [key: string
         showAmmPoolLoading,
         ammUserTotal,
         isRecentLoading,
-    } = useCoinPair({ ammActivityMap });
+    } = useCoinPair();
     const [tabIndex, setTabIndex] = React.useState<0 | 1>(1);
     // const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
 
