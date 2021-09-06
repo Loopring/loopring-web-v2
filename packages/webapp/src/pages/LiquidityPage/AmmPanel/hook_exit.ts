@@ -19,24 +19,8 @@ import {
     makeCache,
     makeWalletLayer2
 } from '../../../hooks/help';
-import * as sdk from 'loopring-sdk';
-import {
-    AmmPoolInfoV3,
-    AmmPoolRequestPatch,
-    AmmPoolSnapshot,
-    ChainId,
-    dumpError400,
-    ExitAmmPoolRequest,
-    getExistedMarket,
-    GetNextStorageIdRequest,
-    GetOffchainFeeAmtRequest,
-    LoopringMap,
-    makeExitAmmPoolRequest2,
-    OffchainFeeInfo,
-    OffchainFeeReqType,
-    TickerData,
-    TokenInfo,
-} from 'loopring-sdk';
+import * as sdk from 'loopring-sdk'
+
 import { useAccount } from '../../../stores/account/hook';
 import store from "stores";
 import { LoopringAPI } from "api_wrapper";
@@ -49,17 +33,17 @@ import { useBtnStatus } from "hooks/common/useBtnStatus";
 
 const initSlippage = 0.5
 
-export const useAmmExit = <C extends { [key: string]: any }>({
+export const useAmmExit = ({
     setToastOpen,
     pair,
     ammPoolSnapshot,
     snapShotData,
 }
     : {
-        ammPoolSnapshot: AmmPoolSnapshot | undefined,
+        ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined,
         setToastOpen: any,
-        pair: { coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined },
-        snapShotData: { tickerData: TickerData | undefined, ammPoolSnapshot: AmmPoolSnapshot | undefined } | undefined
+        pair: { coinAInfo: CoinInfo<string> | undefined, coinBInfo: CoinInfo<string> | undefined },
+        snapShotData: { tickerData: sdk.TickerData | undefined, ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined } | undefined
     }) => {
     const { t } = useTranslation('common');
 
@@ -69,12 +53,12 @@ export const useAmmExit = <C extends { [key: string]: any }>({
     const { ammMap } = useAmmMap();
     const { account, status: accountStatus } = useAccount();
 
-    const [baseToken, setBaseToken] = React.useState<TokenInfo>();
-    const [quoteToken, setQuoteToken] = React.useState<TokenInfo>();
+    const [baseToken, setBaseToken] = React.useState<sdk.TokenInfo>();
+    const [quoteToken, setQuoteToken] = React.useState<sdk.TokenInfo>();
     const [baseMinAmt, setBaseMinAmt,] = React.useState<any>()
     const [quoteMinAmt, setQuoteMinAmt,] = React.useState<any>()
 
-    const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<C> | undefined>();
+    const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<string> | undefined>();
 
     const [ammData, setAmmData] = React.useState<AmmExitData<IBData<string>, string>>({
         coinLP: { belong: undefined } as unknown as IBData<string>,
@@ -83,7 +67,7 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
     const [btnI18nKey, setBtnI18nKey] = React.useState<string | undefined>(undefined);
 
-    const [fees, setFees] = React.useState<LoopringMap<OffchainFeeInfo>>()
+    const [fees, setFees] = React.useState<sdk.LoopringMap<sdk.OffchainFeeInfo>>()
     const [fee, setFee] = React.useState<number>(0)
 
     const { account: { accountId, apiKey } } = useAccount()
@@ -94,7 +78,7 @@ export const useAmmExit = <C extends { [key: string]: any }>({
         volA_show: number,
         volB_show: number, 
         ammInfo: any, 
-        request: ExitAmmPoolRequest }>();
+        request: sdk.ExitAmmPoolRequest }>();
 
         React.useEffect(() => {
 
@@ -218,11 +202,11 @@ export const useAmmExit = <C extends { [key: string]: any }>({
                 return
             }
             
-            const feeToken: TokenInfo = tokenMap[pair.coinBInfo.simpleName]
+            const feeToken: sdk.TokenInfo = tokenMap[pair.coinBInfo.simpleName]
 
-            const request: GetOffchainFeeAmtRequest = {
+            const request: sdk.GetOffchainFeeAmtRequest = {
                 accountId: account.accountId,
-                requestType: OffchainFeeReqType.AMM_EXIT,
+                requestType: sdk.OffchainFeeReqType.AMM_EXIT,
                 tokenSymbol: pair.coinBInfo.simpleName as string,
             }
 
@@ -271,13 +255,13 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
         const { ammMap } = store.getState().amm.ammMap
 
-        const { market, amm } = getExistedMarket(marketArray, baseToken.symbol, quoteToken.symbol)
+        const { market, amm } = sdk.getExistedMarket(marketArray, baseToken.symbol, quoteToken.symbol)
 
         if (!market || !amm || !marketMap) {
             return
         }
 
-        const ammInfo: AmmPoolInfoV3 = ammMap[amm as string]
+        const ammInfo: sdk.AmmPoolInfoV3 = ammMap[amm as string]
 
         let newAmmData = {
             slippage: ammData.slippage,
@@ -287,7 +271,8 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
         if (rawVal) {
 
-            const { volA_show, volB_show ,request } = makeExitAmmPoolRequest2(rawVal.toString(), slippageReal, account.accAddress, fees as LoopringMap<OffchainFeeInfo>,
+            const { volA_show, volB_show ,request } = sdk.makeExitAmmPoolRequest2(rawVal.toString(), 
+            slippageReal, account.accAddress, fees as sdk.LoopringMap<sdk.OffchainFeeInfo>,
                 ammMap[amm], ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0)
 
                 newAmmData['coinA'] = { ...ammData.coinA, tradeValue: volA_show, }
@@ -331,14 +316,14 @@ export const useAmmExit = <C extends { [key: string]: any }>({
 
         const { ammInfo, request: reqExit } = request
 
-        const patch: AmmPoolRequestPatch = {
-            chainId: store.getState().system.chainId as ChainId,
+        const patch: sdk.AmmPoolRequestPatch = {
+            chainId: store.getState().system.chainId as sdk.ChainId,
             ammName: ammInfo.__rawConfig__.name,
             poolAddress: ammInfo.address,
             eddsaKey: account.eddsaKey.sk
         }
 
-        const burnedReq: GetNextStorageIdRequest = {
+        const burnedReq: sdk.GetNextStorageIdRequest = {
             accountId: account.accountId,
             sellTokenId: reqExit.exitTokens.burned.tokenId as number
         }
@@ -367,7 +352,7 @@ export const useAmmExit = <C extends { [key: string]: any }>({
             }
 
         } catch (reason) {
-            dumpError400(reason)
+            sdk.dumpError400(reason)
             setToastOpen({ open: true, type: 'error', content: t('labelExitAmmFailed') })
         } finally {
             setIsLoading(false)
