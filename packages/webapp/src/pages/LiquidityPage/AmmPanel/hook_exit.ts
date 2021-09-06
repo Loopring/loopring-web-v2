@@ -2,7 +2,6 @@ import React from "react";
 import {
     AccountStatus,
     AmmExitData,
-    AmmInData,
     CoinInfo,
     fnType,
     IBData,
@@ -46,6 +45,7 @@ export const useAmmExit = ({
         const {
             ammExit: { fee, fees, request, btnI18nKey, btnStatus, ammCalcData, ammData, },
             updatePageAmmExit,
+            updatePageAmmExitBtn,
             common: { ammInfo, ammPoolSnapshot, },
         } = usePageAmmPool()
 
@@ -65,7 +65,7 @@ export const useAmmExit = ({
         React.useEffect(() => {
 
             if (account.readyState !== AccountStatus.ACTIVATED && pair) {
-                updatePageAmmExit({ btnStatus: TradeBtnStatus.AVAILABLE, btnI18nKey: accountStaticCallBack(btnLabelNew), })
+                updatePageAmmExitBtn(accountStaticCallBack(btnLabelNew))
                 initAmmData(pair, undefined, true)
             }
     
@@ -74,7 +74,7 @@ export const useAmmExit = ({
     React.useEffect(() => {
 
         if (account.readyState === AccountStatus.ACTIVATED && ammData && request) {
-            updatePageAmmExit({ btnStatus: TradeBtnStatus.AVAILABLE, btnI18nKey: accountStaticCallBack(btnLabelNew, [{ ammData, request }]) })
+            updatePageAmmExitBtn(accountStaticCallBack(btnLabelNew, [{ ammData, request }]))
         }
 
     }, [account.readyState, ammData, request])
@@ -131,12 +131,8 @@ export const useAmmExit = ({
     }, [fee, snapShotData, coinMap, tokenMap, ammCalcData, ammMap,
         updatePageAmmExit, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt, ])
 
-    const btnLabelActiveCheck = React.useCallback(({ ammData, request }): string | undefined => {
-
-        // myLog('btnLabelActiveCheck ammData:', ammData)
-        myLog('btnLabelActiveCheck req:', request)
-        myLog('btnLabelActiveCheck baseMinAmt:', baseMinAmt)
-        myLog('btnLabelActiveCheck quoteMinAmt:', quoteMinAmt)
+    const btnLabelActiveCheck = React.useCallback(({ ammData, request }):
+         { btnStatus?: TradeBtnStatus, btnI18nKey: string | undefined } => {
 
         const times = 1
 
@@ -144,30 +140,31 @@ export const useAmmExit = ({
         const validAmt2 = request?.volB_show ? request?.volB_show >= times * quoteMinAmt : false
 
         if (isLoading) {
-            updatePageAmmExit({ btnStatus: TradeBtnStatus.LOADING, })
-            return undefined
+            return { btnStatus: TradeBtnStatus.LOADING, btnI18nKey: undefined }
         } else {
             if (account.readyState === AccountStatus.ACTIVATED) {
                 if (ammData === undefined
                     || ammData?.coinLP?.tradeValue === undefined
                     || ammData?.coinLP?.tradeValue === 0) {
-                        updatePageAmmExit({ btnStatus: TradeBtnStatus.DISABLED, })
-                    return 'labelEnterAmount';
+                        return { btnStatus: TradeBtnStatus.DISABLED, btnI18nKey: 'labelEnterAmount' }
                 } else if (validAmt1 && validAmt2) {
-                    updatePageAmmExit({ btnStatus: TradeBtnStatus.AVAILABLE, })
-                    return undefined
+                    return { btnStatus: TradeBtnStatus.AVAILABLE, btnI18nKey: undefined }
                 } else {
-                    updatePageAmmExit({ btnStatus: TradeBtnStatus.DISABLED, })
-                    return `labelLimitMin, ${times * baseMinAmt} ${baseToken?.symbol} / ${times * quoteMinAmt} ${quoteToken?.symbol}`
+                    return {
+                        btnStatus: TradeBtnStatus.DISABLED,
+                        btnI18nKey: `labelLimitMin, ${times * baseMinAmt} ${ammData?.coinA.belong} / ${times * quoteMinAmt} ${ammData?.coinB.belong}`
+                    }
                 }
 
             } else {
-                updatePageAmmExit({ btnStatus: TradeBtnStatus.AVAILABLE, })
             }
 
         }
 
-        return undefined
+        return {
+            btnStatus: TradeBtnStatus.AVAILABLE,
+            btnI18nKey: undefined
+        }
 
     }, [account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, isLoading, updatePageAmmExit,])
 
@@ -266,7 +263,7 @@ export const useAmmExit = ({
     const ammCalculator = React.useCallback(async function (props) {
 
         setIsLoading(true)
-        updatePageAmmExit({ btnStatus: TradeBtnStatus.LOADING })
+        updatePageAmmExitBtn({ btnStatus: TradeBtnStatus.LOADING })
 
         if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !request || !account?.eddsaKey?.sk) {
             myLog(' onAmmJoin ammpoolAPI:', LoopringAPI.ammpoolAPI,
@@ -334,8 +331,8 @@ export const useAmmExit = ({
         [fnType.ACTIVATED]: [ammCalculator]
     })
     const onAmmClick = React.useCallback((props: AmmExitData<IBData<any>>) => {
-        accountStaticCallBack(onAmmClickMap, [props])
-    }, [onAmmClickMap]);
+        updatePageAmmExitBtn(accountStaticCallBack(onAmmClickMap, [props]))
+    }, [onAmmClickMap, updatePageAmmExitBtn]);
 
     const walletLayer2Callback = React.useCallback(() => {
 
