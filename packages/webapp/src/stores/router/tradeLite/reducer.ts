@@ -3,13 +3,15 @@ import { PageTradeLite, PageTradeLiteStatus } from './interface';
 import * as sdk from 'loopring-sdk';
 import { TradeChannel } from 'loopring-sdk';
 
+const initState = {
+    market: undefined,
+    tradePair: undefined,
+    calcTradeParams: undefined,
+    priceImpactObj: undefined,
+}
+
 const initialState: PageTradeLiteStatus = {
-    pageTradeLite: {
-        market: undefined,
-        tradePair: undefined,
-        calcTradeParams: undefined,
-        priceImpactObj: undefined,
-    },
+    pageTradeLite: initState,
 
     __SUBMIT_LOCK_TIMER__: 1000,
     __TOAST_AUTO_CLOSE_TIMER__: 3000,
@@ -18,6 +20,9 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
     name: 'pageTradeLite',
     initialState,
     reducers: {
+        reset(state) {
+            state.pageTradeLite = initState
+        },
         updatePageTradeLite(state, action: PayloadAction<Partial<PageTradeLite>>) {
             const {
                 market,
@@ -103,7 +108,9 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
         },
 
 
+
+
     },
 });
 export { pageTradeLiteSlice };
-export const {updatePageTradeLite} = pageTradeLiteSlice.actions;
+export const {updatePageTradeLite, reset, } = pageTradeLiteSlice.actions;
