@@ -1,5 +1,5 @@
 import React from 'react'
-import { EmptyValueTag, getShowStr, ReverseIcon } from '@loopring-web/common-resources'
+import { EmptyValueTag, getShowStr, myLog, ReverseIcon } from '@loopring-web/common-resources'
 import { IconButtonStyled } from '../Styled'
 
 export function useAmmViewData({error, i18nKey, t, _isStoB, ammCalcData, _onSwitchStob, isAdd, }:
@@ -11,12 +11,13 @@ export function useAmmViewData({error, i18nKey, t, _isStoB, ammCalcData, _onSwit
                 return  t(error.message)
             }else if(error.message !== undefined){
                 return error.message;
-            }else{
+            }else {
                 return t('labelError')
             }
 
         }
         if (i18nKey) {
+            myLog('i18nKey:', i18nKey)
             const key = i18nKey.split(',');
             return t(key[ 0 ], key && key[ 1 ] ? {arg: key[ 1 ]} : undefined)
         } else {
