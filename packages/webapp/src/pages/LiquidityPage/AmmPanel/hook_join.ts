@@ -2,7 +2,6 @@ import React from "react";
 import {
     AccountStatus,
     AmmJoinData,
-    AmmInData,
     CoinInfo,
     fnType,
     IBData,
@@ -82,7 +81,8 @@ export const useAmmJoin = ({
 
     }, [account.readyState, ammData])
 
-    const btnLabelActiveCheck = React.useCallback(({ ammData }): { btnStatus?: TradeBtnStatus, btnI18nKey: string | undefined } => {
+    const btnLabelActiveCheck = React.useCallback(({ ammData }):
+     { btnStatus?: TradeBtnStatus, btnI18nKey: string | undefined } => {
 
         const times = 10
 
@@ -318,10 +318,6 @@ export const useAmmJoin = ({
 
             req.storageIds = [storageId0.offchainId, storageId1.offchainId]
 
-            myLog('join storageId0:', storageId0)
-            myLog('join storageId1:', storageId1)
-            myLog('join req:', req)
-
             const response = await LoopringAPI.ammpoolAPI.joinAmmPool(req, patch, account.apiKey)
 
             myLog('join ammpool response:', response)
@@ -359,7 +355,7 @@ export const useAmmJoin = ({
     })
     const onAmmClick = React.useCallback((props: AmmJoinData<IBData<any>>) => {
         updatePageAmmJoinBtn(accountStaticCallBack(onAmmClickMap, [props]))
-    }, [onAmmClickMap]);
+    }, [onAmmClickMap, updatePageAmmJoinBtn]);
 
     const walletLayer2Callback = React.useCallback(() => {
 
