@@ -70,8 +70,9 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     // const [chartPeriod, setChartPeriod] = useState('week')
 
     const {marketArray, assetsRawData} = useGetAssets()
-    const {currency, themeMode} = useSettings()
+    const {currency, themeMode, setHideL2Assets, setHideLpToken, setHideSmallBalances} = useSettings()
     const {walletLayer2} = store.getState().walletLayer2;
+    const { hideL2Assets, hideLpToken, hideSmallBalances } = store.getState().settings
 
     const total = assetsRawData.map(o => o.tokenValueDollar).reduce((a, b) => a + b, 0)
     
@@ -143,9 +144,11 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
             }, 0),
             priceTag: currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan,
         },
+        hideL2Assets,
         onShowDeposit,
         onShowTransfer,
         onShowWithdraw,
+        setHideL2Assets,
     }
 
     return (
@@ -154,7 +157,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                 <AssetTitle  {...{
                     t,
                     ...rest,
-                    ...AssetTitleProps
+                    ...AssetTitleProps,
                 }} />
             </Box>
 
@@ -188,6 +191,10 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                         onLpDeposit: lpTokenJump,
                         onLpWithdraw: lpTokenJump,
                         getMarketArrayListCallback: getTokenRelatedMarketArray,
+                        hideLpToken, 
+                        hideSmallBalances,
+                        setHideLpToken, 
+                        setHideSmallBalances,
                         ...rest
                     }} />
                 </Box>
