@@ -82,8 +82,8 @@ const reducer = combineReducers({
     amountMap: amountMapSlice.reducer,
 
     // router redux
-    pageTradeLite: pageTradeLiteSlice.reducer,
-    pageAmmPool: pageAmmPoolSlice.reducer,
+    _router_pageTradeLite: pageTradeLiteSlice.reducer,
+    _router_pageAmmPool: pageAmmPoolSlice.reducer,
 })
 
 //const persistedReducer = persistReducer(persistConfig ,reducer)

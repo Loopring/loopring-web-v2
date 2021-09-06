@@ -35,7 +35,7 @@ import { usePageAmmPool } from "stores/router";
 
 const initSlippage = 0.5
 
-export const useAmmJoin = <C extends { [key: string]: any }>({
+export const useAmmJoin = ({
     setToastOpen,
     pair,
     ammPoolSnapshot,
@@ -44,7 +44,7 @@ export const useAmmJoin = <C extends { [key: string]: any }>({
     : {
         ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined,
         setToastOpen: any,
-        pair: { coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined },
+        pair: { coinAInfo: CoinInfo<string> | undefined, coinBInfo: CoinInfo<string> | undefined },
         snapShotData: { tickerData: sdk.TickerData | undefined, ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined } | undefined
     }) => {
 
@@ -69,13 +69,13 @@ export const useAmmJoin = <C extends { [key: string]: any }>({
     const [baseMinAmt, setBaseMinAmt,] = React.useState<any>()
     const [quoteMinAmt, setQuoteMinAmt,] = React.useState<any>()
 
-    const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<C> | undefined>();
+    const [ammCalcData, setAmmCalcData] = React.useState<AmmInData<string> | undefined>();
 
-    const [ammData, setAmmData] = React.useState<AmmJoinData<IBData<C>, C>>({
-        coinA: { belong: undefined } as unknown as IBData<C>,
-        coinB: { belong: undefined } as unknown as IBData<C>,
+    const [ammData, setAmmData] = React.useState<AmmJoinData<IBData<string>, string>>({
+        coinA: { belong: undefined } as unknown as IBData<string>,
+        coinB: { belong: undefined } as unknown as IBData<string>,
         slippage: initSlippage
-    } as AmmJoinData<IBData<C>, C>);
+    } as AmmJoinData<IBData<string>, string>);
 
     const [btnI18nKey, setBtnI18nKey] = React.useState<string | undefined>(undefined);
 
@@ -276,8 +276,8 @@ export const useAmmJoin = <C extends { [key: string]: any }>({
         setBtnI18nKey(accountStaticCallBack(btnLabelNew, [{ ammData: data }]))
 
         setAmmData({
-            coinA: data.coinA as IBData<C>,
-            coinB: data.coinB as IBData<C>,
+            coinA: data.coinA as IBData<string>,
+            coinB: data.coinB as IBData<string>,
             slippage,
         })
 

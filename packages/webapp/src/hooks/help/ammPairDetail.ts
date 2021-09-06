@@ -2,7 +2,7 @@ import { AmmDetailBase, AmmInData } from '@loopring-web/common-resources';
 
 import { volumeToCountAsBigNumber } from './volumeToCount';
 
-export function ammPairInit<C>({
+export function ammPairInit({
                                 fee,
                                 pair,
                                 _ammCalcData,
@@ -11,7 +11,7 @@ export function ammPairInit<C>({
                                 ammMap,
                                 tickerData,
                                 ammPoolSnapshot
-                            }: any): AmmInData<C> {
+                            }: any): AmmInData<string> {
     _ammCalcData.coinInfoMap = coinMap;
     if (tickerData) {
         _ammCalcData.AtoB = Number(tickerData.close)
