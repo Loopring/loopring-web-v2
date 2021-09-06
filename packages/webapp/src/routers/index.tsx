@@ -16,14 +16,16 @@ import { ModalGroup } from '../modal';
 import Footer from '../layouts/footer';
 import React from 'react';
 import store from 'stores'
-import { reset as resetPageTradeLite } from 'stores/router/tradeLite/reducer'
+
+import { resetSwap, resetAmmPool } from 'stores/router'
 
 const RouterView = () => {
 
     const location = useLocation()
 
     React.useEffect(() => {
-        store.dispatch(resetPageTradeLite(undefined))
+        store.dispatch(resetSwap(undefined))
+        store.dispatch(resetAmmPool(undefined))
     }, [location?.pathname])
 
     return (<>
