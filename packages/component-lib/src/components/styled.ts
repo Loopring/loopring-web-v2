@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
-import { BoxProps, Grid, Typography } from '@material-ui/core';
+import { BoxProps, Grid, Typography } from '@mui/material';
 import { css, Theme } from '@emotion/react';
 import { UpColor } from '@loopring-web/common-resources';
-import { Box } from '@material-ui/core/';
+import { Box } from '@mui/material';
 import React from 'react';
 
 // @ts-ignore

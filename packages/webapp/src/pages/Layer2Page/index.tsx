@@ -1,6 +1,6 @@
 import { useRouteMatch } from 'react-router'
 
-import { Box, Typography } from '@material-ui/core'
+import { Box, Typography } from '@mui/material'
 import { Button, SubMenu, SubMenuList as BasicSubMenuList, } from '@loopring-web/component-lib'
 import { useTranslation, withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'

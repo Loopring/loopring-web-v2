@@ -2,7 +2,7 @@ import { WalletConnectBtnProps } from './Interface';
 import { useTranslation } from 'react-i18next';
 import React, { useEffect } from 'react';
 import { AccountStatus, getShortAddr, LoadingIcon, LockIcon, UnConnectIcon, CircleIcon} from '@loopring-web/common-resources';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { Button } from '../../basic-lib';
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';
 import { ChainId } from 'loopring-sdk';

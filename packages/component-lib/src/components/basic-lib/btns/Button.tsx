@@ -4,13 +4,13 @@ import {
     IconButton,
     ToggleButton,
     ToggleButtonGroup as MuToggleButtonGroup,
-} from "@material-ui/core";
+} from '@mui/material';
 import { ButtonProps, TGItemJSXInterface, ToggleButtonGroupProps } from './Interface';
 import { WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
 import { CloseIcon, DropDownIcon, QRIcon } from '@loopring-web/common-resources';
-import { Link } from '@material-ui/core/';
+import { Link } from '@mui/material';
 import React from 'react';
 
 export const Button = styled(MuButton)<ButtonProps>`

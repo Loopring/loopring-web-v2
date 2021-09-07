@@ -8,11 +8,9 @@ import store, { persistor } from 'stores'
 // import { getLibrary } from 'utils/web3_tools'
 // import { NetworkContextName } from 'loopring-sdk'
 import { getTheme, i18n, provider, ProviderComposer } from "@loopring-web/common-resources"
-
-import { ThemeProvider as MuThemeProvider } from '@material-ui/core'
-import LocalizationProvider from '@material-ui/pickers/LocalizationProvider'
-
-import MomentUtils from '@material-ui/lab/AdapterMoment'
+import { ThemeProvider as MuThemeProvider, } from '@mui/material'
+import { LocalizationProvider } from '@mui/lab'
+import MomentUtils from '@mui/lab/AdapterMoment'
 
 import { ThemeProvider } from "@emotion/react"
 

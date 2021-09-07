@@ -1,4 +1,4 @@
-import { MenuItem as MuiMenuItem, Select, SelectProps } from '@material-ui/core';
+import { MenuItem as MuiMenuItem, Select, SelectProps } from '@mui/material';
 import styled from '@emotion/styled';
 import { MuiMenuItemProps } from './Interface';
 import React from 'react';

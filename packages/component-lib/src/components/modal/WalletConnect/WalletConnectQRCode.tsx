@@ -1,7 +1,7 @@
 import QRCode from 'qrcode.react';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
 import { WithTranslation } from 'react-i18next';
-import { Link } from '@material-ui/core/';
+import { Link } from '@mui/material';
 
 export const WalletConnectQRCode = ({url,onCopy, t}: { url: string,onCopy:()=>void } & WithTranslation)=>{
     return   <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'space-between'} flexDirection={'column'}>

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Avatar } from '@material-ui/core';
+import { Avatar } from '@mui/material';
 import { AvatarCoinProps } from './interface';
 
 export * from "./overrides/muTheme"

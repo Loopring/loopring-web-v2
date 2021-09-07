@@ -1,4 +1,4 @@
-import { Box, Modal as MuiModal } from '@material-ui/core';
+import { Box, Modal as MuiModal } from '@mui/material';
 import {
     AmmPanel,
     AmmProps,

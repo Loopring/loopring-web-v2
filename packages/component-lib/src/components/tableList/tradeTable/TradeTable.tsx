@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, BoxProps } from '@material-ui/core'
+import { Box, BoxProps } from '@mui/material'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import moment from 'moment'
@@ -11,7 +11,7 @@ import { EmptyValueTag, getThousandFormattedNumbers, TableType, TradeTypes } fro
 import { useSettings } from '../../../stores';
 import { useDeepCompareEffect } from 'react-use';
 import { Row } from '../poolsTable/Interface';
-import { DateRange } from '@material-ui/lab'
+import { DateRange } from '@mui/lab'
 
 // interface Row {
 //     side: TradeTypes;

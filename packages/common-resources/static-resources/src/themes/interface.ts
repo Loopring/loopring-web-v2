@@ -1,4 +1,4 @@
-import { AvatarProps, Theme } from '@material-ui/core';
+import { AvatarProps, Theme } from '@mui/material';
 import { ColorBaseInterface } from './css/color-lib';
 
 export enum ThemeType {

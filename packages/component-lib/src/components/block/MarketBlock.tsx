@@ -1,7 +1,7 @@
 import { WithTranslation } from 'react-i18next';
 import { CoinKey, EmptyValueTag, getThousandFormattedNumbers, PriceTag } from '@loopring-web/common-resources';
-import { Box, BoxProps, Grid } from '@material-ui/core';
-import { Typography } from '@material-ui/core/';
+import { Box, BoxProps, Grid } from '@mui/material';
+import { Typography } from '@mui/material';
 import styled from '@emotion/styled';
 import React from 'react';
 import { floatTag, MarketBlockProps, useSettings } from './../../index';

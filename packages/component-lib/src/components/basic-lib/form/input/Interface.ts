@@ -2,7 +2,7 @@ import { CoinInfo, CoinKey, CoinMap } from '@loopring-web/common-resources';
 import React from 'react';
 import {
     // Box, BoxProps, Button, ButtonProps,
-    InputProps } from "@material-ui/core";
+    InputProps } from '@mui/material';
 // import styled from '@emotion/styled';
 // import CurrencyInput from 'react-currency-input-field';
 

@@ -1,5 +1,5 @@
 import { MenuItem } from '../../../basic-lib';
-import { ListItemText, Typography } from '@material-ui/core';
+import { ListItemText, Typography } from '@mui/material';
 
 export const ChargeFeeTokenListView = <C extends { [ key: string ]: any }>({chargeFeeTokenList}: {
     chargeFeeTokenList: Array<{ belong: C | string, fee: number | string, __raw__?: any }>

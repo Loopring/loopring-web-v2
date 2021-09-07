@@ -5,13 +5,12 @@ import Header from 'layouts/header'
 import QuotePage from 'pages/QuotePage'
 import { SwapPage } from 'pages/SwapPage'
 
-import Container from '@material-ui/core/Container'
+import { Container ,Box} from '@mui/material'
 import { Layer2Page } from '../pages/Layer2Page'
 import { LiquidityPage } from '../pages/LiquidityPage'
 import { MiningPage } from '../pages/MiningPage'
 
 import { LAYOUT } from '../defs/common_defs';
-import { Box } from '@material-ui/core';
 import { ModalGroup } from '../modal';
 import Footer from '../layouts/footer';
 import React from 'react';

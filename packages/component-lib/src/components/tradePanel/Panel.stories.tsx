@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { SwapPanel } from './Swap';
 import { Meta, Story } from '@storybook/react/types-6-0';
 import { MemoryRouter } from 'react-router-dom';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 import {
     AmmData,
     AmmInData, AmmWithdrawData,

@@ -1,7 +1,7 @@
 import { headerRoot } from '@loopring-web/common-resources'
 
 
-import { Toolbar, } from '@material-ui/core'
+import { Toolbar, } from '@mui/material'
 
 import { useHeader } from './hook'
 import { useConfirmation } from 'stores/localStore/confirmation'

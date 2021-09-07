@@ -1,5 +1,5 @@
-import { Avatar, Box, Card, CardActions, CardContent, Divider } from '@material-ui/core';
-import { Typography } from '@material-ui/core/';
+import { Avatar, Box, Card, CardActions, CardContent, Divider } from '@mui/material';
+import { Typography } from '@mui/material';
 import {  Button } from '../';
 import React from 'react';
 import moment from 'moment';

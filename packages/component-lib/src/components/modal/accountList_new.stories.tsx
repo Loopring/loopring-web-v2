@@ -3,7 +3,7 @@ import React from 'react'
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
-import { Button, Grid, Typography } from '@material-ui/core'
+import { Button, Grid, Typography } from '@mui/material'
 import { ConnectProviders, gatewayList } from '@loopring-web/common-resources'
 import {
     ModalWalletConnect,
@@ -55,7 +55,7 @@ import {
     UpdateAccount_Failed,
 } from './ModalPanels';
 import { account } from '../../static';
-import { Box } from '@material-ui/core/';
+import { Box } from '@mui/material';
 
 const Style = styled.div`
   

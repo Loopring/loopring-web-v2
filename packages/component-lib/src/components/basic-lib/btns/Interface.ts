@@ -1,4 +1,4 @@
-import { Mark,ButtonProps as MuButtonPros, ToggleButtonGroupProps as MuToggleButtonGroupProps } from "@material-ui/core";
+import { Mark,ButtonProps as MuButtonPros, ToggleButtonGroupProps as MuToggleButtonGroupProps } from '@mui/material';
 import { XOR } from "../../../types/lib";
 
 export type ButtonProps = MuButtonPros & {

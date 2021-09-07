@@ -4,7 +4,7 @@ import { Trans, WithTranslation } from 'react-i18next';
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import React, { ChangeEvent } from 'react';
-import { Box, Grid, Typography } from '@material-ui/core';
+import { Box, Grid, Typography } from '@mui/material';
 import { PopoverPure } from '../../'
 import { Button, IconClearStyled, TextField, TypographyGood } from '../../../index';
 import { DepositViewProps } from './Interface';

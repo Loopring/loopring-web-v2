@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, BoxProps, Button, ButtonProps } from '@material-ui/core';
+import { Box, BoxProps, Button, ButtonProps } from '@mui/material';
 import React from 'react';
 import CurrencyInput from 'react-currency-input-field';
 

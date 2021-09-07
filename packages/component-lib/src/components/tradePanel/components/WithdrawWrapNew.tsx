@@ -2,7 +2,7 @@ import { Trans, WithTranslation } from 'react-i18next';
 import React, { ChangeEvent } from 'react';
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
-import { FormControlLabel, Grid, ListItemText, Radio, RadioGroup, Typography, Box } from '@material-ui/core';
+import { FormControlLabel, Grid, ListItemText, Radio, RadioGroup, Typography, Box } from '@mui/material';
 import { CloseIcon, DropDownIcon, globalSetup, IBData, WithdrawTypes, HelpIcon } from '@loopring-web/common-resources';
 import { PopoverPure } from '../..'
 import { TradeBtnStatus } from '../Interface';

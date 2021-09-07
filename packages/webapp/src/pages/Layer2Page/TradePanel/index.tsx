@@ -2,7 +2,7 @@ import React from 'react'
 import { TradeTable } from '@loopring-web/component-lib'
 import { WithTranslation, withTranslation } from 'react-i18next'
 // import styled from '@emotion/styled'
-// import { Box, Paper } from '@material-ui/core'
+// import { Box, Paper } from '@mui/material'
 import { StylePaper } from '../../styled'
 import { useGetTrades } from './hooks'
 

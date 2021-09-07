@@ -1,4 +1,4 @@
-import { FormHelperText, FormLabel, Grid, Typography } from "@material-ui/core";
+import { FormHelperText, FormLabel, Grid, Typography } from '@mui/material';
 import { CoinInfo, FORMAT_STRING_LEN, getThousandFormattedNumbers, IBData } from '@loopring-web/common-resources';
 import { InputCoinProps } from "./Interface";
 import React from "react";

@@ -1,6 +1,6 @@
-import { OutlinedInput, InputAdornment } from '@material-ui/core'
+import { OutlinedInput, InputAdornment } from '@mui/material'
 import { SearchIcon } from '@loopring-web/common-resources'
-import { OutlinedInputProps } from '@material-ui/core/OutlinedInput/OutlinedInput';
+import { OutlinedInputProps } from '@mui/material';
 import React from 'react';
 
 export type InputSearchProps  = {

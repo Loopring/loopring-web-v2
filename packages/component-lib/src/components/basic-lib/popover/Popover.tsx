@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from "@emotion/styled";
-import { Popover as MuiPopover, PopoverOrigin, PopoverProps } from '@material-ui/core'
+import { Popover as MuiPopover, PopoverOrigin, PopoverProps } from '@mui/material'
 import { PopoverWrapProps } from './Interface';
 import { bindHover, bindMenu, bindPopover, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
 import HoverMenu from 'material-ui-popup-state/HoverMenu';

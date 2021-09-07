@@ -143,7 +143,7 @@ module.exports = override(
     }
 
     setConfig(2)
-    
+
     // addCompression()
 
     // addAnalyzer()
@@ -171,11 +171,24 @@ module.exports = override(
     config.resolve.modules = [
       path.resolve(__dirname, "..", "src"),
       "node_modules",
-    ]*/
 
-    alias({
-      // 'static-resource': path.resolve(__dirname, 'node_modules/@loopring-web/component-lib/static-resource'),
-    })(config)
+    ]*/
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "@material-ui/core/Menu":  "@mui/material/Menu",
+      "@material-ui/core":  "@mui/material",
+      "@material-ui/core/Popover":  "@mui/material/Popover",
+
+    }
+    // config.resolve = [
+    //   alias({
+    //
+    //   })(config)
+    // ]
+
+
+
+
 
     return config
   },

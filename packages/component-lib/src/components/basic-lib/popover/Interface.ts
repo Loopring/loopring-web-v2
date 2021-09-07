@@ -1,4 +1,4 @@
-import { PopoverOrigin } from '@material-ui/core';
+import { PopoverOrigin } from '@mui/material';
 import { OneOf } from '@loopring-web/common-resources';
 
 import * as React from 'react';

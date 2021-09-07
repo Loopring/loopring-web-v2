@@ -2,7 +2,7 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 import { Button, Column, generateColumns, Table, TableProps, } from '../../basic-lib/'
 import { Default } from '../../basic-lib/tables/table.stories';
 import { FormatterProps } from 'react-data-grid';
-import { Typography } from '@material-ui/core/';
+import { Typography } from '@mui/material';
 import { Currency, FloatTag, PriceTag } from '@loopring-web/common-resources';
 import { HeaderCell } from './componnents/HeaderCell';
 import React from 'react';

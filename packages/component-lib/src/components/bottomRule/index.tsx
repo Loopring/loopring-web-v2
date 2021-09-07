@@ -1,4 +1,4 @@
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
 import { Button, ModalCloseButton } from '@loopring-web/component-lib';
 import styled from '@emotion/styled';
 import React from 'react';

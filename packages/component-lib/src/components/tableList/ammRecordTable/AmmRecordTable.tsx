@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, BoxProps, Typography } from '@material-ui/core'
+import { Box, BoxProps, Typography } from '@mui/material'
 import { withTranslation, WithTranslation } from 'react-i18next';
 import moment from 'moment'
 import {  TablePagination, TableProps } from '../../basic-lib'

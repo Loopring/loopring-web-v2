@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Typography } from '@material-ui/core'
+import { Box, Typography } from '@mui/material'
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { Button, TablePagination, TableProps } from '../../basic-lib'
 import { Column, Table, } from '../../basic-lib/'

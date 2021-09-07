@@ -1,7 +1,7 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import QRCode from 'qrcode.react';
 import styled from '@emotion/styled';
-import { Box, Modal, Typography } from '@material-ui/core';
+import { Box, Modal, Typography } from '@mui/material';
 import { ModalQRCodeProps, QRCodeProps } from './Interface';
 import { ModalCloseButton } from '../../basic-lib';
 

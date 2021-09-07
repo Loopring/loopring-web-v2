@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { MenuItem, MenuItemProps } from "@material-ui/core";
+import { MenuItem, MenuItemProps } from '@mui/material';
 
 
 export const TabItemPlus = styled<any>(MenuItem)`

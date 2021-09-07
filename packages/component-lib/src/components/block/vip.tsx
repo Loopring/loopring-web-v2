@@ -8,7 +8,7 @@ import {
 } from '../basic-lib';
 import { Trans, WithTranslation, withTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
-import { Box, Button, Divider, Grid, Typography } from '@material-ui/core';
+import { Box, Button, Divider, Grid, Typography } from '@mui/material';
 import { TypographyStrong, VipStyled } from '../styled';
 
 interface Row {

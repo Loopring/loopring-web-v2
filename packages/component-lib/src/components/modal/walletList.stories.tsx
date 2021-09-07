@@ -3,7 +3,7 @@ import React from 'react'
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
-import { Button, Grid } from '@material-ui/core'
+import { Button, Grid } from '@mui/material'
 import { AccountFull, AccountStatus, ConnectProviders, gatewayList } from '@loopring-web/common-resources'
 import {
     ModalWalletConnect,
@@ -15,7 +15,7 @@ import { ModalQRCode, QRCodePanel } from './QRCode'
 
 import { account } from '../../static';
 import { WalletConnectBtn } from '../header';
-import { Box } from '@material-ui/core/';
+import { Box } from '@mui/material';
 
 import { MetaMaskConnectInProgress, 
     WalletConnectConnectInProgress, 

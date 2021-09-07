@@ -1,12 +1,12 @@
-import { experimentalStyled, InputAdornment, TextField, } from "@material-ui/core";
+import { Box, experimentalStyled, InputAdornment, TextField } from '@mui/material';
 import styled from "@emotion/styled";
 import {
     DatePicker as MuDatePicker,
     DatePickerProps as MuDatePickerProps,
-    DateRangeDelimiter,
+    // DateRangeDelimiter,
     DateRangePicker as MuDateRangePicker,
     DateRangePickerProps as MuDateRangePickerProps
-} from '@material-ui/pickers';
+} from '@mui/lab';
 
 import { TFunction } from 'i18next';
 import { CalendarIcon } from '@loopring-web/common-resources';
@@ -62,11 +62,11 @@ const DateTextField = styled(TextField)`
 
 `;
 
-const DateRangeDelimiterStyled = styled(DateRangeDelimiter)`
-    margin: 0 ${({theme}) => theme.unit}px !important;
-`
+// const DateRangeDelimiterStyled = styled(DateRangeDelimiter)`
+//     margin: 0 ${({theme}) => theme.unit}px !important;
+// `
 
-export type DateRangePickerProps = {} & Omit<MuDateRangePickerProps, 'renderInput'>;
+export type DateRangePickerProps = {} & Omit<MuDateRangePickerProps<Date>, 'renderInput'>;
 
 export const DateRangePicker = experimentalStyled(({...props}: DateRangePickerProps & { t: TFunction }) => {
 
@@ -75,7 +75,7 @@ export const DateRangePicker = experimentalStyled(({...props}: DateRangePickerPr
         calendars={props.calendars ? props.calendars : 2}
         mask={props.mask ? props.mask : "__-__-__"}
         inputFormat={props.inputFormat ? props.inputFormat : 'YY-MM-DD'}
-        openPickerIcon={<CalendarIcon/>}
+        // endIcon={<CalendarIcon/>}
         OpenPickerButtonProps={props.OpenPickerButtonProps}
         renderInput={(startProps, endProps) => {
             startProps.InputProps = {
@@ -88,7 +88,7 @@ export const DateRangePicker = experimentalStyled(({...props}: DateRangePickerPr
                 )
             }
             endProps.InputProps = {
-                ...endProps.InputProps, readOnly: true, endAdornment: (
+                ...endProps.InputProps, endAdornment: (
                     <InputAdornment position="end" component={'button'} className={'date-range-adornment'}>
                         <span className={'MuiIconButton-label'}>
                             <CalendarIcon/>
@@ -98,7 +98,8 @@ export const DateRangePicker = experimentalStyled(({...props}: DateRangePickerPr
             }
             return (<>
                 <DateTextField {...{...startProps, helperText: null, label: undefined}} placeholder={'YY-MM-DD'}/>
-                <DateRangeDelimiterStyled>-</DateRangeDelimiterStyled>
+                <Box sx={{ mx: 2 }}> - </Box>
+                {/*<DateRangeDelimiterStyled>-</DateRangeDelimiterStyled>*/}
                 <DateTextField {...{...endProps, helperText: null, label: undefined}} placeholder={'YY-MM-DD'}/>
             </>)
         }
@@ -115,19 +116,38 @@ export const DatePicker = styled(({
                                       value,
                                       ...props
                                   }: DatePickerProps & { t?: TFunction }) => <MuDatePicker
-
+    {...props}
     disableFuture={props.disableFuture ? props.disableFuture : true}
     mask={props.mask ? props.mask : "__-__-__"}
     inputFormat={inputFormat ? inputFormat : 'YY-MM-DD'}
-    openTo={props.openTo ? props.openTo : 'date'}
-    views={props.views ? props.views : ["year", "date"]}
+    openTo={props.openTo ? props.openTo : 'day' }
+    views={props.views ? props.views : ["year", "day"]}
     value={value}
-    openPickerIcon={<CalendarIcon/>}
-    renderInput={(props) => {
-        props.InputProps = {...props.InputProps}
-        return (<DateTextField {...{...props, helperText: null}}  />)
+    OpenPickerButtonProps={props.OpenPickerButtonProps}
+    components={{OpenPickerIcon:CalendarIcon}}
+    // openPicker={()=>{}}
+    // openPickerIcon={<CalendarIcon/>}
+    renderInput={(_props) => {
+        // const endAdornment = _props.InputProps?.endAdornment;
+        // {props.openPicker}
+        // {...{...endAdornment}}
+        // onClick={props.openPicker}
+        // @ts-ignore
+        _props.InputProps = {..._props.InputProps, endAdornment: (
+                // {endAdornment}
+                <InputAdornment
+
+                    position="end" component={'button'} className={'date-adornment'}>
+                        <span className={'MuiIconButton-label'}>
+                            <CalendarIcon/>
+                        </span>
+                </InputAdornment>
+            )}
+
+        
+        return (<DateTextField {...{..._props, helperText: null}}  />)
     }}
-    {...props} />
+ />
 )<DatePickerProps>`
 
 ` as React.ComponentType<DatePickerProps & { t?: TFunction }>

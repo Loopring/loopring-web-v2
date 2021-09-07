@@ -1,6 +1,6 @@
 import { Trans, WithTranslation } from 'react-i18next';
 import React, { ChangeEvent } from 'react';
-import { Grid, ListItemText, Typography, Box } from '@material-ui/core';
+import { Grid, ListItemText, Typography, Box } from '@mui/material';
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 // import { Link as RouterLink } from 'react-router-dom';

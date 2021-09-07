@@ -1,7 +1,7 @@
 import { SwapProps, SwapTradeData } from '../Interface';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
 import { IBData, TradeCalcData } from '@loopring-web/common-resources';
 import { SwapData, SwapMenuList, SwapTradeWrap } from '../components';

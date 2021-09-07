@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { List, ListProps } from "@material-ui/core";
+import { List, ListProps } from '@mui/material';
 
 export const SubMenu = styled(List)<ListProps>`
   width: 100%;

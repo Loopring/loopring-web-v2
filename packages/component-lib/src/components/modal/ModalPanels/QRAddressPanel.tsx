@@ -1,7 +1,7 @@
 import QRCode from 'qrcode.react';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import { WithTranslation, withTranslation } from 'react-i18next';
-import { Box } from '@material-ui/core/';
+import { Box } from '@mui/material';
 import { Account } from '@loopring-web/common-resources';
 
 

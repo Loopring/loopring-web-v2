@@ -1,6 +1,15 @@
 import styled from '@emotion/styled';
-import Switch from '@material-ui/core/Switch';
-import { Box, Divider, FormControlLabel, Grid, Radio, RadioGroup, Typography } from '@material-ui/core';
+import {
+    Switch,
+    Box,
+    Divider,
+    FormControlLabel,
+    Grid,
+    Radio,
+    RadioGroup,
+    Typography,
+    SelectChangeEvent
+} from '@mui/material';
 import React from 'react';
 import {
     Currency,
@@ -47,7 +56,7 @@ const BoxStyle = styled(Box)(() => ({
 
 export const BtnCurrency = ({t, currency, label, handleChange}: any) => {
     const [state, setState] = React.useState<string>(currency ? currency : Currency.dollar);
-    const _handleChange = React.useCallback((event: React.ChangeEvent<any>) => {
+    const _handleChange = React.useCallback((event: SelectChangeEvent<any>) => {
         setState(event.target.value);
         if (handleChange) {
 
@@ -58,7 +67,8 @@ export const BtnCurrency = ({t, currency, label, handleChange}: any) => {
                           labelId="language-selected"
                           id="language-selected"
                           value={state} autoWidth
-                          onChange={_handleChange}>
+                          onChange={_handleChange}
+                         >
         <OutlineSelectItem value={Currency.dollar}>$ {t('labelUSDollar')}</OutlineSelectItem>
         <OutlineSelectItem value={Currency.yen}>¥ {t('labelCNYYuan')}</OutlineSelectItem>
     </OutlineSelect>
@@ -76,7 +86,7 @@ const RadioGroupStyle = styled(RadioGroup)`
 
 
 export const BtnLanguage = ({t, label, handleChange}: any) => {
-    const _handleChange = React.useCallback((event: React.ChangeEvent<any>) => {
+    const _handleChange = React.useCallback((event: SelectChangeEvent<any>) => {
         if (handleChange) {
             handleChange(event.target.value);
         }

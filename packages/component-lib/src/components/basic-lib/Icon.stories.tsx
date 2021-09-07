@@ -1,7 +1,7 @@
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
-import { Grid, Typography } from '@material-ui/core/';
+import { Grid, Typography } from '@mui/material';
 import {
     AlertIcon,
     AssetsIcon,

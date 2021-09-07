@@ -1,4 +1,4 @@
-import { ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core/';
+import { ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import { WithTranslation } from "react-i18next";
 import React from "react";
 import styled from "@emotion/styled";
@@ -116,7 +116,7 @@ export const CoinItem = React.memo(React.forwardRef(<C extends any>({
     // const coinIcon: any = coinJson [ simpleName ];
 
     return <StyledCoinItem
-        button
+        button={false}
         ref={ref}
         key={itemKey as string}
         selected={select === simpleName}

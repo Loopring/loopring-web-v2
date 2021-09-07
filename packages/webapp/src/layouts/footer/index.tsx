@@ -1,5 +1,5 @@
 import styled from '@emotion/styled/macro'
-import { Box, Container, Grid, Link, List, ListItem, Typography } from '@material-ui/core';
+import { Box, Container, Grid, Link, List, ListItem, Typography } from '@mui/material';
 import { WithTranslation, withTranslation } from 'react-i18next';
 
 const FooterDiv = styled(Box)`

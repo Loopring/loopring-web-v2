@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, IconButton, LinearProgress, linearProgressClasses } from '@material-ui/core';
+import { Box, IconButton, LinearProgress, linearProgressClasses } from '@mui/material';
 import { css } from '@emotion/react';
 
 

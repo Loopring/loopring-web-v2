@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { Box, Tab, Tabs } from '@material-ui/core'
+import { Box, Tab, Tabs } from '@mui/material'
 import { AmmTable, TradeTable, TransactionTable } from '@loopring-web/component-lib'
 import { StylePaper } from '../../styled'
 import { useGetAmmRecord, useGetTrades, useGetTxs } from './hooks';

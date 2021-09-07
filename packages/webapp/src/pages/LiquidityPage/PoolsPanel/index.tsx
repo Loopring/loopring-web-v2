@@ -1,5 +1,5 @@
 import { WithTranslation, withTranslation, } from 'react-i18next'
-import { Box, InputAdornment, OutlinedInput, Typography } from '@material-ui/core'
+import { Box, InputAdornment, OutlinedInput, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 
 import React from 'react';
