@@ -1,5 +1,5 @@
 import { Box, Grid, IconButton, Typography } from '@material-ui/core/';
-import { getThousandFormattedNumbers, HideIcon, ViewIcon } from '@loopring-web/common-resources';
+import { HideIcon, ViewIcon, getValuePrecisionThousand } from '@loopring-web/common-resources';
 import React from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { AssetTitleProps } from './Interface';
@@ -51,7 +51,7 @@ export const AssetTitle = withTranslation('common')(({
                         marginTop={1}>
                 <Typography component={'span'} paddingRight={1} variant={'h1'}> {assetInfo.priceTag} </Typography>
                 {!hideL2Assets && assetInfo.totalAsset ? <Typography component={'span'}
-                                      variant={'h1'}>{assetInfo.totalAsset ? getThousandFormattedNumbers(Number(assetInfo.totalAsset.toFixed(2))) : 0.00}</Typography> :
+                                      variant={'h1'}>{assetInfo.totalAsset ? getValuePrecisionThousand(assetInfo.totalAsset, 2, 2) : 0.00}</Typography> :
                     <Typography component={'span'}
                                 variant={'h1'}>&#10033;&#10033;&#10033;&#10033;.&#10033;&#10033;</Typography>}
             </Typography>

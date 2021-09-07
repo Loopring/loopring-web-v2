@@ -200,8 +200,6 @@ export const useAmmExit = ({
 
             updatePageAmmExit({ fee: fee.toNumber(), fees })
 
-            myLog('---calculateCallback fee:', fee.toNumber())
-
             const newAmmCalcData = {
                 ...ammCalcData, fee: fee.toString()
                     + ' ' + pair.coinBInfo.simpleName,
