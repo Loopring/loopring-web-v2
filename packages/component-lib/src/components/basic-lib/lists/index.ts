@@ -89,7 +89,7 @@ export const OutlineSelectItem = styled(MenuItem)<any>`
       border-left-color: transparent;
     }
   }
- 
+  
 
   &.Mui-selected, &.Mui-selected.Mui-focusVisible {
     padding: ${({theme}) => `${theme.unit * 1} ${theme.unit * 1} 0 ${theme.unit * 1} `};
