@@ -14,10 +14,10 @@ export type CardProps = {
 export const Card = withTranslation(['landPage', 'common'], {withRef: true})((
     {
         t,
-        title,
-        icon,
-        animationJSON,
-        describe,
+        // title,
+        // icon,
+        // animationJSON,
+        // describe,
     }: WithTranslation) => {
     const [{
         // x, y,
@@ -68,7 +68,7 @@ export const Card = withTranslation(['landPage', 'common'], {withRef: true})((
             // rotateY,
             // rotateZ,
         }}>
-        <Lottie  animationData={}/>
+        {/* <Lottie  animationData={}/> */}
         <animated.p style={{}}>
             <Typography whiteSpace={'pre-line'} fontWeight={500} component={'h5'}
             >{t('labelSafety')}</Typography>

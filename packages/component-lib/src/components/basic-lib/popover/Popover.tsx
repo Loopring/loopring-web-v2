@@ -197,6 +197,7 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
       }
     }
     &.arrow-top-center .MuiPopover-paper {
+      margin-top: ${({theme}) => theme.unit * -0.5}px;
       &:before {
         left: 50%;
         transform: translateX(-50%) rotate(-180deg);
