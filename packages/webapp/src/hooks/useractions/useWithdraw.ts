@@ -32,7 +32,7 @@ import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
 import { useWalletInfo } from 'stores/localStore/walletInfo';
 import { checkErrorInfo } from './utils';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
-import { updateWithdrawData, useModalData } from 'stores/router';
+import { useModalData } from 'stores/router';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawAlertText: string | undefined,
@@ -237,6 +237,9 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             myLog('code:', code)
             if (code === ConnectorError.USER_DENIED) {
                 setShowAccount({isShow: true, step: AccountStep.Withdraw_User_Denied})
+            } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
+                setLastRequest({request})
+                setShowAccount({isShow: true, step: AccountStep.Withdraw_First_Method_Denied})
             } else {
                 setShowAccount({isShow: true, step: AccountStep.Withdraw_Failed})
             }
