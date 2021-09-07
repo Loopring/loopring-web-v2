@@ -30,6 +30,9 @@ import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
 import { initSlippage, usePageAmmPool } from "stores/router";
 
 import _ from 'lodash'
+import { sleep } from "loopring-sdk";
+import { getTimestampDaysLater } from "utils/dt_tools";
+import { DAYS } from "defs/common_defs";
 
 // ----------calc hook -------
 
@@ -193,6 +196,8 @@ export const useAmmJoin = ({
             const feeRaw = fees[pair.coinBInfo.simpleName] ? fees[pair.coinBInfo.simpleName].fee : 0
             const fee = sdk.toBig(feeRaw).div('1e' + feeToken.decimals)
 
+            myLog('new join fee:', fee.toString())
+
             const newAmmCalcData = {
                 ...ammCalcData, fee: fee.toString()
                     + ' ' + pair.coinBInfo.simpleName,
@@ -206,7 +211,7 @@ export const useAmmJoin = ({
 
     React.useEffect(() => {
         calculateCallback()
-    }, [accountStatus, pair.coinBInfo?.simpleName, ammData])
+    }, [accountStatus, account.readyState, pair.coinBInfo?.simpleName, tokenMap, ammCalcData?.lpCoin.belong])
 
     const handleJoin = React.useCallback(async ({ data, ammData, type, fees, ammPoolSnapshot, tokenMap, account }) => {
 
@@ -318,6 +323,10 @@ export const useAmmJoin = ({
 
             req.storageIds = [storageId0.offchainId, storageId1.offchainId]
 
+            req.validUntil = getTimestampDaysLater(DAYS)
+
+            myLog('join ammpool req:', req)
+
             const response = await LoopringAPI.ammpoolAPI.joinAmmPool(req, patch, account.apiKey)
 
             myLog('join ammpool response:', response)
@@ -357,7 +366,7 @@ export const useAmmJoin = ({
         accountStaticCallBack(onAmmClickMap, [props])
     }, [onAmmClickMap, updatePageAmmJoinBtn]);
 
-    const walletLayer2Callback = React.useCallback(() => {
+    const walletLayer2Callback = React.useCallback(async() => {
 
         if (pair?.coinAInfo?.simpleName && snapShotData?.ammPoolSnapshot) {
             const { walletMap } = makeWalletLayer2()
@@ -371,7 +380,7 @@ export const useAmmJoin = ({
 
     React.useEffect(() => {
         walletLayer2Callback()
-    }, [fee, pair?.coinAInfo?.simpleName, snapShotData?.ammPoolSnapshot, tokenMap])
+    }, [pair?.coinAInfo?.simpleName, snapShotData?.ammPoolSnapshot, tokenMap])
 
     return {
         ammCalcData,
@@ -380,6 +389,7 @@ export const useAmmJoin = ({
         btnStatus,
         onAmmClick,
         btnI18nKey,
+        calculateCallback,
 
     }
 }

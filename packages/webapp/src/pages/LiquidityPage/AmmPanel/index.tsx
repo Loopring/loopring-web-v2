@@ -99,6 +99,7 @@ export const AmmPanelView = ({
         onAmmClick: onAmmAddClick,
         btnStatus: addBtnStatus,
         btnI18nKey: ammDepositBtnI18nKey,
+        calculateCallback: joinCalculateCallback
 
     } = useAmmJoin({
         setToastOpen,
@@ -114,6 +115,7 @@ export const AmmPanelView = ({
         onAmmClick: onAmmRemoveClick,
         btnStatus: removeBtnStatus,
         btnI18nKey: ammWithdrawBtnI18nKey,
+        calculateCallback: exitCalculateCallback
 
     } = useAmmExit({
         setToastOpen,
@@ -128,7 +130,11 @@ export const AmmPanelView = ({
 
         {pair ?
             <> <AmmPanel {...{ ...rest }}
-                onRefreshData={updateAmmPoolSnapshot}
+                onRefreshData={() => {
+                    updateAmmPoolSnapshot()
+                    joinCalculateCallback()
+                    exitCalculateCallback()
+                }}
                 refreshRef={refreshRef}
 
                 ammDepositData={ammJoinData}
