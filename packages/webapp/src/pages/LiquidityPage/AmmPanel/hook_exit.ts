@@ -30,6 +30,9 @@ import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
 
 import _ from 'lodash'
 import { initSlippage, usePageAmmPool, } from "stores/router";
+import { sleep } from "loopring-sdk";
+import { getTimestampDaysLater } from "utils/dt_tools";
+import { DAYS } from "defs/common_defs";
 
 export const useAmmExit = ({
     setToastOpen,
@@ -86,6 +89,8 @@ export const useAmmExit = ({
     }, [account.readyState, ammData, volA_show, volB_show, updatePageAmmExitBtn])
 
     const initAmmData = React.useCallback(async (pair: any, walletMap: any, isReset: boolean = false) => {
+
+        myLog('initammdata fee:', fee)
 
         const _ammCalcData = ammPairInit({
             fee,
@@ -198,7 +203,7 @@ export const useAmmExit = ({
             const feeRaw = fees[pair.coinBInfo.simpleName] ? fees[pair.coinBInfo.simpleName].fee : 0
             const fee = sdk.toBig(feeRaw).div('1e' + feeToken.decimals)
 
-            updatePageAmmExit({ fee: fee.toNumber(), fees })
+            myLog('new exit fee:', fee.toString())
 
             const newAmmCalcData = {
                 ...ammCalcData, fee: fee.toString()
@@ -213,7 +218,7 @@ export const useAmmExit = ({
 
     React.useEffect(() => {
         calculateCallback()
-    }, [accountStatus, account.readyState, pair.coinBInfo?.simpleName, ammCalcData, tokenMap, ])
+    }, [accountStatus, account.readyState, pair.coinBInfo?.simpleName, tokenMap, ammCalcData?.lpCoin.belong])
 
     const handleExit = React.useCallback(async ({ data, requestOut, ammData, fees, ammPoolSnapshot, tokenMap, account }) => {
 
@@ -306,6 +311,10 @@ export const useAmmExit = ({
                 }
             }})
             
+            req.validUntil = getTimestampDaysLater(DAYS)
+
+            myLog('exit ammpool req:', req)
+
             const response = await LoopringAPI.ammpoolAPI.exitAmmPool(req, patch, account.apiKey)
 
             myLog('exit ammpool response:', response)
@@ -337,7 +346,7 @@ export const useAmmExit = ({
         accountStaticCallBack(onAmmClickMap, [props])
     }, [onAmmClickMap, updatePageAmmExitBtn]);
 
-    const walletLayer2Callback = React.useCallback(() => {
+    const walletLayer2Callback = React.useCallback(async() => {
 
         if (pair?.coinAInfo?.simpleName && snapShotData?.ammPoolSnapshot) {
             const { walletMap } = makeWalletLayer2()
