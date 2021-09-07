@@ -32,6 +32,7 @@ import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
 import { useWalletInfo } from 'stores/localStore/walletInfo';
 import { checkErrorInfo } from './utils';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
+import { updateWithdrawData, useModalData } from 'stores/router';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawAlertText: string | undefined,
@@ -52,11 +53,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const {tokenMap, totalCoinMap,} = useTokenMap();
     const {account, status: accountStatus} = useAccount()
     const {exchangeInfo, chainId} = useSystem();
-    const [withdrawValue, setWithdrawValue] = React.useState<IBData<T>>({
-        belong: undefined,
-        tradeValue: 0,
-        balance: 0
-    } as IBData<unknown>)
+
+    const { withdrawValue, updateWithdrawData } = useModalData()
 
     // const {status:walletLayer2Status} = useWalletLayer2();
     const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
@@ -142,7 +140,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const resetDefault = React.useCallback(() => {
         if (symbol) {
-            setWithdrawValue({
+            updateWithdrawData({
                 belong: symbol as any,
                 balance: walletMap2[ symbol ]?.count,
                 tradeValue: undefined,
@@ -154,7 +152,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                 const keyVal = keys[ key ]
                 const walletInfo = walletMap2[ keyVal ]
                 if (sdk.toBig(walletInfo.count).gt(0)) {
-                    setWithdrawValue({
+                    updateWithdrawData({
                         belong: keyVal as any,
                         tradeValue: 0,
                         balance: walletInfo.count,
@@ -163,7 +161,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                 }
             }
         }
-    }, [symbol, walletMap2, setWithdrawValue])
+    }, [symbol, walletMap2, updateWithdrawData])
     React.useEffect(() => {
         resetDefault();
     }, [isShow])
@@ -322,9 +320,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         handlePanelEvent: async (data: SwitchData<R>, switchType: 'Tomenu' | 'Tobutton') => {
             return new Promise((res: any) => {
                 if (data?.tradeData?.belong) {
-                    // myLog('handlePanelEvent', data.tradeData)
                     if (withdrawValue !== data.tradeData) {
-                        setWithdrawValue(data.tradeData)
+                        updateWithdrawData(data.tradeData)
                     }
                 }
 
