@@ -25,7 +25,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     const { account } = useAccount()
     const { exchangeInfo, chainId, gasPrice } = useSystem()
     
-    const { depositValue, updateDepositData, } = useModalData()
+    const { depositValue, updateDepositData, resetDepositData, } = useModalData()
 
     const { modals: { isShowDeposit: { symbol, isShow } } } = useOpenModals()
 
@@ -61,36 +61,43 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     }, [depositValue?.belong, depositValue?.tradeValue, allowanceInfo?.tokenInfo.symbol])
 
     const walletLayer1Callback = React.useCallback(() => {
-        if (symbol && walletLayer1) {
-            updateDepositData({
-                belong: symbol as any,
-                balance: walletLayer1[symbol]?.count,
-                tradeValue: undefined,
-            })
+        if (!depositValue.belong) {
 
-        } else {
-            if (walletLayer1) {
-                const keys = Reflect.ownKeys(walletLayer1)
-                for (var key in keys) {
-                    const keyVal = keys[key] as any
-                    const walletInfo = walletLayer1[keyVal]
-                    if (sdk.toBig(walletInfo.count).gt(0)) {
+            if (symbol && walletLayer1) {
 
-                        updateDepositData({
-                            belong: keyVal as any,
-                            tradeValue: 0,
-                            balance: walletInfo.count,
-                        })
+                updateDepositData({
+                    belong: symbol as any,
+                    balance: walletLayer1[symbol]?.count,
+                    tradeValue: undefined,
+                })
 
-                        return
+            } else {
+                if (walletLayer1) {
+                    const keys = Reflect.ownKeys(walletLayer1)
+                    for (var key in keys) {
+                        const keyVal = keys[key] as any
+                        const walletInfo = walletLayer1[keyVal]
+                        if (sdk.toBig(walletInfo.count).gt(0)) {
+    
+                            updateDepositData({
+                                belong: keyVal as any,
+                                tradeValue: 0,
+                                balance: walletInfo.count,
+                            })
+    
+                            return
+                        }
                     }
                 }
             }
         }
-    }, [walletLayer1, symbol, updateDepositData])
+    }, [walletLayer1, symbol, updateDepositData, depositValue])
 
     React.useEffect(() => {
-        walletLayer1Callback()
+        myLog('isShow:', isShow)
+        if (isShow) {
+            walletLayer1Callback()
+        }
     }, [isShow])
 
     const handleDeposit = React.useCallback(async (inputValue: any) => {
@@ -180,6 +187,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                     // deposit failed
                     setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
                 }
+                resetDepositData()
 
             } catch (reason: any) {
                 dumpError400(reason)
@@ -198,6 +206,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                         break
                     default:
                         setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
+                        resetDepositData()
                         break
                 }
             }
@@ -222,6 +231,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
     const handlePanelEvent = useCallback(async (data: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {
+            myLog('got!!!! data.tradeData:', data.tradeData)
             updateDepositData(data.tradeData)
             res();
         })
