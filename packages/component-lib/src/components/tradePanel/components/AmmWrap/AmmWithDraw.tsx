@@ -154,7 +154,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
     let lpBalance: any = ammData?.coinLP?.balance
     lpBalance = parseFloat(lpBalance)
     const showLP = (lpBalance && lpTradeValue && lpTradeValue > 0 && lpTradeValue < lpBalance) ? getShowStr(lpTradeValue, 2, 6) : '0'
-    
+
     const miniA = ammData?.coinA?.tradeValue ? getShowStr(ammData?.coinA?.tradeValue) : EmptyValueTag
 
     const miniB = ammData?.coinB?.tradeValue ? getShowStr(ammData?.coinB?.tradeValue) : EmptyValueTag

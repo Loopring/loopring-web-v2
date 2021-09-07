@@ -22,7 +22,7 @@ const initJoinState: PageAmmJoin = {
 
 const initExitState: PageAmmExit = {
     volA_show: undefined,
-    volB_show: undefined, 
+    volB_show: undefined,
     fees: {},
     fee: 0,
     request: undefined,
@@ -52,7 +52,7 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
     name: '_router_pageAmmPool',
     initialState,
     reducers: {
-        
+
         resetAmmPool(state) {
             state.ammJoin = initJoinState
             state.ammExit = initExitState
@@ -142,7 +142,7 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
                 request,
                 ammCalcData,
                 ammData,
-                
+
                 volA_show,
                 volB_show,
             } = action.payload;
@@ -167,13 +167,9 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
                 state.ammExit.ammData = ammData
             }
 
-            if (volA_show) {
-                state.ammExit.volA_show = volA_show
-            }
+            state.ammExit.volA_show = volA_show
 
-            if (volB_show) {
-                state.ammExit.volB_show = volB_show
-            }
+            state.ammExit.volB_show = volB_show
         },
 
     },
@@ -181,11 +177,11 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
 
 export { pageAmmPoolSlice }
 
-export const { 
-    updatePageAmmJoin, 
+export const {
+    updatePageAmmJoin,
     updatePageAmmJoinBtn,
     updatePageAmmExit,
     updatePageAmmExitBtn,
-    updatePageAmmCommon, 
-    resetAmmPool, 
+    updatePageAmmCommon,
+    resetAmmPool,
 } = pageAmmPoolSlice.actions;
