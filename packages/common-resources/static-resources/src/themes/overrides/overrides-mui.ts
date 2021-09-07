@@ -717,7 +717,7 @@ export const MuiTab = ({colorBase}: any): { styleOverrides: ComponentsOverrides[
         styleOverrides: {
             root: {
                 fontWeight: 'normal',
-                padding: `0 ${unit * 2}px`,
+                padding: `${unit * 2}px`,
                 maxWidth: 'initial',
                 minWidth: 'auto !important',
                 fontSize: fontDefault.h5,

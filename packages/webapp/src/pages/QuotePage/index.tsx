@@ -356,7 +356,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                          className={'MuiPaper-elevation2'}>
             <Box display={'flex'} flexDirection={'column'}  >
                 <Container className={'toolbar'}  >
-                   <Box paddingTop={1/2} paddingLeft={1} paddingRight={2} display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
+                   <Box  paddingLeft={1} paddingRight={2} display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
                        <Tabs
                            value={tableTabValue}
                            onChange={handleTabChange}
@@ -368,7 +368,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                        </Tabs>
                        <InputSearch value={searchValue} onChange={handleSearchChange}/>
                    </Box>
-                   <Divider/>
+                   <Divider style={{marginTop:'-1px'}}/>
                 </Container>
 
                 <QuoteTable /* onVisibleRowsChange={onVisibleRowsChange} */

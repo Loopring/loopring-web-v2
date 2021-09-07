@@ -40,6 +40,7 @@ const StyledSwitch = styled(Switch)`
 const BoxStyle = styled(Box)(() => ({
     " .MuiInput-root":{
         background: 'var(--opacity)',
+        textAlign: 'right',
     },
 })) as typeof Box
 
@@ -85,8 +86,8 @@ export const BtnLanguage = ({t, label, handleChange}: any) => {
                           id="language-selected"
                           value={i18n.language} 
                           onChange={_handleChange}>
-        <OutlineSelectItem value={LanguageType.en_US}>EN</OutlineSelectItem>
-        <OutlineSelectItem value={LanguageType.zh_CN}>中文</OutlineSelectItem>
+        <OutlineSelectItem value={LanguageType.en_US}>English</OutlineSelectItem>
+        <OutlineSelectItem value={LanguageType.zh_CN}>简体中文</OutlineSelectItem>
     </OutlineSelect>
 }
 
