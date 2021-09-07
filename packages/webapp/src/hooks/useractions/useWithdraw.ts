@@ -15,7 +15,7 @@ import {
 } from '@loopring-web/common-resources';
 
 import * as sdk from 'loopring-sdk'
-import { ConnectorError, GetWithdrawalAgentsRequest } from 'loopring-sdk'
+import { ConnectorError, dumpError400, GetWithdrawalAgentsRequest } from 'loopring-sdk'
 
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
@@ -54,7 +54,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const {account, status: accountStatus} = useAccount()
     const {exchangeInfo, chainId} = useSystem();
 
-    const { withdrawValue, updateWithdrawData } = useModalData()
+    const { withdrawValue, updateWithdrawData, resetWithdrawData, } = useModalData()
 
     const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
 
@@ -138,32 +138,38 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     }, [setWalletMap2])
 
     const resetDefault = React.useCallback(() => {
-        if (symbol) {
-            updateWithdrawData({
-                belong: symbol as any,
-                balance: walletMap2[ symbol ]?.count,
-                tradeValue: undefined,
-            })
-
-        } else {
-            const keys = Reflect.ownKeys(walletMap2)
-            for (var key in keys) {
-                const keyVal = keys[ key ]
-                const walletInfo = walletMap2[ keyVal ]
-                if (sdk.toBig(walletInfo.count).gt(0)) {
-                    updateWithdrawData({
-                        belong: keyVal as any,
-                        tradeValue: 0,
-                        balance: walletInfo.count,
-                    })
-                    break
+        if (!withdrawValue.belong) {
+            if (symbol) {
+                updateWithdrawData({
+                    belong: symbol as any,
+                    balance: walletMap2[ symbol ]?.count,
+                    tradeValue: undefined,
+                })
+    
+            } else {
+                const keys = Reflect.ownKeys(walletMap2)
+                for (var key in keys) {
+                    const keyVal = keys[ key ]
+                    const walletInfo = walletMap2[ keyVal ]
+                    if (sdk.toBig(walletInfo.count).gt(0)) {
+                        updateWithdrawData({
+                            belong: keyVal as any,
+                            tradeValue: 0,
+                            balance: walletInfo.count,
+                        })
+                        break
+                    }
                 }
             }
         }
-    }, [symbol, walletMap2, updateWithdrawData])
+    }, [symbol, walletMap2, updateWithdrawData, withdrawValue])
+
     React.useEffect(() => {
-        resetDefault();
+        if (isShow) {
+            resetDefault();
+        }
     }, [isShow])
+
     useWalletLayer2Socket({walletLayer2Callback})
 
     useCustomDCEffect(() => {
@@ -176,51 +182,66 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
         const {apiKey, connectName, eddsaKey} = account
 
-        if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
-
-            let isHWAddr = checkHWAddr(account.accAddress)
-
-            isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
-
-            const response = await LoopringAPI.userAPI.submitOffchainWithdraw({
-                request,
-                web3: connectProvides.usedWeb3,
-                chainId: chainId === 'unknown' ? 1 : chainId,
-                walletType: connectName as sdk.ConnectorNames,
-                eddsaKey: eddsaKey.sk,
-                apiKey,
-                isHWAddr,
-            })
-
-            myLog('submitOffchainWithdraw:', response)
-
-            if (response?.errorInfo) {
-                // Withdraw failed
-                const code = checkErrorInfo(response.errorInfo, isFirstTime)
-                if (code === ConnectorError.USER_DENIED) {
-                    setShowAccount({isShow: true, step: AccountStep.Withdraw_User_Denied})
-                } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
-                    setLastRequest({request})
-                    setShowAccount({isShow: true, step: AccountStep.Withdraw_First_Method_Denied})
-                } else {
+        try {
+            if (connectProvides.usedWeb3 && LoopringAPI.userAPI) {
+    
+                let isHWAddr = checkHWAddr(account.accAddress)
+    
+                isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
+    
+                const response = await LoopringAPI.userAPI.submitOffchainWithdraw({
+                    request,
+                    web3: connectProvides.usedWeb3,
+                    chainId: chainId === 'unknown' ? 1 : chainId,
+                    walletType: connectName as sdk.ConnectorNames,
+                    eddsaKey: eddsaKey.sk,
+                    apiKey,
+                    isHWAddr,
+                })
+    
+                myLog('submitOffchainWithdraw:', response)
+    
+                if (response?.errorInfo) {
+                    // Withdraw failed
+                    const code = checkErrorInfo(response.errorInfo, isFirstTime)
+                    if (code === ConnectorError.USER_DENIED) {
+                        setShowAccount({isShow: true, step: AccountStep.Withdraw_User_Denied})
+                    } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
+                        setLastRequest({request})
+                        setShowAccount({isShow: true, step: AccountStep.Withdraw_First_Method_Denied})
+                    } else {
+                        setShowAccount({isShow: true, step: AccountStep.Withdraw_Failed})
+                    }
+                } else if (response?.resultInfo) {
                     setShowAccount({isShow: true, step: AccountStep.Withdraw_Failed})
+                } else {
+                    // Withdraw success
+                    setShowAccount({isShow: true, step: AccountStep.Withdraw_In_Progress})
+                    await sdk.sleep(TOAST_TIME)
+                    setShowAccount({isShow: true, step: AccountStep.Withdraw_Success})
+                    if (isHWAddr) {
+                        myLog('......try to set isHWAddr', isHWAddr)
+                        updateDepositHashWrapper({wallet: account.accAddress, isHWAddr})
+                    }
+
+                    resetWithdrawData()
                 }
-            } else if (response?.resultInfo) {
-                setShowAccount({isShow: true, step: AccountStep.Withdraw_Failed})
-            } else {
-                // Withdraw success
-                setShowAccount({isShow: true, step: AccountStep.Withdraw_In_Progress})
-                await sdk.sleep(TOAST_TIME)
-                setShowAccount({isShow: true, step: AccountStep.Withdraw_Success})
-                if (isHWAddr) {
-                    myLog('......try to set isHWAddr', isHWAddr)
-                    updateDepositHashWrapper({wallet: account.accAddress, isHWAddr})
-                }
+    
+                walletLayer2Service.sendUserUpdate()
+    
             }
 
-            walletLayer2Service.sendUserUpdate()
-
+        } catch (reason) {
+            dumpError400(reason)
+            const code = checkErrorInfo(reason, isFirstTime)
+            myLog('code:', code)
+            if (code === ConnectorError.USER_DENIED) {
+                setShowAccount({isShow: true, step: AccountStep.Withdraw_User_Denied})
+            } else {
+                setShowAccount({isShow: true, step: AccountStep.Withdraw_Failed})
+            }
         }
+
     }, [setLastRequest, setShowAccount, updateDepositHashWrapper, account])
 
     const handleWithdraw = React.useCallback(async (inputValue: R, address, isFirstTime: boolean = true) => {
