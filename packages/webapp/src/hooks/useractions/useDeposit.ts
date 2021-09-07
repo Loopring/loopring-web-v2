@@ -17,6 +17,7 @@ import { checkErrorInfo } from './utils';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useAllowances } from 'hooks/common/useAllowances';
 import { useModalData } from 'stores/router';
+import { isAccActivated } from './checkAccStatus';
 
 export const useDeposit = <R extends IBData<T>, T>(): {
     depositProps: DepositProps<R, T>
@@ -24,7 +25,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     const { tokenMap, totalCoinMap, } = useTokenMap()
     const { account } = useAccount()
     const { exchangeInfo, chainId, gasPrice } = useSystem()
-    
+
     const { depositValue, updateDepositData, resetDepositData, } = useModalData()
 
     const { modals: { isShowDeposit: { symbol, isShow } } } = useOpenModals()
@@ -43,7 +44,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
         resetBtnInfo()
 
-        if (depositValue.belong === allowanceInfo?.tokenInfo.symbol && depositValue?.tradeValue && allowanceInfo 
+        if (depositValue.belong === allowanceInfo?.tokenInfo.symbol && depositValue?.tradeValue && allowanceInfo
             && sdk.toBig(depositValue?.tradeValue).lte(sdk.toBig(depositValue?.balance))) {
             const curValInWei = sdk.toBig(depositValue?.tradeValue).times('1e' + allowanceInfo?.tokenInfo.decimals)
             if (allowanceInfo.needCheck && curValInWei.gt(allowanceInfo.allowance)) {
@@ -78,13 +79,13 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                         const keyVal = keys[key] as any
                         const walletInfo = walletLayer1[keyVal]
                         if (sdk.toBig(walletInfo.count).gt(0)) {
-    
+
                             updateDepositData({
                                 belong: keyVal as any,
                                 tradeValue: 0,
                                 balance: walletInfo.count,
                             })
-    
+
                             return
                         }
                     }
@@ -108,7 +109,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
         let result: ActionResult = { code: ActionResultCode.NoError }
 
         if ((readyState !== AccountStatus.UN_CONNECT
-                && inputValue.tradeValue)
+            && inputValue.tradeValue)
             && tokenMap && exchangeInfo?.exchangeAddress
             && connectProvides.usedWeb3 && LoopringAPI.exchangeAPI) {
             try {
@@ -137,9 +138,9 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                     if (curValInWei.gt(allowanceInfo.allowance)) {
 
                         myLog(curValInWei, allowanceInfo.allowance, ' need approveMax!')
-                        
+
                         setShowAccount({ isShow: true, step: AccountStep.Deposit_Approve_WaitForAuth })
-                        
+
                         nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
 
                         nonceInit = true
@@ -180,12 +181,15 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 result.data = response
 
-                if (response) {
-                    // deposit sucess
-                    setShowAccount({ isShow: true, step: AccountStep.Deposit_Submit })
-                } else {
-                    // deposit failed
-                    setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
+                if (isAccActivated()) {
+                    if (response) {
+                        // deposit sucess
+                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Submit })
+                    } else {
+                        // deposit failed
+                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
+                    }
+
                 }
                 resetDepositData()
 
@@ -195,19 +199,23 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 result.data = reason
 
                 //deposit failed
-                const err = checkErrorInfo(reason, true)
+                if (isAccActivated()) {
+                    const err = checkErrorInfo(reason, true)
 
-                myLog('---- deposit reason:', reason?.message.indexOf('User denied transaction'))
-                myLog('---- deposit err:', err)
+                    myLog('---- deposit reason:', reason?.message.indexOf('User denied transaction'))
+                    myLog('---- deposit err:', err)
 
-                switch (err) {
-                    case ConnectorError.USER_DENIED:
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Denied })
-                        break
-                    default:
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
-                        resetDepositData()
-                        break
+                    switch (err) {
+                        case ConnectorError.USER_DENIED:
+                            setShowAccount({ isShow: true, step: AccountStep.Deposit_Denied })
+                            break
+                        default:
+                            setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
+                            resetDepositData()
+                            break
+                    }
+                } else {
+                    resetDepositData()
                 }
             }
 
