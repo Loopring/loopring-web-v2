@@ -680,13 +680,15 @@ export const MuiMenuItem = ({colorBase, themeMode}: any) => {
                 paddingRight: pxToRem(12),
                 color: colorBase.textSecondary,
                 '&.Mui-selected':{
-                    
+                    background: colorBase.boxHover,
                 },
 
                 // backgroundColor: `${colorBase.borderHover} !important`,
                 '&:hover, &.Mui-selected:hover': {
+                    // background:'inherit',
+                    // color: colorBase.textPrimary,
                     // borderColor: colorBase.primaryLight,
-                    backgroundColor: colorBase.boxHover,
+                    background: colorBase.boxHover,
                 },
                 '& .MuiListItemText-multiline': {
                     display: 'flex',
