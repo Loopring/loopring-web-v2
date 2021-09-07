@@ -200,7 +200,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
                             vertical: 'bottom',
                             horizontal: 'center',
                         }}>
-                            <Box padding={1.5}>
+                            <Box padding={1.5} paddingLeft={1}>
                                 <Typography component={'span'} display={'flex'} flexDirection={'row'}
                                     justifyContent={'space-between'} alignItems={'center'}
                                     style={{ textTransform: 'capitalize' }} color={'textPrimary'}>
@@ -225,22 +225,22 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
                                                 }}
                                                 src={'static/images/icon-default.png'} />
                                         }
-                                        <Typography component={'span'} variant={'h5'} marginLeft={1 / 2}
-                                            height={24}
-                                            lineHeight={'24px'}>
+                                        <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} marginLeft={1 / 2}
+                                            height={20}
+                                            lineHeight={'20px'}>
                                             {coinA}
                                         </Typography>
                                     </Box>
                                         
-                                    <Typography component={'span'} variant={'h5'} height={24} marginLeft={10}
-                                        lineHeight={'24px'}>
+                                    <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} height={20} marginLeft={10}
+                                        lineHeight={'20px'}>
                                             {currency === 'USD' ? '$' : '￥'}
                                         {getValuePrecisionThousand(liquidityA, 2, 2)}
                                     </Typography>
 
                                 </Typography>
                                 <Typography component={'span'} display={'flex'} flexDirection={'row'}
-                                    justifyContent={'space-between'} alignItems={'center'} marginTop={1}
+                                    justifyContent={'space-between'} alignItems={'center'} marginTop={1 / 2}
                                     style={{ textTransform: 'capitalize' }}>
                                     <Box component={'span'} className={'logo-icon'} display={'flex'}
                                         height={'var(--list-menu-coin-size)'}
@@ -258,16 +258,16 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
                                                     width: 'var(--list-menu-coin-size)'
                                                 }}
                                                 src={'static/images/icon-default.png'} />}
-                                        <Typography variant={'h5'} component={'span'} marginRight={5} marginLeft={1 / 2} alignSelf={'right'}
-                                            height={24}
-                                            lineHeight={'24px'}>
+                                        <Typography variant={'body2'} color={'var(--color-text-primary)'} component={'span'} marginRight={5} marginLeft={1 / 2} alignSelf={'right'}
+                                            height={20}
+                                            lineHeight={'20px'}>
                                             {coinB}
                                         </Typography>            
                                     </Box>
                                         
-                                    <Typography variant={'h5'} component={'span'} height={24}
+                                    <Typography variant={'body2'} color={'var(--color-text-primary)'} component={'span'} height={20}
                                         marginLeft={10}
-                                        lineHeight={'24px'}>
+                                        lineHeight={'20px'}>
                                             {currency === 'USD' ? '$' : '￥'}
                                         {getValuePrecisionThousand(liquidityB, 2, 2)}
                                     </Typography>
