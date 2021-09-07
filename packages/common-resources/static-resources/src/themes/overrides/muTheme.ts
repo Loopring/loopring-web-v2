@@ -46,7 +46,7 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
     // @ts-ignore
     let _shadows =_.cloneDeep(shadows);
     // _shadows[1] = colorBase.shadow;
-    // _shadows[2] = colorBase.shadow2;
+    // _shadows[2] = colorBase.shadowHeader;
     const theme = createMuiTheme({
         spacing: unit,
         palette: {

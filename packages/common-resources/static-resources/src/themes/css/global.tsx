@@ -29,45 +29,56 @@ export const colorBase = ({theme}: any) => css`
     --color-secondary: ${theme.colorBase.secondary};
     --color-secondary-hover: ${theme.colorBase.secondaryHover};
     --color-secondary-pressed: ${theme.colorBase.secondaryPressed};
+    --color-disable: ${theme.colorBase.disable};
     --color-success: ${theme.colorBase.success};
     --color-warning: ${theme.colorBase.warning};
     --color-error: ${theme.colorBase.error};
     --color-text-primary: ${theme.colorBase.textPrimary};
-    --color-text-button: ${theme.colorBase.textButton};
     --color-text-secondary: ${theme.colorBase.textSecondary};
     --color-text-third: ${theme.colorBase.textThird};
+    --color-text-button: ${theme.colorBase.textButton};
+    --color-text-button-select: ${theme.colorBase.textButtonSelect};
     --color-text-disable: ${theme.colorBase.textDisable};
-    --color-disable: ${theme.colorBase.disable};
     --color-border: ${theme.colorBase.border};
     --color-border-hover: ${theme.colorBase.borderHover};
     --color-border-dark: ${theme.colorBase.borderDark};
-    --color-divide: ${theme.colorBase.divide};
-    --color-pop-bg: ${theme.colorBase.popBg};
+    --color-border-select: ${theme.colorBase.borderSelect};
+    --color-border-disable: ${theme.colorBase.borderDisable};
+    --color-border-disable2: ${theme.colorBase.borderDisable2};
     --color-box: ${theme.colorBase.box};
-    --color-box-secondary: ${theme.colorBase.boxSecondary};
     --color-box-hover: ${theme.colorBase.boxHover};
+    --color-pop-bg: ${theme.colorBase.popBg};
+
     --color-box-linear: ${theme.colorBase.boxLinear};
     --color-global-bg: ${theme.colorBase.globalBg};
+    --field-opacity: ${theme.colorBase.fieldOpacity};
+    --color-divide: ${theme.colorBase.divide};
+    --color-box-secondary: ${theme.colorBase.boxSecondary};
+    --color-mask:  ${theme.colorBase.mask};
+    --color-table-header-Bg : ${theme.colorBase.tableHeaderBg};
     --color-star: ${theme.colorBase.star};  
     --color-logo: ${theme.colorBase.logo};
+    
     /********************Case for shadow*******************/
     --color-button-pot:  ${theme.colorBase.buttonPot};
     --color-button-icon: ${theme.colorBase.buttonIcon};
-    --color-text-button-select: ${theme.colorBase.textButtonSelect};
-    --color-mask:  ${theme.colorBase.mask};
+
+    /********************CSS shadow *******************/
     --shadow: ${theme.colorBase.shadow};
-    --shadow2: ${theme.colorBase.shadoww};
-    --opacity: ${theme.colorBase.opacity};
+    --shadowHeader: ${theme.colorBase.shadowHeader};
+    --shadow2: ${theme.colorBase.shadow2};
+    --shadowHover: ${theme.colorBase.shadowHover};
+
     /********************Case for special*******************/
+    --provider-btn:${theme.colorBase.providerBtn};
+    --provider-hover: ${theme.colorBase.providerBtnHover};
+    --provider-agree: ${theme.colorBase.providerApprove};
     --vip-bg: ${hexToRGB(theme.colorBase.warning, '0.2')};
     --vip-text: ${theme.colorBase.warning};
     --network-bg: ${hexToRGB(theme.colorBase.warning, '0.2')};
     --network-text: ${theme.colorBase.warning};
-    --provider-btn:${theme.colorBase.providerBtn};
-    --provider-hover: ${theme.colorBase.providerBtnHover};
-    --field-opacity: ${theme.colorBase.fieldOpacity};
     --auto-refresh-color: ${theme.colorBase.primary};
-   
+    --opacity: ${theme.colorBase.opacity};
   }
  
 `;
@@ -86,7 +97,7 @@ export const scrollbarDefault = ({theme}: any) => css`
     box-shadow:var(--shadow)
   }
   .MuiPaper-elevation4{
-    box-shadow:var(--shadow2)
+    box-shadow:var(--shadowHeader)
   }
   
   //::-webkit-scrollbar { width: 8px; height: 3px; position: absolute}
