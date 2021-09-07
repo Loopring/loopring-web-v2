@@ -46,7 +46,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const {account} = useAccount()
     const {exchangeInfo, chainId} = useSystem();
 
-    const { transferValue, updateTransferData, } = useModalData()
+    const { transferValue, updateTransferData, resetTransferData, } = useModalData()
 
     const [walletMap, setWalletMap] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
     const {chargeFeeList} = useChargeFees(transferValue.belong, sdk.OffchainFeeReqType.TRANSFER, tokenMap)
@@ -86,33 +86,36 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     useWalletLayer2Socket({walletLayer2Callback})
 
     const resetDefault = React.useCallback(() => {
-        if (symbol) {
-            myLog('resetDefault symbol:', symbol)
-            updateTransferData({
-                belong: symbol as any,
-                balance: walletMap[ symbol ]?.count,
-                tradeValue: undefined,
-            })
-        } else {
-            const keys = Reflect.ownKeys(walletMap)
-            for (var key in keys) {
-                const keyVal = keys[ key ]
-                const walletInfo = walletMap[ keyVal ]
-                if (sdk.toBig(walletInfo.count).gt(0)) {
-                    updateTransferData({
-                        belong: keyVal as any,
-                        tradeValue: 0,
-                        balance: walletInfo.count,
-                    })
-                    break
+        if (!transferValue.belong) {
+            if (symbol) {
+                myLog('resetDefault symbol:', symbol)
+                updateTransferData({
+                    belong: symbol as any,
+                    balance: walletMap[ symbol ]?.count,
+                    tradeValue: undefined,
+                })
+            } else {
+                const keys = Reflect.ownKeys(walletMap)
+                for (var key in keys) {
+                    const keyVal = keys[ key ]
+                    const walletInfo = walletMap[ keyVal ]
+                    if (sdk.toBig(walletInfo.count).gt(0)) {
+                        updateTransferData({
+                            belong: keyVal as any,
+                            tradeValue: 0,
+                            balance: walletInfo.count,
+                        })
+                        break
+                    }
                 }
             }
-
         }
-    }, [symbol, walletMap, updateTransferData])
+    }, [symbol, walletMap, updateTransferData, transferValue])
 
     React.useEffect(() => {
-        resetDefault();
+        if (isShow) {
+            resetDefault()
+        }
     }, [isShow, tranferFeeInfo])
 
     const {checkHWAddr, updateDepositHashWrapper,} = useWalletInfo()
@@ -123,49 +126,66 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
         const {apiKey, connectName, eddsaKey} = account
 
-        if (connectProvides.usedWeb3) {
+        try {
 
-            let isHWAddr = checkHWAddr(account.accAddress)
-
-            isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
-
-            const response = await LoopringAPI.userAPI?.submitInternalTransfer({
-                request,
-                web3: connectProvides.usedWeb3,
-                chainId: chainId !== ChainId.GOERLI ? ChainId.MAINNET : chainId,
-                walletType: connectName as sdk.ConnectorNames,
-                eddsaKey: eddsaKey.sk,
-                apiKey,
-                isHWAddr,
-            })
-
-            myLog('submitInternalTransfer:', response)
-
-            if (response?.errorInfo) {
-                // Withdraw failed
-                const code = checkErrorInfo(response.errorInfo, isFirstTime)
-                if (code === ConnectorError.USER_DENIED) {
-                    setShowAccount({isShow: true, step: AccountStep.Transfer_User_Denied})
-                } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
-                    setLastRequest({request})
-                    setShowAccount({isShow: true, step: AccountStep.Transfer_First_Method_Denied})
-                } else {
+            if (connectProvides.usedWeb3) {
+    
+                let isHWAddr = checkHWAddr(account.accAddress)
+    
+                isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
+    
+                const response = await LoopringAPI.userAPI?.submitInternalTransfer({
+                    request,
+                    web3: connectProvides.usedWeb3,
+                    chainId: chainId !== ChainId.GOERLI ? ChainId.MAINNET : chainId,
+                    walletType: connectName as sdk.ConnectorNames,
+                    eddsaKey: eddsaKey.sk,
+                    apiKey,
+                    isHWAddr,
+                })
+    
+                myLog('submitInternalTransfer:', response)
+    
+                if (response?.errorInfo) {
+                    // Withdraw failed
+                    const code = checkErrorInfo(response.errorInfo, isFirstTime)
+                    if (code === ConnectorError.USER_DENIED) {
+                        setShowAccount({isShow: true, step: AccountStep.Transfer_User_Denied})
+                    } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
+                        setLastRequest({request})
+                        setShowAccount({isShow: true, step: AccountStep.Transfer_First_Method_Denied})
+                    } else {
+                        setShowAccount({isShow: true, step: AccountStep.Transfer_Failed})
+                    }
+                } else if (response?.resultInfo) {
                     setShowAccount({isShow: true, step: AccountStep.Transfer_Failed})
+                } else {
+                    // Withdraw success
+                    setShowAccount({isShow: true, step: AccountStep.Transfer_In_Progress})
+                    await sdk.sleep(TOAST_TIME)
+                    setShowAccount({isShow: true, step: AccountStep.Transfer_Success})
+                    if (isHWAddr) {
+                        myLog('......try to set isHWAddr', isHWAddr)
+                        updateDepositHashWrapper({wallet: account.accAddress, isHWAddr})
+                    }
+    
+                    resetTransferData()
                 }
-            } else if (response?.resultInfo) {
-                setShowAccount({isShow: true, step: AccountStep.Transfer_Failed})
-            } else {
-                // Withdraw success
-                setShowAccount({isShow: true, step: AccountStep.Transfer_In_Progress})
-                await sdk.sleep(TOAST_TIME)
-                setShowAccount({isShow: true, step: AccountStep.Transfer_Success})
-                if (isHWAddr) {
-                    myLog('......try to set isHWAddr', isHWAddr)
-                    updateDepositHashWrapper({wallet: account.accAddress, isHWAddr})
-                }
+    
+                walletLayer2Service.sendUserUpdate()
+    
             }
 
-            walletLayer2Service.sendUserUpdate()
+        } catch (reason) {
+            const code = checkErrorInfo(reason, isFirstTime)
+            if (code === ConnectorError.USER_DENIED) {
+                setShowAccount({isShow: true, step: AccountStep.Transfer_User_Denied})
+            } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
+                setLastRequest({request})
+                setShowAccount({isShow: true, step: AccountStep.Transfer_First_Method_Denied})
+            } else {
+                setShowAccount({isShow: true, step: AccountStep.Transfer_Failed})
+            }
 
         }
     }, [setLastRequest, setShowAccount, updateDepositHashWrapper, account,])
