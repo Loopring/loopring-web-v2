@@ -261,7 +261,10 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
                 const withdrawToken = tokenMap[ inputValue.belong as string ]
                 const feeToken = tokenMap[ withdrawFeeInfo.belong ]
-                const withdrawVol = sdk.toBig(inputValue.tradeValue).times('1e' + withdrawToken.decimals).toFixed(0, 0)
+                const isExceedBalance = feeToken.tokenId === withdrawToken.tokenId && inputValue.balance - (inputValue.tradeValue || 0) < withdrawFeeInfo.fee
+                // withdraw vol cannot exceed totalVol - fee
+                const finalVol = isExceedBalance ? inputValue.balance - withdrawFeeInfo.fee : inputValue.tradeValue
+                const withdrawVol = sdk.toBig(finalVol).times('1e' + withdrawToken.decimals).toFixed(0, 0)
 
                 const storageId = await LoopringAPI.userAPI?.getNextStorageId({
                     accountId: accountId,
