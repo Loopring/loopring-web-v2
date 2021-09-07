@@ -81,7 +81,7 @@ export const useAmmExit = ({
 
     React.useEffect(() => {
 
-        if (account.readyState === AccountStatus.ACTIVATED && ammData && volA_show && volB_show) {
+        if (account.readyState === AccountStatus.ACTIVATED && ammData) {
             const btnInfo = accountStaticCallBack(btnLabelNew, [{ ammData, volA_show, volB_show, }])
             updatePageAmmExitBtn(btnInfo)
         }
@@ -213,8 +213,7 @@ export const useAmmExit = ({
             updatePageAmmExit({ fee: fee.toNumber(), fees, ammCalcData: newAmmCalcData})
         }
 
-    }, [updatePageAmmExit, accountStatus, account, pair, tokenMap, ammCalcData
-    ])
+    }, [updatePageAmmExit, accountStatus, account, pair, tokenMap, ammCalcData])
 
     React.useEffect(() => {
         calculateCallback()
@@ -243,9 +242,13 @@ export const useAmmExit = ({
             slippage: ammData.slippage,
         }
 
-        const rawVal = data.coinLP.tradeValue
+        let rawVal = data.coinLP.tradeValue
 
         let ammDataPatch = {}
+
+        if (rawVal === undefined) {
+            rawVal = '0'
+        }
 
         if (rawVal) {
 
