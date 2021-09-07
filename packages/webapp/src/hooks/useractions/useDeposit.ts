@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { AccountStep, DepositProps, SwitchData, useOpenModals } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
-import { ChainId, ConnectorError, dumpError400, GetAllowancesRequest } from 'loopring-sdk';
+import { ChainId, ConnectorError, dumpError400, } from 'loopring-sdk';
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
 import { useSystem } from 'stores/system';
@@ -16,6 +16,8 @@ import { ActionResult, ActionResultCode } from 'defs/common_defs';
 import { checkErrorInfo } from './utils';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useAllowances } from 'hooks/common/useAllowances';
+import { useModalData } from 'stores/router';
+import { isAccActivated } from './checkAccStatus';
 
 export const useDeposit = <R extends IBData<T>, T>(): {
     depositProps: DepositProps<R, T>
@@ -23,11 +25,9 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     const { tokenMap, totalCoinMap, } = useTokenMap()
     const { account } = useAccount()
     const { exchangeInfo, chainId, gasPrice } = useSystem()
-    const [depositValue, setDepositValue] = React.useState<IBData<T>>({
-        belong: undefined,
-        tradeValue: 0,
-        balance: 0
-    } as IBData<unknown>)
+
+    const { depositValue, updateDepositData, resetDepositData, } = useModalData()
+
     const { modals: { isShowDeposit: { symbol, isShow } } } = useOpenModals()
 
     const { walletLayer1 } = useWalletLayer1()
@@ -36,7 +36,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
     const { btnStatus, btnInfo, enableBtn, disableBtn, setLabelAndParams, resetBtnInfo, } = useBtnStatus()
 
-    const { allowanceInfo } = useAllowances({ owner: account.accAddress, symbol: depositValue.belong, })
+    const { allowanceInfo } = useAllowances({ owner: account.accAddress, symbol: depositValue.belong as string, })
 
     const updateBtnStatus = React.useCallback(() => {
 
@@ -44,12 +44,12 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
         resetBtnInfo()
 
-        if (depositValue.belong === allowanceInfo?.tokenInfo.symbol && depositValue?.tradeValue && allowanceInfo 
+        if (depositValue.belong === allowanceInfo?.tokenInfo.symbol && depositValue?.tradeValue && allowanceInfo
             && sdk.toBig(depositValue?.tradeValue).lte(sdk.toBig(depositValue?.balance))) {
             const curValInWei = sdk.toBig(depositValue?.tradeValue).times('1e' + allowanceInfo?.tokenInfo.decimals)
             if (allowanceInfo.needCheck && curValInWei.gt(allowanceInfo.allowance)) {
                 myLog('!!---> set labelDepositNeedApprove!!!! belong:', depositValue.belong)
-                setLabelAndParams('labelDepositNeedApprove', { symbol: depositValue.belong })
+                setLabelAndParams('labelDepositNeedApprove', { symbol: depositValue.belong as string })
             }
             enableBtn()
         } else {
@@ -62,36 +62,43 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     }, [depositValue?.belong, depositValue?.tradeValue, allowanceInfo?.tokenInfo.symbol])
 
     const walletLayer1Callback = React.useCallback(() => {
-        if (symbol && walletLayer1) {
-            setDepositValue({
-                belong: symbol as any,
-                balance: walletLayer1[symbol]?.count,
-                tradeValue: undefined,
-            })
+        if (!depositValue.belong) {
 
-        } else {
-            if (walletLayer1) {
-                const keys = Reflect.ownKeys(walletLayer1)
-                for (var key in keys) {
-                    const keyVal = keys[key] as any
-                    const walletInfo = walletLayer1[keyVal]
-                    if (sdk.toBig(walletInfo.count).gt(0)) {
+            if (symbol && walletLayer1) {
 
-                        setDepositValue({
-                            belong: keyVal as any,
-                            tradeValue: 0,
-                            balance: walletInfo.count,
-                        })
+                updateDepositData({
+                    belong: symbol as any,
+                    balance: walletLayer1[symbol]?.count,
+                    tradeValue: undefined,
+                })
 
-                        return
+            } else {
+                if (walletLayer1) {
+                    const keys = Reflect.ownKeys(walletLayer1)
+                    for (var key in keys) {
+                        const keyVal = keys[key] as any
+                        const walletInfo = walletLayer1[keyVal]
+                        if (sdk.toBig(walletInfo.count).gt(0)) {
+
+                            updateDepositData({
+                                belong: keyVal as any,
+                                tradeValue: 0,
+                                balance: walletInfo.count,
+                            })
+
+                            return
+                        }
                     }
                 }
             }
         }
-    }, [walletLayer1, symbol, setDepositValue])
+    }, [walletLayer1, symbol, updateDepositData, depositValue])
 
     React.useEffect(() => {
-        walletLayer1Callback()
+        myLog('isShow:', isShow)
+        if (isShow) {
+            walletLayer1Callback()
+        }
     }, [isShow])
 
     const handleDeposit = React.useCallback(async (inputValue: any) => {
@@ -102,7 +109,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
         let result: ActionResult = { code: ActionResultCode.NoError }
 
         if ((readyState !== AccountStatus.UN_CONNECT
-                && inputValue.tradeValue)
+            && inputValue.tradeValue)
             && tokenMap && exchangeInfo?.exchangeAddress
             && connectProvides.usedWeb3 && LoopringAPI.exchangeAPI) {
             try {
@@ -131,9 +138,9 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                     if (curValInWei.gt(allowanceInfo.allowance)) {
 
                         myLog(curValInWei, allowanceInfo.allowance, ' need approveMax!')
-                        
+
                         setShowAccount({ isShow: true, step: AccountStep.Deposit_Approve_WaitForAuth })
-                        
+
                         nonce = await sdk.getNonce(connectProvides.usedWeb3, account.accAddress)
 
                         nonceInit = true
@@ -174,13 +181,17 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 result.data = response
 
-                if (response) {
-                    // deposit sucess
-                    setShowAccount({ isShow: true, step: AccountStep.Deposit_Submit })
-                } else {
-                    // deposit failed
-                    setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
+                if (isAccActivated()) {
+                    if (response) {
+                        // deposit sucess
+                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Submit })
+                    } else {
+                        // deposit failed
+                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
+                    }
+
                 }
+                resetDepositData()
 
             } catch (reason: any) {
                 dumpError400(reason)
@@ -188,18 +199,23 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 result.data = reason
 
                 //deposit failed
-                const err = checkErrorInfo(reason, true)
+                if (isAccActivated()) {
+                    const err = checkErrorInfo(reason, true)
 
-                myLog('---- deposit reason:', reason?.message.indexOf('User denied transaction'))
-                myLog('---- deposit err:', err)
+                    myLog('---- deposit reason:', reason?.message.indexOf('User denied transaction'))
+                    myLog('---- deposit err:', err)
 
-                switch (err) {
-                    case ConnectorError.USER_DENIED:
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Denied })
-                        break
-                    default:
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
-                        break
+                    switch (err) {
+                        case ConnectorError.USER_DENIED:
+                            setShowAccount({ isShow: true, step: AccountStep.Deposit_Denied })
+                            break
+                        default:
+                            setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
+                            resetDepositData()
+                            break
+                    }
+                } else {
+                    resetDepositData()
                 }
             }
 
@@ -223,10 +239,11 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
     const handlePanelEvent = useCallback(async (data: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {
-            setDepositValue(data.tradeData)
+            myLog('got!!!! data.tradeData:', data.tradeData)
+            updateDepositData(data.tradeData)
             res();
         })
-    }, [depositValue, setDepositValue])
+    }, [depositValue, updateDepositData])
 
     const depositProps = React.useMemo(() => {
         const isNewAccount = account.readyState === AccountStatus.NO_ACCOUNT ? true : false;
