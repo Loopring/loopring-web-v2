@@ -154,6 +154,11 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
     let lpBalance: any = ammData?.coinLP?.balance
     lpBalance = parseFloat(lpBalance)
     const showLP = (lpBalance && lpTradeValue && lpTradeValue > 0 && lpTradeValue < lpBalance) ? getShowStr(lpTradeValue, 2, 6) : '0'
+
+    const miniA = ammData?.coinA?.tradeValue ? getShowStr(ammData?.coinA?.tradeValue) : EmptyValueTag
+
+    const miniB = ammData?.coinB?.tradeValue ? getShowStr(ammData?.coinB?.tradeValue) : EmptyValueTag
+
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
@@ -224,7 +229,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                         }
                         <Typography variant={'body1'}>{ammData?.coinA?.belong}</Typography>
                     </Box>
-                    <Typography variant={'body1'}>{getShowStr(ammData?.coinA?.tradeValue)}</Typography>
+                    <Typography variant={'body1'}>{miniA}</Typography>
                 </Box>
                 <Box marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'}
                      justifyContent={'space-between'}>
@@ -249,7 +254,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                         }
                         <Typography variant={'body1'}>{ammData?.coinB?.belong}</Typography>
                     </Box>
-                    <Typography variant={'body1'}>{getShowStr(ammData?.coinB?.tradeValue)}</Typography>
+                    <Typography variant={'body1'}>{miniB}</Typography>
                 </Box>
             </Box>
         </Grid>
