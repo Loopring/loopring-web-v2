@@ -46,7 +46,7 @@ const TradePanel = withTranslation('common')(
                     <Tab label={t('labelRecent')}   {...applyProps(0)} />
                     <Tab label={t('labelMyTrade')} {...applyProps(1)} />
                 </TabsStyled>
-                <Divider/>
+                <Divider style={{marginTop:'-1px'}}/>
                 {value === 1?
                     <TradeTable
                         rowHeight={RowConfig.rowHeight}

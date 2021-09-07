@@ -103,13 +103,13 @@ const InputButtonWrap = () => {
         </Grid>
     </>
 }
-export const BtnLanguage = ({t, label, handleChange}: any) => {
+export const BtnLanguage = ({ handleChange}: any) => {
     const _handleChange = React.useCallback((event: React.ChangeEvent<any>) => {
         if (handleChange) {
             handleChange(event.target.value);
         }
     }, [handleChange]);
-    return <OutlineSelect aria-label={t(label)} IconComponent={DropDownIcon}
+    return <OutlineSelect  IconComponent={DropDownIcon}
                           labelId="language-selected"
                           id="language-selected"
                           value={i18n.language}
