@@ -171,7 +171,6 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
         formatter: (({row, column, rowIdx}) => {
             const {amountDollar, amountYuan = 0, coinA, coinB, totalA, totalB} = row as any
             const popoverState = getPopoverState(rowIdx)
-            console.log({faitPrices})
 
             const coinAIcon: any = coinJson[coinA];
             const coinBIcon: any = coinJson[coinB];

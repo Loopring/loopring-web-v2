@@ -528,7 +528,7 @@ export const MuiToggleButton = ({colorBase}: any): { styleOverrides: ComponentsO
                 borderRadius: '4px !important',
                 marginRight: pxToRem(2),
                 fontSize: '1.4rem',
-                color: colorBase.textThird,
+                color: colorBase.textSecondary,
                 border: 'none',
                 textTransform: 'none',
                 // borderColor: colorBase.border,
@@ -538,7 +538,8 @@ export const MuiToggleButton = ({colorBase}: any): { styleOverrides: ComponentsO
                 backgroundColor: 'inherit',
                 '&:hover': {
                     backgroundColor: 'inherit',
-                    color: colorBase.textButton,
+                    // color: colorBase.textButton,
+                    color: colorBase.textPrimary,
                     // borderColor: colorBase.textPrimary,
                     border: 'none',
                     '&:not(:last-child), &:not(:first-of-type)': {
