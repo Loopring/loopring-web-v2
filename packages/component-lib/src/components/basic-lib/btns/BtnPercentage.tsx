@@ -220,6 +220,14 @@ export const BtnPercentage = withTranslation('common')(({
                                                         }: BtnPercentageProps & WithTranslation) => {
     const [value, setValue] = React.useState<number>(selected);
 
+    React.useEffect(() => {
+      if (selected >= 0 && selected <= 100) {
+        setValue(Math.floor(selected))
+      } else {
+        setValue(0)
+      }
+    }, [selected])
+
     const _anchors = anchors && anchors.length ? anchors : [{
         value: 0, label: '0'
     }, {
