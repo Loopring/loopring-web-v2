@@ -149,6 +149,11 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
 
     const { label, stob, } = useAmmViewData({error, i18nKey: ammWithdrawBtnI18nKey, t, _isStoB, ammCalcData, _onSwitchStob, isAdd: false, })
 
+    const showPercentage = _selectedPercentage < 0 || _selectedPercentage > 100 ? EmptyValueTag + '%' : `${_selectedPercentage}%`
+    const lpTradeValue = ammData?.coinLP?.tradeValue
+    let lpBalance: any = ammData?.coinLP?.balance
+    lpBalance = parseFloat(lpBalance)
+    const showLP = (lpBalance && lpTradeValue && lpTradeValue > 0 && lpTradeValue < lpBalance) ? getShowStr(lpTradeValue, 2, 6) : '0'
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
@@ -158,10 +163,10 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                 <Link onClick={() => setIsPercentage(!isPercentage)}>{t('labelAmmSwitch')}</Link>
             </Typography>
             <Typography alignSelf={'center'} variant={'h2'}>
-                {_selectedPercentage}%
+                {showPercentage}
             </Typography>
             <Typography alignSelf={'center'} variant={'body1'} marginTop={1} hidden={!isPercentage} lineHeight={'22px'}>
-                {ammData?.coinLP?.tradeValue ? getShowStr(ammData?.coinLP?.tradeValue, 2, 6) : EmptyValueTag}
+                {showLP}
             </Typography>
             <Grid item alignSelf={'stretch'} marginTop={1} marginX={1} hidden={!isPercentage} height={48}>
                 <BtnPercentage selected={_selectedPercentage} anchors={[{
