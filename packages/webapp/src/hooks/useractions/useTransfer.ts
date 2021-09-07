@@ -24,6 +24,8 @@ import { useWalletInfo } from 'stores/localStore/walletInfo';
 import { checkErrorInfo } from './utils';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useModalData } from 'stores/router';
+import store from 'stores';
+import { isAccActivated } from './checkAccStatus';
 
 export const useTransfer = <R extends IBData<T>, T>(): {
     transferToastOpen: boolean,
@@ -34,22 +36,22 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     lastRequest: any,
 } => {
 
-    const {setShowAccount, setShowTransfer,} = useOpenModals()
+    const { setShowAccount, setShowTransfer, } = useOpenModals()
 
     const [transferToastOpen, setTransferToastOpen] = React.useState<boolean>(false)
 
     const [transferAlertText, setTransferAlertText] = React.useState<string>()
 
-    const {modals: {isShowTransfer: {symbol, isShow}}} = useOpenModals()
+    const { modals: { isShowTransfer: { symbol, isShow } } } = useOpenModals()
 
-    const {tokenMap, totalCoinMap,} = useTokenMap();
-    const {account} = useAccount()
-    const {exchangeInfo, chainId} = useSystem();
+    const { tokenMap, totalCoinMap, } = useTokenMap();
+    const { account } = useAccount()
+    const { exchangeInfo, chainId } = useSystem();
 
     const { transferValue, updateTransferData, resetTransferData, } = useModalData()
 
     const [walletMap, setWalletMap] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
-    const {chargeFeeList} = useChargeFees(transferValue.belong, sdk.OffchainFeeReqType.TRANSFER, tokenMap)
+    const { chargeFeeList } = useChargeFees(transferValue.belong, sdk.OffchainFeeReqType.TRANSFER, tokenMap)
 
     const [tranferFeeInfo, setTransferFeeInfo] = React.useState<FeeInfo>()
     const [isExceedMax, setIsExceedMax] = React.useState(false)
@@ -59,13 +61,13 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         setAddress,
         addrStatus,
     } = useAddressCheck()
-    
+
     React.useEffect(() => {
         myLog('enter reset address of transfer!!!!')
         setAddress(transferValue.address)
     }, [transferValue.address])
 
-    const {btnStatus, enableBtn, disableBtn,} = useBtnStatus()
+    const { btnStatus, enableBtn, disableBtn, } = useBtnStatus()
 
     React.useEffect(() => {
 
@@ -83,7 +85,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         setWalletMap(walletMap)
     }, [])
 
-    useWalletLayer2Socket({walletLayer2Callback})
+    useWalletLayer2Socket({ walletLayer2Callback })
 
     const resetDefault = React.useCallback(() => {
         if (!transferValue.belong) {
@@ -91,14 +93,14 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                 myLog('resetDefault symbol:', symbol)
                 updateTransferData({
                     belong: symbol as any,
-                    balance: walletMap[ symbol ]?.count,
+                    balance: walletMap[symbol]?.count,
                     tradeValue: undefined,
                 })
             } else {
                 const keys = Reflect.ownKeys(walletMap)
                 for (var key in keys) {
-                    const keyVal = keys[ key ]
-                    const walletInfo = walletMap[ keyVal ]
+                    const keyVal = keys[key]
+                    const walletInfo = walletMap[keyVal]
                     if (sdk.toBig(walletInfo.count).gt(0)) {
                         updateTransferData({
                             belong: keyVal as any,
@@ -118,22 +120,22 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         }
     }, [isShow, tranferFeeInfo])
 
-    const {checkHWAddr, updateDepositHashWrapper,} = useWalletInfo()
+    const { checkHWAddr, updateDepositHashWrapper, } = useWalletInfo()
 
     const [lastRequest, setLastRequest] = React.useState<any>({})
 
     const processRequest = React.useCallback(async (request: sdk.OriginTransferRequestV3, isFirstTime: boolean) => {
 
-        const {apiKey, connectName, eddsaKey} = account
+        const { apiKey, connectName, eddsaKey } = account
 
         try {
 
             if (connectProvides.usedWeb3) {
-    
+
                 let isHWAddr = checkHWAddr(account.accAddress)
-    
+
                 isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
-    
+
                 const response = await LoopringAPI.userAPI?.submitInternalTransfer({
                     request,
                     web3: connectProvides.usedWeb3,
@@ -143,48 +145,58 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     apiKey,
                     isHWAddr,
                 })
-    
+
                 myLog('submitInternalTransfer:', response)
-    
-                if (response?.errorInfo) {
-                    // Withdraw failed
-                    const code = checkErrorInfo(response.errorInfo, isFirstTime)
-                    if (code === ConnectorError.USER_DENIED) {
-                        setShowAccount({isShow: true, step: AccountStep.Transfer_User_Denied})
-                    } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
-                        setLastRequest({request})
-                        setShowAccount({isShow: true, step: AccountStep.Transfer_First_Method_Denied})
+
+
+                if (isAccActivated()) {
+
+                    if (response?.errorInfo) {
+                        // Withdraw failed
+                        const code = checkErrorInfo(response.errorInfo, isFirstTime)
+                        if (code === ConnectorError.USER_DENIED) {
+                            setShowAccount({ isShow: true, step: AccountStep.Transfer_User_Denied })
+                        } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
+                            setLastRequest({ request })
+                            setShowAccount({ isShow: true, step: AccountStep.Transfer_First_Method_Denied })
+                        } else {
+                            setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed })
+                        }
+                    } else if (response?.resultInfo) {
+                        setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed })
                     } else {
-                        setShowAccount({isShow: true, step: AccountStep.Transfer_Failed})
+                        // Withdraw success
+                        setShowAccount({ isShow: true, step: AccountStep.Transfer_In_Progress })
+                        await sdk.sleep(TOAST_TIME)
+                        setShowAccount({ isShow: true, step: AccountStep.Transfer_Success })
+                        if (isHWAddr) {
+                            myLog('......try to set isHWAddr', isHWAddr)
+                            updateDepositHashWrapper({ wallet: account.accAddress, isHWAddr })
+                        }
+                        walletLayer2Service.sendUserUpdate()
+
+                        resetTransferData()
                     }
-                } else if (response?.resultInfo) {
-                    setShowAccount({isShow: true, step: AccountStep.Transfer_Failed})
                 } else {
-                    // Withdraw success
-                    setShowAccount({isShow: true, step: AccountStep.Transfer_In_Progress})
-                    await sdk.sleep(TOAST_TIME)
-                    setShowAccount({isShow: true, step: AccountStep.Transfer_Success})
-                    if (isHWAddr) {
-                        myLog('......try to set isHWAddr', isHWAddr)
-                        updateDepositHashWrapper({wallet: account.accAddress, isHWAddr})
-                    }
-    
+
                     resetTransferData()
                 }
-    
-                walletLayer2Service.sendUserUpdate()
-    
+
+
             }
 
         } catch (reason) {
             const code = checkErrorInfo(reason, isFirstTime)
-            if (code === ConnectorError.USER_DENIED) {
-                setShowAccount({isShow: true, step: AccountStep.Transfer_User_Denied})
-            } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
-                setLastRequest({request})
-                setShowAccount({isShow: true, step: AccountStep.Transfer_First_Method_Denied})
-            } else {
-                setShowAccount({isShow: true, step: AccountStep.Transfer_Failed})
+
+            if (isAccActivated()) {
+                if (code === ConnectorError.USER_DENIED) {
+                    setShowAccount({ isShow: true, step: AccountStep.Transfer_User_Denied })
+                } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
+                    setLastRequest({ request })
+                    setShowAccount({ isShow: true, step: AccountStep.Transfer_First_Method_Denied })
+                } else {
+                    setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed })
+                }
             }
 
         }
@@ -192,7 +204,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
 
     const onTransferClick = useCallback(async (transferValue, isFirstTime: boolean = true) => {
-        const {accountId, accAddress, readyState, apiKey, eddsaKey} = account
+        const { accountId, accAddress, readyState, apiKey, eddsaKey } = account
 
         if (readyState === AccountStatus.ACTIVATED && tokenMap && LoopringAPI.userAPI
             && exchangeInfo && connectProvides.usedWeb3
@@ -200,11 +212,11 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
             try {
 
-                setShowTransfer({isShow: false})
-                setShowAccount({isShow: true, step: AccountStep.Transfer_WaitForAuth})
+                setShowTransfer({ isShow: false })
+                setShowAccount({ isShow: true, step: AccountStep.Transfer_WaitForAuth })
 
-                const sellToken = tokenMap[ transferValue.belong as string ]
-                const feeToken = tokenMap[ tranferFeeInfo.belong ]
+                const sellToken = tokenMap[transferValue.belong as string]
+                const feeToken = tokenMap[tranferFeeInfo.belong]
                 const transferVol = sdk.toBig(transferValue.tradeValue).times('1e' + sellToken.decimals).toFixed(0, 0)
                 const storageId = await LoopringAPI.userAPI?.getNextStorageId({
                     accountId,
@@ -236,7 +248,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             } catch (e) {
                 sdk.dumpError400(e)
                 // transfer failed
-                setShowAccount({isShow: true, step: AccountStep.Transfer_Failed})
+                setShowAccount({ isShow: true, step: AccountStep.Transfer_Failed })
             }
 
         } else {
@@ -250,7 +262,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             if (data?.tradeData?.belong) {
                 updateTransferData(data.tradeData)
             } else {
-                updateTransferData({belong: undefined, tradeValue: 0, balance: 0})
+                updateTransferData({ belong: undefined, tradeValue: 0, balance: 0 })
             }
             res();
         })
@@ -264,7 +276,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         setTransferFeeInfo(value)
     }, [setTransferFeeInfo])
 
-    const {t} = useTranslation()
+    const { t } = useTranslation()
 
     const transferProps = {
         tradeData: transferValue as any,
@@ -278,17 +290,17 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         chargeFeeTokenList: chargeFeeList,
         handleOnAddressChange: (value: any) => {
         },
-        handleError: ({belong, balance, tradeValue}: any) => {
+        handleError: ({ belong, balance, tradeValue }: any) => {
             if (typeof tradeValue !== 'undefined' && balance < tradeValue || (tradeValue && !balance)) {
                 setIsExceedMax(true)
-                return {error: true, message: t('tokenNotEnough', {belong,})}
+                return { error: true, message: t('tokenNotEnough', { belong, }) }
             }
             setIsExceedMax(false)
-            return {error: false, message: ''}
+            return { error: false, message: '' }
         },
         handleAddressError: (_value: any) => {
-            updateTransferData({address: _value})
-            return {error: false, message: ''}
+            updateTransferData({ address: _value })
+            return { error: false, message: '' }
         }
     }
 

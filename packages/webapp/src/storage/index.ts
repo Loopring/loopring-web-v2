@@ -18,7 +18,7 @@ export enum CONSTANTS {
     WalletConnect = 'walletconnect',
 }
 
-const SESSION_TIMEOUT_SECONDS = 60 * 15
+const SESSION_TIMEOUT_SECONDS = 10
 
 export class UserStorage {
 
