@@ -16,6 +16,7 @@ import { ActionResult, ActionResultCode } from 'defs/common_defs';
 import { checkErrorInfo } from './utils';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useAllowances } from 'hooks/common/useAllowances';
+import { useModalData } from 'stores/router';
 
 export const useDeposit = <R extends IBData<T>, T>(): {
     depositProps: DepositProps<R, T>
@@ -23,11 +24,9 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     const { tokenMap, totalCoinMap, } = useTokenMap()
     const { account } = useAccount()
     const { exchangeInfo, chainId, gasPrice } = useSystem()
-    const [depositValue, setDepositValue] = React.useState<IBData<T>>({
-        belong: undefined,
-        tradeValue: 0,
-        balance: 0
-    } as IBData<unknown>)
+    
+    const { depositValue, updateDepositData, } = useModalData()
+
     const { modals: { isShowDeposit: { symbol, isShow } } } = useOpenModals()
 
     const { walletLayer1 } = useWalletLayer1()
@@ -36,7 +35,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
     const { btnStatus, btnInfo, enableBtn, disableBtn, setLabelAndParams, resetBtnInfo, } = useBtnStatus()
 
-    const { allowanceInfo } = useAllowances({ owner: account.accAddress, symbol: depositValue.belong, })
+    const { allowanceInfo } = useAllowances({ owner: account.accAddress, symbol: depositValue.belong as string, })
 
     const updateBtnStatus = React.useCallback(() => {
 
@@ -49,7 +48,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             const curValInWei = sdk.toBig(depositValue?.tradeValue).times('1e' + allowanceInfo?.tokenInfo.decimals)
             if (allowanceInfo.needCheck && curValInWei.gt(allowanceInfo.allowance)) {
                 myLog('!!---> set labelDepositNeedApprove!!!! belong:', depositValue.belong)
-                setLabelAndParams('labelDepositNeedApprove', { symbol: depositValue.belong })
+                setLabelAndParams('labelDepositNeedApprove', { symbol: depositValue.belong as string })
             }
             enableBtn()
         } else {
@@ -63,7 +62,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
     const walletLayer1Callback = React.useCallback(() => {
         if (symbol && walletLayer1) {
-            setDepositValue({
+            updateDepositData({
                 belong: symbol as any,
                 balance: walletLayer1[symbol]?.count,
                 tradeValue: undefined,
@@ -77,7 +76,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                     const walletInfo = walletLayer1[keyVal]
                     if (sdk.toBig(walletInfo.count).gt(0)) {
 
-                        setDepositValue({
+                        updateDepositData({
                             belong: keyVal as any,
                             tradeValue: 0,
                             balance: walletInfo.count,
@@ -88,7 +87,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 }
             }
         }
-    }, [walletLayer1, symbol, setDepositValue])
+    }, [walletLayer1, symbol, updateDepositData])
 
     React.useEffect(() => {
         walletLayer1Callback()
@@ -223,10 +222,10 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
     const handlePanelEvent = useCallback(async (data: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {
-            setDepositValue(data.tradeData)
+            updateDepositData(data.tradeData)
             res();
         })
-    }, [depositValue, setDepositValue])
+    }, [depositValue, updateDepositData])
 
     const depositProps = React.useMemo(() => {
         const isNewAccount = account.readyState === AccountStatus.NO_ACCOUNT ? true : false;

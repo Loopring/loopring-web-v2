@@ -23,6 +23,7 @@ import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
 import { useWalletInfo } from 'stores/localStore/walletInfo';
 import { checkErrorInfo } from './utils';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
+import { useModalData } from 'stores/router';
 
 export const useTransfer = <R extends IBData<T>, T>(): {
     transferToastOpen: boolean,
@@ -44,14 +45,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const {tokenMap, totalCoinMap,} = useTokenMap();
     const {account} = useAccount()
     const {exchangeInfo, chainId} = useSystem();
-    // const {walletLayer2, status: walletLayer2Status} = useWalletLayer2();
+
+    const { transferValue, updateTransferData, } = useModalData()
+
     const [walletMap, setWalletMap] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
-    // const {setShowTransfer}  = useOpenModals();
-    const [transferValue, setTransferValue] = React.useState<IBData<T>>({
-        belong: undefined,
-        tradeValue: 0,
-        balance: 0
-    } as IBData<unknown>)
     const {chargeFeeList} = useChargeFees(transferValue.belong, sdk.OffchainFeeReqType.TRANSFER, tokenMap)
 
     const [tranferFeeInfo, setTransferFeeInfo] = React.useState<FeeInfo>()
@@ -62,6 +59,11 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         setAddress,
         addrStatus,
     } = useAddressCheck()
+    
+    React.useEffect(() => {
+        myLog('enter reset address of transfer!!!!')
+        setAddress(transferValue.address)
+    }, [transferValue.address])
 
     const {btnStatus, enableBtn, disableBtn,} = useBtnStatus()
 
@@ -86,7 +88,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const resetDefault = React.useCallback(() => {
         if (symbol) {
             myLog('resetDefault symbol:', symbol)
-            setTransferValue({
+            updateTransferData({
                 belong: symbol as any,
                 balance: walletMap[ symbol ]?.count,
                 tradeValue: undefined,
@@ -97,7 +99,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                 const keyVal = keys[ key ]
                 const walletInfo = walletMap[ keyVal ]
                 if (sdk.toBig(walletInfo.count).gt(0)) {
-                    setTransferValue({
+                    updateTransferData({
                         belong: keyVal as any,
                         tradeValue: 0,
                         balance: walletInfo.count,
@@ -107,7 +109,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             }
 
         }
-    }, [symbol, walletMap, setTransferValue])
+    }, [symbol, walletMap, updateTransferData])
 
     React.useEffect(() => {
         resetDefault();
@@ -225,14 +227,14 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const handlePanelEvent = useCallback(async (data: SwitchData<R>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {
-            if (data?.tradeData?.belong && transferValue !== data.tradeData) {
-                setTransferValue(data.tradeData)
+            if (data?.tradeData?.belong) {
+                updateTransferData(data.tradeData)
             } else {
-                setTransferValue({belong: undefined, tradeValue: 0, balance: 0} as IBData<unknown>)
+                updateTransferData({belong: undefined, tradeValue: 0, balance: 0})
             }
             res();
         })
-    }, [setTransferValue, transferValue])
+    }, [updateTransferData, transferValue])
 
     const handleFeeChange = useCallback((value: {
         belong: string;
@@ -265,7 +267,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             return {error: false, message: ''}
         },
         handleAddressError: (_value: any) => {
-            setAddress(_value)
+            updateTransferData({address: _value})
             return {error: false, message: ''}
         }
     }

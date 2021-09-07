@@ -56,7 +56,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const { withdrawValue, updateWithdrawData } = useModalData()
 
-    // const {status:walletLayer2Status} = useWalletLayer2();
     const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
 
     const [withdrawFeeInfo, setWithdrawFeeInfo] = React.useState<any>()
@@ -320,9 +319,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         handlePanelEvent: async (data: SwitchData<R>, switchType: 'Tomenu' | 'Tobutton') => {
             return new Promise((res: any) => {
                 if (data?.tradeData?.belong) {
-                    if (withdrawValue !== data.tradeData) {
                         updateWithdrawData(data.tradeData)
-                    }
                 }
 
                 res();
