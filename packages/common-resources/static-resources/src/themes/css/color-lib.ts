@@ -11,52 +11,61 @@ export const hexToRGB = (hex:string, alpha?:string|number)=> {
 }
 
 export const ColorDarkDefault = Object.freeze({
-    primary: '#3B5AF4',
-    primaryHover: '#627BF6',
-    primaryPressed: '#293EAA',
+    primary: '#4169FF',
+    primaryHover: '#6787FF',
+    primaryPressed: '#2D49B2',
     secondary: '#1890FF',
     secondaryHover: '#46A6FF',
     secondaryPressed: '#1064B2',
+    disable:'#343754',
     success: '#00BBA8',
     warning: '#FBA95C',
     error: '#FF5677',
     textPrimary: '#FFFFFF',
     textSecondary: '#A4ABC1',
     textThird: '#687295',
+    textButton: '#FFFFFF',
     textButtonSelect:'#FFFFFF',
     textDisable: `${hexToRGB('#ffffff', '0.25')}`,
-    disable:'#404871',
     border: '#49527D',
-    borderHover: '#828BA7',
-    borderDark: '#393F64',
-    divide: '#444C75',
+    borderHover: '#A1ABC9',
+    borderDark: '#6C738A',
+    borderSelect: '#FFFFFF',
+    borderDisable: '#383C5C',
+    borderDisable2: '#2D2F4B',
     box: '#2D2F4B',
-    boxSecondary: '#687295',
-    boxHover:  `${hexToRGB('#ffffff', '0.03')}`,
+    boxHover:  `${hexToRGB('#ffffff', '0.05')}`,
     popBg: '#393F64',
-    globalBg: '#1F2034',
+
+
     boxLinear: 'linear-gradient(194.79deg, #322C53 17.96%, #262B50 44.29%, #32314F 96.93%)',
+    globalBg: '#1F2034',
+    fieldOpacity:`${hexToRGB('#ffffff', '0.1')}`,
+    divide: '#444C75',
+    boxSecondary: '#687295',
     mask: `${hexToRGB('#000000', '0.68')}`,
+    tableHeaderBg:'#393f64',
+    star:`#F0B90B`,
+    logo: '#FFFFFF',
+    /********************CSS special button *******************/
+    buttonPot:'#FFFFFF',
+    buttonIcon:'#A4ABC1',
+
+    /********************CSS shadow *******************/
+    shadow: ` 0px 4px 4px ${hexToRGB('#000000', '.25')}`,
+    shadowHeader: `0px 4px 8px rgba(0, 0, 0, 0.15)`,
+    shadow2: `0px -4px 8px rgba(0, 0, 0, 0.15)`,
+    shadowHover: `0px 10px 20px rgba(0, 0, 0, 0.45)`,
+
+    /********************Case for provider*******************/
     white: '#ffffff',
     dark: '#000000',
     opacity: `${hexToRGB('#000000', '0')}`,
-    star:`#F0B90B`,
-    logo: '#FFFFFF',
-    /********************CSS special buttonr*******************/
-    textButton:'#FFFFFF',
-    buttonPot:'#FFFFFF',
-    /********************Case for provider*******************/
-    shadow: ` 0px 4px 4px ${hexToRGB('#000000', '.25')}`,
-    shadow2: `0px 4px 8px 0px rgba(87, 102, 236, 0.08)`,
-
-    fieldOpacity:`${hexToRGB('#ffffff', '0.1')}`,
     providerBtn:`${hexToRGB('#ffffff', '0.1')}`,
     providerBtnHover:`${hexToRGB('#ffffff', '0.03')}`,
-    buttonIcon:'#A4ABC1',
-    // @ts-ignore
-    // textMenu:this.textSecondary,
-/********************Case for provider*******************/
+    providerApprove:`${hexToRGB('#ffffff', '0.03')}`,
 })
+
 export const ColorLightDefault = Object.freeze({...ColorDarkDefault,
     primary: '#3B5AF4',
     primaryHover: '#627BF6',
@@ -64,46 +73,55 @@ export const ColorLightDefault = Object.freeze({...ColorDarkDefault,
     secondary: '#1890FF',
     secondaryHover: '#46A6FF',
     secondaryPressed: '#1064B2',
+    disable:'#F4F5F9',
     success: '#00BBA8',
     warning: '#FBA95C',
     error: '#FF5677',
     textPrimary: '#15162B',
     textSecondary: '#4E5395',
     textThird: '#A3A8CA',
-    textButtonSelect:'#1890FF',
+    textButton:'#FFFFFF',
+    textButtonSelect:'#3B5AF4',
     textDisable: `${hexToRGB('#000000', '0.25')}`,
-    disable:'#F4F5F9',
     border: '#E9EAF2',
     borderHover: '#627BF6',
     borderDark: '#293EAA',
-    divide: '#E9EAF2',
+    borderSelect: '#3B5AF4',
+    borderDisable: '#E9EAF2',
+    borderDisable2: '#FFFFFF',
     box: '#FFFFFF',
-    boxSecondary: '#A3A8CA',
-    boxHover:  `${hexToRGB('#4E5395', '0.1')}`,
+    boxHover:  `${hexToRGB('#3B5AF4', '0.05')}`,
     popBg: '#FFFFFF',
-    globalBg: '#F6F7FB',
+
+
     boxLinear: '#FFFFFF',
+    globalBg: '#F6F7FB',
+    fieldOpacity:'#EEF1FA',
+    divide: '#E9EAF2',
+    boxSecondary: '#A3A8CA',
     mask: `${hexToRGB('#000000', '0.68')}`,
-    white: '#ffffff',
-    dark: '#000000',
-    opacity: `${hexToRGB('#FFFFFF', '0')}`,
+    tableHeaderBg:'#F6F7FB',
     star:`#F0B90B`,
     logo: '#3B5AF4',
     /********************CSS special buttonr*******************/
-    textButton:'#FFFFFF',
     buttonPot:'#FFFFFF',
-    /********************Case for provider*******************/
+    buttonIcon:'#15162B',
+    
+    /********************CSS shadow *******************/
     shadow: `0px 10px 20px rgba(87, 129, 236, 0.08)`,
-    shadow2: `0px 4px 8px 0px rgba(87, 102, 236, 0.08)`,
-    fieldOpacity:`#EEF1FA`,
-    providerBtn:`${hexToRGB('#ffffff', '0.1')}`,
-    providerBtnHover:`${hexToRGB('#627BF6', '0.1')}`,
-    buttonIcon:'#A3A8CA',
-    //${hexToRGB('#4E5395', '0.1')}
+    shadowHeader: `0px 4px 8px rgba(87, 102, 236, 0.1)`,
+    shadow2: `0px -4px 8px rgba(87, 102, 236, 0.1)`,
+    shadowHover: `0px 10px 20px rgba(87, 129, 236, 0.25)`,
 
-    // textMenu:this.textButton,
     /********************Case for provider*******************/
+    white: '#ffffff',
+    dark: '#000000',
+    opacity: `${hexToRGB('#FFFFFF', '0')}`,
+    providerBtn:`${hexToRGB('#3B5AF4', '0.1')}`,
+    providerBtnHover:`${hexToRGB('#3B5AF4', '0.15')}`,
+    providerApprove:`#F6F7FB`,
 })
+
 export type ColorBaseInterface = typeof ColorDarkDefault
 
 //provider

@@ -73,7 +73,7 @@ const ProviderBtnStyled = styled(Button)`
 //padding: 0 ${({theme}) => theme.unit * 5 / 3}px;
 const BoxStyle = styled(Box)`
   ${({ theme }) => theme.border.defaultFrame({ c_key: 'blur', d_R: 1 / 2, d_W: 0 })};
-  background: var(--provider-hover);
+  background: var(--provider-agree);
 
  
 
