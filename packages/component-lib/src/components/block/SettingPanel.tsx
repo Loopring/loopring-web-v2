@@ -115,7 +115,7 @@ export const SettingPanel = withTranslation(['common', 'layout'],{withRef:true})
         }
     }, [themeMode])
     const updown = React.useCallback(({key})=>{
-      return  <Trans i18nKey="whichColorIsUp" tOptions={{
+      return    <Typography component={'span'} variant={'body2'}><Trans i18nKey="whichColorIsUp" tOptions={{
           up: (key === UpColor.green ? t('labelgreen') : t('labelred')),
           down: (key === UpColor.green ? t('labelred') : t('labelgreen'))
       }} >
@@ -127,7 +127,7 @@ export const SettingPanel = withTranslation(['common', 'layout'],{withRef:true})
             textTransform: 'capitalize',
             // color: key === UpColor.green ? theme.colorBase.error : theme.colorBase.success
         }}>color down</Typography>
-        </Trans>
+      </Trans></Typography>
     },[UpColor])
 
     return         <BoxStyle component={'section'} display={'flex'} flexDirection={'column'} width={'var(--swap-box-width)'}>
@@ -135,7 +135,7 @@ export const SettingPanel = withTranslation(['common', 'layout'],{withRef:true})
         <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}
               alignItems={'center'} paddingX={2} marginY={2}>
             <Grid item xs={4} display={'flex'} flexDirection={'column'}>
-                <Typography variant={'body1'} component={'p'}>{t('labelLanguage')}</Typography>
+                <Typography variant={'body1'} component={'p'} color={'textSecondary'}>{t('labelLanguage')}</Typography>
             </Grid>
             <Grid item xs={8} display={'flex'} flexDirection={'column'} justifyContent={'space-evenly'}
                   alignItems={'flex-end'} alignSelf={'stretch'}>
@@ -153,7 +153,7 @@ export const SettingPanel = withTranslation(['common', 'layout'],{withRef:true})
         <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}
               alignItems={'center'} paddingX={2} marginY={2}>
             <Grid item xs={4} display={'flex'} flexDirection={'column'}>
-                <Typography variant={'body1'} component={'p'}>{t('labelCurrency')}</Typography>
+                <Typography variant={'body1'} component={'p'} color={'textSecondary'}>{t('labelCurrency')}</Typography>
             </Grid>
             <Grid item xs={8} display={'flex'} flexDirection={'column'} justifyContent={'space-evenly'}
                   alignItems={'flex-end'} alignSelf={'stretch'}>
@@ -172,7 +172,7 @@ export const SettingPanel = withTranslation(['common', 'layout'],{withRef:true})
         <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}
               alignItems={'center'} paddingX={2} marginY={1}>
             <Grid item xs={4} display={'flex'} flexDirection={'column'}>
-                <Typography variant={'body1'} component={'p'}>{t('labelColors')}</Typography>
+                <Typography variant={'body1'} component={'p'} color={'textSecondary'}>{t('labelColors')}</Typography>
             </Grid>
             <Grid item xs={8} display={'flex'} flexDirection={'column'} justifyContent={'center'}
                   alignItems={'flex-end'} alignSelf={'stretch'}>
@@ -208,7 +208,7 @@ export const SettingPanel = withTranslation(['common', 'layout'],{withRef:true})
         <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}
               alignItems={'center'} paddingX={2} marginY={2}>
             <Grid item xs={4} display={'flex'} flexDirection={'column'}>
-                <Typography variant={'body1'} component={'p'}>{t('labelTheme')}</Typography>
+                <Typography variant={'body1'} component={'p'} color={'textSecondary'}>{t('labelTheme')}</Typography>
             </Grid>
             <Grid item xs={8} display={'flex'} flexDirection={'column'} justifyContent={'center'}
                   alignItems={'flex-end'} alignSelf={'stretch'} >
