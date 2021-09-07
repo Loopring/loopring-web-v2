@@ -56,9 +56,10 @@ export const Button = styled(MuButton)<ButtonProps>`
 
 const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
   ${({theme,size}) => size!=='small'?`
-      background: var(--color-border-dark);
+      background: var(--color-box);
       padding: ${theme.unit/2}px;
       padding-right: ${theme.unit/4}px;
+      box-shadow: var(--shadow3);
   `:``};
   .MuiToggleButton-sizeSmall {
     background: var(--color-box);

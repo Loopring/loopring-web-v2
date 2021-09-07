@@ -56,6 +56,7 @@ export const ColorDarkDefault = Object.freeze({
     shadowHeader: `0px 4px 8px rgba(0, 0, 0, 0.15)`,
     shadow2: `0px -4px 8px rgba(0, 0, 0, 0.15)`,
     shadowHover: `0px 10px 20px rgba(0, 0, 0, 0.45)`,
+    shadow3: `0px 10px 20px rgba(0, 0, 0, 0.15)`,
 
     /********************Case for provider*******************/
     white: '#ffffff',
@@ -112,6 +113,7 @@ export const ColorLightDefault = Object.freeze({...ColorDarkDefault,
     shadowHeader: `0px 4px 8px rgba(87, 102, 236, 0.1)`,
     shadow2: `0px -4px 8px rgba(87, 102, 236, 0.1)`,
     shadowHover: `0px 10px 20px rgba(87, 129, 236, 0.25)`,
+    shadow3: `0px 10px 20px rgba(87, 129, 236, 0.1)`,
 
     /********************Case for provider*******************/
     white: '#ffffff',

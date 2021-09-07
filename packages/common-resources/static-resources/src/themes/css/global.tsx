@@ -68,6 +68,7 @@ export const colorBase = ({theme}: any) => css`
     --shadowHeader: ${theme.colorBase.shadowHeader};
     --shadow2: ${theme.colorBase.shadow2};
     --shadowHover: ${theme.colorBase.shadowHover};
+    --shadow3: ${theme.colorBase.shadow3};
 
     /********************Case for special*******************/
     --provider-btn:${theme.colorBase.providerBtn};
