@@ -2,8 +2,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import React from 'react';
 import { EmptyIcon } from '@loopring-web/common-resources';
-import { Box, Typography } from '@material-ui/core/';
-import { BoxProps } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
+import { BoxProps } from '@mui/material';
 
 
 export type EmptyProps = {

@@ -3,7 +3,7 @@ import React from 'react';
 import CurrencyInput from 'react-currency-input-field';
 import { globalSetup } from '@loopring-web/common-resources';
 import styled from '@emotion/styled';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { WithTranslation } from 'react-i18next';
 import { useFocusRef } from '../../../basic-lib/form/hooks';
 import { useSettings } from '../../../../stores';

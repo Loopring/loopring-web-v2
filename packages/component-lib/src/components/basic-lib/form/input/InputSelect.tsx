@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box  } from "@material-ui/core";
+import { Box  } from '@mui/material';
 import { CloseIcon, CoinInfo, CoinKey, globalSetup } from '@loopring-web/common-resources';
 import React from "react";
 import { InputSelectProps } from "./Interface";

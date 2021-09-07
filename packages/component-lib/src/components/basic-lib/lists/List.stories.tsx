@@ -16,13 +16,13 @@ import {
     MenuItem,
     Tab,
     Tabs
-} from '@material-ui/core';
+} from '@mui/material';
 import { coinMap, CoinType, layer2ItemData, walletMap } from "../../../static";
 import { CoinMenu } from './CoinList';
 import { AlertIcon, AssetsIcon, CheckIcon, CoinInfo, DownloadIcon, globalCss, PendingIcon } from '@loopring-web/common-resources';
 import React from 'react';
 
-import { Typography } from '@material-ui/core/';
+import { Typography } from '@mui/material';
 import { SubMenuItem } from './SubMenuList';
 import { TabItemPlus } from './HeadToolbar';
 import { WalletNotificationListItem } from './Notification';

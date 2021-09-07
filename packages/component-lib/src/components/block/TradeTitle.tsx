@@ -8,8 +8,8 @@ import {
     PriceTag,
     TradeFloat
 } from '@loopring-web/common-resources';
-import { Box, Grid } from '@material-ui/core';
-import { Avatar, Typography } from '@material-ui/core/';
+import { Box, Grid } from '@mui/material';
+import { Avatar, Typography } from '@mui/material';
 import styled from '@emotion/styled';
 import React from 'react';
 import { baseTitleCss, useSettings } from '../../index';

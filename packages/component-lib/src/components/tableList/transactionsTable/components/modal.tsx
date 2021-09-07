@@ -1,6 +1,6 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import styled from '@emotion/styled'
-import { Box, Grid, Typography } from '@material-ui/core';
+import { Box, Grid, Typography } from '@mui/material';
 import moment from 'moment'
 import { EmptyValueTag } from '@loopring-web/common-resources';
 

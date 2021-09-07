@@ -1,6 +1,6 @@
 import { AccountBaseProps } from './Interface'
 import { AccountBasePanel } from './AccountBase'
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { WithTranslation, withTranslation } from 'react-i18next';
 
 export const HadAccount = withTranslation('common')(({mainBtn, t, ...props }: WithTranslation &AccountBaseProps) => {

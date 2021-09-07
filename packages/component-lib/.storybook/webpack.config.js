@@ -19,6 +19,7 @@ module.exports = function ({config, mode = 'DEV'}) {
       //path.resolve(__dirname, '..', 'node_modules/@loopring-web/static-resource'),
       // "@loopring-web/static-resource":path.resolve(__dirname, '..', 'node_modules/@loopring-web/static-resource'),
       "@emotion/core": toPath("node_modules/@emotion/react"),
+      "@material-ui/core": toPath("node_modules/@mui/material"),
       "emotion-theming": toPath("node_modules/@emotion/react"),
       "@emotion/styled-base": toPath("node_modules/@emotion/styled/base"),
     },

@@ -1,7 +1,7 @@
 import { HeaderRendererProps } from 'react-data-grid';
 // import { DropDownIcon } from '@loopring-web/common-resources';
 import styled from '@emotion/styled'
-import { Box, BoxProps } from '@material-ui/core'
+import { Box, BoxProps } from '@mui/material'
 import { css } from '@emotion/react';
 import React from 'react';
 

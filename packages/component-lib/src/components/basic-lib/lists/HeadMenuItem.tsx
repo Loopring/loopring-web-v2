@@ -1,4 +1,4 @@
-import { Box, Container, ListItemAvatar, MenuItem, MenuProps, Typography } from "@material-ui/core";
+import { Box, Container, ListItemAvatar, MenuItem, MenuProps, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { WithTranslation } from "react-i18next";
 // @ts-ignore
@@ -55,11 +55,13 @@ const StyledHeadMenuItem = styled(MenuItem)<MenuItemProps<any>>`
   box-shadow: inherit;
   height: var(--header-height);
   //color: var(--color-text-secondary);
+  background: inherit;
   position: relative;
-  &:hover,&.Mui-selected:hover {
-    background-color: inherit;
+  &.Mui-selected,&:hover,&.Mui-selected:hover {
+    background: inherit;
+    color: var(--color-text-primary);
   }
- 
+  
   &.layer-0 {
     .MuiButtonBase-root {
       opacity: 1;

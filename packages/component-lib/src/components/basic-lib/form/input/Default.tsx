@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Avatar, Box, FormControlLabel as MuFormControlLabel, TextField as MuTextField } from "@material-ui/core";
+import { Avatar, Box, FormControlLabel as MuFormControlLabel, TextField as MuTextField } from '@mui/material';
 import { AvatarCoinStyled } from '@loopring-web/common-resources';
 import { useSettings } from '../../../../stores';
 

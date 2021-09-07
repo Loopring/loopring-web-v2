@@ -2,7 +2,7 @@ import { IBData } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../Interface';
 import { Trans, WithTranslation } from 'react-i18next';
 import React from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
 import { Button } from '../../basic-lib';
 import { ResetViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';

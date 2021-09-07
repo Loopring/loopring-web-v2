@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
+import { Tabs } from '@mui/material'
+import { Tab } from '@mui/material'
 import styled from '@emotion/styled'
 
 import { RawDataTradeItem, TradeTable, } from '@loopring-web/component-lib'
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router'
 import { TableWrapStyled } from '../../../styled';
-import { Divider } from '@material-ui/core'
+import { Divider } from '@mui/material'
 
 const TabsStyled = styled(Tabs)`
   margin-left: ${({theme}) => theme.unit}px;

@@ -1,4 +1,4 @@
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
 import { Trans, withTranslation, WithTranslation } from 'react-i18next';
 import {
     ConnectProviders,
@@ -8,7 +8,7 @@ import {
 import React from 'react';
 
 import { Button } from '../../basic-lib';
-import { Link } from '@material-ui/core/';
+import { Link } from '@mui/material';
 
 export enum IconType {
     LoadingIcon,

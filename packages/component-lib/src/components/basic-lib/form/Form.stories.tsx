@@ -7,9 +7,9 @@ import {
     FormControl,
     FormControlLabel as MuiFormControlLabel,
     Grid,
-    ListItemText,
+    ListItemText, SelectChangeEvent,
     Typography
-} from '@material-ui/core'
+} from '@mui/material'
 import { InputCoinProps, MenuItem, OutlineSelect, OutlineSelectItem } from '../../basic-lib'
 import { Trans, withTranslation } from "react-i18next";
 import {
@@ -31,12 +31,12 @@ import {
     DropDownIcon, i18n,
     IBData, LanguageType,
 } from '@loopring-web/common-resources';
-import { DateRange } from '@material-ui/lab';
+import { DateRange } from '@mui/lab';
 import { EmptyDefault } from '../empty';
 import { coinMap, CoinType, inputProps, walletMap } from '../../../static';
 import { CoinMenu } from '../lists';
 import { InputCoin } from './input/InputCoin';
-import { Link } from '@material-ui/core/';
+import { Link } from '@mui/material';
 import { IconClearStyled } from '../../tradePanel';
 
 
@@ -104,7 +104,7 @@ const InputButtonWrap = () => {
     </>
 }
 export const BtnLanguage = ({ handleChange}: any) => {
-    const _handleChange = React.useCallback((event: React.ChangeEvent<any>) => {
+    const _handleChange = React.useCallback((event: SelectChangeEvent<any>) => {
         if (handleChange) {
             handleChange(event.target.value);
         }

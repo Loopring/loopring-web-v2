@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid, Typography } from '@material-ui/core';
+import { Box, Button, Container, Grid, Typography } from '@mui/material';
 import React from 'react';
 import styled from '@emotion/styled/';
 import { DropDownIcon, ThemeType } from '@loopring-web/common-resources';

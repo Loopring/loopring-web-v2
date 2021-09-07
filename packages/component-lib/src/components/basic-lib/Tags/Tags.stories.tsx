@@ -1,6 +1,6 @@
 import { Meta, Story } from '@storybook/react/types-6-0'
 
-import { Box, Grid } from '@material-ui/core'
+import { Box, Grid } from '@mui/material'
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import { NewTagIcon } from './index';

@@ -1,6 +1,6 @@
 import { AccountBasePanel } from './AccountBase';
 import {AccountBaseProps } from './Interface';
-import { Box, Typography } from '@material-ui/core/';
+import { Box, Typography } from '@mui/material';
 import { Button, AnimationArrow } from '../../../index';
 import { WithTranslation, withTranslation } from 'react-i18next';
 

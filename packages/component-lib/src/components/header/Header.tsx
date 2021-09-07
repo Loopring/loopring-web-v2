@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { AppBar, Box, Container, IconButton, Slide, Toolbar } from '@material-ui/core';
-import { Typography } from '@material-ui/core/';
+import { AppBar, Box, Container, IconButton, Slide, Toolbar } from '@mui/material';
+import { Typography } from '@mui/material';
 import { Link as RouterLink } from "react-router-dom";
 import logoSVG from '@loopring-web/common-resources/assets/svg/logo.svg'
 import { WithTranslation, withTranslation } from 'react-i18next';
@@ -53,32 +53,29 @@ const HeaderStyled = styled(AppBar)`
 `
 
 const LogoStyle = styled(Typography)`
+  display: flex;
+  align-items: center;
   a.MuiButtonBase-root {
     height: auto;
     width: auto;
     min-width: auto;
     border-radius: 0;
+    text-indent:-999999em;
+    
 
+    background: var(--color-primary);
+    background: var(--color-logo);
+    mask: url(${logoSVG}) space;
+    mask-size: contain;
+    mask-position: center;
+    mask-size: contain;
+    width: 105px;
+    height: 40px;
+    margin-top: -6px;
+    color: transparent;
     &:hover {
       background-color: inherit;
-
-      span.MuiIconButton-label {
-        background: var(--color-logo);
-        //background: var(--color-primary);
-      }
-    }
-
-    span.MuiIconButton-label {
-      background: var(--color-primary);
       background: var(--color-logo);
-      mask: url(${logoSVG}) space;
-      mask-size: contain;
-      mask-position: center;
-      mask-size: contain;
-      width: 105px;
-      height: 40px;
-      margin-top: -6px;
-      color: transparent;
     }
   }
 ` as typeof Typography

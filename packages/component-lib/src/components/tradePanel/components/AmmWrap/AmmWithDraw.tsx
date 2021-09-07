@@ -13,7 +13,7 @@ import { AmmWithdrawWrapProps } from './Interface';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
 import { usePopupState } from 'material-ui-popup-state/hooks';
-import { Avatar, Grid, Typography } from '@material-ui/core';
+import { Avatar, Grid, Typography } from '@mui/material';
 import {
     BtnPercentage,
     Button,
@@ -25,7 +25,7 @@ import {
 import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { SlippagePanel } from '../tool';
 import { useSettings } from '../../../../stores';
-import { Box, Link } from '@material-ui/core/';
+import { Box, Link } from '@mui/material';
 import { SvgStyled } from './styled';
 import { toBig } from 'loopring-sdk';
 

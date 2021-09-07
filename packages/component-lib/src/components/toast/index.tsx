@@ -1,4 +1,4 @@
-import { Snackbar, Alert, AlertTitle, Typography } from '@material-ui/core'
+import { Snackbar, Alert, AlertTitle, Typography } from '@mui/material'
 import { GoodIcon, AlertIcon, ErrorIcon, InfoIcon } from '@loopring-web/common-resources'
 import styled from '@emotion/styled'
 

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { Box } from '@material-ui/core'
-import { Divider, ListItem, ListItemAvatar, ListItemText, Typography, ListItemProps } from '@material-ui/core';
+import { Box } from '@mui/material'
+import { Divider, ListItem, ListItemAvatar, ListItemText, Typography, ListItemProps } from '@mui/material';
 import { WithTranslation } from 'react-i18next';
 import { SubMenuListProps } from './Interface';
 

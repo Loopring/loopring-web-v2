@@ -1,4 +1,4 @@
-import { Box, Grid, IconButton, Typography } from '@material-ui/core/';
+import { Box, Grid, IconButton, Typography } from '@mui/material';
 import { HideIcon, ViewIcon, getValuePrecisionThousand } from '@loopring-web/common-resources';
 import React from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';

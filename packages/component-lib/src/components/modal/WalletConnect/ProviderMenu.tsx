@@ -1,8 +1,8 @@
-import { Box, Checkbox, FormControlLabel as MuiFormControlLabel } from '@material-ui/core';
+import { Box, Checkbox, FormControlLabel as MuiFormControlLabel } from '@mui/material';
 import { Trans, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import { ProviderMenuProps } from './Interface';
-import { Link, Typography } from '@material-ui/core/';
+import { Link, Typography } from '@mui/material';
 import { Button } from '../../basic-lib';
 import { CheckBoxIcon, CheckedIcon, ConnectProviders, GatewayItem } from '@loopring-web/common-resources';
 import React from 'react';

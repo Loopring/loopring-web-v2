@@ -1,4 +1,4 @@
-import { createMuiTheme } from "@material-ui/core";
+import { createTheme } from '@mui/material';
 import { ColorDarkDefault, ColorLightDefault } from "../css/color-lib";
 import { borderFunc, unit } from "./utils";
 import {
@@ -37,7 +37,7 @@ import {
 import { MuPickDate } from './overrides-date-pick';
 import { fontDefault } from "../css/global";
 import { LoopringTheme, ThemeKeys } from '../interface';
-import shadows from '@material-ui/core/styles/shadows';
+import { shadows } from '@mui/system';
 import * as _ from "lodash"
 
 export { unit };
@@ -47,7 +47,7 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
     let _shadows =_.cloneDeep(shadows);
     // _shadows[1] = colorBase.shadow;
     // _shadows[2] = colorBase.shadowHeader;
-    const theme = createMuiTheme({
+    const theme = createTheme({
         spacing: unit,
         palette: {
             mode: themeMode,

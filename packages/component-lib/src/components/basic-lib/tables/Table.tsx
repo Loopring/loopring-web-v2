@@ -9,7 +9,7 @@ import { Column, DataGridProps, SortableHeaderCell, SortableHeaderCellProps, Tab
 import { EmptyDefault } from '../empty';
 // import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
 import { LoadingIcon } from '@loopring-web/common-resources'
-import { Box, IconButton } from '@material-ui/core';
+import { Box, IconButton } from '@mui/material';
 
 interface TableWrapperStyledProps {
   showloading: 'true' | 'false'

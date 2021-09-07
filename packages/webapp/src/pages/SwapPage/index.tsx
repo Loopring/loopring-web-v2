@@ -1,4 +1,4 @@
-import { Box, Grid, } from '@material-ui/core'
+import { Box, Grid, } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import BasicInfoPanel from './panel/BasicInfoPanel'
 import TradePanel from './panel/TradePanel'

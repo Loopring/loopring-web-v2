@@ -1,11 +1,11 @@
-import { FormHelperText, FormLabel, Grid, } from "@material-ui/core";
+import { FormHelperText, FormLabel, Grid, } from '@mui/material';
 import { CoinInfo, DropDownIcon, FORMAT_STRING_LEN, getThousandFormattedNumbers, IBData } from '@loopring-web/common-resources';
 import { InputButtonProps } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
 import { IInput, ISBtn, IWrap } from "./style";
 import { CoinIcon } from './Default';
-import { Typography } from '@material-ui/core/';
+import { Typography } from '@mui/material';
 
 function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                          label = "Enter token",

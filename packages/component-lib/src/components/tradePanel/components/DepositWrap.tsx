@@ -2,7 +2,7 @@ import { CloseIcon, globalSetup, IBData } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../Interface';
 import { Trans, WithTranslation } from 'react-i18next';
 import React, { ChangeEvent } from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
 import { Button, IconClearStyled, TextField, TypographyGood } from '../../../index';
 import { DepositViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';

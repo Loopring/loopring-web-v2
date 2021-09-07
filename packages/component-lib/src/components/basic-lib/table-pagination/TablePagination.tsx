@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Pagination } from '@material-ui/core'
+import { Box, Pagination } from '@mui/material'
 import styled from '@emotion/styled'
 
 // const StyledPaginationWrapper = styled(Box)`

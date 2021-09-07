@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Meta, Story } from '@storybook/react/types-6-0';
 import { MemoryRouter } from 'react-router-dom';
-import { Box, Breadcrumbs, Container, GlobalStyles, Grid, Hidden, Link, Toolbar, Typography, } from '@material-ui/core';
+import { Box, Breadcrumbs, Container, GlobalStyles, Grid, Hidden, Link, Toolbar, Typography, } from '@mui/material';
 
 import { css, Theme, useTheme } from '@emotion/react';
 import {

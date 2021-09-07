@@ -1,6 +1,6 @@
 // import { ModalProvider } from 'styled-react-modal'
 import RouterView from './routers'
-import { GlobalStyles } from '@material-ui/core';
+import { GlobalStyles } from '@mui/material';
 import { css, Theme, useTheme } from '@emotion/react';
 import { ErrorMap, globalCss } from '@loopring-web/common-resources';
 import { setLanguage } from '@loopring-web/component-lib'

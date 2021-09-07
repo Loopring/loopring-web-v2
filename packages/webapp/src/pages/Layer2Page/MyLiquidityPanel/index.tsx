@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { Box, Divider, Grid, Typography } from '@material-ui/core'
+import { Box, Divider, Grid, Typography } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { MyPoolTable, useSettings } from '@loopring-web/component-lib'

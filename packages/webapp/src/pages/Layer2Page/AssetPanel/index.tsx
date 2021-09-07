@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { PriceTag } from '@loopring-web/common-resources'
-import { Box, Typography } from '@material-ui/core'
+import { Box, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { useHistory } from 'react-router-dom'
 import {

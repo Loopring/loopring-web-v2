@@ -3,7 +3,7 @@ import { AmmInData, CoinInfo, EmptyValueTag, getShowStr, WalletMap } from '@loop
 import { useAmmJoin } from './hook_join'
 import { useAmmExit } from './hook_exit'
 import { useAmmCommon } from './hook_common'
-import { Box, Divider, Grid, Typography } from '@material-ui/core';
+import { Box, Divider, Grid, Typography } from '@mui/material';
 import { AmmPoolSnapshot, TickerData, } from 'loopring-sdk';
 import { TOAST_TIME } from 'defs/common_defs';
 import React from 'react';

@@ -12,13 +12,13 @@ import { AmmDepositWrapProps } from './Interface';
 import { Button, InputCoin, LinkActionStyle, PopoverPure } from '../../../basic-lib';
 import React from 'react';
 import { usePopupState } from 'material-ui-popup-state/hooks';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
 import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { SlippagePanel } from '../tool';
 import { TradeBtnStatus } from '../../Interface';
 import { SvgStyled } from './styled';
 import { useSettings } from '../../../../stores';
-import { Box } from '@material-ui/core/';
+import { Box } from '@mui/material';
 import { useAmmViewData } from './ammViewHook';
 
 

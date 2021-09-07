@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import styled from '@emotion/styled';
 // import { ErrorObject } from '@loopring-web/common-resources';
 // import { getContactInfo } from '../../utils/dt_tools';

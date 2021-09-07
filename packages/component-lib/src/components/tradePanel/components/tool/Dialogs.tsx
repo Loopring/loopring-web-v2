@@ -1,9 +1,9 @@
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 
 import { Trans, WithTranslation, withTranslation } from 'react-i18next';
 import { Button } from '../../../basic-lib'
 import React from 'react';
-import { Typography } from '@material-ui/core/';
+import { Typography } from '@mui/material';
 
 export const AlertImpact = withTranslation('common', {withRef: true})(({
                                                                            t,

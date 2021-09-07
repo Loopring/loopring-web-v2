@@ -1,5 +1,5 @@
 import React from "react";
-import { LinkProps, ListItemProps, MenuItemProps as muMenuItemProps } from "@material-ui/core";
+import { LinkProps, ListItemProps, MenuItemProps as muMenuItemProps } from '@mui/material';
 import { CoinInfo, CoinKey, CoinMap, WalletCoin, WalletMap } from '@loopring-web/common-resources';
 import { ListProps } from 'react-virtualized';
 import { List } from 'immutable';

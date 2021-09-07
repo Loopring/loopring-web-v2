@@ -2,11 +2,11 @@ import { AmmCard, AmmProps, EmptyDefault } from '@loopring-web/component-lib';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { AmmCardProps, AmmJoinData, AmmInData, AmmExitData, IBData } from '@loopring-web/common-resources';
-import { Box, Grid, Typography } from '@material-ui/core';
+import { Box, Grid, Typography } from '@mui/material';
 import styled from '@emotion/styled'
 import { useAmmMiningUI } from './hook';
-// import Tabs from '@material-ui/core/Tabs';
-// import Tab from '@material-ui/core/Tab';
+// import Tabs from '@mui/material';
+// import Tab from '@mui/material';
 import { useAmmPool } from '../LiquidityPage/hook'
 import { Trans, withTranslation } from 'react-i18next';
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';

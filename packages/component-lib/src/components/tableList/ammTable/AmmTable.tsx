@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Typography } from '@material-ui/core'
+import { Box, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import moment from 'moment'

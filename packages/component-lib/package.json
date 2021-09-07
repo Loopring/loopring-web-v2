@@ -10,7 +10,6 @@
     "@loopring-web/common-resources": "1.0.0",
     "clsx": "^1.1.1",
     "immutable": "^4.0.0-rc.12",
-    "material-ui-popup-state": "^1.8.0",
     "moment": "^2.29.1",
     "polished": "^4.1.1",
     "react-scripts-rewired": "3.1.1",

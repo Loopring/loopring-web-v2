@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 import { TablePaddingX } from '@loopring-web/component-lib';
 import { LAYOUT } from '../defs/common_defs';
 

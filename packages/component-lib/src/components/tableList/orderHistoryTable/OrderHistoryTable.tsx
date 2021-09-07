@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import styled from '@emotion/styled'
-import { Box } from '@material-ui/core'
-import { DateRange } from '@material-ui/lab'
+import { Box } from '@mui/material'
+import { DateRange } from '@mui/lab'
 import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
 import { bindHover } from 'material-ui-popup-state/es';

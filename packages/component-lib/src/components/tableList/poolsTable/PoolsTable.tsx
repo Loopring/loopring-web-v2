@@ -20,7 +20,7 @@ import {
 } from '@loopring-web/common-resources';
 import { Avatar, Box,
     // InputAdornment, OutlinedInput,
-    Typography } from '@material-ui/core/';
+    Typography } from '@mui/material';
 import { PoolTableProps, Row } from './Interface';
 import styled from '@emotion/styled';
 import {  TablePaddingX } from '../../styled';

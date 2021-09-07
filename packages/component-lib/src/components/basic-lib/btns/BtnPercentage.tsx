@@ -1,8 +1,8 @@
 /* Rectangle 340 */
 import styled from '@emotion/styled';
 import { BtnPercentageProps } from './Interface';
-import { Slider } from '@material-ui/core';
-import { Box } from '@material-ui/core/';
+import { Slider } from '@mui/material';
+import { Box } from '@mui/material';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import React from 'react';
 

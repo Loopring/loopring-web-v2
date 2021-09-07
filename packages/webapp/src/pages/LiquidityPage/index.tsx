@@ -1,6 +1,6 @@
 import { useRouteMatch } from 'react-router'
 
-import { Box } from '@material-ui/core'
+import { Box } from '@mui/material'
 
 import { withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'

@@ -1,6 +1,6 @@
 import { UpColor } from '@loopring-web/common-resources'
 import { ChartType, ScaleAreaChart, ToggleButtonGroup, TradeTitle, useSettings } from '@loopring-web/component-lib'
-import { Box, Grid } from "@material-ui/core"
+import { Box, Grid } from '@mui/material'
 import { WithTranslation } from 'react-i18next'
 import { useBasicInfo } from './hook'
 import { VolToNumberWithPrecision } from 'utils/formatter_tool'

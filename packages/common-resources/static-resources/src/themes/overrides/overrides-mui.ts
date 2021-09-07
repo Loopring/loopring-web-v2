@@ -1,5 +1,5 @@
 import { borderFunc, pxToRem } from './utils';
-import { ComponentsOverrides } from '@material-ui/core/';
+import { ComponentsOverrides } from '@mui/material';
 import { fontDefault } from '../css/global';
 
 const opacity = 1;
@@ -419,9 +419,11 @@ export const MuiInputBase = ({colorBase, themeMode}: any): { styleOverrides: Com
                 '& fieldset': {
                     display: 'none',
                 },
-                ' .MuiInputAdornment-root': {
-                    pointerEvents: 'none',
-                    color: 'inherit',
+                ' .MuiInputAdornment-root, .MuiSelect-iconOutlined': {
+                    color: colorBase.textThird,
+                },
+                '.search .MuiInputAdornment-root':{
+                    pointerEvents: 'none'
                 },
                 paddingRight: 0,
                 '&:hover': {
@@ -439,8 +441,8 @@ export const MuiInputBase = ({colorBase, themeMode}: any): { styleOverrides: Com
                     padding: 0,
                     border: 'transparent',
                     backgroundColor: 'transparent',
-                    color: 'var(--color-text-secondary)',
-                    '&$focused': {
+                    color: 'var(--color-text-primary)',
+                    '&:focus': {
                         background: 'transparent',
                     },
 
@@ -448,9 +450,9 @@ export const MuiInputBase = ({colorBase, themeMode}: any): { styleOverrides: Com
                         right: '.4rem',
                         top: 1,
                         position: 'absolute',
-                        pointerEvents: 'none',
+                        // pointerEvents: 'none',
                         transition: 'fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-                        color: 'var(--color-text-secondary)'
+                        // color: 'var(--color-text-secondary)'
                     },
                     '&.MuiInputBase-root': {
                         minWidth: 'auto',
@@ -487,10 +489,10 @@ export const MuiIconButton = ({colorBase}: any): { styleOverrides: ComponentsOve
             root: {
                 height: 'var(--btn-icon-size)',
                 width: 'var(--btn-icon-size)',
+                color: 'inherit',
                 ' svg': {
                     height: 'var(--svg-size-large)',
                     width: 'var(--svg-size-large)',
-                    color: 'inherit',
                 },
                 '&.MuiIconButton-sizeSmall': {
                     height: 'var(--btn-icon-size-small)',
@@ -507,9 +509,9 @@ export const MuiIconButton = ({colorBase}: any): { styleOverrides: ComponentsOve
                     }
                 }
             },
-            label: {
-                width: 'auto'
-            }
+            // label: {
+            //     width: 'auto'
+            // }
         }
     }
 }
@@ -677,6 +679,10 @@ export const MuiMenuItem = ({colorBase, themeMode}: any) => {
                 paddingLeft: pxToRem(12),
                 paddingRight: pxToRem(12),
                 color: colorBase.textSecondary,
+                '&.Mui-selected':{
+                    
+                },
+
                 // backgroundColor: `${colorBase.borderHover} !important`,
                 '&:hover, &.Mui-selected:hover': {
                     // borderColor: colorBase.primaryLight,

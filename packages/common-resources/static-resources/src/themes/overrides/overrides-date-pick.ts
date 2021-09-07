@@ -17,7 +17,7 @@ export const MuPickDate = ({colorBase, themeMode}: { colorBase: typeof ColorDark
                     border: borderFunc(themeMode).defaultFrame({c_key:colorBase.divide}),//`1px solid `,
                     '& svg': {
                         fontSize: '2rem',
-                        color: colorBase.textSecondary
+                        // color: colorBase.textSecondary
                     },
                     '& .MuiPickersCalendar-weekDayLabel': {
                         fontSize: '1rem',
@@ -40,7 +40,7 @@ export const MuPickDate = ({colorBase, themeMode}: { colorBase: typeof ColorDark
                     border: borderFunc(themeMode).borderConfig({c_key: 'blur'}),
                     '& svg': {
                         fontSize: '2rem',
-                        color: colorBase.textSecondary
+                        // color: colorBase.textSecondary
                     },
                     '& .MuiPickersCalendar-weekDayLabel': {
                         fontSize: '1rem',
@@ -112,7 +112,7 @@ export const MuPickDate = ({colorBase, themeMode}: { colorBase: typeof ColorDark
                 root: {
                     '& svg': {
                         fontSize: '2rem',
-                        color: colorBase.textSecondary
+                        // color: colorBase.textSecondary
                     },
                     background:  colorBase.popBg,
                     boxShadow: colorBase.shadow,

@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Box, Button } from '@material-ui/core'
+import { Box, Button } from '@mui/material'
 import { withTranslation, WithTranslation } from 'react-i18next'
 import { RouteComponentProps, withRouter } from 'react-router-dom'
 import {
@@ -11,7 +11,7 @@ import {
 } from '@loopring-web/common-resources'
 import { Column, Table } from '../../basic-lib/tables/index'
 import { TablePaddingX } from '../../styled'
-import { IconButton, Typography } from '@material-ui/core/';
+import { IconButton, Typography } from '@mui/material';
 import { useSettings } from '@loopring-web/component-lib/src/stores'
 import { useDispatch } from 'react-redux'
 

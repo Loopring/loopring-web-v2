@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Meta, Story } from '@storybook/react/types-6-0';
 import { MemoryRouter } from 'react-router-dom';
-import { Box, Collapse, Container, GlobalStyles, Grid, IconButton, Paper, Toolbar, } from '@material-ui/core';
+import { Box, Collapse, Container, GlobalStyles, Grid, IconButton, Paper, Toolbar, } from '@mui/material';
 import { Header, HideOnScroll } from '../header/Header'
 import { css, Theme, useTheme } from '@emotion/react';
 import { Button, SubMenu, SubMenuList as BasicSubMenuList } from '../basic-lib';
@@ -42,7 +42,7 @@ import {
 import { setShowDeposit, setShowTransfer, setShowWithdraw } from '../../stores';
 import { ammCalcData, coinMap, CoinType, tradeCalcData, walletMap } from '../../static';
 import { useDispatch } from 'react-redux';
-import { Typography } from '@material-ui/core/';
+import { Typography } from '@mui/material';
 
 
 const Style = styled.div`
