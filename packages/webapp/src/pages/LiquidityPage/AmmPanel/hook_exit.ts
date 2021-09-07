@@ -213,7 +213,7 @@ export const useAmmExit = ({
 
     React.useEffect(() => {
         calculateCallback()
-    }, [accountStatus, account.readyState, pair.coinBInfo?.simpleName, ammData, ])
+    }, [accountStatus, account.readyState, pair.coinBInfo?.simpleName, ammCalcData, tokenMap, ])
 
     const handleExit = React.useCallback(async ({ data, requestOut, ammData, fees, ammPoolSnapshot, tokenMap, account }) => {
 
@@ -360,6 +360,7 @@ export const useAmmExit = ({
         btnStatus,
         onAmmClick,
         btnI18nKey,
+        calculateCallback,
 
     }
 }

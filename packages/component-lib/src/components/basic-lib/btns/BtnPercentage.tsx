@@ -240,7 +240,6 @@ export const BtnPercentage = withTranslation('common')(({
         value: 100, label: t('labelMax:') + '100%'
     }];
     const _handleChanged = (_event: Event, value: number| number[], _activeThumb: number)=>{
-        debugger
         setValue(value as number)
         handleChanged(value)
     }

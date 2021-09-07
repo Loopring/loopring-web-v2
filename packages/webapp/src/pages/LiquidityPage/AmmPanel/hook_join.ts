@@ -206,7 +206,7 @@ export const useAmmJoin = ({
 
     React.useEffect(() => {
         calculateCallback()
-    }, [accountStatus, pair.coinBInfo?.simpleName, ammData])
+    }, [accountStatus, account.readyState, pair.coinBInfo?.simpleName, ammCalcData, tokenMap, ])
 
     const handleJoin = React.useCallback(async ({ data, ammData, type, fees, ammPoolSnapshot, tokenMap, account }) => {
 
@@ -380,6 +380,7 @@ export const useAmmJoin = ({
         btnStatus,
         onAmmClick,
         btnI18nKey,
+        calculateCallback,
 
     }
 }

@@ -567,10 +567,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
             let {market: market} = sdk.getExistedMarket(marketArray, coinA, coinB);
             setMarket(market);
             updatePageTradeLite({market, tradePair})
-            // if(market === _market){
-            //     myLog('Market change getAmount', market)
-            //     should15sRefresh()
-            // }
+            
             myLog('Market change getAmount', market)
             if (account.readyState === AccountStatus.ACTIVATED) {
                 getAmount({market})
