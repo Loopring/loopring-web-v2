@@ -94,8 +94,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
             }
 
         },
-    },
+    }
 })
 
 export { modalDataSlice }
-export const { updateWithdrawData, updateTransferData, updateDepositData, resetAll, } = modalDataSlice.actions
+
+export const { updateWithdrawData, updateTransferData, updateDepositData, 
+    resetWithdrawData, resetTransferData, resetDepositData, resetAll, } = modalDataSlice.actions
