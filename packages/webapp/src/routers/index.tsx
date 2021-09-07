@@ -1,4 +1,4 @@
-import { Route, Switch, useLocation, } from 'react-router-dom'
+import { Route, useLocation,Switch } from 'react-router-dom'
 
 import Header from 'layouts/header'
 
@@ -20,6 +20,19 @@ import store from 'stores'
 import { resetAmmPool, resetSwap } from 'stores/router'
 import { LandPage } from '../pages/LandPage/LandPage';
 
+const ContentWrap = ({children}: React.PropsWithChildren<any>) => {
+    return <Container maxWidth="lg"
+                      style={{
+                          minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
+                          display: 'flex',
+                          flexDirection: 'column'
+                      }}>
+        <Box display={'flex'} flex={1} alignItems={'stretch'} flexDirection={'row'} marginTop={3}>
+            {children}
+        </Box>
+    </Container>
+}
+
 const RouterView = () => {
 
     const location = useLocation()
@@ -28,58 +41,34 @@ const RouterView = () => {
         store.dispatch(resetSwap(undefined))
         store.dispatch(resetAmmPool(undefined))
     }, [location?.pathname])
-
-    return (<>
-        <Header />
-
+    return <>
+        <Header/>
         <Switch>
-            <React.Fragment>
-                <Route exact component={LandPage} path='/landing-page' />
-                <Container maxWidth="lg"
-                    style={{
-                        minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
-                        display: 'flex',
-                        flexDirection: 'column'
-                    }}>
-                    <Box display={'flex'} flex={1} alignItems={'stretch'} flexDirection={'row'} marginTop={3}>
-                        <Route exact component={SwapPage} path='/' />
-                        <Route exact component={QuotePage} path='/markets' />
-                        <Route component={SwapPage} path='/trading/lite' />
-                        <Route component={SwapPage} path='/trading/lite(/:symbol)' />
-                        <Route exact component={MiningPage} path='/mining' />
+            {/*<Route exact component={LandPage} path='/landing-page'/>*/}
+            <Route exact path='/landing-page'><ContentWrap><SwapPage/></ContentWrap></Route>
+            <Route exact path='/'><ContentWrap><SwapPage/></ContentWrap></Route>
+            <Route path='/trading/lite'><ContentWrap><SwapPage/></ContentWrap></Route>
+            <Route path='/trading/lite(/:symbol)'><ContentWrap><SwapPage/></ContentWrap></Route>
 
-                        <Route exact component={Layer2Page} path='/layer2' />
-                        <Route exact component={Layer2Page} path='/layer2/assets' />
-                        <Route exact component={Layer2Page} path='/layer2/my-liquidity' />
-                        <Route exact component={Layer2Page} path='/layer2/history' />
-                        <Route exact component={Layer2Page} path='/layer2/order' />
-                        <Route exact component={Layer2Page} path='/layer2/rewards' />
-                        {/* <Route exact component={Layer2Page} path='/layer2/red-packet'/>
-                    <Route exact component={Layer2Page} path='/layer2/security'/>
-                    <Route exact component={Layer2Page} path='/layer2/vip'/> */}
-                        {/* <Route exact component={Layer2Page} path='/layer2/transactions'/>
-                    <Route exact component={Layer2Page} path='/layer2/trades'/>
-                    <Route exact component={Layer2Page} path='/layer2/ammRecords'/> */}
-                        {/* <Route exact component={Layer2Page} path='/layer2/orders'/> */}
-                        <Route exact component={Layer2Page} path='/layer2/setting' />
+            <Route exact path='/markets'><ContentWrap><QuotePage/></ContentWrap> </Route>
+            <Route exact path='/mining'><ContentWrap><MiningPage/></ContentWrap> </Route>
+            <Route exact path='/layer2'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            <Route exact path='/layer2/assets'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            <Route exact path='/layer2/my-liquidity'><ContentWrap><Layer2Page/></ContentWrap> </Route>
+            <Route exact path='/layer2/history'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            <Route exact path='/layer2/order'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            <Route exact path='/layer2/rewards'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            <Route exact path='/layer2/setting'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            <Route exact path='/liquidity'> <ContentWrap><LiquidityPage/></ContentWrap></Route>
+            <Route exact path='/liquidity/pools/*'><ContentWrap><LiquidityPage/></ContentWrap></Route>
+            <Route exact path='/liquidity/pools'><ContentWrap><LiquidityPage/></ContentWrap></Route>
+            <Route exact path='/liquidity/amm-mining'><ContentWrap><LiquidityPage/></ContentWrap> </Route>
+            <Route exact path='/liquidity/my-liquidity'><ContentWrap><LiquidityPage/></ContentWrap></Route>
 
-                        <Route exact component={LiquidityPage} path='/liquidity' />
-                        <Route exact component={LiquidityPage} path='/liquidity/pools/*' />
-                        <Route exact component={LiquidityPage} path='/liquidity/pools' />
-                        {/*<Route exact component={LiquidityPage} path='/liquidity/pools/coinPair(/:symbol)'/>*/}
-                        <Route exact component={LiquidityPage} path='/liquidity/amm-mining' />
-                        <Route exact component={LiquidityPage} path='/liquidity/my-liquidity' />
-                        {/* <Route exact component={LiquidityPage} path='/liquidity/orderBook-Mining'/>
-                    <Route exact component={LiquidityPage} path='/liquidity/maker-rebates'/> */}
-                    </Box>
-                </Container>
-            </React.Fragment>
         </Switch>
-
-        {/*</Box>*/}
-        <ModalGroup />
-        <Footer />
-    </>)
+        <ModalGroup/>
+        <Footer/>
+    </>
 }
 
 export default RouterView
