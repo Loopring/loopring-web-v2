@@ -46,8 +46,9 @@ const AwardWrapperStyled = styled(Box)`
 `
 
 const TabsStyled = styled(Tabs)`
-  padding: ${({ theme }) => theme.unit}px;
-  padding-bottom: 0;
+  // padding: ${({ theme }) => theme.unit}px;
+  //padding-bottom: 0;
+  padding-left:${({ theme }) => theme.unit}px;
 `
 
 const applyProps = (index: number) => {
@@ -274,7 +275,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [key: string
                         <Tab label={t('labelAmmAllTransactions')} {...applyProps(0)} />
                         <Tab label={t('labelAmmMyTransactions')} {...applyProps(1)} />
                     </TabsStyled>
-                    <Divider />
+                    <Divider style={{marginTop:'-1px'}}/>
                     {/*ammRecordArray*/}
                     {tabIndex === 0 ? <AmmRecordTable
                         rawData={ammMarketArray}

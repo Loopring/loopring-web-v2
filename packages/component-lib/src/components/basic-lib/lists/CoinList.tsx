@@ -1,11 +1,10 @@
-import { Avatar, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core/';
+import { ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core/';
 import { WithTranslation } from "react-i18next";
 import React from "react";
 import styled from "@emotion/styled";
 import { CoinItemProps, CoinMenuProps } from "./Interface";
-import { AvatarCoinStyled, CoinInfo, CoinKey, WalletCoin } from '@loopring-web/common-resources';
+import { CoinInfo, CoinKey, WalletCoin } from '@loopring-web/common-resources';
 import { Virtuoso } from 'react-virtuoso';
-import { useSettings } from '../../../stores';
 import { CoinIcon } from '../form';
 
 

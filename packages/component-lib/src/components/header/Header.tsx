@@ -63,7 +63,8 @@ const LogoStyle = styled(Typography)`
       background-color: inherit;
 
       span.MuiIconButton-label {
-        background: var(--color-primary);
+        background: var(--color-logo);
+        //background: var(--color-primary);
       }
     }
 
@@ -167,7 +168,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                               }: { menuList: HeaderMenuItemInterface[], layer?: number, handleListKeyDown?: any } & WithTranslation) => {
         const nodeMenuItem = ({label, router, layer, child, ...rest}: HeaderMenuItemInterface & any) => {
             return <>{layer >= 1 ? <Layer2Item {...{...rest, label, router, child, layer}} />
-                : <Typography variant={'body1'} key={label.id}>{rest.t(label.i18nKey)}</Typography>
+                : <Typography variant={'body1'} key={label.id} color={'inherit'}>{rest.t(label.i18nKey)}</Typography>
             }
             </>
         }

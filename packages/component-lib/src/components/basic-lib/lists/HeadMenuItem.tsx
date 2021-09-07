@@ -56,9 +56,10 @@ const StyledHeadMenuItem = styled(MenuItem)<MenuItemProps<any>>`
   height: var(--header-height);
   //color: var(--color-text-secondary);
   position: relative;
-  &:hover {
+  &:hover,&.Mui-selected:hover {
     background-color: inherit;
   }
+ 
   &.layer-0 {
     .MuiButtonBase-root {
       opacity: 1;
