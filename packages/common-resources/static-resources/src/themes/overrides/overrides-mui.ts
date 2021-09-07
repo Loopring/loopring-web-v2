@@ -149,7 +149,7 @@ export const MuiSwitch = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                     // transform: `translateX(-${gap}px)`,
                     '& + .MuiSwitch-track.MuiSwitch-track': {
                         backgroundColor: 'transparent',
-                        opacity: opacity,
+                        // opacity: opacity,
                         borderWidth,
                         border: `solid ${colorBase.primary}`,
                     },
@@ -180,10 +180,7 @@ export const MuiSwitch = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 border: `solid ${colorBase.textSecondary}`,
                 borderWidth,
                 backgroundColor: 'transparent', //${colorBase.textSecondary},
-                '&&': {
-                    opacity: opacity,
-                },
-                //transition: theme.transitions.create(['background-color', 'border']),
+                opacity: 1,
                 boxSizing: 'border-box',
             },
 
@@ -238,8 +235,10 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 height: pxToRem(40),
                 fontSize: pxToRem(14),
                 backgroundColor: colorBase.primary,
+                boxShadow:'initial',
                 '&:hover': {
                     backgroundColor: colorBase.primaryHover,
+                    boxShadow:'initial',
                 },
                 '&.Mui-disabled': {
                     backgroundColor: colorBase.defaultDisable,
