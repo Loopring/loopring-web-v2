@@ -487,7 +487,7 @@ export const MuiInputBase = ({colorBase, themeMode}: any): { styleOverrides: Com
                     }
                 },
                 '&.MuiOutlinedInput-root': {
-                    padding: '.3rem 2.4rem .3rem .8rem',
+                    padding: '.3rem .3rem .3rem .8rem',
                     minWidth: 'auto',
                 },
                 ' .MuiOutlinedInput-input': {
@@ -762,7 +762,7 @@ export const MuiTab = ({colorBase}: any): { styleOverrides: ComponentsOverrides[
                 '&:hover': {
                     backgroundColor: 'transparent',
                 },
-                '.MuiTab-wrapper': {
+                '&.MuiTab-root': {
                     textTransform: 'capitalize',
                 },
                 '&.Mui-selected': {

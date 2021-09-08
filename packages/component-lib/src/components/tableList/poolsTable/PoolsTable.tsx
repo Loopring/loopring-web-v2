@@ -169,24 +169,22 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
         width: 'auto',
         name: t('labelLiquidity'),
         formatter: (({row, column, rowIdx}) => {
-            const {amountDollar, amountYuan = 0, coinA, coinB, totalA, totalB} = row as any
+            const {coinA, coinB, totalA, totalB, amountDollar, amountYuan} = row as any
             const popoverState = getPopoverState(rowIdx)
 
             const coinAIcon: any = coinJson[coinA];
             const coinBIcon: any = coinJson[coinB];
-            const priceADollar = faitPrices[coinA]?.price || 0
-            const priceAYuan = priceADollar * (forex || 6.5)
-            const priceBDollar = faitPrices[coinB]?.price || 0
-            const priceBYuan = priceBDollar * (forex || 6.5)
-            const liquidityA = currency === 'USD' ? totalA * priceADollar : totalA * priceAYuan
-            const liquidityB = currency === 'USD' ? totalB * priceBDollar : totalB * priceBYuan
+            // const priceADollar = faitPrices[coinA]?.price || 0
+            // const priceAYuan = priceADollar * (forex || 6.5)
+            // const priceBDollar = faitPrices[coinB]?.price || 0
+            // const priceBYuan = priceBDollar * (forex || 6.5)
+            const liquidityLpToken = currency === 'USD' ? amountDollar : amountYuan
             return(
                 <>
                     <Button {...bindHover(popoverState)}>
                         <Typography borderBottom={'1px dashed var(--color-text-primary)'}
                             component={'span'} style={{ cursor: 'pointer' }}> {
-                            typeof amountDollar === 'undefined' ? EmptyValueTag :
-                                typeof amountDollar === 'undefined' ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getValuePrecisionThousand(amountDollar, 2, 2) : PriceTag.Yuan + getValuePrecisionThousand(amountYuan, 2, 2)}
+                                typeof liquidityLpToken === 'undefined' ? EmptyValueTag : (currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(liquidityLpToken, 2, 2)}
                         </Typography>
                     </Button>
                     <PopoverPure
@@ -234,8 +232,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
                                         
                                     <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} height={20} marginLeft={10}
                                         lineHeight={'20px'}>
-                                            {currency === 'USD' ? '$' : '￥'}
-                                        {getValuePrecisionThousand(liquidityA, 2, 2)}
+                                        {getValuePrecisionThousand(totalA, undefined, 2)}
                                     </Typography>
 
                                 </Typography>
@@ -268,8 +265,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
                                     <Typography variant={'body2'} color={'var(--color-text-primary)'} component={'span'} height={20}
                                         marginLeft={10}
                                         lineHeight={'20px'}>
-                                            {currency === 'USD' ? '$' : '￥'}
-                                        {getValuePrecisionThousand(liquidityB, 2, 2)}
+                                        {getValuePrecisionThousand(totalB, undefined, 2)}
                                     </Typography>
 
                                 </Typography>

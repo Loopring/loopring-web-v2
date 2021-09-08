@@ -210,7 +210,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
     const CellStatus = ({row, column, rowIdx, hash}: any) => {
         const [isOpen, setIsOpen] = useState(false)
         const value = row[ column.key ]
-        const popupId = `${column.key}-${rowIdx}`
+        const popupId = `${column.key}-orderTable-${rowIdx}`
         const RenderValue: any = styled.span`
           position: relative;
           display: flex;
@@ -289,11 +289,11 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         //         getOrderDetail(hash)
         //     }
         // }, [])
-        const rightState = usePopupState({variant: 'popover', popupId: `popupId-${rowIdx}`});
+        const rightState = usePopupState({variant: 'popover', popupId: popupId});
 
         return <div className="rdg-cell-value">
             {/* <Button {...bindHover(rightState)}> Hover Open Right </Button> */}
-            <div {...bindHover(rightState)} style={{width: 110}}>
+            <div {...bindTrigger(rightState)} style={{width: 110}}>
                 <RenderValue>
                     {actualValue}
                     <DropDownIcon/>

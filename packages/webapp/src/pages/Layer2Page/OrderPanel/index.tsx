@@ -6,7 +6,7 @@ import { StylePaper } from '../../styled'
 
 const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
     const container = React.useRef(null);
-    const [pageSize, setPageSize] = React.useState(10);
+    const [pageSize, setPageSize] = React.useState(0);
     const {
         rawData,
         getOrderList,
@@ -22,9 +22,17 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
         // @ts-ignore
         let height = container?.current?.offsetHeight;
         if (height) {
-            setPageSize(Math.floor((height - 100) / 44) - 1);
+            setPageSize(Math.floor((height - 88) / 44) - 1);
         }
     }, [container, pageSize]);
+
+    React.useEffect(() => {
+        if (pageSize) {
+            getOrderList({
+                limit: pageSize,
+            })
+        }
+    }, [pageSize, getOrderList])
 
     return (
         <>
