@@ -50,7 +50,7 @@ export const TradeTitle = <I extends object>({
     const tradeFloatType = tradeFloat?.changeDollar === 0 ? FloatTag.none : tradeFloat && tradeFloat.changeDollar && tradeFloat.changeDollar < 0 ? FloatTag.decrease : FloatTag.increase;
     const { currency, upColor } = useSettings();
     // console.log({tradeFloat})
-    const change = (tradeFloat?.change && !Number.isNaN(tradeFloat?.change)) ? (tradeFloat.change).toFixed(2) + '%' : '0.00%'
+    const change = (tradeFloat?.change && tradeFloat.change.toFixed && !Number.isNaN(tradeFloat?.change)) ? (tradeFloat.change).toFixed(2) + '%' : '0.00%'
     return <TradeTitleStyled custom={{ chg: upColor }}>{coinBInfo && coinAInfo ?
         <Grid container height={72}>
             <Grid item xs={12} height={28}>

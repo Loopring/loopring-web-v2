@@ -54,15 +54,18 @@ export const L2OrderIcon = (props: SvgIconProps) => {
 
 export const CheckBoxIcon = (props: SvgIconProps) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M17 19L7 19C5.89543 19 5 18.1046 5 17L5 7C5 5.89543 5.89543 5 7 5L17 5C18.1046 5 19 5.89543 19 7L19 17C19 18.1046 18.1046 19 17 19ZM7 7L7 17L17 17L17 7L7 7Z" />
+        <path d="M4 3H20C20.2652 3 20.5196 3.10536 20.7071 3.29289C20.8946 3.48043 21 3.73478 21 4V20C21 20.2652 20.8946 20.5196 20.7071 20.7071C20.5196 20.8946 20.2652 21 20 21H4C3.73478 21 3.48043 20.8946 3.29289 20.7071C3.10536 20.5196 3 20.2652 3 20V4C3 3.73478 3.10536 3.48043 3.29289 3.29289C3.48043 3.10536 3.73478 3 4 3ZM5 5V19H19V5H5Z" />
     </SvgIcon>
 }
+
+
+
 export const CheckedIcon = (props: SvgIconProps) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M17 19L7 19C5.89543 19 5 18.1046 5 17L5 7C5 5.89543 5.89543 5 7 5L17 5C18.1046 5 19 5.89543 19 7L19 17C19 18.1046 18.1046 19 17 19ZM7 7L7 17L17 17L17 7L7 7ZM11 15.362L8.3 12.715L9.7 11.285L11 12.556L14.3 9.289L15.7 10.711L11 15.361L11 15.362Z" />
-        <path d="M8.3 12.715L11 15.362L11 15.361L15.7 10.711L14.3 9.289L11 12.556L9.7 11.285L8.3 12.715Z" />
+        <path fillRule="evenodd" clipRule="evenodd" d="M20 3H4C3.73478 3 3.48043 3.10536 3.29289 3.29289C3.10536 3.48043 3 3.73478 3 4V20C3 20.2652 3.10536 20.5196 3.29289 20.7071C3.48043 20.8946 3.73478 21 4 21H20C20.2652 21 20.5196 20.8946 20.7071 20.7071C20.8946 20.5196 21 20.2652 21 20V4C21 3.73478 20.8946 3.48043 20.7071 3.29289C20.5196 3.10536 20.2652 3 20 3ZM6.76001 11.7569L11.003 15.9999L18.074 8.92889L16.659 7.51489L11.003 13.1719L8.17401 10.3429L6.76001 11.7569Z"/>
     </SvgIcon>
 }
+
 
 export const ViewIcon = (props: SvgIconProps) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -281,12 +284,13 @@ export const RefreshIcon = (props: SvgIconProps) => {
 
 
 export const CompleteIcon = (props: SvgIconProps) => {
-    return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none"
-    >
-        <path opacity="0.1" d="M12.312 22C6.79168 21.994 2.31807 17.5204 2.31201 12L2.31201 11.8C2.42194 6.30455 6.9466 1.92797 12.4427 2.0009C17.9388 2.07382 22.3457 6.5689 22.3098 12.0654C22.2739 17.5618 17.8086 21.9989 12.312 22Z" fill="#00BBA8"/>
-        <path d="M10.312 16.42L6.31201 12.42L7.72201 11.01L10.312 13.59L16.902 7L18.312 8.42L10.312 16.42Z" fill="#00BBA8"/>
+    return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path opacity="0.1" d="M12 22C6.47967 21.994 2.00606 17.5204 2 12L2 11.8C2.10993 6.30455 6.63459 1.92797 12.1307 2.0009C17.6268 2.07382 22.0337 6.5689 21.9978 12.0654C21.9619 17.5618 17.4966 21.9989 12 22Z" fill="#00BBA8"/>
+        <path d="M10 16.42L6 12.42L7.41 11.01L10 13.59L16.59 7L18 8.42L10 16.42Z" fill="#00BBA8"/>
     </SvgIcon>
 }
+
+
 
 export const WaitingIcon = (props: SvgIconProps) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -315,5 +319,11 @@ export const EmptyIcon = (props: SvgIconProps) => {
 export const CircleIcon = (props: SvgIconProps) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
         <circle cx="10" cy="10" r="10"/>
+    </SvgIcon>
+}
+
+export const GrowIcon = (props: SvgIconProps) => {
+    return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M4 11L12 1L20 11L15 11C15 16.523 10.523 21 5 21C4.727 21 4.457 20.99 4.19 20.968C7.05 19.46 9 16.458 9 13L9 11L4 11Z"/>
     </SvgIcon>
 }

@@ -2,7 +2,7 @@ import { borderFunc, pxToRem } from './utils';
 import { ComponentsOverrides } from '@mui/material';
 import { fontDefault } from '../css/global';
 
-const opacity = 1;
+// const opacity = 1;
 export const unit = 8;
 export const radius = 4;
 export const checkBoxSize = 18;
@@ -35,8 +35,16 @@ export const MuiCheckbox = ({colorBase}: any): { styleOverrides: ComponentsOverr
                     color: colorBase.textPrimary,
                 },
                 '&.Mui-checked': {
-                    color: colorBase.textPrimary,
+                    color: colorBase.primary,
+                    '&:hover':{
+                        color: colorBase.primaryDark,
+                    }
                 },
+                ' .MuiSvgIcon-fontSizeMedium ':{
+                    // fontSize: fontDefault.h5
+                    height:fontDefault.h5 ,
+                    width: fontDefault.h5 ,
+                }
             },
         }
     }
@@ -88,7 +96,7 @@ export const MuiLink = ({colorBase}: any) => {
     }
 }
 
-export const MuiTextField = (): { styleOverrides: ComponentsOverrides['MuiTextField'] } => {
+export const MuiTextField = ({colorBase}: any): { styleOverrides: ComponentsOverrides['MuiTextField'] } => {
     return {
         styleOverrides: {
             root: {
@@ -96,11 +104,27 @@ export const MuiTextField = (): { styleOverrides: ComponentsOverrides['MuiTextFi
                     marginLeft: 0,
                     marginRight: 0,
                     textAlign: 'right',
+                },
+                ' .MuiFormLabel-root':{
+                    color: colorBase.textSecondary,
                 }
             }
         }
     }
 }
+
+// export const MuiFormLabel = ({colorBase}: any): { styleOverrides: ComponentsOverrides['MuiFormLabel'] } => {
+//     return {
+//         styleOverrides: {
+//             root: {
+//
+//                 // '.MuiFormLabel-root':{
+//                 //
+//                 // }
+//             }
+//         }
+//     }
+// }
 
 
 export const MuiModal = ({colorBase}: any) => {
@@ -124,75 +148,78 @@ export const MuiToolbar = () => {
         }
     }
 }
+
+// @ts-ignore
 export const MuiSwitch = ({colorBase}: any): { styleOverrides: ComponentsOverrides['MuiSwitch'] } => {
-    const borderWidth = 2;
-    const padding = borderWidth + 2;
-    const width = pxToRem(46);
-    const height = pxToRem(24);
-    const size = pxToRem(16);
+    // const borderWidth = 2;
+    // const padding = borderWidth + 2;
+    // const width = pxToRem(46);
+    // const height = pxToRem(24);
+    // const size = pxToRem(16);
+    return {styleOverrides:{}}
     // const gap =  (38 - (borderWidth + padding)*2);
-    return {
-        styleOverrides: {
-            root: {
-                width,
-                height,
-                padding: 0,
-                margin: pxToRem(8),
-                overflow: 'unset',
-                '& .MuiIconButton-root': {
-                    padding: pxToRem(padding),
-                    height: 'auto',
-                    width: 'auto'
-                },
-                '& .Mui-checked': {
-                    color: colorBase.textPrimary,
-                    // transform: `translateX(-${gap}px)`,
-                    '& + .MuiSwitch-track.MuiSwitch-track': {
-                        backgroundColor: 'transparent',
-                        // opacity: opacity,
-                        borderWidth,
-                        border: `solid ${colorBase.primary}`,
-                    },
-                    '& .MuiSwitch-thumb': {
-                        backgroundColor: colorBase.primary,
-                        opacity: opacity,
-                    }
-                },
-                '& .MuiIconButton-root.Mui-disabled': {
-                    '&.Mui-checked .MuiSwitch-thumb': {
-                        backgroundColor: colorBase.primary,
-                    },
-                    '& + .MuiSwitch-track': {
-                        backgroundColor: colorBase.divide,
-                        border: 'none',
-                        opacity: 0.6 * opacity,
-                    },
-                    '& .MuiSwitch-thumb': {
-                        backgroundColor: colorBase.textSecondary,
-                        opacity: .6 * opacity,
-                    }
-                }
-
-            },
-            colorPrimary: {},
-            track: {
-                borderRadius: 40,
-                border: `solid ${colorBase.textSecondary}`,
-                borderWidth,
-                backgroundColor: 'transparent', //${colorBase.textSecondary},
-                opacity: 1,
-                boxSizing: 'border-box',
-            },
-
-            thumb: {
-                boxShadow: 'none',
-                backgroundColor: colorBase.textSecondary, // this.palette.grey[400],
-                width: size,
-                height: size,
-            },
-
-        }
-    }
+    // return {
+    //     styleOverrides: {
+    //         root: {
+    //             width,
+    //             height,
+    //             padding: 0,
+    //             margin: pxToRem(8),
+    //             overflow: 'unset',
+    //             '& .MuiIconButton-root': {
+    //                 padding: pxToRem(padding),
+    //                 height: 'auto',
+    //                 width: 'auto'
+    //             },
+    //             '& .Mui-checked': {
+    //                 color: colorBase.textPrimary,
+    //                 // transform: `translateX(-${gap}px)`,
+    //                 '& + .MuiSwitch-track.MuiSwitch-track': {
+    //                     backgroundColor: 'transparent',
+    //                     // opacity: opacity,
+    //                     borderWidth,
+    //                     border: `solid ${colorBase.primary}`,
+    //                 },
+    //                 '& .MuiSwitch-thumb': {
+    //                     backgroundColor: colorBase.primary,
+    //                     opacity: opacity,
+    //                 }
+    //             },
+    //             '& .MuiIconButton-root.Mui-disabled': {
+    //                 '&.Mui-checked .MuiSwitch-thumb': {
+    //                     backgroundColor: colorBase.primary,
+    //                 },
+    //                 '& + .MuiSwitch-track': {
+    //                     backgroundColor: colorBase.divide,
+    //                     border: 'none',
+    //                     opacity: 0.6 * opacity,
+    //                 },
+    //                 '& .MuiSwitch-thumb': {
+    //                     backgroundColor: colorBase.textSecondary,
+    //                     opacity: .6 * opacity,
+    //                 }
+    //             }
+    //
+    //         },
+    //         colorPrimary: {},
+    //         track: {
+    //             borderRadius: 40,
+    //             border: `solid ${colorBase.textSecondary}`,
+    //             borderWidth,
+    //             backgroundColor: 'transparent', //${colorBase.textSecondary},
+    //             opacity: 1,
+    //             boxSizing: 'border-box',
+    //         },
+    //
+    //         thumb: {
+    //             boxShadow: 'none',
+    //             backgroundColor: colorBase.textSecondary, // this.palette.grey[400],
+    //             width: size,
+    //             height: size,
+    //         },
+    //
+    //     }
+    // }
 }
 
 export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrides['MuiButton'] } => {
@@ -585,11 +612,16 @@ export const MuiPaginationItem = ({colorBase}: any) => {
                 fontSize: '2rem',
             },
             textPrimary: {
+                '&:hover': {
+                    backgroundColor: colorBase.boxHover,
+                    color: colorBase.textButtonSelect,
+                },
                 '&.Mui-selected': {
                     backgroundColor: 'transparent',
-                    color: colorBase.secondary,
+                    color: colorBase.textButtonSelect,
                     '&:hover': {
-                        backgroundColor: colorBase.opacity,
+                        backgroundColor: colorBase.boxHover,
+                        color: colorBase.textButtonSelect,
                     }
                 }
 
@@ -599,16 +631,12 @@ export const MuiPaginationItem = ({colorBase}: any) => {
         }
     }
 }
-export const MuiFormLabel = ({colorBase}: any) => {
+export const MuiFormLabel = ({colorBase}: any): { styleOverrides: ComponentsOverrides['MuiFormLabel'] } => {
     return {
         styleOverrides: {
             root: {
-                padding: '1.2rem 0',
-                display: 'inline-block',
-                position: 'relative',
-                fontSize: '1.4rem',
+                color: colorBase.textSecondary,
                 lineHeight: 1,
-                height: '38px',
                 boxSizing: 'border-box',
                 '&.MuiInputLabel-shrink': {
                     transform: 'none'
