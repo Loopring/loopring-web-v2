@@ -268,11 +268,20 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const handlePanelEvent = useCallback(async (data: SwitchData<R>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {
-            if (data?.tradeData?.belong) {
-                updateTransferData(data.tradeData)
-            } else {
-                updateTransferData({ belong: undefined, tradeValue: 0, balance: 0 })
+
+            if (data.to === 'button') {
+                if (walletMap && data?.tradeData?.belong) {
+                    const walletInfo = walletMap[data?.tradeData?.belong as string]
+                    updateTransferData({
+                        belong: data.tradeData?.belong,
+                        tradeValue: data.tradeData?.tradeValue,
+                        balance: walletInfo.count
+                    })
+                } else {
+                    updateTransferData({ belong: undefined, tradeValue: undefined, balance: undefined })
+                }
             }
+
             res();
         })
     }, [updateTransferData, transferValue])
