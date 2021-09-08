@@ -2,11 +2,11 @@ import { Trans, WithTranslation } from 'react-i18next';
 import React, { ChangeEvent } from 'react';
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
-import { FormControlLabel, Grid, ListItemText, Radio, RadioGroup, Typography, Box } from '@mui/material';
+import { FormControlLabel, Grid, Radio, RadioGroup, Typography, Box, IconProps } from '@mui/material';
 import { CloseIcon, DropDownIcon, globalSetup, IBData, WithdrawTypes, HelpIcon } from '@loopring-web/common-resources';
 import { PopoverPure } from '../..'
 import { TradeBtnStatus } from '../Interface';
-import { Button, IconClearStyled, MenuItem, TextField,TypographyGood, TypographyStrong } from '../../../index';
+import { Button, IconClearStyled, TextField,TypographyGood, TypographyStrong } from '../../../index';
 import { WithdrawViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import { ToggleButtonGroup } from '../../basic-lib';
@@ -17,11 +17,11 @@ const FeeTokenItemWrapper = styled(Box)`
     background-color: var(--color-global-bg);
 `
 
-const DropdownIconStyled = styled(DropDownIcon)`
-    transform: rotate(${({status}: any) => {
-        return status === 'down' ? '0deg': '180deg'
-    }});
-` as any
+const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
+  transform: rotate(${({status}: any) => {
+    return status === 'down' ? '0deg': '180deg'
+  }});
+` as (props:IconProps& {status:string})=>JSX.Element
 
 export const WithdrawWrapNew = <T extends IBData<I>,
     I>({
@@ -99,7 +99,7 @@ export const WithdrawWrapNew = <T extends IBData<I>,
         setIsFeeNotEnough(false)
     }, [chargeFeeTokenList, assetsData, checkFeeTokenEnough, getTokenFee, feeToken])
 
-    const handleToggleChange = React.useCallback((e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
+    const handleToggleChange = React.useCallback((_e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
         if (value === null) return
         setFeeToken(value)
         const currFeeRaw = toggleData.find(o => o.key === value)?.__raw__ || '--'
@@ -225,7 +225,7 @@ export const WithdrawWrapNew = <T extends IBData<I>,
                 <Box component={'span'} display={'flex'} alignItems={'center'} style={{ cursor: 'pointer' }} onClick={() => setDropdownStatus(prev => prev === 'up' ? 'down' : 'up')}>
                     {getTokenFee(feeToken) || '--'} {feeToken}
                     <Typography marginLeft={1} color={'var(--color-text-secondary)'}>{t(`withdrawLabel${_withdrawType === 'Fast' ? 'Fast' : 'Standard' }`)}</Typography>
-                    <DropdownIconStyled status={dropdownStatus} fontSize={'large'} />
+                    <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
                     <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
                         {isFeeNotEnough && t('transferLabelFeeNotEnough')}
                     </Typography>

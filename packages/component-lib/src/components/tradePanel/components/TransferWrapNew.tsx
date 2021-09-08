@@ -1,11 +1,11 @@
 import { Trans, WithTranslation } from 'react-i18next';
 import React, { ChangeEvent } from 'react';
-import { Grid, ListItemText, Typography, Box } from '@mui/material';
+import { Grid, Typography, Box, IconProps } from '@mui/material';
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 // import { Link as RouterLink } from 'react-router-dom';
 import { CloseIcon, DropDownIcon, globalSetup, IBData, HelpIcon } from '@loopring-web/common-resources';
-import { Button, IconClearStyled, MenuItem, TextField, TradeBtnStatus, TypographyGood } from '../../index';
+import { Button, IconClearStyled, TextField, TradeBtnStatus } from '../../index';
 import { PopoverPure } from '../../'
 import { TransferViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
@@ -17,11 +17,11 @@ const FeeTokenItemWrapper = styled(Box)`
     background-color: var(--color-global-bg);
 `
 
-const DropdownIconStyled = styled(DropDownIcon)`
+const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
     transform: rotate(${({status}: any) => {
-        return status === 'down' ? '0deg': '180deg'
-    }});
-` as any
+    return status === 'down' ? '0deg': '180deg'
+}});
+` as (props:IconProps& {status:string})=>JSX.Element
 
 export const TransferWrapNew = <T extends IBData<I>,
     I>({
@@ -144,7 +144,7 @@ export const TransferWrapNew = <T extends IBData<I>,
         return tokenAssets && Number(tokenAssets) > fee
     }, [assetsData])
 
-    const handleToggleChange = React.useCallback((e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
+    const handleToggleChange = React.useCallback((_e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
         if (value === null) return
         const currFeeRaw = toggleData.find(o => o.key === value)?.__raw__ || '--'
         setFeeToken(value)
@@ -259,7 +259,7 @@ export const TransferWrapNew = <T extends IBData<I>,
                 {t('transferLabelFee')}：
                 <Box component={'span'} display={'flex'} alignItems={'center'} style={{ cursor: 'pointer' }} onClick={() => setDropdownStatus(prev => prev === 'up' ? 'down' : 'up')}>
                     {getTokenFee(feeToken) || '--'} {feeToken}
-                    <DropdownIconStyled status={dropdownStatus} fontSize={'large'} />
+                    <DropdownIconStyled  status={dropdownStatus} fontSize={'medium'} />
                     <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
                         {isFeeNotEnough && t('transferLabelFeeNotEnough')}
                     </Typography>
