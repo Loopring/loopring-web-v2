@@ -3,6 +3,8 @@ import { TradeBtnStatus } from '@loopring-web/component-lib'
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { PageAmmCommon } from '.'
 import { PageAmmJoin, PageAmmExit, PageAmmPoolStatus } from './interface'
+import * as sdk from 'loopring-sdk'
+import { BIGO } from 'defs/common_defs'
 
 export const initSlippage = 0.5
 
@@ -167,9 +169,14 @@ const pageAmmPoolSlice: Slice<PageAmmPoolStatus> = createSlice({
                 state.ammExit.ammData = ammData
             }
 
-            state.ammExit.volA_show = volA_show
+            if (volA_show !== undefined && sdk.toBig(volA_show).gte(BIGO)) {
+                state.ammExit.volA_show = volA_show
+            }
 
-            state.ammExit.volB_show = volB_show
+            if (volB_show !== undefined && sdk.toBig(volB_show).gte(BIGO)) {
+                state.ammExit.volB_show = volB_show
+            }
+
         },
 
     },

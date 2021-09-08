@@ -30,7 +30,6 @@ import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
 
 import _ from 'lodash'
 import { initSlippage, usePageAmmPool, } from "stores/router";
-import { sleep } from "loopring-sdk";
 import { getTimestampDaysLater } from "utils/dt_tools";
 import { DAYS } from "defs/common_defs";
 
@@ -146,6 +145,8 @@ export const useAmmExit = ({
 
         const validAmt1 = volA_show ? volA_show >= times * baseMinAmt : false
         const validAmt2 = volB_show ? volB_show >= times * quoteMinAmt : false
+
+        // myLog(volA_show, baseMinAmt, volB_show, quoteMinAmt)
 
         if (isLoading) {
             return { btnStatus: TradeBtnStatus.LOADING, btnI18nKey: undefined }

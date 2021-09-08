@@ -29,16 +29,16 @@ export const OutlineSelect = styled(Select)`
   //  width: auto;
   //}
   .MuiInput-input{
-    padding: .3rem 1.2rem .3rem .8rem;
+    padding: .3rem .3rem .3rem .8rem;
   }
-  svg {
-    //right: .4rem;
-    top: ${({theme}) => theme.unit -3}px;
-    position: absolute;
-    //pointer-events: none;
-    //transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-    //color: var(--color-text-secondary)
-  }
+  // svg {
+  //   //right: .4rem;
+  //   top: ${({theme}) => theme.unit -3}px;
+  //   position: absolute;
+  //   //pointer-events: none;
+  //   //transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  //   //color: var(--color-text-secondary)
+  // }
  
   
 

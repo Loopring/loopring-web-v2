@@ -1,5 +1,5 @@
 import React from 'react'
-import { EmptyValueTag, getShowStr, myLog, ReverseIcon } from '@loopring-web/common-resources'
+import { EmptyValueTag, getShowStr, ReverseIcon } from '@loopring-web/common-resources'
 import { IconButtonStyled } from '../Styled'
 
 export function useAmmViewData({error, i18nKey, t, _isStoB, ammCalcData, _onSwitchStob, isAdd, }:

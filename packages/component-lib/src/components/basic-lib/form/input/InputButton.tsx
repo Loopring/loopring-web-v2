@@ -115,7 +115,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
               alignContent={'stretch'}>
             <Grid item className={'btn-wrap'}>
                 <ISBtn variant={'text'} onClick={(event) => handleOnClick(event, ref)}
-                       endIcon={<DropDownIcon color={"inherit"}/>} disabled={disabled}>
+                       endIcon={<DropDownIcon color={"inherit"} fontSize={'large'}/>} disabled={disabled}>
                     {belong ?
                         <Grid container align-items={'center'} display={'flex'}>
                             <Grid item display={'flex'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
