@@ -122,6 +122,7 @@ export const useAmmCommon = ({pair,}: {
     }, [accountStatus, account, pair, tokenMap])
 
     return {
+        accountStatus: account.readyState,
         toastOpen,
         setToastOpen,
         closeToast,

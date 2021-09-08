@@ -84,6 +84,7 @@ export const AmmPanelView = ({
 } & any) => {
 
     const {
+        accountStatus,
         toastOpen,
         setToastOpen,
         closeToast,
@@ -133,6 +134,9 @@ export const AmmPanelView = ({
 
         {pair ?
             <> <AmmPanel {...{ ...rest }}
+
+                accStatus={accountStatus}
+                
                 onRefreshData={() => {
                     updateAmmPoolSnapshot()
                     updateJoinFee()

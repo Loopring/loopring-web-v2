@@ -4,7 +4,8 @@ import {
     EmptyValueTag,
     IBData,
     LinkedIcon,
-    SlippageTolerance
+    SlippageTolerance,
+    AccountStatus
 } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import { AmmDepositWrapProps } from './Interface';
@@ -26,26 +27,27 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
     I,
     ACD extends AmmInData<I>,
     C = IBData<I>>({
-                       t,
-                       disabled,
-                       isStob,
-                       switchStobEvent,
-                       ammDepositBtnStatus,
-                       ammCalcData,
-                       ammDepositBtnI18nKey,
-                       onAmmAddClick,
-                       tokenAProps,
-                       tokenBProps,
-                       onAddChangeEvent,
-                       handleError,
-                       ammData,
-                       ...rest
-                   }: AmmDepositWrapProps<T, I, ACD, C> & WithTranslation) => {
+        t,
+        disabled,
+        isStob,
+        switchStobEvent,
+        ammDepositBtnStatus,
+        ammCalcData,
+        ammDepositBtnI18nKey,
+        onAmmAddClick,
+        tokenAProps,
+        tokenBProps,
+        onAddChangeEvent,
+        handleError,
+        ammData,
+        accStatus,
+        ...rest
+    }: AmmDepositWrapProps<T, I, ACD, C> & WithTranslation) => {
     const coinARef = React.useRef();
     const coinBRef = React.useRef();
-    const {slippage} = useSettings();
+    const { slippage } = useSettings();
     const slippageArray: Array<number | string> = SlippageTolerance.concat(`slippage:${slippage}`) as Array<number | string>;
-    
+
     const [errorA, setErrorA] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
         error: false,
         message: ''
@@ -67,33 +69,34 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
     const getDisabled = () => {
         return disabled || ammCalcData === undefined || ammCalcData.coinInfoMap === undefined;
     };
+
     if (typeof handleError !== 'function') {
-        handleError = ({belong, balance, tradeValue}: any) => {
-            if (ammCalcData?.myCoinA?.belong && ammCalcData?.myCoinB?.belong) {
+        handleError = ({ belong, balance, tradeValue }: any) => {
+            if (accStatus === AccountStatus.ACTIVATED && ammCalcData?.myCoinA?.belong && ammCalcData?.myCoinB?.belong) {
                 const isCoinA = belong === ammCalcData.myCoinA.belong
                 if (balance < tradeValue || (tradeValue && !balance)) {
-                    const _error = {error: true, message: t('tokenNotEnough', {belong: belong})}
+                    const _error = { error: true, message: t('tokenNotEnough', { belong: belong }) }
                     if (isCoinA) {
                         setErrorA(_error);
                     } else {
                         setErrorB(_error);
                     }
-                    return  _error
+                    return _error
                 }
-    
+
                 if (isCoinA) {
-                    setErrorA({error: false, message: ''});
+                    setErrorA({ error: false, message: '' });
                 } else {
-                    setErrorB({error: false, message: ''});
+                    setErrorB({ error: false, message: '' });
                 }
             }
-            return {error: false, message: ''}
+            return { error: false, message: '' }
         }
     }
     const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
         const focus: 'coinA' | 'coinB' = _ref?.current === coinARef.current ? 'coinA' : 'coinB';
-        if (ammData[ focus ].tradeValue !== ibData.tradeValue) {
-            onAddChangeEvent({tradeData: {...ammData, [ focus ]: ibData}, type: focus});
+        if (ammData[focus].tradeValue !== ibData.tradeValue) {
+            onAddChangeEvent({ tradeData: { ...ammData, [focus]: ibData }, type: focus });
         }
     }, [ammData, onAddChangeEvent]);
     const propsA: any = {
@@ -134,34 +137,34 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
         });
     }, [ammData, onAddChangeEvent])
 
-    const { label, stob, } = useAmmViewData({error: { errorA, errorB, }, i18nKey: ammDepositBtnI18nKey, t, _isStoB, ammCalcData, _onSwitchStob, isAdd: true, })
+    const { label, stob, } = useAmmViewData({ error: { errorA, errorB, }, i18nKey: ammDepositBtnI18nKey, t, _isStoB, ammCalcData, _onSwitchStob, isAdd: true, })
 
     // myLog('amm deposit ammData:', ammData)
 
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
-                 direction={"column"}
-                 justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
+        direction={"column"}
+        justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
         <Grid item marginTop={3} display={'flex'} alignSelf={"stretch"} justifyContent={''} alignItems={"stretch"}
-              flexDirection={"column"}>
+            flexDirection={"column"}>
             <InputCoin<any, I, any> ref={coinARef} disabled={getDisabled()} {...{
                 ...propsA,
-                isHideError:true,
+                isHideError: true,
                 order: 'right',
                 inputData: ammData ? ammData.coinA : {} as any,
                 coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
-            }}/>
+            }} />
             <Box alignSelf={"center"} marginY={1}>
                 <SvgStyled>
-                    <LinkedIcon/>
+                    <LinkedIcon />
                 </SvgStyled>
             </Box>
             <InputCoin<any, I, any> ref={coinBRef} disabled={getDisabled()} {...{
                 ...propsB,
-                isHideError:true,
+                isHideError: true,
                 order: 'right',
                 inputData: ammData ? ammData.coinB : {} as any,
                 coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
-            }}/>
+            }} />
         </Grid>
 
         <Grid item>
@@ -171,13 +174,13 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
         </Grid>
         <Grid item alignSelf={"stretch"}>
             <Grid container direction={"column"} spacing={1} alignItems={"stretch"}>
-                <Grid item paddingBottom={3} sx={{color: 'text.secondary'}}>
+                <Grid item paddingBottom={3} sx={{ color: 'text.secondary' }}>
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
-                          height={24}>
+                        height={24}>
                         <Typography component={'p'} variant="body2" color={'textSecondary'}>{t('swapTolerance')}</Typography>
                         {ammCalcData ? <>
                             <Typography {...bindHover(popupState)}
-                                        component={'span'} variant="body2" color={'textPrimary'}>
+                                component={'span'} variant="body2" color={'textPrimary'}>
                                 <LinkActionStyle>
                                     {ammData.slippage ? ammData.slippage : ammCalcData.slippage ? ammCalcData.slippage : 0.5}%
                                 </LinkActionStyle>
@@ -185,8 +188,8 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
                                     className={'arrow-right'}
                                     {...bindPopover(popupState)}
                                     {...{
-                                        anchorOrigin: {vertical: 'bottom', horizontal: 'right'},
-                                        transformOrigin: {vertical: 'top', horizontal: 'right'}
+                                        anchorOrigin: { vertical: 'bottom', horizontal: 'right' },
+                                        transformOrigin: { vertical: 'top', horizontal: 'right' }
                                     }}
                                 >
                                     <SlippagePanel {...{
@@ -202,19 +205,19 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
                         }
                     </Grid>
 
-                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"} marginTop={1/2}>
+                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"} marginTop={1 / 2}>
                         <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('swapFee')} </Typography>
                         <Typography component={'p'}
-                                    variant="body2" color={'textPrimary'}>{t(ammCalcData ? ammCalcData.fee : EmptyValueTag)}</Typography>
+                            variant="body2" color={'textPrimary'}>{t(ammCalcData ? ammCalcData.fee : EmptyValueTag)}</Typography>
                     </Grid>
                 </Grid>
                 <Grid item>
                     <ButtonStyle variant={'contained'} size={'large'} color={'primary'} onClick={() => {
                         onAmmAddClick(ammData)
                     }}
-                            loading={!getDisabled() && ammDepositBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-                            disabled={getDisabled() || ammDepositBtnStatus === TradeBtnStatus.DISABLED || ammDepositBtnStatus === TradeBtnStatus.LOADING || errorA.error || errorB.error}
-                            fullWidth={true}>
+                        loading={!getDisabled() && ammDepositBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
+                        disabled={accStatus === AccountStatus.ACTIVATED && (getDisabled() || (ammDepositBtnStatus === TradeBtnStatus.DISABLED || ammDepositBtnStatus === TradeBtnStatus.LOADING || errorA.error || errorB.error))}
+                        fullWidth={true}>
                         {label}
 
                     </ButtonStyle>

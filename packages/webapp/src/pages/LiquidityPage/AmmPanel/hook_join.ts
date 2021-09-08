@@ -100,6 +100,8 @@ export const useAmmJoin = ({
         const validAmt1 = ammData?.coinA?.tradeValue ? ammData?.coinA?.tradeValue >= times * baseMinAmt : false
         const validAmt2 = ammData?.coinB?.tradeValue ? ammData?.coinB?.tradeValue >= times * quoteMinAmt : false
 
+        myLog('btnLabelActiveCheck validAmt1:', validAmt1, ' validAmt2:', validAmt2)
+        
         if (isLoading) {
             return { btnStatus: TradeBtnStatus.LOADING, btnI18nKey: undefined }
         } else {
