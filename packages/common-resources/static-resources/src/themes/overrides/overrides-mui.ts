@@ -487,7 +487,7 @@ export const MuiInputBase = ({colorBase, themeMode}: any): { styleOverrides: Com
                     }
                 },
                 '&.MuiOutlinedInput-root': {
-                    padding: '.3rem 2.4rem .3rem .8rem',
+                    padding: '.3rem .3rem .3rem .8rem',
                     minWidth: 'auto',
                 },
                 ' .MuiOutlinedInput-input': {

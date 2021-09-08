@@ -26,15 +26,17 @@ import { useSettings } from '../../stores';
 
 
 const StyledSwitch = styled(Switch)`
-  margin:0;  
+  margin: 0;
 `;
 
-const BoxStyle = styled(Box)(() => ({
-    " .MuiInputBase-root": {
-        background: 'var(--opacity)',
-        textAlign: 'right',
-    },
-})) as typeof Box
+const BoxStyle = styled(Box)`
+  background: 'var(--color-pop-bg)';
+  box-shadow: 'var(--shadow)';
+  .MuiInputBase-root {
+    background: var(--opacity);
+    text-align: right;
+  }
+` as typeof Box
 
 
 export const BtnCurrency = ({t, currency, label, handleChange}: any) => {
@@ -62,12 +64,16 @@ const StyledDivider = styled(Divider)`
 `
 const RadioGroupStyle = styled(RadioGroup)`
   margin: 0;
+
   .MuiFormControlLabel-root {
     margin-right: 0;
     display: inline-flex;
     align-items: center;
     justify-content: flex-end;
     flex-direction: row;
+  }
+  .MuiFormControlLabel-label{
+    line-height: var(--svg-size-cover)
   }
 `
 
@@ -119,20 +125,20 @@ export const SettingPanel = withTranslation(['common', 'layout'], {withRef: true
         return <>
             <Typography component={'span'} variant={'body2'} color={'textPrimary'}>
                 <Trans i18nKey="whichColorIsUp" tOptions={{
-                up: (key === UpColor.green ? t('labelgreen') : t('labelred')),
-                down: (key === UpColor.green ? t('labelred') : t('labelgreen'))
-            }}>
-                <Typography component={'span'} variant={'body2'} color={'textPrimary'} style={{
+                    up: (key === UpColor.green ? t('labelgreen') : t('labelred')),
+                    down: (key === UpColor.green ? t('labelred') : t('labelgreen'))
+                }}>
+                    <Typography component={'span'} variant={'body2'} color={'textPrimary'} style={{
+                        textTransform: 'capitalize',
+                        // color: key === UpColor.green ? theme.colorBase.success : theme.colorBase.error
+                    }}>color up</Typography>
+                    and <Typography component={'span'} variant={'body2'} color={'textPrimary'} style={{
                     textTransform: 'capitalize',
-                    // color: key === UpColor.green ? theme.colorBase.success : theme.colorBase.error
-                }}>color up</Typography>
-                and <Typography component={'span'} variant={'body2'} color={'textPrimary'} style={{
-                textTransform: 'capitalize',
-                // color: key === UpColor.green ? theme.colorBase.error : theme.colorBase.success
-            }}>color down</Typography>
-            </Trans>
+                    // color: key === UpColor.green ? theme.colorBase.error : theme.colorBase.success
+                }}>color down</Typography>
+                </Trans>
             </Typography>
-            <Typography component={'span'} style={{verticalAlign:'-webkit-baseline-middle'}}
+            <Typography component={'span'} style={{verticalAlign: '-webkit-baseline-middle'}}
                         color={key === UpColor.green ? 'var(--color-success)' : 'var(--color-error)'}>
                 <GrowIcon fontSize={'medium'} color={'inherit'}/>
             </Typography>
