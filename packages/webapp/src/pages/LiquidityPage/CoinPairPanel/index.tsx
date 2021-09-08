@@ -104,7 +104,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                 <Link color="textSecondary" href="/#/liquidity/pools">
                     {t('labelAmmList')}
                 </Link>
-                <Typography color={'textSecondary'} display={'flex'} alignItems={'center'}
+                <Typography color={'textPrimary'} display={'flex'} alignItems={'center'}
                             justifyContent={'center'}
                 >{pair.coinAInfo?.simpleName}-{pair.coinBInfo?.simpleName}</Typography>
             </Breadcrumbs>

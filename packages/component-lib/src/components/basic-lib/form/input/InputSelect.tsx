@@ -118,7 +118,6 @@ function _InputSelect<C, I extends string = CoinKey<C>>({
             {/*</Grid>*/}
         </Box>
         <Box flex={1} ref={panelRef}>
-
             {panelRender({selected, value: value.selected})}
         </Box>
     </WrapStyled>

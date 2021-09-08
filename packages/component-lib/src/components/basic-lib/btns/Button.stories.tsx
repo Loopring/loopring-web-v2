@@ -180,13 +180,13 @@ export const LButton: Story<ButtonProps> = withTranslation()(({t, ...rest}: With
                 </Grid>
                 <Grid item>
                     <Breadcrumbs aria-label="breadcrumb">
-                        <Link color="textPrimary" href="/">
+                        <Link color="textSecondary" href="/">
                             Material-UI
                         </Link>
-                        <Link color="textPrimary" href="/">
+                        <Link color="textSecondary" href="/">
                             Core
                         </Link>
-                        <Typography color="textSecondary">Breadcrumb</Typography>
+                        <Typography color="textPrimary">Breadcrumb</Typography>
                     </Breadcrumbs>
                 </Grid>
 
