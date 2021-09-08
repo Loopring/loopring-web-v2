@@ -32,7 +32,7 @@ import {
     MuiToolbar,
     MuiAlert,
     MuiSnackbar,
-    radius,
+    radius, MuiFormLabel,
 } from "./overrides-mui";
 import { MuPickDate } from './overrides-date-pick';
 import { fontDefault } from "../css/global";
@@ -172,7 +172,8 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             MuiSwitch: MuiSwitch({colorBase}),
             MuiIconButton: MuiIconButton({colorBase}),
             MuiPaginationItem: MuiPaginationItem({colorBase}),
-            MuiTextField: MuiTextField(),
+            MuiTextField: MuiTextField({colorBase}),
+            MuiFormLabel:MuiFormLabel({colorBase}),
             MuiInputBase: MuiInputBase({colorBase,themeMode}),
             MuiMenu: MuiMenu({colorBase}),
             MuiMenuItem: MuiMenuItem({colorBase,themeMode}),

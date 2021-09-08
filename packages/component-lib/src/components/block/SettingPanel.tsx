@@ -1,19 +1,20 @@
 import styled from '@emotion/styled';
 import {
-    Switch,
     Box,
     Divider,
     FormControlLabel,
     Grid,
     Radio,
     RadioGroup,
+    SelectChangeEvent,
+    Switch,
     Typography,
-    SelectChangeEvent
 } from '@mui/material';
 import React from 'react';
 import {
     Currency,
     DropDownIcon,
+    GrowIcon,
     i18n,
     LanguageType,
     ThemeType,
@@ -23,31 +24,13 @@ import { OutlineSelect, OutlineSelectItem } from '../basic-lib';
 import { Trans, WithTranslation, withTranslation } from 'react-i18next';
 import { useSettings } from '../../stores';
 
-// const StyledSwitchColor = styled(Switch)(({theme}) => ({
-//
-//     "& .Mui-checked": {
-//         color: theme.colorBase.textPrimary,
-//         '& + .MuiSwitch-track.MuiSwitch-track': {
-//             border: `solid ${theme.colorBase.success}`,
-//         },
-//         '& .MuiSwitch-thumb': {
-//             backgroundColor: theme.colorBase.success,
-//         }
-//     },
-//     '& .MuiSwitch-track': {
-//         border: `solid ${theme.colorBase.error}`,
-//         opacity: 1
-//     },
-//     '& .MuiSwitch-thumb': {
-//         backgroundColor: theme.colorBase.error,
-//     }
-// }));
+
 const StyledSwitch = styled(Switch)`
   margin:0;  
 `;
 
 const BoxStyle = styled(Box)(() => ({
-    " .MuiInput-root":{
+    " .MuiInputBase-root": {
         background: 'var(--opacity)',
         textAlign: 'right',
     },
@@ -68,7 +51,7 @@ export const BtnCurrency = ({t, currency, label, handleChange}: any) => {
                           id="language-selected"
                           value={state} autoWidth
                           onChange={_handleChange}
-                         >
+    >
         <OutlineSelectItem value={Currency.dollar}>$ {t('labelUSDollar')}</OutlineSelectItem>
         <OutlineSelectItem value={Currency.yen}>¥ {t('labelCNYYuan')}</OutlineSelectItem>
     </OutlineSelect>
@@ -80,7 +63,11 @@ const StyledDivider = styled(Divider)`
 const RadioGroupStyle = styled(RadioGroup)`
   margin: 0;
   .MuiFormControlLabel-root {
-        margin-right: 0;
+    margin-right: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-direction: row;
   }
 `
 
@@ -94,7 +81,7 @@ export const BtnLanguage = ({t, label, handleChange}: any) => {
     return <OutlineSelect aria-label={t(label)} IconComponent={DropDownIcon}
                           labelId="language-selected"
                           id="language-selected"
-                          value={i18n.language} 
+                          value={i18n.language}
                           onChange={_handleChange}>
         <OutlineSelectItem value={LanguageType.en_US}>English</OutlineSelectItem>
         <OutlineSelectItem value={LanguageType.zh_CN}>简体中文</OutlineSelectItem>
@@ -102,22 +89,25 @@ export const BtnLanguage = ({t, label, handleChange}: any) => {
 }
 
 
-export const SettingPanel = withTranslation(['common', 'layout'],{withRef:true})(({t, ...rest}: & WithTranslation) => {
+export const SettingPanel = withTranslation(['common', 'layout'], {withRef: true})(({
+                                                                                        t,
+                                                                                        ...rest
+                                                                                    }: & WithTranslation) => {
     // const theme = useTheme();
     const {setUpColor, setCurrency, setLanguage, currency, upColor, setTheme, themeMode} = useSettings()
 
-    const handleOnLanguageChange =React.useCallback( (value: any) => {
+    const handleOnLanguageChange = React.useCallback((value: any) => {
 
         setLanguage(value)
-    } ,[setLanguage])
-    const handleOnCurrencyChange =React.useCallback( (value: any) => {
+    }, [setLanguage])
+    const handleOnCurrencyChange = React.useCallback((value: any) => {
         setCurrency(value);
-    } ,[setCurrency])
-    const handleColorChange = React.useCallback((_e: any,value) => {
+    }, [setCurrency])
+    const handleColorChange = React.useCallback((_e: any, value) => {
         setUpColor(value);
-    } ,[setUpColor])
+    }, [setUpColor])
     //const [mode, setMode] = React.useState(themeMode)
-    const handleThemeClick = React.useCallback((e:any) => {
+    const handleThemeClick = React.useCallback((e: any) => {
 
         if (e.target.checked) {
             setTheme(ThemeType.dark);
@@ -125,23 +115,32 @@ export const SettingPanel = withTranslation(['common', 'layout'],{withRef:true})
             setTheme(ThemeType.light);
         }
     }, [themeMode])
-    const updown = React.useCallback(({key})=>{
-      return    <Typography component={'span'} variant={'body2'}><Trans i18nKey="whichColorIsUp" tOptions={{
-          up: (key === UpColor.green ? t('labelgreen') : t('labelred')),
-          down: (key === UpColor.green ? t('labelred') : t('labelgreen'))
-      }} >
-            <Typography component={'span'} variant={'body2'} style={{
+    const updown = React.useCallback(({key}) => {
+        return <>
+            <Typography component={'span'} variant={'body2'} color={'textPrimary'}>
+                <Trans i18nKey="whichColorIsUp" tOptions={{
+                up: (key === UpColor.green ? t('labelgreen') : t('labelred')),
+                down: (key === UpColor.green ? t('labelred') : t('labelgreen'))
+            }}>
+                <Typography component={'span'} variant={'body2'} color={'textPrimary'} style={{
+                    textTransform: 'capitalize',
+                    // color: key === UpColor.green ? theme.colorBase.success : theme.colorBase.error
+                }}>color up</Typography>
+                and <Typography component={'span'} variant={'body2'} color={'textPrimary'} style={{
                 textTransform: 'capitalize',
-                // color: key === UpColor.green ? theme.colorBase.success : theme.colorBase.error
-            }}>color up</Typography>
-            and <Typography component={'span'} variant={'body2'} style={{
-            textTransform: 'capitalize',
-            // color: key === UpColor.green ? theme.colorBase.error : theme.colorBase.success
-        }}>color down</Typography>
-      </Trans></Typography>
-    },[UpColor])
+                // color: key === UpColor.green ? theme.colorBase.error : theme.colorBase.success
+            }}>color down</Typography>
+            </Trans>
+            </Typography>
+            <Typography component={'span'} style={{verticalAlign:'-webkit-baseline-middle'}}
+                        color={key === UpColor.green ? 'var(--color-success)' : 'var(--color-error)'}>
+                <GrowIcon fontSize={'medium'} color={'inherit'}/>
+            </Typography>
+        </>
 
-    return         <BoxStyle component={'section'} display={'flex'} flexDirection={'column'} width={'var(--swap-box-width)'}>
+    }, [UpColor])
+
+    return <BoxStyle component={'section'} display={'flex'} flexDirection={'column'} width={'var(--swap-box-width)'}>
         {/*<Typography variant={'h6'} component={'h4'} paddingX={2}>{t('labelTitleLayout')}</Typography>*/}
         <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}
               alignItems={'center'} paddingX={2} marginY={2}>
@@ -191,23 +190,26 @@ export const SettingPanel = withTranslation(['common', 'layout'],{withRef:true})
                 {/*    */}
                 {/*</Typography>*/}
                 {/*<Typography >*/}
-                    <RadioGroupStyle row={false}  aria-label="withdraw" name="withdraw" value={upColor}
-                                onChange={handleColorChange}>
-                        {Object.keys(UpColor).map((key) => {
-                            return <FormControlLabel key={key} value={key} control={<Radio/>}
-                                                     label={updown({key})}/>
-                        })}
-                    </RadioGroupStyle>
-                    {/*<ToggleButtonGroup exclusive {...{*/}
-                    {/*    ...rest,*/}
-                    {/*    t,*/}
-                    {/*    tgItemJSXs: [*/}
-                    {/*        {value: UpColor.green, JSX:<>UP</>,tlabel: 'green up'},*/}
-                    {/*        {value: UpColor.red, JSX:<>Down</>,tlabel: 'red up'}],*/}
-                    {/*    value: upColor,*/}
-                    {/*    handleChange:handleColorChange,*/}
-                    {/*    size: 'small'*/}
-                    {/*}}/>*/}
+                <RadioGroupStyle row={false} aria-label="withdraw" name="withdraw" value={upColor}
+                                 onChange={handleColorChange}>
+                    {Object.keys(UpColor).map((key) => {
+                        return <>
+                            <FormControlLabel key={key} value={key} control={<Radio/>}
+                                              label={updown({key})}/>
+                        </>
+
+                    })}
+                </RadioGroupStyle>
+                {/*<ToggleButtonGroup exclusive {...{*/}
+                {/*    ...rest,*/}
+                {/*    t,*/}
+                {/*    tgItemJSXs: [*/}
+                {/*        {value: UpColor.green, JSX:<>UP</>,tlabel: 'green up'},*/}
+                {/*        {value: UpColor.red, JSX:<>Down</>,tlabel: 'red up'}],*/}
+                {/*    value: upColor,*/}
+                {/*    handleChange:handleColorChange,*/}
+                {/*    size: 'small'*/}
+                {/*}}/>*/}
                 {/*</Typography>*/}
 
                 {/*<StyledSwitchColor checked={upColor === UpColor.green} color="default"*/}
@@ -222,8 +224,9 @@ export const SettingPanel = withTranslation(['common', 'layout'],{withRef:true})
                 <Typography variant={'body1'} component={'p'} color={'textSecondary'}>{t('labelTheme')}</Typography>
             </Grid>
             <Grid item xs={8} display={'flex'} flexDirection={'column'} justifyContent={'center'}
-                  alignItems={'flex-end'} alignSelf={'stretch'} >
-                <StyledSwitch checked={themeMode === ThemeType.dark } aria-label={t('change theme')}  onClick={handleThemeClick}></StyledSwitch>
+                  alignItems={'flex-end'} alignSelf={'stretch'}>
+                <StyledSwitch checked={themeMode === ThemeType.dark} aria-label={t('change theme')}
+                              onClick={handleThemeClick}></StyledSwitch>
             </Grid>
         </Grid>
     </BoxStyle>
