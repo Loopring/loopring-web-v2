@@ -240,13 +240,18 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
     const handlePanelEvent = useCallback(async (data: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {
-            if (data.to === 'button' && walletLayer1 && data?.tradeData?.belong) {
-                const walletInfo = walletLayer1[data?.tradeData?.belong]
-                // myLog('got!!!! data:', data.to, data.tradeData, walletInfo)
-                updateDepositData( { belong: data.tradeData?.belong, 
-                    tradeValue: data.tradeData?.tradeValue, 
-                    balance: walletInfo.count
-                })
+            if (data.to === 'button') {
+                if (walletLayer1 && data?.tradeData?.belong) {
+                    const walletInfo = walletLayer1[data?.tradeData?.belong]
+                    // myLog('got!!!! data:', data.to, data.tradeData, walletInfo)
+                    updateDepositData({
+                        belong: data.tradeData?.belong,
+                        tradeValue: data.tradeData?.tradeValue,
+                        balance: walletInfo.count
+                    })
+                } else {
+                    updateDepositData({ belong: undefined, tradeValue: 0, balance: 0 })
+                }
             }
             res();
         })

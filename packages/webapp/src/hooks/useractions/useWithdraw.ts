@@ -357,8 +357,18 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         },
         handlePanelEvent: async (data: SwitchData<R>, switchType: 'Tomenu' | 'Tobutton') => {
             return new Promise((res: any) => {
-                if (data?.tradeData?.belong) {
-                    updateWithdrawData(data.tradeData)
+
+                if (data.to === 'button') {
+                    if (walletMap2 && data?.tradeData?.belong) {
+                        const walletInfo = walletMap2[data?.tradeData?.belong as string]
+                        updateWithdrawData({
+                            belong: data.tradeData?.belong,
+                            tradeValue: data.tradeData?.tradeValue,
+                            balance: walletInfo.count
+                        })
+                    } else {
+                        updateWithdrawData({ belong: undefined, tradeValue: undefined, balance: undefined })
+                    }
                 }
 
                 res();
