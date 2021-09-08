@@ -5,13 +5,15 @@ const initialWithdrawState: WithdrawData = {
     belong: undefined,
     tradeValue: 0,
     balance: 0,
+    address: undefined,
 }
 
 const initialTransferState: TransferData = {
     belong: undefined,
     tradeValue: 0,
     balance: 0,
-    address: ''
+    address: undefined,
+    memo: undefined,
 }
 
 const initialDepositState: DepositData = {
