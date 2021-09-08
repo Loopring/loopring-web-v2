@@ -1,11 +1,10 @@
 import { Trans, WithTranslation } from 'react-i18next';
 import React, { ChangeEvent } from 'react';
-import { Grid, ListItemText, Typography, Box } from '@mui/material';
+import { Grid, Typography, Box, IconProps } from '@mui/material';
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
-// import { Link as RouterLink } from 'react-router-dom';
 import { CloseIcon, DropDownIcon, globalSetup, IBData, HelpIcon } from '@loopring-web/common-resources';
-import { Button, IconClearStyled, MenuItem, TextField, TradeBtnStatus, TypographyGood } from '../../index';
+import { Button, IconClearStyled, TextField, TradeBtnStatus } from '../../index';
 import { PopoverPure } from '../../'
 import { TransferViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
@@ -17,11 +16,11 @@ const FeeTokenItemWrapper = styled(Box)`
     background-color: var(--color-global-bg);
 `
 
-const DropdownIconStyled = styled(DropDownIcon)`
+const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
     transform: rotate(${({status}: any) => {
-        return status === 'down' ? '0deg': '180deg'
-    }});
-` as any
+    return status === 'down' ? '0deg': '180deg'
+}});
+` as (props:IconProps& {status:string})=>JSX.Element
 
 export const TransferWrapNew = <T extends IBData<I>,
     I>({
@@ -38,8 +37,7 @@ export const TransferWrapNew = <T extends IBData<I>,
            assetsData,
            ...rest
        }: TransferViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
-    // const [_chargeFeeToken, setChargeFeeToken] = React.useState<any | undefined>(
-    //     chargeFeeToken && chargeFeeTokenList.length ? chargeFeeTokenList[ chargeFeeToken as any ] : undefined);
+    
     const inputBtnRef = React.useRef();
     const getDisabled = () => {
         if (disabled || tradeData === undefined || walletMap === undefined || coinMap === undefined || isFeeNotEnough) {
@@ -55,7 +53,7 @@ export const TransferWrapNew = <T extends IBData<I>,
 
     const [address, setAddress] = React.useState<string | undefined>(addressDefault ? addressDefault : '');
     const [addressError, setAddressError] = React.useState<{ error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined>();
-    // const [feeIndex, setFeeIndex] = React.useState<any | undefined>(0);
+    
     const [memo, setMemo] = React.useState('');
     const [feeToken, setFeeToken] = React.useState('')
     const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
@@ -73,8 +71,6 @@ export const TransferWrapNew = <T extends IBData<I>,
     const getTokenFee = React.useCallback((token: string) => {
         return toggleData.find(o => o.key === token)?.fee || 0
     }, [toggleData])
-
-    // const fee = toggleData.find(o => o.key === feeToken)?.fee || '--'
     
     const debounceAddress = React.useCallback(_.debounce(({address}: any) => {
         if (handleOnAddressChange) {
@@ -97,35 +93,15 @@ export const TransferWrapNew = <T extends IBData<I>,
         setMemo(e.target.value)
     }, [])
 
-    // const _handleFeeChange = React.useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    //     const index = e.target ? Number(e.target.value) : 0;
-    //     setFeeIndex(index)
-    //     if (handleFeeChange) {
-    //         handleFeeChange(chargeFeeTokenList[ index ]);
-    //     }
-    // }, [chargeFeeTokenList, handleFeeChange]);
-
-    // const addressInput = React.useRef();
     const handleClear = React.useCallback(() => {
-        // @ts-ignore
-        // addressInput?.current?.value = "";
         setAddress('')
-    }, [])
-
-    // const getTokenFee = React.useCallback(())
-
-    // const getToggleData = React.useCallback(() => {
-    //     if (!!chargeFeeTokenList.length) {
-    //         return chargeFeeTokenList.map(({belong, fee}) => {
-    //             console.log({belong, fee})
-    //             return ({
-    //                 key: belong,
-    //                 value: belong,
-    //             })
-    //         })
-    //     }
-    //     return []
-    // }, [chargeFeeTokenList])
+        if (handleAddressError) {
+            const error = handleAddressError('')
+            if (error?.error) {
+                setAddressError(error)
+            }
+        }
+    }, [setAddress, handleAddressError, setAddressError])
 
     React.useEffect(() => {
         if (!!chargeFeeTokenList.length && !feeToken && assetsData) {
@@ -146,7 +122,7 @@ export const TransferWrapNew = <T extends IBData<I>,
         return tokenAssets && Number(tokenAssets) > fee
     }, [assetsData])
 
-    const handleToggleChange = React.useCallback((e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
+    const handleToggleChange = React.useCallback((_e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
         if (value === null) return
         const currFeeRaw = toggleData.find(o => o.key === value)?.__raw__ || '--'
         setFeeToken(value)
@@ -261,7 +237,7 @@ export const TransferWrapNew = <T extends IBData<I>,
                 {t('transferLabelFee')}：
                 <Box component={'span'} display={'flex'} alignItems={'center'} style={{ cursor: 'pointer' }} onClick={() => setDropdownStatus(prev => prev === 'up' ? 'down' : 'up')}>
                     {getTokenFee(feeToken) || '--'} {feeToken}
-                    <DropdownIconStyled status={dropdownStatus} fontSize={'large'} />
+                    <DropdownIconStyled  status={dropdownStatus} fontSize={'medium'} />
                     <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
                         {isFeeNotEnough && t('transferLabelFeeNotEnough')}
                     </Typography>

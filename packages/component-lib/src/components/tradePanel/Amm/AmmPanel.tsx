@@ -37,6 +37,7 @@ const TabPanelBtn = ({t, value, handleChange}: WithTranslation & any) => {
         <Tab label={t('labelLiquidityWithdraw')} value={1}/>
     </Tabs>
 }
+
 export const AmmPanel = withTranslation('common', {withRef: true})(<T extends AmmJoinData<C extends IBData<I> ? C : IBData<I>>,
     TW extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
     I,
@@ -71,6 +72,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
         height,
         width,
         anchors,
+        accStatus,
         ...rest
     }: AmmProps<T, TW, I, ACD, C> & WithTranslation) => {
 
@@ -153,6 +155,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
                 ammData: ammDepositData,
                 tokenAProps: {...tokenDepositAProps},
                 tokenBProps: {...tokenDepositBProps},
+                accStatus,
             }} />, [
                 rest, ammChgDepositData,
                 tokenDepositAProps, tokenDepositBProps, anchors,
@@ -160,6 +163,7 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
                 ammDepositBtnStatus,
                 ammDepositBtnI18nKey,
                 ammCalcDataDeposit,
+                accStatus,
                 onAmmAddClick,
                 handleError,
             ]),

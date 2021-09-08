@@ -59,7 +59,7 @@ const StyledHeadMenuItem = styled(MenuItem)<MenuItemProps<any>>`
   position: relative;
   &.Mui-selected,&:hover,&.Mui-selected:hover {
     background: inherit;
-    color: var(--color-text-primary);
+    color: var(--color-text-button-select);
   }
   
   &.layer-0 {

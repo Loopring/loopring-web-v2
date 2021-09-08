@@ -1,5 +1,5 @@
 import { InputButtonProps } from '../../basic-lib';
-import { AmmJoinData, AmmExitData, CoinInfo, IBData } from '@loopring-web/common-resources';
+import { AmmJoinData, AmmExitData, CoinInfo, IBData, AccountStatus } from '@loopring-web/common-resources';
 import { AmmChgData, AmmDepositBaseProps, AmmWithdrawBaseProps, AmmWithdrawChgData } from '../components';
 
 export enum AmmPanelType {
@@ -40,6 +40,7 @@ export type AmmProps<T extends AmmJoinData<C extends IBData<I> ? C : IBData<I>>,
     onRemoveChangeEvent?: (data: AmmWithdrawChgData<TW>) => AmmWithdrawChgData<TW>,
     refreshRef: React.Ref<any>,
     onRefreshData?: () => void,
+    accStatus?: AccountStatus,
 }
     & AmmWithdrawBaseProps<TW, I>
     & AmmDepositBaseProps<T, I>

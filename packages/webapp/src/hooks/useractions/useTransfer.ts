@@ -6,7 +6,7 @@ import { ChainId, ConnectorError } from 'loopring-sdk'
 import { connectProvides } from '@loopring-web/web3-provider';
 
 import { AccountStep, SwitchData, TransferProps, useOpenModals, } from '@loopring-web/component-lib';
-import { AccountStatus, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
+import { AccountStatus, CoinMap, IBData, SagaStatus, WalletMap } from '@loopring-web/common-resources';
 
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
@@ -24,7 +24,6 @@ import { useWalletInfo } from 'stores/localStore/walletInfo';
 import { checkErrorInfo } from './utils';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useModalData } from 'stores/router';
-import store from 'stores';
 import { isAccActivated } from './checkAccStatus';
 import { getFloatValue } from 'utils/formatter_tool';
 
@@ -46,7 +45,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const { modals: { isShowTransfer: { symbol, isShow } } } = useOpenModals()
 
     const { tokenMap, totalCoinMap, } = useTokenMap();
-    const { account } = useAccount()
+    const { account, status: accountStatus, } = useAccount()
     const { exchangeInfo, chainId } = useSystem();
 
     const { transferValue, updateTransferData, resetTransferData, } = useModalData()
@@ -63,16 +62,13 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         addrStatus,
     } = useAddressCheck()
 
-    React.useEffect(() => {
-        myLog('enter reset address of transfer!!!!')
-        setAddress(transferValue.address as string)
-    }, [transferValue.address])
-
     const { btnStatus, enableBtn, disableBtn, } = useBtnStatus()
 
     React.useEffect(() => {
 
         const tradeValue = getFloatValue(transferValue?.tradeValue)
+
+        // myLog('tradeValue:', tradeValue, ' isExceedMax:', isExceedMax, ' addrStatus:', addrStatus)
 
         if (chargeFeeList && chargeFeeList?.length > 0 && !!address && tradeValue
             && addrStatus === AddressError.NoError && !isExceedMax) {
@@ -122,7 +118,15 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         if (isShow) {
             resetDefault()
         }
-    }, [isShow, tranferFeeInfo])
+    }, [isShow])
+
+    React.useEffect(() => {
+
+        if (isShow && accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
+            setAddress(transferValue.address ? transferValue.address : '')
+        }
+
+    }, [setAddress, isShow, transferValue.address, accountStatus, account.readyState])
 
     const { checkHWAddr, updateDepositHashWrapper, } = useWalletInfo()
 
@@ -206,7 +210,6 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         }
     }, [setLastRequest, setShowAccount, updateDepositHashWrapper, account,])
 
-
     const onTransferClick = useCallback(async (transferValue, isFirstTime: boolean = true) => {
         const { accountId, accAddress, readyState, apiKey, eddsaKey } = account
 
@@ -276,10 +279,15 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     updateTransferData({
                         belong: data.tradeData?.belong,
                         tradeValue: data.tradeData?.tradeValue,
-                        balance: walletInfo.count
+                        balance: walletInfo.count,
+                        address: '*',
                     })
                 } else {
-                    updateTransferData({ belong: undefined, tradeValue: undefined, balance: undefined })
+                    updateTransferData({ 
+                        belong: undefined, 
+                        tradeValue: undefined, 
+                        balance: undefined,
+                        address: '*', })
                 }
             }
 
@@ -298,6 +306,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const { t } = useTranslation()
 
     const transferProps = {
+        addressDefault: address,
         tradeData: transferValue as any,
         coinMap: totalCoinMap as CoinMap<T>,
         walletMap: walletMap as WalletMap<T>,
@@ -320,8 +329,8 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             setIsExceedMax(false)
             return { error: false, message: '' }
         },
-        handleAddressError: (_value: any) => {
-            updateTransferData({ address: _value, balance: -1, tradeValue: -1 })
+        handleAddressError: (value: any) => {
+            updateTransferData({ address: value, balance: -1, tradeValue: -1 })
             return { error: false, message: '' }
         }
     }

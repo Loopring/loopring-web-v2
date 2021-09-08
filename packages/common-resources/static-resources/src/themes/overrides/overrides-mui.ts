@@ -691,10 +691,14 @@ export const MuiListItem = ({colorBase}: any) => {
                 '&.Mui-selected, &.Mui-focusVisible': {
                     backgroundColor: 'transparent',
                     color: colorBase.textButtonSelect,
-                    border: 'none',
+                    // " .MuiTypography-body1":{
+                    //     color: colorBase.textButtonSelect,
+                    // },
                     '&:hover': {
                         color: colorBase.textButtonSelect,
-                        border: 'none',
+                        // " .MuiTypography-body1":{
+                        //     color: colorBase.textButtonSelect,
+                        // },
                     }
                 },
                 ' .MuiListItemAvatar-root': {
@@ -723,8 +727,12 @@ export const MuiMenuItem = ({colorBase, themeMode}: any) => {
                 paddingLeft: pxToRem(12),
                 paddingRight: pxToRem(12),
                 color: colorBase.textSecondary,
-                '&.Mui-selected':{
+                '&.Mui-selected, &.Mui-selected.Mui-focusVisible':{
                     background: colorBase.boxHover,
+                    color: colorBase.textButtonSelect,
+                    // " .MuiTypography-body1":{
+                    //     color: colorBase.textButtonSelect,
+                    // },
                 },
 
                 // backgroundColor: `${colorBase.borderHover} !important`,

@@ -29,13 +29,13 @@ const Styled = styled(Box)`
 const InputStyled = styled(CurrencyInput)`
   text-align: right;
   color: var(--color-text-primary);
-
+  
   ::placeholder {
     color: var(--color-text-secondary);
   }
-;
   width: 48px; //calc(100% - 2rem);
   height: 100%; //var(--btn-Input-height);
+  min-height:24px;
   border: 0;
   margin: 0;
   border-top-left-radius: 0px;

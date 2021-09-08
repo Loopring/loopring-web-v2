@@ -16,8 +16,8 @@ import { usePopupState } from 'material-ui-popup-state/hooks';
 import { Avatar, Grid, Typography } from '@mui/material';
 import {
     BtnPercentage,
-    Button,
     InputCoin,
+    ButtonStyle,
     LinkActionStyle,
     PopoverPure,
     TradeBtnStatus
@@ -318,7 +318,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                     </Grid>
                 </Grid>
                 <Grid item>
-                    <Button variant={'contained'} size={'large'} color={'primary'} onClick={() => {
+                    <ButtonStyle variant={'contained'} size={'large'} color={'primary'} onClick={() => {
                         onAmmRemoveClick(ammData)
                         setSelectedPercentage(0)
                     }}
@@ -326,7 +326,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                         disabled={getDisabled() || ammWithdrawBtnStatus === TradeBtnStatus.DISABLED || ammWithdrawBtnStatus === TradeBtnStatus.LOADING || error.error}
                         fullWidth={true}>
                         {label}
-                    </Button>
+                    </ButtonStyle>
                 </Grid>
             </Grid>
         </Grid>

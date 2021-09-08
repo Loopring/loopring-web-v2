@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { Box, IconButton, LinearProgress, linearProgressClasses } from '@mui/material';
 import { css } from '@emotion/react';
+import { Button } from '../../basic-lib';
 
 
 export const BorderLinearProgress = styled(LinearProgress)(({theme}) => ({
@@ -178,3 +179,7 @@ export const CountDownStyled = styled(Box)`
       }
     }
 ` as typeof Box
+
+export const ButtonStyle = styled(Button)`
+   font-size: 1.6rem;
+`as typeof Button

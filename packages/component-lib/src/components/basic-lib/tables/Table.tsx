@@ -8,7 +8,7 @@ import React from "react";
 import { Column, DataGridProps, SortableHeaderCell, SortableHeaderCellProps, TableProps } from './';
 import { EmptyDefault } from '../empty';
 // import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
-import { LoadingIcon } from '@loopring-web/common-resources'
+import { LoadingIcon, myLog } from '@loopring-web/common-resources'
 import { Box, IconButton } from '@mui/material';
 
 interface TableWrapperStyledProps {
@@ -257,6 +257,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
     `
 
     /*** sort handle end ***/
+
     return <TableWrapperStyled showloading={!!showloading ? 'true' : 'false'}>
         <DataGridStyled
             {...rest}
@@ -269,7 +270,6 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
             rowHeight={rowHeight ? rowHeight : 44}
             onRowsChange={setRows}
             onSortColumnsChange={onSortColumnsChange}
-            // sortDirection={sortDirection}
             rowRenderer={rowRenderer as any}
             sortColumns={sortColumns}
             onRowClick={onRowClick}
