@@ -265,18 +265,27 @@ export const makeMyAmmWithStat = <C extends { [ key: string ]: any }>
     let balanceA, balanceB, balanceDollar, balanceYuan;
     if (_walletMap && _walletMap[ 'LP-' + coinA + '-' + coinB ] && forex) {
         // @ts-ignore
-        const ratio = new BigNumber(_walletMap[ 'LP-' + coinA + '-' + coinB ].count).div(ammDetail.totalLPToken);
-        balanceA = ratio.times(volumeToCountAsBigNumber(coinA, ammDetail.totalA ? ammDetail.totalA : 0) || 1);
-        balanceB = ratio.times(volumeToCountAsBigNumber(coinB, ammDetail.totalB ? ammDetail.totalB : 0) || 1);
+        const totalLpAmount = _walletMap[ 'LP-' + coinA + '-' + coinB ].count || 0
+        // const ratio = new BigNumber(_walletMap[ 'LP-' + coinA + '-' + coinB ].count).div(ammDetail.totalLPToken);
+        const ratio = totalLpAmount / (ammDetail.totalLPToken || 1);
+        // balanceA = ratio.times(volumeToCountAsBigNumber(coinA, ammDetail.totalA ? ammDetail.totalA : 0) || 1);
+        balanceA = ratio * (ammDetail.totalA ||0);
+        // balanceB = ratio.times(volumeToCountAsBigNumber(coinB, ammDetail.totalB ? ammDetail.totalB : 0) || 1);
+        balanceB = ratio * (ammDetail.totalB || 0);
         // @ts-ignore
-        balanceDollar = balanceA.times(faitPrices[ coinA ] ? faitPrices[ coinA ].price : 0).plus(balanceB.times(faitPrices[ coinB ] ? faitPrices[ coinB ].price : 0))
-        balanceYuan = balanceDollar.times(forex);
+        // balanceDollar = balanceA.times(faitPrices[ coinA ] ? faitPrices[ coinA ].price : 0).plus(balanceB.times(faitPrices[ coinB ] ? faitPrices[ coinB ].price : 0))
+        
+        // WARNING! NOT ACCERATE
+        balanceDollar = balanceA * (faitPrices[ coinA ] ? faitPrices[ coinA ].price : 0) + (balanceB * (faitPrices[ coinB ] ? faitPrices[ coinB ].price : 0))
+        balanceYuan = balanceDollar * (forex);
+
         _myAmm = {
             // ...ammDetail,
-            balanceA: balanceA.toNumber(),
-            balanceB: balanceB.toNumber(),
-            balanceYuan: balanceYuan.toNumber(),
-            balanceDollar: balanceDollar.toNumber(),
+            balanceA: balanceA,
+            balanceB: balanceB,
+            balanceYuan: balanceYuan,
+            balanceDollar: balanceDollar,
+            totalLpAmount: totalLpAmount,
         }
     }
     if (ammUserRewardMap && ammUserRewardMap[ 'AMM-' + market ]

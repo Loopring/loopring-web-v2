@@ -162,9 +162,10 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
                 return prev
             }, [] as MyPoolRow<R>[])
 
-            const formattedPoolRow = _myPoolRow.map(o => {
+            const formattedPoolRow = _myPoolRow.map((o: any) => {
                 const market = `LP-${o.ammDetail?.coinAInfo.simpleName}-${o.ammDetail?.coinBInfo.simpleName}`
-                const totalAmmValueDollar = getLpTokenPrice(market)
+                const totalAmount = o.totalLpAmount
+                const totalAmmValueDollar = (getLpTokenPrice(market) || 0) * totalAmount
                 const totalAmmValueYuan = (totalAmmValueDollar || 0) * forex
                 return ({
                     ...o,
