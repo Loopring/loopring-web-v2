@@ -1,4 +1,4 @@
-import { Box, IconButton, Link, } from '@mui/material';
+import { Box, ClickAwayListener, IconButton, Link, } from '@mui/material';
 import {
     DownloadIcon,
     // DropDownIcon,
@@ -12,7 +12,7 @@ import {
 // import React from 'react';
 import { WithTranslation } from 'react-i18next';
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';
-import { bindPopper } from 'material-ui-popup-state/es';
+import { bindPopper, bindTrigger } from 'material-ui-popup-state/es';
 import {
     // OutlineSelect,
     // OutlineSelectItem,
@@ -39,7 +39,7 @@ export const BtnDownload = ({
             //popupId="wallet-connect-notification"
             // popoverContent={}
             //arrowHorizon={{right: 98}}
-            className={'arrow-center'}
+            // className={'arrow-center'}
             anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'center',
@@ -64,29 +64,30 @@ export const BtnNotification = ({t}: any) => <IconButton
 
 export const BtnSetting = ({t, label}: any) => {
     const popupState = usePopupState({variant: 'popover', popupId: 'settingPop'});
-    return <Box>
-        <IconButton aria-label={t(label)} {...bindHover(popupState)}><SettingIcon/></IconButton>
-        <PopoverPure
-            // type={PopoverType.hover}
-            {...bindPopper(popupState)}
-            //popupId="wallet-connect-notification"
-            // popoverContent={}
-            //arrowHorizon={{right: 98}}
-            // className={'arrow-center'}
-            anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-            }}
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'center',
-            }}
-        >
-            <Box margin={2}>
-                <SettingPanel/>
-            </Box>
-        </PopoverPure>
-    </Box>
+    return<Box>
+            <IconButton aria-label={t(label)} {...bindTrigger(popupState)}><SettingIcon/></IconButton>
+            <PopoverPure
+                // type={PopoverType.hover}
+                {...bindPopper(popupState)}
+
+                //popupId="wallet-connect-notification"
+                // popoverContent={}
+                //arrowHorizon={{right: 98}}
+                // className={'arrow-center'}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+            >
+                <ClickAwayListener onClickAway={()=>{popupState.setOpen(false)}}>
+                   <Box margin={2}> <SettingPanel/>  </Box>
+                </ClickAwayListener>
+            </PopoverPure>
+        </Box>
 }
 
 
