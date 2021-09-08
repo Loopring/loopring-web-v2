@@ -1,5 +1,5 @@
 import { InputButtonProps } from '../../../basic-lib';
-import { CoinInfo } from '@loopring-web/common-resources';
+import { AccountStatus, CoinInfo } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../../index';
 
 
@@ -26,6 +26,7 @@ export type AmmDepositExtendProps<T, I, C, ACD> = {
     tokenAProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>,
     tokenBProps?: Partial<InputButtonProps<C, I, CoinInfo<I>>>,
     ammCalcData: ACD,
+    accStatus?: AccountStatus,
 }
 export type AmmDepositWrapProps<T, I, ACD, C> = AmmDepositBaseProps<T, I> & AmmDepositExtendProps<T, I, C, ACD> & {
     ammData: T
