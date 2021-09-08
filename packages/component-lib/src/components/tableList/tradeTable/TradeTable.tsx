@@ -7,7 +7,7 @@ import { Column, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { Filter, FilterTradeTypes } from './components/Filter'
-import { EmptyValueTag, getThousandFormattedNumbers, TableType, TradeTypes } from '@loopring-web/common-resources';
+import { EmptyValueTag, getThousandFormattedNumbers, getValuePrecisionThousand, TableType, TradeTypes } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores';
 import { useDeepCompareEffect } from 'react-use';
 import { Row } from '../poolsTable/Interface';
@@ -113,8 +113,8 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
         formatter: ({row}) => {
             // const tradeType = row[ 'side' ] === TradeTypes.Buy ? t('labelBuy') : t('labelSell')
             const {from, to} = row[ 'amount' ]
-            const fromValue = from.value ? getThousandFormattedNumbers(Number(from.value)) : EmptyValueTag
-            const toValue = to.value ? getThousandFormattedNumbers(Number(to.value)) : EmptyValueTag
+            const fromValue = from.value ? getValuePrecisionThousand(from.value, 4, 2) : EmptyValueTag
+            const toValue = to.value ? getValuePrecisionThousand(to.value, 4, 2) : EmptyValueTag
 
             return (
                 <div className="rdg-cell-value">
@@ -144,7 +144,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
         name: t('labelTradePrice'),
         formatter: ({row}) => {
             const {value} = row[ 'price' ]
-            const renderValue = value ? `${getThousandFormattedNumbers(value)}` : EmptyValueTag
+            const renderValue = value ? (getValuePrecisionThousand(Number(value), 6, 2)) : EmptyValueTag
             return (
                 <div className="rdg-cell-value">
                     {renderValue}
