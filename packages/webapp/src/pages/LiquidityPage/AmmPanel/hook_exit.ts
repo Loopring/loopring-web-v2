@@ -93,56 +93,62 @@ export const useAmmExit = ({
 
         const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_EXIT)
 
+        let fee = undefined
+        let fees = []
+
         if (feeInfo?.fee && feeInfo?.fees) {
-            const _ammCalcData = ammPairInit({
-                fee: feeInfo?.fee,
-                pair,
-                _ammCalcData: {},
-                coinMap,
-                walletMap,
-                ammMap,
-                tickerData: snapShotData?.tickerData,
-                ammPoolSnapshot: snapShotData?.ammPoolSnapshot
-            })
+            fee = feeInfo?.fee.toNumber()
+            fees = feeInfo?.fees
+        }
 
-            const feePatch = {
-                fee: feeInfo?.fee.toNumber(), 
-                fees: feeInfo?.fees,
+        const _ammCalcData = ammPairInit({
+            fee,
+            pair,
+            _ammCalcData: {},
+            coinMap,
+            walletMap,
+            ammMap,
+            tickerData: snapShotData?.tickerData,
+            ammPoolSnapshot: snapShotData?.ammPoolSnapshot
+        })
+
+        const feePatch = {
+            fee,
+            fees,
+        }
+
+        myLog("exit feePatch:", feePatch)
+
+        if (isReset) {
+            updatePageAmmExit({ ammCalcData: _ammCalcData, ...feePatch, })
+        } else {
+            updatePageAmmExit({ ammCalcData: { ...ammCalcData, ..._ammCalcData }, ...feePatch, })
+        }
+
+        if (_ammCalcData.lpCoin && _ammCalcData.myCoinA && _ammCalcData.myCoinB && tokenMap) {
+
+            const baseT = tokenMap[_ammCalcData.myCoinA.belong]
+
+            const quoteT = tokenMap[_ammCalcData.myCoinB.belong]
+
+            setBaseToken(baseT)
+            setQuoteToken(quoteT)
+
+            setBaseMinAmt(baseT ? sdk.toBig(baseT.orderAmounts.minimum).div('1e' + baseT.decimals).toNumber() : undefined)
+            setQuoteMinAmt(quoteT ? sdk.toBig(quoteT.orderAmounts.minimum).div('1e' + quoteT.decimals).toNumber() : undefined)
+
+            const newAmmData = {
+                coinA: _ammCalcData.myCoinA,
+                coinB: _ammCalcData.myCoinB,
+                coinLP: _ammCalcData.lpCoin,
+                slippage: initSlippage,
             }
 
-            myLog("exit feePatch:", feePatch)
+            updatePageAmmExit({ ammData: newAmmData })
 
-            if (isReset) {
-                updatePageAmmExit({ ammCalcData: _ammCalcData, ...feePatch, })
-            } else {
-                updatePageAmmExit({ ammCalcData: { ...ammCalcData, ..._ammCalcData }, ...feePatch, })
-            }
-    
-            if (_ammCalcData.lpCoin && _ammCalcData.myCoinA && _ammCalcData.myCoinB && tokenMap) {
-    
-                const baseT = tokenMap[_ammCalcData.myCoinA.belong]
-    
-                const quoteT = tokenMap[_ammCalcData.myCoinB.belong]
-    
-                setBaseToken(baseT)
-                setQuoteToken(quoteT)
-    
-                setBaseMinAmt(baseT ? sdk.toBig(baseT.orderAmounts.minimum).div('1e' + baseT.decimals).toNumber() : undefined)
-                setQuoteMinAmt(quoteT ? sdk.toBig(quoteT.orderAmounts.minimum).div('1e' + quoteT.decimals).toNumber() : undefined)
-    
-                const newAmmData = {
-                    coinA: _ammCalcData.myCoinA,
-                    coinB: _ammCalcData.myCoinB,
-                    coinLP: _ammCalcData.lpCoin,
-                    slippage: initSlippage,
-                }
-    
-                updatePageAmmExit({ ammData: newAmmData })
-    
-            } else {
-                myLog('check:', (_ammCalcData.lpCoin && _ammCalcData.myCoinA && _ammCalcData.myCoinB))
-                myLog('tokenMap:', tokenMap)
-            }
+        } else {
+            myLog('check:', (_ammCalcData.lpCoin && _ammCalcData.myCoinA && _ammCalcData.myCoinB))
+            myLog('tokenMap:', tokenMap)
         }
 
     }, [snapShotData, coinMap, tokenMap, ammCalcData, ammMap,
@@ -213,16 +219,13 @@ export const useAmmExit = ({
 
     const handleExit = React.useCallback(async ({ data, ammData, fees, ammPoolSnapshot, tokenMap, account }) => {
 
-        if (!tokenMap || !baseToken || !quoteToken
-            || !ammPoolSnapshot || !account?.accAddress) {
+        if (!tokenMap || !ammMap || !baseToken || !quoteToken || !ammPoolSnapshot) {
             return
         }
 
         const { slippage } = data
 
         const slippageReal = sdk.toBig(slippage).div(100).toString()
-
-        const { ammMap } = store.getState().amm.ammMap
 
         const { market, amm } = sdk.getExistedMarket(marketArray, baseToken.symbol, quoteToken.symbol)
 
@@ -246,7 +249,7 @@ export const useAmmExit = ({
 
             const { volA_show, volB_show, request } = sdk.makeExitAmmPoolRequest2(rawVal.toString(),
                 slippageReal, account.accAddress, fees as sdk.LoopringMap<sdk.OffchainFeeInfo>,
-                ammMap[amm], ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0)
+                ammMap[amm] as any, ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0)
 
             newAmmData['coinA'] = { ...ammData.coinA, tradeValue: volA_show, }
             newAmmData['coinB'] = { ...ammData.coinB, tradeValue: volB_show, }
