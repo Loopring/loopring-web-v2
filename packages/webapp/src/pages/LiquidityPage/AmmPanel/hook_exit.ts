@@ -146,7 +146,7 @@ export const useAmmExit = ({
         const validAmt1 = volA_show ? volA_show >= times * baseMinAmt : false
         const validAmt2 = volB_show ? volB_show >= times * quoteMinAmt : false
 
-        myLog(volA_show, baseMinAmt, volB_show, quoteMinAmt)
+        // myLog(volA_show, baseMinAmt, volB_show, quoteMinAmt)
 
         if (isLoading) {
             return { btnStatus: TradeBtnStatus.LOADING, btnI18nKey: undefined }
