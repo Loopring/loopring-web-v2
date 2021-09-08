@@ -102,7 +102,7 @@ const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
 
     &.Mui-selected, &.Mui-selected + &.Mui-selected {
       // color: var(--color-primary);
-      color: var(--color-text-button-select);
+      color: var(--color-text-button-select)  !important;
       background: var(--color-box) !important;
       //background:  var(--color-disable);
       // border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-primary)'})}
