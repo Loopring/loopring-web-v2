@@ -3,7 +3,6 @@ import React, { ChangeEvent } from 'react';
 import { Grid, Typography, Box, IconProps } from '@mui/material';
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
-// import { Link as RouterLink } from 'react-router-dom';
 import { CloseIcon, DropDownIcon, globalSetup, IBData, HelpIcon } from '@loopring-web/common-resources';
 import { Button, IconClearStyled, TextField, TradeBtnStatus } from '../../index';
 import { PopoverPure } from '../../'
@@ -38,8 +37,7 @@ export const TransferWrapNew = <T extends IBData<I>,
            assetsData,
            ...rest
        }: TransferViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
-    // const [_chargeFeeToken, setChargeFeeToken] = React.useState<any | undefined>(
-    //     chargeFeeToken && chargeFeeTokenList.length ? chargeFeeTokenList[ chargeFeeToken as any ] : undefined);
+    
     const inputBtnRef = React.useRef();
     const getDisabled = () => {
         if (disabled || tradeData === undefined || walletMap === undefined || coinMap === undefined || isFeeNotEnough) {
@@ -55,7 +53,7 @@ export const TransferWrapNew = <T extends IBData<I>,
 
     const [address, setAddress] = React.useState<string | undefined>(addressDefault ? addressDefault : '');
     const [addressError, setAddressError] = React.useState<{ error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined>();
-    // const [feeIndex, setFeeIndex] = React.useState<any | undefined>(0);
+    
     const [memo, setMemo] = React.useState('');
     const [feeToken, setFeeToken] = React.useState('')
     const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')

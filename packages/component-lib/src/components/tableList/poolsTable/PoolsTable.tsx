@@ -13,6 +13,7 @@ import {
     getThousandFormattedNumbers,
     getValuePrecisionThousand,
     globalSetup,
+    myLog,
     // MiningIcon,
     PriceTag,
     // SearchIcon,
@@ -292,23 +293,6 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
             </Typography>
         }
     },
-    // {
-    //     key: 'reward24',
-    //     sortable: false,
-    //     minWidth: 136,
-    //     width: 'auto',
-    //     name: t('label24Reward'),
-    //     formatter: ({row}) => {
-    //         const reward: EmptyValueTag | number = (row.tradeFloat && typeof row.tradeFloat.reward !== 'undefined') ? row.tradeFloat.reward : EmptyValueTag;
-    //         return <Typography
-    //             component={'span'}> {
-    //             reward === EmptyValueTag ? reward :
-    //                 currency === Currency.dollar ?
-    //                     PriceTag.Dollar + getThousandFormattedNumbers(reward)
-    //                     : PriceTag.Yuan + getThousandFormattedNumbers(reward)}
-    //         </Typography>
-    //     }
-    // },
     {
         key: 'APY',
         sortable: false,
@@ -337,7 +321,6 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
     },
 ]
 
-
 export const PoolsTable = withTranslation('tables')(
     <T extends { [ key: string ]: any }>({
                                              t, i18n,
@@ -365,48 +348,12 @@ export const PoolsTable = withTranslation('tables')(
             return popoverState
         }, [])
 
-        // useDeepCompareEffect(() => {
-        //     setTotalData(rawData)
-        // }, [rawData])
-
         const defaultArgs: TableProps<any, any> = {
             rawData,
             columnMode: columnMode({t, i18n, tReady}/* , Currency.dollar */, getPopoverState, coinJson, faitPrices, currency, forex),
             generateRows: (rawData: any) => rawData,
             generateColumns: ({columnsRaw}) => columnsRaw as Column<Row<any>, unknown>[],
         }
-
-
-        // const pageSize = pagination ? pagination.pageSize : 10;
-
-        // const getRenderData = React.useCallback(() => pagination
-        //     ? totalData.slice((page - 1) * pageSize, page * pageSize)
-        //     : totalData
-        //     , [page, pageSize, pagination, totalData])
-
-        // const updateData = React.useCallback(({ filterBy}) => {
-        //     // if (TableType === 'filter') {
-        //     //     setPage(1)
-        //     // }
-        //     // @ts-ignore
-        //     let newData = rawData.filter((row) => {
-        //         if (row && row.coinAInfo) {
-        //             // @ts-ignore
-        //             return RegExp(filterBy, 'ig').test(row.coinAInfo.simpleName) || RegExp(filterBy, 'ig').test(row.coinBInfo.simpleName);
-        //         }
-        //     })
-        //     setTotalData(newData);
-        // }, [rawData]);
-        //
-        // const handleFilterChange = React.useCallback(_.debounce((filterBy: string) => {
-        //     updateData({TableType: TableType.filter, filterBy})
-        // }, wait), []);
-
-        // const _handlePageChange =(page: number) => {
-        //     setPage(page);
-        //     updateData({TableType: TableType.page, currPage: page})
-        //     handlePageChange(page);
-        // }
 
         const onRowClick = React.useCallback((_rowIdx: any, row: any) => {
             const pathname = `/liquidity/pools/coinPair/${row?.coinAInfo?.simpleName + '-' + row?.coinBInfo?.simpleName}`
@@ -417,40 +364,18 @@ export const PoolsTable = withTranslation('tables')(
         }, [history])
 
         return <TableStyled flex={1} flexDirection={'column'} display={'flex'}>
-            {/*{showFilter && <Box display={'flex'} margin={3}>*/}
-            {/*  <OutlinedInput*/}
-            {/*      {...{*/}
-            {/*          placeholder: t('labelFilter'),*/}
-            {/*          value: filterBy,*/}
-            {/*          onChange: (event: any) => {*/}
-            {/*              setFilterBy(event.currentTarget?.value);*/}
-            {/*              handleFilterChange(event.currentTarget?.value);*/}
-            {/*          }*/}
-            {/*      }*/}
-            {/*      }*/}
-            {/*      key={'search'}*/}
-            {/*      className={'search'}*/}
-            {/*      aria-label={'search'}*/}
-            {/*      startAdornment={<InputAdornment position="start">*/}
-            {/*          <SearchIcon/>*/}
-            {/*      </InputAdornment>}*/}
-            {/*  />*/}
-            {/*</Box>}*/}
-            {/*className={'scrollable'}*/}
+
             <Table className={'scrollable'}
                    style={{ height: tableHeight }}
                  {...{
                 ...defaultArgs, t, i18n, tReady, ...rest,
-                rawData: rawData,// getRenderData(),
-                onRowClick: (index, row) => onRowClick(index, row),
-                sortMethod: (sortedRows: any[], sortColumn: string) => {
-                   return  sortMethod(sortedRows,sortColumn)
+                rawData: rawData,
+                onRowClick: (index, row) => {
+                    onRowClick(index, row)
                 },
+                sortMethod: (sortedRows: any[], sortColumn: string) => sortMethod(sortedRows, sortColumn),
                 sortDefaultKey: 'liquidity',
             }}/>
-            {/* {pagination && rawData && rawData.length > 0 && (
-                <TablePagination page={page} pageSize={pageSize} total={totalData.length}
-                                 onPageChange={_handlePageChange}/>
-            )} */}
+            
         </TableStyled>
     })
