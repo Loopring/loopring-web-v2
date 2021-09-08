@@ -34,6 +34,7 @@ import { checkErrorInfo } from './utils';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useModalData } from 'stores/router';
 import { isAccActivated } from './checkAccStatus';
+import { getFloatValue } from 'utils/formatter_tool';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawAlertText: string | undefined,
@@ -82,7 +83,9 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     React.useEffect(() => {
 
-        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && withdrawValue?.tradeValue
+        const tradeValue = getFloatValue(withdrawValue?.tradeValue)
+
+        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && tradeValue
             && addrStatus === AddressError.NoError && !isExceedMax) {
             enableBtn()
         } else {
@@ -371,7 +374,9 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             return { error: false, message: '' }
         },
         handleError: ({ belong, balance, tradeValue }: any) => {
-            if (typeof tradeValue !== 'undefined' && balance < tradeValue || (tradeValue && !balance)) {
+            balance = getFloatValue(balance)
+            tradeValue = getFloatValue(tradeValue)
+            if ((balance > 0 && balance < tradeValue) || (tradeValue && !balance)) {
                 setIsExceedMax(true)
                 return { error: true, message: t('tokenNotEnough', { belong, }) }
             }

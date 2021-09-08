@@ -1,20 +1,20 @@
 export type WithdrawData = {
     belong: string | undefined,
-    tradeValue: number,
-    balance: number,
+    tradeValue: number | undefined,
+    balance: number | undefined,
 }
 
 export type TransferData = {
     belong: string | undefined,
-    tradeValue: number,
-    balance: number,
-    address: string,
+    tradeValue: number | undefined,
+    balance: number | undefined,
+    address: string | undefined,
 }
 
 export type DepositData = {
     belong: string | undefined,
-    tradeValue: number,
-    balance: number,
+    tradeValue: number | undefined,
+    balance: number | undefined,
 }
 
 export type ModalDataStatus = {
