@@ -119,10 +119,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     }, [isShow])
 
     React.useEffect(() => {
-        if (isShow && transferValue.address) {
-            setAddress(transferValue.address)
+        if (isShow) {
+            setAddress(transferValue.address as string)
         }
-    }, [isShow, transferValue.address])
+    }, [isShow, transferValue.address, setAddress, ])
 
     const { checkHWAddr, updateDepositHashWrapper, } = useWalletInfo()
 
