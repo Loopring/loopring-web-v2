@@ -24,6 +24,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     const {sendSocketTopic, socketEnd} = useSocket();
     const [recommendedPairs, setRecommendedPairs] = React.useState<string[]>([])
     const {marketArray, coinMap} = store.getState().tokenMap;
+    const {faitPrices, forex} = store.getState().system
     // const recommendMarkets: string[] = marketArray && recommendedPairs.length === 4 ? recommendedPairs : []
     // const recommendMarkets: string[] = ['LRC-USDC', 'LRC-ETH', 'ETH-USDC', 'USDC-USDT']
     // const _marketArrayWithOutRecommend = marketArray ? marketArray.filter(item => recommendMarkets.findIndex(m => m === item) === -1) : [];
@@ -148,6 +149,8 @@ export function useQuote<C extends { [ key: string ]: string }>() {
                     coinA,
                     coinB,
                 },
+                coinAPriceDollar: faitPrices?.[coinA]?.price || 0,
+                coinAPriceYuan: (faitPrices?.[coinA]?.price || 0) * (forex || 6.5),
             } as QuoteTableRawDataItem;
 
             if (marketPairs.findIndex(m => m === key) !== -1) {
