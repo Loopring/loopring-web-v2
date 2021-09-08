@@ -4,12 +4,11 @@ import {
     EmptyValueTag,
     IBData,
     LinkedIcon,
-    SlippageTolerance,
-    myLog
+    SlippageTolerance
 } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import { AmmDepositWrapProps } from './Interface';
-import { Button, InputCoin, LinkActionStyle, PopoverPure } from '../../../basic-lib';
+import { InputCoin, LinkActionStyle, PopoverPure } from '../../../basic-lib';
 import React from 'react';
 import { usePopupState } from 'material-ui-popup-state/hooks';
 import { Grid, Typography } from '@mui/material';
@@ -20,6 +19,7 @@ import { SvgStyled } from './styled';
 import { useSettings } from '../../../../stores';
 import { Box } from '@mui/material';
 import { useAmmViewData } from './ammViewHook';
+import { ButtonStyle } from '../Styled';
 
 
 export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : IBData<I>>,
@@ -209,7 +209,7 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
                     </Grid>
                 </Grid>
                 <Grid item>
-                    <Button variant={'contained'} size={'large'} color={'primary'} onClick={() => {
+                    <ButtonStyle variant={'contained'} size={'large'} color={'primary'} onClick={() => {
                         onAmmAddClick(ammData)
                     }}
                             loading={!getDisabled() && ammDepositBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
@@ -217,7 +217,7 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
                             fullWidth={true}>
                         {label}
 
-                    </Button>
+                    </ButtonStyle>
                 </Grid>
             </Grid>
         </Grid>
