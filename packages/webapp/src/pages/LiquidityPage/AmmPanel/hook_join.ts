@@ -37,11 +37,13 @@ import { DAYS } from "defs/common_defs";
 // ----------calc hook -------
 
 export const useAmmJoin = ({
+    getFee,
     setToastOpen,
     pair,
     snapShotData,
 }
     : {
+        getFee: (requestType: sdk.OffchainFeeReqType) => any,
         setToastOpen: any,
         pair: { coinAInfo: CoinInfo<string> | undefined, coinBInfo: CoinInfo<string> | undefined },
         snapShotData: { tickerData: sdk.TickerData | undefined, ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined } | undefined
@@ -133,7 +135,7 @@ export const useAmmJoin = ({
 
     const initAmmData = React.useCallback(async (pair: any, walletMap: any, isReset: boolean = false) => {
 
-        const feeInfo = await getJoinFee()
+        const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_JOIN)
 
         if (feeInfo?.fee && feeInfo?.fees) {
             const _ammCalcData = ammPairInit({
@@ -181,41 +183,13 @@ export const useAmmJoin = ({
 
         }
 
-    }, [snapShotData, coinMap, tokenMap, ammCalcData, ammMap,
+    }, [snapShotData, coinMap, tokenMap, ammCalcData, ammMap, getFee,
         updatePageAmmJoin, setBaseToken, setQuoteToken, setBaseMinAmt, setQuoteMinAmt,])
-
-    const getJoinFee = React.useCallback(async () => {
-        if (accountStatus === SagaStatus.UNSET && LoopringAPI.userAPI && pair.coinBInfo?.simpleName
-                && account.readyState === AccountStatus.ACTIVATED && tokenMap) {
-
-            const feeToken: sdk.TokenInfo = tokenMap[pair.coinBInfo.simpleName]
-
-            const requestType = sdk.OffchainFeeReqType.AMM_JOIN
-
-            const request: sdk.GetOffchainFeeAmtRequest = {
-                accountId: account.accountId,
-                requestType,
-                tokenSymbol: pair.coinBInfo.simpleName as string,
-            }
-
-            const { fees } = await LoopringAPI.userAPI.getOffchainFeeAmt(request, account.apiKey)
-
-            const feeRaw = fees[pair.coinBInfo.simpleName] ? fees[pair.coinBInfo.simpleName].fee : 0
-            const fee = sdk.toBig(feeRaw).div('1e' + feeToken.decimals)
-
-            myLog('new join fee:', fee.toString())
-            return {
-                fee, 
-                fees,
-            }
-        }
-
-    }, [accountStatus, account, pair, tokenMap])
 
     const updateJoinFee = React.useCallback(async() => {
 
         if (pair?.coinBInfo?.simpleName && ammCalcData) {
-            const feeInfo = await getJoinFee()
+            const feeInfo = await getFee(sdk.OffchainFeeReqType.AMM_JOIN)
     
             if (feeInfo?.fee && feeInfo?.fees) {
     
@@ -384,13 +358,13 @@ export const useAmmJoin = ({
 
     const walletLayer2Callback = React.useCallback(async() => {
 
-        if (pair?.coinAInfo?.simpleName && snapShotData?.ammPoolSnapshot) {
+        if (pair?.coinBInfo?.simpleName && snapShotData?.ammPoolSnapshot) {
             const { walletMap } = makeWalletLayer2()
             initAmmData(pair, walletMap)
             setIsLoading(false)
         }
 
-    }, [pair?.coinAInfo?.simpleName, snapShotData?.ammPoolSnapshot])
+    }, [pair?.coinBInfo?.simpleName, snapShotData?.ammPoolSnapshot])
 
     useWalletLayer2Socket({ walletLayer2Callback })
 
