@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { AccountStep, DepositProps, SwitchData, useOpenModals } from '@loopring-web/component-lib';
+import { AccountStep, DepositProps, SwitchData, useOpenModals, } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
 import { ChainId, ConnectorError, dumpError400, } from 'loopring-sdk';
@@ -40,7 +40,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
     const updateBtnStatus = React.useCallback(() => {
 
-        myLog('!! updateBtnStatus .... depositValue:', depositValue, allowanceInfo?.tokenInfo)
+        // myLog('!! updateBtnStatus .... depositValue:', depositValue, allowanceInfo?.tokenInfo)
 
         resetBtnInfo()
 
@@ -63,35 +63,34 @@ export const useDeposit = <R extends IBData<T>, T>(): {
     }, [depositValue?.belong, depositValue?.tradeValue, depositValue?.balance, allowanceInfo?.tokenInfo.symbol])
 
     const walletLayer1Callback = React.useCallback(() => {
-        if (!depositValue.belong) {
 
-            if (symbol && walletLayer1) {
+        if (symbol && walletLayer1) {
 
-                updateDepositData({
-                    belong: symbol as any,
-                    balance: walletLayer1[symbol]?.count,
-                    tradeValue: undefined,
-                })
+            updateDepositData({
+                belong: symbol as any,
+                balance: walletLayer1[symbol]?.count,
+                tradeValue: undefined,
+            })
 
-            } else {
-                if (walletLayer1) {
-                    const keys = Reflect.ownKeys(walletLayer1)
-                    for (var key in keys) {
-                        const keyVal = keys[key] as any
-                        const walletInfo = walletLayer1[keyVal]
-                        if (sdk.toBig(walletInfo.count).gt(0)) {
+        } else {
+            if (!depositValue.belong && walletLayer1) {
+                const keys = Reflect.ownKeys(walletLayer1)
+                for (var key in keys) {
+                    const keyVal = keys[key] as any
+                    const walletInfo = walletLayer1[keyVal]
+                    if (sdk.toBig(walletInfo.count).gt(0)) {
 
-                            updateDepositData({
-                                belong: keyVal as any,
-                                tradeValue: 0,
-                                balance: walletInfo.count,
-                            })
+                        updateDepositData({
+                            belong: keyVal as any,
+                            tradeValue: 0,
+                            balance: walletInfo.count,
+                        })
 
-                            return
-                        }
+                        return
                     }
                 }
             }
+
         }
     }, [walletLayer1, symbol, updateDepositData, depositValue])
 
@@ -240,11 +239,22 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
     const handlePanelEvent = useCallback(async (data: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {
-            myLog('got!!!! data.tradeData:', data.tradeData)
-            updateDepositData(data.tradeData)
+            if (data.to === 'button') {
+                if (walletLayer1 && data?.tradeData?.belong) {
+                    const walletInfo = walletLayer1[data?.tradeData?.belong]
+                    // myLog('got!!!! data:', data.to, data.tradeData, walletInfo)
+                    updateDepositData({
+                        belong: data.tradeData?.belong,
+                        tradeValue: data.tradeData?.tradeValue,
+                        balance: walletInfo.count
+                    })
+                } else {
+                    updateDepositData({ belong: undefined, tradeValue: 0, balance: 0 })
+                }
+            }
             res();
         })
-    }, [depositValue, updateDepositData])
+    }, [walletLayer1, updateDepositData])
 
     const depositProps = React.useMemo(() => {
         const isNewAccount = account.readyState === AccountStatus.NO_ACCOUNT ? true : false;

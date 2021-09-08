@@ -65,9 +65,9 @@ export const colorBase = ({theme}: any) => css`
 
     /********************CSS shadow *******************/
     --shadow: ${theme.colorBase.shadow};
-    --shadowHeader: ${theme.colorBase.shadowHeader};
+    --shadow-header: ${theme.colorBase.shadowHeader};
     --shadow2: ${theme.colorBase.shadow2};
-    --shadowHover: ${theme.colorBase.shadowHover};
+    --shadow-hover: ${theme.colorBase.shadowHover};
     --shadow3: ${theme.colorBase.shadow3};
 
     /********************Case for special*******************/
@@ -98,7 +98,7 @@ export const scrollbarDefault = ({theme}: any) => css`
     box-shadow:var(--shadow)
   }
   .MuiPaper-elevation4{
-    box-shadow:var(--shadowHeader)
+    box-shadow:var(--shadow-header)
   }
   
   //::-webkit-scrollbar { width: 8px; height: 3px; position: absolute}
@@ -227,6 +227,7 @@ export const globalCss = ({theme}: any) => css`
     --btn-icon-size-small: 24px;
     --btn-icon-size: 36px;
     --svg-size: 14px;
+    --svg-size-cover: 32px;
     --svg-size-large: 24px;
     --swap-box-height: 580px; /** js used also **/
     --panel-setting-height: 680px;

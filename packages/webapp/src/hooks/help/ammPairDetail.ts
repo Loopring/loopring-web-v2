@@ -20,7 +20,9 @@ export function ammPairInit({
     }
 
     let coinACount = 0, coinBCount = 0, percentage = 0
-    if (pair.coinAInfo) {
+    if (pair.coinBInfo) {
+
+        _ammCalcData.fee = fee.toString() + ' ' + pair.coinBInfo.simpleName
 
         _ammCalcData.myCoinA = {
             belong: pair.coinAInfo.simpleName,
