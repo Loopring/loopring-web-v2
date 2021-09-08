@@ -35,6 +35,7 @@ import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useModalData } from 'stores/router';
 import { isAccActivated } from './checkAccStatus';
 import { getFloatValue } from 'utils/formatter_tool';
+import { AnyAsyncThunk } from '@reduxjs/toolkit/dist/matchers';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawAlertText: string | undefined,
@@ -148,6 +149,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     belong: symbol as any,
                     balance: walletMap2[symbol]?.count,
                     tradeValue: undefined,
+                    address: '*',
                 })
             }
 
@@ -162,6 +164,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                             belong: keyVal as any,
                             tradeValue: 0,
                             balance: walletInfo.count,
+                            address: '*',
                         })
                         break
                     }
@@ -177,6 +180,30 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             resetDefault();
         }
     }, [isShow])
+
+    React.useEffect(() => {
+        if (accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
+        } else {
+            setShowWithdraw({ isShow: false })
+        }
+    }, [accountStatus, account.readyState])
+
+    React.useEffect(() => {
+
+        if (isShow && accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
+            if (withdrawValue.address) {
+                setAddress(withdrawValue.address)
+            } else {
+                setAddress(account.accAddress)
+                updateWithdrawData({
+                    address: account.accAddress,
+                    balance: -1,
+                    tradeValue: -1,
+                })
+            }
+        }
+
+    }, [setAddress, isShow, withdrawValue.address, accountStatus, account.readyState])
 
     useWalletLayer2Socket({ walletLayer2Callback })
 
@@ -263,7 +290,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     }, [setLastRequest, setShowAccount, updateDepositHashWrapper, account])
 
-    const handleWithdraw = React.useCallback(async (inputValue: R, address, isFirstTime: boolean = true) => {
+    const handleWithdraw = React.useCallback(async (inputValue: any, address, isFirstTime: boolean = true) => {
 
         const { accountId, accAddress, readyState, apiKey, eddsaKey } = account
 
@@ -324,18 +351,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     }, [account, tokenMap, exchangeInfo, withdrawType2, withdrawFeeInfo, withdrawValue, setShowAccount])
 
-    React.useEffect(() => {
-        if (accountStatus === SagaStatus.UNSET) {
-            if (account.readyState === AccountStatus.ACTIVATED) {
-                if (account.accAddress) {
-                    setAddress(account.accAddress)
-                }
-            } else {
-                setShowWithdraw({ isShow: false })
-            }
-        }
-    }, [accountStatus, account.readyState])
-
     const withdrawProps: any = {
         addressDefault: address,
         tradeData: withdrawValue as any,
@@ -346,16 +361,16 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         withdrawTypes,
         onWithdrawClick: () => {
             if (withdrawValue && withdrawValue.belong) {
-                handleWithdraw(withdrawValue as R, address)
+                handleWithdraw(withdrawValue, address)
             }
             setShowWithdraw({ isShow: false })
         },
         handleFeeChange(value: { belong: any; fee: number | string; __raw__?: any }): void {
-            myLog('handleFeeChange', value)
+            // myLog('handleFeeChange', value)
             setWithdrawFeeInfo(value as any)
         },
         handleWithdrawTypeChange: (value: 'Fast' | 'Standard') => {
-            myLog('handleWithdrawTypeChange', value)
+            // myLog('handleWithdrawTypeChange', value)
             const offchainType = value === WithdrawType.Fast ? sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL : sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
             setWithdrawType(offchainType)
         },
@@ -368,11 +383,21 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                         updateWithdrawData({
                             belong: data.tradeData?.belong,
                             tradeValue: data.tradeData?.tradeValue,
-                            balance: walletInfo.count
+                            balance: walletInfo.count,
+                            address: '*',
                         })
                     } else {
-                        updateWithdrawData({ belong: undefined, tradeValue: undefined, balance: undefined })
+                        updateWithdrawData({ 
+                            belong: undefined, 
+                            tradeValue: undefined, 
+                            balance: undefined,
+                            address: '*', 
+                        })
                     }
+                }
+
+                else {
+                    myLog('handlePanelEvent: ', data)
                 }
 
                 res();
@@ -381,10 +406,9 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         chargeFeeToken: 'ETH',
         chargeFeeTokenList: chargeFeeList,
         handleOnAddressChange: (value: any) => {
-            // myLog('withdraw handleOnAddressChange', value);
         },
-        handleAddressError: (_value: any) => {
-            setAddress(_value)
+        handleAddressError: (value: any) => {
+            updateWithdrawData({ address: value, balance: -1, tradeValue: -1 })
             return { error: false, message: '' }
         },
         handleError: ({ belong, balance, tradeValue }: any) => {

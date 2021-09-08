@@ -2,11 +2,11 @@ import { Trans, WithTranslation } from 'react-i18next';
 import React, { ChangeEvent } from 'react';
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
-import { FormControlLabel, Grid, ListItemText, Radio, RadioGroup, Typography, Box } from '@mui/material';
+import { FormControlLabel, Grid, Radio, RadioGroup, Typography, Box, IconProps } from '@mui/material';
 import { CloseIcon, DropDownIcon, globalSetup, IBData, WithdrawTypes, HelpIcon } from '@loopring-web/common-resources';
 import { PopoverPure } from '../..'
 import { TradeBtnStatus } from '../Interface';
-import { Button, IconClearStyled, MenuItem, TextField,TypographyGood, TypographyStrong } from '../../../index';
+import { Button, IconClearStyled, TextField,TypographyGood, TypographyStrong } from '../../../index';
 import { WithdrawViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import { ToggleButtonGroup } from '../../basic-lib';
@@ -17,11 +17,11 @@ const FeeTokenItemWrapper = styled(Box)`
     background-color: var(--color-global-bg);
 `
 
-const DropdownIconStyled = styled(DropDownIcon)`
-    transform: rotate(${({status}: any) => {
-        return status === 'down' ? '0deg': '180deg'
-    }});
-` as any
+const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
+  transform: rotate(${({status}: any) => {
+    return status === 'down' ? '0deg': '180deg'
+  }});
+` as (props:IconProps& {status:string})=>JSX.Element
 
 export const WithdrawWrapNew = <T extends IBData<I>,
     I>({
@@ -41,7 +41,6 @@ export const WithdrawWrapNew = <T extends IBData<I>,
            ...rest
        }: WithdrawViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
     const [_withdrawType, setWithdrawType] = React.useState<string | undefined>(withdrawType);
-    const [feeIndex, setFeeIndex] = React.useState<any | undefined>(0);
     const [address, setAddress] = React.useState<string | undefined>(addressDefault ? addressDefault : '');
     const [addressError, setAddressError] = React.useState<{ error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined>();
     const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
@@ -100,7 +99,7 @@ export const WithdrawWrapNew = <T extends IBData<I>,
         setIsFeeNotEnough(false)
     }, [chargeFeeTokenList, assetsData, checkFeeTokenEnough, getTokenFee, feeToken])
 
-    const handleToggleChange = React.useCallback((e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
+    const handleToggleChange = React.useCallback((_e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
         if (value === null) return
         setFeeToken(value)
         const currFeeRaw = toggleData.find(o => o.key === value)?.__raw__ || '--'
@@ -118,14 +117,6 @@ export const WithdrawWrapNew = <T extends IBData<I>,
             handleWithdrawTypeChange(e.target?.value as any);
         }
     }, [handleWithdrawTypeChange])
-
-    // const _handleFeeChange = React.useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    //     const index = e.target ? Number(e.target.value) : 0;
-    //     setFeeIndex(index)
-    //     if (handleFeeChange) {
-    //         handleFeeChange(chargeFeeTokenList[ index ]);
-    //     }
-    // }, [chargeFeeTokenList, handleFeeChange])
 
     const debounceAddress = React.useCallback(_.debounce(({address,handleOnAddressChange}: any) => {
         if (handleOnAddressChange) {
@@ -146,10 +137,14 @@ export const WithdrawWrapNew = <T extends IBData<I>,
     }
 
     const handleClear = React.useCallback(() => {
-        // @ts-ignore
-        // addressInput?.current?.value = "";
         setAddress('')
-    }, [])
+        if (handleAddressError) {
+            const error = handleAddressError('')
+            if (error?.error) {
+                setAddressError(error)
+            }
+        }
+    }, [setAddress, setAddressError, handleAddressError])
 
     return <Grid className={walletMap ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"} /* minHeight={540} */
@@ -223,54 +218,14 @@ export const WithdrawWrapNew = <T extends IBData<I>,
                 <CloseIcon />
             </IconClearStyled> : ''}
         </Grid>
-        {/* <Grid item marginTop={2} alignSelf={'stretch'}>
-            <RadioGroup row aria-label="withdraw" name="withdraw" value={_withdrawType}
-                        onChange={(e) => {
-                            _handleWithdrawTypeChange(e);
-                        }
-                        }>
-                {Object.keys(withdrawTypes).map((key) => {
-                    return <FormControlLabel key={key} value={key} control={<Radio/>}
-                                             label={`${t('withdrawTypeLabel' + key)}: ${withdrawTypes[ key ]}Gas`}/>
-                })}
-            </RadioGroup>
-        </Grid> */}
         {/* TODO: check whether there's a need to show deposit fee */}
         <Grid item /* marginTop={2} */ alignSelf={"stretch"}>
-            {/* <TextField
-                id="withdrawFeeType"
-                select
-                label={t('withdrawLabelFee')}
-                value={feeIndex}
-                onChange={(event: React.ChangeEvent<any>) => {
-                    _handleFeeChange(event)
-                }}
-                disabled={chargeFeeTokenList.length ? false : true}
-                SelectProps={{IconComponent: DropDownIcon}}
-                fullWidth={true}
-            >{chargeFeeTokenList.map(({belong, fee}, index) => {
-                // @ts-ignore
-                return <MenuItem key={index} value={index} withnocheckicon={'true'}>
-                    <ListItemText primary={<Typography
-                        sx={{display: 'inline'}}
-                        component="span"
-                        variant="body1"
-                        color="text.primary"
-                    >{belong}</Typography>} secondary={<Typography
-                        sx={{display: 'inline'}}
-                        component="span"
-                        variant="body1"
-                        color="text.primaryLight"
-                    >{fee}</Typography>}/>
-                </MenuItem>
-            })
-            }</TextField> */}
             <Typography component={'span'} display={'flex'} alignItems={'center'} variant={'body1'} color={'var(--color-text-secondary)'} marginBottom={1}>
                 {t('transferLabelFee')}：
                 <Box component={'span'} display={'flex'} alignItems={'center'} style={{ cursor: 'pointer' }} onClick={() => setDropdownStatus(prev => prev === 'up' ? 'down' : 'up')}>
                     {getTokenFee(feeToken) || '--'} {feeToken}
                     <Typography marginLeft={1} color={'var(--color-text-secondary)'}>{t(`withdrawLabel${_withdrawType === 'Fast' ? 'Fast' : 'Standard' }`)}</Typography>
-                    <DropdownIconStyled status={dropdownStatus} fontSize={'large'} />
+                    <DropdownIconStyled status={dropdownStatus} fontSize={'medium'} />
                     <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
                         {isFeeNotEnough && t('transferLabelFeeNotEnough')}
                     </Typography>

@@ -1,12 +1,12 @@
 import React from 'react'
-import { EmptyValueTag, getShowStr, ReverseIcon } from '@loopring-web/common-resources'
+import { AccountStatus, EmptyValueTag, getShowStr, ReverseIcon } from '@loopring-web/common-resources'
 import { IconButtonStyled } from '../Styled'
 
-export function useAmmViewData({error, i18nKey, t, _isStoB, ammCalcData, _onSwitchStob, isAdd, }:
-    {error: any, i18nKey: any, t: any, _isStoB: boolean, ammCalcData: any, _onSwitchStob: any, isAdd: boolean, }) {
+export function useAmmViewData({accStatus, error, i18nKey, t, _isStoB, ammCalcData, _onSwitchStob, isAdd, }:
+    { accStatus?: AccountStatus, error: any, i18nKey: any, t: any, _isStoB: boolean, ammCalcData: any, _onSwitchStob: any, isAdd: boolean, }) {
 
     const label = React.useMemo(()=> {
-        if (isAdd) {
+        if (isAdd && accStatus === AccountStatus.ACTIVATED) {
             if(error.errorA.error || error.errorB.error) {
                 const errorTmp = error.errorA.error ? error.errorA : error.errorB
 
