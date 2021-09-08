@@ -75,7 +75,7 @@ const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
     &:hover {
       //backgroundColor: var(--color-box);
       // color: var(--color-primary);
-      color: var(--color-text-primary);
+      color: var(--color-text-button-select);
       // border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-primary)'})};
       border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-border-hover)'})};
       background: var(--color-box);
@@ -87,7 +87,7 @@ const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
         //background: var(--opacity);
         background: var(--color-box);
         // color: var(--color-primary);
-        color: var(--color-text-primary);
+        color: var(--color-text-button-select);
         // border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-primary)'})};
         border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-border-hover)'})};
       }
@@ -102,7 +102,7 @@ const MuToggleButtonGroupStyle = styled(MuToggleButtonGroup)`
 
     &.Mui-selected, &.Mui-selected + &.Mui-selected {
       // color: var(--color-primary);
-      color: var(--color-text-primary);
+      color: var(--color-text-button-select);
       background: var(--color-box) !important;
       //background:  var(--color-disable);
       // border: ${({theme}) => theme.border.borderConfig({c_key: 'var(--color-primary)'})}
