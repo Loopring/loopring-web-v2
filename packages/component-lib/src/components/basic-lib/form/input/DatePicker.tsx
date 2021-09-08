@@ -1,4 +1,4 @@
-import { Box, experimentalStyled, InputAdornment, TextField } from '@mui/material';
+import { Box, experimentalStyled, IconButton, InputAdornment, TextField } from '@mui/material';
 import styled from "@emotion/styled";
 import {
     DatePicker as MuDatePicker,
@@ -12,53 +12,63 @@ import { TFunction } from 'i18next';
 import { CalendarIcon } from '@loopring-web/common-resources';
 
 const DateTextField = styled(TextField)`
-  position: relative;
-
-  && .MuiInputBase-input {
-    padding-right: 1rem;
-    position: relative;
-    padding-right: 0px;
-    cursor: pointer;
-    pointer-events: none;
+  && .MuiOutlinedInput-root.MuiInputBase-adornedEnd{
+    padding-right: ${({theme}) => theme.unit}px;
   }
-
-  .MuiIconButton-label {
-    width: 100%;
-    display: flex;
-    align-items: baseline;
-    justify-content: inherit;
-  }
-
-  .MuiIconButton-edgeEnd, .MuiInputAdornment-positionEnd {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 1px;
-    padding: 0;
-    height: auto;
-    //text-indent: -.4rem;
-    margin-left: -.4rem;
-    //padding-right: .4rem;
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-
-    & svg {
-      font-size: 1.8rem;
-      color:var(--color-text-primary)
+  && .date-range-adornment{
+   
+    .MuiIconButton-edgeEnd{
+      height: var(--btn-icon-size);
+      width: var(--btn-icon-size);
     }
-
   }
-
-  .MuiInputAdornment-positionEnd.date-range-adornment {
-    pointer-events: none;
-    cursor: pointer;
-    top: 2px;
-    margin-left: -.8rem;
-
-  }
+  //position: relative;
+  //
+  //&& .MuiInputBase-input {
+  //  padding-right: 1rem;
+  //  position: relative;
+  //  padding-right: 0px;
+  //  cursor: pointer;
+  //  pointer-events: none;
+  //}
+  //
+  //.MuiIconButton-label {
+  //  width: 100%;
+  //  display: flex;
+  //  align-items: baseline;
+  //  justify-content: inherit;
+  //}
+  //
+  //.MuiIconButton-edgeEnd, .MuiInputAdornment-positionEnd {
+  //  position: absolute;
+  //  left: 0;
+  //  right: 0;
+  //  bottom: 0;
+  //  top: 1px;
+  //  padding: 0;
+  //  height: auto;
+  //  //text-indent: -.4rem;
+  //  margin-left: -.4rem;
+  //  //padding-right: .4rem;
+  //  width: 100%;
+  //  display: flex;
+  //  justify-content: flex-end;
+  //  align-items: center;
+  //
+  //  & svg {
+  //    font-size: 1.8rem;
+  //    color:var(--color-text-primary)
+  //  }
+  //
+  //}
+  //
+  //.MuiInputAdornment-positionEnd.date-range-adornment {
+  //  pointer-events: none;
+  //  cursor: pointer;
+  //  top: 2px;
+  //  margin-left: -.8rem;
+  //
+  //}
 
 `;
 
@@ -72,6 +82,7 @@ export const DateRangePicker = experimentalStyled(({...props}: DateRangePickerPr
 
     return <MuDateRangePicker
         {...props}
+        disableFuture={props.disableFuture ? props.disableFuture : true}
         calendars={props.calendars ? props.calendars : 2}
         mask={props.mask ? props.mask : "__-__-__"}
         inputFormat={props.inputFormat ? props.inputFormat : 'YY-MM-DD'}
@@ -80,27 +91,28 @@ export const DateRangePicker = experimentalStyled(({...props}: DateRangePickerPr
         renderInput={(startProps, endProps) => {
             startProps.InputProps = {
                 ...startProps.InputProps, endAdornment: (
-                    <InputAdornment position="end" component={'button'} className={'date-range-adornment'}>
-                        <span className={'MuiIconButton-label'}>
+                    <InputAdornment variant={'standard'} position="end"  className={'date-range-adornment'}>
+                        <IconButton edge={'end'} size={'medium'}>
                             <CalendarIcon/>
-                        </span>
+                        </IconButton>
+
                     </InputAdornment>
                 )
             }
             endProps.InputProps = {
                 ...endProps.InputProps, endAdornment: (
-                    <InputAdornment position="end" component={'button'} className={'date-range-adornment'}>
-                        <span className={'MuiIconButton-label'}>
+                    <InputAdornment variant={'standard'} position="end"  className={'date-range-adornment'}>
+                        <IconButton  edge={'end'} size={'medium'}>
                             <CalendarIcon/>
-                        </span>
+                        </IconButton>
                     </InputAdornment>
                 )
             }
             return (<>
-                <DateTextField {...{...startProps, helperText: null, label: undefined}} placeholder={'YY-MM-DD'}/>
+                <DateTextField ref={startProps.inputRef} {...{...startProps, helperText: null, label: undefined}} placeholder={'YY-MM-DD'}/>
                 <Box sx={{ mx: 2 }}> - </Box>
                 {/*<DateRangeDelimiterStyled>-</DateRangeDelimiterStyled>*/}
-                <DateTextField {...{...endProps, helperText: null, label: undefined}} placeholder={'YY-MM-DD'}/>
+                <DateTextField ref={endProps.inputRef}  {...{...endProps, helperText: null, label: undefined}} placeholder={'YY-MM-DD'}/>
             </>)
         }
         }
@@ -123,8 +135,9 @@ export const DatePicker = styled(({
     openTo={props.openTo ? props.openTo : 'day' }
     views={props.views ? props.views : ["year", "day"]}
     value={value}
-    OpenPickerButtonProps={props.OpenPickerButtonProps}
+    // OpenPickerButtonProps={props.OpenPickerButtonProps}
     components={{OpenPickerIcon:CalendarIcon}}
+    desktopModeMediaQuery={'@media (min-width: 720px)'}
     // openPicker={()=>{}}
     // openPickerIcon={<CalendarIcon/>}
     renderInput={(_props) => {
@@ -133,19 +146,18 @@ export const DatePicker = styled(({
         // {...{...endAdornment}}
         // onClick={props.openPicker}
         // @ts-ignore
-        _props.InputProps = {..._props.InputProps, endAdornment: (
-                // {endAdornment}
-                <InputAdornment
+        // _props.InputProps = {..._props.InputProps, endAdornment: (
+        //         // {endAdornment}
+        //         <InputAdornment
+        //
+        //             position="end" component={'button'} className={'date-adornment'}>
+        //                 <span className={'MuiIconButton-label'}>
+        //                     <CalendarIcon/>
+        //                 </span>
+        //         </InputAdornment>
+        //     )}
 
-                    position="end" component={'button'} className={'date-adornment'}>
-                        <span className={'MuiIconButton-label'}>
-                            <CalendarIcon/>
-                        </span>
-                </InputAdornment>
-            )}
-
-        
-        return (<DateTextField {...{..._props, helperText: null}}  />)
+        return <DateTextField ref={_props.inputRef} {...{..._props, helperText: null}}  />
     }}
  />
 )<DatePickerProps>`
