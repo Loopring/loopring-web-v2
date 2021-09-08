@@ -137,7 +137,10 @@ export const ISBtn:React.ComponentType<ButtonProps & { logoColor?: any }> = styl
     text-overflow: ellipsis;
     font-size: ${({theme}) => theme.fontDefault.h5};
     color: var(--color-text-primary);
-
+    .MuiButton-endIcon{
+      color: var(--color-text-third);
+    }
+    
     .placeholder {
       color: var(--color-text-secondary);
     }
