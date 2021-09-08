@@ -762,7 +762,7 @@ export const MuiTab = ({colorBase}: any): { styleOverrides: ComponentsOverrides[
                 '&:hover': {
                     backgroundColor: 'transparent',
                 },
-                '.MuiTab-wrapper': {
+                '&.MuiTab-root': {
                     textTransform: 'capitalize',
                 },
                 '&.Mui-selected': {

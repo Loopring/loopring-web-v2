@@ -33,6 +33,7 @@ const StyledDiv = styled.div`
 const HeaderStyled = styled(AppBar)`
   && {
     z-index: 400;
+    box-shadow: var(--shadow-header);
     .wrap {
       height: var(--header-height);
       margin: 0 auto;

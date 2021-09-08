@@ -39,8 +39,9 @@ const MarketBlockStyled = styled(Box)<StyledProps>`
   }
 
   &:hover {
+    box-shadow: var(--shadow-hover);
     // box-shadow: var(--shadow);
-    border: 1px solid var(--color-border);
+    //border: 1px solid var(--color-border);
   }
 
 ` as React.ElementType<StyledProps & BoxProps>;
