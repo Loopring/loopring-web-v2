@@ -10,14 +10,14 @@ import styled from '@emotion/styled';
 const WalletConnectBtnStyled = styled(Button)`
   text-transform: none;
   min-width: 120px;
-
   &.wallet-btn {
     //width:;
+    justify-content: center;
     width: var(--walletconnect-width);
   }
 
   i {
-    padding-right: ${({ theme }) => theme.unit}px;
+    padding-right: ${({ theme }) => theme.unit/2}px;
     display: flex;
     justify-content: center;
     align-content: space-between;
@@ -149,11 +149,11 @@ export const WalletConnectBtn = ({
           break
         case AccountStatus.ACTIVATED:
           // setBtnClassname('unlocked')
-          setIcon(<CircleIcon htmlColor={'var(--color-success)'} style={{ marginTop: 1 }} />)
+          setIcon(<CircleIcon fontSize={'large'} htmlColor={'var(--color-success)'} />)
           break
         case AccountStatus.NO_ACCOUNT:
           // setBtnClassname('no-account')
-          setIcon(<CircleIcon color={'error'} style={{ marginTop: 1 }}/>)
+          setIcon(<CircleIcon fontSize={'large'}  color={'error'}/>)
           break
         case AccountStatus.DEPOSITING:
           setBtnClassname('depositing')
@@ -161,7 +161,7 @@ export const WalletConnectBtn = ({
           break
         case AccountStatus.NOT_ACTIVE:
           // setBtnClassname('not-active')
-          setIcon(<LoadingIcon htmlColor={'var(--color-warning)'} style={{ marginTop: 1 }}/>)
+          setIcon(<CircleIcon fontSize={'large'}  htmlColor={'var(--color-warning)'}/>)
           break
         case AccountStatus.ERROR_NETWORK:
           setBtnClassname('wrong-network')
@@ -203,7 +203,7 @@ export const WalletConnectBtn = ({
       color={'primary'}
       className={`wallet-btn ${btnClassname}`}
       onClick={_handleClick} {...bindHover(popupState)} >
-      {icon ? <Typography component={'i'} paddingRight={1}>{icon}</Typography> : <></>}
+      {icon ? <Typography component={'i'} >{icon}</Typography> : <></>}
       <Typography component={'span'} variant={'body1'} lineHeight={1} color={'inherit'}> {t(label)}  </Typography>
     </WalletConnectBtnStyled>
   </>

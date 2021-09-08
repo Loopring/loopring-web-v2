@@ -37,8 +37,15 @@ const RouterView = () => {
     const location = useLocation()
 
     React.useEffect(() => {
-        store.dispatch(resetSwap(undefined))
-        store.dispatch(resetAmmPool(undefined))
+        if(location.pathname){
+            const pathname = location.pathname;
+            if(pathname.match(/(trading\/lite)|(landing-pag)/ig))  {
+                store.dispatch(resetSwap(undefined))
+            }
+            if(pathname.match(/(liquidity\/pools)/ig))  {
+                store.dispatch(resetAmmPool(undefined))
+            }
+        }
     }, [location?.pathname])
     return <>
         <Header/>

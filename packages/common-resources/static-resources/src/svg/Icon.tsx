@@ -318,9 +318,10 @@ export const EmptyIcon = (props: SvgIconProps) => {
 
 export const CircleIcon = (props: SvgIconProps) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <circle cx="10" cy="10" r="10"/>
+        <circle cx="12" cy="12" r="3"/>
     </SvgIcon>
 }
+
 
 export const GrowIcon = (props: SvgIconProps) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">

@@ -366,9 +366,12 @@ export const MuiSvgIcon = () => {
     return {
         styleOverrides: {
             root: {
-                height: 'var(--svg-size)',
-                width: 'var(--svg-size)',
+
                 // margin: '-4px',
+                '&.MuiSvgIcon-fontSizeSmall': {
+                    height: 'var(--svg-size)',
+                    width: 'var(--svg-size)',
+                },
                 '&.MuiSvgIcon-fontSizeLarge': {
                     height: 'var(--svg-size-large)',
                     width: 'var(--svg-size-large)',
