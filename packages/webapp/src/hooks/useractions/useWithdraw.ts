@@ -142,15 +142,17 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     }, [setWalletMap2])
 
     const resetDefault = React.useCallback(() => {
-        if (!withdrawValue.belong) {
-            if (symbol) {
+        if (symbol) {
+            if (walletMap2) {
                 updateWithdrawData({
                     belong: symbol as any,
                     balance: walletMap2[symbol]?.count,
                     tradeValue: undefined,
                 })
+            }
 
-            } else {
+        } else {
+            if (!withdrawValue.belong && walletMap2) {
                 const keys = Reflect.ownKeys(walletMap2)
                 for (var key in keys) {
                     const keyVal = keys[key]
@@ -164,6 +166,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                         break
                     }
                 }
+
+
             }
         }
     }, [symbol, walletMap2, updateWithdrawData, withdrawValue])

@@ -91,15 +91,15 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     useWalletLayer2Socket({ walletLayer2Callback })
 
     const resetDefault = React.useCallback(() => {
-        if (!transferValue.belong) {
-            if (symbol) {
-                myLog('resetDefault symbol:', symbol)
-                updateTransferData({
-                    belong: symbol as any,
-                    balance: walletMap[symbol]?.count,
-                    tradeValue: undefined,
-                })
-            } else {
+        if (symbol && walletMap) {
+            myLog('resetDefault symbol:', symbol)
+            updateTransferData({
+                belong: symbol as any,
+                balance: walletMap[symbol]?.count,
+                tradeValue: undefined,
+            })
+        } else {
+            if (!transferValue.belong && walletMap) {
                 const keys = Reflect.ownKeys(walletMap)
                 for (var key in keys) {
                     const keyVal = keys[key]
@@ -114,6 +114,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     }
                 }
             }
+
         }
     }, [symbol, walletMap, updateTransferData, transferValue])
 
