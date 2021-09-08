@@ -30,10 +30,10 @@ export const TradeMenuList = <T extends IBData<I>,
     }
     const theme = useTheme();
     const backElement = React.useMemo(() => <>
-        <Typography fontSize={'body1'}>
-            <Link color="textSecondary" onClick={() => {
+        <Typography fontSize={'body1'} color="textPrimary" >
+            <Link style={{color:'var(--color-text-primary)',textAlign:'right'}}  onClick={() => {
                 onChangeEvent(0, {tradeData, to: 'button'})
-            }} style={{textAlign: 'right'}}>{t('labelCancel')}</Link>
+            }} >{t('labelCancel')}</Link>
         </Typography>
     </>, [onChangeEvent, tradeData])
     try {
