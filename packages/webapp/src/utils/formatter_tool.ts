@@ -4,6 +4,7 @@ import * as sdk from 'loopring-sdk'
 import { Side, toBig } from 'loopring-sdk'
 import { getShowStr, TradeTypes } from '@loopring-web/common-resources'
 import { volumeToCountAsBigNumber } from 'hooks/help'
+import { getValuePrecisionThousand } from '@loopring-web/common-resources'
 
 const getTokenInfo = (symbol: string) => {
     const tokenMap = store.getState().tokenMap.tokenMap
@@ -104,7 +105,7 @@ export function tradeItemToTableDataItem(tradeItem: any) {
     const buyValue = getShowStr((isBuy ? baseValue : quoteValue)?.toNumber())
 
     const feeKey = buyToken
-    const feeValue = getShowStr(volumeToCountAsBigNumber(feeKey, tradeItem.fee)?.toString())
+    const feeValue = getValuePrecisionThousand(volumeToCountAsBigNumber(feeKey, tradeItem.fee)?.toString(), 4, 2) as any
 
     return ({
         side,
