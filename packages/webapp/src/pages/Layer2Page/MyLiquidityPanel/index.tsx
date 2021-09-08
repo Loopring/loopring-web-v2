@@ -4,7 +4,7 @@ import { Box, Divider, Grid, Typography } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { MyPoolTable, useSettings } from '@loopring-web/component-lib'
-import { Currency, EmptyValueTag, getThousandFormattedNumbers, PriceTag } from '@loopring-web/common-resources';
+import { Currency, EmptyValueTag, getThousandFormattedNumbers, PriceTag, getValuePrecisionThousand } from '@loopring-web/common-resources';
 
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 import { useOverview } from './hook';
@@ -72,8 +72,8 @@ const MyLiquidity: any = withTranslation('common')(
             setPage(page);
         }, [])
         const {myAmmMarketArray, summaryReward, myPoolRow, showLoading} = useOverview({ammActivityMap});
-        const renderPositionValueDollar = PriceTag.Dollar + Number(getThousandFormattedNumbers(Number((summaryReward?.rewardDollar || 0).toFixed(2)) + (summaryReward?.feeDollar || 0))).toFixed(2)
-        const renderPositionValueYuan = PriceTag.Yuan + Number(getThousandFormattedNumbers(summaryReward?.feeYuan ?? 0 + (Number.isFinite(summaryReward) ? Number((summaryReward?.feeYuan || 0).toFixed(2)) : 0))).toFixed(2)
+        const renderPositionValueDollar = PriceTag.Dollar + getValuePrecisionThousand(((summaryReward?.rewardDollar || 0) + (summaryReward?.feeDollar || 0)), 2, 2)
+        const renderPositionValueYuan = PriceTag.Yuan + getValuePrecisionThousand(((summaryReward?.rewardYuan || 0) + (summaryReward?.feeYuan || 0)), 2, 2)
 
         return (
             <>

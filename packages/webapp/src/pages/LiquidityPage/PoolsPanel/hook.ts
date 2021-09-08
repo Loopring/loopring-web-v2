@@ -109,9 +109,9 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
             default:
                 _rawData = rawData
         }
-        resetTableData(_rawData)
+        // resetTableData(_rawData)
         return _rawData;
-    },[filteredData])
+    },[filteredData, rawData])
 
     const updateTickerLoop = React.useCallback((_keys?: string[]) => {
         updateTickers(_keys as string[]);
