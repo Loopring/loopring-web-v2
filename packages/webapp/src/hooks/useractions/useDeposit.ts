@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { AccountStep, DepositProps, SwitchData, useOpenModals } from '@loopring-web/component-lib';
+import { AccountStep, DepositProps, SwitchData, useOpenModals, } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
 import { ChainId, ConnectorError, dumpError400, } from 'loopring-sdk';
@@ -40,7 +40,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
     const updateBtnStatus = React.useCallback(() => {
 
-        myLog('!! updateBtnStatus .... depositValue:', depositValue, allowanceInfo?.tokenInfo)
+        // myLog('!! updateBtnStatus .... depositValue:', depositValue, allowanceInfo?.tokenInfo)
 
         resetBtnInfo()
 
@@ -240,11 +240,17 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
     const handlePanelEvent = useCallback(async (data: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {
-            myLog('got!!!! data.tradeData:', data.tradeData)
-            updateDepositData(data.tradeData)
+            if (data.to === 'button' && walletLayer1 && data?.tradeData?.belong) {
+                const walletInfo = walletLayer1[data?.tradeData?.belong]
+                // myLog('got!!!! data:', data.to, data.tradeData, walletInfo)
+                updateDepositData( { belong: data.tradeData?.belong, 
+                    tradeValue: data.tradeData?.tradeValue, 
+                    balance: walletInfo.count
+                })
+            }
             res();
         })
-    }, [depositValue, updateDepositData])
+    }, [walletLayer1, updateDepositData])
 
     const depositProps = React.useMemo(() => {
         const isNewAccount = account.readyState === AccountStatus.NO_ACCOUNT ? true : false;
