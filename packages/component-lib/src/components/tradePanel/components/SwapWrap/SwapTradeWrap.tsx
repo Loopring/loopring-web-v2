@@ -11,7 +11,7 @@ import {
 } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
-import { Grid, Typography } from '@mui/material';
+import { Grid, styled, Typography } from '@mui/material';
 import { Button, InputButton, LinkActionStyle, PopoverPure } from '../../../basic-lib';
 import { usePopupState } from 'material-ui-popup-state/hooks';
 import { bindHover, bindPopover } from 'material-ui-popup-state/es';
@@ -20,7 +20,9 @@ import { useSettings } from '../../../../stores';
 import { IconButtonStyled } from '../Styled';
 import { SlippagePanel } from '../tool';
 import { Box } from '@mui/material';
-
+const ButtonStyle = styled(Button)`
+   font-size: 1.6rem;
+`as typeof Button
 export const SwapTradeWrap = <T extends IBData<I>,
     I,
     TCD extends TradeCalcData<I>>({
