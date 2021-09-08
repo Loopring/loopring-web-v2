@@ -95,35 +95,15 @@ export const TransferWrapNew = <T extends IBData<I>,
         setMemo(e.target.value)
     }, [])
 
-    // const _handleFeeChange = React.useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    //     const index = e.target ? Number(e.target.value) : 0;
-    //     setFeeIndex(index)
-    //     if (handleFeeChange) {
-    //         handleFeeChange(chargeFeeTokenList[ index ]);
-    //     }
-    // }, [chargeFeeTokenList, handleFeeChange]);
-
-    // const addressInput = React.useRef();
     const handleClear = React.useCallback(() => {
-        // @ts-ignore
-        // addressInput?.current?.value = "";
         setAddress('')
-    }, [])
-
-    // const getTokenFee = React.useCallback(())
-
-    // const getToggleData = React.useCallback(() => {
-    //     if (!!chargeFeeTokenList.length) {
-    //         return chargeFeeTokenList.map(({belong, fee}) => {
-    //             console.log({belong, fee})
-    //             return ({
-    //                 key: belong,
-    //                 value: belong,
-    //             })
-    //         })
-    //     }
-    //     return []
-    // }, [chargeFeeTokenList])
+        if (handleAddressError) {
+            const error = handleAddressError('')
+            if (error?.error) {
+                setAddressError(error)
+            }
+        }
+    }, [setAddress, handleAddressError, setAddressError])
 
     React.useEffect(() => {
         if (!!chargeFeeTokenList.length && !feeToken && assetsData) {
