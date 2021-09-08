@@ -136,10 +136,6 @@ export const useOrderList = () => {
         }
     }, [accountId, apiKey])
 
-    React.useEffect(() => {
-        getOrderList({})
-    }, [getOrderList])
-
     return {
         marketArray: jointPairs,
         getOrderList,

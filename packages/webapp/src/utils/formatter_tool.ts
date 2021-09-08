@@ -129,3 +129,12 @@ export function tradeItemToTableDataItem(tradeItem: any) {
         }
     })
 }
+
+export function getFloatValue(rawVal: any) {
+    if (rawVal === undefined || rawVal === null) {
+        return 0
+    }
+
+    const isStr = typeof rawVal === 'string'
+    return isStr ? parseFloat(rawVal.trim()) : rawVal
+}

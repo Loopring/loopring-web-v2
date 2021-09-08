@@ -26,6 +26,7 @@ import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useModalData } from 'stores/router';
 import store from 'stores';
 import { isAccActivated } from './checkAccStatus';
+import { getFloatValue } from 'utils/formatter_tool';
 
 export const useTransfer = <R extends IBData<T>, T>(): {
     transferToastOpen: boolean,
@@ -64,14 +65,16 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     React.useEffect(() => {
         myLog('enter reset address of transfer!!!!')
-        setAddress(transferValue.address)
+        setAddress(transferValue.address as string)
     }, [transferValue.address])
 
     const { btnStatus, enableBtn, disableBtn, } = useBtnStatus()
 
     React.useEffect(() => {
 
-        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && transferValue?.tradeValue
+        const tradeValue = getFloatValue(transferValue?.tradeValue)
+
+        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && tradeValue
             && addrStatus === AddressError.NoError && !isExceedMax) {
             enableBtn()
         } else {
@@ -297,7 +300,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         handleOnAddressChange: (value: any) => {
         },
         handleError: ({ belong, balance, tradeValue }: any) => {
-            if (typeof tradeValue !== 'undefined' && balance < tradeValue || (tradeValue && !balance)) {
+            balance = getFloatValue(balance)
+            tradeValue = getFloatValue(tradeValue)
+            // myLog(belong, balance, tradeValue, (tradeValue > 0 && balance < tradeValue) || (!!tradeValue && !balance))
+            if ((balance > 0 && balance < tradeValue) || (tradeValue && !balance)) {
                 setIsExceedMax(true)
                 return { error: true, message: t('tokenNotEnough', { belong, }) }
             }
@@ -305,7 +311,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             return { error: false, message: '' }
         },
         handleAddressError: (_value: any) => {
-            updateTransferData({ address: _value })
+            updateTransferData({ address: _value, balance: -1, tradeValue: -1 })
             return { error: false, message: '' }
         }
     }
