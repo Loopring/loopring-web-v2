@@ -2,6 +2,7 @@ import React from "react";
 import {
     AccountStatus,
     CoinInfo,
+    SagaStatus,
 } from '@loopring-web/common-resources';
 import { useTokenMap, } from '../../../stores/token';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
@@ -24,9 +25,9 @@ export const useAmmCommon = ({pair,}: {
 
     const {sendSocketTopic, socketEnd} = useSocket()
 
-    const {account} = useAccount()
+    const {account, status: accountStatus, } = useAccount()
 
-    const {marketArray, marketMap,} = useTokenMap();
+    const {marketArray, marketMap, tokenMap, } = useTokenMap();
     const {ammMap} = useAmmMap();
 
     const {
@@ -94,12 +95,39 @@ export const useAmmCommon = ({pair,}: {
 
     }, []);
 
+    const getFee = React.useCallback(async(requestType: sdk.OffchainFeeReqType) => {
+        if (accountStatus === SagaStatus.UNSET && LoopringAPI.userAPI && pair.coinBInfo?.simpleName
+                && account.readyState === AccountStatus.ACTIVATED && tokenMap) {
+
+            const feeToken: sdk.TokenInfo = tokenMap[pair.coinBInfo.simpleName]
+
+            const request: sdk.GetOffchainFeeAmtRequest = {
+                accountId: account.accountId,
+                requestType,
+                tokenSymbol: pair.coinBInfo.simpleName as string,
+            }
+
+            const { fees } = await LoopringAPI.userAPI.getOffchainFeeAmt(request, account.apiKey)
+
+            const feeRaw = fees[pair.coinBInfo.simpleName] ? fees[pair.coinBInfo.simpleName].fee : 0
+            const fee = sdk.toBig(feeRaw).div('1e' + feeToken.decimals)
+
+            myLog('new fee:', fee.toString())
+            return {
+                fee, 
+                fees,
+            }
+        }
+
+    }, [accountStatus, account, pair, tokenMap])
+
     return {
         toastOpen,
         setToastOpen,
         closeToast,
         refreshRef,
         updateAmmPoolSnapshot,
+        getFee,
     }
 
 }
