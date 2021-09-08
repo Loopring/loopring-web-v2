@@ -49,6 +49,7 @@ import {
     VipIcon,
     WaitingIcon,
     WarningIcon,
+    GrowIcon,
 } from '@loopring-web/common-resources';
 
 const Styled = styled.div`
@@ -107,7 +108,7 @@ const listIcon = [
     <CompleteIcon/>,
     <WaitingIcon/>,
     <WarningIcon/>,
-
+    <GrowIcon/>
 ]
 
 export const IconList: Story<any> = withTranslation()(({}: WithTranslation & any) => {
