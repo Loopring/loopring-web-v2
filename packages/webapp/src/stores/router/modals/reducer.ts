@@ -51,11 +51,11 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
                 state.withdrawValue.belong = belong
             }
 
-            if (balance !== undefined) {
+            if (balance === undefined || balance >= 0) {
                 state.withdrawValue.balance = balance
             }
 
-            if (tradeValue !== undefined) {
+            if (tradeValue === undefined || tradeValue >= 0) {
                 state.withdrawValue.tradeValue = tradeValue
             }
         },
@@ -66,15 +66,15 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
                 state.transferValue.belong = belong
             }
 
-            if (balance !== undefined) {
+            if (balance === undefined || balance >= 0) {
                 state.transferValue.balance = balance
             }
 
-            if (tradeValue !== undefined) {
+            if (tradeValue === undefined || tradeValue >= 0) {
                 state.transferValue.tradeValue = tradeValue
             }
 
-            if (address !== undefined) {
+            if (address === undefined || address !== '*') {
                 state.transferValue.address = address
             }
         },
@@ -85,11 +85,11 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
                 state.depositValue.belong = belong
             }
 
-            if (balance !== undefined) {
+            if (balance === undefined || balance >= 0) {
                 state.depositValue.balance = balance
             }
 
-            if (tradeValue !== undefined) {
+            if (tradeValue === undefined || tradeValue >= 0) {
                 state.depositValue.tradeValue = tradeValue
             }
 
@@ -99,5 +99,5 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
 
 export { modalDataSlice }
 
-export const { updateWithdrawData, updateTransferData, updateDepositData, 
+export const { updateWithdrawData, updateTransferData, updateDepositData,
     resetWithdrawData, resetTransferData, resetDepositData, resetAll, } = modalDataSlice.actions

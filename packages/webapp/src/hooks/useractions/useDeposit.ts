@@ -40,7 +40,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
     const updateBtnStatus = React.useCallback(() => {
 
-        myLog('!! updateBtnStatus .... depositValue:', depositValue, allowanceInfo)
+        myLog('!! updateBtnStatus .... depositValue:', depositValue, allowanceInfo?.tokenInfo)
 
         resetBtnInfo()
 
@@ -53,13 +53,14 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             }
             enableBtn()
         } else {
+            myLog('try to disable deposit btn!')
             disableBtn()
         }
     }, [enableBtn, disableBtn, setLabelAndParams, depositValue, allowanceInfo])
 
     React.useEffect(() => {
         updateBtnStatus()
-    }, [depositValue?.belong, depositValue?.tradeValue, allowanceInfo?.tokenInfo.symbol])
+    }, [depositValue?.belong, depositValue?.tradeValue, depositValue?.balance, allowanceInfo?.tokenInfo.symbol])
 
     const walletLayer1Callback = React.useCallback(() => {
         if (!depositValue.belong) {
