@@ -506,7 +506,11 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                 return state
             })
         }
-        if(tradeData && lastStepAt && tradeData[lastStepAt].tradeValue && tradeData[lastStepAt].tradeValue !== 0) {
+        if( tradeData
+            && lastStepAt
+            && tradeCalcData.coinSell === tradeData['sell'].belong
+            && tradeCalcData.coinBuy === tradeData['buy'].belong
+            && tradeData[lastStepAt].tradeValue && tradeData[lastStepAt].tradeValue !== 0) {
             reCalculateDataWhenValueChange(tradeData,tradePair,lastStepAt);
         }
 
