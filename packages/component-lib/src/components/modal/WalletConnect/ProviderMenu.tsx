@@ -17,25 +17,26 @@ const CheckboxStyled = styled(Checkbox)`
 
 const ProviderBtnStyled = styled(Button)`
   
+  font-size: 1.4rem;
   background: var(--opacity);
   color: var(--color-text-secondary);
+  justify-content: space-between;
+  padding:0 ${({ theme }) => theme.unit * 3}px;
+  text-indent: 0.5em;
   &:hover {
     background: var(--provider-hover);
     border-color: var(--opacity);
     color: var(--color-text-button-select);
   }
+  
+  //.MuiButton-label {
+  //  display: flex;
+  //  
+  //  justify-content: space-between;
+  //  align-items: center;
+  //  margin-left: 1em;
+  //}
 
-  // width: var(--gateway-icon-size);
-  // height: var(--gateway-icon-size);
-  // border-radius: 50%;
-  .MuiButton-label {
-    display: flex;
-    text-indent: 1em;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  padding: 0 ${({ theme }) => theme.unit * 5 / 3}px;
 
   &.selected {
     position: relative;
@@ -45,6 +46,7 @@ const ProviderBtnStyled = styled(Button)`
     &:after {
       position: absolute;
       content: "\u25CF";
+      text-indent: 0em;
       color: var(--color-success);
       //width: 100%;
       display: flex;
