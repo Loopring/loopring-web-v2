@@ -137,10 +137,14 @@ export const WithdrawWrapNew = <T extends IBData<I>,
     }
 
     const handleClear = React.useCallback(() => {
-        // @ts-ignore
-        // addressInput?.current?.value = "";
         setAddress('')
-    }, [])
+        if (handleAddressError) {
+            const error = handleAddressError('')
+            if (error?.error) {
+                setAddressError(error)
+            }
+        }
+    }, [setAddress, setAddressError, handleAddressError])
 
     return <Grid className={walletMap ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"} /* minHeight={540} */
@@ -214,48 +218,8 @@ export const WithdrawWrapNew = <T extends IBData<I>,
                 <CloseIcon />
             </IconClearStyled> : ''}
         </Grid>
-        {/* <Grid item marginTop={2} alignSelf={'stretch'}>
-            <RadioGroup row aria-label="withdraw" name="withdraw" value={_withdrawType}
-                        onChange={(e) => {
-                            _handleWithdrawTypeChange(e);
-                        }
-                        }>
-                {Object.keys(withdrawTypes).map((key) => {
-                    return <FormControlLabel key={key} value={key} control={<Radio/>}
-                                             label={`${t('withdrawTypeLabel' + key)}: ${withdrawTypes[ key ]}Gas`}/>
-                })}
-            </RadioGroup>
-        </Grid> */}
         {/* TODO: check whether there's a need to show deposit fee */}
         <Grid item /* marginTop={2} */ alignSelf={"stretch"}>
-            {/* <TextField
-                id="withdrawFeeType"
-                select
-                label={t('withdrawLabelFee')}
-                value={feeIndex}
-                onChange={(event: React.ChangeEvent<any>) => {
-                    _handleFeeChange(event)
-                }}
-                disabled={chargeFeeTokenList.length ? false : true}
-                SelectProps={{IconComponent: DropDownIcon}}
-                fullWidth={true}
-            >{chargeFeeTokenList.map(({belong, fee}, index) => {
-                // @ts-ignore
-                return <MenuItem key={index} value={index} withnocheckicon={'true'}>
-                    <ListItemText primary={<Typography
-                        sx={{display: 'inline'}}
-                        component="span"
-                        variant="body1"
-                        color="text.primary"
-                    >{belong}</Typography>} secondary={<Typography
-                        sx={{display: 'inline'}}
-                        component="span"
-                        variant="body1"
-                        color="text.primaryLight"
-                    >{fee}</Typography>}/>
-                </MenuItem>
-            })
-            }</TextField> */}
             <Typography component={'span'} display={'flex'} alignItems={'center'} variant={'body1'} color={'var(--color-text-secondary)'} marginBottom={1}>
                 {t('transferLabelFee')}：
                 <Box component={'span'} display={'flex'} alignItems={'center'} style={{ cursor: 'pointer' }} onClick={() => setDropdownStatus(prev => prev === 'up' ? 'down' : 'up')}>
