@@ -35,6 +35,7 @@ import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useModalData } from 'stores/router';
 import { isAccActivated } from './checkAccStatus';
 import { getFloatValue } from 'utils/formatter_tool';
+import { AnyAsyncThunk } from '@reduxjs/toolkit/dist/matchers';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawAlertText: string | undefined,
@@ -178,6 +179,12 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         }
     }, [isShow])
 
+    React.useEffect(() => {
+        if (isShow && withdrawValue.address) {
+            setAddress(withdrawValue.address)
+        }
+    }, [isShow, withdrawValue.address])
+
     useWalletLayer2Socket({ walletLayer2Callback })
 
     useCustomDCEffect(() => {
@@ -263,7 +270,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     }, [setLastRequest, setShowAccount, updateDepositHashWrapper, account])
 
-    const handleWithdraw = React.useCallback(async (inputValue: R, address, isFirstTime: boolean = true) => {
+    const handleWithdraw = React.useCallback(async (inputValue: any, address, isFirstTime: boolean = true) => {
 
         const { accountId, accAddress, readyState, apiKey, eddsaKey } = account
 
@@ -346,7 +353,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         withdrawTypes,
         onWithdrawClick: () => {
             if (withdrawValue && withdrawValue.belong) {
-                handleWithdraw(withdrawValue as R, address)
+                handleWithdraw(withdrawValue, address)
             }
             setShowWithdraw({ isShow: false })
         },

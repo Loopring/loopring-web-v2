@@ -73,8 +73,6 @@ export const TransferWrapNew = <T extends IBData<I>,
     const getTokenFee = React.useCallback((token: string) => {
         return toggleData.find(o => o.key === token)?.fee || 0
     }, [toggleData])
-
-    // const fee = toggleData.find(o => o.key === feeToken)?.fee || '--'
     
     const debounceAddress = React.useCallback(_.debounce(({address}: any) => {
         if (handleOnAddressChange) {

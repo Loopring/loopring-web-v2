@@ -24,7 +24,6 @@ import { useWalletInfo } from 'stores/localStore/walletInfo';
 import { checkErrorInfo } from './utils';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useModalData } from 'stores/router';
-import store from 'stores';
 import { isAccActivated } from './checkAccStatus';
 import { getFloatValue } from 'utils/formatter_tool';
 
@@ -62,11 +61,6 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         setAddress,
         addrStatus,
     } = useAddressCheck()
-
-    React.useEffect(() => {
-        myLog('enter reset address of transfer!!!!')
-        setAddress(transferValue.address as string)
-    }, [transferValue.address])
 
     const { btnStatus, enableBtn, disableBtn, } = useBtnStatus()
 
@@ -122,7 +116,13 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         if (isShow) {
             resetDefault()
         }
-    }, [isShow, tranferFeeInfo])
+    }, [isShow])
+
+    React.useEffect(() => {
+        if (isShow && transferValue.address) {
+            setAddress(transferValue.address)
+        }
+    }, [isShow, transferValue.address])
 
     const { checkHWAddr, updateDepositHashWrapper, } = useWalletInfo()
 
@@ -298,6 +298,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const { t } = useTranslation()
 
     const transferProps = {
+        addressDefault: address,
         tradeData: transferValue as any,
         coinMap: totalCoinMap as CoinMap<T>,
         walletMap: walletMap as WalletMap<T>,

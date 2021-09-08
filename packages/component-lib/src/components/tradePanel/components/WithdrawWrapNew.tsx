@@ -41,7 +41,6 @@ export const WithdrawWrapNew = <T extends IBData<I>,
            ...rest
        }: WithdrawViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
     const [_withdrawType, setWithdrawType] = React.useState<string | undefined>(withdrawType);
-    const [feeIndex, setFeeIndex] = React.useState<any | undefined>(0);
     const [address, setAddress] = React.useState<string | undefined>(addressDefault ? addressDefault : '');
     const [addressError, setAddressError] = React.useState<{ error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined>();
     const [dropdownStatus, setDropdownStatus] = React.useState<'up' | 'down'>('down')
@@ -118,14 +117,6 @@ export const WithdrawWrapNew = <T extends IBData<I>,
             handleWithdrawTypeChange(e.target?.value as any);
         }
     }, [handleWithdrawTypeChange])
-
-    // const _handleFeeChange = React.useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    //     const index = e.target ? Number(e.target.value) : 0;
-    //     setFeeIndex(index)
-    //     if (handleFeeChange) {
-    //         handleFeeChange(chargeFeeTokenList[ index ]);
-    //     }
-    // }, [chargeFeeTokenList, handleFeeChange])
 
     const debounceAddress = React.useCallback(_.debounce(({address,handleOnAddressChange}: any) => {
         if (handleOnAddressChange) {
