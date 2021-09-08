@@ -204,8 +204,8 @@ const InputSelectWrap = (rest: any) => {
         {/*<Button variant={'text'} size={'medium'} color={'primary'}*/}
         {/*       */}
         {/*></Button>*/}
-        <Typography fontSize={'body1'}>
-            <Link color="textSecondary" onClick={() => {}} style={{textAlign:'right'}}>Cancel</Link>
+        <Typography fontSize={'body1'} color={'textPrimary'}>
+            <Link color={'inherit'} style={{color:'var(--color-text-primary)',textAlign:'right'}} onClick={() => {}} >Cancel</Link>
         </Typography>
     </>, [])
     const inputSelectProps: InputSelectProps<CoinType> = {

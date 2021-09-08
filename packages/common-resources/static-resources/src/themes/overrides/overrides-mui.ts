@@ -85,6 +85,7 @@ export const MuiLink = ({colorBase}: any) => {
         styleOverrides: {
             root: {
                 color: colorBase.secondary,
+                textDecoration: 'none',
                 '&:hover': {
                     color: colorBase.secondaryHover,
                 },
@@ -648,6 +649,17 @@ export const MuiFormLabel = ({colorBase}: any): { styleOverrides: ComponentsOver
         }
 
 
+    }
+}
+export const MuiBreadcrumbs = (): { styleOverrides: ComponentsOverrides['MuiBreadcrumbs'] } => {
+    return {
+        styleOverrides: {
+            root: {
+                ' .MuiLink-root': {
+                    textDecoration: 'none'
+                }
+            }
+        }
     }
 }
 export const MuiList = () => {
