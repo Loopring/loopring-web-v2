@@ -149,6 +149,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     belong: symbol as any,
                     balance: walletMap2[symbol]?.count,
                     tradeValue: undefined,
+                    address: '*',
                 })
             }
 
@@ -163,6 +164,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                             belong: keyVal as any,
                             tradeValue: 0,
                             balance: walletInfo.count,
+                            address: '*',
                         })
                         break
                     }
@@ -381,10 +383,16 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                         updateWithdrawData({
                             belong: data.tradeData?.belong,
                             tradeValue: data.tradeData?.tradeValue,
-                            balance: walletInfo.count
+                            balance: walletInfo.count,
+                            address: '*',
                         })
                     } else {
-                        updateWithdrawData({ belong: undefined, tradeValue: undefined, balance: undefined })
+                        updateWithdrawData({ 
+                            belong: undefined, 
+                            tradeValue: undefined, 
+                            balance: undefined,
+                            address: '*', 
+                        })
                     }
                 }
 
