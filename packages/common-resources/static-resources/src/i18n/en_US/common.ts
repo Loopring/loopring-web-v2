@@ -7,7 +7,7 @@ export default {
     tokenEnterReceiveToken: 'Receive',
     tokenSelectToken: 'Select Token',
     tokenExchange: 'exchange',
-    tokenNotEnough: 'Insufficient {{belong}} balance, please deposit',
+    tokenNotEnough: 'Insufficient {{belong}} balance',
     tokenSearchCoin: 'Search Token Symbol',
     swapTolerance: 'Slippage Tolerance',
     swapPriceImpact: 'Price Impact',

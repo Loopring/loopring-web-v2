@@ -1,4 +1,4 @@
-import { Box, ClickAwayListener, IconButton, Link, } from '@mui/material';
+import { Box, IconButton, Link, } from '@mui/material';
 import {
     DownloadIcon,
     // DropDownIcon,
@@ -12,7 +12,7 @@ import {
 // import React from 'react';
 import { WithTranslation } from 'react-i18next';
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';
-import { bindPopper, bindTrigger } from 'material-ui-popup-state/es';
+import { bindPopper } from 'material-ui-popup-state/es';
 import {
     // OutlineSelect,
     // OutlineSelectItem,
@@ -65,7 +65,7 @@ export const BtnNotification = ({t}: any) => <IconButton
 export const BtnSetting = ({t, label}: any) => {
     const popupState = usePopupState({variant: 'popover', popupId: 'settingPop'});
     return<Box>
-            <IconButton aria-label={t(label)} {...bindTrigger(popupState)}><SettingIcon/></IconButton>
+            <IconButton aria-label={t(label)} {...bindHover(popupState)}><SettingIcon/></IconButton>
             <PopoverPure
                 // type={PopoverType.hover}
                 {...bindPopper(popupState)}
@@ -83,9 +83,9 @@ export const BtnSetting = ({t, label}: any) => {
                     horizontal: 'center',
                 }}
             >
-                <ClickAwayListener onClickAway={()=>{popupState.setOpen(false)}}>
+                {/*<ClickAwayListener onClickAway={()=>{popupState.setOpen(false)}}>*/}
                    <Box margin={2}> <SettingPanel/>  </Box>
-                </ClickAwayListener>
+                {/*</ClickAwayListener>*/}
             </PopoverPure>
         </Box>
 }
