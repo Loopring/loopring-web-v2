@@ -34,19 +34,19 @@ const ContentWrap = ({children}: React.PropsWithChildren<any>) => {
 
 const RouterView = () => {
 
-    const location = useLocation()
+    // const location = useLocation()
 
-    React.useEffect(() => {
-        if(location.pathname){
-            const pathname = location.pathname;
-            if(pathname.match(/(trading\/lite)|(landing-pag)/ig))  {
-                store.dispatch(resetSwap(undefined))
-            }
-            if(pathname.match(/(liquidity\/pools)/ig))  {
-                store.dispatch(resetAmmPool(undefined))
-            }
-        }
-    }, [location?.pathname])
+    // React.useEffect(() => {
+    //     if(location.pathname){
+    //         const pathname = location.pathname;
+    //         if(pathname.match(/(trading\/lite)|(landing-pag)/ig))  {
+    //             store.dispatch(resetSwap(undefined))
+    //         }
+    //         if(pathname.match(/(liquidity\/pools)/ig))  {
+    //             store.dispatch(resetAmmPool(undefined))
+    //         }
+    //     }
+    // }, [location?.pathname])
     return <>
         <Header/>
         <Switch>
