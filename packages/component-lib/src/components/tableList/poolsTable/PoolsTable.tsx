@@ -289,7 +289,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
 
             const {volume} = row.tradeFloat && row.tradeFloat.volume ? row.tradeFloat : {volume: EmptyValueTag};
             return <Typography
-                component={'span'}> {volume && Number.isFinite(volume) ? getThousandFormattedNumbers(Number(volume || 0), 2) : volume} {row.tradeFloat && row.tradeFloat.volume ? row.coinAInfo.simpleName : ''}
+                component={'span'}> {volume && Number.isFinite(volume) ? getValuePrecisionThousand(volume, 4, 4) : volume} {row.tradeFloat && row.tradeFloat.volume ? row.coinAInfo.simpleName : ''}
             </Typography>
         }
     },

@@ -35,7 +35,7 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
 ({t, ...rest}: WithTranslation
     & {}) => {
     const container = React.useRef(null);
-    const {filteredData, sortMethod, tableHeight, getFilteredData, filterValue, } = useAmmMapUI();
+    const {filteredData, sortMethod, tableHeight, getFilteredData, filterValue } = useAmmMapUI();
     const { coinJson } = useSettings();
     const { faitPrices, forex } = useSystem()
     return (
