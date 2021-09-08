@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material'
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { Button, TablePagination, TableProps } from '../../basic-lib'
 import { Column, Table, } from '../../basic-lib/'
-import { Currency, EmptyValueTag, getThousandFormattedNumbers, globalSetup, PriceTag } from '@loopring-web/common-resources'
+import { Currency, EmptyValueTag, globalSetup, PriceTag, getValuePrecisionThousand } from '@loopring-web/common-resources'
 import { Method, MyPoolRow as Row, MyPoolTableProps } from './Interface'
 import { FormatterProps } from 'react-data-grid';
 import styled from '@emotion/styled';
@@ -88,8 +88,8 @@ const columnMode = ({
             // const formattedDollar = (balanceDollar && Number.isNaN(balanceYuan)) ? balanceDollar : 0
             return <Box height={'100%'} display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
                 <TypogStyle variant={'body1'} component={'span'} color={'textPrimary'} fontFamily={'Roboto'}>
-                    {balanceDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(totalAmmValueDollar.toFixed(2))
-                        : PriceTag.Yuan + getThousandFormattedNumbers(totalAmmValueYuan.toFixed(2))}
+                    {balanceDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getValuePrecisionThousand(totalAmmValueDollar, 2, 2)
+                        : PriceTag.Yuan + getValuePrecisionThousand(totalAmmValueYuan, 2, 2)}
                 </TypogStyle>
                 {/* <Typography variant={'body2'} component={'p'} color={'textSecondary'} marginTop={1 / 2}>
 
@@ -128,14 +128,14 @@ const columnMode = ({
                 <Typography variant={'body2'} component={'p'} color={'textPrimary'} fontFamily={'Roboto'}>
 
                     <Typography component={'span'}
-                                >{getThousandFormattedNumbers(feeA)}</Typography>
+                                >{getValuePrecisionThousand(feeA)}</Typography>
                     <Typography component={'span'}
                                 >{` ${coinAInfo?.simpleName as string}`}</Typography>
                 </Typography>
                 <Typography variant={'body2'} component={'p'} color={'textPrimary'} marginX={1 / 2}>+</Typography>
                 <Typography variant={'body2'} component={'p'} color={'textPrimary'} fontFamily={'Roboto'}>
                     <Typography component={'span'}
-                                >{getThousandFormattedNumbers(feeB)}</Typography>
+                                >{getValuePrecisionThousand(feeB)}</Typography>
                     <Typography component={'span'}
                                 >{` ${coinBInfo?.simpleName as string}` }</Typography>
 

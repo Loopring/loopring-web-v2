@@ -91,15 +91,15 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     useWalletLayer2Socket({ walletLayer2Callback })
 
     const resetDefault = React.useCallback(() => {
-        if (!transferValue.belong) {
-            if (symbol) {
-                myLog('resetDefault symbol:', symbol)
-                updateTransferData({
-                    belong: symbol as any,
-                    balance: walletMap[symbol]?.count,
-                    tradeValue: undefined,
-                })
-            } else {
+        if (symbol && walletMap) {
+            myLog('resetDefault symbol:', symbol)
+            updateTransferData({
+                belong: symbol as any,
+                balance: walletMap[symbol]?.count,
+                tradeValue: undefined,
+            })
+        } else {
+            if (!transferValue.belong && walletMap) {
                 const keys = Reflect.ownKeys(walletMap)
                 for (var key in keys) {
                     const keyVal = keys[key]
@@ -114,6 +114,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     }
                 }
             }
+
         }
     }, [symbol, walletMap, updateTransferData, transferValue])
 
@@ -268,11 +269,20 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const handlePanelEvent = useCallback(async (data: SwitchData<R>, switchType: 'Tomenu' | 'Tobutton') => {
         return new Promise<void>((res: any) => {
-            if (data?.tradeData?.belong) {
-                updateTransferData(data.tradeData)
-            } else {
-                updateTransferData({ belong: undefined, tradeValue: 0, balance: 0 })
+
+            if (data.to === 'button') {
+                if (walletMap && data?.tradeData?.belong) {
+                    const walletInfo = walletMap[data?.tradeData?.belong as string]
+                    updateTransferData({
+                        belong: data.tradeData?.belong,
+                        tradeValue: data.tradeData?.tradeValue,
+                        balance: walletInfo.count
+                    })
+                } else {
+                    updateTransferData({ belong: undefined, tradeValue: undefined, balance: undefined })
+                }
             }
+
             res();
         })
     }, [updateTransferData, transferValue])
