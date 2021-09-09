@@ -72,12 +72,19 @@ const BoxStyled = styled(Box)`
 const TableStyled = styled(Box)`
     .rdg {
         border-radius: ${({theme}) => theme.unit}px;
-        --template-columns: 300px auto auto auto 130px !important;
+        --template-columns: 200px auto auto auto 200px !important;
 
         .rdg-cell.action {
         display: flex;
-        justify-content: center;                    
+        justify-content: flex-end;                    
         align-items: center;
+        }
+    }
+    .textAlignRight{
+        text-align: right;
+
+        .rdg-header-sort-cell {
+            justify-content: flex-end;
         }
     }
 
@@ -168,6 +175,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
         key: 'liquidity',
         sortable: true,
         width: 'auto',
+        headerCellClass: 'textAlignRight',
         name: t('labelLiquidity'),
         formatter: (({row, column, rowIdx}) => {
             const {coinA, coinB, totalA, totalB, amountDollar, amountYuan} = row as any
@@ -181,13 +189,15 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
             // const priceBYuan = priceBDollar * (forex || 6.5)
             const liquidityLpToken = currency === 'USD' ? amountDollar : amountYuan
             return(
-                <>
-                    <Button {...bindHover(popoverState)}>
-                        <Typography borderBottom={'1px dashed var(--color-text-primary)'}
-                            component={'span'} style={{ cursor: 'pointer' }}> {
-                                typeof liquidityLpToken === 'undefined' ? EmptyValueTag : (currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(liquidityLpToken, 2, 2)}
-                        </Typography>
-                    </Button>
+                <>  
+                    <Box className={'textAlignRight'}>
+                        <Button {...bindHover(popoverState)}>
+                            <Typography
+                                component={'span'} style={{ cursor: 'pointer' }}> {
+                                    typeof liquidityLpToken === 'undefined' ? EmptyValueTag : (currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(liquidityLpToken, 2, 2)}
+                            </Typography>
+                        </Button>
+                    </Box>
                     <PopoverPure
                         className={'arrow-top-center'}
                         {...bindPopper(popoverState)}
@@ -281,6 +291,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
         sortable: true,
         width: 'auto',
         minWidth: 156,
+        headerCellClass: 'textAlignRight',
         name: t('label24TradeVolume'),
         formatter: ({row}) => {
             //priceDollar, priceYuan, ,priceDollar: EmptyValueTag, priceYuan: EmptyValueTag
@@ -291,10 +302,12 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
             const totalAmountYuan = (Number(volume) || 0) * (tokenPrices[row.coinAInfo.simpleName] || 0) * (forex || 6.5)
             const renderValue = currency === 'USD' ? totalAmountDollar : totalAmountYuan
             const renderUnit = currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan
-            return <Typography
-                component={'span'}> {volume && Number.isFinite(volume)
-                    ? renderUnit + getValuePrecisionThousand(renderValue, 2, 2) : volume} {/* {row.tradeFloat && row.tradeFloat.volume ? row.coinAInfo.simpleName : ''} */}
-            </Typography>
+            return <Box className={'textAlignRight'}>
+                <Typography
+                    component={'span'}> {volume && Number.isFinite(volume)
+                        ? renderUnit + getValuePrecisionThousand(renderValue, 2, 2) : volume} {/* {row.tradeFloat && row.tradeFloat.volume ? row.coinAInfo.simpleName : ''} */}
+                </Typography>
+            </Box> 
         }
     },
     {
@@ -303,24 +316,29 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
         name: t('labelAPY'),
         width: 'auto',
         maxWidth: 68,
+        headerCellClass: 'textAlignRight',
         formatter: ({row}) => {
             const APY = typeof row.APY !== undefined && row.APY ? row?.APY : EmptyValueTag;
-            return <Typography
+            return <Box className={'textAlignRight'}>
+                <Typography
                 component={'span'}> {APY === EmptyValueTag || typeof APY === 'undefined' ? EmptyValueTag : APY + '%'}</Typography>
+            </Box>
         }
     },
     {
-        key: 'trade',
+        key: 'action',
         name: t('labelAction'),
         // maxWidth: 120,
         width: 'auto',
-        headerCellClass: `action`,
+        headerCellClass: `textAlignRight`,
         cellClass: () => `action`,
         formatter: ({row}) => {
-            return <Button
-                href={`${window.location.href}/pools/coinPair/${row?.coinAInfo?.simpleName + '-' + row?.coinBInfo?.simpleName}`}
-                className={'btn'} variant={'outlined'} size={'small'}>
-                {t('labelTradePool')}</Button>
+            return <Box className={'action'}>
+                <Button
+                    href={`${window.location.href}/pools/coinPair/${row?.coinAInfo?.simpleName + '-' + row?.coinBInfo?.simpleName}`}
+                    className={'btn'} variant={'outlined'} size={'small'}>
+                    {t('labelTradePool')}</Button>
+            </Box> 
         }
     },
 ]

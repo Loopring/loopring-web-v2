@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import styled from '@emotion/styled'
-import { Box } from '@mui/material'
+import { Box, ClickAwayListener } from '@mui/material'
 import { DateRange } from '@mui/lab'
 import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
@@ -293,6 +293,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
 
         return <div className="rdg-cell-value">
             {/* <Button {...bindHover(rightState)}> Hover Open Right </Button> */}
+            
             <div {...bindTrigger(rightState)} style={{width: 110}}>
                 <RenderValue>
                     {actualValue}
@@ -307,6 +308,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                 // popoverContent={popoverContent}
                 // handleStateChange={(state) => handleStateChange(state, hash)}
                 // handleStateChange={setIsOpen}
+                
                 anchorOrigin={{
                     vertical: 'bottom',
                     horizontal: 'right',
@@ -316,7 +318,9 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                     horizontal: 'right',
                 }}
             >
-                {popoverContent}
+                <ClickAwayListener onClickAway={() => rightState.setOpen(false)}>
+                    {popoverContent}
+                </ClickAwayListener>
             </PopoverPure>
         </div>
     }
