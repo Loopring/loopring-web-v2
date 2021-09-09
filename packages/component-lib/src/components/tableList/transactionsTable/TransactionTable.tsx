@@ -12,6 +12,7 @@ import {
     WaitingIcon,
     WarningIcon,
     CompleteIcon,
+    getValuePrecisionThousand,
     myLog,
 } from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
@@ -266,7 +267,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
             formatter: ({row}) => {
                 const {unit, value} = row[ 'amount' ]
                 const hasValue = Number.isFinite(value)
-                const renderValue = hasValue ? `${getThousandFormattedNumbers(Number(value), 5)}` : EmptyValueTag
+                const renderValue = hasValue ? `${getValuePrecisionThousand(value, 4)}` : EmptyValueTag
                 return (
                     <div className="rdg-cell-value">
                         {renderValue} {unit || ''}
@@ -279,8 +280,9 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
             name: t('labelTxFee'),
             formatter: ({row}) => {
                 const fee = row[ 'fee' ]
-                const hasValue = fee ? Number.isFinite(fee.value) : ''
-                const renderValue = hasValue && fee.value !== 0 ? `${fee.value.toFixed(6)} ${fee.unit}` : EmptyValueTag
+                // const hasValue = fee ? Number.isFinite(fee.value) : ''
+                // const renderValue = hasValue && fee.value !== 0 ? `${fee.value.toFixed(6)} ${fee.unit}` : EmptyValueTag
+                const renderValue = `${getValuePrecisionThousand(fee.value, 4, 2)} ${fee.unit}`
                 return (
                     <div className="rdg-cell-value">
                         <span>{renderValue}</span>
