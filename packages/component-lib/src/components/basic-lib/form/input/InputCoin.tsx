@@ -22,6 +22,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        focusOnInput,
                                                                        name,
                                                                        isHideError = false,
+                                                                       isShowCoinInfo = true,
                                                                    }
                                                                        : InputCoinProps<T, C, I>, ref: React.ForwardedRef<any>) {
     const {balance, belong, tradeValue} = (inputData ? inputData : {}) as IBData<C>;
@@ -105,13 +106,12 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
         <Grid container className={`coinInput-wrap ${error.error ? 'error' : ''}`} wrap={'nowrap'}
               alignItems={'stretch'}
               alignContent={'stretch'}>
-
-            <CoinWrap order={order === 'left' ? 2 : 1}
+                {isShowCoinInfo && (
+                      <CoinWrap order={order === 'left' ? 2 : 1}
                       display={'flex'}
                       alignItems={'center'}
                       className={`icon-wrap icon-wrap-${order}`}>
-                {/* hide */}
-                <Grid container align-items={'center'} display={'none'}>
+                <Grid container align-items={'center'} display={'flex'}>
                     <Grid item display={'flex'} order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}
                           className={'logo-icon'}
                           height={'var(--list-menu-coin-size)'}
@@ -127,6 +127,8 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                         </Typography></Grid>
                 </Grid>
             </CoinWrap>
+            )}
+            
             <Grid order={order === 'left' ? 1 : 2} flex={1} item className={`input-wrap input-wrap-${order}`}>
                 <IInput ref={inputEle} onValueChange={_handleContChange} value={
                     typeof sValue === 'undefined' ? '' : sValue

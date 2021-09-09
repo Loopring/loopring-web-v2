@@ -251,7 +251,7 @@ export const useAmmJoin = ({
 
         const { request } = sdk.makeJoinAmmPoolRequest(rawVal,
             isAtoB, slippageReal, account.accAddress, fees,
-            ammMap[amm], ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0, 0)
+            ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0, 0)
 
         const newData = _.cloneDeep(data)
 

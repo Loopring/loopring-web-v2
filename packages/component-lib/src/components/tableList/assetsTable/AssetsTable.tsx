@@ -24,7 +24,7 @@ const TableWrap = styled(Box)`
 
   .rdg {
     flex: 1;
-    --template-columns: 220px 150px auto auto ${(props: any) => props.lan === 'en_US' ? '275px' : '240px'} !important;
+    --template-columns: 220px 150px auto auto ${(props: any) => props.lan === 'en_US' ? '285px' : '240px'} !important;
 
     .rdg-cell:first-of-type {
         display: flex;
