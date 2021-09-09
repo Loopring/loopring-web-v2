@@ -101,7 +101,7 @@ export const useAmmJoin = ({
         const validAmt2 = ammData?.coinB?.tradeValue ? ammData?.coinB?.tradeValue >= times * quoteMinAmt : false
 
         myLog('btnLabelActiveCheck validAmt1:', validAmt1, ' validAmt2:', validAmt2)
-        
+
         if (isLoading) {
             return { btnStatus: TradeBtnStatus.LOADING, btnI18nKey: undefined }
         } else {
@@ -348,6 +348,7 @@ export const useAmmJoin = ({
             setToastOpen({ open: true, type: 'error', content: t('labelJoinAmmFailed') })
         } finally {
             setIsLoading(false)
+            updateJoinFee()
             walletLayer2Service.sendUserUpdate()
         }
 

@@ -136,11 +136,11 @@ export const AmmPanelView = ({
             <> <AmmPanel {...{ ...rest }}
 
                 accStatus={accountStatus}
-                
+
                 onRefreshData={() => {
                     updateAmmPoolSnapshot()
-                    updateJoinFee()
-                    updateExitFee()
+                    //updateJoinFee()
+                    //updateExitFee()
                 }}
                 refreshRef={refreshRef}
 
