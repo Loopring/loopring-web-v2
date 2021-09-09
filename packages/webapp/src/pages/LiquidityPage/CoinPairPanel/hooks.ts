@@ -13,20 +13,16 @@ import { useLocation, useRouteMatch } from 'react-router';
 import moment from 'moment'
 import { AmmDetailStore, useAmmMap } from '../../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../../stores/walletLayer2';
-import { makeTickView, makeWalletLayer2, useAmmTotalValue, volumeToCount, WalletMapExtend } from '../../../hooks/help';
+import { makeTickView, makeWalletLayer2, volumeToCount, WalletMapExtend } from '../../../hooks/help';
 import {
-    AmmPoolActivityRule,
     AmmPoolSnapshot,
     AmmUserRewardMap,
     getExistedMarket,
-    LoopringMap,
     TickerData,
     TradingInterval
 } from 'loopring-sdk';
-import { getUserAmmTransaction, makeMyAmmMarketArray, getRecentAmmTransaction } from '../../../hooks/help/marketTable';
+import { getUserAmmTransaction, makeMyAmmMarketArray, getRecentAmmTransaction,makeMyAmmWithSnapshot } from '../../../hooks/help';
 import { AmmRecordRow } from '@loopring-web/component-lib';
-import { useSystem } from '../../../stores/system';
-import { makeMyAmmWithSnapshot } from '../../../hooks/help/makeUIAmmActivityMap';
 import { useUserRewards } from '../../../stores/userRewards';
 import { LoopringAPI } from 'api_wrapper';
 import { useWalletLayer2Socket } from 'services/socket/';
@@ -91,7 +87,6 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
 
     const match: any = useRouteMatch("/liquidity/pools/coinPair/:symbol")
     const {coinMap, tokenMap, marketArray, addressIndex} = useTokenMap();
-    const {faitPrices} = useSystem();
     const {ammMap, getAmmMap, status: ammMapStatus} = useAmmMap();
     const {userRewardsMap, status: useUserRewardsStatus} = useUserRewards()
     const {accountId} = store.getState().account
@@ -163,7 +158,6 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
     const [isLoading, setIsLoading] = React.useState(false)
     const [isRecentLoading, setIsRecentLoading] = React.useState(false)
     const [lpTokenList, setLpTokenList] = React.useState<{ addr: string; price: number; }[]>([])
-    const {getAmmLiquidity} = useAmmTotalValue()
     const {forex} = store.getState().system
 
     const getAwardList = React.useCallback(async () => {
@@ -319,7 +313,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
         }
     }, [getUserAmmPoolTxs, getRecentAmmPoolTxs, lpTokenList])
 
-    const walletLayer2DoIt = React.useCallback((market) => {
+    const walletLayer2DoIt = React.useCallback(() => {
         const {walletMap: _walletMap} = makeWalletLayer2();
 
         setWalletMap(_walletMap as WalletMapExtend<any>)
@@ -393,7 +387,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
 
         // let _walletMap: WalletMapExtend<C>|undefined = undefined
         if (walletLayer2) {
-            walletLayer2DoIt(realMarket);
+            walletLayer2DoIt();
         }
 
         if (realAmm && realMarket && ammMap) {
@@ -414,7 +408,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
 
                         _tradeFloat = makeTickView(tickMap[ realMarket ] ? tickMap[ realMarket ] : {})
                         myLog('........close:', _tradeFloat, close)
-                        setTradeFloat({..._tradeFloat, close: close as number} as TradeFloat);
+                        setTradeFloat({..._tradeFloat, close: close} as TradeFloat);
                         setCoinPairInfo({..._coinPairInfo})
                         setSnapShotData(_snapShotData)
 
@@ -446,7 +440,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
     const walletLayer2Callback = React.useCallback(() => {
         const {market} = getExistedMarket(marketArray, pair.coinAInfo?.simpleName as string, pair.coinBInfo?.simpleName as string);
         if (market && snapShotData && snapShotData.ammPoolSnapshot) {
-            const _walletMap = walletLayer2DoIt(market);
+            const _walletMap = walletLayer2DoIt();
             const _myAmm: MyAmmLP<C> = makeMyAmmWithSnapshot(market, _walletMap, ammUserRewardMap, snapShotData);
             setMyAmm(_myAmm);
         }
