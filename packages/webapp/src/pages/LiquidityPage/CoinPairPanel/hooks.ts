@@ -152,6 +152,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
     const [pair, setPair] = React.useState<{ coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined }>({
         coinAInfo: undefined,
         coinBInfo: undefined,
+
     });
     const [pairHistory, setPairHistory] = React.useState<ammHistoryItem[]>([])
     const [awardList, setAwardList] = React.useState<AwardItme[]>([])
@@ -159,6 +160,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
     const [isRecentLoading, setIsRecentLoading] = React.useState(false)
     const [lpTokenList, setLpTokenList] = React.useState<{ addr: string; price: number; }[]>([])
     const {forex} = store.getState().system
+    const [stobPair,setStobPair]  =  React.useState< {stob:string|undefined,btos:string|undefined}>({stob:undefined,btos:undefined})
 
     const getAwardList = React.useCallback(async () => {
         try {
@@ -400,7 +402,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
                             tickerData: tickMap[ realMarket ],
                             ammPoolSnapshot: ammPoolSnapshot,
                         }
-                        const {close} = calcPriceByAmmTickMapDepth({
+                        const {close,stob,btos} = calcPriceByAmmTickMapDepth({
                             market: realMarket,
                             tradePair: realMarket,
                             dependencyData: {ammPoolSnapshot, tickMap, depth}
@@ -408,6 +410,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
 
                         _tradeFloat = makeTickView(tickMap[ realMarket ] ? tickMap[ realMarket ] : {})
                         myLog('........close:', _tradeFloat, close)
+                        setStobPair({stob,btos})
                         setTradeFloat({..._tradeFloat, close: close} as TradeFloat);
                         setCoinPairInfo({..._coinPairInfo})
                         setSnapShotData(_snapShotData)
@@ -494,6 +497,8 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
         isRecentLoading,
         ammTotal,
         ammUserTotal,
+        stob:stobPair.stob,
+        btos:stobPair.btos
         // recentTxnTotal,
         // recentMarketArray,
     }

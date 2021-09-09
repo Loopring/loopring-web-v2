@@ -84,6 +84,7 @@ export type AmmInData<T> = {
     lpCoinB: IBData<T>,
     lpCoin: IBData<T>,
     AtoB: number,
+    BtoA: number,
     coinInfoMap: CoinMap<T, CoinInfo<T>>,
     // walletMap: WalletMap<T, WalletCoin<T>>,
     // AmmWalletMap: WalletMap<T, WalletCoin<T>>,

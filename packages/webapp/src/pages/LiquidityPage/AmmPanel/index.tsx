@@ -16,13 +16,13 @@ import React from 'react';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 
-const MyAmmLPAssets = withTranslation('common')(({ ammCalcData, t }:
-    { ammCalcData: AmmInData<any> } & WithTranslation) => {
+const MyAmmLPAssets = withTranslation('common')(({ammCalcData, t}:
+                                                     { ammCalcData: AmmInData<any> } & WithTranslation) => {
     return <Box className={'MuiPaper-elevation2'} paddingX={3} paddingY={2}>
         <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
             <Box display={'flex'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
-                alignItems={'center'} justifyContent={'center'}>
-                <CoinIcon symbol={'LP-' + ammCalcData.lpCoinA.belong + '-' + ammCalcData.lpCoinB.belong} />
+                 alignItems={'center'} justifyContent={'center'}>
+                <CoinIcon symbol={'LP-' + ammCalcData.lpCoinA.belong + '-' + ammCalcData.lpCoinB.belong}/>
             </Box>
             <Box paddingLeft={1}>
                 <Typography variant={'h4'} component={'h3'} paddingRight={1} fontWeight={700}>
@@ -36,34 +36,34 @@ const MyAmmLPAssets = withTranslation('common')(({ ammCalcData, t }:
                 </Typography>
             </Box>
         </Box>
-        <Divider style={{ margin: '16px 0' }} />
+        <Divider style={{margin: '16px 0'}}/>
         <Box display={'flex'} flexDirection={'column'}>
 
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}>
                 <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('labelMyLPToken')} </Typography>
                 <Typography component={'p'}
-                    variant="body2">{ammCalcData && ammCalcData?.lpCoin?.balance !== undefined ? getValuePrecisionThousand(ammCalcData.lpCoin.balance) : EmptyValueTag}</Typography>
+                            variant="body2">{ammCalcData && ammCalcData?.lpCoin?.balance !== undefined ? getValuePrecisionThousand(ammCalcData.lpCoin.balance) : EmptyValueTag}</Typography>
             </Box>
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}
-                marginTop={1 / 2}>
+                 marginTop={1 / 2}>
                 <Typography component={'p'} variant="body2"
-                    color={'textSecondary'}> {t('labelMyLPAToken', { symbol: ammCalcData.lpCoinA.belong })} </Typography>
+                            color={'textSecondary'}> {t('labelMyLPAToken', {symbol: ammCalcData.lpCoinA.belong})} </Typography>
                 <Typography component={'p'}
-                    variant="body2">{ammCalcData && ammCalcData.lpCoinA.balance ? getValuePrecisionThousand(ammCalcData.lpCoinA.balance) : EmptyValueTag}</Typography>
+                            variant="body2">{ammCalcData && ammCalcData.lpCoinA.balance ? getValuePrecisionThousand(ammCalcData.lpCoinA.balance) : EmptyValueTag}</Typography>
             </Box>
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}
-                marginTop={1 / 2}>
+                 marginTop={1 / 2}>
                 <Typography component={'p'} variant="body2"
-                    color={'textSecondary'}> {t('labelMyLPBToken', { symbol: ammCalcData.lpCoinB.belong })} </Typography>
+                            color={'textSecondary'}> {t('labelMyLPBToken', {symbol: ammCalcData.lpCoinB.belong})} </Typography>
                 <Typography component={'p'}
-                    variant="body2">{ammCalcData && ammCalcData.lpCoinB.balance ? getValuePrecisionThousand(ammCalcData.lpCoinB.balance) : EmptyValueTag}</Typography>
+                            variant="body2">{ammCalcData && ammCalcData.lpCoinB.balance ? getValuePrecisionThousand(ammCalcData.lpCoinB.balance) : EmptyValueTag}</Typography>
             </Box>
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}
-                marginTop={1 / 2}>
+                 marginTop={1 / 2}>
                 <Typography component={'p'} variant="body2"
-                    color={'textSecondary'}> {t('labelMyLPAmountFor')} </Typography>
+                            color={'textSecondary'}> {t('labelMyLPAmountFor')} </Typography>
                 <Typography component={'p'}
-                    variant="body2">{ammCalcData && ammCalcData.percentage ? getValuePrecisionThousand(Number(ammCalcData.percentage) * 100) + '%' : EmptyValueTag}</Typography>
+                            variant="body2">{ammCalcData && ammCalcData.percentage ? getValuePrecisionThousand(Number(ammCalcData.percentage) * 100) + '%' : EmptyValueTag}</Typography>
             </Box>
         </Box>
     </Box>
@@ -72,15 +72,19 @@ const MyAmmLPAssets = withTranslation('common')(({ ammCalcData, t }:
 
 const BoxWrapperStyled = styled(Grid)`
   background: var(--color-box);
-  border-radius: ${({ theme }) => theme.unit}px;
+  border-radius: ${({theme}) => theme.unit}px;
 `
 export const AmmPanelView = ({
-    pair,
-    walletMap,
-    ammType, snapShotData,
-    ...rest
-}: {
+                                 pair,
+                                 walletMap,
+                                 btos,
+                                 stob,
+                                 ammType, snapShotData,
+                                 ...rest
+                             }: {
     pair: { coinAInfo: CoinInfo<string> | undefined, coinBInfo: CoinInfo<string> | undefined },
+    btos: string|undefined,
+    stob: string|undefined,
     snapShotData: {
         tickerData: TickerData | undefined,
         ammPoolSnapshot: AmmPoolSnapshot | undefined
@@ -97,7 +101,7 @@ export const AmmPanelView = ({
         refreshRef,
         updateAmmPoolSnapshot,
         getFee,
-    } = useAmmCommon({ pair, })
+    } = useAmmCommon({pair,})
 
     const {
 
@@ -114,6 +118,8 @@ export const AmmPanelView = ({
         setToastOpen,
         pair,
         snapShotData,
+        btos,
+        stob,
     })
 
     const {
@@ -125,50 +131,51 @@ export const AmmPanelView = ({
         btnStatus: removeBtnStatus,
         btnI18nKey: ammWithdrawBtnI18nKey,
         updateExitFee
-
     } = useAmmExit({
         getFee,
         setToastOpen,
         pair,
         snapShotData,
+        btos,
+        stob,
     })
 
     return <>
         <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'}
-            open={toastOpen?.open ?? false}
-            autoHideDuration={TOAST_TIME} onClose={closeToast} />
+               open={toastOpen?.open ?? false}
+               autoHideDuration={TOAST_TIME} onClose={closeToast}/>
 
         {pair ?
-            <> <AmmPanel {...{ ...rest }}
+            <> <AmmPanel {...{...rest}}
 
-                accStatus={accountStatus}
+                         accStatus={accountStatus}
 
-                onRefreshData={() => {
-                    updateAmmPoolSnapshot()
-                    //updateJoinFee()
-                    //updateExitFee()
-                }}
-                refreshRef={refreshRef}
+                         onRefreshData={() => {
+                             updateAmmPoolSnapshot()
+                             //updateJoinFee()
+                             //updateExitFee()
+                         }}
+                         refreshRef={refreshRef}
 
-                ammDepositData={ammJoinData}
-                ammCalcDataDeposit={ammCalcDataDeposit}
-                handleAmmAddChangeEvent={handleJoinAmmPoolEvent}
-                onAmmAddClick={onAmmAddClick}
-                tabSelected={ammType ? ammType : AmmPanelType.Join}
-                ammDepositBtnI18nKey={ammDepositBtnI18nKey}
-                ammDepositBtnStatus={addBtnStatus}
+                         ammDepositData={ammJoinData}
+                         ammCalcDataDeposit={ammCalcDataDeposit}
+                         handleAmmAddChangeEvent={handleJoinAmmPoolEvent}
+                         onAmmAddClick={onAmmAddClick}
+                         tabSelected={ammType ? ammType : AmmPanelType.Join}
+                         ammDepositBtnI18nKey={ammDepositBtnI18nKey}
+                         ammDepositBtnStatus={addBtnStatus}
 
-                ammWithdrawData={ammExitData}
-                ammCalcDataWithDraw={ammCalcDataWithdraw}
-                handleAmmRemoveChangeEvent={handleExitAmmPoolEvent}
-                onAmmRemoveClick={onAmmRemoveClick}
-                ammWithdrawBtnI18nKey={ammWithdrawBtnI18nKey}
-                ammWithdrawBtnStatus={removeBtnStatus}
+                         ammWithdrawData={ammExitData}
+                         ammCalcDataWithDraw={ammCalcDataWithdraw}
+                         handleAmmRemoveChangeEvent={handleExitAmmPoolEvent}
+                         onAmmRemoveClick={onAmmRemoveClick}
+                         ammWithdrawBtnI18nKey={ammWithdrawBtnI18nKey}
+                         ammWithdrawBtnStatus={removeBtnStatus}
 
             />
                 {ammCalcDataDeposit && ammCalcDataDeposit.lpCoin ?
                     <BoxWrapperStyled marginTop={5 / 2}>
-                        <MyAmmLPAssets ammCalcData={ammCalcDataDeposit} />
+                        <MyAmmLPAssets ammCalcData={ammCalcDataDeposit}/>
                     </BoxWrapperStyled> : <></>
 
                 } </> : <></>}
