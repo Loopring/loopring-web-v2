@@ -7,7 +7,7 @@ import moment from 'moment'
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
 import { PopoverPure } from '../../basic-lib'
-import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes, getThousandFormattedNumbers } from '@loopring-web/common-resources'
+import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes, getValuePrecisionThousand } from '@loopring-web/common-resources'
 import { Column, Popover, PopoverType, Table, TablePagination } from '../../basic-lib'
 import { SingleOrderHistoryTable } from './SingleOrderHistoryTable'
 import { Filter, FilterOrderTypes } from './components/Filter'
@@ -65,7 +65,7 @@ export type OrderHistoryRawDataItem = {
     market: string;
     side: TradeTypes;
     amount: OrderPair;
-    average: number;
+    average: number | string;
     // filledAmount: OrderPair;
     price: {
         key: string;
@@ -112,7 +112,7 @@ export interface OrderHistoryTableProps {
     };
     showFilter?: boolean;
     getOrderList: (props: Omit<GetOrdersRequest, "accountId">) => Promise<void>;
-    showloading?: boolean;
+    showLoading?: boolean;
     marketArray?: string[];
     showDetailLoading?: boolean;
     getOrderDetail: (orderHash: string) => Promise<void>;
@@ -122,7 +122,7 @@ export interface OrderHistoryTableProps {
 
 
 export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryTableProps & WithTranslation) => {
-    const { t, rawData, pagination, showFilter, getOrderList, showloading, marketArray, showDetailLoading, getOrderDetail, orderDetailList } = props
+    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray, showDetailLoading, getOrderDetail, orderDetailList } = props
     const actionColumns = ['status']
     // const { language } = useSettings()
     // const [orderDetail, setOrderDetail] = useState([]);
@@ -131,7 +131,6 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
     const [filterToken, setFilterToken] = useState<string>('All Pairs')
     const [page, setPage] = useState(1)
     const pageSize = pagination ? pagination.pageSize : 0
-
     const getColumnModeOrderHistory = (): Column<OrderHistoryRow, unknown>[] => [
         {
             key: 'amount',
@@ -140,7 +139,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                 const {from, to} = row[ column.key ]
                 const {key: keyFrom, value: valueFrom} = from
                 const {key: keyTo, value: valueTo} = to
-                const renderValue = `${valueFrom} ${keyFrom} \u2192 ${valueTo} ${keyTo}`
+                const renderValue = `${getValuePrecisionThousand(valueFrom, 4, 4)} ${keyFrom} \u2192 ${getValuePrecisionThousand(valueTo, 4)} ${keyTo}`
                 return <div className="rdg-cell-value">{renderValue}</div>
             },
         },
@@ -149,8 +148,9 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             name: t('labelOrderAverage'),
             formatter: ({row, column}) => {
                 const value = row[ column.key ]
-                const hasValue = Number.isFinite(value)
-                const renderValue = hasValue ? value.toFixed(6) : EmptyValueTag
+                // const hasValue = Number.isFinite(value)
+                // const renderValue = hasValue ? getValuePrecisionThousand(value, 6, 2) : EmptyValueTag
+                const renderValue = value ? getValuePrecisionThousand(value, 4, 4) : EmptyValueTag
                 return <div className="rdg-cell-value">{renderValue}</div>
             },
         },
@@ -171,7 +171,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             formatter: ({row}) => {
                 const value = row['price'].value
                 const hasValue = Number.isFinite(value)
-                const renderValue = hasValue ? value.toFixed(6) : EmptyValueTag
+                const renderValue = hasValue ? getValuePrecisionThousand(value, 4, 4) : EmptyValueTag
                 return (
                     <div className="rdg-cell-value">
                         <span>{renderValue}</span>
@@ -404,7 +404,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                     handleFilterChange={handleFilterChange}/>
             </TableFilterStyled>
         )}
-        <Table {...{...defaultArgs, ...props, rawData, showloading}} />
+        <Table {...{...defaultArgs, ...props, rawData, showloading: showLoading}} />
         {
             pagination && (
                 <TablePagination page={page} pageSize={pageSize} total={pagination.total}

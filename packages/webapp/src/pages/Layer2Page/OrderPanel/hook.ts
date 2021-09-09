@@ -1,11 +1,12 @@
 import React from 'react'
-import { TradeStatus, TradeTypes } from '@loopring-web/common-resources'
+import { EmptyValueTag, TradeStatus, TradeTypes } from '@loopring-web/common-resources'
 import { OrderHistoryRawDataItem, OrderHistoryTableDetailItem } from '@loopring-web/component-lib'
 import { useAccount } from 'stores/account';
 import { LoopringAPI } from 'api_wrapper'
-import { volumeToCount } from 'hooks/help'
+import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
 import { GetOrdersRequest, Side } from 'loopring-sdk'
 import store from 'stores'
+import BigNumber from 'bignumber.js';
 
 export const useOrderList = () => {
     const [orderOriginalData, setOrderOriginalData] = React.useState<OrderHistoryRawDataItem[]>([])
@@ -46,8 +47,14 @@ export const useOrderList = () => {
                     const [tokenFirst, tokenLast] = marketList
                     const baseToken = isBuy ? tokenLast : tokenFirst
                     const quoteToken = isBuy ? tokenFirst : tokenLast
+                    const actualBaseFilled = isBuy ? quoteFilled : baseFilled
+                    const actualQuoteFilled = isBuy ? baseFilled : quoteFilled
                     const baseValue = isBuy ? volumeToCount(baseToken, quoteAmount) : volumeToCount(baseToken, baseAmount)
                     const quoteValue = isBuy ? volumeToCount(quoteToken, baseAmount) : (volumeToCount(baseToken, baseAmount) || 0) * Number(o.price || 0)
+                    const baseVolume = volumeToCountAsBigNumber(baseToken, actualBaseFilled)
+                    const quoteVolume = volumeToCountAsBigNumber(quoteToken, actualQuoteFilled)
+
+                    const average = baseVolume?.div(quoteVolume || new BigNumber(1)).toNumber() || 0
 
                     return ({
                         market: o.market,
@@ -56,15 +63,14 @@ export const useOrderList = () => {
                         amount: {
                             from: {
                                 key: baseToken,
-                                value: baseValue?.toFixed(2) as any
+                                value: baseValue as any
                             },
                             to: {
                                 key: quoteToken,
-                                value: quoteValue?.toFixed(2) as any
+                                value: quoteValue as any
                             }
                         },
-                        // average: Number(o.price),
-                        average: Number(volumeToCount(quoteToken, quoteFilled)) / Number(volumeToCount(baseToken, baseFilled)),
+                        average: average,
                         // filledAmount: {
                         //     from: {
                         //         key: baseToken,
