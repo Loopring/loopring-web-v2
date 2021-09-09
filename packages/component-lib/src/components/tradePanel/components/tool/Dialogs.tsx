@@ -71,7 +71,6 @@ export const ConfirmImpact = withTranslation('common', {withRef: true})(({
             </DialogContentText>
             <DialogContentText id="alert-dialog-slide-description">
                 <Trans i18nKey={'labelImpactAgree'} tOptions={value}>
-                    Please enter uppercase <Typography component={'span'} color={'textPrimary'}>\"AGREE\"</Typography>to confirm again.
                 </Trans>
             </DialogContentText>
             <TextField
