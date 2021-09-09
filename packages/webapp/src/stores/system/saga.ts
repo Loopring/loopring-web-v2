@@ -4,7 +4,7 @@ import { ENV, NETWORKEXTEND } from "./interface"
 import store from '../index';
 // import { reset } from '../account/reducer';
 import { LoopringAPI } from 'api_wrapper';
-import { getAmmMap, updateRealTimeAmmMap } from '../Amm/AmmMap';
+import { getAmmMap, initAmmMap, updateRealTimeAmmMap } from '../Amm/AmmMap';
 import { getTokenMap } from '../token';
 import { CustomError, ErrorMap } from '@loopring-web/common-resources';
 import { getAmmActivityMap } from '../Amm/AmmActivityMap';
@@ -22,6 +22,7 @@ const initConfig = function* <R extends { [ key: string ]: any }>(chainId: Chain
     const {pairs, marketArr, tokenArr, markets} = yield call(async () => LoopringAPI.exchangeAPI?.getMixMarkets());
 
     store.dispatch(getTokenMap({tokensMap, marketMap: markets, pairs, marketArr, tokenArr}))
+    store.dispatch(initAmmMap({ammpools}))
     yield take('tokenMap/getTokenMapStatus');
     store.dispatch(getTokenPrices(undefined));
     yield take('tokenPrices/getTokenPricesStatus');

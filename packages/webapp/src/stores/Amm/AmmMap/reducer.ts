@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { AmmMapStates, GetAmmMapParams } from './interface';
 import { SagaStatus } from '@loopring-web/common-resources';
+import { AmmPoolInfoV3, LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs';
 
 
 const initialState: Required<AmmMapStates<object, object>> = {
@@ -13,6 +14,16 @@ const ammMapSlice: Slice = createSlice({
     name: 'ammMap',
     initialState,
     reducers: {
+        initAmmMap(state,action: PayloadAction<{ ammpools: LoopringMap<AmmPoolInfoV3> }>) {
+            const ammpools = action.payload.ammpools;
+            const ammMap:{[key:string ]:string} = Reflect.ownKeys(ammpools).reduce((prev, key) => {
+                return {...prev, [key]: {
+                        address: ammpools[ key as string ].address,
+                        market: ammpools[ key as string ].market,
+                        __rawConfig__: ammpools[ key as string ]}}
+            }, {} )
+            state.ammMap = ammMap
+        },
         getAmmMap(state, action: PayloadAction<GetAmmMapParams>) {
             state.status = SagaStatus.PENDING
         },
@@ -41,4 +52,4 @@ const ammMapSlice: Slice = createSlice({
     },
 });
 export { ammMapSlice };
-export const {getAmmMap, getAmmMapStatus, statusUnset, updateRealTimeAmmMap} = ammMapSlice.actions
+export const {getAmmMap,initAmmMap, getAmmMapStatus, statusUnset, updateRealTimeAmmMap} = ammMapSlice.actions
