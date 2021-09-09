@@ -98,23 +98,13 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
     const tokenMapList = tokenMap ? Object.entries(tokenMap) : []
     let routerLocation = useLocation()
 
-    // const {account} = useAccount();
-
-
-    // const {ammMap, getAmmMap} = ammMapState;
-
-    // const {ammMap,updateAmmMap} = useAmmMap();
-    // const walletLayer2State = useWalletLayer2();
     const {walletLayer2} = useWalletLayer2();
     const [walletMap, setWalletMap] = React.useState<WalletMapExtend<C> | undefined>(undefined);
-    // const [ammRecordArray, setAmmRecordArray] = React.useState<AmmRecordRow<C>[]>([]);
     const [ammMarketArray, setAmmMarketArray] = React.useState<AmmRecordRow<C>[]>([]);
     const [ammTotal, setAmmTotal] = React.useState(0)
     const [ammUserTotal, setAmmUserTotal] = React.useState(0)
-    // const [recentTxnTotal, setRecentTxnTotal] = React.useState(0)
 
     const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<AmmRecordRow<C>[]>([]);
-    // const [recentMarketArray, setRecentMarketArray] = React.useState<any[]>([])
     const [ammUserRewardMap, setAmmUserRewardMap] = React.useState<AmmUserRewardMap | undefined>(undefined);
     const [snapShotData, setSnapShotData] = React.useState<{
         tickerData: TickerData | undefined
@@ -134,7 +124,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
             balanceYuan: 0,
             balanceDollar: 0,
         })
-    // const [ammPoolSnapshot, setammPoolSnapshot] = React.useState<AmmPoolSnapshot|undefined>(undefined);
+        
     const [coinPairInfo, setCoinPairInfo] = React.useState<PgAmmDetail<C>>({
         myCoinA: undefined,
         myCoinB: undefined,
@@ -189,20 +179,12 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
                         })
                     }))
     
-                    myLog('formattedList:', formattedList)
-    
                     setAwardList(formattedList)
                 }
             }
-
         } catch (reason) {
-            
         }
     }, [accountId])
-
-    useEffect(() => {
-        getAwardList()
-    }, [getAwardList])
 
     const getLpTokenList = React.useCallback(async () => {
         if (LoopringAPI.walletAPI) {
@@ -215,6 +197,10 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
         }
         return []
     }, [])
+
+    useEffect(() => {
+        getAwardList()
+    }, [getAwardList])
 
     useEffect(() => {
         getLpTokenList()
@@ -467,10 +453,8 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
     return {
         walletMap,
         myAmm,
-        // tickerData,
         coinPairInfo,
         snapShotData,
-        // ammPoolSnapshot,                       App.tsx
         pair,
         tradeFloat,
         ammMarketArray,
@@ -482,7 +466,5 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
         isRecentLoading,
         ammTotal,
         ammUserTotal,
-        // recentTxnTotal,
-        // recentMarketArray,
     }
 }
