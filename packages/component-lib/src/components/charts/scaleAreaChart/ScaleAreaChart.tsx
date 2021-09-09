@@ -17,6 +17,7 @@ export interface ScaleAreaChartProps {
     showArea?: boolean
     extraInfo?: string
     showXAxis?: boolean
+    isHeadTailCompare?: boolean
 }
 
 export const ScaleAreaChart = (props: ScaleAreaChartProps) => {
