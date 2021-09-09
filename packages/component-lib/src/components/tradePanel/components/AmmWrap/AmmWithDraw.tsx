@@ -198,6 +198,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                 <InputCoin<IBData<I>, I, CoinInfo<I>> ref={coinLPRef} disabled={getDisabled()} {...{
                     ...propsLP,
                     isHideError: true,
+                    isShowCoinInfo: false,
                     order: 'right',
                     inputData: ammData ? ammData.coinLP : {} as any,
                     coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
@@ -206,7 +207,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
 
             <Box alignSelf={"center"} marginY={1}>
                 <SvgStyled>
-                    <ExchangeIcon />
+                    <ExchangeIcon htmlColor={'var(--color-text-third)'} />
                 </SvgStyled>
             </Box>
             <Box borderRadius={1} style={{ background: 'var(--color-pop-bg)' }}
