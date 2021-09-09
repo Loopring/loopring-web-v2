@@ -1,5 +1,11 @@
 import { AmmPanel, AmmPanelType, CoinIcon, Toast } from '@loopring-web/component-lib';
-import { AmmInData, CoinInfo, EmptyValueTag, getValuePrecisionThousand, WalletMap } from '@loopring-web/common-resources';
+import {
+    AmmInData,
+    CoinInfo,
+    EmptyValueTag,
+    getValuePrecisionThousand,
+    WalletMap
+} from '@loopring-web/common-resources';
 import { useAmmJoin } from './hook_join'
 import { useAmmExit } from './hook_exit'
 import { useAmmCommon } from './hook_common'
