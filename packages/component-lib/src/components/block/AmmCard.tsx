@@ -10,7 +10,8 @@ import {
     Currency,
     EmptyValueTag,
     getThousandFormattedNumbers,
-    PriceTag
+    PriceTag,
+    getValuePrecisionThousand
 } from '@loopring-web/common-resources';
 import { useSettings } from '../../stores';
 import styled from '@emotion/styled';
@@ -52,11 +53,10 @@ export const AmmCard = withTranslation('common', {withRef: true})(
         const { rewardValue, rewardValue2 } = rest
         // const coinAIconHasLoaded = useImage(coinAInfo?.icon ? coinAInfo?.icon : '').hasLoaded;
         // const coinBIconHasLoaded = useImage(coinBInfo?.icon ? coinBInfo?.icon : '').hasLoaded;
-        const {coinJson} = useSettings();
+        const {coinJson, currency} = useSettings();
         const coinAIcon: any = coinJson[ coinAInfo.simpleName ];
         const coinBIcon: any = coinJson[ coinBInfo.simpleName ];
         const pair = `${coinAInfo.simpleName} / ${coinBInfo.simpleName}`
-        const {currency} = useSettings();
 
         return <Card ref={ref}>
             <CardContent>
@@ -145,8 +145,8 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     </Typography>
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'}>
                         {t('labelLiquidity') + ' ' +
-                                amountDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(amountDollar as number)
-                                    : PriceTag.Yuan + getThousandFormattedNumbers(amountYuan as number)}
+                                amountDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getValuePrecisionThousand(amountDollar, 2, 2)
+                                    : PriceTag.Yuan + getValuePrecisionThousand(amountYuan, 2, 2)}
                     </Typography>
                 </DetailWrapperStyled>
 
@@ -156,7 +156,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                         {t('labelMiningActivityReward')}
                     </Typography>
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'}>
-                        ${getThousandFormattedNumbers((rewardValue && Number.isFinite(rewardValue) ? rewardValue : 0) + (rewardValue2 && Number.isFinite(rewardValue2) ? rewardValue2 : 0))}
+                        ${getValuePrecisionThousand(((rewardValue && Number.isFinite(rewardValue) ? rewardValue : 0) + (rewardValue2 && Number.isFinite(rewardValue2) ? rewardValue2 : 0)), 2, 2)}
                     </Typography>
                 </DetailWrapperStyled>
 
@@ -166,7 +166,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                         {t('labelMiningMyShare')}
                     </Typography>
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'}>
-                        $300
+                        --
                     </Typography>
                 </DetailWrapperStyled>
 
@@ -178,7 +178,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'}>
                         {myRewards === 0
                             ? EmptyValueTag
-                            : getThousandFormattedNumbers(myRewards, 6)}
+                            : getValuePrecisionThousand(myRewards, 6, 6)}
                         {' ' + rewardToken?.simpleName}
                     </Typography>
                 </DetailWrapperStyled>
