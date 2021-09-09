@@ -45,12 +45,13 @@ export const makeUIAmmActivityMap = <R extends { [ key: string ]: any }, I exten
                         const symbol = idIndex[ ammPoolActivityRule.awardRules[ 0 ].tokenId as any ]
                         const totalRewards = VolToNumberWithPrecision(ammPoolActivityRule.awardRules[ 0 ].volume, symbol)
                         // @ts-ignore
+                        const myRewardVol = myReward && myReward[ ammPoolActivityRule.market ]?.currentRewards[ 0 ] ? myReward[ ammPoolActivityRule.market ]?.currentRewards[ 0 ].volume : 0
                         const item = {
                             // @ts-ignore
                             rewardToken: coinMap[ symbol ],
                             totalRewards: Number(totalRewards),
                             myRewards: status === AmmPoolActivityStatus.InProgress && myReward && myReward[ ammPoolActivityRule.market ] ?
-                                volumeToCount(symbol, myReward[ ammPoolActivityRule.market ]?.currentRewards[ 0 ].volume) : 0,
+                                volumeToCount(symbol, myRewardVol) : 0,
                             duration: {
                                 from: new Date(ammPoolActivityRule?.rangeFrom),
                                 to: new Date(ammPoolActivityRule?.rangeTo),

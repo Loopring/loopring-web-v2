@@ -35,7 +35,6 @@ import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useModalData } from 'stores/router';
 import { isAccActivated } from './checkAccStatus';
 import { getFloatValue } from 'utils/formatter_tool';
-import { AnyAsyncThunk } from '@reduxjs/toolkit/dist/matchers';
 
 export const useWithdraw = <R extends IBData<T>, T>(): {
     withdrawAlertText: string | undefined,
@@ -76,6 +75,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const {
         address,
+        realAddr,
         setAddress,
         addrStatus,
     } = useAddressCheck()
@@ -353,6 +353,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const withdrawProps: any = {
         addressDefault: address,
+        realAddr,
         tradeData: withdrawValue as any,
         coinMap: totalCoinMap as CoinMap<T>,
         walletMap: walletMap2 as WalletMap<any>,

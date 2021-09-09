@@ -44,6 +44,7 @@ export type TransferInfoProps<C> = {
 
 export type TransferExtendProps<T, I, C> = {
     addressDefault?: string;
+    realAddr?: string,
     onTransferClick: (data: T) => void,
     handleFeeChange: (value: { belong: C | string, fee: number, __raw__?: any }) => void,
     handleOnAddressChange: (value: string | undefined | I) => void,
@@ -99,6 +100,7 @@ export type WithdrawInfoProps<C> = {
 
 export type WithdrawExtendProps<T, I, C> = {
     addressDefault?: string;
+    realAddr?: string,
     onWithdrawClick: (data: T) => void,
     handleFeeChange: (value: { belong: C | string, fee: number | string, __raw__?: any }) => void,
     handleWithdrawTypeChange: (value: keyof typeof WithdrawType) => void,
