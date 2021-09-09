@@ -20,21 +20,21 @@ const TableWrapperStyled = styled(Box)<TableWrapperStyledProps>`
   position: relative;
   flex: 1;
 
-  &::after {
-    visibility: ${({ showloading }) => showloading === 'true' ? 'visible' : 'hidden'};
-    position: absolute;
-    z-index: 20;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.2;
-    background-color: var(--color-global-bg);
-    content: '';
-    pointer-events: auto;
-  }
+  // &::after {
+  //   visibility: ${({ showloading }) => showloading === 'true' ? 'visible' : 'hidden'};
+  //   position: absolute;
+  //   z-index: 20;
+  //   top: 0;
+  //   right: 0;
+  //   bottom: 0;
+  //   left: 0;
+  //   width: 100%;
+  //   height: 100%;
+  //   opacity: 0.2;
+  //   background-color: var(--color-global-bg);
+  //   content: '';
+  //   pointer-events: auto;
+  // }
 ` as any
 
 export const DataGridStyled = styled(DataGrid)`

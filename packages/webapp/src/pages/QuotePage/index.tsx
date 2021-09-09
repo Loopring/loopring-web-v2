@@ -188,7 +188,6 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     // prevent amm risky pair
     const getFilteredTickList = useCallback(() => {
         if (!!ammPoolBalances.length && tickList && !!tickList.length) {
-            console.log(tickList)
             return tickList.filter((o: any) => {
                 const pair = `${o.pair.coinA}-${o.pair.coinB}`
                 if (ammPoolBalances.find(o => o.poolName === pair)) {
