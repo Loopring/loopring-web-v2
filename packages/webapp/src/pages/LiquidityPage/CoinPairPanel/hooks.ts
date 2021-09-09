@@ -34,7 +34,6 @@ import store from 'stores'
 import { calcPriceByAmmTickMapDepth, swapDependAsync } from '../../SwapPage/help';
 import { myLog } from "@loopring-web/common-resources";
 
-import { getShowStr } from '@loopring-web/common-resources'
 import _ from 'lodash'
 import { useAmmPool } from "../hook";
 
@@ -409,7 +408,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
 
                         _tradeFloat = makeTickView(tickMap[ realMarket ] ? tickMap[ realMarket ] : {})
                         myLog('........close:', close)
-                        setTradeFloat({..._tradeFloat, close: Number(getShowStr(close))} as TradeFloat);
+                        setTradeFloat({..._tradeFloat, close: close as number} as TradeFloat);
                         setCoinPairInfo({..._coinPairInfo})
                         setSnapShotData(_snapShotData)
 

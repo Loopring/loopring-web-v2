@@ -10,7 +10,6 @@ import {
 import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
 import { LoopringAPI } from 'api_wrapper'
 import store from 'stores'
-import { getShowStr, TradeTypes } from '@loopring-web/common-resources'
 import { AmmTxType, Side, toBig, UserTxTypes } from 'loopring-sdk'
 import { tradeItemToTableDataItem } from 'utils/formatter_tool'
 

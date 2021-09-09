@@ -1,5 +1,5 @@
 import React from 'react'
-import { AccountStatus, EmptyValueTag, getShowStr, ReverseIcon } from '@loopring-web/common-resources'
+import { AccountStatus, EmptyValueTag, getValuePrecisionThousand, ReverseIcon } from '@loopring-web/common-resources'
 import { IconButtonStyled } from '../Styled'
 
 export function useAmmViewData({accStatus, error, i18nKey, t, _isStoB, ammCalcData, _onSwitchStob, isAdd, }:
@@ -31,9 +31,9 @@ export function useAmmViewData({accStatus, error, i18nKey, t, _isStoB, ammCalcDa
         if (ammCalcData && ammCalcData?.lpCoinA && ammCalcData?.lpCoinB && ammCalcData.AtoB) {
             let price: string;
             if (_isStoB) {
-                price = `1 ${ammCalcData?.lpCoinA?.belong} \u2248 ${getShowStr(ammCalcData.AtoB)} ${ammCalcData?.lpCoinB?.belong}`;
+                price = `1 ${ammCalcData?.lpCoinA?.belong} \u2248 ${getValuePrecisionThousand(ammCalcData.AtoB)} ${ammCalcData?.lpCoinB?.belong}`;
             } else {
-                price = `1 ${ammCalcData?.lpCoinB?.belong} \u2248 ${getShowStr(1 / ammCalcData.AtoB)} ${ammCalcData?.lpCoinA?.belong}`;
+                price = `1 ${ammCalcData?.lpCoinB?.belong} \u2248 ${getValuePrecisionThousand(1 / ammCalcData.AtoB)} ${ammCalcData?.lpCoinA?.belong}`;
             }
             return <> {price} <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
             ><ReverseIcon/></IconButtonStyled></>
