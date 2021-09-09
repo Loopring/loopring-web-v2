@@ -5,7 +5,7 @@ import {
     AvatarCoinStyled,
     Currency,
     EmptyValueTag,
-    getThousandFormattedNumbers,
+    getValuePrecisionThousand,
     PriceTag
 } from '@loopring-web/common-resources';
 import { Avatar, Box, Breadcrumbs, Divider, Grid, Link, Tab, Tabs, Typography } from '@mui/material';
@@ -74,6 +74,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         showAmmPoolLoading,
         ammUserTotal,
         isRecentLoading,
+        stob,
+        btos,
     } = useCoinPair();
     const [tabIndex, setTabIndex] = React.useState<0 | 1>(1);
     // const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
@@ -166,7 +168,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                     <Typography marginLeft={1 / 2} justifyContent={'center'} display={'flex'}>
                                         <Typography component={'span'} alignSelf={'right'} variant={'h5'} height={24}
                                                     lineHeight={'24px'}>
-                                            {getThousandFormattedNumbers(coinPairInfo.totalA, 4)}</Typography>
+                                            {getValuePrecisionThousand(coinPairInfo.totalA, 4)}</Typography>
                                         <Typography component={'span'} variant={'h5'} marginLeft={1} alignSelf={'right'}
                                                     height={24}
                                                     lineHeight={'24px'}>
@@ -207,7 +209,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                     <Typography marginLeft={1 / 2} justifyContent={'center'} display={'flex'}>
                                         <Typography variant={'h5'} component={'span'} alignSelf={'right'} height={24}
                                                     lineHeight={'24px'}>
-                                            {getThousandFormattedNumbers(coinPairInfo.totalB, 4)}</Typography>
+                                            {getValuePrecisionThousand(coinPairInfo.totalB, 4)}</Typography>
                                         <Typography variant={'h5'} component={'span'} marginLeft={1} alignSelf={'right'}
                                                     height={24}
                                                     lineHeight={'24px'}>
@@ -231,7 +233,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             <Box>
                                 <Typography variant={'h3'}
                                             component={'span'}> {typeof coinPairInfo.amountDollar === 'undefined' ? EmptyValueTag :
-                                    currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(coinPairInfo.amountDollar, 2, {isAbbreviate: true}) : PriceTag.Yuan + getThousandFormattedNumbers(coinPairInfo.amountYuan ? coinPairInfo.amountYuan : 0, 2, {isAbbreviate: true})}
+                                    currency === Currency.dollar ? PriceTag.Dollar + getValuePrecisionThousand(coinPairInfo.amountDollar) : PriceTag.Yuan + getValuePrecisionThousand(coinPairInfo.amountYuan)}
                                 </Typography>
 
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}>
@@ -243,7 +245,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         <Grid item paddingX={2} paddingY={3} xs={6} sm={3} lg={3}>
                             <Box>
                                 <Typography variant={'h3'} component={'span'}>
-                                    {getThousandFormattedNumbers(tradeFloat && tradeFloat.volume ? tradeFloat.volume : 0.00, 2, {isAbbreviate: true})}
+                                    {getValuePrecisionThousand(tradeFloat?.volume)}
                                 </Typography>
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}>
                                     {t('label24Volume')}
@@ -300,7 +302,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
             <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}}>
                 {/*<FixedStyle>*/}
                 <Box>
-                    <AmmPanelView pair={pair} walletMap={walletMap} snapShotData={snapShotData}/>
+                    <AmmPanelView pair={pair} stob={stob} btos={btos} walletMap={walletMap} snapShotData={snapShotData}/>
                 </Box>
             </Box>
         </Box>
