@@ -1,13 +1,8 @@
 import React from 'react'
 
-import { utils } from 'ethers'
-import { myError, myLog } from '@loopring-web/common-resources'
 import { connectProvides } from '@loopring-web/web3-provider'
-
-export enum AddressError {
-    NoError,
-    InvalidAddr,
-}
+import { AddressError } from 'defs/common_defs'
+import { checkAddr } from 'utils/web3_tools'
 
 export const useAddressCheck = () => {
 
@@ -17,41 +12,18 @@ export const useAddressCheck = () => {
 
     const [addrStatus, setAddrStatus,] = React.useState<AddressError>(AddressError.NoError)
 
+    const check = React.useCallback(async(address: any, web3: any) => {
+
+        const { realAddr, addressErr, } = await checkAddr(address, web3)
+
+        setRealAddr(realAddr)
+
+        setAddrStatus(addressErr)
+
+    }, [setRealAddr, setAddrStatus, ])
+
     React.useEffect(() => {
-
-        myLog('addr:', address)
-
-        if (address) {
-            try {
-                const addr = utils.getAddress(address)
-                myLog('utils.getAddress:', addr)
-                setRealAddr('')
-                setAddrStatus(AddressError.NoError)
-            } catch (reason) {
-                try {
-                    connectProvides.usedWeb3?.eth.ens.getAddress(address).then((addressResovled) => {
-                        myLog('addressResovled:', addressResovled)
-                        setRealAddr(addressResovled)
-                        setAddrStatus(AddressError.NoError)
-                    }).catch((reason3) => {
-                        if (reason3) {
-                            // myError(reason3)
-                            setAddrStatus(AddressError.InvalidAddr)
-                            setRealAddr('')
-                            return
-                        }
-                    })
-                } catch (reason2) {
-                    // myLog('reason2:', reason2)
-                    setAddrStatus(AddressError.InvalidAddr)
-                    setRealAddr('')
-                }
-
-            }
-        } else {
-            setAddrStatus(AddressError.InvalidAddr)
-        }
-
+        check(address, connectProvides.usedWeb3)
     }, [address, setAddrStatus])
 
     return {

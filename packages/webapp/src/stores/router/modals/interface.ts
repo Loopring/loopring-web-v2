@@ -17,6 +17,7 @@ export type DepositData = {
     belong: string | undefined,
     tradeValue: number | undefined,
     balance: number | undefined,
+    reffer: string | undefined,
 }
 
 export type ModalDataStatus = {

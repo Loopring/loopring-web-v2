@@ -20,6 +20,7 @@ const initialDepositState: DepositData = {
     belong: undefined,
     tradeValue: 0,
     balance: 0,
+    reffer: undefined,
 }
 
 const initialState: ModalDataStatus = {
@@ -85,7 +86,7 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
             }
         },
         updateDepositData(state, action: PayloadAction<Partial<DepositData>>) {
-            const { belong, balance, tradeValue } = action.payload
+            const { belong, balance, tradeValue, reffer, } = action.payload
 
             if (belong) {
                 state.depositValue.belong = belong
@@ -97,6 +98,10 @@ const modalDataSlice: Slice<ModalDataStatus> = createSlice({
 
             if (tradeValue === undefined || tradeValue >= 0) {
                 state.depositValue.tradeValue = tradeValue
+            }
+
+            if (reffer === undefined || reffer !== '*') {
+                state.depositValue.reffer = reffer
             }
 
         },

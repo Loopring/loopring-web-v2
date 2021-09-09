@@ -25,3 +25,10 @@ export const TOAST_TIME = 3000
 export const DAYS = 30
 
 export const BIGO = sdk.toBig(0)
+
+export enum AddressError {
+    NoError,
+    EmptyAddr,
+    InvalidAddr,
+    ENSResolveFailed,
+}

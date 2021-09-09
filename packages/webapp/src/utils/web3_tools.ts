@@ -9,14 +9,20 @@ import { ChainId } from 'loopring-sdk'
 
 import ms from 'ms.macro'
 
+import { utils } from 'ethers'
+import { connectProvides } from '@loopring-web/web3-provider'
+import { AddressError } from 'defs/common_defs'
+import { myLog } from '@loopring-web/common-resources'
+import { reject } from 'lodash'
+
 export function getLibrary(provider: any): Web3Provider {
     const library = new Web3Provider(
         provider,
         typeof provider.chainId === 'number'
             ? provider.chainId
             : typeof provider.chainId === 'string'
-            ? parseInt(provider.chainId)
-            : 'any'
+                ? parseInt(provider.chainId)
+                : 'any'
     )
     library.pollingInterval = ms`15s`
 
@@ -61,7 +67,7 @@ export function isAddress(value: any): string | false {
     }
 }
 
-const ETHERSCAN_PREFIXES: { [ key: number ]: string } = {
+const ETHERSCAN_PREFIXES: { [key: number]: string } = {
     1: '',
     5: 'goerli.',
 }
@@ -71,7 +77,7 @@ export function getEtherscanLink(
     data: string,
     type: 'transaction' | 'token' | 'address' | 'block'
 ): string {
-    const prefix = `https://${ETHERSCAN_PREFIXES[ chainId ] || ETHERSCAN_PREFIXES[ 1 ]}etherscan.io`
+    const prefix = `https://${ETHERSCAN_PREFIXES[chainId] || ETHERSCAN_PREFIXES[1]}etherscan.io`
 
     switch (type) {
         case 'transaction': {
@@ -132,3 +138,56 @@ export async function isContract(web3: any, address: string) {
     return code && code.length > 2
 }
 
+export async function checkAddr(address: any, web3?: any) {
+
+    if (!web3) {
+        web3 = connectProvides.usedWeb3
+    }
+
+    let realAddr = ''
+
+    let addressErr = AddressError.NoError
+
+    if (address) {
+        try {
+            const addr = utils.getAddress(address)
+            myLog('utils.getAddress:', addr)
+            addressErr = AddressError.NoError
+            realAddr = ''
+        } catch (reason) {
+
+            return new Promise<any>((resolve) => {
+                try {
+
+                    connectProvides.usedWeb3?.eth.ens.getAddress(address).then((addressResovled) => {
+                        myLog('addressResovled:', addressResovled)
+                        resolve({
+                            realAddr: addressResovled,
+                            errInfo: AddressError.NoError,
+                        })
+                    }).catch(() => {
+                        resolve({
+                            realAddr: '',
+                            errInfo: AddressError.InvalidAddr,
+                        })
+                    })
+
+                } catch (reason2) {
+                    resolve({
+                        realAddr: '',
+                        errInfo: AddressError.InvalidAddr,
+                    })
+                }
+
+            })
+
+        }
+    } else {
+        addressErr = AddressError.EmptyAddr
+    }
+
+    return {
+        realAddr,
+        addressErr,
+    }
+}

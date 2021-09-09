@@ -17,9 +17,9 @@ import { myLog } from "@loopring-web/common-resources";
 import { makeWalletLayer2 } from 'hooks/help';
 import { useWalletLayer2Socket, walletLayer2Service } from '../../services/socket';
 import { getTimestampDaysLater } from 'utils/dt_tools';
-import { DAYS, TOAST_TIME } from 'defs/common_defs';
+import { AddressError, DAYS, TOAST_TIME } from 'defs/common_defs';
 import { useTranslation } from 'react-i18next';
-import { AddressError, useAddressCheck } from 'hooks/common/useAddrCheck';
+import { useAddressCheck } from 'hooks/common/useAddrCheck';
 import { useWalletInfo } from 'stores/localStore/walletInfo';
 import { checkErrorInfo } from './utils';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
@@ -280,7 +280,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     updateTransferData({
                         belong: data.tradeData?.belong,
                         tradeValue: data.tradeData?.tradeValue,
-                        balance: walletInfo.count,
+                        balance: walletInfo ? walletInfo.count : 0,
                         address: '*',
                     })
                 } else {
