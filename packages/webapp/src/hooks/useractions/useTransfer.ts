@@ -6,11 +6,11 @@ import { ChainId, ConnectorError } from 'loopring-sdk'
 import { connectProvides } from '@loopring-web/web3-provider';
 
 import { AccountStep, SwitchData, TransferProps, useOpenModals, } from '@loopring-web/component-lib';
-import { AccountStatus, CoinMap, IBData, SagaStatus, WalletMap } from '@loopring-web/common-resources';
+import { AccountStatus, CoinMap, FeeInfo, IBData, SagaStatus, WalletMap } from '@loopring-web/common-resources';
 
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
-import { FeeInfo, useChargeFees } from '../common/useChargeFees';
+import { useChargeFees } from '../common/useChargeFees';
 import { LoopringAPI } from 'api_wrapper';
 import { useSystem } from 'stores/system';
 import { myLog } from "@loopring-web/common-resources";
@@ -226,9 +226,10 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                 const sellToken = tokenMap[transferValue.belong as string]
                 const feeToken = tokenMap[tranferFeeInfo.belong]
 
-                const isExceedBalance = feeToken.tokenId === sellToken.tokenId && transferValue.balance - (transferValue.tradeValue || 0) < tranferFeeInfo.fee
+                const isExceedBalance = false
+                // const isExceedBalance = feeToken.tokenId === sellToken.tokenId && transferValue.balance - (transferValue.tradeValue || 0) < tranferFeeInfo.fee
                 // withdraw vol cannot exceed totalVol - fee
-                const finalVol = isExceedBalance ? transferValue.balance - tranferFeeInfo.fee : transferValue.tradeValue
+                const finalVol = isExceedBalance ? transferValue.balance - (tranferFeeInfo.fee as number) : transferValue.tradeValue
                 const transferVol = sdk.toBig(finalVol).times('1e' + sellToken.decimals).toFixed(0, 0)
 
                 // const transferVol = sdk.toBig(withdrawVol).times('1e' + sellToken.decimals).toFixed(0, 0)
@@ -298,7 +299,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const handleFeeChange = useCallback((value: {
         belong: string;
-        fee: number;
+        fee: number | string | undefined;
         __raw__?: any
     }): void => {
         setTransferFeeInfo(value)

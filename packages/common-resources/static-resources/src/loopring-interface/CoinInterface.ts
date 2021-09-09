@@ -28,6 +28,12 @@ export type CoinMap<R, I = CoinInfo<R>> = {
     // [k in k extends typeof R]: I;
 }
 
+export interface FeeInfo {
+    belong: string,
+    fee: number | string | undefined,
+    __raw__?: any,
+}
+
 export type PairMap<R extends { [ key: string ]: any }, P = { coinA: CoinInfo<R>, coinB: CoinInfo<R> }> = {
     [K in PairKey<R>]?: P
 }

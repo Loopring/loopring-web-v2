@@ -5,15 +5,13 @@ import { BigNumber } from 'bignumber.js'
  * @param minFractionDigits default = 6
  * @returns
  */
-export const getThousandFormattedNumbers = (value: undefined | number, minFractionDigits: number = 6, option?: { isAbbreviate: boolean }) => {
-    if (!Number.isFinite(value)) return value
-    let result = value !== undefined ? value.toLocaleString('en', {
-        minimumFractionDigits: minFractionDigits
-    }).replace(/(\.\d+?)0*$/, '$1') : undefined
-    return value == undefined ? undefined : option && option.isAbbreviate ? abbreviateNumber(value) : result;
-
-
-}
+// export const getThousandFormattedNumbers = (value: undefined | number, minFractionDigits: number = 6, option?: { isAbbreviate: boolean }) => {
+//     if (!Number.isFinite(value)) return value
+//     let result = value !== undefined ? value.toLocaleString('en', {
+//         minimumFractionDigits: minFractionDigits
+//     }).replace(/(\.\d+?)0*$/, '$1') : undefined
+//     return value == undefined ? undefined : option && option.isAbbreviate ? abbreviateNumber(value) : result;
+// }
 
 export function abbreviateNumber(value: number) {
     let newValue = value, result: string = '';
