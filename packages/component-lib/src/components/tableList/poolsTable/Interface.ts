@@ -15,8 +15,9 @@ export type PoolTableProps<T, R = Row<T>> = {
     wait?: number;
     tableHeight?: number;
     coinJson: any;
-    faitPrices: any;
     forex?: number;
+    tokenPrices: any;
+    showLoading?: boolean;
     sortMethod:( sortedRows: any[], sortColumn: string)=> any[],
 }
 
