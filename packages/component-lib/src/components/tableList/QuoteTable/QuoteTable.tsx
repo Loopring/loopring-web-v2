@@ -6,6 +6,8 @@ import {
     EmptyValueTag,
     FloatTag,
     getThousandFormattedNumbers,
+    getValuePrecisionThousand,
+    PriceTag,
     StarHollowIcon,
     StarSolidIcon
 } from '@loopring-web/common-resources'
@@ -33,7 +35,7 @@ const TableStyled = styled(Table)`
             }   
         }};
       
-        --template-columns: 240px auto auto auto auto auto 92px !important;
+        --template-columns: 240px 180px 100px auto auto auto 132px !important;
         .rdg-cell.action{
             display: flex;
             justify-content: center;
@@ -42,6 +44,13 @@ const TableStyled = styled(Table)`
     }
     .textAlignRight{
         text-align: right;
+
+        .rdg-header-sort-cell {
+            justify-content: flex-end;
+        }
+    }
+    .textAlignCenter {
+        text-align: center;
     }
 `
 
@@ -90,8 +99,9 @@ type IGetColumnModePros = {
 }
 
 // const getColumnModelQuoteTable = (t: TFunction, history: any): Column<Row, unknown>[] => [
-const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem, unknown>[] => {
-    const {t: {t}, history, upColor, handleStartClick, favoriteMarket} = props
+const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }): Column<QuoteTableRawDataItem, unknown>[] => {
+    const {t: {t}, history, upColor, handleStartClick, favoriteMarket, currency} = props
+    const isUSD = currency === 'USD'
     return (
         [
             {
@@ -138,6 +148,8 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                 // resizable: true,
                 formatter: ({row}) => {
                     const value = row[ 'close' ]
+                    const priceDollar = row['coinAPriceDollar']
+                    const priceYuan = row['coinAPriceYuan']
                     // const [valueFirst, valueLast] = value
                     // const getRenderValue = (value: number) => {
                     //     return Number.isFinite(value) ? value.toFixed(2) : EmptyValueTag;
@@ -147,7 +159,8 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                     // `
                     return (
                         <div className="rdg-cell-value">
-                            <span>{Number.isFinite(value) ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
+                            <span>{Number.isFinite(value) ? getValuePrecisionThousand(value, 2, 2) : EmptyValueTag}</span>
+                            <Typography color={'var(--color-text-third)'} component={'span'}> / {isUSD ? PriceTag.Dollar + getValuePrecisionThousand(priceDollar, 2, 2) : PriceTag.Yuan + getValuePrecisionThousand(priceYuan, 2, 2)}</Typography>
                         </div>
                     )
                 },
@@ -157,6 +170,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                 name: t('labelQuota24hChange'),
                 // resizable: true,
                 sortable: true,
+                headerCellClass: 'textAlignRight',
                 formatter: ({row}) => {
                     const value = row.change
 
@@ -165,7 +179,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                     // const sign = isPositive ? '+' : ''
                     // const renderValue = hasValue ? `${sign}${value.toFixed(2)}%` : 'N/A%'
                     return (
-                        <div className="rdg-cell-value">
+                        <div className="rdg-cell-value textAlignRight">
                             <QuoteTableChangedCell value={value} upColor={upColor}>
                                 {typeof value !== 'undefined' ? (
                                     (row.floatTag === FloatTag.increase ? '+' : '') + Number(getThousandFormattedNumbers(value)).toFixed(2) + '%') : EmptyValueTag}
@@ -177,6 +191,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
             {
                 key: 'high',
                 name: t('labelQuota24hHigh'),
+                headerCellClass: 'textAlignRight',
                 // resizable: true,
                 // sortable: true,
                 formatter: ({row, column}) => {
@@ -184,7 +199,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                     // const hasValue = Number.isFinite(value)
                     // const renderValue = hasValue ? value.toFixed(2) : EmptyValueTag
                     return (
-                        <div className="rdg-cell-value">
+                        <div className="rdg-cell-value textAlignRight">
                             <span>{Number.isFinite(value) ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
                         </div>
                     )
@@ -193,6 +208,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
             {
                 key: 'low',
                 name: t('labelQuota24hLow'),
+                headerCellClass: 'textAlignRight',
                 // resizable: true,
                 // sortable: true,
                 formatter: ({row, column}) => {
@@ -200,7 +216,7 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
                     // const hasValue = Number.isFinite(value)
                     // const renderValue = hasValue ? value.toFixed(2) : EmptyValueTag
                     return (
-                        <div className="rdg-cell-value">
+                        <div className="rdg-cell-value textAlignRight">
                             <span>{Number.isFinite(value) ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
                         </div>
                     )
@@ -209,12 +225,13 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
             {
                 key: 'volume',
                 name: t('labelQuota24hAmount'),
+                headerCellClass: 'textAlignRight',
                 // resizable: true,
                 sortable: true,
                 formatter: ({row}) => {
                     const value = row[ 'volume' ]
                     return (
-                        <div className="rdg-cell-value">
+                        <div className="rdg-cell-value textAlignRight">
                             <span>{Number.isFinite(value) ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
                         </div>
                     )
@@ -223,13 +240,13 @@ const getColumnMode = (props: IGetColumnModePros): Column<QuoteTableRawDataItem,
             {
                 key: 'actions',
                 // resizable: true,
-                headerCellClass: 'textAlignRight',
+                headerCellClass: 'textAlignCenter',
                 name: t('labelQuoteAction'),
                 formatter: ({row}) => {
                     const {coinA, coinB} = row[ 'pair' ]
                     const tradePair = `${coinA}-${coinB}`
                     return (
-                        <div className="rdg-cell-value">
+                        <div className="rdg-cell-value textAlignCenter">
                             <Button variant="outlined" onClick={() => history.push({
                                 pathname: `/trading/lite/${tradePair}`
                             })}>Trade</Button>
@@ -293,6 +310,7 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
 
     let userSettings = useSettings()
     const upColor = userSettings?.upColor
+    const {currency} = userSettings
 
     const dispatch = useDispatch()
 
@@ -315,6 +333,7 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
             upColor,
             handleStartClick,
             favoriteMarket,
+            currency
         }),//getColumnModelQuoteTable(t, history),
         generateRows: (rawData: any) => rawData,
         onRowClick: onRowClick,

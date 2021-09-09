@@ -67,6 +67,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const {favoriteMarket, removeMarket, addMarket} = useFavoriteMarket()
     const {t} = rest
     const tableRef  = React.useRef<HTMLDivElement>();
+    
     // const [isFixed,setIsFixed] = React.useState(false);
     const resetTableData = React.useCallback((tableData)=>{
         setFilteredData(tableData)
@@ -187,6 +188,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     // prevent amm risky pair
     const getFilteredTickList = useCallback(() => {
         if (!!ammPoolBalances.length && tickList && !!tickList.length) {
+            console.log(tickList)
             return tickList.filter((o: any) => {
                 const pair = `${o.pair.coinA}-${o.pair.coinB}`
                 if (ammPoolBalances.find(o => o.poolName === pair)) {
