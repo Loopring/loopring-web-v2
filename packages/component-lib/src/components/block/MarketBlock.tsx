@@ -114,7 +114,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                     </Box> */}
 
                 </Grid>
-                <Grid item position={'absolute'} top={0} right={0} width={90} height={52}>
+                <Grid item position={'absolute'} top={0} right={0} width={90} height={42}>
                     <ScaleAreaChart showTooltip={false} showArea={false} type={ChartType.Trend} data={chartData}/>
                 </Grid>
             </Grid> : <></>
