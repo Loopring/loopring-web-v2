@@ -138,7 +138,12 @@ export async function isContract(web3: any, address: string) {
     return code && code.length > 2
 }
 
-export async function checkAddr(address: any, web3?: any) {
+export interface AddrCheckResult {
+    realAddr: string,
+    addressErr: AddressError,
+}
+
+export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResult> {
 
     if (!web3) {
         web3 = connectProvides.usedWeb3
@@ -156,26 +161,26 @@ export async function checkAddr(address: any, web3?: any) {
             realAddr = ''
         } catch (reason) {
 
-            return new Promise<any>((resolve) => {
+            return new Promise<AddrCheckResult>((resolve) => {
                 try {
 
                     connectProvides.usedWeb3?.eth.ens.getAddress(address).then((addressResovled) => {
                         myLog('addressResovled:', addressResovled)
                         resolve({
                             realAddr: addressResovled,
-                            errInfo: AddressError.NoError,
+                            addressErr: AddressError.NoError,
                         })
                     }).catch(() => {
                         resolve({
                             realAddr: '',
-                            errInfo: AddressError.InvalidAddr,
+                            addressErr: AddressError.InvalidAddr,
                         })
                     })
 
                 } catch (reason2) {
                     resolve({
                         realAddr: '',
-                        errInfo: AddressError.InvalidAddr,
+                        addressErr: AddressError.InvalidAddr,
                     })
                 }
 

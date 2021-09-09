@@ -249,7 +249,7 @@ export const useAmmExit = ({
 
             const { volA_show, volB_show, request } = sdk.makeExitAmmPoolRequest2(rawVal.toString(),
                 slippageReal, account.accAddress, fees as sdk.LoopringMap<sdk.OffchainFeeInfo>,
-                ammMap[amm] as any, ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0)
+                ammPoolSnapshot, tokenMap as any, idIndex as IdMap, 0)
 
             newAmmData['coinA'] = { ...ammData.coinA, tradeValue: volA_show, }
             newAmmData['coinB'] = { ...ammData.coinB, tradeValue: volB_show, }
