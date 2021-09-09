@@ -1,7 +1,7 @@
 import { WalletConnectBtnProps } from './Interface';
 import { useTranslation } from 'react-i18next';
 import React, { useEffect } from 'react';
-import { AccountStatus, getShortAddr, LoadingIcon, LockIcon, UnConnectIcon, CircleIcon} from '@loopring-web/common-resources';
+import { AccountStatus, getShortAddr, LoadingIcon, LockIcon, UnConnectIcon, CircleIcon, myLog} from '@loopring-web/common-resources';
 import { Typography } from '@mui/material';
 import { Button } from '../../basic-lib';
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';
@@ -29,41 +29,14 @@ const WalletConnectBtnStyled = styled(Button)`
   }
 
   &.no-account {
-    &:after {
-      position: absolute;
-      content: "\u25CF";
-      color: var(--color-error);
-      display: flex;
-      left: 0;
-      padding-left: ${({ theme }) => theme.unit * 2}px;
-      align-items: center;
-      font-size: ${({ theme }) => theme.fontDefault.h5};
-    }
+    
   }
   &.not-active{
-    &:after {
-      position: absolute;
-      content: "\u25CF";
-      color: var(--color-warning);
-      display: flex;
-      left: 0;
-      padding-left: ${({ theme }) => theme.unit * 2}px;
-      align-items: center;
-      font-size: ${({ theme }) => theme.fontDefault.h5};
-    }
+    
   }
 
   &.unlocked {
-    &:after {
-      position: absolute;
-      content: "\u25CF";
-      color: var(--color-success);
-      display: flex;
-      left: 0;
-      padding-left: ${({ theme }) => theme.unit * 2}px;
-      align-items: center;
-      font-size: ${({ theme }) => theme.fontDefault.h5};
-    }
+    
   }
 
   &.wrong-network {
@@ -138,6 +111,9 @@ export const WalletConnectBtn = ({
         setLabel(addressShort);
       }
       setIcon(undefined)
+
+      myLog('wallet connect account.readyState:', account.readyState)
+      
       switch (account.readyState) {
         case AccountStatus.UN_CONNECT:
           setBtnClassname('un-connect')
@@ -148,11 +124,11 @@ export const WalletConnectBtn = ({
           setIcon(<LockIcon color={'error'} style={{ width: 16, height: 16 }} />)
           break
         case AccountStatus.ACTIVATED:
-          // setBtnClassname('unlocked')
+          setBtnClassname('unlocked')
           setIcon(<CircleIcon fontSize={'large'} htmlColor={'var(--color-success)'} />)
           break
         case AccountStatus.NO_ACCOUNT:
-          // setBtnClassname('no-account')
+          setBtnClassname('no-account')
           setIcon(<CircleIcon fontSize={'large'}  color={'error'}/>)
           break
         case AccountStatus.DEPOSITING:
@@ -160,7 +136,7 @@ export const WalletConnectBtn = ({
           setIcon(<LoadingIcon color={'primary'} style={{ width: 18, height: 18 }} />)
           break
         case AccountStatus.NOT_ACTIVE:
-          // setBtnClassname('not-active')
+          setBtnClassname('not-active')
           setIcon(<CircleIcon fontSize={'large'}  htmlColor={'var(--color-warning)'}/>)
           break
         case AccountStatus.ERROR_NETWORK:

@@ -8,8 +8,9 @@ import React from "react";
 import { Column, DataGridProps, SortableHeaderCell, SortableHeaderCellProps, TableProps } from './';
 import { EmptyDefault } from '../empty';
 // import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
-import { LoadingIcon, myLog } from '@loopring-web/common-resources'
+import { LoadingIcon } from '@loopring-web/common-resources'
 import { Box, IconButton } from '@mui/material';
+import { css } from '@emotion/react';
 
 interface TableWrapperStyledProps {
   showloading: 'true' | 'false'
@@ -36,11 +37,28 @@ const TableWrapperStyled = styled(Box)<TableWrapperStyledProps>`
   //   pointer-events: auto;
   // }
 ` as any
+const hr = ({theme}: any) => css`
+  border-radius: ${theme.unit / 2}px;
+  content: '';
+  display: block;
+  height: 1px;
+  //margin-bottom: -2px;
+  background: var(--color-divide);
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+`;
 
 export const DataGridStyled = styled(DataGrid)`
   width: 100%;
   height: 100%;
 
+  .table-divide &.rdg .rdg-header-row {
+    &:after{
+      ${hr}
+    }
+  }
   &.rdg {
     min-height: 350px;
     color: var(--color-text-primary);
@@ -49,11 +67,14 @@ export const DataGridStyled = styled(DataGrid)`
     border: rgba(0, 0, 0, 0) 0 solid;
     //background-color: inherit;
     .rdg-header-row {
+      
       color: var(--color-text-secondary);
       width: 100%;
       background-color: inherit;
       font-weight: normal;
+      
     }
+    
 
     &.scrollable .rdg-header-row {
       background: var(--color-box);

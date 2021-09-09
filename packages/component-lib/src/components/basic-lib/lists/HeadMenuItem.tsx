@@ -12,19 +12,7 @@ import React, { ForwardedRef, RefAttributes } from "react";
 // import Popover from 'material-ui-popup-state/HoverPopover';
 // background-color: ${theme.colorBase.primaryLight};
 
-// const hr = ({theme}: any) => css`
-//   border-radius: ${theme.unit / 2}px;
-//   content: '';
-//   margin: 0 8px;
-//   display: block;
-//   height: 2px;
-//   //margin-bottom: -2px;
-//   background: transparent;
-//   position: absolute;
-//   left: 0;
-//   right: 0;
-//   bottom: 0;
-// `;
+
 
 // &:after {
 //     ${hr}
