@@ -17,7 +17,7 @@ import { useAmmMap } from '../../../stores/Amm/AmmMap';
 import { SagaStatus } from '@loopring-web/common-resources';
 import { useWalletLayer2Socket } from 'services/socket/';
 import { useSystem } from 'stores/system';
-import { LoopringAPI } from 'api_wrapper'
+import store from 'stores'
 
 export const useOverview = <R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>(
     {
@@ -38,12 +38,13 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     const {status: ammMapStatus, ammMap, getAmmMap} = useAmmMap();
     const {getAmmLiquidity} = useAmmTotalValue()
     const {forex} = useSystem()
+    const {tokenPrices} = store.getState().tokenPrices
 
     // const [walletMap, setWalletMap] = React.useState<WalletMapExtend<R> | undefined>(undefined);
     const [summaryReward, setSummaryReward] = React.useState<SummaryMyAmm | undefined>(undefined);
     const [myPoolRow, setMyPoolRow] = React.useState<MyPoolRow<R>[]>([])
     const [myAmmMarketArray, setMyAmmMarketArray] = React.useState<AmmRecordRow<R>[]>([])
-    const [lpTokenList, setLpTokenList] = React.useState<{ addr: string; price: number }[]>([])
+    // const [lpTokenList, setLpTokenList] = React.useState<{ addr: string; price: number }[]>([])
     const [showLoading, setShowLoading] = React.useState(false)
 
     React.useEffect(() => {
@@ -52,6 +53,10 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
             walletLayer2Callback()
         }
     }, [ammMapStatus, userRewardsStatus, walletLayer2Status])
+
+    React.useEffect(() => {
+        setShowLoading(true)
+    }, [])
     
 
     // React.useEffect(() => {
@@ -60,33 +65,33 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     //     }
     // }, [ammMapStatus, userRewardsStatus])
 
-    const getLpTokenList = React.useCallback(async () => {
-        if (LoopringAPI.walletAPI) {
-            const result = await LoopringAPI.walletAPI.getLatestTokenPrices()
-            const list = Object.entries(result.tokenPrices).map(([addr, price]) => ({
-                addr,
-                price,
-            }))
-            setLpTokenList(list)
-        }
-    }, [])
+    // const getLpTokenList = React.useCallback(async () => {
+    //     if (LoopringAPI.walletAPI) {
+    //         const result = await LoopringAPI.walletAPI.getLatestTokenPrices()
+    //         const list = Object.entries(result.tokenPrices).map(([addr, price]) => ({
+    //             addr,
+    //             price,
+    //         }))
+    //         setLpTokenList(list)
+    //     }
+    // }, [])
 
-    React.useEffect(() => {
-        if (!lpTokenList.length) {
-            getLpTokenList()
-        }
-    }, [getLpTokenList, lpTokenList])
+    // React.useEffect(() => {
+    //     if (!lpTokenList.length) {
+    //         getLpTokenList()
+    //     }
+    // }, [getLpTokenList, lpTokenList])
 
-    const getLpTokenPrice = React.useCallback((market: string) => {
-        if (addressIndex) {
-            const address = Object.entries(addressIndex).find(([_, token]) => token === market)?.[ 0 ]
-            if (address && !!lpTokenList.length) {
-                return lpTokenList.find((o) => o.addr === address)?.price
-            }
-            return undefined
-        }
-        return undefined
-    }, [addressIndex, lpTokenList])
+    // const getLpTokenPrice = React.useCallback((market: string) => {
+    //     if (addressIndex) {
+    //         const address = Object.entries(addressIndex).find(([_, token]) => token === market)?.[ 0 ]
+    //         if (address && !!lpTokenList.length) {
+    //             return lpTokenList.find((o) => o.addr === address)?.price
+    //         }
+    //         return undefined
+    //     }
+    //     return undefined
+    // }, [addressIndex, lpTokenList])
 
     
     // const [ammUserRewardMap, setAmmUserRewardMap] = React.useState<AmmUserRewardMap|undefined>(undefined);
@@ -134,8 +139,8 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     //     return (price || 0) * (formattedBalance || 0)
     // }, [walletLayer2, getLpTokenPrice])
 
-    const makeMyPoolRow = React.useCallback(async (_walletMap, lpTokenList): Promise<MyPoolRow<R>[]> => {
-        if (_walletMap && ammMap && userRewardsMap && forex && !!lpTokenList.length && addressIndex) {
+    const makeMyPoolRow = React.useCallback(async (_walletMap): Promise<MyPoolRow<R>[]> => {
+        if (_walletMap && ammMap && userRewardsMap && tokenPrices && forex) {
             // @ts-ignore
             const _myPoolRow: MyPoolRow<R>[] = Reflect.ownKeys(_walletMap).reduce((prev: MyPoolRow<R>[], walletKey: string) => {
                 if (/LP-/i.test(walletKey)) {
@@ -165,7 +170,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
             const formattedPoolRow = _myPoolRow.map((o: any) => {
                 const market = `LP-${o.ammDetail?.coinAInfo.simpleName}-${o.ammDetail?.coinBInfo.simpleName}`
                 const totalAmount = o.totalLpAmount
-                const totalAmmValueDollar = (getLpTokenPrice(market) || 0) * totalAmount
+                const totalAmmValueDollar = (tokenPrices[market] || 0) * totalAmount
                 const totalAmmValueYuan = (totalAmmValueDollar || 0) * forex
                 return ({
                     ...o,
@@ -176,23 +181,23 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
             return formattedPoolRow as any;
         }
         return [];
-    }, [ammMap, userRewardsMap, getAmmLiquidity, forex, addressIndex, getLpTokenPrice])
+    }, [ammMap, userRewardsMap, getAmmLiquidity, tokenPrices, forex])
 
     const walletLayer2Callback = React.useCallback(async () => {
-        if (ammMap && !!lpTokenList.length && addressIndex && forex) {
+        if (ammMap && tokenPrices && userRewardsMap && forex) {
             setShowLoading(true)
             const _walletMap = await walletLayer2DoIt();
-            const _myPoolRow = await makeMyPoolRow(_walletMap, lpTokenList);
+            const _myPoolRow = await makeMyPoolRow(_walletMap);
             setMyPoolRow(_myPoolRow)
             setShowLoading(false)
         }
-    }, [ammMap, makeMyPoolRow, walletLayer2DoIt, lpTokenList, addressIndex, forex])
+    }, [ammMap, makeMyPoolRow, walletLayer2DoIt, tokenPrices])
 
-    React.useEffect(() => {
-        if (ammMap && !!lpTokenList.length && addressIndex && forex) {
-            walletLayer2Callback()
-        }
-    }, [addressIndex, lpTokenList, forex, makeMyPoolRow, walletLayer2DoIt, ammMap, userRewardsMap, walletLayer2Callback])
+    // React.useEffect(() => {
+    //     if (ammMap && tokenPrices) {
+    //         walletLayer2Callback()
+    //     }
+    // }, [makeMyPoolRow, walletLayer2DoIt, ammMap, userRewardsMap, walletLayer2Callback, tokenPrices])
 
     // React.useEffect(() => {
     //     if (walletLayer2) {
