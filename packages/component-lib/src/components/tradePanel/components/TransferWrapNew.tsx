@@ -35,6 +35,7 @@ export const TransferWrapNew = <T extends IBData<I>,
            handleAddressError,
            wait = globalSetup.wait,
            assetsData,
+           realAddr,
            ...rest
        }: TransferViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
     
@@ -213,6 +214,10 @@ export const TransferWrapNew = <T extends IBData<I>,
                     <CloseIcon  />
                 </IconClearStyled> : ''}
         </Grid>
+        
+        {realAddr && <Grid item alignSelf={"stretch"} position={'relative'}>
+            {realAddr}
+        </Grid>}
 
         <Grid item /* marginTop={4} */ alignSelf={"stretch"} position={'relative'}>
             <TextField
