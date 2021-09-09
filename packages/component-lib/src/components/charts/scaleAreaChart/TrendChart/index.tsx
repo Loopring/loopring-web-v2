@@ -111,8 +111,8 @@ const TrendChart = ({
             setPriceTrend(renderData[ renderData.length - 1 ].sign === 1
                 ? 'up'
                 : 'down')
-        } else {
-            const isUp = renderData[0].close < renderData[ renderData.length - 1 ].close
+        } else if(renderData) {
+            const isUp = renderData[0]?.close < renderData[ renderData.length - 1 ]?.close
             setPriceTrend(isUp ? 'up' : 'down')
         }
     }, [renderData])

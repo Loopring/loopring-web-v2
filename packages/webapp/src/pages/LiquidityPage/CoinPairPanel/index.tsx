@@ -74,6 +74,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         showAmmPoolLoading,
         ammUserTotal,
         isRecentLoading,
+        stob,
+        btos,
     } = useCoinPair();
     const [tabIndex, setTabIndex] = React.useState<0 | 1>(1);
     // const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
@@ -300,7 +302,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
             <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}}>
                 {/*<FixedStyle>*/}
                 <Box>
-                    <AmmPanelView pair={pair} walletMap={walletMap} snapShotData={snapShotData}/>
+                    <AmmPanelView pair={pair} stob={stob} btos={btos} walletMap={walletMap} snapShotData={snapShotData}/>
                 </Box>
             </Box>
         </Box>
