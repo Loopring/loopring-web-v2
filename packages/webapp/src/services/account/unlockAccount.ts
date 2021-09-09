@@ -6,19 +6,25 @@ import { accountServices } from './accountServices';
 import { myLog } from "@loopring-web/common-resources";
 import { checkErrorInfo } from 'hooks/useractions/utils';
 
+import * as sdk from 'loopring-sdk'
+
 export async function unlockAccount() {
     const account = store.getState().account;
     const {exchangeInfo} = store.getState().system;
     accountServices.sendSign()
     if (exchangeInfo && LoopringAPI.userAPI && account.nonce !== undefined) {
         try {
-            const eddsaKey = await generateKeyPair(
-                connectProvides.usedWeb3,
-                account.accAddress,
-                exchangeInfo.exchangeAddress,
-                account.nonce - 1,
-                account.connectName as any,
-            )
+            
+            const connectName = account.connectName as sdk.ConnectorNames
+
+            const eddsaKey = await generateKeyPair({
+                web3: connectProvides.usedWeb3,
+                address: account.accAddress,
+                exchangeAddress: exchangeInfo.exchangeAddress,
+                keyNonce: account.nonce - 1,
+                walletType: connectName,
+            })
+            
             const {apiKey} = (await LoopringAPI.userAPI.getUserApiKey({
                 accountId: account.accountId
             }, eddsaKey.sk))

@@ -2,7 +2,7 @@ import * as sdk from 'loopring-sdk';
 import store from '../../stores';
 import { LoopringAPI, } from 'api_wrapper';
 import { AmmRecordRow, AmmTradeType, RawDataTradeItem } from '@loopring-web/component-lib';
-import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
+import { volumeToCount, } from './volumeToCount';
 import { myError } from "@loopring-web/common-resources";
 import { tradeItemToTableDataItem } from 'utils/formatter_tool';
 

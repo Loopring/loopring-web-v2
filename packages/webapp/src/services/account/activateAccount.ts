@@ -70,12 +70,13 @@ export async function updateAccountFromServer({isHWAddr,}: { isHWAddr: boolean, 
                     if (!eddsaKey) {
                         myLog('no eddsaKey ！!')
                         eddsaKey = await sdk
-                            .generateKeyPair(
-                                connectProvides.usedWeb3,
-                                accInfo.owner,
-                                system.exchangeInfo.exchangeAddress,
-                                accInfo.nonce,
-                                connectName,
+                            .generateKeyPair({
+                                web3: connectProvides.usedWeb3,
+                                address: accInfo.owner,
+                                exchangeAddress: system.exchangeInfo.exchangeAddress,
+                                keyNonce: accInfo.nonce,
+                                walletType: connectName,
+                            }
                             )
                         myLog('no eddsaKey! after generateKeyPair')
                     }
@@ -118,6 +119,12 @@ export async function updateAccountFromServer({isHWAddr,}: { isHWAddr: boolean, 
                             result.data = {
                                 eddsaKey,
                                 errorInfo: updateAccountResponse.errorInfo,
+                            }
+                        } else if (updateAccountResponse?.resultInfo) {
+                            result.code = ActionResultCode.UpdateAccoutError
+                            result.data = {
+                                eddsaKey,
+                                errorInfo: updateAccountResponse.resultInfo,
                             }
                         } else {
                             result.data = {
