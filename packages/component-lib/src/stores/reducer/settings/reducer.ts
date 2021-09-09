@@ -16,7 +16,7 @@ const initialState: SettingsState = {
     slippage: 'N',
     hideL2Assets: false,
     hideLpToken: false,
-    hideSmallBalances: false,
+    hideSmallBalances: true,
 }
 
 export const settingsSlice:Slice<SettingsState> = createSlice({
