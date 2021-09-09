@@ -12,12 +12,13 @@ import { LoopringAPI } from 'api_wrapper';
 import { myLog } from "@loopring-web/common-resources";
 import { useWalletLayer1 } from 'stores/walletLayer1';
 import { useTranslation } from 'react-i18next';
-import { ActionResult, ActionResultCode } from 'defs/common_defs';
+import { ActionResult, ActionResultCode, AddressError } from 'defs/common_defs';
 import { checkErrorInfo } from './utils';
 import { useBtnStatus } from 'hooks/common/useBtnStatus';
 import { useAllowances } from 'hooks/common/useAllowances';
 import { useModalData } from 'stores/router';
 import { isAccActivated } from './checkAccStatus';
+import { checkAddr } from 'utils/web3_tools';
 
 export const useDeposit = <R extends IBData<T>, T>(): {
     depositProps: DepositProps<R, T>
@@ -112,9 +113,27 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
             if (typeof reffer === 'string') {
                 try {
-                    
-                } catch (reason) {
+                    const { realAddr, addressErr, } = await checkAddr(reffer, connectProvides.usedWeb3)
+                    if (addressErr !== AddressError.NoError) {
+                        return
+                    }
+                    const{ accInfo, error, } = await LoopringAPI.exchangeAPI.getAccount({owner: realAddr ? realAddr : reffer})
 
+                    if (error || !accInfo?.accountId) {
+                        return
+                    }
+
+    // address: string;
+    // referrer?: number;
+    // promotionCode?: string;
+    // publicKeyX: string;
+    // publicKeyY: string;
+
+                    // sdk.SetReferrerRequest
+
+                    // LoopringAPI.userAPI.SetReferrer({address : account.accAddress})
+
+                } catch (reason) {
                 }
             }
         }
