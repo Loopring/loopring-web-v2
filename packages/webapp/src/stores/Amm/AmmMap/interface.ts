@@ -16,7 +16,7 @@ export type AmmDetailStore<T> = AmmDetailBase<T> & {
 export type AmmMap<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }> = {
     [key in keyof R]: AmmDetailStore<I>
 }
-export type AmmMapStates<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }> = {
+export type     AmmMapStates<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }> = {
     ammMap: AmmMap<R, I> | undefined
     __timer__?: number,
 } & StateBase
