@@ -118,6 +118,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                         <Box className="rdg-cell-value"
                             display={'flex'}
                             alignItems={'center'}
+                            height={'100%'}
                             >
                             <Typography  marginRight={1}>
                                 <IconButton style={{color:'var(--color-star)'}} size={'medium'} onClick={(e:any) => handleStartClick(e, isFavourite, pair)}>
