@@ -47,12 +47,12 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
                         rawData: rawData,
                         showFilter: true,
                         getOrderList,
-                        showLoading,
                         marketArray,
                         showDetailLoading,
                         getOrderDetail,
                         orderDetailList,
-                        ...rest
+                        ...rest,
+                        showLoading,
                     }} />
                 </div>
             </StylePaper>

@@ -325,7 +325,6 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
         }
         dispatch(addFavoriteMarket(pair))
     }
-    console.log({rawData})
 
     // const finalData = formattedRawData.map(o => Object.values(o))
     const defaultArgs: any = {
