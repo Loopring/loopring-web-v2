@@ -7,37 +7,11 @@ import { Column, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { Filter, FilterTradeTypes } from './components/Filter'
-import { EmptyValueTag, getThousandFormattedNumbers, getValuePrecisionThousand, TableType, TradeTypes } from '@loopring-web/common-resources';
+import { EmptyValueTag, getValuePrecisionThousand, TableType, TradeTypes } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores';
 import { useDeepCompareEffect } from 'react-use';
 import { Row } from '../poolsTable/Interface';
 import { DateRange } from '@mui/lab'
-
-// interface Row {
-//     side: TradeTypes;
-//     amount: {
-//         from: {
-//             key: string;
-//             value: number;
-//         },
-//         to: {
-//             key: string;
-//             value: number
-//         }
-//     };
-//     price: number;
-//     fee: number;
-//     time: number;
-//     cellExpend?: {
-//         value: string
-//         children: []
-//         isExpanded: boolean
-//     };
-//     children?: Row[];
-//     isExpanded?: boolean;
-//     formatter?: any;
-// }
-
 
 export type RawDataTradeItem = {
     side: keyof typeof TradeTypes;

@@ -3,7 +3,7 @@ import React, { ChangeEvent } from 'react';
 import { Grid, Typography, Box, IconProps } from '@mui/material';
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
-import { CloseIcon, DropDownIcon, globalSetup, IBData, HelpIcon } from '@loopring-web/common-resources';
+import { CloseIcon, DropDownIcon, globalSetup, IBData, HelpIcon, getValuePrecisionThousand } from '@loopring-web/common-resources';
 import { Button, IconClearStyled, TextField, TradeBtnStatus } from '../../index';
 import { PopoverPure } from '../../'
 import { TransferViewProps } from './Interface';
@@ -70,7 +70,7 @@ export const TransferWrapNew = <T extends IBData<I>,
     }))
 
     const getTokenFee = React.useCallback((token: string) => {
-        return toggleData.find(o => o.key === token)?.fee || 0
+        return getValuePrecisionThousand(toggleData.find(o => o.key === token)?.fee)
     }, [toggleData])
     
     const debounceAddress = React.useCallback(_.debounce(({address}: any) => {
@@ -106,7 +106,7 @@ export const TransferWrapNew = <T extends IBData<I>,
 
     React.useEffect(() => {
         if (!!chargeFeeTokenList.length && !feeToken && assetsData) {
-            const defaultToken = chargeFeeTokenList.find(o => assetsData.find(item => item.name === o.belong)?.available > o.fee)?.belong || 'ETH'
+            const defaultToken = chargeFeeTokenList.find(o => o.fee !==undefined && assetsData.find(item => item.name === o.belong)?.available > o.fee)?.belong || 'ETH'
             setFeeToken(defaultToken)
             const currFee = toggleData.find(o => o.key === defaultToken)?.fee || '--'
             const currFeeRaw = toggleData.find(o => o.key === defaultToken)?.__raw__ || '--'

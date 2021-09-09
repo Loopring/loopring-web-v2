@@ -4,7 +4,7 @@ import { Box, Divider, Grid, Typography } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { MyPoolTable, useSettings } from '@loopring-web/component-lib'
-import { Currency, EmptyValueTag, getThousandFormattedNumbers, PriceTag, getValuePrecisionThousand } from '@loopring-web/common-resources';
+import { Currency, EmptyValueTag, PriceTag, getValuePrecisionThousand } from '@loopring-web/common-resources';
 
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 import { useOverview } from './hook';
@@ -98,9 +98,9 @@ const MyLiquidity: any = withTranslation('common')(
                                             color={'textSecondary'}>{t('labelFeeRewards')}</Typography>
                                 <Typography variant={'h3'} marginTop={1} fontFamily={'Roboto'}>
                                     {summaryReward === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar
-                                        + Number(getThousandFormattedNumbers(summaryReward.feeDollar ? summaryReward.feeDollar : 0)).toFixed(2)
+                                        + Number(getValuePrecisionThousand(summaryReward.feeDollar, 2))
                                         : PriceTag.Yuan
-                                        + Number(getThousandFormattedNumbers(summaryReward.feeYuan ? summaryReward.feeYuan : 0)).toFixed(2)}
+                                        + Number(getValuePrecisionThousand(summaryReward.feeYuan, 2))}
                                 </Typography>
                             </Grid>
                             {/* <Grid display={'flex'} flexDirection={'column'} marginTop={5} item>
