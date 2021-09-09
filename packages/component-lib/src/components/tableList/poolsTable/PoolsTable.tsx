@@ -150,7 +150,7 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
 
 }) as <R extends AmmDetail<T>, T>(props: { row: R }) => JSX.Element;
 
-const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: any, coinJson: any, faitPrices: any, currency: any, forex?: number): Column<R, unknown>[] => [
+const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: any, coinJson: any, tokenPrices: any, currency: any, forex?: number): Column<R, unknown>[] => [
     {
         key: 'pools',
         sortable: true,
@@ -286,10 +286,9 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
             //priceDollar, priceYuan, ,priceDollar: EmptyValueTag, priceYuan: EmptyValueTag
             // typeof priceDollar === 'undefined' ? EmptyValueTag :
             //     currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(Number(priceDollar)) : PriceTag.Yuan + getThousandFormattedNumbers(Number(priceYuan))}
-
             const {volume} = row.tradeFloat && row.tradeFloat.volume ? row.tradeFloat : {volume: EmptyValueTag};
-            const totalAmountDollar = (Number(volume) || 0) * (faitPrices[row.coinAInfo.simpleName]?.price || 0)
-            const totalAmountYuan = (Number(volume) || 0) * (faitPrices[row.coinAInfo.simpleName]?.price || 0) * (forex || 6.5)
+            const totalAmountDollar = (Number(volume) || 0) * (tokenPrices[row.coinAInfo.simpleName] || 0)
+            const totalAmountYuan = (Number(volume) || 0) * (tokenPrices[row.coinAInfo.simpleName] || 0) * (forex || 6.5)
             const renderValue = currency === 'USD' ? totalAmountDollar : totalAmountYuan
             const renderUnit = currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan
             return <Typography
@@ -338,8 +337,9 @@ export const PoolsTable = withTranslation('tables')(
                                              wait = globalSetup.wait,
                                              tableHeight = 350,
                                              coinJson,
-                                             faitPrices,
                                              forex,
+                                             tokenPrices,
+                                             showLoading,
                                              ...rest
                                          }: WithTranslation & PoolTableProps<T>) => {
         // const [filterBy, setFilterBy] = React.useState<string>('');
@@ -355,7 +355,7 @@ export const PoolsTable = withTranslation('tables')(
 
         const defaultArgs: TableProps<any, any> = {
             rawData,
-            columnMode: columnMode({t, i18n, tReady}/* , Currency.dollar */, getPopoverState, coinJson, faitPrices, currency, forex),
+            columnMode: columnMode({t, i18n, tReady}/* , Currency.dollar */, getPopoverState, coinJson, tokenPrices, currency, forex),
             generateRows: (rawData: any) => rawData,
             generateColumns: ({columnsRaw}) => columnsRaw as Column<Row<any>, unknown>[],
         }
@@ -378,6 +378,7 @@ export const PoolsTable = withTranslation('tables')(
                 onRowClick: (index, row) => {
                     onRowClick(index, row)
                 },
+                showloading: showLoading,
                 sortMethod: (sortedRows: any[], sortColumn: string) => sortMethod(sortedRows, sortColumn),
                 sortDefaultKey: 'liquidity',
             }}/>
