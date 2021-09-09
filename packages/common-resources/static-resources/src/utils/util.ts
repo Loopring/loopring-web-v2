@@ -94,7 +94,11 @@ export const getValuePrecisionThousand = (value?: number | string, minDigit = 6,
         let [_init, _dot] = result.split('.');
         if (_dot) {
             _dot = _dot.replace(/0+?$/, '');
-            result = _init + '.' + _dot;
+            if (_dot) {
+                result = _init + '.' + _dot ;
+            } else {
+                result = _init
+            }
         }
     }
     return result
