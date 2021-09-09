@@ -3,7 +3,7 @@ import {
     CoinInfo,
     CoinMap,
     EmptyValueTag,
-    ExchangeIcon,
+    ExchangeIcon, getValuePrecisionThousand,
     IBData,
     ReverseIcon,
     SlippageTolerance,
@@ -249,7 +249,8 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"} marginTop={1/2}>
                         <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('swapMinReceive')}</Typography>
                         <Typography component={'p'}
-                                    variant="body2" color={'textPrimary'}>{minimumReceived} </Typography>
+                                    variant="body2" color={'textPrimary'}>
+                            { minimumReceived !== EmptyValueTag  ? getValuePrecisionThousand(minimumReceived) : EmptyValueTag} </Typography>
                     </Grid>
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"} marginTop={1/2}>
                         <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('swapFee')} </Typography>
