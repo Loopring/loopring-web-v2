@@ -518,7 +518,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
     }, [market, pageTradeLite, tradeData, tradeCalcData, setTradeCalcData])
 
     const resetTradeCalcData = React.useCallback((_tradeData, _market?, type?: 'sell' | 'buy') => {
-        if (coinMap && tokenMap && marketMap && marketArray && ammMap) {
+        if (coinMap && tokenMap && marketMap && marketArray ) {
             const {tradePair} = marketInitCheck(_market, type);
             // @ts-ignore
             const [, coinA, coinB] = tradePair.match(/([\w,#]+)-([\w,#]+)/i);
@@ -580,7 +580,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
             setPair({coinAInfo: coinMap[ coinA ], coinBInfo: coinMap[ coinB ]})
         }
 
-    }, [tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray, ammMap, setTradeCalcData, setTradeData, setMarket, setPair])
+    }, [tradeCalcData, tradeData, coinMap, tokenMap, marketMap, marketArray, setTradeCalcData, setTradeData, setMarket, setPair])
 
 
     const callPairDetailInfoAPIs = React.useCallback(async () => {
