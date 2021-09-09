@@ -31,8 +31,8 @@ const BasicInfoPanel = ({props, coinAInfo, coinBInfo, tradeFloat, marketArray, t
         <Grid item>
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
                 <TradeTitle {...{
-        baseShow,
-        quoteShow,
+                    baseShow,
+                    quoteShow,
                     coinAInfo, coinBInfo,
                     ...rest, t, tradeFloat
                 }}></TradeTitle>
