@@ -334,6 +334,7 @@ export const useAmmExit = ({
             setToastOpen({ open: true, type: 'error', content: t('labelExitAmmFailed') })
         } finally {
             setIsLoading(false)
+            updateExitFee()
             walletLayer2Service.sendUserUpdate()
         }
 
