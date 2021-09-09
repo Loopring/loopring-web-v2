@@ -19,8 +19,6 @@ export const useAddressCheck = () => {
 
     React.useEffect(() => {
 
-        setAddrStatus(AddressError.NoError)
-
         myLog('addr:', address)
 
         if (address) {
@@ -28,27 +26,30 @@ export const useAddressCheck = () => {
                 const addr = utils.getAddress(address)
                 myLog('utils.getAddress:', addr)
                 setRealAddr('')
-                return
+                setAddrStatus(AddressError.NoError)
             } catch (reason) {
                 try {
                     connectProvides.usedWeb3?.eth.ens.getAddress(address).then((addressResovled) => {
                         myLog('addressResovled:', addressResovled)
                         setRealAddr(addressResovled)
+                        setAddrStatus(AddressError.NoError)
                     }).catch((reason3) => {
                         if (reason3) {
-                            myError(reason3)
+                            // myError(reason3)
                             setAddrStatus(AddressError.InvalidAddr)
                             setRealAddr('')
                             return
                         }
                     })
                 } catch (reason2) {
-                    myLog('reason2:', reason2)
+                    // myLog('reason2:', reason2)
                     setAddrStatus(AddressError.InvalidAddr)
                     setRealAddr('')
                 }
 
             }
+        } else {
+            setAddrStatus(AddressError.InvalidAddr)
         }
 
     }, [address, setAddrStatus])
