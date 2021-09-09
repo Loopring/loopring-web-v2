@@ -20,15 +20,17 @@ export function ammPairInit({
     }
 
     let coinACount = 0, coinBCount = 0, percentage = 0
-    if (pair.coinBInfo) {
-
-        _ammCalcData.fee = fee !== undefined ? (fee.toString() + ' ' + pair.coinBInfo.simpleName) : undefined
-
+    
+    if (pair.coinAInfo) {
         _ammCalcData.myCoinA = {
             belong: pair.coinAInfo.simpleName,
             balance: walletMap ? walletMap[ pair.coinAInfo.simpleName ]?.count : 0,
             tradeValue: undefined,
         }
+    }
+
+    if (pair.coinBInfo) {
+        _ammCalcData.fee = fee !== undefined ? (fee.toString() + ' ' + pair.coinBInfo.simpleName) : undefined
 
         const feeReal = !!fee ? fee : 0
 

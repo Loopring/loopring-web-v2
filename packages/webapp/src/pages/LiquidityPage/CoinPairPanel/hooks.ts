@@ -38,18 +38,30 @@ import { getShowStr } from '@loopring-web/common-resources'
 import _ from 'lodash'
 import { useAmmPool } from "../hook";
 
-const makeAmmDetailExtendsActivityMap = ({ammMap, coinMap, ammActivityMap, ammKey}: any) => {
+const makeAmmDetailExtendsActivityMap = ({ammMap, coinMap, ammActivityMap, market}: any) => {
+
+    let amm = 'AMM-' + market
+
+    let ammDetail = undefined
 
     if (ammMap && coinMap) {
-        let ammDetail = _.cloneDeep(ammMap[ ammKey as string ]);
-        const ammActivity = ammActivityMap [ ammKey as string ];
+        if (!ammMap[ amm as string ]) {
+            amm = 'AMM-LRC-ETH'
+            market = 'LRC-ETH'
+        }
+        ammDetail = _.cloneDeep(ammMap[ amm as string ]);
+        const ammActivity = ammActivityMap [ amm as string ];
 
         if (ammDetail && ammDetail.coinA) {
             ammDetail.myCoinA = coinMap[ ammDetail.coinA ];
             ammDetail.myCoinB = coinMap[ ammDetail.coinB ];
             ammDetail[ 'activity' ] = ammActivity ? ammActivity : {};
         }
-        return ammDetail;
+    }
+    return {
+        amm,
+        market,
+        ammDetail,
     }
 }
 type PgAmmDetail<C extends { [ key: string ]: any }> = AmmDetailStore<C> & {
@@ -348,13 +360,23 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
     React.useEffect(() => {
         const coinKey = match?.params.symbol ?? undefined;
         let _tradeFloat: Partial<TradeFloat> | undefined = {}
-        const [, coinA, coinB] = coinKey.match(/(\w+)-(\w+)/i)
+        let [, coinA, coinB] = coinKey.match(/(\w+)-(\w+)/i)
+
+        if (ammMap && !ammMap[`AMM-${coinA}-${coinB}`]) {
+            coinA = 'LRC'
+            coinB = 'ETH'
+        }
+
         let {
-            amm,
             market
         } = getExistedMarket(marketArray, coinA, coinB);
 
-        const _coinPairInfo = makeAmmDetailExtendsActivityMap({ammMap, coinMap, ammActivityMap, ammKey: amm})
+        const {
+            amm: realAmm,
+            market: realMarket,
+            ammDetail: _coinPairInfo,
+        } = makeAmmDetailExtendsActivityMap({ammMap, coinMap, ammActivityMap, market,})
+
         setCoinPairInfo(_coinPairInfo ? _coinPairInfo : {})
 
         if (coinMap) {
@@ -366,26 +388,26 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
 
         // let _walletMap: WalletMapExtend<C>|undefined = undefined
         if (walletLayer2) {
-            walletLayer2DoIt(market);
+            walletLayer2DoIt(realMarket);
         }
 
-        if (amm && market && ammMap) {
+        if (realAmm && realMarket && ammMap) {
             //TODO should add it into websocket
             getAmmMap();
-            swapDependAsync(market).then(
+            swapDependAsync(realMarket).then(
                 ({ammPoolSnapshot, tickMap, depth}) => {
                     if (tokenMap && tickMap) {
                         const _snapShotData = {
-                            tickerData: tickMap[ market ],
+                            tickerData: tickMap[ realMarket ],
                             ammPoolSnapshot: ammPoolSnapshot,
                         }
                         const {close} = calcPriceByAmmTickMapDepth({
-                            market,
-                            tradePair: market,
+                            market: realMarket,
+                            tradePair: realMarket,
                             dependencyData: {ammPoolSnapshot, tickMap, depth}
                         })
 
-                        _tradeFloat = makeTickView(tickMap[ market ] ? tickMap[ market ] : {})
+                        _tradeFloat = makeTickView(tickMap[ realMarket ] ? tickMap[ realMarket ] : {})
                         myLog('........close:', close)
                         setTradeFloat({..._tradeFloat, close: Number(getShowStr(close))} as TradeFloat);
                         setCoinPairInfo({..._coinPairInfo})
