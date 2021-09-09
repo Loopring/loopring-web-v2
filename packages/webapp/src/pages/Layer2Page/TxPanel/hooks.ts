@@ -5,12 +5,11 @@ import { useAccount } from 'stores/account/hook'
 import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes } from '@loopring-web/component-lib'
 import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
 import { LoopringAPI } from 'api_wrapper'
+import { myLog } from '@loopring-web/common-resources'
 
 export function useGetTxs() {
 
     const {account: {accountId, apiKey}} = useAccount()
-
-    // const userApi = useUserAPI()
 
     const [txs, setTxs] = useState<RawDataTransactionItem[]>([])
     const [isLoading, setIsLoading] = useState(true)
@@ -58,6 +57,9 @@ export function useGetTxs() {
                 status: getTxnStatus(o.status),
                 // tradeType: TransactionTradeTypes.transfer
             }))
+
+            myLog('userTransferMapped:', userTransferMapped)
+            debugger
             const userDepositMapped = userTxnList[ 1 ].userDepositHistory?.map(o => ({
                 side: TransactionTradeTypes.deposit,
                 symbol: o.symbol,

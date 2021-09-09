@@ -5,6 +5,7 @@ import {
     CoinInfo,
     EmptyValueTag,
     ExchangeIcon,
+    getValuePrecisionThousand,
     IBData,
     myLog,
     SlippageTolerance
@@ -29,7 +30,6 @@ import { Box, Link } from '@mui/material';
 import { SvgStyled } from './styled';
 import { toBig } from 'loopring-sdk';
 
-import { getShowStr } from '@loopring-web/common-resources'
 import { useAmmViewData } from './ammViewHook';
 
 import _ from 'lodash'
@@ -161,11 +161,11 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
     const lpTradeValue = ammData?.coinLP?.tradeValue
     let lpBalance: any = ammData?.coinLP?.balance
     lpBalance = parseFloat(lpBalance)
-    const showLP = (lpBalance && lpTradeValue && lpTradeValue > 0 && lpTradeValue < lpBalance) ? getShowStr(lpTradeValue, 2, 6) : '0'
+    const showLP = (lpBalance && lpTradeValue && lpTradeValue > 0 && lpTradeValue < lpBalance) ? getValuePrecisionThousand(lpTradeValue, 2, 6) : '0'
 
-    const miniA = ammData?.coinA?.tradeValue ? getShowStr(ammData?.coinA?.tradeValue) : EmptyValueTag
+    const miniA = ammData?.coinA?.tradeValue ? getValuePrecisionThousand(ammData?.coinA?.tradeValue) : EmptyValueTag
 
-    const miniB = ammData?.coinB?.tradeValue ? getShowStr(ammData?.coinB?.tradeValue) : EmptyValueTag
+    const miniB = ammData?.coinB?.tradeValue ? getValuePrecisionThousand(ammData?.coinB?.tradeValue) : EmptyValueTag
 
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
         direction={"column"}
