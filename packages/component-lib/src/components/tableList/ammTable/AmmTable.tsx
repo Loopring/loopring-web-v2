@@ -7,7 +7,7 @@ import { Column, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { Filter, FilterTradeTypes } from './components/Filter'
-import { getThousandFormattedNumbers, TableType } from '@loopring-web/common-resources';
+import { getValuePrecisionThousand, TableType } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores';
 import { useDeepCompareEffect } from 'react-use';
 import { Row } from '../poolsTable/Interface';
@@ -150,8 +150,8 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
         formatter: ({row}) => {
             const amount = row[ 'lpTokenAmount' ]
             const renderValue = row[ 'side' ] === AmmSideTypes.Join
-                ? `+${getThousandFormattedNumbers(Number(amount))}`
-                : `-${getThousandFormattedNumbers(Number(amount))}`
+                ? `+${getValuePrecisionThousand(amount)}`
+                : `-${getValuePrecisionThousand(amount)}`
             return (
                 <div className="rdg-cell-value">
                     {renderValue}

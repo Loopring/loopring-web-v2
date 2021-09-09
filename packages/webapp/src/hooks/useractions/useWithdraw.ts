@@ -7,6 +7,7 @@ import { AccountStep, SwitchData, useOpenModals, WithdrawProps } from '@loopring
 import {
     AccountStatus,
     CoinMap,
+    FeeInfo,
     IBData,
     SagaStatus,
     WalletMap,
@@ -60,7 +61,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
 
-    const [withdrawFeeInfo, setWithdrawFeeInfo] = React.useState<any>()
+    const [withdrawFeeInfo, setWithdrawFeeInfo] = React.useState<FeeInfo>()
 
     const [withdrawType, setWithdrawType] = React.useState<sdk.OffchainFeeReqType>(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
 
@@ -306,9 +307,10 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
                 const withdrawToken = tokenMap[inputValue.belong as string]
                 const feeToken = tokenMap[withdrawFeeInfo.belong]
-                const isExceedBalance = feeToken.tokenId === withdrawToken.tokenId && inputValue.balance - (inputValue.tradeValue || 0) < withdrawFeeInfo.fee
+                const fee = (withdrawFeeInfo.fee as number)
+                const isExceedBalance = feeToken.tokenId === withdrawToken.tokenId && inputValue.balance - (inputValue.tradeValue || 0) < fee
                 // withdraw vol cannot exceed totalVol - fee
-                const finalVol = isExceedBalance ? inputValue.balance - withdrawFeeInfo.fee : inputValue.tradeValue
+                const finalVol = isExceedBalance ? inputValue.balance - fee : inputValue.tradeValue
                 const withdrawVol = sdk.toBig(finalVol).times('1e' + withdrawToken.decimals).toFixed(0, 0)
 
                 const storageId = await LoopringAPI.userAPI?.getNextStorageId({

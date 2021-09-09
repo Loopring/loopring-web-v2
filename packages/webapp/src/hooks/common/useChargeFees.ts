@@ -12,13 +12,7 @@ import React, { useState } from 'react';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { LoopringAPI } from 'api_wrapper';
 import * as _ from 'lodash'
-import { globalSetup } from '@loopring-web/common-resources'
-
-export interface FeeInfo {
-    belong: string,
-    fee: number,
-    __raw__?: any,
-}
+import { FeeInfo, globalSetup } from '@loopring-web/common-resources'
 
 export function useChargeFees(tokenSymbol: string | undefined, requestType: OffchainFeeReqType,
                               tokenMap: LoopringMap<TokenInfo> | undefined, amount?: number) {

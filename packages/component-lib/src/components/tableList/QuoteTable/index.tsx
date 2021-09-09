@@ -5,7 +5,6 @@ import { RouteComponentProps, withRouter } from 'react-router-dom'
 import {
     EmptyValueTag,
     FloatTag,
-    getThousandFormattedNumbers,
     getValuePrecisionThousand,
     PriceTag,
     StarHollowIcon,
@@ -183,7 +182,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                         <div className="rdg-cell-value textAlignRight">
                             <QuoteTableChangedCell value={value} upColor={upColor}>
                                 {typeof value !== 'undefined' ? (
-                                    (row.floatTag === FloatTag.increase ? '+' : '') + Number(getThousandFormattedNumbers(value)).toFixed(2) + '%') : EmptyValueTag}
+                                    (row.floatTag === FloatTag.increase ? '+' : '') + Number(getValuePrecisionThousand(value)).toFixed(2) + '%') : EmptyValueTag}
                             </QuoteTableChangedCell>
                         </div>
                     )
@@ -201,7 +200,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                     // const renderValue = hasValue ? value.toFixed(2) : EmptyValueTag
                     return (
                         <div className="rdg-cell-value textAlignRight">
-                            <span>{Number.isFinite(value) ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
+                            <span>{Number.isFinite(value) ? getValuePrecisionThousand(value) : EmptyValueTag}</span>
                         </div>
                     )
                 },
@@ -218,7 +217,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                     // const renderValue = hasValue ? value.toFixed(2) : EmptyValueTag
                     return (
                         <div className="rdg-cell-value textAlignRight">
-                            <span>{Number.isFinite(value) ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
+                            <span>{Number.isFinite(value) ? getValuePrecisionThousand(value) : EmptyValueTag}</span>
                         </div>
                     )
                 },
@@ -233,7 +232,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                     const value = row[ 'volume' ]
                     return (
                         <div className="rdg-cell-value textAlignRight">
-                            <span>{Number.isFinite(value) ? getThousandFormattedNumbers(value) : EmptyValueTag}</span>
+                            <span>{Number.isFinite(value) ? getValuePrecisionThousand(value) : EmptyValueTag}</span>
                         </div>
                     )
                 },
