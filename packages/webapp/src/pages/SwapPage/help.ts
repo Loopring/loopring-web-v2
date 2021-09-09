@@ -80,7 +80,7 @@ export const calcPriceByAmmTickMapDepth = <C>(
         }
 
         //second getValue from tickerData
-        if (!stob && tickMap) {
+        if (( stob === '0.00' || !stob) && tickMap) {
             const tickerData = tickMap[market]
             if (!!tickerData) {
                 close = getValuePrecisionThousand(tickerData.close,tokenMap[coinB].precision);
@@ -94,7 +94,7 @@ export const calcPriceByAmmTickMapDepth = <C>(
         }
 
         //last check from depth
-        if (!stob && depth) {
+        if (( stob === '0.00' || !stob) && depth) {
             close = depth.mid_price;
             stob =  depth.mid_price;
             btos =  Number(close) !== 0 ?  getValuePrecisionThousand( 1/Number(close), tokenMap[ coinA ].precision):0;

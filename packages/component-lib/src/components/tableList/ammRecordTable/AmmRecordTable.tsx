@@ -7,7 +7,7 @@ import { Column, Table, } from '../../basic-lib'
 import {
     Currency,
     EmptyValueTag,
-    getThousandFormattedNumbers,
+    getValuePrecisionThousand,
     getValuePrecision,
     globalSetup,
     PriceTag
@@ -87,7 +87,7 @@ const columnMode = ({t}: WithTranslation, currency: 'USD' | 'CYN'): Column<Row<a
             return <Typography
                 component={'span'}> {
                 typeof totalDollar === 'undefined' ? EmptyValueTag :
-                    currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(totalDollar) : PriceTag.Yuan + getThousandFormattedNumbers(totalYuan)}
+                    currency === Currency.dollar ? PriceTag.Dollar + getValuePrecisionThousand(totalDollar) : PriceTag.Yuan + getValuePrecisionThousand(totalYuan)}
             </Typography>
 
         }
