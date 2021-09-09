@@ -62,8 +62,6 @@ const LogoStyle = styled(Typography)`
     min-width: auto;
     border-radius: 0;
     text-indent:-999999em;
-    
-
     background: var(--color-primary);
     background: var(--color-logo);
     mask: url(${logoSVG}) space;
@@ -72,7 +70,7 @@ const LogoStyle = styled(Typography)`
     mask-size: contain;
     width: 105px;
     height: 40px;
-    margin-top: -6px;
+    margin-top: -10px;
     color: transparent;
     &:hover {
       background-color: inherit;
@@ -84,7 +82,7 @@ const LogoStyle = styled(Typography)`
 export const LoopringLogo = React.memo(()=> {
     // const history = useHistory();
     // const url = history.push('/main').
-    return   <LogoStyle variant="h6" component="h1">
+    return   <LogoStyle variant="h6" component="h1" marginRight={4} >
         <IconButton edge="start" aria-label="menu" component={RouterLink} to={'/landing-page'} color={"inherit"}>
             Loopring 路印
             loopring protocol 3.6

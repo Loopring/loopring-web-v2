@@ -203,7 +203,7 @@ export const WalletConnectBtn = ({
       color={'primary'}
       className={`wallet-btn ${btnClassname}`}
       onClick={_handleClick} {...bindHover(popupState)} >
-      {icon ? <Typography component={'i'} >{icon}</Typography> : <></>}
+      {icon ? <Typography component={'i'} marginLeft={-1} >{icon}</Typography> : <></>}
       <Typography component={'span'} variant={'body1'} lineHeight={1} color={'inherit'}> {t(label)}  </Typography>
     </WalletConnectBtnStyled>
   </>
