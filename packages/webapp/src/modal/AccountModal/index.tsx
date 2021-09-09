@@ -150,7 +150,6 @@ export const ModalAccountInfo = withTranslation('common')(({
         
         setShowAccount({isShow: false})
         setShowDeposit({isShow: true})
-        // setShowAccount({isShow: true, step: AccountStep.Deposit});
 
     }, [setShowAccount])
 

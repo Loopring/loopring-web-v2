@@ -101,7 +101,30 @@ export const useDeposit = <R extends IBData<T>, T>(): {
         }
     }, [isShow])
 
+    const setReffer = React.useCallback(async(inputValue: any) => {
+
+        const reffer: any = inputValue?.reffer
+
+        if (LoopringAPI.userAPI && LoopringAPI.exchangeAPI) {
+            if (reffer === undefined || (reffer as string).trim() === '') {
+                return
+            }
+
+            if (typeof reffer === 'string') {
+                try {
+                    
+                } catch (reason) {
+
+                }
+            }
+        }
+
+    }, [])
+
     const handleDeposit = React.useCallback(async (inputValue: any) => {
+
+        myLog('handleDeposit:', inputValue)
+
         const { readyState, connectName } = account
 
         console.log(LoopringAPI.exchangeAPI, connectProvides.usedWeb3)
@@ -183,8 +206,11 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 if (isAccActivated()) {
                     if (response) {
-                        // deposit sucess
+                        // deposit success
                         setShowAccount({ isShow: true, step: AccountStep.Deposit_Submit })
+
+                        setReffer(inputValue)
+
                     } else {
                         // deposit failed
                         setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
@@ -215,6 +241,21 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                             break
                     }
                 } else {
+                    const err = checkErrorInfo(reason, true)
+
+                    myLog('---- deposit reason:', reason?.message.indexOf('User denied transaction'))
+                    myLog('---- deposit err:', err)
+
+                    switch (err) {
+                        case ConnectorError.USER_DENIED:
+                            setShowAccount({ isShow: true, step: AccountStep.Deposit_Denied })
+                            break
+                        default:
+                            setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
+                            resetDepositData()
+                            break
+                    }
+
                     resetDepositData()
                 }
             }
@@ -246,7 +287,8 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                     updateDepositData({
                         belong: data.tradeData?.belong,
                         tradeValue: data.tradeData?.tradeValue,
-                        balance: walletInfo.count
+                        balance: walletInfo.count,
+                        reffer: '*',
                     })
                 } else {
                     updateDepositData({ belong: undefined, tradeValue: 0, balance: 0 })
@@ -255,6 +297,12 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             res();
         })
     }, [walletLayer1, updateDepositData])
+
+    const handleAddressError = useCallback((value: string): { error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined => {
+        myLog('handleAddressError:', value)
+        updateDepositData({ reffer: value, tradeValue: -1, balance: -1, })
+        return undefined
+    }, [])
 
     const depositProps = React.useMemo(() => {
         const isNewAccount = account.readyState === AccountStatus.NO_ACCOUNT ? true : false;
@@ -268,6 +316,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
             walletMap: walletLayer1 as WalletMap<any>,
             depositBtnStatus: btnStatus,
             handlePanelEvent,
+            handleAddressError,
             onDepositClick,
         }
     }, [account.readyState, btnInfo, totalCoinMap, walletLayer1, onDepositClick])
