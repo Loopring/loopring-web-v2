@@ -5,12 +5,13 @@ import { ChainId } from 'loopring-sdk';
 import { useAmmMap } from './stores/Amm/AmmMap';
 import { SagaStatus } from '@loopring-web/common-resources';
 import { useTokenMap } from './stores/token';
-import { useAccount } from './stores/account/hook';
+import { useAccount } from './stores/account';
 import { connectProvides, walletServices } from '@loopring-web/web3-provider';
 import { useAccountInit } from './hookAccountInit';
 import { useAmmActivityMap } from './stores/Amm/AmmActivityMap';
 import { useTicker } from './stores/ticker';
 import { useUserRewards } from './stores/userRewards';
+import { useTokenPrices } from './stores/tokenPrices';
 
 // import { statusUnset as accountStatusUnset } from './stores/account';
 
@@ -31,6 +32,8 @@ export function useInit() {
     const {account, updateAccount, resetAccount, status: accountStatus, statusUnset: accountStatusUnset} = useAccount();
     const {status: tokenMapStatus, statusUnset: tokenMapStatusUnset} = useTokenMap();
     const {status: ammMapStatus, statusUnset: ammMapStatusUnset} = useAmmMap();
+    const {status: tokenPricesStatus, statusUnset: tokenPricesUnset} = useTokenPrices();
+
     const {updateSystem, status: systemStatus, statusUnset: systemStatusUnset} = useSystem();
     const {status: ammActivityMapStatus, statusUnset: ammActivityMapStatusUnset} = useAmmActivityMap();
     const {status: userRewardsStatus, statusUnset: userRewardsUnset} = useUserRewards();
@@ -111,10 +114,21 @@ export function useInit() {
             default:
                 break;
         }
-        if (tokenMapStatus === SagaStatus.UNSET && ammMapStatus === SagaStatus.UNSET) {
+        switch (tokenPricesStatus) {
+            case SagaStatus.ERROR:
+                tokenPricesUnset();
+                setState('ERROR')
+                break;
+            case SagaStatus.DONE:
+                tokenPricesUnset();
+                break;
+            default:
+                break;
+        }
+        if (tokenMapStatus === SagaStatus.UNSET && ammMapStatus === SagaStatus.UNSET && tokenPricesStatus === SagaStatus.UNSET) {
             setState('DONE')
         }
-    }, [tokenMapStatus, ammMapStatus])
+    }, [tokenMapStatus, ammMapStatus, tokenPricesStatus])
     React.useEffect(() => {
         switch (ammActivityMapStatus) {
             case SagaStatus.ERROR:

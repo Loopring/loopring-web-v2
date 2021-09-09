@@ -162,8 +162,8 @@ export const coinType = {
 export const tradeCalcData: TradeCalcData<CoinType> = {
     coinSell: 'ETH', //name
     coinBuy: 'LRC',
-    BtoS: 0,
-    StoB: 0,
+    BtoS: '1,11',
+    StoB: '1,11',
     coinInfoMap: coinMap,
     sellCoinInfoMap: coinMap,
     buyCoinInfoMap: coinMap,
