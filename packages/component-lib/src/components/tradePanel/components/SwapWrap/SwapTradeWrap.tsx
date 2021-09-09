@@ -200,8 +200,8 @@ export const SwapTradeWrap = <T extends IBData<I>,
         </Grid>
         <Grid item>
             <Typography component={'p'} variant="body1" height={24} lineHeight={'24px'}>
-                {showVal ? <> {convertStr}
-                  <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
+                {showVal ? <>  {convertStr}
+                    <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
                       // style={{transform: 'rotate(90deg)'}}
                   ><ReverseIcon/></IconButtonStyled>
                 </>:t('labelCalculating')}
