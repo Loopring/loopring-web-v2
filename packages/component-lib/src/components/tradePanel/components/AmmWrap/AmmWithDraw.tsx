@@ -170,7 +170,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
         direction={"column"}
         justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
-        <Grid item display={'flex'} alignSelf={"stretch"} justifyContent={''} alignItems={"stretch"}
+        <Grid item display={'flex'} alignSelf={"stretch"}  alignItems={"stretch"}
             flexDirection={"column"}>
             <Typography alignSelf={'flex-end'}>
                 <Link onClick={() => setIsPercentage(!isPercentage)}>{t('labelAmmSwitch')}</Link>
@@ -178,22 +178,28 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
             <Typography alignSelf={'center'} variant={'h2'}>
                 {showPercentage}
             </Typography>
-            <Typography alignSelf={'center'} variant={'body1'} marginTop={1} hidden={!isPercentage} lineHeight={'22px'}>
-                {showLP}
-            </Typography>
-            <Grid item alignSelf={'stretch'} marginTop={1} marginX={1} hidden={!isPercentage} height={48}>
-                <BtnPercentage selected={_selectedPercentage} anchors={[{
-                    value: 0, label: '0'
-                }, {
-                    value: 25, label: ''
-                }, {
-                    value: 50, label: ''
-                }, {
-                    value: 75, label: ''
-                }, {
-                    value: 100, label: t('labelAvaiable:') + '100%'
-                }]} handleChanged={onPercentage} />
-            </Grid>
+            <Grid item hidden={!isPercentage} height={80} >
+               <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'space-between'}>
+                   <Typography alignSelf={'center'} variant={'body1'} marginTop={1} lineHeight={'22px'}>
+                       {showLP?getValuePrecisionThousand(showLP):EmptyValueTag}
+                   </Typography>
+                   <Box  alignSelf={'stretch'} marginTop={1} marginX={1}  height={48}>
+                       <BtnPercentage selected={_selectedPercentage} anchors={[{
+                           value: 0, label: '0'
+                       }, {
+                           value: 25, label: ''
+                       }, {
+                           value: 50, label: ''
+                       }, {
+                           value: 75, label: ''
+                       }, {
+                           value: 100, label: t('labelAvaiable:') + '100%'
+                       }]} handleChanged={onPercentage} />
+                   </Box>
+
+               </Box>
+           </Grid>
+
             <Grid item alignSelf={'stretch'} marginTop={1} hidden={isPercentage}>
                 <InputCoin<IBData<I>, I, CoinInfo<I>> ref={coinLPRef} disabled={getDisabled()} {...{
                     ...propsLP,
@@ -238,7 +244,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                         }
                         <Typography variant={'body1'}>{ammData?.coinA?.belong}</Typography>
                     </Box>
-                    <Typography variant={'body1'}>{miniA}</Typography>
+                    <Typography variant={'body1'}>{miniA?getValuePrecisionThousand(miniA):EmptyValueTag}</Typography>
                 </Box>
                 <Box marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'}
                     justifyContent={'space-between'}>
@@ -263,7 +269,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                         }
                         <Typography variant={'body1'}>{ammData?.coinB?.belong}</Typography>
                     </Box>
-                    <Typography variant={'body1'}>{miniB}</Typography>
+                    <Typography variant={'body1'}>{miniB?getValuePrecisionThousand(miniB):EmptyValueTag}</Typography>
                 </Box>
             </Box>
         </Grid>

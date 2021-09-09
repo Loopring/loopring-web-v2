@@ -201,6 +201,7 @@ export const toolBarPanel = ({theme}: any) => css`
     justify-content: flex-end;
     box-sizing: border-box;
     height: var(--toolbar-row-padding-minus);
+    padding: 0  ${theme.unit*5/2}px;
     //min-height: var(--toolbar-row-padding);
     margin-top: var(--toolbar-row-padding-minus);
 

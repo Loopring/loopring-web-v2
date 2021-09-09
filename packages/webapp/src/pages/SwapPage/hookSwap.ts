@@ -482,7 +482,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
         if (pageTradeLite.market && (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market
             || `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` === market)
         ) {
-            let {stob, close} = calcPriceByAmmTickMapDepth({
+            let {stob, btos, close} = calcPriceByAmmTickMapDepth({
                 market: market as any, tradePair: `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
                 dependencyData: {tickMap, ammPoolSnapshot, depth}
             })
@@ -494,9 +494,10 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                 ..._tradeFloat,
                 close: close
             } as TradeFloat);
+
             setTradeCalcData((state) => {
-                state.StoB = stob
-                state.BtoS = stob ? 1 / stob : 0
+                state.StoB = stob;
+                state.BtoS = btos;
                 return state
             })
         }
