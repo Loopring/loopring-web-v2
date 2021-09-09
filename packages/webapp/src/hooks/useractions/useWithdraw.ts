@@ -362,7 +362,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
         withdrawTypes,
         onWithdrawClick: () => {
             if (withdrawValue && withdrawValue.belong) {
-                handleWithdraw(withdrawValue, address)
+                handleWithdraw(withdrawValue, realAddr ? realAddr : address)
             }
             setShowWithdraw({ isShow: false })
         },

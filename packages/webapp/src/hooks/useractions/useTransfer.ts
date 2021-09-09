@@ -69,7 +69,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
         const tradeValue = getFloatValue(transferValue?.tradeValue)
 
-        // myLog('tradeValue:', tradeValue, ' isExceedMax:', isExceedMax, ' addrStatus:', addrStatus)
+        myLog('tradeValue:', tradeValue, ' isExceedMax:', isExceedMax, ' addrStatus:', addrStatus)
 
         if (chargeFeeList && chargeFeeList?.length > 0 && !!address && tradeValue
             && addrStatus === AddressError.NoError && !isExceedMax) {
@@ -240,7 +240,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     exchange: exchangeInfo.exchangeAddress,
                     payerAddr: accAddress,
                     payerId: accountId,
-                    payeeAddr: address,
+                    payeeAddr: realAddr ? realAddr : address,
                     payeeId: 0,
                     storageId: storageId?.offchainId,
                     token: {
