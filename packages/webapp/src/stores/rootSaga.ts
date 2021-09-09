@@ -12,6 +12,7 @@ import { userRewardsForks } from './userRewards/saga';
 import { socketForks } from './socket/saga';
 import { accountFork } from './account/saga';
 import { amountForks } from './amount/saga';
+import { tokenPricesSaga } from './tokenPrices/saga';
 
 
 // https://css-tricks.com/finite-state-machines-with-react/
@@ -51,6 +52,7 @@ function* mySaga() {
         // fork(helloSaga),
         // fork(watchTransition),
         ...tokenSaga,
+        ...tokenPricesSaga,
         ...walletLayer1Fork,
         ...walletLayer2Fork,
         ...systemForks,
@@ -60,7 +62,6 @@ function* mySaga() {
         ...socketForks,
         ...accountFork,
         ...amountForks,
-
     ]);
 }
 

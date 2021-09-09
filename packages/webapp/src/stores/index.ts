@@ -30,6 +30,7 @@ import { Confirmation } from './localStore/confirmation'
 import { WalletInfo } from './localStore/walletInfo'
 import { amountMapSlice } from './amount';
 import { pageTradeLiteSlice, pageAmmPoolSlice, modalDataSlice, } from './router';
+import { tokenPricesSlice } from './tokenPrices';
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -75,6 +76,8 @@ const reducer = combineReducers({
     userRewardsMap: userRewardsMapSlice.reducer,
     amm: ammReducer,
     tokenMap: tokenMapSlice.reducer,
+    tokenPrices: tokenPricesSlice.reducer,
+
     walletLayer2: walletLayer2Slice.reducer,
     walletLayer1: walletLayer1Slice.reducer,
     tickerMap: tickerMapSlice.reducer,
