@@ -157,10 +157,16 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                     // const RenderValue = styled.span`
                     // 	color: var(--color-text-secondary)
                     // `
+
+                    const faitPrice = Number.isFinite(value) 
+                        ? isUSD 
+                            ? PriceTag.Dollar + getValuePrecisionThousand(priceDollar, 2, 2) 
+                            : PriceTag.Yuan + getValuePrecisionThousand(priceYuan, 2, 2)
+                        : EmptyValueTag
                     return (
                         <div className="rdg-cell-value">
                             <span>{Number.isFinite(value) ? getValuePrecisionThousand(value, 2, 2) : EmptyValueTag}</span>
-                            <Typography color={'var(--color-text-third)'} component={'span'}> / {isUSD ? PriceTag.Dollar + getValuePrecisionThousand(priceDollar, 2, 2) : PriceTag.Yuan + getValuePrecisionThousand(priceYuan, 2, 2)}</Typography>
+                            <Typography color={'var(--color-text-third)'} component={'span'}> / {faitPrice}</Typography>
                         </div>
                     )
                 },
