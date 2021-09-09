@@ -288,8 +288,13 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
             //     currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(Number(priceDollar)) : PriceTag.Yuan + getThousandFormattedNumbers(Number(priceYuan))}
 
             const {volume} = row.tradeFloat && row.tradeFloat.volume ? row.tradeFloat : {volume: EmptyValueTag};
+            const totalAmountDollar = (Number(volume) || 0) * (faitPrices[row.coinAInfo.simpleName]?.price || 0)
+            const totalAmountYuan = (Number(volume) || 0) * (faitPrices[row.coinAInfo.simpleName]?.price || 0) * (forex || 6.5)
+            const renderValue = currency === 'USD' ? totalAmountDollar : totalAmountYuan
+            const renderUnit = currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan
             return <Typography
-                component={'span'}> {volume && Number.isFinite(volume) ? getValuePrecisionThousand(volume, 4, 4) : volume} {row.tradeFloat && row.tradeFloat.volume ? row.coinAInfo.simpleName : ''}
+                component={'span'}> {volume && Number.isFinite(volume)
+                    ? renderUnit + getValuePrecisionThousand(renderValue, 2, 2) : volume} {/* {row.tradeFloat && row.tradeFloat.volume ? row.coinAInfo.simpleName : ''} */}
             </Typography>
         }
     },
