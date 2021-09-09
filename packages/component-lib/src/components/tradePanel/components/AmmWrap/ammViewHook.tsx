@@ -31,9 +31,9 @@ export function useAmmViewData({accStatus, error, i18nKey, t, _isStoB, ammCalcDa
         if (ammCalcData && ammCalcData?.lpCoinA && ammCalcData?.lpCoinB && ammCalcData.AtoB) {
             let price: string;
             if (_isStoB) {
-                price = `1 ${ammCalcData?.lpCoinA?.belong} \u2248 ${getValuePrecisionThousand(ammCalcData.AtoB)} ${ammCalcData?.lpCoinB?.belong}`;
+                price = `1 ${ammCalcData?.lpCoinA?.belong} \u2248 ${getValuePrecisionThousand(ammCalcData.AtoB, 2)} ${ammCalcData?.lpCoinB?.belong}`;
             } else {
-                price = `1 ${ammCalcData?.lpCoinB?.belong} \u2248 ${getValuePrecisionThousand(1 / ammCalcData.AtoB)} ${ammCalcData?.lpCoinA?.belong}`;
+                price = `1 ${ammCalcData?.lpCoinB?.belong} \u2248 ${getValuePrecisionThousand(ammCalcData.AtoB ? 1 / ammCalcData.AtoB : 0, 2)} ${ammCalcData?.lpCoinA?.belong}`;
             }
             return <> {price} <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
             ><ReverseIcon/></IconButtonStyled></>

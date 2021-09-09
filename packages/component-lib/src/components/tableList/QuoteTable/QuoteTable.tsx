@@ -118,6 +118,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                         <Box className="rdg-cell-value"
                             display={'flex'}
                             alignItems={'center'}
+                            height={'100%'}
                             >
                             <Typography  marginRight={1}>
                                 <IconButton style={{color:'var(--color-star)'}} size={'medium'} onClick={(e:any) => handleStartClick(e, isFavourite, pair)}>
@@ -325,7 +326,6 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
         }
         dispatch(addFavoriteMarket(pair))
     }
-    console.log({rawData})
 
     // const finalData = formattedRawData.map(o => Object.values(o))
     const defaultArgs: any = {
