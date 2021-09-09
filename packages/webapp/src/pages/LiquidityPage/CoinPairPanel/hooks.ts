@@ -378,10 +378,16 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
 
         setCoinPairInfo(_coinPairInfo ? _coinPairInfo : {})
 
+
         if (coinMap) {
+            const coinAInfo = coinMap[ coinA ]
+            const coinBInfo = coinMap[ coinB ]
+
+            myLog('coinAInfo:', coinAInfo, ' coinBInfo:', coinBInfo)
+
             setPair({
-                coinAInfo: coinMap[ coinA ],
-                coinBInfo: coinMap[ coinB ]
+                coinAInfo,
+                coinBInfo,
             })
         }
 
@@ -407,7 +413,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
                         })
 
                         _tradeFloat = makeTickView(tickMap[ realMarket ] ? tickMap[ realMarket ] : {})
-                        myLog('........close:', close)
+                        myLog('........close:', _tradeFloat, close)
                         setTradeFloat({..._tradeFloat, close: close as number} as TradeFloat);
                         setCoinPairInfo({..._coinPairInfo})
                         setSnapShotData(_snapShotData)
