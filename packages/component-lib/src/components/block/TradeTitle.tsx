@@ -4,7 +4,8 @@ import {
     CoinInfo,
     Currency,
     FloatTag,
-    getThousandFormattedNumbers,
+    getValuePrecisionThousand,
+    myLog,
     PriceTag,
     TradeFloat
 } from '@loopring-web/common-resources';
@@ -49,6 +50,14 @@ export const TradeTitle = <I extends object>({
 
     const tradeFloatType = tradeFloat?.changeDollar === 0 ? FloatTag.none : tradeFloat && tradeFloat.changeDollar && tradeFloat.changeDollar < 0 ? FloatTag.decrease : FloatTag.increase;
     const { currency, upColor } = useSettings();
+
+    const close = getValuePrecisionThousand(tradeFloat.close, 2)
+
+    const value = currency === Currency.dollar ? '\u2248 ' + PriceTag.Dollar
+    + getValuePrecisionThousand(tradeFloat && tradeFloat.closeDollar ? Number(tradeFloat.closeDollar.toFixed(2)) : 0)
+    : '\u2248 ' + PriceTag.Yuan
+    + getValuePrecisionThousand(tradeFloat && tradeFloat.closeYuan ? Number(tradeFloat.closeYuan.toFixed(2)) : 0)
+
     // console.log({tradeFloat})
     const change = (tradeFloat?.change && tradeFloat.change.toFixed && !Number.isNaN(tradeFloat?.change)) ? (tradeFloat.change).toFixed(2) + '%' : '0.00%'
     return <TradeTitleStyled custom={{ chg: upColor }}>{coinBInfo && coinAInfo ?
@@ -104,23 +113,17 @@ export const TradeTitle = <I extends object>({
                 alignItems={'center'} className={'float-group'} marginTop={1}>
 
                 <Typography variant={'h1'}>
-                    {Number.isFinite(tradeFloat.close) ? tradeFloat.close : 0} {quoteShow}
+                    {close} {quoteShow}
                 </Typography>
                 <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'} justifyContent={'center'}
                     className={'float-chart'}>
                     <Typography variant={'body2'} component={'span'}
                         className={'chart-change'}>
                         {' '}
-                        {/*{t('labelChange24h', {timeUnit: tradeFloat.timeUnit})}*/}
                     </Typography>
                     <Typography variant={'h5'} component={'span'} display={'flex'} alignItems={'flex-end'}>
                         <Typography variant={'h5'} component={'span'}>
-                            {/* {`${(tradeFloat.floatTag === 'decrease' ? '-' : '+') + tradeFloat.priceDollar} (${change})`}</Typography> */}
-                            {/*{ tradeFloatType === FloatTag.increase ? '+' : '' }*/}
-                            {currency === Currency.dollar ? '\u2248 ' + PriceTag.Dollar
-                                + getThousandFormattedNumbers(tradeFloat && tradeFloat.closeDollar ? Number(tradeFloat.closeDollar.toFixed(2)) : 0)
-                                : '\u2248 ' + PriceTag.Yuan
-                                + getThousandFormattedNumbers(tradeFloat && tradeFloat.closeYuan ? Number(tradeFloat.closeYuan.toFixed(2)) : 0)}
+                            {value}
                         </Typography>
                         <Typography variant={'h5'} component={'span'} className={`float-tag float-${tradeFloatType}`}>
                             （{tradeFloatType === FloatTag.increase ? '+' : '-'}{change}）
