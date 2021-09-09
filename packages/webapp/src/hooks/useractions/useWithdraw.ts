@@ -224,6 +224,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
                 isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
 
+                myLog('withdraw processRequest:', isHWAddr, isFirstTime)
+
                 const response = await LoopringAPI.userAPI.submitOffchainWithdraw({
                     request,
                     web3: connectProvides.usedWeb3,
