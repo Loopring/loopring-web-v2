@@ -35,6 +35,7 @@ const TrendChart = ({
                         showArea = true,
                         extraInfo,
                         showXAxis = false,
+                        isHeadTailCompare = false,
                     }: ScaleAreaChartProps) => {
     const userSettings = useSettings()
     const upColor = userSettings ? userSettings.upColor : 'green'
@@ -46,11 +47,11 @@ const TrendChart = ({
     const trendColor =
         upColor === 'green'
             ? priceTrend === 'up'
-            ? UP_COLOR
-            : DOWN_COLOR
+                ? UP_COLOR
+                : DOWN_COLOR
             : priceTrend === 'up'
-            ? DOWN_COLOR
-            : UP_COLOR
+                ? DOWN_COLOR
+                : UP_COLOR
     const hasData = data && Array.isArray(data) && !!data.length
 
     const handleMousemove = useCallback(
@@ -106,10 +107,13 @@ const TrendChart = ({
     }, [renderData])
 
     useDeepCompareEffect(() => {
-        if (renderData && !!renderData.length) {
+        if (!isHeadTailCompare && renderData && !!renderData.length) {
             setPriceTrend(renderData[ renderData.length - 1 ].sign === 1
                 ? 'up'
                 : 'down')
+        } else {
+            const isUp = renderData[0].close < renderData[ renderData.length - 1 ].close
+            setPriceTrend(isUp ? 'up' : 'down')
         }
     }, [renderData])
 
