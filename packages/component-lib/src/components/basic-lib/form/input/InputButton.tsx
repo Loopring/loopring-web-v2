@@ -1,5 +1,11 @@
 import { FormHelperText, FormLabel, Grid, } from '@mui/material';
-import { CoinInfo, DropDownIcon, FORMAT_STRING_LEN, getThousandFormattedNumbers, IBData } from '@loopring-web/common-resources';
+import {
+    CoinInfo,
+    DropDownIcon,
+    FORMAT_STRING_LEN,
+     getValuePrecisionThousand,
+    IBData
+} from '@loopring-web/common-resources';
 import { InputButtonProps } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
@@ -108,7 +114,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 <FormLabel className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>
                     <span>{maxAllow ? subLabel + ':' : ''}</span>
-                    <span>{balance ? getThousandFormattedNumbers(balance) : '0'}</span>
+                    <span>{maxAllow ? (balance ? getValuePrecisionThousand(balance) : '0.00') :''}</span>
                 </FormLabel> : null}</Grid>
         </Grid>
         <Grid container className={`btnInput-wrap ${error.error ? 'error' : ''}`} wrap={'nowrap'} alignItems={'stretch'}
