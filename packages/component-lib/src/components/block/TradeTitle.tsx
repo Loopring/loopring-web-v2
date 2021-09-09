@@ -51,7 +51,7 @@ export const TradeTitle = <I extends object>({
     const tradeFloatType = tradeFloat?.changeDollar === 0 ? FloatTag.none : tradeFloat && tradeFloat.changeDollar && tradeFloat.changeDollar < 0 ? FloatTag.decrease : FloatTag.increase;
     const { currency, upColor } = useSettings();
 
-    const close = getValuePrecisionThousand(tradeFloat.close, 2)
+    const close = tradeFloat.close
 
     const value = currency === Currency.dollar ? '\u2248 ' + PriceTag.Dollar
     + getValuePrecisionThousand(tradeFloat && tradeFloat.closeDollar ? Number(tradeFloat.closeDollar.toFixed(2)) : 0)

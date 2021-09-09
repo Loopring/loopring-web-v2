@@ -92,14 +92,11 @@ const getAmmMapApi = async <R extends { [ key: string ]: any }>({ammpools}: GetA
             const coinA = idIndex[ item.tokens.pooled[ 0 ] as any ];
             const coinB = idIndex[ item.tokens.pooled[ 1 ] as any ];
             const dataItem: AmmDetailStore<R> = {
+                ...item,
                 coinA: coinA,
                 coinB: coinB,
                 isNew: Date.now() - (Number(item.createdAt)) > 3 * 86400 * 1000 ? false : true,//3*24*60*60*1000,
                 isActivity: item.status === 7 ? true : false,
-                address: item.address,
-                market: item.market,
-                feeBips: item.feeBips,
-                precisions: item.precisions,
                 ...setAmmState({ammPoolState: ammPoolStats[ key ], keyPair: `${coinA}-${coinB}`}),
                 __rawConfig__: item
             } as AmmDetailStore<R>

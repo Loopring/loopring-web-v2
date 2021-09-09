@@ -1,7 +1,7 @@
 import store from '../../stores';
 import { AmmPoolSnapshot, DepthData, LoopringMap, TickerData, TokenVolumeV3 } from 'loopring-sdk';
 import { LoopringAPI } from '../../api_wrapper';
-import { CustomError, ErrorMap } from '@loopring-web/common-resources';
+import { CustomError, ErrorMap, getValuePrecisionThousand } from '@loopring-web/common-resources';
 import { volumeToCountAsBigNumber } from '../../hooks/help';
 import { myLog } from "@loopring-web/common-resources";
 import { PairFormat } from '../../stores/router';
@@ -45,15 +45,19 @@ export const calcPriceByAmmTickMapDepth = <C>(
         market: PairFormat,
         tradePair: PairFormat
         dependencyData: { tickMap: any, ammPoolSnapshot: any, depth: any },
-    }): { stob: number | undefined, close: number | undefined } => {
+    }): {
+    stob: string | undefined,
+    btos: string | undefined
+    close: string | undefined } => {
     const { tokenMap, idIndex } = store.getState().tokenMap
     // const  = store.getState().pageTradeLite.pageTradeLite;
     // @ts-ignore
-    const [, coinSell, coinBuy] = tradePair.match(/(\w+)-(\w+)/i)
+    const [, coinSell] = tradePair.match(/(\w+)-(\w+)/i)
     // @ts-ignore
     const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i)
-    let stob: number | undefined | BigNumber = undefined,
-        close: number | undefined = undefined;
+    let stob: number |string| undefined | BigNumber = undefined,
+        btos: number |string| undefined | BigNumber = undefined,
+        close: number |string| undefined = undefined;
     if (coinA && coinB && tokenMap && idIndex) {
         //first getValue from  ammPoolSnapshot
         if (ammPoolSnapshot) {
@@ -62,11 +66,15 @@ export const calcPriceByAmmTickMapDepth = <C>(
             stob = volumeToCountAsBigNumber(idIndex[poolBTokenVol.tokenId], poolBTokenVol.volume)?.div(
                 volumeToCountAsBigNumber(idIndex[poolATokenVol.tokenId], poolATokenVol.volume) || 1
             )
-            stob = stob?.toNumber()
+            // @ts-ignore
+            btos = getValuePrecisionThousand(BigNumber(1).div(stob).toNumber(),tokenMap[coinA].precision)// .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
+            stob = getValuePrecisionThousand(stob?.toNumber(), tokenMap[coinB].precision)
+
             // stob = Number(stob?.toFixed(tokenMap[idIndex[poolBTokenVol.tokenId]].precision))
             close = stob;
             if (coinSell !== coinA) {
-                stob = Number((1 / (stob || 1)))// .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
+                stob = btos;
+                btos = close;
             }
             myLog('pairDetailDone stob from amm:', stob)
         }
@@ -75,11 +83,12 @@ export const calcPriceByAmmTickMapDepth = <C>(
         if (!stob && tickMap) {
             const tickerData = tickMap[market]
             if (!!tickerData) {
-                close = Number(tickerData.close);
-                if (tickerData.base === coinSell) {
-                    stob = Number(tickerData.close)
-                } else {
-                    stob = Number(tickerData.close) !== 0 ? 1 / Number(tickerData.close) : 0
+                close = getValuePrecisionThousand(tickerData.close,tokenMap[coinB].precision);
+                stob = close;
+                btos = Number(tickerData.close) !== 0 ? getValuePrecisionThousand(1 / tickerData.close,tokenMap[coinA].precision) : 0
+                if (!tickerData.base === coinSell) {
+                    stob = btos;
+                    btos = close;
                 }
             }
         }
@@ -87,15 +96,22 @@ export const calcPriceByAmmTickMapDepth = <C>(
         //last check from depth
         if (!stob && depth) {
             close = depth.mid_price;
-            stob = tradePair === depth.symbol ? depth.mid_price : 1 / depth.mid_price
+            stob =  depth.mid_price;
+            btos =  Number(close) !== 0 ?  getValuePrecisionThousand( 1/Number(close), tokenMap[ coinA ].precision):0;
+            if (!tradePair === depth.symbol) {
+                stob = btos;
+                btos = close;
+            }
         }
         // const isValidS2B = (stob !== 0 && stob !== undefined && !isNaN(stob))
         return {
-            stob: !stob || isNaN(stob as any) ? undefined : stob as number,
-            close
+            btos: btos as string,
+            stob: stob as string,
+            close: close as string,
         }
     }
     return {
+        btos: undefined,
         stob: undefined,
         close: undefined
     }

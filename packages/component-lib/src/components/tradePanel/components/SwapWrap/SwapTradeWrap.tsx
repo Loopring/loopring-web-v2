@@ -150,10 +150,13 @@ export const SwapTradeWrap = <T extends IBData<I>,
 
     }, [error, t, swapBtnI18nKey])
 
-    const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB
+    // console.log('tradeData:', tradeData)
+    // console.log('tradeCalcData:', tradeCalcData)
+    // console.log('_isStoB:', _isStoB)
 
-    const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${tradeCalcData?.StoB ? getValuePrecisionThousand(tradeCalcData.StoB, 2) : EmptyValueTag} ${tradeData.buy?.belong}`
-        : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData.BtoS ? getValuePrecisionThousand(tradeCalcData.BtoS, 2) : EmptyValueTag} ${tradeData.sell?.belong}`;
+    const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB
+    const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${tradeCalcData?.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
+        : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData .BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`;
     const priceImpactColor =  tradeCalcData?.priceImpactColor ? tradeCalcData.priceImpactColor : 'textPrimary'
     const priceImpact = tradeCalcData?.priceImpact ?  tradeCalcData.priceImpact + ' %' : EmptyValueTag
 
@@ -166,7 +169,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
         <Grid item marginTop={3} display={'flex'} alignSelf={"stretch"} justifyContent={'flex-start'}
               alignItems={"center"} flexDirection={"column"} flexBasis={'initial'}>
-                  
+
             <InputButton<any, I, CoinInfo<I>> ref={sellRef} disabled={getDisabled()}  {...{
                 ...propsSell,
                 isHideError: true,
