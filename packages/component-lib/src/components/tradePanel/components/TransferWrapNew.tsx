@@ -3,7 +3,7 @@ import React, { ChangeEvent } from 'react';
 import { Grid, Typography, Box, IconProps } from '@mui/material';
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
-import { CloseIcon, DropDownIcon, globalSetup, IBData, HelpIcon, getValuePrecisionThousand } from '@loopring-web/common-resources';
+import { CloseIcon, DropDownIcon, globalSetup, IBData, HelpIcon, getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
 import { Button, IconClearStyled, TextField, TradeBtnStatus } from '../../index';
 import { PopoverPure } from '../../'
 import { TransferViewProps } from './Interface';
@@ -70,7 +70,9 @@ export const TransferWrapNew = <T extends IBData<I>,
     }))
 
     const getTokenFee = React.useCallback((token: string) => {
-        return getValuePrecisionThousand(toggleData.find(o => o.key === token)?.fee)
+        const raw = toggleData.find(o => o.key === token)?.fee
+        // myLog('......raw:', raw, typeof raw, getValuePrecisionThousand(raw))
+        return getValuePrecisionThousand(raw)
     }, [toggleData])
     
     const debounceAddress = React.useCallback(_.debounce(({address}: any) => {

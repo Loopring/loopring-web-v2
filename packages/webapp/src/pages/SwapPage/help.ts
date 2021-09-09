@@ -71,7 +71,7 @@ export const calcPriceByAmmTickMapDepth = <C>(
             stob = getValuePrecisionThousand(stob?.toNumber(), tokenMap[coinB].precision)
 
             // stob = Number(stob?.toFixed(tokenMap[idIndex[poolBTokenVol.tokenId]].precision))
-            close = stob;
+            close = stob?.toString();
             if (coinSell !== coinA) {
                 stob = btos;
                 btos = close;
