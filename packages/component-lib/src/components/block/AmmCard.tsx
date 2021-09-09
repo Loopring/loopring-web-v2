@@ -9,7 +9,6 @@ import {
     AvatarCoinStyled,
     Currency,
     EmptyValueTag,
-    getThousandFormattedNumbers,
     PriceTag,
     getValuePrecisionThousand
 } from '@loopring-web/common-resources';

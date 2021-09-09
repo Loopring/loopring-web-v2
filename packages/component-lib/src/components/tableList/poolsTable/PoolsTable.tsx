@@ -8,9 +8,7 @@ import { Button, Column, NewTagIcon, Table,
     TableProps, PopoverPure } from '../../basic-lib'
 import {
     AmmDetail, AvatarCoinStyled,
-    Currency,
     EmptyValueTag,
-    getThousandFormattedNumbers,
     getValuePrecisionThousand,
     globalSetup,
     myLog,

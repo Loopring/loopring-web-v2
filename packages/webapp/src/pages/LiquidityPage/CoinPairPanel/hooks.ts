@@ -3,7 +3,6 @@ import { useDeepCompareEffect } from 'react-use'
 import {
     AmmActivity,
     CoinInfo,
-    getThousandFormattedNumbers,
     MyAmmLP,
     SagaStatus,
     TradeFloat
@@ -239,8 +238,8 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
                         const totalYuan = totalDollar * forex
                         return ({
                             ...o,
-                            totalDollar: getThousandFormattedNumbers(totalDollar.toFixed(2)),
-                            totalYuan: getThousandFormattedNumbers(Number((totalYuan).toFixed(2))),
+                            totalDollar: totalDollar,
+                            totalYuan: totalYuan,
                         })
                     })
                     // setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
@@ -279,8 +278,8 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
                         const totalYuan = totalDollar * forex
                         return ({
                             ...o,
-                            totalDollar: getThousandFormattedNumbers(totalDollar.toFixed(2)),
-                            totalYuan: getThousandFormattedNumbers(Number((totalYuan).toFixed(2))),
+                            totalDollar: totalDollar,
+                            totalYuan: totalYuan,
                         })
                     })
                     // setMyAmmMarketArray(_myTradeArray ? _myTradeArray : [])
