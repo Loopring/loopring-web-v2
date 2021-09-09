@@ -12,13 +12,14 @@ import {
     WaitingIcon,
     WarningIcon,
     CompleteIcon,
+    myLog,
 } from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
 import { TxnDetailPanel, TxnDetailProps } from './components/modal'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes } from './Interface'
-import { DateRange } from '@mui/lab'
-import { UserTxTypes } from 'loopring-sdk'
+import { DateRange, StaticDatePicker } from '@mui/lab'
+import { TxType, UserTxTypes } from 'loopring-sdk'
 
 export type TxsFilterProps = {
     // accountId: number;
@@ -297,22 +298,29 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
                     color: ${({theme}) => theme.colorBase[ value ? 'secondary' : 'textSecondary' ]};
                     cursor: pointer;
                 `
+
                 const {
                     hash,
+                    txType,
                     status,
                     time,
+                    receiverAddress,
                     recipient,
                     senderAddress,
                     amount,
                     fee,
                     memo,
                 } = row
+                
+                const receiver = txType === TxType.TRANSFER ? receiverAddress 
+                : txType === TxType.OFFCHAIN_WITHDRAWAL ? recipient : ''
+
                 const formattedDetail = {
                     hash,
                     status,
                     time,
-                    from: recipient,
-                    to: senderAddress,
+                    from: senderAddress,
+                    to: receiver,
                     fee: `${fee.value} ${fee.unit}`,
                     amount: `${amount.value} ${amount.unit}`,
                     memo,

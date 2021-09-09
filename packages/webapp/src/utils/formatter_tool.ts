@@ -2,7 +2,7 @@ import store from 'stores'
 
 import * as sdk from 'loopring-sdk'
 import { Side, toBig } from 'loopring-sdk'
-import { getShowStr, TradeTypes } from '@loopring-web/common-resources'
+import { TradeTypes } from '@loopring-web/common-resources'
 import { volumeToCountAsBigNumber } from 'hooks/help'
 import { getValuePrecisionThousand } from '@loopring-web/common-resources'
 
@@ -101,8 +101,8 @@ export function tradeItemToTableDataItem(tradeItem: any) {
     const quoteValue = baseValue?.times(tradeItem.price)
     const sellToken = isBuy ? quote : base
     const buyToken = isBuy ? base : quote
-    const sellValue = getShowStr((isBuy ? quoteValue : baseValue)?.toNumber())
-    const buyValue = getShowStr((isBuy ? baseValue : quoteValue)?.toNumber())
+    const sellValue = (isBuy ? quoteValue : baseValue)?.toNumber()
+    const buyValue = (isBuy ? baseValue : quoteValue)?.toNumber()
 
     const feeKey = buyToken
     const feeValue = getValuePrecisionThousand(volumeToCountAsBigNumber(feeKey, tradeItem.fee)?.toString(), 4, 2) as any
@@ -111,11 +111,11 @@ export function tradeItemToTableDataItem(tradeItem: any) {
         side,
         price: {
             key: sellToken,
-            value: getShowStr(toBig(tradeItem.price).toString()),
+            value: toBig(tradeItem.price).toNumber(),
         },
         fee: {
             key: feeKey,
-            value: feeKey && feeValue ? feeValue : '--'
+            value: feeKey && feeValue ? feeValue : undefined
         },
         time: Number(tradeItem.tradeTime),
         amount: {

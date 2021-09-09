@@ -14,8 +14,6 @@ import { LoopringAPI } from 'api_wrapper';
 import * as _ from 'lodash'
 import { globalSetup } from '@loopring-web/common-resources'
 
-import { getShowStr } from '@loopring-web/common-resources'
-
 export interface FeeInfo {
     belong: string,
     fee: number,
@@ -62,7 +60,7 @@ export function useChargeFees(tokenSymbol: string | undefined, requestType: Offc
                         response.raw_data.fees.forEach((item: any) => {
                             const feeRaw = item.fee
                             const tokenInfo = tokenMap[ item.token ]
-                            const fee = getShowStr(sdk.toBig(item.fee).div('1e' + tokenInfo.decimals).toNumber())
+                            const fee = sdk.toBig(item.fee).div('1e' + tokenInfo.decimals).toNumber()
                             chargeFeeList.push({belong: item.token, fee, __raw__: feeRaw})
                         })
                     }

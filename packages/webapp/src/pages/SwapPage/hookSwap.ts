@@ -24,8 +24,6 @@ import { useTranslation } from 'react-i18next';
 import { useWalletLayer2Socket, walletLayer2Service } from '../../services/socket';
 import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
 
-import { getShowStr } from '@loopring-web/common-resources'
-
 import { useToast } from '../../hooks/common/useToast';
 import {
     accountStaticCallBack,
@@ -85,8 +83,6 @@ const getPriceImpactInfo = (calcTradeParams: any) => {
             priceImpactColor = 'var(--color-error)'
             priceLevel = PriceLevel.Lv2
         }
-
-        priceImpact = getShowStr(priceImpact)
 
     } else {
         priceImpactColor = 'var(--color-text-primary)'
@@ -493,16 +489,14 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
 
             // myLog('refreshAmmPoolSnapshot ---stob:', close, stob)
 
-            close = Number(getShowStr(close))
-
             let _tradeFloat = makeTickView(tickMap && tickMap[ pageTradeLite.market ] ? tickMap[ pageTradeLite.market ] : {})
             setTradeFloat({
                 ..._tradeFloat,
                 close: close
             } as TradeFloat);
             setTradeCalcData((state) => {
-                state.StoB = getShowStr(stob)
-                state.BtoS = getShowStr(stob ? 1 / stob : 0)
+                state.StoB = stob
+                state.BtoS = stob ? 1 / stob : 0
                 return state
             })
         }
@@ -650,11 +644,11 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
             const _tradeCalcData = {
                 priceImpact: priceImpactObj.value,
                 priceImpactColor: priceImpactObj.priceImpactColor,
-                minimumReceived: getShowStr(calcTradeParams?.amountBOutSlip.minReceivedVal),
+                minimumReceived: calcTradeParams?.amountBOutSlip.minReceivedVal,
                 fee: totalFee,
             }
 
-            _tradeData[ isAtoB ? 'buy' : 'sell' ].tradeValue = getShowStr(calcTradeParams?.output)
+            _tradeData[ isAtoB ? 'buy' : 'sell' ].tradeValue = calcTradeParams?.output
             updatePageTradeLite({
                 market,
                 calcTradeParams: {
