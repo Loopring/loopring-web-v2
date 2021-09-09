@@ -7,7 +7,7 @@ import { AmmPoolInfoV3, LoopringMap } from 'loopring-sdk/dist/defs/loopring_defs
 const initialState: Required<AmmMapStates<object, object>> = {
     ammMap: undefined,
     __timer__: -1,
-    status: 'PENDING',
+    status: SagaStatus.PENDING,
     errorMessage: null,
 }
 const ammMapSlice: Slice = createSlice({
@@ -18,8 +18,7 @@ const ammMapSlice: Slice = createSlice({
             const ammpools = action.payload.ammpools;
             const ammMap:{[key:string ]:string} = Reflect.ownKeys(ammpools).reduce((prev, key) => {
                 return {...prev, [key]: {
-                        address: ammpools[ key as string ].address,
-                        market: ammpools[ key as string ].market,
+                        ...ammpools[ key as string ],
                         __rawConfig__: ammpools[ key as string ]}}
             }, {} )
             state.ammMap = ammMap
