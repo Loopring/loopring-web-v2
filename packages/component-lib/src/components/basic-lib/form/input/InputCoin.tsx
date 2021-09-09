@@ -110,7 +110,8 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                       display={'flex'}
                       alignItems={'center'}
                       className={`icon-wrap icon-wrap-${order}`}>
-                <Grid container align-items={'center'} display={'flex'}>
+                {/* hide */}
+                <Grid container align-items={'center'} display={'none'}>
                     <Grid item display={'flex'} order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}
                           className={'logo-icon'}
                           height={'var(--list-menu-coin-size)'}
