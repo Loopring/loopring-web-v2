@@ -1,4 +1,6 @@
 import { BigNumber } from 'bignumber.js'
+import { toBig } from 'loopring-sdk'
+
 /**
  *
  * @param value
@@ -70,25 +72,25 @@ export const getValuePrecision = (rawValue?: number | string, precision = 6) => 
  * @returns string
  */
 export const getValuePrecisionThousand = (value?: number | string, minDigit = 6, precision = 2) => {
-    let result = undefined
-    if (!value || !Number.isFinite(Number(value))) {
+    if (!value || !Number.isFinite(Number(value)) || Number(value) === 0) {
        return  '0.00'
     }
+
+    let result: any = undefined
+
     if (Number(value) > 1) {
         if (minDigit < 3) {
-            result = Number(Number(value).toFixed(minDigit)).toLocaleString('en')
+            result = Number(toBig(value).toFixed(minDigit)).toLocaleString('en')
         } else {
             result = Number(value).toLocaleString('en', {
                 minimumFractionDigits: minDigit
             })
         }
+    } else if (Number(value) <= 1) {
+        result = toBig(value).toPrecision(precision)
     }
-
-    if (Number(value) === 0) {
-        result = '0.00'
-    } else if (Number(value) < 1) {
-        result = Number(value).toPrecision(precision)
-    } else if( result ) {
+    
+    if( result ) {
         let [_init, _dot] = result.split('.');
         if (_dot) {
             _dot = _dot.replace(/0+?$/, '');
@@ -99,5 +101,6 @@ export const getValuePrecisionThousand = (value?: number | string, minDigit = 6,
             }
         }
     }
+
     return result
 }
