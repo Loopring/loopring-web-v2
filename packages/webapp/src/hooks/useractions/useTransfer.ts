@@ -58,6 +58,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const {
         address,
+        realAddr,
         setAddress,
         addrStatus,
     } = useAddressCheck()
@@ -307,6 +308,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const transferProps = {
         addressDefault: address,
+        realAddr,
         tradeData: transferValue as any,
         coinMap: totalCoinMap as CoinMap<T>,
         walletMap: walletMap as WalletMap<T>,

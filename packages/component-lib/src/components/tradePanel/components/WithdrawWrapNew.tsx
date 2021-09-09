@@ -38,6 +38,7 @@ export const WithdrawWrapNew = <T extends IBData<I>,
            handleOnAddressChange, handleAddressError,
            wait = globalSetup.wait,
            assetsData,
+           realAddr,
            ...rest
        }: WithdrawViewProps<T, I> & WithTranslation & { assetsData: any[] }) => {
     const [_withdrawType, setWithdrawType] = React.useState<string | undefined>(withdrawType);
@@ -151,17 +152,6 @@ export const WithdrawWrapNew = <T extends IBData<I>,
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}
                   flexWrap={'nowrap'}>
         <Grid item>
-            {/* <Typography component={'h4'} textAlign={'center'} variant={'h3'} marginBottom={2}>
-                {t('withdrawTitle')}
-            </Typography>
-            <Typography component={'p'} variant="body1">
-                <Trans i18nKey="withdrawDescription">
-                    Your withdrawal will be processed in the next batch, which usually takes <TypographyGood
-                    component={'span'}>30 minutes to 2 hours</TypographyGood>. (There will be <TypographyStrong
-                    component={'span'}> a large delay</TypographyStrong> if the Ethereum gas price <TypographyStrong
-                    component={'span'}>exceeds 500 GWei</TypographyStrong>.）
-                </Trans>
-            </Typography> */}
             <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'} /* marginBottom={2} */>
                 <Typography component={'h4'} variant={'h3'} marginRight={1}>{t('withdrawTitle')}</Typography>
                 <HelpIcon {...bindHover(popupState)} fontSize={'large'} htmlColor={'var(--color-text-third)'} />
@@ -218,6 +208,11 @@ export const WithdrawWrapNew = <T extends IBData<I>,
                 <CloseIcon />
             </IconClearStyled> : ''}
         </Grid>
+        
+        {realAddr && <Grid item alignSelf={"stretch"} position={'relative'}>
+            {realAddr}
+        </Grid>}
+
         {/* TODO: check whether there's a need to show deposit fee */}
         <Grid item /* marginTop={2} */ alignSelf={"stretch"}>
             <Typography component={'span'} display={'flex'} alignItems={'center'} variant={'body1'} color={'var(--color-text-secondary)'} marginBottom={1}>
@@ -258,13 +253,6 @@ export const WithdrawWrapNew = <T extends IBData<I>,
                     disabled={getDisabled() || withdrawBtnStatus === TradeBtnStatus.DISABLED || withdrawBtnStatus === TradeBtnStatus.LOADING ? true : false}
             >{t(`withdrawLabelBtn`)}
             </Button>
-            {/* TODO: link to last deposit history */}
-            {/*<Box marginTop={2} display={'flex'} justifyContent={'center'}>*/}
-            {/*    <Link component={RouterLink} to={'/'}> <Typography variant={'body2'}>*/}
-            {/*        {t('withdrawLabelLinkRecent')}*/}
-
-            {/*    </Typography></Link>*/}
-            {/*</Box>*/}
         </Grid>
     </Grid>
 }
