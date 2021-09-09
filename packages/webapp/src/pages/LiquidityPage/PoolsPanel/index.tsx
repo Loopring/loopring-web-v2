@@ -66,7 +66,7 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
                         </InputAdornment>}
                     />
                 </Box>
-                <StylePaper display={'flex'}  flexDirection={'column'} ref={container} >
+                <StylePaper display={'flex'}  flexDirection={'column'} ref={container} className={'table-divide'} >
                     <PoolsTable {...{
                         rawData:filteredData,
                         showLoading: !filteredData.length,
