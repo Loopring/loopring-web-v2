@@ -73,7 +73,7 @@ export const getValuePrecision = (rawValue?: number | string, precision = 6) => 
  */
 export const getValuePrecisionThousand = (value?: number | string, minDigit = 6, precision = 2) => {
     let result = undefined
-    if (!value || !Number.isFinite(Number(result))) {
+    if (!value || !Number.isFinite(Number(value))) {
        return  '0.00'
     }
     if (Number(value) > 1) {
