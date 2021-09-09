@@ -10,6 +10,7 @@ import { SearchIcon } from '@loopring-web/common-resources'
 import { useSettings } from '@loopring-web/component-lib';
 import { useSystem } from 'stores/system';
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
+import store from 'stores'
 
 const WrapperStyled = styled(Box)`
     flex: 1;
@@ -37,7 +38,9 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
     const container = React.useRef(null);
     const {filteredData, sortMethod, tableHeight, getFilteredData, filterValue } = useAmmMapUI();
     const { coinJson } = useSettings();
-    const { faitPrices, forex } = useSystem()
+    const { forex } = useSystem()
+    const { tokenPrices } = store.getState().tokenPrices
+
     return (
         <>
             <WrapperStyled flex={1} marginBottom={3}>
@@ -70,8 +73,8 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
                         tableHeight: tableHeight,
                         sortMethod: sortMethod,
                         coinJson,
-                        faitPrices,
                         forex,
+                        tokenPrices,
                     }} />
                 </StylePaper>
             </WrapperStyled>

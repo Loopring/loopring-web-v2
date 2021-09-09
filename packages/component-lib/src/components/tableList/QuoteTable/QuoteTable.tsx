@@ -268,6 +268,7 @@ export interface QuoteTableProps {
     addFavoriteMarket: (pair: string) => void;
     removeFavoriteMarket: (pair: string) => void;
     currentheight?: number;
+    showLoading?: boolean;
     // generateColumns: ({
     //                       columnsRaw,
     //                       t,
@@ -292,6 +293,7 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                                                                     favoriteMarket,
                                                                     addFavoriteMarket,
                                                                     removeFavoriteMarket,
+                                                                    showLoading,
                                                                     ...rest
                                                                 }: QuoteTableProps & WithTranslation & RouteComponentProps) => {
     //const formattedRawData = rawData && Array.isArray(rawData) ? rawData : []
@@ -445,7 +447,8 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                 onVisibleRowsChange,
                 rawData,
                 rowHeight,
-                headerRowHeight
+                headerRowHeight,
+                showloading: showLoading
             }}
                 /* onScroll={getScrollIndex} */ />
         </TableWrapperStyled>

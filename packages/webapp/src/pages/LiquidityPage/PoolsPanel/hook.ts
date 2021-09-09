@@ -5,6 +5,7 @@ import { useTokenMap } from '../../../stores/token';
 import { useSocket } from '../../../stores/socket';
 import { useTicker } from '../../../stores/ticker';
 import _ from 'lodash'
+import store from 'stores'
 
 const RowConfig = {
     rowHeight:44,
@@ -25,6 +26,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
     const [filterValue, setFilterValue] = React.useState('');
     const [tableHeight, setTableHeight] = React.useState(0)
     const {ammMap, status: ammMapStatus,} = useAmmMap();
+    const {tokenPrices} = store.getState().tokenPrices
     const {
         tickerMap,
         status: tickerStatus,
@@ -32,9 +34,11 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
     } = useTicker();
     const {status: socketStatus, statusUnset: socketStatusUnset,} = useSocket();
     const resetTableData = React.useCallback((tableData)=>{
-        setFilteredData(tableData)
-        setTableHeight(RowConfig.headerRowHeight + tableData.length * RowConfig.rowHeight )
-    },[setFilteredData,setTableHeight])
+        if (tokenPrices) {
+            setFilteredData(tableData)
+            setTableHeight(RowConfig.headerRowHeight + tableData.length * RowConfig.rowHeight )
+        }
+    },[setFilteredData, setTableHeight, tokenPrices])
     const updateRawData = React.useCallback((tickerMap) => {
         try {
             const _ammMap: any = _.cloneDeep(ammMap);
@@ -172,7 +176,6 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
         getFilteredData,
         filteredData,
         updateTickersUI,
-        sortMethod
+        sortMethod,
     }
 }
-
