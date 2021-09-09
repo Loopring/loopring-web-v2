@@ -50,24 +50,10 @@ export const useGetAssets = () => {
     const {account} = useAccount();
     const {sendSocketTopic, socketEnd} = useSocket();
     const {forex} = useSystem()
+    const {tokenPrices} = store.getState().tokenPrices
 
-    const {marketArray, addressIndex, tokenMap,} = store.getState().tokenMap
-    const [lpTokenList, setLpTokenList] = React.useState<{ addr: string; price: number }[]>([])
+    const {marketArray, tokenMap} = store.getState().tokenMap
 
-    const getLpTokenList = React.useCallback(async () => {
-        if (LoopringAPI.walletAPI) {
-            const result = await LoopringAPI.walletAPI.getLatestTokenPrices()
-            const list = Object.entries(result.tokenPrices).map(([addr, price]) => ({
-                addr,
-                price,
-            }))
-            setLpTokenList(list)
-        }
-    }, [])
-
-    React.useEffect(() => {
-        getLpTokenList()
-    }, [getLpTokenList])
     React.useEffect(() => {
         if (account.readyState === AccountStatus.ACTIVATED) {
             sendSocketTopic({[ WsTopicType.account ]: true});
@@ -101,19 +87,8 @@ export const useGetAssets = () => {
         detail: o[ 1 ]
     })) as ITokenInfoItem[] : []
 
-    const getLpTokenPrice = useCallback((market: string) => {
-        if (addressIndex) {
-            const address = Object.entries(addressIndex).find(([_, token]) => token === market)?.[ 0 ]
-            if (address && lpTokenList) {
-                return lpTokenList.find((o) => o.addr === address)?.price
-            }
-            return undefined
-        }
-        return undefined
-    }, [addressIndex, lpTokenList])
-
     const getAssetsRawData = React.useCallback(() => {
-        if (tokenMap && !!Object.keys(tokenMap).length && !!Object.keys(assetsMap).length && !!tokenPriceList.length && !!lpTokenList.length) {
+        if (tokenMap && !!Object.keys(tokenMap).length && !!Object.keys(assetsMap).length && !!tokenPriceList.length) {
             const tokenKeys = Object.keys(tokenMap)
             let data: any[] = []
             tokenKeys.forEach((key, index) => {
@@ -134,7 +109,8 @@ export const useGetAssets = () => {
                         tokenValueDollar = rawData?.toNumber() || 0
                     } else {
                         // const formattedBalance = Number(volumeToCount(tokenInfo.token, tokenInfo.detail?.detail.total))
-                        const price = getLpTokenPrice(tokenInfo.token)
+                        // const price = getLpTokenPrice(tokenInfo.token)
+                        const price = tokenPrices[tokenInfo.token]
                         if (totalAmount && price) {
                             // tokenValueDollar = Number(getValuePrecision((formattedBalance || 0) * price, 2)) || 0 as any;
                             tokenValueDollar = totalAmount.times(price).toNumber()
@@ -190,7 +166,7 @@ export const useGetAssets = () => {
             })
             setAssetsRawData(data)
         }
-    }, [assetsMap, tokenMap, lpTokenList])
+    }, [assetsMap, tokenMap, tokenPrices])
 
     React.useEffect(() => {
         getAssetsRawData()

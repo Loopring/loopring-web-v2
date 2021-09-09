@@ -94,7 +94,7 @@ const columnMode = ({
             // const formattedDollar = (balanceDollar && Number.isNaN(balanceYuan)) ? balanceDollar : 0
             return <Box height={'100%'} display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
                     <Button {...bindHover(popState)}>
-                        <Typography borderBottom={'1px dashed var(--color-text-primary)'}
+                        <Typography
                             component={'span'} style={{ cursor: 'pointer' }}> {
                                 typeof totalAmmValueDollar === 'undefined' ? EmptyValueTag : (currency === 'USD' ? PriceTag.Dollar + getValuePrecisionThousand(totalAmmValueDollar, 2, 2) : PriceTag.Yuan + getValuePrecisionThousand(totalAmmValueYuan, 2, 2))}
                         </Typography>
