@@ -34,11 +34,11 @@ styled(Box)`
   // }
 `;
 
-const AwardWrapperStyled = styled(Box)`
-  padding: ${({theme}) => theme.unit * 2}px ${({theme}) => theme.unit * 5 / 2}px;
-  background-color: var(--color-box);
-  border-radius: ${({theme}) => theme.unit}px;
-`
+// const AwardWrapperStyled = styled(Box)`
+//   padding: ${({theme}) => theme.unit * 2}px ${({theme}) => theme.unit * 5 / 2}px;
+//   background-color: var(--color-box);
+//   border-radius: ${({theme}) => theme.unit}px;
+// `
 
 const TabsStyled = styled(Tabs)`
     // padding: ${({theme}) => theme.unit}px;
@@ -70,7 +70,6 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
         ammMarketArray,
         myAmmMarketArray,
         pairHistory,
-        awardList,
         getUserAmmPoolTxs,
         showAmmPoolLoading,
         ammUserTotal,
@@ -158,7 +157,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                             :
                                             <Avatar variant="circular" alt={coinPairInfo?.myCoinA?.simpleName as string}
                                                     style={{
-                                                        height: 'var(--list-menu-coin-size))',
+                                                        height: 'var(--list-menu-coin-size)',
                                                         width: 'var(--list-menu-coin-size)'
                                                     }}
                                                 // src={sellData?.icon}
@@ -204,7 +203,6 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                                       height: 'var(--list-menu-coin-size)',
                                                       width: 'var(--list-menu-coin-size)'
                                                   }}
-                                            // src={sellData?.icon}
                                                   src={'static/images/icon-default.png'}/>}</Box>
                                     <Typography marginLeft={1 / 2} justifyContent={'center'} display={'flex'}>
                                         <Typography variant={'h5'} component={'span'} alignSelf={'right'} height={24}

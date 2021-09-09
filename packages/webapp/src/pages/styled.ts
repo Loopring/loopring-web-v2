@@ -58,10 +58,12 @@ export const TableWrapStyled = styled(Box)`
     .toolbar{
       position: fixed;
       top: ${LAYOUT.HEADER_HEIGHT}px;
-      @media (min-width: 1280px){
-        max-width: 1232px;
+      @media (min-width: 1200px){
+        max-width: calc(1200px - 48px)
       }
+
       max-width: calc(100% - ${({theme}) => 6*theme.unit}px);
+
       // width: calc(100% - ${({theme}) => 6*theme.unit}px);
       z-index: 209;
       background: var(--color-box);

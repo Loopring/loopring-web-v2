@@ -7,7 +7,7 @@ export const useTokenPrices = <R extends { [ key: string ]: any }>(): TokenPrice
     getTokenPrices: () => void,
     statusUnset: () => void,
 } => {
-    const tokenPrices: TokenPricesStates<R> = useSelector((state: any) => state.amm.tokenPrices)
+    const tokenPrices: TokenPricesStates<R> = useSelector((state: any) => state.tokenPrices)
     const dispatch = useDispatch();
     return {
         ...tokenPrices,
