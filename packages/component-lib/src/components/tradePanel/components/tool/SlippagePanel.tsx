@@ -3,12 +3,16 @@ import React from 'react';
 import CurrencyInput from 'react-currency-input-field';
 import { globalSetup } from '@loopring-web/common-resources';
 import styled from '@emotion/styled';
-import { Box, Input, InputAdornment, TextField } from '@mui/material';
+import { Box, FormHelperText, InputAdornment } from '@mui/material';
 import { WithTranslation } from 'react-i18next';
 import { useFocusRef } from '../../../basic-lib/form/hooks';
 import { useSettings } from '../../../../stores';
 
 const Styled = styled(Box)`
+  .MuiFormHelperText-root{
+    font-size:${({theme})=>theme.fontDefault.body1} ;
+    color:var(--color-error);
+  }
   .MuiToggleButtonGroup-root {
     .MuiToggleButtonGroup-grouped:first-of-type {
       margin-left: -1px;
@@ -19,45 +23,63 @@ const Styled = styled(Box)`
     
     justify-content: flex-start;
     align-content: space-between;
+    // .MuiButtonBase-root{
+    //   .MuiFormControl-root{
+    //     .MuiOutlinedInput-root{
+    //       border:0
+    //     }
+    //     margin:0  -${({theme})=>theme.unit-1}px
+    //   }
+    // }
   }
+  //.MuiInputBase-sizeSmall{
+  //  height: 2.4rem;
+  //}
+  
   //background: var(--color-global-bg);
 `
 // ${({ theme }) => theme.border.defaultFrame({ c_key: 'var(--color-box-secondary)',d_R:1/2, d_W: 1 })};
 
 // ${({ theme }) => theme.border.defaultFrame({ c_key: 'blur', d_W: 1 })};
+const suffix = '%';
 
 const InputStyled = styled(CurrencyInput)`
+  position:relative;
   text-align: right;
   color: var(--color-text-primary);
   
   ::placeholder {
     color: var(--color-text-secondary);
   }
-  width: 48px; //calc(100% - 2rem);
-  height: 100%; //var(--btn-Input-height);
-  min-height:24px;
-  border: 0;
-  margin: 0;
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
-  font-size: ${({theme}) => theme.fontDefault.h6};
-  display: block;
-  //padding: .8rem 1rem;
+  //width: 100%;
+  height: 2.4rem;
+  width: 92px; //calc(100% - 2rem);
+  // height: 100%; //var(--btn-Input-height);
+  // min-height:24px;
+  padding: .3rem .3rem .3rem .8rem;
+  fontSize: 1.4rem;
+  background: var(--color-box);
+  ${({ theme }) => theme.border.defaultFrame({ d_R: 1 / 2, c_key: 'var(--color-border)' })};
+  text-align: left;
   min-width: 0;
-  background: none;
-  box-sizing: border-box;
-  animation-name: mui-auto-fill-cancel;
-  letter-spacing: inherit;
-  animation-duration: 10ms;
-  -webkit-tap-highlight-color: transparent;
-
+  padding-right: 2rem;
+  .MuiButtonBase-root & {
+  }
+  // &:after {
+  //   display: block;
+  //   content: '${suffix}';
+  //   position: absolute;
+  //   right: 0;
+  // } 
   :focus {
     outline: 0;
     border-color: transparent;
   }
+  
 }
 
 ` as typeof CurrencyInput
+const CUSTOMER_SLIPPAGE_NAME = 'customerSlippage'
 export const SlippagePanel = ({
                                   slippageList,
                                   slippage,
@@ -73,30 +95,40 @@ export const SlippagePanel = ({
 }) => {
     let {slippage:_slippage} = useSettings()
     const [customSlippage, setCustomSlippage] = React.useState<string|number | 'N'>(_slippage);
+    const [showAlert, setShowAlert] = React.useState<boolean>(_slippage!=='N' && _slippage>5?true:false);
     // const [cValue, setCValue] = React.useState<number | 'N'>(_slippage);
     const inputEle = useFocusRef({
         shouldFocusOn: false,
         value: _slippage,
     });
-    const suffix = '%';
     const [value, setValue] = React.useState(slippage);
-    const _handleChange =(event: React.MouseEvent<HTMLElement>, newValue: number | string) => {
+    const _handleChange =(event: React.MouseEvent<HTMLElement>|any, newValue: number | string) => {
+        
         if (event.target !== inputEle.current && newValue!== undefined) {
             if(newValue && newValue !== 'N' ){
                 setValue(newValue)
                 handleChange(newValue, customSlippage !== 0.1 && customSlippage !== 0.5 && customSlippage !== 1 ? customSlippage : undefined)
             }
-        } else if(event.target === inputEle.current && event.type === 'change'){
-
-            var _value = inputEle.current?.value ?? ''
-            if(parseFloat(_value) < 100){
-                _value = _value.replace(suffix,'')
+        } else if(event.target?.name === CUSTOMER_SLIPPAGE_NAME && event.type === 'change'){
+            var _value = event.target?.value??''
+            _value = _value.replace(suffix,'')
+            if(Number(_value) <= 100){
                 setValue(_value)
                 setCustomSlippage(_value)
+                if(_value >=5){
+                  setShowAlert(true)
+                }else{
+                    setShowAlert(false)
+                }
+            }else{
+                setShowAlert(true)
+                setValue(100)
+                setCustomSlippage(100)
             }
         }else{
 
         }
+        event.preventDefault()
     }
     const handleOnBlur = React.useCallback(()=>{
         if(customSlippage !== 'N' && value !== 'N'){
@@ -104,29 +136,30 @@ export const SlippagePanel = ({
           }
     },[value,customSlippage])
 
+
     const toggleData =React.useMemo(()=> slippageList.reduce((pre, value, index) => {
         let item: TGItemJSXInterface;
         if (RegExp('slippage:').test(value.toString())) {
             item = {
                 value: customSlippage,
-                JSX: <TextField ref={inputEle}
-                                placeholder={rest.t('labelCustomer')}
-                                onChange={_handleChange as any}
-                                onMouseOut={handleOnBlur}
-                                onBlur={handleOnBlur}
-                                variant={'outlined'}
-                                InputProps={{
-                                    inputComponent: ()=><InputStyled
-                                        allowDecimals={true}
-                                        decimalsLimit={2}
-                                        step={0.01}
-                                        maxLength={4}
-                                        defaultValue={customSlippage === 'N'? '':customSlippage}
-                                    />,
-                                    endAdornment:<InputAdornment position={'end'}>%</InputAdornment>}
-                                }
-                />,
-                tlabel:'custom Slippage',
+                JSX:  <Box position={'relative'} className={'MuiInputBase-root'}  display={'flex'} flexDirection={'row'}
+                ><InputStyled className={'MuiInputBase-sizeSmall MuiInputBase-root '} ref={inputEle} name={CUSTOMER_SLIPPAGE_NAME}
+                                   allowDecimals={true}
+                                   decimalsLimit={2}
+                                   placeholder={rest.t('labelCustomer')}
+                                   onChange={_handleChange as any}
+                                   onMouseOut={handleOnBlur}
+                                   onBlur={handleOnBlur}
+                                   defaultValue={customSlippage === 'N'? '':customSlippage}
+                                   maxLength={5}
+                              autoComplete={"off"}
+                                   // suffix={suffix}
+                /><InputAdornment
+                    style={{zIndex:99,position:'absolute',right:8,top:'50%',transform:'translateY(-50%)', height:'100%',maxHeight:'auto'}}
+                    position={'end'}
+
+                >{suffix}</InputAdornment></Box>,
+                notWrap:true,
                 key: 'custom'+ '-' + index,
             }
         } else {
@@ -142,12 +175,16 @@ export const SlippagePanel = ({
         return pre;
     }, [] as TGItemJSXInterface[]) ,[customSlippage,_handleChange])
 
-    return <Styled  className={'MuiPaper-elevation2'}
+    return <Styled className={'MuiPaper-elevation2'} flexDirection={'column'}
         height={'var(--slippage-pop-height)'}
         width={'var(--slippage-pop-width)'} padding={2}
-        display={'flex'}>  {
+        display={'flex'}>
+
         <ToggleButtonGroup exclusive {...{...rest, tgItemJSXs: toggleData, value: value, size: 'small'}}
                            onChange={_handleChange}/>
-    }
+
+        {showAlert && <FormHelperText>{rest.t('labelSlippageAlert')}</FormHelperText>}
+
+
     </Styled>
 }
