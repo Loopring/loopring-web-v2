@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { AccountStep, DepositProps, SwitchData, useOpenModals, } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
-import { ChainId, ConnectorError, dumpError400, } from 'loopring-sdk';
+import { ChainId, ConnectorError, ConnectorNames, dumpError400, } from 'loopring-sdk';
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
 import { useSystem } from 'stores/system';
@@ -19,6 +19,7 @@ import { useAllowances } from 'hooks/common/useAllowances';
 import { useModalData } from 'stores/router';
 import { isAccActivated } from './checkAccStatus';
 import { checkAddr } from 'utils/web3_tools';
+import { isPosIntNum } from 'utils/formatter_tool';
 
 export const useDeposit = <R extends IBData<T>, T>(): {
     depositProps: DepositProps<R, T>
@@ -102,47 +103,85 @@ export const useDeposit = <R extends IBData<T>, T>(): {
         }
     }, [isShow])
 
-    const setReffer = React.useCallback(async(inputValue: any) => {
+    const setReffer = React.useCallback(async (inputValue: any) => {
 
-        const reffer: any = inputValue?.reffer
+        let reffer: any = inputValue?.reffer
 
-        if (LoopringAPI.userAPI && LoopringAPI.exchangeAPI) {
+        myLog('setReffer type reffer:', typeof reffer, reffer, Number.isInteger(reffer))
+
+        if (LoopringAPI.userAPI && LoopringAPI.exchangeAPI && exchangeInfo?.exchangeAddress) {
             if (reffer === undefined || (reffer as string).trim() === '') {
                 return
             }
 
+            let refferId = 0
+
             if (typeof reffer === 'string') {
+                reffer = reffer.trim()
+                if (isPosIntNum(reffer)) {
+                    refferId = parseInt(reffer)
+                } else {
+                    try {
+                        const { realAddr, addressErr, } = await checkAddr(reffer, connectProvides.usedWeb3)
+                        if (addressErr !== AddressError.NoError) {
+                            return
+                        }
+                        const realRefferAddr = realAddr ? realAddr : reffer
+                        const { accInfo, error, } = await LoopringAPI.exchangeAPI.getAccount({ owner: realRefferAddr, })
+
+                        if (error || !accInfo?.accountId) {
+                            return
+                        }
+
+                        refferId = accInfo?.accountId
+
+                    } catch (reason) {
+                        dumpError400(reason)
+                    }
+
+                }
+            } else if (typeof reffer === 'number') {
+                refferId = reffer
+            }
+
+            if (refferId) {
                 try {
-                    const { realAddr, addressErr, } = await checkAddr(reffer, connectProvides.usedWeb3)
-                    if (addressErr !== AddressError.NoError) {
-                        return
+
+                    myLog('setReffer generateKeyPair!!! refferId:', refferId)
+
+                    const eddsaKey = await sdk.generateKeyPair({
+                        web3: connectProvides.usedWeb3,
+                        address: account.accAddress,
+                        exchangeAddress: exchangeInfo.exchangeAddress,
+                        keyNonce: 0,
+                        walletType: account.connectName as ConnectorNames,
                     }
-                    const{ accInfo, error, } = await LoopringAPI.exchangeAPI.getAccount({owner: realAddr ? realAddr : reffer})
-
-                    if (error || !accInfo?.accountId) {
-                        return
+                    )
+                    const request: sdk.SetReferrerRequest = {
+                        address: account.accAddress,
+                        referrer: refferId,
+                        publicKeyX: eddsaKey.formatedPx,
+                        publicKeyY: eddsaKey.formatedPy,
                     }
 
-    // address: string;
-    // referrer?: number;
-    // promotionCode?: string;
-    // publicKeyX: string;
-    // publicKeyY: string;
+                    const response = await LoopringAPI.userAPI.SetReferrer(request, eddsaKey.sk)
 
-                    // sdk.SetReferrerRequest
-
-                    // LoopringAPI.userAPI.SetReferrer({address : account.accAddress})
+                    myLog(response)
 
                 } catch (reason) {
+                    dumpError400(reason)
                 }
+
             }
         }
 
-    }, [])
+    }, [exchangeInfo, account])
 
     const handleDeposit = React.useCallback(async (inputValue: any) => {
 
         myLog('handleDeposit:', inputValue)
+
+        await setReffer(inputValue)
 
         const { readyState, connectName } = account
 
@@ -223,19 +262,15 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 result.data = response
 
-                if (isAccActivated()) {
-                    if (response) {
-                        // deposit success
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Submit })
+                if (response) {
 
-                        setReffer(inputValue)
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit_Submit })
 
-                    } else {
-                        // deposit failed
-                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
-                    }
-
+                } else {
+                    // deposit failed
+                    setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
                 }
+
                 resetDepositData()
 
             } catch (reason: any) {
@@ -244,38 +279,19 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 result.data = reason
 
                 //deposit failed
-                if (isAccActivated()) {
-                    const err = checkErrorInfo(reason, true)
+                const err = checkErrorInfo(reason, true)
 
-                    myLog('---- deposit reason:', reason?.message.indexOf('User denied transaction'))
-                    myLog('---- deposit err:', err)
+                myLog('---- deposit reason:', reason?.message.indexOf('User denied transaction'))
+                myLog('---- deposit err:', err)
 
-                    switch (err) {
-                        case ConnectorError.USER_DENIED:
-                            setShowAccount({ isShow: true, step: AccountStep.Deposit_Denied })
-                            break
-                        default:
-                            setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
-                            resetDepositData()
-                            break
-                    }
-                } else {
-                    const err = checkErrorInfo(reason, true)
-
-                    myLog('---- deposit reason:', reason?.message.indexOf('User denied transaction'))
-                    myLog('---- deposit err:', err)
-
-                    switch (err) {
-                        case ConnectorError.USER_DENIED:
-                            setShowAccount({ isShow: true, step: AccountStep.Deposit_Denied })
-                            break
-                        default:
-                            setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
-                            resetDepositData()
-                            break
-                    }
-
-                    resetDepositData()
+                switch (err) {
+                    case ConnectorError.USER_DENIED:
+                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Denied })
+                        break
+                    default:
+                        setShowAccount({ isShow: true, step: AccountStep.Deposit_Failed })
+                        resetDepositData()
+                        break
                 }
             }
 
