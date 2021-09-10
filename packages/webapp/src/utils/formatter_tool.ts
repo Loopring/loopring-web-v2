@@ -141,17 +141,17 @@ export function getFloatValue(rawVal: any) {
 }
 
 export function isIntNum(val: any){
-    var regPos = / ^\d+$/; 
+    var regPos = /^\d+$/; 
     var regNeg = /^\-[1-9][0-9]*$/;
     if(regPos.test(val) && regNeg.test(val)) {
         return true;
     } else {
         return false;
-    } 
+    }
 }
 
 export function isPosIntNum(val: any){
-    var regPos = / ^\d+$/;
+    var regPos = /^\d+$/;
     if(regPos.test(val)) {
         return true;
     } else {
