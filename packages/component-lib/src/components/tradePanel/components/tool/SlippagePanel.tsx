@@ -10,7 +10,7 @@ import { useSettings } from '../../../../stores';
 
 const Styled = styled(Box)`
   .MuiFormHelperText-root{
-    font-size:${({theme})=>theme.fontDefault.body1} ;
+    font-size:${({theme})=>theme.fontDefault.body2} ;
     color:var(--color-error);
   }
   .MuiToggleButtonGroup-root {
