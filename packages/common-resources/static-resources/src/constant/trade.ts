@@ -1,13 +1,13 @@
 export enum WithdrawType {
-    'Fast' = 'Fast',
-    'Standard' = 'Standard',
+    Fast = 'Fast',
+    Standard = 'Standard',
 }
 
 export const WithdrawTypes: {
     [P in keyof typeof WithdrawType]: string | number
 } = {
-    'Fast': '',
-    'Standard': '',
+    Fast: '',
+    Standard: '',
 }
 
 export  type PriceTagType = '$' | '￥';

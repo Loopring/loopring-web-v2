@@ -32,7 +32,6 @@ export const BtnDownload = ({
     const popupState = usePopupState({variant: 'popover', popupId: 'download-QRcode'});
     const Description = () => <Link target={'_blank'} href='https://loopring.pro'>{t(i18nDescription)}</Link>
 
-    myLog('BtnDownload url:', url)
     return <Box>
         <IconButton aria-label={t('labeldownloadApp')} {...bindHover(popupState)}><DownloadIcon/></IconButton>
         <PopoverPure
