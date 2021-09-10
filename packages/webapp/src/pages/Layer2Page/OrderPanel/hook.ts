@@ -1,5 +1,5 @@
 import React from 'react'
-import { EmptyValueTag, TradeStatus, TradeTypes } from '@loopring-web/common-resources'
+import { EmptyValueTag, myLog, TradeStatus, TradeTypes } from '@loopring-web/common-resources'
 import { OrderHistoryRawDataItem, OrderHistoryTableDetailItem } from '@loopring-web/component-lib'
 import { useAccount } from 'stores/account';
 import { LoopringAPI } from 'api_wrapper'
@@ -7,6 +7,7 @@ import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
 import { GetOrdersRequest, Side } from 'loopring-sdk'
 import store from 'stores'
 import BigNumber from 'bignumber.js';
+import {TFunction} from 'react-i18next'
 
 export const useOrderList = () => {
     const [orderOriginalData, setOrderOriginalData] = React.useState<OrderHistoryRawDataItem[]>([])
@@ -14,9 +15,11 @@ export const useOrderList = () => {
     const [totalNum, setTotalNum] = React.useState(0)
     const [showLoading, setShowLoading] = React.useState(false)
     const [showDetailLoading, setShowDetailLoading] = React.useState(false)
+    const [openOrderList, setOpenOrderList] = React.useState<OrderHistoryRawDataItem[]>([])
     const {account: {accountId, apiKey}} = useAccount()
     const {tokenMap: {marketArray}} = store.getState()
     const {ammMap: {ammMap}} = store.getState().amm
+    const {sk: privateKey} = store.getState().account.eddsaKey
 
     const ammPairList = ammMap
         ? Object.keys(ammMap)
@@ -24,6 +27,7 @@ export const useOrderList = () => {
     const jointPairs = (marketArray || []).concat(ammPairList)
 
     const getOrderList = React.useCallback(async (props: Omit<GetOrdersRequest, 'accountId'>) => {
+        const isOpenOrder = props.status && props.status === 'processing'
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
             setShowLoading(true)
             const userOrders = await LoopringAPI.userAPI.getOrders({
@@ -32,7 +36,8 @@ export const useOrderList = () => {
             }, apiKey)
             if (userOrders && Array.isArray(userOrders.orders)) {
                 setTotalNum(userOrders.totalNum)
-                setOrderOriginalData(userOrders.orders.map(o => {
+                myLog(userOrders.orders)
+                const data = userOrders.orders.map(o => {
                     const {baseAmount, quoteAmount, baseFilled, quoteFilled} = o.volumes
 
                     const marketList = o.market.split('-')
@@ -47,14 +52,16 @@ export const useOrderList = () => {
                     const [tokenFirst, tokenLast] = marketList
                     const baseToken = isBuy ? tokenLast : tokenFirst
                     const quoteToken = isBuy ? tokenFirst : tokenLast
-                    const actualBaseFilled = isBuy ? quoteFilled : baseFilled
-                    const actualQuoteFilled = isBuy ? baseFilled : quoteFilled
+                    const actualBaseFilled = (isBuy ? quoteFilled : baseFilled) as any
+                    const actualQuoteFilled = (isBuy ? baseFilled : quoteFilled) as any
                     const baseValue = isBuy ? volumeToCount(baseToken, quoteAmount) : volumeToCount(baseToken, baseAmount)
                     const quoteValue = isBuy ? volumeToCount(quoteToken, baseAmount) : (volumeToCount(baseToken, baseAmount) || 0) * Number(o.price || 0)
                     const baseVolume = volumeToCountAsBigNumber(baseToken, actualBaseFilled)
                     const quoteVolume = volumeToCountAsBigNumber(quoteToken, actualQuoteFilled)
+                    const quotefilledValue = volumeToCount(quoteToken, actualQuoteFilled)
 
                     const average = baseVolume?.div(quoteVolume || new BigNumber(1)).toNumber() || 0
+                    const completion = (quotefilledValue || 0)  / (quoteValue || 1)
 
                     return ({
                         market: o.market,
@@ -88,15 +95,44 @@ export const useOrderList = () => {
                         },
                         time: o.validity.start * 1000,
                         status: o.status as unknown as TradeStatus,
-                        hash: o.hash
+                        hash: o.hash,
+                        orderId: o.clientOrderId,
+                        tradeChannel: o.tradeChannel,
+                        completion: completion,
                     })
-                }))
+                })
+                if (isOpenOrder) {
+                    setOpenOrderList(data)
+                } else {
+                    setOrderOriginalData(data)
+                } 
             }
             setShowLoading(false)
         }
     }, [accountId, apiKey])
 
-    const getOrderDetail = React.useCallback(async (orderHash: string) => {
+    const cancelOrder = React.useCallback(async({orderHash, clientOrderId}) => {
+        if (LoopringAPI && LoopringAPI.userAPI && accountId && privateKey && apiKey) {
+            // console.log({
+            //     accountId,
+            //     orderHash,
+            // clientOrderId, privateKey, apiKey})
+            setShowLoading(true)
+            await LoopringAPI.userAPI.cancelOrder({
+                accountId,
+                orderHash,
+                clientOrderId,
+            }, privateKey, apiKey)
+            setTimeout(()=> {
+                getOrderList({
+                    status: 'processing'
+                })
+            }, 500)
+            // setShowLoading(false)
+        }
+    }, [accountId, apiKey, privateKey])
+
+    const getOrderDetail = React.useCallback(async (orderHash: string, t: TFunction) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
             setShowDetailLoading(true)
             const orderDetail = await LoopringAPI.userAPI.getOrderDetails({
@@ -112,29 +148,38 @@ export const useOrderList = () => {
                 // due to AMM case, we cannot use first index
                 const side = o.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
                 const isBuy = side === TradeTypes.Buy
+                const role = isBuy ? t('labelOrderDetailMaker') : t('labelOrderDetailTaker')
                 const [tokenFirst, tokenLast] = marketList
                 const baseToken = isBuy ? tokenLast : tokenFirst
                 const quoteToken = isBuy ? tokenFirst : tokenLast
                 const baseValue = isBuy ? volumeToCount(baseToken, quoteAmount) : volumeToCount(baseToken, baseAmount)
                 const quoteValue = isBuy ? volumeToCount(quoteToken, baseAmount) : (volumeToCount(baseToken, baseAmount) || 0) * Number(o.price || 0)
+                const actualBaseFilled = isBuy ? quoteFilled : baseFilled
+                const actualQuoteFilled = isBuy ? baseFilled : quoteFilled
+                const baseVolume = volumeToCountAsBigNumber(baseToken, actualBaseFilled)
+                const quoteVolume = volumeToCountAsBigNumber(quoteToken, actualQuoteFilled)
+                const filledPrice = baseVolume?.div(quoteVolume || new BigNumber(1)).toNumber() || 0
+
                 return ({
                     amount: {
                         from: {
                             key: baseToken,
-                            value: baseValue?.toFixed(2) as any
+                            value: baseValue as any
                         },
                         to: {
                             key: quoteToken,
-                            value: quoteValue?.toFixed(2) as any
+                            value: quoteValue as any
                         }
                     },
-                    filledPrice: o.price,
+                    filledPrice: filledPrice,
                     fee: {
                         key: quoteToken,
                         value: fee,
                     },
-                    role: o.side,
+                    role: role,
                     time: o.validity.start * 1000,
+                    volume: quoteVolume?.toNumber(),
+                    orderId: o.clientOrderId,
                 })
             })
             setOrderDetailList(formattedData)
@@ -146,11 +191,12 @@ export const useOrderList = () => {
         marketArray: jointPairs,
         getOrderList,
         rawData: orderOriginalData,
+        openOrderList,
         totalNum,
         showLoading,
         showDetailLoading,
         getOrderDetail,
         orderDetailList,
+        cancelOrder,
     }
 }
-
