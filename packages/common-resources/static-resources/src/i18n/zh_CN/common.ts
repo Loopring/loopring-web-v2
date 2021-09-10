@@ -279,4 +279,6 @@ export default {
     labelCreateAccountDepositDenied: '您以拒绝充值 {{value}} {{symbol}}, 账户未激活',
     labelCreateAccountSubmit: '{{value}} {{symbol}} 的充值以提交成功，\n 预计等待{{count}}分钟...',
     labelCreateAccountFailed: '{{value}} {{symbol}} 的充值失败, 账户未激活',
+    labelSlippageAlert:'滑点过大将会影响您出金后收到的token数量'
+
 }

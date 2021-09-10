@@ -137,7 +137,8 @@ export const ToggleButtonGroup = ({
         })
     }
     return <MuToggleButtonGroupStyle size={size} value={value} exclusive={exclusive} onChange={_handleChange}>
-        {tgItemJSXs?.map(({value, JSX, tlabel, disabled, key}: TGItemJSXInterface) =>
+        {tgItemJSXs?.map(({value, JSX, tlabel, disabled, key, notWrap}: TGItemJSXInterface) =>
+            notWrap?<React.Fragment  key={key ? key : value} >{JSX}</React.Fragment>:
             <ToggleButton key={key ? key : value} value={value}
                           aria-label={tlabel}
                           disabled={disabled}>{JSX}</ToggleButton>)}
