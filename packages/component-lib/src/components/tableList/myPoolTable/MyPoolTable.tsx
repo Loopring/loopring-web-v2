@@ -24,7 +24,8 @@ export enum PoolTradeType {
 //     // filter = 'filter',
 //     page = 'page'
 // }
-const rowHeight = 86;
+// const rowHeight = 86;
+const rowHeight = 44;
 
 const TableStyled = styled(Box)`
     .rdg {
@@ -301,8 +302,8 @@ export const MyPoolTable = withTranslation('tables')(<T extends { [ key: string 
                 ...defaultArgs, t, i18n, tReady, ...rest,
                 rawData: rawData
             }}/>
-        {pagination && (
+        {/* {pagination && rawData.length > pageSize && (
             <TablePagination page={page} pageSize={pageSize} total={totalData.length} onPageChange={_handlePageChange}/>
-        )}
+        )} */}
     </TableStyled>
 })

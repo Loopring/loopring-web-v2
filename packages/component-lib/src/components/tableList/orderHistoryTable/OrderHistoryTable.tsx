@@ -579,7 +579,6 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             headerCellClass: 'textAlignRight',
             name: t('labelOrderCancelAll'),
             formatter: ({row}: any) => {
-                console.log(row)
                 const orderHash = row['hash']
                 const clientOrderId = row['orderId']
                 return (
