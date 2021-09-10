@@ -5,7 +5,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 
-import { ChainId } from 'loopring-sdk'
+import { ChainId, dumpError400 } from 'loopring-sdk'
 
 import ms from 'ms.macro'
 
@@ -160,6 +160,8 @@ export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResu
             addressErr = AddressError.NoError
             realAddr = ''
         } catch (reason) {
+
+            dumpError400(reason)
 
             return new Promise<AddrCheckResult>((resolve) => {
                 try {
