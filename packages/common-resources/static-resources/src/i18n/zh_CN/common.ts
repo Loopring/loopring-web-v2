@@ -34,6 +34,7 @@ export default {
     withdrawLabelEnterToken: '选择提现代币',
     withdrawDescription: '提现操作会被提交到以太坊的下一个区块，一般会在<1>30分钟到2小时</1>内到账。（如果以太坊的GAS价格<5>超过500GWei</5>的话，可能会存在<3>长时间的延迟</3>）',
     withdrawLabelBtn: '提现',
+    withdrawLabelBtnExceed: '超过最大提现数{{amt}}!',
     withdrawLabelAddress: '提现到该账号地址',
     withdrawLabelAddressInput: '输入地址',
     withdrawLabelFee: '请选付费代币',

@@ -34,6 +34,7 @@ export default {
     withdrawLabelEnterToken: 'Enter withdrawal token',
     withdrawDescription: 'Your withdrawal will be processed in the next batch, which usually takes <1>30 minutes to 2 hours</1>. (There will be <3>a large delay</3> if the Ethereum gas price <5>exceeds 500 GWei</5>.）',
     withdrawLabelBtn: 'Withdraw',
+    withdrawLabelBtnExceed: 'Exceed Max Fast Withdraw Amt{{amt}}!',
     withdrawLabelAddress: 'Withdrawal address',
     withdrawLabelAddressInput: 'Please input the address',
     withdrawLabelFee: 'Select payment token',
