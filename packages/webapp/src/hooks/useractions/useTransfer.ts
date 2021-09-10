@@ -226,8 +226,11 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                 const sellToken = tokenMap[transferValue.belong as string]
                 const feeToken = tokenMap[tranferFeeInfo.belong]
 
-                const isExceedBalance = feeToken.tokenId === sellToken.tokenId && tranferFeeInfo.__raw__ && sdk.toBig(transferValue.balance).minus(sdk.toBig(transferValue.tradeValue ?? 0)).times('1e' + sellToken.decimals).lte(sdk.toBig(tranferFeeInfo.__raw__))
-                const finalVol = isExceedBalance ? sdk.toBig(transferValue.balance).times('1e' + sellToken.decimals).minus(sdk.toBig(tranferFeeInfo.__raw__ ?? 0)) : sdk.toBig(transferValue.tradeValue)
+                const fee = sdk.toBig(tranferFeeInfo.__raw__ ?? 0)
+                const balance = sdk.toBig(transferValue.balance ?? 0).times('1e' + sellToken.decimals)
+                const tradeValue = sdk.toBig(transferValue.tradeValue ?? 0).times('1e' + sellToken.decimals)
+                const isExceedBalance = feeToken.tokenId === sellToken.tokenId && tradeValue.plus(fee).gt(balance)
+                const finalVol = isExceedBalance ?  balance.minus(fee) : tradeValue
                 const transferVol = finalVol.toFixed(0, 0)
 
                 const storageId = await LoopringAPI.userAPI?.getNextStorageId({
