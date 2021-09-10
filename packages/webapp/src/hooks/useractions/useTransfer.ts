@@ -17,7 +17,7 @@ import { myLog } from "@loopring-web/common-resources";
 import { makeWalletLayer2 } from 'hooks/help';
 import { useWalletLayer2Socket, walletLayer2Service } from '../../services/socket';
 import { getTimestampDaysLater } from 'utils/dt_tools';
-import { AddressError, DAYS, TOAST_TIME } from 'defs/common_defs';
+import { AddressError, BIGO, DAYS, TOAST_TIME } from 'defs/common_defs';
 import { useTranslation } from 'react-i18next';
 import { useAddressCheck } from 'hooks/common/useAddrCheck';
 import { useWalletInfo } from 'stores/localStore/walletInfo';
@@ -65,20 +65,31 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const { btnStatus, enableBtn, disableBtn, } = useBtnStatus()
 
-    React.useEffect(() => {
+    const checkBtnStatus = React.useCallback(() => {
 
-        const tradeValue = getFloatValue(transferValue?.tradeValue)
+        if (!tokenMap || !tranferFeeInfo?.belong || !transferValue?.belong || !address) {
+            disableBtn()
+            return
+        }
 
-        myLog('tradeValue:', tradeValue, ' isExceedMax:', isExceedMax, ' addrStatus:', addrStatus)
+        const sellToken = tokenMap[transferValue.belong as string]
 
-        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && tradeValue
+        const tradeValue = sdk.toBig(transferValue.tradeValue ?? 0).times('1e' + sellToken.decimals)
+        
+        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && tradeValue.gt(BIGO)
             && addrStatus === AddressError.NoError && !isExceedMax) {
             enableBtn()
         } else {
             disableBtn()
         }
 
-    }, [enableBtn, disableBtn, chargeFeeList, address, addrStatus, transferValue?.tradeValue, isExceedMax])
+    }, [enableBtn, disableBtn, tokenMap, address, addrStatus, chargeFeeList, tranferFeeInfo, transferValue, isExceedMax, ])
+
+    React.useEffect(() => {
+        
+        checkBtnStatus()
+
+    }, [tokenMap, chargeFeeList, address, addrStatus, tranferFeeInfo?.belong, transferValue?.belong, transferValue?.tradeValue, isExceedMax, ])
 
     const walletLayer2Callback = React.useCallback(() => {
         const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
@@ -226,7 +237,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                 const sellToken = tokenMap[transferValue.belong as string]
                 const feeToken = tokenMap[tranferFeeInfo.belong]
 
-                const fee = sdk.toBig(tranferFeeInfo.__raw__ ?? 0)
+                const fee = sdk.toBig(tranferFeeInfo.__raw__.feeRaw ?? 0)
                 const balance = sdk.toBig(transferValue.balance ?? 0).times('1e' + sellToken.decimals)
                 const tradeValue = sdk.toBig(transferValue.tradeValue ?? 0).times('1e' + sellToken.decimals)
                 const isExceedBalance = feeToken.tokenId === sellToken.tokenId && tradeValue.plus(fee).gt(balance)
@@ -250,7 +261,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     },
                     maxFee: {
                         tokenId: feeToken.tokenId,
-                        volume: String(tranferFeeInfo.__raw__),
+                        volume: fee.toString(),
                     },
                     validUntil: getTimestampDaysLater(DAYS),
                     memo: transferValue.memo,
