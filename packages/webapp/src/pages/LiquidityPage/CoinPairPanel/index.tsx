@@ -6,7 +6,8 @@ import {
     Currency,
     EmptyValueTag,
     getValuePrecisionThousand,
-    PriceTag
+    PriceTag,
+    abbreviateNumber,
 } from '@loopring-web/common-resources';
 import { Avatar, Box, Breadcrumbs, Divider, Grid, Link, Tab, Tabs, Typography } from '@mui/material';
 import { AmmPanelView } from '../AmmPanel';
@@ -135,7 +136,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                     </Box>
                     <BoxWrapperStyled container className={'MuiPaper-elevation2'} display={'flex'}
                                       alignItems={'center'}>
-                        <Grid item paddingLeft={2} paddingY={3} xs={6} sm={4} lg={3}
+                        <Grid item paddingLeft={2} paddingY={3} xs={7} sm={4} lg={3}
                               display={'flex'}
                               justifyContent={'space-between'}
                               alignItems={'center'}>
@@ -233,7 +234,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             <Box>
                                 <Typography variant={'h3'}
                                             component={'span'}> {typeof coinPairInfo.amountDollar === 'undefined' ? EmptyValueTag :
-                                    currency === Currency.dollar ? PriceTag.Dollar + getValuePrecisionThousand(coinPairInfo.amountDollar) : PriceTag.Yuan + getValuePrecisionThousand(coinPairInfo.amountYuan)}
+                                    currency === Currency.dollar ? PriceTag.Dollar + abbreviateNumber(coinPairInfo.amountDollar || 0) : PriceTag.Yuan + abbreviateNumber(coinPairInfo.amountYuan || 0)}
                                 </Typography>
 
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}>
