@@ -165,7 +165,7 @@ export const ModalBackButton = ({onBack, t}: {
     onBack?: () => void
 } & WithTranslation) => {
     return <Box alignSelf={'flex-start'} marginTop={-3} marginLeft={1.5}>
-        <IconButton color={'inherit'} aria-label={t('labelBack')} size={'small'} onClick={() => {
+        <IconButton size={'medium'} color={'inherit'} aria-label={t('labelBack')} onClick={() => {
             onBack && onBack()
         }}>
             <DropDownIcon style={{transform: 'rotate(90deg) scale(1.5)'}}/>
