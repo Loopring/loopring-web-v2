@@ -279,4 +279,6 @@ export default {
     labelCreateAccountDepositDenied:'You refuse to activate layer2 deposit {{value}} {{symbol}}',
     labelCreateAccountSubmit:'Activate layer2, deposit {{value}} {{symbol}} submitted! \n Around {{count}} minutes remaining...\',',
     labelCreateAccountFailed:'Activate layer2, deposit {{value}} {{symbol}} failed!',
+    labelOrderTableOpenOrder: 'Open Order',
+    labelOrderTableOrderHistory: 'Order History',
 }

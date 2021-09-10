@@ -294,7 +294,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         showloading={showAmmPoolLoading}
                         rowHeight={RowConfig.rowHeight}
                         headerRowHeight={RowConfig.headerRowHeight}
-                        currentheight={tableHeight - 44}
+                        currentheight={tableHeight}
                         currency={currency}
                     />}
                 </StylePaper>
