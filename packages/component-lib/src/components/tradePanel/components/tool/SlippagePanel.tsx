@@ -135,28 +135,7 @@ export const SlippagePanel = ({
               handleChange(value, customSlippage !== 0.1 && customSlippage !== 0.5 && customSlippage !== 1 ? customSlippage : undefined)
           }
     },[value,customSlippage])
-    // const NumberFormatCustom = React.forwardRef<HTMLInputElement,CurrencyInputProps>((props,ref)=>{
-    //    const { onChange,value, ...other } = props;
-    //    return  <InputStyled
-    //         {...other}
-    //         ref={ref}
-    //         placeholder={rest.t('labelCustomer')}
-    //         onValueChange={(value,)=>{
-    //             if(onChange) {
-    //                 const event = new Event('change')
-    //                 Object.defineProperty(event, 'target', {writable: false, value: {
-    //                         name: props.name as any,
-    //                         value: value as string,
-    //                     }});
-    //                 onChange(event as any);
-    //             }
-    //         }}
-    //         allowDecimals={true}
-    //         decimalsLimit={2}
-    //         step={0.01}
-    //         defaultValue={value === 'N'? '':value as number}
-    //     />
-    // }) as (props:CurrencyInputProps)=>JSX.Element;
+
 
     const toggleData =React.useMemo(()=> slippageList.reduce((pre, value, index) => {
         let item: TGItemJSXInterface;
@@ -206,21 +185,6 @@ export const SlippagePanel = ({
 
         {showAlert && <FormHelperText>{rest.t('labelSlippageAlert')}</FormHelperText>}
 
-        {/*<TextField*/}
-        {/*    size={'small'}*/}
-        {/*    variant={'outlined'}*/}
-        {/*    ref={inputEle}*/}
-        {/*    name={CUSTOMER_SLIPPAGE_NAME}*/}
-        {/*    onChange={_handleChange as any}*/}
-        {/*    onMouseOut={handleOnBlur}*/}
-        {/*    onBlur={handleOnBlur}*/}
 
-        {/*    InputProps={{*/}
-        {/*        type:'number',*/}
-        {/*        // inputComponent: NumberFormatCustom as any,*/}
-        {/*        value:customSlippage,*/}
-        {/*        endAdornment:<InputAdornment position={'end'}>%</InputAdornment>}*/}
-        {/*    }*/}
-        {/*/>*/}
     </Styled>
 }
