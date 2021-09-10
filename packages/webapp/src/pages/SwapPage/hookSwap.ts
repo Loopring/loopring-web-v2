@@ -13,6 +13,8 @@ import {
     AccountStatus,
     CoinMap,
     fnType,
+    getValuePrecision,
+    getValuePrecisionThousand,
     IBData,
     SagaStatus,
     TradeCalcData,
@@ -648,7 +650,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                 fee: totalFee,
             }
 
-            _tradeData[ isAtoB ? 'buy' : 'sell' ].tradeValue = calcTradeParams?.output
+            _tradeData[ isAtoB ? 'buy' : 'sell' ].tradeValue = getValuePrecisionThousand(calcTradeParams?.output)
             updatePageTradeLite({
                 market,
                 calcTradeParams: {

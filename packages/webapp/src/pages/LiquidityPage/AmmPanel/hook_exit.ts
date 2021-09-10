@@ -66,8 +66,10 @@ export const useAmmExit = ({
 
     const [baseToken, setBaseToken] = React.useState<sdk.TokenInfo>();
     const [quoteToken, setQuoteToken] = React.useState<sdk.TokenInfo>();
+    const [lpToken, setLpToken] = React.useState<sdk.TokenInfo>();
     const [baseMinAmt, setBaseMinAmt,] = React.useState<any>()
     const [quoteMinAmt, setQuoteMinAmt,] = React.useState<any>()
+    const [lpMinAmt, setLpMinAmt,] = React.useState<any>()
 
     React.useEffect(() => {
 
@@ -137,11 +139,15 @@ export const useAmmExit = ({
 
             const quoteT = tokenMap[ _ammCalcData.myCoinB.belong ]
 
+            const lpToken = tokenMap[ _ammCalcData.lpCoin.belong ]
+
             setBaseToken(baseT)
             setQuoteToken(quoteT)
+            setLpToken(lpToken)
 
             setBaseMinAmt(baseT ? sdk.toBig(baseT.orderAmounts.minimum).div('1e' + baseT.decimals).toNumber() : undefined)
             setQuoteMinAmt(quoteT ? sdk.toBig(quoteT.orderAmounts.minimum).div('1e' + quoteT.decimals).toNumber() : undefined)
+            setLpMinAmt(lpToken ? sdk.toBig(lpToken.orderAmounts.minimum).div('1e' + lpToken.decimals).toNumber() : undefined)
 
             const newAmmData = {
                 coinA: _ammCalcData.myCoinA,
@@ -162,16 +168,11 @@ export const useAmmExit = ({
 
     const btnLabelActiveCheck = React.useCallback(({
                                                        ammData,
-                                                       volA_show,
-                                                       volB_show
                                                    }): { btnStatus?: TradeBtnStatus, btnI18nKey: string | undefined } => {
 
         const times = 1
 
-        const validAmt1 = volA_show ? volA_show >= times * baseMinAmt : false
-        const validAmt2 = volB_show ? volB_show >= times * quoteMinAmt : false
-
-        // myLog(volA_show, baseMinAmt, volB_show, quoteMinAmt)
+        const validAmt = ammData?.coinLP?.tradeValue ? sdk.toBig(ammData?.coinLP?.tradeValue).gte(sdk.toBig(times * lpMinAmt)) : false
 
         if (isLoading) {
             return {btnStatus: TradeBtnStatus.LOADING, btnI18nKey: undefined}
@@ -183,12 +184,12 @@ export const useAmmExit = ({
                     myLog('will DISABLED! ', ammData)
 
                     return {btnStatus: TradeBtnStatus.DISABLED, btnI18nKey: 'labelEnterAmount'}
-                } else if (validAmt1 && validAmt2) {
+                } else if (validAmt) {
                     return {btnStatus: TradeBtnStatus.AVAILABLE, btnI18nKey: undefined}
                 } else {
                     return {
                         btnStatus: TradeBtnStatus.DISABLED,
-                        btnI18nKey: `labelLimitMin, ${times * baseMinAmt} ${ammData?.coinA.belong} / ${times * quoteMinAmt} ${ammData?.coinB.belong}`
+                        btnI18nKey: `labelLimitMin, ${times * lpMinAmt} ${ammData?.coinLP?.belong} `
                     }
                 }
 
@@ -202,7 +203,7 @@ export const useAmmExit = ({
             btnI18nKey: undefined
         }
 
-    }, [account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, isLoading, updatePageAmmExit,])
+    }, [account.readyState, baseToken, quoteToken, baseMinAmt, quoteMinAmt, lpMinAmt, isLoading, updatePageAmmExit,])
 
     const btnLabelNew = Object.assign(_.cloneDeep(btnLabel), {
         [ fnType.ACTIVATED ]: [btnLabelActiveCheck]
