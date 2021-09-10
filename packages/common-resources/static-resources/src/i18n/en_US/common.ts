@@ -279,6 +279,7 @@ export default {
     labelCreateAccountDepositDenied:'You refuse to activate layer2 deposit {{value}} {{symbol}}',
     labelCreateAccountSubmit:'Activate layer2, deposit {{value}} {{symbol}} submitted! \n Around {{count}} minutes remaining...\',',
     labelCreateAccountFailed:'Activate layer2, deposit {{value}} {{symbol}} failed!',
+    labelSlippageAlert:'The slippage tolerance is so high, you may receive less token',
     labelOrderTableOpenOrder: 'Open Order',
     labelOrderTableOrderHistory: 'Order History',
 }

@@ -161,9 +161,11 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
     const lpTradeValue = ammData?.coinLP?.tradeValue
     let lpBalance: any = ammData?.coinLP?.balance
     lpBalance = parseFloat(lpBalance)
-    const showLP = (lpBalance && lpTradeValue && lpTradeValue > 0 && lpTradeValue < lpBalance) ? getValuePrecisionThousand(lpTradeValue, 2, 6) : '0'
+    const showLP = (lpBalance && lpTradeValue && lpTradeValue > 0 && lpTradeValue <= lpBalance) ? getValuePrecisionThousand(lpTradeValue, 2, 6) : '0'
 
     const miniA = ammData?.coinA?.tradeValue ? getValuePrecisionThousand(ammData?.coinA?.tradeValue) : EmptyValueTag
+
+    // myLog('ammData?.coinB?.tradeValue:', ammData?.coinB?.tradeValue, getValuePrecisionThousand(ammData?.coinB?.tradeValue))
 
     const miniB = ammData?.coinB?.tradeValue ? getValuePrecisionThousand(ammData?.coinB?.tradeValue) : EmptyValueTag
 
@@ -181,7 +183,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
             <Grid item hidden={!isPercentage} height={80} >
                <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'space-between'}>
                    <Typography alignSelf={'center'} variant={'body1'} marginTop={1} lineHeight={'22px'}>
-                       {showLP?getValuePrecisionThousand(showLP):EmptyValueTag}
+                       {showLP}
                    </Typography>
                    <Box  alignSelf={'stretch'} marginTop={1} marginX={1}  height={48}>
                        <BtnPercentage selected={_selectedPercentage} anchors={[{
@@ -239,12 +241,11 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                                     width: 'var(--withdraw-coin-size)',
                                     height: 'var(--withdraw-coin-size)',
                                 }}
-                                // src={sellData?.icon}
                                 src={'static/images/icon-default.png'} />
                         }
                         <Typography variant={'body1'}>{ammData?.coinA?.belong}</Typography>
                     </Box>
-                    <Typography variant={'body1'}>{miniA?getValuePrecisionThousand(miniA):EmptyValueTag}</Typography>
+                    <Typography variant={'body1'}>{miniA}</Typography>
                 </Box>
                 <Box marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'}
                     justifyContent={'space-between'}>
@@ -269,7 +270,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                         }
                         <Typography variant={'body1'}>{ammData?.coinB?.belong}</Typography>
                     </Box>
-                    <Typography variant={'body1'}>{miniB?getValuePrecisionThousand(miniB):EmptyValueTag}</Typography>
+                    <Typography variant={'body1'}>{miniB}</Typography>
                 </Box>
             </Box>
         </Grid>
