@@ -5,7 +5,6 @@ import {
     FORMAT_STRING_LEN,
      getValuePrecisionThousand,
     IBData,
-    myLog
 } from '@loopring-web/common-resources';
 import { InputButtonProps } from "./Interface";
 import React from "react";
@@ -123,15 +122,17 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
               alignContent={'stretch'}>
             <Grid item className={'btn-wrap'}>
                 <ISBtn variant={'text'} onClick={(event) => handleOnClick(event, ref)}
-                       endIcon={<DropDownIcon color={"inherit"} fontSize={'large'}/>} disabled={disabled}>
+                       endIcon={<DropDownIcon color={"inherit"} fontSize={'large'} style={{marginLeft:'-4px'}}/>} disabled={disabled}>
                     {belong ?
                         <Grid container align-items={'center'} display={'flex'}>
-                            <Grid item display={'flex'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
+                            <Grid item display={'flex'} className={'logo-icon'}
+                                  width={'var(--list-menu-coin-size)'}
+                                  height={'var(--list-menu-coin-size)'}
                                    alignItems={'center'} justifyContent={'center'}>
                                 <CoinIcon symbol={belong}/>
                             </Grid>
                             <Grid item paddingLeft={1}>
-                                <Typography
+                                <Typography display={'inline-flex'} alignItems={'center'}
                                     variant={belong&&belong.length >= FORMAT_STRING_LEN ? 'body1' : 'h4'}>
                                     {belong}
                                 </Typography></Grid>
