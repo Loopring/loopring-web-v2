@@ -98,7 +98,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
         const tradeValue = sdk.toBig(withdrawValue.tradeValue ?? 0).times('1e' + sellToken.decimals)
 
-        const exceedPoolLimit = tradeValue.gte(sdk.toBig(feeToken.fastWithdrawLimit))
+        const exceedPoolLimit = withdrawType2 === 'Fast' && tradeValue.gt(0) && tradeValue.gte(sdk.toBig(feeToken.fastWithdrawLimit))
         
         if (chargeFeeList && chargeFeeList?.length > 0 && !!address && tradeValue.gt(BIGO)
             && addrStatus === AddressError.NoError && !isExceedMax && !exceedPoolLimit) {
@@ -115,13 +115,15 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
         // myLog('exceedPoolLimit:', exceedPoolLimit, feeToken, withdrawFeeInfo)
 
-    }, [enableBtn, disableBtn, tokenMap, address, addrStatus, chargeFeeList, withdrawFeeInfo, withdrawValue, isExceedMax, ])
+    }, [withdrawType2, enableBtn, disableBtn, tokenMap, address, addrStatus, 
+        chargeFeeList, withdrawFeeInfo, withdrawValue, isExceedMax, ])
 
     React.useEffect(() => {
         
         checkBtnStatus()
 
-    }, [tokenMap, chargeFeeList, address, addrStatus, withdrawFeeInfo?.belong, withdrawValue?.belong, withdrawValue?.tradeValue, isExceedMax, ])
+    }, [withdrawType2, address, addrStatus, withdrawFeeInfo?.belong, withdrawFeeInfo?.fee,
+        withdrawFeeInfo?.belong, withdrawValue?.belong, withdrawValue?.tradeValue, isExceedMax, ])
 
     const updateWithdrawTypes = React.useCallback(async () => {
 
@@ -378,6 +380,14 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     }, [account, tokenMap, exchangeInfo, withdrawType2, withdrawFeeInfo, withdrawValue, setShowAccount])
 
+    const handleFeeChange = React.useCallback((value: {
+        belong: string;
+        fee: number | string | undefined;
+        __raw__?: any
+    }): void => {
+        setWithdrawFeeInfo(value)
+    }, [setWithdrawFeeInfo])
+
     const withdrawProps: any = {
         withdrawI18nKey,
         addressDefault: address,
@@ -394,10 +404,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             }
             setShowWithdraw({ isShow: false })
         },
-        handleFeeChange(value: { belong: any; fee: number | string; __raw__?: any }): void {
-            // myLog('.......handleFeeChange', value)
-            setWithdrawFeeInfo(value as any)
-        },
+        handleFeeChange,
         handleWithdrawTypeChange: (value: 'Fast' | 'Standard') => {
             // myLog('handleWithdrawTypeChange', value)
             const offchainType = value === WithdrawType.Fast ? sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL : sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
