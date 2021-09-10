@@ -433,6 +433,9 @@ export const MuiInputBase = ({colorBase, themeMode}: any): { styleOverrides: Com
                 backgroundColor: colorBase.box,
                 border: borderFunc(themeMode).borderConfig({c_key: colorBase.border}),//`1px solid ${colorBase.border}`,
                 borderRadius: 4,
+                '&.MuiInputBase-sizeSmall':{
+                   height:'2.4rem'
+                },
                 '&:not(.MuiFormControl-fullWidth)': {
                     // width: 'var(--btn-min-width)',
                     minWidth: 'var(--btn-min-width)',
