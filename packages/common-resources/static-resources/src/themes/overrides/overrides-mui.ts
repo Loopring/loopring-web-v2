@@ -32,12 +32,12 @@ export const MuiCheckbox = ({colorBase}: any): { styleOverrides: ComponentsOverr
                 },
                 '&:hover': {
                     backgroundColor: 'inherit',
-                    color: colorBase.textPrimary,
+                    color: colorBase.textButtonSelect,
                 },
                 '&.Mui-checked': {
-                    color: colorBase.primary,
+                    color: colorBase.textButtonSelect,
                     '&:hover':{
-                        color: colorBase.primaryDark,
+                        color: colorBase.textButtonSelect,
                     }
                 },
                 ' .MuiSvgIcon-fontSizeMedium ':{

@@ -5,7 +5,9 @@ import { WithTranslation, withTranslation } from 'react-i18next';
 
 export const HadAccount = withTranslation('common')(({mainBtn, t, ...props }: WithTranslation &AccountBaseProps) => {
     return <Box flex={1} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'}>
-        <AccountBasePanel {...props} t={t}/>
+        <Box display={'flex'} flex={1} marginBottom={10} justifyContent={'center'} alignItems={'center'}>
+            <AccountBasePanel {...props} t={t}/>
+        </Box>
         {/*<Box display={'flex'}  flexDirection={'column'} alignItems={'center'}>*/}
         {/*    <Typography variant={'body2'} marginBottom={1} >*/}
         {/*        {t('labelActivatedAccountDeposit')}*/}

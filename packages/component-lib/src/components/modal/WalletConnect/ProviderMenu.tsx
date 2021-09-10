@@ -152,7 +152,7 @@ export const ProviderMenu = ({
           <ProviderBtnStyled variant={'outlined'} size={'large'} className={
             providerName === item.key ? 'selected' : ''
           } fullWidth
-            endIcon={<img src={item.imgSrc} alt={item.key} height={18} />}
+            endIcon={<img src={item.imgSrc} alt={item.key} height={36} />}
             onClick={(e) => { _handleSelect(e, item.key, item.handleSelect ? item.handleSelect : handleSelect) }}>
             {t(item.key)}
           </ProviderBtnStyled>
