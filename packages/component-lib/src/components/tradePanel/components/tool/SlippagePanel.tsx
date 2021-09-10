@@ -173,6 +173,7 @@ export const SlippagePanel = ({
                                    onBlur={handleOnBlur}
                                    defaultValue={customSlippage === 'N'? '':customSlippage}
                                    maxLength={5}
+                              autoComplete={"off"}
                                    // suffix={suffix}
                 /><InputAdornment
                     style={{zIndex:99,position:'absolute',right:8,top:'50%',transform:'translateY(-50%)', height:'100%',maxHeight:'auto'}}
