@@ -21,7 +21,6 @@ import { ConnectorError, dumpError400, GetWithdrawalAgentsRequest } from 'loopri
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
 import { useChargeFees } from '../common/useChargeFees';
-import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { LoopringAPI } from 'api_wrapper';
 import { useSystem } from 'stores/system';
 import { myLog } from "@loopring-web/common-resources";
@@ -87,18 +86,18 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const checkBtnStatus = React.useCallback(() => {
 
+        myLog('address:', address)
+
         if (!tokenMap || !withdrawFeeInfo?.belong || !withdrawValue?.belong || !address) {
             disableBtn()
             return
         }
 
-        const sellToken = tokenMap[withdrawValue.belong as string]
+        const withdrawT = tokenMap[withdrawValue.belong as string]
 
-        const feeToken = tokenMap[withdrawFeeInfo.belong]
+        const tradeValue = sdk.toBig(withdrawValue.tradeValue ?? 0).times('1e' + withdrawT.decimals)
 
-        const tradeValue = sdk.toBig(withdrawValue.tradeValue ?? 0).times('1e' + sellToken.decimals)
-
-        const exceedPoolLimit = withdrawType2 === 'Fast' && tradeValue.gt(0) && tradeValue.gte(sdk.toBig(feeToken.fastWithdrawLimit))
+        const exceedPoolLimit = withdrawType2 === 'Fast' && tradeValue.gt(0) && tradeValue.gte(sdk.toBig(withdrawT.fastWithdrawLimit))
         
         if (chargeFeeList && chargeFeeList?.length > 0 && !!address && tradeValue.gt(BIGO)
             && addrStatus === AddressError.NoError && !isExceedMax && !exceedPoolLimit) {
@@ -222,11 +221,12 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
         if (isShow && accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
             if (withdrawValue.address) {
+                myLog('addr 1')
                 setAddress(withdrawValue.address)
             } else {
-                setAddress(account.accAddress)
+                myLog('addr 2')
+                // setAddress(account.accAddress)
                 updateWithdrawData({
-                    address: account.accAddress,
                     balance: -1,
                     tradeValue: -1,
                 })
@@ -432,14 +432,10 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     }
                 }
 
-                else {
-                    myLog('handlePanelEvent: ', data)
-                }
-
-                res();
+                res()
             })
         },
-        chargeFeeToken: 'ETH',
+        chargeFeeToken: withdrawFeeInfo?.belong,
         chargeFeeTokenList: chargeFeeList,
         handleOnAddressChange: (value: any) => {
         },
