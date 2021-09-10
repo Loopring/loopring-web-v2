@@ -4,7 +4,8 @@ import {
     DropDownIcon,
     FORMAT_STRING_LEN,
      getValuePrecisionThousand,
-    IBData
+    IBData,
+    myLog
 } from '@loopring-web/common-resources';
 import { InputButtonProps } from "./Interface";
 import React from "react";
@@ -106,6 +107,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
     // const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;
 
     // formatValue(sValue)
+
     return <> <IWrap component={'div'} ref={ref}>
         <Grid container component={'div'} className={'label-wrap'} justifyContent={'space-between'}
               paddingBottom={1 / 2}>
