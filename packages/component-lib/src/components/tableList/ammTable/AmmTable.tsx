@@ -102,14 +102,14 @@ const StyledSideCell: any = styled(Typography)`
   }}
 `
 
-const getValuePrecisioned = (rawValue?: string | number) => {
-    if (!rawValue) return '--'
-    let data = Number(rawValue)
-    if (data < 1) {
-        return data.toPrecision(2)
-    }
-    return data.toFixed(4)
-}
+// const getValuePrecisioned = (rawValue?: string | number) => {
+//     if (!rawValue) return '--'
+//     let data = Number(rawValue)
+//     if (data < 1) {
+//         return data.toPrecision(2)
+//     }
+//     return data.toFixed(4)
+// }
 
 const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<RawDataAmmItem, unknown>[] => [
     {
@@ -118,8 +118,8 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
         formatter: ({row}) => {
             const tradeType = row[ 'side' ] === AmmSideTypes.Join ? t('labelAmmJoin') : t('labelAmmExit')
             const {from, to} = row[ 'amount' ]
-            const renderFromValue = Number.isFinite(Number(from.value)) ? getValuePrecisioned(Number(from.value)): 0
-            const renderToValue = Number.isFinite(Number(to.value)) ? getValuePrecisioned(Number(to.value)): 0
+            const renderFromValue = getValuePrecisionThousand(from.value, 4, 2)
+            const renderToValue = getValuePrecisionThousand(to.value, 4, 2)
             return (
                 <>
                     <StyledSideCell value={row[ 'side' ]}>
@@ -169,7 +169,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
             const {key, value} = row[ 'fee' ]
             return (
                 <div className="rdg-cell-value">
-                    {`${Number.isFinite(Number(value)) ? getValuePrecisioned(Number(value)) : 0} ${key}`}
+                    {`${getValuePrecisionThousand(value, 4, 2)} ${key}`}
                 </div>
             )
         }
