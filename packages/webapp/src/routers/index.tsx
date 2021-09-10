@@ -14,10 +14,8 @@ import { LAYOUT } from '../defs/common_defs';
 import { ModalGroup } from '../modal';
 import Footer from '../layouts/footer';
 import React from 'react';
-import store from 'stores'
 
-import { resetAmmPool, resetSwap } from 'stores/router'
-import { LandPage } from '../pages/LandPage/LandPage';
+
 
 const ContentWrap = ({children}: React.PropsWithChildren<any>) => {
     return <Container maxWidth="lg"

@@ -11,8 +11,17 @@ import store from './stores';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { HashRouter as Router } from 'react-router-dom'
+import { HashRouter as Router, useLocation } from 'react-router-dom'
 
+const ScrollToTop =  () =>{
+    const { pathname } = useLocation();
+
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
+
+    return null;
+}
 const App = () => {
     const theme: Theme = useTheme();
     const {i18n: {language}} = useTranslation()
@@ -53,6 +62,7 @@ const App = () => {
             <LoadingPage/>
             : state === 'ERROR' ? <ErrorPage {...ErrorMap.NO_NETWORK_ERROR} /> : <>
             <Router>
+                <ScrollToTop/>
                 <RouterView/>
                 </Router>
             </>}
