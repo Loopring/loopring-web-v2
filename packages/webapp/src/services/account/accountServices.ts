@@ -133,6 +133,7 @@ export const accountServices = {
     },
 
     sendCheckAcc: async () => {
+        myLog('-------sendCheckAcc enter!')
         if (store) {
             const account = store.getState().account
             if (LoopringAPI.exchangeAPI) {
@@ -163,7 +164,7 @@ export const accountServices = {
     },
     sendCheckAccount: async (ethAddress: string) => {
         const self = this;
-        myLog('After connect >>,checkAccount: step3 processAccountCheck', ethAddress)
+        myLog('After connect >>,sendCheckAccount: step3 processAccountCheck', ethAddress)
         store.dispatch(updateAccountStatus({accAddress: ethAddress, readyState: AccountStatus.UN_CONNECT}))
         subject.next({
             status: Commands.ProcessAccountCheck,
