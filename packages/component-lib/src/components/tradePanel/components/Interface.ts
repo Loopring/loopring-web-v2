@@ -91,6 +91,7 @@ export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> & DepositExt
 
 
 export type WithdrawInfoProps<C> = {
+    withdrawI18nKey?: string,
     withdrawBtnStatus?: keyof typeof TradeBtnStatus | undefined,
     withdrawType?: keyof typeof WithdrawType,
     withdrawTypes: typeof WithdrawTypes,

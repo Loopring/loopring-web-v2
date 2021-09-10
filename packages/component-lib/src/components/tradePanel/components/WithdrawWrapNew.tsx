@@ -26,6 +26,7 @@ const DropdownIconStyled = styled(DropDownIcon)<IconProps>`
 export const WithdrawWrapNew = <T extends IBData<I>,
     I>({
            t, disabled, walletMap, tradeData, coinMap,
+           withdrawI18nKey,
            addressDefault,
            withdrawTypes = WithdrawTypes,
            withdrawType,
@@ -251,7 +252,7 @@ export const WithdrawWrapNew = <T extends IBData<I>,
             }}
                     loading={!getDisabled() && withdrawBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                     disabled={getDisabled() || withdrawBtnStatus === TradeBtnStatus.DISABLED || withdrawBtnStatus === TradeBtnStatus.LOADING ? true : false}
-            >{t(`withdrawLabelBtn`)}
+            >{t(withdrawI18nKey ?? `withdrawLabelBtn`)}
             </Button>
         </Grid>
     </Grid>
