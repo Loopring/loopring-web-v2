@@ -7,6 +7,7 @@ import { getRenderData } from '../data'
 import { Box, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { useSettings } from '@loopring-web/component-lib/src/stores'
+import { myLog } from '@loopring-web/common-resources';
 
 const DEFAULT_YAXIS_DOMAIN = 0.05
 const UP_COLOR = '#00BBA8'
@@ -30,7 +31,6 @@ const TrendChart = ({
                         data,
                         yAxisDomainPercent = DEFAULT_YAXIS_DOMAIN,
                         handleMove,
-                        // riseColor = 'green',
                         showTooltip = true,
                         showArea = true,
                         extraInfo,
