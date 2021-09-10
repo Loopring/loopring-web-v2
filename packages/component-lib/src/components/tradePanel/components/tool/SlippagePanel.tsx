@@ -3,7 +3,7 @@ import React from 'react';
 import CurrencyInput from 'react-currency-input-field';
 import { globalSetup } from '@loopring-web/common-resources';
 import styled from '@emotion/styled';
-import { Box } from '@mui/material';
+import { Box, Input, InputAdornment, TextField } from '@mui/material';
 import { WithTranslation } from 'react-i18next';
 import { useFocusRef } from '../../../basic-lib/form/hooks';
 import { useSettings } from '../../../../stores';
@@ -87,10 +87,13 @@ export const SlippagePanel = ({
                 handleChange(newValue, customSlippage !== 0.1 && customSlippage !== 0.5 && customSlippage !== 1 ? customSlippage : undefined)
             }
         } else if(event.target === inputEle.current && event.type === 'change'){
+
             var _value = inputEle.current?.value??''
-            _value = _value.replace(suffix,'')
-            setValue(_value)
-            setCustomSlippage(_value)
+            if(_value <100){
+                _value = _value.replace(suffix,'')
+                setValue(_value)
+                setCustomSlippage(_value)
+            }
         }else{
 
         }
@@ -106,15 +109,33 @@ export const SlippagePanel = ({
         if (RegExp('slippage:').test(value.toString())) {
             item = {
                 value: customSlippage,
-                JSX: <>{rest.t('labelCustomer')} : <InputStyled ref={inputEle} placeholder={'N%'} allowDecimals={true}
-                                                                decimalsLimit={2}
-                                                                // onValueChange={(value, name) => _handleChange(InputEvent,value)}
-                                                                onChange={_handleChange as any}
-                                                                onMouseOut={handleOnBlur}
-                                                                onBlur={handleOnBlur}
-                                                                defaultValue={customSlippage === 'N'? '':customSlippage}
-                                                                // value={customSlippage === 'N'? '':customSlippage}
-                                                                maxLength={3} suffix={suffix}/></>,
+                JSX: <TextField ref={inputEle}
+                                placeholder={rest.t('labelCustomer')}
+                                onChange={_handleChange as any}
+                                onMouseOut={handleOnBlur}
+                                onBlur={handleOnBlur}
+                                variant={'outlined'}
+                                InputProps={{
+                                    inputComponent: ()=><InputStyled
+                                        allowDecimals={true}
+                                        decimalsLimit={2}
+                                        step={0.01}
+                                        maxLength={4}
+                                        defaultValue={customSlippage === 'N'? '':customSlippage}
+                                    />,
+                                    endAdornment:<InputAdornment position={'end'}>%</InputAdornment>}
+                                }
+                />,
+
+                    {/*<InputStyled ref={inputEle} placeholder={'N%'} allowDecimals={true}*/}
+                    {/*                                            decimalsLimit={2}*/}
+                    {/*                                            // onValueChange={(value, name) => _handleChange(InputEvent,value)}*/}
+                    {/*                                            onChange={_handleChange as any}*/}
+                    {/*                                            onMouseOut={handleOnBlur}*/}
+                    {/*                                            onBlur={handleOnBlur}*/}
+                    {/*                                            defaultValue={customSlippage === 'N'? '':customSlippage}*/}
+                    {/*                                            // value={customSlippage === 'N'? '':customSlippage}*/}
+                    {/*                                            maxLength={3} suffix={suffix}/>*/}
                 tlabel:'custom Slippage',
                 key: 'custom'+ '-' + index,
             }
