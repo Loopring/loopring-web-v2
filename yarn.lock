@@ -16898,10 +16898,10 @@ loglevel@^1.4.1, loglevel@^1.6.8:
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.7.1.tgz#005fde2f5e6e47068f935ff28573e125ef72f197"
   integrity sha512-Hesni4s5UkWkwCGJMQGAh71PaLUmKFM60dHvq0zi/vDhhrzuk+4GgNbTXJ12YYQJn6ZKBDNIjYcuQGKudvqrIw==
 
-loopring-sdk@0.0.124:
-  version "0.0.124"
-  resolved "https://registry.yarnpkg.com/loopring-sdk/-/loopring-sdk-0.0.124.tgz#646d17a1c257630cf0e407bb4b89603013c18102"
-  integrity sha512-BkLRJo5l0783wJEbwrySiG5dj36/PbXT6wTMcN58s3AAKSmbhgTzYmIOIfhfERIhfXZ2r8QUk81LNvuZ9a65Ug==
+loopring-sdk@0.0.125:
+  version "0.0.125"
+  resolved "https://registry.yarnpkg.com/loopring-sdk/-/loopring-sdk-0.0.125.tgz#9b589a6182b99163f9a3201df844ce5ea6573ea0"
+  integrity sha512-tIwuwUSpyvFgw2fgq6u2QOEeAyqd9tKDmckjl9K+sKR88/zpMpOuCHyKIdWo05r8Hpc+HmjL34hZHdE5Aqc8iw==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
