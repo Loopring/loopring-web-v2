@@ -255,7 +255,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                         <div className="rdg-cell-value textAlignCenter">
                             <Button variant="outlined" onClick={() => history.push({
                                 pathname: `/trading/lite/${tradePair}`
-                            })}>Trade</Button>
+                            })}>{t('labelTrade')}</Button>
                         </div>
                     )
                 }
