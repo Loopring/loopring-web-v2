@@ -16,7 +16,7 @@
     "BAL": {"x": 289, "y": 202, "w": 37, "h": 36, "offX": 0, "offY": 0, "sourceW": 37, "sourceH": 36},
     "BAND": {"x": 100, "y": 482, "w": 19, "h": 26, "offX": 9, "offY": 5, "sourceW": 37, "sourceH": 36},
     "BAT": {"x": 248, "y": 242, "w": 37, "h": 36, "offX": 0, "offY": 0, "sourceW": 37, "sourceH": 36},
-    "BCDT": {"x": 205, "y": 442, "w": 27, "h": 36, "offX": 5, "offY": 0, "sourceW": 37, "sourceH": 36},
+    "BCDT": {"x": 200, "y": 442, "w": 27, "h": 36, "offX": 5, "offY": 0, "sourceW": 37, "sourceH": 36},
     "BCP": {"x": 207, "y": 282, "w": 37, "h": 36, "offX": 0, "offY": 0, "sourceW": 37, "sourceH": 36},
     "BEL": {"x": 166, "y": 322, "w": 37, "h": 36, "offX": 0, "offY": 0, "sourceW": 37, "sourceH": 36},
     "BKT": {"x": 125, "y": 362, "w": 37, "h": 36, "offX": 0, "offY": 0, "sourceW": 37, "sourceH": 36},
