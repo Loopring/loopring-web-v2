@@ -357,7 +357,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                 const value = row['orderType'] as any
                 let renderValue = ''
                 switch(value) {
-                    case 'CLASS_AMM':
+                    case 'AMM':
                         renderValue = t('labelOrderAmm')
                         break;
                     case 'LIMIT_ORDER':
@@ -482,7 +482,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                 const value = row['orderType'] as any
                 let renderValue = ''
                 switch(value) {
-                    case 'CLASS_AMM':
+                    case 'AMM':
                         renderValue = t('labelOrderAmm')
                         break;
                     case 'LIMIT_ORDER':
