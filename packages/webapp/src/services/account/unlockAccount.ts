@@ -28,7 +28,6 @@ export async function unlockAccount() {
             const {apiKey} = (await LoopringAPI.userAPI.getUserApiKey({
                 accountId: account.accountId
             }, eddsaKey.sk))
-            myLog('After connect >>,unlockAccount: step2 apiKey', apiKey)
 
             accountServices.sendAccountSigned(account.accountId, apiKey, eddsaKey)
         } catch (e) {

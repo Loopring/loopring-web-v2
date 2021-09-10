@@ -464,7 +464,6 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
     React.useEffect(() => {
         if (market) {
             //@ts-ignore
-            myLog('refreshRef', market, refreshRef.current, refreshRef.current.firstElementChild);
             if (refreshRef.current) {
                 // @ts-ignore
                 refreshRef.current.firstElementChild.click();
