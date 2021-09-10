@@ -11,7 +11,9 @@ export const UpdateAccount = ({
 }: WithTranslation & AccountBaseProps & { goUpdateAccount?: () => void }) => {
     return <Box flex={1} display={'flex'} flexDirection={'column'} justifyContent={'space-between'}
         alignItems={'center'}>
-        <AccountBasePanel {...props} t={t} />
+        <Box display={'flex'} flex={1} marginBottom={5} justifyContent={'center'} alignItems={'center'}>
+            <AccountBasePanel {...props} t={t} />
+        </Box>
         <Box display={'flex'} marginTop={2} alignSelf={'stretch'} paddingX={5} flexDirection={'column'} alignItems={'center'}>
             <Typography variant={'body2'} >
                 {t('labelActivatedAccountDeposit')}
