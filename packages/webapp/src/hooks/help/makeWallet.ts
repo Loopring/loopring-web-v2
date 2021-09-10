@@ -1,5 +1,5 @@
 import store from '../../stores';
-import { CoinKey, WalletCoin } from '@loopring-web/common-resources';
+import { CoinKey, myLog, WalletCoin } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
 
 export type WalletMapExtend<C> = {
@@ -16,7 +16,8 @@ export const makeWalletLayer2 = <C extends { [ key: string ]: any }>(): { wallet
     if (walletLayer2) {
         walletMap = Reflect.ownKeys(walletLayer2).reduce((prev, item) => {
             const {total, locked, pending: {withdraw}} = walletLayer2[ item as string ];
-            const countBig = sdk.toBig(total).minus(sdk.toBig(locked)).minus(sdk.toBig(withdraw)).toString()
+            const countBig = sdk.toBig(total).minus(sdk.toBig(locked)).toString()
+            
             return {
                 ...prev, [ item ]: {
                     belong: item,
@@ -26,6 +27,8 @@ export const makeWalletLayer2 = <C extends { [ key: string ]: any }>(): { wallet
             }
         }, {} as WalletMapExtend<C>)
     }
+
+    myLog(walletMap)
 
     return {walletMap}
 }
