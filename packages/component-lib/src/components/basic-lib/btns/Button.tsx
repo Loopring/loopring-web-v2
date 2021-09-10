@@ -9,7 +9,7 @@ import { ButtonProps, TGItemJSXInterface, ToggleButtonGroupProps } from './Inter
 import { WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
-import { CloseIcon, DropDownIcon, QRIcon } from '@loopring-web/common-resources';
+import { BackIcon, CloseIcon, QRIcon } from '@loopring-web/common-resources';
 import { Link } from '@mui/material';
 import React from 'react';
 
@@ -165,23 +165,46 @@ export const ModalBackButton = ({onBack, t}: {
     onBack?: () => void
 } & WithTranslation) => {
     return <Box alignSelf={'flex-start'} marginTop={-3} marginLeft={1.5}>
-        <IconButton color={'inherit'} aria-label={t('labelBack')} size={'small'} onClick={() => {
+        <IconButton size={'medium'} color={'inherit'} aria-label={t('labelBack')} onClick={() => {
             onBack && onBack()
         }}>
-            <DropDownIcon style={{transform: 'rotate(90deg) scale(1.5)'}}/>
+            <BackIcon/>
         </IconButton>
     </Box>
 }
+const QRStyle = styled(Box)`
+  .MuiButtonBase-root{
+    position:relative;
+    //z-index: 10;
+  }
+    &:after{
+      content: '';
+      position: absolute;
+      display: block;
+      height: 48px;
+      width: 48px;
+      top:-2px;
+      left:-2px;
+      //z-index: -1;
+      background-image:${({theme})=> {
+        if(theme.mode === 'dark') {
+          return  `url('./static/images/qr_code_dark.png')`;
+        }else{
+          return `url('./static/images/qr_code_light.png')`;
+        }
+      }};
+    }
+` as typeof Box
 export const QRButtonStyle = ({onQRClick, t}: {
     onQRClick?: () => void
 } & WithTranslation) => {
-    return <Box alignSelf={'flex-start'} marginTop={-1 / 2 * 7} marginLeft={1.5} position={'absolute'}>
-        <IconButton color={'inherit'} aria-label={t('labelBack')} size={'medium'} onClick={() => {
+    return <QRStyle alignSelf={'flex-start'} marginTop={-1 / 2 * 7} marginLeft={1.5} position={'absolute'}>
+        <IconButton  aria-label={t('labelBack')} size={'medium'} onClick={() => {
             onQRClick && onQRClick()
         }}>
-            <QRIcon/>
+            <QRIcon htmlColor={'var(--color-text-third)'}/>
         </IconButton>
-    </Box>
+    </QRStyle>
 }
 export const LinkActionStyle = styled(Link)`
   text-decoration: underline dotted;
