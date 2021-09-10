@@ -36,6 +36,7 @@ export interface BtnPercentageDraggableProps extends BtnPercentageProps{
 export interface TGItemJSXInterface {
     value: any,
     key?: string,
+    notWrap?: boolean
     JSX: React.ReactElement,
     tlabel?: string,  // after 18n
     disabled?: boolean
