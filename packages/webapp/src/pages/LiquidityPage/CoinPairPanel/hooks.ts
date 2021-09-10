@@ -228,6 +228,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
                     address: addr,
                     limit: limit,
                     offset,
+                    txStatus: 'processed'
                 })?.then((res) => {
                     let _myTradeArray = makeMyAmmMarketArray(market, res.userAmmPoolTxs)
     

@@ -308,7 +308,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                 const withdrawToken = tokenMap[inputValue.belong as string]
                 const feeToken = tokenMap[withdrawFeeInfo.belong]
 
-                const fee = sdk.toBig(withdrawFeeInfo.__raw__ ?? 0)
+                const fee = sdk.toBig(withdrawFeeInfo?.__raw__?.feeRaw ?? 0)
                 const balance = sdk.toBig(inputValue.balance ?? 0).times('1e' + withdrawToken.decimals)
                 const tradeValue = sdk.toBig(inputValue.tradeValue ?? 0).times('1e' + withdrawToken.decimals)
                 const isExceedBalance = feeToken.tokenId === withdrawToken.tokenId && tradeValue.plus(fee).gt(balance)
@@ -332,7 +332,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     },
                     maxFee: {
                         tokenId: feeToken.tokenId,
-                        volume: withdrawFeeInfo.__raw__,
+                        volume: fee.toString(),
                     },
                     fastWithdrawalMode: withdrawType2 === WithdrawType.Fast,
                     extraData: '',

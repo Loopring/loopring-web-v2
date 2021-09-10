@@ -12,7 +12,7 @@ import React, { useState } from 'react';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { LoopringAPI } from 'api_wrapper';
 import * as _ from 'lodash'
-import { FeeInfo, getValuePrecisionThousand, globalSetup } from '@loopring-web/common-resources'
+import { FeeInfo, globalSetup } from '@loopring-web/common-resources'
 
 export function useChargeFees(tokenSymbol: string | undefined, requestType: OffchainFeeReqType,
                               tokenMap: LoopringMap<TokenInfo> | undefined, amount?: number) {
@@ -54,8 +54,9 @@ export function useChargeFees(tokenSymbol: string | undefined, requestType: Offc
                         response.raw_data.fees.forEach((item: any) => {
                             const feeRaw = item.fee
                             const tokenInfo = tokenMap[ item.token ]
+                            const fastWithDraw = tokenInfo.fastWithdrawLimit
                             const fee = sdk.toBig(item.fee).div('1e' + tokenInfo.decimals).toString()
-                            chargeFeeList.push({belong: item.token, fee, __raw__: feeRaw})
+                            chargeFeeList.push({belong: item.token, fee, __raw__: { feeRaw, fastWithDraw }})
                         })
                     }
 
