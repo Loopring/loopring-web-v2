@@ -165,6 +165,8 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
 
     const miniA = ammData?.coinA?.tradeValue ? getValuePrecisionThousand(ammData?.coinA?.tradeValue) : EmptyValueTag
 
+    // myLog('ammData?.coinB?.tradeValue:', ammData?.coinB?.tradeValue, getValuePrecisionThousand(ammData?.coinB?.tradeValue))
+
     const miniB = ammData?.coinB?.tradeValue ? getValuePrecisionThousand(ammData?.coinB?.tradeValue) : EmptyValueTag
 
     return <Grid className={ammCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
@@ -244,7 +246,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                         }
                         <Typography variant={'body1'}>{ammData?.coinA?.belong}</Typography>
                     </Box>
-                    <Typography variant={'body1'}>{miniA?getValuePrecisionThousand(miniA):EmptyValueTag}</Typography>
+                    <Typography variant={'body1'}>{miniA}</Typography>
                 </Box>
                 <Box marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'}
                     justifyContent={'space-between'}>
@@ -269,7 +271,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                         }
                         <Typography variant={'body1'}>{ammData?.coinB?.belong}</Typography>
                     </Box>
-                    <Typography variant={'body1'}>{miniB?getValuePrecisionThousand(miniB):EmptyValueTag}</Typography>
+                    <Typography variant={'body1'}>{miniB}</Typography>
                 </Box>
             </Box>
         </Grid>
