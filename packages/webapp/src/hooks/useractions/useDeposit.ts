@@ -120,6 +120,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 reffer = reffer.trim()
                 if (isPosIntNum(reffer)) {
                     refferId = parseInt(reffer)
+                    myLog('got isPosIntNum')
                 } else {
                     try {
                         const { realAddr, addressErr, } = await checkAddr(reffer, connectProvides.usedWeb3)
