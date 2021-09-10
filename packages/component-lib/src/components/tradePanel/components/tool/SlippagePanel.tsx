@@ -88,8 +88,8 @@ export const SlippagePanel = ({
             }
         } else if(event.target === inputEle.current && event.type === 'change'){
 
-            var _value = inputEle.current?.value??''
-            if(_value <100){
+            var _value = inputEle.current?.value ?? ''
+            if(parseFloat(_value) < 100){
                 _value = _value.replace(suffix,'')
                 setValue(_value)
                 setCustomSlippage(_value)
@@ -126,16 +126,6 @@ export const SlippagePanel = ({
                                     endAdornment:<InputAdornment position={'end'}>%</InputAdornment>}
                                 }
                 />,
-
-                    {/*<InputStyled ref={inputEle} placeholder={'N%'} allowDecimals={true}*/}
-                    {/*                                            decimalsLimit={2}*/}
-                    {/*                                            // onValueChange={(value, name) => _handleChange(InputEvent,value)}*/}
-                    {/*                                            onChange={_handleChange as any}*/}
-                    {/*                                            onMouseOut={handleOnBlur}*/}
-                    {/*                                            onBlur={handleOnBlur}*/}
-                    {/*                                            defaultValue={customSlippage === 'N'? '':customSlippage}*/}
-                    {/*                                            // value={customSlippage === 'N'? '':customSlippage}*/}
-                    {/*                                            maxLength={3} suffix={suffix}/>*/}
                 tlabel:'custom Slippage',
                 key: 'custom'+ '-' + index,
             }
