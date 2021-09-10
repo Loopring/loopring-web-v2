@@ -156,12 +156,9 @@ export async function checkAddr(address: any, web3?: any): Promise<AddrCheckResu
     if (address) {
         try {
             const addr = utils.getAddress(address)
-            myLog('utils.getAddress:', addr)
             addressErr = AddressError.NoError
             realAddr = ''
         } catch (reason) {
-
-            dumpError400(reason)
 
             return new Promise<AddrCheckResult>((resolve) => {
                 try {

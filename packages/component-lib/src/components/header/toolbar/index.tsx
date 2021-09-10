@@ -19,8 +19,6 @@ import {
     PopoverPure } from '../../basic-lib';
 import { SettingPanel } from '../../block/SettingPanel';
 import { QRCodePanel } from '../../modal';
-// import { useSettings } from '../../../stores';
-import { myLog } from '@loopring-web/common-resources'
 
 export const BtnDownload = ({
                                 t,
