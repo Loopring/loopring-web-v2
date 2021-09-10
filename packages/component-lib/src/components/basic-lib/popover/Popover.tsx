@@ -218,7 +218,3 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
 
 
 ` as React.ElementType<PopoverProps>
-
-// export const PopoverPure = ({anchorOrigin,className,children,...rest}:PopoverProps)=>{
-//     return  <PopoverStyled {...{...rest}} className={clsx(className,` arrow-${anchorOrigin?.horizontal}`)} >{children}</PopoverStyled>
-// }

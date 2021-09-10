@@ -11,8 +11,6 @@ import { BottomRule, Header as HeaderUI, HideOnScroll, } from '@loopring-web/com
 import { withRouter } from 'react-router-dom'
 import { RouteComponentProps } from 'react-router';
 
-
-
 const Header = withTranslation('common')(withRouter(({t,location, ...rest}: any & RouteComponentProps) => {
 
     const {
@@ -35,6 +33,3 @@ const Header = withTranslation('common')(withRouter(({t,location, ...rest}: any 
 }))
 
 export default Header
-
-
-
