@@ -21,14 +21,13 @@ import { ConnectorError, dumpError400, GetWithdrawalAgentsRequest } from 'loopri
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
 import { useChargeFees } from '../common/useChargeFees';
-import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { LoopringAPI } from 'api_wrapper';
 import { useSystem } from 'stores/system';
 import { myLog } from "@loopring-web/common-resources";
 import { makeWalletLayer2 } from 'hooks/help';
 import { useWalletLayer2Socket, walletLayer2Service } from '../../services/socket';
 import { getTimestampDaysLater } from 'utils/dt_tools';
-import { AddressError, DAYS, TOAST_TIME } from 'defs/common_defs';
+import { AddressError, BIGO, DAYS, TOAST_TIME } from 'defs/common_defs';
 import { useAddressCheck, } from 'hooks/common/useAddrCheck';
 import { useWalletInfo } from 'stores/localStore/walletInfo';
 import { checkErrorInfo } from './utils';
@@ -74,6 +73,8 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const [lastRequest, setLastRequest] = React.useState<any>({})
 
+    const [withdrawI18nKey, setWithdrawI18nKey] = React.useState<string>()
+
     const {
         address,
         realAddr,
@@ -83,18 +84,45 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const { btnStatus, enableBtn, disableBtn, } = useBtnStatus()
 
-    React.useEffect(() => {
+    const checkBtnStatus = React.useCallback(() => {
 
-        const tradeValue = getFloatValue(withdrawValue?.tradeValue)
+        myLog('address:', address)
 
-        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && tradeValue
-            && addrStatus === AddressError.NoError && !isExceedMax) {
+        if (!tokenMap || !withdrawFeeInfo?.belong || !withdrawValue?.belong || !address) {
+            disableBtn()
+            return
+        }
+
+        const withdrawT = tokenMap[withdrawValue.belong as string]
+
+        const tradeValue = sdk.toBig(withdrawValue.tradeValue ?? 0).times('1e' + withdrawT.decimals)
+
+        const exceedPoolLimit = withdrawType2 === 'Fast' && tradeValue.gt(0) && tradeValue.gte(sdk.toBig(withdrawT.fastWithdrawLimit))
+        
+        if (chargeFeeList && chargeFeeList?.length > 0 && !!address && tradeValue.gt(BIGO)
+            && addrStatus === AddressError.NoError && !isExceedMax && !exceedPoolLimit) {
             enableBtn()
         } else {
             disableBtn()
         }
 
-    }, [enableBtn, disableBtn, chargeFeeList, address, addrStatus, withdrawValue?.tradeValue])
+        if (exceedPoolLimit) {
+            setWithdrawI18nKey('withdrawLabelBtnExceed')
+        } else {
+            setWithdrawI18nKey(undefined)
+        }
+
+        // myLog('exceedPoolLimit:', exceedPoolLimit, feeToken, withdrawFeeInfo)
+
+    }, [withdrawType2, enableBtn, disableBtn, tokenMap, address, addrStatus, 
+        chargeFeeList, withdrawFeeInfo, withdrawValue, isExceedMax, ])
+
+    React.useEffect(() => {
+        
+        checkBtnStatus()
+
+    }, [withdrawType2, address, addrStatus, withdrawFeeInfo?.belong, withdrawFeeInfo?.fee,
+        withdrawFeeInfo?.belong, withdrawValue?.belong, withdrawValue?.tradeValue, isExceedMax, ])
 
     const updateWithdrawTypes = React.useCallback(async () => {
 
@@ -193,11 +221,12 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
         if (isShow && accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
             if (withdrawValue.address) {
+                myLog('addr 1')
                 setAddress(withdrawValue.address)
             } else {
-                setAddress(account.accAddress)
+                myLog('addr 2')
+                // setAddress(account.accAddress)
                 updateWithdrawData({
-                    address: account.accAddress,
                     balance: -1,
                     tradeValue: -1,
                 })
@@ -207,12 +236,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     }, [setAddress, isShow, withdrawValue.address, accountStatus, account.readyState])
 
     useWalletLayer2Socket({ walletLayer2Callback })
-
-    useCustomDCEffect(() => {
-        if (chargeFeeList.length > 0) {
-            setWithdrawFeeInfo(chargeFeeList[0])
-        }
-    }, [chargeFeeList, setWithdrawFeeInfo])
 
     const processRequest = React.useCallback(async (request: sdk.OffChainWithdrawalRequestV3, isFirstTime: boolean) => {
 
@@ -357,7 +380,16 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     }, [account, tokenMap, exchangeInfo, withdrawType2, withdrawFeeInfo, withdrawValue, setShowAccount])
 
+    const handleFeeChange = React.useCallback((value: {
+        belong: string;
+        fee: number | string | undefined;
+        __raw__?: any
+    }): void => {
+        setWithdrawFeeInfo(value)
+    }, [setWithdrawFeeInfo])
+
     const withdrawProps: any = {
+        withdrawI18nKey,
         addressDefault: address,
         realAddr,
         tradeData: withdrawValue as any,
@@ -372,10 +404,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             }
             setShowWithdraw({ isShow: false })
         },
-        handleFeeChange(value: { belong: any; fee: number | string; __raw__?: any }): void {
-            // myLog('handleFeeChange', value)
-            setWithdrawFeeInfo(value as any)
-        },
+        handleFeeChange,
         handleWithdrawTypeChange: (value: 'Fast' | 'Standard') => {
             // myLog('handleWithdrawTypeChange', value)
             const offchainType = value === WithdrawType.Fast ? sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL : sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL
@@ -403,14 +432,10 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     }
                 }
 
-                else {
-                    myLog('handlePanelEvent: ', data)
-                }
-
-                res();
+                res()
             })
         },
-        chargeFeeToken: 'ETH',
+        chargeFeeToken: withdrawFeeInfo?.belong,
         chargeFeeTokenList: chargeFeeList,
         handleOnAddressChange: (value: any) => {
         },
