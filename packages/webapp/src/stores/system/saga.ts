@@ -92,8 +92,6 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
             const socketURL = ChainId.MAINNET === chainId ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws` : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
             const etherscanBaseUrl = ChainId.MAINNET === chainId ? `https://etherscan.io/` : `https://goerli.etherscan.io/`
 
-            myLog('etherscanBaseUrl in saga:', etherscanBaseUrl)
-
             window.loopringSocket = new LoopringSocket(socketURL);
 
             let {__timer__} = store.getState().system;
