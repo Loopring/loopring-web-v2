@@ -18,7 +18,7 @@ export type System<C extends { [ key: string ]: any }> = {
     env: keyof typeof ENV,
     chainId: 1 | 5 | 'unknown'
     // network: keyof typeof NETWORK,
-    etherscanUrl: string,
+    etherscanBaseUrl: string,
     socketURL: string,
     baseURL: string,
     faitPrices: { [k in keyof C]: { price: any, [ key: string ]: any } } | undefined,

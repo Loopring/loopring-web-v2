@@ -3,6 +3,8 @@ import styled from '@emotion/styled'
 import { Box, Grid, Typography } from '@mui/material';
 import moment from 'moment'
 import { EmptyValueTag } from '@loopring-web/common-resources';
+import { TxType } from 'loopring-sdk';
+import { Link } from 'react-router-dom';
 
 export enum TxnDetailStatus {
     processed = 'PROCESSED',
@@ -12,7 +14,9 @@ export enum TxnDetailStatus {
 }
 
 export type TxnDetailProps = {
+    txType?: TxType,
     hash: string;
+    txHash: string;
     status: keyof typeof TxnDetailStatus;
     time: string;
     from: string;
@@ -20,6 +24,7 @@ export type TxnDetailProps = {
     amount: string;
     fee: string;
     memo?: string;
+    etherscanBaseUrl?: string;
 }
 
 const ContentWrapperStyled = styled(Box)`
@@ -28,7 +33,7 @@ const ContentWrapperStyled = styled(Box)`
     transform: translate(-50%, -50%);
     width: 70%;
     min-width: ${({theme}) => theme.unit * 87.5}px;
-    height: 60%;
+    height: 70%;
     background-color: var(--color-box);
     box-shadow: 0px ${({theme}) => theme.unit / 2}px ${({theme}) => theme.unit / 2}px rgba(0, 0, 0, 0.25);
     border-radius: ${({theme}) => theme.unit}px;
@@ -74,10 +79,21 @@ const InfoValueStyled = styled(Box)`
     color: ${(props: any) => props.hash ? 'var(--color-secondary)' : 'var(--color-text-primary)'}
 ` as any
 
+const StatusStyled = styled(Typography)`
+color: ${({theme}) => (status === 'processed')
+    ? theme.colorBase.success 
+    : status === 'processing' 
+        ? theme.colorBase.warning
+        : status === 'failed' 
+            ? theme.colorBase.error
+            : theme.colorBase.secondaryHover }
+`
+
 export const TxnDetailPanel = withTranslation('common', { withRef: true })((
     {
         t,
         hash,
+        txHash,
         status,
         time,
         from,
@@ -85,17 +101,10 @@ export const TxnDetailPanel = withTranslation('common', { withRef: true })((
         amount,
         fee,
         memo,
-        ...rest
+        etherscanBaseUrl,
     }: TxnDetailProps & WithTranslation) => {
-        const StatusStyled = styled(Typography)`
-            color: ${({theme}) => status === 'processed' 
-                ? theme.colorBase.success 
-                : status === 'processing' 
-                    ? theme.colorBase.warning
-                    : status === 'failed' 
-                        ? theme.colorBase.error
-                        : theme.colorBase.secondaryHover }
-        `
+        // || txType === TxType.DEPOSIT && status === 'processing'
+
         return <ContentWrapperStyled>
             <HeaderStyled>
                 <Typography variant={'h4'} marginLeft={4}>
@@ -107,6 +116,10 @@ export const TxnDetailPanel = withTranslation('common', { withRef: true })((
                     <TypographyStyled>{t('labelTxnDetailHash')}</TypographyStyled>
                     <InfoValueStyled>{hash}</InfoValueStyled>
                 </GridItemStyled>
+                {txHash && <GridItemStyled item>
+                    <TypographyStyled>{t('labelTxnDetailHashLv1')}</TypographyStyled>
+                    <InfoValueStyled><a target={'_blank'} href={`${etherscanBaseUrl}tx/${txHash}`}>{txHash}</a></InfoValueStyled>
+                </GridItemStyled>}
                 <GridItemStyled item>
                     <TypographyStyled>{t('labelTxnDetailStatus')}</TypographyStyled>
                     <StatusStyled>{status.toUpperCase()}</StatusStyled>

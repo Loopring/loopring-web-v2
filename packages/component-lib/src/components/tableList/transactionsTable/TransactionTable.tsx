@@ -142,6 +142,7 @@ const TableStyled = styled(Box)`
 ` as typeof Box
 
 export interface TransactionTableProps {
+    etherscanBaseUrl?: string;
     rawData: RawDataTransactionItem[];
     pagination?: {
         pageSize: number;
@@ -153,7 +154,7 @@ export interface TransactionTableProps {
 }
 
 export const TransactionTable = withTranslation(['tables', 'common'])((props: TransactionTableProps & WithTranslation) => {
-    const { rawData, pagination, showFilter, getTxnList, showloading, ...rest } = props
+    const { rawData, pagination, showFilter, getTxnList, showloading, etherscanBaseUrl, ...rest } = props
     const [page, setPage] = React.useState(1)
     const [totalData, setTotalData] = React.useState<RawDataTransactionItem[]>(rawData)
     const [filterType, setFilterType] = React.useState(TransactionTradeTypes.allTypes)
@@ -162,6 +163,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
     const [modalState, setModalState] = React.useState(false)
     const [txnDetailInfo, setTxnDetailInfo] = React.useState<TxnDetailProps>({
         hash: '',
+        txHash: '',
         status: 'processed',
         time: '',
         from: '',
@@ -245,7 +247,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
     const handleTxnDetail = React.useCallback((prop: TxnDetailProps) => {
         setModalState(true)
         setTxnDetailInfo(prop)
-    }, [])
+    }, [setModalState, setTxnDetailInfo])
 
     const getColumnModeTransaction = React.useCallback((t: TFunction): Column<any, unknown>[] => [
         {
@@ -303,6 +305,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
 
                 const {
                     hash,
+                    txHash,
                     txType,
                     status,
                     time,
@@ -313,12 +316,16 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
                     fee,
                     memo,
                 } = row
+
+                // const hashShow = (txType === TxType.DEPOSIT) ? txHash : hash
                 
                 const receiver = txType === TxType.TRANSFER ? receiverAddress 
                 : txType === TxType.OFFCHAIN_WITHDRAWAL ? recipient : ''
 
                 const formattedDetail = {
+                    txType,
                     hash,
+                    txHash,
                     status,
                     time,
                     from: senderAddress,
@@ -326,6 +333,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
                     fee: `${fee.value} ${fee.unit}`,
                     amount: `${amount.value} ${amount.unit}`,
                     memo,
+                    etherscanBaseUrl,
                 }
                 return (
                     <div className="rdg-cell-value">
@@ -362,7 +370,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
                 )
             },
         },
-    ], [handleTxnDetail])
+    ], [handleTxnDetail, etherscanBaseUrl])
 
     const defaultArgs: any = {
         // rawData: [],
