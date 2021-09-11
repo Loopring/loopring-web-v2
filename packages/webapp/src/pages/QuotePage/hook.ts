@@ -26,6 +26,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     const {marketArray, coinMap} = store.getState().tokenMap;
     const {forex} = store.getState().system
     const {tokenPrices} = store.getState().tokenPrices
+
     // const recommendMarkets: string[] = marketArray && recommendedPairs.length === 4 ? recommendedPairs : []
     // const recommendMarkets: string[] = ['LRC-USDC', 'LRC-ETH', 'ETH-USDC', 'USDC-USDT']
     // const _marketArrayWithOutRecommend = marketArray ? marketArray.filter(item => recommendMarkets.findIndex(m => m === item) === -1) : [];
@@ -42,14 +43,14 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     const updateRecommendation = React.useCallback((recommendationIndex, ticker) => {
         if (recommendations.length) {
             //  let _recommendations = deepClone(recommendations)
+            console.log('updateRecommendation ticker:', ticker)
             recommendations[ recommendationIndex ].tradeFloat = ticker
             setRecommendations(recommendations)
         }
-    }, [recommendations]);
+    }, [recommendations, setRecommendations]);
 
     React.useEffect(() => {
         const subscription = subject.subscribe(({tickerMap}) => {
-            myLog('tickerMap:', tickerMap)
             if (tickerMap) {
                 Reflect.ownKeys(tickerMap).forEach((key) => {
                     let recommendationIndex = recommendedPairs.findIndex(ele => ele === key)
@@ -62,7 +63,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
             }
         });
         return () => subscription.unsubscribe();
-    }, [subject, recommendedPairs]);
+    }, [subject, recommendedPairs, updateRecommendation]);
 
     const getRecommendPairs = useCallback(async () => {
         if (LoopringAPI.exchangeAPI) {
@@ -79,7 +80,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
             // setRecommendedPairs(recommended)
             // return recommended
         }
-    }, [])
+    }, [setRecommendedPairs])
 
     React.useEffect(() => {
         getRecommendPairs()
@@ -201,6 +202,8 @@ export function useQuote<C extends { [ key: string ]: string }>() {
             }
             return prev
         }, [] as MarketBlockProps<C>[])
+
+        console.log('_recommendations:', _recommendations)
 
         setRecommendations(_recommendations)
         // }
