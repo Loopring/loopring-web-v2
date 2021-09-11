@@ -20,7 +20,7 @@ export const ModalGroup = withTranslation('common', {
         onWalletConnectPanelClose?: (event: MouseEvent) => void
         onAccountInfoPanelClose?: (event: MouseEvent) => void
     }) => {
-    const {etherscanUrl} = useSystem();
+    const {etherscanBaseUrl} = useSystem();
     useAccountModal();
     const {modals: {isShowAccount, isShowConnect}, 
         setShowAccount, setShowDeposit, setShowTransfer, setShowWithdraw, } = useOpenModals();
@@ -45,7 +45,7 @@ export const ModalGroup = withTranslation('common', {
         <ModalAccountInfo
             {...{
                 ...rest,
-                etherscanUrl,
+                etherscanBaseUrl,
                 open: isShowAccount.isShow,
                 onClose: onAccountInfoPanelClose
             }}

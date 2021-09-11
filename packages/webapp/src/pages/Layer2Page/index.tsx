@@ -6,11 +6,8 @@ import { useTranslation, withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import { AccountStatus, fnType, i18n, LoadingIcon, SagaStatus, subMenuLayer2 } from '@loopring-web/common-resources'
 
-import TxPanel from './TxPanel'
 import AssetPanel from './AssetPanel'
-import TradePanel from './TradePanel'
-import AmmPanel from './AmmPanel'
-import History from './HistoryPanel'
+import HistoryPanel from './HistoryPanel'
 import OrderPanel from './OrderPanel'
 import MyLiqudityPanel from './MyLiquidityPanel'
 import React from 'react';
@@ -155,10 +152,10 @@ export const Layer2Page = () => {
 
                         {selected === 'assets' && <AssetPanel/>}
                         {selected === 'my-liquidity' && <MyLiqudityPanel/>}
-                        {selected === 'history' && <History/>}
-                        {selected === 'transactions' && <TxPanel/>}
+                        {selected === 'history' && <HistoryPanel/>}
+                        {/* {selected === 'transactions' && <TxPanel/>}
                         {selected === 'trades' && <TradePanel/>}
-                        {selected === 'ammRecords' && <AmmPanel/>}
+                        {selected === 'ammRecords' && <AmmPanel/>} */}
                         {selected === 'order' && <OrderPanel/>}
                         {/*{selected === 'setting' && <SettingPanel/>}*/}
                     </Box>

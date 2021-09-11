@@ -4,8 +4,9 @@ import { Box, Tab, Tabs } from '@mui/material'
 import { AmmTable, TradeTable, TransactionTable } from '@loopring-web/component-lib'
 import { StylePaper } from '../../styled'
 import { useGetAmmRecord, useGetTrades, useGetTxs } from './hooks';
+import { useSystem } from 'stores/system'
 
-const TxPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
+const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
     const [pageSize, setPageSize] = React.useState(0);
     const [currentTab, setCurrentTab] = React.useState('transactions')
 
@@ -32,6 +33,8 @@ const TxPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
         }
     }, [getUserTxnList, pageSize])
 
+    const { etherscanBaseUrl, } = useSystem()
+
     return (
         <StylePaper ref={container}>
             <Box marginTop={2} marginLeft={2}>
@@ -45,6 +48,7 @@ const TxPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
             <div className="tableWrapper">
                 {currentTab === 'transactions' ? (
                     <TransactionTable {...{
+                        etherscanBaseUrl,
                         rawData: txTableData,
                         pagination: {
                             pageSize: pageSize,
@@ -82,4 +86,4 @@ const TxPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
     )
 })
 
-export default TxPanel
+export default HistoryPanel

@@ -9,6 +9,8 @@ import { myLog } from '@loopring-web/common-resources'
 
 export function useGetTxs() {
 
+    myLog('..........----------------useGetTxs')
+
     const {account: {accountId, apiKey}} = useAccount()
 
     const [txs, setTxs] = useState<RawDataTransactionItem[]>([])
@@ -59,7 +61,7 @@ export function useGetTxs() {
             }))
 
             myLog('userTransferMapped:', userTransferMapped)
-            debugger
+            
             const userDepositMapped = userTxnList[ 1 ].userDepositHistory?.map(o => ({
                 side: TransactionTradeTypes.deposit,
                 symbol: o.symbol,
@@ -81,6 +83,9 @@ export function useGetTxs() {
                 status: getTxnStatus(o.status),
                 // tradeType: TransactionTradeTypes.deposit
             }))
+
+            myLog('userDepositMapped:', userDepositMapped)
+
             const userWithdrawMapped = userTxnList[ 2 ].userOnchainWithdrawalHistory?.map((o => ({
                 side: TransactionTradeTypes.withdraw,
                 // token: o.symbol,
