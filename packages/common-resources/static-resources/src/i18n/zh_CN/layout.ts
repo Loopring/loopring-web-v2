@@ -11,7 +11,7 @@ export default {
     labelAdvancedDescription: '提供更丰富的交易模式',
     labelDownloadApp: '下载手机客户端',
     labelDownloadAppTitle: '下载钱包',
-    labelDownloadBtn: '转去 APP 商店',
+    labelDownloadBtn: '转去路印官网',
     labelNotification: '消息提醒',
     themeSetting: '主题模版',
     languageSetting: '语言设置',

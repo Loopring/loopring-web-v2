@@ -3,7 +3,6 @@ import React from 'react'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { AddressError } from 'defs/common_defs'
 import { checkAddr } from 'utils/web3_tools'
-import { myLog } from '@loopring-web/common-resources'
 
 export const useAddressCheck = () => {
 
@@ -16,8 +15,6 @@ export const useAddressCheck = () => {
     const check = React.useCallback(async(address: any, web3: any) => {
 
         const { realAddr, addressErr, } = await checkAddr(address, web3)
-
-        myLog('check addr:', realAddr, addressErr, )
 
         setRealAddr(realAddr)
 

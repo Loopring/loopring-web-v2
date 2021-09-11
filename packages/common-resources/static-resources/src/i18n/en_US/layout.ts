@@ -11,7 +11,7 @@ export default {
     labelAdvancedDescription: 'Full access to all trading tools',
     labelDownloadApp: 'Download Loopring Wallet Mobile Application',
     labelDownloadAppTitle: 'Download Loopring Wallet',
-    labelDownloadBtn: 'Go to app store',
+    labelDownloadBtn: 'Go to Loopring Website',
     labelNotification: 'Notification Information',
     themeSetting: 'Theme setting',
     languageSetting: 'Language setting',

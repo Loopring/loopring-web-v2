@@ -19,7 +19,6 @@ import {
     PopoverPure } from '../../basic-lib';
 import { SettingPanel } from '../../block/SettingPanel';
 import { QRCodePanel } from '../../modal';
-// import { useSettings } from '../../../stores';
 
 export const BtnDownload = ({
                                 t,
@@ -29,8 +28,8 @@ export const BtnDownload = ({
                                 ...rest
                             }: & { i18nTitle: string, i18nDescription: string, url: string } & WithTranslation) => {
     const popupState = usePopupState({variant: 'popover', popupId: 'download-QRcode'});
-    const Description = () => <Link
-        href='https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126'>{t(i18nDescription)}</Link>
+    const Description = () => <Link target={'_blank'} href='https://loopring.pro'>{t(i18nDescription)}</Link>
+
     return <Box>
         <IconButton aria-label={t('labeldownloadApp')} {...bindHover(popupState)}><DownloadIcon/></IconButton>
         <PopoverPure

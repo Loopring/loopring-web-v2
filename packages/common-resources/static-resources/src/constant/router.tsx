@@ -29,7 +29,7 @@ export const ToolBarAvailableItem = [
 export let headerToolBarData: Array<{ buttonComponent: number, handleClick?: (props: any) => void, [ key: string ]: any }> = [
     {
         buttonComponent: ButtonComponentsMap.Download,
-        url: 'https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126',
+        url: 'https://loopring.pro',
         i18nTitle: 'labelDownloadAppTitle',
         i18nDescription: 'labelDownloadBtn',
     },
