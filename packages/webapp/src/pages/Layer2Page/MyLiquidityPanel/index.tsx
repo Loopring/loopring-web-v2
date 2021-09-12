@@ -137,7 +137,7 @@ const MyLiquidity: any = withTranslation('common')(
                 {/*    <ScaleAreaChart type={ChartType.Trend} data={[]}/>*/}
                 {/*</StyleWrapper>*/}
 
-                <TableWrapStyled marginY={2} paddingY={2} paddingX={3} flex={1}>
+                <TableWrapStyled className={'table-divide-short'} marginY={2} paddingY={2} paddingX={3} flex={1}>
                     <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1}>
                         <Typography variant={'h5'} marginBottom={3}>{t('labelMyAmm')}</Typography>
                         <MyPoolTable

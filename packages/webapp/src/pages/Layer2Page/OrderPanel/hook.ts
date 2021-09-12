@@ -59,7 +59,9 @@ export const useOrderList = () => {
                     const quoteVolume = volumeToCountAsBigNumber(quoteToken, actualQuoteFilled)
                     const quotefilledValue = volumeToCount(quoteToken, actualQuoteFilled)
 
-                    const average = baseVolume?.div(quoteVolume || new BigNumber(1)).toNumber() || 0
+                    const average = isBuy
+                        ? baseVolume?.div(quoteVolume || new BigNumber(1)).toNumber() || 0
+                        : quoteVolume?.div(baseVolume || new BigNumber(1)).toNumber() || 0
                     const completion = (quotefilledValue || 0)  / (quoteValue || 1)
 
                     return ({

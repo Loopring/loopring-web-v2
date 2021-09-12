@@ -97,7 +97,7 @@ const TableStyled = styled(Box)`
     flex: 1;
 
     .rdg {
-        --template-columns: ${({isopen}: any) => isopen === 'open' ? '100px 100px 260px auto 120px auto 150px' : '100px 100px 260px 80px 120px auto 160px'} !important;
+        --template-columns: ${({isopen}: any) => isopen === 'open' ? '100px 100px 260px auto 120px auto 120px' : '100px 100px 220px 120px 120px auto 160px'} !important;
 
         .rdg-cell:last-of-type {
             display: flex;
@@ -193,7 +193,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             market: currFilterToken === 'All Pairs' ? '' : currFilterToken,
             start: Number.isNaN(start) ? -1 : start,
             end: Number.isNaN(end) ? -1 : end,
-            status: isOpen ? 'processing' : '',
+            status: isOpen ? 'processing' : 'processed, failed, cancelled, cancelling, expired',
         })
     }, [filterDate, filterType, filterToken, getOrderList, page, pageSize, isOpenOrder])
 
