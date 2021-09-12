@@ -72,7 +72,7 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
                     </Tabs>
                 </Box>
                 {/*<div className="title">{rest.t('Orders History')}</div>*/}
-                <div className="tableWrapper">
+                <div className="tableWrapper table-divide-short">
                     <OrderHistoryTable {...{
                         pagination: isOpenOrder ? undefined : {
                             pageSize: pageSize,

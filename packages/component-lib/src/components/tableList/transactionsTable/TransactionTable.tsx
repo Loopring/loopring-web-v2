@@ -143,7 +143,7 @@ export interface TransactionTableProps {
 export const TransactionTable = withTranslation(['tables', 'common'])((props: TransactionTableProps & WithTranslation) => {
     const { rawData, pagination, showFilter, getTxnList, showloading, etherscanBaseUrl, ...rest } = props
     const [page, setPage] = React.useState(1)
-    const [totalData, setTotalData] = React.useState<RawDataTransactionItem[]>(rawData)
+    // const [totalData, setTotalData] = React.useState<RawDataTransactionItem[]>(rawData)
     const [filterType, setFilterType] = React.useState(TransactionTradeTypes.allTypes)
     const [filterDate, setFilterDate] = React.useState<DateRange<Date | string>>(['', ''])
     const [filterToken, setFilterToken] = React.useState<string>('All Tokens')
@@ -162,9 +162,9 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
 
     const pageSize = pagination ? pagination.pageSize : 10;
 
-    useDeepCompareEffect(() => {
-        setTotalData(rawData);
-    }, [rawData])
+    // useDeepCompareEffect(() => {
+    //     setTotalData(rawData);
+    // }, [rawData])
 
     const updateData = React.useCallback(({
                                               TableType,

@@ -50,6 +50,20 @@ const hr = ({theme}: any) => css`
   bottom: 0;
 `;
 
+const hrShort = ({theme}: any) => css`
+  border-radius: ${theme.unit / 2}px;
+  content: '';
+  display: block;
+  height: 1px;
+  width: calc(100% - ${theme.unit * 6}px);
+  //margin-bottom: -2px;
+  background: var(--color-divide);
+  position: absolute;
+  left: ${theme.unit * 3}px;
+  right: 0;
+  bottom: 0;
+`;
+
 export const DataGridStyled = styled(DataGrid)`
   width: 100%;
   height: 100%;
@@ -57,6 +71,11 @@ export const DataGridStyled = styled(DataGrid)`
   .table-divide &.rdg .rdg-header-row {
     &:after{
       ${hr}
+    }
+  }
+  .table-divide-short &.rdg .rdg-header-row {
+    &:after{
+      ${hrShort}
     }
   }
   &.rdg {

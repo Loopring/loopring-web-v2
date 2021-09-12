@@ -178,7 +178,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                 </Box>
             </StyledChartWrapper>
             <StylePaper marginTop={2} ref={container} className={'MuiPaper-elevation2'}>
-                <Box className="tableWrapper">
+                <Box className="tableWrapper table-divide-short">
                     <AssetsTable {...{
                         rawData: assetsRawData,
                         // pagination: {
