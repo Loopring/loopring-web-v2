@@ -9,7 +9,7 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
     const {t} = rest
     const container = React.useRef(null);
     const [pageSize, setPageSize] = React.useState(0);
-    const [tableValue, setTabValue] = React.useState(1);
+    const [tableValue, setTabValue] = React.useState(0);
     const {
         rawData,
         getOrderList,
@@ -36,7 +36,7 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
         if (pageSize) {
             getOrderList({
                 limit: pageSize,
-                status: tableValue === 0 ? 'processing' : ''
+                status: tableValue === 0 ? 'processing' : 'processed, failed, cancelled, cancelling, expired'
             })
         }
     }, [pageSize, getOrderList, tableValue])
@@ -56,7 +56,7 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
     };
     const isOpenOrder = tableValue === 0
     // const openOrderList = rawData.filter(o => o.status === 'processing')
-    const orderHistoryList = rawData.filter(o => o.status !== 'processing')
+    // const orderHistoryList = rawData.filter(o => o.status !== 'processing')
 
     return (
         <>
@@ -79,7 +79,7 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
                             total: totalNum,
                         },
                         // rawData: isOpenOrder ? openOrderList : orderHistoryList,
-                        rawData: orderHistoryList,
+                        rawData: rawData,
                         showFilter: true,
                         getOrderList,
                         marketArray,
