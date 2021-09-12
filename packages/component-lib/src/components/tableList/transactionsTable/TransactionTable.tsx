@@ -44,19 +44,6 @@ interface Row extends RawDataTransactionItem {
     format?: any
 }
 
-/**
- *
- * @param value
- * @param minFractionDigits
- * @returns
- */
-const getThousandFormattedNumbers = (value: number, minFractionDigits: number = 2) => {
-    if (!Number.isFinite(value)) return value
-    return value.toLocaleString('en', {
-        minimumFractionDigits: minFractionDigits
-    })
-}
-
 const TYPE_COLOR_MAPPING = [
     {type: TransactionStatus.processed, color: 'success'},
     {type: TransactionStatus.processing, color: 'warning'},

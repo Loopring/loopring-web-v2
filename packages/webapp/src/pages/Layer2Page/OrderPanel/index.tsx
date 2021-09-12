@@ -19,8 +19,9 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
         showDetailLoading,
         getOrderDetail,
         orderDetailList,
-        openOrderList,
+        // openOrderList,
         cancelOrder,
+        clearRawData,
     } = useOrderList()
 
     React.useEffect(() => {
@@ -38,17 +39,20 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
                 status: tableValue === 0 ? 'processing' : ''
             })
         }
-    }, [pageSize, getOrderList])
+    }, [pageSize, getOrderList, tableValue])
 
-    const handleTabChange = React.useCallback((index: 0 | 1) => {
-        getOrderList({
-            status: index === 0 ? 'processing' : ''
-        })
-    }, [getOrderList])
+    // const handleTabChange = React.useCallback((index: 0 | 1) => {
+    //     console.log({pageSize})
+    //     getOrderList({
+    //         limit: pageSize,
+    //         status: index === 0 ? 'processing' : ''
+    //     })
+    // }, [getOrderList, pageSize])
 
     const handleChangeIndex = (index: 0 | 1) => {
+        clearRawData()
         setTabValue(index);
-        handleTabChange(index);
+        // handleTabChange(index);
     };
     const isOpenOrder = tableValue === 0
     // const openOrderList = rawData.filter(o => o.status === 'processing')
@@ -74,7 +78,8 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
                             pageSize: pageSize,
                             total: totalNum,
                         },
-                        rawData: isOpenOrder ? openOrderList : orderHistoryList,
+                        // rawData: isOpenOrder ? openOrderList : orderHistoryList,
+                        rawData: orderHistoryList,
                         showFilter: true,
                         getOrderList,
                         marketArray,
