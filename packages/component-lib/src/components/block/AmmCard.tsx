@@ -10,7 +10,8 @@ import {
     Currency,
     EmptyValueTag,
     PriceTag,
-    getValuePrecisionThousand
+    getValuePrecisionThousand,
+    // myLog
 } from '@loopring-web/common-resources';
 import { useSettings } from '../../stores';
 import styled from '@emotion/styled';
@@ -155,7 +156,10 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                         {t('labelMiningActivityReward')}
                     </Typography>
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'}>
-                        ${getValuePrecisionThousand(((rewardValue && Number.isFinite(rewardValue) ? rewardValue : 0) + (rewardValue2 && Number.isFinite(rewardValue2) ? rewardValue2 : 0)), 2, 2)}
+                        {/* {getValuePrecisionThousand(((rewardValue && Number.isFinite(rewardValue) ? rewardValue : 0) + (rewardValue2 && Number.isFinite(rewardValue2) ? rewardValue2 : 0)), 2, 2)} */}
+                        {rewardValue && Number.isFinite(rewardValue) ? getValuePrecisionThousand(rewardValue) : EmptyValueTag}
+                        &nbsp;
+                        {rewardToken?.simpleName}
                     </Typography>
                 </DetailWrapperStyled>
 
