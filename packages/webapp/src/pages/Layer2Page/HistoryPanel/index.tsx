@@ -21,7 +21,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
         // @ts-ignore
         let height = container?.current?.offsetHeight;
         if (height) {
-            setPageSize(Math.floor((height - 120) / 44) - 2);
+            setPageSize(Math.floor((height - 120) / 44) - 3);
         }
     }, [container, pageSize]);
 
@@ -45,7 +45,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                     <Tab label={t('labelLayer2HistoryAmmRecords')} value="ammRecords"></Tab>
                 </Tabs>
             </Box>
-            <div className="tableWrapper">
+            <div className="tableWrapper table-divide-short">
                 {currentTab === 'transactions' ? (
                     <TransactionTable {...{
                         etherscanBaseUrl,
