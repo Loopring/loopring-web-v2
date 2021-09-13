@@ -1,22 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { toBig } from 'loopring-sdk'
 
-/**
- *
- * @param value
- * @param minFractionDigits default = 6
- * @returns
- */
-// export const getThousandFormattedNumbers = (value: undefined | number, minFractionDigits: number = 6, option?: { isAbbreviate: boolean }) => {
-//     if (!Number.isFinite(value)) return value
-//     let result = value !== undefined ? value.toLocaleString('en', {
-//         minimumFractionDigits: minFractionDigits
-//     }).replace(/(\.\d+?)0*$/, '$1') : undefined
-//     return value == undefined ? undefined : option && option.isAbbreviate ? abbreviateNumber(value) : result;
-// }
 
 export function abbreviateNumber(value: number) {
-    let newValue = value, result: string = '';
+    let newValue = value, result: string;
     const suffixes = ["", "K", "M", "B", "T"];
     let suffixNum = 0;
     while (newValue >= 1000) {
@@ -38,12 +25,11 @@ export const getFormattedHash = (hash?: string) => {
 }
 
 export function getShortAddr(address: string):string|'' {
-    if (!address || address === undefined || address === null || address.trim() === '') {
+    if (!address || address.trim() === '') {
         // console.log('getShortAddr got empty!')
         return ''
     }
-    const convertAddr = address.substr(0, 6) + '...' + address.substr(address.length - 4)
-    return convertAddr
+    return address.substr(0, 6) + '...' + address.substr(address.length - 4)
 }
 
 /**
@@ -64,33 +50,38 @@ export const getValuePrecision = (rawValue?: number | string, precision = 6) => 
     return new BigNumber(rawValue).toPrecision(2) as string
 }
 
+
 /**
- * 
- * @param value 
- * @param precision default = 6
- * @param digit default = 2
- * @returns string
+ * @param value
+ * @param minDigit  default = 6
+ * @param precision  default = 2
+ * @param fixed
+ * @param notRemoveEndZero default will remove after dot end 0
  */
-export const getValuePrecisionThousand = (value?: number | string, minDigit = 6, precision = 2) => {
-    if (!value || !Number.isFinite(Number(value)) || Number(value) === 0) {
+export const getValuePrecisionThousand = (value: number | string | BigNumber|undefined, minDigit = 6, precision = 2, fixed?:number, notRemoveEndZero?:boolean) => {
+    if ((!value  || !Number.isFinite(Number(value)) || Number(value) === 0 ) && !BigNumber.isBigNumber(value)) {
        return  '0.00'
     }
+    let result: any = value;
+    if (!BigNumber.isBigNumber(result)){
+        result =   toBig(value);
+    }
+    if (result.isGreaterThan(1)) {
+        // if (minDigit < 3) {
+        // } else {
+        //     result = Number(value).toLocaleString('en', {
+        //         minimumFractionDigits: minDigit
+        //     })
+        // }
+        result = Number(result.toFixed(minDigit)).toLocaleString('en',{minimumFractionDigits:minDigit})
 
-    let result: any = undefined
-
-    if (Number(value) > 1) {
-        if (minDigit < 3) {
-            result = Number(toBig(value).toFixed(minDigit)).toLocaleString('en')
-        } else {
-            result = Number(value).toLocaleString('en', {
-                minimumFractionDigits: minDigit
-            })
-        }
-    } else if (Number(value) <= 1) {
-        result = toBig(value).toPrecision(precision)
+    } else if (result.isLessThanOrEqualTo(1) && fixed ){
+        result = result.toFixed(fixed)
+    } else if (result.isLessThanOrEqualTo(1)) {
+        result = result.toPrecision(precision)
     }
     
-    if( result ) {
+    if( result && !notRemoveEndZero ) {
         let [_init, _dot] = result.split('.');
         if (_dot) {
             _dot = _dot.replace(/0+?$/, '');

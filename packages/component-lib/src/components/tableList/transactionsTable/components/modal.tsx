@@ -4,7 +4,6 @@ import { Box, Grid, Typography } from '@mui/material';
 import moment from 'moment'
 import { EmptyValueTag } from '@loopring-web/common-resources';
 import { TxType } from 'loopring-sdk';
-import { Link } from 'react-router-dom';
 
 export enum TxnDetailStatus {
     processed = 'PROCESSED',
@@ -78,9 +77,9 @@ const InfoValueStyled = styled(Box)`
     font-size: 1.4rem;
     color: ${(props: any) => props.hash ? 'var(--color-secondary)' : 'var(--color-text-primary)'}
 ` as any
-
-const StatusStyled = styled(Typography)`
-color: ${({ theme }) => (status === 'processed')
+    
+const StatusStyled = styled(Typography)<any>`
+color: ${({ theme, status }) => (status === 'processed')
         ? theme.colorBase.success
         : status === 'processing'
             ? theme.colorBase.warning
@@ -104,7 +103,6 @@ export const TxnDetailPanel = withTranslation('common', { withRef: true })((
         memo,
         etherscanBaseUrl,
     }: TxnDetailProps & WithTranslation) => {
-    // || txType === TxType.DEPOSIT && status === 'processing'
 
     const headerLabel = txType === TxType.DEPOSIT ? 'labelDTxnDetailHeader'
         : txType === TxType.OFFCHAIN_WITHDRAWAL ? 'labelWTxnDetailHeader' : 'labelTTxnDetailHeader'
@@ -126,7 +124,7 @@ export const TxnDetailPanel = withTranslation('common', { withRef: true })((
             </GridItemStyled>}
             <GridItemStyled item>
                 <TypographyStyled>{t('labelTxnDetailStatus')}</TypographyStyled>
-                <StatusStyled>{status.toUpperCase()}</StatusStyled>
+                <StatusStyled status={status}>{status.toUpperCase()}</StatusStyled>
             </GridItemStyled>
             <GridItemStyled item>
                 <TypographyStyled>{t('labelTxnDetailTime')}</TypographyStyled>
