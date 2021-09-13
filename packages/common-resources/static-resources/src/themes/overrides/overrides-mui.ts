@@ -555,7 +555,8 @@ export const MuiToggleButton = ({colorBase}: any): { styleOverrides: ComponentsO
         styleOverrides: {
             root: {
                 '&.MuiToggleButton-sizeMedium': {
-                    fontSize: '1.4rem'
+                    fontSize: '1.4rem',
+                    minWidth: pxToRem(51),
                 },
                 height: pxToRem(28),
                 // boxShadow: '0px 4px 62px rgba(0, 0, 0, 0.25)',

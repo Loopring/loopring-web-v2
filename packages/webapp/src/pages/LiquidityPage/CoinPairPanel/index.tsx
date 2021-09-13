@@ -152,7 +152,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                       alignItems={'center'} >
                         <Grid item paddingLeft={2} paddingY={3} xs={12} sm={6} lg={4}  overflow={'scroll'}
                               display={'flex'}
-                              justifyContent={'space-between'}
+                              justifyContent={'space-around'}
                               alignItems={'center'}>
                             <Box>
                                 <Typography component={'span'} display={'flex'} flexDirection={'row'}
