@@ -1,28 +1,21 @@
 import React from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import { bindPopper, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
+import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import { bindHover } from 'material-ui-popup-state/es';
 // import * as _ from 'lodash'
-import { Button, Column, NewTagIcon, Table,
-    // TablePagination,
-    TableProps, PopoverPure } from '../../basic-lib'
+import { Button, Column, NewTagIcon, PopoverPure, Table, TableProps } from '../../basic-lib'
 import {
-    AmmDetail, AvatarCoinStyled,
+    AmmDetail,
+    AvatarCoinStyled,
     EmptyValueTag,
     getValuePrecisionThousand,
     globalSetup,
-    myLog,
-    // MiningIcon,
     PriceTag,
-    // SearchIcon,
-    // TableType,
 } from '@loopring-web/common-resources';
-import { Avatar, Box,
-    // InputAdornment, OutlinedInput,
-    Typography } from '@mui/material';
+import { Avatar, Box, Typography } from '@mui/material';
 import { PoolTableProps, Row } from './Interface';
 import styled from '@emotion/styled';
-import {  TablePaddingX } from '../../styled';
+import { TablePaddingX } from '../../styled';
 // import { useDeepCompareEffect } from 'react-use';
 import { useHistory } from 'react-router-dom';
 import { FormatterProps } from 'react-data-grid';
@@ -105,8 +98,8 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
                  width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
                 {coinAIcon ?
                     <AvatarCoinStyled imgx={coinAIcon.x} imgy={coinAIcon.y}
-                                      imgheight={coinAIcon.height}
-                                      imgwidth={coinAIcon.width} size={24}
+                                      imgheight={coinAIcon.h}
+                                      imgwidth={coinAIcon.w} size={24}
                                       variant="circular" alt={coinAInfo?.simpleName as string}
                         // src={sellData?.icon}
                                       src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
@@ -121,8 +114,8 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
             <Box className={'logo-icon'} display={'flex'} height={'var(--list-menu-coin-size)'}   position={'relative'}  zIndex={18}   left={-8}
                  width={'var(--list-menu-coin-size)'} alignItems={'center'}
                  justifyContent={'center'}>{coinBIcon ?
-                <AvatarCoinStyled imgx={coinBIcon.x} imgy={coinBIcon.y} imgheight={coinBIcon.height}
-                                  imgwidth={coinBIcon.width} size={24}
+                <AvatarCoinStyled imgx={coinBIcon.x} imgy={coinBIcon.y} imgheight={coinBIcon.h}
+                                  imgwidth={coinBIcon.w} size={24}
                                   variant="circular" alt={coinBInfo?.simpleName as string}
                     // src={sellData?.icon}
                                   src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
@@ -175,7 +168,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
         width: 'auto',
         headerCellClass: 'textAlignRight',
         name: t('labelLiquidity'),
-        formatter: (({row, column, rowIdx}) => {
+        formatter: (({row, rowIdx}) => {
             const {coinA, coinB, totalA, totalB, amountDollar, amountYuan} = row as any
             const popoverState = getPopoverState(rowIdx)
 
@@ -218,8 +211,8 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
                                         justifyContent={'flex-start'}>
                                         {coinAIcon ?
                                             <AvatarCoinStyled imgx={coinAIcon.x} imgy={coinAIcon.y}
-                                                imgheight={coinAIcon.height}
-                                                imgwidth={coinAIcon.width} size={20}
+                                                imgheight={coinAIcon.h}
+                                                imgwidth={coinAIcon.w} size={20}
                                                 variant="circular"
                                                 style={{ marginTop: 2 }}
                                                 alt={coinA as string}
@@ -253,8 +246,8 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
                                         width={'var(--list-menu-coin-size)'} alignItems={'center'}
                                         justifyContent={'flex-start'}>{coinBIcon ?
                                             <AvatarCoinStyled style={{ marginTop: 2 }} imgx={coinBIcon.x} imgy={coinBIcon.y}
-                                                imgheight={coinBIcon.height}
-                                                imgwidth={coinBIcon.width} size={20}
+                                                imgheight={coinBIcon.h}
+                                                imgwidth={coinBIcon.w} size={20}
                                                 variant="circular"
                                                 alt={coinB as string}
                                                 src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'} />
@@ -365,8 +358,7 @@ export const PoolsTable = withTranslation('tables')(
         const history = useHistory()
 
         const getPopoverState = React.useCallback((label: string) => {
-            const popoverState = usePopupState({variant: 'popover', popupId: `popup-poolsTable-${label}`})
-            return popoverState
+            return usePopupState({variant: 'popover', popupId: `popup-poolsTable-${label}`})
         }, [])
 
         const defaultArgs: TableProps<any, any> = {

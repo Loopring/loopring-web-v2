@@ -14,7 +14,7 @@ import { AmmPanelView } from '../AmmPanel';
 import styled from '@emotion/styled/';
 import { useCoinPair } from './hooks';
 import { StylePaper } from 'pages/styled';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 
 //******************** page code ************************//
@@ -64,7 +64,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
 ({t, ...rest}:
      WithTranslation & any) => {    //ActivityMap<I, I>
     const {currency} = useSettings();
-    let history = useHistory()
+    // let history = useHistory()
     const {
         tradeFloat,
         snapShotData,
@@ -157,8 +157,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                          justifyContent={'center'}>
                                         {coinAIcon ?
                                             <AvatarCoinStyled imgx={coinAIcon.x} imgy={coinAIcon.y}
-                                                              imgheight={coinAIcon.height}
-                                                              imgwidth={coinAIcon.width} size={20}
+                                                              imgheight={coinAIcon.h}
+                                                              imgwidth={coinAIcon.w} size={20}
                                                               variant="circular"
                                                               style={{marginTop: 2}}
                                                               alt={coinPairInfo?.myCoinA?.simpleName as string}
@@ -202,8 +202,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                          width={'var(--list-menu-coin-size)'} alignItems={'center'}
                                          justifyContent={'center'}>{coinBIcon ?
                                         <AvatarCoinStyled style={{marginTop: 2}} imgx={coinBIcon.x} imgy={coinBIcon.y}
-                                                          imgheight={coinBIcon.height}
-                                                          imgwidth={coinBIcon.width} size={20}
+                                                          imgheight={coinBIcon.h}
+                                                          imgwidth={coinBIcon.w} size={20}
                                                           variant="circular"
                                                           alt={coinPairInfo?.myCoinB?.simpleName as string}
                                             // src={sellData?.icon}

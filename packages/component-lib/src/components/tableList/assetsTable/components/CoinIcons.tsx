@@ -29,8 +29,8 @@ export  const CoinIcons = React.memo(({tokenIcon}:{tokenIcon: [any,any?]})=>{
         width={'var(--list-menu-coin-size)'} alignItems={'center'}
         justifyContent={'center'}>
             {coinBInfo.width?
-                    < AvatarCoinStyled imgx={coinBInfo.x} imgy={coinBInfo.y} imgheight={coinBInfo.height}
-                imgwidth={coinBInfo.width} size={24}
+                    < AvatarCoinStyled imgx={coinBInfo.x} imgy={coinBInfo.y} imgheight={coinBInfo.h}
+                imgwidth={coinBInfo.w} size={24}
                 variant="circular" alt={coinBInfo?.simpleName as string}
         // src={sellData?.icon}
         src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
