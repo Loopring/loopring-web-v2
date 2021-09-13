@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, Divider, Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import React from 'react';
 import { VipPanel as VipView } from '@loopring-web/component-lib';
 import { Trans, WithTranslation, withTranslation } from 'react-i18next';
@@ -28,32 +28,12 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t, i18n}: & With
         return path
     }, [level])
     return <>
-
-
-        {/*<Typography variant={'body1'} component={'section'} display={'flex'} flexDirection={'row'}*/}
-        {/*            justifyContent={'flex-end'} alignItems={'center'}>*/}
-        {/*    <Typography component={'div'} display={'flex'} flexDirection={'column'} width={120}*/}
-        {/*                alignItems={'center'}>*/}
-        {/*        <Typography component={'span'} variant={'body1'}*/}
-        {/*                    color={'textColorSecondary'}> {}  </Typography>*/}
-        {/*        <Typography component={'span'} variant={'h4'}>0.075% </Typography>*/}
-        {/*    </Typography>*/}
-        {/*    <DividerBlock/>*/}
-        {/*    <Typography component={'div'} display={'flex'} flexDirection={'column'} width={120}*/}
-        {/*                alignItems={'center'}>*/}
-        {/*        <Typography component={'span'} variant={'body1'}></Typography>*/}
-        {/*        <Typography component={'span'} variant={'h4'}> 0.075%</Typography>*/}
-        {/*    </Typography>*/}
-
-        {/*</Typography>*/}
-
-
         <StylePaper container className={'MuiPaper-elevation2'} padding={4} marginBottom={1}>
             <Grid item xs={12}>
                 <Typography variant={'h5'} component={'h3'} marginY={1} display={'flex'} flexDirection={'row'}
                             alignItems={'center'} justifyContent={'space-between'}>
                     <Typography component={'p'} flexDirection={'row'} display={'flex'} alignSelf={'flex-end'}>
-                        <Typography variant={'h5'} component={'span'} paddingRight={1}>
+                        <Typography component={'h3'} variant={'h4'} color={'text.secondary'} paddingRight={1}>
                             {t('labelTradeFeeLevel')}
                         </Typography>
                         {/*<VipStyled component={'span'} variant={'body2'} > {'VIP 1'} </VipStyled>*/}
@@ -63,10 +43,6 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t, i18n}: & With
                             <img alt="VIP" style={{verticalAlign: 'text-bottom', width: '32px', height: '16px'}}
                                  src={getImagePath()}/>}
                             </Typography>
-                            {/*<Typography  padding={1} component={'div'} width={200}>*/}
-                            {/*    <BorderLinearProgress variant="determinate" value={50}/>*/}
-                            {/*</Typography>*/}
-                            {/*<VipStyled component={'span'} variant={'body2'} > {'VIP 2'} </VipStyled>*/}
                         </Typography>
                     </Typography>
                 </Typography>
@@ -114,18 +90,3 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t, i18n}: & With
         </StylePaper>
     </>
 })
-
-// export const SettingPage = ({open,onClose}: { open:boolean, onClose:(e:any)=>void})=>{
-//     return  <MuiModalStyled
-//         open={open}
-//         onClose={onClose}
-//         aria-labelledby="modal-modal-title"
-//         aria-describedby="modal-modal-description"
-//     >
-//         <BlockStyled >
-//            <SettingPanel/>
-//         </BlockStyled>
-//     </MuiModalStyled>
-// }
-
-
