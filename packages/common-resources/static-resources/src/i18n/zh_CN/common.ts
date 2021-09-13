@@ -277,6 +277,7 @@ export default {
     labelUpdateAccountSubmit: '开户申请以提交',
     labelUnlockAccountSuccess: '解锁成功!',
     labelUnlockAccountFailed: '解锁失败!',
+    labelResetAccount: '重置二层账号',
     // labelCreateAccountApproveWaitForAuth: 'Waiting for <1>{{symbol}}</1> Approve...',
     labelCreateAccountApproveDenied: '<0>{{symbol}}</0> Approve Denied by user.',
     labelAmmSwitch: '切换',
