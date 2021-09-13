@@ -1,20 +1,19 @@
 import {
     AssetsIcon,
-    // MiningIcon,
-    // MyLiquidityIcon,
-    // OrderIcon,
-    // PoolsIcon,
-    // SettingIcon,
-    L2MyLiquidityIcon,
     L2HistoryIcon,
+    L2MyLiquidityIcon,
     L2OrderIcon,
+    // RedPockIcon,
+    // RewardIcon,
+    SecurityIcon,
+    VipIcon,
 } from '../svg';
 
 import { HeaderMenuItemInterface, HeaderMenuTabStatus } from '../loopring-interface';
 
 export enum ButtonComponentsMap {
     Download,
-    Notification ,
+    Notification,
     Setting,
     WalletConnect,
 }
@@ -137,51 +136,36 @@ export const subMenuLayer2 = {
         icon: L2OrderIcon,
         router: {path: '/layer2/order'},
         label: {
-            id: 'order', i18nKey: 'labelOrder',
-        },
-    },
-]
-    /* {
-        icon: TransactionsIcon,
-        router: {path: '/layer2/transactions'},
+            id: 'order', i18nKey: 'labelOrder'
+        }
+    // }, {
+    //     icon: RewardIcon,
+    //     router: {path: '/layer2/rewards'},
+    //     label: {
+    //         id: 'order', i18nKey: 'labelOrder',
+    //     },
+    // }, {
+    //     icon: RedPockIcon,
+    //     router: {path: '/layer2/redPock'},
+    //     label: {
+    //         id: 'order', i18nKey: 'labelOrder',
+    //     },
+    }],
+    settingGroup: [{
+        icon: SecurityIcon,
+        router: {path: '/layer2/security'},
         label: {
-            id: 'transactions', i18nKey: 'labelTransactions',
-        },
+            id: 'setting',
+            i18nKey: 'labelSetting',
+        }
     }, {
-        icon: TradeIcon,
-        router: {path: '/layer2/trades'},
+        icon: VipIcon,
+        router: {path: '/layer2/vip'},
         label: {
-            id: 'trades', i18nKey: 'labelTrades',
+            id: 'setting',
+            i18nKey: 'labelSetting',
         },
-    },
-        {
-            icon: AmmIcon,
-            router: {path: '/layer2/ammRecords'},
-            label: {
-                id: 'AmmRecords', i18nKey: 'labelAmmRecords',
-                description: 'labelAmmRecordsDes',
-            },
-        } 
-    ],
-    // countInfoGroup: [{
-    //     icon: OrderIcon,
-    //     router: {path: '/layer2/orders'},
-    //     label: {
-    //         id: 'orders', i18nKey: 'labelOrders',
-    //     },
-    // },
-
-    // ],
-    // settingGroup: [{
-    //     icon: SettingIcon,
-    //     router: {path: '/layer2/setting'},
-    //     label: {
-    //         id: 'setting',
-    //         i18nKey: 'labelSetting',
-    //     },
-    // },
-    //]
-    */
+    }]
 }
 
 
