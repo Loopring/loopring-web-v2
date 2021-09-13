@@ -14,6 +14,7 @@ import { AmmPanelView } from '../AmmPanel';
 import styled from '@emotion/styled/';
 import { useCoinPair } from './hooks';
 import { StylePaper } from 'pages/styled';
+import store from 'stores'
 
 //******************** page code ************************//
 const BoxWrapperStyled = styled(Grid)`
@@ -62,6 +63,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
 ({t, ...rest}:
      WithTranslation & any) => {    //ActivityMap<I, I>
     const {currency} = useSettings();
+    const {tokenPrices} = store.getState().tokenPrices
     const {
         tradeFloat,
         snapShotData,
@@ -82,6 +84,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
     // const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
 
     const {coinJson} = useSettings();
+    const {forex} = store.getState().system
     const coinAIcon: any = coinJson[ coinPairInfo.myCoinA?.simpleName ];
     const coinBIcon: any = coinJson[ coinPairInfo.myCoinB?.simpleName ];
     // const [pageSize, setPageSize] = React.useState(0)
@@ -99,6 +102,10 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
     const handleTabsChange = React.useCallback((_: any, value: 0 | 1) => {
         setTabIndex(value)
     }, [])
+
+    const priceCoinADollar = pair.coinAInfo?.simpleName ? tokenPrices[pair.coinAInfo?.simpleName] : 0
+    const priceCoinAYuan = priceCoinADollar * (forex || 6.5)
+    const totalAmountValueCoinA = (tradeFloat?.volume || 0) * (currency === 'USD' ? priceCoinADollar : priceCoinAYuan)
 
     return <>
         <Box marginBottom={2}>
@@ -246,7 +253,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         <Grid item paddingX={2} paddingY={3} xs={6} sm={3} lg={3}>
                             <Box>
                                 <Typography variant={'h3'} component={'span'}>
-                                    {getValuePrecisionThousand(tradeFloat?.volume)}
+                                    {(currency === Currency.dollar ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(totalAmountValueCoinA, 2, 2)}
                                 </Typography>
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}>
                                     {t('label24Volume')}

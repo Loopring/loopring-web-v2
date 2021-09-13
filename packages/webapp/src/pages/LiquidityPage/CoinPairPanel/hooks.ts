@@ -397,7 +397,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
 
                     }
                 }).catch((error) => {
-                console.log(error);
+                myLog(error);
                 throw  Error
             })
         }

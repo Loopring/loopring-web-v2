@@ -1,11 +1,12 @@
 import React from 'react';
+import _ from 'lodash'
+import store from 'stores'
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
-import { AmmDetail, CustomError, ErrorMap, SagaStatus, TradeFloat, } from '@loopring-web/common-resources';
+import { AmmDetail, CustomError, ErrorMap, myLog, SagaStatus, TradeFloat, } from '@loopring-web/common-resources';
 import { useTokenMap } from '../../../stores/token';
 import { useSocket } from '../../../stores/socket';
 import { useTicker } from '../../../stores/ticker';
-import _ from 'lodash'
-import store from 'stores'
+import { makeTickView } from '../../../hooks/help';
 
 const RowConfig = {
     rowHeight:44,
@@ -40,6 +41,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
         }
     },[setFilteredData, setTableHeight, tokenPrices])
     const updateRawData = React.useCallback((tickerMap) => {
+
         try {
             const _ammMap: any = _.cloneDeep(ammMap);
             if (_ammMap) {
@@ -54,11 +56,22 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
                     }
                 }
                 const rawData = Object.keys(_ammMap).map((ammKey: string) => {
+                    const [_, coinA, coinB] = ammKey.split('-')
+                    const realMarket = `${coinA}-${coinB}`
+                    const _tickerMap = tickerMap[realMarket].__rawTicker__
+                    const tickerFloat = makeTickView(_tickerMap ? _tickerMap : {})
+                    
                     if (coinMap) {
                         _ammMap[ ammKey ][ 'coinAInfo' ] = coinMap[ _ammMap[ ammKey ][ 'coinA' ] ];
                         _ammMap[ ammKey ][ 'coinBInfo' ] = coinMap[ _ammMap[ ammKey ][ 'coinB' ] ];
                     }
-                    return _ammMap[ ammKey ];
+                    return {
+                        ..._ammMap[ ammKey ],
+                        tradeFloat: {
+                            ..._ammMap[ ammKey ].tradtradeFloat,
+                            volume: tickerFloat?.volume || 0
+                        }
+                    };
                 })
                 setRawData(rawData)
                 resetTableData(rawData)
