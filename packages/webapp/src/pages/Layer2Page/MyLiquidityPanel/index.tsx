@@ -77,9 +77,9 @@ const MyLiquidity: any = withTranslation('common')(
 
         return (
             <>
-                <Grid container spacing={2}>
-                    <Grid item sm={12}>
-                        <StyleWrapper container paddingY={3} paddingX={4} margin={0} display={'flex'}>
+                <Grid container spacing={2} >
+                    <Grid item sm={12} >
+                        <StyleWrapper container   className={'MuiPaper-elevation2'} paddingY={3} paddingX={4} margin={0} display={'flex'}>
                             <Grid item display={'flex'} flexDirection={'column'} sm={3}>
                                 <Typography variant={'h5'}
                                             color={'textSecondary'}
@@ -136,8 +136,7 @@ const MyLiquidity: any = withTranslation('common')(
                 {/*    </StyledBtnGroupWrapper>*/}
                 {/*    <ScaleAreaChart type={ChartType.Trend} data={[]}/>*/}
                 {/*</StyleWrapper>*/}
-
-                <TableWrapStyled className={'table-divide-short'} marginY={2} paddingY={2} paddingX={3} flex={1}>
+                <TableWrapStyled className={'table-divide-short MuiPaper-elevation2'} marginY={2} paddingY={2} paddingX={3} flex={1}>
                     <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1}>
                         <Typography variant={'h5'} marginBottom={3}>{t('labelMyAmm')}</Typography>
                         <MyPoolTable

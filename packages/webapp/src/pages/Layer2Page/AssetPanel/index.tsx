@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { PriceTag } from '@loopring-web/common-resources'
-import { Box, Typography } from '@mui/material'
+import { Box, Grid, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { useHistory } from 'react-router-dom'
 import {
@@ -31,6 +31,13 @@ const StyledChartWrapper = styled(Box)`
         padding: ${({theme}) => theme.unit * 2.5}px ${({theme}) => theme.unit * 3}px;
     }
 `
+const StyleTitlePaper = styled(Box)`
+  width: 100%;
+  //height: 100%;
+  background: var(--color-box);
+  border-radius: ${({theme}) => theme.unit}px;
+`
+
 
 const ChartWrapper = styled(Box)`
     background-image: url('./static/images/${({ dark }: any) => dark === 'true' ? 'noDataDark' : 'noDataLight'}.png');
@@ -153,13 +160,13 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
     return (
         <>
-            <Box>
+            <StyleTitlePaper paddingX={3} paddingY={5/2} className={'MuiPaper-elevation2'} >
                 <AssetTitle  {...{
                     t,
                     ...rest,
                     ...AssetTitleProps,
                 }} />
-            </Box>
+            </StyleTitlePaper>
 
             {/*<div className="title">{t('labelAssetsTitle')}</div>*/}
 

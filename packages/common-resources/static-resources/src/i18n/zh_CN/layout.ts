@@ -37,10 +37,11 @@ export default {
     labelOrderBookMining: '订单本挖矿排名',
     labelMakerRebates: '做市收益',
     labelSetting: '高级设置',
-    titleLoopring:'路印协议',
-    labelLoopringDescribe:'零知卷叠交易与支付协议',
+    labelSecurity: '安全设置',
+    labelVipPanel: 'VIP',
+    titleLoopring: '路印协议',
+    labelLoopringDescribe: '零知卷叠交易与支付协议',
     labelWrongNetwork: '未识别网络',
-    labelYoutube:'油管',
-    labelWeibo:'微博'
+    labelYoutube: '油管',
+    labelWeibo: '微博'
 }
-

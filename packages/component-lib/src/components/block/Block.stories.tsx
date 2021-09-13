@@ -10,7 +10,7 @@ import {
 } from '@loopring-web/common-resources';
 import { coinMap, CoinType } from '../../static';
 import { withTranslation } from 'react-i18next';
-import {  AssetTitle, AssetTitleProps, TradeTitle } from './';
+import { AssetTitle, AssetTitleProps, TradeTitle, VipPanel } from './';
 import { useDispatch } from 'react-redux';
 import { setShowDeposit, setShowTransfer, setShowWithdraw } from '../../stores';
 import { SettingPanel } from './SettingPanel';
@@ -27,12 +27,13 @@ const Style = styled.div`
 `
 
 
-// const walletBtnProps:WalletConnectBtnProps = {
-//     handleClick:,
-//     accountState: accountFull
-// }
-
-
+const vipData: Array<Array<string>> = [
+    ['VIP 0', '< 10,000 LRC', '1,000.00', '1,000.00', '1,000.00', '--'],
+    ['VIP 1', '< 10,000 LRC', '1,000.00', '1,000.00', '1,000.00', '--'],
+    ['VIP 2', '< 10,000 LRC', '1,000.00', '1,000.00', '1,000.00', '--'],
+    ['VIP 3', '< 10,000 LRC', '1,000.00', '1,000.00', '1,000.00', '--'],
+    ['VIP 4', '< 10,000 LRC', '1,000.00', '1,000.00', '1,000.00', '--'],
+];
 const TradeTitleWrap = withTranslation('common')((rest) => {
     // let tradeData: any = {sell: {belong: undefined}, buy: {belong: undefined}};
     let props: any = {
@@ -188,14 +189,16 @@ const SettingPanelWrap = (_rest: any) => {
 const AssetTitleWrap = (rest: any) => {
     const dispatch = useDispatch();
     const AssetTitleProps: AssetTitleProps = {
+        setHideL2Assets:() => undefined,
+        hideL2Assets: false,
         assetInfo: {
-            totalAsset: 123456.789,
+        totalAsset: 123456.789,
             priceTag: PriceTag.Dollar,
-        },
-        onShowWithdraw: () => dispatch(setShowDeposit({isShow: true})),
+    },
+    onShowWithdraw: () => dispatch(setShowDeposit({isShow: true})),
         onShowTransfer: () => dispatch(setShowTransfer({isShow: true})),
-        onShowDeposit: () => dispatch(setShowWithdraw({isShow: true})),
-    }
+        onShowDeposit: () => dispatch(setShowWithdraw({isShow: true}))
+}
     return <>
         <Grid item xs={12}>
             <AssetTitle  {...{
@@ -205,7 +208,7 @@ const AssetTitleWrap = (rest: any) => {
         </Grid>
     </>
 }
-const Template: Story<any> = () => {
+const Template: Story<any> = withTranslation('common')((...rest) => {
     return <Style> <MemoryRouter initialEntries={['/']}>
         <h4>MarketWrap row</h4>
         <MarketWrap/>
@@ -249,9 +252,16 @@ const Template: Story<any> = () => {
             </Grid>
         </Grid>
 
+        <h5>Vip Panel</h5>
+        <Grid container spacing={2}>
+            <Grid item>
+                <VipPanel {...{...rest}} rawData={vipData}/>
+            </Grid>
+        </Grid>
+
     </MemoryRouter>
     </Style>
-};
+}) as Story<any>;
 
 export default {
     title: 'components/Block',

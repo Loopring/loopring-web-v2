@@ -1,7 +1,7 @@
 import { useRouteMatch } from 'react-router'
 
 import { Box, Typography } from '@mui/material'
-import { Button, SubMenu, SubMenuList as BasicSubMenuList, } from '@loopring-web/component-lib'
+import { Button, SubMenu, SubMenuList as BasicSubMenuList } from '@loopring-web/component-lib'
 import { useTranslation, withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import { AccountStatus, fnType, i18n, LoadingIcon, SagaStatus, subMenuLayer2 } from '@loopring-web/common-resources'
@@ -14,6 +14,9 @@ import React from 'react';
 import { useAccount } from '../../stores/account';
 import { accountStaticCallBack, btnClickMap, btnLabel } from '../../layouts/connectStatusCallback';
 import _ from 'lodash'
+import { SecurityPanel } from './SecurityPanel';
+import { VipPanel } from './VipPanel';
+
 
 export const subMenu = subMenuLayer2
 
@@ -157,7 +160,9 @@ export const Layer2Page = () => {
                         {selected === 'trades' && <TradePanel/>}
                         {selected === 'ammRecords' && <AmmPanel/>} */}
                         {selected === 'order' && <OrderPanel/>}
-                        {/*{selected === 'setting' && <SettingPanel/>}*/}
+                        {selected === 'security' && <SecurityPanel/>}
+                        {selected === 'vip' && <VipPanel/>}
+
                     </Box>
                 </>
             default:

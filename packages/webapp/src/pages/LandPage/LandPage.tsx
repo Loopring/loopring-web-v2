@@ -3,7 +3,6 @@ import React from 'react';
 import styled from '@emotion/styled/';
 import { DropDownIcon, ThemeType } from '@loopring-web/common-resources';
 import { withTranslation } from 'react-i18next';
-import { useSpring, animated,to } from "react-spring";
 import { css, useTheme } from '@emotion/react';
 
 
