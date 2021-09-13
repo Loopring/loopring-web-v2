@@ -76,7 +76,7 @@ export const calcPriceByAmmTickMapDepth = <C>(
                 stob = btos;
                 btos = close;
             }
-            myLog('pairDetailDone stob from amm:', stob)
+            // myLog('pairDetailDone stob from amm:', stob)
         }
 
         //second getValue from tickerData
