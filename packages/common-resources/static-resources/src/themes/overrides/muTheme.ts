@@ -32,19 +32,18 @@ import {
     MuiToolbar,
     MuiAlert,
     MuiSnackbar,
-    radius, MuiFormLabel, MuiBreadcrumbs,
+    radius, MuiFormLabel, MuiBreadcrumbs, MuiDialogTitle, MuiDialog,
 } from "./overrides-mui";
 import { MuPickDate } from './overrides-date-pick';
 import { fontDefault } from "../css/global";
 import { LoopringTheme, ThemeKeys } from '../interface';
-import { shadows } from '@mui/system';
-import * as _ from "lodash"
+// import { shadows } from '@mui/system';
+// import * as _ from "lodash"
 
 export { unit };
 export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
     const colorBase: typeof ColorDarkDefault = themeMode === 'dark' ? ColorDarkDefault : ColorLightDefault;
-    // @ts-ignore
-    let _shadows =_.cloneDeep(shadows);
+    // let _shadows =_.cloneDeep(shadows);
     // _shadows[1] = colorBase.shadow;
     // _shadows[2] = colorBase.shadowHeader;
     const theme = createTheme({
@@ -159,17 +158,17 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             MuiLink: MuiLink({colorBase}),
             MuiModal: MuiModal({colorBase}),
             // MuiBackdrop:MuiBackdrop({colorBase}),
-            MuiPopover: MuiPopover({colorBase}),
+            MuiPopover: MuiPopover(),
             MuiToolbar: MuiToolbar(),
             MuiSvgIcon: MuiSvgIcon(),
             MuiTabs: MuiTabs(),
             MuiTab: MuiTab({colorBase}),
             MuiButtonBase: MuiButtonBase,
-            MuiRadio: MuiRadio({colorBase}),
+            MuiRadio: MuiRadio(),
             MuiButton: MuiButton({colorBase, themeMode}),
             MuiToggleButton: MuiToggleButton({colorBase}),
             // MuiToggleButtonGroup: MuiToggleButtonGroup({colorBase}),
-            MuiSwitch: MuiSwitch({colorBase}),
+            MuiSwitch: MuiSwitch(),
             MuiIconButton: MuiIconButton({colorBase}),
             MuiPaginationItem: MuiPaginationItem({colorBase}),
             MuiTextField: MuiTextField({colorBase}),
@@ -187,6 +186,8 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             MuiDivider: MuiDivider({colorBase}),
             MuiAlert: MuiAlert({colorBase}),
             MuiSnackbar: MuiSnackbar(),
+            MuiDialogTitle:MuiDialogTitle({colorBase}),
+            MuiDialog:MuiDialog({colorBase}),
             ...MuPickDate({colorBase, themeMode})
         },
         shape: {borderRadius: radius}
