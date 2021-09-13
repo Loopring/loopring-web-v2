@@ -74,14 +74,14 @@ import { useGetAssets } from '../../pages/Layer2Page/AssetPanel/hook'
 
 export const ModalAccountInfo = withTranslation('common')(({
                                                                onClose,
-                                                               etherscanUrl,
+                                                               etherscanBaseUrl,
                                                                open,
                                                                t,
                                                                ...rest
                                                            }: {
     open: boolean,
     onClose?: (e: MouseEvent) => void,
-    etherscanUrl: string
+    etherscanBaseUrl: string
 } & WithTranslation) => {
 
     const {
@@ -371,7 +371,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 view: <NoAccount {...{
                     goDeposit,
                     ...account,
-                    etherscanUrl,
+                    etherscanUrl: etherscanBaseUrl,
                     onSwitch, onCopy,
                     onViewQRCode, onDisconnect, addressShort,
                 }} />, onQRClick
@@ -380,7 +380,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                 view: <QRAddressPanel {...{
                     ...rest,
                     ...account,
-                    etherscanUrl,
+                    etherscanUrl: etherscanBaseUrl,
                     t
                 }} />, onBack, noClose: true
             },
@@ -388,10 +388,10 @@ export const ModalAccountInfo = withTranslation('common')(({
                 view: <HadAccount {...{
                     ...account,
                     onSwitch, onCopy,
-                    etherscanUrl,
+                    etherscanUrl:etherscanBaseUrl,
 
                     onViewQRCode, onDisconnect, addressShort,
-                    etherscanLink: etherscanUrl + account.accAddress,
+                    etherscanLink: etherscanBaseUrl + 'address/' + account.accAddress,
                     mainBtn: account.readyState === 'ACTIVATED' ? lockBtn : unlockBtn
                 }} />, onQRClick
             },
@@ -585,7 +585,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             [ AccountStep.UpdateAccount ]: {
                 view: <UpdateAccount {...{
                     ...account,
-                    etherscanUrl,
+                    etherscanUrl: etherscanBaseUrl,
                     onSwitch, onCopy,
                     onViewQRCode, onDisconnect, addressShort,
                 }} goUpdateAccount={() => {
@@ -653,7 +653,7 @@ export const ModalAccountInfo = withTranslation('common')(({
             },
 
         })
-    }, [addressShort, account, depositProps, etherscanUrl, onCopy, onSwitch, onDisconnect, onViewQRCode, t, rest])
+    }, [addressShort, account, depositProps, etherscanBaseUrl, onCopy, onSwitch, onDisconnect, onViewQRCode, t, rest])
 
     const current = accountList[ isShowAccount.step ]
 

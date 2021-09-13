@@ -37,9 +37,7 @@ const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap}: { amm
             history.push(`/liquidity/pools/coinPair/${pair}`)
         }
     }, [history])
-
-    console.log(ammActivityViewMap)
-
+    
     return <>{ammActivityViewMap.length ? ammActivityViewMap.map((item: AmmCardProps<I>, index) =>
         <Grid item xs={12} sm={6} lg={4} key={index}>
             <AmmCardWrap handleClick={jumpTo} {...item as any} />

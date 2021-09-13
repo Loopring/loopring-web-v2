@@ -6,7 +6,7 @@ import store from '../index';
 import { LoopringAPI } from 'api_wrapper';
 import { getAmmMap, initAmmMap, updateRealTimeAmmMap } from '../Amm/AmmMap';
 import { getTokenMap } from '../token';
-import { CustomError, ErrorMap } from '@loopring-web/common-resources';
+import { CustomError, ErrorMap, myLog } from '@loopring-web/common-resources';
 import { getAmmActivityMap } from '../Amm/AmmActivityMap';
 import { updateWalletLayer1 } from '../walletLayer1';
 import { delay } from 'rxjs/operators';
@@ -90,7 +90,7 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
             // : process.env.REACT_APP_API_URL_UAT;
             const baseURL = ChainId.MAINNET === chainId ? `https://${process.env.REACT_APP_API_URL}` : `https:/${process.env.REACT_APP_API_URL_UAT}`
             const socketURL = ChainId.MAINNET === chainId ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws` : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
-            const etherscanUrl = ChainId.MAINNET === chainId ? `https://etherscan.io/address/` : `https://goerli.etherscan.io/address/`
+            const etherscanBaseUrl = ChainId.MAINNET === chainId ? `https://etherscan.io/` : `https://goerli.etherscan.io/`
 
             window.loopringSocket = new LoopringSocket(socketURL);
 
@@ -116,7 +116,7 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
             })(__timer__);
             return {
                 chainId,
-                etherscanUrl,
+                etherscanBaseUrl,
                 env,
                 baseURL,
                 socketURL,
@@ -141,11 +141,11 @@ export function* getUpdateSystem({payload}: any) {
             gasPrice,
             forex,
             exchangeInfo,
-            etherscanUrl,
+            etherscanBaseUrl,
             __timer__
         } = yield call(getSystemsApi, chainId);
 
-        yield put(getSystemStatus({env, baseURL, faitPrices, gasPrice, forex, exchangeInfo, etherscanUrl, __timer__}));
+        yield put(getSystemStatus({env, baseURL, faitPrices, gasPrice, forex, exchangeInfo, etherscanBaseUrl, __timer__}));
         yield call(initConfig, chainId)
         //TODO check wallect store
     } catch (err) {

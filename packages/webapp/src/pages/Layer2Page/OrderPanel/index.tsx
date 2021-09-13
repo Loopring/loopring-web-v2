@@ -9,7 +9,7 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
     const {t} = rest
     const container = React.useRef(null);
     const [pageSize, setPageSize] = React.useState(0);
-    const [tableValue, setTabValue] = React.useState(1);
+    const [tableValue, setTabValue] = React.useState(0);
     const {
         rawData,
         getOrderList,
@@ -19,8 +19,9 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
         showDetailLoading,
         getOrderDetail,
         orderDetailList,
-        openOrderList,
+        // openOrderList,
         cancelOrder,
+        clearRawData,
     } = useOrderList()
 
     React.useEffect(() => {
@@ -35,24 +36,27 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
         if (pageSize) {
             getOrderList({
                 limit: pageSize,
-                status: tableValue === 0 ? 'processing' : ''
+                status: tableValue === 0 ? 'processing' : 'processed,failed,cancelled,cancelling,expired'
             })
         }
-    }, [pageSize, getOrderList])
+    }, [pageSize, getOrderList, tableValue])
 
-    const handleTabChange = React.useCallback((index: 0 | 1) => {
-        getOrderList({
-            status: index === 0 ? 'processing' : ''
-        })
-    }, [getOrderList])
+    // const handleTabChange = React.useCallback((index: 0 | 1) => {
+    //     console.log({pageSize})
+    //     getOrderList({
+    //         limit: pageSize,
+    //         status: index === 0 ? 'processing' : ''
+    //     })
+    // }, [getOrderList, pageSize])
 
     const handleChangeIndex = (index: 0 | 1) => {
+        clearRawData()
         setTabValue(index);
-        handleTabChange(index);
+        // handleTabChange(index);
     };
     const isOpenOrder = tableValue === 0
     // const openOrderList = rawData.filter(o => o.status === 'processing')
-    const orderHistoryList = rawData.filter(o => o.status !== 'processing')
+    // const orderHistoryList = rawData.filter(o => o.status !== 'processing')
 
     return (
         <>
@@ -68,13 +72,14 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
                     </Tabs>
                 </Box>
                 {/*<div className="title">{rest.t('Orders History')}</div>*/}
-                <div className="tableWrapper">
+                <div className="tableWrapper table-divide-short">
                     <OrderHistoryTable {...{
                         pagination: isOpenOrder ? undefined : {
                             pageSize: pageSize,
                             total: totalNum,
                         },
-                        rawData: isOpenOrder ? openOrderList : orderHistoryList,
+                        // rawData: isOpenOrder ? openOrderList : orderHistoryList,
+                        rawData: rawData,
                         showFilter: true,
                         getOrderList,
                         marketArray,

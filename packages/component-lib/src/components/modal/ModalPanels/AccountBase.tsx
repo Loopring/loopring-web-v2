@@ -42,7 +42,7 @@ export const AccountBasePanel = ({
                                 t,
                             }:AccountBaseProps & WithTranslation) => {
     const addressShort = getShortAddr(accAddress)
-    const etherscanLink = etherscanUrl + accAddress;
+    const etherscanLink = etherscanUrl + 'address/' + accAddress;
     const connectBy = connectName === 'unknown' ? t('labelWrongNetwork') : connectName;
 
     const getImagePath = React.useCallback(() => {

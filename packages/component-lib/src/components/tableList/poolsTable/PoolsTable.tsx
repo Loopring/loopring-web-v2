@@ -386,7 +386,7 @@ export const PoolsTable = withTranslation('tables')(
 
         return <TableStyled flex={1} flexDirection={'column'} display={'flex'}>
 
-            <Table className={'scrollable'}
+            <Table /* className={'scrollable'} */
                    style={{ height: tableHeight }}
                  {...{
                 ...defaultArgs, t, i18n, tReady, ...rest,

@@ -7,7 +7,7 @@ import moment from 'moment'
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
 import { PopoverPure } from '../../basic-lib'
-import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes, getValuePrecisionThousand } from '@loopring-web/common-resources'
+import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes, getValuePrecisionThousand, myLog } from '@loopring-web/common-resources'
 import { Column, Popover, PopoverType, Table, TablePagination } from '../../basic-lib'
 import { SingleOrderHistoryTable } from './SingleOrderHistoryTable'
 import { Filter, FilterOrderTypes } from './components/Filter'
@@ -97,7 +97,7 @@ const TableStyled = styled(Box)`
     flex: 1;
 
     .rdg {
-        --template-columns: ${({isopen}: any) => isopen === 'open' ? '100px 100px 260px auto 120px auto 150px' : '100px 100px 260px 80px 120px auto 160px'} !important;
+        --template-columns: ${({isopen}: any) => isopen === 'open' ? '100px 100px 260px auto 120px auto 120px' : '100px 100px 220px 120px 120px auto 160px'} !important;
 
         .rdg-cell:last-of-type {
             display: flex;
@@ -163,8 +163,15 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
     const [modalState, setModalState] = useState(false)
     const [currOrderId, setCurrOrderId] = useState('')
     const pageSize = pagination ? pagination.pageSize : 0
+
+    useEffect(() => {
+        if (isOpenOrder) {
+            setPage(1)
+        }
+    }, [isOpenOrder])
     
     const updateData = useCallback(({
+                                        isOpen = isOpenOrder,
                                         actionType,
                                         currFilterType = filterType,
                                         currFilterDate = filterDate,
@@ -186,8 +193,9 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             market: currFilterToken === 'All Pairs' ? '' : currFilterToken,
             start: Number.isNaN(start) ? -1 : start,
             end: Number.isNaN(end) ? -1 : end,
+            status: isOpen ? 'processing' : 'processed,failed,cancelled,cancelling,expired',
         })
-    }, [filterDate, filterType, filterToken, getOrderList, page, pageSize])
+    }, [filterDate, filterType, filterToken, getOrderList, page, pageSize, isOpenOrder])
 
     const handleFilterChange = useCallback(({type = filterType, date = filterDate, token = filterToken, currPage = page}) => {
         setFilterType(type)
@@ -626,7 +634,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             <OrderDetailPanel rawData={orderDetailList} showLoading={showDetailLoading} orderId={currOrderId} />
         </Modal>
         {
-            pagination && (
+            pagination && !!rawData.length && (
                 <TablePagination page={page} pageSize={pageSize} total={pagination.total}
                     onPageChange={handlePageChange}/>
             )
