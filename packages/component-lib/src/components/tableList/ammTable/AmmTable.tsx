@@ -87,6 +87,9 @@ const TableStyled = styled(Box)`
       justify-content: center;
       align-items: center;
     }
+    .textAlignRight {
+        text-align: right;
+    }
   }
 
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
@@ -147,43 +150,46 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
     {
         key: 'lpTokenAmount',
         name: t('labelAmmLpTokenAmount'),
+        headerCellClass: 'textAlignRight',
         formatter: ({row}) => {
             const amount = row[ 'lpTokenAmount' ]
             const renderValue = row[ 'side' ] === AmmSideTypes.Join
                 ? `+${getValuePrecisionThousand(amount)}`
                 : `-${getValuePrecisionThousand(amount)}`
             return (
-                <div className="rdg-cell-value">
+                <Box className="rdg-cell-value textAlignRight">
                     {renderValue}
                     {/*{currency === Currency.dollar ?*/}
                     {/*    PriceTag.Dollar + getThousandFormattedNumbers(priceDollar)*/}
                     {/*    : PriceTag.Yuan + getThousandFormattedNumbers(priceYuan)}*/}
-                </div>
+                </Box>
             )
         }
     },
     {
         key: 'fee',
         name: t('labelAmmFee'),
+        headerCellClass: 'textAlignRight',
         formatter: ({row}) => {
             const {key, value} = row[ 'fee' ]
             return (
-                <div className="rdg-cell-value">
+                <Box className="rdg-cell-value textAlignRight">
                     {`${getValuePrecisionThousand(value, 4, 2)} ${key}`}
-                </div>
+                </Box>
             )
         }
     },
     {
         key: 'time',
         name: t('labelAmmRecordTime'),
+        headerCellClass: 'textAlignRight',
         // minWidth: 400,
         formatter: ({row}) => {
             const time = moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
             return (
-                <div className="rdg-cell-value">
+                <Box className="rdg-cell-value textAlignRight">
                     {time}
-                </div>
+                </Box>
             )
         }
     },

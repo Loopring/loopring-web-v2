@@ -23,7 +23,7 @@ const TableWrap = styled(Box)`
 
   .rdg {
     flex: 1;
-    --template-columns: 220px 150px auto auto ${(props: any) => props.lan === 'en_US' ? '285px' : '240px'} !important;
+    --template-columns: 200px 150px auto auto ${(props: any) => props.lan === 'en_US' ? '285px' : '240px'} !important;
 
     .rdg-cell:first-of-type {
       display: flex;
@@ -36,11 +36,13 @@ const TableWrap = styled(Box)`
       justify-content: center;
       align-items: center;
     }
+
+    .textAlignRight {
+        text-align: right;
+    }
   }
 
-  .textAlignRight {
-    text-align: right;
-  }
+  
 
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as any
@@ -224,11 +226,12 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         {
             key: 'amount',
             name: t('labelAmount'),
+            headerCellClass: 'textAlignRight',
             formatter: ({row}) => {
                 const value = row[ 'amount' ]
-                return <>
+                return <Box className={'textAlignRight'}>
                     {getValuePrecisionThousand(value, 6, 2)}
-                </>
+                </Box>
             }
         },
         // {
@@ -238,24 +241,26 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         {
             key: 'locked',
             name: t('labelLocked'),
+            headerCellClass: 'textAlignRight',
             formatter: ({row}) => {
                 const value = row[ 'locked' ]
-                return <>
+                return <Box className={'textAlignRight'}>
                     {getValuePrecisionThousand(value, 6, 2)}
-                </>
+                </Box>
 
             }
         },
         {
             key: 'value',
             name: t('labelAssetsTableValue'),
+            headerCellClass: 'textAlignRight',
             formatter: ({row}) => {
                 const tokenValueDollar = row[ 'tokenValueDollar' ]
                 const tokenValueYuan = row[ 'tokenValueYuan' ]
                 const renderValue = isUSD ? tokenValueDollar : tokenValueYuan
-                return <>
+                return <Box className={'textAlignRight'}>
                     {isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand(renderValue, 2, 2)}
-                </>
+                </Box>
             }
         },
         {
