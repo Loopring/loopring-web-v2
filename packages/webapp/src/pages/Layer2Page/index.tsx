@@ -20,23 +20,6 @@ import { VipPanel } from './VipPanel';
 
 export const subMenu = subMenuLayer2
 
-const BoxStyle = styled(Box)`
-  ${({theme}) => `
-    background: var(--color-box);
-    width: 100%;
-    min-width:auto;
-    ${theme.border.defaultFrame({c_key: 'blur'})};
-    & > div{
-      background-color:initial;
-      border:0;
-      width:auto;
-      min-width: var(--swap-box-width);
-      max-width: 520px;
-    }
-    `
-}
-
-` as typeof Box
 const BtnConnect = withTranslation(['common'], {withRef: true})(({t}: any) => {
     const {status: accountStatus, account} = useAccount();
     // const {setShowAccount} = useOpenModals();
@@ -82,7 +65,7 @@ export const Layer2Page = () => {
         // statusUnset: accountStatusUnset
     } = useAccount();
 
-    const {t, ...rest} = useTranslation();
+    const {t} = useTranslation();
     const selected = match?.params.item ?? 'assets';
     // const {depositProps} = useDeposit()
 
