@@ -38,6 +38,7 @@ export interface PanelProps {
         name: string,
         url: string,
     }
+    patch?: any,
 }
 
 export const BasicPanel = withTranslation('common', { withRef: true })(({
@@ -180,7 +181,7 @@ export const UnlockAccountBase = (props: PanelProps & WithTranslation) => {
 
 export const UpdateAccountBase = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
-        title: 'labelUpdateAccount'
+        title: props.patch?.isReset ? 'labelResetAccount' : 'labelUpdateAccount'
     }
     return <BasicPanel {...propsPatch} {...props} />
 }

@@ -328,6 +328,14 @@ export const ModalAccountInfo = withTranslation('common')(({
         }
     }, [setShowAccount,])
 
+    const backToResetAccountBtnInfo = React.useMemo(() => {
+        return {
+            btnTxt: 'labelRetry',
+            callback: () => {
+            }
+        }
+    }, [setShowAccount,])
+
     const TryNewTransferAuthBtnInfo = React.useMemo(() => {
         return {
             btnTxt: 'labelTryNext',
@@ -648,6 +656,46 @@ export const ModalAccountInfo = withTranslation('common')(({
             },
             [ AccountStep.UnlockAccount_Failed ]: {
                 view: <UnlockAccount_Failed btnInfo={closeBtnInfo} {...{
+                    ...rest, t
+                }} />,
+            },
+
+
+            [ AccountStep.ResetAccount_Approve_WaitForAuth ]: {
+                view: <UpdateAccount_Approve_WaitForAuth patch={ { isReset: true } }
+                    providerName={account.connectName} {...{
+                    ...rest, t
+                }} />,
+            },
+            [ AccountStep.ResetAccount_First_Method_Denied ]: {
+                view: <UpdateAccount_First_Method_Denied patch={ { isReset: true } } btnInfo={{
+                    btnTxt: t('labelTryAnother'),
+                    callback: (e?: any) => {
+                        goUpdateAccount(false)
+                    }
+                }} {...{
+                    ...rest, t
+                }} />, onBack: () => {
+                    backToResetAccountBtnInfo.callback()
+                }
+            },
+            [ AccountStep.ResetAccount_User_Denied ]: {
+                view: <UpdateAccount_User_Denied patch={ { isReset: true } } btnInfo={backToResetAccountBtnInfo} {...{
+                    ...rest, t
+                }} />,
+            },
+            [ AccountStep.ResetAccount_Success ]: {
+                view: <UpdateAccount_Success patch={ { isReset: true } } btnInfo={closeBtnInfo}  {...{
+                    ...rest, t
+                }} />,
+            },
+            [ AccountStep.ResetAccount_Submit ]: {
+                view: <UpdateAccount_Submit patch={ { isReset: true } } btnInfo={closeBtnInfo} {...{
+                    ...rest, t
+                }} />,
+            },
+            [ AccountStep.ResetAccount_Failed ]: {
+                view: <UpdateAccount_Failed patch={ { isReset: true } } btnInfo={closeBtnInfo} {...{
                     ...rest, t
                 }} />,
             },
