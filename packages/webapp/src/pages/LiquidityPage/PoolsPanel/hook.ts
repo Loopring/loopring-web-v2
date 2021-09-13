@@ -82,6 +82,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
 
     }, [ammMap]);
     const sortMethod = React.useCallback((_sortedRows,sortColumn)=>{
+        myLog({filteredData})
         let _rawData:Row<R>[]  = [];
         switch (sortColumn) {
             case 'pools':
@@ -109,8 +110,10 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
                 break;
             case 'volume24':
                 _rawData = filteredData.sort((a, b) => {
-                    const valueA = a.tradeFloat.volume
-                    const valueB = b.tradeFloat.volume
+                    const priceDollarA = tokenPrices[a.coinAInfo.simpleName] || 0
+                    const priceDollarB = tokenPrices[b.coinAInfo.simpleName] || 0
+                    const valueA = (a.tradeFloat.volume || 0) * priceDollarA
+                    const valueB = (b.tradeFloat.volume || 0) * priceDollarB
                     if (valueA && valueB) {
                         return valueB - valueA
                     }
