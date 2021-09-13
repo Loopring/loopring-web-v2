@@ -303,7 +303,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
             return <Box className={'textAlignRight'}>
                 <Typography
                     component={'span'}> {volume && Number.isFinite(volume)
-                        ? renderUnit + getValuePrecisionThousand(renderValue, 2, 2) : volume} {/* {row.tradeFloat && row.tradeFloat.volume ? row.coinAInfo.simpleName : ''} */}
+                        ? renderUnit + getValuePrecisionThousand(renderValue, 2, 2) : EmptyValueTag} {/* {row.tradeFloat && row.tradeFloat.volume ? row.coinAInfo.simpleName : ''} */}
                 </Typography>
             </Box> 
         }
