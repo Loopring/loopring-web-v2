@@ -12,27 +12,16 @@ const StylePaper = styled(Grid)`
   border-radius: ${({theme}) => theme.unit}px;
 `
 
-const StyledDivider = styled(Divider)`
-  margin: ${({theme}) => theme.unit}px 0 ${({theme}) => theme.unit}px 0px;
-`
-const DividerBlock = styled(Divider)`
-  margin: 0;
-  flex: 1;
-  width: 1px;
-  height: ${({theme}) => theme.unit * 3}px;
-  b
-  ackground: var(--color-divide)
-`
 
 
-const vipDefault: Array<Array<string>> = [
+const vipDefault: string[][] = [
     ['VIP 0', '< 10,000 LRC', '1,000.00', '1,000.00', '1,000.00', '--'],
     ['VIP 1', '< 10,000 LRC', '1,000.00', '1,000.00', '1,000.00', '--'],
     ['VIP 2', '< 10,000 LRC', '1,000.00', '1,000.00', '1,000.00', '--'],
     ['VIP 3', '< 10,000 LRC', '1,000.00', '1,000.00', '1,000.00', '--'],
     ['VIP 4', '< 10,000 LRC', '1,000.00', '1,000.00', '1,000.00', '--'],
 ];
-export const VipPanel = withTranslation(['common', 'layout'])(({t, i18n, ...rest}: & WithTranslation) => {
+export const VipPanel = withTranslation(['common', 'layout'])(({t, i18n}: & WithTranslation) => {
     const {account: {level}} = useAccount()
     const getImagePath = React.useCallback(() => {
         const path = `static/images/vips/${level.toUpperCase()}.png`
