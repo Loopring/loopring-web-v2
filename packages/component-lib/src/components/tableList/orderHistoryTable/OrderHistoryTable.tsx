@@ -193,7 +193,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             market: currFilterToken === 'All Pairs' ? '' : currFilterToken,
             start: Number.isNaN(start) ? -1 : start,
             end: Number.isNaN(end) ? -1 : end,
-            status: isOpen ? 'processing' : 'processed, failed, cancelled, cancelling, expired',
+            status: isOpen ? 'processing' : 'processed,failed,cancelled,cancelling,expired',
         })
     }, [filterDate, filterType, filterToken, getOrderList, page, pageSize, isOpenOrder])
 
