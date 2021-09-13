@@ -386,6 +386,42 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
 
                 }} />,
             },
+
+            [AccountStep.ResetAccount_Approve_WaitForAuth]: {
+                view: <UpdateAccount_Approve_WaitForAuth patch={ { isReset: true } } {...{
+                          ...rest,
+                    providerNam:ConnectProviders.MetaMask
+                    }} />,
+            },
+            [AccountStep.ResetAccount_First_Method_Denied]: {
+                view: <UpdateAccount_First_Method_Denied patch={ { isReset: true } } btnInfo={retryBtn} {...{
+                      ...rest
+
+                }} />,
+            },
+            [AccountStep.ResetAccount_User_Denied]: {
+                view: <UpdateAccount_User_Denied patch={ { isReset: true } } btnInfo={retryBtn} {...{
+                      ...rest
+
+                }} />,
+            },
+            [AccountStep.ResetAccount_Success]: {
+                view: <UpdateAccount_Success patch={ { isReset: true } } btnInfo={closeBtn}  {...{
+                      ...rest
+
+                }} />,
+            },
+            [AccountStep.ResetAccount_Submit]: {
+                view: <UpdateAccount_Submit patch={ { isReset: true } } btnInfo={closeBtn} {...{
+                      ...rest
+
+                }} />,
+            },
+            [AccountStep.ResetAccount_Failed]: {
+                view: <UpdateAccount_Failed patch={ { isReset: true } } btnInfo={closeBtn} {...{
+                      ...rest
+                }} />,
+            }
         }
 
         return { nameList5: Object.keys(accountMap), accountList5: Object.values(accountMap) }

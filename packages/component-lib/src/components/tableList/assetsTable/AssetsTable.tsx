@@ -1,21 +1,20 @@
-    import React, { useCallback, useEffect, useState } from 'react'
-import { Box, Grid, MenuItem, ListItemText, Avatar, Typography } from '@mui/material'
+import React, { useCallback, useEffect, useState } from 'react'
+import {  Box,
+    Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
-import { useHistory } from 'react-router-dom'
+// import { useHistory } from 'react-router-dom'
 // import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state'
-import { Button, Popover, PopoverType } from '../../basic-lib'
 import { Column, Table } from '../../basic-lib'
 // import { TablePagination } from '../../basic-lib'
 import { Filter } from './components/Filter'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
-import {
-    // TableType,
-    MoreIcon, AvatarCoinStyled, PriceTag, myLog } from '@loopring-web/common-resources';
+import { getValuePrecisionThousand, PriceTag } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores'
-import {
-    // getThousandFormattedNumbers, getValuePrecision,
-    getValuePrecisionThousand } from '@loopring-web/common-resources'
+import { CoinIcons } from './components/CoinIcons';
+import ActionMemo from './components/ActionMemo';
+
+
 
 const TableWrap = styled(Box)`
   display: flex;
@@ -27,9 +26,9 @@ const TableWrap = styled(Box)`
     --template-columns: 220px 150px auto auto ${(props: any) => props.lan === 'en_US' ? '285px' : '240px'} !important;
 
     .rdg-cell:first-of-type {
-        display: flex;
-        align-items: center;
-        margin-top: ${({theme}) => theme.unit / 8}px;
+      display: flex;
+      align-items: center;
+      margin-top: ${({theme}) => theme.unit / 8}px;
     }
 
     .rdg-cell.action {
@@ -38,9 +37,10 @@ const TableWrap = styled(Box)`
       align-items: center;
     }
   }
-  .textAlignRight{
+
+  .textAlignRight {
     text-align: right;
-    }
+  }
 
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as any
@@ -53,12 +53,7 @@ const TableWrap = styled(Box)`
 //     }
 // `
 
-const GridStyled = styled(Grid)`
-    .MuiGrid-item {
-        padding: 0;
-        padding-top: ${({theme}) => theme.unit / 4}px;
-    }
-`
+
 
 interface Row {
     token: {
@@ -117,13 +112,13 @@ export interface AssetsTableProps {
     pagination?: {
         pageSize: number
     }
-    tableHeight?:number,
+    tableHeight?: number,
     onVisibleRowsChange?: (props: any) => void
     showFilter?: boolean
     onShowDeposit: (token: string) => void,
     onShowTransfer: (token: string) => void,
     onShowWithdraw: (token: string) => void,
-    onLpDeposit: (token: string, type: LpTokenAction ) => void,
+    onLpDeposit: (token: string, type: LpTokenAction) => void,
     onLpWithdraw: (token: string, type: LpTokenAction) => void,
     getMarketArrayListCallback: (token: string) => string[],
     // hideL2Assets: boolean,
@@ -133,9 +128,10 @@ export interface AssetsTableProps {
     setHideLpToken: (value: boolean) => void,
     setHideSmallBalances: (value: boolean) => void,
 }
+
 const RowConfig = {
-    rowHeight:44,
-    headerRowHeight:44,
+    rowHeight: 44,
+    headerRowHeight: 44,
 
 }
 
@@ -165,7 +161,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     // const [hideSmallBalance, setHideSmallBalance] = useState(false)
     // const [hideLpToken, sethideLpToken] = useState(false)
     const [filter, setFilter] = useState({
-        searchValue:'',
+        searchValue: '',
         // hideSmallBalance:false,
         // hideLpToken:false
     })
@@ -173,15 +169,14 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     const [viewData, setViewData] = useState<RawDataAssetsItem[]>(rawData)
     const [tableHeight, setTableHeight] = React.useState(props.tableHeight);
 
-    const resetTableData = React.useCallback((viewData)=>{
+    const resetTableData = React.useCallback((viewData) => {
         setViewData(viewData)
-        setTableHeight(RowConfig.headerRowHeight + viewData.length * RowConfig.rowHeight )
-    },[setViewData,setTableHeight])
+        setTableHeight(RowConfig.headerRowHeight + viewData.length * RowConfig.rowHeight)
+    }, [setViewData, setTableHeight])
     // const [page, setPage] = useState(1)
     // const pageSize = pagination ? pagination.pageSize : 10;
 
     const {language} = useSettings()
-    let history = useHistory()
     const {coinJson, currency} = useSettings();
     // const rightState = usePopupState({variant: 'popover', popupId: `action-popover`});
     const isUSD = currency === 'USD'
@@ -192,74 +187,11 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         updateData();
     }, [totalData, filter, hideLpToken, hideSmallBalances])
 
-    const jumpToAmm = useCallback((type: LpTokenAction, market: string) => {
-        const pathname = `/liquidity/pools/coinPair/${market}`
-            
-        history && history.push({
-            pathname,
-            search: `type=${type}`
-        })
-    }, [history])
 
-    const jumpToSwapPanel = useCallback((pair: string) => {
-        history && history.push({
-            pathname: `/trading/lite/${pair}`
-        })
-    }, [history])
 
-    const getPopoverTrigger = useCallback(() => (
-        <MoreIcon cursor={'pointer'} />
-    ), [])
 
-    const getPopoverPopper = useCallback((market: string, isLp: boolean) => {
-        const marketList = isLp ? [] : getMarketArrayListCallback(market).filter(pair => {
-            const [first, last] = pair.split('-')
-            if (first === 'USDT' || last === 'USDT') {
-                return true
-            }
-            return first === market
-        })
-        
-        return (
-            <Box borderRadius={'inherit'} minWidth={110}>
-                {isLp ? (
-                    <>
-                    <MenuItem onClick={() => jumpToAmm(LpTokenAction.add, market)}>
-                        <ListItemText>{t('labelPoolTableAddLiqudity')}</ListItemText>
-                    </MenuItem>
-                    <MenuItem onClick={() => jumpToAmm(LpTokenAction.remove, market)}>
-                        <ListItemText>{t('labelPoolTableRemoveLiqudity')}</ListItemText>
-                    </MenuItem>
-                </>
-                ) : (
-                    marketList.map(pair => {
-                        const formattedPair = pair.replace('-', ' / ')
-                        return (
-                            <MenuItem key={pair} onClick={() => jumpToSwapPanel(pair)}>
-                                <ListItemText>{formattedPair}</ListItemText>
-                            </MenuItem>
-                        )
-                    })
-                )}
-            </Box>
-    )} , [t, jumpToAmm, jumpToSwapPanel, getMarketArrayListCallback])
 
-    const getPopoverProps: any = useCallback((market: string, isLp: boolean) => (
-        {
-            type: PopoverType.click,
-            popupId: 'testPopup',
-            className: 'arrow-right',
-            children: getPopoverTrigger(),
-            popoverContent: getPopoverPopper(market, isLp),
-            anchorOrigin: {
-                vertical: 'bottom',
-                horizontal: 'right',
-            },
-            transformOrigin: {
-                vertical: 'top',
-                horizontal: 'right',
-            },
-        }), [getPopoverTrigger, getPopoverPopper])
+
 
     const getColumnModeAssets = (t: TFunction): Column<Row, unknown>[] => [
         {
@@ -267,58 +199,25 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             name: t('labelToken'),
             formatter: ({row, column}) => {
                 const token = row[ column.key ]
-                let tokenIcon: any = undefined
+                let tokenIcon: [any,any] = [undefined,undefined]
                 const [head, middle, tail] = token.value.split('-')
                 if (token.type === 'lp' && middle && tail) {
-                    tokenIcon = coinJson[middle] && coinJson[tail] ? [coinJson[middle], coinJson[tail]] : [undefined, undefined]
+                    tokenIcon = coinJson[ middle ] && coinJson[ tail ] ? [coinJson[ middle ], coinJson[ tail ]] : [undefined, undefined]
                 }
                 if (token.type !== 'lp' && head && head !== 'lp') {
-                    tokenIcon = coinJson[head] ? [coinJson[head], undefined] : [undefined, undefined]
+                    tokenIcon = coinJson[ head ] ? [coinJson[ head ], undefined] : [undefined, undefined]
                 }
-                const [coinAInfo, coinBInfo] = tokenIcon
-                return <>
-                        <Box className={'logo-icon'} display={'flex'}   height={'var(--list-menu-coin-size)'}  position={'relative'}  zIndex={20}
-                            width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
-                            {coinAInfo ?
-                                <AvatarCoinStyled imgx={coinAInfo.x} imgy={coinAInfo.y}
-                                                imgheight={coinAInfo.height}
-                                                imgwidth={coinAInfo.width} size={24}
-                                                variant="circular" alt={coinAInfo?.simpleName as string}
-                                    // src={sellData?.icon}
-                                                src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
-                                : <Avatar variant="circular" alt={coinAInfo?.simpleName as string} style={{
-                                    height: 'var(--list-menu-coin-size)',
-                                    width: 'var(--list-menu-coin-size)'
-                                }}
-                                    // src={sellData?.icon}
-                                        src={'static/images/icon-default.png'}/>
-                            }
-                        </Box>
-                        {coinBInfo && (
-                            <Box className={'logo-icon'} display={'flex'} height={'var(--list-menu-coin-size)'}   position={'relative'}  zIndex={18}   left={-8}
-                                width={'var(--list-menu-coin-size)'} alignItems={'center'}
-                                justifyContent={'center'}>{coinBInfo ?
-                                <AvatarCoinStyled imgx={coinBInfo.x} imgy={coinBInfo.y} imgheight={coinBInfo.height}
-                                                imgwidth={coinBInfo.width} size={24}
-                                                variant="circular" alt={coinBInfo?.simpleName as string}
-                                    // src={sellData?.icon}
-                                                src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
-                                : <Avatar variant="circular" alt={coinBInfo?.simpleName as string} style={{
-                                    height: 'var(--list-menu-coin-size)',
-                                    width: 'var(--list-menu-coin-size)'
-                                }}
-                                    // src={sellData?.icon}
-                                        src={'static/images/icon-default.png'}/>} 
-                            </Box>
-                        )}
-                        <Typography variant={'inherit'} display={'flex'} flexDirection={'column'} marginLeft={1} component={'div'}
-                                    paddingRight={1}>
-                            <Typography component={'h3'} color={'textPrimary'} title={'sell'}>
-                                <Typography component={'span'} className={'next-coin'}>
-                                    {token.value}
-                                </Typography>
-                            </Typography>
-                        </Typography>
+               return <>
+                   <CoinIcons tokenIcon={tokenIcon}/>
+                   <Typography variant={'inherit'} display={'flex'} flexDirection={'column'} marginLeft={1}
+                               component={'div'}
+                               paddingRight={1}>
+                       <Typography component={'h3'} color={'textPrimary'} title={'sell'}>
+                           <Typography component={'span'} className={'next-coin'}>
+                               {token.value}
+                           </Typography>
+                       </Typography>
+                   </Typography>
                 </>
             }
         },
@@ -326,7 +225,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             key: 'amount',
             name: t('labelAmount'),
             formatter: ({row}) => {
-                const value = row['amount']
+                const value = row[ 'amount' ]
                 return <>
                     {getValuePrecisionThousand(value, 6, 2)}
                 </>
@@ -340,7 +239,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             key: 'locked',
             name: t('labelLocked'),
             formatter: ({row}) => {
-                const value = row['locked']
+                const value = row[ 'locked' ]
                 return <>
                     {getValuePrecisionThousand(value, 6, 2)}
                 </>
@@ -351,8 +250,8 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             key: 'value',
             name: t('labelAssetsTableValue'),
             formatter: ({row}) => {
-                const tokenValueDollar = row['tokenValueDollar']
-                const tokenValueYuan = row['tokenValueYuan']
+                const tokenValueDollar = row[ 'tokenValueDollar' ]
+                const tokenValueYuan = row[ 'tokenValueYuan' ]
                 const renderValue = isUSD ? tokenValueDollar : tokenValueYuan
                 return <>
                     {isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand(renderValue, 2, 2)}
@@ -364,34 +263,16 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             name: t('labelActions'),
             headerCellClass: 'textAlignRight',
             // minWidth: 280,
-            formatter: ({row}) => {
+            formatter:  ({row}) => {
                 const token = row[ 'token' ]
                 const isLp = token.type === TokenType.lp
                 const lpPairList = token.value.split('-')
                 lpPairList.splice(0, 1)
                 const lpPair = lpPairList.join('-')
                 const tokenValue = token.value
-                const renderMarket = isLp ? lpPair : tokenValue
-
-                return (
-                    <GridStyled container spacing={1} justifyContent={'flex-start'} alignItems={'center'}>
-                            <Grid item>
-                                <Button variant={'text'} size={'medium'} color={'primary'}
-                                        onClick={() => onShowDeposit(tokenValue)}>{t('labelDeposit')}</Button>
-                            </Grid>
-                            <Grid item>
-                                <Button variant={'text'} size={'medium'} color={'primary'}
-                                        onClick={() => onShowTransfer(tokenValue)}>{t('labelTransfer')}</Button>
-                            </Grid>
-                            <Grid item>
-                                <Button variant={'text'} size={'medium'} color={'primary'}
-                                        onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
-                            </Grid>
-                            <Grid item marginTop={1}>
-                                <Popover {...getPopoverProps(renderMarket, isLp)}/>
-                            </Grid>
-                    </GridStyled>
-                )
+                const renderMarket:`${string}-${string}` = (isLp ? lpPair : tokenValue) as `${string}-${string}`;
+                return  <ActionMemo {...{t,tokenValue,getMarketArrayListCallback,isLp,
+                        market:renderMarket,onShowDeposit,onShowTransfer,onShowWithdraw}}/>
             }
         },
     ]
@@ -474,12 +355,12 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         <Table
             {...{...rest, t}}
             showloading={!viewData.length}
-            style={{ height: tableHeight }}
+            style={{height: tableHeight}}
             rowHeight={RowConfig.rowHeight}
             headerRowHeight={RowConfig.headerRowHeight}
             rawData={viewData}
-            generateRows={(rowData:any) => rowData}
-            generateColumns = {({columnsRaw}: any) => columnsRaw as Column<any, unknown>[]}
+            generateRows={(rowData: any) => rowData}
+            generateColumns={({columnsRaw}: any) => columnsRaw as Column<any, unknown>[]}
             columnMode={getColumnModeAssets(t).filter(o => !o.hidden)}
 
         />

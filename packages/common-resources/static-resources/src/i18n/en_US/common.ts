@@ -277,6 +277,8 @@ export default {
     labelUpdateAccountSubmit: 'Activating Tx submitted.',
     labelUnlockAccountSuccess: 'Unlock successfully!',
     labelUnlockAccountFailed: 'Unlock failed!',
+
+    labelResetAccount: 'Reset Layer2 Account',
     // labelCreateAccountApproveWaitForAuth: 'Waiting for <1>{{symbol}}</1> Approve...',
     labelCreateAccountApproveDenied: '<0>{{symbol}}</0> Approve Denied by user.',
     labelAmmSwitch: 'switch',
