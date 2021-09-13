@@ -4,8 +4,9 @@ import { Box, Tab, Tabs } from '@mui/material'
 import { AmmTable, TradeTable, TransactionTable } from '@loopring-web/component-lib'
 import { StylePaper } from '../../styled'
 import { useGetAmmRecord, useGetTrades, useGetTxs } from './hooks';
+import { useSystem } from 'stores/system'
 
-const TxPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
+const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
     const [pageSize, setPageSize] = React.useState(0);
     const [currentTab, setCurrentTab] = React.useState('transactions')
 
@@ -20,7 +21,7 @@ const TxPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
         // @ts-ignore
         let height = container?.current?.offsetHeight;
         if (height) {
-            setPageSize(Math.floor((height - 120) / 44) - 2);
+            setPageSize(Math.floor((height - 120) / 44) - 3);
         }
     }, [container, pageSize]);
 
@@ -32,6 +33,8 @@ const TxPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
         }
     }, [getUserTxnList, pageSize])
 
+    const { etherscanBaseUrl, } = useSystem()
+
     return (
         <StylePaper ref={container}>
             <Box marginTop={2} marginLeft={2}>
@@ -42,9 +45,10 @@ const TxPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
                     <Tab label={t('labelLayer2HistoryAmmRecords')} value="ammRecords"></Tab>
                 </Tabs>
             </Box>
-            <div className="tableWrapper">
+            <div className="tableWrapper table-divide-short">
                 {currentTab === 'transactions' ? (
                     <TransactionTable {...{
+                        etherscanBaseUrl,
                         rawData: txTableData,
                         pagination: {
                             pageSize: pageSize,
@@ -82,4 +86,4 @@ const TxPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
     )
 })
 
-export default TxPanel
+export default HistoryPanel

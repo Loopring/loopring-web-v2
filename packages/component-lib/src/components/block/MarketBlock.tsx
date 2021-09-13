@@ -56,10 +56,10 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                                                      }: & WithTranslation & MarketBlockProps<C> & { handleBlockClick: () => void }) => {
     const {upColor, currency} = useSettings();
     const isUSD = currency === 'USD'
-    const { volume, priceDollar, priceYuan } = tradeFloat
+    const { volume, coinAPriceDollar, coinAPriceYuan } = tradeFloat as any
     const currencyUnit = isUSD ? PriceTag.Dollar : PriceTag.Yuan
-    const baseFaitPriceDollar = Number((priceDollar / (volume || 1)).toFixed(2))
-    const baseFaitPriceYuan = Number((priceYuan / (volume || 1)).toFixed(2))
+    const baseFaitPrice = getValuePrecisionThousand(isUSD ? coinAPriceDollar: coinAPriceYuan)
+
     return <MarketBlockStyled onClick={handleBlockClick} className={'MuiPaper-elevation2'} custom={{chg: upColor}} padding={0.5 * 5} display={'flex'}
                               justifyContent={'stretch'}>
         {coinAInfo && coinBInfo ?
@@ -87,7 +87,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                                 </Typography>
                               <Typography color={'var(--color-text-secondary)'} marginX={1 / 4}>&#8776;</Typography>
                               <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
-                            {currencyUnit}{getValuePrecisionThousand(isUSD ? baseFaitPriceDollar : baseFaitPriceYuan, 2)}</Typography>
+                            {currencyUnit} {baseFaitPrice}</Typography>
                             </Box>) : ''}
                         <Box display={'flex'} alignItems={'center'}>
                           <Typography variant={'body2'} component={'span'} marginTop={1 / 2} marginRight={1}

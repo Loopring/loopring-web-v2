@@ -14,6 +14,8 @@ import { AmmPanelView } from '../AmmPanel';
 import styled from '@emotion/styled/';
 import { useCoinPair } from './hooks';
 import { StylePaper } from 'pages/styled';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
+
 
 //******************** page code ************************//
 const BoxWrapperStyled = styled(Grid)`
@@ -62,6 +64,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
 ({t, ...rest}:
      WithTranslation & any) => {    //ActivityMap<I, I>
     const {currency} = useSettings();
+    let history = useHistory()
     const {
         tradeFloat,
         snapShotData,
@@ -103,7 +106,11 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
     return <>
         <Box marginBottom={2}>
             <Breadcrumbs aria-label="breadcrumb">
-                <Link color="textSecondary" href="/#/liquidity/pools">
+                {/*<Link color="textSecondary" href="/#/liquidity/pools">*/}
+                {/*<Link color="textSecondary" onClick={()=>{history.goBack()}}>*/}
+                {/*    {t('labelBack')}*/}
+                {/*</Link>*/}
+                <Link color="textSecondary" component={RouterLink} to={'/liquidity/pools'}>
                     {t('labelAmmList')}
                 </Link>
                 <Typography color={'textPrimary'} display={'flex'} alignItems={'center'}
@@ -135,8 +142,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         />
                     </Box>
                     <BoxWrapperStyled container className={'MuiPaper-elevation2'} display={'flex'}
-                                      alignItems={'center'}>
-                        <Grid item paddingLeft={2} paddingY={3} xs={7} sm={4} lg={3}
+                                      alignItems={'center'} >
+                        <Grid item paddingLeft={2} paddingY={3} xs={12} sm={6} lg={4}  overflow={'scroll'}
                               display={'flex'}
                               justifyContent={'space-between'}
                               alignItems={'center'}>
@@ -229,8 +236,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             }} orientation={'vertical'}/>
                         </Grid>
 
-
-                        <Grid item paddingX={2} paddingY={3} xs={6} sm={3} lg={3}>
+                        <Grid item paddingX={2} paddingY={3} xs={4} sm={3} lg={3}>
                             <Box>
                                 <Typography variant={'h3'}
                                             component={'span'}> {typeof coinPairInfo.amountDollar === 'undefined' ? EmptyValueTag :
@@ -243,7 +249,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             </Box>
                         </Grid>
 
-                        <Grid item paddingX={2} paddingY={3} xs={6} sm={3} lg={3}>
+                        <Grid item paddingX={2} paddingY={3} xs={4} sm={6} lg={3}>
                             <Box>
                                 <Typography variant={'h3'} component={'span'}>
                                     {getValuePrecisionThousand(tradeFloat?.volume)}
@@ -254,7 +260,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             </Box>
                         </Grid>
 
-                        <Grid item paddingX={2} paddingY={3} xs={6} sm={2} lg={3}>
+                        <Grid item paddingX={2} paddingY={3} xs={4} sm={6} lg={2}>
                             <Box>
                                 <Typography variant={'h3'}
                                             component={'span'}> {coinPairInfo.APY ? coinPairInfo.APY : EmptyValueTag}%

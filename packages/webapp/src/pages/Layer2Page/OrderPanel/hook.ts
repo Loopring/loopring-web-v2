@@ -15,7 +15,7 @@ export const useOrderList = () => {
     const [totalNum, setTotalNum] = React.useState(0)
     const [showLoading, setShowLoading] = React.useState(false)
     const [showDetailLoading, setShowDetailLoading] = React.useState(false)
-    const [openOrderList, setOpenOrderList] = React.useState<OrderHistoryRawDataItem[]>([])
+    // const [openOrderList, setOpenOrderList] = React.useState<OrderHistoryRawDataItem[]>([])
     const {account: {accountId, apiKey}} = useAccount()
     const {tokenMap: {marketArray}} = store.getState()
     const {ammMap: {ammMap}} = store.getState().amm
@@ -27,7 +27,7 @@ export const useOrderList = () => {
     const jointPairs = (marketArray || []).concat(ammPairList)
 
     const getOrderList = React.useCallback(async (props: Omit<GetOrdersRequest, 'accountId'>) => {
-        const isOpenOrder = props.status && props.status === 'processing'
+        // const isOpenOrder = props.status && props.status === 'processing'
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
             setShowLoading(true)
             const userOrders = await LoopringAPI.userAPI.getOrders({
@@ -36,7 +36,6 @@ export const useOrderList = () => {
             }, apiKey)
             if (userOrders && Array.isArray(userOrders.orders)) {
                 setTotalNum(userOrders.totalNum)
-                myLog(userOrders.orders)
                 const data = userOrders.orders.map(o => {
                     const {baseAmount, quoteAmount, baseFilled, quoteFilled} = o.volumes
 
@@ -60,7 +59,9 @@ export const useOrderList = () => {
                     const quoteVolume = volumeToCountAsBigNumber(quoteToken, actualQuoteFilled)
                     const quotefilledValue = volumeToCount(quoteToken, actualQuoteFilled)
 
-                    const average = baseVolume?.div(quoteVolume || new BigNumber(1)).toNumber() || 0
+                    const average = isBuy
+                        ? baseVolume?.div(quoteVolume || new BigNumber(1)).toNumber() || 0
+                        : quoteVolume?.div(baseVolume || new BigNumber(1)).toNumber() || 0
                     const completion = (quotefilledValue || 0)  / (quoteValue || 1)
 
                     return ({
@@ -101,11 +102,11 @@ export const useOrderList = () => {
                         completion: completion,
                     })
                 })
-                if (isOpenOrder) {
-                    setOpenOrderList(data)
-                } else {
+                // if (isOpenOrder) {
+                //     setOpenOrderList(data)
+                // } else {
                     setOrderOriginalData(data)
-                } 
+                // } 
             }
             setShowLoading(false)
         }
@@ -186,12 +187,17 @@ export const useOrderList = () => {
             setShowDetailLoading(false)
         }
     }, [accountId, apiKey])
+    
+    const clearData = React.useCallback(() => {
+        setOrderOriginalData([])
+    }, [])
 
     return {
         marketArray: jointPairs,
         getOrderList,
         rawData: orderOriginalData,
-        openOrderList,
+        clearRawData: clearData,
+        // openOrderList,
         totalNum,
         showLoading,
         showDetailLoading,
