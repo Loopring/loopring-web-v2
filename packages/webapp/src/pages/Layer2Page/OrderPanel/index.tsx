@@ -36,7 +36,7 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
         if (pageSize) {
             getOrderList({
                 limit: pageSize,
-                status: tableValue === 0 ? 'processing' : 'processed, failed, cancelled, cancelling, expired'
+                status: tableValue === 0 ? 'processing' : 'processed,failed,cancelled,cancelling,expired'
             })
         }
     }, [pageSize, getOrderList, tableValue])
