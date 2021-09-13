@@ -1,6 +1,5 @@
 import { Box, Grid, IconButton, Typography } from '@mui/material';
 import { HideIcon, ViewIcon, getValuePrecisionThousand } from '@loopring-web/common-resources';
-import React from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { AssetTitleProps } from './Interface';
 import styled from '@emotion/styled';
@@ -32,7 +31,7 @@ export const AssetTitle = withTranslation('common')(({
     return <Grid container spacing={2} justifyContent={'space-between'} alignItems={'flex-start'}>
         <Grid item xs={7} display={'flex'} flexDirection={'column'}>
             <BoxStyled component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}
-                       marginTop={1} marginBottom={'16px'}>
+                        marginBottom={'16px'}>
                 <Typography component={'span'} variant={'body1'} paddingRight={3} color={'textSecondary'}>
                     {t('labelAssetTitle')}
                     {' '}

@@ -155,15 +155,15 @@ export const subMenuLayer2 = {
         icon: SecurityIcon,
         router: {path: '/layer2/security'},
         label: {
-            id: 'setting',
-            i18nKey: 'labelSetting',
+            id: 'security',
+            i18nKey: 'labelSecurity',
         }
     }, {
         icon: VipIcon,
         router: {path: '/layer2/vip'},
         label: {
-            id: 'setting',
-            i18nKey: 'labelSetting',
+            id: 'vipPanel',
+            i18nKey: 'labelVipPanel',
         },
     }]
 }

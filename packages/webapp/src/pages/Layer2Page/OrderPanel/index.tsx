@@ -60,7 +60,7 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
 
     return (
         <>
-            <StylePaper ref={container}>
+            <StylePaper ref={container} className={'MuiPaper-elevation2'}>
                 <Box padding={2} paddingBottom={0}>
                     <Tabs
                         value={tableValue}

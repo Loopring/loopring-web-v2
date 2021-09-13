@@ -36,11 +36,12 @@ export default {
     labelMyLiquidity: 'My Liquidity',
     labelOrderBookMining: 'Orderbook Mining ',
     labelMakerRebates: 'Maker Rebates',
-    labelSetting: 'Settings',
+    labelSetting: 'Setting',
+    labelSecurity: 'Security',
+    labelVipPanel: 'VIP',
     titleLoopring:'Loopring',
     labelLoopringDescribe:'zkRollup Exchange and Payment Protocol',
     labelWrongNetwork: 'Wrong network',
     labelYoutube:'Youtube',
     labelWeibo:'Weibo'
-
 }

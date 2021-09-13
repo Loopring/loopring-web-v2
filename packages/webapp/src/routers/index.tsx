@@ -62,7 +62,8 @@ const RouterView = () => {
             <Route exact path='/layer2/history'><ContentWrap><Layer2Page/></ContentWrap></Route>
             <Route exact path='/layer2/order'><ContentWrap><Layer2Page/></ContentWrap></Route>
             <Route exact path='/layer2/rewards'><ContentWrap><Layer2Page/></ContentWrap></Route>
-            <Route exact path='/layer2/setting'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            <Route exact path='/layer2/security'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            <Route exact path='/layer2/vip'><ContentWrap><Layer2Page/></ContentWrap></Route>
             <Route exact path='/liquidity'> <ContentWrap><LiquidityPage/></ContentWrap></Route>
             <Route exact path='/liquidity/pools/*'><ContentWrap><LiquidityPage/></ContentWrap></Route>
             <Route exact path='/liquidity/pools'><ContentWrap><LiquidityPage/></ContentWrap></Route>
