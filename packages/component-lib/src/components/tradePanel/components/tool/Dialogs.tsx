@@ -30,10 +30,10 @@ export const AlertImpact = withTranslation('common', {withRef: true})(({
             </DialogContentText>
         </DialogContent>
         <DialogActions>
-            <Button onClick={(e) => handleClose(e as any)}> {t('labelDisAgreeConfirm')}</Button>
-            <Button onClick={(e) => {
+            <Button variant={'outlined'} size={'medium'} onClick={(e) => handleClose(e as any)}> {t('labelDisAgreeConfirm')}</Button>
+            <Button variant={'contained'} size={'small'} onClick={(e) => {
                 handleClose(e as any, true)
-            }}>{t('labelAgreeConfirm')}</Button>
+            }}  color={'primary'} >{t('labelAgreeConfirm')}</Button>
 
         </DialogActions>
     </Dialog>
@@ -86,10 +86,13 @@ export const ConfirmImpact = withTranslation('common', {withRef: true})(({
             />
         </DialogContent>
         <DialogActions>
-            <Button onClick={(e) => handleClose(e as any)}> {t('labelDisAgreeConfirm')}</Button>
-            <Button disabled={agree.trim() !== 'AGREE'} onClick={(e) => {
-                handleClose(e as any, true)
-            }}>{t('labelAgreeConfirm')}</Button>
+            {/*<Button onClick={(e) => handleClose(e as any)}> {t('labelDisAgreeConfirm')}</Button>*/}
+            {/*<Button disabled={agree.trim() !== 'AGREE'} onClick={(e) => {*/}
+            {/*    handleClose(e as any, true)*/}
+            {/*}}>{t('labelAgreeConfirm')}</Button>*/}
+            <Button variant={'outlined'} size={'medium'} onClick={(e) => handleClose(e as any)}> {t('labelDisAgreeConfirm')}</Button>
+            <Button variant={'contained'} size={'small'} onClick={(e) => handleClose(e as any, true)}
+                    disabled={agree.trim() !== 'AGREE'}  color={'primary'} >{t('labelAgreeConfirm')}</Button>
         </DialogActions>
     </Dialog>
 })
