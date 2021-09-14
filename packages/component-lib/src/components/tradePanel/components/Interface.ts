@@ -59,9 +59,11 @@ export type TransferViewProps<T, I, C = CoinKey<I> | string> =
  * private props
  */
 export type ResetInfoProps<C> = {
+    assetsData?: any[]
     resetBtnStatus?: keyof typeof TradeBtnStatus | undefined,
     chargeFeeTokenList: Array<FeeInfo>,
     chargeFeeToken?: C | string,
+    handleFeeChange: (value: FeeInfo) => void,
 }
 export type ResetExtendProps<T> = {
     onResetClick: () => void,
