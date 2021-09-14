@@ -52,7 +52,7 @@ const TradePanel = withTranslation('common')(
                         rowHeight={RowConfig.rowHeight}
                         headerRowHeight={RowConfig.headerRowHeight}
                         rawData={myTradeArray}
-                        pagination={{pageSize:14}}
+                        pagination={{pageSize:14,total:14}}
                         currentheight={tableHeight - RowConfig.rowHeight}/>:
                     <TradeTable
                         rowHeight={RowConfig.rowHeight}
