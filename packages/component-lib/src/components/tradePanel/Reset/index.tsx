@@ -11,6 +11,7 @@ export const ResetPanel = withTranslation('common', {withRef: true})(<T extends 
         resetBtnStatus,
         chargeFeeToken,
         chargeFeeTokenList,
+        assetsData,
         ...rest
     }: ResetProps<T> & WithTranslation) => {
 
@@ -25,6 +26,7 @@ export const ResetPanel = withTranslation('common', {withRef: true})(<T extends 
                                                 chargeFeeTokenList,
                                                 resetBtnStatus,
                                                 onResetClick,
+                                                assetsData,
                                             }} />,[onResetClick,resetBtnStatus,rest]),
             toolBarItem: undefined
         },]
