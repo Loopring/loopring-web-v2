@@ -337,18 +337,6 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                     </Grid>
                 )
             )}
-            {/* // <Grid item xs={12} sm={6} lg={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[0])}>
-            //     <MarketBlock {...{...formattedRecommendations[0], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[0]?.tradeFloat), chartData: formattedRecommendations[0] ? formattedRecommendations[0].chartData : [], ...rest}}></MarketBlock>
-            // </Grid>
-            // <Grid item xs={12} sm={6} lg={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[1])}>
-            //     <MarketBlock {...{...formattedRecommendations[1], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[1]?.tradeFloat), chartData: formattedRecommendations[1] ? formattedRecommendations[1].chartData : [], ...rest}}></MarketBlock>
-            // </Grid>
-            // <Grid item xs={12} sm={6} lg={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[2])}>
-            //     <MarketBlock {...{...formattedRecommendations[2], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[2]?.tradeFloat), chartData: formattedRecommendations[2] ? formattedRecommendations[2].chartData : [], ...rest}}></MarketBlock>
-            // </Grid>
-            // <Grid item xs={12} sm={6} lg={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[3])}>
-            //     <MarketBlock {...{...formattedRecommendations[3], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[3]?.tradeFloat), chartData: formattedRecommendations[3] ? formattedRecommendations[3].chartData : [], ...rest}}></MarketBlock>
-            // </Grid> */}
 
         </RowStyled>
         <TableWrapStyled ref={tableRef as any}
