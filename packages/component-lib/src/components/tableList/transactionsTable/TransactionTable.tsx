@@ -3,7 +3,6 @@ import styled from '@emotion/styled'
 import { Box, Link, Modal } from '@mui/material'
 import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
-import { useDeepCompareEffect } from 'react-use'
 import { Column, Table, TablePagination } from '../../basic-lib'
 import {
     EmptyValueTag,
@@ -13,13 +12,12 @@ import {
     WarningIcon,
     CompleteIcon,
     getValuePrecisionThousand,
-    myLog,
 } from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
 import { TxnDetailPanel, TxnDetailProps } from './components/modal'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes } from './Interface'
-import { DateRange, StaticDatePicker } from '@mui/lab'
+import { DateRange } from '@mui/lab'
 import { TxType, UserTxTypes } from 'loopring-sdk'
 
 export type TxsFilterProps = {

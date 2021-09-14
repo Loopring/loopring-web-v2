@@ -42,7 +42,6 @@ import { DAYS } from '../../defs/common_defs';
 import { getTimestampDaysLater } from '../../utils/dt_tools';
 import { myLog } from '@loopring-web/common-resources/static-resources/src/utils/log_tools';
 import { calcPriceByAmmTickMapDepth, marketInitCheck, swapDependAsync } from './help';
-import { useTicker } from '../../stores/ticker';
 
 const useSwapSocket = () => {
     const {sendSocketTopic, socketEnd} = useSocket();
@@ -98,10 +97,10 @@ const getPriceImpactInfo = (calcTradeParams: any) => {
     }
 }
 
-export const useSwap = <C extends { [ key: string ]: any }>() => {
+export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}) => {
 
     //High: No not Move!!!!!!
-    const {realPair, realMarket} = usePairMatch('/trading/lite');
+    const {realPair, realMarket} = usePairMatch(path);
     /** get store value **/
     const {amountMap, getAmount} = useAmount();
     const {account, status: accountStatus} = useAccount();
@@ -134,13 +133,8 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
     const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
     const [myTradeArray, setMyTradeArray] = React.useState<RawDataTradeItem[]>([]);
     const [tradeFloat, setTradeFloat] = React.useState<TradeFloat | undefined>(undefined);
-    // const [tickMap, setTickMap] = React.useState<sdk.LoopringMap<sdk.TickerData> | undefined>(undefined)
-    // const [ammPoolSnapshot, setAmmPoolSnapshot] = React.useState<sdk.AmmPoolSnapshot | undefined>(undefined);
     const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
     const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
-
-    // const [depth, setDepth] = React.useState<sdk.DepthData>()
-    // const [priceImpact, setPriceImpact] = React.useState<number>(0)
 
     /*** Btn related function ***/
     const swapFunc = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
@@ -728,6 +722,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
     }
     
     return {
+        market,
         toastOpen,
         closeToast,
         tradeCalcData,

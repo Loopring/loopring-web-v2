@@ -1,19 +1,16 @@
-import { Route, useLocation,Switch } from 'react-router-dom'
-
-import Header from 'layouts/header'
-
-import QuotePage from 'pages/QuotePage'
-import { SwapPage } from 'pages/SwapPage'
-
-import { Container ,Box} from '@mui/material'
-import { Layer2Page } from '../pages/Layer2Page'
-import { LiquidityPage } from '../pages/LiquidityPage'
-import { MiningPage } from '../pages/MiningPage'
-
-import { LAYOUT } from '../defs/common_defs';
-import { ModalGroup } from '../modal';
-import Footer from '../layouts/footer';
+import { Route,Switch } from 'react-router-dom'
 import React from 'react';
+import { Container ,Box} from '@mui/material'
+import Header from 'layouts/header'
+import Footer from '../layouts/footer';
+import { ModalGroup } from '../modal';
+import { LAYOUT } from '../defs/common_defs';
+import { QuotePage } from 'pages/QuotePage'
+import { SwapPage } from 'pages/SwapPage'
+import { Layer2Page } from 'pages/Layer2Page'
+import { LiquidityPage } from 'pages/LiquidityPage'
+import { MiningPage } from 'pages/MiningPage'
+import { OrderbookPage } from 'pages/ProTradePage';
 
 
 
@@ -53,8 +50,8 @@ const RouterView = () => {
             <Route exact path='/'><ContentWrap><SwapPage/></ContentWrap></Route>
             <Route path='/trading/lite'><ContentWrap><SwapPage/></ContentWrap></Route>
             <Route path='/trading/lite(/:symbol)'><ContentWrap><SwapPage/></ContentWrap></Route>
-            <Route path='/trading/pro'><ContentWrap><SwapPage/></ContentWrap></Route>
-            <Route path='/trading/pro(/:symbol)'><ContentWrap><SwapPage/></ContentWrap></Route>
+            <Route path='/trading/pro'><OrderbookPage/></Route>
+            <Route path='/trading/pro(/:symbol)'><OrderbookPage/></Route>
 
             <Route exact path='/markets'><ContentWrap><QuotePage/></ContentWrap> </Route>
             <Route exact path='/mining'><ContentWrap><MiningPage/></ContentWrap> </Route>

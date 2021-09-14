@@ -56,7 +56,7 @@ const RowConfig = {
 
 }
 
-const QuotePage = withTranslation('common')((rest: WithTranslation) => {
+export const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const [candlestickList, setCandlestickList] = React.useState<any[]>([])
     const [ammPoolBalances, setAmmPoolBalances] = React.useState<any[]>([])
     const [tableTabValue, setTableTabValue] = React.useState('all')
@@ -388,4 +388,4 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
 
 })
 
-export default QuotePage
+// export default QuotePage
