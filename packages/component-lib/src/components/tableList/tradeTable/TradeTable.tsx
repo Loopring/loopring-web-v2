@@ -61,7 +61,7 @@ const TableStyled = styled(Box)`
 
   .rdg {
     height: ${(props: any) => props.currentheight}px;
-    --template-columns: 320px auto auto auto !important;
+    --template-columns: 300px 120px auto auto !important;
 
     .rdg-cell.action {
       display: flex;
@@ -71,6 +71,10 @@ const TableStyled = styled(Box)`
 
     .rdg-header-row {
       // background-color: inherit !important;
+    }
+
+    .textAlignRight {
+        text-align: right;
     }
   }
 
@@ -91,11 +95,11 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
             const toValue = to.value ? getValuePrecisionThousand(to.value, 4, 2) : EmptyValueTag
 
             return (
-                <div className="rdg-cell-value">
+                <Box className="rdg-cell-value">
                     <StyledSideCell value={row[ 'side' ]}>
                         {`${fromValue} ${from.key} \u2192 ${toValue} ${to.key}`}
                     </StyledSideCell>
-                </div>
+                </Box>
             )
         }
     },
@@ -116,26 +120,28 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
     {
         key: 'price',
         name: t('labelTradePrice'),
+        headerCellClass: 'textAlignRight',
         formatter: ({row}) => {
             const {value} = row[ 'price' ]
             const renderValue = value ? (getValuePrecisionThousand(Number(value), 6, 2)) : EmptyValueTag
             return (
-                <div className="rdg-cell-value">
+                <Box className="rdg-cell-value textAlignRight">
                     {renderValue}
                     {/*{currency === Currency.dollar ?*/}
                     {/*    PriceTag.Dollar + getThousandFormattedNumbers(priceDollar)*/}
                     {/*    : PriceTag.Yuan + getThousandFormattedNumbers(priceYuan)}*/}
-                </div>
+                </Box>
             )
         }
     },
     {
         key: 'fee',
         name: t('labelTradeFee'),
+        headerCellClass: 'textAlignRight',
         formatter: ({row}) => {
             const {key, value} = row[ 'fee' ]
             return (
-                <div className="rdg-cell-value">
+                <div className="rdg-cell-value textAlignRight">
                     {`${value} ${key}`}
                 </div>
             )
@@ -144,11 +150,12 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
     {
         key: 'time',
         name: t('labelTradeTime'),
+        headerCellClass: 'textAlignRight',
         // minWidth: 400,
         formatter: ({row}) => {
             const time = moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
             return (
-                <div className="rdg-cell-value">
+                <div className="rdg-cell-value textAlignRight">
                     {time}
                 </div>
             )

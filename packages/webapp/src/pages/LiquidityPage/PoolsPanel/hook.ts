@@ -83,7 +83,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
     }, [ammMap]);
     const sortMethod = React.useCallback((_sortedRows,sortColumn)=>{
         myLog({filteredData})
-        let _rawData:Row<R>[]  = [];
+        let _rawData:Row<R>[] = [];
         switch (sortColumn) {
             case 'pools':
                 _rawData = filteredData.sort((a, b) => {
@@ -131,7 +131,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
         }
         // resetTableData(_rawData)
         return _rawData;
-    },[filteredData, rawData])
+    },[filteredData, rawData, tokenPrices])
 
     const updateTickerLoop = React.useCallback((_keys?: string[]) => {
         updateTickers(_keys as string[]);
