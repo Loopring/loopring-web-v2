@@ -53,6 +53,8 @@ const RouterView = () => {
             <Route exact path='/'><ContentWrap><SwapPage/></ContentWrap></Route>
             <Route path='/trading/lite'><ContentWrap><SwapPage/></ContentWrap></Route>
             <Route path='/trading/lite(/:symbol)'><ContentWrap><SwapPage/></ContentWrap></Route>
+            <Route path='/trading/pro'><ContentWrap><SwapPage/></ContentWrap></Route>
+            <Route path='/trading/pro(/:symbol)'><ContentWrap><SwapPage/></ContentWrap></Route>
 
             <Route exact path='/markets'><ContentWrap><QuotePage/></ContentWrap> </Route>
             <Route exact path='/mining'><ContentWrap><MiningPage/></ContentWrap> </Route>

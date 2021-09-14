@@ -1,18 +1,17 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects"
-import { getTicker, getTickers, getTickerStatus } from './reducer'
-import { CoinKey, CustomError, ErrorMap, PairKey, TradeFloat } from '@loopring-web/common-resources'
-
+import {  getTickers, getTickerStatus } from './reducer'
+import {  CustomError, ErrorMap} from '@loopring-web/common-resources'
 
 import { LoopringAPI } from "api_wrapper"
 import { makeTickerMap } from '../../hooks/help';
 
 
-type TickerMap<R extends { [ key: string ]: any }> = {
-    [key in CoinKey<R> | PairKey<R>]?: TradeFloat & {
-    reward?: number, rewardToken?: string
-}
-
-}
+// type TickerMap<R extends { [ key: string ]: any }> = {
+//     [key in CoinKey<R> | PairKey<R>]?: TradeFloat & {
+//     reward?: number, rewardToken?: string
+// }
+//
+// }
 
 
 const getTickersApi = async <R extends { [ key: string ]: any }>(list: Array<keyof R>) => {
@@ -42,16 +41,16 @@ export function* getPostsSaga({payload}: any) {
     }
 }
 
-function* tickerSaga() {
-    yield all([takeLatest(getTicker, getPostsSaga)]);
-}
+// function* tickerSaga() {
+//     yield all([takeLatest(getTicker, getPostsSaga)]);
+// }
 
 function* tickersSaga() {
     yield all([takeLatest(getTickers, getPostsSaga)]);
 }
 
 export const tickerForks = [
-    fork(tickerSaga),
+    // fork(tickerSaga),
     fork(tickersSaga),
 ]
  

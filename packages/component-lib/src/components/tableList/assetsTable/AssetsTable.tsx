@@ -9,7 +9,7 @@ import { Column, Table } from '../../basic-lib'
 // import { TablePagination } from '../../basic-lib'
 import { Filter } from './components/Filter'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
-import { getValuePrecisionThousand, PriceTag } from '@loopring-web/common-resources';
+import { getValuePrecisionThousand, MarketType, PriceTag } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores'
 import { CoinIcons } from './components/CoinIcons';
 import ActionMemo from './components/ActionMemo';
@@ -275,7 +275,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                 lpPairList.splice(0, 1)
                 const lpPair = lpPairList.join('-')
                 const tokenValue = token.value
-                const renderMarket:`${string}-${string}` = (isLp ? lpPair : tokenValue) as `${string}-${string}`;
+                const renderMarket:MarketType = (isLp ? lpPair : tokenValue) as MarketType;
                 return  <ActionMemo {...{t,tokenValue,getMarketArrayListCallback,isLp,
                         market:renderMarket,onShowDeposit,onShowTransfer,onShowWithdraw}}/>
             }

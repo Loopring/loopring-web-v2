@@ -14,18 +14,24 @@ import { LoopringSocket } from 'services/socket';
 import { statusUnset as accountStatusUnset } from '../account';
 import { ChainId, FiatPriceInfo, LoopringMap } from 'loopring-sdk';
 import { getTokenPrices } from '../tokenPrices';
+import { getTickers, useTicker } from '../ticker';
 
 const initConfig = function* <R extends { [ key: string ]: any }>(chainId: ChainId | 'unknown') {
     // store.dispatch(updateAccountStatus());
     const {tokenSymbolMap: tokensMap} = yield call(async () => await LoopringAPI.exchangeAPI?.getTokens())
     const {ammpools} = yield call(async () => await LoopringAPI.ammpoolAPI?.getAmmPoolConf());
     const {pairs, marketArr, tokenArr, markets} = yield call(async () => LoopringAPI.exchangeAPI?.getMixMarkets());
+    // const
+
+    //
+
 
     store.dispatch(getTokenMap({tokensMap, marketMap: markets, pairs, marketArr, tokenArr}))
     store.dispatch(initAmmMap({ammpools}))
     yield take('tokenMap/getTokenMapStatus');
     store.dispatch(getTokenPrices(undefined));
     yield take('tokenPrices/getTokenPricesStatus');
+    store.dispatch(getTickers({tickerKeys:marketArr}))
     store.dispatch(getAmmMap({ammpools}))
     store.dispatch(getAmmActivityMap({ammpools}))
     if (store.getState().tokenMap.status === 'ERROR') {

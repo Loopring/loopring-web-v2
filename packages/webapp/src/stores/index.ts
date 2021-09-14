@@ -29,7 +29,7 @@ import { OnchainHashInfo } from './localStore/onchainHashInfo'
 import { Confirmation } from './localStore/confirmation'
 import { WalletInfo } from './localStore/walletInfo'
 import { amountMapSlice } from './amount';
-import { pageTradeLiteSlice, pageAmmPoolSlice, modalDataSlice, } from './router';
+import { pageTradeLiteSlice, pageAmmPoolSlice, modalDataSlice, pageTradeProSlice, } from './router';
 import { tokenPricesSlice } from './tokenPrices';
 
 const sagaMiddleware = createSagaMiddleware()
@@ -86,6 +86,7 @@ const reducer = combineReducers({
 
     // router redux
     _router_pageTradeLite: pageTradeLiteSlice.reducer,
+    _router_pageTradePro: pageTradeProSlice.reducer,
     _router_pageAmmPool: pageAmmPoolSlice.reducer,
     _router_modalData: modalDataSlice.reducer,
 })

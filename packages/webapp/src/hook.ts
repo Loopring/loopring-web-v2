@@ -9,7 +9,7 @@ import { useAccount } from './stores/account';
 import { connectProvides, walletServices } from '@loopring-web/web3-provider';
 import { useAccountInit } from './hookAccountInit';
 import { useAmmActivityMap } from './stores/Amm/AmmActivityMap';
-import { useTicker } from './stores/ticker';
+import { TickerMap, useTicker } from './stores/ticker';
 import { useUserRewards } from './stores/userRewards';
 import { useTokenPrices } from './stores/tokenPrices';
 
@@ -173,6 +173,21 @@ export function useInit() {
                 break;
         }
     }, [userRewardsStatus])
+    React.useEffect(() => {
+        switch (tickerStatus) {
+            case "ERROR":
+                console.log("ERROR", 'get ticker error,ui');
+                tickerStatusUnset()
+                break;
+            case "PENDING":
+                break;
+            case "DONE":
+                tickerStatusUnset();
+                break;
+            default:
+                break;
+        }
+    }, [tickerStatus, tickerStatusUnset]);
 
     useAccountInit({state})
     // React.useEffect(() => {
