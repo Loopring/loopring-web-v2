@@ -98,7 +98,7 @@ const TableStyled = styled(Box)`
 
     .rdg {
         --template-columns: ${({isopen}: any) => isopen === 'open' 
-            ? 'auto auto 220px auto auto auto 120px' 
+            ? 'auto auto 220px auto auto 130px 120px' 
             : '100px 100px 220px 120px 120px auto 160px'} !important;
 
         .rdg-cell:last-of-type {
