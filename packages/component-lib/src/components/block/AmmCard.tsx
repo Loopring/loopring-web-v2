@@ -122,7 +122,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> {APY || EmptyValueTag}%
                     </Typography>
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'} marginTop={1}
-                                style={{textTransform: 'uppercase'}}>{t('labelAPY')}</Typography>
+                                style={{textTransform: 'uppercase'}}>{t('labelAPR')}</Typography>
                 </Typography>
 
                 <DividerWrapperStyled marginTop={3} marginBottom={2}>

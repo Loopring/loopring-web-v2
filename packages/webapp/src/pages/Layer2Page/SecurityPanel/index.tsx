@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { Box, Button, Divider, Grid, Typography } from '@mui/material';
 import React from 'react';
 import { Trans, WithTranslation, withTranslation } from 'react-i18next';
-import { useExportAccountInfo } from './hook';
+import { useExportAccountInfo, useResetAccount } from './hook';
 
 const StyledPaper = styled(Grid)`
   width: 100%;
@@ -22,8 +22,10 @@ const StyledDivider = styled(Divider)`
 //   background: var(--color-divide)
 // `
 
-
 export const SecurityPanel = withTranslation(['common', 'layout'])(({t, i18n, ...rest}: & WithTranslation) => {
+
+    const { resetKeypair, } = useResetAccount()
+
     const {exportAccInfo} = useExportAccountInfo()
 
     return <StyledPaper container className={'MuiPaper-elevation2'} marginBottom={2}>
@@ -42,7 +44,9 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({t, i18n, ..
                         </Typography>
                     </Grid>
                     <Grid item xs={5} display={'flex'} justifyContent={'flex-start'} alignItems={'flex-end'} flexDirection={'column'}>
-                        <Button variant={'outlined'} size={'medium'} color={'primary'}
+                        <Button variant={'outlined'} size={'medium'} color={'primary'} onClick={ () => {
+                            resetKeypair()
+                        }}
                                 disabled={false}>{t('labelBtnReset')}</Button>
                         <Typography variant={'body2'} color={'text.secondary'} component={'p'}
                                     paddingTop={1}>{t('labelHadChangPassword', {passDay: '14 hours'})}</Typography>

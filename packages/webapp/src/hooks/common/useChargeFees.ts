@@ -54,9 +54,10 @@ export function useChargeFees(tokenSymbol: string | undefined, requestType: Offc
                         response.raw_data.fees.forEach((item: any) => {
                             const feeRaw = item.fee
                             const tokenInfo = tokenMap[ item.token ]
+                            const tokenId = tokenInfo.tokenId
                             const fastWithDraw = tokenInfo.fastWithdrawLimit
                             const fee = sdk.toBig(item.fee).div('1e' + tokenInfo.decimals).toString()
-                            chargeFeeList.push({belong: item.token, fee, __raw__: { feeRaw, fastWithDraw }})
+                            chargeFeeList.push({belong: item.token, fee, __raw__: { fastWithDraw, feeRaw, tokenId, }})
                         })
                     }
 
