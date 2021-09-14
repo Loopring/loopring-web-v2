@@ -1,10 +1,25 @@
 import { AccountStatus } from '@loopring-web/common-resources';
 import exportFromJSON from 'export-from-json';
 import { useAccount } from '../../../stores/account';
-import React from 'react';
+import React from 'react'
+
+import { AccountStep,
+    useOpenModals 
+} from '@loopring-web/component-lib'
 
 export function useResetAccount() {
 
+    const {
+        setShowAccount,
+    } = useOpenModals()
+
+    const resetKeypair = React.useCallback(() => {
+        setShowAccount({isShow: true, step: AccountStep.ResetAccount_Approve_WaitForAuth})
+    }, [setShowAccount])
+
+    return {
+        resetKeypair,
+    }
 }
 
 export function useExportAccountInfo() {
