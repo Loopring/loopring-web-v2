@@ -16,12 +16,8 @@ import {
     Deposit_Submit,
     Deposit_WaitForAuth,
     HadAccount,
-    ModalAccount,
-    ModalPanel,
-    ModalQRCode,
     NoAccount,
     QRAddressPanel,
-    Toast,
     Transfer_Failed,
     Transfer_First_Method_Denied,
     Transfer_In_Progress,
@@ -48,31 +44,24 @@ import {
     Withdraw_WaitForAuth,
 } from '@loopring-web/component-lib';
 import { walletServices } from '@loopring-web/web3-provider';
-import { ConnectorError, sleep } from 'loopring-sdk';
 
 import React, { useState } from 'react';
 import { copyToClipBoard } from 'utils/obj_tools';
-import { updateAccountStatus, useAccount } from 'stores/account';
-import { ActionResult, ActionResultCode, REFRESH_RATE, TOAST_TIME } from 'defs/common_defs';
-import { updateAccountFromServer } from 'services/account/activateAccount';
+import { useAccount } from 'stores/account';
 import { lockAccount } from 'services/account/lockAccount';
 import { unlockAccount } from 'services/account/unlockAccount';
 import { myLog } from "@loopring-web/common-resources";
 import { useDeposit } from 'hooks/useractions/useDeposit';
 
-import { accountServices } from '../../services/account/accountServices'
-
-import { LoopringAPI } from 'api_wrapper';
-import { useWalletInfo } from 'stores/localStore/walletInfo';
-
-import store from 'stores'
 import { useTransfer } from 'hooks/useractions/useTransfer';
 import { useWithdraw } from 'hooks/useractions/useWithdraw';
-import { checkErrorInfo } from 'hooks/useractions/utils';
 import { useGetAssets } from '../../pages/Layer2Page/AssetPanel/hook'
+import { useUpdateAccout } from 'hooks/useractions/useUpdateAccount';
 
-export function useAccountModal({t, etherscanBaseUrl, onClose, rest, }: 
+export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }: 
     {t: any, etherscanBaseUrl: string, rest: any, onClose?: any, }) {
+
+    const { goUpdateAccount } = useUpdateAccout()
 
     const {
         modals: {isShowAccount}, setShowConnect, setShowAccount,
@@ -87,8 +76,6 @@ export function useAccountModal({t, etherscanBaseUrl, onClose, rest, }:
         setShouldShow,
         resetAccount,
     } = useAccount();
-
-    const {walletInfo, updateDepositHashWrapper, checkHWAddr,} = useWalletInfo()
 
     const {
         withdrawAlertText,
@@ -142,97 +129,6 @@ export function useAccountModal({t, etherscanBaseUrl, onClose, rest, }:
         setShowDeposit({isShow: true})
 
     }, [setShowAccount])
-
-    const goUpdateAccount = React.useCallback(async (isFirstTime: boolean = true) => {
-
-        if (!account.accAddress) {
-            myLog('account.accAddress is nil')
-            return
-        }
-
-        setShowAccount({isShow: true, step: AccountStep.UpdateAccount_Approve_WaitForAuth});
-
-        let isHWAddr = checkHWAddr(account.accAddress)
-
-        isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
-
-        myLog('goUpdateAccount.... isFirstTime:', isFirstTime, ' isHWAddr:', isHWAddr)
-
-        const updateAccAndCheck = async () => {
-            const result: ActionResult = await updateAccountFromServer({isHWAddr})
-
-            switch (result.code) {
-                case ActionResultCode.NoError:
-
-                    const eddsaKey = result?.data?.eddsaKey
-                    myLog(' after NoError:', eddsaKey)
-                    await sleep(REFRESH_RATE)
-
-                    if (LoopringAPI.userAPI && LoopringAPI.exchangeAPI && eddsaKey) {
-
-                        const {accInfo, error} = await LoopringAPI.exchangeAPI.getAccount({owner: account.accAddress})
-
-                        if (!error && accInfo) {
-
-                            const {apiKey} = (await LoopringAPI.userAPI.getUserApiKey({
-                                accountId: accInfo.accountId
-                            }, eddsaKey.sk))
-
-                            myLog('After connect >>, get apiKey', apiKey)
-
-                            if (!isFirstTime && isHWAddr) {
-                                updateDepositHashWrapper({wallet: account.accAddress, isHWAddr,})
-                            }
-
-                            accountServices.sendAccountSigned(accInfo.accountId, apiKey, eddsaKey)
-
-                        }
-
-                    }
-
-                    setShowAccount({isShow: false})
-                    break
-                case ActionResultCode.GetAccError:
-                case ActionResultCode.GenEddsaKeyError:
-                case ActionResultCode.UpdateAccoutError:
-
-
-                    const eddsaKey2 = result?.data?.eddsaKey
-
-                    if (eddsaKey2) {
-                        myLog('UpdateAccoutError:', eddsaKey2)
-                        store.dispatch(updateAccountStatus({eddsaKey: eddsaKey2,}))
-                    }
-
-                    const errMsg = checkErrorInfo(result?.data?.errorInfo, isFirstTime)
-
-                    myLog('----------UpdateAccoutError errMsg:', errMsg)
-
-                    switch (errMsg) {
-                        case ConnectorError.NOT_SUPPORT_ERROR:
-                            myLog(' 00000---- got NOT_SUPPORT_ERROR')
-                            setShowAccount({isShow: true, step: AccountStep.UpdateAccount_First_Method_Denied})
-                            return
-                        case ConnectorError.USER_DENIED:
-                            myLog(' 11111---- got USER_DENIED')
-                            setShowAccount({isShow: true, step: AccountStep.UpdateAccount_User_Denied})
-                            return
-                        default:
-                            myLog(' 11111---- got UpdateAccount_Success')
-                            setShowAccount({isShow: true, step: AccountStep.UpdateAccount_Success})
-                            accountServices.sendCheckAccount(account.accAddress)
-                            break
-                    }
-                    break
-                default:
-                    break
-            }
-
-        }
-
-        updateAccAndCheck()
-
-    }, [account, setShowAccount, walletInfo])
 
     const onQRClick = React.useCallback(() => {
         setShowAccount({isShow: true, step: AccountStep.QRCode})

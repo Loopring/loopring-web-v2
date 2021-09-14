@@ -6,7 +6,7 @@ import {
     Toast,
 } from '@loopring-web/component-lib';
 import { TOAST_TIME } from 'defs/common_defs';
-import { useAccountModal } from './hook';
+import { useAccountModalForUI } from './hook';
 
 export const ModalAccountInfo = withTranslation('common')(({
                                                                onClose,
@@ -37,7 +37,7 @@ export const ModalAccountInfo = withTranslation('common')(({
         closeBtnInfo,
         accountList,
         currentModal,
-    } = useAccountModal({t, etherscanBaseUrl, rest, onClose})
+    } = useAccountModalForUI({t, etherscanBaseUrl, rest, onClose})
 
     return <>
 
