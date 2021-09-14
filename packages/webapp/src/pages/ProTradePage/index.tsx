@@ -14,8 +14,8 @@ import { ChartView, MarketView, OrderTableView, SpotView, Toolbar, WalletInfo } 
 
 
 const OrderbookPage = withTranslation('common')( ()=>{
-    const { market,marketTicker} = usePro()
-    const { unit} = useTheme()
+    const { market,marketTicker } = usePro()
+    const { unit } = useTheme()
     const ViewList = {
         toolbar:React.useMemo(()=><Toolbar market={market as any} marketTicker={marketTicker as any}/>,[market,marketTicker]),
         walletInfo: React.useMemo(()=><WalletInfo/>,[]),

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { getTickers, statusUnset, updateTicker } from './reducer';
-import { TickerMap, TickerStates } from './interface';
+import {  TickerStates } from './interface';
 import { CoinKey } from '@loopring-web/common-resources';
 import React from 'react';
 import { LoopringMap, TickerData } from 'loopring-sdk';
@@ -16,7 +16,7 @@ export function useTicker(): TickerStates & {
         ...tickerMap,
         statusUnset: React.useCallback(() => dispatch(statusUnset(undefined)), [dispatch]),
         updateTickers: React.useCallback((tickerKeys: Array<CoinKey<any>>) => dispatch(getTickers({tickerKeys})), [dispatch]),
-        updateTickerSync: React.useCallback((tickerMap: LoopringMap<TickerData> )=> dispatch(updateTicker(tickerMap)), [dispatch]),
+        updateTickerSync: React.useCallback((tickMap: LoopringMap<TickerData> )=> dispatch(updateTicker(tickMap)), [dispatch]),
     }
 
 }

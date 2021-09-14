@@ -4,6 +4,7 @@ import { LoopringAPI } from '../../api_wrapper';
 import { CustomError, ErrorMap, getValuePrecisionThousand, MarketType } from '@loopring-web/common-resources';
 import { volumeToCountAsBigNumber } from '../../hooks/help';
 import BigNumber from 'bignumber.js';
+import { updateTicker } from '../../stores/ticker';
 
 export const swapDependAsync = (market: MarketType): Promise<{
     ammPoolSnapshot: AmmPoolSnapshot | undefined,
@@ -20,6 +21,7 @@ export const swapDependAsync = (market: MarketType): Promise<{
                 LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({poolAddress,}),
                 LoopringAPI.exchangeAPI.getMixTicker({market: market})])
                 .then(([{depth}, {ammPoolSnapshot}, {tickMap}]) => {
+                    store.dispatch(updateTicker(tickMap))
                     resolve({
                         ammPoolSnapshot: ammPoolSnapshot,
                         tickMap,

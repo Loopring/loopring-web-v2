@@ -16,8 +16,6 @@ import {
     CoinMap,
     fnType,
     getShowStr,
-    getValuePrecision,
-    getValuePrecisionThousand,
     IBData, MarketType,
     SagaStatus,
     TradeCalcData,
@@ -44,6 +42,7 @@ import { DAYS } from '../../defs/common_defs';
 import { getTimestampDaysLater } from '../../utils/dt_tools';
 import { myLog } from '@loopring-web/common-resources/static-resources/src/utils/log_tools';
 import { calcPriceByAmmTickMapDepth, marketInitCheck, swapDependAsync } from './help';
+import { useTicker } from '../../stores/ticker';
 
 const useSwapSocket = () => {
     const {sendSocketTopic, socketEnd} = useSocket();
@@ -137,8 +136,9 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
     const [tradeFloat, setTradeFloat] = React.useState<TradeFloat | undefined>(undefined);
     // const [tickMap, setTickMap] = React.useState<sdk.LoopringMap<sdk.TickerData> | undefined>(undefined)
     // const [ammPoolSnapshot, setAmmPoolSnapshot] = React.useState<sdk.AmmPoolSnapshot | undefined>(undefined);
-    const [alertOpen, setAlertOpen] = React.useState<boolean>(false)
-    const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false)
+    const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
+    const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
+
     // const [depth, setDepth] = React.useState<sdk.DepthData>()
     // const [priceImpact, setPriceImpact] = React.useState<number>(0)
 

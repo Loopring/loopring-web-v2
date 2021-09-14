@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
-import { Ticker, TickerStates } from './interface';
-import { CoinKey, MarketType, SagaStatus } from '@loopring-web/common-resources';
-import { makeTickerMap } from '../../hooks/help';
+import { TickerStates } from './interface';
+import { CoinKey, SagaStatus } from '@loopring-web/common-resources';
 import { LoopringMap, TickerData } from 'loopring-sdk';
 
 const initialState: Required<TickerStates> = {
@@ -15,15 +14,7 @@ const tickerMapSlice: Slice = createSlice({
     initialState,
     reducers: {
         updateTicker(state, action: PayloadAction<LoopringMap<TickerData>>) {
-            if(action.payload){
-                const tickMap  =  action.payload
-                const {data} = makeTickerMap({tickerMap: tickMap})
-                state.tickerMap = {
-                    ...state.tickerMap,
-                    ...data
-                }
-            }
-            state.status = SagaStatus.DONE
+            state.status = SagaStatus.PENDING
         },
         getTickers(state, action: PayloadAction<Array<CoinKey<any>>>) {
             state.status = SagaStatus.PENDING
@@ -35,7 +26,13 @@ const tickerMapSlice: Slice = createSlice({
                 // @ts-ignore
                 state.errorMessage = action.error
             }
-            state.tickerMap = action.payload.tickerMap;//{...state.tickerMap,...};
+            const {tickerMap, __timer__} = action.payload;
+            if (tickerMap) {
+                state.tickerMap = tickerMap;
+            }
+            if (__timer__) {
+                state.__timer__ = __timer__;
+            }
             state.status = SagaStatus.DONE
         },
         statusUnset: state => {
