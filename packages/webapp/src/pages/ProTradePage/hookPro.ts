@@ -10,49 +10,70 @@ import React from 'react';
 import { CoinInfo, MarketType } from '@loopring-web/common-resources';
 import {  useTicker } from '../../stores/ticker';
 import { MarketBlockProps } from '@loopring-web/component-lib';
+import { useSwap } from '../SwapPage/hookSwap';
 
 export const usePro = <C extends { [ key: string ]: any }>():{
-    market: MarketType|undefined,
-    marketTicker: MarketBlockProps<C> |undefined,
+    [key: string]: any;
+    market: MarketType|undefined;
+    // marketTicker: MarketBlockProps<C> |undefined,
 } =>{
     //High: No not Move!!!!!!
-    const {realMarket} = usePairMatch('./trading/pro');
+    // const {realMarket} = usePairMatch();
     //basic info from redux
     const {t} = useTranslation();
-    const {amountMap, getAmount} = useAmount();
-    const {account, status: accountStatus} = useAccount();
-    const {toastOpen, setToastOpen, closeToast,} = useToast();
-    const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap()
-    const {ammMap} = useAmmMap();
-    const {exchangeInfo} = useSystem();
-    const {tickerMap} = useTicker();
+    const {
+        market,
+        tradeCalcData,
+        tradeData,
+        tradeFloat,
+        tradeArray,
+        // myTradeArray,
+        // marketArray,
+        handleSwapPanelEvent,
+        onSwapClick,
+        pair,
+        swapBtnI18nKey,
+        swapBtnStatus,
+        toastOpen,
+        closeToast,
+        should15sRefresh,
+        // debugInfo,
+        alertOpen,
+        confirmOpen,
+        refreshRef,
+        swapFunc,
+        isSwapLoading,
+        pageTradeLite,
+    } = useSwap({path:'./trading/pro'});
+
+    // const {amountMap, getAmount} = useAmount();
+    // const {account, status: accountStatus} = useAccount();
+    // const {toastOpen, setToastOpen, closeToast,} = useToast();
+    // const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap()
+    // const {ammMap} = useAmmMap();
+    // const {exchangeInfo} = useSystem();
+
     //
 
     //init market
-    const [market,setMarket] = React.useState<MarketType|undefined>(realMarket);
-    const [marketTicker,setMarketTicker] = React.useState<MarketBlockProps<C>|undefined>(undefined);
 
     //useEffect by Market
     React.useEffect(()=>{
         if(market){
-            setDefaultData()
+            // setDefaultData()
         }
     },[market])
-    const setDefaultData = React.useCallback(()=>{
-        if(coinMap && tickerMap){
-            //@ts-ignore
-            const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
-            setMarketTicker({
-                coinAInfo: coinMap[coinA] as CoinInfo<C>,
-                coinBInfo: coinMap[coinB] as CoinInfo<C>,
-                tradeFloat: tickerMap[market as string]
-            })
-        }
 
-    },[tickerMap,market])
 
     return {
         market,
-        marketTicker,
+        toastOpen,
+        closeToast,
+        swapFunc,
+        alertOpen,
+        confirmOpen,
+        pageTradeLite,
+        tradeCalcData,
+        // marketTicker,
     }
 }

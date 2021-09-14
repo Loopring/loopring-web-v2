@@ -5,38 +5,56 @@ import GridLayout from 'react-grid-layout';
 
 import { usePro } from './hookPro';
 import { useTheme } from '@emotion/react';
-import { Box } from '@mui/material';
+import { Box, Container, styled } from '@mui/material';
 import { layoutConfigs } from '@loopring-web/common-resources';
 import { ChartView, MarketView, OrderTableView, SpotView, Toolbar, WalletInfo } from './panel'
+import { AlertImpact, ConfirmImpact, Toast } from '@loopring-web/component-lib';
+import { LAYOUT, TOAST_TIME } from '../../defs/common_defs';
+
+const BoxStyle = styled(Box)`
+    background:var(--color-box);
+`
 
 
 
-
-
-const OrderbookPage = withTranslation('common')( ()=>{
-    const { market,marketTicker } = usePro()
-    const { unit } = useTheme()
+export const OrderbookPage = withTranslation('common')( ()=>{
+    const { market,
+        toastOpen,
+        closeToast,
+        swapFunc,
+        alertOpen,
+        confirmOpen,
+        tradeCalcData,
+        pageTradeLite, } = usePro();
+    const { unit } = useTheme();
     const ViewList = {
-        toolbar:React.useMemo(()=><Toolbar market={market as any} marketTicker={marketTicker as any}/>,[market,marketTicker]),
-        walletInfo: React.useMemo(()=><WalletInfo/>,[]),
+        toolbar:React.useMemo(()=><Toolbar market={market as any}/>,[market]),
+        walletInfo: React.useMemo(()=><WalletInfo tradeCalcData={tradeCalcData} market={market as any}/>,[tradeCalcData,market]),
         spot: React.useMemo(()=><SpotView/>,[]),
         market: React.useMemo(()=><MarketView/>,[]),
         chart:  React.useMemo(()=><ChartView/>,[]),
         orderTable:   React.useMemo(()=><OrderTableView/>,[])
     }
 
-
-    return <>{market?
-        <GridLayout layout={layoutConfigs[0].layout}
+    return <>
+        <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'}
+               open={toastOpen?.open ?? false}
+               autoHideDuration={TOAST_TIME} onClose={closeToast}/>
+        <AlertImpact handleClose={swapFunc} open={alertOpen} value={pageTradeLite?.priceImpactObj?.value as any}/>
+        <ConfirmImpact handleClose={swapFunc} open={confirmOpen} value={pageTradeLite?.priceImpactObj?.value as any}/>
+        {market?
+        <Box display={'block'} margin={'0 auto'} width={1280} >
+            <GridLayout layout={layoutConfigs[0].layout}
             className="layout" cols={24} rowHeight={unit/2} width={1280} margin={[unit/2,unit/2]}>
             {layoutConfigs[0].layout.map((value,index)=>{
-                return <Box key={value.i}
+                return <BoxStyle key={value.i}
                             data-grid={{...value}}
                             component={'section'}>
                     {ViewList[value.i]}
-                </Box>
+                </BoxStyle>
             })}
         </GridLayout>
+        </Box>
     :<>'loading'</>}</>
 })
 
