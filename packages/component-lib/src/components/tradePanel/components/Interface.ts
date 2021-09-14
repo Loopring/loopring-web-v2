@@ -3,6 +3,7 @@ import {
     CoinInfo,
     CoinKey,
     CoinMap,
+    FeeInfo,
     RequireOne,
     WalletCoin,
     WalletMap,
@@ -13,12 +14,10 @@ import { TradeBtnStatus } from '../Interface';
 import React from 'react';
 import { BtnInfoProps, SwitchPanelProps } from '../../basic-lib';
 
-
 /**
  * private props
  */
 export type TradeMenuListProps<T, I> = {
-    //swapData: SwapData<T>,
     walletMap: WalletMap<I, WalletCoin<I>>,
     _height?: string | number,
     coinMap: CoinMap<I, CoinInfo<I>>,
@@ -38,7 +37,7 @@ export type SwitchData<T> = {
 export type TransferInfoProps<C> = {
     transferI18nKey?: string,
     transferBtnStatus?: keyof typeof TradeBtnStatus | undefined,
-    chargeFeeTokenList: Array<{ belong: C | string, fee: number | string | undefined, __raw__?: any }>,
+    chargeFeeTokenList: Array<FeeInfo>,
     chargeFeeToken?: C | string,
 }
 
@@ -46,7 +45,7 @@ export type TransferExtendProps<T, I, C> = {
     addressDefault?: string;
     realAddr?: string,
     onTransferClick: (data: T) => void,
-    handleFeeChange: (value: { belong: C | string, fee: number | string | undefined, __raw__?: any }) => void,
+    handleFeeChange: (value: FeeInfo) => void,
     handleOnAddressChange: (value: string | undefined | I) => void,
     handleAddressError: (address: string) => { error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined,
     wait?: number
@@ -95,7 +94,7 @@ export type WithdrawInfoProps<C> = {
     withdrawBtnStatus?: keyof typeof TradeBtnStatus | undefined,
     withdrawType?: keyof typeof WithdrawType,
     withdrawTypes: typeof WithdrawTypes,
-    chargeFeeTokenList: Array<{ belong: C | string, fee: number | string, __raw__?: any }>,
+    chargeFeeTokenList: Array<FeeInfo>,
     chargeFeeToken?: C | string,
 }
 
@@ -103,13 +102,12 @@ export type WithdrawExtendProps<T, I, C> = {
     addressDefault?: string;
     realAddr?: string,
     onWithdrawClick: (data: T) => void,
-    handleFeeChange: (value: { belong: C | string, fee: number | string, __raw__?: any }) => void,
+    handleFeeChange: (value: FeeInfo) => void,
     handleWithdrawTypeChange: (value: keyof typeof WithdrawType) => void,
     handleOnAddressChange: (value: string | undefined | I) => void,
     handleAddressError?: (address: string) => { error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined,
     wait?: number
 } & WithdrawInfoProps<C>
-
 
 export type WithdrawViewProps<T, I, C = CoinKey<I> | string> =
     BasicACoinTradeViewProps<T, I>
