@@ -380,11 +380,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     }, [account, tokenMap, exchangeInfo, withdrawType2, withdrawFeeInfo, withdrawValue, setShowAccount])
 
-    const handleFeeChange = React.useCallback((value: {
-        belong: string;
-        fee: number | string | undefined;
-        __raw__?: any
-    }): void => {
+    const handleFeeChange = React.useCallback((value: FeeInfo): void => {
         setWithdrawFeeInfo(value)
     }, [setWithdrawFeeInfo])
 
