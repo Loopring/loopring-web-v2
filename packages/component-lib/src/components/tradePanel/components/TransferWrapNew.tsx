@@ -228,13 +228,6 @@ export const TransferWrapNew = <T extends IBData<I>,
                 label={t('transferLabelMemo')}
                 placeholder={t('transferLabelMemoPlaceholder')}
                 onChange={_handleOnMemoChange}
-                // disabled={chargeFeeTokenList.length ? false : true}
-                // SelectProps={{IconComponent: DropDownIcon}}
-                // required={true}
-                // inputRef={addressInput}
-                // helperText={<Typography
-                //     variant={'body2'}
-                //     component={'span'}>{addressError && addressError.error ? addressError.message : ''}</Typography>}
                 fullWidth={true}
             />
         </Grid>
@@ -256,35 +249,6 @@ export const TransferWrapNew = <T extends IBData<I>,
                     <ToggleButtonGroup exclusive size={'small'} {...{data: toggleData, value: feeToken, t, ...rest}} onChange={handleToggleChange} />
                 </FeeTokenItemWrapper>
             )}
-            
-            {/* <TextField
-                id="transferFeeType"
-                select
-                label={t('transferLabelFee')}
-                value={feeIndex}
-                onChange={(event: React.ChangeEvent<any>) => {
-                    _handleFeeChange(event)
-                }}
-                disabled={chargeFeeTokenList.length ? false : true}
-                SelectProps={{IconComponent: DropDownIcon}}
-                fullWidth={true}
-            >{chargeFeeTokenList.map(({belong, fee}, index) => {
-                // @ts-ignore
-                return <MenuItem key={index} value={index} withnocheckicon={'true'}>
-                    <ListItemText primary={<Typography
-                        sx={{display: 'inline'}}
-                        component="span"
-                        variant="body1"
-                        color="text.primary"
-                    >{belong}</Typography>} secondary={<Typography
-                        sx={{display: 'inline'}}
-                        component="span"
-                        variant="body1"
-                        color="text.primaryLight"
-                    >{fee}</Typography>}/>
-                </MenuItem>
-            })
-            }</TextField> */}
         </Grid>
         <Grid item marginTop={2} alignSelf={'stretch'}>
             <Button fullWidth variant={'contained'} size={'medium'} color={'primary'} onClick={() => {
