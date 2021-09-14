@@ -725,16 +725,8 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                 break
         }
 
-
     }
-    // const debugInfo = process.env.NODE_ENV !== 'production' ? {
-    //     tradeData,
-    //     tradeCalcData: {coinBuy: tradeCalcData?.coinBuy, coinSell: tradeCalcData?.coinSell},
-    //     priceImpact: calcTradeParams?.priceImpact,
-    //     exceedDepth: calcTradeParams?.exceedDepth ?? false,
-    //     amountBOutSlip: calcTradeParams?.amountBOutSlip ? JSON.stringify(calcTradeParams.amountBOutSlip) : '',
-    //     market,
-    // } : ''
+    
     return {
         toastOpen,
         closeToast,
@@ -755,9 +747,6 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
         confirmOpen,
         swapFunc,
         pageTradeLite,
-        // priceImpact,
-        //DEBUG:
-        // debugInfo,
         isSwapLoading,
     }
 
