@@ -10,12 +10,12 @@ import { AccountStep,
 export function useResetAccount() {
 
     const {
-        setShowAccount,
+        setShowResetAccount,
     } = useOpenModals()
 
     const resetKeypair = React.useCallback(() => {
-        setShowAccount({isShow: true, step: AccountStep.ResetAccount_Approve_WaitForAuth})
-    }, [setShowAccount])
+        setShowResetAccount({isShow: true,})
+    }, [setShowResetAccount])
 
     return {
         resetKeypair,

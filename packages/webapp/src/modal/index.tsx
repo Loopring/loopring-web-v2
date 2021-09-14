@@ -21,9 +21,13 @@ export const ModalGroup = withTranslation('common', {
         onAccountInfoPanelClose?: (event: MouseEvent) => void
     }) => {
     const {etherscanBaseUrl} = useSystem();
-    useAccountModal();
-    const {modals: {isShowAccount, isShowConnect}, 
-        setShowAccount, setShowDeposit, setShowTransfer, setShowWithdraw, } = useOpenModals();
+
+    useAccountModal()
+
+    const {
+        modals: {isShowAccount, isShowConnect}, 
+        setShowDeposit, setShowTransfer, setShowWithdraw, setShowResetAccount, 
+    } = useOpenModals()
     
     const { account } = useAccount()
 
@@ -32,6 +36,7 @@ export const ModalGroup = withTranslation('common', {
             setShowDeposit({ isShow: false })
             setShowTransfer({ isShow: false })
             setShowWithdraw({ isShow: false })
+            setShowResetAccount({ isShow: false })
         }
     }, [account.readyState])
 
@@ -42,6 +47,7 @@ export const ModalGroup = withTranslation('common', {
             open: isShowConnect.isShow,
             onClose: onWalletConnectPanelClose
         }} />
+        
         <ModalAccountInfo
             {...{
                 ...rest,

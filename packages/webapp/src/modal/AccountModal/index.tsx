@@ -27,6 +27,7 @@ export const ModalAccountInfo = withTranslation('common')(({
         transferProps,
         withdrawProps,
         depositProps,
+        resetProps,
         assetsRawData,
         copyToastOpen,
         setCopyToastOpen,
@@ -54,7 +55,7 @@ export const ModalAccountInfo = withTranslation('common')(({
         <ModalPanel transferProps={transferProps}
                     withDrawProps={withdrawProps}
                     depositProps={depositProps}
-                    resetProps={{} as any}
+                    resetProps={resetProps}
                     ammProps={{} as any}
                     swapProps={{} as any}
                     assetsData={assetsRawData}
