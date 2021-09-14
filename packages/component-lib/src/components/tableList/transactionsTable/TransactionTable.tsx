@@ -60,7 +60,7 @@ const CellStatus = ({row, column}: any) => {
     const RenderValue = styled.div`
         display: flex;
         align-items: center;
-        cursor: pointer;
+        // cursor: pointer;
         color: ${({theme}) => theme.colorBase[ `${TYPE_COLOR_MAPPING.find(o => o.type === status)?.color}` ]};
 
         & svg {
@@ -79,7 +79,7 @@ const CellStatus = ({row, column}: any) => {
             {svg}
         </RenderValue>
 
-    return <>
+    return <Box className="rdg-cell-value rdgCellCenter">
         {/* <Popover
             type={PopoverType.hover}
             popupId={popupId}
@@ -99,7 +99,7 @@ const CellStatus = ({row, column}: any) => {
             {RenderValueWrapper}
         </Popover> */}
         {RenderValueWrapper}
-    </>
+    </Box>
 }
 
 const TableStyled = styled(Box)`
@@ -108,16 +108,24 @@ const TableStyled = styled(Box)`
     flex: 1;
 
     .rdg {
-        --template-columns: 120px auto auto auto 120px 170px !important;
+        --template-columns: 120px auto auto auto 120px 150px !important;
 
         // .rdg-cell.action {
         // display: flex;
         // justify-content: center;
         // align-items: center;
         // }
-        .rdg-cell {
+        .rdgCellCenter {
+            height: 100%;
             display: flex;
+            justify-content: center;
             align-items: center;
+        }
+        .textAlignRight {
+            text-align: right;
+        }
+        .textAlingCenter {
+            text-align: center;
         }
     }
     // .textAlignRight {
@@ -244,44 +252,47 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
                 const value = row[ 'side' ]
                 const renderValue = value === TransactionTradeTypes.deposit ? t('labelDeposit') : value === TransactionTradeTypes.transfer ? t('labelTransfer') : t('labelWithdraw');
                 return (
-                    <div className="rdg-cell-value">
+                    <Box className="rdg-cell-value">
                         {renderValue}
-                    </div>
+                    </Box>
                 )
             }
         },
         {
             key: 'amount',
             name: t('labelTxAmount'),
+            headerCellClass: 'textAlignRight',
             formatter: ({row}) => {
                 const {unit, value} = row[ 'amount' ]
                 const hasValue = Number.isFinite(value)
                 const renderValue = hasValue ? `${getValuePrecisionThousand(value, 4)}` : EmptyValueTag
                 return (
-                    <div className="rdg-cell-value">
+                    <Box className="rdg-cell-value textAlignRight">
                         {renderValue} {unit || ''}
-                    </div>
+                    </Box>
                 )
             },
         },
         {
             key: 'fee',
             name: t('labelTxFee'),
+            headerCellClass: 'textAlignRight',
             formatter: ({row}) => {
                 const fee = row[ 'fee' ]
                 // const hasValue = fee ? Number.isFinite(fee.value) : ''
                 // const renderValue = hasValue && fee.value !== 0 ? `${fee.value.toFixed(6)} ${fee.unit}` : EmptyValueTag
                 const renderValue = `${getValuePrecisionThousand(fee.value, 4, 2)} ${fee.unit}`
                 return (
-                    <div className="rdg-cell-value">
-                        <span>{renderValue}</span>
-                    </div>
+                    <Box className="rdg-cell-value textAlignRight">
+                        {renderValue}
+                    </Box>
                 )
             },
         },
         {
             key: 'txnHash',
             name: t('labelTxTxnHash'),
+            headerCellClass: 'textAlignRight',
             formatter: ({row}) => {
                 const path = row[ 'path' ] || ''
                 const value = row[ 'txnHash' ]
@@ -323,7 +334,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
                     etherscanBaseUrl,
                 }
                 return (
-                    <div className="rdg-cell-value">
+                    <div className="rdg-cell-value textAlignRight">
                         {path ? <Link href={path}>
                                 <RenderValue title={value}>{value || EmptyValueTag}</RenderValue>
                             </Link> :
@@ -335,15 +346,17 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
         {
             key: 'status',
             name: t('labelTxStatus'),
+            headerCellClass: 'textAlingCenter',
             formatter: ({row, column, rowIdx}) => (
-                <div className="rdg-cell-value">
+                // <Box component={'div'} className="rdg-cell-value rdgCellCenter">
                     <CellStatus {...{row, column, rowIdx}} />
-                </div>
+                // </Box>
             )
         },
         {
             key: 'time',
             name: t('labelTxTime'),
+            headerCellClass: 'textAlignRight',
             formatter: ({row}) => {
                 const value = row[ 'time' ]
                 const hasValue = Number.isFinite(value)
@@ -351,9 +364,9 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
                     ? moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
                     : EmptyValueTag
                 return (
-                    <div className="rdg-cell-value">
-                        <span>{renderValue}</span>
-                    </div>
+                    <Box className="rdg-cell-value textAlignRight">
+                        {renderValue}
+                    </Box>
                 )
             },
         },

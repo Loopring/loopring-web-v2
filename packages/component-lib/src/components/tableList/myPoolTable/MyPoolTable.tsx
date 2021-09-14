@@ -99,12 +99,12 @@ const columnMode = ({
             // const formattedYuan = (balanceYuan && Number.isNaN(balanceYuan)) ? balanceYuan : 0
             // const formattedDollar = (balanceDollar && Number.isNaN(balanceYuan)) ? balanceDollar : 0
             return <Box height={'100%'} display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
-                    <Button {...bindHover(popState)}>
+                    <Box {...bindHover(popState)}>
                         <Typography
                             component={'span'} style={{ cursor: 'pointer' }}> {
                                 typeof totalAmmValueDollar === 'undefined' ? EmptyValueTag : (currency === 'USD' ? PriceTag.Dollar + getValuePrecisionThousand(totalAmmValueDollar, 2, 2) : PriceTag.Yuan + getValuePrecisionThousand(totalAmmValueYuan, 2, 2))}
                         </Typography>
-                    </Button>
+                    </Box>
                     <PopoverPure
                         className={'arrow-top-center'}
                         {...bindPopper(popState)}
