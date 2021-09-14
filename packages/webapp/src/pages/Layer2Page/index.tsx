@@ -3,7 +3,6 @@ import { useRouteMatch } from 'react-router'
 import { Box, Typography } from '@mui/material'
 import { Button, SubMenu, SubMenuList as BasicSubMenuList } from '@loopring-web/component-lib'
 import { useTranslation, withTranslation } from 'react-i18next'
-import styled from '@emotion/styled'
 import { AccountStatus, fnType, i18n, LoadingIcon, SagaStatus, subMenuLayer2 } from '@loopring-web/common-resources'
 
 import AssetPanel from './AssetPanel'
@@ -155,48 +154,6 @@ export const Layer2Page = () => {
 
     return <>
         {viewTemplate}
-        {/*    {*/}
-
-        {/*   */}
-        {/*    readyState === AccountStatus.UN_CONNECT*/}
-        {/*        ? <Redirect to="/"/>*/}
-        {/*        :*/}
-        {/*        readyState === AccountStatus.NO_ACCOUNT*/}
-        {/*        || readyState === AccountStatus.DEPOSITING ?*/}
-        {/*            <BoxStyle display={'flex'} flexWrap={'wrap'} alignItems={'center'} justifyContent={'center'}*/}
-        {/*                      alignContent={'flex-start'}>*/}
-        {/*                <DepositPanel  {...{*/}
-        {/*                    ...rest, ...depositProps,*/}
-        {/*                    title: t('depositTitleAndActive'),*/}
-        {/*                    description: 'depositAndActiveDescription'*/}
-        {/*                }} > </DepositPanel>*/}
-        {/*            </BoxStyle> : <>*/}
-        {/*                <Box width={'200px'} display={'flex'} justifyContent={'stretch'} marginRight={3} marginBottom={2}>*/}
-        {/*                    <SubMenu>*/}
-        {/*                        <SubMenuList selected={selected} subMenu={subMenu as any}/>*/}
-        {/*                    </SubMenu>*/}
-        {/*                </Box>*/}
-        {/*                <Box minHeight={420} display={'flex'} alignItems={'stretch'} flexDirection={'column'} marginTop={0}*/}
-        {/*                     flex={1}>*/}
-        {/*                    {readyState === AccountStatus.LOCKED ?*/}
-        {/*                        <>*/}
-        {/*                            {*/}
-        {/*                                selected === 'setting' ? <SettingPanel/> :*/}
-        {/*                                    <Box flex={1} display={'flex'} justifyContent={'center'} alignItems={'center'}*/}
-        {/*                                         marginTop={-10}>*/}
-        {/*                                        <BtnConnect/>*/}
-        {/*                                    </Box>*/}
-
-        {/*                            }*/}
-        {/*                        </> :*/}
-        {/*                       */}
-
-        {/*                    }*/}
-
-
-        {/*                </Box>*/}
-        {/*            </>*/}
-        {/*}*/}
     </>
 
 

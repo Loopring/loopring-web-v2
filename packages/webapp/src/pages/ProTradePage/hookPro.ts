@@ -5,12 +5,10 @@ import { useToast } from '../../hooks/common/useToast';
 import { useTokenMap } from '../../stores/token';
 import { useAmmMap } from '../../stores/Amm/AmmMap';
 import { useSystem } from '../../stores/system';
-import { usePageTradeLite } from '../../stores/router';
-import { useWalletLayer2 } from '../../stores/walletLayer2';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
-import { CoinInfo, MarketType, TradeFloat } from '@loopring-web/common-resources';
-import { Ticker, useTicker } from '../../stores/ticker';
+import { CoinInfo, MarketType } from '@loopring-web/common-resources';
+import {  useTicker } from '../../stores/ticker';
 import { MarketBlockProps } from '@loopring-web/component-lib';
 
 export const usePro = <C extends { [ key: string ]: any }>():{
@@ -27,7 +25,7 @@ export const usePro = <C extends { [ key: string ]: any }>():{
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap()
     const {ammMap} = useAmmMap();
     const {exchangeInfo} = useSystem();
-    const {tickerMap, updateTickers} = useTicker();
+    const {tickerMap} = useTicker();
     //
 
     //init market

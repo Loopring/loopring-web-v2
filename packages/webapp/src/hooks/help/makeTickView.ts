@@ -49,13 +49,17 @@ export const makeTickView = (tick: Partial<TickerData>) => {
 }
 export const makeTickerMap = <R extends { [ key: string ]: any }>({tickerMap}: { tickerMap: LoopringMap<TickerData> }): TickerMap<{ [ key: string ]: any }> => {
     const {faitPrices, forex} = store.getState().system;
+    const {tokenPrices} = store.getState().tokenPrices;
+
     return Reflect.ownKeys(tickerMap).reduce((prev, key) => {
         const item: TickerData = tickerMap[ key as any ];
-        if (item && item.base && forex && faitPrices && (faitPrices[ item.base ] || faitPrices[ 'USDT' ])) {
+        if (item && item.base && forex && faitPrices && (faitPrices[ item.base ] || tokenPrices[ item.base ]  || faitPrices[ 'USDT' ])) {
+            const price = tokenPrices[ item.base ] ? tokenPrices[ item.base ]: faitPrices[ item.base ]?faitPrices[ item.base ].price:faitPrices[ 'USDT' ].price;
+            // faitPrices[ item.base ] ? faitPrices[ item.base ].price : faitPrices[ 'USDT' ].price
             // const volume = VolToNumberWithPrecision(item.base_token_volume, item.base as string)
             const volume = volumeToCount(item.symbol.split('-')[ 1 ], item.quote_token_volume)
             //FIX: DIE is not in faitPrices
-            const priceDollar = toBig(volume ? volume : 0).times(faitPrices[ item.base ] ? faitPrices[ item.base ].price : faitPrices[ 'USDT' ].price);
+            const priceDollar = toBig(volume ? volume : 0).times(price);
             const priceYuan = priceDollar?.times(forex);
             const change = item.change && item.change !== 0 ? item.change * 100 : undefined;
 

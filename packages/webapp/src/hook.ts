@@ -9,7 +9,7 @@ import { useAccount } from './stores/account';
 import { connectProvides, walletServices } from '@loopring-web/web3-provider';
 import { useAccountInit } from './hookAccountInit';
 import { useAmmActivityMap } from './stores/Amm/AmmActivityMap';
-import { TickerMap, useTicker } from './stores/ticker';
+import { useTicker } from './stores/ticker';
 import { useUserRewards } from './stores/userRewards';
 import { useTokenPrices } from './stores/tokenPrices';
 

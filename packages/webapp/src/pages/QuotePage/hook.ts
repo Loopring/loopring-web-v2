@@ -21,18 +21,8 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     const {forex} = store.getState().system
     const {tokenPrices} = store.getState().tokenPrices
     const {tickerMap,status:tickerStatus} = useTicker();
-
-    // const recommendMarkets: string[] = marketArray && recommendedPairs.length === 4 ? recommendedPairs : []
-    // const recommendMarkets: string[] = ['LRC-USDC', 'LRC-ETH', 'ETH-USDC', 'USDC-USDT']
-    // const _marketArrayWithOutRecommend = marketArray ? marketArray.filter(item => recommendMarkets.findIndex(m => m === item) === -1) : [];
-    // const _marketArrayWithOutRecommend = marketArray ? marketArray.filter(item => recommendedPairs.findIndex(m => m === item) === -1) : [];
     const [tickList, setTickList] = React.useState<any>([]);
     const [recommendations, setRecommendations] = React.useState<MarketBlockProps<C>[]>([]);
-    // const [, setTickerKeys] = React.useState<string[]>([]);
-    // const [focusRowFrom, setFocusRowFrom] = React.useState<[start: number, end: number]>([0, 2]);
-    // const [startIndex, setStartIndex] = React.useState<number>(-1);
-    // const recommendMarkets: string[] = marketArray ? marketArray.slice(0, 4) : ['LRC-ETH', 'LRC-ETH', 'LRC-ETH', 'LRC-ETH']
-
     const subject = React.useMemo(() => tickerService.onSocket(), []);
 
     const updateRecommendation = React.useCallback((recommendationIndex, ticker) => {
@@ -46,19 +36,23 @@ export function useQuote<C extends { [ key: string ]: string }>() {
 
     React.useEffect(() => {
         const subscription = subject.subscribe(({tickerMap}) => {
-            if (tickerMap) {
-                Reflect.ownKeys(tickerMap).forEach((key) => {
-                    let recommendationIndex = recommendedPairs.findIndex(ele => ele === key)
-                    if (recommendationIndex !== -1) {
-                        // setRecommendations
-                        updateRecommendation(recommendationIndex, tickerMap[ key as string ])
-                    }
-                    //TODO update related row. use socket return
-                })
-            }
+            socketCallback()
         });
         return () => subscription.unsubscribe();
-    }, [subject, recommendedPairs, updateRecommendation]);
+    }, [subject]);
+    
+    const socketCallback= React.useCallback(()=>{
+        if (tickerMap && recommendedPairs) {
+            Reflect.ownKeys(tickerMap).forEach((key) => {
+                let recommendationIndex = recommendedPairs.findIndex(ele => ele === key)
+                if (recommendationIndex !== -1) {
+                    // setRecommendations
+                    updateRecommendation(recommendationIndex, tickerMap[ key as string ])
+                }
+                //TODO update related row. use socket return
+            })
+        }
+    },[recommendedPairs,updateRecommendation,tickerMap])
 
     const getRecommendPairs = useCallback(async () => {
         if (LoopringAPI.exchangeAPI) {
@@ -70,10 +64,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
                 myError(e)
             }
             return []
-            // const { recommended } = await LoopringAPI.exchangeAPI.getRecommendedMarkets()
-            // console.log(recommended)
-            // setRecommendedPairs(recommended)
-            // return recommended
+
         }
     }, [setRecommendedPairs])
 
@@ -96,19 +87,6 @@ export function useQuote<C extends { [ key: string ]: string }>() {
 
 
 
-    // const getTicker = React.useCallback(() => {
-    //     // if (_marketArrayWithOutRecommend) {
-    //     // let array = _marketArrayWithOutRecommend.slice(from * OnePageSize, to * OnePageSize);
-    //     // let array = _marketArrayWithOutRecommend; // 暂时获取全量数据
-    //     //High: add recommendations market first time is 36个数据
-    //     // if (from === 0) {
-    //     //     array = recommendMarkets.concat(array)
-    //     // }
-    //     // updateTickers(array);
-    //     // }
-    //     updateTickers(marketArray || []);
-    //
-    // }, [marketArray])
 
     const updateRawData = React.useCallback(async (tickerMap: TickerMap<C>) => {
         const marketPairs: string[] = await getRecommendPairs()
