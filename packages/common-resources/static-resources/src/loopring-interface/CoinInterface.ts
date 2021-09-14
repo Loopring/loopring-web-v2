@@ -30,8 +30,12 @@ export type CoinMap<R, I = CoinInfo<R>> = {
 
 export interface FeeInfo {
     belong: string,
-    fee: number | string | undefined,
-    __raw__?: any,
+    fee: number | string,
+    __raw__: {
+        fastWithDraw: string,
+        tokenId: number,
+        feeRaw: string,
+    },
 }
 
 export type PairMap<R extends { [ key: string ]: any }, P = { coinA: CoinInfo<R>, coinB: CoinInfo<R> }> = {
