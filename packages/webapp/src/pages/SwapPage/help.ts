@@ -1,12 +1,11 @@
 import store from '../../stores';
 import { AmmPoolSnapshot, DepthData, LoopringMap, TickerData, TokenVolumeV3 } from 'loopring-sdk';
 import { LoopringAPI } from '../../api_wrapper';
-import { CustomError, ErrorMap, getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
+import { CustomError, ErrorMap, getValuePrecisionThousand, MarketType } from '@loopring-web/common-resources';
 import { volumeToCountAsBigNumber } from '../../hooks/help';
-import { PairFormat } from '../../stores/router';
 import BigNumber from 'bignumber.js';
 
-export const swapDependAsync = (market: PairFormat): Promise<{
+export const swapDependAsync = (market: MarketType): Promise<{
     ammPoolSnapshot: AmmPoolSnapshot | undefined,
     tickMap: LoopringMap<TickerData>,
     depth: DepthData
@@ -41,8 +40,8 @@ export const calcPriceByAmmTickMapDepth = <C>(
         tradePair,
         dependencyData: {tickMap, ammPoolSnapshot, depth}
     }: {
-        market: PairFormat,
-        tradePair: PairFormat
+        market: MarketType,
+        tradePair: MarketType
         dependencyData: { tickMap: any, ammPoolSnapshot: any, depth: any },
     }): {
     stob: string | undefined,
@@ -122,7 +121,7 @@ export const calcPriceByAmmTickMapDepth = <C>(
     }
 }
 
-export const marketInitCheck = (market: string, type?: 'sell' | 'buy'): { tradePair: PairFormat } => {
+export const marketInitCheck = (market: string, type?: 'sell' | 'buy'): { tradePair: MarketType } => {
     const {coinMap, tokenMap, marketMap, marketArray} = store.getState().tokenMap
     const {ammMap} = store.getState().amm
     if (coinMap && tokenMap && marketMap && marketArray && ammMap) {

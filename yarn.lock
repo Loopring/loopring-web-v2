@@ -5621,6 +5621,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-grid-layout@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@types/react-grid-layout/-/react-grid-layout-1.1.2.tgz#be46ac453e5193f512b0c4c90f36342e9e82258c"
+  integrity sha512-jGpMO5VTXgrCsOoxGHSzfM/9sihlN6GDNyssaMdl73Q7Vtrbe0VVYxoavodommoRXS29hLW/2RLbQ/Oj5++slg==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-is@^16.7.1 || ^17.0.0":
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/@types/react-is/-/react-is-17.0.2.tgz#abc4d910bff5b0bc6b3e1bec57575f6b63fd4e05"
@@ -9080,7 +9087,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@*, classnames@^2.2.5, classnames@^2.2.6:
+classnames@*, classnames@2.3.1, classnames@^2.2.5, classnames@^2.2.6:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
   integrity sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==
@@ -16833,6 +16840,11 @@ lodash.flow@^3.5.0:
   resolved "https://registry.yarnpkg.com/lodash.flow/-/lodash.flow-3.5.0.tgz#87bf40292b8cf83e4e8ce1a3ae4209e20071675a"
   integrity sha1-h79AKSuM+D5OjOGjrkIJ4gBxZ1o=
 
+lodash.isequal@^4.0.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
+  integrity sha1-QVxEePK8wwEgwizhDtMib30+GOA=
+
 lodash.ismatch@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.ismatch/-/lodash.ismatch-4.4.0.tgz#756cb5150ca3ba6f11085a78849645f188f85f37"
@@ -20138,7 +20150,7 @@ promzard@^0.3.0:
   dependencies:
     read "1"
 
-prop-types@^15.0.0, prop-types@^15.5.4, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@15.x, prop-types@^15.0.0, prop-types@^15.5.4, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -20584,6 +20596,14 @@ react-dom@^17.0.2:
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
+react-draggable@^4.0.0, react-draggable@^4.0.3:
+  version "4.4.4"
+  resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-4.4.4.tgz#5b26d9996be63d32d285a426f41055de87e59b2f"
+  integrity sha512-6e0WdcNLwpBx/YIDpoyd2Xb04PB0elrDrulKUgdrIlwuYvxh5Ok9M+F8cljm8kPXXs43PmMzek9RrB1b7mLMqA==
+  dependencies:
+    clsx "^1.1.1"
+    prop-types "^15.6.0"
+
 react-draggable@^4.4.3:
   version "4.4.3"
   resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-4.4.3.tgz#0727f2cae5813e36b0e4962bf11b2f9ef2b406f3"
@@ -20641,6 +20661,17 @@ react-financial-charts@^1.3.1:
     "@react-financial-charts/series" "^1.3.1"
     "@react-financial-charts/tooltip" "^1.3.1"
     "@react-financial-charts/utils" "^1.3.0"
+
+react-grid-layout@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/react-grid-layout/-/react-grid-layout-1.3.0.tgz#ca8a3e13e62ee2162fa658b1eec4b8eec0203dbd"
+  integrity sha512-WqFwybAItXu0AaSt9YL8+9xE5YotIzMcCYE0Q9XBqSKNyShTxPbC0LjObV/tOWZoADNWJ+osseVfRoZsjzwWXg==
+  dependencies:
+    classnames "2.3.1"
+    lodash.isequal "^4.0.0"
+    prop-types "^15.0.0"
+    react-draggable "^4.0.0"
+    react-resizable "^3.0.4"
 
 react-helmet-async@^1.0.7:
   version "1.0.9"
@@ -20728,6 +20759,14 @@ react-refresh@^0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
+
+react-resizable@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/react-resizable/-/react-resizable-3.0.4.tgz#aa20108eff28c52c6fddaa49abfbef8abf5e581b"
+  integrity sha512-StnwmiESiamNzdRHbSSvA65b0ZQJ7eVQpPusrSmcpyGKzC0gojhtO62xxH6YOBmepk9dQTBi9yxidL3W4s3EBA==
+  dependencies:
+    prop-types "15.x"
+    react-draggable "^4.0.3"
 
 react-resize-detector@^6.6.3:
   version "6.7.6"

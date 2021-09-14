@@ -1,14 +1,16 @@
 import * as sdk from 'loopring-sdk';
 import { OrderStatus, sleep } from 'loopring-sdk';
 import React from 'react';
+import { usePairMatch } from '../../hooks/common/usePairMatch';
 import { useSocket } from '../../stores/socket';
 import { useAccount } from '../../stores/account';
-import { usePairMatch } from '../../hooks/common/usePairMatch';
 import { useAmount } from '../../stores/amount';
 import { useTokenMap } from '../../stores/token';
 import { useAmmMap } from '../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../stores/walletLayer2';
 import { useSystem } from '../../stores/system';
+import {  usePageTradeLite } from '../../stores/router';
+
 import {
     AccountStatus,
     CoinMap,
@@ -16,7 +18,7 @@ import {
     getShowStr,
     getValuePrecision,
     getValuePrecisionThousand,
-    IBData,
+    IBData, MarketType,
     SagaStatus,
     TradeCalcData,
     TradeFloat,
@@ -38,7 +40,6 @@ import {
 } from '../../hooks/help';
 import { LoopringAPI } from '../../api_wrapper';
 import * as _ from 'lodash'
-import { PairFormat, usePageTradeLite } from '../../stores/router';
 import { DAYS } from '../../defs/common_defs';
 import { getTimestampDaysLater } from '../../utils/dt_tools';
 import { myLog } from '@loopring-web/common-resources/static-resources/src/utils/log_tools';
@@ -120,7 +121,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
     const {t} = useTranslation('common')
     const refreshRef = React.createRef();
     const [pair, setPair] = React.useState(realPair);
-    const [market, setMarket] = React.useState<PairFormat>(realMarket as PairFormat);
+    const [market, setMarket] = React.useState<MarketType>(realMarket as MarketType);
     const [swapBtnI18nKey, setSwapBtnI18nKey] = React.useState<string | undefined>(undefined)
     const [swapBtnStatus, setSwapBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE)
     const [isSwapLoading, setIsSwapLoading] = React.useState(false)
@@ -419,7 +420,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                 })
             }
             updatePageTradeLite({
-                market: market as PairFormat,
+                market: market as MarketType,
                 feeBips: 0,
                 totalFee: 0,
                 takerRate: 0,
