@@ -43,7 +43,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     const updateRecommendation = React.useCallback((recommendationIndex, ticker) => {
         if (recommendations.length) {
             //  let _recommendations = deepClone(recommendations)
-            console.log('updateRecommendation ticker:', ticker)
+            // console.log('updateRecommendation ticker:', ticker)
             recommendations[ recommendationIndex ].tradeFloat = ticker
             setRecommendations(recommendations)
         }
@@ -203,7 +203,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
             return prev
         }, [] as MarketBlockProps<C>[])
 
-        console.log('_recommendations:', _recommendations)
+        // console.log('_recommendations:', _recommendations)
 
         setRecommendations(_recommendations)
         // }
