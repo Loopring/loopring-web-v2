@@ -218,6 +218,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         return {
             btnTxt: 'labelRetry',
             callback: () => {
+                //TODO
             }
         }
     }, [setShowAccount,])
@@ -483,7 +484,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
                     onSwitch, onCopy,
                     onViewQRCode, onDisconnect, addressShort,
                 }} goUpdateAccount={() => {
-                    goUpdateAccount()
+                    goUpdateAccount({})
                 }}  {...{...rest, t}} />, onQRClick
             },
             [ AccountStep.UpdateAccount_Approve_WaitForAuth ]: {
@@ -496,7 +497,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
                 view: <UpdateAccount_First_Method_Denied btnInfo={{
                     btnTxt: t('labelTryAnother'),
                     callback: (e?: any) => {
-                        goUpdateAccount(false)
+                        goUpdateAccount({ isFirstTime: false })
                     }
                 }} {...{
                     ...rest, t
@@ -557,7 +558,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
                 view: <UpdateAccount_First_Method_Denied patch={ { isReset: true } } btnInfo={{
                     btnTxt: t('labelTryAnother'),
                     callback: (e?: any) => {
-                        goUpdateAccount(false)
+                        goUpdateAccount({ isReset: true, isFirstTime: false })
                     }
                 }} {...{
                     ...rest, t

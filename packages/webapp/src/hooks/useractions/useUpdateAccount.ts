@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { updateAccountStatus, useAccount } from 'stores/account'
-import { myLog } from '@loopring-web/common-resources'
+import { FeeInfo, myLog } from '@loopring-web/common-resources'
 import {
     AccountStep,
     useOpenModals,
@@ -33,23 +33,38 @@ export function useUpdateAccout() {
         account,
     } = useAccount();
 
-    const goUpdateAccount = React.useCallback(async (isFirstTime: boolean = true) => {
+    const goUpdateAccount = React.useCallback(async ({ isFirstTime, isReset, feeInfo, }: {
+        isFirstTime?: boolean,
+        isReset?: boolean,
+        feeInfo?: FeeInfo,
+    }) => {
+
+        if (isFirstTime === undefined) {
+            isFirstTime = true
+        }
+
+        if (isReset === undefined) {
+            isReset = false
+        }
 
         if (!account.accAddress) {
             myLog('account.accAddress is nil')
             return
         }
 
-        setShowAccount({isShow: true, step: AccountStep.UpdateAccount_Approve_WaitForAuth});
+        setShowAccount({
+            isShow: true, 
+            step: isReset ? AccountStep.ResetAccount_Approve_WaitForAuth : AccountStep.UpdateAccount_Approve_WaitForAuth, 
+        })
 
         let isHWAddr = checkHWAddr(account.accAddress)
 
         isHWAddr = !isFirstTime ? !isHWAddr : isHWAddr
 
-        myLog('goUpdateAccount.... isFirstTime:', isFirstTime, ' isHWAddr:', isHWAddr)
+        myLog('goUpdateAccount.... isFirstTime:', isFirstTime, ' isReset:', isReset, ' isHWAddr:', isHWAddr)
 
         const updateAccAndCheck = async () => {
-            const result: ActionResult = await updateAccountFromServer({isHWAddr})
+            const result: ActionResult = await updateAccountFromServer({isHWAddr, feeInfo, })
 
             switch (result.code) {
                 case ActionResultCode.NoError:
@@ -94,22 +109,31 @@ export function useUpdateAccout() {
                         store.dispatch(updateAccountStatus({eddsaKey: eddsaKey2,}))
                     }
 
-                    const errMsg = checkErrorInfo(result?.data?.errorInfo, isFirstTime)
+                    const errMsg = checkErrorInfo(result?.data?.errorInfo, isFirstTime as boolean)
 
                     myLog('----------UpdateAccoutError errMsg:', errMsg)
 
                     switch (errMsg) {
                         case ConnectorError.NOT_SUPPORT_ERROR:
                             myLog(' 00000---- got NOT_SUPPORT_ERROR')
-                            setShowAccount({isShow: true, step: AccountStep.UpdateAccount_First_Method_Denied})
+                            setShowAccount({
+                                isShow: true, 
+                                step: isReset ? AccountStep.ResetAccount_First_Method_Denied :  AccountStep.UpdateAccount_First_Method_Denied
+                            })
                             return
                         case ConnectorError.USER_DENIED:
                             myLog(' 11111---- got USER_DENIED')
-                            setShowAccount({isShow: true, step: AccountStep.UpdateAccount_User_Denied})
+                            setShowAccount({
+                                isShow: true, 
+                                step: isReset ? AccountStep.ResetAccount_User_Denied :  AccountStep.UpdateAccount_User_Denied
+                            })
                             return
                         default:
                             myLog(' 11111---- got UpdateAccount_Success')
-                            setShowAccount({isShow: true, step: AccountStep.UpdateAccount_Success})
+                            setShowAccount({
+                                isShow: true, 
+                                step: isReset ? AccountStep.ResetAccount_Success :  AccountStep.UpdateAccount_Success
+                            })
                             accountServices.sendCheckAccount(account.accAddress)
                             break
                     }
