@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { Avatar, Box, FormControlLabel as MuFormControlLabel, TextField as MuTextField } from '@mui/material';
-import { AvatarCoinStyled } from '@loopring-web/common-resources';
+import { AvatarCoinStyled, LPTokenType, MarketType } from '@loopring-web/common-resources';
 import { useSettings } from '../../../../stores';
 
 // ${({theme}) => theme.border.defaultFrame({c_key: 'blur', d_R: 1/2})};
@@ -40,7 +40,7 @@ export const TextField = styled(MuTextField)`
   }
 ` as typeof MuTextField;
 
-export const CoinIcon = <R extends `${string}-${string}` | string | `LP-${string}-${string}`>({symbol,lpSize=24,size=24}: {
+export const CoinIcon = <R extends MarketType | string | LPTokenType>({symbol,lpSize=24,size=24}: {
     symbol: R,
     lpSize?:number,
     size?:number

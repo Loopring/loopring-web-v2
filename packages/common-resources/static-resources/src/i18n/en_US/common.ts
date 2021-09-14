@@ -289,4 +289,5 @@ export default {
     labelSlippageAlert:'The slippage tolerance is so high, you may receive less token',
     labelOrderTableOpenOrder: 'Open Order',
     labelOrderTableOrderHistory: 'Order History',
+    labelBtnFix:'reset'
 }

@@ -100,7 +100,7 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({t, i18n, ..
                       alignItems={'flex-start'} paddingX={4} marginBottom={2}>
                     <Grid item xs={7} display={'flex'} flexDirection={'column'}>
                         <Typography variant={'body1'} color={'text.secondary'}
-                                    component={'p'}>{t('descriptionSetting')}</Typography>
+                                    component={'p'}>{t('descriptionSettingFee')}</Typography>
                     </Grid>
                     <Grid item xs={5} display={'flex'} flexDirection={'column'} justifyContent={'space-evenly'}
                           alignItems={'flex-end'} alignSelf={'stretch'}>

@@ -288,4 +288,5 @@ export default {
     labelSlippageAlert:'滑点过大将会影响您出金后收到的token数量',
     labelOrderTableOpenOrder: '当前订单',
     labelOrderTableOrderHistory: '订单历史',
+    labelBtnFix:'重置'
 }

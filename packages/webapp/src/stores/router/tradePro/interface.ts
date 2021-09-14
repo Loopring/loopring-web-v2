@@ -3,7 +3,7 @@ import { TradeChannel } from 'loopring-sdk';
 import { OrderInfo } from 'loopring-sdk/dist/defs/loopring_defs';
 import { MarketType } from '@loopring-web/common-resources';
 
-export type PageTradeLite = {
+export type PageTradePro = {
     market?: MarketType  // eg: ETH-LRC, Pair from loopring market
     tradePair?: MarketType  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
     calcTradeParams?: {
@@ -44,8 +44,8 @@ export type PageTradeLite = {
     lastStepAt?:'sell'|'buy'|undefined,
 }
 
-export type PageTradeLiteStatus = {
-    pageTradeLite: PageTradeLite,
+export type PageTradeProStatus = {
+    pageTradePro: PageTradePro,
     __SUBMIT_LOCK_TIMER__: 1000;
     __TOAST_AUTO_CLOSE_TIMER__: 3000
 }
