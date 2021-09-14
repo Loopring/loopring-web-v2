@@ -308,11 +308,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         })
     }, [updateTransferData, transferValue])
 
-    const handleFeeChange = useCallback((value: {
-        belong: string;
-        fee: number | string | undefined;
-        __raw__?: any
-    }): void => {
+    const handleFeeChange = useCallback((value: FeeInfo): void => {
         setTransferFeeInfo(value)
     }, [setTransferFeeInfo])
 

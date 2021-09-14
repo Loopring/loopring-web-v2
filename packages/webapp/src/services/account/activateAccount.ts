@@ -1,7 +1,7 @@
 import { updateAccountStatus } from '../../stores/account';
 import { AccountStep, setShowAccount, setShowConnect } from '@loopring-web/component-lib';
 import store from '../../stores';
-import { AccountStatus } from '@loopring-web/common-resources';
+import { AccountStatus, FeeInfo } from '@loopring-web/common-resources';
 import { myLog } from "@loopring-web/common-resources";
 import { LoopringAPI } from 'api_wrapper';
 import { connectProvides } from '@loopring-web/web3-provider';
@@ -42,7 +42,7 @@ export async function activeAccount({reason, shouldShow}: { reason: any, shouldS
     }
 }
 
-export async function updateAccountFromServer({isHWAddr,}: { isHWAddr: boolean, }) {
+export async function updateAccountFromServer({isHWAddr, feeInfo, }: { isHWAddr: boolean, feeInfo?: FeeInfo, }) {
 
     const system = store.getState().system
     const account = store.getState().account
@@ -83,21 +83,21 @@ export async function updateAccountFromServer({isHWAddr,}: { isHWAddr: boolean, 
 
                     try {
 
-                        const feeMap = {
-                            'ETH': '529000000000000',
-                            'LRC': '34000000000000000000',
-                            'USDT': '7850000',
-                            'DAI': '98100000000000000000',
-                        }
+                        let tokenId = 0
 
-                        myLog('fee:', sdk.toBig(feeMap[ 'ETH' ]).div('1e18').toNumber())
+                        let feeVol = '0'
+
+                        if (feeInfo) {
+                            tokenId = feeInfo.__raw__.tokenId
+                            feeVol = feeInfo.__raw__.feeRaw
+                        }
 
                         const request: sdk.UpdateAccountRequestV3 = {
                             exchange: system.exchangeInfo.exchangeAddress,
                             owner: accInfo.owner,
                             accountId: accInfo.accountId,
                             publicKey: {x: eddsaKey.formatedPx, y: eddsaKey.formatedPy,},
-                            maxFee: {tokenId: 0, volume: feeMap[ 'ETH' ]},
+                            maxFee: {tokenId, volume: feeVol},
                             validUntil: getTimestampDaysLater(DAYS),
                             nonce: accInfo.nonce as number,
                         }
