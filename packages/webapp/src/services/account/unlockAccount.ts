@@ -29,7 +29,7 @@ export async function unlockAccount() {
                 accountId: account.accountId
             }, eddsaKey.sk))
 
-            accountServices.sendAccountSigned(account.accountId, apiKey, eddsaKey)
+            accountServices.sendAccountSigned({accountId: account.accountId, apiKey, eddsaKey})
         } catch (e) {
             const errType = checkErrorInfo(e, true)
             switch (errType) {

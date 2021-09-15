@@ -18,6 +18,7 @@ import {
     HadAccount,
     NoAccount,
     QRAddressPanel,
+    setShowResetAccount,
     Transfer_Failed,
     Transfer_First_Method_Denied,
     Transfer_In_Progress,
@@ -221,7 +222,8 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         return {
             btnTxt: 'labelRetry',
             callback: () => {
-                //TODO
+                setShowAccount({ isShow: false, })
+                setShowResetAccount({ isShow: true, })
             }
         }
     }, [setShowAccount,])

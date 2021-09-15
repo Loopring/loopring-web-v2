@@ -4,6 +4,7 @@ import { updateAccountStatus, useAccount } from 'stores/account'
 import { FeeInfo, myLog } from '@loopring-web/common-resources'
 import {
     AccountStep,
+    setShowResetAccount,
     useOpenModals,
 } from '@loopring-web/component-lib'
 
@@ -89,13 +90,19 @@ export function useUpdateAccout() {
                                 updateDepositHashWrapper({wallet: account.accAddress, isHWAddr,})
                             }
 
-                            accountServices.sendAccountSigned(accInfo.accountId, apiKey, eddsaKey)
+                            accountServices.sendAccountSigned({accountId: accInfo.accountId, apiKey, eddsaKey, isReset, })
 
                         }
 
                     }
 
-                    setShowAccount({isShow: false})
+                    if (isReset) {
+                        myLog('reset show success!!')
+                        setShowAccount({ isShow: true, step: AccountStep.ResetAccount_Success, })
+                    } else {
+                        myLog('not reset show account close!!')
+                        setShowAccount({ isShow: false})
+                    }
                     break
                 case ActionResultCode.GetAccError:
                 case ActionResultCode.GenEddsaKeyError:

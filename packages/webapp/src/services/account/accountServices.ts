@@ -99,7 +99,9 @@ export const accountServices = {
     },
     sendActiveAccountDeposit: () => {
     },
-    sendAccountSigned: (accountId?: number, apiKey?: string, eddsaKey?: any) => {
+    sendAccountSigned: ({accountId, apiKey, eddsaKey, isReset, }: {
+        accountId?: number, apiKey?: string, eddsaKey?: any, isReset?: boolean,
+    }) => {
         const updateInfo = accountId && apiKey && eddsaKey ? {
             accountId,
             apiKey,
@@ -110,11 +112,17 @@ export const accountServices = {
             },
             readyState: AccountStatus.ACTIVATED
         } : {readyState: AccountStatus.ACTIVATED}
-        store.dispatch(updateAccountStatus(updateInfo));
-        subject.next({
-            status: Commands.AccountUnlocked,
-            data: undefined
-        })
+
+        store.dispatch(updateAccountStatus(updateInfo))
+
+        if (!isReset) {
+            subject.next({
+                status: Commands.AccountUnlocked,
+                data: undefined
+            })
+        } else {
+            myLog('sendAccountSigned: isReset!!!!!')
+        }
     },
     sendNoAccount: () => {
         store.dispatch(updateAccountStatus({readyState: AccountStatus.NO_ACCOUNT,}))
