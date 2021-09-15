@@ -8,6 +8,7 @@ import React from 'react';
 export const ExportAccountPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>, I>(
     {
         exportAccountProps,
+        setExportAccountToastOpen,
         ...rest
     }: ExportAccountProps & WithTranslation) => {
 
@@ -18,8 +19,9 @@ export const ExportAccountPanel = withTranslation('common', {withRef: true})(<T 
             element: React.useMemo(() => <ExportAccountWrap key={"transfer"}
                                             {...{
                                                 exportAccountProps,
+                                                setExportAccountToastOpen,
                                                 ...rest,
-                                            }} />,[exportAccountProps, rest]),
+                                            }} />,[exportAccountProps, rest, setExportAccountToastOpen]),
             toolBarItem: undefined
         },]
     }
