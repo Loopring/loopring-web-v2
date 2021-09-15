@@ -70,7 +70,8 @@ export type ResetExtendProps<T> = {
 } & ResetInfoProps<T>;
 
 export type ExportAccountExtendProps = {
-    exportAccountProps: any
+    exportAccountProps: any;
+    setExportAccountToastOpen: (value: boolean) => void;
 }
 
 export type ResetViewProps<T> = ResetExtendProps<T>
