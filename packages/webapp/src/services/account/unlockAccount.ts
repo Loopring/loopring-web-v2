@@ -28,9 +28,7 @@ export async function unlockAccount() {
                 walletType: connectName,
             })
 
-            myLog('unlockAccount eddsaKey:', eddsaKey)
-            myLog('unlockAccount connectName:', connectName)
-            myLog('unlockAccount accountId:', account.accountId)
+            // myLog('unlockAccount eddsaKey:', eddsaKey)
             
             const { apiKey, raw_data, } = (await LoopringAPI.userAPI.getUserApiKey({
                 accountId: account.accountId

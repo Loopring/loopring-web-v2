@@ -65,7 +65,7 @@ export function useUpdateAccout() {
         myLog('goUpdateAccount.... isFirstTime:', isFirstTime, ' isReset:', isReset, ' isHWAddr:', isHWAddr)
 
         const updateAccAndCheck = async () => {
-            const result: ActionResult = await updateAccountFromServer({isHWAddr, feeInfo, })
+            const result: ActionResult = await updateAccountFromServer({isHWAddr, feeInfo, isReset, })
 
             switch (result.code) {
                 case ActionResultCode.NoError:
