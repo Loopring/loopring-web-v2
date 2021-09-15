@@ -8,6 +8,7 @@ import {
     ModalCloseButton,
     ModalPanelProps,
     ResetPanel,
+    ExportAccountPanel,
     ResetProps,
     SwapPanel,
     SwapProps,
@@ -87,6 +88,7 @@ export const ModalPanel = <T extends IBData<I>, I>({
     ammProps: AmmProps<any, any, T, any>,
     swapProps: SwapProps<T, I, any>,
     assetsData: any[],
+    exportAccountProps: any,
 }) => {
     const {
         modals,
@@ -95,13 +97,15 @@ export const ModalPanel = <T extends IBData<I>, I>({
         setShowTransfer,
         setShowDeposit,
         setShowWithdraw,
-        setShowResetAccount
+        setShowResetAccount,
+        setShowExportAccount,
     } = useOpenModals()
     const {
         isShowTransfer,
         isShowWithdraw,
         isShowDeposit,
         isShowResetAccount,
+        isShowExportAccount,
         isShowAmm,
         isShowSwap
     } = modals;
@@ -127,8 +131,14 @@ export const ModalPanel = <T extends IBData<I>, I>({
                onClose={() => setShowResetAccount({...isShowResetAccount, isShow: false})}
                content={<ResetPanel<any, any> {...{
                    ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
-                   _height: 'var(--modal-height)', ...resetProps, assetsData,
+                   _height: `calc(var(--modal-height) - ${theme.unit * 6}px)`, ...resetProps, assetsData,
                }} > </ResetPanel>}/>
+        <Modal open={isShowExportAccount.isShow}
+               onClose={() => setShowExportAccount({...isShowExportAccount, isShow: false})}
+               content={<ExportAccountPanel {...{
+                   ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
+                   _height: 'var(--modal-height)',
+               }} > </ExportAccountPanel>}/>
         <Modal open={isShowAmm.isShow}
                onClose={() => setShowAmm({...isShowAmm, isShow: false} as any)}
                content={<AmmPanel<any, any, any, any> {...{

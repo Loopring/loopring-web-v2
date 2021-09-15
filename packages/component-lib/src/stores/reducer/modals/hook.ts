@@ -8,7 +8,8 @@ import {
     setShowResetAccount,
     setShowSwap,
     setShowTransfer,
-    setShowWithdraw
+    setShowWithdraw,
+    setShowExportAccount,
 } from './reducer';
 
 import React from 'react';
@@ -25,6 +26,7 @@ export const useOpenModals = () => {
         setShowSwap: React.useCallback((state: ModalStatePlayLoad ) => dispatch(setShowSwap(state)), [dispatch]),
         setShowAccount: React.useCallback((state: ModalStatePlayLoad & { step?: number }) => dispatch(setShowAccount(state)), [dispatch]),
         setShowConnect: React.useCallback((state: ModalStatePlayLoad & { step?: number }) => dispatch(setShowConnect(state)), [dispatch]),
+        setShowExportAccount: React.useCallback((state: ModalStatePlayLoad) => dispatch(setShowExportAccount(state)), [dispatch]),
     }
 
 }

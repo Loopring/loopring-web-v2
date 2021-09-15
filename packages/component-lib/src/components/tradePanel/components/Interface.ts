@@ -69,6 +69,10 @@ export type ResetExtendProps<T> = {
     onResetClick: () => void,
 } & ResetInfoProps<T>;
 
+export type ExportAccountExtendProps = {
+    exportAccountProps: any
+}
+
 export type ResetViewProps<T> = ResetExtendProps<T>
 
 /**
