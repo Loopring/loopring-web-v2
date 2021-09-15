@@ -34,7 +34,6 @@ export const useReset = <T>(): {
     const resetProps: ResetProps<T> = {
         onResetClick,
         resetBtnStatus: btnStatus,
-        // chargeFeeToken: 'ETH',
         chargeFeeToken: resetFeeInfo?.belong,
         chargeFeeTokenList: chargeFeeList,
         handleFeeChange,

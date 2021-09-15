@@ -42,12 +42,12 @@ export async function activeAccount({reason, shouldShow}: { reason: any, shouldS
     }
 }
 
-export async function updateAccountFromServer({isHWAddr, feeInfo, }: { isHWAddr: boolean, feeInfo?: FeeInfo, }) {
+export async function updateAccountFromServer({isHWAddr, feeInfo, isReset, }: { isHWAddr: boolean, feeInfo?: FeeInfo, isReset?: boolean }) {
 
     const system = store.getState().system
     const account = store.getState().account
 
-    let eddsaKey = account.eddsaKey
+    let eddsaKey = isReset ? undefined : account.eddsaKey
 
     myLog('before check!', account)
 
