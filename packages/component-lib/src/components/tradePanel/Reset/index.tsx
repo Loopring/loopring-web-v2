@@ -27,7 +27,7 @@ export const ResetPanel = withTranslation('common', {withRef: true})(<T extends 
                                                 resetBtnStatus,
                                                 onResetClick,
                                                 assetsData,
-                                            }} />,[onResetClick,resetBtnStatus,rest]),
+                                            }} />,[onResetClick,resetBtnStatus,rest, assetsData, chargeFeeToken, chargeFeeTokenList]),
             toolBarItem: undefined
         },]
     }
