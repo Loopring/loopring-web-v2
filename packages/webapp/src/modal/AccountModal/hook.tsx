@@ -18,7 +18,6 @@ import {
     HadAccount,
     NoAccount,
     QRAddressPanel,
-    setShowResetAccount,
     Transfer_Failed,
     Transfer_First_Method_Denied,
     Transfer_In_Progress,
@@ -67,7 +66,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
 
     const {
         modals: {isShowAccount}, setShowConnect, setShowAccount,
-        setShowDeposit, setShowTransfer, setShowWithdraw
+        setShowDeposit, setShowTransfer, setShowWithdraw, setShowResetAccount,
     } = useOpenModals()
 
     const {
@@ -258,6 +257,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
                 setShowTransfer({isShow: false})
                 setShowWithdraw({isShow: false})
                 setShowAccount({isShow: false})
+                setShowResetAccount({ isShow: true })
                 if (onClose) {
                     onClose(e)
                 }
