@@ -53,6 +53,12 @@ import {
     UpdateAccount_Success,
     UpdateAccount_Submit,
     UpdateAccount_Failed,
+
+    ExportAccount_Approve_WaitForAuth,
+    ExportAccount_User_Denied,
+    ExportAccount_Success,
+    ExportAccount_Failed,
+
 } from './ModalPanels';
 import { account } from '../../static';
 import { Box } from '@mui/material';
@@ -417,11 +423,30 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
 
                 }} />,
             },
-            [AccountStep.ResetAccount_Failed]: {
-                view: <UpdateAccount_Failed patch={ { isReset: true } } btnInfo={closeBtn} {...{
+            
+            [AccountStep.ExportAccount_Approve_WaitForAuth]: {
+                view: <ExportAccount_Approve_WaitForAuth patch={ { isReset: true } } btnInfo={closeBtn} {...{
                       ...rest
                 }} />,
-            }
+            },
+            [AccountStep.ExportAccount_User_Denied]: {
+                view: <ExportAccount_User_Denied patch={ { isReset: true } } btnInfo={retryBtn} {...{
+                      ...rest
+
+                }} />,
+            },
+            [AccountStep.ExportAccount_Success]: {
+                view: <ExportAccount_Success patch={ { isReset: true } } btnInfo={closeBtn}  {...{
+                      ...rest
+
+                }} />,
+            },
+            [AccountStep.ExportAccount_Failed]: {
+                view: <ExportAccount_Failed patch={ { isReset: true } } btnInfo={closeBtn} {...{
+                      ...rest
+
+                }} />,
+            },
         }
 
         return { nameList5: Object.keys(accountMap), accountList5: Object.values(accountMap) }
