@@ -11,6 +11,7 @@ import { CoinInfo, MarketType } from '@loopring-web/common-resources';
 import {  useTicker } from '../../stores/ticker';
 import { MarketBlockProps } from '@loopring-web/component-lib';
 import { useSwap } from '../SwapPage/hookSwap';
+import { usePageTradeLite, usePageTradePro } from '../../stores/router';
 
 export const usePro = <C extends { [ key: string ]: any }>():{
     [key: string]: any;
@@ -18,8 +19,20 @@ export const usePro = <C extends { [ key: string ]: any }>():{
     // marketTicker: MarketBlockProps<C> |undefined,
 } =>{
     //High: No not Move!!!!!!
-    // const {realMarket} = usePairMatch();
+    const {realMarket} = usePairMatch('./trading/pro');
     //basic info from redux
+    const {
+        pageTradePro,
+        updatePageTradePro,
+        __SUBMIT_LOCK_TIMER__,
+        __TOAST_AUTO_CLOSE_TIMER__
+    } = usePageTradePro();
+    const {amountMap, getAmount} = useAmount();
+    const {account, status: accountStatus} = useAccount();
+    const {toastOpen, setToastOpen, closeToast} = useToast();
+    const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap()
+    const {ammMap} = useAmmMap();
+    const {exchangeInfo} = useSystem();
     const {t} = useTranslation();
     const {
         market,
@@ -34,8 +47,8 @@ export const usePro = <C extends { [ key: string ]: any }>():{
         pair,
         swapBtnI18nKey,
         swapBtnStatus,
-        toastOpen,
-        closeToast,
+        // toastOpen,
+        // closeToast,
         should15sRefresh,
         // debugInfo,
         alertOpen,
@@ -46,12 +59,7 @@ export const usePro = <C extends { [ key: string ]: any }>():{
         pageTradeLite,
     } = useSwap({path:'./trading/pro'});
 
-    // const {amountMap, getAmount} = useAmount();
-    // const {account, status: accountStatus} = useAccount();
-    // const {toastOpen, setToastOpen, closeToast,} = useToast();
-    // const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap()
-    // const {ammMap} = useAmmMap();
-    // const {exchangeInfo} = useSystem();
+
 
     //
 
