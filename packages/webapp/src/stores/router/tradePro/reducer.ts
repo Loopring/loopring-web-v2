@@ -10,20 +10,20 @@ const initState = {
     priceImpactObj: undefined,
 }
 
-const initialState: PageTradeProStatus = {
+const initialState: PageTradeProStatus<{ [ key: string ]: any }> = {
     pageTradePro: initState,
-
+    __DAYS__:30,
     __SUBMIT_LOCK_TIMER__: 1000,
     __TOAST_AUTO_CLOSE_TIMER__: 3000,
 };
-const pageTradeProSlice: Slice<PageTradeProStatus> = createSlice({
+const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = createSlice({
     name: '_router_pageTradePro',
     initialState,
     reducers: {
         resetOrderPge(state) {
             state.pageTradePro = initState
         },
-        updatePageTradePro(state, action: PayloadAction<Partial<PageTradePro>>) {
+        updatePageTradePro(state, action: PayloadAction<Partial<PageTradePro<{ [ key: string ]: any }>>>) {
             const {
                 market,
                 depth,

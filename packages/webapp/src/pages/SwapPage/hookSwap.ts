@@ -38,7 +38,7 @@ import {
 } from '../../hooks/help';
 import { LoopringAPI } from '../../api_wrapper';
 import * as _ from 'lodash'
-import { DAYS } from '../../defs/common_defs';
+// import { DAYS } from '../../defs/common_defs';
 import { getTimestampDaysLater } from '../../utils/dt_tools';
 import { myLog } from '@loopring-web/common-resources/static-resources/src/utils/log_tools';
 import { calcPriceByAmmTickMapDepth, marketInitCheck, swapDependAsync } from './help';
@@ -112,7 +112,8 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
         pageTradeLite,
         updatePageTradeLite,
         __SUBMIT_LOCK_TIMER__,
-        __TOAST_AUTO_CLOSE_TIMER__
+        __TOAST_AUTO_CLOSE_TIMER__,
+        __DAYS__
     } = usePageTradeLite();
     const {status: walletLayer2Status} = useWalletLayer2();
     /*** api prepare ***/
@@ -183,7 +184,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
                         volume: calcTradeParams.amountBOutSlip.minReceived as string
                     },
                     allOrNone: false,
-                    validUntil: getTimestampDaysLater(DAYS),
+                    validUntil: getTimestampDaysLater(__DAYS__),
                     maxFeeBips: parseInt(totalFee as string),
                     fillAmountBOrS: false, // amm only false
                     orderType,
