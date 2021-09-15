@@ -78,8 +78,12 @@ export const ResetWrap = <T extends object>({
     }, [chargeFeeTokenList, assetsData, checkFeeTokenEnough, getTokenFee, feeToken])
 
     const getDisabled = React.useCallback(() => {
-        return false
-    }, [])
+        if (isFeeNotEnough) {
+            return true
+        } else {
+            return false
+        }
+    }, [isFeeNotEnough])
 
     const handleToggleChange = React.useCallback((_e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
         if (value === null) return
