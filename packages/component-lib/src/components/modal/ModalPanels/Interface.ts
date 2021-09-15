@@ -75,4 +75,9 @@ export enum AccountStep {
     ResetAccount_Submit,
     ResetAccount_Failed,
 
+    ExportAccount_Approve_WaitForAuth,
+    ExportAccount_User_Denied,
+    ExportAccount_Success,
+    ExportAccount_Failed,
+
 }
