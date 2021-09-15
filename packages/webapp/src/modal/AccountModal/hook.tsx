@@ -51,7 +51,7 @@ import {
 import { walletServices } from '@loopring-web/web3-provider';
 
 import React, { useState } from 'react';
-import { copyToClipBoard } from 'utils/obj_tools';
+import { copyToClipBoard } from '@loopring-web/common-resources';
 import { useAccount } from 'stores/account';
 import { lockAccount } from 'services/account/lockAccount';
 import { unlockAccount } from 'services/account/unlockAccount';
