@@ -109,12 +109,12 @@ export function useUpdateAccout() {
                 case ActionResultCode.UpdateAccoutError:
 
 
-                    const eddsaKey2 = result?.data?.eddsaKey
+                    // const eddsaKey2 = result?.data?.eddsaKey
 
-                    if (eddsaKey2) {
-                        myLog('UpdateAccoutError:', eddsaKey2)
-                        store.dispatch(updateAccountStatus({eddsaKey: eddsaKey2,}))
-                    }
+                    // if (eddsaKey2) {
+                    //     myLog('UpdateAccoutError:', eddsaKey2)
+                    //     store.dispatch(updateAccountStatus({eddsaKey: eddsaKey2,}))
+                    // }
 
                     const errMsg = checkErrorInfo(result?.data?.errorInfo, isFirstTime as boolean)
 

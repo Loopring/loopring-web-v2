@@ -20,7 +20,9 @@ export const useOpenModals = () => {
         setShowTransfer: React.useCallback((state: ModalStatePlayLoad & Transaction) => dispatch(setShowTransfer(state)), [dispatch]),
         setShowDeposit: React.useCallback((state: ModalStatePlayLoad & Transaction ) => dispatch(setShowDeposit(state)), [dispatch]),
         setShowWithdraw: React.useCallback((state: ModalStatePlayLoad & Transaction) => dispatch(setShowWithdraw(state)), [dispatch]),
-        setShowResetAccount: React.useCallback((state: ModalStatePlayLoad ) => dispatch(setShowResetAccount(state)), [dispatch]),
+        setShowResetAccount: React.useCallback((state: ModalStatePlayLoad ) => {
+            dispatch(setShowResetAccount(state))
+        }, [dispatch]),
         setShowAmm: React.useCallback((state: ModalStatePlayLoad ) => dispatch(setShowAmm(state)), [dispatch]),
         setShowSwap: React.useCallback((state: ModalStatePlayLoad ) => dispatch(setShowSwap(state)), [dispatch]),
         setShowAccount: React.useCallback((state: ModalStatePlayLoad & { step?: number }) => dispatch(setShowAccount(state)), [dispatch]),

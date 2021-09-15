@@ -82,6 +82,8 @@ export const accountServices = {
             accountId: accInfo.accountId,
             nonce: accInfo.nonce,
             level: accInfo.tags,
+            keyNonce: accInfo.keyNonce,
+            keySeed: accInfo.keySeed,
         } : {
             readyState: AccountStatus.LOCKED,
             apiKey: '',

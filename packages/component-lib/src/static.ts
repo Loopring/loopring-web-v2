@@ -19,6 +19,7 @@ export const account:Account = {
     eddsaKey: '',
     publicKey: {},
     level: '',
+    keySeed: '',
     nonce: undefined,
     keyNonce: undefined,
     connectName: ConnectProviders.unknown,
