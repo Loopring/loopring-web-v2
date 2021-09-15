@@ -274,6 +274,8 @@ export default {
     labelTransferSuccess: 'Transfer {{value}} {{symbol}} successfully!',
     labelUpdateAccountSuccess: 'Congratulations!',
     labelUpdateAccountSuccess2: 'You have been successfully activated Loopring Layer2 account!',
+    labelResetAccountSuccess: 'Congratulations!',
+    labelResetAccountSuccess2: 'You have been successfully reset Loopring Layer2 account keypair!',
     labelUpdateAccountSubmit: 'Activating Tx submitted.',
     labelUnlockAccountSuccess: 'Unlock successfully!',
     labelUnlockAccountFailed: 'Unlock failed!',

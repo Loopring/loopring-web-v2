@@ -55,10 +55,12 @@ export const UpdateAccount_User_Denied = (props: PanelProps & WithTranslation) =
 
 // symbol
 export const UpdateAccount_Success = (props: PanelProps & WithTranslation) => {
+    const describe1 = props.t(props.patch?.isReset ? 'labelResetAccountSuccess' : 'labelUpdateAccountSuccess')
+    const describe2 = props.t(props.patch?.isReset ? 'labelResetAccountSuccess2' : 'labelUpdateAccountSuccess2')
     const propsPatch = {
         iconType: IconType.DoneIcon,
-        describe1: props.t('labelUpdateAccountSuccess'),
-        describe2: props.t('labelUpdateAccountSuccess2'),
+        describe1,
+        describe2,
     }
     return <UpdateAccountBase {...propsPatch} {...props} />
 }
