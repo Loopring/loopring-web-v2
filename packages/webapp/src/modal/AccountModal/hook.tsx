@@ -253,11 +253,12 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         return {
             btnTxt: 'labelClose',
             callback: (e: any) => {
+                myLog('try to close all')
                 setShouldShow(false);
-                setShowTransfer({isShow: false})
-                setShowWithdraw({isShow: false})
-                setShowAccount({isShow: false})
-                setShowResetAccount({ isShow: true })
+                setShowTransfer({ isShow: false, })
+                setShowWithdraw({ isShow: false, })
+                setShowAccount({ isShow: false, })
+                setShowResetAccount({ isShow: false, })
                 if (onClose) {
                     onClose(e)
                 }
