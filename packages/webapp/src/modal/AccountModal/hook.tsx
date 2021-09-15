@@ -235,17 +235,6 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         }
     }, [setShowAccount,])
 
-    const backToExportAccountBtnInfo = React.useMemo(() => {
-        return {
-            btnTxt: 'labelRetry',
-            callback: () => {
-                //todo
-                setShowAccount({ isShow: false, })
-                setShowResetAccount({ isShow: true, })
-            }
-        }
-    }, [setShowAccount,])
-
     const TryNewTransferAuthBtnInfo = React.useMemo(() => {
         return {
             btnTxt: 'labelTryNext',
@@ -613,12 +602,12 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
             },
             
             [AccountStep.ExportAccount_Approve_WaitForAuth]: {
-                view: <ExportAccount_Approve_WaitForAuth patch={ { isReset: true } } btnInfo={closeBtnInfo} {...{
+                view: <ExportAccount_Approve_WaitForAuth patch={ { isReset: true } } {...{
                       ...rest, t
                 }} />,
             },
             [AccountStep.ExportAccount_User_Denied]: {
-                view: <ExportAccount_User_Denied patch={ { isReset: true } } btnInfo={backToExportAccountBtnInfo} {...{
+                view: <ExportAccount_User_Denied patch={ { isReset: true } } btnInfo={closeBtnInfo} {...{
                       ...rest, t
 
                 }} />,
