@@ -58,6 +58,7 @@ import { useWithdraw } from 'hooks/useractions/useWithdraw';
 import { useGetAssets } from '../../pages/Layer2Page/AssetPanel/hook'
 import { useUpdateAccout } from 'hooks/useractions/useUpdateAccount';
 import { useReset } from 'hooks/useractions/useReset';
+import { useExportAccount } from 'hooks/useractions/useExportAccount';
 
 export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }: 
     {t: any, etherscanBaseUrl: string, rest: any, onClose?: any, }) {
@@ -101,6 +102,8 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
     } = useTransfer()
 
     const { resetProps, } = useReset()
+
+    const { exportAccountProps } = useExportAccount()
 
     const [openQRCode, setOpenQRCode] = useState(false)
 
@@ -603,6 +606,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         withdrawProps,
         depositProps,
         resetProps,
+        exportAccountProps,
         assetsRawData,
         copyToastOpen,
         setCopyToastOpen,

@@ -26,6 +26,10 @@ export function useExportAccountInfo() {
 
     const {account} = useAccount()
 
+    const {
+        setShowExportAccount,
+    } = useOpenModals()
+
     const exportAccInfo = React.useCallback(() => {
 
         if (account.readyState !== AccountStatus.ACTIVATED) {
@@ -43,14 +47,19 @@ export function useExportAccountInfo() {
             privateKey: account.eddsaKey.sk,
         }
 
-        const fileName = 'accountInfo'
-        const exportType = 'json'
+        // const fileName = 'accountInfo'
+        // const exportType = 'json'
 
-        exportFromJSON({data: accInfo, fileName, exportType})
-
+        // exportFromJSON({data: accInfo, fileName, exportType})
+        return accInfo
     }, [account])
+
+    const exportAccount = React.useCallback(() => {
+        setShowExportAccount({isShow: true})
+    }, [setShowExportAccount])
 
     return {
         exportAccInfo,
+        exportAccount,
     }
 }

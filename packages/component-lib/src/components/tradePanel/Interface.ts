@@ -10,6 +10,7 @@ import {
     TransferInfoProps as _TransferInfoProps,
     WithdrawExtendProps,
     WithdrawInfoProps as _WithdrawInfoProps,
+    ExportAccountExtendProps,
 } from './components/Interface';
 import { SwapData, SwapTradeBaseEventProps, SwapTradeBaseProps, } from './components/SwapWrap/Interface';
 import { AmmPanelBaseProps } from './Amm';
@@ -32,6 +33,7 @@ export type ModalProps = {
 }
 
 export type ResetProps<T> = ResetExtendProps<T>
+export type ExportAccountProps = ExportAccountExtendProps
 export type DepositProps<T, I> = BasicACoinTradeHookProps<T, I> & DepositExtendProps<T, I>;
 export type WithdrawProps<T, I> = BasicACoinTradeHookProps<T, I> & WithdrawExtendProps<T, I, CoinKey<I>>;
 export type TransferProps<T, I> = BasicACoinTradeHookProps<T, I> & TransferExtendProps<T, I, CoinKey<I>>;
