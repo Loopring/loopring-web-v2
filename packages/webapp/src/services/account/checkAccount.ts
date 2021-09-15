@@ -16,7 +16,7 @@ export const checkAccount = (newAccAddress: string) => {
             accountServices.sendCheckAccount(newAccAddress)
         } else if (account.accountId && account.apiKey && account.eddsaKey) {
             myLog('After connect >>,checkAccount: step1 have activate account from store')
-            accountServices.sendAccountSigned();
+            accountServices.sendAccountSigned({});
         } else {
             myLog('After connect >>,checkAccount: step1 account locked')
             accountServices.sendAccountLock();

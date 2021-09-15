@@ -42,11 +42,16 @@ import {
     Withdraw_Success,
     Withdraw_User_Denied,
     Withdraw_WaitForAuth,
+
+    ExportAccount_Approve_WaitForAuth,
+    ExportAccount_User_Denied,
+    ExportAccount_Success,
+    ExportAccount_Failed,
 } from '@loopring-web/component-lib';
 import { walletServices } from '@loopring-web/web3-provider';
 
 import React, { useState } from 'react';
-import { copyToClipBoard } from 'utils/obj_tools';
+import { copyToClipBoard } from '@loopring-web/common-resources';
 import { useAccount } from 'stores/account';
 import { lockAccount } from 'services/account/lockAccount';
 import { unlockAccount } from 'services/account/unlockAccount';
@@ -67,7 +72,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
 
     const {
         modals: {isShowAccount}, setShowConnect, setShowAccount,
-        setShowDeposit, setShowTransfer, setShowWithdraw
+        setShowDeposit, setShowTransfer, setShowWithdraw, setShowResetAccount,
     } = useOpenModals()
 
     const {
@@ -224,7 +229,19 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         return {
             btnTxt: 'labelRetry',
             callback: () => {
-                //TODO
+                setShowAccount({ isShow: false, })
+                setShowResetAccount({ isShow: true, })
+            }
+        }
+    }, [setShowAccount,])
+
+    const backToExportAccountBtnInfo = React.useMemo(() => {
+        return {
+            btnTxt: 'labelRetry',
+            callback: () => {
+                //todo
+                setShowAccount({ isShow: false, })
+                setShowResetAccount({ isShow: true, })
             }
         }
     }, [setShowAccount,])
@@ -255,10 +272,12 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         return {
             btnTxt: 'labelClose',
             callback: (e: any) => {
+                myLog('try to close all')
                 setShouldShow(false);
-                setShowTransfer({isShow: false})
-                setShowWithdraw({isShow: false})
-                setShowAccount({isShow: false})
+                setShowTransfer({ isShow: false, })
+                setShowWithdraw({ isShow: false, })
+                setShowAccount({ isShow: false, })
+                setShowResetAccount({ isShow: false, })
                 if (onClose) {
                     onClose(e)
                 }
@@ -590,6 +609,30 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
             [ AccountStep.ResetAccount_Failed ]: {
                 view: <UpdateAccount_Failed patch={ { isReset: true } } btnInfo={closeBtnInfo} {...{
                     ...rest, t
+                }} />,
+            },
+            
+            [AccountStep.ExportAccount_Approve_WaitForAuth]: {
+                view: <ExportAccount_Approve_WaitForAuth patch={ { isReset: true } } btnInfo={closeBtnInfo} {...{
+                      ...rest
+                }} />,
+            },
+            [AccountStep.ExportAccount_User_Denied]: {
+                view: <ExportAccount_User_Denied patch={ { isReset: true } } btnInfo={backToExportAccountBtnInfo} {...{
+                      ...rest
+
+                }} />,
+            },
+            [AccountStep.ExportAccount_Success]: {
+                view: <ExportAccount_Success patch={ { isReset: true } } btnInfo={closeBtnInfo}  {...{
+                      ...rest
+
+                }} />,
+            },
+            [AccountStep.ExportAccount_Failed]: {
+                view: <ExportAccount_Failed patch={ { isReset: true } } btnInfo={closeBtnInfo} {...{
+                      ...rest
+
                 }} />,
             },
 

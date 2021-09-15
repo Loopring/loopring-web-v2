@@ -12,6 +12,9 @@ export async function unlockAccount() {
     const account = store.getState().account;
     const {exchangeInfo} = store.getState().system;
     accountServices.sendSign()
+
+    myLog('unlockAccount account:', account)
+
     if (exchangeInfo && LoopringAPI.userAPI && account.nonce !== undefined) {
         try {
             
@@ -24,13 +27,25 @@ export async function unlockAccount() {
                 keyNonce: account.nonce - 1,
                 walletType: connectName,
             })
+
+            // myLog('unlockAccount eddsaKey:', eddsaKey)
             
-            const {apiKey} = (await LoopringAPI.userAPI.getUserApiKey({
+            const { apiKey, raw_data, } = (await LoopringAPI.userAPI.getUserApiKey({
                 accountId: account.accountId
             }, eddsaKey.sk))
 
-            accountServices.sendAccountSigned(account.accountId, apiKey, eddsaKey)
+            myLog('unlockAccount raw_data:', raw_data)
+
+            if (!apiKey && raw_data.resultInfo) {
+                myLog('try to sendErrorUnlock....')
+                accountServices.sendErrorUnlock()
+            } else {
+                myLog('try to sendAccountSigned....')
+                accountServices.sendAccountSigned({accountId: account.accountId, apiKey, eddsaKey})
+            }
         } catch (e) {
+            myLog('unlockAccount e:', e)
+
             const errType = checkErrorInfo(e, true)
             switch (errType) {
                 case ConnectorError.USER_DENIED:
