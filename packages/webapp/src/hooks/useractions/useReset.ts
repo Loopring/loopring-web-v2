@@ -33,7 +33,6 @@ export const useReset = <T>(): {
         handleFeeChange,
     }
 
-
     return {
         resetProps: resetProps as ResetProps<T>,
     }
