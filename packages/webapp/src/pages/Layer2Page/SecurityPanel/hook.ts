@@ -3,9 +3,7 @@ import exportFromJSON from 'export-from-json'
 import { useAccount } from '../../../stores/account'
 import React from 'react'
 
-import { AccountStep,
-    useOpenModals 
-} from '@loopring-web/component-lib'
+import { useOpenModals, } from '@loopring-web/component-lib'
 
 export function useResetAccount() {
 

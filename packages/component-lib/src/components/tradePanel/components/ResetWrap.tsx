@@ -1,4 +1,3 @@
-import { IBData } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../Interface';
 import { Trans, WithTranslation } from 'react-i18next';
 import React from 'react';
