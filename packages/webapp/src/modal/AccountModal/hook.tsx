@@ -614,24 +614,24 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
             
             [AccountStep.ExportAccount_Approve_WaitForAuth]: {
                 view: <ExportAccount_Approve_WaitForAuth patch={ { isReset: true } } btnInfo={closeBtnInfo} {...{
-                      ...rest
+                      ...rest, t
                 }} />,
             },
             [AccountStep.ExportAccount_User_Denied]: {
                 view: <ExportAccount_User_Denied patch={ { isReset: true } } btnInfo={backToExportAccountBtnInfo} {...{
-                      ...rest
+                      ...rest, t
 
                 }} />,
             },
             [AccountStep.ExportAccount_Success]: {
                 view: <ExportAccount_Success patch={ { isReset: true } } btnInfo={closeBtnInfo}  {...{
-                      ...rest
+                      ...rest, t
 
                 }} />,
             },
             [AccountStep.ExportAccount_Failed]: {
                 view: <ExportAccount_Failed patch={ { isReset: true } } btnInfo={closeBtnInfo} {...{
-                      ...rest
+                      ...rest, t
 
                 }} />,
             },
