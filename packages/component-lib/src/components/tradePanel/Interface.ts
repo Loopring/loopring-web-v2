@@ -31,13 +31,13 @@ export type ModalProps = {
     btnDisable?: boolean
 }
 
-export type ResetProps<T, I> = BasicACoinTradeHookProps<T, I> & Required<ResetExtendProps<T>>
+export type ResetProps<T> = ResetExtendProps<T>
 export type DepositProps<T, I> = BasicACoinTradeHookProps<T, I> & DepositExtendProps<T, I>;
 export type WithdrawProps<T, I> = BasicACoinTradeHookProps<T, I> & WithdrawExtendProps<T, I, CoinKey<I>>;
 export type TransferProps<T, I> = BasicACoinTradeHookProps<T, I> & TransferExtendProps<T, I, CoinKey<I>>;
 
 
-export  type  ResetInfoProps<T, I> = DefaultProps<T, I> & _ResetInfoProps;
+export  type  ResetInfoProps<T, I> = DefaultProps<T, I> & _ResetInfoProps<T>;
 export  type  DepositInfoProps<T, I> = DefaultProps<T, I> & _DepositInfoProps<I>;
 export  type  WithdrawInfoProps<T, I> = DefaultProps<T, I> & _WithdrawInfoProps<CoinKey<I>>;
 export  type  TransferInfoProps<T, I> = DefaultProps<T, I> & _TransferInfoProps<CoinKey<I>>;
