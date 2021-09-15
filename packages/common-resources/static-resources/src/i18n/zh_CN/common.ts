@@ -283,6 +283,9 @@ export default {
     labelResetAccount: '重置二层账号密钥',
 
     labelExportAccount: '导出账号',
+    labelExportAccountNoPhotos: '请勿拍照',
+    labelExportAccountDescription: '请对以下信息严格保密，不要明文存储到任何联网的电脑中；否则，您在交易所的资产可能会因为低价下单而受损失。',
+    labelExportAccountCopy: '复制',
     labelExportAccountSuccess: '导出账号成功!',
     labelExportAccountFailed: '导出账号失败!',
     // labelCreateAccountApproveWaitForAuth: 'Waiting for <1>{{symbol}}</1> Approve...',

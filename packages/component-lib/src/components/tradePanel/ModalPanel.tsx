@@ -137,7 +137,7 @@ export const ModalPanel = <T extends IBData<I>, I>({
                onClose={() => setShowExportAccount({...isShowExportAccount, isShow: false})}
                content={<ExportAccountPanel {...{
                    ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
-                   _height: 'var(--modal-height)',
+                   _height: `calc(var(--modal-height) + ${theme.unit * 20}px)`,
                }} > </ExportAccountPanel>}/>
         <Modal open={isShowAmm.isShow}
                onClose={() => setShowAmm({...isShowAmm, isShow: false} as any)}

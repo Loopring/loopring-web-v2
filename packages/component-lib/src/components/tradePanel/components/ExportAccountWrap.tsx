@@ -4,9 +4,14 @@ import { Grid, Typography, TextareaAutosize } from '@mui/material';
 import { Button } from '../../basic-lib';
 import { ExportAccountExtendProps } from './Interface';
 import styled from '@emotion/styled'
+import { Toast } from '@loopring-web/component-lib'
+import { copyToClipBoard } from '@loopring-web/common-resources'
+
+const TOAST_TIME = 3000
 
 const TextareaAutosizeStyled = styled(TextareaAutosize)`
     width: 100%;
+    padding: ${({theme}: any) => theme.unit * 2}px;
     color: var(--color-text-secondary);
     background: var(--color-global-bg);
 ` as any
@@ -15,20 +20,22 @@ export const ExportAccountWrap = ({
            t,
            ...rest
        }: ExportAccountExtendProps & WithTranslation) => {
-    const [accountInfo, setAccountInfo] = React.useState<any>()
-    const { exportAccountProps } = rest
+    const [info, setInfo] = React.useState<any>()
+    const [copyToastOpen, setCopyToastOpen] = React.useState(false)
+    const { exportAccountProps: {accountInfo} } = rest
 
+    // console.log({exportAccountProps})
     React.useEffect(() => {
-        if (exportAccountProps) {
+        if (accountInfo) {
             try{
-                const info = JSON.stringify(exportAccountProps, null, 4)
-                setAccountInfo(info)
+                const info = JSON.stringify(accountInfo, null, 4)
+                setInfo(info)
             }
             finally{
 
             }
         }
-    }, [exportAccountProps])
+    }, [accountInfo])
 
     return <Grid className={''} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
@@ -42,7 +49,7 @@ export const ExportAccountWrap = ({
             </Typography>
         </Grid>
 
-        <Grid item alignSelf={"stretch"} position={'relative'}>
+        <Grid item alignSelf={"stretch"} marginBottom={1} position={'relative'}>
             <Typography component={'p'} variant="body1" color={'var(--color-text-third)'}>
                 {t('labelExportAccountDescription')}
             </Typography>
@@ -51,18 +58,22 @@ export const ExportAccountWrap = ({
         <Grid item alignSelf={"stretch"} position={'relative'}>
             <TextareaAutosizeStyled
                 disabled
-                defaultValue={accountInfo}
+                maxRows={15}
+                defaultValue={info}
             ></TextareaAutosizeStyled>
         </Grid>
 
         <Grid item marginTop={2} alignSelf={'stretch'}>
             <Button fullWidth variant={'contained'} size={'medium'} color={'primary'} onClick={() => {
-                // if (onResetClick) {
-                //     onResetClick()
-                // }
+                copyToClipBoard(info)
+                setCopyToastOpen(true)
             }}
             >{t(`labelExportAccountCopy`)}
             </Button>
         </Grid>
+        <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen}
+            autoHideDuration={TOAST_TIME} onClose={() => {
+                setCopyToastOpen(false)
+            }} severity={"success"}/>
     </Grid>
 }
