@@ -83,10 +83,10 @@ export const ModalPanel = <T extends IBData<I>, I>({
     transferProps: TransferProps<T, I>,
     withDrawProps: WithdrawProps<T, I>,
     depositProps: DepositProps<T, I>,
-    resetProps: ResetProps<T, I>
-    ammProps: AmmProps<any, any, T, any>
-    swapProps: SwapProps<T, I, any>;
-    assetsData: any[];
+    resetProps: ResetProps<I>,
+    ammProps: AmmProps<any, any, T, any>,
+    swapProps: SwapProps<T, I, any>,
+    assetsData: any[],
 }) => {
     const {
         modals,
@@ -127,7 +127,7 @@ export const ModalPanel = <T extends IBData<I>, I>({
                onClose={() => setShowResetAccount({...isShowResetAccount, isShow: false})}
                content={<ResetPanel<any, any> {...{
                    ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
-                   _height: 'var(--modal-height)', ...resetProps,
+                   _height: 'var(--modal-height)', ...resetProps, assetsData,
                }} > </ResetPanel>}/>
         <Modal open={isShowAmm.isShow}
                onClose={() => setShowAmm({...isShowAmm, isShow: false} as any)}

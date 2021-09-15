@@ -50,6 +50,21 @@ export const getValuePrecision = (rawValue?: number | string, precision = 6) => 
     return new BigNumber(rawValue).toPrecision(2) as string
 }
 
+const getFloatFloor = (value: number | string | undefined, precision: number) => {
+    if ((!value  || !Number.isFinite(Number(value)) || Number(value) === 0 ) && !BigNumber.isBigNumber(value)) {
+        return '0.00'
+    }
+    const result = Math.floor(Number(value) * Math.pow(10, precision))
+    return result / Math.pow(10, precision)
+}
+
+const getFloatCeil = (value: number | string | undefined, precision: number) => {
+    if ((!value  || !Number.isFinite(Number(value)) || Number(value) === 0 ) && !BigNumber.isBigNumber(value)) {
+        return '0.00'
+    }
+    let result = Math.ceil(Number(value) * Math.pow(10, precision))
+    return result / Math.pow(10, precision)
+}
 
 /**
  * @param value
@@ -57,14 +72,15 @@ export const getValuePrecision = (rawValue?: number | string, precision = 6) => 
  * @param precision  default = 2
  * @param fixed
  * @param notRemoveEndZero default will remove after dot end 0
+ * @param floor default .toFixed
  */
-export const getValuePrecisionThousand = (value: number | string | BigNumber|undefined, minDigit = 6, precision = 2, fixed?:number, notRemoveEndZero?:boolean) => {
+export const getValuePrecisionThousand = (value: number | string | BigNumber | undefined, minDigit = 6, precision = 2, fixed?: number, notRemoveEndZero?: boolean, floor?: boolean) => {
     if ((!value  || !Number.isFinite(Number(value)) || Number(value) === 0 ) && !BigNumber.isBigNumber(value)) {
-       return  '0.00'
+        return  '0.00'
     }
     let result: any = value;
     if (!BigNumber.isBigNumber(result)){
-        result =   toBig(value);
+        result = toBig(value);
     }
     if (result.isGreaterThan(1)) {
         // if (minDigit < 3) {
@@ -73,15 +89,26 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber|und
         //         minimumFractionDigits: minDigit
         //     })
         // }
-        result = Number(result.toFixed(minDigit)).toLocaleString('en',{minimumFractionDigits:minDigit})
+        let formattedValue = null
+        if (floor === true) {
+            formattedValue = getFloatFloor(result, minDigit)
+        }
+        if (floor === false) {
+            formattedValue = getFloatCeil(result, minDigit)
+        }
+        if (floor === undefined) {
+            formattedValue = result.toFixed(minDigit)
+        }
 
+        // result = Number(result.toFixed(minDigit)).toLocaleString('en',{minimumFractionDigits:minDigit})
+        result = Number(formattedValue).toLocaleString('en', {minimumFractionDigits: minDigit})
     } else if (result.isLessThanOrEqualTo(1) && fixed ){
         result = result.toFixed(fixed)
     } else if (result.isLessThanOrEqualTo(1)) {
         result = result.toPrecision(precision)
     }
     
-    if( result && !notRemoveEndZero ) {
+    if(result && !notRemoveEndZero ) {
         let [_init, _dot] = result.split('.');
         if (_dot) {
             _dot = _dot.replace(/0+?$/, '');
