@@ -274,11 +274,17 @@ export default {
     labelTransferSuccess: 'Transfer {{value}} {{symbol}} successfully!',
     labelUpdateAccountSuccess: 'Congratulations!',
     labelUpdateAccountSuccess2: 'You have been successfully activated Loopring Layer2 account!',
+    labelResetAccountSuccess: 'Congratulations!',
+    labelResetAccountSuccess2: 'You have been successfully reset Loopring Layer2 account keypair!',
     labelUpdateAccountSubmit: 'Activating Tx submitted.',
     labelUnlockAccountSuccess: 'Unlock successfully!',
     labelUnlockAccountFailed: 'Unlock failed!',
 
     labelResetAccount: 'Reset Layer2 Account',
+
+    labelExportAccount: 'Export Account',
+    labelExportAccountSuccess: 'Export Account successfully!',
+    labelExportAccountFailed: 'Export Account failed!',
     // labelCreateAccountApproveWaitForAuth: 'Waiting for <1>{{symbol}}</1> Approve...',
     labelCreateAccountApproveDenied: '<0>{{symbol}}</0> Approve Denied by user.',
     labelAmmSwitch: 'switch',

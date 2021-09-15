@@ -11,6 +11,7 @@ const initialState: AccountState = {
     eddsaKey: '',
     publicKey: {},
     level: '',
+    keySeed: '',
     nonce: undefined,
     keyNonce: undefined,
     connectName: ConnectProviders.unknown,
@@ -50,6 +51,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                     apiKey,
                     eddsaKey,
                     _chainId,
+                    keySeed,
                     nonce,
                     connectName,
                     // _userOnModel
@@ -89,6 +91,9 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                 }
                 if (nonce !== undefined) {
                     state.nonce = nonce;
+                }
+                if (keySeed !== undefined) {
+                    state.keySeed = keySeed;
                 }
                 state.status = SagaStatus.DONE;
             }

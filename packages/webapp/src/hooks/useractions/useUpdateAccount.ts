@@ -4,6 +4,7 @@ import { updateAccountStatus, useAccount } from 'stores/account'
 import { FeeInfo, myLog } from '@loopring-web/common-resources'
 import {
     AccountStep,
+    setShowResetAccount,
     useOpenModals,
 } from '@loopring-web/component-lib'
 
@@ -64,7 +65,7 @@ export function useUpdateAccout() {
         myLog('goUpdateAccount.... isFirstTime:', isFirstTime, ' isReset:', isReset, ' isHWAddr:', isHWAddr)
 
         const updateAccAndCheck = async () => {
-            const result: ActionResult = await updateAccountFromServer({isHWAddr, feeInfo, })
+            const result: ActionResult = await updateAccountFromServer({isHWAddr, feeInfo, isReset, })
 
             switch (result.code) {
                 case ActionResultCode.NoError:
@@ -89,25 +90,31 @@ export function useUpdateAccout() {
                                 updateDepositHashWrapper({wallet: account.accAddress, isHWAddr,})
                             }
 
-                            accountServices.sendAccountSigned(accInfo.accountId, apiKey, eddsaKey)
+                            accountServices.sendAccountSigned({accountId: accInfo.accountId, apiKey, eddsaKey, isReset, })
 
                         }
 
                     }
 
-                    setShowAccount({isShow: false})
+                    if (isReset) {
+                        myLog('reset show success!!')
+                        setShowAccount({ isShow: true, step: AccountStep.ResetAccount_Success, })
+                    } else {
+                        myLog('not reset show account close!!')
+                        setShowAccount({ isShow: false})
+                    }
                     break
                 case ActionResultCode.GetAccError:
                 case ActionResultCode.GenEddsaKeyError:
                 case ActionResultCode.UpdateAccoutError:
 
 
-                    const eddsaKey2 = result?.data?.eddsaKey
+                    // const eddsaKey2 = result?.data?.eddsaKey
 
-                    if (eddsaKey2) {
-                        myLog('UpdateAccoutError:', eddsaKey2)
-                        store.dispatch(updateAccountStatus({eddsaKey: eddsaKey2,}))
-                    }
+                    // if (eddsaKey2) {
+                    //     myLog('UpdateAccoutError:', eddsaKey2)
+                    //     store.dispatch(updateAccountStatus({eddsaKey: eddsaKey2,}))
+                    // }
 
                     const errMsg = checkErrorInfo(result?.data?.errorInfo, isFirstTime as boolean)
 

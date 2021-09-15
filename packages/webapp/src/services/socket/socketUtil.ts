@@ -214,7 +214,11 @@ export class LoopringSocket {
                     break
                 case  SocketEventType.orderbook:
                     //FIX:  make orderbook Topic
-                    list = socket[ SocketEventType.orderbook ].map(key => getOrderBookArg(key, 0))
+                    list = socket[ SocketEventType.orderbook ].map(key => getOrderBookArg({
+                        market: key, 
+                        level: 0,
+                        //todo
+                    }))
                     if (list && list.length) {
                         this.addSocketEvents(SocketEventType.orderbook)
                         topics = [...topics, ...list];
