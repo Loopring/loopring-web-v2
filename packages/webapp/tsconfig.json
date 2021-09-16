@@ -5,5 +5,5 @@
     "rootDir": "."
   },
   "include": [
-    "src", "src/*", "src/**/*.json"]
+    "src", "src/*", "src/**/*.json", ]
 }

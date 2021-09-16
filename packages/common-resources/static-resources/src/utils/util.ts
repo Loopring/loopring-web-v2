@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { toBig } from 'loopring-sdk'
 
-
 export function abbreviateNumber(value: number) {
     let newValue = value, result: string;
     const suffixes = ["", "K", "M", "B", "T"];
@@ -74,13 +73,26 @@ const getFloatCeil = (value: number | string | undefined, precision: number) => 
  * @param notRemoveEndZero default will remove after dot end 0
  * @param floor default .toFixed
  */
-export const getValuePrecisionThousand = (value: number | string | BigNumber | undefined, minDigit = 6, precision = 2, fixed?: number, notRemoveEndZero?: boolean, floor?: boolean) => {
+export const getValuePrecisionThousand = (value: number | string | BigNumber | undefined, minDigit = 6, precision = 2, fixed?: number, notRemoveEndZero?: boolean, option?: {
+    floor?: boolean,
+    isFait?: boolean,
+}) => {
+    const floor = option?.floor
+    const isFait = option?.isFait
     if ((!value  || !Number.isFinite(Number(value)) || Number(value) === 0 ) && !BigNumber.isBigNumber(value)) {
-        return  '0.00'
+        return '0.00'
     }
     let result: any = value;
     if (!BigNumber.isBigNumber(result)){
         result = toBig(value);
+    }
+    // fait price or percentage
+    if (isFait === true) {
+        if (result.isGreaterThanOrEqualTo(1)) {
+            return toBig(result.toFixed(2)).toNumber().toLocaleString('en', {minimumFractionDigits: 2})
+        } else {
+            return result.toNumber().toLocaleString('en', {minimumFractionDigits: 6})
+        }
     }
     if (result.isGreaterThan(1)) {
         // if (minDigit < 3) {
@@ -99,16 +111,15 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
         if (floor === undefined) {
             formattedValue = result.toFixed(minDigit)
         }
-
-        // result = Number(result.toFixed(minDigit)).toLocaleString('en',{minimumFractionDigits:minDigit})
-        result = Number(formattedValue).toLocaleString('en', {minimumFractionDigits: minDigit})
-    } else if (result.isLessThanOrEqualTo(1) && fixed ){
+        // remain zero
+        result = (toBig(formattedValue) as any).toNumber().toLocaleString('en',{minimumFractionDigits: minDigit})
+    } else if (result.isLessThanOrEqualTo(1) && fixed){
         result = result.toFixed(fixed)
     } else if (result.isLessThanOrEqualTo(1)) {
         result = result.toPrecision(precision)
     }
     
-    if(result && !notRemoveEndZero ) {
+    if (result && !notRemoveEndZero) {
         let [_init, _dot] = result.split('.');
         if (_dot) {
             _dot = _dot.replace(/0+?$/, '');

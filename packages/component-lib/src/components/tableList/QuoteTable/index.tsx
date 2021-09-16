@@ -34,7 +34,7 @@ const TableStyled = styled(Table)`
             }   
         }};
       
-        --template-columns: 240px 180px 100px auto auto auto 132px !important;
+        --template-columns: 240px 200px 100px auto auto auto 132px !important;
         .rdg-cell.action{
             display: flex;
             justify-content: center;
@@ -150,6 +150,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                     const value = row[ 'close' ]
                     const priceDollar = row['coinAPriceDollar']
                     const priceYuan = row['coinAPriceYuan']
+                    const precision = row['precision'] || 6
                     // const [valueFirst, valueLast] = value
                     // const getRenderValue = (value: number) => {
                     //     return Number.isFinite(value) ? value.toFixed(2) : EmptyValueTag;
@@ -157,15 +158,20 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                     // const RenderValue = styled.span`
                     // 	color: var(--color-text-secondary)
                     // `
+                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, precision, precision, undefined, true) : EmptyValueTag
 
-                    const faitPrice = Number.isFinite(value) 
+                    const faitPrice = Number.isFinite(value)
                         ? isUSD 
-                            ? PriceTag.Dollar + getValuePrecisionThousand(priceDollar, 2, 2) 
-                            : PriceTag.Yuan + getValuePrecisionThousand(priceYuan, 2, 2)
+                            ? PriceTag.Dollar + getValuePrecisionThousand(priceDollar, 2, 2, 2, true, {
+                                isFait: true
+                            })
+                            : PriceTag.Yuan + getValuePrecisionThousand(priceYuan, 2, 2, 2, true, {
+                                isFait: true
+                            })
                         : EmptyValueTag
                     return (
                         <div className="rdg-cell-value">
-                            <span>{Number.isFinite(value) ? getValuePrecisionThousand(value, 2, 2) : EmptyValueTag}</span>
+                            <span>{price}</span>
                             <Typography color={'var(--color-text-third)'} component={'span'}> / {faitPrice}</Typography>
                         </div>
                     )
@@ -188,7 +194,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                         <div className="rdg-cell-value textAlignRight">
                             <QuoteTableChangedCell value={value} upColor={upColor}>
                                 {typeof value !== 'undefined' ? (
-                                    (row.floatTag === FloatTag.increase ? '+' : '') + Number(getValuePrecisionThousand(value)).toFixed(2) + '%') : EmptyValueTag}
+                                    (row.floatTag === FloatTag.increase ? '+' : '') + getValuePrecisionThousand(value, 2, 2, 2, true) + '%') : EmptyValueTag}
                             </QuoteTableChangedCell>
                         </div>
                     )
@@ -202,11 +208,11 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                 // sortable: true,
                 formatter: ({row, column}) => {
                     const value = row[ column.key ]
-                    // const hasValue = Number.isFinite(value)
-                    // const renderValue = hasValue ? value.toFixed(2) : EmptyValueTag
+                    const precision = row['precision'] || 6
+                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, precision, precision, undefined, true) : EmptyValueTag
                     return (
                         <div className="rdg-cell-value textAlignRight">
-                            <span>{Number.isFinite(value) ? getValuePrecisionThousand(value) : EmptyValueTag}</span>
+                            <span>{price}</span>
                         </div>
                     )
                 },
@@ -219,11 +225,11 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                 // sortable: true,
                 formatter: ({row, column}) => {
                     const value = row[ column.key ]
-                    // const hasValue = Number.isFinite(value)
-                    // const renderValue = hasValue ? value.toFixed(2) : EmptyValueTag
+                    const precision = row['precision'] || 6
+                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, precision, precision, undefined, true) : EmptyValueTag
                     return (
                         <div className="rdg-cell-value textAlignRight">
-                            <span>{Number.isFinite(value) ? getValuePrecisionThousand(value) : EmptyValueTag}</span>
+                            <span>{price}</span>
                         </div>
                     )
                 },
@@ -238,7 +244,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                     const value = row[ 'volume' ]
                     return (
                         <div className="rdg-cell-value textAlignRight">
-                            <span>{Number.isFinite(value) ? getValuePrecisionThousand(value) : EmptyValueTag}</span>
+                            <span>{Number.isFinite(value) ? getValuePrecisionThousand(value, 6, 6, 6, true) : EmptyValueTag}</span>
                         </div>
                     )
                 },

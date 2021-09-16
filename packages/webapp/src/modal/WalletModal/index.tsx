@@ -24,8 +24,7 @@ import {
 import { useAccount } from 'stores/account';
 import { connectProvides, walletServices } from '@loopring-web/web3-provider';
 import { useSystem } from 'stores/system';
-import { myLog } from "@loopring-web/common-resources";
-import { copyToClipBoard } from '../../utils/obj_tools';
+import { myLog, copyToClipBoard, } from "@loopring-web/common-resources";
 import { TOAST_TIME } from '../../defs/common_defs';
 import { useSelector } from 'react-redux';
 import { RootState } from 'stores';

@@ -42,11 +42,16 @@ import {
     Withdraw_Success,
     Withdraw_User_Denied,
     Withdraw_WaitForAuth,
+
+    ExportAccount_Approve_WaitForAuth,
+    ExportAccount_User_Denied,
+    ExportAccount_Success,
+    ExportAccount_Failed,
 } from '@loopring-web/component-lib';
 import { walletServices } from '@loopring-web/web3-provider';
 
 import React, { useState } from 'react';
-import { copyToClipBoard } from 'utils/obj_tools';
+import { copyToClipBoard } from '@loopring-web/common-resources';
 import { useAccount } from 'stores/account';
 import { lockAccount } from 'services/account/lockAccount';
 import { unlockAccount } from 'services/account/unlockAccount';
@@ -58,6 +63,7 @@ import { useWithdraw } from 'hooks/useractions/useWithdraw';
 import { useGetAssets } from '../../pages/Layer2Page/AssetPanel/hook'
 import { useUpdateAccout } from 'hooks/useractions/useUpdateAccount';
 import { useReset } from 'hooks/useractions/useReset';
+import { useExportAccount } from 'hooks/useractions/useExportAccount';
 
 export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }: 
     {t: any, etherscanBaseUrl: string, rest: any, onClose?: any, }) {
@@ -66,7 +72,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
 
     const {
         modals: {isShowAccount}, setShowConnect, setShowAccount,
-        setShowDeposit, setShowTransfer, setShowWithdraw
+        setShowDeposit, setShowTransfer, setShowWithdraw, setShowResetAccount,
     } = useOpenModals()
 
     const {
@@ -87,6 +93,12 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         lastRequest,
     } = useWithdraw()
 
+    const {
+        exportAccountAlertText,
+        exportAccountToastOpen,
+        setExportAccountToastOpen,
+    } = useExportAccount()
+
     const {depositProps} = useDeposit()
 
     const {assetsRawData} = useGetAssets()
@@ -101,6 +113,8 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
     } = useTransfer()
 
     const { resetProps, } = useReset()
+
+    const { exportAccountProps } = useExportAccount()
 
     const [openQRCode, setOpenQRCode] = useState(false)
 
@@ -221,7 +235,8 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         return {
             btnTxt: 'labelRetry',
             callback: () => {
-                //TODO
+                setShowAccount({ isShow: false, })
+                setShowResetAccount({ isShow: true, })
             }
         }
     }, [setShowAccount,])
@@ -252,10 +267,12 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         return {
             btnTxt: 'labelClose',
             callback: (e: any) => {
+                myLog('try to close all')
                 setShouldShow(false);
-                setShowTransfer({isShow: false})
-                setShowWithdraw({isShow: false})
-                setShowAccount({isShow: false})
+                setShowTransfer({ isShow: false, })
+                setShowWithdraw({ isShow: false, })
+                setShowAccount({ isShow: false, })
+                setShowResetAccount({ isShow: false, })
                 if (onClose) {
                     onClose(e)
                 }
@@ -589,6 +606,30 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
                     ...rest, t
                 }} />,
             },
+            
+            [AccountStep.ExportAccount_Approve_WaitForAuth]: {
+                view: <ExportAccount_Approve_WaitForAuth patch={ { isReset: true } } {...{
+                      ...rest, t
+                }} />,
+            },
+            [AccountStep.ExportAccount_User_Denied]: {
+                view: <ExportAccount_User_Denied patch={ { isReset: true } } btnInfo={closeBtnInfo} {...{
+                      ...rest, t
+
+                }} />,
+            },
+            [AccountStep.ExportAccount_Success]: {
+                view: <ExportAccount_Success patch={ { isReset: true } } btnInfo={closeBtnInfo}  {...{
+                      ...rest, t
+
+                }} />,
+            },
+            [AccountStep.ExportAccount_Failed]: {
+                view: <ExportAccount_Failed patch={ { isReset: true } } btnInfo={closeBtnInfo} {...{
+                      ...rest, t
+
+                }} />,
+            },
 
         })
     }, [addressShort, account, depositProps, etherscanBaseUrl, onCopy, onSwitch, onDisconnect, onViewQRCode, t, rest])
@@ -603,6 +644,13 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         withdrawProps,
         depositProps,
         resetProps,
+        exportAccountProps,
+        exportAccountAlertText,
+        exportAccountToastOpen,
+        setExportAccountToastOpen,
+        transferAlertText,
+        transferToastOpen,
+        setTransferToastOpen,
         assetsRawData,
         copyToastOpen,
         setCopyToastOpen,

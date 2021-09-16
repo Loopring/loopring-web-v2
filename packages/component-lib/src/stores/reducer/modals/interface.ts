@@ -19,6 +19,7 @@ export interface ModalState {
     isShowWithdraw: ModalStatePlayLoad & Transaction,
     isShowDeposit: ModalStatePlayLoad & Transaction,
     isShowResetAccount: ModalStatePlayLoad,
+    isShowExportAccount: ModalStatePlayLoad,
     isShowSwap: ModalStatePlayLoad,
     isShowAmm: ModalStatePlayLoad,
     isShowConnect: ModalStatePlayLoad & { step: number },
