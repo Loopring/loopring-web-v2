@@ -26,8 +26,11 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        handleCountChange,
                                                                        focusOnInput,
                                                                        name,
+                                                                       size = 'middle',
                                                                        isHideError = false,
                                                                        isShowCoinInfo = true,
+                                                                       isShowCoinIcon = true,
+                                                                       coinLabelStyle = undefined,
                                                                    }
                                                                        : InputCoinProps<T, C, I>, ref: React.ForwardedRef<any>) {
     const {balance, belong, tradeValue} = (inputData ? inputData : {}) as IBData<C>;
@@ -96,7 +99,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
     // const coinInfo: any = coinMap[ belong ] ? coinMap[ belong ] : {};
     // const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;
     // formatValue(sValue)
-    return <> <IWrap component={'div'} ref={ref}>
+    return <> <IWrap size={size} component={'div'} ref={ref}>
         <Grid container component={'div'} className={'label-wrap'} justifyContent={'space-between'}
               paddingBottom={1 / 2}>
             <Grid item xs={6}><FormLabel className={'main-label'}>{label}</FormLabel></Grid>
@@ -108,16 +111,18 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 </FormLabel> : null}</Grid>
         </Grid>
 
-        <Grid container className={`coinInput-wrap ${error.error ? 'error' : ''}`} wrap={'nowrap'}
+        <Grid container className={`coinInput-wrap
+         ${(belong && belong.length) >= FORMAT_STRING_LEN ? 'text-small' : ''} 
+         ${error.error ? 'error' : ''}`} wrap={'nowrap'}
               alignItems={'stretch'}
-              alignContent={'stretch'}>
+              alignContent={'stretch'} style={coinLabelStyle}>
                 {isShowCoinInfo && (
                       <CoinWrap order={order === 'left' ? 2 : 1}
                       display={'flex'}
                       alignItems={'center'}
                       className={`icon-wrap icon-wrap-${order}`}>
                 <Grid container align-items={'center'} display={'flex'}>
-                    <Grid item display={'flex'} order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}
+                    {isShowCoinIcon &&<Grid item display={'flex'} order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}
                           className={'logo-icon'}
                           width={'var(--list-menu-coin-size)'}
                           height={'var(--list-menu-coin-size)'}
@@ -125,10 +130,10 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
 
                         <CoinIcon symbol={belong}/>
 
-                    </Grid>
+                    </Grid> }
                     <Grid item order={order === 'left' ? 1 : 2}
                           paddingLeft={order === 'left' ? 0 : 1}>
-                        <Typography  variant={(belong && belong.length) >= FORMAT_STRING_LEN ? 'body1' : 'h4'}>
+                        <Typography fontSize={'inherit'} color={'inherit'}>
                             {belong}
                         </Typography></Grid>
                 </Grid>

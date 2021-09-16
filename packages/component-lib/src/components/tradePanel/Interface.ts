@@ -1,4 +1,4 @@
-import { CoinKey, IBData } from '@loopring-web/common-resources';
+import { CoinKey, IBData, TradeCalcData } from '@loopring-web/common-resources';
 import {
     BasicACoinTradeHookProps,
     DefaultProps,
@@ -14,6 +14,7 @@ import {
 } from './components/Interface';
 import { SwapData, SwapTradeBaseEventProps, SwapTradeBaseProps, } from './components/SwapWrap/Interface';
 import { AmmPanelBaseProps } from './Amm';
+import { TradeLimitInfoProps, TradeMarketInfoProps, TradeProBaseEventProps, TradeProType } from './tradePro/Interface';
 
 export type SwapTradeData<T> = {
     sell: T,
@@ -23,6 +24,29 @@ export type SwapTradeData<T> = {
         [ key: string ]: any
     }
 }
+
+export type LimitTradeData<T> = {
+    price: T,
+    base: T,
+    quote: T,
+    type: TradeProType,
+    // slippage: number | string,
+    // __cache__?: {
+    //     [ key: string ]: any
+    // }
+}
+export type MarketTradeData<T> = {
+    // price: T,
+    base: T,
+    quote: T,
+    type: TradeProType,
+    slippage: number | string,
+    __cache__?: {
+        [ key: string ]: any
+    }
+}
+
+
 
 export type { SwapData }
 
@@ -67,8 +91,6 @@ export  type  AmmInfoProps<T, TW, I, ACD, C = IBData<I>> = AmmPanelBaseProps<T, 
  *      @param data: SwapData<T>
  *  ) => SwapData<T>
  */
-
-
 export type SwapProps<T, I, TCD> = {
     refreshRef: React.Ref<any>;
     onRefreshData?: () => void;
@@ -76,6 +98,26 @@ export type SwapProps<T, I, TCD> = {
     handleSwapPanelEvent: (data: SwapData<SwapTradeData<T>>, switchType: 'buyTomenu' | 'sellTomenu' | 'exchange' | 'buyTobutton' | 'sellTobutton') => Promise<void>,
     onChangeEvent?: (index: 0 | 1, data: SwapData<SwapTradeData<T>>) => SwapData<SwapTradeData<T>>,
 } & SwapInfoProps<T, I, TCD> & SwapTradeBaseEventProps<T, I> & SwapTradeBaseProps<T, I, TCD>
+
+
+//L = LimitTradeData<T> ,
+//T = IBData<I>,
+//I = CoinKey<any>, TCD
+export type TradeLimitProps<L extends LimitTradeData<T> ,
+    T extends  IBData<I>,
+    TCD extends TradeCalcData<I>, I =  CoinKey<any>> = {
+    tradeData: L | undefined,
+    handleSubmitEvent: (data:L) => Promise<void>,
+    onChangeEvent?: (data:L,inputType:TradeProType) => L,
+} & TradeLimitInfoProps<T,TCD,I>  & TradeProBaseEventProps<L, T, I>
+
+export type TradeMarketProps<M extends MarketTradeData<T> ,
+    T extends  IBData<I>,
+    TCD extends TradeCalcData<I>, I =  CoinKey<any>> = {
+    tradeData: M | undefined,
+    handleSubmitEvent: (data:M) => Promise<void>,
+    onChangeEvent?: (data:M,inputType:TradeProType) => M,
+} & TradeMarketInfoProps<T,TCD,I>  & TradeProBaseEventProps<M, T, I>
 
 
 export type SwitchData<T> = {

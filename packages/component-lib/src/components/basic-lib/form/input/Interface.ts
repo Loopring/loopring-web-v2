@@ -40,9 +40,12 @@ export type InputCoinProps<T, R, I> = {
     handleCountChange?: (ibData: T, ref: React.ForwardedRef<any>) => void,
     handleError?: (ibData: T, ref: React.ForwardedRef<any>) => { error: boolean, message?: string | React.ElementType<HTMLElement> },
     focusOnInput?: boolean,
+    size?:'middle'|'small',
+    isShowCoinIcon?: boolean,
     order?: 'left' | 'right',
     name?: string,
-    isShowCoinInfo?: boolean
+    isShowCoinInfo?: boolean,
+    coinLabelStyle?: React.CSSProperties,
 }
 export type InputSelectProps<T, I = CoinKey<T>> = {
     // coinMap: CoinMap<R,I extends CoinInfo?CoinInfo:CoinInfo>,

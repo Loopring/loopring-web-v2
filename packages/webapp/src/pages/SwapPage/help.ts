@@ -1,6 +1,15 @@
 import React from 'react'
 import store from '../../stores';
-import { AmmPoolSnapshot, DepthData, LoopringMap, TickerData, TokenVolumeV3,toBig,SubmitOrderRequestV3 } from 'loopring-sdk';
+import {
+    AmmPoolSnapshot,
+    DepthData,
+    LoopringMap,
+    TickerData,
+    TokenVolumeV3,
+    toBig,
+    SubmitOrderRequestV3,
+    getExistedMarket, TokenInfo, TokenAmount, OrderType, TradeChannel
+} from 'loopring-sdk';
 import { LoopringAPI } from '../../api_wrapper';
 import { CustomError, ErrorMap, getValuePrecisionThousand, MarketType } from '@loopring-web/common-resources';
 import { volumeToCountAsBigNumber } from '../../hooks/help';
@@ -13,6 +22,7 @@ import { useSystem } from 'stores/system';
 import { useAmmMap } from 'stores/Amm/AmmMap';
 import { useAmount } from 'stores/amount';
 import { getExistedMarket } from 'loopring-sdk';
+import { getTimestampDaysLater } from '../../utils/dt_tools';
 
 export const swapDependAsync = (market: MarketType): Promise<{
     ammPoolSnapshot: AmmPoolSnapshot | undefined,
