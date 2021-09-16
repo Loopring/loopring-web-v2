@@ -54,9 +54,9 @@ export const TradeTitle = <I extends object>({
     const close = tradeFloat.close
 
     const value = currency === Currency.dollar ? '\u2248 ' + PriceTag.Dollar
-    + getValuePrecisionThousand(tradeFloat && tradeFloat.closeDollar ? Number(tradeFloat.closeDollar.toFixed(2)) : 0)
+    + getValuePrecisionThousand((tradeFloat && tradeFloat.closeDollar ? tradeFloat.closeDollar : 0), undefined, undefined, undefined, true, { isFait: true })
     : '\u2248 ' + PriceTag.Yuan
-    + getValuePrecisionThousand(tradeFloat && tradeFloat.closeYuan ? Number(tradeFloat.closeYuan.toFixed(2)) : 0)
+    + getValuePrecisionThousand((tradeFloat && tradeFloat.closeYuan ? tradeFloat.closeYuan : 0), undefined, undefined, undefined, true, { isFait: true })
 
     // console.log({tradeFloat})
     const change = (tradeFloat?.change && tradeFloat.change.toFixed && !Number.isNaN(tradeFloat?.change)) ? (tradeFloat.change).toFixed(2) + '%' : '0.00%'
