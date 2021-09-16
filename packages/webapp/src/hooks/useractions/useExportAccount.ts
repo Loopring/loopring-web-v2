@@ -36,7 +36,7 @@ export const useExportAccount = <T>() => {
             privateKey: account.eddsaKey.sk,
         }
         setAccountInfo(accInfo)
-    }, [account.readyState])
+    }, [account.readyState, account.nonce])
     // const exportAccInfo = React.useCallback(() => {
     //     if (account.readyState !== AccountStatus.ACTIVATED) {
     //         return undefined
