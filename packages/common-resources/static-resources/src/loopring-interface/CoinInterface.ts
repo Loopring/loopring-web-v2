@@ -1,4 +1,5 @@
 import { FloatTag, TradeStatus, TradeTypes } from '../constant';
+import * as sdk from 'loopring-sdk'
 
 export type CoinKey<R> = keyof R;
 export type PairKey<P> = keyof P;
@@ -135,6 +136,9 @@ export type AmmCardProps<T> =
     & { activity: AmmActivity<T>, tradeFloat: TradeFloat, handleClick: () => void };
 
 export type AmmActivity<I> = {
+    market: string,
+    status: sdk.AmmPoolActivityStatus,
+    ruleType: string,
     totalRewards: number,
     myRewards: number,
     rewardToken: CoinInfo<I>,
