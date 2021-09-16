@@ -32,7 +32,7 @@ export type TradeProBaseEventProps<X,T, I> = {
 
 
 export type TradeCommonProps<X,T,TCD,I> = {
-    tradeData: X | undefined,
+    tradeData: X ,
     i18nKey?: string,
     tradeCalcData: TCD,
     onChangeEvent: (data: X,type:TradeProType) =>  X,
