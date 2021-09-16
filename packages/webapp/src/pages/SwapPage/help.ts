@@ -21,7 +21,6 @@ import { useTokenMap } from 'stores/token';
 import { useSystem } from 'stores/system';
 import { useAmmMap } from 'stores/Amm/AmmMap';
 import { useAmount } from 'stores/amount';
-import { getExistedMarket } from 'loopring-sdk';
 import { getTimestampDaysLater } from '../../utils/dt_tools';
 
 export const swapDependAsync = (market: MarketType): Promise<{
@@ -253,7 +252,7 @@ export function makelimitReq({
         sellToken: isBuy ? quoteTokenVol3 : baseTokenVol3,
         buyToken: isBuy ? baseTokenVol3 :quoteTokenVol3,
         allOrNone: false,
-        validUntil: getTimestampDaysLater(DAYS),
+        validUntil: getTimestampDaysLater(30),
         maxFeeBips,
         fillAmountBOrS: false, // amm only false
         orderType: OrderType.LimitOrder,
