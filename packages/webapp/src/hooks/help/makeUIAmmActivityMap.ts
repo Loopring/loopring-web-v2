@@ -51,8 +51,11 @@ export const makeUIAmmActivityMap = <R extends { [key: string]: any }, I extends
                             const totalRewards = VolToNumberWithPrecision(ammPoolActivityRule.awardRules[0].volume, symbol)
                             // @ts-ignore
                             const myRewardVol = myReward && myReward[ammPoolActivityRule.market]?.currentRewards[0] ? myReward[ammPoolActivityRule.market]?.currentRewards[0].volume : 0
+                            
                             const item = {
                                 // @ts-ignore
+                                market: ammPoolActivityRule.market,
+                                ruleType: ammPoolActivityRule.ruleType,
                                 rewardToken: coinMap[symbol],
                                 totalRewards: Number(totalRewards),
                                 myRewards: status === AmmPoolActivityStatus.InProgress && myReward && myReward[ammPoolActivityRule.market] ?
@@ -97,7 +100,8 @@ export const makeUIAmmActivityMap = <R extends { [key: string]: any }, I extends
     myLog('ammActivityViewMap:', ammActivityViewMap)
 
     const resultArray = makeAsCard(ammActivityViewMap)
-    console.log(resultArray)
+
+    myLog('resultArray:', resultArray)
     return resultArray;
 
 }
@@ -110,19 +114,34 @@ const makeAsCard = <R extends { [key: string]: any }, I extends { [key: string]:
         if (ammActivityViewMap && coinMap) {
             // @ts-ignore
             return Reflect.ownKeys(ammActivityViewMap).reduce((prev: Array<AmmCardProps<I>>, key: string) => {
+                const activities = ammActivityViewMap[key]
+
                 const _ammInfo = ammMap[key as string]
-                if (_ammInfo && _ammInfo.coinA && coinMap && ammActivityViewMap[key]) {
+                if (activities) {
+
+                    //_ammInfo && _ammInfo.coinA && coinMap && 
 
                     // @ts-ignore
-                    const itemArray = ammActivityViewMap[key].map((item) => {
-                        return {
-                            ..._.cloneDeep(_ammInfo),
-                            // @ts-ignore
-                            coinAInfo: coinMap[_ammInfo.coinA],
-                            // @ts-ignore
-                            coinBInfo: coinMap[_ammInfo.coinB],
-                            activity: item,
+                    const itemArray = activities.map((item: AmmActivity) => {
+                        const matchRes = (item.market as string).replace('AMM-', '').match(/(\w+)-(\w+)/i)
+
+                        if (matchRes) {
+                            const coinAInfo = coinMap[matchRes[1]]
+                            const coinBInfo = coinMap[matchRes[2]]
+                            // myLog('matchRes:', matchRes, ' coinAInfo:', coinAInfo, ' coinBInfo:', coinBInfo)
+                            return {
+                                ..._.cloneDeep(_ammInfo),
+                                ...item,
+                                ruleType: item.ruleType,
+                                coinAInfo,
+                                coinBInfo,
+                                activity: item,
+                            }
+
                         }
+
+                        return {}
+
                     })
                     prev = [...prev, ...itemArray]
                 }
