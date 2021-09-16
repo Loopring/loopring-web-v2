@@ -8,14 +8,13 @@ import { useTheme } from '@emotion/react';
 import { Box, styled } from '@mui/material';
 import { layoutConfigs } from '@loopring-web/common-resources';
 import { ChartView, MarketView, OrderTableView, SpotView, Toolbar, WalletInfo } from './panel'
-import { AlertImpact, ConfirmImpact, Toast } from '@loopring-web/component-lib';
-import { TOAST_TIME } from '../../defs/common_defs';
-import { usePageTradePro } from '../../stores/router';
+import {  boxLiner } from '@loopring-web/component-lib';
+
 
 const BoxStyle = styled(Box)`
   background: var(--color-box);
   &.spot{
-    background: var(--color-box-linear);
+    ${({theme}:any) => boxLiner({theme})}
   }
 `
 const ResponsiveGridLayout = WidthProvider(Responsive);

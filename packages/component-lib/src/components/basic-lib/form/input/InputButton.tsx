@@ -1,4 +1,4 @@
-import { FormHelperText, FormLabel, Grid, } from '@mui/material';
+import { FormHelperText, Grid, } from '@mui/material';
 import {
     CoinInfo,
     DropDownIcon,
@@ -110,13 +110,13 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
     return <> <IWrap component={'div'} ref={ref}>
         <Grid container component={'div'} className={'label-wrap'} justifyContent={'space-between'}
               paddingBottom={1 / 2}>
-            <Grid item xs={6}><FormLabel className={'main-label'}>{label}</FormLabel></Grid>
+            <Grid item xs={6}><Typography fontSize={'inherit'} className={'main-label'}>{label}</Typography></Grid>
             <Grid item xs={6} className={'sub-label'}>{subLabel && belong ?
-                <FormLabel className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
+                <Typography fontSize={'inherit'} className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>
                     <span>{maxAllow ? subLabel + ':' : ''}</span>
                     <span>{maxAllow ? (balance ? getValuePrecisionThousand(balance) : '0.00') :''}</span>
-                </FormLabel> : null}</Grid>
+                </Typography> : null}</Grid>
         </Grid>
         <Grid container className={`btnInput-wrap
         ${(belong && belong.length) >= FORMAT_STRING_LEN ? 'text-small' : ''}  
