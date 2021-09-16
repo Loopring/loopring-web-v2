@@ -286,6 +286,7 @@ export default {
     labelExportAccountNoPhotos: 'No Photos',
     labelExportAccountDescription: 'Please keep the secret',
     labelExportAccountCopy: 'Copy',
+
     labelExportAccountSuccess: 'Export Account successfully!',
     labelExportAccountFailed: 'Export Account failed!',
     // labelCreateAccountApproveWaitForAuth: 'Waiting for <1>{{symbol}}</1> Approve...',

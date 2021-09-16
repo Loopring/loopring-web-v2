@@ -2,8 +2,10 @@ import React from 'react';
 
 import { AccountStatus} from '@loopring-web/common-resources';
 import { useAccount } from 'stores/account'
+import { useTranslation } from 'react-i18next'
 
 export const useExportAccount = <T>() => {
+    const { t } = useTranslation('common')
     const {account} = useAccount()
     const [accountInfo, setAccountInfo] = React.useState({
         address: '',
@@ -15,6 +17,9 @@ export const useExportAccount = <T>() => {
         publicY: '',
         privateKey: '',
     })
+    const [exportAccountToastOpen, setExportAccountToastOpen] = React.useState(false)
+    const exportAccountAlertText = t('labelCopyClipBoard')
+
     React.useEffect(() => {
         if (account.readyState !== AccountStatus.ACTIVATED) {
             return undefined
@@ -62,5 +67,8 @@ export const useExportAccount = <T>() => {
 
     return {
         exportAccountProps: exportAccountProps,
+        exportAccountAlertText,
+        exportAccountToastOpen,
+        setExportAccountToastOpen,
     }
 }
