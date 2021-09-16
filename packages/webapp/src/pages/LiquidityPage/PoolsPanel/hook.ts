@@ -175,6 +175,22 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
                     return 0
                 })
                 break;
+            case 'APY':
+                _rawData = filteredData.sort((a, b) => {
+                    const valueA = a.APY || 0
+                    const valueB = b.APY || 0
+                    if (valueA && valueB) {
+                        return valueB - valueA
+                    }
+                    if (valueA && !valueB) {
+                        return -1
+                    }
+                    if (!valueA && valueB) {
+                        return 1
+                    }
+                    return 0
+                })
+                break;
             default:
                 _rawData = rawData
         }

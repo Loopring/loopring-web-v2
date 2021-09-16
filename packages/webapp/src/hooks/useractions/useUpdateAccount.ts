@@ -26,7 +26,7 @@ import { checkErrorInfo } from 'hooks/useractions/utils'
 
 export function useUpdateAccout() {
 
-    const {walletInfo, updateDepositHashWrapper, checkHWAddr,} = useWalletInfo()
+    const { walletInfo, updateDepositHashWrapper, checkHWAddr, } = useWalletInfo()
 
     const { setShowAccount, } = useOpenModals()
 
@@ -54,8 +54,8 @@ export function useUpdateAccout() {
         }
 
         setShowAccount({
-            isShow: true, 
-            step: isReset ? AccountStep.ResetAccount_Approve_WaitForAuth : AccountStep.UpdateAccount_Approve_WaitForAuth, 
+            isShow: true,
+            step: isReset ? AccountStep.ResetAccount_Approve_WaitForAuth : AccountStep.UpdateAccount_Approve_WaitForAuth,
         })
 
         let isHWAddr = checkHWAddr(account.accAddress)
@@ -65,7 +65,7 @@ export function useUpdateAccout() {
         myLog('goUpdateAccount.... isFirstTime:', isFirstTime, ' isReset:', isReset, ' isHWAddr:', isHWAddr)
 
         const updateAccAndCheck = async () => {
-            const result: ActionResult = await updateAccountFromServer({isHWAddr, feeInfo, isReset, })
+            const result: ActionResult = await updateAccountFromServer({ isHWAddr, feeInfo, isReset, })
 
             switch (result.code) {
                 case ActionResultCode.NoError:
@@ -76,21 +76,21 @@ export function useUpdateAccout() {
 
                     if (LoopringAPI.userAPI && LoopringAPI.exchangeAPI && eddsaKey) {
 
-                        const {accInfo, error} = await LoopringAPI.exchangeAPI.getAccount({owner: account.accAddress})
+                        const { accInfo, error } = await LoopringAPI.exchangeAPI.getAccount({ owner: account.accAddress })
 
                         if (!error && accInfo) {
 
-                            const {apiKey} = (await LoopringAPI.userAPI.getUserApiKey({
+                            const { apiKey } = (await LoopringAPI.userAPI.getUserApiKey({
                                 accountId: accInfo.accountId
                             }, eddsaKey.sk))
 
                             myLog('After connect >>, get apiKey', apiKey)
 
                             if (!isFirstTime && isHWAddr) {
-                                updateDepositHashWrapper({wallet: account.accAddress, isHWAddr,})
+                                updateDepositHashWrapper({ wallet: account.accAddress, isHWAddr, })
                             }
 
-                            accountServices.sendAccountSigned({accountId: accInfo.accountId, apiKey, eddsaKey, isReset, })
+                            accountServices.sendAccountSigned({ accountId: accInfo.accountId, apiKey, eddsaKey, isReset, })
 
                         }
 
@@ -99,22 +99,25 @@ export function useUpdateAccout() {
                     if (isReset) {
                         myLog('reset show success!!')
                         setShowAccount({ isShow: true, step: AccountStep.ResetAccount_Success, })
+                        if (LoopringAPI.exchangeAPI) {
+                            const { accInfo } = (await LoopringAPI.exchangeAPI.getAccount({
+                                owner: account.accAddress
+                            }))
+                            if (accInfo && accInfo.accountId && accInfo.publicKey.x && accInfo.publicKey.y) {
+                                store.dispatch(updateAccountStatus(accInfo))
+                            } else {
+                                myLog('unexpected accInfo:', accInfo)
+                            }
+                        }
+
                     } else {
                         myLog('not reset show account close!!')
-                        setShowAccount({ isShow: false})
+                        setShowAccount({ isShow: false, })
                     }
                     break
                 case ActionResultCode.GetAccError:
                 case ActionResultCode.GenEddsaKeyError:
                 case ActionResultCode.UpdateAccoutError:
-
-
-                    // const eddsaKey2 = result?.data?.eddsaKey
-
-                    // if (eddsaKey2) {
-                    //     myLog('UpdateAccoutError:', eddsaKey2)
-                    //     store.dispatch(updateAccountStatus({eddsaKey: eddsaKey2,}))
-                    // }
 
                     const errMsg = checkErrorInfo(result?.data?.errorInfo, isFirstTime as boolean)
 
@@ -124,22 +127,22 @@ export function useUpdateAccout() {
                         case ConnectorError.NOT_SUPPORT_ERROR:
                             myLog(' 00000---- got NOT_SUPPORT_ERROR')
                             setShowAccount({
-                                isShow: true, 
-                                step: isReset ? AccountStep.ResetAccount_First_Method_Denied :  AccountStep.UpdateAccount_First_Method_Denied
+                                isShow: true,
+                                step: isReset ? AccountStep.ResetAccount_First_Method_Denied : AccountStep.UpdateAccount_First_Method_Denied
                             })
                             return
                         case ConnectorError.USER_DENIED:
                             myLog(' 11111---- got USER_DENIED')
                             setShowAccount({
-                                isShow: true, 
-                                step: isReset ? AccountStep.ResetAccount_User_Denied :  AccountStep.UpdateAccount_User_Denied
+                                isShow: true,
+                                step: isReset ? AccountStep.ResetAccount_User_Denied : AccountStep.UpdateAccount_User_Denied
                             })
                             return
                         default:
                             myLog(' 11111---- got UpdateAccount_Success')
                             setShowAccount({
-                                isShow: true, 
-                                step: isReset ? AccountStep.ResetAccount_Success :  AccountStep.UpdateAccount_Success
+                                isShow: true,
+                                step: isReset ? AccountStep.ResetAccount_Success : AccountStep.UpdateAccount_Success
                             })
                             accountServices.sendCheckAccount(account.accAddress)
                             break
