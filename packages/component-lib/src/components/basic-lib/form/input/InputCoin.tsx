@@ -1,11 +1,11 @@
-import { FormHelperText, FormLabel, Grid, Typography } from '@mui/material';
+import { FormHelperText, Grid, Typography } from '@mui/material';
 import {
     CoinInfo,
     FORMAT_STRING_LEN,
     getValuePrecisionThousand,
     IBData
 } from '@loopring-web/common-resources';
-import { InputCoinProps } from "./Interface";
+import { InputCoinProps, InputSize } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
 import { CoinWrap, IInput, IWrap } from "./style";
@@ -26,7 +26,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        handleCountChange,
                                                                        focusOnInput,
                                                                        name,
-                                                                       size = 'middle',
+                                                                       size = InputSize.middle,
                                                                        isHideError = false,
                                                                        isShowCoinInfo = true,
                                                                        isShowCoinIcon = true,
@@ -102,13 +102,13 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
     return <> <IWrap size={size} component={'div'} ref={ref}>
         <Grid container component={'div'} className={'label-wrap'} justifyContent={'space-between'}
               paddingBottom={1 / 2}>
-            <Grid item xs={6}><FormLabel className={'main-label'}>{label}</FormLabel></Grid>
+            <Grid item xs={6}><Typography fontSize={'inherit'} className={'main-label'}>{label}</Typography></Grid>
             <Grid item xs={6} className={'sub-label'}>{subLabel && belong ?
-                <FormLabel className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
+                <Typography fontSize={'inherit'} className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>
                     <span>{maxAllow ? subLabel + ':' : ''}</span>
-                    <span>{balance ? getValuePrecisionThousand(balance) : '0.00'}</span>
-                </FormLabel> : null}</Grid>
+                    <span>{maxAllow ? (balance ? getValuePrecisionThousand(balance) : '0.00') :''}</span>
+                </Typography> : null}</Grid>
         </Grid>
 
         <Grid container className={`coinInput-wrap

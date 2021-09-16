@@ -6,7 +6,7 @@ import * as sdk from 'loopring-sdk';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { OrderStatus, sleep } from 'loopring-sdk';
 import { walletLayer2Service } from 'services/socket';
-import { SwapTradeData } from '@loopring-web/component-lib';
+import { MarketTradeData, SwapData, SwapTradeData, TradeBaseType } from '@loopring-web/component-lib';
 import { usePageTradePro } from 'stores/router';
 import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
@@ -24,12 +24,13 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
     const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
     const {toastOpen, setToastOpen, closeToast} = useToast();
     const {account, status: accountStatus} = useAccount();
-    const [tradeData, setTradeData] = React.useState<SwapTradeData<IBData<C>> | undefined>(undefined);
-    // const [tradeCalcData, setTradeCalcData] = React.useState<Partial<TradeCalcData<C>>>({
-    //     coinInfoMap: marketCoins?.reduce((prev: any, item: string | number) => {
-    //         return {...prev, [ item ]: coinMap ? coinMap[ item ] : {}}
-    //     }, {} as CoinMap<C>)
-    // });
+    const [marketTradeData, setMarketTradeData] = React.useState<MarketTradeData<IBData<C>> | undefined>(undefined);
+    // const limitTradeData:LimitTradeData<IBData<any>> = {
+    //     sell: {belong: 'ETH'} as IBData<any>,
+    //     buy: {belong: 'LRC'} as IBData<any>,
+    //     price: {count: 0},
+    //     type: TradeProType.sell
+    // }
     const {exchangeInfo} = useSystem();
 
 
@@ -42,8 +43,16 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
         __SUBMIT_LOCK_TIMER__,
         __TOAST_AUTO_CLOSE_TIMER__
     } = usePageTradePro();
+    const onChangeMarketEvent = async (tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType): Promise<void> => {
 
-    const marketLastCall = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
+        // myLog('handleSwapPanelEvent...')
+
+        // const {tradeData} = swapData
+        // resetSwap(swapType, tradeData)
+
+    }
+
+    const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
         let {calcTradeParams, tradeChannel, orderType,tradeCalcData, totalFee} = pageTradePro;
         setAlertOpen(false)
         setConfirmOpen(false)
@@ -60,8 +69,8 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
                 return
             }
 
-            const sell = tradeData?.sell.belong as string
-            const buy = tradeData?.buy.belong as string
+            const sell = marketTradeData?.sell.belong as string
+            const buy = marketTradeData?.buy.belong as string
 
             const baseToken = tokenMap[ sell ]
             const quoteToken = tokenMap[ buy ]
@@ -129,12 +138,12 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
                         }
                     }
                     walletLayer2Service.sendUserUpdate()
-                    setTradeData((state) => {
+                    setMarketTradeData((state) => {
                         return {
                             ...state,
                             sell: {...state?.sell, tradeValue: 0},
                             buy: {...state?.buy, tradeValue: 0},
-                        } as SwapTradeData<IBData<C>>
+                        } as MarketTradeData<IBData<C>>
                     });
                     updatePageTradePro({
                         market: market as MarketType,
@@ -168,14 +177,17 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
 
         }
 
-    }, [account.readyState, pageTradePro, tokenMap, tradeData, setIsMarketLoading, setToastOpen, setTradeData])
+    }, [account.readyState, pageTradePro, tokenMap, marketTradeData, setIsMarketLoading, setToastOpen, setMarketTradeData])
 
     return {
         alertOpen,
         confirmOpen,
         toastOpen,
         closeToast,
-        marketLastCall
+        // marketLastCall,
+       marketSubmit,
+       marketTradeData,
+       onChangeMarketEvent
         // marketTicker,
     }
 }

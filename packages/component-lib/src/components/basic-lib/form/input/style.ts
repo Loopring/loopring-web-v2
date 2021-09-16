@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { Box, BoxProps, Button, ButtonProps } from '@mui/material';
 import React from 'react';
 import CurrencyInput from 'react-currency-input-field';
+import { InputSize } from './Interface';
 
 export const IWrap = styled(Box)<BoxProps & {size:'middle'|'small'}>`
   ${({theme}) => theme.border.defaultFrame({c_key: 'var(--opacity)'})};
@@ -68,41 +69,7 @@ export const IWrap = styled(Box)<BoxProps & {size:'middle'|'small'}>`
       border-radius:  ${({theme}) => theme.unit / 2}px;
      
     }
-    ${({size,theme}) => {
-      if(size === 'small'){
-        return`
-          .input-wrap{
-            font-size: ${theme.fontDefault.body1};
-          }
-          .label-wrap{
-            font-size: ${theme.fontDefault.body2};
-          }
-          .coinInput-wrap, .btnInput-wrap {
-            font-size: ${theme.fontDefault.body1};
-            height: var(--btn-Input-small-height);
-            &.text-small{
-              font-size: ${theme.fontDefault.body2};
-            }
-          }
-      `
-      }else{
-        return`
-          .input-wrap{
-             font-size: ${theme.fontDefault.h5};
-          }
-          .label-wrap{
-            font-size: ${theme.fontDefault.body1};
-          }
-          .coinInput-wrap, .btnInput-wrap{
-              font-size: ${theme.fontDefault.h4};
-              height: var(--btn-Input-height);
-              &.text-small{
-                font-size: ${theme.fontDefault.body1};
-              }
-          }
-      `;
-      }
-    }};
+    
   }
 
   .input-wrap {
@@ -121,6 +88,49 @@ export const IWrap = styled(Box)<BoxProps & {size:'middle'|'small'}>`
     }
 
   }
+  ${({size,theme}) => {
+    if(size === InputSize.small){
+      return`
+          .input-wrap,.icon-wrap{
+            font-size: ${theme.fontDefault.body1};
+          }
+          .label-wrap, .main-label{
+            font-size: ${theme.fontDefault.body2};
+          }
+          .coinInput-wrap, .btnInput-wrap {
+            font-size: ${theme.fontDefault.body1};
+            height: var(--btn-Input-small-height);
+            &.text-small{
+              font-size: ${theme.fontDefault.body2};
+            }
+            input[type=text]{
+              font-size: ${theme.fontDefault.body1};
+            }
+          }
+         
+      `
+    }else{
+      return`
+          .input-wrap,.icon-wrap{
+             font-size: ${theme.fontDefault.h5};
+          }
+          .label-wrap{
+            font-size: ${theme.fontDefault.body1};
+          }
+          .coinInput-wrap, .btnInput-wrap{
+              font-size: ${theme.fontDefault.h4};
+              height: var(--btn-Input-height);
+              &.text-small{
+                font-size: ${theme.fontDefault.body1};
+              }
+              input[type=text]{
+                font-size: ${theme.fontDefault.h4};
+              }
+          }
+         
+      `;
+    }
+  }};
 
 ` as (props:BoxProps & {size:'middle'|'small'})=>JSX.Element
 export const CoinWrap:React.ComponentType<BoxProps & { logoColor?: any }> = styled(Box)<BoxProps & { logoColor?: any }>`
@@ -204,7 +214,6 @@ export const IInput = styled(CurrencyInput)`
   margin: 0;
 
 
-  font-size: ${({theme}) => theme.fontDefault.h4};
   display: block;
   padding: .8rem 1rem;
   min-width: 0;

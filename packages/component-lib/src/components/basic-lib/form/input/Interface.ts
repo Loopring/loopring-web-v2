@@ -26,6 +26,10 @@ export type InputButtonProps<T, R, I> = {
     focusOnInput?: boolean,
     name?: string
 }
+export enum  InputSize {
+    middle='middle',
+    small='small'
+}
 export type InputCoinProps<T, R, I> = {
     inputData?: T | undefined,
     label: string,
@@ -40,7 +44,7 @@ export type InputCoinProps<T, R, I> = {
     handleCountChange?: (ibData: T, ref: React.ForwardedRef<any>) => void,
     handleError?: (ibData: T, ref: React.ForwardedRef<any>) => { error: boolean, message?: string | React.ElementType<HTMLElement> },
     focusOnInput?: boolean,
-    size?:'middle'|'small',
+    size?:InputSize,
     isShowCoinIcon?: boolean,
     order?: 'left' | 'right',
     name?: string,
