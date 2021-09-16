@@ -229,8 +229,9 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             headerCellClass: 'textAlignRight',
             formatter: ({row}) => {
                 const value = row[ 'amount' ]
+                const precision = row['precision']
                 return <Box className={'textAlignRight'}>
-                    {getValuePrecisionThousand(value, 6, 2)}
+                    {getValuePrecisionThousand(value, precision, precision, undefined, true, { floor: true })}
                 </Box>
             }
         },
@@ -244,8 +245,9 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             headerCellClass: 'textAlignRight',
             formatter: ({row}) => {
                 const value = row[ 'locked' ]
+                const precision = row['precision']
                 return <Box className={'textAlignRight'}>
-                    {getValuePrecisionThousand(value, 6, 2)}
+                    {getValuePrecisionThousand(value, precision, precision, undefined, true, { floor: true })}
                 </Box>
 
             }
@@ -259,7 +261,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                 const tokenValueYuan = row[ 'tokenValueYuan' ]
                 const renderValue = isUSD ? tokenValueDollar : tokenValueYuan
                 return <Box className={'textAlignRight'}>
-                    {isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand(renderValue, 2, 2)}
+                    {isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand(renderValue, undefined, undefined, undefined, true, { isFait: true, floor: true })}
                 </Box>
             }
         },
