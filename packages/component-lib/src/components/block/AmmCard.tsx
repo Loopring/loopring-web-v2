@@ -45,7 +45,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             amountDollar,
             amountYuan,
             // isNew,
-            APY,
+            APR,
             activity: {duration, myRewards, rewardToken, isPass},
             handleClick,
             ...rest
@@ -119,7 +119,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     </Box>
                 </BoxStyled>
                 <Typography display={'flex'} flexDirection={'column'} component={'span'} justifyContent={'center'} alignItems={'center'} marginTop={7}>
-                    <Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> {APY || EmptyValueTag}%
+                    <Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> {APR || EmptyValueTag}%
                     </Typography>
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'} marginTop={1}
                                 style={{textTransform: 'uppercase'}}>{t('labelAPR')}</Typography>
