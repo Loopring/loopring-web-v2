@@ -9,7 +9,7 @@ import { useTokenMap } from '../../stores/token';
 import { useAmmMap } from '../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../stores/walletLayer2';
 import { useSystem } from '../../stores/system';
-import {  usePageTradeLite } from '../../stores/router';
+import { usePageTradeLite } from '../../stores/router';
 
 import {
     AccountStatus,

@@ -3,18 +3,20 @@ import { AvatarCoinStyled, EmptyValueTag, MarketType, TradeCalcData } from '@loo
 import { Avatar, Box, Divider, Grid, Typography } from '@mui/material';
 import React, { useCallback } from 'react';
 import { Button, useSettings } from '@loopring-web/component-lib';
-import { useModals } from '../../../../hooks/useractions/useModals';
+import { useModals } from 'hooks/useractions/useModals';
+import { usePageTradePro } from 'stores/router';
 
-export const WalletInfo = withTranslation('common')(<C extends { [ key: string ]: any }>({t, market, tradeCalcData}: {
+export const WalletInfo = withTranslation('common')(<C extends { [ key: string ]: any }>({t, market}: {
     market: MarketType,
-    tradeCalcData: TradeCalcData<C>
+    // tradeCalcData: TradeCalcData<C>
 } & WithTranslation) => {
+    const { pageTradePro: {tradeCalcData} } = usePageTradePro();
     //@ts-ignore
     const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
     const {coinJson, slippage} = useSettings();
     const tokenAIcon: any = coinJson[ coinA ];
     const tokenBIcon: any = coinJson[ coinB ];
-    const walletMap = tradeCalcData.walletMap?tradeCalcData.walletMap:{};
+    const walletMap = tradeCalcData && tradeCalcData.walletMap?tradeCalcData.walletMap:{};
     const {showDeposit, showWithdraw,} = useModals()
     const onShowDeposit = React.useCallback((token?: any) => {
         showDeposit({isShow: true, symbol: token})
@@ -48,7 +50,7 @@ export const WalletInfo = withTranslation('common')(<C extends { [ key: string ]
                     }
                     <Typography variant={'body1'}>{coinA}</Typography>
                 </Box>
-                <Typography variant={'body1'}>{walletMap[coinA]?walletMap[coinA].count:0}</Typography>
+                <Typography variant={'body1'}>{walletMap[coinA] ? walletMap[coinA]?.count:0}</Typography>
             </Box>
             <Box marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'}
                  justifyContent={'space-between'} >
@@ -72,7 +74,7 @@ export const WalletInfo = withTranslation('common')(<C extends { [ key: string ]
                     }
                     <Typography variant={'body1'}>{coinB}</Typography>
                 </Box>
-                <Typography variant={'body1'}>{walletMap[coinB]?walletMap[coinB].count:0}</Typography>
+                <Typography variant={'body1'}>{walletMap[coinB]? walletMap[coinB]?.count:0}</Typography>
             </Box>
             <Box display={'flex'} flexDirection={'row'} alignItems={'center'} marginTop={2} justifyContent={'center'}>
                 <Box marginRight={1}>

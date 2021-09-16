@@ -13,6 +13,7 @@ const initState = {
 const initialState: PageTradeProStatus<{ [ key: string ]: any }> = {
     pageTradePro: initState,
     __DAYS__:30,
+    __API_REFRESH__:15000,
     __SUBMIT_LOCK_TIMER__: 1000,
     __TOAST_AUTO_CLOSE_TIMER__: 3000,
 };
@@ -111,4 +112,4 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
     },
 });
 export { pageTradeProSlice };
-export const {updatePageTradePro, } = pageTradeProSlice.actions;
+export const {updatePageTradePro } = pageTradeProSlice.actions;

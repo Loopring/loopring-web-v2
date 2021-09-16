@@ -10,29 +10,24 @@ import { layoutConfigs } from '@loopring-web/common-resources';
 import { ChartView, MarketView, OrderTableView, SpotView, Toolbar, WalletInfo } from './panel'
 import { AlertImpact, ConfirmImpact, Toast } from '@loopring-web/component-lib';
 import { TOAST_TIME } from '../../defs/common_defs';
+import { usePageTradePro } from '../../stores/router';
 
 const BoxStyle = styled(Box)`
   background: var(--color-box);
+  &.spot{
+    background: var(--color-box-linear);
+  }
 `
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 
 export const OrderbookPage = withTranslation('common')(() => {
-    const {
-        market,
-        toastOpen,
-        closeToast,
-        swapFunc,
-        alertOpen,
-        confirmOpen,
-        tradeCalcData,
-        pageTradeLite,
-    } = usePro();
+    // const { pageTradePro } = usePageTradePro();
+    const { market } = usePro();
     const {unit} = useTheme();
     const ViewList = {
         toolbar: React.useMemo(() => <Toolbar market={market as any}/>, [market]),
-        walletInfo: React.useMemo(() => <WalletInfo tradeCalcData={tradeCalcData}
-                                                    market={market as any}/>, [tradeCalcData, market]),
+        walletInfo: React.useMemo(() => <WalletInfo market={market as any}/>, [ market]),
         spot: React.useMemo(() => <SpotView market={market as any}/>, [market]),
         market: React.useMemo(() => <MarketView/>, []),
         market2: React.useMemo(() => <MarketView/>, []),
@@ -50,7 +45,7 @@ export const OrderbookPage = withTranslation('common')(() => {
                     cols={layoutConfigs[ 0 ].cols}
                     rowHeight={unit / 2} margin={[unit / 2, unit / 2]}>
                     {layoutConfigs[ 0 ].layouts[ 'xlg' ].map((value, index) => {
-                        return <BoxStyle key={value.i}
+                        return <BoxStyle key={value.i} className={value.i}
                                          data-grid={{...value}}
                                          component={'section'}>
                             {ViewList[ value.i ]}
