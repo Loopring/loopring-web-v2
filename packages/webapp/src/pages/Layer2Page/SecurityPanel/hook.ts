@@ -53,11 +53,6 @@ export function useExportAccountInfo() {
             publicY: account.eddsaKey.formatedPy,
             privateKey: account.eddsaKey.sk,
         }
-
-        // const fileName = 'accountInfo'
-        // const exportType = 'json'
-
-        // exportFromJSON({data: accInfo, fileName, exportType})
         return accInfo
     }, [account])
 
@@ -66,7 +61,7 @@ export function useExportAccountInfo() {
         const account = store.getState().account;
         const { exchangeInfo } = store.getState().system;
 
-        myLog('unlockAccount account:', account)
+        myLog('exportAccount account:', account)
 
         if (exchangeInfo && LoopringAPI.userAPI && account.nonce !== undefined) {
             try {
