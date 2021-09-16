@@ -1,6 +1,5 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { MarketTradeData, TradeBaseType, TradeBtnStatus, TradeMarketProps } from '../Interface';
-import _ from 'lodash'
 import {
     CoinInfo,
     CoinKey,
@@ -121,7 +120,11 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
             {/*</Grid>*/}
             {/*<Grid item>*/}
             <Box alignSelf={"center"} paddingTop={4} paddingX={1}>
-               <BtnPercentage step={25} valueLabelDisplay={'on'} selected={selectedPercentage} anchors={[{
+               <BtnPercentage step={25}
+                              // valuetext={(value)=>`${value}%`}
+                              getAriaLabel={(value)=>`${value}%`}
+                              valueLabelFormat={(value)=>`${value}%`}
+                              valueLabelDisplay={'on'} selected={selectedPercentage} anchors={[{
                    value: 0, label: ''
                }, {
                    value: 25, label: ''

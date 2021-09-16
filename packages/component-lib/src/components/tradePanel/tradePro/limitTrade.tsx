@@ -1,8 +1,8 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { BtnPercentage, InputCoin, InputSize } from '../../basic-lib';
 import { LimitTradeData, TradeBtnStatus, TradeLimitProps } from '../Interface';
-import { CoinInfo, CoinKey, CoinMap, IBData, TradeCalcProData } from '@loopring-web/common-resources';
-import { Box, Tab, Tabs } from '@mui/material';
+import { CoinInfo, CoinKey, CoinMap, EmptyValueTag, IBData, TradeCalcProData } from '@loopring-web/common-resources';
+import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { TradeProType } from './Interface';
 import { ButtonStyle } from '../components/Styled';
 import { useCommon } from './hookCommon';
@@ -81,6 +81,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
             t
         }
     },[tabIndex,TradeProType,_handleCountChange])
+    const fee = (tradeCalcProData && tradeCalcProData.fee) ? ((parseFloat(tradeCalcProData.fee) / 100).toString() + '%') : EmptyValueTag
 
     return <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
         <Box className={'tool-bar'}  paddingX={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
@@ -114,7 +115,11 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
             {/*</Grid>*/}
             {/*<Grid item>*/}
             <Box alignSelf={"center"} paddingTop={4} paddingX={1}>
-                <BtnPercentage step={25} valueLabelDisplay={'on'} selected={selectedPercentage} anchors={[{
+                <BtnPercentage step={25}
+                               // valuetext={(value)=>`${value}%`}
+                               getAriaLabel={(value)=>`${value}%`}
+                               valueLabelFormat={(value)=>`${value}%`}
+                               valueLabelDisplay={'on'} selected={selectedPercentage} anchors={[{
                     value: 0, label: ''
                 }, {
                     value: 25, label: ''
@@ -138,6 +143,16 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
             {/*<Grid item>*/}
 
             {/*< label={tradeCalcProData.baseToken} coinMap={tradeCalcProData.coinMap} />*/}
+        </Box>
+        <Box className={'info-panel'} paddingX={2} paddingTop={2}>
+
+        <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
+              marginTop={1 / 2} >
+            <Typography component={'p'} variant="body2"
+                        color={'textSecondary'}> {t('swapFee')} </Typography>
+            <Typography component={'p'}
+                        variant="body2" color={'textPrimary'}>{fee}</Typography>
+        </Grid>
         </Box>
         <Box paddingX={2} paddingTop={2}>
             <ButtonStyle variant={'contained'} size={'medium'} color={tabIndex === TradeProType.sell ?'success':'error'} onClick={() => {
