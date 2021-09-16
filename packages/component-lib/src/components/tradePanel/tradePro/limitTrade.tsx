@@ -83,7 +83,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
     },[tabIndex,TradeProType,_handleCountChange])
 
     return <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
-        <Box className={'tool-bar'} paddingTop={2} paddingX={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+        <Box className={'tool-bar'}  paddingX={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
             <Box component={'header'} width={'100%'} >
                 <Tabs variant={'fullWidth'} value={tabIndex}
                       onChange={(_e, index) => _handleChangeIndex(index)} className={'pro-tabs'}>
