@@ -193,7 +193,6 @@ export function makelimitReq({
     amount, 
     base, 
     quote, 
-    market,
     tokenMap,
 
     exchangeAddress,
@@ -280,7 +279,7 @@ export function usePlaceOrder() {
 
     const { ammMap, } = useAmmMap()
 
-    //{isBuy, price, amount, base, quote, market, feeBips, }
+    //{isBuy, price, amount, (base, quote / market), feeBips, }
     const makelimitReqInHook = React.useCallback((params: ReqParams) => {
 
         if (!exchangeInfo || !ammMap || !amountMap || !marketArray) {
@@ -296,7 +295,9 @@ export function usePlaceOrder() {
         let ammMarket = ''
 
         if (params.market) {
-            const result = params.market.match(/([\w,#]+)-([\w,#]+)/i);
+
+            const result = params.market.match(/([\w,#]+)-([\w,#]+)/i)
+
             if (result) {
                 [ , base, quote, ] = result
             }
@@ -316,10 +317,15 @@ export function usePlaceOrder() {
             exchangeAddress: exchangeInfo.exchangeAddress,
             accountId: account.accountId,
             tokenMap,
+            tokenAmtMap,
         }
 
         return makelimitReq(fullParams)
 
-    }, [account, tokenMap, marketArray, exchangeInfo, ])
+    }, [account, tokenMap, ammMap, amountMap, marketArray, exchangeInfo, ])
+
+    return {
+        makelimitReqInHook,
+    }
 
 }

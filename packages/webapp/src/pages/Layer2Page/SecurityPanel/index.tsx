@@ -28,8 +28,6 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({t, i18n, ..
 
     const {exportAccInfo, exportAccount} = useExportAccountInfo()
 
-    console.log(exportAccInfo())
-
     return <StyledPaper container className={'MuiPaper-elevation2'} marginBottom={2}>
         {/*<Typography variant={'h5'} component={'h3'} paddingLeft={2}>{t('labelTitleSecurity')}</Typography>*/}
         <Grid item xs={12} display={'flex'} flexDirection={'column'}  paddingY={1}>
