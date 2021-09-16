@@ -82,9 +82,29 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         onChangeEvent(tradeData,TradeBaseType.tab)
     }, [tradeData])
 
+    const btnLabel = React.useMemo(() => {
+        if (inputError.error) {
+            if (typeof inputError.message === 'string') {
+                return t(inputError.message)
+            } else if (inputError.message !== undefined) {
+                return inputError.message;
+            } else {
+                return t('labelError')
+            }
+
+        }
+        // if (i18nKey) {
+        const key = i18nKey.split(',');
+        return t(key[ 0 ], key && key[ 1 ] ? {arg: key[ 1 ]} : undefined)
+        // } else {
+        //     return t()
+        // }
+
+    }, [inputError, t, i18nKey])
     return {
         sellRef,
         buyRef,
+        btnLabel,
         // slippage,
         getDisabled,
         // handleCountChange,

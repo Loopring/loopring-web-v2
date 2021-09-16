@@ -163,5 +163,6 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
 }
 
 export const InputCoin = React.memo(React.forwardRef(_InputCoin)) as
-    <T extends IBData<C>, C, I extends CoinInfo<C>>(props: InputCoinProps<T, C, I>, ref: React.RefAttributes<any>) => JSX.Element;
+    <T extends IBData<C>, C, I extends CoinInfo<C>>(props: InputCoinProps<T, C, I> & React.RefAttributes<any>) => JSX.Element;
 //as React.ComponentType<InputButtonProps<coinType,CoinInfo> & RefAttributes<HTMLDivElement>>;
+

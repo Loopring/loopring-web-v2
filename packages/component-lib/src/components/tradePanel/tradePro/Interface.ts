@@ -39,7 +39,7 @@ export type TradeProBaseEventProps<X,T, I> = {
 
 export type TradeCommonProps<X,T,TCD,I> = {
     tradeData: X ,
-    i18nKey?: string,
+    i18nKey: string,
     tradeCalcData: TCD,
     onChangeEvent: (data: X,formType:TradeBaseType) =>  X,
     tradeBtnBaseStatus?: keyof typeof TradeBtnStatus | undefined,
