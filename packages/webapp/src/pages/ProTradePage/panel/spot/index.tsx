@@ -6,8 +6,12 @@ import { MarketType } from '@loopring-web/common-resources';
 import { usePageTradePro } from '../../../../stores/router';
 import { useMarket } from './useMarket';
 import { useLimit } from './hookLimit';
-import { Box, Tab, Tabs } from '@mui/material';
+import { Box, Divider, styled, Tab, Tabs } from '@mui/material';
 
+// const TabsStyle = styled(Tabs)`
+//   flex: 1;
+//   width: 100%;
+// ` as typeof Tabs
 export  enum TabIndex  {
     market='market',
     limit='limit'
@@ -34,20 +38,22 @@ export  const SpotView = withTranslation('common')(<C extends { [ key: string ]:
         <AlertImpact handleClose={marketSubmit} open={alertOpen} value={pageTradePro?.priceImpactObj?.value as any}/>
         <ConfirmImpact handleClose={marketSubmit} open={confirmOpen} value={pageTradePro?.priceImpactObj?.value as any}/>
         <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
-            <Box component={'header'}>
-                <Tabs value={tabIndex}>
+            <Box component={'header'} width={'100%'} >
+                <Tabs variant={'fullWidth'} value={tabIndex} onChange={(_e,value)=>{
+                    setTabIndex(value)
+                }}>
                     <Tab value={TabIndex.limit} label={t('labelProLimit')}/>
                     <Tab value={TabIndex.market} label={t('labelProMarket')}/>
                 </Tabs>
             </Box>
-
+            <Divider style={{marginTop:'-1px'}}/>
             <Box flex={1} component={'section'}>
                 {tabIndex === TabIndex.limit && <LimitTrade  handleSubmitEvent={limitSubmit}
-                                                             tradeCalcData={pageTradePro.tradeCalcData as any}
+                                                             tradeCalcProData={pageTradePro.tradeCalcProData}
                                                              tradeData={limitTradeData}
                                                              onChangeEvent={onChangeLimitEvent}/>}
                 {tabIndex === TabIndex.market && <MarketTrade   handleSubmitEvent={marketSubmit}
-                                                                tradeCalcData={pageTradePro.tradeCalcData as any}
+                                                                tradeCalcProData={pageTradePro.tradeCalcProData}
                                                                 tradeData={marketTradeData}
                                                                 onChangeEvent={onChangeMarketEvent}/>}
             </Box>

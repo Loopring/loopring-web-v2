@@ -88,6 +88,9 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             warning:{
                 main: colorBase.warning,
             },
+            success:{
+                main: colorBase.success,
+            },
             error: {
                 main: colorBase.error,
                 dark: colorBase.error,

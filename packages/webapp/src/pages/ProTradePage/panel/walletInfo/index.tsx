@@ -8,15 +8,15 @@ import { usePageTradePro } from 'stores/router';
 
 export const WalletInfo = withTranslation('common')(<C extends { [ key: string ]: any }>({t, market}: {
     market: MarketType,
-    // tradeCalcData: TradeCalcData<C>
+    // tradeCalcProData: TradeCalcData<C>
 } & WithTranslation) => {
-    const { pageTradePro: {tradeCalcData} } = usePageTradePro();
+    const { pageTradePro: {tradeCalcProData} } = usePageTradePro();
     //@ts-ignore
     const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
     const {coinJson, slippage} = useSettings();
     const tokenAIcon: any = coinJson[ coinA ];
     const tokenBIcon: any = coinJson[ coinB ];
-    const walletMap = tradeCalcData && tradeCalcData.walletMap?tradeCalcData.walletMap:{};
+    const walletMap = tradeCalcProData && tradeCalcProData.walletMap?tradeCalcProData.walletMap:{};
     const {showDeposit, showWithdraw,} = useModals()
     const onShowDeposit = React.useCallback((token?: any) => {
         showDeposit({isShow: true, symbol: token})

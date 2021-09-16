@@ -8,6 +8,7 @@ const initState = {
     tradePair: undefined,
     calcTradeParams: undefined,
     priceImpactObj: undefined,
+    tradeCalcProData: {},
 }
 
 const initialState: PageTradeProStatus<{ [ key: string ]: any }> = {
@@ -29,6 +30,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 market,
                 depth,
                 tickMap,
+                tradeCalcProData,
                 ammPoolSnapshot,
                 quoteMinAmtInfo,
                 calcTradeParams,
@@ -42,7 +44,9 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
             } = action.payload;
             if (market !== state.pageTradePro.market) {
                 state.pageTradePro = {
+                    ...initState,
                     market,
+                    tradeCalcProData:tradeCalcProData?tradeCalcProData:{},
                     calcTradeParams,
                     depth,
                     tickMap,
@@ -63,10 +67,9 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 if(lastStepAt){
                     state.pageTradePro.lastStepAt = lastStepAt;
                 }
-                // if (tradePair) {
-                //     state.pageTradePro.tradePair = tradePair;
-                //     state.pageTradePro.lastStepAt = undefined
-                // }
+                if (tradeCalcProData) {
+                    state.pageTradePro.tradeCalcProData = tradeCalcProData;
+                }
                 if (depth) {
                     state.pageTradePro.depth = depth;
                 }

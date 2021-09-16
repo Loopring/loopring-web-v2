@@ -30,17 +30,17 @@ export type TxsFilterProps = {
     types?: UserTxTypes[] | string;
 }
 
-interface Row extends RawDataTransactionItem {
-    filterColumn: string
-    cellExpend: {
-        value: string
-        children: []
-        isExpanded: boolean
-    }
-    children?: Row[]
-    isExpanded?: boolean
-    format?: any
-}
+// interface Row extends RawDataTransactionItem {
+//     filterColumn: string
+//     cellExpend: {
+//         value: string
+//         children: []
+//         isExpanded: boolean
+//     }
+//     children?: Row[]
+//     isExpanded?: boolean
+//     format?: any
+// }
 
 const TYPE_COLOR_MAPPING = [
     {type: TransactionStatus.processed, color: 'success'},
@@ -147,7 +147,7 @@ export interface TransactionTableProps {
 }
 
 export const TransactionTable = withTranslation(['tables', 'common'])((props: TransactionTableProps & WithTranslation) => {
-    const { rawData, pagination, showFilter, getTxnList, showloading, etherscanBaseUrl, ...rest } = props
+    const { rawData, pagination, showFilter, getTxnList, showloading, etherscanBaseUrl } = props
     const [page, setPage] = React.useState(1)
     // const [totalData, setTotalData] = React.useState<RawDataTransactionItem[]>(rawData)
     const [filterType, setFilterType] = React.useState(TransactionTradeTypes.allTypes)

@@ -10,9 +10,9 @@ export const useLimit = <C extends { [ key: string ]: any }>(market:MarketType):
     // marketTicker: MarketBlockProps<C> |undefined,
 } =>{
     const limitTradeData:LimitTradeData<IBData<any>> = {
-        sell: {belong: 'ETH'} as IBData<any>,
-        buy: {belong: 'LRC'} as IBData<any>,
-        price: {count: 0},
+        base: {belong: 'ETH'} as IBData<any>,
+        quote: {belong: 'LRC'} as IBData<any>,
+        price: {belong: 'LRC',tradeValue: 0} as IBData<any>,
         type: TradeProType.sell
     }
     const {toastOpen, setToastOpen, closeToast} = useToast();

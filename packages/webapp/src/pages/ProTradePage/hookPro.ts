@@ -65,24 +65,24 @@ export const usePro = <C extends { [ key: string ]: any }>():{
         userInfoUpdateCallback})
 
 
-    const updateWalletLayer2Balance = React.useCallback((_tradeCalcData?)=>{
+    const updateWalletLayer2Balance = React.useCallback((_tradeCalcProData?)=>{
         // @ts-ignore
-        let tradeCalcData = _tradeCalcData?_tradeCalcData: pageTradePro.tradeCalcData;
-        // let walletMap: WalletMap<any> | undefined = tradeCalcData?.walletMap;
+        let tradeCalcProData = _tradeCalcProData?_tradeCalcProData: pageTradePro.tradeCalcProData;
+        // let walletMap: WalletMap<any> | undefined = tradeCalcProData?.walletMap;
         let walletMap: WalletMap<any> | undefined;
         if (account.readyState === AccountStatus.ACTIVATED && walletLayer2Status === SagaStatus.UNSET) {
             walletMap = makeWalletLayer2().walletMap as WalletMap<any>;
         }
 
-        tradeCalcData={
-            ...pageTradePro.tradeCalcData,
-            ...tradeCalcData,
+        tradeCalcProData={
+            ...pageTradePro.tradeCalcProData,
+            ...tradeCalcProData,
             walletMap,
             priceImpact: '',
             priceImpactColor: 'inherit',
             minimumReceived: '',
         }
-        updatePageTradePro({market, tradeCalcData})
+        updatePageTradePro({market, tradeCalcProData})
 
     },[market,pageTradePro])
 
@@ -114,11 +114,11 @@ export const usePro = <C extends { [ key: string ]: any }>():{
             setMarket(market);
             // @ts-ignore
             [, coinA, coinB] = market.match(/([\w]+)-([\w]+)/i);
-            let tradeCalcData = pageTradePro.tradeCalcData;
-            tradeCalcData = {
-                ...tradeCalcData,
-                coinSell: coinA,
-                coinBuy: coinB,
+            let tradeCalcProData = pageTradePro.tradeCalcProData;
+            tradeCalcProData = {
+                ...tradeCalcProData,
+                coinBase: coinA,
+                coinQuote: coinB,
                 StoB: undefined,
                 BtoS: undefined,
                 fee: undefined,
@@ -126,11 +126,11 @@ export const usePro = <C extends { [ key: string ]: any }>():{
                     return {...prev, [ item ]: coinMap ? coinMap[ item ] : {}}
                 }, {} as CoinMap<C>),
             }
-            if (!Object.keys(tradeCalcData.walletMap ?? {}).length){
-                updateWalletLayer2Balance(tradeCalcData)
+            if (!Object.keys(tradeCalcProData.walletMap ?? {}).length){
+                updateWalletLayer2Balance(tradeCalcProData)
             }
 
-            updatePageTradePro({market, tradeCalcData})
+            updatePageTradePro({market, tradeCalcProData})
 
 
         }

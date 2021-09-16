@@ -298,5 +298,15 @@ export default {
     labelSlippageAlert:'滑点过大将会影响您出金后收到的token数量',
     labelOrderTableOpenOrder: '当前订单',
     labelOrderTableOrderHistory: '订单历史',
-    labelBtnFix:'重置'
+    labelBtnFix:'重置',
+    labelProSell:'卖',                               
+    labelProBuy:'买',
+    labelProLimit:'限价',
+    labelProMarket:'市价',
+    labelProPrice:'价格',
+    labelProBaseLabel:'数量',
+    labelProQuoteLabel:'数量',
+    labelProLimitBtn: '{{tradeType}} {{symbol}}',
+    labelProMarketBtn: '{{tradeType}} {{symbol}}'
+
 }
