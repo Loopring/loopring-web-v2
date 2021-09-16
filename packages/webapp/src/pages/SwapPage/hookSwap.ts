@@ -14,8 +14,6 @@ import {
     CoinMap,
     fnType,
     getShowStr,
-    getValuePrecision,
-    getValuePrecisionThousand,
     IBData,
     SagaStatus,
     TradeCalcData,
@@ -638,7 +636,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                 depth,
                 ammPoolSnapshot: ammPoolSnapshot,
                 feeBips: feeBips ? feeBips.toString() : '0',
-                takerRate: takerRate ? takerRate : '0',
+                takerRate: takerRate ? takerRate.toString() : '0',
                 slipBips: slippage
             })
 
@@ -662,7 +660,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                 } as any,
                 priceImpactObj,
                 lastStepAt:type,
-                feeBips, totalFee, takerRate, sellMinAmtInfo, buyMinAmtInfo
+                feeBips, totalFee, takerRate, sellMinAmtInfo: sellMinAmtInfo as any, buyMinAmtInfo: buyMinAmtInfo as any
             })
             //setOutput(calcTradeParams)
             setTradeCalcData({...tradeCalcData, ..._tradeCalcData});
