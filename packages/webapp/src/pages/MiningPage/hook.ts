@@ -19,7 +19,6 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
     // const walletLayer2State = useWalletLayer2();
     const [ammActivityViewMap, setAmmActivityViewMap] = React.useState<Array<AmmCardProps<I>>>([]);
 
-
     const [ammActivityPastViewMap, setAmmActivityPastViewMap] = React.useState<Array<AmmCardProps<I>>>(
         []);
     // const [ammUserRewardMap, setAmmUserRewardMap] = React.useState<AmmUserRewardMap>(

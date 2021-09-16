@@ -71,7 +71,6 @@ export const makeUIAmmActivityMap = <R extends { [key: string]: any }, I extends
                                 prev[ammPoolActivityRule.market] = [item];
                             }
 
-
                             // return prev;
                         }
                         return prev;
@@ -98,11 +97,11 @@ export const makeUIAmmActivityMap = <R extends { [key: string]: any }, I extends
     myLog('ammActivityViewMap:', ammActivityViewMap)
 
     const resultArray = makeAsCard(ammActivityViewMap)
-    // console.log(resultArray)
+    console.log(resultArray)
     return resultArray;
 
-
 }
+
 const makeAsCard = <R extends { [key: string]: any }, I extends { [key: string]: any }>
     (ammActivityViewMap: AmmActivityViewMap<R, I> | undefined, myReward?: any): Array<AmmCardProps<I>> => {
     const { coinMap } = store.getState().tokenMap
