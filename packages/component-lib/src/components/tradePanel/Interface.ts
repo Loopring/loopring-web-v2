@@ -1,4 +1,4 @@
-import { CoinKey, IBData, TradeCalcData } from '@loopring-web/common-resources';
+import { CoinKey, IBData, TradeCalcProData } from '@loopring-web/common-resources';
 import {
     BasicACoinTradeHookProps,
     DefaultProps,
@@ -34,9 +34,9 @@ export type SwapTradeData<T> = {
 
 
 export type LimitTradeData<T> = {
-    price: {count:number|undefined},
-    buy: T,
-    sell: T,
+    price:T,
+    base: T,
+    quote: T,
     type: TradeProType,
     // slippage: number | string,
     // __cache__?: {
@@ -45,8 +45,8 @@ export type LimitTradeData<T> = {
 }
 export type MarketTradeData<T> = {
     // price: T,
-    buy: T,
-    sell: T,
+    base: T,
+    quote: T,
     type: TradeProType,
     slippage: number | string,
     __cache__?: {
@@ -113,7 +113,7 @@ export type SwapProps<T, I, TCD> = {
 //I = CoinKey<any>, TCD
 export type TradeLimitProps<L extends LimitTradeData<T> ,
     T extends  IBData<I>,
-    TCD extends TradeCalcData<I>, I =  CoinKey<any>> = {
+    TCD extends TradeCalcProData<I>, I =  CoinKey<any>> = {
     tradeData: L | undefined,
     handleSubmitEvent: (data:L) => Promise<void>,
     onChangeEvent: (data:L,formType:TradeBaseType) => L,
@@ -121,7 +121,7 @@ export type TradeLimitProps<L extends LimitTradeData<T> ,
 
 export type TradeMarketProps<M extends MarketTradeData<T> ,
     T extends  IBData<I>,
-    TCD extends TradeCalcData<I>, I =  CoinKey<any>> = {
+    TCD extends TradeCalcProData<I>, I =  CoinKey<any>> = {
     tradeData: M | undefined,
     handleSubmitEvent: (data:M) => Promise<void>,
     onChangeEvent: (data:M,formType:TradeBaseType) => M,

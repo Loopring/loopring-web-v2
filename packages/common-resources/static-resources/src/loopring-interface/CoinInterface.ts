@@ -62,6 +62,22 @@ export type TradeCalcData<T> = {
     minimumReceived: string,
     fee: string
 }
+export type TradeCalcProData<T> = {
+    coinBase: keyof T, //name
+    coinQuote: keyof T,
+    StoB: string,
+    BtoS: string,
+    coinInfoMap?: CoinMap<T, CoinInfo<T>>,
+    // sellCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
+    // buyCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
+    walletMap?: WalletMap<T, WalletCoin<T>>,
+    slippage: number | string
+    // slippageTolerance: Array<number | string>,
+    priceImpact: string,
+    priceImpactColor: string,
+    minimumReceived: string,
+    fee: string
+}
 
 /**
  *   @description coinA and coinB balance is different

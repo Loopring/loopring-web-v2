@@ -299,5 +299,15 @@ export default {
     labelSlippageAlert:'The slippage tolerance is so high, you may receive less token',
     labelOrderTableOpenOrder: 'Open Order',
     labelOrderTableOrderHistory: 'Order History',
-    labelBtnFix:'reset'
+    labelBtnFix:'reset',
+    labelProSell:'Sell',
+    labelProBuy:'Buy',
+    labelProLimit:'Limit',
+    labelProMarket:'Market',
+    labelProPrice:'Price',
+    labelProBaseLabel:'Amount',
+    labelProQuoteLabel:'Amount',
+    labelProLimitBtn: '{{tradeType}} {{symbol}}',
+    labelProMarketBtn: '{{tradeType}} {{symbol}}'
+
 }

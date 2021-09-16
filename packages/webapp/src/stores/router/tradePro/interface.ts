@@ -1,12 +1,11 @@
 import * as sdk from 'loopring-sdk';
-import { TradeChannel } from 'loopring-sdk';
-import { OrderInfo } from 'loopring-sdk/dist/defs/loopring_defs';
-import { MarketType, TradeCalcData } from '@loopring-web/common-resources';
+import { TradeChannel,OrderInfo } from 'loopring-sdk';
+import { MarketType, TradeCalcProData } from '@loopring-web/common-resources';
 
 export type PageTradePro<C> = {
     market?: MarketType  // eg: ETH-LRC, Pair from loopring market
     // tradePair?: MarketType  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
-    tradeCalcData?: Partial<TradeCalcData<C>>
+    tradeCalcProData: Partial<TradeCalcProData<keyof C>>
     calcTradeParams?: {
         exceedDepth: boolean;
         isReverse: boolean;

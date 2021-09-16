@@ -38,6 +38,7 @@ export const OrderbookPage = withTranslation('common')(() => {
         {market ?
             <Box display={'block'} margin={'0 auto'} width={'100%'}>
                 <ResponsiveGridLayout
+                    draggableHandle={'drag-holder'}
                     layouts={layoutConfigs[ 0 ].layouts}
                     className="layout"
                     breakpoints={layoutConfigs[ 0 ].breakpoints}

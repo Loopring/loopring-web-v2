@@ -180,29 +180,29 @@ const StyledSlider = styled(Slider)`
       input {
         cursor: pointer;
       }
-      .MuiSlider-valueLabelCircle{
-        background: var(--color-pop-bg);
-        background: var(--color-pop-bg);
-        overflow: visible;
-        box-shadow: var(--shadow);
-        border-radius: ${({theme}) => theme.unit * 0.5}px;
-        transform: rotate(0) ;
-        .MuiSlider-valueLabelLabel{
-          transform: rotate(0) ;
-        }
-        &:before {
-          position: absolute;
-          bottom:  2px;
-          content: '';
-          display: block;
-          transform: rotate(-180deg);
-          transform-origin: bottom;
-          width: 0;
-          height: 0;
-          border: ${({theme}) => theme.unit}px solid transparent;
-          border-bottom: ${({theme}) => theme.unit}px solid var(--color-pop-bg);
-        }
-      }
+      // .MuiSlider-valueLabelCircle{
+      //   background: var(--color-pop-bg);
+      //   background: var(--color-pop-bg);
+      //   overflow: visible;
+      //   box-shadow: var(--shadow);
+      //   border-radius: ${({theme}) => theme.unit * 0.5}px;
+      //   transform: rotate(0) ;
+      //   .MuiSlider-valueLabelLabel{
+      //     transform: rotate(0) ;
+      //   }
+      //   &:before {
+      //     position: absolute;
+      //     bottom:  2px;
+      //     content: '';
+      //     display: block;
+      //     transform: rotate(-180deg);
+      //     transform-origin: bottom;
+      //     width: 0;
+      //     height: 0;
+      //     border: ${({theme}) => theme.unit}px solid transparent;
+      //     border-bottom: ${({theme}) => theme.unit}px solid var(--color-pop-bg);
+      //   }
+      // }
 
     }
   }

@@ -11,6 +11,7 @@ export const IWrap = styled(Box)<BoxProps & {size:'middle'|'small'}>`
     white-space: nowrap;
     text-overflow: ellipsis;
     text-transform: capitalize;
+    color: var(--color-text-secondary);
   }
 
   .message-wrap {

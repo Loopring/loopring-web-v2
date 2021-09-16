@@ -102,9 +102,9 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
     return <> <IWrap size={size} component={'div'} ref={ref}>
         <Grid container component={'div'} className={'label-wrap'} justifyContent={'space-between'}
               paddingBottom={1 / 2}>
-            <Grid item xs={6}><Typography fontSize={'inherit'} className={'main-label'}>{label}</Typography></Grid>
+            <Grid item xs={6}><Typography fontSize={'inherit'} color={'inherit'} className={'main-label'}>{label}</Typography></Grid>
             <Grid item xs={6} className={'sub-label'}>{subLabel && belong ?
-                <Typography fontSize={'inherit'} className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
+                <Typography fontSize={'inherit'} color={'inherit'} className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>
                     <span>{maxAllow ? subLabel + ':' : ''}</span>
                     <span>{maxAllow ? (balance ? getValuePrecisionThousand(balance) : '0.00') :''}</span>
@@ -115,11 +115,11 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
          ${(belong && belong.length) >= FORMAT_STRING_LEN ? 'text-small' : ''} 
          ${error.error ? 'error' : ''}`} wrap={'nowrap'}
               alignItems={'stretch'}
-              alignContent={'stretch'} style={coinLabelStyle}>
+              alignContent={'stretch'} >
                 {isShowCoinInfo && (
                       <CoinWrap order={order === 'left' ? 2 : 1}
                       display={'flex'}
-                      alignItems={'center'}
+                      alignItems={'center'} style={coinLabelStyle}
                       className={`icon-wrap icon-wrap-${order}`}>
                 <Grid container align-items={'center'} display={'flex'}>
                     {isShowCoinIcon &&<Grid item display={'flex'} order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}

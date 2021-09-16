@@ -53,7 +53,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
     }
 
     const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
-        let {calcTradeParams, tradeChannel, orderType,tradeCalcData, totalFee} = pageTradePro;
+        let {calcTradeParams, tradeChannel, orderType,tradeCalcProData, totalFee} = pageTradePro;
         setAlertOpen(false)
         setConfirmOpen(false)
 
@@ -69,11 +69,8 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
                 return
             }
 
-            const sell = marketTradeData?.sell.belong as string
-            const buy = marketTradeData?.buy.belong as string
-
-            const baseToken = tokenMap[ sell ]
-            const quoteToken = tokenMap[ buy ]
+            const baseToken = tokenMap[ marketTradeData?.base.belong as string ]
+            const quoteToken = tokenMap[ marketTradeData?.quote.belong as string ]
 
             const request: sdk.GetNextStorageIdRequest = {
                 accountId: account.accountId,
@@ -141,14 +138,14 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
                     setMarketTradeData((state) => {
                         return {
                             ...state,
-                            sell: {...state?.sell, tradeValue: 0},
-                            buy: {...state?.buy, tradeValue: 0},
+                            sell: {...state?.base, tradeValue: 0},
+                            buy: {...state?.quote, tradeValue: 0},
                         } as MarketTradeData<IBData<C>>
                     });
                     updatePageTradePro({
                         market: market as MarketType,
-                        tradeCalcData:{
-                            ...tradeCalcData,
+                        tradeCalcProData:{
+                            ...tradeCalcProData,
                             minimumReceived: undefined,
                             priceImpact: undefined,
                             fee: undefined
