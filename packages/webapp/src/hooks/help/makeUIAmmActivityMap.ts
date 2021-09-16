@@ -55,6 +55,7 @@ export const makeUIAmmActivityMap = <R extends { [key: string]: any }, I extends
                             const item = {
                                 // @ts-ignore
                                 market: ammPoolActivityRule.market,
+                                status: ammPoolActivityRule.status,
                                 ruleType: ammPoolActivityRule.ruleType,
                                 rewardToken: coinMap[symbol],
                                 totalRewards: Number(totalRewards),
@@ -131,8 +132,6 @@ const makeAsCard = <R extends { [key: string]: any }, I extends { [key: string]:
                             // myLog('matchRes:', matchRes, ' coinAInfo:', coinAInfo, ' coinBInfo:', coinBInfo)
                             return {
                                 ..._.cloneDeep(_ammInfo),
-                                ...item,
-                                ruleType: item.ruleType,
                                 coinAInfo,
                                 coinBInfo,
                                 activity: item,
