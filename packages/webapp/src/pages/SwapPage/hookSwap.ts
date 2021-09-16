@@ -158,12 +158,12 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
             const sell = tradeData?.sell.belong as string
             const buy = tradeData?.buy.belong as string
 
-            const baseToken = tokenMap[ sell ]
-            const quoteToken = tokenMap[ buy ]
+            const sellToken = tokenMap[ sell ]
+            const buyToken = tokenMap[ buy ]
 
             const request: sdk.GetNextStorageIdRequest = {
                 accountId: account.accountId,
-                sellTokenId: baseToken.tokenId
+                sellTokenId: sellToken.tokenId
             }
 
             const storageId = await LoopringAPI.userAPI.getNextStorageId(request, account.apiKey)
@@ -176,11 +176,11 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
                     accountId: account.accountId,
                     storageId: storageId.orderId,
                     sellToken: {
-                        tokenId: baseToken.tokenId,
+                        tokenId: sellToken.tokenId,
                         volume: calcTradeParams.amountS as string
                     },
                     buyToken: {
-                        tokenId: quoteToken.tokenId,
+                        tokenId: buyToken.tokenId,
                         volume: calcTradeParams.amountBOutSlip.minReceived as string
                     },
                     allOrNone: false,
@@ -634,7 +634,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
                 depth,
                 ammPoolSnapshot: ammPoolSnapshot,
                 feeBips: feeBips ? feeBips.toString() : '0',
-                takerRate: takerRate ? takerRate : '0',
+                takerRate: takerRate ? takerRate.toString() : '0',
                 slipBips: slippage
             })
 
@@ -658,7 +658,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
                 } as any,
                 priceImpactObj,
                 lastStepAt:type,
-                feeBips, totalFee, takerRate, sellMinAmtInfo, buyMinAmtInfo
+                feeBips, totalFee, takerRate, sellMinAmtInfo: sellMinAmtInfo as any, buyMinAmtInfo: buyMinAmtInfo as any
             })
             //setOutput(calcTradeParams)
             setTradeCalcData({...tradeCalcData, ..._tradeCalcData});
@@ -723,7 +723,6 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
     }
     
     return {
-        market,
         toastOpen,
         closeToast,
         tradeCalcData,
