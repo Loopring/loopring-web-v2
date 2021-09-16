@@ -61,9 +61,10 @@ export class LoopringSocket {
             // const bids = genAB(data['bids'], true)
             // const asks = genAB(data['asks'])
             const timestamp = Date.now()
+           const _data = getMidPrice({_asks:data['asks'], _bids:data['bids']})
             orderbookService.sendOrderbook({
                 [  topic.market ]: {
-                    ...data,
+                    ..._data,
                     timestamp: timestamp,
                     symbol: topic.market} as any
             })
@@ -238,11 +239,13 @@ export class LoopringSocket {
                     }
                     break;
                 case  SocketEventType.order:
-                    //FIX:  make order Topic
-                    list = socket[ SocketEventType.order ].map(key => getOrderArg(key))
-                    if (list && list.length) {
-                        this.addSocketEvents(SocketEventType.order)
-                        topics = [...topics, ...list];
+                    const orderSocket = socket[ SocketEventType.order ];
+                    if(orderSocket){
+                        list = orderSocket.map(key => getOrderArg(key))
+                        if (list && list.length) {
+                            this.addSocketEvents(SocketEventType.order)
+                            topics = [...topics, ...list];
+                        }
                     }
 
                     break

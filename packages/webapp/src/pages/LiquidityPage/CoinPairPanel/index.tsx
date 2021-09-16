@@ -270,7 +270,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         <Grid item paddingX={2} paddingY={3} xs={4} sm={6} lg={2}>
                             <Box>
                                 <Typography variant={'h3'}
-                                            component={'span'}> {coinPairInfo.APY ? coinPairInfo.APY : EmptyValueTag}%
+                                            component={'span'}> {coinPairInfo.APR ? coinPairInfo.APR : EmptyValueTag}%
                                 </Typography>
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}>
                                     {t('labelAPR')}

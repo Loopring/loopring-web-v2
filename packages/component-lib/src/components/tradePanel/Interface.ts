@@ -33,8 +33,8 @@ export type SwapTradeData<T> = {
 
 export type LimitTradeData<T> = {
     price: T,
-    base: T,
-    quote: T,
+    buy: T,
+    sell: T,
     type: TradeProType,
     // slippage: number | string,
     // __cache__?: {
@@ -43,8 +43,8 @@ export type LimitTradeData<T> = {
 }
 export type MarketTradeData<T> = {
     // price: T,
-    base: T,
-    quote: T,
+    buy: T,
+    sell: T,
     type: TradeProType,
     slippage: number | string,
     __cache__?: {
