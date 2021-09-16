@@ -23,7 +23,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
     } = useTicker();
     const {sendSocketTopic, socketEnd} = useSocket();
     const [recommendedPairs, setRecommendedPairs] = React.useState<string[]>([])
-    const {marketArray, coinMap} = store.getState().tokenMap;
+    const {marketArray, coinMap, marketMap} = store.getState().tokenMap;
     const {forex} = store.getState().system
     const {tokenPrices} = store.getState().tokenPrices
 
@@ -151,6 +151,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
                     coinA,
                     coinB,
                 },
+                // precision: marketMap ? marketMap[] : undefined,
                 coinAPriceDollar: tokenPrices[coinA] || 0,
                 coinAPriceYuan: (tokenPrices[coinA] || 0) * (forex || 6.5),
             } as QuoteTableRawDataItem;
@@ -164,8 +165,18 @@ export function useQuote<C extends { [ key: string ]: string }>() {
             prev.push(_item);
             return prev
         }, [] as QuoteTableRawDataItem[]) : []
+        const newTickList = [...tickList, ..._tickList]
+        const newTickListWithPrecision = newTickList.map(o => {
+            const pair = o.__rawTicker__.symbol
+            const precision = marketMap ? marketMap[pair].precisionForPrice : undefined
+            // console.log(pair, precision)
+            return ({
+                ...o,
+                precision,
+            })
+        })
 
-        setTickList([...tickList, ..._tickList])
+        setTickList(newTickListWithPrecision)
         //setTickList
         // if (focusRowFrom[ 0 ] === 0 && _recommendationsFloat.length > 0) {
         // if (focusRowFrom[ 0 ] === 0) {

@@ -89,6 +89,7 @@ export const ModalPanel = <T extends IBData<I>, I>({
     swapProps: SwapProps<T, I, any>,
     assetsData: any[],
     exportAccountProps: any,
+    setExportAccountToastOpen: any
 }) => {
     const {
         modals,
@@ -137,7 +138,7 @@ export const ModalPanel = <T extends IBData<I>, I>({
                onClose={() => setShowExportAccount({...isShowExportAccount, isShow: false})}
                content={<ExportAccountPanel {...{
                    ...rest, _width: `calc(var(--modal-width) - ${theme.unit * 5 / 2}px)`,
-                   _height: `calc(var(--modal-height) + ${theme.unit * 20}px)`,
+                   _height: `calc(var(--modal-height) + ${theme.unit * 16}px)`,
                }} > </ExportAccountPanel>}/>
         <Modal open={isShowAmm.isShow}
                onClose={() => setShowAmm({...isShowAmm, isShow: false} as any)}

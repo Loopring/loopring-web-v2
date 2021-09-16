@@ -24,6 +24,9 @@ export const ModalAccountInfo = withTranslation('common')(({
         withdrawAlertText,
         withdrawToastOpen,
         setWithdrawToastOpen,
+        exportAccountAlertText,
+        exportAccountToastOpen,
+        setExportAccountToastOpen,
         transferProps,
         withdrawProps,
         depositProps,
@@ -53,6 +56,11 @@ export const ModalAccountInfo = withTranslation('common')(({
             setWithdrawToastOpen(false)
         }}/>
 
+        <Toast alertText={exportAccountAlertText as string} open={exportAccountToastOpen}
+            autoHideDuration={TOAST_TIME} onClose={() => {
+                setExportAccountToastOpen(false)
+        }} severity={"success"}/>
+
         <ModalPanel transferProps={transferProps}
                     withDrawProps={withdrawProps}
                     depositProps={depositProps}
@@ -61,6 +69,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                     ammProps={{} as any}
                     swapProps={{} as any}
                     assetsData={assetsRawData}
+                    setExportAccountToastOpen={setExportAccountToastOpen}
                     {...{_height: 'var(--modal-height)', _width: 'var(--modal-width)'}}
         />
 

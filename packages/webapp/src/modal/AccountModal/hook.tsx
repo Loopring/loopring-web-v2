@@ -93,6 +93,12 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         lastRequest,
     } = useWithdraw()
 
+    const {
+        exportAccountAlertText,
+        exportAccountToastOpen,
+        setExportAccountToastOpen,
+    } = useExportAccount()
+
     const {depositProps} = useDeposit()
 
     const {assetsRawData} = useGetAssets()
@@ -639,6 +645,12 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
         depositProps,
         resetProps,
         exportAccountProps,
+        exportAccountAlertText,
+        exportAccountToastOpen,
+        setExportAccountToastOpen,
+        transferAlertText,
+        transferToastOpen,
+        setTransferToastOpen,
         assetsRawData,
         copyToastOpen,
         setCopyToastOpen,
