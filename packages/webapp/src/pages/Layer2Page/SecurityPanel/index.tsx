@@ -98,7 +98,7 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({t, i18n, ..
                     </Grid>
                 </Grid>
             </Box>
-            <StyledDivider/>
+            {/* <StyledDivider/>
             <Box component={'section'} display={'flex'} flexDirection={'column'}>
                 <Typography variant={'h4'} color={'text.primary'} component={'h4'} paddingX={4}
                             marginY={1}>{t('labelSettingFee')}</Typography>
@@ -117,7 +117,7 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({t, i18n, ..
                                             color={'primary'} disabled={false}>{t('labelBtnFix')}</Button></Grid>
                     </Grid>
                 </Grid>
-            </Box>
+            </Box> */}
         </Grid>
     </StyledPaper>
 })
