@@ -2,7 +2,7 @@ export default {
     labelMarkets: '市场',
     labelTrade: '交易',
     labelLiquidity: '流动性矿池',
-    labelMining: '流动性挖矿',
+    labelMining: '挖矿',
     labelLayer2: '二层账号',
     loopringDomain: '路印交易所',
     labelClassic: '简洁版',
