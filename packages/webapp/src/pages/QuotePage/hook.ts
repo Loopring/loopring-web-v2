@@ -17,7 +17,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
 
     const {sendSocketTopic, socketEnd} = useSocket();
     const [recommendedPairs, setRecommendedPairs] = React.useState<string[]>([])
-    const {marketArray, coinMap, marketMap} = store.getState().tokenMap;
+    const {marketArray, coinMap, marketMap, tokenMap} = store.getState().tokenMap;
     const {forex} = store.getState().system
     const {tokenPrices} = store.getState().tokenPrices
     const {tickerMap,status:tickerStatus} = useTicker();
@@ -164,9 +164,25 @@ export function useQuote<C extends { [ key: string ]: string }>() {
             return prev
         }, [] as MarketBlockProps<C>[])
 
-        // console.log('_recommendations:', _recommendations)
+        // let _recommendationsWithPrecision = _.cloneDeep(_recommendations)
+        const _recommendationsWithPrecision = _recommendations.map(o => {
+            const pair = o.tradeFloat['__rawTicker__']?.symbol
+            const coinB = o.tradeFloat['pair']?.coinB
+            const marketPrecision = marketMap ? marketMap[pair]?.precisionForPrice : undefined
+            const coinBPrecision = tokenMap ? tokenMap[coinB]?.precision : undefined
+            return ({
+                ...o,
+                tradeFloat: {
+                    ...o.tradeFloat,
+                    marketPrecision,
+                    coinBPrecision,
+                }
+            })
+        } )
 
-        setRecommendations(_recommendations)
+        // console.log('_recommendations:', _recommendationsWithPrecision)
+        
+        setRecommendations(_recommendationsWithPrecision)
         // }
     }, [tickList])
 
