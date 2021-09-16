@@ -135,6 +135,8 @@ export type AmmCardProps<T> =
     & { activity: AmmActivity<T>, tradeFloat: TradeFloat, handleClick: () => void };
 
 export type AmmActivity<I> = {
+    market: string,
+    ruleType: string,
     totalRewards: number,
     myRewards: number,
     rewardToken: CoinInfo<I>,
