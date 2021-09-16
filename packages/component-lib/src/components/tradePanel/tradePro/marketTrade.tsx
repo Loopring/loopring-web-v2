@@ -18,9 +18,9 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
     const  {
         t,
         // disabled,
-        tradeMarketI18nKey:_tradeMarketI18nKey,
+        tradeMarketI18nKey,
         // tradeCalcData,
-        tradeMarketBtnStatus:_tradeMarketBtnStatus,
+        tradeMarketBtnStatus,
         // tokenBuyProps,
         // tokenSellProps,
         // tradeData,
@@ -39,16 +39,16 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         inputError,
         // i18nKey : tradeMarketI18nKey,
         tradeCalcData,
-        tradeBtnBaseStatus:tradeMarketBtnStatus,
+        tradeBtnBaseStatus,
         propsBuy,
         propsSell,
     } = useCommon({
         ...props as any,
         tradeData,
-        i18nKey: _tradeMarketI18nKey?_tradeMarketI18nKey:'labelTrade',
-        tradeBtnBaseStatus: _tradeMarketBtnStatus
+        i18nKey: tradeMarketI18nKey?tradeMarketI18nKey:'labelTrade',
+        tradeBtnBaseStatus: tradeMarketBtnStatus
     })
-    return <Box flex={1} display={'flex'} flexDirection={'row'} alignItems={'stretch'}>
+    return <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
         <Box className={'tool-bar'} paddingTop={2} paddingX={2} display={'flex'} alignItems={'stretch'}>
             <Tabs value={tradeData?.type ?? TradeProType.buy}
                   onChange={(_e, index) => _handleChangeIndex(index)} className={'pro-tabs'}>
@@ -86,10 +86,12 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
             <ButtonStyle variant={'contained'} size={'large'} color={'primary'} onClick={() => {
                 // onSwapClick(swapData.tradeData)
             }}
-                         loading={!getDisabled() && tradeMarketBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-                         disabled={getDisabled() || tradeMarketBtnStatus === TradeBtnStatus.DISABLED || tradeMarketBtnStatus === TradeBtnStatus.LOADING || inputError.error}
+                         loading={!getDisabled() && tradeBtnBaseStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
+                         disabled={getDisabled() || tradeBtnBaseStatus === TradeBtnStatus.DISABLED || tradeBtnBaseStatus === TradeBtnStatus.LOADING || inputError.error}
                          fullWidth={true}>{btnLabel}
             </ButtonStyle>
         </Box>
     </Box>
-})
+})   as <M extends MarketTradeData<T>,
+    T extends IBData<I>,
+    TCD extends TradeCalcData<I>, I = CoinKey<any>>(props: TradeMarketProps<M,T,TCD, I>) => JSX.Element

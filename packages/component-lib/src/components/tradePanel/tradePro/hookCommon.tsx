@@ -3,6 +3,7 @@ import { TradeBaseType, TradeCommonProps, TradeProBaseEventProps, TradeProType }
 import { IBData, TradeCalcData } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import { LimitTradeData, MarketTradeData } from '../Interface';
+import { InputSize } from '../../basic-lib';
 
 export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
     T,
@@ -48,11 +49,14 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         }
     }, [tradeData, onChangeEvent]);
     const propsBuy = {
-        label: t('tokenEnterReceiveToken'),
+        label: t('labelAmount'),
         subLabel: t('tokenHave'),
         emptyText: t('tokenSelectToken'),
         placeholderText: '0.00',
         maxAllow: false,
+        size:InputSize.small,
+        coinLabelStyle:{color:'var(--color-secondary)'},
+        isShowCoinIcon:false,
         ...tokenBuyProps,
         handleError,
         handleCountChange,
@@ -65,6 +69,9 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         emptyText: t('tokenSelectToken'),
         placeholderText: '0.00',
         maxAllow: true,
+        size:InputSize.small,
+        coinLabelStyle:{color:'var(--color-secondary)'},
+        isShowCoinIcon:false,
         ...tokenSellProps,
         handleCountChange,
         // handleOnClick,
