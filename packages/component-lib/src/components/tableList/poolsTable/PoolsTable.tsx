@@ -185,7 +185,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
                         <Button {...bindHover(popoverState)}>
                             <Typography
                                 component={'span'} style={{ cursor: 'pointer' }}> {
-                                    typeof liquidityLpToken === 'undefined' ? EmptyValueTag : (currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(liquidityLpToken, 2, 2)}
+                                    typeof liquidityLpToken === 'undefined' ? EmptyValueTag : (currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(liquidityLpToken, undefined, undefined, undefined, true, { isFait: true })}
                             </Typography>
                         </Button>
                     </Box>
@@ -296,7 +296,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
             return <Box className={'textAlignRight'}>
                 <Typography
                     component={'span'}> {volume && Number.isFinite(volume)
-                        ? renderUnit + getValuePrecisionThousand(renderValue, 2, 2) : EmptyValueTag} {/* {row.tradeFloat && row.tradeFloat.volume ? row.coinAInfo.simpleName : ''} */}
+                        ? renderUnit + getValuePrecisionThousand(renderValue, undefined, undefined, undefined, true, { isFait: true }) : EmptyValueTag} {/* {row.tradeFloat && row.tradeFloat.volume ? row.coinAInfo.simpleName : ''} */}
                 </Typography>
             </Box> 
         }
@@ -312,7 +312,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
             const APY = typeof row.APY !== undefined && row.APY ? row?.APY : EmptyValueTag;
             return <Box className={'textAlignRight'}>
                 <Typography
-                component={'span'}> {APY === EmptyValueTag || typeof APY === 'undefined' ? EmptyValueTag : APY + '%'}</Typography>
+                component={'span'}> {APY === EmptyValueTag || typeof APY === 'undefined' ? EmptyValueTag : getValuePrecisionThousand(APY, 2, 2, 2, true) + '%'}</Typography>
             </Box>
         }
     },
