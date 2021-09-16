@@ -133,7 +133,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                         {t('labelMiningActiveDate')}
                     </Typography>
-                    <Typography component={'span'} color={'textPrimary'} variant={'h6'}>
+                    <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
                         {' ' + moment(duration.from).format('YYYY/MM/DD')} - {moment(duration.to).format('MM/DD')}
                     </Typography>
                 </DetailWrapperStyled>
@@ -143,7 +143,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                         {t('labelMiningLiquidity')}
                     </Typography>
-                    <Typography component={'span'} color={'textPrimary'} variant={'h6'}>
+                    <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
                         {t('labelLiquidity') + ' ' +
                                 amountDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getValuePrecisionThousand(amountDollar, 2, 2)
                                     : PriceTag.Yuan + getValuePrecisionThousand(amountYuan, 2, 2)}
@@ -155,7 +155,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                         {t('labelMiningActivityReward')}
                     </Typography>
-                    <Typography component={'span'} color={'textPrimary'} variant={'h6'}>
+                    <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
                         {/* {getValuePrecisionThousand(((rewardValue && Number.isFinite(rewardValue) ? rewardValue : 0) + (rewardValue2 && Number.isFinite(rewardValue2) ? rewardValue2 : 0)), 2, 2)} */}
                         {rewardValue && Number.isFinite(rewardValue) ? getValuePrecisionThousand(rewardValue) : EmptyValueTag}
                         &nbsp;
@@ -168,7 +168,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                         {t('labelMiningMyShare')}
                     </Typography>
-                    <Typography component={'span'} color={'textPrimary'} variant={'h6'}>
+                    <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
                         --
                     </Typography>
                 </DetailWrapperStyled>
@@ -178,11 +178,10 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                         {t('labelMiningMyReward')}
                     </Typography>
-                    <Typography component={'span'} color={'textPrimary'} variant={'h6'}>
+                    <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
                         {myRewards === 0
                             ? EmptyValueTag
-                            : getValuePrecisionThousand(myRewards, 6, 6)}
-                        {' ' + rewardToken?.simpleName}
+                            : getValuePrecisionThousand(myRewards, 6, 6) + rewardToken?.simpleName}
                     </Typography>
                 </DetailWrapperStyled>
 
@@ -216,7 +215,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                 </BoxBg> */}
             </CardContent>
             <CardActions>
-                <Button fullWidth variant={'contained'} size={'medium'} disabled={!!isPass}
+                <Button fullWidth variant={'contained'} size={'large'} disabled={!!isPass}
                         color={'primary'}
                         onClick={handleClick}>{t(isPass ? 'labelEndLiquidityBtn' : 'labelAddLiquidityBtn')}</Button>
             </CardActions>

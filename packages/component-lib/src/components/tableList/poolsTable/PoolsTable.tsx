@@ -303,7 +303,7 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
     },
     {
         key: 'APY',
-        sortable: false,
+        sortable: true,
         name: t('labelAPR'),
         width: 'auto',
         maxWidth: 68,
