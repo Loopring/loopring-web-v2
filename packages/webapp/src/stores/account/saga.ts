@@ -31,6 +31,8 @@ export function* cleanAccountSaga({payload}: PayloadAction<{ shouldUpdateProvide
             publicKey: {},
             level: '',
             nonce: -1,
+            keyNonce : -1,
+            keySeed: '',
         }
 
         if (payload && payload.shouldUpdateProvider) {

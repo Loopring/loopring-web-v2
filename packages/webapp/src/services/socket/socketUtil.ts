@@ -238,13 +238,11 @@ export class LoopringSocket {
                     }
                     break;
                 case  SocketEventType.order:
-                    const orderSocket = socket[ SocketEventType.order ];
-                    if(orderSocket){
-                        list = orderSocket.map(key => getOrderArg(key))
-                        if (list && list.length) {
-                            this.addSocketEvents(SocketEventType.order)
-                            topics = [...topics, ...list];
-                        }
+                    //FIX:  make order Topic
+                    list = socket[ SocketEventType.order ].map(key => getOrderArg(key))
+                    if (list && list.length) {
+                        this.addSocketEvents(SocketEventType.order)
+                        topics = [...topics, ...list];
                     }
 
                     break

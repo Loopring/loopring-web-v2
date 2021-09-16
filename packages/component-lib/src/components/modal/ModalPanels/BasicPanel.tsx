@@ -186,6 +186,13 @@ export const UpdateAccountBase = (props: PanelProps & WithTranslation) => {
     return <BasicPanel {...propsPatch} {...props} />
 }
 
+export const ExportAccountBase = (props: PanelProps & WithTranslation) => {
+    const propsPatch = {
+        title: 'labelExportAccount'
+    }
+    return <BasicPanel {...propsPatch} {...props} />
+}
+
 export const DepositBase = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         title: 'labelDeposit'

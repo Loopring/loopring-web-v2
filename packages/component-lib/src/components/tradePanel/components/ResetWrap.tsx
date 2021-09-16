@@ -1,4 +1,3 @@
-import { IBData } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../Interface';
 import { Trans, WithTranslation } from 'react-i18next';
 import React from 'react';
@@ -45,6 +44,20 @@ export const ResetWrap = <T extends object>({
         label: t('restLabelEnterToken'),
     }
 
+    React.useEffect(() => {
+        if (!!chargeFeeTokenList.length && !feeToken && assetsData) {
+            const defaultToken = chargeFeeTokenList.find(o => assetsData.find(item => item.name === o.belong)?.available > o.fee)?.belong || 'ETH'
+            setFeeToken(defaultToken)
+            const currFee = toggleData.find(o => o.key === defaultToken)?.fee || '--'
+            const currFeeRaw = toggleData.find(o => o.key === defaultToken)?.__raw__ || '--'
+            handleFeeChange({
+                belong: defaultToken,
+                fee: currFee,
+                __raw__: currFeeRaw,
+            })
+        }
+    }, [chargeFeeTokenList, feeToken, assetsData, handleFeeChange, toggleData])
+
     const getTokenFee = React.useCallback((token: string) => {
         const raw = toggleData.find(o => o.key === token)?.fee
         // myLog('......raw:', raw, typeof raw, getValuePrecisionThousand(raw))
@@ -65,8 +78,12 @@ export const ResetWrap = <T extends object>({
     }, [chargeFeeTokenList, assetsData, checkFeeTokenEnough, getTokenFee, feeToken])
 
     const getDisabled = React.useCallback(() => {
-        return false
-    }, [])
+        if (isFeeNotEnough) {
+            return true
+        } else {
+            return false
+        }
+    }, [isFeeNotEnough])
 
     const handleToggleChange = React.useCallback((_e: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
         if (value === null) return
@@ -98,7 +115,7 @@ export const ResetWrap = <T extends object>({
             <Typography component={'span'} display={'flex'} alignItems={'center'} variant={'body1'} color={'var(--color-text-secondary)'} marginBottom={1}>
                 {t('transferLabelFee')}：
                 <Box component={'span'} display={'flex'} alignItems={'center'} style={{ cursor: 'pointer' }} onClick={() => setDropdownStatus(prev => prev === 'up' ? 'down' : 'up')}>
-                    {/* {getTokenFee(feeToken) || '--'} {feeToken} */}
+                    {getTokenFee(feeToken) || '--'} {feeToken}
                     <DropdownIconStyled  status={dropdownStatus} fontSize={'medium'} />
                     <Typography marginLeft={1} component={'span'} color={'var(--color-error)'}>
                         {isFeeNotEnough && t('transferLabelFeeNotEnough')}
@@ -126,6 +143,3 @@ export const ResetWrap = <T extends object>({
         </Grid>
     </Grid>
 }
-
-
-

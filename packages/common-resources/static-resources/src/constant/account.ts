@@ -33,6 +33,7 @@ export type Account = {
     apiKey: string,
     eddsaKey: any,
     publicKey: any,
+    keySeed: string,
     nonce:number|undefined,
     keyNonce: number|undefined,
     connectName: keyof typeof ConnectProviders,

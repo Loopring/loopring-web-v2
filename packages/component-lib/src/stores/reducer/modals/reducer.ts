@@ -6,6 +6,7 @@ const initialState: ModalState = {
     isShowWithdraw: {isShow: false,symbol:undefined},
     isShowDeposit: {isShow: false,symbol:undefined},
     isShowResetAccount: {isShow: false},
+    isShowExportAccount: {isShow: false},
     isShowSwap: {isShow: false},
     isShowAmm: {isShow: false},
     isShowConnect: {isShow: false, step: 0},
@@ -52,6 +53,10 @@ export const modalsSlice: Slice<ModalState> = createSlice({
             state.isShowResetAccount.isShow = isShow;
 
         },
+        setShowExportAccount(state, action: PayloadAction<ModalStatePlayLoad>) {
+            const {isShow} = action.payload;
+            state.isShowExportAccount.isShow = isShow;
+        },
         setShowConnect(state, action: PayloadAction<{ isShow: boolean, step?: number }>) {
             const {isShow, step} = action.payload;
             state.isShowConnect = {
@@ -73,6 +78,7 @@ export const {
     setShowWithdraw,
     setShowDeposit,
     setShowResetAccount,
+    setShowExportAccount,
     setShowSwap,
     setShowAmm,
     setShowConnect,
