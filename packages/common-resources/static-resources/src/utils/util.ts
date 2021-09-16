@@ -65,20 +65,37 @@ const getFloatCeil = (value: number | string | undefined, precision: number) => 
     return result / Math.pow(10, precision)
 }
 
+const addZeroAfterDot = (value: string) => {
+    let [_init, _dot] = value.split('.');
+    if (_dot) {
+        _dot = _dot.replace(/0+?$/, '');
+        if (_dot) {
+            value = _init + '.' + _dot ;
+        } else {
+            value = _init
+        }
+        return value
+    }
+    return value
+}
+
 /**
  * @param value
  * @param minDigit  default = 6
  * @param precision  default = 2
- * @param fixed
+ * @param fixed default = undefined
  * @param notRemoveEndZero default will remove after dot end 0
- * @param floor default .toFixed
+ * @param option { floor?: boolean, isFait?: boolean, isTrade?: boolean }
  */
 export const getValuePrecisionThousand = (value: number | string | BigNumber | undefined, minDigit = 6, precision = 2, fixed?: number, notRemoveEndZero?: boolean, option?: {
     floor?: boolean,
     isFait?: boolean,
+    isTrade?: boolean,
 }) => {
     const floor = option?.floor
     const isFait = option?.isFait
+    const isTrade = option?.isTrade
+
     if ((!value  || !Number.isFinite(Number(value)) || Number(value) === 0 ) && !BigNumber.isBigNumber(value)) {
         return '0.00'
     }
@@ -86,13 +103,17 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     if (!BigNumber.isBigNumber(result)){
         result = toBig(value);
     }
-    // fait price or percentage
+    // fait price
     if (isFait === true) {
         if (result.isGreaterThanOrEqualTo(1)) {
-            return toBig(result.toFixed(2)).toNumber().toLocaleString('en', {minimumFractionDigits: 2})
+            // fixed 2 decimals
+            return toBig(result.toFixed(2)).toNumber().toLocaleString('en')
         } else {
             return result.toNumber().toLocaleString('en', {minimumFractionDigits: 6})
         }
+    }
+    if (isTrade === true) {
+        return result.toNumber().toLocaleString('en')
     }
     if (result.isGreaterThan(1)) {
         // if (minDigit < 3) {
@@ -111,8 +132,8 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
         if (floor === undefined) {
             formattedValue = result.toFixed(minDigit)
         }
-        // remain zero
-        result = (toBig(formattedValue) as any).toNumber().toLocaleString('en',{minimumFractionDigits: minDigit})
+        // remain string-number zero
+        result = toBig(formattedValue).toNumber().toLocaleString('en',{minimumFractionDigits: minDigit})
     } else if (result.isLessThanOrEqualTo(1) && fixed){
         result = result.toFixed(fixed)
     } else if (result.isLessThanOrEqualTo(1)) {
@@ -120,15 +141,16 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     }
     
     if (result && !notRemoveEndZero) {
-        let [_init, _dot] = result.split('.');
-        if (_dot) {
-            _dot = _dot.replace(/0+?$/, '');
-            if (_dot) {
-                result = _init + '.' + _dot ;
-            } else {
-                result = _init
-            }
-        }
+        // let [_init, _dot] = result.split('.');
+        // if (_dot) {
+        //     _dot = _dot.replace(/0+?$/, '');
+        //     if (_dot) {
+        //         result = _init + '.' + _dot ;
+        //     } else {
+        //         result = _init
+        //     }
+        // }
+        result = addZeroAfterDot(result)
     }
 
     return result

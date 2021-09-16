@@ -92,8 +92,8 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
         formatter: ({row}) => {
             // const tradeType = row[ 'side' ] === TradeTypes.Buy ? t('labelBuy') : t('labelSell')
             const {from, to} = row[ 'amount' ]
-            const fromValue = from.value ? getValuePrecisionThousand(from.value, 4, 2) : EmptyValueTag
-            const toValue = to.value ? getValuePrecisionThousand(to.value, 4, 2) : EmptyValueTag
+            const fromValue = from.value ? getValuePrecisionThousand(from.value, undefined, undefined, undefined, false, { isTrade: true }) : EmptyValueTag
+            const toValue = to.value ? getValuePrecisionThousand(from.value, undefined, undefined, undefined, false, { isTrade: true }) : EmptyValueTag
 
             return (
                 <Box className="rdg-cell-value">
@@ -124,7 +124,8 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
         headerCellClass: 'textAlignRight',
         formatter: ({row}) => {
             const {value} = row[ 'price' ]
-            const renderValue = value ? (getValuePrecisionThousand(Number(value), 6, 2)) : EmptyValueTag
+            const precision = row['precision'] || 6
+            const renderValue = value ? (getValuePrecisionThousand(Number(value), precision, precision, undefined, true)) : EmptyValueTag
             return (
                 <Box className="rdg-cell-value textAlignRight">
                     {renderValue}

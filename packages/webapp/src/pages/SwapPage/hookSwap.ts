@@ -337,7 +337,14 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
                 limit:100,
             }, account.apiKey);
             let _myTradeArray = makeMarketArray(market, userTrades) as RawDataTradeItem[]
-            setMyTradeArray(_myTradeArray ? _myTradeArray : [])
+            const formattedTradreArray = _myTradeArray.map(o => {
+                return {
+                    ...o,
+                    precision: marketMap ? marketMap[market].precisionForPrice : undefined
+                }
+            }) as RawDataTradeItem[]
+            // setMyTradeArray(_myTradeArray ? _myTradeArray : [])
+            setMyTradeArray(_myTradeArray ? formattedTradreArray : [])
         } else {
             setMyTradeArray([])
         }
@@ -354,7 +361,12 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
         if (LoopringAPI.exchangeAPI && market) {
             const {marketTrades} = await LoopringAPI.exchangeAPI.getMarketTrades({market,limit:15});
             const _tradeArray = makeMarketArray(market, marketTrades)
-            setTradeArray(_tradeArray as RawDataTradeItem[])
+            const formattedTradArray = _tradeArray.map(o => ({
+                ...o,
+                precision: marketMap ? marketMap[market].precisionForPrice : undefined
+            })) as RawDataTradeItem[]
+            // setTradeArray(_tradeArray as RawDataTradeItem[])
+            setTradeArray(formattedTradArray as RawDataTradeItem[])
         } else {
             setTradeArray([])
         }

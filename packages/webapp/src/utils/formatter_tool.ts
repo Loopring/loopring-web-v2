@@ -90,6 +90,7 @@ export function formatPriceWithPrecision(rawVal: string,
 }
 
 export function tradeItemToTableDataItem(tradeItem: any) {
+    const { tokenMap } = store.getState().tokenMap
     const marketList = tradeItem.market.split('-')
     // due to AMM case, we cannot use first index
     const side = tradeItem.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
@@ -104,8 +105,11 @@ export function tradeItemToTableDataItem(tradeItem: any) {
     const sellValue = (isBuy ? quoteValue : baseValue)?.toNumber()
     const buyValue = (isBuy ? baseValue : quoteValue)?.toNumber()
 
-    const feeKey = buyToken
-    const feeValue = getValuePrecisionThousand(volumeToCountAsBigNumber(feeKey, tradeItem.fee)?.toString(), 4, 2) as any
+    const feeKey = isBuy ? base : quote
+    const feeKeyPrecision = tokenMap ? tokenMap[feeKey].precision : undefined
+    const feeValue = getValuePrecisionThousand(volumeToCountAsBigNumber(feeKey, tradeItem.fee), feeKeyPrecision, feeKeyPrecision, undefined, false, {
+        floor: false
+    }) as any
 
     return ({
         side,
