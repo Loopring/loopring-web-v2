@@ -105,12 +105,20 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     }
     // fait price
     if (isFait === true) {
-        if (result.isGreaterThanOrEqualTo(1)) {
-            // fixed 2 decimals
-            return toBig(result.toFixed(2)).toNumber().toLocaleString('en', {minimumFractionDigits: 2})
-        } else {
-            return result.toNumber().toLocaleString('en', {minimumFractionDigits: 6})
+        if (floor === true) {
+            result = getFloatFloor(result, 2)
         }
+        if (floor === false) {
+            result = getFloatCeil(result, 2)
+        }
+        if (toBig(result).isGreaterThanOrEqualTo(1)) {
+            // fixed 2 decimals
+            result = toBig(result.toFixed(2)).toNumber().toLocaleString('en', {minimumFractionDigits: 2})
+        } else {
+            result = toBig(result).toNumber().toLocaleString('en', {minimumFractionDigits: 6})
+        }
+        
+        return result
     }
     if (isTrade === true) {
         return result.toNumber().toLocaleString('en')
