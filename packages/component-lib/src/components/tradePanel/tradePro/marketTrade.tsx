@@ -98,7 +98,7 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
     const minimumReceived = tradeCalcProData && tradeCalcProData.minimumReceived ? tradeCalcProData.minimumReceived : EmptyValueTag
 
     return <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
-        <Box className={'tool-bar'} paddingTop={2} paddingX={2} display={'flex'} alignItems={'center'}
+        <Box className={'tool-bar'}  paddingX={2} display={'flex'} alignItems={'center'}
              justifyContent={'center'}>
             <Box component={'header'} width={'100%'}>
                 <Tabs variant={'fullWidth'} value={tabIndex}
