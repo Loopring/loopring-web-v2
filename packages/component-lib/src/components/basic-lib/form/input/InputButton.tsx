@@ -118,7 +118,10 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                     <span>{maxAllow ? (balance ? getValuePrecisionThousand(balance) : '0.00') :''}</span>
                 </FormLabel> : null}</Grid>
         </Grid>
-        <Grid container className={`btnInput-wrap ${error.error ? 'error' : ''}`} wrap={'nowrap'} alignItems={'stretch'}
+        <Grid container className={`btnInput-wrap
+        ${(belong && belong.length) >= FORMAT_STRING_LEN ? 'text-small' : ''}  
+        ${error.error ? 'error' : ''}
+        `} wrap={'nowrap'} alignItems={'stretch'}
               alignContent={'stretch'}>
             <Grid item className={'btn-wrap'}>
                 <ISBtn variant={'text'} onClick={(event) => handleOnClick(event, ref)}
@@ -132,8 +135,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                 <CoinIcon symbol={belong}/>
                             </Grid>
                             <Grid item paddingLeft={1}>
-                                <Typography display={'inline-flex'} alignItems={'center'}
-                                    variant={belong&&belong.length >= FORMAT_STRING_LEN ? 'body1' : 'h4'}>
+                                <Typography fontSize={'inherit'} color={'inherit'}>
                                     {belong}
                                 </Typography></Grid>
                         </Grid>

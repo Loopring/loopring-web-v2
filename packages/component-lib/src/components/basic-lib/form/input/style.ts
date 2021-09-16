@@ -3,7 +3,7 @@ import { Box, BoxProps, Button, ButtonProps } from '@mui/material';
 import React from 'react';
 import CurrencyInput from 'react-currency-input-field';
 
-export const IWrap = styled(Box)`
+export const IWrap = styled(Box)<BoxProps & {size:'middle'|'small'}>`
   ${({theme}) => theme.border.defaultFrame({c_key: 'var(--opacity)'})};
  
   .label-wrap {
@@ -36,6 +36,7 @@ export const IWrap = styled(Box)`
       text-decoration: none;
     }
   }
+ 
 
   .coinInput-wrap, .btnInput-wrap {
     position: relative;
@@ -44,6 +45,8 @@ export const IWrap = styled(Box)`
     border-radius: ${({theme}) => theme.unit / 2}px;
     margin-top: ${({theme}) => `${theme.unit / 2}px`};
     height: var(--btn-Input-height);
+    
+   
    
     ::before {
       content: '';
@@ -64,19 +67,42 @@ export const IWrap = styled(Box)`
       border: 1px solid var(--color-error) !important;
       border-radius:  ${({theme}) => theme.unit / 2}px;
      
-     
-      // .input-wrap-right input,.icon-wrap-left {
-      //       border-top-left-radius: 0px;
-      //       border-bottom-left-radius: 0px;
-      //       border-left:0
-      // }
-      //
-      // .input-wrap-left input,.icon-wrap-right,button {
-      //     border-top-right-radius: 0px;
-      //     border-bottom-right-radius: 0px;
-      //     border-right:0
-      // }
     }
+    ${({size,theme}) => {
+      if(size === 'small'){
+        return`
+          .input-wrap{
+            font-size: ${theme.fontDefault.body1};
+          }
+          .label-wrap{
+            font-size: ${theme.fontDefault.body2};
+          }
+          .coinInput-wrap, .btnInput-wrap {
+            font-size: ${theme.fontDefault.body1};
+            height: var(--btn-Input-small-height);
+            &.text-small{
+              font-size: ${theme.fontDefault.body2};
+            }
+          }
+      `
+      }else{
+        return`
+          .input-wrap{
+             font-size: ${theme.fontDefault.h5};
+          }
+          .label-wrap{
+            font-size: ${theme.fontDefault.body1};
+          }
+          .coinInput-wrap, .btnInput-wrap{
+              font-size: ${theme.fontDefault.h4};
+              height: var(--btn-Input-height);
+              &.text-small{
+                font-size: ${theme.fontDefault.body1};
+              }
+          }
+      `;
+      }
+    }};
   }
 
   .input-wrap {
@@ -96,7 +122,7 @@ export const IWrap = styled(Box)`
 
   }
 
-` as typeof Box
+` as (props:BoxProps & {size:'middle'|'small'})=>JSX.Element
 export const CoinWrap:React.ComponentType<BoxProps & { logoColor?: any }> = styled(Box)<BoxProps & { logoColor?: any }>`
   & {
 
