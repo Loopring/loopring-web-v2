@@ -1,5 +1,5 @@
 import React from 'react';
-import { TradeCommonProps, TradeProBaseEventProps, TradeProType } from './Interface';
+import { TradeBaseType, TradeCommonProps, TradeProBaseEventProps, TradeProType } from './Interface';
 import { IBData, TradeCalcData } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import { LimitTradeData, MarketTradeData } from '../Interface';
@@ -79,7 +79,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         } else {
             tradeData.type = index
         }
-        onChangeEvent(tradeData,ty)
+        onChangeEvent(tradeData,TradeBaseType.tab)
     }, [tradeData])
 
     return {
