@@ -8,11 +8,11 @@ import { TradeProType } from './Interface';
 import React from 'react';
 import { IconButtonStyled } from '../components/Styled';
 
-const tradeDataInit:LimitTradeData<IBData<any>> = {
-    sell: {belong:'',tradeValue:undefined,balance} as IBData<any>,
-    buy:  {belong:''},
-    slippage: 0.5,
-}
+// const tradeDataInit:LimitTradeData<IBData<any>> = {
+//     sell: {belong:'',tradeValue:undefined,balance} as IBData<any>,
+//     buy:  {belong:''},
+//     slippage: 0.5,
+// }
 
 export const limitTrade = withTranslation('common', {withRef: true})(<L extends LimitTradeData<T>,
     T extends IBData<I>,
@@ -59,24 +59,24 @@ export const limitTrade = withTranslation('common', {withRef: true})(<L extends 
            </Box>
         <Box className={'trade-panel'} >
 
-            <InputCoin<any, I, CoinInfo<I>> ref={buyRef} disabled={getDisabled()} {...{
-                ...propsBuy,
-                // maxAllow:false,
-                isHideError: true,
-                inputData: tradeData ? tradeData.buy : {} as any,
-                coinMap: tradeCalcData && tradeCalcData.coinInfoMap ? tradeCalcData.coinInfoMap : {} as CoinMap<I, CoinInfo<I>>
-            }} />
-            {/*</Grid>*/}
-            {/*<Grid item>*/}
-            <Box alignSelf={"center"} marginY={1}>
+            {/*<InputCoin<any, I, CoinInfo<I>> ref={buyRef} disabled={getDisabled()} {...{*/}
+            {/*    ...propsBuy,*/}
+            {/*    // maxAllow:false,*/}
+            {/*    isHideError: true,*/}
+            {/*    inputData: tradeData ? tradeData.buy : {} as any,*/}
+            {/*    coinMap: tradeCalcData && tradeCalcData.coinInfoMap ? tradeCalcData.coinInfoMap : {} as CoinMap<I, CoinInfo<I>>*/}
+            {/*}} />*/}
+            {/*/!*</Grid>*!/*/}
+            {/*/!*<Grid item>*!/*/}
+            {/*<Box alignSelf={"center"} marginY={1}>*/}
 
-            </Box>
-            <InputButton<any, I, CoinInfo<I>> ref={sellRef} disabled={getDisabled()}  {...{
-                ...propsSell,
-                isHideError: true,
-                inputData: tradeData ? tradeData.sell : {} as any,
-                coinMap: tradeCalcData && tradeCalcData.coinInfoMap ? tradeCalcData.coinInfoMap : {} as CoinMap<I, CoinInfo<I>>
-            }} />
+            {/*</Box>*/}
+            {/*<InputButton<any, I, CoinInfo<I>> ref={sellRef} disabled={getDisabled()}  {...{*/}
+            {/*    ...propsSell,*/}
+            {/*    isHideError: true,*/}
+            {/*    inputData: tradeData ? tradeData.sell : {} as any,*/}
+            {/*    coinMap: tradeCalcData && tradeCalcData.coinInfoMap ? tradeCalcData.coinInfoMap : {} as CoinMap<I, CoinInfo<I>>*/}
+            {/*}} />*/}
             {/*</Grid>*/}
             {/*<Grid item>*/}
 
