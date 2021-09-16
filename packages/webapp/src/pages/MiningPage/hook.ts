@@ -19,7 +19,6 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
     // const walletLayer2State = useWalletLayer2();
     const [ammActivityViewMap, setAmmActivityViewMap] = React.useState<Array<AmmCardProps<I>>>([]);
 
-
     const [ammActivityPastViewMap, setAmmActivityPastViewMap] = React.useState<Array<AmmCardProps<I>>>(
         []);
     // const [ammUserRewardMap, setAmmUserRewardMap] = React.useState<AmmUserRewardMap>(
@@ -34,7 +33,6 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
             setAmmActivityViewMap(makeUIAmmActivityMap(
                 {
                     ammActivityMap,
-                    type: 'AMM_MINING',
                     ammPoolActivityStatus: [AmmPoolActivityStatus.NotStarted, AmmPoolActivityStatus.InProgress]
                 }, userRewardsMapState.userRewardsMap
             ));
@@ -42,7 +40,6 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
                 makeUIAmmActivityMap(
                     {
                         ammActivityMap,
-                        type: 'AMM_MINING',
                         ammPoolActivityStatus: [AmmPoolActivityStatus.EndOfGame]
                     }, userRewardsMapState.userRewardsMap
                 ))
@@ -60,7 +57,6 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
                     makeUIAmmActivityMap(
                         {
                             ammActivityMap,
-                            type: 'AMM_MINING',
                             ammPoolActivityStatus: [AmmPoolActivityStatus.NotStarted, AmmPoolActivityStatus.InProgress]
                         }, userRewardsMapState.userRewardsMap
                     ));
@@ -68,7 +64,6 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
                     makeUIAmmActivityMap(
                         {
                             ammActivityMap,
-                            type: 'AMM_MINING',
                             ammPoolActivityStatus: [AmmPoolActivityStatus.EndOfGame]
                         }, userRewardsMapState.userRewardsMap
                     ))
