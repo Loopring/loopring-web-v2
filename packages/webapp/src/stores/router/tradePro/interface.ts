@@ -5,7 +5,7 @@ import { MarketType, TradeCalcData } from '@loopring-web/common-resources';
 
 export type PageTradePro<C> = {
     market?: MarketType  // eg: ETH-LRC, Pair from loopring market
-    tradePair?: MarketType  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
+    // tradePair?: MarketType  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
     tradeCalcData?: Partial<TradeCalcData<C>>
     calcTradeParams?: {
         exceedDepth: boolean;
@@ -31,7 +31,8 @@ export type PageTradePro<C> = {
         priceImpactColor: string,
         priceLevel: number | string,
     },
-    depth?: sdk.DepthData | undefined
+    depth?: sdk.DepthData | undefined,
+    depthLevel?: number,
     tickMap?: sdk.LoopringMap<sdk.TickerData> | undefined,
     ammPoolSnapshot?: sdk.AmmPoolSnapshot | undefined,
     tradeChannel?: undefined | TradeChannel
@@ -48,6 +49,7 @@ export type PageTradePro<C> = {
 export type PageTradeProStatus<C extends { [ key: string ]: any }> = {
     pageTradePro: PageTradePro<C>,
     __DAYS__:30;
+    __API_REFRESH__:15000;
     __SUBMIT_LOCK_TIMER__: 1000;
     __TOAST_AUTO_CLOSE_TIMER__: 3000
 }

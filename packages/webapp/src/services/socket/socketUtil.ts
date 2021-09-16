@@ -1,12 +1,11 @@
 import {
-    ChainId,
-    getAccountArg,
-    getAmmpoolArg,
-    getCandlestickArg,
+    ChainId, DepthData,
+    getAccountArg, getAmmpoolArg,
+    getCandlestickArg, getMidPrice,
     getOrderArg,
     getOrderBookArg,
     getTickerArg,
-    getTradeArg,
+    getTradeArg, OrderDetail,
     toBig,
 } from 'loopring-sdk';
 import { walletLayer2Service } from './services/walletLayer2Service';
@@ -15,6 +14,9 @@ import { ammPoolService } from './services/ammPoolService';
 import { CustomError, ErrorMap } from '@loopring-web/common-resources';
 import { LoopringAPI } from 'api_wrapper';
 import { AmmPoolSnapshot } from 'loopring-sdk/dist/defs/loopring_defs';
+import { SocketMap } from '../../stores/socket/interface';
+import { bookService } from './services/bookService';
+import { orderbookService } from './services/orderbookService';
 
 
 export type SocketEvent = (e: any, ...props: any[]) => any
@@ -42,7 +44,7 @@ export type SocketEventMap = {
 export class LoopringSocket {
     private static SocketEventMap: SocketEventMap = {
         [ SocketEventType.account ]: (data: { [ key: string ]: any }) => {
-            const {accountId, totalAmount, tokenId, amountLocked, pending} = data;
+            const { totalAmount, tokenId, amountLocked, pending} = data;
             walletLayer2Service.sendAccount({
                 tokenId,
                 locked: amountLocked,
@@ -50,14 +52,24 @@ export class LoopringSocket {
                 pending,
             })
         },
-        [ SocketEventType.order ]: (_e: any) => {
-
+        [ SocketEventType.order ]: (data: OrderDetail) => {
+            bookService.sendBook({
+                [ data.market ]: data as any
+            })
         },
-        [ SocketEventType.orderbook ]: (_e: any) => {
-
+        [ SocketEventType.orderbook ]: (data: DepthData,topic) => {
+            // const bids = genAB(data['bids'], true)
+            // const asks = genAB(data['asks'])
+            const timestamp = Date.now()
+            orderbookService.sendOrderbook({
+                [  topic.market ]: {
+                    ...data,
+                    timestamp: timestamp,
+                    symbol: topic.market} as any
+            })
         },
         [ SocketEventType.trade ]: (_e: any) => {
-
+             //TODO
         },
         [ SocketEventType.ticker ]: (data: string[]) => {
             const [symbol, timestamp, size, volume, open, high, low, close, count, bid, ask] = data;
@@ -80,15 +92,17 @@ export class LoopringSocket {
             })
         },
         [ SocketEventType.candlestick ]: (_e: any) => {
+            //TODO
+        },
+        // [ SocketEventType.candlestick ]: (data: string) => {
+        //
+        // },
+        [ SocketEventType.ammpool ]: (data: [[string,string],string], topic) => {
+            if(data.length) {
+                ammPoolService.sendAmmPool({[ topic.poolAddress ]:{pooled:data[0],lp:data[1]}} )
 
-        },
-        [ SocketEventType.candlestick ]: (data: string) => {
-
-        },
-        [ SocketEventType.ammpool ]: (data: any[]) => {
-            const [poolName, poolAddress, pooled, [tokenId, volume], risky] = data;
-            ammPoolService.sendAmmPool({[poolName]:{poolName, poolAddress, pooled, lp: {tokenId, volume}, risky} as AmmPoolSnapshot} )
-        },
+            }
+         },
         [ SocketEventType.pingpong ]: (data: string, socket:WebSocket  ) => {
 
             if (data === 'ping' && socket && socket.send) {
@@ -182,17 +196,36 @@ export class LoopringSocket {
         }
     }
 
-    private makeMessageArray = ({socket}: { socket: { [ key: string ]: string[] } }): {
+    private makeMessageArray = ({socket}: { socket: SocketMap }): {
         topics: any[]
     } => {
         let topics: any[] = [], list: any[] = []; // let registerDispatch = [];
         Reflect.ownKeys(socket).forEach((eventType) => {
             switch (eventType) {
                 case  SocketEventType.ticker:
-                    list = socket[ SocketEventType.ticker ].map(key => getTickerArg(key))
-                    if (list && list.length) {
-                        this.addSocketEvents(SocketEventType.ticker)
-                        topics = [...topics, ...list];
+                    const tickerSocket = socket[ SocketEventType.ticker ];
+                    if(tickerSocket){
+                        list = tickerSocket.map(key => getTickerArg(key))
+                        if (list && list.length) {
+                            this.addSocketEvents(SocketEventType.ticker)
+                            topics = [...topics, ...list];
+                        }
+                    }
+                    break
+                case  SocketEventType.ammpool:
+                    // list = socket[ SocketEventType.ammpool ].map(key => getAmmpoolArg(key))
+                    // if (list && list.length) {
+                    //     this.addSocketEvents(SocketEventType.ammpool)
+                    //     topics = [...topics, ...list];
+                    // }
+                    // break
+                    const ammpoolSocket = socket[ SocketEventType.ammpool ];
+                    if(ammpoolSocket){
+                        list = ammpoolSocket.map(key => getAmmpoolArg(key))
+                        if (list && list.length) {
+                            this.addSocketEvents(SocketEventType.ammpool)
+                            topics = [...topics, ...list];
+                        }
                     }
                     break
                 case  SocketEventType.account:
@@ -205,42 +238,53 @@ export class LoopringSocket {
                     }
                     break;
                 case  SocketEventType.order:
-                    //FIX:  make order Topic
-                    list = socket[ SocketEventType.order ].map(key => getOrderArg(key))
-                    if (list && list.length) {
-                        this.addSocketEvents(SocketEventType.order)
-                        topics = [...topics, ...list];
+                    const orderSocket = socket[ SocketEventType.order ];
+                    if(orderSocket){
+                        list = orderSocket.map(key => getOrderArg(key))
+                        if (list && list.length) {
+                            this.addSocketEvents(SocketEventType.order)
+                            topics = [...topics, ...list];
+                        }
                     }
+
                     break
+
                 case  SocketEventType.orderbook:
-                    //FIX:  make orderbook Topic
-                    list = socket[ SocketEventType.orderbook ].map(key => getOrderBookArg(key, 0))
-                    if (list && list.length) {
-                        this.addSocketEvents(SocketEventType.orderbook)
-                        topics = [...topics, ...list];
+                    const orderbookSocket = socket[ SocketEventType.orderbook ];
+                    if(orderbookSocket){
+                        const level = orderbookSocket.level??0;
+                        const snapshot = orderbookSocket.snapshot??true;
+                        const count = orderbookSocket.count??50;
+                        list = orderbookSocket.markets.map(key => getOrderBookArg({market:key, level, count, snapshot}))
+                        if (list && list.length) {
+                            this.addSocketEvents(SocketEventType.orderbook)
+                            topics = [...topics, ...list];
+                        }
                     }
+
                     break
                 case  SocketEventType.trade:
-                    list = socket[ SocketEventType.trade ].map(key => getTradeArg(key))
-                    if (list && list.length) {
-                        this.addSocketEvents(SocketEventType.trade)
-                        topics = [...topics, ...list];
+                    const tradeSocket = socket[ SocketEventType.trade ];
+                    if(tradeSocket){
+                        list = tradeSocket.map(key => getTradeArg(key))
+                        if (list && list.length) {
+                            this.addSocketEvents(SocketEventType.trade)
+                            topics = [...topics, ...list];
+                        }
                     }
                     break
                 case  SocketEventType.candlestick:
-                    list = socket[ SocketEventType.candlestick ].map(key => getCandlestickArg(key))
-                    if (list && list.length) {
-                        this.addSocketEvents(SocketEventType.candlestick)
-                        topics = [...topics, ...list];
+                    //FIX:
+                    const candlestickSocket = socket[ SocketEventType.candlestick ];
+                    if(candlestickSocket){
+                        list = candlestickSocket.map(key => getCandlestickArg(key))
+                        if (list && list.length) {
+                            this.addSocketEvents(SocketEventType.candlestick)
+                            topics = [...topics, ...list];
+                        }
                     }
                     break
-                case  SocketEventType.ammpool:
-                    list = socket[ SocketEventType.ammpool ].map(key => getAmmpoolArg(key))
-                    if (list && list.length) {
-                        this.addSocketEvents(SocketEventType.ammpool)
-                        topics = [...topics, ...list];
-                    }
-                    break
+
             }
         })
         return {topics}
@@ -308,7 +352,7 @@ export class LoopringSocket {
                         }
                         if (topic && topic.topic && self._socketCallbackMap) {
                             const {topic: {topic: _topic}, data} = result
-                            self._socketCallbackMap[ _topic ]?.fn.call(self, data, ...self._socketCallbackMap[ _topic ].deps);
+                            self._socketCallbackMap[ _topic ]?.fn.call(self, data, topic,...self._socketCallbackMap[ _topic ].deps);
 
                         }
 
@@ -326,6 +370,8 @@ export class LoopringSocket {
                         self.__wsTimer__.timer = setTimeout(function () {
                             self.socketConnect.call(self, {topics, apiKey});
                         }, 1000 * self.__wsTimer__.count);
+                    }else{
+
                     }
                 };
                 this._loopringSocket.onerror = function (err: Event) {
@@ -364,6 +410,8 @@ export class LoopringSocket {
         this.addSocketEvents(SocketEventType.pingpong, [this.loopringSocket])
     }
 }
+
+
 
 // const socketInstance = new LoopringSocket();
 // // @ts-ignore

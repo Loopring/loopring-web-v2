@@ -7,11 +7,26 @@ import { useAmmMap } from '../../stores/Amm/AmmMap';
 import { useSystem } from '../../stores/system';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
-import { CoinInfo, MarketType } from '@loopring-web/common-resources';
-import {  useTicker } from '../../stores/ticker';
-import { MarketBlockProps } from '@loopring-web/component-lib';
-import { useSwap } from '../SwapPage/hookSwap';
-import { usePageTradeLite, usePageTradePro } from '../../stores/router';
+import {
+    AccountStatus,
+    CoinInfo,
+    CoinMap, IBData,
+    MarketType,
+    myLog,
+    SagaStatus, TradeCalcData,
+    WalletMap
+} from '@loopring-web/common-resources';
+
+import { usePageTradePro } from '../../stores/router';
+import { marketInitCheck, swapDependAsync } from '../SwapPage/help';
+import { makeWalletLayer2 } from '../../hooks/help';
+import * as sdk from 'loopring-sdk';
+import { useWalletLayer2 } from '../../stores/walletLayer2';
+import { LoopringAPI } from '../../api_wrapper';
+
+import { useProSocket, useSocketProService } from './proService';
+import { SwapTradeData } from '@loopring-web/component-lib';
+
 
 export const usePro = <C extends { [ key: string ]: any }>():{
     [key: string]: any;
@@ -27,61 +42,105 @@ export const usePro = <C extends { [ key: string ]: any }>():{
         __SUBMIT_LOCK_TIMER__,
         __TOAST_AUTO_CLOSE_TIMER__
     } = usePageTradePro();
+    const [market, setMarket] = React.useState<MarketType>(realMarket as MarketType);
     const {amountMap, getAmount} = useAmount();
     const {account, status: accountStatus} = useAccount();
+    const {walletLayer2, status: walletLayer2Status} = useWalletLayer2();
+
     const {toastOpen, setToastOpen, closeToast} = useToast();
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap()
     const {ammMap} = useAmmMap();
     const {exchangeInfo} = useSystem();
     const {t} = useTranslation();
-    const {
-        market,
-        tradeCalcData,
-        tradeData,
-        tradeFloat,
-        tradeArray,
-        // myTradeArray,
-        // marketArray,
-        handleSwapPanelEvent,
-        onSwapClick,
-        pair,
-        swapBtnI18nKey,
-        swapBtnStatus,
-        // toastOpen,
-        // closeToast,
-        should15sRefresh,
-        // debugInfo,
-        alertOpen,
-        confirmOpen,
-        refreshRef,
-        swapFunc,
-        isSwapLoading,
-        pageTradeLite,
-    } = useSwap({path:'./trading/pro'});
+    useProSocket()
+    const depDataCallback = React.useCallback(()=>{
+        //TODO
+    },[])
+    const userInfoUpdateCallback = React.useCallback(()=>{
+        updateWalletLayer2Balance();
+        // TODO:
+        // updateOrderTable();
+    },[])
+    useSocketProService({depDataCallback,
+        userInfoUpdateCallback})
+
+
+    const updateWalletLayer2Balance = React.useCallback((_tradeCalcData?)=>{
+        // @ts-ignore
+        let tradeCalcData = _tradeCalcData?_tradeCalcData: pageTradePro.tradeCalcData;
+        // let walletMap: WalletMap<any> | undefined = tradeCalcData?.walletMap;
+        let walletMap: WalletMap<any> | undefined;
+        if (account.readyState === AccountStatus.ACTIVATED && walletLayer2Status === SagaStatus.UNSET) {
+            walletMap = makeWalletLayer2().walletMap as WalletMap<any>;
+        }
+
+        tradeCalcData={
+            ...pageTradePro.tradeCalcData,
+            ...tradeCalcData,
+            walletMap,
+            priceImpact: '',
+            priceImpactColor: 'inherit',
+            minimumReceived: '',
+        }
+        updatePageTradePro({market, tradeCalcData})
+
+    },[market,pageTradePro])
 
 
 
-    //
+
+
+
+    React.useEffect(()=>{
+        resetTradeCalcData(undefined, market)
+    },[])
+    React.useEffect(() => {
+        // getDependencyData();
+        if (account.readyState === AccountStatus.ACTIVATED) {
+            getAmount({market})
+        }
+        if(market){
+        }
+    }, [market])
+
+
+
+    const resetTradeCalcData = React.useCallback((_tradeData, _market) => {
+        if (coinMap && tokenMap && marketMap && marketArray ) {
+            const {tradePair} = marketInitCheck(_market);
+            // @ts-ignore
+            let [, coinA, coinB] = tradePair.match(/([\w]+)-([\w]+)/i);
+            let {market} = sdk.getExistedMarket(marketArray, coinA, coinB);
+            setMarket(market);
+            // @ts-ignore
+            [, coinA, coinB] = market.match(/([\w]+)-([\w]+)/i);
+            let tradeCalcData = pageTradePro.tradeCalcData;
+            tradeCalcData = {
+                ...tradeCalcData,
+                coinSell: coinA,
+                coinBuy: coinB,
+                StoB: undefined,
+                BtoS: undefined,
+                fee: undefined,
+                coinInfoMap: marketCoins?.reduce((prev: any, item: string | number) => {
+                    return {...prev, [ item ]: coinMap ? coinMap[ item ] : {}}
+                }, {} as CoinMap<C>),
+            }
+            if (!Object.keys(tradeCalcData.walletMap ?? {}).length){
+                updateWalletLayer2Balance(tradeCalcData)
+            }
+
+            updatePageTradePro({market, tradeCalcData})
+
+
+        }
+    }, [coinMap, tokenMap, marketMap, marketArray,  setMarket])
 
     //init market
 
-    //useEffect by Market
-    React.useEffect(()=>{
-        if(market){
-            // setDefaultData()
-        }
-    },[market])
-
-
     return {
         market,
-        toastOpen,
-        closeToast,
-        swapFunc,
-        alertOpen,
-        confirmOpen,
-        pageTradeLite,
-        tradeCalcData,
+
         // marketTicker,
     }
 }
