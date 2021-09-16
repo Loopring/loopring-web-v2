@@ -14,7 +14,13 @@ import {
 } from './components/Interface';
 import { SwapData, SwapTradeBaseEventProps, SwapTradeBaseProps, } from './components/SwapWrap/Interface';
 import { AmmPanelBaseProps } from './Amm';
-import { TradeLimitInfoProps, TradeMarketInfoProps, TradeProBaseEventProps, TradeProType } from './tradePro/Interface';
+import {
+    TradeBaseType,
+    TradeLimitInfoProps,
+    TradeMarketInfoProps,
+    TradeProBaseEventProps,
+    TradeProType
+} from './tradePro/Interface';
 
 export type SwapTradeData<T> = {
     sell: T,
@@ -108,7 +114,7 @@ export type TradeLimitProps<L extends LimitTradeData<T> ,
     TCD extends TradeCalcData<I>, I =  CoinKey<any>> = {
     tradeData: L | undefined,
     handleSubmitEvent: (data:L) => Promise<void>,
-    onChangeEvent?: (data:L,inputType:TradeProType) => L,
+    onChangeEvent?: (data:L,formType:TradeBaseType) => L,
 } & TradeLimitInfoProps<T,TCD,I>  & TradeProBaseEventProps<L, T, I>
 
 export type TradeMarketProps<M extends MarketTradeData<T> ,
@@ -116,7 +122,7 @@ export type TradeMarketProps<M extends MarketTradeData<T> ,
     TCD extends TradeCalcData<I>, I =  CoinKey<any>> = {
     tradeData: M | undefined,
     handleSubmitEvent: (data:M) => Promise<void>,
-    onChangeEvent?: (data:M,inputType:TradeProType) => M,
+    onChangeEvent?: (data:M,formType:TradeBaseType) => M,
 } & TradeMarketInfoProps<T,TCD,I>  & TradeProBaseEventProps<M, T, I>
 
 

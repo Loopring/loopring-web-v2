@@ -1,10 +1,16 @@
-import { SwapData, SwapTradeData, TradeBtnStatus } from '../Interface';
+import { TradeBtnStatus } from '../Interface';
 import { InputButtonProps } from '../../basic-lib';
 import { CoinInfo } from '@loopring-web/common-resources';
 
 export enum TradeProType {
     'sell' ,
     'buy'
+}
+export enum TradeBaseType {
+    'sell' ,
+    'buy',
+    'tab',
+    'slippage'
 }
 
 export type TradeLimitInfoProps<T,TCD,I> = {
@@ -35,7 +41,7 @@ export type TradeCommonProps<X,T,TCD,I> = {
     tradeData: X ,
     i18nKey?: string,
     tradeCalcData: TCD,
-    onChangeEvent: (data: X,type:TradeProType) =>  X,
+    onChangeEvent: (data: X,formType:TradeBaseType) =>  X,
     tradeBtnBaseStatus?: keyof typeof TradeBtnStatus | undefined,
     // tokenPriceProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>,
     tokenBuyProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>,
