@@ -91,7 +91,7 @@ export const IWrap = styled(Box)<BoxProps & {size:'middle'|'small'}>`
   ${({size,theme}) => {
     if(size === InputSize.small){
       return`
-          .input-wrap{
+          .input-wrap,.icon-wrap{
             font-size: ${theme.fontDefault.body1};
           }
           .label-wrap, .main-label{
@@ -103,11 +103,15 @@ export const IWrap = styled(Box)<BoxProps & {size:'middle'|'small'}>`
             &.text-small{
               font-size: ${theme.fontDefault.body2};
             }
+            input[type=text]{
+              font-size: ${theme.fontDefault.body1};
+            }
           }
+         
       `
     }else{
       return`
-          .input-wrap{
+          .input-wrap,.icon-wrap{
              font-size: ${theme.fontDefault.h5};
           }
           .label-wrap{
@@ -119,7 +123,11 @@ export const IWrap = styled(Box)<BoxProps & {size:'middle'|'small'}>`
               &.text-small{
                 font-size: ${theme.fontDefault.body1};
               }
+              input[type=text]{
+                font-size: ${theme.fontDefault.h4};
+              }
           }
+         
       `;
     }
   }};
@@ -206,7 +214,6 @@ export const IInput = styled(CurrencyInput)`
   margin: 0;
 
 
-  font-size: ${({theme}) => theme.fontDefault.h4};
   display: block;
   padding: .8rem 1rem;
   min-width: 0;
