@@ -17,7 +17,7 @@ export const useOrderList = () => {
     const [showDetailLoading, setShowDetailLoading] = React.useState(false)
     // const [openOrderList, setOpenOrderList] = React.useState<OrderHistoryRawDataItem[]>([])
     const {account: {accountId, apiKey}} = useAccount()
-    const {tokenMap: {marketArray}} = store.getState()
+    const {tokenMap: {marketArray, tokenMap, marketMap}} = store.getState()
     const {ammMap: {ammMap}} = store.getState().amm
     const {sk: privateKey} = store.getState().account.eddsaKey
 
@@ -64,6 +64,9 @@ export const useOrderList = () => {
                         : quoteVolume?.div(baseVolume || new BigNumber(1)).toNumber() || 0
                     const completion = (quotefilledValue || 0)  / (quoteValue || 1)
 
+                    const precisionFrom = tokenMap ? (tokenMap as any)[baseToken]?.precisionForOrder : undefined
+                    const precisionTo = tokenMap ? (tokenMap as any)[quoteToken]?.precisionForOrder : undefined
+                    const precisionMarket = marketMap ? marketMap[o.market].precisionForPrice : undefined
                     return ({
                         market: o.market,
                         side: o.side === 'BUY' ? TradeTypes.Buy : TradeTypes.Sell,
@@ -71,11 +74,13 @@ export const useOrderList = () => {
                         amount: {
                             from: {
                                 key: baseToken,
-                                value: baseValue as any
+                                value: baseValue as any,
+                                precision: precisionFrom,
                             },
                             to: {
                                 key: quoteToken,
-                                value: quoteValue as any
+                                value: quoteValue as any,
+                                precision: precisionTo,
                             }
                         },
                         average: average,
@@ -100,6 +105,7 @@ export const useOrderList = () => {
                         orderId: o.clientOrderId,
                         tradeChannel: o.tradeChannel,
                         completion: completion,
+                        precisionMarket: precisionMarket,
                     })
                 })
                 // if (isOpenOrder) {
@@ -160,22 +166,34 @@ export const useOrderList = () => {
                 const baseVolume = volumeToCountAsBigNumber(baseToken, actualBaseFilled)
                 const quoteVolume = volumeToCountAsBigNumber(quoteToken, actualQuoteFilled)
                 const filledPrice = baseVolume?.div(quoteVolume || new BigNumber(1)).toNumber() || 0
+                const feeValue = volumeToCountAsBigNumber(quoteToken, fee)?.toNumber() || 0
+
+                const precisionFrom = tokenMap ? (tokenMap as any)[baseToken]?.precisionForOrder : undefined
+                const precisionTo = tokenMap ? (tokenMap as any)[quoteToken]?.precisionForOrder : undefined
+                const precisionMarket = marketMap ? marketMap[o.market].precisionForPrice : undefined
+                const precisionFee = tokenMap ? (tokenMap as any)[quoteToken]?.precisionForOrder : undefined
 
                 return ({
                     amount: {
                         from: {
                             key: baseToken,
-                            value: baseValue as any
+                            value: baseValue as any,
+                            precision: precisionFrom,
                         },
                         to: {
                             key: quoteToken,
-                            value: quoteValue as any
+                            value: quoteValue as any,
+                            precision: precisionTo,
                         }
                     },
-                    filledPrice: filledPrice,
+                    filledPrice: {
+                        value: filledPrice,
+                        precision: precisionMarket,
+                    } ,
                     fee: {
                         key: quoteToken,
-                        value: fee,
+                        value: feeValue,
+                        precision: precisionFee,
                     },
                     role: role,
                     time: o.validity.start * 1000,
@@ -186,7 +204,7 @@ export const useOrderList = () => {
             setOrderDetailList(formattedData)
             setShowDetailLoading(false)
         }
-    }, [accountId, apiKey])
+    }, [accountId, apiKey, marketMap, tokenMap])
     
     const clearData = React.useCallback(() => {
         setOrderOriginalData([])

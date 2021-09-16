@@ -26,6 +26,7 @@ export type TxsFilterProps = {
 export function useGetTxs() {
 
     const {account: {accountId, apiKey}} = useAccount()
+    const { tokenMap } = store.getState().tokenMap
 
     const [txs, setTxs] = useState<RawDataTransactionItem[]>([])
     const [txsTotal, setTxsTotal] = useState(0)
@@ -73,22 +74,26 @@ export function useGetTxs() {
                 types,
             }, apiKey)
 
-            const formattedList = userTxnList.userTxs.map(o => ({
-                ...o,
-                side: o.txType as any,
-                amount: {
-                    unit: o.symbol || '',
-                    value: Number(volumeToCount(o.symbol, o.amount))
-                },
-                fee: {
-                    unit: o.feeTokenSymbol || '',
-                    value: Number(volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0))
-                },
-                memo: o.memo || '',
-                time: o.timestamp,
-                txnHash: o.hash,
-                status: getTxnStatus(o.status),
-            }))
+            const formattedList = userTxnList.userTxs.map(o => {
+                const feePrecision = tokenMap ? tokenMap[o.feeTokenSymbol].precision : undefined
+                return ({
+                    ...o,
+                    side: o.txType as any,
+                    amount: {
+                        unit: o.symbol || '',
+                        value: Number(volumeToCount(o.symbol, o.amount))
+                    },
+                    fee: {
+                        unit: o.feeTokenSymbol || '',
+                        value: Number(volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0))
+                    },
+                    memo: o.memo || '',
+                    time: o.timestamp,
+                    txnHash: o.hash,
+                    status: getTxnStatus(o.status),
+                    feePrecision: feePrecision,
+                })
+            })
             setTxs(formattedList)
             setTxsTotal(userTxnList.totalNum)
             setShowLoading(false)

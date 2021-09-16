@@ -54,10 +54,14 @@ export enum DetailRole {
 export type OrderHistoryTableDetailItem = {
     amount: OrderPair;
     // tradingPrice: number;
-    filledPrice: string | number;
+    filledPrice: {
+        value: string | number;
+        precision?: number;
+    } 
     fee: {
         key: string;
-        value: string;
+        value: string | number;
+        precision?: number;
     }
     role: string;
     time: number;
@@ -98,8 +102,8 @@ const TableStyled = styled(Box)`
 
     .rdg {
         --template-columns: ${({isopen}: any) => isopen === 'open' 
-            ? 'auto auto 220px auto auto 130px 120px' 
-            : '100px 100px 220px 120px 120px auto 160px'} !important;
+            ? 'auto auto 240px 130px 130px 120px 100px' 
+            : 'auto auto 240px 130px 130px 120px 130px'} !important;
 
         .rdg-cell:last-of-type {
             display: flex;
@@ -412,9 +416,11 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             name: t('labelOrderAmount'),
             formatter: ({row, column}) => {
                 const {from, to} = row[ column.key ]
+                const precisionFrom = row.amount.from?.['precision']
+                const precisionTo = row.amount.to?.['precision']
                 const {key: keyFrom, value: valueFrom} = from
                 const {key: keyTo, value: valueTo} = to
-                const renderValue = `${getValuePrecisionThousand(valueFrom, 4, 4)} ${keyFrom} \u2192 ${getValuePrecisionThousand(valueTo, 4)} ${keyTo}`
+                const renderValue = `${getValuePrecisionThousand(valueFrom, precisionFrom, precisionFrom)} ${keyFrom} \u2192 ${getValuePrecisionThousand(valueTo, precisionTo, precisionTo)} ${keyTo}`
                 return <div className="rdg-cell-value">{renderValue}</div>
             },
         },
@@ -425,9 +431,10 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             headerCellClass: 'textAlignRight',
             formatter: ({row, column}) => {
                 const value = row[ column.key ]
+                const precisionMarket = row['precisionMarket']
                 // const hasValue = Number.isFinite(value)
                 // const renderValue = hasValue ? getValuePrecisionThousand(value, 6, 2) : EmptyValueTag
-                const renderValue = value ? getValuePrecisionThousand(value, 4, 4) : EmptyValueTag
+                const renderValue = value ? getValuePrecisionThousand(value, undefined, undefined, precisionMarket, true) : EmptyValueTag
                 return <div className="rdg-cell-value textAlignRight">{renderValue}</div>
             },
         },
@@ -448,8 +455,9 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             headerCellClass: 'textAlignRight',
             formatter: ({row}) => {
                 const value = row['price'].value
+                const precisionMarket = row['precisionMarket']
                 const hasValue = Number.isFinite(value)
-                const renderValue = hasValue ? getValuePrecisionThousand(value, 4, 4) : EmptyValueTag
+                const renderValue = hasValue ? getValuePrecisionThousand(value, undefined, undefined, precisionMarket, true) : EmptyValueTag
                 return (
                     <div className="rdg-cell-value textAlignRight">
                         <span>{renderValue}</span>
@@ -539,7 +547,9 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                 const {from, to} = row[ column.key ]
                 const {key: keyFrom, value: valueFrom} = from
                 const {key: keyTo, value: valueTo} = to
-                const renderValue = `${getValuePrecisionThousand(valueFrom, 4, 4)} ${keyFrom} \u2192 ${getValuePrecisionThousand(valueTo, 4)} ${keyTo}`
+                const precisionFrom = row.amount.from?.['precision']
+                const precisionTo = row.amount.to?.['precision']
+                const renderValue = `${getValuePrecisionThousand(valueFrom, precisionFrom, precisionFrom)} ${keyFrom} \u2192 ${getValuePrecisionThousand(valueTo, precisionTo, precisionTo)} ${keyTo}`
                 return <div className="rdg-cell-value">{renderValue}</div>
             },
         },
@@ -549,8 +559,9 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             headerCellClass: 'textAlignRight',
             formatter: ({row}) => {
                 const value = row['price'].value
+                const precisionMarket = row['precisionMarket']
                 const hasValue = Number.isFinite(value)
-                const renderValue = hasValue ? getValuePrecisionThousand(value, 4, 4) : EmptyValueTag
+                const renderValue = hasValue ? getValuePrecisionThousand(value, precisionMarket, precisionMarket, precisionMarket, true) : EmptyValueTag
                 return (
                     <div className="rdg-cell-value textAlignRight">
                         <span>{renderValue}</span>

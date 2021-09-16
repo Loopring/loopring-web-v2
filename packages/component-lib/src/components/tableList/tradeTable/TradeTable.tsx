@@ -84,15 +84,17 @@ const TableStyled = styled(Box)`
 const StyledSideCell: any = styled(Box)`
 `
 
-const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<RawDataTradeItem, unknown>[] => [
+const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN', tokenMap: any): Column<RawDataTradeItem, unknown>[] => [
     {
         key: 'side',
         name: t('labelTradeSide'),
         formatter: ({row}) => {
             // const tradeType = row[ 'side' ] === TradeTypes.Buy ? t('labelBuy') : t('labelSell')
             const {from, to} = row[ 'amount' ]
-            const fromValue = from.value ? getValuePrecisionThousand(from.value, undefined, undefined, undefined, false, { isTrade: true }) : EmptyValueTag
-            const toValue = to.value ? getValuePrecisionThousand(from.value, undefined, undefined, undefined, false, { isTrade: true }) : EmptyValueTag
+            const precisionFrom = tokenMap ? tokenMap[from.key]?.precision : undefined
+            const precisionTo = tokenMap ? tokenMap[to.key]?.precision : undefined
+            const fromValue = from.value ? getValuePrecisionThousand(from.value, precisionFrom, precisionFrom) : EmptyValueTag
+            const toValue = to.value ? getValuePrecisionThousand(to.value, precisionTo, precisionTo) : EmptyValueTag
 
             return (
                 <Box className="rdg-cell-value">
@@ -124,7 +126,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
         formatter: ({row}) => {
             const {value} = row[ 'price' ]
             const precision = row['precision'] || 6
-            const renderValue = value ? (getValuePrecisionThousand(Number(value), precision, precision, undefined, true)) : EmptyValueTag
+            const renderValue = value ? (getValuePrecisionThousand(value, precision, precision, undefined, true)) : EmptyValueTag
             return (
                 <Box className="rdg-cell-value textAlignRight">
                     {renderValue}
@@ -172,8 +174,9 @@ export const TradeTable = withTranslation('tables')(({
                                                          currentheight,
                                                          rowHeight = 44,
                                                          headerRowHeight = 44,
+                                                         tokenMap = undefined,
                                                          ...rest
-                                                     }: WithTranslation & TradeTableProps) => {
+                                                     }: WithTranslation & TradeTableProps & { tokenMap?: any }) => {
     const [filterType, setFilterType] = React.useState(FilterTradeTypes.allTypes)
     const [filterDate, setFilterDate] = React.useState<DateRange<string | Date>>([null, null])
     const [filterPair, setFilterPair] = React.useState('all')
@@ -181,7 +184,7 @@ export const TradeTable = withTranslation('tables')(({
     const [totalData, setTotalData] = React.useState<RawDataTradeItem[]>(rawData)
     const {currency} = useSettings();
     const defaultArgs: any = {
-        columnMode: getColumnModeAssets(t, currency).filter(o => !o.hidden),
+        columnMode: getColumnModeAssets(t, currency, tokenMap).filter(o => !o.hidden),
         generateRows: (rawData: any) => rawData,
         generateColumns: ({columnsRaw}: any) => columnsRaw as Column<Row<any>, unknown>[],
         style: {
