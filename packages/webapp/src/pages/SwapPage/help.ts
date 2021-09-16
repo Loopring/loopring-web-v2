@@ -1,15 +1,17 @@
 import store from '../../stores';
-import { AmmPoolSnapshot, DepthData, LoopringMap, TickerData, TokenVolumeV3 } from 'loopring-sdk';
 import { LoopringAPI } from '../../api_wrapper';
 import { CustomError, ErrorMap, getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
 import { volumeToCountAsBigNumber } from '../../hooks/help';
 import { PairFormat } from '../../stores/router';
 import BigNumber from 'bignumber.js';
+import * as sdk from 'loopring-sdk'
+import { getTimestampDaysLater } from 'utils/dt_tools';
+import { DAYS } from 'defs/common_defs';
 
 export const swapDependAsync = (market: PairFormat): Promise<{
-    ammPoolSnapshot: AmmPoolSnapshot | undefined,
-    tickMap: LoopringMap<TickerData>,
-    depth: DepthData
+    ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined,
+    tickMap: sdk.LoopringMap<sdk.TickerData>,
+    depth: sdk.DepthData
 }> => {
     const {ammMap} = store.getState().amm.ammMap
 
@@ -61,8 +63,8 @@ export const calcPriceByAmmTickMapDepth = <C>(
     if (coinA && coinB && tokenMap && marketMap && idIndex) {
         //first getValue from  ammPoolSnapshot
         if (ammPoolSnapshot) {
-            const poolATokenVol: TokenVolumeV3 = ammPoolSnapshot.pooled[ 0 ];
-            const poolBTokenVol: TokenVolumeV3 = ammPoolSnapshot.pooled[ 1 ];
+            const poolATokenVol: sdk.TokenVolumeV3 = ammPoolSnapshot.pooled[ 0 ];
+            const poolBTokenVol: sdk.TokenVolumeV3 = ammPoolSnapshot.pooled[ 1 ];
             stob = volumeToCountAsBigNumber(idIndex[ poolBTokenVol.tokenId ], poolBTokenVol.volume)?.div(
                 volumeToCountAsBigNumber(idIndex[ poolATokenVol.tokenId ], poolATokenVol.volume) || 1
             )
@@ -154,4 +156,77 @@ export const marketInitCheck = (market: string, type?: 'sell' | 'buy'): { tradeP
     }
 
     return {tradePair: 'LRC-ETH'};
+}
+
+export interface ReqParams {
+    isBuy: boolean,
+
+    price: number, 
+    amount: number, 
+    baseTokenInfo: sdk.TokenInfo, 
+    quoteTokenInfo: sdk.TokenInfo,
+
+    exchangeAddress: string,
+    accountId: number,
+    storageId: number,
+
+    feeBips: string,
+    tokenAmtMap: {[key: string]: sdk.TokenAmount},
+}
+
+export function makelimitReq({
+    isBuy,
+
+    price, 
+    amount, 
+    baseTokenInfo, 
+    quoteTokenInfo, 
+
+    exchangeAddress,
+    accountId,
+    storageId,
+
+    feeBips,
+    tokenAmtMap,
+ }: ReqParams) {
+
+    if (isBuy === undefined) {
+        isBuy = true
+    }
+
+    const baseVol = sdk.toBig(amount).times('1e' + baseTokenInfo.decimals)
+    const quoteVol = sdk.toBig(amount).times(sdk.toBig(price)).times('1e' + quoteTokenInfo.decimals)
+
+    const baseTokenVol3: sdk.TokenVolumeV3 = {
+        tokenId: baseTokenInfo.tokenId,
+        volume: baseVol.toString()
+    }
+
+    const quoteTokenVol3: sdk.TokenVolumeV3 = {
+        tokenId: quoteTokenInfo.tokenId,
+        volume: quoteVol.toString()
+    }
+
+    const takerRate = tokenAmtMap[baseTokenInfo.symbol].userOrderInfo.takerRate
+
+    const maxFeeBips = parseInt(sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString())
+
+    const request: sdk.SubmitOrderRequestV3 = {
+        exchange: exchangeAddress,
+        accountId,
+        storageId,
+        sellToken: isBuy ? quoteTokenVol3 : baseTokenVol3,
+        buyToken: isBuy ? baseTokenVol3 :quoteTokenVol3,
+        allOrNone: false,
+        validUntil: getTimestampDaysLater(DAYS),
+        maxFeeBips,
+        fillAmountBOrS: false, // amm only false
+        orderType: sdk.OrderType.LimitOrder,
+        tradeChannel: sdk.TradeChannel.MIXED,
+        eddsaSignature: '',
+    }
+
+    return {
+        request,
+    }
 }
