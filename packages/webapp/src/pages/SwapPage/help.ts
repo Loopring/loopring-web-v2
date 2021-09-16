@@ -1,3 +1,5 @@
+import React from 'react'
+
 import store from '../../stores';
 import { LoopringAPI } from '../../api_wrapper';
 import { CustomError, ErrorMap, getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
@@ -7,6 +9,12 @@ import BigNumber from 'bignumber.js';
 import * as sdk from 'loopring-sdk'
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { DAYS } from 'defs/common_defs';
+import { useAccount } from 'stores/account';
+import { useTokenMap } from 'stores/token';
+import { useSystem } from 'stores/system';
+import { useAmmMap } from 'stores/Amm/AmmMap';
+import { useAmount } from 'stores/amount';
+import { getExistedMarket } from 'loopring-sdk';
 
 export const swapDependAsync = (market: PairFormat): Promise<{
     ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined,
@@ -159,19 +167,23 @@ export const marketInitCheck = (market: string, type?: 'sell' | 'buy'): { tradeP
 }
 
 export interface ReqParams {
-    isBuy: boolean,
+    isBuy?: boolean,
 
     price: number, 
     amount: number, 
-    baseTokenInfo: sdk.TokenInfo, 
-    quoteTokenInfo: sdk.TokenInfo,
+    base?: string,
+    quote?: string, 
+    market?: string,
+    tokenMap?: sdk.LoopringMap<sdk.TokenInfo>,
 
-    exchangeAddress: string,
-    accountId: number,
-    storageId: number,
+    exchangeAddress?: string,
+    accountId?: number,
+    storageId?: number,
 
-    feeBips: string,
-    tokenAmtMap: {[key: string]: sdk.TokenAmount},
+    feeBips?: string,
+
+    // key is ETH or USDT
+    tokenAmtMap?: {[key: string]: sdk.TokenAmount},
 }
 
 export function makelimitReq({
@@ -179,8 +191,10 @@ export function makelimitReq({
 
     price, 
     amount, 
-    baseTokenInfo, 
-    quoteTokenInfo, 
+    base, 
+    quote, 
+    market,
+    tokenMap,
 
     exchangeAddress,
     accountId,
@@ -190,9 +204,22 @@ export function makelimitReq({
     tokenAmtMap,
  }: ReqParams) {
 
+    if (!tokenMap || !tokenAmtMap || !exchangeAddress
+         || accountId === undefined || storageId === undefined
+         || !base || !quote) {
+        return undefined
+    }
+
     if (isBuy === undefined) {
         isBuy = true
     }
+
+    if (!storageId) {
+        storageId = 0
+    }
+
+    const baseTokenInfo = tokenMap[base]
+    const quoteTokenInfo = tokenMap[quote]
 
     const baseVol = sdk.toBig(amount).times('1e' + baseTokenInfo.decimals)
     const quoteVol = sdk.toBig(amount).times(sdk.toBig(price)).times('1e' + quoteTokenInfo.decimals)
@@ -229,4 +256,70 @@ export function makelimitReq({
     return {
         request,
     }
+}
+
+//buy eth. ETH-USDT reversed. calc: usdt<-eth/isAtoB=false
+export function marketBuy() {
+
+}
+
+//sell eth. ETH-USDT. calc: eth->usdt/isAtoB=true
+export function marketSell() {
+
+}
+
+export function usePlaceOrder() {
+
+    const { account } = useAccount()
+
+    const { tokenMap, marketArray, } = useTokenMap()
+
+    const { exchangeInfo, } = useSystem()
+
+    const { amountMap, } = useAmount()
+
+    const { ammMap, } = useAmmMap()
+
+    //{isBuy, price, amount, base, quote, market, feeBips, }
+    const makelimitReqInHook = React.useCallback((params: ReqParams) => {
+
+        if (!exchangeInfo || !ammMap || !amountMap || !marketArray) {
+            return
+        }
+
+        let base = params.base
+
+        let quote = params.quote
+
+        let market = params.market
+
+        let ammMarket = ''
+
+        if (params.market) {
+            const result = params.market.match(/([\w,#]+)-([\w,#]+)/i);
+            if (result) {
+                [ , base, quote, ] = result
+            }
+
+            const existedMarket = getExistedMarket(marketArray, base, quote)
+
+            base = existedMarket.baseShow
+            quote = existedMarket.quoteShow
+            market = existedMarket.market
+            ammMarket = existedMarket.amm as string
+        }
+
+        const tokenAmtMap = ammMap[ ammMarket ] ? amountMap[ ammMarket ] : amountMap[ market as string ]
+
+        const fullParams: ReqParams  = {
+            ...params,
+            exchangeAddress: exchangeInfo.exchangeAddress,
+            accountId: account.accountId,
+            tokenMap,
+        }
+
+        return makelimitReq(fullParams)
+
+    }, [account, tokenMap, marketArray, exchangeInfo, ])
+
 }
