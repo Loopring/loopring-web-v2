@@ -21,7 +21,7 @@ export  const SpotView = withTranslation('common')(<C extends { [ key: string ]:
 } & WithTranslation)=>{
     const { pageTradePro } = usePageTradePro();
     const { toastOpenL, closeToastL,limitSubmit,limitTradeData,onChangeLimitEvent} = useLimit(market)
-    const [tabIndex, setTabIndex] = React.useState<TabIndex>(TabIndex.limit)
+    const [tabIndex, setTabIndex] = React.useState<TabIndex>(TabIndex.market)
     const { alertOpen, confirmOpen, toastOpen, closeToast,
         marketSubmit,marketTradeData,onChangeMarketEvent} = useMarket(market)
     return <>
