@@ -8,6 +8,7 @@ import {
     getValuePrecisionThousand,
     PriceTag,
     abbreviateNumber,
+    myLog,
 } from '@loopring-web/common-resources';
 import { Avatar, Box, Breadcrumbs, Divider, Grid, Link, Tab, Tabs, Typography } from '@mui/material';
 import { AmmPanelView } from '../AmmPanel';
@@ -90,6 +91,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
     const {forex} = store.getState().system
     const coinAIcon: any = coinJson[ coinPairInfo.myCoinA?.simpleName ];
     const coinBIcon: any = coinJson[ coinPairInfo.myCoinB?.simpleName ];
+    const precisionA = coinPairInfo['precisionA'] || undefined
+    const precisionB = coinPairInfo['precisionB'] || undefined
     // const [pageSize, setPageSize] = React.useState(0)
     const container = React.useRef(null);
     const tableHeight = RowConfig.headerRowHeight + (tabIndex === 0 ? 15 : 14) * RowConfig.rowHeight;
@@ -183,7 +186,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                     <Typography marginLeft={1 / 2} justifyContent={'center'} display={'flex'}>
                                         <Typography component={'span'} alignSelf={'right'} variant={'h5'} height={24}
                                                     lineHeight={'24px'}>
-                                            {getValuePrecisionThousand(coinPairInfo.totalA, 4)}</Typography>
+                                            {getValuePrecisionThousand(coinPairInfo.totalA, precisionA, precisionA)}</Typography>
                                         <Typography component={'span'} variant={'h5'} marginLeft={1} alignSelf={'right'}
                                                     height={24}
                                                     lineHeight={'24px'}>
@@ -224,7 +227,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                     <Typography marginLeft={1 / 2} justifyContent={'center'} display={'flex'}>
                                         <Typography variant={'h5'} component={'span'} alignSelf={'right'} height={24}
                                                     lineHeight={'24px'}>
-                                            {getValuePrecisionThousand(coinPairInfo.totalB, 4)}</Typography>
+                                            {getValuePrecisionThousand(coinPairInfo.totalB, precisionB, precisionB)}</Typography>
                                         <Typography variant={'h5'} component={'span'} marginLeft={1} alignSelf={'right'}
                                                     height={24}
                                                     lineHeight={'24px'}>
@@ -259,7 +262,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         <Grid item paddingX={2} paddingY={3} xs={4} sm={6} lg={3}>
                             <Box>
                                 <Typography variant={'h3'} component={'span'}>
-                                    {(currency === Currency.dollar ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(totalAmountValueCoinA, 2, 2)}
+                                    {(currency === Currency.dollar ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(totalAmountValueCoinA, undefined, undefined, undefined, true, { isFait: true })}
                                 </Typography>
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}>
                                     {t('label24Volume')}
@@ -270,7 +273,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         <Grid item paddingX={2} paddingY={3} xs={4} sm={6} lg={2}>
                             <Box>
                                 <Typography variant={'h3'}
-                                            component={'span'}> {coinPairInfo.APY ? coinPairInfo.APY : EmptyValueTag}%
+                                            component={'span'}> {coinPairInfo.APY ? getValuePrecisionThousand(coinPairInfo.APY, 2, 2, undefined, true) : EmptyValueTag}%
                                 </Typography>
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}>
                                     {t('labelAPR')}

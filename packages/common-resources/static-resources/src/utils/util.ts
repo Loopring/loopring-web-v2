@@ -107,7 +107,7 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     if (isFait === true) {
         if (result.isGreaterThanOrEqualTo(1)) {
             // fixed 2 decimals
-            return toBig(result.toFixed(2)).toNumber().toLocaleString('en')
+            return toBig(result.toFixed(2)).toNumber().toLocaleString('en', {minimumFractionDigits: 2})
         } else {
             return result.toNumber().toLocaleString('en', {minimumFractionDigits: 6})
         }
