@@ -34,7 +34,6 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
             setAmmActivityViewMap(makeUIAmmActivityMap(
                 {
                     ammActivityMap,
-                    type: 'AMM_MINING',
                     ammPoolActivityStatus: [AmmPoolActivityStatus.NotStarted, AmmPoolActivityStatus.InProgress]
                 }, userRewardsMapState.userRewardsMap
             ));
@@ -42,7 +41,6 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
                 makeUIAmmActivityMap(
                     {
                         ammActivityMap,
-                        type: 'AMM_MINING',
                         ammPoolActivityStatus: [AmmPoolActivityStatus.EndOfGame]
                     }, userRewardsMapState.userRewardsMap
                 ))
@@ -60,7 +58,6 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
                     makeUIAmmActivityMap(
                         {
                             ammActivityMap,
-                            type: 'AMM_MINING',
                             ammPoolActivityStatus: [AmmPoolActivityStatus.NotStarted, AmmPoolActivityStatus.InProgress]
                         }, userRewardsMapState.userRewardsMap
                     ));
@@ -68,7 +65,6 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
                     makeUIAmmActivityMap(
                         {
                             ammActivityMap,
-                            type: 'AMM_MINING',
                             ammPoolActivityStatus: [AmmPoolActivityStatus.EndOfGame]
                         }, userRewardsMapState.userRewardsMap
                     ))
