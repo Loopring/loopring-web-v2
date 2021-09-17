@@ -33,7 +33,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
 } => {
     const {walletLayer2, status: walletLayer2Status} = useWalletLayer2();
     const {status: userRewardsStatus, userRewardsMap, getUserRewards} = useUserRewards();
-    const {marketArray, addressIndex} = useTokenMap();
+    const {marketArray, addressIndex, tokenMap} = useTokenMap();
     // const {marketArray, addressIndex, tokenMap,} = store.getState().tokenMap
     const {status: ammMapStatus, ammMap, getAmmMap} = useAmmMap();
     const {getAmmLiquidity} = useAmmTotalValue()
@@ -172,10 +172,17 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
                 const totalAmount = o.totalLpAmount
                 const totalAmmValueDollar = (tokenPrices[market] || 0) * totalAmount
                 const totalAmmValueYuan = (totalAmmValueDollar || 0) * forex
+                const coinA = o.ammDetail.coinAInfo.simpleName
+                const coinB = o.ammDetail.coinBInfo.simpleName
+                const precisionA = tokenMap ? tokenMap[coinA].precision : undefined
+                const precisionB = tokenMap ? tokenMap[coinB].precision : undefined
+
                 return ({
                     ...o,
                     totalAmmValueDollar,
                     totalAmmValueYuan,
+                    precisionA,
+                    precisionB
                 })
             })
             return formattedPoolRow as any;
