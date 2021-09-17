@@ -79,7 +79,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
             _handleError(value);
             setsValue(value);
             if (handleCountChange) {
-                handleCountChange({...inputData, ...{tradeValue: value}} as any, ref)
+                handleCountChange({...inputData, ...{tradeValue: value}} as any,_name, ref)
             }
             //debounceCount({...inputData, ...{tradeValue: value}})
         }
@@ -99,7 +99,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
     // const coinInfo: any = coinMap[ belong ] ? coinMap[ belong ] : {};
     // const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;
     // formatValue(sValue)
-    return <> <IWrap size={size} component={'div'} ref={ref}>
+    return <> <IWrap size={size} component={'div'} ref={ref} >
         <Grid container component={'div'} className={'label-wrap'} justifyContent={'space-between'}
               paddingBottom={1 / 2}>
             <Grid item xs={6}><Typography fontSize={'inherit'} color={'inherit'} className={'main-label'}>{label}</Typography></Grid>
@@ -143,7 +143,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
             <Grid order={order === 'left' ? 1 : 2} flex={1} item className={`input-wrap input-wrap-${order}`}>
                 <IInput ref={inputEle} onValueChange={_handleContChange} value={
                     typeof sValue === 'undefined' ? '' : sValue
-                } allowNegativeValue={false}
+                } allowNegativeValue={false}   name={name}
                         disabled={!(!disabled || belong)}
                         placeholder={placeholderText}
                         aria-placeholder={placeholderText} aria-label={label} decimalsLimit={10000000}/>

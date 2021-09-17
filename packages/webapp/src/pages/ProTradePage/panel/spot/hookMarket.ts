@@ -6,7 +6,14 @@ import * as sdk from 'loopring-sdk';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 import { OrderStatus, sleep } from 'loopring-sdk';
 import { walletLayer2Service } from 'services/socket';
-import { MarketTradeData, SwapData, SwapTradeData, TradeBaseType } from '@loopring-web/component-lib';
+import {
+    LimitTradeData,
+    MarketTradeData,
+    SwapData,
+    SwapTradeData,
+    TradeBaseType,
+    TradeProType, useSettings
+} from '@loopring-web/component-lib';
 import { usePageTradePro } from 'stores/router';
 import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
@@ -24,26 +31,45 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
     const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
     const {toastOpen, setToastOpen, closeToast} = useToast();
     const {account, status: accountStatus} = useAccount();
-    const [marketTradeData, setMarketTradeData] = React.useState<MarketTradeData<IBData<C>> | undefined>(undefined);
-    // const limitTradeData:LimitTradeData<IBData<any>> = {
-    //     sell: {belong: 'ETH'} as IBData<any>,
-    //     buy: {belong: 'LRC'} as IBData<any>,
-    //     price: {count: 0},
-    //     type: TradeProType.sell
-    // }
-    const {exchangeInfo} = useSystem();
-
-
-    const [isMarketLoading, setIsMarketLoading] = React.useState(false)
-
+    const {slippage} =useSettings()
+    // const [marketTradeData, setMarketTradeData] = React.useState<MarketTradeData<IBData<C>> | undefined>(undefined);
     const {
         pageTradePro,
         updatePageTradePro,
         __DAYS__,
         __SUBMIT_LOCK_TIMER__,
         __TOAST_AUTO_CLOSE_TIMER__
-    } = usePageTradePro();
+    } = usePageTradePro();    // @ts-ignore
+    const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
+    const walletMap = pageTradePro.tradeCalcProData?.walletMap ?? {}
+
+    const [marketTradeData, setMarketTradeData] = React.useState<MarketTradeData<IBData<any>>>(
+        pageTradePro.market === market ? {
+            base: {
+                belong: baseSymbol,
+                balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
+            } as IBData<any>,
+            quote: {
+                belong: quoteSymbol,
+                balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
+            } as IBData<any>,
+            slippage: slippage&&slippage!=='N'?slippage:0.5,
+            type: TradeProType.sell
+        } : {
+            base: {belong: baseSymbol} as IBData<any>,
+            quote: {belong: quoteSymbol} as IBData<any>,
+            slippage: slippage&&slippage!=='N'?slippage:0.5,
+            type: TradeProType.sell
+        }
+    )
+    const {exchangeInfo} = useSystem();
+
+
+    const [isMarketLoading, setIsMarketLoading] = React.useState(false)
+
+
     const onChangeMarketEvent = async (tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType): Promise<void> => {
+        myLog(`onChangeMarketEvent tradeData:`, tradeData, 'formType',formType)
 
         myLog('handleSwapPanelEvent...', tradeData)
 

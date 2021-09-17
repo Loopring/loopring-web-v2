@@ -10,11 +10,9 @@ import { myLog } from "@loopring-web/common-resources";
 import { networkUpdate } from 'services/account/networkUpdate';
 import { checkAccount } from 'services/account/checkAccount';
 import { REFRESH_RATE } from 'defs/common_defs';
-import { useWalletLayer2 } from 'stores/walletLayer2';
 import { resetLayer12Data } from './services/account/resetAccount';
 
 import store from 'stores'
-import { accountServices } from 'services/account/accountServices';
 
 export function useConnect({state}: { state: keyof typeof SagaStatus }) {
     const {
@@ -25,7 +23,7 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
         setShouldShow,
         status: accountStatus
     } = useAccount();
-    const {updateWalletLayer2, resetLayer2} = useWalletLayer2()
+    // const {updateWalletLayer2, resetLayer2} = useWalletLayer2()
 
     const {updateSystem} = useSystem();
     const {setShowConnect} = useOpenModals();

@@ -7,7 +7,6 @@ import {
     EmptyValueTag,
     getValuePrecisionThousand,
     IBData,
-    myLog,
     SlippageTolerance,
     TradeCalcProData
 } from '@loopring-web/common-resources';
@@ -47,11 +46,7 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         onChangeEvent,
         // ...rest
     } = props
-    const _handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
-        // const focus: 'buy' | 'sell' = _ref?.current === buyRef.current ? 'buy' : 'sell';
 
-        myLog('user input market:',ibData, ' _ref:', _ref)
-    }, [tradeData]);
 
     const {
         quoteRef,
@@ -66,11 +61,12 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         propsBase,
         propsQuote,
         onPercentage,
+        handleCountChange,
         selectedPercentage,
     } = useCommon({
+        type: 'market',
         ...props as any,
         tradeData,
-        handleCountChange: _handleCountChange,
         onChangeEvent,
         i18nKey: tradeMarketI18nKey ? tradeMarketI18nKey : 'labelProMarketBtn',
         tradeBtnBaseStatus: tradeMarketBtnStatus
@@ -113,6 +109,7 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
                 <InputCoin<any, I, CoinInfo<I>> ref={baseRef as any} name={'base'} disabled={getDisabled()} {...{
                     ...propsBase,
                     // maxAllow:false,
+                    handleCountChange,
                     isHideError: true,
                     inputData: tradeData ? tradeData.base : {} as any,
                     coinMap: tradeCalcProData && tradeCalcProData.coinInfoMap ? tradeCalcProData.coinInfoMap : {} as CoinMap<I, CoinInfo<I>>
@@ -141,6 +138,7 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
                 <InputCoin<any, I, CoinInfo<I>> ref={quoteRef} name={'quote'} disabled={getDisabled()}  {...{
                     ...propsQuote,
                     isHideError: true,
+                    handleCountChange,
                     inputData: tradeData ? tradeData.quote : {} as any,
                     coinMap: tradeCalcProData && tradeCalcProData.coinInfoMap ? tradeCalcProData.coinInfoMap : {} as CoinMap<I, CoinInfo<I>>
                 }} />
