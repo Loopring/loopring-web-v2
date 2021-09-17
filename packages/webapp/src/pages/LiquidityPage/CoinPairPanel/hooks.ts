@@ -301,7 +301,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
     }, [getUserAmmPoolTxs, getRecentAmmPoolTxs, lpTokenList])
 
     const walletLayer2DoIt = React.useCallback(() => {
-        const {walletMap: _walletMap} = makeWalletLayer2();
+        const {walletMap: _walletMap} = makeWalletLayer2(false);
 
         setWalletMap(_walletMap as WalletMapExtend<any>)
         if (_walletMap) {
