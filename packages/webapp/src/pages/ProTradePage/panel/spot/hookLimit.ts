@@ -3,6 +3,7 @@ import { useToast } from 'hooks/common/useToast';
 import { IBData, MarketType, myLog } from '@loopring-web/common-resources';
 import { LimitTradeData, TradeBaseType, TradeProType } from '@loopring-web/component-lib';
 import { usePageTradePro } from '../../../../stores/router';
+import { walletLayer2Service } from '../../../../services/socket';
 
 
 export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType): {
@@ -35,6 +36,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
     )
     const {toastOpen, setToastOpen, closeToast} = useToast();
     const limitSubmit = () => {
+        walletLayer2Service.sendUserUpdate()
         return
     }
     const onChangeLimitEvent = async (tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType): Promise<void> => {
