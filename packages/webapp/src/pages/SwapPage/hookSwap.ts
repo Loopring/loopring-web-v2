@@ -256,9 +256,36 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
 
     }, [account.readyState, pageTradeLite, tokenMap, tradeData, setIsSwapLoading, setToastOpen, setTradeData])
     const btnLabelAccountActive = React.useCallback((): string | undefined => {
+
+        if (!tokenMap) {
+            return
+        }
+
+        const sellToken = tokenMap[tradeCalcData.coinSell as string]
+        const buyToken = tokenMap[tradeCalcData.coinBuy as string]
+
         let {calcTradeParams} = pageTradeLite;
-        const validAmt = !!(calcTradeParams?.amountBOut && sellMinAmt
+
+        if (!sellToken || !buyToken || !calcTradeParams) {
+            return
+        }
+
+        let validAmt = !!(calcTradeParams?.amountBOut && sellMinAmt
             && sdk.toBig(calcTradeParams?.amountBOut).gte(sdk.toBig(sellMinAmt)));
+
+        const sellExceed = sdk.toBig(sellToken?.orderAmounts?.maximum).lt(calcTradeParams?.amountS)
+
+        const buyExceed = sdk.toBig(buyToken?.orderAmounts?.maximum).lt(calcTradeParams?.amountBOutSlip.minReceived)
+
+        if (sellExceed || buyExceed) {
+            validAmt = false
+        }
+
+        const sellMaxVal = sdk.toBig(sellToken?.orderAmounts?.maximum).div('1e' + sellToken.decimals)
+        const buyMaxVal = sdk.toBig(buyToken?.orderAmounts?.maximum).div('1e' + buyToken.decimals)
+
+        // myLog('sellExceed:', sellToken.symbol, sellExceed, sellMaxVal.toString(), ' buyExceed:', buyToken.symbol, buyExceed, buyMaxVal.toString())
+        
         if (isSwapLoading) {
             setSwapBtnStatus(TradeBtnStatus.LOADING)
             return undefined
@@ -271,10 +298,19 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
                     || tradeData?.buy.tradeValue === 0) {
                     setSwapBtnStatus(TradeBtnStatus.DISABLED)
                     return 'labelEnterAmount';
+                } else if (sellExceed) {
+                    const maxOrderSize = sellMaxVal + ' ' + tradeData?.sell.belong;
+                    // myLog('sell maxOrderSize:', maxOrderSize)
+                    setSwapBtnStatus(TradeBtnStatus.DISABLED)
+                    return `labelLimitMax,${maxOrderSize}`;
+                } else if (buyExceed) {
+                    const maxOrderSize = buyMaxVal + ' ' + tradeData?.buy.belong;
+                    // myLog('buy maxOrderSize:', maxOrderSize)
+                    setSwapBtnStatus(TradeBtnStatus.DISABLED)
+                    return `labelLimitMax,${maxOrderSize}`;
                 } else if (validAmt || sellMinAmt === undefined) {
                     setSwapBtnStatus(TradeBtnStatus.AVAILABLE)
                     return undefined
-
                 } else {
                     const quote = tradeData?.buy.belong;
                     const minOrderSize = VolToNumberWithPrecision(sellMinAmt, quote as any) + ' ' + tradeData?.buy.belong;
@@ -627,13 +663,13 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
 
                 buyMinAmtInfo = amount[ _tradeData[ 'buy' ].belong as string ];
                 sellMinAmtInfo = amount[ _tradeData[ 'sell' ].belong as string ];
-                myLog(`buyMinAmtInfo,sellMinAmtInfo: AMM-${market}, ${_tradeData[ 'buy' ].belong}`, buyMinAmtInfo, sellMinAmtInfo)
+                // myLog(`buyMinAmtInfo,sellMinAmtInfo: AMM-${market}, ${_tradeData[ 'buy' ].belong}`, buyMinAmtInfo, sellMinAmtInfo)
 
                 takerRate = buyMinAmtInfo ? buyMinAmtInfo.userOrderInfo.takerRate : 0
                 feeBips = ammMap[ ammMarket ] ? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
                 totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString();
                 setSellMinAmt(buyMinAmtInfo?.userOrderInfo.minAmount)
-                myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
+                // myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
             }
             const calcTradeParams = sdk.getOutputAmount({
                 input: input.toString(),
