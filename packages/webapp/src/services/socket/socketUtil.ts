@@ -61,10 +61,10 @@ export class LoopringSocket {
             // const bids = genAB(data['bids'], true)
             // const asks = genAB(data['asks'])
             const timestamp = Date.now()
-           const _data = getMidPrice({_asks:data['asks'], _bids:data['bids']})
+           // const _data = getMidPrice({_asks:data['asks'], _bids:data['bids']})
             orderbookService.sendOrderbook({
                 [  topic.market ]: {
-                    ..._data,
+                    ...data,
                     timestamp: timestamp,
                     symbol: topic.market} as any
             })
