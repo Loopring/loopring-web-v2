@@ -20,7 +20,7 @@ import { useTokenMap } from 'stores/token';
 import { useSystem } from 'stores/system';
 import { useTranslation } from 'react-i18next';
 
-export const hookMarket = <C extends { [ key: string ]: any }>(market:MarketType):{
+export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType):{
     [key: string]: any;
     // market: MarketType|undefined;
     // marketTicker: MarketBlockProps<C> |undefined,
