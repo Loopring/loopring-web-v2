@@ -102,7 +102,7 @@ const columnMode = ({
                     <Box {...bindHover(popState)}>
                         <Typography
                             component={'span'} style={{ cursor: 'pointer' }}> {
-                                typeof totalAmmValueDollar === 'undefined' ? EmptyValueTag : (currency === 'USD' ? PriceTag.Dollar + getValuePrecisionThousand(totalAmmValueDollar, 2, 2) : PriceTag.Yuan + getValuePrecisionThousand(totalAmmValueYuan, 2, 2))}
+                                typeof totalAmmValueDollar === 'undefined' ? EmptyValueTag : (currency === 'USD' ? PriceTag.Dollar + getValuePrecisionThousand(totalAmmValueDollar, undefined, undefined, undefined, true, { isFait: true, floor: true }) : PriceTag.Yuan + getValuePrecisionThousand(totalAmmValueYuan, undefined, undefined, undefined, true, { isFait: true, floor: true }))}
                         </Typography>
                     </Box>
                     <PopoverPure
@@ -202,7 +202,7 @@ const columnMode = ({
             if (!row.ammDetail || !row.ammDetail.coinAInfo) {
                 return <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}/>
             }
-            const {ammDetail: {coinAInfo, coinBInfo}, feeA, feeB} = row;
+            const {ammDetail: {coinAInfo, coinBInfo}, feeA, feeB, precisionA , precisionB} = row as any;
             return <Box width={'100%'} height={'100%'} display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
                 {/* <TypogStyle variant={'body1'} component={'span'} color={'textPrimary'}>
                     {feeDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? 'US' + PriceTag.Dollar + getThousandFormattedNumbers(feeDollar)
@@ -211,14 +211,14 @@ const columnMode = ({
                 <Typography variant={'body2'} component={'p'} color={'textPrimary'} fontFamily={'Roboto'}>
 
                     <Typography component={'span'}
-                                >{getValuePrecisionThousand(feeA)}</Typography>
+                                >{getValuePrecisionThousand(feeA, undefined, undefined, precisionA, false, { floor: true })}</Typography>
                     <Typography component={'span'}
                                 >{` ${coinAInfo?.simpleName as string}`}</Typography>
                 </Typography>
                 <Typography variant={'body2'} component={'p'} color={'textPrimary'} marginX={1 / 2}>+</Typography>
                 <Typography variant={'body2'} component={'p'} color={'textPrimary'} fontFamily={'Roboto'}>
                     <Typography component={'span'}
-                                >{getValuePrecisionThousand(feeB)}</Typography>
+                                >{getValuePrecisionThousand(feeB, undefined, undefined, precisionB, false, { floor: true } )}</Typography>
                     <Typography component={'span'}
                                 >{` ${coinBInfo?.simpleName as string}` }</Typography>
 

@@ -50,7 +50,7 @@ export const AssetTitle = withTranslation('common')(({
                         marginTop={1}>
                 <Typography component={'span'} paddingRight={1} variant={'h1'}> {assetInfo.priceTag} </Typography>
                 {!hideL2Assets && assetInfo.totalAsset ? <Typography component={'span'}
-                                      variant={'h1'}>{assetInfo.totalAsset ? getValuePrecisionThousand(assetInfo.totalAsset, 2, 2) : 0.00}</Typography> :
+                                      variant={'h1'}>{assetInfo.totalAsset ? getValuePrecisionThousand(assetInfo.totalAsset, 2, 2, 2, true, { floor: true }) : '0.00'}</Typography> :
                     <Typography component={'span'}
                                 variant={'h1'}>&#10033;&#10033;&#10033;&#10033;.&#10033;&#10033;</Typography>}
             </Typography>
