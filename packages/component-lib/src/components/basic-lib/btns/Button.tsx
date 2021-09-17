@@ -178,6 +178,7 @@ const QRStyle = styled(Box)`
     //z-index: 10;
   }
     &:after{
+      pointer-events: none;
       content: '';
       position: absolute;
       display: block;
@@ -199,7 +200,7 @@ export const QRButtonStyle = ({onQRClick, t}: {
     onQRClick?: () => void
 } & WithTranslation) => {
     return <QRStyle alignSelf={'flex-start'} marginTop={-1 / 2 * 7} marginLeft={1.5} position={'absolute'}>
-        <IconButton  aria-label={t('labelBack')} size={'medium'} onClick={() => {
+        <IconButton aria-label={t('labelBack')} size={'medium'} onClick={() => {
             onQRClick && onQRClick()
         }}>
             <QRIcon htmlColor={'var(--color-text-third)'}/>
