@@ -312,7 +312,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
     }, [makeWalletLayer2, getUserAmmPoolTxs, makeMyAmmMarketArray, marketArray, pair, getRecentAmmPoolTxs])
 
     const getPairList = React.useCallback(async (coinPairInfo: any) => {
-        myLog('***  getPairList   coinPairInfo:', coinPairInfo)
+        // myLog('***  getPairList   coinPairInfo:', coinPairInfo)
         if (LoopringAPI.exchangeAPI && coinPairInfo.myCoinA && coinPairInfo.myCoinB) {
             const {myCoinA, myCoinB} = coinPairInfo
             const market = `${myCoinA?.name}-${myCoinB?.name}`
@@ -350,9 +350,16 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
             ammDetail: _coinPairInfo,
         } = makeAmmDetailExtendsActivityMap({ammMap, coinMap, ammActivityMap, market, coinA, coinB, })
 
-        myLog('-----> _coinPairInfo:', market, ammMap, coinMap, ammActivityMap, _coinPairInfo)
+        // myLog('-----> _coinPairInfo:', market, ammMap, coinMap, ammActivityMap, _coinPairInfo)
 
-        setCoinPairInfo(_coinPairInfo ? _coinPairInfo : {})
+        const coinPairInfoWithPrecision = {
+            ..._coinPairInfo,
+            precisionA: tokenMap ? tokenMap[_coinPairInfo.coinA].precision : undefined,
+            precisionB: tokenMap ? tokenMap[_coinPairInfo.coinB].precision : undefined,
+        }
+
+        // setCoinPairInfo(_coinPairInfo ? _coinPairInfo : {})
+        setCoinPairInfo(coinPairInfoWithPrecision ? coinPairInfoWithPrecision : {})
 
         getPairList(_coinPairInfo)
 
@@ -360,7 +367,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
             const coinAInfo = coinMap[ coinA ]
             const coinBInfo = coinMap[ coinB ]
 
-            myLog('coinAInfo:', coinAInfo, ' coinBInfo:', coinBInfo)
+            // myLog('coinAInfo:', coinAInfo, ' coinBInfo:', coinBInfo)
 
             setPair({
                 coinAInfo,
@@ -389,10 +396,18 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
                         })
 
                         _tradeFloat = makeTickView(tickMap[ realMarket ] ? tickMap[ realMarket ] : {})
-                        myLog('........close:', _tradeFloat, close)
+                        // myLog('........close:', _tradeFloat, close)
                         setStobPair({stob,btos})
                         setTradeFloat({..._tradeFloat, close: close} as TradeFloat);
-                        setCoinPairInfo({..._coinPairInfo})
+
+                        const coinPairInfoWithPrecision = {
+                            ..._coinPairInfo,
+                            precisionA: tokenMap ? tokenMap[_coinPairInfo.coinA].precision : undefined,
+                            precisionB: tokenMap ? tokenMap[_coinPairInfo.coinB].precision : undefined,
+                        }
+
+                        // setCoinPairInfo({..._coinPairInfo})
+                        setCoinPairInfo({...coinPairInfoWithPrecision})
                         setSnapShotData(_snapShotData)
 
                     }

@@ -133,7 +133,7 @@ const TrendChart = ({
     return (
         <ResponsiveContainer debounce={100} width={'95%'}>
             <ComposedChart data={renderData} onMouseMove={showTooltip && handleMousemove}
-                           onMouseLeave={handleMouseLeave}>
+                        onMouseLeave={showTooltip && handleMouseLeave}>
                 <defs>
                     <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                         {/* <stop offset="5%" stopColor="rgba(1, 187, 168, 0.4)" stopOpacity={0.8}/> */}

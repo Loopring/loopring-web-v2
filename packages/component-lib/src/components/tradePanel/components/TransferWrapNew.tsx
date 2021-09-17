@@ -72,7 +72,7 @@ export const TransferWrapNew = <T extends IBData<I>,
     const getTokenFee = React.useCallback((token: string) => {
         const raw = toggleData.find(o => o.key === token)?.fee
         // myLog('......raw:', raw, typeof raw, getValuePrecisionThousand(raw))
-        return getValuePrecisionThousand(raw)
+        return getValuePrecisionThousand(raw, undefined, undefined, undefined, false, { isTrade: true, floor: false })
     }, [toggleData])
     
     const debounceAddress = React.useCallback(_.debounce(({address}: any) => {
