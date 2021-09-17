@@ -1,7 +1,7 @@
 import { AmmCard, AmmProps, EmptyDefault } from '@loopring-web/component-lib';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { AmmCardProps, AmmJoinData, AmmInData, AmmExitData, IBData } from '@loopring-web/common-resources';
+import { AmmCardProps, AmmJoinData, AmmInData, AmmExitData, IBData, myLog } from '@loopring-web/common-resources';
 import { Box, Grid, Typography } from '@mui/material';
 import styled from '@emotion/styled'
 import { useAmmMiningUI } from './hook';
@@ -91,6 +91,7 @@ export const MiningPage = withTranslation('common')(<T extends AmmJoinData<C ext
     //     setTabIndex(newValue);
     // }
     const jointAmmViewMap = [...ammActivityViewMap, ...ammActivityPastViewMap]
+    const filteredJointAmmViewMap = jointAmmViewMap.filter(o => o.activity.ruleType !== 'SWAP_VOLUME_RANKING')
 
     return <WrapperStyled>
         {/* <Tabs value={tabIndex}
@@ -108,7 +109,7 @@ export const MiningPage = withTranslation('common')(<T extends AmmJoinData<C ext
         >{t('labelMiningPageTitle')}</Typography>
         <Grid container spacing={5}>
             <AmmList
-                ammActivityViewMap={jointAmmViewMap}
+                ammActivityViewMap={filteredJointAmmViewMap}
                 ammRewardRecordList={ammRewardRecordList}
                 getLiquidityMining={getLiquidityMining}
             />

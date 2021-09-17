@@ -60,7 +60,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             amountYuan,
             // isNew,
             APR,
-            activity: {duration, myRewards, rewardToken, isPass},
+            activity: {duration, myRewards, rewardToken, isPass, ruleType, status, totalRewards, rewardTokenDollar, rewardTokenYuan},
             handleClick,
             popoverIdx,
             totalA,
@@ -79,21 +79,34 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             coinBPriceYuan: number,
             ammRewardRecordList: RewardItem[],
             getLiquidityMining: (market: string, size?: number) => Promise<void> }, ref: React.ForwardedRef<any>) => {
-        const { rewardValue, rewardValue2, coinAPriceDollar, coinBPriceDollar, coinAPriceYuan, coinBPriceYuan } = rest
+        const isOrderbook = ruleType === 'ORDERBOOK_MINING'
+        const isAmm = ruleType === 'AMM_MINING'
+        const { rewardValue, rewardValue2, coinAPriceDollar, coinBPriceDollar, coinAPriceYuan, coinBPriceYuan, rewardToken2 } = rest
         // const coinAIconHasLoaded = useImage(coinAInfo?.icon ? coinAInfo?.icon : '').hasLoaded;
         // const coinBIconHasLoaded = useImage(coinBInfo?.icon ? coinBInfo?.icon : '').hasLoaded;
         const {coinJson, currency} = useSettings();
         const coinAIcon: any = coinJson[ coinAInfo?.simpleName ] || '';
         const coinBIcon: any = coinJson[ coinBInfo?.simpleName ] || '';
-        const market = `${coinAInfo.simpleName}-${coinBInfo.simpleName}`
+        // const market = `${coinAInfo.simpleName}-${coinBInfo.simpleName}`
         const pair = `${coinAInfo.simpleName} / ${coinBInfo.simpleName}`
 
-        const popoverState = usePopupState({variant: 'popover', popupId: `popup-poolsTable-${popoverIdx}`})
+        const totalAmmRewardDollar = PriceTag.Dollar + getValuePrecisionThousand((rewardValue || 0) * (coinAPriceDollar || 0) + (rewardValue2 || 0) * (coinBPriceDollar || 0), undefined, undefined, 2, true, { isFait: true })
+        const totalAmmRewardYuan = PriceTag.Yuan + getValuePrecisionThousand((rewardValue || 0) * (coinAPriceYuan || 0) + (rewardValue2 || 0) * (coinBPriceYuan || 0), undefined, undefined, 2, true, { isFait: true })
+        // const orderbookRewardFaitDollar = rewardToken.simpleName === coinAInfo.simpleName ? coinAPriceDollar : coinBPriceDollar
+        // const orderbookRewardFaitYuan = rewardToken.simpleName === coinAInfo.simpleName ? coinAPriceYuan : coinBPriceYuan
+        const orderbookRewardDollar = PriceTag.Dollar + getValuePrecisionThousand((totalRewards || 0) * (rewardTokenDollar || 0), undefined, undefined, 2, true, { isFait: true })
+        const orderbookRewardYuan = PriceTag.Yuan + getValuePrecisionThousand((totalRewards || 0) * (rewardTokenYuan || 0), undefined, undefined, 2, true, { isFait: true })
+        // console.log({totalRewards, rewardTokenYuan}, rewardToken.simpleName, orderbookRewardDollar, ruleType)
+
+        const popLiquidityState = usePopupState({variant: 'popover', popupId: `popup-totalLiquidty-${popoverIdx}`})
+        const popTotalRewardState = usePopupState({variant: 'popover', popupId: `popup-totalReward-${popoverIdx}`})
+        const popMyAmmValueState = usePopupState({variant: 'popover', popupId: `popup-myAmmValue-${popoverIdx}`})
+        
         return <Card ref={ref}>
             <CardContent>
                 <BoxStyled display={'flex'} flexDirection={'row'} justifyContent={'space-between'}
                            alignItems={'center'}>
-                    <Typography onClick={() => getLiquidityMining(market, 120)} variant={'h3'} component={'span'} color={'textPrimary'} fontFamily={'Roboto'}>
+                    <Typography variant={'h3'} component={'span'} color={'textPrimary'} fontFamily={'Roboto'}>
                         {pair}
                     </Typography>
                     <Box display={'flex'} flexDirection={'row'} justifyContent={'flex-start'} alignItems={'center'} marginRight={-1}>
@@ -171,12 +184,12 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                 </DetailWrapperStyled>
 
 
-                <DetailWrapperStyled>
+                {isAmm && <DetailWrapperStyled>
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                         {t('labelMiningLiquidity')}
                     </Typography>
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
-                        <Typography {...bindHover(popoverState)} style={{ cursor: 'pointer', borderBottom: '1px dashed var(--color-text-primary)' }}>
+                        <Typography {...bindHover(popLiquidityState)} style={{ cursor: 'pointer', borderBottom: '1px dashed var(--color-text-primary)' }}>
                         {t('labelLiquidity') + ' ' +
                                 amountDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getValuePrecisionThousand(amountDollar, undefined, undefined, undefined, true, { isFait: true })
                                     : PriceTag.Yuan + getValuePrecisionThousand(amountYuan, undefined, undefined, undefined, true, { isFait: true })}
@@ -187,7 +200,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                         </Typography>
                         <PopoverPure
                             className={'arrow-top-center'}
-                            {...bindPopper(popoverState)}
+                            {...bindPopper(popLiquidityState)}
                             anchorOrigin={{
                                 vertical: 'top',
                                 horizontal: 'center',
@@ -270,42 +283,231 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                 </Box>
                             </PopoverPure>
                     </Typography>
-                </DetailWrapperStyled>
+                </DetailWrapperStyled>}
 
 
                 <DetailWrapperStyled>
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                         {t('labelMiningActivityReward')}
                     </Typography>
-                    <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
+                    <Typography {...bindHover(popTotalRewardState)} component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400} style={{ borderBottom: totalRewards ? '1px dashed var(--color-text-primary)' : 'none' }}>
                         {/* {getValuePrecisionThousand(((rewardValue && Number.isFinite(rewardValue) ? rewardValue : 0) + (rewardValue2 && Number.isFinite(rewardValue2) ? rewardValue2 : 0)), 2, 2)} */}
-                        {currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan}
-                        {rewardValue && Number.isFinite(rewardValue) ? getValuePrecisionThousand((rewardValue || 0) * ((currency === 'USD' ? coinAPriceDollar : coinAPriceYuan)|| 0), undefined, undefined, 2, true, { isFait: true }) : EmptyValueTag}
+                        {/* {rewardValue && Number.isFinite(rewardValue)
+                            ? currency === 'USD' ? totalAmmRewardDollar : totalAmmRewardYuan
+                            : EmptyValueTag
+                        } */}
+                        {isOrderbook 
+                            ? currency === 'USD'
+                                ? orderbookRewardDollar : orderbookRewardYuan
+                            : isAmm
+                                ? currency === 'USD'
+                                    ? totalAmmRewardDollar
+                                    : totalAmmRewardYuan
+                            : currency === 'USD'
+                                ? orderbookRewardDollar : orderbookRewardYuan
+                        }
+                        
+                        {/* {rewardValue2 && Number.isFinite(rewardValue2)
+                            ? (currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand((rewardValue2 || 0) * ((currency === 'USD' ? coinBPriceDollar : coinBPriceYuan)|| 0), undefined, undefined, 2, true, { isFait: true })
+                            : EmptyValueTag
+                        } */}
                     </Typography>
+                    <PopoverPure
+                        className={'arrow-top-center'}
+                        {...bindPopper(popTotalRewardState)}
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                        transformOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                        }}>
+                            <Box padding={1.5} paddingLeft={1}>
+                                <Typography component={'span'} display={'flex'} flexDirection={'row'}
+                                    justifyContent={'space-between'} alignItems={'center'}
+                                    style={{ textTransform: 'capitalize' }} color={'textPrimary'}>
+                                    <Box component={'span'} className={'logo-icon'} display={'flex'}
+                                        height={'var(--list-menu-coin-size)'}
+                                        width={'var(--list-menu-coin-size)'} alignItems={'center'}
+                                        
+                                        justifyContent={'flex-start'}>
+                                        {coinAIcon ?
+                                            <AvatarCoinStyled imgx={coinAIcon.x} imgy={coinAIcon.y}
+                                                imgheight={coinAIcon.h}
+                                                imgwidth={coinAIcon.w} size={20}
+                                                variant="circular"
+                                                style={{ marginTop: 2 }}
+                                                alt={coinAInfo.simpleName as string}
+                                                src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'} />
+                                            :
+                                            <Avatar variant="circular" alt={coinAInfo.simpleName as string}
+                                                style={{
+                                                    height: 'var(--list-menu-coin-size))',
+                                                    width: 'var(--list-menu-coin-size)'
+                                                }}
+                                                src={'static/images/icon-default.png'} />
+                                        }
+                                        <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} marginLeft={1 / 2}
+                                            height={20}
+                                            lineHeight={'20px'}>
+                                            {coinAInfo.simpleName}
+                                        </Typography>
+                                    </Box>
+                                        
+                                    <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} height={20} marginLeft={10}
+                                        lineHeight={'20px'}>
+                                        {getValuePrecisionThousand((isOrderbook ? totalRewards : rewardValue), undefined, undefined, precisionA, false, {floor: true})}
+                                        &nbsp;
+                                        {coinAInfo.simpleName}
+                                    </Typography>
+                                </Typography>
+                                {rewardToken2 && (
+                                    <Typography component={'span'} display={'flex'} flexDirection={'row'}
+                                        justifyContent={'space-between'} alignItems={'center'} marginTop={1 / 2}
+                                        style={{ textTransform: 'capitalize' }}>
+                                        <Box component={'span'} className={'logo-icon'} display={'flex'}
+                                            height={'var(--list-menu-coin-size)'}
+                                            width={'var(--list-menu-coin-size)'} alignItems={'center'}
+                                            justifyContent={'flex-start'}>{coinBIcon ?
+                                                <AvatarCoinStyled style={{ marginTop: 2 }} imgx={coinBIcon.x} imgy={coinBIcon.y}
+                                                    imgheight={coinBIcon.h}
+                                                    imgwidth={coinBIcon.w} size={20}
+                                                    variant="circular"
+                                                    alt={coinBInfo.simpleName as string}
+                                                    src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'} />
+                                                : <Avatar variant="circular" alt={coinBInfo.simpleName as string}
+                                                    style={{
+                                                        height: 'var(--list-menu-coin-size)',
+                                                        width: 'var(--list-menu-coin-size)'
+                                                    }}
+                                                    src={'static/images/icon-default.png'} />}
+                                            <Typography variant={'body2'} color={'var(--color-text-primary)'} component={'span'} marginRight={5} marginLeft={1 / 2} alignSelf={'right'}
+                                                height={20}
+                                                lineHeight={'20px'}>
+                                                {coinBInfo.simpleName}
+                                            </Typography>            
+                                        </Box>
+                                            
+                                        <Typography variant={'body2'} color={'var(--color-text-primary)'} component={'span'} height={20}
+                                            marginLeft={10}
+                                            lineHeight={'20px'}>
+                                            {getValuePrecisionThousand(rewardValue2, undefined, undefined, precisionB, false, {floor: true})}
+                                            &nbsp;
+                                            {coinBInfo.simpleName}
+                                        </Typography>
+                                    </Typography>
+                                )}
+                                
+                            </Box>
+                        </PopoverPure>
+                    
                 </DetailWrapperStyled>
 
 
-                <DetailWrapperStyled>
+                {isAmm && <DetailWrapperStyled>
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                         {t('labelMiningMyShare')}
                     </Typography>
-                    <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
+                    <Typography {...bindHover(popMyAmmValueState)} component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
                         --
                     </Typography>
-                </DetailWrapperStyled>
-
+                    <PopoverPure
+                        className={'arrow-top-center'}
+                        {...bindPopper(popMyAmmValueState)}
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                        transformOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                        }}>
+                            <Box padding={1.5} paddingLeft={1}>
+                                <Typography component={'span'} display={'flex'} flexDirection={'row'}
+                                    justifyContent={'space-between'} alignItems={'center'}
+                                    style={{ textTransform: 'capitalize' }} color={'textPrimary'}>
+                                    <Box component={'span'} className={'logo-icon'} display={'flex'}
+                                        height={'var(--list-menu-coin-size)'}
+                                        width={'var(--list-menu-coin-size)'} alignItems={'center'}
+                                        
+                                        justifyContent={'flex-start'}>
+                                        {coinAIcon ?
+                                            <AvatarCoinStyled imgx={coinAIcon.x} imgy={coinAIcon.y}
+                                                imgheight={coinAIcon.h}
+                                                imgwidth={coinAIcon.w} size={20}
+                                                variant="circular"
+                                                style={{ marginTop: 2 }}
+                                                alt={coinAInfo.simpleName as string}
+                                                src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'} />
+                                            :
+                                            <Avatar variant="circular" alt={coinAInfo.simpleName as string}
+                                                style={{
+                                                    height: 'var(--list-menu-coin-size))',
+                                                    width: 'var(--list-menu-coin-size)'
+                                                }}
+                                                src={'static/images/icon-default.png'} />
+                                        }
+                                        <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} marginLeft={1 / 2}
+                                            height={20}
+                                            lineHeight={'20px'}>
+                                            {coinAInfo.simpleName}
+                                        </Typography>
+                                    </Box>
+                                        
+                                    <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} height={20} marginLeft={10}
+                                        lineHeight={'20px'}>
+                                        {/* TODO: find myshare value */}
+                                        {getValuePrecisionThousand(0, undefined, undefined, precisionA, false, {floor: true})}
+                                    </Typography>
+                                </Typography>
+                                    <Typography component={'span'} display={'flex'} flexDirection={'row'}
+                                        justifyContent={'space-between'} alignItems={'center'} marginTop={1 / 2}
+                                        style={{ textTransform: 'capitalize' }}>
+                                        <Box component={'span'} className={'logo-icon'} display={'flex'}
+                                            height={'var(--list-menu-coin-size)'}
+                                            width={'var(--list-menu-coin-size)'} alignItems={'center'}
+                                            justifyContent={'flex-start'}>{coinBIcon ?
+                                                <AvatarCoinStyled style={{ marginTop: 2 }} imgx={coinBIcon.x} imgy={coinBIcon.y}
+                                                    imgheight={coinBIcon.h}
+                                                    imgwidth={coinBIcon.w} size={20}
+                                                    variant="circular"
+                                                    alt={coinBInfo.simpleName as string}
+                                                    src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'} />
+                                                : <Avatar variant="circular" alt={coinBInfo.simpleName as string}
+                                                    style={{
+                                                        height: 'var(--list-menu-coin-size)',
+                                                        width: 'var(--list-menu-coin-size)'
+                                                    }}
+                                                    src={'static/images/icon-default.png'} />}
+                                            <Typography variant={'body2'} color={'var(--color-text-primary)'} component={'span'} marginRight={5} marginLeft={1 / 2} alignSelf={'right'}
+                                                height={20}
+                                                lineHeight={'20px'}>
+                                                {coinBInfo.simpleName}
+                                            </Typography>            
+                                        </Box>
+                                            
+                                        <Typography variant={'body2'} color={'var(--color-text-primary)'} component={'span'} height={20}
+                                            marginLeft={10}
+                                            lineHeight={'20px'}>
+                                            {/* TODO: find myshare value */}
+                                            {getValuePrecisionThousand(0, undefined, undefined, precisionB, false, {floor: true})}
+                                        </Typography>
+                                    </Typography>
+                            </Box>
+                        </PopoverPure>
+                </DetailWrapperStyled>}
 
                 <DetailWrapperStyled>
-                    <Typography onClick={() => getLiquidityMining('market', 120)} component={'span'} color={'textSecondary'} variant={'h6'}>
+                    <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                         {t('labelMiningMyReward')}
                     </Typography>
-                    <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
+                    <Typography onClick={() => getLiquidityMining('market', 120)} component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
                         {myRewards === 0
                             ? EmptyValueTag
-                            : getValuePrecisionThousand(myRewards, undefined, undefined, undefined, true, { isTrade: true }) + rewardToken?.simpleName}
+                            : getValuePrecisionThousand(myRewards, undefined, undefined, undefined, true, { isFait: true, floor: true }) + rewardToken?.simpleName}
                     </Typography>
                 </DetailWrapperStyled>
-
 
                 {/* <BoxBg display={'flex'} flexDirection={'column'} alignItems={'stretch'} marginTop={2} padding={1}>
                     <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
@@ -338,7 +540,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             <CardActions>
                 <Button fullWidth variant={'contained'} size={'large'} disabled={!!isPass}
                         color={'primary'}
-                        onClick={handleClick}>{t(isPass ? 'labelEndLiquidityBtn' : 'labelAddLiquidityBtn')}</Button>
+                        onClick={handleClick}>{isAmm ? t(isPass ? 'labelEndLiquidityBtn' : 'labelAddLiquidityBtn') : t(isPass ? 'labelEndLiquidityBtn' : 'labelPlaceOrderBtn')}</Button>
             </CardActions>
         </Card>
     }))) as <T>(props: AmmCardProps<T> & React.RefAttributes<any>) => JSX.Element;

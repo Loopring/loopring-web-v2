@@ -77,7 +77,6 @@ export const makeUIAmmActivityMap = <R extends { [key: string]: any }, I extends
 
                             // return prev;
                         }
-                        console.log({prev})
                         return prev;
                     }, ammActivityViewMapTmp)
 
@@ -132,10 +131,12 @@ const makeAsCard = <R extends { [key: string]: any }, I extends { [key: string]:
                         if (matchRes) {
                             const coinAInfo = coinMap[matchRes[1]]
                             const coinBInfo = coinMap[matchRes[2]]
-                            const coinAPriceDollar = tokenPrices[coinAInfo?.simpleName]
+                            const coinAPriceDollar = tokenPrices ? tokenPrices[coinAInfo?.simpleName] : 0
                             const coinAPriceYuan = coinAPriceDollar * (forex || 6.5)
-                            const coinBPriceDollar = tokenPrices[coinBInfo?.simpleName]
+                            const coinBPriceDollar = tokenPrices ? tokenPrices[coinBInfo?.simpleName] : 0
                             const coinBPriceYuan = coinBPriceDollar * (forex || 6.5)
+                            const rewardTokenDollar = tokenPrices ? tokenPrices[item?.rewardToken?.simpleName] : 0
+                            const rewardTokenYuan = rewardTokenDollar * (forex || 6.5)
                             // myLog('matchRes:', matchRes, ' coinAInfo:', coinAInfo, ' coinBInfo:', coinBInfo)
                             return {
                                 ..._.cloneDeep(_ammInfo),
@@ -145,7 +146,11 @@ const makeAsCard = <R extends { [key: string]: any }, I extends { [key: string]:
                                 coinAPriceYuan,
                                 coinBPriceDollar,
                                 coinBPriceYuan,
-                                activity: item,
+                                activity: {
+                                    ...item,
+                                    rewardTokenDollar: rewardTokenDollar,
+                                    rewardTokenYuan: rewardTokenYuan,
+                                },
                             }
 
                         }

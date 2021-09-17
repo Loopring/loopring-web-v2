@@ -163,6 +163,8 @@ export type AmmActivity<I> = {
         to: Date,
     }
     isPass?: boolean,
+    rewardTokenDollar?: number,
+    rewardTokenYuan?: number,
 }
 export type Amount<T> = {
     sell: { belong: T, tradeValue: number },
