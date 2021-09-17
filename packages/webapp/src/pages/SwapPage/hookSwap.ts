@@ -263,17 +263,17 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
             return
         }
 
-        const sellToken = tokenMap[tradeCalcData.coinSell as string]
-        const buyToken = tokenMap[tradeCalcData.coinBuy as string]
+        const sellToken = tokenMap[tradeData?.sell.belong as string]
+        const buyToken = tokenMap[tradeData?.buy.belong as string]
 
-        let {calcTradeParams} = pageTradeLite;
+        const {calcTradeParams} = pageTradeLite;
 
         if (!sellToken || !buyToken || !calcTradeParams) {
             return
         }
 
-        let validAmt = !!(calcTradeParams?.amountBOut && sellMinAmt
-            && sdk.toBig(calcTradeParams?.amountBOut).gte(sdk.toBig(sellMinAmt)));
+        let validAmt = !!(calcTradeParams?.amountS && sellMinAmt
+            && sdk.toBig(calcTradeParams?.amountS).gte(sdk.toBig(sellMinAmt)));
 
         const sellExceed = sdk.toBig(sellToken?.orderAmounts?.maximum).lt(calcTradeParams?.amountS)
 
@@ -314,8 +314,8 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                     setSwapBtnStatus(TradeBtnStatus.AVAILABLE)
                     return undefined
                 } else {
-                    const quote = tradeData?.buy.belong;
-                    const minOrderSize = VolToNumberWithPrecision(sellMinAmt, quote as any) + ' ' + tradeData?.buy.belong;
+                    const sellSymbol = tradeData?.sell.belong;
+                    const minOrderSize = VolToNumberWithPrecision(sellMinAmt, sellSymbol as any) + ' ' + sellSymbol;
                     setSwapBtnStatus(TradeBtnStatus.DISABLED)
                     return `labelLimitMin, ${minOrderSize}`
 
@@ -670,7 +670,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                 takerRate = buyMinAmtInfo ? buyMinAmtInfo.userOrderInfo.takerRate : 0
                 feeBips = ammMap[ ammMarket ] ? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
                 totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString();
-                setSellMinAmt(buyMinAmtInfo?.userOrderInfo.minAmount)
+                setSellMinAmt(sellMinAmtInfo?.userOrderInfo.minAmount)
                 // myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
             }
             const calcTradeParams = sdk.getOutputAmount({
