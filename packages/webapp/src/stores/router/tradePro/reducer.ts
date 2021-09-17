@@ -69,7 +69,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     state.pageTradePro.tradeCalcProData = tradeCalcProData;
                 }
                 if (depth) {
-                    debugger
+
                     state.pageTradePro.depth = depth;
                 }
 
