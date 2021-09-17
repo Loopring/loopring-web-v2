@@ -436,7 +436,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
 
         let walletMap: WalletMap<any> | undefined = undefined
         if (account.readyState === AccountStatus.ACTIVATED) {
-            walletMap = makeWalletLayer2().walletMap;
+            walletMap = makeWalletLayer2(true).walletMap;
             myLog('--ACTIVATED tradeCalcData:', tradeCalcData)
             setTradeData({
                 ...tradeData,
@@ -566,7 +566,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
             let walletMap: WalletMap<any> | undefined;
             if (account.readyState === AccountStatus.ACTIVATED && walletLayer2Status === SagaStatus.UNSET) {
                 if (!Object.keys(tradeCalcData.walletMap ?? {}).length) {
-                    walletMap = makeWalletLayer2().walletMap as WalletMap<any>;
+                    walletMap = makeWalletLayer2(true).walletMap as WalletMap<any>;
                 }
                 walletMap = tradeCalcData.walletMap as WalletMap<any>;
             }
