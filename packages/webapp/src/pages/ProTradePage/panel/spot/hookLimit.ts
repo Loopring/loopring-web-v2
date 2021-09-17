@@ -1,9 +1,10 @@
 import React from 'react';
 import { useToast } from 'hooks/common/useToast';
 import { IBData, MarketType, myLog } from '@loopring-web/common-resources';
-import { LimitTradeData, TradeBaseType, TradeProType } from '@loopring-web/component-lib';
-import { usePageTradePro } from '../../../../stores/router';
-import { walletLayer2Service } from '../../../../services/socket';
+import { LimitTradeData, TradeBaseType, TradeBtnStatus, TradeProType } from '@loopring-web/component-lib';
+import { usePageTradePro } from 'stores/router';
+import { walletLayer2Service } from 'services/socket';
+import { useSubmitBtn } from './hookBtn';
 
 
 export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType): {
@@ -14,7 +15,8 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
     const {pageTradePro} = usePageTradePro();
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
-    const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {}
+    const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
+    
     const [limitTradeData, setLimitTradeData] = React.useState<LimitTradeData<IBData<any>>>(
         pageTradePro.market === market ? {
             base: {
@@ -49,14 +51,28 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         // resetSwap(swapType, tradeData)
 
     }
+    const {
+        btnStatus:tradeLimitBtnStatus ,
+        onBtnClick:limitBtnClick,
+        btnLabel:tradeLimitI18nKey,
+        // btnClickCallbackArray
+    } =  useSubmitBtn({
+        availableTradeCheck: ()=> {return  {label:'', tradeBtnStatus: TradeBtnStatus.AVAILABLE}},
+        isLoading:true,
+        submitCallback: limitSubmit
+    })
     return {
         // alertOpen,
         // confirmOpen,
         toastOpen,
         closeToast,
-        limitSubmit,
+        // limitSubmit,
+        isLimitLoading:false,
         limitTradeData,
-        onChangeLimitEvent
+        onChangeLimitEvent,
+        tradeLimitI18nKey,
+        tradeLimitBtnStatus,
+        limitBtnClick,
         // marketTicker,
     }
 }
