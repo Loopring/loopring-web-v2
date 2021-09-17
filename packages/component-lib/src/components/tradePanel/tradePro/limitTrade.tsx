@@ -1,7 +1,7 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { BtnPercentage, InputCoin, InputSize } from '../../basic-lib';
 import { LimitTradeData, TradeBtnStatus, TradeLimitProps } from '../Interface';
-import { CoinInfo, CoinKey, CoinMap, EmptyValueTag, IBData, TradeCalcProData } from '@loopring-web/common-resources';
+import { CoinInfo, CoinKey, CoinMap, EmptyValueTag, IBData, myLog, TradeCalcProData } from '@loopring-web/common-resources';
 import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { TradeProType } from './Interface';
 import { ButtonStyle } from '../components/Styled';
@@ -37,10 +37,8 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
     } =  props
     const priceRef = React.useRef();
     const _handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
-        if (ibData) {
-
-        }
-    }, [tradeData]);
+        myLog('user input limit', ibData)
+        }, [tradeData]);
     const {
         quoteRef,
         baseRef,

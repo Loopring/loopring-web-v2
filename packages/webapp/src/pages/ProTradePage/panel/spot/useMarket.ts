@@ -45,7 +45,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
     } = usePageTradePro();
     const onChangeMarketEvent = async (tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType): Promise<void> => {
 
-        // myLog('handleSwapPanelEvent...')
+        myLog('handleSwapPanelEvent...', tradeData)
 
         // const {tradeData} = swapData
         // resetSwap(swapType, tradeData)

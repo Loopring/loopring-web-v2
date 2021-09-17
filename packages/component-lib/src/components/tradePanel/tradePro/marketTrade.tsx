@@ -7,6 +7,7 @@ import {
     EmptyValueTag,
     getValuePrecisionThousand,
     IBData,
+    myLog,
     SlippageTolerance,
     TradeCalcProData
 } from '@loopring-web/common-resources';
@@ -47,9 +48,9 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         // ...rest
     } = props
     const _handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
-        if (ibData) {
+        // const focus: 'buy' | 'sell' = _ref?.current === buyRef.current ? 'buy' : 'sell';
 
-        }
+        myLog('user input market:',ibData, ' _ref:', _ref)
     }, [tradeData]);
 
     const {
