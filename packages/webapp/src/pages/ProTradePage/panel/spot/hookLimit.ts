@@ -5,6 +5,7 @@ import { LimitTradeData, TradeBaseType, TradeBtnStatus, TradeProType } from '@lo
 import { usePageTradePro } from 'stores/router';
 import { walletLayer2Service } from 'services/socket';
 import { useSubmitBtn } from './hookBtn';
+import { usePlaceOrder } from 'pages/SwapPage/swap_hook';
 
 
 export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType): {
@@ -41,10 +42,38 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         walletLayer2Service.sendUserUpdate()
         return
     }
+
+    const { makelimitReqInHook } = usePlaceOrder()
+
     const onChangeLimitEvent = async (tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType): Promise<void> => {
         myLog(`onChangeLimitEvent tradeData:`, tradeData, 'formType', formType)
-        //TODO:
+
+        if (formType === TradeBaseType.slippage) {
+            return
+        }
+        
         setLimitTradeData(tradeData)
+        // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
+
+        let amountBase = formType === TradeBaseType.base ? tradeData.base.tradeValue : undefined
+        let amountQuote = formType === TradeBaseType.quote ? tradeData.quote.tradeValue : undefined
+
+        if (formType === TradeBaseType.price) {
+            amountBase = tradeData.base.tradeValue !== undefined ? tradeData.base.tradeValue : undefined
+            amountQuote = amountBase !== undefined ? undefined : tradeData.quote.tradeValue !== undefined ? tradeData.quote.tradeValue : undefined
+        }
+
+        const request = makelimitReqInHook({
+            isBuy: tradeData.type === 'buy',
+            base: tradeData.base.belong,
+            quote: tradeData.quote.belong,
+            price: tradeData.price.tradeValue as number,
+            amountBase,
+            amountQuote,
+        })
+
+        myLog('limitRequest:', request?.limitRequest)
+
         // myLog('handleSwapPanelEvent...')
 
         // const {tradeData} = swapData

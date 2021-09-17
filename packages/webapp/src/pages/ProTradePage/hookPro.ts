@@ -32,7 +32,9 @@ export const usePro = <C extends { [ key: string ]: any }>():{
     // marketTicker: MarketBlockProps<C> |undefined,
 } =>{
     //High: No not Move!!!!!!
-    const {realMarket} = usePairMatch('./trading/pro');
+    let {realMarket} = usePairMatch('./trading/pro');
+    realMarket = 'ETH-USDT'
+    
     //basic info from redux
     const {
         pageTradePro,

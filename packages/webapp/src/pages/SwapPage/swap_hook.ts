@@ -10,6 +10,7 @@ import { useSystem } from 'stores/system';
 import { useAmmMap } from 'stores/Amm/AmmMap';
 import { useAmount } from 'stores/amount';
 import { usePageTradeLite } from 'stores/router';
+import { myLog } from '@loopring-web/common-resources';
 
 export interface ReqParams {
     isBuy?: boolean,
@@ -278,14 +279,14 @@ export function usePlaceOrder() {
             if (result) {
                 [, base, quote,] = result
             }
-
-            const existedMarket = sdk.getExistedMarket(marketArray, base, quote)
-
-            params.base = existedMarket.baseShow
-            params.quote = existedMarket.quoteShow
-            market = existedMarket.market
-            ammMarket = existedMarket.amm as string
         }
+
+        const existedMarket = sdk.getExistedMarket(marketArray, base, quote)
+
+        params.base = existedMarket.baseShow
+        params.quote = existedMarket.quoteShow
+        market = existedMarket.market
+        ammMarket = existedMarket.amm as string
 
         const tokenAmtMap = ammMap[ammMarket] ? amountMap[ammMarket] : amountMap[market as string]
 
@@ -304,7 +305,7 @@ export function usePlaceOrder() {
 
         const tokenAmtMap = getTokenAmtMap(params)
 
-        if (!tokenAmtMap) {
+        if (!tokenAmtMap?.tokenAmtMap) {
             return
         }
 
@@ -329,7 +330,7 @@ export function usePlaceOrder() {
 
         const tokenAmtMap = getTokenAmtMap(params)
 
-        if (!tokenAmtMap) {
+        if (!tokenAmtMap?.tokenAmtMap) {
             return
         }
 
@@ -340,6 +341,8 @@ export function usePlaceOrder() {
             tokenMap,
             tokenAmtMap: tokenAmtMap.tokenAmtMap,
         }
+
+        myLog('fullParams:', fullParams)
 
         return makelimitReq(fullParams)
 
