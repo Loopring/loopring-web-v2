@@ -265,14 +265,18 @@ export function makelimitReq({
     }
 }
 
-//buy eth. ETH-USDT reversed. calc: usdt<-eth/isAtoB=false
-export function marketBuy() {
+//price = USDTVol / ETHVol
 
+//buy eth(base). ETH-USDT reversed. sell:usdt buy:eth   calc: usdt<-eth/isAtoB=false
+// fee(buyToken) -> eth(base)
+// percentage -> change quote vol
+export function marketBuy() {
 }
 
-//sell eth. ETH-USDT. calc: eth->usdt/isAtoB=true
+//sell eth(base). ETH-USDT. sell:eth buy:usdt   calc: eth->usdt/isAtoB=true
+// fee(buytoken) -> usdt(quote)
+// percentage -> change base vol
 export function marketSell() {
-
 }
 
 export function usePlaceOrder() {
