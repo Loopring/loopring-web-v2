@@ -17,7 +17,6 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
-    
     const [limitTradeData, setLimitTradeData] = React.useState<LimitTradeData<IBData<any>>>(
         pageTradePro.market === market ? {
             base: {
@@ -28,16 +27,48 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                 belong: quoteSymbol,
                 balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
             } as IBData<any>,
-            price: {belong: pageTradePro.tradeCalcProData.coinQuote, tradeValue: 0} as IBData<any>,
+            price: {belong: pageTradePro.tradeCalcProData.coinQuote, tradeValue: pageTradePro.depth?.mid_price??''} as IBData<any>,
             type: TradeProType.sell
         } : {
             base: {belong: baseSymbol} as IBData<any>,
             quote: {belong: quoteSymbol} as IBData<any>,
-            price: {belong: quoteSymbol, tradeValue: 0} as IBData<any>,
+            price: {belong: quoteSymbol, tradeValue: pageTradePro.depth?.mid_price} as IBData<any>,
             type: TradeProType.sell
         }
     )
+
     const {toastOpen, setToastOpen, closeToast} = useToast();
+
+    React.useEffect(()=>{
+        resetTradeData(limitTradeData.type)
+    },[ pageTradePro.market,
+        pageTradePro.tradeCalcProData.walletMap])
+
+    const resetTradeData = React.useCallback((type:TradeProType)=>{
+        const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
+        // @ts-ignore
+        const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
+        setLimitTradeData( (state)=>{
+            return pageTradePro.market === market ?{
+                type,
+                base: {
+                    belong: baseSymbol,
+                    balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
+                } as IBData<any>,
+                quote: {
+                    belong: quoteSymbol,
+                    balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
+                } as IBData<any>,
+                price: {belong: quoteSymbol, tradeValue: pageTradePro.depth?.mid_price} as IBData<any>,
+            } : {
+                type,
+                base: {belong: baseSymbol} as IBData<any>,
+                quote: {belong: quoteSymbol} as IBData<any>,
+                price: {belong: quoteSymbol, tradeValue: 0} as IBData<any>,
+            }
+        })
+    },[pageTradePro,market])
+
     const limitSubmit = () => {
         walletLayer2Service.sendUserUpdate()
         return
@@ -45,7 +76,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
 
     const { makelimitReqInHook } = usePlaceOrder()
 
-    const onChangeLimitEvent = async (tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType): Promise<void> => {
+    const onChangeLimitEvent = React.useCallback(async (tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType): Promise<void> => {
         myLog(`onChangeLimitEvent tradeData:`, tradeData, 'formType', formType)
 
         if (formType === TradeBaseType.slippage) {
@@ -79,7 +110,8 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         // const {tradeData} = swapData
         // resetSwap(swapType, tradeData)
 
-    }
+    } ,[setLimitTradeData])
+
     const {
         btnStatus:tradeLimitBtnStatus ,
         onBtnClick:limitBtnClick,

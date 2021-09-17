@@ -1,19 +1,12 @@
-import { AccountStatus, CoinMap, IBData, MarketType, myLog, TradeCalcData } from '@loopring-web/common-resources';
+import { AccountStatus, IBData, MarketType, myLog } from '@loopring-web/common-resources';
 import React from 'react';
 import { useToast } from 'hooks/common/useToast';
 import { LoopringAPI } from 'api_wrapper';
 import * as sdk from 'loopring-sdk';
-import { getTimestampDaysLater } from 'utils/dt_tools';
 import { OrderStatus, sleep, toBig } from 'loopring-sdk';
+import { getTimestampDaysLater } from 'utils/dt_tools';
 import { walletLayer2Service } from 'services/socket';
-import {
-    LimitTradeData,
-    MarketTradeData,
-    SwapData,
-    SwapTradeData,
-    TradeBaseType, TradeBtnStatus,
-    TradeProType, useSettings
-} from '@loopring-web/component-lib';
+import { MarketTradeData, TradeBaseType, TradeBtnStatus, TradeProType, useSettings } from '@loopring-web/component-lib';
 import { usePageTradePro } from 'stores/router';
 import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
@@ -21,7 +14,6 @@ import { useSystem } from 'stores/system';
 import { useTranslation } from 'react-i18next';
 import { useSubmitBtn } from './hookBtn';
 import { VolToNumberWithPrecision } from '../../../../utils/formatter_tool';
-import { OrderInfo } from 'loopring-sdk/dist/defs/loopring_defs';
 
 export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType):{
     [key: string]: any;
@@ -42,9 +34,12 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
         __DAYS__,
         __SUBMIT_LOCK_TIMER__,
         __TOAST_AUTO_CLOSE_TIMER__
-    } = usePageTradePro();    // @ts-ignore
+    } = usePageTradePro();
+    // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const walletMap = pageTradePro.tradeCalcProData?.walletMap ?? {}
+    const [isMarketLoading, setIsMarketLoading] = React.useState(false)
+    const {exchangeInfo} = useSystem();
 
     const [marketTradeData, setMarketTradeData] = React.useState<MarketTradeData<IBData<any>>>(
         pageTradePro.market === market ? {
@@ -65,20 +60,32 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
             type: TradeProType.sell
         }
     )
-    const {exchangeInfo} = useSystem();
+    React.useEffect(()=>{
+        setMarketTradeData(  pageTradePro.market === market ?{
+            base: {
+                belong: baseSymbol,
+                balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
+            } as IBData<any>,
+            quote: {
+                belong: quoteSymbol,
+                balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
+            } as IBData<any>,
+            slippage: slippage&&slippage!=='N'?slippage:0.5,
+            type: TradeProType.sell
+        } : {
+            base: {belong: baseSymbol} as IBData<any>,
+            quote: {belong: quoteSymbol} as IBData<any>,
+            slippage: slippage&&slippage!=='N'?slippage:0.5,
+            type: TradeProType.sell
+        } )
+    },[ pageTradePro.market,
+        pageTradePro.tradeCalcProData.walletMap])
 
 
-    const [isMarketLoading, setIsMarketLoading] = React.useState(false)
 
 
     const onChangeMarketEvent = async (tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType): Promise<void> => {
         myLog(`onChangeMarketEvent tradeData:`, tradeData, 'formType',formType)
-
-        myLog('handleSwapPanelEvent...', tradeData)
-
-        // const {tradeData} = swapData
-        // resetSwap(swapType, tradeData)
-
     }
 
     const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
@@ -167,8 +174,8 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
                     setMarketTradeData((state) => {
                         return {
                             ...state,
-                            sell: {...state?.base, tradeValue: 0},
-                            buy: {...state?.quote, tradeValue: 0},
+                            base: {...state?.base, tradeValue: 0},
+                            quote: {...state?.quote, tradeValue: 0},
                         } as MarketTradeData<IBData<C>>
                     });
                     updatePageTradePro({
@@ -180,14 +187,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
                             fee: undefined
                         }
                     })
-                    // setTradeCalcData((state) => {
-                    //     return {
-                    //         ...state,
-                    //         minimumReceived: undefined,
-                    //         priceImpact: undefined,
-                    //         fee: undefined
-                    //     }
-                    // })
+
                 }
             } catch (reason) {
                 sdk.dumpError400(reason)
@@ -247,9 +247,9 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
         toastOpen,
         closeToast,
         isMarketLoading,
-       marketSubmit,
-       marketTradeData,
-       onChangeMarketEvent,
+        marketSubmit,
+        marketTradeData,
+        onChangeMarketEvent,
         tradeMarketBtnStatus,
         tradeMarketBtnI18nKey,
         marketBtnClick,
