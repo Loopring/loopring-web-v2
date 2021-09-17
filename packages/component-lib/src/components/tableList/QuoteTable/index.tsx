@@ -34,7 +34,7 @@ const TableStyled = styled(Table)`
             }   
         }};
       
-        --template-columns: 240px 200px 100px auto auto auto 132px !important;
+        --template-columns: 240px 220px 100px auto auto auto 132px !important;
         .rdg-cell.action{
             display: flex;
             justify-content: center;

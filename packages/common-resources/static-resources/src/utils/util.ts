@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { toBig } from 'loopring-sdk'
+import { toBig, toFixed } from 'loopring-sdk'
 
 export function abbreviateNumber(value: number) {
     let newValue = value, result: string;
@@ -105,15 +105,28 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     }
     // fait price
     if (isFait === true) {
-        if (result.isGreaterThanOrEqualTo(1)) {
-            // fixed 2 decimals
-            return toBig(result.toFixed(2)).toNumber().toLocaleString('en')
-        } else {
-            return result.toNumber().toLocaleString('en', {minimumFractionDigits: 6})
+        if (floor === true) {
+            result = getFloatFloor(result, 2)
         }
+        if (floor === false) {
+            result = getFloatCeil(result, 2)
+        }
+        if (toBig(result).isGreaterThanOrEqualTo(1)) {
+            // fixed 2 decimals
+            result = toBig(result.toFixed(2)).toNumber().toLocaleString('en', {minimumFractionDigits: 2})
+        } else {
+            result = toBig(result).toNumber().toLocaleString('en', {minimumFractionDigits: 6})
+        }
+        
+        return result
     }
     if (isTrade === true) {
-        return result.toNumber().toLocaleString('en')
+        let [_init, _dot] = result.toString().split('.');
+        if (_dot && _dot.length > 3) {
+            return result.toNumber().toLocaleString('en', {minimumFractionDigits: _dot.length})
+        } else {
+            return result.toNumber().toLocaleString('en')
+        }
     }
     if (result.isGreaterThan(1)) {
         // if (minDigit < 3) {
@@ -124,20 +137,18 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
         // }
         let formattedValue = null
         if (floor === true) {
-            formattedValue = getFloatFloor(result, minDigit)
+            formattedValue = getFloatFloor(result, fixed || minDigit)
         }
         if (floor === false) {
-            formattedValue = getFloatCeil(result, minDigit)
+            formattedValue = getFloatCeil(result, fixed || minDigit)
         }
         if (floor === undefined) {
-            formattedValue = result.toFixed(minDigit)
+            formattedValue = result.toFixed(fixed || minDigit)
         }
         // remain string-number zero
-        result = toBig(formattedValue).toNumber().toLocaleString('en',{minimumFractionDigits: minDigit})
-    } else if (result.isLessThanOrEqualTo(1) && fixed){
-        result = result.toFixed(fixed)
+        result = toBig(formattedValue).toNumber().toLocaleString('en',{minimumFractionDigits: (fixed || minDigit)})
     } else if (result.isLessThanOrEqualTo(1)) {
-        result = result.toPrecision(precision)
+        result = result.toFixed(fixed || precision)
     }
     
     if (result && !notRemoveEndZero) {

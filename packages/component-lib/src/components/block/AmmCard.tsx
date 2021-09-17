@@ -119,7 +119,8 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     </Box>
                 </BoxStyled>
                 <Typography display={'flex'} flexDirection={'column'} component={'span'} justifyContent={'center'} alignItems={'center'} marginTop={7}>
-                    <Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> {APR || EmptyValueTag}%
+                    {/* <Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> {APR || EmptyValueTag}% */}
+                    <Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> {getValuePrecisionThousand(APR, 2, 2, 2, true) + '%' || EmptyValueTag}
                     </Typography>
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'} marginTop={1}
                                 style={{textTransform: 'uppercase'}}>{t('labelAPR')}</Typography>
@@ -145,7 +146,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     </Typography>
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
                         {t('labelLiquidity') + ' ' +
-                                amountDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getValuePrecisionThousand(amountDollar, 2, 2)
+                                amountDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getValuePrecisionThousand(amountDollar, undefined, undefined, undefined, true, { isFait: true })
                                     : PriceTag.Yuan + getValuePrecisionThousand(amountYuan, 2, 2)}
                     </Typography>
                 </DetailWrapperStyled>
@@ -157,7 +158,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     </Typography>
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
                         {/* {getValuePrecisionThousand(((rewardValue && Number.isFinite(rewardValue) ? rewardValue : 0) + (rewardValue2 && Number.isFinite(rewardValue2) ? rewardValue2 : 0)), 2, 2)} */}
-                        {rewardValue && Number.isFinite(rewardValue) ? getValuePrecisionThousand(rewardValue) : EmptyValueTag}
+                        {rewardValue && Number.isFinite(rewardValue) ? getValuePrecisionThousand(rewardValue, undefined, undefined, undefined, true, { isTrade: true }) : EmptyValueTag}
                         &nbsp;
                         {rewardToken?.simpleName}
                     </Typography>
@@ -181,7 +182,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
                         {myRewards === 0
                             ? EmptyValueTag
-                            : getValuePrecisionThousand(myRewards, 6, 6) + rewardToken?.simpleName}
+                            : getValuePrecisionThousand(myRewards, undefined, undefined, undefined, true, { isTrade: true }) + rewardToken?.simpleName}
                     </Typography>
                 </DetailWrapperStyled>
 
