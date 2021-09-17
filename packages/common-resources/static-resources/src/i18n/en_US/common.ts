@@ -308,6 +308,9 @@ export default {
     labelProBaseLabel:'Amount',
     labelProQuoteLabel:'Amount',
     labelProLimitBtn: '{{tradeType}} {{symbol}}',
-    labelProMarketBtn: '{{tradeType}} {{symbol}}'
+    labelProMarketBtn: '{{tradeType}} {{symbol}}',
 
+    LabelDepthPrice: 'Price({{symbol})',
+    LabelDepthAmount: 'Amount({{symbol})',
+    LabelDepthTotal: 'Total({{symbol})',
 }

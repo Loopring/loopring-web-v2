@@ -17,7 +17,7 @@ export enum TabIndex {
     limit = 'limit'
 }
 
-export const SpotView = withTranslation('common')(<C extends { [ key: string ]: any }>({
+export const SpotView = withTranslation('common')(({
                                                                                            t, market
                                                                                            // ,marketTicker
                                                                                        }: {
