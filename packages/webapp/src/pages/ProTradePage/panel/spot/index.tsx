@@ -4,7 +4,7 @@ import { AlertImpact, ConfirmImpact, LimitTrade, MarketTrade, Toast } from '@loo
 import { TOAST_TIME } from '../../../../defs/common_defs';
 import { MarketType } from '@loopring-web/common-resources';
 import { usePageTradePro } from '../../../../stores/router';
-import { hookMarket } from './useMarket';
+import { hookMarket } from './hookMarket';
 import { useLimit } from './hookLimit';
 import { Box, Divider, styled, Tab, Tabs } from '@mui/material';
 
