@@ -32,15 +32,25 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
         // handleError,
         // handleSubmitEvent,
         // handleChangeIndex,
-        // onChangeEvent,
+        onChangeEvent,
         // ...rest
     } =  props
     const priceRef = React.useRef();
-    const _handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
-        if (ibData) {
-
-        }
-    }, [tradeData]);
+    // const _handleCountChange = React.useCallback((ibData: IBData<I>,name:string, _ref: any) => {
+    //     console.log('limitTrade: handleUser input :',ibData,name)
+    //     // const base = tradeData[TradeBaseType.base];
+    //     // const price = tradeData[TradeBaseType.price];
+    //     // const quote = tradeData[TradeBaseType.quote];
+    //     const _tradeData = {
+    //         ...tradeData,
+    //         // base,
+    //         // price,
+    //         // quote,
+    //         [name]: ibData,
+    //     }
+    //     onChangeEvent(_tradeData,TradeBaseType[name])
+    //
+    // }, [tradeData,onChangeEvent]);
     const {
         quoteRef,
         baseRef,
@@ -51,14 +61,16 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
         tabIndex,
         tradeCalcProData,
         tradeBtnBaseStatus,
+        handleCountChange,
         propsBase,
         propsQuote,
         onPercentage,
         selectedPercentage,
     } = useCommon({
+        type: 'limit',
         ...props as any,
         tradeData,
-        handleCountChange:_handleCountChange,
+        onChangeEvent,
         i18nKey: tradeLimitI18nKey?tradeLimitI18nKey:'labelProLimitBtn',
         tradeBtnBaseStatus: tradeLimitBtnStatus
     })
@@ -73,14 +85,14 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
             coinLabelStyle:{color:'var(--color-text-secondary)'},
             isShowCoinIcon:false,
             // ...tokenQuoteProps,
-            handleCountChange:_handleCountChange,
+            handleCountChange,
             // handleError:tabIndex === TradeProType.sell? handleError :undefined,
             maxAllow: false,
 
             // handleOnClick,
             t
         }
-    },[tabIndex,TradeProType,_handleCountChange])
+    },[tabIndex,TradeProType,handleCountChange])
     const fee = (tradeCalcProData && tradeCalcProData.fee) ? ((parseFloat(tradeCalcProData.fee) / 100).toString() + '%') : EmptyValueTag
 
     return <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
@@ -88,8 +100,8 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
             <Box component={'header'} width={'100%'} >
                 <Tabs variant={'fullWidth'} value={tabIndex}
                       onChange={(_e, index) => _handleChangeIndex(index)} className={'pro-tabs'}>
-                    <Tab value={TradeProType.sell} label={t('labelProSell')}/>
                     <Tab value={TradeProType.buy} label={t('labelProBuy')}/>
+                    <Tab value={TradeProType.sell} label={t('labelProSell')}/>
                 </Tabs>
             </Box>
         </Box>
@@ -108,6 +120,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
                     ...propsBase,
                     // maxAllow:false,
                     isHideError: true,
+                    handleCountChange,
                     inputData: tradeData ? tradeData.base : {} as any,
                     coinMap: tradeCalcProData && tradeCalcProData.coinInfoMap ? tradeCalcProData.coinInfoMap : {} as CoinMap<I, CoinInfo<I>>
                 }} />
@@ -135,6 +148,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
                 <InputCoin<any, I, CoinInfo<I>> ref={quoteRef} name={'quote'} disabled={getDisabled()}  {...{
                     ...propsQuote,
                     isHideError: true,
+                    handleCountChange,
                     inputData: tradeData ? tradeData.quote : {} as any,
                     coinMap: tradeCalcProData && tradeCalcProData.coinInfoMap ? tradeCalcProData.coinInfoMap : {} as CoinMap<I, CoinInfo<I>>
                 }} />
