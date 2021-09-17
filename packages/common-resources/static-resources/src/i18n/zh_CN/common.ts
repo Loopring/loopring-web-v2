@@ -232,6 +232,7 @@ export default {
     labelMiningMyReward: '我的奖励',
     labelCookiesAgree: '同意',
     labelLimitMin: '最小下单量{{arg}}',
+    labelLimitMax: '{{arg}} 最大下单量{{arg}}',
     labelEnterAmount: '请填写兑换数',
     labelAgreeLoopringTxt: '允许路印使用Cookies。',
     labelLayer2HistoryTransactions: '充值提现',
