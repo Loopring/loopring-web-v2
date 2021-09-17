@@ -28,11 +28,19 @@ import {
     YAxis,
 } from "react-financial-charts";
 import { macd } from "@react-financial-charts/indicators";
-import { IOHLCData } from ".";
 
 enum CandleStickFill {
     up = '#00BBA8',
     down = '#fb3838'
+}
+
+export interface IOHLCData {
+    close: number;
+    date: Date;
+    high: number;
+    low: number;
+    open: number;
+    volume: number;
 }
 
 export interface StockChartProps {

@@ -4,7 +4,7 @@ import { AlertImpact, ConfirmImpact, LimitTrade, MarketTrade, Toast } from '@loo
 import { TOAST_TIME } from '../../../../defs/common_defs';
 import { MarketType } from '@loopring-web/common-resources';
 import { usePageTradePro } from '../../../../stores/router';
-import { useMarket } from './useMarket';
+import { useMarket } from './hookMarket';
 import { useLimit } from './hookLimit';
 import { Box, Divider, styled, Tab, Tabs } from '@mui/material';
 
@@ -24,8 +24,8 @@ export  const SpotView = withTranslation('common')(<C extends { [ key: string ]:
     // marketTicker:  MarketBlockProps<C>
 } & WithTranslation)=>{
     const { pageTradePro } = usePageTradePro();
-    const { toastOpenL, closeToastL,limitSubmit,limitTradeData,onChangeLimitEvent} = useLimit(market)
     const [tabIndex, setTabIndex] = React.useState<TabIndex>(TabIndex.market)
+    const { toastOpenL, closeToastL,limitSubmit,limitTradeData,onChangeLimitEvent} = useLimit(market)
     const { alertOpen, confirmOpen, toastOpen, closeToast,
         marketSubmit,marketTradeData,onChangeMarketEvent} = useMarket(market)
     return <>

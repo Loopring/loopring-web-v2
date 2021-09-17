@@ -22,10 +22,8 @@ import { marketInitCheck, swapDependAsync } from '../SwapPage/help';
 import { makeWalletLayer2 } from '../../hooks/help';
 import * as sdk from 'loopring-sdk';
 import { useWalletLayer2 } from '../../stores/walletLayer2';
-import { LoopringAPI } from '../../api_wrapper';
 
 import { useProSocket, useSocketProService } from './proService';
-import { SwapTradeData } from '@loopring-web/component-lib';
 
 
 export const usePro = <C extends { [ key: string ]: any }>():{
@@ -43,9 +41,9 @@ export const usePro = <C extends { [ key: string ]: any }>():{
         __TOAST_AUTO_CLOSE_TIMER__
     } = usePageTradePro();
     const [market, setMarket] = React.useState<MarketType>(realMarket as MarketType);
-    const {amountMap, getAmount} = useAmount();
+    const {getAmount} = useAmount();
     const {account, status: accountStatus} = useAccount();
-    const {walletLayer2, status: walletLayer2Status} = useWalletLayer2();
+    const {status: walletLayer2Status} = useWalletLayer2();
 
     const {toastOpen, setToastOpen, closeToast} = useToast();
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap()
@@ -57,10 +55,13 @@ export const usePro = <C extends { [ key: string ]: any }>():{
         //TODO
     },[])
     const userInfoUpdateCallback = React.useCallback(()=>{
-        updateWalletLayer2Balance();
-        // TODO:
-        // updateOrderTable();
-    },[])
+        if(accountStatus === SagaStatus.UNSET && account.readyState === 'ACTIVATED'){
+            updateWalletLayer2Balance();
+            // TODO:
+            // updateOrderTable();
+        }
+
+    },[accountStatus])
     useSocketProService({depDataCallback,
         userInfoUpdateCallback})
 
