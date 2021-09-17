@@ -281,8 +281,8 @@ export function usePlaceOrder() {
 
             const existedMarket = sdk.getExistedMarket(marketArray, base, quote)
 
-            base = existedMarket.baseShow
-            quote = existedMarket.quoteShow
+            params.base = existedMarket.baseShow
+            params.quote = existedMarket.quoteShow
             market = existedMarket.market
             ammMarket = existedMarket.amm as string
         }
