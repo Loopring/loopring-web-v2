@@ -32,7 +32,7 @@ const BtnConnect = withTranslation(['common'], {withRef: true})(({t}: any) => {
         ],
         [ fnType.ERROR_NETWORK ]: [
             function () {
-                return `depositTitleAndActive`
+                return `labelWrongNetwork`
             }
         ],
     });
@@ -64,7 +64,7 @@ export const Layer2Page = () => {
         // statusUnset: accountStatusUnset
     } = useAccount();
 
-    const {t} = useTranslation();
+    const {t} = useTranslation(['common','layout']);
     const selected = match?.params.item ?? 'assets';
     // const {depositProps} = useDeposit()
 
