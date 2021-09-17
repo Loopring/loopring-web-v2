@@ -75,7 +75,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
             _handleError(value);
             setsValue(value);
             if (handleCountChange) {
-                handleCountChange({...inputData, ...{tradeValue: value}} as any, ref)
+                handleCountChange({...inputData, ...{tradeValue: value}} as any,_name, ref)
             }
             //debounceCount({...inputData, ...{tradeValue: value}})
         }
@@ -124,7 +124,8 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
         `} wrap={'nowrap'} alignItems={'stretch'}
               alignContent={'stretch'}>
             <Grid item className={'btn-wrap'}>
-                <ISBtn variant={'text'} onClick={(event) => handleOnClick(event, ref)}
+                <ISBtn variant={'text'} onClick={(event) => handleOnClick(event,
+                    name??'inputBtnDefault', ref)}
                        endIcon={<DropDownIcon color={"inherit"} fontSize={'large'} style={{marginLeft:'-4px'}}/>} disabled={disabled}>
                     {belong ?
                         <Grid container align-items={'center'} display={'flex'}>
