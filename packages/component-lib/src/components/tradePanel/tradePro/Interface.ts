@@ -8,6 +8,7 @@ export enum TradeProType {
     buy='buy'
 }
 export enum TradeBaseType {
+    price='price' ,
     quote='quote' ,
     base='base',
     tab='tab',
@@ -39,12 +40,13 @@ export type TradeProBaseEventProps<X,T, I> = {
 
 
 export type TradeCommonProps<X,T,TCD,I> = {
+    type:'limit'|'market',
     tradeData: X ,
     i18nKey: string,
     tradeCalcProData: TCD,
     onChangeEvent: (data: X,formType:TradeBaseType) =>  X,
     tradeBtnBaseStatus?: keyof typeof TradeBtnStatus | undefined,
-    handleCountChange:(ibData: T, ref: React.ForwardedRef<any>) => void,
+    handleCountChange?:(ibData: T,name:string, ref: React.ForwardedRef<any>) => void,
     // tokenPriceProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>,
     tokenBaseProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>,
     tokenQuoteProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>
