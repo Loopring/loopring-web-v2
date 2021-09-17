@@ -4,7 +4,7 @@ import { ammPoolService, tickerService, walletLayer2Service } from '../../servic
 import { useWalletLayer2 } from 'stores/walletLayer2';
 import React from 'react';
 import { useWalletLayer1 } from 'stores/walletLayer1';
-import { AccountStatus, globalSetup, MarketType, myLog, SagaStatus } from '@loopring-web/common-resources';
+import { AccountStatus, globalSetup, myLog, SagaStatus } from '@loopring-web/common-resources';
 import store from '../../stores';
 import { orderbookService } from '../../services/socket/services/orderbookService';
 import { merge } from 'rxjs';
@@ -95,6 +95,8 @@ export const useSocketProService = ({
                             volume:lp
                         }
                     }
+                    myLog('socket:ammPoolSnapshot',ammPoolSnapshot)
+
                     store.dispatch(updatePageTradePro( {market, ammPoolSnapshot: ammPoolSnapshot}))
                 }
 
@@ -106,16 +108,18 @@ export const useSocketProService = ({
                 // @ts-ignore
                 const tickerMap = value.tickerMap;
                 if(tickerMap.market === market){
+                    myLog('socket:tickMap',tickerMap)
                     store.dispatch(updatePageTradePro( {market,tickMap:tickerMap}))
                 }
             }
             // @ts-ignore
             if(value && value.orderbookMap){
                 const market = pageTradePro.market;
-                // debugger
                 // @ts-ignore
                 const orderbook = value.orderbookMap[market];
                 if(orderbook && orderbook.symbol){
+                    myLog('socket:orderbook to depth',orderbook)
+
                     store.dispatch(updatePageTradePro( {market, depth: orderbook}))
                 }
             }
