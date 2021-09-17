@@ -4,14 +4,14 @@ import { useToast } from 'hooks/common/useToast';
 import { LoopringAPI } from 'api_wrapper';
 import * as sdk from 'loopring-sdk';
 import { getTimestampDaysLater } from 'utils/dt_tools';
-import { OrderStatus, sleep } from 'loopring-sdk';
+import { OrderStatus, sleep, toBig } from 'loopring-sdk';
 import { walletLayer2Service } from 'services/socket';
 import {
     LimitTradeData,
     MarketTradeData,
     SwapData,
     SwapTradeData,
-    TradeBaseType,
+    TradeBaseType, TradeBtnStatus,
     TradeProType, useSettings
 } from '@loopring-web/component-lib';
 import { usePageTradePro } from 'stores/router';
@@ -19,6 +19,9 @@ import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
 import { useSystem } from 'stores/system';
 import { useTranslation } from 'react-i18next';
+import { useSubmitBtn } from './hookBtn';
+import { VolToNumberWithPrecision } from '../../../../utils/formatter_tool';
+import { OrderInfo } from 'loopring-sdk/dist/defs/loopring_defs';
 
 export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType):{
     [key: string]: any;
@@ -201,16 +204,55 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
         }
 
     }, [account.readyState, pageTradePro, tokenMap, marketTradeData, setIsMarketLoading, setToastOpen, setMarketTradeData])
+    const availableTradeCheck = React.useCallback((): { tradeBtnStatus:TradeBtnStatus,label:string }=> {
+        let {calcTradeParams,quoteMinAmtInfo,baseMinAmtInfo} = pageTradePro;
+        if (account.readyState === AccountStatus.ACTIVATED) {
+            const type =  marketTradeData.type === TradeProType.sell ? 'quote':'base';
+            const minAmt =  type === 'quote' ? quoteMinAmtInfo?.minAmount:baseMinAmtInfo?.minAmount;
+            const validAmt = !!(calcTradeParams?.amountBOut && minAmt
+                && toBig(calcTradeParams?.amountBOut).gte(toBig(minAmt)));
 
+                if (marketTradeData === undefined
+                    || marketTradeData?.base.tradeValue === undefined
+                    || marketTradeData?.quote.tradeValue === undefined
+                    || marketTradeData?.base.tradeValue === 0
+                    || marketTradeData?.quote.tradeValue === 0) {
+                    return { tradeBtnStatus:TradeBtnStatus.DISABLED,label:'labelEnterAmount' }
+                } else if (validAmt || minAmt === undefined) {
+                    return { tradeBtnStatus:TradeBtnStatus.AVAILABLE,label:'' }
+                } else {
+                    const symbol:string = marketTradeData[type].belong;
+                    const minOrderSize = VolToNumberWithPrecision(minAmt, symbol) + ' ' + symbol;
+                    return { tradeBtnStatus:TradeBtnStatus.DISABLED,label:`labelLimitMin, ${minOrderSize}` }
+                }
+            }
+        return { tradeBtnStatus:TradeBtnStatus.AVAILABLE,label:'' }
+    }, [account.readyState, pageTradePro, marketTradeData])
+
+    const {
+        btnStatus:tradeMarketBtnStatus ,
+        onBtnClick:marketBtnClick,
+        btnLabel:tradeMarketBtnI18nKey,
+        // btnClickCallbackArray
+    } =  useSubmitBtn({
+        availableTradeCheck: availableTradeCheck,
+        isLoading:isMarketLoading,
+        submitCallback: marketSubmit,
+        marketTradeData
+    })
+    
     return {
         alertOpen,
         confirmOpen,
         toastOpen,
         closeToast,
-        // marketLastCall,
+        isMarketLoading,
        marketSubmit,
        marketTradeData,
-       onChangeMarketEvent
+       onChangeMarketEvent,
+        tradeMarketBtnStatus,
+        tradeMarketBtnI18nKey,
+        marketBtnClick,
         // marketTicker,
     }
 }

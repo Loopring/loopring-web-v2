@@ -39,10 +39,9 @@ export type PageTradePro<C> = {
     feeBips?: number | string,
     totalFee?: number | string,
     takerRate?: number | string,
-    quoteMinAmtInfo?: number | string,
-    buyMinAmtInfo?: undefined | OrderInfo;
-    sellMinAmtInfo?: undefined | OrderInfo;
-    lastStepAt?:'sell'|'buy'|undefined,
+    quoteMinAmtInfo?: undefined | OrderInfo,
+    baseMinAmtInfo?: undefined | OrderInfo;
+    lastStepAt?:'base'|'quote'|undefined,
 }
 
 export type PageTradeProStatus<C extends { [ key: string ]: any }> = {
