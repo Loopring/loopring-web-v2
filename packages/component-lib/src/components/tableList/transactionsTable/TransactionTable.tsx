@@ -263,7 +263,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
             formatter: ({row}) => {
                 const {unit, value} = row[ 'amount' ]
                 const hasValue = Number.isFinite(value)
-                const renderValue = hasValue ? `${getValuePrecisionThousand(value, 4)}` : EmptyValueTag
+                const renderValue = hasValue ? `${getValuePrecisionThousand(value, undefined, undefined, undefined, false, { isTrade: true })}` : EmptyValueTag
                 return (
                     <Box className="rdg-cell-value textAlignRight">
                         {renderValue} {unit || ''}
@@ -277,9 +277,10 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
             headerCellClass: 'textAlignRight',
             formatter: ({row}) => {
                 const fee = row[ 'fee' ]
+                const feePrecision = row['feePrecision']
                 // const hasValue = fee ? Number.isFinite(fee.value) : ''
                 // const renderValue = hasValue && fee.value !== 0 ? `${fee.value.toFixed(6)} ${fee.unit}` : EmptyValueTag
-                const renderValue = `${getValuePrecisionThousand(fee.value, 4, 2)} ${fee.unit}`
+                const renderValue = `${getValuePrecisionThousand(fee.value, feePrecision, feePrecision, undefined, false, { floor: false })} ${fee.unit}`
                 return (
                     <Box className="rdg-cell-value textAlignRight">
                         {renderValue}

@@ -100,7 +100,7 @@ export default {
     labelOrderDetailMaker: 'Maker',
     labelOrderDetailTradingVolume: 'Trading Volume',
     labelOrderDetailOrderId: 'Order Id',
-    labelOrderCancelAll: 'Cancel All',
+    labelOrderCancelAll: 'Action',
     labelOrderCancel: 'Cancel',
     labelOrderProcessing: 'Processing',
     labelOrderProcessed: 'Processed',

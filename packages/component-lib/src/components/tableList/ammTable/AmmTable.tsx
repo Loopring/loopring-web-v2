@@ -121,8 +121,8 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
         formatter: ({row}) => {
             const tradeType = row[ 'side' ] === AmmSideTypes.Join ? t('labelAmmJoin') : t('labelAmmExit')
             const {from, to} = row[ 'amount' ]
-            const renderFromValue = getValuePrecisionThousand(from.value, 4, 2)
-            const renderToValue = getValuePrecisionThousand(to.value, 4, 2)
+            const renderFromValue = getValuePrecisionThousand(from.value, undefined, undefined, undefined, false, { isTrade: true })
+            const renderToValue = getValuePrecisionThousand(to.value, undefined, undefined, undefined, false, { isTrade: true })
             return (
                 <>
                     <StyledSideCell value={row[ 'side' ]}>

@@ -100,7 +100,7 @@ export default {
     labelOrderDetailMaker: '挂单',
     labelOrderDetailTradingVolume: '交易量',
     labelOrderDetailOrderId: '订单号',
-    labelOrderCancelAll: '撤销所有订单',
+    labelOrderCancelAll: '操作',
     labelOrderCancel: '撤销订单',
     labelOrderProcessing: '挂单中',
     labelOrderProcessed: '完全成交',
