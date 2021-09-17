@@ -77,6 +77,7 @@ export const makeUIAmmActivityMap = <R extends { [key: string]: any }, I extends
 
                             // return prev;
                         }
+                        console.log({prev})
                         return prev;
                     }, ammActivityViewMapTmp)
 
@@ -111,6 +112,8 @@ const makeAsCard = <R extends { [key: string]: any }, I extends { [key: string]:
     (ammActivityViewMap: AmmActivityViewMap<R, I> | undefined, myReward?: any): Array<AmmCardProps<I>> => {
     const { coinMap } = store.getState().tokenMap
     const { ammMap } = store.getState().amm.ammMap
+    const { tokenPrices } = store.getState().tokenPrices
+    const { forex } = store.getState().system
     try {
         if (ammActivityViewMap && coinMap) {
             // @ts-ignore
@@ -129,11 +132,19 @@ const makeAsCard = <R extends { [key: string]: any }, I extends { [key: string]:
                         if (matchRes) {
                             const coinAInfo = coinMap[matchRes[1]]
                             const coinBInfo = coinMap[matchRes[2]]
+                            const coinAPriceDollar = tokenPrices[coinAInfo?.simpleName]
+                            const coinAPriceYuan = coinAPriceDollar * (forex || 6.5)
+                            const coinBPriceDollar = tokenPrices[coinBInfo?.simpleName]
+                            const coinBPriceYuan = coinBPriceDollar * (forex || 6.5)
                             // myLog('matchRes:', matchRes, ' coinAInfo:', coinAInfo, ' coinBInfo:', coinBInfo)
                             return {
                                 ..._.cloneDeep(_ammInfo),
                                 coinAInfo,
                                 coinBInfo,
+                                coinAPriceDollar,
+                                coinAPriceYuan,
+                                coinBPriceDollar,
+                                coinBPriceYuan,
                                 activity: item,
                             }
 
