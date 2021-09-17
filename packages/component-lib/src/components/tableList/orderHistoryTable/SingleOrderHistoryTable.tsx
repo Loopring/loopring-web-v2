@@ -51,7 +51,9 @@ const getColumnModeSingleHistory = (t: TFunction): Column<Row, unknown>[] => {
                 const {from, to} = row[ column.key ]
                 const {key: keyFrom, value: valueFrom} = from
                 const {key: keyTo, value: valueTo} = to
-                const renderValue = `${getValuePrecisionThousand(valueFrom, 4, 4)} ${keyFrom} \u2192 ${getValuePrecisionThousand(valueTo, 4, 4)} ${keyTo}`
+                const precisionFrom = row.amount.from?.['precision']
+                const precisionTo = row.amount.to?.['precision']
+                const renderValue = `${getValuePrecisionThousand(valueFrom, undefined, undefined, precisionFrom)} ${keyFrom} \u2192 ${getValuePrecisionThousand(valueTo, precisionTo, precisionTo, precisionTo)} ${keyTo}`
                 return <div className="rdg-cell-value">{renderValue}</div>
             },
         },
@@ -70,8 +72,9 @@ const getColumnModeSingleHistory = (t: TFunction): Column<Row, unknown>[] => {
             name: t('labelOrderFilledPrice'),
             headerCellClass: 'textAlignRight',
             formatter: ({row, column}) => {
-                const value = row[ column.key ]
-                const renderValue = value ? getValuePrecisionThousand(value, 4, 4) : EmptyValueTag
+                const value = row[ column.key ].value
+                const precisionMarket = row[ column.key ].precision
+                const renderValue = value ? getValuePrecisionThousand(value, undefined, undefined, precisionMarket, true) : EmptyValueTag
                 return <div className="rdg-cell-value textAlignRight">{renderValue}</div>
             },
         },
@@ -80,9 +83,11 @@ const getColumnModeSingleHistory = (t: TFunction): Column<Row, unknown>[] => {
             name: t('labelOrderFee'),
             headerCellClass: 'textAlignRight',
             formatter: ({row, column}) => {
-                const value = row[ column.key ]
+                const value = row[ column.key ].value
+                const precision = row[ column.key ].precision
+                const quoteToken = row.amount.to.key
                 const hasValue = Number.isFinite(value)
-                const renderValue = hasValue ? value.toFixed(5) : EmptyValueTag
+                const renderValue = hasValue ? `${getValuePrecisionThousand(value, undefined, undefined, precision)} ${quoteToken}` : EmptyValueTag
                 return <div className="rdg-cell-value textAlignRight">{renderValue}</div>
             },
         },

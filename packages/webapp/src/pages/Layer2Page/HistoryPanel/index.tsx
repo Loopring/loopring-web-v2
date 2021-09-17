@@ -5,6 +5,7 @@ import { AmmTable, TradeTable, TransactionTable } from '@loopring-web/component-
 import { StylePaper } from '../../styled'
 import { useGetAmmRecord, useGetTrades, useGetTxs } from './hooks';
 import { useSystem } from 'stores/system'
+import store from 'stores'
 
 const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
     const [pageSize, setPageSize] = React.useState(0);
@@ -13,6 +14,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     const {txs: txTableData, txsTotal, showLoading: showTxsLoading, getUserTxnList} = useGetTxs()
     const {userTrades, showLoading: showTradesLoading} = useGetTrades()
     const {ammRecordList, showLoading: ammLoading} = useGetAmmRecord()
+    const {tokenMap} = store.getState().tokenMap
 
     const {t} = rest
     const container = React.useRef(null);
@@ -67,6 +69,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                         // },
                         showFilter: true,
                         showloading: showTradesLoading,
+                        tokenMap: tokenMap,
                         ...rest
                     }}/>
                 ) : (

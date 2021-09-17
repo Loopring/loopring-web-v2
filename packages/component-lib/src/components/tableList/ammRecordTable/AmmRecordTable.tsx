@@ -67,11 +67,11 @@ const columnMode = ({t}: WithTranslation, currency: 'USD' | 'CYN'): Column<Row<a
                     <Typography color={isAdd ? 'var(--color-success)' : 'var(--color-error)'}>{side}</Typography>
                     &nbsp;&nbsp;
                     <Typography component={'span'}>
-                        {`${getValuePrecisionThousand(amountA, 4)} ${coinA.simpleName}`}
+                        {`${getValuePrecisionThousand(amountA, undefined, undefined, undefined, false, { isTrade: true })} ${coinA.simpleName}`}
                     </Typography>
                     &nbsp;  +  &nbsp;
                     <Typography component={'span'}>
-                        {`${getValuePrecisionThousand(amountB, 4)} ${coinB.simpleName}`}
+                        {`${getValuePrecisionThousand(amountB, undefined, undefined, undefined, false, { isTrade: true })} ${coinB.simpleName}`}
                     </Typography>
                 </Box>
             )
@@ -87,7 +87,7 @@ const columnMode = ({t}: WithTranslation, currency: 'USD' | 'CYN'): Column<Row<a
             return <Typography
                 component={'span'}> {
                 typeof totalDollar === 'undefined' ? EmptyValueTag :
-                    currency === Currency.dollar ? PriceTag.Dollar + getValuePrecisionThousand(totalDollar, 2, 2) : PriceTag.Yuan + getValuePrecisionThousand(totalYuan, 2, 2)}
+                    currency === Currency.dollar ? PriceTag.Dollar + getValuePrecisionThousand(totalDollar, undefined, undefined, undefined, true, { isFait: true }) : PriceTag.Yuan + getValuePrecisionThousand(totalYuan, 2, 2)}
             </Typography>
 
         }
