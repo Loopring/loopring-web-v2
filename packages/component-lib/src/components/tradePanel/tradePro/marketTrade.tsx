@@ -19,7 +19,7 @@ import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { SlippagePanel } from '../components';
 import React from 'react';
 import { usePopupState } from 'material-ui-popup-state/hooks';
-import { useSettings } from 'stores';
+import { useSettings } from '../../../stores';
 
 export const MarketTrade = withTranslation('common', {withRef: true})(<M extends MarketTradeData<T>,
     T extends IBData<I>,

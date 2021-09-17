@@ -12,15 +12,15 @@ export type IdMap = {
 }
 
 export type TokenMapStates<R extends { [ key: string ]: any }> = {
-    coinMap?: CoinMap<R> | undefined,
+    coinMap: CoinMap<R> | undefined,
     totalCoinMap?: CoinMap<R> | undefined,
-    marketArray?: string[],
-    marketCoins?: string[]
+    marketArray: string[],
+    marketCoins: string[]
     // tokenPairsMap?:TokenPairMap<R>,
-    tokenMap?: TokenMap<R>,
-    marketMap?: LoopringMap<MarketInfo>,
-    addressIndex?: AddressMap,
-    idIndex?: IdMap,
+    tokenMap: TokenMap<R>,
+    marketMap: LoopringMap<MarketInfo>,
+    addressIndex: AddressMap,
+    idIndex: IdMap,
 } & StateBase
 
 

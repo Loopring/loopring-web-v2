@@ -18,6 +18,7 @@ import * as sdk from 'loopring-sdk';
 import { LoopringAPI } from '../../api_wrapper';
 import { swapDependAsync } from '../SwapPage/help';
 import { useAmmMap } from '../../stores/Amm/AmmMap';
+import { makeTickerMap } from '../../hooks/help';
 
 /**
  *
@@ -192,7 +193,8 @@ export  const useProSocket = () => {
         if (market && ammMap && LoopringAPI.exchangeAPI) {
             try {
                 const {depth, ammPoolSnapshot, tickMap} = await swapDependAsync(market);
-                updatePageTradePro({market, depth, ammPoolSnapshot, tickMap})
+                const tickerMap  = makeTickerMap({tickerMap: tickMap})
+                updatePageTradePro({market, depth, ammPoolSnapshot, tickMap:tickerMap})
             } catch (error) {
 
             }
