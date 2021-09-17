@@ -34,7 +34,8 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
         __DAYS__,
         __SUBMIT_LOCK_TIMER__,
         __TOAST_AUTO_CLOSE_TIMER__
-    } = usePageTradePro();    // @ts-ignore
+    } = usePageTradePro();
+    // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const walletMap = pageTradePro.tradeCalcProData?.walletMap ?? {}
     const [isMarketLoading, setIsMarketLoading] = React.useState(false)

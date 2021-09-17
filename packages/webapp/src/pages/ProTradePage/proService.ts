@@ -95,7 +95,7 @@ export const useSocketProService = ({
                             volume:lp
                         }
                     }
-                    myLog('socket:ammPoolSnapshot',ammPoolSnapshot)
+                    // myLog('socket:ammPoolSnapshot',ammPoolSnapshot)
 
                     store.dispatch(updatePageTradePro( {market, ammPoolSnapshot: ammPoolSnapshot}))
                 }
@@ -108,7 +108,7 @@ export const useSocketProService = ({
                 // @ts-ignore
                 const tickerMap = value.tickerMap;
                 if(tickerMap.market === market){
-                    myLog('socket:tickMap',tickerMap)
+                    // myLog('socket:tickMap',tickerMap)
                     store.dispatch(updatePageTradePro( {market,tickMap:tickerMap}))
                 }
             }
@@ -118,7 +118,7 @@ export const useSocketProService = ({
                 // @ts-ignore
                 const orderbook = value.orderbookMap[market];
                 if(orderbook && orderbook.symbol){
-                    myLog('socket:orderbook to depth',orderbook)
+                    // myLog('socket:orderbook to depth',orderbook)
 
                     store.dispatch(updatePageTradePro( {market, depth: orderbook}))
                 }
@@ -130,7 +130,7 @@ export const useSocketProService = ({
             // _socketUpdate({walletLayer2Status, walletLayer1Status})
         })
         return () => subscription.unsubscribe();
-    }, [subjectAmmpool,subjectOrderBook,subjectTicker]);
+    }, []);
 
 
 
@@ -141,7 +141,7 @@ export const useSocketProService = ({
             _accountUpdate({walletLayer2Status, walletLayer1Status})
         })
         return () => subscription.unsubscribe();
-    }, [subjectWallet,subjectBook]);
+    }, []);
 
     // React.useEffect(() => {
     //     const subscription = merge(subjectWallet,subjectBook).subscribe(()=>{
