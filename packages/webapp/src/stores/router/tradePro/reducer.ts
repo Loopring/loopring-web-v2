@@ -32,14 +32,13 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 tickMap,
                 tradeCalcProData,
                 ammPoolSnapshot,
-                quoteMinAmtInfo,
                 calcTradeParams,
                 priceImpactObj,
                 feeBips,
                 totalFee,
                 takerRate,
-                buyMinAmtInfo,
-                sellMinAmtInfo,
+                baseMinAmtInfo,
+                quoteMinAmtInfo,
                 lastStepAt
             } = action.payload;
             if (market !== state.pageTradePro.market) {
@@ -57,9 +56,8 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     feeBips,
                     totalFee,
                     takerRate,
+                    baseMinAmtInfo,
                     quoteMinAmtInfo,
-                    buyMinAmtInfo,
-                    sellMinAmtInfo,
                     lastStepAt:undefined,
                 }
 
@@ -97,11 +95,11 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 if (takerRate) {
                     state.pageTradePro.takerRate = takerRate;
                 }
-                if (sellMinAmtInfo) {
-                    state.pageTradePro.sellMinAmtInfo = sellMinAmtInfo;
+                if (baseMinAmtInfo) {
+                    state.pageTradePro.baseMinAmtInfo = baseMinAmtInfo;
                 }
-                if (buyMinAmtInfo) {
-                    state.pageTradePro.buyMinAmtInfo = buyMinAmtInfo;
+                if (quoteMinAmtInfo) {
+                    state.pageTradePro.quoteMinAmtInfo = quoteMinAmtInfo;
                 }
 
             }
