@@ -7,9 +7,8 @@ import { CoinInfo, CoinKey, WalletCoin } from '@loopring-web/common-resources';
 import { Virtuoso } from 'react-virtuoso';
 import { CoinIcon } from '../form';
 
-
 function _CoinMenu<C, I extends CoinInfo<C>>({
-                                                 coinMap = {}, walletMap = {}, filterBy = (ele, filterString) => {
+                                                 coinMap = {}, walletMap = {}, nonZero, sorted, filterBy = (ele, filterString) => {
         return filterString && filterString.length ? RegExp(filterString).test(ele.simpleName as string) : true
     }, filterString, handleSelect, allowScroll = true, selected = null,
                                                  listProps = {},
@@ -24,17 +23,40 @@ function _CoinMenu<C, I extends CoinInfo<C>>({
             setSelect(selected);
         }
     }, [select, selected])
-    //const list = React.useMemo(() =>
+
+    if (nonZero === undefined) {
+        nonZero = false
+    }
+    if (sorted === undefined) {
+        sorted = true
+    }
+
     const list = Object.keys(coinMap).reduce((list: Array<{ walletCoin: WalletCoin<C>, key: string }>, key) => {
         if (filterBy(coinMap[ key ], filterString)) {
             const walletCoin: WalletCoin<C> = walletMap[ key ] ? walletMap[ key ] : {belong: key, count: 0}
-            list.push({walletCoin, key: key});
-            if (select === key) {
-                rowIndex = list.length - 1;
+            if ((nonZero && walletMap[ key ] && walletMap[ key ].count > 0) || !nonZero) {
+                list.push({walletCoin, key: key});
+                if (select === key) {
+                    rowIndex = list.length - 1;
+                }
             }
         }
         return list;
     }, [])
+
+    if (sorted) {
+        list.sort(function(a, b) {
+            if (a.walletCoin.count && b.walletCoin.count) {
+                return b.walletCoin.count - a.walletCoin.count
+            } else if (a.walletCoin.count && !b.walletCoin.count) {
+                return -1
+            } else if (!a.walletCoin.count && b.walletCoin.count) {
+                return 1
+            }
+            return a.walletCoin.belong.localeCompare(b.walletCoin.belong)
+        })
+    }
+
     const handleListItemClick = React.useCallback((_event: React.MouseEvent, select: CoinKey<C>) => {
         setSelect(select);
         handleSelect && handleSelect(_event, select);

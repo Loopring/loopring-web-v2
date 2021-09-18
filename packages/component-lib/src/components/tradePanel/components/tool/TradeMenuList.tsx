@@ -9,6 +9,8 @@ import { useTheme } from '@emotion/react';
 
 export const TradeMenuList = <T extends IBData<I>,
     I>({
+        nonZero,
+        sorted,
            t, onChangeEvent, walletMap, selected, tradeData, coinMap, _height,
            ...rest
        }: TradeMenuListProps<T, I> & WithTranslation) => {
@@ -52,6 +54,8 @@ export const TradeMenuList = <T extends IBData<I>,
                             :` calc(${_height}  - 2 * var(--toolbar-row-padding) - ${theme.unit * 3}px )`
                         : '460px'}
                 {...{
+                    nonZero,
+                    sorted,
                 coinMap: coinMap, //swapData.type === 'sell' ? tradeCalcData?.sellCoinInfoMap : tradeCalcData?.buyCoinInfoMap as any,
                 filterBy,
                 // height: '410px',

@@ -375,7 +375,7 @@ export const useAmmJoin = ({
     const walletLayer2Callback = React.useCallback(async () => {
 
         if (pair?.coinBInfo?.simpleName && snapShotData?.ammPoolSnapshot) {
-            const {walletMap} = makeWalletLayer2()
+            const {walletMap} = makeWalletLayer2(false)
             initAmmData(pair, walletMap)
             setIsLoading(false)
         }

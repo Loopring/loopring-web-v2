@@ -100,7 +100,7 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
     //     ammPoolSnapshot: AmmPoolSnapshot|undefined
     // }|undefined>(undefined);
     const walletLayer2DoIt = React.useCallback(async() => {
-        const {walletMap: _walletMap} = makeWalletLayer2();
+        const {walletMap: _walletMap} = makeWalletLayer2(false);
         // setWalletMap(_walletMap as WalletMapExtend<any>)
         if (_walletMap) {
             // setShowLoading(true)

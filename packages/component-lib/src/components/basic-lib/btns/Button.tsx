@@ -178,6 +178,7 @@ const QRStyle = styled(Box)`
     //z-index: 10;
   }
     &:after{
+      pointer-events: none;
       content: '';
       position: absolute;
       display: block;
