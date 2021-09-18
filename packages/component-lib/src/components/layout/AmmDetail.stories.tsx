@@ -78,7 +78,7 @@ const titleInfo: AmmDetailExtendProps<AmmInData<any>, any> = {
     feeB: 1232,
     isNew: true,
     isActivity: false,
-    APR: 56,
+    APY: 56,
 }
 const myAmm: MyAmmLP<any> = {
     feeA: 122,
@@ -182,7 +182,7 @@ const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
                                     <Typography component={'span'}
                                                 style={{textTransform: 'capitalize'}}>{t('labelLiquidity')}</Typography>
                                     <Typography component={'span'}
-                                                style={{textTransform: 'uppercase'}}>{t('labelAPR')}</Typography>
+                                                style={{textTransform: 'uppercase'}}>{t('labelAPY')}</Typography>
                                 </Typography>
                                 <Typography component={'p'} color={'textPrimary'} display={'flex'}
                                             justifyContent={'space-between'} marginTop={1}>
@@ -192,7 +192,7 @@ const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
                                             currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(titleInfo.amountDollar) : PriceTag.Yuan + getThousandFormattedNumbers(titleInfo.amountYuan ? titleInfo.amountYuan : 0)}
                                         </Typography>
                                         <Typography
-                                            component={'span'}> {titleInfo.APR ? titleInfo.APR : EmptyValueTag}%
+                                            component={'span'}> {titleInfo.APY ? titleInfo.APY : EmptyValueTag}%
                                         </Typography>
                                     </>
 

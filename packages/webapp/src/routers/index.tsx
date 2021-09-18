@@ -42,6 +42,8 @@ const RouterView = () => {
     //         }
     //     }
     // }, [location?.pathname])
+    const proFlag = !!(process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === 'true')
+
     return <>
         <Header/>
         <Switch>
@@ -50,8 +52,13 @@ const RouterView = () => {
             <Route exact path='/'><ContentWrap><SwapPage/></ContentWrap></Route>
             <Route path='/trading/lite'><ContentWrap><SwapPage/></ContentWrap></Route>
             <Route path='/trading/lite(/:symbol)'><ContentWrap><SwapPage/></ContentWrap></Route>
-            <Route path='/trading/pro'><OrderbookPage/></Route>
-            <Route path='/trading/pro(/:symbol)'><OrderbookPage/></Route>
+
+            {
+                proFlag && <Route path='/trading/pro'><OrderbookPage /></Route>
+            }
+            {
+                proFlag && <Route path='/trading/pro(/:symbol)'><OrderbookPage /></Route>
+            }
 
             <Route exact path='/markets'><ContentWrap><QuotePage/></ContentWrap> </Route>
             <Route exact path='/mining'><ContentWrap><MiningPage/></ContentWrap> </Route>

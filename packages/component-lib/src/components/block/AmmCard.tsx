@@ -88,7 +88,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             amountDollar,
             amountYuan,
             // isNew,
-            APR,
+            APY,
             activity: {duration, myRewards, rewardToken, isPass, ruleType, status, totalRewards, rewardTokenDollar, rewardTokenYuan, maxSpread},
             handleClick,
             popoverIdx,
@@ -203,17 +203,17 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     </Box>
                 </BoxStyled>
                 <Typography display={'flex'} flexDirection={'column'} component={'span'} justifyContent={'center'} alignItems={'center'} marginTop={7}>
-                    {/* <Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> {APR || EmptyValueTag}% */}
+                    {/* <Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> {APY || EmptyValueTag}% */}
                     {isOrderbook ? (
                         <Typography component={'span'} variant={'h2'} fontFamily={'Roboto'}>
                             {totalRewards ? getValuePrecisionThousand(totalRewards) + ' '
                             + rewardToken.simpleName : EmptyValueTag}
                         </Typography>) 
                     : (<Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> 
-                        {getValuePrecisionThousand(APR, 2, 2, 2, true) + '%' || EmptyValueTag}
+                        {getValuePrecisionThousand(APY, 2, 2, 2, true) + '%' || EmptyValueTag}
                     </Typography>)}
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'} marginTop={1}
-                                style={{textTransform: 'uppercase'}}>{isOrderbook ? t('labelMiningReward'): t('labelAPR')}</Typography>
+                                style={{textTransform: 'uppercase'}}>{isOrderbook ? t('labelMiningReward'): t('labelAPY')}</Typography>
                 </Typography>
 
                 <DividerWrapperStyled marginTop={3} marginBottom={2}>

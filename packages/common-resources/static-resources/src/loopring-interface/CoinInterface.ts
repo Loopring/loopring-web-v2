@@ -138,7 +138,7 @@ export type AmmDetailBase<T> = {
     feeYuan?: number,
     isNew?: boolean,
     isActivity?: boolean,
-    APR?: number,
+    APY?: number,
 }
 
 export type AmmDetail<T> = AmmDetailBase<T> & {
@@ -248,6 +248,6 @@ export type TradeFloat = {
     changeYuan?: number,
     closeDollar?: number,
     closeYuan?: number,
-    // APR?:number
+    // APY?:number
     // tagNew?: boolean
 }

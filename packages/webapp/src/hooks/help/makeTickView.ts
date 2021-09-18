@@ -23,7 +23,7 @@ export const makeTickView = (tick: Partial<TickerData>) => {
             high: tick.high === 0 ? undefined : tick.high,
             low: tick.low === 0 ? undefined : tick.low,
 
-            // APR: 0,
+            // APY: 0,
         }
         if (faitPrices && forex && tick.close) {
             const volume = VolToNumberWithPrecision((tick.base_token_volume ?? 0), tick.base as string)
@@ -74,7 +74,7 @@ export const makeTickerMap = <R extends { [ key: string ]: any }>({tickerMap}: {
                 close: isNaN(item.close) ? undefined : item.close,
                 high: item.high === 0 ? undefined : item.high,
                 low: item.low === 0 ? undefined : item.low,
-                // APR: 0,
+                // APY: 0,
                 reward: 0,
                 rewardToken: '',
                 __rawTicker__: item,

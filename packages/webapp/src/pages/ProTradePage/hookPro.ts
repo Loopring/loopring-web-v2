@@ -72,7 +72,7 @@ export const usePro = <C extends { [ key: string ]: any }>():{
         // let walletMap: WalletMap<any> | undefined = tradeCalcProData?.walletMap;
         let walletMap: WalletMap<any> | undefined;
         if (account.readyState === AccountStatus.ACTIVATED && walletLayer2Status === SagaStatus.UNSET) {
-            walletMap = makeWalletLayer2().walletMap as WalletMap<any>;
+            walletMap = makeWalletLayer2(true).walletMap as WalletMap<any>;
         }
 
         tradeCalcProData={

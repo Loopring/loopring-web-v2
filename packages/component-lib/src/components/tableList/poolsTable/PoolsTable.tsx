@@ -302,17 +302,17 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
         }
     },
     {
-        key: 'APR',
+        key: 'APY',
         sortable: true,
-        name: t('labelAPR'),
+        name: t('labelAPY'),
         width: 'auto',
         maxWidth: 68,
         headerCellClass: 'textAlignRight',
         formatter: ({row}) => {
-            const APR = typeof row.APR !== undefined && row.APR ? row?.APR : EmptyValueTag;
+            const APY = typeof row.APY !== undefined && row.APY ? row?.APY : EmptyValueTag;
             return <Box className={'textAlignRight'}>
                 <Typography
-                component={'span'}> {APR === EmptyValueTag || typeof APR === 'undefined' ? EmptyValueTag : getValuePrecisionThousand(APR, 2, 2, 2, true) + '%'}</Typography>
+                component={'span'}> {APY === EmptyValueTag || typeof APY === 'undefined' ? EmptyValueTag : getValuePrecisionThousand(APY, 2, 2, 2, true) + '%'}</Typography>
             </Box>
         }
     },
