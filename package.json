@@ -21,7 +21,7 @@
     "dotenv-webpack": "^7.0.3",
     "ffjavascript": "^0.1.0",
     "i18next": "^20.1.0",
-    "loopring-sdk": "0.0.130",
+    "loopring-sdk": "0.0.135",
     "lottie-react": "^2.1.0",
     "material-ui-popup-state": "^1.9.3",
     "qrcode.react": "^1.0.1",
