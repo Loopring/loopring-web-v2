@@ -79,7 +79,7 @@ export  const MarketView = withTranslation('common')(({
                                 depths={pageTradePro.depth[ `${DepthType.bid}s`].slice(0,8)}
                                 showTitle ={false}  />
                 </Box>
-                :<LoadingIcon/>
+                :<Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}><LoadingIcon/></Box>
             }
 
 
