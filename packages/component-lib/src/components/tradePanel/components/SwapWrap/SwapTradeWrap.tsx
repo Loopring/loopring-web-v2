@@ -58,11 +58,11 @@ export const SwapTradeWrap = <T extends IBData<I>,
         return disabled || tradeCalcData === undefined || tradeCalcData.coinInfoMap === undefined;
     }, [disabled, tradeCalcData]);
 
-    const handleOnClick = React.useCallback((_event: React.MouseEvent, ref: any) => {
+    const handleOnClick = React.useCallback((_event: React.MouseEvent,_name:string, ref: any) => {
         const focus: 'buy' | 'sell' = ref.current === buyRef.current ? 'buy' : 'sell';
         onChangeEvent(1, {tradeData: swapData.tradeData, type: focus, to: 'menu'});
     }, [swapData, onChangeEvent])
-    const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
+    const handleCountChange = React.useCallback((ibData: IBData<I>,_name:string,_ref: any) => {
         const focus: 'buy' | 'sell' = _ref?.current === buyRef.current ? 'buy' : 'sell';
         if (swapData.tradeData[ focus ].tradeValue !== ibData.tradeValue) {
             onChangeEvent(0, {tradeData: {...swapData.tradeData, [ focus ]: ibData}, type: focus, to: 'button'});

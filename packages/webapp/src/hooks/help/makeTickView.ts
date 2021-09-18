@@ -23,7 +23,7 @@ export const makeTickView = (tick: Partial<TickerData>) => {
             high: tick.high === 0 ? undefined : tick.high,
             low: tick.low === 0 ? undefined : tick.low,
 
-            // APY: 0,
+            // APR: 0,
         }
         if (faitPrices && forex && tick.close) {
             const volume = VolToNumberWithPrecision((tick.base_token_volume ?? 0), tick.base as string)
@@ -49,13 +49,17 @@ export const makeTickView = (tick: Partial<TickerData>) => {
 }
 export const makeTickerMap = <R extends { [ key: string ]: any }>({tickerMap}: { tickerMap: LoopringMap<TickerData> }): TickerMap<{ [ key: string ]: any }> => {
     const {faitPrices, forex} = store.getState().system;
+    const {tokenPrices} = store.getState().tokenPrices;
+
     return Reflect.ownKeys(tickerMap).reduce((prev, key) => {
         const item: TickerData = tickerMap[ key as any ];
-        if (item && item.base && forex && faitPrices && (faitPrices[ item.base ] || faitPrices[ 'USDT' ])) {
+        if (item && item.base && forex && faitPrices && (faitPrices[ item.base ] || tokenPrices[ item.base ]  || faitPrices[ 'USDT' ])) {
+            const price = tokenPrices[ item.base ] ? tokenPrices[ item.base ]: faitPrices[ item.base ]?faitPrices[ item.base ].price:faitPrices[ 'USDT' ].price;
+            // faitPrices[ item.base ] ? faitPrices[ item.base ].price : faitPrices[ 'USDT' ].price
             // const volume = VolToNumberWithPrecision(item.base_token_volume, item.base as string)
             const volume = volumeToCount(item.symbol.split('-')[ 1 ], item.quote_token_volume)
             //FIX: DIE is not in faitPrices
-            const priceDollar = toBig(volume ? volume : 0).times(faitPrices[ item.base ] ? faitPrices[ item.base ].price : faitPrices[ 'USDT' ].price);
+            const priceDollar = toBig(volume ? volume : 0).times(price);
             const priceYuan = priceDollar?.times(forex);
             const change = item.change && item.change !== 0 ? item.change * 100 : undefined;
 
@@ -70,7 +74,7 @@ export const makeTickerMap = <R extends { [ key: string ]: any }>({tickerMap}: {
                 close: isNaN(item.close) ? undefined : item.close,
                 high: item.high === 0 ? undefined : item.high,
                 low: item.low === 0 ? undefined : item.low,
-                // APY: 0,
+                // APR: 0,
                 reward: 0,
                 rewardToken: '',
                 __rawTicker__: item,

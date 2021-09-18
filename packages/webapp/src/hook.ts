@@ -173,6 +173,21 @@ export function useInit() {
                 break;
         }
     }, [userRewardsStatus])
+    React.useEffect(() => {
+        switch (tickerStatus) {
+            case "ERROR":
+                console.log("ERROR", 'get ticker error,ui');
+                tickerStatusUnset()
+                break;
+            case "PENDING":
+                break;
+            case "DONE":
+                tickerStatusUnset();
+                break;
+            default:
+                break;
+        }
+    }, [tickerStatus, tickerStatusUnset]);
 
     useAccountInit({state})
     // React.useEffect(() => {

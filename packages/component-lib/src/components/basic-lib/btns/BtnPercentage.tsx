@@ -1,6 +1,6 @@
 /* Rectangle 340 */
 import styled from '@emotion/styled';
-import { BtnPercentageProps } from './Interface';
+import {  BtnPercentageProps } from './Interface';
 import { Slider } from '@mui/material';
 import { Box } from '@mui/material';
 import { WithTranslation, withTranslation } from 'react-i18next';
@@ -169,40 +169,48 @@ const StyledSlider = styled(Slider)`
 
     & .MuiSlider-thumb {
       z-index: 30;
-      transform: translate(-50%,-50%) ;
+      transform: translate(-50%, -50%);
       width: 18px;
       height: 18px;
       color: var(--color-button-pot);
-      margin-top: 0px;
-      margin-left: 0px;
+      margin-top: 0;
+      margin-left: 0;
       ${({theme}) => theme.border.defaultFrame({d_W: 2, d_R: 12, c_key: 'var(--color-secondary)'})};
-      box-shadow:initial;
+      box-shadow: initial;
+
       input {
         cursor: pointer;
       }
-      .MuiSlider-valueLabelCircle{
-        background: var(--color-pop-bg);
-        background: var(--color-pop-bg);
-        overflow: visible;
-        box-shadow: var(--shadow);
-        border-radius: ${({theme}) => theme.unit * 0.5}px;
-        transform: rotate(0) ;
-        .MuiSlider-valueLabelLabel{
-          transform: rotate(0) ;
-        }
-        &:before {
-          position: absolute;
-          bottom:  2px;
-          content: '';
-          display: block;
-          transform: rotate(-180deg);
-          transform-origin: bottom;
-          width: 0;
-          height: 0;
-          border: ${({theme}) => theme.unit}px solid transparent;
-          border-bottom: ${({theme}) => theme.unit}px solid var(--color-pop-bg);
-        }
+
+      .MuiSlider-valueLabel {
+        background: var(--opacity);
+        padding: 0;
+        top:-4px;
       }
+
+      // .MuiSlider-valueLabelCircle{
+      //   background: var(--color-pop-bg);
+      //   background: var(--color-pop-bg);
+      //   overflow: visible;
+      //   box-shadow: var(--shadow);
+        //   border-radius: ${({theme}) => theme.unit * 0.5}px;
+      //   transform: rotate(0) ;
+      //   .MuiSlider-valueLabelLabel{
+      //     transform: rotate(0) ;
+      //   }
+      //   &:before {
+      //     position: absolute;
+      //     bottom:  2px;
+      //     content: '';
+      //     display: block;
+      //     transform: rotate(-180deg);
+      //     transform-origin: bottom;
+      //     width: 0;
+      //     height: 0;
+        //     border: ${({theme}) => theme.unit}px solid transparent;
+        //     border-bottom: ${({theme}) => theme.unit}px solid var(--color-pop-bg);
+      //   }
+      // }
 
     }
   }
@@ -216,7 +224,8 @@ export const BtnPercentage = withTranslation('common')(({
                                                             valueLabelDisplay = 'off',
                                                             valuetext,
                                                             step = 1,
-                                                            t
+                                                            t,
+                                                            ...rest
                                                         }: BtnPercentageProps & WithTranslation) => {
     const [value, setValue] = React.useState<number>(selected);
 
@@ -256,6 +265,7 @@ export const BtnPercentage = withTranslation('common')(({
     // }
     return <Box width={'100%'} display={'flex'}>
         <StyledSlider
+            {...rest}
             aria-label="Always visible"
             value={value}
             getAriaValueText={_valuetext as any}

@@ -21,7 +21,7 @@ const vipDefault: string[][] = [
     ['VIP 3', '< 10,000 LRC', '1,000.00', '1,000.00', '1,000.00', '--'],
     ['VIP 4', '< 10,000 LRC', '1,000.00', '1,000.00', '1,000.00', '--'],
 ];
-export const VipPanel = withTranslation(['common', 'layout'])(({t, i18n}: & WithTranslation) => {
+export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTranslation) => {
     const {account: {level}} = useAccount()
     const getImagePath = React.useCallback(() => {
         const path = `static/images/vips/${level.toUpperCase()}.png`
@@ -63,11 +63,11 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t, i18n}: & With
             </Grid>
 
         </StylePaper>
-        <StylePaper flex={1} container className={'MuiPaper-elevation2'} marginY={1} padding={4}>
+        <StylePaper flex={1} container className={'MuiPaper-elevation2'} marginY={1} padding={4} >
             <Grid item xs={12}>
                 <Typography component={'h3'} variant={'h4'} color={'text.secondary'}>Fee List</Typography>
             </Grid>
-            <Grid item>
+            <Grid item xs={12} marginTop={2}>
                 <VipView rawData={vipDefault}/>
             </Grid>
 

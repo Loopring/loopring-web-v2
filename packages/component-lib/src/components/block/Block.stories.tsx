@@ -99,7 +99,7 @@ const AmmCardWrap = () => {
                 to: new Date()
             },
         },
-        APY: 56,
+        APR: 56,
         tradeFloat: {
             priceDollar: 123,
             priceYuan: 2343232,

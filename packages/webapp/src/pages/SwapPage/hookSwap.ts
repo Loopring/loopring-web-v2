@@ -1,20 +1,22 @@
 import * as sdk from 'loopring-sdk';
 import { OrderStatus, sleep } from 'loopring-sdk';
 import React from 'react';
+import { usePairMatch } from '../../hooks/common/usePairMatch';
 import { useSocket } from '../../stores/socket';
 import { useAccount } from '../../stores/account';
-import { usePairMatch } from '../../hooks/common/usePairMatch';
 import { useAmount } from '../../stores/amount';
 import { useTokenMap } from '../../stores/token';
 import { useAmmMap } from '../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../stores/walletLayer2';
 import { useSystem } from '../../stores/system';
+import { usePageTradeLite } from '../../stores/router';
+
 import {
     AccountStatus,
     CoinMap,
     fnType,
     getShowStr,
-    IBData,
+    IBData, MarketType,
     SagaStatus,
     TradeCalcData,
     TradeFloat,
@@ -36,8 +38,7 @@ import {
 } from '../../hooks/help';
 import { LoopringAPI } from '../../api_wrapper';
 import * as _ from 'lodash'
-import { PairFormat, usePageTradeLite } from '../../stores/router';
-import { DAYS } from '../../defs/common_defs';
+// import { DAYS } from '../../defs/common_defs';
 import { getTimestampDaysLater } from '../../utils/dt_tools';
 import { myLog } from '@loopring-web/common-resources/static-resources/src/utils/log_tools';
 import { calcPriceByAmmTickMapDepth, marketInitCheck, swapDependAsync } from './help';
@@ -96,10 +97,10 @@ const getPriceImpactInfo = (calcTradeParams: any) => {
     }
 }
 
-export const useSwap = <C extends { [ key: string ]: any }>() => {
+export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}) => {
 
     //High: No not Move!!!!!!
-    const {realPair, realMarket} = usePairMatch('/trading/lite');
+    const {realPair, realMarket} = usePairMatch(path);
     /** get store value **/
     const {amountMap, getAmount} = useAmount();
     const {account, status: accountStatus} = useAccount();
@@ -111,14 +112,15 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
         pageTradeLite,
         updatePageTradeLite,
         __SUBMIT_LOCK_TIMER__,
-        __TOAST_AUTO_CLOSE_TIMER__
+        __TOAST_AUTO_CLOSE_TIMER__,
+        __DAYS__
     } = usePageTradeLite();
     const {status: walletLayer2Status} = useWalletLayer2();
     /*** api prepare ***/
     const {t} = useTranslation('common')
     const refreshRef = React.createRef();
     const [pair, setPair] = React.useState(realPair);
-    const [market, setMarket] = React.useState<PairFormat>(realMarket as PairFormat);
+    const [market, setMarket] = React.useState<MarketType>(realMarket as MarketType);
     const [swapBtnI18nKey, setSwapBtnI18nKey] = React.useState<string | undefined>(undefined)
     const [swapBtnStatus, setSwapBtnStatus] = React.useState(TradeBtnStatus.AVAILABLE)
     const [isSwapLoading, setIsSwapLoading] = React.useState(false)
@@ -132,12 +134,8 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
     const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
     const [myTradeArray, setMyTradeArray] = React.useState<RawDataTradeItem[]>([]);
     const [tradeFloat, setTradeFloat] = React.useState<TradeFloat | undefined>(undefined);
-    // const [tickMap, setTickMap] = React.useState<sdk.LoopringMap<sdk.TickerData> | undefined>(undefined)
-    // const [ammPoolSnapshot, setAmmPoolSnapshot] = React.useState<sdk.AmmPoolSnapshot | undefined>(undefined);
-    const [alertOpen, setAlertOpen] = React.useState<boolean>(false)
-    const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false)
-    // const [depth, setDepth] = React.useState<sdk.DepthData>()
-    // const [priceImpact, setPriceImpact] = React.useState<number>(0)
+    const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
+    const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
 
     /*** Btn related function ***/
     const swapFunc = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
@@ -186,7 +184,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                         volume: calcTradeParams.amountBOutSlip.minReceived as string
                     },
                     allOrNone: false,
-                    validUntil: getTimestampDaysLater(DAYS),
+                    validUntil: getTimestampDaysLater(__DAYS__),
                     maxFeeBips: parseInt(totalFee as string),
                     fillAmountBOrS: false, // amm only false
                     orderType,
@@ -467,7 +465,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
                 })
             }
             updatePageTradeLite({
-                market: market as PairFormat,
+                market: market as MarketType,
                 feeBips: 0,
                 totalFee: 0,
                 takerRate: 0,

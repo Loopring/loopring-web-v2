@@ -1,12 +1,23 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import _ from 'lodash'
 import store from 'stores'
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
-import { AmmDetail, CustomError, ErrorMap, myLog, SagaStatus, TradeFloat, } from '@loopring-web/common-resources';
+import {
+    AmmDetail,
+    CustomError,
+    ErrorMap,
+    myError,
+    myLog,
+    SagaStatus,
+    TradeFloat,
+} from '@loopring-web/common-resources';
 import { useTokenMap } from '../../../stores/token';
 import { useSocket } from '../../../stores/socket';
 import { useTicker } from '../../../stores/ticker';
 import { makeTickView } from '../../../hooks/help';
+import { tickerService } from '../../../services/socket';
+import { LoopringAPI } from '../../../api_wrapper';
+import { WsTopicType } from 'loopring-sdk';
 
 const RowConfig = {
     rowHeight:44,
@@ -22,18 +33,56 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
     const [filteredData, setFilteredData] = React.useState<Array<Row<R>> | []>([])
 
     // const [page, setPage] = React.useState<number>(1);
-    const {coinMap} = useTokenMap();
+    const {coinMap,marketArray} = useTokenMap();
     const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
     const [filterValue, setFilterValue] = React.useState('');
     const [tableHeight, setTableHeight] = React.useState(0)
-    const {ammMap, status: ammMapStatus,} = useAmmMap();
+    const {ammMap} = useAmmMap();
     const {tokenPrices} = store.getState().tokenPrices
-    const {
-        tickerMap,
-        status: tickerStatus,
-        updateTickers,
-    } = useTicker();
-    const {status: socketStatus, statusUnset: socketStatusUnset,} = useSocket();
+    const {tickerMap,updateTickerSync, status: tickerStatus} = useTicker();
+    const {sendSocketTopic, socketEnd} = useSocket();
+
+    const subject = React.useMemo(() => tickerService.onSocket(), []);
+    React.useEffect(() => {
+        const subscription = subject.subscribe(({tickerMap}) => {
+            if (tickerMap) {
+                Reflect.ownKeys(tickerMap).forEach((key) => {
+                    // let recommendationIndex = recommendedPairs.findIndex(ele => ele === key)
+                    // if (recommendationIndex !== -1) {
+                    //     // setRecommendations
+                    //     updateRecommendation(recommendationIndex, tickerMap[ key as string ])
+                    // }
+                    //TODO update related row. use socket return
+                })
+            }
+        });
+        return () => subscription.unsubscribe();
+    }, [subject]);
+    React.useEffect(() => {
+        socketSendTicker();
+        return () => {
+            socketEnd()
+        }
+    }, []);
+    const socketSendTicker = React.useCallback(() => {
+        sendSocketTopic({[ WsTopicType.ticker ]: marketArray});
+    }, [])
+
+    // const getRecommendPairs = React.useCallback(async () => {
+    //     if (LoopringAPI.exchangeAPI) {
+    //         try {
+    //             const {recommended} = await LoopringAPI.exchangeAPI.getRecommendedMarkets()
+    //             setRecommendedPairs(recommended)
+    //             return recommended || []
+    //         } catch (e) {
+    //             myError(e)
+    //         }
+    //         return []
+    //
+    //     }
+    // }, [setRecommendedPairs])
+
+
     const resetTableData = React.useCallback((tableData)=>{
         if (tokenPrices) {
             setFilteredData(tableData)
@@ -50,7 +99,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
                         _ammMap[ 'AMM-' + tickerMapKey ].tradeFloat = {
                             ..._ammMap[ 'AMM-' + tickerMapKey ].tradeFloat,
                             ...tickerMap[ tickerMapKey ],
-                            // APY: _ammMap['AMM-' + tickerMapKey ].APY
+                            // APR: _ammMap['AMM-' + tickerMapKey ].APR
                         }
     
                     }
@@ -126,10 +175,10 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
                     return 0
                 })
                 break;
-            case 'APY':
+            case 'APR':
                 _rawData = filteredData.sort((a, b) => {
-                    const valueA = a.APY || 0
-                    const valueB = b.APY || 0
+                    const valueA = a.APR || 0
+                    const valueB = b.APR || 0
                     if (valueA && valueB) {
                         return valueB - valueA
                     }
@@ -149,31 +198,12 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
         return _rawData;
     },[filteredData, rawData, tokenPrices])
 
-    const updateTickerLoop = React.useCallback((_keys?: string[]) => {
-        updateTickers(_keys as string[]);
-        if (nodeTimer.current !== -1) {
-            clearTimeout(nodeTimer.current);
-        }
-        nodeTimer.current = setTimeout(() => {
-            updateTickerLoop(_keys)
-        }, 1000)
-    }, [updateTickers])
+
     React.useEffect(() => {
         return () => {
             clearTimeout(nodeTimer.current as NodeJS.Timeout);
         }
     }, [nodeTimer.current]);
-
-    const updateTickersUI = React.useCallback(() => {
-        if (ammMap && Object.keys(ammMap).length > 0) {
-            updateTickerLoop(Object.keys(ammMap))
-        }
-    }, [ammMap]);
-    React.useEffect(() => {
-        if (ammMap && Object.keys(ammMap).length !== 0) {
-            updateTickersUI()
-        }
-    }, []);
 
 
     React.useEffect(() => {
@@ -181,11 +211,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
             updateRawData(tickerMap)
         }
     }, [tickerStatus]);
-    React.useEffect(() => {
-        if (ammMapStatus === SagaStatus.UNSET) {
-            updateTickersUI()
-        }
-    }, [ammMapStatus, updateTickersUI]);
+
     const getFilteredData = React.useCallback((event) => {
         setFilterValue(event.currentTarget?.value);
         if(event.currentTarget?.value) {
@@ -207,7 +233,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
         tableHeight,
         getFilteredData,
         filteredData,
-        updateTickersUI,
+        // updateTickersUI,
         sortMethod,
     }
 }

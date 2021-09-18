@@ -15,6 +15,9 @@ const socketSlice: Slice<StateBase & { socket: SocketMap }> = createSlice({
             state.socket = {};
             state.status = SagaStatus.PENDING;
         },
+        // socketNotSupport(state,action: PayloadAction<undefined>) {
+        //
+        // },
         sendSocketTopic(state, action: PayloadAction<{ socket: SocketMap }>) {
             state.socket = action.payload.socket
         },

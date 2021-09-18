@@ -1,15 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
 import styled from '@emotion/styled'
-import { Box, ClickAwayListener, Modal, Typography } from '@mui/material'
+import { Box, Modal, Typography } from '@mui/material'
 import { DateRange } from '@mui/lab'
 import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
-import { bindHover } from 'material-ui-popup-state/es';
-import { bindPopper, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
-import { PopoverPure } from '../../basic-lib'
-import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes, getValuePrecisionThousand, myLog } from '@loopring-web/common-resources'
-import { Column, Popover, PopoverType, Table, TablePagination } from '../../basic-lib'
-import { SingleOrderHistoryTable } from './SingleOrderHistoryTable'
+import {  usePopupState } from 'material-ui-popup-state/hooks';
+import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes, getValuePrecisionThousand } from '@loopring-web/common-resources'
+import { Column, Table, TablePagination } from '../../basic-lib'
 import { Filter, FilterOrderTypes } from './components/Filter'
 import { OrderDetailPanel } from './components/modal'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
@@ -84,16 +81,16 @@ export type OrderHistoryRawDataItem = {
     hash: string;
     orderId: string;
 }
-
-const LastDayPriceChangedCell: any = styled(Box)`
-    color: ${(props: any) => {
-        const {
-        value,
-        theme: {colorBase},
-        } = props
-        return value === TradeTypes.Buy ? colorBase.success : colorBase.error
-    }};
-`
+//
+// const LastDayPriceChangedCell: any = styled(Box)`
+//     color: ${(props: any) => {
+//         const {
+//         value,
+//         theme: {colorBase},
+//         } = props
+//         return value === TradeTypes.Buy ? colorBase.success : colorBase.error
+//     }};
+// `
 
 const TableStyled = styled(Box)`
     display: flex;
