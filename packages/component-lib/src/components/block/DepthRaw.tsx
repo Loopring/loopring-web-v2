@@ -36,36 +36,44 @@ export enum DepthType {
     bid = 'bid'
 }
 
-export const DepthBlock = withTranslation('common')(({
-                                                         marketInfo,
-                                                         depths,
-                                                         // tokenBaseInfo,
-                                                         type,
-                                                         t,
-                                                         showTitle = true
-                                                     }: { showTitle?: boolean,
-    type: DepthType, depths: DepthViewData[],
+export const DepthTitle = withTranslation('common')(({
+                                                          marketInfo,
+
+                                                          t,
+                                                      }: {
+    // type: DepthType,
     // tokenBaseInfo: TokenInfo, tokenQuoteInfo: TokenInfo,
     marketInfo: MarketInfo
-} & WithTranslation) => {
-
+} & WithTranslation)=>{
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = marketInfo.market.match(/(\w+)-(\w+)/i);
 
-    return <Box paddingTop={1/2}>
-        {showTitle && < Grid container spacing={1} position={'relative'} wrap={'nowrap'} >
-          <Grid item xs={4} alignSelf={'flex-start'} >
+    return < Grid container spacing={1} position={'relative'} wrap={'nowrap'} >
+        <Grid item xs={4} alignSelf={'flex-start'} >
             <Typography lineHeight={Height} color={'var(--color-text-third)'}
                         variant={'body2'} component={'p'} >{t('labelDepthPrice', {symbol: quoteSymbol})} </Typography>
-          </Grid>
-          <Grid item xs={4} alignSelf={'flex-end'} >
+        </Grid>
+        <Grid item xs={4} alignSelf={'flex-end'} >
             <Typography lineHeight={Height} color={'var(--color-text-third)'}
                         variant={'body2'} textAlign={'right'}  component={'p'} >  {t('labelDepthAmount', {symbol: baseSymbol})} </Typography>
-          </Grid>
-          <Grid item xs={4} alignSelf={'flex-end'} >
+        </Grid>
+        <Grid item xs={4} alignSelf={'flex-end'} >
             <Typography lineHeight={Height} color={'var(--color-text-third)'} variant={'body2'} textAlign={'right'}  component={'p'} >  {t('labelDepthTotal')} </Typography>
-          </Grid>
-        </Grid>}
+        </Grid>
+    </Grid>
+})
+export const DepthBlock = withTranslation('common')(({
+                                                         depths,
+                                                         // tokenBaseInfo,
+                                                         type,
+                                                     }: {
+    type: DepthType,
+    depths: DepthViewData[],
+    marketInfo: MarketInfo
+} & WithTranslation) => {
+
+
+    return <>
         {depths.map((depth,index) => {
             // const amt_p = ;
             //
@@ -79,5 +87,5 @@ export const DepthBlock = withTranslation('common')(({
             }}    />
         })}
 
-    </Box>
+    </>
 })
