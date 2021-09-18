@@ -8,7 +8,9 @@ type DepthColor= {
 }
 export const DepthHIcon = ({bo='#49527D',l='#49527D',a='#FF5677',b='#00BBA8',...props}: SvgIconProps & DepthColor) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <rect x="2.5" y="2.5" width="19" height="19" rx="1.5" stroke={bo}/>
+        <path fillRule="evenodd" clipRule="evenodd"
+              d="M20 3H4C3.44772 3 3 3.44772 3 4V20C3 20.5523 3.44772 21 4 21H20C20.5523 21 21 20.5523 21 20V4C21 3.44772 20.5523 3 20 3ZM4 2C2.89543 2 2 2.89543 2 4V20C2 21.1046 2.89543 22 4 22H20C21.1046 22 22 21.1046 22 20V4C22 2.89543 21.1046 2 20 2H4Z"
+              fill={bo}/>
         <rect x="10.0001" y="4.66675" width="9.33333" height="2.66667" fill={l}/>
         <rect x="10.0001" y="8.66675" width="9.33333" height="2.66667" fill={l}/>
         <rect x="10.0001" y="12.6665" width="9.33333" height="2.66667" fill={l}/>
@@ -17,9 +19,12 @@ export const DepthHIcon = ({bo='#49527D',l='#49527D',a='#FF5677',b='#00BBA8',...
         <rect x="4.66663" y="12.6665" width="4" height="6.66667" fill={b}/>
     </SvgIcon>
 }
+
 export const DepthFIcon = ({bo='#49527D',l='#49527D',a='#FF5677',b='#00BBA8',...props}: SvgIconProps & DepthColor) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <rect x="2.5" y="2.5" width="19" height="19" rx="1.5" stroke={bo}/>
+        <path fillRule="evenodd" clipRule="evenodd"
+              d="M20 3H4C3.44772 3 3 3.44772 3 4V20C3 20.5523 3.44772 21 4 21H20C20.5523 21 21 20.5523 21 20V4C21 3.44772 20.5523 3 20 3ZM4 2C2.89543 2 2 2.89543 2 4V20C2 21.1046 2.89543 22 4 22H20C21.1046 22 22 21.1046 22 20V4C22 2.89543 21.1046 2 20 2H4Z"
+              fill={bo}/>
         <rect x="10.0001" y="4.66675" width="9.33333" height="2.66667" fill={l}/>
         <rect x="10.0001" y="8.66675" width="9.33333" height="2.66667" fill={l}/>
         <rect x="10.0001" y="12.6665" width="9.33333" height="2.66667" fill={l}/>
@@ -27,6 +32,16 @@ export const DepthFIcon = ({bo='#49527D',l='#49527D',a='#FF5677',b='#00BBA8',...
         <rect x="4.66663" y="4.66675" width="4" height="14.6667" fill={a}/>
     </SvgIcon>
 }
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 2.66675H17.3333V5.33342H8V2.66675Z" fill="#49527D"/>
+    <path d="M8 6.66675H17.3333V9.33342H8V6.66675Z" fill="#49527D"/>
+    <path d="M8 10.6665H17.3333V13.3332H8V10.6665Z" fill="#49527D"/>
+    <path d="M8 14.6667H17.3333V17.3334H8V14.6667Z" fill="#49527D"/>
+    <path d="M2.6665 2.66675H6.6665V9.33341H2.6665V2.66675Z" fill="#FF5677"/>
+    <path d="M2.6665 10.6665H6.6665V17.3332H2.6665V10.6665Z" fill="#00BBA8"/>
+</svg>
+
+
 export const UpIcon = (props: SvgIconProps ) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M13 7.83L16.59 11.41L18 10L12 4L6 10L7.41 11.41L11 7.83L11 20L13 20L13 7.83Z" />

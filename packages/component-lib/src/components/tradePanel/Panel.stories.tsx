@@ -371,7 +371,7 @@ const Template: Story<any> = () => {
             <h4>Slippage bloc</h4>
             <Grid container spacing={2}>
                 <SlippagePanel {...{
-                    ...rest, t, tReady:true,
+                    ...rest, t,
                     handleChange: ()=>{},
                     slippageList: slippageArray,
                     slippage: 0.5

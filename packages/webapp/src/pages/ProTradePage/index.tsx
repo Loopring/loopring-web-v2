@@ -5,20 +5,24 @@ import { Responsive, WidthProvider } from 'react-grid-layout';
 
 import { usePro } from './hookPro';
 import { useTheme } from '@emotion/react';
-import { Box, styled } from '@mui/material';
+import { Box } from '@mui/material';
 import { layoutConfigs } from '@loopring-web/common-resources';
 import { ChartView, MarketView, OrderTableView, SpotView, Toolbar, WalletInfo } from './panel'
 import {  boxLiner } from '@loopring-web/component-lib';
+import styled from '@emotion/styled/';
 
 
 const BoxStyle = styled(Box)`
+  --tab-header: 44px;
   background: var(--color-box);
   &.spot{
     ${({theme}:any) => boxLiner({theme})}
   }
   .MuiTabs-root{
-     .MuiTab-root{
-       min-height: 44;
+    min-height: var(--tab-header);
+    .MuiTab-root{
+       min-height: var(--tab-header);
+       padding: ${({theme}) => theme.unit }px;
      }
   }
 `
