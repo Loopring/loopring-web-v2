@@ -37,6 +37,10 @@ const CardStyled = styled(Card)`
     justify-content: space-between;
 `
 
+const CardActionBoxStyled = styled(Box)`
+    position: relative;
+`
+
 const BoxStyled = styled(Box)`
 ` as typeof Box
 // const BoxBg = styled(Box)`
@@ -55,7 +59,7 @@ const DividerWrapperStyled = styled(Box)``
 
 const ViewDetailStyled = styled(Typography)`
     &:hover {
-        border-bottom: 1px solid var(--color-text-secondary);
+        color: var(--color-text-primary);
     }
 ` as any
 
@@ -309,8 +313,10 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                         <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                             {t('labelMiningMaxSpread')}
                         </Typography>
-                        <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400} style={{ borderBottom: totalRewards ? '1px dashed var(--color-text-primary)' : 'none' }}>
-                            {maxSpread}
+                        <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
+                            {getValuePrecisionThousand(maxSpread, undefined, undefined, 2, true)}
+                            &nbsp;
+                            {'%'}
                         </Typography>
                     </DetailWrapperStyled>
                 )}
@@ -540,17 +546,17 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                 </DetailWrapperStyled>
             </CardContent>
             <CardActions>
-                <Box width={'100%'} display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
+                <CardActionBoxStyled width={'100%'} display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
                     <Button fullWidth variant={'contained'} size={'large'} disabled={!!isPass}
                             color={'primary'}
-                            onClick={handleClick}>{isAmm ? t(isPass ? 'labelEndLiquidityBtn' : 'labelAddLiquidityBtn') : t(isPass ? 'labelEndLiquidityBtn' : 'labelPlaceOrderBtn')}
+                            onClick={handleClick}>{isAmm ? t(isPass ? 'labelEndLiquidityBtn' : 'labelAddLiquidityBtn') : t(isPass ? 'labelEndLiquidityBtn' : 'labelMiningPlaceOrderBtn')}
                     </Button>
                     <ViewDetailStyled onClick={() => handleViewDetail()} component={'a'} variant={'body1'} color={'var(--color-text-secondary)'} marginTop={1}>
                         {t('labelMiningViewDetails')}
                         &nbsp;
                         {'>'}
                     </ViewDetailStyled>
-                </Box>
+                </CardActionBoxStyled>
             </CardActions>
         </CardStyled>
     }))) as <T>(props: AmmCardProps<T> & React.RefAttributes<any>) => JSX.Element;

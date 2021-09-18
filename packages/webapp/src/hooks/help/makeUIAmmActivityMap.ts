@@ -57,7 +57,7 @@ export const makeUIAmmActivityMap = <R extends { [key: string]: any }, I extends
                                 ruleType: ammPoolActivityRule.ruleType,
                                 rewardToken: coinMap[symbol],
                                 totalRewards: Number(totalRewards),
-                                maxSpread: ammPoolActivityRule?.maxSpread,
+                                maxSpread: (ammPoolActivityRule?.maxSpread || 0) * 100,
                                 myRewards: status === AmmPoolActivityStatus.InProgress && myReward && myReward[ammPoolActivityRule.market] ?
                                     volumeToCount(symbol, myRewardVol) : 0,
                                 duration: {
