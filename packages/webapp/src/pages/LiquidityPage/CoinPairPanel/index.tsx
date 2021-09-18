@@ -8,7 +8,7 @@ import {
     getValuePrecisionThousand,
     PriceTag,
     abbreviateNumber,
-    myLog,
+    myLog, RowConfig,
 } from '@loopring-web/common-resources';
 import { Avatar, Box, Breadcrumbs, Divider, Grid, Link, Tab, Tabs, Typography } from '@mui/material';
 import { AmmPanelView } from '../AmmPanel';
@@ -57,10 +57,6 @@ const applyProps = (index: number) => {
         'aria-controls': `tabpanel-${index}`,
     }
 }
-const RowConfig = {
-    rowHeight: 44,
-    headerRowHeight: 44,
-}
 
 export const CoinPairPanel = withTranslation('common')(<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>
 ({t, ...rest}:
@@ -95,7 +91,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
     const precisionB = coinPairInfo['precisionB'] || undefined
     // const [pageSize, setPageSize] = React.useState(0)
     const container = React.useRef(null);
-    const tableHeight = RowConfig.headerRowHeight + (tabIndex === 0 ? 15 : 14) * RowConfig.rowHeight;
+    const tableHeight = RowConfig.rowHeaderHeight + (tabIndex === 0 ? 15 : 14) * RowConfig.rowHeight;
 
     // React.useEffect(() => {
     //     // @ts-ignore
@@ -296,7 +292,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                     {tabIndex === 0 ? <AmmRecordTable
                         rawData={ammMarketArray}
                         rowHeight={RowConfig.rowHeight}
-                        headerRowHeight={RowConfig.headerRowHeight}
+                        headerRowHeight={RowConfig.rowHeaderHeight}
                         currentheight={tableHeight}
                         showloading={isRecentLoading}
                         currency={currency}
@@ -310,7 +306,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         }}
                         showloading={showAmmPoolLoading}
                         rowHeight={RowConfig.rowHeight}
-                        headerRowHeight={RowConfig.headerRowHeight}
+                        headerRowHeight={RowConfig.rowHeaderHeight}
                         currentheight={tableHeight}
                         currency={currency}
                     />}
