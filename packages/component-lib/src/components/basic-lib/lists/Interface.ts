@@ -68,7 +68,7 @@ export type CoinMenuProps<R, I> = {
     listProps?: ListProps | any,
     selected: CoinKey<R> | null,
     nonZero: boolean,
-    sorted?: boolean,
+    sorted: boolean,
     filterString: string,
     height?: string,
     allowScroll?: boolean,//boolean
