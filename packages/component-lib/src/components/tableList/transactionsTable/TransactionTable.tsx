@@ -3,7 +3,6 @@ import styled from '@emotion/styled'
 import { Box, Link, Modal } from '@mui/material'
 import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
-import { useDeepCompareEffect } from 'react-use'
 import { Column, Table, TablePagination } from '../../basic-lib'
 import {
     EmptyValueTag,
@@ -13,13 +12,12 @@ import {
     WarningIcon,
     CompleteIcon,
     getValuePrecisionThousand,
-    myLog,
 } from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
 import { TxnDetailPanel, TxnDetailProps } from './components/modal'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { RawDataTransactionItem, TransactionStatus, TransactionTradeTypes } from './Interface'
-import { DateRange, StaticDatePicker } from '@mui/lab'
+import { DateRange } from '@mui/lab'
 import { TxType, UserTxTypes } from 'loopring-sdk'
 
 export type TxsFilterProps = {
@@ -32,21 +30,22 @@ export type TxsFilterProps = {
     types?: UserTxTypes[] | string;
 }
 
-interface Row extends RawDataTransactionItem {
-    filterColumn: string
-    cellExpend: {
-        value: string
-        children: []
-        isExpanded: boolean
-    }
-    children?: Row[]
-    isExpanded?: boolean
-    format?: any
-}
+// interface Row extends RawDataTransactionItem {
+//     filterColumn: string
+//     cellExpend: {
+//         value: string
+//         children: []
+//         isExpanded: boolean
+//     }
+//     children?: Row[]
+//     isExpanded?: boolean
+//     format?: any
+// }
 
 const TYPE_COLOR_MAPPING = [
     {type: TransactionStatus.processed, color: 'success'},
     {type: TransactionStatus.processing, color: 'warning'},
+    {type: TransactionStatus.received, color: 'warning'},
     {type: TransactionStatus.failed, color: 'error'},
 ]
 
@@ -70,7 +69,7 @@ const CellStatus = ({row, column}: any) => {
     `
     const svg = status === 'processed' 
         ? <CompleteIcon /> 
-        : status === 'processing' 
+        : status === 'processing' || status === 'received'
             ? <WaitingIcon /> 
             : <WarningIcon />
     const RenderValueWrapper =
@@ -149,7 +148,7 @@ export interface TransactionTableProps {
 }
 
 export const TransactionTable = withTranslation(['tables', 'common'])((props: TransactionTableProps & WithTranslation) => {
-    const { rawData, pagination, showFilter, getTxnList, showloading, etherscanBaseUrl, ...rest } = props
+    const { rawData, pagination, showFilter, getTxnList, showloading, etherscanBaseUrl } = props
     const [page, setPage] = React.useState(1)
     // const [totalData, setTotalData] = React.useState<RawDataTransactionItem[]>(rawData)
     const [filterType, setFilterType] = React.useState(TransactionTradeTypes.allTypes)
