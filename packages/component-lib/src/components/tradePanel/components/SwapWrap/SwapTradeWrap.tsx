@@ -160,15 +160,18 @@ export const SwapTradeWrap = <T extends IBData<I>,
     let btos = `${tradeCalcData .BtoS ? tradeCalcData.BtoS : EmptyValueTag}`
 
     if (tradeData?.sell.tradeValue && tradeData?.buy.tradeValue) {
-        stob = getValuePrecisionThousand(tradeData?.sell.tradeValue / tradeData?.buy.tradeValue)
-        btos = getValuePrecisionThousand(tradeData?.buy.tradeValue / tradeData?.sell.tradeValue)
+        const precision = 8
+        stob = getValuePrecisionThousand(tradeData?.buy.tradeValue / tradeData?.sell.tradeValue, undefined, undefined, precision)
+        btos = getValuePrecisionThousand(tradeData?.sell.tradeValue / tradeData?.buy.tradeValue, undefined, undefined, precision)
+        // stob = (tradeData?.buy.tradeValue / tradeData?.sell.tradeValue).toString()
+        btos = (tradeData?.sell.tradeValue / tradeData?.buy.tradeValue).toString()
     }
 
     const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${stob} ${tradeData.buy?.belong}`
-        : `1${tradeData.buy?.belong} \u2248 ${btos} ${tradeData.sell?.belong}`;
+        : `1${tradeData.buy?.belong} \u2248 ${btos} ${tradeData.sell?.belong}`
         
     const priceImpactColor =  tradeCalcData?.priceImpactColor ? tradeCalcData.priceImpactColor : 'textPrimary'
-    const priceImpact = tradeCalcData?.priceImpact ?  getValuePrecisionThousand(tradeCalcData.priceImpact) + ' %' : EmptyValueTag
+    const priceImpact = tradeCalcData?.priceImpact ?  getValuePrecisionThousand(tradeCalcData.priceImpact, undefined, undefined, 2, true) + ' %' : EmptyValueTag
 
     const fee = (tradeCalcData && tradeCalcData.fee) ? ((parseFloat(tradeCalcData.fee) / 100).toString() + '%') : EmptyValueTag
 
