@@ -29,7 +29,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
             const {
                 market,
                 depth,
-                tickMap,
+                tickerMap,
                 tradeCalcProData,
                 ammPoolSnapshot,
                 calcTradeParams,
@@ -48,7 +48,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     tradeCalcProData:tradeCalcProData?tradeCalcProData:{},
                     calcTradeParams,
                     depth,
-                    tickMap,
+                    tickerMap,
                     ammPoolSnapshot,
                     priceImpactObj,
                     tradeChannel: calcTradeParams ? (calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined,
@@ -73,8 +73,8 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     state.pageTradePro.depth = depth;
                 }
 
-                if (tickMap) {
-                    state.pageTradePro.tickMap = tickMap;
+                if (tickerMap) {
+                    state.pageTradePro.tickerMap = tickerMap;
                 }
                 if (ammPoolSnapshot) {
                     state.pageTradePro.ammPoolSnapshot = ammPoolSnapshot;

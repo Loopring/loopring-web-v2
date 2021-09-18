@@ -12,7 +12,7 @@ import { useLocation, useRouteMatch } from 'react-router';
 import moment from 'moment'
 import { AmmDetailStore, useAmmMap } from '../../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../../stores/walletLayer2';
-import { makeTickView, makeWalletLayer2, volumeToCount, WalletMapExtend } from '../../../hooks/help';
+import { makeTickerMap, makeWalletLayer2, volumeToCount, WalletMapExtend } from 'hooks/help';
 import {
     AmmPoolSnapshot,
     AmmUserRewardMap,
@@ -389,16 +389,17 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
                             tickerData: tickMap[ realMarket ],
                             ammPoolSnapshot: ammPoolSnapshot,
                         }
+                        const tickerMap = makeTickerMap({tickerMap: tickMap})
                         const {close,stob,btos} = calcPriceByAmmTickMapDepth({
                             market: realMarket,
                             tradePair: realMarket,
-                            dependencyData: {ammPoolSnapshot, tickMap, depth}
+                            dependencyData: {ammPoolSnapshot, tickerMap, depth}
                         })
 
-                        _tradeFloat = makeTickView(tickMap[ realMarket ] ? tickMap[ realMarket ] : {})
+                        // _tradeFloat = makeTickView(tickMap[ realMarket ] ? tickMap[ realMarket ] : {})
                         // myLog('........close:', _tradeFloat, close)
                         setStobPair({stob,btos})
-                        setTradeFloat({..._tradeFloat, close: close} as TradeFloat);
+                        setTradeFloat({...tickerMap.tradeFloat, close: close} as TradeFloat);
 
                         const coinPairInfoWithPrecision = {
                             ..._coinPairInfo,

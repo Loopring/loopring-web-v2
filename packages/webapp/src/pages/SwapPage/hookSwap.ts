@@ -1,15 +1,15 @@
 import * as sdk from 'loopring-sdk';
 import { OrderStatus, sleep } from 'loopring-sdk';
 import React from 'react';
-import { usePairMatch } from '../../hooks/common/usePairMatch';
-import { useSocket } from '../../stores/socket';
-import { useAccount } from '../../stores/account';
-import { useAmount } from '../../stores/amount';
-import { useTokenMap } from '../../stores/token';
-import { useAmmMap } from '../../stores/Amm/AmmMap';
-import { useWalletLayer2 } from '../../stores/walletLayer2';
-import { useSystem } from '../../stores/system';
-import { usePageTradeLite } from '../../stores/router';
+import { usePairMatch } from 'hooks/common/usePairMatch';
+import { useSocket } from 'stores/socket';
+import { useAccount } from 'stores/account';
+import { useAmount } from 'stores/amount';
+import { useTokenMap } from 'stores/token';
+import { useAmmMap } from 'stores/Amm/AmmMap';
+import { useWalletLayer2 } from 'stores/walletLayer2';
+import { useSystem } from 'stores/system';
+import { usePageTradeLite } from 'stores/router';
 
 import {
     AccountStatus,
@@ -24,19 +24,18 @@ import {
 } from '@loopring-web/common-resources';
 import { RawDataTradeItem, SwapData, SwapTradeData, SwapType, TradeBtnStatus } from '@loopring-web/component-lib';
 import { useTranslation } from 'react-i18next';
-import { useWalletLayer2Socket, walletLayer2Service } from '../../services/socket';
-import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
+import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
+import { VolToNumberWithPrecision } from 'utils/formatter_tool';
 
-import { useToast } from '../../hooks/common/useToast';
+import { useToast } from 'hooks/common/useToast';
 import {
     accountStaticCallBack,
     btnClickMap,
     btnLabel,
-    makeMarketArray,
-    makeTickView,
+    makeMarketArray, makeTickerMap,
     makeWalletLayer2,
-} from '../../hooks/help';
-import { LoopringAPI } from '../../api_wrapper';
+} from 'hooks/help';
+import { LoopringAPI } from 'api_wrapper';
 import * as _ from 'lodash'
 // import { DAYS } from '../../defs/common_defs';
 import { getTimestampDaysLater } from '../../utils/dt_tools';
@@ -524,7 +523,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
 
     }, [market]);
     const refreshAmmPoolSnapshot = React.useCallback(() => {
-        const {tickMap, ammPoolSnapshot, depth, lastStepAt,tradePair} = pageTradeLite;
+        const {tickerMap, ammPoolSnapshot, depth, lastStepAt,tradePair} = pageTradeLite;
         //@ts-ignore
         //(tickMap || ammPoolSnapshot) &&
         if (pageTradeLite.market && (`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market
@@ -532,14 +531,14 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
         ) {
             let {stob, btos, close} = calcPriceByAmmTickMapDepth({
                 market: market as any, tradePair: `${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}`,
-                dependencyData: {tickMap, ammPoolSnapshot, depth}
+                dependencyData: {tickerMap, ammPoolSnapshot, depth}
             })
 
             // myLog('refreshAmmPoolSnapshot ---stob:', close, stob)
 
-            let _tradeFloat = makeTickView(tickMap && tickMap[ pageTradeLite.market ] ? tickMap[ pageTradeLite.market ] : {})
+            // let _tradeFloat =
             setTradeFloat({
-                ..._tradeFloat,
+                ...tickerMap?.tradeFloat,
                 close: close
             } as TradeFloat);
 
@@ -630,7 +629,8 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
         if (market && ammMap && LoopringAPI.exchangeAPI) {
             try {
                 const {depth, ammPoolSnapshot, tickMap} = await swapDependAsync(market);
-                updatePageTradeLite({market, depth, ammPoolSnapshot, tickMap})
+                const tickerMap = makeTickerMap({tickerMap: tickMap})
+                updatePageTradeLite({market, depth, ammPoolSnapshot, tickerMap})
             } catch (error) {
                 myLog(error, 'go to LER-ETH');
                 resetTradeCalcData(undefined, market)

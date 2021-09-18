@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import _ from 'lodash'
 import store from 'stores'
-import { useAmmMap } from '../../../stores/Amm/AmmMap';
+import { useAmmMap } from 'stores/Amm/AmmMap';
 import {
     AmmDetail,
     CustomError,
@@ -11,12 +11,10 @@ import {
     SagaStatus,
     TradeFloat,
 } from '@loopring-web/common-resources';
-import { useTokenMap } from '../../../stores/token';
-import { useSocket } from '../../../stores/socket';
-import { useTicker } from '../../../stores/ticker';
-import { makeTickView } from '../../../hooks/help';
-import { tickerService } from '../../../services/socket';
-import { LoopringAPI } from '../../../api_wrapper';
+import { useTokenMap } from 'stores/token';
+import { useSocket } from 'stores/socket';
+import { useTicker } from 'stores/ticker';
+import { tickerService } from 'services/socket';
 import { WsTopicType } from 'loopring-sdk';
 
 const RowConfig = {
@@ -24,7 +22,7 @@ const RowConfig = {
     headerRowHeight:44,
 
 }
-// import { tickerService } from '../../../services/tickerService';
+// import { tickerService } from 'services/tickerService';
 type Row<R> = AmmDetail<R> & { tradeFloat: TradeFloat }
 export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>(
     // {pageSize}: { pageSize: number }
@@ -107,9 +105,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
                 const rawData = Object.keys(_ammMap).map((ammKey: string) => {
                     const [_, coinA, coinB] = ammKey.split('-')
                     const realMarket = `${coinA}-${coinB}`
-                    const _tickerMap = tickerMap[realMarket].__rawTicker__
-                    const tickerFloat = makeTickView(_tickerMap ? _tickerMap : {})
-                    
+
                     if (coinMap) {
                         _ammMap[ ammKey ][ 'coinAInfo' ] = coinMap[ _ammMap[ ammKey ][ 'coinA' ] ];
                         _ammMap[ ammKey ][ 'coinBInfo' ] = coinMap[ _ammMap[ ammKey ][ 'coinB' ] ];
@@ -118,7 +114,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
                         ..._ammMap[ ammKey ],
                         tradeFloat: {
                             ..._ammMap[ ammKey ].tradtradeFloat,
-                            volume: tickerFloat?.volume || 0
+                            volume: tickerMap[realMarket].tickerFloat?.volume || 0
                         }
                     };
                 })

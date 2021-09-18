@@ -27,7 +27,7 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
             const {
                 market,
                 depth,
-                tickMap,
+                tickerMap,
                 ammPoolSnapshot,
                 tradePair,
                 quoteMinAmtInfo,
@@ -46,7 +46,7 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                     tradePair,  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
                     calcTradeParams,
                     depth,
-                    tickMap,
+                    tickerMap,
                     ammPoolSnapshot,
                     priceImpactObj,
                     tradeChannel: calcTradeParams ? (calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined,
@@ -72,8 +72,8 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                     state.pageTradeLite.depth = depth;
                 }
 
-                if (tickMap) {
-                    state.pageTradeLite.tickMap = tickMap;
+                if (tickerMap) {
+                    state.pageTradeLite.tickerMap = tickerMap;
                 }
                 if (ammPoolSnapshot) {
                     state.pageTradeLite.ammPoolSnapshot = ammPoolSnapshot;
