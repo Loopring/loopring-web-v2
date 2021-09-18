@@ -51,6 +51,7 @@ export type TradeCalcData<T> = {
     coinBuy: keyof T,
     StoB: string,
     BtoS: string,
+    marketPrecision: number,
     coinInfoMap?: CoinMap<T, CoinInfo<T>>,
     sellCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
     buyCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
