@@ -50,6 +50,12 @@ const DetailWrapperStyled = styled(Box)`
 
 const DividerWrapperStyled = styled(Box)``
 
+const ViewDetailStyled = styled(Typography)`
+    &:hover {
+        border-bottom: 1px solid var(--color-text-secondary);
+    }
+` as any
+
 export const AmmCard = withTranslation('common', {withRef: true})(
     React.memo(React.forwardRef(<T extends { [ key: string ]: any }>(
         {
@@ -69,6 +75,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             precisionB,
             ammRewardRecordList, //: RewardItem[]
             getLiquidityMining, //: (market: string, size?: number) => Promise<void>
+            getMiningLinkList,
             ...rest
         }: AmmCardProps<T> & WithTranslation & { popoverIdx: number, 
             precisionA?: number, 
@@ -78,18 +85,19 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             coinAPriceYuan: number,
             coinBPriceYuan: number,
             ammRewardRecordList: RewardItem[],
-            getLiquidityMining: (market: string, size?: number) => Promise<void> }, ref: React.ForwardedRef<any>) => {
+            getLiquidityMining: (market: string, size?: number) => Promise<void>,
+            getMiningLinkList: (market: string) => string[],
+        }, ref: React.ForwardedRef<any>) => {
         const isOrderbook = ruleType === 'ORDERBOOK_MINING'
         const isAmm = ruleType === 'AMM_MINING'
         const { rewardValue, rewardValue2, coinAPriceDollar, coinBPriceDollar, coinAPriceYuan, coinBPriceYuan, rewardToken2 } = rest
         // const coinAIconHasLoaded = useImage(coinAInfo?.icon ? coinAInfo?.icon : '').hasLoaded;
         // const coinBIconHasLoaded = useImage(coinBInfo?.icon ? coinBInfo?.icon : '').hasLoaded;
-        const {coinJson, currency} = useSettings();
+        const {coinJson, currency, language} = useSettings();
         const coinAIcon: any = coinJson[ coinAInfo?.simpleName ] || '';
         const coinBIcon: any = coinJson[ coinBInfo?.simpleName ] || '';
-        // const market = `${coinAInfo.simpleName}-${coinBInfo.simpleName}`
+        const pathname = `${coinAInfo.simpleName}-${coinBInfo.simpleName}`
         const pair = `${coinAInfo.simpleName} / ${coinBInfo.simpleName}`
-        console.log({rest})
 
         const totalAmmRewardDollar = PriceTag.Dollar + getValuePrecisionThousand((rewardValue || 0) * (coinAPriceDollar || 0) + (rewardValue2 || 0) * (coinBPriceDollar || 0), undefined, undefined, 2, true, { isFait: true })
         const totalAmmRewardYuan = PriceTag.Yuan + getValuePrecisionThousand((rewardValue || 0) * (coinAPriceYuan || 0) + (rewardValue2 || 0) * (coinBPriceYuan || 0), undefined, undefined, 2, true, { isFait: true })
@@ -102,6 +110,13 @@ export const AmmCard = withTranslation('common', {withRef: true})(
         const popLiquidityState = usePopupState({variant: 'popover', popupId: `popup-totalLiquidty-${popoverIdx}`})
         const popTotalRewardState = usePopupState({variant: 'popover', popupId: `popup-totalReward-${popoverIdx}`})
         const popMyAmmValueState = usePopupState({variant: 'popover', popupId: `popup-myAmmValue-${popoverIdx}`})
+        
+        const handleViewDetail = React.useCallback(() => {
+            const isUs = language === 'en_US'
+            const urlList = getMiningLinkList(isUs ? 'en' : 'cn')
+            const url = urlList[pathname]
+            window.open(url)
+        }, [getMiningLinkList, pathname, language])
         
         return <Card ref={ref}>
             <CardContent>
@@ -520,39 +535,19 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                             : getValuePrecisionThousand(myRewards, undefined, undefined, undefined, true, { isFait: true, floor: true }) + rewardToken?.simpleName}
                     </Typography>
                 </DetailWrapperStyled>
-
-                {/* <BoxBg display={'flex'} flexDirection={'column'} alignItems={'stretch'} marginTop={2} padding={1}>
-                    <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
-                        <Typography display={'flex'} flexDirection={'column'} component={'div'}>
-                            <Typography variant={'body2'} component={'h5'} color={'textSecondary'}>
-                                {t('labelReward')}
-                            </Typography>
-                            <Typography variant={'body1'} component={'span'} color={'textPrimary'}>
-                                {getThousandFormattedNumbers(totalRewards, 2)}
-                                {' ' + rewardToken?.simpleName}
-                            </Typography>
-                        </Typography>
-                        <Typography display={'flex'} flexDirection={'column'} alignItems={'flex-end'} component={'div'}>
-                            <Typography variant={'body2'} component={'h5'} color={'textSecondary'}>
-                                {t('labelMyReward')}
-                            </Typography>
-                            <Typography variant={'body1'} component={'span'} color={'textPrimary'}>
-                                {myRewards==0?EmptyValueTag:getThousandFormattedNumbers(myRewards, 6)}
-                                {' ' + rewardToken?.simpleName}
-                            </Typography>
-                        </Typography>
-                    </Box>
-                    <Typography alignSelf={'flex-start'} variant={'body2'} color={'textSecondary'} component="span"
-                                marginTop={1}>
-                        {t('labelDate')}:
-                        {' ' + moment(duration.from).format('L')} - {moment(duration.to).format('L')}
-                    </Typography>
-                </BoxBg> */}
             </CardContent>
             <CardActions>
-                <Button fullWidth variant={'contained'} size={'large'} disabled={!!isPass}
-                        color={'primary'}
-                        onClick={handleClick}>{isAmm ? t(isPass ? 'labelEndLiquidityBtn' : 'labelAddLiquidityBtn') : t(isPass ? 'labelEndLiquidityBtn' : 'labelPlaceOrderBtn')}</Button>
+                <Box width={'100%'} display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
+                    <Button fullWidth variant={'contained'} size={'large'} disabled={!!isPass}
+                            color={'primary'}
+                            onClick={handleClick}>{isAmm ? t(isPass ? 'labelEndLiquidityBtn' : 'labelAddLiquidityBtn') : t(isPass ? 'labelEndLiquidityBtn' : 'labelPlaceOrderBtn')}
+                    </Button>
+                    <ViewDetailStyled onClick={() => handleViewDetail()} component={'a'} variant={'body1'} color={'var(--color-text-secondary)'} marginTop={1}>
+                        {t('labelMiningViewDetails')}
+                        &nbsp;
+                        {'>'}
+                    </ViewDetailStyled>
+                </Box>
             </CardActions>
         </Card>
     }))) as <T>(props: AmmCardProps<T> & React.RefAttributes<any>) => JSX.Element;

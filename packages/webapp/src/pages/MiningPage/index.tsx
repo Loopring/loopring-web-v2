@@ -10,7 +10,13 @@ import { useAmmMiningUI } from './hook';
 import { useAmmPool } from '../LiquidityPage/hook'
 import { Trans, withTranslation } from 'react-i18next';
 import { AmmPoolActivityRule, LoopringMap, RewardItem } from 'loopring-sdk';
+import { getMiningLinkList } from '@loopring-web/common-resources'
 import store from 'stores'
+
+export enum MiningJumpType {
+    orderbook = 'orderbook',
+    amm = 'amm'
+}
 
 const WrapperStyled = styled(Box)`
   display: flex;
@@ -23,13 +29,15 @@ const WrapperStyled = styled(Box)`
 // `
 
 type ClickHandler = {
-    handleClick: (pair: string) => void
+    handleClick: (pair: string, type: MiningJumpType) => void
 }
 
 const AmmCardWrap = React.memo(React.forwardRef((props: AmmCardProps<{ [ key: string ]: any }> & ClickHandler & { popoverIdx: number, ammRewardRecordList: RewardItem[], getLiquidityMining: (market: string, size?: number) => Promise<void> }, ref) => {
     const pair = `${props.coinAInfo?.simpleName}-${props.coinBInfo?.simpleName}`
+    const { ruleType } = props.activity
+    const type = ruleType === 'ORDERBOOK_MINING' ? MiningJumpType.orderbook : MiningJumpType.amm
     const popoverIdx = props.popoverIdx
-    return props ? <AmmCard ref={ref} {...props} {...{popoverIdx}} handleClick={() => props.handleClick(pair)}/> : <></>
+    return props ? <AmmCard ref={ref} {...props} {...{popoverIdx, getMiningLinkList}} handleClick={() => props.handleClick(pair, type)}/> : <></>
 }));
 
 const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap, ammRewardRecordList, getLiquidityMining}: 
@@ -41,9 +49,13 @@ const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap, ammRew
     let history = useHistory();
     const {tokenMap} = store.getState().tokenMap
 
-    const jumpTo = React.useCallback((pair: string) => {
+    const jumpTo = React.useCallback((pair: string, type: MiningJumpType) => {
         if (history) {
-            history.push(`/liquidity/pools/coinPair/${pair}`)
+            if (type === MiningJumpType.amm) {
+                history.push(`/liquidity/pools/coinPair/${pair}`)
+            } else {
+                history.push(`/trading/lite/${pair}`)
+            }
         }
     }, [history])
     
