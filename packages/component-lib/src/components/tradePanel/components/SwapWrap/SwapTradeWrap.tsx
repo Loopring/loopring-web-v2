@@ -155,8 +155,18 @@ export const SwapTradeWrap = <T extends IBData<I>,
     // console.log('_isStoB:', _isStoB)
 
     const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB
-    const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${tradeCalcData?.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
-        : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData .BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`;
+    
+    let stob = `${tradeCalcData?.StoB ? tradeCalcData.StoB : EmptyValueTag}`
+    let btos = `${tradeCalcData .BtoS ? tradeCalcData.BtoS : EmptyValueTag}`
+
+    if (tradeData?.sell.tradeValue && tradeData?.buy.tradeValue) {
+        stob = getValuePrecisionThousand(tradeData?.sell.tradeValue / tradeData?.buy.tradeValue)
+        btos = getValuePrecisionThousand(tradeData?.buy.tradeValue / tradeData?.sell.tradeValue)
+    }
+
+    const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${stob} ${tradeData.buy?.belong}`
+        : `1${tradeData.buy?.belong} \u2248 ${btos} ${tradeData.sell?.belong}`;
+        
     const priceImpactColor =  tradeCalcData?.priceImpactColor ? tradeCalcData.priceImpactColor : 'textPrimary'
     const priceImpact = tradeCalcData?.priceImpact ?  getValuePrecisionThousand(tradeCalcData.priceImpact) + ' %' : EmptyValueTag
 
