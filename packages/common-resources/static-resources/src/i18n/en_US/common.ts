@@ -138,7 +138,7 @@ export default {
     labelMyReward: 'My Rewards',
     labelDate: 'Date',
     labelBack: 'Back',
-    labelAPR: 'APR',
+    labelAPY: 'APY',
     label24Volume: '24h Trade Volume',
     labelTVL: 'Total Volume Locked',
     labelAmmTotalToken: 'Tokens in AMM',

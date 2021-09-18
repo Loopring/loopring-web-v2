@@ -92,7 +92,6 @@ export const makeUIAmmActivityMap = <R extends { [key: string]: any }, I extends
                 const newMap = genView(ammActivityMap[item])
                 const copiedNewMap = _.cloneDeep(newMap)
                 ammActivityViewMap = { ...ammActivityViewMap, [item]: copiedNewMap}
-                myLog({ammActivityViewMap})
             })
         } else {
             ammActivityViewMap = genView(ammActivityMap[type])
@@ -100,11 +99,8 @@ export const makeUIAmmActivityMap = <R extends { [key: string]: any }, I extends
         
 
     }
-    myLog('ammActivityViewMap:', ammActivityViewMap)
 
     const resultArray = makeAsCard(ammActivityViewMap)
-
-    myLog('resultArray:', resultArray)
     return resultArray;
 
 }
