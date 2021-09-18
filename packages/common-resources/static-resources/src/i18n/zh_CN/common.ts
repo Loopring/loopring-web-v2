@@ -312,6 +312,6 @@ export default {
 
     labelDepthPrice: '价格({{symbol}})',
     labelDepthAmount: '数量({{symbol}})',
-    labelDepthTotal: '总量({{symbol}})',
+    labelDepthTotal: '总量',
 
 }

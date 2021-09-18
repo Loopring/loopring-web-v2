@@ -1,29 +1,33 @@
-// amt: "64000000000000000000"
-// amtTotal: "64000000000000000000"
-// price: 0.011674
-// vol: "747100000000000000"
-
-import { ABInfo, toBig, TokenInfo } from "loopring-sdk";
 import { Box, Grid, Typography } from '@mui/material';
 import { MarketInfo } from 'loopring-sdk/dist/defs';
 import { WithTranslation, withTranslation } from 'react-i18next';
-import { getValuePrecisionThousand } from '@loopring-web/common-resources';
+import { DepthViewData } from '@loopring-web/common-resources';
+import { useTheme } from '@emotion/react';
 
-// volTotal: "747100000000000000"
-export type Row = ABInfo & { amt_p: string, amtTotal_p: string, type: DepthType }
-export const Depth = ({price, amt_p, amtTotal_p, type}: Row) => {
-    const color = type === DepthType.ask? 'error':'var(--color-success)';
+export type Row = DepthViewData  & {type:DepthType}
+const Height = '20px'
+export const Depth = ({
+                          price,
+                          // amt,
+                          amtForShow,
+                          // amtTotal,
+                          amtTotalForShow,
+                          percentage,
+                          type,
+                      }: Row) => {
+    const theme = useTheme();
+    const color = type === DepthType.ask? 'var(--color-error)':'var(--color-success)';
     return <Grid container spacing={1} position={'relative'} wrap={'nowrap'} >
-        <Grid item xs={4} alignSelf={'flex-start'}>
-            <Typography lineHeight={'20px'} color={color} variant={'body2'} > {price}  </Typography>
+        <Box style={{opacity:0.1,backgroundColor:color}} display={'block'} position={'absolute'} top={theme.unit} right={0} width={percentage*100+'%'} height={Height} zIndex={44}/>
+        <Grid item xs={4} alignSelf={'flex-start'} zIndex={55} >
+            <Typography lineHeight={Height} color={color} variant={'body2'} > {price}  </Typography>
         </Grid>
-        <Grid item xs={4} alignSelf={'flex-end'} textAlign={'right'}>
-            <Typography lineHeight={'20px'} color={'text.secondary'} variant={'body2'}>  {amt_p}  </Typography>
+        <Grid item xs={4} alignSelf={'flex-end'} textAlign={'right'} zIndex={55}>
+            <Typography lineHeight={Height} color={'text.secondary'} variant={'body2'}>  {amtForShow}  </Typography>
         </Grid>
-        <Grid item xs={4} alignSelf={'flex-end'} textAlign={'right'}>
-            <Typography lineHeight={'20px'} color={'text.secondary'} variant={'body2'}>  {amtTotal_p} </Typography>
+        <Grid item xs={4} alignSelf={'flex-end'} textAlign={'right'} zIndex={55} >
+            <Typography lineHeight={Height} color={'text.secondary'} variant={'body2'}>  {amtTotalForShow} </Typography>
         </Grid>
-
     </Grid>
 }
 
@@ -35,11 +39,15 @@ export enum DepthType {
 export const DepthBlock = withTranslation('common')(({
                                                          marketInfo,
                                                          depths,
-                                                         tokenBaseInfo,
+                                                         // tokenBaseInfo,
                                                          type,
                                                          t,
                                                          showTitle = true
-                                                     }: { showTitle?: boolean, type: DepthType, depths: ABInfo[], tokenBaseInfo: TokenInfo, tokenQuoteInfo: TokenInfo, marketInfo: MarketInfo } & WithTranslation) => {
+                                                     }: { showTitle?: boolean,
+    type: DepthType, depths: DepthViewData[],
+    // tokenBaseInfo: TokenInfo, tokenQuoteInfo: TokenInfo,
+    marketInfo: MarketInfo
+} & WithTranslation) => {
 
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = marketInfo.market.match(/(\w+)-(\w+)/i);
@@ -47,30 +55,27 @@ export const DepthBlock = withTranslation('common')(({
     return <Box paddingTop={1/2}>
         {showTitle && < Grid container spacing={1} position={'relative'} wrap={'nowrap'} >
           <Grid item xs={4} alignSelf={'flex-start'} >
-            <Typography lineHeight={'20px'} color={'var(--color-text-third)'}
+            <Typography lineHeight={Height} color={'var(--color-text-third)'}
                         variant={'body2'} component={'p'} >{t('labelDepthPrice', {symbol: quoteSymbol})} </Typography>
           </Grid>
           <Grid item xs={4} alignSelf={'flex-end'} >
-            <Typography lineHeight={'20px'} color={'var(--color-text-third)'}
+            <Typography lineHeight={Height} color={'var(--color-text-third)'}
                         variant={'body2'} textAlign={'right'}  component={'p'} >  {t('labelDepthAmount', {symbol: baseSymbol})} </Typography>
           </Grid>
-          <Grid item xs={4} alignSelf={'flex-end'}>
-            <Typography lineHeight={'20px'} color={'var(--color-text-third)'} variant={'body2'} textAlign={'right'}  component={'p'} >  {t('labelDepthTotal')} </Typography>
+          <Grid item xs={4} alignSelf={'flex-end'} >
+            <Typography lineHeight={Height} color={'var(--color-text-third)'} variant={'body2'} textAlign={'right'}  component={'p'} >  {t('labelDepthTotal')} </Typography>
           </Grid>
         </Grid>}
-        {depths.map((depth) => {
-            const amt_p = getValuePrecisionThousand(toBig(depth.amt).div('1e' + tokenBaseInfo.decimals),
-                undefined, undefined, marketInfo.precisionForPrice, true);
+        {depths.map((depth,index) => {
+            // const amt_p = ;
+            //
+            // const amtTotal_p = getValuePrecisionThousand(toBig(depth.amtTotal).div('1e' + tokenBaseInfo.decimals),
+            //     undefined, undefined, marketInfo.precisionForPrice, true);
 
-            const amtTotal_p = getValuePrecisionThousand(toBig(depth.amtTotal).div('1e' + tokenBaseInfo.decimals),
-                undefined, undefined, marketInfo.precisionForPrice, true);
 
-
-            return <Depth {...{
+            return <Depth key={index} {...{
                 ...depth,
                 type,
-                amt_p,
-                amtTotal_p
             }}    />
         })}
 

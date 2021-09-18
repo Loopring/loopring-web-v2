@@ -313,5 +313,5 @@ export default {
 
     labelDepthPrice: 'Price({{symbol}})',
     labelDepthAmount: 'Amount({{symbol}})',
-    labelDepthTotal: 'Total({{symbol}})',
+    labelDepthTotal: 'Total',
 }

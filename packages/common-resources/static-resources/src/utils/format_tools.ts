@@ -1,6 +1,6 @@
 import * as sdk from 'loopring-sdk'
 import BigNumber from 'bignumber.js'
-import { myLog } from './log_tools'
+import { getValuePrecisionThousand } from './util';
 
 export function getShowStr(rawVal: string | number | undefined, fixed: number = 2, precision: number = 4) {
     if (rawVal === '0' || rawVal === 0)
@@ -17,15 +17,25 @@ export function getShowStr(rawVal: string | number | undefined, fixed: number = 
     return newVal
 }
 
-function genABViewData({amtSlice, amtTotalSlice, priceSlice, baseDecimal, count, maxVal, }: {
+export type DepthData  = {
     amtSlice: sdk.ABInfo[],
-    amtTotalSlice: string[], 
-    priceSlice: number[], 
+    amtTotalSlice: string[],
+    priceSlice: number[],
     baseDecimal: number,
     quoteDecimal: number,
-    count: number, 
-    maxVal: BigNumber
-}) {
+    count: number,
+    maxVal: BigNumber,
+    precisionForPrice: number
+}
+export type DepthViewData = {
+    price: number,
+    amt:string,
+    amtForShow: string,
+    amtTotal: string,
+    amtTotalForShow: string,
+    percentage : number,
+}
+function genABViewData({precisionForPrice,amtSlice, amtTotalSlice, priceSlice, baseDecimal, count, maxVal, }: DepthData):DepthViewData[] {
 
     if (amtTotalSlice.length < count) {
         const lastV = amtTotalSlice[amtTotalSlice.length - 1]
@@ -38,10 +48,12 @@ function genABViewData({amtSlice, amtTotalSlice, priceSlice, baseDecimal, count,
     amtTotalSlice = amtTotalSlice.reverse()
     priceSlice = priceSlice.reverse()
 
-    const viewData = amtTotalSlice.map((value: string, ind: number) => {
+    const viewData:DepthViewData[] = amtTotalSlice.map((value: string, ind: number) => {
         const amt = amtSlice[ind].amt
-        const amtForShow = sdk.toBig(amtSlice[ind].amt).div('1e' + baseDecimal).toString()
-        const amtTotalForShow = sdk.toBig(value).div('1e' + baseDecimal).toString()
+        const amtForShow =  getValuePrecisionThousand(sdk.toBig(amtSlice[ind].amt).div('1e' + baseDecimal),
+            undefined, undefined, precisionForPrice, true)
+        const amtTotalForShow =  getValuePrecisionThousand(sdk.toBig(value).div('1e' + baseDecimal),
+            undefined, undefined, precisionForPrice, true)
         const percentage = maxVal.gt(sdk.toBig(0)) ? sdk.toBig(value).div(maxVal).toNumber() : 0
 
         // myLog('value:', value, ' maxVal:', maxVal.toString(), percentage)
@@ -60,13 +72,14 @@ function genABViewData({amtSlice, amtTotalSlice, priceSlice, baseDecimal, count,
 
 }
 
-export function depth2ViewData({ depth, count, baseDecimal, quoteDecimal, }: {
+export function depth2ViewData({ depth, count, baseDecimal, quoteDecimal, precisionForPrice}: {
     depth: sdk.DepthData, 
     baseDecimal: number,
     quoteDecimal: number,
     count?: number, 
     maxWidth?: number,
-}) {
+    precisionForPrice: number,
+}):{asks:DepthViewData[],bids:DepthViewData[]} {
 
     if (count === undefined) {
         count = 10
@@ -82,9 +95,9 @@ export function depth2ViewData({ depth, count, baseDecimal, quoteDecimal, }: {
 
     const maxVal = BigNumber.max(sdk.toBig(askTotalSlice[askTotalSlice.length - 1]), sdk.toBig(bidTotalSlice[0]))
 
-    const asks = genABViewData({amtSlice: askSlice, amtTotalSlice: askTotalSlice, priceSlice: askPriceSlice, baseDecimal, quoteDecimal, count, maxVal})
+    const asks = genABViewData({precisionForPrice,amtSlice: askSlice, amtTotalSlice: askTotalSlice, priceSlice: askPriceSlice, baseDecimal, quoteDecimal, count, maxVal})
 
-    const bids = genABViewData({amtSlice: bidSlice, amtTotalSlice: bidTotalSlice, priceSlice: bidPriceSlice, baseDecimal, quoteDecimal, count, maxVal})
+    const bids = genABViewData({precisionForPrice,amtSlice: bidSlice, amtTotalSlice: bidTotalSlice, priceSlice: bidPriceSlice, baseDecimal, quoteDecimal, count, maxVal})
 
     return {
         asks,

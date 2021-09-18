@@ -13,7 +13,7 @@ const FooterDiv = styled(Box)`
     width: auto;
     max-width: initial;
     :hover{
-       background:  var(--opacity);;
+       background:  var(--opacity);
     }
     a{
       color:var(--color-text-secondary) 
