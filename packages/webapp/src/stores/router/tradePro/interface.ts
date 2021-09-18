@@ -33,7 +33,7 @@ export type PageTradePro<C> = {
     },
     depth?: sdk.DepthData | undefined,
     depthLevel?: number,
-    tickMap?: TickerMap<any> | undefined,
+    tickerMap?: TickerMap<any> | undefined,
     ammPoolSnapshot?: sdk.AmmPoolSnapshot | undefined,
     tradeChannel?: undefined | TradeChannel
     orderType?: undefined | sdk.OrderType
