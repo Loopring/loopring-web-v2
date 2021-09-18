@@ -60,7 +60,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             amountYuan,
             // isNew,
             APR,
-            activity: {duration, myRewards, rewardToken, isPass, ruleType, status, totalRewards, rewardTokenDollar, rewardTokenYuan},
+            activity: {duration, myRewards, rewardToken, isPass, ruleType, status, totalRewards, rewardTokenDollar, rewardTokenYuan, maxSpread},
             handleClick,
             popoverIdx,
             totalA,
@@ -89,6 +89,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
         const coinBIcon: any = coinJson[ coinBInfo?.simpleName ] || '';
         // const market = `${coinAInfo.simpleName}-${coinBInfo.simpleName}`
         const pair = `${coinAInfo.simpleName} / ${coinBInfo.simpleName}`
+        console.log({rest})
 
         const totalAmmRewardDollar = PriceTag.Dollar + getValuePrecisionThousand((rewardValue || 0) * (coinAPriceDollar || 0) + (rewardValue2 || 0) * (coinBPriceDollar || 0), undefined, undefined, 2, true, { isFait: true })
         const totalAmmRewardYuan = PriceTag.Yuan + getValuePrecisionThousand((rewardValue || 0) * (coinAPriceYuan || 0) + (rewardValue2 || 0) * (coinBPriceYuan || 0), undefined, undefined, 2, true, { isFait: true })
@@ -285,6 +286,17 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     </Typography>
                 </DetailWrapperStyled>}
 
+                {isOrderbook && (
+                    <DetailWrapperStyled>
+                        <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
+                            {t('labelMiningMaxSpread')}
+                        </Typography>
+                        <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400} style={{ borderBottom: totalRewards ? '1px dashed var(--color-text-primary)' : 'none' }}>
+                            {maxSpread}
+                        </Typography>
+                    </DetailWrapperStyled>
+                )}
+
 
                 <DetailWrapperStyled>
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
@@ -409,7 +421,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                         {t('labelMiningMyShare')}
                     </Typography>
-                    <Typography {...bindHover(popMyAmmValueState)} component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
+                    <Typography {...bindHover(popMyAmmValueState)} component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400} style={{ borderBottom: false ? '1px dashed var(--color-text-primary)' : 'none' }}>
                         --
                     </Typography>
                     <PopoverPure

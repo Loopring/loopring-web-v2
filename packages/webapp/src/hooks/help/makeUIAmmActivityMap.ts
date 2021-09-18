@@ -25,22 +25,20 @@ export type AmmActivityViewMap<R, I> = {
 export const makeUIAmmActivityMap = <R extends { [key: string]: any }, I extends { [key: string]: any }>
     ({ ammActivityMap, type, ammPoolActivityStatus }: {
         ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined,
-        type?: 'AMM_MINING' | 'SWAP_VOLUME_RANKING' | undefined,
+        type?: 'AMM_MINING' | 'SWAP_VOLUME_RANKING' | 'ORDERBOOK_MINING' | undefined,
         ammPoolActivityStatus: AmmPoolActivityStatus[]
     }, myReward: AmmUserRewardMap | undefined):
     Array<AmmCardProps<I>> => {
     const { coinMap, tokenMap, idIndex } = store.getState().tokenMap
 
     let ammActivityViewMap: AmmActivityViewMap<R, I> = {}
-    
+
     if (ammActivityMap) {
 
         const genView = (ammActivityMapItem: any) => {
 
             let ammActivityViewMapTmp: AmmActivityViewMap<R, I> = {}
-
             ammPoolActivityStatus.forEach((status: AmmPoolActivityStatus) => {
-
                 if (ammActivityMapItem[status]) {
                     // @ts-ignore
                     ammActivityMapItem[status].reduce((prev: AmmActivityViewMap<R, I>, ammPoolActivityRule: AmmPoolActivityRule) => {
@@ -59,6 +57,7 @@ export const makeUIAmmActivityMap = <R extends { [key: string]: any }, I extends
                                 ruleType: ammPoolActivityRule.ruleType,
                                 rewardToken: coinMap[symbol],
                                 totalRewards: Number(totalRewards),
+                                maxSpread: ammPoolActivityRule?.maxSpread,
                                 myRewards: status === AmmPoolActivityStatus.InProgress && myReward && myReward[ammPoolActivityRule.market] ?
                                     volumeToCount(symbol, myRewardVol) : 0,
                                 duration: {
@@ -91,11 +90,14 @@ export const makeUIAmmActivityMap = <R extends { [key: string]: any }, I extends
             const keys = Object.keys(ammActivityMap)
             keys.forEach((item: any, ind: number) => {
                 const newMap = genView(ammActivityMap[item])
-                ammActivityViewMap = { ...ammActivityViewMap, ...newMap}
+                const copiedNewMap = _.cloneDeep(newMap)
+                ammActivityViewMap = { ...ammActivityViewMap, [item]: copiedNewMap}
+                myLog({ammActivityViewMap})
             })
         } else {
             ammActivityViewMap = genView(ammActivityMap[type])
         }
+        
 
     }
     myLog('ammActivityViewMap:', ammActivityViewMap)
@@ -108,7 +110,7 @@ export const makeUIAmmActivityMap = <R extends { [key: string]: any }, I extends
 }
 
 const makeAsCard = <R extends { [key: string]: any }, I extends { [key: string]: any }>
-    (ammActivityViewMap: AmmActivityViewMap<R, I> | undefined, myReward?: any): Array<AmmCardProps<I>> => {
+    (ammActivityViewMap: any, myReward?: any): Array<AmmCardProps<I>> => {
     const { coinMap } = store.getState().tokenMap
     const { ammMap } = store.getState().amm.ammMap
     const { tokenPrices } = store.getState().tokenPrices
@@ -116,52 +118,61 @@ const makeAsCard = <R extends { [key: string]: any }, I extends { [key: string]:
     try {
         if (ammActivityViewMap && coinMap) {
             // @ts-ignore
-            return Reflect.ownKeys(ammActivityViewMap).reduce((prev: Array<AmmCardProps<I>>, key: string) => {
-                const activities = ammActivityViewMap[key]
+            // return ammActivityViewMap.map()
+            let finalArray = [] as any[]
+            const catogoriedMap = Object.keys(ammActivityViewMap)
+            catogoriedMap.forEach(item => {
+                const basicArray = Object.keys(ammActivityViewMap[item]).reduce((prev: Array<AmmCardProps<I>>, key: string) => {
+                        const activities = ammActivityViewMap[item][key]
 
-                const _ammInfo = ammMap[key as string]
-                if (activities) {
+                        const _ammInfo = ammMap[key as string]
+                        if (activities) {
 
-                    //_ammInfo && _ammInfo.coinA && coinMap && 
+                            //_ammInfo && _ammInfo.coinA && coinMap && 
 
-                    // @ts-ignore
-                    const itemArray = activities.map((item: AmmActivity) => {
-                        const matchRes = (item.market as string).replace('AMM-', '').match(/(\w+)-(\w+)/i)
+                            // @ts-ignore
+                            const itemArray = activities.map((item: AmmActivity) => {
+                                const matchRes = (item.market as string).replace('AMM-', '').match(/(\w+)-(\w+)/i)
 
-                        if (matchRes) {
-                            const coinAInfo = coinMap[matchRes[1]]
-                            const coinBInfo = coinMap[matchRes[2]]
-                            const coinAPriceDollar = tokenPrices ? tokenPrices[coinAInfo?.simpleName] : 0
-                            const coinAPriceYuan = coinAPriceDollar * (forex || 6.5)
-                            const coinBPriceDollar = tokenPrices ? tokenPrices[coinBInfo?.simpleName] : 0
-                            const coinBPriceYuan = coinBPriceDollar * (forex || 6.5)
-                            const rewardTokenDollar = tokenPrices ? tokenPrices[item?.rewardToken?.simpleName] : 0
-                            const rewardTokenYuan = rewardTokenDollar * (forex || 6.5)
-                            // myLog('matchRes:', matchRes, ' coinAInfo:', coinAInfo, ' coinBInfo:', coinBInfo)
-                            return {
-                                ..._.cloneDeep(_ammInfo),
-                                coinAInfo,
-                                coinBInfo,
-                                coinAPriceDollar,
-                                coinAPriceYuan,
-                                coinBPriceDollar,
-                                coinBPriceYuan,
-                                activity: {
-                                    ...item,
-                                    rewardTokenDollar: rewardTokenDollar,
-                                    rewardTokenYuan: rewardTokenYuan,
-                                },
-                            }
+                                if (matchRes) {
+                                    const coinAInfo = coinMap[matchRes[1]]
+                                    const coinBInfo = coinMap[matchRes[2]]
+                                    const coinAPriceDollar = tokenPrices ? tokenPrices[coinAInfo?.simpleName] : 0
+                                    const coinAPriceYuan = coinAPriceDollar * (forex || 6.5)
+                                    const coinBPriceDollar = tokenPrices ? tokenPrices[coinBInfo?.simpleName] : 0
+                                    const coinBPriceYuan = coinBPriceDollar * (forex || 6.5)
+                                    const rewardTokenDollar = tokenPrices ? tokenPrices[item?.rewardToken?.simpleName] : 0
+                                    const rewardTokenYuan = rewardTokenDollar * (forex || 6.5)
+                                    // myLog('matchRes:', matchRes, ' coinAInfo:', coinAInfo, ' coinBInfo:', coinBInfo)
+                                    return {
+                                        ..._.cloneDeep(_ammInfo),
+                                        coinAInfo,
+                                        coinBInfo,
+                                        coinAPriceDollar,
+                                        coinAPriceYuan,
+                                        coinBPriceDollar,
+                                        coinBPriceYuan,
+                                        activity: {
+                                            ...item,
+                                            rewardTokenDollar: rewardTokenDollar,
+                                            rewardTokenYuan: rewardTokenYuan,
+                                        },
+                                    }
 
+                                }
+
+                                return {}
+
+                            })
+                            prev = [...prev, ...itemArray]
                         }
-
-                        return {}
-
-                    })
-                    prev = [...prev, ...itemArray]
-                }
-                return prev;
-            }, [] as Array<AmmCardProps<I>>) as Array<AmmCardProps<I>>
+                        return prev;
+                    }, [] as Array<AmmCardProps<I>>) as Array<AmmCardProps<I>>
+                
+                
+                finalArray = [...finalArray, ...basicArray]
+            })
+            return finalArray
         } else {
             return [] as Array<AmmCardProps<I>>
         }

@@ -165,6 +165,7 @@ export type AmmActivity<I> = {
     isPass?: boolean,
     rewardTokenDollar?: number,
     rewardTokenYuan?: number,
+    maxSpread?: number,
 }
 export type Amount<T> = {
     sell: { belong: T, tradeValue: number },
