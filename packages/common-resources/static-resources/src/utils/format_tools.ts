@@ -72,32 +72,38 @@ function genABViewData({precisionForPrice,amtSlice, amtTotalSlice, priceSlice, b
 
 }
 
-export function depth2ViewData({ depth, count, baseDecimal, quoteDecimal, precisionForPrice}: {
+export function depth2ViewData({ depth, countAsk,countBid, baseDecimal, quoteDecimal, precisionForPrice}: {
     depth: sdk.DepthData, 
     baseDecimal: number,
     quoteDecimal: number,
-    count?: number, 
+    countAsk?: number,
+    countBid?: number,
     maxWidth?: number,
     precisionForPrice: number,
 }):{asks:DepthViewData[],bids:DepthViewData[]} {
 
-    if (count === undefined) {
-        count = 10
+    if (countAsk === undefined || countBid === undefined) {
+        countAsk = 8
+        countBid = 8
     }
     
-    let askSlice = depth.asks.slice(0, count)
-    let askTotalSlice = depth.asks_amtTotals.slice(0, count)
-    let askPriceSlice = depth.asks_prices.slice(0, count)
+    let askSlice = depth.asks.slice(0, countAsk)
+    let askTotalSlice = depth.asks_amtTotals.slice(0, countAsk)
+    let askPriceSlice = depth.asks_prices.slice(0, countAsk)
 
-    let bidSlice = depth.bids.slice(0, count)
-    let bidTotalSlice = depth.bids_amtTotals.slice(-count)
-    let bidPriceSlice = depth.bids_prices.slice(-count)
+    let bidSlice = depth.bids.slice(0, countBid)
+    let bidTotalSlice = depth.bids_amtTotals.slice(-countBid)
+    let bidPriceSlice = depth.bids_prices.slice(-countBid)
+    let maxVal = askTotalSlice.length? sdk.toBig(askTotalSlice[askTotalSlice.length - 1]): sdk.toBig(bidTotalSlice[0]);
+    if(askTotalSlice.length && bidTotalSlice.length){
+        maxVal  = BigNumber.max(sdk.toBig(askTotalSlice[askTotalSlice.length - 1]), sdk.toBig(bidTotalSlice[0]))
+    }
 
-    const maxVal = BigNumber.max(sdk.toBig(askTotalSlice[askTotalSlice.length - 1]), sdk.toBig(bidTotalSlice[0]))
+    const asks = genABViewData({precisionForPrice,amtSlice: askSlice,
+        amtTotalSlice: askTotalSlice, priceSlice: askPriceSlice, baseDecimal, quoteDecimal,count:countAsk, maxVal})
 
-    const asks = genABViewData({precisionForPrice,amtSlice: askSlice, amtTotalSlice: askTotalSlice, priceSlice: askPriceSlice, baseDecimal, quoteDecimal, count, maxVal})
-
-    const bids = genABViewData({precisionForPrice,amtSlice: bidSlice, amtTotalSlice: bidTotalSlice, priceSlice: bidPriceSlice, baseDecimal, quoteDecimal, count, maxVal})
+    const bids = genABViewData({precisionForPrice,amtSlice: bidSlice,
+        amtTotalSlice: bidTotalSlice, priceSlice: bidPriceSlice, baseDecimal, quoteDecimal,count:countBid, maxVal})
 
     return {
         asks,

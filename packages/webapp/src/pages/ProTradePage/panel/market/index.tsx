@@ -1,14 +1,11 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
+import { DepthBlock, DepthTitle, DepthType, ToggleButtonGroup, useSettings } from '@loopring-web/component-lib';
 import {
-    DepthBlock,
-    DepthType,
-    MenuItem,
-    TextField,
-    ToggleButtonGroup,
-    useSettings
-} from '@loopring-web/component-lib';
-import {
-    Currency, depth2ViewData, DepthFIcon, DepthHIcon, DepthViewData,
+    Currency,
+    depth2ViewData,
+    DepthFIcon,
+    DepthHIcon,
+    DepthViewData,
     EmptyValueTag,
     getValuePrecisionThousand,
     LoadingIcon,
@@ -23,35 +20,55 @@ import { useTokenPrices } from 'stores/tokenPrices';
 import { useSystem } from 'stores/system';
 import styled from '@emotion/styled/';
 
-const  ROW_LENGTH: number = 8;
+const ROW_LENGTH: number = 8;
 
 enum TabIndex {
     orderbook = 'orderbook',
     trades = 'trades'
 }
-enum DepthShowType  {
+
+enum DepthShowType {
     asks = 'asks',
     half = 'half',
     bids = 'bids'
 }
+
 const MarketToolbar = styled(Box)`
-  &.pro .MuiToggleButtonGroup-root{
+  &.pro .MuiToggleButtonGroup-root {
+   
     .MuiToggleButton-root.MuiToggleButton-sizeSmall,
-    .MuiToggleButton-root.MuiToggleButton-sizeSmall.Mui-selected{
+    .MuiToggleButton-root.MuiToggleButton-sizeSmall.Mui-selected {
       //&:not(:first-of-type), &:not(:last-child) {
       //  border:0;
       //}
       height: 24px;
       width: 24px;
-      padding:0;
-      border:0;
-      background:var(--opacity) !important;
-      :hover{
-        border:0;
+      padding: 0;
+      border: 0;
+      background: var(--opacity) !important;
+      :hover {
+        border: 0;
+        svg{
+          path{
+            fill: var(--color-text-button-Select)
+          }
+        }
       }
     }
+    .MuiToggleButton-root.MuiToggleButton-sizeSmall.Mui-selected {
+      svg{
+        path{
+          fill: var(--color-text-button-Select)
+        }
+      }
+
+    }
   }
- 
+  //.MuiToggleButton-root.MuiToggleButton-sizeSmall.Mui-selected{
+  //  depthType === DepthShowType.bids ?  :
+  //}  
+
+  
 ` as typeof Box
 export const MarketView = withTranslation('common')(({
                                                          t, market, ...rest
@@ -72,34 +89,42 @@ export const MarketView = withTranslation('common')(({
     const quotePrice = tokenPrices[ quoteSymbol ];
     const {forex} = useSystem();
 
-    const [depthViewData, setDepthViewData] = React.useState<{asks:DepthViewData[],bids:DepthViewData[]}>({
-        asks:[],
-        bids:[]
+    const [depthViewData, setDepthViewData] = React.useState<{ asks: DepthViewData[], bids: DepthViewData[] }>({
+        asks: [],
+        bids: []
     });
     const [rowLength, setRowLength] = React.useState<number>(ROW_LENGTH);
     const [level, setLevel] = React.useState<string>('0.01');
     const [depthType, setDepthType] = React.useState<DepthShowType>(DepthShowType.half);
-    const handleOnDepthTypeChange = React.useCallback((event: React.MouseEvent<HTMLElement>|any, newValue)=>{
+    const handleOnDepthTypeChange = React.useCallback((event: React.MouseEvent<HTMLElement> | any, newValue) => {
+        debugger
         setDepthType(newValue);
         //TODO: change table
         rebuildList()
-    },[level])
+    }, [level])
 
-    const handleOnLevelChange = React.useCallback((event: React.ChangeEvent<{ value: string}>)=>{
+    const handleOnLevelChange = React.useCallback((event: React.ChangeEvent<{ value: string }>) => {
+
         setLevel(event.target?.value);
         //TODO: change table
         // rebuildList()
-    },[])
-    const rebuildList = React.useCallback(()=>{
+    }, [])
+    const rebuildList = React.useCallback(() => {
 
-        if(depth)  {
-            const baseDecimal  = tokenMap[baseSymbol]?.decimals;
-            const quoteDecimal   = tokenMap[baseSymbol]?.decimals;
-            const precisionForPrice = marketMap[market].precisionForPrice;
-            const viewData = depth2ViewData({ depth,count: rowLength, baseDecimal, quoteDecimal, precisionForPrice })
+        if (depth) {
+            const baseDecimal = tokenMap[ baseSymbol ]?.decimals;
+            const quoteDecimal = tokenMap[ baseSymbol ]?.decimals;
+            const precisionForPrice = marketMap[ market ].precisionForPrice;
+            let [countAsk,countBid] = [rowLength,rowLength]
+            if(depthType === DepthShowType.bids) {
+                [countAsk,countBid] = [0,rowLength*2]
+            }else if (depthType === DepthShowType.asks){
+                [countAsk,countBid] = [rowLength*2,0]
+            }else{}
+            const viewData = depth2ViewData({depth,countAsk,countBid , baseDecimal, quoteDecimal, precisionForPrice})
             setDepthViewData(viewData);
         }
-    },[depth,depthType,rowLength] )
+    }, [depth, depthType, rowLength])
     const middlePrice = React.useMemo(() => {
 
         const {close} = tickerMap ? tickerMap[ market ] : {close: undefined};
@@ -131,29 +156,32 @@ export const MarketView = withTranslation('common')(({
         </Typography>
     }, [tickerMap])
     const toggleData = React.useMemo(() => {
-        return [{
-            value: DepthShowType.half,
-            JSX: <DepthHIcon fontSize={'large'} bo={depthType === DepthShowType.half?'var(--color-text-button-Select)':'var(--color-border)'}
-                             l={'var(--color-border)'} a={'var(--color-error)'} b={'var(--color-success)'} />,
-            key: DepthShowType.half,
-        },
+        return [
+            {
+                value: DepthShowType.half,
+                JSX: <DepthHIcon fontSize={'large'}
+                                 bo={'var(--color-border)'}
+                                 l={'var(--color-border)'} a={'var(--color-error)'} b={'var(--color-success)'}/>,
+                key: DepthShowType.half,
+            },
             {
                 value: DepthShowType.bids,
-                JSX: <DepthFIcon fontSize={'large'} bo={depthType === DepthShowType.bids?'var(--color-text-button-Select)':'var(--color-border)'}
-                                 l={'var(--color-border)'} a={'var(--color-success)'} b={''} />,
-                key:  DepthShowType.bids,
+                JSX: <DepthFIcon fontSize={'large'}
+                                 bo={'var(--color-border)'}
+                                 l={'var(--color-border)'} a={'var(--color-success)'} b={''}/>,
+                key: DepthShowType.bids,
             },
             {
                 value: DepthShowType.asks,
-                JSX: <DepthFIcon fontSize={'large'} bo={depthType === DepthShowType.asks?'var(--color-text-button-Select)':'var(--color-border)'}
-                                 l={'var(--color-border)'} a={'var(--color-error)'} b={''} />,
-                key:  DepthShowType.asks,
-            }
-            ,]
-    }, [])
-    React.useEffect(()=>{
+                JSX: <DepthFIcon fontSize={'large'}
+                                 bo={'var(--color-border)'}
+                                 l={'var(--color-border)'} a={'var(--color-error)'} b={''}/>,
+                key: DepthShowType.asks,
+            }]
+    }, [depthType])
+    React.useEffect(() => {
         rebuildList()
-    },[depth,level,depthType,rowLength])
+    }, [depth, level, depthType, rowLength])
     return <>
         <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
             <Box component={'header'} width={'100%'}>
@@ -165,8 +193,15 @@ export const MarketView = withTranslation('common')(({
                 </Tabs>
             </Box>
             <Box className={'depthPane;'} flex={1} paddingY={1}>
-                <MarketToolbar component={'header'} className={'pro'} width={'100%'} display={'flex'} paddingX={2} alignItems={'stretch'} >
-                    <ToggleButtonGroup  exclusive {...{...rest,t, tgItemJSXs: toggleData, value: depthType, size: 'small'}}
+                <MarketToolbar component={'header'} className={'pro'} width={'100%'} display={'flex'} paddingX={2}
+                               alignItems={'stretch'}>
+                    <ToggleButtonGroup exclusive {...{
+                        ...rest,
+                        t,
+                        tgItemJSXs: toggleData,
+                        value: depthType,
+                        size: 'small'
+                    }}
                                        onChange={handleOnDepthTypeChange}/>
                     {/*<TextField*/}
                     {/*    id="outlined-select-level"*/}
@@ -180,16 +215,19 @@ export const MarketView = withTranslation('common')(({
                 </MarketToolbar>
                 {depth && tickerMap && tokenMap && marketMap && market == pageTradePro.market ?
                     <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'} paddingX={2}>
-                        <DepthBlock marketInfo={marketMap[market]}
+                       <Box paddingTop={1/2}><DepthTitle marketInfo={marketMap[ market ]}/></Box>
+                        <DepthBlock marketInfo={marketMap[ market ]}
                                     type={DepthType.ask}
                                     depths={depthViewData.asks}
-                                    showTitle={true}/>
+                                    // showTitle={true}
+                        />
                         <Box paddingY={1 / 2} display={'flex'} flexDirection={'column'} alignItems={'center'}>
                             {middlePrice}
                         </Box>
-                        <DepthBlock marketInfo={marketMap[market]}
-                            type={DepthType.bid} depths={depthViewData.bids}
-                                    showTitle={false}/>
+                        <DepthBlock marketInfo={marketMap[ market ]}
+                                    type={DepthType.bid} depths={depthViewData.bids}
+                                    // showTitle={false}
+                        />
                     </Box>
                     : <Box flex={1} height={'100%'} display={'flex'} alignItems={'center'}
                            justifyContent={'center'}><LoadingIcon/></Box>
