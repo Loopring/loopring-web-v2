@@ -50,21 +50,16 @@ export const UpIcon = (props: SvgIconProps ) => {
 
 export const DragIcon = (props: SvgIconProps ) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M10 1H16V3H10V1Z" />
-            <path d="M10 7H16V9H10V7Z" />
-            <path d="M16 13H10V15H16V13Z"/>
+        <path d="M15 1.5H24V4.5H15V1.5Z" fill="#687295"/>
+        <path d="M15 10.5H24V13.5H15V10.5Z" fill="#687295"/>
+        <path d="M24 19.5H15V22.5H24V19.5Z" fill="#687295"/>
     </SvgIcon>
 }
 export const ResizeIcon = (props: SvgIconProps ) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M10 10V0L0 10H10Z" />
+        <path d="M24 24V9L9 24H24Z" fill="#687295"/>
     </SvgIcon>
 }
-
-
-
-
-
 export const AssetsIcon = (props: SvgIconProps) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C21.9939 17.5203 17.5203 21.9939 12 22ZM11 4.062C7.72604 4.47603 5.04227 6.85789 4.24231 10.0595C3.44234 13.2611 4.69036 16.6254 7.38479 18.5307C10.0792 20.436 13.6671 20.4913 16.419 18.67L16.319 18.741L16.413 18.676L16.472 18.635L16.536 18.59L16.552 18.579L16.561 18.572L11.433 13.442C11.1544 13.1585 10.9988 12.7765 11 12.379L11 4.062ZM13.829 13L18.056 17.227L18.063 17.219L18.068 17.213L18.058 17.224C19.0896 16.0335 19.744 14.5633 19.938 13L13.829 13ZM13 4.062L13 11L19.938 11C19.4815 7.37411 16.6259 4.51851 13 4.062Z"/></SvgIcon>
@@ -321,7 +316,7 @@ export const LoadingIcon = (props: SvgIconProps) => {
         <path
             d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
             <animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25"
-                              dur="0.6s" repeatCount="indefinite"></animateTransform>
+    dur="0.6s" repeatCount="indefinite"/>
         </path>
     </SvgIcon>
 }
@@ -351,7 +346,7 @@ export const ProToLiteIcon = (props: SvgIconProps) => {
 export const RefreshIcon = (props: SvgIconProps) => {
     return <SvgIcon {...props} viewBox="0 0 24 24" aria-hidden="true">
         <path
-            d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"></path>
+    d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
     </SvgIcon>
 }
 

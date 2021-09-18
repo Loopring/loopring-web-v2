@@ -152,8 +152,8 @@ export const globalCss = ({theme}: any) => css`
     box-sizing: border-box;
     -moz-box-sizing: border-box; /* Firefox */
     -webkit-box-sizing: border-box; /* Safari */
-    // font-family: DINCondensed, Helvetica, Arial, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
-    font-family: Roboto;
+    font-family: Roboto, Helvetica, Arial, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
+    //font-family: Roboto;
     font-size: 62.5%; /* 62.5% of 16px = 10px */
 
   }
@@ -226,9 +226,11 @@ export const globalCss = ({theme}: any) => css`
     --slippage-pop-width: 308px;
     //--slippage-pop-height: 88px ;
     --chart-title-coin-size: 28px;
-    --btn-icon-size-small: 24px;
+    --btn-icon-size-small: 20px;
+    --btn-icon-size-medium: 24px;
     --btn-icon-size: 36px;
     --svg-size: 14px;
+    --svg-size-medium: 16px;
     --svg-size-cover: 32px;
     --svg-size-large: 24px;
     --swap-box-height: 580px; /** js used also **/
@@ -274,17 +276,17 @@ export const globalCss = ({theme}: any) => css`
 
   }
 
-  . draggable_panel {
-    border: 1px solid var(--color-border);
-    height: 100%;
-  }
-
-  . draggable_header {
-    display: none;
-    cursor: move;
-    height: 0px;
-    width: 100%;
-  }
+  //. draggable_panel {
+  //  border: 1px solid var(--color-border);
+  //  height: 100%;
+  //}
+  //
+  //. draggable_header {
+  //  display: none;
+  //  cursor: move;
+  //  height: 0px;
+  //  width: 100%;
+  //}
 
   .rdg.rdg {
     --background-color: inherit;

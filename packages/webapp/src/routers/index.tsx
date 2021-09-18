@@ -11,6 +11,7 @@ import { Layer2Page } from 'pages/Layer2Page'
 import { LiquidityPage } from 'pages/LiquidityPage'
 import { MiningPage } from 'pages/MiningPage'
 import { OrderbookPage } from 'pages/ProTradePage';
+import { useTicker } from '../stores/ticker';
 
 
 
@@ -42,7 +43,8 @@ const RouterView = () => {
     //         }
     //     }
     // }, [location?.pathname])
-    const proFlag = !!(process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === 'true')
+    const proFlag = (process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === 'true')
+    const {tickerMap} = useTicker();
 
     return <>
         <Header />
@@ -54,10 +56,10 @@ const RouterView = () => {
             <Route path='/trading/lite(/:symbol)'><ContentWrap><SwapPage /></ContentWrap></Route>
 
             {
-                proFlag && <Route path='/trading/pro'><OrderbookPage /></Route>
+                proFlag && tickerMap && <Route path='/trading/pro'><OrderbookPage /></Route>
             }
             {
-                proFlag && <Route path='/trading/pro(/:symbol)'><OrderbookPage /></Route>
+                proFlag && tickerMap && <Route path='/trading/pro(/:symbol)'><OrderbookPage /></Route>
             }
 
             <Route exact path='/markets'><ContentWrap><QuotePage /></ContentWrap> </Route>

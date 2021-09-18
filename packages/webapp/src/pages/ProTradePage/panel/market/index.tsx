@@ -11,7 +11,9 @@ import {
     getValuePrecisionThousand,
     LoadingIcon,
     MarketType,
-    PriceTag
+    PriceTag,
+    UpColor,
+    UpIcon
 } from '@loopring-web/common-resources';
 import { Box, MenuItem, Tab, Tabs, TextField, Typography } from '@mui/material';
 import React from 'react';
@@ -21,26 +23,25 @@ import { useTokenPrices } from 'stores/tokenPrices';
 import { useSystem } from 'stores/system';
 import styled from '@emotion/styled/';
 
-const ROW_LENGTH: number = 8;
 
 enum TabIndex {
     orderbook = 'orderbook',
     trades = 'trades'
 }
 
-const Precision =  {
-    1  : 0.1,
-    2  : 0.01,
-    3  : 0.001,
-    4  : 0.0001,
-    5  : 0.00001,
-    6  : 0.000001,
-    7  : 0.0000001,
-    8  : 0.00000001,
-    9  : 0.000000001,
-    10 : 0.0000000001,
-    11 : 0.00000000001,
-    12 : 0.000000000001
+const Precision = {
+    1: 0.1,
+    2: 0.01,
+    3: 0.001,
+    4: 0.0001,
+    5: 0.00001,
+    6: 0.000001,
+    7: 0.0000001,
+    8: 0.00000001,
+    9: 0.000000001,
+    10: 0.0000000001,
+    11: 0.00000000001,
+    12: 0.000000000001
 }
 
 
@@ -91,11 +92,14 @@ const MarketToolbar = styled(Box)`
 
 
 ` as typeof Box
+
+
 export const MarketView = withTranslation('common')(({
+                                                         rowLength,
                                                          t, market, ...rest
                                                      }: {
     market: MarketType,
-    // marketTicker:  MarketBlockProps<C>
+    rowLength:number
 } & WithTranslation) => {
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
@@ -114,7 +118,6 @@ export const MarketView = withTranslation('common')(({
         asks: [],
         bids: []
     });
-    const [rowLength, setRowLength] = React.useState<number>(ROW_LENGTH);
     const [level, setLevel] = React.useState<string>('0.01');
     const [depthType, setDepthType] = React.useState<DepthShowType>(DepthShowType.half);
     const handleOnDepthTypeChange = React.useCallback((event: React.MouseEvent<HTMLElement> | any, newValue) => {
@@ -149,15 +152,19 @@ export const MarketView = withTranslation('common')(({
     const middlePrice = React.useMemo(() => {
 
         const {close} = tickerMap ? tickerMap[ market ] : {close: undefined};
+        let up: 'up' | 'down' | '' = '';
         let priceColor = '';
         let value = '';
         if (close && depth && depth.mid_price) {
             if (depth.mid_price === close) {
                 priceColor = '';
+                up = '';
             } else if (depth.mid_price > close) {
-                priceColor = 'var(--color-success)'
+                priceColor = (upColor == UpColor.green ? 'var(--color-success)' : 'var(--color-error)');
+                up = 'up'
             } else {
-                priceColor = 'var(--color-error)'
+                up = 'down'
+                priceColor = (upColor == UpColor.green ? 'var(--color-error)' : 'var(--color-success)');
             }
             value = currency === Currency.dollar ? '\u2248 ' + PriceTag.Dollar
                 + getValuePrecisionThousand(close * quotePrice, undefined, undefined, undefined, true, {isFait: true})
@@ -169,13 +176,17 @@ export const MarketView = withTranslation('common')(({
         return <Typography color={'var(--color-text-third)'} variant={'body2'} component={'p'} display={'inline-flex'}
                            textAlign={'center'} alignItems={'center'}>
             {close ? <>
-                    <Typography color={priceColor} component={'span'} paddingRight={1}> {close} </Typography> {value}
+                    <Typography lineHeight={1} color={priceColor} component={'span'} paddingRight={1} alignItems={'center'}
+                                display={'inline-flex'}> {close}
+                        {up && < UpIcon fontSize={'small'} htmlColor={priceColor} style={{
+                            transform: (priceColor === 'up' ? '' : 'rotate(-180deg)')}}/> }
+                    </Typography> {value}
                 </>
                 : EmptyValueTag
             }
 
         </Typography>
-    }, [tickerMap])
+    }, [tickerMap, depth?.mid_price])
     const toggleData = React.useMemo(() => {
         return [
             {
@@ -203,9 +214,9 @@ export const MarketView = withTranslation('common')(({
     const precisionListPrice = React.useMemo(() => {
         const precisionForPrice = marketMap[ market ].precisionForPrice;
         const orderbookAggLevels = marketMap[ market ].orderbookAggLevels;
-        let list: { value:string }[] = [];
+        let list: { value: string }[] = [];
         for (let i = 0; i < orderbookAggLevels; i++) {
-            list.push({value:Precision[precisionForPrice - i]})
+            list.push({value: Precision[ precisionForPrice - i ]})
         }
 
 
@@ -244,8 +255,9 @@ export const MarketView = withTranslation('common')(({
                         value={level}
                         onChange={handleOnLevelChange}
                         inputProps={{IconComponent: DropDownIcon}}
-                    >                       
-                        {precisionListPrice.map(({value},index) => <MenuItem key={value} value={value}>{value}</MenuItem>)}
+                    >
+                        {precisionListPrice.map(({value}) => <MenuItem key={value}
+                                                                              value={value}>{value}</MenuItem>)}
 
                     </TextField>
                 </MarketToolbar>

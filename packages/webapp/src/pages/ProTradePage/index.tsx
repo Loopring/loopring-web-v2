@@ -1,68 +1,127 @@
 import { withTranslation } from 'react-i18next';
 
 import React from 'react';
-import { Responsive, WidthProvider } from 'react-grid-layout';
+import { Layouts, Responsive, WidthProvider } from 'react-grid-layout';
 
 import { usePro } from './hookPro';
 import { useTheme } from '@emotion/react';
-import { Box } from '@mui/material';
-import { layoutConfigs } from '@loopring-web/common-resources';
+import { Box, IconButton } from '@mui/material';
+import { BreakPoint, DragIcon, layoutConfigs, myLog, ResizeIcon } from '@loopring-web/common-resources';
 import { ChartView, MarketView, OrderTableView, SpotView, Toolbar, WalletInfo } from './panel'
-import {  boxLiner } from '@loopring-web/component-lib';
+import { boxLiner } from '@loopring-web/component-lib';
 import styled from '@emotion/styled/';
 
+const MARKET_ROW_LENGTH: number = 8;
 
 const BoxStyle = styled(Box)`
   --tab-header: 44px;
   background: var(--color-box);
-  &.spot{
-    ${({theme}:any) => boxLiner({theme})}
+
+  &.spot {
+    ${({theme}: any) => boxLiner({theme})}
   }
-  .MuiTabs-root{
+
+  .MuiTabs-root {
     min-height: var(--tab-header);
-    .MuiTab-root{
-       min-height: var(--tab-header);
-       padding: ${({theme}) => theme.unit }px;
-     }
+
+    .MuiTab-root {
+      min-height: var(--tab-header);
+      padding: ${({theme}) => theme.unit}px;
+    }
   }
 `
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-
+type Config = {
+    currentBreakpoint: BreakPoint,
+    mounted: boolean,
+    layouts: Layouts,
+    compactType: 'vertical' | 'horizontal' | null | undefined
+}
 export const OrderbookPage = withTranslation('common')(() => {
     // const { pageTradePro } = usePageTradePro();
-    const { market } = usePro();
+    const {market} = usePro();
     const {unit} = useTheme();
+    const [rowLength, setRowLength] = React.useState<number>(MARKET_ROW_LENGTH);
+
+    const [configLayout, setConfigLayout] = React.useState<Config>({
+            compactType: "vertical",
+            currentBreakpoint: BreakPoint.xlg,
+            mounted: false,
+            layouts: layoutConfigs[ 0 ].layouts
+        }
+    )
+
     const ViewList = {
         toolbar: React.useMemo(() => <Toolbar market={market as any}/>, [market]),
-        walletInfo: React.useMemo(() => <WalletInfo market={market as any}/>, [ market]),
-        spot: React.useMemo(() => <SpotView market={market as any}/>, [market]),
-        market: React.useMemo(() => <MarketView market={market as any}/>, [market]),
-        market2: React.useMemo(() => <></>,[]),    //<MarketView market={market as any}/>, [market])
+        walletInfo: React.useMemo(() => <WalletInfo market={market as any}/>, [market]),
+        spot: React.useMemo(() => <SpotView market={market as any} />, [market]),
+        market: React.useMemo(() => <MarketView market={market as any} rowLength={rowLength}/>, [market,rowLength]),
+        market2: React.useMemo(() => <></>, []),    //<MarketView market={market as any}/>, [market])
         chart: React.useMemo(() => <ChartView/>, []),
         orderTable: React.useMemo(() => <OrderTableView/>, [])
     }
+    const onBreakpointChange = React.useCallback((breakpoint: BreakPoint) => {
+        setConfigLayout((state:Config) => {
+            return {
+                ...state,
+                currentBreakpoint: breakpoint
+            }
+        })
+        // this.setState({
+        //     currentBreakpoint: breakpoint
+        // });
+        // setConfigLayout
+    }, []);
+    // const onLayoutChange = React.useCallback((layout, layouts) => {
+    //     myLog(layout)
+    //
+    //     // saveToLS("layouts", layouts);
+    //     // this.setState({ layouts });
+    // }, [])
+    const  onResize  = React.useCallback((layout, oldLayoutItem, layoutItem) => {
 
-    return <>
-        {market ?
-            <Box display={'block'} margin={'0 auto'} width={'100%'}>
-                <ResponsiveGridLayout
-                    draggableHandle={'drag-holder'}
-                    layouts={layoutConfigs[ 0 ].layouts}
+            if(layoutItem.i === 'market'){
+                myLog(layoutItem.i,layoutItem.h )
+                const i = Math.floor(((layoutItem.h - 58) * unit) / 40)
+                if(i <= 40){
+                    setRowLength(MARKET_ROW_LENGTH + i)
+                } else{
+                    setRowLength(48)
+                }
+
+            }
+
+        // this.setState({ layouts });
+    }, [setRowLength])
+
+
+    return <Box display={'block'} margin={'0 auto'} width={'100%'} position={'relative'}>
+                {market  ?  <ResponsiveGridLayout
                     className="layout"
+                    {...{...configLayout}}
+                    onBreakpointChange={onBreakpointChange}
+                    onResizeStop={onResize}
+                    resizeHandle={<IconButton size={'medium'} style={{position: 'absolute', zIndex: 78, right: 0, bottom: 0}} className={'resize-holder'}>
+                        <ResizeIcon style={{marginRight:`-${unit}px`,marginBottom:`-${unit}px`}}/></IconButton>}
+                    draggableHandle={'.drag-holder'}
                     breakpoints={layoutConfigs[ 0 ].breakpoints}
                     cols={layoutConfigs[ 0 ].cols}
-                    rowHeight={unit / 2} margin={[unit / 2, unit / 2]}>
-                    {layoutConfigs[ 0 ].layouts[ 'xlg' ].map((value, index) => {
-                        return <BoxStyle key={value.i} className={value.i}
-                                         data-grid={{...value}}
-                                         component={'section'}>
-                            {ViewList[ value.i ]}
+                    rowHeight={unit / 2}
+                    margin={[unit / 2, unit / 2]}>
+                    {configLayout.layouts[ configLayout.currentBreakpoint ].map((layout) => {
+                        return <BoxStyle key={layout.i} className={layout.i}
+                                         data-grid={{...layout}}
+                                         component={'section'} position={'relative'}>
+                            {ViewList[ layout.i ]}
+                            <IconButton size={'medium'} style={{position: 'absolute', zIndex: 78, right: 0, top: 0}}
+                                        className={'drag-holder'}><DragIcon style={{marginRight:`-${unit}px`,marginTop:''}}/></IconButton>
                         </BoxStyle>
                     })}
-                </ResponsiveGridLayout>
+
+                </ResponsiveGridLayout> : <>'loading'</>}
             </Box>
-            : <>'loading'</>}</>
+
 })
 
 
