@@ -48,25 +48,31 @@ function genABViewData({precisionForPrice,amtSlice, amtTotalSlice, priceSlice, b
     amtTotalSlice = amtTotalSlice.reverse()
     priceSlice = priceSlice.reverse()
 
-    const viewData:DepthViewData[] = amtTotalSlice.map((value: string, ind: number) => {
-        const amt = amtSlice[ind].amt
-        const amtForShow =  getValuePrecisionThousand(sdk.toBig(amtSlice[ind].amt).div('1e' + baseDecimal),
-            undefined, undefined, precisionForPrice, true)
-        const amtTotalForShow =  getValuePrecisionThousand(sdk.toBig(value).div('1e' + baseDecimal),
-            undefined, undefined, precisionForPrice, true)
-        const percentage = maxVal.gt(sdk.toBig(0)) ? sdk.toBig(value).div(maxVal).toNumber() : 0
+    const viewData:DepthViewData[] = amtTotalSlice.reduce((prv,value: string, ind: number) => {
+        if( amtSlice[ind] && amtSlice[ind].amt ){
+            const amt = amtSlice[ind].amt
+            // console.log(amt)
+            const amtForShow =  getValuePrecisionThousand(sdk.toBig(amt).div('1e' + baseDecimal),
+                undefined, undefined, precisionForPrice, true)
+            const amtTotalForShow =  getValuePrecisionThousand(sdk.toBig(value).div('1e' + baseDecimal),
+                undefined, undefined, precisionForPrice, true)
+            const percentage = maxVal.gt(sdk.toBig(0)) ? sdk.toBig(value).div(maxVal).toNumber() : 0
+            prv.push({
+                price: priceSlice[ind],
+                amt,
+                amtForShow,
+                amtTotal: amtTotalSlice[ind],
+                amtTotalForShow,
+                percentage,
+            })
+        }
+        return prv
+
 
         // myLog('value:', value, ' maxVal:', maxVal.toString(), percentage)
 
-        return {
-            price: priceSlice[ind],
-            amt,
-            amtForShow,
-            amtTotal: amtTotalSlice[ind],
-            amtTotalForShow,
-            percentage,
-        }
-    })
+
+    },[] as DepthViewData[])
 
     return viewData
 
