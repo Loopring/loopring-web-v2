@@ -194,7 +194,7 @@ export  const useProSocket = () => {
             try {
                 const {depth, ammPoolSnapshot, tickMap} = await swapDependAsync(market);
                 const tickerMap  = makeTickerMap({tickerMap: tickMap})
-                updatePageTradePro({market, depth, ammPoolSnapshot, tickMap:tickerMap})
+                updatePageTradePro({market, depth, ammPoolSnapshot, tickerMap})
             } catch (error) {
 
             }

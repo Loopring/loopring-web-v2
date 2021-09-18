@@ -46,11 +46,11 @@ export const calcPriceByAmmTickMapDepth = <C>(
     {
         market,
         tradePair,
-        dependencyData: {tickMap, ammPoolSnapshot, depth}
+        dependencyData: {tickerMap, ammPoolSnapshot, depth}
     }: {
         market: MarketType,
         tradePair: MarketType
-        dependencyData: { tickMap: any, ammPoolSnapshot: any, depth: any },
+        dependencyData: { tickerMap: any, ammPoolSnapshot: any, depth: any },
     }): {
     stob: string | undefined,
     btos: string | undefined
@@ -89,8 +89,8 @@ export const calcPriceByAmmTickMapDepth = <C>(
         }
 
         //second getValue from tickerData
-        if ((stob === '0.00' || !stob) && tickMap) {
-            const tickerData = tickMap[ market ]
+        if ((stob === '0.00' || !stob) && tickerMap) {
+            const tickerData = tickerMap[ market ]
             if (!!tickerData) {
                 let precision = marketMap[ market ].precisionForPrice ? marketMap[ market ].precisionForPrice : tokenMap[ coinB ].precision;
                 close = getValuePrecisionThousand(tickerData.close, precision, precision, precision,true);
