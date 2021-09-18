@@ -10,7 +10,7 @@ import {
     StarHollowIcon,
     StarSolidIcon
 } from '@loopring-web/common-resources'
-import { Column, Table } from '../../basic-lib/tables/index'
+import { Column, Table } from '../../basic-lib'
 import { TablePaddingX } from '../../styled'
 import { IconButton, Typography } from '@mui/material';
 import { useSettings } from '@loopring-web/component-lib/src/stores'
@@ -120,7 +120,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                             height={'100%'}
                             >
                             <Typography  marginRight={1}>
-                                <IconButton style={{color:'var(--color-star)'}} size={'medium'} onClick={(e:any) => handleStartClick(e, isFavourite, pair)}>
+                                <IconButton style={{color:'var(--color-star)'}} size={'large'} onClick={(e:any) => handleStartClick(e, isFavourite, pair)}>
                                     {isFavourite ? (
                                         <StarSolidIcon  cursor={'pointer'}/>
                                     ) : (
@@ -330,12 +330,11 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
 
     const dispatch = useDispatch()
 
-    const handleStartClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, isFavourite: boolean, pair: string) => {
+    const handleStartClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, isFavourite: boolean, pair: string):void => {
         // console.log(isFavoourite, pair)
         event.stopPropagation()
         if (isFavourite) {
             dispatch(removeFavoriteMarket(pair))
-            return
         }
         dispatch(addFavoriteMarket(pair))
     }

@@ -153,8 +153,8 @@ export const ModalCloseButton = ({onClose, t}: {
 } & WithTranslation) => {
     return <Box className={'close-button'} alignSelf={'flex-end'} position={'absolute'} zIndex={99} marginTop={'-28px'}
                 marginRight={'12px'}>
-        <IconButton aria-label={t('labelClose')}
-                    color={'inherit'} size={'medium'} onClick={(event) => {
+        <IconButton size={'large'} aria-label={t('labelClose')}
+                    color={'inherit'} onClick={(event) => {
             onClose && onClose(event, 'escapeKeyDown')
         }}>
             <CloseIcon/>
@@ -165,7 +165,7 @@ export const ModalBackButton = ({onBack, t}: {
     onBack?: () => void
 } & WithTranslation) => {
     return <Box alignSelf={'flex-start'} marginTop={-3} marginLeft={1.5}>
-        <IconButton size={'medium'} color={'inherit'} aria-label={t('labelBack')} onClick={() => {
+        <IconButton size={'large'} color={'inherit'} aria-label={t('labelBack')} onClick={() => {
             onBack && onBack()
         }}>
             <BackIcon/>
@@ -200,7 +200,7 @@ export const QRButtonStyle = ({onQRClick, t}: {
     onQRClick?: () => void
 } & WithTranslation) => {
     return <QRStyle alignSelf={'flex-start'} marginTop={-1 / 2 * 7} marginLeft={1.5} position={'absolute'}>
-        <IconButton aria-label={t('labelBack')} size={'medium'} onClick={() => {
+        <IconButton  size={'large'}  aria-label={t('labelBack')} onClick={() => {
             onQRClick && onQRClick()
         }}>
             <QRIcon htmlColor={'var(--color-text-third)'}/>

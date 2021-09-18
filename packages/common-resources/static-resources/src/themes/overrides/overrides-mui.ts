@@ -378,6 +378,11 @@ export const MuiSvgIcon = () => {
                     width: 'var(--svg-size-large)',
                     // margin: '-6px',
                 },
+                '&.MuiSvgIcon-fontSizeMedium': {
+                    height: 'var(--svg-size-medium)',
+                    width: 'var(--svg-size-medium)',
+                    // margin: '-6px',
+                },
                 '&.tag': {
                     width: 'auto',
                     height: 'auto',
@@ -522,12 +527,28 @@ export const MuiIconButton = ({colorBase}: any): { styleOverrides: ComponentsOve
     return {
         styleOverrides: {
             root: {
-                height: 'var(--btn-icon-size)',
-                width: 'var(--btn-icon-size)',
                 color: 'inherit',
+                height: 'var(--btn-icon-size-medium)',
+                width: 'var(--btn-icon-size-medium)',
                 ' svg': {
-                    height: 'var(--svg-size-large)',
-                    width: 'var(--svg-size-large)',
+                    height: 'var(--svg-size-medium)',
+                    width: 'var(--svg-size-medium)',
+                },
+                '&.MuiIconButton-sizeLarge': {
+                    height: 'var(--btn-icon-size)',
+                    width: 'var(--btn-icon-size)',
+                    ' svg': {
+                        height: 'var(--svg-size-large)',
+                        width: 'var(--svg-size-large)',
+                    },
+                },
+                '&.MuiIconButton-sizeMedium': {
+                    height: 'var(--btn-icon-size-medium)',
+                    width: 'var(--btn-icon-size-medium)',
+                    ' svg': {
+                        height: 'var(--svg-size-medium)',
+                        width: 'var(--svg-size-medium)',
+                    },
                 },
                 '&.MuiIconButton-sizeSmall': {
                     height: 'var(--btn-icon-size-small)',
