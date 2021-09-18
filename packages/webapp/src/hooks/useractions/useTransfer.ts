@@ -50,7 +50,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const { transferValue, updateTransferData, resetTransferData, } = useModalData()
 
-    const [walletMap, setWalletMap] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
+    const [walletMap, setWalletMap] = React.useState(makeWalletLayer2(true).walletMap ?? {} as WalletMap<R>);
     const { chargeFeeList } = useChargeFees(transferValue.belong, sdk.OffchainFeeReqType.TRANSFER, tokenMap)
 
     const [tranferFeeInfo, setTransferFeeInfo] = React.useState<FeeInfo>()
@@ -92,7 +92,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     }, [tokenMap, chargeFeeList, address, addrStatus, tranferFeeInfo?.belong, transferValue?.belong, transferValue?.tradeValue, isExceedMax, ])
 
     const walletLayer2Callback = React.useCallback(() => {
-        const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
+        const walletMap = makeWalletLayer2(true).walletMap ?? {} as WalletMap<R>
         setWalletMap(walletMap)
     }, [])
 
