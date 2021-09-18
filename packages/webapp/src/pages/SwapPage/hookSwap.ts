@@ -260,6 +260,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
     const btnLabelAccountActive = React.useCallback((): string | undefined => {
 
         if (!tokenMap) {
+            setSwapBtnStatus(TradeBtnStatus.DISABLED)
             return
         }
 
@@ -269,6 +270,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
         const {calcTradeParams} = pageTradeLite;
 
         if (!sellToken || !buyToken || !calcTradeParams) {
+            setSwapBtnStatus(TradeBtnStatus.DISABLED)
             return
         }
 
@@ -286,7 +288,7 @@ export const useSwap = <C extends { [ key: string ]: any }>() => {
         const sellMaxVal = sdk.toBig(sellToken?.orderAmounts?.maximum).div('1e' + sellToken.decimals)
         const buyMaxVal = sdk.toBig(buyToken?.orderAmounts?.maximum).div('1e' + buyToken.decimals)
 
-        // myLog('sellExceed:', sellToken.symbol, sellExceed, sellMaxVal.toString(), ' buyExceed:', buyToken.symbol, buyExceed, buyMaxVal.toString())
+        myLog('sellExceed:', sellToken.symbol, sellExceed, sellMaxVal.toString(), ' buyExceed:', buyToken.symbol, buyExceed, buyMaxVal.toString())
         
         if (isSwapLoading) {
             setSwapBtnStatus(TradeBtnStatus.LOADING)
