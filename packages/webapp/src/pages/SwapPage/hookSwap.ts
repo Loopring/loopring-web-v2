@@ -542,12 +542,24 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
                 close: close
             } as TradeFloat);
 
+            myLog('stob:', stob, ' btos:', btos)
+
+            myLog('before set stob:', tradeData)
+
+            if (tradeData?.sell.tradeValue && tradeData?.buy.tradeValue) {
+                stob = (tradeData?.sell.tradeValue / tradeData?.buy.tradeValue).toString()
+                btos = (tradeData?.buy.tradeValue / tradeData?.sell.tradeValue).toString()
+            }
+
+            myLog('stob:', stob, ' btos:', btos)
+
             setTradeCalcData((state) => {
                 state.StoB = stob;
                 state.BtoS = btos;
                 return state
             })
         }
+
         if( tradeData
             && lastStepAt
             && tradeCalcData.coinSell === tradeData['sell'].belong

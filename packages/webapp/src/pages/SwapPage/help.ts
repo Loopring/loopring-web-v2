@@ -7,7 +7,7 @@ import {
     TokenVolumeV3,
 } from 'loopring-sdk';
 import { LoopringAPI } from '../../api_wrapper';
-import { CustomError, ErrorMap, getValuePrecisionThousand, MarketType } from '@loopring-web/common-resources';
+import { CustomError, ErrorMap, getValuePrecisionThousand, MarketType, myLog } from '@loopring-web/common-resources';
 import { volumeToCountAsBigNumber } from '../../hooks/help';
 import BigNumber from 'bignumber.js';
 import { updateTicker } from 'stores/ticker';
@@ -115,6 +115,7 @@ export const calcPriceByAmmTickMapDepth = <C>(
                 btos = close;
             }
         }
+        
         // const isValidS2B = (stob !== 0 && stob !== undefined && !isNaN(stob))
         return {
             btos: btos as string,
