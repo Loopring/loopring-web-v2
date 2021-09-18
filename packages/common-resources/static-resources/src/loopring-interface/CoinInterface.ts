@@ -1,4 +1,5 @@
 import { FloatTag, TradeStatus, TradeTypes } from '../constant';
+import * as sdk from 'loopring-sdk'
 
 export type CoinKey<R> = keyof R;
 export type PairKey<P> = keyof P;
@@ -53,6 +54,22 @@ export type TradeCalcData<T> = {
     coinInfoMap?: CoinMap<T, CoinInfo<T>>,
     sellCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
     buyCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
+    walletMap?: WalletMap<T, WalletCoin<T>>,
+    slippage: number | string
+    // slippageTolerance: Array<number | string>,
+    priceImpact: string,
+    priceImpactColor: string,
+    minimumReceived: string,
+    fee: string
+}
+export type TradeCalcProData<T> = {
+    coinBase: keyof T, //name
+    coinQuote: keyof T,
+    StoB: string,
+    BtoS: string,
+    coinInfoMap?: CoinMap<T, CoinInfo<T>>,
+    // sellCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
+    // buyCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
     walletMap?: WalletMap<T, WalletCoin<T>>,
     slippage: number | string
     // slippageTolerance: Array<number | string>,
@@ -121,7 +138,7 @@ export type AmmDetailBase<T> = {
     feeYuan?: number,
     isNew?: boolean,
     isActivity?: boolean,
-    APY?: number,
+    APR?: number,
 }
 
 export type AmmDetail<T> = AmmDetailBase<T> & {
@@ -135,6 +152,9 @@ export type AmmCardProps<T> =
     & { activity: AmmActivity<T>, tradeFloat: TradeFloat, handleClick: () => void };
 
 export type AmmActivity<I> = {
+    market: string,
+    status: sdk.AmmPoolActivityStatus,
+    ruleType: string,
     totalRewards: number,
     myRewards: number,
     rewardToken: CoinInfo<I>,
@@ -143,6 +163,9 @@ export type AmmActivity<I> = {
         to: Date,
     }
     isPass?: boolean,
+    rewardTokenDollar?: number,
+    rewardTokenYuan?: number,
+    maxSpread?: number,
 }
 export type Amount<T> = {
     sell: { belong: T, tradeValue: number },
@@ -225,6 +248,6 @@ export type TradeFloat = {
     changeYuan?: number,
     closeDollar?: number,
     closeYuan?: number,
-    // APY?:number
+    // APR?:number
     // tagNew?: boolean
 }

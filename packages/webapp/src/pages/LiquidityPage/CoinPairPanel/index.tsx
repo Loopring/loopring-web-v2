@@ -155,7 +155,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                       alignItems={'center'} >
                         <Grid item paddingLeft={2} paddingY={3} xs={12} sm={6} lg={4}  overflow={'scroll'}
                               display={'flex'}
-                              justifyContent={'space-around'}
+                              justifyContent={'space-between'}
                               alignItems={'center'}>
                             <Box>
                                 <Typography component={'span'} display={'flex'} flexDirection={'row'}
@@ -273,7 +273,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         <Grid item paddingX={2} paddingY={3} xs={4} sm={6} lg={2}>
                             <Box>
                                 <Typography variant={'h3'}
-                                            component={'span'}> {coinPairInfo.APY ? getValuePrecisionThousand(coinPairInfo.APY, 2, 2, undefined, true) : EmptyValueTag}%
+                                            component={'span'}> {coinPairInfo.APR ? getValuePrecisionThousand(coinPairInfo.APR, 2, 2, undefined, true) : EmptyValueTag}%
                                 </Typography>
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}>
                                     {t('labelAPR')}

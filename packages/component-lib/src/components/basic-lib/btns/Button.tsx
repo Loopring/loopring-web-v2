@@ -6,7 +6,7 @@ import {
     ToggleButtonGroup as MuToggleButtonGroup,
 } from '@mui/material';
 import { ButtonProps, TGItemJSXInterface, ToggleButtonGroupProps } from './Interface';
-import { WithTranslation } from "react-i18next";
+import { TFunction, WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
 import { BackIcon, CloseIcon, QRIcon } from '@loopring-web/common-resources';
@@ -123,7 +123,7 @@ export const ToggleButtonGroup = ({
                                       data,
                                       exclusive,
                                       onChange
-                                  }: WithTranslation & ToggleButtonGroupProps) => {
+                                  }: { t:TFunction } & ToggleButtonGroupProps) => {
 
     const _handleChange = React.useCallback((_e: React.MouseEvent<HTMLElement, MouseEvent>, value: any) => {
         // setValue(value)

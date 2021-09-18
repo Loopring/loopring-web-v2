@@ -262,7 +262,7 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 color: colorBase.textButton,
                 height: pxToRem(40),
                 fontSize: pxToRem(14),
-                backgroundColor: colorBase.primary,
+                // backgroundColor: colorBase.primary,
                 boxShadow: 'initial',
                 '&:hover': {
                     backgroundColor: colorBase.primaryHover,
@@ -315,6 +315,7 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                     // backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23FFFFFF33' stroke-width='1' stroke-dasharray='4%25%2c 8%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e")`
                 },
             },
+
             // outlinedSecondary:{
             //     borderColor: colorBase.primaryLight,
             //     color: colorBase.primaryLight,
@@ -797,6 +798,9 @@ export const MuiTab = ({colorBase}: any): { styleOverrides: ComponentsOverrides[
                     '&:after': hr({colorBase}),
                 },
                 '&:focus-visible::after, &:active::after, &.Mui-selected:after': hr({colorBase}),
+                '&.MuiTab-fullWidth:focus-visible::after, &.MuiTab-fullWidth:active::after, &.MuiTab-fullWidth.Mui-selected:after':{
+                    margin:0
+                },
                 '> div, > button': {
                     height: 'calc(100% - 2px)',
                     textTransform: 'capitalize'

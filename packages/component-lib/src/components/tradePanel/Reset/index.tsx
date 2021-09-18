@@ -32,6 +32,6 @@ export const ResetPanel = withTranslation('common', {withRef: true})(<T extends 
         },]
     }
     return <SwitchPanel {...{...rest, ...props}} />
-}) as <T, I>(props: ResetProps<I> & React.RefAttributes<any>) => JSX.Element;
+}) as <T extends IBData<I>, I>(props: ResetProps<T> & React.RefAttributes<any>) => JSX.Element;
 
 // export const TransferModal = withTranslation()

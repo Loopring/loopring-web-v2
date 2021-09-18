@@ -5,5 +5,6 @@ export * from './ModalPanel'
 export * from './components/Styled'
 export * from './Amm'
 export * from './components/tool/Dialogs'
+export * from './tradePro'
 export * from './ExportAccount'
 

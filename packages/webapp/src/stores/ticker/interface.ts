@@ -15,6 +15,7 @@ export type TickerMap<R extends { [ key: string ]: any }> = {
 }
 export type TickerStates<C = { [ key: string ]: any }> = {
     tickerMap?: TickerMap<C>
+    __timer__?: number
 } & StateBase
 
 

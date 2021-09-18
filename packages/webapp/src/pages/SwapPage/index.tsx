@@ -34,7 +34,7 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
         swapFunc,
         isSwapLoading,
         pageTradeLite,
-    } = useSwap();
+    } = useSwap({path:'/trading/lite'});
 
     return <>
 

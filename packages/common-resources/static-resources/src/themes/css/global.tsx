@@ -55,7 +55,7 @@ export const colorBase = ({theme}: any) => css`
     --color-divide: ${theme.colorBase.divide};
     --color-box-secondary: ${theme.colorBase.boxSecondary};
     --color-mask:  ${theme.colorBase.mask};
-    --color-table-header-Bg : ${theme.colorBase.tableHeaderBg};
+    --color-table-header-bg : ${theme.colorBase.tableHeaderBg};
     --color-star: ${theme.colorBase.star};  
     --color-logo: ${theme.colorBase.logo};
     
@@ -212,6 +212,8 @@ export const globalCss = ({theme}: any) => css`
     --desktop-max-width: 1200px;
     --desktop-min-width: 1024px;
     --btn-Input-height: 48px;
+    --btn-Input-small-height: 32px;
+
     //--btn-max-width: 160px;
     --btn-min-width: 100px;
     --coin-min-width: 80px;

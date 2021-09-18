@@ -1,11 +1,11 @@
-import { FormHelperText, FormLabel, Grid, Typography } from '@mui/material';
+import { FormHelperText, Grid, Typography } from '@mui/material';
 import {
     CoinInfo,
     FORMAT_STRING_LEN,
     getValuePrecisionThousand,
     IBData
 } from '@loopring-web/common-resources';
-import { InputCoinProps } from "./Interface";
+import { InputCoinProps, InputSize } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
 import { CoinWrap, IInput, IWrap } from "./style";
@@ -26,8 +26,11 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        handleCountChange,
                                                                        focusOnInput,
                                                                        name,
+                                                                       size = InputSize.middle,
                                                                        isHideError = false,
                                                                        isShowCoinInfo = true,
+                                                                       isShowCoinIcon = true,
+                                                                       coinLabelStyle = undefined,
                                                                    }
                                                                        : InputCoinProps<T, C, I>, ref: React.ForwardedRef<any>) {
     const {balance, belong, tradeValue} = (inputData ? inputData : {}) as IBData<C>;
@@ -76,7 +79,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
             _handleError(value);
             setsValue(value);
             if (handleCountChange) {
-                handleCountChange({...inputData, ...{tradeValue: value}} as any, ref)
+                handleCountChange({...inputData, ...{tradeValue: value}} as any,_name, ref)
             }
             //debounceCount({...inputData, ...{tradeValue: value}})
         }
@@ -96,28 +99,30 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
     // const coinInfo: any = coinMap[ belong ] ? coinMap[ belong ] : {};
     // const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;
     // formatValue(sValue)
-    return <> <IWrap component={'div'} ref={ref}>
+    return <> <IWrap size={size} component={'div'} ref={ref} >
         <Grid container component={'div'} className={'label-wrap'} justifyContent={'space-between'}
               paddingBottom={1 / 2}>
-            <Grid item xs={6}><FormLabel className={'main-label'}>{label}</FormLabel></Grid>
+            <Grid item xs={6}><Typography fontSize={'inherit'} color={'inherit'} className={'main-label'}>{label}</Typography></Grid>
             <Grid item xs={6} className={'sub-label'}>{subLabel && belong ?
-                <FormLabel className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
+                <Typography fontSize={'inherit'} color={'inherit'} className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>
                     <span>{maxAllow ? subLabel + ':' : ''}</span>
-                    <span>{balance ? getValuePrecisionThousand(balance) : '0.00'}</span>
-                </FormLabel> : null}</Grid>
+                    <span>{maxAllow ? (balance ? getValuePrecisionThousand(balance) : '0.00') :''}</span>
+                </Typography> : null}</Grid>
         </Grid>
 
-        <Grid container className={`coinInput-wrap ${error.error ? 'error' : ''}`} wrap={'nowrap'}
+        <Grid container className={`coinInput-wrap
+         ${(belong && belong.length) >= FORMAT_STRING_LEN ? 'text-small' : ''} 
+         ${error.error ? 'error' : ''}`} wrap={'nowrap'}
               alignItems={'stretch'}
-              alignContent={'stretch'}>
+              alignContent={'stretch'} >
                 {isShowCoinInfo && (
                       <CoinWrap order={order === 'left' ? 2 : 1}
                       display={'flex'}
-                      alignItems={'center'}
+                      alignItems={'center'} style={coinLabelStyle}
                       className={`icon-wrap icon-wrap-${order}`}>
                 <Grid container align-items={'center'} display={'flex'}>
-                    <Grid item display={'flex'} order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}
+                    {isShowCoinIcon &&<Grid item display={'flex'} order={order === 'left' ? 2 : 1} paddingLeft={order === 'left' ? 1 : 0}
                           className={'logo-icon'}
                           width={'var(--list-menu-coin-size)'}
                           height={'var(--list-menu-coin-size)'}
@@ -125,10 +130,10 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
 
                         <CoinIcon symbol={belong}/>
 
-                    </Grid>
+                    </Grid> }
                     <Grid item order={order === 'left' ? 1 : 2}
                           paddingLeft={order === 'left' ? 0 : 1}>
-                        <Typography  variant={(belong && belong.length) >= FORMAT_STRING_LEN ? 'body1' : 'h4'}>
+                        <Typography fontSize={'inherit'} color={'inherit'}>
                             {belong}
                         </Typography></Grid>
                 </Grid>
@@ -138,7 +143,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
             <Grid order={order === 'left' ? 1 : 2} flex={1} item className={`input-wrap input-wrap-${order}`}>
                 <IInput ref={inputEle} onValueChange={_handleContChange} value={
                     typeof sValue === 'undefined' ? '' : sValue
-                } allowNegativeValue={false}
+                } allowNegativeValue={false}   name={name}
                         disabled={!(!disabled || belong)}
                         placeholder={placeholderText}
                         aria-placeholder={placeholderText} aria-label={label} decimalsLimit={10000000}/>
@@ -158,5 +163,6 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
 }
 
 export const InputCoin = React.memo(React.forwardRef(_InputCoin)) as
-    <T extends IBData<C>, C, I extends CoinInfo<C>>(props: InputCoinProps<T, C, I>, ref: React.RefAttributes<any>) => JSX.Element;
+    <T extends IBData<C>, C, I extends CoinInfo<C>>(props: InputCoinProps<T, C, I> & React.RefAttributes<any>) => JSX.Element;
 //as React.ComponentType<InputButtonProps<coinType,CoinInfo> & RefAttributes<HTMLDivElement>>;
+

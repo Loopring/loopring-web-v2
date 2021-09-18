@@ -41,7 +41,8 @@ export type RawDataTradeItem = {
 export type TradeTableProps = {
     rawData: RawDataTradeItem[];
     pagination?: {
-        pageSize: number
+        pageSize: number,
+        total: number,
     }
     showFilter?: boolean;
     currentheight?: number;

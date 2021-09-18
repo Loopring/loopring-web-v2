@@ -1,25 +1,32 @@
 import React from 'react'
-
 import store from '../../stores';
+import {
+    AmmPoolSnapshot,
+    DepthData,
+    LoopringMap,
+    TickerData,
+    TokenVolumeV3,
+    toBig,
+    SubmitOrderRequestV3,
+    getExistedMarket, TokenInfo, TokenAmount, OrderType, TradeChannel
+} from 'loopring-sdk';
 import { LoopringAPI } from '../../api_wrapper';
-import { CustomError, ErrorMap, getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
+import { CustomError, ErrorMap, getValuePrecisionThousand, MarketType } from '@loopring-web/common-resources';
 import { volumeToCountAsBigNumber } from '../../hooks/help';
-import { PairFormat } from '../../stores/router';
 import BigNumber from 'bignumber.js';
-import * as sdk from 'loopring-sdk'
-import { getTimestampDaysLater } from 'utils/dt_tools';
-import { DAYS } from 'defs/common_defs';
+import { updateTicker } from 'stores/ticker';
+
 import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
 import { useSystem } from 'stores/system';
 import { useAmmMap } from 'stores/Amm/AmmMap';
 import { useAmount } from 'stores/amount';
-import { getExistedMarket } from 'loopring-sdk';
+import { getTimestampDaysLater } from '../../utils/dt_tools';
 
-export const swapDependAsync = (market: PairFormat): Promise<{
-    ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined,
-    tickMap: sdk.LoopringMap<sdk.TickerData>,
-    depth: sdk.DepthData
+export const swapDependAsync = (market: MarketType): Promise<{
+    ammPoolSnapshot: AmmPoolSnapshot | undefined,
+    tickMap: LoopringMap<TickerData>,
+    depth: DepthData
 }> => {
     const {ammMap} = store.getState().amm.ammMap
 
@@ -31,6 +38,7 @@ export const swapDependAsync = (market: PairFormat): Promise<{
                 LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({poolAddress,}),
                 LoopringAPI.exchangeAPI.getMixTicker({market: market})])
                 .then(([{depth}, {ammPoolSnapshot}, {tickMap}]) => {
+                    store.dispatch(updateTicker(tickMap))
                     resolve({
                         ammPoolSnapshot: ammPoolSnapshot,
                         tickMap,
@@ -51,8 +59,8 @@ export const calcPriceByAmmTickMapDepth = <C>(
         tradePair,
         dependencyData: {tickMap, ammPoolSnapshot, depth}
     }: {
-        market: PairFormat,
-        tradePair: PairFormat
+        market: MarketType,
+        tradePair: MarketType
         dependencyData: { tickMap: any, ammPoolSnapshot: any, depth: any },
     }): {
     stob: string | undefined,
@@ -71,8 +79,8 @@ export const calcPriceByAmmTickMapDepth = <C>(
     if (coinA && coinB && tokenMap && marketMap && idIndex) {
         //first getValue from  ammPoolSnapshot
         if (ammPoolSnapshot) {
-            const poolATokenVol: sdk.TokenVolumeV3 = ammPoolSnapshot.pooled[ 0 ];
-            const poolBTokenVol: sdk.TokenVolumeV3 = ammPoolSnapshot.pooled[ 1 ];
+            const poolATokenVol: TokenVolumeV3 = ammPoolSnapshot.pooled[ 0 ];
+            const poolBTokenVol: TokenVolumeV3 = ammPoolSnapshot.pooled[ 1 ];
             stob = volumeToCountAsBigNumber(idIndex[ poolBTokenVol.tokenId ], poolBTokenVol.volume)?.div(
                 volumeToCountAsBigNumber(idIndex[ poolATokenVol.tokenId ], poolATokenVol.volume) || 1
             )
@@ -132,7 +140,7 @@ export const calcPriceByAmmTickMapDepth = <C>(
     }
 }
 
-export const marketInitCheck = (market: string, type?: 'sell' | 'buy'): { tradePair: PairFormat } => {
+export const marketInitCheck = (market: string, type?: 'sell' | 'buy'): { tradePair: MarketType } => {
     const {coinMap, tokenMap, marketMap, marketArray} = store.getState().tokenMap
     const {ammMap} = store.getState().amm
     if (coinMap && tokenMap && marketMap && marketArray && ammMap) {
@@ -169,12 +177,12 @@ export const marketInitCheck = (market: string, type?: 'sell' | 'buy'): { tradeP
 export interface ReqParams {
     isBuy?: boolean,
 
-    price: number, 
-    amount: number, 
+    price: number,
+    amount: number,
     base?: string,
-    quote?: string, 
+    quote?: string,
     market?: string,
-    tokenMap?: sdk.LoopringMap<sdk.TokenInfo>,
+    tokenMap?: LoopringMap<TokenInfo>,
 
     exchangeAddress?: string,
     accountId?: number,
@@ -183,16 +191,16 @@ export interface ReqParams {
     feeBips?: string,
 
     // key is ETH or USDT
-    tokenAmtMap?: {[key: string]: sdk.TokenAmount},
+    tokenAmtMap?: {[key: string]: TokenAmount},
 }
 
 export function makelimitReq({
     isBuy,
 
-    price, 
-    amount, 
-    base, 
-    quote, 
+    price,
+    amount,
+    base,
+    quote,
     tokenMap,
 
     exchangeAddress,
@@ -220,35 +228,35 @@ export function makelimitReq({
     const baseTokenInfo = tokenMap[base]
     const quoteTokenInfo = tokenMap[quote]
 
-    const baseVol = sdk.toBig(amount).times('1e' + baseTokenInfo.decimals)
-    const quoteVol = sdk.toBig(amount).times(sdk.toBig(price)).times('1e' + quoteTokenInfo.decimals)
+    const baseVol = toBig(amount).times('1e' + baseTokenInfo.decimals)
+    const quoteVol = toBig(amount).times(toBig(price)).times('1e' + quoteTokenInfo.decimals)
 
-    const baseTokenVol3: sdk.TokenVolumeV3 = {
+    const baseTokenVol3: TokenVolumeV3 = {
         tokenId: baseTokenInfo.tokenId,
         volume: baseVol.toString()
     }
 
-    const quoteTokenVol3: sdk.TokenVolumeV3 = {
+    const quoteTokenVol3: TokenVolumeV3 = {
         tokenId: quoteTokenInfo.tokenId,
         volume: quoteVol.toString()
     }
 
     const takerRate = tokenAmtMap[baseTokenInfo.symbol].userOrderInfo.takerRate
 
-    const maxFeeBips = parseInt(sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString())
+    const maxFeeBips = parseInt(toBig(feeBips).plus(toBig(takerRate)).toString())
 
-    const request: sdk.SubmitOrderRequestV3 = {
+    const request: SubmitOrderRequestV3 = {
         exchange: exchangeAddress,
         accountId,
         storageId,
         sellToken: isBuy ? quoteTokenVol3 : baseTokenVol3,
         buyToken: isBuy ? baseTokenVol3 :quoteTokenVol3,
         allOrNone: false,
-        validUntil: getTimestampDaysLater(DAYS),
+        validUntil: getTimestampDaysLater(30),
         maxFeeBips,
         fillAmountBOrS: false, // amm only false
-        orderType: sdk.OrderType.LimitOrder,
-        tradeChannel: sdk.TradeChannel.MIXED,
+        orderType: OrderType.LimitOrder,
+        tradeChannel: TradeChannel.MIXED,
         eddsaSignature: '',
     }
 
@@ -257,14 +265,18 @@ export function makelimitReq({
     }
 }
 
-//buy eth. ETH-USDT reversed. calc: usdt<-eth/isAtoB=false
-export function marketBuy() {
+//price = USDTVol / ETHVol
 
+//buy eth(base). ETH-USDT reversed. sell:usdt buy:eth   calc: usdt<-eth/isAtoB=false
+// fee(buyToken) -> eth(base)
+// percentage -> change quote vol
+export function marketBuy() {
 }
 
-//sell eth. ETH-USDT. calc: eth->usdt/isAtoB=true
+//sell eth(base). ETH-USDT. sell:eth buy:usdt   calc: eth->usdt/isAtoB=true
+// fee(buytoken) -> usdt(quote)
+// percentage -> change base vol
 export function marketSell() {
-
 }
 
 export function usePlaceOrder() {

@@ -4,7 +4,7 @@ import CurrencyInput from 'react-currency-input-field';
 import { globalSetup } from '@loopring-web/common-resources';
 import styled from '@emotion/styled';
 import { Box, FormHelperText, InputAdornment } from '@mui/material';
-import { WithTranslation } from 'react-i18next';
+import { TFunction } from 'react-i18next';
 import { useFocusRef } from '../../../basic-lib/form/hooks';
 import { useSettings } from '../../../../stores';
 
@@ -86,7 +86,7 @@ export const SlippagePanel = ({
                                   wait = globalSetup.wait,
                                   handleChange,
                                   ...rest
-                              }: WithTranslation & {
+                              }: { t:TFunction } & {
 
 
     slippageList: Array<number | string>,
