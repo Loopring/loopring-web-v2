@@ -19,6 +19,7 @@ import { bindHover } from 'material-ui-popup-state/es';
 import { useSettings } from '../../stores';
 import styled from '@emotion/styled';
 import { RewardItem } from 'loopring-sdk'
+import { emptyTypeAnnotation, NUMBER_BINARY_OPERATORS } from '@babel/types';
 
 export interface Reward {
     startAt: number;
@@ -35,7 +36,22 @@ const CardStyled = styled(Card)`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: relative;
 `
+
+const LabelStyled = styled(Box)`
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: ${({theme}) => theme.unit}px 0; 
+    padding: ${({theme}) => theme.unit / 2}px ${({theme}) => theme.unit}px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-box);
+    font-size: 1.4rem;
+    background: ${({type}: any) => type === 'ORDERBOOK_MINING' ? 'var(--color-warning)' : 'var(--color-primary-hover)'}
+` as any
 
 const CardActionBoxStyled = styled(Box)`
     position: relative;
@@ -126,6 +142,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
         }, [getMiningLinkList, pathname, language])
         
         return <CardStyled ref={ref}>
+            <LabelStyled type={ruleType}>{isOrderbook ? 'Orderbook' : 'Amm Pool'}</LabelStyled>
             <CardContent style={{ paddingBottom: 0 }}>
                 <BoxStyled display={'flex'} flexDirection={'row'} justifyContent={'space-between'}
                            alignItems={'center'}>
@@ -187,10 +204,16 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                 </BoxStyled>
                 <Typography display={'flex'} flexDirection={'column'} component={'span'} justifyContent={'center'} alignItems={'center'} marginTop={7}>
                     {/* <Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> {APR || EmptyValueTag}% */}
-                    <Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> {getValuePrecisionThousand(APR, 2, 2, 2, true) + '%' || EmptyValueTag}
-                    </Typography>
+                    {isOrderbook ? (
+                        <Typography component={'span'} variant={'h2'} fontFamily={'Roboto'}>
+                            {totalRewards ? getValuePrecisionThousand(totalRewards) + ' '
+                            + rewardToken.simpleName : EmptyValueTag}
+                        </Typography>) 
+                    : (<Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> 
+                        {getValuePrecisionThousand(APR, 2, 2, 2, true) + '%' || EmptyValueTag}
+                    </Typography>)}
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'} marginTop={1}
-                                style={{textTransform: 'uppercase'}}>{t('labelAPR')}</Typography>
+                                style={{textTransform: 'uppercase'}}>{isOrderbook ? t('labelMiningReward'): t('labelAPR')}</Typography>
                 </Typography>
 
                 <DividerWrapperStyled marginTop={3} marginBottom={2}>
@@ -332,17 +355,9 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                             ? currency === 'USD' ? totalAmmRewardDollar : totalAmmRewardYuan
                             : EmptyValueTag
                         } */}
-                        {isOrderbook 
-                            ? currency === 'USD'
-                                ? orderbookRewardDollar : orderbookRewardYuan
-                            : isAmm
-                                ? currency === 'USD'
-                                    ? totalAmmRewardDollar
-                                    : totalAmmRewardYuan
-                            : currency === 'USD'
-                                ? orderbookRewardDollar : orderbookRewardYuan
-                        }
-                        
+                        {getValuePrecisionThousand(totalRewards)}
+                        &nbsp;
+                        {rewardToken.simpleName}
                         {/* {rewardValue2 && Number.isFinite(rewardValue2)
                             ? (currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand((rewardValue2 || 0) * ((currency === 'USD' ? coinBPriceDollar : coinBPriceYuan)|| 0), undefined, undefined, 2, true, { isFait: true })
                             : EmptyValueTag
@@ -359,11 +374,11 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                             vertical: 'bottom',
                             horizontal: 'center',
                         }}>
-                            <Box padding={1.5} paddingLeft={1}>
+                            <Box padding={1}>
                                 <Typography component={'span'} display={'flex'} flexDirection={'row'}
                                     justifyContent={'space-between'} alignItems={'center'}
                                     style={{ textTransform: 'capitalize' }} color={'textPrimary'}>
-                                    <Box component={'span'} className={'logo-icon'} display={'flex'}
+                                    {/* <Box component={'span'} className={'logo-icon'} display={'flex'}
                                         height={'var(--list-menu-coin-size)'}
                                         width={'var(--list-menu-coin-size)'} alignItems={'center'}
                                         
@@ -389,13 +404,21 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                             lineHeight={'20px'}>
                                             {coinAInfo?.simpleName}
                                         </Typography>
-                                    </Box>
+                                    </Box> */}
                                         
-                                    <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} height={20} marginLeft={10}
+                                    <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} height={20}
                                         lineHeight={'20px'}>
-                                        {getValuePrecisionThousand((isOrderbook ? totalRewards : rewardValue), undefined, undefined, precisionA, false, {floor: true})}
-                                        &nbsp;
-                                        {coinAInfo?.simpleName}
+                                        {isOrderbook 
+                                            ? currency === 'USD'
+                                                ? orderbookRewardDollar : orderbookRewardYuan
+                                            : isAmm
+                                                ? currency === 'USD'
+                                                    ? totalAmmRewardDollar
+                                                    : totalAmmRewardYuan
+                                            : currency === 'USD'
+                                                ? orderbookRewardDollar : orderbookRewardYuan
+                                        }
+                                        {/* {getValuePrecisionThousand((isOrderbook ? totalRewards : rewardValue), undefined, undefined, precisionA, false, {floor: true})} */}
                                     </Typography>
                                 </Typography>
                                 {rewardToken2 && (

@@ -233,6 +233,7 @@ export default {
     labelMiningPlaceOrderBtn: 'Place Order',
     labelMiningViewDetails: 'View details',
     labelMiningMaxSpread: 'Max Spread',
+    labelMiningReward: 'Reward',
     labelCookiesAgree: 'Agree',
     labelLimitMin:'Minimum is {{arg}}',
     labelEnterAmount:'Enter an amount',

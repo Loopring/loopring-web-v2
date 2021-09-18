@@ -233,6 +233,7 @@ export default {
     labelMiningViewDetails: '查看活动详情',
     labelMiningMaxSpread: '最大 spread',
     labelMiningMyReward: '我的奖励',
+    labelMiningReward: '活动奖励',
     labelCookiesAgree: '同意',
     labelLimitMin: '最小下单量{{arg}}',
     labelEnterAmount: '请填写兑换数',
