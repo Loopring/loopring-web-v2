@@ -593,12 +593,15 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
                 return {...prev, [ item ]: coinMap[ item ]}
             }, {} as CoinMap<C>)
 
+            const marketPrecision = marketMap && marketMap[_market] && marketMap[_market].precisionForPrice ? marketMap[_market].precisionForPrice : 4
+
             setTradeCalcData((state) => {
                 return {
                     ...state,
                     walletMap,
                     coinSell: coinA,
                     coinBuy: coinB,
+                    marketPrecision,
                     sellCoinInfoMap,
                     buyCoinInfoMap,
                     priceImpact: '',
@@ -642,7 +645,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
         const {ammPoolSnapshot, depth, tradePair} = pageTradeLite;
 
         // @ts-ignore
-        myLog('reCalculateDataWhenValueChange depth:_tradePair,market', pageTradeLite, _tradePair, market)
+        // myLog('reCalculateDataWhenValueChange depth:_tradePair,market', pageTradeLite, _tradePair, market)
         //checkMarketDataValid(ammPoolSnapshot, tickMap, market, depth) &&
         if (depth && market && _tradePair === tradePair) {
 

@@ -7,7 +7,8 @@ import {
     IBData,
     ReverseIcon,
     SlippageTolerance,
-    TradeCalcData
+    TradeCalcData,
+    myLog,
 } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
@@ -20,6 +21,7 @@ import { useSettings } from '../../../../stores';
 import { IconButtonStyled,ButtonStyle } from '../Styled';
 import { SlippagePanel } from '../tool';
 import { Box } from '@mui/material';
+import * as sdk from 'loopring-sdk'
 
 export const SwapTradeWrap = <T extends IBData<I>,
     I,
@@ -160,11 +162,14 @@ export const SwapTradeWrap = <T extends IBData<I>,
     let btos = `${tradeCalcData .BtoS ? tradeCalcData.BtoS : EmptyValueTag}`
 
     if (tradeData?.sell.tradeValue && tradeData?.buy.tradeValue) {
-        const precision = 8
-        stob = getValuePrecisionThousand(tradeData?.buy.tradeValue / tradeData?.sell.tradeValue, undefined, undefined, precision)
-        btos = getValuePrecisionThousand(tradeData?.sell.tradeValue / tradeData?.buy.tradeValue, undefined, undefined, precision)
-        // stob = (tradeData?.buy.tradeValue / tradeData?.sell.tradeValue).toString()
-        btos = (tradeData?.sell.tradeValue / tradeData?.buy.tradeValue).toString()
+        // myLog("tradeCalcData.marketPrecision:", tradeCalcData.marketPrecision)
+        const sellBig = sdk.toBig(tradeData?.sell.tradeValue)
+        const buyBig = sdk.toBig(tradeData?.buy.tradeValue)
+        const BIG0 = sdk.toBig(0)
+        if (sellBig.gt(BIG0) && buyBig.gt(BIG0)) {
+            stob = getValuePrecisionThousand(buyBig.div(sellBig).toString(), undefined, undefined, tradeCalcData.marketPrecision)
+            btos = getValuePrecisionThousand(sellBig.div(buyBig).toString(), undefined, undefined, tradeCalcData.marketPrecision)
+        }
     }
 
     const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${stob} ${tradeData.buy?.belong}`
