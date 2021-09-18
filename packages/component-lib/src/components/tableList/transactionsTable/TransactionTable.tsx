@@ -45,6 +45,7 @@ export type TxsFilterProps = {
 const TYPE_COLOR_MAPPING = [
     {type: TransactionStatus.processed, color: 'success'},
     {type: TransactionStatus.processing, color: 'warning'},
+    {type: TransactionStatus.received, color: 'warning'},
     {type: TransactionStatus.failed, color: 'error'},
 ]
 
@@ -68,7 +69,7 @@ const CellStatus = ({row, column}: any) => {
     `
     const svg = status === 'processed' 
         ? <CompleteIcon /> 
-        : status === 'processing' 
+        : status === 'processing' || status === 'received'
             ? <WaitingIcon /> 
             : <WarningIcon />
     const RenderValueWrapper =
