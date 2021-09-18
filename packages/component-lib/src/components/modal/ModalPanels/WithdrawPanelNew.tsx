@@ -57,6 +57,8 @@ export const WithdrawPanelNew = withTranslation('common', {withRef: true})(<T ex
             {
                 key: "tradeMenuList",
                 element: React.useMemo( () => <TradeMenuList {...{
+                    nonZero: true,
+                    sorted: true,
                     ...rest,
                     onChangeEvent,
                     //rest.walletMap,

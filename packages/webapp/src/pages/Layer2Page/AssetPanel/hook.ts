@@ -67,7 +67,7 @@ export const useGetAssets = () => {
     }, [account.readyState]);
 
     const walletLayer2Callback = React.useCallback(() => {
-        const walletMap = makeWalletLayer2()
+        const walletMap = makeWalletLayer2(false)
         const assetsKeyList = walletMap && walletMap.walletMap ? Object.keys(walletMap.walletMap) : []
         const assetsDetailList = walletMap && walletMap.walletMap ? Object.values(walletMap.walletMap) : []
         let map: { [ key: string ]: any } = {}
