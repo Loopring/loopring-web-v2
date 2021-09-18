@@ -31,7 +31,7 @@ export  const MarketView = withTranslation('common')(({
     const [tabIndex, setTabIndex] = React.useState<TabIndex>(TabIndex.orderbook)
     const {pageTradePro} = usePageTradePro();
 
-    const {tickMap,depth} = pageTradePro;
+    const {tickerMap,depth} = pageTradePro;
     const { marketMap,tokenMap }  = useTokenMap();
     const {upColor, currency } = useSettings();
     const {tokenPrices} = useTokenPrices();
@@ -40,17 +40,14 @@ export  const MarketView = withTranslation('common')(({
     const {forex} = useSystem();
 
 
-    // const                          {pageTradePro.tickMap[market].close + '\u2248' + pageTradePro.tickMap[market].priceDollar }
-    // `1${tradeData.sell?.belong} \u2248 ${tradeCalcData?.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
 
-    // if (tickMap) {
     const value = currency === Currency.dollar ? '\u2248 ' + PriceTag.Dollar
         + getValuePrecisionThousand((
-            (tickMap && tickMap[ market ])? tickMap[ market ].close * basePrice
+            (tickerMap && tickerMap[ market ])? tickerMap[ market ].close * basePrice
                 : 0), undefined, undefined, undefined, true, {isFait: true})
         : '\u2248 ' + PriceTag.Yuan
-        + getValuePrecisionThousand(( (tickMap && tickMap[ market ])?
-            tickMap[ market ].close * basePrice / forex: 0), undefined, undefined, undefined, true, {isFait: true})
+        + getValuePrecisionThousand(( (tickerMap && tickerMap[ market ])?
+            tickerMap[ market ].close * basePrice / forex: 0), undefined, undefined, undefined, true, {isFait: true})
      // }
     return <>
         <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
@@ -62,7 +59,7 @@ export  const MarketView = withTranslation('common')(({
                     {/*<Tab value={TabIndex.market} label={t('labelProMarket')}/>*/}
                 </Tabs>
             </Box>
-            {pageTradePro.depth && pageTradePro.tickMap && tokenMap && marketMap && market == pageTradePro.market ?
+            {pageTradePro.depth && pageTradePro.tickerMap && tokenMap && marketMap && market == pageTradePro.market ?
                 <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'} paddingX={2}>
                     <DepthBlock marketInfo={marketMap[market]}
                                 type={DepthType.ask}
@@ -72,7 +69,7 @@ export  const MarketView = withTranslation('common')(({
                                 showTitle ={true}  />
                     <Box paddingY={1/2} display={'flex'} flexDirection={'column'}  alignItems={'center'}>
                          <Typography color={'var(--color-text-third)'} variant={'body2'} component={'p'} textAlign={'center'} >
-                             {pageTradePro.tickMap[market].close} {value}
+                             {pageTradePro.tickerMap[market].close} {value}
                          </Typography>
                     </Box>
                     <DepthBlock marketInfo={marketMap[market]}
@@ -82,7 +79,7 @@ export  const MarketView = withTranslation('common')(({
                                 depths={pageTradePro.depth[ `${DepthType.bid}s`].slice(0,8)}
                                 showTitle ={false}  />
                 </Box>
-                :<LoadingIcon/>
+                :<Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'}><LoadingIcon/></Box>
             }
 
 
