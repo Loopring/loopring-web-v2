@@ -13,7 +13,7 @@ import { useTokenMap } from 'stores/token';
 import { useSystem } from 'stores/system';
 import { useTranslation } from 'react-i18next';
 import { useSubmitBtn } from './hookBtn';
-import { VolToNumberWithPrecision } from '../../../../utils/formatter_tool';
+import { VolToNumberWithPrecision } from 'utils/formatter_tool';
 
 export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType):{
     [key: string]: any;

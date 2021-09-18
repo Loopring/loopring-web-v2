@@ -1,6 +1,7 @@
 import * as sdk from 'loopring-sdk';
 import { TradeChannel,OrderInfo } from 'loopring-sdk';
 import { MarketType, TradeCalcProData } from '@loopring-web/common-resources';
+import { TickerMap } from '../../ticker';
 
 export type PageTradePro<C> = {
     market?: MarketType  // eg: ETH-LRC, Pair from loopring market
@@ -32,7 +33,7 @@ export type PageTradePro<C> = {
     },
     depth?: sdk.DepthData | undefined,
     depthLevel?: number,
-    tickMap?: sdk.LoopringMap<sdk.TickerData> | undefined,
+    tickMap?: TickerMap<any> | undefined,
     ammPoolSnapshot?: sdk.AmmPoolSnapshot | undefined,
     tradeChannel?: undefined | TradeChannel
     orderType?: undefined | sdk.OrderType
