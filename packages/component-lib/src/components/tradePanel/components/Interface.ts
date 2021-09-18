@@ -18,6 +18,8 @@ import { BtnInfoProps, SwitchPanelProps } from '../../basic-lib';
  * private props
  */
 export type TradeMenuListProps<T, I> = {
+    nonZero: boolean,
+    sorted: boolean,
     walletMap: WalletMap<I, WalletCoin<I>>,
     _height?: string | number,
     coinMap: CoinMap<I, CoinInfo<I>>,

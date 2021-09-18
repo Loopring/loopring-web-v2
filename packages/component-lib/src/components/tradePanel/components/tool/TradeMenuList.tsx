@@ -9,7 +9,7 @@ import { useTheme } from '@emotion/react';
 
 export const TradeMenuList = <T extends IBData<I>,
     I>({
-           t, onChangeEvent, walletMap, selected, tradeData, coinMap, _height,
+           t, onChangeEvent, nonZero, sorted, walletMap, selected, tradeData, coinMap, _height,
            ...rest
        }: TradeMenuListProps<T, I> & WithTranslation) => {
     const ref = React.useRef<any>(null);
@@ -54,6 +54,8 @@ export const TradeMenuList = <T extends IBData<I>,
                 {...{
                 coinMap: coinMap, //swapData.type === 'sell' ? tradeCalcData?.sellCoinInfoMap : tradeCalcData?.buyCoinInfoMap as any,
                 filterBy,
+                nonZero,
+                sorted,
                 // height: '410px',
                 filterString: value,
                 handleSelect,

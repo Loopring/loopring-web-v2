@@ -67,6 +67,8 @@ export interface CoinItemProps<C> extends ListItemProps {
 export type CoinMenuProps<R, I> = {
     listProps?: ListProps | any,
     selected: CoinKey<R> | null,
+    nonZero: boolean,
+    sorted?: boolean,
     filterString: string,
     height?: string,
     allowScroll?: boolean,//boolean
