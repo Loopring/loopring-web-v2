@@ -311,7 +311,7 @@ export default {
     labelProLimitBtn: '{{tradeType}} {{symbol}}',
     labelProMarketBtn: '{{tradeType}} {{symbol}}',
 
-    LabelDepthPrice: 'Price({{symbol})',
-    LabelDepthAmount: 'Amount({{symbol})',
-    LabelDepthTotal: 'Total({{symbol})',
+    labelDepthPrice: 'Price({{symbol}})',
+    labelDepthAmount: 'Amount({{symbol}})',
+    labelDepthTotal: 'Total({{symbol}})',
 }

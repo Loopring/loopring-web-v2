@@ -21,9 +21,9 @@ export type System<C extends { [ key: string ]: any }> = {
     etherscanBaseUrl: string,
     socketURL: string,
     baseURL: string,
-    faitPrices: { [k in keyof C]: { price: any, [ key: string ]: any } } | undefined,
-    gasPrice: number | undefined,
-    forex: number | undefined,
+    faitPrices: { [k in keyof C]: { price: any, [ key: string ]: any } },
+    gasPrice: number ,
+    forex: number,
     exchangeInfo: ExchangeInfo | undefined,
 
 }

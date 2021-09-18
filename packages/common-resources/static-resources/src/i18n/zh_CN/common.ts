@@ -310,8 +310,8 @@ export default {
     labelProLimitBtn: '{{tradeType}} {{symbol}}',
     labelProMarketBtn: '{{tradeType}} {{symbol}}',
 
-    LabelDepthPrice: '价格({{symbol})',
-    LabelDepthAmount: '数量({{symbol})',
-    LabelDepthTotal: '总量({{symbol})',
+    labelDepthPrice: '价格({{symbol}})',
+    labelDepthAmount: '数量({{symbol}})',
+    labelDepthTotal: '总量({{symbol}})',
 
 }

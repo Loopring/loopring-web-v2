@@ -29,7 +29,7 @@ export const OrderbookPage = withTranslation('common')(() => {
         walletInfo: React.useMemo(() => <WalletInfo market={market as any}/>, [ market]),
         spot: React.useMemo(() => <SpotView market={market as any}/>, [market]),
         market: React.useMemo(() => <MarketView market={market as any}/>, [market]),
-        market2: React.useMemo(() => <MarketView market={market as any}/>, [market]),
+        market2: React.useMemo(() => <></>,[]),    //<MarketView market={market as any}/>, [market])
         chart: React.useMemo(() => <ChartView/>, []),
         orderTable: React.useMemo(() => <OrderTableView/>, [])
     }
