@@ -16,6 +16,11 @@ const BoxStyle = styled(Box)`
   &.spot{
     ${({theme}:any) => boxLiner({theme})}
   }
+  .MuiTabs-root{
+     .MuiTab-root{
+       min-height: 44;
+     }
+  }
 `
 const ResponsiveGridLayout = WidthProvider(Responsive);
 

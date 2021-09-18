@@ -1,7 +1,58 @@
 import { SvgIcon, SvgIconProps, } from '@mui/material';
 
+type DepthColor= {
+    bo:string,
+    l:string,
+    a:string,
+    b:string,
+}
+export const DepthHIcon = ({bo='#49527D',l='#49527D',a='#FF5677',b='#00BBA8',...props}: SvgIconProps & DepthColor) => {
+    return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="1.5" stroke={bo}/>
+        <rect x="10.0001" y="4.66675" width="9.33333" height="2.66667" fill={l}/>
+        <rect x="10.0001" y="8.66675" width="9.33333" height="2.66667" fill={l}/>
+        <rect x="10.0001" y="12.6665" width="9.33333" height="2.66667" fill={l}/>
+        <rect x="10.0001" y="16.6667" width="9.33333" height="2.66667" fill={l}/>
+        <rect x="4.66663" y="4.66675" width="4" height="6.66667" fill={a}/>
+        <rect x="4.66663" y="12.6665" width="4" height="6.66667" fill={b}/>
+    </SvgIcon>
+}
+export const DepthFIcon = ({bo='#49527D',l='#49527D',a='#FF5677',b='#00BBA8',...props}: SvgIconProps & DepthColor) => {
+    return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="1.5" stroke={bo}/>
+        <rect x="10.0001" y="4.66675" width="9.33333" height="2.66667" fill={l}/>
+        <rect x="10.0001" y="8.66675" width="9.33333" height="2.66667" fill={l}/>
+        <rect x="10.0001" y="12.6665" width="9.33333" height="2.66667" fill={l}/>
+        <rect x="10.0001" y="16.6667" width="9.33333" height="2.66667" fill={l}/>
+        <rect x="4.66663" y="4.66675" width="4" height="14.6667" fill={a}/>
+    </SvgIcon>
+}
+export const UpIcon = (props: SvgIconProps ) => {
+    return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M13 7.83L16.59 11.41L18 10L12 4L6 10L7.41 11.41L11 7.83L11 20L13 20L13 7.83Z" />
+    </SvgIcon>
+}
+
+export const DragIcon = (props: SvgIconProps ) => {
+    return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M10 1H16V3H10V1Z" />
+            <path d="M10 7H16V9H10V7Z" />
+            <path d="M16 13H10V15H16V13Z"/>
+    </SvgIcon>
+}
+export const ResizeIcon = (props: SvgIconProps ) => {
+    return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M10 10V0L0 10H10Z" />
+    </SvgIcon>
+}
+
+
+
+
+
 export const AssetsIcon = (props: SvgIconProps) => {
-    return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C21.9939 17.5203 17.5203 21.9939 12 22ZM11 4.062C7.72604 4.47603 5.04227 6.85789 4.24231 10.0595C3.44234 13.2611 4.69036 16.6254 7.38479 18.5307C10.0792 20.436 13.6671 20.4913 16.419 18.67L16.319 18.741L16.413 18.676L16.472 18.635L16.536 18.59L16.552 18.579L16.561 18.572L11.433 13.442C11.1544 13.1585 10.9988 12.7765 11 12.379L11 4.062ZM13.829 13L18.056 17.227L18.063 17.219L18.068 17.213L18.058 17.224C19.0896 16.0335 19.744 14.5633 19.938 13L13.829 13ZM13 4.062L13 11L19.938 11C19.4815 7.37411 16.6259 4.51851 13 4.062Z"/></SvgIcon>
+    return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C21.9939 17.5203 17.5203 21.9939 12 22ZM11 4.062C7.72604 4.47603 5.04227 6.85789 4.24231 10.0595C3.44234 13.2611 4.69036 16.6254 7.38479 18.5307C10.0792 20.436 13.6671 20.4913 16.419 18.67L16.319 18.741L16.413 18.676L16.472 18.635L16.536 18.59L16.552 18.579L16.561 18.572L11.433 13.442C11.1544 13.1585 10.9988 12.7765 11 12.379L11 4.062ZM13.829 13L18.056 17.227L18.063 17.219L18.068 17.213L18.058 17.224C19.0896 16.0335 19.744 14.5633 19.938 13L13.829 13ZM13 4.062L13 11L19.938 11C19.4815 7.37411 16.6259 4.51851 13 4.062Z"/></SvgIcon>
 }
 export const L2MyLiquidityIcon = (props: SvgIconProps) => {
     return <SvgIcon {...props} width="24" height="24" viewBox="0 0 24 24" fill="none">
