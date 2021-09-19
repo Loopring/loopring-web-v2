@@ -157,7 +157,7 @@ export default {
     labelFeeRewards: 'Fee Rewards',
     labelMiningRewards: 'Mining Rewards',
     labelLiquidityValue: 'Liquidity Value',
-    labelCopyAddClip: ' Address Copied to Clipboard!',
+    labelCopyAddClip: 'Address Copied to Clipboard!',
     labelPleaseInputWalletAddress: 'Please Input Address',
     labelEmptyDefault: 'Empty',
     labelUnlockAccount:'Unlock Account',
