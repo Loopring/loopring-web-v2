@@ -138,7 +138,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
                 _rawData = filteredData.sort((a, b) => {
                     const valueA = a.coinAInfo.simpleName
                     const valueB = b.coinAInfo.simpleName
-                    return valueA.localeCompare(valueB)
+                    return valueB.localeCompare(valueA)
                 })
                 break;
             case 'liquidity':

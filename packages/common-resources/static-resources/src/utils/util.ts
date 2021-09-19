@@ -79,6 +79,7 @@ const addZeroAfterDot = (value: string) => {
     return value
 }
 
+// rules online docs: https://docs.qq.com/sheet/DUXFxc1pyZU1MZkJq?tab=BB08J2
 /**
  * @param value
  * @param minDigit  default = 6
@@ -105,20 +106,24 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     }
     // fait price
     if (isFait === true) {
-        if (floor === true) {
-            result = getFloatFloor(result, 2)
-        }
-        if (floor === false) {
-            result = getFloatCeil(result, 2)
-        }
         if (toBig(result).isGreaterThanOrEqualTo(1)) {
+            if (floor === true) {
+                result = getFloatFloor(result, 2)
+            }
+            if (floor === false) {
+                result = getFloatCeil(result, 2)
+            }
             // fixed 2 decimals
-            result = toBig(result.toFixed(2)).toNumber().toLocaleString('en', {minimumFractionDigits: 2})
+            return toBig(result.toFixed(2)).toNumber().toLocaleString('en', {minimumFractionDigits: 2})
         } else {
-            result = toBig(result).toNumber().toLocaleString('en', {minimumFractionDigits: 6})
+            if (floor === true) {
+                result = getFloatFloor(result, 6)
+            }
+            if (floor === false) {
+                result = getFloatCeil(result, 6)
+            }
+            return toBig(result).toNumber().toLocaleString('en', {minimumFractionDigits: 6})
         }
-        
-        return result
     }
     if (isTrade === true) {
         let [_init, _dot] = result.toString().split('.');
@@ -152,15 +157,6 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     }
     
     if (result && !notRemoveEndZero) {
-        // let [_init, _dot] = result.split('.');
-        // if (_dot) {
-        //     _dot = _dot.replace(/0+?$/, '');
-        //     if (_dot) {
-        //         result = _init + '.' + _dot ;
-        //     } else {
-        //         result = _init
-        //     }
-        // }
         result = addZeroAfterDot(result)
     }
 
