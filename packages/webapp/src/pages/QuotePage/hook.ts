@@ -118,7 +118,7 @@ export function useQuote<C extends { [ key: string ]: string }>() {
         const newTickList = [...tickList, ..._tickList]
         const newTickListWithPrecision = newTickList.map(o => {
             const pair = o.__rawTicker__.symbol
-            const precision = marketMap ? marketMap[pair].precisionForPrice : undefined
+            const precision = marketMap ? marketMap[pair]?.precisionForPrice : undefined
             // console.log(pair, precision)
             return ({
                 ...o,

@@ -105,10 +105,10 @@ export const MiningPage = withTranslation('common')(<T extends AmmJoinData<C ext
     const jointAmmViewMap = [...ammActivityViewMap, ...ammActivityPastViewMap]
     const filteredJointAmmViewMap = jointAmmViewMap.filter(o => o.activity.ruleType !== 'SWAP_VOLUME_RANKING')
     const orderedViewMap = filteredJointAmmViewMap.sort((a, b) => {
-        if (a.APY && !b.APY) {
+        if (a.APR && !b.APR) {
             return -1
         }
-        if (b.APY && !a.APY) {
+        if (b.APR && !a.APR) {
             return 1
         }
         return 0

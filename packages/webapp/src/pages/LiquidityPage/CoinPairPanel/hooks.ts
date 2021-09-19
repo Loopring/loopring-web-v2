@@ -135,7 +135,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
         feeB: undefined,
         isNew: undefined,
         isActivity: undefined,
-        APY: undefined
+        APR: undefined
     } as unknown as PgAmmDetail<C>);
     const [tradeFloat, setTradeFloat] = React.useState<TradeFloat | undefined>(undefined);
     const [pair, setPair] = React.useState<{ coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined }>({

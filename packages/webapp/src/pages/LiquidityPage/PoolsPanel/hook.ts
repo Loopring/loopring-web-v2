@@ -99,7 +99,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
                         _ammMap[ 'AMM-' + tickerMapKey ].tradeFloat = {
                             ..._ammMap[ 'AMM-' + tickerMapKey ].tradeFloat,
                             ...tickerMap[ tickerMapKey ],
-                            // APY: _ammMap['AMM-' + tickerMapKey ].APY
+                            // APR: _ammMap['AMM-' + tickerMapKey ].APR
                         }
     
                     }
@@ -175,10 +175,10 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
                     return 0
                 })
                 break;
-            case 'APY':
+            case 'APR':
                 _rawData = filteredData.sort((a, b) => {
-                    const valueA = a.APY || 0
-                    const valueB = b.APY || 0
+                    const valueA = a.APR || 0
+                    const valueB = b.APR || 0
                     if (valueA && valueB) {
                         return valueB - valueA
                     }

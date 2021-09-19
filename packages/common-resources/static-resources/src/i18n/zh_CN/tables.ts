@@ -68,7 +68,7 @@ export default {
     labelLiquidity: '流动性',
     label24TradeVolume: '24h 交易量',
     label24Reward: '24h 奖励',
-    labelAPY: 'APY',
+    labelAPY: 'APR',
     labelTradePool: '入金',
     labelAction: '操作',
     labelFilter: '搜索',
