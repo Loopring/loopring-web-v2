@@ -138,7 +138,7 @@ export default {
     labelMyReward: '我的奖励',
     labelDate: '日期',
     labelBack: '返回',
-    labelAPY: 'APY',
+    labelAPY: 'APR',
     label24Volume: '24h 交易量',
     labelTVL: '总锁仓量',
     labelAmmTotalToken: '池子中的代币',
