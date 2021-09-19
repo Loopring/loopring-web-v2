@@ -73,7 +73,7 @@ export const ModalAccountInfo = withTranslation('common')(({
                     {...{_height: 'var(--modal-height)', _width: 'var(--modal-width)'}}
         />
 
-        <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen}
+        <Toast alertText={t('labelCopyAddClip')} open={copyToastOpen}
                autoHideDuration={TOAST_TIME} onClose={() => {
             setCopyToastOpen(false)
         }} severity={"success"}/>

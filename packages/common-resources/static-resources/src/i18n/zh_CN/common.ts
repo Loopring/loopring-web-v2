@@ -157,7 +157,7 @@ export default {
     labelFeeRewards: '做市返佣',
     labelMiningRewards: '活动奖励',
     labelLiquidityValue: '流动性价值',
-    labelCopyAddClip: '复制黏贴到剪切板！',
+    labelCopyAddClip: '地址复制到剪切板！',
     labelPleaseInputWalletAddress: '请输入地址',
     labelEmptyDefault: '内容空空的～',
     labelUnlockAccount: '解锁账号',
