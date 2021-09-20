@@ -36,10 +36,11 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
 ({t, ...rest}: WithTranslation
     & {}) => {
     const container = React.useRef(null);
-    const {filteredData, sortMethod, tableHeight, getFilteredData, filterValue } = useAmmMapUI();
+    const {filteredData, sortMethod, tableHeight, getFilteredData, filterValue, rawData } = useAmmMapUI();
     const { coinJson } = useSettings();
     const { forex } = useSystem()
     const { tokenPrices } = store.getState().tokenPrices
+    const showLoading = rawData && !rawData.length
 
     return (
         <>
@@ -68,8 +69,8 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
                 </Box>
                 <StylePaper display={'flex'}  flexDirection={'column'} ref={container} className={'table-divide'} >
                     <PoolsTable {...{
-                        rawData:filteredData,
-                        showLoading: !filteredData.length,
+                        rawData: filteredData,
+                        showLoading: showLoading,
                         tableHeight: tableHeight,
                         sortMethod: sortMethod,
                         coinJson,

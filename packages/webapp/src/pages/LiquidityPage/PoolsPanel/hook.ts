@@ -131,7 +131,6 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
 
     }, [ammMap]);
     const sortMethod = React.useCallback((_sortedRows,sortColumn)=>{
-        myLog({filteredData})
         let _rawData:Row<R>[] = [];
         switch (sortColumn) {
             case 'pools':
@@ -229,6 +228,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
     }, [rawData])
     return {
         // page,
+        rawData,
         filterValue,
         tableHeight,
         getFilteredData,
