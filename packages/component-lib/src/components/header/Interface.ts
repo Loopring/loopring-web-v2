@@ -8,6 +8,7 @@ export interface HeaderToolBarInterface {
 export interface HeaderProps {
     headerToolBarData: HeaderToolBarInterface[],
     headerMenuData: HeaderMenuItemInterface[],
+    isWrap?: boolean,
     selected: string,
     className?: string,
 }

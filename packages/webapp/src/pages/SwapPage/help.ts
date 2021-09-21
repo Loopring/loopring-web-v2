@@ -12,7 +12,7 @@ import { volumeToCountAsBigNumber } from '../../hooks/help';
 import BigNumber from 'bignumber.js';
 import { updateTicker } from 'stores/ticker';
 
-export const swapDependAsync = (market: MarketType): Promise<{
+export const swapDependAsync = (market: MarketType,level?:number,limit?:number): Promise<{
     ammPoolSnapshot: AmmPoolSnapshot | undefined,
     tickMap: LoopringMap<TickerData>,
     depth: DepthData
@@ -23,7 +23,7 @@ export const swapDependAsync = (market: MarketType): Promise<{
         const poolAddress = ammMap[ 'AMM-' + market ]?.address
         if (LoopringAPI.ammpoolAPI && LoopringAPI.exchangeAPI) {
             Promise.all([
-                LoopringAPI.exchangeAPI.getMixDepth({market}),
+                LoopringAPI.exchangeAPI.getMixDepth({market,level,limit}),
                 LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({poolAddress,}),
                 LoopringAPI.exchangeAPI.getMixTicker({market: market})])
                 .then(([{depth}, {ammPoolSnapshot}, {tickMap}]) => {

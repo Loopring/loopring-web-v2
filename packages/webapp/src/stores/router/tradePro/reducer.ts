@@ -9,6 +9,7 @@ const initState = {
     calcTradeParams: undefined,
     priceImpactObj: undefined,
     tradeCalcProData: {},
+    tradeArray:[]
 }
 
 const initialState: PageTradeProStatus<{ [ key: string ]: any }> = {
@@ -35,6 +36,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 calcTradeParams,
                 priceImpactObj,
                 feeBips,
+                tradeArray,
                 totalFee,
                 takerRate,
                 baseMinAmtInfo,
@@ -58,6 +60,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     takerRate,
                     baseMinAmtInfo,
                     quoteMinAmtInfo,
+                    tradeArray,
                     lastStepAt:undefined,
                 }
 
@@ -83,6 +86,9 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     state.pageTradePro.calcTradeParams = calcTradeParams;
                     state.pageTradePro.orderType = calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
                     state.pageTradePro.tradeChannel = calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
+                }
+                if(tradeArray){
+                    state.pageTradePro.tradeArray= tradeArray;
                 }
                 if (priceImpactObj) {
                     state.pageTradePro.priceImpactObj = priceImpactObj;

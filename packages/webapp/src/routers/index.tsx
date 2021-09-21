@@ -16,7 +16,7 @@ import { useTicker } from '../stores/ticker';
 
 
 const ContentWrap = ({ children }: React.PropsWithChildren<any>) => {
-    return <Container maxWidth="lg"
+    return <> <Header isHideOnScroll={false}/><Container maxWidth="lg"
         style={{
             minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
             display: 'flex',
@@ -25,7 +25,7 @@ const ContentWrap = ({ children }: React.PropsWithChildren<any>) => {
         <Box display={'flex'} flex={1} alignItems={'stretch'} flexDirection={'row'} marginTop={3}>
             {children}
         </Box>
-    </Container>
+    </Container></>
 }
 
 const RouterView = () => {
@@ -47,7 +47,7 @@ const RouterView = () => {
     const {tickerMap} = useTicker();
 
     return <>
-        <Header />
+
         <Switch>
             {/*<Route exact component={LandPage} path='/landing-page'/>*/}
             <Route exact path='/landing-page'><ContentWrap><SwapPage /></ContentWrap></Route>
@@ -56,7 +56,9 @@ const RouterView = () => {
             <Route path='/trading/lite(/:symbol)'><ContentWrap><SwapPage /></ContentWrap></Route>
 
             {
-                proFlag && tickerMap && <Route path='/trading/pro'><OrderbookPage /></Route>
+                proFlag && tickerMap && <Route path='/trading/pro'>
+                  <Header isHideOnScroll={true}/>
+                  <OrderbookPage /></Route>
             }
             {
                 proFlag && tickerMap && <Route path='/trading/pro(/:symbol)'><OrderbookPage /></Route>

@@ -1,24 +1,27 @@
 
 import * as _ from 'lodash';
-import { ammPoolService, tickerService, walletLayer2Service } from '../../services/socket';
+import { ammPoolService, tickerService, walletLayer2Service } from 'services/socket';
 import { useWalletLayer2 } from 'stores/walletLayer2';
 import React from 'react';
 import { useWalletLayer1 } from 'stores/walletLayer1';
 import { AccountStatus, globalSetup, myLog, SagaStatus } from '@loopring-web/common-resources';
-import store from '../../stores';
-import { orderbookService } from '../../services/socket/services/orderbookService';
+import store from 'stores';
+import { orderbookService } from 'services/socket/services/orderbookService';
 import { merge } from 'rxjs';
-import { bookService } from '../../services/socket/services/bookService';
-import { updatePageTradePro, usePageTradePro } from '../../stores/router';
-import { useSocket } from '../../stores/socket';
-import { useAccount } from '../../stores/account';
-import { useTokenMap } from '../../stores/token';
-import { SocketMap } from '../../stores/socket/interface';
+import { bookService } from 'services/socket/services/bookService';
+import { updatePageTradePro, usePageTradePro } from 'stores/router';
+import { useSocket } from 'stores/socket';
+import { useAccount } from 'stores/account';
+import { useTokenMap } from 'stores/token';
+import { SocketMap } from 'stores/socket/interface';
 import * as sdk from 'loopring-sdk';
-import { LoopringAPI } from '../../api_wrapper';
+import { LoopringAPI } from 'api_wrapper';
 import { swapDependAsync } from '../SwapPage/help';
-import { useAmmMap } from '../../stores/Amm/AmmMap';
-import { makeTickerMap } from '../../hooks/help';
+import { useAmmMap } from 'stores/Amm/AmmMap';
+import { makeMarketArray, makeTickerMap } from 'hooks/help';
+import { RawDataTradeItem } from '@loopring-web/component-lib';
+import { tradeService } from 'services/socket/services/tradeService';
+const TRADE_ARRAY_MAX_LENGTH  = 50;
 
 /**
  *
@@ -47,6 +50,7 @@ export const useSocketProService = ({
     const subjectAmmpool = React.useMemo(() => ammPoolService.onSocket(), []);
     const subjectOrderBook = React.useMemo(() => orderbookService.onSocket(), []);
     const subjectTicker = React.useMemo(() => tickerService.onSocket(), []);
+    const subjectTrade = React.useMemo(() => tradeService.onSocket(), []);
 
 
 
@@ -70,7 +74,7 @@ export const useSocketProService = ({
     }, throttleWait)
     // const  _socketUpdate = React.useCallback(socketUpdate({updateWalletLayer1,updateWalletLayer2,walletLayer1Status,walletLayer2Status}),[]);
     React.useEffect(() => {
-        const subscription = merge(subjectAmmpool,subjectOrderBook,subjectTicker).subscribe((value)=>{
+        const subscription = merge(subjectAmmpool,subjectOrderBook,subjectTicker,subjectTrade).subscribe((value)=>{
             const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
             // @ts-ignore
             if(ammMap && value && value.ammPoolMap){
@@ -124,6 +128,18 @@ export const useSocketProService = ({
                     store.dispatch(updatePageTradePro( {market, depth: orderbook}))
                 }
             }
+            // @ts-ignore
+            if(value && value.trades && value.trade.market === pageTradePro.market ) {
+                const market = pageTradePro.market;
+                // @ts-ignore
+                const _tradeArray = makeMarketArray(market, value.trades);
+                let tradeArray = [..._tradeArray,...pageTradePro.tradeArray?pageTradePro.tradeArray:[]];
+                tradeArray.length = TRADE_ARRAY_MAX_LENGTH;
+                store.dispatch(updatePageTradePro( {market, tradeArray: tradeArray}))
+
+                // tradeArray.splice(-1,)
+              // ?.pop()
+            }
             //Ticker will update global ticker at tickerService;
             // const walletLayer2Status = store.getState().walletLayer2.status;
             // const walletLayer1Status = store.getState().walletLayer1.status;
@@ -167,7 +183,7 @@ export const useSocketProService = ({
 export  const useProSocket = () => {
     const {sendSocketTopic, socketEnd} = useSocket();
     const {account, status:accountStatus} = useAccount();
-    const {marketArray} = useTokenMap();
+    const {marketArray,marketMap} = useTokenMap();
     const {ammMap} = useAmmMap();
 
     const {pageTradePro,updatePageTradePro,__API_REFRESH__} = usePageTradePro();
@@ -181,6 +197,7 @@ export  const useProSocket = () => {
     const noSocketLoop = React.useCallback(() => {
        if(window.loopringSocket === undefined){
            getDependencyData();
+           getMarketDepData();
        }
         //@ts-ignore
         if (nodeTimer.current !== -1) {
@@ -192,21 +209,46 @@ export  const useProSocket = () => {
         const { market} = pageTradePro
         if (market && ammMap && LoopringAPI.exchangeAPI) {
             try {
-                const {depth, ammPoolSnapshot, tickMap} = await swapDependAsync(market);
+                const {depth, ammPoolSnapshot, tickMap} = await swapDependAsync(market,pageTradePro.depthLevel,50);
                 const tickerMap  = makeTickerMap({tickerMap: tickMap})
                 updatePageTradePro({market, depth, ammPoolSnapshot, tickerMap})
             } catch (error) {
 
             }
+        }
+
+    }, [pageTradePro,ammMap]);
+    const getMarketDepData = React.useCallback(async () => {
+        const { market} = pageTradePro
+        if (LoopringAPI.exchangeAPI && market) {
+            const {marketTrades} = await LoopringAPI.exchangeAPI.getMarketTrades({market,limit:TRADE_ARRAY_MAX_LENGTH});
+            const _tradeArray = makeMarketArray(market, marketTrades)
+            const formattedTradArray:RawDataTradeItem[] = _tradeArray.map(o => ({
+                ...o,
+                precision: marketMap ? marketMap[market].precisionForPrice : undefined
+            })) as RawDataTradeItem[]
+            // setTradeArray(_tradeArray as RawDataTradeItem[])
+            updatePageTradePro({market, tradeArray:formattedTradArray})
 
         }
 
     }, [pageTradePro,ammMap])
+    React.useEffect(() => {
+        getDependencyData();
+    },[
+        pageTradePro.market,
+        pageTradePro.depthLevel
+    ])
+    React.useEffect(() => {
+        getMarketDepData()
 
+    },[
+        pageTradePro.market,
+    ])
 
     React.useEffect(() => {
         //firstTime call it
-        getDependencyData();
+        // getDependencyData();
         noSocketLoop();
         if(ammMap && pageTradePro.market){
             const dataSocket:SocketMap = {
@@ -217,6 +259,9 @@ export  const useProSocket = () => {
                     count: 50,
                     snapshot: true
                 },
+
+                //History Data
+                [ sdk.WsTopicType.trade ]:[pageTradePro.market as string ],
             }
             if (accountStatus === SagaStatus.UNSET){
                 if(account.readyState === AccountStatus.ACTIVATED) {
