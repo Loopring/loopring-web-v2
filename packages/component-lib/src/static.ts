@@ -165,6 +165,8 @@ export const tradeCalcData: TradeCalcData<CoinType> = {
     coinBuy: 'LRC',
     BtoS: '1,11',
     StoB: '1,11',
+    tokenA: {} as any,
+    tokenB: {} as any,
     marketPrecision: 20,
     coinInfoMap: coinMap,
     sellCoinInfoMap: coinMap,

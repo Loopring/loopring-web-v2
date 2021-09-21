@@ -183,7 +183,7 @@ export default {
     labelWalletConnectQRCode:'Please scan the QR code with a WalletConnect compatible application',
     labelSuccessConnect:'Successfully Connected with {{providerName}}',
     labelSuccessConnectDescribe:'Congratulations, Connection Successful!',
-    labelCopyClipBoard:'Copy to clipboard',
+    labelCopyClipBoard:'Keypair is copied to clipboard',
     labelRejectOrError:'User has rejected or error has occurred, please retry',
     labelWalletConnectProcessDescribe2:'Please click ‘Approve’ on your device.',
     labelUnlockProcessing:"Unlocking Layer2...",

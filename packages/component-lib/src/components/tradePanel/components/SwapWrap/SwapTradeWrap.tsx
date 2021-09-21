@@ -162,13 +162,17 @@ export const SwapTradeWrap = <T extends IBData<I>,
     let btos = `${tradeCalcData .BtoS ? tradeCalcData.BtoS : EmptyValueTag}`
 
     if (tradeData?.sell.tradeValue && tradeData?.buy.tradeValue) {
-        // myLog("tradeCalcData.marketPrecision:", tradeCalcData.marketPrecision)
+        myLog("tradeCalcData:", tradeCalcData.marketPrecision, tradeCalcData.tokenA.symbol, tradeCalcData.tokenA.precision)
         const sellBig = sdk.toBig(tradeData?.sell.tradeValue)
         const buyBig = sdk.toBig(tradeData?.buy.tradeValue)
         const BIG0 = sdk.toBig(0)
-        if (sellBig.gt(BIG0) && buyBig.gt(BIG0)) {
-            stob = getValuePrecisionThousand(buyBig.div(sellBig).toString(), undefined, undefined, tradeCalcData.marketPrecision)
-            btos = getValuePrecisionThousand(sellBig.div(buyBig).toString(), undefined, undefined, tradeCalcData.marketPrecision)
+        if (sellBig.gt(BIG0) && buyBig.gt(BIG0))  {
+            const isReversed = tradeData.sell.belong !== tradeCalcData.tokenA.symbol
+            const stobPrecision = !isReversed ? tradeCalcData.marketPrecision : tradeCalcData.tokenA.precision
+            const btosPrecision = !isReversed ? tradeCalcData.tokenA.precision : tradeCalcData.marketPrecision
+            stob = getValuePrecisionThousand(buyBig.div(sellBig).toString(), stobPrecision, stobPrecision, stobPrecision)
+            btos = getValuePrecisionThousand(sellBig.div(buyBig).toString(), btosPrecision, btosPrecision, btosPrecision)
+            myLog("tradeCalcData.stob:", buyBig.div(sellBig).toString(), stob, sellBig.div(buyBig).toString(), btos)
         }
     }
 
