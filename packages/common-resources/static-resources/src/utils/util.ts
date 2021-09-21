@@ -93,11 +93,13 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     isFait?: boolean,
     isTrade?: boolean,
     isExponential?: boolean,
+    isPrice?: boolean,
 }) => {
     const floor = option?.floor
     const isFait = option?.isFait
     const isTrade = option?.isTrade
     const isExponential = option?.isExponential
+    const isPrice = option?.isPrice
 
     if ((!value  || !Number.isFinite(Number(value)) || Number(value) === 0 ) && !BigNumber.isBigNumber(value)) {
         return '0.00'
@@ -113,6 +115,10 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     // remove exponential
     if (isExponential === true) {
         result = toBig(toBig(value).toFixed(20));
+    }
+
+    if (isPrice === true) {
+        return toBig(toBig(result).toFixed(fixed || 6)).toNumber().toLocaleString('en', {minimumFractionDigits: fixed || 6})
     }
     
     // fait price

@@ -158,7 +158,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                     // const RenderValue = styled.span`
                     // 	color: var(--color-text-secondary)
                     // `
-                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, precision, precision, undefined, true) : EmptyValueTag
+                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, undefined, undefined, precision, true, { isPrice: true }) : EmptyValueTag
 
                     const faitPrice = Number.isFinite(value)
                         ? isUSD 
@@ -209,7 +209,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                 formatter: ({row, column}) => {
                     const value = row[ column.key ]
                     const precision = row['precision'] || 6
-                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, precision, precision, undefined, true) : EmptyValueTag
+                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, undefined, undefined, precision, true, {isPrice: true}) : EmptyValueTag
                     return (
                         <div className="rdg-cell-value textAlignRight">
                             <span>{price}</span>
@@ -226,7 +226,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                 formatter: ({row, column}) => {
                     const value = row[ column.key ]
                     const precision = row['precision'] || 6
-                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, precision, precision, undefined, true) : EmptyValueTag
+                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, undefined, undefined, precision, true, {isPrice: true}) : EmptyValueTag
                     return (
                         <div className="rdg-cell-value textAlignRight">
                             <span>{price}</span>
@@ -243,7 +243,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                 formatter: ({row}) => {
                     const value = row[ 'volume' ]
                     const precision = row['precision'] || 6
-                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, precision, precision, undefined, true) : EmptyValueTag
+                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, precision, undefined, undefined, true, {isTrade: true}) : EmptyValueTag
                     return (
                         <div className="rdg-cell-value textAlignRight">
                             <span>{price}</span>

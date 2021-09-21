@@ -154,8 +154,8 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
         formatter: ({row}) => {
             const amount = row[ 'lpTokenAmount' ]
             const renderValue = row[ 'side' ] === AmmSideTypes.Join
-                ? `+${getValuePrecisionThousand(amount)}`
-                : `-${getValuePrecisionThousand(amount)}`
+                ? `+${getValuePrecisionThousand(amount, undefined, undefined, undefined, false, {isTrade: true})}`
+                : `-${getValuePrecisionThousand(amount, undefined, undefined, undefined, false, {isTrade: true})}`
             return (
                 <Box className="rdg-cell-value textAlignRight">
                     {renderValue}
@@ -174,7 +174,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
             const {key, value} = row[ 'fee' ]
             return (
                 <Box className="rdg-cell-value textAlignRight">
-                    {`${getValuePrecisionThousand(value, 4, 2)} ${key}`}
+                    {`${getValuePrecisionThousand(value, undefined, undefined, undefined, false, {isTrade: true, floor: false})} ${key}`}
                 </Box>
             )
         }
