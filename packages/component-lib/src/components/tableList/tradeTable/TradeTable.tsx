@@ -127,7 +127,6 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN', tokenMap: a
         formatter: ({row}) => {
             const {value} = row[ 'price' ]
             const precision = row['precision'] || 6
-            myLog(value)
             const renderValue = value ? (getValuePrecisionThousand(value, undefined, undefined, precision, true, {isPrice: true})) : EmptyValueTag
             return (
                 <Box className="rdg-cell-value textAlignRight">
