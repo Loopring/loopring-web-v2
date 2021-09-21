@@ -211,13 +211,13 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
         }
     }, [tickerStatus]);
 
-    const getFilteredData = React.useCallback((event) => {
-        setFilterValue(event.currentTarget?.value);
-        if(event.currentTarget?.value) {
+    const getFilteredData = React.useCallback((value: string) => {
+        setFilterValue(value);
+        if(value) {
             const _rawData =  rawData.filter(o => {
                 const coinA = o.coinAInfo.name.toLowerCase()
                 const coinB = o.coinBInfo.name.toLowerCase()
-                const formattedValue = event.currentTarget?.value.toLowerCase()
+                const formattedValue = value.toLowerCase()
                 return coinA.includes(formattedValue) || coinB.includes(formattedValue)
             })
             resetTableData(_rawData)

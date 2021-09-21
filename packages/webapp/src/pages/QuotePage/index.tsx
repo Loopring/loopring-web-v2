@@ -345,19 +345,20 @@ export const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                          className={'MuiPaper-elevation2'}>
             <Box display={'flex'} flexDirection={'column'}  >
                 <Container className={'toolbar'}  >
-                   <Box  paddingLeft={1} paddingRight={2} display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
-                       <Tabs
-                           value={tableTabValue}
-                           onChange={handleTabChange}
-                           aria-label="disabled tabs example"
-                       >
-                           <Tab label={t('labelQuotePageFavourite')} value="favourite"/>
-                           <Tab label={t('labelAll')} value="all"/>
-                           {/* <Tab label={t('labelQuotePageTradeRanking')} value="tradeRanking"/> */}
-                       </Tabs>
-                       <InputSearch value={searchValue} onChange={handleSearchChange}/>
-                   </Box>
-                   <Divider style={{marginTop:'-1px'}}/>
+                    <Box  paddingLeft={1} paddingRight={2} display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
+                        <Tabs
+                            value={tableTabValue}
+                            onChange={handleTabChange}
+                            aria-label="disabled tabs example"
+                        >
+                            <Tab label={t('labelQuotePageFavourite')} value="favourite"/>
+                            <Tab label={t('labelAll')} value="all"/>
+                            {/* <Tab label={t('labelQuotePageTradeRanking')} value="tradeRanking"/> */}
+                        </Tabs>
+                        <InputSearch value={searchValue} onChange={handleSearchChange}
+                        />
+                    </Box>
+                    <Divider style={{marginTop:'-1px'}}/>
                 </Container>
 
                 <QuoteTable /* onVisibleRowsChange={onVisibleRowsChange} */
