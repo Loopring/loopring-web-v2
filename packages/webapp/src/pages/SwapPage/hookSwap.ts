@@ -585,13 +585,16 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
                 }
             }
 
-            const sellCoinInfoMap = tokenMap[ coinB ].tradePairs?.reduce((prev: any, item: string | number) => {
+            const sellCoinInfoMap = tokenMap[ coinA ].tradePairs?.reduce((prev: any, item: string | number) => {
                 return {...prev, [ item ]: coinMap[ item ]}
             }, {} as CoinMap<C>)
 
-            const buyCoinInfoMap = tokenMap[ coinA ].tradePairs?.reduce((prev: any, item: string | number) => {
+            const buyCoinInfoMap = tokenMap[ coinB ].tradePairs?.reduce((prev: any, item: string | number) => {
                 return {...prev, [ item ]: coinMap[ item ]}
             }, {} as CoinMap<C>)
+
+            const tokenA = tokenMap[ coinA ]
+            const tokenB = tokenMap[ coinB ]
 
             const marketPrecision = marketMap && marketMap[_market] && marketMap[_market].precisionForPrice ? marketMap[_market].precisionForPrice : 4
 
@@ -601,6 +604,8 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
                     walletMap,
                     coinSell: coinA,
                     coinBuy: coinB,
+                    tokenA,
+                    tokenB,
                     marketPrecision,
                     sellCoinInfoMap,
                     buyCoinInfoMap,
