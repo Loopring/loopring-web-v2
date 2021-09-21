@@ -61,14 +61,14 @@ const MyAmmLPAssets = withTranslation('common')(({ammCalcData, t}:
                 <Typography component={'p'} variant="body2"
                             color={'textSecondary'}> {t('labelMyLPAToken', {symbol: ammCalcData.lpCoinA.belong})} </Typography>
                 <Typography component={'p'}
-                            variant="body2">{ammCalcData && ammCalcData.lpCoinA.balance ? getValuePrecisionThousand(ammCalcData.lpCoinA.balance, undefined, undefined, coinAPrecision, true, { floor: true }) : EmptyValueTag}</Typography>
+                            variant="body2">{ammCalcData && ammCalcData.lpCoinA.balance ? getValuePrecisionThousand(ammCalcData.lpCoinA.balance, coinAPrecision, 2, undefined, false, { floor: true }) : EmptyValueTag}</Typography>
             </Box>
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}
                  marginTop={1 / 2}>
                 <Typography component={'p'} variant="body2"
                             color={'textSecondary'}> {t('labelMyLPBToken', {symbol: ammCalcData.lpCoinB.belong})} </Typography>
                 <Typography component={'p'}
-                            variant="body2">{ammCalcData && ammCalcData.lpCoinB.balance ? getValuePrecisionThousand(ammCalcData.lpCoinB.balance, undefined, undefined, coinBPrecision, true, { floor: true }) : EmptyValueTag}</Typography>
+                            variant="body2">{ammCalcData && ammCalcData.lpCoinB.balance ? getValuePrecisionThousand(ammCalcData.lpCoinB.balance, coinBPrecision, 2, undefined, false, { floor: true }) : EmptyValueTag}</Typography>
             </Box>
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}
                  marginTop={1 / 2}>

@@ -1,7 +1,7 @@
 import { AmmCard, AmmProps, EmptyDefault, RewardTable } from '@loopring-web/component-lib';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { AmmCardProps, AmmJoinData, AmmInData, AmmExitData, IBData } from '@loopring-web/common-resources';
+import { AmmCardProps, AmmJoinData, AmmInData, AmmExitData, IBData, myLog } from '@loopring-web/common-resources';
 import { Box, Grid, Typography, Modal } from '@mui/material';
 import styled from '@emotion/styled'
 import { useAmmMiningUI, RewardListItem } from './hook';
@@ -46,22 +46,24 @@ type ClickHandler = {
     handleClick: (pair: string, type: MiningJumpType) => void
 }
 
-const AmmCardWrap = React.memo(React.forwardRef((props: AmmCardProps<{ [ key: string ]: any }> & ClickHandler & { popoverIdx: number, ammRewardRecordList: RewardListItem[], getLiquidityMining: (market: string, size?: number) => Promise<void>, setShowRewardDetail: React.Dispatch<React.SetStateAction<boolean>>, setChosenCardInfo: React.Dispatch<React.SetStateAction<any>> }, ref) => {
+const AmmCardWrap = React.memo(React.forwardRef((props: AmmCardProps<{ [ key: string ]: any }> & ClickHandler & { popoverIdx: number, ammRewardRecordList: RewardListItem[], getLiquidityMining: (market: string, size?: number) => Promise<void>, setShowRewardDetail: React.Dispatch<React.SetStateAction<boolean>>, setChosenCardInfo: React.Dispatch<React.SetStateAction<any>>, getMyAmmShare: (market: string) => any }, ref) => {
     const pair = `${props.coinAInfo?.simpleName}-${props.coinBInfo?.simpleName}`
     const { ruleType } = props.activity
     const type = ruleType === 'ORDERBOOK_MINING' ? MiningJumpType.orderbook : MiningJumpType.amm
     const popoverIdx = props.popoverIdx
-    const {setShowRewardDetail, setChosenCardInfo} = props
-    return props ? <AmmCard ref={ref} {...props} {...{popoverIdx, getMiningLinkList, setShowRewardDetail, setChosenCardInfo}} handleClick={() => props.handleClick(pair, type)}/> : <></>
+    const {setShowRewardDetail, setChosenCardInfo, getMyAmmShare} = props
+    const ammInfo = getMyAmmShare(`LP-${pair}`)
+    return props ? <AmmCard ref={ref} {...props} {...{popoverIdx, getMiningLinkList, setShowRewardDetail, setChosenCardInfo, ammInfo}} handleClick={() => props.handleClick(pair, type)}/> : <></>
 }));
 
-const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap, ammRewardRecordList, getLiquidityMining, setShowRewardDetail, setChosenCardInfo}: 
+const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap, ammRewardRecordList, getLiquidityMining, setShowRewardDetail, setChosenCardInfo, getMyAmmShare}: 
     { 
         ammActivityViewMap: Array<AmmCardProps<I>>, 
         ammRewardRecordList: RewardListItem[],
         getLiquidityMining: (market: string, size?: number) => Promise<void>,
         setShowRewardDetail: React.Dispatch<React.SetStateAction<boolean>>,
         setChosenCardInfo: React.Dispatch<React.SetStateAction<any>>,
+        getMyAmmShare: (market: string) => any,
     }) => {
     let history = useHistory();
     const {tokenMap} = store.getState().tokenMap
@@ -89,6 +91,7 @@ const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap, ammRew
                     getLiquidityMining,
                     setShowRewardDetail,
                     setChosenCardInfo: setChosenCardInfo,
+                    getMyAmmShare,
                 }} handleClick={jumpTo} {...item as any}   />
             </Grid>
         )
@@ -119,6 +122,7 @@ export const MiningPage = withTranslation('common')(<T extends AmmJoinData<C ext
         getLiquidityMining,
         showRewardDetail,
         setShowRewardDetail,
+        getMyAmmShare,
     } = useAmmMiningUI({ammActivityMap});
     // const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
     // const handleChange = (event: any, newValue: 0 | 1) => {
@@ -164,6 +168,7 @@ export const MiningPage = withTranslation('common')(<T extends AmmJoinData<C ext
                 setChosenCardInfo={setChosenCardInfo}
                 {...{
                     setShowRewardDetail,
+                    getMyAmmShare,
                 }}
             />
         </Grid>

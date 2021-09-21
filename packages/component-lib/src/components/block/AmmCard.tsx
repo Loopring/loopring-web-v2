@@ -101,6 +101,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             getMiningLinkList,
             setShowRewardDetail,
             setChosenCardInfo,
+            ammInfo,
             ...rest
         }: AmmCardProps<T> & WithTranslation & { popoverIdx: number, 
             precisionA?: number, 
@@ -117,6 +118,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             getMiningLinkList: (market: string) => string[],
             setShowRewardDetail: React.Dispatch<React.SetStateAction<boolean>>,
             setChosenCardInfo: React.Dispatch<React.SetStateAction<any>>,
+            ammInfo: any,
         }, ref: React.ForwardedRef<any>) => {
         const isOrderbook = ruleType === 'ORDERBOOK_MINING'
         const isAmm = ruleType === 'AMM_MINING'
@@ -128,6 +130,11 @@ export const AmmCard = withTranslation('common', {withRef: true})(
         const coinBIcon: any = coinJson[ coinBInfo?.simpleName ] || '';
         const pathname = `${coinAInfo?.simpleName}-${coinBInfo?.simpleName}`
         const pair = `${coinAInfo?.simpleName} / ${coinBInfo?.simpleName}`
+
+        const myBalanceA = ammInfo?.balanceA
+        const myBalanceB = ammInfo?.balanceB
+        const myTotalAmmValueDollar = ammInfo?.totalAmmValueDollar
+        const myTotalAmmValueYuan = ammInfo?.totalAmmValueYuan
 
         const totalAmmRewardDollar = PriceTag.Dollar + getValuePrecisionThousand((rewardValue || 0) * (coinAPriceDollar || 0) + (rewardValue2 || 0) * (coinBPriceDollar || 0), undefined, undefined, 2, true, { isFait: true })
         const totalAmmRewardYuan = PriceTag.Yuan + getValuePrecisionThousand((rewardValue || 0) * (coinAPriceYuan || 0) + (rewardValue2 || 0) * (coinBPriceYuan || 0), undefined, undefined, 2, true, { isFait: true })
@@ -428,8 +435,8 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                                 ? currency === 'USD'
                                                     ? totalAmmRewardDollar
                                                     : totalAmmRewardYuan
-                                            : currency === 'USD'
-                                                ? orderbookRewardDollar : orderbookRewardYuan
+                                                : currency === 'USD'
+                                                    ? orderbookRewardDollar : orderbookRewardYuan
                                         }
                                         {/* {getValuePrecisionThousand((isOrderbook ? totalRewards : rewardValue), undefined, undefined, precisionA, false, {floor: true})} */}
                                     </Typography>
@@ -481,9 +488,12 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                         {t('labelMiningMyShare')}
                     </Typography>
-                    <Typography {...bindHover(popMyAmmValueState)} component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400} style={{ borderBottom: false ? '1px dashed var(--color-text-primary)' : 'none' }}>
-                        --
-                    </Typography>
+                    {myTotalAmmValueDollar ? (
+                        <Typography {...bindHover(popMyAmmValueState)} component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400} style={{ borderBottom: myTotalAmmValueDollar ? '1px dashed var(--color-text-primary)' : 'none' }}>
+                            {currency === 'USD' ? PriceTag.Dollar + getValuePrecisionThousand(myTotalAmmValueDollar, undefined, undefined, undefined, false, {isFait: true, floor: true}) : PriceTag.Yuan + getValuePrecisionThousand(myTotalAmmValueYuan, undefined, undefined, undefined, false, {isFait: true, floor: true})}
+                        </Typography>
+                    ) : <Typography>{EmptyValueTag}</Typography>}
+                    
                     <PopoverPure
                         className={'arrow-top-center'}
                         {...bindPopper(popMyAmmValueState)}
@@ -529,8 +539,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                         
                                     <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} height={20} marginLeft={10}
                                         lineHeight={'20px'}>
-                                        {/* TODO: find myshare value */}
-                                        {getValuePrecisionThousand(0, undefined, undefined, precisionA, false, {floor: true})}
+                                        {getValuePrecisionThousand(myBalanceA, precisionA, 2, undefined, false, {floor: true})}
                                     </Typography>
                                 </Typography>
                                     <Typography component={'span'} display={'flex'} flexDirection={'row'}
@@ -562,8 +571,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                         <Typography variant={'body2'} color={'var(--color-text-primary)'} component={'span'} height={20}
                                             marginLeft={10}
                                             lineHeight={'20px'}>
-                                            {/* TODO: find myshare value */}
-                                            {getValuePrecisionThousand(0, undefined, undefined, precisionB, false, {floor: true})}
+                                            {getValuePrecisionThousand(myBalanceB, precisionB, 2, undefined, false, {floor: true})}
                                         </Typography>
                                     </Typography>
                             </Box>
