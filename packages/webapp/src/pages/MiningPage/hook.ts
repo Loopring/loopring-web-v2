@@ -7,15 +7,22 @@ import { LoopringAPI } from 'api_wrapper';
 import { useUserRewards } from '../../stores/userRewards';
 import store from 'stores'
 
+export type RewardListItem = {
+    amount: string;
+    time: number;
+}
+
 export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>(
     {
         ammActivityMap
     }: { ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined }
 ): {
     ammActivityViewMap: Array<AmmCardProps<I>>,
-    ammRewardRecordList: RewardItem[],
+    ammRewardRecordList: RewardListItem[],
     ammActivityPastViewMap: Array<AmmCardProps<I>>,
     getLiquidityMining: (market: string, size?: number) => Promise<void>,
+    showRewardDetail: boolean,
+    setShowRewardDetail: React.Dispatch<React.SetStateAction<boolean>>,
 } => {
     const userRewardsMapState = useUserRewards();// store.getState().userRewardsMap
     // const {coinMap} = useTokenMap();
@@ -23,11 +30,12 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
     // const walletLayer2State = useWalletLayer2();
     const {apiKey, accountId} = store.getState().account
     const [ammActivityViewMap, setAmmActivityViewMap] = React.useState<Array<AmmCardProps<I>>>([]);
-    const [ammRewardRecordList, setAmmRewardRecordList] = React.useState<RewardItem[]>([])
+    const [ammRewardRecordList, setAmmRewardRecordList] = React.useState<RewardListItem[]>([])
     const [ammActivityPastViewMap, setAmmActivityPastViewMap] = React.useState<Array<AmmCardProps<I>>>(
         []);
     // const [ammUserRewardMap, setAmmUserRewardMap] = React.useState<AmmUserRewardMap>(
     //     {});
+    const [showRewardDetail, setShowRewardDetail] = React.useState(false)
 
     const getLiquidityMining = React.useCallback(async (market: string, size: number = 120) => {
         if (LoopringAPI && LoopringAPI.ammpoolAPI) {
@@ -37,7 +45,11 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
                 size: size,
             }, apiKey)
             const { rewards } = ammRewardList
-            setAmmRewardRecordList(rewards)
+            const formattedRes = rewards.map(o => ({
+                amount: o.amount,
+                time: o.startAt,
+            }))
+            setAmmRewardRecordList(formattedRes)
         }
     }, [apiKey, accountId])
 
@@ -116,6 +128,8 @@ export const useAmmMiningUI = <R extends { [ key: string ]: any }, I extends { [
         ammRewardRecordList,
         ammActivityPastViewMap,
         getLiquidityMining,
+        showRewardDetail,
+        setShowRewardDetail,
     }
 
 }

@@ -1,9 +1,11 @@
+import React, { useCallback } from 'react';
 import { AmmPanel, AmmPanelType, CoinIcon, Toast } from '@loopring-web/component-lib';
 import {
     AmmInData,
     CoinInfo,
     EmptyValueTag,
     getValuePrecisionThousand,
+    myLog,
     WalletMap
 } from '@loopring-web/common-resources';
 import { useAmmJoin } from './hook_join'
@@ -12,12 +14,22 @@ import { useAmmCommon } from './hook_common'
 import { Box, Divider, Grid, Typography } from '@mui/material';
 import { AmmPoolSnapshot, TickerData, } from 'loopring-sdk';
 import { TOAST_TIME } from 'defs/common_defs';
-import React from 'react';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
+import store from 'stores'
 
 const MyAmmLPAssets = withTranslation('common')(({ammCalcData, t}:
                                                      { ammCalcData: AmmInData<any> } & WithTranslation) => {
+    const { tokenMap } = store.getState().tokenMap
+
+    const getTokenPrecision = React.useCallback((token: string) => {
+        if (tokenMap) {
+            return tokenMap[token].precision
+        }
+    }, [tokenMap])
+    // myLog(Number(ammCalcData.percentage) * 100)
+    const coinAPrecision = getTokenPrecision(ammCalcData?.lpCoinA?.belong)
+    const coinBPrecision = getTokenPrecision(ammCalcData?.lpCoinB?.belong)
     return <Box className={'MuiPaper-elevation2'} paddingX={3} paddingY={2}>
         <Box display={'flex'} flexDirection={'row'} alignItems={'center'}>
             <Box display={'flex'} className={'logo-icon'} height={'var(--list-menu-coin-size)'}
@@ -42,28 +54,28 @@ const MyAmmLPAssets = withTranslation('common')(({ammCalcData, t}:
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}>
                 <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('labelMyLPToken')} </Typography>
                 <Typography component={'p'}
-                            variant="body2">{ammCalcData && ammCalcData?.lpCoin?.balance !== undefined ? getValuePrecisionThousand(ammCalcData.lpCoin.balance) : EmptyValueTag}</Typography>
+                            variant="body2">{ammCalcData && ammCalcData?.lpCoin?.balance !== undefined ? getValuePrecisionThousand(ammCalcData.lpCoin.balance, undefined, undefined, undefined, false, { isTrade: true }) : EmptyValueTag}</Typography>
             </Box>
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}
                  marginTop={1 / 2}>
                 <Typography component={'p'} variant="body2"
                             color={'textSecondary'}> {t('labelMyLPAToken', {symbol: ammCalcData.lpCoinA.belong})} </Typography>
                 <Typography component={'p'}
-                            variant="body2">{ammCalcData && ammCalcData.lpCoinA.balance ? getValuePrecisionThousand(ammCalcData.lpCoinA.balance) : EmptyValueTag}</Typography>
+                            variant="body2">{ammCalcData && ammCalcData.lpCoinA.balance ? getValuePrecisionThousand(ammCalcData.lpCoinA.balance, undefined, undefined, coinAPrecision, true, { floor: true }) : EmptyValueTag}</Typography>
             </Box>
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}
                  marginTop={1 / 2}>
                 <Typography component={'p'} variant="body2"
                             color={'textSecondary'}> {t('labelMyLPBToken', {symbol: ammCalcData.lpCoinB.belong})} </Typography>
                 <Typography component={'p'}
-                            variant="body2">{ammCalcData && ammCalcData.lpCoinB.balance ? getValuePrecisionThousand(ammCalcData.lpCoinB.balance) : EmptyValueTag}</Typography>
+                            variant="body2">{ammCalcData && ammCalcData.lpCoinB.balance ? getValuePrecisionThousand(ammCalcData.lpCoinB.balance, undefined, undefined, coinBPrecision, true, { floor: true }) : EmptyValueTag}</Typography>
             </Box>
             <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={"center"}
                  marginTop={1 / 2}>
                 <Typography component={'p'} variant="body2"
                             color={'textSecondary'}> {t('labelMyLPAmountFor')} </Typography>
                 <Typography component={'p'}
-                            variant="body2">{ammCalcData && ammCalcData.percentage ? getValuePrecisionThousand(Number(ammCalcData.percentage) * 100) + '%' : EmptyValueTag}</Typography>
+                            variant="body2">{ammCalcData && ammCalcData.percentage ? getValuePrecisionThousand(Number(ammCalcData.percentage) * 100, 4, 2, undefined, false, { floor: true, isExponential: true }) + '%' : EmptyValueTag}</Typography>
             </Box>
         </Box>
     </Box>
@@ -121,6 +133,8 @@ export const AmmPanelView = ({
         btos,
         stob,
     })
+
+    // myLog({ammCalcDataDeposit})
 
     const {
 

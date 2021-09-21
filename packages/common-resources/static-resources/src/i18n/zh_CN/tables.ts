@@ -118,4 +118,6 @@ export default {
     labelOrderTypes: '订单类型',
     labelOrderChannels: '订单渠道',
     labelOrderCompletion: '成交比例',
+    labelRewardTableAmount: '奖励数量',
+    labelRewardTableTime: '时间',
 }

@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { toBig, toFixed } from 'loopring-sdk'
+import { toBig } from 'loopring-sdk'
 
 export function abbreviateNumber(value: number) {
     let newValue = value, result: string;
@@ -92,18 +92,29 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     floor?: boolean,
     isFait?: boolean,
     isTrade?: boolean,
+    isExponential?: boolean,
 }) => {
     const floor = option?.floor
     const isFait = option?.isFait
     const isTrade = option?.isTrade
+    const isExponential = option?.isExponential
 
     if ((!value  || !Number.isFinite(Number(value)) || Number(value) === 0 ) && !BigNumber.isBigNumber(value)) {
         return '0.00'
     }
     let result: any = value;
+
+    
+    
     if (!BigNumber.isBigNumber(result)){
         result = toBig(value);
     }
+
+    // remove exponential
+    if (isExponential === true) {
+        result = toBig(toBig(value).toFixed(20));
+    }
+    
     // fait price
     if (isFait === true) {
         if (toBig(result).isGreaterThanOrEqualTo(1)) {
@@ -153,7 +164,8 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
         // remain string-number zero
         result = toBig(formattedValue).toNumber().toLocaleString('en',{minimumFractionDigits: (fixed || minDigit)})
     } else if (result.isLessThanOrEqualTo(1)) {
-        result = result.toFixed(fixed || precision)
+        // console.log(11111, result.toNumber())
+        result = fixed ? result.toFixed(fixed) : toBig(result).toPrecision(precision)
     }
     
     if (result && !notRemoveEndZero) {

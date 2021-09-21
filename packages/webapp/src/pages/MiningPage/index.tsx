@@ -1,15 +1,15 @@
-import { AmmCard, AmmProps, EmptyDefault } from '@loopring-web/component-lib';
+import { AmmCard, AmmProps, EmptyDefault, RewardTable } from '@loopring-web/component-lib';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { AmmCardProps, AmmJoinData, AmmInData, AmmExitData, IBData, myLog } from '@loopring-web/common-resources';
-import { Box, Grid, Typography } from '@mui/material';
+import { AmmCardProps, AmmJoinData, AmmInData, AmmExitData, IBData } from '@loopring-web/common-resources';
+import { Box, Grid, Typography, Modal } from '@mui/material';
 import styled from '@emotion/styled'
-import { useAmmMiningUI } from './hook';
+import { useAmmMiningUI, RewardListItem } from './hook';
 // import Tabs from '@mui/material';
 // import Tab from '@mui/material';
 import { useAmmPool } from '../LiquidityPage/hook'
 import { Trans, withTranslation } from 'react-i18next';
-import { AmmPoolActivityRule, LoopringMap, RewardItem } from 'loopring-sdk';
+import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 import { getMiningLinkList } from '@loopring-web/common-resources'
 import store from 'stores'
 
@@ -24,27 +24,44 @@ const WrapperStyled = styled(Box)`
   flex: 1;
 ` as typeof Box
 
-// const AmmListWrapperStyled = styled(Box)`
-//     display: flex;
-// `
+const ContentWrapperStyled = styled(Box)`
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: ${({theme}) => theme.unit * 37.5}px;
+    // min-width: ${({theme}) => theme.unit * 87.5}px;
+    // height: 60%;
+    max-height: ${({theme}) => theme.unit * 30}px;
+    background-color: var(--color-box);
+    box-shadow: 0px ${({theme}) => theme.unit / 2}px ${({theme}) => theme.unit / 2}px rgba(0, 0, 0, 0.25);
+    // padding: 0 ${({theme}) => theme.unit * 1}px;
+    border-radius: ${({theme}) => theme.unit / 2}px;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+`
 
 type ClickHandler = {
     handleClick: (pair: string, type: MiningJumpType) => void
 }
 
-const AmmCardWrap = React.memo(React.forwardRef((props: AmmCardProps<{ [ key: string ]: any }> & ClickHandler & { popoverIdx: number, ammRewardRecordList: RewardItem[], getLiquidityMining: (market: string, size?: number) => Promise<void> }, ref) => {
+const AmmCardWrap = React.memo(React.forwardRef((props: AmmCardProps<{ [ key: string ]: any }> & ClickHandler & { popoverIdx: number, ammRewardRecordList: RewardListItem[], getLiquidityMining: (market: string, size?: number) => Promise<void>, setShowRewardDetail: React.Dispatch<React.SetStateAction<boolean>>, setChosenCardInfo: React.Dispatch<React.SetStateAction<any>> }, ref) => {
     const pair = `${props.coinAInfo?.simpleName}-${props.coinBInfo?.simpleName}`
     const { ruleType } = props.activity
     const type = ruleType === 'ORDERBOOK_MINING' ? MiningJumpType.orderbook : MiningJumpType.amm
     const popoverIdx = props.popoverIdx
-    return props ? <AmmCard ref={ref} {...props} {...{popoverIdx, getMiningLinkList}} handleClick={() => props.handleClick(pair, type)}/> : <></>
+    const {setShowRewardDetail, setChosenCardInfo} = props
+    return props ? <AmmCard ref={ref} {...props} {...{popoverIdx, getMiningLinkList, setShowRewardDetail, setChosenCardInfo}} handleClick={() => props.handleClick(pair, type)}/> : <></>
 }));
 
-const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap, ammRewardRecordList, getLiquidityMining}: 
+const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap, ammRewardRecordList, getLiquidityMining, setShowRewardDetail, setChosenCardInfo}: 
     { 
         ammActivityViewMap: Array<AmmCardProps<I>>, 
-        ammRewardRecordList: RewardItem[], 
-        getLiquidityMining: (market: string, size?: number) => Promise<void>
+        ammRewardRecordList: RewardListItem[],
+        getLiquidityMining: (market: string, size?: number) => Promise<void>,
+        setShowRewardDetail: React.Dispatch<React.SetStateAction<boolean>>,
+        setChosenCardInfo: React.Dispatch<React.SetStateAction<any>>,
     }) => {
     let history = useHistory();
     const {tokenMap} = store.getState().tokenMap
@@ -70,6 +87,8 @@ const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap, ammRew
                     precisionB,
                     ammRewardRecordList,
                     getLiquidityMining,
+                    setShowRewardDetail,
+                    setChosenCardInfo: setChosenCardInfo,
                 }} handleClick={jumpTo} {...item as any}   />
             </Grid>
         )
@@ -91,12 +110,15 @@ export const MiningPage = withTranslation('common')(<T extends AmmJoinData<C ext
     ammProps: AmmProps<T, TW, I, ACD>,
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined,
 } & any) => {
+    const [chosenCardInfo, setChosenCardInfo] = React.useState(undefined)
     const {ammActivityMap} = useAmmPool();
     const {
         ammActivityViewMap,
         ammActivityPastViewMap,
         ammRewardRecordList,
         getLiquidityMining,
+        showRewardDetail,
+        setShowRewardDetail,
     } = useAmmMiningUI({ammActivityMap});
     // const [tabIndex, setTabIndex] = React.useState<0 | 1>(0);
     // const handleChange = (event: any, newValue: 0 | 1) => {
@@ -122,18 +144,38 @@ export const MiningPage = withTranslation('common')(<T extends AmmJoinData<C ext
             <Tab label={t('labelPastActivities')}/>
         </Tabs> */}
         <Typography
-            variant={'h2'}
+            variant={'h3'}
             component={'div'}
             fontFamily={'Roboto'}
             marginTop={2}
-            marginBottom={3}
         >{t('labelMiningPageTitle')}</Typography>
+        <Typography
+            variant={'h6'}
+            component={'div'}
+            marginTop={1}
+            marginBottom={4.5}
+            color={'var(--color-text-secondary)'}
+        >{t('labelMiningPageViceTitle')}</Typography>
         <Grid container spacing={5}>
             <AmmList
                 ammActivityViewMap={orderedViewMap}
                 ammRewardRecordList={ammRewardRecordList}
                 getLiquidityMining={getLiquidityMining}
+                setChosenCardInfo={setChosenCardInfo}
+                {...{
+                    setShowRewardDetail,
+                }}
             />
         </Grid>
+        <Modal
+            open={showRewardDetail}
+            onClose={() => setShowRewardDetail(false)}
+        >
+            <ContentWrapperStyled>
+                <RewardTable rawData={ammRewardRecordList} chosenCardInfo={chosenCardInfo} />
+            </ContentWrapperStyled>
+            
+            {/* <OrderDetailPanel rawData={orderDetailList} showLoading={showDetailLoading} orderId={currOrderId} /> */}
+        </Modal>
     </WrapperStyled>
 })

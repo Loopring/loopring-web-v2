@@ -99,6 +99,8 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             ammRewardRecordList, //: RewardItem[]
             getLiquidityMining, //: (market: string, size?: number) => Promise<void>
             getMiningLinkList,
+            setShowRewardDetail,
+            setChosenCardInfo,
             ...rest
         }: AmmCardProps<T> & WithTranslation & { popoverIdx: number, 
             precisionA?: number, 
@@ -107,9 +109,14 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             coinBPriceDollar: number,
             coinAPriceYuan: number,
             coinBPriceYuan: number,
-            ammRewardRecordList: RewardItem[],
+            ammRewardRecordList: {
+                amount: string;
+                time: number;
+            }[],
             getLiquidityMining: (market: string, size?: number) => Promise<void>,
             getMiningLinkList: (market: string) => string[],
+            setShowRewardDetail: React.Dispatch<React.SetStateAction<boolean>>,
+            setChosenCardInfo: React.Dispatch<React.SetStateAction<any>>,
         }, ref: React.ForwardedRef<any>) => {
         const isOrderbook = ruleType === 'ORDERBOOK_MINING'
         const isAmm = ruleType === 'AMM_MINING'
@@ -140,6 +147,12 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             const url = urlList[pathname]
             window.open(url)
         }, [getMiningLinkList, pathname, language])
+
+        const handleMyRewardClick = React.useCallback(() => {
+            getLiquidityMining(pathname, 120)
+            setShowRewardDetail(true)
+            setChosenCardInfo(rewardToken?.simpleName)
+        }, [getLiquidityMining, pathname, rewardToken?.simpleName, setChosenCardInfo, setShowRewardDetail])
         
         return <CardStyled ref={ref}>
             <LabelStyled type={ruleType}>{isOrderbook ? 'Orderbook' : 'Amm Pool'}</LabelStyled>
@@ -207,7 +220,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     {isOrderbook ? (
                         <Typography component={'span'} variant={'h2'} fontFamily={'Roboto'}>
                             {totalRewards ? getValuePrecisionThousand(totalRewards) + ' '
-                            + rewardToken.simpleName : EmptyValueTag}
+                            + rewardToken?.simpleName : EmptyValueTag}
                         </Typography>) 
                     : (<Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> 
                         {getValuePrecisionThousand(APR, 2, 2, 2, true) + '%' || EmptyValueTag}
@@ -357,7 +370,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                         } */}
                         {getValuePrecisionThousand(totalRewards)}
                         &nbsp;
-                        {rewardToken.simpleName}
+                        {rewardToken?.simpleName}
                         {/* {rewardValue2 && Number.isFinite(rewardValue2)
                             ? (currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand((rewardValue2 || 0) * ((currency === 'USD' ? coinBPriceDollar : coinBPriceYuan)|| 0), undefined, undefined, 2, true, { isFait: true })
                             : EmptyValueTag
@@ -561,7 +574,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                         {t('labelMiningMyReward')}
                     </Typography>
-                    <Typography onClick={() => getLiquidityMining('market', 120)} component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
+                    <Typography onClick={myRewards ? handleMyRewardClick : undefined} component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
                         {myRewards === 0
                             ? EmptyValueTag
                             : getValuePrecisionThousand(myRewards, undefined, undefined, undefined, true, { isFait: true, floor: true }) + rewardToken?.simpleName}
