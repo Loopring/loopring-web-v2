@@ -19,11 +19,13 @@ import {
 
 import { usePageTradePro } from '../../stores/router';
 import { marketInitCheck, swapDependAsync } from '../SwapPage/help';
-import { makeWalletLayer2 } from '../../hooks/help';
+import { makeMarketArray, makeWalletLayer2 } from '../../hooks/help';
 import * as sdk from 'loopring-sdk';
 import { useWalletLayer2 } from '../../stores/walletLayer2';
 
 import { useProSocket, useSocketProService } from './proService';
+import { LoopringAPI } from '../../api_wrapper';
+import { RawDataTradeItem } from '@loopring-web/component-lib';
 
 
 export const usePro = <C extends { [ key: string ]: any }>():{
@@ -46,12 +48,9 @@ export const usePro = <C extends { [ key: string ]: any }>():{
     const {getAmount} = useAmount();
     const {account, status: accountStatus} = useAccount();
     const {status: walletLayer2Status} = useWalletLayer2();
+    // const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
 
-    const {toastOpen, setToastOpen, closeToast} = useToast();
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap()
-    const {ammMap} = useAmmMap();
-    const {exchangeInfo} = useSystem();
-    const {t} = useTranslation();
     useProSocket()
     const depDataCallback = React.useCallback(()=>{
         //TODO

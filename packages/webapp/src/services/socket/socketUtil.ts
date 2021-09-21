@@ -5,7 +5,7 @@ import {
     getOrderArg,
     getOrderBookArg,
     getTickerArg,
-    getTradeArg, OrderDetail,
+    getTradeArg, MarketTradeInfo, OrderDetail,
     toBig,
 } from 'loopring-sdk';
 import { walletLayer2Service } from './services/walletLayer2Service';
@@ -17,6 +17,8 @@ import { AmmPoolSnapshot } from 'loopring-sdk/dist/defs/loopring_defs';
 import { SocketMap } from '../../stores/socket/interface';
 import { bookService } from './services/bookService';
 import { orderbookService } from './services/orderbookService';
+import { Side } from 'loopring-sdk/dist/defs/loopring_enums';
+import { tradeService } from './services/tradeService';
 
 
 export type SocketEvent = (e: any, ...props: any[]) => any
@@ -69,8 +71,20 @@ export class LoopringSocket {
                     symbol: topic.market} as any
             })
         },
-        [ SocketEventType.trade ]: (_e: any) => {
-             //TODO
+        [ SocketEventType.trade ]: (datas: string[][]) => {
+            const marketTrades:MarketTradeInfo[] =  datas.map((data)=>{
+                const  [  market, tradeTime,tradeId,side, volume ,price,fee ]  = data;
+                return {market, tradeTime, tradeId, side, volume, price, fee} as unknown as MarketTradeInfo
+            })
+            tradeService.sendTrade(marketTrades)
+            // [
+            //     "1584717910000",  //timestamp
+            //     "123456789",  //tradeId
+            //     "buy",  //side
+            //     "500000",  //size
+            //     "0.0008",  //price
+            //     "100"  //fee
+            // ]
         },
         [ SocketEventType.ticker ]: (data: string[]) => {
             const [symbol, timestamp, size, volume, open, high, low, close, count, bid, ask] = data;

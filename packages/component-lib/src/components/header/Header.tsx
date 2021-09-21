@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
-import { AppBar, Box, Container, IconButton, Slide, Toolbar } from '@mui/material';
-import { Typography } from '@mui/material';
+import { AppBar, Box, Container, IconButton, Slide, Toolbar, Typography, useScrollTrigger } from '@mui/material';
 import { Link as RouterLink } from "react-router-dom";
 import logoSVG from '@loopring-web/common-resources/assets/svg/logo.svg'
 import { WithTranslation, withTranslation } from 'react-i18next';
@@ -24,22 +23,22 @@ const ToolBarStyled = styled(Toolbar)`
     padding: 0;
   }
 `
-const StyledDiv = styled.div`
-  &.item-scrolled .MuiAppBar-root.MuiAppBar-positionFixed {
-    //background: var(--color-global-bg);
-    //box-shadow: var(--shadow);
-  }
-`
+// const StyledDiv = styled.div`
+//   &.item-scrolled .MuiAppBar-root.MuiAppBar-positionFixed {
+//     //background: var(--color-global-bg);
+//     //box-shadow: var(--shadow);
+//   }
+// `
 const HeaderStyled = styled(AppBar)`
   && {
     z-index: 400;
     box-shadow: var(--shadow-header);
-    .wrap {
-      height: var(--header-height);
-      margin: 0 auto;
-      //min-width: 800px;
-    }
-
+    //.wrap {
+    // 
+    //  //min-width: 800px;
+    //}
+    height: var(--header-height);
+    margin: 0 auto;
     background-color: var(--color-box);
     backdrop-filter: blur(4px);
     box-sizing: border-box;
@@ -56,12 +55,13 @@ const HeaderStyled = styled(AppBar)`
 const LogoStyle = styled(Typography)`
   display: flex;
   align-items: center;
+
   a.MuiButtonBase-root {
     height: auto;
     width: auto;
     min-width: auto;
     border-radius: 0;
-    text-indent:-999999em;
+    text-indent: -999999em;
     background: var(--color-primary);
     background: var(--color-logo);
     mask: url(${logoSVG}) space;
@@ -72,6 +72,7 @@ const LogoStyle = styled(Typography)`
     height: 40px;
     margin-top: -10px;
     color: transparent;
+
     &:hover {
       background-color: inherit;
       background: var(--color-logo);
@@ -79,10 +80,10 @@ const LogoStyle = styled(Typography)`
   }
 ` as typeof Typography
 
-export const LoopringLogo = React.memo(()=> {
+export const LoopringLogo = React.memo(() => {
     // const history = useHistory();
     // const url = history.push('/main').
-    return   <LogoStyle variant="h6" component="h1" marginRight={4} >
+    return <LogoStyle variant="h6" component="h1" marginRight={4}>
         <IconButton edge="start" aria-label="menu" component={RouterLink} to={'/landing-page'} color={"inherit"}>
             Loopring 路印
             loopring protocol 3.6
@@ -114,26 +115,31 @@ const ToolBarItem = ({buttonComponent, ...props}: any) => {
     return <TabItemPlus>{render}</TabItemPlus>;
 }
 
-export const HideOnScroll = React.forwardRef(({children, ...rest}: any, ref) => {
-    const [className, setClassName] = React.useState('');
-    const handleScroll = React.useCallback(() => {
-        const position = window.pageYOffset;
-        if (position > 20) {
-            setClassName('item-scrolled');
-        } else {
-            setClassName('');
-        }
-    }, [setClassName]);
+export const HideOnScroll = React.forwardRef(({children, window, ...rest}: any, ref) => {
+    // const { children, window } = props;
 
-    React.useEffect(() => {
-        window.addEventListener('scroll', handleScroll, {passive: true});
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, [handleScroll]);
+    // const [className, setClassName] = React.useState('');
+    // const handleScroll = React.useCallback(() => {
+    //     const position = window.pageYOffset;
+    //     if (position > 20) {
+    //         setClassName('item-scrolled');
+    //     } else {
+    //         setClassName('');
+    //     }
+    // }, [setClassName]);
+    //
+    // React.useEffect(() => {
+    //     window.addEventListener('scroll', handleScroll, {passive: true});
+    //     return () => {
+    //         window.removeEventListener('scroll', handleScroll);
+    //     };
+    // }, [handleScroll]);
+    const trigger = useScrollTrigger({
+        target: window ? window() : undefined,
+    });
     //className = {_className}
-    return <Slide  {...rest} appear={false} adirection="down" forwardedRef={ref} in={!ref}>
-        <StyledDiv className={className}>{children}</StyledDiv>
+    return <Slide  {...rest} appear={false} adirection="down" forwardedRef={ref} in={!trigger}>
+        {children}
     </Slide>
 })
 
@@ -141,10 +147,10 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                                                                                                    headerMenuData,
                                                                                                    headerToolBarData,
                                                                                                    selected,
+                                                                                                   isWrap = true,
                                                                                                    i18n,
                                                                                                    ...rest
                                                                                                }: HeaderProps & WithTranslation, ref: React.ForwardedRef<any>) => {
-
 
 
     const getMenuButtons = ({
@@ -175,7 +181,7 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
             router,
             child,
             layer,
-            selected:new RegExp(label.id, 'ig').test(selected.split('/')[ 1 ] ? selected.split('/')[ 1 ] : selected)?true:false,
+            selected: new RegExp(label.id, 'ig').test(selected.split('/')[ 1 ] ? selected.split('/')[ 1 ] : selected) ? true : false,
             // className: new RegExp(label.id, 'ig').test(selected.split('/')[ 1 ] ? selected.split('/')[ 1 ] : selected) ? 'Mui-selected' : '',
             renderList: ({handleListKeyDown}: { handleListKeyDown: ({...rest}) => any }) => {
                 return getDrawerChoices({menuList: child, layer: layer + 1, handleListKeyDown, ...rest})
@@ -218,14 +224,16 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                 </Box>
             </ToolBarStyled>
         );
-    },[headerToolBarData,headerMenuData,getDrawerChoices,getMenuButtons,i18n,rest]);
+    }, [headerToolBarData, headerMenuData, getDrawerChoices, getMenuButtons, i18n, rest]);
 
     return (
         <HeaderStyled elevation={4} ref={ref} className={`${rest?.className}`}>
-            <Container className={'wrap'} maxWidth='lg'>
+            {isWrap ? <Container className={'wrap'} maxWidth='lg'>
                 {displayDesktop}
-            </Container>
+            </Container> : <Box marginX={2}> {displayDesktop}</Box>
+            }
         </HeaderStyled>
 
     );
 }));
+

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Meta, Story } from '@storybook/react/types-6-0';
 import { MemoryRouter } from 'react-router-dom';
-import { Box, Collapse, Container, GlobalStyles, Grid, IconButton, Paper, Toolbar, } from '@mui/material';
+import { Box, Collapse, Container, CssBaseline, GlobalStyles, Grid, IconButton, Paper, Toolbar, } from '@mui/material';
 import { Header, HideOnScroll } from '../header/Header'
 import { css, Theme, useTheme } from '@emotion/react';
 import { Button, SubMenu, SubMenuList as BasicSubMenuList } from '../basic-lib';
@@ -278,6 +278,7 @@ const Layer2Wrap = withTranslation('common')(({t,...rest}:any) => {
 
 
     return <>
+        <CssBaseline />
         <HideOnScroll>
             <Header headerMenuData={headerMenuData} headerToolBarData={headerToolBarData}
                     selected={'markets'}></Header>

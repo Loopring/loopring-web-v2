@@ -28,10 +28,10 @@ const basicLayout={
         'lg':[
             {i:'toolbar',   x:0,y:0,w:24,h:9,minW:24,minH:9},
             {i:'walletInfo',x:0,y:10,w:4,h:23,minW:4,minH:22},
-            {i:'spot',      x:0,y:14,w:4,h:98,minW:4,minH:70},
-            {i:'market',    x:4,y:10,w:4,h:77,minW:4,minH:58},
-            {i:'market2',   x:8,y:10,w:4,h:77,minW:4,minH:58},
-            {i:'chart',     x:13,y:10,w:12,h:77,minW:6,minH:32},
+            {i:'spot',      x:0,y:14,w:4,h:94,minW:4,minH:70},
+            {i:'market',    x:4,y:10,w:4,h:73,minW:4,minH:58},
+            {i:'market2',   x:8,y:10,w:4,h:73,minW:4,minH:58},
+            {i:'chart',     x:13,y:10,w:12,h:73,minW:6,minH:32},
             {i:'orderTable',x:5,y:64,w:20,h:44,minW:6,minH:36},
         ],
         'md':[
