@@ -15,7 +15,7 @@ import { myLog } from '@loopring-web/common-resources';
 export interface ReqParams {
     isBuy?: boolean,
 
-    price: number,
+    price?: number,
     amountBase?: number,
     amountQuote?: number,
     base?: string,
@@ -66,11 +66,17 @@ export function makeMarketReq({
 
     if (!tokenMap || !tokenAmtMap || !exchangeAddress || !marketArray
         || accountId === undefined || !base || !quote || (!depth && !ammPoolSnapshot)) {
+            myLog('(!depth && !ammPoolSnapshot):', (!depth && !ammPoolSnapshot))
+            debugger
         return undefined
     }
 
     if (isBuy === undefined) {
         isBuy = true
+    }
+
+    if (feeBips === undefined) {
+        feeBips = '0'
     }
 
     if (!storageId) {
@@ -80,8 +86,8 @@ export function makeMarketReq({
     const baseTokenInfo = tokenMap[base]
     const quoteTokenInfo = tokenMap[quote]
 
-    const sellTokenInfo = isBuy ? baseTokenInfo : quoteTokenInfo
-    const buyTokenInfo = isBuy ? quoteTokenInfo : baseTokenInfo
+    const sellTokenInfo = isBuy ? quoteTokenInfo : baseTokenInfo
+    const buyTokenInfo = isBuy ? baseTokenInfo : quoteTokenInfo
 
     const input = (amountBase !== undefined ? amountBase : amountQuote !== undefined ? amountQuote : '')?.toString()
 
@@ -92,6 +98,9 @@ export function makeMarketReq({
     const isAtoB = (isBuy && amountQuote !== undefined) || (!isBuy && amountBase !== undefined)
 
     const takerRate = tokenAmtMap[buyTokenInfo.symbol].userOrderInfo.takerRate
+
+    myLog('makeMarketReq isBuy:', isBuy, ' sell:', sell, ' buy:', buy, ' isAtoB:', isAtoB,
+     ' feeBips:', feeBips, ' takerRate:', takerRate)
 
     const maxFeeBips = parseInt(sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString())
 
@@ -109,6 +118,8 @@ export function makeMarketReq({
         takerRate: takerRate ? takerRate.toString() : '0',
         slipBips: slippage as string
     })
+
+    myLog('makeMarketReq calcTradeParams:', calcTradeParams)
 
     const tradeChannel = calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined
     const orderType = calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly) : undefined
@@ -140,6 +151,7 @@ export function makeMarketReq({
 
     return {
         marketRequest,
+        calcTradeParams,
     }
 }
 
@@ -162,12 +174,16 @@ export function makelimitReq({
 }: ReqParams) {
 
     if (!tokenMap || !tokenAmtMap || !exchangeAddress
-        || accountId === undefined || !base || !quote) {
+        || accountId === undefined || !base || !quote || (!amountBase && !amountQuote)) {
         return undefined
     }
 
     if (isBuy === undefined) {
         isBuy = true
+    }
+
+    if (feeBips === undefined) {
+        feeBips = '0'
     }
 
     if (!storageId) {
@@ -317,9 +333,11 @@ export function usePlaceOrder() {
             tokenAmtMap: tokenAmtMap.tokenAmtMap,
         }
 
+        myLog('makeMarketReqInHook fullParams:', fullParams)
+
         return makeMarketReq(fullParams)
 
-    }, [account, tokenMap, ammMap, amountMap, marketArray, exchangeInfo,])
+    }, [account, tokenMap, ammMap, amountMap, marketArray, exchangeInfo, ])
 
     // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
     const makelimitReqInHook = React.useCallback((params: ReqParams) => {

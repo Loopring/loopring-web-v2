@@ -14,6 +14,7 @@ import { useSystem } from 'stores/system';
 import { useTranslation } from 'react-i18next';
 import { useSubmitBtn } from './hookBtn';
 import { VolToNumberWithPrecision } from 'utils/formatter_tool';
+import { usePlaceOrder } from 'pages/SwapPage/swap_hook';
 
 export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType):{
     [key: string]: any;
@@ -21,7 +22,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
     // marketTicker: MarketBlockProps<C> |undefined,
 } =>{
     const {t} = useTranslation();
-    const {tokenMap,marketCoins,coinMap} = useTokenMap();
+    const {tokenMap,marketCoins,coinMap, marketArray, marketMap, } = useTokenMap();
     const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
     const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
     const {toastOpen, setToastOpen, closeToast} = useToast();
@@ -81,11 +82,37 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
     },[ pageTradePro.market,
         pageTradePro.tradeCalcProData.walletMap])
 
+    const { makeMarketReqInHook } = usePlaceOrder()
 
+    const onChangeMarketEvent = async(tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType): Promise<void> => {
 
+        if (!pageTradePro.depth && !pageTradePro.ammPoolSnapshot) {
+            myLog(`onChangeMarketEvent data not ready!`)
+            return
+        }
 
-    const onChangeMarketEvent = async (tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType): Promise<void> => {
         myLog(`onChangeMarketEvent tradeData:`, tradeData, 'formType',formType)
+
+        setMarketTradeData(tradeData)
+        let amountBase = formType === TradeBaseType.base ? tradeData.base.tradeValue : undefined
+        let amountQuote = formType === TradeBaseType.quote ? tradeData.quote.tradeValue : undefined
+        let slippage = sdk.toBig(tradeData.slippage ? tradeData.slippage : '0.5').times(100).toString();
+        
+        const request = makeMarketReqInHook({
+            isBuy: tradeData.type === 'buy',
+            base: tradeData.base.belong,
+            quote: tradeData.quote.belong,
+            amountBase,
+            amountQuote,
+            marketArray,
+            marketMap,
+            depth: pageTradePro.depth,
+            ammPoolSnapshot: pageTradePro.ammPoolSnapshot,
+            slippage,
+        })
+
+        myLog('marketRequest:', request)
+    
     }
 
     const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {

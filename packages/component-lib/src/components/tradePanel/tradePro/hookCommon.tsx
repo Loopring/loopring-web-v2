@@ -47,7 +47,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         if(handleCountChange){
             handleCountChange(ibData, name, _ref)
         }else{
-            myLog(`${type}Trade: handleUser input on :`, ibData, name)
+            // myLog(`${type}Trade: handleUser input on :`, ibData, name)
             const _tradeData = {
                     ...tradeData,
                     [ name ]: ibData,

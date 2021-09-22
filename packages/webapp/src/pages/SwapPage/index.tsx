@@ -6,9 +6,7 @@ import { AlertImpact, ConfirmImpact, SwapPanel, Toast } from '@loopring-web/comp
 
 import { TOAST_TIME } from 'defs/common_defs'
 import { FixedStyle } from 'pages/styled'
-import React from 'react';
 import { useSwap } from './hookSwap';
-
 
 export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) => {
 
