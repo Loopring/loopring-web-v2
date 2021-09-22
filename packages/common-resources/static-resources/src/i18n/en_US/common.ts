@@ -325,4 +325,5 @@ export default {
     labelFailure: 'Failure',
     labelPrompt: 'Prompt',
 
+    labelComingSoon: 'Coming Soon',
 }

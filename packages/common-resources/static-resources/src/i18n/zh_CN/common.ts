@@ -324,4 +324,5 @@ export default {
     labelFailure: '失败',
     labelPrompt: '提示',
 
+    labelComingSoon: '敬请期待',
 }
