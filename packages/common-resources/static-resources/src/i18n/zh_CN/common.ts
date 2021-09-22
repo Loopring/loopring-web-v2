@@ -313,7 +313,8 @@ export default {
     labelProQuoteLabel:'数量',
     labelProLimitBtn: '{{tradeType}} {{symbol}}',
     labelProMarketBtn: '{{tradeType}} {{symbol}}',
-
+    labelProOrderbook:'订单',
+    labelProTrades:'交易',
     labelDepthPrice: '价格({{symbol}})',
     labelDepthAmount: '数量({{symbol}})',
     labelDepthTotal: '总量',
