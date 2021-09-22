@@ -16,7 +16,7 @@ import {
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import { PopoverPure } from '../basic-lib'
 import { bindHover } from 'material-ui-popup-state/es';
-import { useSettings } from 'stores';
+import { useSettings } from '../../stores';
 import styled from '@emotion/styled';
 import { RewardItem } from 'loopring-sdk'
 
