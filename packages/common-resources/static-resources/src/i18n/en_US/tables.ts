@@ -118,4 +118,6 @@ export default {
     labelOrderTypes: 'Types',
     labelOrderChannels: 'Channels',
     labelOrderCompletion: 'Completion',
+    labelRewardTableAmount: 'Amount',
+    labelRewardTableTime: 'Time',
 }

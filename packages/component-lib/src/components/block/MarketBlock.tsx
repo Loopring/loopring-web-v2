@@ -85,7 +85,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                         {tradeFloat.close ? (
                             <Box height={24} display={'flex'} alignItems={'center'}
                                         className={`float-tag float-${tradeFloat.floatTag}`}>
-                                <Typography variant={'h4'}>{getValuePrecisionThousand(tradeFloat?.close, marketPrecision, marketPrecision)}
+                                <Typography variant={'h4'}>{getValuePrecisionThousand(tradeFloat?.close, undefined, undefined, marketPrecision, true, {isPrice: true})}
                                 </Typography>
                               <Typography color={'var(--color-text-secondary)'} marginX={1 / 4}>&#8776;</Typography>
                               <Typography variant={'body2'} color={'var(--color-text-secondary)'}>

@@ -7,7 +7,7 @@ import { Column, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { Filter, FilterTradeTypes } from './components/Filter'
-import { EmptyValueTag, getValuePrecisionThousand, TableType, TradeTypes } from '@loopring-web/common-resources';
+import { EmptyValueTag, getValuePrecisionThousand, myLog, TableType, TradeTypes } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores';
 import { useDeepCompareEffect } from 'react-use';
 import { Row } from '../poolsTable/Interface';
@@ -127,7 +127,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN', tokenMap: a
         formatter: ({row}) => {
             const {value} = row[ 'price' ]
             const precision = row['precision'] || 6
-            const renderValue = value ? (getValuePrecisionThousand(value, precision, precision, undefined, true)) : EmptyValueTag
+            const renderValue = value ? (getValuePrecisionThousand(value, undefined, undefined, precision, true, {isPrice: true})) : EmptyValueTag
             return (
                 <Box className="rdg-cell-value textAlignRight">
                     {renderValue}
@@ -144,6 +144,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN', tokenMap: a
         headerCellClass: 'textAlignRight',
         formatter: ({row}) => {
             const {key, value} = row[ 'fee' ]
+            // myLog({value})
             return (
                 <div className="rdg-cell-value textAlignRight">
                     {`${value} ${key}`}
