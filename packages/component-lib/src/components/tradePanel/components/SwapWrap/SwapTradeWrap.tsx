@@ -8,7 +8,6 @@ import {
     ReverseIcon,
     SlippageTolerance,
     TradeCalcData,
-    myLog,
 } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
@@ -21,7 +20,6 @@ import { useSettings } from '../../../../stores';
 import { IconButtonStyled,ButtonStyle } from '../Styled';
 import { SlippagePanel } from '../tool';
 import { Box } from '@mui/material';
-import * as sdk from 'loopring-sdk'
 
 export const SwapTradeWrap = <T extends IBData<I>,
     I,
@@ -151,34 +149,14 @@ export const SwapTradeWrap = <T extends IBData<I>,
         }
 
     }, [error, t, swapBtnI18nKey])
-
-    // console.log('tradeData:', tradeData)
-    // console.log('tradeCalcData:', tradeCalcData)
-    // console.log('_isStoB:', _isStoB)
-
     const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB
 
-    let stob = `${tradeCalcData?.StoB ? tradeCalcData.StoB : EmptyValueTag}`
-    let btos = `${tradeCalcData .BtoS ? tradeCalcData.BtoS : EmptyValueTag}`
+   
 
-    if (tradeData?.sell.tradeValue && tradeData?.buy.tradeValue) {
-        myLog("tradeCalcData:", tradeCalcData.marketPrecision, tradeCalcData.tokenA.symbol, tradeCalcData.tokenA.precision)
-        const sellBig = sdk.toBig(tradeData?.sell.tradeValue)
-        const buyBig = sdk.toBig(tradeData?.buy.tradeValue)
-        const BIG0 = sdk.toBig(0)
-        if (sellBig.gt(BIG0) && buyBig.gt(BIG0))  {
-            const isReversed = tradeData.sell.belong !== tradeCalcData.tokenA.symbol
-            const stobPrecision = !isReversed ? tradeCalcData.marketPrecision : tradeCalcData.tokenA.precision
-            const btosPrecision = !isReversed ? tradeCalcData.tokenA.precision : tradeCalcData.marketPrecision
-            stob = getValuePrecisionThousand(buyBig.div(sellBig).toString(), stobPrecision, stobPrecision, stobPrecision)
-            btos = getValuePrecisionThousand(sellBig.div(buyBig).toString(), btosPrecision, btosPrecision, btosPrecision)
-            myLog("tradeCalcData.stob:", buyBig.div(sellBig).toString(), stob, sellBig.div(buyBig).toString(), btos)
-        }
-    }
-
-    const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${stob} ${tradeData.buy?.belong}`
-        : `1${tradeData.buy?.belong} \u2248 ${btos} ${tradeData.sell?.belong}`
-
+    // const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${stob} ${tradeData.buy?.belong}`
+    //     : `1${tradeData.buy?.belong} \u2248 ${btos} ${tradeData.sell?.belong}`
+    const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${tradeCalcData?.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
+        : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData .BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`;
     const priceImpactColor =  tradeCalcData?.priceImpactColor ? tradeCalcData.priceImpactColor : 'textPrimary'
     const priceImpact = tradeCalcData?.priceImpact ?  getValuePrecisionThousand(tradeCalcData.priceImpact, undefined, undefined, 2, true) + ' %' : EmptyValueTag
 

@@ -65,7 +65,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const [withdrawType, setWithdrawType] = React.useState<sdk.OffchainFeeReqType>(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
 
     const withdrawType2 = withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
-    const { chargeFeeList } = useChargeFees(withdrawValue.belong, withdrawType, tokenMap, withdrawValue.tradeValue)
+    const { chargeFeeList } = useChargeFees({tokenSymbol: withdrawValue.belong, requestType: withdrawType, tokenMap, amount: withdrawValue.tradeValue})
 
     const [withdrawTypes, setWithdrawTypes] = React.useState<any>(WithdrawTypes)
     const [isExceedMax, setIsExceedMax] = React.useState(false)

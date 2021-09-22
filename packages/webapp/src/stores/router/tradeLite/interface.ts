@@ -2,7 +2,7 @@ import * as sdk from 'loopring-sdk';
 import { TradeChannel } from 'loopring-sdk';
 import { OrderInfo } from 'loopring-sdk/dist/defs/loopring_defs';
 import { MarketType } from '@loopring-web/common-resources';
-import { TickerMap } from '../../ticker';
+import { Ticker, TickerMap } from '../../ticker';
 
 export type PageTradeLite = {
     market?: MarketType  // eg: ETH-LRC, Pair from loopring market
@@ -32,7 +32,7 @@ export type PageTradeLite = {
         priceLevel: number | string,
     },
     depth?: sdk.DepthData | undefined
-    tickerMap?: TickerMap<any> | undefined,
+    ticker?: Ticker| undefined,
     ammPoolSnapshot?: sdk.AmmPoolSnapshot | undefined,
     tradeChannel?: undefined | TradeChannel
     orderType?: undefined | sdk.OrderType
@@ -43,6 +43,7 @@ export type PageTradeLite = {
     buyMinAmtInfo?: undefined | OrderInfo;
     sellMinAmtInfo?: undefined | OrderInfo;
     lastStepAt?:'sell'|'buy'|undefined,
+    close?: string,
 }
 
 export type PageTradeLiteStatus = {

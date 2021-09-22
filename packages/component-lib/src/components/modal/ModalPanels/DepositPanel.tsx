@@ -39,8 +39,6 @@ export const DepositPanel = withTranslation('common', {withRef: true})(<T extend
                 key: "tradeMenuList",
                 element: React.useMemo( () => <TradeMenuList {...{
                     ...rest,
-                    nonZero: false,
-                    sorted: true,
                     onChangeEvent,
                     //rest.walletMap,
                     selected: switchData.tradeData.belong,
