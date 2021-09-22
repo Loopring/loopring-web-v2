@@ -317,7 +317,7 @@ export default {
     labelProMarketBtn: '{{tradeType}} {{symbol}}',
 
     labelSwapCancelled: 'Swap is cancelled.',
-    labelSucessfully: 'Sucessfully',
+    labelSuccessfully: 'Successfully',
     labelWarning: 'Warning',
     labelFailure: 'Failure',
     labelPrompt: 'Prompt',

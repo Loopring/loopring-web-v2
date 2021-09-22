@@ -316,7 +316,7 @@ export default {
     labelProMarketBtn: '{{tradeType}} {{symbol}}',
 
     labelSwapCancelled: '交易被取消',
-    labelSucessfully: '成功',
+    labelSuccessfully: '成功',
     labelWarning: '警告',
     labelFailure: '失败',
     labelPrompt: '提示',
