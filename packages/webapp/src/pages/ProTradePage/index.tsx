@@ -59,9 +59,10 @@ export const OrderbookPage = withTranslation('common')(() => {
         toolbar: React.useMemo(() => <Toolbar market={market as any} handleOnMarketChange={handleOnMarketChange}/>, [market,handleOnMarketChange]),
         walletInfo: React.useMemo(() => <WalletInfo market={market as any}/>, [market]),
         spot: React.useMemo(() => <SpotView market={market as any} />, [market]),
-        market: React.useMemo(() =><>{depthLevel && <MarketView market={market as any} rowLength={rowLength}/>}</>
+        market: React.useMemo(() =><>{depthLevel && <MarketView market={market as any} rowLength={rowLength} breakpoint={configLayout.currentBreakpoint}/>}</>
             , [market,rowLength,configLayout.currentBreakpoint,depthLevel]),
-        market2: React.useMemo(() => <></>, []),    //<MarketView market={market as any}/>, [market])
+        market2: React.useMemo(() => <>{[BreakPoint.lg,BreakPoint.xlg].includes(configLayout.currentBreakpoint) && <MarketView market={market as any} rowLength={rowLength} breakpoint={configLayout.currentBreakpoint}/>}</>
+            , [market,rowLength,configLayout.currentBreakpoint,depthLevel]),    //<MarketView market={market as any}/>, [market])
         chart: React.useMemo(() => <ChartView/>, []),
         orderTable: React.useMemo(() => <OrderTableView/>, [])
     }

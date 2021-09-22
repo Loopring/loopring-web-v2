@@ -4,7 +4,7 @@ import { useTicker } from 'stores/ticker';
 import React from 'react';
 import { MarketBlockProps } from '@loopring-web/component-lib';
 import { useTokenMap } from 'stores/token';
-import { MenuItem, TextField } from '@mui/material';
+import { Box, MenuItem, TextField } from '@mui/material';
 import { usePageTradePro } from '../../../../stores/router';
 
 export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: any }>({
@@ -40,7 +40,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
     const _handleOnMarketChange = React.useCallback((event: React.ChangeEvent<{ value: string }>) => {
         handleOnMarketChange(event.target.value as MarketType)
     }, [])
-    return <>
+    return <Box display={'flex'} alignItems={'center'} height={'100%'} paddingX={2} >
         <TextField
             id="outlined-select-level"
             select
@@ -52,5 +52,6 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
             {marketArray && marketArray.map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
 
         </TextField>
-    </>
+       </Box>
+
 })
