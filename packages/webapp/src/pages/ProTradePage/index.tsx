@@ -1,19 +1,21 @@
 import { withTranslation } from 'react-i18next';
 
 import React from 'react';
-import { Layouts, Responsive, WidthProvider } from 'react-grid-layout';
+import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout';
 
 import { usePro } from './hookPro';
 import { useTheme } from '@emotion/react';
 import { Box, IconButton } from '@mui/material';
 import { BreakPoint, DragIcon, layoutConfigs, myLog, ResizeIcon } from '@loopring-web/common-resources';
-import { ChartView, MarketView, OrderTableView, SpotView, Toolbar, WalletInfo } from './panel'
+import { ChartView, MarketView, OrderTableView, SpotView, TabMarketIndex, Toolbar, WalletInfo } from './panel'
 import { boxLiner } from '@loopring-web/component-lib';
 import styled from '@emotion/styled/';
 import { usePageTradePro } from '../../stores/router';
 
 const MARKET_ROW_LENGTH: number = 8;
 const MARKET_ROW_LENGTH_LG: number = 11;
+
+const MARKET_TRADES_LENGTH: number = 5;
 
 
 const BoxStyle = styled(Box)`
@@ -27,9 +29,12 @@ const BoxStyle = styled(Box)`
   .MuiTabs-root {
     min-height: var(--tab-header);
 
-    .MuiTab-root {
+    .MuiTab-root.MuiTab-fullWidth, .MuiTab-root {
       min-height: var(--tab-header);
       padding: ${({theme}) => theme.unit}px;
+      &:after{
+        margin: 0;
+      }
     }
   }
 `
@@ -41,39 +46,92 @@ type Config = {
     layouts: Layouts,
     compactType: 'vertical' | 'horizontal' | null | undefined
 }
+const initBreakPoint = ():BreakPoint=>{
+    if( window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.xlg]) {
+        return BreakPoint.xlg
+    } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.lg]) {
+        return BreakPoint.lg
+    } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.md]) {
+        return BreakPoint.md
+    } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.sm]) {
+        return BreakPoint.sm
+    } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.xs]) {
+        return BreakPoint.xs
+    } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.xxs]) {
+        return BreakPoint.xxs
+    } else {
+        return BreakPoint.md
+    }
+};
 export const OrderbookPage = withTranslation('common')(() => {
     const { pageTradePro:depthLevel } = usePageTradePro();
     const {market,handleOnMarketChange} = usePro();
     const {unit} = useTheme();
     const [rowLength, setRowLength] = React.useState<number>(MARKET_ROW_LENGTH);
-
+    const [tradeTableLengths, setTradeTableLengths] = React.useState<{ market:number,market2:number }>({
+        market:MARKET_TRADES_LENGTH,
+        market2: MARKET_TRADES_LENGTH
+    });
     const [configLayout, setConfigLayout] = React.useState<Config>({
             compactType: "vertical",
-            currentBreakpoint: BreakPoint.xlg,
+            currentBreakpoint: initBreakPoint(),
             mounted: false,
             layouts: layoutConfigs[ 0 ].layouts
         }
     )
 
+
     const ViewList = {
         toolbar: React.useMemo(() => <Toolbar market={market as any} handleOnMarketChange={handleOnMarketChange}/>, [market,handleOnMarketChange]),
         walletInfo: React.useMemo(() => <WalletInfo market={market as any}/>, [market]),
         spot: React.useMemo(() => <SpotView market={market as any} />, [market]),
-        market: React.useMemo(() =><>{depthLevel && <MarketView market={market as any} rowLength={rowLength} breakpoint={configLayout.currentBreakpoint}/>}</>
+        market: React.useMemo(() =><>{depthLevel && <MarketView market={market as any} rowLength={rowLength} tableLength={tradeTableLengths.market} main={TabMarketIndex.Orderbook}
+                                                                breakpoint={configLayout.currentBreakpoint}/>}</>
             , [market,rowLength,configLayout.currentBreakpoint,depthLevel]),
-        market2: React.useMemo(() => <>{[BreakPoint.lg,BreakPoint.xlg].includes(configLayout.currentBreakpoint) && <MarketView market={market as any} rowLength={rowLength} breakpoint={configLayout.currentBreakpoint}/>}</>
+        market2: React.useMemo(() => <>{[BreakPoint.lg,BreakPoint.xlg].includes(configLayout.currentBreakpoint) && <MarketView market={market as any}  main={TabMarketIndex.Trades}
+                                                                                                                               tableLength={tradeTableLengths.market2}
+                                                                                                                               rowLength={rowLength} breakpoint={configLayout.currentBreakpoint}/>}</>
             , [market,rowLength,configLayout.currentBreakpoint,depthLevel]),    //<MarketView market={market as any}/>, [market])
         chart: React.useMemo(() => <ChartView/>, []),
         orderTable: React.useMemo(() => <OrderTableView/>, [])
     }
     const onRestDepthTableLength = React.useCallback((h:number) => {
-        myLog('market',h )
-        const i = Math.floor(((h - 58) * unit) / 40)
-        if(i <= 40){
-            setRowLength(MARKET_ROW_LENGTH + i)
-        } else{
-            setRowLength(48)
+        if(h){
+            myLog('market',h )
+            const i = Math.floor(((h - 58) * unit) / 40)
+            if(i <= 40){
+                setRowLength(MARKET_ROW_LENGTH + i)
+            } else{
+                setRowLength(48)
+            }
         }
+
+
+    }, [])
+    const  onRestMarketTableLength  = React.useCallback((layout:Layout|undefined) => {
+        myLog('market',layout )
+        if(layout && layout.h) {
+            const h = layout.h
+            const i = Math.floor(((h - 58) * unit) / 44)
+
+                setTradeTableLengths((state)=>{
+                    if(i <= 40){
+                       return {
+                           ...state,
+                           [layout.i]: MARKET_TRADES_LENGTH +i
+                       }
+                    } else{
+                        return {
+                            ...state,
+                            [layout.i]: MARKET_TRADES_LENGTH + 40
+                        }
+                    }
+                })
+            // } else{
+            //     setRowLength(40)
+            // }
+        }
+
 
     }, [])
     const onBreakpointChange = React.useCallback((breakpoint: BreakPoint) => {
@@ -86,6 +144,7 @@ export const OrderbookPage = withTranslation('common')(() => {
         const layout = configLayout.layouts[breakpoint]
         if(layout){
             onRestDepthTableLength(layout.find(i => i.i === 'market')?.h as number)
+            onRestMarketTableLength(layout.find(i => /market/.test(i.i)))
         }
 
         // this.setState({
@@ -97,6 +156,10 @@ export const OrderbookPage = withTranslation('common')(() => {
     const  onResize  = React.useCallback((layout, oldLayoutItem, layoutItem) => {
         if(layoutItem.i === 'market'){
             onRestDepthTableLength(layoutItem.h)
+            onRestMarketTableLength(layoutItem)
+        }
+        if(layoutItem.i === 'market2'){
+            onRestMarketTableLength(layoutItem)
         }
 
         // this.setState({ layouts });
