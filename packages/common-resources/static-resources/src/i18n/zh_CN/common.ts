@@ -313,6 +313,12 @@ export default {
     labelProBaseLabel:'数量',
     labelProQuoteLabel:'数量',
     labelProLimitBtn: '{{tradeType}} {{symbol}}',
-    labelProMarketBtn: '{{tradeType}} {{symbol}}'
+    labelProMarketBtn: '{{tradeType}} {{symbol}}',
+
+    labelSwapCancelled: '交易被取消',
+    labelSucessfully: '成功',
+    labelWarning: '警告',
+    labelFailure: '失败',
+    labelPrompt: '提示',
 
 }

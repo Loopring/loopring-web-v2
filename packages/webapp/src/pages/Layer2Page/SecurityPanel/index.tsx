@@ -48,8 +48,8 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({t, i18n, ..
                             resetKeypair()
                         }}
                                 disabled={false}>{t('labelBtnReset')}</Button>
-                        <Typography variant={'body2'} color={'text.secondary'} component={'p'}
-                                    paddingTop={1}>{t('labelHadChangPassword', {passDay: '14 hours'})}</Typography>
+                        {/* <Typography variant={'body2'} color={'text.secondary'} component={'p'}
+                                    paddingTop={1}>{t('labelHadChangPassword', {passDay: '14 hours'})}</Typography> */}
                     </Grid>
                 </Grid>
                 {/*<Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}*/}

@@ -243,7 +243,6 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
             } catch (reason) {
                 sdk.dumpError400(reason)
                 setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
-
             }
 
             // setOutput(undefined)
