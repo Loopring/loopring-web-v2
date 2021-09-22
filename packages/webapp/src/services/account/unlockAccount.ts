@@ -41,7 +41,7 @@ export async function unlockAccount() {
                 accountServices.sendErrorUnlock()
             } else {
                 myLog('try to sendAccountSigned....')
-                accountServices.sendAccountSigned({accountId: account.accountId, apiKey, eddsaKey})
+                accountServices.sendAccountSigned({accountId: account.accountId, nonce: account.nonce, apiKey, eddsaKey})
             }
         } catch (e) {
             myLog('unlockAccount e:', e)
