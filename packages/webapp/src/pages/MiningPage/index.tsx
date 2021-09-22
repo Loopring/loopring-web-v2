@@ -129,7 +129,8 @@ export const MiningPage = withTranslation('common')(<T extends AmmJoinData<C ext
     //     setTabIndex(newValue);
     // }
     const jointAmmViewMap = [...ammActivityViewMap, ...ammActivityPastViewMap]
-    const filteredJointAmmViewMap = jointAmmViewMap.filter(o => o.activity.ruleType !== 'SWAP_VOLUME_RANKING')
+    // hide orderbook activity for now
+    const filteredJointAmmViewMap = jointAmmViewMap.filter(o => o.activity.ruleType !== 'SWAP_VOLUME_RANKING' && o.activity.ruleType !== 'ORDERBOOK_MINING')
     const orderedViewMap = filteredJointAmmViewMap.sort((a, b) => {
         if (a.APR && !b.APR) {
             return -1
