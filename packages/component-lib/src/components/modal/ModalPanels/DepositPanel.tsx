@@ -41,8 +41,6 @@ export const DepositPanel = withTranslation('common', {withRef: true})(<T extend
                     nonZero: false,
                     sorted: true,
                     ...rest,
-                    nonZero: false,
-                    sorted: true,
                     onChangeEvent,
                     //rest.walletMap,
                     selected: switchData.tradeData.belong,
