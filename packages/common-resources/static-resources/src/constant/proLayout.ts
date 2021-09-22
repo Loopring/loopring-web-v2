@@ -3,6 +3,8 @@ export enum LayoutConfig {
     layout1,
     layout2
 }
+export const MarketRowHeight = 20
+
 
 export enum BreakPoint {
     xlg = 'xlg',

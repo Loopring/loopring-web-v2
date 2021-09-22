@@ -1,6 +1,6 @@
 import { all, call, fork, put, takeLatest } from "redux-saga/effects"
 import { getTickers, getTickerStatus, updateTicker } from './reducer'
-import { CustomError, ErrorMap } from '@loopring-web/common-resources'
+import { CustomError, ErrorMap, myLog } from '@loopring-web/common-resources'
 
 import { LoopringAPI } from "api_wrapper"
 import { makeTickerMap } from '../../hooks/help';
@@ -55,12 +55,12 @@ function* getPostsSaga({payload}: any) {
 function* tickerMakeMap({payload}: PayloadAction<LoopringMap<TickerData>>) {
     try {
         let {tickerMap, __timer__} = store.getState().tickerMap;
+
         const data = makeTickerMap({tickerMap: payload})
         yield put(getTickerStatus({tickerMap: {...tickerMap, ...data}, __timer__}));
-        // }else{
-        //     yield put(getTickerStatus({tickerMap: {...tickerMap, ...data}, __timer__}));
-        // }
+
     } catch (err) {
+        myLog('err',err)
         yield put(getTickerStatus(err));
     }
 }
