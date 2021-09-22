@@ -20,10 +20,6 @@ import { useSettings } from '@loopring-web/component-lib';
 import React, { Provider as TProvider } from 'react';
 import { TimeoutCheckProvider } from 'TimeoutCheckProvider'
 
-if (process.env.REACT_APP_VER) {
-    console.log('VER:', process.env.REACT_APP_VER)
-}
-
 const ProviderApp = React.memo(({children}: { children: JSX.Element }) => {
     const providers: Array<[TProvider<any>, any]> = [
         provider(Provider as any, {store}),

@@ -1,12 +1,4 @@
-import store from '../../stores';
-import React from 'react'
-import {
-    AmmPoolSnapshot,
-    DepthData,
-    LoopringMap,
-    TickerData,
-    TokenVolumeV3,
-} from 'loopring-sdk';
+import store from 'stores';
 import {
     AmmPoolSnapshot,
     DepthData,
@@ -17,22 +9,20 @@ import {
     SubmitOrderRequestV3,
     getExistedMarket, TokenInfo, TokenAmount, OrderType, TradeChannel
 } from 'loopring-sdk';
-import { LoopringAPI } from '../../api_wrapper';
-import { CustomError, ErrorMap, getValuePrecisionThousand, MarketType, myLog } from '@loopring-web/common-resources';
+import { LoopringAPI } from 'api_wrapper';
 import { CustomError, ErrorMap, getValuePrecisionThousand, MarketType } from '@loopring-web/common-resources';
-import { volumeToCountAsBigNumber } from '../../hooks/help';
+import { volumeToCountAsBigNumber } from 'hooks/help';
 import BigNumber from 'bignumber.js';
 import { updateTicker } from 'stores/ticker';
-import { updateTicker } from 'stores/ticker';
-
+import { getTimestampDaysLater } from 'utils/dt_tools';
 import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
 import { useSystem } from 'stores/system';
 import { useAmmMap } from 'stores/Amm/AmmMap';
 import { useAmount } from 'stores/amount';
-import { getTimestampDaysLater } from '../../utils/dt_tools';
-a
-export const swapDependAsync = (market: MarketType): Promise<{
+import React from 'react';
+
+export const swapDependAsync = (market: MarketType,level?:number,limit?:number): Promise<{
     ammPoolSnapshot: AmmPoolSnapshot | undefined,
     tickMap: LoopringMap<TickerData>,
     depth: DepthData
@@ -47,6 +37,7 @@ export const swapDependAsync = (market: MarketType): Promise<{
                 LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({poolAddress,}),
                 LoopringAPI.exchangeAPI.getMixTicker({market: market})])
                 .then(([{depth}, {ammPoolSnapshot}, {tickMap}]) => {
+                    store.dispatch(updateTicker(tickMap))
                     resolve({
                         ammPoolSnapshot: ammPoolSnapshot,
                         tickMap,
@@ -69,7 +60,7 @@ export const calcPriceByAmmTickMapDepth = <C>(
     }: {
         market: MarketType,
         tradePair: MarketType
-        dependencyData: { tickMap: any, ammPoolSnapshot: any, depth: any },
+        dependencyData: { tickerMap: any, ammPoolSnapshot: any, depth: any },
     }): {
     stob: string | undefined,
     btos: string | undefined
@@ -324,9 +315,6 @@ export function usePlaceOrder() {
             }
 
             const existedMarket = getExistedMarket(marketArray, base, quote)
-
-            base = existedMarket.baseShow
-            quote = existedMarket.quoteShow
             market = existedMarket.market
             ammMarket = existedMarket.amm as string
         }
