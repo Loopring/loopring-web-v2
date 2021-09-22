@@ -6,7 +6,6 @@ import React from 'react';
 import { useWalletLayer1 } from 'stores/walletLayer1';
 import { AccountStatus, globalSetup, myLog, SagaStatus } from '@loopring-web/common-resources';
 import store from 'stores';
-import { orderbookService } from 'services/socket/services/orderbookService';
 import { merge } from 'rxjs';
 import { bookService } from 'services/socket/services/bookService';
 import { updatePageTradePro, usePageTradePro } from 'stores/router';
@@ -21,7 +20,8 @@ import { useAmmMap } from 'stores/Amm/AmmMap';
 import { makeMarketArray } from 'hooks/help';
 import { RawDataTradeItem } from '@loopring-web/component-lib';
 import { tradeService } from 'services/socket/services/tradeService';
-import { useTicker } from '../../stores/ticker';
+import { useTicker } from 'stores/ticker';
+import { mixorderService } from 'services/socket/services/mixorderService';
 const TRADE_ARRAY_MAX_LENGTH  = 50;
 
 /**
@@ -49,7 +49,7 @@ export const useSocketProService = ({
     const {ammMap} = useAmmMap();
 
     const subjectAmmpool = React.useMemo(() => ammPoolService.onSocket(), []);
-    const subjectOrderBook = React.useMemo(() => orderbookService.onSocket(), []);
+    const subjectMixorder = React.useMemo(() => mixorderService.onSocket(), []);
     const subjectTicker = React.useMemo(() => tickerService.onSocket(), []);
     const subjectTrade = React.useMemo(() => tradeService.onSocket(), []);
 
@@ -75,7 +75,7 @@ export const useSocketProService = ({
     }, throttleWait)
     // const  _socketUpdate = React.useCallback(socketUpdate({updateWalletLayer1,updateWalletLayer2,walletLayer1Status,walletLayer2Status}),[]);
     React.useEffect(() => {
-        const subscription = merge(subjectAmmpool,subjectOrderBook,subjectTicker,subjectTrade).subscribe((value)=>{
+        const subscription = merge(subjectAmmpool,subjectMixorder,subjectTicker,subjectTrade).subscribe((value)=>{
             const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
             // @ts-ignore
             if(ammMap && value && value.ammPoolMap){
@@ -119,14 +119,14 @@ export const useSocketProService = ({
                 }
             }
             // @ts-ignore
-            if(value && value.orderbookMap){
+            if(value && value.mixorderMap){
                 const market = pageTradePro.market;
                 // @ts-ignore
-                const orderbook = value.orderbookMap[market];
-                if(orderbook && orderbook.symbol){
-                    // myLog('socket:orderbook to depth',orderbook)
+                const mixorder = value.mixorderMap[market];
+                if(mixorder && mixorder.symbol){
+                    // myLog('socket:mixorder to depth',mixorder)
 
-                    store.dispatch(updatePageTradePro( {market, depth: orderbook}))
+                    store.dispatch(updatePageTradePro( {market, depth: mixorder}))
                 }
             }
             // @ts-ignore
@@ -259,13 +259,11 @@ export  const useProSocket = () => {
             const dataSocket:SocketMap = {
                 [ sdk.WsTopicType.ammpool ]:[ ammMap['AMM-'+pageTradePro.market].address],
                 [ sdk.WsTopicType.ticker ]:[pageTradePro.market as string],
-                [ sdk.WsTopicType.orderbook ]: {markets:[pageTradePro.market],
+                [ sdk.WsTopicType.mixorder ]: {markets:[pageTradePro.market],
                     level: marketMap[pageTradePro.market].precisionForPrice - Number(pageTradePro.depthLevel),
                     count: 50,
                     snapshot: true
                 },
-
-                //History Data
                 [ sdk.WsTopicType.trade ]:[pageTradePro.market as string ],
             }
             if (accountStatus === SagaStatus.UNSET){
