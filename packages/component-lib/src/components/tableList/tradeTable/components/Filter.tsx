@@ -37,8 +37,8 @@ const StyledBtnBox = styled(Box)`
 `
 
 export enum FilterTradeTypes {
-    buy = 'Buy',
-    sell = 'Sell',
+    maker = 'Maker',
+    taker = 'Taker',
     allTypes = 'All Types'
 }
 
@@ -57,12 +57,12 @@ export const Filter = withTranslation('tables', {withRef: true})(({
             value: 'All Types'
         },
         {
-            label: t('labelOrderFilterBuy'),
-            value: 'Buy'
+            label: t('labelTradeRoleMaker'),
+            value: 'Maker'
         },
         {
-            label: t('labelOrderFilterSell'),
-            value: 'Sell'
+            label: t('labelTradeRoleTaker'),
+            value: 'Taker'
         },
     ]
 

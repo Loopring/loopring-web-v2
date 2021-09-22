@@ -70,6 +70,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                         showFilter: true,
                         showloading: showTradesLoading,
                         tokenMap: tokenMap,
+                        isL2Trade: true,
                         ...rest
                     }}/>
                 ) : (
