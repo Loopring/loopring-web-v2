@@ -86,8 +86,8 @@ export function makeMarketReq({
     const baseTokenInfo = tokenMap[base]
     const quoteTokenInfo = tokenMap[quote]
 
-    const sellTokenInfo = isBuy ? baseTokenInfo : quoteTokenInfo
-    const buyTokenInfo = isBuy ? quoteTokenInfo : baseTokenInfo
+    const sellTokenInfo = isBuy ? quoteTokenInfo : baseTokenInfo
+    const buyTokenInfo = isBuy ? baseTokenInfo : quoteTokenInfo
 
     const input = (amountBase !== undefined ? amountBase : amountQuote !== undefined ? amountQuote : '')?.toString()
 
@@ -99,7 +99,8 @@ export function makeMarketReq({
 
     const takerRate = tokenAmtMap[buyTokenInfo.symbol].userOrderInfo.takerRate
 
-    myLog('makeMarketReq isAtoB:', isAtoB, ' feeBips:', feeBips, ' takerRate:', takerRate)
+    myLog('makeMarketReq isBuy:', isBuy, ' sell:', sell, ' buy:', buy, ' isAtoB:', isAtoB,
+     ' feeBips:', feeBips, ' takerRate:', takerRate)
 
     const maxFeeBips = parseInt(sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString())
 
@@ -173,12 +174,16 @@ export function makelimitReq({
 }: ReqParams) {
 
     if (!tokenMap || !tokenAmtMap || !exchangeAddress
-        || accountId === undefined || !base || !quote) {
+        || accountId === undefined || !base || !quote || (!amountBase && !amountQuote)) {
         return undefined
     }
 
     if (isBuy === undefined) {
         isBuy = true
+    }
+
+    if (feeBips === undefined) {
+        feeBips = '0'
     }
 
     if (!storageId) {
