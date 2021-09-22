@@ -286,7 +286,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
         const buyMaxVal = sdk.toBig(buyToken?.orderAmounts?.maximum).div('1e' + buyToken.decimals)
 
         myLog('sellExceed:', sellToken.symbol, sellExceed, sellMaxVal.toString(), ' buyExceed:', buyToken.symbol, buyExceed, buyMaxVal.toString())
-        
+
         if (isSwapLoading) {
             setSwapBtnStatus(TradeBtnStatus.LOADING)
             return undefined
@@ -596,13 +596,18 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
                 }
             }
 
-            const sellCoinInfoMap = tokenMap[ coinB ].tradePairs?.reduce((prev: any, item: string | number) => {
+            const sellCoinInfoMap = tokenMap[ coinA ].tradePairs?.reduce((prev: any, item: string | number) => {
                 return {...prev, [ item ]: coinMap[ item ]}
             }, {} as CoinMap<C>)
 
-            const buyCoinInfoMap = tokenMap[ coinA ].tradePairs?.reduce((prev: any, item: string | number) => {
+            const buyCoinInfoMap = tokenMap[ coinB ].tradePairs?.reduce((prev: any, item: string | number) => {
                 return {...prev, [ item ]: coinMap[ item ]}
             }, {} as CoinMap<C>)
+
+            const tokenA = tokenMap[ coinA ]
+            const tokenB = tokenMap[ coinB ]
+
+            const marketPrecision = marketMap && marketMap[_market] && marketMap[_market].precisionForPrice ? marketMap[_market].precisionForPrice : 4
 
             setTradeCalcData((state) => {
                 return {
@@ -610,6 +615,9 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
                     walletMap,
                     coinSell: coinA,
                     coinBuy: coinB,
+                    tokenA,
+                    tokenB,
+                    marketPrecision,
                     sellCoinInfoMap,
                     buyCoinInfoMap,
                     priceImpact: '',
@@ -654,7 +662,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
         const {ammPoolSnapshot, depth, tradePair} = pageTradeLite;
 
         // @ts-ignore
-        myLog('reCalculateDataWhenValueChange depth:_tradePair,market', pageTradeLite, _tradePair, market)
+        // myLog('reCalculateDataWhenValueChange depth:_tradePair,market', pageTradeLite, _tradePair, market)
         //checkMarketDataValid(ammPoolSnapshot, tickMap, market, depth) &&
         if (depth && market && _tradePair === tradePair) {
 

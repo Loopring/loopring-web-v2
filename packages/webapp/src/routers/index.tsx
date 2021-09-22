@@ -15,13 +15,13 @@ import { useTicker } from '../stores/ticker';
 
 
 
-const ContentWrap = ({ children }: React.PropsWithChildren<any>) => {
-    return <> <Header isHideOnScroll={false}/><Container maxWidth="lg"
-        style={{
-            minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
-            display: 'flex',
-            flexDirection: 'column'
-        }}>
+const ContentWrap = ({children}: React.PropsWithChildren<any>) => {
+    return <Container maxWidth="lg"
+                      style={{
+                          minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
+                          display: 'flex',
+                          flexDirection: 'column'
+                      }}>
         <Box display={'flex'} flex={1} alignItems={'stretch'} flexDirection={'row'} marginTop={3}>
             {children}
         </Box>

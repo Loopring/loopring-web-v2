@@ -115,10 +115,11 @@ export function useQuote<C extends { [ key: string ]: string }>() {
             prev.push(_item);
             return prev
         }, [] as QuoteTableRawDataItem[]) : []
-        const newTickList = [...tickList, ..._tickList]
-        const newTickListWithPrecision = newTickList.map(o => {
+        // const newTickList = [...tickList, ..._tickList]
+        // const newTickList = _tickList
+        const newTickListWithPrecision = _tickList.map((o: any) => {
             const pair = o.__rawTicker__.symbol
-            const precision = marketMap ? marketMap[pair].precisionForPrice : undefined
+            const precision = marketMap ? marketMap[pair]?.precisionForPrice : undefined
             // console.log(pair, precision)
             return ({
                 ...o,
