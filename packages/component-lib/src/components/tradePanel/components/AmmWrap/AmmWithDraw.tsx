@@ -34,6 +34,8 @@ import { useAmmViewData } from './ammViewHook';
 
 import _ from 'lodash'
 
+import * as sdk from 'loopring-sdk'
+
 export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
     I,
     ACD extends AmmInData<I>,
@@ -114,12 +116,14 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
 
     const onPercentage = (value: any) => {
 
-        myLog('onPercentage:', value)
-
         if (ammData?.coinLP) {
             setSelectedPercentage(value)
             const cloneLP = _.cloneDeep(ammData.coinLP)
-            cloneLP.tradeValue = (cloneLP.balance / 100) * value;
+
+            cloneLP.tradeValue = sdk.toBig(cloneLP.balance).times(value).div(100).toNumber()
+
+            myLog('onPercentage:', value, ' :', cloneLP.balance, cloneLP.tradeValue)
+
             handleCountChange(cloneLP, null)
         }
 
