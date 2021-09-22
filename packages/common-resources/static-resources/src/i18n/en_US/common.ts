@@ -314,7 +314,8 @@ export default {
     labelProQuoteLabel:'Amount',
     labelProLimitBtn: '{{tradeType}} {{symbol}}',
     labelProMarketBtn: '{{tradeType}} {{symbol}}',
-
+    labelProOrderbook:'Orderbook',
+    labelProTrades:'Trades',
     labelDepthPrice: 'Price({{symbol}})',
     labelDepthAmount: 'Amount({{symbol}})',
     labelDepthTotal: 'Total',
