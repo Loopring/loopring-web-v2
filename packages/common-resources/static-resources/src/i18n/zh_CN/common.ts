@@ -183,7 +183,7 @@ export default {
     labelWalletConnectQRCode: '请用移动端路印钱包（或支持WalletConnect的应用）扫描二维码',
     labelSuccessConnect: '使用{{providerName}}连接成功',
     labelSuccessConnectDescribe: '恭喜，连接成功',
-    labelCopyClipBoard: '复制密钥到剪切板',
+    labelCopyClipBoard: '复制到剪切板',
     labelRejectOrError: '用户拒绝或错误发生, 请<1>点击重试</1>。',
     labelWalletConnectProcessDescribe2: '请在你的移动应用上点击确认按钮。',
     labelUnlockProcessing: "正在解锁二层账号...",
