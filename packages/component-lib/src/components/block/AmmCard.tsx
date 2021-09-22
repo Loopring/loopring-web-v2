@@ -369,20 +369,19 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                         {t('labelMiningActivityReward')}
                     </Typography>
-                    <Typography {...bindHover(popTotalRewardState)} component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400} style={{ borderBottom: totalRewards ? '1px dashed var(--color-text-primary)' : 'none' }}>
-                        {/* {getValuePrecisionThousand(((rewardValue && Number.isFinite(rewardValue) ? rewardValue : 0) + (rewardValue2 && Number.isFinite(rewardValue2) ? rewardValue2 : 0)), 2, 2)} */}
-                        {/* {rewardValue && Number.isFinite(rewardValue)
-                            ? currency === 'USD' ? totalAmmRewardDollar : totalAmmRewardYuan
-                            : EmptyValueTag
-                        } */}
-                        {getValuePrecisionThousand(totalRewards)}
-                        &nbsp;
-                        {rewardToken?.simpleName}
-                        {/* {rewardValue2 && Number.isFinite(rewardValue2)
-                            ? (currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand((rewardValue2 || 0) * ((currency === 'USD' ? coinBPriceDollar : coinBPriceYuan)|| 0), undefined, undefined, 2, true, { isFait: true })
-                            : EmptyValueTag
-                        } */}
-                    </Typography>
+                    {isPass ? (
+                        <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
+                            {getValuePrecisionThousand(totalRewards)}
+                            &nbsp;
+                            {rewardToken?.simpleName}
+                        </Typography>
+                    ) : (
+                        <Typography {...bindHover(popTotalRewardState)} component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400} style={{ borderBottom: totalRewards ? '1px dashed var(--color-text-primary)' : 'none' }}>
+                            {getValuePrecisionThousand(totalRewards)}
+                            &nbsp;
+                            {rewardToken?.simpleName}
+                        </Typography>
+                    )}
                     <PopoverPure
                         className={'arrow-top-center'}
                         {...bindPopper(popTotalRewardState)}
