@@ -101,13 +101,14 @@ export const accountServices = {
     },
     sendActiveAccountDeposit: () => {
     },
-    sendAccountSigned: ({accountId, apiKey, eddsaKey, isReset, }: {
-        accountId?: number, apiKey?: string, eddsaKey?: any, isReset?: boolean,
+    sendAccountSigned: ({accountId, apiKey, eddsaKey, isReset, nonce, }: {
+        accountId?: number, apiKey?: string, eddsaKey?: any, isReset?: boolean, nonce?: number,
     }) => {
-        const updateInfo = accountId && apiKey && eddsaKey ? {
+        const updateInfo = accountId && apiKey && eddsaKey && nonce !== undefined ? {
             accountId,
             apiKey,
             eddsaKey,
+            nonce,
             publicKey: {
                 x: sdk.toHex(sdk.toBig(eddsaKey.keyPair.publicKeyX)),
                 y: sdk.toHex(sdk.toBig(eddsaKey.keyPair.publicKeyY)),
