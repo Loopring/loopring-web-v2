@@ -16,10 +16,9 @@ import {
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import { PopoverPure } from '../basic-lib'
 import { bindHover } from 'material-ui-popup-state/es';
-import { useSettings } from '../../stores';
+import { useSettings } from 'stores';
 import styled from '@emotion/styled';
 import { RewardItem } from 'loopring-sdk'
-import { emptyTypeAnnotation, NUMBER_BINARY_OPERATORS } from '@babel/types';
 
 export interface Reward {
     startAt: number;
@@ -89,7 +88,8 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             amountYuan,
             // isNew,
             APR,
-            activity: {duration, myRewards, rewardToken, isPass, ruleType, status, totalRewards, rewardTokenDollar, rewardTokenYuan, maxSpread},
+            activity: {duration, myRewards, rewardToken, isPass, ruleType,
+                totalRewards, rewardTokenDollar, rewardTokenYuan, maxSpread},
             handleClick,
             popoverIdx,
             totalA,
