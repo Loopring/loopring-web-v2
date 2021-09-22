@@ -8,7 +8,7 @@ const initialState: Required<TokenPricesStates<object>> = {
     tokenPrices: undefined,
     __rawConfig__: undefined,
     __timer__: -1,
-    status: 'PENDING',
+    status: SagaStatus.PENDING,
     errorMessage: null,
 }
 const tokenPricesSlice: Slice = createSlice({

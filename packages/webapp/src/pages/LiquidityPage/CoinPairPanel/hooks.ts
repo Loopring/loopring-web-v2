@@ -12,7 +12,7 @@ import { useLocation, useRouteMatch } from 'react-router';
 import moment from 'moment'
 import { AmmDetailStore, useAmmMap } from '../../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../../stores/walletLayer2';
-import { makeTickerMap, makeWalletLayer2, volumeToCount, WalletMapExtend } from 'hooks/help';
+import { makeWalletLayer2, volumeToCount, WalletMapExtend } from 'hooks/help';
 import {
     AmmPoolSnapshot,
     AmmUserRewardMap,
@@ -31,6 +31,7 @@ import { myLog } from "@loopring-web/common-resources";
 
 import _ from 'lodash'
 import { useAmmPool } from "../hook";
+import { useTicker } from '../../../stores/ticker';
 
 const makeAmmDetailExtendsActivityMap = ({ammMap, coinMap, ammActivityMap, market, coinA, coinB, }: any) => {
 
@@ -87,8 +88,10 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
     const match: any = useRouteMatch("/liquidity/pools/coinPair/:symbol")
     const {coinMap, tokenMap, marketArray, addressIndex} = useTokenMap();
     const {ammMap, getAmmMap, status: ammMapStatus} = useAmmMap();
-    const {userRewardsMap, status: useUserRewardsStatus} = useUserRewards()
-    const {accountId} = store.getState().account
+    const {userRewardsMap, status: useUserRewardsStatus} = useUserRewards();
+    const {tickerMap} = useTicker();
+
+    const {accountId} = store.getState().account;
     const tokenMapList = tokenMap ? Object.entries(tokenMap) : []
     let routerLocation = useLocation()
 
@@ -389,17 +392,18 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
                             tickerData: tickMap[ realMarket ],
                             ammPoolSnapshot: ammPoolSnapshot,
                         }
-                        const tickerMap = makeTickerMap({tickerMap: tickMap})
+                        const ticker = tickerMap[market];
+
                         const {close,stob,btos} = calcPriceByAmmTickMapDepth({
                             market: realMarket,
                             tradePair: realMarket,
-                            dependencyData: {ammPoolSnapshot, tickerMap, depth}
+                            dependencyData: {ammPoolSnapshot, ticker, depth}
                         })
 
                         // _tradeFloat = makeTickView(tickMap[ realMarket ] ? tickMap[ realMarket ] : {})
                         // myLog('........close:', _tradeFloat, close)
                         setStobPair({stob,btos})
-                        setTradeFloat({...tickerMap.tradeFloat, close: close} as TradeFloat);
+                        setTradeFloat({...ticker, close: close} as TradeFloat);
 
                         const coinPairInfoWithPrecision = {
                             ..._coinPairInfo,
