@@ -197,7 +197,7 @@ export default {
     labelFailedTokenAccess:'Failed to approve {{symbol}} access!',
     labelSuccessTokenAccess:'Congratulations, you have {{symbol}} access!',
     labelSuccessUnlockDescribe:'Congratulations, Successfully Unlocked!',
-    labelSuccessUnlock:'Unlock Successful',
+    labelSuccessUnlock:'Unlock Successfully!',
     labelDepositApproveSuccess:'Congratulations, deposit is completed! Please click button to activate your account.',
     labelActivateAccount:'Activate Account',
     labelClose: 'Close',
@@ -314,6 +314,12 @@ export default {
     labelProBaseLabel:'Amount',
     labelProQuoteLabel:'Amount',
     labelProLimitBtn: '{{tradeType}} {{symbol}}',
-    labelProMarketBtn: '{{tradeType}} {{symbol}}'
+    labelProMarketBtn: '{{tradeType}} {{symbol}}',
+
+    labelSwapCancelled: 'Swap is cancelled.',
+    labelSucessfully: 'Sucessfully',
+    labelWarning: 'Warning',
+    labelFailure: 'Failure',
+    labelPrompt: 'Prompt',
 
 }
