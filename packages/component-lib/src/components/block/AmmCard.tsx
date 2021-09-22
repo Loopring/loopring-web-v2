@@ -364,7 +364,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     </DetailWrapperStyled>
                 )}
 
-
+                {!isOrderbook && (
                 <DetailWrapperStyled>
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                         {t('labelMiningActivityReward')}
@@ -480,7 +480,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                             </Box>
                         </PopoverPure>
                     
-                </DetailWrapperStyled>
+                </DetailWrapperStyled>)}
 
 
                 {isAmm && <DetailWrapperStyled>

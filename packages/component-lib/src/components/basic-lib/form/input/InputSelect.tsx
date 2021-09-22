@@ -110,9 +110,9 @@ function _InputSelect<C, I extends string = CoinKey<C>>({
                              value={value?.selected}
                              className={'search-wrap'}
                              onChange={_handleContentChange} />
-                {value?.selected !== '' ? <IconClearStyled size={'small'}  style={{top:'6px'}} aria-label="Clear" onClick={handleClear}>
+                {/* {value?.selected !== '' ? <IconClearStyled size={'small'}  style={{top:'6px'}} aria-label="Clear" onClick={handleClear}>
                     <CloseIcon/>
-                </IconClearStyled> : ''}
+                </IconClearStyled> : ''} */}
             </Box>
             {backElement?<Box marginLeft={2}>{backElement}</Box>:<></>}
             {/*</Grid>*/}
