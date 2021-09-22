@@ -68,6 +68,7 @@ export default {
     labelTxTime: 'Time',
     labelTxTxnHash: 'Txn Hash',
     labelTxStatus: 'Status',
+    
     labelVolume: 'volume',
     labelTradePair: 'Trade Pair',
     labelPool: 'Pool',
