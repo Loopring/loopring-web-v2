@@ -12,6 +12,7 @@ import {
     WarningIcon,
     CompleteIcon,
     getValuePrecisionThousand,
+    myLog,
 } from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
 import { TxnDetailPanel, TxnDetailProps } from './components/modal'
@@ -190,7 +191,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
             : currFilterToken
         const formattedType = currFilterType.toUpperCase()
         const types = currFilterType === TransactionTradeTypes.allTypes 
-            ? '' 
+            ? 'deposit,transfer,offchain_withdrawal'
             : formattedType === TransactionTradeTypes.deposit
                 ? 'deposit'
                 : formattedType === TransactionTradeTypes.transfer
@@ -281,7 +282,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
                 const feePrecision = row['feePrecision']
                 // const hasValue = fee ? Number.isFinite(fee.value) : ''
                 // const renderValue = hasValue && fee.value !== 0 ? `${fee.value.toFixed(6)} ${fee.unit}` : EmptyValueTag
-                const renderValue = `${getValuePrecisionThousand(fee.value, feePrecision, feePrecision, undefined, false, { floor: false })} ${fee.unit}`
+                const renderValue = `${getValuePrecisionThousand(fee.value, feePrecision, undefined, undefined, false, { floor: false })} ${fee.unit}`
                 return (
                     <Box className="rdg-cell-value textAlignRight">
                         {renderValue}

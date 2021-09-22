@@ -31,6 +31,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
         if (pageSize) {
             getUserTxnList({
                 limit: pageSize,
+                types: 'deposit,transfer,offchain_withdrawal',
             })
         }
     }, [getUserTxnList, pageSize])
