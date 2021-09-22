@@ -321,7 +321,7 @@ export default {
     labelDepthTotal: 'Total',
 
     labelSwapCancelled: 'Swap is cancelled.',
-    labelSucessfully: 'Sucessfully',
+    labelSuccessfully: 'Successfully',
     labelWarning: 'Warning',
     labelFailure: 'Failure',
     labelPrompt: 'Prompt',
