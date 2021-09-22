@@ -10,6 +10,7 @@ import { BreakPoint, DragIcon, layoutConfigs, myLog, ResizeIcon } from '@looprin
 import { ChartView, MarketView, OrderTableView, SpotView, Toolbar, WalletInfo } from './panel'
 import { boxLiner } from '@loopring-web/component-lib';
 import styled from '@emotion/styled/';
+import { usePageTradePro } from '../../stores/router';
 
 const MARKET_ROW_LENGTH: number = 8;
 const MARKET_ROW_LENGTH_LG: number = 11;
@@ -41,7 +42,7 @@ type Config = {
     compactType: 'vertical' | 'horizontal' | null | undefined
 }
 export const OrderbookPage = withTranslation('common')(() => {
-    // const { pageTradePro } = usePageTradePro();
+    const { pageTradePro:depthLevel } = usePageTradePro();
     const {market} = usePro();
     const {unit} = useTheme();
     const [rowLength, setRowLength] = React.useState<number>(MARKET_ROW_LENGTH);
@@ -58,7 +59,8 @@ export const OrderbookPage = withTranslation('common')(() => {
         toolbar: React.useMemo(() => <Toolbar market={market as any}/>, [market]),
         walletInfo: React.useMemo(() => <WalletInfo market={market as any}/>, [market]),
         spot: React.useMemo(() => <SpotView market={market as any} />, [market]),
-        market: React.useMemo(() => <MarketView market={market as any} rowLength={rowLength}/>, [market,rowLength,configLayout.currentBreakpoint]),
+        market: React.useMemo(() =><>{depthLevel && <MarketView market={market as any} rowLength={rowLength}/>}</>
+            , [market,rowLength,configLayout.currentBreakpoint,depthLevel]),
         market2: React.useMemo(() => <></>, []),    //<MarketView market={market as any}/>, [market])
         chart: React.useMemo(() => <ChartView/>, []),
         orderTable: React.useMemo(() => <OrderTableView/>, [])

@@ -1,5 +1,5 @@
 import * as sdk from 'loopring-sdk';
-import { OrderStatus, sleep, toBig } from 'loopring-sdk';
+import { OrderStatus, sleep } from 'loopring-sdk';
 import React from 'react';
 import { usePairMatch } from 'hooks/common/usePairMatch';
 import { useSocket } from 'stores/socket';
@@ -15,8 +15,10 @@ import {
     AccountStatus,
     CoinMap,
     fnType,
-    getShowStr, getValuePrecisionThousand,
-    IBData, MarketType,
+    getShowStr,
+    getValuePrecisionThousand,
+    IBData,
+    MarketType,
     SagaStatus,
     TradeCalcData,
     TradeFloat,
@@ -28,21 +30,15 @@ import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
 import { VolToNumberWithPrecision } from 'utils/formatter_tool';
 
 import { useToast } from 'hooks/common/useToast';
-import {
-    accountStaticCallBack,
-    btnClickMap,
-    btnLabel,
-    makeMarketArray, makeTickerMap,
-    makeWalletLayer2,
-} from 'hooks/help';
+import { accountStaticCallBack, btnClickMap, btnLabel, makeMarketArray, makeWalletLayer2, } from 'hooks/help';
 import { LoopringAPI } from 'api_wrapper';
 import * as _ from 'lodash'
 // import { DAYS } from '../../defs/common_defs';
 import { getTimestampDaysLater } from '../../utils/dt_tools';
 import { myLog } from '@loopring-web/common-resources/static-resources/src/utils/log_tools';
 import { calcPriceByAmmTickMapDepth, marketInitCheck, reCalcStoB, swapDependAsync } from './help';
-import BigNumber from 'bignumber.js';
 import { useTicker } from '../../stores/ticker';
+import store from '../../stores';
 
 const useSwapSocket = () => {
     const {sendSocketTopic, socketEnd} = useSocket();
@@ -98,7 +94,7 @@ const getPriceImpactInfo = (calcTradeParams: any) => {
     }
 }
 
-export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}) => {
+export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: string }) => {
 
     //High: No not Move!!!!!!
     const {realPair, realMarket} = usePairMatch(path);
@@ -265,8 +261,8 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
             return
         }
 
-        const sellToken = tokenMap[tradeData?.sell.belong as string]
-        const buyToken = tokenMap[tradeData?.buy.belong as string]
+        const sellToken = tokenMap[ tradeData?.sell.belong as string ]
+        const buyToken = tokenMap[ tradeData?.buy.belong as string ]
 
         const {calcTradeParams} = pageTradeLite;
 
@@ -375,13 +371,13 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
             const {userTrades} = await LoopringAPI.userAPI.getUserTrades({
                 accountId: account.accountId,
                 market,
-                limit:100,
+                limit: 100,
             }, account.apiKey);
             let _myTradeArray = makeMarketArray(market, userTrades) as RawDataTradeItem[]
             const formattedTradreArray = _myTradeArray.map(o => {
                 return {
                     ...o,
-                    precision: marketMap ? marketMap[market].precisionForPrice : undefined
+                    precision: marketMap ? marketMap[ market ].precisionForPrice : undefined
                 }
             }) as RawDataTradeItem[]
             // setMyTradeArray(_myTradeArray ? _myTradeArray : [])
@@ -400,11 +396,11 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
 
     const marketTradeTableCallback = React.useCallback(async () => {
         if (LoopringAPI.exchangeAPI && market) {
-            const {marketTrades} = await LoopringAPI.exchangeAPI.getMarketTrades({market,limit:15});
+            const {marketTrades} = await LoopringAPI.exchangeAPI.getMarketTrades({market, limit: 15});
             const _tradeArray = makeMarketArray(market, marketTrades)
             const formattedTradArray = _tradeArray.map(o => ({
                 ...o,
-                precision: marketMap ? marketMap[market].precisionForPrice : undefined
+                precision: marketMap ? marketMap[ market ].precisionForPrice : undefined
             })) as RawDataTradeItem[]
             // setTradeArray(_tradeArray as RawDataTradeItem[])
             setTradeArray(formattedTradArray as RawDataTradeItem[])
@@ -527,7 +523,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
 
     }, [market]);
     const refreshAmmPoolSnapshot = React.useCallback(() => {
-        const {ticker, ammPoolSnapshot, depth, lastStepAt,tradePair, market} = pageTradeLite;
+        const {ticker, ammPoolSnapshot, depth, lastStepAt, tradePair, market} = pageTradeLite;
         //@ts-ignore
         //(tickMap || ammPoolSnapshot) &&
         if ((`${tradeCalcData.coinSell}-${tradeCalcData.coinBuy}` === market
@@ -540,37 +536,37 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
 
             setTradeFloat({...tradeFloat, close: close} as TradeFloat);
 
-            const result = reCalcStoB(market,tradeData as SwapTradeData<IBData<unknown>>,tradePair as any)
-            if(result){
+            const result = reCalcStoB(market, tradeData as SwapTradeData<IBData<unknown>>, tradePair as any)
+            if (result) {
                 setTradeCalcData((state) => {
                     state.StoB = result.stob;
                     state.BtoS = result.btos;
                     return state
                 })
-            }else{
+            } else {
                 setTradeCalcData((state) => {
                     state.StoB = stob;
                     state.BtoS = btos;
                     return state
                 })
             }
-            updatePageTradeLite({market,close})
+            updatePageTradeLite({market, close})
 
         }
 
-        if( tradeData
+        if (tradeData
             && lastStepAt
-            && tradeCalcData.coinSell === tradeData['sell'].belong
-            && tradeCalcData.coinBuy === tradeData['buy'].belong
-            && tradeData[lastStepAt].tradeValue && tradeData[lastStepAt].tradeValue !== 0) {
-            reCalculateDataWhenValueChange(tradeData,tradePair,lastStepAt);
+            && tradeCalcData.coinSell === tradeData[ 'sell' ].belong
+            && tradeCalcData.coinBuy === tradeData[ 'buy' ].belong
+            && tradeData[ lastStepAt ].tradeValue && tradeData[ lastStepAt ].tradeValue !== 0) {
+            reCalculateDataWhenValueChange(tradeData, tradePair, lastStepAt);
         }
 
 
     }, [market, pageTradeLite, tradeData, tradeCalcData, setTradeCalcData])
 
     const resetTradeCalcData = React.useCallback((_tradeData, _market?, type?: 'sell' | 'buy') => {
-        if (coinMap && tokenMap && marketMap && marketArray ) {
+        if (coinMap && tokenMap && marketMap && marketArray) {
             const {tradePair} = marketInitCheck(_market, type);
             // @ts-ignore
             const [, coinA, coinB] = tradePair.match(/([\w,#]+)-([\w,#]+)/i);
@@ -629,7 +625,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
             let {market: market} = sdk.getExistedMarket(marketArray, coinA, coinB);
             setMarket(market);
             updatePageTradeLite({market, tradePair})
-            
+
             myLog('Market change getAmount', market)
             if (account.readyState === AccountStatus.ACTIVATED) {
                 getAmount({market})
@@ -645,17 +641,18 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
         if (market && ammMap && LoopringAPI.exchangeAPI) {
             try {
                 const {depth, ammPoolSnapshot} = await swapDependAsync(market);
-                // const tickerMap = makeTickerMap({tickerMap: tickMap})
-                updatePageTradeLite({market, depth, ammPoolSnapshot, ticker:tickerMap[market]})
+                const {tickerMap} = store.getState().tickerMap
+                // myLog('store.getState().tickerMap',tickerMap[market]);
+                updatePageTradeLite({market, depth, ammPoolSnapshot, ticker: tickerMap[ market ]})
             } catch (error) {
                 myLog(error, 'go to LRC-ETH');
                 resetTradeCalcData(undefined, market)
             }
         }
 
-    }, [market, ammMap])
+    }, [market, ammMap, tickerMap])
     const reCalculateDataWhenValueChange = React.useCallback((_tradeData, _tradePair?, type?) => {
-        const {ammPoolSnapshot, depth, tradePair,close} = pageTradeLite;
+        const {ammPoolSnapshot, depth, tradePair, close} = pageTradeLite;
 
         // @ts-ignore
         // myLog('reCalculateDataWhenValueChange depth:_tradePair,market', pageTradeLite, _tradePair, market)
@@ -706,7 +703,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
 
             const priceImpactObj = getPriceImpactInfo(calcTradeParams)
 
-            const _tradeCalcData:Partial<TradeCalcData<C>> = {
+            const _tradeCalcData: Partial<TradeCalcData<C>> = {
                 priceImpact: priceImpactObj.value,
                 priceImpactColor: priceImpactObj.priceImpactColor,
                 minimumReceived: calcTradeParams?.amountBOutSlip.minReceivedVal,
@@ -714,25 +711,24 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
             }
 
 
-
             // myLog('calcTradeParams?.output:', calcTradeParams?.output, getShowStr(calcTradeParams?.output))
             _tradeData[ isAtoB ? 'buy' : 'sell' ].tradeValue = getShowStr(calcTradeParams?.output)
 
-            const result = reCalcStoB(market,_tradeData as SwapTradeData<IBData<unknown>>,tradePair as any)
-            if(result){
+            const result = reCalcStoB(market, _tradeData as SwapTradeData<IBData<unknown>>, tradePair as any)
+            if (result) {
                 _tradeCalcData.StoB = result.stob;
                 _tradeCalcData.BtoS = result.btos;
-            }else{
-                if(close){
+            } else {
+                if (close) {
                     // @ts-ignore
                     const [, _coinA] = market.match(/(\w+)-(\w+)/i)
-                    let _btos = getValuePrecisionThousand(1/Number(close.replace(',','')),
-                        tokenMap[ _coinA ].precision, tokenMap[ _coinA ].precision, tokenMap[ _coinA ].precision,true);// .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
+                    let _btos = getValuePrecisionThousand(1 / Number(close.replace(',', '')),
+                        tokenMap[ _coinA ].precision, tokenMap[ _coinA ].precision, tokenMap[ _coinA ].precision, true);// .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
 
-                    if(market === tradePair) {
+                    if (market === tradePair) {
                         _tradeCalcData.StoB = close;
                         _tradeCalcData.BtoS = _btos
-                    }else{
+                    } else {
                         _tradeCalcData.StoB = _btos
                         _tradeCalcData.BtoS = close;
                     }
@@ -741,7 +737,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
 
             }
 
-           updatePageTradeLite({
+            updatePageTradeLite({
                 market,
                 calcTradeParams: {
                     ...calcTradeParams,
@@ -749,7 +745,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
                     takerRate: takerRate ? takerRate : 0,
                 } as any,
                 priceImpactObj,
-                lastStepAt:type,
+                lastStepAt: type,
                 feeBips, totalFee, takerRate, sellMinAmtInfo: sellMinAmtInfo as any, buyMinAmtInfo: buyMinAmtInfo as any
             })
             //setOutput(calcTradeParams)
@@ -785,12 +781,12 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
                 break
             case SwapType.EXCHANGE_CLICK:
                 const {close} = pageTradeLite;
-                let btos:string = '0';
-                if(close){
+                let btos: string = '0';
+                if (close) {
                     // @ts-ignore
                     const [, _coinA] = market.match(/(\w+)-(\w+)/i)
-                    btos = getValuePrecisionThousand(1/Number(close.replace(',','')),
-                        tokenMap[ _coinA ].precision, tokenMap[ _coinA ].precision, tokenMap[ _coinA ].precision,true);// .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
+                    btos = getValuePrecisionThousand(1 / Number(close.replace(',', '')),
+                        tokenMap[ _coinA ].precision, tokenMap[ _coinA ].precision, tokenMap[ _coinA ].precision, true);// .toFixed(tokenMap[idIndex[poolATokenVol.tokenId]].precision))
 
                 }
                 const _tradeCalcData = {
@@ -799,12 +795,12 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
                     coinBuy: tradeCalcData.coinSell,
                     sellCoinInfoMap: tradeCalcData.buyCoinInfoMap,
                     buyCoinInfoMap: tradeCalcData.sellCoinInfoMap,
-                    StoB: market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`? close : btos,
-                    BtoS: market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`? btos : close,
+                    StoB: market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` ? close : btos,
+                    BtoS: market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` ? btos : close,
                     priceImpact: undefined,
                     priceImpactColor: 'inherit',
                     minimumReceived: undefined,
-                    fee:undefined,
+                    fee: undefined,
                 }
 
                 myLog('Exchange,tradeCalcData', tradeCalcData);
@@ -821,7 +817,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}:{path:string}
         }
 
     }
-    
+
     return {
         toastOpen,
         closeToast,

@@ -1,31 +1,24 @@
-import { usePairMatch } from '../../hooks/common/usePairMatch';
-import { useAmount } from '../../stores/amount';
-import { useAccount } from '../../stores/account';
-import { useToast } from '../../hooks/common/useToast';
-import { useTokenMap } from '../../stores/token';
-import { useAmmMap } from '../../stores/Amm/AmmMap';
-import { useSystem } from '../../stores/system';
-import { useTranslation } from 'react-i18next';
+import { usePairMatch } from 'hooks/common/usePairMatch';
+import { useAmount } from 'stores/amount';
+import { useAccount } from 'stores/account';
+import { useTokenMap } from 'stores/token';
+
 import React from 'react';
 import {
     AccountStatus,
-    CoinInfo,
-    CoinMap, IBData,
-    MarketType,
-    myLog,
-    SagaStatus, TradeCalcData,
+    CoinMap,
+    MarketType, PrecisionTree,
+    SagaStatus,
     WalletMap
 } from '@loopring-web/common-resources';
 
-import { usePageTradePro } from '../../stores/router';
-import { marketInitCheck, swapDependAsync } from '../SwapPage/help';
-import { makeMarketArray, makeWalletLayer2 } from '../../hooks/help';
+import { usePageTradePro } from 'stores/router';
+import { marketInitCheck } from '../SwapPage/help';
+import { makeWalletLayer2 } from 'hooks/help';
 import * as sdk from 'loopring-sdk';
-import { useWalletLayer2 } from '../../stores/walletLayer2';
+import { useWalletLayer2 } from 'stores/walletLayer2';
 
 import { useProSocket, useSocketProService } from './proService';
-import { LoopringAPI } from '../../api_wrapper';
-import { RawDataTradeItem } from '@loopring-web/component-lib';
 
 
 export const usePro = <C extends { [ key: string ]: any }>():{
@@ -102,9 +95,29 @@ export const usePro = <C extends { [ key: string ]: any }>():{
             getAmount({market})
         }
         if(market){
+            resetTradeCalcData(undefined, market)
+            precisionList()
+            // precisionList()
         }
     }, [market])
 
+    const precisionList = React.useCallback(() => {
+        const precisionForPrice = marketMap[ market ].precisionForPrice;
+        const orderbookAggLevels = marketMap[ market ].orderbookAggLevels;
+        let list: { value: number,label:string }[] = [];
+        for (let i = 0; i < orderbookAggLevels; i++) {
+            if(PrecisionTree[ precisionForPrice - i ]){
+                list.push({value: precisionForPrice - i,label:PrecisionTree[ precisionForPrice - i ].toString()})
+            }
+
+        }
+        updatePageTradePro({market, precisionLevels: list, depthLevel:precisionForPrice})
+
+
+
+        // return list
+
+    }, [market])
 
 
     const resetTradeCalcData = React.useCallback((_tradeData, _market) => {

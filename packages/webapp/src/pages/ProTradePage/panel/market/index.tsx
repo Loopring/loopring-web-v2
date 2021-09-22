@@ -10,7 +10,7 @@ import {
     EmptyValueTag,
     getValuePrecisionThousand,
     LoadingIcon,
-    MarketType,
+    MarketType, PrecisionTree,
     PriceTag,
     UpColor,
     UpIcon
@@ -29,20 +29,6 @@ enum TabIndex {
     trades = 'trades'
 }
 
-const Precision = {
-    1: 0.1,
-    2: 0.01,
-    3: 0.001,
-    4: 0.0001,
-    5: 0.00001,
-    6: 0.000001,
-    7: 0.0000001,
-    8: 0.00000001,
-    9: 0.000000001,
-    10: 0.0000000001,
-    11: 0.00000000001,
-    12: 0.000000000001
-}
 
 
 enum DepthShowType {
@@ -104,9 +90,9 @@ export const MarketView = withTranslation('common')(({
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const [tabIndex, setTabIndex] = React.useState<TabIndex>(TabIndex.orderbook);
-    const {pageTradePro} = usePageTradePro();
+    const {pageTradePro,updatePageTradePro} = usePageTradePro();
 
-    const {tickerMap, depth} = pageTradePro;
+    // const {tickerMap, depth, precisionLevels, market: _market, depthLevel} = pageTradePro;
     const {marketMap, tokenMap} = useTokenMap();
     const {upColor, currency} = useSettings();
     const {tokenPrices} = useTokenPrices();
@@ -118,7 +104,7 @@ export const MarketView = withTranslation('common')(({
         asks: [],
         bids: []
     });
-    const [level, setLevel] = React.useState<string>('0.01');
+    const [level, setLevel] = React.useState<number>(  pageTradePro.depthLevel??marketMap[market].precisionForPrice);
     const [depthType, setDepthType] = React.useState<DepthShowType>(DepthShowType.half);
     const handleOnDepthTypeChange = React.useCallback((event: React.MouseEvent<HTMLElement> | any, newValue) => {
         setDepthType(newValue);
@@ -127,14 +113,14 @@ export const MarketView = withTranslation('common')(({
     }, [level])
 
     const handleOnLevelChange = React.useCallback((event: React.ChangeEvent<{ value: string }>) => {
-
-        setLevel(event.target?.value);
+        setLevel(Number(event.target?.value));
+        updatePageTradePro({market,depthLevel:Number(event.target?.value)})
         //TODO: change table
         // rebuildList()
     }, [])
     const rebuildList = React.useCallback(() => {
-
-        if (depth) {
+        const depth =  pageTradePro.depth;
+        if (depth && (depth.bids.length || depth.asks.length)) {
             const baseDecimal = tokenMap[ baseSymbol ]?.decimals;
             const quoteDecimal = tokenMap[ baseSymbol ]?.decimals;
             const precisionForPrice = marketMap[ market ].precisionForPrice;
@@ -148,18 +134,19 @@ export const MarketView = withTranslation('common')(({
             const viewData = depth2ViewData({depth, countAsk, countBid, baseDecimal, quoteDecimal, precisionForPrice})
             setDepthViewData(viewData);
         }
-    }, [depth, depthType, rowLength])
+    }, [pageTradePro, depthType, rowLength])
     const middlePrice = React.useMemo(() => {
-
-        const {close} = tickerMap ? tickerMap[ market ] : {close: undefined};
+        const {ticker, depth} = pageTradePro;
+        let close = undefined;
         let up: 'up' | 'down' | '' = '';
         let priceColor = '';
         let value = '';
-        if (close && depth && depth.mid_price) {
+        if ( ticker &&  depth && depth.mid_price && depth.symbol === market) {
+            close = ticker.close;
             if (depth.mid_price === close) {
                 priceColor = '';
                 up = '';
-            } else if (depth.mid_price > close) {
+            } else if (depth.mid_price < close) {
                 priceColor = (upColor == UpColor.green ? 'var(--color-success)' : 'var(--color-error)');
                 up = 'up'
             } else {
@@ -172,7 +159,7 @@ export const MarketView = withTranslation('common')(({
                 + getValuePrecisionThousand(close * quotePrice / forex, undefined, undefined, undefined, true, {isFait: true})
 
         }
-
+        
         return <Typography color={'var(--color-text-third)'} variant={'body2'} component={'p'} display={'inline-flex'}
                            textAlign={'center'} alignItems={'center'}>
             {close ? <>
@@ -186,7 +173,7 @@ export const MarketView = withTranslation('common')(({
             }
 
         </Typography>
-    }, [tickerMap, depth?.mid_price])
+    }, [ pageTradePro, market])
     const toggleData = React.useMemo(() => {
         return [
             {
@@ -211,23 +198,14 @@ export const MarketView = withTranslation('common')(({
                 key: DepthShowType.asks,
             }]
     }, [depthType])
-    const precisionListPrice = React.useMemo(() => {
-        const precisionForPrice = marketMap[ market ].precisionForPrice;
-        const orderbookAggLevels = marketMap[ market ].orderbookAggLevels;
-        let list: { value: string }[] = [];
-        for (let i = 0; i < orderbookAggLevels; i++) {
-            list.push({value: Precision[ precisionForPrice - i ]})
-        }
-
-
-        return list
-
-    }, [market])
 
 
     React.useEffect(() => {
-        rebuildList()
-    }, [depth, level, depthType, rowLength])
+        if(pageTradePro.depth?.symbol === market){
+            rebuildList()
+        }
+
+    }, [pageTradePro.depth, depthType, rowLength])
     return <>
         <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'} height={'100%'}>
             <Box component={'header'} width={'100%'}>
@@ -256,13 +234,13 @@ export const MarketView = withTranslation('common')(({
                         onChange={handleOnLevelChange}
                         inputProps={{IconComponent: DropDownIcon}}
                     >
-                        {precisionListPrice.map(({value}) => <MenuItem key={value}
-                                                                              value={value}>{value}</MenuItem>)}
+                        {pageTradePro.precisionLevels && pageTradePro.precisionLevels.map(({value,label}) => <MenuItem key={value}
+                                                                              value={value}>{label}</MenuItem>)}
 
                     </TextField>
                 </MarketToolbar>
 
-                {depth && tickerMap && tokenMap && marketMap && market == pageTradePro.market ?
+                { pageTradePro.ticker  && pageTradePro.depth?.symbol  === pageTradePro.market ?
                     <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'} paddingX={2}>
                         <Box paddingTop={1 / 2}><DepthTitle marketInfo={marketMap[ market ]}/></Box>
                         <DepthBlock marketInfo={marketMap[ market ]}

@@ -18,9 +18,10 @@ import * as sdk from 'loopring-sdk';
 import { LoopringAPI } from 'api_wrapper';
 import { swapDependAsync } from '../SwapPage/help';
 import { useAmmMap } from 'stores/Amm/AmmMap';
-import { makeMarketArray, makeTickerMap } from 'hooks/help';
+import { makeMarketArray } from 'hooks/help';
 import { RawDataTradeItem } from '@loopring-web/component-lib';
 import { tradeService } from 'services/socket/services/tradeService';
+import { useTicker } from '../../stores/ticker';
 const TRADE_ARRAY_MAX_LENGTH  = 50;
 
 /**
@@ -114,7 +115,7 @@ export const useSocketProService = ({
                 const tickerMap = value.tickerMap;
                 if(tickerMap.market === market){
                     // myLog('socket:tickMap',tickerMap)
-                    store.dispatch(updatePageTradePro( {market,tickMap:tickerMap}))
+                    store.dispatch(updatePageTradePro( {market,ticker:tickerMap[market]}))
                 }
             }
             // @ts-ignore
@@ -185,6 +186,7 @@ export  const useProSocket = () => {
     const {account, status:accountStatus} = useAccount();
     const {marketArray,marketMap} = useTokenMap();
     const {ammMap} = useAmmMap();
+    const {tickerMap} = useTicker()
 
     const {pageTradePro,updatePageTradePro,__API_REFRESH__} = usePageTradePro();
     const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
@@ -207,17 +209,20 @@ export  const useProSocket = () => {
     }, [ nodeTimer])
     const getDependencyData = React.useCallback(async () => {
         const { market} = pageTradePro
-        if (market && ammMap && LoopringAPI.exchangeAPI) {
+        if (market && ammMap && pageTradePro.depthLevel &&  LoopringAPI.exchangeAPI) {
             try {
-                const {depth, ammPoolSnapshot, tickMap} = await swapDependAsync(market,pageTradePro.depthLevel,50);
-                const tickerMap  = makeTickerMap({tickerMap: tickMap})
-                updatePageTradePro({market, depth, ammPoolSnapshot, tickerMap})
+
+                const {depth, ammPoolSnapshot} = await swapDependAsync(market, marketMap[market].precisionForPrice - Number(pageTradePro.depthLevel),50);
+                // const tickerMap  = makeTickerMap({tickerMap: tickMap})
+                const {tickerMap} = store.getState().tickerMap
+                // myLog('store.getState().tickerMap',tickerMap[market]);
+                updatePageTradePro({market, depth, ammPoolSnapshot, ticker:tickerMap[market]})
             } catch (error) {
 
             }
         }
 
-    }, [pageTradePro,ammMap]);
+    }, [pageTradePro,ammMap,tickerMap]);
     const getMarketDepData = React.useCallback(async () => {
         const { market} = pageTradePro
         if (LoopringAPI.exchangeAPI && market) {
@@ -255,7 +260,7 @@ export  const useProSocket = () => {
                 [ sdk.WsTopicType.ammpool ]:[ ammMap['AMM-'+pageTradePro.market].address],
                 [ sdk.WsTopicType.ticker ]:[pageTradePro.market as string],
                 [ sdk.WsTopicType.orderbook ]: {markets:[pageTradePro.market],
-                    level:pageTradePro.depthLevel,
+                    level: marketMap[pageTradePro.market].precisionForPrice - Number(pageTradePro.depthLevel),
                     count: 50,
                     snapshot: true
                 },

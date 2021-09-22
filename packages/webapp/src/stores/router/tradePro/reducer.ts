@@ -30,7 +30,9 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
             const {
                 market,
                 depth,
-                tickerMap,
+                precisionLevels,
+                depthLevel,
+                ticker,
                 tradeCalcProData,
                 ammPoolSnapshot,
                 calcTradeParams,
@@ -50,7 +52,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     tradeCalcProData:tradeCalcProData?tradeCalcProData:{},
                     calcTradeParams,
                     depth,
-                    tickerMap,
+                    ticker,
                     ammPoolSnapshot,
                     priceImpactObj,
                     tradeChannel: calcTradeParams ? (calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined,
@@ -61,10 +63,20 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     baseMinAmtInfo,
                     quoteMinAmtInfo,
                     tradeArray,
+                    precisionLevels,
+                    depthLevel,
                     lastStepAt:undefined,
                 }
 
             } else {
+                if(precisionLevels){
+                    state.pageTradePro.precisionLevels = precisionLevels
+                }
+
+                if(depthLevel){
+                    state.pageTradePro.depthLevel = depthLevel
+                }
+
                 if(lastStepAt){
                     state.pageTradePro.lastStepAt = lastStepAt;
                 }
@@ -76,8 +88,8 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     state.pageTradePro.depth = depth;
                 }
 
-                if (tickerMap) {
-                    state.pageTradePro.tickerMap = tickerMap;
+                if (ticker) {
+                    state.pageTradePro.ticker = ticker;
                 }
                 if (ammPoolSnapshot) {
                     state.pageTradePro.ammPoolSnapshot = ammPoolSnapshot;

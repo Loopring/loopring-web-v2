@@ -1,7 +1,7 @@
 import * as sdk from 'loopring-sdk';
 import { TradeChannel,OrderInfo } from 'loopring-sdk';
 import { MarketType, TradeCalcProData } from '@loopring-web/common-resources';
-import { TickerMap } from '../../ticker';
+import { Ticker, TickerMap } from '../../ticker';
 import { RawDataTradeItem } from '@loopring-web/component-lib';
 
 export type PageTradePro<C> = {
@@ -32,9 +32,10 @@ export type PageTradePro<C> = {
         priceImpactColor: string,
         priceLevel: number | string,
     },
+    precisionLevels?: { value: number,label:string }[],
     depth?: sdk.DepthData | undefined,
-    depthLevel?: number,
-    tickerMap?: TickerMap<any> | undefined,
+    depthLevel?: number ,
+    ticker?: Ticker| undefined,
     ammPoolSnapshot?: sdk.AmmPoolSnapshot | undefined,
     tradeChannel?: undefined | TradeChannel
     orderType?: undefined | sdk.OrderType
