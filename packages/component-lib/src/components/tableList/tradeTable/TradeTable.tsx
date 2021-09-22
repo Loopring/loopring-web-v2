@@ -61,6 +61,7 @@ export type TradeTableProps = {
     rowHeight?: number;
     headerRowHeight?: number;
     isL2Trade?: boolean;
+    marketMap?: any;
 }
 
 // enum TableType {
@@ -304,6 +305,7 @@ export const TradeTable = withTranslation('tables')(({
                                                          headerRowHeight = 44,
                                                          tokenMap = undefined,
                                                          isL2Trade = false,
+                                                         marketMap = undefined,
                                                          ...rest
                                                      }: WithTranslation & TradeTableProps & { tokenMap?: any }) => {
     const [filterType, setFilterType] = React.useState(FilterTradeTypes.allTypes)
@@ -399,6 +401,7 @@ export const TradeTable = withTranslation('tables')(({
                     filterDate,
                     filterPair,
                     handleReset,
+                    marketMap,
                 }} />
             </TableFilterStyled>
         )}
