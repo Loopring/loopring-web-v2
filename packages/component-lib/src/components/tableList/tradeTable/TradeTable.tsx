@@ -13,8 +13,19 @@ import { useDeepCompareEffect } from 'react-use';
 import { Row } from '../poolsTable/Interface';
 import { DateRange } from '@mui/lab'
 
+export enum TradeItemRole {
+    maker = 'Maker',
+    taker = 'Taker',
+}
+
+export enum TradeItemCounterparty {
+    orderbook = 'Orderbook',
+    pool = 'Pool',
+}
+
 export type RawDataTradeItem = {
-    side: keyof typeof TradeTypes;
+    // side: keyof typeof TradeTypes;
+    role: TradeItemRole;
     amount: {
         from: {
             key: string;
@@ -25,10 +36,11 @@ export type RawDataTradeItem = {
             value: number | undefined;
         }
     };
+    counterParty: TradeItemCounterparty;
     price: {
         key: string
         value: number | undefined,
-    }
+    };
     // priceDollar: number;
     // priceYuan: number;
     fee: {
@@ -48,6 +60,7 @@ export type TradeTableProps = {
     currentheight?: number;
     rowHeight?: number;
     headerRowHeight?: number;
+    isL2Trade?: boolean;
 }
 
 // enum TableType {
@@ -62,7 +75,7 @@ const TableStyled = styled(Box)`
 
   .rdg {
     height: ${(props: any) => props.currentheight}px;
-    --template-columns: 300px 120px auto auto !important;
+    --template-columns: ${({tradeposition}: any) => tradeposition === 'swap' ? '300px 120px auto auto !important' : '150px 300px auto 120px auto auto !important'};
 
     .rdg-cell.action {
       display: flex;
@@ -80,93 +93,206 @@ const TableStyled = styled(Box)`
   }
 
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
-` as (props: { currentheight?:number } & BoxProps) => JSX.Element;
+` as any;
 
 const StyledSideCell: any = styled(Box)`
 `
 
-const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CNY', tokenMap: any): Column<RawDataTradeItem, unknown>[] => [
-    {
-        key: 'side',
-        name: t('labelTradeSide'),
-        formatter: ({row}) => {
-            // const tradeType = row[ 'side' ] === TradeTypes.Buy ? t('labelBuy') : t('labelSell')
-            const {from, to} = row[ 'amount' ]
-            const precisionFrom = tokenMap ? tokenMap[from.key]?.precision : undefined
-            const precisionTo = tokenMap ? tokenMap[to.key]?.precision : undefined
-            const fromValue = from.value ? getValuePrecisionThousand(from.value, precisionFrom, precisionFrom) : EmptyValueTag
-            const toValue = to.value ? getValuePrecisionThousand(to.value, precisionTo, precisionTo) : EmptyValueTag
-
-            return (
-                <Box className="rdg-cell-value">
-                    <StyledSideCell value={row[ 'side' ]}>
-                        {`${fromValue} ${from.key} \u2192 ${toValue} ${to.key}`}
-                    </StyledSideCell>
-                </Box>
-            )
-        }
-    },
-    // {
-    //     key: 'amount',
-    //     name: t('labelTradeAmount'),
-    //     formatter: ({row}) => {
-    //         const {from, to} = row[ 'amount' ]
-    //         const fromValue = from.value ? getThousandFormattedNumbers(Number(from.value)) : EmptyValueTag
-    //         const toValue = to.value ? getThousandFormattedNumbers(Number(to.value)) : EmptyValueTag
-    //         return (
-    //             <div className="rdg-cell-value">
-    //                 {`${fromValue} ${from.key} \u279E ${toValue} ${to.key}`}
-    //             </div>
-    //         )
-    //     }
-    // },
-    {
-        key: 'price',
-        name: t('labelTradePrice'),
-        headerCellClass: 'textAlignRight',
-        formatter: ({row}) => {
-            const {value} = row[ 'price' ]
-            const precision = row['precision'] || 6
-            const renderValue = value ? (getValuePrecisionThousand(value, undefined, undefined, precision, true, {isPrice: true})) : EmptyValueTag
-            return (
-                <Box className="rdg-cell-value textAlignRight">
-                    {renderValue}
-                    {/*{currency === Currency.dollar ?*/}
-                    {/*    PriceTag.Dollar + getThousandFormattedNumbers(priceDollar)*/}
-                    {/*    : PriceTag.Yuan + getThousandFormattedNumbers(priceYuan)}*/}
-                </Box>
-            )
-        }
-    },
-    {
-        key: 'fee',
-        name: t('labelTradeFee'),
-        headerCellClass: 'textAlignRight',
-        formatter: ({row}) => {
-            const {key, value} = row[ 'fee' ]
-            // myLog({value})
-            return (
-                <div className="rdg-cell-value textAlignRight">
-                    {`${value} ${key}`}
-                </div>
-            )
-        }
-    },
-    {
-        key: 'time',
-        name: t('labelTradeTime'),
-        headerCellClass: 'textAlignRight',
-        // minWidth: 400,
-        formatter: ({row}) => {
-            const time = moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
-            return (
-                <div className="rdg-cell-value textAlignRight">
-                    {time}
-                </div>
-            )
-        }
-    },
-]
+const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CNY', tokenMap: any, isL2Trade: boolean): Column<RawDataTradeItem, unknown>[] => {
+    if (isL2Trade === true) {
+        return [
+            {
+                key: 'role',
+                name: t('labelTradeRole'),
+                formatter: ({row}) => {
+                    const value = row['role']
+                    const renderValue = value === TradeItemRole.maker ? t('labelTradeRoleMaker') : t('labelTradeRoleTaker')
+                    return (
+                        <Box className="rdg-cell-value">
+                            {renderValue}
+                        </Box>
+                    )
+                }
+            },
+            {
+                key: 'side',
+                name: t('labelTradeSide'),
+                formatter: ({row}) => {
+                    // const tradeType = row[ 'side' ] === TradeTypes.Buy ? t('labelBuy') : t('labelSell')
+                    const {from, to} = row[ 'amount' ]
+                    const precisionFrom = tokenMap ? tokenMap[from.key]?.precision : undefined
+                    const precisionTo = tokenMap ? tokenMap[to.key]?.precision : undefined
+                    const fromValue = from.value ? getValuePrecisionThousand(from.value, precisionFrom, precisionFrom) : EmptyValueTag
+                    const toValue = to.value ? getValuePrecisionThousand(to.value, precisionTo, precisionTo) : EmptyValueTag
+        
+                    return (
+                        <Box className="rdg-cell-value">
+                            <StyledSideCell value={row[ 'side' ]}>
+                                {`${fromValue} ${from.key} \u2192 ${toValue} ${to.key}`}
+                            </StyledSideCell>
+                        </Box>
+                    )
+                }
+            },
+            {
+                key: 'counterparty',
+                name: t('labelTradeConterparty'),
+                formatter: ({row}) => {
+                    const value = row['counterParty']
+                    const renderValue = value === TradeItemCounterparty.orderbook ? t('labelTradeCounterpartyOrderbook') : t('labelTradeCounterpartyPool')
+                    return (
+                        <Box className="rdg-cell-value">
+                            {renderValue}
+                        </Box>
+                    )
+                }
+            },
+            // {
+            //     key: 'amount',
+            //     name: t('labelTradeAmount'),
+            //     formatter: ({row}) => {
+            //         const {from, to} = row[ 'amount' ]
+            //         const fromValue = from.value ? getThousandFormattedNumbers(Number(from.value)) : EmptyValueTag
+            //         const toValue = to.value ? getThousandFormattedNumbers(Number(to.value)) : EmptyValueTag
+            //         return (
+            //             <div className="rdg-cell-value">
+            //                 {`${fromValue} ${from.key} \u279E ${toValue} ${to.key}`}
+            //             </div>
+            //         )
+            //     }
+            // },
+            {
+                key: 'price',
+                name: t('labelTradePrice'),
+                headerCellClass: 'textAlignRight',
+                formatter: ({row}) => {
+                    const {value} = row[ 'price' ]
+                    const precision = row['precision'] || 6
+                    const renderValue = value ? (getValuePrecisionThousand(value, undefined, undefined, precision, true, {isPrice: true})) : EmptyValueTag
+                    return (
+                        <Box className="rdg-cell-value textAlignRight">
+                            {renderValue}
+                            {/*{currency === Currency.dollar ?*/}
+                            {/*    PriceTag.Dollar + getThousandFormattedNumbers(priceDollar)*/}
+                            {/*    : PriceTag.Yuan + getThousandFormattedNumbers(priceYuan)}*/}
+                        </Box>
+                    )
+                }
+            },
+            {
+                key: 'fee',
+                name: t('labelTradeFee'),
+                headerCellClass: 'textAlignRight',
+                formatter: ({row}) => {
+                    const {key, value} = row[ 'fee' ]
+                    // myLog({value})
+                    return (
+                        <div className="rdg-cell-value textAlignRight">
+                            {`${value} ${key}`}
+                        </div>
+                    )
+                }
+            },
+            {
+                key: 'time',
+                name: t('labelTradeTime'),
+                headerCellClass: 'textAlignRight',
+                // minWidth: 400,
+                formatter: ({row}) => {
+                    const time = moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
+                    return (
+                        <div className="rdg-cell-value textAlignRight">
+                            {time}
+                        </div>
+                    )
+                }
+            },
+        ]
+    } else {
+        return [
+            {
+                key: 'side',
+                name: t('labelTradeSide'),
+                formatter: ({row}) => {
+                    // const tradeType = row[ 'side' ] === TradeTypes.Buy ? t('labelBuy') : t('labelSell')
+                    const {from, to} = row[ 'amount' ]
+                    const precisionFrom = tokenMap ? tokenMap[from.key]?.precision : undefined
+                    const precisionTo = tokenMap ? tokenMap[to.key]?.precision : undefined
+                    const fromValue = from.value ? getValuePrecisionThousand(from.value, precisionFrom, precisionFrom) : EmptyValueTag
+                    const toValue = to.value ? getValuePrecisionThousand(to.value, precisionTo, precisionTo) : EmptyValueTag
+        
+                    return (
+                        <Box className="rdg-cell-value">
+                            <StyledSideCell value={row[ 'side' ]}>
+                                {`${fromValue} ${from.key} \u2192 ${toValue} ${to.key}`}
+                            </StyledSideCell>
+                        </Box>
+                    )
+                }
+            },
+            // {
+            //     key: 'amount',
+            //     name: t('labelTradeAmount'),
+            //     formatter: ({row}) => {
+            //         const {from, to} = row[ 'amount' ]
+            //         const fromValue = from.value ? getThousandFormattedNumbers(Number(from.value)) : EmptyValueTag
+            //         const toValue = to.value ? getThousandFormattedNumbers(Number(to.value)) : EmptyValueTag
+            //         return (
+            //             <div className="rdg-cell-value">
+            //                 {`${fromValue} ${from.key} \u279E ${toValue} ${to.key}`}
+            //             </div>
+            //         )
+            //     }
+            // },
+            {
+                key: 'price',
+                name: t('labelTradePrice'),
+                headerCellClass: 'textAlignRight',
+                formatter: ({row}) => {
+                    const {value} = row[ 'price' ]
+                    const precision = row['precision'] || 6
+                    const renderValue = value ? (getValuePrecisionThousand(value, undefined, undefined, precision, true, {isPrice: true})) : EmptyValueTag
+                    return (
+                        <Box className="rdg-cell-value textAlignRight">
+                            {renderValue}
+                            {/*{currency === Currency.dollar ?*/}
+                            {/*    PriceTag.Dollar + getThousandFormattedNumbers(priceDollar)*/}
+                            {/*    : PriceTag.Yuan + getThousandFormattedNumbers(priceYuan)}*/}
+                        </Box>
+                    )
+                }
+            },
+            {
+                key: 'fee',
+                name: t('labelTradeFee'),
+                headerCellClass: 'textAlignRight',
+                formatter: ({row}) => {
+                    const {key, value} = row[ 'fee' ]
+                    // myLog({value})
+                    return (
+                        <div className="rdg-cell-value textAlignRight">
+                            {`${value} ${key}`}
+                        </div>
+                    )
+                }
+            },
+            {
+                key: 'time',
+                name: t('labelTradeTime'),
+                headerCellClass: 'textAlignRight',
+                // minWidth: 400,
+                formatter: ({row}) => {
+                    const time = moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
+                    return (
+                        <div className="rdg-cell-value textAlignRight">
+                            {time}
+                        </div>
+                    )
+                }
+            },
+        ]
+    }
+} 
 
 export const TradeTable = withTranslation('tables')(({
                                                          t,
@@ -177,6 +303,7 @@ export const TradeTable = withTranslation('tables')(({
                                                          rowHeight = 44,
                                                          headerRowHeight = 44,
                                                          tokenMap = undefined,
+                                                         isL2Trade = false,
                                                          ...rest
                                                      }: WithTranslation & TradeTableProps & { tokenMap?: any }) => {
     const [filterType, setFilterType] = React.useState(FilterTradeTypes.allTypes)
@@ -186,7 +313,7 @@ export const TradeTable = withTranslation('tables')(({
     const [totalData, setTotalData] = React.useState<RawDataTradeItem[]>(rawData)
     const {currency} = useSettings();
     const defaultArgs: any = {
-        columnMode: getColumnModeAssets(t, currency, tokenMap).filter(o => !o.hidden),
+        columnMode: getColumnModeAssets(t, currency, tokenMap, isL2Trade).filter(o => !o.hidden),
         generateRows: (rawData: any) => rawData,
         generateColumns: ({columnsRaw}: any) => columnsRaw as Column<Row<any>, unknown>[],
         style: {
@@ -212,7 +339,8 @@ export const TradeTable = withTranslation('tables')(({
                                           }) => {
         let resultData = rawData ? rawData : []
         if (currFilterType !== FilterTradeTypes.allTypes) {
-            resultData = resultData.filter(o => o.side === (currFilterType === TradeTypes.Buy ? TradeTypes.Buy : TradeTypes.Sell))
+            // resultData = resultData.filter(o => o.side === (currFilterType === TradeTypes.Buy ? TradeTypes.Buy : TradeTypes.Sell))
+            resultData = resultData.filter(o => o.role === (currFilterType === TradeItemRole.maker ? TradeItemRole.maker : TradeItemRole.taker))
         }
         if (currFilterDate[ 0 ] && currFilterDate[ 1 ]) {
             const startTime = Number(moment(currFilterDate[ 0 ]).format('x'))
@@ -259,8 +387,9 @@ export const TradeTable = withTranslation('tables')(({
             currFilterPair: 'all'
         })
     }
+    const tradeposition = isL2Trade === true ? 'layer2' : 'swap'
 
-    return <TableStyled currentheight={currentheight} >
+    return <TableStyled currentheight={currentheight} tradeposition={tradeposition}>
         {showFilter && (
             <TableFilterStyled>
                 <Filter {...{
