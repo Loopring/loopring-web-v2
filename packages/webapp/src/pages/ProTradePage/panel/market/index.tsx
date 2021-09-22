@@ -1,6 +1,7 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { DepthBlock, DepthTitle, DepthType, ToggleButtonGroup, useSettings } from '@loopring-web/component-lib';
 import {
+    BreakPoint,
     Currency,
     depth2ViewData,
     DepthFIcon,
@@ -82,9 +83,11 @@ const MarketToolbar = styled(Box)`
 
 export const MarketView = withTranslation('common')(({
                                                          rowLength,
+                                                         breakpoint,
                                                          t, market, ...rest
                                                      }: {
     market: MarketType,
+    breakpoint:BreakPoint
     rowLength:number
 } & WithTranslation) => {
     // @ts-ignore
@@ -117,7 +120,7 @@ export const MarketView = withTranslation('common')(({
         updatePageTradePro({market,depthLevel:Number(event.target?.value)})
         //TODO: change table
         // rebuildList()
-    }, [])
+    }, [market])
     const rebuildList = React.useCallback(() => {
         const depth =  pageTradePro.depth;
         if (depth && (depth.bids.length || depth.asks.length)) {
