@@ -33,9 +33,8 @@ import { useToast } from 'hooks/common/useToast';
 import { accountStaticCallBack, btnClickMap, btnLabel, makeMarketArray, makeWalletLayer2, } from 'hooks/help';
 import { LoopringAPI } from 'api_wrapper';
 import * as _ from 'lodash'
-// import { DAYS } from '../../defs/common_defs';
 import { getTimestampDaysLater } from '../../utils/dt_tools';
-import { myLog } from '@loopring-web/common-resources/static-resources/src/utils/log_tools';
+import { myLog } from '@loopring-web/common-resources';
 import { calcPriceByAmmTickMapDepth, marketInitCheck, reCalcStoB, swapDependAsync } from './help';
 import { useTicker } from '../../stores/ticker';
 import store from '../../stores';
