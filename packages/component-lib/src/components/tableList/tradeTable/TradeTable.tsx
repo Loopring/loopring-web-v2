@@ -12,6 +12,7 @@ import { useSettings } from '../../../stores';
 import { useDeepCompareEffect } from 'react-use';
 import { Row } from '../poolsTable/Interface';
 import { DateRange } from '@mui/lab'
+import { GetUserTradesRequest } from 'loopring-sdk'
 
 export enum TradeItemRole {
     maker = 'Maker',
@@ -52,6 +53,8 @@ export type RawDataTradeItem = {
 
 export type TradeTableProps = {
     rawData: RawDataTradeItem[];
+    // getUserTradeList?: (param: Omit<GetUserTradesRequest, 'accountId'>) => void;
+    getUserTradeList?: (param: any) => void;
     pagination?: {
         pageSize: number,
         total: number,
@@ -62,6 +65,7 @@ export type TradeTableProps = {
     headerRowHeight?: number;
     isL2Trade?: boolean;
     marketMap?: any;
+    showLoading?: boolean;
 }
 
 // enum TableType {
@@ -306,13 +310,15 @@ export const TradeTable = withTranslation('tables')(({
                                                          tokenMap = undefined,
                                                          isL2Trade = false,
                                                          marketMap = undefined,
+                                                         getUserTradeList,
+                                                         showLoading = false,
                                                          ...rest
                                                      }: WithTranslation & TradeTableProps & { tokenMap?: any }) => {
     const [filterType, setFilterType] = React.useState(FilterTradeTypes.allTypes)
     const [filterDate, setFilterDate] = React.useState<DateRange<string | Date>>([null, null])
     const [filterPair, setFilterPair] = React.useState('all')
     const [page, setPage] = React.useState(1)
-    const [totalData, setTotalData] = React.useState<RawDataTradeItem[]>(rawData)
+    // const [totalData, setTotalData] = React.useState<RawDataTradeItem[]>(rawData)
     const {currency} = useSettings();
     const defaultArgs: any = {
         columnMode: getColumnModeAssets(t, currency, tokenMap, isL2Trade).filter(o => !o.hidden),
@@ -322,16 +328,16 @@ export const TradeTable = withTranslation('tables')(({
             backgroundColor: ({colorBase}: any) => `${colorBase.box}`
         }
     }
-    useDeepCompareEffect(() => {
-        setTotalData(rawData);
-    }, [rawData])
+    // useDeepCompareEffect(() => {
+    //     setTotalData(rawData);
+    // }, [rawData])
 
     const pageSize = pagination ? pagination.pageSize : 10;
 
-    const getRenderData = React.useCallback(() => pagination
-            ? totalData.slice((page - 1) * pageSize, page * pageSize)
-            : totalData
-        , [page, pageSize, pagination, totalData])
+    // const getRenderData = React.useCallback(() => pagination
+    //         ? totalData.slice((page - 1) * pageSize, page * pageSize)
+    //         : totalData
+    //     , [page, pageSize, pagination, totalData])
 
     const updateData = React.useCallback(({
                                               TableType,
@@ -339,27 +345,51 @@ export const TradeTable = withTranslation('tables')(({
                                               currFilterDate = filterDate,
                                               currFilterPair = filterPair
                                           }) => {
-        let resultData = rawData ? rawData : []
-        if (currFilterType !== FilterTradeTypes.allTypes) {
-            // resultData = resultData.filter(o => o.side === (currFilterType === TradeTypes.Buy ? TradeTypes.Buy : TradeTypes.Sell))
-            resultData = resultData.filter(o => o.role === (currFilterType === TradeItemRole.maker ? TradeItemRole.maker : TradeItemRole.taker))
-        }
-        if (currFilterDate[ 0 ] && currFilterDate[ 1 ]) {
-            const startTime = Number(moment(currFilterDate[ 0 ]).format('x'))
-            const endTime = Number(moment(currFilterDate[ 1 ]).format('x'))
-            resultData = resultData.filter(o => o.time < endTime && o.time > startTime)
-        }
-        if (currFilterPair !== 'all') {
-            resultData = resultData.filter(o => {
-                const pair = `${o.amount.from.key} - ${o.amount.to.key}`
-                return pair === currFilterPair
-            })
-        }
+        // let resultData = rawData ? rawData : []
+
+        // if (currFilterType !== FilterTradeTypes.allTypes) {
+        //     // resultData = resultData.filter(o => o.side === (currFilterType === TradeTypes.Buy ? TradeTypes.Buy : TradeTypes.Sell))
+        //     resultData = resultData.filter(o => o.role === (currFilterType === TradeItemRole.maker ? TradeItemRole.maker : TradeItemRole.taker))
+        // }
+        // if (currFilterDate[ 0 ] && currFilterDate[ 1 ]) {
+        //     const startTime = Number(moment(currFilterDate[ 0 ]).format('x'))
+        //     const endTime = Number(moment(currFilterDate[ 1 ]).format('x'))
+        //     resultData = resultData.filter(o => o.time < endTime && o.time > startTime)
+        // }
+        // if (currFilterPair !== 'all') {
+        //     resultData = resultData.filter(o => {
+        //         const pair = `${o.amount.from.key} - ${o.amount.to.key}`
+        //         return pair === currFilterPair
+        //     })
+        // }
         if (TableType === 'filter') {
             setPage(1)
         }
-        setTotalData(resultData)
-    }, [rawData, filterDate, filterType, filterPair])
+        const market = currFilterPair === 'all'
+            ? '' 
+            : currFilterPair.replace(/\s+/g,"")
+        // const formattedType = currFilterType.toUpperCase()
+        // const types = currFilterType === TradeItemRole.allTypes 
+        //     ? 'maker,taker'
+        //     : formattedType === TradeItemRole.deposit
+        //         ? 'deposit'
+        //         : formattedType === TradeItemRole.transfer
+        //             ? 'transfer'
+        //             : 'offchain_withdrawal'
+        // const start = Number(moment(currFilterDate[ 0 ]).format('x'))
+        // const end = Number(moment(currFilterDate[ 1 ]).format('x'))
+        if (getUserTradeList) {
+            getUserTradeList({
+                market,
+                offset: (page - 1) * pageSize,
+                limit: pageSize,
+                // fillTypes,
+                // start,
+                // end,
+            })
+        }
+        // setTotalData(resultData)
+    }, [rawData, filterDate, filterType, filterPair, getUserTradeList, page, pageSize])
 
     const handleFilterChange = React.useCallback(({type = filterType, date = filterDate, pair = filterPair}) => {
         setFilterType(type)
@@ -405,14 +435,15 @@ export const TradeTable = withTranslation('tables')(({
                 }} />
             </TableFilterStyled>
         )}
-        <Table className={'scrollable'}   {...{
+        <Table className={'scrollable'} {...{
             ...defaultArgs,
             rowHeight,
             headerRowHeight,
-            ...rest, rawData: getRenderData()
+            showloading: showLoading,
+            ...rest, rawData: rawData,
         }}/>
         {pagination && (
-            <TablePagination height={rowHeight} page={page} pageSize={pageSize} total={totalData.length} onPageChange={handlePageChange}/>
+            <TablePagination height={rowHeight} page={page} pageSize={pageSize} total={pagination.total} onPageChange={handlePageChange}/>
         )}
     </TableStyled>
 })
