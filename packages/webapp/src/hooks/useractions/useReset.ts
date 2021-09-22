@@ -16,11 +16,16 @@ export const useReset = <T>(): {
 
     const { tokenMap } = useTokenMap()
 
-    const { chargeFeeList, } = useChargeFees('ETH', sdk.OffchainFeeReqType.UPDATE_ACCOUNT, tokenMap)
+    const { modals: { isShowResetAccount, }, setShowResetAccount, } = useOpenModals()
+
+    const { chargeFeeList, } = useChargeFees({
+        tokenSymbol: 'ETH', 
+        requestType: sdk.OffchainFeeReqType.UPDATE_ACCOUNT, 
+        tokenMap, 
+        needRefresh: isShowResetAccount.isShow, 
+    })
 
     const { goUpdateAccount, } = useUpdateAccout()
-
-    const { setShowResetAccount, } = useOpenModals()
 
     const onResetClick = React.useCallback(() => {
         setShowResetAccount({ isShow: false, })

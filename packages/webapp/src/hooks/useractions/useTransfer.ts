@@ -51,7 +51,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     const { transferValue, updateTransferData, resetTransferData, } = useModalData()
 
     const [walletMap, setWalletMap] = React.useState(makeWalletLayer2(true).walletMap ?? {} as WalletMap<R>);
-    const { chargeFeeList } = useChargeFees(transferValue.belong, sdk.OffchainFeeReqType.TRANSFER, tokenMap)
+    const { chargeFeeList } = useChargeFees({tokenSymbol: transferValue.belong, requestType: sdk.OffchainFeeReqType.TRANSFER, tokenMap})
 
     const [tranferFeeInfo, setTransferFeeInfo] = React.useState<FeeInfo>()
     const [isExceedMax, setIsExceedMax] = React.useState(false)
