@@ -16,6 +16,8 @@ import { useSocket } from 'stores/socket';
 import { useTicker } from 'stores/ticker';
 import { tickerService } from 'services/socket';
 import { WsTopicType } from 'loopring-sdk';
+import { makeTickView } from 'hooks/help';
+import { LoopringAPI } from 'api_wrapper';
 
 
 // import { tickerService } from 'services/tickerService';
@@ -101,7 +103,9 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
                 const rawData = Object.keys(_ammMap).map((ammKey: string) => {
                     const [_, coinA, coinB] = ammKey.split('-')
                     const realMarket = `${coinA}-${coinB}`
-
+                    const _tickerMap = tickerMap[realMarket].__rawTicker__
+                    const tickerFloat = makeTickView(_tickerMap ? _tickerMap : {})
+                    
                     if (coinMap) {
                         _ammMap[ ammKey ][ 'coinAInfo' ] = coinMap[ _ammMap[ ammKey ][ 'coinA' ] ];
                         _ammMap[ ammKey ][ 'coinBInfo' ] = coinMap[ _ammMap[ ammKey ][ 'coinB' ] ];
@@ -110,7 +114,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
                         ..._ammMap[ ammKey ],
                         tradeFloat: {
                             ..._ammMap[ ammKey ].tradtradeFloat,
-                            volume: tickerMap[realMarket].tickerFloat?.volume || 0
+                            volume: tickerFloat?.volume || 0
                         }
                     };
                 })

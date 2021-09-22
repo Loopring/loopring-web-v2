@@ -182,7 +182,7 @@ const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
                                     <Typography component={'span'}
                                                 style={{textTransform: 'capitalize'}}>{t('labelLiquidity')}</Typography>
                                     <Typography component={'span'}
-                                                style={{textTransform: 'uppercase'}}>{t('labelAPR')}</Typography>
+                                                style={{textTransform: 'uppercase'}}>{t('labelAPY')}</Typography>
                                 </Typography>
                                 <Typography component={'p'} color={'textPrimary'} display={'flex'}
                                             justifyContent={'space-between'} marginTop={1}>
