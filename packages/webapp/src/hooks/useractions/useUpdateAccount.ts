@@ -90,7 +90,7 @@ export function useUpdateAccout() {
                                 updateDepositHashWrapper({ wallet: account.accAddress, isHWAddr, })
                             }
 
-                            accountServices.sendAccountSigned({ accountId: accInfo.accountId, apiKey, eddsaKey, isReset, })
+                            accountServices.sendAccountSigned({ accountId: accInfo.accountId, nonce: accInfo.nonce, apiKey, eddsaKey, isReset, })
 
                         }
 
