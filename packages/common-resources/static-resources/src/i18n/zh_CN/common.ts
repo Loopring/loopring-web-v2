@@ -320,7 +320,7 @@ export default {
     labelDepthTotal: '总量',
 
     labelSwapCancelled: '交易被取消',
-    labelSucessfully: '成功',
+    labelSuccessfully: '成功',
     labelWarning: '警告',
     labelFailure: '失败',
     labelPrompt: '提示',
