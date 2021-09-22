@@ -27,7 +27,7 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
             const {
                 market,
                 depth,
-                tickerMap,
+                ticker,
                 ammPoolSnapshot,
                 tradePair,
                 quoteMinAmtInfo,
@@ -38,7 +38,8 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                 takerRate,
                 buyMinAmtInfo,
                 sellMinAmtInfo,
-                lastStepAt
+                lastStepAt,
+                close,
             } = action.payload;
             if (market !== state.pageTradeLite.market) {
                 state.pageTradeLite = {
@@ -46,7 +47,7 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                     tradePair,  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
                     calcTradeParams,
                     depth,
-                    tickerMap,
+                    ticker,
                     ammPoolSnapshot,
                     priceImpactObj,
                     tradeChannel: calcTradeParams ? (calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined,
@@ -58,9 +59,11 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                     buyMinAmtInfo,
                     sellMinAmtInfo,
                     lastStepAt:undefined,
+                    close,
                 }
 
             } else {
+
                 if(lastStepAt){
                     state.pageTradeLite.lastStepAt = lastStepAt;
                 }
@@ -71,9 +74,11 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                 if (depth) {
                     state.pageTradeLite.depth = depth;
                 }
-
-                if (tickerMap) {
-                    state.pageTradeLite.tickerMap = tickerMap;
+                if(close){
+                    state.pageTradeLite.close = close;
+                }
+                if (ticker) {
+                    state.pageTradeLite.ticker = ticker;
                 }
                 if (ammPoolSnapshot) {
                     state.pageTradeLite.ammPoolSnapshot = ammPoolSnapshot;

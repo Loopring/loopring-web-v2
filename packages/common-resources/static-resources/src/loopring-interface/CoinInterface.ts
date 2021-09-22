@@ -49,11 +49,11 @@ export type WalletMap<R, I = WalletCoin<R>> = {
 export type TradeCalcData<T> = {
     coinSell: keyof T, //name
     coinBuy: keyof T,
-    tokenA: sdk.TokenInfo,
-    tokenB: sdk.TokenInfo,
+    // tokenA: sdk.TokenInfo,
+    // tokenB: sdk.TokenInfo,
     StoB: string,
     BtoS: string,
-    marketPrecision: number,
+    // marketPrecision: number,
     coinInfoMap?: CoinMap<T, CoinInfo<T>>,
     sellCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
     buyCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
