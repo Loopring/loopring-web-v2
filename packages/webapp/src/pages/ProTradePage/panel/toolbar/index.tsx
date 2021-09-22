@@ -1,20 +1,25 @@
 import { withTranslation } from 'react-i18next';
-import { CoinInfo, MarketType, SagaStatus } from '@loopring-web/common-resources';
+import { CoinInfo, DropDownIcon, MarketType, SagaStatus } from '@loopring-web/common-resources';
 import { useTicker } from 'stores/ticker';
 import React from 'react';
 import { MarketBlockProps } from '@loopring-web/component-lib';
 import { useTokenMap } from 'stores/token';
+import { MenuItem, TextField } from '@mui/material';
+import { usePageTradePro } from '../../../../stores/router';
 
 export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: any }>({
-                                                                                          market
+                                                                                          market,
+                                                                                          handleOnMarketChange,
                                                                                           // ,marketTicker
                                                                                       }: {
     market: MarketType,
+    handleOnMarketChange:(newMarket:MarketType) => void,
     // marketTicker:  MarketBlockProps<C>
 }) => {
     const {tickerMap,status:tickerStatus} = useTicker();
     const [marketTicker,setMarketTicker] = React.useState<MarketBlockProps<C>|undefined>(undefined);
-    const {coinMap} = useTokenMap()
+    const {coinMap,marketArray} = useTokenMap();
+    // const {pageTradePro,updatePageTradePro} = usePageTradePro()
     React.useEffect(() => {
         if(tickerStatus === SagaStatus.UNSET) {
             setDefaultData();
@@ -32,6 +37,20 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
         }
 
     },[tickerMap,market])
+    const _handleOnMarketChange = React.useCallback((event: React.ChangeEvent<{ value: string }>) => {
+        handleOnMarketChange(event.target.value as MarketType)
+    }, [])
     return <>
+        <TextField
+            id="outlined-select-level"
+            select
+            size={'small'}
+            value={market}
+            onChange={_handleOnMarketChange}
+            inputProps={{IconComponent: DropDownIcon}}
+        >
+            {marketArray && marketArray.map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
+
+        </TextField>
     </>
 })

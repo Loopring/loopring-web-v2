@@ -21,13 +21,6 @@ import {
 import { volumeToCountAsBigNumber } from 'hooks/help';
 import BigNumber from 'bignumber.js';
 import { Ticker, updateTicker } from 'stores/ticker';
-import { getTimestampDaysLater } from 'utils/dt_tools';
-import { useAccount } from 'stores/account';
-import { useTokenMap } from 'stores/token';
-import { useSystem } from 'stores/system';
-import { useAmmMap } from 'stores/Amm/AmmMap';
-import { useAmount } from 'stores/amount';
-import React from 'react';
 import { SwapTradeData } from '@loopring-web/component-lib';
 import * as sdk from 'loopring-sdk';
 

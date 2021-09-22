@@ -14,7 +14,6 @@ export const mixorderService = {
            const data = mixorderMap[key as string];
            const {bids,asks,mid_price} = getMidPrice({_asks:data['asks'], _bids:data['bids']})
 
-
            return {...pre, [key]:{
                    ...data,
                    mid_price,
