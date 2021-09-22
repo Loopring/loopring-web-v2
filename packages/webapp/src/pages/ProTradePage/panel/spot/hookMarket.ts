@@ -84,13 +84,14 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
 
     const { makeMarketReqInHook } = usePlaceOrder()
 
-    const onChangeMarketEvent = async(tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType): Promise<void> => {
+    const onChangeMarketEvent = React.useCallback(async(tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType): Promise<void> => {
+
+        myLog(`onChangeMarketEvent pageTradePro:`, pageTradePro)
 
         if (!pageTradePro.depth && !pageTradePro.ammPoolSnapshot) {
             myLog(`onChangeMarketEvent data not ready!`)
             return
         }
-
         myLog(`onChangeMarketEvent tradeData:`, tradeData, 'formType',formType)
 
         setMarketTradeData(tradeData)
@@ -113,7 +114,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
 
         myLog('marketRequest:', request)
     
-    }
+    }, [pageTradePro])
 
     const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
         let {calcTradeParams, tradeChannel, orderType,tradeCalcProData, totalFee} = pageTradePro;
