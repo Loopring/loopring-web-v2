@@ -88,20 +88,27 @@ export const usePro = <C extends { [ key: string ]: any }>():{
 
     React.useEffect(()=>{
         resetTradeCalcData(undefined, market)
+        precisionList(market);
     },[])
     React.useEffect(() => {
         // getDependencyData();
         if (account.readyState === AccountStatus.ACTIVATED) {
-            getAmount({market})
+            getAmount({market:market})
         }
-        if(market){
-            resetTradeCalcData(undefined, market)
-            precisionList()
-            // precisionList()
-        }
-    }, [market])
 
-    const precisionList = React.useCallback(() => {
+        // if(pageTradePro.market !== market){
+        //
+        //
+        //     // precisionList()
+        // }
+    }, [market]);
+    const handleOnMarketChange =  React.useCallback((newMarket:MarketType) => {
+        resetTradeCalcData(undefined, newMarket)
+        precisionList(newMarket)
+        // setMarket(newMarket)
+    },[])
+
+    const precisionList = React.useCallback((market:MarketType) => {
         const precisionForPrice = marketMap[ market ].precisionForPrice;
         const orderbookAggLevels = marketMap[ market ].orderbookAggLevels;
         let list: { value: number,label:string }[] = [];
@@ -117,7 +124,7 @@ export const usePro = <C extends { [ key: string ]: any }>():{
 
         // return list
 
-    }, [market])
+    }, [])
 
 
     const resetTradeCalcData = React.useCallback((_tradeData, _market) => {
@@ -155,7 +162,7 @@ export const usePro = <C extends { [ key: string ]: any }>():{
 
     return {
         market,
-
+        handleOnMarketChange,
         // marketTicker,
     }
 }

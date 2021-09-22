@@ -3,7 +3,7 @@ import {
     DepthData,
     getAccountArg,
     getAmmpoolArg,
-    getCandlestickArg,
+    getCandlestickArg, getMixOrderArg,
     getOrderArg,
     getOrderBookArg,
     getTickerArg,
@@ -79,7 +79,8 @@ export class LoopringSocket {
         [ SocketEventType.mixorder ]: (data: DepthData, topic) => {
             // const bids = genAB(data['bids'], true)
             // const asks = genAB(data['asks'])
-            const timestamp = Date.now()
+            const timestamp = Date.now();
+            // debugger
             // const _data = getMidPrice({_asks:data['asks'], _bids:data['bids']})
             mixorderService.sendMixorder({
                 [ topic.market ]: {
@@ -307,7 +308,7 @@ export class LoopringSocket {
                         const level = mixorderSocket.level ?? 0;
                         const snapshot = mixorderSocket.snapshot ?? true;
                         const count = mixorderSocket.count ?? 50;
-                        list = mixorderSocket.markets.map(key => getOrderBookArg({
+                        list = mixorderSocket.markets.map(key => getMixOrderArg({
                             market: key,
                             level,
                             count,

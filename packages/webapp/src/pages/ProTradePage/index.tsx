@@ -43,7 +43,7 @@ type Config = {
 }
 export const OrderbookPage = withTranslation('common')(() => {
     const { pageTradePro:depthLevel } = usePageTradePro();
-    const {market} = usePro();
+    const {market,handleOnMarketChange} = usePro();
     const {unit} = useTheme();
     const [rowLength, setRowLength] = React.useState<number>(MARKET_ROW_LENGTH);
 
@@ -56,7 +56,7 @@ export const OrderbookPage = withTranslation('common')(() => {
     )
 
     const ViewList = {
-        toolbar: React.useMemo(() => <Toolbar market={market as any}/>, [market]),
+        toolbar: React.useMemo(() => <Toolbar market={market as any} handleOnMarketChange={handleOnMarketChange}/>, [market,handleOnMarketChange]),
         walletInfo: React.useMemo(() => <WalletInfo market={market as any}/>, [market]),
         spot: React.useMemo(() => <SpotView market={market as any} />, [market]),
         market: React.useMemo(() =><>{depthLevel && <MarketView market={market as any} rowLength={rowLength}/>}</>
