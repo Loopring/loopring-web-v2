@@ -99,6 +99,9 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             ammRewardRecordList, //: RewardItem[]
             getLiquidityMining, //: (market: string, size?: number) => Promise<void>
             getMiningLinkList,
+            setShowRewardDetail,
+            setChosenCardInfo,
+            ammInfo,
             ...rest
         }: AmmCardProps<T> & WithTranslation & { popoverIdx: number, 
             precisionA?: number, 
@@ -107,9 +110,15 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             coinBPriceDollar: number,
             coinAPriceYuan: number,
             coinBPriceYuan: number,
-            ammRewardRecordList: RewardItem[],
+            ammRewardRecordList: {
+                amount: string;
+                time: number;
+            }[],
             getLiquidityMining: (market: string, size?: number) => Promise<void>,
             getMiningLinkList: (market: string) => string[],
+            setShowRewardDetail: React.Dispatch<React.SetStateAction<boolean>>,
+            setChosenCardInfo: React.Dispatch<React.SetStateAction<any>>,
+            ammInfo: any,
         }, ref: React.ForwardedRef<any>) => {
         const isOrderbook = ruleType === 'ORDERBOOK_MINING'
         const isAmm = ruleType === 'AMM_MINING'
@@ -121,6 +130,11 @@ export const AmmCard = withTranslation('common', {withRef: true})(
         const coinBIcon: any = coinJson[ coinBInfo?.simpleName ] || '';
         const pathname = `${coinAInfo?.simpleName}-${coinBInfo?.simpleName}`
         const pair = `${coinAInfo?.simpleName} / ${coinBInfo?.simpleName}`
+
+        const myBalanceA = ammInfo?.balanceA
+        const myBalanceB = ammInfo?.balanceB
+        const myTotalAmmValueDollar = ammInfo?.totalAmmValueDollar
+        const myTotalAmmValueYuan = ammInfo?.totalAmmValueYuan
 
         const totalAmmRewardDollar = PriceTag.Dollar + getValuePrecisionThousand((rewardValue || 0) * (coinAPriceDollar || 0) + (rewardValue2 || 0) * (coinBPriceDollar || 0), undefined, undefined, 2, true, { isFait: true })
         const totalAmmRewardYuan = PriceTag.Yuan + getValuePrecisionThousand((rewardValue || 0) * (coinAPriceYuan || 0) + (rewardValue2 || 0) * (coinBPriceYuan || 0), undefined, undefined, 2, true, { isFait: true })
@@ -140,6 +154,12 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             const url = urlList[pathname]
             window.open(url)
         }, [getMiningLinkList, pathname, language])
+
+        const handleMyRewardClick = React.useCallback(() => {
+            getLiquidityMining(pathname, 120)
+            setShowRewardDetail(true)
+            setChosenCardInfo(rewardToken?.simpleName)
+        }, [getLiquidityMining, pathname, rewardToken?.simpleName, setChosenCardInfo, setShowRewardDetail])
         
         return <CardStyled ref={ref}>
             <LabelStyled type={ruleType}>{isOrderbook ? 'Orderbook' : 'Amm Pool'}</LabelStyled>
@@ -207,7 +227,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     {isOrderbook ? (
                         <Typography component={'span'} variant={'h2'} fontFamily={'Roboto'}>
                             {totalRewards ? getValuePrecisionThousand(totalRewards) + ' '
-                            + rewardToken.simpleName : EmptyValueTag}
+                            + rewardToken?.simpleName : EmptyValueTag}
                         </Typography>) 
                     : (<Typography component={'span'} variant={'h1'} fontFamily={'Roboto'}> 
                         {getValuePrecisionThousand(APR, 2, 2, 2, true) + '%' || EmptyValueTag}
@@ -357,7 +377,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                         } */}
                         {getValuePrecisionThousand(totalRewards)}
                         &nbsp;
-                        {rewardToken.simpleName}
+                        {rewardToken?.simpleName}
                         {/* {rewardValue2 && Number.isFinite(rewardValue2)
                             ? (currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand((rewardValue2 || 0) * ((currency === 'USD' ? coinBPriceDollar : coinBPriceYuan)|| 0), undefined, undefined, 2, true, { isFait: true })
                             : EmptyValueTag
@@ -415,8 +435,8 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                                 ? currency === 'USD'
                                                     ? totalAmmRewardDollar
                                                     : totalAmmRewardYuan
-                                            : currency === 'USD'
-                                                ? orderbookRewardDollar : orderbookRewardYuan
+                                                : currency === 'USD'
+                                                    ? orderbookRewardDollar : orderbookRewardYuan
                                         }
                                         {/* {getValuePrecisionThousand((isOrderbook ? totalRewards : rewardValue), undefined, undefined, precisionA, false, {floor: true})} */}
                                     </Typography>
@@ -468,9 +488,12 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                         {t('labelMiningMyShare')}
                     </Typography>
-                    <Typography {...bindHover(popMyAmmValueState)} component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400} style={{ borderBottom: false ? '1px dashed var(--color-text-primary)' : 'none' }}>
-                        --
-                    </Typography>
+                    {myTotalAmmValueDollar ? (
+                        <Typography {...bindHover(popMyAmmValueState)} component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400} style={{ borderBottom: myTotalAmmValueDollar ? '1px dashed var(--color-text-primary)' : 'none' }}>
+                            {currency === 'USD' ? PriceTag.Dollar + getValuePrecisionThousand(myTotalAmmValueDollar, undefined, undefined, undefined, false, {isFait: true, floor: true}) : PriceTag.Yuan + getValuePrecisionThousand(myTotalAmmValueYuan, undefined, undefined, undefined, false, {isFait: true, floor: true})}
+                        </Typography>
+                    ) : <Typography>{EmptyValueTag}</Typography>}
+                    
                     <PopoverPure
                         className={'arrow-top-center'}
                         {...bindPopper(popMyAmmValueState)}
@@ -516,8 +539,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                         
                                     <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} height={20} marginLeft={10}
                                         lineHeight={'20px'}>
-                                        {/* TODO: find myshare value */}
-                                        {getValuePrecisionThousand(0, undefined, undefined, precisionA, false, {floor: true})}
+                                        {getValuePrecisionThousand(myBalanceA, precisionA, 2, undefined, false, {floor: true})}
                                     </Typography>
                                 </Typography>
                                     <Typography component={'span'} display={'flex'} flexDirection={'row'}
@@ -549,8 +571,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                         <Typography variant={'body2'} color={'var(--color-text-primary)'} component={'span'} height={20}
                                             marginLeft={10}
                                             lineHeight={'20px'}>
-                                            {/* TODO: find myshare value */}
-                                            {getValuePrecisionThousand(0, undefined, undefined, precisionB, false, {floor: true})}
+                                            {getValuePrecisionThousand(myBalanceB, precisionB, 2, undefined, false, {floor: true})}
                                         </Typography>
                                     </Typography>
                             </Box>
@@ -561,7 +582,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography component={'span'} color={'textSecondary'} variant={'h6'}>
                         {t('labelMiningMyReward')}
                     </Typography>
-                    <Typography onClick={() => getLiquidityMining('market', 120)} component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
+                    <Typography onClick={myRewards ? handleMyRewardClick : undefined} component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
                         {myRewards === 0
                             ? EmptyValueTag
                             : getValuePrecisionThousand(myRewards, undefined, undefined, undefined, true, { isFait: true, floor: true }) + rewardToken?.simpleName}
