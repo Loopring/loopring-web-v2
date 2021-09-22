@@ -158,14 +158,15 @@ export const subMenuLayer2 = {
             id: 'security',
             i18nKey: 'labelSecurity',
         }
-    }, {
-        icon: VipIcon,
-        router: {path: '/layer2/vip'},
-        label: {
-            id: 'vipPanel',
-            i18nKey: 'labelVipPanel',
-        },
-    }]
+    }], 
+    // {
+    //     icon: VipIcon,
+    //     router: {path: '/layer2/vip'},
+    //     label: {
+    //         id: 'vipPanel',
+    //         i18nKey: 'labelVipPanel',
+    //     },
+    // }]
 }
 
 
