@@ -38,8 +38,6 @@ export const DepositPanel = withTranslation('common', {withRef: true})(<T extend
             {
                 key: "tradeMenuList",
                 element: React.useMemo( () => <TradeMenuList {...{
-                    nonZero: false,
-                    sorted: true,
                     ...rest,
                     nonZero: false,
                     sorted: true,
