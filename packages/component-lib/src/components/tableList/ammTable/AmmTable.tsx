@@ -114,7 +114,7 @@ const StyledSideCell: any = styled(Typography)`
 //     return data.toFixed(4)
 // }
 
-const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<RawDataAmmItem, unknown>[] => [
+const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CNY'): Column<RawDataAmmItem, unknown>[] => [
     {
         key: 'side',
         name: t('labelAmmSide'),

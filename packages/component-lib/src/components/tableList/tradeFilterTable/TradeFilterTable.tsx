@@ -16,7 +16,7 @@ interface Row {
     priceYuan: number,
     priceDollar: number,
     change24: string,
-    showTag: 'USD' | 'CYN',
+    showTag: 'USD' | 'CNY',
     floatTag: keyof typeof FloatTag,
 }
 
