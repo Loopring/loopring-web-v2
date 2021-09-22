@@ -98,7 +98,7 @@ type IGetColumnModePros = {
 }
 
 // const getColumnModelQuoteTable = (t: TFunction, history: any): Column<Row, unknown>[] => [
-const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }): Column<QuoteTableRawDataItem, unknown>[] => {
+const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CNY' }): Column<QuoteTableRawDataItem, unknown>[] => {
     const {t: {t}, history, upColor, handleStartClick, favoriteMarket, currency} = props
     const isUSD = currency === 'USD'
     return (

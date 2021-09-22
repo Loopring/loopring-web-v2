@@ -85,7 +85,7 @@ const TableStyled = styled(Box)`
 const StyledSideCell: any = styled(Box)`
 `
 
-const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN', tokenMap: any): Column<RawDataTradeItem, unknown>[] => [
+const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CNY', tokenMap: any): Column<RawDataTradeItem, unknown>[] => [
     {
         key: 'side',
         name: t('labelTradeSide'),

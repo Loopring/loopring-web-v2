@@ -12,7 +12,7 @@ export interface SettingsState {
     themeMode: ThemeKeys
     language: LanguageKeys
     platform: PlatFormKeys
-    currency: 'USD' | 'CYN'
+    currency: 'USD' | 'CNY'
     upColor: keyof typeof UpColor
     slippage: number | 'N'
     coinJson: any

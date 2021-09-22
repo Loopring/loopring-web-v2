@@ -21,5 +21,5 @@ export type MyPoolTableProps<T, R = MyPoolRow<T>> = {
     showFilter?: boolean,
     wait?: number;
     showloading?: boolean;
-    currency?: 'USD' | 'CYN'
+    currency?: 'USD' | 'CNY'
 } & Method<R>

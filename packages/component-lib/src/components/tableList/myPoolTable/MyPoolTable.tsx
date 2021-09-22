@@ -66,7 +66,7 @@ const columnMode = ({
                         t,
                         handleWithdraw,
                         handleDeposit
-                    }: WithTranslation & Method<Row<any>>, currency: 'USD' | 'CYN', getPopoverState: any, coinJson: any): Column<Row<any>, unknown>[] => [
+                    }: WithTranslation & Method<Row<any>>, currency: 'USD' | 'CNY', getPopoverState: any, coinJson: any): Column<Row<any>, unknown>[] => [
     {
         key: 'pools',
         sortable: false,
