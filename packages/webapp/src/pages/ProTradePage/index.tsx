@@ -15,7 +15,9 @@ import { usePageTradePro } from '../../stores/router';
 const MARKET_ROW_LENGTH: number = 8;
 const MARKET_ROW_LENGTH_LG: number = 11;
 
-const MARKET_TRADES_LENGTH: number = 5;
+const MARKET_TRADES_LENGTH: number = 19;
+const MARKET_TRADES_LENGTH_LG: number = 24;
+
 
 
 const BoxStyle = styled(Box)`
@@ -87,17 +89,19 @@ export const OrderbookPage = withTranslation('common')(() => {
         spot: React.useMemo(() => <SpotView market={market as any} />, [market]),
         market: React.useMemo(() =><>{depthLevel && <MarketView market={market as any} rowLength={rowLength} tableLength={tradeTableLengths.market} main={TabMarketIndex.Orderbook}
                                                                 breakpoint={configLayout.currentBreakpoint}/>}</>
-            , [market,rowLength,configLayout.currentBreakpoint,depthLevel]),
-        market2: React.useMemo(() => <>{[BreakPoint.lg,BreakPoint.xlg].includes(configLayout.currentBreakpoint) && <MarketView market={market as any}  main={TabMarketIndex.Trades}
+            , [market,rowLength,configLayout.currentBreakpoint,depthLevel,tradeTableLengths.market]),
+        market2: React.useMemo(() => <>{[BreakPoint.lg,BreakPoint.xlg].includes(configLayout.currentBreakpoint) && <MarketView market={market as any}
+                                                                                                                               main={TabMarketIndex.Trades}
                                                                                                                                tableLength={tradeTableLengths.market2}
-                                                                                                                               rowLength={rowLength} breakpoint={configLayout.currentBreakpoint}/>}</>
-            , [market,rowLength,configLayout.currentBreakpoint,depthLevel]),    //<MarketView market={market as any}/>, [market])
+                                                                                                                               rowLength={0}
+                                                                                                                               breakpoint={configLayout.currentBreakpoint}/>}</>
+            , [market,rowLength,configLayout.currentBreakpoint,depthLevel,tradeTableLengths.market2]),    //<MarketView market={market as any}/>, [market])
         chart: React.useMemo(() => <ChartView/>, []),
         orderTable: React.useMemo(() => <OrderTableView/>, [])
     }
     const onRestDepthTableLength = React.useCallback((h:number) => {
         if(h){
-            myLog('market',h )
+                // myLog('market',h )
             const i = Math.floor(((h - 58) * unit) / 40)
             if(i <= 40){
                 setRowLength(MARKET_ROW_LENGTH + i)
@@ -112,10 +116,10 @@ export const OrderbookPage = withTranslation('common')(() => {
         myLog('market',layout )
         if(layout && layout.h) {
             const h = layout.h
-            const i = Math.floor(((h - 58) * unit) / 44)
-
+            const i = Math.floor(((h - 58) * unit) / 20)
+                myLog('onRestMarketTableLength',layout.i)
                 setTradeTableLengths((state)=>{
-                    if(i <= 40){
+                    if(i <= 30){  //32
                        return {
                            ...state,
                            [layout.i]: MARKET_TRADES_LENGTH +i
@@ -123,7 +127,7 @@ export const OrderbookPage = withTranslation('common')(() => {
                     } else{
                         return {
                             ...state,
-                            [layout.i]: MARKET_TRADES_LENGTH + 40
+                            [layout.i]: MARKET_TRADES_LENGTH + 30
                         }
                     }
                 })
@@ -144,7 +148,11 @@ export const OrderbookPage = withTranslation('common')(() => {
         const layout = configLayout.layouts[breakpoint]
         if(layout){
             onRestDepthTableLength(layout.find(i => i.i === 'market')?.h as number)
-            onRestMarketTableLength(layout.find(i => /market/.test(i.i)))
+            const lys = layout.filter(i => /market/.test(i.i));
+            lys.forEach((layout)=>{
+                onRestMarketTableLength(layout)
+            })
+
         }
 
         // this.setState({
