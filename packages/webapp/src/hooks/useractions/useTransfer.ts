@@ -105,6 +105,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                 belong: symbol as any,
                 balance: walletMap[symbol]?.count,
                 tradeValue: undefined,
+                address: "*",
             })
         } else {
             if (!transferValue.belong && walletMap) {
@@ -117,6 +118,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                             belong: keyVal as any,
                             tradeValue: 0,
                             balance: walletInfo.count,
+                            address: "*",
                         })
                         break
                     }
@@ -135,6 +137,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     React.useEffect(() => {
 
         if (isShow && accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
+            myLog('useEffect transferValue.address:', transferValue.address)
             setAddress(transferValue.address ? transferValue.address : '')
         }
 
