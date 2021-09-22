@@ -4,7 +4,7 @@ import { Box, Grid, MenuItem } from '@mui/material'
 import { withTranslation, WithTranslation } from "react-i18next";
 import { TextField, DateRangePicker } from '../../../basic-lib/form'
 import { Button } from '../../../basic-lib/btns'
-import { DropDownIcon } from '@loopring-web/common-resources'
+import { DropDownIcon, myLog } from '@loopring-web/common-resources'
 import { DateRange } from '@mui/lab'
 import { RawDataTradeItem } from '../TradeTable'
 
@@ -14,7 +14,8 @@ export interface FilterProps {
     filterType: FilterTradeTypes;
     filterPair: string;
     handleReset: () => void;
-    handleFilterChange: ({type, date}: any) => void
+    handleFilterChange: ({type, date}: any) => void;
+    marketMap?: any;
 }
 
 const StyledTextFiled = styled(TextField)`
@@ -50,6 +51,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
         filterPair,
         handleReset,
         handleFilterChange,
+        marketMap,
     }: FilterProps & WithTranslation) => {
     const filterTradeTypeList = [
         {
@@ -65,8 +67,12 @@ export const Filter = withTranslation('tables', {withRef: true})(({
             value: 'Taker'
         },
     ]
+    myLog({marketMap})
 
-    const rawPairList = rawData.map(item => `${item.amount.from.key} - ${item.amount.to.key}`)
+    const rawPairList = rawData.map(item => `${item.amount.from.key}-${item.amount.to.key}`).filter(o => marketMap[o]).map(market => {
+        const formattedMarket = market.split('-')
+        return formattedMarket.join(' - ')
+    })
     const formattedRawPairList = [
         {
             label: t('labelFilterAllPairs'),

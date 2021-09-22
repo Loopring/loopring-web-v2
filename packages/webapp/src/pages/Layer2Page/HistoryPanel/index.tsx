@@ -14,7 +14,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     const {txs: txTableData, txsTotal, showLoading: showTxsLoading, getUserTxnList} = useGetTxs()
     const {userTrades, showLoading: showTradesLoading} = useGetTrades()
     const {ammRecordList, showLoading: ammLoading} = useGetAmmRecord()
-    const {tokenMap} = store.getState().tokenMap
+    const {tokenMap, marketMap} = store.getState().tokenMap
 
     const {t} = rest
     const container = React.useRef(null);
@@ -72,6 +72,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                         showloading: showTradesLoading,
                         tokenMap: tokenMap,
                         isL2Trade: true,
+                        marketMap: marketMap,
                         ...rest
                     }}/>
                 ) : (
