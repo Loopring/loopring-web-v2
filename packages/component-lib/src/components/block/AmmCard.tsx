@@ -11,6 +11,7 @@ import {
     EmptyValueTag,
     PriceTag,
     getValuePrecisionThousand,
+    myLog,
     // myLog
 } from '@loopring-web/common-resources';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
@@ -143,6 +144,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
         const orderbookRewardDollar = PriceTag.Dollar + getValuePrecisionThousand((totalRewards || 0) * (rewardTokenDollar || 0), undefined, undefined, 2, true, { isFait: true })
         const orderbookRewardYuan = PriceTag.Yuan + getValuePrecisionThousand((totalRewards || 0) * (rewardTokenYuan || 0), undefined, undefined, 2, true, { isFait: true })
         // console.log({totalRewards, rewardTokenYuan}, rewardToken.simpleName, orderbookRewardDollar, ruleType)
+        const isComing = moment(duration.from).unix() * 1000 > moment.now();
 
         const popLiquidityState = usePopupState({variant: 'popover', popupId: `popup-totalLiquidty-${popoverIdx}`})
         const popTotalRewardState = usePopupState({variant: 'popover', popupId: `popup-totalReward-${popoverIdx}`})
@@ -590,9 +592,13 @@ export const AmmCard = withTranslation('common', {withRef: true})(
             </CardContent>
             <CardActions>
                 <CardActionBoxStyled width={'100%'} display={'flex'} flexDirection={'column'} justifyContent={'center'} alignItems={'center'}>
-                    <Button fullWidth variant={'contained'} size={'large'} disabled={!!isPass}
+                    <Button fullWidth variant={'contained'} size={'large'} disabled={!!isPass || isComing}
                             color={'primary'}
-                            onClick={handleClick}>{isAmm ? t(isPass ? 'labelEndLiquidityBtn' : 'labelAddLiquidityBtn') : t(isPass ? 'labelEndLiquidityBtn' : 'labelMiningPlaceOrderBtn')}
+                            onClick={handleClick}>{isAmm ? t(isPass
+                                ? 'labelEndLiquidityBtn' 
+                                : isComing
+                                    ? 'labelComingSoon'
+                                    : 'labelAddLiquidityBtn') : t(isPass ? 'labelEndLiquidityBtn' : 'labelMiningPlaceOrderBtn')}
                     </Button>
                     <ViewDetailStyled onClick={() => handleViewDetail()} component={'a'} variant={'body1'} color={'var(--color-text-secondary)'} marginTop={1}>
                         {t('labelMiningViewDetails')}
