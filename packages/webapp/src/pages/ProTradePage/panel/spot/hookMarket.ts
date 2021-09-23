@@ -261,6 +261,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
         btnStatus:tradeMarketBtnStatus ,
         onBtnClick:marketBtnClick,
         btnLabel:tradeMarketBtnI18nKey,
+        btnStyle: tradeMarketBtnStyle
         // btnClickCallbackArray
     } =  useSubmitBtn({
         availableTradeCheck: availableTradeCheck,
@@ -281,6 +282,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
         tradeMarketBtnStatus,
         tradeMarketBtnI18nKey,
         marketBtnClick,
+        tradeMarketBtnStyle
         // marketTicker,
     }
 }

@@ -35,13 +35,15 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         // disabled,
         tradeMarketI18nKey,
         // tradeCalcProData,
+        tradeMarketBtnStyle,
+
         tradeMarketBtnStatus,
         // handleCountChange,
         // tokenBaseProps,
         // tokenQuoteProps,
         // tradeData,
         // handleError,
-        // handleSubmitEvent,
+        handleSubmitEvent,
         // handleChangeIndex,
         onChangeEvent,
         // ...rest
@@ -211,8 +213,8 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         </Box>
         <Box paddingTop={2} paddingX={2}>
             <ButtonStyle variant={'contained'} size={'medium'}
-                         color={tabIndex === TradeProType.sell ? 'success' : 'error'} onClick={() => {
-                // onSwapClick(swapData.tradeData)
+                         color={tabIndex === TradeProType.sell ? 'success' : 'error'} style={tradeMarketBtnStyle} onClick={() => {
+                handleSubmitEvent(tradeData)
             }}
                          loading={!getDisabled() && tradeBtnBaseStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                          disabled={getDisabled() || tradeBtnBaseStatus === TradeBtnStatus.DISABLED || tradeBtnBaseStatus === TradeBtnStatus.LOADING || inputError.error}
