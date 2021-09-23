@@ -259,7 +259,7 @@ export const MarketView = withTranslation('common')(({
             <Divider style={{marginTop: '-1px'}}/>
             {tabIndex === TabMarketIndex.Orderbook ?<Box className={'depthPanel'} flex={1} paddingY={1}>
                     <MarketToolbar component={'header'} className={'pro'} width={'100%'} display={'flex'} paddingX={2}
-                                   alignItems={'stretch'} justifyContent={'space-between'}>
+                                   alignItems={'stretch'} justifyContent={'space-between'} height={24}>
                         <ToggleButtonGroup exclusive {...{
                             ...rest,
                             t,
@@ -290,7 +290,7 @@ export const MarketView = withTranslation('common')(({
                                         depths={depthViewData.asks}
                                 // showTitle={true}
                             />
-                            <Box paddingY={1 / 2} display={'flex'} flexDirection={'column'} alignItems={'center'}>
+                            <Box paddingY={1} display={'flex'} flexDirection={'column'} alignItems={'center'} height={24}>
                                 {middlePrice}
                             </Box>
                             <DepthBlock marketInfo={marketMap[ market ]}
