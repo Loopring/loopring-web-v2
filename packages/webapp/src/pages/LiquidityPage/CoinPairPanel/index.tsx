@@ -272,7 +272,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                             component={'span'}> {coinPairInfo.APR ? getValuePrecisionThousand(coinPairInfo.APR, 2, 2, undefined, true) : EmptyValueTag}%
                                 </Typography>
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}>
-                                    {t('labelAPY')}
+                                    {t('labelAPR')}
                                 </Typography>
                             </Box>
                         </Grid>

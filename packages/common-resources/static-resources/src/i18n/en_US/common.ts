@@ -321,6 +321,13 @@ export default {
     labelProMarketBtn: '{{tradeType}} {{symbol}}',
     labelProOrderbook:'Orderbook',
     labelProTrades:'Trades',
+
+    labelProToolbar24hChange: '24h Change',
+    labelProToolbar24hHigh: '24h High',
+    labelProToolbar24hLow: '24h Low',
+    labelProToolbar24hBaseVol: '24h Volume({{symbol}})',
+    labelProToolbar24hQuoteVol: '24h Volume({{symbol}})',
+
     labelDepthPrice: 'Price({{symbol}})',
     labelDepthAmount: 'Amount({{symbol}})',
     labelDepthTotal: 'Total',
