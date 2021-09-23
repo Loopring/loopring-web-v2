@@ -17,21 +17,20 @@ const MARKET_ROW_LENGTH_LG: number = 11;
 
 const MARKET_TRADES_LENGTH: number = 19;
 const MARKET_TRADES_LENGTH_LG: number = 24;
-
+export const HeaderHeight= 44;
 
 
 const BoxStyle = styled(Box)`
-  --tab-header: 44px;
+  --tab-header: ${HeaderHeight}px;
   background: var(--color-box);
 
   &.spot {
     ${({theme}: any) => boxLiner({theme})}
   }
-
   .MuiTabs-root {
     min-height: var(--tab-header);
-
     .MuiTab-root.MuiTab-fullWidth, .MuiTab-root {
+      font-size: ${({theme}) => theme.fontDefault.body1};
       min-height: var(--tab-header);
       padding: ${({theme}) => theme.unit}px;
       &:after{

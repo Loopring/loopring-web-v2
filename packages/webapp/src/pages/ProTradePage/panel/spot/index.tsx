@@ -64,7 +64,7 @@ export const SpotView = withTranslation('common')(({
                 <Tabs variant={'fullWidth'} value={tabIndex} onChange={(_e, value) => {
                     setTabIndex(value)
                 }}>
-                    <Tab value={TabIndex.limit} label={t('labelProLimit')}/>
+                    <Tab  value={TabIndex.limit} label={t('labelProLimit')}/>
                     <Tab value={TabIndex.market} label={t('labelProMarket')}/>
                 </Tabs>
             </Box>
