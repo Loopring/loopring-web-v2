@@ -17,8 +17,8 @@ export type PageTradePro<C> = {
         takerRate: string | number;
         feeBips: string | number;
         output: string;
-        baseAmt: string;
-        quoteAmt: string;
+        sellAmt: string;
+        buyAmt: string;
         amountS: string;
         amountBOut: string;
         amountBOutWithoutFee: string;
