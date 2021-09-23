@@ -8,8 +8,6 @@ import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
 import { useSystem } from 'stores/system';
 import { useAmmMap } from 'stores/Amm/AmmMap';
-import { useAmount } from 'stores/amount';
-import { usePageTradeLite } from 'stores/router';
 import { myLog } from '@loopring-web/common-resources';
 import store from 'stores'
 
@@ -98,8 +96,7 @@ export function makeMarketReq({
 
     const takerRate = (tokenAmtMap && tokenAmtMap[buyTokenInfo.symbol]) ? tokenAmtMap[buyTokenInfo.symbol].userOrderInfo.takerRate : 0
 
-    myLog('makeMarketReq isBuy:', isBuy, ' sell:', sell, ' buy:', buy, ' isAtoB:', isAtoB,
-     ' feeBips:', feeBips, ' takerRate:', takerRate)
+    // myLog('makeMarketReq isBuy:', isBuy, ' sell:', sell, ' buy:', buy, ' isAtoB:', isAtoB, ' feeBips:', feeBips, ' takerRate:', takerRate)
 
     const maxFeeBips = parseInt(sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString())
 
@@ -258,17 +255,19 @@ export function usePlaceOrder() {
 
     const { account } = useAccount()
 
-    const { coinMap, tokenMap, marketArray, marketCoins, marketMap, } = useTokenMap()
+    const { tokenMap, marketArray, } = useTokenMap()
 
     const { exchangeInfo, } = useSystem()
-
-    const { ammMap, } = useAmmMap()
 
     const getTokenAmtMap = React.useCallback((params: ReqParams) => {
 
         const amountMap = store.getState().amountMap.amountMap
 
+        const ammMap = store.getState().amm.ammMap
+
         if (!ammMap || !marketArray) {
+            // myLog('ammMap:', ammMap)
+            // myLog('marketArray:', marketArray)
             return undefined
         }
 
@@ -298,11 +297,13 @@ export function usePlaceOrder() {
 
         const tokenAmtMap = amountMap ? ammMap[ammMarket] ? amountMap[ammMarket] : amountMap[market as string] : undefined
 
+        const feeBips = ammMap[ ammMarket ] ? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
         return {
+            feeBips,
             tokenAmtMap,
         }
 
-    }, [ammMap, marketArray,])
+    }, [ marketArray,])
 
     // {isBuy, amountB or amountS, (base, quote / market), feeBips, takerRate, depth, ammPoolSnapshot, slippage, }
     const makeMarketReqInHook = React.useCallback((params: ReqParams) => {
@@ -324,14 +325,13 @@ export function usePlaceOrder() {
             exchangeAddress: exchangeInfo.exchangeAddress,
             accountId: account.accountId,
             tokenMap,
-            tokenAmtMap: tokenAmtMap?.tokenAmtMap,
+            feeBips: tokenAmtMap.feeBips,
+            tokenAmtMap: tokenAmtMap.tokenAmtMap,
         }
-
-        myLog('makeMarketReqInHook fullParams:', fullParams)
 
         return makeMarketReq(fullParams)
 
-    }, [account, tokenMap, ammMap, marketArray, exchangeInfo, ])
+    }, [account, tokenMap, marketArray, exchangeInfo, ])
 
     // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
     const makelimitReqInHook = React.useCallback((params: ReqParams) => {
@@ -351,14 +351,13 @@ export function usePlaceOrder() {
             exchangeAddress: exchangeInfo.exchangeAddress,
             accountId: account.accountId,
             tokenMap,
-            tokenAmtMap: tokenAmtMap?.tokenAmtMap,
+            feeBips: tokenAmtMap.feeBips,
+            tokenAmtMap: tokenAmtMap.tokenAmtMap,
         }
-
-        myLog('fullParams:', fullParams)
 
         return makelimitReq(fullParams)
 
-    }, [account, tokenMap, ammMap, marketArray, exchangeInfo,])
+    }, [account, tokenMap, marketArray, exchangeInfo,])
 
     return {
         makeMarketReqInHook,

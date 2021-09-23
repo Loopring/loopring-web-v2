@@ -214,7 +214,7 @@ export const MarketView = withTranslation('common')(({
             }]
     }, [depthType])
     const tradeProTable =  React.useMemo(() => {
-        myLog('tableLength',tableLength)
+        // myLog('tableLength',tableLength)
 
         return <>{pageTradePro.tradeArray ? 
                 <TradePro
