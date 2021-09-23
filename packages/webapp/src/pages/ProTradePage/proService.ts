@@ -1,10 +1,9 @@
-
 import * as _ from 'lodash';
 import { ammPoolService, tickerService, walletLayer2Service } from 'services/socket';
 import { useWalletLayer2 } from 'stores/walletLayer2';
 import React from 'react';
 import { useWalletLayer1 } from 'stores/walletLayer1';
-import { AccountStatus, globalSetup, myLog, SagaStatus } from '@loopring-web/common-resources';
+import { AccountStatus, globalSetup, SagaStatus } from '@loopring-web/common-resources';
 import store from 'stores';
 import { merge } from 'rxjs';
 import { bookService } from 'services/socket/services/bookService';
@@ -18,11 +17,11 @@ import { LoopringAPI } from 'api_wrapper';
 import { swapDependAsync } from '../SwapPage/help';
 import { useAmmMap } from 'stores/Amm/AmmMap';
 import { makeMarketArray } from 'hooks/help';
-import { RawDataTradeItem } from '@loopring-web/component-lib';
 import { tradeService } from 'services/socket/services/tradeService';
 import { useTicker } from 'stores/ticker';
 import { mixorderService } from 'services/socket/services/mixorderService';
-const TRADE_ARRAY_MAX_LENGTH  = 50;
+
+const TRADE_ARRAY_MAX_LENGTH = 50;
 
 /**
  *
@@ -36,11 +35,11 @@ export const useSocketProService = ({
                                         depDataCallback,
                                         userInfoUpdateCallback,
                                         walletLayer1Callback
-                                      }: {
+                                    }: {
     throttleWait?: number,
-    depDataCallback?:()=> void,
+    depDataCallback?: () => void,
     userInfoUpdateCallback?: () => void,
-    walletLayer1Callback?: ()=> void,
+    walletLayer1Callback?: () => void,
 }) => {
     const {updateWalletLayer1, status: walletLayer1Status,} = useWalletLayer1();
     const {updateWalletLayer2, status: walletLayer2Status,} = useWalletLayer2();
@@ -54,92 +53,87 @@ export const useSocketProService = ({
     const subjectTrade = React.useMemo(() => tradeService.onSocket(), []);
 
 
-
-
     const _accountUpdate = _.throttle(({walletLayer1Status, walletLayer2Status}) => {
-            if (walletLayer1Status !== SagaStatus.PENDING) {
-                updateWalletLayer1()
-            }
-            if (walletLayer2Status !== SagaStatus.PENDING) {
-                updateWalletLayer2()
-            }
-        }, throttleWait)
+        if (walletLayer1Status !== SagaStatus.PENDING) {
+            updateWalletLayer1()
+        }
+        if (walletLayer2Status !== SagaStatus.PENDING) {
+            updateWalletLayer2()
+        }
+    }, throttleWait)
     // const _accountUpdate = ({walletLayer2Status, walletLayer1Status}: any) => {
     //     accountUpdate({walletLayer2Status, walletLayer1Status})
     // }
 
     const _dependencyCallback = _.throttle(() => {
-        if(depDataCallback){
+        if (depDataCallback) {
             depDataCallback()
         }
     }, throttleWait)
     // const  _socketUpdate = React.useCallback(socketUpdate({updateWalletLayer1,updateWalletLayer2,walletLayer1Status,walletLayer2Status}),[]);
     React.useEffect(() => {
-        const subscription = merge(subjectAmmpool,subjectMixorder,subjectTicker,subjectTrade).subscribe((value)=>{
+        const subscription = merge(subjectAmmpool, subjectMixorder, subjectTicker, subjectTrade).subscribe((value) => {
             const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
             // @ts-ignore
-            if(ammMap && value && value.ammPoolMap){
+            if (ammMap && value && value.ammPoolMap) {
                 // @ts-ignore
                 const ammPoolMap = value.ammPoolMap;
                 const market = pageTradePro.market;
-                const {address} =  ammMap['AMM-'+market];
-                const {pooled:_pooled,lp} = ammPoolMap[address]
-                if(_pooled && pageTradePro.ammPoolSnapshot){
+                const {address} = ammMap[ 'AMM-' + market ];
+                if (ammPoolMap && ammPoolMap[ address ]?.pooled && pageTradePro.ammPoolSnapshot) {
+                    const {pooled: _pooled, lp} = ammPoolMap[ address ];
                     let pooled = pageTradePro.ammPoolSnapshot.pooled
-                    pooled = [{  ...pooled[0],
-                            volume: _pooled[0]
-                        } ,
-                        {...pooled[1],
-                            volume: _pooled[1]
-                        },
-                    ]
+                    pooled = [{
+                        ...pooled[ 0 ],
+                        volume: _pooled[ 0 ]
+                    }, {
+                        ...pooled[ 1 ], volume: _pooled[ 1 ]
+                    },]
                     const ammPoolSnapshot = {
                         ...pageTradePro.ammPoolSnapshot,
                         pooled,
-                        lp:{
+                        lp: {
                             ...pageTradePro.ammPoolSnapshot.lp,
-                            volume:lp
+                            volume: lp
                         }
                     }
-                    // myLog('socket:ammPoolSnapshot',ammPoolSnapshot)
-
-                    store.dispatch(updatePageTradePro( {market, ammPoolSnapshot: ammPoolSnapshot}))
+                    store.dispatch(updatePageTradePro({market, ammPoolSnapshot: ammPoolSnapshot}))
                 }
 
 
             }
             // @ts-ignore
-            if(value && value.tickerMap){
+            if (value && value.tickerMap) {
                 const market = pageTradePro.market;
                 // @ts-ignore
                 const tickerMap = value.tickerMap;
-                if(tickerMap.market === market){
+                if (tickerMap.market === market) {
                     // myLog('socket:tickMap',tickerMap)
-                    store.dispatch(updatePageTradePro( {market,ticker:tickerMap[market]}))
+                    store.dispatch(updatePageTradePro({market, ticker: tickerMap[ market ]}))
                 }
             }
             // @ts-ignore
-            if(value && value.mixorderMap){
+            if (value && value.mixorderMap) {
                 const market = pageTradePro.market;
                 // @ts-ignore
-                const mixorder = value.mixorderMap[market];
-                if(mixorder && mixorder.symbol){
+                const mixorder = value.mixorderMap[ market ];
+                if (mixorder && mixorder.symbol) {
                     // myLog('socket:mixorder to depth',mixorder)
 
-                    store.dispatch(updatePageTradePro( {market, depth: mixorder}))
+                    store.dispatch(updatePageTradePro({market, depth: mixorder}))
                 }
             }
             // @ts-ignore
-            if(value && value.trades && value.trade.market === pageTradePro.market ) {
+            if (value && value.trades && value.trade.market === pageTradePro.market) {
                 const market = pageTradePro.market;
                 // @ts-ignore
                 const _tradeArray = makeMarketArray(market, value.trades);
-                let tradeArray = [..._tradeArray,...pageTradePro.tradeArray?pageTradePro.tradeArray:[]];
+                let tradeArray = [..._tradeArray, ...pageTradePro.tradeArray ? pageTradePro.tradeArray : []];
                 tradeArray.length = TRADE_ARRAY_MAX_LENGTH;
-                store.dispatch(updatePageTradePro( {market, tradeArray: tradeArray}))
+                store.dispatch(updatePageTradePro({market, tradeArray: tradeArray}))
 
                 // tradeArray.splice(-1,)
-              // ?.pop()
+                // ?.pop()
             }
             //Ticker will update global ticker at tickerService;
             // const walletLayer2Status = store.getState().walletLayer2.status;
@@ -151,9 +145,8 @@ export const useSocketProService = ({
     }, []);
 
 
-
     React.useEffect(() => {
-        const subscription = merge(subjectWallet,subjectBook).subscribe(()=>{
+        const subscription = merge(subjectWallet, subjectBook).subscribe(() => {
             const walletLayer2Status = store.getState().walletLayer2.status;
             const walletLayer1Status = store.getState().walletLayer1.status;
             _accountUpdate({walletLayer2Status, walletLayer1Status})
@@ -181,14 +174,14 @@ export const useSocketProService = ({
     }, [walletLayer1Status])
 }
 
-export  const useProSocket = () => {
+export const useProSocket = () => {
     const {sendSocketTopic, socketEnd} = useSocket();
-    const {account, status:accountStatus} = useAccount();
-    const {marketArray,marketMap} = useTokenMap();
+    const {account, status: accountStatus} = useAccount();
+    const {marketArray, marketMap} = useTokenMap();
     const {ammMap} = useAmmMap();
     const {tickerMap} = useTicker()
 
-    const {pageTradePro,updatePageTradePro,__API_REFRESH__} = usePageTradePro();
+    const {pageTradePro, updatePageTradePro, __API_REFRESH__} = usePageTradePro();
     const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
 
     React.useEffect(() => {
@@ -197,36 +190,42 @@ export  const useProSocket = () => {
         }
     }, [nodeTimer.current]);
     const noSocketLoop = React.useCallback(() => {
-       if(window.loopringSocket === undefined){
-           getDependencyData();
-           getMarketDepData();
-       }
+        if (window.loopringSocket === undefined) {
+            getDependencyData();
+            getMarketDepData();
+        }
         //@ts-ignore
         if (nodeTimer.current !== -1) {
             clearTimeout(nodeTimer.current as NodeJS.Timeout);
         }
         nodeTimer.current = setTimeout(noSocketLoop, __API_REFRESH__)
-    }, [ nodeTimer])
+    }, [nodeTimer])
     const getDependencyData = React.useCallback(async () => {
-        const { market} = pageTradePro
-        if (market && ammMap && pageTradePro.depthLevel &&  LoopringAPI.exchangeAPI) {
+        const {market} = pageTradePro
+        if (market && ammMap && pageTradePro.depthLevel && LoopringAPI.exchangeAPI) {
             try {
 
-                const {depth, ammPoolSnapshot} = await swapDependAsync(market, marketMap[market].precisionForPrice - Number(pageTradePro.depthLevel),50);
+                const {
+                    depth,
+                    ammPoolSnapshot
+                } = await swapDependAsync(market, marketMap[ market ].precisionForPrice - Number(pageTradePro.depthLevel), 50);
                 // const tickerMap  = makeTickerMap({tickerMap: tickMap})
                 const {tickerMap} = store.getState().tickerMap
                 // myLog('store.getState().tickerMap',tickerMap[market]);
-                updatePageTradePro({market, depth, ammPoolSnapshot, ticker:tickerMap[market]})
+                updatePageTradePro({market, depth, ammPoolSnapshot, ticker: tickerMap[ market ]})
             } catch (error) {
 
             }
         }
 
-    }, [pageTradePro,ammMap,tickerMap]);
+    }, [pageTradePro, ammMap, tickerMap]);
     const getMarketDepData = React.useCallback(async () => {
-        const { market} = pageTradePro
+        const {market} = pageTradePro
         if (LoopringAPI.exchangeAPI && market) {
-            const {marketTrades} = await LoopringAPI.exchangeAPI.getMarketTrades({market,limit:TRADE_ARRAY_MAX_LENGTH});
+            const {marketTrades} = await LoopringAPI.exchangeAPI.getMarketTrades({
+                market,
+                limit: TRADE_ARRAY_MAX_LENGTH
+            });
             const _tradeArray = makeMarketArray(market, marketTrades)
             // const formattedTradArray:RawDataTradeItem[] = _tradeArray.map(o => (
             //     {
@@ -235,21 +234,21 @@ export  const useProSocket = () => {
             // })
             // ) as RawDataTradeItem[]
             // setTradeArray(_tradeArray as RawDataTradeItem[])
-            updatePageTradePro({market, tradeArray:_tradeArray})
+            updatePageTradePro({market, tradeArray: _tradeArray})
 
         }
 
-    }, [pageTradePro,ammMap])
+    }, [pageTradePro, ammMap])
     React.useEffect(() => {
         getDependencyData();
-    },[
+    }, [
         pageTradePro.market,
         pageTradePro.depthLevel
     ])
     React.useEffect(() => {
         getMarketDepData()
 
-    },[
+    }, [
         pageTradePro.market,
     ])
 
@@ -257,26 +256,27 @@ export  const useProSocket = () => {
         //firstTime call it
         // getDependencyData();
         noSocketLoop();
-        if(ammMap && pageTradePro.market){
-            const dataSocket:SocketMap = {
-                [ sdk.WsTopicType.ammpool ]:[ ammMap['AMM-'+pageTradePro.market].address],
-                [ sdk.WsTopicType.ticker ]:[pageTradePro.market as string],
-                [ sdk.WsTopicType.mixorder ]: {markets:[pageTradePro.market],
-                    level: marketMap[pageTradePro.market].precisionForPrice - Number(pageTradePro.depthLevel),
+        if (ammMap && pageTradePro.market) {
+            const dataSocket: SocketMap = {
+                [ sdk.WsTopicType.ammpool ]: [ammMap[ 'AMM-' + pageTradePro.market ].address],
+                [ sdk.WsTopicType.ticker ]: [pageTradePro.market as string],
+                [ sdk.WsTopicType.mixorder ]: {
+                    markets: [pageTradePro.market],
+                    level: marketMap[ pageTradePro.market ].precisionForPrice - Number(pageTradePro.depthLevel),
                     count: 50,
                     snapshot: true
                 },
-                [ sdk.WsTopicType.trade ]:[pageTradePro.market as string ],
+                [ sdk.WsTopicType.trade ]: [pageTradePro.market as string],
             }
-            if (accountStatus === SagaStatus.UNSET){
-                if(account.readyState === AccountStatus.ACTIVATED) {
+            if (accountStatus === SagaStatus.UNSET) {
+                if (account.readyState === AccountStatus.ACTIVATED) {
                     sendSocketTopic({
                         ...dataSocket,
                         [ sdk.WsTopicType.account ]: true,
-                        [ sdk.WsTopicType.order]:marketArray,
+                        [ sdk.WsTopicType.order ]: marketArray,
 
                     })
-                }else{
+                } else {
                     sendSocketTopic(dataSocket)
                 }
             }

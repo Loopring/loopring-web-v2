@@ -43,7 +43,6 @@ export const SpotView = withTranslation('common')(({
         marketSubmit,
         marketBtnClick,
         isMarketLoading,
-
     } = useMarket(market)
     return <>
         <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'}

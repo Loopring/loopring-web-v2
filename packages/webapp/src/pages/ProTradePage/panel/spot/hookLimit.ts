@@ -36,6 +36,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
             type: TradeProType.sell
         }
     )
+    const [isLimitLoading, setIsLimitLoading] = React.useState(false)
 
     const {toastOpen, setToastOpen, closeToast} = useToast();
 
@@ -119,7 +120,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         btnStyle: tradeLimitBtnStyle
     } =  useSubmitBtn({
         availableTradeCheck: ()=> {return  {label:'', tradeBtnStatus: TradeBtnStatus.AVAILABLE}},
-        isLoading:true,
+        isLoading:isLimitLoading,
         submitCallback: limitSubmit
     })
     return {
