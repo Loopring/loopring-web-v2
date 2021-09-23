@@ -99,9 +99,15 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
         setMarketTradeData(tradeData)
 
+        let slippage = sdk.toBig(tradeData.slippage ? tradeData.slippage : '0.5').times(100).toString()
+
         let amountBase = formType === TradeBaseType.base ? tradeData.base.tradeValue : undefined
         let amountQuote = formType === TradeBaseType.quote ? tradeData.quote.tradeValue : undefined
-        let slippage = sdk.toBig(tradeData.slippage ? tradeData.slippage : '0.5').times(100).toString();
+
+        if (formType === TradeBaseType.tab) {
+            amountBase = tradeData.base.tradeValue ? tradeData.base.tradeValue : undefined
+            amountQuote = amountBase !== undefined ? undefined : tradeData.quote.tradeValue ? tradeData.quote.tradeValue : undefined
+        }
 
         const request = makeMarketReqInHook({
             isBuy: tradeData.type === 'buy',

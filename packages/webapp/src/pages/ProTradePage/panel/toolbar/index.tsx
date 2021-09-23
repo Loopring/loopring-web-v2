@@ -51,7 +51,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
         return undefined
     }, [marketMap])
 
-    myLog(market, getMarketPrecision(market))
+    // myLog(market, getMarketPrecision(market))
     
     // const {pageTradePro,updatePageTradePro} = usePageTradePro()
     React.useEffect(() => {
