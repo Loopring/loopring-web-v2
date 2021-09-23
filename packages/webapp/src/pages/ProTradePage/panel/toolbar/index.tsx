@@ -8,7 +8,12 @@ import { useSettings } from '@loopring-web/component-lib';
 import { Box, MenuItem, TextField, Grid, Typography } from '@mui/material';
 import { usePageTradePro } from '../../../../stores/router';
 import { getValuePrecisionThousand } from '@loopring-web/common-resources';
-// import 
+import { volumeToCount } from 'hooks/help'
+import styled from '@emotion/styled'
+
+const PriceTitleStyled = styled(Typography)`
+    color: var(--color-text-third);
+`
 
 export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: any }>({
                                                                                           market,
@@ -23,7 +28,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
 }) => {
     const {tickerMap,status:tickerStatus} = useTicker();
     const [marketTicker,setMarketTicker] = React.useState<MarketBlockProps<C>|undefined>(undefined);
-    const {coinMap, marketArray, marketMap} = useTokenMap();
+    const {coinMap, marketArray, marketMap, tokenMap} = useTokenMap();
     const { pageTradePro: {ticker} } = usePageTradePro()
     const { currency } = useSettings()
     
@@ -40,7 +45,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
     } = ticker || {} as any
     const base = __rawTicker__?.base
     const quote = __rawTicker__?.quote
-    const baseVol = __rawTicker__?.base_token_volume
+    const baseVol = volumeToCount(base, __rawTicker__?.base_token_volume || 0)
     const isRise = floatTag === 'increase'
     const isUSD = currency === 'USD'
 
@@ -51,8 +56,13 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
         return undefined
     }, [marketMap])
 
-    myLog(market, getMarketPrecision(market))
-    
+    const getTokenPrecision = React.useCallback((token: string) => {
+        if (tokenMap) {
+            return tokenMap[token]?.precision
+        }
+        return undefined
+    }, [tokenMap])
+
     // const {pageTradePro,updatePageTradePro} = usePageTradePro()
     React.useEffect(() => {
         if(tickerStatus === SagaStatus.UNSET) {
@@ -84,34 +94,33 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
             inputProps={{IconComponent: DropDownIcon}}
         >
             {marketArray && marketArray.map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
-
         </TextField>
-        <Grid container spacing={3}>
+        <Grid container spacing={3} marginLeft={0}>
             <Grid item>
                 <Typography color={isRise ? 'var(--color-success)' : 'var(--color-error)'}>{close}</Typography>
                 <Typography>{isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand((isUSD ? priceDollar : priceYuan), undefined, undefined, undefined, true, {isFait: true})}</Typography>
             </Grid>
             <Grid item>
-                <Typography>{t('labelProToolbar24hChange')}</Typography>
+                <PriceTitleStyled>{t('labelProToolbar24hChange')}</PriceTitleStyled>
                 <Typography color={isRise ? 'var(--color-success)' : 'var(--color-error)'}>
                     {`${isRise ? '+' : '-'} ${getValuePrecisionThousand(change, undefined, undefined, 2, true)}%`}
                 </Typography>
             </Grid>
             <Grid item>
-                <Typography>{t('labelProToolbar24hHigh')}</Typography>
+                <PriceTitleStyled>{t('labelProToolbar24hHigh')}</PriceTitleStyled>
                 <Typography>{getValuePrecisionThousand(high, undefined, undefined, getMarketPrecision(market), true, {isPrice: true})}</Typography>
             </Grid>
             <Grid item>
-                <Typography>{t('labelProToolbar24hLow')}</Typography>
+                <PriceTitleStyled>{t('labelProToolbar24hLow')}</PriceTitleStyled>
                 <Typography>{getValuePrecisionThousand(low, undefined, undefined, getMarketPrecision(market), true, {isPrice: true})}</Typography>
             </Grid>
             <Grid item>
-                <Typography>{t('labelProToolbar24hBaseVol', {symbol: base})}</Typography>
-                <Typography>{baseVol}</Typography>
+                <PriceTitleStyled>{t('labelProToolbar24hBaseVol', {symbol: base})}</PriceTitleStyled>
+                <Typography>{getValuePrecisionThousand(baseVol, undefined, undefined, getTokenPrecision(base), true, {isPrice: true})}</Typography>
             </Grid>
             <Grid item>
-                <Typography>{t('labelProToolbar24hQuoteVol', {symbol: quote})}</Typography>
-                <Typography>{getValuePrecisionThousand(quoteVol, undefined, undefined, getMarketPrecision(market), true, {isPrice: true})}</Typography>
+                <PriceTitleStyled>{t('labelProToolbar24hQuoteVol', {symbol: quote})}</PriceTitleStyled>
+                <Typography>{getValuePrecisionThousand(quoteVol, undefined, undefined, getTokenPrecision(quote), true, {isPrice: true})}</Typography>
             </Grid>
         </Grid>
     </Box>
