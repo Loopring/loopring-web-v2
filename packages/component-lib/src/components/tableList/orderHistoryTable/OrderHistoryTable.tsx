@@ -5,7 +5,7 @@ import { DateRange } from '@mui/lab'
 import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
 import {  usePopupState } from 'material-ui-popup-state/hooks';
-import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes, getValuePrecisionThousand } from '@loopring-web/common-resources'
+import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes, getValuePrecisionThousand, myLog } from '@loopring-web/common-resources'
 import { Column, Table, TablePagination } from '../../basic-lib'
 import { Filter, FilterOrderTypes } from './components/Filter'
 import { OrderDetailPanel } from './components/modal'
@@ -152,10 +152,11 @@ export interface OrderHistoryTableProps {
     orderDetailList: OrderHistoryTableDetailItem[];
     isOpenOrder?: boolean;
     cancelOrder: ({orderHash, clientOrderId}: any) => void
+    isScroll?: boolean;
 }
 
 export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryTableProps & WithTranslation) => {
-    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray, showDetailLoading, getOrderDetail, orderDetailList, cancelOrder, isOpenOrder = false } = props
+    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray, showDetailLoading, getOrderDetail, orderDetailList, cancelOrder, isOpenOrder = false, isScroll } = props
     const actionColumns = ['status']
     // const { language } = useSettings()
     // const [orderDetail, setOrderDetail] = useState([]);
@@ -636,7 +637,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                     handleFilterChange={handleFilterChange}/>
             </TableFilterStyled>
         )}
-        <Table {...{...defaultArgs, ...props, rawData, showloading: showLoading}} />
+        <Table className={isScroll ? 'scrollable' : undefined} {...{...defaultArgs, ...props, rawData, showloading: showLoading}} />
         <Modal
             open={modalState}
             onClose={() => setModalState(false)}
