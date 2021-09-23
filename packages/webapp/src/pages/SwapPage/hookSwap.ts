@@ -608,6 +608,8 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
                     // tokenA,
                     // tokenB,
                     // marketPrecision,
+                    sellPrecision: tokenMap[coinA as string].precision,
+                    buyPrecision: tokenMap[coinB as string].precision,
                     sellCoinInfoMap,
                     buyCoinInfoMap,
                     priceImpact: '',
@@ -799,10 +801,11 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
                     priceImpactColor: 'inherit',
                     minimumReceived: undefined,
                     fee: undefined,
+                    buyPrecision: tokenMap[tradeCalcData.coinBuy as string].precision,
+                    sellPrecision: tokenMap[tradeCalcData.coinSell as string].precision,
                 }
 
-                myLog('Exchange,tradeCalcData', tradeCalcData);
-                myLog('Exchange,_tradeCalcData', _tradeCalcData);
+                myLog('Exchange,tradeCalcData,_tradeCalcData', tradeCalcData,_tradeCalcData);
                 callPairDetailInfoAPIs()
                 updatePageTradeLite({market, tradePair: `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}`})
                 setTradeCalcData({..._tradeCalcData})
@@ -837,6 +840,8 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
         swapFunc,
         pageTradeLite,
         isSwapLoading,
+        // buyPrecision,
+        // sellPrecision,
     }
 
 }
