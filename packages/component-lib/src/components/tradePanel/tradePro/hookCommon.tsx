@@ -27,7 +27,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
     const quoteRef = React.useRef();
     const baseRef = React.useRef();
     const [selectedPercentage, setSelectedPercentage] = React.useState(0);
-    const [tabIndex, setTabIndex] = React.useState<TradeProType>(tradeData.type ?? TradeProType.sell);
+    const [tabIndex, setTabIndex] = React.useState<TradeProType>(tradeData.type ?? TradeProType.buy);
     const [inputError, setInputError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
         error: false,
         message: ''
@@ -71,7 +71,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
             isShowCoinIcon: false,
             ...tokenBaseProps,
             handleError: tabIndex === TradeProType.sell ? handleError : undefined,
-            maxAllow: tabIndex === TradeProType.sell ? true : false,
+            maxAllow: tabIndex === TradeProType.sell,
             // handleOnClick,
             ...rest
         }
@@ -88,7 +88,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
             isShowCoinIcon: false,
             ...tokenQuoteProps,
             handleError: tabIndex === TradeProType.buy ? handleError : undefined,
-            maxAllow: tabIndex === TradeProType.buy ? true : false,
+            maxAllow: tabIndex === TradeProType.buy,
 
 
             // handleOnClick,

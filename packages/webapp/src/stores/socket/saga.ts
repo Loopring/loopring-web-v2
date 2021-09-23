@@ -19,6 +19,7 @@ export function* sendMessage({payload}: any) {
         const {apiKey} = store.getState().account;
         const {socket} = payload;
         if (window.loopringSocket) {
+            // yield call(window.loopringSocket.socketSendMessage, {socket, apiKey})
             yield call(window.loopringSocket.socketSendMessage, {socket, apiKey})
         }
         yield put(getSocketStatus(undefined));

@@ -26,7 +26,7 @@ export const SpotView = withTranslation('common')(({
     // marketTicker:  MarketBlockProps<C>
 } & WithTranslation) => {
     const {pageTradePro} = usePageTradePro();
-    const [tabIndex, setTabIndex] = React.useState<TabIndex>(TabIndex.market);
+    const [tabIndex, setTabIndex] = React.useState<TabIndex>(TabIndex.limit);
     const {marketMap, tokenMap} = useTokenMap();
     //@ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
@@ -71,7 +71,7 @@ export const SpotView = withTranslation('common')(({
             <Divider style={{marginTop: '-1px'}}/>
             <Box flex={1} component={'section'}>
                 {tabIndex === TabIndex.limit && <LimitTrade
-                  disabled={false}
+                  // disabled={false}
                   tokenPriceProps={{
                       handleError: handlePriceError,
                       decimalsLimit: marketMap[ market ].precisionForPrice
@@ -87,7 +87,7 @@ export const SpotView = withTranslation('common')(({
                   tradeData={limitTradeData}
                   onChangeEvent={onChangeLimitEvent}/>}
                 {tabIndex === TabIndex.market && <MarketTrade
-                  disabled={false}
+                  // disabled={false}
                   tokenBaseProps={{disabled: isMarketLoading, decimalsLimit: tokenMap[ baseSymbol ].precision}}
                   tokenQuoteProps={{disabled: isMarketLoading, decimalsLimit: tokenMap[ quoteSymbol ].precision}}
                   tradeMarketI18nKey={tradeMarketI18nKey}

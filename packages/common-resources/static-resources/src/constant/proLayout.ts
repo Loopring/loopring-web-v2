@@ -60,10 +60,10 @@ const basicLayout = {
             {i:'toolbar',   x:0,y:0,w:12,h:9, minW:12,minH:9},
             {i:'walletInfo',x:0,y:10,w:4,h:23,minW:3,minH:22},
             {i:'spot',      x:0,y:14,w:4,h:71,minW:3,minH:70},
-            {i:'market',    x:4,y:10,w:3,h:94,minW:3,minH:58},
+            {i:'market',    x:4,y:10,w:3,h:58,minW:3,minH:58},
             {i:'market2',   x:0,y:0, w:0,h:0, minW:0,minH:0},
             {i:'chart',     x:7,y:10,w:5,h:58,minW:6,minH:32},
-            {i:'orderTable',x:7,y:64,w:5,h:36,minW:5,minH:36},
+            {i:'orderTable',x:7,y:64,w:8,h:36,minW:5,minH:36},
         ],
         'xxs': [
             {i:'toolbar',   x:0,y:0, w:6, h:9,  minW:6,minH:9},
