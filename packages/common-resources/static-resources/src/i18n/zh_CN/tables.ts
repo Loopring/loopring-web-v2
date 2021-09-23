@@ -47,6 +47,12 @@ export default {
     labelTradePrice: '价格',
     labelTradeFee: '费用',
     labelTradeTime: '交易时间',
+    labelTradeRole: '交易类型',
+    labelTradeRoleMaker: '挂单',
+    labelTradeRoleTaker: '吃单',
+    labelTradeConterparty: '交易对手方',
+    labelTradeCounterpartyOrderbook: '订单本',
+    labelTradeCounterpartyPool: '流动性矿池',
     labelTxFilterAllTypes: '所有类型',
     labelTxFilterDeposit: '充值',
     labelTxFilterWithdraw: '提现',
@@ -62,6 +68,7 @@ export default {
     labelTxTime: '时间',
     labelTxTxnHash: '交易哈希',
     labelTxStatus: '状态',
+    
     labelVolume: '交易量',
     labelTradePair: '交易对',
     labelPool: '资金池',
@@ -118,4 +125,6 @@ export default {
     labelOrderTypes: '订单类型',
     labelOrderChannels: '订单渠道',
     labelOrderCompletion: '成交比例',
+    labelRewardTableAmount: '奖励数量',
+    labelRewardTableTime: '时间',
 }

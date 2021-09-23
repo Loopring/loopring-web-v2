@@ -40,7 +40,7 @@ export type AmmRecordTableProps<T, R = AmmRecordRow<T>> = {
     currentheight?: number;
     rowHeight?: number;
     headerRowHeight?: number;
-    currency?: 'USD' | 'CYN';
+    currency?: 'USD' | 'CNY';
 }
 // rowHeight={RowConfig.rowHeight}
 // headerRowHeight={RowConfig.headerRowHeight}

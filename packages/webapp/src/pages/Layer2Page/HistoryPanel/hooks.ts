@@ -178,15 +178,30 @@ export function useGetTxs() {
 
 export function useGetTrades() {
     const [userTrades, setUserTrades] = React.useState<RawDataTradeItem[]>([])
+    const [userTradesTotal, setUserTradesTotal] = React.useState(0)
     const [showLoading, setShowLoading] = React.useState(true)
     const {account: {accountId, apiKey}} = useAccount()
 
     const tokenMap = store.getState().tokenMap.tokenMap
 
-    const getUserTradeList = React.useCallback(async () => {
+    const getUserTradeList = React.useCallback(async ({
+        market,
+        orderHash,
+        offset,
+        limit,
+        fromId,
+        fillTypes,
+    }) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey && tokenMap) {
+            setShowLoading(true)
             const userTrades = await LoopringAPI.userAPI.getUserTrades({
                 accountId,
+                market,
+                orderHash,
+                offset,
+                limit,
+                fromId,
+                fillTypes,
             }, apiKey)
 
             if (userTrades && userTrades.userTrades) {
@@ -194,17 +209,20 @@ export function useGetTrades() {
                 setUserTrades(userTrades.userTrades.map(o => {
                     return tradeItemToTableDataItem(o)
                 }))
-                setShowLoading(false)
+                setUserTradesTotal(userTrades.totalNum)
             }
+            setShowLoading(false)
         }
     }, [accountId, apiKey, tokenMap])
 
     React.useEffect(() => {
-        getUserTradeList()
+        getUserTradeList({})
     }, [getUserTradeList])
 
     return {
         userTrades,
+        userTradesTotal,
+        getUserTradeList,
         showLoading,
     }
 }
