@@ -139,6 +139,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
 
         const totalAmmRewardDollar = PriceTag.Dollar + getValuePrecisionThousand((rewardValue || 0) * (coinAPriceDollar || 0) + (rewardValue2 || 0) * (coinBPriceDollar || 0), undefined, undefined, 2, true, { isFait: true })
         const totalAmmRewardYuan = PriceTag.Yuan + getValuePrecisionThousand((rewardValue || 0) * (coinAPriceYuan || 0) + (rewardValue2 || 0) * (coinBPriceYuan || 0), undefined, undefined, 2, true, { isFait: true })
+        myLog({totalAmmRewardDollar, totalAmmRewardYuan, rewardValue, rewardValue2, coinAPriceDollar, coinBPriceDollar})
         // const orderbookRewardFaitDollar = rewardToken.simpleName === coinAInfo.simpleName ? coinAPriceDollar : coinBPriceDollar
         // const orderbookRewardFaitYuan = rewardToken.simpleName === coinAInfo.simpleName ? coinAPriceYuan : coinBPriceYuan
         const orderbookRewardDollar = PriceTag.Dollar + getValuePrecisionThousand((totalRewards || 0) * (rewardTokenDollar || 0), undefined, undefined, 2, true, { isFait: true })
