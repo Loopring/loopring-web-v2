@@ -145,7 +145,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 </ISBtn>
             </Grid>
             <Grid item className={'input-wrap input-wrap-right'}>
-                <IInput ref={inputEle} onValueChange={_handleContChange} value={
+                <IInput ref={inputEle} autoComplete="off" onValueChange={_handleContChange} value={
                     typeof sValue === 'undefined' ? '' : sValue
                 } allowNegativeValue={false}
                         name={name}
