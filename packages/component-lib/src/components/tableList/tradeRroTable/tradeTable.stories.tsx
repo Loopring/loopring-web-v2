@@ -2,7 +2,7 @@ import styled from '@emotion/styled'
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
-import { RawDataTradeItem, TradeTable } from './index'
+import { RawDataTradeItem, TradePro, } from './index'
 import { TradeTypes } from '@loopring-web/common-resources';
 
 const Style = styled.div`
@@ -23,7 +23,8 @@ const rawData: RawDataTradeItem[] = [
             to: {
                 key: 'ETH',
                 value: 1.05
-            }
+            },
+            volume:1111
         },
         price: {
             key: 'ETH',
@@ -45,7 +46,8 @@ const rawData: RawDataTradeItem[] = [
             to: {
                 key: 'ETH',
                 value: 25.73
-            }
+            },
+            volume:1111
         },
         price: {
             key: 'ETH',
@@ -67,7 +69,8 @@ const rawData: RawDataTradeItem[] = [
             to: {
                 key: 'ETH',
                 value: 1.05
-            }
+            },
+            volume:1111
         },
         price: {
             key: 'ETH',
@@ -78,28 +81,6 @@ const rawData: RawDataTradeItem[] = [
             value: 2.55
         },
         time: 0
-    },
-    {
-        side: TradeTypes.Sell,
-        amount: {
-            from: {
-                key: 'BTC',
-                value: 0.59
-            },
-            to: {
-                key: 'ETH',
-                value: 25.73
-            }
-        },
-        price: {
-            key: 'ETH',
-            value: 1785.65
-        },
-        fee: {
-            key: 'LRC',
-            value: 2.55
-        },
-        time: 3
     },
     {
         side: TradeTypes.Buy,
@@ -111,7 +92,8 @@ const rawData: RawDataTradeItem[] = [
             to: {
                 key: 'ETH',
                 value: 1.05
-            }
+            },
+            volume:1111
         },
         price: {
             key: 'ETH',
@@ -122,28 +104,6 @@ const rawData: RawDataTradeItem[] = [
             value: 2.55
         },
         time: 0
-    },
-    {
-        side: TradeTypes.Sell,
-        amount: {
-            from: {
-                key: 'BTC',
-                value: 0.59
-            },
-            to: {
-                key: 'ETH',
-                value: 25.73
-            }
-        },
-        price: {
-            key: 'ETH',
-            value: 1785.65
-        },
-        fee: {
-            key: 'LRC',
-            value: 2.55
-        },
-        time: 3
     },
     {
         side: TradeTypes.Buy,
@@ -155,7 +115,8 @@ const rawData: RawDataTradeItem[] = [
             to: {
                 key: 'ETH',
                 value: 1.05
-            }
+            },
+            volume:1111
         },
         price: {
             key: 'ETH',
@@ -166,28 +127,6 @@ const rawData: RawDataTradeItem[] = [
             value: 2.55
         },
         time: 0
-    },
-    {
-        side: TradeTypes.Sell,
-        amount: {
-            from: {
-                key: 'BTC',
-                value: 0.59
-            },
-            to: {
-                key: 'ETH',
-                value: 25.73
-            }
-        },
-        price: {
-            key: 'ETH',
-            value: 1785.65
-        },
-        fee: {
-            key: 'LRC',
-            value: 2.55
-        },
-        time: 3
     },
     {
         side: TradeTypes.Buy,
@@ -199,7 +138,8 @@ const rawData: RawDataTradeItem[] = [
             to: {
                 key: 'ETH',
                 value: 1.05
-            }
+            },
+            volume:1111
         },
         price: {
             key: 'ETH',
@@ -212,29 +152,7 @@ const rawData: RawDataTradeItem[] = [
         time: 0
     },
     {
-        side: TradeTypes.Sell,
-        amount: {
-            from: {
-                key: 'BTC',
-                value: 0.59
-            },
-            to: {
-                key: 'ETH',
-                value: 25.73
-            }
-        },
-        price: {
-            key: 'ETH',
-            value: 1785.65
-        },
-        fee: {
-            key: 'LRC',
-            value: 2.55
-        },
-        time: 3
-    },
-    {
-        side: TradeTypes.Sell,
+        side: TradeTypes.Buy,
         amount: {
             from: {
                 key: 'LRC',
@@ -243,7 +161,8 @@ const rawData: RawDataTradeItem[] = [
             to: {
                 key: 'ETH',
                 value: 1.05
-            }
+            },
+            volume:1111
         },
         price: {
             key: 'ETH',
@@ -253,7 +172,7 @@ const rawData: RawDataTradeItem[] = [
             key: 'LRC',
             value: 2.55
         },
-        time: 3
+        time: 0
     },
 ]
 
@@ -262,7 +181,7 @@ const Template: Story<any> = withTranslation()((args: any) => {
         <>
             <Style>
                 <MemoryRouter initialEntries={['/']}>
-                    <TradeTable {...args} />
+                    <TradePro {...args} />
                 </MemoryRouter>
             </Style>
         </>
@@ -281,7 +200,7 @@ Trade.args = {
 }
 
 export default {
-    title: 'components/TableList/Trade',
-    component: TradeTable,
+    title: 'components/TableList/TradePro',
+    component: TradePro,
     argTypes: {},
 } as Meta
