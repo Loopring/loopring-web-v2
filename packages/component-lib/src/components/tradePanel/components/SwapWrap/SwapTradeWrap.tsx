@@ -177,9 +177,9 @@ export const SwapTradeWrap = <T extends IBData<I>,
             {/*</Grid>*/}
             {/*<Grid item>*/}
             <Box alignSelf={"center"} marginY={1}>
-                <IconButtonStyled size={'large'} onClick={covertOnClick} color="inherit"
+                <IconButtonStyled size={'large'} onClick={covertOnClick}
                                   aria-label={t('tokenExchange')}>
-                    <ExchangeIcon fontSize={'large'}/>
+                    <ExchangeIcon fontSize={'large'} htmlColor={'var(--color-text-primary)'}/>
                 </IconButtonStyled>
             </Box>
             {/*</Grid>*/}

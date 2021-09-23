@@ -1,7 +1,7 @@
 import * as sdk from 'loopring-sdk';
-import { TradeChannel,OrderInfo } from 'loopring-sdk';
+import { OrderInfo } from 'loopring-sdk';
 import { MarketType, TradeCalcProData } from '@loopring-web/common-resources';
-import { Ticker, TickerMap } from '../../ticker';
+import { Ticker } from '../../ticker';
 import { RawDataTradeItem } from '@loopring-web/component-lib';
 
 export type PageTradePro<C> = {
@@ -9,7 +9,7 @@ export type PageTradePro<C> = {
     // tradePair?: MarketType  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
     request?: sdk.SubmitOrderRequestV3,
     tradeCalcProData: Partial<TradeCalcProData<keyof C>>
-    calcTradeParams?: {
+    calcTradeParams?:Partial< {
         exceedDepth: boolean;
         isReverse: boolean;
         isAtoB: boolean;
@@ -27,7 +27,7 @@ export type PageTradePro<C> = {
             minReceivedVal: string;
         };
         priceImpact: string;
-    } | null | undefined,
+    }> | null | undefined,
     priceImpactObj?: undefined | {    // account has activated or undefined
         value: number | string,
         priceImpactColor: string,

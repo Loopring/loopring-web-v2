@@ -12,7 +12,7 @@ import {
     WithdrawInfoProps as _WithdrawInfoProps,
     ExportAccountExtendProps,
 } from './components/Interface';
-import { SwapData, SwapTradeBaseEventProps, SwapTradeBaseProps, } from './components/SwapWrap/Interface';
+import { SwapData, SwapTradeBaseEventProps, SwapTradeBaseProps, } from './components';
 import { AmmPanelBaseProps } from './Amm';
 import {
     TradeBaseType,
@@ -102,6 +102,7 @@ export  type  AmmInfoProps<T, TW, I, ACD, C = IBData<I>> = AmmPanelBaseProps<T, 
 export type SwapProps<T, I, TCD> = {
     refreshRef: React.Ref<any>;
     onRefreshData?: () => void;
+    toPro?: () => void;     
     tradeData: SwapTradeData<T> | undefined,
     handleSwapPanelEvent: (data: SwapData<SwapTradeData<T>>, switchType: 'buyTomenu' | 'sellTomenu' | 'exchange' | 'buyTobutton' | 'sellTobutton') => Promise<void>,
     onChangeEvent?: (index: 0 | 1, data: SwapData<SwapTradeData<T>>) => SwapData<SwapTradeData<T>>,
