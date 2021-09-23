@@ -2,11 +2,11 @@ import styled from '@emotion/styled';
 import { Meta, Story } from '@storybook/react/types-6-0';
 import { MemoryRouter } from 'react-router-dom';
 import { Box, Collapse, Container, CssBaseline, GlobalStyles, Grid, IconButton, Paper, Toolbar, } from '@mui/material';
-import { Header, HideOnScroll } from '../header/Header'
+import { Header, HideOnScroll } from '../header'
 import { css, Theme, useTheme } from '@emotion/react';
 import { Button, SubMenu, SubMenuList as BasicSubMenuList } from '../basic-lib';
 import {
-    AmmData,
+    AmmExitData,
     AmmInData,
     globalCss,
     headerMenuData,
@@ -24,7 +24,7 @@ import {  withTranslation } from 'react-i18next';
 import { OrderHistoryTable as OrderHistoryTableUI } from '../tableList/orderHistoryTable'
 import {  AssetTitleProps } from '../block';
 import React from 'react';
-import { AssetTitle } from '../block/AssetTitle';
+import { AssetTitle } from '../block';
 import {
     AccountBasePanel,
     AccountBaseProps,
@@ -96,7 +96,7 @@ let withdrawProps: WithdrawProps<any, any> = {
     withdrawType: WithdrawType.Fast,
     withdrawTypes: WithdrawTypes,
     chargeFeeToken: 'ETH',
-    chargeFeeTokenList: [{belong: 'ETH', fee: 0.001}, {belong: 'LRC', fee: '1'}],
+    chargeFeeTokenList: [{belong: 'ETH', fee: 0.001,__raw__:''}, {belong: 'LRC', fee: '1',__raw__:''}] as any,
     handleOnAddressChange: (value: any) => {
         console.log('handleOnAddressChange', value);
     },
@@ -125,7 +125,7 @@ let transferProps: TransferProps<any, any> = {
         console.log(value)
     },
     chargeFeeToken: 'ETH',
-    chargeFeeTokenList: [{belong: 'ETH', fee: 0.001}, {belong: 'LRC', fee: '1'}],
+    chargeFeeTokenList:[{belong: 'ETH', fee: 0.001,__raw__:''}, {belong: 'LRC', fee: '1',__raw__:''}] as any,
     handleOnAddressChange: (value: any) => {
         console.log('handleOnAddressChange', value);
     },
@@ -133,23 +133,18 @@ let transferProps: TransferProps<any, any> = {
         return {error: true, message: 'any error'}
     }
 }
-let resetProps: ResetProps<any, any> = {
-    tradeData,
-    coinMap,
-    walletMap,
+let resetProps: ResetProps<any> = {
+    chargeFeeTokenList: [],
+    // tradeData,
+    assetsData:[],
+    // walletMap,
     resetBtnStatus: TradeBtnStatus.AVAILABLE,
-    onResetClick: (tradeData: SwapTradeData<CoinType>) => {
+    onResetClick: () => {
         console.log('Swap button click', tradeData);
     },
-    handlePanelEvent: async (props: SwitchData<any>, switchType: 'Tomenu' | 'Tobutton') => {
-        return new Promise((res) => {
-            setTimeout(() => {
-                console.log('wait 100, with props', props, switchType);
-                res();
-            }, 500)
-        })
-    },
-    fee: {count: 234, price: 123}
+    handleFeeChange: async (value: any) => {
+        console.log(value)
+    }
 }
 let swapProps: SwapProps<IBData<string>, string, any> = {
     refreshRef: React.createRef(),
@@ -162,11 +157,12 @@ let swapProps: SwapProps<IBData<string>, string, any> = {
         console.log(data, switchType)
     }
 };
-let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
+let ammProps: AmmProps<AmmExitData<IBData<any>>, any, AmmInData<any>, any> = {
     refreshRef: React.createRef(),
     ammDepositData: {
         coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
         coinB: {belong: 'LRC', balance: 1000, tradeValue: 0},
+        coinLP: {belong: 'LP-ETH-LRC', balance: 1000, tradeValue: 0},
         slippage: '',
     },
     ammWithdrawData: {
@@ -177,23 +173,27 @@ let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
     // tradeCalcData,
     ammCalcDataDeposit: ammCalcData,
     ammCalcDataWithDraw: ammCalcData,
-    handleAmmAddChangeEvent: (data, type) => {
+    handleAmmAddChangeEvent: (data: any, type: any) => {
         console.log('handleAmmAddChangeEvent', data, type);
     },
-    handleAmmRemoveChangeEvent: (data, type) => {
-        console.log('handleAmmRemoveChangeEvent', data, type);
+    handleAmmRemoveChangeEvent: (data: any) => {
+        console.log('handleAmmRemoveChangeEvent', data);
     },
-    onAmmRemoveClick: (data) => {
+    onAmmRemoveClick: (data: any) => {
         console.log('onAmmRemoveClick', data);
     },
-    onAmmAddClick: (data) => {
+    onAmmAddClick: (data: any) => {
         console.log('onAmmAddClick', data);
     }
 }
 
 const ModalPanelWrap = () => {
     return <ModalPanel transferProps={transferProps} withDrawProps={withdrawProps} depositProps={depositProps}
-                       resetProps={resetProps} ammProps={ammProps} swapProps={swapProps}/>
+                       resetProps={resetProps}
+                       ammProps={ammProps as AmmProps<any, any, any, any>}
+                       swapProps={swapProps} assetsData={resetProps as any}
+                       exportAccountProps={{} as any}
+                       setExportAccountToastOpen={{} as any} />
 }
 
 const AssetTitleWrap = (rest: any) => {
@@ -202,13 +202,17 @@ const AssetTitleWrap = (rest: any) => {
     // const [isDepositShow, setIsDepositShow] = React.useState(false)
     // const [isWithdrawShow, setIsWithdrawShow] = React.useState(false)
     const AssetTitleProps: AssetTitleProps = {
+        hideL2Assets: false,
+        setHideL2Assets(value: boolean): void {
+            console.log(value)
+        },
         assetInfo: {
             totalAsset: 123456.789,
             priceTag: PriceTag.Dollar,
         },
         onShowWithdraw: () => dispatch(setShowDeposit({isShow: true})),
         onShowTransfer: () => dispatch(setShowTransfer({isShow: true})),
-        onShowDeposit: () => dispatch(setShowWithdraw({isShow: true})),
+        onShowDeposit: () => dispatch(setShowWithdraw({isShow: true}))
     }
     return <>
         <Grid item xs={12}>
@@ -242,6 +246,8 @@ const Layer2Wrap = withTranslation('common')(({t,...rest}:any) => {
       }
     ` as typeof Paper;
     const accountInfoProps: AccountBaseProps = {
+        keySeed: '',
+        qrCodeUrl: '',
         accAddress: '0x123567243o24o242423098784',
         accountId: 0,
         apiKey: '',
@@ -281,7 +287,7 @@ const Layer2Wrap = withTranslation('common')(({t,...rest}:any) => {
         <CssBaseline />
         <HideOnScroll>
             <Header headerMenuData={headerMenuData} headerToolBarData={headerToolBarData}
-                    selected={'markets'}></Header>
+    selected={'markets'}/>
         </HideOnScroll>
         <Toolbar/>
         <ModalPanelWrap/>
@@ -322,17 +328,17 @@ const Template: Story<any> = () => {
     const theme: Theme = useTheme();
     console.log(theme.mode)
     return <> <MemoryRouter initialEntries={['/']}><GlobalStyles styles={css`
-      ${globalCss({theme})};
+  ${globalCss({theme})};
 
-      body:before {
-        ${theme.mode === 'dark' ? `
+  body:before {
+    ${theme.mode === 'dark' ? `
             color: ${theme.colorBase.textPrimary};        
            
             background: var(--color-global-bg);
        ` : ''}
-      }
-    }
-    `}></GlobalStyles>
+  }
+}
+`}/>
         <Style>
             <Layer2Wrap/>
         </Style>

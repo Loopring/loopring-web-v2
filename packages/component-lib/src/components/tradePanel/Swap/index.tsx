@@ -1,12 +1,13 @@
 import { SwapProps, SwapTradeData } from '../Interface';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import React from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
-import { IBData, TradeCalcData } from '@loopring-web/common-resources';
+import { IBData, ProToLiteIcon, TradeCalcData } from '@loopring-web/common-resources';
 import { SwapData, SwapMenuList, SwapTradeWrap } from '../components';
 import { CountDownIcon } from '../components/tool/Refresh';
 import * as _ from 'lodash'
+import { IconButtonStyled } from '../components/Styled';
 
 export const SwapPanel = withTranslation('common', {withRef: true})(<T extends IBData<I>,
     I,
@@ -19,6 +20,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                                       handleSwapPanelEvent,
                                       handleError,
                                       onSwapClick,
+    toPro,
                                       onRefreshData,
                                       refreshRef,
                                       ...rest
@@ -55,7 +57,6 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
         }
 
     }
-
     const [index, setIndex] = React.useState(0);
     const [swapData, setSwapData] = React.useState<SwapData<SwapTradeData<T>>>({
         to: 'button',
@@ -153,7 +154,16 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                     tokenBuyProps,
                     handleError]),
                 toolBarItem: React.useMemo(() => <Grid container justifyContent={'flex-end'}>
-                    <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef}/>
+                   <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef}/>
+                   <Typography display={'inline-block'} marginLeft={2}>
+                       <IconButtonStyled onClick={toPro}
+                                         className={'switch outline'}
+                                         size={'large'}
+                                         aria-label="to Professional">
+                           <ProToLiteIcon color={'primary'} fontSize={'large'} />
+                       </IconButtonStyled>
+                   </Typography>
+
                 </Grid>, [onRefreshData])
             },
             {

@@ -21,17 +21,16 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
     // marketTicker: MarketBlockProps<C> |undefined,
 } => {
     const {t} = useTranslation();
-    const {tokenMap, marketCoins, coinMap, marketArray, marketMap,} = useTokenMap();
+    const {tokenMap, marketArray, marketMap,} = useTokenMap();
     const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
     const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
     const {toastOpen, setToastOpen, closeToast} = useToast();
-    const {account, status: accountStatus} = useAccount();
+    const {account} = useAccount();
     const {slippage} = useSettings()
     // const [marketTradeData, setMarketTradeData] = React.useState<MarketTradeData<IBData<C>> | undefined>(undefined);
     const {
         pageTradePro,
         updatePageTradePro,
-        __DAYS__,
         __SUBMIT_LOCK_TIMER__,
         __TOAST_AUTO_CLOSE_TIMER__
     } = usePageTradePro();
@@ -124,7 +123,9 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
         myLog('marketRequest:', request)
 
-        updatePageTradePro({ market, request: request?.marketRequest, calcTradeParams: request?.calcTradeParams, })
+        updatePageTradePro({
+            market, request: request?.marketRequest, calcTradeParams: request?.calcTradeParams
+        })
     
     }, [])
 
@@ -147,7 +148,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             }
 
             const baseToken = tokenMap[ marketTradeData?.base.belong as string ]
-            const quoteToken = tokenMap[ marketTradeData?.quote.belong as string ]
+            // const quoteToken = tokenMap[ marketTradeData?.quote.belong as string ]
             try {
 
                 const req: sdk.GetNextStorageIdRequest = {
@@ -233,8 +234,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             const validAmt = !!(calcTradeParams?.amountBOut && minAmt
                 && sdk.toBig(calcTradeParams?.amountBOut).gte(sdk.toBig(minAmt)));
 
-            if (marketTradeData === undefined
-                || marketTradeData?.base.tradeValue === undefined
+            if (marketTradeData?.base.tradeValue === undefined
                 || marketTradeData?.quote.tradeValue === undefined
                 || marketTradeData?.base.tradeValue === 0
                 || marketTradeData?.quote.tradeValue === 0) {

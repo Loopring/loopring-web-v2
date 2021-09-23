@@ -23,16 +23,16 @@ export const IconClearStyled = styled(IconButton)`
 
 export const IconButtonStyled = styled(IconButton)`
   &.MuiButtonBase-root {
-    svg {
-      color: var(--color-text-primary);
-    }
+    //svg {
+    //  color: var(--color-text-primary);
+    //}
   }
 
   .MuiToolbar-root &.MuiButtonBase-root {
     svg {
-      font-size: ${({theme}) => theme.fontDefault.h4};
-      height: var(--btn-icon-size-small);
-      width: var(--btn-icon-size-small);
+      //font-size: ${({theme}) => theme.fontDefault.h4};
+      //height: var(--btn-icon-size-small);
+      //width: var(--btn-icon-size-small);
 
     }
 
@@ -105,11 +105,9 @@ const cssAutoRefresh = (_props: any) => css`
     }
   }
 `
-//      //background-image: url("data:image/svg+xml,%3Csvg width='34' height='27' viewBox='0 0 34 27' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fillRule='evenodd' clipRule='evenodd' d='M19.354 12.7874H33.4527V12.8709L11.4393 26.1381L22.351 17.5019L19.354 12.7874ZM11.1439 0V26.3259L0 17.5228L11.1439 0Z' fill='%231C60FF'/%3E%3C/svg%3E%0A");
 export const CountDownStyled = styled(Box)`
   ${({theme}) => cssAutoRefresh({theme})}
   width: var(--btn-icon-size);
-  height: var(--btn-icon-size);
   height: var(--btn-icon-size);
   position: relative;
   background-size: 68%;

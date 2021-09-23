@@ -38,6 +38,7 @@ import { myLog } from '@loopring-web/common-resources';
 import { calcPriceByAmmTickMapDepth, marketInitCheck, reCalcStoB, swapDependAsync } from './help';
 import { useTicker } from '../../stores/ticker';
 import store from '../../stores';
+import { useHistory } from 'react-router-dom';
 
 const useSwapSocket = () => {
     const {sendSocketTopic, socketEnd} = useSocket();
@@ -116,6 +117,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
     const {status: walletLayer2Status} = useWalletLayer2();
     /*** api prepare ***/
     const {t} = useTranslation('common')
+    const history  = useHistory();
     const refreshRef = React.createRef();
     const [pair, setPair] = React.useState(realPair);
     const [market, setMarket] = React.useState<MarketType>(realMarket as MarketType);
@@ -407,6 +409,11 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
         }
 
     }, [market, setTradeArray])
+    const toPro = React.useCallback(() => {
+        history.push({
+            pathname: `/trading/pro/${market}`
+        })
+    },[market]);
 
     const should15sRefresh = React.useCallback(() => {
         // myLog('should15sRefresh', market);
@@ -840,6 +847,8 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
         swapFunc,
         pageTradeLite,
         isSwapLoading,
+        market,
+        toPro,
         // buyPrecision,
         // sellPrecision,
     }
