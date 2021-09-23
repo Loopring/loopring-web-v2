@@ -85,7 +85,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                         {tradeFloat.close ? (
                             <Box height={24} display={'flex'} alignItems={'center'}
                                         className={`float-tag float-${tradeFloat.floatTag}`}>
-                                <Typography variant={'h4'}>{getValuePrecisionThousand(tradeFloat?.close, marketPrecision, marketPrecision)}
+                                <Typography variant={'h4'}>{getValuePrecisionThousand(tradeFloat?.close, undefined, undefined, marketPrecision, true, {isPrice: true})}
                                 </Typography>
                               <Typography color={'var(--color-text-secondary)'} marginX={1 / 4}>&#8776;</Typography>
                               <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
@@ -107,7 +107,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
 
                 </Grid>
                 <Grid item position={'absolute'} top={0} right={0} width={90} height={36}>
-                    <ScaleAreaChart isHeadTailCompare showTooltip={false} showArea={false} type={ChartType.Trend} data={chartData}/>
+                    <ScaleAreaChart isHeadTailCompare showTooltip={false} showArea={true} type={ChartType.Trend} data={chartData}/>
                 </Grid>
             </Grid> : <></>
         } </MarketBlockStyled>

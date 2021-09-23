@@ -26,6 +26,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        handleCountChange,
                                                                        focusOnInput,
                                                                        name,
+                                                                       decimalsLimit = 8,
                                                                        size = InputSize.middle,
                                                                        isHideError = false,
                                                                        isShowCoinInfo = true,
@@ -144,9 +145,10 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 <IInput ref={inputEle} autoComplete="off" onValueChange={_handleContChange} value={
                     typeof sValue === 'undefined' ? '' : sValue
                 } allowNegativeValue={false}   name={name}
+                        decimalsLimit={decimalsLimit}
                         disabled={!(!disabled || belong)}
                         placeholder={placeholderText}
-                        aria-placeholder={placeholderText} aria-label={label} decimalsLimit={10000000}/>
+                        aria-placeholder={placeholderText} aria-label={label}/>
                 <label/>
             </Grid>
         </Grid>

@@ -12,6 +12,7 @@ import {
     WarningIcon,
     CompleteIcon,
     getValuePrecisionThousand,
+    myLog,
 } from '@loopring-web/common-resources'
 import { Filter } from './components/Filter'
 import { TxnDetailPanel, TxnDetailProps } from './components/modal'
@@ -190,7 +191,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
             : currFilterToken
         const formattedType = currFilterType.toUpperCase()
         const types = currFilterType === TransactionTradeTypes.allTypes 
-            ? '' 
+            ? 'deposit,transfer,offchain_withdrawal'
             : formattedType === TransactionTradeTypes.deposit
                 ? 'deposit'
                 : formattedType === TransactionTradeTypes.transfer
@@ -281,7 +282,7 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
                 const feePrecision = row['feePrecision']
                 // const hasValue = fee ? Number.isFinite(fee.value) : ''
                 // const renderValue = hasValue && fee.value !== 0 ? `${fee.value.toFixed(6)} ${fee.unit}` : EmptyValueTag
-                const renderValue = `${getValuePrecisionThousand(fee.value, feePrecision, feePrecision, undefined, false, { floor: false })} ${fee.unit}`
+                const renderValue = `${getValuePrecisionThousand(fee.value, undefined, undefined, undefined, false, { floor: false, isTrade: true })} ${fee.unit}`
                 return (
                     <Box className="rdg-cell-value textAlignRight">
                         {renderValue}
@@ -319,7 +320,8 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
                 
                 const receiver = txType === TxType.TRANSFER ? receiverAddress 
                 : txType === TxType.OFFCHAIN_WITHDRAWAL ? recipient : ''
-
+                myLog('feeDetail', getValuePrecisionThousand(fee.value, undefined, undefined, undefined, false, { isTrade: true, floor: false }))
+                myLog('amountDetail', getValuePrecisionThousand(amount.value, undefined, undefined, undefined, false, { isTrade: true }))
                 const formattedDetail = {
                     txType,
                     hash,
@@ -328,8 +330,8 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
                     time,
                     from: senderAddress,
                     to: receiver,
-                    fee: `${fee.value} ${fee.unit}`,
-                    amount: `${amount.value} ${amount.unit}`,
+                    fee: `${getValuePrecisionThousand(fee.value, undefined, undefined, undefined, false, { isTrade: true, floor: false })} ${fee.unit}`,
+                    amount: `${getValuePrecisionThousand(amount.value, undefined, undefined, undefined, false, { isTrade: true })} ${amount.unit}`,
                     memo,
                     etherscanBaseUrl,
                 }

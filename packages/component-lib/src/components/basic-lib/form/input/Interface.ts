@@ -14,6 +14,7 @@ export type InputButtonProps<T, R, I> = {
     emptyText: string,
     coinMap: CoinMap<R, I extends CoinInfo<R> ? CoinInfo<R> : CoinInfo<R>>,
     placeholderText?: string,
+    decimalsLimit?:number
     isAllowBalanceClick?: boolean,
     maxAllow?: boolean,
     disabled?: boolean,
@@ -37,6 +38,7 @@ export type InputCoinProps<T, R, I> = {
     coinMap: CoinMap<R, I extends CoinInfo<R> ? CoinInfo<R> : CoinInfo<R>>,
     placeholderText?: string,
     maxAllow?: boolean,
+    decimalsLimit?:number
     disabled?: boolean,
     logoColor?: string,
     wait?: number,

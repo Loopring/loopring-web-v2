@@ -32,6 +32,7 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
         swapFunc,
         isSwapLoading,
         pageTradeLite,
+
     } = useSwap({path:'/trading/lite'});
 
     return <>
@@ -53,8 +54,8 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
             <FixedStyle>
                 <SwapPanel
                     //disabled={isSwapLoading}
-                    tokenBuyProps={{disabled: isSwapLoading}}
-                    tokenSellProps={{disabled: isSwapLoading}}
+                    tokenBuyProps={{disabled: isSwapLoading, decimalsLimit: tradeCalcData.buyPrecision}}
+                    tokenSellProps={{disabled: isSwapLoading, decimalsLimit: tradeCalcData.sellPrecision}}
                     onRefreshData={should15sRefresh}
                     refreshRef={refreshRef}
                     tradeData={tradeData as any}
