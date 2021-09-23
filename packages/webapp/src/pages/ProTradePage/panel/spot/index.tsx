@@ -30,6 +30,7 @@ export const SpotView = withTranslation('common')(({
         toastOpenL, closeToastL, limitTradeData, onChangeLimitEvent,
         tradeLimitI18nKey,
         tradeLimitBtnStatus,
+        tradeLimitBtnStyle,
         limitBtnClick,
         isLimitLoading,
     } = useLimit(market)
@@ -38,10 +39,10 @@ export const SpotView = withTranslation('common')(({
         marketTradeData, onChangeMarketEvent,
         tradeMarketI18nKey,
         tradeMarketBtnStatus,
+        tradeMarketBtnStyle,
         marketSubmit,
         marketBtnClick,
         isMarketLoading,
-
     } = useMarket(market)
     return <>
         <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'}
@@ -66,9 +67,11 @@ export const SpotView = withTranslation('common')(({
             <Box flex={1} component={'section'}>
                 {tabIndex === TabIndex.limit && <LimitTrade
                   disabled={false}
+
                   tokenBaseProps={{disabled: isLimitLoading}}
                   tokenQuoteProps={{disabled: isLimitLoading}}
                   tradeLimitI18nKey={tradeLimitI18nKey}
+                  tradeLimitBtnStyle={tradeLimitBtnStyle}
                   tradeLimitBtnStatus={tradeLimitBtnStatus}
                   handleSubmitEvent={limitBtnClick}
                   tradeCalcProData={pageTradePro.tradeCalcProData}
@@ -79,6 +82,8 @@ export const SpotView = withTranslation('common')(({
                   tokenBaseProps={{disabled: isMarketLoading}}
                   tokenQuoteProps={{disabled: isMarketLoading}}
                   tradeMarketI18nKey={tradeMarketI18nKey}
+                  tradeMarketBtnStyle={tradeMarketBtnStyle}
+                    // tradeLimitBtnStyle={tradeLimitBtnStyle}
                   tradeMarketBtnStatus={tradeMarketBtnStatus}
                   handleSubmitEvent={marketBtnClick}
                   tradeCalcProData={pageTradePro.tradeCalcProData}

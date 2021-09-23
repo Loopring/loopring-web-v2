@@ -17,18 +17,18 @@ import { VolToNumberWithPrecision } from 'utils/formatter_tool';
 import { usePlaceOrder } from 'pages/SwapPage/swap_hook';
 import store from 'stores';
 
-export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType):{
-    [key: string]: any;
+export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType): {
+    [ key: string ]: any;
     // market: MarketType|undefined;
     // marketTicker: MarketBlockProps<C> |undefined,
-} =>{
+} => {
     const {t} = useTranslation();
-    const {tokenMap,marketCoins,coinMap, marketArray, marketMap, } = useTokenMap();
+    const {tokenMap, marketCoins, coinMap, marketArray, marketMap,} = useTokenMap();
     const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
     const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
     const {toastOpen, setToastOpen, closeToast} = useToast();
     const {account, status: accountStatus} = useAccount();
-    const {slippage} =useSettings()
+    const {slippage} = useSettings()
     // const [marketTradeData, setMarketTradeData] = React.useState<MarketTradeData<IBData<C>> | undefined>(undefined);
     const {
         pageTradePro,
@@ -54,17 +54,17 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
                 belong: quoteSymbol,
                 balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
             } as IBData<any>,
-            slippage: slippage&&slippage!=='N'?slippage:0.5,
+            slippage: slippage && slippage !== 'N' ? slippage : 0.5,
             type: TradeProType.sell
         } : {
             base: {belong: baseSymbol} as IBData<any>,
             quote: {belong: quoteSymbol} as IBData<any>,
-            slippage: slippage&&slippage!=='N'?slippage:0.5,
+            slippage: slippage && slippage !== 'N' ? slippage : 0.5,
             type: TradeProType.sell
         }
     )
-    React.useEffect(()=>{
-        setMarketTradeData(  pageTradePro.market === market ?{
+    React.useEffect(() => {
+        setMarketTradeData(pageTradePro.market === market ? {
             base: {
                 belong: baseSymbol,
                 balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
@@ -73,18 +73,18 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
                 belong: quoteSymbol,
                 balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
             } as IBData<any>,
-            slippage: slippage&&slippage!=='N'?slippage:0.5,
+            slippage: slippage && slippage !== 'N' ? slippage : 0.5,
             type: TradeProType.sell
         } : {
             base: {belong: baseSymbol} as IBData<any>,
             quote: {belong: quoteSymbol} as IBData<any>,
-            slippage: slippage&&slippage!=='N'?slippage:0.5,
+            slippage: slippage && slippage !== 'N' ? slippage : 0.5,
             type: TradeProType.sell
         })
     },[ pageTradePro.market,
         pageTradePro.tradeCalcProData.walletMap])
 
-    const { makeMarketReqInHook } = usePlaceOrder()
+    const {makeMarketReqInHook} = usePlaceOrder()
 
     const onChangeMarketEvent = React.useCallback((tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType) => {
 
@@ -104,7 +104,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
         let amountBase = formType === TradeBaseType.base ? tradeData.base.tradeValue : undefined
         let amountQuote = formType === TradeBaseType.quote ? tradeData.quote.tradeValue : undefined
         let slippage = sdk.toBig(tradeData.slippage ? tradeData.slippage : '0.5').times(100).toString();
-        
+
         const request = makeMarketReqInHook({
             isBuy: tradeData.type === 'buy',
             base: tradeData.base.belong,
@@ -196,7 +196,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
                     });
                     updatePageTradePro({
                         market: market as MarketType,
-                        tradeCalcProData:{
+                        tradeCalcProData: {
                             ...tradeCalcProData,
                             minimumReceived: undefined,
                             priceImpact: undefined,
@@ -220,43 +220,43 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
         }
 
     }, [account.readyState, pageTradePro, tokenMap, marketTradeData, setIsMarketLoading, setToastOpen, setMarketTradeData])
-    const availableTradeCheck = React.useCallback((): { tradeBtnStatus:TradeBtnStatus,label:string }=> {
-        let {calcTradeParams,quoteMinAmtInfo,baseMinAmtInfo} = pageTradePro;
+    const availableTradeCheck = React.useCallback((): { tradeBtnStatus: TradeBtnStatus, label: string } => {
+        let {calcTradeParams, quoteMinAmtInfo, baseMinAmtInfo} = pageTradePro;
         if (account.readyState === AccountStatus.ACTIVATED) {
-            const type =  marketTradeData.type === TradeProType.sell ? 'quote':'base';
-            const minAmt =  type === 'quote' ? quoteMinAmtInfo?.minAmount:baseMinAmtInfo?.minAmount;
+            const type = marketTradeData.type === TradeProType.sell ? 'quote' : 'base';
+            const minAmt = type === 'quote' ? quoteMinAmtInfo?.minAmount : baseMinAmtInfo?.minAmount;
             const validAmt = !!(calcTradeParams?.amountBOut && minAmt
                 && toBig(calcTradeParams?.amountBOut).gte(toBig(minAmt)));
 
-                if (marketTradeData === undefined
-                    || marketTradeData?.base.tradeValue === undefined
-                    || marketTradeData?.quote.tradeValue === undefined
-                    || marketTradeData?.base.tradeValue === 0
-                    || marketTradeData?.quote.tradeValue === 0) {
-                    return { tradeBtnStatus:TradeBtnStatus.DISABLED,label:'labelEnterAmount' }
-                } else if (validAmt || minAmt === undefined) {
-                    return { tradeBtnStatus:TradeBtnStatus.AVAILABLE,label:'' }
-                } else {
-                    const symbol:string = marketTradeData[type].belong;
-                    const minOrderSize = VolToNumberWithPrecision(minAmt, symbol) + ' ' + symbol;
-                    return { tradeBtnStatus:TradeBtnStatus.DISABLED,label:`labelLimitMin, ${minOrderSize}` }
-                }
+            if (marketTradeData === undefined
+                || marketTradeData?.base.tradeValue === undefined
+                || marketTradeData?.quote.tradeValue === undefined
+                || marketTradeData?.base.tradeValue === 0
+                || marketTradeData?.quote.tradeValue === 0) {
+                return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: 'labelEnterAmount'}
+            } else if (validAmt || minAmt === undefined) {
+                return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
+            } else {
+                const symbol: string = marketTradeData[ type ].belong;
+                const minOrderSize = VolToNumberWithPrecision(minAmt, symbol) + ' ' + symbol;
+                return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin, ${minOrderSize}`}
             }
-        return { tradeBtnStatus:TradeBtnStatus.AVAILABLE,label:'' }
+        }
+        return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
     }, [account.readyState, pageTradePro, marketTradeData])
 
     const {
-        btnStatus:tradeMarketBtnStatus ,
-        onBtnClick:marketBtnClick,
-        btnLabel:tradeMarketBtnI18nKey,
+        btnStatus: tradeMarketBtnStatus,
+        onBtnClick: marketBtnClick,
+        btnLabel: tradeMarketI18nKey,
+        btnStyle: tradeMarketBtnStyle
         // btnClickCallbackArray
-    } =  useSubmitBtn({
+    } = useSubmitBtn({
         availableTradeCheck: availableTradeCheck,
-        isLoading:isMarketLoading,
-        submitCallback: marketSubmit,
-        marketTradeData
+        isLoading: isMarketLoading,
+        submitCallback: marketSubmit
     })
-    
+
     return {
         alertOpen,
         confirmOpen,
@@ -267,8 +267,9 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
         marketTradeData,
         onChangeMarketEvent,
         tradeMarketBtnStatus,
-        tradeMarketBtnI18nKey,
+        tradeMarketI18nKey,
         marketBtnClick,
+        tradeMarketBtnStyle
         // marketTicker,
     }
 }
