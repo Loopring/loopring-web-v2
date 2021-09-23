@@ -2,7 +2,7 @@ import React from 'react'
 import { withTranslation, TFunction } from 'react-i18next';
 import { Tabs, Tab, Box, Divider } from '@mui/material'
 import { OrderHistoryTable } from '@loopring-web/component-lib'
-import { useOrderList } from '../spot/hookTable'
+import { useOrderList } from './hookTable'
 
 export  const OrderTableView = withTranslation('common')(<C extends { [ key: string ]: any }>({
     t,

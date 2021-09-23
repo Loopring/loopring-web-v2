@@ -1,7 +1,6 @@
 import * as sdk from 'loopring-sdk'
 import BigNumber from 'bignumber.js'
 import { getValuePrecisionThousand } from './util';
-import { myLog } from './log_tools';
 
 export function getShowStr(rawVal: string | number | undefined, fixed: number = 2, precision: number = 4) {
     if (rawVal === '0' || rawVal === 0)
@@ -49,20 +48,20 @@ function genABViewData({precisionForPrice,amtSlice, amtTotalSlice, priceSlice, b
     amtTotalSlice = amtTotalSlice.reverse()
     priceSlice = priceSlice.reverse()
 
-    const viewData:DepthViewData[] = amtTotalSlice.reduce((prv,value: string, ind: number) => {
-        if( amtSlice[ind] && amtSlice[ind].amt ){
-            const amt = amtSlice[ind].amt
+    return amtTotalSlice.reduce((prv, value: string, ind: number) => {
+        if (amtSlice[ ind ] && amtSlice[ ind ].amt) {
+            const amt = amtSlice[ ind ].amt
             // console.log(amt)
-            const amtForShow =  getValuePrecisionThousand(sdk.toBig(amt).div('1e' + baseDecimal),
+            const amtForShow = getValuePrecisionThousand(sdk.toBig(amt).div('1e' + baseDecimal),
                 undefined, undefined, precisionForPrice, true)
-            const amtTotalForShow =  getValuePrecisionThousand(sdk.toBig(value).div('1e' + baseDecimal),
+            const amtTotalForShow = getValuePrecisionThousand(sdk.toBig(value).div('1e' + baseDecimal),
                 undefined, undefined, precisionForPrice, true)
             const percentage = maxVal.gt(sdk.toBig(0)) ? sdk.toBig(value).div(maxVal).toNumber() : 0
             prv.push({
-                price: priceSlice[ind],
+                price: priceSlice[ ind ],
                 amt,
                 amtForShow,
-                amtTotal: amtTotalSlice[ind],
+                amtTotal: amtTotalSlice[ ind ],
                 amtTotalForShow,
                 percentage,
             })
@@ -73,9 +72,7 @@ function genABViewData({precisionForPrice,amtSlice, amtTotalSlice, priceSlice, b
         // myLog('value:', value, ' maxVal:', maxVal.toString(), percentage)
 
 
-    },[] as DepthViewData[])
-
-    return viewData
+    }, [] as DepthViewData[])
 
 }
 
