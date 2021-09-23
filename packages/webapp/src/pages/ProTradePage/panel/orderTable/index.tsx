@@ -4,5 +4,6 @@ export  const OrderTableView = withTranslation('common')(<C extends { [ key: str
 
 })=>{
     return <>
+        test
     </>
 })

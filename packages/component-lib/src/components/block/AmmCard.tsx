@@ -236,7 +236,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                         {getValuePrecisionThousand(APR, 2, 2, 2, true) + '%' || EmptyValueTag}
                     </Typography>)}
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'} marginTop={1}
-                                style={{textTransform: 'uppercase'}}>{isOrderbook ? t('labelMiningReward'): t('labelAPY')}</Typography>
+                                style={{textTransform: 'uppercase'}}>{isOrderbook ? t('labelMiningReward'): t('labelAPR')}</Typography>
                 </Typography>
 
                 <DividerWrapperStyled marginTop={3} marginBottom={2}>
