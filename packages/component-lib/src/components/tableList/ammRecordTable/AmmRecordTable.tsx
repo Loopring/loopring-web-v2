@@ -51,7 +51,7 @@ const TableStyled = styled(Box)`
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as (props: { currentheight?:number } & BoxProps) => JSX.Element;
 
-const columnMode = ({t}: WithTranslation, currency: 'USD' | 'CYN'): Column<Row<any>, unknown>[] => [
+const columnMode = ({t}: WithTranslation, currency: 'USD' | 'CNY'): Column<Row<any>, unknown>[] => [
     {
         key: 'style',
         sortable: false,

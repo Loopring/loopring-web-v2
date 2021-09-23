@@ -88,7 +88,7 @@ const MyLiquidity: any = withTranslation('common')(
             <>
                 <Grid container spacing={2} >
                     <Grid item sm={12} >
-                        <StyleWrapper container   className={'MuiPaper-elevation2'} paddingY={3} paddingX={4} margin={0} display={'flex'}>
+                        <StyleWrapper container className={'MuiPaper-elevation2'} paddingY={3} paddingX={4} margin={0} display={'flex'}>
                             <Grid item display={'flex'} flexDirection={'column'} sm={3}>
                                 <Typography variant={'h5'}
                                             color={'textSecondary'}

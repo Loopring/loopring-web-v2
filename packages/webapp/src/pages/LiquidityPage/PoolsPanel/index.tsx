@@ -5,7 +5,7 @@ import styled from '@emotion/styled'
 import React from 'react';
 import { useAmmMapUI } from './hook';
 
-import { PoolsTable } from '@loopring-web/component-lib';
+import { PoolsTable, InputSearch } from '@loopring-web/component-lib';
 import { SearchIcon } from '@loopring-web/common-resources'
 import { useSettings } from '@loopring-web/component-lib';
 import { useSystem } from 'stores/system';
@@ -36,10 +36,11 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
 ({t, ...rest}: WithTranslation
     & {}) => {
     const container = React.useRef(null);
-    const {filteredData, sortMethod, tableHeight, getFilteredData, filterValue } = useAmmMapUI();
+    const {filteredData, sortMethod, tableHeight, getFilteredData, filterValue, rawData } = useAmmMapUI();
     const { coinJson } = useSettings();
     const { forex } = useSystem()
     const { tokenPrices } = store.getState().tokenPrices
+    const showLoading = rawData && !rawData.length
 
     return (
         <>
@@ -49,7 +50,7 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
                         variant={'h2'}
                         component={'h2'}
                     >{t('labelLiquidityPageTitle')}</Typography>
-                    <OutlinedInput
+                    {/* <OutlinedInput
                         {...{
                             placeholder: t('labelFilter'),
                             value: filterValue,
@@ -64,12 +65,20 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
                         startAdornment={<InputAdornment position="start">
                             <SearchIcon/>
                         </InputAdornment>}
+                    /> */}
+                    <InputSearch
+                        key={'search'}
+                        className={'search'}
+                        aria-label={'search'}
+                        placeholder={t('labelFilter')}
+                        value={filterValue}
+                        onChange={getFilteredData as any}
                     />
                 </Box>
                 <StylePaper display={'flex'}  flexDirection={'column'} ref={container} className={'table-divide'} >
                     <PoolsTable {...{
-                        rawData:filteredData,
-                        showLoading: !filteredData.length,
+                        rawData: filteredData,
+                        showLoading: showLoading,
                         tableHeight: tableHeight,
                         sortMethod: sortMethod,
                         coinJson,

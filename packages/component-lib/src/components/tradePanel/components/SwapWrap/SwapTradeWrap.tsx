@@ -154,7 +154,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
     // const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${stob} ${tradeData.buy?.belong}`
     //     : `1${tradeData.buy?.belong} \u2248 ${btos} ${tradeData.sell?.belong}`
     const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${tradeCalcData?.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
-        : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData .BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`;
+        : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData.BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`;
     const priceImpactColor =  tradeCalcData?.priceImpactColor ? tradeCalcData.priceImpactColor : 'textPrimary'
     const priceImpact = tradeCalcData?.priceImpact ?  getValuePrecisionThousand(tradeCalcData.priceImpact, undefined, undefined, 2, true) + ' %' : EmptyValueTag
 

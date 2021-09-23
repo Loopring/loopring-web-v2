@@ -259,7 +259,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
     /*** sort handle start ***/
     const [sortColumns, setSortColumns] = React.useState<readonly Readonly<SortColumn>[]>([{
         columnKey: sortDefaultKey as any,
-        direction: sortInitDirection ? sortInitDirection : undefined as any
+        direction: sortInitDirection ? sortInitDirection : 'ASC' as any
     }]);
 
     // const [[sortColumn, sortDirection], setSort] = React.useState<[string | undefined, SortDirection]>([sortDefaultKey, sortInitDirection ? sortInitDirection : undefined]);

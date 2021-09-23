@@ -79,7 +79,7 @@ export const settingsSlice:Slice<SettingsState> = createSlice({
         setPlatform(state, action: PayloadAction<keyof typeof PlatFormType>) {
             state.platform = action.payload
         },
-        setCurrency(state, action: PayloadAction<'USD' | 'CYN'>) {
+        setCurrency(state, action: PayloadAction<'USD' | 'CNY'>) {
             // localStore.setItem('Currency',action.payload)
             state.currency = action.payload
         },

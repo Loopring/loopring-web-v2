@@ -47,6 +47,12 @@ export default {
     labelTradePrice: 'Price',
     labelTradeFee: 'Fee',
     labelTradeTime: 'Time',
+    labelTradeRole: 'Role',
+    labelTradeRoleMaker: 'Maker',
+    labelTradeRoleTaker: 'Taker',
+    labelTradeConterparty: 'Counterparty',
+    labelTradeCounterpartyOrderbook: 'Orderbook',
+    labelTradeCounterpartyPool: 'Pool',
     labelTxFilterAllTypes: 'All Types',
     labelTxFilterDeposit: 'Deposit',
     labelTxFilterWithdraw: 'Withdrawal',
@@ -62,6 +68,7 @@ export default {
     labelTxTime: 'Time',
     labelTxTxnHash: 'Txn Hash',
     labelTxStatus: 'Status',
+    
     labelVolume: 'volume',
     labelTradePair: 'Trade Pair',
     labelPool: 'Pool',
@@ -118,4 +125,6 @@ export default {
     labelOrderTypes: 'Types',
     labelOrderChannels: 'Channels',
     labelOrderCompletion: 'Completion',
+    labelRewardTableAmount: 'Amount',
+    labelRewardTableTime: 'Time',
 }
