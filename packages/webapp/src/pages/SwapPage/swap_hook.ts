@@ -64,10 +64,8 @@ export function makeMarketReq({
     slippage,
 }: ReqParams) {
 
-    if (!tokenMap || !tokenAmtMap || !exchangeAddress || !marketArray
+    if (!tokenMap || !exchangeAddress || !marketArray
         || accountId === undefined || !base || !quote || (!depth && !ammPoolSnapshot)) {
-            myLog('(!depth && !ammPoolSnapshot):', (!depth && !ammPoolSnapshot))
-            debugger
         return undefined
     }
 
@@ -97,7 +95,7 @@ export function makeMarketReq({
     // buy. amountSell is not null.
     const isAtoB = (isBuy && amountQuote !== undefined) || (!isBuy && amountBase !== undefined)
 
-    const takerRate = tokenAmtMap[buyTokenInfo.symbol].userOrderInfo.takerRate
+    const takerRate = (tokenAmtMap && tokenAmtMap[buyTokenInfo.symbol]) ? tokenAmtMap[buyTokenInfo.symbol].userOrderInfo.takerRate : 0
 
     myLog('makeMarketReq isBuy:', isBuy, ' sell:', sell, ' buy:', buy, ' isAtoB:', isAtoB,
      ' feeBips:', feeBips, ' takerRate:', takerRate)
@@ -216,7 +214,7 @@ export function makelimitReq({
         volume: quoteVol.toString()
     }
 
-    const takerRate = tokenAmtMap[baseTokenInfo.symbol].userOrderInfo.takerRate
+    const takerRate = (tokenAmtMap && tokenAmtMap[baseTokenInfo.symbol]) ? tokenAmtMap[baseTokenInfo.symbol].userOrderInfo.takerRate : 0
 
     const maxFeeBips = parseInt(sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString())
 
@@ -276,7 +274,7 @@ export function usePlaceOrder() {
 
     const getTokenAmtMap = React.useCallback((params: ReqParams) => {
 
-        if (!ammMap || !amountMap || !marketArray) {
+        if (!ammMap || !marketArray) {
             return undefined
         }
 
@@ -304,7 +302,7 @@ export function usePlaceOrder() {
         market = existedMarket.market
         ammMarket = existedMarket.amm as string
 
-        const tokenAmtMap = ammMap[ammMarket] ? amountMap[ammMarket] : amountMap[market as string]
+        const tokenAmtMap = amountMap ? ammMap[ammMarket] ? amountMap[ammMarket] : amountMap[market as string] : undefined
 
         return {
             tokenAmtMap,
@@ -321,16 +319,18 @@ export function usePlaceOrder() {
 
         const tokenAmtMap = getTokenAmtMap(params)
 
-        if (!tokenAmtMap?.tokenAmtMap) {
-            return
-        }
+        myLog('makeMarketReqInHook tokenAmtMap:', tokenAmtMap)
+
+        // if (!tokenAmtMap?.tokenAmtMap) {
+        //     return
+        // }
 
         const fullParams: ReqParams = {
             ...params,
             exchangeAddress: exchangeInfo.exchangeAddress,
             accountId: account.accountId,
             tokenMap,
-            tokenAmtMap: tokenAmtMap.tokenAmtMap,
+            tokenAmtMap: tokenAmtMap?.tokenAmtMap,
         }
 
         myLog('makeMarketReqInHook fullParams:', fullParams)
@@ -348,16 +348,16 @@ export function usePlaceOrder() {
 
         const tokenAmtMap = getTokenAmtMap(params)
 
-        if (!tokenAmtMap?.tokenAmtMap) {
-            return
-        }
+        // if (!tokenAmtMap?.tokenAmtMap) {
+        //     return
+        // }
 
         const fullParams: ReqParams = {
             ...params,
             exchangeAddress: exchangeInfo.exchangeAddress,
             accountId: account.accountId,
             tokenMap,
-            tokenAmtMap: tokenAmtMap.tokenAmtMap,
+            tokenAmtMap: tokenAmtMap?.tokenAmtMap,
         }
 
         myLog('fullParams:', fullParams)

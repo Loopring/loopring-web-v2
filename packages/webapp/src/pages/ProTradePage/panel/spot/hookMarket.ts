@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { useSubmitBtn } from './hookBtn';
 import { VolToNumberWithPrecision } from 'utils/formatter_tool';
 import { usePlaceOrder } from 'pages/SwapPage/swap_hook';
+import store from 'stores';
 
 export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType):{
     [key: string]: any;
@@ -36,6 +37,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
         __SUBMIT_LOCK_TIMER__,
         __TOAST_AUTO_CLOSE_TIMER__
     } = usePageTradePro();
+
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const walletMap = pageTradePro.tradeCalcProData?.walletMap ?? {}
@@ -78,23 +80,27 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
             quote: {belong: quoteSymbol} as IBData<any>,
             slippage: slippage&&slippage!=='N'?slippage:0.5,
             type: TradeProType.sell
-        } )
+        })
     },[ pageTradePro.market,
         pageTradePro.tradeCalcProData.walletMap])
 
     const { makeMarketReqInHook } = usePlaceOrder()
 
-    const onChangeMarketEvent = React.useCallback(async(tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType): Promise<void> => {
+    const onChangeMarketEvent = React.useCallback((tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType) => {
 
-        myLog(`onChangeMarketEvent pageTradePro:`, pageTradePro)
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
+        myLog(`onChangeMarketEvent depth:`, pageTradePro.depth)
+        myLog(`onChangeMarketEvent ammPoolSnapshot:`, pageTradePro.ammPoolSnapshot)
 
         if (!pageTradePro.depth && !pageTradePro.ammPoolSnapshot) {
             myLog(`onChangeMarketEvent data not ready!`)
             return
         }
+        
         myLog(`onChangeMarketEvent tradeData:`, tradeData, 'formType',formType)
 
         setMarketTradeData(tradeData)
+
         let amountBase = formType === TradeBaseType.base ? tradeData.base.tradeValue : undefined
         let amountQuote = formType === TradeBaseType.quote ? tradeData.quote.tradeValue : undefined
         let slippage = sdk.toBig(tradeData.slippage ? tradeData.slippage : '0.5').times(100).toString();
@@ -113,18 +119,21 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
         })
 
         myLog('marketRequest:', request)
+
+        updatePageTradePro({ market, request: request?.marketRequest, calcTradeParams: request?.calcTradeParams, })
     
-    }, [pageTradePro])
+    }, [])
 
     const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
-        let {calcTradeParams, tradeChannel, orderType,tradeCalcProData, totalFee} = pageTradePro;
+        const { calcTradeParams, request, tradeCalcProData, } = pageTradePro;
         setAlertOpen(false)
         setConfirmOpen(false)
 
         if (isAgree) {
 
             setIsMarketLoading(true);
-            if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo || !calcTradeParams
+            if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo 
+                || !calcTradeParams || !request
                 || account.readyState !== AccountStatus.ACTIVATED) {
 
                 setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
@@ -135,37 +144,16 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
 
             const baseToken = tokenMap[ marketTradeData?.base.belong as string ]
             const quoteToken = tokenMap[ marketTradeData?.quote.belong as string ]
-
-            const request: sdk.GetNextStorageIdRequest = {
-                accountId: account.accountId,
-                sellTokenId: baseToken.tokenId
-            }
-
-            const storageId = await LoopringAPI.userAPI.getNextStorageId(request, account.apiKey)
-
             try {
 
-
-                const request: sdk.SubmitOrderRequestV3 = {
-                    exchange: exchangeInfo.exchangeAddress,
+                const req: sdk.GetNextStorageIdRequest = {
                     accountId: account.accountId,
-                    storageId: storageId.orderId,
-                    sellToken: {
-                        tokenId: baseToken.tokenId,
-                        volume: calcTradeParams.amountS as string
-                    },
-                    buyToken: {
-                        tokenId: quoteToken.tokenId,
-                        volume: calcTradeParams.amountBOutSlip.minReceived as string
-                    },
-                    allOrNone: false,
-                    validUntil: getTimestampDaysLater(__DAYS__),
-                    maxFeeBips: parseInt(totalFee as string),
-                    fillAmountBOrS: false, // amm only false
-                    orderType,
-                    tradeChannel,
-                    eddsaSignature: '',
+                    sellTokenId: baseToken.tokenId
                 }
+
+                const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
+    
+                request.storageId = storageId.orderId
 
                 myLog(request)
 
