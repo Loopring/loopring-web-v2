@@ -1,5 +1,5 @@
 import React from 'react'
-import { EmptyValueTag, myLog, TradeStatus, TradeTypes } from '@loopring-web/common-resources'
+import { TradeStatus, TradeTypes } from '@loopring-web/common-resources'
 import { OrderHistoryRawDataItem, OrderHistoryTableDetailItem } from '@loopring-web/component-lib'
 import { useAccount } from 'stores/account';
 import { LoopringAPI } from 'api_wrapper'

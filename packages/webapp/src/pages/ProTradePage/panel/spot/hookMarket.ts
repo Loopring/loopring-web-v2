@@ -42,7 +42,8 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
     const {exchangeInfo} = useSystem();
 
     const [marketTradeData, setMarketTradeData] = React.useState<MarketTradeData<IBData<any>>>(
-        pageTradePro.market === market ? {
+        // pageTradePro.market === market ?
+        {
             base: {
                 belong: baseSymbol,
                 balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
@@ -52,51 +53,73 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                 balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
             } as IBData<any>,
             slippage: slippage && slippage !== 'N' ? slippage : 0.5,
-            type: TradeProType.sell
-        } : {
-            base: {belong: baseSymbol} as IBData<any>,
-            quote: {belong: quoteSymbol} as IBData<any>,
-            slippage: slippage && slippage !== 'N' ? slippage : 0.5,
-            type: TradeProType.sell
+            type: TradeProType.buy
         }
     )
     React.useEffect(() => {
-        setMarketTradeData(pageTradePro.market === market ? {
-            base: {
-                belong: baseSymbol,
-                balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
-            } as IBData<any>,
-            quote: {
-                belong: quoteSymbol,
-                balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
-            } as IBData<any>,
-            slippage: slippage && slippage !== 'N' ? slippage : 0.5,
-            type: TradeProType.sell
-        } : {
-            base: {belong: baseSymbol} as IBData<any>,
-            quote: {belong: quoteSymbol} as IBData<any>,
-            slippage: slippage && slippage !== 'N' ? slippage : 0.5,
-            type: TradeProType.sell
+        // if(walletMap[ baseSymbol as string ])
+        // if(walletMap)
+        const walletMap = pageTradePro.tradeCalcProData?.walletMap ?? {}
+        setMarketTradeData((state) => {
+            return {
+                ...state,
+                base: {
+                    ...state.base,
+                    // belong: baseSymbol,
+                    balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
+                } as IBData<any>,
+                quote: {
+                    ...state.quote,
+                    balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
+                } as IBData<any>,
+            }
         })
-    },[ pageTradePro.market,
-        pageTradePro.tradeCalcProData.walletMap])
+    }, [pageTradePro.tradeCalcProData?.walletMap])
+
+    React.useEffect(() => {
+        if (marketTradeData.base.belong !== baseSymbol || marketTradeData.quote.belong !== quoteSymbol) {
+            setMarketTradeData((state) => {
+                return {
+                    ...state,
+                    base: {
+                        belong: baseSymbol,
+                        balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
+                    } as IBData<any>,
+                    quote: {
+                        belong: quoteSymbol,
+                        balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
+                    } as IBData<any>,
+
+                }
+            })
+        }
+
+    }, [baseSymbol, quoteSymbol])
+
+    // React.useEffect(() => {
+    //     if (pageTradePro.market === market && pageTradePro.depth) {
+    //         setIsMarketLoading(false)
+    //     } else {
+    //         setIsMarketLoading(true)
+    //     }
+    // }, [market, pageTradePro.depth, pageTradePro.market])
 
     const {makeMarketReqInHook} = usePlaceOrder()
 
     const onChangeMarketEvent = React.useCallback((tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType) => {
 
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
-        myLog(`onChangeMarketEvent depth:`, pageTradePro.depth)
-        myLog(`onChangeMarketEvent ammPoolSnapshot:`, pageTradePro.ammPoolSnapshot)
-
+        // myLog(`onChangeMarketEvent depth:`, pageTradePro.depth)
+        // myLog(`onChangeMarketEvent ammPoolSnapshot:`, pageTradePro.ammPoolSnapshot)
         if (!pageTradePro.depth && !pageTradePro.ammPoolSnapshot) {
-            myLog(`onChangeMarketEvent data not ready!`)
+            // myLog(`onChangeMarketEvent data not ready!`)
+            setIsMarketLoading(true)
             return
         }
-        
+
         myLog(`onChangeMarketEvent tradeData:`, tradeData, 'formType',formType)
 
-        setMarketTradeData(tradeData)
+        // setMarketTradeData(tradeData)
 
         let slippage = sdk.toBig(tradeData.slippage ? tradeData.slippage : '0.5').times(100).toString()
 
@@ -126,18 +149,18 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         updatePageTradePro({
             market, request: request?.marketRequest, calcTradeParams: request?.calcTradeParams
         })
-    
+
     }, [])
 
     const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
-        const { calcTradeParams, request, tradeCalcProData, } = pageTradePro;
+        const {calcTradeParams, request, tradeCalcProData,} = pageTradePro;
         setAlertOpen(false)
         setConfirmOpen(false)
 
         if (isAgree) {
 
             setIsMarketLoading(true);
-            if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo 
+            if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo
                 || !calcTradeParams || !request
                 || account.readyState !== AccountStatus.ACTIVATED) {
 
@@ -157,7 +180,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                 }
 
                 const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
-    
+
                 request.storageId = storageId.orderId
 
                 myLog(request)

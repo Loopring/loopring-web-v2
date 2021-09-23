@@ -86,8 +86,12 @@ export const OrderbookPage = withTranslation('common')(() => {
         toolbar: React.useMemo(() => <Toolbar market={market as any} handleOnMarketChange={handleOnMarketChange}/>, [market,handleOnMarketChange]),
         walletInfo: React.useMemo(() => <WalletInfo market={market as any}/>, [market]),
         spot: React.useMemo(() => <SpotView market={market as any} />, [market]),
-        market: React.useMemo(() =><>{depthLevel && <MarketView market={market as any} rowLength={rowLength} tableLength={tradeTableLengths.market} main={TabMarketIndex.Orderbook}
-                                                                breakpoint={configLayout.currentBreakpoint}/>}</>
+        market: React.useMemo(() =><>{depthLevel
+            && <MarketView market={market as any}
+                           rowLength={rowLength}
+                           tableLength={tradeTableLengths.market}
+                           main={TabMarketIndex.Orderbook}
+                           breakpoint={configLayout.currentBreakpoint}/>}</>
             , [market,rowLength,configLayout.currentBreakpoint,depthLevel,tradeTableLengths.market]),
         market2: React.useMemo(() => <>{[BreakPoint.lg,BreakPoint.xlg].includes(configLayout.currentBreakpoint) && <MarketView market={market as any}
                                                                                                                                main={TabMarketIndex.Trades}
@@ -116,7 +120,7 @@ export const OrderbookPage = withTranslation('common')(() => {
         if(layout && layout.h) {
             const h = layout.h
             const i = Math.floor(((h - 58) * unit) / 20)
-                myLog('onRestMarketTableLength',layout.i)
+                // myLog('onRestMarketTableLength',layout.i)
                 setTradeTableLengths((state)=>{
                     if(i <= 30){  //32
                        return {
