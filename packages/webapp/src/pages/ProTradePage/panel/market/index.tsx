@@ -247,7 +247,7 @@ export const MarketView = withTranslation('common')(({
                 {[BreakPoint.lg, BreakPoint.xlg].includes(breakpoint) ?
                     // <Tabs value={tabIndex}>
                     //     <Tab value={tabIndex} labelProl={t(`labelPro${tabIndex}`)}/>
-                    <Typography variant={'h5'} lineHeight={'44px'}>{t(`labelPro${tabIndex}`)}</Typography>
+                    <Typography variant={'body1'} lineHeight={'44px'}>{t(`labelPro${tabIndex}`)}</Typography>
                     // </Tabs>
                     :<Tabs value={tabIndex} onChange={(_e, value) => {
                         setTabIndex(value)
