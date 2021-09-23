@@ -101,7 +101,7 @@ export function depth2ViewData({ depth, countAsk,countBid, baseDecimal, quoteDec
     let bidSlice = depth.bids.slice(0, countBid)
     let bidTotalSlice = depth.bids_amtTotals.slice(-countBid)
     let bidPriceSlice = depth.bids_prices.slice(-countBid)
-    myLog(`maxVal ${depth.symbol}`,askTotalSlice[askTotalSlice.length - 1],bidTotalSlice[0])
+    // myLog(`maxVal ${depth.symbol}`,askTotalSlice[askTotalSlice.length - 1],bidTotalSlice[0])
     let maxVal = askTotalSlice.length? sdk.toBig(askTotalSlice[askTotalSlice.length - 1]): sdk.toBig(bidTotalSlice[0]);
     if(askTotalSlice.length && bidTotalSlice.length){
         maxVal  = BigNumber.max(sdk.toBig(askTotalSlice[askTotalSlice.length - 1]), sdk.toBig(bidTotalSlice[0]))

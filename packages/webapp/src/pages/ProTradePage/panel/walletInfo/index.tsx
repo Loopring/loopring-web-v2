@@ -104,13 +104,16 @@ const UnLookView = React.memo(({t,market}:{market: MarketType,t:TFunction})=>{
     const tokenAIcon: any = coinJson[ coinA ];
     const tokenBIcon: any = coinJson[ coinB ];
     const walletMap = tradeCalcProData && tradeCalcProData.walletMap?tradeCalcProData.walletMap:{};
-    const {showDeposit, showWithdraw,} = useModals()
+    const {showDeposit,showTransfer,} = useModals()
     const onShowDeposit = React.useCallback((token?: any) => {
         showDeposit({isShow: true, symbol: token})
     }, [showDeposit])
-    const onShowWithdraw = React.useCallback((token?: any) => {
-        showWithdraw({isShow: true, symbol: token})
-    }, [showWithdraw])
+    // const onShowWithdraw = React.useCallback((token?: any) => {
+    //     showWithdraw({isShow: true, symbol: token})
+    // }, [showWithdraw])
+    const onShowTransfer = useCallback((token?: any) => {
+        showTransfer({isShow: true, symbol: token})
+    }, [showTransfer])
     return <Box paddingBottom={2}>
         <Typography paddingX={2} paddingY={2} variant={'body1'} component={'h4'}>{t('Available')}</Typography>
         <Divider/>
@@ -166,7 +169,7 @@ const UnLookView = React.memo(({t,market}:{market: MarketType,t:TFunction})=>{
             <Box display={'flex'} flexDirection={'row'} alignItems={'center'} marginTop={2} justifyContent={'center'}>
                 <Box marginRight={1}>
                     <Button style={{height: 28,fontSize: '1.4rem'}}  variant={'contained'} size={'small'} color={'primary'} onClick={() => onShowDeposit(coinA)}>{t('labelDeposit')}</Button></Box>
-                <Box marginLeft={1}><Button  style={{height: 28,fontSize: '1.4rem'}}  variant={'outlined'} size={'small'} onClick={() => onShowWithdraw(coinA)}>{t('labelTransfer')}</Button></Box>
+                <Box marginLeft={1}><Button  style={{height: 28,fontSize: '1.4rem'}}  variant={'outlined'} size={'small'} onClick={() => onShowTransfer(coinA)}>{t('labelTransfer')}</Button></Box>
             </Box>
 
         </Box>

@@ -26,11 +26,13 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
         // tradeCalcProData,
         // handleCountChange,
         tradeLimitBtnStatus,
+        tradeLimitBtnStyle,
         // tokenBaseProps,
         // tokenQuoteProps,
         // tradeData,
         // handleError,
-        // handleSubmitEvent,
+        tokenPriceProps,
+        handleSubmitEvent,
         // handleChangeIndex,
         onChangeEvent,
         // ...rest
@@ -84,7 +86,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
             order:'"right"' as any,
             coinLabelStyle:{color:'var(--color-text-secondary)'},
             isShowCoinIcon:false,
-            // ...tokenQuoteProps,
+            ...tokenPriceProps,
             handleCountChange,
             // handleError:tabIndex === TradeProType.sell? handleError :undefined,
             maxAllow: false,
@@ -169,8 +171,10 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
         </Grid>
         </Box>
         <Box paddingX={2} paddingTop={2}>
-            <ButtonStyle variant={'contained'} size={'medium'} color={tabIndex === TradeProType.sell ?'success':'error'} onClick={() => {
-                // onSwapClick(swapData.tradeData)
+            <ButtonStyle variant={'contained'} size={'medium'}
+                         color={tabIndex === TradeProType.sell ?'success':'error'}
+                         style={tradeLimitBtnStyle} onClick={() => {
+                handleSubmitEvent(tradeData)
             }}
                          loading={!getDisabled() && tradeBtnBaseStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                          disabled={getDisabled() || tradeBtnBaseStatus === TradeBtnStatus.DISABLED || tradeBtnBaseStatus === TradeBtnStatus.LOADING || inputError.error}
