@@ -321,6 +321,7 @@ export default {
     labelProMarketBtn: '{{tradeType}} {{symbol}}',
     labelProOrderbook:'Orderbook',
     labelProTrades:'Trades',
+    labelErrorPricePrecisionLimit:'{{symbol}} price only {{decimal}} decimals allowed',
     labelDepthPrice: 'Price({{symbol}})',
     labelDepthAmount: 'Amount({{symbol}})',
     labelDepthTotal: 'Total',

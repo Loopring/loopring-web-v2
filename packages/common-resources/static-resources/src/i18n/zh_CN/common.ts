@@ -320,6 +320,7 @@ export default {
     labelProMarketBtn: '{{tradeType}} {{symbol}}',
     labelProOrderbook:'订单',
     labelProTrades:'交易',
+    labelErrorPricePrecisionLimit:'限价 {{symbol}}，最多可保留小数点后 {{decimal} 位',
     labelDepthPrice: '价格({{symbol}})',
     labelDepthAmount: '数量({{symbol}})',
     labelDepthTotal: '总量',
