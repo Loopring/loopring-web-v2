@@ -3,8 +3,6 @@ import React from 'react';
 import { useToast } from 'hooks/common/useToast';
 import { LoopringAPI } from 'api_wrapper';
 import * as sdk from 'loopring-sdk';
-import { OrderStatus, sleep, toBig } from 'loopring-sdk';
-import { getTimestampDaysLater } from 'utils/dt_tools';
 import { walletLayer2Service } from 'services/socket';
 import { MarketTradeData, TradeBaseType, TradeBtnStatus, TradeProType, useSettings } from '@loopring-web/component-lib';
 import { usePageTradePro } from 'stores/router';
@@ -15,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useSubmitBtn } from './hookBtn';
 import { VolToNumberWithPrecision } from 'utils/formatter_tool';
 import { usePlaceOrder } from 'pages/SwapPage/swap_hook';
+import store from 'stores';
 
 export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType): {
     [ key: string ]: any;
@@ -36,6 +35,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         __SUBMIT_LOCK_TIMER__,
         __TOAST_AUTO_CLOSE_TIMER__
     } = usePageTradePro();
+
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const walletMap = pageTradePro.tradeCalcProData?.walletMap ?? {}
@@ -79,22 +79,26 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             slippage: slippage && slippage !== 'N' ? slippage : 0.5,
             type: TradeProType.sell
         })
-    }, [pageTradePro.market,
+    },[ pageTradePro.market,
         pageTradePro.tradeCalcProData.walletMap])
 
     const {makeMarketReqInHook} = usePlaceOrder()
 
-    const onChangeMarketEvent = React.useCallback(async (tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType): Promise<void> => {
+    const onChangeMarketEvent = React.useCallback((tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType) => {
 
-        myLog(`onChangeMarketEvent pageTradePro:`, pageTradePro)
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
+        myLog(`onChangeMarketEvent depth:`, pageTradePro.depth)
+        myLog(`onChangeMarketEvent ammPoolSnapshot:`, pageTradePro.ammPoolSnapshot)
 
         if (!pageTradePro.depth && !pageTradePro.ammPoolSnapshot) {
             myLog(`onChangeMarketEvent data not ready!`)
             return
         }
-        myLog(`onChangeMarketEvent tradeData:`, tradeData, 'formType', formType)
+        
+        myLog(`onChangeMarketEvent tradeData:`, tradeData, 'formType',formType)
 
         setMarketTradeData(tradeData)
+
         let amountBase = formType === TradeBaseType.base ? tradeData.base.tradeValue : undefined
         let amountQuote = formType === TradeBaseType.quote ? tradeData.quote.tradeValue : undefined
         let slippage = sdk.toBig(tradeData.slippage ? tradeData.slippage : '0.5').times(100).toString();
@@ -114,17 +118,20 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
         myLog('marketRequest:', request)
 
-    }, [pageTradePro])
+        updatePageTradePro({ market, request: request?.marketRequest, calcTradeParams: request?.calcTradeParams, })
+    
+    }, [])
 
     const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
-        let {calcTradeParams, tradeChannel, orderType, tradeCalcProData, totalFee} = pageTradePro;
+        const { calcTradeParams, request, tradeCalcProData, } = pageTradePro;
         setAlertOpen(false)
         setConfirmOpen(false)
 
         if (isAgree) {
 
             setIsMarketLoading(true);
-            if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo || !calcTradeParams
+            if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo 
+                || !calcTradeParams || !request
                 || account.readyState !== AccountStatus.ACTIVATED) {
 
                 setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
@@ -135,37 +142,16 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
             const baseToken = tokenMap[ marketTradeData?.base.belong as string ]
             const quoteToken = tokenMap[ marketTradeData?.quote.belong as string ]
-
-            const request: sdk.GetNextStorageIdRequest = {
-                accountId: account.accountId,
-                sellTokenId: baseToken.tokenId
-            }
-
-            const storageId = await LoopringAPI.userAPI.getNextStorageId(request, account.apiKey)
-
             try {
 
-
-                const request: sdk.SubmitOrderRequestV3 = {
-                    exchange: exchangeInfo.exchangeAddress,
+                const req: sdk.GetNextStorageIdRequest = {
                     accountId: account.accountId,
-                    storageId: storageId.orderId,
-                    sellToken: {
-                        tokenId: baseToken.tokenId,
-                        volume: calcTradeParams.amountS as string
-                    },
-                    buyToken: {
-                        tokenId: quoteToken.tokenId,
-                        volume: calcTradeParams.amountBOutSlip.minReceived as string
-                    },
-                    allOrNone: false,
-                    validUntil: getTimestampDaysLater(__DAYS__),
-                    maxFeeBips: parseInt(totalFee as string),
-                    fillAmountBOrS: false, // amm only false
-                    orderType,
-                    tradeChannel,
-                    eddsaSignature: '',
+                    sellTokenId: baseToken.tokenId
                 }
+
+                const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
+    
+                request.storageId = storageId.orderId
 
                 myLog(request)
 
@@ -177,7 +163,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                     setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                     myLog(response?.resultInfo)
                 } else {
-                    await sleep(__TOAST_AUTO_CLOSE_TIMER__)
+                    await sdk.sleep(__TOAST_AUTO_CLOSE_TIMER__)
 
                     const resp = await LoopringAPI.userAPI.getOrderDetails({
                         accountId: account.accountId,
@@ -188,10 +174,10 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
                     if (resp.orderDetail?.status !== undefined) {
                         switch (resp.orderDetail?.status) {
-                            case OrderStatus.cancelled:
+                            case sdk.OrderStatus.cancelled:
                                 setToastOpen({open: true, type: 'warning', content: t('labelSwapCancelled')})
                                 break
-                            case OrderStatus.processed:
+                            case sdk.OrderStatus.processed:
                                 setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
                                 break
                             default:
@@ -225,7 +211,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
             // setOutput(undefined)
 
-            await sleep(__SUBMIT_LOCK_TIMER__)
+            await sdk.sleep(__SUBMIT_LOCK_TIMER__)
 
             setIsMarketLoading(false)
 
@@ -233,12 +219,13 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
     }, [account.readyState, pageTradePro, tokenMap, marketTradeData, setIsMarketLoading, setToastOpen, setMarketTradeData])
     const availableTradeCheck = React.useCallback((): { tradeBtnStatus: TradeBtnStatus, label: string } => {
-        let {calcTradeParams, quoteMinAmtInfo, baseMinAmtInfo} = pageTradePro;
+
+        const {calcTradeParams, quoteMinAmtInfo, baseMinAmtInfo} = pageTradePro;
         if (account.readyState === AccountStatus.ACTIVATED) {
             const type = marketTradeData.type === TradeProType.sell ? 'quote' : 'base';
             const minAmt = type === 'quote' ? quoteMinAmtInfo?.minAmount : baseMinAmtInfo?.minAmount;
             const validAmt = !!(calcTradeParams?.amountBOut && minAmt
-                && toBig(calcTradeParams?.amountBOut).gte(toBig(minAmt)));
+                && sdk.toBig(calcTradeParams?.amountBOut).gte(sdk.toBig(minAmt)));
 
             if (marketTradeData === undefined
                 || marketTradeData?.base.tradeValue === undefined
