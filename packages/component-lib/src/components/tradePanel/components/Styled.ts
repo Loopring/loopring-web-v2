@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, IconButton, LinearProgress, linearProgressClasses } from '@mui/material';
+import { Box, IconButton, LinearProgress, linearProgressClasses, Tabs } from '@mui/material';
 import { css } from '@emotion/react';
 import { Button } from '../../basic-lib';
 
@@ -183,3 +183,70 @@ export const CountDownStyled = styled(Box)`
 export const ButtonStyle = styled(Button)`
    font-size: 1.6rem;
 `as typeof Button
+
+
+export const TabsStyle = styled(Tabs)`
+ &&.trade-tabs{
+     background:var(--color-global-bg);
+     min-height: 28px;
+     height: 28px;
+     border-radius: ${({theme}) => theme.unit/2}px;
+     margin-top: ${({theme}) => theme.unit*2}px;
+     .MuiTab-fullWidth.MuiTab-root{
+       min-height: 28px;
+       height: 28px;
+       line-height: 28px;
+       font-size: ${({theme}) => theme.fontDefault.h6};
+       &:focus-visible:after{
+         background-color: initial;
+       }
+       &.Mui-selected{
+         overflow: unset;
+         border-radius: ${({theme}) => theme.unit/2}px;
+         color: var(--color-text-button);
+         &.trade-tab-buy{
+         
+           background:var(--color-success);
+         }
+         &.trade-tab-sell{
+           background:var(--color-error); 
+         }
+         &.trade-tab-sell:after{
+           background-color: var(--color-error);
+           mask-size: cover;
+         //<svg width="17" height="28" viewBox="0 0 17 28" fill="none" >
+         //<path d="M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z" fill="#00BBA8"/>
+         //</svg>
+
+           mask-image: url('data:image/svg+xml,\
+           <svg width="17" height="28" viewBox="0 0 17 28" fill="white" xmlns="http://www.w3.org/2000/svg">\
+           <path d="M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z" />\
+           </svg>');
+           top:0;
+           height: 28px;
+           left: -8px;
+           width: 17px;
+           transform: rotate(180deg);
+           //clip-path: polygon('M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z')
+         }
+         &.trade-tab-buy:after {
+           background-color:var(--color-success);
+           mask-size: cover;
+           mask-image: url('data:image/svg+xml,\
+           <svg width="17" height="28" viewBox="0 0 17 28" fill="white" xmlns="http://www.w3.org/2000/svg">\
+           <path d="M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z" />\
+           </svg>');
+           top:0;
+           left: auto;
+           height: 28px;
+           right: -8px;
+           width: 17px;
+           //clip-path: polygon('M0 0H12.4213C15.1599 0 17.0886 2.68993 16.2098 5.28363L9.43321 25.2836C8.88302 26.9074 7.35922 28 5.64476 28H0V0Z')
+         }
+       }
+    }
+ }
+
+
+` as typeof Tabs
+

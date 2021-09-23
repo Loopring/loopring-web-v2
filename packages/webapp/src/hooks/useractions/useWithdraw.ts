@@ -86,8 +86,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const checkBtnStatus = React.useCallback(() => {
 
-        myLog('address:', address)
-
         if (!tokenMap || !withdrawFeeInfo?.belong || !withdrawValue?.belong || !address) {
             disableBtn()
             return
