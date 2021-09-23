@@ -33,6 +33,7 @@ export type PageTradePro<C> = {
         priceImpactColor: string,
         priceLevel: number | string,
     },
+    defaultPrice?:number,
     precisionLevels?: { value: number,label:string }[],
     depth?: sdk.DepthData | undefined,
     depthLevel?: number ,

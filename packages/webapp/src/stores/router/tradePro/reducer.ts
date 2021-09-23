@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { PageTradePro, PageTradeProStatus } from './interface';
-import * as sdk from 'loopring-sdk';
-import { TradeChannel } from 'loopring-sdk';
 
 const initState = {
     market: undefined,
@@ -43,6 +41,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 tradeArray,
                 totalFee,
                 takerRate,
+                defaultPrice,
                 baseMinAmtInfo,
                 quoteMinAmtInfo,
                 lastStepAt
@@ -64,6 +63,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     baseMinAmtInfo,
                     quoteMinAmtInfo,
                     tradeArray,
+                    defaultPrice,
                     precisionLevels,
                     depthLevel,
                     lastStepAt:undefined,
@@ -73,7 +73,9 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 if(precisionLevels){
                     state.pageTradePro.precisionLevels = precisionLevels
                 }
-
+                if(defaultPrice){
+                    state.pageTradePro.defaultPrice = defaultPrice
+                }
                 if(depthLevel){
                     state.pageTradePro.depthLevel = depthLevel
                 }

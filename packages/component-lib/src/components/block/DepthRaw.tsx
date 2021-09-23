@@ -4,10 +4,11 @@ import { WithTranslation, withTranslation } from 'react-i18next';
 import { DepthViewData, MarketRowHeight } from '@loopring-web/common-resources';
 import { useTheme } from '@emotion/react';
 
-export type Row = DepthViewData  & {type:DepthType}
+export type Row = DepthViewData  & {type:DepthType, onClick:(event:MouseEvent,price:number)=>void,}
 export const Depth = ({
                           price,
                           // amt,
+                          onClick,
                           amtForShow,
                           // amtTotal,
                           amtTotalForShow,
@@ -16,7 +17,7 @@ export const Depth = ({
                       }: Row) => {
     const theme = useTheme();
     const color = type === DepthType.ask? 'var(--color-error)':'var(--color-success)';
-    return <Grid container spacing={1} position={'relative'} wrap={'nowrap'} >
+    return <Grid container spacing={1} position={'relative'} wrap={'nowrap'} style={{cursor:'pointer'}} onClick={(e)=>onClick(e as any,price)}>
         <Box style={{opacity:0.1,backgroundColor:color}} display={'block'} position={'absolute'} top={theme.unit} right={0} width={percentage*100+'%'} height={`${MarketRowHeight}px`} zIndex={44}/>
         <Grid item xs={4} alignSelf={'flex-start'} zIndex={55} >
             <Typography lineHeight={`${MarketRowHeight}px`} color={color} variant={'body2'} > {price}  </Typography>
@@ -63,9 +64,11 @@ export const DepthTitle = withTranslation('common')(({
 })
 export const DepthBlock = withTranslation('common')(({
                                                          depths,
+                                                         onClick,
                                                          // tokenBaseInfo,
                                                          type,
                                                      }: {
+    onClick:(event:MouseEvent,price:number)=>void,
     type: DepthType,
     depths: DepthViewData[],
     marketInfo: MarketInfo
@@ -80,7 +83,7 @@ export const DepthBlock = withTranslation('common')(({
             //     undefined, undefined, marketInfo.precisionForPrice, true);
 
 
-            return <Depth key={index} {...{
+            return <Depth onClick={onClick} key={index} {...{
                 ...depth,
                 type,
             }}    />
