@@ -73,7 +73,7 @@ const TableStyled = styled(Box)`
 ` as (props: { currentheight?:number } & BoxProps) => JSX.Element;
 
 
-const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN',
+const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CNY',
                              // tokenMap: TokenMap<C>,
                              precision: number): Column<Required<RawDataTradeItem>, unknown>[] => [
     {
