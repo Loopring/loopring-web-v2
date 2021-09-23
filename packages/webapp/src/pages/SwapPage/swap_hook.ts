@@ -175,6 +175,10 @@ export function makelimitReq({
         return undefined
     }
 
+    if (price === undefined) {
+        price = 0
+    }
+
     if (isBuy === undefined) {
         isBuy = true
     }
