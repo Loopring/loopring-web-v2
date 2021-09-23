@@ -5,6 +5,7 @@ import { WithTranslation } from 'react-i18next';
 import { LimitTradeData, MarketTradeData } from '../Interface';
 import { InputSize } from '../../basic-lib';
 import _ from 'lodash';
+import * as sdk from 'loopring-sdk'
 
 export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
     T extends IBData<I>,
@@ -134,11 +135,11 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
 
     const onPercentage = React.useCallback((value: any) => {
         myLog('hookCommon onPercentage:', value)
-        const inputType =  tradeData.type === TradeProType.sell ? 'quote':'base';
+        const inputType =  tradeData.type === TradeProType.sell ? 'base' : 'quote'
         setSelectedPercentage(value)
         const tradeCoin = _.cloneDeep(tradeData[inputType]);
         if (tradeCoin && tradeCoin.balance) {
-            tradeCoin.tradeValue = (tradeCoin.balance / 100) * value;
+            tradeCoin.tradeValue = sdk.toBig(tradeCoin.balance).times(sdk.toBig(value)).div(100).toNumber()
             _handleCountChange(tradeCoin, inputType, {current: 'percentage'} as React.Ref<any>)
         }
     },[_handleCountChange,tradeData]);
