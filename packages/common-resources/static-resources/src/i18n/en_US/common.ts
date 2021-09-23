@@ -328,6 +328,7 @@ export default {
     labelProToolbar24hBaseVol: '24h Volume({{symbol}})',
     labelProToolbar24hQuoteVol: '24h Volume({{symbol}})',
 
+    labelErrorPricePrecisionLimit:'{{symbol}} price only {{decimal}} decimals allowed',
     labelDepthPrice: 'Price({{symbol}})',
     labelDepthAmount: 'Amount({{symbol}})',
     labelDepthTotal: 'Total',

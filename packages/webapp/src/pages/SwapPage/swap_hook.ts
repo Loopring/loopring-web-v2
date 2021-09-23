@@ -11,6 +11,7 @@ import { useAmmMap } from 'stores/Amm/AmmMap';
 import { useAmount } from 'stores/amount';
 import { usePageTradeLite } from 'stores/router';
 import { myLog } from '@loopring-web/common-resources';
+import store from 'stores'
 
 export interface ReqParams {
     isBuy?: boolean,
@@ -261,19 +262,11 @@ export function usePlaceOrder() {
 
     const { exchangeInfo, } = useSystem()
 
-    const { amountMap, } = useAmount()
-
     const { ammMap, } = useAmmMap()
 
-    const {
-        pageTradeLite,
-        pageTradeLite: { ammPoolSnapshot, depth, tradePair, },
-        updatePageTradeLite,
-        __SUBMIT_LOCK_TIMER__,
-        __TOAST_AUTO_CLOSE_TIMER__,
-    } = usePageTradeLite()
-
     const getTokenAmtMap = React.useCallback((params: ReqParams) => {
+
+        const amountMap = store.getState().amountMap.amountMap
 
         if (!ammMap || !marketArray) {
             return undefined
@@ -309,7 +302,7 @@ export function usePlaceOrder() {
             tokenAmtMap,
         }
 
-    }, [ammMap, amountMap, marketArray,])
+    }, [ammMap, marketArray,])
 
     // {isBuy, amountB or amountS, (base, quote / market), feeBips, takerRate, depth, ammPoolSnapshot, slippage, }
     const makeMarketReqInHook = React.useCallback((params: ReqParams) => {
@@ -322,9 +315,9 @@ export function usePlaceOrder() {
 
         myLog('makeMarketReqInHook tokenAmtMap:', tokenAmtMap)
 
-        // if (!tokenAmtMap?.tokenAmtMap) {
-        //     return
-        // }
+        if (!tokenAmtMap?.tokenAmtMap) {
+            return
+        }
 
         const fullParams: ReqParams = {
             ...params,
@@ -338,7 +331,7 @@ export function usePlaceOrder() {
 
         return makeMarketReq(fullParams)
 
-    }, [account, tokenMap, ammMap, amountMap, marketArray, exchangeInfo, ])
+    }, [account, tokenMap, ammMap, marketArray, exchangeInfo, ])
 
     // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
     const makelimitReqInHook = React.useCallback((params: ReqParams) => {
@@ -349,9 +342,9 @@ export function usePlaceOrder() {
 
         const tokenAmtMap = getTokenAmtMap(params)
 
-        // if (!tokenAmtMap?.tokenAmtMap) {
-        //     return
-        // }
+        if (!tokenAmtMap?.tokenAmtMap) {
+            return
+        }
 
         const fullParams: ReqParams = {
             ...params,
@@ -365,7 +358,7 @@ export function usePlaceOrder() {
 
         return makelimitReq(fullParams)
 
-    }, [account, tokenMap, ammMap, amountMap, marketArray, exchangeInfo,])
+    }, [account, tokenMap, ammMap, marketArray, exchangeInfo,])
 
     return {
         makeMarketReqInHook,
