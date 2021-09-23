@@ -130,7 +130,8 @@ export function tradeItemToTableDataItem(tradeItem: any) {
             to: {
                 key: buyToken,
                 value: buyValue ? buyValue : undefined
-            }
+            },
+            volume: baseValue?.toNumber(),
         }
     })
 }

@@ -10,7 +10,6 @@ import { Filter, FilterTradeTypes } from './components/Filter'
 import { EmptyValueTag, getValuePrecisionThousand, TableType, TradeTypes } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores';
 import { useDeepCompareEffect } from 'react-use';
-import { Row } from '../poolsTable/Interface';
 import { DateRange } from '@mui/lab'
 
 export type RawDataTradeItem = {
@@ -24,6 +23,7 @@ export type RawDataTradeItem = {
             key: string;
             value: number | undefined;
         }
+        volume?: number
     };
     price: {
         key: string
@@ -187,7 +187,7 @@ export const TradeTable = withTranslation('tables')(({
     const defaultArgs: any = {
         columnMode: getColumnModeAssets(t, currency, tokenMap).filter(o => !o.hidden),
         generateRows: (rawData: any) => rawData,
-        generateColumns: ({columnsRaw}: any) => columnsRaw as Column<Row<any>, unknown>[],
+        generateColumns: ({columnsRaw}: any) => columnsRaw as Column<RawDataTradeItem, unknown>[],
         style: {
             backgroundColor: ({colorBase}: any) => `${colorBase.box}`
         }

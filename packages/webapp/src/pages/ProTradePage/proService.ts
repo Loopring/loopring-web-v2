@@ -228,12 +228,14 @@ export  const useProSocket = () => {
         if (LoopringAPI.exchangeAPI && market) {
             const {marketTrades} = await LoopringAPI.exchangeAPI.getMarketTrades({market,limit:TRADE_ARRAY_MAX_LENGTH});
             const _tradeArray = makeMarketArray(market, marketTrades)
-            const formattedTradArray:RawDataTradeItem[] = _tradeArray.map(o => ({
-                ...o,
-                precision: marketMap ? marketMap[market].precisionForPrice : undefined
-            })) as RawDataTradeItem[]
+            // const formattedTradArray:RawDataTradeItem[] = _tradeArray.map(o => (
+            //     {
+            //     ...o,
+            //     precision: marketMap ? marketMap[market].precisionForPrice : undefined
+            // })
+            // ) as RawDataTradeItem[]
             // setTradeArray(_tradeArray as RawDataTradeItem[])
-            updatePageTradePro({market, tradeArray:formattedTradArray})
+            updatePageTradePro({market, tradeArray:_tradeArray})
 
         }
 
