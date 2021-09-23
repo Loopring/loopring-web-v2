@@ -6,6 +6,7 @@ import { TradeChannel } from 'loopring-sdk';
 const initState = {
     market: undefined,
     tradePair: undefined,
+    request: undefined,
     calcTradeParams: undefined,
     priceImpactObj: undefined,
     tradeCalcProData: {},
@@ -33,6 +34,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 precisionLevels,
                 depthLevel,
                 ticker,
+                request,
                 tradeCalcProData,
                 ammPoolSnapshot,
                 calcTradeParams,
@@ -50,13 +52,12 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     ...initState,
                     market,
                     tradeCalcProData:tradeCalcProData?tradeCalcProData:{},
+                    request,
                     calcTradeParams,
                     depth,
                     ticker,
                     ammPoolSnapshot,
                     priceImpactObj,
-                    tradeChannel: calcTradeParams ? (calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined,
-                    orderType: calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly) : undefined,
                     feeBips,
                     totalFee,
                     takerRate,
@@ -91,14 +92,19 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 if (ticker) {
                     state.pageTradePro.ticker = ticker;
                 }
+
                 if (ammPoolSnapshot) {
                     state.pageTradePro.ammPoolSnapshot = ammPoolSnapshot;
                 }
+
+                if (request) {
+                    state.pageTradePro.request = request
+                }
+
                 if (calcTradeParams) {
                     state.pageTradePro.calcTradeParams = calcTradeParams;
-                    state.pageTradePro.orderType = calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
-                    state.pageTradePro.tradeChannel = calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
                 }
+
                 if(tradeArray){
                     state.pageTradePro.tradeArray= tradeArray;
                 }
