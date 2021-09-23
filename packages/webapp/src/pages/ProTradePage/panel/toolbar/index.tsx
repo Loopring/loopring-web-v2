@@ -13,6 +13,11 @@ import styled from '@emotion/styled'
 
 const PriceTitleStyled = styled(Typography)`
     color: var(--color-text-third);
+    font-size: 1.2rem;
+`
+
+const PriceValueStyled = styled(Typography)`
+    font-size: 1.2rem;
 `
 
 export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: any }>({
@@ -95,32 +100,32 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
         >
             {marketArray && marketArray.map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
         </TextField>
-        <Grid container spacing={3} marginLeft={0}>
+        <Grid container spacing={3} marginLeft={0} display={'flex'} alignItems={'center'}>
             <Grid item>
-                <Typography color={isRise ? 'var(--color-success)' : 'var(--color-error)'}>{close}</Typography>
-                <Typography>{isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand((isUSD ? priceDollar : priceYuan), undefined, undefined, undefined, true, {isFait: true})}</Typography>
+                <Typography fontWeight={500} color={isRise ? 'var(--color-success)' : 'var(--color-error)'}>{close}</Typography>
+                <PriceValueStyled>{isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand((isUSD ? priceDollar : priceYuan), undefined, undefined, undefined, true, {isFait: true})}</PriceValueStyled>
             </Grid>
             <Grid item>
                 <PriceTitleStyled>{t('labelProToolbar24hChange')}</PriceTitleStyled>
-                <Typography color={isRise ? 'var(--color-success)' : 'var(--color-error)'}>
+                <PriceValueStyled color={isRise ? 'var(--color-success)' : 'var(--color-error)'}>
                     {`${isRise ? '+' : '-'} ${getValuePrecisionThousand(change, undefined, undefined, 2, true)}%`}
-                </Typography>
+                </PriceValueStyled>
             </Grid>
             <Grid item>
                 <PriceTitleStyled>{t('labelProToolbar24hHigh')}</PriceTitleStyled>
-                <Typography>{getValuePrecisionThousand(high, undefined, undefined, getMarketPrecision(market), true, {isPrice: true})}</Typography>
+                <PriceValueStyled>{getValuePrecisionThousand(high, undefined, undefined, getMarketPrecision(market), true, {isPrice: true})}</PriceValueStyled>
             </Grid>
             <Grid item>
                 <PriceTitleStyled>{t('labelProToolbar24hLow')}</PriceTitleStyled>
-                <Typography>{getValuePrecisionThousand(low, undefined, undefined, getMarketPrecision(market), true, {isPrice: true})}</Typography>
+                <PriceValueStyled>{getValuePrecisionThousand(low, undefined, undefined, getMarketPrecision(market), true, {isPrice: true})}</PriceValueStyled>
             </Grid>
             <Grid item>
                 <PriceTitleStyled>{t('labelProToolbar24hBaseVol', {symbol: base})}</PriceTitleStyled>
-                <Typography>{getValuePrecisionThousand(baseVol, undefined, undefined, getTokenPrecision(base), true, {isPrice: true})}</Typography>
+                <PriceValueStyled>{getValuePrecisionThousand(baseVol, undefined, undefined, getTokenPrecision(base), true, {isPrice: true})}</PriceValueStyled>
             </Grid>
             <Grid item>
                 <PriceTitleStyled>{t('labelProToolbar24hQuoteVol', {symbol: quote})}</PriceTitleStyled>
-                <Typography>{getValuePrecisionThousand(quoteVol, undefined, undefined, getTokenPrecision(quote), true, {isPrice: true})}</Typography>
+                <PriceValueStyled>{getValuePrecisionThousand(quoteVol, undefined, undefined, getTokenPrecision(quote), true, {isPrice: true})}</PriceValueStyled>
             </Grid>
         </Grid>
     </Box>
