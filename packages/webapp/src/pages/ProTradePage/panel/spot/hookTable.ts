@@ -8,6 +8,7 @@ import { GetOrdersRequest, Side } from 'loopring-sdk'
 import store from 'stores'
 import BigNumber from 'bignumber.js';
 import {TFunction} from 'react-i18next'
+import { cloneDeep } from 'lodash';
 
 export const useOrderList = () => {
     const [orderOriginalData, setOrderOriginalData] = React.useState<OrderHistoryRawDataItem[]>([])
@@ -28,8 +29,8 @@ export const useOrderList = () => {
 
     const getOrderList = React.useCallback(async (props: Omit<GetOrdersRequest, 'accountId'>) => {
         // const isOpenOrder = props.status && props.status === 'processing'
+        setShowLoading(true)
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
-            setShowLoading(true)
             const userOrders = await LoopringAPI.userAPI.getOrders({
                 ...props,
                 accountId,
@@ -108,15 +109,35 @@ export const useOrderList = () => {
                         precisionMarket: precisionMarket,
                     })
                 })
-                // if (isOpenOrder) {
-                //     setOpenOrderList(data)
-                // } else {
-                    setOrderOriginalData(data)
-                // } 
+                // setOrderOriginalData(data)
+                setShowLoading(false)
+                return data
             }
             setShowLoading(false)
+            return []
         }
+        setShowLoading(false)
+        return []
     }, [accountId, apiKey])
+
+    const isAtBottom = React.useCallback(({ currentTarget }: React.UIEvent<HTMLDivElement>): boolean => {
+        return currentTarget.scrollTop + 10 >= currentTarget.scrollHeight - currentTarget.clientHeight;
+    }, [])
+
+    const handleScroll = React.useCallback(async (event: React.UIEvent<HTMLDivElement>) => {
+        if (!isAtBottom(event) || (event.target as any)?.scrollTop === 0) return;
+    
+        // setIsLoading(true);
+        const prevData = cloneDeep(orderOriginalData)
+    
+        const newData = await getOrderList({
+            limit: 50,
+            offset: prevData.length,
+        })
+        const jointData = [...prevData, ...newData]
+        setOrderOriginalData(jointData)
+        // setIsLoading(false);
+    }, [getOrderList, isAtBottom, orderOriginalData])
 
     const cancelOrder = React.useCallback(async({orderHash, clientOrderId}) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && privateKey && apiKey) {
@@ -213,6 +234,7 @@ export const useOrderList = () => {
     return {
         marketArray: jointPairs,
         getOrderList,
+        setOrderOriginalData,
         rawData: orderOriginalData,
         clearRawData: clearData,
         // openOrderList,
@@ -222,5 +244,6 @@ export const useOrderList = () => {
         getOrderDetail,
         orderDetailList,
         cancelOrder,
+        handleScroll,
     }
 }

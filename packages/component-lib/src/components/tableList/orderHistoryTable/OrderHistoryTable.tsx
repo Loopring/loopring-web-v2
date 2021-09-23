@@ -98,9 +98,14 @@ const TableStyled = styled(Box)`
     flex: 1;
 
     .rdg {
-        --template-columns: ${({isopen}: any) => isopen === 'open' 
-            ? 'auto auto 240px 130px 130px 120px 100px' 
-            : 'auto auto 240px 130px 130px 120px 130px'} !important;
+        --template-columns: ${({isopen, ispro}: any) => isopen === 'open' 
+            ? ispro === 'pro'
+                ? 'auto auto 250x 150px auto auto auto'
+                : 'auto auto 240px 130px 130px 120px 100px' 
+            : ispro === 'pro' 
+                ? 'auto auto 250px 150px 150px auto auto'
+                : 'auto auto 240px 130px 130px 120px 130px'
+        };
 
         .rdg-cell:last-of-type {
             display: flex;
@@ -144,7 +149,7 @@ export interface OrderHistoryTableProps {
         total: number;
     };
     showFilter?: boolean;
-    getOrderList: (props: Omit<GetOrdersRequest, "accountId">) => Promise<void>;
+    getOrderList: (props: Omit<GetOrdersRequest, "accountId">) => Promise<any>;
     showLoading?: boolean;
     marketArray?: string[];
     showDetailLoading?: boolean;
@@ -153,10 +158,12 @@ export interface OrderHistoryTableProps {
     isOpenOrder?: boolean;
     cancelOrder: ({orderHash, clientOrderId}: any) => void
     isScroll?: boolean;
+    isPro?: boolean;
+    handleScroll?: (event: React.UIEvent<HTMLDivElement>) => Promise<void>;
 }
 
 export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryTableProps & WithTranslation) => {
-    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray, showDetailLoading, getOrderDetail, orderDetailList, cancelOrder, isOpenOrder = false, isScroll } = props
+    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray, showDetailLoading, getOrderDetail, orderDetailList, cancelOrder, isOpenOrder = false, isScroll, handleScroll, isPro = false } = props
     const actionColumns = ['status']
     // const { language } = useSettings()
     // const [orderDetail, setOrderDetail] = useState([]);
@@ -625,7 +632,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         // }
     }
 
-    return <TableStyled isopen={isOpenOrder ? 'open' : 'history'}>
+    return <TableStyled isopen={isOpenOrder ? 'open' : 'history'} ispro={isPro ? 'pro' : 'lite'}>
         {showFilter && (
             <TableFilterStyled>
                 <Filter
@@ -637,7 +644,11 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                     handleFilterChange={handleFilterChange}/>
             </TableFilterStyled>
         )}
-        <Table className={isScroll ? 'scrollable' : undefined} {...{...defaultArgs, ...props, rawData, showloading: showLoading}} />
+        <Table 
+            className={isScroll ? 'scrollable' : undefined}
+            onScroll={handleScroll ?? undefined}
+            {...{...defaultArgs, ...props, rawData, showloading: showLoading}}
+        />
         <Modal
             open={modalState}
             onClose={() => setModalState(false)}
