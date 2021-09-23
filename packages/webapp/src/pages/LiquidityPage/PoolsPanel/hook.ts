@@ -127,14 +127,13 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
 
     }, [ammMap]);
     const sortMethod = React.useCallback((_sortedRows,sortColumn)=>{
-        myLog({filteredData})
         let _rawData:Row<R>[] = [];
         switch (sortColumn) {
             case 'pools':
                 _rawData = filteredData.sort((a, b) => {
                     const valueA = a.coinAInfo.simpleName
                     const valueB = b.coinAInfo.simpleName
-                    return valueA.localeCompare(valueB)
+                    return valueB.localeCompare(valueA)
                 })
                 break;
             case 'liquidity':
@@ -208,13 +207,13 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
         }
     }, [tickerStatus]);
 
-    const getFilteredData = React.useCallback((event) => {
-        setFilterValue(event.currentTarget?.value);
-        if(event.currentTarget?.value) {
+    const getFilteredData = React.useCallback((value: string) => {
+        setFilterValue(value);
+        if(value) {
             const _rawData =  rawData.filter(o => {
                 const coinA = o.coinAInfo.name.toLowerCase()
                 const coinB = o.coinBInfo.name.toLowerCase()
-                const formattedValue = event.currentTarget?.value.toLowerCase()
+                const formattedValue = value.toLowerCase()
                 return coinA.includes(formattedValue) || coinB.includes(formattedValue)
             })
             resetTableData(_rawData)
@@ -225,6 +224,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
     }, [rawData])
     return {
         // page,
+        rawData,
         filterValue,
         tableHeight,
         getFilteredData,

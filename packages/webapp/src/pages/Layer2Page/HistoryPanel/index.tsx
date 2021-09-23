@@ -12,9 +12,9 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
     const [currentTab, setCurrentTab] = React.useState('transactions')
 
     const {txs: txTableData, txsTotal, showLoading: showTxsLoading, getUserTxnList} = useGetTxs()
-    const {userTrades, showLoading: showTradesLoading} = useGetTrades()
+    const {userTrades, getUserTradeList, userTradesTotal, showLoading: showTradeLoading} = useGetTrades()
     const {ammRecordList, showLoading: ammLoading} = useGetAmmRecord()
-    const {tokenMap} = store.getState().tokenMap
+    const {tokenMap, marketMap} = store.getState().tokenMap
 
     const {t} = rest
     const container = React.useRef(null);
@@ -31,6 +31,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
         if (pageSize) {
             getUserTxnList({
                 limit: pageSize,
+                types: 'deposit,transfer,offchain_withdrawal',
             })
         }
     }, [getUserTxnList, pageSize])
@@ -62,14 +63,19 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
                         ...rest
                     }} />
                 ) : currentTab === 'trades' ? (
-                    <TradeTable {...{
+                    <TradeTable
+                        getUserTradeList={getUserTradeList}
+                        {...{
                         rawData: userTrades,
-                        // pagination: {
-                        //     pageSize: pageSize
-                        // },
                         showFilter: true,
-                        showloading: showTradesLoading,
+                        showloading: showTradeLoading,
                         tokenMap: tokenMap,
+                        isL2Trade: true,
+                        marketMap: marketMap,
+                        pagination: {
+                            pageSize: pageSize,
+                            total: userTradesTotal,
+                        },
                         ...rest
                     }}/>
                 ) : (

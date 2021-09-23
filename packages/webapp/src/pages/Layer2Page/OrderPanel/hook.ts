@@ -66,7 +66,7 @@ export const useOrderList = () => {
 
                     const precisionFrom = tokenMap ? (tokenMap as any)[baseToken]?.precisionForOrder : undefined
                     const precisionTo = tokenMap ? (tokenMap as any)[quoteToken]?.precisionForOrder : undefined
-                    const precisionMarket = marketMap ? marketMap[o.market].precisionForPrice : undefined
+                    const precisionMarket = marketMap ? marketMap[o.market]?.precisionForPrice : undefined
                     return ({
                         market: o.market,
                         side: o.side === 'BUY' ? TradeTypes.Buy : TradeTypes.Sell,
@@ -170,7 +170,7 @@ export const useOrderList = () => {
 
                 const precisionFrom = tokenMap ? (tokenMap as any)[baseToken]?.precisionForOrder : undefined
                 const precisionTo = tokenMap ? (tokenMap as any)[quoteToken]?.precisionForOrder : undefined
-                const precisionMarket = marketMap ? marketMap[o.market].precisionForPrice : undefined
+                const precisionMarket = marketMap ? marketMap[o.market]?.precisionForPrice : undefined
                 const precisionFee = tokenMap ? (tokenMap as any)[quoteToken]?.precisionForOrder : undefined
 
                 return ({

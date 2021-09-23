@@ -4,7 +4,7 @@ import { Box, Grid, MenuItem } from '@mui/material'
 import { withTranslation, WithTranslation } from "react-i18next";
 import { TextField, DateRangePicker } from '../../../basic-lib/form'
 import { Button } from '../../../basic-lib/btns'
-import { DropDownIcon } from '@loopring-web/common-resources'
+import { DropDownIcon, myLog } from '@loopring-web/common-resources'
 import { DateRange } from '@mui/lab'
 import { RawDataTradeItem } from '../TradeTable'
 
@@ -14,7 +14,8 @@ export interface FilterProps {
     filterType: FilterTradeTypes;
     filterPair: string;
     handleReset: () => void;
-    handleFilterChange: ({type, date}: any) => void
+    handleFilterChange: ({type, date}: any) => void;
+    marketMap?: any;
 }
 
 const StyledTextFiled = styled(TextField)`
@@ -37,8 +38,8 @@ const StyledBtnBox = styled(Box)`
 `
 
 export enum FilterTradeTypes {
-    buy = 'Buy',
-    sell = 'Sell',
+    maker = 'Maker',
+    taker = 'Taker',
     allTypes = 'All Types'
 }
 
@@ -50,6 +51,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
         filterPair,
         handleReset,
         handleFilterChange,
+        marketMap,
     }: FilterProps & WithTranslation) => {
     const filterTradeTypeList = [
         {
@@ -57,16 +59,20 @@ export const Filter = withTranslation('tables', {withRef: true})(({
             value: 'All Types'
         },
         {
-            label: t('labelOrderFilterBuy'),
-            value: 'Buy'
+            label: t('labelTradeRoleMaker'),
+            value: 'Maker'
         },
         {
-            label: t('labelOrderFilterSell'),
-            value: 'Sell'
+            label: t('labelTradeRoleTaker'),
+            value: 'Taker'
         },
     ]
+    myLog({marketMap})
 
-    const rawPairList = rawData.map(item => `${item.amount.from.key} - ${item.amount.to.key}`)
+    const rawPairList = rawData.map(item => `${item.amount.from.key}-${item.amount.to.key}`).filter(o => marketMap[o]).map(market => {
+        const formattedMarket = market.split('-')
+        return formattedMarket.join(' - ')
+    })
     const formattedRawPairList = [
         {
             label: t('labelFilterAllPairs'),
@@ -80,7 +86,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
 
     return (
         <Grid container spacing={2} alignItems={'center'}>
-            <Grid item xs={2}>
+            {/* <Grid item xs={2}>
                 <StyledTextFiled
                     id="table-trade-filter-types"
                     select
@@ -93,13 +99,13 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                     inputProps={{IconComponent: DropDownIcon}}
                 > {filterTradeTypeList.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
                 </StyledTextFiled>
-            </Grid>
-            <Grid item>
+            </Grid> */}
+            {/* <Grid item>
                 <DateRangePicker value={filterDate} onChange={(date: any) => {
                     // setFilterDate(date)
                     handleFilterChange({date: date})
                 }} />
-            </Grid>
+            </Grid> */}
             <Grid item xs={2}>
                 <StyledTextFiled
                     id="table-trade-filter-pairs"

@@ -357,8 +357,8 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
 
         const coinPairInfoWithPrecision = {
             ..._coinPairInfo,
-            precisionA: tokenMap ? tokenMap[_coinPairInfo.coinA].precision : undefined,
-            precisionB: tokenMap ? tokenMap[_coinPairInfo.coinB].precision : undefined,
+            precisionA: tokenMap ? tokenMap[_coinPairInfo.coinA]?.precision : undefined,
+            precisionB: tokenMap ? tokenMap[_coinPairInfo.coinB]?.precision : undefined,
         }
 
         // setCoinPairInfo(_coinPairInfo ? _coinPairInfo : {})
@@ -407,8 +407,8 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
 
                         const coinPairInfoWithPrecision = {
                             ..._coinPairInfo,
-                            precisionA: tokenMap ? tokenMap[_coinPairInfo.coinA].precision : undefined,
-                            precisionB: tokenMap ? tokenMap[_coinPairInfo.coinB].precision : undefined,
+                            precisionA: tokenMap ? tokenMap[_coinPairInfo.coinA]?.precision : undefined,
+                            precisionB: tokenMap ? tokenMap[_coinPairInfo.coinB]?.precision : undefined,
                         }
 
                         // setCoinPairInfo({..._coinPairInfo})

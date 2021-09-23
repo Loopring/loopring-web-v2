@@ -172,8 +172,8 @@ export const useOverview = <R extends { [ key: string ]: any }, I extends { [ ke
                 const totalAmount = o.totalLpAmount
                 const totalAmmValueDollar = (tokenPrices[market] || 0) * totalAmount
                 const totalAmmValueYuan = (totalAmmValueDollar || 0) * forex
-                const coinA = o.ammDetail.coinAInfo?.simpleName
-                const coinB = o.ammDetail.coinBInfo?.simpleName
+                const coinA = o.ammDetail?.coinAInfo?.simpleName
+                const coinB = o.ammDetail?.coinBInfo?.simpleName
                 const precisionA = tokenMap ? tokenMap[coinA]?.precision : undefined
                 const precisionB = tokenMap ? tokenMap[coinB]?.precision : undefined
 

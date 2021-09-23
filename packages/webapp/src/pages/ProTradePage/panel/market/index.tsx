@@ -281,7 +281,7 @@ export const MarketView = withTranslation('common')(({
                         >
                             {pageTradePro.precisionLevels && pageTradePro.precisionLevels.map(({value, label}) => <MenuItem
                                 key={value}
-                                value={value}>{label}</MenuItem>)}
+                                value={value}>{label.toString()}</MenuItem>)}
 
                         </TextField>
                     </MarketToolbar>
