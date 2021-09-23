@@ -126,7 +126,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
 
         const tradeValue = data.tradeValue
         if(tradeValue) {
-            const [int,precision] = tradeValue.toString().split('.');
+            const [,precision] = tradeValue.toString().split('.');
             if(precision && precision.length > marketMap[market].precisionForPrice){
                 return {
                     error: true,
