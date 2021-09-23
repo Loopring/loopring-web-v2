@@ -98,20 +98,27 @@ export function depth2ViewData({ depth, countAsk,countBid, baseDecimal, quoteDec
     let askTotalSlice = depth.asks_amtTotals.slice(0, countAsk)
     let askPriceSlice = depth.asks_prices.slice(0, countAsk)
 
-    let bidSlice = depth.bids.slice(0, countBid)
-    let bidTotalSlice = depth.bids_amtTotals.slice(-countBid)
-    let bidPriceSlice = depth.bids_prices.slice(-countBid)
-    // myLog(`maxVal ${depth.symbol}`,askTotalSlice[askTotalSlice.length - 1],bidTotalSlice[0])
-    let maxVal = askTotalSlice.length? sdk.toBig(askTotalSlice[askTotalSlice.length - 1]): sdk.toBig(bidTotalSlice[0]);
-    if(askTotalSlice.length && bidTotalSlice.length){
+    let bidSlice = countBid > 0 ? depth.bids.slice(-countBid) : []
+    let bidTotalSlice = countBid > 0 ? depth.bids_amtTotals.slice(-countBid) : []
+    let bidPriceSlice = countBid > 0 ? depth.bids_prices.slice(-countBid) : []
+
+    let maxVal = sdk.toBig(0)
+
+    if(askTotalSlice.length && bidTotalSlice.length) {
         maxVal  = BigNumber.max(sdk.toBig(askTotalSlice[askTotalSlice.length - 1]), sdk.toBig(bidTotalSlice[0]))
+    } else if (askTotalSlice.length) {
+        maxVal = sdk.toBig(askTotalSlice[askTotalSlice.length - 1])
+    } else if (bidTotalSlice.length) {
+        maxVal = sdk.toBig(bidTotalSlice[0])
+    } else {
+        throw new Error('no ab input!')
     }
 
     const asks = genABViewData({precisionForPrice,amtSlice: askSlice,
-        amtTotalSlice: askTotalSlice, priceSlice: askPriceSlice, baseDecimal, quoteDecimal,count:countAsk, maxVal})
+        amtTotalSlice: askTotalSlice, priceSlice: askPriceSlice, baseDecimal, quoteDecimal, count:countAsk, maxVal})
 
     const bids = genABViewData({precisionForPrice,amtSlice: bidSlice,
-        amtTotalSlice: bidTotalSlice, priceSlice: bidPriceSlice, baseDecimal, quoteDecimal,count:countBid, maxVal})
+        amtTotalSlice: bidTotalSlice, priceSlice: bidPriceSlice, baseDecimal, quoteDecimal, count:countBid, maxVal})
 
     return {
         asks,

@@ -15,6 +15,7 @@ import { usePageTradePro } from 'stores/router';
 import _ from 'lodash';
 import { accountStaticCallBack, btnClickMap, btnLabel } from 'layouts/connectStatusCallback';
 import { useAccount } from 'stores/account';
+import { HeaderHeight } from '../../index';
 
 
 const OtherView =React.memo( ({t}:{market: MarketType,t:TFunction})=>{
@@ -46,7 +47,7 @@ const OtherView =React.memo( ({t}:{market: MarketType,t:TFunction})=>{
         switch (account.readyState) {
             case AccountStatus.UN_CONNECT:
                 return  <Box flex={1} height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'} flexDirection={'column'}>
-                    <Typography lineHeight={2} paddingX={2} color={'text.primary'} marginBottom={2} variant={'body2'} whiteSpace={'pre-line'}
+                    <Typography  lineHeight={2} paddingX={2} color={'text.primary'} marginBottom={2} variant={'body2'} whiteSpace={'pre-line'}
                                 textAlign={'center'}>{t('describeTitleConnectToWallet')}</Typography>
                     {BtnConnect}
                 </Box>
@@ -115,7 +116,7 @@ const UnLookView = React.memo(({t,market}:{market: MarketType,t:TFunction})=>{
         showTransfer({isShow: true, symbol: token})
     }, [showTransfer])
     return <Box paddingBottom={2}>
-        <Typography paddingX={2} paddingY={2} variant={'body1'} component={'h4'}>{t('Available')}</Typography>
+        <Typography height={HeaderHeight} lineHeight={`${HeaderHeight}px`} paddingX={2} variant={'body1'} component={'h4'}>{t('Available')}</Typography>
         <Divider/>
         <Box  paddingX={2}  display={'flex'} flex={1} flexDirection={'column'} justifyContent={''}>
             <Box marginTop={2} display={'flex'} flexDirection={'row'} alignItems={'center'}

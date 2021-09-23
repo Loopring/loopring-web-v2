@@ -2,9 +2,9 @@ import { WithTranslation, withTranslation } from 'react-i18next';
 import { BtnPercentage, InputCoin, InputSize } from '../../basic-lib';
 import { LimitTradeData, TradeBtnStatus, TradeLimitProps } from '../Interface';
 import { CoinInfo, CoinKey, CoinMap, EmptyValueTag, IBData, TradeCalcProData } from '@loopring-web/common-resources';
-import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Grid, Tab, Typography } from '@mui/material';
 import { TradeProType } from './Interface';
-import { ButtonStyle } from '../components/Styled';
+import { ButtonStyle, TabsStyle } from '../components/Styled';
 import { useCommon } from './hookCommon';
 import React from 'react';
 
@@ -100,11 +100,11 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
     return <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
         <Box className={'tool-bar'}  paddingX={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
             <Box component={'header'} width={'100%'} >
-                <Tabs variant={'fullWidth'} value={tabIndex}
-                      onChange={(_e, index) => _handleChangeIndex(index)} className={'pro-tabs'}>
-                    <Tab value={TradeProType.buy} label={t('labelProBuy')}/>
-                    <Tab value={TradeProType.sell} label={t('labelProSell')}/>
-                </Tabs>
+                <TabsStyle className={'trade-tabs pro-tabs'}  variant={'fullWidth'} value={tabIndex}
+                      onChange={(_e, index) => _handleChangeIndex(index)} >
+                    <Tab className={'trade-tab-buy'} value={TradeProType.buy} label={t('labelProBuy')}/>
+                    <Tab className={'trade-tab-sell'} value={TradeProType.sell} label={t('labelProSell')}/>
+                </TabsStyle>
             </Box>
         </Box>
         <Box className={'trade-panel'} paddingX={2} paddingTop={2}>
