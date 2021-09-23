@@ -7,6 +7,7 @@ import { usePageTradePro } from '../../../../stores/router';
 import { useMarket } from './hookMarket';
 import { useLimit } from './hookLimit';
 import { Box, Divider, Tab, Tabs } from '@mui/material';
+import { useTokenMap } from '../../../../stores/token';
 
 // const TabsStyle = styled(Tabs)`
 //   flex: 1;
@@ -18,14 +19,17 @@ export enum TabIndex {
 }
 
 export const SpotView = withTranslation('common')(({
-                                                                                           t, market
-                                                                                           // ,marketTicker
-                                                                                       }: {
+                                                       t, market
+                                                       // ,marketTicker
+                                                   }: {
     market: MarketType,
     // marketTicker:  MarketBlockProps<C>
 } & WithTranslation) => {
     const {pageTradePro} = usePageTradePro();
-    const [tabIndex, setTabIndex] = React.useState<TabIndex>(TabIndex.market)
+    const [tabIndex, setTabIndex] = React.useState<TabIndex>(TabIndex.market);
+    const {marketMap, tokenMap} = useTokenMap();
+    //@ts-ignore
+    const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const {
         toastOpenL, closeToastL, limitTradeData, onChangeLimitEvent,
         tradeLimitI18nKey,
@@ -33,6 +37,7 @@ export const SpotView = withTranslation('common')(({
         tradeLimitBtnStyle,
         limitBtnClick,
         isLimitLoading,
+        handlePriceError,
     } = useLimit(market)
     const {
         alertOpen, confirmOpen, toastOpen, closeToast,
@@ -67,9 +72,13 @@ export const SpotView = withTranslation('common')(({
             <Box flex={1} component={'section'}>
                 {tabIndex === TabIndex.limit && <LimitTrade
                   disabled={false}
-
-                  tokenBaseProps={{disabled: isLimitLoading}}
-                  tokenQuoteProps={{disabled: isLimitLoading}}
+                  tokenPriceProps={{
+                      handleError: handlePriceError,
+                      decimalsLimit: marketMap[ market ].precisionForPrice
+                  }
+                  }
+                  tokenBaseProps={{disabled: isLimitLoading, decimalsLimit: tokenMap[ baseSymbol ].precision}}
+                  tokenQuoteProps={{disabled: isLimitLoading, decimalsLimit: tokenMap[ quoteSymbol ].precision}}
                   tradeLimitI18nKey={tradeLimitI18nKey}
                   tradeLimitBtnStyle={tradeLimitBtnStyle}
                   tradeLimitBtnStatus={tradeLimitBtnStatus}
@@ -79,8 +88,8 @@ export const SpotView = withTranslation('common')(({
                   onChangeEvent={onChangeLimitEvent}/>}
                 {tabIndex === TabIndex.market && <MarketTrade
                   disabled={false}
-                  tokenBaseProps={{disabled: isMarketLoading}}
-                  tokenQuoteProps={{disabled: isMarketLoading}}
+                  tokenBaseProps={{disabled: isMarketLoading, decimalsLimit: tokenMap[ baseSymbol ].precision}}
+                  tokenQuoteProps={{disabled: isMarketLoading, decimalsLimit: tokenMap[ quoteSymbol ].precision}}
                   tradeMarketI18nKey={tradeMarketI18nKey}
                   tradeMarketBtnStyle={tradeMarketBtnStyle}
                     // tradeLimitBtnStyle={tradeLimitBtnStyle}

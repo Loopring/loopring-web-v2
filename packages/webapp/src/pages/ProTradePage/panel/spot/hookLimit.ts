@@ -6,6 +6,9 @@ import { usePageTradePro } from 'stores/router';
 import { walletLayer2Service } from 'services/socket';
 import { useSubmitBtn } from './hookBtn';
 import { usePlaceOrder } from 'pages/SwapPage/swap_hook';
+import { useTokenMap } from 'stores/token';
+import { useTranslation } from 'react-i18next';
+import store from 'stores';
 
 
 export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType): {
@@ -14,6 +17,8 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
     // marketTicker: MarketBlockProps<C> |undefined,
 } => {
     const {pageTradePro} = usePageTradePro();
+    const {marketMap} = useTokenMap();
+    const {t} = useTranslation('common');
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
@@ -46,6 +51,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         pageTradePro.tradeCalcProData.walletMap])
 
     const resetTradeData = React.useCallback((type:TradeProType)=>{
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
         const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
         // @ts-ignore
         const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
@@ -112,7 +118,27 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         // resetSwap(swapType, tradeData)
 
     } ,[setLimitTradeData])
+    const handlePriceError =  React.useCallback(  (data: IBData<any>): { error: boolean, message?: string | React.ElementType<HTMLElement> }|undefined =>{
+       
+        const tradeValue = data.tradeValue
+        if(tradeValue) {
+            const [int,precision] = tradeValue.toString().split('.');
+            if(precision && precision.length > marketMap[market].precisionForPrice){
+                return {
+                    error: true,
+                    message: t('labelErrorPricePrecisionLimit',{symbol:data.belong,decimal:marketMap[market].precisionForPrice})
+                    //labelErrorPricePrecisionLimit:'{{symbol}} price only {{decimal}} decimals allowed',
+                    //labelErrorPricePrecisionLimit:'限价 {{symbol}}，最多可保留小数点后 {{decimal} 位'
 
+                }
+            }
+            return  undefined
+        }else {
+           return  undefined
+        }
+
+
+    },[])
     const {
         btnStatus: tradeLimitBtnStatus ,
         onBtnClick: limitBtnClick,
@@ -135,6 +161,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         tradeLimitI18nKey,
         tradeLimitBtnStatus,
         limitBtnClick,
+        handlePriceError,
         tradeLimitBtnStyle,
         // marketTicker,
     }

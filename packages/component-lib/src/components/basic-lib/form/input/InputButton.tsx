@@ -21,6 +21,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                          // coinMap,
                                                                          maxAllow,
                                                                          disabled,
+                                                                         decimalsLimit = 8,
                                                                          emptyText = 'tokenSelectToken',
                                                                          placeholderText = '0.00',
                                                                          inputData,
@@ -151,7 +152,9 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                         name={name}
                         disabled={!(!disabled || belong)}
                         placeholder={placeholderText}
-                        aria-placeholder={placeholderText} aria-label={label} decimalsLimit={10000000}/>
+                        aria-placeholder={placeholderText} aria-label={label}
+                        decimalsLimit={decimalsLimit}
+                />
                 <label/>
             </Grid>
         </Grid>
