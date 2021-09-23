@@ -325,6 +325,7 @@ export default {
     labelProToolbar24hLow: '24h 最低价',
     labelProToolbar24hBaseVol: '24h 成交量（{{symbol}}）',
     labelProToolbar24hQuoteVol: '24h 成交量（{{symbol}}）',
+    labelErrorPricePrecisionLimit:'限价 {{symbol}}，最多可保留小数点后 {{decimal} 位',
     labelDepthPrice: '价格({{symbol}})',
     labelDepthAmount: '数量({{symbol}})',
     labelDepthTotal: '总量',
