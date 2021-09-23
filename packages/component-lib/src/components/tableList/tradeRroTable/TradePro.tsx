@@ -113,7 +113,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CNY',
         headerCellClass: 'text-align-right',
         // minWidth: 400,
         formatter: ({row}) => {
-            const time = moment(new Date(row[ 'time' ])).format("HH:MM:SS")
+            const time = moment(new Date(row[ 'time' ])).format("HH:mm:SS")  //,M-DD
             return <Box className="rdg-cell-value">
                 <Typography className=" text-align-right" textAlign={'right'}
                                                                variant={'body2'} lineHeight={`${MarketRowHeight}px`} > {time}</Typography> </Box>
