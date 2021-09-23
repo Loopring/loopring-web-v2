@@ -113,10 +113,10 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
     } ,[setLimitTradeData])
 
     const {
-        btnStatus:tradeLimitBtnStatus ,
-        onBtnClick:limitBtnClick,
-        btnLabel:tradeLimitI18nKey,
-        // btnClickCallbackArray
+        btnStatus: tradeLimitBtnStatus ,
+        onBtnClick: limitBtnClick,
+        btnLabel: tradeLimitI18nKey,
+        btnStyle: tradeLimitBtnStyle
     } =  useSubmitBtn({
         availableTradeCheck: ()=> {return  {label:'', tradeBtnStatus: TradeBtnStatus.AVAILABLE}},
         isLoading:true,
@@ -134,6 +134,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         tradeLimitI18nKey,
         tradeLimitBtnStatus,
         limitBtnClick,
+        tradeLimitBtnStyle,
         // marketTicker,
     }
 }

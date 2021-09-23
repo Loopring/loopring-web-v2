@@ -1,5 +1,4 @@
 import React from 'react';
-import * as sdk from 'loopring-sdk';
 import {  TradeBtnStatus } from '@loopring-web/component-lib';
 import { AccountStatus, fnType} from '@loopring-web/common-resources';
 import * as _ from 'lodash';
@@ -32,6 +31,18 @@ export  const useSubmitBtn = ({
         }
     }, [account.readyState,availableTradeCheck,rest])
 
+    const btnStyle: Partial<React.CSSProperties>|undefined = React.useMemo((): Partial<React.CSSProperties>|undefined  => {
+
+            if (account.readyState === AccountStatus.ACTIVATED) {
+                // const {tradeBtnStatus}  = availableTradeCheck(rest)
+                return undefined
+            } else {
+                return {backgroundColor:"var (--color-primary)"}
+            }
+
+        // }
+    }, [account.readyState])
+
     const _btnLabelArray = Object.assign(_.cloneDeep(btnLabel), {
         [ fnType.ACTIVATED ]: [(rest:any)=> {const {label} =  availableTradeCheck(rest) 
             return label}]
@@ -52,6 +63,7 @@ export  const useSubmitBtn = ({
         btnStatus,
         onBtnClick,
         btnLabel:_btnLabel,
+        btnStyle
         // btnClickCallbackArray
     }
 }

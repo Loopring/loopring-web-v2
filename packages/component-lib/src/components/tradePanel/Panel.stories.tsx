@@ -5,7 +5,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { Box, Grid } from '@mui/material';
 import {
     AmmData,
-    AmmInData, AmmWithdrawData,
+    AmmInData,
+    AmmWithdrawData,
     IBData,
     SlippageTolerance,
     WithdrawType,

@@ -215,13 +215,18 @@ export const MarketView = withTranslation('common')(({
     }, [depthType])
     const tradeProTable =  React.useMemo(() => {
         myLog('tableLength',tableLength)
-        return <TradePro
-            // rowHeight={MarketRowHeight}
-            // headerRowHeight={20}
-            rawData={pageTradePro.tradeArray ? pageTradePro.tradeArray.slice(0, tableLength) : []}
-            // tokenMap={tokenMap}
-            precision={marketMap[ market ].precisionForPrice}
-            currentheight={tableLength * 20 + 20}/>
+
+        return <>{pageTradePro.tradeArray ? 
+                <TradePro
+                    // rowHeight={MarketRowHeight}
+                    // headerRowHeight={20}
+                    rawData={pageTradePro.tradeArray ? pageTradePro.tradeArray.slice(0, tableLength) : []}
+                    // tokenMap={tokenMap}
+                    precision={marketMap[ market ].precisionForPrice}
+                    currentheight={tableLength * 20 + 20}/>
+           : <Box flex={1} height={'100%'} display={'flex'} alignItems={'center'}
+                      justifyContent={'center'}><LoadingIcon/></Box>}
+        </>
     },[tableLength, market, pageTradePro.tradeArray])
 
     // React.useEffect(() => {
@@ -235,8 +240,7 @@ export const MarketView = withTranslation('common')(({
             rebuildList()
         }
     }, [pageTradePro.depth, depthType, rowLength])
-    return <>
-        <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'} height={'100%'}>
+    return<Box display={'flex'} flexDirection={'column'} alignItems={'stretch'} height={'100%'}>
             <Box component={'header'} width={'100%'} paddingX={2}>
 
 
@@ -290,7 +294,7 @@ export const MarketView = withTranslation('common')(({
                                         depths={depthViewData.asks}
                                 // showTitle={true}
                             />
-                            <Box paddingY={1} display={'flex'} flexDirection={'column'} alignItems={'center'} height={24}>
+                            <Box display={'flex'} flexDirection={'column'} alignItems={'center'} height={24}>
                                 {middlePrice}
                             </Box>
                             <DepthBlock marketInfo={marketMap[ market ]}
@@ -301,8 +305,8 @@ export const MarketView = withTranslation('common')(({
                         : <Box flex={1} height={'100%'} display={'flex'} alignItems={'center'}
                                justifyContent={'center'}><LoadingIcon/></Box>
                     }
-                </Box> :
-                <Box className={'tradePanel'} flex={1} paddingY={1}>
+                </Box>
+                : <Box className={'tradePanel'} flex={1} paddingY={1}>
                     {tradeProTable}
                 </Box>
             }
@@ -310,5 +314,4 @@ export const MarketView = withTranslation('common')(({
 
         </Box>
 
-    </>
 })
