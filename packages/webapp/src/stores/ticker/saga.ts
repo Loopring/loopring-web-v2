@@ -18,18 +18,18 @@ const getTickersApi = async <R extends { [ key: string ]: any }>(list: Array<key
     if (LoopringAPI.exchangeAPI) {
         __timer__ = ((__timer__) => {
             if (__timer__ && __timer__ !== -1) {
-                clearInterval(__timer__);
+                clearTimeout(__timer__);
             }
-            return setInterval(async () => {
+            return setTimeout(() => {
                 store.dispatch(getTickers({tickerKey: marketArray}))
-            }, 300000);
+            },  1000*60*5);
         })(__timer__);
         const tickers = await LoopringAPI.exchangeAPI.getMixTicker({market: list.join(',')})
         const data = makeTickerMap({tickerMap: tickers.tickMap})
         return {data, __timer__}
     } else {
         if (__timer__ && __timer__ !== -1) {
-            clearInterval(__timer__);
+            clearTimeout(__timer__);
         }
         return {data: {}, __timer__: -1};
 
@@ -54,10 +54,10 @@ function* getPostsSaga({payload}: any) {
 
 function* tickerMakeMap({payload}: PayloadAction<LoopringMap<TickerData>>) {
     try {
-        let {tickerMap, __timer__} = store.getState().tickerMap;
+        let {tickerMap} = store.getState().tickerMap;
 
         const data = makeTickerMap({tickerMap: payload})
-        yield put(getTickerStatus({tickerMap: {...tickerMap, ...data}, __timer__}));
+        yield put(getTickerStatus({tickerMap: {...tickerMap, ...data}}));
 
     } catch (err) {
         myLog('err',err)
