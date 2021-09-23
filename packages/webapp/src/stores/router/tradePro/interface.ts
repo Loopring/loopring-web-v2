@@ -27,7 +27,7 @@ export type PageTradePro<C> = {
             minReceivedVal: string;
         };
         priceImpact: string;
-    },
+    } | null | undefined,
     priceImpactObj?: undefined | {    // account has activated or undefined
         value: number | string,
         priceImpactColor: string,

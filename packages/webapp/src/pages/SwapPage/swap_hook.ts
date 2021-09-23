@@ -171,8 +171,9 @@ export function makelimitReq({
     tokenAmtMap,
 }: ReqParams) {
 
-    if (!tokenMap || !tokenAmtMap || !exchangeAddress
+    if (!tokenMap || !exchangeAddress
         || accountId === undefined || !base || !quote || (!amountBase && !amountQuote)) {
+        myLog('got empty input!')
         return undefined
     }
 

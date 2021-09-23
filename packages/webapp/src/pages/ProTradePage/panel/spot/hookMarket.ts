@@ -3,8 +3,6 @@ import React from 'react';
 import { useToast } from 'hooks/common/useToast';
 import { LoopringAPI } from 'api_wrapper';
 import * as sdk from 'loopring-sdk';
-import { OrderStatus, sleep, toBig } from 'loopring-sdk';
-import { getTimestampDaysLater } from 'utils/dt_tools';
 import { walletLayer2Service } from 'services/socket';
 import { MarketTradeData, TradeBaseType, TradeBtnStatus, TradeProType, useSettings } from '@loopring-web/component-lib';
 import { usePageTradePro } from 'stores/router';
@@ -165,7 +163,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                     setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                     myLog(response?.resultInfo)
                 } else {
-                    await sleep(__TOAST_AUTO_CLOSE_TIMER__)
+                    await sdk.sleep(__TOAST_AUTO_CLOSE_TIMER__)
 
                     const resp = await LoopringAPI.userAPI.getOrderDetails({
                         accountId: account.accountId,
@@ -176,10 +174,10 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
                     if (resp.orderDetail?.status !== undefined) {
                         switch (resp.orderDetail?.status) {
-                            case OrderStatus.cancelled:
+                            case sdk.OrderStatus.cancelled:
                                 setToastOpen({open: true, type: 'warning', content: t('labelSwapCancelled')})
                                 break
-                            case OrderStatus.processed:
+                            case sdk.OrderStatus.processed:
                                 setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
                                 break
                             default:
@@ -213,7 +211,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
             // setOutput(undefined)
 
-            await sleep(__SUBMIT_LOCK_TIMER__)
+            await sdk.sleep(__SUBMIT_LOCK_TIMER__)
 
             setIsMarketLoading(false)
 
@@ -221,12 +219,13 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
     }, [account.readyState, pageTradePro, tokenMap, marketTradeData, setIsMarketLoading, setToastOpen, setMarketTradeData])
     const availableTradeCheck = React.useCallback((): { tradeBtnStatus: TradeBtnStatus, label: string } => {
-        let {calcTradeParams, quoteMinAmtInfo, baseMinAmtInfo} = pageTradePro;
+
+        const {calcTradeParams, quoteMinAmtInfo, baseMinAmtInfo} = pageTradePro;
         if (account.readyState === AccountStatus.ACTIVATED) {
             const type = marketTradeData.type === TradeProType.sell ? 'quote' : 'base';
             const minAmt = type === 'quote' ? quoteMinAmtInfo?.minAmount : baseMinAmtInfo?.minAmount;
             const validAmt = !!(calcTradeParams?.amountBOut && minAmt
-                && toBig(calcTradeParams?.amountBOut).gte(toBig(minAmt)));
+                && sdk.toBig(calcTradeParams?.amountBOut).gte(sdk.toBig(minAmt)));
 
             if (marketTradeData === undefined
                 || marketTradeData?.base.tradeValue === undefined

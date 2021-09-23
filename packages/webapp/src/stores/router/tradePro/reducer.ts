@@ -85,7 +85,6 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     state.pageTradePro.tradeCalcProData = tradeCalcProData;
                 }
                 if (depth) {
-
                     state.pageTradePro.depth = depth;
                 }
 
@@ -101,7 +100,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     state.pageTradePro.request = request
                 }
 
-                if (calcTradeParams) {
+                if (calcTradeParams !== undefined) {
                     state.pageTradePro.calcTradeParams = calcTradeParams;
                 }
 
