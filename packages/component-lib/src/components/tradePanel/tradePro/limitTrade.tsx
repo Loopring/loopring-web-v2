@@ -102,8 +102,8 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
             <Box component={'header'} width={'100%'} >
                 <TabsStyle className={'trade-tabs pro-tabs'}  variant={'fullWidth'} value={tabIndex}
                       onChange={(_e, index) => _handleChangeIndex(index)} >
-                    <Tab className={'trade-tab-sell'} value={TradeProType.buy} label={t('labelProBuy')}/>
-                    <Tab className={'trade-tab-buy'} value={TradeProType.sell} label={t('labelProSell')}/>
+                    <Tab className={'trade-tab-buy'} value={TradeProType.buy} label={t('labelProBuy')}/>
+                    <Tab className={'trade-tab-sell'} value={TradeProType.sell} label={t('labelProSell')}/>
                 </TabsStyle>
             </Box>
         </Box>
