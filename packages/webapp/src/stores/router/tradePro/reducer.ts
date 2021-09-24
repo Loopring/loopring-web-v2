@@ -36,6 +36,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 tradeCalcProData,
                 ammPoolSnapshot,
                 calcTradeParams,
+                limitCalcTradeParams,
                 priceImpactObj,
                 feeBips,
                 tradeArray,
@@ -53,6 +54,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     tradeCalcProData:tradeCalcProData?tradeCalcProData:{},
                     request,
                     calcTradeParams,
+                    limitCalcTradeParams,
                     depth,
                     ticker,
                     ammPoolSnapshot,
@@ -106,6 +108,10 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     state.pageTradePro.calcTradeParams = calcTradeParams;
                 }
 
+                if (limitCalcTradeParams !== undefined) {
+                    state.pageTradePro.limitCalcTradeParams = limitCalcTradeParams;
+                }
+                
                 if(tradeArray){
                     state.pageTradePro.tradeArray= tradeArray;
                 }
