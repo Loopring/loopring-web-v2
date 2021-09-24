@@ -65,7 +65,10 @@ export function makeMarketReq({
 
     if (!tokenMap || !exchangeAddress || !marketArray
         || accountId === undefined || !base || !quote || (!depth && !ammPoolSnapshot)) {
-        return undefined
+        return {
+            calcTradeParams:undefined,
+            marketRequest:undefined,
+        }
     }
 
     if (isBuy === undefined) {
@@ -168,12 +171,18 @@ export function makeLimitReq({
 
     feeBips,
     tokenAmtMap,
-}: ReqParams) {
+}: ReqParams):{
+    calcTradeParams:undefined|{[key:string]:any},
+    limitRequest:undefined|{[key:string]:any},
+} {
 
     if (!tokenMap || !exchangeAddress || !depth
         || accountId === undefined || !base || !quote || (!amountBase && !amountQuote)) {
         myLog('got empty input!')
-        return undefined
+        return {
+            calcTradeParams:undefined,
+            limitRequest:undefined,
+        }
     }
 
     if (price === undefined) {
@@ -340,7 +349,10 @@ export function usePlaceOrder() {
     }, [ marketArray,])
 
     // {isBuy, amountB or amountS, (base, quote / market), feeBips, takerRate, depth, ammPoolSnapshot, slippage, }
-    const makeMarketReqInHook = React.useCallback((params: ReqParams) => {
+    const makeMarketReqInHook = React.useCallback((params: ReqParams):{
+        calcTradeParams:undefined|{[key:string]:any},
+        marketRequest:undefined|{[key:string]:any},
+    } => {
 
         // if (!exchangeInfo) {
         //     return
@@ -361,7 +373,10 @@ export function usePlaceOrder() {
             }
             return makeMarketReq(fullParams)
         }else{
-            return undefined
+            return {
+                calcTradeParams:undefined,
+                marketRequest:undefined,
+            }
         }
 
 
@@ -371,7 +386,7 @@ export function usePlaceOrder() {
     }, [account, tokenMap, marketArray, exchangeInfo, ])
 
     // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
-    const makeLimitReqInHook = React.useCallback((params: ReqParams) => {
+    const makeLimitReqInHook = React.useCallback((params: ReqParams):{ calcTradeParams: object | undefined; limitRequest: object | undefined } => {
         const {tokenAmtMap,feeBips} = getTokenAmtMap(params)
         if (exchangeInfo) {
             const fullParams: ReqParams = {
@@ -385,7 +400,10 @@ export function usePlaceOrder() {
             return makeLimitReq(fullParams)
         }else {
             myLog('makeMarketReqInHook error no tokenAmtMap', tokenAmtMap)
-            return undefined
+            return {
+                calcTradeParams:undefined,
+                limitRequest:undefined,
+            }
         }
 
     }, [account, tokenMap, marketArray, exchangeInfo,])
