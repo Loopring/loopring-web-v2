@@ -346,4 +346,5 @@ export default {
     // labelPrompt: 'Prompt',
 
     labelComingSoon: 'Coming Soon',
+    labelTradeProHideOtherPairs: 'Hide other trading pairs',
 }
