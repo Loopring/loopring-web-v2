@@ -127,7 +127,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
 
             myLog(`tradeData price:${tradeData.price.tradeValue}`, tradeData.type,amountBase,amountQuote)
 
-            const request = makeLimitReqInHook({
+            const {limitRequest,calcTradeParams} = makeLimitReqInHook({
                 isBuy: tradeData.type === 'buy',
                 base: tradeData.base.belong,
                 quote: tradeData.quote.belong,
@@ -140,8 +140,8 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
             // myLog('limitRequest:', request)
             //TODO: fee update
             updatePageTradePro({market,
-                request: request?.limitRequest,
-                limitCalcTradeParams: request?.calcTradeParams,
+                request: limitRequest,
+                limitCalcTradeParams: calcTradeParams,
                 tradeCalcProData: {
                     ...pageTradePro.tradeCalcProData,
                     fee: 'TODO'
