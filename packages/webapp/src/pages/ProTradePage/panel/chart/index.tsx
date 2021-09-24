@@ -19,13 +19,13 @@ const formatDateData = testKlineData.map(d => ({
 
 export  const ChartView = withTranslation('common')(<C extends { [ key: string ]: any }>({market}: {market: string | undefined})=>{
 
-    const { market: marketTmp } = useKlineChart(market)
+    const { candlestickViewData, } = useKlineChart(market)
 
     return <>
      <Styled>
                 <ScaleAreaChart
                     type={ChartType.Kline}
-                    data={formatDateData}
+                    data={candlestickViewData}
                     indicator={
                         {
                             mainIndicators: [{indicator: MainIndicator.MA, params: {period: 5}}, 
