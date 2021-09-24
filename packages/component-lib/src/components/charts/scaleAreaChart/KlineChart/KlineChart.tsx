@@ -59,7 +59,7 @@ export enum SubIndicator {
 
 export interface IndicatorProps {
     mainIndicators?: { indicator: MainIndicator, params?: any }[]
-    subIndicator?: { indicator: SubIndicator, params?: any }
+    subIndicator?: { indicator: SubIndicator, params?: any }[]
 }
 
 export interface StockChartProps {
@@ -93,6 +93,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
         // simple moving average
 
         let mainIndicatorLst: any[] = []
+        let subIndicatorLst: any[] = []
 
         let id = 1
 
@@ -111,7 +112,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                                 d[`sma${periodMA}`] = c;
                             })
                             .accessor((d: any) => d[`sma${periodMA}`]);
-                        mainIndicatorLst.push(indMA)
+                        mainIndicatorLst.push({ func: indMA, type: item.indicator })
                         maToolTipOptions.push({
                             yAccessor: indMA.accessor(),
                             type: "MA",
@@ -128,7 +129,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                                 d[`ema${periodEMA}`] = c;
                             })
                             .accessor((d: any) => d[`ema${periodEMA}`]);
-                        mainIndicatorLst.push(indEMA)
+                        mainIndicatorLst.push({ func: indEMA, type: item.indicator })
                         maToolTipOptions.push({
                             yAccessor: indEMA.accessor(),
                             type: "EMA",
@@ -143,7 +144,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                                 d.bb = c;
                             })
                             .accessor((d: any) => d.bb);
-                        mainIndicatorLst.push(indBOLL)
+                        mainIndicatorLst.push({ func: indBOLL, type: item.indicator })
                         bollToolTipOption = indBOLL.options()
                         break
                     default:
@@ -154,27 +155,40 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
 
         myLog('bollToolTipOption:', bollToolTipOption)
 
-        if (subIndicator) {
+        if (subIndicator && subIndicator.length > 0) {
+            subIndicator.forEach((item: { indicator: SubIndicator, params?: any }) => {
+                switch (item.indicator) {
+                    case SubIndicator.MACD:
+                        const macdCalculator = macd().id(id++)
+                            .options({
+                                fast: 12,
+                                signal: 9,
+                                slow: 26,
+                            })
+                            .merge((d: any, c: any) => {
+                                d.macd = c;
+                            })
+                            .accessor((d: any) => d.macd)
+                        subIndicatorLst.push({ func: macdCalculator, type: item.indicator })
+                        break
+                    case SubIndicator.KDJ:
+                        break
+                    case SubIndicator.RSI:
+                        break
+                    default:
+                        break
+                }
+            })
         }
-
-        const macdCalculator = macd()
-            .options({
-                fast: 12,
-                signal: 9,
-                slow: 26,
-            })
-            .merge((d: any, c: any) => {
-                d.macd = c;
-            })
-            .accessor((d: any) => d.macd);
-
-        const macdYAccessor = macdCalculator.accessor();
-        const macdOptions = macdCalculator.options();
 
         let calculatedData = initialData
 
-        mainIndicatorLst.forEach((func: any) => {
-            calculatedData = func(calculatedData)
+        mainIndicatorLst.forEach((item: any) => {
+            calculatedData = item.func(calculatedData)
+        })
+
+        subIndicatorLst.forEach((item: any) => {
+            calculatedData = item.func(calculatedData)
         })
 
         const { margin, xScaleProvider } = this;
@@ -230,8 +244,8 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                     {
                         mainIndicatorLst && mainIndicatorLst.map((item: any) => {
                             return (<>
-                                <LineSeries yAccessor={item.accessor()} strokeStyle={item.stroke()} />
-                                <CurrentCoordinate yAccessor={item.accessor()} fillStyle={item.stroke()} />
+                                <LineSeries yAccessor={item.func.accessor()} strokeStyle={item.func.stroke()} />
+                                <CurrentCoordinate yAccessor={item.func.accessor()} fillStyle={item.func.stroke()} />
                             </>)
                         })
                     }
@@ -245,56 +259,55 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                         displayFormat={this.pricesDisplayFormat}
                         yAccessor={this.yEdgeIndicator}
                     />
-                    {maToolTipOptions && 
-                    <MovingAverageTooltip
-                        origin={[8, 24]}
-                        textFill={'#FFF'}
-                        options={maToolTipOptions}
-                    />}
+                    {
+                        maToolTipOptions &&
+                        <MovingAverageTooltip
+                            origin={[8, 24]}
+                            textFill={'#FFF'}
+                            options={maToolTipOptions}
+                        />}
                     {/* <ZoomButtons /> */}
                     <OHLCTooltip origin={[8, 16]} textFill={'#FFF'} />
-                    { bollToolTipOption && <>
-                    <BollingerSeries
-                        strokeStyle={bbStroke}
-                    />
-                    <BollingerBandTooltip
-                        origin={[8, 64]}
-                        yAccessor={d => d.bb}
-                        options={bollToolTipOption}
-                        textFill={'#fff'}
-                    /></>}
+                    {
+                        bollToolTipOption && <>
+                            <BollingerSeries
+                                strokeStyle={bbStroke}
+                            />
+                            <BollingerBandTooltip
+                                origin={[8, 64]}
+                                yAccessor={d => d.bb}
+                                options={bollToolTipOption}
+                                textFill={'#fff'}
+                            /></>}
                 </Chart>
-                {/* <Chart id={2} origin={(w, h) => [0, h - 200]} height={100} yExtents={d => d.volume}>
-					<XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="bottom" orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'} strokeStyle={'rgba(255, 255, 255, 0.3)'} />
-					<YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right" ticks={5} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'} strokeStyle={'rgba(255, 255, 255, 0.3)'} />
-					<MouseCoordinateX displayFormat={timeDisplayFormat} />
-                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
-                    <BarSeries yAccessor={this.volumeSeries} fillStyle={this.volumeColor} />
-                    <SingleValueTooltip
-                        yAccessor={d => d.volume}
-                        yLabel={"VOL"}
-                        valueFill={'rgba(255, 255, 255, 0.8)'}
-                        yDisplayFormat={(d: any) => this.pricesDisplayFormat(d)}
-                        origin={[8, 16]}
-                    />
-				</Chart> */}
-                <Chart id={8} origin={(_w, _h) => [0, _h - 100]} height={100} yExtents={macdYAccessor}>
-                    <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="bottom"
-                        orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
-                    <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right"
-                        ticks={5} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
-                    <MouseCoordinateX displayFormat={timeDisplayFormat} />
-                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
-                    <MACDSeries yAccessor={macdYAccessor} {...this.macdAppearance} />
-                    <MACDTooltip
-                        origin={[8, 16]}
-                        appearance={this.macdAppearance}
-                        options={macdOptions}
-                        yAccessor={macdYAccessor}
-                    />
-                </Chart>
+
+                {
+                    subIndicatorLst && subIndicatorLst.length > 0 && subIndicatorLst.map((item: any) => {
+                        switch(item.type) {
+                            case SubIndicator.MACD:
+                                return <Chart id={8} origin={(_w, _h) => [0, _h - 100]} height={100} yExtents={item.func.accessor()}>
+                                    <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="bottom"
+                                        orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                                    <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right"
+                                        ticks={5} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                                    <MouseCoordinateX displayFormat={timeDisplayFormat} />
+                                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
+                                    <MACDSeries yAccessor={item.func.accessor()} {...this.macdAppearance} />
+                                    <MACDTooltip
+                                        origin={[8, 16]}
+                                        appearance={this.macdAppearance}
+                                        options={item.func.options()}
+                                        yAccessor={item.func.accessor()}
+                                    />
+                                </Chart>
+                            default:
+                                break
+                        }
+                        return <></>
+                    })
+                }
                 <CrossHairCursor strokeStyle={'#fff'} />
             </ChartCanvas>
         );
