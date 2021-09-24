@@ -312,7 +312,8 @@ export class LoopringSocket {
                             market: key,
                             level,
                             count,
-                            snapshot
+                            snapshot,
+                            showOverlap: false,
                         }))
                         if (list && list.length) {
                             this.addSocketEvents(SocketEventType.mixorder)
