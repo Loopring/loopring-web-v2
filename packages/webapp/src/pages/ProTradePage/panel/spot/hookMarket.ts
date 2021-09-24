@@ -131,7 +131,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             amountQuote = amountBase !== undefined ? undefined : tradeData.quote.tradeValue ? tradeData.quote.tradeValue : undefined
         }
 
-        const request = makeMarketReqInHook({
+        let {marketRequest,calcTradeParams} = makeMarketReqInHook({
             isBuy: tradeData.type === 'buy',
             base: tradeData.base.belong,
             quote: tradeData.quote.belong,
@@ -144,10 +144,21 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             slippage,
         })
 
-        myLog('marketRequest:', request)
+        myLog('marketRequest:',marketRequest, calcTradeParams)
 
         updatePageTradePro({
-            market, request: request?.marketRequest, calcTradeParams: request?.calcTradeParams
+            market,
+            request: marketRequest as any,
+            calcTradeParams: calcTradeParams,
+            tradeCalcProData: {
+                ...pageTradePro.tradeCalcProData,
+                fee:calcTradeParams ? calcTradeParams.feeBips: undefined
+            }
+        })
+        setMarketTradeData((state)=>{
+           return{
+               ...state,
+           }
         })
 
     }, [])
