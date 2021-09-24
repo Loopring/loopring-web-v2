@@ -5,7 +5,7 @@ import { LimitTradeData, TradeBaseType, TradeBtnStatus, TradeProType } from '@lo
 import { usePageTradePro } from 'stores/router';
 import { walletLayer2Service } from 'services/socket';
 import { useSubmitBtn } from './hookBtn';
-import { usePlaceOrder } from 'pages/SwapPage/swap_hook';
+import { usePlaceOrder } from 'hooks/common/useTrade';
 import { useTokenMap } from 'stores/token';
 import { useTranslation } from 'react-i18next';
 import store from 'stores';
@@ -78,7 +78,8 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         // @ts-ignore
         const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
         setLimitTradeData((state) => {
-            return pageTradePro.market === market ? {
+           return  {
+                ...state,
                 type,
                 base: {
                     belong: baseSymbol,
@@ -92,11 +93,6 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                     belong: quoteSymbol,
                     tradeValue: (pageTradePro.market === market && pageTradePro.ticker)?pageTradePro.ticker.close:0
                 } as IBData<any>,
-            } : {
-                type,
-                base: {belong: baseSymbol} as IBData<any>,
-                quote: {belong: quoteSymbol} as IBData<any>,
-                price: {belong: quoteSymbol, tradeValue: 0} as IBData<any>,
             }
         });
         updatePageTradePro({market,defaultPrice:undefined})
@@ -107,7 +103,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         return
     }
 
-    const {makelimitReqInHook} = usePlaceOrder()
+    const {makeLimitReqInHook} = usePlaceOrder()
 
     const onChangeLimitEvent = React.useCallback((tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType) => {
         // myLog(`onChangeLimitEvent tradeData:`, tradeData, 'formType', formType)
@@ -115,9 +111,9 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
 
         if (formType === TradeBaseType.tab) {
-            resetTradeData(limitTradeData.type)
+            resetTradeData(tradeData.type)
         } else {
-            setLimitTradeData(tradeData)
+
             // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
 
             let amountBase = formType === TradeBaseType.base ? tradeData.base.tradeValue : undefined
@@ -128,9 +124,9 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                 amountQuote = amountBase !== undefined ? undefined : tradeData.quote.tradeValue !== undefined ? tradeData.quote.tradeValue : undefined
             }
 
-            // myLog('tradeData.type:', tradeData.type)
+            myLog(`tradeData price:${tradeData.price.tradeValue}`, tradeData.type,amountBase,amountQuote)
 
-            const request = makelimitReqInHook({
+            const request = makeLimitReqInHook({
                 isBuy: tradeData.type === 'buy',
                 base: tradeData.base.belong,
                 quote: tradeData.quote.belong,
@@ -141,9 +137,32 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
             })
 
             // myLog('limitRequest:', request)
-
-            updatePageTradePro({market, request: request?.limitRequest, limitCalcTradeParams: request?.calcTradeParams,})
-
+            //TODO: fee update
+            updatePageTradePro({market,
+                request: request?.limitRequest,
+                limitCalcTradeParams: request?.calcTradeParams,
+                tradeCalcProData: {
+                    ...pageTradePro.tradeCalcProData,
+                    fee: 'TODO'
+                }
+            })
+            setLimitTradeData((state) => {
+                return  {
+                    ...state,
+                    price:{
+                        ...state.price,
+                        tradeValue:tradeData.price.tradeValue
+                    },
+                    base:{
+                        ...state.base,
+                        tradeValue:request?.calcTradeParams.baseVolShow  as number
+                    },
+                    quote:{
+                        ...state.base,
+                        tradeValue:request?.calcTradeParams.quoteVolShow  as number
+                    }
+                }
+            })
         }
         // if (formType === TradeBaseType.slippage) {
         //     return
