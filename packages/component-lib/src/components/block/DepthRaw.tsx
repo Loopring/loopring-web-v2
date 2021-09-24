@@ -2,9 +2,20 @@ import { Box, Grid, Typography } from '@mui/material';
 import { MarketInfo } from 'loopring-sdk/dist/defs';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { DepthViewData, MarketRowHeight } from '@loopring-web/common-resources';
-import { useTheme } from '@emotion/react';
+// import { useTheme } from '@emotion/react';
+import styled from '@emotion/styled';
 
 export type Row = DepthViewData  & {type:DepthType, onClick:(event:MouseEvent,price:number)=>void,}
+export const  GridStyle = styled(Grid)`
+  margin: 0;
+  &:hover{
+    background: var(--color-box-hover);
+  }
+  & > .MuiGrid-item{
+    padding-top: 0;
+    padding-left: 0;
+  }
+` as typeof Grid
 export const Depth = ({
                           price,
                           // amt,
@@ -15,10 +26,10 @@ export const Depth = ({
                           percentage,
                           type,
                       }: Row) => {
-    const theme = useTheme();
+    // const theme = useTheme();
     const color = type === DepthType.ask? 'var(--color-error)':'var(--color-success)';
-    return <Grid container spacing={1} position={'relative'} wrap={'nowrap'} style={{cursor:'pointer'}} onClick={(e)=>onClick(e as any,price)}>
-        <Box style={{opacity:0.1,backgroundColor:color}} display={'block'} position={'absolute'} top={theme.unit} right={0} width={percentage*100+'%'} height={`${MarketRowHeight}px`} zIndex={44}/>
+    return <GridStyle   container spacing={1} position={'relative'} wrap={'nowrap'} style={{cursor:'pointer'}} onClick={(e)=>onClick(e as any,price)}>
+        <Box style={{opacity:0.1,backgroundColor:color}} display={'block'} position={'absolute'} right={0} width={percentage*100+'%'} height={`${MarketRowHeight}px`} zIndex={44}/>
         <Grid item xs={4} alignSelf={'flex-start'} zIndex={55} >
             <Typography lineHeight={`${MarketRowHeight}px`} color={color} variant={'body2'} > {price}  </Typography>
         </Grid>
@@ -28,7 +39,7 @@ export const Depth = ({
         <Grid item xs={4} alignSelf={'flex-end'} textAlign={'right'} zIndex={55} >
             <Typography lineHeight={`${MarketRowHeight}px`} color={'text.secondary'} variant={'body2'}>  {amtTotalForShow} </Typography>
         </Grid>
-    </Grid>
+    </GridStyle>
 }
 
 export enum DepthType {
@@ -48,7 +59,7 @@ export const DepthTitle = withTranslation('common')(({
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = marketInfo.market.match(/(\w+)-(\w+)/i);
 
-    return < Grid container spacing={1} position={'relative'} wrap={'nowrap'} >
+    return <GridStyle  container spacing={1} position={'relative'} wrap={'nowrap'} >
         <Grid item xs={4} alignSelf={'flex-start'} >
             <Typography lineHeight={`${MarketRowHeight}px`} color={'var(--color-text-third)'}
                         variant={'body2'} component={'p'} >{t('labelDepthPrice', {symbol: quoteSymbol})} </Typography>
@@ -60,7 +71,7 @@ export const DepthTitle = withTranslation('common')(({
         <Grid item xs={4} alignSelf={'flex-end'} >
             <Typography lineHeight={`${MarketRowHeight}px`} color={'var(--color-text-third)'} variant={'body2'} textAlign={'right'}  component={'p'} >  {t('labelDepthTotal')} </Typography>
         </Grid>
-    </Grid>
+    </GridStyle>
 })
 export const DepthBlock = withTranslation('common')(({
                                                          depths,
