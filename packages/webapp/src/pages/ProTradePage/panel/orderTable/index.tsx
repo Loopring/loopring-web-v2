@@ -1,9 +1,17 @@
 import React from 'react'
 import { withTranslation, TFunction } from 'react-i18next';
-import { Tabs, Tab, Box, Divider } from '@mui/material'
+import { Tabs, Tab, Box, Divider, FormControlLabel, Checkbox } from '@mui/material'
 import { OrderHistoryTable } from '@loopring-web/component-lib'
-import { myLog } from '@loopring-web/common-resources';
+import { myLog, CheckedIcon, CheckBoxIcon } from '@loopring-web/common-resources';
 import { useOrderList } from './hookTable'
+import styled from '@emotion/styled'
+
+const CheckboxStyled = styled(Box)`
+    position: absolute;
+    top: 50%;
+    right: ${({theme}) => theme.unit * 3}px;
+    transform: translateY(-50%);
+`
 
 export  const OrderTableView = withTranslation('common')(<C extends { [ key: string ]: any }>({
     t,
@@ -22,6 +30,7 @@ export  const OrderTableView = withTranslation('common')(<C extends { [ key: str
         handleScroll,
     } = useOrderList()
     const [tabValue, setTabValue] = React.useState(0)
+    const [hideOtherPairs, setHideOtherPairs] = React.useState(false)
 
     const handleTabSwitch = React.useCallback((index: number) => {
         setTabValue(index)
@@ -40,7 +49,7 @@ export  const OrderTableView = withTranslation('common')(<C extends { [ key: str
     }, [getOrderList, setOrderOriginalData, tabValue])
 
     return <>
-        <Box padding={2} paddingTop={0} paddingBottom={0}>
+        <Box padding={2} paddingTop={0} paddingBottom={0} style={{ position: 'relative' }}>
             <Tabs
                 value={tabValue}
                 onChange={(e, index) => handleTabSwitch(index)}
@@ -49,7 +58,15 @@ export  const OrderTableView = withTranslation('common')(<C extends { [ key: str
                 <Tab label={t('labelOrderTableOpenOrder')}/>
                 <Tab label={t('labelOrderTableOrderHistory')}/>
             </Tabs>
-            
+            <CheckboxStyled>
+                <FormControlLabel style={{marginRight: 0}}
+                    control={<Checkbox checked={hideOtherPairs} checkedIcon={<CheckedIcon/>}
+                                        icon={<CheckBoxIcon/>}
+                                        color="default" onChange={(event) => {
+                        setHideOtherPairs(event.target.checked)
+                    }}/>} label={t('labelTradeProHideOtherPairs')}
+                />
+            </CheckboxStyled>
         </Box>
         <Divider />
         <OrderHistoryTable
