@@ -17,7 +17,6 @@ import {
     LineSeries,
     MACDSeries,
     MACDTooltip,
-    SingleValueTooltip,
     MouseCoordinateX,
     MouseCoordinateY,
     MovingAverageTooltip,
