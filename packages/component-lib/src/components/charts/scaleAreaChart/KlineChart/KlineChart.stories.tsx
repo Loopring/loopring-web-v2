@@ -5,6 +5,7 @@ import { ChartType } from '../../index';
 import { withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import { testKlineData } from './data'
+import { MainIndicator } from '.';
 
 const Styled = styled.div`
   flex: 1;
@@ -28,6 +29,14 @@ export const Kline = withTranslation()(() => {
                 <ScaleAreaChart
                     type={ChartType.Kline}
                     data={formatDateData}
+                    indicator={
+                        {
+                            mainIndicators: [{indicator: MainIndicator.MA, params: {period: 5}}, 
+                                {indicator: MainIndicator.MA, params: {period: 10}}, 
+                                {indicator: MainIndicator.BOLL}
+                            ]
+                        }
+                    }
                     // yAxisDomainPercent={0.2}
                     // handleMove={(props) => {
                     // 	console.log(props)
