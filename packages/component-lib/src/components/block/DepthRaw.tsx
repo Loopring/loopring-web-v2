@@ -10,6 +10,7 @@ export const  GridStyle = styled(Grid)`
   margin: 0;
   &:hover{
     background: var(--color-box-hover);
+    transition: background 0.4s ease-out;
   }
   & > .MuiGrid-item{
     padding-top: 0;
