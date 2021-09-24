@@ -124,7 +124,7 @@ export const useOrderList = () => {
         return currentTarget.scrollTop + 10 >= currentTarget.scrollHeight - currentTarget.clientHeight;
     }, [])
 
-    const handleScroll = React.useCallback(async (event: React.UIEvent<HTMLDivElement>) => {
+    const handleScroll = React.useCallback(async (event: React.UIEvent<HTMLDivElement>, isOpen: boolean = false) => {
         if (!isAtBottom(event) || (event.target as any)?.scrollTop === 0) return;
     
         // setIsLoading(true);
@@ -133,6 +133,7 @@ export const useOrderList = () => {
         const newData = await getOrderList({
             limit: 50,
             offset: prevData.length,
+            status: isOpen ? 'processing' : 'processed,failed,cancelled,cancelling,expired'
         })
         const jointData = [...prevData, ...newData]
         setOrderOriginalData(jointData)
