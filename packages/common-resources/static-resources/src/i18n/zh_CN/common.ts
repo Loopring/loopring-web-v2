@@ -344,4 +344,6 @@ export default {
 
     labelComingSoon: '敬请期待',
     labelTradeProHideOtherPairs: '隐藏其他交易对',
+    labelCancelAllOrders: '确认撤销全部订单？',
+    labelConfirm: '确定',
 }
