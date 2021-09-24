@@ -146,14 +146,15 @@ export function makeMarketReq({
     }
 
     return {
-        marketRequest,
         calcTradeParams,
+        marketRequest,
     }
 }
 
 export function makelimitReq({
     isBuy,
 
+    depth,
     price,
     amountBase,
     amountQuote,
@@ -169,7 +170,7 @@ export function makelimitReq({
     tokenAmtMap,
 }: ReqParams) {
 
-    if (!tokenMap || !exchangeAddress
+    if (!tokenMap || !exchangeAddress || !depth
         || accountId === undefined || !base || !quote || (!amountBase && !amountQuote)) {
         myLog('got empty input!')
         return undefined
@@ -197,11 +198,18 @@ export function makelimitReq({
     let baseVol = undefined
     let quoteVol = undefined
 
+    let baseVolShow = undefined
+    let quoteVolShow = undefined
+
     if (amountBase !== undefined) {
-        baseVol = sdk.toBig(amountBase).times('1e' + baseTokenInfo.decimals)
+        baseVolShow = amountBase
+        baseVol = sdk.toBig(baseVolShow).times('1e' + baseTokenInfo.decimals)
+        quoteVolShow = sdk.toBig(amountBase).times(sdk.toBig(price)).toString()
         quoteVol = sdk.toBig(amountBase).times(sdk.toBig(price)).times('1e' + quoteTokenInfo.decimals)
     } else if (amountQuote !== undefined) {
+        baseVolShow = sdk.toBig(amountQuote).div(sdk.toBig(price)).toString()
         baseVol = sdk.toBig(amountQuote).div(sdk.toBig(price)).times('1e' + baseTokenInfo.decimals)
+        quoteVolShow = amountQuote
         quoteVol = sdk.toBig(amountQuote).times('1e' + quoteTokenInfo.decimals)
     } else {
         throw Error('no amount info!')
@@ -236,7 +244,28 @@ export function makelimitReq({
         eddsaSignature: '',
     }
 
+    let priceImpact = 0
+
+    const ask1 = depth.asks_prices[0]
+    const bid1 = depth.bids_prices[depth.bids_prices.length - 1]
+    
+    if (isBuy && ask1 && price > ask1) {
+        priceImpact = (price - ask1) / ask1
+    } else if (!isBuy && bid1 && price < bid1) {
+        priceImpact = (bid1 - price) / bid1
+    }
+
+    const calcTradeParams = {
+        isBuy,
+        priceImpact,
+        baseVol: baseVol.toString(),
+        baseVolShow,
+        quoteVol: quoteVol.toString(),
+        quoteVolShow,
+    }
+
     return {
+        calcTradeParams,
         limitRequest,
     }
 }

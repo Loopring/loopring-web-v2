@@ -5,11 +5,12 @@ import TrendChart from './TrendChart'
 import DepthChart from './DepthChart'
 import { ChartType } from '../';
 
-import { DayilyStockChart } from './KlineChart'
+import { DayilyStockChart, IndicatorProps, } from './KlineChart'
 
 export interface ScaleAreaChartProps {
     type: ChartType
     data: any
+    indicator?: IndicatorProps
     handleMove?: (props: any) => void
     yAxisDomainPercent?: number // defualt 0.1
     riseColor?: 'green' | 'red'

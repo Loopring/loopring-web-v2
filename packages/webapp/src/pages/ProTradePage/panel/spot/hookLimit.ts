@@ -101,7 +101,9 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
     const {makelimitReqInHook} = usePlaceOrder()
 
     const onChangeLimitEvent = React.useCallback((tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType) => {
-        myLog(`onChangeLimitEvent tradeData:`, tradeData, 'formType', formType)
+        // myLog(`onChangeLimitEvent tradeData:`, tradeData, 'formType', formType)
+
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
 
         if (formType === TradeBaseType.tab) {
             resetTradeData(limitTradeData.type)
@@ -117,18 +119,21 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                 amountQuote = amountBase !== undefined ? undefined : tradeData.quote.tradeValue !== undefined ? tradeData.quote.tradeValue : undefined
             }
 
+            // myLog('tradeData.type:', tradeData.type)
+
             const request = makelimitReqInHook({
                 isBuy: tradeData.type === 'buy',
                 base: tradeData.base.belong,
                 quote: tradeData.quote.belong,
                 price: tradeData.price.tradeValue as number,
+                depth: pageTradePro.depth,
                 amountBase,
                 amountQuote,
             })
 
-            myLog('limitRequest:', request?.limitRequest)
+            // myLog('limitRequest:', request)
 
-            updatePageTradePro({market, request: request?.limitRequest, calcTradeParams: null,})
+            updatePageTradePro({market, request: request?.limitRequest, limitCalcTradeParams: request?.calcTradeParams,})
 
         }
         // if (formType === TradeBaseType.slippage) {
