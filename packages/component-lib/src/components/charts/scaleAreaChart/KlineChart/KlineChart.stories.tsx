@@ -14,9 +14,6 @@ const Styled = styled.div`
   height: 100%;
 `
 
-// @ts-ignore
-
-
 const formatDateData = testKlineData.map(d => ({
     ...d,
     date: new Date(d.date)
@@ -38,13 +35,7 @@ export const Kline = withTranslation()(() => {
                             subIndicator: [{ indicator: SubIndicator.VOLUME }, { indicator: SubIndicator.MACD }]
                         }
                     }
-                    // yAxisDomainPercent={0.2}
-                    // handleMove={(props) => {
-                    // 	console.log(props)
-                    // }}
-                    // riseColor="red"
                 />
-                {/* <DayilyStockChart data={[]} /> */}
             </Styled>
         </>
     )
