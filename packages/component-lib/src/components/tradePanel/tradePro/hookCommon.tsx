@@ -15,7 +15,8 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
                                             i18nKey,
                                             tradeCalcProData,
                                             tradeBtnBaseStatus,
-                                            tradeData, handleCountChange,
+                                            tradeData,
+                                            handleCountChange,
                                             onChangeEvent,
                                             tokenBaseProps,
                                             tokenQuoteProps,
@@ -45,18 +46,19 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         }
     }
     const _handleCountChange = React.useCallback((ibData: T, name: string, _ref: any) => {
-        if(handleCountChange){
+        if (handleCountChange) {
             handleCountChange(ibData, name, _ref)
-        }else{
-            // myLog(`${type}Trade: handleUser input on :`, ibData, name)
+        } else {
+            myLog(`${type}Trade: handleUser input on :`, ibData, name, tradeData)
             const _tradeData = {
-                    ...tradeData,
-                    [ name ]: ibData,
+                ...tradeData,
+                // type: tabIndex,
+                [ name ]: ibData,
             }
             onChangeEvent(_tradeData, TradeBaseType[ name ])
         }
 
-    }, [tradeData,type]);
+    }, [tradeData, type, tabIndex]);
 
 
     const propsBase = React.useMemo(() => {
@@ -105,7 +107,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         } else {
             tradeData.type = index
         }
-        
+
         // myLog('tradeData.type:', tradeData.type)
 
         onChangeEvent(tradeData, TradeBaseType.tab)
@@ -138,21 +140,21 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
 
     const onPercentage = React.useCallback((value: any) => {
         myLog('hookCommon onPercentage:', value)
-        const inputType =  tradeData.type === TradeProType.sell ? 'base' : 'quote'
+        const inputType = tradeData.type === TradeProType.sell ? 'base' : 'quote'
         setSelectedPercentage(value)
-        const tradeCoin = _.cloneDeep(tradeData[inputType]);
+        const tradeCoin = _.cloneDeep(tradeData[ inputType ]);
         if (tradeCoin && tradeCoin.balance) {
             tradeCoin.tradeValue = sdk.toBig(tradeCoin.balance).times(sdk.toBig(value)).div(100).toNumber()
             _handleCountChange(tradeCoin, inputType, {current: 'percentage'} as React.Ref<any>)
         }
-    },[_handleCountChange,tradeData]);
+    }, [_handleCountChange, tradeData]);
     return {
         quoteRef,
         baseRef,
         btnLabel,
         tabIndex,
         getDisabled,
-        handleCountChange:_handleCountChange,
+        handleCountChange: _handleCountChange,
         selectedPercentage,
         onPercentage,
         inputError,

@@ -12,7 +12,7 @@ import { useSystem } from 'stores/system';
 import { useTranslation } from 'react-i18next';
 import { useSubmitBtn } from './hookBtn';
 import { VolToNumberWithPrecision } from 'utils/formatter_tool';
-import { usePlaceOrder } from 'pages/SwapPage/swap_hook';
+import { usePlaceOrder } from 'hooks/common/useTrade';
 import store from 'stores';
 
 export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType): {

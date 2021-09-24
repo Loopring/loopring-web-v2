@@ -151,7 +151,7 @@ export function makeMarketReq({
     }
 }
 
-export function makelimitReq({
+export function makeLimitReq({
     isBuy,
 
     depth,
@@ -204,10 +204,10 @@ export function makelimitReq({
     if (amountBase !== undefined) {
         baseVolShow = amountBase
         baseVol = sdk.toBig(baseVolShow).times('1e' + baseTokenInfo.decimals)
-        quoteVolShow = sdk.toBig(amountBase).times(sdk.toBig(price)).toString()
+        quoteVolShow = sdk.toBig(amountBase).times(sdk.toBig(price)).toFixed(quoteTokenInfo.precision)
         quoteVol = sdk.toBig(amountBase).times(sdk.toBig(price)).times('1e' + quoteTokenInfo.decimals)
     } else if (amountQuote !== undefined) {
-        baseVolShow = sdk.toBig(amountQuote).div(sdk.toBig(price)).toString()
+        baseVolShow = sdk.toBig(amountQuote).div(sdk.toBig(price)).toFixed(baseTokenInfo.precision)
         baseVol = sdk.toBig(amountQuote).div(sdk.toBig(price)).times('1e' + baseTokenInfo.decimals)
         quoteVolShow = amountQuote
         quoteVol = sdk.toBig(amountQuote).times('1e' + quoteTokenInfo.decimals)
@@ -289,112 +289,110 @@ export function usePlaceOrder() {
     const { account } = useAccount()
 
     const { tokenMap, marketArray, } = useTokenMap()
+    const { ammMap } = useAmmMap()
+
 
     const { exchangeInfo, } = useSystem()
 
     const getTokenAmtMap = React.useCallback((params: ReqParams) => {
+        const {amountMap} = store.getState().amountMap
+        if(ammMap && marketArray && amountMap){
+            let base = params.base
 
-        const amountMap = store.getState().amountMap.amountMap
+            let quote = params.quote
 
-        const ammMap = store.getState().amm.ammMap
+            let market = params.market
 
-        if (!ammMap || !marketArray) {
-            // myLog('ammMap:', ammMap)
-            // myLog('marketArray:', marketArray)
-            return undefined
-        }
+            let ammMarket = ''
 
-        let base = params.base
+            if (params.market) {
 
-        let quote = params.quote
+                const result = params.market.match(/([\w,#]+)-([\w,#]+)/i)
 
-        let market = params.market
+                if (result) {
+                    [, base, quote,] = result
+                }
+            }
 
-        let ammMarket = ''
+            const existedMarket = sdk.getExistedMarket(marketArray, base, quote)
 
-        if (params.market) {
+            params.base = existedMarket.baseShow
+            params.quote = existedMarket.quoteShow
+            market = existedMarket.market
+            ammMarket = existedMarket.amm as string
 
-            const result = params.market.match(/([\w,#]+)-([\w,#]+)/i)
+            const tokenAmtMap = amountMap ? ammMap[ammMarket] ? amountMap[ammMarket] : amountMap[market as string] : undefined
 
-            if (result) {
-                [, base, quote,] = result
+            const feeBips = ammMap[ ammMarket ] ? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
+            return {
+                feeBips,
+                tokenAmtMap,
+            }
+        }else{
+            return {
+                feeBips:undefined,
+                tokenAmtMap:undefined,
             }
         }
 
-        const existedMarket = sdk.getExistedMarket(marketArray, base, quote)
 
-        params.base = existedMarket.baseShow
-        params.quote = existedMarket.quoteShow
-        market = existedMarket.market
-        ammMarket = existedMarket.amm as string
-
-        const tokenAmtMap = amountMap ? ammMap[ammMarket] ? amountMap[ammMarket] : amountMap[market as string] : undefined
-
-        const feeBips = ammMap[ ammMarket ] ? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
-        return {
-            feeBips,
-            tokenAmtMap,
-        }
 
     }, [ marketArray,])
 
     // {isBuy, amountB or amountS, (base, quote / market), feeBips, takerRate, depth, ammPoolSnapshot, slippage, }
     const makeMarketReqInHook = React.useCallback((params: ReqParams) => {
 
-        if (!exchangeInfo) {
-            return
-        }
+        // if (!exchangeInfo) {
+        //     return
+        // }
 
-        const tokenAmtMap = getTokenAmtMap(params)
+        const {tokenAmtMap,feeBips} = getTokenAmtMap(params)
 
         myLog('makeMarketReqInHook tokenAmtMap:', tokenAmtMap)
 
-        if (!tokenAmtMap?.tokenAmtMap) {
-            return
+        if (exchangeInfo) {
+            const fullParams: ReqParams = {
+                ...params,
+                exchangeAddress: exchangeInfo.exchangeAddress,
+                accountId: account.accountId,
+                tokenMap,
+                feeBips: feeBips?feeBips.toString():'0',
+                tokenAmtMap: tokenAmtMap,
+            }
+            return makeMarketReq(fullParams)
+        }else{
+            return undefined
         }
 
-        const fullParams: ReqParams = {
-            ...params,
-            exchangeAddress: exchangeInfo.exchangeAddress,
-            accountId: account.accountId,
-            tokenMap,
-            feeBips: tokenAmtMap.feeBips,
-            tokenAmtMap: tokenAmtMap.tokenAmtMap,
-        }
 
-        return makeMarketReq(fullParams)
+
+
 
     }, [account, tokenMap, marketArray, exchangeInfo, ])
 
     // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
-    const makelimitReqInHook = React.useCallback((params: ReqParams) => {
-
-        if (!exchangeInfo) {
-            return
+    const makeLimitReqInHook = React.useCallback((params: ReqParams) => {
+        const {tokenAmtMap,feeBips} = getTokenAmtMap(params)
+        if (exchangeInfo) {
+            const fullParams: ReqParams = {
+                ...params,
+                exchangeAddress: exchangeInfo.exchangeAddress,
+                accountId: account.accountId,
+                tokenMap,
+                feeBips: feeBips?feeBips.toString():'0',
+                tokenAmtMap: tokenAmtMap,
+            }
+            return makeLimitReq(fullParams)
+        }else {
+            myLog('makeMarketReqInHook error no tokenAmtMap', tokenAmtMap)
+            return undefined
         }
-
-        const tokenAmtMap = getTokenAmtMap(params)
-
-        if (!tokenAmtMap?.tokenAmtMap) {
-            return
-        }
-
-        const fullParams: ReqParams = {
-            ...params,
-            exchangeAddress: exchangeInfo.exchangeAddress,
-            accountId: account.accountId,
-            tokenMap,
-            feeBips: tokenAmtMap.feeBips,
-            tokenAmtMap: tokenAmtMap.tokenAmtMap,
-        }
-
-        return makelimitReq(fullParams)
 
     }, [account, tokenMap, marketArray, exchangeInfo,])
 
     return {
         makeMarketReqInHook,
-        makelimitReqInHook,
+        makeLimitReqInHook,
     }
 
 }

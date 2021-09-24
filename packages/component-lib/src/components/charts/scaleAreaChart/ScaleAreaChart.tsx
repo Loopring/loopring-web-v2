@@ -28,7 +28,7 @@ export const ScaleAreaChart = (props: ScaleAreaChartProps) => {
         case ChartType.Depth:
             return <DepthChart {...props} />
         case ChartType.Kline:
-            return <DayilyStockChart data={props.data}/>
+            return <DayilyStockChart {...props.indicator} data={props.data}/>
         default:
             return <span>prop "type" is not avaible for current chart</span>
     }
