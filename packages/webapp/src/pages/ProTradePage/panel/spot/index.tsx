@@ -38,6 +38,7 @@ export const SpotView = withTranslation('common')(({
         limitBtnClick,
         isLimitLoading,
         handlePriceError,
+        resetLimitData,
     } = useLimit(market)
     const {
         alertOpen, confirmOpen, toastOpen, closeToast,
@@ -46,24 +47,28 @@ export const SpotView = withTranslation('common')(({
         tradeMarketBtnStatus,
         tradeMarketBtnStyle,
         marketSubmit,
+        resetMarketData,
         marketBtnClick,
         isMarketLoading,
     } = useMarket(market)
     const onTabChange =  React.useCallback((_e, value) => {
-        setTabIndex(value)
-        updatePageTradePro({
-            market,
-            // request: marketRequest as any,
-            // calcTradeParams: calcTradeParams,
-            tradeCalcProData: {
-                ...pageTradePro.tradeCalcProData,
-                fee: undefined,
-                minimumReceived: undefined,
-                priceImpact: undefined,
-                priceImpactColor: 'inherit',
-                lastStepAt:undefined,
-            }
-        })
+        setTabIndex(value);
+        resetLimitData();
+        resetMarketData();
+        // updatePageTradePro({
+        //     market,
+        //     // request: marketRequest as any,
+        //     // calcTradeParams: calcTradeParams,
+        //     lastStepAt:undefined,
+        //     tradeCalcProData: {
+        //         ...pageTradePro.tradeCalcProData,
+        //         fee: undefined,
+        //         minimumReceived: undefined,
+        //         priceImpact: undefined,
+        //         priceImpactColor: 'inherit',
+        //
+        //     }
+        // })
     },[market])
     return <>
         <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'}
