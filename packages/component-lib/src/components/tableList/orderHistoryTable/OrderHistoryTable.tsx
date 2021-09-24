@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 // import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
-import { PopoverPure, Button } from '../../index'
+import { PopoverPure, Button, AlertImpact, CancelAllOrdersAlert } from '../../index'
 import { bindTrigger } from 'material-ui-popup-state/es';
 import styled from '@emotion/styled'
 import { Box, Modal, Typography, ClickAwayListener, Grid } from '@mui/material'
@@ -15,6 +15,47 @@ import { OrderDetailPanel } from './components/modal'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
 // import { useSettings } from '../../../stores';
 import { GetOrdersRequest, Side, OrderType } from 'loopring-sdk'
+
+// export const AlertImpact = withTranslation('common', {withRef: true})(({
+//     t,
+//     value,
+//     open,
+//     handleClose
+// }: WithTranslation & {
+// open: boolean,
+// value: number,
+// handleClose: (event: MouseEvent, isAgree?: boolean) => void
+// }) => {
+// return <Dialog
+// open={open}
+// keepMounted
+// onClose={(e: MouseEvent) => handleClose(e)}
+// aria-describedby="alert-dialog-slide-description"
+// >
+// <DialogTitle> {t('labelImpactTitle')}</DialogTitle>
+// <DialogContent>
+// <DialogContentText id="alert-dialog-slide-description">
+// <Trans i18nKey={'labelImpactExtraGreat'} tOptions={{value}}>
+// Your transaction amount will affect the pool price<Typography component={'span'} color={'error'}> {<>{value}</>}% </Typography>. Are you sure to swap?
+// </Trans>
+// </DialogContentText>
+// </DialogContent>
+// <DialogActions>
+// <Button variant={'outlined'} size={'medium'} onClick={(e) => handleClose(e as any)}> {t('labelDisAgreeConfirm')}</Button>
+// <Button variant={'contained'} size={'small'} onClick={(e) => {
+// handleClose(e as any, true)
+// }}  color={'primary'} >{t('labelAgreeConfirm')}</Button>
+
+// </DialogActions>
+// </Dialog>
+// })
+
+const CancelColHeaderStyled = styled(Typography)`
+    display: flex;
+    align-items: center;
+    color: var(--color-primary);
+    cursor: pointer;
+`
 
 export type OrderPair = {
     from: {
@@ -104,11 +145,11 @@ const TableStyled = styled(Box)`
         --template-columns: ${({isopen, ispro}: any) => isopen === 'open' 
             ? ispro === 'pro'
                 ? 'auto auto 250x 150px auto auto auto'
-                : 'auto auto 240px 130px 130px 120px 100px' 
+                : 'auto auto 230px 130px 130px 120px 140px' 
             : ispro === 'pro' 
                 ? 'auto auto 250px 150px 150px auto auto'
-                : 'auto auto 240px 130px 130px 120px 130px'
-        };
+                : 'auto auto 230px 130px 130px 120px 130px'
+        } !important;
 
         .rdg-cell:last-of-type {
             display: flex;
@@ -176,6 +217,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
     const [page, setPage] = useState(1)
     const [modalState, setModalState] = useState(false)
     const [currOrderId, setCurrOrderId] = useState('')
+    const [showCancelAllAlert, setShowCancelAllAlert] = useState(false)
     const pageSize = pagination ? pagination.pageSize : 0
 
     useEffect(() => {
@@ -364,7 +406,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         </RenderValue>
     }, [getOrderDetail])
 
-    const handleCancel = useCallback((orderHash: string, clientOrderId: string) => {
+    const handleCancel = useCallback((orderHash?: string, clientOrderId?: string) => {
         cancelOrder({
             orderHash,
             clientOrderId
@@ -610,7 +652,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         {
             key: 'cancel',
             headerCellClass: 'textAlignRight',
-            name: t('labelOrderCancelAll'),
+            name: (<CancelColHeaderStyled onClick={() => setShowCancelAllAlert(true)}>{t('labelOrderCancelAll')}</CancelColHeaderStyled>),
             formatter: ({row, index}: any) => {
                 const orderHash = row['hash']
                 const clientOrderId = row['orderId']
@@ -631,7 +673,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                         </Box>
                         
                         <PopoverPure
-                            className={'arrow-top-right'}
+                            className={isPro ? 'arrow-top-right' : 'arrow-top-center'}
                             {...bindPopper(popState)}
                             anchorOrigin={{
                                 vertical: 'top',
@@ -692,6 +734,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             onScroll={handleScroll ? (e) => handleScroll(e, isOpenOrder) : undefined}
             {...{...defaultArgs, ...props, rawData, showloading: showLoading}}
         />
+        <CancelAllOrdersAlert open={showCancelAllAlert} handleCancelAll={handleCancel} handleClose={() => setShowCancelAllAlert(false)} />
         <Modal
             open={modalState}
             onClose={() => setModalState(false)}
