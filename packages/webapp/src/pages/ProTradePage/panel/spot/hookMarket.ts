@@ -152,21 +152,29 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             calcTradeParams: calcTradeParams,
             tradeCalcProData: {
                 ...pageTradePro.tradeCalcProData,
-                fee:calcTradeParams ? calcTradeParams.feeBips: undefined
+                fee:calcTradeParams ? calcTradeParams.feeBips: undefined,
+                minimumReceived: calcTradeParams? calcTradeParams.amountBOutSlip?.minReceivedVal: undefined,
+                priceImpact: calcTradeParams? calcTradeParams.priceImpact:undefined,
             }
         })
         setMarketTradeData((state)=>{
-           return{
-               ...state,
-               base:{
-                   ...state.base,
-                   tradeValue: calcTradeParams?.baseVolShow as number
-               },
-               quote:{
-                   ...state.quote,
-                   tradeValue: calcTradeParams?.quoteVolShow as number
-               }
-           }
+            let baseValue = undefined;
+            let quoteValue = undefined;
+            if(calcTradeParams){
+                 baseValue = calcTradeParams.isReverse? calcTradeParams.buyAmt as number:calcTradeParams.sellAmt  as number;
+                 quoteValue = calcTradeParams.isReverse? calcTradeParams.sellAmt as number: calcTradeParams.buyAmt  as number;
+            }
+            return{
+                ...state,
+                base:{
+                    ...state.base,
+                    tradeValue:  baseValue
+                },
+                quote:{
+                    ...state.quote,
+                    tradeValue: quoteValue
+                }
+            }
         })
 
     }, [])
