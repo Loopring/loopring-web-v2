@@ -222,7 +222,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
             bottom: "#01CCCB",
         };
 
-        let chartId = 2
+        let chartId = 1
 
         return (
             <ChartCanvas
