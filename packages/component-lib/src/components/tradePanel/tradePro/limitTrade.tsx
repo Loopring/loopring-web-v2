@@ -22,6 +22,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
     const  {
         t,
         // disabled,
+        tradeType,
         tradeLimitI18nKey,
         // tradeCalcProData,
         // handleCountChange,
@@ -60,7 +61,6 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
         getDisabled,
         _handleChangeIndex,
         inputError,
-        tabIndex,
         tradeCalcProData,
         tradeBtnBaseStatus,
         handleCountChange,
@@ -72,6 +72,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
         type: 'limit',
         ...props as any,
         tradeData,
+        tradeType,
         onChangeEvent,
         i18nKey: tradeLimitI18nKey?tradeLimitI18nKey:'labelProLimitBtn',
         tradeBtnBaseStatus: tradeLimitBtnStatus
@@ -94,13 +95,13 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
             // handleOnClick,
             t
         }
-    },[tabIndex,TradeProType,handleCountChange])
+    },[tradeType,TradeProType,handleCountChange])
     const fee = (tradeCalcProData && tradeCalcProData.fee) ? ((parseFloat(tradeCalcProData.fee) / 100).toString() + '%') : EmptyValueTag
 
     return <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
         <Box className={'tool-bar'}  paddingX={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
             <Box component={'header'} width={'100%'} >
-                <TabsStyle className={'trade-tabs pro-tabs'}  variant={'fullWidth'} value={tabIndex}
+                <TabsStyle className={'trade-tabs pro-tabs'}  variant={'fullWidth'} value={tradeType}
                       onChange={(_e, index) => _handleChangeIndex(index)} >
                     <Tab className={'trade-tab-buy'} value={TradeProType.buy} label={t('labelProBuy')}/>
                     <Tab className={'trade-tab-sell'} value={TradeProType.sell} label={t('labelProSell')}/>
@@ -172,7 +173,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
         </Box>
         <Box paddingX={2} paddingTop={2}>
             <ButtonStyle variant={'contained'} size={'medium'}
-                         color={tabIndex === TradeProType.sell ?'success':'error'}
+                         color={tradeType === TradeProType.sell ?'success':'error'}
                          style={tradeLimitBtnStyle} onClick={() => {
                 handleSubmitEvent(tradeData)
             }}
