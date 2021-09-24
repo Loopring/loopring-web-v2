@@ -33,12 +33,13 @@ import { useToast } from 'hooks/common/useToast';
 import { accountStaticCallBack, btnClickMap, btnLabel, makeMarketArray, makeWalletLayer2, } from 'hooks/help';
 import { LoopringAPI } from 'api_wrapper';
 import * as _ from 'lodash'
-import { getTimestampDaysLater } from '../../utils/dt_tools';
+import { getTimestampDaysLater } from 'utils/dt_tools';
 import { myLog } from '@loopring-web/common-resources';
 import { calcPriceByAmmTickMapDepth, marketInitCheck, reCalcStoB, swapDependAsync } from './help';
-import { useTicker } from '../../stores/ticker';
-import store from '../../stores';
+import { useTicker } from 'stores/ticker';
+import store from 'stores';
 import { useHistory } from 'react-router-dom';
+import { getPriceImpactInfo, PriceLevel } from 'hooks/common/useTrade';
 
 const useSwapSocket = () => {
     const {sendSocketTopic, socketEnd} = useSocket();
@@ -55,44 +56,9 @@ const useSwapSocket = () => {
     }, [account.readyState]);
 }
 
-enum PriceLevel {
-    Normal,
-    Lv1,
-    Lv2,
-}
 
-const getPriceImpactInfo = (calcTradeParams: any) => {
-    let priceImpact: any = calcTradeParams?.priceImpact ? parseFloat(calcTradeParams?.priceImpact) * 100 : undefined
-    let priceImpactColor = 'var(--color-success)'
 
-    let priceLevel = PriceLevel.Normal
 
-    if (priceImpact) {
-
-        if (priceImpact > 0.1 && priceImpact <= 1) {
-            priceImpactColor = 'var(--color-success)'
-        } else if (priceImpact > 1 && priceImpact <= 3) {
-            priceImpactColor = 'textPrimary'
-        } else if (priceImpact > 3 && priceImpact <= 5) {
-            priceImpactColor = 'var(--color-warning)'
-        } else if (priceImpact > 5 && priceImpact <= 10) {
-            priceImpactColor = 'var(--color-error)'
-            priceLevel = PriceLevel.Lv1
-        } else if (priceImpact > 10) {
-            priceImpactColor = 'var(--color-error)'
-            priceLevel = PriceLevel.Lv2
-        }
-
-    } else {
-        priceImpactColor = 'var(--color-text-primary)'
-    }
-
-    return {
-        value: priceImpact,
-        priceImpactColor,
-        priceLevel,
-    }
-}
 
 export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: string }) => {
 
@@ -707,6 +673,9 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
                 takerRate: takerRate ? takerRate.toString() : '0',
                 slipBips: slippage
             })
+
+            myLog('depth:', depth)
+            myLog('calcTradeParams:', calcTradeParams)
 
             const priceImpactObj = getPriceImpactInfo(calcTradeParams)
 

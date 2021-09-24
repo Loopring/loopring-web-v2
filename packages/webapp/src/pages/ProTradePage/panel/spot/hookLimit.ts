@@ -1,8 +1,10 @@
 import React from 'react';
 import { useToast } from 'hooks/common/useToast';
-import { IBData, MarketType, myLog } from '@loopring-web/common-resources';
+import { IBData, MarketType, myLog,
+    // SagaStatus
+} from '@loopring-web/common-resources';
 import { LimitTradeData, TradeBaseType, TradeBtnStatus, TradeProType } from '@loopring-web/component-lib';
-import { usePageTradePro } from 'stores/router';
+import { updatePageTradePro, usePageTradePro } from 'stores/router';
 import { walletLayer2Service } from 'services/socket';
 import { useSubmitBtn } from './hookBtn';
 import { usePlaceOrder } from 'hooks/common/useTrade';
@@ -10,6 +12,8 @@ import { useTokenMap } from 'stores/token';
 import { useTranslation } from 'react-i18next';
 import store from 'stores';
 import { volumeToCount } from '../../../../hooks/help';
+import { SubmitOrderRequestV3 } from 'loopring-sdk';
+// import { useWalletLayer2 } from '../../../../stores/walletLayer2';
 
 
 export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType): {
@@ -30,6 +34,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
     const marketPrecision = marketMap[ market ].precisionForPrice;
+    // const {status:walletLayer2Status} = useWalletLayer2()
     const [limitTradeData, setLimitTradeData] = React.useState<LimitTradeData<IBData<any>>>(
         {
             base: {
@@ -72,7 +77,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
 
     }, [pageTradePro.defaultPrice])
 
-    const resetTradeData = React.useCallback((type: TradeProType) => {
+    const resetTradeData = React.useCallback((type?: TradeProType) => {
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
         const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
         // const marketPrecision =  marketMap[market].precisionForPrice;
@@ -81,7 +86,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         setLimitTradeData((state) => {
            return  {
                 ...state,
-                type,
+                type:type??state.type,
                 base: {
                     belong: baseSymbol,
                     balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
@@ -96,7 +101,15 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                 } as IBData<any>,
             }
         });
-        updatePageTradePro({market,defaultPrice:undefined})
+       
+        updatePageTradePro({market,defaultPrice:undefined, tradeCalcProData: {
+                ...pageTradePro.tradeCalcProData,
+                fee: undefined,
+                minimumReceived: undefined,
+                priceImpact: undefined,
+                priceImpactColor: 'inherit',
+
+         }})
     }, [pageTradePro, marketPrecision, market])
 
     const limitSubmit = () => {
@@ -127,7 +140,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
 
             myLog(`tradeData price:${tradeData.price.tradeValue}`, tradeData.type,amountBase,amountQuote)
 
-            const request = makeLimitReqInHook({
+            const {limitRequest,calcTradeParams} = makeLimitReqInHook({
                 isBuy: tradeData.type === 'buy',
                 base: tradeData.base.belong,
                 quote: tradeData.quote.belong,
@@ -140,8 +153,8 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
             // myLog('limitRequest:', request)
             //TODO: fee update
             updatePageTradePro({market,
-                request: request?.limitRequest,
-                limitCalcTradeParams: request?.calcTradeParams,
+                request: limitRequest as SubmitOrderRequestV3,
+                limitCalcTradeParams: calcTradeParams,
                 tradeCalcProData: {
                     ...pageTradePro.tradeCalcProData,
                     fee: 'TODO'
@@ -156,11 +169,11 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                     },
                     base:{
                         ...state.base,
-                        tradeValue: request?.calcTradeParams.baseVolShow as number
+                        tradeValue: calcTradeParams?.baseVolShow as number
                     },
                     quote:{
                         ...state.quote,
-                        tradeValue:request?.calcTradeParams.quoteVolShow as number
+                        tradeValue: calcTradeParams?.quoteVolShow as number
                     }
 
                 }
@@ -215,6 +228,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         toastOpen,
         closeToast,
         // limitSubmit,
+        resetLimitData: resetTradeData,
         isLimitLoading: false,
         limitTradeData,
         onChangeLimitEvent,

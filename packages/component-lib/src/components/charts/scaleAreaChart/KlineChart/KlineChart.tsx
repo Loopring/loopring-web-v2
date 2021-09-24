@@ -22,11 +22,17 @@ import {
     MovingAverageTooltip,
     OHLCTooltip,
     sma,
+    sar,
+    rsi,
     withDeviceRatio,
     withSize,
     XAxis,
     YAxis,
     BarSeries,
+    SARSeries,
+    SingleValueTooltip,
+    RSISeries,
+    RSITooltip,
 } from "react-financial-charts";
 import { macd, } from "@react-financial-charts/indicators";
 import { myLog } from "@loopring-web/common-resources";
@@ -37,11 +43,11 @@ enum CandleStickFill {
 }
 
 export interface IOHLCData {
-    close: number;
     date: Date;
+    open: number;
     high: number;
     low: number;
-    open: number;
+    close: number;
     volume: number;
 }
 
@@ -54,8 +60,8 @@ export enum MainIndicator {
 export enum SubIndicator {
     VOLUME = 'VOLUME',
     MACD = 'MACD',
-    KDJ = 'KDJ',
     RSI = 'RSI',
+    SAR = 'SAR',
 }
 
 export interface IndicatorProps {
@@ -71,12 +77,23 @@ export interface StockChartProps {
     readonly ratio: number;
 }
 
+export function fibonacci(n: number) {
+    let n1 = 1, n2 = 1;
+    for (let i = 2; i < n; i++) {
+        [n1, n2] = [n2, n1 + n2]
+    }
+    return [n1, n2]
+}
+
 class StockChart extends React.Component<StockChartProps & IndicatorProps> {
     private readonly margin = { left: 0, right: 48, top: 0, bottom: 24 };
     private readonly pricesDisplayFormat = format(".2f");
     private readonly xScaleProvider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(
         (d: IOHLCData) => d.date,
     );
+
+    private readonly accelerationFactor = 0.02;
+    private readonly maxAccelerationFactor = 0.2;
 
     private readonly macdAppearance = {
         fillStyle: {
@@ -154,8 +171,6 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
             })
         }
 
-        myLog('bollToolTipOption:', bollToolTipOption)
-
         if (subIndicator && subIndicator.length > 0) {
             subIndicator.forEach((item: { indicator: SubIndicator, params?: any }) => {
                 switch (item.indicator) {
@@ -172,9 +187,26 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                             .accessor((d: any) => d.macd)
                         subIndicatorLst.push({ func: macdCalculator, type: item.indicator })
                         break
-                    case SubIndicator.KDJ:
-                        break
                     case SubIndicator.RSI:
+                        const rsiCalculator = rsi()
+                            .options({ windowSize: 14 })
+                            .merge((d: any, c: any) => {
+                                d.rsi = c;
+                            })
+                            .accessor((d: any) => d.rsi);
+                        subIndicatorLst.push({ func: rsiCalculator, type: item.indicator })
+                        break
+                    case SubIndicator.SAR:
+                        const sarCalculator = sar().id(id++)
+                            .options({
+                                accelerationFactor: this.accelerationFactor,
+                                maxAccelerationFactor: this.maxAccelerationFactor,
+                            })
+                            .merge((d: any, c: any) => {
+                                d.sar = c;
+                            })
+                            .accessor((d: any) => d.sar);
+                        subIndicatorLst.push({ func: sarCalculator, type: item.indicator })
                         break
                     case SubIndicator.VOLUME:
                         subIndicatorLst.push({ func: undefined, type: item.indicator })
@@ -209,7 +241,9 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
 
         const gridHeight = height - margin.top - margin.bottom;
 
-        const chartHeight = Math.floor(gridHeight * 2 / 3)
+        const [h1, hall] = fibonacci(1 + subIndicatorLst.length)
+
+        const chartHeight = Math.floor(gridHeight * h1 / hall)
 
         const subHeight = subIndicatorLst.length ? Math.floor((gridHeight - chartHeight) / subIndicatorLst.length) : 0
 
@@ -265,6 +299,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                         displayFormat={this.pricesDisplayFormat}
                         yAccessor={this.yEdgeIndicator}
                     />
+                    <OHLCTooltip origin={[8, 16]} textFill={'#FFF'} />
                     {
                         maToolTipOptions &&
                         <MovingAverageTooltip
@@ -272,8 +307,6 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                             textFill={'#FFF'}
                             options={maToolTipOptions}
                         />}
-                    {/* <ZoomButtons /> */}
-                    <OHLCTooltip origin={[8, 16]} textFill={'#FFF'} />
                     {
                         bollToolTipOption && <>
                             <BollingerSeries
@@ -296,7 +329,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                                         orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'}
                                         strokeStyle={'rgba(255, 255, 255, 0.3)'} />
                                     <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right"
-                                        ticks={5} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                                        ticks={2} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
                                         strokeStyle={'rgba(255, 255, 255, 0.3)'} />
                                     <MouseCoordinateX displayFormat={timeDisplayFormat} />
                                     <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
@@ -310,7 +343,40 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                                 </Chart>
                             case SubIndicator.VOLUME:
                                 return <Chart id={chartId++} height={subHeight} origin={(_: number, h: number) => [0, h - (subIndicatorLst.length - ind) * subHeight]} yExtents={this.barChartExtents}>
+                                    <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="bottom"
+                                        orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                                    <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right"
+                                        ticks={2} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+
                                     <BarSeries fillStyle={this.volumeColor} yAccessor={this.volumeSeries} />
+                                </Chart>
+                            case SubIndicator.RSI:
+                                return <Chart id={chartId++} height={subHeight} origin={(_: number, h: number) => [0, h - (subIndicatorLst.length - ind) * subHeight]} yExtents={[0, 100]}>
+                                    <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="bottom"
+                                        orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                                    <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right"
+                                        ticks={2} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                                    <RSISeries yAccessor={item.func.accessor()} />
+                                    <RSITooltip origin={[8, 16]} yAccessor={item.func.accessor()} options={item.func.options()} />
+                                </Chart>
+                            case SubIndicator.SAR:
+                                return <Chart id={chartId++} height={subHeight} origin={(_: number, h: number) => [0, h - (subIndicatorLst.length - ind) * subHeight]} yExtents={item.func.accessor()}>
+                                    <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="bottom"
+                                        orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                                    <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right"
+                                        ticks={2} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                                    <SARSeries yAccessor={item.func.accessor()} />
+                                    <SingleValueTooltip
+                                        yLabel={`SAR (${this.accelerationFactor}, ${this.maxAccelerationFactor})`}
+                                        yAccessor={item.func.accessor()}
+                                        origin={[8, 8]}
+                                    />
                                 </Chart>
                             default:
                                 break
