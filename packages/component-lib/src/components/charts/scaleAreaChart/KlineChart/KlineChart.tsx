@@ -17,6 +17,7 @@ import {
     LineSeries,
     MACDSeries,
     MACDTooltip,
+    SingleValueTooltip,
     MouseCoordinateX,
     MouseCoordinateY,
     MovingAverageTooltip,
@@ -26,6 +27,7 @@ import {
     withSize,
     XAxis,
     YAxis,
+    BarSeries,
 } from "react-financial-charts";
 import { macd, } from "@react-financial-charts/indicators";
 import { myLog } from "@loopring-web/common-resources";
@@ -82,9 +84,9 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
             divergence: "#4682B4",
         },
         strokeStyle: {
-            macd: "#FF0000",
-            signal: "#00F300",
-            zero: "yellow",
+            macd: "#0093FF",
+            signal: "#D84315",
+            zero: "rgba(0, 0, 0, 0.3)",
         },
     };
 
@@ -175,6 +177,9 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                         break
                     case SubIndicator.RSI:
                         break
+                    case SubIndicator.VOLUME:
+                        subIndicatorLst.push({ func: undefined, type: item.indicator })
+                        break
                     default:
                         break
                 }
@@ -184,11 +189,15 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
         let calculatedData = initialData
 
         mainIndicatorLst.forEach((item: any) => {
-            calculatedData = item.func(calculatedData)
+            if (item.func) {
+                calculatedData = item.func(calculatedData)
+            }
         })
 
         subIndicatorLst.forEach((item: any) => {
-            calculatedData = item.func(calculatedData)
+            if (item.func) {
+                calculatedData = item.func(calculatedData)
+            }
         })
 
         const { margin, xScaleProvider } = this;
@@ -201,14 +210,9 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
 
         const gridHeight = height - margin.top - margin.bottom;
 
-        // const elderRayHeight = 100;
-        // const elderRayOrigin = (_: number, h: number) => [0, h - elderRayHeight];
-        // const barChartHeight = gridHeight / 4;
-        // const barChartOrigin = (_: number, h: number) => [0, h - barChartHeight - elderRayHeight];
-        // const chartHeight = gridHeight - elderRayHeight;
-        const volumeHeight = 100;
-        const MACDHeight = 100;
-        const chartHeight = gridHeight - volumeHeight - MACDHeight;
+        const chartHeight = Math.floor(gridHeight * 2 / 3)
+
+        const subHeight = subIndicatorLst.length ? Math.floor((gridHeight - chartHeight) / subIndicatorLst.length) : 0
 
         const timeDisplayFormat = timeFormat(dateTimeFormat);
 
@@ -217,6 +221,8 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
             middle: "#CC0165",
             bottom: "#01CCCB",
         };
+
+        let chartId = 2
 
         return (
             <ChartCanvas
@@ -232,7 +238,8 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                 xExtents={xExtents}
                 zoomAnchor={lastVisibleItemBasedZoomAnchor}
             >
-                <Chart id={1} height={chartHeight} yExtents={this.candleChartExtents} padding={{ top: 10, bottom: 20 }}>
+
+                <Chart id={chartId++} height={chartHeight} yExtents={this.candleChartExtents} padding={{ top: 10, bottom: 20 }}>
                     <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} showTicks={false}
                         showTickLabel={false} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
                         strokeStyle={'rgba(255, 255, 255, 0.3)'} />
@@ -282,10 +289,10 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                 </Chart>
 
                 {
-                    subIndicatorLst && subIndicatorLst.length > 0 && subIndicatorLst.map((item: any) => {
-                        switch(item.type) {
+                    subIndicatorLst && subIndicatorLst.length > 0 && subIndicatorLst.map((item: any, ind: number) => {
+                        switch (item.type) {
                             case SubIndicator.MACD:
-                                return <Chart id={8} origin={(_w, _h) => [0, _h - 100]} height={100} yExtents={item.func.accessor()}>
+                                return <Chart id={chartId++} height={subHeight} origin={(_w, _h) => [0, _h - (subIndicatorLst.length - ind) * subHeight]} yExtents={item.func.accessor()}>
                                     <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="bottom"
                                         orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'}
                                         strokeStyle={'rgba(255, 255, 255, 0.3)'} />
@@ -301,6 +308,10 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                                         options={item.func.options()}
                                         yAccessor={item.func.accessor()}
                                     />
+                                </Chart>
+                            case SubIndicator.VOLUME:
+                                return <Chart id={chartId++} height={subHeight} origin={(_: number, h: number) => [0, h - (subIndicatorLst.length - ind) * subHeight]} yExtents={this.barChartExtents}>
+                                    <BarSeries fillStyle={this.volumeColor} yAccessor={this.volumeSeries} />
                                 </Chart>
                             default:
                                 break
