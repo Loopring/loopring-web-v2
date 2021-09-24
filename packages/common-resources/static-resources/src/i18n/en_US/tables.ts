@@ -108,7 +108,7 @@ export default {
     labelOrderDetailTradingVolume: 'Trading Volume',
     labelOrderDetailOrderId: 'Order Id',
     labelOrderCancelAll: 'Action',
-    labelOrderCancel: 'Cancel',
+    labelOrderCancelOrder: 'Cancel',
     labelOrderProcessing: 'Processing',
     labelOrderProcessed: 'Processed',
     labelOrderCancelling: 'Cancelling',
@@ -127,4 +127,6 @@ export default {
     labelOrderCompletion: 'Completion',
     labelRewardTableAmount: 'Amount',
     labelRewardTableTime: 'Time',
+    labelOrderCancelConfirm: 'Confirm to cancel this order?',
+    labelOrderConfirm: 'Confirm',
 }
