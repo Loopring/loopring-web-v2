@@ -27,7 +27,8 @@ import {
     XAxis,
     YAxis,
 } from "react-financial-charts";
-import { macd } from "@react-financial-charts/indicators";
+import { macd, } from "@react-financial-charts/indicators";
+import { myLog } from "@loopring-web/common-resources";
 
 enum CandleStickFill {
     up = '#00BBA8',
@@ -44,9 +45,9 @@ export interface IOHLCData {
 }
 
 export enum MainIndicator {
-    MA,
-    EMA,
-    BOLL,
+    MA = 'MA',
+    EMA = 'EMA',
+    BOLL = 'BOLL',
 }
 
 export enum SubIndicator {
@@ -57,12 +58,11 @@ export enum SubIndicator {
 }
 
 export interface IndicatorProps {
-    mainIndicators?: MainIndicator[]
-    subIndicator?: SubIndicator
+    mainIndicators?: { indicator: MainIndicator, params?: any }[]
+    subIndicator?: { indicator: SubIndicator, params?: any }
 }
 
 export interface StockChartProps {
-    readonly indicators?: IndicatorProps;
     readonly data: IOHLCData[];
     readonly height: number;
     readonly dateTimeFormat?: string;
@@ -70,8 +70,8 @@ export interface StockChartProps {
     readonly ratio: number;
 }
 
-class StockChart extends React.Component<StockChartProps> {
-    private readonly margin = {left: 0, right: 48, top: 0, bottom: 24};
+class StockChart extends React.Component<StockChartProps & IndicatorProps> {
+    private readonly margin = { left: 0, right: 48, top: 0, bottom: 24 };
     private readonly pricesDisplayFormat = format(".2f");
     private readonly xScaleProvider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(
         (d: IOHLCData) => d.date,
@@ -88,23 +88,76 @@ class StockChart extends React.Component<StockChartProps> {
         },
     };
 
-    // private readonly macdCalculator = macd()
-    //     .id(6)
-    //     .options({
-    //         fast: 12,
-    //         signal: 9,
-    //         slow: 26,
-    //     })
-    //     .merge((d: any, c: any) => {
-    //         d.macd = c;
-    //     })
-    //     .accessor((d: any) => d.macd);
-
     public render() {
-        const {data: initialData, dateTimeFormat = "%d %b", height, ratio, width} = this.props;
+        const { data: initialData, dateTimeFormat = "%d %b", height, ratio, width, mainIndicators, subIndicator, } = this.props;
         // simple moving average
+
+        let mainIndicatorLst: any[] = []
+
+        let id = 1
+
+        let maToolTipOptions: any[] = []
+        let bollToolTipOption: any = undefined
+
+        if (mainIndicators && mainIndicators?.length > 0) {
+            mainIndicators.forEach((item: { indicator: MainIndicator, params?: any }) => {
+                switch (item.indicator) {
+                    case MainIndicator.MA:
+                        const periodMA = item.params.period
+                        const indMA = sma()
+                            .id(id++)
+                            .options({ windowSize: periodMA })
+                            .merge((d: any, c: any) => {
+                                d[`sma${periodMA}`] = c;
+                            })
+                            .accessor((d: any) => d[`sma${periodMA}`]);
+                        mainIndicatorLst.push(indMA)
+                        maToolTipOptions.push({
+                            yAccessor: indMA.accessor(),
+                            type: "MA",
+                            stroke: indMA.stroke(),
+                            windowSize: indMA.options().windowSize,
+                        })
+                        break
+                    case MainIndicator.EMA:
+                        const periodEMA = item.params.period
+                        const indEMA = ema()
+                            .id(id++)
+                            .options({ windowSize: periodEMA })
+                            .merge((d: any, c: any) => {
+                                d[`ema${periodEMA}`] = c;
+                            })
+                            .accessor((d: any) => d[`ema${periodEMA}`]);
+                        mainIndicatorLst.push(indEMA)
+                        maToolTipOptions.push({
+                            yAccessor: indEMA.accessor(),
+                            type: "EMA",
+                            stroke: indEMA.stroke(),
+                            windowSize: indEMA.options().windowSize,
+                        })
+                        break
+                    case MainIndicator.BOLL:
+                        const indBOLL = bollingerBand()
+                            .id(id++)
+                            .merge((d: any, c: any) => {
+                                d.bb = c;
+                            })
+                            .accessor((d: any) => d.bb);
+                        mainIndicatorLst.push(indBOLL)
+                        bollToolTipOption = indBOLL.options()
+                        break
+                    default:
+                        break
+                }
+            })
+        }
+
+        myLog('bollToolTipOption:', bollToolTipOption)
+
+        if (subIndicator) {
+        }
+
         const macdCalculator = macd()
-            // .id(6)
             .options({
                 fast: 12,
                 signal: 9,
@@ -115,75 +168,21 @@ class StockChart extends React.Component<StockChartProps> {
             })
             .accessor((d: any) => d.macd);
 
-        const sma5 = sma()
-            .id(1)
-            .options({windowSize: 5})
-            .merge((d: any, c: any) => {
-                d.sma5 = c;
-            })
-            .accessor((d: any) => d.sma5);
-
-        const sma10 = sma()
-            .id(2)
-            .options({windowSize: 10})
-            .merge((d: any, c: any) => {
-                d.sma10 = c;
-            })
-            .accessor((d: any) => d.sma10);
-
-        const sma30 = sma()
-            .id(3)
-            .options({windowSize: 30})
-            .merge((d: any, c: any) => {
-                d.sma30 = c;
-            })
-            .accessor((d: any) => d.sma30);
-
-        const sma60 = sma()
-            .id(4)
-            .options({windowSize: 60})
-            .merge((d: any, c: any) => {
-                d.sma60 = c;
-            })
-            .accessor((d: any) => d.sma60);
-
-        const bollinger = bollingerBand()
-            .id(5)
-            .merge((d: any, c: any) => {
-                d.bb = c;
-            })
-            .accessor((d: any) => d.bb);
-
-        // const elder = elderRay();
-
-        const ema26 = ema()
-            .id(6)
-            .options({windowSize: 26})
-            .merge((d: any, c: any) => {
-                d.ema26 = c;
-            })
-            .accessor((d: any) => d.ema26);
-
-        const ema12 = ema()
-            .id(7)
-            .options({windowSize: 12})
-            .merge((d: any, c: any) => {
-                d.ema12 = c;
-            })
-            .accessor((d: any) => d.ema12);
-
         const macdYAccessor = macdCalculator.accessor();
         const macdOptions = macdCalculator.options();
 
-        // const calculatedData = macdCalculator(ema12(ema26(sma60(sma30(sma10(sma5(bollinger(initialData))))))));
-        const calculatedData = macdCalculator(ema12(ema26(initialData)));
+        let calculatedData = initialData
 
-        const {margin, xScaleProvider} = this;
+        mainIndicatorLst.forEach((func: any) => {
+            calculatedData = func(calculatedData)
+        })
 
-        const {data, xScale, xAccessor, displayXAccessor} = xScaleProvider(calculatedData);
+        const { margin, xScaleProvider } = this;
 
-        const max = xAccessor(data[ data.length - 1 ]);
-        const min = xAccessor(data[ Math.max(0, data.length - 100) ]);
+        const { data, xScale, xAccessor, displayXAccessor } = xScaleProvider(calculatedData);
+
+        const max = xAccessor(data[data.length - 1]);
+        const min = xAccessor(data[Math.max(0, data.length - 100)]);
         const xExtents = [min, max + 5];
 
         const gridHeight = height - margin.top - margin.bottom;
@@ -219,23 +218,25 @@ class StockChart extends React.Component<StockChartProps> {
                 xExtents={xExtents}
                 zoomAnchor={lastVisibleItemBasedZoomAnchor}
             >
-                <Chart id={1} height={chartHeight} yExtents={this.candleChartExtents} padding={{top: 10, bottom: 20}}>
+                <Chart id={1} height={chartHeight} yExtents={this.candleChartExtents} padding={{ top: 10, bottom: 20 }}>
                     <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} showTicks={false}
-                           showTickLabel={false} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                           strokeStyle={'rgba(255, 255, 255, 0.3)'}/>
+                        showTickLabel={false} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
                     <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'}
-                           tickFormat={this.pricesDisplayFormat} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                           strokeStyle={'rgba(255, 255, 255, 0.3)'}/>
-                    <CandlestickSeries fill={this.candleStickColor}/>
-                    <LineSeries yAccessor={sma5.accessor()} strokeStyle={sma5.stroke()}/>
-                    <CurrentCoordinate yAccessor={sma5.accessor()} fillStyle={sma5.stroke()}/>
-                    <LineSeries yAccessor={sma10.accessor()} strokeStyle={sma10.stroke()}/>
-                    <CurrentCoordinate yAccessor={sma10.accessor()} fillStyle={sma10.stroke()}/>
-                    <LineSeries yAccessor={sma30.accessor()} strokeStyle={sma30.stroke()}/>
-                    <CurrentCoordinate yAccessor={sma30.accessor()} fillStyle={sma30.stroke()}/>
-                    <LineSeries yAccessor={sma60.accessor()} strokeStyle={sma60.stroke()}/>
-                    <CurrentCoordinate yAccessor={sma60.accessor()} fillStyle={sma60.stroke()}/>
-                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat}/>
+                        tickFormat={this.pricesDisplayFormat} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                    <CandlestickSeries fill={this.candleStickColor} />
+
+                    {
+                        mainIndicatorLst && mainIndicatorLst.map((item: any) => {
+                            return (<>
+                                <LineSeries yAccessor={item.accessor()} strokeStyle={item.stroke()} />
+                                <CurrentCoordinate yAccessor={item.accessor()} fillStyle={item.stroke()} />
+                            </>)
+                        })
+                    }
+
+                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
                     <EdgeIndicator
                         itemType="last"
                         rectWidth={margin.right}
@@ -244,47 +245,24 @@ class StockChart extends React.Component<StockChartProps> {
                         displayFormat={this.pricesDisplayFormat}
                         yAccessor={this.yEdgeIndicator}
                     />
+                    {maToolTipOptions && 
                     <MovingAverageTooltip
                         origin={[8, 24]}
                         textFill={'#FFF'}
-                        options={[
-                            {
-                                yAccessor: sma5.accessor(),
-                                type: "MA",
-                                stroke: sma5.stroke(),
-                                windowSize: sma5.options().windowSize,
-                            },
-                            {
-                                yAccessor: sma10.accessor(),
-                                type: "MA",
-                                stroke: sma10.stroke(),
-                                windowSize: sma10.options().windowSize,
-                            },
-                            {
-                                yAccessor: sma30.accessor(),
-                                type: "MA",
-                                stroke: sma30.stroke(),
-                                windowSize: sma30.options().windowSize,
-                            },
-                            {
-                                yAccessor: sma60.accessor(),
-                                type: "MA",
-                                stroke: sma60.stroke(),
-                                windowSize: sma60.options().windowSize,
-                            },
-                        ]}
-                    />
+                        options={maToolTipOptions}
+                    />}
                     {/* <ZoomButtons /> */}
-                    <OHLCTooltip origin={[8, 16]} textFill={'#FFF'}/>
+                    <OHLCTooltip origin={[8, 16]} textFill={'#FFF'} />
+                    { bollToolTipOption && <>
                     <BollingerSeries
                         strokeStyle={bbStroke}
                     />
                     <BollingerBandTooltip
                         origin={[8, 64]}
                         yAccessor={d => d.bb}
-                        options={bollinger.options()}
+                        options={bollToolTipOption}
                         textFill={'#fff'}
-                    />
+                    /></>}
                 </Chart>
                 {/* <Chart id={2} origin={(w, h) => [0, h - 200]} height={100} yExtents={d => d.volume}>
 					<XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="bottom" orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'} strokeStyle={'rgba(255, 255, 255, 0.3)'} />
@@ -302,13 +280,13 @@ class StockChart extends React.Component<StockChartProps> {
 				</Chart> */}
                 <Chart id={8} origin={(_w, _h) => [0, _h - 100]} height={100} yExtents={macdYAccessor}>
                     <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="bottom"
-                           orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                           strokeStyle={'rgba(255, 255, 255, 0.3)'}/>
+                        orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
                     <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right"
-                           ticks={5} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                           strokeStyle={'rgba(255, 255, 255, 0.3)'}/>
-                    <MouseCoordinateX displayFormat={timeDisplayFormat}/>
-                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat}/>
+                        ticks={5} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                    <MouseCoordinateX displayFormat={timeDisplayFormat} />
+                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
                     <MACDSeries yAccessor={macdYAccessor} {...this.macdAppearance} />
                     <MACDTooltip
                         origin={[8, 16]}
@@ -317,7 +295,7 @@ class StockChart extends React.Component<StockChartProps> {
                         yAccessor={macdYAccessor}
                     />
                 </Chart>
-                <CrossHairCursor strokeStyle={'#fff'}/>
+                <CrossHairCursor strokeStyle={'#fff'} />
             </ChartCanvas>
         );
     }
@@ -350,4 +328,4 @@ class StockChart extends React.Component<StockChartProps> {
     };
 }
 
-export const DayilyStockChart = withSize({style: {minHeight: 600}})(withDeviceRatio()(StockChart));
+export const DayilyStockChart = withSize({ style: { minHeight: 600 } })(withDeviceRatio()(StockChart));
