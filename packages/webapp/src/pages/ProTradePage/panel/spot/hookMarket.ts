@@ -158,6 +158,14 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         setMarketTradeData((state)=>{
            return{
                ...state,
+               base:{
+                   ...state.base,
+                   tradeValue: calcTradeParams?.baseVolShow as number
+               },
+               quote:{
+                   ...state.quote,
+                   tradeValue: calcTradeParams?.quoteVolShow as number
+               }
            }
         })
 
