@@ -1,6 +1,8 @@
 import React from 'react';
 import { useToast } from 'hooks/common/useToast';
-import { IBData, MarketType, myLog } from '@loopring-web/common-resources';
+import { IBData, MarketType, myLog,
+    // SagaStatus
+} from '@loopring-web/common-resources';
 import { LimitTradeData, TradeBaseType, TradeBtnStatus, TradeProType } from '@loopring-web/component-lib';
 import { usePageTradePro } from 'stores/router';
 import { walletLayer2Service } from 'services/socket';
@@ -11,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import store from 'stores';
 import { volumeToCount } from '../../../../hooks/help';
 import { SubmitOrderRequestV3 } from 'loopring-sdk';
+// import { useWalletLayer2 } from '../../../../stores/walletLayer2';
 
 
 export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType): {
@@ -31,6 +34,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
     const marketPrecision = marketMap[ market ].precisionForPrice;
+    // const {status:walletLayer2Status} = useWalletLayer2()
     const [limitTradeData, setLimitTradeData] = React.useState<LimitTradeData<IBData<any>>>(
         {
             base: {
@@ -97,7 +101,10 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                 } as IBData<any>,
             }
         });
-        updatePageTradePro({market,defaultPrice:undefined})
+
+        updatePageTradePro({market,defaultPrice:undefined,tradeCalcProData:{
+                ...pageTradePro.tradeCalcProData
+            }})
     }, [pageTradePro, marketPrecision, market])
 
     const limitSubmit = () => {
@@ -216,6 +223,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         toastOpen,
         closeToast,
         // limitSubmit,
+        resetTradeData,
         isLimitLoading: false,
         limitTradeData,
         onChangeLimitEvent,

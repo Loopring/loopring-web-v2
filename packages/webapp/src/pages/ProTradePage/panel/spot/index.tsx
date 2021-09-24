@@ -3,7 +3,7 @@ import React from 'react';
 import { AlertImpact, ConfirmImpact, LimitTrade, MarketTrade, Toast } from '@loopring-web/component-lib';
 import { TOAST_TIME } from '../../../../defs/common_defs';
 import { MarketType } from '@loopring-web/common-resources';
-import { usePageTradePro } from '../../../../stores/router';
+import { updatePageTradePro, usePageTradePro } from '../../../../stores/router';
 import { useMarket } from './hookMarket';
 import { useLimit } from './hookLimit';
 import { Box, Divider, Tab, Tabs } from '@mui/material';
@@ -49,6 +49,22 @@ export const SpotView = withTranslation('common')(({
         marketBtnClick,
         isMarketLoading,
     } = useMarket(market)
+    const onTabChange =  React.useCallback((_e, value) => {
+        setTabIndex(value)
+        updatePageTradePro({
+            market,
+            // request: marketRequest as any,
+            // calcTradeParams: calcTradeParams,
+            tradeCalcProData: {
+                ...pageTradePro.tradeCalcProData,
+                fee: undefined,
+                minimumReceived: undefined,
+                priceImpact: undefined,
+                priceImpactColor: 'inherit',
+                lastStepAt:undefined,
+            }
+        })
+    },[market])
     return <>
         <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'}
                open={toastOpen?.open ?? false}
@@ -61,9 +77,7 @@ export const SpotView = withTranslation('common')(({
                        value={pageTradePro?.priceImpactObj?.value as any}/>
         <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
             <Box component={'header'} width={'100%'}>
-                <Tabs variant={'fullWidth'} value={tabIndex} onChange={(_e, value) => {
-                    setTabIndex(value)
-                }}>
+                <Tabs variant={'fullWidth'} value={tabIndex} onChange={onTabChange}>
                     <Tab  value={TabIndex.limit} label={t('labelProLimit')}/>
                     <Tab value={TabIndex.market} label={t('labelProMarket')}/>
                 </Tabs>
