@@ -237,11 +237,12 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
 
         const max = xAccessor(data[data.length - 1]);
         const min = xAccessor(data[Math.max(0, data.length - 100)]);
-        const xExtents = [min, max + 5];
+
+        const xExtents = [min, max + 5]
 
         const gridHeight = height - margin.top - margin.bottom;
 
-        const [h1, hall] = fibonacci(1 + subIndicatorLst.length)
+        const [h1, hall] = fibonacci(3 + subIndicatorLst.length)
 
         const chartHeight = Math.floor(gridHeight * h1 / hall)
 
