@@ -5,7 +5,7 @@ import { LoopringAPI } from 'api_wrapper';
 import * as sdk from 'loopring-sdk';
 import { walletLayer2Service } from 'services/socket';
 import { MarketTradeData, TradeBaseType, TradeBtnStatus, TradeProType, useSettings } from '@loopring-web/component-lib';
-import { updatePageTradePro, usePageTradePro } from 'stores/router';
+import { usePageTradePro } from 'stores/router';
 import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
 import { useSystem } from 'stores/system';
@@ -120,6 +120,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
         if (formType === TradeBaseType.tab) {
             resetTradeData(tradeData.type)
+            updatePageTradePro({market,tradeType:tradeData.type})
             return;
             // amountBase = tradeData.base.tradeValue ? tradeData.base.tradeValue : undefined
             // amountQuote = amountBase !== undefined ? undefined : tradeData.quote.tradeValue ? tradeData.quote.tradeValue : undefined
