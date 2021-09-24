@@ -350,4 +350,6 @@ export default {
 
     labelComingSoon: 'Coming Soon',
     labelTradeProHideOtherPairs: 'Hide other trading pairs',
+    labelCancelAllOrders: 'Confirm cancelling all orders?',
+    labelConfirm: 'Confirm',
 }
