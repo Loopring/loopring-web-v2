@@ -37,11 +37,11 @@ enum CandleStickFill {
 }
 
 export interface IOHLCData {
-    close: number;
     date: Date;
+    open: number;
     high: number;
     low: number;
-    open: number;
+    close: number;
     volume: number;
 }
 
