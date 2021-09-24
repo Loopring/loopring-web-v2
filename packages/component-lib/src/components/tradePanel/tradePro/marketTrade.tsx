@@ -213,7 +213,7 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         </Box>
         <Box paddingTop={2} paddingX={2}>
             <ButtonStyle variant={'contained'} size={'medium'}
-                         color={tabIndex === TradeProType.sell ? 'success' : 'error'}
+                         color={tabIndex === TradeProType.sell ?'error' :'success'}
                          style={{...tradeMarketBtnStyle}}
                          onClick={() => {
                 handleSubmitEvent(tradeData)

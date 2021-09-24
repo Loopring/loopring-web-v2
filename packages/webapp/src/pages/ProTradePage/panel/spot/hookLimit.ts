@@ -4,7 +4,7 @@ import { IBData, MarketType, myLog,
     // SagaStatus
 } from '@loopring-web/common-resources';
 import { LimitTradeData, TradeBaseType, TradeBtnStatus, TradeProType } from '@loopring-web/component-lib';
-import { usePageTradePro } from 'stores/router';
+import { updatePageTradePro, usePageTradePro } from 'stores/router';
 import { walletLayer2Service } from 'services/socket';
 import { useSubmitBtn } from './hookBtn';
 import { usePlaceOrder } from 'hooks/common/useTrade';
@@ -77,7 +77,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
 
     }, [pageTradePro.defaultPrice])
 
-    const resetTradeData = React.useCallback((type: TradeProType) => {
+    const resetTradeData = React.useCallback((type?: TradeProType) => {
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
         const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
         // const marketPrecision =  marketMap[market].precisionForPrice;
@@ -86,7 +86,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         setLimitTradeData((state) => {
            return  {
                 ...state,
-                type,
+                type:type??state.type,
                 base: {
                     belong: baseSymbol,
                     balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
@@ -101,10 +101,15 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                 } as IBData<any>,
             }
         });
+       
+        updatePageTradePro({market,defaultPrice:undefined, tradeCalcProData: {
+                ...pageTradePro.tradeCalcProData,
+                fee: undefined,
+                minimumReceived: undefined,
+                priceImpact: undefined,
+                priceImpactColor: 'inherit',
 
-        updatePageTradePro({market,defaultPrice:undefined,tradeCalcProData:{
-                ...pageTradePro.tradeCalcProData
-            }})
+         }})
     }, [pageTradePro, marketPrecision, market])
 
     const limitSubmit = () => {
@@ -223,7 +228,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         toastOpen,
         closeToast,
         // limitSubmit,
-        resetTradeData,
+        resetLimitData: resetTradeData,
         isLimitLoading: false,
         limitTradeData,
         onChangeLimitEvent,
