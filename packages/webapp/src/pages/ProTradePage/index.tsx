@@ -68,7 +68,7 @@ const initBreakPoint = (): BreakPoint => {
     }
 };
 export const OrderbookPage = withTranslation('common')(() => {
-    const {pageTradePro: {depthLevel,depth}} = usePageTradePro();
+    const {pageTradePro: {depthLevel, depth}} = usePageTradePro();
     const {market, handleOnMarketChange} = usePro();
     const {unit} = useTheme();
     const [rowLength, setRowLength] = React.useState<number>(MARKET_ROW_LENGTH);
@@ -76,6 +76,7 @@ export const OrderbookPage = withTranslation('common')(() => {
         market: MARKET_TRADES_LENGTH,
         market2: MARKET_TRADES_LENGTH
     });
+
     const [configLayout, setConfigLayout] = React.useState<Config>({
             compactType: "vertical",
             currentBreakpoint: initBreakPoint(),
@@ -83,7 +84,6 @@ export const OrderbookPage = withTranslation('common')(() => {
             layouts: layoutConfigs[ 0 ].layouts
         }
     )
-
 
     const ViewList = {
         toolbar: React.useMemo(() => <Toolbar market={market as any}
@@ -106,7 +106,7 @@ export const OrderbookPage = withTranslation('common')(() => {
                            rowLength={0}
                            breakpoint={configLayout.currentBreakpoint}/>}</>
             , [market, rowLength, configLayout.currentBreakpoint, depthLevel, tradeTableLengths.market2]),    //<MarketView market={market as any}/>, [market])
-        chart: React.useMemo(() => <ChartView/>, []),
+        chart: React.useMemo(() => <ChartView market={market} />, []),
         orderTable: React.useMemo(() => <OrderTableView market={market} />, [market])
     }
     const onRestDepthTableLength = React.useCallback((h: number) => {
