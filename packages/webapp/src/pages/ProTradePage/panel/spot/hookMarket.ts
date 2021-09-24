@@ -117,7 +117,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             return
         }
 
-        myLog(`onChangeMarketEvent tradeData:`, tradeData, 'formType',formType)
+        // myLog(`onChangeMarketEvent tradeData:`, tradeData, 'formType',formType)
 
         // setMarketTradeData(tradeData)
 
@@ -146,6 +146,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             slippage,
         })
 
+        myLog('depth:',pageTradePro.depth)
         myLog('marketRequest:',marketRequest, calcTradeParams)
         const priceImpactObj =  getPriceImpactInfo(calcTradeParams)
         updatePageTradePro({
