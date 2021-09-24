@@ -10,6 +10,7 @@ import { useTokenMap } from 'stores/token';
 import { useTranslation } from 'react-i18next';
 import store from 'stores';
 import { volumeToCount } from '../../../../hooks/help';
+import { SubmitOrderRequestV3 } from 'loopring-sdk';
 
 
 export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType): {
@@ -127,7 +128,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
 
             myLog(`tradeData price:${tradeData.price.tradeValue}`, tradeData.type,amountBase,amountQuote)
 
-            const request = makeLimitReqInHook({
+            const {limitRequest,calcTradeParams} = makeLimitReqInHook({
                 isBuy: tradeData.type === 'buy',
                 base: tradeData.base.belong,
                 quote: tradeData.quote.belong,
@@ -140,8 +141,8 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
             // myLog('limitRequest:', request)
             //TODO: fee update
             updatePageTradePro({market,
-                request: request?.limitRequest,
-                limitCalcTradeParams: request?.calcTradeParams,
+                request: limitRequest as SubmitOrderRequestV3,
+                limitCalcTradeParams: calcTradeParams,
                 tradeCalcProData: {
                     ...pageTradePro.tradeCalcProData,
                     fee: 'TODO'
@@ -156,11 +157,11 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                     },
                     base:{
                         ...state.base,
-                        tradeValue: request?.calcTradeParams.baseVolShow as number
+                        tradeValue: calcTradeParams?.baseVolShow as number
                     },
                     quote:{
                         ...state.quote,
-                        tradeValue:request?.calcTradeParams.quoteVolShow as number
+                        tradeValue: calcTradeParams?.quoteVolShow as number
                     }
 
                 }
