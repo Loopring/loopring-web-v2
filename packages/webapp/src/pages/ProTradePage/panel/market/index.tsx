@@ -155,7 +155,7 @@ export const MarketView = withTranslation('common')(({
     }, [pageTradePro, depthType, rowLength])
     const middlePrice = React.useMemo(() => {
         const {ticker, depth} = pageTradePro;
-        let close = undefined;
+        let close: number| string | undefined = undefined;
         let up: 'up' | 'down' | '' = '';
         let priceColor = '';
         let value = '';
@@ -177,9 +177,11 @@ export const MarketView = withTranslation('common')(({
                 + getValuePrecisionThousand(close * quotePrice / forex, undefined, undefined, undefined, true, {isFait: true})
 
         }
-
+        close = (close ? close.toFixed(marketMap[ market ].precisionForPrice) : undefined)
         return <Typography color={'var(--color-text-third)'} variant={'body2'} component={'p'} display={'inline-flex'}
-                           textAlign={'center'} alignItems={'center'}>
+                           textAlign={'center'} alignItems={'center'} onClick={(event:any) => {
+            priceClick(event,close  as any)
+        }}>
             {close ? <>
                     <Typography lineHeight={1} color={priceColor} component={'span'} paddingRight={1} alignItems={'center'}
                                 display={'inline-flex'}> {close}
@@ -233,9 +235,9 @@ export const MarketView = withTranslation('common')(({
         </>
     }, [tableLength, market, pageTradePro.tradeArray])
 
-    const priceClick = React.useCallback( (event,price)=>{
-        updatePageTradePro({market,defaultPrice:price})
-    },[updatePageTradePro,market])
+    const priceClick = React.useCallback((event, price) => {
+        updatePageTradePro({market, defaultPrice: price})
+    }, [updatePageTradePro, market])
     React.useEffect(() => {
         if (pageTradePro.depth?.symbol === market && rowLength) {
             rebuildList()
@@ -300,9 +302,9 @@ export const MarketView = withTranslation('common')(({
                         />
                         <Box display={'flex'} flexDirection={'column'}
                              alignItems={'center'}
-                             height={24} style={{cursor:'pointer'}}
-                             onClick={(event)=>{priceClick(event,middlePrice)}}>
-                             {middlePrice}
+                             height={24} style={{cursor: 'pointer'}}
+                        >
+                            {middlePrice}
                         </Box>
                         <DepthBlock onClick={priceClick} marketInfo={marketMap[ market ]}
                                     type={DepthType.bid} depths={depthViewData.bids}

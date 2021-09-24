@@ -9,6 +9,7 @@ import { usePlaceOrder } from 'hooks/common/useTrade';
 import { useTokenMap } from 'stores/token';
 import { useTranslation } from 'react-i18next';
 import store from 'stores';
+import { volumeToCount } from '../../../../hooks/help';
 
 
 export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType): {
@@ -41,7 +42,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
             } as IBData<any>,
             price: {
                 belong: pageTradePro.tradeCalcProData.coinQuote,
-                tradeValue: (pageTradePro.market === market && pageTradePro.ticker)?pageTradePro.ticker.close:0
+                tradeValue: (pageTradePro.market === market && pageTradePro.ticker)?pageTradePro.ticker.close.toFixed(marketPrecision):0
             } as IBData<any>,
             type: TradeProType.buy
         }
@@ -63,7 +64,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                     ...state,
                     price: {
                         ...state.price,
-                        tradeValue: pageTradePro.defaultPrice? pageTradePro.defaultPrice: (pageTradePro.market === market && pageTradePro.ticker)?pageTradePro.ticker.close:0
+                        tradeValue: pageTradePro.defaultPrice? pageTradePro.defaultPrice: (pageTradePro.market === market && pageTradePro.ticker)?pageTradePro.ticker.close.toFixed(marketPrecision):0
                     } as IBData<any>,
                 }
             })
@@ -91,7 +92,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                 } as IBData<any>,
                 price: {
                     belong: quoteSymbol,
-                    tradeValue: (pageTradePro.market === market && pageTradePro.ticker)?pageTradePro.ticker.close:0
+                    tradeValue: (pageTradePro.market === market && pageTradePro.ticker)?pageTradePro.ticker.close.toFixed(marketPrecision):0
                 } as IBData<any>,
             }
         });
@@ -155,12 +156,13 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                     },
                     base:{
                         ...state.base,
-                        tradeValue:request?.calcTradeParams.baseVolShow  as number
+                        tradeValue: request?.calcTradeParams.baseVolShow as number
                     },
                     quote:{
-                        ...state.base,
-                        tradeValue:request?.calcTradeParams.quoteVolShow  as number
+                        ...state.quote,
+                        tradeValue:request?.calcTradeParams.quoteVolShow as number
                     }
+
                 }
             })
         }
