@@ -674,6 +674,9 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
                 slipBips: slippage
             })
 
+            myLog('depth:', depth)
+            myLog('calcTradeParams:', calcTradeParams)
+
             const priceImpactObj = getPriceImpactInfo(calcTradeParams)
 
             const _tradeCalcData: Partial<TradeCalcData<C>> = {
