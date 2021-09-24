@@ -124,7 +124,7 @@ export const useSocketProService = ({
                 }
             }
             // @ts-ignore
-            if (value && value.trades && value.trades.length > 0 && value.trades[0].market === pageTradePro.market) {
+            if (value && value.trades == true && value.trades[0].market === pageTradePro.market) {
                 const market = pageTradePro.market;
                 // @ts-ignore
                 const _tradeArray = makeMarketArray(market, value.trades);
