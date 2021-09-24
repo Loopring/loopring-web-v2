@@ -32,7 +32,7 @@ export interface ReqParams {
     feeBips?: string,
 
     // key is ETH or USDT
-    tokenAmtMap?: { [key: string]: sdk.TokenAmount },
+    tokenAmtMap?: { [ key: string ]: sdk.TokenAmount },
 
     ammPoolSnapshot?: sdk.AmmPoolSnapshot,
     depth?: sdk.DepthData,
@@ -40,34 +40,34 @@ export interface ReqParams {
 }
 
 export function makeMarketReq({
-    isBuy,
+                                  isBuy,
 
-    amountBase,
-    amountQuote,
-    base,
-    quote,
+                                  amountBase,
+                                  amountQuote,
+                                  base,
+                                  quote,
 
-    tokenMap,
-    marketArray,
-    marketMap,
+                                  tokenMap,
+                                  marketArray,
+                                  marketMap,
 
-    exchangeAddress,
-    accountId,
-    storageId,
+                                  exchangeAddress,
+                                  accountId,
+                                  storageId,
 
-    feeBips,
-    tokenAmtMap,
+                                  feeBips,
+                                  tokenAmtMap,
 
-    depth,
-    ammPoolSnapshot,
-    slippage,
-}: ReqParams) {
+                                  depth,
+                                  ammPoolSnapshot,
+                                  slippage,
+                              }: ReqParams) {
 
     if (!tokenMap || !exchangeAddress || !marketArray
         || accountId === undefined || !base || !quote || (!depth && !ammPoolSnapshot)) {
         return {
-            calcTradeParams:undefined,
-            marketRequest:undefined,
+            calcTradeParams: undefined,
+            marketRequest: undefined,
         }
     }
 
@@ -83,8 +83,8 @@ export function makeMarketReq({
         storageId = 0
     }
 
-    const baseTokenInfo = tokenMap[base]
-    const quoteTokenInfo = tokenMap[quote]
+    const baseTokenInfo = tokenMap[ base ]
+    const quoteTokenInfo = tokenMap[ quote ]
 
     const sellTokenInfo = isBuy ? quoteTokenInfo : baseTokenInfo
     const buyTokenInfo = isBuy ? baseTokenInfo : quoteTokenInfo
@@ -97,7 +97,7 @@ export function makeMarketReq({
     // buy. amountSell is not null.
     const isAtoB = (isBuy && amountQuote !== undefined) || (!isBuy && amountBase !== undefined)
 
-    const takerRate = (tokenAmtMap && tokenAmtMap[buyTokenInfo.symbol]) ? tokenAmtMap[buyTokenInfo.symbol].userOrderInfo.takerRate : 0
+    const takerRate = (tokenAmtMap && tokenAmtMap[ buyTokenInfo.symbol ]) ? tokenAmtMap[ buyTokenInfo.symbol ].userOrderInfo.takerRate : 0
 
     // myLog('makeMarketReq isBuy:', isBuy, ' sell:', sell, ' buy:', buy, ' isAtoB:', isAtoB, ' feeBips:', feeBips, ' takerRate:', takerRate)
 
@@ -155,33 +155,33 @@ export function makeMarketReq({
 }
 
 export function makeLimitReq({
-    isBuy,
+                                 isBuy,
 
-    depth,
-    price,
-    amountBase,
-    amountQuote,
-    base,
-    quote,
-    tokenMap,
+                                 depth,
+                                 price,
+                                 amountBase,
+                                 amountQuote,
+                                 base,
+                                 quote,
+                                 tokenMap,
 
-    exchangeAddress,
-    accountId,
-    storageId,
+                                 exchangeAddress,
+                                 accountId,
+                                 storageId,
 
-    feeBips,
-    tokenAmtMap,
-}: ReqParams):{
-    calcTradeParams:undefined|{[key:string]:any},
-    limitRequest:undefined|{[key:string]:any},
+                                 feeBips,
+                                 tokenAmtMap,
+                             }: ReqParams): {
+    calcTradeParams: undefined | { [ key: string ]: any },
+    limitRequest: undefined | { [ key: string ]: any },
 } {
 
     if (!tokenMap || !exchangeAddress || !depth
         || accountId === undefined || !base || !quote || (!amountBase && !amountQuote)) {
         myLog('got empty input!')
         return {
-            calcTradeParams:undefined,
-            limitRequest:undefined,
+            calcTradeParams: undefined,
+            limitRequest: undefined,
         }
     }
 
@@ -201,8 +201,8 @@ export function makeLimitReq({
         storageId = 0
     }
 
-    const baseTokenInfo = tokenMap[base]
-    const quoteTokenInfo = tokenMap[quote]
+    const baseTokenInfo = tokenMap[ base ]
+    const quoteTokenInfo = tokenMap[ quote ]
 
     let baseVol = undefined
     let quoteVol = undefined
@@ -234,7 +234,7 @@ export function makeLimitReq({
         volume: quoteVol.toString()
     }
 
-    const takerRate = (tokenAmtMap && tokenAmtMap[baseTokenInfo.symbol]) ? tokenAmtMap[baseTokenInfo.symbol].userOrderInfo.takerRate : 0
+    const takerRate = (tokenAmtMap && tokenAmtMap[ baseTokenInfo.symbol ]) ? tokenAmtMap[ baseTokenInfo.symbol ].userOrderInfo.takerRate : 0
 
     const maxFeeBips = parseInt(sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString())
 
@@ -255,9 +255,9 @@ export function makeLimitReq({
 
     let priceImpact = 0
 
-    const ask1 = depth.asks_prices[0]
-    const bid1 = depth.bids_prices[depth.bids_prices.length - 1]
-    
+    const ask1 = depth.asks_prices[ 0 ]
+    const bid1 = depth.bids_prices[ depth.bids_prices.length - 1 ]
+
     if (isBuy && ask1 && price > ask1) {
         priceImpact = (price - ask1) / ask1
     } else if (!isBuy && bid1 && price < bid1) {
@@ -295,17 +295,17 @@ export function makeMarketSellReq() {
 
 export function usePlaceOrder() {
 
-    const { account } = useAccount()
+    const {account} = useAccount()
 
-    const { tokenMap, marketArray, } = useTokenMap()
-    const { ammMap } = useAmmMap()
+    const {tokenMap, marketArray,} = useTokenMap()
+    const {ammMap} = useAmmMap()
 
 
-    const { exchangeInfo, } = useSystem()
+    const {exchangeInfo,} = useSystem()
 
     const getTokenAmtMap = React.useCallback((params: ReqParams) => {
         const {amountMap} = store.getState().amountMap
-        if(ammMap && marketArray && amountMap){
+        if (ammMap && marketArray && amountMap) {
             let base = params.base
 
             let quote = params.quote
@@ -330,35 +330,34 @@ export function usePlaceOrder() {
             market = existedMarket.market
             ammMarket = existedMarket.amm as string
 
-            const tokenAmtMap = amountMap ? ammMap[ammMarket] ? amountMap[ammMarket] : amountMap[market as string] : undefined
+            const tokenAmtMap = amountMap ? ammMap[ ammMarket ] ? amountMap[ ammMarket ] : amountMap[ market as string ] : undefined
 
             const feeBips = ammMap[ ammMarket ] ? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
             return {
                 feeBips,
                 tokenAmtMap,
             }
-        }else{
+        } else {
             return {
-                feeBips:undefined,
-                tokenAmtMap:undefined,
+                feeBips: undefined,
+                tokenAmtMap: undefined,
             }
         }
 
 
-
-    }, [ marketArray,])
+    }, [marketArray,])
 
     // {isBuy, amountB or amountS, (base, quote / market), feeBips, takerRate, depth, ammPoolSnapshot, slippage, }
-    const makeMarketReqInHook = React.useCallback((params: ReqParams):{
-        calcTradeParams:undefined|{[key:string]:any},
-        marketRequest:undefined|{[key:string]:any},
+    const makeMarketReqInHook = React.useCallback((params: ReqParams): {
+        calcTradeParams: undefined | { [ key: string ]: any },
+        marketRequest: undefined | { [ key: string ]: any },
     } => {
 
         // if (!exchangeInfo) {
         //     return
         // }
 
-        const {tokenAmtMap,feeBips} = getTokenAmtMap(params)
+        const {tokenAmtMap, feeBips} = getTokenAmtMap(params)
 
         myLog('makeMarketReqInHook tokenAmtMap:', tokenAmtMap)
 
@@ -368,41 +367,38 @@ export function usePlaceOrder() {
                 exchangeAddress: exchangeInfo.exchangeAddress,
                 accountId: account.accountId,
                 tokenMap,
-                feeBips: feeBips?feeBips.toString():'0',
+                feeBips: feeBips ? feeBips.toString() : '0',
                 tokenAmtMap: tokenAmtMap,
             }
             return makeMarketReq(fullParams)
-        }else{
+        } else {
             return {
-                calcTradeParams:undefined,
-                marketRequest:undefined,
+                calcTradeParams: undefined,
+                marketRequest: undefined,
             }
         }
 
 
-
-
-
-    }, [account, tokenMap, marketArray, exchangeInfo, ])
+    }, [account, tokenMap, marketArray, exchangeInfo,])
 
     // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
-    const makeLimitReqInHook = React.useCallback((params: ReqParams):{ calcTradeParams: object | undefined; limitRequest: object | undefined } => {
-        const {tokenAmtMap,feeBips} = getTokenAmtMap(params)
+    const makeLimitReqInHook = React.useCallback((params: ReqParams): { calcTradeParams: undefined | { [ key: string ]: any }; limitRequest: undefined | { [ key: string ]: any } } => {
+        const {tokenAmtMap, feeBips} = getTokenAmtMap(params)
         if (exchangeInfo) {
             const fullParams: ReqParams = {
                 ...params,
                 exchangeAddress: exchangeInfo.exchangeAddress,
                 accountId: account.accountId,
                 tokenMap,
-                feeBips: feeBips?feeBips.toString():'0',
+                feeBips: feeBips ? feeBips.toString() : '0',
                 tokenAmtMap: tokenAmtMap,
             }
             return makeLimitReq(fullParams)
-        }else {
+        } else {
             myLog('makeMarketReqInHook error no tokenAmtMap', tokenAmtMap)
             return {
-                calcTradeParams:undefined,
-                limitRequest:undefined,
+                calcTradeParams: undefined,
+                limitRequest: undefined,
             }
         }
 
