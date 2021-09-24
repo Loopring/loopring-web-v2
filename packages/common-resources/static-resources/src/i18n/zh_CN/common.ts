@@ -343,4 +343,5 @@ export default {
     // labelPrompt: '提示',
 
     labelComingSoon: '敬请期待',
+    labelTradeProHideOtherPairs: '隐藏其他交易对',
 }
