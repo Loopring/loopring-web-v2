@@ -35,7 +35,7 @@ export const Kline = withTranslation()(() => {
                                 {indicator: MainIndicator.MA, params: {period: 10}}, 
                                 {indicator: MainIndicator.BOLL}
                             ],
-                            subIndicator: [{ indicator: SubIndicator.MACD }]
+                            subIndicator: [{ indicator: SubIndicator.VOLUME }, { indicator: SubIndicator.MACD }]
                         }
                     }
                     // yAxisDomainPercent={0.2}
