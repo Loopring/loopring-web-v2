@@ -115,7 +115,7 @@ export function makeMarketReq({
         ammPoolSnapshot: ammPoolSnapshot,
         feeBips: feeBips ? feeBips.toString() : '0',
         takerRate: takerRate ? takerRate.toString() : '0',
-        slipBips: slippage as string
+        slipBips: slippage as string,
     })
 
     myLog('makeMarketReq calcTradeParams:', calcTradeParams)
@@ -409,4 +409,42 @@ export function usePlaceOrder() {
         makeLimitReqInHook,
     }
 
+}
+export enum PriceLevel {
+    Normal,
+    Lv1,
+    Lv2,
+}
+
+export const getPriceImpactInfo = (calcTradeParams: any) => {
+    let priceImpact: any = calcTradeParams?.priceImpact ? parseFloat(calcTradeParams?.priceImpact) * 100 : undefined
+    let priceImpactColor = 'var(--color-success)'
+
+    let priceLevel = PriceLevel.Normal
+
+    if (priceImpact) {
+
+        if (priceImpact > 0.1 && priceImpact <= 1) {
+            priceImpactColor = 'var(--color-success)'
+        } else if (priceImpact > 1 && priceImpact <= 3) {
+            priceImpactColor = 'textPrimary'
+        } else if (priceImpact > 3 && priceImpact <= 5) {
+            priceImpactColor = 'var(--color-warning)'
+        } else if (priceImpact > 5 && priceImpact <= 10) {
+            priceImpactColor = 'var(--color-error)'
+            priceLevel = PriceLevel.Lv1
+        } else if (priceImpact > 10) {
+            priceImpactColor = 'var(--color-error)'
+            priceLevel = PriceLevel.Lv2
+        }
+
+    } else {
+        priceImpactColor = 'var(--color-text-primary)'
+    }
+
+    return {
+        value: priceImpact,
+        priceImpactColor,
+        priceLevel,
+    }
 }

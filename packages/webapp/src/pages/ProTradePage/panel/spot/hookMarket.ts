@@ -12,7 +12,7 @@ import { useSystem } from 'stores/system';
 import { useTranslation } from 'react-i18next';
 import { useSubmitBtn } from './hookBtn';
 import { VolToNumberWithPrecision } from 'utils/formatter_tool';
-import { usePlaceOrder } from 'hooks/common/useTrade';
+import { getPriceImpactInfo, PriceLevel, usePlaceOrder } from 'hooks/common/useTrade';
 import store from 'stores';
 
 export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType): {
@@ -125,10 +125,12 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
         let amountBase = formType === TradeBaseType.base ? tradeData.base.tradeValue : undefined
         let amountQuote = formType === TradeBaseType.quote ? tradeData.quote.tradeValue : undefined
-
+        let lastStepAt =  pageTradePro.lastStepAt;
         if (formType === TradeBaseType.tab) {
             amountBase = tradeData.base.tradeValue ? tradeData.base.tradeValue : undefined
             amountQuote = amountBase !== undefined ? undefined : tradeData.quote.tradeValue ? tradeData.quote.tradeValue : undefined
+        }else if(['base','quote'].includes(formType)){
+            lastStepAt =  formType as any;
         }
 
         let {marketRequest,calcTradeParams} = makeMarketReqInHook({
@@ -145,7 +147,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         })
 
         myLog('marketRequest:',marketRequest, calcTradeParams)
-
+        const priceImpactObj =  getPriceImpactInfo(calcTradeParams)
         updatePageTradePro({
             market,
             request: marketRequest as any,
@@ -155,7 +157,10 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                 fee:calcTradeParams ? calcTradeParams.feeBips: undefined,
                 minimumReceived: calcTradeParams? calcTradeParams.amountBOutSlip?.minReceivedVal: undefined,
                 priceImpact: calcTradeParams? calcTradeParams.priceImpact:undefined,
-            }
+                priceImpactColor: priceImpactObj?.priceImpactColor,
+
+            },
+            lastStepAt,
         })
         setMarketTradeData((state)=>{
             let baseValue = undefined;
@@ -179,8 +184,11 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
     }, [])
 
+
     const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
-        const {calcTradeParams, request, tradeCalcProData,} = pageTradePro;
+        // const {calcTradeParams, request, tradeCalcProData,} = pageTradePro;
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
+        const {calcTradeParams, request, tradeCalcProData} =  pageTradePro;
         setAlertOpen(false)
         setConfirmOpen(false)
 
@@ -274,10 +282,12 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
         }
 
-    }, [account.readyState, pageTradePro, tokenMap, marketTradeData, setIsMarketLoading, setToastOpen, setMarketTradeData])
+    }, [account.readyState, tokenMap, marketTradeData, setIsMarketLoading, setToastOpen, setMarketTradeData])
     const availableTradeCheck = React.useCallback((): { tradeBtnStatus: TradeBtnStatus, label: string } => {
 
-        const {calcTradeParams, quoteMinAmtInfo, baseMinAmtInfo} = pageTradePro;
+        // const {calcTradeParams, quoteMinAmtInfo, baseMinAmtInfo} = pageTradePro;
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
+        const {calcTradeParams, quoteMinAmtInfo, baseMinAmtInfo} =  pageTradePro;
         if (account.readyState === AccountStatus.ACTIVATED) {
             const type = marketTradeData.type === TradeProType.sell ? 'quote' : 'base';
             const minAmt = type === 'quote' ? quoteMinAmtInfo?.minAmount : baseMinAmtInfo?.minAmount;
@@ -297,8 +307,26 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin, ${minOrderSize}`}
             }
         }
+
         return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
-    }, [account.readyState, pageTradePro, marketTradeData])
+    }, [account.readyState, marketTradeData,marketSubmit])
+    const onSubmitBtnClick = React.useCallback(()=>{
+        const {priceLevel} = getPriceImpactInfo(pageTradePro.calcTradeParams)
+
+        switch (priceLevel) {
+            case PriceLevel.Lv1:
+                setAlertOpen(true)
+                break
+            case PriceLevel.Lv2:
+                setConfirmOpen(true)
+                break
+            default:
+                marketSubmit(undefined as any, true);
+                break
+        }
+
+        myLog('swap directly')
+    },[])
 
     const {
         btnStatus: tradeMarketBtnStatus,
@@ -309,7 +337,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
     } = useSubmitBtn({
         availableTradeCheck: availableTradeCheck,
         isLoading: isMarketLoading,
-        submitCallback: marketSubmit
+        submitCallback: onSubmitBtnClick
     })
 
     return {

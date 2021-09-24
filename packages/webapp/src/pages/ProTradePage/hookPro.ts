@@ -148,11 +148,12 @@ export const usePro = <C extends { [ key: string ]: any }>():{
                     return {...prev, [ item ]: coinMap ? coinMap[ item ] : {}}
                 }, {} as CoinMap<C>),
             }
+
             if (!Object.keys(tradeCalcProData.walletMap ?? {}).length){
                 updateWalletLayer2Balance(tradeCalcProData)
+            } else{
+                updatePageTradePro({market, tradeCalcProData})
             }
-
-            updatePageTradePro({market, tradeCalcProData})
 
 
         }
