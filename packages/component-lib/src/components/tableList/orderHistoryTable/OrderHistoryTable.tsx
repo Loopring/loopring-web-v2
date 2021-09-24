@@ -159,7 +159,7 @@ export interface OrderHistoryTableProps {
     cancelOrder: ({orderHash, clientOrderId}: any) => void
     isScroll?: boolean;
     isPro?: boolean;
-    handleScroll?: (event: React.UIEvent<HTMLDivElement>) => Promise<void>;
+    handleScroll?: (event: React.UIEvent<HTMLDivElement>, isOpen?: boolean) => Promise<void>;
 }
 
 export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryTableProps & WithTranslation) => {
@@ -646,7 +646,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         )}
         <Table 
             className={isScroll ? 'scrollable' : undefined}
-            onScroll={handleScroll ?? undefined}
+            onScroll={handleScroll ? (e) => handleScroll(e, isOpenOrder) : undefined}
             {...{...defaultArgs, ...props, rawData, showloading: showLoading}}
         />
         <Modal
