@@ -105,6 +105,9 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         } else {
             tradeData.type = index
         }
+        
+        // myLog('tradeData.type:', tradeData.type)
+
         onChangeEvent(tradeData, TradeBaseType.tab)
     }, [tradeData])
 

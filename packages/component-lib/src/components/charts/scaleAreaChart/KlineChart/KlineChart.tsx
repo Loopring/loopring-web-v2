@@ -43,7 +43,26 @@ export interface IOHLCData {
     volume: number;
 }
 
+export enum MainIndicator {
+    MA,
+    EMA,
+    BOLL,
+}
+
+export enum SubIndicator {
+    VOLUME = 'VOLUME',
+    MACD = 'MACD',
+    KDJ = 'KDJ',
+    RSI = 'RSI',
+}
+
+export interface IndicatorProps {
+    mainIndicators?: MainIndicator[]
+    subIndicator?: SubIndicator
+}
+
 export interface StockChartProps {
+    readonly indicators?: IndicatorProps;
     readonly data: IOHLCData[];
     readonly height: number;
     readonly dateTimeFormat?: string;
