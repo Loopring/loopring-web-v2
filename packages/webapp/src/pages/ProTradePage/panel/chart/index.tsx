@@ -2,6 +2,7 @@ import { withTranslation } from 'react-i18next';
 import { ScaleAreaChart, ChartType, testKlineData, MainIndicator, SubIndicator } from '@loopring-web/component-lib'
 import {  } from '../../index';
 import styled from '@emotion/styled'
+import { useKlineChart } from './hook';
 
 const Styled = styled.div`
   flex: 1;
@@ -16,7 +17,10 @@ const formatDateData = testKlineData.map(d => ({
 }))
 
 
-export  const ChartView = withTranslation('common')(<C extends { [ key: string ]: any }>()=>{
+export  const ChartView = withTranslation('common')(<C extends { [ key: string ]: any }>({market}: {market: string | undefined})=>{
+
+    const { market: marketTmp } = useKlineChart(market)
+
     return <>
      <Styled>
                 <ScaleAreaChart
