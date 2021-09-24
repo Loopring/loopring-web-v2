@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { PageTradePro, PageTradeProStatus } from './interface';
+import { TradeProType } from '@loopring-web/component-lib';
 
 const initState = {
     market: undefined,
@@ -8,7 +9,8 @@ const initState = {
     calcTradeParams: undefined,
     priceImpactObj: undefined,
     tradeCalcProData: {},
-    tradeArray:[]
+    tradeArray:[],
+    tradeType:TradeProType.buy,
 }
 
 const initialState: PageTradeProStatus<{ [ key: string ]: any }> = {
@@ -29,6 +31,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
             const {
                 market,
                 depth,
+                tradeType,
                 precisionLevels,
                 depthLevel,
                 ticker,
@@ -50,6 +53,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
             if (market !== state.pageTradePro.market) {
                 state.pageTradePro = {
                     ...initState,
+                    tradeType:state.pageTradePro.tradeType??tradeType??initState.tradeType,
                     market,
                     tradeCalcProData:tradeCalcProData?tradeCalcProData:{},
                     request,
@@ -72,6 +76,9 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 }
 
             } else {
+                if(tradeType){
+                    state.pageTradePro.tradeType = tradeType
+                }
                 if(precisionLevels){
                     state.pageTradePro.precisionLevels = precisionLevels
                 }
