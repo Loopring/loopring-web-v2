@@ -108,7 +108,7 @@ export default {
     labelOrderDetailTradingVolume: '交易量',
     labelOrderDetailOrderId: '订单号',
     labelOrderCancelAll: '操作',
-    labelOrderCancel: '撤销订单',
+    labelOrderCancelOrder: '撤销订单',
     labelOrderProcessing: '挂单中',
     labelOrderProcessed: '完全成交',
     labelOrderCancelling: '取消中',
@@ -127,4 +127,7 @@ export default {
     labelOrderCompletion: '成交比例',
     labelRewardTableAmount: '奖励数量',
     labelRewardTableTime: '时间',
+    labelOrderCancelConfirm: '确认撤销该订单？',
+    labelOrderConfirm: '确定',
+    labelOrderCancel: '取消',
 }
