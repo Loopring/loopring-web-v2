@@ -160,7 +160,7 @@ export const MarketView = withTranslation('common')(({
         let priceColor = '';
         let value = '';
         if (ticker && depth && depth.mid_price && depth.symbol === market) {
-            close = ticker.close;
+            close = ticker.close? ticker.close:depth?.mid_price
             if (depth.mid_price === close) {
                 priceColor = '';
                 up = '';

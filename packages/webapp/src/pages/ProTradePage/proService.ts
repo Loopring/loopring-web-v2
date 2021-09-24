@@ -26,13 +26,13 @@ const TRADE_ARRAY_MAX_LENGTH = 50;
 /**
  *
  * @param throttleWait
- * @param dependencyCallback
- * @param useInfoUpdateCallback  will update your wallet balance
+ * @param depDataCallback
+ * @param userInfoUpdateCallback
  * @param walletLayer1Callback
  */
 export const useSocketProService = ({
                                         throttleWait = globalSetup.throttleWait,
-                                        depDataCallback,
+                                        // depDataCallback,
                                         userInfoUpdateCallback,
                                         walletLayer1Callback
                                     }: {
@@ -65,22 +65,23 @@ export const useSocketProService = ({
     //     accountUpdate({walletLayer2Status, walletLayer1Status})
     // }
 
-    const _dependencyCallback = _.throttle(() => {
-        if (depDataCallback) {
-            depDataCallback()
-        }
-    }, throttleWait)
+    // const _dependencyCallback = _.throttle(() => {
+    //     if (depDataCallback) {
+    //         depDataCallback()
+    //     }
+    // }, throttleWait)
     // const  _socketUpdate = React.useCallback(socketUpdate({updateWalletLayer1,updateWalletLayer2,walletLayer1Status,walletLayer2Status}),[]);
     React.useEffect(() => {
         const subscription = merge(subjectAmmpool, subjectMixorder, subjectTicker, subjectTrade).subscribe((value) => {
             const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
+            const market = pageTradePro.market;
+            const address = ammMap && ammMap[ 'AMM-' + market ]?.address;
+
             // @ts-ignore
-            if (ammMap && value && value.ammPoolMap) {
+            if (address && ammMap && value && value.ammPoolMap) {
                 // @ts-ignore
                 const ammPoolMap = value.ammPoolMap;
-                const market = pageTradePro.market;
-                const {address} = ammMap[ 'AMM-' + market ];
-                if (ammPoolMap && ammPoolMap[ address ]?.pooled && pageTradePro.ammPoolSnapshot) {
+                if (address && ammPoolMap && ammPoolMap[ address ]?.pooled && pageTradePro.ammPoolSnapshot) {
                     const {pooled: _pooled, lp} = ammPoolMap[ address ];
                     let pooled = pageTradePro.ammPoolSnapshot.pooled
                     pooled = [{
@@ -258,7 +259,7 @@ export const useProSocket = () => {
         noSocketLoop();
         if (ammMap && pageTradePro.market) {
             const dataSocket: SocketMap = {
-                [ sdk.WsTopicType.ammpool ]: [ammMap[ 'AMM-' + pageTradePro.market ].address],
+                [ sdk.WsTopicType.ammpool ]: ammMap[ 'AMM-' + pageTradePro.market ] ? [ammMap[ 'AMM-' + pageTradePro.market ].address]:[],
                 [ sdk.WsTopicType.ticker ]: [pageTradePro.market as string],
                 [ sdk.WsTopicType.mixorder ]: {
                     markets: [pageTradePro.market],

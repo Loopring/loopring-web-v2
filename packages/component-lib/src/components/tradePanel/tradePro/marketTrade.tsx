@@ -56,7 +56,7 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         btnLabel,
         getDisabled,
         _handleChangeIndex,
-        inputError,
+        // inputError,
         tradeCalcProData,
         tradeBtnBaseStatus,
         propsBase,
@@ -219,7 +219,7 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
                 handleSubmitEvent(tradeData)
             }}
                          loading={!getDisabled() && tradeBtnBaseStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-                         disabled={getDisabled() || tradeBtnBaseStatus === TradeBtnStatus.DISABLED || tradeBtnBaseStatus === TradeBtnStatus.LOADING || inputError.error}
+                         disabled={getDisabled() || tradeBtnBaseStatus === TradeBtnStatus.DISABLED || tradeBtnBaseStatus === TradeBtnStatus.LOADING }
                          fullWidth={true}>
                 {btnLabel}
             </ButtonStyle>

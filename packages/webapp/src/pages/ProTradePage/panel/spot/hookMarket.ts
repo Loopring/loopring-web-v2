@@ -111,11 +111,14 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         // myLog(`onChangeMarketEvent depth:`, pageTradePro.depth)
         // myLog(`onChangeMarketEvent ammPoolSnapshot:`, pageTradePro.ammPoolSnapshot)
-        if (!pageTradePro.depth && !pageTradePro.ammPoolSnapshot) {
+        if (!pageTradePro.depth) {
             // myLog(`onChangeMarketEvent data not ready!`)
             setIsMarketLoading(true)
             return
+        }else {
+            setIsMarketLoading(false)
         }
+
         let lastStepAt =  pageTradePro.lastStepAt;
 
         if (formType === TradeBaseType.tab) {
@@ -225,7 +228,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
     const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
         // const {calcTradeParams, request, tradeCalcProData,} = pageTradePro;
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-        const {calcTradeParams, request, tradeCalcProData} =  pageTradePro;
+        const {calcTradeParams, request} =  pageTradePro;
         setAlertOpen(false)
         setConfirmOpen(false)
 
@@ -297,7 +300,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                     updatePageTradePro({
                         market: market as MarketType,
                         tradeCalcProData: {
-                            ...tradeCalcProData,
+                            ...pageTradePro.tradeCalcProData,
                             minimumReceived: undefined,
                             priceImpact: undefined,
                             fee: undefined
@@ -322,7 +325,6 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
     }, [account.readyState, tokenMap, marketTradeData, setIsMarketLoading, setToastOpen, setMarketTradeData])
     const availableTradeCheck = React.useCallback((): { tradeBtnStatus: TradeBtnStatus, label: string } => {
 
-        // const {calcTradeParams, quoteMinAmtInfo, baseMinAmtInfo} = pageTradePro;
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
         const {calcTradeParams, quoteMinAmtInfo, baseMinAmtInfo} =  pageTradePro;
         if (account.readyState === AccountStatus.ACTIVATED) {
@@ -376,7 +378,6 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         isLoading: isMarketLoading,
         submitCallback: onSubmitBtnClick
     })
-
     return {
         alertOpen,
         confirmOpen,

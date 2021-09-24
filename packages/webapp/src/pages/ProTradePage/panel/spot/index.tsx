@@ -7,13 +7,13 @@ import {
     MarketTrade,
     Toast, TradeProType
 } from '@loopring-web/component-lib';
-import { TOAST_TIME } from '../../../../defs/common_defs';
+import { TOAST_TIME } from 'defs/common_defs';
 import { MarketType } from '@loopring-web/common-resources';
-import { usePageTradePro } from '../../../../stores/router';
+import { usePageTradePro } from 'stores/router';
 import { useMarket } from './hookMarket';
 import { useLimit } from './hookLimit';
 import { Box, Divider, Tab, Tabs } from '@mui/material';
-import { useTokenMap } from '../../../../stores/token';
+import { useTokenMap } from 'stores/token';
 
 // const TabsStyle = styled(Tabs)`
 //   flex: 1;

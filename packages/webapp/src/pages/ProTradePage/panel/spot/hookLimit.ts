@@ -45,7 +45,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
             } as IBData<any>,
             price: {
                 belong: pageTradePro.tradeCalcProData.coinQuote,
-                tradeValue: (pageTradePro.market === market && pageTradePro.ticker) ? pageTradePro.ticker.close.toFixed(marketPrecision) : 0
+                tradeValue: (pageTradePro.market === market && pageTradePro.ticker) ? pageTradePro.ticker.close? pageTradePro.ticker.close.toFixed(marketPrecision):pageTradePro?.depth?.mid_price.toFixed(marketPrecision) : 0
             } as IBData<any>,
             type: pageTradePro.tradeType ?? TradeProType.buy
         }
@@ -67,7 +67,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                     ...state,
                     price: {
                         ...state.price,
-                        tradeValue: pageTradePro.defaultPrice ? pageTradePro.defaultPrice : (pageTradePro.market === market && pageTradePro.ticker) ? pageTradePro.ticker.close.toFixed(marketPrecision) : 0
+                        tradeValue: pageTradePro.defaultPrice ? pageTradePro.defaultPrice : (pageTradePro.market === market && pageTradePro.ticker) ? pageTradePro.ticker.close? pageTradePro.ticker.close.toFixed(marketPrecision):pageTradePro?.depth?.mid_price.toFixed(marketPrecision) : 0
                     } as IBData<any>,
                 }
             })
@@ -95,7 +95,8 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                 } as IBData<any>,
                 price: {
                     belong: quoteSymbol,
-                    tradeValue: (pageTradePro.market === market && pageTradePro.ticker) ? pageTradePro.ticker.close.toFixed(marketPrecision) : 0
+                    tradeValue: (pageTradePro.market === market && pageTradePro.ticker) ?
+                        pageTradePro.ticker.close? pageTradePro.ticker.close.toFixed(marketPrecision):pageTradePro?.depth?.mid_price.toFixed(marketPrecision) : 0
                 } as IBData<any>,
             }
         });
