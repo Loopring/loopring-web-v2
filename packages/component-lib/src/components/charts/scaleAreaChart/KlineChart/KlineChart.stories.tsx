@@ -32,7 +32,10 @@ export const Kline = withTranslation()(() => {
                                 {indicator: MainIndicator.MA, params: {period: 10}}, 
                                 {indicator: MainIndicator.BOLL}
                             ],
-                            subIndicator: [{ indicator: SubIndicator.VOLUME }, { indicator: SubIndicator.MACD }]
+                            subIndicator: [{ indicator: SubIndicator.VOLUME }, 
+                                { indicator: SubIndicator.MACD }, 
+                                { indicator: SubIndicator.SAR }, 
+                                { indicator: SubIndicator.RSI }]
                         }
                     }
                 />
