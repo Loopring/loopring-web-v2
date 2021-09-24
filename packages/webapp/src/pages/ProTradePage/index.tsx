@@ -17,7 +17,7 @@ const MARKET_ROW_LENGTH_LG: number = 11;
 
 const MARKET_TRADES_LENGTH: number = 19;
 const MARKET_TRADES_LENGTH_LG: number = 24;
-export const HeaderHeight= 44;
+export const HeaderHeight = 44;
 
 
 const BoxStyle = styled(Box)`
@@ -27,13 +27,16 @@ const BoxStyle = styled(Box)`
   &.spot {
     ${({theme}: any) => boxLiner({theme})}
   }
+
   .MuiTabs-root {
     min-height: var(--tab-header);
+
     .MuiTab-root.MuiTab-fullWidth, .MuiTab-root {
       font-size: ${({theme}) => theme.fontDefault.body1};
       min-height: var(--tab-header);
       padding: ${({theme}) => theme.unit}px;
-      &:after{
+
+      &:after {
         margin: 0;
       }
     }
@@ -47,30 +50,30 @@ type Config = {
     layouts: Layouts,
     compactType: 'vertical' | 'horizontal' | null | undefined
 }
-const initBreakPoint = ():BreakPoint=>{
-    if( window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.xlg]) {
+const initBreakPoint = (): BreakPoint => {
+    if (window.innerWidth >= layoutConfigs[ 0 ].breakpoints[ BreakPoint.xlg ]) {
         return BreakPoint.xlg
-    } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.lg]) {
+    } else if (window.innerWidth >= layoutConfigs[ 0 ].breakpoints[ BreakPoint.lg ]) {
         return BreakPoint.lg
-    } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.md]) {
+    } else if (window.innerWidth >= layoutConfigs[ 0 ].breakpoints[ BreakPoint.md ]) {
         return BreakPoint.md
-    } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.sm]) {
+    } else if (window.innerWidth >= layoutConfigs[ 0 ].breakpoints[ BreakPoint.sm ]) {
         return BreakPoint.sm
-    } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.xs]) {
+    } else if (window.innerWidth >= layoutConfigs[ 0 ].breakpoints[ BreakPoint.xs ]) {
         return BreakPoint.xs
-    } else if (window.innerWidth >= layoutConfigs[0].breakpoints[BreakPoint.xxs]) {
+    } else if (window.innerWidth >= layoutConfigs[ 0 ].breakpoints[ BreakPoint.xxs ]) {
         return BreakPoint.xxs
     } else {
         return BreakPoint.md
     }
 };
 export const OrderbookPage = withTranslation('common')(() => {
-    const { pageTradePro:depthLevel } = usePageTradePro();
-    const {market,handleOnMarketChange} = usePro();
+    const {pageTradePro: {depthLevel,depth}} = usePageTradePro();
+    const {market, handleOnMarketChange} = usePro();
     const {unit} = useTheme();
     const [rowLength, setRowLength] = React.useState<number>(MARKET_ROW_LENGTH);
-    const [tradeTableLengths, setTradeTableLengths] = React.useState<{ market:number,market2:number }>({
-        market:MARKET_TRADES_LENGTH,
+    const [tradeTableLengths, setTradeTableLengths] = React.useState<{ market: number, market2: number }>({
+        market: MARKET_TRADES_LENGTH,
         market2: MARKET_TRADES_LENGTH
     });
     const [configLayout, setConfigLayout] = React.useState<Config>({
@@ -83,57 +86,61 @@ export const OrderbookPage = withTranslation('common')(() => {
 
 
     const ViewList = {
-        toolbar: React.useMemo(() => <Toolbar market={market as any} handleOnMarketChange={handleOnMarketChange}/>, [market,handleOnMarketChange]),
+        toolbar: React.useMemo(() => <Toolbar market={market as any}
+                                              handleOnMarketChange={handleOnMarketChange}/>, [market, handleOnMarketChange]),
         walletInfo: React.useMemo(() => <WalletInfo market={market as any}/>, [market]),
-        spot: React.useMemo(() => <SpotView market={market as any} />, [market]),
-        market: React.useMemo(() =><>{depthLevel
+        spot: React.useMemo(() => <>{
+            depth && <SpotView market={market as any}/>
+        }</>, [market,depth]),
+        market: React.useMemo(() => <>{depthLevel
             && <MarketView market={market as any}
                            rowLength={rowLength}
                            tableLength={tradeTableLengths.market}
                            main={TabMarketIndex.Orderbook}
                            breakpoint={configLayout.currentBreakpoint}/>}</>
-            , [market,rowLength,configLayout.currentBreakpoint,depthLevel,tradeTableLengths.market]),
-        market2: React.useMemo(() => <>{[BreakPoint.lg,BreakPoint.xlg].includes(configLayout.currentBreakpoint) && <MarketView market={market as any}
-                                                                                                                               main={TabMarketIndex.Trades}
-                                                                                                                               tableLength={tradeTableLengths.market2}
-                                                                                                                               rowLength={0}
-                                                                                                                               breakpoint={configLayout.currentBreakpoint}/>}</>
-            , [market,rowLength,configLayout.currentBreakpoint,depthLevel,tradeTableLengths.market2]),    //<MarketView market={market as any}/>, [market])
+            , [market, rowLength, configLayout.currentBreakpoint, depthLevel, tradeTableLengths.market]),
+        market2: React.useMemo(() => <>{[BreakPoint.lg, BreakPoint.xlg].includes(configLayout.currentBreakpoint)
+            && <MarketView market={market as any}
+                           main={TabMarketIndex.Trades}
+                           tableLength={tradeTableLengths.market2}
+                           rowLength={0}
+                           breakpoint={configLayout.currentBreakpoint}/>}</>
+            , [market, rowLength, configLayout.currentBreakpoint, depthLevel, tradeTableLengths.market2]),    //<MarketView market={market as any}/>, [market])
         chart: React.useMemo(() => <ChartView/>, []),
         orderTable: React.useMemo(() => <OrderTableView/>, [])
     }
-    const onRestDepthTableLength = React.useCallback((h:number) => {
-        if(h){
-                // myLog('market',h )
+    const onRestDepthTableLength = React.useCallback((h: number) => {
+        if (h) {
+            // myLog('market',h )
             const i = Math.floor(((h - 58) * unit) / 40)
-            if(i <= 40){
+            if (i <= 40) {
                 setRowLength(MARKET_ROW_LENGTH + i)
-            } else{
+            } else {
                 setRowLength(48)
             }
         }
 
 
     }, [])
-    const  onRestMarketTableLength  = React.useCallback((layout:Layout|undefined) => {
-        myLog('market',layout )
-        if(layout && layout.h) {
+    const onRestMarketTableLength = React.useCallback((layout: Layout | undefined) => {
+        myLog('market', layout)
+        if (layout && layout.h) {
             const h = layout.h
             const i = Math.floor(((h - 58) * unit) / 20)
-                // myLog('onRestMarketTableLength',layout.i)
-                setTradeTableLengths((state)=>{
-                    if(i <= 30){  //32
-                       return {
-                           ...state,
-                           [layout.i]: MARKET_TRADES_LENGTH +i
-                       }
-                    } else{
-                        return {
-                            ...state,
-                            [layout.i]: MARKET_TRADES_LENGTH + 30
-                        }
+            // myLog('onRestMarketTableLength',layout.i)
+            setTradeTableLengths((state) => {
+                if (i <= 30) {  //32
+                    return {
+                        ...state,
+                        [ layout.i ]: MARKET_TRADES_LENGTH + i
                     }
-                })
+                } else {
+                    return {
+                        ...state,
+                        [ layout.i ]: MARKET_TRADES_LENGTH + 30
+                    }
+                }
+            })
             // } else{
             //     setRowLength(40)
             // }
@@ -142,17 +149,17 @@ export const OrderbookPage = withTranslation('common')(() => {
 
     }, [])
     const onBreakpointChange = React.useCallback((breakpoint: BreakPoint) => {
-        setConfigLayout((state:Config) => {
+        setConfigLayout((state: Config) => {
             return {
                 ...state,
                 currentBreakpoint: breakpoint
             }
         })
-        const layout = configLayout.layouts[breakpoint]
-        if(layout){
+        const layout = configLayout.layouts[ breakpoint ]
+        if (layout) {
             onRestDepthTableLength(layout.find(i => i.i === 'market')?.h as number)
             const lys = layout.filter(i => /market/.test(i.i));
-            lys.forEach((layout)=>{
+            lys.forEach((layout) => {
                 onRestMarketTableLength(layout)
             })
 
@@ -164,12 +171,12 @@ export const OrderbookPage = withTranslation('common')(() => {
         // setConfigLayout
     }, [configLayout]);
 
-    const  onResize  = React.useCallback((layout, oldLayoutItem, layoutItem) => {
-        if(layoutItem.i === 'market'){
+    const onResize = React.useCallback((layout, oldLayoutItem, layoutItem) => {
+        if (layoutItem.i === 'market') {
             onRestDepthTableLength(layoutItem.h)
             onRestMarketTableLength(layoutItem)
         }
-        if(layoutItem.i === 'market2'){
+        if (layoutItem.i === 'market2') {
             onRestMarketTableLength(layoutItem)
         }
 
@@ -177,31 +184,32 @@ export const OrderbookPage = withTranslation('common')(() => {
     }, [setRowLength])
 
 
-    return <Box display={'block'} margin={'0 auto'} width={'100%'} position={'relative'} >
-                {market  ?  <ResponsiveGridLayout
-                    className="layout"
-                    {...{...configLayout}}
-                    onBreakpointChange={onBreakpointChange}
-                    onResizeStop={onResize}
-                    resizeHandle={<IconButton size={'medium'} style={{position: 'absolute', zIndex: 78, right: 0, bottom: 0}} className={'resize-holder'}>
-                        <ResizeIcon style={{marginRight:`-${unit}px`,marginBottom:`-${unit}px`}}/></IconButton>}
-                    draggableHandle={'.drag-holder'}
-                    breakpoints={layoutConfigs[ 0 ].breakpoints}
-                    cols={layoutConfigs[ 0 ].cols}
-                    rowHeight={unit / 2}
-                    margin={[unit / 2, unit / 2]}>
-                    {configLayout.layouts[ configLayout.currentBreakpoint ].map((layout) => {
-                        return <BoxStyle key={layout.i} overflow={'hidden'} className={layout.i}
-                                         data-grid={{...layout}}
-                                         component={'section'} position={'relative'}>
-                            {ViewList[ layout.i ]}
-                            <IconButton size={'medium'} style={{position: 'absolute', zIndex: 78, right: 0, top: 0}}
-                                        className={'drag-holder'}><DragIcon style={{marginRight:`-${unit}px`,marginTop:''}}/></IconButton>
-                        </BoxStyle>
-                    })}
+    return <Box display={'block'} margin={'0 auto'} width={'100%'} position={'relative'}>
+        {market ? <ResponsiveGridLayout
+            className="layout"
+            {...{...configLayout}}
+            onBreakpointChange={onBreakpointChange}
+            onResizeStop={onResize}
+            resizeHandle={<IconButton size={'medium'} style={{position: 'absolute', zIndex: 78, right: 0, bottom: 0}}
+                                      className={'resize-holder'}>
+                <ResizeIcon style={{marginRight: `-${unit}px`, marginBottom: `-${unit}px`}}/></IconButton>}
+            draggableHandle={'.drag-holder'}
+            breakpoints={layoutConfigs[ 0 ].breakpoints}
+            cols={layoutConfigs[ 0 ].cols}
+            rowHeight={unit / 2}
+            margin={[unit / 2, unit / 2]}>
+            {configLayout.layouts[ configLayout.currentBreakpoint ].map((layout) => {
+                return <BoxStyle key={layout.i} overflow={'hidden'} className={layout.i}
+                                 data-grid={{...layout}}
+                                 component={'section'} position={'relative'}>
+                    {ViewList[ layout.i ]}
+                    <IconButton size={'medium'} style={{position: 'absolute', zIndex: 78, right: 0, top: 0}}
+                                className={'drag-holder'}><DragIcon style={{marginRight: `-${unit}px`, marginTop: ''}}/></IconButton>
+                </BoxStyle>
+            })}
 
-                </ResponsiveGridLayout> : <>'loading'</>}
-            </Box>
+        </ResponsiveGridLayout> : <>'loading'</>}
+    </Box>
 
 })
 
