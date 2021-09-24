@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { PageTradePro, PageTradeProStatus } from './interface';
 import { TradeProType } from '@loopring-web/component-lib';
+import { RequireOne } from '@loopring-web/common-resources';
 
 const initState = {
-    market: undefined,
+    market: '' as any,
     tradePair: undefined,
     request: undefined,
     calcTradeParams: undefined,
@@ -27,7 +28,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
         resetOrderPge(state) {
             state.pageTradePro = initState
         },
-        updatePageTradePro(state, action: PayloadAction<Partial<PageTradePro<{ [ key: string ]: any }>>>) {
+        updatePageTradePro(state, action: PayloadAction<RequireOne<PageTradePro<{ [ key: string ]: any }>, 'market'>>) {
             const {
                 market,
                 depth,

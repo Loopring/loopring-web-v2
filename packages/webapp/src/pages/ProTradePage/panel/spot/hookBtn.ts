@@ -11,13 +11,13 @@ export const useSubmitBtn = ({
                                  submitCallback,
                                  ...rest
                              }: {
-    [ key: string ]: any,
+    // [ key: string ]: any,
     submitCallback: (...props: any[]) => any,
     availableTradeCheck: (...props: any[]) => { tradeBtnStatus: TradeBtnStatus, label: string },
     isLoading: boolean
 }) => {
     // let {calcTradeParams} = usePageTradePro();
-    let {account, status: accountStatus} = useAccount();
+    let {account} = useAccount();
 
     const btnStatus = React.useMemo((): string | undefined => {
         if (account.readyState === AccountStatus.ACTIVATED) {
@@ -61,7 +61,6 @@ export const useSubmitBtn = ({
     const onBtnClick = React.useCallback((props: any) => {
         accountStaticCallBack(btnClickCallbackArray, [props])
     }, [btnClickCallbackArray])
-
     return {
         btnStatus,
         onBtnClick,

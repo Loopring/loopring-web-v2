@@ -19,6 +19,7 @@ import * as sdk from 'loopring-sdk';
 import { useWalletLayer2 } from 'stores/walletLayer2';
 
 import { useProSocket, useSocketProService } from './proService';
+import store from '../../stores';
 
 
 export const usePro = <C extends { [ key: string ]: any }>():{
@@ -28,14 +29,14 @@ export const usePro = <C extends { [ key: string ]: any }>():{
 } =>{
     //High: No not Move!!!!!!
     let {realMarket} = usePairMatch('./trading/pro');
-    realMarket = 'ETH-USDT'
+    // realMarket = 'ETH-USDT'
     
     //basic info from redux
     const {
-        pageTradePro,
+        // pageTradePro,
         updatePageTradePro,
-        __SUBMIT_LOCK_TIMER__,
-        __TOAST_AUTO_CLOSE_TIMER__
+        // __SUBMIT_LOCK_TIMER__,
+        // __TOAST_AUTO_CLOSE_TIMER__
     } = usePageTradePro();
     const [market, setMarket] = React.useState<MarketType>(realMarket as MarketType);
     const {getAmount} = useAmount();
@@ -60,9 +61,11 @@ export const usePro = <C extends { [ key: string ]: any }>():{
         userInfoUpdateCallback})
 
 
-    const updateWalletLayer2Balance = React.useCallback((_tradeCalcProData?)=>{
+    const updateWalletLayer2Balance = React.useCallback((_tradeCalcProData?,_market?:MarketType)=>{
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         // @ts-ignore
         let tradeCalcProData = _tradeCalcProData?_tradeCalcProData: pageTradePro.tradeCalcProData;
+        let market:MarketType = _market ?_market: pageTradePro.market;
         // let walletMap: WalletMap<any> | undefined = tradeCalcProData?.walletMap;
         let walletMap: WalletMap<any> | undefined;
         if (account.readyState === AccountStatus.ACTIVATED && walletLayer2Status === SagaStatus.UNSET) {
@@ -79,7 +82,7 @@ export const usePro = <C extends { [ key: string ]: any }>():{
         }
         updatePageTradePro({market, tradeCalcProData})
 
-    },[market,pageTradePro,account,walletLayer2Status])
+    },[market,account,walletLayer2Status])
 
 
 
@@ -128,6 +131,7 @@ export const usePro = <C extends { [ key: string ]: any }>():{
 
 
     const resetTradeCalcData = React.useCallback((_tradeData, _market) => {
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         if (coinMap && tokenMap && marketMap && marketArray ) {
             const {tradePair} = marketInitCheck(_market);
             // @ts-ignore
@@ -141,23 +145,23 @@ export const usePro = <C extends { [ key: string ]: any }>():{
                 ...tradeCalcProData,
                 coinBase: coinA,
                 coinQuote: coinB,
-                StoB: undefined,
-                BtoS: undefined,
-                fee: undefined,
+                // StoB: undefined,
+                // BtoS: undefined,
+                // fee: undefined,
                 coinInfoMap: marketCoins?.reduce((prev: any, item: string | number) => {
                     return {...prev, [ item ]: coinMap ? coinMap[ item ] : {}}
                 }, {} as CoinMap<C>),
             }
 
             if (!Object.keys(tradeCalcProData.walletMap ?? {}).length){
-                updateWalletLayer2Balance(tradeCalcProData)
+                updateWalletLayer2Balance(tradeCalcProData,market)
             } else{
                 updatePageTradePro({market, tradeCalcProData})
             }
 
 
         }
-    }, [coinMap, tokenMap, marketMap, marketArray,  setMarket])
+    }, [coinMap, tokenMap, marketMap, marketArray, setMarket])
 
     //init market
 

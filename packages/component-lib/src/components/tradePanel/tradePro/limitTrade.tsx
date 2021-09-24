@@ -60,7 +60,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
         btnLabel,
         getDisabled,
         _handleChangeIndex,
-        inputError,
+        // inputError,
         tradeCalcProData,
         tradeBtnBaseStatus,
         handleCountChange,
@@ -172,13 +172,14 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
         </Grid>
         </Box>
         <Box paddingX={2} paddingTop={2}>
+            {/*{getDisabled()} {tradeBtnBaseStatus}*/}
             <ButtonStyle variant={'contained'} size={'medium'}
                          color={tradeType === TradeProType.sell ?'success':'error'}
                          style={tradeLimitBtnStyle} onClick={() => {
                 handleSubmitEvent(tradeData)
             }}
                          loading={!getDisabled() && tradeBtnBaseStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-                         disabled={getDisabled() || tradeBtnBaseStatus === TradeBtnStatus.DISABLED || tradeBtnBaseStatus === TradeBtnStatus.LOADING || inputError.error}
+                         disabled={getDisabled() || tradeBtnBaseStatus === TradeBtnStatus.DISABLED || tradeBtnBaseStatus === TradeBtnStatus.LOADING }
                          fullWidth={true}>{btnLabel}
             </ButtonStyle>
         </Box>
