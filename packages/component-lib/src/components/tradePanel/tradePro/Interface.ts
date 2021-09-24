@@ -36,6 +36,7 @@ export type TradeMarketInfoProps<T,TCD extends TradeCalcProData<I>,I> = {
 
 export type TradeProBaseEventProps<X,T, I> = {
     disabled?: boolean,
+    tradeType:  TradeProType,
     handleChangeIndex?: (index: TradeProType) => X,
     // onSwapClick: (tradeData: SwapTradeData<T>) => void | any,
 } & Partial<Pick<InputButtonProps<T, I, unknown>, 'handleError'>>

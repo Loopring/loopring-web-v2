@@ -36,7 +36,7 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         tradeMarketI18nKey,
         // tradeCalcProData,
         tradeMarketBtnStyle,
-
+        tradeType,
         tradeMarketBtnStatus,
         // handleCountChange,
         // tokenBaseProps,
@@ -57,7 +57,6 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         getDisabled,
         _handleChangeIndex,
         inputError,
-        tabIndex,
         tradeCalcProData,
         tradeBtnBaseStatus,
         propsBase,
@@ -69,6 +68,7 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         type: 'market',
         ...props as any,
         tradeData,
+        tradeType,
         onChangeEvent,
         i18nKey: tradeMarketI18nKey ? tradeMarketI18nKey : 'labelProMarketBtn',
         tradeBtnBaseStatus: tradeMarketBtnStatus
@@ -99,7 +99,7 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         <Box className={'tool-bar'}  paddingX={2} display={'flex'} alignItems={'center'}
              justifyContent={'center'}>
             <Box component={'header'} width={'100%'}>
-                <TabsStyle className={'trade-tabs pro-tabs'} variant={'fullWidth'} value={tabIndex}
+                <TabsStyle className={'trade-tabs pro-tabs'} variant={'fullWidth'} value={tradeType}
                       onChange={(_e, index) => _handleChangeIndex(index)} >
                     <Tab className={'trade-tab-buy'} value={TradeProType.buy} label={t('labelProBuy')}/>
                     <Tab className={'trade-tab-sell'}  value={TradeProType.sell} label={t('labelProSell')}/>
@@ -213,7 +213,7 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         </Box>
         <Box paddingTop={2} paddingX={2}>
             <ButtonStyle variant={'contained'} size={'medium'}
-                         color={tabIndex === TradeProType.sell ?'error' :'success'}
+                         color={tradeType === TradeProType.sell ?'error' :'success'}
                          style={{...tradeMarketBtnStyle}}
                          onClick={() => {
                 handleSubmitEvent(tradeData)
