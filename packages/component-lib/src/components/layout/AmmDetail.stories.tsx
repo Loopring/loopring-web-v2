@@ -12,7 +12,6 @@ import {
     Currency,
     EmptyValueTag,
     FloatTag,
-    getThousandFormattedNumbers,
     globalCss,
     headerMenuData,
     headerToolBarData,

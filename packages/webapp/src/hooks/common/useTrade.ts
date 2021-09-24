@@ -204,10 +204,10 @@ export function makeLimitReq({
     if (amountBase !== undefined) {
         baseVolShow = amountBase
         baseVol = sdk.toBig(baseVolShow).times('1e' + baseTokenInfo.decimals)
-        quoteVolShow = sdk.toBig(amountBase).times(sdk.toBig(price)).toString()
+        quoteVolShow = sdk.toBig(amountBase).times(sdk.toBig(price)).toFixed(quoteTokenInfo.precision)
         quoteVol = sdk.toBig(amountBase).times(sdk.toBig(price)).times('1e' + quoteTokenInfo.decimals)
     } else if (amountQuote !== undefined) {
-        baseVolShow = sdk.toBig(amountQuote).div(sdk.toBig(price)).toString()
+        baseVolShow = sdk.toBig(amountQuote).div(sdk.toBig(price)).toFixed(baseTokenInfo.precision)
         baseVol = sdk.toBig(amountQuote).div(sdk.toBig(price)).times('1e' + baseTokenInfo.decimals)
         quoteVolShow = amountQuote
         quoteVol = sdk.toBig(amountQuote).times('1e' + quoteTokenInfo.decimals)
@@ -350,7 +350,7 @@ export function usePlaceOrder() {
 
         myLog('makeMarketReqInHook tokenAmtMap:', tokenAmtMap)
 
-        if (tokenAmtMap && exchangeInfo) {
+        if (exchangeInfo) {
             const fullParams: ReqParams = {
                 ...params,
                 exchangeAddress: exchangeInfo.exchangeAddress,
@@ -373,7 +373,7 @@ export function usePlaceOrder() {
     // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
     const makeLimitReqInHook = React.useCallback((params: ReqParams) => {
         const {tokenAmtMap,feeBips} = getTokenAmtMap(params)
-        if (exchangeInfo && tokenAmtMap) {
+        if (exchangeInfo) {
             const fullParams: ReqParams = {
                 ...params,
                 exchangeAddress: exchangeInfo.exchangeAddress,

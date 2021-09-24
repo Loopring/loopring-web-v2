@@ -15,8 +15,10 @@ const CheckboxStyled = styled(Box)`
 
 export  const OrderTableView = withTranslation('common')(<C extends { [ key: string ]: any }>({
     t,
+    market,
 }:{
     t: TFunction<"translation">,
+    market?: string,
 })=>{
     const { 
         getOrderDetail, 
@@ -37,6 +39,8 @@ export  const OrderTableView = withTranslation('common')(<C extends { [ key: str
         clearRawData()
     }, [clearRawData])
 
+    const filteredData = hideOtherPairs ? rawData.filter(o => o.market === market) : rawData
+
     React.useEffect(() => {
         const getData = async () => {
             const data = await getOrderList({
@@ -47,6 +51,11 @@ export  const OrderTableView = withTranslation('common')(<C extends { [ key: str
         }
         getData()
     }, [getOrderList, setOrderOriginalData, tabValue])
+
+    const handleCheckBoxChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        setHideOtherPairs(event.target.checked)
+        
+    }, [])
 
     return <>
         <Box padding={2} paddingTop={0} paddingBottom={0} style={{ position: 'relative' }}>
@@ -61,17 +70,15 @@ export  const OrderTableView = withTranslation('common')(<C extends { [ key: str
             <CheckboxStyled>
                 <FormControlLabel style={{marginRight: 0}}
                     control={<Checkbox checked={hideOtherPairs} checkedIcon={<CheckedIcon/>}
-                                        icon={<CheckBoxIcon/>}
-                                        color="default" onChange={(event) => {
-                        setHideOtherPairs(event.target.checked)
-                    }}/>} label={t('labelTradeProHideOtherPairs')}
+                            icon={<CheckBoxIcon/>}
+                            color="default" onChange={handleCheckBoxChange}/>} label={t('labelTradeProHideOtherPairs')}
                 />
             </CheckboxStyled>
         </Box>
         <Divider />
         <OrderHistoryTable
             {...{
-                rawData,
+                rawData: filteredData,
                 getOrderList,
                 getOrderDetail,
                 orderDetailList,
