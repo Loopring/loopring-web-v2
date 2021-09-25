@@ -103,7 +103,8 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
     return <> <IWrap size={size} component={'div'} ref={ref} >
         <Grid container component={'div'} className={'label-wrap'} justifyContent={'space-between'}
               paddingBottom={1 / 2}>
-            <Grid item xs={6}><Typography fontSize={'inherit'} color={'inherit'} className={'main-label'}>{label}</Typography></Grid>
+            <Grid item xs={6}><Typography fontSize={'inherit'}
+                                          color={'var(--color-text-third)'} className={'main-label'}>{label}</Typography></Grid>
             <Grid item xs={6} className={'sub-label'}>{subLabel && belong ?
                 <Typography fontSize={'inherit'} color={'inherit'} className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>

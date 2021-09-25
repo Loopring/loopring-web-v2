@@ -29,8 +29,9 @@ export const IWrap = styled(Box)<BoxProps & {size:'middle'|'small'}>`
 
     .max-allow {
       text-decoration: underline dotted;
+      color: var(--color-secoundary);
       &:hover {
-        color: var(--color-secoundary);
+        color: var(--color-primary);
       }
     }
 

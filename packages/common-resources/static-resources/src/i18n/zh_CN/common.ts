@@ -9,6 +9,7 @@ export default {
     tokenExchange: '转换',
     tokenNotEnough: '{{belong}}余额不足无法交易',
     tokenSearchCoin: '搜索交易币种',
+    swapTitle:'兑换',
     swapTolerance: '滑点范围',
     swapPriceImpact: '价格影响',
     swapMinReceive: '最少买入',
