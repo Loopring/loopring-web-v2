@@ -51,6 +51,8 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps &
       align-items: stretch;
       .MuiToolbar-root{
         align-items: flex-end;
+        display: flex;
+        justify-content: space-between;
       }
     }
  

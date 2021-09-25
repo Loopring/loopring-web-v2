@@ -222,7 +222,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                     <ExchangeIcon fontSize={'large'} htmlColor={'var(--color-text-third)'} />
                 </SvgStyled>
             </Box>
-            <Box borderRadius={1} style={{ background: 'var(--color-pop-bg)' }}
+            <Box borderRadius={1} style={{ background: 'var(--color-table-header-bg)' }}
                 alignItems={'stretch'} display={'flex'}
                 paddingY={1} paddingX={2} flexDirection={'column'}>
                 <Typography variant={'body1'} color={'textSecondary'}
