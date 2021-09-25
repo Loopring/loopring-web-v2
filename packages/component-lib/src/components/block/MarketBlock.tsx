@@ -1,11 +1,11 @@
 import { WithTranslation } from 'react-i18next';
-import { CoinKey, EmptyValueTag, PriceTag, getValuePrecisionThousand, myLog, } from '@loopring-web/common-resources';
+import { CoinKey, EmptyValueTag, PriceTag, getValuePrecisionThousand, } from '@loopring-web/common-resources';
 import { Box, BoxProps, Grid } from '@mui/material';
 import { Typography } from '@mui/material';
 import styled from '@emotion/styled';
 import React from 'react';
 import { floatTag, MarketBlockProps, useSettings } from './../../index';
-import { ScaleAreaChart } from '../charts/scaleAreaChart'
+import { ScaleAreaChart } from '../charts'
 import { ChartType } from '../charts'
 
 type StyledProps = {

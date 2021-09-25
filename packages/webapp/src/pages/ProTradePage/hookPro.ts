@@ -29,7 +29,7 @@ export const usePro = <C extends { [ key: string ]: any }>():{
 } =>{
     //High: No not Move!!!!!!
     let {realMarket} = usePairMatch('./trading/pro');
-    realMarket = 'ETH-USDT'
+    // realMarket = 'ETH-USDT'              
     
     //basic info from redux
     const {
@@ -114,14 +114,14 @@ export const usePro = <C extends { [ key: string ]: any }>():{
     const precisionList = React.useCallback((market:MarketType) => {
         const precisionForPrice = marketMap[ market ].precisionForPrice;
         const orderbookAggLevels = marketMap[ market ].orderbookAggLevels;
-        let list: { value: number,label:string }[] = [];
+        let precisionLevels: { value: number,label:string }[] = [];
         for (let i = 0; i < orderbookAggLevels; i++) {
             if(PrecisionTree[ precisionForPrice - i ]){
-                list.push({value: precisionForPrice - i,label:PrecisionTree[ precisionForPrice - i ].toString()})
+                precisionLevels.push({value: precisionForPrice - i,label:PrecisionTree[ precisionForPrice - i ]})
             }
 
         }
-        updatePageTradePro({market, precisionLevels: list, depthLevel:precisionForPrice})
+        updatePageTradePro({market, precisionLevels: precisionLevels, depthLevel:precisionForPrice})
 
 
 
