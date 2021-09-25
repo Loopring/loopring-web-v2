@@ -106,7 +106,7 @@ export const OrderbookPage = withTranslation('common')(() => {
                            rowLength={0}
                            breakpoint={configLayout.currentBreakpoint}/>}</>
             , [market, rowLength, configLayout.currentBreakpoint, depthLevel, tradeTableLengths.market2]),    //<MarketView market={market as any}/>, [market])
-        chart: React.useMemo(() => <ChartView market={market} />, []),
+        chart: React.useMemo(() => <ChartView market={market} breakpoint={configLayout.currentBreakpoint} />, [market]),
         orderTable: React.useMemo(() => <OrderTableView market={market} />, [market])
     }
     const onRestDepthTableLength = React.useCallback((h: number) => {

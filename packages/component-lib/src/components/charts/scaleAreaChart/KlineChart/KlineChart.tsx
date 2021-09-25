@@ -38,7 +38,7 @@ import { macd, } from "@react-financial-charts/indicators";
 
 enum CandleStickFill {
     up = '#00BBA8',
-    down = '#fb3838'
+    down = '#FF5677'
 }
 
 export interface IOHLCData {
