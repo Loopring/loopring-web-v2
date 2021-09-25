@@ -154,7 +154,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                     tokenBuyProps,
                     handleError]),
                 toolBarItem: React.useMemo(() => <>
-                    <Typography height={'100%'} display={'inline-flex'} variant={'h5'} alignItems={'center'} alignSelf={'self-start'}>{rest.t('swapTitle')}</Typography>
+                    <Typography marginTop={1} height={'100%'} display={'inline-flex'} variant={'h5'} alignItems={'center'} alignSelf={'self-start'}>{rest.t('swapTitle')}</Typography>
                     <Box alignSelf={'flex-end'} display={'flex'}>
                         <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef}/>
                         <Typography display={'inline-block'} marginLeft={2}>
