@@ -51,7 +51,7 @@ export const usePro = <C extends { [ key: string ]: any }>():{
         //TODO
     },[])
     const userInfoUpdateCallback = React.useCallback(()=>{
-        if(accountStatus === SagaStatus.UNSET && account.readyState === 'ACTIVATED'){
+        if(accountStatus === SagaStatus.UNSET ){
             updateWalletLayer2Balance();
             // TODO:
             // updateOrderTable();
