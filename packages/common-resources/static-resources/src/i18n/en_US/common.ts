@@ -331,6 +331,17 @@ export default {
     labelProToolbar24hBaseVol: '24h Volume({{symbol}})',
     labelProToolbar24hQuoteVol: '24h Volume({{symbol}})',
 
+    labelProChartTitle: 'Chart',
+    labelProTimeDefault: 'Time(1m)',
+    labelProTime1m: '1m',
+    labelProTime5m: '5m',
+    labelProTime15m: '15m',
+    labelProTime1H: '1H',
+    labelProTime4H: '4H',
+    labelProTime1D: '1D',
+    labelProTime1W: '1W',
+    labelProTime1M: '1M',
+
     labelErrorPricePrecisionLimit:'{{symbol}} price only {{decimal}} decimals allowed',
     labelDepthPrice: 'Price({{symbol}})',
     labelDepthAmount: 'Amount({{symbol}})',

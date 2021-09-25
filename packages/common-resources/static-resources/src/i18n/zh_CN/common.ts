@@ -333,6 +333,17 @@ export default {
     labelDepthAmount: '数量({{symbol}})',
     labelDepthTotal: '总量',
 
+    labelProChartTitle: '图表',
+    labelProTimeDefault: '分时(1分钟)',
+    labelProTime1m: '1分钟',
+    labelProTime5m: '5分钟',
+    labelProTime15m: '15分钟',
+    labelProTime1H: '1小时',
+    labelProTime4H: '4小时',
+    labelProTime1D: '1天',
+    labelProTime1W: '1周',
+    labelProTime1M: '1月',
+
 
     labelSwapCancelled: '交易被取消',
     labelSuccessfully: '成功',

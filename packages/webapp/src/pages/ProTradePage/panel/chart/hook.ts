@@ -49,7 +49,7 @@ export function useKlineChart(market: string | undefined) {
     
                 })
     
-                setCandlestickViewData(candlestickViewData)
+                setCandlestickViewData(candlestickViewData.reverse())
 
             } else {
                 throw Error('wrong decimals')
@@ -61,10 +61,11 @@ export function useKlineChart(market: string | undefined) {
 
     React.useEffect(() => {
         genCandlestickData(market)
-    }, [market])
+    }, [market, genCandlestickData])
 
     return {
         candlestickViewData,
         market,
+        genCandlestickData,
     }
 }
