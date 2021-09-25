@@ -17,7 +17,7 @@ import { marketInitCheck } from '../SwapPage/help';
 import { makeWalletLayer2 } from 'hooks/help';
 import * as sdk from 'loopring-sdk';
 import { useWalletLayer2 } from 'stores/walletLayer2';
-
+import { useOrderList } from './panel/orderTable/hookTable'
 import { useProSocket, useSocketProService } from './proService';
 import store from '../../stores';
 
@@ -43,6 +43,7 @@ export const usePro = <C extends { [ key: string ]: any }>():{
     const {getAmount} = useAmount();
     const {account, status: accountStatus} = useAccount();
     const {status: walletLayer2Status} = useWalletLayer2();
+    const { getOrderList } = useOrderList()
     // const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
 
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap()
@@ -53,7 +54,6 @@ export const usePro = <C extends { [ key: string ]: any }>():{
     React.useEffect(() => {
         myLog('account.status',accountStatus,account.readyState)
         if (account.readyState!== AccountStatus.ACTIVATED && accountStatus === SagaStatus.UNSET) {
-
             userInfoUpdateCallback()
         }
     }, [accountStatus])
@@ -83,9 +83,8 @@ export const usePro = <C extends { [ key: string ]: any }>():{
 
     const userInfoUpdateCallback = React.useCallback(()=>{
         updateWalletLayer2Balance();
-        // TODO:
-        // updateOrderTable();
-    },[updateWalletLayer2Balance])
+        getOrderList({})
+    },[updateWalletLayer2Balance,getOrderList])
     useSocketProService({
         // depDataCallback,
             userInfoUpdateCallback})
