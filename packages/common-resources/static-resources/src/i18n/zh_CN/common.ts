@@ -332,8 +332,7 @@ export default {
     labelDepthPrice: '价格({{symbol}})',
     labelDepthAmount: '数量({{symbol}})',
     labelDepthTotal: '总量',
-    labelTradeProPrice: '数量({{symbol}})',
-    labelTradeProAmount: '总量',
+
 
     labelSwapCancelled: '交易被取消',
     labelSuccessfully: '成功',

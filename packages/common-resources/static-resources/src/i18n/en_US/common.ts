@@ -335,8 +335,7 @@ export default {
     labelDepthPrice: 'Price({{symbol}})',
     labelDepthAmount: 'Amount({{symbol}})',
     labelDepthTotal: 'Total',
-    labelTradeProPrice: 'Price({{symbol}})',
-    labelTradeProAmount: 'Amount({{symbol}})',
+
 
     labelSwapCancelled: 'Swap is cancelled.',
     labelSuccessfully: 'Successfully',
