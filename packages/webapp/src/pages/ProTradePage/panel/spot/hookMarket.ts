@@ -14,6 +14,7 @@ import { useSubmitBtn } from './hookBtn';
 import { VolToNumberWithPrecision } from 'utils/formatter_tool';
 import { getPriceImpactInfo, PriceLevel, usePlaceOrder } from 'hooks/common/useTrade';
 import store from 'stores';
+import * as _ from 'lodash'
 
 export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType): {
     [ key: string ]: any;
@@ -154,8 +155,9 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             slippage,
         })
 
-        myLog('depth:',pageTradePro.depth)
-        myLog('marketRequest:',marketRequest, calcTradeParams)
+        // myLog('depth:',pageTradePro.depth)
+        // myLog('marketRequest:',marketRequest, calcTradeParams)
+
         const priceImpactObj =  getPriceImpactInfo(calcTradeParams)
         updatePageTradePro({
             market,
@@ -256,11 +258,13 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
                 const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
 
-                request.storageId = storageId.orderId
+                const requestClone = _.cloneDeep(request)
 
-                myLog(request)
+                requestClone.storageId = storageId.orderId
 
-                const response = await LoopringAPI.userAPI.submitOrder(request, account.eddsaKey.sk, account.apiKey)
+                myLog(requestClone)
+
+                const response = await LoopringAPI.userAPI.submitOrder(requestClone, account.eddsaKey.sk, account.apiKey)
 
                 myLog(response)
 

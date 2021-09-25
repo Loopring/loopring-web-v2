@@ -134,12 +134,12 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
     
                 const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
 
-                const limitReq = _.cloneDeep(request)
-                limitReq.storageId = storageId.orderId
+                const requestClone = _.cloneDeep(request)
+                requestClone.storageId = storageId.orderId
 
-                myLog(limitReq)
+                myLog(requestClone)
 
-                const response = await LoopringAPI.userAPI.submitOrder(limitReq, account.eddsaKey.sk, account.apiKey)
+                const response = await LoopringAPI.userAPI.submitOrder(requestClone, account.eddsaKey.sk, account.apiKey)
 
                 myLog(response)
 
