@@ -47,21 +47,16 @@ export const usePro = <C extends { [ key: string ]: any }>():{
 
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap()
     useProSocket()
-    const depDataCallback = React.useCallback(()=>{
-        //TODO
-    },[])
-    const userInfoUpdateCallback = React.useCallback(()=>{
-        if(accountStatus === SagaStatus.UNSET ){
-            updateWalletLayer2Balance();
-            // TODO:
-            // updateOrderTable();
+    // const depDataCallback = React.useCallback(()=>{
+    //     //TODO
+    // },[])
+    React.useEffect(() => {
+        myLog('account.status',accountStatus,account.readyState)
+        if (account.readyState!== AccountStatus.ACTIVATED && accountStatus === SagaStatus.UNSET) {
+
+            userInfoUpdateCallback()
         }
-
-    },[accountStatus])
-    useSocketProService({depDataCallback,
-        userInfoUpdateCallback})
-
-
+    }, [accountStatus])
     const updateWalletLayer2Balance = React.useCallback((_tradeCalcProData?,_market?:MarketType)=>{
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         // @ts-ignore
@@ -84,6 +79,17 @@ export const usePro = <C extends { [ key: string ]: any }>():{
         updatePageTradePro({market, tradeCalcProData})
 
     },[market,account,walletLayer2Status])
+
+
+    const userInfoUpdateCallback = React.useCallback(()=>{
+        updateWalletLayer2Balance();
+        // TODO:
+        // updateOrderTable();
+    },[updateWalletLayer2Balance])
+    useSocketProService({
+        // depDataCallback,
+            userInfoUpdateCallback})
+
 
 
 
