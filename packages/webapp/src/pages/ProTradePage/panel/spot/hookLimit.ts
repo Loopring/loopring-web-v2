@@ -10,8 +10,8 @@ import { useTokenMap } from 'stores/token';
 import { useTranslation } from 'react-i18next';
 import store from 'stores';
 import * as sdk from 'loopring-sdk';
-import { SubmitOrderRequestV3 } from 'loopring-sdk';
-
+import { LoopringAPI } from 'api_wrapper';
+import * as _ from 'lodash'
 
 export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType): {
     [ key: string ]: any;
@@ -28,7 +28,6 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
     const {marketMap} = useTokenMap();
     const {t} = useTranslation('common');
     const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
-
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
@@ -114,16 +113,38 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
     }, [pageTradePro, marketPrecision, market])
 
     const limitSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
+        myLog('limitSubmit:', event, isAgree)
+        isAgree = true
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-        const {calcTradeParams, request, tradeCalcProData} = pageTradePro;
+        const {limitCalcTradeParams, request, tradeCalcProData} = pageTradePro;
         setAlertOpen(false)
-        if (isAgree) {
+        if (isAgree && LoopringAPI.userAPI && request) {
             setIsLimitLoading(true)
             try {
 
                 //TODO maker order
+                myLog('try to submit order', limitCalcTradeParams, tradeCalcProData)
+
+                const account = store.getState().account
+
+                const req: sdk.GetNextStorageIdRequest = {
+                    accountId: account.accountId,
+                    sellTokenId: request.sellToken.tokenId as number
+                }
+    
+                const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
+
+                const limitReq = _.cloneDeep(request)
+                limitReq.storageId = storageId.orderId
+
+                myLog(limitReq)
+
+                const response = await LoopringAPI.userAPI.submitOrder(limitReq, account.eddsaKey.sk, account.apiKey)
+
+                myLog(response)
 
                 walletLayer2Service.sendUserUpdate()
+
                 // if (resp.orderDetail?.status !== undefined) {
                 //     switch (resp.orderDetail?.status) {
                 //         case sdk.OrderStatus.cancelled:
@@ -136,6 +157,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                 //             setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                 //     }
                 // }
+
                 await sdk.sleep(__SUBMIT_LOCK_TIMER__)
                 setIsLimitLoading(false)
             } catch (reason) {
@@ -143,10 +165,10 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                 setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
 
             }
+            setIsLimitLoading(false)
         }
-
-        return
     }, [])
+
     const {makeLimitReqInHook} = usePlaceOrder()
     const onChangeLimitEvent = React.useCallback((tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType) => {
         // myLog(`onChangeLimitEvent tradeData:`, tradeData, 'formType', formType)
@@ -168,7 +190,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                 amountQuote = amountBase !== undefined ? undefined : tradeData.quote.tradeValue !== undefined ? tradeData.quote.tradeValue : undefined
             }
 
-            myLog(`tradeData price:${tradeData.price.tradeValue}`, tradeData.type, amountBase, amountQuote)
+            // myLog(`tradeData price:${tradeData.price.tradeValue}`, tradeData.type, amountBase, amountQuote)
 
             const {limitRequest, calcTradeParams} = makeLimitReqInHook({
                 isBuy: tradeData.type === 'buy',
@@ -184,7 +206,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
             //TODO: fee update
             updatePageTradePro({
                 market,
-                request: limitRequest as SubmitOrderRequestV3,
+                request: limitRequest as sdk.SubmitOrderRequestV3,
                 limitCalcTradeParams: calcTradeParams,
                 tradeCalcProData: {
                     ...pageTradePro.tradeCalcProData,

@@ -123,7 +123,6 @@ export const OrderbookPage = withTranslation('common')(() => {
 
     }, [])
     const onRestMarketTableLength = React.useCallback((layout: Layout | undefined) => {
-        myLog('market', layout)
         if (layout && layout.h) {
             const h = layout.h
             const i = Math.floor(((h - 58) * unit) / 20)
