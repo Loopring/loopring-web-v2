@@ -17,6 +17,7 @@ import { marketInitCheck } from '../SwapPage/help';
 import { makeWalletLayer2 } from 'hooks/help';
 import * as sdk from 'loopring-sdk';
 import { useWalletLayer2 } from 'stores/walletLayer2';
+import { useOrderList } from './panel/orderTable/hookTable'
 
 import { useProSocket, useSocketProService } from './proService';
 import store from '../../stores';
@@ -43,6 +44,7 @@ export const usePro = <C extends { [ key: string ]: any }>():{
     const {getAmount} = useAmount();
     const {account, status: accountStatus} = useAccount();
     const {status: walletLayer2Status} = useWalletLayer2();
+    const { getOrderList } = useOrderList()
     // const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
 
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap()
@@ -55,9 +57,10 @@ export const usePro = <C extends { [ key: string ]: any }>():{
             updateWalletLayer2Balance();
             // TODO:
             // updateOrderTable();
+            getOrderList({})
         }
 
-    },[accountStatus])
+    },[accountStatus, getOrderList])
     useSocketProService({depDataCallback,
         userInfoUpdateCallback})
 
