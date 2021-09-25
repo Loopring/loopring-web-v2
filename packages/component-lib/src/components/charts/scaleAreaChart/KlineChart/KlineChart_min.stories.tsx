@@ -4,7 +4,7 @@ import { ScaleAreaChart } from '../ScaleAreaChart'
 import { ChartType } from '../../index';
 import { withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
-import { testKlineData } from './data'
+import { testKlineData } from './data_min'
 import { MainIndicator, SubIndicator } from '.';
 import { TradingInterval } from 'loopring-sdk';
 
@@ -28,7 +28,7 @@ export const Kline = withTranslation()(() => {
                 <ScaleAreaChart
                     type={ChartType.Kline}
                     data={formatDateData}
-                    interval={TradingInterval.d1}
+                    interval={TradingInterval.min1}
                     indicator={
                         {
                             mainIndicators: [{indicator: MainIndicator.MA, params: {period: 5}}, 
@@ -48,7 +48,7 @@ export const Kline = withTranslation()(() => {
 }) as Story
 
 export default {
-    title: 'Charts/KineDay',
+    title: 'Charts/KineMin',
     component: Kline,
     argTypes: {},
 } as Meta
