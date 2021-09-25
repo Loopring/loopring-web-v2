@@ -130,4 +130,6 @@ export default {
     labelOrderCancelConfirm: 'Confirm to cancel this order?',
     labelOrderConfirm: 'Confirm',
     labelOrderCancel: 'Cancel',
+    labelTradeProPrice: 'Price({{symbol}})',
+    labelTradeProAmount: 'Amount({{symbol}})',
 }

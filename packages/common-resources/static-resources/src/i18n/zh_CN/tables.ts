@@ -130,4 +130,6 @@ export default {
     labelOrderCancelConfirm: '确认撤销该订单？',
     labelOrderConfirm: '确定',
     labelOrderCancel: '取消',
+    labelTradeProPrice: '数量({{symbol}})',
+    labelTradeProAmount: '总量',
 }
