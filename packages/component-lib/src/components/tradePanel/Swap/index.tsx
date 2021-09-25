@@ -1,7 +1,7 @@
 import { SwapProps, SwapTradeData } from '../Interface';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import React from 'react';
-import { Grid, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { SwitchPanel, SwitchPanelProps } from '../../basic-lib';
 import { IBData, ProToLiteIcon, TradeCalcData } from '@loopring-web/common-resources';
 import { SwapData, SwapMenuList, SwapTradeWrap } from '../components';
@@ -20,7 +20,7 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                                       handleSwapPanelEvent,
                                       handleError,
                                       onSwapClick,
-    toPro,
+                                      toPro,
                                       onRefreshData,
                                       refreshRef,
                                       ...rest
@@ -153,18 +153,20 @@ export const SwapPanel = withTranslation('common', {withRef: true})(<T extends I
                     tokenSellProps,
                     tokenBuyProps,
                     handleError]),
-                toolBarItem: React.useMemo(() => <Grid container justifyContent={'flex-end'}>
-                   <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef}/>
-                   <Typography display={'inline-block'} marginLeft={2}>
-                       <IconButtonStyled onClick={toPro}
-                                         className={'switch outline'}
-                                         size={'large'}
-                                         aria-label="to Professional">
-                           <ProToLiteIcon color={'primary'} fontSize={'large'} />
-                       </IconButtonStyled>
-                   </Typography>
-
-                </Grid>, [onRefreshData])
+                toolBarItem: React.useMemo(() => <>
+                    <Typography height={'100%'} display={'inline-flex'} variant={'h5'} alignItems={'center'} alignSelf={'self-start'}>{rest.t('swapTitle')}</Typography>
+                    <Box alignSelf={'flex-end'} display={'flex'}>
+                        <CountDownIcon onRefreshData={onRefreshData} ref={refreshRef}/>
+                        <Typography display={'inline-block'} marginLeft={2}>
+                            <IconButtonStyled onClick={toPro}
+                                              className={'switch outline'}
+                                              size={'large'}
+                                              aria-label="to Professional">
+                                <ProToLiteIcon color={'primary'} fontSize={'large'}/>
+                            </IconButtonStyled>
+                        </Typography>
+                    </Box>
+                </>, [onRefreshData])
             },
             {
                 key: "tradeMenuList",

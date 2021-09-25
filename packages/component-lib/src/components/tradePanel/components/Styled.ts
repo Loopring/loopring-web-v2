@@ -195,7 +195,7 @@ export const TabsStyle = styled(Tabs)`
        height: 28px;
        line-height: 28px;
        font-size: ${({theme}) => theme.fontDefault.h6};
-       &:focus-visible:after{
+       &:focus-visible,&:active:after{
          background-color: initial;
        }
        &.Mui-selected{
