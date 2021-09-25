@@ -1,7 +1,9 @@
 import { useRouteMatch } from 'react-router-dom'
 import { useTokenMap } from 'stores/token'
 import { getExistedMarket } from 'loopring-sdk'
-import { MarketType } from '@loopring-web/common-resources';
+import { MarketType,
+    // myLog
+} from '@loopring-web/common-resources';
 
 export function usePairMatch<C extends { [ key: string ]: any }>(path: string): {
     realMarket: MarketType | undefined,
@@ -19,8 +21,8 @@ export function usePairMatch<C extends { [ key: string ]: any }>(path: string): 
         return {realMarket: undefined, realPair: undefined}
     }
 
-    let market = match?.params?.market
-
+    let market = match?.params?.market;
+    // myLog('router pair',market)
     let coinA = 'LRC'
 
     let coinB = 'ETH'

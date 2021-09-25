@@ -7,7 +7,7 @@ import React from 'react';
 import {
     AccountStatus,
     CoinMap,
-    MarketType, PrecisionTree,
+    MarketType, myLog, PrecisionTree,
     SagaStatus,
     WalletMap
 } from '@loopring-web/common-resources';
@@ -28,7 +28,8 @@ export const usePro = <C extends { [ key: string ]: any }>():{
     // marketTicker: MarketBlockProps<C> |undefined,
 } =>{
     //High: No not Move!!!!!!
-    let {realMarket} = usePairMatch('./trading/pro');
+    let {realMarket} = usePairMatch('/trading/pro');
+    // myLog('router',realMarket)
     // realMarket = 'ETH-USDT'              
     
     //basic info from redux
