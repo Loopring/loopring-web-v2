@@ -35,7 +35,6 @@ import {
     RSITooltip,
 } from "react-financial-charts";
 import { macd, } from "@react-financial-charts/indicators";
-import { myLog } from "@loopring-web/common-resources";
 
 enum CandleStickFill {
     up = '#00BBA8',
@@ -72,7 +71,7 @@ export interface IndicatorProps {
 export interface StockChartProps {
     readonly data: IOHLCData[];
     readonly height: number;
-    readonly dateTimeFormat?: string;
+    readonly dateTimeFormat: string;
     readonly width: number;
     readonly ratio: number;
 }
@@ -246,7 +245,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
 
         const subHeight = subIndicatorLst.length ? Math.floor((gridHeight - chartHeight) / subIndicatorLst.length) : 0
 
-        const timeDisplayFormat = timeFormat(dateTimeFormat);
+        const timeDisplayFormat = timeFormat(dateTimeFormat)
 
         const bbStroke = {
             top: "#FF01FF",
