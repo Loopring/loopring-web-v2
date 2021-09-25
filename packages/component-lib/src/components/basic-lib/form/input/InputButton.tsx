@@ -6,7 +6,7 @@ import {
      getValuePrecisionThousand,
     IBData,
 } from '@loopring-web/common-resources';
-import { InputButtonProps } from "./Interface";
+import { InputButtonProps, InputSize } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
 import { IInput, ISBtn, IWrap } from "./style";
@@ -29,6 +29,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                          handleOnClick,
                                                                          focusOnInput,
                                                                          name,
+                                                                         size=InputSize.middle,
                                                                          isHideError = false,
                                                                          // isAllowBalanceClick
                                                                      }
@@ -108,10 +109,10 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
 
     // formatValue(sValue)
 
-    return <> <IWrap component={'div'} ref={ref}>
+    return <> <IWrap component={'div'} ref={ref} size={size}>
         <Grid container component={'div'} className={'label-wrap'} justifyContent={'space-between'}
               paddingBottom={1 / 2}>
-            <Grid item xs={6}><Typography fontSize={'inherit'} className={'main-label'}>{label}</Typography></Grid>
+            <Grid item xs={6}><Typography fontSize={'inherit'} className={'main-label'} color={'var(--color-text-third)'}>{label}</Typography></Grid>
             <Grid item xs={6} className={'sub-label'}>{subLabel && belong ?
                 <Typography fontSize={'inherit'} className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>

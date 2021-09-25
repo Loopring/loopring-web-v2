@@ -20,6 +20,7 @@ export type InputButtonProps<T, R, I> = {
     disabled?: boolean,
     logoColor?: string,
     wait?: number,
+    size?:InputSize,
     isHideError?:boolean,
     handleCountChange?: (ibData: T,name:string, ref: React.ForwardedRef<any>) => void,
     handleOnClick: (event: React.MouseEvent,name:string ,ref: React.ForwardedRef<any>) => void,
