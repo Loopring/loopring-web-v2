@@ -29,7 +29,7 @@ export const usePro = <C extends { [ key: string ]: any }>():{
 } =>{
     //High: No not Move!!!!!!
     let {realMarket} = usePairMatch('./trading/pro');
-    // realMarket = 'ETH-USDT'
+    realMarket = 'ETH-USDT'
     
     //basic info from redux
     const {

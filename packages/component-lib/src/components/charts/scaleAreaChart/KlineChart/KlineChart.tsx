@@ -86,14 +86,12 @@ export function fibonacci(n: number) {
 }
 
 class StockChart extends React.Component<StockChartProps & IndicatorProps> {
+    
     private readonly margin = { left: 0, right: 48, top: 0, bottom: 24 };
     private readonly pricesDisplayFormat = format(".2f");
     private readonly xScaleProvider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(
         (d: IOHLCData) => d.date,
     );
-
-    private readonly accelerationFactor = 0.02;
-    private readonly maxAccelerationFactor = 0.2;
 
     private readonly macdAppearance = {
         fillStyle: {
@@ -107,7 +105,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
     };
 
     public render() {
-        const { data: initialData, dateTimeFormat = "%d %b", height, ratio, width, mainIndicators, subIndicator, } = this.props;
+        const { data: initialData, dateTimeFormat, height, ratio, width, mainIndicators, subIndicator, } = this.props;
         // simple moving average
 
         let mainIndicatorLst: any[] = []
@@ -199,14 +197,14 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                     case SubIndicator.SAR:
                         const sarCalculator = sar().id(id++)
                             .options({
-                                accelerationFactor: this.accelerationFactor,
-                                maxAccelerationFactor: this.maxAccelerationFactor,
+                                accelerationFactor: item?.params.accelerationFactor,
+                                maxAccelerationFactor: item?.params.maxAccelerationFactor,
                             })
                             .merge((d: any, c: any) => {
                                 d.sar = c;
                             })
                             .accessor((d: any) => d.sar);
-                        subIndicatorLst.push({ func: sarCalculator, type: item.indicator })
+                        subIndicatorLst.push({ func: sarCalculator, type: item.indicator, params: item?.params, })
                         break
                     case SubIndicator.VOLUME:
                         subIndicatorLst.push({ func: undefined, type: item.indicator })
@@ -374,7 +372,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                                         strokeStyle={'rgba(255, 255, 255, 0.3)'} />
                                     <SARSeries yAccessor={item.func.accessor()} />
                                     <SingleValueTooltip
-                                        yLabel={`SAR (${this.accelerationFactor}, ${this.maxAccelerationFactor})`}
+                                        yLabel={`SAR (${item.params.accelerationFactor}, ${item.params.maxAccelerationFactor})`}
                                         yAccessor={item.func.accessor()}
                                         origin={[8, 8]}
                                     />
@@ -404,11 +402,11 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
     };
 
     private readonly candleStickColor = (data: IOHLCData) => data.close > data.open ? CandleStickFill.up : CandleStickFill.down
-    // @ts-ignore
+    
     private readonly volumeColor = (data: IOHLCData) => {
         return data.close > data.open ? "rgba(38, 166, 154, 0.3)" : "rgba(239, 83, 80, 0.3)";
     };
-    // @ts-ignore
+    
     private readonly volumeSeries = (data: IOHLCData) => {
         return data.volume;
     };
@@ -418,4 +416,4 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
     };
 }
 
-export const DayilyStockChart = withSize({ style: { minHeight: 600 } })(withDeviceRatio()(StockChart));
+export const WrapperedKlineChart = withSize({ style: { minHeight: 600 } })(withDeviceRatio()(StockChart));
