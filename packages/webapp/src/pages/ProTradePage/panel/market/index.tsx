@@ -226,6 +226,7 @@ export const MarketView = withTranslation('common')(({
             <TradePro
                 // rowHeight={MarketRowHeight}
                 // headerRowHeight={20}
+                marketInfo={marketMap[ market ]}
                 rawData={pageTradePro.tradeArray ? pageTradePro.tradeArray.slice(0, tableLength) : []}
                 // tokenMap={tokenMap}
                 precision={marketMap[ market ].precisionForPrice}
@@ -286,7 +287,7 @@ export const MarketView = withTranslation('common')(({
                     >
                         {pageTradePro.precisionLevels && pageTradePro.precisionLevels.map(({value, label}) => <MenuItem
                             key={value}
-                            value={value}>{label.toString()}</MenuItem>)}
+                            value={value}>{label}</MenuItem>)}
 
                     </TextField>
                 </MarketToolbar>
