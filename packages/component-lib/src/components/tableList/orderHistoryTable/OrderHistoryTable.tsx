@@ -16,46 +16,12 @@ import { TableFilterStyled, TablePaddingX } from '../../styled'
 // import { useSettings } from '../../../stores';
 import { GetOrdersRequest, Side, OrderType } from 'loopring-sdk'
 
-// export const AlertImpact = withTranslation('common', {withRef: true})(({
-//     t,
-//     value,
-//     open,
-//     handleClose
-// }: WithTranslation & {
-// open: boolean,
-// value: number,
-// handleClose: (event: MouseEvent, isAgree?: boolean) => void
-// }) => {
-// return <Dialog
-// open={open}
-// keepMounted
-// onClose={(e: MouseEvent) => handleClose(e)}
-// aria-describedby="alert-dialog-slide-description"
-// >
-// <DialogTitle> {t('labelImpactTitle')}</DialogTitle>
-// <DialogContent>
-// <DialogContentText id="alert-dialog-slide-description">
-// <Trans i18nKey={'labelImpactExtraGreat'} tOptions={{value}}>
-// Your transaction amount will affect the pool price<Typography component={'span'} color={'error'}> {<>{value}</>}% </Typography>. Are you sure to swap?
-// </Trans>
-// </DialogContentText>
-// </DialogContent>
-// <DialogActions>
-// <Button variant={'outlined'} size={'medium'} onClick={(e) => handleClose(e as any)}> {t('labelDisAgreeConfirm')}</Button>
-// <Button variant={'contained'} size={'small'} onClick={(e) => {
-// handleClose(e as any, true)
-// }}  color={'primary'} >{t('labelAgreeConfirm')}</Button>
-
-// </DialogActions>
-// </Dialog>
-// })
-
 const CancelColHeaderStyled = styled(Typography)`
     display: flex;
     align-items: center;
-    color: var(--color-primary);
-    cursor: pointer;
-`
+    color: ${({empty}: any) => empty ? 'var(--color-text-third)' : 'var(--color-primary)'};
+    cursor: ${({empty}: any) => empty ? 'not-allowed' : 'pointer'};
+` as any
 
 export type OrderPair = {
     from: {
@@ -546,7 +512,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         
     ]
 
-    const getColumnModeOpenHistory = (t: any): Column<OrderHistoryRow, unknown>[] => [
+    const getColumnModeOpenHistory = (t: any, isEmpty: boolean): Column<OrderHistoryRow, unknown>[] => [
         {
             key: 'types',
             name: t('labelOrderTypes'),
@@ -652,7 +618,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         {
             key: 'cancel',
             headerCellClass: 'textAlignRight',
-            name: (<CancelColHeaderStyled onClick={() => setShowCancelAllAlert(true)}>{t('labelOrderCancelAll')}</CancelColHeaderStyled>),
+            name: (<CancelColHeaderStyled empty={isEmpty} onClick={isEmpty ? undefined : () => setShowCancelAllAlert(true)}>{t('labelOrderCancelAll')}</CancelColHeaderStyled>),
             formatter: ({row, index}: any) => {
                 const orderHash = row['hash']
                 const clientOrderId = row['orderId']
@@ -703,7 +669,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         }
     ]
 
-    const actualColumns = isOpenOrder ? getColumnModeOpenHistory(t): getColumnModeOrderHistory(t)
+    const actualColumns = isOpenOrder ? getColumnModeOpenHistory(t, rawData.length === 0): getColumnModeOrderHistory(t)
 
     const defaultArgs: any = {
         // rawData: [],

@@ -56,7 +56,6 @@ export  const OrderTableView = withTranslation('common')(<C extends { [ key: str
 
     const handleCheckBoxChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setHideOtherPairs(event.target.checked)
-        
     }, [])
 
     return <>
