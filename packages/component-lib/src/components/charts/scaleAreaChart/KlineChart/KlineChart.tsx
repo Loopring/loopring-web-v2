@@ -85,7 +85,7 @@ export function fibonacci(n: number) {
 }
 
 class StockChart extends React.Component<StockChartProps & IndicatorProps> {
-    
+
     private readonly margin = { left: 0, right: 48, top: 0, bottom: 24 };
     private readonly pricesDisplayFormat = format(".2f");
     private readonly xScaleProvider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(
@@ -349,6 +349,11 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                                         strokeStyle={'rgba(255, 255, 255, 0.3)'} />
 
                                     <BarSeries fillStyle={this.volumeColor} yAccessor={this.volumeSeries} />
+                                    <SingleValueTooltip
+                                        yAccessor={this.volumeSeries}
+                                        yLabel={`VOL`}
+                                        origin={[8, 8]}
+                                    />
                                 </Chart>
                             case SubIndicator.RSI:
                                 return <Chart id={chartId++} height={subHeight} origin={(_: number, h: number) => [0, h - (subIndicatorLst.length - ind) * subHeight]} yExtents={[0, 100]}>
@@ -389,7 +394,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
 
     // @ts-ignore
     private readonly barChartExtents = (data: IOHLCData) => {
-        return data.volume;
+        return data.volume
     };
 
     private readonly candleChartExtents = (data: any) => {
@@ -401,13 +406,13 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
     };
 
     private readonly candleStickColor = (data: IOHLCData) => data.close > data.open ? CandleStickFill.up : CandleStickFill.down
-    
+
     private readonly volumeColor = (data: IOHLCData) => {
         return data.close > data.open ? "rgba(38, 166, 154, 0.3)" : "rgba(239, 83, 80, 0.3)";
     };
-    
+
     private readonly volumeSeries = (data: IOHLCData) => {
-        return data.volume;
+        return data.volume
     };
 
     private readonly openCloseColor = (data: IOHLCData) => {
