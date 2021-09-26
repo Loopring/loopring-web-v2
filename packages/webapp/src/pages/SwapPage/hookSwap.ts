@@ -1,5 +1,4 @@
 import * as sdk from 'loopring-sdk';
-import { OrderStatus, sleep } from 'loopring-sdk';
 import React from 'react';
 import { usePairMatch } from 'hooks/common/usePairMatch';
 import { useSocket } from 'stores/socket';
@@ -169,7 +168,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
                     setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                     myLog(response?.resultInfo)
                 } else {
-                    await sleep(__TOAST_AUTO_CLOSE_TIMER__)
+                    await sdk.sleep(__TOAST_AUTO_CLOSE_TIMER__)
 
                     const resp = await LoopringAPI.userAPI.getOrderDetails({
                         accountId: account.accountId,
@@ -181,7 +180,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
                     if (resp.orderDetail?.status !== undefined) {
                         myLog('resp.orderDetail:', resp.orderDetail)
                         switch (resp.orderDetail?.status) {
-                            case OrderStatus.cancelled:
+                            case sdk.OrderStatus.cancelled:
                                 const baseAmount = sdk.toBig(resp.orderDetail.volumes.baseAmount)
                                 const baseFilled = sdk.toBig(resp.orderDetail.volumes.baseFilled)
                                 const quoteAmount = sdk.toBig(resp.orderDetail.volumes.quoteAmount)
@@ -195,13 +194,14 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
                                     setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
                                 }
                                 break
-                            case OrderStatus.processed:
+                            case sdk.OrderStatus.processed:
                                 setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
                                 break
                             default:
                                 setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                         }
                     }
+
                     walletLayer2Service.sendUserUpdate()
                     setTradeData((state) => {
                         return {
@@ -226,7 +226,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
 
             // setOutput(undefined)
 
-            await sleep(__SUBMIT_LOCK_TIMER__)
+            await sdk.sleep(__SUBMIT_LOCK_TIMER__)
 
             setIsSwapLoading(false)
 
