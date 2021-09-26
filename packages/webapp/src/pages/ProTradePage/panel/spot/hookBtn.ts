@@ -52,9 +52,8 @@ export const useSubmitBtn = ({
     });
 
     const _btnLabel = React.useMemo((): string => {
-        const label = accountStaticCallBack(_btnLabelArray, [rest])
-        myLog(label);
-        return label
+        return accountStaticCallBack(_btnLabelArray, [rest])
+        // myLog(label);
     }, [_btnLabelArray, rest])
 
     const btnClickCallbackArray = Object.assign(_.cloneDeep(btnClickMap), {
