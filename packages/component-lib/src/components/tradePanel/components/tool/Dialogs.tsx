@@ -64,6 +64,36 @@ export const CancelAllOrdersAlert = withTranslation('common', {withRef: true})((
         </DialogActions>
     </Dialog>
 })
+export const AlertNotSupport = withTranslation('common', {withRef: true})(({
+                                                                               t,
+                                                                               open,
+                                                                               handleClose
+                                                                           }: WithTranslation & {
+    open: boolean,
+    // des: string
+    handleClose: (event: MouseEvent) => void
+}) => {
+
+
+    return <Dialog
+        open={open}
+        keepMounted
+        onClose={(e: MouseEvent) => handleClose(e)}
+        aria-describedby="alert-dialog-slide-description"
+    >
+        <DialogTitle> {t('labelNotSupportTitle')}</DialogTitle>
+        <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+                <Trans i18nKey={'labelNotAllowTrade'} >
+                </Trans>
+            </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+            <Button variant={'outlined'} size={'medium'} onClick={(e) => handleClose(e as any)}> {t('labelConfirm')}</Button>
+        </DialogActions>
+    </Dialog>
+})
+
 export const ConfirmImpact = withTranslation('common', {withRef: true})(({
                                                                              t,
                                                                              value,

@@ -9,7 +9,7 @@ import {
     setShowSwap,
     setShowTransfer,
     setShowWithdraw,
-    setShowExportAccount,
+    setShowExportAccount, setShowSupport,
 } from './reducer';
 
 import React from 'react';
@@ -18,6 +18,7 @@ export const useOpenModals = () => {
     const dispatch = useDispatch();
     return {
         modals: useSelector((state: any) => state.modals) as ModalState,
+        setShowSupport: React.useCallback((state: ModalStatePlayLoad & Transaction) => dispatch(setShowSupport(state)), [dispatch]),
         setShowTransfer: React.useCallback((state: ModalStatePlayLoad & Transaction) => dispatch(setShowTransfer(state)), [dispatch]),
         setShowDeposit: React.useCallback((state: ModalStatePlayLoad & Transaction ) => dispatch(setShowDeposit(state)), [dispatch]),
         setShowWithdraw: React.useCallback((state: ModalStatePlayLoad & Transaction) => dispatch(setShowWithdraw(state)), [dispatch]),
