@@ -39,7 +39,9 @@ export  const OrderTableView = withTranslation('common')(<C extends { [ key: str
         clearRawData()
     }, [clearRawData])
 
-    const filteredData = hideOtherPairs ? rawData.filter(o => o.market === market) : rawData
+    const getFilteredData = React.useCallback(() => {
+        return hideOtherPairs ? rawData.filter(o => o.market === market) : rawData
+    }, [hideOtherPairs, market, rawData])
 
     React.useEffect(() => {
         const getData = async () => {
@@ -54,7 +56,6 @@ export  const OrderTableView = withTranslation('common')(<C extends { [ key: str
 
     const handleCheckBoxChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setHideOtherPairs(event.target.checked)
-        
     }, [])
 
     return <>
@@ -78,7 +79,7 @@ export  const OrderTableView = withTranslation('common')(<C extends { [ key: str
         <Divider />
         <OrderHistoryTable
             {...{
-                rawData: filteredData,
+                rawData: getFilteredData(),
                 getOrderList,
                 getOrderDetail,
                 orderDetailList,

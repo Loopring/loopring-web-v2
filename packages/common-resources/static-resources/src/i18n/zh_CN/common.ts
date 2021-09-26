@@ -9,6 +9,7 @@ export default {
     tokenExchange: '转换',
     tokenNotEnough: '{{belong}}余额不足无法交易',
     tokenSearchCoin: '搜索交易币种',
+    swapTitle:'兑换',
     swapTolerance: '滑点范围',
     swapPriceImpact: '价格影响',
     swapMinReceive: '最少买入',
@@ -264,6 +265,9 @@ export default {
     labelDisAgreeConfirm: '取消',
     labelImpactAgree: '请输入大写"AGREE"再次确认。',
     labelImpactTitle: '兑换二次确认',
+    labelPriceExtraGreat: '您设置的价格已经{{compare}}市价的20%，您确定执行此操作吗？',
+    labelPriceCompareGreat:'大于',
+    labelPriceCompareLess:'小于',
     labelImpactExtraGreat: '您的交易金额将影响池子价格<1> {{value}}</1>，您确定执行此操作吗？',
     labelCalculating: '计算中...',
     labelAmmMyTransactions: '我的交易',
@@ -330,6 +334,18 @@ export default {
     labelDepthAmount: '数量({{symbol}})',
     labelDepthTotal: '总量',
 
+    labelProChartTitle: '图表',
+    labelProTimeDefault: '分时(1分钟)',
+    labelProTime1m: '1分钟',
+    labelProTime5m: '5分钟',
+    labelProTime15m: '15分钟',
+    labelProTime1H: '1小时',
+    labelProTime4H: '4小时',
+    labelProTime1D: '1天',
+    labelProTime1W: '1周',
+    labelProTime1M: '1月',
+
+
     labelSwapCancelled: '交易被取消',
     labelSuccessfully: '成功',
     labelWarning: '警告',
@@ -344,4 +360,6 @@ export default {
 
     labelComingSoon: '敬请期待',
     labelTradeProHideOtherPairs: '隐藏其他交易对',
+    labelCancelAllOrders: '确认撤销全部订单？',
+    labelConfirm: '确定',
 }

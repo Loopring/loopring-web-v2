@@ -1,13 +1,19 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import React from 'react';
-import { AlertImpact, ConfirmImpact, LimitTrade, MarketTrade, Toast } from '@loopring-web/component-lib';
-import { TOAST_TIME } from '../../../../defs/common_defs';
+import {
+    AlertImpact, AlertLimitPrice,
+    ConfirmImpact,
+    LimitTrade,
+    MarketTrade,
+    Toast, TradeProType
+} from '@loopring-web/component-lib';
+import { TOAST_TIME } from 'defs/common_defs';
 import { MarketType } from '@loopring-web/common-resources';
-import { updatePageTradePro, usePageTradePro } from '../../../../stores/router';
+import { usePageTradePro } from 'stores/router';
 import { useMarket } from './hookMarket';
 import { useLimit } from './hookLimit';
 import { Box, Divider, Tab, Tabs } from '@mui/material';
-import { useTokenMap } from '../../../../stores/token';
+import { useTokenMap } from 'stores/token';
 
 // const TabsStyle = styled(Tabs)`
 //   flex: 1;
@@ -39,6 +45,8 @@ export const SpotView = withTranslation('common')(({
         isLimitLoading,
         handlePriceError,
         resetLimitData,
+        limitAlertOpen,
+        limitSubmit,
     } = useLimit(market)
     const {
         alertOpen, confirmOpen, toastOpen, closeToast,
@@ -77,9 +85,11 @@ export const SpotView = withTranslation('common')(({
         <Toast alertText={toastOpenL?.content ?? ''} severity={toastOpenL?.type ?? 'success'}
                open={toastOpenL?.open ?? false}
                autoHideDuration={TOAST_TIME} onClose={closeToastL}/>
-        <AlertImpact handleClose={marketSubmit} open={alertOpen} value={pageTradePro?.priceImpactObj?.value as any}/>
+        <AlertImpact handleClose={marketSubmit} open={alertOpen} value={pageTradePro.priceImpactObj?.value as any}/>
         <ConfirmImpact handleClose={marketSubmit} open={confirmOpen}
-                       value={pageTradePro?.priceImpactObj?.value as any}/>
+                       value={pageTradePro.priceImpactObj?.value as any}/>
+        <AlertLimitPrice handleClose={limitSubmit} open={limitAlertOpen}
+                       value={pageTradePro.tradeType === TradeProType.buy?"labelPriceCompareGreat":"labelPriceCompareLess"}/>
         <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
             <Box component={'header'} width={'100%'}>
                 <Tabs variant={'fullWidth'} value={tabIndex} onChange={onTabChange}>
@@ -96,6 +106,7 @@ export const SpotView = withTranslation('common')(({
                       decimalsLimit: marketMap[ market ].precisionForPrice
                   }
                   }
+                  tradeType={pageTradePro.tradeType}
                   tokenBaseProps={{disabled: isLimitLoading, decimalsLimit: tokenMap[ baseSymbol ].precision}}
                   tokenQuoteProps={{disabled: isLimitLoading, decimalsLimit: tokenMap[ quoteSymbol ].precision}}
                   tradeLimitI18nKey={tradeLimitI18nKey}
@@ -107,11 +118,12 @@ export const SpotView = withTranslation('common')(({
                   onChangeEvent={onChangeLimitEvent}/>}
                 {tabIndex === TabIndex.market && <MarketTrade
                   // disabled={false}
+
                   tokenBaseProps={{disabled: isMarketLoading, decimalsLimit: tokenMap[ baseSymbol ].precision}}
                   tokenQuoteProps={{disabled: isMarketLoading, decimalsLimit: tokenMap[ quoteSymbol ].precision}}
                   tradeMarketI18nKey={tradeMarketI18nKey}
                   tradeMarketBtnStyle={tradeMarketBtnStyle}
-                    // tradeLimitBtnStyle={tradeLimitBtnStyle}
+                  tradeType={pageTradePro.tradeType}
                   tradeMarketBtnStatus={tradeMarketBtnStatus}
                   handleSubmitEvent={marketBtnClick}
                   tradeCalcProData={pageTradePro.tradeCalcProData}

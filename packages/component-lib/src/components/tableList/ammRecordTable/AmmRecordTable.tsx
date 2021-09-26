@@ -8,7 +8,6 @@ import {
     Currency,
     EmptyValueTag,
     getValuePrecisionThousand,
-    getValuePrecision,
     globalSetup,
     PriceTag
 } from '@loopring-web/common-resources'

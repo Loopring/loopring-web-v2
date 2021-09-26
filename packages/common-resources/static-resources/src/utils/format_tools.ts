@@ -25,7 +25,8 @@ export type DepthData  = {
     quoteDecimal: number,
     count: number,
     maxVal: BigNumber,
-    precisionForPrice: number
+    precisionForPrice: number,
+    basePrecision: number,
 }
 export type DepthViewData = {
     price: number,
@@ -35,7 +36,9 @@ export type DepthViewData = {
     amtTotalForShow: string,
     percentage : number,
 }
-function genABViewData({precisionForPrice,amtSlice, amtTotalSlice, priceSlice, baseDecimal, count, maxVal, }: DepthData):DepthViewData[] {
+function genABViewData({
+                           // precisionForPrice,
+                           amtSlice, amtTotalSlice, priceSlice, baseDecimal, count, maxVal,basePrecision }: DepthData):DepthViewData[] {
 
     if (amtTotalSlice.length < count) {
         const lastV = amtTotalSlice[amtTotalSlice.length - 1]
@@ -53,9 +56,9 @@ function genABViewData({precisionForPrice,amtSlice, amtTotalSlice, priceSlice, b
             const amt = amtSlice[ ind ].amt
             // console.log(amt)
             const amtForShow = getValuePrecisionThousand(sdk.toBig(amt).div('1e' + baseDecimal),
-                undefined, undefined, precisionForPrice, true)
+                undefined, undefined, basePrecision, true)
             const amtTotalForShow = getValuePrecisionThousand(sdk.toBig(value).div('1e' + baseDecimal),
-                undefined, undefined, precisionForPrice, true)
+                undefined, undefined, basePrecision, true)
             const percentage = maxVal.gt(sdk.toBig(0)) ? sdk.toBig(value).div(maxVal).toNumber() : 0
             prv.push({
                 price: priceSlice[ ind ],
@@ -76,13 +79,14 @@ function genABViewData({precisionForPrice,amtSlice, amtTotalSlice, priceSlice, b
 
 }
 
-export function depth2ViewData({ depth, countAsk,countBid, baseDecimal, quoteDecimal, precisionForPrice}: {
+export function depth2ViewData({ depth, countAsk,countBid, baseDecimal, quoteDecimal, precisionForPrice, basePrecision}: {
     depth: sdk.DepthData, 
     baseDecimal: number,
     quoteDecimal: number,
     countAsk?: number,
     countBid?: number,
     maxWidth?: number,
+    basePrecision: number,
     precisionForPrice: number,
 }):{asks:DepthViewData[],bids:DepthViewData[]} {
 
@@ -111,10 +115,10 @@ export function depth2ViewData({ depth, countAsk,countBid, baseDecimal, quoteDec
         throw new Error('no ab input!')
     }
 
-    const asks = genABViewData({precisionForPrice,amtSlice: askSlice,
+    const asks = genABViewData({basePrecision,precisionForPrice,amtSlice: askSlice,
         amtTotalSlice: askTotalSlice, priceSlice: askPriceSlice, baseDecimal, quoteDecimal, count:countAsk, maxVal})
 
-    const bids = genABViewData({precisionForPrice,amtSlice: bidSlice,
+    const bids = genABViewData({basePrecision,precisionForPrice,amtSlice: bidSlice,
         amtTotalSlice: bidTotalSlice, priceSlice: bidPriceSlice, baseDecimal, quoteDecimal, count:countBid, maxVal})
 
     return {

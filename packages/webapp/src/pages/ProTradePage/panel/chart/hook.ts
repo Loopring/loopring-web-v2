@@ -3,50 +3,69 @@ import React from 'react'
 import * as sdk from 'loopring-sdk'
 import { TradingInterval } from 'loopring-sdk'
 import { IOHLCData } from '@loopring-web/component-lib'
+import { useTokenMap } from 'stores/token'
+import { myLog } from '@loopring-web/common-resources'
+import { VolToNumberWithPrecision } from 'utils/formatter_tool'
 
 export function useKlineChart(market: string | undefined) {
+
+    const { tokenMap } = useTokenMap()
 
     const [candlestickViewData, setCandlestickViewData] = React.useState<IOHLCData[]>([])
 
     const genCandlestickData = React.useCallback(async(market: string | undefined) => {
 
-        if (market && LoopringAPI.exchangeAPI) {
+        if (market && LoopringAPI.exchangeAPI && tokenMap) {
         
-            const rep: sdk.GetCandlestickRequest = {
-                market,
-                interval: TradingInterval.d1
-            }
+            // @ts-ignore
+            const [_, coinBase, coinQuote] = market.match(/(\w+)-(\w+)/i)
 
-            const candlesticks = await LoopringAPI.exchangeAPI.getMixCandlestick(rep)
+            myLog('coinBase:', coinBase)
 
-            let candlestickViewData: IOHLCData[] = []
-            
-            candlesticks.candlesticks.forEach((item: sdk.Candlestick) => {
+            const decimals = tokenMap[coinBase] ? tokenMap[coinBase].decimals : -1
 
-                const dataItem: IOHLCData = {
-                    date: new Date(item.timestamp),
-                    open: item.open,
-                    high: item.high,
-                    low: item.low,
-                    close: item.close,
-                    volume: parseInt(item.baseVol),
+            if (decimals > 0) {
+                const rep: sdk.GetCandlestickRequest = {
+                    market,
+                    interval: TradingInterval.d1
                 }
+    
+                const candlesticks = await LoopringAPI.exchangeAPI.getMixCandlestick(rep)
+    
+                let candlestickViewData: IOHLCData[] = []
+                
+                candlesticks.candlesticks.forEach((item: sdk.Candlestick) => {
+    
+                    const dataItem: IOHLCData = {
+                        date: new Date(item.timestamp),
+                        open: item.open,
+                        high: item.high,
+                        low: item.low,
+                        close: item.close,
+                        volume: sdk.toBig(item.baseVol).div('1e' + decimals).toNumber()
+                    }
+    
+                    candlestickViewData.push(dataItem)
+    
+                })
+    
+                setCandlestickViewData(candlestickViewData.reverse())
 
-                candlestickViewData.push(dataItem)
-
-            })
-
-            setCandlestickViewData(candlestickViewData)
+            } else {
+                throw Error('wrong decimals')
+            }
+        
         }
 
-    }, [])
+    }, [tokenMap])
 
     React.useEffect(() => {
         genCandlestickData(market)
-    }, [market])
+    }, [market, genCandlestickData])
 
     return {
         candlestickViewData,
         market,
+        genCandlestickData,
     }
 }

@@ -26,13 +26,13 @@ const TRADE_ARRAY_MAX_LENGTH = 50;
 /**
  *
  * @param throttleWait
- * @param dependencyCallback
- * @param useInfoUpdateCallback  will update your wallet balance
+ * @param depDataCallback
+ * @param userInfoUpdateCallback
  * @param walletLayer1Callback
  */
 export const useSocketProService = ({
                                         throttleWait = globalSetup.throttleWait,
-                                        depDataCallback,
+                                        // depDataCallback,
                                         userInfoUpdateCallback,
                                         walletLayer1Callback
                                     }: {
@@ -65,22 +65,23 @@ export const useSocketProService = ({
     //     accountUpdate({walletLayer2Status, walletLayer1Status})
     // }
 
-    const _dependencyCallback = _.throttle(() => {
-        if (depDataCallback) {
-            depDataCallback()
-        }
-    }, throttleWait)
+    // const _dependencyCallback = _.throttle(() => {
+    //     if (depDataCallback) {
+    //         depDataCallback()
+    //     }
+    // }, throttleWait)
     // const  _socketUpdate = React.useCallback(socketUpdate({updateWalletLayer1,updateWalletLayer2,walletLayer1Status,walletLayer2Status}),[]);
     React.useEffect(() => {
         const subscription = merge(subjectAmmpool, subjectMixorder, subjectTicker, subjectTrade).subscribe((value) => {
             const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
+            const market = pageTradePro.market;
+            const address = ammMap && ammMap[ 'AMM-' + market ]?.address;
+
             // @ts-ignore
-            if (ammMap && value && value.ammPoolMap) {
+            if (address && ammMap && value && value.ammPoolMap) {
                 // @ts-ignore
                 const ammPoolMap = value.ammPoolMap;
-                const market = pageTradePro.market;
-                const {address} = ammMap[ 'AMM-' + market ];
-                if (ammPoolMap && ammPoolMap[ address ]?.pooled && pageTradePro.ammPoolSnapshot) {
+                if (address && ammPoolMap && ammPoolMap[ address ]?.pooled && pageTradePro.ammPoolSnapshot) {
                     const {pooled: _pooled, lp} = ammPoolMap[ address ];
                     let pooled = pageTradePro.ammPoolSnapshot.pooled
                     pooled = [{
@@ -175,7 +176,7 @@ export const useSocketProService = ({
 }
 
 export const useProSocket = () => {
-    const {sendSocketTopic, socketEnd} = useSocket();
+    const {sendSocketTopic, socketEnd, status:socketStatus} = useSocket();
     const {account, status: accountStatus} = useAccount();
     const {marketArray, marketMap} = useTokenMap();
     const {ammMap} = useAmmMap();
@@ -255,37 +256,40 @@ export const useProSocket = () => {
     React.useEffect(() => {
         //firstTime call it
         // getDependencyData();
-        noSocketLoop();
-        if (ammMap && pageTradePro.market) {
-            const dataSocket: SocketMap = {
-                [ sdk.WsTopicType.ammpool ]: [ammMap[ 'AMM-' + pageTradePro.market ].address],
-                [ sdk.WsTopicType.ticker ]: [pageTradePro.market as string],
-                [ sdk.WsTopicType.mixorder ]: {
-                    markets: [pageTradePro.market],
-                    level: marketMap[ pageTradePro.market ].precisionForPrice - Number(pageTradePro.depthLevel),
-                    count: 50,
-                    snapshot: true
-                },
-                [ sdk.WsTopicType.trade ]: [pageTradePro.market as string],
-            }
-            if (accountStatus === SagaStatus.UNSET) {
-                if (account.readyState === AccountStatus.ACTIVATED) {
-                    sendSocketTopic({
-                        ...dataSocket,
-                        [ sdk.WsTopicType.account ]: true,
-                        [ sdk.WsTopicType.order ]: marketArray,
-
-                    })
-                } else {
-                    sendSocketTopic(dataSocket)
+        if(socketStatus !== SagaStatus.PENDING){
+            noSocketLoop();
+            if (ammMap && pageTradePro.market) {
+                const dataSocket: SocketMap = {
+                    [ sdk.WsTopicType.ammpool ]: ammMap[ 'AMM-' + pageTradePro.market ] ? [ammMap[ 'AMM-' + pageTradePro.market ].address]:[],
+                    [ sdk.WsTopicType.ticker ]: [pageTradePro.market as string],
+                    [ sdk.WsTopicType.mixorder ]: {
+                        markets: [pageTradePro.market],
+                        level: marketMap[ pageTradePro.market ].precisionForPrice - Number(pageTradePro.depthLevel),
+                        count: 50,
+                        snapshot: true
+                    },
+                    [ sdk.WsTopicType.trade ]: [pageTradePro.market as string],
                 }
+                if (accountStatus === SagaStatus.UNSET) {
+                    if (account.readyState === AccountStatus.ACTIVATED) {
+                        sendSocketTopic({
+                            ...dataSocket,
+                            [ sdk.WsTopicType.account ]: true,
+                            [ sdk.WsTopicType.order ]: marketArray,
+
+                        })
+                    } else {
+                        sendSocketTopic(dataSocket)
+                    }
+                }
+
             }
 
+            return () => {
+                socketEnd()
+            }
         }
 
-        return () => {
-            socketEnd()
-        }
     }, [accountStatus,
         pageTradePro.market,
         pageTradePro.depthLevel]);

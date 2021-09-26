@@ -320,8 +320,8 @@ export const TransactionTable = withTranslation(['tables', 'common'])((props: Tr
                 
                 const receiver = txType === TxType.TRANSFER ? receiverAddress 
                 : txType === TxType.OFFCHAIN_WITHDRAWAL ? recipient : ''
-                myLog('feeDetail', getValuePrecisionThousand(fee.value, undefined, undefined, undefined, false, { isTrade: true, floor: false }))
-                myLog('amountDetail', getValuePrecisionThousand(amount.value, undefined, undefined, undefined, false, { isTrade: true }))
+                // myLog('feeDetail', getValuePrecisionThousand(fee.value, undefined, undefined, undefined, false, { isTrade: true, floor: false }))
+                // myLog('amountDetail', getValuePrecisionThousand(amount.value, undefined, undefined, undefined, false, { isTrade: true }))
                 const formattedDetail = {
                     txType,
                     hash,
