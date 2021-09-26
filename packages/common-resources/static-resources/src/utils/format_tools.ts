@@ -56,9 +56,9 @@ function genABViewData({
             const amt = amtSlice[ ind ].amt
             // console.log(amt)
             const amtForShow = getValuePrecisionThousand(sdk.toBig(amt).div('1e' + baseDecimal),
-                undefined, undefined, basePrecision, true)
+                undefined, undefined, basePrecision, true, { isAbbreviate: true })
             const amtTotalForShow = getValuePrecisionThousand(sdk.toBig(value).div('1e' + baseDecimal),
-                undefined, undefined, basePrecision, true)
+                undefined, undefined, basePrecision, true, { isAbbreviate: true })
             const percentage = maxVal.gt(sdk.toBig(0)) ? sdk.toBig(value).div(maxVal).toNumber() : 0
             prv.push({
                 price: priceSlice[ ind ],
