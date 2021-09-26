@@ -50,6 +50,9 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         if (handleCountChange) {
             handleCountChange(ibData, name, _ref)
         } else {
+            if(_ref.current !== 'percentage'){
+                setSelectedPercentage(0)
+            }
             // myLog(`${type}Trade: handleUser input on :`, ibData, name, tradeData)
             const _tradeData = {
                 ...tradeData,
@@ -115,16 +118,16 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
     }, [tradeData])
 
     const btnLabel = React.useMemo(() => {
-        if (inputError.error) {
-            if (typeof inputError.message === 'string') {
-                return t(inputError.message)
-            } else if (inputError.message !== undefined) {
-                return inputError.message;
-            } else {
-                return t('labelError')
-            }
-
-        }
+        // if (inputError.error) {
+        //     if (typeof inputError.message === 'string') {
+        //         return t(inputError.message)
+        //     } else if (inputError.message !== undefined) {
+        //         return inputError.message;
+        //     } else {
+        //         return t('labelError')
+        //     }
+        //
+        // }
         // myLog('i18nKey',i18nKey)
         // if (i18nKey) {
         const key = i18nKey.split(',');
