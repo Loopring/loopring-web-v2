@@ -38,6 +38,7 @@ export function useInit() {
     const {status: ammActivityMapStatus, statusUnset: ammActivityMapStatusUnset} = useAmmActivityMap();
     const {status: userRewardsStatus, statusUnset: userRewardsUnset} = useUserRewards();
     const {status: tickerStatus, statusUnset: tickerStatusUnset} = useTicker();
+    const {status: amountStatus, statusUnset: amountStatusUnset} = useTicker();
 
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
@@ -158,6 +159,21 @@ export function useInit() {
                 break;
         }
     }, [tickerStatus])
+    React.useEffect(() => {
+        switch (amountStatus) {
+            case SagaStatus.ERROR:
+                console.log("ERROR", 'get ticker error,ui');
+                amountStatusUnset()
+                break;
+            case SagaStatus.PENDING:
+                break;
+            case SagaStatus.DONE:
+                amountStatusUnset();
+                break;
+            default:
+                break;
+        }
+    }, [amountStatus])
     React.useEffect(() => {
         switch (userRewardsStatus) {
             case SagaStatus.ERROR:
