@@ -4,7 +4,7 @@ import { SocketMap } from './interface';
 
 const initialState: StateBase & { socket: SocketMap } = {
     socket: {},
-    status: 'PENDING',
+    status: 'DONE',
     errorMessage: null,
 }
 const socketSlice: Slice<StateBase & { socket: SocketMap }> = createSlice({

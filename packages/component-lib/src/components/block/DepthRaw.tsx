@@ -19,7 +19,6 @@ export const  GridStyle = styled(Grid)`
 ` as typeof Grid
 export const Depth = ({
                           price,
-                          // amt,
                           onClick,
                           amtForShow,
                           // amtTotal,
@@ -82,6 +81,7 @@ export const DepthBlock = withTranslation('common')(({
                                                      }: {
     onClick:(event:MouseEvent,price:number)=>void,
     type: DepthType,
+    // quotePrecision:number,
     depths: DepthViewData[],
     marketInfo: MarketInfo
 } & WithTranslation) => {

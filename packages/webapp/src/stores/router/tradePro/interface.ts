@@ -2,7 +2,7 @@ import * as sdk from 'loopring-sdk';
 import { OrderInfo } from 'loopring-sdk';
 import { MarketType, TradeCalcProData } from '@loopring-web/common-resources';
 import { Ticker } from '../../ticker';
-import { RawDataTradeItem } from '@loopring-web/component-lib';
+import { RawDataTradeItem, TradeProType } from '@loopring-web/component-lib';
 
 export type marketCalcParams = {
     exceedDepth: boolean;
@@ -34,7 +34,7 @@ export type limitCalcParams = {
 }
 
 export type PageTradePro<C> = {
-    market?: MarketType  // eg: ETH-LRC, Pair from loopring market
+    market: MarketType  // eg: ETH-LRC, Pair from loopring market
     // tradePair?: MarketType  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
     request?: sdk.SubmitOrderRequestV3,
     tradeCalcProData: Partial<TradeCalcProData<keyof C>>
@@ -45,6 +45,7 @@ export type PageTradePro<C> = {
         priceImpactColor: string,
         priceLevel: number | string,
     },
+    tradeType:TradeProType
     defaultPrice?:number,
     precisionLevels?: { value: number,label:string }[],
     depth?: sdk.DepthData | undefined,

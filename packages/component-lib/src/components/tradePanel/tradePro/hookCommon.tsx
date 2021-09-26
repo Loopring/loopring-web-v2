@@ -16,6 +16,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
                                             tradeCalcProData,
                                             tradeBtnBaseStatus,
                                             tradeData,
+    tradeType,
                                             handleCountChange,
                                             onChangeEvent,
                                             tokenBaseProps,
@@ -28,7 +29,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
     const quoteRef = React.useRef();
     const baseRef = React.useRef();
     const [selectedPercentage, setSelectedPercentage] = React.useState(0);
-    const [tabIndex, setTabIndex] = React.useState<TradeProType>(tradeData.type ?? TradeProType.buy);
+    // const [tabIndex, setTabIndex] = React.useState<TradeProType>(tradeData.type ?? TradeProType.buy);
     const [inputError, setInputError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
         error: false,
         message: ''
@@ -49,7 +50,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         if (handleCountChange) {
             handleCountChange(ibData, name, _ref)
         } else {
-            myLog(`${type}Trade: handleUser input on :`, ibData, name, tradeData)
+            // myLog(`${type}Trade: handleUser input on :`, ibData, name, tradeData)
             const _tradeData = {
                 ...tradeData,
                 // type: tabIndex,
@@ -58,7 +59,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
             onChangeEvent(_tradeData, TradeBaseType[ name ])
         }
 
-    }, [tradeData, type, tabIndex]);
+    }, [tradeData, type, tradeType]);
 
 
     const propsBase = React.useMemo(() => {
@@ -72,12 +73,12 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
             coinLabelStyle: {color: 'var(--color-text-secondary)'},
             isShowCoinIcon: false,
             ...tokenBaseProps,
-            handleError: tabIndex === TradeProType.sell ? handleError : undefined,
-            maxAllow: tabIndex === TradeProType.sell,
+            handleError:  tradeType === TradeProType.sell ? handleError : undefined,
+            maxAllow: tradeType === TradeProType.sell,
             // handleOnClick,
             ...rest
         }
-    }, [tokenBaseProps, tabIndex, TradeProType])
+    }, [tokenBaseProps, tradeType, TradeProType])
     const propsQuote = React.useMemo(() => {
         return {
             label: t('labelProQuoteLabel'),
@@ -89,19 +90,19 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
             coinLabelStyle: {color: 'var(--color-text-secondary)'},
             isShowCoinIcon: false,
             ...tokenQuoteProps,
-            handleError: tabIndex === TradeProType.buy ? handleError : undefined,
-            maxAllow: tabIndex === TradeProType.buy,
+            handleError: tradeType === TradeProType.buy ? handleError : undefined,
+            maxAllow: tradeType === TradeProType.buy,
 
 
             // handleOnClick,
             ...rest
         }
-    }, [tokenQuoteProps, tabIndex, TradeProType])
+    }, [tokenQuoteProps, tradeType, TradeProType])
     const getDisabled = React.useCallback(() => {
         return disabled || tradeCalcProData === undefined || tradeCalcProData.coinInfoMap === undefined;
     }, [disabled, tradeCalcProData]);
     const _handleChangeIndex = React.useCallback((index: TradeProType) => {
-        setTabIndex(index)
+        // setTabIndex(index)
         if (handleChangeIndex) {
             tradeData = handleChangeIndex(index)
         } else {
@@ -129,14 +130,14 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         const key = i18nKey.split(',');
         return t(key[ 0 ], {
             arg: key[ 1 ],
-            tradeType: tabIndex === TradeProType.sell ? t('labelProSell') : t('labelProBuy'),
+            tradeType: tradeType === TradeProType.sell ? t('labelProSell') : t('labelProBuy'),
             symbol: tradeCalcProData.coinBase
         })
         // } else {
         //     return t()
         // }
 
-    }, [inputError, t, i18nKey, tabIndex, tradeCalcProData])
+    }, [inputError, t, i18nKey, tradeType, tradeCalcProData])
 
     const onPercentage = React.useCallback((value: any) => {
         myLog('hookCommon onPercentage:', value)
@@ -152,7 +153,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         quoteRef,
         baseRef,
         btnLabel,
-        tabIndex,
+        // tabIndex,
         getDisabled,
         handleCountChange: _handleCountChange,
         selectedPercentage,

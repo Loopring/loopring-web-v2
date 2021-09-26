@@ -32,6 +32,7 @@ export const useOrderList = () => {
         setShowLoading(true)
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
             const userOrders = await LoopringAPI.userAPI.getOrders({
+                limit: 50,
                 ...props,
                 accountId,
             }, apiKey)
@@ -118,7 +119,7 @@ export const useOrderList = () => {
         }
         setShowLoading(false)
         return []
-    }, [accountId, apiKey])
+    }, [accountId, apiKey, marketMap, tokenMap])
 
     const isAtBottom = React.useCallback(({ currentTarget }: React.UIEvent<HTMLDivElement>): boolean => {
         return currentTarget.scrollTop + 10 >= currentTarget.scrollHeight - currentTarget.clientHeight;
@@ -131,7 +132,6 @@ export const useOrderList = () => {
         const prevData = cloneDeep(orderOriginalData)
     
         const newData = await getOrderList({
-            limit: 50,
             offset: prevData.length,
             status: isOpen ? 'processing' : 'processed,failed,cancelled,cancelling,expired'
         })
@@ -142,24 +142,20 @@ export const useOrderList = () => {
 
     const cancelOrder = React.useCallback(async({orderHash, clientOrderId}) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && privateKey && apiKey) {
-            // console.log({
-            //     accountId,
-            //     orderHash,
-            // clientOrderId, privateKey, apiKey})
             setShowLoading(true)
             await LoopringAPI.userAPI.cancelOrder({
                 accountId,
                 orderHash,
                 clientOrderId,
             }, privateKey, apiKey)
-            setTimeout(()=> {
-                getOrderList({
+            setTimeout(async () => {
+                const data = await getOrderList({
                     status: 'processing'
                 })
+                setOrderOriginalData(data)
             }, 500)
-            // setShowLoading(false)
         }
-    }, [accountId, apiKey, privateKey])
+    }, [accountId, apiKey, getOrderList, privateKey])
 
     const getOrderDetail = React.useCallback(async (orderHash: string, t: TFunction) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {

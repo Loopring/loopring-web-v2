@@ -1,14 +1,17 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { PageTradePro, PageTradeProStatus } from './interface';
+import { TradeProType } from '@loopring-web/component-lib';
+import { RequireOne } from '@loopring-web/common-resources';
 
 const initState = {
-    market: undefined,
+    market: '' as any,
     tradePair: undefined,
     request: undefined,
     calcTradeParams: undefined,
     priceImpactObj: undefined,
     tradeCalcProData: {},
-    tradeArray:[]
+    tradeArray:[],
+    tradeType:TradeProType.buy,
 }
 
 const initialState: PageTradeProStatus<{ [ key: string ]: any }> = {
@@ -25,10 +28,11 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
         resetOrderPge(state) {
             state.pageTradePro = initState
         },
-        updatePageTradePro(state, action: PayloadAction<Partial<PageTradePro<{ [ key: string ]: any }>>>) {
+        updatePageTradePro(state, action: PayloadAction<RequireOne<PageTradePro<{ [ key: string ]: any }>, 'market'>>) {
             const {
                 market,
                 depth,
+                tradeType,
                 precisionLevels,
                 depthLevel,
                 ticker,
@@ -50,6 +54,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
             if (market !== state.pageTradePro.market) {
                 state.pageTradePro = {
                     ...initState,
+                    tradeType:state.pageTradePro.tradeType??tradeType??initState.tradeType,
                     market,
                     tradeCalcProData:tradeCalcProData?tradeCalcProData:{},
                     request,
@@ -72,6 +77,9 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 }
 
             } else {
+                if(tradeType){
+                    state.pageTradePro.tradeType = tradeType
+                }
                 if(precisionLevels){
                     state.pageTradePro.precisionLevels = precisionLevels
                 }

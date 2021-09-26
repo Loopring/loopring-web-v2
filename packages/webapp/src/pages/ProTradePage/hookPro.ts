@@ -7,7 +7,7 @@ import React from 'react';
 import {
     AccountStatus,
     CoinMap,
-    MarketType, PrecisionTree,
+    MarketType, myLog, PrecisionTree,
     SagaStatus,
     WalletMap
 } from '@loopring-web/common-resources';
@@ -17,8 +17,9 @@ import { marketInitCheck } from '../SwapPage/help';
 import { makeWalletLayer2 } from 'hooks/help';
 import * as sdk from 'loopring-sdk';
 import { useWalletLayer2 } from 'stores/walletLayer2';
-
+import { useOrderList } from './panel/orderTable/hookTable'
 import { useProSocket, useSocketProService } from './proService';
+import store from '../../stores';
 
 
 export const usePro = <C extends { [ key: string ]: any }>():{
@@ -27,42 +28,40 @@ export const usePro = <C extends { [ key: string ]: any }>():{
     // marketTicker: MarketBlockProps<C> |undefined,
 } =>{
     //High: No not Move!!!!!!
-    let {realMarket} = usePairMatch('./trading/pro');
-    realMarket = 'ETH-USDT'
+    let {realMarket} = usePairMatch('/trading/pro');
+    // myLog('router',realMarket)
+    // realMarket = 'ETH-USDT'              
     
     //basic info from redux
     const {
-        pageTradePro,
+        // pageTradePro,
         updatePageTradePro,
-        __SUBMIT_LOCK_TIMER__,
-        __TOAST_AUTO_CLOSE_TIMER__
+        // __SUBMIT_LOCK_TIMER__,
+        // __TOAST_AUTO_CLOSE_TIMER__
     } = usePageTradePro();
     const [market, setMarket] = React.useState<MarketType>(realMarket as MarketType);
     const {getAmount} = useAmount();
     const {account, status: accountStatus} = useAccount();
     const {status: walletLayer2Status} = useWalletLayer2();
+    const { getOrderList } = useOrderList()
     // const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
 
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap()
     useProSocket()
-    const depDataCallback = React.useCallback(()=>{
-        //TODO
-    },[])
-    const userInfoUpdateCallback = React.useCallback(()=>{
-        if(accountStatus === SagaStatus.UNSET && account.readyState === 'ACTIVATED'){
-            updateWalletLayer2Balance();
-            // TODO:
-            // updateOrderTable();
+    // const depDataCallback = React.useCallback(()=>{
+    //     //TODO
+    // },[])
+    React.useEffect(() => {
+        myLog('account.status',accountStatus,account.readyState)
+        if (account.readyState!== AccountStatus.ACTIVATED && accountStatus === SagaStatus.UNSET) {
+            userInfoUpdateCallback()
         }
-
-    },[accountStatus])
-    useSocketProService({depDataCallback,
-        userInfoUpdateCallback})
-
-
-    const updateWalletLayer2Balance = React.useCallback((_tradeCalcProData?)=>{
+    }, [accountStatus])
+    const updateWalletLayer2Balance = React.useCallback((_tradeCalcProData?,_market?:MarketType)=>{
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         // @ts-ignore
         let tradeCalcProData = _tradeCalcProData?_tradeCalcProData: pageTradePro.tradeCalcProData;
+        let market:MarketType = _market ?_market: pageTradePro.market;
         // let walletMap: WalletMap<any> | undefined = tradeCalcProData?.walletMap;
         let walletMap: WalletMap<any> | undefined;
         if (account.readyState === AccountStatus.ACTIVATED && walletLayer2Status === SagaStatus.UNSET) {
@@ -79,7 +78,17 @@ export const usePro = <C extends { [ key: string ]: any }>():{
         }
         updatePageTradePro({market, tradeCalcProData})
 
-    },[market,pageTradePro,account,walletLayer2Status])
+    },[market,account,walletLayer2Status])
+
+
+    const userInfoUpdateCallback = React.useCallback(()=>{
+        updateWalletLayer2Balance();
+        getOrderList({})
+    },[updateWalletLayer2Balance,getOrderList])
+    useSocketProService({
+        // depDataCallback,
+            userInfoUpdateCallback})
+
 
 
 
@@ -111,14 +120,14 @@ export const usePro = <C extends { [ key: string ]: any }>():{
     const precisionList = React.useCallback((market:MarketType) => {
         const precisionForPrice = marketMap[ market ].precisionForPrice;
         const orderbookAggLevels = marketMap[ market ].orderbookAggLevels;
-        let list: { value: number,label:string }[] = [];
+        let precisionLevels: { value: number,label:string }[] = [];
         for (let i = 0; i < orderbookAggLevels; i++) {
             if(PrecisionTree[ precisionForPrice - i ]){
-                list.push({value: precisionForPrice - i,label:PrecisionTree[ precisionForPrice - i ].toString()})
+                precisionLevels.push({value: precisionForPrice - i,label:PrecisionTree[ precisionForPrice - i ]})
             }
 
         }
-        updatePageTradePro({market, precisionLevels: list, depthLevel:precisionForPrice})
+        updatePageTradePro({market, precisionLevels: precisionLevels, depthLevel:precisionForPrice})
 
 
 
@@ -128,6 +137,7 @@ export const usePro = <C extends { [ key: string ]: any }>():{
 
 
     const resetTradeCalcData = React.useCallback((_tradeData, _market) => {
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         if (coinMap && tokenMap && marketMap && marketArray ) {
             const {tradePair} = marketInitCheck(_market);
             // @ts-ignore
@@ -141,23 +151,23 @@ export const usePro = <C extends { [ key: string ]: any }>():{
                 ...tradeCalcProData,
                 coinBase: coinA,
                 coinQuote: coinB,
-                StoB: undefined,
-                BtoS: undefined,
-                fee: undefined,
+                // StoB: undefined,
+                // BtoS: undefined,
+                // fee: undefined,
                 coinInfoMap: marketCoins?.reduce((prev: any, item: string | number) => {
                     return {...prev, [ item ]: coinMap ? coinMap[ item ] : {}}
                 }, {} as CoinMap<C>),
             }
 
             if (!Object.keys(tradeCalcProData.walletMap ?? {}).length){
-                updateWalletLayer2Balance(tradeCalcProData)
+                updateWalletLayer2Balance(tradeCalcProData,market)
             } else{
                 updatePageTradePro({market, tradeCalcProData})
             }
 
 
         }
-    }, [coinMap, tokenMap, marketMap, marketArray,  setMarket])
+    }, [coinMap, tokenMap, marketMap, marketArray, setMarket])
 
     //init market
 

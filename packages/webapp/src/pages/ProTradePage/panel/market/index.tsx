@@ -117,16 +117,16 @@ export const MarketView = withTranslation('common')(({
         asks: [],
         bids: []
     });
-    const [level, setLevel] = React.useState<number>(pageTradePro.depthLevel ?? marketMap[ market ].precisionForPrice);
+    // const [level, setLevel] = React.useState<number>(pageTradePro.depthLevel ?? marketMap[ market ].precisionForPrice);
     const [depthType, setDepthType] = React.useState<DepthShowType>(DepthShowType.half);
     const handleOnDepthTypeChange = React.useCallback((event: React.MouseEvent<HTMLElement> | any, newValue) => {
         setDepthType(newValue);
         //TODO: change table
         rebuildList()
-    }, [level])
+    }, [])
 
     const handleOnLevelChange = React.useCallback((event: React.ChangeEvent<{ value: string }>) => {
-        setLevel(Number(event.target?.value));
+        // setLevel(Number(event.target?.value));
         updatePageTradePro({market, depthLevel: Number(event.target?.value)})
         //TODO: change table
         // rebuildList()
@@ -142,6 +142,7 @@ export const MarketView = withTranslation('common')(({
             const baseDecimal = tokenMap[ baseSymbol ]?.decimals;
             const quoteDecimal = tokenMap[ baseSymbol ]?.decimals;
             const precisionForPrice = marketMap[ market ].precisionForPrice;
+            const basePrecision = tokenMap[ baseSymbol ].precision;
             let [countAsk, countBid] = [rowLength, rowLength]
             if (depthType === DepthShowType.bids) {
                 [countAsk, countBid] = [0, rowLength * 2]
@@ -149,7 +150,7 @@ export const MarketView = withTranslation('common')(({
                 [countAsk, countBid] = [rowLength * 2, 0]
             } else {
             }
-            const viewData = depth2ViewData({depth, countAsk, countBid, baseDecimal, quoteDecimal, precisionForPrice})
+            const viewData = depth2ViewData({depth, countAsk, countBid, baseDecimal, quoteDecimal, precisionForPrice,basePrecision})
             setDepthViewData(viewData);
         }
     }, [pageTradePro, depthType, rowLength])
@@ -160,7 +161,7 @@ export const MarketView = withTranslation('common')(({
         let priceColor = '';
         let value = '';
         if (ticker && depth && depth.mid_price && depth.symbol === market) {
-            close = ticker.close;
+            close = ticker.close? ticker.close:depth?.mid_price
             if (depth.mid_price === close) {
                 priceColor = '';
                 up = '';
@@ -226,8 +227,9 @@ export const MarketView = withTranslation('common')(({
             <TradePro
                 // rowHeight={MarketRowHeight}
                 // headerRowHeight={20}
+                marketInfo={marketMap[ market ]}
                 rawData={pageTradePro.tradeArray ? pageTradePro.tradeArray.slice(0, tableLength) : []}
-                // tokenMap={tokenMap}
+                quotePrecision={tokenMap[quoteSymbol].precision}
                 precision={marketMap[ market ].precisionForPrice}
                 currentheight={tableLength * 20 + 20}/>
             : <Box flex={1} height={'100%'} display={'flex'} alignItems={'center'}
@@ -280,13 +282,13 @@ export const MarketView = withTranslation('common')(({
                         id="outlined-select-level"
                         select
                         size={'small'}
-                        value={level}
+                        value={pageTradePro.depthLevel}
                         onChange={handleOnLevelChange}
                         inputProps={{IconComponent: DropDownIcon}}
                     >
                         {pageTradePro.precisionLevels && pageTradePro.precisionLevels.map(({value, label}) => <MenuItem
                             key={value}
-                            value={value}>{label.toString()}</MenuItem>)}
+                            value={value}>{label}</MenuItem>)}
 
                     </TextField>
                 </MarketToolbar>
@@ -297,6 +299,7 @@ export const MarketView = withTranslation('common')(({
                         <DepthBlock onClick={priceClick}
                                     marketInfo={marketMap[ market ]}
                                     type={DepthType.ask}
+                                    // quotePrecision={tokenMap[quoteSymbol].precision}
                                     depths={depthViewData.asks}
                             // showTitle={true}
                         />
