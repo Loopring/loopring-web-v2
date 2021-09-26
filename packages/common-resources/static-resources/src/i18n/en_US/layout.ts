@@ -4,7 +4,7 @@ export default {
     labelLiquidity: 'Pools',
     labelMining: 'Farm',
     labelLayer2: 'Layer2',
-    loopringDomain: 'Loopring Exchange',
+    loopringDomain: 'Loopring Layer2 - APP ',
     labelClassic: 'Classic',
     labelClassicDescription: 'Fast trading with low fees.',
     labelAdvanced: 'Professional',
