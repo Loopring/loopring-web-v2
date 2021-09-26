@@ -337,6 +337,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
         if (account.readyState === AccountStatus.ACTIVATED) {
             const type = limitTradeData.type === TradeProType.sell ? 'quote' : 'base';
             const minAmt = type === 'quote' ? quoteMinAmtInfo?.minAmount : baseMinAmtInfo?.minAmount;
+            //TODO:  minAmt
             const validAmt = 'TODO minAmt'
 
                 // !!(limitCalcTradeParams?.amountBOut && minAmt
@@ -347,7 +348,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
                 || limitTradeData?.quote.tradeValue === 0) {
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: 'labelEnterAmount'}
             } else if (validAmt || minAmt === undefined) {
-                return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: 'TODO minAmt'}
+                return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: 'TODO minAmt'}     // label: ''}
             } else {
                 const symbol: string = limitTradeData[ type ].belong;
                 const minOrderSize = VolToNumberWithPrecision(minAmt, symbol) + ' ' + symbol;
