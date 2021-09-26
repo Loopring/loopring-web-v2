@@ -188,7 +188,8 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
                                 const quoteFilled = sdk.toBig(resp.orderDetail.volumes.quoteFilled)
                                 const percentage1 =baseAmount.eq(BIGO) ? 0 : baseFilled.div(baseAmount).toNumber()
                                 const percentage2 =quoteAmount.eq(BIGO) ? 0 : quoteFilled.div(quoteAmount).toNumber()
-                                if (percentage1 < 0.95 || percentage2 < 0.95) {
+                                myLog('percentage1:', percentage1, ' percentage2:', percentage2)
+                                if (percentage1 === 0 || percentage2 === 0) {
                                     setToastOpen({open: true, type: 'warning', content: t('labelSwapCancelled')})
                                 } else {
                                     setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
@@ -415,13 +416,12 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
         }
     }, [account.readyState, accountStatus, market, tradeCalcData?.coinSell, tradeCalcData?.coinBuy])
 
-
     const walletLayer2Callback = React.useCallback(async () => {
 
         let walletMap: WalletMap<any> | undefined = undefined
         if (account.readyState === AccountStatus.ACTIVATED) {
             walletMap = makeWalletLayer2(true).walletMap;
-            myLog('--ACTIVATED tradeCalcData:', tradeCalcData)
+            // myLog('--ACTIVATED tradeCalcData:', tradeCalcData)
             setTradeData({
                 ...tradeData,
                 sell: {
