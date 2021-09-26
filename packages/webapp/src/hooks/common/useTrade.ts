@@ -340,11 +340,11 @@ export function usePlaceOrder() {
 
             let market = params.market
 
-            let ammMarket = ''
+            let ammMarket: string
 
-            if (params.market) {
+            if (market) {
 
-                const result = params.market.match(/([\w,#]+)-([\w,#]+)/i)
+                const result = market.match(/([\w,#]+)-([\w,#]+)/i)
 
                 if (result) {
                     [, base, quote,] = result
