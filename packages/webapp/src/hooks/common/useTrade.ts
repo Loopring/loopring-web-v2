@@ -418,30 +418,41 @@ export enum PriceLevel {
     Lv2,
 }
 
-export const getPriceImpactInfo = (calcTradeParams: any) => {
+export const getPriceImpactInfo = (calcTradeParams: any, isMarket: boolean = true) => {
     let priceImpact: any = calcTradeParams?.priceImpact ? parseFloat(calcTradeParams?.priceImpact) * 100 : undefined
     let priceImpactColor = 'var(--color-success)'
 
     let priceLevel = PriceLevel.Normal
 
-    if (priceImpact) {
+    if (isMarket) {
 
-        if (priceImpact > 0.1 && priceImpact <= 1) {
-            priceImpactColor = 'var(--color-success)'
-        } else if (priceImpact > 1 && priceImpact <= 3) {
-            priceImpactColor = 'textPrimary'
-        } else if (priceImpact > 3 && priceImpact <= 5) {
-            priceImpactColor = 'var(--color-warning)'
-        } else if (priceImpact > 5 && priceImpact <= 10) {
-            priceImpactColor = 'var(--color-error)'
-            priceLevel = PriceLevel.Lv1
-        } else if (priceImpact > 10) {
-            priceImpactColor = 'var(--color-error)'
-            priceLevel = PriceLevel.Lv2
+        if (priceImpact) {
+    
+            if (priceImpact > 0.1 && priceImpact <= 1) {
+                priceImpactColor = 'var(--color-success)'
+            } else if (priceImpact > 1 && priceImpact <= 3) {
+                priceImpactColor = 'textPrimary'
+            } else if (priceImpact > 3 && priceImpact <= 5) {
+                priceImpactColor = 'var(--color-warning)'
+            } else if (priceImpact > 5 && priceImpact <= 10) {
+                priceImpactColor = 'var(--color-error)'
+                priceLevel = PriceLevel.Lv1
+            } else if (priceImpact > 10) {
+                priceImpactColor = 'var(--color-error)'
+                priceLevel = PriceLevel.Lv2
+            }
+    
+        } else {
+            priceImpactColor = 'var(--color-text-primary)'
         }
 
     } else {
-        priceImpactColor = 'var(--color-text-primary)'
+    
+        if (priceImpact > 20) {
+            priceImpactColor = 'var(--color-error)'
+            priceLevel = PriceLevel.Lv1
+        }
+
     }
 
     return {

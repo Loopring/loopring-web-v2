@@ -20,11 +20,7 @@ import { LoopringAPI } from 'api_wrapper';
 import * as _ from 'lodash'
 import { BIGO } from 'defs/common_defs';
 
-export const useLimit = <C extends { [key: string]: any }>(market: MarketType): {
-    [key: string]: any;
-    // market: MarketType|undefined;
-    // marketTicker: MarketBlockProps<C> |undefined,
-} => {
+export const useLimit = <C extends { [key: string]: any }>(market: MarketType) => {
     const {
         pageTradePro,
         updatePageTradePro,
@@ -34,7 +30,9 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
     } = usePageTradePro();
     const { marketMap } = useTokenMap();
     const { t } = useTranslation('common');
+
     const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
+
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
@@ -130,7 +128,9 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
         isAgree = true
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
         const { limitCalcTradeParams, request, tradeCalcProData } = pageTradePro;
+
         setAlertOpen(false)
+
         if (isAgree && LoopringAPI.userAPI && request) {
             try {
 
@@ -305,8 +305,11 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
 
     const onSubmitBtnClick = React.useCallback(async () => {
         setIsLimitLoading(true);
-        const { priceLevel } = getPriceImpactInfo(pageTradePro.calcTradeParams)
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
+        const { priceLevel } = getPriceImpactInfo(pageTradePro.limitCalcTradeParams, false)
         const { isIpValid } = await LoopringAPI?.exchangeAPI?.checkIpValid('') ?? { isIpValid: false }
+
+        myLog('---- onSubmitBtnClick priceLevel:', priceLevel)
 
         //TODO: pending on checkIpValid API
         if (isIpValid === false) {
@@ -321,6 +324,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
                     // setConfirmOpen(true)
                     break
                 default:
+                    debugger
                     limitSubmit(undefined as any, true);
                     break
             }
@@ -340,9 +344,8 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
         submitCallback: onSubmitBtnClick
     })
     return {
-        // alertOpen,
-        // confirmOpen,
-        toastOpen,
+        toastOpen, 
+        setToastOpen, 
         closeToast,
         limitAlertOpen: alertOpen,
         resetLimitData: resetTradeData,
@@ -351,6 +354,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
         onChangeLimitEvent,
         tradeLimitI18nKey,
         tradeLimitBtnStatus,
+        limitSubmit,
         limitBtnClick,
         handlePriceError,
         tradeLimitBtnStyle,

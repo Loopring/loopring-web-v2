@@ -37,7 +37,7 @@ export const SpotView = withTranslation('common')(({
     //@ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const {
-        toastOpenL, closeToastL, limitTradeData, onChangeLimitEvent,
+        toastOpen: toastOpenL, closeToast: closeToastL, limitTradeData, onChangeLimitEvent,
         tradeLimitI18nKey,
         tradeLimitBtnStatus,
         tradeLimitBtnStyle,
@@ -91,6 +91,7 @@ export const SpotView = withTranslation('common')(({
                        value={getValuePrecisionThousand(pageTradePro?.priceImpactObj?.value,2) + '%' as any}/>
         <AlertLimitPrice handleClose={limitSubmit} open={limitAlertOpen}
                        value={pageTradePro.tradeType === TradeProType.buy?"labelPriceCompareGreat":"labelPriceCompareLess"}/>
+        
         <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
             <Box component={'header'} width={'100%'}>
                 <Tabs variant={'fullWidth'} value={tabIndex} onChange={onTabChange}>
@@ -103,7 +104,7 @@ export const SpotView = withTranslation('common')(({
                 {tabIndex === TabIndex.limit && <LimitTrade
                   // disabled={false}
                   tokenPriceProps={{
-                      handleError: handlePriceError,
+                      handleError: handlePriceError as any,
                       decimalsLimit: marketMap[ market ].precisionForPrice
                   }
                   }
@@ -112,11 +113,11 @@ export const SpotView = withTranslation('common')(({
                   tokenQuoteProps={{disabled: isLimitLoading, decimalsLimit: tokenMap[ quoteSymbol ].precision}}
                   tradeLimitI18nKey={tradeLimitI18nKey}
                   tradeLimitBtnStyle={tradeLimitBtnStyle}
-                  tradeLimitBtnStatus={tradeLimitBtnStatus}
-                  handleSubmitEvent={limitBtnClick}
+                  tradeLimitBtnStatus={tradeLimitBtnStatus as any}
+                  handleSubmitEvent={limitBtnClick as any}
                   tradeCalcProData={pageTradePro.tradeCalcProData}
                   tradeData={limitTradeData}
-                  onChangeEvent={onChangeLimitEvent}/>}
+                  onChangeEvent={onChangeLimitEvent as any}/>}
                 {tabIndex === TabIndex.market && <MarketTrade
                   // disabled={false}
 
