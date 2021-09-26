@@ -271,6 +271,9 @@ export function makeLimitReq({
         baseVolShow,
         quoteVol: quoteVol.toString(),
         quoteVolShow,
+        takerRate,
+        feeBips,
+        maxFeeBips,
     }
 
     return {
@@ -299,7 +302,6 @@ export function usePlaceOrder() {
 
     const {tokenMap, marketArray,} = useTokenMap()
     const {ammMap} = useAmmMap()
-
 
     const {exchangeInfo,} = useSystem()
 
@@ -353,13 +355,9 @@ export function usePlaceOrder() {
         marketRequest: undefined | { [ key: string ]: any },
     } => {
 
-        // if (!exchangeInfo) {
-        //     return
-        // }
-
         const {tokenAmtMap, feeBips} = getTokenAmtMap(params)
 
-        myLog('makeMarketReqInHook tokenAmtMap:', tokenAmtMap)
+        myLog('makeMarketReqInHook tokenAmtMap:', tokenAmtMap, feeBips)
 
         if (exchangeInfo) {
             const fullParams: ReqParams = {
@@ -384,6 +382,9 @@ export function usePlaceOrder() {
     // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
     const makeLimitReqInHook = React.useCallback((params: ReqParams): { calcTradeParams: undefined | { [ key: string ]: any }; limitRequest: undefined | { [ key: string ]: any } } => {
         const {tokenAmtMap, feeBips} = getTokenAmtMap(params)
+
+        myLog('makeLimitReqInHook tokenAmtMap:', tokenAmtMap, feeBips)
+
         if (exchangeInfo) {
             const fullParams: ReqParams = {
                 ...params,
@@ -395,7 +396,7 @@ export function usePlaceOrder() {
             }
             return makeLimitReq(fullParams)
         } else {
-            myLog('makeMarketReqInHook error no tokenAmtMap', tokenAmtMap)
+            myLog('makeLimitReqInHook error no tokenAmtMap', tokenAmtMap)
             return {
                 calcTradeParams: undefined,
                 limitRequest: undefined,
@@ -410,6 +411,7 @@ export function usePlaceOrder() {
     }
 
 }
+
 export enum PriceLevel {
     Normal,
     Lv1,
