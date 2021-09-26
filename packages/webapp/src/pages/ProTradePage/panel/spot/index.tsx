@@ -8,7 +8,7 @@ import {
     Toast, TradeProType
 } from '@loopring-web/component-lib';
 import { TOAST_TIME } from 'defs/common_defs';
-import { MarketType } from '@loopring-web/common-resources';
+import { getValuePrecisionThousand, MarketType } from '@loopring-web/common-resources';
 import { usePageTradePro } from 'stores/router';
 import { useMarket } from './hookMarket';
 import { useLimit } from './hookLimit';
@@ -85,9 +85,10 @@ export const SpotView = withTranslation('common')(({
         <Toast alertText={toastOpenL?.content ?? ''} severity={toastOpenL?.type ?? 'success'}
                open={toastOpenL?.open ?? false}
                autoHideDuration={TOAST_TIME} onClose={closeToastL}/>
-        <AlertImpact handleClose={marketSubmit} open={alertOpen} value={pageTradePro.priceImpactObj?.value as any}/>
+        <AlertImpact handleClose={marketSubmit} open={alertOpen}
+                     value={getValuePrecisionThousand(pageTradePro?.priceImpactObj?.value,2) + '%' as any}/>
         <ConfirmImpact handleClose={marketSubmit} open={confirmOpen}
-                       value={pageTradePro.priceImpactObj?.value as any}/>
+                       value={getValuePrecisionThousand(pageTradePro?.priceImpactObj?.value,2) + '%' as any}/>
         <AlertLimitPrice handleClose={limitSubmit} open={limitAlertOpen}
                        value={pageTradePro.tradeType === TradeProType.buy?"labelPriceCompareGreat":"labelPriceCompareLess"}/>
         <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'}>

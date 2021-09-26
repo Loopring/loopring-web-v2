@@ -4,7 +4,14 @@ import { useToast } from 'hooks/common/useToast';
 import { LoopringAPI } from 'api_wrapper';
 import * as sdk from 'loopring-sdk';
 import { walletLayer2Service } from 'services/socket';
-import { MarketTradeData, TradeBaseType, TradeBtnStatus, TradeProType, useSettings } from '@loopring-web/component-lib';
+import {
+    MarketTradeData,
+    TradeBaseType,
+    TradeBtnStatus,
+    TradeProType,
+    useOpenModals,
+    useSettings
+} from '@loopring-web/component-lib';
 import { usePageTradePro } from 'stores/router';
 import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
@@ -15,6 +22,7 @@ import { VolToNumberWithPrecision } from 'utils/formatter_tool';
 import { getPriceImpactInfo, PriceLevel, usePlaceOrder } from 'hooks/common/useTrade';
 import store from 'stores';
 import * as _ from 'lodash'
+import { BIGO } from 'defs/common_defs';
 
 export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType): {
     [ key: string ]: any;
@@ -28,6 +36,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
     const {toastOpen, setToastOpen, closeToast} = useToast();
     const {account} = useAccount();
     const {slippage} = useSettings()
+    const {setShowSupport} = useOpenModals()
     // const [marketTradeData, setMarketTradeData] = React.useState<MarketTradeData<IBData<C>> | undefined>(undefined);
     const {
         pageTradePro,
@@ -233,13 +242,13 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         const {calcTradeParams, request} =  pageTradePro;
         setAlertOpen(false)
         setConfirmOpen(false)
-
         if (isAgree) {
 
-            setIsMarketLoading(true);
             if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo
                 || !calcTradeParams || !request
                 || account.readyState !== AccountStatus.ACTIVATED) {
+
+                debugger
 
                 setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                 setIsMarketLoading(false)
@@ -278,13 +287,25 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                         accountId: account.accountId,
                         orderHash: response.hash
                     }, account.apiKey)
-
+    
                     myLog('-----> resp:', resp)
-
+    
                     if (resp.orderDetail?.status !== undefined) {
+                        myLog('resp.orderDetail:', resp.orderDetail)
                         switch (resp.orderDetail?.status) {
                             case sdk.OrderStatus.cancelled:
-                                setToastOpen({open: true, type: 'warning', content: t('labelSwapCancelled')})
+                                const baseAmount = sdk.toBig(resp.orderDetail.volumes.baseAmount)
+                                const baseFilled = sdk.toBig(resp.orderDetail.volumes.baseFilled)
+                                const quoteAmount = sdk.toBig(resp.orderDetail.volumes.quoteAmount)
+                                const quoteFilled = sdk.toBig(resp.orderDetail.volumes.quoteFilled)
+                                const percentage1 =baseAmount.eq(BIGO) ? 0 : baseFilled.div(baseAmount).toNumber()
+                                const percentage2 =quoteAmount.eq(BIGO) ? 0 : quoteFilled.div(quoteAmount).toNumber()
+                                myLog('percentage1:', percentage1, ' percentage2:', percentage2)
+                                if (percentage1 === 0 || percentage2 === 0) {
+                                    setToastOpen({open: true, type: 'warning', content: t('labelSwapCancelled')})
+                                } else {
+                                    setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
+                                }
                                 break
                             case sdk.OrderStatus.processed:
                                 setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
@@ -293,6 +314,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                                 setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                         }
                     }
+
                     walletLayer2Service.sendUserUpdate()
                     setMarketTradeData((state) => {
                         return {
@@ -324,6 +346,8 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
             setIsMarketLoading(false)
 
+        } else{
+            setIsMarketLoading(false)
         }
 
     }, [account.readyState, tokenMap, marketTradeData, setIsMarketLoading, setToastOpen, setMarketTradeData])
@@ -353,21 +377,27 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
         return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
     }, [account.readyState, marketTradeData,marketSubmit])
-    const onSubmitBtnClick = React.useCallback(()=>{
+    const onSubmitBtnClick = React.useCallback(async ()=>{
+        setIsMarketLoading(true);
         const {priceLevel} = getPriceImpactInfo(pageTradePro.calcTradeParams)
-
-        switch (priceLevel) {
-            case PriceLevel.Lv1:
-                setAlertOpen(true)
-                break
-            case PriceLevel.Lv2:
-                setConfirmOpen(true)
-                break
-            default:
-                marketSubmit(undefined as any, true);
-                break
+        const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('')?? {isIpValid:false}
+        //TODO: pending on checkIpValid API
+        if(isIpValid === false){
+            setShowSupport({isShow:true})
+            setIsMarketLoading(false)
+        }else {
+            switch (priceLevel) {
+                case PriceLevel.Lv1:
+                    setAlertOpen(true)
+                    break
+                case PriceLevel.Lv2:
+                    setConfirmOpen(true)
+                    break
+                default:
+                    marketSubmit(undefined as any, true);
+                    break
+            }
         }
-
         myLog('swap directly')
     },[])
 
