@@ -1,6 +1,6 @@
 import React from 'react';
 import { useToast } from 'hooks/common/useToast';
-import { IBData, MarketType, myLog, } from '@loopring-web/common-resources';
+import { AccountStatus, IBData, MarketType, myLog, } from '@loopring-web/common-resources';
 import {
     LimitTradeData,
     TradeBaseType,
@@ -19,6 +19,7 @@ import * as sdk from 'loopring-sdk';
 import { LoopringAPI } from 'api_wrapper';
 import * as _ from 'lodash'
 import { BIGO } from 'defs/common_defs';
+import { VolToNumberWithPrecision } from '../../../../utils/formatter_tool';
 
 export const useLimit = <C extends { [key: string]: any }>(market: MarketType): {
     [key: string]: any;
@@ -329,6 +330,33 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
             }
         }
     }, [])
+    const availableTradeCheck = React.useCallback((): { tradeBtnStatus: TradeBtnStatus, label: string } => {
+        const account = store.getState().account;
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
+        const {limitCalcTradeParams, quoteMinAmtInfo, baseMinAmtInfo} =  pageTradePro;
+        if (account.readyState === AccountStatus.ACTIVATED) {
+            const type = limitTradeData.type === TradeProType.sell ? 'quote' : 'base';
+            const minAmt = type === 'quote' ? quoteMinAmtInfo?.minAmount : baseMinAmtInfo?.minAmount;
+            const validAmt = 'TODO minAmt'
+
+                // !!(limitCalcTradeParams?.amountBOut && minAmt
+                // && sdk.toBig(limitCalcTradeParams?.amountBOut).gte(sdk.toBig(minAmt)));
+            if (limitTradeData?.base.tradeValue === undefined
+                || limitTradeData?.quote.tradeValue === undefined
+                || limitTradeData?.base.tradeValue === 0
+                || limitTradeData?.quote.tradeValue === 0) {
+                return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: 'labelEnterAmount'}
+            } else if (validAmt || minAmt === undefined) {
+                return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: 'TODO minAmt'}
+            } else {
+                const symbol: string = limitTradeData[ type ].belong;
+                const minOrderSize = VolToNumberWithPrecision(minAmt, symbol) + ' ' + symbol;
+                return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin, ${minOrderSize}`}
+            }
+        }
+        return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
+    }, [ limitTradeData,limitSubmit])
+
 
     const {
         btnStatus: tradeLimitBtnStatus,
@@ -336,9 +364,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
         btnLabel: tradeLimitI18nKey,
         btnStyle: tradeLimitBtnStyle
     } = useSubmitBtn({
-        availableTradeCheck: () => {
-            return { label: '', tradeBtnStatus: TradeBtnStatus.AVAILABLE }
-        },
+        availableTradeCheck,
         isLoading: isLimitLoading,
         submitCallback: onSubmitBtnClick
     })
