@@ -209,7 +209,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         setMarketTradeData((state) => {
             return {
                 ...state,
-                type:type??state.type,
+                type:type??pageTradePro.tradeType,
                 base: {
                     ...state.base,
                     // belong: baseSymbol,
@@ -249,9 +249,6 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo
                 || !calcTradeParams || !request
                 || account.readyState !== AccountStatus.ACTIVATED) {
-
-                debugger
-
                 setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                 setIsMarketLoading(false)
 
@@ -357,12 +354,16 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
     const availableTradeCheck = React.useCallback((): { tradeBtnStatus: TradeBtnStatus, label: string } => {
         const account = store.getState().account;
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-        const {calcTradeParams, buyMinAmtInfo} =  pageTradePro;
+        const {calcTradeParams,
+            // buyMinAmtInfo,
+            sellMinAmtInfo} =  pageTradePro;
 
         if (account.readyState === AccountStatus.ACTIVATED) {
-            const type = marketTradeData.type === TradeProType.sell ? 'quote' : 'base';
-            const minAmt = buyMinAmtInfo?.minAmount;
-
+            // const type = marketTradeData.type === TradeProType.sell ? 'quote' : 'base';
+            // const minAmt = buyMinAmtInfo?.minAmount;
+            // myLog('minAmt',calcTradeParams?.amountBOut,minAmt)
+            const minAmt =  sellMinAmtInfo?.minAmount
+            // myLog(marketTradeData.type ,'minAmt',minAmt)
             const validAmt = !!(calcTradeParams?.amountBOut && minAmt
                 && sdk.toBig(calcTradeParams?.amountBOut).gte(sdk.toBig(minAmt)));
 
@@ -374,7 +375,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             } else if (validAmt || minAmt === undefined) {
                 return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
             } else {
-                const symbol: string = marketTradeData[ type ].belong;
+                const symbol: string = marketTradeData[ 'base' ].belong;
                 const minOrderSize = VolToNumberWithPrecision(minAmt, symbol) + ' ' + symbol;
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin, ${minOrderSize}`}
             }
@@ -389,7 +390,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         const {priceLevel} = getPriceImpactInfo(pageTradePro.calcTradeParams)
         const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('')?? {isIpValid:false}
         //TODO: pending on checkIpValid API
-        if(isIpValid === false){
+        if(!isIpValid){
             setShowSupport({isShow:true})
             setIsMarketLoading(false)
         }else {

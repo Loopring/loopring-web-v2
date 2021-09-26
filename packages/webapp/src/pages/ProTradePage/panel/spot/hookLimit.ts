@@ -11,7 +11,7 @@ import {
 import { usePageTradePro } from 'stores/router';
 import { walletLayer2Service } from 'services/socket';
 import { useSubmitBtn } from './hookBtn';
-import { getPriceImpactInfo, LimitPrice, PriceLevel, usePlaceOrder } from 'hooks/common/useTrade';
+import { getPriceImpactInfo, PriceLevel, usePlaceOrder } from 'hooks/common/useTrade';
 import { useTokenMap } from 'stores/token';
 import { useTranslation } from 'react-i18next';
 import store from 'stores';
@@ -90,7 +90,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
         setLimitTradeData((state) => {
             return {
                 ...state,
-                type: type ?? state.type,
+                type: type??pageTradePro.tradeType,
                 base: {
                     belong: baseSymbol,
                     balance: walletMap ? walletMap[baseSymbol as string]?.count : 0,
@@ -315,18 +315,13 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
         myLog('---- onSubmitBtnClick priceLevel:', priceLevel)
 
         //TODO: pending on checkIpValid API
-        if (isIpValid === false) {
+        if (!isIpValid) {
             setShowSupport({ isShow: true })
             setIsLimitLoading(false)
         } else {
             switch (priceLevel) {
                 case PriceLevel.Lv1:
                     setAlertOpen(true)
-                    break
-                // case LimitPrice.Less:
-                //     setAlertOpen(true)
-
-                    // setConfirmOpen(true)
                     break
                 default:
                     limitSubmit(undefined as any, true);
@@ -337,24 +332,22 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
     const availableTradeCheck = React.useCallback((): { tradeBtnStatus: TradeBtnStatus, label: string } => {
         const account = store.getState().account;
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-        const {limitCalcTradeParams, sellMinAmtInfo, buyMinAmtInfo} =  pageTradePro;
+        const {limitCalcTradeParams,
+            sellMinAmtInfo,
+            buyMinAmtInfo} =  pageTradePro;
         if (account.readyState === AccountStatus.ACTIVATED) {
-            const type = limitTradeData.type === TradeProType.sell ? 'quote' : 'base';
-            const minAmt = buyMinAmtInfo?.minAmount
-            //TODO:  minAmt
-            const validAmt = 'TODO minAmt'
-
-                // !!(limitCalcTradeParams?.amountBOut && minAmt
-                // && sdk.toBig(limitCalcTradeParams?.amountBOut).gte(sdk.toBig(minAmt)));
+            // const type = limitTradeData.type === TradeProType.sell ? 'quote' : 'base';
+            const minAmt = limitTradeData.type === TradeProType.sell ? sellMinAmtInfo?.minAmount : buyMinAmtInfo?.minAmount
+            const validAmt =!!(limitCalcTradeParams?.baseVol && minAmt && sdk.toBig(limitCalcTradeParams?.baseVol).gte(sdk.toBig(minAmt)));
             if (limitTradeData?.base.tradeValue === undefined
                 || limitTradeData?.quote.tradeValue === undefined
                 || limitTradeData?.base.tradeValue === 0
                 || limitTradeData?.quote.tradeValue === 0) {
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: 'labelEnterAmount'}
             } else if (validAmt || minAmt === undefined) {
-                return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: 'TODO minAmt'}     // label: ''}
+                return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}     // label: ''}
             } else {
-                const symbol: string = limitTradeData[ type ].belong;
+                const symbol: string = limitTradeData[ 'base' ].belong;
                 const minOrderSize = VolToNumberWithPrecision(minAmt, symbol) + ' ' + symbol;
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin, ${minOrderSize}`}
             }
