@@ -266,8 +266,8 @@ export default {
     labelImpactAgree:'Please enter "AGREE" to confirm again.',
     labelImpactTitle : 'Swap Requires Confirmation',
     labelPriceExtraGreat: 'The price you set is {{compare}} than 20% the market price. Are you sure you want to make this order?',
-    labelPriceCompareGreat:'大于',
-    labelPriceCompareLess:'低于',
+    labelPriceCompareGreat:'Greater',
+    labelPriceCompareLess:'Less',
     labelImpactExtraGreat: 'Your transaction amount will affect the pool price <1>{{value}}</1>. Are you sure to swap?',
     labelCalculating:'Calculating...',
     labelAmmMyTransactions: 'My Transactions',
@@ -293,14 +293,14 @@ export default {
     labelUpdateAccountSubmit: 'Activating Tx submitted.',
     labelUnlockAccountSuccess: 'Unlock successfully!',
     labelUnlockAccountFailed: 'Unlock failed!',
-
+    labelNotSupportTitle:'Information',
+    labelNotAllowTrade:'Apologies! But we are unable to provide services of order and AMM deposit by your IP address to you as per our Terms of Use.',
+    labelKnown:'OK',
     labelResetAccount: 'Reset Layer2 Account',
-
     labelExportAccount: 'Export Account',
     labelExportAccountNoPhotos: 'No Photos',
     labelExportAccountDescription: 'Please keep the secret',
     labelExportAccountCopy: 'Copy',
-
     labelExportAccountSuccess: 'Export Account successfully!',
     labelExportAccountFailed: 'Export Account failed!',
     // labelCreateAccountApproveWaitForAuth: 'Waiting for <1>{{symbol}}</1> Approve...',
@@ -331,6 +331,10 @@ export default {
     labelProToolbar24hLow: '24h Low',
     labelProToolbar24hBaseVol: '24h Volume({{symbol}})',
     labelProToolbar24hQuoteVol: '24h Volume({{symbol}})',
+    labelErrorPricePrecisionLimit:'{{symbol}} price only {{decimal}} decimals allowed',
+    labelDepthPrice: 'Price({{symbol}})',
+    labelDepthAmount: 'Amount({{symbol}})',
+    labelDepthTotal: 'Total',
 
     labelProChartTitle: 'Chart',
     labelProTimeDefault: 'Time(1m)',
@@ -342,12 +346,6 @@ export default {
     labelProTime1D: '1D',
     labelProTime1W: '1W',
     labelProTime1M: '1M',
-
-    labelErrorPricePrecisionLimit:'{{symbol}} price only {{decimal}} decimals allowed',
-    labelDepthPrice: 'Price({{symbol}})',
-    labelDepthAmount: 'Amount({{symbol}})',
-    labelDepthTotal: 'Total',
-
 
     labelSwapCancelled: 'Swap is cancelled.',
     labelSuccessfully: 'Successfully',
