@@ -108,7 +108,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     state.pageTradePro.ammPoolSnapshot = ammPoolSnapshot;
                 }
 
-                if (request) {
+                if (request !== undefined) {
                     state.pageTradePro.request = request
                 }
 
