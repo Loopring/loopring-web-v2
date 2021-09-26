@@ -1,8 +1,9 @@
-import { Box, Container, ListItemAvatar, MenuItem, MenuProps, Typography } from '@mui/material';
+import {  Container, ListItemAvatar, MenuItem, MenuProps, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { WithTranslation } from "react-i18next";
-// @ts-ignore
-import { anchorRef, bindHover, bindMenu, bindTrigger, usePopupState } from "material-ui-popup-state/hooks";
+import {
+    // anchorRef, bindHover, bindTrigger
+    bindMenu, bindHover, usePopupState } from "material-ui-popup-state/hooks";
 import { BasicHeaderItem, HeadMenuType, MenuItemLink, MenuItemProps } from './Interface'
 import styled from "@emotion/styled";
 import clsx from "clsx";
@@ -35,22 +36,30 @@ export const HeaderMenu = styled(Container)`
   position: relative;
 ` as typeof Container;
 const StyledHeadMenuItem = styled(MenuItem)<MenuItemProps<any>>`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-transform: capitalize;
-  // font-size: ${({theme}) => theme.fontDefault.h5};
-  box-shadow: inherit;
-  height: var(--header-height);
-  //color: var(--color-text-secondary);
-  background: inherit;
-  position: relative;
-  &.Mui-selected,&:hover,&.Mui-selected:hover {
-    background: inherit;
-    color: var(--color-text-button-select);
+  &:not(.layer-0){
+    display: flex;
+    height: var(--header-submenu-item-height);
+    width: var(--header-submenu-item-weight);
+    align-items: flex-start;
   }
-  
   &.layer-0 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-transform: capitalize;
+      // font-size: ${({theme}) => theme.fontDefault.h5};
+    box-shadow: inherit;
+    height: var(--header-height);
+    //color: var(--color-text-secondary);
+    background: inherit;
+    position: relative;
+    &.Mui-selected,&:hover,&.Mui-selected:hover {
+      background: inherit;
+      color: var(--color-text-button-select);
+    }
+    &.Mui-selected.Mui-focusVisible{
+      background: inherit;
+    }
     .MuiButtonBase-root {
       opacity: 1;
       color: inherit;
@@ -86,64 +95,45 @@ const StyledHeadMenuItem = styled(MenuItem)<MenuItemProps<any>>`
 }
 ` as typeof MenuItem;
 const StyledLayer2Item = styled(MenuItem)<MenuItemProps<any>>`
-   padding: 0 1.2rem;
-  // border-left-color: transparent;
-   height: 100%;
-  //
-  p {
-    font-size: ${({theme}) => theme.fontDefault.h5};
-    line-height: 2em;
-  }
-
-  h5 {
-    color: var(--color-text-primary);
-    text-transform: capitalize;
-    line-height: 2em;
-  }
-
+  padding:0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   &:hover {
     //border-left-color: transparent;
     background: var(--opacity);
     h5 {
       color: var(--color-primary)
     }
-
-    //background: var(--color-box-hover);
   }
-
-  // .dot {
-  //   width: 24px;
-  //   text-align: center;
-  //   text-indent: .3em;
-  //   //font-size:1.1em;
-  //   transform: scale(1.2) translateY(5px);
-  //   color: var(--color-primary)
-  //
-  // }
 ` as typeof MenuItem;
 
 
 const StyledHeaderMenuSub = styled(Menu)<MenuProps>`
   && {
-    color: var(--color-text-secondary)
+    color: var(--color-text-third)
     ul {
-      background-color: var(--color-pop-bg);
+      ${({theme}) => theme.border.defaultFrame({c_key: 'var(--opacity)',d_R:0.5})};
+      background: var(--color-pop-bg);
       padding: 0;
-      .layer-1 {
-        height: var(--header-menu-list-height)
-      }
+      //.layer-sub {
+      //  height: var(--header-menu-list-height)
+      //}
     }
 
 
   }` as typeof Menu;
 const StyledTabBtn = styled(MenuItem)<MenuItemProps<any>>`
+  &.Mui-selected, &.Mui-selected.Mui-focusVisible{
+    background: inherit;
+  }
   && {
     text-transform: capitalize;
     display: flex;
     height: 100%;
-    //color: var(--color-text-secondary);
-    // font-size: ${({theme}) => theme.fontDefault.h5};
-    padding: 0 16px;
+    padding-left: ${({theme}) => theme.unit*3/2}px;
+    padding-right: 0;
     svg {
       transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     }
@@ -178,12 +168,12 @@ export const HeadMenuItem = React.memo(React.forwardRef(<I extends BasicHeaderIt
 
 export let Layer2Item: <I extends BasicHeaderItem>(props: (MenuItemProps<I> & WithTranslation)) => JSX.Element;
 Layer2Item = React.memo(<I extends BasicHeaderItem>({t, label}: MenuItemProps<I> & WithTranslation) => {
-    return <StyledLayer2Item key={label.id}>
+    return <StyledLayer2Item  className={'layer-sub'}  key={label.id}   >
         {/*<Box className={'dot'} paddingTop={0}>&#x25CF;</Box>*/}
-        <Box display={"flex"} paddingRight={1.5} flexDirection={"column"} justifyContent={"space-around"}>
-            <Box paddingTop={0.5} lineHeight={'1.1'}><Typography component={'h5'} variant={"h6"}>{t(label.i18nKey)}</Typography></Box>
-            <Box><Typography component={'p'} variant={'body2'}>{label?.description ? t(label.description) : ''}</Typography></Box>
-        </Box>
+        {/*<Box display={"flex"} paddingRight={1.5} flexDirection={"column"} justifyContent={"space-around"}>*/}
+        <Typography lineHeight={'22px'} component={'h5'} variant={"body1"} color={'text.primary'}>{t(label.i18nKey)}</Typography>
+        <Typography lineHeight={'20px'} component={'p'} variant={'body2'} color={'inherit'}>{label?.description ? t(label.description) : ''}</Typography>
+        {/*</Box>*/}
     </StyledLayer2Item>
 }) as <I extends BasicHeaderItem>(props: MenuItemProps<I> & WithTranslation) => JSX.Element;
 
@@ -198,17 +188,19 @@ export const HeaderMenuSub = React.memo(React.forwardRef(<I extends BasicHeaderI
                                                                                      }: HeadMenuType<I> & WithTranslation, ref: ForwardedRef<any>) => {
 
     const popupState = usePopupState({variant: 'popover', popupId: `popupId: 'tradeHeaderSubMenu'`});
-    return <><StyledTabBtn selected={selected} {...bindHover(popupState)} key={label.id} className={className} ref={ref}>
-        <Typography component={'span'} variant={'body1'} paddingRight={1}>
-            {t(label.i18nKey)}</Typography>
-            <ListItemAvatar color={'inherit'}><DropDownIcon/></ListItemAvatar>
+    return <>
+        <StyledTabBtn selected={selected} {...bindHover(popupState)} key={label.id} className={className} ref={ref}>
+            <Typography component={'span'} variant={'body1'} paddingRight={1}>
+                {t(label.i18nKey)}
+            </Typography>
+                <ListItemAvatar color={'inherit'} style={{display:'inline-flex',alignItems:'center'}}><DropDownIcon fontSize={'medium'}/></ListItemAvatar>
         </StyledTabBtn>
         <StyledHeaderMenuSub key={`menu-${layer}-${label.id}`}
                              {...bindMenu(popupState)}
-                             getContentAnchorEl={null}
+                             // getContentAnchorEl={null}
                              anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
                              transformOrigin={{vertical: 'top', horizontal: 'left'}}
-                             className={`menu-${layer}-${label.id}`}>
+                             className={`MuiPaper-elevation2 menu-${layer}-${label.id}`}>
             {renderList && renderList({handleListKeyDown: popupState.close})}
         </StyledHeaderMenuSub>
         {/*</ParentPopupState.Provider>*/}

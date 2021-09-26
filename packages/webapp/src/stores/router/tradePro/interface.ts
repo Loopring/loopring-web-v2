@@ -28,7 +28,8 @@ export type limitCalcParams = {
     isBuy: boolean
     priceImpact: number
     baseVol: string
-    baseVolShow: string | number
+    baseVolShow: string | number ,
+    amountBOut: string;
     quoteVol: string
     quoteVolShow: string | number
 }
@@ -36,7 +37,7 @@ export type limitCalcParams = {
 export type PageTradePro<C> = {
     market: MarketType  // eg: ETH-LRC, Pair from loopring market
     // tradePair?: MarketType  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
-    request?: sdk.SubmitOrderRequestV3,
+    request?: sdk.SubmitOrderRequestV3 | null | undefined,
     tradeCalcProData: Partial<TradeCalcProData<keyof C>>
     calcTradeParams?:Partial<marketCalcParams> | null | undefined,
     limitCalcTradeParams?:Partial<limitCalcParams> | null | undefined,
@@ -55,8 +56,8 @@ export type PageTradePro<C> = {
     feeBips?: number | string,
     totalFee?: number | string,
     takerRate?: number | string,
-    quoteMinAmtInfo?: undefined | OrderInfo,
-    baseMinAmtInfo?: undefined | OrderInfo;
+    sellMinAmtInfo?: undefined | OrderInfo,
+    buyMinAmtInfo?: undefined | OrderInfo;
     lastStepAt?:'base'|'quote'|undefined,
     tradeArray?:RawDataTradeItem[],
 }

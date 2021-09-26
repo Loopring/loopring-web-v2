@@ -6,7 +6,7 @@ import {
     // RedPockIcon,
     // RewardIcon,
     SecurityIcon,
-    VipIcon,
+    // VipIcon,
 } from '../svg';
 
 import { HeaderMenuItemInterface, HeaderMenuTabStatus } from '../loopring-interface';
@@ -46,16 +46,16 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [{
         id: 'Classic', i18nKey: 'labelClassic',
         description: 'labelClassicDescription',
     },
-    router: {path: '/trading/lite'},
+     router: {path: '/trading/lite/LRC-ETH'},
 },
-// {
-//     label: {
-//         id: 'Advanced', i18nKey: 'labelAdvanced',
-//         //TODO: translate id
-//         description: 'labelAdvancedDescription',
-//     },
-//     router: { path: '/trading/pro' },
-// },
+{
+    label: {
+        id: 'Advanced', i18nKey: 'labelAdvanced',
+        //TODO: translate id
+        description: 'labelAdvancedDescription',
+    },
+    router: { path: '/trading/pro/LRC-ETH' },
+},
 ]
 
 
@@ -85,8 +85,8 @@ export let headerMenuData: Array<HeaderMenuItemInterface> = [
         label: {
             id: 'Trading', i18nKey: 'labelTrade',
         },
-        router: {path: '/trading/lite/LRC-ETH'},
         status: HeaderMenuTabStatus.default,
+        child: layer2ItemData,
     },
     {
         label: {
