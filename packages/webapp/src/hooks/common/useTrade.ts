@@ -417,6 +417,14 @@ export enum PriceLevel {
     Lv1,
     Lv2,
 }
+export enum LimitPrice {
+    Normal,
+    Greater,
+    Less
+    // Lv1,
+    // Lv2,
+}
+
 
 export const getPriceImpactInfo = (calcTradeParams: any) => {
     let priceImpact: any = calcTradeParams?.priceImpact ? parseFloat(calcTradeParams?.priceImpact) * 100 : undefined

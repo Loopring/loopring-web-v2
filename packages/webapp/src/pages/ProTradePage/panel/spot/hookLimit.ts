@@ -11,7 +11,7 @@ import {
 import { usePageTradePro } from 'stores/router';
 import { walletLayer2Service } from 'services/socket';
 import { useSubmitBtn } from './hookBtn';
-import { getPriceImpactInfo, PriceLevel, usePlaceOrder } from 'hooks/common/useTrade';
+import { getPriceImpactInfo, LimitPrice, PriceLevel, usePlaceOrder } from 'hooks/common/useTrade';
 import { useTokenMap } from 'stores/token';
 import { useTranslation } from 'react-i18next';
 import store from 'stores';
@@ -305,7 +305,8 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
 
     const onSubmitBtnClick = React.useCallback(async () => {
         setIsLimitLoading(true);
-        const { priceLevel } = getPriceImpactInfo(pageTradePro.calcTradeParams)
+        // const { priceLevel } = getPriceImpactInfo(pageTradePro.calcTradeParams)
+        const priceLevel = LimitPrice.Greater;
         const { isIpValid } = await LoopringAPI?.exchangeAPI?.checkIpValid('') ?? { isIpValid: false }
 
         //TODO: pending on checkIpValid API
@@ -314,10 +315,12 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
             setIsLimitLoading(false)
         } else {
             switch (priceLevel) {
-                case PriceLevel.Lv1:
+                case LimitPrice.Greater:
                     setAlertOpen(true)
                     break
-                case PriceLevel.Lv2:
+                // case LimitPrice.Less:
+                //     setAlertOpen(true)
+
                     // setConfirmOpen(true)
                     break
                 default:

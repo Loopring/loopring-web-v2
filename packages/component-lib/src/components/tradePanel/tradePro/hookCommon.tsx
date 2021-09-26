@@ -50,6 +50,9 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         if (handleCountChange) {
             handleCountChange(ibData, name, _ref)
         } else {
+            if(_ref.current !== 'percentage'){
+                setSelectedPercentage(0)
+            }
             // myLog(`${type}Trade: handleUser input on :`, ibData, name, tradeData)
             const _tradeData = {
                 ...tradeData,
