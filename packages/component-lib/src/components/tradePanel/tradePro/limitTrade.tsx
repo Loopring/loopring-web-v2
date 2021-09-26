@@ -174,7 +174,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
         <Box paddingX={2} paddingTop={2}>
             {/*{getDisabled()} {tradeBtnBaseStatus}*/}
             <ButtonStyle variant={'contained'} size={'medium'}
-                         color={tradeType === TradeProType.sell ?'success':'error'}
+                         color={tradeType === TradeProType.sell ?'error':'success'}
                          style={tradeLimitBtnStyle} onClick={() => {
                 handleSubmitEvent(tradeData)
             }}
