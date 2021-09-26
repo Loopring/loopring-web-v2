@@ -23,7 +23,14 @@ import {
     TradeFloat,
     WalletMap
 } from '@loopring-web/common-resources';
-import { RawDataTradeItem, SwapData, SwapTradeData, SwapType, TradeBtnStatus } from '@loopring-web/component-lib';
+import {
+    RawDataTradeItem,
+    SwapData,
+    SwapTradeData,
+    SwapType,
+    TradeBtnStatus,
+    useOpenModals
+} from '@loopring-web/component-lib';
 import { useTranslation } from 'react-i18next';
 import { useWalletLayer2Socket, walletLayer2Service } from 'services/socket';
 import { VolToNumberWithPrecision } from 'utils/formatter_tool';
@@ -40,6 +47,7 @@ import store from 'stores';
 import { useHistory } from 'react-router-dom';
 import { getPriceImpactInfo, PriceLevel } from 'hooks/common/useTrade';
 import { BIGO } from 'defs/common_defs';
+import { useModals } from '../../hooks/useractions/useModals';
 
 const useSwapSocket = () => {
     const {sendSocketTopic, socketEnd} = useSocket();
@@ -70,7 +78,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
     const {toastOpen, setToastOpen, closeToast,} = useToast();
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap();
     const {tickerMap} = useTicker()
-
+    const {setShowSupport} = useOpenModals()
     const {ammMap} = useAmmMap();
     const {exchangeInfo} = useSystem();
     const {
@@ -111,7 +119,6 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
 
         if (isAgree) {
 
-            setIsSwapLoading(true);
             if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo || !calcTradeParams
                 || account.readyState !== AccountStatus.ACTIVATED) {
 
@@ -230,6 +237,8 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
 
             setIsSwapLoading(false)
 
+        }else{
+            setIsSwapLoading(false);
         }
 
     }, [account.readyState, pageTradeLite, tokenMap, tradeData, setIsSwapLoading, setToastOpen, setTradeData])
@@ -314,17 +323,27 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
 
 
         const {priceLevel} = getPriceImpactInfo(pageTradeLite.calcTradeParams)
+        setIsSwapLoading(true);
 
-        switch (priceLevel) {
-            case PriceLevel.Lv1:
-                setAlertOpen(true)
-                break
-            case PriceLevel.Lv2:
-                setConfirmOpen(true)
-                break
-            default:
-                swapFunc(undefined as any, true);
-                break
+        const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('')?? {isIpValid:false}
+        //TODO: pending on checkIpValid API
+        if(isIpValid === false){
+            setShowSupport({isShow:true})
+            setIsSwapLoading(false);
+        }else{
+            // {}
+            switch (priceLevel) {
+                case PriceLevel.Lv1:
+                    setAlertOpen(true)
+                    break
+                case PriceLevel.Lv2:
+                    setConfirmOpen(true)
+                    break
+                default:
+                    swapFunc(undefined as any, true);
+                    break
+            }
+
         }
 
         myLog('swap directly')
@@ -353,14 +372,14 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
                 limit: 100,
             }, account.apiKey);
             let _myTradeArray = makeMarketArray(market, userTrades) as RawDataTradeItem[]
-            const formattedTradreArray = _myTradeArray.map(o => {
+            const formattedTradeArray = _myTradeArray.map(o => {
                 return {
                     ...o,
                     precision: marketMap ? marketMap[ market ].precisionForPrice : undefined
                 }
             }) as RawDataTradeItem[]
             // setMyTradeArray(_myTradeArray ? _myTradeArray : [])
-            setMyTradeArray(_myTradeArray ? formattedTradreArray : [])
+            setMyTradeArray(_myTradeArray ? formattedTradeArray : [])
         } else {
             setMyTradeArray([])
         }
