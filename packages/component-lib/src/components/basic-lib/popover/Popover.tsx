@@ -186,6 +186,15 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
       }
     }
 
+    &.no-arrow .MuiPopover-paper{
+      &:before {
+        display: none !important;
+      }
+      &:after {
+        display: none !important;
+      }
+    }
+
     &.arrow-right .MuiPopover-paper {
       &:before {
         right: ${({theme}) => theme.unit}px;

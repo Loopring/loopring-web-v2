@@ -13,7 +13,13 @@ export function useKlineChart(market: string | undefined) {
 
     const [candlestickViewData, setCandlestickViewData] = React.useState<IOHLCData[]>([])
 
-    const genCandlestickData = React.useCallback(async(market: string | undefined) => {
+    const genCandlestickData = React.useCallback(async({
+        market, 
+        timeInterval = TradingInterval.min1,
+    } : {
+        market: string | undefined;
+        timeInterval?: TradingInterval;
+    }) => {
 
         if (market && LoopringAPI.exchangeAPI && tokenMap) {
         
@@ -27,7 +33,7 @@ export function useKlineChart(market: string | undefined) {
             if (decimals > 0) {
                 const rep: sdk.GetCandlestickRequest = {
                     market,
-                    interval: TradingInterval.d1
+                    interval: timeInterval
                 }
     
                 const candlesticks = await LoopringAPI.exchangeAPI.getMixCandlestick(rep)
@@ -60,7 +66,7 @@ export function useKlineChart(market: string | undefined) {
     }, [tokenMap])
 
     React.useEffect(() => {
-        genCandlestickData(market)
+        genCandlestickData({market})
     }, [market, genCandlestickData])
 
     return {
