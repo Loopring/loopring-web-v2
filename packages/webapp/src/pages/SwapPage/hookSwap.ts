@@ -40,6 +40,7 @@ import { useTicker } from 'stores/ticker';
 import store from 'stores';
 import { useHistory } from 'react-router-dom';
 import { getPriceImpactInfo, PriceLevel } from 'hooks/common/useTrade';
+import { BIGO } from 'defs/common_defs';
 
 const useSwapSocket = () => {
     const {sendSocketTopic, socketEnd} = useSocket();
@@ -178,9 +179,21 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
                     myLog('-----> resp:', resp)
 
                     if (resp.orderDetail?.status !== undefined) {
+                        myLog('resp.orderDetail:', resp.orderDetail)
                         switch (resp.orderDetail?.status) {
                             case OrderStatus.cancelled:
-                                setToastOpen({open: true, type: 'warning', content: t('labelSwapCancelled')})
+                                const baseAmount = sdk.toBig(resp.orderDetail.volumes.baseAmount)
+                                const baseFilled = sdk.toBig(resp.orderDetail.volumes.baseFilled)
+                                const quoteAmount = sdk.toBig(resp.orderDetail.volumes.quoteAmount)
+                                const quoteFilled = sdk.toBig(resp.orderDetail.volumes.quoteFilled)
+                                const percentage1 =baseAmount.eq(BIGO) ? 0 : baseFilled.div(baseAmount).toNumber()
+                                const percentage2 =quoteAmount.eq(BIGO) ? 0 : quoteFilled.div(quoteAmount).toNumber()
+                                myLog('percentage1:', percentage1, ' percentage2:', percentage2)
+                                if (percentage1 === 0 || percentage2 === 0) {
+                                    setToastOpen({open: true, type: 'warning', content: t('labelSwapCancelled')})
+                                } else {
+                                    setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
+                                }
                                 break
                             case OrderStatus.processed:
                                 setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
@@ -403,13 +416,12 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
         }
     }, [account.readyState, accountStatus, market, tradeCalcData?.coinSell, tradeCalcData?.coinBuy])
 
-
     const walletLayer2Callback = React.useCallback(async () => {
 
         let walletMap: WalletMap<any> | undefined = undefined
         if (account.readyState === AccountStatus.ACTIVATED) {
             walletMap = makeWalletLayer2(true).walletMap;
-            myLog('--ACTIVATED tradeCalcData:', tradeCalcData)
+            // myLog('--ACTIVATED tradeCalcData:', tradeCalcData)
             setTradeData({
                 ...tradeData,
                 sell: {
