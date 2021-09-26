@@ -21,7 +21,7 @@ import * as _ from 'lodash'
 import { BIGO } from 'defs/common_defs';
 import { VolToNumberWithPrecision } from '../../../../utils/formatter_tool';
 
-export const useLimit = <C extends { [key: string]: any }>(market: MarketType) => {
+export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType) => {
     const {
         pageTradePro,
         updatePageTradePro,
@@ -29,26 +29,26 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
         __SUBMIT_LOCK_TIMER__,
         // __TOAST_AUTO_CLOSE_TIMER__
     } = usePageTradePro();
-    const { marketMap } = useTokenMap();
-    const { t } = useTranslation('common');
+    const {marketMap} = useTokenMap();
+    const {t} = useTranslation('common');
 
     const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
 
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
-    const marketPrecision = marketMap[market].precisionForPrice;
-    const { setShowSupport } = useOpenModals()
+    const marketPrecision = marketMap[ market ].precisionForPrice;
+    const {setShowSupport} = useOpenModals()
 
     const [limitTradeData, setLimitTradeData] = React.useState<LimitTradeData<IBData<any>>>(
         {
             base: {
                 belong: baseSymbol,
-                balance: walletMap ? walletMap[baseSymbol as string]?.count : 0,
+                balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
             } as IBData<any>,
             quote: {
                 belong: quoteSymbol,
-                balance: walletMap ? walletMap[quoteSymbol as string]?.count : 0,
+                balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
             } as IBData<any>,
             price: {
                 belong: pageTradePro.tradeCalcProData.coinQuote,
@@ -59,12 +59,12 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
     )
     const [isLimitLoading, setIsLimitLoading] = React.useState(false)
 
-    const { toastOpen, setToastOpen, closeToast } = useToast();
+    const {toastOpen, setToastOpen, closeToast} = useToast();
 
     React.useEffect(() => {
         resetTradeData(pageTradePro.tradeType)
     }, [pageTradePro.market,
-    pageTradePro.tradeCalcProData.walletMap])
+        pageTradePro.tradeCalcProData.walletMap])
 
     React.useEffect(() => {
         if (pageTradePro.defaultPrice) {
@@ -90,14 +90,14 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
         setLimitTradeData((state) => {
             return {
                 ...state,
-                type: type??pageTradePro.tradeType,
+                type: type ?? pageTradePro.tradeType,
                 base: {
                     belong: baseSymbol,
-                    balance: walletMap ? walletMap[baseSymbol as string]?.count : 0,
+                    balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
                 } as IBData<any>,
                 quote: {
                     belong: quoteSymbol,
-                    balance: walletMap ? walletMap[quoteSymbol as string]?.count : 0,
+                    balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
                 } as IBData<any>,
                 price: {
                     belong: quoteSymbol,
@@ -108,11 +108,11 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
         });
 
         updatePageTradePro({
-            market, 
+            market,
             request: null,
             calcTradeParams: null,
             limitCalcTradeParams: null,
-            defaultPrice: undefined, 
+            defaultPrice: undefined,
             tradeCalcProData: {
                 ...pageTradePro.tradeCalcProData,
                 fee: undefined,
@@ -128,7 +128,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
         myLog('limitSubmit:', event, isAgree)
 
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-        const { limitCalcTradeParams, request, tradeCalcProData } = pageTradePro;
+        const {limitCalcTradeParams, request, tradeCalcProData} = pageTradePro;
 
         setAlertOpen(false)
 
@@ -157,7 +157,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
                 myLog(response)
 
                 if (!response?.hash) {
-                    setToastOpen({ open: true, type: 'error', content: t('labelSwapFailed') })
+                    setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                     myLog(response?.resultInfo)
                 } else {
                     await sdk.sleep(__SUBMIT_LOCK_TIMER__)
@@ -181,16 +181,16 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
                                 const percentage2 = quoteAmount.eq(BIGO) ? 0 : quoteFilled.div(quoteAmount).toNumber()
                                 myLog('percentage1:', percentage1, ' percentage2:', percentage2)
                                 if (percentage1 === 0 || percentage2 === 0) {
-                                    setToastOpen({ open: true, type: 'warning', content: t('labelSwapCancelled') })
+                                    setToastOpen({open: true, type: 'warning', content: t('labelSwapCancelled')})
                                 } else {
-                                    setToastOpen({ open: true, type: 'success', content: t('labelSwapSuccess') })
+                                    setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
                                 }
                                 break
                             case sdk.OrderStatus.processed:
-                                setToastOpen({ open: true, type: 'success', content: t('labelSwapSuccess') })
+                                setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
                                 break
                             default:
-                                setToastOpen({ open: true, type: 'error', content: t('labelSwapFailed') })
+                                setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                         }
                     }
 
@@ -202,7 +202,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
                 setIsLimitLoading(false)
             } catch (reason) {
                 sdk.dumpError400(reason)
-                setToastOpen({ open: true, type: 'error', content: t('labelSwapFailed') })
+                setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
 
             }
             setIsLimitLoading(false)
@@ -211,7 +211,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
         }
     }, [])
 
-    const { makeLimitReqInHook } = usePlaceOrder()
+    const {makeLimitReqInHook} = usePlaceOrder()
     const onChangeLimitEvent = React.useCallback((tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType) => {
         // myLog(`onChangeLimitEvent tradeData:`, tradeData, 'formType', formType)
 
@@ -219,7 +219,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
 
         if (formType === TradeBaseType.tab) {
             resetTradeData(tradeData.type)
-            updatePageTradePro({ market, tradeType: tradeData.type })
+            updatePageTradePro({market, tradeType: tradeData.type})
         } else {
 
             // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
@@ -234,7 +234,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
 
             // myLog(`tradeData price:${tradeData.price.tradeValue}`, tradeData.type, amountBase, amountQuote)
 
-            const { limitRequest, calcTradeParams, sellMinAmtInfo, buyMinAmtInfo, } = makeLimitReqInHook({
+            const {limitRequest, calcTradeParams, sellMinAmtInfo, buyMinAmtInfo,} = makeLimitReqInHook({
                 isBuy: tradeData.type === 'buy',
                 base: tradeData.base.belong,
                 quote: tradeData.quote.belong,
@@ -287,12 +287,12 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
         const tradeValue = data.tradeValue
         if (tradeValue) {
             const [, precision] = tradeValue.toString().split('.');
-            if (precision && precision.length > marketMap[market].precisionForPrice) {
+            if (precision && precision.length > marketMap[ market ].precisionForPrice) {
                 return {
                     error: true,
                     message: t('labelErrorPricePrecisionLimit', {
                         symbol: data.belong,
-                        decimal: marketMap[market].precisionForPrice
+                        decimal: marketMap[ market ].precisionForPrice
                     })
                     //labelErrorPricePrecisionLimit:'{{symbol}} price only {{decimal}} decimals allowed',
                     //labelErrorPricePrecisionLimit:'限价 {{symbol}}，最多可保留小数点后 {{decimal} 位'
@@ -309,14 +309,14 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
     const onSubmitBtnClick = React.useCallback(async () => {
         setIsLimitLoading(true);
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
-        const { priceLevel } = getPriceImpactInfo(pageTradePro.limitCalcTradeParams, false)
-        const { isIpValid } = await LoopringAPI?.exchangeAPI?.checkIpValid('') ?? { isIpValid: false }
+        const {priceLevel} = getPriceImpactInfo(pageTradePro.limitCalcTradeParams, false)
+        const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('') ?? {isIpValid: false}
 
         myLog('---- onSubmitBtnClick priceLevel:', priceLevel)
 
         //TODO: pending on checkIpValid API
         if (!isIpValid) {
-            setShowSupport({ isShow: true })
+            setShowSupport({isShow: true})
             setIsLimitLoading(false)
         } else {
             switch (priceLevel) {
@@ -332,13 +332,15 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
     const availableTradeCheck = React.useCallback((): { tradeBtnStatus: TradeBtnStatus, label: string } => {
         const account = store.getState().account;
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-        const {limitCalcTradeParams,
+        const {
+            limitCalcTradeParams,
             sellMinAmtInfo,
-            buyMinAmtInfo} =  pageTradePro;
+            buyMinAmtInfo
+        } = pageTradePro;
         if (account.readyState === AccountStatus.ACTIVATED) {
             // const type = limitTradeData.type === TradeProType.sell ? 'quote' : 'base';
             const minAmt = limitTradeData.type === TradeProType.sell ? sellMinAmtInfo?.minAmount : buyMinAmtInfo?.minAmount
-            const validAmt =!!(limitCalcTradeParams?.baseVol && minAmt && sdk.toBig(limitCalcTradeParams?.baseVol).gte(sdk.toBig(minAmt)));
+            const validAmt = !!(limitCalcTradeParams?.baseVol && minAmt && sdk.toBig(limitCalcTradeParams?.baseVol).gte(sdk.toBig(minAmt)));
             if (limitTradeData?.base.tradeValue === undefined
                 || limitTradeData?.quote.tradeValue === undefined
                 || limitTradeData?.base.tradeValue === 0
@@ -353,7 +355,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
             }
         }
         return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
-    }, [ limitTradeData,limitSubmit])
+    }, [limitTradeData, limitSubmit])
 
 
     const {
@@ -367,8 +369,8 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
         submitCallback: onSubmitBtnClick
     })
     return {
-        toastOpen, 
-        setToastOpen, 
+        toastOpen,
+        setToastOpen,
         closeToast,
         limitAlertOpen: alertOpen,
         resetLimitData: resetTradeData,

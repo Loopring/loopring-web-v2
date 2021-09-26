@@ -5,43 +5,42 @@ import { TradingInterval } from 'loopring-sdk'
 import { IOHLCData } from '@loopring-web/component-lib'
 import { useTokenMap } from 'stores/token'
 import { myLog } from '@loopring-web/common-resources'
-import { VolToNumberWithPrecision } from 'utils/formatter_tool'
 
 export function useKlineChart(market: string | undefined) {
 
-    const { tokenMap } = useTokenMap()
+    const {tokenMap} = useTokenMap()
 
     const [candlestickViewData, setCandlestickViewData] = React.useState<IOHLCData[]>([])
 
-    const genCandlestickData = React.useCallback(async({
-        market, 
-        timeInterval = TradingInterval.min1,
-    } : {
+    const genCandlestickData = React.useCallback(async ({
+                                                            market,
+                                                            timeInterval = TradingInterval.min1,
+                                                        }: {
         market: string | undefined;
         timeInterval?: TradingInterval;
     }) => {
 
         if (market && LoopringAPI.exchangeAPI && tokenMap) {
-        
+
             // @ts-ignore
             const [_, coinBase, coinQuote] = market.match(/(\w+)-(\w+)/i)
 
             myLog('coinBase:', coinBase)
 
-            const decimals = tokenMap[coinBase] ? tokenMap[coinBase].decimals : -1
+            const decimals = tokenMap[ coinBase ] ? tokenMap[ coinBase ].decimals : -1
 
             if (decimals > 0) {
                 const rep: sdk.GetCandlestickRequest = {
                     market,
                     interval: timeInterval
                 }
-    
+
                 const candlesticks = await LoopringAPI.exchangeAPI.getMixCandlestick(rep)
-    
+
                 let candlestickViewData: IOHLCData[] = []
-                
+
                 candlesticks.candlesticks.forEach((item: sdk.Candlestick) => {
-    
+
                     const dataItem: IOHLCData = {
                         date: new Date(item.timestamp),
                         open: item.open,
@@ -50,17 +49,17 @@ export function useKlineChart(market: string | undefined) {
                         close: item.close,
                         volume: sdk.toBig(item.baseVol).div('1e' + decimals).toNumber()
                     }
-    
+
                     candlestickViewData.push(dataItem)
-    
+
                 })
-    
+
                 setCandlestickViewData(candlestickViewData.reverse())
 
             } else {
                 throw Error('wrong decimals')
             }
-        
+
         }
 
     }, [tokenMap])
