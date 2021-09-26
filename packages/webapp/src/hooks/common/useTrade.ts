@@ -157,7 +157,9 @@ export function makeMarketReq({
     return {
         sellUserOrderInfo,
         buyUserOrderInfo,
-        calcTradeParams,
+        calcTradeParams: {
+        ...calcTradeParams,
+        maxFeeBips},
         marketRequest,
     }
 }
