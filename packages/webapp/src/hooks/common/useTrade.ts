@@ -66,6 +66,8 @@ export function makeMarketReq({
     if (!tokenMap || !exchangeAddress || !marketArray
         || accountId === undefined || !base || !quote || (!depth && !ammPoolSnapshot)) {
         return {
+            sellUserOrderInfo: undefined,
+            buyUserOrderInfo: undefined,
             calcTradeParams: undefined,
             marketRequest: undefined,
         }
@@ -97,7 +99,11 @@ export function makeMarketReq({
     // buy. amountSell is not null.
     const isAtoB = (isBuy && amountQuote !== undefined) || (!isBuy && amountBase !== undefined)
 
-    const takerRate = (tokenAmtMap && tokenAmtMap[ buyTokenInfo.symbol ]) ? tokenAmtMap[ buyTokenInfo.symbol ].userOrderInfo.takerRate : 0
+    const sellUserOrderInfo = (tokenAmtMap && tokenAmtMap[ sell ]) ? tokenAmtMap[ sell ].userOrderInfo : undefined
+
+    const buyUserOrderInfo = (tokenAmtMap && tokenAmtMap[ buy ]) ? tokenAmtMap[ buy ].userOrderInfo : undefined
+
+    const takerRate = buyUserOrderInfo ? buyUserOrderInfo.takerRate : 0
 
     // myLog('makeMarketReq isBuy:', isBuy, ' sell:', sell, ' buy:', buy, ' isAtoB:', isAtoB, ' feeBips:', feeBips, ' takerRate:', takerRate)
 
@@ -149,6 +155,8 @@ export function makeMarketReq({
     }
 
     return {
+        sellUserOrderInfo,
+        buyUserOrderInfo,
         calcTradeParams,
         marketRequest,
     }
@@ -172,6 +180,8 @@ export function makeLimitReq({
                                  feeBips,
                                  tokenAmtMap,
                              }: ReqParams): {
+                sellMinAmtInfo: sdk.OrderInfo | undefined,
+                buyMinAmtInfo: sdk.OrderInfo | undefined,
     calcTradeParams: undefined | { [ key: string ]: any },
     limitRequest: undefined | { [ key: string ]: any },
 } {
@@ -180,6 +190,8 @@ export function makeLimitReq({
         || accountId === undefined || !base || !quote || (!amountBase && !amountQuote)) {
         myLog('got empty input!')
         return {
+            sellMinAmtInfo: undefined,
+            buyMinAmtInfo: undefined,
             calcTradeParams: undefined,
             limitRequest: undefined,
         }
@@ -203,6 +215,16 @@ export function makeLimitReq({
 
     const baseTokenInfo = tokenMap[ base ]
     const quoteTokenInfo = tokenMap[ quote ]
+
+    const sellTokenInfo = isBuy ? quoteTokenInfo : baseTokenInfo
+    const buyTokenInfo = isBuy ? baseTokenInfo : quoteTokenInfo
+
+    const sell = sellTokenInfo.symbol
+    const buy = buyTokenInfo.symbol
+
+    const sellMinAmtInfo = (tokenAmtMap && tokenAmtMap[ sell ]) ? tokenAmtMap[ sell ].userOrderInfo : undefined
+
+    const buyMinAmtInfo = (tokenAmtMap && tokenAmtMap[ buy ]) ? tokenAmtMap[ buy ].userOrderInfo : undefined
 
     let baseVol = undefined
     let quoteVol = undefined
@@ -277,6 +299,8 @@ export function makeLimitReq({
     }
 
     return {
+        sellMinAmtInfo,
+        buyMinAmtInfo,
         calcTradeParams,
         limitRequest,
     }
@@ -334,6 +358,7 @@ export function usePlaceOrder() {
 
             const tokenAmtMap = amountMap ? ammMap[ ammMarket ] ? amountMap[ ammMarket ] : amountMap[ market as string ] : undefined
 
+
             const feeBips = ammMap[ ammMarket ] ? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
             return {
                 feeBips,
@@ -380,7 +405,7 @@ export function usePlaceOrder() {
     }, [account, tokenMap, marketArray, exchangeInfo,])
 
     // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
-    const makeLimitReqInHook = React.useCallback((params: ReqParams): { calcTradeParams: undefined | { [ key: string ]: any }; limitRequest: undefined | { [ key: string ]: any } } => {
+    const makeLimitReqInHook = React.useCallback((params: ReqParams) => {
         const {tokenAmtMap, feeBips} = getTokenAmtMap(params)
 
         myLog('makeLimitReqInHook tokenAmtMap:', tokenAmtMap, feeBips)
@@ -398,6 +423,8 @@ export function usePlaceOrder() {
         } else {
             myLog('makeLimitReqInHook error no tokenAmtMap', tokenAmtMap)
             return {
+                sellMinAmtInfo: undefined,
+                buyMinAmtInfo: undefined,
                 calcTradeParams: undefined,
                 limitRequest: undefined,
             }

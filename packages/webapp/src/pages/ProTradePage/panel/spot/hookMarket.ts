@@ -353,13 +353,16 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         }
 
     }, [account.readyState, tokenMap, marketTradeData, setIsMarketLoading, setToastOpen, setMarketTradeData])
+    
     const availableTradeCheck = React.useCallback((): { tradeBtnStatus: TradeBtnStatus, label: string } => {
         const account = store.getState().account;
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-        const {calcTradeParams, quoteMinAmtInfo, baseMinAmtInfo} =  pageTradePro;
+        const {calcTradeParams, buyMinAmtInfo} =  pageTradePro;
+
         if (account.readyState === AccountStatus.ACTIVATED) {
             const type = marketTradeData.type === TradeProType.sell ? 'quote' : 'base';
-            const minAmt = type === 'quote' ? quoteMinAmtInfo?.minAmount : baseMinAmtInfo?.minAmount;
+            const minAmt = buyMinAmtInfo?.minAmount;
+
             const validAmt = !!(calcTradeParams?.amountBOut && minAmt
                 && sdk.toBig(calcTradeParams?.amountBOut).gte(sdk.toBig(minAmt)));
 
@@ -378,7 +381,8 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         }
 
         return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
-    }, [ marketTradeData,marketSubmit])
+    }, [ marketTradeData, marketSubmit])
+    
     const onSubmitBtnClick = React.useCallback(async ()=>{
         setIsMarketLoading(true);
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro

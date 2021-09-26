@@ -126,7 +126,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
 
     const limitSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
         myLog('limitSubmit:', event, isAgree)
-        isAgree = true
+
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
         const { limitCalcTradeParams, request, tradeCalcProData } = pageTradePro;
 
@@ -234,7 +234,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
 
             // myLog(`tradeData price:${tradeData.price.tradeValue}`, tradeData.type, amountBase, amountQuote)
 
-            const { limitRequest, calcTradeParams } = makeLimitReqInHook({
+            const { limitRequest, calcTradeParams, sellMinAmtInfo, buyMinAmtInfo, } = makeLimitReqInHook({
                 isBuy: tradeData.type === 'buy',
                 base: tradeData.base.belong,
                 quote: tradeData.quote.belong,
@@ -248,6 +248,8 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
             //TODO: fee update
             updatePageTradePro({
                 market,
+                sellMinAmtInfo,
+                buyMinAmtInfo,
                 request: limitRequest as sdk.SubmitOrderRequestV3,
                 limitCalcTradeParams: calcTradeParams,
                 tradeCalcProData: {
@@ -327,7 +329,6 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
                     // setConfirmOpen(true)
                     break
                 default:
-                    debugger
                     limitSubmit(undefined as any, true);
                     break
             }
@@ -336,10 +337,10 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType) =
     const availableTradeCheck = React.useCallback((): { tradeBtnStatus: TradeBtnStatus, label: string } => {
         const account = store.getState().account;
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-        const {limitCalcTradeParams, quoteMinAmtInfo, baseMinAmtInfo} =  pageTradePro;
+        const {limitCalcTradeParams, sellMinAmtInfo, buyMinAmtInfo} =  pageTradePro;
         if (account.readyState === AccountStatus.ACTIVATED) {
             const type = limitTradeData.type === TradeProType.sell ? 'quote' : 'base';
-            const minAmt = type === 'quote' ? quoteMinAmtInfo?.minAmount : baseMinAmtInfo?.minAmount;
+            const minAmt = buyMinAmtInfo?.minAmount
             //TODO:  minAmt
             const validAmt = 'TODO minAmt'
 
