@@ -174,7 +174,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             calcTradeParams: calcTradeParams,
             tradeCalcProData: {
                 ...pageTradePro.tradeCalcProData,
-                fee: calcTradeParams  &&  calcTradeParams.feeBips ? calcTradeParams.feeBips: undefined,
+                fee: calcTradeParams && calcTradeParams.maxFeeBips ? calcTradeParams.maxFeeBips: undefined,
                 minimumReceived: calcTradeParams? calcTradeParams.amountBOutSlip?.minReceivedVal: undefined,
                 priceImpact: calcTradeParams? calcTradeParams.priceImpact:undefined,
                 priceImpactColor: priceImpactObj?.priceImpactColor,

@@ -38,8 +38,8 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
-    const marketPrecision = marketMap[ market ].precisionForPrice;
-    const {setShowSupport} = useOpenModals()
+    const marketPrecision = marketMap[market].precisionForPrice;
+    const { setShowSupport } = useOpenModals()
 
     const [limitTradeData, setLimitTradeData] = React.useState<LimitTradeData<IBData<any>>>(
         {
@@ -200,7 +200,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
 
             }
             setIsLimitLoading(false)
-        } else{
+        } else {
             setIsLimitLoading(false)
         }
     }, [])
@@ -246,7 +246,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
                 limitCalcTradeParams: calcTradeParams,
                 tradeCalcProData: {
                     ...pageTradePro.tradeCalcProData,
-                    fee: 'TODO'
+                    fee: calcTradeParams && calcTradeParams.maxFeeBips ? calcTradeParams.maxFeeBips : undefined,
                 }
             })
             setLimitTradeData((state) => {
@@ -312,13 +312,13 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
     })
     const onSubmitBtnClick = React.useCallback(async () => {
         setIsLimitLoading(true);
-        const {priceLevel} = getPriceImpactInfo(pageTradePro.calcTradeParams)
-        const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('')?? {isIpValid:false}
+        const { priceLevel } = getPriceImpactInfo(pageTradePro.calcTradeParams)
+        const { isIpValid } = await LoopringAPI?.exchangeAPI?.checkIpValid('') ?? { isIpValid: false }
         //TODO: pending on checkIpValid API
-        if(isIpValid === false){
-            setShowSupport({isShow:true})
+        if (isIpValid === false) {
+            setShowSupport({ isShow: true })
             setIsLimitLoading(false)
-        }else{
+        } else {
             switch (priceLevel) {
                 case PriceLevel.Lv1:
                     setAlertOpen(true)
