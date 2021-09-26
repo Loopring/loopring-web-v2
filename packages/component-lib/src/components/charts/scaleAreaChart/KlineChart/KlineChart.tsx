@@ -84,7 +84,11 @@ export function fibonacci(n: number) {
     return [n1, n2]
 }
 
-class StockChart extends React.Component<StockChartProps & IndicatorProps> {
+export type StockChartExtraProps = {
+    themeMode: 'light' | 'dark'
+}
+
+class StockChart extends React.Component<StockChartProps & IndicatorProps & StockChartExtraProps> {
 
     private readonly margin = { left: 0, right: 48, top: 0, bottom: 24 };
     private readonly pricesDisplayFormat = format(".2f");
@@ -104,7 +108,8 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
     };
 
     public render() {
-        const { data: initialData, dateTimeFormat, height, ratio, width, mainIndicators, subIndicator, } = this.props;
+        const { data: initialData, dateTimeFormat, height, ratio, width, mainIndicators, subIndicator, themeMode } = this.props;
+        const isDark = themeMode === 'dark'
         // simple moving average
 
         let mainIndicatorLst: any[] = []
@@ -347,7 +352,8 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                                     <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right"
                                         ticks={2} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
                                         strokeStyle={'rgba(255, 255, 255, 0.3)'} />
-
+                                    <MouseCoordinateX displayFormat={timeDisplayFormat} />
+                                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
                                     <BarSeries fillStyle={this.volumeColor} yAccessor={this.volumeSeries} />
                                     <SingleValueTooltip
                                         yAccessor={this.volumeSeries}
@@ -363,6 +369,8 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                                     <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right"
                                         ticks={2} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
                                         strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                                    <MouseCoordinateX displayFormat={timeDisplayFormat} />
+                                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
                                     <RSISeries yAccessor={item.func.accessor()} />
                                     <RSITooltip origin={[8, 16]} yAccessor={item.func.accessor()} options={item.func.options()} />
                                 </Chart>
@@ -374,6 +382,8 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                                     <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right"
                                         ticks={2} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
                                         strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                                    <MouseCoordinateX displayFormat={timeDisplayFormat} />
+                                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
                                     <SARSeries yAccessor={item.func.accessor()} />
                                     <SingleValueTooltip
                                         yLabel={`SAR (${item.params.accelerationFactor}, ${item.params.maxAccelerationFactor})`}
@@ -387,7 +397,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
                         return <></>
                     })
                 }
-                <CrossHairCursor strokeStyle={'#fff'} />
+                <CrossHairCursor strokeStyle={isDark ? '#FFFFFF' : '#15162B'} />
             </ChartCanvas>
         );
     }
@@ -420,4 +430,4 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps> {
     };
 }
 
-export const WrapperedKlineChart = withSize({ style: { minHeight: 600 } })(withDeviceRatio()(StockChart));
+export const WrapperedKlineChart = withSize({ style: { minHeight: 200 } })(withDeviceRatio()(StockChart));
