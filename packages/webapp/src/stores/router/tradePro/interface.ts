@@ -36,7 +36,7 @@ export type limitCalcParams = {
 export type PageTradePro<C> = {
     market: MarketType  // eg: ETH-LRC, Pair from loopring market
     // tradePair?: MarketType  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
-    request?: sdk.SubmitOrderRequestV3,
+    request?: sdk.SubmitOrderRequestV3 | null | undefined,
     tradeCalcProData: Partial<TradeCalcProData<keyof C>>
     calcTradeParams?:Partial<marketCalcParams> | null | undefined,
     limitCalcTradeParams?:Partial<limitCalcParams> | null | undefined,
