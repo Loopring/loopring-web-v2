@@ -66,6 +66,8 @@ export function makeMarketReq({
     if (!tokenMap || !exchangeAddress || !marketArray
         || accountId === undefined || !base || !quote || (!depth && !ammPoolSnapshot)) {
         return {
+            sellUserOrderInfo: undefined,
+            buyUserOrderInfo: undefined,
             calcTradeParams: undefined,
             marketRequest: undefined,
         }
@@ -97,7 +99,11 @@ export function makeMarketReq({
     // buy. amountSell is not null.
     const isAtoB = (isBuy && amountQuote !== undefined) || (!isBuy && amountBase !== undefined)
 
-    const takerRate = (tokenAmtMap && tokenAmtMap[ buyTokenInfo.symbol ]) ? tokenAmtMap[ buyTokenInfo.symbol ].userOrderInfo.takerRate : 0
+    const sellUserOrderInfo = (tokenAmtMap && tokenAmtMap[ sell ]) ? tokenAmtMap[ sell ].userOrderInfo : undefined
+
+    const buyUserOrderInfo = (tokenAmtMap && tokenAmtMap[ buy ]) ? tokenAmtMap[ buy ].userOrderInfo : undefined
+
+    const takerRate = buyUserOrderInfo ? buyUserOrderInfo.takerRate : 0
 
     // myLog('makeMarketReq isBuy:', isBuy, ' sell:', sell, ' buy:', buy, ' isAtoB:', isAtoB, ' feeBips:', feeBips, ' takerRate:', takerRate)
 
@@ -149,7 +155,11 @@ export function makeMarketReq({
     }
 
     return {
-        calcTradeParams,
+        sellUserOrderInfo,
+        buyUserOrderInfo,
+        calcTradeParams: {
+        ...calcTradeParams,
+        maxFeeBips},
         marketRequest,
     }
 }
@@ -172,6 +182,8 @@ export function makeLimitReq({
                                  feeBips,
                                  tokenAmtMap,
                              }: ReqParams): {
+                sellMinAmtInfo: sdk.OrderInfo | undefined,
+                buyMinAmtInfo: sdk.OrderInfo | undefined,
     calcTradeParams: undefined | { [ key: string ]: any },
     limitRequest: undefined | { [ key: string ]: any },
 } {
@@ -180,6 +192,8 @@ export function makeLimitReq({
         || accountId === undefined || !base || !quote || (!amountBase && !amountQuote)) {
         myLog('got empty input!')
         return {
+            sellMinAmtInfo: undefined,
+            buyMinAmtInfo: undefined,
             calcTradeParams: undefined,
             limitRequest: undefined,
         }
@@ -203,6 +217,16 @@ export function makeLimitReq({
 
     const baseTokenInfo = tokenMap[ base ]
     const quoteTokenInfo = tokenMap[ quote ]
+
+    const sellTokenInfo = isBuy ? quoteTokenInfo : baseTokenInfo
+    const buyTokenInfo = isBuy ? baseTokenInfo : quoteTokenInfo
+
+    const sell = sellTokenInfo.symbol
+    const buy = buyTokenInfo.symbol
+
+    const sellMinAmtInfo = (tokenAmtMap && tokenAmtMap[ sell ]) ? tokenAmtMap[ sell ].userOrderInfo : undefined
+
+    const buyMinAmtInfo = (tokenAmtMap && tokenAmtMap[ buy ]) ? tokenAmtMap[ buy ].userOrderInfo : undefined
 
     let baseVol = undefined
     let quoteVol = undefined
@@ -271,9 +295,14 @@ export function makeLimitReq({
         baseVolShow,
         quoteVol: quoteVol.toString(),
         quoteVolShow,
+        takerRate,
+        feeBips,
+        maxFeeBips,
     }
 
     return {
+        sellMinAmtInfo,
+        buyMinAmtInfo,
         calcTradeParams,
         limitRequest,
     }
@@ -300,7 +329,6 @@ export function usePlaceOrder() {
     const {tokenMap, marketArray,} = useTokenMap()
     const {ammMap} = useAmmMap()
 
-
     const {exchangeInfo,} = useSystem()
 
     const getTokenAmtMap = React.useCallback((params: ReqParams) => {
@@ -312,11 +340,11 @@ export function usePlaceOrder() {
 
             let market = params.market
 
-            let ammMarket = ''
+            let ammMarket: string
 
-            if (params.market) {
+            if (market) {
 
-                const result = params.market.match(/([\w,#]+)-([\w,#]+)/i)
+                const result = market.match(/([\w,#]+)-([\w,#]+)/i)
 
                 if (result) {
                     [, base, quote,] = result
@@ -331,6 +359,7 @@ export function usePlaceOrder() {
             ammMarket = existedMarket.amm as string
 
             const tokenAmtMap = amountMap ? ammMap[ ammMarket ] ? amountMap[ ammMarket ] : amountMap[ market as string ] : undefined
+
 
             const feeBips = ammMap[ ammMarket ] ? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
             return {
@@ -353,13 +382,9 @@ export function usePlaceOrder() {
         marketRequest: undefined | { [ key: string ]: any },
     } => {
 
-        // if (!exchangeInfo) {
-        //     return
-        // }
-
         const {tokenAmtMap, feeBips} = getTokenAmtMap(params)
 
-        myLog('makeMarketReqInHook tokenAmtMap:', tokenAmtMap)
+        myLog('makeMarketReqInHook tokenAmtMap:', tokenAmtMap, feeBips)
 
         if (exchangeInfo) {
             const fullParams: ReqParams = {
@@ -382,8 +407,11 @@ export function usePlaceOrder() {
     }, [account, tokenMap, marketArray, exchangeInfo,])
 
     // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
-    const makeLimitReqInHook = React.useCallback((params: ReqParams): { calcTradeParams: undefined | { [ key: string ]: any }; limitRequest: undefined | { [ key: string ]: any } } => {
+    const makeLimitReqInHook = React.useCallback((params: ReqParams) => {
         const {tokenAmtMap, feeBips} = getTokenAmtMap(params)
+
+        myLog('makeLimitReqInHook tokenAmtMap:', tokenAmtMap, feeBips)
+
         if (exchangeInfo) {
             const fullParams: ReqParams = {
                 ...params,
@@ -395,8 +423,10 @@ export function usePlaceOrder() {
             }
             return makeLimitReq(fullParams)
         } else {
-            myLog('makeMarketReqInHook error no tokenAmtMap', tokenAmtMap)
+            myLog('makeLimitReqInHook error no tokenAmtMap', tokenAmtMap)
             return {
+                sellMinAmtInfo: undefined,
+                buyMinAmtInfo: undefined,
                 calcTradeParams: undefined,
                 limitRequest: undefined,
             }
@@ -410,36 +440,56 @@ export function usePlaceOrder() {
     }
 
 }
+
 export enum PriceLevel {
     Normal,
     Lv1,
     Lv2,
 }
+export enum LimitPrice {
+    Normal,
+    Greater,
+    Less
+    // Lv1,
+    // Lv2,
+}
 
-export const getPriceImpactInfo = (calcTradeParams: any) => {
+
+export const getPriceImpactInfo = (calcTradeParams: any, isMarket: boolean = true) => {
     let priceImpact: any = calcTradeParams?.priceImpact ? parseFloat(calcTradeParams?.priceImpact) * 100 : undefined
     let priceImpactColor = 'var(--color-success)'
 
     let priceLevel = PriceLevel.Normal
 
-    if (priceImpact) {
+    if (isMarket) {
 
-        if (priceImpact > 0.1 && priceImpact <= 1) {
-            priceImpactColor = 'var(--color-success)'
-        } else if (priceImpact > 1 && priceImpact <= 3) {
-            priceImpactColor = 'textPrimary'
-        } else if (priceImpact > 3 && priceImpact <= 5) {
-            priceImpactColor = 'var(--color-warning)'
-        } else if (priceImpact > 5 && priceImpact <= 10) {
-            priceImpactColor = 'var(--color-error)'
-            priceLevel = PriceLevel.Lv1
-        } else if (priceImpact > 10) {
-            priceImpactColor = 'var(--color-error)'
-            priceLevel = PriceLevel.Lv2
+        if (priceImpact) {
+    
+            if (priceImpact > 0.1 && priceImpact <= 1) {
+                priceImpactColor = 'var(--color-success)'
+            } else if (priceImpact > 1 && priceImpact <= 3) {
+                priceImpactColor = 'textPrimary'
+            } else if (priceImpact > 3 && priceImpact <= 5) {
+                priceImpactColor = 'var(--color-warning)'
+            } else if (priceImpact > 5 && priceImpact <= 10) {
+                priceImpactColor = 'var(--color-error)'
+                priceLevel = PriceLevel.Lv1
+            } else if (priceImpact > 10) {
+                priceImpactColor = 'var(--color-error)'
+                priceLevel = PriceLevel.Lv2
+            }
+    
+        } else {
+            priceImpactColor = 'var(--color-text-primary)'
         }
 
     } else {
-        priceImpactColor = 'var(--color-text-primary)'
+    
+        if (priceImpact > 20) {
+            priceImpactColor = 'var(--color-error)'
+            priceLevel = PriceLevel.Lv1
+        }
+
     }
 
     return {

@@ -321,11 +321,12 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
     });
     const swapCalculatorCallback = React.useCallback(async () => {
 
-
         const {priceLevel} = getPriceImpactInfo(pageTradeLite.calcTradeParams)
         setIsSwapLoading(true);
 
         const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('')?? {isIpValid:false}
+
+        myLog('---- swapCalculatorCallback priceLevel:', priceLevel)
         //TODO: pending on checkIpValid API
         if(isIpValid === false){
             setShowSupport({isShow:true})

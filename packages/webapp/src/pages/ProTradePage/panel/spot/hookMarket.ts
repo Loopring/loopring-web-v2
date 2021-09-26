@@ -117,7 +117,6 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
     const {makeMarketReqInHook} = usePlaceOrder()
 
     const onChangeMarketEvent = React.useCallback((tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType) => {
-
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         // myLog(`onChangeMarketEvent depth:`, pageTradePro.depth)
         // myLog(`onChangeMarketEvent ammPoolSnapshot:`, pageTradePro.ammPoolSnapshot)
@@ -174,9 +173,9 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             calcTradeParams: calcTradeParams,
             tradeCalcProData: {
                 ...pageTradePro.tradeCalcProData,
-                fee: calcTradeParams  &&  calcTradeParams.feeBips ? calcTradeParams.feeBips: undefined,
+                fee: calcTradeParams && calcTradeParams.maxFeeBips ? calcTradeParams.maxFeeBips: undefined,
                 minimumReceived: calcTradeParams? calcTradeParams.amountBOutSlip?.minReceivedVal: undefined,
-                priceImpact: calcTradeParams? calcTradeParams.priceImpact:undefined,
+                priceImpact: priceImpactObj? priceImpactObj.value:undefined,
                 priceImpactColor: priceImpactObj?.priceImpactColor,
             },
             lastStepAt,
@@ -190,6 +189,8 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             }
             return{
                 ...state,
+                ...tradeData,
+                // slippage: tradeData.slippage,
                 base:{
                     ...state.base,
                     tradeValue: baseValue && Number(baseValue.toFixed(tokenMap[state.base.belong].precision))
@@ -224,8 +225,9 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         })
         updatePageTradePro({
             market,
-            // request: marketRequest as any,
-            // calcTradeParams: calcTradeParams,
+            request: null,
+            calcTradeParams: null,
+            limitCalcTradeParams: null,
             lastStepAt:undefined,
             tradeCalcProData: {
                 ...pageTradePro.tradeCalcProData,
@@ -351,13 +353,16 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         }
 
     }, [account.readyState, tokenMap, marketTradeData, setIsMarketLoading, setToastOpen, setMarketTradeData])
+    
     const availableTradeCheck = React.useCallback((): { tradeBtnStatus: TradeBtnStatus, label: string } => {
-
+        const account = store.getState().account;
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-        const {calcTradeParams, quoteMinAmtInfo, baseMinAmtInfo} =  pageTradePro;
+        const {calcTradeParams, buyMinAmtInfo} =  pageTradePro;
+
         if (account.readyState === AccountStatus.ACTIVATED) {
             const type = marketTradeData.type === TradeProType.sell ? 'quote' : 'base';
-            const minAmt = type === 'quote' ? quoteMinAmtInfo?.minAmount : baseMinAmtInfo?.minAmount;
+            const minAmt = buyMinAmtInfo?.minAmount;
+
             const validAmt = !!(calcTradeParams?.amountBOut && minAmt
                 && sdk.toBig(calcTradeParams?.amountBOut).gte(sdk.toBig(minAmt)));
 
@@ -376,9 +381,11 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         }
 
         return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
-    }, [account.readyState, marketTradeData,marketSubmit])
+    }, [ marketTradeData, marketSubmit])
+    
     const onSubmitBtnClick = React.useCallback(async ()=>{
         setIsMarketLoading(true);
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         const {priceLevel} = getPriceImpactInfo(pageTradePro.calcTradeParams)
         const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('')?? {isIpValid:false}
         //TODO: pending on checkIpValid API
@@ -398,7 +405,6 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                     break
             }
         }
-        myLog('swap directly')
     },[])
 
     const {
