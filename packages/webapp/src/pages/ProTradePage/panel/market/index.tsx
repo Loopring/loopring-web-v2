@@ -150,18 +150,26 @@ export const MarketView = withTranslation('common')(({
                 [countAsk, countBid] = [rowLength * 2, 0]
             } else {
             }
-            const viewData = depth2ViewData({depth, countAsk, countBid, baseDecimal, quoteDecimal, precisionForPrice,basePrecision})
+            const viewData = depth2ViewData({
+                depth,
+                countAsk,
+                countBid,
+                baseDecimal,
+                quoteDecimal,
+                precisionForPrice,
+                basePrecision
+            })
             setDepthViewData(viewData);
         }
     }, [pageTradePro, depthType, rowLength])
     const middlePrice = React.useMemo(() => {
         const {ticker, depth} = pageTradePro;
-        let close: number| string | undefined = undefined;
+        let close: number | string | undefined = undefined;
         let up: 'up' | 'down' | '' = '';
         let priceColor = '';
         let value = '';
         if (ticker && depth && depth.mid_price && depth.symbol === market) {
-            close = ticker.close? ticker.close:depth?.mid_price
+            close = ticker.close ? ticker.close : depth?.mid_price
             if (depth.mid_price === close) {
                 priceColor = '';
                 up = '';
@@ -180,8 +188,8 @@ export const MarketView = withTranslation('common')(({
         }
         close = (close ? close.toFixed(marketMap[ market ].precisionForPrice) : undefined)
         return <Typography color={'var(--color-text-third)'} variant={'body2'} component={'p'} display={'inline-flex'}
-                           textAlign={'center'} alignItems={'center'} onClick={(event:any) => {
-            priceClick(event,close  as any)
+                           textAlign={'center'} alignItems={'center'} onClick={(event: any) => {
+            priceClick(event, close as any)
         }}>
             {close ? <>
                     <Typography lineHeight={1} color={priceColor} component={'span'} paddingRight={1} alignItems={'center'}
@@ -229,7 +237,7 @@ export const MarketView = withTranslation('common')(({
                 // headerRowHeight={20}
                 marketInfo={marketMap[ market ]}
                 rawData={pageTradePro.tradeArray ? pageTradePro.tradeArray.slice(0, tableLength) : []}
-                quotePrecision={tokenMap[quoteSymbol].precision}
+                quotePrecision={tokenMap[ quoteSymbol ].precision}
                 precision={marketMap[ market ].precisionForPrice}
                 currentheight={tableLength * 20 + 20}/>
             : <Box flex={1} height={'100%'} display={'flex'} alignItems={'center'}
@@ -299,7 +307,7 @@ export const MarketView = withTranslation('common')(({
                         <DepthBlock onClick={priceClick}
                                     marketInfo={marketMap[ market ]}
                                     type={DepthType.ask}
-                                    // quotePrecision={tokenMap[quoteSymbol].precision}
+                            // quotePrecision={tokenMap[quoteSymbol].precision}
                                     depths={depthViewData.asks}
                             // showTitle={true}
                         />

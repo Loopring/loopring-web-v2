@@ -1,13 +1,18 @@
 import React from 'react';
-import { withTranslation, TFunction } from 'react-i18next';
-import { CoinInfo, DropDownIcon, MarketType, myLog, PriceTag, SagaStatus } from '@loopring-web/common-resources';
+import { TFunction, withTranslation } from 'react-i18next';
+import {
+    CoinInfo,
+    DropDownIcon,
+    getValuePrecisionThousand,
+    MarketType,
+    PriceTag,
+    SagaStatus
+} from '@loopring-web/common-resources';
 import { useTicker } from 'stores/ticker';
-import { MarketBlockProps } from '@loopring-web/component-lib';
+import { MarketBlockProps, useSettings } from '@loopring-web/component-lib';
 import { useTokenMap } from 'stores/token';
-import { useSettings } from '@loopring-web/component-lib';
-import { Box, MenuItem, TextField, Grid, Typography } from '@mui/material';
+import { Box, Grid, MenuItem, TextField, Typography } from '@mui/material';
 import { usePageTradePro } from '../../../../stores/router';
-import { getValuePrecisionThousand } from '@loopring-web/common-resources';
 import { volumeToCount } from 'hooks/help'
 import styled from '@emotion/styled'
 
@@ -28,20 +33,20 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
                                                                                       }: {
     t: TFunction<"translation">,
     market: MarketType,
-    handleOnMarketChange:(newMarket:MarketType) => void,
+    handleOnMarketChange: (newMarket: MarketType) => void,
     // marketTicker:  MarketBlockProps<C>
 }) => {
-    const {tickerMap,status:tickerStatus} = useTicker();
-    const [marketTicker,setMarketTicker] = React.useState<MarketBlockProps<C>|undefined>(undefined);
+    const {tickerMap, status: tickerStatus} = useTicker();
+    const [marketTicker, setMarketTicker] = React.useState<MarketBlockProps<C> | undefined>(undefined);
     const {coinMap, marketArray, marketMap, tokenMap} = useTokenMap();
-    const { pageTradePro: {ticker} } = usePageTradePro()
-    const { currency } = useSettings()
-    
+    const {pageTradePro: {ticker}} = usePageTradePro()
+    const {currency} = useSettings()
+
     const {
         change,
         close,
         floatTag,
-        high, 
+        high,
         low,
         volume: quoteVol,
         priceDollar,
@@ -56,40 +61,40 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
 
     const getMarketPrecision = React.useCallback((market: string) => {
         if (marketMap) {
-            return marketMap[market].precisionForPrice
+            return marketMap[ market ].precisionForPrice
         }
         return undefined
     }, [marketMap])
 
     const getTokenPrecision = React.useCallback((token: string) => {
         if (tokenMap) {
-            return tokenMap[token]?.precision
+            return tokenMap[ token ]?.precision
         }
         return undefined
     }, [tokenMap])
 
     // const {pageTradePro,updatePageTradePro} = usePageTradePro()
     React.useEffect(() => {
-        if(tickerStatus === SagaStatus.UNSET) {
+        if (tickerStatus === SagaStatus.UNSET) {
             setDefaultData();
         }
     }, [tickerStatus]);
-    const setDefaultData = React.useCallback(()=>{
-        if(coinMap && tickerMap){
+    const setDefaultData = React.useCallback(() => {
+        if (coinMap && tickerMap) {
             //@ts-ignore
             const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
             setMarketTicker({
-                coinAInfo: coinMap[coinA] as CoinInfo<C>,
-                coinBInfo: coinMap[coinB] as CoinInfo<C>,
-                tradeFloat: tickerMap[market as string]
+                coinAInfo: coinMap[ coinA ] as CoinInfo<C>,
+                coinBInfo: coinMap[ coinB ] as CoinInfo<C>,
+                tradeFloat: tickerMap[ market as string ]
             })
         }
 
-    },[tickerMap,market])
+    }, [tickerMap, market])
     const _handleOnMarketChange = React.useCallback((event: React.ChangeEvent<{ value: string }>) => {
         handleOnMarketChange(event.target.value as MarketType)
     }, [])
-    return <Box display={'flex'} alignItems={'center'} height={'100%'} paddingX={2} >
+    return <Box display={'flex'} alignItems={'center'} height={'100%'} paddingX={2}>
         <TextField
             id="outlined-select-level"
             select
@@ -102,7 +107,8 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
         </TextField>
         <Grid container spacing={3} marginLeft={0} display={'flex'} alignItems={'center'}>
             <Grid item>
-                <Typography fontWeight={500} color={isRise ? 'var(--color-success)' : 'var(--color-error)'}>{close}</Typography>
+                <Typography fontWeight={500}
+                            color={isRise ? 'var(--color-success)' : 'var(--color-error)'}>{close}</Typography>
                 <PriceValueStyled>{isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand((isUSD ? priceDollar : priceYuan), undefined, undefined, undefined, true, {isFait: true})}</PriceValueStyled>
             </Grid>
             <Grid item>

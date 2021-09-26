@@ -6,7 +6,7 @@ import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout';
 import { usePro } from './hookPro';
 import { useTheme } from '@emotion/react';
 import { Box, IconButton } from '@mui/material';
-import { BreakPoint, DragIcon, layoutConfigs, myLog, ResizeIcon } from '@loopring-web/common-resources';
+import { BreakPoint, DragIcon, layoutConfigs, ResizeIcon } from '@loopring-web/common-resources';
 import { ChartView, MarketView, OrderTableView, SpotView, TabMarketIndex, Toolbar, WalletInfo } from './panel'
 import { boxLiner } from '@loopring-web/component-lib';
 import styled from '@emotion/styled/';
@@ -91,7 +91,7 @@ export const OrderbookPage = withTranslation('common')(() => {
         walletInfo: React.useMemo(() => <WalletInfo market={market as any}/>, [market]),
         spot: React.useMemo(() => <>{
             depth && <SpotView market={market as any}/>
-        }</>, [market,depth]),
+        }</>, [market, depth]),
         market: React.useMemo(() => <>{depthLevel
             && <MarketView market={market as any}
                            rowLength={rowLength}
@@ -106,8 +106,8 @@ export const OrderbookPage = withTranslation('common')(() => {
                            rowLength={0}
                            breakpoint={configLayout.currentBreakpoint}/>}</>
             , [market, rowLength, configLayout.currentBreakpoint, depthLevel, tradeTableLengths.market2]),    //<MarketView market={market as any}/>, [market])
-        chart: React.useMemo(() => <ChartView market={market} breakpoint={configLayout.currentBreakpoint} />, [market]),
-        orderTable: React.useMemo(() => <OrderTableView market={market} />, [market])
+        chart: React.useMemo(() => <ChartView market={market} breakpoint={configLayout.currentBreakpoint}/>, [market]),
+        orderTable: React.useMemo(() => <OrderTableView market={market}/>, [market])
     }
     const onRestDepthTableLength = React.useCallback((h: number) => {
         if (h) {

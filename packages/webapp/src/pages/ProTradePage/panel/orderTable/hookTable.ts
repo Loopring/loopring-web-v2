@@ -7,7 +7,7 @@ import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
 import { GetOrdersRequest, Side } from 'loopring-sdk'
 import store from 'stores'
 import BigNumber from 'bignumber.js';
-import {TFunction} from 'react-i18next'
+import { TFunction } from 'react-i18next'
 import { cloneDeep } from 'lodash';
 
 export const useOrderList = () => {
@@ -64,11 +64,11 @@ export const useOrderList = () => {
                     const average = isBuy
                         ? baseVolume?.div(quoteVolume || new BigNumber(1)).toNumber() || 0
                         : quoteVolume?.div(baseVolume || new BigNumber(1)).toNumber() || 0
-                    const completion = (quotefilledValue || 0)  / (quoteValue || 1)
+                    const completion = (quotefilledValue || 0) / (quoteValue || 1)
 
-                    const precisionFrom = tokenMap ? (tokenMap as any)[baseToken]?.precisionForOrder : undefined
-                    const precisionTo = tokenMap ? (tokenMap as any)[quoteToken]?.precisionForOrder : undefined
-                    const precisionMarket = marketMap ? marketMap[o.market]?.precisionForPrice : undefined
+                    const precisionFrom = tokenMap ? (tokenMap as any)[ baseToken ]?.precisionForOrder : undefined
+                    const precisionTo = tokenMap ? (tokenMap as any)[ quoteToken ]?.precisionForOrder : undefined
+                    const precisionMarket = marketMap ? marketMap[ o.market ]?.precisionForPrice : undefined
                     return ({
                         market: o.market,
                         side: o.side === 'BUY' ? TradeTypes.Buy : TradeTypes.Sell,
@@ -121,16 +121,16 @@ export const useOrderList = () => {
         return []
     }, [accountId, apiKey, marketMap, tokenMap])
 
-    const isAtBottom = React.useCallback(({ currentTarget }: React.UIEvent<HTMLDivElement>): boolean => {
+    const isAtBottom = React.useCallback(({currentTarget}: React.UIEvent<HTMLDivElement>): boolean => {
         return currentTarget.scrollTop + 10 >= currentTarget.scrollHeight - currentTarget.clientHeight;
     }, [])
 
     const handleScroll = React.useCallback(async (event: React.UIEvent<HTMLDivElement>, isOpen: boolean = false) => {
         if (!isAtBottom(event) || (event.target as any)?.scrollTop === 0) return;
-    
+
         // setIsLoading(true);
         const prevData = cloneDeep(orderOriginalData)
-    
+
         const newData = await getOrderList({
             offset: prevData.length,
             status: isOpen ? 'processing' : 'processed,failed,cancelled,cancelling,expired'
@@ -140,7 +140,7 @@ export const useOrderList = () => {
         // setIsLoading(false);
     }, [getOrderList, isAtBottom, orderOriginalData])
 
-    const cancelOrder = React.useCallback(async({orderHash, clientOrderId}) => {
+    const cancelOrder = React.useCallback(async ({orderHash, clientOrderId}) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && privateKey && apiKey) {
             setShowLoading(true)
             await LoopringAPI.userAPI.cancelOrder({
@@ -186,10 +186,10 @@ export const useOrderList = () => {
                 const filledPrice = baseVolume?.div(quoteVolume || new BigNumber(1)).toNumber() || 0
                 const feeValue = volumeToCountAsBigNumber(quoteToken, fee)?.toNumber() || 0
 
-                const precisionFrom = tokenMap ? (tokenMap as any)[baseToken]?.precisionForOrder : undefined
-                const precisionTo = tokenMap ? (tokenMap as any)[quoteToken]?.precisionForOrder : undefined
-                const precisionMarket = marketMap ? marketMap[o.market]?.precisionForPrice : undefined
-                const precisionFee = tokenMap ? (tokenMap as any)[quoteToken]?.precisionForOrder : undefined
+                const precisionFrom = tokenMap ? (tokenMap as any)[ baseToken ]?.precisionForOrder : undefined
+                const precisionTo = tokenMap ? (tokenMap as any)[ quoteToken ]?.precisionForOrder : undefined
+                const precisionMarket = marketMap ? marketMap[ o.market ]?.precisionForPrice : undefined
+                const precisionFee = tokenMap ? (tokenMap as any)[ quoteToken ]?.precisionForOrder : undefined
 
                 return ({
                     amount: {
@@ -207,7 +207,7 @@ export const useOrderList = () => {
                     filledPrice: {
                         value: filledPrice,
                         precision: precisionMarket,
-                    } ,
+                    },
                     fee: {
                         key: quoteToken,
                         value: feeValue,
@@ -223,7 +223,7 @@ export const useOrderList = () => {
             setShowDetailLoading(false)
         }
     }, [accountId, apiKey, marketMap, tokenMap])
-    
+
     const clearData = React.useCallback(() => {
         setOrderOriginalData([])
     }, [])

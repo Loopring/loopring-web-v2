@@ -125,7 +125,7 @@ export const useSocketProService = ({
                 }
             }
             // @ts-ignore
-            if (value && value.trades == true && value.trades[0].market === pageTradePro.market) {
+            if (value && value.trades == true && value.trades[ 0 ].market === pageTradePro.market) {
                 const market = pageTradePro.market;
                 // @ts-ignore
                 const _tradeArray = makeMarketArray(market, value.trades);
@@ -176,7 +176,7 @@ export const useSocketProService = ({
 }
 
 export const useProSocket = () => {
-    const {sendSocketTopic, socketEnd, status:socketStatus} = useSocket();
+    const {sendSocketTopic, socketEnd, status: socketStatus} = useSocket();
     const {account, status: accountStatus} = useAccount();
     const {marketArray, marketMap} = useTokenMap();
     const {ammMap} = useAmmMap();
@@ -256,11 +256,11 @@ export const useProSocket = () => {
     React.useEffect(() => {
         //firstTime call it
         // getDependencyData();
-        if(socketStatus !== SagaStatus.PENDING){
+        if (socketStatus !== SagaStatus.PENDING) {
             noSocketLoop();
             if (ammMap && pageTradePro.market) {
                 const dataSocket: SocketMap = {
-                    [ sdk.WsTopicType.ammpool ]: ammMap[ 'AMM-' + pageTradePro.market ] ? [ammMap[ 'AMM-' + pageTradePro.market ].address]:[],
+                    [ sdk.WsTopicType.ammpool ]: ammMap[ 'AMM-' + pageTradePro.market ] ? [ammMap[ 'AMM-' + pageTradePro.market ].address] : [],
                     [ sdk.WsTopicType.ticker ]: [pageTradePro.market as string],
                     [ sdk.WsTopicType.mixorder ]: {
                         markets: [pageTradePro.market],
