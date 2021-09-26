@@ -380,6 +380,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
     }, [account.readyState, marketTradeData,marketSubmit])
     const onSubmitBtnClick = React.useCallback(async ()=>{
         setIsMarketLoading(true);
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         const {priceLevel} = getPriceImpactInfo(pageTradePro.calcTradeParams)
         const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('')?? {isIpValid:false}
         //TODO: pending on checkIpValid API
@@ -399,7 +400,6 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                     break
             }
         }
-        myLog('swap directly')
     },[])
 
     const {
