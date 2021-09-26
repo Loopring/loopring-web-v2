@@ -56,8 +56,8 @@ export type PageTradePro<C> = {
     feeBips?: number | string,
     totalFee?: number | string,
     takerRate?: number | string,
-    quoteMinAmtInfo?: undefined | OrderInfo,
-    baseMinAmtInfo?: undefined | OrderInfo;
+    sellMinAmtInfo?: undefined | OrderInfo,
+    buyMinAmtInfo?: undefined | OrderInfo;
     lastStepAt?:'base'|'quote'|undefined,
     tradeArray?:RawDataTradeItem[],
 }
