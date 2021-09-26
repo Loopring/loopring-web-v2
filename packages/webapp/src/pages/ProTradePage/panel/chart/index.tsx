@@ -12,7 +12,7 @@ import { useKlineChart } from './hook';
 const ChartWrapperStyled = styled(Box)`
     flex: 1;
     width: 100%;
-    height: 100%;
+    // height: 100%;
 `
 
 const ChartItemStyled = styled(Typography)`
@@ -94,7 +94,7 @@ export const ChartView = withTranslation('common')(({market, breakpoint, t, i18n
     const { candlestickViewData, genCandlestickData } = useKlineChart(market)
     const [timeInterval, setTimeInterval] = React.useState(TradingInterval.min1)
     const [subChart, setSubChart] = React.useState(SubIndicator.VOLUME)
-    const [chosenIndicators, setChosenIndicators] = React.useState<string[]>([])
+    const [chosenIndicators, setChosenIndicators] = React.useState<string[]>(chartFearturesList.map(o => o.id))
 
     const handleTimeIntervalChange = React.useCallback((timeInterval: TradingInterval) => {
         setTimeInterval(timeInterval)
