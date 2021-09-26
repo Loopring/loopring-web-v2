@@ -79,6 +79,14 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
     })
     const _onSlippageChange = React.useCallback((slippage: number | string, customSlippage: number | string | undefined) => {
         popupState.close();
+        // handleCountChange(({
+        //         ...tradeData,
+        //         slippage: slippage,
+        //         __cache__: {
+        //             ...tradeData.__cache__,
+        //             customSlippage: customSlippage
+        //         }
+        //     },TradeBaseType.slippage));
         onChangeEvent({
             ...tradeData,
             slippage: slippage,

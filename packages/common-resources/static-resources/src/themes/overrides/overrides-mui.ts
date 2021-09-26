@@ -737,6 +737,11 @@ export const MuiListItem = ({colorBase}: any) => {
 export const MuiMenu = ({colorBase}: any) => {
     return {
         styleOverrides: {
+            root: {
+                " .MuiBackdrop-root":{
+                    opacity:"0 !important",
+                }
+            },
             list: {
                 backgroundColor: colorBase.popBg
             }

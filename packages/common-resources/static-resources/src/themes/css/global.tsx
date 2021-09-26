@@ -207,8 +207,8 @@ export const globalCss = ({theme}: any) => css`
     --delay: calc(var(--auto-refresh-duration) / 2);
     --header-row-height: 44px;
     --header-height: 64px;
-    --header-menu-list-height: 72px;
-    --header-menu-list-width: 250px;
+    --header-submenu-item-height: 52px;
+    --header-submenu-item-width: 250px;
     --desktop-max-width: 1200px;
     --desktop-min-width: 1024px;
     --btn-Input-height: 48px;

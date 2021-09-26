@@ -28,7 +28,8 @@ export type limitCalcParams = {
     isBuy: boolean
     priceImpact: number
     baseVol: string
-    baseVolShow: string | number
+    baseVolShow: string | number ,
+    amountBOut: string;
     quoteVol: string
     quoteVolShow: string | number
 }

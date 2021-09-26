@@ -117,7 +117,6 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
     const {makeMarketReqInHook} = usePlaceOrder()
 
     const onChangeMarketEvent = React.useCallback((tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType) => {
-
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         // myLog(`onChangeMarketEvent depth:`, pageTradePro.depth)
         // myLog(`onChangeMarketEvent ammPoolSnapshot:`, pageTradePro.ammPoolSnapshot)
@@ -176,7 +175,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                 ...pageTradePro.tradeCalcProData,
                 fee: calcTradeParams && calcTradeParams.maxFeeBips ? calcTradeParams.maxFeeBips: undefined,
                 minimumReceived: calcTradeParams? calcTradeParams.amountBOutSlip?.minReceivedVal: undefined,
-                priceImpact: calcTradeParams? calcTradeParams.priceImpact:undefined,
+                priceImpact: priceImpactObj? priceImpactObj.value:undefined,
                 priceImpactColor: priceImpactObj?.priceImpactColor,
             },
             lastStepAt,
@@ -190,6 +189,8 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             }
             return{
                 ...state,
+                ...tradeData,
+                // slippage: tradeData.slippage,
                 base:{
                     ...state.base,
                     tradeValue: baseValue && Number(baseValue.toFixed(tokenMap[state.base.belong].precision))
@@ -353,7 +354,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
     }, [account.readyState, tokenMap, marketTradeData, setIsMarketLoading, setToastOpen, setMarketTradeData])
     const availableTradeCheck = React.useCallback((): { tradeBtnStatus: TradeBtnStatus, label: string } => {
-
+        const account = store.getState().account;
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
         const {calcTradeParams, quoteMinAmtInfo, baseMinAmtInfo} =  pageTradePro;
         if (account.readyState === AccountStatus.ACTIVATED) {
@@ -377,7 +378,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         }
 
         return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
-    }, [account.readyState, marketTradeData,marketSubmit])
+    }, [ marketTradeData,marketSubmit])
     const onSubmitBtnClick = React.useCallback(async ()=>{
         setIsMarketLoading(true);
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
