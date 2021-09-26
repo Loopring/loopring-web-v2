@@ -15,11 +15,12 @@ export class LoopringAPI {
     public static wsAPI: WsAPI | undefined = undefined
 
     public static InitApi = (chainId: ChainId) => {
-        LoopringAPI.userAPI = new UserAPI({chainId})
-        LoopringAPI.exchangeAPI = new ExchangeAPI({chainId})
-        LoopringAPI.ammpoolAPI = new AmmpoolAPI({chainId})
-        LoopringAPI.walletAPI = new WalletAPI({chainId})
-        LoopringAPI.wsAPI = new WsAPI({chainId})
+        const baseUrl = chainId === ChainId.GOERLI ? 'https://uat2.loopring.io' : 'https://api3.loopring.io'
+        LoopringAPI.userAPI = new UserAPI({baseUrl})
+        LoopringAPI.exchangeAPI = new ExchangeAPI({baseUrl})
+        LoopringAPI.ammpoolAPI = new AmmpoolAPI({baseUrl})
+        LoopringAPI.walletAPI = new WalletAPI({baseUrl})
+        LoopringAPI.wsAPI = new WsAPI({baseUrl})
     }
 
 }
