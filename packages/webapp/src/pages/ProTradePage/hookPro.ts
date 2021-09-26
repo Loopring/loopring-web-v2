@@ -110,7 +110,7 @@ export const usePro = <C extends { [ key: string ]: any }>():{
         //
         //     // precisionList()
         // }
-    }, [market]);
+    }, [market,accountStatus]);
     const handleOnMarketChange =  React.useCallback((newMarket:MarketType) => {
         resetTradeCalcData(undefined, newMarket)
         precisionList(newMarket)
