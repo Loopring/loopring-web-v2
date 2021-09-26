@@ -38,8 +38,8 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
-    const marketPrecision = marketMap[ market ].precisionForPrice;
-    const {setShowSupport} = useOpenModals()
+    const marketPrecision = marketMap[market].precisionForPrice;
+    const { setShowSupport } = useOpenModals()
 
     const [limitTradeData, setLimitTradeData] = React.useState<LimitTradeData<IBData<any>>>(
         {
@@ -68,7 +68,6 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
     pageTradePro.tradeCalcProData.walletMap])
 
     React.useEffect(() => {
-        // resetTradeData(limitTradeData.type)
         if (pageTradePro.defaultPrice) {
             setLimitTradeData((state) => {
                 return {
@@ -110,7 +109,12 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
         });
 
         updatePageTradePro({
-            market, defaultPrice: undefined, tradeCalcProData: {
+            market, 
+            request: null,
+            calcTradeParams: null,
+            limitCalcTradeParams: null,
+            defaultPrice: undefined, 
+            tradeCalcProData: {
                 ...pageTradePro.tradeCalcProData,
                 fee: undefined,
                 minimumReceived: undefined,
@@ -192,6 +196,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
                     walletLayer2Service.sendUserUpdate()
                 }
 
+                resetTradeData()
 
                 setIsLimitLoading(false)
             } catch (reason) {
@@ -200,7 +205,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
 
             }
             setIsLimitLoading(false)
-        } else{
+        } else {
             setIsLimitLoading(false)
         }
     }, [])
@@ -246,7 +251,7 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
                 limitCalcTradeParams: calcTradeParams,
                 tradeCalcProData: {
                     ...pageTradePro.tradeCalcProData,
-                    fee: 'TODO'
+                    fee: calcTradeParams && calcTradeParams.maxFeeBips ? calcTradeParams.maxFeeBips : undefined,
                 }
             })
             setLimitTradeData((state) => {
@@ -296,29 +301,18 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
             return undefined
         }
 
-
     }, [])
-    const {
-        btnStatus: tradeLimitBtnStatus,
-        onBtnClick: limitBtnClick,
-        btnLabel: tradeLimitI18nKey,
-        btnStyle: tradeLimitBtnStyle
-    } = useSubmitBtn({
-        availableTradeCheck: () => {
-            return { label: '', tradeBtnStatus: TradeBtnStatus.AVAILABLE }
-        },
-        isLoading: isLimitLoading,
-        submitCallback: limitSubmit
-    })
+
     const onSubmitBtnClick = React.useCallback(async () => {
         setIsLimitLoading(true);
-        const {priceLevel} = getPriceImpactInfo(pageTradePro.calcTradeParams)
-        const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('')?? {isIpValid:false}
+        const { priceLevel } = getPriceImpactInfo(pageTradePro.calcTradeParams)
+        const { isIpValid } = await LoopringAPI?.exchangeAPI?.checkIpValid('') ?? { isIpValid: false }
+
         //TODO: pending on checkIpValid API
-        if(isIpValid === false){
-            setShowSupport({isShow:true})
+        if (isIpValid === false) {
+            setShowSupport({ isShow: true })
             setIsLimitLoading(false)
-        }else{
+        } else {
             switch (priceLevel) {
                 case PriceLevel.Lv1:
                     setAlertOpen(true)
@@ -331,16 +325,25 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
                     break
             }
         }
-
-
-        myLog('swap directly')
     }, [])
+
+    const {
+        btnStatus: tradeLimitBtnStatus,
+        onBtnClick: limitBtnClick,
+        btnLabel: tradeLimitI18nKey,
+        btnStyle: tradeLimitBtnStyle
+    } = useSubmitBtn({
+        availableTradeCheck: () => {
+            return { label: '', tradeBtnStatus: TradeBtnStatus.AVAILABLE }
+        },
+        isLoading: isLimitLoading,
+        submitCallback: onSubmitBtnClick
+    })
     return {
         // alertOpen,
         // confirmOpen,
         toastOpen,
         closeToast,
-        limitSubmit: onSubmitBtnClick,
         limitAlertOpen: alertOpen,
         resetLimitData: resetTradeData,
         isLimitLoading: false,
