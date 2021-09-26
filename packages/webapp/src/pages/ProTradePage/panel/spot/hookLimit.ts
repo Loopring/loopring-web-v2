@@ -1,7 +1,13 @@
 import React from 'react';
 import { useToast } from 'hooks/common/useToast';
 import { IBData, MarketType, myLog, } from '@loopring-web/common-resources';
-import { LimitTradeData, TradeBaseType, TradeBtnStatus, TradeProType } from '@loopring-web/component-lib';
+import {
+    LimitTradeData,
+    TradeBaseType,
+    TradeBtnStatus,
+    TradeProType,
+    useOpenModals
+} from '@loopring-web/component-lib';
 import { usePageTradePro } from 'stores/router';
 import { walletLayer2Service } from 'services/socket';
 import { useSubmitBtn } from './hookBtn';
@@ -32,7 +38,9 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
     // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const walletMap = pageTradePro.tradeCalcProData.walletMap ?? {};
-    const marketPrecision = marketMap[market].precisionForPrice;
+    const marketPrecision = marketMap[ market ].precisionForPrice;
+    const {setShowSupport} = useOpenModals()
+
     const [limitTradeData, setLimitTradeData] = React.useState<LimitTradeData<IBData<any>>>(
         {
             base: {
@@ -120,7 +128,6 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
         const { limitCalcTradeParams, request, tradeCalcProData } = pageTradePro;
         setAlertOpen(false)
         if (isAgree && LoopringAPI.userAPI && request) {
-            setIsLimitLoading(true)
             try {
 
                 //TODO maker order
@@ -192,6 +199,8 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
                 setToastOpen({ open: true, type: 'error', content: t('labelSwapFailed') })
 
             }
+            setIsLimitLoading(false)
+        } else{
             setIsLimitLoading(false)
         }
     }, [])
@@ -301,21 +310,30 @@ export const useLimit = <C extends { [key: string]: any }>(market: MarketType): 
         isLoading: isLimitLoading,
         submitCallback: limitSubmit
     })
-    const onSubmitBtnClick = React.useCallback(() => {
-        const { priceLevel } = getPriceImpactInfo(pageTradePro.calcTradeParams)
-
-        switch (priceLevel) {
-            case PriceLevel.Lv1:
-                setAlertOpen(true)
-                break
-            case PriceLevel.Lv2:
-                // setConfirmOpen(true)
-                break
-            default:
-                limitSubmit(undefined as any, true);
-                break
+    const onSubmitBtnClick = React.useCallback(async () => {
+        setIsLimitLoading(true);
+        const {priceLevel} = getPriceImpactInfo(pageTradePro.calcTradeParams)
+        const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('')?? {isIpValid:false}
+        //TODO: pending on checkIpValid API
+        if(isIpValid === false){
+            setShowSupport({isShow:true})
+            setIsLimitLoading(false)
+        }else{
+            switch (priceLevel) {
+                case PriceLevel.Lv1:
+                    setAlertOpen(true)
+                    break
+                case PriceLevel.Lv2:
+                    // setConfirmOpen(true)
+                    break
+                default:
+                    limitSubmit(undefined as any, true);
+                    break
+            }
         }
 
+
+        myLog('swap directly')
     }, [])
     return {
         // alertOpen,

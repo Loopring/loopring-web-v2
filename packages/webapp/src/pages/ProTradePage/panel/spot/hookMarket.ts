@@ -4,7 +4,14 @@ import { useToast } from 'hooks/common/useToast';
 import { LoopringAPI } from 'api_wrapper';
 import * as sdk from 'loopring-sdk';
 import { walletLayer2Service } from 'services/socket';
-import { MarketTradeData, TradeBaseType, TradeBtnStatus, TradeProType, useSettings } from '@loopring-web/component-lib';
+import {
+    MarketTradeData,
+    TradeBaseType,
+    TradeBtnStatus,
+    TradeProType,
+    useOpenModals,
+    useSettings
+} from '@loopring-web/component-lib';
 import { usePageTradePro } from 'stores/router';
 import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
@@ -29,6 +36,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
     const {toastOpen, setToastOpen, closeToast} = useToast();
     const {account} = useAccount();
     const {slippage} = useSettings()
+    const {setShowSupport} = useOpenModals()
     // const [marketTradeData, setMarketTradeData] = React.useState<MarketTradeData<IBData<C>> | undefined>(undefined);
     const {
         pageTradePro,
@@ -234,10 +242,8 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         const {calcTradeParams, request} =  pageTradePro;
         setAlertOpen(false)
         setConfirmOpen(false)
-
         if (isAgree) {
 
-            setIsMarketLoading(true);
             if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo
                 || !calcTradeParams || !request
                 || account.readyState !== AccountStatus.ACTIVATED) {
@@ -340,6 +346,8 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
             setIsMarketLoading(false)
 
+        } else{
+            setIsMarketLoading(false)
         }
 
     }, [account.readyState, tokenMap, marketTradeData, setIsMarketLoading, setToastOpen, setMarketTradeData])
@@ -369,21 +377,27 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
         return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
     }, [account.readyState, marketTradeData,marketSubmit])
-    const onSubmitBtnClick = React.useCallback(()=>{
+    const onSubmitBtnClick = React.useCallback(async ()=>{
+        setIsMarketLoading(true);
         const {priceLevel} = getPriceImpactInfo(pageTradePro.calcTradeParams)
-
-        switch (priceLevel) {
-            case PriceLevel.Lv1:
-                setAlertOpen(true)
-                break
-            case PriceLevel.Lv2:
-                setConfirmOpen(true)
-                break
-            default:
-                marketSubmit(undefined as any, true);
-                break
+        const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('')?? {isIpValid:false}
+        //TODO: pending on checkIpValid API
+        if(isIpValid === false){
+            setShowSupport({isShow:true})
+            setIsMarketLoading(false)
+        }else {
+            switch (priceLevel) {
+                case PriceLevel.Lv1:
+                    setAlertOpen(true)
+                    break
+                case PriceLevel.Lv2:
+                    setConfirmOpen(true)
+                    break
+                default:
+                    marketSubmit(undefined as any, true);
+                    break
+            }
         }
-
         myLog('swap directly')
     },[])
 
