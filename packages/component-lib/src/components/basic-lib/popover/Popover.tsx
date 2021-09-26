@@ -50,9 +50,9 @@ export const Popover: React.FC<PopoverWrapProps> = ({
 
     const PopoverStyled = styled(CustomPopover)<PopoverProps>`
       &.MuiModal-root {
-        .MuiBackdrop-root {
-          background-color: inherit;
-        }
+        //.MuiBackdrop-root {
+        //  background-color: inherit;
+        //}
         &.arrow-center,
         &.arrow-right,
         &.arrow-left,
