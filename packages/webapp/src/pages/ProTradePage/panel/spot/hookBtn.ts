@@ -1,6 +1,6 @@
 import React from 'react';
 import { TradeBtnStatus } from '@loopring-web/component-lib';
-import { AccountStatus, fnType } from '@loopring-web/common-resources';
+import { AccountStatus, fnType, myLog } from '@loopring-web/common-resources';
 import * as _ from 'lodash';
 import { accountStaticCallBack, btnClickMap, btnLabel } from 'layouts/connectStatusCallback';
 import { useAccount } from 'stores/account';
@@ -52,7 +52,9 @@ export const useSubmitBtn = ({
     });
 
     const _btnLabel = React.useMemo((): string => {
-        return accountStaticCallBack(_btnLabelArray, [rest])
+        const label = accountStaticCallBack(_btnLabelArray, [rest])
+        myLog(label);
+        return label
     }, [_btnLabelArray, rest])
 
     const btnClickCallbackArray = Object.assign(_.cloneDeep(btnClickMap), {
@@ -61,6 +63,7 @@ export const useSubmitBtn = ({
     const onBtnClick = React.useCallback((props: any) => {
         accountStaticCallBack(btnClickCallbackArray, [props])
     }, [btnClickCallbackArray])
+
     return {
         btnStatus,
         onBtnClick,

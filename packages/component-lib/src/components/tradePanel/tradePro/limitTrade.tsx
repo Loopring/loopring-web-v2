@@ -180,7 +180,8 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
             }}
                          loading={!getDisabled() && tradeBtnBaseStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                          disabled={getDisabled() || tradeBtnBaseStatus === TradeBtnStatus.DISABLED || tradeBtnBaseStatus === TradeBtnStatus.LOADING }
-                         fullWidth={true}>{btnLabel}
+                         fullWidth={true}>
+                {btnLabel}
             </ButtonStyle>
         </Box>
     </Box>
