@@ -12,6 +12,7 @@ import { useAmmActivityMap } from './stores/Amm/AmmActivityMap';
 import { useTicker } from './stores/ticker';
 import { useUserRewards } from './stores/userRewards';
 import { useTokenPrices } from './stores/tokenPrices';
+import { useAmount } from './stores/amount';
 
 // import { statusUnset as accountStatusUnset } from './stores/account';
 
@@ -38,7 +39,7 @@ export function useInit() {
     const {status: ammActivityMapStatus, statusUnset: ammActivityMapStatusUnset} = useAmmActivityMap();
     const {status: userRewardsStatus, statusUnset: userRewardsUnset} = useUserRewards();
     const {status: tickerStatus, statusUnset: tickerStatusUnset} = useTicker();
-    const {status: amountStatus, statusUnset: amountStatusUnset} = useTicker();
+    const {status: amountStatus, statusUnset: amountStatusUnset} = useAmount();
 
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
