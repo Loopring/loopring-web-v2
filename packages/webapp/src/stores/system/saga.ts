@@ -99,7 +99,17 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
             const baseURL = ChainId.MAINNET === chainId ? `https://${process.env.REACT_APP_API_URL}` : `https:/${process.env.REACT_APP_API_URL_UAT}`
             const socketURL = ChainId.MAINNET === chainId ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws` : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
             const etherscanBaseUrl = ChainId.MAINNET === chainId ? `https://etherscan.io/` : `https://goerli.etherscan.io/`
-            const allowTrade  = await LoopringAPI.exchangeAPI.getAccountServices({});
+            let allowTrade;
+            try{
+                 allowTrade  = await LoopringAPI.exchangeAPI.getAccountServices({});
+
+            } catch {
+                allowTrade =  {register: {enable:false},
+                order: {enable:false},
+                joinAmm: {enable:false},
+                dAppTrade: {enable:false},
+                raw_data: {enable:false},}
+        }
 
             window.loopringSocket = new LoopringSocket(socketURL);
 
