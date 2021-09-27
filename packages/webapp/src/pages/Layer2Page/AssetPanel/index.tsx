@@ -18,6 +18,7 @@ import { useModals } from 'hooks/useractions/useModals'
 import store from 'stores'
 import { StylePaper } from 'pages/styled'
 import { useGetAssets } from './hook'
+import { Currency } from 'loopring-sdk';
 
 const StyledChartWrapper = styled(Box)`
     height: 225px;
@@ -146,10 +147,10 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
     const AssetTitleProps: AssetTitleProps = {
         assetInfo: {
-            totalAsset: assetsRawData.map(o => currency === 'USD' ? o.tokenValueDollar : o.tokenValueYuan).reduce((prev, next) => {
+            totalAsset: assetsRawData.map(o => currency === Currency.usd ? o.tokenValueDollar : o.tokenValueYuan).reduce((prev, next) => {
                 return prev + next
             }, 0),
-            priceTag: currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan,
+            priceTag: currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan,
         },
         hideL2Assets,
         onShowDeposit,

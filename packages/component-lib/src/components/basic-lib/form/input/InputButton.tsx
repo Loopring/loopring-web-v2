@@ -16,7 +16,7 @@ import { Typography } from '@mui/material';
 function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                          label = "Enter token",
                                                                          handleError,
-                                                                         subLabel = "Max",
+                                                                         subLabel,
                                                                          // wait = globalSetup.wait,
                                                                          // coinMap,
                                                                          maxAllow,
@@ -114,10 +114,11 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
               paddingBottom={1 / 2}>
             <Grid item xs={3}><Typography fontSize={'inherit'} className={'main-label'} color={'var(--color-text-third)'}>{label}</Typography></Grid>
             <Grid item xs={9} className={'sub-label'}>{subLabel && belong ?
-                <Typography fontSize={'inherit'} className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
+                <Typography fontSize={'inherit'}
+                            className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>
-                    <span>{maxAllow ? subLabel + ':' : ''}</span>
-                    <span>{maxAllow ? (balance ? getValuePrecisionThousand(balance) : '0.00') :''}</span>
+                    <span>{subLabel}</span>
+                    <span>{ (balance ? getValuePrecisionThousand(balance) : '0.00')}</span>
                 </Typography> : null}</Grid>
         </Grid>
         <Grid container className={`btnInput-wrap

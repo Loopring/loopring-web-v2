@@ -1,4 +1,5 @@
 import { AmmDetail, MyAmmLP } from '@loopring-web/common-resources';
+import { Currency } from 'loopring-sdk';
 
 export type MyPoolRow<R> = MyAmmLP<R> & {
     ammDetail: AmmDetail<R>
@@ -21,5 +22,5 @@ export type MyPoolTableProps<T, R = MyPoolRow<T>> = {
     showFilter?: boolean,
     wait?: number;
     showloading?: boolean;
-    currency?: 'USD' | 'CNY'
+    currency?: Currency
 } & Method<R>

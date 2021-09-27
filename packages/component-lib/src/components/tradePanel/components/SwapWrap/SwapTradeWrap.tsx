@@ -116,7 +116,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
     }
     const propsBuy = {
         label: t('tokenEnterReceiveToken'),
-        subLabel: t('tokenHave'),
+        // subLabel: t('tokenHave'),
         emptyText: t('tokenSelectToken'),
         placeholderText: '0.00',
         maxAllow: false,

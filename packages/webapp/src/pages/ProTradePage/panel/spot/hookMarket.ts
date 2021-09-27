@@ -18,7 +18,7 @@ import { useTokenMap } from 'stores/token';
 import { useSystem } from 'stores/system';
 import { useTranslation } from 'react-i18next';
 import { useSubmitBtn } from './hookBtn';
-import { VolToNumberWithPrecision } from 'utils/formatter_tool';
+// import { VolToNumberWithPrecision } from 'utils/formatter_tool';
 import { getPriceImpactInfo, PriceLevel, usePlaceOrder } from 'hooks/common/useTrade';
 import store from 'stores';
 import * as _ from 'lodash'

@@ -1,12 +1,22 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { BtnPercentage, InputCoin, InputSize } from '../../basic-lib';
 import { LimitTradeData, TradeBtnStatus, TradeLimitProps } from '../Interface';
-import { CoinInfo, CoinKey, CoinMap, EmptyValueTag, IBData, TradeCalcProData } from '@loopring-web/common-resources';
+import {
+    CoinInfo,
+    CoinKey,
+    CoinMap,
+    EmptyValueTag,
+    IBData,
+    PriceTag,
+    TradeCalcProData
+} from '@loopring-web/common-resources';
 import { Box, Grid, Tab, Typography } from '@mui/material';
 import { TradeProType } from './Interface';
 import { ButtonStyle, TabsStyle } from '../components/Styled';
 import { useCommon } from './hookCommon';
 import React from 'react';
+import { useSettings } from '../../../stores';
+import { Currency } from 'loopring-sdk';
 
 // const tradeDataInit:LimitTradeData<IBData<any>> = {
 //     quote: {belong:'',tradeValue:undefined,balance} as IBData<any>,
@@ -38,6 +48,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
         onChangeEvent,
         // ...rest
     } =  props
+    const {currency} = useSettings()
     const priceRef = React.useRef();
     // const _handleCountChange = React.useCallback((ibData: IBData<I>,name:string, _ref: any) => {
     //     console.log('limitTrade: handleUser input :',ibData,name)
@@ -80,7 +91,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
     const propsPrice = React.useMemo(()=>{
         return {
             label: t('labelProPrice'),
-            subLabel: t('tokenMax'),
+            subLabel: `\u2248 ${currency == Currency.usd?PriceTag.Dollar:PriceTag.Yuan}`,   //'\u224'
             emptyText: t('tokenSelectToken'),
             placeholderText: '0.00',
             size:InputSize.small,
@@ -112,9 +123,9 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
             <Box paddingTop={2}>
                 <InputCoin<any, I, CoinInfo<I>> ref={priceRef as any}  name={'price'} disabled={false} {...{
                     ...propsPrice,
-                    // maxAllow:false,
+                    maxAllow:false,
                     isHideError: true,
-                    inputData:tradeData ? tradeData.price : {} as any,
+                    inputData: tradeData ? tradeData.price : {} as any,
                     coinMap: tradeCalcProData && tradeCalcProData.coinInfoMap ? tradeCalcProData.coinInfoMap : {} as CoinMap<I, CoinInfo<I>>
                 }} />
             </Box>

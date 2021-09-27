@@ -4,6 +4,7 @@ import { useTokenMap, } from 'stores/token'
 import { useWalletLayer2 } from 'stores/walletLayer2'
 import { volumeToCount } from 'hooks/help'
 import store from 'stores'
+import { Currency } from 'loopring-sdk';
 
 export const useAmmTotalValue = () => {
     const {addressIndex} = useTokenMap();
@@ -29,10 +30,10 @@ export const useAmmTotalValue = () => {
     type GetAmmLiquidityProps = {
         market: string;
         balance?: number;
-        currency?: 'USD' | 'CNY'
+        currency?: Currency
     }
 
-    const getAmmLiquidity = React.useCallback(async ({market, balance, currency = 'USD'}: GetAmmLiquidityProps) => {
+    const getAmmLiquidity = React.useCallback(async ({market, balance, currency =  Currency.usd}: GetAmmLiquidityProps) => {
         const price = await getLpTokenPrice(market)
         let curBalance = 0
         if (balance) {
@@ -42,7 +43,7 @@ export const useAmmTotalValue = () => {
             curBalance = Number(Object.entries(walletLayer2 || {}).find(([token]) => token === market)?.[ 1 ].total || 0)
         }
         const formattedBalance = volumeToCount(market, curBalance)
-        const unit = currency && currency === 'CNY' ? forex : 1
+        const unit = currency && currency === Currency.cny ? forex : 1
         return (price || 0) * (formattedBalance || 0) * (unit as number)
     }, [walletLayer2, getLpTokenPrice, forex])
 

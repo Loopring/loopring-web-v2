@@ -3,10 +3,11 @@ import { Button, Column, generateColumns, Table, TableProps, } from '../../basic
 import { Default } from '../../basic-lib/tables/table.stories';
 import { FormatterProps } from 'react-data-grid';
 import { Typography } from '@mui/material';
-import { Currency, FloatTag, PriceTag } from '@loopring-web/common-resources';
+import {  FloatTag, PriceTag } from '@loopring-web/common-resources';
 import { HeaderCell } from './componnents/HeaderCell';
 import React from 'react';
 import styled from '@emotion/styled';
+import { Currency } from 'loopring-sdk';
 
 interface Row {
     sellData: string,
@@ -16,7 +17,7 @@ interface Row {
     priceYuan: number,
     priceDollar: number,
     change24: string,
-    showTag: 'USD' | 'CNY',
+    showTag: Currency,
     floatTag: keyof typeof FloatTag,
 }
 
@@ -133,7 +134,7 @@ export const TradeFilterTable = withTranslation('tables')(({
                     {row.price}
                 </Typography>
                 <Typography component={'p'}
-                            variant={'body2'}>{row.showTag === Currency.dollar ? PriceTag.Dollar + row.priceDollar : PriceTag.Yuan + row.priceYuan}</Typography>
+                            variant={'body2'}>{row.showTag === Currency.usd ? PriceTag.Dollar + row.priceDollar : PriceTag.Yuan + row.priceYuan}</Typography>
             </>
         },
         {

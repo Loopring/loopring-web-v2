@@ -34,7 +34,7 @@ export type SwapTradeData<T> = {
 
 
 export type LimitTradeData<T> = {
-    price:T,
+    price: T,
     base: T,
     quote: T,
     type: TradeProType,
