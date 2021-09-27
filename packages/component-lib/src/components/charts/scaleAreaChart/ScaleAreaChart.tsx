@@ -5,11 +5,12 @@ import TrendChart from './TrendChart'
 import DepthChart from './DepthChart'
 import { ChartType } from '../';
 
-import { WrapperedKlineChart, IndicatorProps, } from './KlineChart'
+import { WrapperedKlineChart, IndicatorProps } from './KlineChart'
 
 import * as sdk from 'loopring-sdk'
 import { TradingInterval } from 'loopring-sdk';
 import { useSettings } from '../../../stores'
+import { getTheme } from '@loopring-web/common-resources'
 
 export interface ScaleAreaChartProps {
     type: ChartType
@@ -27,7 +28,7 @@ export interface ScaleAreaChartProps {
 }
 
 export const ScaleAreaChart = (props: ScaleAreaChartProps) => {
-    const { themeMode } = useSettings()
+    const { themeMode, upColor } = useSettings()
     switch (props.type) {
         case ChartType.Trend:
             return <TrendChart {...props} />
@@ -61,7 +62,14 @@ export const ScaleAreaChart = (props: ScaleAreaChartProps) => {
                         break
                 }
             }
-            return <WrapperedKlineChart dateTimeFormat={dateTimeFormat} {...props.indicator} data={props.data} themeMode={themeMode} />
+            return <WrapperedKlineChart 
+                    dateTimeFormat={dateTimeFormat} 
+                    {...props.indicator} 
+                    data={props.data} 
+                    themeMode={themeMode} 
+                    upColor={upColor}
+                    colorBase={getTheme(themeMode).colorBase}
+                />
         default:
             return <span>prop "type" is not avaible for current chart</span>
     }

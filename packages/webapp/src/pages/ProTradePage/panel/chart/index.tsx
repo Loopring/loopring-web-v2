@@ -25,9 +25,6 @@ const formatDateData = testKlineData.map(d => ({
 }))
 
 const timeIntervalData = [
-    // {
-    //     id: 'Default', i18nKey: 'labelProTimeDefault',
-    // },
     {
         id: TradingInterval.min1,
         i18nKey: 'labelProTime1m',
@@ -39,10 +36,19 @@ const timeIntervalData = [
         id: TradingInterval.min15, i18nKey: 'labelProTime15m',
     },
     {
+        id: TradingInterval.min30, i18nKey: 'labelProTime30m',
+    },
+    {
         id: TradingInterval.hr1, i18nKey: 'labelProTime1H',
     },
     {
+        id: TradingInterval.hr2, i18nKey: 'labelProTime2H',
+    },
+    {
         id: TradingInterval.hr4, i18nKey: 'labelProTime4H',
+    },
+    {
+        id: TradingInterval.hr12, i18nKey: 'labelProTime12H',
     },
     {
         id: TradingInterval.d1, i18nKey: 'labelProTime1D',
@@ -92,7 +98,7 @@ export const ChartView = withTranslation('common')(({market, breakpoint, t, i18n
     } & WithTranslation) => {
 
     const { candlestickViewData, genCandlestickData } = useKlineChart(market)
-    const [timeInterval, setTimeInterval] = React.useState(TradingInterval.min1)
+    const [timeInterval, setTimeInterval] = React.useState(TradingInterval.d1)
     const [subChart, setSubChart] = React.useState(SubIndicator.VOLUME)
     const [chosenIndicators, setChosenIndicators] = React.useState<string[]>(chartFearturesList.map(o => o.id))
 
@@ -195,7 +201,7 @@ export const ChartView = withTranslation('common')(({market, breakpoint, t, i18n
                         const isSelected = o.id === subChart
                         return (
                             <Grid key={o.id} item>
-                                <ChartItemStyled 
+                                <ChartItemStyled
                                     color={isSelected ? 'var(--color-text-primary)' : 'var(--color-text-third)'}
                                     onClick={() => handleSubChartFeatureClick(o.id)}
                                 >
