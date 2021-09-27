@@ -3,7 +3,7 @@ import {
     CoinInfo,
     DropDownIcon,
     FORMAT_STRING_LEN,
-     getValuePrecisionThousand,
+     // getValuePrecisionThousand,
     IBData,
 } from '@loopring-web/common-resources';
 import { InputButtonProps, InputSize } from "./Interface";
@@ -118,7 +118,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                             className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>
                     <span>{subLabel}</span>
-                    <span>{ (balance ? getValuePrecisionThousand(balance) : '0.00')}</span>
+                    <span>{(balance ? balance : '0.00')}</span>
                 </Typography> : null}</Grid>
         </Grid>
         <Grid container className={`btnInput-wrap
