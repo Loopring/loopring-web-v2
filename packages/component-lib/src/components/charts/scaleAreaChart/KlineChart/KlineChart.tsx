@@ -37,6 +37,7 @@ import {
     Label,
 } from "react-financial-charts";
 import { macd, } from "@react-financial-charts/indicators";
+import { myLog } from "@loopring-web/common-resources";
 
 enum CandleStickFill {
     up = '#00BBA8',
@@ -114,6 +115,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
     public render() {
         const { data: initialData, dateTimeFormat, height, ratio, width, mainIndicators, subIndicator, themeMode, upColor, colorBase } = this.props;
         // const isDark = themeMode === 'dark'
+        const isUpGreen = upColor === 'green'
         // simple moving average
 
         let mainIndicatorLst: any[] = []
@@ -264,6 +266,17 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
 
         let chartId = 1
 
+        const getTrendValueColor = (data?: any) => {
+            if (data && data.close && data.open) {
+                return data.close > data.open
+                    ? isUpGreen
+                        ? colorBase.success : colorBase.error
+                    : isUpGreen
+                        ? colorBase.error : colorBase.success
+            }
+            return colorBase.textPrimary
+        }
+
         return (
             <ChartCanvas
                 height={height}
@@ -288,10 +301,10 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                     {/* <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} */}
                     <YAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn}
                         // tickFormat={this.pricesDisplayFormat} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                        tickFormat={this.pricesDisplayFormat} tickLabelFill={colorBase.providerBtn}
+                        tickFormat={this.pricesDisplayFormat} tickLabelFill={colorBase.textDisable}
                         // strokeStyle={'rgba(255, 255, 255, 0.3)'} />
                         strokeStyle={colorBase.textDisable} />
-                    <CandlestickSeries fill={this.candleStickColor} wickStroke={this.candleStickColor} />
+                    <CandlestickSeries fill={(data) => getTrendValueColor(data)} wickStroke={(data) => getTrendValueColor(data)} />
 
                     {
                         mainIndicatorLst && mainIndicatorLst.map((item: any) => {
@@ -306,17 +319,17 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                     <EdgeIndicator
                         itemType="last"
                         rectWidth={margin.right}
-                        fill={this.openCloseColor}
-                        lineStroke={this.openCloseColor}
+                        fill={(data) => getTrendValueColor(data)}
+                        lineStroke={(data) => getTrendValueColor(data)}
                         displayFormat={this.pricesDisplayFormat}
                         yAccessor={this.yEdgeIndicator}
                     />
-                    <OHLCTooltip origin={[8, 16]} textFill={'#FFF'} />
+                    <OHLCTooltip origin={[8, 16]} textFill={(data: any) => getTrendValueColor(data)} />
                     {
                         maToolTipOptions &&
                         <MovingAverageTooltip
                             origin={[8, 24]}
-                            textFill={'#FFF'}
+                            textFill={colorBase.textPrimary}
                             options={maToolTipOptions}
                         />}
                     {
@@ -328,14 +341,14 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                                 origin={[8, 64]}
                                 yAccessor={d => d.bb}
                                 options={bollToolTipOption}
-                                textFill={'#fff'}
+                                textFill={colorBase.textPrimary}
                             /></>}
                     <Label
                         text={'Loopring'}
                         fontFamily={'Roboto'}
                         // fontSize: number;
                         fontWeight={'400'}
-                        fillStyle={colorBase.textThird}
+                        fillStyle={colorBase.textDisable}
                         x={(width - this.margin.left - this.margin.right) / 2}
                         y={(height - this.margin.top - this.margin.bottom) * 2 / 5}
                     />
@@ -376,7 +389,8 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                                     <SingleValueTooltip
                                         yAccessor={this.volumeSeries}
                                         yLabel={`VOL`}
-                                        origin={[8, 8]}
+                                        origin={[8, 16]}
+                                        valueFill={colorBase.textPrimary}
                                     />
                                 </Chart>
                             case SubIndicator.RSI:
@@ -390,7 +404,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                                     <MouseCoordinateX displayFormat={timeDisplayFormat} />
                                     <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
                                     <RSISeries yAccessor={item.func.accessor()} />
-                                    <RSITooltip origin={[8, 16]} yAccessor={item.func.accessor()} options={item.func.options()} />
+                                    <RSITooltip origin={[8, 16]} yAccessor={item.func.accessor()} options={item.func.options()} textFill={colorBase.textPrimary} />
                                 </Chart>
                             case SubIndicator.SAR:
                                 return <Chart id={chartId++} height={subHeight} origin={(_: number, h: number) => [0, h - (subIndicatorLst.length - ind) * subHeight]} yExtents={item.func.accessor()}>
@@ -406,7 +420,8 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                                     <SingleValueTooltip
                                         yLabel={`SAR (${item.params.accelerationFactor}, ${item.params.maxAccelerationFactor})`}
                                         yAccessor={item.func.accessor()}
-                                        origin={[8, 8]}
+                                        origin={[8, 16]}
+                                        valueFill={colorBase.textPrimary}
                                     />
                                 </Chart>
                             default:
@@ -433,13 +448,13 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
         return data.close;
     };
 
-    private readonly candleStickColor = (data: IOHLCData) => data.close > data.open
-        ? this.props.upColor ==='green'
-            ? CandleStickFill.up
-            : CandleStickFill.down
-        : this.props.upColor ==='green'
-            ? CandleStickFill.down
-            : CandleStickFill.up
+    // private readonly candleStickColor = (data: IOHLCData) => data.close > data.open
+    //     ? this.props.upColor ==='green'
+    //         ? CandleStickFill.up
+    //         : CandleStickFill.down
+    //     : this.props.upColor ==='green'
+    //         ? CandleStickFill.down
+    //         : CandleStickFill.up
 
     private readonly volumeColor = (data: IOHLCData) => {
         return data.close > data.open 
@@ -455,15 +470,15 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
         return data.volume
     };
 
-    private readonly openCloseColor = (data: IOHLCData) => {
-        return data.close > data.open
-            ? this.props.upColor ==='green'
-                ? CandleStickFill.up
-                : CandleStickFill.down
-            : this.props.upColor ==='green'
-                ? CandleStickFill.down
-                : CandleStickFill.up
-    };
+    // private readonly openCloseColor = (data: IOHLCData) => {
+    //     return data.close > data.open
+    //         ? this.props.upColor ==='green'
+    //             ? CandleStickFill.up
+    //             : CandleStickFill.down
+    //         : this.props.upColor ==='green'
+    //             ? CandleStickFill.down
+    //             : CandleStickFill.up
+    // };
 }
 
 export const WrapperedKlineChart = withSize({ style: { minHeight: 200 } })(withDeviceRatio()(StockChart));

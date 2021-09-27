@@ -239,11 +239,12 @@ export const MarketView = withTranslation('common')(({
                 rawData={pageTradePro.tradeArray ? pageTradePro.tradeArray.slice(0, tableLength) : []}
                 quotePrecision={tokenMap[ quoteSymbol ].precision}
                 precision={marketMap[ market ].precisionForPrice}
+                depthLevel={pageTradePro.depthLevel}
                 currentheight={tableLength * 20 + 20}/>
             : <Box flex={1} height={'100%'} display={'flex'} alignItems={'center'}
                    justifyContent={'center'}><LoadingIcon/></Box>}
         </>
-    }, [tableLength, market, pageTradePro.tradeArray])
+    }, [tableLength, market, pageTradePro.tradeArray, pageTradePro.depthLevel])
 
     const priceClick = React.useCallback((event, price) => {
         updatePageTradePro({market, defaultPrice: price})

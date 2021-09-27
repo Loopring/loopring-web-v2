@@ -77,12 +77,12 @@ const chartFearturesList = [
     {
         id: MainIndicator.MA,
         label: 'MA',
-        params: { period: 5 }
+        params: { period: 7 }
     },
     {
         id: MainIndicator.EMA,
         label: 'EMA',
-        params: { period: 10}
+        params: { period: 7}
     },
     {
         id: MainIndicator.BOLL,
