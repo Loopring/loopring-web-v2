@@ -234,7 +234,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
 
             // myLog(`tradeData price:${tradeData.price.tradeValue}`, tradeData.type, amountBase, amountQuote)
 
-            const {limitRequest, calcTradeParams, sellMinAmtInfo, buyMinAmtInfo,} = makeLimitReqInHook({
+            const {limitRequest, calcTradeParams, sellUserOrderInfo, buyUserOrderInfo, } = makeLimitReqInHook({
                 isBuy: tradeData.type === 'buy',
                 base: tradeData.base.belong,
                 quote: tradeData.quote.belong,
@@ -248,13 +248,13 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
             //TODO: fee update
             updatePageTradePro({
                 market,
-                sellMinAmtInfo,
-                buyMinAmtInfo,
+                sellUserOrderInfo,
+                buyUserOrderInfo,
                 request: limitRequest as sdk.SubmitOrderRequestV3,
                 limitCalcTradeParams: calcTradeParams,
                 tradeCalcProData: {
                     ...pageTradePro.tradeCalcProData,
-                    fee: calcTradeParams && calcTradeParams.maxFeeBips ? calcTradeParams.maxFeeBips : undefined,
+                    fee: calcTradeParams && calcTradeParams.maxFeeBips ? calcTradeParams.maxFeeBips.toString() : undefined,
                 }
             })
             setLimitTradeData((state) => {
@@ -334,12 +334,12 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
         const {
             limitCalcTradeParams,
-            sellMinAmtInfo,
-            buyMinAmtInfo
+            sellUserOrderInfo,
+            buyUserOrderInfo
         } = pageTradePro;
         if (account.readyState === AccountStatus.ACTIVATED) {
             // const type = limitTradeData.type === TradeProType.sell ? 'quote' : 'base';
-            const minAmt = limitTradeData.type === TradeProType.sell ? sellMinAmtInfo?.minAmount : buyMinAmtInfo?.minAmount
+            const minAmt = limitTradeData.type === TradeProType.sell ? sellUserOrderInfo?.minAmount : buyUserOrderInfo?.minAmount
             const validAmt = !!(limitCalcTradeParams?.baseVol && minAmt && sdk.toBig(limitCalcTradeParams?.baseVol).gte(sdk.toBig(minAmt)));
             if (limitTradeData?.base.tradeValue === undefined
                 || limitTradeData?.quote.tradeValue === undefined
