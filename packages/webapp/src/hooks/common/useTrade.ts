@@ -11,6 +11,7 @@ import { useAmmMap } from 'stores/Amm/AmmMap';
 import { myLog } from '@loopring-web/common-resources';
 import store from 'stores'
 import * as _ from 'lodash'
+import { OrderInfoPatch } from 'stores/router';
 
 export enum PriceLevel {
     Normal,
@@ -132,7 +133,7 @@ export function makeMarketReq({
         slipBips: slippage as string,
     })
 
-    const minOrderInfo: sdk.OrderInfo & { minAmtShow?: number, symbol?: string } | undefined = _.cloneDeep(isBuy ? buyUserOrderInfo : sellUserOrderInfo) 
+    const minOrderInfo: sdk.OrderInfo & OrderInfoPatch | undefined = _.cloneDeep(isBuy ? buyUserOrderInfo : sellUserOrderInfo) 
 
     if (minOrderInfo) {
         if (!isBuy) { // sell eth -> usdt, calc min eth from usdt min amt(100USDT)
@@ -156,15 +157,17 @@ export function makeMarketReq({
             minOrderInfo.minAmount = calcTradeParamsForMin?.amountS as string
             minOrderInfo.minAmtShow = sdk.toBig(minOrderInfo.minAmount).div('1e' + sellTokenInfo.decimals).toNumber()
             minOrderInfo.symbol = sell
+            minOrderInfo.minAmtCheck = sdk.toBig(calcTradeParams?.sellAmt).gte(sdk.toBig(minOrderInfo.minAmtShow))
+
         } else {
+            
             minOrderInfo.minAmtShow = sdk.toBig(minOrderInfo.minAmount).div('1e' + buyTokenInfo.decimals).toNumber()
             minOrderInfo.symbol = buy
+            minOrderInfo.minAmtCheck = sdk.toBig(calcTradeParams?.buyAmt).gte(sdk.toBig(minOrderInfo.minAmtShow))
         }
     } else {
         throw Error('undefined minOrderInfo')
     }
-
-    const minAmtCheck = sdk.toBig(input).gte(sdk.toBig(minOrderInfo.minAmount))
 
     // myLog('makeMarketReq calcTradeParams:', calcTradeParams)
 

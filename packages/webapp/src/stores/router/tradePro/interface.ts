@@ -34,6 +34,12 @@ export type limitCalcParams = {
     quoteVolShow: string | number
 }
 
+export type OrderInfoPatch = {
+    minAmtShow?: number, 
+    symbol?: string, 
+    minAmtCheck?: boolean 
+}
+
 export type PageTradePro<C> = {
     market: MarketType  // eg: ETH-LRC, Pair from loopring market
     // tradePair?: MarketType  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
@@ -58,7 +64,7 @@ export type PageTradePro<C> = {
     takerRate?: number | string,
     sellUserOrderInfo?: undefined| null | OrderInfo,
     buyUserOrderInfo?: undefined | null | OrderInfo,
-    minOrderInfo?: undefined | null | OrderInfo,
+    minOrderInfo?: undefined | null | OrderInfo & OrderInfoPatch,
     lastStepAt?:'base'|'quote'|undefined,
     tradeArray?:RawDataTradeItem[],
 }
