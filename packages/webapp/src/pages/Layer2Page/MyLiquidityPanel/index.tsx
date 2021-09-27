@@ -56,7 +56,7 @@ const MyLiquidity: any = withTranslation('common')(
         const [chartPeriod, setChartPeriod] = React.useState('ALL');
         const [page, setPage] = React.useState(1);
         const {currency} = useSettings();
-        const {forex} = useSystem()
+        const {forex,allowTrade} = useSystem()
         const history = useHistory()
 
         // React.useEffect(() => {
@@ -150,6 +150,7 @@ const MyLiquidity: any = withTranslation('common')(
                     <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1}>
                         <Typography variant={'h5'} marginBottom={3}>{t('labelMyAmm')}</Typography>
                         <MyPoolTable
+                            allowTrade={allowTrade}
                             rawData={myPoolRow}
                             pagination={{pageSize: 10}}
                             showloading={showLoading}
