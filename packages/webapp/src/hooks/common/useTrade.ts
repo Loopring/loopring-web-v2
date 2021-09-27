@@ -290,28 +290,6 @@ export function makeLimitReq({
         throw Error('no amount info!')
     }
 
-    const minOrderInfo: sdk.OrderInfo & OrderInfoPatch | undefined = _.cloneDeep(isBuy ? buyUserOrderInfo : sellUserOrderInfo) 
-
-    if (minOrderInfo) {
-        if (!isBuy) { // sell eth -> usdt, calc min eth from usdt min amt(100USDT)
-            const minInput = sdk.toBig(buyUserOrderInfo?.minAmount).div('1e' + buyTokenInfo.decimals).toString()
-            
-            // minOrderInfo.minAmount = calcTradeParamsForMin?.amountS as string
-            // minOrderInfo.minAmtShow = sdk.toBig(minOrderInfo.minAmount).div('1e' + sellTokenInfo.decimals).toNumber()
-            // minOrderInfo.symbol = sell
-            // minOrderInfo.minAmtCheck = sdk.toBig(quoteVol).gte(sdk.toBig(minOrderInfo.minAmtShow))
-
-        } else {
-            
-            minOrderInfo.minAmtShow = sdk.toBig(minOrderInfo.minAmount).div('1e' + buyTokenInfo.decimals).toNumber()
-            minOrderInfo.symbol = buy
-            minOrderInfo.minAmtCheck = sdk.toBig(baseVol).gte(sdk.toBig(minOrderInfo.minAmtShow))
-        }
-        
-    } else {
-        throw Error('undefined minOrderInfo')
-    }
-
     const baseTokenVol3: sdk.TokenVolumeV3 = {
         tokenId: baseTokenInfo.tokenId,
         volume: baseVol.toString()
@@ -320,6 +298,33 @@ export function makeLimitReq({
     const quoteTokenVol3: sdk.TokenVolumeV3 = {
         tokenId: quoteTokenInfo.tokenId,
         volume: quoteVol.toString()
+    }
+
+    let minOrderInfo: sdk.OrderInfo & OrderInfoPatch | undefined = undefined
+
+    if (sellUserOrderInfo && buyUserOrderInfo) {
+        if (!isBuy) { // sell eth -> usdt, price = 100 usdt / eth  quantity = 1 eth, calc 
+
+            // 0.032 eth 100 usdt
+
+            minOrderInfo = _.cloneDeep(buyUserOrderInfo)
+            const minAmount = sdk.toBig(minOrderInfo.minAmount).div('1e' + buyTokenInfo.decimals).div(sdk.toBig(price))
+            minOrderInfo.minAmtShow = minAmount.toNumber()
+            minOrderInfo.minAmount = minAmount.times('1e' + sellTokenInfo.decimals).toString()
+            minOrderInfo.symbol = sell
+            minOrderInfo.minAmtCheck = baseVol.gte(sdk.toBig(minOrderInfo.minAmount))
+
+        } else {
+
+            minOrderInfo = _.cloneDeep(buyUserOrderInfo)
+            minOrderInfo.minAmtShow = sdk.toBig(minOrderInfo.minAmount).div('1e' + buyTokenInfo.decimals).toNumber()
+            minOrderInfo.symbol = buy
+            minOrderInfo.minAmtCheck = baseVol.gte(sdk.toBig(minOrderInfo.minAmount))
+
+        }
+        
+    } else {
+        throw Error('undefined minOrderInfo')
     }
 
     const takerRate = (tokenAmtMap && tokenAmtMap[baseTokenInfo.symbol]) ? tokenAmtMap[baseTokenInfo.symbol].userOrderInfo.takerRate : 0
@@ -370,6 +375,7 @@ export function makeLimitReq({
     return {
         sellUserOrderInfo,
         buyUserOrderInfo,
+        minOrderInfo,
         calcTradeParams,
         limitRequest,
     }

@@ -263,7 +263,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
 
             // myLog(`tradeData price:${tradeData.price.tradeValue}`, tradeData.type, amountBase, amountQuote)
 
-            const {limitRequest, calcTradeParams, sellUserOrderInfo, buyUserOrderInfo,} = makeLimitReqInHook({
+            const {limitRequest, calcTradeParams, sellUserOrderInfo, buyUserOrderInfo, minOrderInfo, } = makeLimitReqInHook({
                 isBuy: tradeData.type === 'buy',
                 base: tradeData.base.belong,
                 quote: tradeData.quote.belong,
@@ -279,6 +279,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                 market,
                 sellUserOrderInfo,
                 buyUserOrderInfo,
+                minOrderInfo,
                 request: limitRequest as sdk.SubmitOrderRequestV3,
                 limitCalcTradeParams: calcTradeParams,
                 tradeCalcProData: {
@@ -331,7 +332,6 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                     })
                     //labelErrorPricePrecisionLimit:'{{symbol}} price only {{decimal}} decimals allowed',
                     //labelErrorPricePrecisionLimit:'限价 {{symbol}}，最多可保留小数点后 {{decimal} 位'
-
                 }
             }
             return undefined
@@ -365,25 +365,21 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         const account = store.getState().account;
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
         const {
-            limitCalcTradeParams,
-            sellUserOrderInfo,
-            buyUserOrderInfo
+            minOrderInfo,
         } = pageTradePro;
         if (account.readyState === AccountStatus.ACTIVATED) {
             // const type = limitTradeData.type === TradeProType.sell ? 'quote' : 'base';
-            const minAmt = limitTradeData.type === TradeProType.sell ? sellUserOrderInfo?.minAmount : buyUserOrderInfo?.minAmount
-            const validAmt = !!(limitCalcTradeParams?.baseVol && minAmt && sdk.toBig(limitCalcTradeParams?.baseVol).gte(sdk.toBig(minAmt)));
             if (limitTradeData?.base.tradeValue === undefined
                 || limitTradeData?.quote.tradeValue === undefined
                 || limitTradeData?.base.tradeValue === 0
                 || limitTradeData?.quote.tradeValue === 0) {
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: 'labelEnterAmount'}
-            } else if (validAmt || minAmt === undefined) {
+            } else if (minOrderInfo?.minAmtCheck || minOrderInfo?.minAmtShow === undefined) {
                 return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}     // label: ''}
             } else {
                 //todo
                 const symbol: string = limitTradeData[ 'base' ].belong;
-                const minOrderSize = VolToNumberWithPrecision(minAmt, symbol) + ' ' + symbol;
+                const minOrderSize = `${minOrderInfo?.minAmtShow} ${minOrderInfo?.symbol}`;
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin, ${minOrderSize}`}
             }
         }
