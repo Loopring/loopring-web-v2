@@ -316,10 +316,8 @@ export function makeLimitReq({
 
         } else {
 
-            minOrderInfo = _.cloneDeep(sellUserOrderInfo)
-            const minAmount = sdk.toBig(minOrderInfo.minAmount).div('1e' + sellTokenInfo.decimals).div(sdk.toBig(price))
-            minOrderInfo.minAmtShow = minAmount.toNumber()
-            minOrderInfo.minAmount = minAmount.times('1e' + buyTokenInfo.decimals).toString()
+            minOrderInfo = _.cloneDeep(buyUserOrderInfo)
+            minOrderInfo.minAmtShow = sdk.toBig(minOrderInfo.minAmount).div('1e' + buyTokenInfo.decimals).toNumber()
             minOrderInfo.symbol = buy
             minOrderInfo.minAmtCheck = baseVol.gte(sdk.toBig(minOrderInfo.minAmount))
 
