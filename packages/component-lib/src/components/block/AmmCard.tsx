@@ -1,25 +1,22 @@
-import { Avatar, Box, Card, CardActions, CardContent, Divider } from '@mui/material';
-import { Typography } from '@mui/material';
-import {  Button } from '../';
+import { Avatar, Box, Card, CardActions, CardContent, Divider, Typography } from '@mui/material';
+import { Button } from '../';
 import React from 'react';
 import moment from 'moment';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import {
     AmmCardProps,
     AvatarCoinStyled,
-    Currency,
     EmptyValueTag,
-    PriceTag,
     getValuePrecisionThousand,
     myLog,
-    // myLog
+    PriceTag,
 } from '@loopring-web/common-resources';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import { PopoverPure } from '../basic-lib'
 import { bindHover } from 'material-ui-popup-state/es';
 import { useSettings } from '../../stores';
 import styled from '@emotion/styled';
-import { RewardItem } from 'loopring-sdk'
+import { Currency } from 'loopring-sdk'
 
 export interface Reward {
     startAt: number;
@@ -218,7 +215,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                             </Typography>
                             <Typography variant={'body2'} component={'span'} color={'textSecondary'}>
                                 {t('labelLiquidity') + ' ' +
-                                amountDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(amountDollar as number)
+                                amountDollar === undefined ? EmptyValueTag : currency === Currency.usd ? PriceTag.Dollar + getThousandFormattedNumbers(amountDollar as number)
                                     : PriceTag.Yuan + getThousandFormattedNumbers(amountYuan as number)}
                             </Typography>
                         </Typography> */}
@@ -260,11 +257,11 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     <Typography component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400}>
                         <Typography {...bindHover(popLiquidityState)} style={{ cursor: 'pointer', borderBottom: '1px dashed var(--color-text-primary)' }}>
                         {t('labelLiquidity') + ' ' +
-                                amountDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getValuePrecisionThousand(amountDollar, undefined, undefined, undefined, true, { isFait: true })
+                                amountDollar === undefined ? EmptyValueTag : currency === Currency.usd ? PriceTag.Dollar + getValuePrecisionThousand(amountDollar, undefined, undefined, undefined, true, { isFait: true })
                                     : PriceTag.Yuan + getValuePrecisionThousand(amountYuan, undefined, undefined, undefined, true, { isFait: true })}
                             {/* <Typography
                                 component={'span'} style={{ cursor: 'pointer' }}> {
-                                    typeof totalAmmValueDollar === 'undefined' ? EmptyValueTag : (currency === 'USD' ? PriceTag.Dollar + getValuePrecisionThousand(totalAmmValueDollar, undefined, undefined, undefined, true, { isFait: true, floor: true }) : PriceTag.Yuan + getValuePrecisionThousand(totalAmmValueYuan, undefined, undefined, undefined, true, { isFait: true, floor: true }))}
+                                    typeof totalAmmValueDollar === 'undefined' ? EmptyValueTag : (currency === Currency.usd ? PriceTag.Dollar + getValuePrecisionThousand(totalAmmValueDollar, undefined, undefined, undefined, true, { isFait: true, floor: true }) : PriceTag.Yuan + getValuePrecisionThousand(totalAmmValueYuan, undefined, undefined, undefined, true, { isFait: true, floor: true }))}
                             </Typography> */}
                         </Typography>
                         <PopoverPure
@@ -431,13 +428,13 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                                     <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} height={20}
                                         lineHeight={'20px'}>
                                         {isOrderbook 
-                                            ? currency === 'USD'
+                                            ? currency === Currency.usd
                                                 ? orderbookRewardDollar : orderbookRewardYuan
                                             : isAmm
-                                                ? currency === 'USD'
+                                                ? currency === Currency.usd
                                                     ? totalAmmRewardDollar
                                                     : totalAmmRewardYuan
-                                                : currency === 'USD'
+                                                : currency === Currency.usd
                                                     ? orderbookRewardDollar : orderbookRewardYuan
                                         }
                                         {/* {getValuePrecisionThousand((isOrderbook ? totalRewards : rewardValue), undefined, undefined, precisionA, false, {floor: true})} */}
@@ -492,7 +489,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
                     </Typography>
                     {myTotalAmmValueDollar ? (
                         <Typography {...bindHover(popMyAmmValueState)} component={'span'} color={'textPrimary'} variant={'h6'} fontWeight={400} style={{ borderBottom: myTotalAmmValueDollar ? '1px dashed var(--color-text-primary)' : 'none' }}>
-                            {currency === 'USD' ? PriceTag.Dollar + getValuePrecisionThousand(myTotalAmmValueDollar, undefined, undefined, undefined, false, {isFait: true, floor: true}) : PriceTag.Yuan + getValuePrecisionThousand(myTotalAmmValueYuan, undefined, undefined, undefined, false, {isFait: true, floor: true})}
+                            {currency === Currency.usd ? PriceTag.Dollar + getValuePrecisionThousand(myTotalAmmValueDollar, undefined, undefined, undefined, false, {isFait: true, floor: true}) : PriceTag.Yuan + getValuePrecisionThousand(myTotalAmmValueYuan, undefined, undefined, undefined, false, {isFait: true, floor: true})}
                         </Typography>
                     ) : <Typography>{EmptyValueTag}</Typography>}
                     

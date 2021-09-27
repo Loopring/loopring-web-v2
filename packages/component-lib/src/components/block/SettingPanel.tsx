@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 import React from 'react';
 import {
-    Currency,
     DropDownIcon,
     GrowIcon,
     i18n,
@@ -23,6 +22,7 @@ import {
 import { OutlineSelect, OutlineSelectItem } from '../basic-lib';
 import { Trans, WithTranslation, withTranslation } from 'react-i18next';
 import { useSettings } from '../../stores';
+import { Currency } from 'loopring-sdk';
 
 
 const StyledSwitch = styled(Switch)`
@@ -40,7 +40,7 @@ const BoxStyle = styled(Box)`
 
 
 export const BtnCurrency = ({t, currency, label, handleChange}: any) => {
-    const [state, setState] = React.useState<string>(currency ? currency : Currency.dollar);
+    const [state, setState] = React.useState<string>(currency ? currency : Currency.usd);
     const _handleChange = React.useCallback((event: SelectChangeEvent<any>) => {
         setState(event.target.value);
         if (handleChange) {
@@ -54,8 +54,8 @@ export const BtnCurrency = ({t, currency, label, handleChange}: any) => {
                           value={state} autoWidth
                           onChange={_handleChange}
     >
-        <OutlineSelectItem value={Currency.dollar}>$ {t('labelUSDollar')}</OutlineSelectItem>
-        <OutlineSelectItem value={Currency.yen}>¥ {t('labelCNYYuan')}</OutlineSelectItem>
+        <OutlineSelectItem value={Currency.usd}>$ {t('labelUSDollar')}</OutlineSelectItem>
+        <OutlineSelectItem value={Currency.cny}>¥ {t('labelCNYYuan')}</OutlineSelectItem>
     </OutlineSelect>
 }
 

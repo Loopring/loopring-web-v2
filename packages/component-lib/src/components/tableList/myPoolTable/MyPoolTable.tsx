@@ -18,6 +18,7 @@ import { IconColumn } from '../poolsTable';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import { bindHover } from 'material-ui-popup-state/es';
 import { useSettings } from '../../../stores';
+import { Currency } from 'loopring-sdk';
 
 export enum PoolTradeType {
     add = 'add',
@@ -66,7 +67,7 @@ const columnMode = ({
                         t,
                         handleWithdraw,
                         handleDeposit
-                    }: WithTranslation & Method<Row<any>>, currency: 'USD' | 'CNY', getPopoverState: any, coinJson: any): Column<Row<any>, unknown>[] => [
+                    }: WithTranslation & Method<Row<any>>, currency: Currency, getPopoverState: any, coinJson: any): Column<Row<any>, unknown>[] => [
     {
         key: 'pools',
         sortable: false,
@@ -102,7 +103,7 @@ const columnMode = ({
                     <Box {...bindHover(popState)}>
                         <Typography
                             component={'span'} style={{ cursor: 'pointer' }}> {
-                                typeof totalAmmValueDollar === 'undefined' ? EmptyValueTag : (currency === 'USD' ? PriceTag.Dollar + getValuePrecisionThousand(totalAmmValueDollar, undefined, undefined, undefined, true, { isFait: true, floor: true }) : PriceTag.Yuan + getValuePrecisionThousand(totalAmmValueYuan, undefined, undefined, undefined, true, { isFait: true, floor: true }))}
+                                typeof totalAmmValueDollar === 'undefined' ? EmptyValueTag : (currency === Currency.usd ? PriceTag.Dollar + getValuePrecisionThousand(totalAmmValueDollar, undefined, undefined, undefined, true, { isFait: true, floor: true }) : PriceTag.Yuan + getValuePrecisionThousand(totalAmmValueYuan, undefined, undefined, undefined, true, { isFait: true, floor: true }))}
                         </Typography>
                     </Box>
                     <PopoverPure
@@ -205,7 +206,7 @@ const columnMode = ({
             const {ammDetail: {coinAInfo, coinBInfo}, feeA, feeB, precisionA , precisionB} = row as any;
             return <Box width={'100%'} height={'100%'} display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
                 {/* <TypogStyle variant={'body1'} component={'span'} color={'textPrimary'}>
-                    {feeDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? 'US' + PriceTag.Dollar + getThousandFormattedNumbers(feeDollar)
+                    {feeDollar === undefined ? EmptyValueTag : currency === Currency.usd ? 'US' + PriceTag.Dollar + getThousandFormattedNumbers(feeDollar)
                         : 'CNY' + PriceTag.Yuan + getThousandFormattedNumbers(feeYuan as number)}
                 </TypogStyle> */}
                 <Typography variant={'body2'} component={'p'} color={'textPrimary'} fontFamily={'Roboto'}>
@@ -260,7 +261,7 @@ export const MyPoolTable = withTranslation('tables')(<T extends { [ key: string 
                                                                                               handleWithdraw,
                                                                                               handleDeposit,
                                                                                               wait = globalSetup.wait,
-                                                                                              currency = 'USD',
+                                                                                              currency =  Currency.usd,
                                                                                               showloading,
                                                                                               ...rest
                                                                                           }: MyPoolTableProps<T> & WithTranslation) => {

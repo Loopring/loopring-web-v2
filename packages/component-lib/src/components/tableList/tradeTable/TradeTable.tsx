@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, BoxProps } from '@mui/material'
+import { Box } from '@mui/material'
 import styled from '@emotion/styled'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import moment from 'moment'
@@ -7,11 +7,10 @@ import { Column, Table } from '../../basic-lib/tables'
 import { TablePagination } from '../../basic-lib'
 import { TableFilterStyled, TablePaddingX } from '../../styled';
 import { Filter, FilterTradeTypes } from './components/Filter'
-import { EmptyValueTag, getValuePrecisionThousand, myLog, TableType, TradeTypes } from '@loopring-web/common-resources';
+import { EmptyValueTag, getValuePrecisionThousand, TableType } from '@loopring-web/common-resources';
 import { useSettings } from '../../../stores';
-import { useDeepCompareEffect } from 'react-use';
 import { DateRange } from '@mui/lab'
-import { GetUserTradesRequest } from 'loopring-sdk'
+import { Currency } from 'loopring-sdk'
 
 export enum TradeItemRole {
     maker = 'Maker',
@@ -103,7 +102,7 @@ const TableStyled = styled(Box)`
 const StyledSideCell: any = styled(Box)`
 `
 
-const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CNY', tokenMap: any, isL2Trade: boolean): Column<RawDataTradeItem, unknown>[] => {
+const getColumnModeAssets = (t: TFunction, _currency: Currency, tokenMap: any, isL2Trade: boolean): Column<RawDataTradeItem, unknown>[] => {
     if (isL2Trade === true) {
         return [
             {
@@ -177,7 +176,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CNY', tokenMap: a
                     return (
                         <Box className="rdg-cell-value textAlignRight">
                             {renderValue}
-                            {/*{currency === Currency.dollar ?*/}
+                            {/*{currency === Currency.usd ?*/}
                             {/*    PriceTag.Dollar + getThousandFormattedNumbers(priceDollar)*/}
                             {/*    : PriceTag.Yuan + getThousandFormattedNumbers(priceYuan)}*/}
                         </Box>
@@ -260,7 +259,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CNY', tokenMap: a
                     return (
                         <Box className="rdg-cell-value textAlignRight">
                             {renderValue}
-                            {/*{currency === Currency.dollar ?*/}
+                            {/*{currency === Currency.usd ?*/}
                             {/*    PriceTag.Dollar + getThousandFormattedNumbers(priceDollar)*/}
                             {/*    : PriceTag.Yuan + getThousandFormattedNumbers(priceYuan)}*/}
                         </Box>

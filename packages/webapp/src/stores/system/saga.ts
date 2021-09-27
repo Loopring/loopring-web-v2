@@ -12,7 +12,7 @@ import { updateWalletLayer1 } from '../walletLayer1';
 import { delay } from 'rxjs/operators';
 import { LoopringSocket } from 'services/socket';
 import { statusUnset as accountStatusUnset } from '../account';
-import { ChainId, FiatPriceInfo, LoopringMap } from 'loopring-sdk';
+import { ChainId, Currency, FiatPriceInfo, LoopringMap } from 'loopring-sdk';
 import { getTokenPrices } from '../tokenPrices';
 import { getTickers, useTicker } from '../ticker';
 
@@ -53,7 +53,7 @@ const should15MinutesUpdateDataGroup = async (): Promise<{
     forex: number | undefined,
 }> => {
     if (LoopringAPI.exchangeAPI && LoopringAPI.walletAPI) {
-        const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'USD'})).fiatPrices
+        const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal:  Currency.usd})).fiatPrices
         const faitPricesY = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'CNY'})).fiatPrices
         // const tokenPrices = (await LoopringAPI.walletAPI.getLatestTokenPrices()).tokenPrices;
         // const tokenPrices = Reflect.ownKeys(result).reduce((prev, address) => {
@@ -108,7 +108,7 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
                 return setInterval(async () => {
                     if (LoopringAPI.exchangeAPI) {
                         // const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'CNY'})).fiatPrices
-                        // const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'USD'})).fiatPrices
+                        // const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal:  Currency.usd})).fiatPrices
                         // const faitPricesY = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'CNY'})).fiatPrices
                         // const tokenPrices =  (await LoopringAPI.walletAPI.getLatestTokenPrices()).tokenPrices;
                         // const gasPrice = (await LoopringAPI.exchangeAPI.getGasPrice()).gasPrice / 1e+9

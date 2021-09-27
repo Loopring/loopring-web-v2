@@ -4,13 +4,14 @@ import { Box, Divider, Grid, Typography } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { MyPoolTable, useSettings } from '@loopring-web/component-lib'
-import { Currency, EmptyValueTag, PriceTag, getValuePrecisionThousand } from '@loopring-web/common-resources';
+import {  EmptyValueTag, PriceTag, getValuePrecisionThousand } from '@loopring-web/common-resources';
 
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 import { useOverview } from './hook';
 import { useSystem } from 'stores/system'
 import { TableWrapStyled } from 'pages/styled'
 import { useAmmActivityMap } from 'stores/Amm/AmmActivityMap'
+import { Currency } from 'loopring-sdk';
 
 
 //TODO: FIXED:  demo data
@@ -94,7 +95,7 @@ const MyLiquidity: any = withTranslation('common')(
                                             color={'textSecondary'}
                                             fontFamily={'Roboto'}>{t('labelTotalPositionValue')}</Typography>
                                 <Typography variant={'h3'} marginTop={1} fontFamily={'Roboto'}>
-                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.dollar
+                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.usd
                                         ? renderPositionValueDollar
                                         : renderPositionValueYuan}
                                 </Typography>
@@ -106,7 +107,7 @@ const MyLiquidity: any = withTranslation('common')(
                                 <Typography variant={'h5'} component={'h3'} fontFamily={'Roboto'}
                                             color={'textSecondary'}>{t('labelFeeRewards')}</Typography>
                                 <Typography variant={'h3'} marginTop={1} fontFamily={'Roboto'}>
-                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.dollar 
+                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.usd 
                                         ? renderRewardsDollar
                                         : renderRewardsYuan
                                     }
@@ -116,7 +117,7 @@ const MyLiquidity: any = withTranslation('common')(
                                 <Typography variant={'h5'} component={'h3'} fontFamily={'Roboto'}
                                             color={'textSecondary'}>{t('labelMiningRewards')}</Typography>
                                 <Typography variant={'h3'} marginTop={1} fontFamily={'Roboto'}>
-                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar
+                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.usd ? PriceTag.Dollar
                                         + getThousandFormattedNumbers(summaryReward.rewardDollar ? summaryReward.rewardDollar : 0)
                                         : PriceTag.Yuan
                                         + getThousandFormattedNumbers(summaryReward.rewardYuan ? summaryReward.rewardYuan : 0)}

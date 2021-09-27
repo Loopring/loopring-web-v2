@@ -320,7 +320,7 @@ export default {
     labelProMarket:'市价',
     labelProPrice:'价格',
     labelProBaseLabel:'数量',
-    labelProQuoteLabel:'数量',
+    labelProQuoteLabel:'成交额',
     labelProLimitBtn: '{{tradeType}} {{symbol}}',
     labelProMarketBtn: '{{tradeType}} {{symbol}}',
     labelProOrderbook:'订单',
@@ -334,7 +334,7 @@ export default {
     labelErrorPricePrecisionLimit:'限价 {{symbol}}，最多可保留小数点后 {{decimal} 位',
     labelDepthPrice: '价格({{symbol}})',
     labelDepthAmount: '数量({{symbol}})',
-    labelDepthTotal: '总量',
+    labelDepthTotal: '累积',
 
     labelProChartTitle: '图表',
     labelProTimeDefault: '分时(1分钟)',
