@@ -1,8 +1,8 @@
 import React from 'react';
-import {  Box, Grid, ListItemText, MenuItem } from '@mui/material';
+import { Box, Grid, ListItemText, MenuItem } from '@mui/material';
 import styled from '@emotion/styled';
-import { Popover, Button, PopoverType, PopoverWrapProps } from '../../../basic-lib';
-import {  MoreIcon } from '@loopring-web/common-resources';
+import { Button, Popover, PopoverType, PopoverWrapProps } from '../../../basic-lib';
+import { MoreIcon } from '@loopring-web/common-resources';
 import { LpTokenAction } from '../AssetsTable';
 import { useHistory } from 'react-router-dom';
 import { TFunction } from 'i18next';
@@ -13,10 +13,11 @@ const GridStyled = styled(Grid)`
     padding-top: ${({theme}) => theme.unit / 4}px;
   }
 `
-const ActionPopContent = React.memo(({market,isLp,getMarketArrayListCallback,t}
-                                         :{
-    t:TFunction,
-    market: string, isLp: boolean,  getMarketArrayListCallback: (token: string) => string[],
+const ActionPopContent = React.memo(({market, isLp,allowTrade, getMarketArrayListCallback, t}
+                                         : {
+    allowTrade?:any,
+    t: TFunction,
+    market: string, isLp: boolean, getMarketArrayListCallback: (token: string) => string[],
 }) => {
     let history = useHistory()
 
@@ -44,11 +45,10 @@ const ActionPopContent = React.memo(({market,isLp,getMarketArrayListCallback,t}
     }, [history])
     return (
         <Box borderRadius={'inherit'} minWidth={110}>
-            {isLp ? (
-                <>
-                    <MenuItem onClick={() => jumpToAmm(LpTokenAction.add, market)}>
-                        <ListItemText>{t('labelPoolTableAddLiqudity')}</ListItemText>
-                    </MenuItem>
+            {isLp ? ( <>
+                    {allowTrade?.joinAmm?.enable && <MenuItem onClick={() => jumpToAmm(LpTokenAction.add, market)}>
+                      <ListItemText>{t('labelPoolTableAddLiqudity')}</ListItemText>
+                    </MenuItem>}
                     <MenuItem onClick={() => jumpToAmm(LpTokenAction.remove, market)}>
                         <ListItemText>{t('labelPoolTableRemoveLiqudity')}</ListItemText>
                     </MenuItem>
@@ -68,35 +68,46 @@ const ActionPopContent = React.memo(({market,isLp,getMarketArrayListCallback,t}
 })
 
 
-const ActionMemo = React.memo(({t,tokenValue,getMarketArrayListCallback,isLp,market,onShowDeposit,onShowTransfer,onShowWithdraw}: {
-    tokenValue:any,
+const ActionMemo = React.memo(({
+                                   t,
+                                   allowTrade,
+                                   tokenValue,
+                                   getMarketArrayListCallback,
+                                   isLp,
+                                   market,
+                                   onShowDeposit,
+                                   onShowTransfer,
+                                   onShowWithdraw
+                               }: {
+    tokenValue: any,
+    allowTrade?: any,
     // renderMarket:any,
-    market:`${string}-${string}`,
-    isLp:boolean,
+    market: `${string}-${string}`,
+    isLp: boolean,
     onShowDeposit: (token: string) => void,
     onShowTransfer: (token: string) => void,
     onShowWithdraw: (token: string) => void,
     getMarketArrayListCallback: (token: string) => string[],
-    t:TFunction,
-})=>{
-   
-    const popoverProps:PopoverWrapProps = {
-                type: PopoverType.click,
-                popupId: 'testPopup',
-                className: 'arrow-right',
-                children: <MoreIcon cursor={'pointer'}/>,
-                popoverContent: <ActionPopContent {...{isLp,market,getMarketArrayListCallback,t}} />,
-                anchorOrigin: {
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                },
-                transformOrigin: {
-                    vertical: 'top',
-                    horizontal: 'right',
-                },
-            } as PopoverWrapProps
+    t: TFunction,
+}) => {
 
-   return  <GridStyled container spacing={1} justifyContent={'flex-start'} alignItems={'center'}>
+    const popoverProps: PopoverWrapProps = {
+        type: PopoverType.click,
+        popupId: 'testPopup',
+        className: 'arrow-right',
+        children: <MoreIcon cursor={'pointer'}/>,
+        popoverContent: <ActionPopContent {...{isLp, market, getMarketArrayListCallback,allowTrade, t}} />,
+        anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'right',
+        },
+        transformOrigin: {
+            vertical: 'top',
+            horizontal: 'right',
+        },
+    } as PopoverWrapProps
+
+    return <GridStyled container spacing={1} justifyContent={'flex-start'} alignItems={'center'}>
         <Grid item>
             <Button variant={'text'} size={'medium'} color={'primary'}
                     onClick={() => onShowDeposit(tokenValue)}>{t('labelDeposit')}</Button>
@@ -109,10 +120,14 @@ const ActionMemo = React.memo(({t,tokenValue,getMarketArrayListCallback,isLp,mar
             <Button variant={'text'} size={'medium'} color={'primary'}
                     onClick={() => onShowWithdraw(tokenValue)}>{t('labelWithdraw')}</Button>
         </Grid>
+        {!isLp &&  allowTrade.order.enable &&
         <Grid item marginTop={1}>
-            <Popover {...{...popoverProps}}/>
-        </Grid>
+          <Popover {...{...popoverProps}}/>
+        </Grid>}
+        {isLp && <Grid item marginTop={1}>
+          <Popover {...{...popoverProps}}/>
+        </Grid>}
     </GridStyled>
 })
-export default  ActionMemo;
+export default ActionMemo;
 

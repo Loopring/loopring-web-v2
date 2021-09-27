@@ -9,6 +9,8 @@ export type MyPoolRow<R> = MyAmmLP<R> & {
 export  type  Method<R> = {
     handleWithdraw: (row: R) => void,
     handleDeposit: (row: R) => void,
+    allowTrade?:any
+
 }
 
 
@@ -17,6 +19,7 @@ export type MyPoolTableProps<T, R = MyPoolRow<T>> = {
     pagination?: {
         pageSize: number
     },
+    allowTrade?:any
     page?: number,
     handlePageChange: (page: number) => void,
     showFilter?: boolean,

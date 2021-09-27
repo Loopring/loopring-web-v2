@@ -66,7 +66,8 @@ const PoolStyle = styled(Box)`
 const columnMode = ({
                         t,
                         handleWithdraw,
-                        handleDeposit
+                        handleDeposit,
+                        allowTrade,
                     }: WithTranslation & Method<Row<any>>, currency: Currency, getPopoverState: any, coinJson: any): Column<Row<any>, unknown>[] => [
     {
         key: 'pools',
@@ -237,9 +238,10 @@ const columnMode = ({
                             justifyContent={'center'}>
                 <Box display={'flex'} marginRight={-1}>
                     <Button variant={'text'} size={'small'}
+                            disabled={!(allowTrade?.joinAmm?.enable)}
                             onClick={() => {
-                                handleDeposit(row)
-                            }}>{t('labelPoolTableAddLiqudity')}</Button>
+                                                                handleDeposit(row)
+                                                            }}>{t('labelPoolTableAddLiqudity')}</Button>
                     <Button variant={'text'} size={'small'}
                             onClick={() => {
                                 handleWithdraw(row)
@@ -254,6 +256,7 @@ const columnMode = ({
 export const MyPoolTable = withTranslation('tables')(<T extends { [ key: string ]: any }>({
                                                                                               t, i18n,
                                                                                               tReady,
+                                                                                              allowTrade,
                                                                                               handlePageChange,
                                                                                               pagination,
                                                                                               showFilter = true,
@@ -279,7 +282,7 @@ export const MyPoolTable = withTranslation('tables')(<T extends { [ key: string 
 
     const defaultArgs: TableProps<any, any> = {
         rawData,
-        columnMode: columnMode({t, i18n, tReady, handleWithdraw, handleDeposit}, currency, getPopoverState, coinJson),
+        columnMode: columnMode({t, i18n, tReady, handleWithdraw, handleDeposit,allowTrade}, currency, getPopoverState, coinJson),
         generateRows: (rawData: any) => rawData,
         generateColumns: ({columnsRaw}) => columnsRaw as Column<Row<any>, unknown>[],
     }
