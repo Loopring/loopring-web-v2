@@ -6,7 +6,7 @@ import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout';
 import { usePro } from './hookPro';
 import { useTheme } from '@emotion/react';
 import { Box, IconButton } from '@mui/material';
-import { BreakPoint, DragIcon, layoutConfigs, ResizeIcon } from '@loopring-web/common-resources';
+import { BreakPoint, DragIcon, layoutConfigs, LoadingIcon, ResizeIcon } from '@loopring-web/common-resources';
 import { ChartView, MarketView, OrderTableView, SpotView, TabMarketIndex, Toolbar, WalletInfo } from './panel'
 import { boxLiner } from '@loopring-web/component-lib';
 import styled from '@emotion/styled/';
@@ -90,7 +90,8 @@ export const OrderbookPage = withTranslation('common')(() => {
                                               handleOnMarketChange={handleOnMarketChange}/>, [market, handleOnMarketChange]),
         walletInfo: React.useMemo(() => <WalletInfo market={market as any}/>, [market]),
         spot: React.useMemo(() => <>{
-            depth && <SpotView market={market as any}/>
+            depth ? <SpotView market={market as any}/> :<Box flex={1} height={'100%'} display={'flex'} alignItems={'center'}
+                                                             justifyContent={'center'}><LoadingIcon/></Box>
         }</>, [market, depth]),
         market: React.useMemo(() => <>{depthLevel
             && <MarketView market={market as any}

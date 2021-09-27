@@ -97,6 +97,7 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     isTrade?: boolean,
     isExponential?: boolean,
     isPrice?: boolean,
+    abbreviate?: 3|6|9|12|15|18,
     isAbbreviate?: true,
 }) => {
     const floor = option?.floor
@@ -105,7 +106,7 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     const isExponential = option?.isExponential
     const isPrice = option?.isPrice
     const isAbbreviate = option?.isAbbreviate
-
+    const abbreviate = (option?.abbreviate)?? 6
     if ((!value  || !Number.isFinite(Number(value)) || Number(value) === 0 ) && !BigNumber.isBigNumber(value)) {
         return '0.00'
     }
@@ -119,7 +120,7 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     if (isAbbreviate === true) {
         let [_init, _dot] = result.toString().split('.');
         const integerPartLength = _init.length
-        if (integerPartLength > 6) {
+        if (integerPartLength > abbreviate) {
             return getAbbreviateNumber(result)
         }
     }
