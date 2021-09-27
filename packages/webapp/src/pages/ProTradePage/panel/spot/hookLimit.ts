@@ -313,7 +313,8 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         setIsLimitLoading(true);
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         const {priceLevel} = getPriceImpactInfo(pageTradePro.limitCalcTradeParams, false)
-        const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('') ?? {isIpValid: false}
+        
+        const isIpValid = true
 
         myLog('---- onSubmitBtnClick priceLevel:', priceLevel)
 
