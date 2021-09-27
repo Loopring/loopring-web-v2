@@ -385,7 +385,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         setIsMarketLoading(true);
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         const {priceLevel} = getPriceImpactInfo(pageTradePro.calcTradeParams)
-        const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('') ?? {isIpValid: false}
+        const isIpValid = true
         //TODO: pending on checkIpValid API
         if (!isIpValid) {
             setShowSupport({isShow: true})

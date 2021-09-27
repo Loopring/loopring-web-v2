@@ -160,7 +160,7 @@ export function makeMarketReq({
             minOrderInfo.minAmtCheck = sdk.toBig(calcTradeParams?.sellAmt).gte(sdk.toBig(minOrderInfo.minAmtShow))
 
         } else {
-            
+
             minOrderInfo.minAmtShow = sdk.toBig(minOrderInfo.minAmount).div('1e' + buyTokenInfo.decimals).toNumber()
             minOrderInfo.symbol = buy
             minOrderInfo.minAmtCheck = sdk.toBig(calcTradeParams?.buyAmt).gte(sdk.toBig(minOrderInfo.minAmtShow))
@@ -290,6 +290,28 @@ export function makeLimitReq({
         throw Error('no amount info!')
     }
 
+    const minOrderInfo: sdk.OrderInfo & OrderInfoPatch | undefined = _.cloneDeep(isBuy ? buyUserOrderInfo : sellUserOrderInfo) 
+
+    if (minOrderInfo) {
+        if (!isBuy) { // sell eth -> usdt, calc min eth from usdt min amt(100USDT)
+            const minInput = sdk.toBig(buyUserOrderInfo?.minAmount).div('1e' + buyTokenInfo.decimals).toString()
+            
+            // minOrderInfo.minAmount = calcTradeParamsForMin?.amountS as string
+            // minOrderInfo.minAmtShow = sdk.toBig(minOrderInfo.minAmount).div('1e' + sellTokenInfo.decimals).toNumber()
+            // minOrderInfo.symbol = sell
+            // minOrderInfo.minAmtCheck = sdk.toBig(quoteVol).gte(sdk.toBig(minOrderInfo.minAmtShow))
+
+        } else {
+            
+            minOrderInfo.minAmtShow = sdk.toBig(minOrderInfo.minAmount).div('1e' + buyTokenInfo.decimals).toNumber()
+            minOrderInfo.symbol = buy
+            minOrderInfo.minAmtCheck = sdk.toBig(baseVol).gte(sdk.toBig(minOrderInfo.minAmtShow))
+        }
+        
+    } else {
+        throw Error('undefined minOrderInfo')
+    }
+
     const baseTokenVol3: sdk.TokenVolumeV3 = {
         tokenId: baseTokenInfo.tokenId,
         volume: baseVol.toString()
@@ -304,12 +326,15 @@ export function makeLimitReq({
 
     const maxFeeBips = parseInt(sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString())
 
+    const sellToken = isBuy ? quoteTokenVol3 : baseTokenVol3
+    const buyToken = isBuy ? baseTokenVol3 : quoteTokenVol3
+
     const limitRequest: sdk.SubmitOrderRequestV3 = {
         exchange: exchangeAddress,
         accountId,
         storageId,
-        sellToken: isBuy ? quoteTokenVol3 : baseTokenVol3,
-        buyToken: isBuy ? baseTokenVol3 : quoteTokenVol3,
+        sellToken,
+        buyToken,
         allOrNone: false,
         validUntil: getTimestampDaysLater(DAYS),
         maxFeeBips,
