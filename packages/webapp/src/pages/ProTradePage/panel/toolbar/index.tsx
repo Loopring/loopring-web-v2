@@ -99,6 +99,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
             id="outlined-select-level"
             select
             size={'small'}
+            style={{ width: '190px' }}
             value={market}
             onChange={_handleOnMarketChange}
             inputProps={{IconComponent: DropDownIcon}}
