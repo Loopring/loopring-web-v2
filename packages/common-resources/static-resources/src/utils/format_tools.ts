@@ -157,6 +157,7 @@ function genABViewData({
     }
 
     amtSlice = amtSlice.reverse()
+    amtTotalSlice = amtTotalSlice.reverse()
     abInfoSlice = abInfoSlice.reverse()
     priceSlice = priceSlice.reverse()
 
@@ -166,7 +167,7 @@ function genABViewData({
             // console.log(amt)
             const amtForShow = getValuePrecisionThousand(sdk.toBig(amt).div('1e' + baseDecimal),
                 undefined, undefined, basePrecision, true, { isAbbreviate: true })
-            const amtTotalForShow = getValuePrecisionThousand(sdk.toBig(value.amt).div('1e' + baseDecimal),
+            const amtTotalForShow = getValuePrecisionThousand(sdk.toBig(amtTotalSlice[ind]).div('1e' + baseDecimal),
                 undefined, undefined, basePrecision, true, { isAbbreviate: true })
             const percentage = maxVal.gt(sdk.toBig(0)) ? sdk.toBig(value.amt).div(maxVal).toNumber() : 0
             prv.push({
