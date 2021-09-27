@@ -3,12 +3,11 @@ import { WithTranslation, withTranslation } from 'react-i18next';
 import { AmmRecordTable, ChartType, ScaleAreaChart, TradeTitle, useSettings } from '@loopring-web/component-lib';
 import {
     AvatarCoinStyled,
-    Currency,
     EmptyValueTag,
     getValuePrecisionThousand,
     PriceTag,
     abbreviateNumber,
-    myLog, RowConfig,
+    RowConfig,
 } from '@loopring-web/common-resources';
 import { Avatar, Box, Breadcrumbs, Divider, Grid, Link, Tab, Tabs, Typography } from '@mui/material';
 import { AmmPanelView } from '../AmmPanel';
@@ -17,6 +16,7 @@ import { useCoinPair } from './hooks';
 import { StylePaper } from 'pages/styled';
 import store from 'stores'
 import { Link as RouterLink } from 'react-router-dom';
+import { Currency } from 'loopring-sdk';
 
 
 //******************** page code ************************//
@@ -107,7 +107,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
 
     const priceCoinADollar = pair.coinAInfo?.simpleName ? tokenPrices[pair.coinAInfo?.simpleName] : 0
     const priceCoinAYuan = priceCoinADollar * (forex || 6.5)
-    const totalAmountValueCoinA = (tradeFloat?.volume || 0) * (currency === 'USD' ? priceCoinADollar : priceCoinAYuan)
+    const totalAmountValueCoinA = (tradeFloat?.volume || 0) * (currency === Currency.usd ? priceCoinADollar : priceCoinAYuan)
 
     return <>
         <Box marginBottom={2}>
@@ -246,7 +246,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             <Box>
                                 <Typography variant={'h3'}
                                             component={'span'}> {typeof coinPairInfo.amountDollar === 'undefined' ? EmptyValueTag :
-                                    currency === Currency.dollar ? PriceTag.Dollar + abbreviateNumber(coinPairInfo.amountDollar || 0) : PriceTag.Yuan + abbreviateNumber(coinPairInfo.amountYuan || 0)}
+                                    currency === Currency.usd ? PriceTag.Dollar + abbreviateNumber(coinPairInfo.amountDollar || 0) : PriceTag.Yuan + abbreviateNumber(coinPairInfo.amountYuan || 0)}
                                 </Typography>
 
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}>
@@ -258,7 +258,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         <Grid item paddingX={2} paddingY={3} xs={4} sm={6} lg={3}>
                             <Box>
                                 <Typography variant={'h3'} component={'span'}>
-                                    {(currency === Currency.dollar ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(totalAmountValueCoinA, undefined, undefined, undefined, true, { isFait: true })}
+                                    {(currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(totalAmountValueCoinA, undefined, undefined, undefined, true, { isFait: true })}
                                 </Typography>
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}>
                                     {t('label24Volume')}

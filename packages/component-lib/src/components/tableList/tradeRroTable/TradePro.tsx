@@ -8,6 +8,7 @@ import { useSettings } from '../../../stores';
 import styled from '@emotion/styled';
 import { TablePaddingX } from '../../styled';
 import { MarketInfo } from 'loopring-sdk/dist/defs';
+import { Currency } from 'loopring-sdk';
 
 // export type RawDataTradeItem = {
 //     side: keyof typeof TradeTypes;
@@ -38,7 +39,7 @@ import { MarketInfo } from 'loopring-sdk/dist/defs';
 export type TradeProTableProps = {
     rawData: RawDataTradeItem[];
     // tokenMap:TokenMap<C>
-    quotePrecision: number,
+    // quotePrecision: number,
     precision: number,
     marketInfo:MarketInfo,
     currentheight?: number;
@@ -76,7 +77,7 @@ const TableStyled = styled(Box)`
 ` as (props: { currentheight?:number } & BoxProps) => JSX.Element;
 
 
-const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CNY',
+const getColumnModeAssets = (t: TFunction, _currency: Currency,
                              // quotePrecision,
                              baseSymbol:string, quoteSymbol:string ,
                        ): Column<Required<RawDataTradeItem>, unknown>[] => [

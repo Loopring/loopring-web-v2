@@ -9,7 +9,6 @@ import {
     AmmDetailExtendProps,
     AmmInData,
     CoinInfo,
-    Currency,
     EmptyValueTag,
     FloatTag,
     globalCss,
@@ -31,6 +30,7 @@ import { Header } from '../header';
 import React from 'react';
 import { AmmPanelType, AmmProps } from '../tradePanel';
 import { AmmPanel } from '../tradePanel';
+import { Currency } from 'loopring-sdk';
 
 
 const Style = styled.div`
@@ -188,7 +188,7 @@ const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
                                     <>
                                         <Typography
                                             component={'span'}> {typeof titleInfo.amountDollar === 'undefined' ? EmptyValueTag :
-                                            currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(titleInfo.amountDollar) : PriceTag.Yuan + getThousandFormattedNumbers(titleInfo.amountYuan ? titleInfo.amountYuan : 0)}
+                                            currency === Currency.usd ? PriceTag.Dollar + getThousandFormattedNumbers(titleInfo.amountDollar) : PriceTag.Yuan + getThousandFormattedNumbers(titleInfo.amountYuan ? titleInfo.amountYuan : 0)}
                                         </Typography>
                                         <Typography
                                             component={'span'}> {titleInfo.APR ? titleInfo.APR : EmptyValueTag}%
@@ -243,7 +243,7 @@ const AmmDetailWrap = withTranslation('common')(({t, ...rest}: any) => {
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}
                                             justifyContent={'space-between'} marginTop={1} alignItems={'center'}>
                                     <Typography component={'span'} variant={'h5'} color={'textPrimary'}>
-                                        {currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(titleInfo.tradeFloat.priceDollar)
+                                        {currency === Currency.usd ? PriceTag.Dollar + getThousandFormattedNumbers(titleInfo.tradeFloat.priceDollar)
                                             : PriceTag.Yuan + getThousandFormattedNumbers(titleInfo.tradeFloat.priceYuan)}
                                     </Typography>
                                     <Typography noWrap textAlign={'center'} component={'span'} color={'textSecondary'}

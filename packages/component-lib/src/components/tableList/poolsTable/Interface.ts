@@ -1,7 +1,6 @@
 import { AmmDetail, TradeFloat } from '@loopring-web/common-resources';
 
 export type Row<T> = AmmDetail<T> & {
-    // currency:  keyof typeof Currency,
     tradeFloat?: TradeFloat,
 }
 export type PoolTableProps<T, R = Row<T>> = {

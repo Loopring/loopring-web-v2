@@ -13,6 +13,7 @@ import { getValuePrecisionThousand, MarketType, PriceTag } from '@loopring-web/c
 import { useSettings } from '../../../stores'
 import { CoinIcons } from './components/CoinIcons';
 import ActionMemo from './components/ActionMemo';
+import { Currency } from 'loopring-sdk';
 
 
 
@@ -181,7 +182,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     const {language} = useSettings()
     const {coinJson, currency} = useSettings();
     // const rightState = usePopupState({variant: 'popover', popupId: `action-popover`});
-    const isUSD = currency === 'USD'
+    const isUSD = currency === Currency.usd
     useEffect(() => {
         setTotalData(rawData);
     }, [rawData])
