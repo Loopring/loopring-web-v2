@@ -150,7 +150,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         let amountQuote = formType === TradeBaseType.quote ? tradeData.quote.tradeValue : undefined
 
 
-        let {marketRequest, calcTradeParams} = makeMarketReqInHook({
+        let {marketRequest, calcTradeParams, sellUserOrderInfo, buyUserOrderInfo, minOrderInfo} = makeMarketReqInHook({
             isBuy: tradeData.type === 'buy',
             base: tradeData.base.belong,
             quote: tradeData.quote.belong,
@@ -169,11 +169,12 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         const priceImpactObj = getPriceImpactInfo(calcTradeParams)
         updatePageTradePro({
             market,
+            sellUserOrderInfo, buyUserOrderInfo, minOrderInfo,
             request: marketRequest as any,
             calcTradeParams: calcTradeParams,
             tradeCalcProData: {
                 ...pageTradePro.tradeCalcProData,
-                fee: calcTradeParams && calcTradeParams.maxFeeBips ? calcTradeParams.maxFeeBips : undefined,
+                fee: calcTradeParams && calcTradeParams.maxFeeBips ? calcTradeParams.maxFeeBips.toString() : undefined,
                 minimumReceived: calcTradeParams ? calcTradeParams.amountBOutSlip?.minReceivedVal : undefined,
                 priceImpact: priceImpactObj ? priceImpactObj.value : undefined,
                 priceImpactColor: priceImpactObj?.priceImpactColor,
@@ -357,14 +358,14 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         const {
             calcTradeParams,
             // buyMinAmtInfo,
-            sellMinAmtInfo
+            sellUserOrderInfo,
         } = pageTradePro;
 
         if (account.readyState === AccountStatus.ACTIVATED) {
             // const type = marketTradeData.type === TradeProType.sell ? 'quote' : 'base';
             // const minAmt = buyMinAmtInfo?.minAmount;
             // myLog('minAmt',calcTradeParams?.amountBOut,minAmt)
-            const minAmt = sellMinAmtInfo?.minAmount
+            const minAmt = sellUserOrderInfo?.minAmount
             // myLog(marketTradeData.type ,'minAmt',minAmt)
             const validAmt = !!(calcTradeParams?.amountBOut && minAmt
                 && sdk.toBig(calcTradeParams?.amountBOut).gte(sdk.toBig(minAmt)));

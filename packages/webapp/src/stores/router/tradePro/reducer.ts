@@ -47,8 +47,9 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 totalFee,
                 takerRate,
                 defaultPrice,
-                sellMinAmtInfo,
-                buyMinAmtInfo,
+                sellUserOrderInfo,
+                buyUserOrderInfo,
+                minOrderInfo,
                 lastStepAt
             } = action.payload;
             if (market !== state.pageTradePro.market) {
@@ -67,12 +68,13 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     feeBips,
                     totalFee,
                     takerRate,
-                    sellMinAmtInfo,
-                    buyMinAmtInfo,
                     tradeArray,
                     defaultPrice,
                     precisionLevels,
                     depthLevel,
+                    sellUserOrderInfo,
+                    buyUserOrderInfo,
+                    minOrderInfo,
                     lastStepAt:undefined,
                 }
 
@@ -135,11 +137,14 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 if (takerRate) {
                     state.pageTradePro.takerRate = takerRate;
                 }
-                if (sellMinAmtInfo) {
-                    state.pageTradePro.sellMinAmtInfo = sellMinAmtInfo;
+                if (sellUserOrderInfo !== undefined) {
+                    state.pageTradePro.sellUserOrderInfo = sellUserOrderInfo;
                 }
-                if (buyMinAmtInfo) {
-                    state.pageTradePro.buyMinAmtInfo = buyMinAmtInfo;
+                if (buyUserOrderInfo !== undefined) {
+                    state.pageTradePro.buyUserOrderInfo = buyUserOrderInfo;
+                }
+                if (minOrderInfo !== undefined) {
+                    state.pageTradePro.minOrderInfo = minOrderInfo;
                 }
 
             }
