@@ -34,7 +34,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
     } = usePageTradePro();
     const {marketMap} = useTokenMap();
     const {tokenPrices} = useTokenPrices();
-    const {forex} = useSystem()
+    const {forex,allowTrade} = useSystem()
     const {currency} = useSettings()
 
     const {t} = useTranslation('common');
@@ -346,15 +346,11 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         const {priceLevel} = getPriceImpactInfo(pageTradePro.limitCalcTradeParams, false)
 
-        const isIpValid = true
-
-        myLog('---- onSubmitBtnClick priceLevel:', priceLevel)
-
-        //TODO: pending on checkIpValid API
-        if (!isIpValid) {
+        if (!allowTrade.order.enable) {
             setShowSupport({isShow: true})
             setIsLimitLoading(false)
         } else {
+
             switch (priceLevel) {
                 case PriceLevel.Lv1:
                     setAlertOpen(true)
@@ -364,7 +360,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                     break
             }
         }
-    }, [])
+    }, [allowTrade])
     const availableTradeCheck = React.useCallback((): { tradeBtnStatus: TradeBtnStatus, label: string } => {
         const account = store.getState().account;
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;

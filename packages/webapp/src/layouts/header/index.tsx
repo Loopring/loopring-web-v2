@@ -11,6 +11,7 @@ import { BottomRule, Header as HeaderUI, HideOnScroll, } from '@loopring-web/com
 import { withRouter } from 'react-router-dom'
 import { RouteComponentProps } from 'react-router';
 import React from 'react';
+import { useSystem } from '../../stores/system';
 
 const Header = withTranslation('common')(withRouter(({t,location,isHideOnScroll = false,...rest}: any & RouteComponentProps) => {
 
@@ -20,14 +21,18 @@ const Header = withTranslation('common')(withRouter(({t,location,isHideOnScroll 
     } = useHeader()
 
     const {confirmWrapper, confirmation} = useConfirmation()
+    const {allowTrade} = useSystem()
 
     return (<>
         {isHideOnScroll ?< HideOnScroll window={undefined}>
             <HeaderUI isWrap={false} {...rest}
+                      allowTrade={allowTrade}
                       headerMenuData={headerMenuData}
                       headerToolBarData={headerToolBarData}
                       selected={location.pathname === '/' ? headerRoot : location.pathname}></HeaderUI>
-        </HideOnScroll>: <HeaderUI {...rest} headerMenuData={headerMenuData} headerToolBarData={headerToolBarData}
+        </HideOnScroll>: <HeaderUI {...rest}
+                                   allowTrade={allowTrade}
+                                   headerMenuData={headerMenuData} headerToolBarData={headerToolBarData}
                                       selected={location.pathname === '/' ? headerRoot : location.pathname}></HeaderUI>}
         <Toolbar/>
         <BottomRule isShow={!confirmation?.confirmed}

@@ -101,15 +101,15 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
             const etherscanBaseUrl = ChainId.MAINNET === chainId ? `https://etherscan.io/` : `https://goerli.etherscan.io/`
             let allowTrade;
             try{
-                 allowTrade  = await LoopringAPI.exchangeAPI.getAccountServices({});
+               allowTrade  = await LoopringAPI.exchangeAPI.getAccountServices({});
 
             } catch {
                 allowTrade =  {register: {enable:false},
-                order: {enable:false},
-                joinAmm: {enable:false},
-                dAppTrade: {enable:false},
-                raw_data: {enable:false},}
-        }
+                    order: {enable:false},
+                    joinAmm: {enable:false},
+                    dAppTrade: {enable:false},
+                    raw_data: {enable:false},}
+            }
 
             window.loopringSocket = new LoopringSocket(socketURL);
 
@@ -157,6 +157,7 @@ export function* getUpdateSystem({payload}: any) {
         const {
             env,
             baseURL,
+            allowTrade,
             faitPrices,
             gasPrice,
             forex,
@@ -165,7 +166,7 @@ export function* getUpdateSystem({payload}: any) {
             __timer__
         } = yield call(getSystemsApi, chainId);
 
-        yield put(getSystemStatus({env, baseURL, faitPrices, gasPrice, forex, exchangeInfo, etherscanBaseUrl, __timer__}));
+        yield put(getSystemStatus({env, baseURL, allowTrade,faitPrices, gasPrice, forex, exchangeInfo, etherscanBaseUrl, __timer__}));
         yield call(initConfig, chainId)
         //TODO check wallect store
     } catch (err) {

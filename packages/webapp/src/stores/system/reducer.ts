@@ -16,11 +16,11 @@ const initialState: SystemStatus = {
     status: 'PENDING',
     errorMessage: null,
     allowTrade: {
-        register: {enable:true},
-        order: {enable:true},
-        joinAmm: {enable:true},
-        dAppTrade: {enable:true},
-        raw_data: {enable:true},
+        register: {enable:false},
+        order: {enable:false},
+        joinAmm: {enable:false},
+        dAppTrade: {enable:false},
+        raw_data: {enable:false},
     },
     exchangeInfo: undefined,
 
