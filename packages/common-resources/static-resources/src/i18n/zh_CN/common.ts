@@ -168,6 +168,7 @@ export default {
     labelTradePageTitle: '交易记录',
     labelAmmPageTitle: 'AMM 出入金记录',
     labelSwapSuccess: '兑换成功！',
+    labelOrderProcessing: '已下单！',
     labelSwapFailed: '兑换失败！',
     labelJoinAmmSuccess: '加入流动性池成功！',
     labelJoinAmmFailed: '加入流动性池失败！',
