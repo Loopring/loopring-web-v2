@@ -33,6 +33,7 @@ export type BasicHeaderItem = {
 export type HeadMenuType<I extends BasicHeaderItem> = {
     children?: React.ElementType<any> | JSX.Element,
     className?: string,
+    allowTrade?:object,
     renderList?: (props: { handleListKeyDown: ({...rest}) => any }) => any,
     onOpen?: boolean,
     selected?:boolean,
@@ -43,9 +44,11 @@ export type HeadMenuType<I extends BasicHeaderItem> = {
 } & I
 export type MenuItemLink<I extends BasicHeaderItem> = HeadMenuType<I> & {
     className?: string,
+    allowTrade:any,
     handleListKeyDown?: () => any,
     layer: number,
 } & LinkProps;
+
 export type MenuItemProps<I extends BasicHeaderItem> = HeadMenuType<I> & {
     className?: string,
     handleListKeyDown?: () => any,
