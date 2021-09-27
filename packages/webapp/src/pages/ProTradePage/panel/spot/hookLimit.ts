@@ -352,6 +352,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
             } else if (validAmt || minAmt === undefined) {
                 return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}     // label: ''}
             } else {
+                //todo
                 const symbol: string = limitTradeData[ 'base' ].belong;
                 const minOrderSize = VolToNumberWithPrecision(minAmt, symbol) + ' ' + symbol;
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin, ${minOrderSize}`}

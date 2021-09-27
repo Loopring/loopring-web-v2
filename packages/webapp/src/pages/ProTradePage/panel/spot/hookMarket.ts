@@ -359,30 +359,21 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         const account = store.getState().account;
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
         const {
-            calcTradeParams,
-            // buyMinAmtInfo,
-            sellUserOrderInfo,
+            minOrderInfo,
         } = pageTradePro;
 
         if (account.readyState === AccountStatus.ACTIVATED) {
-            // const type = marketTradeData.type === TradeProType.sell ? 'quote' : 'base';
-            // const minAmt = buyMinAmtInfo?.minAmount;
-            // myLog('minAmt',calcTradeParams?.amountBOut,minAmt)
-            const minAmt = sellUserOrderInfo?.minAmount
-            // myLog(marketTradeData.type ,'minAmt',minAmt)
-            const validAmt = !!(calcTradeParams?.amountBOut && minAmt
-                && sdk.toBig(calcTradeParams?.amountBOut).gte(sdk.toBig(minAmt)));
 
             if (marketTradeData?.base.tradeValue === undefined
                 || marketTradeData?.quote.tradeValue === undefined
                 || marketTradeData?.base.tradeValue === 0
                 || marketTradeData?.quote.tradeValue === 0) {
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: 'labelEnterAmount'}
-            } else if (validAmt || minAmt === undefined) {
+            } else if (minOrderInfo?.minAmtCheck || minOrderInfo?.minAmtShow === undefined) {
                 return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
             } else {
                 const symbol: string = marketTradeData[ 'base' ].belong;
-                const minOrderSize = VolToNumberWithPrecision(minAmt, symbol) + ' ' + symbol;
+                const minOrderSize = `${minOrderInfo?.minAmtShow} ${minOrderInfo?.symbol}`;
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin, ${minOrderSize}`}
             }
         }
