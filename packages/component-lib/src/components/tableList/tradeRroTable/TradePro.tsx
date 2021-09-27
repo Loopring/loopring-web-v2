@@ -2,14 +2,13 @@ import { Box, BoxProps, Typography } from '@mui/material'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import moment from 'moment'
 import { Column, Table } from '../../basic-lib'
-import { EmptyValueTag, MarketRowHeight, TradeTypes } from '@loopring-web/common-resources';
+import { EmptyValueTag, MarketRowHeight, myLog, TradeTypes } from '@loopring-web/common-resources';
 import { RawDataTradeItem } from '../tradeTable';
 import { useSettings } from '../../../stores';
 import styled from '@emotion/styled';
 import { TablePaddingX } from '../../styled';
 import { MarketInfo } from 'loopring-sdk/dist/defs';
 import { Currency } from 'loopring-sdk';
-
 // export type RawDataTradeItem = {
 //     side: keyof typeof TradeTypes;
 //     amount: {
@@ -45,6 +44,7 @@ export type TradeProTableProps = {
     currentheight?: number;
     rowHeight?: number;
     headerRowHeight?: number;
+    depthLevel?: number,
 }
 
 const TableStyled = styled(Box)`
@@ -77,9 +77,10 @@ const TableStyled = styled(Box)`
 ` as (props: { currentheight?:number } & BoxProps) => JSX.Element;
 
 
-const getColumnModeAssets = (t: TFunction, _currency: Currency,
+const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CNY',
                              // quotePrecision,
                              baseSymbol:string, quoteSymbol:string ,
+                             depthLevel?: number,
                        ): Column<Required<RawDataTradeItem>, unknown>[] => [
     {
         key: 'price',
@@ -88,12 +89,25 @@ const getColumnModeAssets = (t: TFunction, _currency: Currency,
 
             const color = row[ 'side' ] === TradeTypes.Buy ? 'var(--color-error)' : 'var(--color-success)';
             const {value} = row[ 'price' ];
+            const digitNum = depthLevel || 0
+            myLog(digitNum)
+            let formattedValue = value as any
+            let [_init, _dot] = String((value || '')).split('.');
+            if (_dot) {
+                const dotLen = _dot.length
+                if (dotLen < digitNum) {
+                    for (let i = dotLen; i < digitNum; i++) {
+                        _dot = _dot + '0'
+                    }
+                    formattedValue = _init + '.' + _dot
+                }
+            }
 
             // const precision = row['precision'] || 6
             // const renderValue = value ? (getValuePrecisionThousand(value, precision, precision, undefined, true)) : EmptyValueTag
 
             return <Box className="rdg-cell-value">
-                <Typography textAlign={'left'} color={color} variant={'body2'} lineHeight={`${MarketRowHeight}px`} > {value}  </Typography>
+                <Typography textAlign={'left'} color={color} variant={'body2'} lineHeight={`${MarketRowHeight}px`} > {formattedValue}  </Typography>
             </Box>
 
 
@@ -137,6 +151,7 @@ export const TradePro = withTranslation('tables')(({
                                                        headerRowHeight = MarketRowHeight,
                                                        // tokenMap,
                                                        precision,
+                                                       depthLevel,
                                                        ...rest
                                                    }: WithTranslation & TradeProTableProps) => {
 
@@ -148,7 +163,7 @@ export const TradePro = withTranslation('tables')(({
         rawData: rawData,
         columnMode: getColumnModeAssets(t, currency,
             // quotePrecision,
-            baseSymbol, quoteSymbol ).filter(o => !o.hidden),
+            baseSymbol, quoteSymbol, depthLevel ).filter(o => !o.hidden),
         generateRows: (rawData: any) => rawData,
         generateColumns: ({columnsRaw}: any) => columnsRaw as Column<RawDataTradeItem, unknown>[],
         style: {
