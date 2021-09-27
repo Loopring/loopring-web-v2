@@ -91,7 +91,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
     const propsPrice = React.useMemo(()=>{
         return {
             label: t('labelProPrice'),
-            subLabel: `\/u224 ${currency == Currency.usd?PriceTag.Dollar:PriceTag.Yuan}`,   //'\u224'
+            subLabel: `\u2248 ${currency == Currency.usd?PriceTag.Dollar:PriceTag.Yuan}`,   //'\u224'
             emptyText: t('tokenSelectToken'),
             placeholderText: '0.00',
             size:InputSize.small,
@@ -125,7 +125,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
                     ...propsPrice,
                     maxAllow:false,
                     isHideError: true,
-                    inputData:tradeData ? tradeData.price : {} as any,
+                    inputData: tradeData ? tradeData.price : {} as any,
                     coinMap: tradeCalcProData && tradeCalcProData.coinInfoMap ? tradeCalcProData.coinInfoMap : {} as CoinMap<I, CoinInfo<I>>
                 }} />
             </Box>

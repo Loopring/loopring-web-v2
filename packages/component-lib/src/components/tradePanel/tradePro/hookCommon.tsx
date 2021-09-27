@@ -68,7 +68,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
     const propsBase = React.useMemo(() => {
         return {
             label: t('labelProBaseLabel'),
-            subLabel: t('tokenMax'),
+            subLabel: tradeType === TradeProType.sell ? t('tokenMax'):undefined,
             emptyText: t('tokenSelectToken'),
             placeholderText: '0.00',
             size: InputSize.small,
@@ -85,7 +85,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
     const propsQuote = React.useMemo(() => {
         return {
             label: t('labelProQuoteLabel'),
-            subLabel: t('tokenMax'),
+            subLabel:tradeType === TradeProType.buy ? t('tokenMax'):undefined,
             emptyText: t('tokenSelectToken'),
             placeholderText: '0.00',
             size: InputSize.small,
