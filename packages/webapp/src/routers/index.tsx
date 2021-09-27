@@ -60,16 +60,16 @@ const RouterView = () => {
             <Route exact path='/'><ContentWrap>
                 {allowTrade?.order.enable? <SwapPage/>:<Layer2Page />}
             </ContentWrap></Route>
-            <Route path='/trading/lite'><ContentWrap><SwapPage /></ContentWrap></Route>
-            <Route path='/trading/lite(/:symbol)'><ContentWrap><SwapPage /></ContentWrap></Route>
+            <Route path='/trade/lite'><ContentWrap><SwapPage /></ContentWrap></Route>
+            <Route path='/trade/lite(/:symbol)'><ContentWrap><SwapPage /></ContentWrap></Route>
 
             {
-                proFlag && tickerMap && <Route path='/trading/pro'>
+                proFlag && tickerMap && <Route path='/trade/pro'>
                   <Header isHideOnScroll={true}/>
                   <OrderbookPage /></Route>
             }
             {
-                proFlag && tickerMap && <Route path='/trading/pro(/:symbol)'><OrderbookPage /></Route>
+                proFlag && tickerMap && <Route path='/trade/pro(/:symbol)'><OrderbookPage /></Route>
             }
 
             <Route exact path='/markets'><ContentWrap><QuotePage /></ContentWrap> </Route>

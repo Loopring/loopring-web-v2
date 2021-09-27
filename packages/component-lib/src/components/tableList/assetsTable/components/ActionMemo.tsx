@@ -40,7 +40,7 @@ const ActionPopContent = React.memo(({market, isLp,allowTrade, getMarketArrayLis
 
     const jumpToSwapPanel = React.useCallback((pair: string) => {
         history && history.push({
-            pathname: `/trading/lite/${pair}`
+            pathname: `/trade/lite/${pair}`
         })
     }, [history])
     return (

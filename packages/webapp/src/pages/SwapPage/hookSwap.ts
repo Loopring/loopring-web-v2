@@ -408,7 +408,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
     }, [market, setTradeArray])
     const toPro = React.useCallback(() => {
         history.push({
-            pathname: `/trading/pro/${market}`
+            pathname: `/trade/pro/${market}`
         })
     },[market]);
 

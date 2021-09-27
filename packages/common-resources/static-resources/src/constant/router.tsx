@@ -28,7 +28,7 @@ export const ToolBarAvailableItem = [
 export let headerToolBarData: Array<{ buttonComponent: number, handleClick?: (props: any) => void, [ key: string ]: any }> = [
     {
         buttonComponent: ButtonComponentsMap.Download,
-        url: 'https://loopring.pro',
+        url: 'https://loopring.io',
         i18nTitle: 'labelDownloadAppTitle',
         i18nDescription: 'labelDownloadBtn',
     },
@@ -46,7 +46,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [{
         id: 'Classic', i18nKey: 'labelClassic',
         description: 'labelClassicDescription',
     },
-     router: {path: '/trading/lite/LRC-ETH'},
+     router: {path: '/trade/lite/LRC-ETH'},
 },
 {
     label: {
@@ -54,7 +54,7 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [{
         //TODO: translate id
         description: 'labelAdvancedDescription',
     },
-    router: { path: '/trading/pro/LRC-ETH' },
+    router: { path: '/trade/pro/LRC-ETH' },
 },
 ]
 
