@@ -132,13 +132,11 @@ export function makeMarketReq({
         slipBips: slippage as string,
     })
 
-    const minOrderInfo: sdk.OrderInfo | undefined = _.cloneDeep(isBuy ? buyUserOrderInfo : sellUserOrderInfo) 
+    const minOrderInfo: sdk.OrderInfo & { minAmtShow?: number, symbol?: string } | undefined = _.cloneDeep(isBuy ? buyUserOrderInfo : sellUserOrderInfo) 
 
     if (minOrderInfo) {
-        if (!isBuy) { // sell eth -> usdt
+        if (!isBuy) { // sell eth -> usdt, calc min eth from usdt min amt(100USDT)
             const minInput = sdk.toBig(buyUserOrderInfo?.minAmount).div('1e' + buyTokenInfo.decimals).toString()
-            
-            // myLog('--------------isAtoB:', isAtoB, minInput)
 
             const calcTradeParamsForMin = sdk.getOutputAmount({
                 input: minInput,
@@ -149,20 +147,26 @@ export function makeMarketReq({
                 tokenMap: tokenMap as any,
                 marketMap: marketMap as any,
                 depth: depth as sdk.DepthData,
-                ammPoolSnapshot: ammPoolSnapshot,
+                ammPoolSnapshot,
                 feeBips: feeBips ? feeBips.toString() : '0',
                 takerRate: takerRate ? takerRate.toString() : '0',
                 slipBips: slippage as string,
             })
-    
+            
             minOrderInfo.minAmount = calcTradeParamsForMin?.amountS as string
-
+            minOrderInfo.minAmtShow = sdk.toBig(minOrderInfo.minAmount).div('1e' + sellTokenInfo.decimals).toNumber()
+            minOrderInfo.symbol = sell
+        } else {
+            minOrderInfo.minAmtShow = sdk.toBig(minOrderInfo.minAmount).div('1e' + buyTokenInfo.decimals).toNumber()
+            minOrderInfo.symbol = buy
         }
     } else {
         throw Error('undefined minOrderInfo')
     }
 
-    myLog('makeMarketReq calcTradeParams:', calcTradeParams)
+    const minAmtCheck = sdk.toBig(input).gte(sdk.toBig(minOrderInfo.minAmount))
+
+    // myLog('makeMarketReq calcTradeParams:', calcTradeParams)
 
     const tradeChannel = calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined
     const orderType = calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly) : undefined

@@ -109,6 +109,9 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
 
         updatePageTradePro({
             market,
+            minOrderInfo: null,
+            sellUserOrderInfo: null,
+            buyUserOrderInfo: null,
             request: null,
             calcTradeParams: null,
             limitCalcTradeParams: null,

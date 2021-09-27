@@ -226,6 +226,9 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         })
         updatePageTradePro({
             market,
+            sellUserOrderInfo: null,
+            buyUserOrderInfo: null,
+            minOrderInfo: null,
             request: null,
             calcTradeParams: null,
             limitCalcTradeParams: null,
