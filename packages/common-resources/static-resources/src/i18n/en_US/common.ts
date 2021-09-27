@@ -168,6 +168,7 @@ export default {
     labelTradePageTitle: 'Trade History',
     labelAmmPageTitle: 'AMM Records',
     labelSwapSuccess: 'Swap successful!',
+    labelOrderProcessing: 'Order Placed!',
     labelSwapFailed: 'Swap failed!',
     labelJoinAmmSuccess: 'Add AMM Pool successful!',
     labelJoinAmmFailed: 'Add AMM Pool failed!',

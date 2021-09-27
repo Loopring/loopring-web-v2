@@ -313,8 +313,12 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                             case sdk.OrderStatus.processed:
                                 setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
                                 break
+                            case sdk.OrderStatus.processing:
+                                setToastOpen({open: true, type: 'success', content: t('labelOrderProcessing')})
+                                break
                             default:
                                 setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
+                                break
                         }
                     }
 
