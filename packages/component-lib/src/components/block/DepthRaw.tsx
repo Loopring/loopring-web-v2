@@ -1,7 +1,7 @@
 import { Box, Grid, Typography } from '@mui/material';
 import { MarketInfo } from 'loopring-sdk/dist/defs';
 import { WithTranslation, withTranslation } from 'react-i18next';
-import { DepthViewData, MarketRowHeight } from '@loopring-web/common-resources';
+import { DepthViewData, MarketRowHeight, myLog } from '@loopring-web/common-resources';
 // import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 
@@ -25,13 +25,27 @@ export const Depth = ({
                           amtTotalForShow,
                           percentage,
                           type,
-                      }: Row) => {
+                          depthLevel,
+                      }: Row & {depthLevel?: number}) => {
     // const theme = useTheme();
+    const digitNum = depthLevel || 0
+    let formattedPrice = price as any
+    let [_init, _dot] = String((price || '')).split('.');
+    if (_dot) {
+        const dotLen = _dot.length
+        if (dotLen < digitNum) {
+            for (let i = dotLen; i < digitNum; i++) {
+                _dot = _dot + '0'
+            }
+            formattedPrice = _init + '.' + _dot
+        }
+    }
+
     const color = type === DepthType.ask? 'var(--color-error)':'var(--color-success)';
     return <GridStyle   container spacing={1} position={'relative'} wrap={'nowrap'} style={{cursor:'pointer'}} onClick={(e)=>onClick(e as any,price)}>
         <Box style={{opacity:0.1,backgroundColor:color}} display={'block'} position={'absolute'} right={0} width={percentage*100+'%'} height={`${MarketRowHeight}px`} zIndex={44}/>
         <Grid item xs={4} alignSelf={'flex-start'} zIndex={55} >
-            <Typography lineHeight={`${MarketRowHeight}px`} color={color} variant={'body2'} > {price}  </Typography>
+            <Typography lineHeight={`${MarketRowHeight}px`} color={color} variant={'body2'} > {formattedPrice}  </Typography>
         </Grid>
         <Grid item xs={4} alignSelf={'flex-end'} textAlign={'right'} zIndex={55}>
             <Typography lineHeight={`${MarketRowHeight}px`} color={'text.secondary'} variant={'body2'}>  {amtForShow}  </Typography>
@@ -78,12 +92,14 @@ export const DepthBlock = withTranslation('common')(({
                                                          onClick,
                                                          // tokenBaseInfo,
                                                          type,
+                                                         depthLevel,
                                                      }: {
     onClick:(event:MouseEvent,price:number)=>void,
     type: DepthType,
     // quotePrecision:number,
     depths: DepthViewData[],
-    marketInfo: MarketInfo
+    marketInfo: MarketInfo,
+    depthLevel?: number,
 } & WithTranslation) => {
 
 
@@ -98,6 +114,7 @@ export const DepthBlock = withTranslation('common')(({
             return <Depth onClick={onClick} key={index} {...{
                 ...depth,
                 type,
+                depthLevel,
             }}    />
         })}
 

@@ -44,7 +44,6 @@ export type TradeProTableProps = {
     currentheight?: number;
     rowHeight?: number;
     headerRowHeight?: number;
-    depthLevel?: number,
 }
 
 const TableStyled = styled(Box)`
@@ -80,7 +79,6 @@ const TableStyled = styled(Box)`
 const getColumnModeAssets = (t: TFunction, _currency: Currency,
                              // quotePrecision,
                              baseSymbol:string, quoteSymbol:string ,
-                             depthLevel?: number,
                        ): Column<Required<RawDataTradeItem>, unknown>[] => [
     {
         key: 'price',
@@ -89,25 +87,12 @@ const getColumnModeAssets = (t: TFunction, _currency: Currency,
 
             const color = row[ 'side' ] === TradeTypes.Buy ? 'var(--color-error)' : 'var(--color-success)';
             const {value} = row[ 'price' ];
-            const digitNum = depthLevel || 0
-            myLog(digitNum)
-            let formattedValue = value as any
-            let [_init, _dot] = String((value || '')).split('.');
-            if (_dot) {
-                const dotLen = _dot.length
-                if (dotLen < digitNum) {
-                    for (let i = dotLen; i < digitNum; i++) {
-                        _dot = _dot + '0'
-                    }
-                    formattedValue = _init + '.' + _dot
-                }
-            }
 
             // const precision = row['precision'] || 6
             // const renderValue = value ? (getValuePrecisionThousand(value, precision, precision, undefined, true)) : EmptyValueTag
 
             return <Box className="rdg-cell-value">
-                <Typography textAlign={'left'} color={color} variant={'body2'} lineHeight={`${MarketRowHeight}px`} > {formattedValue}  </Typography>
+                <Typography textAlign={'left'} color={color} variant={'body2'} lineHeight={`${MarketRowHeight}px`} > {value}  </Typography>
             </Box>
 
 
@@ -151,7 +136,6 @@ export const TradePro = withTranslation('tables')(({
                                                        headerRowHeight = MarketRowHeight,
                                                        // tokenMap,
                                                        precision,
-                                                       depthLevel,
                                                        ...rest
                                                    }: WithTranslation & TradeProTableProps) => {
 
@@ -163,7 +147,7 @@ export const TradePro = withTranslation('tables')(({
         rawData: rawData,
         columnMode: getColumnModeAssets(t, currency,
             // quotePrecision,
-            baseSymbol, quoteSymbol, depthLevel ).filter(o => !o.hidden),
+            baseSymbol, quoteSymbol ).filter(o => !o.hidden),
         generateRows: (rawData: any) => rawData,
         generateColumns: ({columnsRaw}: any) => columnsRaw as Column<RawDataTradeItem, unknown>[],
         style: {
