@@ -9,7 +9,6 @@ import {
 } from '@loopring-web/component-lib';
 import {
     BreakPoint,
-    Currency,
     depth2ViewData,
     DepthFIcon,
     DepthHIcon,
@@ -30,6 +29,7 @@ import { useTokenMap } from 'stores/token';
 import { useTokenPrices } from 'stores/tokenPrices';
 import { useSystem } from 'stores/system';
 import styled from '@emotion/styled/';
+import { Currency } from 'loopring-sdk';
 
 
 export enum TabMarketIndex {
@@ -142,7 +142,8 @@ export const MarketView = withTranslation('common')(({
             const baseDecimal = tokenMap[ baseSymbol ]?.decimals;
             const quoteDecimal = tokenMap[ baseSymbol ]?.decimals;
             const precisionForPrice = marketMap[ market ].precisionForPrice;
-            const basePrecision = tokenMap[ baseSymbol ].precision;
+            //@ts-ignore
+            const basePrecision = tokenMap[ baseSymbol ].precisionForOrder;
             let [countAsk, countBid] = [rowLength, rowLength]
             if (depthType === DepthShowType.bids) {
                 [countAsk, countBid] = [0, rowLength * 2]
@@ -180,7 +181,7 @@ export const MarketView = withTranslation('common')(({
                 up = 'down'
                 priceColor = (upColor == UpColor.green ? 'var(--color-error)' : 'var(--color-success)');
             }
-            value = currency === Currency.dollar ? '\u2248 ' + PriceTag.Dollar
+            value = currency === Currency.usd ? '\u2248 ' + PriceTag.Dollar
                 + getValuePrecisionThousand(close * quotePrice, undefined, undefined, undefined, true, {isFait: true})
                 : '\u2248 ' + PriceTag.Yuan
                 + getValuePrecisionThousand(close * quotePrice / forex, undefined, undefined, undefined, true, {isFait: true})
@@ -237,7 +238,7 @@ export const MarketView = withTranslation('common')(({
                 // headerRowHeight={20}
                 marketInfo={marketMap[ market ]}
                 rawData={pageTradePro.tradeArray ? pageTradePro.tradeArray.slice(0, tableLength) : []}
-                quotePrecision={tokenMap[ quoteSymbol ].precision}
+                // basePrecision={basePrecision}
                 precision={marketMap[ market ].precisionForPrice}
                 currentheight={tableLength * 20 + 20}/>
             : <Box flex={1} height={'100%'} display={'flex'} alignItems={'center'}

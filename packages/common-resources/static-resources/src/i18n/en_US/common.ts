@@ -320,7 +320,7 @@ export default {
     labelProMarket:'Market',
     labelProPrice:'Price',
     labelProBaseLabel:'Amount',
-    labelProQuoteLabel:'Amount',
+    labelProQuoteLabel:'Total',
     labelProLimitBtn: '{{tradeType}} {{symbol}}',
     labelProMarketBtn: '{{tradeType}} {{symbol}}',
     labelProOrderbook:'Orderbook',
@@ -334,7 +334,7 @@ export default {
     labelErrorPricePrecisionLimit:'{{symbol}} price only {{decimal}} decimals allowed',
     labelDepthPrice: 'Price({{symbol}})',
     labelDepthAmount: 'Amount({{symbol}})',
-    labelDepthTotal: 'Total',
+    labelDepthTotal: 'Accumulation',
 
     labelProChartTitle: 'Chart',
     labelProTimeDefault: 'Time(1m)',

@@ -137,8 +137,10 @@ export function tradeItemToTableDataItem(tradeItem: any) {
                 key: buyToken,
                 value: buyValue ? buyValue : undefined
             },
+
             volume: getValuePrecisionThousand(baseValue,
-                tokenMap[base].precision,  tokenMap[base].precision,  tokenMap[base].precision, true)
+                //@ts-ignore
+                tokenMap[base].precisionForOrder,  tokenMap[base].precisionForOrder,  tokenMap[base].precisionForOrder, true)
         }
     })
 }
