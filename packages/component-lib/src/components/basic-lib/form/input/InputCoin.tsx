@@ -2,7 +2,7 @@ import { FormHelperText, Grid, Typography } from '@mui/material';
 import {
     CoinInfo,
     FORMAT_STRING_LEN,
-    getValuePrecisionThousand,
+    // getValuePrecisionThousand,
     IBData
 } from '@loopring-web/common-resources';
 import { InputCoinProps, InputSize } from "./Interface";
@@ -109,7 +109,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 <Typography fontSize={'inherit'} color={'inherit'} className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>
                     <span>{subLabel}</span>
-                    <span>{(balance ? getValuePrecisionThousand(balance) : '0.00')}</span>
+                    <span>{(balance ? balance : '0.00')}</span>
                 </Typography> : null}</Grid>
         </Grid>
 

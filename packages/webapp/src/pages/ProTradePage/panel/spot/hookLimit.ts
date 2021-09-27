@@ -1,6 +1,6 @@
 import React from 'react';
 import { useToast } from 'hooks/common/useToast';
-import { AccountStatus, IBData, MarketType, myLog, } from '@loopring-web/common-resources';
+import { AccountStatus, getValuePrecisionThousand, IBData, MarketType, myLog, } from '@loopring-web/common-resources';
 import {
     LimitTradeData,
     TradeBaseType,
@@ -64,7 +64,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
             price: {
                 belong: pageTradePro.tradeCalcProData.coinQuote,
                 tradeValue: tradePrice,
-                balance: balance
+                balance: getValuePrecisionThousand(balance, undefined, undefined, undefined, true, {isFait: true})
             } as IBData<any>,
             type: pageTradePro.tradeType ?? TradeProType.buy
         }
@@ -79,23 +79,24 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         pageTradePro.tradeCalcProData.walletMap])
 
     React.useEffect(() => {
-        if (pageTradePro.defaultPrice) {
-            setLimitTradeData((state) => {
-                const tradePrice = pageTradePro.defaultPrice ? pageTradePro.defaultPrice : (pageTradePro.market === market && pageTradePro.ticker) ? pageTradePro.ticker.close ? pageTradePro.ticker.close.toFixed(marketPrecision) : pageTradePro?.depth?.mid_price.toFixed(marketPrecision) : 0;
-                let balance = tradePrice && tokenPrices && (Number(tradePrice) * tokenPrices[ quoteSymbol as string ])
-                if (balance && currency === Currency.cny) {
-                    balance = Number(balance) / forex;
-                }
-                return {
-                    ...state,
-                    price: {
-                        ...state.price,
-                        tradeValue: tradePrice,
-                        balance
-                    } as IBData<any>,
-                }
-            })
-        }
+        // if (pageTradePro.defaultPrice) {
+        setLimitTradeData((state) => {
+            const tradePrice = pageTradePro.defaultPrice ? pageTradePro.defaultPrice : (pageTradePro.market === market && pageTradePro.ticker) ? pageTradePro.ticker.close ? pageTradePro.ticker.close.toFixed(marketPrecision) : pageTradePro?.depth?.mid_price.toFixed(marketPrecision) : 0;
+            let balance = tradePrice && tokenPrices && (Number(tradePrice) * tokenPrices[ quoteSymbol as string ])
+            if (balance && currency === Currency.cny) {
+                balance = Number(balance) / forex;
+            }
+            // console.log('balance',balance)
+            return {
+                ...state,
+                price: {
+                    ...state.price,
+                    tradeValue: tradePrice,
+                    balance: getValuePrecisionThousand(balance, undefined, undefined, undefined, true, {isFait: true})
+                } as IBData<any>,
+            }
+        })
+        // }
 
     }, [pageTradePro.defaultPrice,currency,forex])
 
@@ -127,7 +128,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                 price: {
                     belong: quoteSymbol,
                     tradeValue: tradePrice,
-                    balance: balance
+                    balance: getValuePrecisionThousand(balance, undefined, undefined, undefined, true, {isFait: true})
                 } as IBData<any>,
             }
         });
@@ -296,7 +297,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                     price: {
                         belong: quoteSymbol,
                         tradeValue: tradePrice,
-                        balance: balance,
+                        balance: getValuePrecisionThousand(balance, undefined, undefined, undefined, true, {isFait: true})
                     } as IBData<any>,
                     base: {
                         ...state.base,
@@ -315,7 +316,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         // }
 
 
-    }, [setLimitTradeData,currency, forex])
+    }, [setLimitTradeData, currency, forex])
     const handlePriceError = React.useCallback((data: IBData<any>): { error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined => {
 
         const tradeValue = data.tradeValue

@@ -110,7 +110,6 @@ export const MarketView = withTranslation('common')(({
     const {upColor, currency} = useSettings();
     const {tokenPrices} = useTokenPrices();
     // @ts-ignore
-    const quotePrice = tokenPrices[ quoteSymbol ];
     const {forex} = useSystem();
 
     const [depthViewData, setDepthViewData] = React.useState<{ asks: DepthViewData[], bids: DepthViewData[] }>({
@@ -169,7 +168,8 @@ export const MarketView = withTranslation('common')(({
         let up: 'up' | 'down' | '' = '';
         let priceColor = '';
         let value = '';
-        if (ticker && depth && depth.mid_price && depth.symbol === market) {
+        if (ticker && depth && tokenPrices && depth.mid_price && depth.symbol === market) {
+            const quotePrice =  tokenPrices[ quoteSymbol ];
             close = ticker.close ? ticker.close : depth?.mid_price
             if (depth.mid_price === close) {
                 priceColor = '';
@@ -182,9 +182,9 @@ export const MarketView = withTranslation('common')(({
                 priceColor = (upColor == UpColor.green ? 'var(--color-error)' : 'var(--color-success)');
             }
             value = currency === Currency.usd ? '\u2248 ' + PriceTag.Dollar
-                + getValuePrecisionThousand(close * quotePrice, undefined, undefined, undefined, true, {isFait: true})
+                + getValuePrecisionThousand(close * (quotePrice??0), undefined, undefined, undefined, true, {isFait: true})
                 : '\u2248 ' + PriceTag.Yuan
-                + getValuePrecisionThousand(close * quotePrice / forex, undefined, undefined, undefined, true, {isFait: true})
+                + getValuePrecisionThousand(close * (quotePrice??0) / forex, undefined, undefined, undefined, true, {isFait: true})
 
         }
         close = (close ? close.toFixed(marketMap[ market ].precisionForPrice) : undefined)
@@ -204,7 +204,7 @@ export const MarketView = withTranslation('common')(({
             }
 
         </Typography>
-    }, [pageTradePro, market])
+    }, [pageTradePro, market, currency, tokenPrices])
     const toggleData = React.useMemo(() => {
         return [
             {
