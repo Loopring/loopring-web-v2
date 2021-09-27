@@ -80,7 +80,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
     const {tickerMap} = useTicker()
     const {setShowSupport} = useOpenModals()
     const {ammMap} = useAmmMap();
-    const {exchangeInfo} = useSystem();
+    const {exchangeInfo,allowTrade} = useSystem();
     const {
         pageTradeLite,
         updatePageTradeLite,
@@ -324,11 +324,9 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
         const {priceLevel} = getPriceImpactInfo(pageTradeLite.calcTradeParams)
         setIsSwapLoading(true);
 
-        const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('')?? {isIpValid:false}
 
         myLog('---- swapCalculatorCallback priceLevel:', priceLevel)
-        //TODO: pending on checkIpValid API
-        if(isIpValid === false){
+        if (!allowTrade.order.enable) {
             setShowSupport({isShow:true})
             setIsSwapLoading(false);
         }else{
@@ -349,7 +347,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
 
         myLog('swap directly')
 
-    }, [pageTradeLite])
+    }, [pageTradeLite,allowTrade])
     const swapBtnClickArray = Object.assign(_.cloneDeep(btnClickMap), {
         [ fnType.ACTIVATED ]: [swapCalculatorCallback]
     })

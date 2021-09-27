@@ -18,7 +18,7 @@ import { useTokenMap } from 'stores/token';
 import { useSystem } from 'stores/system';
 import { useTranslation } from 'react-i18next';
 import { useSubmitBtn } from './hookBtn';
-import { VolToNumberWithPrecision } from 'utils/formatter_tool';
+// import { VolToNumberWithPrecision } from 'utils/formatter_tool';
 import { getPriceImpactInfo, PriceLevel, usePlaceOrder } from 'hooks/common/useTrade';
 import store from 'stores';
 import * as _ from 'lodash'
@@ -35,7 +35,8 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
     const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
     const {toastOpen, setToastOpen, closeToast} = useToast();
     const {account} = useAccount();
-    const {slippage} = useSettings()
+    const {slippage} = useSettings();
+    const {exchangeInfo,allowTrade} = useSystem();
     const {setShowSupport} = useOpenModals()
     // const [marketTradeData, setMarketTradeData] = React.useState<MarketTradeData<IBData<C>> | undefined>(undefined);
     const {
@@ -49,7 +50,6 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const walletMap = pageTradePro.tradeCalcProData?.walletMap ?? {}
     const [isMarketLoading, setIsMarketLoading] = React.useState(false)
-    const {exchangeInfo} = useSystem();
 
     const [marketTradeData, setMarketTradeData] = React.useState<MarketTradeData<IBData<any>>>(
         // pageTradePro.market === market ?
@@ -385,9 +385,8 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         setIsMarketLoading(true);
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         const {priceLevel} = getPriceImpactInfo(pageTradePro.calcTradeParams)
-        const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('') ?? {isIpValid: false}
-        //TODO: pending on checkIpValid API
-        if (!isIpValid) {
+        // const isIpValid = true
+        if (!allowTrade.order.enable) {
             setShowSupport({isShow: true})
             setIsMarketLoading(false)
         } else {
@@ -403,7 +402,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                     break
             }
         }
-    }, [])
+    }, [allowTrade])
 
     const {
         btnStatus: tradeMarketBtnStatus,

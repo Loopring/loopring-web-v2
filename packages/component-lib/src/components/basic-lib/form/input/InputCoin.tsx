@@ -2,7 +2,7 @@ import { FormHelperText, Grid, Typography } from '@mui/material';
 import {
     CoinInfo,
     FORMAT_STRING_LEN,
-    getValuePrecisionThousand,
+    // getValuePrecisionThousand,
     IBData
 } from '@loopring-web/common-resources';
 import { InputCoinProps, InputSize } from "./Interface";
@@ -16,7 +16,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        order = 'left',
                                                                        label = "Amount",
                                                                        handleError,
-                                                                       subLabel = "Available",
+                                                                       subLabel,
                                                                        // wait = globalSetup.wait,
                                                                        // coinMap,
                                                                        maxAllow,
@@ -108,8 +108,8 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
             <Grid item xs={9} className={'sub-label'}>{subLabel && belong ?
                 <Typography fontSize={'inherit'} color={'inherit'} className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>
-                    <span>{maxAllow ? subLabel + ':' : ''}</span>
-                    <span>{maxAllow ? (balance ? getValuePrecisionThousand(balance) : '0.00') :''}</span>
+                    <span>{subLabel}</span>
+                    <span>{(balance ? balance : '0.00')}</span>
                 </Typography> : null}</Grid>
         </Grid>
 

@@ -32,6 +32,7 @@ import { initSlippage, usePageAmmPool } from "stores/router";
 import _ from 'lodash'
 import { getTimestampDaysLater } from "utils/dt_tools";
 import { DAYS } from "defs/common_defs";
+import { useSystem } from '../../../stores/system';
 
 // ----------calc hook -------
 
@@ -65,6 +66,7 @@ export const useAmmJoin = ({
     const {setShowSupport} = useOpenModals()
 
     const {coinMap, tokenMap} = useTokenMap();
+    const {allowTrade} = useSystem();
     const {ammMap} = useAmmMap();
     const {account, status: accountStatus} = useAccount();
 
@@ -238,7 +240,7 @@ export const useAmmJoin = ({
 
         const {idIndex, marketArray, marketMap,} = store.getState().tokenMap
 
-        const {ammMap} = store.getState().amm.ammMap
+        // const {ammMap} = store.getState().amm.ammMap
 
         const {market, amm} = sdk.getExistedMarket(marketArray, data.coinA.belong as string,
             data.coinB.belong as string)
@@ -292,9 +294,8 @@ export const useAmmJoin = ({
         setIsLoading(true)
 
         updatePageAmmJoinBtn({btnStatus: TradeBtnStatus.LOADING,})
-        const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('')?? {isIpValid:false}
-        //TODO: pending on checkIpValid API
-        if(isIpValid === false){
+
+        if (!allowTrade.order.enable) {
             setShowSupport({isShow:true})
             setIsLoading(false)
         }else {
@@ -369,7 +370,7 @@ export const useAmmJoin = ({
                 makeCache(props.__cache__)
             }
         }
-    }, [request, ammData, account, t])
+    }, [request, ammData, account, t, allowTrade])
 
     const onAmmClickMap = Object.assign(_.cloneDeep(btnClickMap), {
         [ fnType.ACTIVATED ]: [ammCalculator]

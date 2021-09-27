@@ -15,6 +15,7 @@ import { Box, Grid, MenuItem, TextField, Typography } from '@mui/material';
 import { usePageTradePro } from '../../../../stores/router';
 import { volumeToCount } from 'hooks/help'
 import styled from '@emotion/styled'
+import { Currency } from 'loopring-sdk';
 
 const PriceTitleStyled = styled(Typography)`
     color: var(--color-text-third);
@@ -57,7 +58,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
     const quote = __rawTicker__?.quote
     const baseVol = volumeToCount(base, __rawTicker__?.base_token_volume || 0)
     const isRise = floatTag === 'increase'
-    const isUSD = currency === 'USD'
+    const isUSD = currency === Currency.usd
 
     const getMarketPrecision = React.useCallback((market: string) => {
         if (marketMap) {

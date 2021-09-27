@@ -15,6 +15,7 @@ import { TablePaddingX } from '../../styled'
 import { IconButton, Typography } from '@mui/material';
 import { useSettings } from '@loopring-web/component-lib/src/stores'
 import { useDispatch } from 'react-redux'
+import { Currency } from 'loopring-sdk';
 
 const TableWrapperStyled = styled(Box)`
     display: flex;
@@ -98,9 +99,9 @@ type IGetColumnModePros = {
 }
 
 // const getColumnModelQuoteTable = (t: TFunction, history: any): Column<Row, unknown>[] => [
-const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CNY' }): Column<QuoteTableRawDataItem, unknown>[] => {
+const getColumnMode = (props: IGetColumnModePros & { currency: Currency }): Column<QuoteTableRawDataItem, unknown>[] => {
     const {t: {t}, history, upColor, handleStartClick, favoriteMarket, currency} = props
-    const isUSD = currency === 'USD'
+    const isUSD = currency === Currency.usd
     return (
         [
             {

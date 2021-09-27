@@ -13,6 +13,7 @@ import { getValuePrecisionThousand, MarketType, PriceTag } from '@loopring-web/c
 import { useSettings } from '../../../stores'
 import { CoinIcons } from './components/CoinIcons';
 import ActionMemo from './components/ActionMemo';
+import { Currency } from 'loopring-sdk';
 
 
 
@@ -114,6 +115,7 @@ export interface AssetsTableProps {
     pagination?: {
         pageSize: number
     }
+    allowTrade?:any,
     tableHeight?: number,
     onVisibleRowsChange?: (props: any) => void
     showFilter?: boolean
@@ -142,6 +144,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
         t,
         // pagination,
         rawData,
+        allowTrade,
         // onVisibleRowsChange,
         showFilter,
         onShowDeposit,
@@ -181,7 +184,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
     const {language} = useSettings()
     const {coinJson, currency} = useSettings();
     // const rightState = usePopupState({variant: 'popover', popupId: `action-popover`});
-    const isUSD = currency === 'USD'
+    const isUSD = currency === Currency.usd
     useEffect(() => {
         setTotalData(rawData);
     }, [rawData])
@@ -195,7 +198,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
 
 
 
-    const getColumnModeAssets = (t: TFunction): Column<Row, unknown>[] => [
+    const getColumnModeAssets = (t: TFunction, allowTrade?:any): Column<Row, unknown>[] => [
         {
             key: 'token',
             name: t('labelToken'),
@@ -278,7 +281,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                 const lpPair = lpPairList.join('-')
                 const tokenValue = token.value
                 const renderMarket:MarketType = (isLp ? lpPair : tokenValue) as MarketType;
-                return  <ActionMemo {...{t,tokenValue,getMarketArrayListCallback,isLp,
+                return  <ActionMemo {...{t,tokenValue,getMarketArrayListCallback,isLp, allowTrade,
                         market:renderMarket,onShowDeposit,onShowTransfer,onShowWithdraw}}/>
             }
         },
@@ -368,7 +371,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
             rawData={viewData}
             generateRows={(rowData: any) => rowData}
             generateColumns={({columnsRaw}: any) => columnsRaw as Column<any, unknown>[]}
-            columnMode={getColumnModeAssets(t).filter(o => !o.hidden)}
+            columnMode={getColumnModeAssets(t,allowTrade).filter(o => !o.hidden)}
 
         />
         {/*{pagination && (*/}

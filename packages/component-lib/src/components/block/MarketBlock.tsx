@@ -7,6 +7,7 @@ import React from 'react';
 import { floatTag, MarketBlockProps, useSettings } from './../../index';
 import { ScaleAreaChart } from '../charts'
 import { ChartType } from '../charts'
+import { Currency } from 'loopring-sdk';
 
 type StyledProps = {
     custom: any
@@ -55,7 +56,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                                                          handleBlockClick,
                                                      }: & WithTranslation & MarketBlockProps<C> & { handleBlockClick: () => void }) => {
     const {upColor, currency} = useSettings();
-    const isUSD = currency === 'USD'
+    const isUSD = currency === Currency.usd
     const { volume, coinAPriceDollar, coinAPriceYuan, marketPrecision, coinBPrecision } = tradeFloat as any
     const currencyUnit = isUSD ? PriceTag.Dollar : PriceTag.Yuan
     const baseFaitPrice = getValuePrecisionThousand((isUSD ? coinAPriceDollar : coinAPriceYuan), undefined, undefined, undefined, true, {
