@@ -53,7 +53,7 @@ const should15MinutesUpdateDataGroup = async (): Promise<{
     forex: number | undefined,
 }> => {
     if (LoopringAPI.exchangeAPI && LoopringAPI.walletAPI) {
-        const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal:  Currency.usd})).fiatPrices
+        const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'USD'})).fiatPrices
         const faitPricesY = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'CNY'})).fiatPrices
         // const tokenPrices = (await LoopringAPI.walletAPI.getLatestTokenPrices()).tokenPrices;
         // const tokenPrices = Reflect.ownKeys(result).reduce((prev, address) => {
@@ -68,6 +68,7 @@ const should15MinutesUpdateDataGroup = async (): Promise<{
             faitPricesY,
             gasPrice,
             forex,
+            // allowTrade,
         }
     }
     return {
@@ -76,6 +77,7 @@ const should15MinutesUpdateDataGroup = async (): Promise<{
         // tokenPrices:undefined,
         gasPrice: undefined,
         forex: undefined,
+        // allowTrade,
     }
 }
 
@@ -97,6 +99,7 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
             const baseURL = ChainId.MAINNET === chainId ? `https://${process.env.REACT_APP_API_URL}` : `https:/${process.env.REACT_APP_API_URL_UAT}`
             const socketURL = ChainId.MAINNET === chainId ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws` : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
             const etherscanBaseUrl = ChainId.MAINNET === chainId ? `https://etherscan.io/` : `https://goerli.etherscan.io/`
+            const allowTrade  = await LoopringAPI.exchangeAPI.getAccountServices({});
 
             window.loopringSocket = new LoopringSocket(socketURL);
 
@@ -121,6 +124,7 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
 
             })(__timer__);
             return {
+                allowTrade,
                 chainId,
                 etherscanBaseUrl,
                 env,
