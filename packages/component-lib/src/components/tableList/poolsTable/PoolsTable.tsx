@@ -21,6 +21,7 @@ import { useHistory } from 'react-router-dom';
 import { FormatterProps } from 'react-data-grid';
 // import store from '@loopring-web/webapp/src/stores';
 import { useSettings } from '../../../stores';
+import { Currency } from 'loopring-sdk';
 
 
 // export enum TradeTypes {
@@ -137,7 +138,7 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
                     </Typography>
                 </Typography>
                 {/*<Typography variant={'body2'} component={'span'} color={'textSecondary'}>*/}
-                {/*    {t('labelLiquidity') + ' ' + currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(amountDollar)*/}
+                {/*    {t('labelLiquidity') + ' ' + currency === Currency.usd ? PriceTag.Dollar + getThousandFormattedNumbers(amountDollar)*/}
                 {/*        : PriceTag.Yuan + getThousandFormattedNumbers(amountYuan)}*/}
                 {/*</Typography>*/}
             </Typography>
@@ -178,14 +179,14 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
             // const priceAYuan = priceADollar * (forex || 6.5)
             // const priceBDollar = faitPrices[coinB]?.price || 0
             // const priceBYuan = priceBDollar * (forex || 6.5)
-            const liquidityLpToken = currency === 'USD' ? amountDollar : amountYuan
+            const liquidityLpToken = currency === Currency.usd ? amountDollar : amountYuan
             return(
                 <>  
                     <Box className={'textAlignRight'}>
                         <Button {...bindHover(popoverState)}>
                             <Typography
                                 component={'span'} style={{ cursor: 'pointer' }}> {
-                                    typeof liquidityLpToken === 'undefined' ? EmptyValueTag : (currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(liquidityLpToken, undefined, undefined, undefined, true, { isFait: true })}
+                                    typeof liquidityLpToken === 'undefined' ? EmptyValueTag : (currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(liquidityLpToken, undefined, undefined, undefined, true, { isFait: true })}
                             </Typography>
                         </Button>
                     </Box>
@@ -287,12 +288,12 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: 
         formatter: ({row}) => {
             //priceDollar, priceYuan, ,priceDollar: EmptyValueTag, priceYuan: EmptyValueTag
             // typeof priceDollar === 'undefined' ? EmptyValueTag :
-            //     currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(Number(priceDollar)) : PriceTag.Yuan + getThousandFormattedNumbers(Number(priceYuan))}
+            //     currency === Currency.usd ? PriceTag.Dollar + getThousandFormattedNumbers(Number(priceDollar)) : PriceTag.Yuan + getThousandFormattedNumbers(Number(priceYuan))}
             const {volume} = row.tradeFloat && row.tradeFloat.volume ? row.tradeFloat : {volume: EmptyValueTag};
             const totalAmountDollar = (Number(volume) || 0) * (tokenPrices[row.coinAInfo.simpleName] || 0)
             const totalAmountYuan = (Number(volume) || 0) * (tokenPrices[row.coinAInfo.simpleName] || 0) * (forex || 6.5)
-            const renderValue = currency === 'USD' ? totalAmountDollar : totalAmountYuan
-            const renderUnit = currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan
+            const renderValue = currency === Currency.usd ? totalAmountDollar : totalAmountYuan
+            const renderUnit = currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan
             return <Box className={'textAlignRight'}>
                 <Typography
                     component={'span'}> {volume && Number.isFinite(volume)
@@ -363,7 +364,7 @@ export const PoolsTable = withTranslation('tables')(
 
         const defaultArgs: TableProps<any, any> = {
             rawData,
-            columnMode: columnMode({t, i18n, tReady}/* , Currency.dollar */, getPopoverState, coinJson, tokenPrices, currency, forex),
+            columnMode: columnMode({t, i18n, tReady}/* , Currency.usd */, getPopoverState, coinJson, tokenPrices, currency, forex),
             generateRows: (rawData: any) => rawData,
             generateColumns: ({columnsRaw}) => columnsRaw as Column<Row<any>, unknown>[],
         }

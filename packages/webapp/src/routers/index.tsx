@@ -12,6 +12,7 @@ import { LiquidityPage } from 'pages/LiquidityPage'
 import { MiningPage } from 'pages/MiningPage'
 import { OrderbookPage } from 'pages/ProTradePage';
 import { useTicker } from '../stores/ticker';
+import { useSystem } from '../stores/system';
 
 
 
@@ -45,13 +46,20 @@ const RouterView = () => {
     // }, [location?.pathname])
     const proFlag = (process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === 'true')
     const {tickerMap} = useTicker();
+    const {allowTrade} = useSystem();
 
     return <>
 
         <Switch>
             {/*<Route exact component={LandPage} path='/landing-page'/>*/}
-            <Route exact path='/landing-page'><ContentWrap><SwapPage /></ContentWrap></Route>
-            <Route exact path='/'><ContentWrap><SwapPage /></ContentWrap></Route>
+            <Route exact path='/landing-page'>
+                <ContentWrap>
+                    {allowTrade?.order.enable? <SwapPage/>:<Layer2Page />}
+                </ContentWrap>
+            </Route>
+            <Route exact path='/'><ContentWrap>
+                {allowTrade?.order.enable? <SwapPage/>:<Layer2Page />}
+            </ContentWrap></Route>
             <Route path='/trading/lite'><ContentWrap><SwapPage /></ContentWrap></Route>
             <Route path='/trading/lite(/:symbol)'><ContentWrap><SwapPage /></ContentWrap></Route>
 

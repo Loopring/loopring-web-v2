@@ -2,9 +2,9 @@ import styled from '@emotion/styled'
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
-import { Currency, FloatTag } from '@loopring-web/common-resources'
+import { FloatTag } from '@loopring-web/common-resources'
 import { TradeFilterTable } from './TradeFilterTable';
-
+import { Currency } from 'loopring-sdk';
 
 const Style = styled.div`
   background: var(--color-global-bg);
@@ -21,7 +21,7 @@ const rawData: any = [{
     priceYuan: 1231231,
     priceDollar: 12312312,
     change24: '+24%',
-    showTag: Currency.dollar,
+    showTag: Currency.usd,
     floatTag: FloatTag.decrease
 },
     {
@@ -32,7 +32,7 @@ const rawData: any = [{
         priceYuan: 1231231,
         priceDollar: 12312312,
         change24: '+24%',
-        showTag: Currency.dollar,
+        showTag: Currency.usd,
         floatTag: FloatTag.decrease
     },
     {
@@ -43,7 +43,7 @@ const rawData: any = [{
         priceYuan: 1231231,
         priceDollar: 12312312,
         change24: '+24%',
-        showTag: Currency.dollar,
+        showTag: Currency.usd,
         floatTag: FloatTag.decrease
     },
     {
@@ -54,7 +54,7 @@ const rawData: any = [{
         priceYuan: 1231231,
         priceDollar: 12312312,
         change24: '+24%',
-        showTag: Currency.dollar,
+        showTag: Currency.usd,
         floatTag: FloatTag.increase
     },
     {
@@ -65,7 +65,7 @@ const rawData: any = [{
         priceYuan: 1231231,
         priceDollar: 12312312,
         change24: '+24%',
-        showTag: Currency.dollar,
+        showTag: Currency.usd,
         floatTag: FloatTag.increase
     },
     {
@@ -76,7 +76,7 @@ const rawData: any = [{
         priceYuan: 1231231,
         priceDollar: 12312312,
         change24: '+24%',
-        showTag: Currency.dollar,
+        showTag: Currency.usd,
         floatTag: FloatTag.increase
     }
 ]
@@ -92,7 +92,7 @@ const Template: Story<any> = withTranslation()((args: any) => {
         </>
     )
 }) as Story<any>
-
+//@ts-ignore
 export const Trade = Template.bind({})
 
 Trade.args = {

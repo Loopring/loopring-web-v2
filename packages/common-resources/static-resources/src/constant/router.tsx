@@ -72,6 +72,8 @@ export enum NavListIndex {
     liquidity,
     layer2
 }
+export const orderDisableList = [ 'Liquidity', 'Markets','Trading' ,'Mining' ]
+export const ammDisableList = [ 'Liquidity' ]
 
 export let headerMenuData: Array<HeaderMenuItemInterface> = [
     {
