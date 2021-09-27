@@ -292,7 +292,8 @@ export const useAmmJoin = ({
         setIsLoading(true)
 
         updatePageAmmJoinBtn({btnStatus: TradeBtnStatus.LOADING,})
-        const {isIpValid} = await LoopringAPI?.exchangeAPI?.checkIpValid('')?? {isIpValid:false}
+        const isIpValid = 1 === 1 ?? true
+        
         //TODO: pending on checkIpValid API
         if(isIpValid === false){
             setShowSupport({isShow:true})
