@@ -235,7 +235,7 @@ export const QuotePage = withTranslation('common')((rest: WithTranslation) => {
         const {coinA, coinB} = row.pair
         const tradePair = `${coinA}-${coinB}`
         history && history.push({
-            pathname: `/trading/lite/${tradePair}`
+            pathname: `/trade/lite/${tradePair}`
         })
     }, [history])
 
@@ -267,13 +267,13 @@ export const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     //     return
     //   }
     //   history && history.push({
-    //     pathname: `/trading/lite/${market}`
+    //     pathname: `/trade/lite/${market}`
     //   })
     // }, [history])
     const handleRecommendBoxClick = React.useCallback((recommendation: any) => {
         if (recommendation && recommendation.market) {
             history && history.push({
-                pathname: `/trading/lite/${recommendation.market}`
+                pathname: `/trade/lite/${recommendation.market}`
             })
         }
     }, [history])
