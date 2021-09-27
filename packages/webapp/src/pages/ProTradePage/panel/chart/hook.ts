@@ -14,7 +14,7 @@ export function useKlineChart(market: string | undefined) {
 
     const genCandlestickData = React.useCallback(async ({
                                                             market,
-                                                            timeInterval = TradingInterval.min1,
+                                                            timeInterval = TradingInterval.d1,
                                                         }: {
         market: string | undefined;
         timeInterval?: TradingInterval;
@@ -24,8 +24,6 @@ export function useKlineChart(market: string | undefined) {
 
             // @ts-ignore
             const [_, coinBase, coinQuote] = market.match(/(\w+)-(\w+)/i)
-
-            myLog('coinBase:', coinBase)
 
             const decimals = tokenMap[ coinBase ] ? tokenMap[ coinBase ].decimals : -1
 

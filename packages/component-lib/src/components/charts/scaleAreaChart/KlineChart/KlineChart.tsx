@@ -2,6 +2,7 @@ import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 import React from "react";
 import {
+    Annotate,
     bollingerBand,
     BollingerBandTooltip,
     BollingerSeries,
@@ -33,6 +34,7 @@ import {
     SingleValueTooltip,
     RSISeries,
     RSITooltip,
+    Label,
 } from "react-financial-charts";
 import { macd, } from "@react-financial-charts/indicators";
 
@@ -85,7 +87,9 @@ export function fibonacci(n: number) {
 }
 
 export type StockChartExtraProps = {
-    themeMode: 'light' | 'dark'
+    themeMode: 'light' | 'dark';
+    upColor: 'green' | 'red';
+    colorBase: any;
 }
 
 class StockChart extends React.Component<StockChartProps & IndicatorProps & StockChartExtraProps> {
@@ -108,8 +112,8 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
     };
 
     public render() {
-        const { data: initialData, dateTimeFormat, height, ratio, width, mainIndicators, subIndicator, themeMode } = this.props;
-        const isDark = themeMode === 'dark'
+        const { data: initialData, dateTimeFormat, height, ratio, width, mainIndicators, subIndicator, themeMode, upColor, colorBase } = this.props;
+        // const isDark = themeMode === 'dark'
         // simple moving average
 
         let mainIndicatorLst: any[] = []
@@ -275,14 +279,19 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                 zoomAnchor={lastVisibleItemBasedZoomAnchor}
             >
 
-                <Chart id={chartId++} height={chartHeight} yExtents={this.candleChartExtents} padding={{ top: 10, bottom: 20 }}>
-                    <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} showTicks={false}
-                        showTickLabel={false} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
-                    <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'}
-                        tickFormat={this.pricesDisplayFormat} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
-                    <CandlestickSeries fill={this.candleStickColor} />
+                <Chart id={chartId++} height={chartHeight} yExtents={this.candleChartExtents} padding={{ top: 30, bottom: 30 }}>
+                    <XAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} showTicks={false}
+                        // showTickLabel={false} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                        showTickLabel={false} tickLabelFill={colorBase.providerBtn}
+                        // strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                        strokeStyle={colorBase.textDisable} />
+                    {/* <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} */}
+                    <YAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn}
+                        // tickFormat={this.pricesDisplayFormat} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
+                        tickFormat={this.pricesDisplayFormat} tickLabelFill={colorBase.providerBtn}
+                        // strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                        strokeStyle={colorBase.textDisable} />
+                    <CandlestickSeries fill={this.candleStickColor} wickStroke={this.candleStickColor} />
 
                     {
                         mainIndicatorLst && mainIndicatorLst.map((item: any) => {
@@ -321,6 +330,15 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                                 options={bollToolTipOption}
                                 textFill={'#fff'}
                             /></>}
+                    <Label
+                        text={'Loopring'}
+                        fontFamily={'Roboto'}
+                        // fontSize: number;
+                        fontWeight={'400'}
+                        fillStyle={colorBase.textThird}
+                        x={(width - this.margin.left - this.margin.right) / 2}
+                        y={(height - this.margin.top - this.margin.bottom) * 2 / 5}
+                    />
                 </Chart>
 
                 {
@@ -328,12 +346,12 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                         switch (item.type) {
                             case SubIndicator.MACD:
                                 return <Chart id={chartId++} height={subHeight} origin={(_w, _h) => [0, _h - (subIndicatorLst.length - ind) * subHeight]} yExtents={item.func.accessor()}>
-                                    <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="bottom"
-                                        orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
-                                    <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right"
-                                        ticks={2} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                                    <XAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} axisAt="bottom"
+                                        orient="bottom" tickLabelFill={colorBase.textDisable}
+                                        strokeStyle={colorBase.textDisable} />
+                                    <YAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} axisAt="right" orient="right"
+                                        ticks={2} tickFormat={format(".2s")} tickLabelFill={colorBase.textDisable}
+                                        strokeStyle={colorBase.textDisable} />
                                     <MouseCoordinateX displayFormat={timeDisplayFormat} />
                                     <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
                                     <MACDSeries yAccessor={item.func.accessor()} {...this.macdAppearance} />
@@ -346,12 +364,12 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                                 </Chart>
                             case SubIndicator.VOLUME:
                                 return <Chart id={chartId++} height={subHeight} origin={(_: number, h: number) => [0, h - (subIndicatorLst.length - ind) * subHeight]} yExtents={this.barChartExtents}>
-                                    <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="bottom"
-                                        orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
-                                    <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right"
-                                        ticks={2} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                                    <XAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} axisAt="bottom"
+                                        orient="bottom" tickLabelFill={colorBase.textDisable}
+                                        strokeStyle={colorBase.textDisable} />
+                                    <YAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} axisAt="right" orient="right"
+                                        ticks={2} tickFormat={format(".2s")} tickLabelFill={colorBase.textDisable}
+                                        strokeStyle={colorBase.textDisable} />
                                     <MouseCoordinateX displayFormat={timeDisplayFormat} />
                                     <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
                                     <BarSeries fillStyle={this.volumeColor} yAccessor={this.volumeSeries} />
@@ -363,12 +381,12 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                                 </Chart>
                             case SubIndicator.RSI:
                                 return <Chart id={chartId++} height={subHeight} origin={(_: number, h: number) => [0, h - (subIndicatorLst.length - ind) * subHeight]} yExtents={[0, 100]}>
-                                    <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="bottom"
-                                        orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
-                                    <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right"
-                                        ticks={2} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                                    <XAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} axisAt="bottom"
+                                        orient="bottom" tickLabelFill={colorBase.textDisable}
+                                        strokeStyle={colorBase.textDisable} />
+                                    <YAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} axisAt="right" orient="right"
+                                        ticks={2} tickFormat={format(".2s")} tickLabelFill={colorBase.textDisable}
+                                        strokeStyle={colorBase.textDisable} />
                                     <MouseCoordinateX displayFormat={timeDisplayFormat} />
                                     <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
                                     <RSISeries yAccessor={item.func.accessor()} />
@@ -376,12 +394,12 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                                 </Chart>
                             case SubIndicator.SAR:
                                 return <Chart id={chartId++} height={subHeight} origin={(_: number, h: number) => [0, h - (subIndicatorLst.length - ind) * subHeight]} yExtents={item.func.accessor()}>
-                                    <XAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="bottom"
-                                        orient="bottom" tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
-                                    <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} axisAt="right" orient="right"
-                                        ticks={2} tickFormat={format(".2s")} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                                        strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                                    <XAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} axisAt="bottom"
+                                        orient="bottom" tickLabelFill={colorBase.textDisable}
+                                        strokeStyle={colorBase.textDisable} />
+                                    <YAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} axisAt="right" orient="right"
+                                        ticks={2} tickFormat={format(".2s")} tickLabelFill={colorBase.textDisable}
+                                        strokeStyle={colorBase.textDisable} />
                                     <MouseCoordinateX displayFormat={timeDisplayFormat} />
                                     <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
                                     <SARSeries yAccessor={item.func.accessor()} />
@@ -397,7 +415,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                         return <></>
                     })
                 }
-                <CrossHairCursor strokeStyle={isDark ? '#FFFFFF' : '#15162B'} />
+                <CrossHairCursor strokeStyle={colorBase.textPrimary} />
             </ChartCanvas>
         );
     }
@@ -415,10 +433,22 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
         return data.close;
     };
 
-    private readonly candleStickColor = (data: IOHLCData) => data.close > data.open ? CandleStickFill.up : CandleStickFill.down
+    private readonly candleStickColor = (data: IOHLCData) => data.close > data.open
+        ? this.props.upColor ==='green'
+            ? CandleStickFill.up
+            : CandleStickFill.down
+        : this.props.upColor ==='green'
+            ? CandleStickFill.down
+            : CandleStickFill.up
 
     private readonly volumeColor = (data: IOHLCData) => {
-        return data.close > data.open ? "rgba(38, 166, 154, 0.3)" : "rgba(239, 83, 80, 0.3)";
+        return data.close > data.open 
+            ? this.props.upColor ==='green'
+                ? "rgba(38, 166, 154, 0.3)"
+                : "rgba(239, 83, 80, 0.3)"
+            : this.props.upColor ==='green'
+                ? "rgba(239, 83, 80, 0.3)"
+                : "rgba(38, 166, 154, 0.3)"
     };
 
     private readonly volumeSeries = (data: IOHLCData) => {
@@ -426,7 +456,13 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
     };
 
     private readonly openCloseColor = (data: IOHLCData) => {
-        return data.close > data.open ? "#26a69a" : "#ef5350";
+        return data.close > data.open
+            ? this.props.upColor ==='green'
+                ? CandleStickFill.up
+                : CandleStickFill.down
+            : this.props.upColor ==='green'
+                ? CandleStickFill.down
+                : CandleStickFill.up
     };
 }
 
