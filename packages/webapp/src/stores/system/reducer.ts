@@ -15,7 +15,13 @@ const initialState: SystemStatus = {
     __timer__: -1,
     status: 'PENDING',
     errorMessage: null,
-
+    allowTrade: {
+        register: {enable:true},
+        order: {enable:true},
+        joinAmm: {enable:true},
+        dAppTrade: {enable:true},
+        raw_data: {enable:true},
+    },
     exchangeInfo: undefined,
 
     topics: [],
@@ -68,12 +74,16 @@ const systemSlice: Slice<SystemStatus> = createSlice({
                 faitPrices,
                 gasPrice,
                 forex,
+                allowTrade,
                 exchangeInfo,
                 __timer__,
                 etherscanBaseUrl
             } = action.payload;
             if (env) {
                 state.env = env
+            }
+            if (allowTrade) {
+                state.allowTrade = allowTrade
             }
             if (socketURL) {
                 state.socketURL = socketURL;
