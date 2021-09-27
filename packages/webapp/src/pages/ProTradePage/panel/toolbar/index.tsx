@@ -116,7 +116,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
             <Grid item>
                 <PriceTitleStyled>{t('labelProToolbar24hChange')}</PriceTitleStyled>
                 <PriceValueStyled color={isRise ? 'var(--color-success)' : 'var(--color-error)'}>
-                    {`${isRise ? '+' : '-'} ${getValuePrecisionThousand(change, undefined, undefined, 2, true)}%`}
+                    {`${isRise ? '+' : ''} ${getValuePrecisionThousand(change, undefined, undefined, 2, true)}%`}
                 </PriceValueStyled>
             </Grid>
             <Grid item>
