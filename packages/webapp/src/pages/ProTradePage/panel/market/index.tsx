@@ -240,7 +240,6 @@ export const MarketView = withTranslation('common')(({
                 rawData={pageTradePro.tradeArray ? pageTradePro.tradeArray.slice(0, tableLength) : []}
                 // basePrecision={basePrecision}
                 precision={marketMap[ market ].precisionForPrice}
-                depthLevel={pageTradePro.depthLevel}
                 currentheight={tableLength * 20 + 20}/>
             : <Box flex={1} height={'100%'} display={'flex'} alignItems={'center'}
                    justifyContent={'center'}><LoadingIcon/></Box>}
@@ -311,6 +310,7 @@ export const MarketView = withTranslation('common')(({
                                     type={DepthType.ask}
                             // quotePrecision={tokenMap[quoteSymbol].precision}
                                     depths={depthViewData.asks}
+                                    depthLevel={pageTradePro.depthLevel}
                             // showTitle={true}
                         />
                         <Box display={'flex'} flexDirection={'column'}
@@ -321,6 +321,7 @@ export const MarketView = withTranslation('common')(({
                         </Box>
                         <DepthBlock onClick={priceClick} marketInfo={marketMap[ market ]}
                                     type={DepthType.bid} depths={depthViewData.bids}
+                                    depthLevel={pageTradePro.depthLevel}
                             // showTitle={false}
                         />
                     </Box>
