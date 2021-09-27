@@ -181,7 +181,7 @@ export const MarketView = withTranslation('common')(({
                 up = 'down'
                 priceColor = (upColor == UpColor.green ? 'var(--color-error)' : 'var(--color-success)');
             }
-            value = currency === 'USD' ? '\u2248 ' + PriceTag.Dollar
+            value = currency === Currency.usd ? '\u2248 ' + PriceTag.Dollar
                 + getValuePrecisionThousand(close * (quotePrice??0), undefined, undefined, undefined, true, {isFait: true})
                 : '\u2248 ' + PriceTag.Yuan
                 + getValuePrecisionThousand(close * (quotePrice??0) / forex, undefined, undefined, undefined, true, {isFait: true})
