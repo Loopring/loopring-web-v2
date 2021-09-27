@@ -183,6 +183,7 @@ export const ChartView = withTranslation('common')(({market, breakpoint, t, i18n
                 <ScaleAreaChart
                     type={ChartType.Kline}
                     data={candlestickViewData}
+                    interval={timeInterval}
                     indicator={
                         {
                             mainIndicators: chartFearturesList.filter(o => chosenIndicators.includes(o.id)).map(item => ({
