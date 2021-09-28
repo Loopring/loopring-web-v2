@@ -2,7 +2,7 @@ import { Box, BoxProps, Typography } from '@mui/material'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next'
 import moment from 'moment'
 import { Column, Table } from '../../basic-lib'
-import { EmptyValueTag, MarketRowHeight, myLog, TradeTypes } from '@loopring-web/common-resources';
+import { EmptyValueTag, MarketRowHeight, myLog, TradeTypes, getValuePrecisionThousand } from '@loopring-web/common-resources';
 import { RawDataTradeItem } from '../tradeTable';
 import { useSettings } from '../../../stores';
 import styled from '@emotion/styled';
@@ -78,7 +78,7 @@ const TableStyled = styled(Box)`
 
 const getColumnModeAssets = (t: TFunction, _currency: Currency,
                              // quotePrecision,
-                             baseSymbol:string, quoteSymbol:string ,
+                             baseSymbol:string, quoteSymbol:string, precision: number
                        ): Column<Required<RawDataTradeItem>, unknown>[] => [
     {
         key: 'price',
@@ -89,10 +89,10 @@ const getColumnModeAssets = (t: TFunction, _currency: Currency,
             const {value} = row[ 'price' ];
 
             // const precision = row['precision'] || 6
-            // const renderValue = value ? (getValuePrecisionThousand(value, precision, precision, undefined, true)) : EmptyValueTag
+            const renderValue = value ? (getValuePrecisionThousand(value, undefined, undefined, precision, true)) : EmptyValueTag
 
             return <Box className="rdg-cell-value">
-                <Typography textAlign={'left'} color={color} variant={'body2'} lineHeight={`${MarketRowHeight}px`} > {value}  </Typography>
+                <Typography textAlign={'left'} color={color} variant={'body2'} lineHeight={`${MarketRowHeight}px`} > {renderValue}  </Typography>
             </Box>
 
 
@@ -147,7 +147,7 @@ export const TradePro = withTranslation('tables')(({
         rawData: rawData,
         columnMode: getColumnModeAssets(t, currency,
             // quotePrecision,
-            baseSymbol, quoteSymbol ).filter(o => !o.hidden),
+            baseSymbol, quoteSymbol, precision ).filter(o => !o.hidden),
         generateRows: (rawData: any) => rawData,
         generateColumns: ({columnsRaw}: any) => columnsRaw as Column<RawDataTradeItem, unknown>[],
         style: {
