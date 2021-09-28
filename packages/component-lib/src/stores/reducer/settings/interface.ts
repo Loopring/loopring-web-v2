@@ -1,4 +1,5 @@
 import { LanguageKeys, ThemeKeys, UpColor } from '@loopring-web/common-resources';
+import { Currency } from 'loopring-sdk';
 
 export enum PlatFormType {
     mobile = 'mobile',
@@ -12,7 +13,7 @@ export interface SettingsState {
     themeMode: ThemeKeys
     language: LanguageKeys
     platform: PlatFormKeys
-    currency: 'USD' | 'CYN'
+    currency: Currency
     upColor: keyof typeof UpColor
     slippage: number | 'N'
     coinJson: any

@@ -1,9 +1,8 @@
 import { useRouteMatch } from 'react-router'
 
 import { Box, Typography } from '@mui/material'
-import { Button, SubMenu, SubMenuList as BasicSubMenuList, } from '@loopring-web/component-lib'
+import { Button, SubMenu, SubMenuList as BasicSubMenuList } from '@loopring-web/component-lib'
 import { useTranslation, withTranslation } from 'react-i18next'
-import styled from '@emotion/styled'
 import { AccountStatus, fnType, i18n, LoadingIcon, SagaStatus, subMenuLayer2 } from '@loopring-web/common-resources'
 
 import AssetPanel from './AssetPanel'
@@ -14,26 +13,12 @@ import React from 'react';
 import { useAccount } from '../../stores/account';
 import { accountStaticCallBack, btnClickMap, btnLabel } from '../../layouts/connectStatusCallback';
 import _ from 'lodash'
+import { SecurityPanel } from './SecurityPanel';
+import { VipPanel } from './VipPanel';
+
 
 export const subMenu = subMenuLayer2
 
-const BoxStyle = styled(Box)`
-  ${({theme}) => `
-    background: var(--color-box);
-    width: 100%;
-    min-width:auto;
-    ${theme.border.defaultFrame({c_key: 'blur'})};
-    & > div{
-      background-color:initial;
-      border:0;
-      width:auto;
-      min-width: var(--swap-box-width);
-      max-width: 520px;
-    }
-    `
-}
-
-` as typeof Box
 const BtnConnect = withTranslation(['common'], {withRef: true})(({t}: any) => {
     const {status: accountStatus, account} = useAccount();
     // const {setShowAccount} = useOpenModals();
@@ -47,7 +32,7 @@ const BtnConnect = withTranslation(['common'], {withRef: true})(({t}: any) => {
         ],
         [ fnType.ERROR_NETWORK ]: [
             function () {
-                return `depositTitleAndActive`
+                return `labelWrongNetwork`
             }
         ],
     });
@@ -79,7 +64,7 @@ export const Layer2Page = () => {
         // statusUnset: accountStatusUnset
     } = useAccount();
 
-    const {t, ...rest} = useTranslation();
+    const {t} = useTranslation(['common','layout']);
     const selected = match?.params.item ?? 'assets';
     // const {depositProps} = useDeposit()
 
@@ -157,7 +142,9 @@ export const Layer2Page = () => {
                         {selected === 'trades' && <TradePanel/>}
                         {selected === 'ammRecords' && <AmmPanel/>} */}
                         {selected === 'order' && <OrderPanel/>}
-                        {/*{selected === 'setting' && <SettingPanel/>}*/}
+                        {selected === 'security' && <SecurityPanel/>}
+                        {selected === 'vip' && <VipPanel/>}
+
                     </Box>
                 </>
             default:
@@ -167,48 +154,6 @@ export const Layer2Page = () => {
 
     return <>
         {viewTemplate}
-        {/*    {*/}
-
-        {/*   */}
-        {/*    readyState === AccountStatus.UN_CONNECT*/}
-        {/*        ? <Redirect to="/"/>*/}
-        {/*        :*/}
-        {/*        readyState === AccountStatus.NO_ACCOUNT*/}
-        {/*        || readyState === AccountStatus.DEPOSITING ?*/}
-        {/*            <BoxStyle display={'flex'} flexWrap={'wrap'} alignItems={'center'} justifyContent={'center'}*/}
-        {/*                      alignContent={'flex-start'}>*/}
-        {/*                <DepositPanel  {...{*/}
-        {/*                    ...rest, ...depositProps,*/}
-        {/*                    title: t('depositTitleAndActive'),*/}
-        {/*                    description: 'depositAndActiveDescription'*/}
-        {/*                }} > </DepositPanel>*/}
-        {/*            </BoxStyle> : <>*/}
-        {/*                <Box width={'200px'} display={'flex'} justifyContent={'stretch'} marginRight={3} marginBottom={2}>*/}
-        {/*                    <SubMenu>*/}
-        {/*                        <SubMenuList selected={selected} subMenu={subMenu as any}/>*/}
-        {/*                    </SubMenu>*/}
-        {/*                </Box>*/}
-        {/*                <Box minHeight={420} display={'flex'} alignItems={'stretch'} flexDirection={'column'} marginTop={0}*/}
-        {/*                     flex={1}>*/}
-        {/*                    {readyState === AccountStatus.LOCKED ?*/}
-        {/*                        <>*/}
-        {/*                            {*/}
-        {/*                                selected === 'setting' ? <SettingPanel/> :*/}
-        {/*                                    <Box flex={1} display={'flex'} justifyContent={'center'} alignItems={'center'}*/}
-        {/*                                         marginTop={-10}>*/}
-        {/*                                        <BtnConnect/>*/}
-        {/*                                    </Box>*/}
-
-        {/*                            }*/}
-        {/*                        </> :*/}
-        {/*                       */}
-
-        {/*                    }*/}
-
-
-        {/*                </Box>*/}
-        {/*            </>*/}
-        {/*}*/}
     </>
 
 

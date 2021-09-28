@@ -15,10 +15,12 @@ export type Transaction = {
 }
 
 export interface ModalState {
+    isShowSupport: ModalStatePlayLoad,
     isShowTransfer: ModalStatePlayLoad & Transaction,
     isShowWithdraw: ModalStatePlayLoad & Transaction,
     isShowDeposit: ModalStatePlayLoad & Transaction,
     isShowResetAccount: ModalStatePlayLoad,
+    isShowExportAccount: ModalStatePlayLoad,
     isShowSwap: ModalStatePlayLoad,
     isShowAmm: ModalStatePlayLoad,
     isShowConnect: ModalStatePlayLoad & { step: number },

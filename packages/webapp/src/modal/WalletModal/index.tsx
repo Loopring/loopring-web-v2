@@ -24,8 +24,7 @@ import {
 import { useAccount } from 'stores/account';
 import { connectProvides, walletServices } from '@loopring-web/web3-provider';
 import { useSystem } from 'stores/system';
-import { myLog } from "@loopring-web/common-resources";
-import { copyToClipBoard } from '../../utils/obj_tools';
+import { myLog, copyToClipBoard, } from "@loopring-web/common-resources";
 import { TOAST_TIME } from '../../defs/common_defs';
 import { useSelector } from 'react-redux';
 import { RootState } from 'stores';
@@ -171,7 +170,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
     const walletList = React.useMemo(() => {
         return Object.values({
             [ WalletConnectStep.Provider ]: {
-                view: <ProviderMenu termUrl={'./'} gatewayList={gatewayList}
+                view: <ProviderMenu termUrl={'https://exchange.loopring.pro/legal/terms'} gatewayList={gatewayList}
                                     providerName={account.connectName} {...{t, ...rest}} />,
                 onBack: providerBack
             },
@@ -203,7 +202,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
     return <>
         <ModalWalletConnect open={isShowConnect.isShow} onClose={_onClose} panelList={walletList}
                             onBack={walletList[ isShowConnect.step ].onBack} step={isShowConnect.step}/>
-        <Toast alertText={t('Address Copied to Clipboard!')} open={copyToastOpen}
+        <Toast alertText={t('labelCopyAddClip')} open={copyToastOpen}
                autoHideDuration={TOAST_TIME} onClose={() => {
             setCopyToastOpen(false)
         }} severity={"success"}/>

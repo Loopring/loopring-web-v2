@@ -4,7 +4,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import moment from 'moment'
 import { EmptyValueTag } from '@loopring-web/common-resources';
 import { TxType } from 'loopring-sdk';
-import { Link } from 'react-router-dom';
+import { getValuePrecisionThousand } from '@loopring-web/common-resources';
 
 export enum TxnDetailStatus {
     processed = 'PROCESSED',
@@ -67,20 +67,25 @@ const GridItemStyled = styled(Grid)`
     margin-bottom: ${({ theme }) => theme.unit * 3}px;
 `
 
+const EthHshStyled = styled(Typography)`
+    cursor: pointer;
+    text-decoration: underline;
+`
+
 const TypographyStyled = styled(Typography)`
     color: var(--color-text-secondary);
     width: ${({ theme }) => theme.unit * 20}px;
 `
 
 const InfoValueStyled = styled(Box)`
-    max-width: ${({ theme }) => theme.unit * 32}px;
+    // max-width: ${({ theme }) => theme.unit * 32}px;
     word-break: break-all;
     font-size: 1.4rem;
     color: ${(props: any) => props.hash ? 'var(--color-secondary)' : 'var(--color-text-primary)'}
 ` as any
-
-const StatusStyled = styled(Typography)`
-color: ${({ theme }) => (status === 'processed')
+    
+const StatusStyled = styled(Typography)<any>`
+color: ${({ theme, status }) => (status === 'processed')
         ? theme.colorBase.success
         : status === 'processing'
             ? theme.colorBase.warning
@@ -104,10 +109,16 @@ export const TxnDetailPanel = withTranslation('common', { withRef: true })((
         memo,
         etherscanBaseUrl,
     }: TxnDetailProps & WithTranslation) => {
-    // || txType === TxType.DEPOSIT && status === 'processing'
 
     const headerLabel = txType === TxType.DEPOSIT ? 'labelDTxnDetailHeader'
         : txType === TxType.OFFCHAIN_WITHDRAWAL ? 'labelWTxnDetailHeader' : 'labelTTxnDetailHeader'
+
+    const renderStatus = status.toUpperCase() === 'PROCESSED' 
+        ? t('labelTxnDetailProcessed')
+        : status.toUpperCase() === 'PROCESSING' || status.toUpperCase() === 'RECEIVED'
+            ? t('labelTxnDetailProcessing')
+            : t('labelTxnDetailFailed')
+
 
     return <ContentWrapperStyled>
         <HeaderStyled>
@@ -122,11 +133,16 @@ export const TxnDetailPanel = withTranslation('common', { withRef: true })((
             </GridItemStyled>
             {txHash && <GridItemStyled item>
                 <TypographyStyled>{t('labelTxnDetailHashLv1')}</TypographyStyled>
-                <InfoValueStyled><a target={'_blank'} href={`${etherscanBaseUrl}tx/${txHash}`}>{txHash}</a></InfoValueStyled>
+                <InfoValueStyled>
+                    <EthHshStyled color={'var(--color-secondary)'} onClick={() => window.open(`${etherscanBaseUrl}tx/${txHash}`)}>{txHash}</EthHshStyled>
+                    {/* <a target={'_blank'} href={`${etherscanBaseUrl}tx/${txHash}`}>
+                        {txHash}</a> */}
+                </InfoValueStyled>
             </GridItemStyled>}
             <GridItemStyled item>
                 <TypographyStyled>{t('labelTxnDetailStatus')}</TypographyStyled>
-                <StatusStyled>{status.toUpperCase()}</StatusStyled>
+                {/* <StatusStyled status={status}>{status.toUpperCase()}</StatusStyled> */}
+                <StatusStyled status={status}>{renderStatus}</StatusStyled>
             </GridItemStyled>
             <GridItemStyled item>
                 <TypographyStyled>{t('labelTxnDetailTime')}</TypographyStyled>

@@ -4,6 +4,7 @@ import { OrderHistoryTable } from '@loopring-web/component-lib'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useOrderList } from './hook'
 import { StylePaper } from '../../styled'
+import { myLog } from '@loopring-web/common-resources';
 
 const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
     const {t} = rest
@@ -34,6 +35,7 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
 
     React.useEffect(() => {
         if (pageSize) {
+            myLog(66666)
             getOrderList({
                 limit: pageSize,
                 status: tableValue === 0 ? 'processing' : 'processed,failed,cancelled,cancelling,expired'
@@ -60,7 +62,7 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
 
     return (
         <>
-            <StylePaper ref={container}>
+            <StylePaper ref={container} className={'MuiPaper-elevation2'}>
                 <Box padding={2} paddingBottom={0}>
                     <Tabs
                         value={tableValue}

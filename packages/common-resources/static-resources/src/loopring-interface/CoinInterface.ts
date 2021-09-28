@@ -1,4 +1,5 @@
 import { FloatTag, TradeStatus, TradeTypes } from '../constant';
+import * as sdk from 'loopring-sdk'
 
 export type CoinKey<R> = keyof R;
 export type PairKey<P> = keyof P;
@@ -30,8 +31,12 @@ export type CoinMap<R, I = CoinInfo<R>> = {
 
 export interface FeeInfo {
     belong: string,
-    fee: number | string | undefined,
-    __raw__?: any,
+    fee: number | string,
+    __raw__: {
+        fastWithDraw: string,
+        tokenId: number,
+        feeRaw: string,
+    },
 }
 
 export type PairMap<R extends { [ key: string ]: any }, P = { coinA: CoinInfo<R>, coinB: CoinInfo<R> }> = {
@@ -44,11 +49,32 @@ export type WalletMap<R, I = WalletCoin<R>> = {
 export type TradeCalcData<T> = {
     coinSell: keyof T, //name
     coinBuy: keyof T,
+    buyPrecision: number,
+    sellPrecision: number,
+    // tokenA: sdk.TokenInfo,
+    // tokenB: sdk.TokenInfo,
     StoB: string,
     BtoS: string,
+    // marketPrecision: number,
     coinInfoMap?: CoinMap<T, CoinInfo<T>>,
     sellCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
     buyCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
+    walletMap?: WalletMap<T, WalletCoin<T>>,
+    slippage: number | string
+    // slippageTolerance: Array<number | string>,
+    priceImpact: string,
+    priceImpactColor: string,
+    minimumReceived: string,
+    fee: string
+}
+export type TradeCalcProData<T> = {
+    coinBase: keyof T, //name
+    coinQuote: keyof T,
+    StoB: string,
+    BtoS: string,
+    coinInfoMap?: CoinMap<T, CoinInfo<T>>,
+    // sellCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
+    // buyCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
     walletMap?: WalletMap<T, WalletCoin<T>>,
     slippage: number | string
     // slippageTolerance: Array<number | string>,
@@ -117,7 +143,7 @@ export type AmmDetailBase<T> = {
     feeYuan?: number,
     isNew?: boolean,
     isActivity?: boolean,
-    APY?: number,
+    APR?: number,
 }
 
 export type AmmDetail<T> = AmmDetailBase<T> & {
@@ -131,6 +157,9 @@ export type AmmCardProps<T> =
     & { activity: AmmActivity<T>, tradeFloat: TradeFloat, handleClick: () => void };
 
 export type AmmActivity<I> = {
+    market: string,
+    status: sdk.AmmPoolActivityStatus,
+    ruleType: string,
     totalRewards: number,
     myRewards: number,
     rewardToken: CoinInfo<I>,
@@ -139,6 +168,9 @@ export type AmmActivity<I> = {
         to: Date,
     }
     isPass?: boolean,
+    rewardTokenDollar?: number,
+    rewardTokenYuan?: number,
+    maxSpread?: number,
 }
 export type Amount<T> = {
     sell: { belong: T, tradeValue: number },
@@ -221,6 +253,6 @@ export type TradeFloat = {
     changeYuan?: number,
     closeDollar?: number,
     closeYuan?: number,
-    // APY?:number
+    // APR?:number
     // tagNew?: boolean
 }

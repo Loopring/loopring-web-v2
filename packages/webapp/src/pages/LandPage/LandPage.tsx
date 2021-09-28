@@ -3,7 +3,6 @@ import React from 'react';
 import styled from '@emotion/styled/';
 import { DropDownIcon, ThemeType } from '@loopring-web/common-resources';
 import { withTranslation } from 'react-i18next';
-import { useSpring, animated,to } from "react-spring";
 import { css, useTheme } from '@emotion/react';
 
 
@@ -186,7 +185,7 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                             {t('labelH1Title')}
                         </Typography>
                         <Typography marginTop={10} width={260}>
-                            <Button href={'/trading/lite/LRC-ETH'} fullWidth={true} size={'large'} variant={'contained'}
+                            <Button href={'/trade/lite/LRC-ETH'} fullWidth={true} size={'large'} variant={'contained'}
                                     style={{
                                         height: 64,
                                         justifyContent: 'space-around',

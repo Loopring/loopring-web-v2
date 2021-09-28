@@ -1,4 +1,5 @@
 import { CoinInfo } from '@loopring-web/common-resources';
+import { Currency } from 'loopring-sdk';
 
 
 export enum AmmTradeType {
@@ -40,7 +41,7 @@ export type AmmRecordTableProps<T, R = AmmRecordRow<T>> = {
     currentheight?: number;
     rowHeight?: number;
     headerRowHeight?: number;
-    currency?: 'USD' | 'CYN';
+    currency?: Currency;
 }
 // rowHeight={RowConfig.rowHeight}
 // headerRowHeight={RowConfig.headerRowHeight}

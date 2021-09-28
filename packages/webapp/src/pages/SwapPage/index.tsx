@@ -6,9 +6,8 @@ import { AlertImpact, ConfirmImpact, SwapPanel, Toast } from '@loopring-web/comp
 
 import { TOAST_TIME } from 'defs/common_defs'
 import { FixedStyle } from 'pages/styled'
-import React from 'react';
 import { useSwap } from './hookSwap';
-
+import { getValuePrecisionThousand } from '@loopring-web/common-resources';
 
 export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) => {
 
@@ -34,7 +33,8 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
         swapFunc,
         isSwapLoading,
         pageTradeLite,
-    } = useSwap();
+        toPro
+    } = useSwap({path: '/trade/lite'});
 
     return <>
 
@@ -55,8 +55,9 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
             <FixedStyle>
                 <SwapPanel
                     //disabled={isSwapLoading}
-                    tokenBuyProps={{disabled: isSwapLoading}}
-                    tokenSellProps={{disabled: isSwapLoading}}
+                    toPro={toPro}
+                    tokenBuyProps={{disabled: isSwapLoading, decimalsLimit: tradeCalcData.buyPrecision}}
+                    tokenSellProps={{disabled: isSwapLoading, decimalsLimit: tradeCalcData.sellPrecision}}
                     onRefreshData={should15sRefresh}
                     refreshRef={refreshRef}
                     tradeData={tradeData as any}
@@ -69,8 +70,10 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
 
             </FixedStyle>
         </Box>
-        <AlertImpact handleClose={swapFunc} open={alertOpen} value={pageTradeLite?.priceImpactObj?.value as any}/>
-        <ConfirmImpact handleClose={swapFunc} open={confirmOpen} value={pageTradeLite?.priceImpactObj?.value as any}/>
+        <AlertImpact handleClose={swapFunc} open={alertOpen}
+                     value={getValuePrecisionThousand(pageTradeLite?.priceImpactObj?.value,2) + '%' as any}/>
+        <ConfirmImpact handleClose={swapFunc} open={confirmOpen}
+                       value={getValuePrecisionThousand(pageTradeLite?.priceImpactObj?.value,2) + '%' as any}/>
     </>
 });
 

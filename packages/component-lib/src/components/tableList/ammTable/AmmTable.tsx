@@ -12,6 +12,7 @@ import { useSettings } from '../../../stores';
 import { useDeepCompareEffect } from 'react-use';
 import { Row } from '../poolsTable/Interface';
 import { AmmSideTypes } from './interface'
+import { Currency } from 'loopring-sdk';
 
 // interface Row {
 //     side: TradeTypes;
@@ -87,6 +88,9 @@ const TableStyled = styled(Box)`
       justify-content: center;
       align-items: center;
     }
+    .textAlignRight {
+        text-align: right;
+    }
   }
 
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
@@ -111,15 +115,15 @@ const StyledSideCell: any = styled(Typography)`
 //     return data.toFixed(4)
 // }
 
-const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<RawDataAmmItem, unknown>[] => [
+const getColumnModeAssets = (t: TFunction, _currency:Currency): Column<RawDataAmmItem, unknown>[] => [
     {
         key: 'side',
         name: t('labelAmmSide'),
         formatter: ({row}) => {
             const tradeType = row[ 'side' ] === AmmSideTypes.Join ? t('labelAmmJoin') : t('labelAmmExit')
             const {from, to} = row[ 'amount' ]
-            const renderFromValue = getValuePrecisionThousand(from.value, 4, 2)
-            const renderToValue = getValuePrecisionThousand(to.value, 4, 2)
+            const renderFromValue = getValuePrecisionThousand(from.value, undefined, undefined, undefined, false, { isTrade: true })
+            const renderToValue = getValuePrecisionThousand(to.value, undefined, undefined, undefined, false, { isTrade: true })
             return (
                 <>
                     <StyledSideCell value={row[ 'side' ]}>
@@ -147,43 +151,46 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CYN'): Column<Raw
     {
         key: 'lpTokenAmount',
         name: t('labelAmmLpTokenAmount'),
+        headerCellClass: 'textAlignRight',
         formatter: ({row}) => {
             const amount = row[ 'lpTokenAmount' ]
             const renderValue = row[ 'side' ] === AmmSideTypes.Join
-                ? `+${getValuePrecisionThousand(amount)}`
-                : `-${getValuePrecisionThousand(amount)}`
+                ? `+${getValuePrecisionThousand(amount, undefined, undefined, undefined, false, {isTrade: true})}`
+                : `-${getValuePrecisionThousand(amount, undefined, undefined, undefined, false, {isTrade: true})}`
             return (
-                <div className="rdg-cell-value">
+                <Box className="rdg-cell-value textAlignRight">
                     {renderValue}
-                    {/*{currency === Currency.dollar ?*/}
+                    {/*{currency === Currency.usd ?*/}
                     {/*    PriceTag.Dollar + getThousandFormattedNumbers(priceDollar)*/}
                     {/*    : PriceTag.Yuan + getThousandFormattedNumbers(priceYuan)}*/}
-                </div>
+                </Box>
             )
         }
     },
     {
         key: 'fee',
         name: t('labelAmmFee'),
+        headerCellClass: 'textAlignRight',
         formatter: ({row}) => {
             const {key, value} = row[ 'fee' ]
             return (
-                <div className="rdg-cell-value">
-                    {`${getValuePrecisionThousand(value, 4, 2)} ${key}`}
-                </div>
+                <Box className="rdg-cell-value textAlignRight">
+                    {`${getValuePrecisionThousand(value, undefined, undefined, undefined, false, {isTrade: true, floor: false})} ${key}`}
+                </Box>
             )
         }
     },
     {
         key: 'time',
         name: t('labelAmmRecordTime'),
+        headerCellClass: 'textAlignRight',
         // minWidth: 400,
         formatter: ({row}) => {
             const time = moment(new Date(row[ 'time' ]), "YYYYMMDDHHMM").fromNow()
             return (
-                <div className="rdg-cell-value">
+                <Box className="rdg-cell-value textAlignRight">
                     {time}
-                </div>
+                </Box>
             )
         }
     },

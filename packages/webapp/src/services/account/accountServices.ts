@@ -7,9 +7,10 @@ import { myLog } from "@loopring-web/common-resources";
 import store from 'stores';
 import { updateAccountStatus } from 'stores/account';
 import * as sdk from 'loopring-sdk'
-import { sleep } from 'loopring-sdk'
+import _ from 'lodash'
 import { unlockAccount } from './unlockAccount';
 import { resetLayer12Data, resetLayer2Data } from './resetAccount';
+// import { sleep } from 'loopring-sdk';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
@@ -82,6 +83,8 @@ export const accountServices = {
             accountId: accInfo.accountId,
             nonce: accInfo.nonce,
             level: accInfo.tags,
+            keyNonce: accInfo.keyNonce,
+            keySeed: accInfo.keySeed,
         } : {
             readyState: AccountStatus.LOCKED,
             apiKey: '',
@@ -91,30 +94,45 @@ export const accountServices = {
         }
         store.dispatch(updateAccountStatus(updateInfo))
         resetLayer2Data()
-        await sleep(100)
-        subject.next({
-            status: Commands.LockAccount,
-            data: undefined,
-        })
+        // await sleep(50)
+
+
+        _.delay(()=>{
+            subject.next({
+                status: Commands.LockAccount,
+                data: undefined,
+            })
+
+        },10)
+
     },
     sendActiveAccountDeposit: () => {
     },
-    sendAccountSigned: (accountId?: number, apiKey?: string, eddsaKey?: any) => {
-        const updateInfo = accountId && apiKey && eddsaKey ? {
+    sendAccountSigned: ({accountId, apiKey, eddsaKey, isReset, nonce, }: {
+        accountId?: number, apiKey?: string, eddsaKey?: any, isReset?: boolean, nonce?: number,
+    }) => {
+        const updateInfo = accountId && apiKey && eddsaKey && nonce !== undefined ? {
             accountId,
             apiKey,
             eddsaKey,
+            nonce,
             publicKey: {
                 x: sdk.toHex(sdk.toBig(eddsaKey.keyPair.publicKeyX)),
                 y: sdk.toHex(sdk.toBig(eddsaKey.keyPair.publicKeyY)),
             },
             readyState: AccountStatus.ACTIVATED
         } : {readyState: AccountStatus.ACTIVATED}
-        store.dispatch(updateAccountStatus(updateInfo));
-        subject.next({
-            status: Commands.AccountUnlocked,
-            data: undefined
-        })
+
+        store.dispatch(updateAccountStatus(updateInfo))
+
+        if (!isReset) {
+            subject.next({
+                status: Commands.AccountUnlocked,
+                data: undefined
+            })
+        } else {
+            myLog('sendAccountSigned: isReset!!!!!')
+        }
     },
     sendNoAccount: () => {
         store.dispatch(updateAccountStatus({readyState: AccountStatus.NO_ACCOUNT,}))

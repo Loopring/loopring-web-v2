@@ -5,6 +5,8 @@ import { ChartType } from '../../index';
 import { withTranslation } from 'react-i18next'
 import styled from '@emotion/styled'
 import { testKlineData } from './data'
+import { MainIndicator, SubIndicator } from '.';
+import { TradingInterval } from 'loopring-sdk';
 
 const Styled = styled.div`
   flex: 1;
@@ -13,35 +15,40 @@ const Styled = styled.div`
   height: 100%;
 `
 
-// @ts-ignore
-
-
 const formatDateData = testKlineData.map(d => ({
     ...d,
     date: new Date(d.date)
 }))
 
 export const Kline = withTranslation()(() => {
+
     return (
         <>
             <Styled>
                 <ScaleAreaChart
                     type={ChartType.Kline}
                     data={formatDateData}
-                    // yAxisDomainPercent={0.2}
-                    // handleMove={(props) => {
-                    // 	console.log(props)
-                    // }}
-                    // riseColor="red"
+                    interval={TradingInterval.d1}
+                    indicator={
+                        {
+                            mainIndicators: [{indicator: MainIndicator.MA, params: {period: 5}}, 
+                                {indicator: MainIndicator.MA, params: {period: 10}}, 
+                                {indicator: MainIndicator.BOLL}
+                            ],
+                            subIndicator: [{ indicator: SubIndicator.VOLUME }, 
+                                { indicator: SubIndicator.MACD }, 
+                                { indicator: SubIndicator.SAR, params: { accelerationFactor: 0.02, maxAccelerationFactor: 0.2, } }, 
+                                { indicator: SubIndicator.RSI }]
+                        }
+                    }
                 />
-                {/* <DayilyStockChart data={[]} /> */}
             </Styled>
         </>
     )
 }) as Story
 
 export default {
-    title: 'Charts',
+    title: 'Charts/KineDay',
     component: Kline,
     argTypes: {},
 } as Meta

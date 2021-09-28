@@ -68,4 +68,16 @@ export enum AccountStep {
     UnlockAccount_Success,
     UnlockAccount_Failed,
 
+    ResetAccount_Approve_WaitForAuth,
+    ResetAccount_First_Method_Denied,
+    ResetAccount_User_Denied,
+    ResetAccount_Success,
+    ResetAccount_Submit,
+    ResetAccount_Failed,
+
+    ExportAccount_Approve_WaitForAuth,
+    ExportAccount_User_Denied,
+    ExportAccount_Success,
+    ExportAccount_Failed,
+
 }

@@ -50,8 +50,8 @@ export const useTransfer = <R extends IBData<T>, T>(): {
 
     const { transferValue, updateTransferData, resetTransferData, } = useModalData()
 
-    const [walletMap, setWalletMap] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
-    const { chargeFeeList } = useChargeFees(transferValue.belong, sdk.OffchainFeeReqType.TRANSFER, tokenMap)
+    const [walletMap, setWalletMap] = React.useState(makeWalletLayer2(true).walletMap ?? {} as WalletMap<R>);
+    const { chargeFeeList } = useChargeFees({tokenSymbol: transferValue.belong, requestType: sdk.OffchainFeeReqType.TRANSFER, tokenMap})
 
     const [tranferFeeInfo, setTransferFeeInfo] = React.useState<FeeInfo>()
     const [isExceedMax, setIsExceedMax] = React.useState(false)
@@ -92,7 +92,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     }, [tokenMap, chargeFeeList, address, addrStatus, tranferFeeInfo?.belong, transferValue?.belong, transferValue?.tradeValue, isExceedMax, ])
 
     const walletLayer2Callback = React.useCallback(() => {
-        const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
+        const walletMap = makeWalletLayer2(true).walletMap ?? {} as WalletMap<R>
         setWalletMap(walletMap)
     }, [])
 
@@ -105,6 +105,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                 belong: symbol as any,
                 balance: walletMap[symbol]?.count,
                 tradeValue: undefined,
+                address: "*",
             })
         } else {
             if (!transferValue.belong && walletMap) {
@@ -117,6 +118,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                             belong: keyVal as any,
                             tradeValue: 0,
                             balance: walletInfo.count,
+                            address: "*",
                         })
                         break
                     }
@@ -135,6 +137,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
     React.useEffect(() => {
 
         if (isShow && accountStatus === SagaStatus.UNSET && account.readyState === AccountStatus.ACTIVATED) {
+            myLog('useEffect transferValue.address:', transferValue.address)
             setAddress(transferValue.address ? transferValue.address : '')
         }
 
@@ -308,11 +311,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
         })
     }, [updateTransferData, transferValue])
 
-    const handleFeeChange = useCallback((value: {
-        belong: string;
-        fee: number | string | undefined;
-        __raw__?: any
-    }): void => {
+    const handleFeeChange = useCallback((value: FeeInfo): void => {
         setTransferFeeInfo(value)
     }, [setTransferFeeInfo])
 

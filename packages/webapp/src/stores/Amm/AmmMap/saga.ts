@@ -46,9 +46,9 @@ export const setAmmState = ({ammPoolState, keyPair}: { ammPoolState: AmmPoolStat
                 // priceDollar: 1.23123,
                 // floatTag: FloatTag.increase,
                 // reward: 12312,
-                // APY: (parseInt(ammPoolState.apyBips) * 1.0 / 100)
+                // APR: (parseInt(ammPoolState.apyBips) * 1.0 / 100)
             },
-            APY: (parseInt(ammPoolState.apyBips) * 1.0 / 100)
+            APR: (parseInt(ammPoolState.apyBips) * 1.0 / 100)
         }
 
 

@@ -10,11 +10,10 @@ import { myLog } from "@loopring-web/common-resources";
 import { networkUpdate } from 'services/account/networkUpdate';
 import { checkAccount } from 'services/account/checkAccount';
 import { REFRESH_RATE } from 'defs/common_defs';
-import { useWalletLayer2 } from 'stores/walletLayer2';
 import { resetLayer12Data } from './services/account/resetAccount';
 
 import store from 'stores'
-import { accountServices } from 'services/account/accountServices';
+import { useModalData } from 'stores/router';
 
 export function useConnect({state}: { state: keyof typeof SagaStatus }) {
     const {
@@ -25,7 +24,9 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
         setShouldShow,
         status: accountStatus
     } = useAccount();
-    const {updateWalletLayer2, resetLayer2} = useWalletLayer2()
+    // const {updateWalletLayer2, resetLayer2} = useWalletLayer2()
+
+    const { resetWithdrawData, resetTransferData, resetDepositData, } = useModalData()
 
     const {updateSystem} = useSystem();
     const {setShowConnect} = useOpenModals();
@@ -44,10 +45,16 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
         myLog('After connect >>,network part start: step1 networkUpdate')
         const networkFlag = networkUpdate({chainId})
         myLog('After connect >>,network part done: step2 check account')
+
         if (networkFlag) {
             resetLayer12Data();
             checkAccount(accAddress);
         }
+
+        resetWithdrawData()
+        resetTransferData()
+        resetDepositData()
+
         setShouldShow(false)
         setShowConnect({isShow: !!shouldShow ?? false, step: WalletConnectStep.SuccessConnect});
         await sleep(REFRESH_RATE)
@@ -60,6 +67,10 @@ export function useConnect({state}: { state: keyof typeof SagaStatus }) {
         resetAccount({shouldUpdateProvider: true});
         setStateAccount(SagaStatus.PENDING)
         resetLayer12Data()
+
+        resetWithdrawData()
+        resetTransferData()
+        resetDepositData()
         // await sleep(REFRESH_RATE)
 
     }, [account, resetAccount, setStateAccount]);

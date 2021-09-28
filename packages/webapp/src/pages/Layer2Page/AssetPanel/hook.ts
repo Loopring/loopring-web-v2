@@ -51,6 +51,7 @@ export const useGetAssets = () => {
     const {sendSocketTopic, socketEnd} = useSocket();
     const {forex} = useSystem()
     const {tokenPrices} = store.getState().tokenPrices
+    const { ammMap } = store.getState().amm.ammMap
 
     const {marketArray, tokenMap} = store.getState().tokenMap
 
@@ -66,7 +67,7 @@ export const useGetAssets = () => {
     }, [account.readyState]);
 
     const walletLayer2Callback = React.useCallback(() => {
-        const walletMap = makeWalletLayer2()
+        const walletMap = makeWalletLayer2(false)
         const assetsKeyList = walletMap && walletMap.walletMap ? Object.keys(walletMap.walletMap) : []
         const assetsDetailList = walletMap && walletMap.walletMap ? Object.values(walletMap.walletMap) : []
         let map: { [ key: string ]: any } = {}
@@ -112,7 +113,6 @@ export const useGetAssets = () => {
                         // const price = getLpTokenPrice(tokenInfo.token)
                         const price = tokenPrices[tokenInfo.token]
                         if (totalAmount && price) {
-                            // tokenValueDollar = Number(getValuePrecision((formattedBalance || 0) * price, 2)) || 0 as any;
                             tokenValueDollar = totalAmount.times(price).toNumber()
                         }
                     }
@@ -164,7 +164,25 @@ export const useGetAssets = () => {
                         ? deltaAmount
                         : deltaName
             })
-            setAssetsRawData(data)
+            const dataWithPrecision = data.map(o => {
+                const token = o.token.value
+                let precision = 0
+
+                if (token.split('-').length === 3) {
+                    const rawList = token.split('-')
+                    rawList.splice(0, 1, 'AMM')
+                    const ammToken =  rawList.join('-')
+                    precision = ammMap ? ammMap[ammToken]?.precisions?.amount : 0
+                } else {
+                    precision = tokenMap[o.token.value].precision
+                }
+                return {
+                    ...o,
+                    precision: precision,
+                }
+            })
+            // setAssetsRawData(data)
+            setAssetsRawData(dataWithPrecision)
         }
     }, [assetsMap, tokenMap, tokenPrices])
 

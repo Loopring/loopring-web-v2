@@ -6,12 +6,12 @@ import {
     MarketBlock,
     MarketBlockProps,
     QuoteTable,
-    QuoteTableRawDataItem
+    QuoteTableRawDataItem,
 } from '@loopring-web/component-lib'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import * as _ from 'lodash'
-// import { FloatTag } from '@loopring-web/common-resources'
+ import { RowConfig } from '@loopring-web/common-resources'
 import { Box, Container, Divider, Grid, Tab, Tabs } from '@mui/material'
 import { useQuote } from './hook'
 import { LoopringAPI } from 'api_wrapper'
@@ -50,13 +50,8 @@ export enum TableFilterParams {
     favourite = 'favourite',
     ranking = 'ranking'
 }
-const RowConfig = {
-    rowHeight:44,
-    headerRowHeight:44,
 
-}
-
-const QuotePage = withTranslation('common')((rest: WithTranslation) => {
+export const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const [candlestickList, setCandlestickList] = React.useState<any[]>([])
     const [ammPoolBalances, setAmmPoolBalances] = React.useState<any[]>([])
     const [tableTabValue, setTableTabValue] = React.useState('all')
@@ -71,7 +66,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     // const [isFixed,setIsFixed] = React.useState(false);
     const resetTableData = React.useCallback((tableData)=>{
         setFilteredData(tableData)
-        setTableHeight(RowConfig.headerRowHeight + tableData.length * RowConfig.rowHeight )
+        setTableHeight(RowConfig.rowHeaderHeight + tableData.length * RowConfig.rowHeight )
     },[setFilteredData,setTableHeight])
 
     const getSwapRankingList = React.useCallback(async () => {
@@ -240,7 +235,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
         const {coinA, coinB} = row.pair
         const tradePair = `${coinA}-${coinB}`
         history && history.push({
-            pathname: `/trading/lite/${tradePair}`
+            pathname: `/trade/lite/${tradePair}`
         })
     }, [history])
 
@@ -272,13 +267,13 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     //     return
     //   }
     //   history && history.push({
-    //     pathname: `/trading/lite/${market}`
+    //     pathname: `/trade/lite/${market}`
     //   })
     // }, [history])
     const handleRecommendBoxClick = React.useCallback((recommendation: any) => {
         if (recommendation && recommendation.market) {
             history && history.push({
-                pathname: `/trading/lite/${recommendation.market}`
+                pathname: `/trade/lite/${recommendation.market}`
             })
         }
     }, [history])
@@ -337,18 +332,6 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                     </Grid>
                 )
             )}
-            {/* // <Grid item xs={12} sm={6} lg={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[0])}>
-            //     <MarketBlock {...{...formattedRecommendations[0], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[0]?.tradeFloat), chartData: formattedRecommendations[0] ? formattedRecommendations[0].chartData : [], ...rest}}></MarketBlock>
-            // </Grid>
-            // <Grid item xs={12} sm={6} lg={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[1])}>
-            //     <MarketBlock {...{...formattedRecommendations[1], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[1]?.tradeFloat), chartData: formattedRecommendations[1] ? formattedRecommendations[1].chartData : [], ...rest}}></MarketBlock>
-            // </Grid>
-            // <Grid item xs={12} sm={6} lg={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[2])}>
-            //     <MarketBlock {...{...formattedRecommendations[2], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[2]?.tradeFloat), chartData: formattedRecommendations[2] ? formattedRecommendations[2].chartData : [], ...rest}}></MarketBlock>
-            // </Grid>
-            // <Grid item xs={12} sm={6} lg={3} onClick={() => handleRecommendBoxClick(formattedRecommendations[3])}>
-            //     <MarketBlock {...{...formattedRecommendations[3], tradeFloat: getTradeFloatVolumeToCount(formattedRecommendations[3]?.tradeFloat), chartData: formattedRecommendations[3] ? formattedRecommendations[3].chartData : [], ...rest}}></MarketBlock>
-            // </Grid> */}
 
         </RowStyled>
         <TableWrapStyled ref={tableRef as any}
@@ -357,19 +340,20 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                          className={'MuiPaper-elevation2'}>
             <Box display={'flex'} flexDirection={'column'}  >
                 <Container className={'toolbar'}  >
-                   <Box  paddingLeft={1} paddingRight={2} display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
-                       <Tabs
-                           value={tableTabValue}
-                           onChange={handleTabChange}
-                           aria-label="disabled tabs example"
-                       >
-                           <Tab label={t('labelQuotePageFavourite')} value="favourite"/>
-                           <Tab label={t('labelAll')} value="all"/>
-                           {/* <Tab label={t('labelQuotePageTradeRanking')} value="tradeRanking"/> */}
-                       </Tabs>
-                       <InputSearch value={searchValue} onChange={handleSearchChange}/>
-                   </Box>
-                   <Divider style={{marginTop:'-1px'}}/>
+                    <Box  paddingLeft={1} paddingRight={2} display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
+                        <Tabs
+                            value={tableTabValue}
+                            onChange={handleTabChange}
+                            aria-label="disabled tabs example"
+                        >
+                            <Tab label={t('labelQuotePageFavourite')} value="favourite"/>
+                            <Tab label={t('labelAll')} value="all"/>
+                            {/* <Tab label={t('labelQuotePageTradeRanking')} value="tradeRanking"/> */}
+                        </Tabs>
+                        <InputSearch value={searchValue} onChange={handleSearchChange}
+                        />
+                    </Box>
+                    <Divider style={{marginTop:'-1px'}}/>
                 </Container>
 
                 <QuoteTable /* onVisibleRowsChange={onVisibleRowsChange} */
@@ -380,7 +364,7 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                     removeFavoriteMarket={removeMarket}
                     currentheight={tableHeight}
                     rowHeight={RowConfig.rowHeight}
-                    headerRowHeight={RowConfig.headerRowHeight}
+                    headerRowHeight={RowConfig.rowHeaderHeight}
                     {...{showLoading: tickList && !tickList.length, ...rest}} />
             </Box>
         </TableWrapStyled>
@@ -388,4 +372,4 @@ const QuotePage = withTranslation('common')((rest: WithTranslation) => {
 
 })
 
-export default QuotePage
+// export default QuotePage

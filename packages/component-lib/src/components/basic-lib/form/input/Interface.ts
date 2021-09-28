@@ -14,17 +14,23 @@ export type InputButtonProps<T, R, I> = {
     emptyText: string,
     coinMap: CoinMap<R, I extends CoinInfo<R> ? CoinInfo<R> : CoinInfo<R>>,
     placeholderText?: string,
+    decimalsLimit?:number
     isAllowBalanceClick?: boolean,
     maxAllow?: boolean,
     disabled?: boolean,
     logoColor?: string,
     wait?: number,
+    size?:InputSize,
     isHideError?:boolean,
-    handleCountChange?: (ibData: T, ref: React.ForwardedRef<any>) => void,
-    handleOnClick: (event: React.MouseEvent, ref: React.ForwardedRef<any>) => void,
+    handleCountChange?: (ibData: T,name:string, ref: React.ForwardedRef<any>) => void,
+    handleOnClick: (event: React.MouseEvent,name:string ,ref: React.ForwardedRef<any>) => void,
     handleError?: (ibData: T & { maxAllow?: boolean }, ref: React.ForwardedRef<any>) => { error: boolean, message?: string | React.ElementType<HTMLElement> },
     focusOnInput?: boolean,
     name?: string
+}
+export enum  InputSize {
+    middle='middle',
+    small='small'
 }
 export type InputCoinProps<T, R, I> = {
     inputData?: T | undefined,
@@ -33,16 +39,20 @@ export type InputCoinProps<T, R, I> = {
     coinMap: CoinMap<R, I extends CoinInfo<R> ? CoinInfo<R> : CoinInfo<R>>,
     placeholderText?: string,
     maxAllow?: boolean,
+    decimalsLimit?:number
     disabled?: boolean,
     logoColor?: string,
     wait?: number,
     isHideError?:boolean,
-    handleCountChange?: (ibData: T, ref: React.ForwardedRef<any>) => void,
+    handleCountChange?: (ibData: T,name:string, ref: React.ForwardedRef<any>) => void,
     handleError?: (ibData: T, ref: React.ForwardedRef<any>) => { error: boolean, message?: string | React.ElementType<HTMLElement> },
     focusOnInput?: boolean,
+    size?:InputSize,
+    isShowCoinIcon?: boolean,
     order?: 'left' | 'right',
     name?: string,
-    isShowCoinInfo?: boolean
+    isShowCoinInfo?: boolean,
+    coinLabelStyle?: React.CSSProperties,
 }
 export type InputSelectProps<T, I = CoinKey<T>> = {
     // coinMap: CoinMap<R,I extends CoinInfo?CoinInfo:CoinInfo>,

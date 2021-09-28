@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { PriceTag } from '@loopring-web/common-resources'
-import { Box, Typography } from '@mui/material'
+import { Box, Grid, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { useHistory } from 'react-router-dom'
 import {
@@ -18,6 +18,8 @@ import { useModals } from 'hooks/useractions/useModals'
 import store from 'stores'
 import { StylePaper } from 'pages/styled'
 import { useGetAssets } from './hook'
+import { Currency } from 'loopring-sdk';
+import { useSystem } from '../../../stores/system';
 
 const StyledChartWrapper = styled(Box)`
     height: 225px;
@@ -31,6 +33,13 @@ const StyledChartWrapper = styled(Box)`
         padding: ${({theme}) => theme.unit * 2.5}px ${({theme}) => theme.unit * 3}px;
     }
 `
+const StyleTitlePaper = styled(Box)`
+  width: 100%;
+  //height: 100%;
+  background: var(--color-box);
+  border-radius: ${({theme}) => theme.unit}px;
+`
+
 
 const ChartWrapper = styled(Box)`
     background-image: url('./static/images/${({ dark }: any) => dark === 'true' ? 'noDataDark' : 'noDataLight'}.png');
@@ -68,7 +77,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const container = useRef(null);
     // const [pageSize, setPageSize] = useState(10);
     // const [chartPeriod, setChartPeriod] = useState('week')
-
+    const {allowTrade} = useSystem();
     const {marketArray, assetsRawData} = useGetAssets()
     const {currency, themeMode, setHideL2Assets, setHideLpToken, setHideSmallBalances} = useSettings()
     const {walletLayer2} = store.getState().walletLayer2;
@@ -139,10 +148,10 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
     const AssetTitleProps: AssetTitleProps = {
         assetInfo: {
-            totalAsset: assetsRawData.map(o => currency === 'USD' ? o.tokenValueDollar : o.tokenValueYuan).reduce((prev, next) => {
+            totalAsset: assetsRawData.map(o => currency === Currency.usd ? o.tokenValueDollar : o.tokenValueYuan).reduce((prev, next) => {
                 return prev + next
             }, 0),
-            priceTag: currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan,
+            priceTag: currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan,
         },
         hideL2Assets,
         onShowDeposit,
@@ -153,13 +162,13 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
     return (
         <>
-            <Box>
+            <StyleTitlePaper paddingX={3} paddingY={5/2} className={'MuiPaper-elevation2'} >
                 <AssetTitle  {...{
                     t,
                     ...rest,
                     ...AssetTitleProps,
                 }} />
-            </Box>
+            </StyleTitlePaper>
 
             {/*<div className="title">{t('labelAssetsTitle')}</div>*/}
 
@@ -185,6 +194,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                         //     pageSize: pageSize
                         // },
                         showFilter: true,
+                        allowTrade,
                         onShowDeposit: onShowDeposit,
                         onShowTransfer: onShowTransfer,
                         onShowWithdraw: onShowWithdraw,

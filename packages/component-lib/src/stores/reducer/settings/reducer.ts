@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { PlatFormType, SettingsState } from "./interface";
-import { Currency, i18n, LanguageKeys, ThemeKeys, ThemeType, UpColor } from '@loopring-web/common-resources';
+import { i18n, LanguageKeys, ThemeKeys, ThemeType, UpColor } from '@loopring-web/common-resources';
 import moment from 'moment';
 import * as imgConfig  from '@loopring-web/common-resources/assets/images/coin/loopring.json'
 import { Slice } from '@reduxjs/toolkit/src/createSlice';
-// import { localStore } from '@loopring-web/common-resources/src/storage';
+import { Currency } from 'loopring-sdk';
 
 const initialState: SettingsState = {
     themeMode: ThemeType.dark, //localStore.getItem('ThemeType')?localStore.getItem('ThemeType') as ThemeKeys :ThemeType.dark,
     language: i18n.language as LanguageKeys, //localStore.getItem('LanguageKey')?localStore.getItem('LanguageKey') as LanguageKeys: i18n.language as LanguageKeys,
     platform: PlatFormType.desktop,
-    currency: Currency.dollar,//localStore.getItem('Currency')?localStore.getItem('Currency') as keyof typeof Currency: Currency.dollar,
+    currency: Currency.usd,//localStore.getItem('Currency')?localStore.getItem('Currency') as keyof typeof Currency: Currency.usd,
     upColor: UpColor.green,//localStore.getItem('UpColor')?localStore.getItem('UpColor') as keyof typeof UpColor: UpColor.green,
     coinJson: imgConfig.frames,
     slippage: 'N',
@@ -79,7 +79,7 @@ export const settingsSlice:Slice<SettingsState> = createSlice({
         setPlatform(state, action: PayloadAction<keyof typeof PlatFormType>) {
             state.platform = action.payload
         },
-        setCurrency(state, action: PayloadAction<'USD' | 'CYN'>) {
+        setCurrency(state, action: PayloadAction<Currency>) {
             // localStore.setItem('Currency',action.payload)
             state.currency = action.payload
         },

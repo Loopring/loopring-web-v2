@@ -7,6 +7,7 @@ export * from './Transfer'
 export * from './Withdraw'
 export * from './UpdateAccount'
 export * from './UnlockAccount'
+export * from './ExportAccount'
 
 export * from './QRAddressPanel'
 export * from './NoAccount'

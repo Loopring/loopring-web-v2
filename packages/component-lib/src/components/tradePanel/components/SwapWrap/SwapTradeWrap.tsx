@@ -7,7 +7,7 @@ import {
     IBData,
     ReverseIcon,
     SlippageTolerance,
-    TradeCalcData
+    TradeCalcData,
 } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
@@ -58,11 +58,11 @@ export const SwapTradeWrap = <T extends IBData<I>,
         return disabled || tradeCalcData === undefined || tradeCalcData.coinInfoMap === undefined;
     }, [disabled, tradeCalcData]);
 
-    const handleOnClick = React.useCallback((_event: React.MouseEvent, ref: any) => {
+    const handleOnClick = React.useCallback((_event: React.MouseEvent,_name:string, ref: any) => {
         const focus: 'buy' | 'sell' = ref.current === buyRef.current ? 'buy' : 'sell';
         onChangeEvent(1, {tradeData: swapData.tradeData, type: focus, to: 'menu'});
     }, [swapData, onChangeEvent])
-    const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
+    const handleCountChange = React.useCallback((ibData: IBData<I>,_name:string,_ref: any) => {
         const focus: 'buy' | 'sell' = _ref?.current === buyRef.current ? 'buy' : 'sell';
         if (swapData.tradeData[ focus ].tradeValue !== ibData.tradeValue) {
             onChangeEvent(0, {tradeData: {...swapData.tradeData, [ focus ]: ibData}, type: focus, to: 'button'});
@@ -116,7 +116,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
     }
     const propsBuy = {
         label: t('tokenEnterReceiveToken'),
-        subLabel: t('tokenHave'),
+        // subLabel: t('tokenHave'),
         emptyText: t('tokenSelectToken'),
         placeholderText: '0.00',
         maxAllow: false,
@@ -142,23 +142,21 @@ export const SwapTradeWrap = <T extends IBData<I>,
 
         }
         if (swapBtnI18nKey) {
-            const key = swapBtnI18nKey.split(',');
+            const key = swapBtnI18nKey.split('|');
             return t(key[ 0 ], key && key[ 1 ] ? {arg: key[ 1 ]} : undefined)
         } else {
             return t(`swapBtn`)
         }
 
     }, [error, t, swapBtnI18nKey])
-
-    // console.log('tradeData:', tradeData)
-    // console.log('tradeCalcData:', tradeCalcData)
-    // console.log('_isStoB:', _isStoB)
-
     const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB
+
+    // const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${stob} ${tradeData.buy?.belong}`
+    //     : `1${tradeData.buy?.belong} \u2248 ${btos} ${tradeData.sell?.belong}`
     const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${tradeCalcData?.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
-        : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData .BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`;
+        : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData.BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`;
     const priceImpactColor =  tradeCalcData?.priceImpactColor ? tradeCalcData.priceImpactColor : 'textPrimary'
-    const priceImpact = tradeCalcData?.priceImpact ?  getValuePrecisionThousand(tradeCalcData.priceImpact) + ' %' : EmptyValueTag
+    const priceImpact = tradeCalcData?.priceImpact ?  getValuePrecisionThousand(tradeCalcData.priceImpact, undefined, undefined, 2, true) + ' %' : EmptyValueTag
 
     const fee = (tradeCalcData && tradeCalcData.fee) ? ((parseFloat(tradeCalcData.fee) / 100).toString() + '%') : EmptyValueTag
 
@@ -179,9 +177,9 @@ export const SwapTradeWrap = <T extends IBData<I>,
             {/*</Grid>*/}
             {/*<Grid item>*/}
             <Box alignSelf={"center"} marginY={1}>
-                <IconButtonStyled size={'medium'} onClick={covertOnClick} color="inherit"
+                <IconButtonStyled size={'large'} onClick={covertOnClick}
                                   aria-label={t('tokenExchange')}>
-                    <ExchangeIcon/>
+                    <ExchangeIcon fontSize={'large'} htmlColor={'var(--color-text-primary)'}/>
                 </IconButtonStyled>
             </Box>
             {/*</Grid>*/}

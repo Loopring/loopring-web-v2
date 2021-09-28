@@ -1,4 +1,4 @@
-import { CoinKey, IBData } from '@loopring-web/common-resources';
+import { CoinKey, IBData, TradeCalcProData } from '@loopring-web/common-resources';
 import {
     BasicACoinTradeHookProps,
     DefaultProps,
@@ -10,9 +10,18 @@ import {
     TransferInfoProps as _TransferInfoProps,
     WithdrawExtendProps,
     WithdrawInfoProps as _WithdrawInfoProps,
+    ExportAccountExtendProps,
 } from './components/Interface';
-import { SwapData, SwapTradeBaseEventProps, SwapTradeBaseProps, } from './components/SwapWrap/Interface';
+import { SwapData, SwapTradeBaseEventProps, SwapTradeBaseProps, } from './components';
 import { AmmPanelBaseProps } from './Amm';
+import {
+    TradeBaseType,
+    TradeLimitInfoProps,
+    TradeMarketInfoProps,
+    TradeProBaseEventProps,
+    TradeProType
+} from './tradePro/Interface';
+export {TradeProType,TradeBaseType}
 
 export type SwapTradeData<T> = {
     sell: T,
@@ -23,6 +32,30 @@ export type SwapTradeData<T> = {
     }
 }
 
+
+export type LimitTradeData<T> = {
+    price: T,
+    base: T,
+    quote: T,
+    type: TradeProType,
+    // slippage: number | string,
+    // __cache__?: {
+    //     [ key: string ]: any
+    // }
+}
+export type MarketTradeData<T> = {
+    // price: T,
+    base: T,
+    quote: T,
+    type: TradeProType,
+    slippage: number | string,
+    __cache__?: {
+        [ key: string ]: any
+    }
+}
+
+
+
 export type { SwapData }
 
 export type ModalProps = {
@@ -31,13 +64,14 @@ export type ModalProps = {
     btnDisable?: boolean
 }
 
-export type ResetProps<T, I> = BasicACoinTradeHookProps<T, I> & Required<ResetExtendProps<T>>
+export type ResetProps<T> = ResetExtendProps<T>
+export type ExportAccountProps = ExportAccountExtendProps
 export type DepositProps<T, I> = BasicACoinTradeHookProps<T, I> & DepositExtendProps<T, I>;
 export type WithdrawProps<T, I> = BasicACoinTradeHookProps<T, I> & WithdrawExtendProps<T, I, CoinKey<I>>;
 export type TransferProps<T, I> = BasicACoinTradeHookProps<T, I> & TransferExtendProps<T, I, CoinKey<I>>;
 
 
-export  type  ResetInfoProps<T, I> = DefaultProps<T, I> & _ResetInfoProps;
+export  type  ResetInfoProps<T, I> = DefaultProps<T, I> & _ResetInfoProps<T>;
 export  type  DepositInfoProps<T, I> = DefaultProps<T, I> & _DepositInfoProps<I>;
 export  type  WithdrawInfoProps<T, I> = DefaultProps<T, I> & _WithdrawInfoProps<CoinKey<I>>;
 export  type  TransferInfoProps<T, I> = DefaultProps<T, I> & _TransferInfoProps<CoinKey<I>>;
@@ -65,15 +99,34 @@ export  type  AmmInfoProps<T, TW, I, ACD, C = IBData<I>> = AmmPanelBaseProps<T, 
  *      @param data: SwapData<T>
  *  ) => SwapData<T>
  */
-
-
 export type SwapProps<T, I, TCD> = {
     refreshRef: React.Ref<any>;
     onRefreshData?: () => void;
+    toPro?: () => void;     
     tradeData: SwapTradeData<T> | undefined,
     handleSwapPanelEvent: (data: SwapData<SwapTradeData<T>>, switchType: 'buyTomenu' | 'sellTomenu' | 'exchange' | 'buyTobutton' | 'sellTobutton') => Promise<void>,
     onChangeEvent?: (index: 0 | 1, data: SwapData<SwapTradeData<T>>) => SwapData<SwapTradeData<T>>,
 } & SwapInfoProps<T, I, TCD> & SwapTradeBaseEventProps<T, I> & SwapTradeBaseProps<T, I, TCD>
+
+
+//L = LimitTradeData<T> ,
+//T = IBData<I>,
+//I = CoinKey<any>, TCD
+export type TradeLimitProps<L extends LimitTradeData<T> ,
+    T extends  IBData<I>,
+    TCD extends TradeCalcProData<I>, I =  CoinKey<any>> = {
+    tradeData: L | undefined,
+    handleSubmitEvent: (data:L) => Promise<void>,
+    onChangeEvent: (data:L,formType:TradeBaseType) => L,
+} & TradeLimitInfoProps<T,TCD,I>  & TradeProBaseEventProps<L, T, I>
+
+export type TradeMarketProps<M extends MarketTradeData<T> ,
+    T extends  IBData<I>,
+    TCD extends TradeCalcProData<I>, I =  CoinKey<any>> = {
+    tradeData: M | undefined,
+    handleSubmitEvent: (data:M) => Promise<void>,
+    onChangeEvent: (data:M,formType:TradeBaseType) => M,
+} & TradeMarketInfoProps<T,TCD,I>  & TradeProBaseEventProps<M, T, I>
 
 
 export type SwitchData<T> = {

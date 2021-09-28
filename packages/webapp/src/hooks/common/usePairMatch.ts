@@ -1,10 +1,12 @@
 import { useRouteMatch } from 'react-router-dom'
 import { useTokenMap } from 'stores/token'
 import { getExistedMarket } from 'loopring-sdk'
-import { PairFormat } from '../../stores/router';
+import { MarketType,
+    // myLog
+} from '@loopring-web/common-resources';
 
 export function usePairMatch<C extends { [ key: string ]: any }>(path: string): {
-    realMarket: PairFormat | '',
+    realMarket: MarketType | undefined,
     realPair: any
 } {
     const {coinMap, tokenMap, marketArray,} = useTokenMap()
@@ -16,16 +18,16 @@ export function usePairMatch<C extends { [ key: string ]: any }>(path: string): 
     // React.useEffect(()=>{
 
     if (!coinMap || !tokenMap || !marketArray) {
-        return {realMarket: '', realPair: undefined}
+        return {realMarket: undefined, realPair: undefined}
     }
 
-    let market = match?.params?.market
-
+    let market = match?.params?.market;
+    // myLog('router pair',market)
     let coinA = 'LRC'
 
     let coinB = 'ETH'
 
-    let realMarket: PairFormat | '' = `${coinA}-${coinB}`
+    let realMarket: MarketType | undefined = `${coinA}-${coinB}`
 
     if (market) {
 

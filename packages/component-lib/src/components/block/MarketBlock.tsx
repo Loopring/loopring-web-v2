@@ -5,8 +5,9 @@ import { Typography } from '@mui/material';
 import styled from '@emotion/styled';
 import React from 'react';
 import { floatTag, MarketBlockProps, useSettings } from './../../index';
-import { ScaleAreaChart } from '../charts/scaleAreaChart'
+import { ScaleAreaChart } from '../charts'
 import { ChartType } from '../charts'
+import { Currency } from 'loopring-sdk';
 
 type StyledProps = {
     custom: any
@@ -55,10 +56,12 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                                                          handleBlockClick,
                                                      }: & WithTranslation & MarketBlockProps<C> & { handleBlockClick: () => void }) => {
     const {upColor, currency} = useSettings();
-    const isUSD = currency === 'USD'
-    const { volume, coinAPriceDollar, coinAPriceYuan } = tradeFloat as any
+    const isUSD = currency === Currency.usd
+    const { volume, coinAPriceDollar, coinAPriceYuan, marketPrecision, coinBPrecision } = tradeFloat as any
     const currencyUnit = isUSD ? PriceTag.Dollar : PriceTag.Yuan
-    const baseFaitPrice = getValuePrecisionThousand(isUSD ? coinAPriceDollar: coinAPriceYuan)
+    const baseFaitPrice = getValuePrecisionThousand((isUSD ? coinAPriceDollar : coinAPriceYuan), undefined, undefined, undefined, true, {
+      isFait: true
+    })
 
     return <MarketBlockStyled onClick={handleBlockClick} className={'MuiPaper-elevation2'} custom={{chg: upColor}} padding={0.5 * 5} display={'flex'}
                               justifyContent={'stretch'}>
@@ -83,7 +86,7 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                         {tradeFloat.close ? (
                             <Box height={24} display={'flex'} alignItems={'center'}
                                         className={`float-tag float-${tradeFloat.floatTag}`}>
-                                <Typography variant={'h4'}>{getValuePrecisionThousand(tradeFloat?.close)}
+                                <Typography variant={'h4'}>{getValuePrecisionThousand(tradeFloat?.close, undefined, undefined, marketPrecision, true, {isPrice: true})}
                                 </Typography>
                               <Typography color={'var(--color-text-secondary)'} marginX={1 / 4}>&#8776;</Typography>
                               <Typography variant={'body2'} color={'var(--color-text-secondary)'}>
@@ -93,19 +96,19 @@ export const MarketBlock = <C extends CoinKey<I>, I>({
                           <Typography variant={'body2'} component={'span'} marginTop={1 / 2} marginRight={1}
                                       className={`float-tag float-${tradeFloat.floatTag}`}>{
                               tradeFloat.change
-                                ? `${tradeFloat.change > 0 ? '+' : ''}${Number(tradeFloat.change).toFixed(2)}%`
+                                ? `${tradeFloat.change > 0 ? '+' : ''}${getValuePrecisionThousand(tradeFloat.change, 2, 2, 2, true)}%`
                                 : EmptyValueTag + '%'
                                 
                           }
                           </Typography>
                             <Typography variant={'body2'} color={'var(--color-text-secondary)'} component={'div'} textOverflow={'ellipsis'} overflow={'hidden'} whiteSpace={'nowrap'}
-                                    marginTop={1 / 2}>{t('labelAmount')} : {getValuePrecisionThousand(volume)}&nbsp;{coinBInfo.simpleName}</Typography>
+                                    marginTop={1 / 2}>{t('labelAmount')} : {getValuePrecisionThousand(volume, coinBPrecision, coinBPrecision, undefined, true)}&nbsp;{coinBInfo.simpleName}</Typography>
                         </Box>
                     </Box>
 
                 </Grid>
-                <Grid item position={'absolute'} top={0} right={0} width={90} height={42}>
-                    <ScaleAreaChart isHeadTailCompare showTooltip={false} showArea={false} type={ChartType.Trend} data={chartData}/>
+                <Grid item position={'absolute'} top={0} right={0} width={90} height={36}>
+                    <ScaleAreaChart isHeadTailCompare showTooltip={false} showArea={true} type={ChartType.Trend} data={chartData}/>
                 </Grid>
             </Grid> : <></>
         } </MarketBlockStyled>

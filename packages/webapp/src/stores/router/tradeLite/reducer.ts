@@ -12,7 +12,7 @@ const initState = {
 
 const initialState: PageTradeLiteStatus = {
     pageTradeLite: initState,
-
+    __DAYS__:30,
     __SUBMIT_LOCK_TIMER__: 1000,
     __TOAST_AUTO_CLOSE_TIMER__: 3000,
 };
@@ -27,10 +27,11 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
             const {
                 market,
                 depth,
-                tickMap,
+                ticker,
                 ammPoolSnapshot,
                 tradePair,
                 quoteMinAmtInfo,
+                request,
                 calcTradeParams,
                 priceImpactObj,
                 feeBips,
@@ -38,15 +39,17 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                 takerRate,
                 buyMinAmtInfo,
                 sellMinAmtInfo,
-                lastStepAt
+                lastStepAt,
+                close,
             } = action.payload;
             if (market !== state.pageTradeLite.market) {
                 state.pageTradeLite = {
                     market,
                     tradePair,  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
+                    request,
                     calcTradeParams,
                     depth,
-                    tickMap,
+                    ticker,
                     ammPoolSnapshot,
                     priceImpactObj,
                     tradeChannel: calcTradeParams ? (calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined,
@@ -58,9 +61,11 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                     buyMinAmtInfo,
                     sellMinAmtInfo,
                     lastStepAt:undefined,
+                    close,
                 }
 
             } else {
+
                 if(lastStepAt){
                     state.pageTradeLite.lastStepAt = lastStepAt;
                 }
@@ -71,17 +76,22 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                 if (depth) {
                     state.pageTradeLite.depth = depth;
                 }
-
-                if (tickMap) {
-                    state.pageTradeLite.tickMap = tickMap;
+                if(close){
+                    state.pageTradeLite.close = close;
+                }
+                if (ticker) {
+                    state.pageTradeLite.ticker = ticker;
                 }
                 if (ammPoolSnapshot) {
                     state.pageTradeLite.ammPoolSnapshot = ammPoolSnapshot;
                 }
-                if (calcTradeParams) {
+                if (request !== undefined) {
+                    state.pageTradeLite.request = request
+                }
+                if (calcTradeParams !== undefined) {
                     state.pageTradeLite.calcTradeParams = calcTradeParams;
-                    state.pageTradeLite.orderType = calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
-                    state.pageTradeLite.tradeChannel = calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
+                    state.pageTradeLite.orderType = calcTradeParams?.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
+                    state.pageTradeLite.tradeChannel = calcTradeParams?.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
                 }
                 if (priceImpactObj) {
                     state.pageTradeLite.priceImpactObj = priceImpactObj;

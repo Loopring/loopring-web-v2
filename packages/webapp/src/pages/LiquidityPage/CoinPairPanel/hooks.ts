@@ -12,7 +12,7 @@ import { useLocation, useRouteMatch } from 'react-router';
 import moment from 'moment'
 import { AmmDetailStore, useAmmMap } from '../../../stores/Amm/AmmMap';
 import { useWalletLayer2 } from '../../../stores/walletLayer2';
-import { makeTickView, makeWalletLayer2, volumeToCount, WalletMapExtend } from '../../../hooks/help';
+import { makeWalletLayer2, volumeToCount, WalletMapExtend } from 'hooks/help';
 import {
     AmmPoolSnapshot,
     AmmUserRewardMap,
@@ -31,6 +31,7 @@ import { myLog } from "@loopring-web/common-resources";
 
 import _ from 'lodash'
 import { useAmmPool } from "../hook";
+import { useTicker } from '../../../stores/ticker';
 
 const makeAmmDetailExtendsActivityMap = ({ammMap, coinMap, ammActivityMap, market, coinA, coinB, }: any) => {
 
@@ -87,8 +88,10 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
     const match: any = useRouteMatch("/liquidity/pools/coinPair/:symbol")
     const {coinMap, tokenMap, marketArray, addressIndex} = useTokenMap();
     const {ammMap, getAmmMap, status: ammMapStatus} = useAmmMap();
-    const {userRewardsMap, status: useUserRewardsStatus} = useUserRewards()
-    const {accountId} = store.getState().account
+    const {userRewardsMap, status: useUserRewardsStatus} = useUserRewards();
+    const {tickerMap} = useTicker();
+
+    const {accountId} = store.getState().account;
     const tokenMapList = tokenMap ? Object.entries(tokenMap) : []
     let routerLocation = useLocation()
 
@@ -135,7 +138,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
         feeB: undefined,
         isNew: undefined,
         isActivity: undefined,
-        APY: undefined
+        APR: undefined
     } as unknown as PgAmmDetail<C>);
     const [tradeFloat, setTradeFloat] = React.useState<TradeFloat | undefined>(undefined);
     const [pair, setPair] = React.useState<{ coinAInfo: CoinInfo<C> | undefined, coinBInfo: CoinInfo<C> | undefined }>({
@@ -301,7 +304,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
     }, [getUserAmmPoolTxs, getRecentAmmPoolTxs, lpTokenList])
 
     const walletLayer2DoIt = React.useCallback(() => {
-        const {walletMap: _walletMap} = makeWalletLayer2();
+        const {walletMap: _walletMap} = makeWalletLayer2(false);
 
         setWalletMap(_walletMap as WalletMapExtend<any>)
         if (_walletMap) {
@@ -312,7 +315,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
     }, [makeWalletLayer2, getUserAmmPoolTxs, makeMyAmmMarketArray, marketArray, pair, getRecentAmmPoolTxs])
 
     const getPairList = React.useCallback(async (coinPairInfo: any) => {
-        myLog('***  getPairList   coinPairInfo:', coinPairInfo)
+        // myLog('***  getPairList   coinPairInfo:', coinPairInfo)
         if (LoopringAPI.exchangeAPI && coinPairInfo.myCoinA && coinPairInfo.myCoinB) {
             const {myCoinA, myCoinB} = coinPairInfo
             const market = `${myCoinA?.name}-${myCoinB?.name}`
@@ -350,9 +353,16 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
             ammDetail: _coinPairInfo,
         } = makeAmmDetailExtendsActivityMap({ammMap, coinMap, ammActivityMap, market, coinA, coinB, })
 
-        myLog('-----> _coinPairInfo:', market, ammMap, coinMap, ammActivityMap, _coinPairInfo)
+        // myLog('-----> _coinPairInfo:', market, ammMap, coinMap, ammActivityMap, _coinPairInfo)
 
-        setCoinPairInfo(_coinPairInfo ? _coinPairInfo : {})
+        const coinPairInfoWithPrecision = {
+            ..._coinPairInfo,
+            precisionA: tokenMap ? tokenMap[_coinPairInfo.coinA]?.precision : undefined,
+            precisionB: tokenMap ? tokenMap[_coinPairInfo.coinB]?.precision : undefined,
+        }
+
+        // setCoinPairInfo(_coinPairInfo ? _coinPairInfo : {})
+        setCoinPairInfo(coinPairInfoWithPrecision ? coinPairInfoWithPrecision : {})
 
         getPairList(_coinPairInfo)
 
@@ -360,7 +370,7 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
             const coinAInfo = coinMap[ coinA ]
             const coinBInfo = coinMap[ coinB ]
 
-            myLog('coinAInfo:', coinAInfo, ' coinBInfo:', coinBInfo)
+            // myLog('coinAInfo:', coinAInfo, ' coinBInfo:', coinBInfo)
 
             setPair({
                 coinAInfo,
@@ -382,22 +392,32 @@ export const useCoinPair = <C extends { [ key: string ]: any }>() => {
                             tickerData: tickMap[ realMarket ],
                             ammPoolSnapshot: ammPoolSnapshot,
                         }
+                        const ticker = tickerMap[market];
+
                         const {close,stob,btos} = calcPriceByAmmTickMapDepth({
                             market: realMarket,
                             tradePair: realMarket,
-                            dependencyData: {ammPoolSnapshot, tickMap, depth}
+                            dependencyData: {ammPoolSnapshot, ticker, depth}
                         })
 
-                        _tradeFloat = makeTickView(tickMap[ realMarket ] ? tickMap[ realMarket ] : {})
-                        myLog('........close:', _tradeFloat, close)
+                        // _tradeFloat = makeTickView(tickMap[ realMarket ] ? tickMap[ realMarket ] : {})
+                        // myLog('........close:', _tradeFloat, close)
                         setStobPair({stob,btos})
-                        setTradeFloat({..._tradeFloat, close: close} as TradeFloat);
-                        setCoinPairInfo({..._coinPairInfo})
+                        setTradeFloat({...ticker, close: close} as TradeFloat);
+
+                        const coinPairInfoWithPrecision = {
+                            ..._coinPairInfo,
+                            precisionA: tokenMap ? tokenMap[_coinPairInfo.coinA]?.precision : undefined,
+                            precisionB: tokenMap ? tokenMap[_coinPairInfo.coinB]?.precision : undefined,
+                        }
+
+                        // setCoinPairInfo({..._coinPairInfo})
+                        setCoinPairInfo({...coinPairInfoWithPrecision})
                         setSnapShotData(_snapShotData)
 
                     }
                 }).catch((error) => {
-                console.log(error);
+                myLog(error);
                 throw  Error
             })
         }

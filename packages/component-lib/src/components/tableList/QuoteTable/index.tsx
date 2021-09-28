@@ -10,11 +10,12 @@ import {
     StarHollowIcon,
     StarSolidIcon
 } from '@loopring-web/common-resources'
-import { Column, Table } from '../../basic-lib/tables/index'
+import { Column, Table } from '../../basic-lib'
 import { TablePaddingX } from '../../styled'
 import { IconButton, Typography } from '@mui/material';
 import { useSettings } from '@loopring-web/component-lib/src/stores'
 import { useDispatch } from 'react-redux'
+import { Currency } from 'loopring-sdk';
 
 const TableWrapperStyled = styled(Box)`
     display: flex;
@@ -34,7 +35,7 @@ const TableStyled = styled(Table)`
             }   
         }};
       
-        --template-columns: 240px 180px 100px auto auto auto 132px !important;
+        --template-columns: 240px 220px 100px auto auto auto 132px !important;
         .rdg-cell.action{
             display: flex;
             justify-content: center;
@@ -98,9 +99,9 @@ type IGetColumnModePros = {
 }
 
 // const getColumnModelQuoteTable = (t: TFunction, history: any): Column<Row, unknown>[] => [
-const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }): Column<QuoteTableRawDataItem, unknown>[] => {
+const getColumnMode = (props: IGetColumnModePros & { currency: Currency }): Column<QuoteTableRawDataItem, unknown>[] => {
     const {t: {t}, history, upColor, handleStartClick, favoriteMarket, currency} = props
-    const isUSD = currency === 'USD'
+    const isUSD = currency === Currency.usd
     return (
         [
             {
@@ -120,7 +121,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                             height={'100%'}
                             >
                             <Typography  marginRight={1}>
-                                <IconButton style={{color:'var(--color-star)'}} size={'medium'} onClick={(e:any) => handleStartClick(e, isFavourite, pair)}>
+                                <IconButton style={{color:'var(--color-star)'}} size={'large'} onClick={(e:any) => handleStartClick(e, isFavourite, pair)}>
                                     {isFavourite ? (
                                         <StarSolidIcon  cursor={'pointer'}/>
                                     ) : (
@@ -150,6 +151,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                     const value = row[ 'close' ]
                     const priceDollar = row['coinAPriceDollar']
                     const priceYuan = row['coinAPriceYuan']
+                    const precision = row['precision'] || 6
                     // const [valueFirst, valueLast] = value
                     // const getRenderValue = (value: number) => {
                     //     return Number.isFinite(value) ? value.toFixed(2) : EmptyValueTag;
@@ -157,15 +159,20 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                     // const RenderValue = styled.span`
                     // 	color: var(--color-text-secondary)
                     // `
+                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, undefined, undefined, precision, true, { isPrice: true }) : EmptyValueTag
 
-                    const faitPrice = Number.isFinite(value) 
+                    const faitPrice = Number.isFinite(value)
                         ? isUSD 
-                            ? PriceTag.Dollar + getValuePrecisionThousand(priceDollar, 2, 2) 
-                            : PriceTag.Yuan + getValuePrecisionThousand(priceYuan, 2, 2)
+                            ? PriceTag.Dollar + getValuePrecisionThousand(priceDollar, 2, 2, 2, true, {
+                                isFait: true
+                            })
+                            : PriceTag.Yuan + getValuePrecisionThousand(priceYuan, 2, 2, 2, true, {
+                                isFait: true
+                            })
                         : EmptyValueTag
                     return (
                         <div className="rdg-cell-value">
-                            <span>{Number.isFinite(value) ? getValuePrecisionThousand(value, 2, 2) : EmptyValueTag}</span>
+                            <span>{price}</span>
                             <Typography color={'var(--color-text-third)'} component={'span'}> / {faitPrice}</Typography>
                         </div>
                     )
@@ -188,7 +195,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                         <div className="rdg-cell-value textAlignRight">
                             <QuoteTableChangedCell value={value} upColor={upColor}>
                                 {typeof value !== 'undefined' ? (
-                                    (row.floatTag === FloatTag.increase ? '+' : '') + Number(getValuePrecisionThousand(value)).toFixed(2) + '%') : EmptyValueTag}
+                                    (row.floatTag === FloatTag.increase ? '+' : '') + getValuePrecisionThousand(value, 2, 2, 2, true) + '%') : EmptyValueTag}
                             </QuoteTableChangedCell>
                         </div>
                     )
@@ -202,11 +209,11 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                 // sortable: true,
                 formatter: ({row, column}) => {
                     const value = row[ column.key ]
-                    // const hasValue = Number.isFinite(value)
-                    // const renderValue = hasValue ? value.toFixed(2) : EmptyValueTag
+                    const precision = row['precision'] || 6
+                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, undefined, undefined, precision, true, {isPrice: true}) : EmptyValueTag
                     return (
                         <div className="rdg-cell-value textAlignRight">
-                            <span>{Number.isFinite(value) ? getValuePrecisionThousand(value) : EmptyValueTag}</span>
+                            <span>{price}</span>
                         </div>
                     )
                 },
@@ -219,11 +226,11 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                 // sortable: true,
                 formatter: ({row, column}) => {
                     const value = row[ column.key ]
-                    // const hasValue = Number.isFinite(value)
-                    // const renderValue = hasValue ? value.toFixed(2) : EmptyValueTag
+                    const precision = row['precision'] || 6
+                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, undefined, undefined, precision, true, {isPrice: true}) : EmptyValueTag
                     return (
                         <div className="rdg-cell-value textAlignRight">
-                            <span>{Number.isFinite(value) ? getValuePrecisionThousand(value) : EmptyValueTag}</span>
+                            <span>{price}</span>
                         </div>
                     )
                 },
@@ -236,9 +243,11 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                 sortable: true,
                 formatter: ({row}) => {
                     const value = row[ 'volume' ]
+                    const precision = row['precision'] || 6
+                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, precision, undefined, undefined, true, {isTrade: true}) : EmptyValueTag
                     return (
                         <div className="rdg-cell-value textAlignRight">
-                            <span>{Number.isFinite(value) ? getValuePrecisionThousand(value) : EmptyValueTag}</span>
+                            <span>{price}</span>
                         </div>
                     )
                 },
@@ -254,7 +263,7 @@ const getColumnMode = (props: IGetColumnModePros & { currency: 'USD' | 'CYN' }):
                     return (
                         <div className="rdg-cell-value textAlignCenter">
                             <Button variant="outlined" onClick={() => history.push({
-                                pathname: `/trading/lite/${tradePair}`
+                                pathname: `/trade/lite/${tradePair}`
                             })}>{t('labelTrade')}</Button>
                         </div>
                     )
@@ -322,12 +331,11 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
 
     const dispatch = useDispatch()
 
-    const handleStartClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, isFavourite: boolean, pair: string) => {
+    const handleStartClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, isFavourite: boolean, pair: string):void => {
         // console.log(isFavoourite, pair)
         event.stopPropagation()
         if (isFavourite) {
             dispatch(removeFavoriteMarket(pair))
-            return
         }
         dispatch(addFavoriteMarket(pair))
     }
@@ -352,7 +360,7 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                     sortedRows = sortedRows.sort((a, b) => {
                         const valueA = a.pair.coinA
                         const valueB = b.pair.coinA
-                        return valueA.localeCompare(valueB)
+                        return valueB.localeCompare(valueA)
                     })
                     break;
                 case 'close':

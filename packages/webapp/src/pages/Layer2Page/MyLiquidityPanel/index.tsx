@@ -4,12 +4,14 @@ import { Box, Divider, Grid, Typography } from '@mui/material'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { MyPoolTable, useSettings } from '@loopring-web/component-lib'
-import { Currency, EmptyValueTag, PriceTag, getValuePrecisionThousand } from '@loopring-web/common-resources';
+import {  EmptyValueTag, PriceTag, getValuePrecisionThousand } from '@loopring-web/common-resources';
 
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 import { useOverview } from './hook';
+import { useSystem } from 'stores/system'
 import { TableWrapStyled } from 'pages/styled'
 import { useAmmActivityMap } from 'stores/Amm/AmmActivityMap'
+import { Currency } from 'loopring-sdk';
 
 
 //TODO: FIXED:  demo data
@@ -54,6 +56,7 @@ const MyLiquidity: any = withTranslation('common')(
         const [chartPeriod, setChartPeriod] = React.useState('ALL');
         const [page, setPage] = React.useState(1);
         const {currency} = useSettings();
+        const {forex,allowTrade} = useSystem()
         const history = useHistory()
 
         // React.useEffect(() => {
@@ -72,20 +75,27 @@ const MyLiquidity: any = withTranslation('common')(
             setPage(page);
         }, [])
         const {myAmmMarketArray, summaryReward, myPoolRow, showLoading} = useOverview({ammActivityMap});
-        const renderPositionValueDollar = PriceTag.Dollar + getValuePrecisionThousand(((summaryReward?.rewardDollar || 0) + (summaryReward?.feeDollar || 0)), 2, 2)
-        const renderPositionValueYuan = PriceTag.Yuan + getValuePrecisionThousand(((summaryReward?.rewardYuan || 0) + (summaryReward?.feeYuan || 0)), 2, 2)
+        const totalValueDollar = myPoolRow.map((o: any) => {
+            return o.totalAmmValueDollar as number
+        }).reduce((a, b) => a + b, 0)
+        const totalRewardDollar = myPoolRow.map(o => o.feeDollar).reduce((a, b) => (a || 0) + (b || 0), 0)
+
+        const renderPositionValueDollar = PriceTag.Dollar + getValuePrecisionThousand(totalValueDollar, undefined, undefined, undefined, true, { isFait: true, floor: true })
+        const renderPositionValueYuan = PriceTag.Yuan + getValuePrecisionThousand(totalValueDollar * (forex || 6.5), undefined, undefined, undefined, true, { isFait: true, floor: true })
+        const renderRewardsDollar = PriceTag.Dollar + getValuePrecisionThousand((totalRewardDollar || 0), undefined, undefined, undefined, true, { isFait: true, floor: true })
+        const renderRewardsYuan = PriceTag.Yuan + getValuePrecisionThousand((totalRewardDollar || 0) * (forex || 6.5), undefined, undefined, undefined, true, { isFait: true, floor: true })
 
         return (
             <>
-                <Grid container spacing={2}>
-                    <Grid item sm={12}>
-                        <StyleWrapper container paddingY={3} paddingX={4} margin={0} display={'flex'}>
+                <Grid container spacing={2} >
+                    <Grid item sm={12} >
+                        <StyleWrapper container className={'MuiPaper-elevation2'} paddingY={3} paddingX={4} margin={0} display={'flex'}>
                             <Grid item display={'flex'} flexDirection={'column'} sm={3}>
                                 <Typography variant={'h5'}
                                             color={'textSecondary'}
                                             fontFamily={'Roboto'}>{t('labelTotalPositionValue')}</Typography>
                                 <Typography variant={'h3'} marginTop={1} fontFamily={'Roboto'}>
-                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.dollar
+                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.usd
                                         ? renderPositionValueDollar
                                         : renderPositionValueYuan}
                                 </Typography>
@@ -97,17 +107,17 @@ const MyLiquidity: any = withTranslation('common')(
                                 <Typography variant={'h5'} component={'h3'} fontFamily={'Roboto'}
                                             color={'textSecondary'}>{t('labelFeeRewards')}</Typography>
                                 <Typography variant={'h3'} marginTop={1} fontFamily={'Roboto'}>
-                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar
-                                        + Number(getValuePrecisionThousand(summaryReward.feeDollar, 2))
-                                        : PriceTag.Yuan
-                                        + Number(getValuePrecisionThousand(summaryReward.feeYuan, 2))}
+                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.usd 
+                                        ? renderRewardsDollar
+                                        : renderRewardsYuan
+                                    }
                                 </Typography>
                             </Grid>
                             {/* <Grid display={'flex'} flexDirection={'column'} marginTop={5} item>
                                 <Typography variant={'h5'} component={'h3'} fontFamily={'Roboto'}
                                             color={'textSecondary'}>{t('labelMiningRewards')}</Typography>
                                 <Typography variant={'h3'} marginTop={1} fontFamily={'Roboto'}>
-                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar
+                                    {summaryReward === undefined ? EmptyValueTag : currency === Currency.usd ? PriceTag.Dollar
                                         + getThousandFormattedNumbers(summaryReward.rewardDollar ? summaryReward.rewardDollar : 0)
                                         : PriceTag.Yuan
                                         + getThousandFormattedNumbers(summaryReward.rewardYuan ? summaryReward.rewardYuan : 0)}
@@ -136,11 +146,11 @@ const MyLiquidity: any = withTranslation('common')(
                 {/*    </StyledBtnGroupWrapper>*/}
                 {/*    <ScaleAreaChart type={ChartType.Trend} data={[]}/>*/}
                 {/*</StyleWrapper>*/}
-
-                <TableWrapStyled className={'table-divide-short'} marginY={2} paddingY={2} paddingX={3} flex={1}>
+                <TableWrapStyled className={'table-divide-short MuiPaper-elevation2'} marginY={2} paddingY={2} paddingX={3} flex={1}>
                     <Grid item xs={12} display={'flex'} flexDirection={'column'} flex={1}>
                         <Typography variant={'h5'} marginBottom={3}>{t('labelMyAmm')}</Typography>
                         <MyPoolTable
+                            allowTrade={allowTrade}
                             rawData={myPoolRow}
                             pagination={{pageSize: 10}}
                             showloading={showLoading}

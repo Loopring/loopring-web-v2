@@ -6,7 +6,7 @@ import {
     ToggleButtonGroup as MuToggleButtonGroup,
 } from '@mui/material';
 import { ButtonProps, TGItemJSXInterface, ToggleButtonGroupProps } from './Interface';
-import { WithTranslation } from "react-i18next";
+import { TFunction, WithTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
 import { BackIcon, CloseIcon, QRIcon } from '@loopring-web/common-resources';
@@ -16,10 +16,14 @@ import React from 'react';
 export const Button = styled(MuButton)<ButtonProps>`
   && {
     &.MuiButton-root.Mui-disabled {
-      ${({loading, theme}) => {
+      ${({loading, theme, loadingBg}) => {
+        // if(loading=== 'true') {
+        //     debugger
+        // }
         return loading === 'true' ? `
            color:transparent;
-           background:${theme.colorBase.primary};
+           background-color:${theme.colorBase.primary};
+           background-color:${loadingBg};
            &::after{
             display: block;
             content: url(${loadingSvg});
@@ -123,7 +127,7 @@ export const ToggleButtonGroup = ({
                                       data,
                                       exclusive,
                                       onChange
-                                  }: WithTranslation & ToggleButtonGroupProps) => {
+                                  }: { t:TFunction } & ToggleButtonGroupProps) => {
 
     const _handleChange = React.useCallback((_e: React.MouseEvent<HTMLElement, MouseEvent>, value: any) => {
         // setValue(value)
@@ -153,8 +157,8 @@ export const ModalCloseButton = ({onClose, t}: {
 } & WithTranslation) => {
     return <Box className={'close-button'} alignSelf={'flex-end'} position={'absolute'} zIndex={99} marginTop={'-28px'}
                 marginRight={'12px'}>
-        <IconButton aria-label={t('labelClose')}
-                    color={'inherit'} size={'medium'} onClick={(event) => {
+        <IconButton size={'large'} aria-label={t('labelClose')}
+                    color={'inherit'} onClick={(event) => {
             onClose && onClose(event, 'escapeKeyDown')
         }}>
             <CloseIcon/>
@@ -165,7 +169,7 @@ export const ModalBackButton = ({onBack, t}: {
     onBack?: () => void
 } & WithTranslation) => {
     return <Box alignSelf={'flex-start'} marginTop={-3} marginLeft={1.5}>
-        <IconButton size={'medium'} color={'inherit'} aria-label={t('labelBack')} onClick={() => {
+        <IconButton size={'large'} color={'inherit'} aria-label={t('labelBack')} onClick={() => {
             onBack && onBack()
         }}>
             <BackIcon/>
@@ -178,6 +182,7 @@ const QRStyle = styled(Box)`
     //z-index: 10;
   }
     &:after{
+      pointer-events: none;
       content: '';
       position: absolute;
       display: block;
@@ -199,7 +204,7 @@ export const QRButtonStyle = ({onQRClick, t}: {
     onQRClick?: () => void
 } & WithTranslation) => {
     return <QRStyle alignSelf={'flex-start'} marginTop={-1 / 2 * 7} marginLeft={1.5} position={'absolute'}>
-        <IconButton  aria-label={t('labelBack')} size={'medium'} onClick={() => {
+        <IconButton  size={'large'}  aria-label={t('labelBack')} onClick={() => {
             onQRClick && onQRClick()
         }}>
             <QRIcon htmlColor={'var(--color-text-third)'}/>

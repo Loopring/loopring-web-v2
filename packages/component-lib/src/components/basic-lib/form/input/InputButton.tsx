@@ -1,12 +1,12 @@
-import { FormHelperText, FormLabel, Grid, } from '@mui/material';
+import { FormHelperText, Grid, } from '@mui/material';
 import {
     CoinInfo,
     DropDownIcon,
     FORMAT_STRING_LEN,
-     getValuePrecisionThousand,
+     // getValuePrecisionThousand,
     IBData,
 } from '@loopring-web/common-resources';
-import { InputButtonProps } from "./Interface";
+import { InputButtonProps, InputSize } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
 import { IInput, ISBtn, IWrap } from "./style";
@@ -16,11 +16,12 @@ import { Typography } from '@mui/material';
 function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                          label = "Enter token",
                                                                          handleError,
-                                                                         subLabel = "Max",
+                                                                         subLabel,
                                                                          // wait = globalSetup.wait,
                                                                          // coinMap,
                                                                          maxAllow,
                                                                          disabled,
+                                                                         decimalsLimit = 8,
                                                                          emptyText = 'tokenSelectToken',
                                                                          placeholderText = '0.00',
                                                                          inputData,
@@ -28,6 +29,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                          handleOnClick,
                                                                          focusOnInput,
                                                                          name,
+                                                                         size=InputSize.middle,
                                                                          isHideError = false,
                                                                          // isAllowBalanceClick
                                                                      }
@@ -75,7 +77,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
             _handleError(value);
             setsValue(value);
             if (handleCountChange) {
-                handleCountChange({...inputData, ...{tradeValue: value}} as any, ref)
+                handleCountChange({...inputData, ...{tradeValue: value}} as any,_name, ref)
             }
             //debounceCount({...inputData, ...{tradeValue: value}})
         }
@@ -107,21 +109,26 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
 
     // formatValue(sValue)
 
-    return <> <IWrap component={'div'} ref={ref}>
+    return <> <IWrap component={'div'} ref={ref} size={size}>
         <Grid container component={'div'} className={'label-wrap'} justifyContent={'space-between'}
               paddingBottom={1 / 2}>
-            <Grid item xs={6}><FormLabel className={'main-label'}>{label}</FormLabel></Grid>
-            <Grid item xs={6} className={'sub-label'}>{subLabel && belong ?
-                <FormLabel className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
+            <Grid item xs={3}><Typography fontSize={'inherit'} className={'main-label'} color={'var(--color-text-third)'}>{label}</Typography></Grid>
+            <Grid item xs={9} className={'sub-label'}>{subLabel && belong ?
+                <Typography fontSize={'inherit'}
+                            className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>
-                    <span>{maxAllow ? subLabel + ':' : ''}</span>
-                    <span>{maxAllow ? (balance ? getValuePrecisionThousand(balance) : '0.00') :''}</span>
-                </FormLabel> : null}</Grid>
+                    <span>{subLabel}</span>
+                    <span>{(balance ? balance : '0.00')}</span>
+                </Typography> : null}</Grid>
         </Grid>
-        <Grid container className={`btnInput-wrap ${error.error ? 'error' : ''}`} wrap={'nowrap'} alignItems={'stretch'}
+        <Grid container className={`btnInput-wrap
+        ${(belong && belong.length) >= FORMAT_STRING_LEN ? 'text-small' : ''}  
+        ${error.error ? 'error' : ''}
+        `} wrap={'nowrap'} alignItems={'stretch'}
               alignContent={'stretch'}>
             <Grid item className={'btn-wrap'}>
-                <ISBtn variant={'text'} onClick={(event) => handleOnClick(event, ref)}
+                <ISBtn variant={'text'} onClick={(event) => handleOnClick(event,
+                    name??'inputBtnDefault', ref)}
                        endIcon={<DropDownIcon color={"inherit"} fontSize={'large'} style={{marginLeft:'-4px'}}/>} disabled={disabled}>
                     {belong ?
                         <Grid container align-items={'center'} display={'flex'}>
@@ -132,8 +139,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                 <CoinIcon symbol={belong}/>
                             </Grid>
                             <Grid item paddingLeft={1}>
-                                <Typography display={'inline-flex'} alignItems={'center'}
-                                    variant={belong&&belong.length >= FORMAT_STRING_LEN ? 'body1' : 'h4'}>
+                                <Typography fontSize={'inherit'} color={'inherit'}>
                                     {belong}
                                 </Typography></Grid>
                         </Grid>
@@ -142,13 +148,15 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 </ISBtn>
             </Grid>
             <Grid item className={'input-wrap input-wrap-right'}>
-                <IInput ref={inputEle} onValueChange={_handleContChange} value={
+                <IInput ref={inputEle} autoComplete="off" onValueChange={_handleContChange} value={
                     typeof sValue === 'undefined' ? '' : sValue
                 } allowNegativeValue={false}
                         name={name}
                         disabled={!(!disabled || belong)}
                         placeholder={placeholderText}
-                        aria-placeholder={placeholderText} aria-label={label} decimalsLimit={10000000}/>
+                        aria-placeholder={placeholderText} aria-label={label}
+                        decimalsLimit={decimalsLimit}
+                />
                 <label/>
             </Grid>
         </Grid>

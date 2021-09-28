@@ -93,7 +93,7 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
             return { error: false, message: '' }
         }
     }
-    const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
+    const handleCountChange = React.useCallback((ibData: IBData<I>,_name:string, _ref: any) => {
         const focus: 'coinA' | 'coinB' = _ref?.current === coinARef.current ? 'coinA' : 'coinB';
         if (ammData[focus].tradeValue !== ibData.tradeValue) {
             onAddChangeEvent({ tradeData: { ...ammData, [focus]: ibData }, type: focus });
@@ -148,19 +148,21 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
             flexDirection={"column"}>
             <InputCoin<any, I, any> ref={coinARef} disabled={getDisabled()} {...{
                 ...propsA,
+                name:'coinA',
                 isHideError: true,
                 order: 'right',
                 inputData: ammData ? ammData.coinA : {} as any,
                 coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
             }} />
             <Box alignSelf={"center"} marginY={1}>
-                <SvgStyled>
+                <SvgStyled >
                     {/* <LinkedIcon /> */}
-                    <LinkedIcon htmlColor={'var(--color-text-third)'} />
+                    <LinkedIcon fontSize={'large'} htmlColor={'var(--color-text-third)'} />
                 </SvgStyled>
             </Box>
             <InputCoin<any, I, any> ref={coinBRef} disabled={getDisabled()} {...{
                 ...propsB,
+                name:'coinB',
                 isHideError: true,
                 order: 'right',
                 inputData: ammData ? ammData.coinB : {} as any,

@@ -7,6 +7,7 @@ import { getRenderData } from '../data'
 import { Box, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { useSettings } from '@loopring-web/component-lib/src/stores'
+import { myLog } from '@loopring-web/common-resources';
 
 const DEFAULT_YAXIS_DOMAIN = 0.05
 const UP_COLOR = '#00BBA8'
@@ -66,6 +67,7 @@ const TrendChart = ({
                     renderData[ activeTooltipIndex ] &&
                     renderData[ activeTooltipIndex ].sign
                 ) {
+                    myLog(renderData[ activeTooltipIndex ].sign)
                     setPriceTrend(
                         renderData[ activeTooltipIndex ].sign === 1
                             ? 'up'
@@ -133,7 +135,7 @@ const TrendChart = ({
     return (
         <ResponsiveContainer debounce={100} width={'95%'}>
             <ComposedChart data={renderData} onMouseMove={showTooltip && handleMousemove}
-                           onMouseLeave={handleMouseLeave}>
+                        onMouseLeave={showTooltip && handleMouseLeave}>
                 <defs>
                     <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                         {/* <stop offset="5%" stopColor="rgba(1, 187, 168, 0.4)" stopOpacity={0.8}/> */}

@@ -36,14 +36,14 @@ export const MuiCheckbox = ({colorBase}: any): { styleOverrides: ComponentsOverr
                 },
                 '&.Mui-checked': {
                     color: colorBase.textButtonSelect,
-                    '&:hover':{
+                    '&:hover': {
                         color: colorBase.textButtonSelect,
                     }
                 },
-                ' .MuiSvgIcon-fontSizeMedium ':{
+                ' .MuiSvgIcon-fontSizeMedium ': {
                     // fontSize: fontDefault.h5
-                    height:fontDefault.h5 ,
-                    width: fontDefault.h5 ,
+                    height: fontDefault.h5,
+                    width: fontDefault.h5,
                 }
             },
         }
@@ -106,7 +106,7 @@ export const MuiTextField = ({colorBase}: any): { styleOverrides: ComponentsOver
                     marginRight: 0,
                     textAlign: 'right',
                 },
-                ' .MuiFormLabel-root':{
+                ' .MuiFormLabel-root': {
                     color: colorBase.textSecondary,
                 }
             }
@@ -151,13 +151,13 @@ export const MuiToolbar = () => {
 }
 
 // @ts-ignore
-export const MuiSwitch = ({colorBase}: any): { styleOverrides: ComponentsOverrides['MuiSwitch'] } => {
+export const MuiSwitch = (): { styleOverrides: ComponentsOverrides['MuiSwitch'] } => {
     // const borderWidth = 2;
     // const padding = borderWidth + 2;
     // const width = pxToRem(46);
     // const height = pxToRem(24);
     // const size = pxToRem(16);
-    return {styleOverrides:{}}
+    return {styleOverrides: {}}
     // const gap =  (38 - (borderWidth + padding)*2);
     // return {
     //     styleOverrides: {
@@ -240,6 +240,9 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 fontWeight: 'normal',
                 paddingLeft: pxToRem(12),
                 paddingRight: pxToRem(12),
+                // '&.MuiButton-contained':{
+                //
+                // }
             },
             text: {
                 color: colorBase.secondary,
@@ -262,11 +265,18 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 color: colorBase.textButton,
                 height: pxToRem(40),
                 fontSize: pxToRem(14),
-                backgroundColor: colorBase.primary,
-                boxShadow:'initial',
+                boxShadow: 'initial',
                 '&:hover': {
-                    backgroundColor: colorBase.primaryHover,
-                    boxShadow:'initial',
+                    boxShadow: 'initial',
+                    '&:before':{
+                        background: colorBase.primaryHover,
+                        content:'\'\'',
+                        position: 'absolute',
+                        top:0,
+                        left:0,
+                        right:0,
+                        bottom:0
+                    }
                 },
                 '&.Mui-disabled': {
                     backgroundColor: colorBase.defaultDisable,
@@ -315,6 +325,7 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                     // backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23FFFFFF33' stroke-width='1' stroke-dasharray='4%25%2c 8%25' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e")`
                 },
             },
+
             // outlinedSecondary:{
             //     borderColor: colorBase.primaryLight,
             //     color: colorBase.primaryLight,
@@ -327,7 +338,7 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
 
 
 // @ts-ignore
-export const MuiPopover = ({colorBase}: any): { styleOverrides: ComponentsOverrides['MuiPopover'] } => {
+export const MuiPopover = (): { styleOverrides: ComponentsOverrides['MuiPopover'] } => {
     return {
         styleOverrides: {}
 
@@ -377,6 +388,11 @@ export const MuiSvgIcon = () => {
                     width: 'var(--svg-size-large)',
                     // margin: '-6px',
                 },
+                '&.MuiSvgIcon-fontSizeMedium': {
+                    height: 'var(--svg-size-medium)',
+                    width: 'var(--svg-size-medium)',
+                    // margin: '-6px',
+                },
                 '&.tag': {
                     width: 'auto',
                     height: 'auto',
@@ -387,7 +403,7 @@ export const MuiSvgIcon = () => {
     }
 }
 //@ts-ignore
-export const MuiRadio = ({colorBase}: any) => {
+export const MuiRadio = () => {
     return {
         styleOverrides: {
             root: {
@@ -433,8 +449,8 @@ export const MuiInputBase = ({colorBase, themeMode}: any): { styleOverrides: Com
                 backgroundColor: colorBase.box,
                 border: borderFunc(themeMode).borderConfig({c_key: colorBase.border}),//`1px solid ${colorBase.border}`,
                 borderRadius: 4,
-                '&.MuiInputBase-sizeSmall':{
-                   height:'2.4rem'
+                '&.MuiInputBase-sizeSmall': {
+                    height: '2.4rem'
                 },
                 '&:not(.MuiFormControl-fullWidth)': {
                     // width: 'var(--btn-min-width)',
@@ -456,7 +472,7 @@ export const MuiInputBase = ({colorBase, themeMode}: any): { styleOverrides: Com
                 ' .MuiInputAdornment-root, .MuiSelect-iconOutlined': {
                     color: colorBase.textThird,
                 },
-                '.search .MuiInputAdornment-root':{
+                '.search .MuiInputAdornment-root': {
                     pointerEvents: 'none'
                 },
                 paddingRight: 0,
@@ -507,7 +523,7 @@ export const MuiInputBase = ({colorBase, themeMode}: any): { styleOverrides: Com
                     lineHeight: pxToRem(24), minWidth: 'auto',
 
                 },
-                ' .MuiSelect-icon':{
+                ' .MuiSelect-icon': {
                     color: colorBase.textThird
                 }
             },
@@ -521,12 +537,28 @@ export const MuiIconButton = ({colorBase}: any): { styleOverrides: ComponentsOve
     return {
         styleOverrides: {
             root: {
-                height: 'var(--btn-icon-size)',
-                width: 'var(--btn-icon-size)',
                 color: 'inherit',
+                height: 'var(--btn-icon-size-medium)',
+                width: 'var(--btn-icon-size-medium)',
                 ' svg': {
-                    height: 'var(--svg-size-large)',
-                    width: 'var(--svg-size-large)',
+                    height: 'var(--svg-size-medium)',
+                    width: 'var(--svg-size-medium)',
+                },
+                '&.MuiIconButton-sizeLarge': {
+                    height: 'var(--btn-icon-size)',
+                    width: 'var(--btn-icon-size)',
+                    ' svg': {
+                        height: 'var(--svg-size-large)',
+                        width: 'var(--svg-size-large)',
+                    },
+                },
+                '&.MuiIconButton-sizeMedium': {
+                    height: 'var(--btn-icon-size-medium)',
+                    width: 'var(--btn-icon-size-medium)',
+                    ' svg': {
+                        height: 'var(--svg-size-medium)',
+                        width: 'var(--svg-size-medium)',
+                    },
                 },
                 '&.MuiIconButton-sizeSmall': {
                     height: 'var(--btn-icon-size-small)',
@@ -554,8 +586,9 @@ export const MuiToggleButton = ({colorBase}: any): { styleOverrides: ComponentsO
     return {
         styleOverrides: {
             root: {
-                '&.MuiToggleButton-sizeMedium':{
-                    fontSize: '1.4rem'
+                '&.MuiToggleButton-sizeMedium': {
+                    fontSize: '1.4rem',
+                    minWidth: pxToRem(51),
                 },
                 height: pxToRem(28),
                 // boxShadow: '0px 4px 62px rgba(0, 0, 0, 0.25)',
@@ -714,6 +747,11 @@ export const MuiListItem = ({colorBase}: any) => {
 export const MuiMenu = ({colorBase}: any) => {
     return {
         styleOverrides: {
+            root: {
+                " .MuiBackdrop-root":{
+                    opacity:"0 !important",
+                }
+            },
             list: {
                 backgroundColor: colorBase.popBg
             }
@@ -730,7 +768,7 @@ export const MuiMenuItem = ({colorBase, themeMode}: any) => {
                 paddingLeft: pxToRem(12),
                 paddingRight: pxToRem(12),
                 color: colorBase.textSecondary,
-                '&.Mui-selected, &.Mui-selected.Mui-focusVisible':{
+                '&.Mui-selected, &.Mui-selected.Mui-focusVisible': {
                     background: colorBase.boxHover,
                     color: colorBase.textButtonSelect,
                     // " .MuiTypography-body1":{
@@ -796,6 +834,9 @@ export const MuiTab = ({colorBase}: any): { styleOverrides: ComponentsOverrides[
                     '&:after': hr({colorBase}),
                 },
                 '&:focus-visible::after, &:active::after, &.Mui-selected:after': hr({colorBase}),
+                '&.MuiTab-fullWidth:focus-visible::after, &.MuiTab-fullWidth:active::after, &.MuiTab-fullWidth.Mui-selected:after':{
+                    margin:0
+                },
                 '> div, > button': {
                     height: 'calc(100% - 2px)',
                     textTransform: 'capitalize'
@@ -858,17 +899,55 @@ export const MuiAlert = ({colorBase}: any) => {
         styleOverrides: {
             root: {
                 // backgroundColor: colorBase.borderDark,
-                backgroundColor: 'var(--color-pop-bg)',
+                // backgroundColor: 'var(--color-pop-bg)',
+                backgroundColor: colorBase.popBg,
                 height: `${unit * 10}px`,
                 '.MuiAlertTitle-root': {
                     color: colorBase.textPrimary,
                     fontSize: pxToRem(16),
                 }
             },
-            
+
         }
     }
 }
+
+export const MuiDialogTitle = ({colorBase}: any) => {
+    return {
+        styleOverrides: {
+            root: {
+                '&.MuiDialogTitle-root': {
+                    color: colorBase.textPrimary,
+                    fontSize: pxToRem(16),
+                    padding:  `${2*unit}px`,
+                }
+
+            },
+
+        }           
+    }
+}
+export const MuiDialog = ({colorBase}: any) => {
+    return {
+        styleOverrides: {
+            root: {
+                ' .MuiPaper-root':{
+                    background: colorBase.box,
+                    borderRadius: pxToRem(4),
+                },
+                ' .MuiDialogContent-root':{
+                    padding:`0 ${2*unit}px ${2*unit}px ${2*unit}px`,
+                },
+                ' .MuiDialogActions-root':{
+                    padding:`0 ${2*unit}px ${2*unit}px ${2*unit}px`,
+                },
+            }
+
+        },
+
+    }
+}
+
 
 export const MuiSnackbar = () => {
     return {

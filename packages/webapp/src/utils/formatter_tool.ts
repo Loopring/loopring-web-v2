@@ -2,9 +2,10 @@ import store from 'stores'
 
 import * as sdk from 'loopring-sdk'
 import { Side, toBig } from 'loopring-sdk'
-import { TradeTypes } from '@loopring-web/common-resources'
+import {  TradeTypes } from '@loopring-web/common-resources'
 import { volumeToCountAsBigNumber } from 'hooks/help'
 import { getValuePrecisionThousand } from '@loopring-web/common-resources'
+import { TradeItemRole } from '@loopring-web/component-lib'
 
 const getTokenInfo = (symbol: string) => {
     const tokenMap = store.getState().tokenMap.tokenMap
@@ -90,6 +91,7 @@ export function formatPriceWithPrecision(rawVal: string,
 }
 
 export function tradeItemToTableDataItem(tradeItem: any) {
+    const { tokenMap } = store.getState().tokenMap
     const marketList = tradeItem.market.split('-')
     // due to AMM case, we cannot use first index
     const side = tradeItem.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
@@ -98,17 +100,25 @@ export function tradeItemToTableDataItem(tradeItem: any) {
     const base = marketList[marketList.length - 2]
     const quote = marketList[marketList.length - 1]
     const baseValue = volumeToCountAsBigNumber(base, tradeItem.volume)
+    //
     const quoteValue = baseValue?.times(tradeItem.price)
     const sellToken = isBuy ? quote : base
     const buyToken = isBuy ? base : quote
     const sellValue = (isBuy ? quoteValue : baseValue)?.toNumber()
     const buyValue = (isBuy ? baseValue : quoteValue)?.toNumber()
 
-    const feeKey = buyToken
-    const feeValue = getValuePrecisionThousand(volumeToCountAsBigNumber(feeKey, tradeItem.fee)?.toString(), 4, 2) as any
-
+    const feeKey = isBuy ? base : quote
+    const feeKeyPrecision = tokenMap ? tokenMap[feeKey].precision : undefined
+    const feeValue = getValuePrecisionThousand(volumeToCountAsBigNumber(feeKey, tradeItem.fee), feeKeyPrecision, 2, undefined, false, {
+        floor: false,
+        // isTrade: true,
+    }) as any
+    const counterparty = marketList.length === 3 ? 'Orderbook' : 'Pool'
+    // myLog ('....',tokenMap[base].precision)
     return ({
         side,
+        role: tradeItem.side === 'BUY' ? TradeItemRole.taker : TradeItemRole.maker,
+        counterparty: counterparty,
         price: {
             key: sellToken,
             value: toBig(tradeItem.price).toNumber(),
@@ -126,7 +136,11 @@ export function tradeItemToTableDataItem(tradeItem: any) {
             to: {
                 key: buyToken,
                 value: buyValue ? buyValue : undefined
-            }
+            },
+
+            volume: getValuePrecisionThousand(baseValue,
+                //@ts-ignore
+                tokenMap[base].precisionForOrder,  tokenMap[base].precisionForOrder,  tokenMap[base].precisionForOrder, true)
         }
     })
 }
@@ -142,19 +156,11 @@ export function getFloatValue(rawVal: any) {
 
 export function isIntNum(val: any){
     var regPos = /^\d+$/; 
-    var regNeg = /^\-[1-9][0-9]*$/;
-    if(regPos.test(val) && regNeg.test(val)) {
-        return true;
-    } else {
-        return false;
-    }
+    var regNeg = /^-[1-9][0-9]*$/;
+    return regPos.test(val) && regNeg.test(val);
 }
 
 export function isPosIntNum(val: any){
     var regPos = /^\d+$/;
-    if(regPos.test(val)) {
-        return true;
-    } else {
-        return false;
-    } 
+    return regPos.test(val);
 }

@@ -53,6 +53,12 @@ import {
     UpdateAccount_Success,
     UpdateAccount_Submit,
     UpdateAccount_Failed,
+
+    ExportAccount_Approve_WaitForAuth,
+    ExportAccount_User_Denied,
+    ExportAccount_Success,
+    ExportAccount_Failed,
+
 } from './ModalPanels';
 import { account } from '../../static';
 import { Box } from '@mui/material';
@@ -382,6 +388,61 @@ const Template: Story<any> = withTranslation()((rest: WithTranslation) => {
             },
             [AccountStep.UpdateAccount_Failed]: {
                 view: <UpdateAccount_Failed btnInfo={closeBtn} {...{
+                      ...rest
+
+                }} />,
+            },
+
+            [AccountStep.ResetAccount_Approve_WaitForAuth]: {
+                view: <UpdateAccount_Approve_WaitForAuth patch={ { isReset: true } } {...{
+                          ...rest,
+                    providerNam:ConnectProviders.MetaMask
+                    }} />,
+            },
+            [AccountStep.ResetAccount_First_Method_Denied]: {
+                view: <UpdateAccount_First_Method_Denied patch={ { isReset: true } } btnInfo={retryBtn} {...{
+                      ...rest
+
+                }} />,
+            },
+            [AccountStep.ResetAccount_User_Denied]: {
+                view: <UpdateAccount_User_Denied patch={ { isReset: true } } btnInfo={retryBtn} {...{
+                      ...rest
+
+                }} />,
+            },
+            [AccountStep.ResetAccount_Success]: {
+                view: <UpdateAccount_Success patch={ { isReset: true } } btnInfo={closeBtn}  {...{
+                      ...rest
+
+                }} />,
+            },
+            [AccountStep.ResetAccount_Submit]: {
+                view: <UpdateAccount_Submit patch={ { isReset: true } } btnInfo={closeBtn} {...{
+                      ...rest
+
+                }} />,
+            },
+            
+            [AccountStep.ExportAccount_Approve_WaitForAuth]: {
+                view: <ExportAccount_Approve_WaitForAuth patch={ { isReset: true } } btnInfo={closeBtn} {...{
+                      ...rest
+                }} />,
+            },
+            [AccountStep.ExportAccount_User_Denied]: {
+                view: <ExportAccount_User_Denied patch={ { isReset: true } } btnInfo={retryBtn} {...{
+                      ...rest
+
+                }} />,
+            },
+            [AccountStep.ExportAccount_Success]: {
+                view: <ExportAccount_Success patch={ { isReset: true } } btnInfo={closeBtn}  {...{
+                      ...rest
+
+                }} />,
+            },
+            [AccountStep.ExportAccount_Failed]: {
+                view: <ExportAccount_Failed patch={ { isReset: true } } btnInfo={closeBtn} {...{
                       ...rest
 
                 }} />,

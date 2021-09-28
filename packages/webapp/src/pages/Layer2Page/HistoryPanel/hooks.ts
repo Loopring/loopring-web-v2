@@ -26,6 +26,7 @@ export type TxsFilterProps = {
 export function useGetTxs() {
 
     const {account: {accountId, apiKey}} = useAccount()
+    const { tokenMap } = store.getState().tokenMap
 
     const [txs, setTxs] = useState<RawDataTransactionItem[]>([])
     const [txsTotal, setTxsTotal] = useState(0)
@@ -73,22 +74,26 @@ export function useGetTxs() {
                 types,
             }, apiKey)
 
-            const formattedList = userTxnList.userTxs.map(o => ({
-                ...o,
-                side: o.txType as any,
-                amount: {
-                    unit: o.symbol || '',
-                    value: Number(volumeToCount(o.symbol, o.amount))
-                },
-                fee: {
-                    unit: o.feeTokenSymbol || '',
-                    value: Number(volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0))
-                },
-                memo: o.memo || '',
-                time: o.timestamp,
-                txnHash: o.hash,
-                status: getTxnStatus(o.status),
-            }))
+            const formattedList = userTxnList.userTxs.map(o => {
+                const feePrecision = tokenMap ? tokenMap[o.feeTokenSymbol].precision : undefined
+                return ({
+                    ...o,
+                    side: o.txType as any,
+                    amount: {
+                        unit: o.symbol || '',
+                        value: Number(volumeToCount(o.symbol, o.amount))
+                    },
+                    fee: {
+                        unit: o.feeTokenSymbol || '',
+                        value: Number(volumeToCountAsBigNumber(o.feeTokenSymbol, o.feeAmount || 0))
+                    },
+                    memo: o.memo || '',
+                    time: o.timestamp,
+                    txnHash: o.hash,
+                    status: getTxnStatus(o.status),
+                    feePrecision: feePrecision,
+                })
+            })
             setTxs(formattedList)
             setTxsTotal(userTxnList.totalNum)
             setShowLoading(false)
@@ -173,15 +178,30 @@ export function useGetTxs() {
 
 export function useGetTrades() {
     const [userTrades, setUserTrades] = React.useState<RawDataTradeItem[]>([])
+    const [userTradesTotal, setUserTradesTotal] = React.useState(0)
     const [showLoading, setShowLoading] = React.useState(true)
     const {account: {accountId, apiKey}} = useAccount()
 
     const tokenMap = store.getState().tokenMap.tokenMap
 
-    const getUserTradeList = React.useCallback(async () => {
+    const getUserTradeList = React.useCallback(async ({
+        market,
+        orderHash,
+        offset,
+        limit,
+        fromId,
+        fillTypes,
+    }) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey && tokenMap) {
+            setShowLoading(true)
             const userTrades = await LoopringAPI.userAPI.getUserTrades({
                 accountId,
+                market,
+                orderHash,
+                offset,
+                limit,
+                fromId,
+                fillTypes,
             }, apiKey)
 
             if (userTrades && userTrades.userTrades) {
@@ -189,17 +209,20 @@ export function useGetTrades() {
                 setUserTrades(userTrades.userTrades.map(o => {
                     return tradeItemToTableDataItem(o)
                 }))
-                setShowLoading(false)
+                setUserTradesTotal(userTrades.totalNum)
             }
+            setShowLoading(false)
         }
     }, [accountId, apiKey, tokenMap])
 
     React.useEffect(() => {
-        getUserTradeList()
+        getUserTradeList({})
     }, [getUserTradeList])
 
     return {
         userTrades,
+        userTradesTotal,
+        getUserTradeList,
         showLoading,
     }
 }

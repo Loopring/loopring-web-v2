@@ -1,4 +1,9 @@
-import { Mark,ButtonProps as MuButtonPros, ToggleButtonGroupProps as MuToggleButtonGroupProps } from '@mui/material';
+import {
+    Mark,
+    ButtonProps as MuButtonPros,
+    ToggleButtonGroupProps as MuToggleButtonGroupProps,
+     SliderProps
+} from '@mui/material';
 import { XOR } from "../../../types/lib";
 
 export type ButtonProps = MuButtonPros & {
@@ -7,6 +12,7 @@ export type ButtonProps = MuButtonPros & {
     // hBg:'',
     // hColor:'',
     loading?: 'true' | 'false'
+    loadingBg?:string
 }
 
 export type BtnInfo = {
@@ -20,7 +26,7 @@ export type BtnInfoProps = {
     btnInfo? : BtnInfo
 }
 
-export interface BtnPercentageProps  {
+export interface BtnPercentageProps extends SliderProps {
     anchors?:  Mark[], //0 --100    default 0,20,40,60,80,100
     selected: number,
     valueLabelDisplay?: 'on' | 'auto' | 'off',

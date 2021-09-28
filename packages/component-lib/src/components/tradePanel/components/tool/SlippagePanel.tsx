@@ -4,7 +4,7 @@ import CurrencyInput from 'react-currency-input-field';
 import { globalSetup } from '@loopring-web/common-resources';
 import styled from '@emotion/styled';
 import { Box, FormHelperText, InputAdornment } from '@mui/material';
-import { WithTranslation } from 'react-i18next';
+import { TFunction } from 'react-i18next';
 import { useFocusRef } from '../../../basic-lib/form/hooks';
 import { useSettings } from '../../../../stores';
 
@@ -44,30 +44,32 @@ const Styled = styled(Box)`
 const suffix = '%';
 
 const InputStyled = styled(CurrencyInput)`
-  position:relative;
-  text-align: right;
+  position: relative;
   color: var(--color-text-primary);
-  
+
   ::placeholder {
     color: var(--color-text-secondary);
   }
+
   //width: 100%;
   height: 2.4rem;
   width: 92px; //calc(100% - 2rem);
   // height: 100%; //var(--btn-Input-height);
   // min-height:24px;
   padding: .3rem .3rem .3rem .8rem;
-  fontSize: 1.4rem;
+  //fontSize: 1.4rem;
   background: var(--color-box);
-  ${({ theme }) => theme.border.defaultFrame({ d_R: 1 / 2, c_key: 'var(--color-border)' })};
+  ${({theme}) => theme.border.defaultFrame({d_R: 1 / 2, c_key: 'var(--color-border)'})};
   text-align: left;
   min-width: 0;
   padding-right: 2rem;
+
   .MuiButtonBase-root & {
   }
+
   // &:after {
   //   display: block;
-  //   content: '${suffix}';
+    //   content: '${suffix}';
   //   position: absolute;
   //   right: 0;
   // } 
@@ -75,7 +77,7 @@ const InputStyled = styled(CurrencyInput)`
     outline: 0;
     border-color: transparent;
   }
-  
+
 }
 
 ` as typeof CurrencyInput
@@ -86,7 +88,7 @@ export const SlippagePanel = ({
                                   wait = globalSetup.wait,
                                   handleChange,
                                   ...rest
-                              }: WithTranslation & {
+                              }: { t:TFunction } & {
 
 
     slippageList: Array<number | string>,
@@ -95,7 +97,7 @@ export const SlippagePanel = ({
 }) => {
     let {slippage:_slippage} = useSettings()
     const [customSlippage, setCustomSlippage] = React.useState<string|number | 'N'>(_slippage);
-    const [showAlert, setShowAlert] = React.useState<boolean>(_slippage!=='N' && _slippage>5?true:false);
+    const [showAlert, setShowAlert] = React.useState<boolean>(_slippage !== 'N' && _slippage > 5);
     // const [cValue, setCValue] = React.useState<number | 'N'>(_slippage);
     const inputEle = useFocusRef({
         shouldFocusOn: false,
@@ -142,7 +144,7 @@ export const SlippagePanel = ({
         if (RegExp('slippage:').test(value.toString())) {
             item = {
                 value: customSlippage,
-                JSX:  <Box position={'relative'} className={'MuiInputBase-root'}  display={'flex'} flexDirection={'row'}
+                JSX:  <Box  position={'relative'} className={'MuiInputBase-root'}  display={'flex'} flexDirection={'row'}
                 ><InputStyled className={'MuiInputBase-sizeSmall MuiInputBase-root '} ref={inputEle} name={CUSTOMER_SLIPPAGE_NAME}
                                    allowDecimals={true}
                                    decimalsLimit={2}
@@ -165,7 +167,7 @@ export const SlippagePanel = ({
         } else {
             item = {
                 value: value,
-                JSX: <>{value}%</>,
+                JSX: <span>{value}%</span>,     
                 tlabel: value + '%',
                 key: value + '-' + index,
             }

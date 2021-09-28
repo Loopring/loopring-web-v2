@@ -8,7 +8,7 @@ import {
     myLog,
     SagaStatus,
 } from '@loopring-web/common-resources';
-import { TradeBtnStatus } from '@loopring-web/component-lib';
+import { TradeBtnStatus, useOpenModals } from '@loopring-web/component-lib';
 import { IdMap, useTokenMap } from '../../../stores/token';
 import { useAmmMap } from '../../../stores/Amm/AmmMap';
 import {
@@ -32,6 +32,7 @@ import { initSlippage, usePageAmmPool } from "stores/router";
 import _ from 'lodash'
 import { getTimestampDaysLater } from "utils/dt_tools";
 import { DAYS } from "defs/common_defs";
+import { useSystem } from '../../../stores/system';
 
 // ----------calc hook -------
 
@@ -62,8 +63,10 @@ export const useAmmJoin = ({
     const {t} = useTranslation('common');
 
     const [isLoading, setIsLoading] = React.useState(false)
+    const {setShowSupport} = useOpenModals()
 
     const {coinMap, tokenMap} = useTokenMap();
+    const {allowTrade} = useSystem();
     const {ammMap} = useAmmMap();
     const {account, status: accountStatus} = useAccount();
 
@@ -120,7 +123,7 @@ export const useAmmJoin = ({
                 } else {
                     return {
                         btnStatus: TradeBtnStatus.DISABLED,
-                        btnI18nKey: `labelLimitMin, ${times * baseMinAmt} ${ammData?.coinA.belong} / ${times * quoteMinAmt} ${ammData?.coinB.belong}`
+                        btnI18nKey: `labelLimitMin ${times * baseMinAmt} ${ammData?.coinA.belong} / ${times * quoteMinAmt} ${ammData?.coinB.belong}`
                     }
                 }
 
@@ -237,7 +240,7 @@ export const useAmmJoin = ({
 
         const {idIndex, marketArray, marketMap,} = store.getState().tokenMap
 
-        const {ammMap} = store.getState().amm.ammMap
+        // const {ammMap} = store.getState().amm.ammMap
 
         const {market, amm} = sdk.getExistedMarket(marketArray, data.coinA.belong as string,
             data.coinB.belong as string)
@@ -292,77 +295,82 @@ export const useAmmJoin = ({
 
         updatePageAmmJoinBtn({btnStatus: TradeBtnStatus.LOADING,})
 
-        if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !request || !account?.eddsaKey?.sk) {
-            myLog(' onAmmJoin ammpoolAPI:', LoopringAPI.ammpoolAPI,
-                'joinRequest:', request)
-
-            setToastOpen({open: true, type: 'success', content: t('labelJoinAmmFailed')})
+        if (!allowTrade.order.enable) {
+            setShowSupport({isShow:true})
             setIsLoading(false)
-            walletLayer2Service.sendUserUpdate()
-            return
-        }
+        }else {
 
-        const patch: sdk.AmmPoolRequestPatch = {
-            chainId: store.getState().system.chainId as sdk.ChainId,
-            ammName: ammInfo.__rawConfig__.name,
-            poolAddress: ammInfo.address,
-            eddsaKey: account.eddsaKey.sk
-        }
+            if (!LoopringAPI.ammpoolAPI || !LoopringAPI.userAPI || !request || !account?.eddsaKey?.sk) {
+                myLog(' onAmmJoin ammpoolAPI:', LoopringAPI.ammpoolAPI,
+                    'joinRequest:', request)
 
-        let req = _.cloneDeep(request)
-
-        try {
-
-            const request0: sdk.GetNextStorageIdRequest = {
-                accountId: account.accountId,
-                sellTokenId: req.joinTokens.pooled[ 0 ].tokenId as number,
+                setToastOpen({open: true, type: 'success', content: t('labelJoinAmmFailed')})
+                setIsLoading(false)
+                walletLayer2Service.sendUserUpdate()
+                return
             }
-            const storageId0 = await LoopringAPI.userAPI.getNextStorageId(request0, account.apiKey)
 
-            const request_1: sdk.GetNextStorageIdRequest = {
-                accountId: account.accountId,
-                sellTokenId: req.joinTokens.pooled[ 1 ].tokenId as number
+            const patch: sdk.AmmPoolRequestPatch = {
+                chainId: store.getState().system.chainId as sdk.ChainId,
+                ammName: ammInfo.__rawConfig__.name,
+                poolAddress: ammInfo.address,
+                eddsaKey: account.eddsaKey.sk
             }
-            const storageId1 = await LoopringAPI.userAPI.getNextStorageId(request_1, account.apiKey)
 
-            req.storageIds = [storageId0.offchainId, storageId1.offchainId]
+            let req = _.cloneDeep(request)
 
-            req.validUntil = getTimestampDaysLater(DAYS)
+            try {
 
-            myLog('join ammpool req:', req)
-
-            const response = await LoopringAPI.ammpoolAPI.joinAmmPool(req, patch, account.apiKey)
-
-            myLog('join ammpool response:', response)
-
-            updatePageAmmJoin({
-                ammData: {
-                    ...ammData, ...{
-                        coinA: {...ammData.coinA, tradeValue: 0},
-                        coinB: {...ammData.coinB, tradeValue: 0},
-                    }
+                const request0: sdk.GetNextStorageIdRequest = {
+                    accountId: account.accountId,
+                    sellTokenId: req.joinTokens.pooled[ 0 ].tokenId as number,
                 }
-            })
+                const storageId0 = await LoopringAPI.userAPI.getNextStorageId(request0, account.apiKey)
 
-            if ((response.joinAmmPoolResult as any)?.resultInfo) {
+                const request_1: sdk.GetNextStorageIdRequest = {
+                    accountId: account.accountId,
+                    sellTokenId: req.joinTokens.pooled[ 1 ].tokenId as number
+                }
+                const storageId1 = await LoopringAPI.userAPI.getNextStorageId(request_1, account.apiKey)
+
+                req.storageIds = [storageId0.offchainId, storageId1.offchainId]
+
+                req.validUntil = getTimestampDaysLater(DAYS)
+
+                myLog('join ammpool req:', req)
+
+                const response = await LoopringAPI.ammpoolAPI.joinAmmPool(req, patch, account.apiKey)
+
+                myLog('join ammpool response:', response)
+
+                updatePageAmmJoin({
+                    ammData: {
+                        ...ammData, ...{
+                            coinA: {...ammData.coinA, tradeValue: 0},
+                            coinB: {...ammData.coinB, tradeValue: 0},
+                        }
+                    }
+                })
+
+                if ((response.joinAmmPoolResult as any)?.resultInfo) {
+                    setToastOpen({open: true, type: 'error', content: t('labelJoinAmmFailed')})
+                } else {
+                    setToastOpen({open: true, type: 'success', content: t('labelJoinAmmSuccess')})
+                }
+            } catch (reason) {
+                sdk.dumpError400(reason)
                 setToastOpen({open: true, type: 'error', content: t('labelJoinAmmFailed')})
-            } else {
-                setToastOpen({open: true, type: 'success', content: t('labelJoinAmmSuccess')})
+            } finally {
+                setIsLoading(false)
+                updateJoinFee()
+                walletLayer2Service.sendUserUpdate()
             }
-        } catch (reason) {
-            sdk.dumpError400(reason)
-            setToastOpen({open: true, type: 'error', content: t('labelJoinAmmFailed')})
-        } finally {
-            setIsLoading(false)
-            updateJoinFee()
-            walletLayer2Service.sendUserUpdate()
-        }
 
-        if (props.__cache__) {
-            makeCache(props.__cache__)
+            if (props.__cache__) {
+                makeCache(props.__cache__)
+            }
         }
-
-    }, [request, ammData, account, t])
+    }, [request, ammData, account, t, allowTrade])
 
     const onAmmClickMap = Object.assign(_.cloneDeep(btnClickMap), {
         [ fnType.ACTIVATED ]: [ammCalculator]
@@ -375,7 +383,7 @@ export const useAmmJoin = ({
     const walletLayer2Callback = React.useCallback(async () => {
 
         if (pair?.coinBInfo?.simpleName && snapShotData?.ammPoolSnapshot) {
-            const {walletMap} = makeWalletLayer2()
+            const {walletMap} = makeWalletLayer2(false)
             initAmmData(pair, walletMap)
             setIsLoading(false)
         }

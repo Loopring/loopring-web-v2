@@ -58,14 +58,14 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     const { withdrawValue, updateWithdrawData, resetWithdrawData, } = useModalData()
 
-    const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2().walletMap ?? {} as WalletMap<R>);
+    const [walletMap2, setWalletMap2] = React.useState(makeWalletLayer2(true).walletMap ?? {} as WalletMap<R>);
 
     const [withdrawFeeInfo, setWithdrawFeeInfo] = React.useState<FeeInfo>()
 
     const [withdrawType, setWithdrawType] = React.useState<sdk.OffchainFeeReqType>(sdk.OffchainFeeReqType.OFFCHAIN_WITHDRAWAL)
 
     const withdrawType2 = withdrawType === sdk.OffchainFeeReqType.FAST_OFFCHAIN_WITHDRAWAL ? 'Fast' : 'Standard'
-    const { chargeFeeList } = useChargeFees(withdrawValue.belong, withdrawType, tokenMap, withdrawValue.tradeValue)
+    const { chargeFeeList } = useChargeFees({tokenSymbol: withdrawValue.belong, requestType: withdrawType, tokenMap, amount: withdrawValue.tradeValue})
 
     const [withdrawTypes, setWithdrawTypes] = React.useState<any>(WithdrawTypes)
     const [isExceedMax, setIsExceedMax] = React.useState(false)
@@ -85,8 +85,6 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     const { btnStatus, enableBtn, disableBtn, } = useBtnStatus()
 
     const checkBtnStatus = React.useCallback(() => {
-
-        myLog('address:', address)
 
         if (!tokenMap || !withdrawFeeInfo?.belong || !withdrawValue?.belong || !address) {
             disableBtn()
@@ -167,7 +165,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
     }, [withdrawValue.belong, tokenMap,])
 
     const walletLayer2Callback = React.useCallback(() => {
-        const walletMap = makeWalletLayer2().walletMap ?? {} as WalletMap<R>
+        const walletMap = makeWalletLayer2(true).walletMap ?? {} as WalletMap<R>
         setWalletMap2(walletMap)
     }, [setWalletMap2])
 
@@ -380,11 +378,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
     }, [account, tokenMap, exchangeInfo, withdrawType2, withdrawFeeInfo, withdrawValue, setShowAccount])
 
-    const handleFeeChange = React.useCallback((value: {
-        belong: string;
-        fee: number | string | undefined;
-        __raw__?: any
-    }): void => {
+    const handleFeeChange = React.useCallback((value: FeeInfo): void => {
         setWithdrawFeeInfo(value)
     }, [setWithdrawFeeInfo])
 

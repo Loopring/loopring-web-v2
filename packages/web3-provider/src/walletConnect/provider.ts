@@ -184,7 +184,7 @@ export const WalletConnectUnsubscribe = async  (provider: any) => {
 //
 // export const walletlink = new WalletLinkConnector({
 //     url: RPC_URLS[1],
-//     appName: 'Loopring DEX'
+//     appName: 'Loopring L2'
 // })
 //
 // export const ledger = new LedgerConnector({ chainId: 1, url: RPC_URLS[1], pollingInterval: POLLING_INTERVAL })

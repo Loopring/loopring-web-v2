@@ -3,18 +3,20 @@ import { WithTranslation, withTranslation } from 'react-i18next';
 import { AmmRecordTable, ChartType, ScaleAreaChart, TradeTitle, useSettings } from '@loopring-web/component-lib';
 import {
     AvatarCoinStyled,
-    Currency,
     EmptyValueTag,
     getValuePrecisionThousand,
     PriceTag,
     abbreviateNumber,
+    RowConfig,
 } from '@loopring-web/common-resources';
 import { Avatar, Box, Breadcrumbs, Divider, Grid, Link, Tab, Tabs, Typography } from '@mui/material';
 import { AmmPanelView } from '../AmmPanel';
 import styled from '@emotion/styled/';
 import { useCoinPair } from './hooks';
 import { StylePaper } from 'pages/styled';
-import { Link as RouterLink, useHistory } from 'react-router-dom';
+import store from 'stores'
+import { Link as RouterLink } from 'react-router-dom';
+import { Currency } from 'loopring-sdk';
 
 
 //******************** page code ************************//
@@ -55,16 +57,13 @@ const applyProps = (index: number) => {
         'aria-controls': `tabpanel-${index}`,
     }
 }
-const RowConfig = {
-    rowHeight: 44,
-    headerRowHeight: 44,
-}
 
 export const CoinPairPanel = withTranslation('common')(<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>
 ({t, ...rest}:
      WithTranslation & any) => {    //ActivityMap<I, I>
     const {currency} = useSettings();
-    let history = useHistory()
+    const {tokenPrices} = store.getState().tokenPrices
+    // let history = useHistory()
     const {
         tradeFloat,
         snapShotData,
@@ -85,11 +84,14 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
     // const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
 
     const {coinJson} = useSettings();
+    const {forex} = store.getState().system
     const coinAIcon: any = coinJson[ coinPairInfo.myCoinA?.simpleName ];
     const coinBIcon: any = coinJson[ coinPairInfo.myCoinB?.simpleName ];
+    const precisionA = coinPairInfo['precisionA'] || undefined
+    const precisionB = coinPairInfo['precisionB'] || undefined
     // const [pageSize, setPageSize] = React.useState(0)
     const container = React.useRef(null);
-    const tableHeight = RowConfig.headerRowHeight + (tabIndex === 0 ? 15 : 14) * RowConfig.rowHeight;
+    const tableHeight = RowConfig.rowHeaderHeight + (tabIndex === 0 ? 15 : 14) * RowConfig.rowHeight;
 
     // React.useEffect(() => {
     //     // @ts-ignore
@@ -102,6 +104,10 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
     const handleTabsChange = React.useCallback((_: any, value: 0 | 1) => {
         setTabIndex(value)
     }, [])
+
+    const priceCoinADollar = pair.coinAInfo?.simpleName ? tokenPrices[pair.coinAInfo?.simpleName] : 0
+    const priceCoinAYuan = priceCoinADollar * (forex || 6.5)
+    const totalAmountValueCoinA = (tradeFloat?.volume || 0) * (currency === Currency.usd ? priceCoinADollar : priceCoinAYuan)
 
     return <>
         <Box marginBottom={2}>
@@ -157,8 +163,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                          justifyContent={'center'}>
                                         {coinAIcon ?
                                             <AvatarCoinStyled imgx={coinAIcon.x} imgy={coinAIcon.y}
-                                                              imgheight={coinAIcon.height}
-                                                              imgwidth={coinAIcon.width} size={20}
+                                                              imgheight={coinAIcon.h}
+                                                              imgwidth={coinAIcon.w} size={20}
                                                               variant="circular"
                                                               style={{marginTop: 2}}
                                                               alt={coinPairInfo?.myCoinA?.simpleName as string}
@@ -176,7 +182,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                     <Typography marginLeft={1 / 2} justifyContent={'center'} display={'flex'}>
                                         <Typography component={'span'} alignSelf={'right'} variant={'h5'} height={24}
                                                     lineHeight={'24px'}>
-                                            {getValuePrecisionThousand(coinPairInfo.totalA, 4)}</Typography>
+                                            {getValuePrecisionThousand(coinPairInfo.totalA, precisionA, precisionA)}</Typography>
                                         <Typography component={'span'} variant={'h5'} marginLeft={1} alignSelf={'right'}
                                                     height={24}
                                                     lineHeight={'24px'}>
@@ -202,8 +208,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                          width={'var(--list-menu-coin-size)'} alignItems={'center'}
                                          justifyContent={'center'}>{coinBIcon ?
                                         <AvatarCoinStyled style={{marginTop: 2}} imgx={coinBIcon.x} imgy={coinBIcon.y}
-                                                          imgheight={coinBIcon.height}
-                                                          imgwidth={coinBIcon.width} size={20}
+                                                          imgheight={coinBIcon.h}
+                                                          imgwidth={coinBIcon.w} size={20}
                                                           variant="circular"
                                                           alt={coinPairInfo?.myCoinB?.simpleName as string}
                                             // src={sellData?.icon}
@@ -217,7 +223,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                                     <Typography marginLeft={1 / 2} justifyContent={'center'} display={'flex'}>
                                         <Typography variant={'h5'} component={'span'} alignSelf={'right'} height={24}
                                                     lineHeight={'24px'}>
-                                            {getValuePrecisionThousand(coinPairInfo.totalB, 4)}</Typography>
+                                            {getValuePrecisionThousand(coinPairInfo.totalB, precisionB, precisionB)}</Typography>
                                         <Typography variant={'h5'} component={'span'} marginLeft={1} alignSelf={'right'}
                                                     height={24}
                                                     lineHeight={'24px'}>
@@ -240,7 +246,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             <Box>
                                 <Typography variant={'h3'}
                                             component={'span'}> {typeof coinPairInfo.amountDollar === 'undefined' ? EmptyValueTag :
-                                    currency === Currency.dollar ? PriceTag.Dollar + abbreviateNumber(coinPairInfo.amountDollar || 0) : PriceTag.Yuan + abbreviateNumber(coinPairInfo.amountYuan || 0)}
+                                    currency === Currency.usd ? PriceTag.Dollar + abbreviateNumber(coinPairInfo.amountDollar || 0) : PriceTag.Yuan + abbreviateNumber(coinPairInfo.amountYuan || 0)}
                                 </Typography>
 
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}>
@@ -252,7 +258,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         <Grid item paddingX={2} paddingY={3} xs={4} sm={6} lg={3}>
                             <Box>
                                 <Typography variant={'h3'} component={'span'}>
-                                    {getValuePrecisionThousand(tradeFloat?.volume)}
+                                    {(currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(totalAmountValueCoinA, undefined, undefined, undefined, true, { isFait: true })}
                                 </Typography>
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}>
                                     {t('label24Volume')}
@@ -263,10 +269,10 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         <Grid item paddingX={2} paddingY={3} xs={4} sm={6} lg={2}>
                             <Box>
                                 <Typography variant={'h3'}
-                                            component={'span'}> {coinPairInfo.APY ? coinPairInfo.APY : EmptyValueTag}%
+                                            component={'span'}> {coinPairInfo.APR ? getValuePrecisionThousand(coinPairInfo.APR, 2, 2, undefined, true) : EmptyValueTag}%
                                 </Typography>
                                 <Typography component={'p'} color={'textSecondary'} display={'flex'}>
-                                    {t('labelAPY')}
+                                    {t('labelAPR')}
                                 </Typography>
                             </Box>
                         </Grid>
@@ -286,7 +292,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                     {tabIndex === 0 ? <AmmRecordTable
                         rawData={ammMarketArray}
                         rowHeight={RowConfig.rowHeight}
-                        headerRowHeight={RowConfig.headerRowHeight}
+                        headerRowHeight={RowConfig.rowHeaderHeight}
                         currentheight={tableHeight}
                         showloading={isRecentLoading}
                         currency={currency}
@@ -300,7 +306,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                         }}
                         showloading={showAmmPoolLoading}
                         rowHeight={RowConfig.rowHeight}
-                        headerRowHeight={RowConfig.headerRowHeight}
+                        headerRowHeight={RowConfig.rowHeaderHeight}
                         currentheight={tableHeight}
                         currency={currency}
                     />}

@@ -1,18 +1,24 @@
 import React from 'react'
-import { Box, Typography, Avatar } from '@mui/material'
+import { Avatar, Box, Typography } from '@mui/material'
 import { withTranslation, WithTranslation } from 'react-i18next';
-import { Button, TablePagination, TableProps, PopoverPure } from '../../basic-lib'
+import { Button, PopoverPure, TableProps } from '../../basic-lib'
 import { Column, Table, } from '../../basic-lib/'
-import { Currency, EmptyValueTag, globalSetup, PriceTag, getValuePrecisionThousand, AvatarCoinStyled } from '@loopring-web/common-resources'
+import {
+    AvatarCoinStyled,
+    EmptyValueTag,
+    getValuePrecisionThousand,
+    globalSetup,
+    PriceTag
+} from '@loopring-web/common-resources'
 import { Method, MyPoolRow as Row, MyPoolTableProps } from './Interface'
 import { FormatterProps } from 'react-data-grid';
 import styled from '@emotion/styled';
 import { TablePaddingX } from '../../styled';
-import { useDeepCompareEffect } from 'react-use';
 import { IconColumn } from '../poolsTable';
-import { bindPopper, bindTrigger, usePopupState } from 'material-ui-popup-state/hooks';
+import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import { bindHover } from 'material-ui-popup-state/es';
 import { useSettings } from '../../../stores';
+import { Currency } from 'loopring-sdk';
 
 export enum PoolTradeType {
     add = 'add',
@@ -43,9 +49,9 @@ const TableStyled = styled(Box)`
 
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as typeof Box
-const TypogStyle = styled(Typography)`
-    font-size: ${({theme}) => theme.fontDefault.body1};
-` as typeof Typography;
+// const TypogStyle = styled(Typography)`
+//     font-size: ${({theme}) => theme.fontDefault.body1};
+// ` as typeof Typography;
 
 const PoolStyle = styled(Box)`
     height: calc(${rowHeight}px);
@@ -60,8 +66,9 @@ const PoolStyle = styled(Box)`
 const columnMode = ({
                         t,
                         handleWithdraw,
-                        handleDeposit
-                    }: WithTranslation & Method<Row<any>>, currency: 'USD' | 'CYN', getPopoverState: any, coinJson: any): Column<Row<any>, unknown>[] => [
+                        handleDeposit,
+                        allowTrade,
+                    }: WithTranslation & Method<Row<any>>, currency: Currency, getPopoverState: any, coinJson: any): Column<Row<any>, unknown>[] => [
     {
         key: 'pools',
         sortable: false,
@@ -86,7 +93,7 @@ const columnMode = ({
         formatter: ({row, rowIdx}: FormatterProps<Row<any>, unknown>) => {
             const popState = getPopoverState(rowIdx)
             if (!row || !row.ammDetail) {
-                return <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}></Box>
+                return <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}/>
             }
             const {totalAmmValueDollar, totalAmmValueYuan, balanceA, balanceB, ammDetail: {coinAInfo, coinBInfo}} = row as any;
             const coinAIcon: any = coinJson[ coinAInfo.simpleName ];
@@ -94,12 +101,12 @@ const columnMode = ({
             // const formattedYuan = (balanceYuan && Number.isNaN(balanceYuan)) ? balanceYuan : 0
             // const formattedDollar = (balanceDollar && Number.isNaN(balanceYuan)) ? balanceDollar : 0
             return <Box height={'100%'} display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
-                    <Button {...bindHover(popState)}>
+                    <Box {...bindHover(popState)}>
                         <Typography
                             component={'span'} style={{ cursor: 'pointer' }}> {
-                                typeof totalAmmValueDollar === 'undefined' ? EmptyValueTag : (currency === 'USD' ? PriceTag.Dollar + getValuePrecisionThousand(totalAmmValueDollar, 2, 2) : PriceTag.Yuan + getValuePrecisionThousand(totalAmmValueYuan, 2, 2))}
+                                typeof totalAmmValueDollar === 'undefined' ? EmptyValueTag : (currency === Currency.usd ? PriceTag.Dollar + getValuePrecisionThousand(totalAmmValueDollar, undefined, undefined, undefined, true, { isFait: true, floor: true }) : PriceTag.Yuan + getValuePrecisionThousand(totalAmmValueYuan, undefined, undefined, undefined, true, { isFait: true, floor: true }))}
                         </Typography>
-                    </Button>
+                    </Box>
                     <PopoverPure
                         className={'arrow-top-center'}
                         {...bindPopper(popState)}
@@ -122,8 +129,8 @@ const columnMode = ({
                                         justifyContent={'flex-start'}>
                                         {coinAIcon ?
                                             <AvatarCoinStyled imgx={coinAIcon.x} imgy={coinAIcon.y}
-                                                imgheight={coinAIcon.height}
-                                                imgwidth={coinAIcon.width} size={20}
+                                                imgheight={coinAIcon.h}
+                                                imgwidth={coinAIcon.w} size={20}
                                                 variant="circular"
                                                 style={{ marginTop: 2 }}
                                                 alt={coinAInfo.simpleName as string}
@@ -157,8 +164,8 @@ const columnMode = ({
                                         width={'var(--list-menu-coin-size)'} alignItems={'center'}
                                         justifyContent={'flex-start'}>{coinBIcon ?
                                             <AvatarCoinStyled style={{ marginTop: 2 }} imgx={coinBIcon.x} imgy={coinBIcon.y}
-                                                imgheight={coinBIcon.height}
-                                                imgwidth={coinBIcon.width} size={20}
+                                                imgheight={coinBIcon.h}
+                                                imgwidth={coinBIcon.w} size={20}
                                                 variant="circular"
                                                 alt={coinBInfo.simpleName as string}
                                                 src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'} />
@@ -195,25 +202,25 @@ const columnMode = ({
         headerCellClass: 'textAlignRight',
         formatter: ({row}: FormatterProps<Row<any>, unknown>) => {
             if (!row.ammDetail || !row.ammDetail.coinAInfo) {
-                return <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}></Box>
+                return <Box display={'flex'} justifyContent={'flex-end'} alignItems={'center'}/>
             }
-            const {ammDetail: {coinAInfo, coinBInfo}, feeA, feeB, feeYuan, feeDollar} = row;
+            const {ammDetail: {coinAInfo, coinBInfo}, feeA, feeB, precisionA , precisionB} = row as any;
             return <Box width={'100%'} height={'100%'} display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
                 {/* <TypogStyle variant={'body1'} component={'span'} color={'textPrimary'}>
-                    {feeDollar === undefined ? EmptyValueTag : currency === Currency.dollar ? 'US' + PriceTag.Dollar + getThousandFormattedNumbers(feeDollar)
+                    {feeDollar === undefined ? EmptyValueTag : currency === Currency.usd ? 'US' + PriceTag.Dollar + getThousandFormattedNumbers(feeDollar)
                         : 'CNY' + PriceTag.Yuan + getThousandFormattedNumbers(feeYuan as number)}
                 </TypogStyle> */}
                 <Typography variant={'body2'} component={'p'} color={'textPrimary'} fontFamily={'Roboto'}>
 
                     <Typography component={'span'}
-                                >{getValuePrecisionThousand(feeA)}</Typography>
+                                >{getValuePrecisionThousand(feeA, undefined, undefined, precisionA, false, { floor: true })}</Typography>
                     <Typography component={'span'}
                                 >{` ${coinAInfo?.simpleName as string}`}</Typography>
                 </Typography>
                 <Typography variant={'body2'} component={'p'} color={'textPrimary'} marginX={1 / 2}>+</Typography>
                 <Typography variant={'body2'} component={'p'} color={'textPrimary'} fontFamily={'Roboto'}>
                     <Typography component={'span'}
-                                >{getValuePrecisionThousand(feeB)}</Typography>
+                                >{getValuePrecisionThousand(feeB, undefined, undefined, precisionB, false, { floor: true } )}</Typography>
                     <Typography component={'span'}
                                 >{` ${coinBInfo?.simpleName as string}` }</Typography>
 
@@ -231,9 +238,10 @@ const columnMode = ({
                             justifyContent={'center'}>
                 <Box display={'flex'} marginRight={-1}>
                     <Button variant={'text'} size={'small'}
+                            disabled={!(allowTrade?.joinAmm?.enable)}
                             onClick={() => {
-                                handleDeposit(row)
-                            }}>{t('labelPoolTableAddLiqudity')}</Button>
+                                                                handleDeposit(row)
+                                                            }}>{t('labelPoolTableAddLiqudity')}</Button>
                     <Button variant={'text'} size={'small'}
                             onClick={() => {
                                 handleWithdraw(row)
@@ -248,6 +256,7 @@ const columnMode = ({
 export const MyPoolTable = withTranslation('tables')(<T extends { [ key: string ]: any }>({
                                                                                               t, i18n,
                                                                                               tReady,
+                                                                                              allowTrade,
                                                                                               handlePageChange,
                                                                                               pagination,
                                                                                               showFilter = true,
@@ -255,43 +264,42 @@ export const MyPoolTable = withTranslation('tables')(<T extends { [ key: string 
                                                                                               handleWithdraw,
                                                                                               handleDeposit,
                                                                                               wait = globalSetup.wait,
-                                                                                              currency = 'USD',
+                                                                                              currency =  Currency.usd,
                                                                                               showloading,
                                                                                               ...rest
                                                                                           }: MyPoolTableProps<T> & WithTranslation) => {
-    const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
-    const [totalData, setTotalData] = React.useState<Row<T>[]>(rawData && Array.isArray(rawData) ? rawData : []);
-    useDeepCompareEffect(() => {
-        setTotalData(rawData)
-    }, [rawData])
+    // const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
+    // const [totalData, setTotalData] = React.useState<Row<T>[]>(rawData && Array.isArray(rawData) ? rawData : []);
+    // useDeepCompareEffect(() => {
+    //     setTotalData(rawData)
+    // }, [rawData])
 
     const {coinJson} = useSettings();
 
     const getPopoverState = React.useCallback((label: string) => {
-        const popoverState = usePopupState({variant: 'popover', popupId: `popup-poolsTable-${label}`})
-        return popoverState
+        return usePopupState({variant: 'popover', popupId: `popup-poolsTable-${label}`})
     }, [])
 
     const defaultArgs: TableProps<any, any> = {
         rawData,
-        columnMode: columnMode({t, i18n, tReady, handleWithdraw, handleDeposit}, currency, getPopoverState, coinJson),
+        columnMode: columnMode({t, i18n, tReady, handleWithdraw, handleDeposit,allowTrade}, currency, getPopoverState, coinJson),
         generateRows: (rawData: any) => rawData,
         generateColumns: ({columnsRaw}) => columnsRaw as Column<Row<any>, unknown>[],
     }
 
 
-    const pageSize = pagination ? pagination.pageSize : 10;
-
+    // const pageSize = pagination ? pagination.pageSize : 10;
+    //
     // const getRenderData = React.useCallback(() => pagination
     //     ? totalData.slice((page - 1) * pageSize, page * pageSize)
     //     : totalData
     //     , [page, pageSize, pagination, totalData])
-
-    const _handlePageChange = React.useCallback((page: number) => {
-        setPage(page);
-        // updateData({actionType: ActionType.page, currPage: page})
-        handlePageChange(page);
-    }, [handlePageChange])
+    //
+    // const _handlePageChange = React.useCallback((page: number) => {
+    //     setPage(page);
+    //     // updateData({actionType: ActionType.page, currPage: page})
+    //     handlePageChange(page);
+    // }, [handlePageChange])
 
     return <TableStyled>
         <Table

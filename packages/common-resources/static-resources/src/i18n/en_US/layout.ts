@@ -4,7 +4,7 @@ export default {
     labelLiquidity: 'Pools',
     labelMining: 'Farm',
     labelLayer2: 'Layer2',
-    loopringDomain: 'Loopring Exchange',
+    loopringDomain: 'Loopring Layer2 - APP ',
     labelClassic: 'Classic',
     labelClassicDescription: 'Fast trading with low fees.',
     labelAdvanced: 'Professional',
@@ -36,11 +36,12 @@ export default {
     labelMyLiquidity: 'My Liquidity',
     labelOrderBookMining: 'Orderbook Mining ',
     labelMakerRebates: 'Maker Rebates',
-    labelSetting: 'Settings',
+    labelSetting: 'Setting',
+    labelSecurity: 'Security',
+    labelVipPanel: 'VIP',
     titleLoopring:'Loopring',
     labelLoopringDescribe:'zkRollup Exchange and Payment Protocol',
     labelWrongNetwork: 'Wrong network',
     labelYoutube:'Youtube',
     labelWeibo:'Weibo'
-
 }
