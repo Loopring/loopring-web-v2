@@ -48,6 +48,7 @@ export type SocketEventMap = {
 }
 
 export class LoopringSocket {
+
     private static SocketEventMap: SocketEventMap = {
         [ SocketEventType.account ]: (data: { [ key: string ]: any }) => {
             const {totalAmount, tokenId, amountLocked, pending} = data;
@@ -79,16 +80,18 @@ export class LoopringSocket {
         [ SocketEventType.mixorder ]: (data: DepthData, topic) => {
             // const bids = genAB(data['bids'], true)
             // const asks = genAB(data['asks'])
-            const timestamp = Date.now();
-            // debugger
-            // const _data = getMidPrice({_asks:data['asks'], _bids:data['bids']})
-            mixorderService.sendMixorder({
-                [ topic.market ]: {
-                    ...data,
-                    timestamp: timestamp,
-                    symbol: topic.market
-                } as any
-            })
+            // const {socket} = store.getState().socket
+            if(window.loopringSocket.socketKeyMap[SocketEventType.mixorder].level === topic.level){
+                const timestamp = Date.now();
+                mixorderService.sendMixorder({
+                    [ topic.market ]: {
+                        ...data,
+                        timestamp: timestamp,
+                        symbol: topic.market
+                    } as any
+                })
+            }
+
         },
         [ SocketEventType.trade ]: (datas: string[][]) => {
             const marketTrades: MarketTradeInfo[] = datas.map((data) => {
@@ -154,12 +157,22 @@ export class LoopringSocket {
         count: 0
     };
     private _baseUrl: string;
-
     //TODO fill the socket receiver format callback
 
     constructor(url: string) {
         // const url = ChainId.MAINNET === chainId ? process.env.REACT_APP_API_URL : process.env.REACT_APP_API_URL_UAT;
         this._baseUrl = url; // baseSocket: string = `wss://ws.${url}/v3/ws?wsApiKey=${wsKey}`;
+    }
+    private _socketKeyMap: object | undefined;
+
+    get socketKeyMap(): object | undefined {
+        return this._socketKeyMap;
+    }
+
+    private _topics: object | undefined;
+
+    get topics(): object | undefined {
+        return this._topics;
     }
 
     private _socketCallbackMap: SocketCallbackMap | undefined;
@@ -188,6 +201,7 @@ export class LoopringSocket {
                 //register ping pong event
                 this.clearInitTimer(true);
                 this.resetSocketEvents();
+                this._socketKeyMap = socket;
                 const {topics} = this.makeMessageArray({socket});
                 if (!this.isConnectSocket()) {
                     await this.socketConnect({topics, apiKey})
@@ -363,6 +377,7 @@ export class LoopringSocket {
         if (apiKey) {
             data.apiKey = apiKey
         }
+        this._topics = topics;
         // console.log('Socket>>Socket',JSON.stringify(data));
         return JSON.stringify(data)
         // sendMessage(flat_txt)

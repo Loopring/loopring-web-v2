@@ -16,7 +16,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
                                             tradeCalcProData,
                                             tradeBtnBaseStatus,
                                             tradeData,
-    tradeType,
+                                            tradeType,
                                             handleCountChange,
                                             onChangeEvent,
                                             tokenBaseProps,
@@ -50,7 +50,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         if (handleCountChange) {
             handleCountChange(ibData, name, _ref)
         } else {
-            if(_ref.current !== 'percentage'){
+            if (_ref.current !== 'percentage') {
                 setSelectedPercentage(0)
             }
             // myLog(`${type}Trade: handleUser input on :`, ibData, name, tradeData)
@@ -68,7 +68,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
     const propsBase = React.useMemo(() => {
         return {
             label: t('labelProBaseLabel'),
-            subLabel: tradeType === TradeProType.sell ? t('tokenMax'):undefined,
+            subLabel: tradeType === TradeProType.sell ? t('tokenMax') : undefined,
             emptyText: t('tokenSelectToken'),
             placeholderText: '0.00',
             size: InputSize.small,
@@ -76,7 +76,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
             coinLabelStyle: {color: 'var(--color-text-secondary)'},
             isShowCoinIcon: false,
             ...tokenBaseProps,
-            handleError:  tradeType === TradeProType.sell ? handleError : undefined,
+            handleError: tradeType === TradeProType.sell ? handleError : undefined,
             maxAllow: tradeType === TradeProType.sell,
             // handleOnClick,
             ...rest
@@ -85,7 +85,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
     const propsQuote = React.useMemo(() => {
         return {
             label: t('labelProQuoteLabel'),
-            subLabel:tradeType === TradeProType.buy ? t('tokenMax'):undefined,
+            subLabel: tradeType === TradeProType.buy ? t('tokenMax') : undefined,
             emptyText: t('tokenSelectToken'),
             placeholderText: '0.00',
             size: InputSize.small,
@@ -110,6 +110,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
             tradeData = handleChangeIndex(index)
         } else {
             tradeData.type = index
+            setSelectedPercentage(0)
         }
 
         // myLog('tradeData.type:', tradeData.type)
@@ -143,15 +144,15 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
     }, [inputError, t, i18nKey, tradeType, tradeCalcProData])
 
     const onPercentage = React.useCallback((value: any) => {
-        myLog('hookCommon onPercentage:', value)
-        const inputType = tradeData.type === TradeProType.sell ? 'base' : 'quote'
+        myLog('hookCommon onPercentage:', value, tradeData)
+        const inputType = tradeType === TradeProType.sell ? 'base' : 'quote'
         setSelectedPercentage(value)
         const tradeCoin = _.cloneDeep(tradeData[ inputType ]);
         if (tradeCoin && tradeCoin.balance) {
             tradeCoin.tradeValue = sdk.toBig(tradeCoin.balance).times(sdk.toBig(value)).div(100).toNumber()
             _handleCountChange(tradeCoin, inputType, {current: 'percentage'} as React.Ref<any>)
         }
-    }, [_handleCountChange, tradeData]);
+    }, [_handleCountChange, tradeType, tradeData]);
     return {
         quoteRef,
         baseRef,
