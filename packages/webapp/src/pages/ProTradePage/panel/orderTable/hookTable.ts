@@ -1,7 +1,8 @@
 import React from 'react'
-import { TradeStatus, TradeTypes } from '@loopring-web/common-resources'
+import { TradeStatus, TradeTypes, AccountStatus } from '@loopring-web/common-resources'
 import { OrderHistoryRawDataItem, OrderHistoryTableDetailItem } from '@loopring-web/component-lib'
 import { useAccount } from 'stores/account';
+import { useWalletLayer2 } from 'stores/walletLayer2'
 import { LoopringAPI } from 'api_wrapper'
 import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
 import { GetOrdersRequest, Side } from 'loopring-sdk'
@@ -17,10 +18,12 @@ export const useOrderList = () => {
     const [showLoading, setShowLoading] = React.useState(false)
     const [showDetailLoading, setShowDetailLoading] = React.useState(false)
     // const [openOrderList, setOpenOrderList] = React.useState<OrderHistoryRawDataItem[]>([])
-    const {account: {accountId, apiKey}} = useAccount()
+    const {account: {accountId, apiKey, readyState}} = useAccount()
     const {tokenMap: {marketArray, tokenMap, marketMap}} = store.getState()
     const {ammMap: {ammMap}} = store.getState().amm
     const {sk: privateKey} = store.getState().account.eddsaKey
+
+    const { status } = useWalletLayer2()
 
     const ammPairList = ammMap
         ? Object.keys(ammMap)
@@ -120,6 +123,18 @@ export const useOrderList = () => {
         setShowLoading(false)
         return []
     }, [accountId, apiKey, marketMap, tokenMap])
+
+    React.useEffect(() => {
+        (async () => {
+            if (readyState === AccountStatus.ACTIVATED && status === 'UNSET') {
+                const data = await getOrderList({
+                    limit: 50,
+                    status: 'processing',
+                })
+                setOrderOriginalData(data)
+            }
+        })()
+    }, [getOrderList, readyState, status])
 
     const isAtBottom = React.useCallback(({currentTarget}: React.UIEvent<HTMLDivElement>): boolean => {
         return currentTarget.scrollTop + 10 >= currentTarget.scrollHeight - currentTarget.clientHeight;
