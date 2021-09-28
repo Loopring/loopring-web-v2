@@ -20,6 +20,7 @@ import { makeMarketArray } from 'hooks/help';
 import { tradeService } from 'services/socket/services/tradeService';
 import { useTicker } from 'stores/ticker';
 import { mixorderService } from 'services/socket/services/mixorderService';
+import { sleep } from 'loopring-sdk';
 
 const TRADE_ARRAY_MAX_LENGTH = 50;
 
@@ -184,6 +185,7 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
 
     const {pageTradePro, updatePageTradePro, __API_REFRESH__} = usePageTradePro();
     const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
+    // const socketPending = React.useRef<boolean>(true);
 
     React.useEffect(() => {
         return () => {
@@ -254,12 +256,31 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
     React.useEffect(() => {
         getMarketDepData()
     }, [pageTradePro.market])
+    // React.useEffect(()=>{
+    //    if()
+    // },[socketStatus])
+    const doSend = React.useCallback(async (dataSocket)=>{
+        if( socketStatus !== SagaStatus.UNSET ) {
+            await sleep(1000)
+            myLog('socket Pro PENDING', pageTradePro.market)
+        }
+        if (account.readyState === AccountStatus.ACTIVATED) {
+            myLog('socket Pro Send', pageTradePro.market)
+            sendSocketTopic({
+                ...dataSocket,
+                [ sdk.WsTopicType.account ]: true,
+                [ sdk.WsTopicType.order ]: marketArray,
 
+            })
+        } else {
+            sendSocketTopic(dataSocket)
+        }
+    },[account.readyState, socketStatus, pageTradePro.market])
 
     React.useEffect(() => {
         // if(market !=== prageTradePrp.)
         // const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-        if (ammMap && pageTradePro.market && socketStatus !== SagaStatus.PENDING) {
+        if (ammMap && pageTradePro.market && accountStatus === SagaStatus.UNSET ) {
             try {
                 noSocketLoop()
                 const dataSocket: SocketMap = {
@@ -273,37 +294,20 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
                     },
                     [ sdk.WsTopicType.trade ]: [pageTradePro.market as string],
                 }
-                myLog('socket', pageTradePro.market, market)
-                if (accountStatus === SagaStatus.UNSET) {
-                    if (account.readyState === AccountStatus.ACTIVATED) {
-                        sendSocketTopic({
-                            ...dataSocket,
-                            [ sdk.WsTopicType.account ]: true,
-                            [ sdk.WsTopicType.order ]: marketArray,
+                myLog('socket', pageTradePro.market, market);
+                doSend(dataSocket)
 
-                        })
-                    } else {
-                        sendSocketTopic(dataSocket)
-                    }
-
-
-                } else {
-                    myLog('socket PENDING', pageTradePro.market)
-                }
             } catch (e) {
                 socketEnd()
             }
         }else {
             socketEnd()
         }
-
-
-
-
         return () => {
             socketEnd()
         }
     }, [accountStatus,
+        // socketStatus,
         pageTradePro.market,
         pageTradePro.depthLevel]);
 }
