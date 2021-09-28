@@ -22,9 +22,6 @@ export const Button = styled(MuButton)<ButtonProps>`
         // }
         return loading === 'true' ? `
            color:transparent;
-           // &.MuiButton-outlined {
-           // 
-           // }
            background-color:${theme.colorBase.primary};
            background-color:${loadingBg};
            &::after{
