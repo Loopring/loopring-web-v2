@@ -51,7 +51,7 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
     // const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
 
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap()
-    useProSocket()
+    useProSocket({market})
     // const depDataCallback = React.useCallback(()=>{
     //     //TODO
     // },[])
@@ -68,7 +68,8 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
         let market: MarketType = _market ? _market : pageTradePro.market;
         // let walletMap: WalletMap<any> | undefined = tradeCalcProData?.walletMap;
         let walletMap: WalletMap<any> | undefined;
-        if (account.readyState === AccountStatus.ACTIVATED && walletLayer2Status === SagaStatus.UNSET) {
+        if (account.readyState === AccountStatus.ACTIVATED
+            && walletLayer2Status === SagaStatus.UNSET) {
             walletMap = makeWalletLayer2(false).walletMap ?? {};
         }
         // debugger
