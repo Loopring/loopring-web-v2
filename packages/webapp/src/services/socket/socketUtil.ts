@@ -231,7 +231,7 @@ export class LoopringSocket {
                 };
                 ws.close();
             } else {
-                Promise.resolve('no websocket')
+                reolve('no websocket')
             }
         })
     }
@@ -453,6 +453,7 @@ export class LoopringSocket {
                 };
 
             }
+            return
         } catch (error) {
             console.error('Socket>>Socket', 'connect error, not from reconnect')
             // @ts-ignore
@@ -460,6 +461,7 @@ export class LoopringSocket {
                 // @ts-ignore
                 this._ws.close()
             }
+            return
         }
     }
     private clearInitTimer = (init?: boolean) => {

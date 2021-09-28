@@ -3,12 +3,17 @@ import { getSocketStatus, sendSocketTopic, socketEnd } from './reducer'
 import store from '../index';
 import { myLog } from '@loopring-web/common-resources';
 
+const getEndSocket = async () =>{
+    await  window.loopringSocket.socketClose();
+    myLog('socket end')
+    return
+}
 export function* closeSocket() {
     try {
-        myLog('socket end')
+
         if (window.loopringSocket) {
+            yield call(getEndSocket);
             yield put(getSocketStatus(undefined));
-            yield call(window.loopringSocket.socketClose);
         }else{
             yield put(getSocketStatus(undefined));
         }
@@ -17,14 +22,19 @@ export function* closeSocket() {
     }
 }
 
+const getSocket = async ({socket, apiKey}:{socket:any,apiKey:string}) =>{
+    await  window.loopringSocket.socketSendMessage({socket, apiKey})
+    myLog('socket send')
+    return
+}
 export function* sendMessage({payload}: any) {
     try {
         const {apiKey} = store.getState().account;
         const {socket} = payload;
         if (window.loopringSocket) {
             // yield call(window.loopringSocket.socketSendMessage, {socket, apiKey})
+            yield call(getSocket, {socket, apiKey})
             yield put(getSocketStatus(undefined));
-            yield call(window.loopringSocket.socketSendMessage, {socket, apiKey})
         }else {
             yield put(getSocketStatus(undefined));
         }

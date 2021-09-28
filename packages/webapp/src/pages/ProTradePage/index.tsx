@@ -69,7 +69,7 @@ const initBreakPoint = (): BreakPoint => {
 };
 export const OrderbookPage = withTranslation('common')(() => {
     const {pageTradePro: {depthLevel, depth},} = usePageTradePro();
-    const {market, handleOnMarketChange, resetTradeCalcData} = usePro();
+    const {market, handleOnMarketChange,resetTradeCalcData} = usePro();
     const {unit} = useTheme();
     const [rowLength, setRowLength] = React.useState<number>(MARKET_ROW_LENGTH);
     const [tradeTableLengths, setTradeTableLengths] = React.useState<{ market: number, market2: number }>({
