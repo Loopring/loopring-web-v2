@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { PageTradeLite, PageTradeLiteStatus } from './interface';
 import * as sdk from 'loopring-sdk';
-import { TradeChannel } from 'loopring-sdk';
 
 const initState = {
     market: undefined,
@@ -27,10 +26,11 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
             const {
                 market,
                 depth,
-                tickMap,
+                ticker,
                 ammPoolSnapshot,
                 tradePair,
                 quoteMinAmtInfo,
+                request,
                 calcTradeParams,
                 priceImpactObj,
                 feeBips,
@@ -38,18 +38,20 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                 takerRate,
                 buyMinAmtInfo,
                 sellMinAmtInfo,
-                lastStepAt
+                lastStepAt,
+                close,
             } = action.payload;
             if (market !== state.pageTradeLite.market) {
                 state.pageTradeLite = {
                     market,
                     tradePair,  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
+                    request,
                     calcTradeParams,
                     depth,
-                    tickMap,
+                    ticker,
                     ammPoolSnapshot,
                     priceImpactObj,
-                    tradeChannel: calcTradeParams ? (calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined,
+                    tradeChannel: calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined,
                     orderType: calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly) : undefined,
                     feeBips,
                     totalFee,
@@ -58,9 +60,11 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                     buyMinAmtInfo,
                     sellMinAmtInfo,
                     lastStepAt:undefined,
+                    close,
                 }
 
             } else {
+
                 if(lastStepAt){
                     state.pageTradeLite.lastStepAt = lastStepAt;
                 }
@@ -71,17 +75,22 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                 if (depth) {
                     state.pageTradeLite.depth = depth;
                 }
-
-                if (tickMap) {
-                    state.pageTradeLite.tickMap = tickMap;
+                if(close){
+                    state.pageTradeLite.close = close;
+                }
+                if (ticker) {
+                    state.pageTradeLite.ticker = ticker;
                 }
                 if (ammPoolSnapshot) {
                     state.pageTradeLite.ammPoolSnapshot = ammPoolSnapshot;
                 }
-                if (calcTradeParams) {
+                if (request !== undefined) {
+                    state.pageTradeLite.request = request
+                }
+                if (calcTradeParams !== undefined) {
                     state.pageTradeLite.calcTradeParams = calcTradeParams;
-                    state.pageTradeLite.orderType = calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
-                    state.pageTradeLite.tradeChannel = calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
+                    state.pageTradeLite.orderType = calcTradeParams?.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
+                    state.pageTradeLite.tradeChannel = calcTradeParams?.exceedDepth ? sdk.TradeChannel.BLANK : sdk.TradeChannel.MIXED
                 }
                 if (priceImpactObj) {
                     state.pageTradeLite.priceImpactObj = priceImpactObj;

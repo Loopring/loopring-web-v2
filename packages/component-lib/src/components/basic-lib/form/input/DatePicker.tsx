@@ -92,7 +92,7 @@ export const DateRangePicker = experimentalStyled(({...props}: DateRangePickerPr
             startProps.InputProps = {
                 ...startProps.InputProps, endAdornment: (
                     <InputAdornment variant={'standard'} position="end"  className={'date-range-adornment'}>
-                        <IconButton edge={'end'} size={'medium'}>
+                        <IconButton size={'large'} edge={'end'} >
                             <CalendarIcon/>
                         </IconButton>
 
@@ -102,7 +102,7 @@ export const DateRangePicker = experimentalStyled(({...props}: DateRangePickerPr
             endProps.InputProps = {
                 ...endProps.InputProps, endAdornment: (
                     <InputAdornment variant={'standard'} position="end"  className={'date-range-adornment'}>
-                        <IconButton  edge={'end'} size={'medium'}>
+                        <IconButton size={'large'} edge={'end'} >
                             <CalendarIcon/>
                         </IconButton>
                     </InputAdornment>

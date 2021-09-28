@@ -54,10 +54,10 @@ export const TradeMenuList = <T extends IBData<I>,
                             :` calc(${_height}  - 2 * var(--toolbar-row-padding) - ${theme.unit * 3}px )`
                         : '460px'}
                 {...{
-                    nonZero,
-                    sorted,
                 coinMap: coinMap, //swapData.type === 'sell' ? tradeCalcData?.sellCoinInfoMap : tradeCalcData?.buyCoinInfoMap as any,
                 filterBy,
+                nonZero,
+                sorted,
                 // height: '410px',
                 filterString: value,
                 handleSelect,

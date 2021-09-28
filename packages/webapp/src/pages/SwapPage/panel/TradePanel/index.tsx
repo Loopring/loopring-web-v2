@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useState } from 'react'
+import {  useState } from 'react'
 
 import { Tabs } from '@mui/material'
 import { Tab } from '@mui/material'
 import styled from '@emotion/styled'
 
-import { RawDataTradeItem, TradeTable, } from '@loopring-web/component-lib'
+import { RawDataTradeItem, TradeTable} from '@loopring-web/component-lib'
 import { withTranslation, WithTranslation } from 'react-i18next';
+import { RowConfig } from '@loopring-web/common-resources'
 import { RouteComponentProps } from 'react-router'
 import { TableWrapStyled } from '../../../styled';
 import { Divider } from '@mui/material'
@@ -21,11 +22,7 @@ const applyProps = (index: number) => {
     }
 }
 
-const RowConfig = {
-    rowHeight:44,
-    headerRowHeight:44,
-}
-const tableHeight = RowConfig.headerRowHeight + 15 *  RowConfig.rowHeight;
+const tableHeight = RowConfig.rowHeaderHeight + 15 *  RowConfig.rowHeight;
 
 
 const TradePanel = withTranslation('common')(
@@ -52,14 +49,14 @@ const TradePanel = withTranslation('common')(
                 {value === 1?
                     <TradeTable
                         rowHeight={RowConfig.rowHeight}
-                        headerRowHeight={RowConfig.headerRowHeight}
+                        headerRowHeight={RowConfig.rowHeaderHeight}
                         rawData={myTradeArray}
                         pagination={{pageSize:14,total:14}}
                         tokenMap={tokenMap}
                         currentheight={tableHeight - RowConfig.rowHeight}/>:
                     <TradeTable
                         rowHeight={RowConfig.rowHeight}
-                        headerRowHeight={RowConfig.headerRowHeight}
+                        headerRowHeight={RowConfig.rowHeaderHeight}
                         rawData={tradeArray}
                         tokenMap={tokenMap}
                         currentheight={tableHeight}/>

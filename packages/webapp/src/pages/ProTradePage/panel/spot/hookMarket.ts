@@ -1,50 +1,59 @@
-import { AccountStatus, CoinMap, IBData, MarketType, myLog, TradeCalcData } from '@loopring-web/common-resources';
+import { AccountStatus, getValuePrecisionThousand, IBData, MarketType, myLog } from '@loopring-web/common-resources';
 import React from 'react';
 import { useToast } from 'hooks/common/useToast';
 import { LoopringAPI } from 'api_wrapper';
 import * as sdk from 'loopring-sdk';
-import { getTimestampDaysLater } from 'utils/dt_tools';
-import { OrderStatus, sleep } from 'loopring-sdk';
 import { walletLayer2Service } from 'services/socket';
 import {
-    LimitTradeData,
     MarketTradeData,
-    SwapData,
-    SwapTradeData,
     TradeBaseType,
-    TradeProType, useSettings
+    TradeBtnStatus,
+    TradeProType,
+    useOpenModals,
+    useSettings
 } from '@loopring-web/component-lib';
 import { usePageTradePro } from 'stores/router';
 import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
 import { useSystem } from 'stores/system';
 import { useTranslation } from 'react-i18next';
+import { useSubmitBtn } from './hookBtn';
+// import { VolToNumberWithPrecision } from 'utils/formatter_tool';
+import { getPriceImpactInfo, PriceLevel, usePlaceOrder } from 'hooks/common/useTrade';
+import store from 'stores';
+import * as _ from 'lodash'
+import { BIGO } from 'defs/common_defs';
 
-export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType):{
-    [key: string]: any;
+export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType): {
+    [ key: string ]: any;
     // market: MarketType|undefined;
     // marketTicker: MarketBlockProps<C> |undefined,
-} =>{
+} => {
     const {t} = useTranslation();
-    const {tokenMap,marketCoins,coinMap} = useTokenMap();
+    const {tokenMap, marketArray, marketMap,} = useTokenMap();
     const [alertOpen, setAlertOpen] = React.useState<boolean>(false);
     const [confirmOpen, setConfirmOpen] = React.useState<boolean>(false);
     const {toastOpen, setToastOpen, closeToast} = useToast();
-    const {account, status: accountStatus} = useAccount();
-    const {slippage} =useSettings()
+    const {account} = useAccount();
+    const {slippage} = useSettings();
+    const {exchangeInfo,allowTrade} = useSystem();
+    const {setShowSupport} = useOpenModals()
     // const [marketTradeData, setMarketTradeData] = React.useState<MarketTradeData<IBData<C>> | undefined>(undefined);
     const {
         pageTradePro,
         updatePageTradePro,
-        __DAYS__,
         __SUBMIT_LOCK_TIMER__,
         __TOAST_AUTO_CLOSE_TIMER__
-    } = usePageTradePro();    // @ts-ignore
+    } = usePageTradePro();
+
+    // @ts-ignore
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const walletMap = pageTradePro.tradeCalcProData?.walletMap ?? {}
+    const [isMarketLoading, setIsMarketLoading] = React.useState(false)
 
     const [marketTradeData, setMarketTradeData] = React.useState<MarketTradeData<IBData<any>>>(
-        pageTradePro.market === market ? {
+        // pageTradePro.market === market ?
+        {
             base: {
                 belong: baseSymbol,
                 balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
@@ -53,42 +62,197 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
                 belong: quoteSymbol,
                 balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
             } as IBData<any>,
-            slippage: slippage&&slippage!=='N'?slippage:0.5,
-            type: TradeProType.sell
-        } : {
-            base: {belong: baseSymbol} as IBData<any>,
-            quote: {belong: quoteSymbol} as IBData<any>,
-            slippage: slippage&&slippage!=='N'?slippage:0.5,
-            type: TradeProType.sell
+            slippage: slippage && slippage !== 'N' ? slippage : 0.5,
+            type: TradeProType.buy
         }
     )
-    const {exchangeInfo} = useSystem();
+    React.useEffect(() => {
+        // if(walletMap[ baseSymbol as string ])
+        // if(walletMap)
+        const walletMap = pageTradePro.tradeCalcProData?.walletMap ?? {}
+        setMarketTradeData((state) => {
+            return {
+                ...state,
+                base: {
+                    ...state.base,
+                    // belong: baseSymbol,
+                    balance: walletMap ? walletMap[ state.base.belong as string ]?.count : 0,
+                } as IBData<any>,
+                quote: {
+                    ...state.quote,
+                    balance: walletMap ? walletMap[ state.quote.belong as string ]?.count : 0,
+                } as IBData<any>,
+            }
+        })
+    }, [pageTradePro.tradeCalcProData?.walletMap])
+
+    React.useEffect(() => {
+        if (marketTradeData.base.belong !== baseSymbol || marketTradeData.quote.belong !== quoteSymbol) {
+            setMarketTradeData((state) => {
+                return {
+                    ...state,
+                    base: {
+                        belong: baseSymbol,
+                        balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
+                    } as IBData<any>,
+                    quote: {
+                        belong: quoteSymbol,
+                        balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
+                    } as IBData<any>,
+
+                }
+            })
+        }
+
+    }, [baseSymbol, quoteSymbol])
+
+    // React.useEffect(() => {
+    //     if (pageTradePro.market === market && pageTradePro.depth) {
+    //         setIsMarketLoading(false)
+    //     } else {
+    //         setIsMarketLoading(true)
+    //     }
+    // }, [market, pageTradePro.depth, pageTradePro.market])
+
+    const {makeMarketReqInHook} = usePlaceOrder()
+
+    const onChangeMarketEvent = React.useCallback((tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType) => {
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
+        // myLog(`onChangeMarketEvent depth:`, pageTradePro.depth)
+        // myLog(`onChangeMarketEvent ammPoolSnapshot:`, pageTradePro.ammPoolSnapshot)
+        if (!pageTradePro.depth) {
+            // myLog(`onChangeMarketEvent data not ready!`)
+            setIsMarketLoading(true)
+            return
+        } else {
+            setIsMarketLoading(false)
+        }
+
+        let lastStepAt = pageTradePro.lastStepAt;
+
+        if (formType === TradeBaseType.tab) {
+            resetTradeData(tradeData.type)
+            updatePageTradePro({market, tradeType: tradeData.type})
+            return;
+            // amountBase = tradeData.base.tradeValue ? tradeData.base.tradeValue : undefined
+            // amountQuote = amountBase !== undefined ? undefined : tradeData.quote.tradeValue ? tradeData.quote.tradeValue : undefined
+        } else if (['base', 'quote'].includes(formType)) {
+            lastStepAt = formType as any;
+        }
+
+        // myLog(`onChangeMarketEvent tradeData:`, tradeData, 'formType',formType)
+
+        // setMarketTradeData(tradeData)
+
+        let slippage = sdk.toBig(tradeData.slippage ? tradeData.slippage : '0.5').times(100).toString()
+
+        let amountBase = formType === TradeBaseType.base ? tradeData.base.tradeValue : undefined
+        let amountQuote = formType === TradeBaseType.quote ? tradeData.quote.tradeValue : undefined
 
 
-    const [isMarketLoading, setIsMarketLoading] = React.useState(false)
+        let {marketRequest, calcTradeParams, sellUserOrderInfo, buyUserOrderInfo, minOrderInfo} = makeMarketReqInHook({
+            isBuy: tradeData.type === 'buy',
+            base: tradeData.base.belong,
+            quote: tradeData.quote.belong,
+            amountBase,
+            amountQuote,
+            marketArray,
+            marketMap,
+            depth: pageTradePro.depth,
+            ammPoolSnapshot: pageTradePro.ammPoolSnapshot,
+            slippage,
+        })
 
+        // myLog('depth:',pageTradePro.depth)
+        // myLog('marketRequest:',marketRequest, calcTradeParams)
 
-    const onChangeMarketEvent = async (tradeData: MarketTradeData<IBData<any>>, formType: TradeBaseType): Promise<void> => {
-        myLog(`onChangeMarketEvent tradeData:`, tradeData, 'formType',formType)
+        const priceImpactObj = getPriceImpactInfo(calcTradeParams)
+        updatePageTradePro({
+            market,
+            sellUserOrderInfo, buyUserOrderInfo, minOrderInfo,
+            request: marketRequest as any,
+            calcTradeParams: calcTradeParams,
+            tradeCalcProData: {
+                ...pageTradePro.tradeCalcProData,
+                fee: calcTradeParams && calcTradeParams.maxFeeBips ? calcTradeParams.maxFeeBips.toString() : undefined,
+                minimumReceived: calcTradeParams ? calcTradeParams.amountBOutSlip?.minReceivedVal : undefined,
+                priceImpact: priceImpactObj ? priceImpactObj.value : undefined,
+                priceImpactColor: priceImpactObj?.priceImpactColor,
+            },
+            lastStepAt,
+        })
+        setMarketTradeData((state) => {
+            let baseValue = undefined;
+            let quoteValue = undefined;
+            if (calcTradeParams) {
+                baseValue = calcTradeParams.isReverse ? Number(calcTradeParams.buyAmt) : Number(calcTradeParams.sellAmt);
+                quoteValue = calcTradeParams.isReverse ? Number(calcTradeParams.sellAmt) : Number(calcTradeParams.buyAmt);
+            }
+            return {
+                ...state,
+                ...tradeData,
+                // slippage: tradeData.slippage,
+                base: {
+                    ...state.base,
+                    tradeValue: baseValue && Number(baseValue.toFixed(tokenMap[ state.base.belong ].precision))
+                },
+                quote: {
+                    ...state.quote,
+                    tradeValue: quoteValue && Number(quoteValue.toFixed(tokenMap[ state.quote.belong ].precision))
+                }
+            }
+        })
 
-        myLog('handleSwapPanelEvent...', tradeData)
+    }, [])
 
-        // const {tradeData} = swapData
-        // resetSwap(swapType, tradeData)
-
-    }
-
+    const resetTradeData = React.useCallback((type: TradeProType) => {
+        const walletMap = pageTradePro.tradeCalcProData?.walletMap ?? {}
+        setMarketTradeData((state) => {
+            return {
+                ...state,
+                type: type ?? pageTradePro.tradeType,
+                base: {
+                    ...state.base,
+                    // belong: baseSymbol,
+                    balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
+                    tradeValue: undefined
+                } as IBData<any>,
+                quote: {
+                    ...state.quote,
+                    balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
+                    tradeValue: undefined
+                } as IBData<any>,
+            }
+        })
+        updatePageTradePro({
+            market,
+            sellUserOrderInfo: null,
+            buyUserOrderInfo: null,
+            minOrderInfo: null,
+            request: null,
+            calcTradeParams: null,
+            limitCalcTradeParams: null,
+            lastStepAt: undefined,
+            // tradeCalcProData: {
+            //     ...pageTradePro.tradeCalcProData,
+            //     fee: undefined,
+            //     minimumReceived: undefined,
+            //     priceImpact: undefined,
+            //     priceImpactColor: 'inherit',
+            // }
+        })
+    }, [baseSymbol, quoteSymbol, pageTradePro])
     const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
-        let {calcTradeParams, tradeChannel, orderType,tradeCalcProData, totalFee} = pageTradePro;
+        // const {calcTradeParams, request, tradeCalcProData,} = pageTradePro;
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
+        const {calcTradeParams, request} = pageTradePro;
         setAlertOpen(false)
         setConfirmOpen(false)
-
         if (isAgree) {
 
-            setIsMarketLoading(true);
-            if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo || !calcTradeParams
+            if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo
+                || !calcTradeParams || !request
                 || account.readyState !== AccountStatus.ACTIVATED) {
-
                 setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                 setIsMarketLoading(false)
 
@@ -96,42 +260,23 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
             }
 
             const baseToken = tokenMap[ marketTradeData?.base.belong as string ]
-            const quoteToken = tokenMap[ marketTradeData?.quote.belong as string ]
-
-            const request: sdk.GetNextStorageIdRequest = {
-                accountId: account.accountId,
-                sellTokenId: baseToken.tokenId
-            }
-
-            const storageId = await LoopringAPI.userAPI.getNextStorageId(request, account.apiKey)
-
+            // const quoteToken = tokenMap[ marketTradeData?.quote.belong as string ]
             try {
 
-
-                const request: sdk.SubmitOrderRequestV3 = {
-                    exchange: exchangeInfo.exchangeAddress,
+                const req: sdk.GetNextStorageIdRequest = {
                     accountId: account.accountId,
-                    storageId: storageId.orderId,
-                    sellToken: {
-                        tokenId: baseToken.tokenId,
-                        volume: calcTradeParams.amountS as string
-                    },
-                    buyToken: {
-                        tokenId: quoteToken.tokenId,
-                        volume: calcTradeParams.amountBOutSlip.minReceived as string
-                    },
-                    allOrNone: false,
-                    validUntil: getTimestampDaysLater(__DAYS__),
-                    maxFeeBips: parseInt(totalFee as string),
-                    fillAmountBOrS: false, // amm only false
-                    orderType,
-                    tradeChannel,
-                    eddsaSignature: '',
+                    sellTokenId: baseToken.tokenId
                 }
 
-                myLog(request)
+                const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
 
-                const response = await LoopringAPI.userAPI.submitOrder(request, account.eddsaKey.sk, account.apiKey)
+                const requestClone = _.cloneDeep(request)
+
+                requestClone.storageId = storageId.orderId
+
+                myLog(requestClone)
+
+                const response = await LoopringAPI.userAPI.submitOrder(requestClone, account.eddsaKey.sk, account.apiKey)
 
                 myLog(response)
 
@@ -139,7 +284,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
                     setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                     myLog(response?.resultInfo)
                 } else {
-                    await sleep(__TOAST_AUTO_CLOSE_TIMER__)
+                    await sdk.sleep(__TOAST_AUTO_CLOSE_TIMER__)
 
                     const resp = await LoopringAPI.userAPI.getOrderDetails({
                         accountId: account.accountId,
@@ -149,42 +294,52 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
                     myLog('-----> resp:', resp)
 
                     if (resp.orderDetail?.status !== undefined) {
+                        myLog('resp.orderDetail:', resp.orderDetail)
                         switch (resp.orderDetail?.status) {
-                            case OrderStatus.cancelled:
-                                setToastOpen({open: true, type: 'warning', content: t('labelSwapCancelled')})
+                            case sdk.OrderStatus.cancelled:
+                                const baseAmount = sdk.toBig(resp.orderDetail.volumes.baseAmount)
+                                const baseFilled = sdk.toBig(resp.orderDetail.volumes.baseFilled)
+                                const quoteAmount = sdk.toBig(resp.orderDetail.volumes.quoteAmount)
+                                const quoteFilled = sdk.toBig(resp.orderDetail.volumes.quoteFilled)
+                                const percentage1 = baseAmount.eq(BIGO) ? 0 : baseFilled.div(baseAmount).toNumber()
+                                const percentage2 = quoteAmount.eq(BIGO) ? 0 : quoteFilled.div(quoteAmount).toNumber()
+                                myLog('percentage1:', percentage1, ' percentage2:', percentage2)
+                                if (percentage1 === 0 || percentage2 === 0) {
+                                    setToastOpen({open: true, type: 'warning', content: t('labelSwapCancelled')})
+                                } else {
+                                    setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
+                                }
                                 break
-                            case OrderStatus.processed:
+                            case sdk.OrderStatus.processed:
                                 setToastOpen({open: true, type: 'success', content: t('labelSwapSuccess')})
+                                break
+                            case sdk.OrderStatus.processing:
+                                setToastOpen({open: true, type: 'success', content: t('labelOrderProcessing')})
                                 break
                             default:
                                 setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
+                                break
                         }
                     }
+
                     walletLayer2Service.sendUserUpdate()
                     setMarketTradeData((state) => {
                         return {
                             ...state,
-                            sell: {...state?.base, tradeValue: 0},
-                            buy: {...state?.quote, tradeValue: 0},
+                            base: {...state?.base, tradeValue: 0},
+                            quote: {...state?.quote, tradeValue: 0},
                         } as MarketTradeData<IBData<C>>
                     });
                     updatePageTradePro({
                         market: market as MarketType,
-                        tradeCalcProData:{
-                            ...tradeCalcProData,
+                        tradeCalcProData: {
+                            ...pageTradePro.tradeCalcProData,
                             minimumReceived: undefined,
                             priceImpact: undefined,
                             fee: undefined
                         }
                     })
-                    // setTradeCalcData((state) => {
-                    //     return {
-                    //         ...state,
-                    //         minimumReceived: undefined,
-                    //         priceImpact: undefined,
-                    //         fee: undefined
-                    //     }
-                    // })
+
                 }
             } catch (reason) {
                 sdk.dumpError400(reason)
@@ -194,23 +349,97 @@ export const useMarket = <C extends { [ key: string ]: any }>(market:MarketType)
 
             // setOutput(undefined)
 
-            await sleep(__SUBMIT_LOCK_TIMER__)
+            await sdk.sleep(__SUBMIT_LOCK_TIMER__)
 
             setIsMarketLoading(false)
 
+        } else {
+            setIsMarketLoading(false)
         }
 
-    }, [account.readyState, pageTradePro, tokenMap, marketTradeData, setIsMarketLoading, setToastOpen, setMarketTradeData])
+    }, [account.readyState, tokenMap, marketTradeData, setIsMarketLoading, setToastOpen, setMarketTradeData])
 
+    const availableTradeCheck = React.useCallback((): { tradeBtnStatus: TradeBtnStatus, label: string } => {
+        const account = store.getState().account;
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
+        const {
+            minOrderInfo,
+        } = pageTradePro;
+
+        if (account.readyState === AccountStatus.ACTIVATED) {
+
+            if (marketTradeData?.base.tradeValue === undefined
+                || marketTradeData?.quote.tradeValue === undefined
+                || marketTradeData?.base.tradeValue === 0
+                || marketTradeData?.quote.tradeValue === 0) {
+                return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: 'labelEnterAmount'}
+            } else if (minOrderInfo?.minAmtCheck || minOrderInfo?.minAmtShow === undefined) {
+                return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
+            } else {
+                // const symbol: string = marketTradeData[ 'base' ].belong;
+                // const minOrderSize = `${minOrderInfo?.minAmtShow} ${minOrderInfo?.symbol}`;
+                let minOrderSize = 'Error';
+                if( minOrderInfo?.symbol){
+                    const basePrecision = tokenMap[ minOrderInfo.symbol ].precisionForOrder;
+                    const showValue = getValuePrecisionThousand(minOrderInfo?.minAmtShow,
+                        undefined, undefined, basePrecision, true, {isAbbreviate: true})
+                    minOrderSize = `${showValue} ${minOrderInfo?.symbol}`;
+                }
+                return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin| ${minOrderSize}`}
+            }
+        }
+
+        return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
+    }, [marketTradeData, marketSubmit])
+
+    const onSubmitBtnClick = React.useCallback(async () => {
+        setIsMarketLoading(true);
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
+        const {priceLevel} = getPriceImpactInfo(pageTradePro.calcTradeParams)
+        // const isIpValid = true
+        if (!allowTrade.order.enable) {
+            setShowSupport({isShow: true})
+            setIsMarketLoading(false)
+        } else {
+            switch (priceLevel) {
+                case PriceLevel.Lv1:
+                    setAlertOpen(true)
+                    break
+                case PriceLevel.Lv2:
+                    setConfirmOpen(true)
+                    break
+                default:
+                    marketSubmit(undefined as any, true);
+                    break
+            }
+        }
+    }, [allowTrade])
+
+    const {
+        btnStatus: tradeMarketBtnStatus,
+        onBtnClick: marketBtnClick,
+        btnLabel: tradeMarketI18nKey,
+        btnStyle: tradeMarketBtnStyle
+        // btnClickCallbackArray
+    } = useSubmitBtn({
+        availableTradeCheck: availableTradeCheck,
+        isLoading: isMarketLoading,
+        submitCallback: onSubmitBtnClick
+    })
     return {
         alertOpen,
         confirmOpen,
         toastOpen,
         closeToast,
-        // marketLastCall,
-       marketSubmit,
-       marketTradeData,
-       onChangeMarketEvent
+        isMarketLoading,
+        marketSubmit,
+        marketTradeData,
+        resetMarketData: resetTradeData,
+        onChangeMarketEvent,
+        tradeMarketBtnStatus,
+        tradeMarketI18nKey,
+        marketBtnClick,
+        tradeMarketBtnStyle
         // marketTicker,
     }
 }

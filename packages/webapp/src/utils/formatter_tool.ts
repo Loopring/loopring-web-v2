@@ -2,7 +2,7 @@ import store from 'stores'
 
 import * as sdk from 'loopring-sdk'
 import { Side, toBig } from 'loopring-sdk'
-import { TradeTypes } from '@loopring-web/common-resources'
+import {  TradeTypes } from '@loopring-web/common-resources'
 import { volumeToCountAsBigNumber } from 'hooks/help'
 import { getValuePrecisionThousand } from '@loopring-web/common-resources'
 import { TradeItemRole } from '@loopring-web/component-lib'
@@ -100,6 +100,7 @@ export function tradeItemToTableDataItem(tradeItem: any) {
     const base = marketList[marketList.length - 2]
     const quote = marketList[marketList.length - 1]
     const baseValue = volumeToCountAsBigNumber(base, tradeItem.volume)
+    //
     const quoteValue = baseValue?.times(tradeItem.price)
     const sellToken = isBuy ? quote : base
     const buyToken = isBuy ? base : quote
@@ -113,7 +114,7 @@ export function tradeItemToTableDataItem(tradeItem: any) {
         // isTrade: true,
     }) as any
     const counterparty = marketList.length === 3 ? 'Orderbook' : 'Pool'
-
+    // myLog ('....',tokenMap[base].precision)
     return ({
         side,
         role: tradeItem.side === 'BUY' ? TradeItemRole.taker : TradeItemRole.maker,
@@ -135,7 +136,11 @@ export function tradeItemToTableDataItem(tradeItem: any) {
             to: {
                 key: buyToken,
                 value: buyValue ? buyValue : undefined
-            }
+            },
+
+            volume: getValuePrecisionThousand(baseValue,
+                //@ts-ignore
+                tokenMap[base].precisionForOrder,  tokenMap[base].precisionForOrder,  tokenMap[base].precisionForOrder, true)
         }
     })
 }
@@ -151,19 +156,11 @@ export function getFloatValue(rawVal: any) {
 
 export function isIntNum(val: any){
     var regPos = /^\d+$/; 
-    var regNeg = /^\-[1-9][0-9]*$/;
-    if(regPos.test(val) && regNeg.test(val)) {
-        return true;
-    } else {
-        return false;
-    }
+    var regNeg = /^-[1-9][0-9]*$/;
+    return regPos.test(val) && regNeg.test(val);
 }
 
 export function isPosIntNum(val: any){
     var regPos = /^\d+$/;
-    if(regPos.test(val)) {
-        return true;
-    } else {
-        return false;
-    } 
+    return regPos.test(val);
 }

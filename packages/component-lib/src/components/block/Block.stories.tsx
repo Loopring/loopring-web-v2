@@ -268,7 +268,7 @@ export default {
     component: TradeTitleWrap,
     argTypes: {},
 } as Meta
-
+//@ts-ignore
 export const BlockStory = Template.bind({});
 // SwitchPanel.args = {}
 

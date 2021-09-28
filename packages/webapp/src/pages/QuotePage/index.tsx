@@ -6,12 +6,12 @@ import {
     MarketBlock,
     MarketBlockProps,
     QuoteTable,
-    QuoteTableRawDataItem
+    QuoteTableRawDataItem,
 } from '@loopring-web/component-lib'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import * as _ from 'lodash'
-// import { FloatTag } from '@loopring-web/common-resources'
+ import { RowConfig } from '@loopring-web/common-resources'
 import { Box, Container, Divider, Grid, Tab, Tabs } from '@mui/material'
 import { useQuote } from './hook'
 import { LoopringAPI } from 'api_wrapper'
@@ -50,11 +50,6 @@ export enum TableFilterParams {
     favourite = 'favourite',
     ranking = 'ranking'
 }
-const RowConfig = {
-    rowHeight:44,
-    headerRowHeight:44,
-
-}
 
 export const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     const [candlestickList, setCandlestickList] = React.useState<any[]>([])
@@ -71,7 +66,7 @@ export const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     // const [isFixed,setIsFixed] = React.useState(false);
     const resetTableData = React.useCallback((tableData)=>{
         setFilteredData(tableData)
-        setTableHeight(RowConfig.headerRowHeight + tableData.length * RowConfig.rowHeight )
+        setTableHeight(RowConfig.rowHeaderHeight + tableData.length * RowConfig.rowHeight )
     },[setFilteredData,setTableHeight])
 
     const getSwapRankingList = React.useCallback(async () => {
@@ -240,7 +235,7 @@ export const QuotePage = withTranslation('common')((rest: WithTranslation) => {
         const {coinA, coinB} = row.pair
         const tradePair = `${coinA}-${coinB}`
         history && history.push({
-            pathname: `/trading/lite/${tradePair}`
+            pathname: `/trade/lite/${tradePair}`
         })
     }, [history])
 
@@ -272,13 +267,13 @@ export const QuotePage = withTranslation('common')((rest: WithTranslation) => {
     //     return
     //   }
     //   history && history.push({
-    //     pathname: `/trading/lite/${market}`
+    //     pathname: `/trade/lite/${market}`
     //   })
     // }, [history])
     const handleRecommendBoxClick = React.useCallback((recommendation: any) => {
         if (recommendation && recommendation.market) {
             history && history.push({
-                pathname: `/trading/lite/${recommendation.market}`
+                pathname: `/trade/lite/${recommendation.market}`
             })
         }
     }, [history])
@@ -369,7 +364,7 @@ export const QuotePage = withTranslation('common')((rest: WithTranslation) => {
                     removeFavoriteMarket={removeMarket}
                     currentheight={tableHeight}
                     rowHeight={RowConfig.rowHeight}
-                    headerRowHeight={RowConfig.headerRowHeight}
+                    headerRowHeight={RowConfig.rowHeaderHeight}
                     {...{showLoading: tickList && !tickList.length, ...rest}} />
             </Box>
         </TableWrapStyled>

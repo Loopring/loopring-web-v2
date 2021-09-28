@@ -16,6 +16,27 @@ export function abbreviateNumber(value: number) {
     return result;
 }
 
+const getAbbreviateNumber = (value: number | string) => {
+    let newValue: any = value
+    value = parseInt(toBig(value).toString())
+    const formattedValue = toBig(value).toNumber()
+    if (formattedValue >= 1000) {
+        let suffixes = ['', 'K', 'M', 'B', 'T']
+        let suffixNum = Math.floor(('' + formattedValue).length / 3 )
+        let shortValue
+        for (let precision = 3; precision >= 1; precision--) {
+            shortValue = parseFloat((suffixNum !== 0 ? (formattedValue / Math.pow(1000, suffixNum)) : formattedValue).toPrecision(precision))
+            const dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g,'')
+            if (dotLessShortValue.length <= 3) { break }
+        }
+        if (toBig(shortValue).toNumber() % 1 !== 0) {
+            shortValue = toBig(shortValue).toNumber()
+        }
+        newValue = shortValue + suffixes[suffixNum]
+    }
+    return newValue
+}
+
 export const getFormattedHash = (hash?: string) => {
     if (!hash) return hash
     const firstSix = hash.slice(0, 6)
@@ -29,24 +50,6 @@ export function getShortAddr(address: string):string|'' {
         return ''
     }
     return address.substr(0, 6) + '...' + address.substr(address.length - 4)
-}
-
-/**
- * 
- * @param rawValue 
- * @param precision 
- * @returns 
- */
-export const getValuePrecision = (rawValue?: number | string, precision = 6) => {
-    if (!rawValue) return '--'
-    if (typeof rawValue === 'string') {
-        rawValue = Number(rawValue)
-    }
-    if (rawValue === 0) return 0.00
-    if (rawValue >= 1) {
-        return rawValue.toFixed(precision)
-    }
-    return new BigNumber(rawValue).toPrecision(2) as string
 }
 
 const getFloatFloor = (value: number | string | undefined, precision: number) => {
@@ -94,22 +97,32 @@ export const getValuePrecisionThousand = (value: number | string | BigNumber | u
     isTrade?: boolean,
     isExponential?: boolean,
     isPrice?: boolean,
+    abbreviate?: 3|6|9|12|15|18,
+    isAbbreviate?: true,
 }) => {
     const floor = option?.floor
     const isFait = option?.isFait
     const isTrade = option?.isTrade
     const isExponential = option?.isExponential
     const isPrice = option?.isPrice
-
+    const isAbbreviate = option?.isAbbreviate
+    const abbreviate = (option?.abbreviate)?? 6
     if ((!value  || !Number.isFinite(Number(value)) || Number(value) === 0 ) && !BigNumber.isBigNumber(value)) {
         return '0.00'
     }
     let result: any = value;
-
-    
     
     if (!BigNumber.isBigNumber(result)){
         result = toBig(value);
+    }
+
+    // integer part exceed 6 digits abbreaviate, otherwise toLocaleString
+    if (isAbbreviate === true) {
+        let [_init, _dot] = result.toString().split('.');
+        const integerPartLength = _init.length
+        if (integerPartLength > abbreviate) {
+            return getAbbreviateNumber(result)
+        }
     }
 
     // remove exponential

@@ -249,7 +249,7 @@ export const MuPickDate = ({colorBase, themeMode}: { colorBase: typeof ColorDark
                     },
 
                     "&:hover.Mui-selected, &:hover": {
-                        backgroundColor: colorBase.primaryHover,
+                        backgroundColor: colorBase.tag,
                     }
 
 

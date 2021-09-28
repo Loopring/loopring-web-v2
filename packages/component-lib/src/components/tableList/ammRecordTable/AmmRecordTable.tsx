@@ -5,10 +5,8 @@ import moment from 'moment'
 import {  TablePagination, TableProps } from '../../basic-lib'
 import { Column, Table, } from '../../basic-lib'
 import {
-    Currency,
     EmptyValueTag,
     getValuePrecisionThousand,
-    getValuePrecision,
     globalSetup,
     PriceTag
 } from '@loopring-web/common-resources'
@@ -16,6 +14,7 @@ import { AmmRecordRow as Row, AmmRecordTableProps, AmmTradeType } from './Interf
 import { FormatterProps } from 'react-data-grid';
 import styled from '@emotion/styled';
 import { TablePaddingX } from '../../styled';
+import { Currency } from 'loopring-sdk';
 
 // enum ActionType {
 //     // filter = 'filter',
@@ -51,7 +50,7 @@ const TableStyled = styled(Box)`
   ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})}
 ` as (props: { currentheight?:number } & BoxProps) => JSX.Element;
 
-const columnMode = ({t}: WithTranslation, currency: 'USD' | 'CNY'): Column<Row<any>, unknown>[] => [
+const columnMode = ({t}: WithTranslation, currency: Currency): Column<Row<any>, unknown>[] => [
     {
         key: 'style',
         sortable: false,
@@ -87,7 +86,7 @@ const columnMode = ({t}: WithTranslation, currency: 'USD' | 'CNY'): Column<Row<a
             return <Typography
                 component={'span'}> {
                 typeof totalDollar === 'undefined' ? EmptyValueTag :
-                    currency === Currency.dollar ? PriceTag.Dollar + getValuePrecisionThousand(totalDollar, undefined, undefined, undefined, true, { isFait: true }) : PriceTag.Yuan + getValuePrecisionThousand(totalYuan, 2, 2)}
+                    currency === Currency.usd ? PriceTag.Dollar + getValuePrecisionThousand(totalDollar, undefined, undefined, undefined, true, { isFait: true }) : PriceTag.Yuan + getValuePrecisionThousand(totalYuan, 2, 2)}
             </Typography>
 
         }
@@ -153,7 +152,7 @@ export const AmmRecordTable = withTranslation('tables')(<T extends { [ key: stri
                                                                                                  showFilter = true,
                                                                                                  rawData,
                                                                                                  wait = globalSetup.wait,
-                                                                                                 currency = 'USD',
+                                                                                                 currency =  Currency.usd,
                                                                                                  ...rest
                                                                                              }: AmmRecordTableProps<T> & WithTranslation) => {
     const [page, setPage] = React.useState(1);

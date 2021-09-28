@@ -1,4 +1,4 @@
-import { useOpenModals } from '@loopring-web/component-lib';
+import { AlertNotSupport, useOpenModals } from '@loopring-web/component-lib';
 import { ModalWalletConnectPanel } from './WalletModal';
 import { ModalAccountInfo } from './AccountModal';
 import { withTranslation, WithTranslation } from 'react-i18next';
@@ -25,8 +25,12 @@ export const ModalGroup = withTranslation('common', {
     useAccountModal()
 
     const {
-        modals: {isShowAccount, isShowConnect}, 
-        setShowDeposit, setShowTransfer, setShowWithdraw, setShowResetAccount, 
+        modals: {isShowAccount, isShowConnect,isShowSupport},
+        setShowSupport,
+        setShowDeposit,
+        setShowTransfer,
+        setShowWithdraw,
+        setShowResetAccount,
     } = useOpenModals()
     
     const { account } = useAccount()
@@ -41,7 +45,9 @@ export const ModalGroup = withTranslation('common', {
     }, [account.readyState])
 
     return <>
-
+        <AlertNotSupport open ={isShowSupport.isShow} handleClose={()=> {
+             setShowSupport({isShow: false});
+        }}   />
         <ModalWalletConnectPanel {...{
             ...rest,
             open: isShowConnect.isShow,

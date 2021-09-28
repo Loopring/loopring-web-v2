@@ -149,7 +149,7 @@ export function useAccountModalForUI({t, etherscanBaseUrl, onClose, rest, }:
 
     const onQRClick = React.useCallback(() => {
         setShowAccount({isShow: true, step: AccountStep.QRCode})
-    }, [])
+    }, [setShowAccount])
 
     const unlockBtn = React.useMemo(() => {
         return <Button variant={'contained'} fullWidth size={'medium'} onClick={() => {

@@ -2,7 +2,7 @@ import { FormHelperText, Grid, Typography } from '@mui/material';
 import {
     CoinInfo,
     FORMAT_STRING_LEN,
-    getValuePrecisionThousand,
+    // getValuePrecisionThousand,
     IBData
 } from '@loopring-web/common-resources';
 import { InputCoinProps, InputSize } from "./Interface";
@@ -16,7 +16,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        order = 'left',
                                                                        label = "Amount",
                                                                        handleError,
-                                                                       subLabel = "Available",
+                                                                       subLabel,
                                                                        // wait = globalSetup.wait,
                                                                        // coinMap,
                                                                        maxAllow,
@@ -26,6 +26,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        handleCountChange,
                                                                        focusOnInput,
                                                                        name,
+                                                                       decimalsLimit = 8,
                                                                        size = InputSize.middle,
                                                                        isHideError = false,
                                                                        isShowCoinInfo = true,
@@ -102,12 +103,13 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
     return <> <IWrap size={size} component={'div'} ref={ref} >
         <Grid container component={'div'} className={'label-wrap'} justifyContent={'space-between'}
               paddingBottom={1 / 2}>
-            <Grid item xs={6}><Typography fontSize={'inherit'} color={'inherit'} className={'main-label'}>{label}</Typography></Grid>
-            <Grid item xs={6} className={'sub-label'}>{subLabel && belong ?
+            <Grid item xs={3}><Typography fontSize={'inherit'}
+                                          color={'var(--color-text-third)'} className={'main-label'}>{label}</Typography></Grid>
+            <Grid item xs={9} className={'sub-label'}>{subLabel && belong ?
                 <Typography fontSize={'inherit'} color={'inherit'} className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>
-                    <span>{maxAllow ? subLabel + ':' : ''}</span>
-                    <span>{maxAllow ? (balance ? getValuePrecisionThousand(balance) : '0.00') :''}</span>
+                    <span>{subLabel}</span>
+                    <span>{(balance ? balance : '0.00')}</span>
                 </Typography> : null}</Grid>
         </Grid>
 
@@ -141,12 +143,13 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
             )}
             
             <Grid order={order === 'left' ? 1 : 2} flex={1} item className={`input-wrap input-wrap-${order}`}>
-                <IInput ref={inputEle} onValueChange={_handleContChange} value={
+                <IInput ref={inputEle} autoComplete="off" onValueChange={_handleContChange} value={
                     typeof sValue === 'undefined' ? '' : sValue
                 } allowNegativeValue={false}   name={name}
+                        decimalsLimit={decimalsLimit}
                         disabled={!(!disabled || belong)}
                         placeholder={placeholderText}
-                        aria-placeholder={placeholderText} aria-label={label} decimalsLimit={10000000}/>
+                        aria-placeholder={placeholderText} aria-label={label}/>
                 <label/>
             </Grid>
         </Grid>
