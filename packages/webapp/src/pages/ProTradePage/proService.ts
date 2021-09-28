@@ -3,7 +3,7 @@ import { ammPoolService, tickerService, walletLayer2Service } from 'services/soc
 import { useWalletLayer2 } from 'stores/walletLayer2';
 import React from 'react';
 import { useWalletLayer1 } from 'stores/walletLayer1';
-import { AccountStatus, globalSetup, SagaStatus } from '@loopring-web/common-resources';
+import { AccountStatus, globalSetup, MarketType, myLog, SagaStatus } from '@loopring-web/common-resources';
 import store from 'stores';
 import { merge } from 'rxjs';
 import { bookService } from 'services/socket/services/bookService';
@@ -175,7 +175,7 @@ export const useSocketProService = ({
     }, [walletLayer1Status])
 }
 
-export const useProSocket = () => {
+export const useProSocket = ({market}:{market:MarketType|undefined}) => {
     const {sendSocketTopic, socketEnd, status: socketStatus} = useSocket();
     const {account, status: accountStatus} = useAccount();
     const {marketArray, marketMap} = useTokenMap();
@@ -191,14 +191,17 @@ export const useProSocket = () => {
         }
     }, [nodeTimer.current]);
     const noSocketLoop = React.useCallback(() => {
-        if (window.loopringSocket === undefined) {
-            getDependencyData();
-            getMarketDepData();
-        }
         //@ts-ignore
         if (nodeTimer.current !== -1) {
             clearTimeout(nodeTimer.current as NodeJS.Timeout);
         }
+        if ((window.loopringSocket === undefined)
+            || window.loopringSocket.ws === undefined
+            || window.loopringSocket.isConnectSocket() === false ) {
+            getDependencyData();
+            getMarketDepData();
+        }
+
         nodeTimer.current = setTimeout(noSocketLoop, __API_REFRESH__)
     }, [nodeTimer])
     const getDependencyData = React.useCallback(async () => {
@@ -254,22 +257,24 @@ export const useProSocket = () => {
     ])
 
     React.useEffect(() => {
-        //firstTime call it
-        // getDependencyData();
-        if (socketStatus !== SagaStatus.PENDING) {
-            noSocketLoop();
-            if (ammMap && pageTradePro.market) {
-                const dataSocket: SocketMap = {
-                    [ sdk.WsTopicType.ammpool ]: ammMap[ 'AMM-' + pageTradePro.market ] ? [ammMap[ 'AMM-' + pageTradePro.market ].address] : [],
-                    [ sdk.WsTopicType.ticker ]: [pageTradePro.market as string],
-                    [ sdk.WsTopicType.mixorder ]: {
-                        markets: [pageTradePro.market],
-                        level: marketMap[ pageTradePro.market ].precisionForPrice - Number(pageTradePro.depthLevel),
-                        count: 50,
-                        snapshot: true
-                    },
-                    [ sdk.WsTopicType.trade ]: [pageTradePro.market as string],
-                }
+        // if(market !=== prageTradePrp.)
+        if (ammMap && pageTradePro.market) {
+
+            const dataSocket: SocketMap = {
+                [ sdk.WsTopicType.ammpool ]: ammMap[ 'AMM-' + pageTradePro.market ] ? [ammMap[ 'AMM-' + pageTradePro.market ].address] : [],
+                [ sdk.WsTopicType.ticker ]: [pageTradePro.market as string],
+                [ sdk.WsTopicType.mixorder ]: {
+                    markets: [pageTradePro.market],
+                    level: marketMap[ pageTradePro.market ].precisionForPrice - Number(pageTradePro.depthLevel),
+                    count: 50,
+                    snapshot: true
+                },
+                [ sdk.WsTopicType.trade ]: [pageTradePro.market as string],
+            }
+            myLog('socket',pageTradePro.market)
+
+            if (socketStatus !== SagaStatus.PENDING) {
+                noSocketLoop()
                 if (accountStatus === SagaStatus.UNSET) {
                     if (account.readyState === AccountStatus.ACTIVATED) {
                         sendSocketTopic({
@@ -289,6 +294,7 @@ export const useProSocket = () => {
                 socketEnd()
             }
         }
+
 
     }, [accountStatus,
         pageTradePro.market,
