@@ -10,7 +10,7 @@ import {
     TradeProType
 } from '@loopring-web/component-lib';
 import { TOAST_TIME } from 'defs/common_defs';
-import { getValuePrecisionThousand, MarketType } from '@loopring-web/common-resources';
+import { getValuePrecisionThousand, IBData, MarketType } from '@loopring-web/common-resources';
 import { usePageTradePro } from 'stores/router';
 import { useMarket } from './hookMarket';
 import { useLimit } from './hookLimit';
@@ -27,10 +27,12 @@ export enum TabIndex {
 }
 
 export const SpotView = withTranslation('common')(({
-                                                       t, market
+                                                       t, market,
+                                                       resetTradeCalcData,
                                                        // ,marketTicker
                                                    }: {
     market: MarketType,
+    resetTradeCalcData:(props:{ tradeData?:any, market: MarketType|string } )=> void
     // marketTicker:  MarketBlockProps<C>
 } & WithTranslation) => {
     const {pageTradePro} = usePageTradePro();
@@ -50,6 +52,7 @@ export const SpotView = withTranslation('common')(({
         limitAlertOpen,
         limitSubmit,
     } = useLimit(market)
+
     const {
         alertOpen, confirmOpen, toastOpen, closeToast,
         marketTradeData, onChangeMarketEvent,
@@ -63,8 +66,10 @@ export const SpotView = withTranslation('common')(({
     } = useMarket(market)
     const onTabChange = React.useCallback((_e, value) => {
         setTabIndex(value);
+        resetTradeCalcData({market})
         resetLimitData();
         resetMarketData();
+
         // updatePageTradePro({
         //     market,
         //     // request: marketRequest as any,
