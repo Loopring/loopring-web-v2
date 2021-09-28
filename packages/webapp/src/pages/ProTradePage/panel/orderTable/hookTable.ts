@@ -23,7 +23,7 @@ export const useOrderList = () => {
     const {ammMap: {ammMap}} = store.getState().amm
     const {sk: privateKey} = store.getState().account.eddsaKey
 
-    const { status } = useWalletLayer2()
+    const { status, updateWalletLayer2 } = useWalletLayer2()
 
     const ammPairList = ammMap
         ? Object.keys(ammMap)
@@ -166,8 +166,9 @@ export const useOrderList = () => {
                 orderHash,
                 clientOrderId,
             }, privateKey, apiKey)
+            updateWalletLayer2()
         }
-    }, [accountId, apiKey, privateKey])
+    }, [accountId, apiKey, privateKey, updateWalletLayer2])
 
     const getOrderDetail = React.useCallback(async (orderHash: string, t: TFunction) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
