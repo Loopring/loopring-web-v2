@@ -12,6 +12,7 @@ export type ButtonProps = MuButtonPros & {
     // hBg:'',
     // hColor:'',
     loading?: 'true' | 'false'
+    loadingBg?:string
 }
 
 export type BtnInfo = {

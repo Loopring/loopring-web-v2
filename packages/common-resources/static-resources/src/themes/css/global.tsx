@@ -45,6 +45,7 @@ export const colorBase = ({theme}: any) => css`
     --color-border-select: ${theme.colorBase.borderSelect};
     --color-border-disable: ${theme.colorBase.borderDisable};
     --color-border-disable2: ${theme.colorBase.borderDisable2};
+    --color-tag: ${theme.colorBase.tag};
     --color-box: ${theme.colorBase.box};
     --color-box-hover: ${theme.colorBase.boxHover};
     --color-pop-bg: ${theme.colorBase.popBg};
@@ -58,7 +59,8 @@ export const colorBase = ({theme}: any) => css`
     --color-table-header-bg : ${theme.colorBase.tableHeaderBg};
     --color-star: ${theme.colorBase.star};  
     --color-logo: ${theme.colorBase.logo};
-    
+
+
     /********************Case for shadow*******************/
     --color-button-pot:  ${theme.colorBase.buttonPot};
     --color-button-icon: ${theme.colorBase.buttonIcon};

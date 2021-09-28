@@ -2,7 +2,6 @@ import * as sdk from 'loopring-sdk'
 import BigNumber from 'bignumber.js'
 import { getValuePrecisionThousand } from './util';
 import { ABInfo } from 'loopring-sdk';
-import { myLog } from './log_tools';
 
 export function getShowStr(rawVal: string | number | undefined, fixed: number = 2, precision: number = 4) {
     if (rawVal === '0' || rawVal === 0)

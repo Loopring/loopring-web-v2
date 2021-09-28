@@ -16,10 +16,17 @@ import React from 'react';
 export const Button = styled(MuButton)<ButtonProps>`
   && {
     &.MuiButton-root.Mui-disabled {
-      ${({loading, theme}) => {
+      ${({loading, theme, loadingBg}) => {
+        // if(loading=== 'true') {
+        //     debugger
+        // }
         return loading === 'true' ? `
            color:transparent;
-           background:${theme.colorBase.primary};
+           // &.MuiButton-outlined {
+           // 
+           // }
+           background-color:${theme.colorBase.primary};
+           background-color:${loadingBg};
            &::after{
             display: block;
             content: url(${loadingSvg});

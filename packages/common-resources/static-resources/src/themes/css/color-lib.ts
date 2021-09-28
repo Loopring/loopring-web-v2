@@ -12,7 +12,7 @@ export const hexToRGB = (hex:string, alpha?:string|number)=> {
 
 export const ColorDarkDefault = Object.freeze({
     primary: '#4169FF',
-    primaryHover: '#6787FF',
+    primaryHover: `${hexToRGB('#ffffff', '0.2')}`,
     primaryPressed: '#2D49B2',
     secondary: '#1890FF',
     secondaryHover: '#46A6FF',
@@ -33,6 +33,7 @@ export const ColorDarkDefault = Object.freeze({
     borderSelect: '#FFFFFF',
     borderDisable: '#383C5C',
     borderDisable2: '#2D2F4B',
+    tag: '#6787FF',
     box: '#2D2F4B',
     boxHover:  `${hexToRGB('#ffffff', '0.05')}`,
     popBg: '#393F64',
@@ -69,7 +70,7 @@ export const ColorDarkDefault = Object.freeze({
 
 export const ColorLightDefault = Object.freeze({...ColorDarkDefault,
     primary: '#3B5AF4',
-    primaryHover: '#627BF6',
+    primaryHover: `${hexToRGB('#ffffff', '0.2')}`,
     primaryPressed: '#293EAA',
     secondary: '#1890FF',
     secondaryHover: '#46A6FF',
@@ -90,6 +91,7 @@ export const ColorLightDefault = Object.freeze({...ColorDarkDefault,
     borderSelect: '#3B5AF4',
     borderDisable: '#E9EAF2',
     borderDisable2: '#FFFFFF',
+    tag: '#6787FF',
     box: '#FFFFFF',
     boxHover:  `${hexToRGB('#3B5AF4', '0.05')}`,
     popBg: '#FFFFFF',
