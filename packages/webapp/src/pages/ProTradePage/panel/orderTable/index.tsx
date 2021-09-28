@@ -4,6 +4,7 @@ import { Box, Checkbox, Divider, FormControlLabel, Tab, Tabs } from '@mui/materi
 import { OrderHistoryTable } from '@loopring-web/component-lib'
 import { CheckBoxIcon, CheckedIcon } from '@loopring-web/common-resources';
 import { useOrderList } from './hookTable'
+import { useAccount } from 'stores/account'
 import styled from '@emotion/styled'
 
 const CheckboxStyled = styled(Box)`
@@ -33,6 +34,8 @@ export const OrderTableView = withTranslation('common')(<C extends { [ key: stri
     } = useOrderList()
     const [tabValue, setTabValue] = React.useState(0)
     const [hideOtherPairs, setHideOtherPairs] = React.useState(false)
+    const {account: {readyState}} = useAccount()
+    const isShowHidePairsOption = readyState === 'ACTIVATED'
 
     const getFilteredData = React.useCallback(() => {
         return hideOtherPairs ? rawData.filter(o => o.market === market) : rawData
@@ -66,14 +69,16 @@ export const OrderTableView = withTranslation('common')(<C extends { [ key: stri
                 <Tab label={t('labelOrderTableOpenOrder')}/>
                 <Tab label={t('labelOrderTableOrderHistory')}/>
             </Tabs>
-            <CheckboxStyled>
-                <FormControlLabel style={{marginRight: 0}}
-                                  control={<Checkbox checked={hideOtherPairs} checkedIcon={<CheckedIcon/>}
-                                                     icon={<CheckBoxIcon/>}
-                                                     color="default" onChange={handleCheckBoxChange}/>}
-                                  label={t('labelTradeProHideOtherPairs')}
-                />
-            </CheckboxStyled>
+            {isShowHidePairsOption && (
+                <CheckboxStyled>
+                    <FormControlLabel style={{marginRight: 0}}
+                                    control={<Checkbox checked={hideOtherPairs} checkedIcon={<CheckedIcon/>}
+                                                        icon={<CheckBoxIcon/>}
+                                                        color="default" onChange={handleCheckBoxChange}/>}
+                                    label={t('labelTradeProHideOtherPairs')}
+                    />
+                </CheckboxStyled>
+            )}
         </Box>
         <Divider/>
         <OrderHistoryTable
