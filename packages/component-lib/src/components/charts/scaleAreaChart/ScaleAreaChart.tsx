@@ -49,7 +49,7 @@ export const ScaleAreaChart = (props: ScaleAreaChartProps) => {
                     case TradingInterval.hr1:
                     case TradingInterval.hr2:
                     case TradingInterval.hr4:
-                    case TradingInterval.hr4:
+                    case TradingInterval.hr12:
                         // dateTimeFormat = '%Y %b %d, %I %p'
                         dateTimeFormat = '%c'
                         break
