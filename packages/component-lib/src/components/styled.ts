@@ -6,7 +6,7 @@ import { Box } from '@mui/material';
 import React from 'react';
 
 // @ts-ignore
-export const boxLiner = ({theme}: { theme:Theme }) => css`
+export const boxLiner = (_props: { theme:Theme }) => css`
   background: var(--color-box-linear);
   .coinInput-wrap, .btnInput-wrap, .MuiOutlinedInput-root {
     background: var(--field-opacity);
@@ -14,6 +14,9 @@ export const boxLiner = ({theme}: { theme:Theme }) => css`
     :hover{
       border-color: var(--color-border-hover);
     }
+  }
+  .MuiToolbar-root .MuiButtonBase-root.outline{
+    background-color:var(--field-opacity);
   }
 `
 export const TypographyStrong = styled(Typography)`

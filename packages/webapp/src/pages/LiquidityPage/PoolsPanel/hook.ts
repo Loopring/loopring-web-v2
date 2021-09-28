@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import _ from 'lodash'
 import store from 'stores'
-import { useAmmMap } from '../../../stores/Amm/AmmMap';
+import { useAmmMap } from 'stores/Amm/AmmMap';
 import {
     AmmDetail,
     CustomError,
@@ -9,22 +9,18 @@ import {
     myError,
     myLog,
     SagaStatus,
-    TradeFloat,
+    TradeFloat,RowConfig
 } from '@loopring-web/common-resources';
-import { useTokenMap } from '../../../stores/token';
-import { useSocket } from '../../../stores/socket';
-import { useTicker } from '../../../stores/ticker';
-import { makeTickView } from '../../../hooks/help';
-import { tickerService } from '../../../services/socket';
-import { LoopringAPI } from '../../../api_wrapper';
+import { useTokenMap } from 'stores/token';
+import { useSocket } from 'stores/socket';
+import { useTicker } from 'stores/ticker';
+import { tickerService } from 'services/socket';
 import { WsTopicType } from 'loopring-sdk';
+import { makeTickView } from 'hooks/help';
+import { LoopringAPI } from 'api_wrapper';
 
-const RowConfig = {
-    rowHeight:44,
-    headerRowHeight:44,
 
-}
-// import { tickerService } from '../../../services/tickerService';
+// import { tickerService } from 'services/tickerService';
 type Row<R> = AmmDetail<R> & { tradeFloat: TradeFloat }
 export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>(
     // {pageSize}: { pageSize: number }
@@ -86,7 +82,7 @@ export function useAmmMapUI<R extends { [ key: string ]: any }, I extends { [ ke
     const resetTableData = React.useCallback((tableData)=>{
         if (tokenPrices) {
             setFilteredData(tableData)
-            setTableHeight(RowConfig.headerRowHeight + tableData.length * RowConfig.rowHeight )
+            setTableHeight(RowConfig.rowHeaderHeight + tableData.length * RowConfig.rowHeight )
         }
     },[setFilteredData, setTableHeight, tokenPrices])
     const updateRawData = React.useCallback((tickerMap) => {

@@ -3,7 +3,7 @@ import { WithTranslation } from "react-i18next";
 import React from "react";
 import styled from "@emotion/styled";
 import { CoinItemProps, CoinMenuProps } from "./Interface";
-import { CoinInfo, CoinKey, WalletCoin } from '@loopring-web/common-resources';
+import { CoinInfo, CoinKey, myLog, WalletCoin } from '@loopring-web/common-resources';
 import { Virtuoso } from 'react-virtuoso';
 import { CoinIcon } from '../form';
 

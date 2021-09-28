@@ -11,10 +11,10 @@ import {
     TradeCalcProData
 } from '@loopring-web/common-resources';
 import { TradeProType } from './Interface';
-import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Grid, Tab, Typography } from '@mui/material';
 import { BtnPercentage, InputCoin, LinkActionStyle, PopoverPure } from '../../basic-lib';
 import { useCommon } from './hookCommon';
-import { ButtonStyle } from '../components/Styled';
+import { ButtonStyle ,TabsStyle} from '../components/Styled';
 import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { SlippagePanel } from '../components';
 import React from 'react';
@@ -35,13 +35,15 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         // disabled,
         tradeMarketI18nKey,
         // tradeCalcProData,
+        tradeMarketBtnStyle,
+        tradeType,
         tradeMarketBtnStatus,
         // handleCountChange,
         // tokenBaseProps,
         // tokenQuoteProps,
         // tradeData,
         // handleError,
-        // handleSubmitEvent,
+        handleSubmitEvent,
         // handleChangeIndex,
         onChangeEvent,
         // ...rest
@@ -54,8 +56,7 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         btnLabel,
         getDisabled,
         _handleChangeIndex,
-        inputError,
-        tabIndex,
+        // inputError,
         tradeCalcProData,
         tradeBtnBaseStatus,
         propsBase,
@@ -67,6 +68,7 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         type: 'market',
         ...props as any,
         tradeData,
+        tradeType,
         onChangeEvent,
         i18nKey: tradeMarketI18nKey ? tradeMarketI18nKey : 'labelProMarketBtn',
         tradeBtnBaseStatus: tradeMarketBtnStatus
@@ -77,6 +79,14 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
     })
     const _onSlippageChange = React.useCallback((slippage: number | string, customSlippage: number | string | undefined) => {
         popupState.close();
+        // handleCountChange(({
+        //         ...tradeData,
+        //         slippage: slippage,
+        //         __cache__: {
+        //             ...tradeData.__cache__,
+        //             customSlippage: customSlippage
+        //         }
+        //     },TradeBaseType.slippage));
         onChangeEvent({
             ...tradeData,
             slippage: slippage,
@@ -97,11 +107,11 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         <Box className={'tool-bar'}  paddingX={2} display={'flex'} alignItems={'center'}
              justifyContent={'center'}>
             <Box component={'header'} width={'100%'}>
-                <Tabs variant={'fullWidth'} value={tabIndex}
-                      onChange={(_e, index) => _handleChangeIndex(index)} className={'pro-tabs'}>
-                    <Tab value={TradeProType.sell} label={t('labelProSell')}/>
-                    <Tab value={TradeProType.buy} label={t('labelProBuy')}/>
-                </Tabs>
+                <TabsStyle className={'trade-tabs pro-tabs'} variant={'fullWidth'} value={tradeType}
+                      onChange={(_e, index) => _handleChangeIndex(index)} >
+                    <Tab className={'trade-tab-buy'} value={TradeProType.buy} label={t('labelProBuy')}/>
+                    <Tab className={'trade-tab-sell'}  value={TradeProType.sell} label={t('labelProSell')}/>
+                </TabsStyle>
             </Box>
         </Box>
         <Box className={'trade-panel'} paddingTop={2} paddingX={2}>
@@ -211,11 +221,14 @@ export const MarketTrade = withTranslation('common', {withRef: true})(<M extends
         </Box>
         <Box paddingTop={2} paddingX={2}>
             <ButtonStyle variant={'contained'} size={'medium'}
-                         color={tabIndex === TradeProType.sell ? 'success' : 'error'} onClick={() => {
-                // onSwapClick(swapData.tradeData)
+                         color={tradeType === TradeProType.sell ?'error' :'success'}
+                         loadingBg={tradeType === TradeProType.sell ?'var(--color-error)' :'var(--color-success)'}
+                         style={{...tradeMarketBtnStyle}}
+                         onClick={() => {
+                handleSubmitEvent(tradeData)
             }}
                          loading={!getDisabled() && tradeBtnBaseStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-                         disabled={getDisabled() || tradeBtnBaseStatus === TradeBtnStatus.DISABLED || tradeBtnBaseStatus === TradeBtnStatus.LOADING || inputError.error}
+                         disabled={getDisabled() || tradeBtnBaseStatus === TradeBtnStatus.DISABLED || tradeBtnBaseStatus === TradeBtnStatus.LOADING }
                          fullWidth={true}>
                 {btnLabel}
             </ButtonStyle>

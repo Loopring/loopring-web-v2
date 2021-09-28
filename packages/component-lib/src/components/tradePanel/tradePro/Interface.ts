@@ -17,6 +17,7 @@ export enum TradeBaseType {
 
 export type TradeLimitInfoProps<T,TCD extends TradeCalcProData<I>,I> = {
     tradeLimitI18nKey?: string,
+    tradeLimitBtnStyle?: React.CSSProperties,
     tradeCalcProData: Partial<TCD>,
     tradeLimitBtnStatus?: keyof typeof TradeBtnStatus | undefined,
     tokenPriceProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>,
@@ -26,6 +27,7 @@ export type TradeLimitInfoProps<T,TCD extends TradeCalcProData<I>,I> = {
 
 export type TradeMarketInfoProps<T,TCD extends TradeCalcProData<I>,I> = {
     tradeMarketI18nKey?: string,
+    tradeMarketBtnStyle?: React.CSSProperties,
     tradeCalcProData: Partial<TCD>,
     tradeMarketBtnStatus?: keyof typeof TradeBtnStatus | undefined,
     tokenBaseProps?: Partial<InputButtonProps<T, I, CoinInfo<I>>>,
@@ -34,6 +36,7 @@ export type TradeMarketInfoProps<T,TCD extends TradeCalcProData<I>,I> = {
 
 export type TradeProBaseEventProps<X,T, I> = {
     disabled?: boolean,
+    tradeType:  TradeProType,
     handleChangeIndex?: (index: TradeProType) => X,
     // onSwapClick: (tradeData: SwapTradeData<T>) => void | any,
 } & Partial<Pick<InputButtonProps<T, I, unknown>, 'handleError'>>

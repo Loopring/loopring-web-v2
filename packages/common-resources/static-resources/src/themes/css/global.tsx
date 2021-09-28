@@ -45,6 +45,7 @@ export const colorBase = ({theme}: any) => css`
     --color-border-select: ${theme.colorBase.borderSelect};
     --color-border-disable: ${theme.colorBase.borderDisable};
     --color-border-disable2: ${theme.colorBase.borderDisable2};
+    --color-tag: ${theme.colorBase.tag};
     --color-box: ${theme.colorBase.box};
     --color-box-hover: ${theme.colorBase.boxHover};
     --color-pop-bg: ${theme.colorBase.popBg};
@@ -58,7 +59,8 @@ export const colorBase = ({theme}: any) => css`
     --color-table-header-bg : ${theme.colorBase.tableHeaderBg};
     --color-star: ${theme.colorBase.star};  
     --color-logo: ${theme.colorBase.logo};
-    
+
+
     /********************Case for shadow*******************/
     --color-button-pot:  ${theme.colorBase.buttonPot};
     --color-button-icon: ${theme.colorBase.buttonIcon};
@@ -152,8 +154,8 @@ export const globalCss = ({theme}: any) => css`
     box-sizing: border-box;
     -moz-box-sizing: border-box; /* Firefox */
     -webkit-box-sizing: border-box; /* Safari */
-    // font-family: DINCondensed, Helvetica, Arial, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
-    font-family: Roboto;
+    font-family: Roboto, Helvetica, Arial, "华文细黑", "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
+    //font-family: Roboto;
     font-size: 62.5%; /* 62.5% of 16px = 10px */
 
   }
@@ -207,8 +209,8 @@ export const globalCss = ({theme}: any) => css`
     --delay: calc(var(--auto-refresh-duration) / 2);
     --header-row-height: 44px;
     --header-height: 64px;
-    --header-menu-list-height: 72px;
-    --header-menu-list-width: 250px;
+    --header-submenu-item-height: 52px;
+    --header-submenu-item-width: 250px;
     --desktop-max-width: 1200px;
     --desktop-min-width: 1024px;
     --btn-Input-height: 48px;
@@ -226,9 +228,11 @@ export const globalCss = ({theme}: any) => css`
     --slippage-pop-width: 308px;
     //--slippage-pop-height: 88px ;
     --chart-title-coin-size: 28px;
-    --btn-icon-size-small: 24px;
+    --btn-icon-size-small: 20px;
+    --btn-icon-size-medium: 24px;
     --btn-icon-size: 36px;
     --svg-size: 14px;
+    --svg-size-medium: 16px;
     --svg-size-cover: 32px;
     --svg-size-large: 24px;
     --swap-box-height: 580px; /** js used also **/
@@ -250,7 +254,9 @@ export const globalCss = ({theme}: any) => css`
     --account-button-fixed-height: 72px;
     --empty-size: 130px;
     --account-modal-box-width:284px;
-    --walletconnect-width:150px
+    --walletconnect-width:150px;
+    --row-height:44px;
+    --row-header-height:44px;
 
   }
 
@@ -272,17 +278,17 @@ export const globalCss = ({theme}: any) => css`
 
   }
 
-  . draggable_panel {
-    border: 1px solid var(--color-border);
-    height: 100%;
-  }
-
-  . draggable_header {
-    display: none;
-    cursor: move;
-    height: 0px;
-    width: 100%;
-  }
+  //. draggable_panel {
+  //  border: 1px solid var(--color-border);
+  //  height: 100%;
+  //}
+  //
+  //. draggable_header {
+  //  display: none;
+  //  cursor: move;
+  //  height: 0px;
+  //  width: 100%;
+  //}
 
   .rdg.rdg {
     --background-color: inherit;

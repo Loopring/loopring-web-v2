@@ -12,6 +12,7 @@ import { useSettings } from '../../../stores';
 import { useDeepCompareEffect } from 'react-use';
 import { Row } from '../poolsTable/Interface';
 import { AmmSideTypes } from './interface'
+import { Currency } from 'loopring-sdk';
 
 // interface Row {
 //     side: TradeTypes;
@@ -114,7 +115,7 @@ const StyledSideCell: any = styled(Typography)`
 //     return data.toFixed(4)
 // }
 
-const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CNY'): Column<RawDataAmmItem, unknown>[] => [
+const getColumnModeAssets = (t: TFunction, _currency:Currency): Column<RawDataAmmItem, unknown>[] => [
     {
         key: 'side',
         name: t('labelAmmSide'),
@@ -159,7 +160,7 @@ const getColumnModeAssets = (t: TFunction, _currency: 'USD' | 'CNY'): Column<Raw
             return (
                 <Box className="rdg-cell-value textAlignRight">
                     {renderValue}
-                    {/*{currency === Currency.dollar ?*/}
+                    {/*{currency === Currency.usd ?*/}
                     {/*    PriceTag.Dollar + getThousandFormattedNumbers(priceDollar)*/}
                     {/*    : PriceTag.Yuan + getThousandFormattedNumbers(priceYuan)}*/}
                 </Box>

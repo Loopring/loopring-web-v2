@@ -18,6 +18,8 @@ import { useModals } from 'hooks/useractions/useModals'
 import store from 'stores'
 import { StylePaper } from 'pages/styled'
 import { useGetAssets } from './hook'
+import { Currency } from 'loopring-sdk';
+import { useSystem } from '../../../stores/system';
 
 const StyledChartWrapper = styled(Box)`
     height: 225px;
@@ -75,7 +77,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     const container = useRef(null);
     // const [pageSize, setPageSize] = useState(10);
     // const [chartPeriod, setChartPeriod] = useState('week')
-
+    const {allowTrade} = useSystem();
     const {marketArray, assetsRawData} = useGetAssets()
     const {currency, themeMode, setHideL2Assets, setHideLpToken, setHideSmallBalances} = useSettings()
     const {walletLayer2} = store.getState().walletLayer2;
@@ -146,10 +148,10 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
     const AssetTitleProps: AssetTitleProps = {
         assetInfo: {
-            totalAsset: assetsRawData.map(o => currency === 'USD' ? o.tokenValueDollar : o.tokenValueYuan).reduce((prev, next) => {
+            totalAsset: assetsRawData.map(o => currency === Currency.usd ? o.tokenValueDollar : o.tokenValueYuan).reduce((prev, next) => {
                 return prev + next
             }, 0),
-            priceTag: currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan,
+            priceTag: currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan,
         },
         hideL2Assets,
         onShowDeposit,
@@ -192,6 +194,7 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
                         //     pageSize: pageSize
                         // },
                         showFilter: true,
+                        allowTrade,
                         onShowDeposit: onShowDeposit,
                         onShowTransfer: onShowTransfer,
                         onShowWithdraw: onShowWithdraw,

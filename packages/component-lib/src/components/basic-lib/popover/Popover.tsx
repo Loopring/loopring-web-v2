@@ -50,9 +50,9 @@ export const Popover: React.FC<PopoverWrapProps> = ({
 
     const PopoverStyled = styled(CustomPopover)<PopoverProps>`
       &.MuiModal-root {
-        .MuiBackdrop-root {
-          background-color: inherit;
-        }
+        //.MuiBackdrop-root {
+        //  background-color: inherit;
+        //}
         &.arrow-center,
         &.arrow-right,
         &.arrow-left,
@@ -150,6 +150,7 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
     &.arrow-right,
     &.arrow-left,
     &.arrow-left,
+    &.arrow-top-right,
     &.arrow-top-center {
       .MuiPopover-paper {
         background:var(--color-pop-bg);
@@ -185,6 +186,15 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
       }
     }
 
+    &.no-arrow .MuiPopover-paper{
+      &:before {
+        display: none !important;
+      }
+      &:after {
+        display: none !important;
+      }
+    }
+
     &.arrow-right .MuiPopover-paper {
       &:before {
         right: ${({theme}) => theme.unit}px;
@@ -213,8 +223,24 @@ export const PopoverPure = styled(HoverPopover)<PopoverProps>`
         background-color: transparent;
       }
     }
-  
-}
+    &.arrow-top-right .MuiPopover-paper {
+      margin-top: ${({theme}) => theme.unit * -0.5}px;
+      &:before {
+        right: ${({theme}) => theme.unit}px;
+        transform: translateX(-50%) rotate(-180deg);
+        bottom: ${({theme}) => theme.unit * -2}px;
+        top: initial;
+      }
+      &:after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        width: 100%;
+        height: ${({theme}) => theme.unit}px;
+        background-color: transparent;
+      }
+    }
+  }
 
 
 ` as React.ElementType<PopoverProps>

@@ -3,7 +3,6 @@ import React, { useCallback } from 'react';
 import { AccountStep, DepositProps, SwitchData, useOpenModals, } from '@loopring-web/component-lib';
 import { AccountStatus, CoinMap, IBData, WalletMap } from '@loopring-web/common-resources';
 import * as sdk from 'loopring-sdk';
-import { ChainId, ConnectorError, ConnectorNames, dumpError400, } from 'loopring-sdk';
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
 import { useSystem } from 'stores/system';
@@ -137,7 +136,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                         refferId = accInfo?.accountId
 
                     } catch (reason) {
-                        dumpError400(reason)
+                        sdk.dumpError400(reason)
                     }
 
                 }
@@ -155,7 +154,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                         address: account.accAddress,
                         exchangeAddress: exchangeInfo.exchangeAddress,
                         keyNonce: 0,
-                        walletType: account.connectName as ConnectorNames,
+                        walletType: account.connectName as sdk.ConnectorNames,
                     }
                     )
                     const request: sdk.SetReferrerRequest = {
@@ -170,7 +169,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                     myLog(response)
 
                 } catch (reason) {
-                    dumpError400(reason)
+                    sdk.dumpError400(reason)
                 }
 
             }
@@ -207,7 +206,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
 
                 const realGasPrice = gasPrice ?? 30
 
-                const _chainId = chainId === 'unknown' ? ChainId.MAINNET : chainId
+                const _chainId = chainId === 'unknown' ? sdk.ChainId.MAINNET : chainId
 
                 let nonce = 0
 
@@ -275,7 +274,7 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 resetDepositData()
 
             } catch (reason: any) {
-                dumpError400(reason)
+                sdk.dumpError400(reason)
                 result.code = ActionResultCode.DepositFailed
                 result.data = reason
 
@@ -283,10 +282,11 @@ export const useDeposit = <R extends IBData<T>, T>(): {
                 const err = checkErrorInfo(reason, true)
 
                 myLog('---- deposit reason:', reason?.message.indexOf('User denied transaction'))
+                myLog(reason)
                 myLog('---- deposit err:', err)
 
                 switch (err) {
-                    case ConnectorError.USER_DENIED:
+                    case sdk.ConnectorError.USER_DENIED:
                         setShowAccount({ isShow: true, step: AccountStep.Deposit_Denied })
                         break
                     default:

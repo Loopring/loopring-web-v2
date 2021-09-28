@@ -73,7 +73,7 @@ const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap, ammRew
             if (type === MiningJumpType.amm) {
                 history.push(`/liquidity/pools/coinPair/${pair}`)
             } else {
-                history.push(`/trading/lite/${pair}`)
+                history.push(`/trade/lite/${pair}`)
             }
         }
     }, [history])

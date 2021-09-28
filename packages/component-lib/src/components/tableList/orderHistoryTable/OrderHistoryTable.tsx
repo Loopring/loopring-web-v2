@@ -1,17 +1,27 @@
 import { useCallback, useEffect, useState } from 'react'
+// import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
+import { PopoverPure, Button, AlertImpact, CancelAllOrdersAlert } from '../../index'
+import { bindTrigger } from 'material-ui-popup-state/es';
 import styled from '@emotion/styled'
-import { Box, Modal, Typography } from '@mui/material'
+import { Box, Modal, Typography, ClickAwayListener, Grid } from '@mui/material'
 import { DateRange } from '@mui/lab'
 import { TFunction, WithTranslation, withTranslation } from 'react-i18next';
 import moment from 'moment'
-import {  usePopupState } from 'material-ui-popup-state/hooks';
-import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes, getValuePrecisionThousand } from '@loopring-web/common-resources'
+import { usePopupState, bindPopper } from 'material-ui-popup-state/hooks';
+import { DropDownIcon, EmptyValueTag, TableType, TradeStatus, TradeTypes, getValuePrecisionThousand, myLog } from '@loopring-web/common-resources'
 import { Column, Table, TablePagination } from '../../basic-lib'
 import { Filter, FilterOrderTypes } from './components/Filter'
 import { OrderDetailPanel } from './components/modal'
 import { TableFilterStyled, TablePaddingX } from '../../styled'
 // import { useSettings } from '../../../stores';
 import { GetOrdersRequest, Side, OrderType } from 'loopring-sdk'
+
+const CancelColHeaderStyled = styled(Typography)`
+    display: flex;
+    align-items: center;
+    color: ${({empty}: any) => empty ? 'var(--color-text-third)' : 'var(--color-primary)'};
+    cursor: ${({empty}: any) => empty ? 'not-allowed' : 'pointer'};
+` as any
 
 export type OrderPair = {
     from: {
@@ -98,9 +108,14 @@ const TableStyled = styled(Box)`
     flex: 1;
 
     .rdg {
-        --template-columns: ${({isopen}: any) => isopen === 'open' 
-            ? 'auto auto 240px 130px 130px 120px 100px' 
-            : 'auto auto 240px 130px 130px 120px 130px'} !important;
+        --template-columns: ${({isopen, ispro}: any) => isopen === 'open' 
+            ? ispro === 'pro'
+                ? 'auto auto 250x 150px auto auto auto'
+                : 'auto auto 230px 130px 130px 120px 140px' 
+            : ispro === 'pro' 
+                ? 'auto auto 250px 150px 150px auto auto'
+                : 'auto auto 230px 130px 130px 120px 130px'
+        } !important;
 
         .rdg-cell:last-of-type {
             display: flex;
@@ -144,18 +159,22 @@ export interface OrderHistoryTableProps {
         total: number;
     };
     showFilter?: boolean;
-    getOrderList: (props: Omit<GetOrdersRequest, "accountId">) => Promise<void>;
+    getOrderList: (props: Omit<GetOrdersRequest, "accountId">) => Promise<any>;
     showLoading?: boolean;
     marketArray?: string[];
     showDetailLoading?: boolean;
     getOrderDetail: (orderHash: string, t: TFunction) => Promise<any>;
     orderDetailList: OrderHistoryTableDetailItem[];
     isOpenOrder?: boolean;
-    cancelOrder: ({orderHash, clientOrderId}: any) => void
+    cancelOrder: ({orderHash, clientOrderId}: any) => Promise<void>
+    isScroll?: boolean;
+    isPro?: boolean;
+    handleScroll?: (event: React.UIEvent<HTMLDivElement>, isOpen?: boolean) => Promise<void>;
+    clearOrderDetail?: () => void;
 }
 
 export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryTableProps & WithTranslation) => {
-    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray, showDetailLoading, getOrderDetail, orderDetailList, cancelOrder, isOpenOrder = false } = props
+    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray, showDetailLoading, getOrderDetail, orderDetailList, cancelOrder, isOpenOrder = false, isScroll, handleScroll, isPro = false, clearOrderDetail } = props
     const actionColumns = ['status']
     // const { language } = useSettings()
     // const [orderDetail, setOrderDetail] = useState([]);
@@ -165,6 +184,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
     const [page, setPage] = useState(1)
     const [modalState, setModalState] = useState(false)
     const [currOrderId, setCurrOrderId] = useState('')
+    const [showCancelAllAlert, setShowCancelAllAlert] = useState(false)
     const pageSize = pagination ? pagination.pageSize : 0
 
     useEffect(() => {
@@ -292,73 +312,22 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             setCurrOrderId(row['orderId'])
             getOrderDetail(hash, t)
             setModalState(true)
+            if (clearOrderDetail) {
+                clearOrderDetail()
+            }
         }, [row])
     
-    
-        // useEffect(() => {
-        //     console.log(isOpen, rightState.isOpen, currentE)
-        //     if (isOpen && !rightState.isOpen && currentE) {
-        //         // bindTrigger(rightState).onClick(currentE)
-        //     }
-        // }, [rightState, currentE, isOpen])
-    
-        // useEffect(() => {
-        //     if (rightState.isOpen) {
-        //         getOrderDetail(hash)
-        //         rightState.setOpen(true)
-        //     }
-        // }, [getOrderDetail, hash, rightState.isOpen])
-        
-    
         return <RenderValue className="rdg-cell-value textAlignRight" onClick={() => handleOrderClick(hash)}>
-            {/* <div {...bindTrigger(rightState)} style={{width: 110}} onClick={(e) => handleOrderClick(e, hash)}>
-                <RenderValue>
-                    {actualValue}
-                    <DropDownIcon/>
-                </RenderValue>
-            </div> */}
-            {/* <RenderValue > */}
             <Typography component={'span'} marginRight={1}>
                 {actualValue}
             </Typography>
             <DropDownIcon htmlColor={'var(--color-text-third)'} fontSize={'large'} />
-            {/* </RenderValue> */}
-            {/* <PopoverPure
-                className={'arrow-right'}
-                {...bindPopper(rightState)}
-                // popupId={popupId}
-                // children={triggerContent}
-                // popoverContent={popoverContent}
-                // handleStateChange={(state) => handleStateChange(state, hash)}
-                // handleStateChange={setIsOpen}
-                
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-            >
-                <ClickAwayListener onClickAway={() => rightState.setOpen(false)}>
-                    <RenderPopover>
-                        <div className="arrowPopover"/>
-                        <div className="contentWrapper">
-                            <SingleOrderHistoryTable showloading={false} rawData={orderDetailList}/>
-                        </div>
-                    </RenderPopover>
-                </ClickAwayListener>
-            </PopoverPure> */}
         </RenderValue>
-    }, [getOrderDetail])
+    }, [clearOrderDetail, getOrderDetail, t])
 
-    const handleCancel = useCallback((orderHash: string, clientOrderId: string) => {
-        cancelOrder({
-            orderHash,
-            clientOrderId
-        })
-    }, [cancelOrder])
+    const getPopoverState = useCallback((label: string) => {
+        return usePopupState({variant: 'popover', popupId: `popup-cancel-order-${label}`})
+    }, [])
 
     const getColumnModeOrderHistory = (t: any): Column<OrderHistoryRow, unknown>[] => [
         {
@@ -489,7 +458,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         
     ]
 
-    const getColumnModeOpenHistory= (t: any): Column<OrderHistoryRow, unknown>[] => [
+    const getColumnModeOpenHistory = (t: any, isEmpty: boolean): Column<OrderHistoryRow, unknown>[] => [
         {
             key: 'types',
             name: t('labelOrderTypes'),
@@ -595,22 +564,58 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         {
             key: 'cancel',
             headerCellClass: 'textAlignRight',
-            name: t('labelOrderCancelAll'),
-            formatter: ({row}: any) => {
+            name: (<CancelColHeaderStyled empty={isEmpty} onClick={isEmpty ? undefined : () => setShowCancelAllAlert(true)}>{t('labelOrderCancelAll')}</CancelColHeaderStyled>),
+            formatter: ({row, index}: any) => {
                 const orderHash = row['hash']
                 const clientOrderId = row['orderId']
+                const popState = getPopoverState(index)
+                const handleClose = () => {
+                    popState.setOpen(false)
+                }
+                const handleRequestCancel = async () => {
+                    await cancelOrder({orderHash, clientOrderId})
+                    handleClose()
+                }
                 return (
                     <>
-                        <Box style={{ cursor: 'pointer' }} className="rdg-cell-value textAlignRight" onClick={() => handleCancel(orderHash, clientOrderId)}>
-                            <Typography component={'span'} color={'var(--color-primary)'}>{t('labelOrderCancel')}</Typography>
+                        <Box {...bindTrigger(popState)} onClick={(e: any) => {
+                            bindTrigger(popState).onClick(e);
+                        }} style={{ cursor: 'pointer' }} className="rdg-cell-value textAlignRight">
+                            <Typography component={'span'} color={'var(--color-primary)'}>{t('labelOrderCancelOrder')}</Typography>
                         </Box>
+                        
+                        <PopoverPure
+                            className={isPro ? 'arrow-top-right' : 'arrow-top-center'}
+                            {...bindPopper(popState)}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center',
+                            }}
+                            transformOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'center',
+                            }}>
+                            <ClickAwayListener onClickAway={() => popState.setOpen(false)}>
+                                <Box padding={2}>
+                                    <Typography marginBottom={1}>{t('labelOrderCancelConfirm')}</Typography>
+                                    <Grid container spacing={1}>
+                                        <Grid item>
+                                            <Button variant={'outlined'} onClick={handleClose}>{t('labelOrderCancel')}</Button>
+                                        </Grid>
+                                        <Grid item>
+                                            <Button variant={'contained'} size={'small'} onClick={handleRequestCancel}>{t('labelOrderConfirm')}</Button>
+                                        </Grid>
+                                    </Grid>
+                                </Box>
+                            </ClickAwayListener>
+                        </PopoverPure>
                     </>
                 )
             } 
         }
     ]
 
-    const actualColumns = isOpenOrder ? getColumnModeOpenHistory(t): getColumnModeOrderHistory(t)
+    const actualColumns = isOpenOrder ? getColumnModeOpenHistory(t, rawData.length === 0): getColumnModeOrderHistory(t)
 
     const defaultArgs: any = {
         // rawData: [],
@@ -624,7 +629,18 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         // }
     }
 
-    return <TableStyled isopen={isOpenOrder ? 'open' : 'history'}>
+    const handleCancelAll = useCallback(async () => {
+        const openOrdresList = rawData.filter(o => o.status === 'processing').map(o => ({
+            hash: o.hash,
+            orderId: o.orderId
+        }))
+        const promises = openOrdresList.forEach(o => {
+            cancelOrder({orderHash:o.hash, clientOrderId: o.orderId})
+        })
+        await Promise.all([promises])
+    }, [rawData, cancelOrder])
+
+    return <TableStyled isopen={isOpenOrder ? 'open' : 'history'} ispro={isPro ? 'pro' : 'lite'}>
         {showFilter && (
             <TableFilterStyled>
                 <Filter
@@ -636,7 +652,12 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                     handleFilterChange={handleFilterChange}/>
             </TableFilterStyled>
         )}
-        <Table {...{...defaultArgs, ...props, rawData, showloading: showLoading}} />
+        <Table
+            className={isScroll ? 'scrollable' : undefined}
+            onScroll={handleScroll ? (e) => handleScroll(e, isOpenOrder) : undefined}
+            {...{...defaultArgs, ...props, rawData, showloading: showLoading}}
+        />
+        <CancelAllOrdersAlert open={showCancelAllAlert} handleCancelAll={handleCancelAll} handleClose={() => setShowCancelAllAlert(false)} />
         <Modal
             open={modalState}
             onClose={() => setModalState(false)}

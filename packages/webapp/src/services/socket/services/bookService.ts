@@ -1,5 +1,5 @@
-import { Subject } from 'rxjs';
 import { OrderDetail } from 'loopring-sdk';
+import { Subject } from 'rxjs';
 
 const subject = new Subject<{bookMap: BookMap<{ [ key: string ]: any }>}>();
 

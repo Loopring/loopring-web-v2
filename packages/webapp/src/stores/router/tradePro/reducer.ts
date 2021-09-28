@@ -1,14 +1,17 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { PageTradePro, PageTradeProStatus } from './interface';
-import * as sdk from 'loopring-sdk';
-import { TradeChannel } from 'loopring-sdk';
+import { TradeProType } from '@loopring-web/component-lib';
+import { RequireOne } from '@loopring-web/common-resources';
 
 const initState = {
-    market: undefined,
+    market: '' as any,
     tradePair: undefined,
+    request: undefined,
     calcTradeParams: undefined,
     priceImpactObj: undefined,
     tradeCalcProData: {},
+    tradeArray:[],
+    tradeType:TradeProType.buy,
 }
 
 const initialState: PageTradeProStatus<{ [ key: string ]: any }> = {
@@ -25,45 +28,70 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
         resetOrderPge(state) {
             state.pageTradePro = initState
         },
-        updatePageTradePro(state, action: PayloadAction<Partial<PageTradePro<{ [ key: string ]: any }>>>) {
+        updatePageTradePro(state, action: PayloadAction<RequireOne<PageTradePro<{ [ key: string ]: any }>, 'market'>>) {
             const {
                 market,
                 depth,
-                tickMap,
+                tradeType,
+                precisionLevels,
+                depthLevel,
+                ticker,
+                request,
                 tradeCalcProData,
                 ammPoolSnapshot,
-                quoteMinAmtInfo,
                 calcTradeParams,
+                limitCalcTradeParams,
                 priceImpactObj,
                 feeBips,
+                tradeArray,
                 totalFee,
                 takerRate,
-                buyMinAmtInfo,
-                sellMinAmtInfo,
+                defaultPrice,
+                sellUserOrderInfo,
+                buyUserOrderInfo,
+                minOrderInfo,
                 lastStepAt
             } = action.payload;
             if (market !== state.pageTradePro.market) {
                 state.pageTradePro = {
                     ...initState,
+                    tradeType:state.pageTradePro.tradeType??tradeType??initState.tradeType,
                     market,
                     tradeCalcProData:tradeCalcProData?tradeCalcProData:{},
+                    request,
                     calcTradeParams,
+                    limitCalcTradeParams,
                     depth,
-                    tickMap,
+                    ticker,
                     ammPoolSnapshot,
                     priceImpactObj,
-                    tradeChannel: calcTradeParams ? (calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined,
-                    orderType: calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly) : undefined,
                     feeBips,
                     totalFee,
                     takerRate,
-                    quoteMinAmtInfo,
-                    buyMinAmtInfo,
-                    sellMinAmtInfo,
+                    tradeArray,
+                    defaultPrice,
+                    precisionLevels,
+                    depthLevel,
+                    sellUserOrderInfo,
+                    buyUserOrderInfo,
+                    minOrderInfo,
                     lastStepAt:undefined,
                 }
 
             } else {
+                if(tradeType){
+                    state.pageTradePro.tradeType = tradeType
+                }
+                if(precisionLevels){
+                    state.pageTradePro.precisionLevels = precisionLevels
+                }
+                if(defaultPrice){
+                    state.pageTradePro.defaultPrice = defaultPrice
+                }
+                if(depthLevel){
+                    state.pageTradePro.depthLevel = depthLevel
+                }
+
                 if(lastStepAt){
                     state.pageTradePro.lastStepAt = lastStepAt;
                 }
@@ -74,16 +102,28 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     state.pageTradePro.depth = depth;
                 }
 
-                if (tickMap) {
-                    state.pageTradePro.tickMap = tickMap;
+                if (ticker) {
+                    state.pageTradePro.ticker = ticker;
                 }
+
                 if (ammPoolSnapshot) {
                     state.pageTradePro.ammPoolSnapshot = ammPoolSnapshot;
                 }
-                if (calcTradeParams) {
+
+                if (request !== undefined) {
+                    state.pageTradePro.request = request
+                }
+
+                if (calcTradeParams !== undefined) {
                     state.pageTradePro.calcTradeParams = calcTradeParams;
-                    state.pageTradePro.orderType = calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
-                    state.pageTradePro.tradeChannel = calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
+                }
+
+                if (limitCalcTradeParams !== undefined) {
+                    state.pageTradePro.limitCalcTradeParams = limitCalcTradeParams;
+                }
+                
+                if(tradeArray){
+                    state.pageTradePro.tradeArray= tradeArray;
                 }
                 if (priceImpactObj) {
                     state.pageTradePro.priceImpactObj = priceImpactObj;
@@ -97,11 +137,14 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 if (takerRate) {
                     state.pageTradePro.takerRate = takerRate;
                 }
-                if (sellMinAmtInfo) {
-                    state.pageTradePro.sellMinAmtInfo = sellMinAmtInfo;
+                if (sellUserOrderInfo !== undefined) {
+                    state.pageTradePro.sellUserOrderInfo = sellUserOrderInfo;
                 }
-                if (buyMinAmtInfo) {
-                    state.pageTradePro.buyMinAmtInfo = buyMinAmtInfo;
+                if (buyUserOrderInfo !== undefined) {
+                    state.pageTradePro.buyUserOrderInfo = buyUserOrderInfo;
+                }
+                if (minOrderInfo !== undefined) {
+                    state.pageTradePro.minOrderInfo = minOrderInfo;
                 }
 
             }

@@ -12,6 +12,8 @@ import { useAmmActivityMap } from './stores/Amm/AmmActivityMap';
 import { useTicker } from './stores/ticker';
 import { useUserRewards } from './stores/userRewards';
 import { useTokenPrices } from './stores/tokenPrices';
+import { useAmount } from './stores/amount';
+import { useSocket } from './stores/socket';
 
 // import { statusUnset as accountStatusUnset } from './stores/account';
 
@@ -38,6 +40,9 @@ export function useInit() {
     const {status: ammActivityMapStatus, statusUnset: ammActivityMapStatusUnset} = useAmmActivityMap();
     const {status: userRewardsStatus, statusUnset: userRewardsUnset} = useUserRewards();
     const {status: tickerStatus, statusUnset: tickerStatusUnset} = useTicker();
+    const {status: amountStatus, statusUnset: amountStatusUnset} = useAmount();
+    const {status: socketStatus, statusUnset: socketUnset} = useSocket();
+
 
     useCustomDCEffect(async () => {
         // TODO getSessionAccount infor
@@ -145,19 +150,34 @@ export function useInit() {
     }, [ammActivityMapStatus])
     React.useEffect(() => {
         switch (tickerStatus) {
-            case SagaStatus.ERROR:
+            case "ERROR":
                 console.log("ERROR", 'get ticker error,ui');
                 tickerStatusUnset()
                 break;
-            case SagaStatus.PENDING:
+            case "PENDING":
                 break;
-            case SagaStatus.DONE:
+            case "DONE":
                 tickerStatusUnset();
                 break;
             default:
                 break;
         }
-    }, [tickerStatus])
+    }, [tickerStatus]);
+    React.useEffect(() => {
+        switch (amountStatus) {
+            case SagaStatus.ERROR:
+                console.log("ERROR", 'get ticker error,ui');
+                amountStatusUnset()
+                break;
+            case SagaStatus.PENDING:
+                break;
+            case SagaStatus.DONE:
+                amountStatusUnset();
+                break;
+            default:
+                break;
+        }
+    }, [amountStatus])
     React.useEffect(() => {
         switch (userRewardsStatus) {
             case SagaStatus.ERROR:
@@ -174,20 +194,20 @@ export function useInit() {
         }
     }, [userRewardsStatus])
     React.useEffect(() => {
-        switch (tickerStatus) {
+        switch (socketStatus) {
             case "ERROR":
-                console.log("ERROR", 'get ticker error,ui');
-                tickerStatusUnset()
+                // console.log("ERROR", 'get ticker error,ui');
+                socketUnset()
                 break;
             case "PENDING":
                 break;
             case "DONE":
-                tickerStatusUnset();
+                socketUnset();
                 break;
             default:
                 break;
         }
-    }, [tickerStatus, tickerStatusUnset]);
+    }, [socketStatus]);
 
     useAccountInit({state})
     // React.useEffect(() => {

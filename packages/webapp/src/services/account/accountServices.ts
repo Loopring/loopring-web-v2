@@ -7,9 +7,10 @@ import { myLog } from "@loopring-web/common-resources";
 import store from 'stores';
 import { updateAccountStatus } from 'stores/account';
 import * as sdk from 'loopring-sdk'
-import { sleep } from 'loopring-sdk'
+import _ from 'lodash'
 import { unlockAccount } from './unlockAccount';
 import { resetLayer12Data, resetLayer2Data } from './resetAccount';
+// import { sleep } from 'loopring-sdk';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 
@@ -93,11 +94,17 @@ export const accountServices = {
         }
         store.dispatch(updateAccountStatus(updateInfo))
         resetLayer2Data()
-        await sleep(100)
-        subject.next({
-            status: Commands.LockAccount,
-            data: undefined,
-        })
+        // await sleep(50)
+
+
+        _.delay(()=>{
+            subject.next({
+                status: Commands.LockAccount,
+                data: undefined,
+            })
+
+        },10)
+
     },
     sendActiveAccountDeposit: () => {
     },

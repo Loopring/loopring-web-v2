@@ -240,6 +240,9 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 fontWeight: 'normal',
                 paddingLeft: pxToRem(12),
                 paddingRight: pxToRem(12),
+                // '&.MuiButton-contained':{
+                //
+                // }
             },
             text: {
                 color: colorBase.secondary,
@@ -262,11 +265,18 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 color: colorBase.textButton,
                 height: pxToRem(40),
                 fontSize: pxToRem(14),
-                // backgroundColor: colorBase.primary,
                 boxShadow: 'initial',
                 '&:hover': {
-                    backgroundColor: colorBase.primaryHover,
                     boxShadow: 'initial',
+                    '&:before':{
+                        background: colorBase.primaryHover,
+                        content:'\'\'',
+                        position: 'absolute',
+                        top:0,
+                        left:0,
+                        right:0,
+                        bottom:0
+                    }
                 },
                 '&.Mui-disabled': {
                     backgroundColor: colorBase.defaultDisable,
@@ -376,6 +386,11 @@ export const MuiSvgIcon = () => {
                 '&.MuiSvgIcon-fontSizeLarge': {
                     height: 'var(--svg-size-large)',
                     width: 'var(--svg-size-large)',
+                    // margin: '-6px',
+                },
+                '&.MuiSvgIcon-fontSizeMedium': {
+                    height: 'var(--svg-size-medium)',
+                    width: 'var(--svg-size-medium)',
                     // margin: '-6px',
                 },
                 '&.tag': {
@@ -522,12 +537,28 @@ export const MuiIconButton = ({colorBase}: any): { styleOverrides: ComponentsOve
     return {
         styleOverrides: {
             root: {
-                height: 'var(--btn-icon-size)',
-                width: 'var(--btn-icon-size)',
                 color: 'inherit',
+                height: 'var(--btn-icon-size-medium)',
+                width: 'var(--btn-icon-size-medium)',
                 ' svg': {
-                    height: 'var(--svg-size-large)',
-                    width: 'var(--svg-size-large)',
+                    height: 'var(--svg-size-medium)',
+                    width: 'var(--svg-size-medium)',
+                },
+                '&.MuiIconButton-sizeLarge': {
+                    height: 'var(--btn-icon-size)',
+                    width: 'var(--btn-icon-size)',
+                    ' svg': {
+                        height: 'var(--svg-size-large)',
+                        width: 'var(--svg-size-large)',
+                    },
+                },
+                '&.MuiIconButton-sizeMedium': {
+                    height: 'var(--btn-icon-size-medium)',
+                    width: 'var(--btn-icon-size-medium)',
+                    ' svg': {
+                        height: 'var(--svg-size-medium)',
+                        width: 'var(--svg-size-medium)',
+                    },
                 },
                 '&.MuiIconButton-sizeSmall': {
                     height: 'var(--btn-icon-size-small)',
@@ -716,6 +747,11 @@ export const MuiListItem = ({colorBase}: any) => {
 export const MuiMenu = ({colorBase}: any) => {
     return {
         styleOverrides: {
+            root: {
+                " .MuiBackdrop-root":{
+                    opacity:"0 !important",
+                }
+            },
             list: {
                 backgroundColor: colorBase.popBg
             }

@@ -4,7 +4,7 @@ import { SocketMap } from './interface';
 
 const initialState: StateBase & { socket: SocketMap } = {
     socket: {},
-    status: 'PENDING',
+    status: 'DONE',
     errorMessage: null,
 }
 const socketSlice: Slice<StateBase & { socket: SocketMap }> = createSlice({
@@ -20,9 +20,10 @@ const socketSlice: Slice<StateBase & { socket: SocketMap }> = createSlice({
         // },
         sendSocketTopic(state, action: PayloadAction<{ socket: SocketMap }>) {
             state.socket = action.payload.socket
+            state.status = SagaStatus.PENDING;
         },
-        getSocketStatus(state, action: PayloadAction<undefined>) {
-
+        getSocketStatus(state, action: PayloadAction<undefined|Error>) {
+            
             // @ts-ignore
             if (action.error) {
                 state.status = SagaStatus.ERROR

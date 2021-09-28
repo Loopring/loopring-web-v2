@@ -113,7 +113,6 @@ export const useGetAssets = () => {
                         // const price = getLpTokenPrice(tokenInfo.token)
                         const price = tokenPrices[tokenInfo.token]
                         if (totalAmount && price) {
-                            // tokenValueDollar = Number(getValuePrecision((formattedBalance || 0) * price, 2)) || 0 as any;
                             tokenValueDollar = totalAmount.times(price).toNumber()
                         }
                     }

@@ -1,5 +1,4 @@
-import React from 'react'
-import store from '../../stores';
+import store from 'stores';
 import {
     AmmPoolSnapshot,
     DepthData,
@@ -8,22 +7,24 @@ import {
     TokenVolumeV3,
     toBig,
     SubmitOrderRequestV3,
-    getExistedMarket, TokenInfo, TokenAmount, OrderType, TradeChannel
+    getExistedMarket, TokenInfo, TokenAmount, OrderType, TradeChannel, TradesData
 } from 'loopring-sdk';
-import { LoopringAPI } from '../../api_wrapper';
-import { CustomError, ErrorMap, getValuePrecisionThousand, MarketType } from '@loopring-web/common-resources';
-import { volumeToCountAsBigNumber } from '../../hooks/help';
+import { LoopringAPI } from 'api_wrapper';
+import {
+    CustomError,
+    ErrorMap,
+    getValuePrecisionThousand,
+    IBData,
+    MarketType,
+    myLog
+} from '@loopring-web/common-resources';
+import { volumeToCountAsBigNumber } from 'hooks/help';
 import BigNumber from 'bignumber.js';
-import { updateTicker } from 'stores/ticker';
+import { Ticker, updateTicker } from 'stores/ticker';
+import { SwapTradeData } from '@loopring-web/component-lib';
+import * as sdk from 'loopring-sdk';
 
-import { useAccount } from 'stores/account';
-import { useTokenMap } from 'stores/token';
-import { useSystem } from 'stores/system';
-import { useAmmMap } from 'stores/Amm/AmmMap';
-import { useAmount } from 'stores/amount';
-import { getTimestampDaysLater } from '../../utils/dt_tools';
-
-export const swapDependAsync = (market: MarketType): Promise<{
+export const swapDependAsync = (market: MarketType,level?:number,limit?:number): Promise<{
     ammPoolSnapshot: AmmPoolSnapshot | undefined,
     tickMap: LoopringMap<TickerData>,
     depth: DepthData
@@ -34,7 +35,7 @@ export const swapDependAsync = (market: MarketType): Promise<{
         const poolAddress = ammMap[ 'AMM-' + market ]?.address
         if (LoopringAPI.ammpoolAPI && LoopringAPI.exchangeAPI) {
             Promise.all([
-                LoopringAPI.exchangeAPI.getMixDepth({market}),
+                LoopringAPI.exchangeAPI.getMixDepth({market,level,limit}),
                 LoopringAPI.ammpoolAPI.getAmmPoolSnapshot({poolAddress,}),
                 LoopringAPI.exchangeAPI.getMixTicker({market: market})])
                 .then(([{depth}, {ammPoolSnapshot}, {tickMap}]) => {
@@ -57,11 +58,11 @@ export const calcPriceByAmmTickMapDepth = <C>(
     {
         market,
         tradePair,
-        dependencyData: {tickMap, ammPoolSnapshot, depth}
+        dependencyData: {ticker, ammPoolSnapshot, depth}
     }: {
         market: MarketType,
         tradePair: MarketType
-        dependencyData: { tickMap: any, ammPoolSnapshot: any, depth: any },
+        dependencyData: { ticker: Ticker|undefined, ammPoolSnapshot: any, depth: any },
     }): {
     stob: string | undefined,
     btos: string | undefined
@@ -100,18 +101,16 @@ export const calcPriceByAmmTickMapDepth = <C>(
         }
 
         //second getValue from tickerData
-        if ((stob === '0.00' || !stob) && tickMap) {
-            const tickerData = tickMap[ market ]
-            if (!!tickerData) {
-                let precision = marketMap[ market ].precisionForPrice ? marketMap[ market ].precisionForPrice : tokenMap[ coinB ].precision;
-                close = getValuePrecisionThousand(tickerData.close, precision, precision, precision,true);
-                stob = close;
-                btos = Number(tickerData.close) !== 0 ?
-                    getValuePrecisionThousand(1 / tickerData.close, tokenMap[ coinA ].precision, tokenMap[ coinA ].precision, tokenMap[ coinA ].precision,true) : 0
-                if (!tickerData.base === coinSell) {
-                    stob = btos;
-                    btos = close;
-                }
+        if ((stob === '0.00' || !stob) && ticker) {
+            // const tickerData = tickerMap[ market ]
+            let precision = marketMap[ market ].precisionForPrice ? marketMap[ market ].precisionForPrice : tokenMap[ coinB ].precision;
+            close = getValuePrecisionThousand(ticker.close, precision, precision, precision,true);
+            stob = close;
+            btos = Number(ticker.close) !== 0 ?
+                getValuePrecisionThousand(1 / ticker.close, tokenMap[ coinA ].precision, tokenMap[ coinA ].precision, tokenMap[ coinA ].precision,true) : 0
+            if (!ticker.__rawTicker__.base === coinSell) {
+                stob = btos;
+                btos = close;
             }
         }
 
@@ -126,6 +125,7 @@ export const calcPriceByAmmTickMapDepth = <C>(
                 btos = close;
             }
         }
+
         // const isValidS2B = (stob !== 0 && stob !== undefined && !isNaN(stob))
         return {
             btos: btos as string,
@@ -138,6 +138,47 @@ export const calcPriceByAmmTickMapDepth = <C>(
         stob: undefined,
         close: undefined
     }
+}
+export const reCalcStoB = <T extends  SwapTradeData<IBData<C>>,C extends any>(market:MarketType,tradeData:T,tradePair:MarketType):
+    { stob:string,btos:string }|undefined=>{
+    const { tokenMap, marketMap} = store.getState().tokenMap;
+    // const marketPrecision =  ? marketMap[market].precisionForPrice : 4;
+    //@ts-ignore
+    const  [, coinA, coinB] = market.match(/([\w,#]+)-([\w,#]+)/i);
+    // const tokenA = tokenMap[coinA];
+    // const tokenB =;
+    if (tradeData?.sell.tradeValue && tradeData?.buy.tradeValue && tradeData?.sell.tradeValue!==0) {
+        const sellBig = sdk.toBig(tradeData?.sell.tradeValue)
+        const buyBig = sdk.toBig(tradeData?.buy.tradeValue)
+        const marketPrecision =  marketMap[market].precisionForPrice ? marketMap[market].precisionForPrice :  tokenMap[coinB].precision;
+        const tokenPrecision =  tokenMap[coinA].precision;
+        let stob,btos;
+        
+        if(market === tradePair) {
+            stob = getValuePrecisionThousand(buyBig.div(sellBig).toString(), marketPrecision, marketPrecision, marketPrecision,true)
+            btos = getValuePrecisionThousand(sellBig.div(buyBig).toString(), tokenPrecision , tokenPrecision, tokenPrecision)
+        } else{
+            stob = getValuePrecisionThousand(buyBig.div(sellBig).toString(), tokenPrecision , tokenPrecision, tokenPrecision)
+            btos = getValuePrecisionThousand(sellBig.div(buyBig).toString(),  marketPrecision, marketPrecision, marketPrecision,true)
+        }
+        return {stob,btos}
+        // btos = getValuePrecisionThousand(sellBig.div(buyBig).toString(), btosPrecision, btosPrecision, btosPrecision)
+        // myLog("tradeCalcData.stob:", buyBig.div(sellBig).toString(), stob, sellBig.div(buyBig).toString(), btos)
+
+        // const BIG0 = sdk.toBig(0)
+        // if (sellBig.gt(BIG0) && buyBig.gt(BIG0))  {
+            // stob = (tradeData?.sell.tradeValue / tradeData?.buy.tradeValue).toString()
+            // btos = (tradeData?.buy.tradeValue / tradeData?.sell.tradeValue).toString()
+            // const isReversed = tradeData.sell.belong !== tradeCalcData.tokenA.symbol
+
+            // const btosPrecision = !isReversed ? tradeCalcData.tokenA.precision : marketPrecision
+            // market===tradePair &&
+
+
+    }else {
+        return  undefined
+    }
+    
 }
 
 export const marketInitCheck = (market: string, type?: 'sell' | 'buy'): { tradePair: MarketType } => {
@@ -172,172 +213,4 @@ export const marketInitCheck = (market: string, type?: 'sell' | 'buy'): { tradeP
     }
 
     return {tradePair: 'LRC-ETH'};
-}
-
-export interface ReqParams {
-    isBuy?: boolean,
-
-    price: number,
-    amount: number,
-    base?: string,
-    quote?: string,
-    market?: string,
-    tokenMap?: LoopringMap<TokenInfo>,
-
-    exchangeAddress?: string,
-    accountId?: number,
-    storageId?: number,
-
-    feeBips?: string,
-
-    // key is ETH or USDT
-    tokenAmtMap?: {[key: string]: TokenAmount},
-}
-
-export function makelimitReq({
-    isBuy,
-
-    price,
-    amount,
-    base,
-    quote,
-    tokenMap,
-
-    exchangeAddress,
-    accountId,
-    storageId,
-
-    feeBips,
-    tokenAmtMap,
- }: ReqParams) {
-
-    if (!tokenMap || !tokenAmtMap || !exchangeAddress
-         || accountId === undefined || storageId === undefined
-         || !base || !quote) {
-        return undefined
-    }
-
-    if (isBuy === undefined) {
-        isBuy = true
-    }
-
-    if (!storageId) {
-        storageId = 0
-    }
-
-    const baseTokenInfo = tokenMap[base]
-    const quoteTokenInfo = tokenMap[quote]
-
-    const baseVol = toBig(amount).times('1e' + baseTokenInfo.decimals)
-    const quoteVol = toBig(amount).times(toBig(price)).times('1e' + quoteTokenInfo.decimals)
-
-    const baseTokenVol3: TokenVolumeV3 = {
-        tokenId: baseTokenInfo.tokenId,
-        volume: baseVol.toString()
-    }
-
-    const quoteTokenVol3: TokenVolumeV3 = {
-        tokenId: quoteTokenInfo.tokenId,
-        volume: quoteVol.toString()
-    }
-
-    const takerRate = tokenAmtMap[baseTokenInfo.symbol].userOrderInfo.takerRate
-
-    const maxFeeBips = parseInt(toBig(feeBips).plus(toBig(takerRate)).toString())
-
-    const request: SubmitOrderRequestV3 = {
-        exchange: exchangeAddress,
-        accountId,
-        storageId,
-        sellToken: isBuy ? quoteTokenVol3 : baseTokenVol3,
-        buyToken: isBuy ? baseTokenVol3 :quoteTokenVol3,
-        allOrNone: false,
-        validUntil: getTimestampDaysLater(30),
-        maxFeeBips,
-        fillAmountBOrS: false, // amm only false
-        orderType: OrderType.LimitOrder,
-        tradeChannel: TradeChannel.MIXED,
-        eddsaSignature: '',
-    }
-
-    return {
-        request,
-    }
-}
-
-//price = USDTVol / ETHVol
-
-//buy eth(base). ETH-USDT reversed. sell:usdt buy:eth   calc: usdt<-eth/isAtoB=false
-// fee(buyToken) -> eth(base)
-// percentage -> change quote vol
-export function marketBuy() {
-}
-
-//sell eth(base). ETH-USDT. sell:eth buy:usdt   calc: eth->usdt/isAtoB=true
-// fee(buytoken) -> usdt(quote)
-// percentage -> change base vol
-export function marketSell() {
-}
-
-export function usePlaceOrder() {
-
-    const { account } = useAccount()
-
-    const { tokenMap, marketArray, } = useTokenMap()
-
-    const { exchangeInfo, } = useSystem()
-
-    const { amountMap, } = useAmount()
-
-    const { ammMap, } = useAmmMap()
-
-    //{isBuy, price, amount, (base, quote / market), feeBips, }
-    const makelimitReqInHook = React.useCallback((params: ReqParams) => {
-
-        if (!exchangeInfo || !ammMap || !amountMap || !marketArray) {
-            return
-        }
-
-        let base = params.base
-
-        let quote = params.quote
-
-        let market = params.market
-
-        let ammMarket = ''
-
-        if (params.market) {
-
-            const result = params.market.match(/([\w,#]+)-([\w,#]+)/i)
-
-            if (result) {
-                [ , base, quote, ] = result
-            }
-
-            const existedMarket = getExistedMarket(marketArray, base, quote)
-
-            base = existedMarket.baseShow
-            quote = existedMarket.quoteShow
-            market = existedMarket.market
-            ammMarket = existedMarket.amm as string
-        }
-
-        const tokenAmtMap = ammMap[ ammMarket ] ? amountMap[ ammMarket ] : amountMap[ market as string ]
-
-        const fullParams: ReqParams  = {
-            ...params,
-            exchangeAddress: exchangeInfo.exchangeAddress,
-            accountId: account.accountId,
-            tokenMap,
-            tokenAmtMap,
-        }
-
-        return makelimitReq(fullParams)
-
-    }, [account, tokenMap, ammMap, amountMap, marketArray, exchangeInfo, ])
-
-    return {
-        makelimitReqInHook,
-    }
-
 }

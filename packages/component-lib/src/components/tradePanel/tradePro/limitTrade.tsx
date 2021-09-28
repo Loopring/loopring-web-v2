@@ -1,12 +1,22 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { BtnPercentage, InputCoin, InputSize } from '../../basic-lib';
 import { LimitTradeData, TradeBtnStatus, TradeLimitProps } from '../Interface';
-import { CoinInfo, CoinKey, CoinMap, EmptyValueTag, IBData, TradeCalcProData } from '@loopring-web/common-resources';
-import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
+import {
+    CoinInfo,
+    CoinKey,
+    CoinMap,
+    EmptyValueTag,
+    IBData,
+    PriceTag,
+    TradeCalcProData
+} from '@loopring-web/common-resources';
+import { Box, Grid, Tab, Typography } from '@mui/material';
 import { TradeProType } from './Interface';
-import { ButtonStyle } from '../components/Styled';
+import { ButtonStyle, TabsStyle } from '../components/Styled';
 import { useCommon } from './hookCommon';
 import React from 'react';
+import { useSettings } from '../../../stores';
+import { Currency } from 'loopring-sdk';
 
 // const tradeDataInit:LimitTradeData<IBData<any>> = {
 //     quote: {belong:'',tradeValue:undefined,balance} as IBData<any>,
@@ -22,19 +32,23 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
     const  {
         t,
         // disabled,
+        tradeType,
         tradeLimitI18nKey,
         // tradeCalcProData,
         // handleCountChange,
         tradeLimitBtnStatus,
+        tradeLimitBtnStyle,
         // tokenBaseProps,
         // tokenQuoteProps,
         // tradeData,
         // handleError,
-        // handleSubmitEvent,
+        tokenPriceProps,
+        handleSubmitEvent,
         // handleChangeIndex,
         onChangeEvent,
         // ...rest
     } =  props
+    const {currency} = useSettings()
     const priceRef = React.useRef();
     // const _handleCountChange = React.useCallback((ibData: IBData<I>,name:string, _ref: any) => {
     //     console.log('limitTrade: handleUser input :',ibData,name)
@@ -57,8 +71,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
         btnLabel,
         getDisabled,
         _handleChangeIndex,
-        inputError,
-        tabIndex,
+        // inputError,
         tradeCalcProData,
         tradeBtnBaseStatus,
         handleCountChange,
@@ -70,6 +83,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
         type: 'limit',
         ...props as any,
         tradeData,
+        tradeType,
         onChangeEvent,
         i18nKey: tradeLimitI18nKey?tradeLimitI18nKey:'labelProLimitBtn',
         tradeBtnBaseStatus: tradeLimitBtnStatus
@@ -77,14 +91,14 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
     const propsPrice = React.useMemo(()=>{
         return {
             label: t('labelProPrice'),
-            subLabel: t('tokenMax'),
+            subLabel: `\u2248 ${currency == Currency.usd?PriceTag.Dollar:PriceTag.Yuan}`,   //'\u224'
             emptyText: t('tokenSelectToken'),
             placeholderText: '0.00',
             size:InputSize.small,
             order:'"right"' as any,
             coinLabelStyle:{color:'var(--color-text-secondary)'},
             isShowCoinIcon:false,
-            // ...tokenQuoteProps,
+            ...tokenPriceProps,
             handleCountChange,
             // handleError:tabIndex === TradeProType.sell? handleError :undefined,
             maxAllow: false,
@@ -92,26 +106,26 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
             // handleOnClick,
             t
         }
-    },[tabIndex,TradeProType,handleCountChange])
+    },[tradeType,TradeProType,handleCountChange])
     const fee = (tradeCalcProData && tradeCalcProData.fee) ? ((parseFloat(tradeCalcProData.fee) / 100).toString() + '%') : EmptyValueTag
 
     return <Box flex={1} display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
         <Box className={'tool-bar'}  paddingX={2} display={'flex'} alignItems={'center'} justifyContent={'center'}>
             <Box component={'header'} width={'100%'} >
-                <Tabs variant={'fullWidth'} value={tabIndex}
-                      onChange={(_e, index) => _handleChangeIndex(index)} className={'pro-tabs'}>
-                    <Tab value={TradeProType.buy} label={t('labelProBuy')}/>
-                    <Tab value={TradeProType.sell} label={t('labelProSell')}/>
-                </Tabs>
+                <TabsStyle className={'trade-tabs pro-tabs'}  variant={'fullWidth'} value={tradeType}
+                      onChange={(_e, index) => _handleChangeIndex(index)} >
+                    <Tab className={'trade-tab-buy'} value={TradeProType.buy} label={t('labelProBuy')}/>
+                    <Tab className={'trade-tab-sell'} value={TradeProType.sell} label={t('labelProSell')}/>
+                </TabsStyle>
             </Box>
         </Box>
         <Box className={'trade-panel'} paddingX={2} paddingTop={2}>
             <Box paddingTop={2}>
                 <InputCoin<any, I, CoinInfo<I>> ref={priceRef as any}  name={'price'} disabled={false} {...{
                     ...propsPrice,
-                    // maxAllow:false,
+                    maxAllow:false,
                     isHideError: true,
-                    inputData:tradeData ? tradeData.price : {} as any,
+                    inputData: tradeData ? tradeData.price : {} as any,
                     coinMap: tradeCalcProData && tradeCalcProData.coinInfoMap ? tradeCalcProData.coinInfoMap : {} as CoinMap<I, CoinInfo<I>>
                 }} />
             </Box>
@@ -169,12 +183,17 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
         </Grid>
         </Box>
         <Box paddingX={2} paddingTop={2}>
-            <ButtonStyle variant={'contained'} size={'medium'} color={tabIndex === TradeProType.sell ?'success':'error'} onClick={() => {
-                // onSwapClick(swapData.tradeData)
+            {/*{getDisabled()} {tradeBtnBaseStatus}*/}
+            <ButtonStyle variant={'contained'} size={'medium'}
+                         color={tradeType === TradeProType.sell ?'error':'success'}
+                         loadingBg={tradeType === TradeProType.sell ?'var(--color-error)' :'var(--color-success)'}
+                         style={tradeLimitBtnStyle} onClick={() => {
+                handleSubmitEvent(tradeData)
             }}
                          loading={!getDisabled() && tradeBtnBaseStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
-                         disabled={getDisabled() || tradeBtnBaseStatus === TradeBtnStatus.DISABLED || tradeBtnBaseStatus === TradeBtnStatus.LOADING || inputError.error}
-                         fullWidth={true}>{btnLabel}
+                         disabled={getDisabled() || tradeBtnBaseStatus === TradeBtnStatus.DISABLED || tradeBtnBaseStatus === TradeBtnStatus.LOADING }
+                         fullWidth={true}>
+                {btnLabel}
             </ButtonStyle>
         </Box>
     </Box>

@@ -184,12 +184,12 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
             <Typography alignSelf={'center'} variant={'h2'}>
                 {showPercentage}
             </Typography>
-            <Grid item hidden={!isPercentage} height={80} >
+            <Grid item xs={12} hidden={!isPercentage} height={87} >
                <Box display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'space-between'}>
                    <Typography alignSelf={'center'} variant={'body1'} marginTop={1} lineHeight={'22px'}>
                        {showLP}
                    </Typography>
-                   <Box  alignSelf={'stretch'} marginTop={1} marginX={1}  height={48}>
+                   <Box  alignSelf={'stretch'} marginTop={1} marginX={1}  height={49}>
                        <BtnPercentage selected={_selectedPercentage} anchors={[{
                            value: 0, label: '0'
                        }, {
@@ -206,7 +206,7 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
                </Box>
            </Grid>
 
-            <Grid item alignSelf={'stretch'} marginTop={1} hidden={isPercentage}>
+            <Grid item xs={12} hidden={isPercentage} minHeight={86} paddingTop={1} >
                 <InputCoin<IBData<I>, I, CoinInfo<I>> ref={coinLPRef} disabled={getDisabled()} {...{
                     ...propsLP,
                     isHideError: true,
@@ -219,10 +219,10 @@ export const AmmWithdrawWrap = <T extends AmmExitData<C extends IBData<I> ? C : 
 
             <Box alignSelf={"center"} marginY={1}>
                 <SvgStyled>
-                    <ExchangeIcon htmlColor={'var(--color-text-third)'} />
+                    <ExchangeIcon fontSize={'large'} htmlColor={'var(--color-text-third)'} />
                 </SvgStyled>
             </Box>
-            <Box borderRadius={1} style={{ background: 'var(--color-pop-bg)' }}
+            <Box borderRadius={1} style={{ background: 'var(--color-table-header-bg)' }}
                 alignItems={'stretch'} display={'flex'}
                 paddingY={1} paddingX={2} flexDirection={'column'}>
                 <Typography variant={'body1'} color={'textSecondary'}

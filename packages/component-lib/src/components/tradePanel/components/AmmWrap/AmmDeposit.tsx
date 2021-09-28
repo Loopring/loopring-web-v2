@@ -155,9 +155,9 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
                 coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
             }} />
             <Box alignSelf={"center"} marginY={1}>
-                <SvgStyled>
+                <SvgStyled >
                     {/* <LinkedIcon /> */}
-                    <LinkedIcon htmlColor={'var(--color-text-third)'} />
+                    <LinkedIcon fontSize={'large'} htmlColor={'var(--color-text-third)'} />
                 </SvgStyled>
             </Box>
             <InputCoin<any, I, any> ref={coinBRef} disabled={getDisabled()} {...{

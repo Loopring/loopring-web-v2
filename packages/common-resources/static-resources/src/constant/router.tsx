@@ -6,7 +6,7 @@ import {
     // RedPockIcon,
     // RewardIcon,
     SecurityIcon,
-    VipIcon,
+    // VipIcon,
 } from '../svg';
 
 import { HeaderMenuItemInterface, HeaderMenuTabStatus } from '../loopring-interface';
@@ -28,7 +28,7 @@ export const ToolBarAvailableItem = [
 export let headerToolBarData: Array<{ buttonComponent: number, handleClick?: (props: any) => void, [ key: string ]: any }> = [
     {
         buttonComponent: ButtonComponentsMap.Download,
-        url: 'https://loopring.pro',
+        url: 'https://loopring.io',
         i18nTitle: 'labelDownloadAppTitle',
         i18nDescription: 'labelDownloadBtn',
     },
@@ -46,16 +46,16 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [{
         id: 'Classic', i18nKey: 'labelClassic',
         description: 'labelClassicDescription',
     },
-    router: {path: '/trading/lite'},
+     router: {path: '/trade/lite/LRC-ETH'},
 },
-// {
-//     label: {
-//         id: 'Advanced', i18nKey: 'labelAdvanced',
-//         //TODO: translate id
-//         description: 'labelAdvancedDescription',
-//     },
-//     router: { path: '/trading/pro' },
-// },
+{
+    label: {
+        id: 'Advanced', i18nKey: 'labelAdvanced',
+        //TODO: translate id
+        description: 'labelAdvancedDescription',
+    },
+    router: { path: '/trade/pro/LRC-ETH' },
+},
 ]
 
 
@@ -72,6 +72,8 @@ export enum NavListIndex {
     liquidity,
     layer2
 }
+export const orderDisableList = [ 'Liquidity', 'Markets','Trading' ,'Mining' ]
+export const ammDisableList = [ 'Liquidity' ]
 
 export let headerMenuData: Array<HeaderMenuItemInterface> = [
     {
@@ -85,8 +87,8 @@ export let headerMenuData: Array<HeaderMenuItemInterface> = [
         label: {
             id: 'Trading', i18nKey: 'labelTrade',
         },
-        router: {path: '/trading/lite/LRC-ETH'},
         status: HeaderMenuTabStatus.default,
+        child: layer2ItemData,
     },
     {
         label: {

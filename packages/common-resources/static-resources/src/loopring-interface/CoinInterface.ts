@@ -49,11 +49,13 @@ export type WalletMap<R, I = WalletCoin<R>> = {
 export type TradeCalcData<T> = {
     coinSell: keyof T, //name
     coinBuy: keyof T,
-    tokenA: sdk.TokenInfo,
-    tokenB: sdk.TokenInfo,
+    buyPrecision: number,
+    sellPrecision: number,
+    // tokenA: sdk.TokenInfo,
+    // tokenB: sdk.TokenInfo,
     StoB: string,
     BtoS: string,
-    marketPrecision: number,
+    // marketPrecision: number,
     coinInfoMap?: CoinMap<T, CoinInfo<T>>,
     sellCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
     buyCoinInfoMap?: CoinMap<T, CoinInfo<T>>,
@@ -65,7 +67,6 @@ export type TradeCalcData<T> = {
     minimumReceived: string,
     fee: string
 }
-
 export type TradeCalcProData<T> = {
     coinBase: keyof T, //name
     coinQuote: keyof T,
