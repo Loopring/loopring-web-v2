@@ -4,11 +4,14 @@ import { usePopupState, bindPopper } from 'material-ui-popup-state/hooks';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { Divider, Box, Typography, Grid, MenuItem, Checkbox, ClickAwayListener } from '@mui/material'
 import { ScaleAreaChart, ChartType, testKlineData, MainIndicator, SubIndicator, PopoverPure } from '@loopring-web/component-lib'
-import { BreakPoint, KLineFeaturesIcon } from '@loopring-web/common-resources'
+import { BreakPoint, KLineFeaturesIcon, DepthViewData, MarketType, depth2ViewData, myLog } from '@loopring-web/common-resources'
 import styled from '@emotion/styled'
 import { TradingInterval } from 'loopring-sdk'
+import { usePageTradePro } from 'stores/router';
+import { useTokenMap } from 'stores/token'
 import { useKlineChart } from './hook';
 import { timeIntervalData, SubIndicatorList, chartFearturesList } from './klineConfig'
+import { cloneDeepWith } from 'lodash';
 
 const ChartWrapperStyled = styled(Box)`
     flex: 1;
@@ -25,16 +28,73 @@ const formatDateData = testKlineData.map(d => ({
     date: new Date(d.date)
 }))
 
-export const ChartView = withTranslation('common')(({market, breakpoint, t, i18n, ...rest}: 
+export const ChartView = withTranslation('common')(({market, rowLength, t, i18n, ...rest}: 
     {
-        market: string | undefined;
-        breakpoint: BreakPoint;
+        market?: MarketType,
+        rowLength: number,
     } & WithTranslation) => {
 
     const { candlestickViewData, genCandlestickData } = useKlineChart(market)
     const [timeInterval, setTimeInterval] = React.useState(TradingInterval.d1)
     const [subChart, setSubChart] = React.useState(SubIndicator.VOLUME)
     const [chosenIndicators, setChosenIndicators] = React.useState<string[]>(chartFearturesList.map(o => o.id))
+    const [chosenChart, setChosenChart] = React.useState(ChartType.Kline)
+
+    const [depthViewData, setDepthViewData] = React.useState<{ asks: DepthViewData[], bids: DepthViewData[] }>({
+        asks: [],
+        bids: []
+    });
+
+    // @ts-ignore
+    const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
+
+    const { pageTradePro } = usePageTradePro();
+    const { marketMap, tokenMap } = useTokenMap();
+
+    const isKline = chosenChart === ChartType.Kline
+
+    const rebuildList = React.useCallback(() => {
+        const depth = pageTradePro.depth;
+        if (depth && (depth.bids.length || depth.asks.length)) {
+            const baseDecimal = tokenMap[ baseSymbol ]?.decimals;
+            const quoteDecimal = tokenMap[ baseSymbol ]?.decimals;
+            const precisionForPrice = marketMap[ (market || '') ]?.precisionForPrice;
+            //@ts-ignore
+            const basePrecision = tokenMap[ baseSymbol ].precisionForOrder;
+            let [countAsk, countBid] = [rowLength, rowLength]
+            // if (depthType === DepthShowType.bids) {
+            //     [countAsk, countBid] = [0, rowLength * 2]
+            // } else if (depthType === DepthShowType.asks) {
+            //     [countAsk, countBid] = [rowLength * 2, 0]
+            // } else {
+            // }
+            const viewData = depth2ViewData({
+                depth,
+                countAsk: countAsk * 2,
+                countBid: countBid * 2,
+                baseDecimal,
+                quoteDecimal,
+                precisionForPrice,
+                basePrecision
+            })
+            setDepthViewData(viewData);
+        }
+    }, [pageTradePro.depth, tokenMap, baseSymbol, marketMap, market, rowLength])
+
+    React.useEffect(() => {
+        rebuildList()
+    }, [rebuildList, pageTradePro.depth, tokenMap, baseSymbol, marketMap, market, rowLength])
+
+    const getTrendData = React.useCallback(() => {
+        const originalData = cloneDeepWith(depthViewData)
+        const formattedData = {
+            bidsPrices: originalData.bids.map(o => o.price).reverse(),
+            bidsAmtTotals: originalData.bids.map(o => Number(o.amtTotal)).reverse(),
+            asksPrices: originalData.asks.map(o => o.price).reverse(),
+            asksAmtTotals: originalData.asks.map(o => Number(o.amtTotal)).reverse(),
+        }
+        return formattedData
+    }, [depthViewData])
 
     const handleTimeIntervalChange = React.useCallback((timeInterval: TradingInterval) => {
         setTimeInterval(timeInterval)
@@ -43,6 +103,10 @@ export const ChartView = withTranslation('common')(({market, breakpoint, t, i18n
 
     const handleSubChartFeatureClick = React.useCallback((sub: SubIndicator) => {
         setSubChart(sub)
+    }, [])
+
+    const handleChartTypeChange = React.useCallback((chartType: ChartType) => {
+        setChosenChart(chartType)
     }, [])
 
     const popState = usePopupState({variant: 'popover', popupId: `popup-pro-kline-features`})
@@ -55,7 +119,8 @@ export const ChartView = withTranslation('common')(({market, breakpoint, t, i18n
             <Divider style={{marginTop: '-1px'}}/>
             <Box width={'100%'} height={'36px'} paddingX={1} paddingY={1} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
                 <Box display={'flex'} alignItems={'center'}>
-                    <Grid container spacing={1} marginRight={1}>
+                    {isKline && (
+                        <Grid container spacing={1} marginRight={1}>
                         {timeIntervalData.map(item => {
                             const { id, i18nKey } = item
                             const isSelected = id === timeInterval
@@ -106,19 +171,30 @@ export const ChartView = withTranslation('common')(({market, breakpoint, t, i18n
                                 </ClickAwayListener>
                             </PopoverPure>
                         </Grid>
-                    </Grid>
+                    </Grid>)}
                 </Box>
                 <Box>
-                    
+                    <Grid container spacing={2}>
+                        <Grid item onClick={() => handleChartTypeChange(ChartType.Kline)}>
+                            <ChartItemStyled color={isKline ? 'var(--color-text-primary)' : 'var(--color-text-third)'}>
+                                {t('labelProChartTradingView')}
+                            </ChartItemStyled>
+                        </Grid>
+                        <Grid item onClick={() => handleChartTypeChange(ChartType.Depth)}>
+                            <ChartItemStyled color={!isKline ? 'var(--color-text-primary)' : 'var(--color-text-third)'}>
+                                {t('labelProChartDepth')}
+                            </ChartItemStyled>
+                        </Grid>
+                    </Grid>
                 </Box>
             </Box>
             <Divider style={{marginTop: '-1px'}}/>
             <ChartWrapperStyled>
                 <ScaleAreaChart
-                    type={ChartType.Kline}
-                    data={candlestickViewData}
-                    interval={timeInterval}
-                    indicator={
+                    type={isKline ? ChartType.Kline : ChartType.Depth}
+                    data={isKline ? candlestickViewData : getTrendData()}
+                    interval={isKline ? timeInterval : undefined}
+                    indicator={isKline ? 
                         {
                             mainIndicators: chartFearturesList.filter(o => chosenIndicators.includes(o.id)).map(item => ({
                                 indicator: item.id,
@@ -126,27 +202,32 @@ export const ChartView = withTranslation('common')(({market, breakpoint, t, i18n
                             })),
                             subIndicator: [{ indicator: subChart, params: subChart === SubIndicator.SAR ? { accelerationFactor: 0.02, maxAccelerationFactor: 0.2 } : {} }]
                         }
+                        : undefined
                     }
                 />
             </ChartWrapperStyled>
-            <Divider style={{marginTop: '-1px'}}/>
-            <Box width={'100%'} height={'36px'} paddingX={1} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                <Grid container spacing={1}>
-                    {SubIndicatorList.map(o => {
-                        const isSelected = o.id === subChart
-                        return (
-                            <Grid key={o.id} item>
-                                <ChartItemStyled
-                                    color={isSelected ? 'var(--color-text-primary)' : 'var(--color-text-third)'}
-                                    onClick={() => handleSubChartFeatureClick(o.id)}
-                                >
-                                    {o.id}
-                                </ChartItemStyled>
-                            </Grid>
-                        )
-                    })}
-                </Grid>
-            </Box>
+            {isKline && (
+                <>
+                    <Divider style={{marginTop: '-1px'}}/>
+                    <Box width={'100%'} height={'36px'} paddingX={1} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                        <Grid container spacing={1}>
+                            {SubIndicatorList.map(o => {
+                                const isSelected = o.id === subChart
+                                return (
+                                    <Grid key={o.id} item>
+                                        <ChartItemStyled
+                                            color={isSelected ? 'var(--color-text-primary)' : 'var(--color-text-third)'}
+                                            onClick={() => handleSubChartFeatureClick(o.id)}
+                                        >
+                                            {o.id}
+                                        </ChartItemStyled>
+                                    </Grid>
+                                )
+                            })}
+                        </Grid>
+                    </Box>
+                </>
+            )}
         </Box>
     </>
 })

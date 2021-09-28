@@ -350,6 +350,8 @@ export default {
     labelProTime1D: '1D',
     labelProTime1W: '1W',
     labelProTime1M: '1M',
+    labelProChartTradingView: 'TradingView',
+    labelProChartDepth: 'Depth',
 
     labelSwapCancelled: 'Swap is cancelled.',
     labelSuccessfully: 'Successfully',
