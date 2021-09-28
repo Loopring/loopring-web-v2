@@ -240,6 +240,9 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 fontWeight: 'normal',
                 paddingLeft: pxToRem(12),
                 paddingRight: pxToRem(12),
+                // '&.MuiButton-contained':{
+                //
+                // }
             },
             text: {
                 color: colorBase.secondary,
@@ -262,11 +265,18 @@ export const MuiButton = ({colorBase}: any): { styleOverrides: ComponentsOverrid
                 color: colorBase.textButton,
                 height: pxToRem(40),
                 fontSize: pxToRem(14),
-                // backgroundColor: colorBase.primary,
                 boxShadow: 'initial',
                 '&:hover': {
-                    backgroundColor: colorBase.primaryHover,
                     boxShadow: 'initial',
+                    '&:before':{
+                        background: colorBase.primaryHover,
+                        content:'\'\'',
+                        position: 'absolute',
+                        top:0,
+                        left:0,
+                        right:0,
+                        bottom:0
+                    }
                 },
                 '&.Mui-disabled': {
                     backgroundColor: colorBase.defaultDisable,

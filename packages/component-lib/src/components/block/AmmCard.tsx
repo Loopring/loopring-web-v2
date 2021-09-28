@@ -47,7 +47,7 @@ const LabelStyled = styled(Box)`
     align-items: center;
     color: var(--color-box);
     font-size: 1.4rem;
-    background: ${({type}: any) => type === 'ORDERBOOK_MINING' ? 'var(--color-warning)' : 'var(--color-primary-hover)'}
+    background: ${({type}: any) => type === 'ORDERBOOK_MINING' ? 'var(--color-warning)' : 'var(--color-tag)'}
 ` as any
 
 const CardActionBoxStyled = styled(Box)`
