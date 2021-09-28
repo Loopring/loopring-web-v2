@@ -146,7 +146,7 @@ export class LoopringSocket {
                 socket.send('pong')
             } else if (window.loopringSocket.isConnectSocket()) {
                 //HACK:
-                window.loopringSocket.loopringSocket.send('pong')
+                window.loopringSocket.ws.send('pong')
 
             }
 

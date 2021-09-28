@@ -175,7 +175,7 @@ export const useSocketProService = ({
     }, [walletLayer1Status])
 }
 
-export const useProSocket = ({market}:{market:MarketType|undefined}) => {
+export const useProSocket = ({market}: { market: MarketType | undefined }) => {
     const {sendSocketTopic, socketEnd, status: socketStatus} = useSocket();
     const {account, status: accountStatus} = useAccount();
     const {marketArray, marketMap} = useTokenMap();
@@ -197,7 +197,7 @@ export const useProSocket = ({market}:{market:MarketType|undefined}) => {
         }
         if ((window.loopringSocket === undefined)
             || window.loopringSocket.ws === undefined
-            || window.loopringSocket.isConnectSocket() === false ) {
+            || window.loopringSocket.isConnectSocket() === false) {
             getDependencyData();
             getMarketDepData();
         }
@@ -243,38 +243,44 @@ export const useProSocket = ({market}:{market:MarketType|undefined}) => {
         }
 
     }, [pageTradePro, ammMap])
+
     React.useEffect(() => {
-        getDependencyData();
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
+        if (market && pageTradePro.market === market) {
+            getDependencyData();
+        }
     }, [
+        market,
         pageTradePro.market,
         pageTradePro.depthLevel
     ])
     React.useEffect(() => {
-        getMarketDepData()
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
+        if (market && pageTradePro.market === market) {
+            getMarketDepData()
+        }
 
-    }, [
-        pageTradePro.market,
-    ])
+    }, [market, pageTradePro.market])
+
 
     React.useEffect(() => {
         // if(market !=== prageTradePrp.)
-        if (ammMap && pageTradePro.market) {
-
-            const dataSocket: SocketMap = {
-                [ sdk.WsTopicType.ammpool ]: ammMap[ 'AMM-' + pageTradePro.market ] ? [ammMap[ 'AMM-' + pageTradePro.market ].address] : [],
-                [ sdk.WsTopicType.ticker ]: [pageTradePro.market as string],
-                [ sdk.WsTopicType.mixorder ]: {
-                    markets: [pageTradePro.market],
-                    level: marketMap[ pageTradePro.market ].precisionForPrice - Number(pageTradePro.depthLevel),
-                    count: 50,
-                    snapshot: true
-                },
-                [ sdk.WsTopicType.trade ]: [pageTradePro.market as string],
-            }
-            myLog('socket',pageTradePro.market)
-
-            if (socketStatus !== SagaStatus.PENDING) {
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
+        if (ammMap && market && pageTradePro.market === market && socketStatus !== SagaStatus.PENDING) {
+            try {
                 noSocketLoop()
+                const dataSocket: SocketMap = {
+                    [ sdk.WsTopicType.ammpool ]: ammMap[ 'AMM-' + pageTradePro.market ] ? [ammMap[ 'AMM-' + pageTradePro.market ].address] : [],
+                    [ sdk.WsTopicType.ticker ]: [pageTradePro.market as string],
+                    [ sdk.WsTopicType.mixorder ]: {
+                        markets: [pageTradePro.market],
+                        level: marketMap[ pageTradePro.market ].precisionForPrice - Number(pageTradePro.depthLevel),
+                        count: 50,
+                        snapshot: true
+                    },
+                    [ sdk.WsTopicType.trade ]: [pageTradePro.market as string],
+                }
+                myLog('socket', pageTradePro.market, market)
                 if (accountStatus === SagaStatus.UNSET) {
                     if (account.readyState === AccountStatus.ACTIVATED) {
                         sendSocketTopic({
@@ -286,18 +292,26 @@ export const useProSocket = ({market}:{market:MarketType|undefined}) => {
                     } else {
                         sendSocketTopic(dataSocket)
                     }
+
+
+                } else {
+                    myLog('socket PENDING', pageTradePro.market)
                 }
-
-            }
-
-            return () => {
+            } catch (e) {
                 socketEnd()
             }
+        }else {
+            socketEnd()
         }
 
 
+
+
+        return () => {
+            socketEnd()
+        }
     }, [accountStatus,
-        pageTradePro.market,
+        market,
         pageTradePro.depthLevel]);
 }
 

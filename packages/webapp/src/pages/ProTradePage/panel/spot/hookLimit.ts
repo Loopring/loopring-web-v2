@@ -393,7 +393,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                         undefined, undefined, basePrecision, true, {isAbbreviate: true})
                     minOrderSize = `${showValue} ${minOrderInfo?.symbol}`;
                 }
-                return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin, ${minOrderSize}`}
+                return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin| ${minOrderSize}`}
             }
         }
         return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
