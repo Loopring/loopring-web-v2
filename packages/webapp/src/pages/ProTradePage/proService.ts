@@ -13,6 +13,7 @@ import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
 import { SocketMap } from 'stores/socket/interface';
 import * as sdk from 'loopring-sdk';
+import { sleep } from 'loopring-sdk';
 import { LoopringAPI } from 'api_wrapper';
 import { swapDependAsync } from '../SwapPage/help';
 import { useAmmMap } from 'stores/Amm/AmmMap';
@@ -20,7 +21,6 @@ import { makeMarketArray } from 'hooks/help';
 import { tradeService } from 'services/socket/services/tradeService';
 import { useTicker } from 'stores/ticker';
 import { mixorderService } from 'services/socket/services/mixorderService';
-import { sleep } from 'loopring-sdk';
 
 const TRADE_ARRAY_MAX_LENGTH = 50;
 
@@ -153,7 +153,9 @@ export const useSocketProService = ({
             const walletLayer1Status = store.getState().walletLayer1.status;
             _accountUpdate({walletLayer2Status, walletLayer1Status})
         })
-        return () => subscription.unsubscribe();
+        return () => {
+            subscription.unsubscribe();
+        };
     }, []);
 
     // React.useEffect(() => {
@@ -185,13 +187,8 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
 
     const {pageTradePro, updatePageTradePro, __API_REFRESH__} = usePageTradePro();
     const nodeTimer = React.useRef<NodeJS.Timeout | -1>(-1);
-    // const socketPending = React.useRef<boolean>(true);
 
-    React.useEffect(() => {
-        return () => {
-            clearTimeout(nodeTimer.current as NodeJS.Timeout);
-        }
-    }, [nodeTimer.current]);
+
     const noSocketLoop = React.useCallback(() => {
         //@ts-ignore
         if (nodeTimer.current !== -1) {
@@ -199,7 +196,7 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
         }
         if ((window.loopringSocket === undefined)
             || window.loopringSocket.ws === undefined
-            || window.loopringSocket.isConnectSocket() === false) {
+            || !window.loopringSocket.isConnectSocket()) {
             getDependencyData();
             getMarketDepData();
         }
@@ -208,7 +205,7 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
     }, [nodeTimer])
     const getDependencyData = React.useCallback(async () => {
         // const {market} = pageTradePro
-        if (market ===  pageTradePro.market && ammMap && pageTradePro.depthLevel && LoopringAPI.exchangeAPI) {
+        if (market === pageTradePro.market && ammMap && pageTradePro.depthLevel && LoopringAPI.exchangeAPI) {
             try {
 
                 const {
@@ -218,7 +215,12 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
                 // const tickerMap  = makeTickerMap({tickerMap: tickMap})
                 const {tickerMap} = store.getState().tickerMap
                 // myLog('store.getState().tickerMap',tickerMap[market]);
-                updatePageTradePro({market:pageTradePro.market, depth, ammPoolSnapshot, ticker: tickerMap[ pageTradePro.market ]})
+                updatePageTradePro({
+                    market: pageTradePro.market,
+                    depth,
+                    ammPoolSnapshot,
+                    ticker: tickerMap[ pageTradePro.market ]
+                })
             } catch (error) {
 
             }
@@ -227,7 +229,7 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
     }, [pageTradePro, ammMap, tickerMap, market]);
     const getMarketDepData = React.useCallback(async () => {
         // const {market} = pageTradePro
-        if (market ===  pageTradePro.market && LoopringAPI.exchangeAPI ) {
+        if (market === pageTradePro.market && LoopringAPI.exchangeAPI) {
             const {marketTrades} = await LoopringAPI.exchangeAPI.getMarketTrades({
                 market: pageTradePro.market,
                 limit: TRADE_ARRAY_MAX_LENGTH
@@ -240,14 +242,13 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
             // })
             // ) as RawDataTradeItem[]
             // setTradeArray(_tradeArray as RawDataTradeItem[])
-            updatePageTradePro({market:pageTradePro.market, tradeArray: _tradeArray})
+            updatePageTradePro({market: pageTradePro.market, tradeArray: _tradeArray})
 
         }
 
-    }, [pageTradePro, ammMap,market])
+    }, [pageTradePro, ammMap, market])
 
     React.useEffect(() => {
-        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
         getDependencyData();
     }, [
         pageTradePro.market,
@@ -256,11 +257,9 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
     React.useEffect(() => {
         getMarketDepData()
     }, [pageTradePro.market])
-    // React.useEffect(()=>{
-    //    if()
-    // },[socketStatus])
-    const doSend = React.useCallback(async (dataSocket)=>{
-        if( socketStatus !== SagaStatus.UNSET ) {
+
+    const doSend = React.useCallback(async (dataSocket) => {
+        if (socketStatus !== SagaStatus.UNSET) {
             await sleep(1000)
             myLog('socket Pro PENDING', pageTradePro.market)
         }
@@ -275,12 +274,10 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
         } else {
             sendSocketTopic(dataSocket)
         }
-    },[account.readyState, socketStatus, pageTradePro.market])
+    }, [account.readyState, socketStatus, pageTradePro.market])
 
     React.useEffect(() => {
-        // if(market !=== prageTradePrp.)
-        // const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-        if (ammMap && pageTradePro.market && accountStatus === SagaStatus.UNSET ) {
+        if (ammMap && pageTradePro.market && accountStatus === SagaStatus.UNSET) {
             try {
                 noSocketLoop()
                 const dataSocket: SocketMap = {
@@ -300,15 +297,21 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
             } catch (e) {
                 socketEnd()
             }
-        }else {
+        } else {
             socketEnd()
         }
-        return () => {
-            socketEnd()
-        }
+
     }, [accountStatus,
         // socketStatus,
         pageTradePro.market,
         pageTradePro.depthLevel]);
+    React.useEffect(() => {
+        return () => {
+            if (nodeTimer.current !== -1) {
+                clearTimeout(nodeTimer.current);
+            }
+            socketEnd()
+        }
+    }, [])
 }
 
