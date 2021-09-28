@@ -7,6 +7,7 @@ import { Ticker, TickerMap } from '../../ticker';
 export type PageTradeLite = {
     market?: MarketType  // eg: ETH-LRC, Pair from loopring market
     tradePair?: MarketType  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
+    request?: sdk.SubmitOrderRequestV3 | null | undefined,
     calcTradeParams?: {
         exceedDepth: boolean;
         isReverse: boolean;
@@ -25,7 +26,7 @@ export type PageTradeLite = {
             minReceivedVal: string;
         };
         priceImpact: string;
-    },
+    } | null | undefined,
     priceImpactObj?: undefined | {    // account has activated or undefined
         value: number | string,
         priceImpactColor: string,
