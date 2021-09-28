@@ -23,8 +23,8 @@ export function* sendMessage({payload}: any) {
         const {socket} = payload;
         if (window.loopringSocket) {
             // yield call(window.loopringSocket.socketSendMessage, {socket, apiKey})
-            yield call(window.loopringSocket.socketSendMessage, {socket, apiKey})
             yield put(getSocketStatus(undefined));
+            yield call(window.loopringSocket.socketSendMessage, {socket, apiKey})
         }else {
             yield put(getSocketStatus(undefined));
         }
