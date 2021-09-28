@@ -97,10 +97,10 @@ const DepthChart = ({
                         <stop
                             offset="5%"
                             stopColor={asksColor}
-                            stopOpacity={0.3}
+                            stopOpacity={1}
                         />
                         <stop
-                            offset="90%"
+                            offset="98%"
                             stopColor={asksColor}
                             stopOpacity={0}
                         />
@@ -109,10 +109,10 @@ const DepthChart = ({
                         <stop
                             offset="5%"
                             stopColor={bidsColor}
-                            stopOpacity={0.3}
+                            stopOpacity={1}
                         />
                         <stop
-                            offset="90%"
+                            offset="98%"
                             stopColor={bidsColor}
                             stopOpacity={0}
                         />

@@ -350,6 +350,8 @@ export default {
     labelProTime1D: '1天',
     labelProTime1W: '1周',
     labelProTime1M: '1月',
+    labelProChartTradingView: 'TradingView',
+    labelProChartDepth: '深度图',
 
     labelSwapCancelled: '交易被取消',
     labelSuccessfully: '成功',
