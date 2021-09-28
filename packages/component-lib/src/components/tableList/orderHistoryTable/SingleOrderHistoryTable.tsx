@@ -148,7 +148,7 @@ export const SingleOrderHistoryTable = withTranslation('tables')((props: SingleO
     const formattedRawData = props.rawData.map(o => Object.values(o))
     return (
         <TableStyled>
-            <Table {...{...defaultArgs, ...props, rawData: formattedRawData}} />
+            <Table {...{...defaultArgs, ...props, rawData: formattedRawData, showloading: props.showloading}} />
         </TableStyled>
     ) 
 })
