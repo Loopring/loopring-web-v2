@@ -23,7 +23,7 @@ const socketSlice: Slice<StateBase & { socket: SocketMap }> = createSlice({
             state.status = SagaStatus.PENDING;
         },
         getSocketStatus(state, action: PayloadAction<undefined|Error>) {
-             debugger
+            
             // @ts-ignore
             if (action.error) {
                 state.status = SagaStatus.ERROR
