@@ -292,12 +292,12 @@ export function makeLimitReq({
 
     const baseTokenVol3: sdk.TokenVolumeV3 = {
         tokenId: baseTokenInfo.tokenId,
-        volume: baseVol.toString()
+        volume: baseVol.toFixed()
     }
 
     const quoteTokenVol3: sdk.TokenVolumeV3 = {
         tokenId: quoteTokenInfo.tokenId,
-        volume: quoteVol.toString()
+        volume: quoteVol.toFixed()
     }
 
     let minOrderInfo: sdk.OrderInfo & OrderInfoPatch | undefined = undefined
@@ -349,6 +349,8 @@ export function makeLimitReq({
         eddsaSignature: '',
     }
 
+    // myLog('limitRequest:', limitRequest)
+
     let priceImpact = 0
 
     const ask1 = depth.asks_prices[0]
@@ -363,9 +365,9 @@ export function makeLimitReq({
     const calcTradeParams = {
         isBuy,
         priceImpact,
-        baseVol: baseVol.toString(),
+        baseVol: baseVol.toFixed(),
         baseVolShow,
-        quoteVol: quoteVol.toString(),
+        quoteVol: quoteVol.toFixed(),
         quoteVolShow,
         takerRate,
         feeBips,
