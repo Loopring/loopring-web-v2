@@ -32,6 +32,7 @@ export const OrderTableView = withTranslation('common')(<C extends { [ key: stri
         setOrderOriginalData,
         handleScroll,
         clearOrderDetail,
+        showDetailLoading,
     } = useOrderList()
     const [tabValue, setTabValue] = React.useState(0)
     const [hideOtherPairs, setHideOtherPairs] = React.useState(true)
@@ -95,6 +96,7 @@ export const OrderTableView = withTranslation('common')(<C extends { [ key: stri
                 isScroll: true,
                 handleScroll: handleScroll,
                 clearOrderDetail,
+                showDetailLoading,
             }}
         />
     </>
