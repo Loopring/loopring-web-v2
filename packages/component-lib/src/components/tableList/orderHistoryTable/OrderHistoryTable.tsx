@@ -166,14 +166,15 @@ export interface OrderHistoryTableProps {
     getOrderDetail: (orderHash: string, t: TFunction) => Promise<any>;
     orderDetailList: OrderHistoryTableDetailItem[];
     isOpenOrder?: boolean;
-    cancelOrder: ({orderHash, clientOrderId}: any) => void
+    cancelOrder: ({orderHash, clientOrderId}: any) => Promise<void>
     isScroll?: boolean;
     isPro?: boolean;
     handleScroll?: (event: React.UIEvent<HTMLDivElement>, isOpen?: boolean) => Promise<void>;
+    clearOrderDetail?: () => void;
 }
 
 export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryTableProps & WithTranslation) => {
-    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray, showDetailLoading, getOrderDetail, orderDetailList, cancelOrder, isOpenOrder = false, isScroll, handleScroll, isPro = false } = props
+    const { t, rawData, pagination, showFilter, getOrderList, showLoading, marketArray, showDetailLoading, getOrderDetail, orderDetailList, cancelOrder, isOpenOrder = false, isScroll, handleScroll, isPro = false, clearOrderDetail } = props
     const actionColumns = ['status']
     // const { language } = useSettings()
     // const [orderDetail, setOrderDetail] = useState([]);
@@ -311,6 +312,9 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             setCurrOrderId(row['orderId'])
             getOrderDetail(hash, t)
             setModalState(true)
+            if (clearOrderDetail) {
+                clearOrderDetail()
+            }
         }, [row])
     
     
@@ -372,12 +376,12 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         </RenderValue>
     }, [getOrderDetail])
 
-    const handleCancel = useCallback((orderHash?: string, clientOrderId?: string) => {
-        cancelOrder({
-            orderHash,
-            clientOrderId
-        })
-    }, [cancelOrder])
+    // const handleCancel = useCallback((orderHash?: string, clientOrderId?: string) => {
+    //     cancelOrder({
+    //         orderHash,
+    //         clientOrderId
+    //     })
+    // }, [cancelOrder])
 
     const getPopoverState = useCallback((label: string) => {
         return usePopupState({variant: 'popover', popupId: `popup-cancel-order-${label}`})
@@ -626,15 +630,19 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                 const handleClose = () => {
                     popState.setOpen(false)
                 }
-                const handleRequestCancel = () => {
-                    handleCancel(orderHash, clientOrderId)
+                const handleRequestCancel = async () => {
+                    await cancelOrder({orderHash, clientOrderId})
+                    // getOrderList({
+                    //     limit: 50,
+                    //     status: 'processing'
+                    // })
                     handleClose()
                 }
                 return (
                     <>
                         <Box {...bindTrigger(popState)} onClick={(e: any) => {
                             bindTrigger(popState).onClick(e);
-                        }} style={{ cursor: 'pointer' }} className="rdg-cell-value textAlignRight" /* onClick={() => handleCancel(orderHash, clientOrderId)} */>
+                        }} style={{ cursor: 'pointer' }} className="rdg-cell-value textAlignRight">
                             <Typography component={'span'} color={'var(--color-primary)'}>{t('labelOrderCancelOrder')}</Typography>
                         </Box>
                         
@@ -683,6 +691,21 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         // }
     }
 
+    const handleCancelAll = useCallback(async () => {
+        const openOrdresList = rawData.filter(o => o.status === 'processing').map(o => ({
+            hash: o.hash,
+            orderId: o.orderId
+        }))
+        const promises = openOrdresList.forEach(o => {
+            cancelOrder({orderHash:o.hash, clientOrderId: o.orderId})
+        })
+        await Promise.all([promises])
+        // getOrderList({
+        //     limit: 50,
+        //     status: 'processing'
+        // })
+    }, [rawData, cancelOrder, getOrderList])
+
     return <TableStyled isopen={isOpenOrder ? 'open' : 'history'} ispro={isPro ? 'pro' : 'lite'}>
         {showFilter && (
             <TableFilterStyled>
@@ -700,7 +723,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             onScroll={handleScroll ? (e) => handleScroll(e, isOpenOrder) : undefined}
             {...{...defaultArgs, ...props, rawData, showloading: showLoading}}
         />
-        <CancelAllOrdersAlert open={showCancelAllAlert} handleCancelAll={handleCancel} handleClose={() => setShowCancelAllAlert(false)} />
+        <CancelAllOrdersAlert open={showCancelAllAlert} handleCancelAll={handleCancelAll} handleClose={() => setShowCancelAllAlert(false)} />
         <Modal
             open={modalState}
             onClose={() => setModalState(false)}

@@ -31,9 +31,10 @@ export const OrderTableView = withTranslation('common')(<C extends { [ key: stri
         clearRawData,
         setOrderOriginalData,
         handleScroll,
+        clearOrderDetail,
     } = useOrderList()
     const [tabValue, setTabValue] = React.useState(0)
-    const [hideOtherPairs, setHideOtherPairs] = React.useState(false)
+    const [hideOtherPairs, setHideOtherPairs] = React.useState(true)
     const {account: {readyState}} = useAccount()
     const isShowHidePairsOption = readyState === 'ACTIVATED'
 
@@ -93,6 +94,7 @@ export const OrderTableView = withTranslation('common')(<C extends { [ key: stri
                 isPro: true,
                 isScroll: true,
                 handleScroll: handleScroll,
+                clearOrderDetail,
             }}
         />
     </>

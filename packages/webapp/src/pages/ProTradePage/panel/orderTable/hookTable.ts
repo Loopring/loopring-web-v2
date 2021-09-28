@@ -126,7 +126,7 @@ export const useOrderList = () => {
 
     React.useEffect(() => {
         (async () => {
-            if (readyState === AccountStatus.ACTIVATED && status === 'UNSET') {
+            if (status === 'UNSET') {
                 const data = await getOrderList({
                     limit: 50,
                     status: 'processing',
@@ -134,7 +134,11 @@ export const useOrderList = () => {
                 setOrderOriginalData(data)
             }
         })()
-    }, [getOrderList, status, readyState])
+    }, [getOrderList, status])
+
+    const clearOrderDetail = React.useCallback(() => {
+        setOrderDetailList([])
+    }, [])
 
     const isAtBottom = React.useCallback(({currentTarget}: React.UIEvent<HTMLDivElement>): boolean => {
         return currentTarget.scrollTop + 10 >= currentTarget.scrollHeight - currentTarget.clientHeight;
@@ -157,20 +161,13 @@ export const useOrderList = () => {
 
     const cancelOrder = React.useCallback(async ({orderHash, clientOrderId}) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && privateKey && apiKey) {
-            setShowLoading(true)
             await LoopringAPI.userAPI.cancelOrder({
                 accountId,
                 orderHash,
                 clientOrderId,
             }, privateKey, apiKey)
-            setTimeout(async () => {
-                const data = await getOrderList({
-                    status: 'processing'
-                })
-                setOrderOriginalData(data)
-            }, 500)
         }
-    }, [accountId, apiKey, getOrderList, privateKey])
+    }, [accountId, apiKey, privateKey])
 
     const getOrderDetail = React.useCallback(async (orderHash: string, t: TFunction) => {
         if (LoopringAPI && LoopringAPI.userAPI && accountId && apiKey) {
@@ -263,5 +260,6 @@ export const useOrderList = () => {
         orderDetailList,
         cancelOrder,
         handleScroll,
+        clearOrderDetail,
     }
 }
