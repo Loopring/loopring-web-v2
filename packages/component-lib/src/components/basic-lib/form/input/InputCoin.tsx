@@ -36,12 +36,15 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        : InputCoinProps<T, C, I>, ref: React.ForwardedRef<any>) {
     const {balance, belong, tradeValue} = (inputData ? inputData : {}) as IBData<C>;
     const [sValue, setsValue] = React.useState<number | undefined>(tradeValue ? tradeValue : undefined);
-
-    // let _error = {error: false, message: ''};
-    // if (handleError && inputData) {
-    //     let error:any = handleError(inputData, ref);
-    //     _error = error ? error : {error: false}
-    // }
+    React.useEffect(()=>{
+        if(tradeValue === undefined && error.error){
+            setError( {error: false});
+        }
+    },[tradeValue])
+    const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
+        error: false,
+        message: ''
+    });
     const _handleError = React.useCallback((value: any) => {
         if (handleError) {
             let _error = handleError({
@@ -52,10 +55,6 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
             setError(_error ? _error : {error: false});
         }
     }, [handleError, balance, belong, maxAllow, ref])
-    const [error, setError] = React.useState<{ error: boolean, message?: string | React.ElementType }>({
-        error: false,
-        message: ''
-    });
     const inputCallback = React.useCallback(({current}) => {
             if (inputData && (inputData.tradeValue !== Number(current?.value))) {
                 setsValue(inputData.tradeValue);

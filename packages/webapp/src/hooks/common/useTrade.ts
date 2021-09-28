@@ -8,7 +8,7 @@ import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
 import { useSystem } from 'stores/system';
 import { useAmmMap } from 'stores/Amm/AmmMap';
-import { myLog } from '@loopring-web/common-resources';
+import { myError, myLog } from '@loopring-web/common-resources';
 import store from 'stores'
 import * as _ from 'lodash'
 import { OrderInfoPatch } from 'stores/router';
@@ -166,7 +166,7 @@ export function makeMarketReq({
             minOrderInfo.minAmtCheck = sdk.toBig(calcTradeParams?.buyAmt).gte(sdk.toBig(minOrderInfo.minAmtShow))
         }
     } else {
-        throw Error('undefined minOrderInfo')
+        myError('undefined minOrderInfo')
     }
 
     // myLog('makeMarketReq calcTradeParams:', calcTradeParams)
@@ -324,7 +324,8 @@ export function makeLimitReq({
         }
         
     } else {
-        throw Error('undefined minOrderInfo')
+        // throw Error('undefined minOrderInfo')
+        myError('undefined minOrderInfo')
     }
 
     const takerRate = (tokenAmtMap && tokenAmtMap[baseTokenInfo.symbol]) ? tokenAmtMap[baseTokenInfo.symbol].userOrderInfo.takerRate : 0
