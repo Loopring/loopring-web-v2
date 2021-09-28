@@ -189,7 +189,7 @@ export const useAmmExit = ({
                 } else {
                     return {
                         btnStatus: TradeBtnStatus.DISABLED,
-                        btnI18nKey: `labelLimitMin, ${times * lpMinAmt} ${ammData?.coinLP?.belong} `
+                        btnI18nKey: `labelLimitMin| ${times * lpMinAmt} ${ammData?.coinLP?.belong} `
                     }
                 }
 

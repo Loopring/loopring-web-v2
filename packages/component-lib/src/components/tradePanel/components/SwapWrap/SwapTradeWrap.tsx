@@ -142,7 +142,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
 
         }
         if (swapBtnI18nKey) {
-            const key = swapBtnI18nKey.split(',');
+            const key = swapBtnI18nKey.split('|');
             return t(key[ 0 ], key && key[ 1 ] ? {arg: key[ 1 ]} : undefined)
         } else {
             return t(`swapBtn`)

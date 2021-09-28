@@ -131,7 +131,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         // }
         // myLog('i18nKey',i18nKey)
         // if (i18nKey) {
-        const key = i18nKey.split(',');
+        const key = i18nKey.split('|');
         return t(key[ 0 ], {
             arg: key[ 1 ],
             tradeType: tradeType === TradeProType.sell ? t('labelProSell') : t('labelProBuy'),

@@ -304,7 +304,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
                     const sellSymbol = tradeData?.sell.belong;
                     const minOrderSize = VolToNumberWithPrecision(sellMinAmt, sellSymbol as any) + ' ' + sellSymbol;
                     setSwapBtnStatus(TradeBtnStatus.DISABLED)
-                    return `labelLimitMin, ${minOrderSize}`
+                    return `labelLimitMin| ${minOrderSize}`
 
                 }
 

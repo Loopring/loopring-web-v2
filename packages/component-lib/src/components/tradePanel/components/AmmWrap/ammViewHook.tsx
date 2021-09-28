@@ -20,7 +20,7 @@ export function useAmmViewData({accStatus, error, i18nKey, t, _isStoB, ammCalcDa
             }
         }
         if (i18nKey) {
-            const key = i18nKey.split(',');
+            const key = i18nKey.split('|');
             return t(key[ 0 ], key && key[ 1 ] ? {arg: key[ 1 ]} : undefined)
         } else {
             return isAdd ? t(`labelAddLiquidityBtn`) : t(`labelRemoveLiquidityBtn`)
