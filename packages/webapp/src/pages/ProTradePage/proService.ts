@@ -205,32 +205,32 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
         nodeTimer.current = setTimeout(noSocketLoop, __API_REFRESH__)
     }, [nodeTimer])
     const getDependencyData = React.useCallback(async () => {
-        const {market} = pageTradePro
-        if (market && ammMap && pageTradePro.depthLevel && LoopringAPI.exchangeAPI) {
+        // const {market} = pageTradePro
+        if (market ===  pageTradePro.market && ammMap && pageTradePro.depthLevel && LoopringAPI.exchangeAPI) {
             try {
 
                 const {
                     depth,
                     ammPoolSnapshot
-                } = await swapDependAsync(market, marketMap[ market ].precisionForPrice - Number(pageTradePro.depthLevel), 50);
+                } = await swapDependAsync(pageTradePro.market, marketMap[ pageTradePro.market ].precisionForPrice - Number(pageTradePro.depthLevel), 50);
                 // const tickerMap  = makeTickerMap({tickerMap: tickMap})
                 const {tickerMap} = store.getState().tickerMap
                 // myLog('store.getState().tickerMap',tickerMap[market]);
-                updatePageTradePro({market, depth, ammPoolSnapshot, ticker: tickerMap[ market ]})
+                updatePageTradePro({market:pageTradePro.market, depth, ammPoolSnapshot, ticker: tickerMap[ pageTradePro.market ]})
             } catch (error) {
 
             }
         }
 
-    }, [pageTradePro, ammMap, tickerMap]);
+    }, [pageTradePro, ammMap, tickerMap, market]);
     const getMarketDepData = React.useCallback(async () => {
-        const {market} = pageTradePro
-        if (LoopringAPI.exchangeAPI && market) {
+        // const {market} = pageTradePro
+        if (market ===  pageTradePro.market && LoopringAPI.exchangeAPI ) {
             const {marketTrades} = await LoopringAPI.exchangeAPI.getMarketTrades({
-                market,
+                market: pageTradePro.market,
                 limit: TRADE_ARRAY_MAX_LENGTH
             });
-            const _tradeArray = makeMarketArray(market, marketTrades)
+            const _tradeArray = makeMarketArray(pageTradePro.market, marketTrades)
             // const formattedTradArray:RawDataTradeItem[] = _tradeArray.map(o => (
             //     {
             //     ...o,
@@ -238,35 +238,28 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
             // })
             // ) as RawDataTradeItem[]
             // setTradeArray(_tradeArray as RawDataTradeItem[])
-            updatePageTradePro({market, tradeArray: _tradeArray})
+            updatePageTradePro({market:pageTradePro.market, tradeArray: _tradeArray})
 
         }
 
-    }, [pageTradePro, ammMap])
+    }, [pageTradePro, ammMap,market])
 
     React.useEffect(() => {
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-        if (market && pageTradePro.market === market) {
-            getDependencyData();
-        }
+        getDependencyData();
     }, [
-        market,
         pageTradePro.market,
         pageTradePro.depthLevel
     ])
     React.useEffect(() => {
-        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-        if (market && pageTradePro.market === market) {
-            getMarketDepData()
-        }
-
-    }, [market, pageTradePro.market])
+        getMarketDepData()
+    }, [pageTradePro.market])
 
 
     React.useEffect(() => {
         // if(market !=== prageTradePrp.)
-        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
-        if (ammMap && market && pageTradePro.market === market && socketStatus !== SagaStatus.PENDING) {
+        // const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
+        if (ammMap && pageTradePro.market && socketStatus !== SagaStatus.PENDING) {
             try {
                 noSocketLoop()
                 const dataSocket: SocketMap = {
@@ -311,7 +304,7 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
             socketEnd()
         }
     }, [accountStatus,
-        market,
+        pageTradePro.market,
         pageTradePro.depthLevel]);
 }
 
