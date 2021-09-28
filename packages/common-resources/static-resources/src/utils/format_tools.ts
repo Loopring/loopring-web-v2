@@ -150,7 +150,7 @@ function genABViewData({
     amtSlice, abInfoSlice, amtTotalSlice, priceSlice, baseDecimal, count, maxVal, basePrecision }: DepthDataNew): DepthViewData[] {
 
     if (abInfoSlice.length < count) {
-        const lastV = abInfoSlice[abInfoSlice.length - 1]
+        const lastV = abInfoSlice[abInfoSlice.length - 1] ?? {}
         amtSlice = amtSlice.concat(new Array(count - amtSlice.length).fill(lastV.amt))
         amtTotalSlice = amtTotalSlice.concat(new Array(count - amtTotalSlice.length).fill(lastV.amtTotal))
         abInfoSlice = abInfoSlice.concat(new Array(count - abInfoSlice.length).fill(lastV))
