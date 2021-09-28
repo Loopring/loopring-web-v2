@@ -317,71 +317,13 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             }
         }, [row])
     
-    
-        // useEffect(() => {
-        //     console.log(isOpen, rightState.isOpen, currentE)
-        //     if (isOpen && !rightState.isOpen && currentE) {
-        //         // bindTrigger(rightState).onClick(currentE)
-        //     }
-        // }, [rightState, currentE, isOpen])
-    
-        // useEffect(() => {
-        //     if (rightState.isOpen) {
-        //         getOrderDetail(hash)
-        //         rightState.setOpen(true)
-        //     }
-        // }, [getOrderDetail, hash, rightState.isOpen])
-        
-    
         return <RenderValue className="rdg-cell-value textAlignRight" onClick={() => handleOrderClick(hash)}>
-            {/* <div {...bindTrigger(rightState)} style={{width: 110}} onClick={(e) => handleOrderClick(e, hash)}>
-                <RenderValue>
-                    {actualValue}
-                    <DropDownIcon/>
-                </RenderValue>
-            </div> */}
-            {/* <RenderValue > */}
             <Typography component={'span'} marginRight={1}>
                 {actualValue}
             </Typography>
             <DropDownIcon htmlColor={'var(--color-text-third)'} fontSize={'large'} />
-            {/* </RenderValue> */}
-            {/* <PopoverPure
-                className={'arrow-right'}
-                {...bindPopper(rightState)}
-                // popupId={popupId}
-                // children={triggerContent}
-                // popoverContent={popoverContent}
-                // handleStateChange={(state) => handleStateChange(state, hash)}
-                // handleStateChange={setIsOpen}
-                
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-            >
-                <ClickAwayListener onClickAway={() => rightState.setOpen(false)}>
-                    <RenderPopover>
-                        <div className="arrowPopover"/>
-                        <div className="contentWrapper">
-                            <SingleOrderHistoryTable showloading={false} rawData={orderDetailList}/>
-                        </div>
-                    </RenderPopover>
-                </ClickAwayListener>
-            </PopoverPure> */}
         </RenderValue>
     }, [clearOrderDetail, getOrderDetail, t])
-
-    // const handleCancel = useCallback((orderHash?: string, clientOrderId?: string) => {
-    //     cancelOrder({
-    //         orderHash,
-    //         clientOrderId
-    //     })
-    // }, [cancelOrder])
 
     const getPopoverState = useCallback((label: string) => {
         return usePopupState({variant: 'popover', popupId: `popup-cancel-order-${label}`})
@@ -632,10 +574,6 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                 }
                 const handleRequestCancel = async () => {
                     await cancelOrder({orderHash, clientOrderId})
-                    // getOrderList({
-                    //     limit: 50,
-                    //     status: 'processing'
-                    // })
                     handleClose()
                 }
                 return (
@@ -700,11 +638,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
             cancelOrder({orderHash:o.hash, clientOrderId: o.orderId})
         })
         await Promise.all([promises])
-        // getOrderList({
-        //     limit: 50,
-        //     status: 'processing'
-        // })
-    }, [rawData, cancelOrder, getOrderList])
+    }, [rawData, cancelOrder])
 
     return <TableStyled isopen={isOpenOrder ? 'open' : 'history'} ispro={isPro ? 'pro' : 'lite'}>
         {showFilter && (
