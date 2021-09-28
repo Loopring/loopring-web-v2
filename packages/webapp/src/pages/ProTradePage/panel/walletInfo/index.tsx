@@ -44,7 +44,7 @@ const OtherView = React.memo(({t}: { market: MarketType, t: TFunction }) => {
             case AccountStatus.UN_CONNECT:
                 return <Box flex={1} height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}
                             flexDirection={'column'}>
-                    <Typography lineHeight={2} paddingX={2} color={'text.primary'} marginBottom={2} variant={'body2'}
+                    <Typography lineHeight={2} paddingX={2} color={'text.primary'} marginBottom={2} variant={'body1'}
                                 whiteSpace={'pre-line'}
                                 textAlign={'center'}>{t('describeTitleConnectToWallet')}</Typography>
                     {BtnConnect}
@@ -54,7 +54,7 @@ const OtherView = React.memo(({t}: { market: MarketType, t: TFunction }) => {
             case AccountStatus.LOCKED:
                 return <Box flex={1} height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}
                             flexDirection={'column'}>
-                    <Typography lineHeight={2} paddingX={2} color={'text.primary'} marginBottom={2} variant={'body2'}
+                    <Typography lineHeight={2} paddingX={2} color={'text.primary'} marginBottom={2} variant={'body1'}
                                 whiteSpace={'pre-line'}
                                 textAlign={'center'}>{t('describeTitleLocked')}</Typography>
                     {BtnConnect}
@@ -63,7 +63,7 @@ const OtherView = React.memo(({t}: { market: MarketType, t: TFunction }) => {
             case AccountStatus.NO_ACCOUNT:
                 return <Box flex={1} height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}
                             flexDirection={'column'}>
-                    <Typography lineHeight={2} paddingX={2} color={'text.primary'} marginBottom={2} variant={'body2'}
+                    <Typography lineHeight={2} paddingX={2} color={'text.primary'} marginBottom={2} variant={'body1'}
                                 whiteSpace={'pre-line'}
                                 textAlign={'center'}>{t('describeTitleNoAccount')}</Typography>
                     {BtnConnect}
@@ -72,7 +72,7 @@ const OtherView = React.memo(({t}: { market: MarketType, t: TFunction }) => {
             case AccountStatus.NOT_ACTIVE:
                 return <Box flex={1} height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}
                             flexDirection={'column'}>
-                    <Typography lineHeight={2} paddingX={2} color={'text.primary'} marginBottom={2} variant={'body2'}
+                    <Typography lineHeight={2} paddingX={2} color={'text.primary'} marginBottom={2} variant={'body1'}
                                 whiteSpace={'pre-line'}
                                 textAlign={'center'}>{t('describeTitleNotActive')}</Typography>
                     {BtnConnect}
@@ -81,7 +81,7 @@ const OtherView = React.memo(({t}: { market: MarketType, t: TFunction }) => {
             case AccountStatus.DEPOSITING:
                 return <Box flex={1} height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}
                             flexDirection={'column'}>
-                    <Typography lineHeight={2} paddingX={2} color={'text.primary'} marginBottom={2} variant={'body2'}
+                    <Typography lineHeight={2} paddingX={2} color={'text.primary'} marginBottom={2} variant={'body1'}
                                 whiteSpace={'pre-line'}
                                 textAlign={'center'}>{t('describeTitleOpenAccounting')}</Typography>
                     {BtnConnect}
@@ -90,7 +90,7 @@ const OtherView = React.memo(({t}: { market: MarketType, t: TFunction }) => {
             case AccountStatus.ERROR_NETWORK:
                 return <Box flex={1} height={'100%'} display={'flex'} justifyContent={'center'} alignItems={'center'}
                             flexDirection={'column'}>
-                    <Typography lineHeight={2} paddingX={2} color={'text.primary'} marginBottom={2} variant={'body2'}
+                    <Typography lineHeight={2} paddingX={2} color={'text.primary'} marginBottom={2} variant={'body1'}
                                 whiteSpace={'pre-line'}
                                 textAlign={'center'}>{t('describeTitleOnErrorNetwork', {connectName: account.connectName})}</Typography>
                 </Box>
