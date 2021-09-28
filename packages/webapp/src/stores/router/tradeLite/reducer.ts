@@ -31,6 +31,7 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                 ammPoolSnapshot,
                 tradePair,
                 quoteMinAmtInfo,
+                request,
                 calcTradeParams,
                 priceImpactObj,
                 feeBips,
@@ -45,6 +46,7 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                 state.pageTradeLite = {
                     market,
                     tradePair,  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
+                    request,
                     calcTradeParams,
                     depth,
                     ticker,
@@ -83,10 +85,13 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                 if (ammPoolSnapshot) {
                     state.pageTradeLite.ammPoolSnapshot = ammPoolSnapshot;
                 }
-                if (calcTradeParams) {
+                if (request !== undefined) {
+                    state.pageTradeLite.request = request
+                }
+                if (calcTradeParams !== undefined) {
                     state.pageTradeLite.calcTradeParams = calcTradeParams;
-                    state.pageTradeLite.orderType = calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
-                    state.pageTradeLite.tradeChannel = calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
+                    state.pageTradeLite.orderType = calcTradeParams?.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
+                    state.pageTradeLite.tradeChannel = calcTradeParams?.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
                 }
                 if (priceImpactObj) {
                     state.pageTradeLite.priceImpactObj = priceImpactObj;
