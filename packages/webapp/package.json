@@ -1,7 +1,7 @@
 {
   "name": "@loopring-web/webapp",
   "version": "1.0.0",
-  "author": "Loopring Dex Frontend Team",
+  "author": "Loopring Layer2 App Frontend Team",
   "description": "dexwebapp new version",
   "private": true,
   "dependencies": {
@@ -42,8 +42,8 @@
     "me": "yarn build; yarn deploy_me; sleep 3; yarn dns",
     "deploy_lrc": "bash -ac '. .env.deploy; npx ipfs-deploy -p pinata -d cloudflare -t webapp_dex build'",
     "deploy_me": "bash -ac '. .env.deploy.me; npx ipfs-deploy -t webapp_dex -p pinata -d cloudflare build'",
-    "build_fleek": "REACT_APP_VER=fleek_prod dotenv -e .env.production react-app-rewired build",
-    "build": "REACT_APP_VER=`git rev-parse --short HEAD`_prod dotenv -e .env.production react-app-rewired build",
+    "build": "REACT_APP_VER=fleek_prod dotenv -e .env.production react-app-rewired build",
+    "build_with_ver": "REACT_APP_VER=`git rev-parse --short HEAD`_prod dotenv -e .env.production react-app-rewired build",
     "deploy_infura": "npx ipfs-deploy build > .testfile",
     "update_pinata": "bash -ac '. .env.deploy; cat .testfile | xargs -I {} npx ipfs-deploy -p pinata -d cloudflare -c {}'",
     "deploy:ipfs": "yarn build; yarn deploy_infura; yarn update_pinata",
