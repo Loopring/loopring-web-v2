@@ -134,7 +134,7 @@ export const useOrderList = () => {
                 setOrderOriginalData(data)
             }
         })()
-    }, [getOrderList, readyState, status])
+    }, [getOrderList, status, readyState])
 
     const isAtBottom = React.useCallback(({currentTarget}: React.UIEvent<HTMLDivElement>): boolean => {
         return currentTarget.scrollTop + 10 >= currentTarget.scrollHeight - currentTarget.clientHeight;
@@ -242,6 +242,12 @@ export const useOrderList = () => {
     const clearData = React.useCallback(() => {
         setOrderOriginalData([])
     }, [])
+
+    React.useEffect(() => {
+        if (readyState !== AccountStatus.ACTIVATED) {
+            clearData()
+        }
+    }, [status, readyState, clearData])
 
     return {
         marketArray: jointPairs,
