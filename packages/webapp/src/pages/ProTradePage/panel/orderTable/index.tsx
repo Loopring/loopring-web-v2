@@ -34,25 +34,23 @@ export const OrderTableView = withTranslation('common')(<C extends { [ key: stri
     const [tabValue, setTabValue] = React.useState(0)
     const [hideOtherPairs, setHideOtherPairs] = React.useState(false)
 
-    const handleTabSwitch = React.useCallback((index: number) => {
-        setTabValue(index)
-        clearRawData()
-    }, [clearRawData])
-
     const getFilteredData = React.useCallback(() => {
         return hideOtherPairs ? rawData.filter(o => o.market === market) : rawData
     }, [hideOtherPairs, market, rawData])
 
-    React.useEffect(() => {
-        const getData = async () => {
-            const data = await getOrderList({
-                limit: 50,
-                status: tabValue === 0 ? 'processing' : 'processed,failed,cancelled,cancelling,expired'
-            })
-            setOrderOriginalData(data)
-        }
-        getData()
-    }, [getOrderList, setOrderOriginalData, tabValue])
+    const updateOrderList = React.useCallback(async (currentTabIndex: number) => {
+        const data = await getOrderList({
+            limit: 50,
+            status: currentTabIndex === 0 ? 'processing' : 'processed,failed,cancelled,cancelling,expired'
+        })
+        setOrderOriginalData(data)
+    }, [getOrderList, setOrderOriginalData])
+
+    const handleTabSwitch = React.useCallback((index: number) => {
+        setTabValue(index)
+        clearRawData()
+        updateOrderList(index)
+    }, [clearRawData, updateOrderList])
 
     const handleCheckBoxChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         setHideOtherPairs(event.target.checked)
