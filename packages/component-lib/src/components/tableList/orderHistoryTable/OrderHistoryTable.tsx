@@ -374,7 +374,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                 </ClickAwayListener>
             </PopoverPure> */}
         </RenderValue>
-    }, [getOrderDetail])
+    }, [clearOrderDetail, getOrderDetail, t])
 
     // const handleCancel = useCallback((orderHash?: string, clientOrderId?: string) => {
     //     cancelOrder({
