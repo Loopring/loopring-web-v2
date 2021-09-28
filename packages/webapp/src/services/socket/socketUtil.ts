@@ -181,10 +181,10 @@ export class LoopringSocket {
         return this._socketCallbackMap;
     }
 
-    private _loopringSocket: WebSocket | undefined;
+    private _ws: WebSocket | undefined;
 
-    get loopringSocket(): WebSocket | undefined {
-        return this._loopringSocket;
+    get ws(): WebSocket | undefined {
+        return this._ws;
     }
 
     // private static PingPong = {
@@ -206,7 +206,7 @@ export class LoopringSocket {
                 if (!this.isConnectSocket()) {
                     await this.socketConnect({topics, apiKey})
                 } else {
-                    this._loopringSocket?.send(this.makeTopics(topics, apiKey))
+                    this._ws?.send(this.makeTopics(topics, apiKey))
 
                 }
                 return true
@@ -222,7 +222,7 @@ export class LoopringSocket {
 
     }
     public socketClose = async () => {
-        let ws: WebSocket | undefined = this._loopringSocket;
+        let ws: WebSocket | undefined = this._ws;
 
         return new Promise((reolve) => {
             if (ws) {
@@ -364,7 +364,7 @@ export class LoopringSocket {
     }
 
     private isConnectSocket = () => {
-        return !!(this._loopringSocket && this._loopringSocket.readyState === 1);
+        return !!(this._ws && this._ws.readyState === 1);
     }
 
     private makeTopics = (topics: any, apiKey?: string) => {
@@ -403,16 +403,16 @@ export class LoopringSocket {
             const self = this;
             if (LoopringAPI.wsAPI && topics) {
                 const {wsKey} = await LoopringAPI.wsAPI.getWsKey();
-                this._loopringSocket = new WebSocket(`${this._baseUrl}?wsApiKey=${wsKey}`);
+                this._ws = new WebSocket(`${this._baseUrl}?wsApiKey=${wsKey}`);
 
-                this._loopringSocket.onopen = function () {
+                this._ws.onopen = function () {
                     console.warn('Socket>>Socket', "WebSocket is open now.");
-                    if (self._loopringSocket && self._loopringSocket.readyState === WebSocket.OPEN) {
-                        self._loopringSocket.send(self.makeTopics(topics, apiKey))
+                    if (self._ws && self._ws.readyState === WebSocket.OPEN) {
+                        self._ws.send(self.makeTopics(topics, apiKey))
                     }
 
                 };
-                this._loopringSocket.onmessage = function (e) {
+                this._ws.onmessage = function (e) {
                     const {data} = e;
                     // data.topic.topic;
                     if (data === 'ping' && self._socketCallbackMap) {
@@ -433,10 +433,10 @@ export class LoopringSocket {
                     }
                     return false;
                 };
-                this._loopringSocket.onclose = async function (e) {
+                this._ws.onclose = async function (e) {
                     // console.error('Socket>>Socket', e);
-                    if (self._loopringSocket) {
-                        self._loopringSocket = undefined;
+                    if (self._ws) {
+                        self._ws = undefined;
                     }
                     console.log('Socket>>Socket', 'Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
                     self.clearInitTimer()
@@ -448,7 +448,7 @@ export class LoopringSocket {
 
                     }
                 };
-                this._loopringSocket.onerror = function (err: Event) {
+                this._ws.onerror = function (err: Event) {
                     console.error('Socket>>Socket', 'Socket encountered error:', 'Closing socket', err);
                 };
 
@@ -456,9 +456,9 @@ export class LoopringSocket {
         } catch (error) {
             console.error('Socket>>Socket', 'connect error, not from reconnect')
             // @ts-ignore
-            if (this._loopringSocket) {
+            if (this._ws) {
                 // @ts-ignore
-                this._loopringSocket.close()
+                this._ws.close()
             }
         }
     }
@@ -481,7 +481,7 @@ export class LoopringSocket {
     }
     private resetSocketEvents = () => {
         this._socketCallbackMap = undefined;
-        this.addSocketEvents(SocketEventType.pingpong, [this.loopringSocket])
+        this.addSocketEvents(SocketEventType.pingpong, [this.ws])
     }
 }
 
