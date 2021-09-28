@@ -1,14 +1,17 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 import { getSocketStatus, sendSocketTopic, socketEnd } from './reducer'
 import store from '../index';
+import { myLog } from '@loopring-web/common-resources';
 
 export function* closeSocket() {
     try {
+        myLog('socket end')
         if (window.loopringSocket) {
-            yield call(window.loopringSocket.socketClose)
+            yield put(getSocketStatus(undefined));
+            yield call(window.loopringSocket.socketClose);
+        }else{
+            yield put(getSocketStatus(undefined));
         }
-        yield put(getSocketStatus(undefined));
-        //TODO check wallect store
     } catch (err) {
         yield put(getSocketStatus(err));
     }
@@ -21,8 +24,10 @@ export function* sendMessage({payload}: any) {
         if (window.loopringSocket) {
             // yield call(window.loopringSocket.socketSendMessage, {socket, apiKey})
             yield call(window.loopringSocket.socketSendMessage, {socket, apiKey})
+            yield put(getSocketStatus(undefined));
+        }else {
+            yield put(getSocketStatus(undefined));
         }
-        yield put(getSocketStatus(undefined));
     } catch (err) {
         yield put(getSocketStatus(err));
     }
