@@ -24,7 +24,6 @@ export function* closeSocket() {
 
 const getSocket = async ({socket, apiKey}:{socket:any,apiKey:string}) =>{
     await  window.loopringSocket.socketSendMessage({socket, apiKey})
-    myLog('socket send')
     return
 }
 export function* sendMessage({payload}: any) {
