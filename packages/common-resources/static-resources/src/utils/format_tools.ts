@@ -2,6 +2,7 @@ import * as sdk from 'loopring-sdk'
 import BigNumber from 'bignumber.js'
 import { getValuePrecisionThousand } from './util';
 import { ABInfo } from 'loopring-sdk';
+import { myLog } from './log_tools';
 
 export function getShowStr(rawVal: string | number | undefined, fixed: number = 2, precision: number = 4) {
     if (rawVal === '0' || rawVal === 0)
@@ -151,7 +152,8 @@ function genABViewData({
 
     if (abInfoSlice.length < count) {
         const lastV = abInfoSlice[abInfoSlice.length - 1]
-        amtSlice = amtSlice.concat(new Array(count - amtSlice.length).fill(lastV))
+        amtSlice = amtSlice.concat(new Array(count - amtSlice.length).fill(lastV.amt))
+        amtTotalSlice = amtTotalSlice.concat(new Array(count - amtTotalSlice.length).fill(lastV.amtTotal))
         abInfoSlice = abInfoSlice.concat(new Array(count - abInfoSlice.length).fill(lastV))
         priceSlice = priceSlice.concat(new Array(count - priceSlice.length).fill(0))
     }
