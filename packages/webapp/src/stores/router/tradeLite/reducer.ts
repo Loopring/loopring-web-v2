@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction, Slice } from '@reduxjs/toolkit'
 import { PageTradeLite, PageTradeLiteStatus } from './interface';
 import * as sdk from 'loopring-sdk';
-import { TradeChannel } from 'loopring-sdk';
 
 const initState = {
     market: undefined,
@@ -52,7 +51,7 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                     ticker,
                     ammPoolSnapshot,
                     priceImpactObj,
-                    tradeChannel: calcTradeParams ? (calcTradeParams.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined,
+                    tradeChannel: calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined,
                     orderType: calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly) : undefined,
                     feeBips,
                     totalFee,
@@ -91,7 +90,7 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                 if (calcTradeParams !== undefined) {
                     state.pageTradeLite.calcTradeParams = calcTradeParams;
                     state.pageTradeLite.orderType = calcTradeParams?.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly
-                    state.pageTradeLite.tradeChannel = calcTradeParams?.exceedDepth ? TradeChannel.BLANK : sdk.TradeChannel.MIXED
+                    state.pageTradeLite.tradeChannel = calcTradeParams?.exceedDepth ? sdk.TradeChannel.BLANK : sdk.TradeChannel.MIXED
                 }
                 if (priceImpactObj) {
                     state.pageTradeLite.priceImpactObj = priceImpactObj;
