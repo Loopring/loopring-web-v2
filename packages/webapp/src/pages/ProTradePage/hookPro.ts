@@ -6,7 +6,7 @@ import { useTokenMap } from 'stores/token';
 import React from 'react';
 import {
     AccountStatus,
-    CoinMap,
+    CoinMap, IBData,
     MarketType,
     myLog,
     PrecisionTree,
@@ -22,11 +22,13 @@ import { useWalletLayer2 } from 'stores/walletLayer2';
 import { useOrderList } from './panel/orderTable/hookTable'
 import { useProSocket, useSocketProService } from './proService';
 import store from '../../stores';
+import { TradeProType } from '@loopring-web/component-lib';
 
 
 export const usePro = <C extends { [ key: string ]: any }>(): {
     [ key: string ]: any;
     market: MarketType | undefined;
+    resetTradeCalcData:(props:{ tradeData?:any, market: MarketType|string } )=> void
     // marketTicker: MarketBlockProps<C> |undefined,
 } => {
     //High: No not Move!!!!!!
@@ -94,7 +96,7 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
 
 
     React.useEffect(() => {
-        resetTradeCalcData(undefined, market)
+        resetTradeCalcData({ market})
         precisionList(market);
     }, [])
     React.useEffect(() => {
@@ -110,7 +112,7 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
         // }
     }, [market, accountStatus]);
     const handleOnMarketChange = React.useCallback((newMarket: MarketType) => {
-        resetTradeCalcData(undefined, newMarket)
+        resetTradeCalcData({ market:newMarket})
         precisionList(newMarket)
         // setMarket(newMarket)
     }, [])
@@ -133,10 +135,12 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
     }, [])
 
 
-    const resetTradeCalcData = React.useCallback((_tradeData, _market) => {
+    const resetTradeCalcData = React.useCallback((props:{
+        tradeData?:any, market: MarketType|string
+    }) => {
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         if (coinMap && tokenMap && marketMap && marketArray) {
-            const {tradePair} = marketInitCheck(_market);
+            const {tradePair} = marketInitCheck(props.market as string);
             // @ts-ignore
             let [, coinA, coinB] = tradePair.match(/([\w]+)-([\w]+)/i);
             let {market} = sdk.getExistedMarket(marketArray, coinA, coinB);
@@ -148,19 +152,21 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
                 ...tradeCalcProData,
                 coinBase: coinA,
                 coinQuote: coinB,
-                // StoB: undefined,
-                // BtoS: undefined,
-                // fee: undefined,
+                fee: undefined,
+                minimumReceived: undefined,
+                priceImpact: undefined,
+                priceImpactColor: 'inherit',
                 coinInfoMap: marketCoins?.reduce((prev: any, item: string | number) => {
                     return {...prev, [ item ]: coinMap ? coinMap[ item ] : {}}
                 }, {} as CoinMap<C>),
             }
+            updateWalletLayer2Balance(tradeCalcProData, market)
 
-            if (!Object.keys(tradeCalcProData.walletMap ?? {}).length) {
-                updateWalletLayer2Balance(tradeCalcProData, market)
-            } else {
-                updatePageTradePro({market, tradeCalcProData})
-            }
+            // if (!Object.keys(tradeCalcProData.walletMap ?? {}).length) {
+            //    
+            // } else {
+            //     updatePageTradePro({market, tradeCalcProData})
+            // }
 
 
         }
@@ -171,6 +177,7 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
     return {
         market,
         handleOnMarketChange,
+        resetTradeCalcData,
         // marketTicker,
     }
 }

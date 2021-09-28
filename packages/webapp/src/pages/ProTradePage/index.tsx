@@ -68,8 +68,8 @@ const initBreakPoint = (): BreakPoint => {
     }
 };
 export const OrderbookPage = withTranslation('common')(() => {
-    const {pageTradePro: {depthLevel, depth}} = usePageTradePro();
-    const {market, handleOnMarketChange} = usePro();
+    const {pageTradePro: {depthLevel, depth},} = usePageTradePro();
+    const {market, handleOnMarketChange, resetTradeCalcData} = usePro();
     const {unit} = useTheme();
     const [rowLength, setRowLength] = React.useState<number>(MARKET_ROW_LENGTH);
     const [tradeTableLengths, setTradeTableLengths] = React.useState<{ market: number, market2: number }>({
@@ -84,15 +84,22 @@ export const OrderbookPage = withTranslation('common')(() => {
             layouts: layoutConfigs[ 0 ].layouts
         }
     )
+    const sportMemo =  React.useMemo(() => {
+        return <>{
+            depth ? <SpotView
+                market={market as any}
+                resetTradeCalcData={resetTradeCalcData}
+            /> :<Box flex={1} height={'100%'} display={'flex'} alignItems={'center'}
+                                                             justifyContent={'center'}><LoadingIcon/></Box>
+        }</>
+    }, [market, depth])
+
 
     const ViewList = {
         toolbar: React.useMemo(() => <Toolbar market={market as any}
                                               handleOnMarketChange={handleOnMarketChange}/>, [market, handleOnMarketChange]),
         walletInfo: React.useMemo(() => <WalletInfo market={market as any}/>, [market]),
-        spot: React.useMemo(() => <>{
-            depth ? <SpotView market={market as any}/> :<Box flex={1} height={'100%'} display={'flex'} alignItems={'center'}
-                                                             justifyContent={'center'}><LoadingIcon/></Box>
-        }</>, [market, depth]),
+        spot: sportMemo,
         market: React.useMemo(() => <>{depthLevel
             && <MarketView market={market as any}
                            rowLength={rowLength}
