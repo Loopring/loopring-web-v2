@@ -1,4 +1,4 @@
-import { AccountStatus, IBData, MarketType, myLog } from '@loopring-web/common-resources';
+import { AccountStatus, getValuePrecisionThousand, IBData, MarketType, myLog } from '@loopring-web/common-resources';
 import React from 'react';
 import { useToast } from 'hooks/common/useToast';
 import { LoopringAPI } from 'api_wrapper';
@@ -233,15 +233,15 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             calcTradeParams: null,
             limitCalcTradeParams: null,
             lastStepAt: undefined,
-            tradeCalcProData: {
-                ...pageTradePro.tradeCalcProData,
-                fee: undefined,
-                minimumReceived: undefined,
-                priceImpact: undefined,
-                priceImpactColor: 'inherit',
-            }
+            // tradeCalcProData: {
+            //     ...pageTradePro.tradeCalcProData,
+            //     fee: undefined,
+            //     minimumReceived: undefined,
+            //     priceImpact: undefined,
+            //     priceImpactColor: 'inherit',
+            // }
         })
-    }, [baseSymbol, quoteSymbol])
+    }, [baseSymbol, quoteSymbol, pageTradePro])
     const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
         // const {calcTradeParams, request, tradeCalcProData,} = pageTradePro;
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
@@ -376,8 +376,15 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             } else if (minOrderInfo?.minAmtCheck || minOrderInfo?.minAmtShow === undefined) {
                 return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
             } else {
-                const symbol: string = marketTradeData[ 'base' ].belong;
-                const minOrderSize = `${minOrderInfo?.minAmtShow} ${minOrderInfo?.symbol}`;
+                // const symbol: string = marketTradeData[ 'base' ].belong;
+                // const minOrderSize = `${minOrderInfo?.minAmtShow} ${minOrderInfo?.symbol}`;
+                let minOrderSize = 'Error';
+                if( minOrderInfo?.symbol){
+                    const basePrecision = tokenMap[ minOrderInfo.symbol ].precisionForOrder;
+                    const showValue = getValuePrecisionThousand(minOrderInfo?.minAmtShow,
+                        undefined, undefined, basePrecision, true, {isAbbreviate: true})
+                    minOrderSize = `${showValue} ${minOrderInfo?.symbol}`;
+                }
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin, ${minOrderSize}`}
             }
         }
