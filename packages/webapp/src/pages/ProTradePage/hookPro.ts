@@ -71,7 +71,6 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
         let walletMap: WalletMap<any> | undefined;
         if (account.readyState === AccountStatus.ACTIVATED) {
             walletMap = makeWalletLayer2(false).walletMap ?? {};
-            myLog('xxxx')
         }
         // debugger
         tradeCalcProData = {
