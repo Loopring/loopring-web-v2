@@ -2,7 +2,7 @@ import * as sdk from 'loopring-sdk'
 import BigNumber from 'bignumber.js'
 import { getValuePrecisionThousand } from './util';
 import { ABInfo } from 'loopring-sdk';
-import { myError } from './log_tools';
+import { myLog, myError } from './log_tools';
 
 export function getShowStr(rawVal: string | number | undefined, fixed: number = 2, precision: number = 4) {
     if (rawVal === '0' || rawVal === 0)
@@ -188,6 +188,23 @@ function genABViewData({
 
 }
 
+function getMaxAmt(askInfoSlice: sdk.ABInfo[], bidInfoSlice: sdk.ABInfo[]) {
+    
+    let maxVal = sdk.toBig(0)
+
+    const totalLst = askInfoSlice.concat(bidInfoSlice)
+
+    totalLst.forEach((item: sdk.ABInfo) => {
+        const newAmt = sdk.toBig(item.amt)
+        if (newAmt.gte(maxVal)) {
+            maxVal = newAmt
+        }
+    })
+
+    return maxVal
+
+}
+
 export function depth2ViewData({ depth, countAsk, countBid, baseDecimal, quoteDecimal, precisionForPrice, basePrecision }: {
     depth: sdk.DepthData,
     baseDecimal: number,
@@ -214,27 +231,17 @@ export function depth2ViewData({ depth, countAsk, countBid, baseDecimal, quoteDe
     let bidTotalSlice = countBid > 0 ? depth.bids_amtTotals.slice(-countBid) : []
     let bidPriceSlice = countBid > 0 ? depth.bids_prices.slice(-countBid) : []
 
-    let maxVal = sdk.toBig(0)
+    const maxVal = getMaxAmt(askInfoSlice, bidInfoSlice)
 
-    if (askInfoSlice.length && bidInfoSlice.length) {
-        maxVal = BigNumber.max(sdk.toBig(askInfoSlice[askInfoSlice.length - 1].amt), sdk.toBig(bidInfoSlice[0].amt))
-    } else if (askInfoSlice.length) {
-        maxVal = sdk.toBig(askInfoSlice[askInfoSlice.length - 1].amt)
-    } else if (bidInfoSlice.length) {
-        maxVal = sdk.toBig(bidInfoSlice[0].amt)
-    } else {
-        myError('no ab input!')
-    }
-
-    const asks = genABViewData({
+    const asks = countAsk > 0 ? genABViewData({
         basePrecision, precisionForPrice, amtSlice: askSlice, amtTotalSlice: askTotalSlice,
         abInfoSlice: askInfoSlice, priceSlice: askPriceSlice, baseDecimal, quoteDecimal, count: countAsk, maxVal
-    })
+    }): []
 
-    const bids = genABViewData({
+    const bids = countBid > 0 ? genABViewData({
         basePrecision, precisionForPrice, amtSlice: bidSlice, amtTotalSlice: bidTotalSlice,
         abInfoSlice: bidInfoSlice, priceSlice: bidPriceSlice, baseDecimal, quoteDecimal, count: countBid, maxVal
-    })
+    }): []
 
     return {
         asks,

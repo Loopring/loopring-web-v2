@@ -225,6 +225,7 @@ export const BtnPercentage = withTranslation('common')(({
                                                             valuetext,
                                                             step = 1,
                                                             t,
+                                                            tReady,
                                                             ...rest
                                                         }: BtnPercentageProps & WithTranslation) => {
     const [value, setValue] = React.useState<number>(selected);
