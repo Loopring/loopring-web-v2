@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react'
 import { getDepthData } from '../data'
 import { Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, } from '@loopring-web/recharts'
 
-const ASKS_COLOR = '#fb3838'
+const ASKS_COLOR = '#FF5677'
 const BIDS_COLOR = '#00BBA8'
 const YAXIS_DOMAIN = 0.1
 
@@ -23,19 +23,17 @@ export interface DepthProps {
         amount: number
     }) => void
     yAxisDomainPercent?: number
-    riseColor?: 'green' | 'red'
 }
 
 const DepthChart = ({
                         data,
                         handleMove,
                         yAxisDomainPercent = YAXIS_DOMAIN,
-                        riseColor = 'green',
                     }: DepthProps) => {
     const [currentIndex, setCurrentIndex] = useState(-1)
 
-    const asksColor = riseColor === 'green' ? ASKS_COLOR : BIDS_COLOR
-    const bidsColor = riseColor === 'green' ? BIDS_COLOR : ASKS_COLOR
+    const asksColor = ASKS_COLOR
+    const bidsColor = BIDS_COLOR
 
     const hasData = data && Array.isArray(data) && !!data.length
 

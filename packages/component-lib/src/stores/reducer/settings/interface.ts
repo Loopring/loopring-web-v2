@@ -1,5 +1,6 @@
 import { LanguageKeys, ThemeKeys, UpColor } from '@loopring-web/common-resources';
 import { Currency } from 'loopring-sdk';
+import {  Layouts } from 'react-grid-layout';
 
 export enum PlatFormType {
     mobile = 'mobile',
@@ -20,4 +21,5 @@ export interface SettingsState {
     hideL2Assets: boolean
     hideLpToken: boolean
     hideSmallBalances: boolean
+    proLayout: Layouts
 }
