@@ -51,7 +51,7 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
     // const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
 
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap()
-    useProSocket({market})
+    useProSocket({market});
     // const depDataCallback = React.useCallback(()=>{
     //     //TODO
     // },[])
@@ -63,13 +63,13 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
     }, [accountStatus])
     const updateWalletLayer2Balance = React.useCallback((_tradeCalcProData?, _market?: MarketType) => {
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
+        const account = store.getState().account
         // @ts-ignore
         let tradeCalcProData = _tradeCalcProData ? _tradeCalcProData : pageTradePro.tradeCalcProData;
         let market: MarketType = _market ? _market : pageTradePro.market;
         // let walletMap: WalletMap<any> | undefined = tradeCalcProData?.walletMap;
         let walletMap: WalletMap<any> | undefined;
-        if (account.readyState === AccountStatus.ACTIVATED
-            && walletLayer2Status === SagaStatus.UNSET) {
+        if (account.readyState === AccountStatus.ACTIVATED) {
             walletMap = makeWalletLayer2(false).walletMap ?? {};
         }
         // debugger
@@ -83,7 +83,7 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
         }
         updatePageTradePro({market, tradeCalcProData})
 
-    }, [market, account, walletLayer2Status])
+    }, [market , walletLayer2Status])
 
 
     const userInfoUpdateCallback = React.useCallback(() => {
@@ -92,6 +92,7 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
     }, [updateWalletLayer2Balance, getOrderList])
     useSocketProService({
         // depDataCallback,
+        market,
         userInfoUpdateCallback
     })
 
@@ -105,12 +106,6 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
         if (account.readyState === AccountStatus.ACTIVATED) {
             getAmount({market: market})
         }
-
-        // if(pageTradePro.market !== market){
-        //
-        //
-        //     // precisionList()
-        // }
     }, [market, accountStatus]);
     const handleOnMarketChange = React.useCallback((newMarket: MarketType) => {
         resetTradeCalcData({ market:newMarket})

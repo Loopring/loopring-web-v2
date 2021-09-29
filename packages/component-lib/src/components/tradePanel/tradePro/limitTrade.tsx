@@ -142,7 +142,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
             {/*</Grid>*/}
             {/*<Grid item>*/}
             <Box alignSelf={"center"} paddingTop={4} paddingX={1}>
-                <BtnPercentage step={25}
+                <BtnPercentage step={1}
                                // valuetext={(value)=>`${value}%`}
                                getAriaLabel={(value)=>`${value}%`}
                                valueLabelFormat={(value)=>`${value}%`}
@@ -186,7 +186,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
             {/*{getDisabled()} {tradeBtnBaseStatus}*/}
             <ButtonStyle variant={'contained'} size={'medium'}
                          color={tradeType === TradeProType.sell ?'error':'success'}
-                         loadingBg={tradeType === TradeProType.sell ?'var(--color-error)' :'var(--color-success)'}
+                         loadingbg={tradeType === TradeProType.sell ?'var(--color-error)' :'var(--color-success)'}
                          style={tradeLimitBtnStyle} onClick={() => {
                 handleSubmitEvent(tradeData)
             }}

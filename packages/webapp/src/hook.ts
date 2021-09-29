@@ -194,9 +194,10 @@ export function useInit() {
         }
     }, [userRewardsStatus])
     React.useEffect(() => {
+        console.log("socketStatus", socketStatus);
         switch (socketStatus) {
             case "ERROR":
-                // console.log("ERROR", 'get ticker error,ui');
+
                 socketUnset()
                 break;
             case "PENDING":
@@ -232,4 +233,8 @@ export function useInit() {
     }
 }
 
+
+function mylog(arg0: string, arg1: string) {
+    throw new Error('Function not implemented.');
+}
 
