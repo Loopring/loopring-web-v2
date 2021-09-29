@@ -6,6 +6,7 @@ import { StateBase } from '@loopring-web/common-resources';
 
 export function useSocket(): StateBase & {
     // socketStart:()=>void,
+    socket: SocketMap,
     statusUnset: () => void,
     sendSocketTopic: (socket: SocketMap) => void,
     socketEnd: () => void
