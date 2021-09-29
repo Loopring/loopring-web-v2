@@ -292,7 +292,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                 zoomAnchor={lastVisibleItemBasedZoomAnchor}
             >
 
-                <Chart id={chartId++} height={chartHeight} yExtents={this.candleChartExtents} padding={{ top: 30, bottom: 30 }}>
+                <Chart id={chartId++} height={chartHeight} yExtents={this.candleChartExtents} padding={{ top: 20, bottom: 10 }}>
                     <XAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} showTicks={false}
                         // showTickLabel={false} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
                         showTickLabel={false} tickLabelFill={colorBase.providerBtn}
@@ -348,7 +348,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                         fontFamily={'Roboto'}
                         // fontSize: number;
                         fontWeight={'400'}
-                        fillStyle={colorBase.textDisable}
+                        fillStyle={colorBase.fieldOpacity}
                         x={(width - this.margin.left - this.margin.right) / 2}
                         y={(height - this.margin.top - this.margin.bottom) * 2 / 5}
                     />
@@ -441,7 +441,17 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
     };
 
     private readonly candleChartExtents = (data: any) => {
-        return [data.high, data.low];
+        // data max > bolling band ? data max : bolling band
+        // data min < booling band ? data min : bolling band
+        return [data.bb
+            ? data.high >= data.bb.top 
+                ? data.high
+                : data.bb.top * 1.05
+            : data.high, data.bb
+                            ? data.low <= data.bb.bottom
+                                ? data.low
+                                : data.bb.bottom * 0.95 
+                            : data.low];
     };
 
     private readonly yEdgeIndicator = (data: IOHLCData) => {
