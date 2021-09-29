@@ -51,7 +51,7 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
     // const [tradeArray, setTradeArray] = React.useState<RawDataTradeItem[]>([]);
 
     const {coinMap, tokenMap, marketArray, marketCoins, marketMap} = useTokenMap()
-    useProSocket();
+    useProSocket({market});
     // const depDataCallback = React.useCallback(()=>{
     //     //TODO
     // },[])
@@ -92,6 +92,7 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
     }, [updateWalletLayer2Balance, getOrderList])
     useSocketProService({
         // depDataCallback,
+        market,
         userInfoUpdateCallback
     })
 
