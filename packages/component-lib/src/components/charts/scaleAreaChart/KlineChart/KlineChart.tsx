@@ -307,11 +307,11 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                     <CandlestickSeries fill={(data) => getTrendValueColor(data)} wickStroke={(data) => getTrendValueColor(data)} />
 
                     {
-                        mainIndicatorLst && mainIndicatorLst.map((item: any) => {
-                            return (<>
+                        mainIndicatorLst && mainIndicatorLst.map((item: any, index: number) => {
+                            return (<React.Fragment key={`${item}-${index}`}>
                                 <LineSeries yAccessor={item.func.accessor()} strokeStyle={item.func.stroke()} />
                                 <CurrentCoordinate yAccessor={item.func.accessor()} fillStyle={item.func.stroke()} />
-                            </>)
+                            </React.Fragment>)
                         })
                     }
 
@@ -358,12 +358,12 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                     subIndicatorLst && subIndicatorLst.length > 0 && subIndicatorLst.map((item: any, ind: number) => {
                         switch (item.type) {
                             case SubIndicator.MACD:
-                                return <Chart id={chartId++} height={subHeight} origin={(_w, _h) => [0, _h - (subIndicatorLst.length - ind) * subHeight]} yExtents={item.func.accessor()}>
+                                return <Chart key={SubIndicator.MACD} id={chartId++} height={subHeight} origin={(_w, _h) => [0, _h - (subIndicatorLst.length - ind) * subHeight]} yExtents={item.func.accessor()}>
                                     <XAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} axisAt="bottom"
                                         orient="bottom" tickLabelFill={colorBase.textDisable}
                                         strokeStyle={colorBase.textDisable} />
                                     <YAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} axisAt="right" orient="right"
-                                        ticks={2} tickFormat={format(".2s")} tickLabelFill={colorBase.textDisable}
+                                        ticks={2} tickFormat={format("2s")} tickLabelFill={colorBase.textDisable}
                                         strokeStyle={colorBase.textDisable} />
                                     <MouseCoordinateX displayFormat={timeDisplayFormat} />
                                     <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
@@ -376,7 +376,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                                     />
                                 </Chart>
                             case SubIndicator.VOLUME:
-                                return <Chart id={chartId++} height={subHeight} origin={(_: number, h: number) => [0, h - (subIndicatorLst.length - ind) * subHeight]} yExtents={this.barChartExtents}>
+                                return <Chart key={SubIndicator.VOLUME} id={chartId++} height={subHeight} origin={(_: number, h: number) => [0, h - (subIndicatorLst.length - ind) * subHeight]} yExtents={this.barChartExtents}>
                                     <XAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} axisAt="bottom"
                                         orient="bottom" tickLabelFill={colorBase.textDisable}
                                         strokeStyle={colorBase.textDisable} />
@@ -394,7 +394,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                                     />
                                 </Chart>
                             case SubIndicator.RSI:
-                                return <Chart id={chartId++} height={subHeight} origin={(_: number, h: number) => [0, h - (subIndicatorLst.length - ind) * subHeight]} yExtents={[0, 100]}>
+                                return <Chart key={SubIndicator.RSI} id={chartId++} height={subHeight} origin={(_: number, h: number) => [0, h - (subIndicatorLst.length - ind) * subHeight]} yExtents={[0, 100]}>
                                     <XAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} axisAt="bottom"
                                         orient="bottom" tickLabelFill={colorBase.textDisable}
                                         strokeStyle={colorBase.textDisable} />
@@ -407,7 +407,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                                     <RSITooltip origin={[8, 16]} yAccessor={item.func.accessor()} options={item.func.options()} textFill={colorBase.textPrimary} />
                                 </Chart>
                             case SubIndicator.SAR:
-                                return <Chart id={chartId++} height={subHeight} origin={(_: number, h: number) => [0, h - (subIndicatorLst.length - ind) * subHeight]} yExtents={item.func.accessor()}>
+                                return <Chart key={SubIndicator.SAR} id={chartId++} height={subHeight} origin={(_: number, h: number) => [0, h - (subIndicatorLst.length - ind) * subHeight]} yExtents={item.func.accessor()}>
                                     <XAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} axisAt="bottom"
                                         orient="bottom" tickLabelFill={colorBase.textDisable}
                                         strokeStyle={colorBase.textDisable} />
