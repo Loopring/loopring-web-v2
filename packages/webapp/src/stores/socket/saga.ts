@@ -5,7 +5,7 @@ import { myLog } from '@loopring-web/common-resources';
 
 const getEndSocket = async () =>{
     await  window.loopringSocket.socketClose();
-    myLog('socket end')
+    myLog('socketStatus end')
     return
 }
 export function* closeSocket() {
@@ -24,6 +24,7 @@ export function* closeSocket() {
 
 const getSocket = async ({socket, apiKey}:{socket:any,apiKey:string}) =>{
     await  window.loopringSocket.socketSendMessage({socket, apiKey})
+    myLog('socketStatus get')
     return
 }
 export function* sendMessage({payload}: any) {
