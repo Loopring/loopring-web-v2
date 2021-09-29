@@ -30,6 +30,7 @@ import { useTokenPrices } from 'stores/tokenPrices';
 import { useSystem } from 'stores/system';
 import styled from '@emotion/styled/';
 import { Currency } from 'loopring-sdk';
+import store from '../../../../stores';
 
 
 export enum TabMarketIndex {
@@ -125,10 +126,7 @@ export const MarketView = withTranslation('common')(({
     }, [])
 
     const handleOnLevelChange = React.useCallback((event: React.ChangeEvent<{ value: string }>) => {
-        // setLevel(Number(event.target?.value));
         updatePageTradePro({market, depthLevel: Number(event.target?.value)})
-        //TODO: change table
-        // rebuildList()
     }, [market])
     React.useEffect(() => {
         if ([BreakPoint.lg, BreakPoint.xlg].includes(breakpoint)) {
@@ -169,7 +167,7 @@ export const MarketView = withTranslation('common')(({
         let priceColor = '';
         let value = '';
         if (ticker && depth && tokenPrices && depth.mid_price && depth.symbol === market) {
-            const quotePrice =  tokenPrices[ quoteSymbol ];
+            const quotePrice = tokenPrices[ quoteSymbol ];
             close = ticker.close ? ticker.close : depth?.mid_price
             if (depth.mid_price === close) {
                 priceColor = '';
@@ -182,9 +180,9 @@ export const MarketView = withTranslation('common')(({
                 priceColor = (upColor == UpColor.green ? 'var(--color-error)' : 'var(--color-success)');
             }
             value = currency === Currency.usd ? '\u2248 ' + PriceTag.Dollar
-                + getValuePrecisionThousand(close * (quotePrice??0), undefined, undefined, undefined, true, {isFait: true})
+                + getValuePrecisionThousand(close * (quotePrice ?? 0), undefined, undefined, undefined, true, {isFait: true})
                 : '\u2248 ' + PriceTag.Yuan
-                + getValuePrecisionThousand(close * (quotePrice??0) / forex, undefined, undefined, undefined, true, {isFait: true})
+                + getValuePrecisionThousand(close * (quotePrice ?? 0) / forex, undefined, undefined, undefined, true, {isFait: true})
 
         }
         close = (close ? close.toFixed(marketMap[ market ].precisionForPrice) : undefined)
@@ -254,6 +252,15 @@ export const MarketView = withTranslation('common')(({
             rebuildList()
         }
     }, [pageTradePro.depth, depthType, rowLength])
+    // const defaultDepth =
+    // React.useEffect(() => {
+    //     // if (pageTradePro.depth?.symbol === market && rowLength) {
+    //     //     rebuildList()
+    //     // }
+    // }, [pageTradePro.depthLevel])
+    // const Select = React.useMemo(() => {
+    //     return
+    // }, [pageTradePro.precisionLevels, pageTradePro.depthLevel, handleOnLevelChange])
     return <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'} height={'100%'}>
         <Box component={'header'} width={'100%'} paddingX={2}>
 
@@ -274,6 +281,7 @@ export const MarketView = withTranslation('common')(({
             }
             {/*<Tab key={TabMarketIndex.Orderbook} value={TabMarketIndex.Orderbook} label={t(`labelPro${TabMarketIndex.Orderbook}`)}/>*/}
             {/*<Tab key={TabMarketIndex.Trades} value={TabMarketIndex.Trades} label={t(`labelPro${TabMarketIndex.Trades}`)}/>*/}
+            {/*{React.useMemo(()=>store.getState()._router_pageTradePro.pageTradePro.depthLevel,[pageTradePro])}*/}
 
         </Box>
         <Divider style={{marginTop: '-1px'}}/>

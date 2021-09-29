@@ -22,7 +22,7 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
                                             tokenBaseProps,
                                             tokenQuoteProps,
                                             disabled,
-                                            handleError,
+                                            //handleError,
                                             handleChangeIndex,
                                             ...rest
                                         }: TradeProBaseEventProps<X, T, I> & TradeCommonProps<X, T, TCD, I> & WithTranslation) => {
@@ -41,10 +41,11 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
             const value = sdk.toBig(_data.tradeValue).div(sdk.toBig(_data.balance)).times(100).toFixed()
             setSelectedPercentage(Number(value))
         }
-     
-    },[tradeData['base'].tradeValue,tradeData['quote'].tradeValue])
-    if (typeof handleError !== 'function') {
-        handleError = ({belong, balance, tradeValue}: any) => {
+    },[tradeData['base'].tradeValue,tradeData['quote'].tradeValue]);
+
+
+    const handleError = React.useCallback(({belong, balance, tradeValue}: any,ref?) => {
+        if (typeof rest.handleError !== 'function') {
             if (balance < tradeValue || (tradeValue && !balance)) {
                 const _error = {error: true, message: t('tokenNotEnough', {belong: belong})}
                 setInputError(_error);
@@ -53,8 +54,11 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
             }
             setInputError({error: false, message: ''});
             return {error: false, message: ''}
+        }else{
+            return rest.handleError({belong, balance, tradeValue} as any,ref)
         }
-    }
+
+    },[rest.handleError,setInputError])
     const _handleCountChange = React.useCallback((ibData: T, name: string, _ref: any) => {
         if (handleCountChange) {
             handleCountChange(ibData, name, _ref)
