@@ -169,7 +169,6 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         let amountBase = lastStepAt === TradeBaseType.base ? tradeData.base.tradeValue : undefined
         let amountQuote = lastStepAt === TradeBaseType.quote ? tradeData.quote.tradeValue : undefined
 
-
         let {marketRequest, calcTradeParams, sellUserOrderInfo, buyUserOrderInfo, minOrderInfo} = makeMarketReqInHook({
             isBuy: tradeData.type === 'buy',
             base: tradeData.base.belong,

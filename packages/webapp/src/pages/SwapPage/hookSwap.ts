@@ -38,8 +38,6 @@ import { VolToNumberWithPrecision } from 'utils/formatter_tool';
 import { useToast } from 'hooks/common/useToast';
 import { accountStaticCallBack, btnClickMap, btnLabel, makeMarketArray, makeWalletLayer2, } from 'hooks/help';
 import { LoopringAPI } from 'api_wrapper';
-import * as _ from 'lodash'
-import { getTimestampDaysLater } from 'utils/dt_tools';
 import { myLog } from '@loopring-web/common-resources';
 import { calcPriceByAmmTickMapDepth, marketInitCheck, reCalcStoB, swapDependAsync } from './help';
 import { useTicker } from 'stores/ticker';
@@ -47,7 +45,7 @@ import store from 'stores';
 import { useHistory } from 'react-router-dom';
 import { getPriceImpactInfo, PriceLevel } from 'hooks/common/useTrade';
 import { BIGO } from 'defs/common_defs';
-import { useModals } from '../../hooks/useractions/useModals';
+import * as _ from 'lodash'
 
 const useSwapSocket = () => {
     const {sendSocketTopic, socketEnd} = useSocket();
@@ -113,13 +111,13 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
 
     /*** Btn related function ***/
     const swapFunc = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
-        let {calcTradeParams, tradeChannel, orderType, totalFee} = pageTradeLite;
+        let {calcTradeParams, request} = pageTradeLite;
         setAlertOpen(false)
         setConfirmOpen(false)
 
         if (isAgree) {
 
-            if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo || !calcTradeParams
+            if (!LoopringAPI.userAPI || !tokenMap || !exchangeInfo || !calcTradeParams || !request
                 || account.readyState !== AccountStatus.ACTIVATED) {
 
                 setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
@@ -134,40 +132,22 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
             const sellToken = tokenMap[ sell ]
             const buyToken = tokenMap[ buy ]
 
-            const request: sdk.GetNextStorageIdRequest = {
+            const req: sdk.GetNextStorageIdRequest = {
                 accountId: account.accountId,
                 sellTokenId: sellToken.tokenId
             }
 
-            const storageId = await LoopringAPI.userAPI.getNextStorageId(request, account.apiKey)
-
             try {
 
+                const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
+                
+                const reqNew = _.cloneDeep(request)
 
-                const request: sdk.SubmitOrderRequestV3 = {
-                    exchange: exchangeInfo.exchangeAddress,
-                    accountId: account.accountId,
-                    storageId: storageId.orderId,
-                    sellToken: {
-                        tokenId: sellToken.tokenId,
-                        volume: calcTradeParams.amountS as string
-                    },
-                    buyToken: {
-                        tokenId: buyToken.tokenId,
-                        volume: calcTradeParams.amountBOutSlip.minReceived as string
-                    },
-                    allOrNone: false,
-                    validUntil: getTimestampDaysLater(__DAYS__),
-                    maxFeeBips: parseInt(totalFee as string),
-                    fillAmountBOrS: false, // amm only false
-                    orderType,
-                    tradeChannel,
-                    eddsaSignature: '',
-                }
+                reqNew.storageId = storageId.orderId
 
                 myLog(request)
 
-                const response = await LoopringAPI.userAPI.submitOrder(request, account.eddsaKey.sk, account.apiKey)
+                const response = await LoopringAPI.userAPI.submitOrder(reqNew, account.eddsaKey.sk, account.apiKey)
 
                 myLog(response)
 
@@ -686,7 +666,28 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
                 takerRate = buyMinAmtInfo ? buyMinAmtInfo.userOrderInfo.takerRate : 0
                 feeBips = ammMap[ ammMarket ] ? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
                 totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString();
-                setSellMinAmt(sellMinAmtInfo?.userOrderInfo.minAmount)
+
+                const baseToken = tokenMap[_tradeData[ 'buy' ].belong as string]
+
+                const minAmountInput = sdk.toBig(buyMinAmtInfo.userOrderInfo.minAmount).div('1e' + baseToken.decimals).toString()
+
+                const calcForMinAmt = sdk.getOutputAmount({
+                    input: minAmountInput,
+                    sell: coinA,
+                    buy: coinB,
+                    isAtoB: false,
+                    marketArr: marketArray as string[],
+                    tokenMap: tokenMap as any,
+                    marketMap: marketMap as any,
+                    depth,
+                    ammPoolSnapshot: ammPoolSnapshot,
+                    feeBips: feeBips ? feeBips.toString() : '0',
+                    takerRate: takerRate ? takerRate.toString() : '0',
+                    slipBips: slippage
+                })
+
+                setSellMinAmt(calcForMinAmt?.amountS)
+                myLog('calcForMinAmt?.amountS:', calcForMinAmt?.amountS)
                 // myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
             }
             const calcTradeParams = sdk.getOutputAmount({
