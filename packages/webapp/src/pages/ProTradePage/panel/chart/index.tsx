@@ -52,13 +52,14 @@ export const ChartView = withTranslation('common')(({market, rowLength, t, i18n,
     const { marketMap, tokenMap } = useTokenMap();
 
     const isKline = chosenChart === ChartType.Kline
+    const precisionForPrice = marketMap[ (market || '') ]?.precisionForPrice
 
     const rebuildList = React.useCallback(() => {
         const depth = pageTradePro.depth;
         if (depth && (depth.bids.length || depth.asks.length)) {
             const baseDecimal = tokenMap[ baseSymbol ]?.decimals;
             const quoteDecimal = tokenMap[ baseSymbol ]?.decimals;
-            const precisionForPrice = marketMap[ (market || '') ]?.precisionForPrice;
+            // const precisionForPrice = marketMap[ (market || '') ]?.precisionForPrice;
             //@ts-ignore
             const basePrecision = tokenMap[ baseSymbol ].precisionForOrder;
             let [countAsk, countBid] = [rowLength, rowLength]
@@ -79,7 +80,7 @@ export const ChartView = withTranslation('common')(({market, rowLength, t, i18n,
             })
             setDepthViewData(viewData);
         }
-    }, [pageTradePro.depth, tokenMap, baseSymbol, marketMap, market, rowLength])
+    }, [pageTradePro.depth, tokenMap, baseSymbol, rowLength, precisionForPrice])
 
     React.useEffect(() => {
         rebuildList()
@@ -194,6 +195,7 @@ export const ChartView = withTranslation('common')(({market, rowLength, t, i18n,
                     type={isKline ? ChartType.Kline : ChartType.Depth}
                     data={isKline ? candlestickViewData : getTrendData()}
                     interval={isKline ? timeInterval : undefined}
+                    marketPrecision={precisionForPrice}
                     indicator={isKline ? 
                         {
                             mainIndicators: chartFearturesList.filter(o => chosenIndicators.includes(o.id)).map(item => ({
