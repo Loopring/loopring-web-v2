@@ -2,7 +2,6 @@ import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 import React from "react";
 import {
-    Annotate,
     bollingerBand,
     BollingerBandTooltip,
     BollingerSeries,
@@ -37,12 +36,6 @@ import {
     Label,
 } from "react-financial-charts";
 import { macd, } from "@react-financial-charts/indicators";
-import { myLog } from "@loopring-web/common-resources";
-
-enum CandleStickFill {
-    up = '#00BBA8',
-    down = '#FF5677'
-}
 
 export interface IOHLCData {
     date: Date;
@@ -91,12 +84,13 @@ export type StockChartExtraProps = {
     themeMode: 'light' | 'dark';
     upColor: 'green' | 'red';
     colorBase: any;
+    marketPrecision?: number;
 }
 
 class StockChart extends React.Component<StockChartProps & IndicatorProps & StockChartExtraProps> {
-
-    private readonly margin = { left: 0, right: 48, top: 0, bottom: 24 };
-    private readonly pricesDisplayFormat = format(".2f");
+    // private readonly marginRight = (this.props.marketPrecision || 2) * 10;
+    // private readonly margin = { left: 0, right: this.marginRight, top: 0, bottom: 24 };
+    // private readonly pricesDisplayFormat = format(`.${this.props.marketPrecision || 2}f`);
     private readonly xScaleProvider = discontinuousTimeScaleProviderBuilder().inputDateAccessor(
         (d: IOHLCData) => d.date,
     );
@@ -113,10 +107,34 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
     };
 
     public render() {
-        const { data: initialData, dateTimeFormat, height, ratio, width, mainIndicators, subIndicator, themeMode, upColor, colorBase } = this.props;
-        // const isDark = themeMode === 'dark'
+        const { data: initialData, dateTimeFormat, height, ratio, width, mainIndicators, subIndicator, themeMode, upColor, colorBase, marketPrecision } = this.props;
+        
+        const pricesDisplayFormat = format(`.${this.props.marketPrecision || 2}f`);
+        
         const isUpGreen = upColor === 'green'
-        // simple moving average
+
+        const getPricePrecisioned = (price: number, precision = 2) => {
+            let formattedPrice = price as any
+            let [_init, _dot] = String((price || '')).split('.');
+            if (_dot) {
+                const dotLen = _dot.length
+                if (dotLen < precision) {
+                    for (let i = dotLen; i < precision; i++) {
+                        _dot = _dot + '0'
+                    }
+                    formattedPrice = _init + '.' + _dot
+                }
+            }
+            return String(formattedPrice)
+        }
+
+        const getPriceWithPrecisionLenth = (price: number, precision = 2) => {
+            const formattedPrice = getPricePrecisioned(price, precision)
+            return formattedPrice.length
+        }
+
+        const marginRight = getPriceWithPrecisionLenth(initialData[initialData.length - 1]?.close || 6, marketPrecision) * 8.5;
+        const margin = { left: 0, right: marginRight, top: 0, bottom: 24 };
 
         let mainIndicatorLst: any[] = []
         let subIndicatorLst: any[] = []
@@ -239,7 +257,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
             }
         })
 
-        const { margin, xScaleProvider } = this;
+        const { xScaleProvider } = this;
 
         const { data, xScale, xAccessor, displayXAccessor } = xScaleProvider(calculatedData);
 
@@ -294,15 +312,10 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
 
                 <Chart id={chartId++} height={chartHeight} yExtents={this.candleChartExtents} padding={{ top: 20, bottom: 10 }}>
                     <XAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} showTicks={false}
-                        // showTickLabel={false} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
                         showTickLabel={false} tickLabelFill={colorBase.providerBtn}
-                        // strokeStyle={'rgba(255, 255, 255, 0.3)'} />
                         strokeStyle={colorBase.textDisable} />
-                    {/* <YAxis showGridLines gridLinesStrokeStyle={'rgba(255, 255, 255, 0.1)'} */}
                     <YAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn}
-                        // tickFormat={this.pricesDisplayFormat} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
-                        tickFormat={this.pricesDisplayFormat} tickLabelFill={colorBase.textDisable}
-                        // strokeStyle={'rgba(255, 255, 255, 0.3)'} />
+                        tickFormat={pricesDisplayFormat} tickLabelFill={colorBase.textDisable}
                         strokeStyle={colorBase.textDisable} />
                     <CandlestickSeries fill={(data) => getTrendValueColor(data)} wickStroke={(data) => getTrendValueColor(data)} />
 
@@ -315,22 +328,25 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                         })
                     }
 
-                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
+                    <MouseCoordinateY rectWidth={margin.right} displayFormat={pricesDisplayFormat} />
                     <EdgeIndicator
                         itemType="last"
                         rectWidth={margin.right}
                         fill={(data) => getTrendValueColor(data)}
                         lineStroke={(data) => getTrendValueColor(data)}
-                        displayFormat={this.pricesDisplayFormat}
+                        displayFormat={pricesDisplayFormat}
                         yAccessor={this.yEdgeIndicator}
                     />
-                    <OHLCTooltip origin={[8, 16]} textFill={(data: any) => getTrendValueColor(data)} />
+                    <OHLCTooltip origin={[8, 16]} ohlcFormat={(n: any) => getPricePrecisioned(n, marketPrecision)} changeFormat={(_: any) => ''} textFill={(data: any) => getTrendValueColor(data)} />
                     {
                         maToolTipOptions &&
                         <MovingAverageTooltip
                             origin={[8, 24]}
                             textFill={colorBase.textPrimary}
                             options={maToolTipOptions}
+                            // displayFormat={(n: number | {
+                            //     valueOf(): number;
+                            // }) => getPricePrecisioned(n | n.valueOf(), marketPrecision)}
                         />}
                     {
                         bollToolTipOption && <>
@@ -349,8 +365,8 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                         // fontSize: number;
                         fontWeight={'400'}
                         fillStyle={colorBase.fieldOpacity}
-                        x={(width - this.margin.left - this.margin.right) / 2}
-                        y={(height - this.margin.top - this.margin.bottom) * 2 / 5}
+                        x={(width - margin.left - margin.right) / 2}
+                        y={(height - margin.top - margin.bottom) * 2 / 5}
                     />
                 </Chart>
 
@@ -366,7 +382,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                                         ticks={2} tickFormat={format("2s")} tickLabelFill={colorBase.textDisable}
                                         strokeStyle={colorBase.textDisable} />
                                     <MouseCoordinateX displayFormat={timeDisplayFormat} />
-                                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
+                                    <MouseCoordinateY rectWidth={margin.right} displayFormat={pricesDisplayFormat} />
                                     <MACDSeries yAccessor={item.func.accessor()} {...this.macdAppearance} />
                                     <MACDTooltip
                                         origin={[8, 16]}
@@ -384,7 +400,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                                         ticks={2} tickFormat={format(".2s")} tickLabelFill={colorBase.textDisable}
                                         strokeStyle={colorBase.textDisable} />
                                     <MouseCoordinateX displayFormat={timeDisplayFormat} />
-                                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
+                                    <MouseCoordinateY rectWidth={margin.right} displayFormat={pricesDisplayFormat} />
                                     <BarSeries fillStyle={this.volumeColor} yAccessor={this.volumeSeries} />
                                     <SingleValueTooltip
                                         yAccessor={this.volumeSeries}
@@ -402,7 +418,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                                         ticks={2} tickFormat={format(".2s")} tickLabelFill={colorBase.textDisable}
                                         strokeStyle={colorBase.textDisable} />
                                     <MouseCoordinateX displayFormat={timeDisplayFormat} />
-                                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
+                                    <MouseCoordinateY rectWidth={margin.right} displayFormat={pricesDisplayFormat} />
                                     <RSISeries yAccessor={item.func.accessor()} />
                                     <RSITooltip origin={[8, 16]} yAccessor={item.func.accessor()} options={item.func.options()} textFill={colorBase.textPrimary} />
                                 </Chart>
@@ -415,7 +431,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                                         ticks={2} tickFormat={format(".2s")} tickLabelFill={colorBase.textDisable}
                                         strokeStyle={colorBase.textDisable} />
                                     <MouseCoordinateX displayFormat={timeDisplayFormat} />
-                                    <MouseCoordinateY rectWidth={margin.right} displayFormat={this.pricesDisplayFormat} />
+                                    <MouseCoordinateY rectWidth={margin.right} displayFormat={pricesDisplayFormat} />
                                     <SARSeries yAccessor={item.func.accessor()} />
                                     <SingleValueTooltip
                                         yLabel={`SAR (${item.params.accelerationFactor}, ${item.params.maxAccelerationFactor})`}
@@ -458,14 +474,6 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
         return data.close;
     };
 
-    // private readonly candleStickColor = (data: IOHLCData) => data.close > data.open
-    //     ? this.props.upColor ==='green'
-    //         ? CandleStickFill.up
-    //         : CandleStickFill.down
-    //     : this.props.upColor ==='green'
-    //         ? CandleStickFill.down
-    //         : CandleStickFill.up
-
     private readonly volumeColor = (data: IOHLCData) => {
         return data.close > data.open 
             ? this.props.upColor ==='green'
@@ -479,16 +487,6 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
     private readonly volumeSeries = (data: IOHLCData) => {
         return data.volume
     };
-
-    // private readonly openCloseColor = (data: IOHLCData) => {
-    //     return data.close > data.open
-    //         ? this.props.upColor ==='green'
-    //             ? CandleStickFill.up
-    //             : CandleStickFill.down
-    //         : this.props.upColor ==='green'
-    //             ? CandleStickFill.down
-    //             : CandleStickFill.up
-    // };
 }
 
 export const WrapperedKlineChart = withSize({ style: { minHeight: 200 } })(withDeviceRatio()(StockChart));

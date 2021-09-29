@@ -25,20 +25,21 @@ export interface ScaleAreaChartProps {
     extraInfo?: string
     showXAxis?: boolean
     isHeadTailCompare?: boolean
+    marketPrecision?: number
 }
 
-export const ScaleAreaChart = (props: ScaleAreaChartProps) => {
+export const ScaleAreaChart = ({type, interval, indicator, data, marketPrecision, ...rest}: ScaleAreaChartProps) => {
     const { themeMode, upColor } = useSettings()
-    switch (props.type) {
+    switch (type) {
         case ChartType.Trend:
-            return <TrendChart {...props} />
+            return <TrendChart type={type} data={data} {...rest} />
         case ChartType.Depth:
-            return <DepthChart {...props} />
+            return <DepthChart data={data} {...rest} />
         case ChartType.Kline:
             // let dateTimeFormat = '%Y %a %d'
             let dateTimeFormat = '%x'
-            if (props.interval) {
-                switch (props.interval) {
+            if (interval) {
+                switch (interval) {
                     case TradingInterval.min1:
                     case TradingInterval.min5:
                     case TradingInterval.min15:
@@ -64,11 +65,12 @@ export const ScaleAreaChart = (props: ScaleAreaChartProps) => {
             }
             return <WrapperedKlineChart 
                     dateTimeFormat={dateTimeFormat} 
-                    {...props.indicator} 
-                    data={props.data} 
+                    {...indicator} 
+                    data={data} 
                     themeMode={themeMode} 
                     upColor={upColor}
                     colorBase={getTheme(themeMode).colorBase}
+                    marketPrecision={marketPrecision}
                 />
         default:
             return <span>prop "type" is not avaible for current chart</span>
