@@ -142,7 +142,7 @@ export class LoopringSocket {
         },
         [ SocketEventType.pingpong ]: (data: string, socket: WebSocket) => {
 
-            if (data === 'ping' && socket && socket.send) {
+            if (data === 'ping' && socket && socket.send && socket.readyState === 1) {
                 socket.send('pong')
             } else if (window.loopringSocket.isConnectSocket()) {
                 //HACK:

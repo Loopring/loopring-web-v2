@@ -35,7 +35,7 @@ export const ChartView = withTranslation('common')(({market, rowLength, t, i18n,
     } & WithTranslation) => {
 
     const { candlestickViewData, genCandlestickData } = useKlineChart(market)
-    const [timeInterval, setTimeInterval] = React.useState(TradingInterval.d1)
+    const [timeInterval, setTimeInterval] = React.useState(TradingInterval.hr4)
     const [subChart, setSubChart] = React.useState(SubIndicator.VOLUME)
     const [chosenIndicators, setChosenIndicators] = React.useState<string[]>(chartFearturesList.map(o => o.id))
     const [chosenChart, setChosenChart] = React.useState(ChartType.Kline)

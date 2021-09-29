@@ -351,7 +351,7 @@ export default {
     labelProTime1D: '1D',
     labelProTime1W: '1W',
     labelProTime1M: '1M',
-    labelProChartTradingView: 'TradingView',
+    labelProChartTradingView: 'Candlestick',
     labelProChartDepth: 'Depth',
 
     labelSwapCancelled: 'Swap is cancelled.',

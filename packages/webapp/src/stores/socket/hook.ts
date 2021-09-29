@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { sendSocketTopic, socketEnd } from './reducer';
+import { sendSocketTopic, socketEnd,statusUnset} from './reducer';
 import { SocketMap } from './interface';
 import React from 'react';
-import { statusUnset } from '../Amm/AmmMap';
 import { StateBase } from '@loopring-web/common-resources';
 
 export function useSocket(): StateBase & {
     // socketStart:()=>void,
+    socket: SocketMap,
     statusUnset: () => void,
     sendSocketTopic: (socket: SocketMap) => void,
     socketEnd: () => void
