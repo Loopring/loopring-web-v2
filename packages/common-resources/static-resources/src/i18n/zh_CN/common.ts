@@ -314,6 +314,7 @@ export default {
     labelSlippageAlert:'滑点过大将会影响您出金后收到的token数量',
     labelOrderTableOpenOrder: '当前委托',
     labelOrderTableOrderHistory: '历史委托',
+    labelResetLayout: '重置布局',
     labelBtnFix:'重置',
     labelProSell:'卖',
     labelProBuy:'买',

@@ -177,7 +177,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             amountQuote,
             marketArray,
             marketMap,
-            depth: pageTradePro.depth,
+            depth: pageTradePro.depthForCalc,
             ammPoolSnapshot: pageTradePro.ammPoolSnapshot,
             slippage,
         })

@@ -1,9 +1,22 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { setCoinJson, setCurrency, setLanguage, setPlatform, setSlippage, setTheme, setUpColor, setHideL2Assets, setHideLpToken, setHideSmallBalances } from './reducer'
+import {
+    setCoinJson,
+    setCurrency,
+    setHideL2Assets,
+    setHideLpToken,
+    setHideSmallBalances,
+    setLanguage,
+    setLayouts,
+    setPlatform,
+    setSlippage,
+    setTheme,
+    setUpColor
+} from './reducer'
 import { PlatFormType, SettingsState } from "./interface";
 import { LanguageKeys, LanguageType, ThemeKeys, ThemeType, UpColor } from '@loopring-web/common-resources';
 import React from 'react';
 import { Currency } from 'loopring-sdk';
+import { Layouts } from 'react-grid-layout';
 
 export function useSettings(): SettingsState & {
     setPlatform(value: keyof typeof PlatFormType): void,
@@ -16,6 +29,7 @@ export function useSettings(): SettingsState & {
     setHideL2Assets(value: boolean): void,
     setHideLpToken(value: boolean): void,
     setHideSmallBalances(value: boolean): void,
+    setLayouts(value: Layouts): void,
 } {
     const settings: SettingsState = useSelector((state: any) => state.settings)
     const dispatch = useDispatch();
@@ -31,5 +45,7 @@ export function useSettings(): SettingsState & {
         setHideL2Assets: React.useCallback((value: boolean) => dispatch(setHideL2Assets(value)), [dispatch]),
         setHideLpToken: React.useCallback((value: boolean) => dispatch(setHideLpToken(value)), [dispatch]),
         setHideSmallBalances: React.useCallback((value: boolean) => dispatch(setHideSmallBalances(value)), [dispatch]),
+        setLayouts: React.useCallback((value: Layouts) => dispatch(setLayouts(value)), [dispatch]),
+
     }
 }
