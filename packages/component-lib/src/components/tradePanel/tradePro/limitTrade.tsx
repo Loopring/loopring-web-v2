@@ -142,7 +142,7 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
             {/*</Grid>*/}
             {/*<Grid item>*/}
             <Box alignSelf={"center"} paddingTop={4} paddingX={1}>
-                <BtnPercentage step={25}
+                <BtnPercentage step={1}
                                // valuetext={(value)=>`${value}%`}
                                getAriaLabel={(value)=>`${value}%`}
                                valueLabelFormat={(value)=>`${value}%`}
