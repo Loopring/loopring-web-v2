@@ -105,7 +105,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
             onChange={_handleOnMarketChange}
             inputProps={{IconComponent: DropDownIcon}}
         >
-            {marketArray && marketArray.map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
+            {marketArray && !!marketArray.length && (marketArray.slice().sort((a, b) => a.localeCompare(b))).map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
         </TextField>
         <Grid container spacing={3} marginLeft={0} display={'flex'} alignItems={'center'}>
             <Grid item>
