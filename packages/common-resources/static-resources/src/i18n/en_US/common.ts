@@ -314,6 +314,7 @@ export default {
     labelSlippageAlert:'The slippage tolerance is so high, you may receive less token',
     labelOrderTableOpenOrder: 'Open Order',
     labelOrderTableOrderHistory: 'Order History',
+    labelResetLayout: 'Reset Layout',
     labelBtnFix:'reset',
     labelProSell:'Sell',
     labelProBuy:'Buy',
@@ -334,7 +335,7 @@ export default {
     labelProToolbar24hQuoteVol: '24h Volume({{symbol}})',
     labelErrorPricePrecisionLimit:'{{symbol}} price only {{decimal}} decimals allowed',
     labelDepthPrice: 'Price({{symbol}})',
-    labelDepthAmount: 'Amount({{symbol}})',
+    labelDepthAmount: 'Accum({{symbol}})',
     labelDepthTotal: 'Accumulation',
 
     labelProChartTitle: 'Chart',

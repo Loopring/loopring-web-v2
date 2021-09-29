@@ -33,6 +33,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
             const {
                 market,
                 depth,
+                depthForCalc,
                 tradeType,
                 precisionLevels,
                 depthLevel,
@@ -63,6 +64,7 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                     calcTradeParams,
                     limitCalcTradeParams,
                     depth,
+                    depthForCalc,
                     ticker,
                     ammPoolSnapshot,
                     priceImpactObj,
@@ -102,7 +104,9 @@ const pageTradeProSlice: Slice<PageTradeProStatus<{ [ key: string ]: any }>> = c
                 if (depth) {
                     state.pageTradePro.depth = depth;
                 }
-
+                if (depthForCalc) {
+                    state.pageTradePro.depthForCalc = depthForCalc;
+                }
                 if (ticker) {
                     state.pageTradePro.ticker = ticker;
                 }

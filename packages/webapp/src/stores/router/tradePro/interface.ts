@@ -56,6 +56,7 @@ export type PageTradePro<C> = {
     defaultPrice?:number,
     precisionLevels?: { value: number,label:string }[],
     depth?: sdk.DepthData | undefined,
+    depthForCalc?: sdk.DepthData | undefined,
     depthLevel?: number,
     ticker?: Ticker | undefined,
     ammPoolSnapshot?: sdk.AmmPoolSnapshot | undefined,
