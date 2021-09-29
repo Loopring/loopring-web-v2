@@ -1,8 +1,7 @@
 import { Box, Grid, Typography } from '@mui/material';
 import { MarketInfo } from 'loopring-sdk/dist/defs';
 import { WithTranslation, withTranslation } from 'react-i18next';
-import { DepthViewData, MarketRowHeight, myLog } from '@loopring-web/common-resources';
-// import { useTheme } from '@emotion/react';
+import { DepthViewData, MarketRowHeight } from '@loopring-web/common-resources';
 import styled from '@emotion/styled';
 
 export type Row = DepthViewData  & {type:DepthType, onClick:(event:MouseEvent,price:number)=>void,}
@@ -75,15 +74,23 @@ export const DepthTitle = withTranslation('common')(({
 
     return <GridStyle  container spacing={1} position={'relative'} wrap={'nowrap'} >
         <Grid item xs={4} alignSelf={'flex-start'} >
-            <Typography lineHeight={`${MarketRowHeight}px`} color={'var(--color-text-third)'}
+            <Typography lineHeight={`${MarketRowHeight}px`} color={'var(--color-text-third)'}   textOverflow={'ellipsis'}
+                        title={t('labelDepthPrice', {symbol: quoteSymbol})}
                         variant={'body2'} component={'p'} >{t('labelDepthPrice', {symbol: quoteSymbol})} </Typography>
         </Grid>
         <Grid item xs={4} alignSelf={'flex-end'} >
-            <Typography lineHeight={`${MarketRowHeight}px`} color={'var(--color-text-third)'}
+            <Typography lineHeight={`${MarketRowHeight}px`}
+                        title= {t('labelDepthAmount', {symbol: baseSymbol})}
+                        color={'var(--color-text-third)'}  textOverflow={'ellipsis'}  overflow={'hidden'}
                         variant={'body2'} textAlign={'right'}  component={'p'} >  {t('labelDepthAmount', {symbol: baseSymbol})} </Typography>
         </Grid>
         <Grid item xs={4} alignSelf={'flex-end'} >
-            <Typography lineHeight={`${MarketRowHeight}px`} color={'var(--color-text-third)'} variant={'body2'} textAlign={'right'}  component={'p'} >  {t('labelDepthTotal')} </Typography>
+            <Typography
+                lineHeight={`${MarketRowHeight}px`}
+                color={'var(--color-text-third)'}
+                variant={'body2'} textAlign={'right'}
+                title= {t('labelDepthTotal')}
+                component={'p'} >  {t('labelDepthTotal')} </Typography>
         </Grid>
     </GridStyle>
 })
