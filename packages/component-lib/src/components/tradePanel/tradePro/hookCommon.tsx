@@ -37,8 +37,8 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
     React.useEffect(()=>{
         const inputType = tradeType === TradeProType.sell ? 'base' : 'quote';
         if(tradeData[inputType].tradeValue && tradeData[inputType].balance){
-            const _data = tradeData[inputType].tradeValue
-            const value = sdk.toBig(_data).div(sdk.toBig(_data)).times(100).toFixed()
+            const _data = tradeData[inputType]//.tradeValue
+            const value = sdk.toBig(_data.tradeValue).div(sdk.toBig(_data.balance)).times(100).toFixed()
             setSelectedPercentage(Number(value))
         }
      
