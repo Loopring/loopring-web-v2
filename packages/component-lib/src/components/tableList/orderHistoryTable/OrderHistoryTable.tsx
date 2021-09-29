@@ -19,8 +19,8 @@ import { GetOrdersRequest, Side, OrderType } from 'loopring-sdk'
 const CancelColHeaderStyled = styled(Typography)`
     display: flex;
     align-items: center;
-    color: ${({empty}: any) => empty ? 'var(--color-text-third)' : 'var(--color-primary)'};
-    cursor: ${({empty}: any) => empty ? 'not-allowed' : 'pointer'};
+    color: ${({empty}: any) => empty === 'true' ? 'var(--color-text-third)' : 'var(--color-primary)'};
+    cursor: ${({empty}: any) => empty === 'true' ? 'not-allowed' : 'pointer'};
 ` as any
 
 export type OrderPair = {
@@ -564,7 +564,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
         {
             key: 'cancel',
             headerCellClass: 'textAlignRight',
-            name: (<CancelColHeaderStyled empty={isEmpty} onClick={isEmpty ? undefined : () => setShowCancelAllAlert(true)}>{t('labelOrderCancelAll')}</CancelColHeaderStyled>),
+            name: (<CancelColHeaderStyled empty={isEmpty ? 'true' : 'false'} onClick={isEmpty ? undefined : () => setShowCancelAllAlert(true)}>{t('labelOrderCancelAll')}</CancelColHeaderStyled>),
             formatter: ({row, index}: any) => {
                 const orderHash = row['hash']
                 const clientOrderId = row['orderId']
