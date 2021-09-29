@@ -34,6 +34,15 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         error: false,
         message: ''
     });
+    React.useEffect(()=>{
+        const inputType = tradeType === TradeProType.sell ? 'base' : 'quote';
+        if(tradeData[inputType].tradeValue && tradeData[inputType].balance){
+            const _data = tradeData[inputType].tradeValue
+            const value = sdk.toBig(_data).div(sdk.toBig(_data)).times(100).toFixed()
+            setSelectedPercentage(Number(value))
+        }
+     
+    },[tradeData['base'].tradeValue,tradeData['quote'].tradeValue])
     if (typeof handleError !== 'function') {
         handleError = ({belong, balance, tradeValue}: any) => {
             if (balance < tradeValue || (tradeValue && !balance)) {
@@ -50,9 +59,6 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
         if (handleCountChange) {
             handleCountChange(ibData, name, _ref)
         } else {
-            if (_ref.current !== 'percentage') {
-                setSelectedPercentage(0)
-            }
             // myLog(`${type}Trade: handleUser input on :`, ibData, name, tradeData)
             const _tradeData = {
                 ...tradeData,
