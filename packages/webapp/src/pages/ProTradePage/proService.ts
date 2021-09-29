@@ -178,7 +178,7 @@ export const useSocketProService = ({
     }, [walletLayer1Status])
 }
 
-export const useProSocket = ({market}: { market: MarketType | undefined }) => {
+export const useProSocket = () => {
     const {sendSocketTopic, socketEnd, status: socketStatus} = useSocket();
     const {account, status: accountStatus} = useAccount();
     const {marketArray, marketMap} = useTokenMap();
@@ -202,18 +202,18 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
             getDependencyData();
             getMarketDepData();
         }
-        if (market === pageTradePro.market &&  LoopringAPI.exchangeAPI){
-            const {depth} = await LoopringAPI.exchangeAPI.getMixDepth({market,level:0,limit:50})
+        if (  LoopringAPI.exchangeAPI){
+            const {depth} = await LoopringAPI.exchangeAPI.getMixDepth({market:pageTradePro.market,level:0,limit:50})
             updatePageTradePro({
                 market: pageTradePro.market,
                 depthForCalc:depth,
             })
         }
         nodeTimer.current = setTimeout(noSocketAndAPILoop, __API_REFRESH__)
-    }, [nodeTimer,market,pageTradePro,updatePageTradePro])
+    }, [nodeTimer,pageTradePro,updatePageTradePro])
     const getDependencyData = React.useCallback(async () => {
         // const {market} = pageTradePro
-        if (market === pageTradePro.market && ammMap && pageTradePro.depthLevel && LoopringAPI.exchangeAPI) {
+        if ( ammMap && pageTradePro.depthLevel && LoopringAPI.exchangeAPI) {
             try {
                 const {
                     depth,
@@ -234,10 +234,10 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
             }
         }
 
-    }, [pageTradePro, ammMap, tickerMap, market]);
+    }, [pageTradePro, ammMap, tickerMap]);
     const getMarketDepData = React.useCallback(async () => {
         // const {market} = pageTradePro
-        if (market === pageTradePro.market && LoopringAPI.exchangeAPI) {
+        if (pageTradePro.market && LoopringAPI.exchangeAPI) {
             const {marketTrades} = await LoopringAPI.exchangeAPI.getMarketTrades({
                 market: pageTradePro.market,
                 limit: TRADE_ARRAY_MAX_LENGTH
@@ -254,7 +254,7 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
 
         }
 
-    }, [pageTradePro, ammMap, market])
+    }, [pageTradePro, ammMap])
 
     React.useEffect(() => {
         getDependencyData();
@@ -266,23 +266,27 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
         getMarketDepData()
     }, [pageTradePro.market])
 
-    const doSend = React.useCallback(async (dataSocket) => {
+    const doSend = React.useCallback(async (dataSocket,calc=0) => {
         // if(market === pageTradePro.market){
-            if (socketStatus !== SagaStatus.UNSET) {
+            if (socketStatus !== SagaStatus.UNSET && calc<10) {
                 await sleep(3000)
                 myLog('socket Pro PENDING', pageTradePro.market)
-            }
-            if (account.readyState === AccountStatus.ACTIVATED) {
-                myLog('socket Pro Send', pageTradePro.market)
-                sendSocketTopic({
-                    ...dataSocket,
-                    [ sdk.WsTopicType.account ]: true,
-                    [ sdk.WsTopicType.order ]: marketArray,
+                doSend(dataSocket,calc++)
+            } else if(calc>10){
+                if (account.readyState === AccountStatus.ACTIVATED) {
+                    myLog('socket Pro Send', pageTradePro.market)
+                    sendSocketTopic({
+                        ...dataSocket,
+                        [ sdk.WsTopicType.account ]: true,
+                        [ sdk.WsTopicType.order ]: marketArray,
 
-                })
-            } else {
-                sendSocketTopic(dataSocket)
+                    })
+
+                } else {
+                    sendSocketTopic(dataSocket)
+                }
             }
+
         // }else {
         //     socketEnd()
         // }
@@ -304,7 +308,7 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
                     },
                     [ sdk.WsTopicType.trade ]: [pageTradePro.market as string],
                 }
-                myLog('socket', pageTradePro.market, market);
+                myLog('socket', pageTradePro.market);
                 doSend(dataSocket)
 
             } catch (e) {
