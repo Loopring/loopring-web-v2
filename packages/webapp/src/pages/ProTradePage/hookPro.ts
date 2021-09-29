@@ -99,7 +99,7 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
     React.useEffect(() => {
         resetTradeCalcData({ market})
         precisionList(market);
-    }, [])
+    }, [market])
     React.useEffect(() => {
         // getDependencyData();
         if (account.readyState === AccountStatus.ACTIVATED) {

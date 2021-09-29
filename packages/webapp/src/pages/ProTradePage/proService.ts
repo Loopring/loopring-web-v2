@@ -267,7 +267,7 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
     }, [pageTradePro.market])
 
     const doSend = React.useCallback(async (dataSocket) => {
-        if(market === pageTradePro.market){
+        // if(market === pageTradePro.market){
             if (socketStatus !== SagaStatus.UNSET) {
                 await sleep(3000)
                 myLog('socket Pro PENDING', pageTradePro.market)
@@ -283,11 +283,11 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
             } else {
                 sendSocketTopic(dataSocket)
             }
-        }else {
-            socketEnd()
-        }
+        // }else {
+        //     socketEnd()
+        // }
 
-    }, [account.readyState, socketStatus, pageTradePro.market, market])
+    }, [account.readyState, socketStatus, pageTradePro.market])
 
     React.useEffect(() => {
         if (ammMap && pageTradePro.market && accountStatus === SagaStatus.UNSET) {
@@ -310,12 +310,10 @@ export const useProSocket = ({market}: { market: MarketType | undefined }) => {
             } catch (e) {
                 socketEnd()
             }
-        } else {
-            socketEnd()
         }
 
     }, [accountStatus,
-        market,
+        // market,
         pageTradePro.market,
         pageTradePro.depthLevel]);
     React.useEffect(() => {
