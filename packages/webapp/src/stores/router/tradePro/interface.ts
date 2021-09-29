@@ -37,7 +37,7 @@ export type limitCalcParams = {
 export type OrderInfoPatch = {
     minAmtShow?: number, 
     symbol?: string, 
-    minAmtCheck?: boolean 
+    minAmtCheck?: boolean,
 }
 
 export type PageTradePro<C> = {
@@ -47,17 +47,17 @@ export type PageTradePro<C> = {
     tradeCalcProData: Partial<TradeCalcProData<keyof C>>
     calcTradeParams?:Partial<marketCalcParams> | null | undefined,
     limitCalcTradeParams?:Partial<limitCalcParams> | null | undefined,
-    priceImpactObj?: undefined | {    // account has activated or undefined
+    priceImpactObj?: {    // account has activated or undefined
         value: number | string,
         priceImpactColor: string,
         priceLevel: number | string,
-    },
+    } | null | undefined,
     tradeType:TradeProType
     defaultPrice?:number,
     precisionLevels?: { value: number,label:string }[],
     depth?: sdk.DepthData | undefined,
-    depthLevel?: number ,
-    ticker?: Ticker| undefined,
+    depthLevel?: number,
+    ticker?: Ticker | undefined,
     ammPoolSnapshot?: sdk.AmmPoolSnapshot | undefined,
     feeBips?: number | string,
     totalFee?: number | string,
