@@ -79,24 +79,40 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         pageTradePro.tradeCalcProData.walletMap])
 
     React.useEffect(() => {
-        // if (pageTradePro.defaultPrice) {
-        setLimitTradeData((state) => {
-            const tradePrice = pageTradePro.defaultPrice ? pageTradePro.defaultPrice : (pageTradePro.market === market && pageTradePro.ticker) ? pageTradePro.ticker.close ? pageTradePro.ticker.close.toFixed(marketPrecision) : pageTradePro?.depth?.mid_price.toFixed(marketPrecision) : 0;
-            let balance = tradePrice && tokenPrices && (Number(tradePrice) * tokenPrices[ quoteSymbol as string ])
+        if (pageTradePro.defaultPrice) {
+        // setLimitTradeData((state) => {
+        //     const tradePrice = pageTradePro.defaultPrice ? pageTradePro.defaultPrice : (pageTradePro.market === market && pageTradePro.ticker) ? pageTradePro.ticker.close ? pageTradePro.ticker.close.toFixed(marketPrecision) : pageTradePro?.depth?.mid_price.toFixed(marketPrecision) : 0;
+        //     let balance = tradePrice && tokenPrices && (Number(tradePrice) * tokenPrices[ quoteSymbol as string ])
+        //     if (balance && currency === Currency.cny) {
+        //         balance = Number(balance) / forex;
+        //     }
+        //     // console.log('balance',balance)
+        //     return {
+        //         ...state,
+        //         price: {
+        //             ...state.price,
+        //             tradeValue: tradePrice,
+        //             balance: getValuePrecisionThousand(balance, undefined, undefined, undefined, true, {isFait: true})
+        //         } as IBData<any>,
+        //     }
+        // })
+           const tradePrice = pageTradePro.defaultPrice ? pageTradePro.defaultPrice : (pageTradePro.market === market && pageTradePro.ticker) ? pageTradePro.ticker.close ? pageTradePro.ticker.close.toFixed(marketPrecision) : pageTradePro?.depth?.mid_price.toFixed(marketPrecision) : 0;
+           let balance = tradePrice && tokenPrices && (Number(tradePrice) * tokenPrices[ quoteSymbol as string ])
             if (balance && currency === Currency.cny) {
                 balance = Number(balance) / forex;
             }
-            // console.log('balance',balance)
-            return {
-                ...state,
+            // (tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType)
+
+            onChangeLimitEvent({
+                ...limitTradeData,
                 price: {
-                    ...state.price,
-                    tradeValue: tradePrice,
+                    ...limitTradeData.price,
+                    tradeValue: Number(tradePrice),
                     balance: getValuePrecisionThousand(balance, undefined, undefined, undefined, true, {isFait: true})
-                } as IBData<any>,
-            }
-        })
-        // }
+
+                }},TradeBaseType.price)
+        }
+
 
     }, [pageTradePro.defaultPrice, currency, forex])
 
