@@ -292,12 +292,12 @@ export function makeLimitReq({
 
     const baseTokenVol3: sdk.TokenVolumeV3 = {
         tokenId: baseTokenInfo.tokenId,
-        volume: baseVol.toFixed()
+        volume: baseVol.toFixed(0, 0)
     }
 
     const quoteTokenVol3: sdk.TokenVolumeV3 = {
         tokenId: quoteTokenInfo.tokenId,
-        volume: quoteVol.toFixed()
+        volume: quoteVol.toFixed(0, 0)
     }
 
     let minOrderInfo: sdk.OrderInfo & OrderInfoPatch | undefined = undefined
