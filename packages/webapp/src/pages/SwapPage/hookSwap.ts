@@ -62,10 +62,6 @@ const useSwapSocket = () => {
     }, [account.readyState]);
 }
 
-
-
-
-
 export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: string }) => {
 
     //High: No not Move!!!!!!
@@ -222,6 +218,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
         }
 
     }, [account.readyState, pageTradeLite, tokenMap, tradeData, setIsSwapLoading, setToastOpen, setTradeData])
+
     const btnLabelAccountActive = React.useCallback((): string | undefined => {
 
         if (!tokenMap) {
@@ -253,18 +250,16 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
         const sellMaxVal = sdk.toBig(sellToken?.orderAmounts?.maximum).div('1e' + sellToken.decimals)
         const buyMaxVal = sdk.toBig(buyToken?.orderAmounts?.maximum).div('1e' + buyToken.decimals)
 
-        myLog('sellExceed:', sellToken.symbol, sellExceed, sellMaxVal.toString(), ' buyExceed:', buyToken.symbol, buyExceed, buyMaxVal.toString())
+        // myLog('sellExceed:', sellToken.symbol, sellExceed, sellMaxVal.toString(), ' buyExceed:', buyToken.symbol, buyExceed, buyMaxVal.toString())
+        // myLog('calcTradeParams:', calcTradeParams?.amountS, sellMinAmt)
 
         if (isSwapLoading) {
             setSwapBtnStatus(TradeBtnStatus.LOADING)
             return undefined
         } else {
             if (account.readyState === AccountStatus.ACTIVATED) {
-                if (tradeData === undefined
-                    || tradeData?.sell.tradeValue === undefined
-                    || tradeData?.buy.tradeValue === undefined
-                    || tradeData?.sell.tradeValue === 0
-                    || tradeData?.buy.tradeValue === 0) {
+                if (!calcTradeParams || !calcTradeParams.sellAmt || !calcTradeParams.buyAmt) {
+                    myLog('calcTradeParams.baseAmt:', calcTradeParams.sellAmt, ' calcTradeParams.quoteAmt:', calcTradeParams.buyAmt)
                     setSwapBtnStatus(TradeBtnStatus.DISABLED)
                     return 'labelEnterAmount';
                 } else if (sellExceed) {
@@ -293,7 +288,8 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
             }
 
         }
-    }, [account.readyState, pageTradeLite, tradeData, isSwapLoading, setSwapBtnStatus])
+    }, [account.readyState, pageTradeLite, isSwapLoading, sellMinAmt, setSwapBtnStatus])
+
     const _btnLabel = Object.assign(_.cloneDeep(btnLabel), {
         [ fnType.ACTIVATED ]: [
             btnLabelAccountActive
@@ -339,7 +335,7 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
             setSwapBtnStatus(TradeBtnStatus.AVAILABLE)
             setSwapBtnI18nKey(accountStaticCallBack(_btnLabel));
         }
-    }, [accountStatus, isSwapLoading, tradeData?.sell.tradeValue])
+    }, [accountStatus, isSwapLoading, pageTradeLite.calcTradeParams?.amountS])
     /*** Btn related end ***/
 
     /*** table related function ***/
@@ -667,9 +663,9 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
                 feeBips = ammMap[ ammMarket ] ? ammMap[ ammMarket ].__rawConfig__.feeBips : 0
                 totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString();
 
-                const baseToken = tokenMap[_tradeData[ 'buy' ].belong as string]
+                const buyToken = tokenMap[_tradeData[ 'buy' ].belong as string]
 
-                const minAmountInput = sdk.toBig(buyMinAmtInfo.userOrderInfo.minAmount).div('1e' + baseToken.decimals).toString()
+                const minAmountInput = sdk.toBig(buyMinAmtInfo.userOrderInfo.minAmount).div('1e' + buyToken.decimals).toString()
 
                 const calcForMinAmt = sdk.getOutputAmount({
                     input: minAmountInput,
@@ -687,7 +683,8 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
                 })
 
                 setSellMinAmt(calcForMinAmt?.amountS)
-                myLog('calcForMinAmt?.amountS:', calcForMinAmt?.amountS)
+                // myLog('calcForMinAmt?.amountS:', calcForMinAmt?.amountS)
+                // myLog('calcForMinAmt?.sellAmt:', calcForMinAmt?.sellAmt)
                 // myLog(`${realMarket} feeBips:${feeBips} takerRate:${takerRate} totalFee: ${totalFee}`)
             }
             const calcTradeParams = sdk.getOutputAmount({
@@ -705,8 +702,8 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
                 slipBips: slippage
             })
 
-            myLog('depth:', depth)
-            myLog('calcTradeParams:', calcTradeParams)
+            // myLog('depth:', depth)
+            // myLog('calcTradeParams:', calcTradeParams)
 
             const priceImpactObj = getPriceImpactInfo(calcTradeParams)
 

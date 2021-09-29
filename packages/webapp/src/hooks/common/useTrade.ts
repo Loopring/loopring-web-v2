@@ -449,7 +449,6 @@ export function usePlaceOrder() {
             }
         }
 
-
     }, [marketArray,])
 
     // {isBuy, amountB or amountS, (base, quote / market), feeBips, takerRate, depth, ammPoolSnapshot, slippage, }
@@ -457,7 +456,7 @@ export function usePlaceOrder() {
 
         const { tokenAmtMap, feeBips } = getTokenAmtMap(params)
 
-        myLog('makeMarketReqInHook tokenAmtMap:', tokenAmtMap, feeBips)
+        // myLog('makeMarketReqInHook tokenAmtMap:', tokenAmtMap, feeBips)
 
         if (exchangeInfo) {
             const fullParams: ReqParams = {
@@ -548,7 +547,7 @@ export const getPriceImpactInfo = (calcTradeParams: any, isMarket: boolean = tru
 
     } else {
 
-        if (priceImpact > 20) {
+        if (priceImpact > 10) {
             priceImpactColor = 'var(--color-error)'
             priceLevel = PriceLevel.Lv1
         }
