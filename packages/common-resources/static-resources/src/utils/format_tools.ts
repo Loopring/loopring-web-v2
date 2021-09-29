@@ -2,6 +2,7 @@ import * as sdk from 'loopring-sdk'
 import BigNumber from 'bignumber.js'
 import { getValuePrecisionThousand } from './util';
 import { ABInfo } from 'loopring-sdk';
+import { myError } from './log_tools';
 
 export function getShowStr(rawVal: string | number | undefined, fixed: number = 2, precision: number = 4) {
     if (rawVal === '0' || rawVal === 0)
@@ -113,7 +114,8 @@ export function depth2ViewDataAccumulated({ depth, countAsk, countBid, baseDecim
     } else if (bidTotalSlice.length) {
         maxVal = sdk.toBig(bidTotalSlice[0])
     } else {
-        throw new Error('no ab input!')
+        myError('no ab input!')
+        // throw new Error('no ab input!')
     }
 
     const asks = genABViewDataAccumulated({
@@ -221,7 +223,7 @@ export function depth2ViewData({ depth, countAsk, countBid, baseDecimal, quoteDe
     } else if (bidInfoSlice.length) {
         maxVal = sdk.toBig(bidInfoSlice[0].amt)
     } else {
-        throw new Error('no ab input!')
+        myError('no ab input!')
     }
 
     const asks = genABViewData({
