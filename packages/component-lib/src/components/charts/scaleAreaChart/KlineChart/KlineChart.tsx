@@ -292,7 +292,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                 zoomAnchor={lastVisibleItemBasedZoomAnchor}
             >
 
-                <Chart id={chartId++} height={chartHeight} yExtents={this.candleChartExtents} padding={{ top: 30, bottom: 30 }}>
+                <Chart id={chartId++} height={chartHeight} yExtents={this.candleChartExtents}>
                     <XAxis showGridLines gridLinesStrokeStyle={colorBase.providerBtn} showTicks={false}
                         // showTickLabel={false} tickLabelFill={'rgba(255, 255, 255, 0.4)'}
                         showTickLabel={false} tickLabelFill={colorBase.providerBtn}
@@ -348,7 +348,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                         fontFamily={'Roboto'}
                         // fontSize: number;
                         fontWeight={'400'}
-                        fillStyle={colorBase.textDisable}
+                        fillStyle={colorBase.fieldOpacityfieldOpacity}
                         x={(width - this.margin.left - this.margin.right) / 2}
                         y={(height - this.margin.top - this.margin.bottom) * 2 / 5}
                     />
@@ -441,7 +441,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
     };
 
     private readonly candleChartExtents = (data: any) => {
-        return [data.high, data.low];
+        return [data.bb ? data.bb.top * 1.05 : data.high, data.bb ? data.bb.bottom * 0.95 : data.low];
     };
 
     private readonly yEdgeIndicator = (data: IOHLCData) => {
