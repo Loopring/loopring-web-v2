@@ -277,7 +277,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                 base: tradeData.base.belong,
                 quote: tradeData.quote.belong,
                 price: tradeData.price.tradeValue as number,
-                depth: pageTradePro.depth,
+                depth: pageTradePro.depthForCalc,
                 amountBase,
                 amountQuote,
             })
