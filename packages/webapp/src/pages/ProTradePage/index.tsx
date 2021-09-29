@@ -6,9 +6,9 @@ import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout';
 import { usePro } from './hookPro';
 import { useTheme } from '@emotion/react';
 import { Box, IconButton } from '@mui/material';
-import { BreakPoint, DragIcon, layoutConfigs, LoadingIcon, ResizeIcon } from '@loopring-web/common-resources';
+import { BreakPoint, DragIcon, layoutConfigs, LoadingIcon, myLog, ResizeIcon } from '@loopring-web/common-resources';
 import { ChartView, MarketView, OrderTableView, SpotView, TabMarketIndex, Toolbar, WalletInfo } from './panel'
-import { boxLiner } from '@loopring-web/component-lib';
+import { boxLiner, useSettings } from '@loopring-web/component-lib';
 import styled from '@emotion/styled/';
 import { usePageTradePro } from '../../stores/router';
 
@@ -68,9 +68,11 @@ const initBreakPoint = (): BreakPoint => {
     }
 };
 export const OrderbookPage = withTranslation('common')(() => {
-    const {pageTradePro: {depthLevel, depth},} = usePageTradePro();
+    const {pageTradePro: {depthLevel, depth,depthForCalc},} = usePageTradePro();
     const {market, handleOnMarketChange,resetTradeCalcData} = usePro();
     const {unit} = useTheme();
+    const {proLayout,setLayouts} = useSettings();
+
     const [rowLength, setRowLength] = React.useState<number>(MARKET_ROW_LENGTH);
     const [tradeTableLengths, setTradeTableLengths] = React.useState<{ market: number, market2: number }>({
         market: MARKET_TRADES_LENGTH,
@@ -81,42 +83,21 @@ export const OrderbookPage = withTranslation('common')(() => {
             compactType: "vertical",
             currentBreakpoint: initBreakPoint(),
             mounted: false,
-            layouts: layoutConfigs[ 0 ].layouts
+            layouts: proLayout??layoutConfigs[ 0 ].layouts,
         }
     )
     const sportMemo =  React.useMemo(() => {
         return <>{
-            depth ? <SpotView
+            depthForCalc ? <SpotView
                 market={market as any}
                 resetTradeCalcData={resetTradeCalcData}
             /> :<Box flex={1} height={'100%'} display={'flex'} alignItems={'center'}
                                                              justifyContent={'center'}><LoadingIcon/></Box>
         }</>
-    }, [market, depth])
+    }, [market, depthForCalc])
 
 
-    const ViewList = {
-        toolbar: React.useMemo(() => <Toolbar market={market as any}
-                                              handleOnMarketChange={handleOnMarketChange}/>, [market, handleOnMarketChange]),
-        walletInfo: React.useMemo(() => <WalletInfo market={market as any}/>, [market]),
-        spot: sportMemo,
-        market: React.useMemo(() => <>{depthLevel
-            && <MarketView market={market as any}
-                           rowLength={rowLength}
-                           tableLength={tradeTableLengths.market}
-                           main={TabMarketIndex.Orderbook}
-                           breakpoint={configLayout.currentBreakpoint}/>}</>
-            , [market, rowLength, configLayout.currentBreakpoint, depthLevel, tradeTableLengths.market]),
-        market2: React.useMemo(() => <>{[BreakPoint.lg, BreakPoint.xlg].includes(configLayout.currentBreakpoint)
-            && <MarketView market={market as any}
-                           main={TabMarketIndex.Trades}
-                           tableLength={tradeTableLengths.market2}
-                           rowLength={0}
-                           breakpoint={configLayout.currentBreakpoint}/>}</>
-            , [market, rowLength, configLayout.currentBreakpoint, depthLevel, tradeTableLengths.market2]),    //<MarketView market={market as any}/>, [market])
-        chart: React.useMemo(() => <ChartView market={market} breakpoint={configLayout.currentBreakpoint}/>, [market]),
-        orderTable: React.useMemo(() => <OrderTableView market={market}/>, [market])
-    }
+
     const onRestDepthTableLength = React.useCallback((h: number) => {
         if (h) {
             // myLog('market',h )
@@ -186,17 +167,61 @@ export const OrderbookPage = withTranslation('common')(() => {
         if (layoutItem.i === 'market2') {
             onRestMarketTableLength(layoutItem)
         }
-
+        setConfigLayout((state: Config) => {
+            return {
+                ...state,
+                layouts:{
+                    ...state.layouts,
+                    [configLayout.currentBreakpoint]:layout
+                },
+            }
+        })
+        setLayouts({
+            ...proLayout,
+            [configLayout.currentBreakpoint]:layout
+        })
         // this.setState({ layouts });
     }, [setRowLength])
-
-
+    const handleLayoutChange  = React.useCallback(() => {
+        
+        setConfigLayout((state: Config) => {
+            return {
+                ...state,
+                layouts:proLayout?? state.layouts
+            }
+        })
+    }, [proLayout])
+    const ViewList = {
+        toolbar: React.useMemo(() => <Toolbar market={market as any}
+                                              handleLayoutChange={handleLayoutChange}
+                                              handleOnMarketChange={handleOnMarketChange}/>, [market, handleLayoutChange,handleOnMarketChange]),
+        walletInfo: React.useMemo(() => <WalletInfo market={market as any}/>, [market]),
+        spot: sportMemo,
+        market: React.useMemo(() => <>{depthLevel
+            && <MarketView market={market as any}
+                           rowLength={rowLength}
+                           tableLength={tradeTableLengths.market}
+                           main={TabMarketIndex.Orderbook}
+                           breakpoint={configLayout.currentBreakpoint}/>}</>
+            , [market, rowLength, configLayout.currentBreakpoint, depthLevel, tradeTableLengths.market]),
+        market2: React.useMemo(() => <>{[BreakPoint.lg, BreakPoint.xlg].includes(configLayout.currentBreakpoint)
+            && <MarketView market={market as any}
+                           main={TabMarketIndex.Trades}
+                           tableLength={tradeTableLengths.market2}
+                           rowLength={0}
+                           breakpoint={configLayout.currentBreakpoint}/>}</>
+            , [market, rowLength, configLayout.currentBreakpoint, depthLevel, tradeTableLengths.market2]),    //<MarketView market={market as any}/>, [market])
+        chart: React.useMemo(() => <ChartView market={market} rowLength={rowLength}/>, [market, rowLength]),
+        orderTable: React.useMemo(() => <OrderTableView market={market}/>, [market])
+    }
     return <Box display={'block'} margin={'0 auto'} width={'100%'} position={'relative'}>
         {market ? <ResponsiveGridLayout
             className="layout"
             {...{...configLayout}}
             onBreakpointChange={onBreakpointChange}
+            onLayoutChange={handleLayoutChange}
             onResizeStop={onResize}
+            // onLayoutChange={()=>{}}
             resizeHandle={<IconButton size={'medium'} style={{position: 'absolute', zIndex: 78, right: 0, bottom: 0}}
                                       className={'resize-holder'}>
                 <ResizeIcon style={{marginRight: `-${unit}px`, marginBottom: `-${unit}px`}}/></IconButton>}
@@ -215,7 +240,8 @@ export const OrderbookPage = withTranslation('common')(() => {
                 </BoxStyle>
             })}
 
-        </ResponsiveGridLayout> : <>'loading'</>}
+        </ResponsiveGridLayout> :<Box flex={1} height={'100%'} display={'flex'} alignItems={'center'}
+                                      justifyContent={'center'}><LoadingIcon/></Box>}
     </Box>
 
 })

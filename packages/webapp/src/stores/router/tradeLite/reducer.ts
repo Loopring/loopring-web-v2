@@ -30,6 +30,7 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                 ammPoolSnapshot,
                 tradePair,
                 quoteMinAmtInfo,
+                minOrderInfo,
                 request,
                 calcTradeParams,
                 priceImpactObj,
@@ -59,6 +60,7 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                     quoteMinAmtInfo,
                     buyMinAmtInfo,
                     sellMinAmtInfo,
+                    minOrderInfo,
                     lastStepAt:undefined,
                     close,
                 }
@@ -109,6 +111,9 @@ const pageTradeLiteSlice: Slice<PageTradeLiteStatus> = createSlice({
                 }
                 if (buyMinAmtInfo) {
                     state.pageTradeLite.buyMinAmtInfo = buyMinAmtInfo;
+                }
+                if (minOrderInfo) {
+                    state.pageTradeLite.minOrderInfo = minOrderInfo;
                 }
 
             }

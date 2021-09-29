@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { PlatFormType, SettingsState } from "./interface";
-import { i18n, LanguageKeys, ThemeKeys, ThemeType, UpColor } from '@loopring-web/common-resources';
+import { i18n, LanguageKeys, layoutConfigs, ThemeKeys, ThemeType, UpColor } from '@loopring-web/common-resources';
 import moment from 'moment';
 import * as imgConfig  from '@loopring-web/common-resources/assets/images/coin/loopring.json'
 import { Slice } from '@reduxjs/toolkit/src/createSlice';
 import { Currency } from 'loopring-sdk';
+import { Layouts } from 'react-grid-layout';
 
 const initialState: SettingsState = {
     themeMode: ThemeType.dark, //localStore.getItem('ThemeType')?localStore.getItem('ThemeType') as ThemeKeys :ThemeType.dark,
@@ -17,6 +18,7 @@ const initialState: SettingsState = {
     hideL2Assets: false,
     hideLpToken: false,
     hideSmallBalances: true,
+    proLayout: layoutConfigs[ 0 ].layouts
 }
 
 export const settingsSlice:Slice<SettingsState> = createSlice({
@@ -104,7 +106,11 @@ export const settingsSlice:Slice<SettingsState> = createSlice({
         setHideSmallBalances(state, action: PayloadAction<boolean>) {
             state.hideSmallBalances = action.payload
         },
+        setLayouts(state, action: PayloadAction<Layouts>) {
+            // localStore.setItem('UpColor',action.payload)
+            state.proLayout = action.payload
+        },
     },
 })
-export const {setTheme, setLanguage, setPlatform, setCurrency, setUpColor, setSlippage, setCoinJson, setHideL2Assets, setHideLpToken, setHideSmallBalances} = settingsSlice.actions
+export const {setLayouts,setTheme, setLanguage, setPlatform, setCurrency, setUpColor, setSlippage, setCoinJson, setHideL2Assets, setHideLpToken, setHideSmallBalances} = settingsSlice.actions
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions

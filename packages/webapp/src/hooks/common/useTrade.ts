@@ -8,7 +8,7 @@ import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
 import { useSystem } from 'stores/system';
 import { useAmmMap } from 'stores/Amm/AmmMap';
-import { myLog } from '@loopring-web/common-resources';
+import { myError, myLog } from '@loopring-web/common-resources';
 import store from 'stores'
 import * as _ from 'lodash'
 import { OrderInfoPatch } from 'stores/router';
@@ -166,7 +166,7 @@ export function makeMarketReq({
             minOrderInfo.minAmtCheck = sdk.toBig(calcTradeParams?.buyAmt).gte(sdk.toBig(minOrderInfo.minAmtShow))
         }
     } else {
-        throw Error('undefined minOrderInfo')
+        myError('undefined minOrderInfo')
     }
 
     // myLog('makeMarketReq calcTradeParams:', calcTradeParams)
@@ -292,12 +292,12 @@ export function makeLimitReq({
 
     const baseTokenVol3: sdk.TokenVolumeV3 = {
         tokenId: baseTokenInfo.tokenId,
-        volume: baseVol.toFixed()
+        volume: baseVol.toFixed(0, 0)
     }
 
     const quoteTokenVol3: sdk.TokenVolumeV3 = {
         tokenId: quoteTokenInfo.tokenId,
-        volume: quoteVol.toFixed()
+        volume: quoteVol.toFixed(0, 0)
     }
 
     let minOrderInfo: sdk.OrderInfo & OrderInfoPatch | undefined = undefined
@@ -324,7 +324,8 @@ export function makeLimitReq({
         }
         
     } else {
-        throw Error('undefined minOrderInfo')
+        // throw Error('undefined minOrderInfo')
+        myError('undefined minOrderInfo')
     }
 
     const takerRate = (tokenAmtMap && tokenAmtMap[baseTokenInfo.symbol]) ? tokenAmtMap[baseTokenInfo.symbol].userOrderInfo.takerRate : 0
@@ -448,7 +449,6 @@ export function usePlaceOrder() {
             }
         }
 
-
     }, [marketArray,])
 
     // {isBuy, amountB or amountS, (base, quote / market), feeBips, takerRate, depth, ammPoolSnapshot, slippage, }
@@ -456,7 +456,7 @@ export function usePlaceOrder() {
 
         const { tokenAmtMap, feeBips } = getTokenAmtMap(params)
 
-        myLog('makeMarketReqInHook tokenAmtMap:', tokenAmtMap, feeBips)
+        // myLog('makeMarketReqInHook tokenAmtMap:', tokenAmtMap, feeBips)
 
         if (exchangeInfo) {
             const fullParams: ReqParams = {
@@ -547,7 +547,7 @@ export const getPriceImpactInfo = (calcTradeParams: any, isMarket: boolean = tru
 
     } else {
 
-        if (priceImpact > 20) {
+        if (priceImpact > 10) {
             priceImpactColor = 'var(--color-error)'
             priceLevel = PriceLevel.Lv1
         }
