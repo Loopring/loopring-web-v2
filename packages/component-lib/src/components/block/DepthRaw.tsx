@@ -5,7 +5,7 @@ import { DepthViewData, MarketRowHeight } from '@loopring-web/common-resources';
 import styled from '@emotion/styled';
 
 export type Row = DepthViewData  & {type:DepthType, onClick:(event:MouseEvent,price:number)=>void,}
-export const  GridStyle = styled(Grid)`
+export const GridStyle = styled(Grid)`
   margin: 0;
   &:hover{
     background: var(--color-box-hover);
@@ -16,6 +16,12 @@ export const  GridStyle = styled(Grid)`
     padding-left: 0;
   }
 ` as typeof Grid
+
+export enum DepthType {
+    ask = 'ask',
+    bid = 'bid'
+}
+
 export const Depth = ({
                           price,
                           onClick,
@@ -34,10 +40,16 @@ export const Depth = ({
         const dotLen = _dot.length
         if (dotLen < digitNum) {
             for (let i = dotLen; i < digitNum; i++) {
-                _dot = _dot + '0'
+                _dot += '0'
             }
             formattedPrice = _init + '.' + _dot
         }
+    } else {
+        let fakeDot = '.'
+        for (let i = 0; i < digitNum; i++) {
+            fakeDot += '0'
+        }
+        formattedPrice += fakeDot
     }
 
     const color = type === DepthType.ask? 'var(--color-error)':'var(--color-success)';
@@ -53,11 +65,6 @@ export const Depth = ({
             <Typography lineHeight={`${MarketRowHeight}px`} color={'text.secondary'} variant={'body2'}>  {amtTotalForShow} </Typography>
         </Grid>
     </GridStyle>
-}
-
-export enum DepthType {
-    ask = 'ask',
-    bid = 'bid'
 }
 
 export const DepthTitle = withTranslation('common')(({
