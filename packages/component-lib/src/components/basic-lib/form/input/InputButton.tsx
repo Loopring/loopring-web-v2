@@ -40,11 +40,11 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
         error: false,
         message: ''
     });
-    // let _error = {error: false, message: ''};
-    // if (handleError && inputData) {
-    //     let error:any = handleError(inputData, ref);
-    //     _error = error ? error : {error: false}
-    // }
+    React.useEffect(()=>{
+        if(tradeValue === undefined && error.error){
+            setError( {error: false});
+        }
+    },[tradeValue])
     const _handleError = React.useCallback((value: any) => {
         if (handleError) {
             let _error = handleError({
