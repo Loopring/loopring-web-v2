@@ -704,18 +704,26 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
 
             // myLog('depth:', depth)
             // myLog('calcTradeParams:', calcTradeParams)
-
+            const minSymbol = _tradeData.buy.belong;
             const priceImpactObj = getPriceImpactInfo(calcTradeParams)
-
             const _tradeCalcData: Partial<TradeCalcData<C>> = {
                 priceImpact: priceImpactObj.value,
                 priceImpactColor: priceImpactObj.priceImpactColor,
-                minimumReceived: calcTradeParams?.amountBOutSlip.minReceivedVal,
+                minimumReceived: (calcTradeParams && calcTradeParams.amountBOutSlip?.minReceivedVal) ?
+                    getValuePrecisionThousand(
+                        calcTradeParams.amountBOutSlip?.minReceivedVal,
+                        tokenMap[minSymbol].precision,
+                        tokenMap[minSymbol].precision,
+                        tokenMap[minSymbol].precision,
+                        false,
+                        {floor:true}
+                    ):undefined,
                 fee: totalFee
             }
 
 
-            // myLog('calcTradeParams?.output:', calcTradeParams?.output, getShowStr(calcTradeParams?.output))
+
+                // myLog('calcTradeParams?.output:', calcTradeParams?.output, getShowStr(calcTradeParams?.output))
             _tradeData[ isAtoB ? 'buy' : 'sell' ].tradeValue = getShowStr(calcTradeParams?.output)
 
             const result = reCalcStoB(market, _tradeData as SwapTradeData<IBData<unknown>>, tradePair as any)

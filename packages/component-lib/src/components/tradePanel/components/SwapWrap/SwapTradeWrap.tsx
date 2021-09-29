@@ -160,7 +160,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
 
     const fee = (tradeCalcData && tradeCalcData.fee) ? ((parseFloat(tradeCalcData.fee) / 100).toString() + '%') : EmptyValueTag
 
-    const minimumReceived = tradeCalcData && tradeCalcData.minimumReceived ? tradeCalcData.minimumReceived : EmptyValueTag
+    const minimumReceived = tradeCalcData && tradeCalcData.minimumReceived ? `${tradeCalcData.minimumReceived}  ${tradeData.buy?.belong}` : EmptyValueTag
 
     return <Grid className={tradeCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"} flexWrap={'nowrap'}
@@ -246,7 +246,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
                         <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('swapMinReceive')}</Typography>
                         <Typography component={'p'}
                                     variant="body2" color={'textPrimary'}>
-                            { minimumReceived !== EmptyValueTag  ? getValuePrecisionThousand(minimumReceived) : EmptyValueTag} </Typography>
+                            { minimumReceived } </Typography>
                     </Grid>
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"} marginTop={1/2}>
                         <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('swapFee')} </Typography>

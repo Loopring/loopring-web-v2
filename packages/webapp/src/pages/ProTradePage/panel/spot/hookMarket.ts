@@ -183,7 +183,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         })
 
         // myLog('depth:',pageTradePro.depth)
-
+        const minSymbol = tradeData.type === TradeProType.buy? tradeData.base.belong: tradeData.quote.belong
         const priceImpactObj = getPriceImpactInfo(calcTradeParams)
         updatePageTradePro({
             market,
@@ -193,12 +193,22 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             tradeCalcProData: {
                 ...pageTradePro.tradeCalcProData,
                 fee: calcTradeParams && calcTradeParams.maxFeeBips ? calcTradeParams.maxFeeBips.toString() : undefined,
-                minimumReceived: calcTradeParams ? calcTradeParams.amountBOutSlip?.minReceivedVal : undefined,
+                minimumReceived:
+                    (calcTradeParams && calcTradeParams.amountBOutSlip?.minReceivedVal) ?
+                        getValuePrecisionThousand(
+                            calcTradeParams.amountBOutSlip?.minReceivedVal,
+                            tokenMap[minSymbol].precision,
+                            tokenMap[minSymbol].precision,
+                            tokenMap[minSymbol].precision,
+                            true,
+                            {floor:true}
+                        ) : undefined,
                 priceImpact: priceImpactObj ? priceImpactObj.value : undefined,
                 priceImpactColor: priceImpactObj?.priceImpactColor,
             },
             lastStepAt,
         })
+
         setMarketTradeData((state) => {
             let baseValue = undefined;
             let quoteValue = undefined;
