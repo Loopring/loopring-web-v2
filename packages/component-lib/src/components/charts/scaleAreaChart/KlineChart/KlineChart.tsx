@@ -348,7 +348,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                         fontFamily={'Roboto'}
                         // fontSize: number;
                         fontWeight={'400'}
-                        fillStyle={colorBase.fieldOpacityfieldOpacity}
+                        fillStyle={colorBase.fieldOpacity}
                         x={(width - this.margin.left - this.margin.right) / 2}
                         y={(height - this.margin.top - this.margin.bottom) * 2 / 5}
                     />
