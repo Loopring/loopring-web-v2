@@ -40,6 +40,8 @@ export const useCommon = <X extends LimitTradeData<T> | MarketTradeData<T>,
             const _data = tradeData[inputType].tradeValue
             const value = sdk.toBig(_data).div(sdk.toBig(_data)).times(100).toFixed()
             setSelectedPercentage(Number(value))
+        }else{
+            setSelectedPercentage(0)
         }
      
     },[tradeData['base'].tradeValue,tradeData['quote'].tradeValue])
