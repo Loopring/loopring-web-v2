@@ -142,14 +142,12 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
         if (formType === TradeBaseType.tab) {
             resetTradeData(tradeData.type)
-            updatePageTradePro({market, tradeType: tradeData.type})
             return;
             // amountBase = tradeData.base.tradeValue ? tradeData.base.tradeValue : undefined
             // amountQuote = amountBase !== undefined ? undefined : tradeData.quote.tradeValue ? tradeData.quote.tradeValue : undefined
         } else if (['base', 'quote'].includes(formType)) {
             lastStepAt = formType as any;
         }
-        // debugger
 
         if(lastStepAt){
             if (autoRefresh.current !== -1) {
@@ -233,7 +231,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
     }, [autoRecalc])
 
-    const resetTradeData = React.useCallback((type: TradeProType) => {
+    const resetTradeData = React.useCallback((type?: TradeProType) => {
         const walletMap = pageTradePro.tradeCalcProData?.walletMap ?? {}
         setMarketTradeData((state) => {
             return {
@@ -252,8 +250,10 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                 } as IBData<any>,
             }
         })
+        debugger
         updatePageTradePro({
             market,
+            tradeType: type ?? pageTradePro.tradeType,
             sellUserOrderInfo: null,
             buyUserOrderInfo: null,
             minOrderInfo: null,
@@ -261,6 +261,13 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             calcTradeParams: null,
             limitCalcTradeParams: null,
             lastStepAt: undefined,
+            tradeCalcProData:  {
+                ...pageTradePro.tradeCalcProData,
+                priceImpact: undefined,
+                priceImpactColor: undefined,
+                minimumReceived: undefined,
+                fee: undefined
+            }
         })
     }, [baseSymbol, quoteSymbol, pageTradePro])
     const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
@@ -357,6 +364,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                             ...pageTradePro.tradeCalcProData,
                             minimumReceived: undefined,
                             priceImpact: undefined,
+                            priceImpactColor: 'inherit',
                             fee: undefined
                         }
                     })
