@@ -242,11 +242,11 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                                 setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                         }
                     }
-
+                    resetTradeData(pageTradePro.tradeType)
                     walletLayer2Service.sendUserUpdate()
                 }
 
-                resetTradeData()
+
 
                 setIsLimitLoading(false)
             } catch (reason) {

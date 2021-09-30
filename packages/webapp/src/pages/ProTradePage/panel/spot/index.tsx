@@ -66,25 +66,13 @@ export const SpotView = withTranslation('common')(({
         isMarketLoading,
     } = useMarket(market)
     const onTabChange = React.useCallback((_e, value) => {
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
         setTabIndex(value);
+        //HIGH: Do not move the query
+        resetLimitData(pageTradePro.tradeType);
+        resetMarketData(pageTradePro.tradeType);
         resetTradeCalcData({market})
-        resetLimitData();
-        resetMarketData();
-
-        // updatePageTradePro({
-        //     market,
-        //     // request: marketRequest as any,
-        //     // calcTradeParams: calcTradeParams,
-        //     lastStepAt:undefined,
-        //     tradeCalcProData: {
-        //         ...pageTradePro.tradeCalcProData,
-        //         fee: undefined,
-        //         minimumReceived: undefined,
-        //         priceImpact: undefined,
-        //         priceImpactColor: 'inherit',
-        //
-        //     }
-        // })
+        //HIGH: Do not move the query
     }, [market])
 
     const p = getValuePrecisionThousand(parseFloat(pageTradePro.calcTradeParams?.priceImpact ?? '0') * 100, 2) + '%' as any
