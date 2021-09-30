@@ -52,7 +52,7 @@ export const SpotView = withTranslation('common')(({
         resetLimitData,
         limitAlertOpen,
         limitSubmit,
-    } = useLimit(market)
+    } = useLimit({market,resetTradeCalcData})
 
     const {
         alertOpen, confirmOpen, toastOpen, closeToast,
@@ -64,13 +64,12 @@ export const SpotView = withTranslation('common')(({
         resetMarketData,
         marketBtnClick,
         isMarketLoading,
-    } = useMarket(market)
+    } = useMarket({market,resetTradeCalcData})
     const onTabChange = React.useCallback((_e, value) => {
-        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
         setTabIndex(value);
         //HIGH: Do not move the query
-        resetLimitData(pageTradePro.tradeType);
-        resetMarketData(pageTradePro.tradeType);
+        resetLimitData();
+        resetMarketData();
         resetTradeCalcData({market})
         //HIGH: Do not move the query
     }, [market])
