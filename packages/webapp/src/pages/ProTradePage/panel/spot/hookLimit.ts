@@ -151,6 +151,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
 
         updatePageTradePro({
             market,
+            tradeType: type ?? pageTradePro.tradeType,
             minOrderInfo: null,
             sellUserOrderInfo: null,
             buyUserOrderInfo: null,
@@ -158,14 +159,14 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
             calcTradeParams: null,
             limitCalcTradeParams: null,
             defaultPrice: undefined,
-            // tradeCalcProData: {
-            //     ...pageTradePro.tradeCalcProData,
-            //     fee: undefined,
-            //     minimumReceived: undefined,
-            //     priceImpact: undefined,
-            //     priceImpactColor: 'inherit',
-            //
-            // }
+            tradeCalcProData: {
+                ...pageTradePro.tradeCalcProData,
+                fee: undefined,
+                minimumReceived: undefined,
+                priceImpact: undefined,
+                priceImpactColor: 'inherit',
+
+            }
         })
     }, [pageTradePro, marketPrecision, market, currency, forex])
 
@@ -266,8 +267,9 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
 
         if (formType === TradeBaseType.tab) {
+
+            // updatePageTradePro({market, tradeType: tradeData.type})
             resetTradeData(tradeData.type)
-            updatePageTradePro({market, tradeType: tradeData.type})
         } else {
 
             // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
