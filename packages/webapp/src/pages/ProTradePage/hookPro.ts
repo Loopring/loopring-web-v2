@@ -107,10 +107,10 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
             getAmount({market: market})
         }
     }, [market, accountStatus]);
-    const handleOnMarketChange = React.useCallback((newMarket: MarketType) => {
-        resetTradeCalcData({ market:newMarket})
-        precisionList(newMarket)
-        // setMarket(newMarket)
+    const handleOnMarketChange = React.useCallback(async (newMarket: MarketType) => {
+        // resetTradeCalcData({ market:newMarket})
+        // precisionList(newMarket)
+        setMarket(newMarket)
     }, [])
 
     const precisionList = React.useCallback((market: MarketType) => {
@@ -139,10 +139,12 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
             const {tradePair} = marketInitCheck(props.market as string);
             // @ts-ignore
             let [, coinA, coinB] = tradePair.match(/([\w]+)-([\w]+)/i);
-            let {market} = sdk.getExistedMarket(marketArray, coinA, coinB);
-            setMarket(market);
+            let {market:_market} = sdk.getExistedMarket(marketArray, coinA, coinB);
+            if(_market!==market){
+                setMarket(_market);
+            }
             // @ts-ignore
-            [, coinA, coinB] = market.match(/([\w]+)-([\w]+)/i);
+            [, coinA, coinB] = _market.match(/([\w]+)-([\w]+)/i);
             let tradeCalcProData = pageTradePro.tradeCalcProData;
             tradeCalcProData = {
                 ...tradeCalcProData,
@@ -156,7 +158,7 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
                     return {...prev, [ item ]: coinMap ? coinMap[ item ] : {}}
                 }, {} as CoinMap<C>),
             }
-            updateWalletLayer2Balance(tradeCalcProData, market)
+            updateWalletLayer2Balance(tradeCalcProData, _market)
 
             // if (!Object.keys(tradeCalcProData.walletMap ?? {}).length) {
             //    
@@ -166,7 +168,7 @@ export const usePro = <C extends { [ key: string ]: any }>(): {
 
 
         }
-    }, [coinMap, tokenMap, marketMap, marketArray, setMarket])
+    }, [coinMap, tokenMap, marketMap, marketArray,market])
 
     //init market
 

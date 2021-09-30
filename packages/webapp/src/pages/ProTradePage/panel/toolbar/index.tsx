@@ -3,7 +3,8 @@ import { TFunction, withTranslation } from 'react-i18next';
 import {
     CoinInfo,
     DropDownIcon,
-    getValuePrecisionThousand, layoutConfigs,
+    getValuePrecisionThousand,
+    layoutConfigs,
     MarketType,
     PriceTag,
     SagaStatus
@@ -16,15 +17,17 @@ import { usePageTradePro } from '../../../../stores/router';
 import { volumeToCount } from 'hooks/help'
 import styled from '@emotion/styled'
 import { Currency } from 'loopring-sdk';
-import { Layouts } from 'react-grid-layout';
+import { Layout, Layouts } from 'react-grid-layout';
+import { useTokenPrices } from 'stores/tokenPrices';
+import { useSystem } from 'stores/system';
 
 const PriceTitleStyled = styled(Typography)`
-    color: var(--color-text-third);
-    font-size: 1.2rem;
+  color: var(--color-text-third);
+  font-size: 1.2rem;
 `
 
 const PriceValueStyled = styled(Typography)`
-    font-size: 1.2rem;
+  font-size: 1.2rem;
 `
 
 export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: any }>({
@@ -36,15 +39,18 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
                                                                                       }: {
     t: TFunction<"translation">,
     market: MarketType,
-    handleLayoutChange:(layouts:Layouts)=>void,
+    handleLayoutChange: (currentLayout: Layout[], allLayouts?: Layouts, layouts?: Layouts) => void,
+
     handleOnMarketChange: (newMarket: MarketType) => void,
     // marketTicker:  MarketBlockProps<C>
 }) => {
     const {tickerMap, status: tickerStatus} = useTicker();
-    const [marketTicker, setMarketTicker] = React.useState<MarketBlockProps<C> | undefined>(undefined);
+    const [,setMarketTicker] = React.useState<MarketBlockProps<C> | undefined>(undefined);
     const {coinMap, marketArray, marketMap, tokenMap} = useTokenMap();
     const {pageTradePro: {ticker}} = usePageTradePro()
-    const {currency,setLayouts} = useSettings()
+    const {currency} = useSettings()
+    const {forex} = useSystem()
+    const {tokenPrices} = useTokenPrices()
 
     const {
         change,
@@ -53,8 +59,8 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
         high,
         low,
         volume: quoteVol,
-        priceDollar,
-        priceYuan,
+        // priceDollar,
+        // priceYuan,
         __rawTicker__,
     } = ticker || {} as any
     const base = __rawTicker__?.base
@@ -62,6 +68,8 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
     const baseVol = volumeToCount(base, __rawTicker__?.base_token_volume || 0)
     const isRise = floatTag === 'increase'
     const isUSD = currency === Currency.usd
+    const basePriceDollar = tokenPrices ? tokenPrices[base] : 0
+    const basePriceYuan = basePriceDollar * forex
 
     const getMarketPrecision = React.useCallback((market: string) => {
         if (marketMap) {
@@ -98,24 +106,25 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
     const _handleOnMarketChange = React.useCallback((event: React.ChangeEvent<{ value: string }>) => {
         handleOnMarketChange(event.target.value as MarketType)
     }, [])
-    return <Box display={'flex'} alignItems={'center'} height={'100%'} paddingX={2}  justifyContent={'space-between'}>
-        <Box alignItems={'center'} display={'flex'} >
+    return <Box display={'flex'} alignItems={'center'} height={'100%'} paddingX={2} justifyContent={'space-between'}>
+        <Box alignItems={'center'} display={'flex'}>
             <TextField
                 id="outlined-select-level"
                 select
                 size={'small'}
-                style={{ width: '190px' }}
+                style={{width: '190px'}}
                 value={market}
                 onChange={_handleOnMarketChange}
                 inputProps={{IconComponent: DropDownIcon}}
             >
-                {marketArray && !!marketArray.length && (marketArray.slice().sort((a, b) => a.localeCompare(b))).map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
+                {marketArray && !!marketArray.length && (marketArray.slice().sort((a, b) => a.localeCompare(b))).map((item) =>
+                    <MenuItem key={item} value={item}>{item}</MenuItem>)}
             </TextField>
             <Grid container spacing={3} marginLeft={0} display={'flex'} alignItems={'center'}>
                 <Grid item>
                     <Typography fontWeight={500}
                                 color={isRise ? 'var(--color-success)' : 'var(--color-error)'}>{close}</Typography>
-                    <PriceValueStyled>{isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand((isUSD ? priceDollar : priceYuan), undefined, undefined, undefined, true, {isFait: true})}</PriceValueStyled>
+                    <PriceValueStyled>{isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand((isUSD ? basePriceDollar : basePriceYuan), undefined, undefined, undefined, true, {isFait: true})}</PriceValueStyled>
                 </Grid>
                 <Grid item>
                     <PriceTitleStyled>{t('labelProToolbar24hChange')}</PriceTitleStyled>
@@ -141,11 +150,11 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
                 </Grid>
             </Grid>
         </Box>
-        <Box>
-            <Button onClick={()=>{
-                setLayouts(layoutConfigs[0].layouts)
-                handleLayoutChange(layoutConfigs[0].layouts)}}>{t('labelResetLayout')}</Button>
-        </Box>
+        {/*<Box>*/}
+        {/*    <Button onClick={() => {*/}
+        {/*        handleLayoutChange([], undefined, layoutConfigs[ 0 ].layouts)*/}
+        {/*    }}>{t('labelResetLayout')}</Button>*/}
+        {/*</Box>*/}
     </Box>
 
 })

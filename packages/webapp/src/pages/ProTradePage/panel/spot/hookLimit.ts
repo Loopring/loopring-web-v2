@@ -24,7 +24,7 @@ import { BIGO } from 'defs/common_defs';
 import { useTokenPrices } from '../../../../stores/tokenPrices';
 import { useSystem } from '../../../../stores/system';
 
-export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType) => {
+export const useLimit = <C extends { [ key: string ]: any }>({market,resetTradeCalcData}: {market: MarketType } & any) => {
     const {
         pageTradePro,
         updatePageTradePro,
@@ -75,6 +75,10 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
 
     React.useEffect(() => {
         resetTradeData(pageTradePro.tradeType)
+        // if(resetTradeCalcData){
+        //     resetTradeCalcData()
+        // }
+
     }, [pageTradePro.market,
         pageTradePro.tradeCalcProData.walletMap])
 
@@ -151,6 +155,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
 
         updatePageTradePro({
             market,
+            tradeType: type ?? pageTradePro.tradeType,
             minOrderInfo: null,
             sellUserOrderInfo: null,
             buyUserOrderInfo: null,
@@ -158,14 +163,15 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
             calcTradeParams: null,
             limitCalcTradeParams: null,
             defaultPrice: undefined,
-            // tradeCalcProData: {
-            //     ...pageTradePro.tradeCalcProData,
-            //     fee: undefined,
-            //     minimumReceived: undefined,
-            //     priceImpact: undefined,
-            //     priceImpactColor: 'inherit',
-            //
-            // }
+            tradeCalcProData: {
+                ...pageTradePro.tradeCalcProData,
+                // walletMap:walletMap as any,
+                fee: undefined,
+                minimumReceived: undefined,
+                priceImpact: undefined,
+                priceImpactColor: 'inherit',
+
+            }
         })
     }, [pageTradePro, marketPrecision, market, currency, forex])
 
@@ -241,11 +247,11 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                                 setToastOpen({open: true, type: 'error', content: t('labelSwapFailed')})
                         }
                     }
-
+                    resetTradeData(pageTradePro.tradeType)
                     walletLayer2Service.sendUserUpdate()
                 }
 
-                resetTradeData()
+
 
                 setIsLimitLoading(false)
             } catch (reason) {
@@ -266,8 +272,9 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
 
         if (formType === TradeBaseType.tab) {
+
+            // updatePageTradePro({market, tradeType: tradeData.type})
             resetTradeData(tradeData.type)
-            updatePageTradePro({market, tradeType: tradeData.type})
         } else {
 
             // {isBuy, price, amountB or amountS, (base, quote / market), feeBips, takerRate, }
@@ -391,7 +398,12 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
         const {
             minOrderInfo,
+            calcTradeParams,
         } = pageTradePro;
+        // const seed =
+
+
+        // const buyExceed = sdk.toBig(buyToken?.orderAmounts?.maximum).lt(calcTradeParams?.amountBOutSlip.minReceived)
         if (account.readyState === AccountStatus.ACTIVATED) {
             // const type = limitTradeData.type === TradeProType.sell ? 'quote' : 'base';
             if (limitTradeData?.base.tradeValue === undefined
@@ -399,9 +411,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                 || limitTradeData?.base.tradeValue === 0
                 || limitTradeData?.quote.tradeValue === 0) {
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: 'labelEnterAmount'}
-            } else if (minOrderInfo?.minAmtCheck || minOrderInfo?.minAmtShow === undefined) {
-                return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}     // label: ''}
-            } else {
+            }  else if (!minOrderInfo?.minAmtCheck) {
                 let minOrderSize = 'Error';
                 if( minOrderInfo?.symbol){
                     const basePrecision = tokenMap[ minOrderInfo.symbol ].precisionForOrder;
@@ -410,6 +420,12 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                     minOrderSize = `${showValue} ${minOrderInfo?.symbol}`;
                 }
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin| ${minOrderSize}`}
+            } else if(sdk.toBig(
+                limitTradeData[limitTradeData.type === TradeProType.buy?'quote':'base']?.tradeValue
+            ).gt(limitTradeData[limitTradeData.type === TradeProType.buy?'quote':'base'].balance)){
+                return {tradeBtnStatus: TradeBtnStatus.DISABLED,label:''}
+            } else {
+                return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}     // label: ''}
             }
         }
         return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}

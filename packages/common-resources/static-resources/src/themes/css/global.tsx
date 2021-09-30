@@ -257,7 +257,7 @@ export const globalCss = ({theme}: any) => css`
     --walletconnect-width:150px;
     --row-height:44px;
     --row-header-height:44px;
-
+    --chart-height:396px;
   }
 
   //div {

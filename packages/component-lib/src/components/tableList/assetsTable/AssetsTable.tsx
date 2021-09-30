@@ -234,7 +234,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                 const value = row[ 'amount' ]
                 const precision = row['precision']
                 return <Box className={'textAlignRight'}>
-                    {getValuePrecisionThousand(value, precision, precision, undefined, true, { floor: true })}
+                    {getValuePrecisionThousand(value, precision, precision, undefined, false, { floor: true })}
                 </Box>
             }
         },
@@ -250,7 +250,7 @@ export const AssetsTable = withTranslation('tables')((props: WithTranslation & A
                 const value = row[ 'locked' ]
                 const precision = row['precision']
                 return <Box className={'textAlignRight'}>
-                    {getValuePrecisionThousand(value, precision, precision, undefined, true, { floor: true })}
+                    {getValuePrecisionThousand(value, precision, precision, undefined, false, { floor: true })}
                 </Box>
 
             }

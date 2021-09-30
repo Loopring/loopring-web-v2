@@ -81,7 +81,6 @@ export function fibonacci(n: number) {
 }
 
 export type StockChartExtraProps = {
-    themeMode: 'light' | 'dark';
     upColor: 'green' | 'red';
     colorBase: any;
     marketPrecision?: number;
@@ -107,7 +106,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
     };
 
     public render() {
-        const { data: initialData, dateTimeFormat, height, ratio, width, mainIndicators, subIndicator, themeMode, upColor, colorBase, marketPrecision } = this.props;
+        const { data: initialData, dateTimeFormat, height, ratio, width, mainIndicators, subIndicator, upColor, colorBase, marketPrecision } = this.props;
         
         const pricesDisplayFormat = format(`.${this.props.marketPrecision || 2}f`);
         
@@ -364,7 +363,7 @@ class StockChart extends React.Component<StockChartProps & IndicatorProps & Stoc
                         fontFamily={'Roboto'}
                         // fontSize: number;
                         fontWeight={'400'}
-                        fillStyle={colorBase.fieldOpacity}
+                        fillStyle={colorBase.providerBtnHover}
                         x={(width - margin.left - margin.right) / 2}
                         y={(height - margin.top - margin.bottom) * 2 / 5}
                     />
