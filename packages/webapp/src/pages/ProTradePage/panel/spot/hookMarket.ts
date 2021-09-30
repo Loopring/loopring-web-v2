@@ -262,6 +262,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             lastStepAt: undefined,
             tradeCalcProData:  {
                 ...pageTradePro.tradeCalcProData,
+                walletMap:walletMap as any,
                 priceImpact: undefined,
                 priceImpactColor: undefined,
                 minimumReceived: undefined,

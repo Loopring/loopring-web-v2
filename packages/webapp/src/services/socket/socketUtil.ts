@@ -81,7 +81,7 @@ export class LoopringSocket {
             // const bids = genAB(data['bids'], true)
             // const asks = genAB(data['asks'])
             // const {socket} = store.getState().socket
-            if(window.loopringSocket?.socketKeyMap[SocketEventType.mixorder]?.level === topic.level){
+            if(window.loopringSocket?.socketKeyMap && window.loopringSocket?.socketKeyMap[SocketEventType.mixorder]?.level === topic.level){
                 const timestamp = Date.now();
                 mixorderService.sendMixorder({
                     [ topic.market ]: {

@@ -161,6 +161,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
             defaultPrice: undefined,
             tradeCalcProData: {
                 ...pageTradePro.tradeCalcProData,
+                walletMap:walletMap as any,
                 fee: undefined,
                 minimumReceived: undefined,
                 priceImpact: undefined,
