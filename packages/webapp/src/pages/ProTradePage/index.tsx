@@ -6,7 +6,7 @@ import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout';
 import { usePro } from './hookPro';
 import { useTheme } from '@emotion/react';
 import { Box, IconButton } from '@mui/material';
-import { BreakPoint, DragIcon, layoutConfigs, LoadingIcon, myLog, ResizeIcon } from '@loopring-web/common-resources';
+import { BreakPoint, DragIcon, layoutConfigs, LoadingIcon, ResizeIcon } from '@loopring-web/common-resources';
 import { ChartView, MarketView, OrderTableView, SpotView, TabMarketIndex, Toolbar, WalletInfo } from './panel'
 import { boxLiner, useSettings } from '@loopring-web/component-lib';
 import styled from '@emotion/styled/';
@@ -68,10 +68,10 @@ const initBreakPoint = (): BreakPoint => {
     }
 };
 export const OrderbookPage = withTranslation('common')(() => {
-    const {pageTradePro: {depthLevel, depth,depthForCalc},} = usePageTradePro();
-    const {market, handleOnMarketChange,resetTradeCalcData} = usePro();
+    const {pageTradePro: {depthLevel, depth, depthForCalc},} = usePageTradePro();
+    const {market, handleOnMarketChange, resetTradeCalcData} = usePro();
     const {unit} = useTheme();
-    const {proLayout,setLayouts} = useSettings();
+    const {proLayout, setLayouts} = useSettings();
 
     const [rowLength, setRowLength] = React.useState<number>(MARKET_ROW_LENGTH);
     const [tradeTableLengths, setTradeTableLengths] = React.useState<{ market: number, market2: number }>({
@@ -83,7 +83,7 @@ export const OrderbookPage = withTranslation('common')(() => {
             compactType: "vertical",
             currentBreakpoint: initBreakPoint(),
             mounted: false,
-            layouts: proLayout??layoutConfigs[ 0 ].layouts,
+            layouts: proLayout ?? layoutConfigs[ 0 ].layouts,
         }
     )
     const sportMemo =  React.useMemo(() => {
@@ -135,7 +135,16 @@ export const OrderbookPage = withTranslation('common')(() => {
         }
 
 
-    }, [])
+    }, []);
+    const doItemReset = React.useCallback((layout:Layout[])=>{
+
+        onRestDepthTableLength(layout.find(i => i.i === 'market')?.h as number)
+        const lys = layout.filter(i => /market/.test(i.i));
+        lys.forEach((layout) => {
+            onRestMarketTableLength(layout)
+        })
+
+    },[onRestMarketTableLength,onRestDepthTableLength])
     const onBreakpointChange = React.useCallback((breakpoint: BreakPoint) => {
         setConfigLayout((state: Config) => {
             return {
@@ -145,21 +154,17 @@ export const OrderbookPage = withTranslation('common')(() => {
         })
         const layout = configLayout.layouts[ breakpoint ]
         if (layout) {
-            onRestDepthTableLength(layout.find(i => i.i === 'market')?.h as number)
-            const lys = layout.filter(i => /market/.test(i.i));
-            lys.forEach((layout) => {
-                onRestMarketTableLength(layout)
-            })
-
+            doItemReset(layout)
         }
 
         // this.setState({
         //     currentBreakpoint: breakpoint
         // });
         // setConfigLayout
-    }, [configLayout]);
+    }, [configLayout,doItemReset]);
 
-    const onResize = React.useCallback((layout, oldLayoutItem, layoutItem) => {
+
+    const onResize = React.useCallback((layout: Layout[], oldLayoutItem, layoutItem) => {
         if (layoutItem.i === 'market') {
             onRestDepthTableLength(layoutItem.h)
             onRestMarketTableLength(layoutItem)
@@ -167,30 +172,26 @@ export const OrderbookPage = withTranslation('common')(() => {
         if (layoutItem.i === 'market2') {
             onRestMarketTableLength(layoutItem)
         }
-        setConfigLayout((state: Config) => {
-            return {
-                ...state,
-                layouts:{
-                    ...state.layouts,
-                    [configLayout.currentBreakpoint]:layout
-                },
-            }
-        })
-        setLayouts({
-            ...proLayout,
-            [configLayout.currentBreakpoint]:layout
-        })
-        // this.setState({ layouts });
-    }, [setRowLength])
-    const handleLayoutChange  = React.useCallback(() => {
-        
-        setConfigLayout((state: Config) => {
-            return {
-                ...state,
-                layouts:proLayout?? state.layouts
-            }
-        })
-    }, [proLayout])
+        // setConfigLayout((state: Config) => {
+        //     return {
+        //         ...state,
+        //         layouts: {
+        //             ...state.layouts,
+        //             [ configLayout.currentBreakpoint ]: layout
+        //         },
+        //     }
+        // })
+        // setLayouts({[ configLayout.currentBreakpoint ]: layout})
+
+    }, [configLayout.currentBreakpoint ,setRowLength,doItemReset])
+    const handleLayoutChange = React.useCallback((currentLayout: Layout[], allLayouts?: Layouts, layouts?: Layouts) => {
+        if (layouts) {
+            setLayouts(layouts)
+        } else {
+            setLayouts({[ configLayout.currentBreakpoint ]: currentLayout})
+        }
+
+    }, [configLayout,proLayout,setConfigLayout,setLayouts])
     const ViewList = {
         toolbar: React.useMemo(() => <Toolbar market={market as any}
                                               handleLayoutChange={handleLayoutChange}

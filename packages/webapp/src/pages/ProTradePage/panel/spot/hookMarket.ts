@@ -24,7 +24,7 @@ import store from 'stores';
 import * as _ from 'lodash'
 import { BIGO } from 'defs/common_defs';
 
-export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType): {
+export const useMarket = <C extends { [ key: string ]: any }>({market,resetTradeCalcData}: {market: MarketType } & any): {
     [ key: string ]: any;
     // market: MarketType|undefined;
     // marketTicker: MarketBlockProps<C> |undefined,
@@ -76,43 +76,28 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         }
     },[])
     React.useEffect(() => {
-        // if(walletMap[ baseSymbol as string ])
-        // if(walletMap)
-        const walletMap = pageTradePro.tradeCalcProData?.walletMap ?? {}
-        setMarketTradeData((state) => {
-            return {
-                ...state,
-                base: {
-                    ...state.base,
-                    // belong: baseSymbol,
-                    balance: walletMap ? walletMap[ state.base.belong as string ]?.count : 0,
-                } as IBData<any>,
-                quote: {
-                    ...state.quote,
-                    balance: walletMap ? walletMap[ state.quote.belong as string ]?.count : 0,
-                } as IBData<any>,
-            }
-        })
-    }, [pageTradePro.tradeCalcProData?.walletMap])
 
-    React.useEffect(() => {
-        if (marketTradeData.base.belong !== baseSymbol || marketTradeData.quote.belong !== quoteSymbol) {
-            setMarketTradeData((state) => {
-                return {
-                    ...state,
-                    base: {
-                        belong: baseSymbol,
-                        balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
-                    } as IBData<any>,
-                    quote: {
-                        belong: quoteSymbol,
-                        balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
-                    } as IBData<any>,
+        resetTradeData(pageTradePro.tradeType)
+    }, [pageTradePro.market,pageTradePro.tradeCalcProData?.walletMap])
 
-                }
-            })
-        }
-    }, [baseSymbol, quoteSymbol]);
+    // React.useEffect(() => {
+    //     if (marketTradeData.base.belong !== baseSymbol || marketTradeData.quote.belong !== quoteSymbol) {
+    //         setMarketTradeData((state) => {
+    //             return {
+    //                 ...state,
+    //                 base: {
+    //                     belong: baseSymbol,
+    //                     balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
+    //                 } as IBData<any>,
+    //                 quote: {
+    //                     belong: quoteSymbol,
+    //                     balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
+    //                 } as IBData<any>,
+    //
+    //             }
+    //         })
+    //     }
+    // }, [baseSymbol, quoteSymbol]);
 
     const autoRecalc = React.useCallback(() => {
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
@@ -142,14 +127,12 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
         if (formType === TradeBaseType.tab) {
             resetTradeData(tradeData.type)
-            updatePageTradePro({market, tradeType: tradeData.type})
             return;
             // amountBase = tradeData.base.tradeValue ? tradeData.base.tradeValue : undefined
             // amountQuote = amountBase !== undefined ? undefined : tradeData.quote.tradeValue ? tradeData.quote.tradeValue : undefined
         } else if (['base', 'quote'].includes(formType)) {
             lastStepAt = formType as any;
         }
-        // debugger
 
         if(lastStepAt){
             if (autoRefresh.current !== -1) {
@@ -233,7 +216,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
 
     }, [autoRecalc])
 
-    const resetTradeData = React.useCallback((type: TradeProType) => {
+    const resetTradeData = React.useCallback((type?: TradeProType) => {
         const walletMap = pageTradePro.tradeCalcProData?.walletMap ?? {}
         setMarketTradeData((state) => {
             return {
@@ -254,6 +237,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         })
         updatePageTradePro({
             market,
+            tradeType: type ?? pageTradePro.tradeType,
             sellUserOrderInfo: null,
             buyUserOrderInfo: null,
             minOrderInfo: null,
@@ -261,6 +245,14 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             calcTradeParams: null,
             limitCalcTradeParams: null,
             lastStepAt: undefined,
+            tradeCalcProData:  {
+                ...pageTradePro.tradeCalcProData,
+                // walletMap:walletMap as any,
+                priceImpact: undefined,
+                priceImpactColor: undefined,
+                minimumReceived: undefined,
+                fee: undefined
+            }
         })
     }, [baseSymbol, quoteSymbol, pageTradePro])
     const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
@@ -342,24 +334,26 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                                 break
                         }
                     }
-
+                    resetTradeData(pageTradePro.tradeType)
                     walletLayer2Service.sendUserUpdate()
-                    setMarketTradeData((state) => {
-                        return {
-                            ...state,
-                            base: {...state?.base, tradeValue: 0},
-                            quote: {...state?.quote, tradeValue: 0},
-                        } as MarketTradeData<IBData<C>>
-                    });
-                    updatePageTradePro({
-                        market: market as MarketType,
-                        tradeCalcProData: {
-                            ...pageTradePro.tradeCalcProData,
-                            minimumReceived: undefined,
-                            priceImpact: undefined,
-                            fee: undefined
-                        }
-                    })
+
+                    // setMarketTradeData((state) => {
+                    //     return {
+                    //         ...state,
+                    //         base: {...state?.base, tradeValue: 0},
+                    //         quote: {...state?.quote, tradeValue: 0},
+                    //     } as MarketTradeData<IBData<C>>
+                    // });
+                    // updatePageTradePro({
+                    //     market: market as MarketType,
+                    //     tradeCalcProData: {
+                    //         ...pageTradePro.tradeCalcProData,
+                    //         minimumReceived: undefined,
+                    //         priceImpact: undefined,
+                    //         priceImpactColor: 'inherit',
+                    //         fee: undefined
+                    //     }
+                    // })
 
                 }
             } catch (reason) {
@@ -394,9 +388,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                 || marketTradeData?.base.tradeValue === 0
                 || marketTradeData?.quote.tradeValue === 0) {
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: 'labelEnterAmount'}
-            } else if (minOrderInfo?.minAmtCheck || minOrderInfo?.minAmtShow === undefined) {
-                return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
-            } else {
+            } else if  (!minOrderInfo?.minAmtCheck) {
                 // const symbol: string = marketTradeData[ 'base' ].belong;
                 // const minOrderSize = `${minOrderInfo?.minAmtShow} ${minOrderInfo?.symbol}`;
                 let minOrderSize = 'Error';
@@ -407,6 +399,12 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                     minOrderSize = `${showValue} ${minOrderInfo?.symbol}`;
                 }
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin| ${minOrderSize}`}
+
+            } else if(sdk.toBig(marketTradeData[marketTradeData.type === TradeProType.buy?'quote':'base']?.tradeValue
+            ).gt(marketTradeData[marketTradeData.type === TradeProType.buy?'quote':'base'].balance)){
+                return {tradeBtnStatus: TradeBtnStatus.DISABLED,label:''}
+            } else {
+                return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}     // label: ''}
             }
         }
 

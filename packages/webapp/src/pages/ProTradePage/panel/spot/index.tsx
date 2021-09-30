@@ -10,12 +10,13 @@ import {
     TradeProType
 } from '@loopring-web/component-lib';
 import { TOAST_TIME } from 'defs/common_defs';
-import { getValuePrecisionThousand, IBData, MarketType } from '@loopring-web/common-resources';
+import { getValuePrecisionThousand, IBData, LoadingIcon, MarketType } from '@loopring-web/common-resources';
 import { usePageTradePro } from 'stores/router';
 import { useMarket } from './hookMarket';
 import { useLimit } from './hookLimit';
 import { Box, Divider, Tab, Tabs } from '@mui/material';
 import { useTokenMap } from 'stores/token';
+import store from '../../../../stores';
 
 // const TabsStyle = styled(Tabs)`
 //   flex: 1;
@@ -38,7 +39,7 @@ export const SpotView = withTranslation('common')(({
     const {pageTradePro} = usePageTradePro();
     const [tabIndex, setTabIndex] = React.useState<TabIndex>(TabIndex.limit);
     const {marketMap, tokenMap} = useTokenMap();
-    //@ts-ignore
+    //@ts-ignore 
     const [, baseSymbol, quoteSymbol] = market.match(/(\w+)-(\w+)/i);
     const {
         toastOpen: toastOpenL, closeToast: closeToastL, limitTradeData, onChangeLimitEvent,
@@ -51,7 +52,7 @@ export const SpotView = withTranslation('common')(({
         resetLimitData,
         limitAlertOpen,
         limitSubmit,
-    } = useLimit(market)
+    } = useLimit({market,resetTradeCalcData})
 
     const {
         alertOpen, confirmOpen, toastOpen, closeToast,
@@ -63,28 +64,18 @@ export const SpotView = withTranslation('common')(({
         resetMarketData,
         marketBtnClick,
         isMarketLoading,
-    } = useMarket(market)
+    } = useMarket({market,resetTradeCalcData})
     const onTabChange = React.useCallback((_e, value) => {
         setTabIndex(value);
-        resetTradeCalcData({market})
+        //HIGH: Do not move the query
         resetLimitData();
         resetMarketData();
-
-        // updatePageTradePro({
-        //     market,
-        //     // request: marketRequest as any,
-        //     // calcTradeParams: calcTradeParams,
-        //     lastStepAt:undefined,
-        //     tradeCalcProData: {
-        //         ...pageTradePro.tradeCalcProData,
-        //         fee: undefined,
-        //         minimumReceived: undefined,
-        //         priceImpact: undefined,
-        //         priceImpactColor: 'inherit',
-        //
-        //     }
-        // })
+        resetTradeCalcData({market})
+        //HIGH: Do not move the query
     }, [market])
+
+    const p = getValuePrecisionThousand(parseFloat(pageTradePro.calcTradeParams?.priceImpact ?? '0') * 100, 2) + '%' as any
+
     return <>
         <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'}
                open={toastOpen?.open ?? false}
@@ -93,51 +84,51 @@ export const SpotView = withTranslation('common')(({
                open={toastOpenL?.open ?? false}
                autoHideDuration={TOAST_TIME} onClose={closeToastL}/>
         <AlertImpact handleClose={marketSubmit} open={alertOpen}
-                     value={getValuePrecisionThousand(pageTradePro?.priceImpactObj?.value, 2) + '%' as any}/>
+                     value={p}/>
         <ConfirmImpact handleClose={marketSubmit} open={confirmOpen}
-                       value={getValuePrecisionThousand(pageTradePro?.priceImpactObj?.value, 2) + '%' as any}/>
+                       value={p}/>
         <AlertLimitPrice handleClose={limitSubmit} open={limitAlertOpen}
                          value={pageTradePro.tradeType === TradeProType.buy ? "labelPriceCompareGreat" : "labelPriceCompareLess"}/>
 
         <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
             <Box component={'header'} width={'100%'}>
-                <Tabs variant={'fullWidth'} value={tabIndex} onChange={onTabChange}>
-                    <Tab value={TabIndex.limit} label={t('labelProLimit')}/>
-                    <Tab value={TabIndex.market} label={t('labelProMarket')}/>
-                </Tabs>
+            <Tabs variant={'fullWidth'} value={tabIndex} onChange={onTabChange}>
+            <Tab value={TabIndex.limit} label={t('labelProLimit')}/>
+            <Tab value={TabIndex.market} label={t('labelProMarket')}/>
+            </Tabs>
             </Box>
             <Divider style={{marginTop: '-1px'}}/>
             <Box flex={1} component={'section'}>
-                {tabIndex === TabIndex.limit && <LimitTrade
-                    // disabled={false}
-                  tokenPriceProps={{
-                      handleError: handlePriceError as any,
-                      decimalsLimit: marketMap[ market ].precisionForPrice
-                  }
-                  }
-                  tradeType={pageTradePro.tradeType}
-                  tokenBaseProps={{disabled: isLimitLoading, decimalsLimit: tokenMap[ baseSymbol ].precision}}
-                  tokenQuoteProps={{disabled: isLimitLoading, decimalsLimit: tokenMap[ quoteSymbol ].precision}}
-                  tradeLimitI18nKey={tradeLimitI18nKey}
-                  tradeLimitBtnStyle={tradeLimitBtnStyle}
-                  tradeLimitBtnStatus={tradeLimitBtnStatus as any}
-                  handleSubmitEvent={limitBtnClick as any}
-                  tradeCalcProData={pageTradePro.tradeCalcProData}
-                  tradeData={limitTradeData}
-                  onChangeEvent={onChangeLimitEvent as any}/>}
-                {tabIndex === TabIndex.market && <MarketTrade
-                    // disabled={false}
+        {tabIndex === TabIndex.limit && <LimitTrade
+            // disabled={false}
+            tokenPriceProps={{
+            handleError: handlePriceError as any,
+            decimalsLimit: marketMap[ market ].precisionForPrice
+        }
+        }
+            tradeType={pageTradePro.tradeType}
+            tokenBaseProps={{disabled: isLimitLoading, decimalsLimit: tokenMap[ baseSymbol ].precision}}
+            tokenQuoteProps={{disabled: isLimitLoading, decimalsLimit: tokenMap[ quoteSymbol ].precision}}
+            tradeLimitI18nKey={tradeLimitI18nKey}
+            tradeLimitBtnStyle={tradeLimitBtnStyle}
+            tradeLimitBtnStatus={tradeLimitBtnStatus as any}
+            handleSubmitEvent={limitBtnClick as any}
+            tradeCalcProData={pageTradePro.tradeCalcProData}
+            tradeData={limitTradeData}
+            onChangeEvent={onChangeLimitEvent as any}/>}
+        {tabIndex === TabIndex.market && <MarketTrade
+            // disabled={false}
 
-                  tokenBaseProps={{disabled: isMarketLoading, decimalsLimit: tokenMap[ baseSymbol ].precision}}
-                  tokenQuoteProps={{disabled: isMarketLoading, decimalsLimit: tokenMap[ quoteSymbol ].precision}}
-                  tradeMarketI18nKey={tradeMarketI18nKey}
-                  tradeMarketBtnStyle={tradeMarketBtnStyle}
-                  tradeType={pageTradePro.tradeType}
-                  tradeMarketBtnStatus={tradeMarketBtnStatus}
-                  handleSubmitEvent={marketBtnClick}
-                  tradeCalcProData={pageTradePro.tradeCalcProData}
-                  tradeData={marketTradeData}
-                  onChangeEvent={onChangeMarketEvent}/>}
+            tokenBaseProps={{disabled: isMarketLoading, decimalsLimit: tokenMap[ baseSymbol ].precision}}
+            tokenQuoteProps={{disabled: isMarketLoading, decimalsLimit: tokenMap[ quoteSymbol ].precision}}
+            tradeMarketI18nKey={tradeMarketI18nKey}
+            tradeMarketBtnStyle={tradeMarketBtnStyle}
+            tradeType={pageTradePro.tradeType}
+            tradeMarketBtnStatus={tradeMarketBtnStatus}
+            handleSubmitEvent={marketBtnClick}
+            tradeCalcProData={pageTradePro.tradeCalcProData}
+            tradeData={marketTradeData}
+            onChangeEvent={onChangeMarketEvent}/>}
             </Box>
 
         </Box>

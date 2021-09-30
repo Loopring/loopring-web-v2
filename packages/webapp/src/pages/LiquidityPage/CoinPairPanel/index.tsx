@@ -139,7 +139,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                 </Box>
                 {/*<Box flex={1} display={'flex'} alignItems={'stretch'} flexDirection="row" marginTop={3}>*/}
                 <Box marginTop={3} display={'flex'} flexDirection={'column'} justifyContent={'space-between'}>
-                    <Box flex={1} width={'101%'} minHeight={396} maxHeight={460}>
+                    <Box flex={1} width={'101%'}  minHeight={'var(--chart-height)'} height={'var(--chart-height)'} maxHeight={420}>
                         <ScaleAreaChart
                             type={ChartType.Trend}
                             data={pairHistory}

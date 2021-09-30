@@ -4,7 +4,7 @@ import { usePopupState, bindPopper } from 'material-ui-popup-state/hooks';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { Divider, Box, Typography, Grid, MenuItem, Checkbox, ClickAwayListener } from '@mui/material'
 import { ScaleAreaChart, ChartType, testKlineData, MainIndicator, SubIndicator, PopoverPure } from '@loopring-web/component-lib'
-import { BreakPoint, KLineFeaturesIcon, DepthViewData, MarketType, depth2ViewData, myLog } from '@loopring-web/common-resources'
+import { BreakPoint, KLineFeaturesIcon, DepthViewData, MarketType, depth2ViewData } from '@loopring-web/common-resources'
 import styled from '@emotion/styled'
 import { TradingInterval } from 'loopring-sdk'
 import { usePageTradePro } from 'stores/router';
@@ -71,8 +71,8 @@ export const ChartView = withTranslation('common')(({market, rowLength, t, i18n,
             // }
             const viewData = depth2ViewData({
                 depth,
-                countAsk: countAsk * 2,
-                countBid: countBid * 2,
+                countAsk: countAsk,
+                countBid: countBid,
                 baseDecimal,
                 quoteDecimal,
                 precisionForPrice,
@@ -90,9 +90,9 @@ export const ChartView = withTranslation('common')(({market, rowLength, t, i18n,
         const originalData = cloneDeepWith(depthViewData)
         const formattedData = {
             bidsPrices: originalData.bids.map(o => o.price).reverse(),
-            bidsAmtTotals: originalData.bids.map(o => Number(o.amtTotal)).reverse(),
+            bidsAmtTotals: originalData.bids.map(o => Number(o.amtTotalForShow.replace(',', ''))).reverse(),
             asksPrices: originalData.asks.map(o => o.price).reverse(),
-            asksAmtTotals: originalData.asks.map(o => Number(o.amtTotal)).reverse(),
+            asksAmtTotals: originalData.asks.map(o => Number(o.amtTotalForShow.replace(',', ''))).reverse(),
         }
         return formattedData
     }, [depthViewData])
