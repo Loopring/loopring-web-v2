@@ -108,7 +108,11 @@ export const settingsSlice:Slice<SettingsState> = createSlice({
         },
         setLayouts(state, action: PayloadAction<Layouts>) {
             // localStore.setItem('UpColor',action.payload)
-            state.proLayout = action.payload
+            state.proLayout = {
+                ...layoutConfigs[ 0 ].layouts,
+                ...state.proLayout,
+                ...action.payload,
+            }
         },
     },
 })
