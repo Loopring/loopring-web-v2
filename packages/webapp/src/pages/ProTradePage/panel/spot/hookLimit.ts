@@ -24,7 +24,7 @@ import { BIGO } from 'defs/common_defs';
 import { useTokenPrices } from '../../../../stores/tokenPrices';
 import { useSystem } from '../../../../stores/system';
 
-export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType) => {
+export const useLimit = <C extends { [ key: string ]: any }>({market,resetTradeCalcData}: {market: MarketType } & any) => {
     const {
         pageTradePro,
         updatePageTradePro,
@@ -75,6 +75,10 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
 
     React.useEffect(() => {
         resetTradeData(pageTradePro.tradeType)
+        // if(resetTradeCalcData){
+        //     resetTradeCalcData()
+        // }
+
     }, [pageTradePro.market,
         pageTradePro.tradeCalcProData.walletMap])
 
@@ -159,15 +163,15 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
             calcTradeParams: null,
             limitCalcTradeParams: null,
             defaultPrice: undefined,
-            // tradeCalcProData: {
-            //     ...pageTradePro.tradeCalcProData,
-            //     walletMap:walletMap as any,
-            //     fee: undefined,
-            //     minimumReceived: undefined,
-            //     priceImpact: undefined,
-            //     priceImpactColor: 'inherit',
-            //
-            // }
+            tradeCalcProData: {
+                ...pageTradePro.tradeCalcProData,
+                // walletMap:walletMap as any,
+                fee: undefined,
+                minimumReceived: undefined,
+                priceImpact: undefined,
+                priceImpactColor: 'inherit',
+
+            }
         })
     }, [pageTradePro, marketPrecision, market, currency, forex])
 

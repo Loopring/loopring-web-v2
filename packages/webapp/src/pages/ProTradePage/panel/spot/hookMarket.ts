@@ -24,7 +24,7 @@ import store from 'stores';
 import * as _ from 'lodash'
 import { BIGO } from 'defs/common_defs';
 
-export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType): {
+export const useMarket = <C extends { [ key: string ]: any }>({market,resetTradeCalcData}: {market: MarketType } & any): {
     [ key: string ]: any;
     // market: MarketType|undefined;
     // marketTicker: MarketBlockProps<C> |undefined,
@@ -76,24 +76,9 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
         }
     },[])
     React.useEffect(() => {
-        // if(walletMap[ baseSymbol as string ])
-        // if(walletMap)
-        const walletMap = pageTradePro.tradeCalcProData?.walletMap ?? {}
-        setMarketTradeData((state) => {
-            return {
-                ...state,
-                base: {
-                    ...state.base,
-                    // belong: baseSymbol,
-                    balance: walletMap ? walletMap[ state.base.belong as string ]?.count : 0,
-                } as IBData<any>,
-                quote: {
-                    ...state.quote,
-                    balance: walletMap ? walletMap[ state.quote.belong as string ]?.count : 0,
-                } as IBData<any>,
-            }
-        })
-    }, [pageTradePro.tradeCalcProData?.walletMap])
+
+        resetTradeData(pageTradePro.tradeType)
+    }, [pageTradePro.market,pageTradePro.tradeCalcProData?.walletMap])
 
     React.useEffect(() => {
         if (marketTradeData.base.belong !== baseSymbol || marketTradeData.quote.belong !== quoteSymbol) {
@@ -260,14 +245,14 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             calcTradeParams: null,
             limitCalcTradeParams: null,
             lastStepAt: undefined,
-            // tradeCalcProData:  {
-            //     ...pageTradePro.tradeCalcProData,
-            //     walletMap:walletMap as any,
-            //     priceImpact: undefined,
-            //     priceImpactColor: undefined,
-            //     minimumReceived: undefined,
-            //     fee: undefined
-            // }
+            tradeCalcProData:  {
+                ...pageTradePro.tradeCalcProData,
+                // walletMap:walletMap as any,
+                priceImpact: undefined,
+                priceImpactColor: undefined,
+                minimumReceived: undefined,
+                fee: undefined
+            }
         })
     }, [baseSymbol, quoteSymbol, pageTradePro])
     const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
