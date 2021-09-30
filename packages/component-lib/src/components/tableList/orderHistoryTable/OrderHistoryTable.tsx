@@ -598,7 +598,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                             <ClickAwayListener onClickAway={() => popState.setOpen(false)}>
                                 <Box padding={2}>
                                     <Typography marginBottom={1}>{t('labelOrderCancelConfirm')}</Typography>
-                                    <Grid container spacing={1}>
+                                    <Grid container spacing={1} display={'flex'} justifyContent={'flex-end'} alignItems={'center'}>
                                         <Grid item>
                                             <Button variant={'outlined'} onClick={handleClose}>{t('labelOrderCancel')}</Button>
                                         </Grid>
