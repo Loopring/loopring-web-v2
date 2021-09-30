@@ -1,11 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { PlatFormType, SettingsState } from "./interface";
-import { i18n, LanguageKeys, layoutConfigs, ThemeKeys, ThemeType, UpColor } from '@loopring-web/common-resources';
+import {
+    i18n,
+    LanguageKeys,
+    layoutConfigs,
+    myLog,
+    ThemeKeys,
+    ThemeType,
+    UpColor
+} from '@loopring-web/common-resources';
 import moment from 'moment';
-import * as imgConfig  from '@loopring-web/common-resources/assets/images/coin/loopring.json'
+import * as imgConfig from '@loopring-web/common-resources/assets/images/coin/loopring.json'
 import { Slice } from '@reduxjs/toolkit/src/createSlice';
 import { Currency } from 'loopring-sdk';
-import { Layouts } from 'react-grid-layout';
+import { Layout, Layouts } from 'react-grid-layout';
 
 const initialState: SettingsState = {
     themeMode: ThemeType.dark, //localStore.getItem('ThemeType')?localStore.getItem('ThemeType') as ThemeKeys :ThemeType.dark,
@@ -21,57 +29,57 @@ const initialState: SettingsState = {
     proLayout: layoutConfigs[ 0 ].layouts
 }
 
-export const settingsSlice:Slice<SettingsState> = createSlice({
+export const settingsSlice: Slice<SettingsState> = createSlice({
     name: 'settings',
     initialState,
     reducers: {
         setTheme(state, action: PayloadAction<ThemeKeys>) {
             // localStore.setItem('ThemeType',action.payload)
             state.themeMode = action.payload
-            
+
         },
         setLanguage(state, action: PayloadAction<LanguageKeys>) {
             i18n.changeLanguage(action.payload);
             if (action.payload) {
                 // action.payload === 'en_US' ? moment.locale('en') : moment.locale(action.payload.toLocaleLowerCase());
-                action.payload === 'en_US' 
+                action.payload === 'en_US'
                     ? moment.updateLocale('en', {
-                            relativeTime : {
-                                future: "in %s",
-                                past:   "%s ago",
-                                s  : 'a few seconds',
-                                ss : '%d seconds',
-                                m:  "a minute",
-                                mm: "%d minutes",
-                                h:  "an hour",
-                                hh: "%d hours",
-                                d:  "a day",
-                                dd: "%d days",
-                                w:  "a week",
-                                ww: "%d weeks",
-                                M:  "a month",
-                                MM: "%d months",
-                                y:  "a year",
-                                yy: "%d years",
-                            }
-                        })
+                        relativeTime: {
+                            future: "in %s",
+                            past: "%s ago",
+                            s: 'a few seconds',
+                            ss: '%d seconds',
+                            m: "a minute",
+                            mm: "%d minutes",
+                            h: "an hour",
+                            hh: "%d hours",
+                            d: "a day",
+                            dd: "%d days",
+                            w: "a week",
+                            ww: "%d weeks",
+                            M: "a month",
+                            MM: "%d months",
+                            y: "a year",
+                            yy: "%d years",
+                        }
+                    })
                     : moment.updateLocale('zh-cn', {
-                        relativeTime : {
+                        relativeTime: {
                             future: "%s后",
-                            past:   "%s前",
-                            s  : '几秒',
-                            ss : '%d 秒',
-                            m:  "1 分钟",
+                            past: "%s前",
+                            s: '几秒',
+                            ss: '%d 秒',
+                            m: "1 分钟",
                             mm: "%d 分钟",
-                            h:  "1 小时",
+                            h: "1 小时",
                             hh: "%d 小时",
-                            d:  "1 天",
+                            d: "1 天",
                             dd: "%d 天",
-                            w:  "1 周",
+                            w: "1 周",
                             ww: "%d 周",
-                            M:  "1 个月",
+                            M: "1 个月",
                             MM: "%d 个月",
-                            y:  "1 年",
+                            y: "1 年",
                             yy: "%d 年",
                         }
                     });
@@ -108,13 +116,67 @@ export const settingsSlice:Slice<SettingsState> = createSlice({
         },
         setLayouts(state, action: PayloadAction<Layouts>) {
             // localStore.setItem('UpColor',action.payload)
-            state.proLayout = {
-                ...layoutConfigs[ 0 ].layouts,
+            const result: Layouts = {
                 ...state.proLayout,
-                ...action.payload,
+                ...action.payload
             }
-        },
+            state.proLayout = {
+                'xlg': result.xlg,
+                'lg': result.lg,
+                'md': result.md.reduce((pre, item) => [...pre, item.i === 'market2' ? {
+                    i: 'market2',
+                    x: 0,
+                    y: 0,
+                    w: 0,
+                    h: 0,
+                    minW: 0,
+                    minH: 0
+                } : item], [] as Layout[]),
+                'sm': result.sm.reduce((pre, item) => [...pre, item.i === 'market2' ? {
+                    i: 'market2',
+                    x: 0,
+                    y: 0,
+                    w: 0,
+                    h: 0,
+                    minW: 0,
+                    minH: 0
+                } : item], [] as Layout[]),
+                'xs': result.xs.reduce((pre, item) => [...pre, item.i === 'market2' ? {
+                    i: 'market2',
+                    x: 0,
+                    y: 0,
+                    w: 0,
+                    h: 0,
+                    minW: 0,
+                    minH: 0
+                } : item], [] as Layout[]),
+                'xxs': result.xxs.reduce((pre, item) => [...pre, item.i === 'market2' ? {
+                    i: 'market2',
+                    x: 0,
+                    y: 0,
+                    w: 0,
+                    h: 0,
+                    minW: 0,
+                    minH: 0
+                } : item], [] as Layout[]),
+            }
+            myLog(action.payload,state.proLayout )
+
+        }
+
     },
 })
-export const {setLayouts,setTheme, setLanguage, setPlatform, setCurrency, setUpColor, setSlippage, setCoinJson, setHideL2Assets, setHideLpToken, setHideSmallBalances} = settingsSlice.actions
+export const {
+    setLayouts,
+    setTheme,
+    setLanguage,
+    setPlatform,
+    setCurrency,
+    setUpColor,
+    setSlippage,
+    setCoinJson,
+    setHideL2Assets,
+    setHideLpToken,
+    setHideSmallBalances
+} = settingsSlice.actions
 // export const { setTheme,setPlatform,setLanguage } = settingsSlice.actions
