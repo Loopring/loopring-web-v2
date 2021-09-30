@@ -18,6 +18,8 @@ import { volumeToCount } from 'hooks/help'
 import styled from '@emotion/styled'
 import { Currency } from 'loopring-sdk';
 import { Layout, Layouts } from 'react-grid-layout';
+import { useTokenPrices } from 'stores/tokenPrices';
+import { useSystem } from 'stores/system';
 
 const PriceTitleStyled = styled(Typography)`
   color: var(--color-text-third);
@@ -47,6 +49,8 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
     const {coinMap, marketArray, marketMap, tokenMap} = useTokenMap();
     const {pageTradePro: {ticker}} = usePageTradePro()
     const {currency} = useSettings()
+    const {forex} = useSystem()
+    const {tokenPrices} = useTokenPrices()
 
     const {
         change,
@@ -55,8 +59,8 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
         high,
         low,
         volume: quoteVol,
-        priceDollar,
-        priceYuan,
+        // priceDollar,
+        // priceYuan,
         __rawTicker__,
     } = ticker || {} as any
     const base = __rawTicker__?.base
@@ -64,6 +68,8 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
     const baseVol = volumeToCount(base, __rawTicker__?.base_token_volume || 0)
     const isRise = floatTag === 'increase'
     const isUSD = currency === Currency.usd
+    const basePriceDollar = tokenPrices ? tokenPrices[base] : 0
+    const basePriceYuan = basePriceDollar * forex
 
     const getMarketPrecision = React.useCallback((market: string) => {
         if (marketMap) {
@@ -118,7 +124,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
                 <Grid item>
                     <Typography fontWeight={500}
                                 color={isRise ? 'var(--color-success)' : 'var(--color-error)'}>{close}</Typography>
-                    <PriceValueStyled>{isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand((isUSD ? priceDollar : priceYuan), undefined, undefined, undefined, true, {isFait: true})}</PriceValueStyled>
+                    <PriceValueStyled>{isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand((isUSD ? basePriceDollar : basePriceYuan), undefined, undefined, undefined, true, {isFait: true})}</PriceValueStyled>
                 </Grid>
                 <Grid item>
                     <PriceTitleStyled>{t('labelProToolbar24hChange')}</PriceTitleStyled>
