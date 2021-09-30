@@ -6,7 +6,7 @@ import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout';
 import { usePro } from './hookPro';
 import { useTheme } from '@emotion/react';
 import { Box, IconButton } from '@mui/material';
-import { BreakPoint, DragIcon, layoutConfigs, LoadingIcon, ResizeIcon } from '@loopring-web/common-resources';
+import { BreakPoint, DragIcon, layoutConfigs, LoadingIcon, myLog, ResizeIcon } from '@loopring-web/common-resources';
 import { ChartView, MarketView, OrderTableView, SpotView, TabMarketIndex, Toolbar, WalletInfo } from './panel'
 import { boxLiner, useSettings } from '@loopring-web/component-lib';
 import styled from '@emotion/styled/';
@@ -173,12 +173,14 @@ export const OrderbookPage = withTranslation('common')(() => {
             onRestMarketTableLength(layoutItem)
         }
 
+        // else {
+        myLog(configLayout.currentBreakpoint,layout)
+        setLayouts({[ configLayout.currentBreakpoint ]: layout})
+        // }
     }, [configLayout.currentBreakpoint ,setRowLength,doItemReset])
     const handleLayoutChange = React.useCallback((currentLayout: Layout[], allLayouts?: Layouts, layouts?: Layouts) => {
         if (layouts) {
             setLayouts(layouts)
-        } else {
-            setLayouts({[ configLayout.currentBreakpoint ]: currentLayout})
         }
 
     }, [configLayout.currentBreakpoint,proLayout,setConfigLayout,setLayouts])
