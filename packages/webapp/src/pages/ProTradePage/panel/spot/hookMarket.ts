@@ -348,25 +348,26 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                                 break
                         }
                     }
-
+                    resetTradeData(pageTradePro.tradeType)
                     walletLayer2Service.sendUserUpdate()
-                    setMarketTradeData((state) => {
-                        return {
-                            ...state,
-                            base: {...state?.base, tradeValue: 0},
-                            quote: {...state?.quote, tradeValue: 0},
-                        } as MarketTradeData<IBData<C>>
-                    });
-                    updatePageTradePro({
-                        market: market as MarketType,
-                        tradeCalcProData: {
-                            ...pageTradePro.tradeCalcProData,
-                            minimumReceived: undefined,
-                            priceImpact: undefined,
-                            priceImpactColor: 'inherit',
-                            fee: undefined
-                        }
-                    })
+
+                    // setMarketTradeData((state) => {
+                    //     return {
+                    //         ...state,
+                    //         base: {...state?.base, tradeValue: 0},
+                    //         quote: {...state?.quote, tradeValue: 0},
+                    //     } as MarketTradeData<IBData<C>>
+                    // });
+                    // updatePageTradePro({
+                    //     market: market as MarketType,
+                    //     tradeCalcProData: {
+                    //         ...pageTradePro.tradeCalcProData,
+                    //         minimumReceived: undefined,
+                    //         priceImpact: undefined,
+                    //         priceImpactColor: 'inherit',
+                    //         fee: undefined
+                    //     }
+                    // })
 
                 }
             } catch (reason) {
@@ -401,9 +402,7 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                 || marketTradeData?.base.tradeValue === 0
                 || marketTradeData?.quote.tradeValue === 0) {
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: 'labelEnterAmount'}
-            } else if (minOrderInfo?.minAmtCheck || minOrderInfo?.minAmtShow === undefined) {
-                return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
-            } else {
+            } else if  (!minOrderInfo?.minAmtCheck) {
                 // const symbol: string = marketTradeData[ 'base' ].belong;
                 // const minOrderSize = `${minOrderInfo?.minAmtShow} ${minOrderInfo?.symbol}`;
                 let minOrderSize = 'Error';
@@ -414,6 +413,12 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                     minOrderSize = `${showValue} ${minOrderInfo?.symbol}`;
                 }
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin| ${minOrderSize}`}
+
+            } else if(sdk.toBig(marketTradeData[marketTradeData.type === TradeProType.buy?'quote':'base']?.tradeValue
+            ).gt(marketTradeData[marketTradeData.type === TradeProType.buy?'quote':'base'].balance)){
+                return {tradeBtnStatus: TradeBtnStatus.DISABLED,label:''}
+            } else {
+                return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}     // label: ''}
             }
         }
 
