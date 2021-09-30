@@ -353,6 +353,8 @@ export default {
     labelProTime1M: '1月',
     labelProChartTradingView: '蜡烛图',
     labelProChartDepth: '深度图',
+    labelProOrderPrice: '委托价',
+    labelProOrderTotalAmount: '累积',
 
     labelSwapCancelled: '交易被取消',
     labelSuccessfully: '成功',
