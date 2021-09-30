@@ -52,7 +52,7 @@ export const SpotView = withTranslation('common')(({
         resetLimitData,
         limitAlertOpen,
         limitSubmit,
-    } = useLimit(market)
+    } = useLimit({market,resetTradeCalcData})
 
     const {
         alertOpen, confirmOpen, toastOpen, closeToast,
@@ -64,7 +64,7 @@ export const SpotView = withTranslation('common')(({
         resetMarketData,
         marketBtnClick,
         isMarketLoading,
-    } = useMarket(market)
+    } = useMarket({market,resetTradeCalcData})
     const onTabChange = React.useCallback((_e, value) => {
         setTabIndex(value);
         //HIGH: Do not move the query
