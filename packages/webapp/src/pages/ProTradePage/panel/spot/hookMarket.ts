@@ -250,7 +250,6 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                 } as IBData<any>,
             }
         })
-        debugger
         updatePageTradePro({
             market,
             tradeType: type ?? pageTradePro.tradeType,
