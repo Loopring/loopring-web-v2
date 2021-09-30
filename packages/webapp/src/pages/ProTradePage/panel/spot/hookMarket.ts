@@ -80,24 +80,24 @@ export const useMarket = <C extends { [ key: string ]: any }>({market,resetTrade
         resetTradeData(pageTradePro.tradeType)
     }, [pageTradePro.market,pageTradePro.tradeCalcProData?.walletMap])
 
-    React.useEffect(() => {
-        if (marketTradeData.base.belong !== baseSymbol || marketTradeData.quote.belong !== quoteSymbol) {
-            setMarketTradeData((state) => {
-                return {
-                    ...state,
-                    base: {
-                        belong: baseSymbol,
-                        balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
-                    } as IBData<any>,
-                    quote: {
-                        belong: quoteSymbol,
-                        balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
-                    } as IBData<any>,
-
-                }
-            })
-        }
-    }, [baseSymbol, quoteSymbol]);
+    // React.useEffect(() => {
+    //     if (marketTradeData.base.belong !== baseSymbol || marketTradeData.quote.belong !== quoteSymbol) {
+    //         setMarketTradeData((state) => {
+    //             return {
+    //                 ...state,
+    //                 base: {
+    //                     belong: baseSymbol,
+    //                     balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
+    //                 } as IBData<any>,
+    //                 quote: {
+    //                     belong: quoteSymbol,
+    //                     balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
+    //                 } as IBData<any>,
+    //
+    //             }
+    //         })
+    //     }
+    // }, [baseSymbol, quoteSymbol]);
 
     const autoRecalc = React.useCallback(() => {
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
