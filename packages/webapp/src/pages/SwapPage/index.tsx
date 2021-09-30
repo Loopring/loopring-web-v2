@@ -42,14 +42,14 @@ export const SwapPage = withTranslation('common')(({...rest}: WithTranslation) =
                open={toastOpen?.open ?? false}
                autoHideDuration={TOAST_TIME} onClose={closeToast}/>
 
-        <Grid container marginRight={3} alignContent={'stretch'} direction={'column'} flexWrap={'nowrap'}>
+        <Box flex={1} marginRight={3} alignContent={'stretch'} flexDirection={'column'} flexWrap={'nowrap'}>
             <BasicInfoPanel {...{
                 ...rest,
                 ...pair, marketArray,
                 tradeFloat, tradeArray
             }} />
             <TradePanel tradeArray={tradeArray} myTradeArray={myTradeArray}/>
-        </Grid>
+        </Box>
 
         <Box display={'flex'} style={{minWidth: 'var(--swap-box-width)'}}>
             <FixedStyle>
