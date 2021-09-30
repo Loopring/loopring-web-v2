@@ -66,26 +66,17 @@ export const SpotView = withTranslation('common')(({
         isMarketLoading,
     } = useMarket(market)
     const onTabChange = React.useCallback((_e, value) => {
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
         setTabIndex(value);
+        //HIGH: Do not move the query
+        resetLimitData(pageTradePro.tradeType);
+        resetMarketData(pageTradePro.tradeType);
         resetTradeCalcData({market})
-        resetLimitData();
-        resetMarketData();
-
-        // updatePageTradePro({
-        //     market,
-        //     // request: marketRequest as any,
-        //     // calcTradeParams: calcTradeParams,
-        //     lastStepAt:undefined,
-        //     tradeCalcProData: {
-        //         ...pageTradePro.tradeCalcProData,
-        //         fee: undefined,
-        //         minimumReceived: undefined,
-        //         priceImpact: undefined,
-        //         priceImpactColor: 'inherit',
-        //
-        //     }
-        // })
+        //HIGH: Do not move the query
     }, [market])
+
+    const p = getValuePrecisionThousand(parseFloat(pageTradePro.calcTradeParams?.priceImpact ?? '0') * 100, 2) + '%' as any
+
     return <>
         <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'}
                open={toastOpen?.open ?? false}
@@ -94,9 +85,9 @@ export const SpotView = withTranslation('common')(({
                open={toastOpenL?.open ?? false}
                autoHideDuration={TOAST_TIME} onClose={closeToastL}/>
         <AlertImpact handleClose={marketSubmit} open={alertOpen}
-                     value={getValuePrecisionThousand(pageTradePro?.priceImpactObj?.value, 2) + '%' as any}/>
+                     value={p}/>
         <ConfirmImpact handleClose={marketSubmit} open={confirmOpen}
-                       value={getValuePrecisionThousand(pageTradePro?.priceImpactObj?.value, 2) + '%' as any}/>
+                       value={p}/>
         <AlertLimitPrice handleClose={limitSubmit} open={limitAlertOpen}
                          value={pageTradePro.tradeType === TradeProType.buy ? "labelPriceCompareGreat" : "labelPriceCompareLess"}/>
 
