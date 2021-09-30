@@ -4,7 +4,7 @@ import {
     i18n,
     LanguageKeys,
     layoutConfigs,
-    myLog,
+    // myLog,
     ThemeKeys,
     ThemeType,
     UpColor
@@ -160,7 +160,7 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
                     minH: 0
                 } : item], [] as Layout[]),
             }
-            myLog(action.payload,state.proLayout )
+            // myLog(action.payload,state.proLayout )
 
         }
 
