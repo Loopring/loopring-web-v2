@@ -1,4 +1,3 @@
-import { myLog } from '@loopring-web/common-resources';
 import { ChartType } from '../';
 
 export interface IOrigDataItem {

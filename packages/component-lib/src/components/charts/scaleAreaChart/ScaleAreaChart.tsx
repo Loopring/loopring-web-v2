@@ -10,7 +10,7 @@ import { WrapperedKlineChart, IndicatorProps } from './KlineChart'
 import * as sdk from 'loopring-sdk'
 import { TradingInterval } from 'loopring-sdk';
 import { useSettings } from '../../../stores'
-import { getTheme } from '@loopring-web/common-resources'
+import { getTheme, myLog } from '@loopring-web/common-resources'
 
 export interface ScaleAreaChartProps {
     type: ChartType
@@ -34,7 +34,7 @@ export const ScaleAreaChart = ({type, interval, indicator, data, marketPrecision
         case ChartType.Trend:
             return <TrendChart type={type} data={data} {...rest} />
         case ChartType.Depth:
-            return <DepthChart data={data} {...rest} />
+            return <DepthChart data={data} marketPrecision={marketPrecision} colorBase={getTheme(themeMode).colorBase}  {...rest} />
         case ChartType.Kline:
             // let dateTimeFormat = '%Y %a %d'
             let dateTimeFormat = '%x'
@@ -67,7 +67,6 @@ export const ScaleAreaChart = ({type, interval, indicator, data, marketPrecision
                     dateTimeFormat={dateTimeFormat} 
                     {...indicator} 
                     data={data} 
-                    themeMode={themeMode} 
                     upColor={upColor}
                     colorBase={getTheme(themeMode).colorBase}
                     marketPrecision={marketPrecision}
