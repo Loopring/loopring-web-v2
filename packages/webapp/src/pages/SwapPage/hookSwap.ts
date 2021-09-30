@@ -272,14 +272,15 @@ export const useSwap = <C extends { [ key: string ]: any }>({path}: { path: stri
                     // myLog('buy maxOrderSize:', maxOrderSize)
                     setSwapBtnStatus(TradeBtnStatus.DISABLED)
                     return `labelLimitMax,${maxOrderSize}`;
-                } else if (validAmt || sellMinAmt === undefined) {
-                    setSwapBtnStatus(TradeBtnStatus.AVAILABLE)
-                    return undefined
-                } else {
+                } else if (!validAmt) {
                     const sellSymbol = tradeData?.sell.belong;
-                    const minOrderSize = VolToNumberWithPrecision(sellMinAmt, sellSymbol as any) + ' ' + sellSymbol;
+                    const minOrderSize = VolToNumberWithPrecision(sellMinAmt??'', sellSymbol as any) + ' ' + sellSymbol;
                     setSwapBtnStatus(TradeBtnStatus.DISABLED)
                     return `labelLimitMin| ${minOrderSize}`
+                } else {
+                    setSwapBtnStatus(TradeBtnStatus.AVAILABLE)
+                    return undefined
+
 
                 }
 
