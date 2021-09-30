@@ -159,15 +159,15 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
             calcTradeParams: null,
             limitCalcTradeParams: null,
             defaultPrice: undefined,
-            tradeCalcProData: {
-                ...pageTradePro.tradeCalcProData,
-                walletMap:walletMap as any,
-                fee: undefined,
-                minimumReceived: undefined,
-                priceImpact: undefined,
-                priceImpactColor: 'inherit',
-
-            }
+            // tradeCalcProData: {
+            //     ...pageTradePro.tradeCalcProData,
+            //     walletMap:walletMap as any,
+            //     fee: undefined,
+            //     minimumReceived: undefined,
+            //     priceImpact: undefined,
+            //     priceImpactColor: 'inherit',
+            //
+            // }
         })
     }, [pageTradePro, marketPrecision, market, currency, forex])
 
