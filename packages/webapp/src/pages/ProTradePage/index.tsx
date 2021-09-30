@@ -197,7 +197,7 @@ export const OrderbookPage = withTranslation('common')(() => {
                 [ configLayout.currentBreakpoint ]: currentLayout
             })
         }
-        myLog(currentLayout)
+        // myLog(currentLayout)
         //
         // setConfigLayout((state: Config) => {
         //     return {

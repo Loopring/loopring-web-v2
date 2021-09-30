@@ -353,6 +353,8 @@ export default {
     labelProTime1M: '1M',
     labelProChartTradingView: 'Candlestick',
     labelProChartDepth: 'Depth',
+    labelProOrderPrice: 'Order Price',
+    labelProOrderTotalAmount: 'Accumulative Amount',
 
     labelSwapCancelled: 'Swap is cancelled.',
     labelSuccessfully: 'Successfully',
