@@ -393,7 +393,12 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
         const {
             minOrderInfo,
+            calcTradeParams,
         } = pageTradePro;
+        // const seed =
+
+
+        // const buyExceed = sdk.toBig(buyToken?.orderAmounts?.maximum).lt(calcTradeParams?.amountBOutSlip.minReceived)
         if (account.readyState === AccountStatus.ACTIVATED) {
             // const type = limitTradeData.type === TradeProType.sell ? 'quote' : 'base';
             if (limitTradeData?.base.tradeValue === undefined
@@ -401,9 +406,7 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                 || limitTradeData?.base.tradeValue === 0
                 || limitTradeData?.quote.tradeValue === 0) {
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: 'labelEnterAmount'}
-            } else if (minOrderInfo?.minAmtCheck || minOrderInfo?.minAmtShow === undefined) {
-                return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}     // label: ''}
-            } else {
+            }  else if (!minOrderInfo?.minAmtCheck) {
                 let minOrderSize = 'Error';
                 if( minOrderInfo?.symbol){
                     const basePrecision = tokenMap[ minOrderInfo.symbol ].precisionForOrder;
@@ -412,6 +415,12 @@ export const useLimit = <C extends { [ key: string ]: any }>(market: MarketType)
                     minOrderSize = `${showValue} ${minOrderInfo?.symbol}`;
                 }
                 return {tradeBtnStatus: TradeBtnStatus.DISABLED, label: `labelLimitMin| ${minOrderSize}`}
+            } else if(sdk.toBig(
+                limitTradeData[limitTradeData.type === TradeProType.buy?'quote':'base']?.tradeValue
+            ).gt(limitTradeData[limitTradeData.type === TradeProType.buy?'quote':'base'].balance)){
+                return {tradeBtnStatus: TradeBtnStatus.DISABLED,label:''}
+            } else {
+                return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}     // label: ''}
             }
         }
         return {tradeBtnStatus: TradeBtnStatus.AVAILABLE, label: ''}
