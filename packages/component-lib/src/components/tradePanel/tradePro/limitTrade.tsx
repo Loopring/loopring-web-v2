@@ -50,21 +50,6 @@ export const LimitTrade = withTranslation('common', {withRef: true})(<L extends 
     } =  props
     const {currency} = useSettings()
     const priceRef = React.useRef();
-    // const _handleCountChange = React.useCallback((ibData: IBData<I>,name:string, _ref: any) => {
-    //     console.log('limitTrade: handleUser input :',ibData,name)
-    //     // const base = tradeData[TradeBaseType.base];
-    //     // const price = tradeData[TradeBaseType.price];
-    //     // const quote = tradeData[TradeBaseType.quote];
-    //     const _tradeData = {
-    //         ...tradeData,
-    //         // base,
-    //         // price,
-    //         // quote,
-    //         [name]: ibData,
-    //     }
-    //     onChangeEvent(_tradeData,TradeBaseType[name])
-    //
-    // }, [tradeData,onChangeEvent]);
     const {
         quoteRef,
         baseRef,

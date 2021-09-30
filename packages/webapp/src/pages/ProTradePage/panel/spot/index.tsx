@@ -71,6 +71,7 @@ export const SpotView = withTranslation('common')(({
         resetLimitData();
         resetMarketData();
         resetTradeCalcData({market})
+
         //HIGH: Do not move the query
     }, [market])
 
