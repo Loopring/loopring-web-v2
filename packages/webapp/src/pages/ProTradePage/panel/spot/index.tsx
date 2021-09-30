@@ -74,6 +74,9 @@ export const SpotView = withTranslation('common')(({
         resetTradeCalcData({market})
         //HIGH: Do not move the query
     }, [market])
+
+    const p = getValuePrecisionThousand(parseFloat(pageTradePro.calcTradeParams?.priceImpact ?? '0') * 100, 2) + '%' as any
+
     return <>
         <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'}
                open={toastOpen?.open ?? false}
@@ -82,9 +85,9 @@ export const SpotView = withTranslation('common')(({
                open={toastOpenL?.open ?? false}
                autoHideDuration={TOAST_TIME} onClose={closeToastL}/>
         <AlertImpact handleClose={marketSubmit} open={alertOpen}
-                     value={getValuePrecisionThousand(pageTradePro?.priceImpactObj?.value, 2) + '%' as any}/>
+                     value={p}/>
         <ConfirmImpact handleClose={marketSubmit} open={confirmOpen}
-                       value={getValuePrecisionThousand(pageTradePro?.priceImpactObj?.value, 2) + '%' as any}/>
+                       value={p}/>
         <AlertLimitPrice handleClose={limitSubmit} open={limitAlertOpen}
                          value={pageTradePro.tradeType === TradeProType.buy ? "labelPriceCompareGreat" : "labelPriceCompareLess"}/>
 
