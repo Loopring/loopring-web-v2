@@ -1,7 +1,9 @@
+import React from 'react'
 import { useCallback, useState } from 'react'
 // import { ScaleAreaChartProps } from '../ScaleAreaChart'
 import { getDepthData } from '../data'
 import { Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, } from '@loopring-web/recharts'
+// import { getValuePrecisionThousand, myLog } from '@loopring-web/common-resources'
 
 const ASKS_COLOR = '#FF5677'
 const BIDS_COLOR = '#00BBA8'
@@ -23,12 +25,14 @@ export interface DepthProps {
         amount: number
     }) => void
     yAxisDomainPercent?: number
+    // marketPrecision?: number
 }
 
 const DepthChart = ({
                         data,
                         handleMove,
                         yAxisDomainPercent = YAXIS_DOMAIN,
+                        // marketPrecision = 2,
                     }: DepthProps) => {
     const [currentIndex, setCurrentIndex] = useState(-1)
 
@@ -118,12 +122,14 @@ const DepthChart = ({
                 </defs>
                 <XAxis
                     dataKey="price"
-                    hide={true}
+                    // hide={true}
                     type="category"
                     allowDuplicatedCategory
                 />
                 <YAxis
-                    hide={true}
+                    // hide={true}
+                    orientation={'right'}
+                    // tickFormatter={(value) => formatYAxisTicker(value)}
                     domain={[
                         (dataMin: number) => dataMin * (1 - yAxisDomainPercent),
                         (dataMax: number) => dataMax * (1 + yAxisDomainPercent),

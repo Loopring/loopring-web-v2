@@ -3,7 +3,8 @@ import { TFunction, withTranslation } from 'react-i18next';
 import {
     CoinInfo,
     DropDownIcon,
-    getValuePrecisionThousand, layoutConfigs,
+    getValuePrecisionThousand,
+    layoutConfigs,
     MarketType,
     PriceTag,
     SagaStatus
@@ -16,15 +17,15 @@ import { usePageTradePro } from '../../../../stores/router';
 import { volumeToCount } from 'hooks/help'
 import styled from '@emotion/styled'
 import { Currency } from 'loopring-sdk';
-import { Layouts } from 'react-grid-layout';
+import { Layout, Layouts } from 'react-grid-layout';
 
 const PriceTitleStyled = styled(Typography)`
-    color: var(--color-text-third);
-    font-size: 1.2rem;
+  color: var(--color-text-third);
+  font-size: 1.2rem;
 `
 
 const PriceValueStyled = styled(Typography)`
-    font-size: 1.2rem;
+  font-size: 1.2rem;
 `
 
 export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: any }>({
@@ -36,15 +37,16 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
                                                                                       }: {
     t: TFunction<"translation">,
     market: MarketType,
-    handleLayoutChange:(layouts:Layouts)=>void,
+    handleLayoutChange: (currentLayout: Layout[], allLayouts?: Layouts, layouts?: Layouts) => void,
+
     handleOnMarketChange: (newMarket: MarketType) => void,
     // marketTicker:  MarketBlockProps<C>
 }) => {
     const {tickerMap, status: tickerStatus} = useTicker();
-    const [marketTicker, setMarketTicker] = React.useState<MarketBlockProps<C> | undefined>(undefined);
+    const [,setMarketTicker] = React.useState<MarketBlockProps<C> | undefined>(undefined);
     const {coinMap, marketArray, marketMap, tokenMap} = useTokenMap();
     const {pageTradePro: {ticker}} = usePageTradePro()
-    const {currency,setLayouts} = useSettings()
+    const {currency} = useSettings()
 
     const {
         change,
@@ -98,18 +100,19 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
     const _handleOnMarketChange = React.useCallback((event: React.ChangeEvent<{ value: string }>) => {
         handleOnMarketChange(event.target.value as MarketType)
     }, [])
-    return <Box display={'flex'} alignItems={'center'} height={'100%'} paddingX={2}  justifyContent={'space-between'}>
-        <Box alignItems={'center'} display={'flex'} >
+    return <Box display={'flex'} alignItems={'center'} height={'100%'} paddingX={2} justifyContent={'space-between'}>
+        <Box alignItems={'center'} display={'flex'}>
             <TextField
                 id="outlined-select-level"
                 select
                 size={'small'}
-                style={{ width: '190px' }}
+                style={{width: '190px'}}
                 value={market}
                 onChange={_handleOnMarketChange}
                 inputProps={{IconComponent: DropDownIcon}}
             >
-                {marketArray && !!marketArray.length && (marketArray.slice().sort((a, b) => a.localeCompare(b))).map((item) => <MenuItem key={item} value={item}>{item}</MenuItem>)}
+                {marketArray && !!marketArray.length && (marketArray.slice().sort((a, b) => a.localeCompare(b))).map((item) =>
+                    <MenuItem key={item} value={item}>{item}</MenuItem>)}
             </TextField>
             <Grid container spacing={3} marginLeft={0} display={'flex'} alignItems={'center'}>
                 <Grid item>
@@ -141,11 +144,11 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
                 </Grid>
             </Grid>
         </Box>
-        <Box>
-            <Button onClick={()=>{
-                setLayouts(layoutConfigs[0].layouts)
-                handleLayoutChange(layoutConfigs[0].layouts)}}>{t('labelResetLayout')}</Button>
-        </Box>
+        {/*<Box>*/}
+        {/*    <Button onClick={() => {*/}
+        {/*        handleLayoutChange([], undefined, layoutConfigs[ 0 ].layouts)*/}
+        {/*    }}>{t('labelResetLayout')}</Button>*/}
+        {/*</Box>*/}
     </Box>
 
 })
