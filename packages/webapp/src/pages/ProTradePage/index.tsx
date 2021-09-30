@@ -172,16 +172,6 @@ export const OrderbookPage = withTranslation('common')(() => {
         if (layoutItem.i === 'market2') {
             onRestMarketTableLength(layoutItem)
         }
-        // setConfigLayout((state: Config) => {
-        //     return {
-        //         ...state,
-        //         layouts: {
-        //             ...state.layouts,
-        //             [ configLayout.currentBreakpoint ]: layout
-        //         },
-        //     }
-        // })
-        // setLayouts({[ configLayout.currentBreakpoint ]: layout})
 
     }, [configLayout.currentBreakpoint ,setRowLength,doItemReset])
     const handleLayoutChange = React.useCallback((currentLayout: Layout[], allLayouts?: Layouts, layouts?: Layouts) => {
@@ -191,7 +181,7 @@ export const OrderbookPage = withTranslation('common')(() => {
             setLayouts({[ configLayout.currentBreakpoint ]: currentLayout})
         }
 
-    }, [configLayout,proLayout,setConfigLayout,setLayouts])
+    }, [configLayout.currentBreakpoint,proLayout,setConfigLayout,setLayouts])
     const ViewList = {
         toolbar: React.useMemo(() => <Toolbar market={market as any}
                                               handleLayoutChange={handleLayoutChange}

@@ -76,28 +76,9 @@ export const useMarket = <C extends { [ key: string ]: any }>({market,resetTrade
         }
     },[])
     React.useEffect(() => {
-
-        resetTradeData(pageTradePro.tradeType)
-    }, [pageTradePro.market,pageTradePro.tradeCalcProData?.walletMap])
-
-    // React.useEffect(() => {
-    //     if (marketTradeData.base.belong !== baseSymbol || marketTradeData.quote.belong !== quoteSymbol) {
-    //         setMarketTradeData((state) => {
-    //             return {
-    //                 ...state,
-    //                 base: {
-    //                     belong: baseSymbol,
-    //                     balance: walletMap ? walletMap[ baseSymbol as string ]?.count : 0,
-    //                 } as IBData<any>,
-    //                 quote: {
-    //                     belong: quoteSymbol,
-    //                     balance: walletMap ? walletMap[ quoteSymbol as string ]?.count : 0,
-    //                 } as IBData<any>,
-    //
-    //             }
-    //         })
-    //     }
-    // }, [baseSymbol, quoteSymbol]);
+        resetTradeData()
+    }, [pageTradePro.market,
+        pageTradePro.tradeCalcProData.walletMap])
 
     const autoRecalc = React.useCallback(() => {
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
@@ -217,6 +198,7 @@ export const useMarket = <C extends { [ key: string ]: any }>({market,resetTrade
     }, [autoRecalc])
 
     const resetTradeData = React.useCallback((type?: TradeProType) => {
+        const pageTradePro = store.getState()._router_pageTradePro.pageTradePro
         const walletMap = pageTradePro.tradeCalcProData?.walletMap ?? {}
         setMarketTradeData((state) => {
             return {
@@ -254,7 +236,7 @@ export const useMarket = <C extends { [ key: string ]: any }>({market,resetTrade
                 fee: undefined
             }
         })
-    }, [baseSymbol, quoteSymbol, pageTradePro])
+    }, [baseSymbol, quoteSymbol])
     const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
         // const {calcTradeParams, request, tradeCalcProData,} = pageTradePro;
         const pageTradePro = store.getState()._router_pageTradePro.pageTradePro;
@@ -336,25 +318,6 @@ export const useMarket = <C extends { [ key: string ]: any }>({market,resetTrade
                     }
                     resetTradeData(pageTradePro.tradeType)
                     walletLayer2Service.sendUserUpdate()
-
-                    // setMarketTradeData((state) => {
-                    //     return {
-                    //         ...state,
-                    //         base: {...state?.base, tradeValue: 0},
-                    //         quote: {...state?.quote, tradeValue: 0},
-                    //     } as MarketTradeData<IBData<C>>
-                    // });
-                    // updatePageTradePro({
-                    //     market: market as MarketType,
-                    //     tradeCalcProData: {
-                    //         ...pageTradePro.tradeCalcProData,
-                    //         minimumReceived: undefined,
-                    //         priceImpact: undefined,
-                    //         priceImpactColor: 'inherit',
-                    //         fee: undefined
-                    //     }
-                    // })
-
                 }
             } catch (reason) {
                 sdk.dumpError400(reason)
