@@ -165,7 +165,7 @@ export const OrderbookPage = withTranslation('common')(() => {
     }, [configLayout,doItemReset]);
 
 
-    const onResize = React.useCallback((layout, oldLayoutItem, layoutItem) => {
+    const onResize = React.useCallback((layout: Layout[], oldLayoutItem, layoutItem) => {
         if (layoutItem.i === 'market') {
             onRestDepthTableLength(layoutItem.h)
             onRestMarketTableLength(layoutItem)
@@ -183,7 +183,6 @@ export const OrderbookPage = withTranslation('common')(() => {
             }
         })
         setLayouts({
-            ...proLayout,
             [ configLayout.currentBreakpoint ]: layout
         })
 
@@ -193,7 +192,6 @@ export const OrderbookPage = withTranslation('common')(() => {
             setLayouts(layouts)
         } else {
             setLayouts({
-                ...proLayout,
                 [ configLayout.currentBreakpoint ]: currentLayout
             })
         }
