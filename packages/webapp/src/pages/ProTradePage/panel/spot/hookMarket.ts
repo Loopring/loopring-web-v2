@@ -260,14 +260,14 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
             calcTradeParams: null,
             limitCalcTradeParams: null,
             lastStepAt: undefined,
-            tradeCalcProData:  {
-                ...pageTradePro.tradeCalcProData,
-                walletMap:walletMap as any,
-                priceImpact: undefined,
-                priceImpactColor: undefined,
-                minimumReceived: undefined,
-                fee: undefined
-            }
+            // tradeCalcProData:  {
+            //     ...pageTradePro.tradeCalcProData,
+            //     walletMap:walletMap as any,
+            //     priceImpact: undefined,
+            //     priceImpactColor: undefined,
+            //     minimumReceived: undefined,
+            //     fee: undefined
+            // }
         })
     }, [baseSymbol, quoteSymbol, pageTradePro])
     const marketSubmit = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {

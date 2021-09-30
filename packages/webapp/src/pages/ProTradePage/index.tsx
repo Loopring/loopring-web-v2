@@ -172,15 +172,15 @@ export const OrderbookPage = withTranslation('common')(() => {
         if (layoutItem.i === 'market2') {
             onRestMarketTableLength(layoutItem)
         }
-        setConfigLayout((state: Config) => {
-            return {
-                ...state,
-                layouts: {
-                    ...state.layouts,
-                    [ configLayout.currentBreakpoint ]: layout
-                },
-            }
-        })
+        // setConfigLayout((state: Config) => {
+        //     return {
+        //         ...state,
+        //         layouts: {
+        //             ...state.layouts,
+        //             [ configLayout.currentBreakpoint ]: layout
+        //         },
+        //     }
+        // })
         // setLayouts({[ configLayout.currentBreakpoint ]: layout})
 
     }, [configLayout.currentBreakpoint ,setRowLength,doItemReset])
