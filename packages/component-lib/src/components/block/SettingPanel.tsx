@@ -40,7 +40,7 @@ const BoxStyle = styled(Box)`
 
 
 export const BtnCurrency = ({t, currency, label, handleChange}: any) => {
-    const [state, setState] = React.useState<string>(currency ? currency : Currency.usd);
+    const [state, setState] = React.useState<string>(currency === Currency.usd ? Currency.usd : Currency.cny);
     const _handleChange = React.useCallback((event: SelectChangeEvent<any>) => {
         setState(event.target.value);
         if (handleChange) {
