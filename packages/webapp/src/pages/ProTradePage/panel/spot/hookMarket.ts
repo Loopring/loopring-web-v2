@@ -348,25 +348,26 @@ export const useMarket = <C extends { [ key: string ]: any }>(market: MarketType
                                 break
                         }
                     }
-
+                    resetTradeData(pageTradePro.tradeType)
                     walletLayer2Service.sendUserUpdate()
-                    setMarketTradeData((state) => {
-                        return {
-                            ...state,
-                            base: {...state?.base, tradeValue: 0},
-                            quote: {...state?.quote, tradeValue: 0},
-                        } as MarketTradeData<IBData<C>>
-                    });
-                    updatePageTradePro({
-                        market: market as MarketType,
-                        tradeCalcProData: {
-                            ...pageTradePro.tradeCalcProData,
-                            minimumReceived: undefined,
-                            priceImpact: undefined,
-                            priceImpactColor: 'inherit',
-                            fee: undefined
-                        }
-                    })
+
+                    // setMarketTradeData((state) => {
+                    //     return {
+                    //         ...state,
+                    //         base: {...state?.base, tradeValue: 0},
+                    //         quote: {...state?.quote, tradeValue: 0},
+                    //     } as MarketTradeData<IBData<C>>
+                    // });
+                    // updatePageTradePro({
+                    //     market: market as MarketType,
+                    //     tradeCalcProData: {
+                    //         ...pageTradePro.tradeCalcProData,
+                    //         minimumReceived: undefined,
+                    //         priceImpact: undefined,
+                    //         priceImpactColor: 'inherit',
+                    //         fee: undefined
+                    //     }
+                    // })
 
                 }
             } catch (reason) {
