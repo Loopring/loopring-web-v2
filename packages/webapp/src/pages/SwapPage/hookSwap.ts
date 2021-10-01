@@ -43,7 +43,7 @@ import { calcPriceByAmmTickMapDepth, marketInitCheck, reCalcStoB, swapDependAsyn
 import { useTicker } from 'stores/ticker';
 import store from 'stores';
 import { useHistory } from 'react-router-dom';
-import { getPriceImpactInfo, PriceLevel } from 'hooks/common/useTrade';
+import { DefaultFeeBips, getPriceImpactInfo, PriceLevel } from 'hooks/common/useTrade';
 import { BIGO } from 'defs/common_defs';
 import * as _ from 'lodash'
 import { getTimestampDaysLater } from 'utils/dt_tools';
@@ -677,7 +677,7 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
                 // myLog(`buyMinAmtInfo,sellMinAmtInfo: AMM-${market}, ${_tradeData[ 'buy' ].belong}`, buyMinAmtInfo, sellMinAmtInfo)
 
                 takerRate = buyMinAmtInfo ? buyMinAmtInfo.userOrderInfo.takerRate : 0
-                feeBips = ammMap[ammMarket] ? ammMap[ammMarket].__rawConfig__.feeBips : 0
+                feeBips = ammMap[ammMarket] ? ammMap[ammMarket].__rawConfig__.feeBips : 1
                 totalFee = sdk.toBig(feeBips).plus(sdk.toBig(takerRate)).toString();
 
                 const buyToken = tokenMap[_tradeData['buy'].belong as string]
@@ -694,7 +694,7 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
                     marketMap: marketMap as any,
                     depth,
                     ammPoolSnapshot: ammPoolSnapshot,
-                    feeBips: feeBips ? feeBips.toString() : '0',
+                    feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
                     takerRate: takerRate ? takerRate.toString() : '0',
                     slipBips: slippage
                 })
@@ -714,7 +714,7 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
                 marketMap: marketMap as any,
                 depth,
                 ammPoolSnapshot: ammPoolSnapshot,
-                feeBips: feeBips ? feeBips.toString() : '0',
+                feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
                 takerRate: takerRate ? takerRate.toString() : '0',
                 slipBips: slippage
             })
@@ -766,14 +766,14 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
 
             }
 
-            const tradeChannel = calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined
-            const orderType = calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly) : undefined
+            // const tradeChannel = calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.TradeChannel.BLANK : sdk.TradeChannel.MIXED) : undefined
+            // const orderType = calcTradeParams ? (calcTradeParams.exceedDepth ? sdk.OrderType.ClassAmm : sdk.OrderType.TakerOnly) : undefined
 
             updatePageTradeLite({
                 market,
                 calcTradeParams: {
                     ...calcTradeParams,
-                    feeBips: feeBips ? feeBips : 0,
+                    feeBips: feeBips ? feeBips : 1,
                     takerRate: takerRate ? takerRate : 0,
                 } as any,
                 priceImpactObj,
