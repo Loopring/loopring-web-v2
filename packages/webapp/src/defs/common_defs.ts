@@ -32,3 +32,5 @@ export enum AddressError {
     InvalidAddr,
     ENSResolveFailed,
 }
+
+export const MAPFEEBIPS = 63

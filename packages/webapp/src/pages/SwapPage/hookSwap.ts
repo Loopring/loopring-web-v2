@@ -44,7 +44,7 @@ import { useTicker } from 'stores/ticker';
 import store from 'stores';
 import { useHistory } from 'react-router-dom';
 import { DefaultFeeBips, getPriceImpactInfo, PriceLevel } from 'hooks/common/useTrade';
-import { BIGO } from 'defs/common_defs';
+import { BIGO, MAPFEEBIPS } from 'defs/common_defs';
 import * as _ from 'lodash'
 import { getTimestampDaysLater } from 'utils/dt_tools';
 
@@ -152,7 +152,8 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
                     },
                     allOrNone: false,
                     validUntil: getTimestampDaysLater(__DAYS__),
-                    maxFeeBips: parseInt(totalFee as string),
+                    // maxFeeBips: parseInt(totalFee as string),
+                    maxFeeBips: MAPFEEBIPS,
                     fillAmountBOrS: false, // amm only false
                     orderType,
                     tradeChannel,
