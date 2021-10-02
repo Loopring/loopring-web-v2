@@ -3,7 +3,7 @@ import React from 'react'
 import * as sdk from 'loopring-sdk'
 
 import { getTimestampDaysLater } from 'utils/dt_tools';
-import { DAYS } from 'defs/common_defs';
+import { DAYS, MAPFEEBIPS } from 'defs/common_defs';
 import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
 import { useSystem } from 'stores/system';
@@ -194,7 +194,7 @@ export function makeMarketReq({
         buyToken: buyTokenVol3,
         allOrNone: false,
         validUntil: getTimestampDaysLater(DAYS),
-        maxFeeBips,
+        maxFeeBips: MAPFEEBIPS,
         fillAmountBOrS: false, // amm only false
         orderType,
         tradeChannel,
@@ -345,7 +345,7 @@ export function makeLimitReq({
         buyToken,
         allOrNone: false,
         validUntil: getTimestampDaysLater(DAYS),
-        maxFeeBips,
+        maxFeeBips: MAPFEEBIPS,
         fillAmountBOrS: false, // amm only false
         orderType: sdk.OrderType.LimitOrder,
         tradeChannel: sdk.TradeChannel.MIXED,
