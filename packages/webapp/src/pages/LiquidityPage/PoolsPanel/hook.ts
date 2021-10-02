@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import _ from 'lodash'
 import store from 'stores'
 import { useAmmMap } from 'stores/Amm/AmmMap';
@@ -6,8 +6,6 @@ import {
     AmmDetail,
     CustomError,
     ErrorMap,
-    myError,
-    myLog,
     SagaStatus,
     TradeFloat,RowConfig
 } from '@loopring-web/common-resources';
@@ -17,7 +15,6 @@ import { useTicker } from 'stores/ticker';
 import { tickerService } from 'services/socket';
 import { WsTopicType } from 'loopring-sdk';
 import { makeTickView } from 'hooks/help';
-import { LoopringAPI } from 'api_wrapper';
 
 
 // import { tickerService } from 'services/tickerService';

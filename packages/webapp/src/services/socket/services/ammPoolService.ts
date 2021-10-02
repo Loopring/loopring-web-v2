@@ -1,5 +1,4 @@
 import { Subject } from 'rxjs';
-import { AmmPoolSnapshot } from 'loopring-sdk';
 
 
 export type AmmPoolMap<R> = {

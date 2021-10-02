@@ -1,7 +1,6 @@
 import store from 'stores'
 
 import * as sdk from 'loopring-sdk'
-import { Side, toBig } from 'loopring-sdk'
 import {  TradeTypes } from '@loopring-web/common-resources'
 import { volumeToCountAsBigNumber } from 'hooks/help'
 import { getValuePrecisionThousand } from '@loopring-web/common-resources'
@@ -94,7 +93,7 @@ export function tradeItemToTableDataItem(tradeItem: any) {
     const { tokenMap } = store.getState().tokenMap
     const marketList = tradeItem.market.split('-')
     // due to AMM case, we cannot use first index
-    const side = tradeItem.side === Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
+    const side = tradeItem.side === sdk.Side.Buy ? TradeTypes.Buy : TradeTypes.Sell
     const isBuy = side === TradeTypes.Buy
 
     const base = marketList[marketList.length - 2]
@@ -121,7 +120,7 @@ export function tradeItemToTableDataItem(tradeItem: any) {
         counterparty: counterparty,
         price: {
             key: sellToken,
-            value: toBig(tradeItem.price).toNumber(),
+            value: sdk.toBig(tradeItem.price).toNumber(),
         },
         fee: {
             key: feeKey,

@@ -4,7 +4,6 @@ import {
     CoinInfo,
     DropDownIcon,
     getValuePrecisionThousand,
-    layoutConfigs,
     MarketType,
     PriceTag,
     SagaStatus
@@ -12,8 +11,8 @@ import {
 import { useTicker } from 'stores/ticker';
 import { MarketBlockProps, useSettings } from '@loopring-web/component-lib';
 import { useTokenMap } from 'stores/token';
-import { Box, Button, Grid, MenuItem, TextField, Typography } from '@mui/material';
-import { usePageTradePro } from '../../../../stores/router';
+import { Box, Grid, MenuItem, TextField, Typography } from '@mui/material';
+import { usePageTradePro } from 'stores/router';
 import { volumeToCount } from 'hooks/help'
 import styled from '@emotion/styled'
 import { Currency } from 'loopring-sdk';

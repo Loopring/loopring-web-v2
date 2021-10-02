@@ -1,14 +1,5 @@
 import store from 'stores';
-import {
-    AmmPoolSnapshot,
-    DepthData,
-    LoopringMap,
-    TickerData,
-    TokenVolumeV3,
-    toBig,
-    SubmitOrderRequestV3,
-    getExistedMarket, TokenInfo, TokenAmount, OrderType, TradeChannel, TradesData
-} from 'loopring-sdk';
+
 import { LoopringAPI } from 'api_wrapper';
 import {
     CustomError,
@@ -25,9 +16,9 @@ import { SwapTradeData } from '@loopring-web/component-lib';
 import * as sdk from 'loopring-sdk';
 
 export const swapDependAsync = (market: MarketType,level?:number,limit?:number): Promise<{
-    ammPoolSnapshot: AmmPoolSnapshot | undefined,
-    tickMap: LoopringMap<TickerData>,
-    depth: DepthData
+    ammPoolSnapshot: sdk.AmmPoolSnapshot | undefined,
+    tickMap: sdk.LoopringMap<sdk.TickerData>,
+    depth: sdk.DepthData
 }> => {
     const {ammMap} = store.getState().amm.ammMap
 
@@ -80,8 +71,8 @@ export const calcPriceByAmmTickMapDepth = <C>(
     if (coinA && coinB && tokenMap && marketMap && idIndex) {
         //first getValue from  ammPoolSnapshot
         if (ammPoolSnapshot) {
-            const poolATokenVol: TokenVolumeV3 = ammPoolSnapshot.pooled[ 0 ];
-            const poolBTokenVol: TokenVolumeV3 = ammPoolSnapshot.pooled[ 1 ];
+            const poolATokenVol: sdk.TokenVolumeV3 = ammPoolSnapshot.pooled[ 0 ];
+            const poolBTokenVol: sdk.TokenVolumeV3 = ammPoolSnapshot.pooled[ 1 ];
             stob = volumeToCountAsBigNumber(idIndex[ poolBTokenVol.tokenId ], poolBTokenVol.volume)?.div(
                 volumeToCountAsBigNumber(idIndex[ poolATokenVol.tokenId ], poolATokenVol.volume) || 1
             )

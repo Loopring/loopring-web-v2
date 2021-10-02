@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { AmmSideTypes, RawDataAmmItem } from '@loopring-web/component-lib'
 import { LoopringAPI } from 'api_wrapper'
 import { AmmTxType } from 'loopring-sdk'
-import { volumeToCount } from '../../../hooks/help';
-import { useAccount } from '../../../stores/account';
-import { useTokenMap } from '../../../stores/token';
+import { volumeToCount } from 'hooks/help';
+import { useAccount } from 'stores/account';
+import { useTokenMap } from 'stores/token';
 
 export function useGetAmmRecord() {
     const [ammRecordList, setAmmRecordList] = React.useState<RawDataAmmItem[]>([])
@@ -56,7 +56,7 @@ export function useGetAmmRecord() {
         }
     }, [accountId, apiKey, getTokenName])
 
-    useEffect(() => {
+    React.useEffect(() => {
         getAmmpoolList()
     }, [getAmmpoolList])
 

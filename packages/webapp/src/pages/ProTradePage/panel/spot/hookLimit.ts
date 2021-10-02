@@ -17,7 +17,6 @@ import { useTokenMap } from 'stores/token';
 import { useTranslation } from 'react-i18next';
 import store from 'stores';
 import * as sdk from 'loopring-sdk';
-import { Currency } from 'loopring-sdk';
 import { LoopringAPI } from 'api_wrapper';
 import * as _ from 'lodash'
 import { BIGO } from 'defs/common_defs';
@@ -48,7 +47,7 @@ export const useLimit = <C extends { [ key: string ]: any }>({market,resetTradeC
     const {setShowSupport} = useOpenModals()
     const tradePrice = (pageTradePro.market === market && pageTradePro.ticker) ? pageTradePro.ticker.close ? pageTradePro.ticker.close.toFixed(marketPrecision) : pageTradePro?.depth?.mid_price.toFixed(marketPrecision) : 0
     let balance = tradePrice && tokenPrices && (Number(tradePrice) * tokenPrices[ quoteSymbol as string ])
-    if (balance && currency === Currency.cny) {
+    if (balance && currency === sdk.Currency.cny) {
         balance = Number(balance) / forex;
     }
     const [limitTradeData, setLimitTradeData] = React.useState<LimitTradeData<IBData<any>>>(
@@ -82,7 +81,7 @@ export const useLimit = <C extends { [ key: string ]: any }>({market,resetTradeC
         if (pageTradePro.defaultPrice) {
            const tradePrice = pageTradePro.defaultPrice ? pageTradePro.defaultPrice : (pageTradePro.market === market && pageTradePro.ticker) ? pageTradePro.ticker.close ? pageTradePro.ticker.close.toFixed(marketPrecision) : pageTradePro?.depth?.mid_price.toFixed(marketPrecision) : 0;
            let balance = tradePrice && tokenPrices && (Number(tradePrice) * tokenPrices[ quoteSymbol as string ])
-            if (balance && currency === Currency.cny) {
+            if (balance && currency === sdk.Currency.cny) {
                 balance = Number(balance) / forex;
             }
             // (tradeData: LimitTradeData<IBData<any>>, formType: TradeBaseType)
@@ -109,7 +108,7 @@ export const useLimit = <C extends { [ key: string ]: any }>({market,resetTradeC
             const tradePrice = (pageTradePro.market === market && pageTradePro.ticker) ?
                 pageTradePro.ticker.close ? pageTradePro.ticker.close.toFixed(marketPrecision) : pageTradePro?.depth?.mid_price.toFixed(marketPrecision) : 0
             let balance = tradePrice && tokenPrices && (Number(tradePrice) * tokenPrices[ quoteSymbol as string ])
-            if (balance && currency === Currency.cny) {
+            if (balance && currency === sdk.Currency.cny) {
                 balance = Number(balance) / forex;
             }
             return {
@@ -299,7 +298,7 @@ export const useLimit = <C extends { [ key: string ]: any }>({market,resetTradeC
             setLimitTradeData((state) => {
                 const tradePrice = tradeData.price.tradeValue;
                 let balance = tradePrice && tokenPrices && (Number(tradePrice) * tokenPrices[ quoteSymbol as string ])
-                if (balance && currency === Currency.cny) {
+                if (balance && currency === sdk.Currency.cny) {
                     balance = Number(balance) / forex;
                 }
                 return {

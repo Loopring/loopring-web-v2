@@ -2,7 +2,6 @@ import { AmmDetailBase, AmmInData } from '@loopring-web/common-resources';
 
 // import { volumeToCountAsBigNumber } from './volumeToCount';
 // import BigNumber from 'bignumber.js';
-// import { TokenVolumeV3 } from 'loopring-sdk';
 
 export function ammPairInit({
                                 fee,
