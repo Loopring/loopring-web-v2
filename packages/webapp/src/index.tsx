@@ -6,7 +6,6 @@ import reportWebVitals from './reportWebVitals'
 // import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core'
 import store, { persistor } from 'stores'
 // import { getLibrary } from 'utils/web3_tools'
-// import { NetworkContextName } from 'loopring-sdk'
 import { getTheme, i18n, provider, ProviderComposer } from "@loopring-web/common-resources"
 import { ThemeProvider as MuThemeProvider, } from '@mui/material'
 import { LocalizationProvider } from '@mui/lab'

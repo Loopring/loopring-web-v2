@@ -3,14 +3,13 @@ import BigNumber from 'bignumber.js'
 import React from 'react'
 import { useTokenMap } from 'stores/token/hook'
 import * as sdk from 'loopring-sdk'
-import { TokenInfo } from 'loopring-sdk'
 import { myLog } from "@loopring-web/common-resources";
 
 export function useAllowances({ owner, symbol, }: {owner: string, symbol: string, }) {
 
     const { tokenMap, } = useTokenMap()
 
-    const [allowanceInfo, setAllowanceInfo] = React.useState<{ allowance: BigNumber, needCheck: boolean, tokenInfo: TokenInfo }>()
+    const [allowanceInfo, setAllowanceInfo] = React.useState<{ allowance: BigNumber, needCheck: boolean, tokenInfo: sdk.TokenInfo }>()
 
     const updateAllowance = React.useCallback(async (symbol: string) => {
         if (owner && tokenMap && LoopringAPI.exchangeAPI && symbol) {

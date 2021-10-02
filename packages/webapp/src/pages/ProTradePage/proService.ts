@@ -13,7 +13,6 @@ import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
 import { SocketMap } from 'stores/socket/interface';
 import * as sdk from 'loopring-sdk';
-import { sleep } from 'loopring-sdk';
 import { LoopringAPI } from 'api_wrapper';
 import { swapDependAsync } from '../SwapPage/help';
 import { useAmmMap } from 'stores/Amm/AmmMap';
@@ -274,7 +273,7 @@ export const useProSocket = ({market}:{market:MarketType}) => {
         }
         noSocketAndAPILoop()
         if (socketStatus !== SagaStatus.UNSET) {
-            await sleep(5000)
+            await sdk.sleep(5000)
         }
 
         if (socketStatus !== SagaStatus.PENDING) {

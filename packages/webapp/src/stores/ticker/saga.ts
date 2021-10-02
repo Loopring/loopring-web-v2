@@ -3,7 +3,7 @@ import { getTickers, getTickerStatus, updateTicker } from './reducer'
 import { CustomError, ErrorMap, myLog } from '@loopring-web/common-resources'
 
 import { LoopringAPI } from "api_wrapper"
-import { makeTickerMap } from '../../hooks/help';
+import { makeTickerMap } from 'hooks/help';
 import store from '../index';
 import { LoopringMap, TickerData } from 'loopring-sdk';
 import { PayloadAction } from '@reduxjs/toolkit';

@@ -1,11 +1,10 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { AmmPanel, AmmPanelType, CoinIcon, Toast } from '@loopring-web/component-lib';
 import {
     AmmInData,
     CoinInfo,
     EmptyValueTag,
     getValuePrecisionThousand,
-    myLog,
     WalletMap
 } from '@loopring-web/common-resources';
 import { useAmmJoin } from './hook_join'

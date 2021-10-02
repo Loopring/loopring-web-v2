@@ -6,11 +6,10 @@ import {
     EmptyValueTag,
 } from '@loopring-web/common-resources'
 import { useAccount } from 'stores/account';
-import { LoopringAPI } from 'api_wrapper'
 import { makeWalletLayer2, volumeToCountAsBigNumber } from 'hooks/help'
 import { WsTopicType } from 'loopring-sdk'
-import { useSocket } from '../../../stores/socket';
-import { useWalletLayer2Socket } from 'services/socket/';
+import { useSocket } from 'stores/socket';
+import { useWalletLayer2Socket } from 'services/socket';
 import { useSystem } from 'stores/system'
 import BigNumber from 'bignumber.js'
 
