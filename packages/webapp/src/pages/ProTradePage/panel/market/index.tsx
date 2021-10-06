@@ -30,7 +30,6 @@ import { useTokenPrices } from 'stores/tokenPrices';
 import { useSystem } from 'stores/system';
 import styled from '@emotion/styled/';
 import { Currency } from 'loopring-sdk';
-import store from '../../../../stores';
 
 
 export enum TabMarketIndex {
@@ -182,7 +181,7 @@ export const MarketView = withTranslation('common')(({
             value = currency === Currency.usd ? '\u2248 ' + PriceTag.Dollar
                 + getValuePrecisionThousand(close * (quotePrice ?? 0), undefined, undefined, undefined, true, {isFait: true})
                 : '\u2248 ' + PriceTag.Yuan
-                + getValuePrecisionThousand(close * (quotePrice ?? 0) / forex, undefined, undefined, undefined, true, {isFait: true})
+                + getValuePrecisionThousand(close * (quotePrice ?? 0) * forex, undefined, undefined, undefined, true, {isFait: true})
 
         }
         close = (close ? close.toFixed(marketMap[ market ].precisionForPrice) : undefined)
