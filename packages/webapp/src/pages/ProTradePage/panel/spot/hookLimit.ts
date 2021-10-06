@@ -20,8 +20,8 @@ import * as sdk from 'loopring-sdk';
 import { LoopringAPI } from 'api_wrapper';
 import * as _ from 'lodash'
 import { BIGO } from 'defs/common_defs';
-import { useTokenPrices } from '../../../../stores/tokenPrices';
-import { useSystem } from '../../../../stores/system';
+import { useTokenPrices } from 'stores/tokenPrices';
+import { useSystem } from 'stores/system';
 
 export const useLimit = <C extends { [ key: string ]: any }>({market}: {market: MarketType } & any) => {
     const {
