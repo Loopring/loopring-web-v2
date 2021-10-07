@@ -162,7 +162,7 @@ export const AmmCard = withTranslation('common', {withRef: true})(
         }, [getLiquidityMining, pathname, rewardToken?.simpleName, setChosenCardInfo, setShowRewardDetail])
         
         return <CardStyled ref={ref}>
-            <LabelStyled type={ruleType}>{isOrderbook ? 'Orderbook' : 'Amm Pool'}</LabelStyled>
+            <LabelStyled type={ruleType}>{isOrderbook ? 'Orderbook' : 'AMM Pool'}</LabelStyled>
             <CardContent style={{ paddingBottom: 0 }}>
                 <BoxStyled display={'flex'} flexDirection={'row'} justifyContent={'space-between'}
                            alignItems={'center'}>

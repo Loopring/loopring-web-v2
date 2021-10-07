@@ -97,8 +97,8 @@ export const DepositWrapNew = <T extends IBData<I>,
             >
                 <Box padding={2}>
                     <Trans i18nKey={description ? description : 'depositDescription'}>
-                        Once your deposit is <TypographyGood component={'span'}>confirmed on Ethereum</TypographyGood>, it
-                        will be added to your balance within <TypographyGood component={'span'}>2 minutes</TypographyGood>.
+                        Once your deposit is confirmed on Ethereum, it
+                        will be added to your balance within 2 minutes.
                     </Trans>
                 </Box>
             </PopoverPure>
