@@ -166,7 +166,7 @@ export const TransferWrapNew = <T extends IBData<I>,
                     horizontal: 'center',
                 }}
             >
-                <Box padding={2}>
+                <Box padding={2} maxWidth={450} fontSize={14}>
                     <Trans i18nKey="transferDescription">
                         Transfer to any valid Ethereum addresses instantly. Please make
                         sure the recipient address accepts Loopring
