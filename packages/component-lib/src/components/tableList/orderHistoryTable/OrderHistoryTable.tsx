@@ -110,11 +110,11 @@ const TableStyled = styled(Box)`
     .rdg {
         --template-columns: ${({isopen, ispro}: any) => isopen === 'open' 
             ? ispro === 'pro'
-                ? 'auto 250px auto auto auto auto'
-                : 'auto 250px 130px 130px 140px 150px' 
+                ? 'auto auto 250px auto auto auto auto'
+                : 'auto auto 230px auto auto 130px 140px' 
             : ispro === 'pro' 
-                ? 'auto 250px auto auto auto auto'
-                : 'auto 250px 130px 130px 140px 140px'
+                ? 'auto auto 250px auto auto auto auto'
+                : 'auto auto 230px auto 130px 130px 130px'
         } !important;
 
         .rdg-cell:last-of-type {
@@ -338,16 +338,16 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                 let renderValue = ''
                 switch(value) {
                     case 'AMM':
-                        renderValue = t('labelOrderAmm')
+                        renderValue = t('labelOrderMarketOrder')
                         break;
                     case 'LIMIT_ORDER':
                         renderValue = t('labelOrderLimitOrder')
                         break;
                     case 'MAKER_ONLY':
-                        renderValue = t('labelOrderMaker')
+                        renderValue = t('labelOrderLimitOrder')
                         break;
                     case 'TAKER_ONLY':
-                        renderValue = t('labelOrderTaker')
+                        renderValue = t('labelOrderLimitOrder')
                         break;
                     default:
                         break;
@@ -355,28 +355,28 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                 return <div className="rdg-cell-value">{renderValue}</div>
             }
         },
-        // {
-        //     key: 'channels',
-        //     name: t('labelOrderChannels'),
-        //     formatter: ({row}) => {
-        //         const value = row['tradeChannel']
-        //         let renderChannel = ''
-        //         switch(value) {
-        //             case 'MIXED': 
-        //                 renderChannel = t('labelOrderChannelsMixed')
-        //                 break
-        //             case 'AMM_POOL':
-        //                 renderChannel = t('labelOrderChannelsAMM')
-        //                 break
-        //             case 'ORDER_BOOK':
-        //                 renderChannel = t('labelOrderChannelsOrderBook')
-        //                 break
-        //             default:
-        //                 break
-        //         }
-        //         return <div className="rdg-cell-value">{renderChannel}</div>
-        //     },
-        // },
+        {
+            key: 'channels',
+            name: t('labelOrderChannels'),
+            formatter: ({row}) => {
+                const value = row['tradeChannel']
+                let renderChannel = ''
+                switch(value) {
+                    case 'MIXED': 
+                        renderChannel = t('labelOrderChannelsMixed')
+                        break
+                    case 'AMM_POOL':
+                        renderChannel = t('labelOrderChannelsSwap')
+                        break
+                    case 'ORDER_BOOK':
+                        renderChannel = t('labelOrderChannelsOrderBook')
+                        break
+                    default:
+                        break
+                }
+                return <div className="rdg-cell-value">{renderChannel}</div>
+            },
+        },
         {
             key: 'amount',
             name: t('labelOrderAmount'),
@@ -484,28 +484,28 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                 return <div className="rdg-cell-value">{renderValue}</div>
             }
         },
-        // {
-        //     key: 'channels',
-        //     name: t('labelOrderChannels'),
-        //     formatter: ({row}) => {
-        //         const value = row['tradeChannel']
-        //         let renderChannel = ''
-        //         switch(value) {
-        //             case 'MIXED': 
-        //                 renderChannel = t('labelOrderChannelsMixed')
-        //                 break
-        //             case 'AMM_POOL':
-        //                 renderChannel = t('labelOrderChannelsAMM')
-        //                 break
-        //             case 'ORDER_BOOK':
-        //                 renderChannel = t('labelOrderChannelsOrderBook')
-        //                 break
-        //             default:
-        //                 break
-        //         }
-        //         return <div className="rdg-cell-value">{renderChannel}</div>
-        //     },
-        // },
+        {
+            key: 'channels',
+            name: t('labelOrderChannels'),
+            formatter: ({row}) => {
+                const value = row['tradeChannel']
+                let renderChannel = ''
+                switch(value) {
+                    case 'MIXED': 
+                        renderChannel = t('labelOrderChannelsMixed')
+                        break
+                    case 'AMM_POOL':
+                        renderChannel = t('labelOrderChannelsAMM')
+                        break
+                    case 'ORDER_BOOK':
+                        renderChannel = t('labelOrderChannelsOrderBook')
+                        break
+                    default:
+                        break
+                }
+                return <div className="rdg-cell-value">{renderChannel}</div>
+            },
+        },
         {
             key: 'amount',
             name: t('labelOrderAmount'),
