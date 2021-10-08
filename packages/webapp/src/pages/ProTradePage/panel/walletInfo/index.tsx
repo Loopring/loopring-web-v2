@@ -1,14 +1,25 @@
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next';
-import { AccountStatus, AvatarCoinStyled, fnType, i18n, MarketType, SagaStatus } from '@loopring-web/common-resources';
+import React from 'react';
+
+import {
+    AccountStatus,
+    AvatarCoinStyled,
+    fnType,
+    i18n,
+    LockIcon,
+    MarketType,
+    SagaStatus
+} from '@loopring-web/common-resources';
 import { Avatar, Box, Divider, Typography } from '@mui/material';
-import React, { useCallback } from 'react';
-import { Button, useSettings } from '@loopring-web/component-lib';
+import { Button, EmptyDefault, useSettings } from '@loopring-web/component-lib';
 import { useModals } from 'hooks/useractions/useModals';
 import { usePageTradePro } from 'stores/router';
 import _ from 'lodash';
 import { accountStaticCallBack, btnClickMap, btnLabel } from 'layouts/connectStatusCallback';
 import { useAccount } from 'stores/account';
 import { HeaderHeight } from '../../index';
+import * as sdk from 'loopring-sdk';
+import { useTokenMap } from '../../../../stores/token';
 
 
 const OtherView = React.memo(({t}: { market: MarketType, t: TFunction }) => {
@@ -105,14 +116,36 @@ const OtherView = React.memo(({t}: { market: MarketType, t: TFunction }) => {
     //     [ fnType.ACTIVATED ]: [swapCalculatorCallback]
     // })
 })
+const AssetsValue = React.memo(({symbol}:{symbol:string})=>{
+    const {pageTradePro: {tradeCalcProData:{walletMap}}} = usePageTradePro();
+    const {tokenMap} = useTokenMap()
+    if(walletMap && walletMap[symbol]?.detail){
+
+        const total =  sdk.fromWEI(tokenMap, symbol, sdk.toBig(walletMap[symbol].detail.total??0).toString())
+        const locked = Number(walletMap[symbol].detail.locked)?
+            sdk.fromWEI(tokenMap, symbol, sdk.toBig(walletMap[symbol].detail.locked).toString()):0;
+
+        // toBig(walletMap[symbol].detail.total)
+        return <Box display={'flex'} flexDirection={'column'} alignItems={'flex-end'}>
+            <Typography variant={'body1'} color={'text.primary'}>{total}</Typography>
+            {locked? <Typography variant={'body2'} color={'text.secondary'} display={'inline-flex'} marginTop={1/2}>
+              <LockIcon fontSize={'small'} /> :   {locked} 
+            </Typography>:EmptyDefault }
+        </Box>
+    }else{
+        return <Box>{EmptyDefault}</Box>
+    }
+
+
+})
 const UnLookView = React.memo(({t, market}: { market: MarketType, t: TFunction }) => {
-    const {pageTradePro: {tradeCalcProData}} = usePageTradePro();
+    // const {pageTradePro: {tradeCalcProData}} = usePageTradePro();
     //@ts-ignore
     const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
     const {coinJson} = useSettings();
     const tokenAIcon: any = coinJson[ coinA ];
     const tokenBIcon: any = coinJson[ coinB ];
-    const walletMap = tradeCalcProData && tradeCalcProData.walletMap ? tradeCalcProData.walletMap : {};
+    // const walletMap = tradeCalcProData && tradeCalcProData.walletMap ? tradeCalcProData.walletMap : {};
     const {showDeposit, showTransfer,} = useModals()
     const onShowDeposit = React.useCallback((token?: any) => {
         showDeposit({isShow: true, symbol: token})
@@ -120,15 +153,16 @@ const UnLookView = React.memo(({t, market}: { market: MarketType, t: TFunction }
     // const onShowWithdraw = React.useCallback((token?: any) => {
     //     showWithdraw({isShow: true, symbol: token})
     // }, [showWithdraw])
-    const onShowTransfer = useCallback((token?: any) => {
+    const onShowTransfer = React.useCallback((token?: any) => {
         showTransfer({isShow: true, symbol: token})
     }, [showTransfer])
+
     return <Box paddingBottom={2}>
         <Typography height={HeaderHeight} lineHeight={`${HeaderHeight}px`} paddingX={2} variant={'body1'}
-                    component={'h4'}>{t('Available')}</Typography>
+                    component={'h4'}>{t('labelAssetsTitle')}</Typography>
         <Divider/>
         <Box paddingX={2} display={'flex'} flex={1} flexDirection={'column'} justifyContent={''}>
-            <Box marginTop={2} display={'flex'} flexDirection={'row'} alignItems={'center'}
+            <Box marginTop={2} display={'flex'} flexDirection={'row'} alignItems={'flex-end'}
                  justifyContent={'space-between'}>
                 <Box component={'span'} display={'flex'} flexDirection={'row'} alignItems={'center'}
                      className={'logo-icon'} height={'var(--withdraw-coin-size)'} justifyContent={'flex-start'}
@@ -150,9 +184,9 @@ const UnLookView = React.memo(({t, market}: { market: MarketType, t: TFunction }
                     }
                     <Typography variant={'body1'}>{coinA}</Typography>
                 </Box>
-                <Typography variant={'body1'}>{walletMap[ coinA ] ? walletMap[ coinA ]?.count : 0}</Typography>
+                <AssetsValue symbol={coinA} />
             </Box>
-            <Box marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'}
+            <Box marginTop={1} display={'flex'} flexDirection={'row'}  alignItems={'flex-end'}
                  justifyContent={'space-between'}>
                 <Box component={'span'} display={'flex'} flexDirection={'row'} alignItems={'center'}
                      className={'logo-icon'} height={'var(--withdraw-coin-size)'} justifyContent={'flex-start'}
@@ -160,7 +194,7 @@ const UnLookView = React.memo(({t, market}: { market: MarketType, t: TFunction }
                     {tokenBIcon ?
                         <AvatarCoinStyled imgx={tokenBIcon.x} imgy={tokenBIcon.y}
                                           imgheight={tokenBIcon.height}
-                                          imgwidth={tokenBIcon.width} size={16}
+                                          imgwidth={tokenBIcon.width} size={20}
                                           variant="circular"
                                           style={{marginLeft: '-8px'}}
                                           alt={coinB}
@@ -174,7 +208,9 @@ const UnLookView = React.memo(({t, market}: { market: MarketType, t: TFunction }
                     }
                     <Typography variant={'body1'}>{coinB}</Typography>
                 </Box>
-                <Typography variant={'body1'}>{walletMap[ coinB ] ? walletMap[ coinB ]?.count : 0}</Typography>
+                <AssetsValue symbol={coinB} />
+
+                {/*<Typography variant={'body1'}>{walletMap[ coinB ] ? walletMap[ coinB ]?.count : 0}</Typography>*/}
             </Box>
             <Box display={'flex'} flexDirection={'row'} alignItems={'center'} marginTop={2} justifyContent={'center'}>
                 <Box marginRight={1}>
