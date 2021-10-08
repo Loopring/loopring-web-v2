@@ -342,7 +342,8 @@ export const TradeTable = withTranslation('tables')(({
                                               TableType,
                                               currFilterType = filterType,
                                               currFilterDate = filterDate,
-                                              currFilterPair = filterPair
+                                              currFilterPair = filterPair,
+                                              currPage = page,
                                           }) => {
         // let resultData = rawData ? rawData : []
 
@@ -380,7 +381,7 @@ export const TradeTable = withTranslation('tables')(({
         if (getUserTradeList) {
             getUserTradeList({
                 market,
-                offset: (page - 1) * pageSize,
+                offset: (currPage - 1) * pageSize,
                 limit: pageSize,
                 // fillTypes,
                 // start,
@@ -388,7 +389,7 @@ export const TradeTable = withTranslation('tables')(({
             })
         }
         // setTotalData(resultData)
-    }, [rawData, filterDate, filterType, filterPair, getUserTradeList, page, pageSize])
+    }, [filterDate, filterType, filterPair, getUserTradeList, page, pageSize])
 
     const handleFilterChange = React.useCallback(({type = filterType, date = filterDate, pair = filterPair}) => {
         setFilterType(type)
@@ -415,7 +416,8 @@ export const TradeTable = withTranslation('tables')(({
             TableType: 'filter',
             currFilterType: FilterTradeTypes.allTypes,
             currFilterDate: [null, null],
-            currFilterPair: 'all'
+            currFilterPair: 'all',
+            currPage: 1,
         })
     }
     const tradeposition = isL2Trade === true ? 'layer2' : 'swap'
