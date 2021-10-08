@@ -865,7 +865,7 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
         marketArray,
         onSwapClick,
         swapBtnI18nKey,
-        swapBtnStatus: swapBtnStatus,
+        swapBtnStatus,
         handleSwapPanelEvent,
         should15sRefresh,
         refreshRef,
