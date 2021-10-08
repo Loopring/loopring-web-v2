@@ -825,7 +825,9 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
                 const _tradeCalcData = {
                     ...tradeCalcData,
                     coinSell: tradeCalcData.coinBuy,
+                    sellPrecision: tokenMap[tradeCalcData.coinBuy as string].precision,
                     coinBuy: tradeCalcData.coinSell,
+                    buyPrecision: tokenMap[tradeCalcData.coinSell as string].precision,
                     sellCoinInfoMap: tradeCalcData.buyCoinInfoMap,
                     buyCoinInfoMap: tradeCalcData.sellCoinInfoMap,
                     StoB: market === `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` ? close : btos,
@@ -834,14 +836,13 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
                     priceImpactColor: 'inherit',
                     minimumReceived: undefined,
                     fee: undefined,
-                    buyPrecision: tokenMap[tradeCalcData.coinBuy as string].precision,
-                    sellPrecision: tokenMap[tradeCalcData.coinSell as string].precision,
+
                 }
 
                 myLog('Exchange,tradeCalcData,_tradeCalcData', tradeCalcData, _tradeCalcData);
                 callPairDetailInfoAPIs()
                 updatePageTradeLite({ market, tradePair: `${tradeCalcData.coinBuy}-${tradeCalcData.coinSell}` })
-                setTradeCalcData({ ..._tradeCalcData })
+                setTradeCalcData(_tradeCalcData)
                 break;
             default:
                 myLog('resetSwap default')
