@@ -529,7 +529,7 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
                 dependencyData: { ticker, ammPoolSnapshot, depth }
             })
 
-            setTradeFloat({ ...tradeFloat, close: close } as TradeFloat);
+            setTradeFloat({ ...ticker, close: close } as TradeFloat);
 
             const result = reCalcStoB(market, tradeData as SwapTradeData<IBData<unknown>>, tradePair as any)
             if (result) {
