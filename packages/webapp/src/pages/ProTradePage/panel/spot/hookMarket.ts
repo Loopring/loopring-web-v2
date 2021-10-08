@@ -254,13 +254,13 @@ export const useMarket = <C extends { [ key: string ]: any }>({market,resetTrade
                 return
             }
 
-            const baseToken = tokenMap[ marketTradeData?.base.belong as string ]
+            // const baseToken = tokenMap[ marketTradeData?.base.belong as string ]
             // const quoteToken = tokenMap[ marketTradeData?.quote.belong as string ]
             try {
 
                 const req: sdk.GetNextStorageIdRequest = {
                     accountId: account.accountId,
-                    sellTokenId: baseToken.tokenId
+                    sellTokenId: request.sellToken.tokenId as number,
                 }
 
                 const storageId = await LoopringAPI.userAPI.getNextStorageId(req, account.apiKey)
