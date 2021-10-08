@@ -4,14 +4,14 @@ import React from 'react';
 import {
     AccountStatus,
     AvatarCoinStyled, EmptyValueTag,
-    fnType,
+    fnType, getValuePrecisionThousand,
     i18n,
     LockIcon,
     MarketType,
     SagaStatus
 } from '@loopring-web/common-resources';
 import { Avatar, Box, Divider, Typography } from '@mui/material';
-import { Button, EmptyDefault, useSettings } from '@loopring-web/component-lib';
+import { Button, useSettings } from '@loopring-web/component-lib';
 import { useModals } from 'hooks/useractions/useModals';
 import { usePageTradePro } from 'stores/router';
 import _ from 'lodash';
@@ -20,6 +20,7 @@ import { useAccount } from 'stores/account';
 import { HeaderHeight } from '../../index';
 import * as sdk from 'loopring-sdk';
 import { useTokenMap } from '../../../../stores/token';
+import { volumeToCount, volumeToCountAsBigNumber } from '../../../../hooks/help';
 
 
 const OtherView = React.memo(({t}: { market: MarketType, t: TFunction }) => {
@@ -119,11 +120,17 @@ const OtherView = React.memo(({t}: { market: MarketType, t: TFunction }) => {
 const AssetsValue = React.memo(({symbol}:{symbol:string})=>{
     const {pageTradePro: {tradeCalcProData:{walletMap}}} = usePageTradePro();
     const {tokenMap} = useTokenMap()
-    if(walletMap && walletMap[symbol]?.detail){
+    if (walletMap && walletMap[ symbol ]?.detail) {
 
-        const total =  sdk.fromWEI(tokenMap, symbol, sdk.toBig(walletMap[symbol].detail.total??0).toString())
-        const locked = Number(walletMap[symbol].detail.locked)?
-            sdk.fromWEI(tokenMap, symbol, sdk.toBig(walletMap[symbol].detail.locked).toString()):0;
+        const total = getValuePrecisionThousand(
+            volumeToCountAsBigNumber(symbol, sdk.toBig(walletMap[ symbol ].detail.total ?? 0)),
+            undefined, undefined, tokenMap[ symbol ].precision, false, {floor: true, isFait: true});
+        //sdk.fromWEI(tokenMap, symbol, sdk.toBig(walletMap[ symbol ].detail.total ?? 0).toString())
+
+        const locked = Number(walletMap[ symbol ].detail.locked) ?
+            volumeToCount(symbol, walletMap[ symbol ].detail.locked)
+            // sdk.fromWEI(tokenMap, symbol, sdk.toBig(walletMap[symbol].detail.locked).toString())
+            : 0;
 
         // toBig(walletMap[symbol].detail.total)
         return <Box display={'flex'} flexDirection={'column'} alignItems={'flex-end'}>
@@ -227,6 +234,6 @@ const UnLookView = React.memo(({t, market}: { market: MarketType, t: TFunction }
 export const WalletInfo = withTranslation(['common', 'layout'])((props: {
     market: MarketType,
 } & WithTranslation) => {
-    const {account, status: accountStatus} = useAccount();
+    const {account} = useAccount();
     return <>{account.readyState === AccountStatus.ACTIVATED ? <UnLookView {...props}/> : <OtherView {...props}/>} </>
 })
