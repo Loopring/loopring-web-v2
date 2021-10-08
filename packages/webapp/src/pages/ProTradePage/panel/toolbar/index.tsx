@@ -3,13 +3,13 @@ import { TFunction, withTranslation } from 'react-i18next';
 import {
     CoinInfo,
     DropDownIcon,
-    getValuePrecisionThousand,
+    getValuePrecisionThousand, layoutConfigs,
     MarketType,
     PriceTag,
     SagaStatus
 } from '@loopring-web/common-resources';
+import { Button, MarketBlockProps, useSettings } from '@loopring-web/component-lib';
 import { useTicker } from 'stores/ticker';
-import { MarketBlockProps, useSettings } from '@loopring-web/component-lib';
 import { useTokenMap } from 'stores/token';
 import { Box, Grid, MenuItem, TextField, Typography } from '@mui/material';
 import { usePageTradePro } from 'stores/router';
@@ -19,6 +19,7 @@ import { Currency } from 'loopring-sdk';
 import { Layout, Layouts } from 'react-grid-layout';
 import { useTokenPrices } from 'stores/tokenPrices';
 import { useSystem } from 'stores/system';
+import { useHistory } from 'react-router-dom';
 
 const PriceTitleStyled = styled(Typography)`
   color: var(--color-text-third);
@@ -149,11 +150,12 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
                 </Grid>
             </Grid>
         </Box>
-        {/*<Box>*/}
-        {/*    <Button onClick={() => {*/}
-        {/*        handleLayoutChange([], undefined, layoutConfigs[ 0 ].layouts)*/}
-        {/*    }}>{t('labelResetLayout')}</Button>*/}
-        {/*</Box>*/}
+        <Box>
+            <Button onClick={() => {
+                handleLayoutChange([], undefined, layoutConfigs[ 0 ].layouts)
+
+            }}>{t('labelResetLayout')}</Button>
+        </Box>
     </Box>
 
 })
