@@ -3,7 +3,7 @@ import React from 'react';
 
 import {
     AccountStatus,
-    AvatarCoinStyled,
+    AvatarCoinStyled, EmptyValueTag,
     fnType,
     i18n,
     LockIcon,
@@ -128,12 +128,12 @@ const AssetsValue = React.memo(({symbol}:{symbol:string})=>{
         // toBig(walletMap[symbol].detail.total)
         return <Box display={'flex'} flexDirection={'column'} alignItems={'flex-end'}>
             <Typography variant={'body1'} color={'text.primary'}>{total}</Typography>
-            {locked? <Typography variant={'body2'} color={'text.secondary'} display={'inline-flex'} marginTop={1/2}>
-              <LockIcon fontSize={'small'} /> :   {locked} 
-            </Typography>:EmptyDefault }
+            {locked ? <Typography variant={'body2'} color={'text.secondary'} display={'inline-flex'} marginTop={1 / 2}>
+                <LockIcon fontSize={'small'}/> : {locked}
+            </Typography> : EmptyValueTag}
         </Box>
     }else{
-        return <Box>{EmptyDefault}</Box>
+        return <Box>{EmptyValueTag}</Box>
     }
 
 
@@ -162,7 +162,7 @@ const UnLookView = React.memo(({t, market}: { market: MarketType, t: TFunction }
                     component={'h4'}>{t('labelAssetsTitle')}</Typography>
         <Divider/>
         <Box paddingX={2} display={'flex'} flex={1} flexDirection={'column'} justifyContent={''}>
-            <Box marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'}
+            <Box height={44} marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'}
                  justifyContent={'space-between'}>
                 <Box component={'span'} display={'flex'} flexDirection={'row'} alignItems={'center'}
                      className={'logo-icon'} height={'var(--withdraw-coin-size)'} justifyContent={'flex-start'}
@@ -184,9 +184,9 @@ const UnLookView = React.memo(({t, market}: { market: MarketType, t: TFunction }
                     }
                     <Typography variant={'body1'}>{coinA}</Typography>
                 </Box>
-                <AssetsValue symbol={coinA} />
+                <AssetsValue symbol={coinA}/>
             </Box>
-            <Box marginTop={1} display={'flex'} flexDirection={'row'}  alignItems={'center'}
+            <Box height={44} marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'}
                  justifyContent={'space-between'}>
                 <Box component={'span'} display={'flex'} flexDirection={'row'} alignItems={'center'}
                      className={'logo-icon'} height={'var(--withdraw-coin-size)'} justifyContent={'flex-start'}
@@ -194,7 +194,7 @@ const UnLookView = React.memo(({t, market}: { market: MarketType, t: TFunction }
                     {tokenBIcon ?
                         <AvatarCoinStyled imgx={tokenBIcon.x} imgy={tokenBIcon.y}
                                           imgheight={tokenBIcon.height}
-                                          imgwidth={tokenBIcon.width} size={20}
+                                          imgwidth={tokenBIcon.width} size={16}
                                           variant="circular"
                                           style={{marginLeft: '-8px'}}
                                           alt={coinB}
