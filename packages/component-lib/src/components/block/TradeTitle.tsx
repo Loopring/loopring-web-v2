@@ -4,6 +4,7 @@ import {
     CoinInfo,
     FloatTag,
     getValuePrecisionThousand,
+    myLog,
     PriceTag,
     TradeFloat
 } from '@loopring-web/common-resources';
@@ -51,6 +52,7 @@ export const TradeTitle = <I extends object>({
     const { currency, upColor } = useSettings();
 
     const close = tradeFloat.close
+    myLog({tradeFloat})
 
     const value = currency === Currency.usd ? '\u2248 ' + PriceTag.Dollar
     + getValuePrecisionThousand((tradeFloat && tradeFloat.closeDollar ? tradeFloat.closeDollar : 0), undefined, undefined, undefined, true, { isFait: true })
