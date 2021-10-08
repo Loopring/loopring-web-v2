@@ -45,9 +45,9 @@ export const AccountBasePanel = ({
     const etherscanLink = etherscanUrl + 'address/' + accAddress;
     const connectBy = connectName === 'unknown' ? t('labelWrongNetwork') : connectName;
 
-    const getImagePath = React.useCallback(() => {
-      const path = `static/images/vips/${level.toUpperCase()}.png`
-      return path
+    const getImagePath = React.useMemo(() => {
+        return `static/images/vips/${level.toUpperCase()}`
+
     }, [level])
 
     return <Box display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
@@ -59,7 +59,12 @@ export const AccountBasePanel = ({
         <Typography marginTop={1} display={'flex'} alignItems={'center'}
                      justifyContent={'flex-start'}>
             <Typography paddingRight={1} component={'span'} fontSize={'3rem'}>{addressShort}</Typography>
-            {level && <img alt="VIP" style={{verticalAlign: 'text-bottom' ,width: '32px', height: '16px'}} src={getImagePath()} />}
+            {level && <picture>
+                <source  srcSet={`${getImagePath}.webp`} type="image/webp" />
+                <img alt="VIP" style={{verticalAlign: 'text-bottom', width: '32px', height: '16px'}}
+                   src={`${getImagePath}.png`}/>
+            </picture>}
+
         </Typography>
 
         <BoxStyled component={'div'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}
