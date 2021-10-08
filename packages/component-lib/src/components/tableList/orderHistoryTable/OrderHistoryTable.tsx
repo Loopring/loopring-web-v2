@@ -390,7 +390,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                 return <div className="rdg-cell-value">{renderValue}</div>
             },
         },
-        
+
         {
             key: 'average',
             name: t('labelOrderAverage'),
@@ -400,7 +400,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                 const precisionMarket = row['precisionMarket']
                 // const hasValue = Number.isFinite(value)
                 // const renderValue = hasValue ? getValuePrecisionThousand(value, 6, 2) : EmptyValueTag
-                const renderValue = value ? getValuePrecisionThousand(value, undefined, undefined, precisionMarket, true) : EmptyValueTag
+                const renderValue = value ? getValuePrecisionThousand(value, undefined, undefined, precisionMarket, true, {isPrice: true}) : EmptyValueTag
                 return <div className="rdg-cell-value textAlignRight">{renderValue}</div>
             },
         },
@@ -423,7 +423,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                 const value = row['price'].value
                 const precisionMarket = row['precisionMarket']
                 const hasValue = Number.isFinite(value)
-                const renderValue = hasValue ? getValuePrecisionThousand(value, undefined, undefined, precisionMarket, true) : EmptyValueTag
+                const renderValue = hasValue ? getValuePrecisionThousand(value, undefined, undefined, precisionMarket, true, {isPrice: true}) : EmptyValueTag
                 return (
                     <div className="rdg-cell-value textAlignRight">
                         <span>{renderValue}</span>
@@ -527,7 +527,7 @@ export const OrderHistoryTable = withTranslation('tables')((props: OrderHistoryT
                 const value = row['price'].value
                 const precisionMarket = row['precisionMarket']
                 const hasValue = Number.isFinite(value)
-                const renderValue = hasValue ? getValuePrecisionThousand(value, precisionMarket, precisionMarket, precisionMarket, true) : EmptyValueTag
+                const renderValue = hasValue ? getValuePrecisionThousand(value, precisionMarket, precisionMarket, precisionMarket, true, {isPrice: true}) : EmptyValueTag
                 return (
                     <div className="rdg-cell-value textAlignRight">
                         <span>{renderValue}</span>
