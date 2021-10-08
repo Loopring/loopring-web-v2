@@ -10,7 +10,7 @@ import {
 import { volumeToCount, volumeToCountAsBigNumber } from 'hooks/help'
 import { LoopringAPI } from 'api_wrapper'
 import store from 'stores'
-import { AmmTxType, Side, toBig, UserTxTypes } from 'loopring-sdk'
+import { AmmTxType, UserTxTypes } from 'loopring-sdk'
 import { tradeItemToTableDataItem } from 'utils/formatter_tool'
 
 export type TxsFilterProps = {

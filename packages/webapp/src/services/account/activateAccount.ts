@@ -6,7 +6,6 @@ import { myLog } from "@loopring-web/common-resources";
 import { LoopringAPI } from 'api_wrapper';
 import { connectProvides } from '@loopring-web/web3-provider';
 import * as sdk from 'loopring-sdk'
-import { dumpError400 } from 'loopring-sdk'
 import { ActionResult, ActionResultCode, DAYS, } from 'defs/common_defs';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 
@@ -138,7 +137,7 @@ export async function updateAccountFromServer({isHWAddr, feeInfo, isReset, }: { 
                         result.data = {
                             errorInfo: reason
                         }
-                        dumpError400(reason)
+                        sdk.dumpError400(reason)
                     }
 
                 } catch (reason) {
@@ -149,7 +148,7 @@ export async function updateAccountFromServer({isHWAddr, feeInfo, isReset, }: { 
                     result.data = {
                         errorInfo: reason
                     }
-                    dumpError400(reason)
+                    sdk.dumpError400(reason)
                 }
             }
         }
@@ -158,7 +157,7 @@ export async function updateAccountFromServer({isHWAddr, feeInfo, isReset, }: { 
         myLog('other error!!!!!!! ')
         result.code = ActionResultCode.GetAccError
         result.data = reason
-        dumpError400(reason)
+        sdk.dumpError400(reason)
     }
 
     return result

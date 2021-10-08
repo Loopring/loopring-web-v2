@@ -9,13 +9,13 @@ import {
     toBig,
 } from 'loopring-sdk';
 import { AmmActivity, AmmCardProps, MyAmmLP, myLog } from '@loopring-web/common-resources';
-import store from '../../stores';
+import store from 'stores';
 import BigNumber from 'bignumber.js';
 import { volumeToCount, volumeToCountAsBigNumber } from './volumeToCount';
 import { coinMap } from '@loopring-web/component-lib';
-import { AmmDetailStore } from '../../stores/Amm/AmmMap';
+import { AmmDetailStore } from 'stores/Amm/AmmMap';
 import { WalletMapExtend } from './makeWallet';
-import { VolToNumberWithPrecision } from '../../utils/formatter_tool';
+import { VolToNumberWithPrecision } from 'utils/formatter_tool';
 import { myError } from "@loopring-web/common-resources";
 import _ from 'lodash'
 

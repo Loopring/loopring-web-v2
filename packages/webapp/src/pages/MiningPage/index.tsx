@@ -5,8 +5,6 @@ import { AmmCardProps, AmmJoinData, AmmInData, AmmExitData, IBData, myLog } from
 import { Box, Grid, Typography, Modal } from '@mui/material';
 import styled from '@emotion/styled'
 import { useAmmMiningUI, RewardListItem } from './hook';
-// import Tabs from '@mui/material';
-// import Tab from '@mui/material';
 import { useAmmPool } from '../LiquidityPage/hook'
 import { Trans, withTranslation } from 'react-i18next';
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';

@@ -1,13 +1,13 @@
 import React, { useCallback, } from "react"
-import store from '../../stores';
+import store from 'stores';
 import { MarketBlockProps, QuoteTableRawDataItem, } from '@loopring-web/component-lib';
-import { useSocket } from '../../stores/socket';
+import { useSocket } from 'stores/socket';
 import { TradingInterval, WsTopicType } from 'loopring-sdk';
 import { LoopringAPI } from 'api_wrapper'
 import { tickerService } from 'services/socket';
 import { myError, SagaStatus, } from "@loopring-web/common-resources";
 import _ from 'lodash'
-import { TickerMap, useTicker } from '../../stores/ticker';
+import { TickerMap, useTicker } from 'stores/ticker';
 
 // const OnePageSize = 16;
 

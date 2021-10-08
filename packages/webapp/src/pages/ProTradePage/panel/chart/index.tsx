@@ -3,8 +3,8 @@ import { bindTrigger } from 'material-ui-popup-state/es';
 import { usePopupState, bindPopper } from 'material-ui-popup-state/hooks';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { Divider, Box, Typography, Grid, MenuItem, Checkbox, ClickAwayListener } from '@mui/material'
-import { ScaleAreaChart, ChartType, testKlineData, MainIndicator, SubIndicator, PopoverPure } from '@loopring-web/component-lib'
-import { BreakPoint, KLineFeaturesIcon, DepthViewData, MarketType, depth2ViewData } from '@loopring-web/common-resources'
+import { ScaleAreaChart, ChartType, testKlineData, SubIndicator, PopoverPure } from '@loopring-web/component-lib'
+import { KLineFeaturesIcon, DepthViewData, MarketType, depth2ViewData } from '@loopring-web/common-resources'
 import styled from '@emotion/styled'
 import { TradingInterval } from 'loopring-sdk'
 import { usePageTradePro } from 'stores/router';

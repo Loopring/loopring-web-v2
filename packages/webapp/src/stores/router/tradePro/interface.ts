@@ -1,5 +1,4 @@
 import * as sdk from 'loopring-sdk';
-import { OrderInfo } from 'loopring-sdk';
 import { MarketType, TradeCalcProData } from '@loopring-web/common-resources';
 import { Ticker } from '../../ticker';
 import { RawDataTradeItem, TradeProType } from '@loopring-web/component-lib';
@@ -63,9 +62,9 @@ export type PageTradePro<C> = {
     feeBips?: number | string,
     totalFee?: number | string,
     takerRate?: number | string,
-    sellUserOrderInfo?: undefined| null | OrderInfo,
-    buyUserOrderInfo?: undefined | null | OrderInfo,
-    minOrderInfo?: undefined | null | OrderInfo & OrderInfoPatch,
+    sellUserOrderInfo?: undefined| null | sdk.OrderInfo,
+    buyUserOrderInfo?: undefined | null | sdk.OrderInfo,
+    minOrderInfo?: undefined | null | sdk.OrderInfo & OrderInfoPatch,
     lastStepAt?:'base'|'quote'|undefined,
     tradeArray?:RawDataTradeItem[],
 }

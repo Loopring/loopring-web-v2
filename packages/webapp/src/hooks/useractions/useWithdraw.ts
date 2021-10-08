@@ -16,7 +16,6 @@ import {
 } from '@loopring-web/common-resources';
 
 import * as sdk from 'loopring-sdk'
-import { ConnectorError, dumpError400, GetWithdrawalAgentsRequest } from 'loopring-sdk'
 
 import { useTokenMap } from 'stores/token';
 import { useAccount } from 'stores/account';
@@ -128,7 +127,7 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
 
             const tokenInfo = tokenMap[withdrawValue.belong]
 
-            const req: GetWithdrawalAgentsRequest = {
+            const req: sdk.GetWithdrawalAgentsRequest = {
                 tokenId: tokenInfo.tokenId,
                 amount: sdk.toBig('1e' + tokenInfo.decimals).toString(),
             }
@@ -264,9 +263,9 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
                     if (response?.errorInfo) {
                         // Withdraw failed
                         const code = checkErrorInfo(response.errorInfo, isFirstTime)
-                        if (code === ConnectorError.USER_DENIED) {
+                        if (code === sdk.ConnectorError.USER_DENIED) {
                             setShowAccount({ isShow: true, step: AccountStep.Withdraw_User_Denied })
-                        } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
+                        } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
                             setLastRequest({ request })
                             setShowAccount({ isShow: true, step: AccountStep.Withdraw_First_Method_Denied })
                         } else {
@@ -296,14 +295,14 @@ export const useWithdraw = <R extends IBData<T>, T>(): {
             }
 
         } catch (reason) {
-            dumpError400(reason)
+            sdk.dumpError400(reason)
             const code = checkErrorInfo(reason, isFirstTime)
             myLog('code:', code)
 
             if (isAccActivated()) {
-                if (code === ConnectorError.USER_DENIED) {
+                if (code === sdk.ConnectorError.USER_DENIED) {
                     setShowAccount({ isShow: true, step: AccountStep.Withdraw_User_Denied })
-                } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
+                } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
                     setLastRequest({ request })
                     setShowAccount({ isShow: true, step: AccountStep.Withdraw_First_Method_Denied })
                 } else {

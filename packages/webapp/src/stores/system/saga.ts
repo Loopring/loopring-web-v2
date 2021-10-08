@@ -2,7 +2,6 @@ import { all, call, fork, put, take, takeLatest } from "redux-saga/effects"
 import { getSystemStatus, updateRealTimeObj, updateSystem } from './reducer'
 import { ENV, NETWORKEXTEND } from "./interface"
 import store from '../index';
-// import { reset } from '../account/reducer';
 import { LoopringAPI } from 'api_wrapper';
 import { getAmmMap, initAmmMap, updateRealTimeAmmMap } from '../Amm/AmmMap';
 import { getTokenMap } from '../token';
@@ -12,9 +11,9 @@ import { updateWalletLayer1 } from '../walletLayer1';
 import { delay } from 'rxjs/operators';
 import { LoopringSocket } from 'services/socket';
 import { statusUnset as accountStatusUnset } from '../account';
-import { ChainId, Currency, FiatPriceInfo, LoopringMap } from 'loopring-sdk';
+import { ChainId, FiatPriceInfo, LoopringMap } from 'loopring-sdk';
 import { getTokenPrices } from '../tokenPrices';
-import { getTickers, useTicker } from '../ticker';
+import { getTickers, } from '../ticker';
 
 const initConfig = function* <R extends { [ key: string ]: any }>(chainId: ChainId | 'unknown') {
     // store.dispatch(updateAccountStatus());

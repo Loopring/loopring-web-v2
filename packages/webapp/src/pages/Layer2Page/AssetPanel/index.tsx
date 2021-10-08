@@ -19,7 +19,7 @@ import store from 'stores'
 import { StylePaper } from 'pages/styled'
 import { useGetAssets } from './hook'
 import { Currency } from 'loopring-sdk';
-import { useSystem } from '../../../stores/system';
+import { useSystem } from 'stores/system';
 
 const StyledChartWrapper = styled(Box)`
     height: 225px;

@@ -22,7 +22,6 @@ import { useWalletLayer2 } from 'stores/walletLayer2';
 import { useOrderList } from './panel/orderTable/hookTable'
 import { useProSocket, useSocketProService } from './proService';
 import store from '../../stores';
-import { TradeProType } from '@loopring-web/component-lib';
 
 
 export const usePro = <C extends { [ key: string ]: any }>(): {

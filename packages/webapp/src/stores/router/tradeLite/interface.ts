@@ -1,6 +1,4 @@
 import * as sdk from 'loopring-sdk';
-import { TradeChannel } from 'loopring-sdk';
-import { OrderInfo } from 'loopring-sdk/dist/defs/loopring_defs';
 import { MarketType } from '@loopring-web/common-resources';
 import { Ticker, } from '../../ticker';
 import { OrderInfoPatch, } from '../tradePro'
@@ -37,14 +35,14 @@ export type PageTradeLite = {
     depth?: sdk.DepthData | undefined
     ticker?: Ticker| undefined,
     ammPoolSnapshot?: sdk.AmmPoolSnapshot | undefined,
-    tradeChannel?: undefined | TradeChannel
+    tradeChannel?: undefined | sdk.TradeChannel
     orderType?: undefined | sdk.OrderType
     feeBips?: number | string,
     totalFee?: number | string,
     takerRate?: number | string,
     quoteMinAmtInfo?: number | string,
-    buyMinAmtInfo?: undefined | OrderInfo;
-    sellMinAmtInfo?: undefined | OrderInfo;
+    buyMinAmtInfo?: undefined | sdk.OrderInfo;
+    sellMinAmtInfo?: undefined | sdk.OrderInfo;
     lastStepAt?:'sell'|'buy'|undefined,
     close?: string,
 }
