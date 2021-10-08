@@ -126,7 +126,7 @@ export const TradeTitle = <I extends object>({
                             {value}
                         </Typography>
                         <Typography variant={'h5'} component={'span'} className={`float-tag float-${tradeFloatType}`}>
-                            （{tradeFloatType === FloatTag.increase ? '+' : '-'}{change}）
+                            （{tradeFloatType === FloatTag.increase ? '+' : ''}{change}）
                         </Typography>
                     </Typography>
                 </Box>
