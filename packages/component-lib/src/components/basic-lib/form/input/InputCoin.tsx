@@ -2,8 +2,10 @@ import { FormHelperText, Grid, Typography } from '@mui/material';
 import {
     CoinInfo,
     FORMAT_STRING_LEN,
+    getValuePrecisionThousand,
     // getValuePrecisionThousand,
-    IBData
+    IBData,
+    myLog
 } from '@loopring-web/common-resources';
 import { InputCoinProps, InputSize } from "./Interface";
 import React from "react";
@@ -32,6 +34,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                        isShowCoinInfo = true,
                                                                        isShowCoinIcon = true,
                                                                        coinLabelStyle = undefined,
+                                                                       coinPrecision = 6,
                                                                    }
                                                                        : InputCoinProps<T, C, I>, ref: React.ForwardedRef<any>) {
     const {balance, belong, tradeValue} = (inputData ? inputData : {}) as IBData<C>;
@@ -99,6 +102,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
     // const coinInfo: any = coinMap[ belong ] ? coinMap[ belong ] : {};
     // const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;
     // formatValue(sValue)
+    const formattedBalance = getValuePrecisionThousand(balance, undefined, undefined, coinPrecision, false, {floor: true})
     return <> <IWrap size={size} component={'div'} ref={ref} >
         <Grid container component={'div'} className={'label-wrap'} justifyContent={'space-between'}
               paddingBottom={1 / 2}>
@@ -108,7 +112,7 @@ function _InputCoin<T extends IBData<C>, C, I extends CoinInfo<C>>({
                 <Typography fontSize={'inherit'} color={'inherit'} className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>
                     <span>{subLabel}</span>
-                    <span>{(balance ? balance : '0.00')}</span>
+                    <span>{(balance ? formattedBalance : '0.00')}</span>
                 </Typography> : null}</Grid>
         </Grid>
 
