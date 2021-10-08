@@ -5,7 +5,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { JsonRpcSigner, Web3Provider } from '@ethersproject/providers'
 
-import { ChainId, dumpError400 } from 'loopring-sdk'
+import { ChainId, } from 'loopring-sdk'
 
 import ms from 'ms.macro'
 
@@ -13,7 +13,6 @@ import { utils } from 'ethers'
 import { connectProvides } from '@loopring-web/web3-provider'
 import { AddressError } from 'defs/common_defs'
 import { myLog } from '@loopring-web/common-resources'
-import { reject } from 'lodash'
 
 export function getLibrary(provider: any): Web3Provider {
     const library = new Web3Provider(

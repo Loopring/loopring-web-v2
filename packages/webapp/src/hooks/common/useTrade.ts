@@ -3,7 +3,7 @@ import React from 'react'
 import * as sdk from 'loopring-sdk'
 
 import { getTimestampDaysLater } from 'utils/dt_tools';
-import { DAYS } from 'defs/common_defs';
+import { DAYS, MAPFEEBIPS } from 'defs/common_defs';
 import { useAccount } from 'stores/account';
 import { useTokenMap } from 'stores/token';
 import { useSystem } from 'stores/system';
@@ -12,6 +12,8 @@ import { myError, myLog } from '@loopring-web/common-resources';
 import store from 'stores'
 import * as _ from 'lodash'
 import { OrderInfoPatch } from 'stores/router';
+
+export const DefaultFeeBips = '1'
 
 export enum PriceLevel {
     Normal,
@@ -87,7 +89,7 @@ export function makeMarketReq({
     }
 
     if (feeBips === undefined) {
-        feeBips = '0'
+        feeBips = DefaultFeeBips
     }
 
     if (!storageId) {
@@ -128,7 +130,7 @@ export function makeMarketReq({
         marketMap: marketMap as any,
         depth: depth as sdk.DepthData,
         ammPoolSnapshot: ammPoolSnapshot,
-        feeBips: feeBips ? feeBips.toString() : '0',
+        feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
         takerRate: takerRate ? takerRate.toString() : '0',
         slipBips: slippage as string,
     })
@@ -149,7 +151,7 @@ export function makeMarketReq({
                 marketMap: marketMap as any,
                 depth: depth as sdk.DepthData,
                 ammPoolSnapshot,
-                feeBips: feeBips ? feeBips.toString() : '0',
+                feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
                 takerRate: takerRate ? takerRate.toString() : '0',
                 slipBips: slippage as string,
             })
@@ -192,7 +194,7 @@ export function makeMarketReq({
         buyToken: buyTokenVol3,
         allOrNone: false,
         validUntil: getTimestampDaysLater(DAYS),
-        maxFeeBips,
+        maxFeeBips: MAPFEEBIPS,
         fillAmountBOrS: false, // amm only false
         orderType,
         tradeChannel,
@@ -250,7 +252,7 @@ export function makeLimitReq({
     }
 
     if (feeBips === undefined) {
-        feeBips = '0'
+        feeBips = DefaultFeeBips
     }
 
     if (!storageId) {
@@ -343,7 +345,7 @@ export function makeLimitReq({
         buyToken,
         allOrNone: false,
         validUntil: getTimestampDaysLater(DAYS),
-        maxFeeBips,
+        maxFeeBips: MAPFEEBIPS,
         fillAmountBOrS: false, // amm only false
         orderType: sdk.OrderType.LimitOrder,
         tradeChannel: sdk.TradeChannel.MIXED,
@@ -464,7 +466,7 @@ export function usePlaceOrder() {
                 exchangeAddress: exchangeInfo.exchangeAddress,
                 accountId: account.accountId,
                 tokenMap,
-                feeBips: feeBips ? feeBips.toString() : '0',
+                feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
                 tokenAmtMap: tokenAmtMap,
             }
             return makeMarketReq(fullParams)
@@ -493,7 +495,7 @@ export function usePlaceOrder() {
                 exchangeAddress: exchangeInfo.exchangeAddress,
                 accountId: account.accountId,
                 tokenMap,
-                feeBips: feeBips ? feeBips.toString() : '0',
+                feeBips: feeBips ? feeBips.toString() : DefaultFeeBips,
                 tokenAmtMap: tokenAmtMap,
             }
             return makeLimitReq(fullParams)

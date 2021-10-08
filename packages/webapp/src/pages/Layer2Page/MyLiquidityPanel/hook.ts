@@ -1,7 +1,7 @@
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 import React from 'react';
 import { AmmRecordRow, MyPoolRow } from '@loopring-web/component-lib';
-import { makeWalletLayer2 } from '../../../hooks/help/makeWallet';
+import { makeWalletLayer2 } from 'hooks/help/makeWallet';
 import {
     getUserAmmTransaction,
     makeMyAmmMarketArray,
@@ -9,11 +9,11 @@ import {
     makeSummaryMyAmm,
     SummaryMyAmm,
     useAmmTotalValue,
-} from '../../../hooks/help';
-import { useTokenMap } from '../../../stores/token';
-import { useWalletLayer2 } from '../../../stores/walletLayer2';
-import { useUserRewards } from '../../../stores/userRewards';
-import { useAmmMap } from '../../../stores/Amm/AmmMap';
+} from 'hooks/help';
+import { useTokenMap } from 'stores/token';
+import { useWalletLayer2 } from 'stores/walletLayer2';
+import { useUserRewards } from 'stores/userRewards';
+import { useAmmMap } from 'stores/Amm/AmmMap';
 import { SagaStatus } from '@loopring-web/common-resources';
 import { useWalletLayer2Socket } from 'services/socket/';
 import { useSystem } from 'stores/system';

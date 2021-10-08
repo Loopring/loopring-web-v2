@@ -1,9 +1,9 @@
 import React from 'react';
-import { useAmmActivityMap } from '../../stores/Amm/AmmActivityMap';
+import { useAmmActivityMap } from 'stores/Amm/AmmActivityMap';
 
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
-import { useAccount } from '../../stores/account/hook';
-import { useAmmMap } from '../../stores/Amm/AmmMap';
+import { useAccount } from 'stores/account/hook';
+import { useAmmMap } from 'stores/Amm/AmmMap';
 import { SagaStatus } from '@loopring-web/common-resources';
 
 export const useAmmPool = <R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>() => {

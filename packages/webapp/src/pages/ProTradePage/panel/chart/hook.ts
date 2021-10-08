@@ -1,7 +1,6 @@
 import { LoopringAPI } from 'api_wrapper'
 import React from 'react'
 import * as sdk from 'loopring-sdk'
-import { TradingInterval } from 'loopring-sdk'
 import { IOHLCData } from '@loopring-web/component-lib'
 import { useTokenMap } from 'stores/token'
 import { myLog } from '@loopring-web/common-resources'
@@ -14,10 +13,10 @@ export function useKlineChart(market: string | undefined) {
 
     const genCandlestickData = React.useCallback(async ({
                                                             market,
-                                                            timeInterval = TradingInterval.d1,
+                                                            timeInterval = sdk.TradingInterval.d1,
                                                         }: {
         market: string | undefined;
-        timeInterval?: TradingInterval;
+        timeInterval?: sdk.TradingInterval;
     }) => {
 
         if (market && LoopringAPI.exchangeAPI && tokenMap) {

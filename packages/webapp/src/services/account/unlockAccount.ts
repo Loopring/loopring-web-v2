@@ -1,7 +1,6 @@
-import { ConnectorError, generateKeyPair } from 'loopring-sdk';
 import { connectProvides } from '@loopring-web/web3-provider';
 import { LoopringAPI } from 'api_wrapper';
-import store from '../../stores';
+import store from 'stores';
 import { accountServices } from './accountServices';
 import { myLog } from "@loopring-web/common-resources";
 import { checkErrorInfo } from 'hooks/useractions/utils';
@@ -20,7 +19,7 @@ export async function unlockAccount() {
             
             const connectName = account.connectName as sdk.ConnectorNames
 
-            const eddsaKey = await generateKeyPair({
+            const eddsaKey = await sdk.generateKeyPair({
                 web3: connectProvides.usedWeb3,
                 address: account.accAddress,
                 exchangeAddress: exchangeInfo.exchangeAddress,
@@ -48,7 +47,7 @@ export async function unlockAccount() {
 
             const errType = checkErrorInfo(e, true)
             switch (errType) {
-                case ConnectorError.USER_DENIED:
+                case sdk.ConnectorError.USER_DENIED:
                     accountServices.sendSignDeniedByUser()
                     return
                 default:

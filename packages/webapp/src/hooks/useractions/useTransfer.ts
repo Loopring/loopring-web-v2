@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 
 import * as sdk from 'loopring-sdk'
-import { ChainId, ConnectorError } from 'loopring-sdk'
 
 import { connectProvides } from '@loopring-web/web3-provider';
 
@@ -162,7 +161,7 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                 const response = await LoopringAPI.userAPI?.submitInternalTransfer({
                     request,
                     web3: connectProvides.usedWeb3,
-                    chainId: chainId !== ChainId.GOERLI ? ChainId.MAINNET : chainId,
+                    chainId: chainId !== sdk.ChainId.GOERLI ? sdk.ChainId.MAINNET : chainId,
                     walletType: connectName as sdk.ConnectorNames,
                     eddsaKey: eddsaKey.sk,
                     apiKey,
@@ -177,9 +176,9 @@ export const useTransfer = <R extends IBData<T>, T>(): {
                     if (response?.errorInfo) {
                         // Withdraw failed
                         const code = checkErrorInfo(response.errorInfo, isFirstTime)
-                        if (code === ConnectorError.USER_DENIED) {
+                        if (code === sdk.ConnectorError.USER_DENIED) {
                             setShowAccount({ isShow: true, step: AccountStep.Transfer_User_Denied })
-                        } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
+                        } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
                             setLastRequest({ request })
                             setShowAccount({ isShow: true, step: AccountStep.Transfer_First_Method_Denied })
                         } else {
@@ -212,9 +211,9 @@ export const useTransfer = <R extends IBData<T>, T>(): {
             const code = checkErrorInfo(reason, isFirstTime)
 
             if (isAccActivated()) {
-                if (code === ConnectorError.USER_DENIED) {
+                if (code === sdk.ConnectorError.USER_DENIED) {
                     setShowAccount({ isShow: true, step: AccountStep.Transfer_User_Denied })
-                } else if (code === ConnectorError.NOT_SUPPORT_ERROR) {
+                } else if (code === sdk.ConnectorError.NOT_SUPPORT_ERROR) {
                     setLastRequest({ request })
                     setShowAccount({ isShow: true, step: AccountStep.Transfer_First_Method_Denied })
                 } else {

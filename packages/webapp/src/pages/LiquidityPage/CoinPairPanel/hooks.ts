@@ -10,9 +10,9 @@ import {
 import { useTokenMap } from "stores/token";
 import { useLocation, useRouteMatch } from 'react-router';
 import moment from 'moment'
-import { AmmDetailStore, useAmmMap } from '../../../stores/Amm/AmmMap';
-import { useWalletLayer2 } from '../../../stores/walletLayer2';
-import { makeWalletLayer2, volumeToCount, WalletMapExtend } from 'hooks/help';
+import { AmmDetailStore, useAmmMap } from 'stores/Amm/AmmMap';
+import { useWalletLayer2 } from 'stores/walletLayer2';
+import { makeWalletLayer2, volumeToCount, WalletMapExtend, getUserAmmTransaction, makeMyAmmMarketArray, getRecentAmmTransaction,makeMyAmmWithSnapshot } from 'hooks/help';
 import {
     AmmPoolSnapshot,
     AmmUserRewardMap,
@@ -20,9 +20,8 @@ import {
     TickerData,
     TradingInterval
 } from 'loopring-sdk';
-import { getUserAmmTransaction, makeMyAmmMarketArray, getRecentAmmTransaction,makeMyAmmWithSnapshot } from '../../../hooks/help';
 import { AmmRecordRow } from '@loopring-web/component-lib';
-import { useUserRewards } from '../../../stores/userRewards';
+import { useUserRewards } from 'stores/userRewards';
 import { LoopringAPI } from 'api_wrapper';
 import { useWalletLayer2Socket } from 'services/socket/';
 import store from 'stores'
@@ -31,7 +30,7 @@ import { myLog } from "@loopring-web/common-resources";
 
 import _ from 'lodash'
 import { useAmmPool } from "../hook";
-import { useTicker } from '../../../stores/ticker';
+import { useTicker } from 'stores/ticker';
 
 const makeAmmDetailExtendsActivityMap = ({ammMap, coinMap, ammActivityMap, market, coinA, coinB, }: any) => {
 

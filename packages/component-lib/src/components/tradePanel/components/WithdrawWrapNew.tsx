@@ -169,12 +169,9 @@ export const WithdrawWrapNew = <T extends IBData<I>,
                     horizontal: 'center',
                 }}
             >
-                <Box padding={2}>
+                <Box padding={2} maxWidth={490}>
                     <Trans i18nKey="withdrawDescription">
-                        Your withdrawal will be processed in the next batch, which usually takes <TypographyGood
-                        component={'span'}>30 minutes to 2 hours</TypographyGood>. (There will be <TypographyStrong
-                        component={'span'}> a large delay</TypographyStrong> if the Ethereum gas price <TypographyStrong
-                        component={'span'}>exceeds 500 GWei</TypographyStrong>.）
+                        Your withdrawal will be processed in the next batch, which usually takes 30 minutes to 2 hours. (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）
                     </Trans>
                 </Box>
             </PopoverPure>

@@ -1,11 +1,11 @@
-import { AmmCardProps, myLog } from '@loopring-web/common-resources';
-import { AmmPoolActivityRule, AmmPoolActivityStatus, LoopringMap, RewardItem } from 'loopring-sdk';
+import { AmmCardProps, } from '@loopring-web/common-resources';
+import { AmmPoolActivityRule, AmmPoolActivityStatus, LoopringMap, } from 'loopring-sdk';
 import React from 'react';
-import { makeUIAmmActivityMap, makeMyPoolRowWithPoolState, makeWalletLayer2 } from '../../hooks/help';
+import { makeUIAmmActivityMap, makeMyPoolRowWithPoolState, makeWalletLayer2 } from 'hooks/help';
 import { LoopringAPI } from 'api_wrapper';
 import { useAmmMap } from 'stores/Amm/AmmMap'
 
-import { useUserRewards } from '../../stores/userRewards';
+import { useUserRewards } from 'stores/userRewards';
 import { useSystem } from 'stores/system'
 import store from 'stores'
 
