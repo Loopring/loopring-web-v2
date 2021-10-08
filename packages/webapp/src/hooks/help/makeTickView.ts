@@ -63,8 +63,11 @@ export const makeTickerMap = <R extends { [ key: string ]: any }>({tickerMap}: {
             const priceYuan = priceDollar?.times(forex);
             const change = item.change && item.change !== 0 ? item.change * 100 : undefined;
 
+            const extraTickerInfo = makeTickView(item)
+
             prev[ key as keyof R ] = {
                 // ...item,
+                ...extraTickerInfo,
                 timeUnit: '24h',
                 priceDollar: priceDollar?.toNumber() === 0 ? undefined : priceDollar?.toNumber(),
                 priceYuan: priceYuan?.toNumber() === 0 ? undefined : priceYuan?.toNumber(),
