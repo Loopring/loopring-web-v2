@@ -5,6 +5,7 @@ import {
     CoinInfo,
     EmptyValueTag,
     getValuePrecisionThousand,
+    myLog,
     WalletMap
 } from '@loopring-web/common-resources';
 import { useAmmJoin } from './hook_join'
@@ -16,6 +17,7 @@ import { TOAST_TIME } from 'defs/common_defs';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import store from 'stores'
+import { useTokenMap } from 'stores/token';
 
 const MyAmmLPAssets = withTranslation('common')(({ammCalcData, t}:
                                                      { ammCalcData: AmmInData<any> } & WithTranslation) => {
@@ -153,6 +155,19 @@ export const AmmPanelView = ({
         stob,
     })
 
+    const { tokenMap } = store.getState().tokenMap
+
+    const getTokenPrecision = React.useCallback((token: string) => {
+        if (tokenMap && token) {
+            return tokenMap[token].precision
+        }
+        return undefined
+    }, [tokenMap])
+
+    
+    const coinAPrecision = getTokenPrecision(pair?.coinAInfo?.simpleName)
+    const coinBPrecision = getTokenPrecision(pair?.coinBInfo?.simpleName)
+
     return <>
         <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'}
                open={toastOpen?.open ?? false}
@@ -184,7 +199,8 @@ export const AmmPanelView = ({
                          onAmmRemoveClick={onAmmRemoveClick}
                          ammWithdrawBtnI18nKey={ammWithdrawBtnI18nKey}
                          ammWithdrawBtnStatus={removeBtnStatus}
-
+                         coinAPrecision={coinAPrecision}
+                         coinBPrecision={coinBPrecision}
             />
                 {ammCalcDataDeposit && ammCalcDataDeposit.lpCoin ?
                     <BoxWrapperStyled marginTop={5 / 2}>
