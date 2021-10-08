@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import { Column, generateColumns, generateRows, Table, } from '../../basic-lib'
 import { OrderHistoryTableDetailItem, OrderPair } from './OrderHistoryTable'
 import { TFunction, withTranslation, WithTranslation } from 'react-i18next';
-import { EmptyValueTag, getValuePrecisionThousand } from '@loopring-web/common-resources';
+import { EmptyValueTag, getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
 import styled from '@emotion/styled'
 import moment from 'moment'
 import { TablePaddingX } from '../../styled'
@@ -73,8 +73,8 @@ const getColumnModeSingleHistory = (t: TFunction): Column<Row, unknown>[] => {
             headerCellClass: 'textAlignRight',
             formatter: ({row, column}) => {
                 const value = row[ column.key ].value
-                const precisionMarket = row[ column.key ].precision
-                const renderValue = value ? getValuePrecisionThousand(value, undefined, undefined, precisionMarket, true) : EmptyValueTag
+                // const precisionMarket = row[ column.key ].precision
+                const renderValue = value ? getValuePrecisionThousand(value, undefined, undefined, undefined, true, {isPrice: true}) : EmptyValueTag
                 return <div className="rdg-cell-value textAlignRight">{renderValue}</div>
             },
         },
@@ -87,7 +87,7 @@ const getColumnModeSingleHistory = (t: TFunction): Column<Row, unknown>[] => {
                 const precision = row[ column.key ].precision
                 const quoteToken = row.amount.to.key
                 const hasValue = Number.isFinite(value)
-                const renderValue = hasValue ? `${getValuePrecisionThousand(value, undefined, undefined, precision)} ${quoteToken}` : EmptyValueTag
+                const renderValue = hasValue ? `${getValuePrecisionThousand(value, undefined, undefined, precision, false, {floor: false})} ${quoteToken}` : EmptyValueTag
                 return <div className="rdg-cell-value textAlignRight">{renderValue}</div>
             },
         },
