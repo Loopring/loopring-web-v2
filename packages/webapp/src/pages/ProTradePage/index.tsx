@@ -14,10 +14,10 @@ import { usePageTradePro } from '../../stores/router';
 import { useHistory } from 'react-router-dom';
 
 const MARKET_ROW_LENGTH: number = 8;
-const MARKET_ROW_LENGTH_LG: number = 11;
+// const MARKET_ROW_LENGTH_LG: number = 11;
 
 const MARKET_TRADES_LENGTH: number = 19;
-const MARKET_TRADES_LENGTH_LG: number = 24;
+// const MARKET_TRADES_LENGTH_LG: number = 24;
 export const HeaderHeight = 44;
 
 
