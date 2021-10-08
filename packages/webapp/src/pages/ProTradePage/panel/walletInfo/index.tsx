@@ -162,7 +162,7 @@ const UnLookView = React.memo(({t, market}: { market: MarketType, t: TFunction }
                     component={'h4'}>{t('labelAssetsTitle')}</Typography>
         <Divider/>
         <Box paddingX={2} display={'flex'} flex={1} flexDirection={'column'} justifyContent={''}>
-            <Box marginTop={2} display={'flex'} flexDirection={'row'} alignItems={'center'}
+            <Box marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'}
                  justifyContent={'space-between'}>
                 <Box component={'span'} display={'flex'} flexDirection={'row'} alignItems={'center'}
                      className={'logo-icon'} height={'var(--withdraw-coin-size)'} justifyContent={'flex-start'}
