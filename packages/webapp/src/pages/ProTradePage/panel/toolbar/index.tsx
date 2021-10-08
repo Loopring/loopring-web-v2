@@ -3,7 +3,7 @@ import { TFunction, withTranslation } from 'react-i18next';
 import {
     CoinInfo,
     DropDownIcon,
-    getValuePrecisionThousand, layoutConfigs,
+    getValuePrecisionThousand,
     MarketType,
     PriceTag,
     SagaStatus
