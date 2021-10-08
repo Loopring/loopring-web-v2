@@ -6,11 +6,12 @@ import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout';
 import { usePro } from './hookPro';
 import { useTheme } from '@emotion/react';
 import { Box, IconButton } from '@mui/material';
-import { BreakPoint, DragIcon, layoutConfigs, LoadingIcon, ResizeIcon } from '@loopring-web/common-resources';
+import { BreakPoint, DragIcon, layoutConfigs, LoadingIcon, myLog, ResizeIcon } from '@loopring-web/common-resources';
 import { ChartView, MarketView, OrderTableView, SpotView, TabMarketIndex, Toolbar, WalletInfo } from './panel'
 import { boxLiner, useSettings } from '@loopring-web/component-lib';
 import styled from '@emotion/styled/';
 import { usePageTradePro } from '../../stores/router';
+import { useHistory } from 'react-router-dom';
 
 const MARKET_ROW_LENGTH: number = 8;
 const MARKET_ROW_LENGTH_LG: number = 11;
@@ -72,6 +73,7 @@ export const OrderbookPage = withTranslation('common')(() => {
     const {market, handleOnMarketChange, resetTradeCalcData} = usePro();
     const {unit} = useTheme();
     const {proLayout, setLayouts} = useSettings();
+    const history = useHistory()
 
     const [rowLength, setRowLength] = React.useState<number>(MARKET_ROW_LENGTH);
     const [tradeTableLengths, setTradeTableLengths] = React.useState<{ market: number, market2: number }>({
@@ -136,15 +138,15 @@ export const OrderbookPage = withTranslation('common')(() => {
 
 
     }, []);
-    const doItemReset = React.useCallback((layout:Layout[])=>{
-
-        onRestDepthTableLength(layout.find(i => i.i === 'market')?.h as number)
-        const lys = layout.filter(i => /market/.test(i.i));
-        lys.forEach((layout) => {
-            onRestMarketTableLength(layout)
-        })
-
-    },[onRestMarketTableLength,onRestDepthTableLength])
+    // const doItemReset = React.useCallback((layout:Layout[])=>{
+    //
+    //     onRestDepthTableLength(layout.find(i => i.i === 'market')?.h as number)
+    //     const lys = layout.filter(i => /market/.test(i.i));
+    //     lys.forEach((layout) => {
+    //         onRestMarketTableLength(layout)
+    //     })
+    //
+    // },[onRestMarketTableLength,onRestDepthTableLength])
     const onBreakpointChange = React.useCallback((breakpoint: BreakPoint) => {
         setConfigLayout((state: Config) => {
             return {
@@ -152,16 +154,22 @@ export const OrderbookPage = withTranslation('common')(() => {
                 currentBreakpoint: breakpoint
             }
         })
-        const layout = configLayout.layouts[ breakpoint ]
-        if (layout) {
-            doItemReset(layout)
-        }
+        configLayout.layouts[ breakpoint ].forEach((layoutItem,index)=>{
+            onResize(configLayout.layouts[ breakpoint ],
+                configLayout.layouts[configLayout.currentBreakpoint][index],
+                layoutItem)
+        })
+        //onResize(configLayout.layouts[ breakpoint ])
+        // const layout = configLayout.layouts[ breakpoint ]
+        // if (layout) {
+        //     doItemReset(layout)
+        // }
 
         // this.setState({
         //     currentBreakpoint: breakpoint
         // });
         // setConfigLayout
-    }, [configLayout,doItemReset]);
+    }, [configLayout]);
 
 
     const onResize = React.useCallback((layout: Layout[], oldLayoutItem, layoutItem) => {
@@ -172,16 +180,41 @@ export const OrderbookPage = withTranslation('common')(() => {
         if (layoutItem.i === 'market2') {
             onRestMarketTableLength(layoutItem)
         }
+        myLog('currentBreakpoint',configLayout.currentBreakpoint,layout)
+        setLayouts({[ configLayout.currentBreakpoint ]: layout})
 
-    }, [configLayout.currentBreakpoint ,setRowLength,doItemReset])
+    }, [configLayout ,setRowLength])
     const handleLayoutChange = React.useCallback((currentLayout: Layout[], allLayouts?: Layouts, layouts?: Layouts) => {
         if (layouts) {
             setLayouts(layouts)
+            setConfigLayout((state: Config) => {
+                return {
+                    ...state,
+                    layouts: layouts,
+                }
+            })
+            history.go(1)
         } else {
-            setLayouts({[ configLayout.currentBreakpoint ]: currentLayout})
+            // if(allLayouts){
+            //     myLog('currentLayout',configLayout.currentBreakpoint,currentLayout,allLayouts)
+            //     myLog('allLayouts',configLayout.currentBreakpoint,allLayouts)
+            // }
+            // setLayouts({[ configLayout.currentBreakpoint ]: currentLayout})
+            // setConfigLayout((state: Config) => {
+            //     return {
+            //         ...state,
+            //         layouts: {
+            //             ...allLayouts,
+            //             [ configLayout.currentBreakpoint ]: [
+            //
+            //             ]
+            //
+            //         },
+            //     }
+            // })
         }
 
-    }, [configLayout.currentBreakpoint,proLayout,setConfigLayout,setLayouts])
+    }, [configLayout,proLayout,setConfigLayout,setLayouts])
     const ViewList = {
         toolbar: React.useMemo(() => <Toolbar market={market as any}
                                               handleLayoutChange={handleLayoutChange}
