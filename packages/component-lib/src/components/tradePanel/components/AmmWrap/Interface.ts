@@ -29,7 +29,9 @@ export type AmmDepositExtendProps<T, I, C, ACD> = {
     accStatus?: AccountStatus,
 }
 export type AmmDepositWrapProps<T, I, ACD, C> = AmmDepositBaseProps<T, I> & AmmDepositExtendProps<T, I, C, ACD> & {
-    ammData: T
+    ammData: T,
+    coinAPrecision?: number,
+    coinBPrecision?: number,
 }
 
 export type AmmWithdrawBaseProps<T, I > = {

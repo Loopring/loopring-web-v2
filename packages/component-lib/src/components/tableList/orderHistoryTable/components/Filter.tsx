@@ -50,20 +50,20 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                                                                       handleReset,
                                                                       marketArray = [],
                                                                   }: FilterProps & WithTranslation) => {
-                                                                    const FilterOrderTypeList = [
-        {
-            label: t('labelOrderFilterAllTypes'),
-            value: 'All Types'
-        },
-        {
-            label: t('labelOrderFilterBuy'),
-            value: 'Buy'
-        },
-        {
-            label: t('labelOrderFilterSell'),
-            value: 'Sell'
-        },
-    ]
+    //                                                                 const FilterOrderTypeList = [
+    //     {
+    //         label: t('labelOrderFilterAllTypes'),
+    //         value: 'All Types'
+    //     },
+    //     {
+    //         label: t('labelOrderFilterBuy'),
+    //         value: 'Buy'
+    //     },
+    //     {
+    //         label: t('labelOrderFilterSell'),
+    //         value: 'Sell'
+    //     },
+    // ]
     // de-duplicate
     const getTokenTypeList = React.useCallback(() => {
         return [{

@@ -170,7 +170,7 @@ export const ModalWalletConnectPanel = withTranslation('common')(({
     const walletList = React.useMemo(() => {
         return Object.values({
             [ WalletConnectStep.Provider ]: {
-                view: <ProviderMenu termUrl={'https://exchange.loopring.pro/legal/terms'} gatewayList={gatewayList}
+                view: <ProviderMenu termUrl={'https://exchange.loopring.io/legal/terms'} gatewayList={gatewayList}
                                     providerName={account.connectName} {...{t, ...rest}} />,
                 onBack: providerBack
             },

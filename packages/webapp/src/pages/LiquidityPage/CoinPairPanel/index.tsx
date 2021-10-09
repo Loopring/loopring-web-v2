@@ -110,12 +110,8 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
     const totalAmountValueCoinA = (tradeFloat?.volume || 0) * (currency === Currency.usd ? priceCoinADollar : priceCoinAYuan)
 
     return <>
-        <Box marginBottom={2}>
+        {/* <Box marginBottom={2}>
             <Breadcrumbs aria-label="breadcrumb">
-                {/*<Link color="textSecondary" href="/#/liquidity/pools">*/}
-                {/*<Link color="textSecondary" onClick={()=>{history.goBack()}}>*/}
-                {/*    {t('labelBack')}*/}
-                {/*</Link>*/}
                 <Link color="textSecondary" component={RouterLink} to={'/liquidity/pools'}>
                     {t('labelAmmList')}
                 </Link>
@@ -123,7 +119,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                             justifyContent={'center'}
                 >{pair.coinAInfo?.simpleName}-{pair.coinBInfo?.simpleName}</Typography>
             </Breadcrumbs>
-        </Box>
+        </Box> */}
         <Box flex={1} display={'flex'} flexDirection={'row'}>
             <Box display={'flex'} flex={1} marginRight={3} alignContent={'stretch'} flexDirection={'column'}
                  flexWrap={'nowrap'}>
@@ -149,7 +145,7 @@ export const CoinPairPanel = withTranslation('common')(<R extends { [ key: strin
                     </Box>
                     <BoxWrapperStyled container className={'MuiPaper-elevation2'} display={'flex'}
                                       alignItems={'center'} >
-                        <Grid item paddingLeft={2} paddingY={3} xs={12} sm={6} lg={4}  overflow={'scroll'}
+                        <Grid item paddingLeft={2} paddingY={3} xs={12} sm={6} lg={4} /* overflow={'scroll'} */
                               display={'flex'}
                               justifyContent={'space-between'}
                               alignItems={'center'}>

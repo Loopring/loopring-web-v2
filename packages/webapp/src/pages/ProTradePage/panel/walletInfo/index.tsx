@@ -3,15 +3,15 @@ import React from 'react';
 
 import {
     AccountStatus,
-    AvatarCoinStyled,
-    fnType,
+    AvatarCoinStyled, EmptyValueTag,
+    fnType, getValuePrecisionThousand,
     i18n,
     LockIcon,
     MarketType,
     SagaStatus
 } from '@loopring-web/common-resources';
 import { Avatar, Box, Divider, Typography } from '@mui/material';
-import { Button, EmptyDefault, useSettings } from '@loopring-web/component-lib';
+import { Button, useSettings } from '@loopring-web/component-lib';
 import { useModals } from 'hooks/useractions/useModals';
 import { usePageTradePro } from 'stores/router';
 import _ from 'lodash';
@@ -20,6 +20,7 @@ import { useAccount } from 'stores/account';
 import { HeaderHeight } from '../../index';
 import * as sdk from 'loopring-sdk';
 import { useTokenMap } from '../../../../stores/token';
+import { volumeToCount, volumeToCountAsBigNumber } from '../../../../hooks/help';
 
 
 const OtherView = React.memo(({t}: { market: MarketType, t: TFunction }) => {
@@ -119,21 +120,27 @@ const OtherView = React.memo(({t}: { market: MarketType, t: TFunction }) => {
 const AssetsValue = React.memo(({symbol}:{symbol:string})=>{
     const {pageTradePro: {tradeCalcProData:{walletMap}}} = usePageTradePro();
     const {tokenMap} = useTokenMap()
-    if(walletMap && walletMap[symbol]?.detail){
+    if (walletMap && walletMap[ symbol ]?.detail) {
 
-        const total =  sdk.fromWEI(tokenMap, symbol, sdk.toBig(walletMap[symbol].detail.total??0).toString())
-        const locked = Number(walletMap[symbol].detail.locked)?
-            sdk.fromWEI(tokenMap, symbol, sdk.toBig(walletMap[symbol].detail.locked).toString()):0;
+        const total = getValuePrecisionThousand(
+            volumeToCountAsBigNumber(symbol, sdk.toBig(walletMap[ symbol ].detail.total ?? 0)),
+            undefined, undefined, tokenMap[ symbol ].precision, false, {floor: true, isFait: true});
+        //sdk.fromWEI(tokenMap, symbol, sdk.toBig(walletMap[ symbol ].detail.total ?? 0).toString())
+
+        const locked = Number(walletMap[ symbol ].detail.locked) ?
+            volumeToCount(symbol, walletMap[ symbol ].detail.locked)
+            // sdk.fromWEI(tokenMap, symbol, sdk.toBig(walletMap[symbol].detail.locked).toString())
+            : 0;
 
         // toBig(walletMap[symbol].detail.total)
         return <Box display={'flex'} flexDirection={'column'} alignItems={'flex-end'}>
             <Typography variant={'body1'} color={'text.primary'}>{total}</Typography>
-            {locked? <Typography variant={'body2'} color={'text.secondary'} display={'inline-flex'} marginTop={1/2}>
-              <LockIcon fontSize={'small'} /> :   {locked} 
-            </Typography>:EmptyDefault }
+            {locked ? <Typography variant={'body2'} color={'text.secondary'} display={'inline-flex'} marginTop={1 / 2}>
+                <LockIcon fontSize={'small'}/> : {locked}
+            </Typography> : EmptyValueTag}
         </Box>
     }else{
-        return <Box>{EmptyDefault}</Box>
+        return <Box>{EmptyValueTag}</Box>
     }
 
 
@@ -162,7 +169,7 @@ const UnLookView = React.memo(({t, market}: { market: MarketType, t: TFunction }
                     component={'h4'}>{t('labelAssetsTitle')}</Typography>
         <Divider/>
         <Box paddingX={2} display={'flex'} flex={1} flexDirection={'column'} justifyContent={''}>
-            <Box marginTop={2} display={'flex'} flexDirection={'row'} alignItems={'center'}
+            <Box height={44} marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'}
                  justifyContent={'space-between'}>
                 <Box component={'span'} display={'flex'} flexDirection={'row'} alignItems={'center'}
                      className={'logo-icon'} height={'var(--withdraw-coin-size)'} justifyContent={'flex-start'}
@@ -184,9 +191,9 @@ const UnLookView = React.memo(({t, market}: { market: MarketType, t: TFunction }
                     }
                     <Typography variant={'body1'}>{coinA}</Typography>
                 </Box>
-                <AssetsValue symbol={coinA} />
+                <AssetsValue symbol={coinA}/>
             </Box>
-            <Box marginTop={1} display={'flex'} flexDirection={'row'}  alignItems={'center'}
+            <Box height={44} marginTop={1} display={'flex'} flexDirection={'row'} alignItems={'center'}
                  justifyContent={'space-between'}>
                 <Box component={'span'} display={'flex'} flexDirection={'row'} alignItems={'center'}
                      className={'logo-icon'} height={'var(--withdraw-coin-size)'} justifyContent={'flex-start'}
@@ -194,7 +201,7 @@ const UnLookView = React.memo(({t, market}: { market: MarketType, t: TFunction }
                     {tokenBIcon ?
                         <AvatarCoinStyled imgx={tokenBIcon.x} imgy={tokenBIcon.y}
                                           imgheight={tokenBIcon.height}
-                                          imgwidth={tokenBIcon.width} size={20}
+                                          imgwidth={tokenBIcon.width} size={16}
                                           variant="circular"
                                           style={{marginLeft: '-8px'}}
                                           alt={coinB}
@@ -227,6 +234,6 @@ const UnLookView = React.memo(({t, market}: { market: MarketType, t: TFunction }
 export const WalletInfo = withTranslation(['common', 'layout'])((props: {
     market: MarketType,
 } & WithTranslation) => {
-    const {account, status: accountStatus} = useAccount();
+    const {account} = useAccount();
     return <>{account.readyState === AccountStatus.ACTIVATED ? <UnLookView {...props}/> : <OtherView {...props}/>} </>
 })

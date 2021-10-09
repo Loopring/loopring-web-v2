@@ -108,7 +108,7 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
 
     /*** Btn related function ***/
     const swapFunc = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
-        let { calcTradeParams, tradeChannel, orderType, totalFee } = pageTradeLite;
+        let {calcTradeParams, tradeChannel, orderType} = pageTradeLite;
         setAlertOpen(false)
         setConfirmOpen(false)
 
@@ -148,7 +148,7 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
                     },
                     buyToken: {
                         tokenId: buyToken.tokenId,
-                        volume: calcTradeParams.amountBOutSlip.minReceived as string
+                        volume: calcTradeParams.amountBOutSlip?.minReceived as string
                     },
                     allOrNone: false,
                     validUntil: getTimestampDaysLater(__DAYS__),
@@ -218,6 +218,21 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
                             fee: undefined
                         }
                     })
+                    updatePageTradeLite({
+                        market, calcTradeParams: {
+                            ...calcTradeParams,
+                            // takerRate: undefined,
+                            // feeBips: undefined,
+                            output: undefined,
+                            sellAmt: undefined,
+                            buyAmt: undefined,
+                            amountS: undefined,
+                            amountBOut: undefined,
+                            amountBOutWithoutFee: undefined,
+                            amountBOutSlip: undefined,
+                            priceImpact: undefined,
+                        }
+                    })
                 }
             } catch (reason) {
                 sdk.dumpError400(reason)
@@ -234,7 +249,7 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
             setIsSwapLoading(false);
         }
 
-    }, [account.readyState, pageTradeLite, tokenMap, tradeData, setIsSwapLoading, setToastOpen, setTradeData])
+    }, [account.readyState, pageTradeLite, tokenMap, tradeData, setIsSwapLoading, setToastOpen, setTradeData, market])
 
     const btnLabelAccountActive = React.useCallback((): string | undefined => {
 
@@ -256,9 +271,9 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
         let validAmt = !!(calcTradeParams?.amountS && sellMinAmt
             && sdk.toBig(calcTradeParams?.amountS).gte(sdk.toBig(sellMinAmt)));
 
-        const sellExceed = sdk.toBig(sellToken?.orderAmounts?.maximum).lt(calcTradeParams?.amountS)
+        const sellExceed = sdk.toBig(sellToken?.orderAmounts?.maximum).lt(calcTradeParams.amountS??0)
 
-        const buyExceed = sdk.toBig(buyToken?.orderAmounts?.maximum).lt(calcTradeParams?.amountBOutSlip.minReceived)
+        const buyExceed = sdk.toBig(buyToken?.orderAmounts?.maximum).lt(calcTradeParams?.amountBOutSlip?.minReceived??0)
 
         if (sellExceed || buyExceed) {
             validAmt = false
@@ -339,7 +354,6 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
 
         }
 
-        myLog('swap directly 111')
 
     }, [pageTradeLite, allowTrade])
     const swapBtnClickArray = Object.assign(_.cloneDeep(btnClickMap), {
@@ -865,7 +879,7 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
         marketArray,
         onSwapClick,
         swapBtnI18nKey,
-        swapBtnStatus: swapBtnStatus,
+        swapBtnStatus,
         handleSwapPanelEvent,
         should15sRefresh,
         refreshRef,
