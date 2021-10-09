@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { DropDownIcon } from '@loopring-web/common-resources';
 import { SwitchData } from '../../Interface';
 import { IconButtonStyled } from '../Styled';

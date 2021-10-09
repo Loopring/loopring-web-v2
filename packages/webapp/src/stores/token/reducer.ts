@@ -3,14 +3,16 @@ import { GetTokenMapParams, TokenMapStates } from './interface';
 import { SagaStatus } from '@loopring-web/common-resources';
 
 const initialState: TokenMapStates<object> = {
+    marketArray: [],
+    marketCoins: [],
     coinMap: {},
     totalCoinMap: {},
-    addressIndex: undefined,
-    tokenMap: undefined,
-    marketMap: undefined,
-    idIndex: undefined,
+    addressIndex: {},
+    tokenMap: {},
+    marketMap: {},
+    idIndex: {},
     status: 'PENDING',
-    errorMessage: null,
+    errorMessage: null
 }
 const tokenMapSlice: Slice<TokenMapStates<object>> = createSlice({
     name: 'tokenMap',

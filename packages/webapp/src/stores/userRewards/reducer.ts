@@ -15,7 +15,7 @@ const userRewardsMapSlice: Slice<UserRewardsStates> = createSlice({
         getUserRewards(state, action: PayloadAction<undefined>) {
             state.status = SagaStatus.PENDING
         },
-        resetUserRewards (state, action: PayloadAction<undefined>) {
+        resetUserRewards(state, action: PayloadAction<undefined>) {
             state.status = SagaStatus.PENDING
         },
         getUserRewardsStatus(state, action: PayloadAction<UserRewardsStates>) {
@@ -38,4 +38,4 @@ const userRewardsMapSlice: Slice<UserRewardsStates> = createSlice({
     },
 });
 export { userRewardsMapSlice };
-export const {getUserRewards,resetUserRewards, getUserRewardsStatus, statusUnset} = userRewardsMapSlice.actions;
+export const {getUserRewards, resetUserRewards, getUserRewardsStatus, statusUnset} = userRewardsMapSlice.actions;

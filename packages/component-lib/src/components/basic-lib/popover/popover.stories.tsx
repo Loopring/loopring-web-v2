@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { Meta, Story } from '@storybook/react/types-6-0'
-import { Box, Button, Grid } from '@material-ui/core'
+import { Box, Button, Grid } from '@mui/material'
 import { withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
 import { Popover, PopoverPure, PopoverType } from './index'

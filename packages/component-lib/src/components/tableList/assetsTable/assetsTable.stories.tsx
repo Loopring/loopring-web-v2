@@ -4,19 +4,18 @@ import { withTranslation } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
 import { AssetsTable, RawDataAssetsItem, TokenType } from './index'
 
-const Style = styled.div`
-	
+const Style = styled.div`	  
 	flex: 1;
 	height: 100%;
-	flex: 1;
 `
-
 const rawData: RawDataAssetsItem[] = [
     {
         token: {
             type: TokenType.single,
             value: 'LRC'
         },
+        tokenValueDollar:112,
+        tokenValueYuan:12323,
         amount: '25987.09324',
         available: '25987.01234',
         locked: '5.9873',
@@ -41,6 +40,8 @@ const rawData: RawDataAssetsItem[] = [
             type: TokenType.lp,
             value: 'LP-LRC-USDT'
         },
+        tokenValueDollar:112,
+        tokenValueYuan:12323,
         amount: '987.09324',
         available: '887.01234',
         locked: '115.9873',
@@ -52,6 +53,8 @@ const rawData: RawDataAssetsItem[] = [
             type: TokenType.lp,
             value: 'LP-ETH-USDT'
         },
+        tokenValueDollar:112,
+        tokenValueYuan:12323,
         amount: '15987.09324',
         available: '15687.01234',
         locked: '312.9073',
@@ -63,6 +66,8 @@ const rawData: RawDataAssetsItem[] = [
             type: TokenType.single,
             value: 'LRC'
         },
+        tokenValueDollar:112,
+        tokenValueYuan:12323,
         amount: '25987.09324',
         available: '25987.01234',
         locked: '5.9873',
@@ -87,6 +92,8 @@ const rawData: RawDataAssetsItem[] = [
             type: TokenType.lp,
             value: 'LP-LRC-USDT'
         },
+        tokenValueDollar:112,
+        tokenValueYuan:12323,
         amount: '987.09324',
         available: '887.01234',
         locked: '115.9873',
@@ -98,6 +105,8 @@ const rawData: RawDataAssetsItem[] = [
             type: TokenType.lp,
             value: 'LP-ETH-USDT'
         },
+        tokenValueDollar:112,
+        tokenValueYuan:12323,
         amount: '15987.09324',
         available: '15687.01234',
         locked: '312.9073',
@@ -109,6 +118,8 @@ const rawData: RawDataAssetsItem[] = [
             type: TokenType.single,
             value: 'LRC'
         },
+        tokenValueDollar:112,
+        tokenValueYuan:12323,
         amount: '25987.09324',
         available: '25987.01234',
         locked: '5.9873',
@@ -133,6 +144,8 @@ const rawData: RawDataAssetsItem[] = [
             type: TokenType.lp,
             value: 'LP-LRC-USDT'
         },
+        tokenValueDollar:112,
+        tokenValueYuan:12323,
         amount: '987.09324',
         available: '887.01234',
         locked: '115.9873',
@@ -144,6 +157,8 @@ const rawData: RawDataAssetsItem[] = [
             type: TokenType.lp,
             value: 'LP-ETH-USDT'
         },
+        tokenValueDollar:112,
+        tokenValueYuan:12323,
         amount: '15987.09324',
         available: '15687.01234',
         locked: '312.9073',
@@ -155,6 +170,8 @@ const rawData: RawDataAssetsItem[] = [
             type: TokenType.single,
             value: 'LRC'
         },
+        tokenValueDollar:112,
+        tokenValueYuan:12323,
         amount: '25987.09324',
         available: '25987.01234',
         locked: '5.9873',
@@ -179,6 +196,8 @@ const rawData: RawDataAssetsItem[] = [
             type: TokenType.lp,
             value: 'LP-LRC-USDT'
         },
+        tokenValueDollar:112,
+        tokenValueYuan:12323,
         amount: '987.09324',
         available: '887.01234',
         locked: '115.9873',
@@ -190,6 +209,8 @@ const rawData: RawDataAssetsItem[] = [
             type: TokenType.lp,
             value: 'LP-ETH-USDT'
         },
+        tokenValueDollar:112,
+        tokenValueYuan:12323,
         amount: '15987.09324',
         available: '15687.01234',
         locked: '312.9073',
@@ -207,14 +228,14 @@ const Template: Story<any> = withTranslation()((args: any) => {
                     <div style={{marginTop: 24}}>
                         <AssetsTable {...args} pagination={{
                             pageSize: 5
-                        }} showFiliter/>
+                        }} showFilter/>
                     </div>
                 </MemoryRouter>
             </Style>
         </>
     )
 }) as Story<any>
-
+//@ts-ignore
 export const Assets = Template.bind({})
 
 Assets.args = {

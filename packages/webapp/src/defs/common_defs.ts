@@ -1,4 +1,4 @@
-
+import * as sdk from 'loopring-sdk'
 
 export enum ActionResultCode {
     NoError,
@@ -14,15 +14,23 @@ export interface ActionResult {
     code: ActionResultCode
     data?: any
 }
+export const LAYOUT = {
+    HEADER_HEIGHT : 64,
+}
 
 export const REFRESH_RATE = 1000
 
-export const REFRESH_RATE_SLOW = 15000
-
-export const UPDATE_ACC_DELAY = 2500
-
 export const TOAST_TIME = 3000
 
-export const SHORT_INTERVAL = 200
-
 export const DAYS = 30
+
+export const BIGO = sdk.toBig(0)
+
+export enum AddressError {
+    NoError,
+    EmptyAddr,
+    InvalidAddr,
+    ENSResolveFailed,
+}
+
+export const MAPFEEBIPS = 63

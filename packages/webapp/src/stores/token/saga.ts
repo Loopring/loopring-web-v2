@@ -13,7 +13,7 @@ const getTokenMapApi = async <R extends { [ key: string ]: any }>({
                                                                   }: GetTokenMapParams<R>) => {
     let coinMap: CoinMap<any, CoinInfo<any>> = {};
     let totalCoinMap: CoinMap<any, CoinInfo<any>> = {};
-    let tokenMap:any = tokensMap;
+    let tokenMap: any = tokensMap;
     let addressIndex: AddressMap = {};
     let idIndex: IdMap = {};
     Reflect.ownKeys(tokensMap).forEach((key) => {
@@ -44,12 +44,22 @@ const getTokenMapApi = async <R extends { [ key: string ]: any }>({
             [ tokensMap[ key ].tokenId ]: key as string
         }
     })
-    return {data: {coinMap, totalCoinMap, addressIndex, idIndex, tokenMap, marketArray: marketArr, marketCoins: tokenArr}}
+    return {
+        data: {
+            coinMap,
+            totalCoinMap,
+            addressIndex,
+            idIndex,
+            tokenMap,
+            marketArray: marketArr,
+            marketCoins: tokenArr
+        }
+    }
 };
 
 export function* getPostsSaga<R extends { [ key: string ]: any }>({payload}: PayloadAction<GetTokenMapParams<R>>) {
     try {
-        const {tokensMap, marketMap, pairs, marketArr,tokenArr} = payload
+        const {tokensMap, marketMap, pairs, marketArr, tokenArr} = payload
         // @ts-ignore
         const {data} = yield call(getTokenMapApi, {tokensMap, pairs, marketArr, tokenArr});
 

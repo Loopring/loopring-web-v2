@@ -1,8 +1,8 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
-import { Modal } from '@material-ui/core';
+import { Modal } from '@mui/material';
 // import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@emotion/react';
-import { Box } from '@material-ui/core/';
+import { Box } from '@mui/material';
 import {
     ModalAccountProps,
     ModalBackButton,

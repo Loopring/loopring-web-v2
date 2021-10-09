@@ -1,2 +1,2 @@
-export * from './AmmReordTable'
+export * from './AmmRecordTable'
 export * from './Interface'

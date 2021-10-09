@@ -1,35 +1,30 @@
-import { Trans, WithTranslation } from "react-i18next"
+import {  WithTranslation } from "react-i18next"
 import { CreateAccountBase, IconType, PanelProps } from "./BasicPanel"
 
 // symbol
 export const CreateAccount_Approve_WaitForAuth = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.LoadingIcon,
-        describe1: <Trans i18nKey={'label_Approve_WaitForAuth'}>
-        Waiting for {props.symbol} Approve.
-        </Trans>
+        describe1: props.t('labelTokenAccess',{symbol:props.symbol})
     }
     return <CreateAccountBase {...props} {...propsPatch} />
 }
+
 
 // symbol
 export const CreateAccount_Approve_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_Approve_Denied'}>
-        {props.symbol} Approve Denied by user.
-    </Trans>
+        describe1: props.t('labelFailedTokenAccess',{symbol:props.symbol})
     }
     return <CreateAccountBase {...propsPatch} {...props} />
 }
 
 // symbol
-export const CreateAccount_Approve_Submited = (props: PanelProps & WithTranslation) => {
+export const CreateAccount_Approve_Submit = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.SubmitIcon,
-        describe1: <Trans i18nKey={'label_CreateAccount_Approve_Submited'}>
-        {props.symbol} Auth Submited.
-    </Trans>
+        describe1:props.t('labelSuccessTokenAccess',{symbol:props.symbol})
     }
     return <CreateAccountBase {...propsPatch} {...props} />
 }
@@ -38,20 +33,17 @@ export const CreateAccount_Approve_Submited = (props: PanelProps & WithTranslati
 export const CreateAccount_WaitForAuth = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.LoadingIcon,
-        describe1: <Trans i18nKey={'label_CreateAccount_WaitForAuth'}>
-        Waiting for Confirm CreateAccount {props.value} {props.symbol}.
-    </Trans>
+        describe1: props.t('labelDepositWaitForAuth',{symbol:props.symbol})
     }
     return <CreateAccountBase {...propsPatch} {...props} />
 }
+
 
 // value symbol
 export const CreateAccount_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_CreateAccount_Denied'}>
-        {props.value} {props.symbol} CreateAccount User Denied.
-    </Trans>
+        describe1:props.t('labelCreateAccountDepositDenied',{symbol:props.symbol})
     }
     return <CreateAccountBase {...propsPatch} {...props} />
 }
@@ -60,20 +52,17 @@ export const CreateAccount_Denied = (props: PanelProps & WithTranslation) => {
 export const CreateAccount_Failed = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.FailedIcon,
-        describe1: <Trans i18nKey={'label_CreateAccount_Failed'}>
-        {props.value} {props.symbol} CreateAccount Failed.
-    </Trans>
+        describe1: props.t('labelCreateAccountFailed',{value:props.value,symbol:props.symbol})
     }
     return <CreateAccountBase {...propsPatch} {...props} />
 }
 
 // value symbol
-export const CreateAccount_Submited = (props: PanelProps & WithTranslation) => {
+export const CreateAccount_Submit = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.SubmitIcon,
-        describe1: <Trans i18nKey={'label_CreateAccount_Submited'}>
-        { props.value } {props.symbol} CreateAccount Submited.
-    </Trans>
+        describe1: props.t('labelCreateAccountSubmit',{value:props.value,symbol:props.symbol,count:30})
+
     }
     return <CreateAccountBase {...propsPatch} {...props} />
 }

@@ -2,26 +2,35 @@ import { all, call, fork, put, take, takeLatest } from "redux-saga/effects"
 import { getSystemStatus, updateRealTimeObj, updateSystem } from './reducer'
 import { ENV, NETWORKEXTEND } from "./interface"
 import store from '../index';
-// import { reset } from '../account/reducer';
 import { LoopringAPI } from 'api_wrapper';
-import { getAmmMap, updateRealTimeAmmMap } from '../Amm/AmmMap';
+import { getAmmMap, initAmmMap, updateRealTimeAmmMap } from '../Amm/AmmMap';
 import { getTokenMap } from '../token';
-import { CustomError, ErrorMap } from '@loopring-web/common-resources';
+import { CustomError, ErrorMap, myLog } from '@loopring-web/common-resources';
 import { getAmmActivityMap } from '../Amm/AmmActivityMap';
 import { updateWalletLayer1 } from '../walletLayer1';
 import { delay } from 'rxjs/operators';
 import { LoopringSocket } from 'services/socket';
 import { statusUnset as accountStatusUnset } from '../account';
-import { ChainId } from 'loopring-sdk';
+import { ChainId, FiatPriceInfo, LoopringMap } from 'loopring-sdk';
+import { getTokenPrices } from '../tokenPrices';
+import { getTickers, } from '../ticker';
 
 const initConfig = function* <R extends { [ key: string ]: any }>(chainId: ChainId | 'unknown') {
     // store.dispatch(updateAccountStatus());
     const {tokenSymbolMap: tokensMap} = yield call(async () => await LoopringAPI.exchangeAPI?.getTokens())
     const {ammpools} = yield call(async () => await LoopringAPI.ammpoolAPI?.getAmmPoolConf());
     const {pairs, marketArr, tokenArr, markets} = yield call(async () => LoopringAPI.exchangeAPI?.getMixMarkets());
+    // const
+
+    //
+
+
     store.dispatch(getTokenMap({tokensMap, marketMap: markets, pairs, marketArr, tokenArr}))
+    store.dispatch(initAmmMap({ammpools}))
     yield take('tokenMap/getTokenMapStatus');
-    // let basePath: string = `wss://ws.${baseURL}/v3/ws?wsApiKey=${wsKey}`
+    store.dispatch(getTokenPrices(undefined));
+    yield take('tokenPrices/getTokenPricesStatus');
+    store.dispatch(getTickers({tickerKeys:marketArr}))
     store.dispatch(getAmmMap({ammpools}))
     store.dispatch(getAmmActivityMap({ammpools}))
     if (store.getState().tokenMap.status === 'ERROR') {
@@ -36,6 +45,40 @@ const initConfig = function* <R extends { [ key: string ]: any }>(chainId: Chain
     }
     store.dispatch(accountStatusUnset(undefined));
 }
+const should15MinutesUpdateDataGroup = async (): Promise<{
+    faitPrices: LoopringMap<FiatPriceInfo> | undefined,
+    faitPricesY: LoopringMap<FiatPriceInfo> | undefined,
+    gasPrice: number | undefined,
+    forex: number | undefined,
+}> => {
+    if (LoopringAPI.exchangeAPI && LoopringAPI.walletAPI) {
+        const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'USD'})).fiatPrices
+        const faitPricesY = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'CNY'})).fiatPrices
+        // const tokenPrices = (await LoopringAPI.walletAPI.getLatestTokenPrices()).tokenPrices;
+        // const tokenPrices = Reflect.ownKeys(result).reduce((prev, address) => {
+        //     const symbol = addressIndex[ address as string ].replace('LP', 'AMM');
+        //     return {...prev, [ symbol ]: result[ address ]}
+        // }, {})
+
+        const gasPrice = (await LoopringAPI.exchangeAPI.getGasPrice()).gasPrice / 1e+9;
+        const forex = faitPricesY[ 'USDT' ].price;
+        return {
+            faitPrices,
+            faitPricesY,
+            gasPrice,
+            forex,
+            // allowTrade,
+        }
+    }
+    return {
+        faitPrices: undefined,
+        faitPricesY: undefined,
+        // tokenPrices:undefined,
+        gasPrice: undefined,
+        forex: undefined,
+        // allowTrade,
+    }
+}
 
 const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) => {
     //TODO get some other reuqired id...... put into system
@@ -46,21 +89,29 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
     if (chainId === NETWORKEXTEND.NONETWORK) {
         throw new CustomError(ErrorMap.NO_NETWORK_ERROR)
     } else {
-
         LoopringAPI.InitApi(chainId as ChainId);
         if (LoopringAPI.exchangeAPI) {
+
             const {exchangeInfo} = (await LoopringAPI.exchangeAPI.getExchangeInfo())
-            const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'USD'})).fiatPrices
-            const faitPricesY = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'CNY'})).fiatPrices
-            const gasPrice = (await LoopringAPI.exchangeAPI.getGasPrice()).gasPrice / 1e+9;
+            const {faitPrices, faitPricesY, gasPrice, forex,} = await should15MinutesUpdateDataGroup();
             // : process.env.REACT_APP_API_URL_UAT;
             const baseURL = ChainId.MAINNET === chainId ? `https://${process.env.REACT_APP_API_URL}` : `https:/${process.env.REACT_APP_API_URL_UAT}`
             const socketURL = ChainId.MAINNET === chainId ? `wss://ws.${process.env.REACT_APP_API_URL}/v3/ws` : `wss://ws.${process.env.REACT_APP_API_URL_UAT}/v3/ws`;
-            const etherscanUrl = ChainId.MAINNET === chainId ? `https://etherscan.io/address/` : `https://goerli.etherscan.io/address/`
+            const etherscanBaseUrl = ChainId.MAINNET === chainId ? `https://etherscan.io/` : `https://goerli.etherscan.io/`
+            let allowTrade;
+            try{
+               allowTrade  = await LoopringAPI.exchangeAPI.getAccountServices({});
+
+            } catch {
+                allowTrade =  {register: {enable:false},
+                    order: {enable:false},
+                    joinAmm: {enable:false},
+                    dAppTrade: {enable:false},
+                    raw_data: {enable:false},}
+            }
 
             window.loopringSocket = new LoopringSocket(socketURL);
 
-            const forex = faitPricesY[ 'USDT' ].price;
             let {__timer__} = store.getState().system;
             __timer__ = ((__timer__) => {
                 if (__timer__ && __timer__ !== -1) {
@@ -68,9 +119,13 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
                 }
                 return setInterval(async () => {
                     if (LoopringAPI.exchangeAPI) {
-                        const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'CNY'})).fiatPrices
-                        const gasPrice = (await LoopringAPI.exchangeAPI.getGasPrice()).gasPrice / 1e+9
-                        const forex = faitPrices[ 'USDT' ]?.price
+                        // const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'CNY'})).fiatPrices
+                        // const faitPrices = (await LoopringAPI.exchangeAPI.getFiatPrice({legal:  Currency.usd})).fiatPrices
+                        // const faitPricesY = (await LoopringAPI.exchangeAPI.getFiatPrice({legal: 'CNY'})).fiatPrices
+                        // const tokenPrices =  (await LoopringAPI.walletAPI.getLatestTokenPrices()).tokenPrices;
+                        // const gasPrice = (await LoopringAPI.exchangeAPI.getGasPrice()).gasPrice / 1e+9
+                        // const forex = faitPricesY[ 'USDT' ]?.price
+                        const {faitPrices, gasPrice, forex} = await should15MinutesUpdateDataGroup();
                         store.dispatch(updateRealTimeAmmMap(undefined))
                         store.dispatch(updateRealTimeObj({faitPrices, gasPrice, forex}))
                     }
@@ -78,8 +133,9 @@ const getSystemsApi = async <R extends { [ key: string ]: any }>(chainId: any) =
 
             })(__timer__);
             return {
+                allowTrade,
                 chainId,
-                etherscanUrl,
+                etherscanBaseUrl,
                 env,
                 baseURL,
                 socketURL,
@@ -100,15 +156,16 @@ export function* getUpdateSystem({payload}: any) {
         const {
             env,
             baseURL,
+            allowTrade,
             faitPrices,
             gasPrice,
             forex,
             exchangeInfo,
-            etherscanUrl,
+            etherscanBaseUrl,
             __timer__
         } = yield call(getSystemsApi, chainId);
 
-        yield put(getSystemStatus({env, baseURL, faitPrices, gasPrice, forex, exchangeInfo, etherscanUrl, __timer__}));
+        yield put(getSystemStatus({env, baseURL, allowTrade,faitPrices, gasPrice, forex, exchangeInfo, etherscanBaseUrl, __timer__}));
         yield call(initConfig, chainId)
         //TODO check wallect store
     } catch (err) {

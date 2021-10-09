@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
-import { TradeTable, TradeFilterTable, RawDataTradeItem } from '@loopring-web/component-lib'
+import React from 'react'
+import { TradeTable } from '@loopring-web/component-lib'
 import { WithTranslation, withTranslation } from 'react-i18next'
 // import styled from '@emotion/styled'
-// import { Box, Paper } from '@material-ui/core'
+// import { Box, Paper } from '@mui/material'
 import { StylePaper } from '../../styled'
 import { useGetTrades } from './hooks'
 
@@ -59,11 +59,11 @@ import { useGetTrades } from './hooks'
 // //     };
 // //     time: number;
 
-const TradePanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
+const TradePanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
     const [pageSize, setPageSize] = React.useState(10);
-    const { userTrades, showLoading } = useGetTrades()
+    const {userTrades, showLoading} = useGetTrades()
     const container = React.useRef(null);
-    const { t } = rest
+    const {t} = rest
 
     React.useEffect(() => {
         // @ts-ignore
@@ -84,7 +84,8 @@ const TradePanel = withTranslation('common')((rest:WithTranslation<'common'>) =>
                     // },
                     showFilter: true,
                     showLoading: showLoading,
-                    ...rest}}/>
+                    ...rest
+                }}/>
             </div>
         </StylePaper>
     )

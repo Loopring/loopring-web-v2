@@ -1,12 +1,15 @@
 import { AccountBasePanel } from './AccountBase';
 import {AccountBaseProps } from './Interface';
-import { Box, Typography } from '@material-ui/core/';
+import { Box, Typography } from '@mui/material';
 import { Button, AnimationArrow } from '../../../index';
 import { WithTranslation, withTranslation } from 'react-i18next';
 
 export const NoAccount =  withTranslation('common')(({goDeposit,t,...props}:WithTranslation &AccountBaseProps & { goDeposit:()=>void }) => {
     return <Box flex={1} display={'flex'} flexDirection={'column'} justifyContent={'space-between'} alignItems={'center'}>
-        <AccountBasePanel {...props} t={t}/>
+        <Box display={'flex'} flex={1} marginBottom={5} justifyContent={'center'} alignItems={'center'}>
+
+            <AccountBasePanel {...props} t={t}/>
+        </Box>
         {/*<Box display={'flex'} marginTop={3} flexDirection={'column'} alignItems={'center'}>*/}
         {/*    */}
         {/*</Box>*/}
@@ -24,3 +27,4 @@ export const NoAccount =  withTranslation('common')(({goDeposit,t,...props}:With
 
 })
 
+    

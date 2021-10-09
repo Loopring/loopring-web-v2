@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { MenuItem, MenuItemProps } from "@material-ui/core";
+import { MenuItem, MenuItemProps } from '@mui/material';
 
 
 export const TabItemPlus = styled<any>(MenuItem)`
@@ -9,7 +9,7 @@ export const TabItemPlus = styled<any>(MenuItem)`
     }
 
     margin: 0;
-    padding: 0 0 0 1.6rem;
+    padding: 0 0 0 ${({theme}) => theme.unit }px;
 
     &:hover {
       background-color: transparent;

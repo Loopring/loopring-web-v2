@@ -1,7 +1,7 @@
 import { HeaderRendererProps } from 'react-data-grid';
 // import { DropDownIcon } from '@loopring-web/common-resources';
 import styled from '@emotion/styled'
-import { Box, BoxProps } from '@material-ui/core'
+import { Box, BoxProps } from '@mui/material'
 import { css } from '@emotion/react';
 import React from 'react';
 
@@ -32,7 +32,7 @@ const StyledArrowSort = styled(Box)<BoxProps & { sortdirection: 'ASC' | 'DESC' |
     border-bottom-color: ${({
                               // theme,
                               sortdirection
-                            }) => sortdirection === 'ASC' ? `var(--color-text-primary)` : `var(--color-text-third)`};
+                            }) => sortdirection === 'DESC' ? `var(--color-text-primary)` : `var(--color-text-third)`};
   }
 
   .down {
@@ -42,7 +42,7 @@ const StyledArrowSort = styled(Box)<BoxProps & { sortdirection: 'ASC' | 'DESC' |
     border-top-color: ${({
                            // theme,
                            sortdirection
-                         }) => sortdirection === 'DESC' ? `var(--color-text-primary)` : `var(--color-text-third)`};
+                         }) => sortdirection === 'ASC' ? `var(--color-text-primary)` : `var(--color-text-third)`};
     margin-top: ${({theme}) => `${theme.unit / 4}px`};
   }
 ` as (props: BoxProps & { sortdirection: 'ASC' | 'DESC' | undefined }) => JSX.Element;

@@ -1,7 +1,7 @@
 import React, { Dispatch } from 'react';
 import { ArrowSort, headerSortCell, SortableHeaderCellProps } from '../../../basic-lib';
 import { WithTranslation, withTranslation } from 'react-i18next';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 
 // type SharedHeaderCellProps<R, SR> = Pick<
 //     HeaderRendererProps<R, SR>,

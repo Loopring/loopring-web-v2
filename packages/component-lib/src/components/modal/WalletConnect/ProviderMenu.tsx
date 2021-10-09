@@ -1,8 +1,8 @@
-import { Box, Checkbox, FormControlLabel as MuiFormControlLabel } from '@material-ui/core';
+import { Box, Checkbox, FormControlLabel as MuiFormControlLabel } from '@mui/material';
 import { Trans, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import { ProviderMenuProps } from './Interface';
-import { Link, Typography } from '@material-ui/core/';
+import { Link, Typography } from '@mui/material';
 import { Button } from '../../basic-lib';
 import { CheckBoxIcon, CheckedIcon, ConnectProviders, GatewayItem } from '@loopring-web/common-resources';
 import React from 'react';
@@ -17,25 +17,26 @@ const CheckboxStyled = styled(Checkbox)`
 
 const ProviderBtnStyled = styled(Button)`
   
+  font-size: 1.4rem;
   background: var(--opacity);
   color: var(--color-text-secondary);
+  justify-content: space-between;
+  padding:0 ${({ theme }) => theme.unit * 3}px;
+  text-indent: 0.5em;
   &:hover {
     background: var(--provider-hover);
     border-color: var(--opacity);
     color: var(--color-text-button-select);
   }
+  
+  //.MuiButton-label {
+  //  display: flex;
+  //  
+  //  justify-content: space-between;
+  //  align-items: center;
+  //  margin-left: 1em;
+  //}
 
-  // width: var(--gateway-icon-size);
-  // height: var(--gateway-icon-size);
-  // border-radius: 50%;
-  .MuiButton-label {
-    display: flex;
-    text-indent: 1em;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  padding: 0 ${({ theme }) => theme.unit * 5 / 3}px;
 
   &.selected {
     position: relative;
@@ -45,6 +46,7 @@ const ProviderBtnStyled = styled(Button)`
     &:after {
       position: absolute;
       content: "\u25CF";
+      text-indent: 0em;
       color: var(--color-success);
       //width: 100%;
       display: flex;
@@ -73,7 +75,7 @@ const ProviderBtnStyled = styled(Button)`
 //padding: 0 ${({theme}) => theme.unit * 5 / 3}px;
 const BoxStyle = styled(Box)`
   ${({ theme }) => theme.border.defaultFrame({ c_key: 'blur', d_R: 1 / 2, d_W: 0 })};
-  background: var(--provider-hover);
+  background: var(--provider-agree);
 
  
 
@@ -150,7 +152,7 @@ export const ProviderMenu = ({
           <ProviderBtnStyled variant={'outlined'} size={'large'} className={
             providerName === item.key ? 'selected' : ''
           } fullWidth
-            endIcon={<img src={item.imgSrc} alt={item.key} height={18} />}
+            endIcon={<img src={item.imgSrc} alt={item.key} height={36} />}
             onClick={(e) => { _handleSelect(e, item.key, item.handleSelect ? item.handleSelect : handleSelect) }}>
             {t(item.key)}
           </ProviderBtnStyled>

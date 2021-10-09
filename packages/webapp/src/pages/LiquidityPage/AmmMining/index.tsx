@@ -1,11 +1,9 @@
 import { AmmCard, AmmProps, EmptyDefault } from '@loopring-web/component-lib';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { AmmCardProps, AmmData, AmmInData, IBData } from '@loopring-web/common-resources';
-import { Box, Grid } from '@material-ui/core';
+import { AmmCardProps, AmmInData, AmmJoinData, AmmExitData, IBData } from '@loopring-web/common-resources';
+import { Box, Grid, Tabs,Tab } from '@mui/material';
 import { useAmmMiningUI } from './hook';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import { Trans, withTranslation } from 'react-i18next';
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
 
@@ -31,7 +29,8 @@ const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap}: { amm
             <AmmCardWrap handleClick={jumpTo} {...item as any} />
         </Grid>
     ) : <Box flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'column'}>
-        <EmptyDefault height={"calc(100% - 35px)"} marginTop={10} display={'flex'} flexWrap={'nowrap'} alignItems={'center'} justifyContent={'center'}
+        <EmptyDefault height={"calc(100% - 35px)"} marginTop={10} display={'flex'} flexWrap={'nowrap'}
+                      alignItems={'center'} justifyContent={'center'}
                       flexDirection={'column'} message={() => {
             return <Trans i18nKey="labelEmptyDefault">
                 Content is Empty
@@ -39,10 +38,12 @@ const AmmList = <I extends { [ key: string ]: any }>({ammActivityViewMap}: { amm
         }}/> </Box>}   </>
 }
 
-export const AmmMiningView = withTranslation('common')(<T extends AmmData<C extends IBData<I> ? C : IBData<I>>, I,
+export const AmmMiningView = withTranslation('common')(<T extends AmmJoinData<C extends IBData<I> ? C : IBData<I>>,
+    TW extends AmmExitData<C extends IBData<I> ? C : IBData<I>>,
+    I,
     ACD extends AmmInData<I>,
     C = IBData<I>>({ammProps, t, ammActivityMap, ...rest}: {
-    ammProps: AmmProps<T, I, ACD>,
+    ammProps: AmmProps<T, TW, I, ACD>,
     ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined,
 } & any) => {
     const {

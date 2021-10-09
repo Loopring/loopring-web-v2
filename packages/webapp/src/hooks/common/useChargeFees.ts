@@ -1,3 +1,4 @@
+import * as sdk from 'loopring-sdk';
 import {
     dumpError400,
     GetOffchainFeeAmtRequest,
@@ -7,30 +8,23 @@ import {
     TokenInfo
 } from 'loopring-sdk';
 import { useAccount } from 'stores/account';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useCustomDCEffect } from 'hooks/common/useCustomDCEffect';
 import { LoopringAPI } from 'api_wrapper';
-import * as sdk from 'loopring-sdk';
-import React from 'react';
 import * as _ from 'lodash'
-import { globalSetup } from '@loopring-web/common-resources'
-import { getShowStr } from 'utils/formatter_tool';
+import { FeeInfo, globalSetup } from '@loopring-web/common-resources'
 
-export interface FeeInfo {
-    belong: string,
-    fee: number,
-    __raw__?: any,
-}
-
-export function useChargeFees(tokenSymbol: string | undefined, requestType: OffchainFeeReqType,
-    tokenMap: LoopringMap<TokenInfo> | undefined, amount?: number) {
+export function useChargeFees({ tokenSymbol, requestType, tokenMap, amount, needRefresh, }: {
+    tokenSymbol: string | undefined, requestType: OffchainFeeReqType,
+    tokenMap: LoopringMap<TokenInfo> | undefined, amount?: number, needRefresh?: boolean
+}) {
 
     const { account } = useAccount()
 
     const [chargeFeeList, setChargeFeeList] = useState<FeeInfo[]>([])
 
     const getFeeList = React.useCallback(
-        _.debounce(async (accountId: number, apiKey: string, tokenSymbol: string | undefined, requestType: OffchainFeeReqType, 
+        _.debounce(async (accountId: number, apiKey: string, tokenSymbol: string | undefined, requestType: OffchainFeeReqType,
             tokenMap: LoopringMap<TokenInfo> | undefined, amount: number | undefined) => {
 
             if (accountId === -1 || !apiKey || !tokenSymbol || typeof tokenSymbol !== 'string'
@@ -62,8 +56,10 @@ export function useChargeFees(tokenSymbol: string | undefined, requestType: Offc
                     response.raw_data.fees.forEach((item: any) => {
                         const feeRaw = item.fee
                         const tokenInfo = tokenMap[item.token]
-                        const fee = getShowStr(sdk.toBig(item.fee).div('1e' + tokenInfo.decimals).toNumber())
-                        chargeFeeList.push({ belong: item.token, fee, __raw__: feeRaw })
+                        const tokenId = tokenInfo.tokenId
+                        const fastWithDraw = tokenInfo.fastWithdrawLimit
+                        const fee = sdk.toBig(item.fee).div('1e' + tokenInfo.decimals).toString()
+                        chargeFeeList.push({ belong: item.token, fee, __raw__: { fastWithDraw, feeRaw, tokenId, } })
                     })
                 }
 
@@ -74,13 +70,17 @@ export function useChargeFees(tokenSymbol: string | undefined, requestType: Offc
             setChargeFeeList(chargeFeeList)
         }
             , globalSetup.wait)
-    , [])
+        , [])
 
     useCustomDCEffect(() => {
-
         getFeeList(account.accountId, account.apiKey, tokenSymbol, requestType, tokenMap, amount)
-
     }, [account.accountId, account.apiKey, tokenSymbol, requestType, tokenMap, amount])
+
+    useCustomDCEffect(() => {
+        if (needRefresh) {
+            getFeeList(account.accountId, account.apiKey, tokenSymbol, requestType, tokenMap, amount)
+        }
+    }, [needRefresh, account.accountId, account.apiKey, tokenSymbol, requestType, tokenMap, amount])
 
     return {
         chargeFeeList,

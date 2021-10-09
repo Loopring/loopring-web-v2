@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from '@emotion/styled'
-import { Box, Grid, MenuItem } from '@material-ui/core'
+import { Box, Grid, MenuItem } from '@mui/material'
 import { withTranslation, WithTranslation } from "react-i18next";
 import { TextField, DateRangePicker } from '../../../'
 import { Button } from '../../../basic-lib/btns'
 import { DropDownIcon } from '@loopring-web/common-resources'
-import { DateRange } from '@material-ui/lab'
+import { DateRange } from '@mui/lab'
 
 export interface FilterProps {
     handleFilterChange: ({filterType, filterDate, filterToken}: any) => void
@@ -50,20 +50,20 @@ export const Filter = withTranslation('tables', {withRef: true})(({
                                                                       handleReset,
                                                                       marketArray = [],
                                                                   }: FilterProps & WithTranslation) => {
-                                                                    const FilterOrderTypeList = [
-        {
-            label: t('labelOrderFilterAllTypes'),
-            value: 'All Types'
-        },
-        {
-            label: t('labelOrderFilterBuy'),
-            value: 'Buy'
-        },
-        {
-            label: t('labelOrderFilterSell'),
-            value: 'Sell'
-        },
-    ]
+    //                                                                 const FilterOrderTypeList = [
+    //     {
+    //         label: t('labelOrderFilterAllTypes'),
+    //         value: 'All Types'
+    //     },
+    //     {
+    //         label: t('labelOrderFilterBuy'),
+    //         value: 'Buy'
+    //     },
+    //     {
+    //         label: t('labelOrderFilterSell'),
+    //         value: 'Sell'
+    //     },
+    // ]
     // de-duplicate
     const getTokenTypeList = React.useCallback(() => {
         return [{

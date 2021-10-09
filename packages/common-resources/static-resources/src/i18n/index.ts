@@ -14,19 +14,21 @@ export type LanguageKeys = keyof typeof LanguageType
 
 export const resources = {
     en_US: {...enUS},
-    zh_CN: {...zhCN},
+    // zh_CN: {...zhCN},
 };
 
-const initLng = JSON.parse(localStorage.getItem('persist:settings') as string)?.language === `"${LanguageType.zh_CN}"` ? LanguageType.zh_CN : LanguageType.en_US
+// const initLng = JSON.parse(localStorage.getItem('persist:settings') as string)?.language === `"${LanguageType.zh_CN}"` ? LanguageType.zh_CN : LanguageType.en_US
+
+const initLng = LanguageType.en_US
 
 i18n.use(initReactI18next).init({
     resources,
-    ns: ['common', 'layout', 'tables', 'error'],
+    ns: ['common', 'layout', 'tables', 'landPage','error'],
     defaultNS: 'common',
     lng: initLng,
     load: 'currentOnly',
     fallbackLng: LanguageType.en_US,
-    supportedLngs: [LanguageType.en_US, LanguageType.zh_CN],
+    // supportedLngs: [LanguageType.en_US, LanguageType.zh_CN],
     keySeparator: false, // we do not use keys in form messages.welcome
     interpolation: {
         escapeValue: false // react already safes from xss

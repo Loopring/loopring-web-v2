@@ -1,10 +1,10 @@
 import React from 'react'
 import { Meta, Story } from '@storybook/react/types-6-0'
 
-import { Box, Breadcrumbs, Grid, Pagination, Typography, Link } from '@material-ui/core'
+import { Box, Breadcrumbs, Grid, Pagination, Typography, Link } from '@mui/material'
 import { ButtonProps, TGItemData, TGItemJSXInterface } from './Interface';
 import { BtnPercentage, Button, LinkActionStyle, ModalCloseButton, ToggleButtonGroup } from './index'
-import Switch from '@material-ui/core/Switch';
+import { Switch } from '@mui/material';
 import { WithTranslation, withTranslation } from "react-i18next";
 import styled from "@emotion/styled";
 
@@ -165,6 +165,12 @@ export const LButton: Story<ButtonProps> = withTranslation()(({t, ...rest}: With
                         }
 
                         }/>
+                        {/*<BtnPercentageDraggable selected={selected} maxValue={'Available:1001.111'} handleChanged={(value: any) => {*/}
+
+                        {/*    console.log(value)*/}
+                        {/*    setSelected(value)*/}
+                        {/*}  }/>*/}
+
                         {/*< selected={0} handleChanged={(value:any)=>console.log(value)}/>*/}
                     </Grid>
                 </Grid>
@@ -174,13 +180,13 @@ export const LButton: Story<ButtonProps> = withTranslation()(({t, ...rest}: With
                 </Grid>
                 <Grid item>
                     <Breadcrumbs aria-label="breadcrumb">
-                        <Link color="textPrimary" href="/">
+                        <Link color="textSecondary" href="/">
                             Material-UI
                         </Link>
-                        <Link color="textPrimary" href="/">
+                        <Link color="textSecondary" href="/">
                             Core
                         </Link>
-                        <Typography color="textSecondary">Breadcrumb</Typography>
+                        <Typography color="textPrimary">Breadcrumb</Typography>
                     </Breadcrumbs>
                 </Grid>
 
@@ -188,12 +194,15 @@ export const LButton: Story<ButtonProps> = withTranslation()(({t, ...rest}: With
             </Grid>
             <h4>Font</h4>
             <Grid container spacing={2} alignContent={'left'} justifyContent={'flex-start'} direction={"column"}>
-                <Grid item><h1>Font size h1 48</h1></Grid>
-                <Grid item><h2>Font size h2 36</h2></Grid>
-                <Grid item><h3>Font size h3 24</h3></Grid>
-                <Grid item><h4>Font size h4 20</h4></Grid>
-                <Grid item><h5>Font size h5 14</h5></Grid>
-                <Grid item><h6>Font size h6 12</h6></Grid>
+                <Grid item><Typography variant={'h1'}>Font size h1 48</Typography></Grid>
+                <Grid item><Typography variant={'h2'}>Font size h2 36</Typography></Grid>
+                <Grid item><Typography variant={'h3'}>Font size h3 24</Typography></Grid>
+                <Grid item><Typography variant={'h4'}>Font size h4 20</Typography></Grid>
+                <Grid item><Typography variant={'h5'}>Font size h5 16</Typography></Grid>
+                <Grid item><Typography variant={'h6'}>Font size h6 12</Typography></Grid>
+                <Grid item><Typography variant={'subtitle1'}>Font size subtitle1</Typography></Grid>
+                <Grid item><Typography variant={'body1'}>Font size body1</Typography></Grid>
+                <Grid item><Typography variant={'body2'}>Font size body2</Typography></Grid>
             </Grid>
             {/*<Grid container spacing={2} alignContent={'center'} justifyContent={'space-around'}>*/}
             {/*    /!*<Grid item> <Button variant={'outlined'} size={'large'} color={'primary'}>Large primary outlined</Button>*!/*/}

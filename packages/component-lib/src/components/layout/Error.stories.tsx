@@ -1,6 +1,6 @@
 import { Meta, Story } from '@storybook/react/types-6-0';
 import { MemoryRouter } from 'react-router-dom';
-import { Box, Container, GlobalStyles, } from '@material-ui/core';
+import { Box, Container, GlobalStyles, } from '@mui/material';
 
 import { css, Theme, useTheme } from '@emotion/react';
 import { globalCss, } from '@loopring-web/common-resources';

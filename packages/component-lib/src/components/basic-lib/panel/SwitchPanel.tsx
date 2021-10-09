@@ -4,7 +4,7 @@ import SwipeableViews, { SwipeableViewsProps } from 'react-swipeable-views';
 import React, { RefAttributes } from 'react';
 import { useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Grid, Toolbar } from "@material-ui/core";
+import { Grid, Toolbar } from '@mui/material';
 import { boxLiner, toolBarPanel } from '../../styled';
 
 
@@ -51,6 +51,8 @@ export const SwipeableViewsStyled = styled(SwipeableViews)<SwipeableViewsProps &
       align-items: stretch;
       .MuiToolbar-root{
         align-items: flex-end;
+        display: flex;
+        justify-content: space-between;
       }
     }
  

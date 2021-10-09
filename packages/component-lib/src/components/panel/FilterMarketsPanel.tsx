@@ -1,7 +1,7 @@
 import React from 'react';
-import { Tab, Tabs } from '@material-ui/core';
+import { Tab, Tabs } from '@mui/material';
 import { WithTranslation, withTranslation } from 'react-i18next';
-import { Box, Typography } from '@material-ui/core/';
+import { Box, Typography } from '@mui/material';
 import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@emotion/react';
 

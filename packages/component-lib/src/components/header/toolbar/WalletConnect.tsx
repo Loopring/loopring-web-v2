@@ -1,8 +1,8 @@
 import { WalletConnectBtnProps } from './Interface';
 import { useTranslation } from 'react-i18next';
 import React, { useEffect } from 'react';
-import { AccountStatus, getShortAddr, LoadingIcon, LockIcon, UnConnectIcon, } from '@loopring-web/common-resources';
-import { Typography } from '@material-ui/core';
+import { AccountStatus, getShortAddr, LoadingIcon, LockIcon, UnConnectIcon, CircleIcon, myLog} from '@loopring-web/common-resources';
+import { Typography } from '@mui/material';
 import { Button } from '../../basic-lib';
 import { bindHover, usePopupState } from 'material-ui-popup-state/hooks';
 import { ChainId } from 'loopring-sdk';
@@ -10,14 +10,14 @@ import styled from '@emotion/styled';
 const WalletConnectBtnStyled = styled(Button)`
   text-transform: none;
   min-width: 120px;
-
   &.wallet-btn {
     //width:;
+    justify-content: center;
     width: var(--walletconnect-width);
   }
 
   i {
-    padding-right: ${({ theme }) => theme.unit}px;
+    padding-right: ${({ theme }) => theme.unit/2}px;
     display: flex;
     justify-content: center;
     align-content: space-between;
@@ -29,41 +29,14 @@ const WalletConnectBtnStyled = styled(Button)`
   }
 
   &.no-account {
-    &:after {
-      position: absolute;
-      content: "\u25CF";
-      color: var(--color-error);
-      display: flex;
-      left: 0;
-      padding-left: ${({ theme }) => theme.unit * 2}px;
-      align-items: center;
-      font-size: ${({ theme }) => theme.fontDefault.h5};
-    }
+    
   }
   &.not-active{
-    &:after {
-      position: absolute;
-      content: "\u25CF";
-      color: var(--color-warning);
-      display: flex;
-      left: 0;
-      padding-left: ${({ theme }) => theme.unit * 2}px;
-      align-items: center;
-      font-size: ${({ theme }) => theme.fontDefault.h5};
-    }
+    
   }
 
   &.unlocked {
-    &:after {
-      position: absolute;
-      content: "\u25CF";
-      color: var(--color-success);
-      display: flex;
-      left: 0;
-      padding-left: ${({ theme }) => theme.unit * 2}px;
-      align-items: center;
-      font-size: ${({ theme }) => theme.fontDefault.h5};
-    }
+    
   }
 
   &.wrong-network {
@@ -138,6 +111,9 @@ export const WalletConnectBtn = ({
         setLabel(addressShort);
       }
       setIcon(undefined)
+
+      myLog('wallet connect account.readyState:', account.readyState)
+      
       switch (account.readyState) {
         case AccountStatus.UN_CONNECT:
           setBtnClassname('un-connect')
@@ -149,11 +125,11 @@ export const WalletConnectBtn = ({
           break
         case AccountStatus.ACTIVATED:
           setBtnClassname('unlocked')
-          // setIcon(undefined)
+          setIcon(<CircleIcon fontSize={'large'} htmlColor={'var(--color-success)'} />)
           break
         case AccountStatus.NO_ACCOUNT:
           setBtnClassname('no-account')
-          // setIcon(<EmbarIcon color={'secondary'} style={{transform: 'rotate(58deg)'}}/>)
+          setIcon(<CircleIcon fontSize={'large'}  color={'error'}/>)
           break
         case AccountStatus.DEPOSITING:
           setBtnClassname('depositing')
@@ -161,7 +137,7 @@ export const WalletConnectBtn = ({
           break
         case AccountStatus.NOT_ACTIVE:
           setBtnClassname('not-active')
-          // setIcon(<LoadingIcon color={'primary'} style={{width: 18, height: 18}}/>)
+          setIcon(<CircleIcon fontSize={'large'}  htmlColor={'var(--color-warning)'}/>)
           break
         case AccountStatus.ERROR_NETWORK:
           setBtnClassname('wrong-network')
@@ -203,8 +179,8 @@ export const WalletConnectBtn = ({
       color={'primary'}
       className={`wallet-btn ${btnClassname}`}
       onClick={_handleClick} {...bindHover(popupState)} >
-      {icon ? <Typography component={'i'} paddingRight={1}>{icon}</Typography> : <></>}
-      <Typography component={'span'} variant={'body1'} lineHeight={1}> {t(label)}  </Typography>
+      {icon ? <Typography component={'i'} marginLeft={-1} >{icon}</Typography> : <></>}
+      <Typography component={'span'} variant={'body1'} lineHeight={1} color={'inherit'}> {t(label)}  </Typography>
     </WalletConnectBtnStyled>
   </>
 

@@ -1,6 +1,6 @@
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { WithTranslation, withTranslation } from "react-i18next";
-import { Box, Grid, Typography } from '@material-ui/core/';
+import { Box, Grid, Typography } from '@mui/material';
 import { ColorDarkDefault, ColorLightDefault } from '@loopring-web/common-resources';
 import styled from '@emotion/styled';
 import React from 'react';

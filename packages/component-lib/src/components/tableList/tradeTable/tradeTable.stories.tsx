@@ -269,6 +269,7 @@ const Template: Story<any> = withTranslation()((args: any) => {
     )
 }) as Story<any>
 
+// @ts-ignore
 export const Trade = Template.bind({})
 
 Trade.args = {

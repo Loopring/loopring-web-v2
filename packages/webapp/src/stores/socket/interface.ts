@@ -1,9 +1,21 @@
 export type TickerSocket = string
 export type SocketMap = {
-    ticker?:  TickerSocket[];
+    ticker?: TickerSocket[];
     account?: boolean,
     order?: any[],
-    orderbook?: any[],
+    orderbook?: {
+        markets: any[],
+        level?: number,
+        count?: number,
+        snapshot?: boolean,
+    },
+    mixorder?: {
+        showOverlap?: boolean
+        markets: any[],
+        level?: number,
+        count?: number,
+        snapshot?: boolean,
+    },
     trade?: any[],
     candlestick?: any[],
     ammpool?: any[],

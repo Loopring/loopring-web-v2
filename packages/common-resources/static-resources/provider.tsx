@@ -18,6 +18,7 @@ export const provider = (Provider: TProvider<any>, props: any = {}) => [Provider
 export const ProviderComposer = ({providers, children}: { providers: Array<[TProvider<any>, any]>, children: any }) => {
     // @ts-ignore
     return providers.reduce((children, [Provider, props]: [TProvider<any>, any]) => {
+
             // @ts-ignore
             return <Provider {...props}>{children}</Provider>
         }

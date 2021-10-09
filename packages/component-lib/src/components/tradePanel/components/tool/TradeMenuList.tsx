@@ -2,13 +2,15 @@ import { CoinInfo, CoinKey, IBData } from '@loopring-web/common-resources';
 import { Trans, WithTranslation } from 'react-i18next';
 import React from 'react';
 import { CoinMenu, EmptyDefault, InputSelect, InputSelectProps } from '../../../basic-lib';
-import { Box, Link, Typography } from '@material-ui/core';
+import { Box, Link, Typography } from '@mui/material';
 import { TradeMenuListProps } from '../Interface';
 import { useTheme } from '@emotion/react';
 
 
 export const TradeMenuList = <T extends IBData<I>,
     I>({
+        nonZero,
+        sorted,
            t, onChangeEvent, walletMap, selected, tradeData, coinMap, _height,
            ...rest
        }: TradeMenuListProps<T, I> & WithTranslation) => {
@@ -30,10 +32,10 @@ export const TradeMenuList = <T extends IBData<I>,
     }
     const theme = useTheme();
     const backElement = React.useMemo(() => <>
-        <Typography fontSize={'body1'}>
-            <Link color="textSecondary" onClick={() => {
+        <Typography fontSize={'body1'} color="textPrimary" >
+            <Link style={{color:'var(--color-text-primary)',textAlign:'right'}}  onClick={() => {
                 onChangeEvent(0, {tradeData, to: 'button'})
-            }} style={{textAlign: 'right'}}>{t('labelCancel')}</Link>
+            }} >{t('labelCancel')}</Link>
         </Typography>
     </>, [onChangeEvent, tradeData])
     try {
@@ -50,10 +52,12 @@ export const TradeMenuList = <T extends IBData<I>,
                         typeof _height === 'number' ?
                             ` calc(${_height + 'px'}  - 2 * var(--toolbar-row-padding) - ${theme.unit * 3}px ) `
                             :` calc(${_height}  - 2 * var(--toolbar-row-padding) - ${theme.unit * 3}px )`
-                        : '410px'}
+                        : '460px'}
                 {...{
                 coinMap: coinMap, //swapData.type === 'sell' ? tradeCalcData?.sellCoinInfoMap : tradeCalcData?.buyCoinInfoMap as any,
                 filterBy,
+                nonZero,
+                sorted,
                 // height: '410px',
                 filterString: value,
                 handleSelect,

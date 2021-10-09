@@ -1,6 +1,6 @@
 import { Trans, WithTranslation } from 'react-i18next';
 import React, { ChangeEvent } from 'react';
-import { Grid, ListItemText, Typography } from '@material-ui/core';
+import { Grid, ListItemText, Typography } from '@mui/material';
 // import { Link as RouterLink } from 'react-router-dom';
 import { CloseIcon, DropDownIcon, globalSetup, IBData } from '@loopring-web/common-resources';
 import { Button, IconClearStyled, MenuItem, TextField, TradeBtnStatus, TypographyGood } from '../../index';
@@ -37,7 +37,6 @@ export const TransferWrap = <T extends IBData<I>,
     const inputButtonDefaultProps = {
         label: t('transferLabelEnterToken'),
     }
-
 
     const [address, setAddress] = React.useState<string | undefined>(addressDefault ? addressDefault : '');
     const [addressError, setAddressError] = React.useState<{ error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined>();

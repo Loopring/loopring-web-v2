@@ -1,27 +1,27 @@
 import React from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
-import * as _ from 'lodash'
-import { Button, Column, NewTagIcon, Table, TablePagination, TableProps } from '../../basic-lib'
+import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
+import { bindHover } from 'material-ui-popup-state/es';
+// import * as _ from 'lodash'
+import { Button, Column, NewTagIcon, PopoverPure, Table, TableProps } from '../../basic-lib'
 import {
-    AmmDetail, AvatarCoinStyled,
-    Currency,
+    AmmDetail,
+    AvatarCoinStyled,
     EmptyValueTag,
-    getThousandFormattedNumbers,
+    getValuePrecisionThousand,
     globalSetup,
-    MiningIcon,
     PriceTag,
-    SearchIcon,
-    TableType,
 } from '@loopring-web/common-resources';
-import { Avatar, Box, InputAdornment, OutlinedInput, Typography } from '@material-ui/core/';
+import { Avatar, Box, Typography } from '@mui/material';
 import { PoolTableProps, Row } from './Interface';
 import styled from '@emotion/styled';
-import {  TablePaddingX } from '../../styled';
-import { useDeepCompareEffect } from 'react-use';
+import { TablePaddingX } from '../../styled';
+// import { useDeepCompareEffect } from 'react-use';
 import { useHistory } from 'react-router-dom';
 import { FormatterProps } from 'react-data-grid';
 // import store from '@loopring-web/webapp/src/stores';
 import { useSettings } from '../../../stores';
+import { Currency } from 'loopring-sdk';
 
 
 // export enum TradeTypes {
@@ -64,12 +64,19 @@ const BoxStyled = styled(Box)`
 const TableStyled = styled(Box)`
     .rdg {
         border-radius: ${({theme}) => theme.unit}px;
-        --template-columns: 300px auto auto auto 130px !important;
+        --template-columns: 200px auto auto auto 200px !important;
 
         .rdg-cell.action {
         display: flex;
-        justify-content: center;                    
+        justify-content: flex-end;                    
         align-items: center;
+        }
+    }
+    .textAlignRight{
+        text-align: right;
+
+        .rdg-header-sort-cell {
+            justify-content: flex-end;
         }
     }
 
@@ -88,12 +95,12 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
     return <BoxStyled display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
 
         <Box display={'flex'} flexDirection={'row'} justifyContent={'center'} alignItems={'center'}>
-            <Box className={'logo-icon'} height={'var(--list-menu-coin-size)'}  position={'relative'}  zIndex={20}
+            <Box className={'logo-icon'} display={'flex'} height={'var(--list-menu-coin-size)'}  position={'relative'}  zIndex={20}
                  width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
                 {coinAIcon ?
                     <AvatarCoinStyled imgx={coinAIcon.x} imgy={coinAIcon.y}
-                                      imgheight={coinAIcon.height}
-                                      imgwidth={coinAIcon.width} size={24}
+                                      imgheight={coinAIcon.h}
+                                      imgwidth={coinAIcon.w} size={24}
                                       variant="circular" alt={coinAInfo?.simpleName as string}
                         // src={sellData?.icon}
                                       src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
@@ -105,11 +112,11 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
                               src={'static/images/icon-default.png'}/>
                 }</Box>
 
-            <Box className={'logo-icon'} height={'var(--list-menu-coin-size)'}   position={'relative'}  zIndex={18}   left={-8}
+            <Box className={'logo-icon'} display={'flex'} height={'var(--list-menu-coin-size)'}   position={'relative'}  zIndex={18}   left={-8}
                  width={'var(--list-menu-coin-size)'} alignItems={'center'}
                  justifyContent={'center'}>{coinBIcon ?
-                <AvatarCoinStyled imgx={coinBIcon.x} imgy={coinBIcon.y} imgheight={coinBIcon.height}
-                                  imgwidth={coinBIcon.width} size={24}
+                <AvatarCoinStyled imgx={coinBIcon.x} imgy={coinBIcon.y} imgheight={coinBIcon.h}
+                                  imgwidth={coinBIcon.w} size={24}
                                   variant="circular" alt={coinBInfo?.simpleName as string}
                     // src={sellData?.icon}
                                   src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
@@ -131,18 +138,18 @@ export const IconColumn = React.memo(<R extends AmmDetail<T>, T>({row}: { row: R
                     </Typography>
                 </Typography>
                 {/*<Typography variant={'body2'} component={'span'} color={'textSecondary'}>*/}
-                {/*    {t('labelLiquidity') + ' ' + currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(amountDollar)*/}
+                {/*    {t('labelLiquidity') + ' ' + currency === Currency.usd ? PriceTag.Dollar + getThousandFormattedNumbers(amountDollar)*/}
                 {/*        : PriceTag.Yuan + getThousandFormattedNumbers(amountYuan)}*/}
                 {/*</Typography>*/}
             </Typography>
-            {isActivity ? <Typography component={'span'} paddingRight={1}><MiningIcon/> </Typography> : undefined}
+            {isActivity ? <Typography component={'span'} paddingRight={1}> </Typography> : undefined}
             {isNew ? <NewTagIcon/> : undefined}
         </Box>
     </BoxStyled>
 
 }) as <R extends AmmDetail<T>, T>(props: { row: R }) => JSX.Element;
 
-const columnMode = <R extends Row<T>, T>({t}: WithTranslation, currency: 'USD' | 'CYN'): Column<R, unknown>[] => [
+const columnMode = <R extends Row<T>, T>({t}: WithTranslation, getPopoverState: any, coinJson: any, tokenPrices: any, currency: any, forex?: number): Column<R, unknown>[] => [
     {
         key: 'pools',
         sortable: true,
@@ -160,139 +167,206 @@ const columnMode = <R extends Row<T>, T>({t}: WithTranslation, currency: 'USD' |
         key: 'liquidity',
         sortable: true,
         width: 'auto',
+        headerCellClass: 'textAlignRight',
         name: t('labelLiquidity'),
-        formatter: ({row}) => {
-            const {amountDollar, amountYuan = 0} = row
-            return <Typography
-                component={'span'}> {
-                typeof amountDollar === 'undefined' ? EmptyValueTag :
-                    typeof amountDollar === 'undefined' ? EmptyValueTag : currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(amountDollar) : PriceTag.Yuan + getThousandFormattedNumbers(amountYuan)}
-            </Typography>
+        formatter: (({row, rowIdx}) => {
+            const {coinA, coinB, totalA, totalB, amountDollar, amountYuan} = row as any
+            const popoverState = getPopoverState(rowIdx)
 
-        }
+            const coinAIcon: any = coinJson[coinA];
+            const coinBIcon: any = coinJson[coinB];
+            // const priceADollar = faitPrices[coinA]?.price || 0
+            // const priceAYuan = priceADollar * (forex || 6.5)
+            // const priceBDollar = faitPrices[coinB]?.price || 0
+            // const priceBYuan = priceBDollar * (forex || 6.5)
+            const liquidityLpToken = currency === Currency.usd ? amountDollar : amountYuan
+            return(
+                <>  
+                    <Box className={'textAlignRight'}>
+                        <Button {...bindHover(popoverState)}>
+                            <Typography
+                                component={'span'} style={{ cursor: 'pointer' }}> {
+                                    typeof liquidityLpToken === 'undefined' ? EmptyValueTag : (currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan) + getValuePrecisionThousand(liquidityLpToken, undefined, undefined, undefined, true, { isFait: true })}
+                            </Typography>
+                        </Button>
+                    </Box>
+                    <PopoverPure
+                        className={'arrow-top-center'}
+                        {...bindPopper(popoverState)}
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                        transformOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                        }}>
+                            <Box padding={1.5} paddingLeft={1}>
+                                <Typography component={'span'} display={'flex'} flexDirection={'row'}
+                                    justifyContent={'space-between'} alignItems={'center'}
+                                    style={{ textTransform: 'capitalize' }} color={'textPrimary'}>
+                                    <Box component={'span'} className={'logo-icon'} display={'flex'}
+                                        height={'var(--list-menu-coin-size)'}
+                                        width={'var(--list-menu-coin-size)'} alignItems={'center'}
+                                        
+                                        justifyContent={'flex-start'}>
+                                        {coinAIcon ?
+                                            <AvatarCoinStyled imgx={coinAIcon.x} imgy={coinAIcon.y}
+                                                imgheight={coinAIcon.h}
+                                                imgwidth={coinAIcon.w} size={20}
+                                                variant="circular"
+                                                style={{ marginTop: 2 }}
+                                                alt={coinA as string}
+                                                src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'} />
+                                            :
+                                            <Avatar variant="circular" alt={coinA as string}
+                                                style={{
+                                                    height: 'var(--list-menu-coin-size))',
+                                                    width: 'var(--list-menu-coin-size)'
+                                                }}
+                                                src={'static/images/icon-default.png'} />
+                                        }
+                                        <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} marginLeft={1 / 2}
+                                            height={20}
+                                            lineHeight={'20px'}>
+                                            {coinA}
+                                        </Typography>
+                                    </Box>
+                                        
+                                    <Typography component={'span'} color={'var(--color-text-primary)'} variant={'body2'} height={20} marginLeft={10}
+                                        lineHeight={'20px'}>
+                                        {getValuePrecisionThousand(totalA, undefined, 2)}
+                                    </Typography>
+
+                                </Typography>
+                                <Typography component={'span'} display={'flex'} flexDirection={'row'}
+                                    justifyContent={'space-between'} alignItems={'center'} marginTop={1 / 2}
+                                    style={{ textTransform: 'capitalize' }}>
+                                    <Box component={'span'} className={'logo-icon'} display={'flex'}
+                                        height={'var(--list-menu-coin-size)'}
+                                        width={'var(--list-menu-coin-size)'} alignItems={'center'}
+                                        justifyContent={'flex-start'}>{coinBIcon ?
+                                            <AvatarCoinStyled style={{ marginTop: 2 }} imgx={coinBIcon.x} imgy={coinBIcon.y}
+                                                imgheight={coinBIcon.h}
+                                                imgwidth={coinBIcon.w} size={20}
+                                                variant="circular"
+                                                alt={coinB as string}
+                                                src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'} />
+                                            : <Avatar variant="circular" alt={coinB as string}
+                                                style={{
+                                                    height: 'var(--list-menu-coin-size)',
+                                                    width: 'var(--list-menu-coin-size)'
+                                                }}
+                                                src={'static/images/icon-default.png'} />}
+                                        <Typography variant={'body2'} color={'var(--color-text-primary)'} component={'span'} marginRight={5} marginLeft={1 / 2} alignSelf={'right'}
+                                            height={20}
+                                            lineHeight={'20px'}>
+                                            {coinB}
+                                        </Typography>            
+                                    </Box>
+                                        
+                                    <Typography variant={'body2'} color={'var(--color-text-primary)'} component={'span'} height={20}
+                                        marginLeft={10}
+                                        lineHeight={'20px'}>
+                                        {getValuePrecisionThousand(totalB, undefined, 2)}
+                                    </Typography>
+
+                                </Typography>
+                            </Box>
+                    </PopoverPure>
+                </>
+            )
+        })
     },
     {
         key: 'volume24',
         sortable: true,
         width: 'auto',
         minWidth: 156,
+        headerCellClass: 'textAlignRight',
         name: t('label24TradeVolume'),
         formatter: ({row}) => {
             //priceDollar, priceYuan, ,priceDollar: EmptyValueTag, priceYuan: EmptyValueTag
             // typeof priceDollar === 'undefined' ? EmptyValueTag :
-            //     currency === Currency.dollar ? PriceTag.Dollar + getThousandFormattedNumbers(Number(priceDollar)) : PriceTag.Yuan + getThousandFormattedNumbers(Number(priceYuan))}
-
+            //     currency === Currency.usd ? PriceTag.Dollar + getThousandFormattedNumbers(Number(priceDollar)) : PriceTag.Yuan + getThousandFormattedNumbers(Number(priceYuan))}
             const {volume} = row.tradeFloat && row.tradeFloat.volume ? row.tradeFloat : {volume: EmptyValueTag};
-            return <Typography
-                component={'span'}> {volume && Number.isFinite(volume) ? getThousandFormattedNumbers(Number(volume || 0), 2) : volume} {row.tradeFloat && row.tradeFloat.volume ? row.coinAInfo.simpleName : ''}
-            </Typography>
+            const totalAmountDollar = (Number(volume) || 0) * (tokenPrices[row.coinAInfo.simpleName] || 0)
+            const totalAmountYuan = (Number(volume) || 0) * (tokenPrices[row.coinAInfo.simpleName] || 0) * (forex || 6.5)
+            const renderValue = currency === Currency.usd ? totalAmountDollar : totalAmountYuan
+            const renderUnit = currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan
+            return <Box className={'textAlignRight'}>
+                <Typography
+                    component={'span'}> {volume && Number.isFinite(volume)
+                        ? renderUnit + getValuePrecisionThousand(renderValue, undefined, undefined, undefined, true, { isFait: true }) : EmptyValueTag} {/* {row.tradeFloat && row.tradeFloat.volume ? row.coinAInfo.simpleName : ''} */}
+                </Typography>
+            </Box> 
         }
     },
-    // {
-    //     key: 'reward24',
-    //     sortable: false,
-    //     minWidth: 136,
-    //     width: 'auto',
-    //     name: t('label24Reward'),
-    //     formatter: ({row}) => {
-    //         const reward: EmptyValueTag | number = (row.tradeFloat && typeof row.tradeFloat.reward !== 'undefined') ? row.tradeFloat.reward : EmptyValueTag;
-    //         return <Typography
-    //             component={'span'}> {
-    //             reward === EmptyValueTag ? reward :
-    //                 currency === Currency.dollar ?
-    //                     PriceTag.Dollar + getThousandFormattedNumbers(reward)
-    //                     : PriceTag.Yuan + getThousandFormattedNumbers(reward)}
-    //         </Typography>
-    //     }
-    // },
     {
-        key: 'APY',
-        sortable: false,
-        name: t('labelAPY'),
+        key: 'APR',
+        sortable: true,
+        name: t('labelAPR'),
         width: 'auto',
         maxWidth: 68,
+        headerCellClass: 'textAlignRight',
         formatter: ({row}) => {
-            const APY = typeof row.APY !== undefined && row.APY ? row?.APY : EmptyValueTag;
-            return <Typography
-                component={'span'}> {APY === EmptyValueTag || typeof APY === 'undefined' ? EmptyValueTag : APY + '%'}</Typography>
+            const APR = typeof row.APR !== undefined && row.APR ? row?.APR : EmptyValueTag;
+            return <Box className={'textAlignRight'}>
+                <Typography
+                component={'span'}> {APR === EmptyValueTag || typeof APR === 'undefined' ? EmptyValueTag : getValuePrecisionThousand(APR, 2, 2, 2, true) + '%'}</Typography>
+            </Box>
         }
     },
     {
-        key: 'trade',
+        key: 'action',
         name: t('labelAction'),
         // maxWidth: 120,
         width: 'auto',
-        headerCellClass: `action`,
+        headerCellClass: `textAlignRight`,
         cellClass: () => `action`,
         formatter: ({row}) => {
-            return <Button
-                href={`${window.location.href}/pools/coinPair/${row?.coinAInfo?.simpleName + '-' + row?.coinBInfo?.simpleName}`}
-                className={'btn'} variant={'outlined'} size={'small'}>
-                {t('labelTradePool')}</Button>
+            return <Box className={'action'}>
+                <Button
+                    href={`${window.location.href}/pools/coinPair/${row?.coinAInfo?.simpleName + '-' + row?.coinBInfo?.simpleName}`}
+                    className={'btn'} variant={'outlined'} size={'small'}>
+                    {t('labelTradePool')}</Button>
+            </Box> 
         }
     },
 ]
-
 
 export const PoolsTable = withTranslation('tables')(
     <T extends { [ key: string ]: any }>({
                                              t, i18n,
                                              tReady,
-                                             handlePageChange,
-                                             pagination,
+                                             // handlePageChange,
+                                             // pagination,
                                              showFilter = true,
                                              rawData,
+                                             sortMethod,
                                              wait = globalSetup.wait,
                                              tableHeight = 350,
+                                             coinJson,
+                                             forex,
+                                             tokenPrices,
+                                             showLoading,
                                              ...rest
                                          }: WithTranslation & PoolTableProps<T>) => {
-        const [filterBy, setFilterBy] = React.useState<string>('');
-        const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
-        const [totalData, setTotalData] = React.useState<Row<T>[]>(rawData && Array.isArray(rawData) ? rawData : []);
-        
+        // const [filterBy, setFilterBy] = React.useState<string>('');
+        // const [page, setPage] = React.useState(rest?.page ? rest.page : 1);
+        // const [totalData, setTotalData] = React.useState<Row<T>[]>(rawData && Array.isArray(rawData) ? rawData : []);
+        const {currency} = useSettings();
         const history = useHistory()
 
-        useDeepCompareEffect(() => {
-            setTotalData(rawData)
-        }, [rawData])
+        const getPopoverState = React.useCallback((label: string) => {
+            return usePopupState({variant: 'popover', popupId: `popup-poolsTable-${label}`})
+        }, [])
 
         const defaultArgs: TableProps<any, any> = {
             rawData,
-            columnMode: columnMode({t, i18n, tReady}, Currency.dollar),
+            columnMode: columnMode({t, i18n, tReady}/* , Currency.usd */, getPopoverState, coinJson, tokenPrices, currency, forex),
             generateRows: (rawData: any) => rawData,
             generateColumns: ({columnsRaw}) => columnsRaw as Column<Row<any>, unknown>[],
-        }
-
-
-        const pageSize = pagination ? pagination.pageSize : 10;
-
-        const getRenderData = React.useCallback(() => pagination
-            ? totalData.slice((page - 1) * pageSize, page * pageSize)
-            : totalData
-            , [page, pageSize, pagination, totalData])
-
-        const updateData = React.useCallback(({TableType, filterBy}) => {
-            if (TableType === 'filter') {
-                setPage(1)
-            }
-            // @ts-ignore
-            let newData = rawData.filter((row) => {
-                if (row && row.coinAInfo) {
-                    // @ts-ignore
-                    return RegExp(filterBy, 'ig').test(row.coinAInfo.simpleName) || RegExp(filterBy, 'ig').test(row.coinBInfo.simpleName);
-                }
-            })
-            setTotalData(newData);
-        }, [rawData]);
-
-        const handleFilterChange = React.useCallback(_.debounce((filterBy: string) => {
-            updateData({TableType: TableType.filter, filterBy})
-        }, wait), []);
-
-        const _handlePageChange =(page: number) => {
-            setPage(page);
-            updateData({TableType: TableType.page, currPage: page})
-            handlePageChange(page);
         }
 
         const onRowClick = React.useCallback((_rowIdx: any, row: any) => {
@@ -304,102 +378,19 @@ export const PoolsTable = withTranslation('tables')(
         }, [history])
 
         return <TableStyled flex={1} flexDirection={'column'} display={'flex'}>
-            {showFilter && <Box display={'flex'} margin={3}>
-              <OutlinedInput
-                  {...{
-                      placeholder: t('labelFilter'),
-                      value: filterBy,
-                      onChange: (event: any) => {
-                          setFilterBy(event.currentTarget?.value);
-                          handleFilterChange(event.currentTarget?.value);
-                      }
-                  }
-                  }
-                  key={'search'}
-                  className={'search'}
-                  aria-label={'search'}
-                  startAdornment={<InputAdornment position="start">
-                      <SearchIcon/>
-                  </InputAdornment>}
-              />
-            </Box>}
-            <Table style={{ height: tableHeight }} className={'scrollable'} {...{
+
+            <Table /* className={'scrollable'} */
+                   style={{ height: tableHeight }}
+                 {...{
                 ...defaultArgs, t, i18n, tReady, ...rest,
-                rawData: getRenderData(),
-                onRowClick: (index, row) => onRowClick(index, row),
-                // sortMethod: (sortedRows: Row<T>[], sortColumn) => {
-                //     switch (sortColumn) {
-                //         case 'pools':
-                //             sortedRows = sortedRows.sort((a, b) => a?.coinAInfo?.simpleName.localeCompare(b?.coinAInfo?.simpleName))
-                //             break;
-                //         case 'liquidity':
-                //             sortedRows = sortedRows.sort((a, b) => a.amountDollar - b.amountDollar)
-                //             break;
-                //         case 'volume24':
-                //             sortedRows = sortedRows.sort((a, b) => a.tradeFloat.priceDollar - b.tradeFloat.priceDollar)
-                //             break;
-                //         case 'reward24':
-                //             sortedRows = sortedRows.sort((a, b) => a.tradeFloat.reward - b.tradeFloat.reward)
-                //             break;
-                //         case 'APY':
-                //             sortedRows = sortedRows.sort((a, b) => a.tradeFloat.APY - b.tradeFloat.APY)
-                //             break;
-                //         default:
-                //             break;
-                //     }
-                //     return sortedRows;
-                // }
-                sortMethod: (sortedRows: any[], sortColumn: string) => {
-                    switch (sortColumn) {
-                        case 'pools':
-                            sortedRows = sortedRows.sort((a, b) => {
-                                const valueA = a.coinA
-                                const valueB = b.coinA
-                                return valueA.localeCompare(valueB)
-                            })
-                            break;
-                        case 'liquidity':
-                            sortedRows = sortedRows.sort((a, b) => {
-                                const valueA = a[ 'amountDollar' ]
-                                const valueB = b[ 'amountDollar' ]
-                                if (valueA && valueB) {
-                                    return valueB - valueA
-                                }
-                                if (valueA && !valueB) {
-                                    return -1
-                                }
-                                if (!valueA && valueB) {
-                                    return 1
-                                }
-                                return 0
-                            })
-                            break;
-                        case 'volume24':
-                            sortedRows = sortedRows.sort((a, b) => {
-                                const valueA = a.tradeFloat.volume
-                                const valueB = b.tradeFloat.volume
-                                if (valueA && valueB) {
-                                    return valueB - valueA
-                                }
-                                if (valueA && !valueB) {
-                                    return -1
-                                }
-                                if (!valueA && valueB) {
-                                    return 1
-                                }
-                                return 0
-                            })
-                            break;
-                        default:
-                            return sortedRows
-                    }
-                    return sortedRows;
+                rawData: rawData,
+                onRowClick: (index, row) => {
+                    onRowClick(index, row)
                 },
+                showloading: showLoading,
+                sortMethod: (sortedRows: any[], sortColumn: string) => sortMethod(sortedRows, sortColumn),
                 sortDefaultKey: 'liquidity',
             }}/>
-            {pagination && rawData && rawData.length > 0 && (
-                <TablePagination page={page} pageSize={pageSize} total={totalData.length}
-                                 onPageChange={_handlePageChange}/>
-            )}
+            
         </TableStyled>
     })

@@ -1,7 +1,7 @@
 import configureStore from "./configureStore";
-import {GlobalStyles, ThemeProvider as MuThemeProvider} from "@material-ui/core";
-import LocalizationProvider from '@material-ui/pickers/LocalizationProvider';
-import MomentUtils from '@material-ui/lab/AdapterMoment';
+import {GlobalStyles, ThemeProvider as MuThemeProvider} from '@mui/material';
+import {LocalizationProvider} from '@mui/lab';
+import DateAdapter from '@mui/lab/AdapterMoment';
 import {I18nextProvider} from "react-i18next";
 import {Provider} from "react-redux";
 import StoryRouter from 'storybook-react-router';
@@ -67,7 +67,7 @@ export const decorators = [
 // const language = getTheme(store.getState().settings.language);
     StoryRouter();
     return <ProviderComposer providers={[
-      provider(LocalizationProvider, {dateAdapter: MomentUtils}),
+      provider(LocalizationProvider, {dateAdapter: DateAdapter}),
       provider(I18nextProvider, {i18n: i18n}),
       provider(MuThemeProvider, {theme: theme}),
       provider(ThemeProvider, {theme: theme}),

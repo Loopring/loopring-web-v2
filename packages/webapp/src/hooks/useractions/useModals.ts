@@ -7,7 +7,8 @@ import {
     setShowDeposit,
     setShowResetAccount,
     setShowTransfer,
-    setShowWithdraw, Transaction,
+    setShowWithdraw,
+    Transaction,
 } from '@loopring-web/component-lib'
 
 import { useAccount } from 'stores/account'
@@ -16,14 +17,23 @@ export function useModals() {
     const dispatch = useDispatch()
     const {account: {readyState}} = useAccount()
     const {t} = useTranslation('common')
-    const showDeposit = React.useCallback(({isShow,symbol}:ModalStatePlayLoad & Transaction) => dispatch(setShowDeposit({
-        isShow,symbol
+    const showDeposit = React.useCallback(({
+                                               isShow,
+                                               symbol
+                                           }: ModalStatePlayLoad & Transaction) => dispatch(setShowDeposit({
+        isShow, symbol
     })), [dispatch])
-    const showTransfer = React.useCallback(({isShow,symbol}: ModalStatePlayLoad & Transaction) => dispatch(setShowTransfer({
-        isShow,symbol
+    const showTransfer = React.useCallback(({
+                                                isShow,
+                                                symbol
+                                            }: ModalStatePlayLoad & Transaction) => dispatch(setShowTransfer({
+        isShow, symbol
     })), [dispatch])
-    const showWithdraw = React.useCallback(({isShow,symbol}: ModalStatePlayLoad & Transaction) => dispatch(setShowWithdraw({
-        isShow,symbol
+    const showWithdraw = React.useCallback(({
+                                                isShow,
+                                                symbol
+                                            }: ModalStatePlayLoad & Transaction) => dispatch(setShowWithdraw({
+        isShow, symbol
     })), [dispatch])
     const showResetAccount = React.useCallback((isShow: boolean) => dispatch(setShowResetAccount({
         isShow

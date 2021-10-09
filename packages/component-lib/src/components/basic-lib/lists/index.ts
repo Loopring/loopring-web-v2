@@ -1,4 +1,4 @@
-import { MenuItem as MuiMenuItem, Select, SelectProps } from '@material-ui/core';
+import { MenuItem as MuiMenuItem, Select, SelectProps } from '@mui/material';
 import styled from '@emotion/styled';
 import { MuiMenuItemProps } from './Interface';
 import React from 'react';
@@ -21,23 +21,27 @@ export const MenuItem = styled(MuiMenuItem)<MuiMenuItemProps>`
 
 export const OutlineSelect = styled(Select)`
   //padding: 0;
-  
+  min-width: var(--btn-min-width);
   //background-color: transparent;
   color: var(--color-text-secondary);
-  padding: .3rem 1.2rem .3rem .8rem;
   //&.MuiInputBase-root {
   //  min-width: auto;
   //  width: auto;
   //}
-
-  svg {
-    //right: .4rem;
-    top: ${({theme}) => theme.unit -3}px;
-    position: absolute;
-    //pointer-events: none;
-    //transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-    //color: var(--color-text-secondary)
+  .MuiInput-input{
+    padding: .3rem .3rem .3rem .8rem;
   }
+  // svg {
+  //   //right: .4rem;
+  //   top: ${({theme}) => theme.unit -3}px;
+  //   position: absolute;
+  //   //pointer-events: none;
+  //   //transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  //   //color: var(--color-text-secondary)
+  // }
+ 
+  
+
 
   //.MuiSelect-iconOpen {
   //  transform: rotate(180deg)
@@ -52,6 +56,7 @@ export const OutlineSelect = styled(Select)`
     &:before {
       content: '';
       display: none;
+      pointer-events: none;
     }
   }
 
@@ -70,6 +75,7 @@ export const OutlineSelect = styled(Select)`
     margin: 0 auto;
     width: 60%;
     border: 0;
+    pointer-events: none;
   }
 ` as React.ComponentType<SelectProps>;
 
@@ -83,7 +89,7 @@ export const OutlineSelectItem = styled(MenuItem)<any>`
       border-left-color: transparent;
     }
   }
- 
+  
 
   &.Mui-selected, &.Mui-selected.Mui-focusVisible {
     padding: ${({theme}) => `${theme.unit * 1} ${theme.unit * 1} 0 ${theme.unit * 1} `};

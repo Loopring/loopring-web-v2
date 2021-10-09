@@ -1,5 +1,5 @@
 import { WithTranslation } from 'react-i18next';
-import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import { ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { NotificationItem } from './Interface';
 import styled from '@emotion/styled';
 
@@ -88,7 +88,7 @@ const ListItemStyled = styled(ListItem)`
 //   }
 // `
 export const WalletNotificationListItem = ({t, label, startIcon, handleClick}: NotificationItem & WithTranslation) => {
-    return <ListItemStyled button alignItems="flex-start" onClick={handleClick ? handleClick : undefined}
+    return <ListItemStyled button={false} alignItems="flex-start" onClick={handleClick ? handleClick : undefined}
                            className={`wallet-alert wallet-${startIcon.className}`}>
         <ListItemIcon>{startIcon.iconItem}</ListItemIcon>
         <ListItemText primary={t(label.i18nKey)}/>

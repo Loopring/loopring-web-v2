@@ -19,6 +19,7 @@ export const account:Account = {
     eddsaKey: '',
     publicKey: {},
     level: '',
+    keySeed: '',
     nonce: undefined,
     keyNonce: undefined,
     connectName: ConnectProviders.unknown,
@@ -162,8 +163,10 @@ export const coinType = {
 export const tradeCalcData: TradeCalcData<CoinType> = {
     coinSell: 'ETH', //name
     coinBuy: 'LRC',
-    BtoS: 0,
-    StoB: 0,
+    BtoS: '1,11',
+    StoB: '1,11',
+    buyPrecision: 5,
+    sellPrecision: 7,
     coinInfoMap: coinMap,
     sellCoinInfoMap: coinMap,
     buyCoinInfoMap: coinMap,
@@ -178,12 +181,14 @@ export const ammCalcData: AmmInData<CoinType> = {
     myCoinA: {belong: 'ETH', balance: 1000, tradeValue: 0},
     myCoinB: {belong: 'LRC', balance: 1000, tradeValue: 0},
     lpCoinA: {belong: 'ETH', balance: 1000, tradeValue: 0},
-    lpCoinB: {belong: 'ETH', balance: 1000, tradeValue: 0},
+    lpCoinB: {belong: 'LRC', balance: 122, tradeValue: 0},
     lpCoin: {belong: 'ETH', balance: 1000, tradeValue: 0},
     AtoB: 50,
+    BtoA: 50,
     coinInfoMap: coinMap,
     slippage: 0.5,
-    fee: '1%',
+    fee: '0.01',
+    percentage: '0.01',
 }
 
 export const layer2ItemData = List<HeaderMenuItemInterface>([{

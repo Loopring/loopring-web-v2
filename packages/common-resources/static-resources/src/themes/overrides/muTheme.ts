@@ -1,4 +1,4 @@
-import { createMuiTheme } from "@material-ui/core";
+import { createTheme } from '@mui/material';
 import { ColorDarkDefault, ColorLightDefault } from "../css/color-lib";
 import { borderFunc, unit } from "./utils";
 import {
@@ -32,22 +32,21 @@ import {
     MuiToolbar,
     MuiAlert,
     MuiSnackbar,
-    radius,
+    radius, MuiFormLabel, MuiBreadcrumbs, MuiDialogTitle, MuiDialog,
 } from "./overrides-mui";
 import { MuPickDate } from './overrides-date-pick';
 import { fontDefault } from "../css/global";
 import { LoopringTheme, ThemeKeys } from '../interface';
-import shadows from '@material-ui/core/styles/shadows';
-import * as _ from "lodash"
+// import { shadows } from '@mui/system';
+// import * as _ from "lodash"
 
 export { unit };
 export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
     const colorBase: typeof ColorDarkDefault = themeMode === 'dark' ? ColorDarkDefault : ColorLightDefault;
-    // @ts-ignore
-    let _shadows =_.cloneDeep(shadows);
+    // let _shadows =_.cloneDeep(shadows);
     // _shadows[1] = colorBase.shadow;
-    // _shadows[2] = colorBase.shadow2;
-    const theme = createMuiTheme({
+    // _shadows[2] = colorBase.shadowHeader;
+    const theme = createTheme({
         spacing: unit,
         palette: {
             mode: themeMode,
@@ -89,6 +88,9 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             warning:{
                 main: colorBase.warning,
             },
+            success:{
+                main: colorBase.success,
+            },
             error: {
                 main: colorBase.error,
                 dark: colorBase.error,
@@ -101,23 +103,29 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             fontSize: 14,
             h1: {
                 fontSize: fontDefault.h1,
-                lineHeight: '4.6rem'
+                lineHeight: '4.6rem',
+                fontWeight:500
             },
             h2: {
                 fontSize: fontDefault.h2,
-                lineHeight: '3.8rem'
+                lineHeight: '3.8rem',
+                fontWeight:500
             },
             h3: {
                 fontSize: fontDefault.h3,
-                lineHeight: '3.2rem'
+                lineHeight: '3.2rem',
+                fontWeight:500
             },
             h4: {
                 fontSize: fontDefault.h4,
                 lineHeight: '2.8rem',
+                fontWeight:400
+
             },
             h5: {
                 fontSize: fontDefault.h5,
                 lineHeight: '2.4rem',
+                fontWeight:400,
                 margin:0
             },
             h6: {
@@ -125,19 +133,23 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
                 margin: 0,
             },
             subtitle1: {
-                fontSize: 24,
+                fontSize: 16,
+                lineHeight: '2.4rem',
+                fontWeight:500
             },
             button: {
                 fontSize: 20,
-                fontColor: colorBase.textButton,
+                color: colorBase.textButton,
+                fontWeight:400
             },
             body1: {
                 fontSize: fontDefault.body1,
-                fontColor: colorBase.textPrimary,
+                color: colorBase.textPrimary,
+                fontWeight:400
             },
             body2: {
                 fontSize: 12,
-                fontColor: colorBase.textSecondary,
+                color: colorBase.textSecondary,
             },
         },
         // shadows:,
@@ -149,20 +161,22 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             MuiLink: MuiLink({colorBase}),
             MuiModal: MuiModal({colorBase}),
             // MuiBackdrop:MuiBackdrop({colorBase}),
-            MuiPopover: MuiPopover({colorBase}),
+            MuiPopover: MuiPopover(),
             MuiToolbar: MuiToolbar(),
             MuiSvgIcon: MuiSvgIcon(),
             MuiTabs: MuiTabs(),
             MuiTab: MuiTab({colorBase}),
             MuiButtonBase: MuiButtonBase,
-            MuiRadio: MuiRadio({colorBase}),
+            MuiRadio: MuiRadio(),
             MuiButton: MuiButton({colorBase, themeMode}),
             MuiToggleButton: MuiToggleButton({colorBase}),
             // MuiToggleButtonGroup: MuiToggleButtonGroup({colorBase}),
-            MuiSwitch: MuiSwitch({colorBase}),
+            MuiSwitch: MuiSwitch(),
             MuiIconButton: MuiIconButton({colorBase}),
             MuiPaginationItem: MuiPaginationItem({colorBase}),
-            MuiTextField: MuiTextField(),
+            MuiTextField: MuiTextField({colorBase}),
+            MuiBreadcrumbs:MuiBreadcrumbs(),
+            MuiFormLabel:MuiFormLabel({colorBase}),
             MuiInputBase: MuiInputBase({colorBase,themeMode}),
             MuiMenu: MuiMenu({colorBase}),
             MuiMenuItem: MuiMenuItem({colorBase,themeMode}),
@@ -175,6 +189,8 @@ export const getTheme = (themeMode: ThemeKeys): LoopringTheme => {
             MuiDivider: MuiDivider({colorBase}),
             MuiAlert: MuiAlert({colorBase}),
             MuiSnackbar: MuiSnackbar(),
+            MuiDialogTitle:MuiDialogTitle({colorBase}),
+            MuiDialog:MuiDialog({colorBase}),
             ...MuPickDate({colorBase, themeMode})
         },
         shape: {borderRadius: radius}

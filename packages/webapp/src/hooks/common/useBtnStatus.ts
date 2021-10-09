@@ -1,9 +1,19 @@
 import React from 'react'
-import { TradeBtnStatus } from '@loopring-web/component-lib'
+import { BtnInfo, TradeBtnStatus } from '@loopring-web/component-lib'
 
 export function useBtnStatus() {
 
-    const [btnStatus, setBtnStatus, ] = React.useState<TradeBtnStatus>(TradeBtnStatus.AVAILABLE)
+    const [ btnStatus, setBtnStatus, ] = React.useState<TradeBtnStatus>(TradeBtnStatus.AVAILABLE)
+
+    const [ btnInfo, setBtnInfo, ] = React.useState<BtnInfo | undefined>(undefined)
+
+    const setLabelAndParams = React.useCallback((label: string, params: {[key: string]: string}) => {
+        setBtnInfo({ label, params, })
+    }, [setBtnInfo])
+
+    const resetBtnInfo = React.useCallback(() => {
+        setBtnInfo(undefined)
+    }, [setBtnInfo])
 
     const enableBtn = React.useCallback(() => {
         setBtnStatus(TradeBtnStatus.AVAILABLE)
@@ -22,7 +32,10 @@ export function useBtnStatus() {
     }, [])
 
     return {
+        btnInfo,
         btnStatus,
+        setLabelAndParams,
+        resetBtnInfo,
         enableBtn,
         disableBtn,
         setLoadingBtn,

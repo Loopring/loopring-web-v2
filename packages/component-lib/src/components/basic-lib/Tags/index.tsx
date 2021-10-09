@@ -1,4 +1,4 @@
-import { SvgIcon } from '@material-ui/core';
+import { SvgIcon } from '@mui/material';
 
 export const NewTagIcon = () => <SvgIcon className={'tag'} width="25" height="12" viewBox="0 0 25 12" fill="none"
                                          xmlns="http://www.w3.org/2000/svg">

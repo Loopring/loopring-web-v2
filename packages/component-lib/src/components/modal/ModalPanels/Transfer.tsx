@@ -5,8 +5,7 @@ import { IconType, PanelProps, TransferBase } from "./BasicPanel"
 export const Transfer_WaitForAuth = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.LoadingIcon,
-        describe1: <Trans i18nKey={'label_WaitForAuth'}>
-        </Trans>
+        describe1: props.t('labelWaitForAuth')
     }
     return <TransferBase {...propsPatch} {...props} />
 }
@@ -15,7 +14,7 @@ export const Transfer_WaitForAuth = (props: PanelProps & WithTranslation) => {
 export const Transfer_First_Method_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_First_Method_Denied'}>
+        describe1: <Trans i18nKey={'labelFirstSignDenied'}>
             Transfer_First_Method_Denied.
         </Trans>
     }
@@ -26,7 +25,7 @@ export const Transfer_First_Method_Denied = (props: PanelProps & WithTranslation
 export const Transfer_User_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_Denied'}>
+        describe1: <Trans i18nKey={'labelSignDenied'}>
         </Trans>
     }
     return <TransferBase {...propsPatch} {...props} />
@@ -36,7 +35,7 @@ export const Transfer_User_Denied = (props: PanelProps & WithTranslation) => {
 export const Transfer_In_Progress = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.LoadingIcon,
-        describe1: <Trans i18nKey={'label_Transfer_In_Progress'}>
+        describe1: <Trans i18nKey={'labelTransferInProgress'}>
         </Trans>
     }
     return <TransferBase {...propsPatch} {...props} />
@@ -46,9 +45,7 @@ export const Transfer_In_Progress = (props: PanelProps & WithTranslation) => {
 export const Transfer_Success = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.DoneIcon,
-        describe1: <Trans i18nKey={'label_Transfer_Success'}>
-        Transfer {props.value}{props.symbol} successfully!
-        </Trans>
+        describe1: props.t('labelTransferSuccess',{symbol:props.symbol,value:props.value})
     }
     return <TransferBase {...propsPatch} {...props} />
 }
@@ -57,9 +54,7 @@ export const Transfer_Success = (props: PanelProps & WithTranslation) => {
 export const Transfer_Failed = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.FailedIcon,
-        describe1: <Trans i18nKey={'label_Transfer_Failed'}>
-            Transfer {props.value}{props.symbol} failed!
-        </Trans>
+        describe1:  props.t('labelTransferFailed',{symbol:props.symbol,value:props.value})
     }
     return <TransferBase {...propsPatch} {...props} />
 }

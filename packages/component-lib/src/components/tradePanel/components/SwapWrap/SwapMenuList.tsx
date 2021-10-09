@@ -25,6 +25,8 @@ export const SwapMenuList = <T extends IBData<I>,
         });
     }, [swapData, onChangeEvent])
     return <TradeMenuList  {...{
+        nonZero: false,
+        sorted: true,
         ...rest,
         selected,
         tradeData,
