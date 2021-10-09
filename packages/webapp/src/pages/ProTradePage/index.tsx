@@ -244,7 +244,8 @@ export const OrderbookPage = withTranslation('common')(() => {
             onResizeStop={onResize}
             resizeHandle={<IconButton size={'medium'} style={{position: 'absolute', zIndex: 78, right: 0, bottom: 0}}
                                       className={'resize-holder'}>
-                <ResizeIcon style={{marginRight: `-${unit}px`, marginBottom: `-${unit}px`}}/></IconButton>}
+                <ResizeIcon htmlColor={'var(--color-text-third)'}
+                            style={{marginRight: `-${unit}px`, marginBottom: `-${unit}px`}}/></IconButton>}
             draggableHandle={'.drag-holder'}
             breakpoints={layoutConfigs[ 0 ].breakpoints}
             cols={layoutConfigs[ 0 ].cols}
@@ -256,7 +257,8 @@ export const OrderbookPage = withTranslation('common')(() => {
                                  component={'section'} position={'relative'}>
                     {ViewList[ layout.i ]}
                     <IconButton size={'medium'} style={{position: 'absolute', zIndex: 78, right: 0, top: 0}}
-                                className={'drag-holder'}><DragIcon style={{marginRight: `-${unit}px`, marginTop: ''}}/></IconButton>
+                                className={'drag-holder'}><DragIcon htmlColor={'var(--color-text-third)'}
+                                                                    style={{marginRight: `-${unit}px`, marginTop: ''}}/></IconButton>
                 </BoxStyle>
             })}
 

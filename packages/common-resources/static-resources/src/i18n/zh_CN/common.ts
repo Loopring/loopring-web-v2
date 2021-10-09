@@ -374,5 +374,9 @@ export default {
     labelConfirm: '确定',
     labelSettingFee: '',
     descriptionSettingFee: '',
-    labelBtnEdit:''
+    labelBtnEdit: '',
+    labelSettingChargeFeeOrder: '',
+    DesSettingChargeFeeOrder: '',
+    labelReset: '',
+    labelQueryFeeOK: '',
 }
