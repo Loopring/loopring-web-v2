@@ -3,7 +3,7 @@ import { bindTrigger } from 'material-ui-popup-state/es';
 import { usePopupState, bindPopper } from 'material-ui-popup-state/hooks';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { Divider, Box, Typography, Grid, MenuItem, Checkbox, ClickAwayListener } from '@mui/material'
-import { ScaleAreaChart, ChartType, testKlineData, SubIndicator, PopoverPure } from '@loopring-web/component-lib'
+import { ScaleAreaChart, ChartType, SubIndicator, PopoverPure } from '@loopring-web/component-lib'
 import { KLineFeaturesIcon, DepthViewData, MarketType, depth2ViewData } from '@loopring-web/common-resources'
 import styled from '@emotion/styled'
 import { TradingInterval } from 'loopring-sdk'
@@ -23,18 +23,13 @@ const ChartItemStyled = styled(Typography)`
     cursor: pointer;
 `
 
-const formatDateData = testKlineData.map(d => ({
-    ...d,
-    date: new Date(d.date)
-}))
-
 export const ChartView = withTranslation('common')(({market, rowLength, t, i18n, ...rest}: 
     {
         market?: MarketType,
         rowLength: number,
     } & WithTranslation) => {
 
-    const { candlestickViewData, genCandlestickData } = useKlineChart(market)
+    const { candlestickViewData, setCandlestickViewData, genCandlestickData } = useKlineChart(market)
     const [timeInterval, setTimeInterval] = React.useState(TradingInterval.hr4)
     const [subChart, setSubChart] = React.useState(SubIndicator.VOLUME)
     const [chosenIndicators, setChosenIndicators] = React.useState<string[]>(chartFearturesList.map(o => o.id))
