@@ -354,7 +354,6 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
 
         }
 
-        myLog('swap directly 111')
 
     }, [pageTradeLite, allowTrade])
     const swapBtnClickArray = Object.assign(_.cloneDeep(btnClickMap), {
