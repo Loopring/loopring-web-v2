@@ -41,6 +41,8 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
         handleError,
         ammData,
         accStatus,
+        coinAPrecision,
+        coinBPrecision,
         ...rest
     }: AmmDepositWrapProps<T, I, ACD, C> & WithTranslation) => {
     const coinARef = React.useRef();
@@ -152,7 +154,8 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
                 isHideError: true,
                 order: 'right',
                 inputData: ammData ? ammData.coinA : {} as any,
-                coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
+                coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any,
+                coinPrecision: coinAPrecision,
             }} />
             <Box alignSelf={"center"} marginY={1}>
                 <SvgStyled >
@@ -166,7 +169,8 @@ export const AmmDepositWrap = <T extends AmmJoinData<C extends IBData<I> ? C : I
                 isHideError: true,
                 order: 'right',
                 inputData: ammData ? ammData.coinB : {} as any,
-                coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any
+                coinMap: ammCalcData ? ammCalcData.coinInfoMap : {} as any,
+                coinPrecision: coinBPrecision,
             }} />
         </Grid>
 

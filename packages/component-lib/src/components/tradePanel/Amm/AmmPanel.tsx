@@ -73,6 +73,8 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
         width,
         anchors,
         accStatus,
+        coinAPrecision,
+        coinBPrecision,
         ...rest
     }: AmmProps<T, TW, I, ACD, C> & WithTranslation) => {
 
@@ -156,6 +158,8 @@ export const AmmPanel = withTranslation('common', {withRef: true})(<T extends Am
                 tokenAProps: {...tokenDepositAProps},
                 tokenBProps: {...tokenDepositBProps},
                 accStatus,
+                coinAPrecision,
+                coinBPrecision,
             }} />, [
                 rest, ammChgDepositData,
                 tokenDepositAProps, tokenDepositBProps, anchors,
