@@ -1,7 +1,7 @@
 import { WithTranslation, withTranslation } from 'react-i18next';
 import QRCode from 'qrcode.react';
 import styled from '@emotion/styled';
-import { Box, Modal, Typography } from '@material-ui/core';
+import { Box, Modal, Typography } from '@mui/material';
 import { ModalQRCodeProps, QRCodeProps } from './Interface';
 import { ModalCloseButton } from '../../basic-lib';
 
@@ -47,7 +47,7 @@ export const QRCodePanel = ((
     return <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'} flexDirection={'column'}>
         {title && (
             <Typography variant={'h4'} component='h3' className="modalTitle" marginBottom={3}>{title}</Typography>)}
-        <QRCode value={url} size={160} style={{padding: 5, backgroundColor: '#fff'}} aria-label={`link:${url}`}/>
+        <QRCode value={url} size={160} style={{padding: 8, backgroundColor: '#fff'}} aria-label={`link:${url}`}/>
         {description && (<Typography variant={'body1'} marginBottom={3} marginTop={1}>{description}</Typography>)}
 
     </Box>

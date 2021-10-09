@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react'
-import { RawDataAmmItem, AmmSideTypes } from '@loopring-web/component-lib'
+import React from 'react'
+import { AmmSideTypes, RawDataAmmItem } from '@loopring-web/component-lib'
 import { LoopringAPI } from 'api_wrapper'
 import { AmmTxType } from 'loopring-sdk'
-import { volumeToCount } from '../../../hooks/help';
-import { useAccount } from '../../../stores/account';
-import { useTokenMap } from '../../../stores/token';
+import { volumeToCount } from 'hooks/help';
+import { useAccount } from 'stores/account';
+import { useTokenMap } from 'stores/token';
 
 export function useGetAmmRecord() {
     const [ammRecordList, setAmmRecordList] = React.useState<RawDataAmmItem[]>([])
     const [showLoading, setShowLoading] = React.useState(true)
-    const { account:{accountId,apiKey} } =  useAccount()
-    const { tokenMap } = useTokenMap()
+    const {account: {accountId, apiKey}} = useAccount()
+    const {tokenMap} = useTokenMap()
 
     const getTokenName = React.useCallback((tokenId?: number) => {
         if (tokenMap) {
@@ -18,7 +18,7 @@ export function useGetAmmRecord() {
             const values = Object.values(tokenMap)
             const index = values.findIndex(o => o.tokenId === tokenId)
             if (index > -1) {
-                return keys[index]
+                return keys[ index ]
             }
             return ''
         }
@@ -35,18 +35,18 @@ export function useGetAmmRecord() {
                     side: o.txType === AmmTxType.JOIN ? AmmSideTypes.Join : AmmSideTypes.Exit,
                     amount: {
                         from: {
-                            key: getTokenName(o.poolTokens[0]?.tokenId),
-                            value: String(volumeToCount(getTokenName(o.poolTokens[0]?.tokenId), o.poolTokens[0]?.actualAmount))
+                            key: getTokenName(o.poolTokens[ 0 ]?.tokenId),
+                            value: String(volumeToCount(getTokenName(o.poolTokens[ 0 ]?.tokenId), o.poolTokens[ 0 ]?.actualAmount))
                         },
                         to: {
-                            key: getTokenName(o.poolTokens[1]?.tokenId),
-                            value: String(volumeToCount(getTokenName(o.poolTokens[1]?.tokenId), o.poolTokens[1]?.actualAmount))
+                            key: getTokenName(o.poolTokens[ 1 ]?.tokenId),
+                            value: String(volumeToCount(getTokenName(o.poolTokens[ 1 ]?.tokenId), o.poolTokens[ 1 ]?.actualAmount))
                         }
                     },
                     lpTokenAmount: String(volumeToCount(getTokenName(o.lpToken?.tokenId), o.lpToken?.actualAmount)),
                     fee: {
-                        key: getTokenName(o.poolTokens[1]?.tokenId),
-                        value: volumeToCount(getTokenName(o.poolTokens[1]?.tokenId), o.poolTokens[1]?.feeAmount)?.toFixed(6)
+                        key: getTokenName(o.poolTokens[ 1 ]?.tokenId),
+                        value: volumeToCount(getTokenName(o.poolTokens[ 1 ]?.tokenId), o.poolTokens[ 1 ]?.feeAmount)?.toFixed(6)
                     },
                     time: o.updatedAt
                 }))
@@ -55,12 +55,12 @@ export function useGetAmmRecord() {
             }
         }
     }, [accountId, apiKey, getTokenName])
-    
-    useEffect(() => {
+
+    React.useEffect(() => {
         getAmmpoolList()
     }, [getAmmpoolList])
 
-    return  {
+    return {
         ammRecordList,
         showLoading,
     }

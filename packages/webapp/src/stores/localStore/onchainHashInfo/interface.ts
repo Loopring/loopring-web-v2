@@ -3,6 +3,6 @@ export interface TxInfo {
 }
 
 export interface OnchainHashInfo {
-    depositHashes: { [key: string]: TxInfo }
-    withdrawHashes: { [key: string]: TxInfo }
+    depositHashes: { [ key: string ]: TxInfo }
+    withdrawHashes: { [ key: string ]: TxInfo }
 }

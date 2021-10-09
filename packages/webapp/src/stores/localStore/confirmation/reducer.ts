@@ -17,4 +17,4 @@ const confirmationSlice: Slice<Confirmation> = createSlice<Confirmation, SliceCa
 });
 
 export { confirmationSlice }
-export const { confirm } = confirmationSlice.actions
+export const {confirm} = confirmationSlice.actions

@@ -8,14 +8,20 @@ const initialState: SystemStatus = {
     // network:'NONETWORK',
     baseURL: '',
     socketURL: '',
-    etherscanUrl: '',
-    faitPrices: undefined,
-    gasPrice: undefined,
-    forex: undefined,
+    etherscanBaseUrl: '',
+    faitPrices: {},
+    gasPrice: -1,
+    forex: 6.5,
     __timer__: -1,
     status: 'PENDING',
     errorMessage: null,
-
+    allowTrade: {
+        register: {enable:false},
+        order: {enable:false},
+        joinAmm: {enable:false},
+        dAppTrade: {enable:false},
+        raw_data: {enable:false},
+    },
     exchangeInfo: undefined,
 
     topics: [],
@@ -68,12 +74,16 @@ const systemSlice: Slice<SystemStatus> = createSlice({
                 faitPrices,
                 gasPrice,
                 forex,
+                allowTrade,
                 exchangeInfo,
                 __timer__,
-                etherscanUrl
+                etherscanBaseUrl
             } = action.payload;
             if (env) {
                 state.env = env
+            }
+            if (allowTrade) {
+                state.allowTrade = allowTrade
             }
             if (socketURL) {
                 state.socketURL = socketURL;
@@ -94,8 +104,8 @@ const systemSlice: Slice<SystemStatus> = createSlice({
             if (exchangeInfo) {
                 state.exchangeInfo = exchangeInfo
             }
-            if (etherscanUrl) {
-                state.etherscanUrl = etherscanUrl
+            if (etherscanBaseUrl) {
+                state.etherscanBaseUrl = etherscanBaseUrl
             }
 
             if (__timer__) {

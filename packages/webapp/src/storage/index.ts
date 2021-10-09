@@ -1,5 +1,5 @@
 import { TxStatus } from 'loopring-sdk';
-import { myLog } from "utils/log_tools"
+import { myLog } from "@loopring-web/common-resources";
 import { Account } from "@loopring-web/common-resources";
 
 export enum CONSTANTS {
@@ -18,16 +18,16 @@ export enum CONSTANTS {
     WalletConnect = 'walletconnect',
 }
 
-const SESSION_TIMEOUT_SECONDS = 600
+const SESSION_TIMEOUT_SECONDS = 60 * 15
 
 export class UserStorage {
 
-    public static getLocalDepositHash(account: Account): { [key: string]: any } | undefined {
+    public static getLocalDepositHash(account: Account): { [ key: string ]: any } | undefined {
         let depositsHash = window.localStorage.getItem(CONSTANTS.DepositHash);
         if (depositsHash) {
             depositsHash = JSON.parse(depositsHash);
-            if (depositsHash && account.accAddress && depositsHash[account.accAddress]) {
-                return depositsHash[account.accAddress]
+            if (depositsHash && account.accAddress && depositsHash[ account.accAddress ]) {
+                return depositsHash[ account.accAddress ]
             }
         }
         return undefined
@@ -35,20 +35,20 @@ export class UserStorage {
 
     public static clearDepositHash(account: Account, value: string) {
         // @ts-ignore
-        let depositsHash: { [key: string]: object } = window.localStorage.getItem(CONSTANTS.DepositHash);
+        let depositsHash: { [ key: string ]: object } = window.localStorage.getItem(CONSTANTS.DepositHash);
         depositsHash = depositsHash ? JSON.parse(depositsHash as any) : {};
-        if (depositsHash[account.accAddress] && depositsHash[account.accAddress][value]) {
-            delete depositsHash[account.accAddress][value];
+        if (depositsHash[ account.accAddress ] && depositsHash[ account.accAddress ][ value ]) {
+            delete depositsHash[ account.accAddress ][ value ];
         }
     }
 
     public static setLocalDepositHash(account: Account, value: string, status: TxStatus): void {
         // @ts-ignore
-        let depositsHash: { [key: string]: object } = window.localStorage.getItem(CONSTANTS.DepositHash);
+        let depositsHash: { [ key: string ]: object } = window.localStorage.getItem(CONSTANTS.DepositHash);
         depositsHash = depositsHash ? JSON.parse(depositsHash as any) : {};
-        depositsHash[account.accAddress] = {
-            ...depositsHash[account.accAddress],
-            [value]: status,
+        depositsHash[ account.accAddress ] = {
+            ...depositsHash[ account.accAddress ],
+            [ value ]: status,
         }
     }
 

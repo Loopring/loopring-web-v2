@@ -1,13 +1,16 @@
 import { WithTranslation, withTranslation, } from 'react-i18next'
-import { Box, OutlinedInput, InputAdornment } from '@material-ui/core'
+import { Box, InputAdornment, OutlinedInput, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 
 import React from 'react';
 import { useAmmMapUI } from './hook';
 
-import { PoolsTable } from '@loopring-web/component-lib';
+import { PoolsTable, InputSearch } from '@loopring-web/component-lib';
 import { SearchIcon } from '@loopring-web/common-resources'
+import { useSettings } from '@loopring-web/component-lib';
+import { useSystem } from 'stores/system';
 import { AmmPoolActivityRule, LoopringMap } from 'loopring-sdk';
+import store from 'stores'
 
 const WrapperStyled = styled(Box)`
     flex: 1;
@@ -17,7 +20,7 @@ const WrapperStyled = styled(Box)`
 
 const StylePaper = styled(Box)`
     width: 100%;
-    height: 100%;
+    //height: 100%;
     flex: 1;
     background: var(--color-box);
     border-radius: ${({theme}) => theme.unit}px;
@@ -29,70 +32,31 @@ const StylePaper = styled(Box)`
 
 ` as typeof Box;
 
-// const StylePaper = styled(Box)`
-//     width: 100%;
-//     height: 100%;
-//     flex: 1;
-//     background-color: ${({theme}) => theme.colorBase.background().default};
-//     border-radius: ${({theme}) => theme.unit}px;
-
 export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]: any }, I extends { [ key: string ]: any }>
-({t, ammActivityMap, ...rest}: WithTranslation
-    & {
-    ammActivityMap: LoopringMap<LoopringMap<AmmPoolActivityRule[]>> | undefined }) => {
+({t, ...rest}: WithTranslation
+    & {}) => {
     const container = React.useRef(null);
-    const [pageSize, setPageSize] = React.useState(10);
-    const [filterValue, setFilterValue] = React.useState('');
-    const [tableHeight, setTableHeight] = React.useState(0)
-    const {updateTickersUI, rawData, page} = useAmmMapUI({pageSize});
+    const {filteredData, sortMethod, tableHeight, getFilteredData, filterValue, rawData } = useAmmMapUI();
+    const { coinJson } = useSettings();
+    const { forex } = useSystem()
+    const { tokenPrices } = store.getState().tokenPrices
+    const showLoading = rawData && !rawData.length
 
-    const getCurrentHeight = React.useCallback(() => {
-        const height = window.innerHeight
-        const tableHeight = height - 64 - 117
-        setTableHeight(tableHeight)
-      }, [])
-
-    React.useEffect(() => {
-        getCurrentHeight()
-        window.addEventListener('resize', getCurrentHeight)
-        return () => {
-            window.removeEventListener('resize', getCurrentHeight)
-        }
-    }, [getCurrentHeight])
-
-    // React.useEffect(() => {
-    //     // @ts-ignore
-    //     let height = container?.current?.offsetHeight;
-    //     if (height) {
-    //         setPageSize(Math.floor((height - 20) / 44) - 1);
-    //     }
-    // }, [container, pageSize]);
-
-    const getFilteredData = React.useCallback(() => {
-        if (!filterValue) {
-            return rawData
-        }
-        return rawData.filter(o => {
-            const coinA = o.coinAInfo.name.toLowerCase()
-            const coinB = o.coinBInfo.name.toLowerCase()
-            const formattedValue = filterValue.toLowerCase()
-            return coinA.includes(formattedValue) || coinB.includes(formattedValue) 
-        })
-    }, [filterValue, rawData])
-
-    const handlePageChange = React.useCallback((page) => {
-        updateTickersUI(page)
-    }, [updateTickersUI]);
     return (
         <>
-            <WrapperStyled>
-                <Box marginBottom={3}>
-                    <OutlinedInput
+            <WrapperStyled flex={1} marginBottom={3}>
+                <Box marginBottom={3} display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
+                    <Typography
+                        variant={'h2'}
+                        component={'h2'}
+                    >{t('labelLiquidityPageTitle')}</Typography>
+                    {/* <OutlinedInput
                         {...{
                             placeholder: t('labelFilter'),
                             value: filterValue,
                             onChange: (event: any) => {
-                                setFilterValue(event.currentTarget?.value);
+                                getFilteredData(event)
+                               //
                             }
                         }}
                         key={'search'}
@@ -101,19 +65,25 @@ export const PoolsPanel = withTranslation('common')(<R extends { [ key: string ]
                         startAdornment={<InputAdornment position="start">
                             <SearchIcon/>
                         </InputAdornment>}
+                    /> */}
+                    <InputSearch
+                        key={'search'}
+                        className={'search'}
+                        aria-label={'search'}
+                        placeholder={t('labelFilter')}
+                        value={filterValue}
+                        onChange={getFilteredData as any}
                     />
                 </Box>
-                <StylePaper display={'flex'} flexDirection={'column'} ref={container}>
+                <StylePaper display={'flex'}  flexDirection={'column'} ref={container} className={'table-divide'} >
                     <PoolsTable {...{
-                        rawData: getFilteredData(),
-                        handlePageChange,
-                        page,
-                        // pagination: {
-                        //     pageSize
-                        // },
-                        showFilter: false,
-                        showLoading: !rawData.length,
-                        tableHeight: tableHeight
+                        rawData: filteredData,
+                        showLoading: showLoading,
+                        tableHeight: tableHeight,
+                        sortMethod: sortMethod,
+                        coinJson,
+                        forex,
+                        tokenPrices,
                     }} />
                 </StylePaper>
             </WrapperStyled>

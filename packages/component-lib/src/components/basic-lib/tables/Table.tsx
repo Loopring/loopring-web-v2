@@ -9,7 +9,8 @@ import { Column, DataGridProps, SortableHeaderCell, SortableHeaderCellProps, Tab
 import { EmptyDefault } from '../empty';
 // import loadingSvg from '@loopring-web/common-resources/assets/svg/loading.svg'
 import { LoadingIcon } from '@loopring-web/common-resources'
-import { Box, IconButton } from '@material-ui/core';
+import { Box, IconButton } from '@mui/material';
+import { css } from '@emotion/react';
 
 interface TableWrapperStyledProps {
   showloading: 'true' | 'false'
@@ -20,42 +21,79 @@ const TableWrapperStyled = styled(Box)<TableWrapperStyledProps>`
   position: relative;
   flex: 1;
 
-  &::after {
-    visibility: ${({ showloading }) => showloading === 'true' ? 'visible' : 'hidden'};
-    position: absolute;
-    z-index: 20;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.2;
-    background-color: var(--color-global-bg);
-    content: '';
-    pointer-events: auto;
-  }
+  // &::after {
+  //   visibility: ${({ showloading }) => showloading === 'true' ? 'visible' : 'hidden'};
+  //   position: absolute;
+  //   z-index: 20;
+  //   top: 0;
+  //   right: 0;
+  //   bottom: 0;
+  //   left: 0;
+  //   width: 100%;
+  //   height: 100%;
+  //   opacity: 0.2;
+  //   background-color: var(--color-global-bg);
+  //   content: '';
+  //   pointer-events: auto;
+  // }
 ` as any
+const hr = ({theme}: any) => css`
+  border-radius: ${theme.unit / 2}px;
+  content: '';
+  display: block;
+  height: 1px;
+  //margin-bottom: -2px;
+  background: var(--color-divide);
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+`;
+
+const hrShort = ({theme}: any) => css`
+  border-radius: ${theme.unit / 2}px;
+  content: '';
+  display: block;
+  height: 1px;
+  width: calc(100% - ${theme.unit * 6}px);
+  //margin-bottom: -2px;
+  background: var(--color-divide);
+  position: absolute;
+  left: ${theme.unit * 3}px;
+  right: 0;
+  bottom: 0;
+`;
 
 export const DataGridStyled = styled(DataGrid)`
   width: 100%;
   height: 100%;
 
+  .table-divide &.rdg .rdg-header-row {
+    &:after{
+      ${hr}
+    }
+  }
+  .table-divide-short &.rdg .rdg-header-row {
+    &:after{
+      ${hrShort}
+    }
+  }
   &.rdg {
     min-height: 350px;
     color: var(--color-text-primary);
     //color: inherit;
     box-sizing: border-box;
-    border: rgba(0, 0, 0, 0) 0px solid;
+    border: rgba(0, 0, 0, 0) 0 solid;
     //background-color: inherit;
-    font-family: Roboto;
-
     .rdg-header-row {
+      
       color: var(--color-text-secondary);
       width: 100%;
       background-color: inherit;
       font-weight: normal;
+      
     }
+    
 
     &.scrollable .rdg-header-row {
       background: var(--color-box);
@@ -97,8 +135,9 @@ export const DataGridStyled = styled(DataGrid)`
 
     .rdg-row {
       box-sizing: border-box;
-      background-color: inherit;
+      background: inherit;
       width: 100%;
+      transition: background 0.4s ease-out;
 
       &:hover {
         background: var(--color-box-hover);
@@ -183,7 +222,7 @@ export const generateRows = <Row, SR>(rawData: [][], rest: TableProps<Row, SR>):
 };
 
 export type ExtraTableProps = {
-    showLoading?: boolean
+    showloading?: boolean
 }
 
 //TODO:
@@ -206,7 +245,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
         onScroll,
         onRowClick,
         rowHeight,
-        showLoading,
+        showloading,
         t,
         ...rest
     } = props;
@@ -220,7 +259,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
     /*** sort handle start ***/
     const [sortColumns, setSortColumns] = React.useState<readonly Readonly<SortColumn>[]>([{
         columnKey: sortDefaultKey as any,
-        direction: sortInitDirection ? sortInitDirection : undefined as any
+        direction: sortInitDirection ? sortInitDirection : 'ASC' as any
     }]);
 
     // const [[sortColumn, sortDirection], setSort] = React.useState<[string | undefined, SortDirection]>([sortDefaultKey, sortInitDirection ? sortInitDirection : undefined]);
@@ -258,7 +297,8 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
     `
 
     /*** sort handle end ***/
-    return <TableWrapperStyled showloading={!!showLoading ? 'true' : 'false'}>
+
+    return <TableWrapperStyled showloading={!!showloading ? 'true' : 'false'}>
         <DataGridStyled
             {...rest}
             onScroll={onScroll}
@@ -270,11 +310,10 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
             rowHeight={rowHeight ? rowHeight : 44}
             onRowsChange={setRows}
             onSortColumnsChange={onSortColumnsChange}
-            // sortDirection={sortDirection}
             rowRenderer={rowRenderer as any}
             sortColumns={sortColumns}
             onRowClick={onRowClick}
-            emptyRowsRenderer={!showLoading ? (() => EmptyRowsRenderer ? EmptyRowsRenderer :
+            emptyRowsRenderer={!showloading ? (() => EmptyRowsRenderer ? EmptyRowsRenderer :
                 <EmptyDefault height={`calc(100% - var(--header-row-height))`} message={() => {
                     return <RenderEmptyMsg>
                         <Trans i18nKey="labelEmptyDefault">
@@ -283,7 +322,7 @@ export const Table = <R, SR>(props: DataGridProps<R, SR> & WithTranslation & Ext
                     </RenderEmptyMsg>
                 }}/>) : null}
         />
-        {showLoading && (
+        {showloading && (
             <LoadingStyled color={'inherit'}>
               <LoadingIcon />
             </LoadingStyled>

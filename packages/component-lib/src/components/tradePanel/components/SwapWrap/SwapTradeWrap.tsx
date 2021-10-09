@@ -3,23 +3,23 @@ import {
     CoinInfo,
     CoinMap,
     EmptyValueTag,
-    ExchangeIcon,
+    ExchangeIcon, getValuePrecisionThousand,
     IBData,
     ReverseIcon,
     SlippageTolerance,
-    TradeCalcData
+    TradeCalcData,
 } from '@loopring-web/common-resources';
 import { WithTranslation } from 'react-i18next';
 import React from 'react';
-import { Grid, Typography } from '@material-ui/core';
-import { Button, InputButton, LinkActionStyle, PopoverPure } from '../../../basic-lib';
+import { Grid, Typography } from '@mui/material';
+import {  InputButton, LinkActionStyle, PopoverPure } from '../../../basic-lib';
 import { usePopupState } from 'material-ui-popup-state/hooks';
 import { bindHover, bindPopover } from 'material-ui-popup-state/es';
 import { SwapTradeProps } from './Interface';
 import { useSettings } from '../../../../stores';
-import { IconButtonStyled } from '../Styled';
+import { IconButtonStyled,ButtonStyle } from '../Styled';
 import { SlippagePanel } from '../tool';
-import { Box } from '@material-ui/core/';
+import { Box } from '@mui/material';
 
 export const SwapTradeWrap = <T extends IBData<I>,
     I,
@@ -58,11 +58,11 @@ export const SwapTradeWrap = <T extends IBData<I>,
         return disabled || tradeCalcData === undefined || tradeCalcData.coinInfoMap === undefined;
     }, [disabled, tradeCalcData]);
 
-    const handleOnClick = React.useCallback((_event: React.MouseEvent, ref: any) => {
+    const handleOnClick = React.useCallback((_event: React.MouseEvent,_name:string, ref: any) => {
         const focus: 'buy' | 'sell' = ref.current === buyRef.current ? 'buy' : 'sell';
         onChangeEvent(1, {tradeData: swapData.tradeData, type: focus, to: 'menu'});
     }, [swapData, onChangeEvent])
-    const handleCountChange = React.useCallback((ibData: IBData<I>, _ref: any) => {
+    const handleCountChange = React.useCallback((ibData: IBData<I>,_name:string,_ref: any) => {
         const focus: 'buy' | 'sell' = _ref?.current === buyRef.current ? 'buy' : 'sell';
         if (swapData.tradeData[ focus ].tradeValue !== ibData.tradeValue) {
             onChangeEvent(0, {tradeData: {...swapData.tradeData, [ focus ]: ibData}, type: focus, to: 'button'});
@@ -116,7 +116,7 @@ export const SwapTradeWrap = <T extends IBData<I>,
     }
     const propsBuy = {
         label: t('tokenEnterReceiveToken'),
-        subLabel: t('tokenHave'),
+        // subLabel: t('tokenHave'),
         emptyText: t('tokenSelectToken'),
         placeholderText: '0.00',
         maxAllow: false,
@@ -142,36 +142,32 @@ export const SwapTradeWrap = <T extends IBData<I>,
 
         }
         if (swapBtnI18nKey) {
-            const key = swapBtnI18nKey.split(',');
+            const key = swapBtnI18nKey.split('|');
             return t(key[ 0 ], key && key[ 1 ] ? {arg: key[ 1 ]} : undefined)
         } else {
             return t(`swapBtn`)
         }
 
     }, [error, t, swapBtnI18nKey])
-
-    // console.log('tradeData:', tradeData)
-    // console.log('tradeCalcData:', tradeCalcData)
-    // console.log('_isStoB:', _isStoB)
-
     const showVal = tradeData.buy?.belong && tradeData.sell?.belong && tradeCalcData?.StoB
 
+    // const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${stob} ${tradeData.buy?.belong}`
+    //     : `1${tradeData.buy?.belong} \u2248 ${btos} ${tradeData.sell?.belong}`
     const convertStr = _isStoB ? `1${tradeData.sell?.belong} \u2248 ${tradeCalcData?.StoB ? tradeCalcData.StoB : EmptyValueTag} ${tradeData.buy?.belong}`
-        : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData .BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`;
-    const priceImpactColor =  tradeCalcData?.priceImpactColor ? tradeCalcData.priceImpactColor : 'var(--color-textPrimary)'
-    const priceImpact = tradeCalcData?.priceImpact ?  tradeCalcData.priceImpact + ' %' : EmptyValueTag
+        : `1${tradeData.buy?.belong} \u2248 ${tradeCalcData.BtoS ? tradeCalcData.BtoS : EmptyValueTag} ${tradeData.sell?.belong}`;
+    const priceImpactColor =  tradeCalcData?.priceImpactColor ? tradeCalcData.priceImpactColor : 'textPrimary'
+    const priceImpact = tradeCalcData?.priceImpact ?  getValuePrecisionThousand(tradeCalcData.priceImpact, undefined, undefined, 2, true) + ' %' : EmptyValueTag
 
     const fee = (tradeCalcData && tradeCalcData.fee) ? ((parseFloat(tradeCalcData.fee) / 100).toString() + '%') : EmptyValueTag
 
-    const minimumReceived = tradeCalcData && tradeCalcData.minimumReceived ? tradeCalcData.minimumReceived : EmptyValueTag
+    const minimumReceived = tradeCalcData && tradeCalcData.minimumReceived ? `${tradeCalcData.minimumReceived}  ${tradeData.buy?.belong}` : EmptyValueTag
 
     return <Grid className={tradeCalcData ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"} flexWrap={'nowrap'}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>
         <Grid item marginTop={3} display={'flex'} alignSelf={"stretch"} justifyContent={'flex-start'}
               alignItems={"center"} flexDirection={"column"} flexBasis={'initial'}>
-            {/*<Grid container direction={"column"} spacing={1} alignItems={"center"} alignContent={"center"}>*/}
-            {/*    <Grid item>*/}
+
             <InputButton<any, I, CoinInfo<I>> ref={sellRef} disabled={getDisabled()}  {...{
                 ...propsSell,
                 isHideError: true,
@@ -181,9 +177,9 @@ export const SwapTradeWrap = <T extends IBData<I>,
             {/*</Grid>*/}
             {/*<Grid item>*/}
             <Box alignSelf={"center"} marginY={1}>
-                <IconButtonStyled size={'medium'} onClick={covertOnClick} color="inherit"
+                <IconButtonStyled size={'large'} onClick={covertOnClick}
                                   aria-label={t('tokenExchange')}>
-                    <ExchangeIcon/>
+                    <ExchangeIcon fontSize={'large'} htmlColor={'var(--color-text-primary)'}/>
                 </IconButtonStyled>
             </Box>
             {/*</Grid>*/}
@@ -200,8 +196,8 @@ export const SwapTradeWrap = <T extends IBData<I>,
         </Grid>
         <Grid item>
             <Typography component={'p'} variant="body1" height={24} lineHeight={'24px'}>
-                {showVal ? <> {convertStr}
-                  <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
+                {showVal ? <>  {convertStr}
+                    <IconButtonStyled size={'small'} aria-label={t('tokenExchange')} onClick={_onSwitchStob}
                       // style={{transform: 'rotate(90deg)'}}
                   ><ReverseIcon/></IconButtonStyled>
                 </>:t('labelCalculating')}
@@ -213,12 +209,11 @@ export const SwapTradeWrap = <T extends IBData<I>,
                     <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}
                           height={24}>
 
-                        <Typography component={'p'} variant="body1">{t('swapTolerance')}
-                        </Typography>
-                        <Typography component={'p'} variant="body1">
+                        <Typography component={'p'} variant="body2" color={'textSecondary'}>{t('swapTolerance')}</Typography>
+                        <Typography component={'p'} variant="body2" >
                             {tradeCalcData ? <>
                                 <Typography {...bindHover(popupState)}
-                                            component={'span'}>
+                                            component={'span'} color={'textPrimary'}>
                                     <LinkActionStyle>
                                         {tradeData.slippage ? tradeData.slippage : tradeCalcData.slippage ? tradeCalcData.slippage : 0.5}%
                                     </LinkActionStyle>
@@ -243,30 +238,30 @@ export const SwapTradeWrap = <T extends IBData<I>,
                             }
                         </Typography>
                     </Grid>
-                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
-                        <Typography component={'p'} variant="body1"> {t('swapPriceImpact')}</Typography>
-                        <Typography component={'p'}  color={priceImpactColor}
-                                    variant="body1"> {priceImpact}  </Typography>
+                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"} marginTop={1/2}>
+                        <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('swapPriceImpact')}</Typography>
+                        <Typography component={'p'} color={priceImpactColor} variant="body2"> {priceImpact}  </Typography>
                     </Grid>
-                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
-                        <Typography component={'p'} variant="body1"> {t('swapMinReceive')}</Typography>
+                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"} marginTop={1/2}>
+                        <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('swapMinReceive')}</Typography>
                         <Typography component={'p'}
-                                    variant="body1">{minimumReceived} </Typography>
+                                    variant="body2" color={'textPrimary'}>
+                            { minimumReceived } </Typography>
                     </Grid>
-                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"}>
-                        <Typography component={'p'} variant="body1"> {t('swapFee')} </Typography>
+                    <Grid container justifyContent={'space-between'} direction={"row"} alignItems={"center"} marginTop={1/2}>
+                        <Typography component={'p'} variant="body2" color={'textSecondary'}> {t('swapFee')} </Typography>
                         <Typography component={'p'}
-                                    variant="body1">{fee}</Typography>
+                                    variant="body2" color={'textPrimary'}>{fee}</Typography>
                     </Grid>
                 </Grid>
                 <Grid item>
-                    <Button variant={'contained'} size={'large'} color={'primary'} onClick={() => {
+                    <ButtonStyle variant={'contained'} size={'large'} color={'primary'} onClick={() => {
                         onSwapClick(swapData.tradeData)
                     }}
                             loading={!getDisabled() && swapBtnStatus === TradeBtnStatus.LOADING ? 'true' : 'false'}
                             disabled={getDisabled() || swapBtnStatus === TradeBtnStatus.DISABLED || swapBtnStatus === TradeBtnStatus.LOADING || error.error}
                             fullWidth={true}>{label}
-                    </Button>
+                    </ButtonStyle>
                 </Grid>
             </Grid>
         </Grid>

@@ -1,11 +1,9 @@
-import { Box, Button, Typography } from '@material-ui/core/';
+import React from 'react'
+import { Box, Button, Typography } from '@mui/material';
 import { CopyIcon, getShortAddr, LinkIcon, ReverseIcon, } from '@loopring-web/common-resources';
 import { Trans, WithTranslation } from 'react-i18next';
 import styled from '@emotion/styled';
 import { AccountBaseProps } from './Interface';
-import {
-    VipStyled 
-} from '../../../';
 
 const BoxStyled = styled(Box)`
 
@@ -44,12 +42,14 @@ export const AccountBasePanel = ({
                                 t,
                             }:AccountBaseProps & WithTranslation) => {
     const addressShort = getShortAddr(accAddress)
-    const etherscanLink = etherscanUrl + accAddress;
+    const etherscanLink = etherscanUrl + 'address/' + accAddress;
     const connectBy = connectName === 'unknown' ? t('labelWrongNetwork') : connectName;
-    // const popupState = usePopupState({
-    //     variant: 'popover',
-    //     popupId: 'myAddress',
-    // })
+
+    const getImagePath = React.useMemo(() => {
+        return `static/images/vips/${level.toUpperCase()}`
+
+    }, [level])
+
     return <Box display={'flex'} flexDirection={'column'} justifyContent={'flex-start'} alignItems={'center'}>
         <Typography variant={'body2'} color={'textSecondary'} marginTop={3}>
             <Trans i18nKey="labelConnectBy" tOptions={{connectBy}}>
@@ -58,9 +58,13 @@ export const AccountBasePanel = ({
         </Typography>
         <Typography marginTop={1} display={'flex'} alignItems={'center'}
                      justifyContent={'flex-start'}>
-            <Typography component={'span'} variant={'h1'}>{addressShort}</Typography>
-            {level ? <VipStyled component={'span'} variant={'body2'}
-            >{level}</VipStyled> : undefined}
+            <Typography paddingRight={1} component={'span'} fontSize={'3rem'}>{addressShort}</Typography>
+            {level && <picture>
+                <source  srcSet={`${getImagePath}.webp`} type="image/webp" />
+                <img alt="VIP" style={{verticalAlign: 'text-bottom', width: '32px', height: '16px'}}
+                   src={`${getImagePath}.png`}/>
+            </picture>}
+
         </Typography>
 
         <BoxStyled component={'div'} display={'flex'} alignItems={'center'} justifyContent={'space-between'}

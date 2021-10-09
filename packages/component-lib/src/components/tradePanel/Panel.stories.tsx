@@ -2,10 +2,11 @@ import styled from '@emotion/styled';
 import { SwapPanel } from './Swap';
 import { Meta, Story } from '@storybook/react/types-6-0';
 import { MemoryRouter } from 'react-router-dom';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 import {
-    AmmData,
+    AmmJoinData,
     AmmInData,
+    AmmExitData,
     IBData,
     SlippageTolerance,
     WithdrawType,
@@ -96,7 +97,8 @@ let withdrawProps: WithdrawProps<any, any> = {
     withdrawType: WithdrawType.Fast,
     withdrawTypes: WithdrawTypes,
     chargeFeeToken: 'ETH',
-    chargeFeeTokenList: [{belong: 'ETH', fee: 0.001}, {belong: 'LRC', fee: '1'}],
+    // @ts-ignore
+    chargeFeeTokenList: [{belong: 'ETH', fee: 0.001,__raw__:''}, {belong: 'LRC', fee: '1',__raw__:''}],
     handleOnAddressChange: (value: any) => {
         console.log('handleOnAddressChange', value);
     },
@@ -133,7 +135,8 @@ let transferProps: TransferProps<any, any> = {
         console.log('handleWithdrawFee', value);
     },
     chargeFeeToken: 'ETH',
-    chargeFeeTokenList: [{belong: 'ETH', fee: 0.001}, {belong: 'LRC', fee: '1'}],
+    // @ts-ignore
+    chargeFeeTokenList: [{belong: 'ETH', fee: 0.001,__raw__:''}, {belong: 'LRC', fee: '1',__raw__:''}],
     handleOnAddressChange: (value: any) => {
         console.log('handleOnAddressChange', value);
     },
@@ -141,7 +144,7 @@ let transferProps: TransferProps<any, any> = {
         return {error: true, message: 'any error'}
     }
 }
-let resetProps: ResetProps<any, any> = {
+let resetProps: ResetProps<any> = {
     tradeData,
     coinMap,
     walletMap,
@@ -170,16 +173,17 @@ let swapProps: SwapProps<IBData<string>, string, any> = {
         console.log(data, switchType)
     }
 };
-let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
+// @ts-ignore
+let _ammProps: AmmProps<AmmJoinData<IBData<any>>, AmmExitData<IBData<any>>, any, AmmInData<any>> = {
     refreshRef: React.createRef(),
     ammDepositData: {
         coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
         coinB: {belong: 'LRC', balance: 1000, tradeValue: 0},
         slippage: '',
     },
-    ammWithdrawData: {
-        coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
-        coinB: {belong: 'LRC', balance: 1000, tradeValue: 0},
+    AmmExitData: {
+        coinLP: {belong: 'LP-ETH-LRC', balance: 0.3, tradeValue: 0},
+        // coinB: {belong: 'LRC', balance: 1000, tradeValue: 0},
         slippage: '',
     },
     // tradeCalcData,
@@ -188,8 +192,8 @@ let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
     handleAmmAddChangeEvent: (data, type) => {
         console.log('handleAmmAddChangeEvent', data, type);
     },
-    handleAmmRemoveChangeEvent: (data, type) => {
-        console.log('handleAmmRemoveChangeEvent', data, type);
+    handleAmmRemoveChangeEvent: (data,type) => {
+        return console.log('handleAmmRemoveChangeEvent', data, type);
     },
     onAmmRemoveClick: (data) => {
         console.log('onAmmRemoveClick', data);
@@ -305,29 +309,30 @@ const WrapSwapPanel = (rest: any) => {
 
 }
 const WrapAmmPanel = (rest: any) => {
-    let tradeData: any = {
-        coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
-        coinB: {belong: 'LRC', balance: 1000, tradeValue: 0}
-    };
-    let ammProps: AmmProps<AmmData<IBData<any>>, any, AmmInData<any>> = {
-        refreshRef: React.createRef(),
-        ammDepositData: tradeData,
-        ammWithdrawData: tradeData,
-        // tradeCalcData,
-        ammCalcDataDeposit: ammCalcData,
-        ammCalcDataWithDraw: ammCalcData,
-        handleAmmAddChangeEvent: (data, type) => {
-            console.log('handleAmmAddChangeEvent', data, type);
-        },
-        handleAmmRemoveChangeEvent: (data, type) => {
-            console.log('handleAmmRemoveChangeEvent', data, type);
-        },
-        onAmmRemoveClick: (data) => {
-            console.log('onAmmRemoveClick', data);
-        },
-        onAmmAddClick: (data) => {
-            console.log('onAmmAddClick', data);
-        }
+    // let tradeData: any = {
+    //     coinA: {belong: 'ETH', balance: 0.3, tradeValue: 0},
+    //     coinB: {belong: 'LRC', balance: 1000, tradeValue: 0}
+    // };
+    let ammProps: AmmProps<AmmJoinData<IBData<any>>, any, AmmInData<any>, any> = {
+        ..._ammProps
+        // refreshRef: React.createRef(),
+        // ammDepositData: tradeData,
+        // AmmExitData: {coinLP:{belong: 'ETH', balance: 0.3, tradeValue: 0}},
+        // // tradeCalcData,
+        // ammCalcDataDeposit: ammCalcData,
+        // ammCalcDataWithDraw: ammCalcData,
+        // handleAmmAddChangeEvent: (data, type) => {
+        //     console.log('handleAmmAddChangeEvent', data, type);
+        // },
+        // handleAmmRemoveChangeEvent: (data, type) => {
+        //     console.log('handleAmmRemoveChangeEvent', data, type);
+        // },
+        // onAmmRemoveClick: (data) => {
+        //     console.log('onAmmRemoveClick', data);
+        // },
+        // onAmmAddClick: (data) => {
+        //     console.log('onAmmAddClick', data);
+        // }
     }
 
 
@@ -357,7 +362,7 @@ const WrapAmmPanel = (rest: any) => {
 
 const ModalPanelWrap = () => {
     return <ModalPanel transferProps={transferProps} withDrawProps={withdrawProps} depositProps={depositProps}
-                       resetProps={resetProps} ammProps={ammProps} swapProps={swapProps}/>
+                       resetProps={resetProps} ammProps={_ammProps} swapProps={swapProps}/>
 }
 
 
@@ -370,7 +375,7 @@ const Template: Story<any> = () => {
             <h4>Slippage bloc</h4>
             <Grid container spacing={2}>
                 <SlippagePanel {...{
-                    ...rest, t, tReady:true,
+                    ...rest, t,
                     handleChange: ()=>{},
                     slippageList: slippageArray,
                     slippage: 0.5

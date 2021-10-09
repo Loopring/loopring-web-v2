@@ -3,22 +3,20 @@ import { useSelector } from "react-redux"
 
 import { useCustomDCEffect } from "hooks/common/useCustomDCEffect"
 import { getExistedMarket, toBig } from 'loopring-sdk'
-import { RootState } from "stores"
-
-import store from 'stores'
+import store, { RootState } from "stores"
 
 export function formatedVal(rawData: string, base: string, quote: string) {
 
-    const { marketMap, marketArray } =  store.getState().tokenMap
+    const {marketMap, marketArray} = store.getState().tokenMap
 
-        if (!rawData || !base || !quote || !marketMap || !marketArray) {
-            return ''
-        }
+    if (!rawData || !base || !quote || !marketMap || !marketArray) {
+        return ''
+    }
 
-        const { market } = getExistedMarket(marketArray, base, quote)
-        const marketInfo = marketMap[market]
+    const {market} = getExistedMarket(marketArray, base, quote)
+    const marketInfo = marketMap[ market ]
 
-        const showVal = toBig(rawData).toFixed(marketInfo.precisionForPrice)
+    const showVal = toBig(rawData).toFixed(marketInfo.precisionForPrice)
 
     return showVal
 
@@ -26,7 +24,7 @@ export function formatedVal(rawData: string, base: string, quote: string) {
 
 export function useFormatedVal(rawData: string, base: string, quote: string) {
 
-    const { marketMap, marketArray } = useSelector((state: RootState) => state.tokenMap)
+    const {marketMap, marketArray} = useSelector((state: RootState) => state.tokenMap)
 
     const [showVal, setShowVal] = useState<string>(rawData)
 
@@ -37,8 +35,8 @@ export function useFormatedVal(rawData: string, base: string, quote: string) {
             return
         }
 
-        const { market } = getExistedMarket(marketArray, base, quote)
-        const marketInfo = marketMap[market]
+        const {market} = getExistedMarket(marketArray, base, quote)
+        const marketInfo = marketMap[ market ]
 
         setShowVal(toBig(rawData).toFixed(marketInfo.precisionForPrice))
 

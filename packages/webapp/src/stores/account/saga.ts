@@ -1,13 +1,7 @@
-import { all, fork, put, takeLatest, call } from "redux-saga/effects"
-import {
-    cleanAccountStatus,
-    // cleanAccountStatus,
-    nextAccountStatus,
-    // restAccountStatus,
-    updateAccountStatus
-} from './reducer';
+import { all, call, fork, put, takeLatest } from "redux-saga/effects"
+import { cleanAccountStatus, nextAccountStatus, updateAccountStatus } from './reducer';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { Account, AccountStatus, ConnectProviders, SagaStatus } from '@loopring-web/common-resources';
+import { Account, AccountStatus, ConnectProviders } from '@loopring-web/common-resources';
 import { connectProvides } from '@loopring-web/web3-provider';
 
 
@@ -25,24 +19,27 @@ export function* accountUpdateSaga({payload}: PayloadAction<Partial<Account>>) {
         yield put(nextAccountStatus(err));
     }
 }
-export function* cleanAccountSaga({payload}: PayloadAction<{shouldUpdateProvider?:boolean|undefined}>) {
+
+export function* cleanAccountSaga({payload}: PayloadAction<{ shouldUpdateProvider?: boolean | undefined }>) {
     try {
-        let account:Partial<Account> = {
-            accAddress : '',
-            readyState : AccountStatus.UN_CONNECT,
-            accountId : -1,
-            apiKey : '',
-            eddsaKey : '',
-            publicKey : {},
-            level : '',
-            nonce : -1,
+        let account: Partial<Account> = {
+            accAddress: '',
+            readyState: AccountStatus.UN_CONNECT,
+            accountId: -1,
+            apiKey: '',
+            eddsaKey: '',
+            publicKey: {},
+            level: '',
+            nonce: -1,
+            keyNonce : -1,
+            keySeed: '',
         }
 
-        if(payload && payload.shouldUpdateProvider) {
-            yield call(async ()=> await connectProvides.clear())
+        if (payload && payload.shouldUpdateProvider) {
+            yield call(async () => await connectProvides.clear())
             account = {
                 ...account,
-                connectName:ConnectProviders.unknown
+                connectName: ConnectProviders.unknown
             }
         }
         yield put(nextAccountStatus({

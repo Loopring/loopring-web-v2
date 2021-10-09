@@ -1,4 +1,4 @@
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
 import { Trans, withTranslation, WithTranslation } from 'react-i18next';
 import {
     ConnectProviders,
@@ -8,7 +8,7 @@ import {
 import React from 'react';
 
 import { Button } from '../../basic-lib';
-import { Link } from '@material-ui/core/';
+import { Link } from '@mui/material';
 
 export enum IconType {
     LoadingIcon,
@@ -21,7 +21,7 @@ export enum IconType {
 export interface PanelProps {
     title?: string,
     iconType?: IconType,
-    value?: number,
+    value?: number|string,
     symbol?: string,
     describe1?: any,
     describe2?: any,
@@ -38,6 +38,7 @@ export interface PanelProps {
         name: string,
         url: string,
     }
+    patch?: any,
 }
 
 export const BasicPanel = withTranslation('common', { withRef: true })(({
@@ -109,7 +110,7 @@ export const BasicPanel = withTranslation('common', { withRef: true })(({
         </Typography>
 
         {describe1 && <Box display={'flex'} marginTop={marginTopDescribe1} alignItems={'flex-center'}>
-            <Typography variant={'h5'} color={'textPrimary'} component={'p'} marginTop={0} alignSelf={'flex-center'}
+            <Typography variant={'h5'} whiteSpace={'pre-line'} textAlign={'center'} color={'textPrimary'} component={'p'} marginTop={0} alignSelf={'flex-center'}
                 paddingRight={1}>
                 {describe1}
             </Typography>
@@ -120,7 +121,7 @@ export const BasicPanel = withTranslation('common', { withRef: true })(({
         </Box>}
 
         {describe2 && <Box flex={1} display={'flex'} marginTop={0} alignItems={'flex-center'}>
-            <Typography variant={'h5'} color={'textPrimary'} component={'p'} marginTop={0} alignSelf={'flex-center'}
+            <Typography whiteSpace={'pre-line'} variant={'h5'} color={'textPrimary'} component={'p'} marginTop={0} alignSelf={'flex-center'}
                 paddingX={1}>
                 {describe2}
             </Typography>
@@ -152,7 +153,7 @@ export const BasicPanel = withTranslation('common', { withRef: true })(({
 
 export const ConnectBase = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
-        title: 'labelConnect'
+        title: 'labelConnectWallet'
     }
     return <BasicPanel {...propsPatch} {...props} />
 }
@@ -180,7 +181,14 @@ export const UnlockAccountBase = (props: PanelProps & WithTranslation) => {
 
 export const UpdateAccountBase = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
-        title: 'labelUpdateAccount'
+        title: props.patch?.isReset ? 'labelResetAccount' : 'labelUpdateAccount'
+    }
+    return <BasicPanel {...propsPatch} {...props} />
+}
+
+export const ExportAccountBase = (props: PanelProps & WithTranslation) => {
+    const propsPatch = {
+        title: 'labelExportAccount'
     }
     return <BasicPanel {...propsPatch} {...props} />
 }

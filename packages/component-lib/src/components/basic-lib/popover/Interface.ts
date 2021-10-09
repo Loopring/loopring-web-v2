@@ -1,4 +1,4 @@
-import { PopoverOrigin } from '@material-ui/core';
+import { PopoverOrigin } from '@mui/material';
 import { OneOf } from '@loopring-web/common-resources';
 
 import * as React from 'react';
@@ -27,7 +27,7 @@ export type PopoverWrapProps = {
     // children: React.ReactNode;
     className: string;
     popupId: string;
-    children: JSX.Element | undefined | React.ReactElement;
+    children?: JSX.Element | undefined | React.ReactElement;
     popoverContent: React.ReactNode;
     // popoverStyle?: React.CSSProperties;
     anchorOrigin?: PopoverOrigin;

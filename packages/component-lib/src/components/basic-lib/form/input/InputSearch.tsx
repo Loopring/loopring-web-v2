@@ -1,7 +1,16 @@
-import { OutlinedInput, InputAdornment } from '@material-ui/core'
-import { SearchIcon } from '@loopring-web/common-resources'
-import { OutlinedInputProps } from '@material-ui/core/OutlinedInput/OutlinedInput';
+import { OutlinedInput, InputAdornment } from '@mui/material'
+import { SearchIcon, ErrorIcon, myLog } from '@loopring-web/common-resources'
+import { OutlinedInputProps } from '@mui/material';
 import React from 'react';
+import styled from '@emotion/styled'
+
+const CloseIconStyled = styled(ErrorIcon)`
+    position: absolute;
+    top: 55%;
+    transform: translateY(-50%);
+    right: ${({theme}) => theme.unit}px;
+    cursor: pointer;
+`
 
 export type InputSearchProps  = {
     value?: string;
@@ -28,6 +37,17 @@ export const InputSearch =  React.forwardRef(({
             <InputAdornment position="start">
                 <SearchIcon color={'inherit'} />
             </InputAdornment>
+        }
+        endAdornment={
+            <CloseIconStyled
+                htmlColor={'var(--color-text-third)'}
+                style={{ visibility: value ? 'visible' : 'hidden' }}
+                onClick={() => {
+                    if (onChange) {
+                        onChange('' as any)
+                    }
+                }}
+            ></CloseIconStyled>
         }
     />
 } )

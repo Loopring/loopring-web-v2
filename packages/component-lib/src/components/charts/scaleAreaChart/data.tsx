@@ -43,20 +43,26 @@ const getSign = ({
     //     return close >= data[ data.length - 1 ].close ? 1 : -1
     // }
     let sign
-    if (open > close) {
-        sign = -1
-    } else if (open < close) {
-        sign = 1
-    } else {
-        sign =
-            dataIndex > 0
-                ? // If close === open, compare with close of last record
-                data[ dataIndex - 1 ][ closeDimIdx ] <= close
-                    ? 1
-                    : -1
-                : // No record of previous, set to be positive
-                1
-    }
+    const closeLastDay = dataIndex !== 0 && data[ dataIndex - 1 ].close
+    sign = dataIndex > 0 && closeLastDay
+        ? closeLastDay < close 
+            ? 1
+            : -1
+        : 1
+    // if (open > close) {
+    //     sign = -1
+    // } else if (open < close) {
+    //     sign = 1
+    // } else {
+        // sign =
+        //     dataIndex > 0
+        //         ? // If close === open, compare with close of last record
+        //         data[ dataIndex - 1 ][ closeDimIdx ] <= close
+        //             ? 1
+        //             : -1
+        //         : // No record of previous, set to be positive
+        //         1
+    // }
 
     return sign as IDataItem['sign']
 }

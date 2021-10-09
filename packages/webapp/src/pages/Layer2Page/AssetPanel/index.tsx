@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef } from 'react'
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { PriceTag } from '@loopring-web/common-resources'
-import { Box, Paper, Typography } from '@material-ui/core'
+import { Box, Grid, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { useHistory } from 'react-router-dom'
 import {
@@ -18,6 +18,8 @@ import { useModals } from 'hooks/useractions/useModals'
 import store from 'stores'
 import { StylePaper } from 'pages/styled'
 import { useGetAssets } from './hook'
+import { Currency } from 'loopring-sdk';
+import { useSystem } from 'stores/system';
 
 const StyledChartWrapper = styled(Box)`
     height: 225px;
@@ -31,24 +33,31 @@ const StyledChartWrapper = styled(Box)`
         padding: ${({theme}) => theme.unit * 2.5}px ${({theme}) => theme.unit * 3}px;
     }
 `
+const StyleTitlePaper = styled(Box)`
+  width: 100%;
+  //height: 100%;
+  background: var(--color-box);
+  border-radius: ${({theme}) => theme.unit}px;
+`
+
 
 const ChartWrapper = styled(Box)`
-    background-image: url('./static/images/${({dark}: any) => dark ? 'noDataDark' : 'noDataLight'}.png');
+    background-image: url('./static/images/${({ dark }: any) => dark === 'true' ? 'noDataDark' : 'noDataLight'}.png');
     background-repeat: no-repeat;
 ` as any
 
-const StyledBtnGroupWrapper = styled(Box)`
-    position: absolute;
-    z-index: 10;
-    right: ${({theme}) => theme.unit * 3}px;
-    bottom: ${({theme}) => theme.unit * 2.5}px;
-`
-
-const toggleData = [
-    // {value: '24 H', key: '24 H'},
-    {value: 'week', key: '1 W'},
-    {value: 'all', key: 'ALL'},
-]
+// const StyledBtnGroupWrapper = styled(Box)`
+//     position: absolute;
+//     z-index: 10;
+//     right: ${({theme}) => theme.unit * 3}px;
+//     bottom: ${({theme}) => theme.unit * 2.5}px;
+// `
+//
+// const toggleData = [
+//     // {value: '24 H', key: '24 H'},
+//     {value: 'week', key: '1 W'},
+//     {value: 'all', key: 'ALL'},
+// ]
 
 export type ITokenInfoItem = {
     token: string,
@@ -66,21 +75,23 @@ export type TrendDataItem = {
 
 const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => {
     const container = useRef(null);
-    const [pageSize, setPageSize] = useState(10);
+    // const [pageSize, setPageSize] = useState(10);
     // const [chartPeriod, setChartPeriod] = useState('week')
-
-    const { marketArray, assetsRawData } = useGetAssets()
-    const { currency, themeMode } = useSettings()
-    const { walletLayer2 } = store.getState().walletLayer2;
+    const {allowTrade} = useSystem();
+    const {marketArray, assetsRawData} = useGetAssets()
+    const {currency, themeMode, setHideL2Assets, setHideLpToken, setHideSmallBalances} = useSettings()
+    const {walletLayer2} = store.getState().walletLayer2;
+    const { hideL2Assets, hideLpToken, hideSmallBalances } = store.getState().settings
 
     const total = assetsRawData.map(o => o.tokenValueDollar).reduce((a, b) => a + b, 0)
+    
     const percentList = assetsRawData.map(o => ({
         ...o,
-        value: o.tokenValueDollar / total,
+        value: (o.tokenValueDollar && total) ? o.tokenValueDollar / total : 0,
     }))
 
     const lpTotalData = percentList
-        .filter(o => o.token.value.split('-')[0] === 'LP')
+        .filter(o => o.token.value.split('-')[ 0 ] === 'LP')
         .reduce((prev, next) => ({
             name: 'LP-Token',
             value: prev.value + next.value
@@ -88,9 +99,9 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
             name: 'LP-Token',
             value: 0
         })
-    
-    const formattedDoughnutData = percentList.filter(o => o.token.value.split('-')[0] === 'LP').length > 0
-        ? [...percentList.filter(o => o.token.value.split('-')[0] !== 'LP'), lpTotalData]
+
+    const formattedDoughnutData = percentList.filter(o => o.token.value.split('-')[ 0 ] === 'LP').length > 0
+        ? [...percentList.filter(o => o.token.value.split('-')[ 0 ] !== 'LP'), lpTotalData]
         : percentList
 
     // useEffect(() => {
@@ -118,15 +129,15 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
     let history = useHistory();
 
     const onShowDeposit = useCallback((token?: any) => {
-        showDeposit({isShow:true,symbol:token})
+        showDeposit({isShow: true, symbol: token})
     }, [showDeposit])
 
     const onShowTransfer = useCallback((token?: any) => {
-        showTransfer({isShow:true,symbol:token})
+        showTransfer({isShow: true, symbol: token})
     }, [showTransfer])
 
     const onShowWithdraw = useCallback((token?: any) => {
-        showWithdraw({isShow:true,symbol:token})
+        showWithdraw({isShow: true, symbol: token})
     }, [showWithdraw])
 
     const lpTokenJump = useCallback((token: string, type: LpTokenAction) => {
@@ -137,52 +148,63 @@ const AssetPanel = withTranslation('common')(({t, ...rest}: WithTranslation) => 
 
     const AssetTitleProps: AssetTitleProps = {
         assetInfo: {
-            totalAsset: assetsRawData.map(o => currency === 'USD' ? o.tokenValueDollar : o.tokenValueYuan).reduce((prev, next) => {
+            totalAsset: assetsRawData.map(o => currency === Currency.usd ? o.tokenValueDollar : o.tokenValueYuan).reduce((prev, next) => {
                 return prev + next
             }, 0),
-            priceTag: currency === 'USD' ? PriceTag.Dollar : PriceTag.Yuan,
+            priceTag: currency === Currency.usd ? PriceTag.Dollar : PriceTag.Yuan,
         },
+        hideL2Assets,
         onShowDeposit,
         onShowTransfer,
         onShowWithdraw,
+        setHideL2Assets,
     }
 
     return (
         <>
-            <Box>
+            <StyleTitlePaper paddingX={3} paddingY={5/2} className={'MuiPaper-elevation2'} >
                 <AssetTitle  {...{
                     t,
                     ...rest,
-                    ...AssetTitleProps
+                    ...AssetTitleProps,
                 }} />
-            </Box>
+            </StyleTitlePaper>
 
             {/*<div className="title">{t('labelAssetsTitle')}</div>*/}
 
-            <StyledChartWrapper flexDirection={'row'} display={'flex'} justifyContent={'space-between'} alignItems={'stretch'} marginTop={2}>
-                <Box flex={1}  component={'section'} className={'MuiPaper-elevation2'} marginRight={2}>
-                        <Typography component="span" color="textSecondary" variant="body1">{t('labelAssetsDistribution')}</Typography>
-                        <DoughnutChart data={walletLayer2 ? formattedDoughnutData : []}/>
+            <StyledChartWrapper flexDirection={'row'} display={'flex'} justifyContent={'space-between'}
+                                alignItems={'stretch'} marginTop={2}>
+                <Box flex={1} component={'section'} className={'MuiPaper-elevation2'} marginRight={2}>
+                    <Typography component="span" color="textSecondary"
+                                variant="body1">{t('labelAssetsDistribution')}</Typography>
+                    <DoughnutChart data={walletLayer2 ? formattedDoughnutData : []}/>
                 </Box>
-                <Box display={'flex'} flexDirection={'column'} flex={1} component={'section'} className={'MuiPaper-elevation2'}>
-                    <Typography component="span"  color="textSecondary" variant="body1">{t('labelTotalAssets')}</Typography>
-                    <ChartWrapper marginTop={2} dark={themeMode === 'dark'} flex={1} component={'div'} />
+                <Box display={'flex'} flexDirection={'column'} flex={1} component={'section'}
+                     className={'MuiPaper-elevation2'}>
+                    <Typography component="span" color="textSecondary"
+                                variant="body1">{t('labelTotalAssets')}</Typography>
+                    <ChartWrapper marginTop={2} dark={themeMode === 'dark' ? 'true' : 'false'} flex={1} component={'div'}/>
                 </Box>
             </StyledChartWrapper>
             <StylePaper marginTop={2} ref={container} className={'MuiPaper-elevation2'}>
-                <Box className="tableWrapper">
+                <Box className="tableWrapper table-divide-short">
                     <AssetsTable {...{
                         rawData: assetsRawData,
                         // pagination: {
                         //     pageSize: pageSize
                         // },
-                        showFiliter: true,
+                        showFilter: true,
+                        allowTrade,
                         onShowDeposit: onShowDeposit,
                         onShowTransfer: onShowTransfer,
                         onShowWithdraw: onShowWithdraw,
                         onLpDeposit: lpTokenJump,
                         onLpWithdraw: lpTokenJump,
-                        getMakretArrayListCallback: getTokenRelatedMarketArray,
+                        getMarketArrayListCallback: getTokenRelatedMarketArray,
+                        hideLpToken, 
+                        hideSmallBalances,
+                        setHideLpToken, 
+                        setHideSmallBalances,
                         ...rest
                     }} />
                 </Box>

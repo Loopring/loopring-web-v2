@@ -7,10 +7,10 @@ import {
     FormControl,
     FormControlLabel as MuiFormControlLabel,
     Grid,
-    ListItemText,
+    ListItemText, SelectChangeEvent,
     Typography
-} from '@material-ui/core'
-import {  InputCoinProps, MenuItem } from '../../basic-lib'
+} from '@mui/material'
+import { InputCoinProps, MenuItem, OutlineSelect, OutlineSelectItem } from '../../basic-lib'
 import { Trans, withTranslation } from "react-i18next";
 import {
     DatePicker,
@@ -28,15 +28,15 @@ import {
     CloseIcon,
     CoinInfo,
     CoinKey,
-    DropDownIcon,
-    IBData,
+    DropDownIcon, i18n,
+    IBData, LanguageType,
 } from '@loopring-web/common-resources';
-import { DateRange } from '@material-ui/lab';
+import { DateRange } from '@mui/lab';
 import { EmptyDefault } from '../empty';
 import { coinMap, CoinType, inputProps, walletMap } from '../../../static';
 import { CoinMenu } from '../lists';
 import { InputCoin } from './input/InputCoin';
-import { Link } from '@material-ui/core/';
+import { Link } from '@mui/material';
 import { IconClearStyled } from '../../tradePanel';
 
 
@@ -102,6 +102,21 @@ const InputButtonWrap = () => {
             <InputButton<IBData<CoinType>, CoinType, CoinInfo<CoinType>> {...{..._inputProps, ...{inputData: data}}}></InputButton>
         </Grid>
     </>
+}
+export const BtnLanguage = ({ handleChange}: any) => {
+    const _handleChange = React.useCallback((event: SelectChangeEvent<any>) => {
+        if (handleChange) {
+            handleChange(event.target.value);
+        }
+    }, [handleChange]);
+    return <OutlineSelect  IconComponent={DropDownIcon}
+                          labelId="language-selected"
+                          id="language-selected"
+                          value={i18n.language}
+                          onChange={_handleChange}>
+        <OutlineSelectItem value={LanguageType.en_US}>EN</OutlineSelectItem>
+        <OutlineSelectItem value={LanguageType.zh_CN}>中文</OutlineSelectItem>
+    </OutlineSelect>
 }
 const InputIconWrap = () => {
     const ref = React.createRef<HTMLInputElement>();
@@ -189,8 +204,8 @@ const InputSelectWrap = (rest: any) => {
         {/*<Button variant={'text'} size={'medium'} color={'primary'}*/}
         {/*       */}
         {/*></Button>*/}
-        <Typography fontSize={'body1'}>
-            <Link color="textSecondary" onClick={() => {}} style={{textAlign:'right'}}>Cancel</Link>
+        <Typography fontSize={'body1'} color={'textPrimary'}>
+            <Link color={'inherit'} style={{color:'var(--color-text-primary)',textAlign:'right'}} onClick={() => {}} >Cancel</Link>
         </Typography>
     </>, [])
     const inputSelectProps: InputSelectProps<CoinType> = {
@@ -350,6 +365,9 @@ const Template: Story<any> = withTranslation()((props: any) => {
                         >{fee}</Typography>}/>
                     </MenuItem>
                 })}</TextField>
+            </Grid>
+            <Grid item xs={3}>
+            <BtnLanguage {...props} handleChange={(value:any)=>console.log(value)}  />
             </Grid>
             <Grid item xs={3}>
                 <MuiFormControlLabel

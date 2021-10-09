@@ -4,12 +4,12 @@ import { WithTranslation, withTranslation } from 'react-i18next'
 import { StylePaper } from '../../styled'
 import { useGetTxs } from './hooks';
 
-const TxPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
-    const { t } = rest
+const TxPanel = withTranslation('common')((rest: WithTranslation<'common'>) => {
+    const {t} = rest
     const container = React.useRef(null);
     const [pageSize, setPageSize] = React.useState(10);
 
-    const { txs: txTableData, isLoading } = useGetTxs()
+    const {txs: txTableData, isLoading} = useGetTxs()
 
     React.useEffect(() => {
         // @ts-ignore
@@ -30,8 +30,9 @@ const TxPanel = withTranslation('common')((rest:WithTranslation<'common'>) => {
                         total: txTableData.length
                     },
                     showFilter: true,
-                    showLoading: isLoading,
-                    getTxnList: (): any => {},
+                    showloading: isLoading,
+                    getTxnList: (): any => {
+                    },
                     ...rest
                 }} />
             </div>

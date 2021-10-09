@@ -1,30 +1,27 @@
-import { Avatar,
-    // Box, Button, ButtonProps,
-    FormHelperText, FormLabel, Grid } from "@material-ui/core";
-// import styled from "@emotion/styled";
-// // import { debounce } from "lodash"
-// import CurrencyInput from 'react-currency-input-field';
+import { FormHelperText, Grid, } from '@mui/material';
 import {
-    AvatarCoinStyled,
     CoinInfo,
     DropDownIcon,
-    getThousandFormattedNumbers,
-    IBData
+    FORMAT_STRING_LEN,
+     // getValuePrecisionThousand,
+    IBData,
 } from '@loopring-web/common-resources';
-import { InputButtonProps } from "./Interface";
+import { InputButtonProps, InputSize } from "./Interface";
 import React from "react";
 import { useFocusRef } from "../hooks";
-import { useSettings } from '../../../../stores';
 import { IInput, ISBtn, IWrap } from "./style";
+import { CoinIcon } from './Default';
+import { Typography } from '@mui/material';
 
 function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                          label = "Enter token",
                                                                          handleError,
-                                                                         subLabel = "Max",
+                                                                         subLabel,
                                                                          // wait = globalSetup.wait,
-                                                                         coinMap,
+                                                                         // coinMap,
                                                                          maxAllow,
                                                                          disabled,
+                                                                         decimalsLimit = 8,
                                                                          emptyText = 'tokenSelectToken',
                                                                          placeholderText = '0.00',
                                                                          inputData,
@@ -32,7 +29,8 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
                                                                          handleOnClick,
                                                                          focusOnInput,
                                                                          name,
-                                                                         isHideError=false,
+                                                                         size=InputSize.middle,
+                                                                         isHideError = false,
                                                                          // isAllowBalanceClick
                                                                      }
                                                                          : InputButtonProps<T, C, I>, ref: React.ForwardedRef<any>) {
@@ -42,11 +40,11 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
         error: false,
         message: ''
     });
-    // let _error = {error: false, message: ''};
-    // if (handleError && inputData) {
-    //     let error:any = handleError(inputData, ref);
-    //     _error = error ? error : {error: false}
-    // }
+    React.useEffect(()=>{
+        if(tradeValue === undefined && error.error){
+            setError( {error: false});
+        }
+    },[tradeValue])
     const _handleError = React.useCallback((value: any) => {
         if (handleError) {
             let _error = handleError({
@@ -62,8 +60,6 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
             if (inputData && (inputData.tradeValue !== Number(current?.value))) {
                 setsValue(inputData.tradeValue);
                 _handleError(inputData.tradeValue);
-                // debounceCount({...inputData, ...{tradeValue: inputData.tradeValue}})
-                // _handleContChange(current?.value, name)
             }
         },
         [inputData, _handleError])
@@ -81,7 +77,7 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
             _handleError(value);
             setsValue(value);
             if (handleCountChange) {
-                handleCountChange({...inputData, ...{tradeValue: value}} as any, ref)
+                handleCountChange({...inputData, ...{tradeValue: value}} as any,_name, ref)
             }
             //debounceCount({...inputData, ...{tradeValue: value}})
         }
@@ -98,8 +94,8 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
         }
     }, [_handleContChange, balance, name, maxAllow]);
     //@ts-ignore
-    const {coinJson} = useSettings();
-    const coinIcon: any = coinJson[ belong ];
+    // const {coinJson} = useSettings();
+    // const coinIcon: any = coinJson[ belong ];
     //"x": 248,
     // "y": 322,
     // "w": 36,
@@ -112,59 +108,63 @@ function _InputButton<T extends IBData<C>, C, I extends CoinInfo<C>>({
     // const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;
 
     // formatValue(sValue)
-    return <> <IWrap component={'div'} ref={ref}>
+
+    return <> <IWrap component={'div'} ref={ref} size={size}>
         <Grid container component={'div'} className={'label-wrap'} justifyContent={'space-between'}
               paddingBottom={1 / 2}>
-            <Grid item xs={6}><FormLabel className={'main-label'}>{label}</FormLabel></Grid>
-            <Grid item xs={6} className={'sub-label'}>{subLabel && belong ?
-                <FormLabel className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
+            <Grid item xs={3}><Typography fontSize={'inherit'} className={'main-label'} color={'var(--color-text-third)'}>{label}</Typography></Grid>
+            <Grid item xs={9} className={'sub-label'}>{subLabel && belong ?
+                <Typography fontSize={'inherit'}
+                            className={maxAllow && balance > 0 ? "max-allow" : 'no-balance'}
                            onClick={_handleMaxAllowClick}>
-                    <span>{maxAllow ? subLabel + ':' : ''}</span>
-                    <span>{balance ? getThousandFormattedNumbers(balance) : '0'}</span>
-                </FormLabel> : null}</Grid>
+                    <span>{subLabel}</span>
+                    <span>{(balance ? balance : '0.00')}</span>
+                </Typography> : null}</Grid>
         </Grid>
-        <Grid container className={`btnInput-wrap ${error.error ? 'error' : ''}`} wrap={'nowrap'} alignItems={'stretch'}
+        <Grid container className={`btnInput-wrap
+        ${(belong && belong.length) >= FORMAT_STRING_LEN ? 'text-small' : ''}  
+        ${error.error ? 'error' : ''}
+        `} wrap={'nowrap'} alignItems={'stretch'}
               alignContent={'stretch'}>
             <Grid item className={'btn-wrap'}>
-                <ISBtn variant={'text'} onClick={(event) => handleOnClick(event, ref)} endIcon={<DropDownIcon color={"inherit"}/>} disabled={disabled}>
+                <ISBtn variant={'text'} onClick={(event) => handleOnClick(event,
+                    name??'inputBtnDefault', ref)}
+                       endIcon={<DropDownIcon color={"inherit"} fontSize={'large'} style={{marginLeft:'-4px'}}/>} disabled={disabled}>
                     {belong ?
                         <Grid container align-items={'center'} display={'flex'}>
-                            <Grid item className={'logo-icon'} height={'var(--list-menu-coin-size)'}
-                                  width={'var(--list-menu-coin-size)'} alignItems={'center'} justifyContent={'center'}>
-                                {coinIcon ?
-                                    <AvatarCoinStyled imgx={coinIcon.x} imgy={coinIcon.y} imgheight={coinIcon.height}
-                                                      imgwidth={coinIcon.width}
-                                                      variant="circular" alt={coinMap[ belong ]?.simpleName as string}
-                                        // src={sellData?.icon}
-                                                      src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
-                                    : <Avatar variant="circular" alt={coinMap[ belong ]?.simpleName as string} style={{
-                                        height: 'var(--list-menu-coin-size)',
-                                        width: 'var(--list-menu-coin-size)'
-                                    }}
-                                        // src={sellData?.icon}
-                                              src={'static/images/icon-default.png'}/>}
+                            <Grid item display={'flex'} className={'logo-icon'}
+                                  width={'var(--list-menu-coin-size)'}
+                                  height={'var(--list-menu-coin-size)'}
+                                   alignItems={'center'} justifyContent={'center'}>
+                                <CoinIcon symbol={belong}/>
                             </Grid>
-                            <Grid item paddingLeft={1}>{coinMap[ belong ]?.simpleName}</Grid>
+                            <Grid item paddingLeft={1}>
+                                <Typography fontSize={'inherit'} color={'inherit'}>
+                                    {belong}
+                                </Typography></Grid>
                         </Grid>
                         : <span className={'placeholder'}>{emptyText}</span>
                     }
                 </ISBtn>
             </Grid>
             <Grid item className={'input-wrap input-wrap-right'}>
-                <IInput ref={inputEle} onValueChange={_handleContChange} value={
+                <IInput ref={inputEle} autoComplete="off" onValueChange={_handleContChange} value={
                     typeof sValue === 'undefined' ? '' : sValue
                 } allowNegativeValue={false}
                         name={name}
                         disabled={!(!disabled || belong)}
                         placeholder={placeholderText}
-                        aria-placeholder={placeholderText} aria-label={label} decimalsLimit={10000000}/>
-                <label></label>
+                        aria-placeholder={placeholderText} aria-label={label}
+                        decimalsLimit={decimalsLimit}
+                />
+                <label/>
             </Grid>
         </Grid>
-        {isHideError? <></>: <Grid container className={'message-wrap'} wrap={'nowrap'} alignItems={'stretch'} alignContent={'stretch'}
-                                   justifyContent={'flex-end'}>
-            <Grid item><FormHelperText>{error.message}</FormHelperText></Grid>
-        </Grid>}
+        {isHideError ? <></> :
+            <Grid container className={'message-wrap'} wrap={'nowrap'} alignItems={'stretch'} alignContent={'stretch'}
+                  justifyContent={'flex-end'}>
+                <Grid item><FormHelperText>{error.message}</FormHelperText></Grid>
+            </Grid>}
 
 
     </IWrap>

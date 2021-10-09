@@ -1,20 +1,19 @@
 import {
     AssetsIcon,
-    MiningIcon,
-    MyLiquidityIcon,
-    // OrderIcon,
-    // PoolsIcon,
-    // SettingIcon,
-    L2MyLiquidityIcon,
     L2HistoryIcon,
+    L2MyLiquidityIcon,
     L2OrderIcon,
+    // RedPockIcon,
+    // RewardIcon,
+    SecurityIcon,
+    // VipIcon,
 } from '../svg';
 
 import { HeaderMenuItemInterface, HeaderMenuTabStatus } from '../loopring-interface';
 
 export enum ButtonComponentsMap {
     Download,
-    Notification ,
+    Notification,
     Setting,
     WalletConnect,
 }
@@ -29,7 +28,7 @@ export const ToolBarAvailableItem = [
 export let headerToolBarData: Array<{ buttonComponent: number, handleClick?: (props: any) => void, [ key: string ]: any }> = [
     {
         buttonComponent: ButtonComponentsMap.Download,
-        url: 'https://apps.apple.com/us/app/loopring-smart-wallet/id1550921126',
+        url: 'https://loopring.io',
         i18nTitle: 'labelDownloadAppTitle',
         i18nDescription: 'labelDownloadBtn',
     },
@@ -47,16 +46,16 @@ export let layer2ItemData: Array<HeaderMenuItemInterface> = [{
         id: 'Classic', i18nKey: 'labelClassic',
         description: 'labelClassicDescription',
     },
-    router: {path: '/trading/lite'},
+     router: {path: '/trade/lite/LRC-ETH'},
 },
-// {
-//     label: {
-//         id: 'Advanced', i18nKey: 'labelAdvanced',
-//         //TODO: translate id
-//         description: 'labelAdvancedDescription',
-//     },
-//     router: { path: '/trading/pro' },
-// },
+{
+    label: {
+        id: 'Advanced', i18nKey: 'labelAdvanced',
+        //TODO: translate id
+        description: 'labelAdvancedDescription',
+    },
+    router: { path: '/trade/pro/LRC-ETH' },
+},
 ]
 
 
@@ -73,6 +72,8 @@ export enum NavListIndex {
     liquidity,
     layer2
 }
+export const orderDisableList = [ 'Liquidity', 'Markets','Trading' ,'Mining' ]
+export const ammDisableList = [ 'Liquidity' ]
 
 export let headerMenuData: Array<HeaderMenuItemInterface> = [
     {
@@ -86,8 +87,8 @@ export let headerMenuData: Array<HeaderMenuItemInterface> = [
         label: {
             id: 'Trading', i18nKey: 'labelTrade',
         },
-        router: {path: '/trading/lite/LRC-ETH'},
         status: HeaderMenuTabStatus.default,
+        child: layer2ItemData,
     },
     {
         label: {
@@ -137,93 +138,79 @@ export const subMenuLayer2 = {
         icon: L2OrderIcon,
         router: {path: '/layer2/order'},
         label: {
-            id: 'order', i18nKey: 'labelOrder',
-        },
-    },
-]
-    /* {
-        icon: TransactionsIcon,
-        router: {path: '/layer2/transactions'},
-        label: {
-            id: 'transactions', i18nKey: 'labelTransactions',
-        },
-    }, {
-        icon: TradeIcon,
-        router: {path: '/layer2/trades'},
-        label: {
-            id: 'trades', i18nKey: 'labelTrades',
-        },
-    },
-        {
-            icon: AmmIcon,
-            router: {path: '/layer2/ammRecords'},
-            label: {
-                id: 'AmmRecords', i18nKey: 'labelAmmRecords',
-                description: 'labelAmmRecordsDes',
-            },
-        } 
-    ],
-    // countInfoGroup: [{
-    //     icon: OrderIcon,
-    //     router: {path: '/layer2/orders'},
+            id: 'order', i18nKey: 'labelOrder'
+        }
+    // }, {
+    //     icon: RewardIcon,
+    //     router: {path: '/layer2/rewards'},
     //     label: {
-    //         id: 'orders', i18nKey: 'labelOrders',
+    //         id: 'order', i18nKey: 'labelOrder',
     //     },
-    // },
-
-    // ],
-    // settingGroup: [{
-    //     icon: SettingIcon,
-    //     router: {path: '/layer2/setting'},
+    // }, {
+    //     icon: RedPockIcon,
+    //     router: {path: '/layer2/redPock'},
     //     label: {
-    //         id: 'setting',
-    //         i18nKey: 'labelSetting',
+    //         id: 'order', i18nKey: 'labelOrder',
     //     },
-    // },
-    //]
-    */
-}
-
-
-export const subMenuLiquidity = {
-    poolsGroup: [{
-        // icon: PoolsIcon,
-        router: {path: '/liquidity/pools'},
-        label: {
-            id: 'pools',
-            i18nKey: 'labelPools',
-        },
-    }, {
-        icon: MiningIcon,
-        router: {path: '/liquidity/amm-mining'},
-        label: {
-            id: 'amm-mining',
-            i18nKey: 'labelAmmMining',
-        },
-    }, {
-        icon: MyLiquidityIcon,
-        router: {path: '/liquidity/my-liquidity'},
-        label: {
-            id: 'my-liquidity',
-            i18nKey: 'labelMyLiquidity',
-        },
     }],
-    // bookGroup: [{
-    //     icon: OrderMinIcon,
-    //     router: {path: '/liquidity/orderBook-Mining'},
+    settingGroup: [{
+        icon: SecurityIcon,
+        router: {path: '/layer2/security'},
+        label: {
+            id: 'security',
+            i18nKey: 'labelSecurity',
+        }
+    }], 
+    // {
+    //     icon: VipIcon,
+    //     router: {path: '/layer2/vip'},
     //     label: {
-    //         id: 'orderBook-Mining',
-    //         i18nKey: 'labelOrderBookMining',
-    //     }
-    // },
-    //     {
-    //     icon: MakerRebatesIcon,
-    //     router: {path: '/liquidity/maker-rebates'},
-    //     label: {
-    //         id: 'maker-rebates',
-    //         i18nKey: 'labelMakerRebates',
+    //         id: 'vipPanel',
+    //         i18nKey: 'labelVipPanel',
     //     },
-    // }
-    // ]
+    // }]
 }
+
+
+// export const subMenuLiquidity = {
+//     poolsGroup: [{
+//         // icon: PoolsIcon,
+//         router: {path: '/liquidity/pools'},
+//         label: {
+//             id: 'pools',
+//             i18nKey: 'labelPools',
+//         },
+//     }, {
+//         // icon: MiningIcon,
+//         router: {path: '/liquidity/amm-mining'},
+//         label: {
+//             id: 'amm-mining',
+//             i18nKey: 'labelAmmMining',
+//         },
+//     }, {
+//         // icon: MyLiquidityIcon,
+//         router: {path: '/liquidity/my-liquidity'},
+//         label: {
+//             id: 'my-liquidity',
+//             i18nKey: 'labelMyLiquidity',
+//         },
+//     }],
+//     // bookGroup: [{
+//     //     icon: OrderMinIcon,
+//     //     router: {path: '/liquidity/orderBook-Mining'},
+//     //     label: {
+//     //         id: 'orderBook-Mining',
+//     //         i18nKey: 'labelOrderBookMining',
+//     //     }
+//     // },
+//     //     {
+//     //     icon: MakerRebatesIcon,
+//     //     router: {path: '/liquidity/maker-rebates'},
+//     //     label: {
+//     //         id: 'maker-rebates',
+//     //         i18nKey: 'labelMakerRebates',
+//     //     },
+//     // }
+//     // ]
+// }
 export const headerRoot = 'Trading'

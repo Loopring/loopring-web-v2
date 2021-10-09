@@ -1,6 +1,7 @@
-import { Snackbar, Alert, AlertTitle, Typography } from '@material-ui/core'
+import { Snackbar, Alert, AlertTitle, Typography } from '@mui/material'
 import { GoodIcon, AlertIcon, ErrorIcon, InfoIcon } from '@loopring-web/common-resources'
 import styled from '@emotion/styled'
+import { useTranslation, withTranslation, WithTranslation, } from 'react-i18next'
 
 export interface ToastProps {
     open: boolean
@@ -11,22 +12,22 @@ export interface ToastProps {
 }
 
 const AlertStyled = styled(Alert)`
-    svg:first-child {
+    svg:first-of-type {
         width: 2rem;
         height: 2rem;
         margin-top: 0.2rem;
     }
 `
 
-export const Toast = ({ open, severity = 'success', alertText, autoHideDuration = 2000, onClose }: ToastProps) => {
+export const Toast = withTranslation('common')(({ t, open, severity = 'success', alertText, autoHideDuration = 2000, onClose }: ToastProps & WithTranslation) => {
     
     const renderTitle = severity === 'success' 
-        ? 'Successfully'
+        ? t('labelSuccessfully')
         : severity === 'warning'
-            ? 'Warning'
+            ? t('labelWarning')
             : severity === 'error'
-                ? 'Failure'
-                : 'Prompt'
+                ? t('labelFailure')
+                : t('labelPrompt')
 
     const renderIcon = severity === 'success' 
         ? (<GoodIcon htmlColor={'var(--color-success)'} />)
@@ -44,4 +45,4 @@ export const Toast = ({ open, severity = 'success', alertText, autoHideDuration 
             </AlertStyled>
         </Snackbar>
     )
-}
+})

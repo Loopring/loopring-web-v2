@@ -1,7 +1,5 @@
 import { CoinKey, CoinMap, StateBase } from '@loopring-web/common-resources';
-import { MarketInfo, TokenInfo, TokenRelatedInfo } from 'loopring-sdk';
-import { LoopringMap } from 'loopring-sdk';
-import * as loopring_defs from 'loopring-sdk/dist/defs/loopring_defs';
+import { LoopringMap, MarketInfo, TokenInfo, TokenRelatedInfo } from 'loopring-sdk';
 
 export type TokenMap<R extends { [ key: string ]: any }> = LoopringMap<TokenInfo & { tradePairs: Array<CoinKey<R>> }>
 export  type GetTokenMapParams<R extends { [ key: string ]: any }> = { tokensMap: TokenMap<R>, marketMap: LoopringMap<MarketInfo>, pairs: LoopringMap<TokenRelatedInfo>, marketArr: string[], tokenArr: string[] }
@@ -14,15 +12,15 @@ export type IdMap = {
 }
 
 export type TokenMapStates<R extends { [ key: string ]: any }> = {
-    coinMap?: CoinMap<R> | undefined,
+    coinMap: CoinMap<R>,
     totalCoinMap?: CoinMap<R> | undefined,
-    marketArray?: string[],
-    marketCoins?: string[]
+    marketArray: string[],
+    marketCoins: string[]
     // tokenPairsMap?:TokenPairMap<R>,
-    tokenMap?: TokenMap<R>,
-    marketMap?: LoopringMap<MarketInfo>,
-    addressIndex?: AddressMap,
-    idIndex?: IdMap,
+    tokenMap: TokenMap<R>,
+    marketMap: LoopringMap<MarketInfo>,
+    addressIndex: AddressMap,
+    idIndex: IdMap,
 } & StateBase
 
 

@@ -3,6 +3,7 @@ import {
     CoinInfo,
     CoinKey,
     CoinMap,
+    FeeInfo,
     RequireOne,
     WalletCoin,
     WalletMap,
@@ -11,14 +12,14 @@ import {
 } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../Interface';
 import React from 'react';
-import { SwitchPanelProps } from '../../basic-lib';
-
+import { BtnInfoProps, SwitchPanelProps } from '../../basic-lib';
 
 /**
  * private props
  */
 export type TradeMenuListProps<T, I> = {
-    //swapData: SwapData<T>,
+    nonZero: boolean,
+    sorted: boolean,
     walletMap: WalletMap<I, WalletCoin<I>>,
     _height?: string | number,
     coinMap: CoinMap<I, CoinInfo<I>>,
@@ -38,14 +39,15 @@ export type SwitchData<T> = {
 export type TransferInfoProps<C> = {
     transferI18nKey?: string,
     transferBtnStatus?: keyof typeof TradeBtnStatus | undefined,
-    chargeFeeTokenList: Array<{ belong: C | string, fee: number, __raw__?: any }>,
+    chargeFeeTokenList: Array<FeeInfo>,
     chargeFeeToken?: C | string,
 }
 
 export type TransferExtendProps<T, I, C> = {
     addressDefault?: string;
+    realAddr?: string,
     onTransferClick: (data: T) => void,
-    handleFeeChange: (value: { belong: C | string, fee: number, __raw__?: any }) => void,
+    handleFeeChange: (value: FeeInfo) => void,
     handleOnAddressChange: (value: string | undefined | I) => void,
     handleAddressError: (address: string) => { error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined,
     wait?: number
@@ -58,15 +60,23 @@ export type TransferViewProps<T, I, C = CoinKey<I> | string> =
 /**
  * private props
  */
-export type ResetInfoProps = {
+export type ResetInfoProps<C> = {
+    assetsData?: any[]
     resetBtnStatus?: keyof typeof TradeBtnStatus | undefined,
-    fee?: { count: number, price: number }
+    chargeFeeTokenList: Array<FeeInfo>,
+    chargeFeeToken?: C | string,
+    handleFeeChange: (value: FeeInfo) => void,
 }
 export type ResetExtendProps<T> = {
-    onResetClick: (data: T) => void,
-} & ResetInfoProps;
+    onResetClick: () => void,
+} & ResetInfoProps<T>;
 
-export type  ResetViewProps<T, I> = BasicACoinTradeViewProps<T, I> & ResetExtendProps<T>
+export type ExportAccountExtendProps = {
+    exportAccountProps: any;
+    setExportAccountToastOpen: (value: boolean) => void;
+}
+
+export type ResetViewProps<T> = ResetExtendProps<T>
 
 /**
  * private props
@@ -80,7 +90,8 @@ export type DepositInfoProps<I> = {
     handleOnAddressChange?: (value: string | undefined | I) => void,
     handleAddressError?: (address: string) => { error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined,
     wait?: number
-}
+} & BtnInfoProps
+
 export type DepositExtendProps<T, I> = {
     onDepositClick: (data: T) => void,
 } & DepositInfoProps<I>
@@ -89,23 +100,24 @@ export type DepositViewProps<T, I> = BasicACoinTradeViewProps<T, I> & DepositExt
 
 
 export type WithdrawInfoProps<C> = {
+    withdrawI18nKey?: string,
     withdrawBtnStatus?: keyof typeof TradeBtnStatus | undefined,
     withdrawType?: keyof typeof WithdrawType,
     withdrawTypes: typeof WithdrawTypes,
-    chargeFeeTokenList: Array<{ belong: C | string, fee: number | string, __raw__?: any }>,
+    chargeFeeTokenList: Array<FeeInfo>,
     chargeFeeToken?: C | string,
 }
 
 export type WithdrawExtendProps<T, I, C> = {
     addressDefault?: string;
+    realAddr?: string,
     onWithdrawClick: (data: T) => void,
-    handleFeeChange: (value: { belong: C | string, fee: number | string, __raw__?: any }) => void,
+    handleFeeChange: (value: FeeInfo) => void,
     handleWithdrawTypeChange: (value: keyof typeof WithdrawType) => void,
     handleOnAddressChange: (value: string | undefined | I) => void,
     handleAddressError?: (address: string) => { error: boolean, message?: string | React.ElementType<HTMLElement> } | undefined,
     wait?: number
 } & WithdrawInfoProps<C>
-
 
 export type WithdrawViewProps<T, I, C = CoinKey<I> | string> =
     BasicACoinTradeViewProps<T, I>

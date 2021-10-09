@@ -1,5 +1,5 @@
 import React from "react";
-import { LinkProps, ListItemProps, MenuItemProps as muMenuItemProps } from "@material-ui/core";
+import { LinkProps, ListItemProps, MenuItemProps as muMenuItemProps } from '@mui/material';
 import { CoinInfo, CoinKey, CoinMap, WalletCoin, WalletMap } from '@loopring-web/common-resources';
 import { ListProps } from 'react-virtualized';
 import { List } from 'immutable';
@@ -33,6 +33,7 @@ export type BasicHeaderItem = {
 export type HeadMenuType<I extends BasicHeaderItem> = {
     children?: React.ElementType<any> | JSX.Element,
     className?: string,
+    allowTrade?:object,
     renderList?: (props: { handleListKeyDown: ({...rest}) => any }) => any,
     onOpen?: boolean,
     selected?:boolean,
@@ -43,9 +44,11 @@ export type HeadMenuType<I extends BasicHeaderItem> = {
 } & I
 export type MenuItemLink<I extends BasicHeaderItem> = HeadMenuType<I> & {
     className?: string,
+    allowTrade:any,
     handleListKeyDown?: () => any,
     layer: number,
 } & LinkProps;
+
 export type MenuItemProps<I extends BasicHeaderItem> = HeadMenuType<I> & {
     className?: string,
     handleListKeyDown?: () => any,
@@ -67,6 +70,8 @@ export interface CoinItemProps<C> extends ListItemProps {
 export type CoinMenuProps<R, I> = {
     listProps?: ListProps | any,
     selected: CoinKey<R> | null,
+    nonZero: boolean,
+    sorted: boolean,
     filterString: string,
     height?: string,
     allowScroll?: boolean,//boolean

@@ -1,15 +1,14 @@
-import { Avatar, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core/';
+import { ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import { WithTranslation } from "react-i18next";
 import React from "react";
 import styled from "@emotion/styled";
 import { CoinItemProps, CoinMenuProps } from "./Interface";
-import { AvatarCoinStyled, CoinInfo, CoinKey, WalletCoin } from '@loopring-web/common-resources';
+import { CoinInfo, CoinKey, myLog, WalletCoin } from '@loopring-web/common-resources';
 import { Virtuoso } from 'react-virtuoso';
-import { useSettings } from '../../../stores';
-
+import { CoinIcon } from '../form';
 
 function _CoinMenu<C, I extends CoinInfo<C>>({
-                                                 coinMap = {}, walletMap = {}, filterBy = (ele, filterString) => {
+                                                 coinMap = {}, walletMap = {}, nonZero, sorted, filterBy = (ele, filterString) => {
         return filterString && filterString.length ? RegExp(filterString).test(ele.simpleName as string) : true
     }, filterString, handleSelect, allowScroll = true, selected = null,
                                                  listProps = {},
@@ -24,17 +23,40 @@ function _CoinMenu<C, I extends CoinInfo<C>>({
             setSelect(selected);
         }
     }, [select, selected])
-    //const list = React.useMemo(() =>
+
+    if (nonZero === undefined) {
+        nonZero = false
+    }
+    if (sorted === undefined) {
+        sorted = true
+    }
+
     const list = Object.keys(coinMap).reduce((list: Array<{ walletCoin: WalletCoin<C>, key: string }>, key) => {
         if (filterBy(coinMap[ key ], filterString)) {
             const walletCoin: WalletCoin<C> = walletMap[ key ] ? walletMap[ key ] : {belong: key, count: 0}
-            list.push({walletCoin, key: key});
-            if (select === key) {
-                rowIndex = list.length - 1;
+            if ((nonZero && walletMap[ key ] && walletMap[ key ].count > 0) || !nonZero) {
+                list.push({walletCoin, key: key});
+                if (select === key) {
+                    rowIndex = list.length - 1;
+                }
             }
         }
         return list;
     }, [])
+
+    if (sorted) {
+        list.sort(function(a, b) {
+            if (a.walletCoin.count && b.walletCoin.count) {
+                return b.walletCoin.count - a.walletCoin.count
+            } else if (a.walletCoin.count && !b.walletCoin.count) {
+                return -1
+            } else if (!a.walletCoin.count && b.walletCoin.count) {
+                return 1
+            }
+            return a.walletCoin.belong.localeCompare(b.walletCoin.belong)
+        })
+    }
+
     const handleListItemClick = React.useCallback((_event: React.MouseEvent, select: CoinKey<C>) => {
         setSelect(select);
         handleSelect && handleSelect(_event, select);
@@ -112,40 +134,41 @@ export const CoinItem = React.memo(React.forwardRef(<C extends any>({
                                                                     }: CoinItemProps<C> & WithTranslation, ref: React.ForwardedRef<any>) => {
     const {simpleName} = coinInfo;
     // const hasLoaded = useImage(coinInfo.icon ? coinInfo.icon : '').hasLoaded;
-    const {coinJson} = useSettings();
-    const coinIcon: any = coinJson [ simpleName ];
+    // const {coinJson} = useSettings();
+    // const coinIcon: any = coinJson [ simpleName ];
 
     return <StyledCoinItem
-        button
+        button={false}
         ref={ref}
         key={itemKey as string}
         selected={select === simpleName}
         onClick={(event: React.MouseEvent) => handleListItemClick(event, itemKey)}
     >
         <ListItemIcon>
-            {/*<img src={coinInfo.icon} alt={t(simpleName)}/>*/}
-            {/*<Avatar alt={simpleName}*/}
-            {/*        src={coinInfo.icon}*/}
-            {/*        srcSet={`${coinInfo.icon},./images/icon-default.png`}/>*/}
-            {/*<Avatar variant="square" alt={coinInfo?.simpleName}*/}
-            {/*    // src={sellData?.icon}*/}
-            {/*        src={hasLoaded ? coinInfo.icon : 'static/images/icon-default.png'}/>*/}
-            {coinIcon ?
-                <AvatarCoinStyled imgx={coinIcon.x} imgy={coinIcon.y} imgheight={coinIcon.height}
-                                  imgwidth={coinIcon.width}
-                                  variant="circular" alt={simpleName as string}
-                    // src={sellData?.icon}
-                                  src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>
-                : <Avatar variant="circular" alt={simpleName as string} style={{
-                    height: 'var(--list-menu-coin-size)',
-                    width: 'var(--list-menu-coin-size)'
-                }}
-                    // src={sellData?.icon}
-                          src={'static/images/icon-default.png'}/>}
+            <CoinIcon symbol={simpleName} size={24} lpSize={24} />
+            {/*/!*<img src={coinInfo.icon} alt={t(simpleName)}/>*!/*/}
+            {/*/!*<Avatar alt={simpleName}*!/*/}
+            {/*/!*        src={coinInfo.icon}*!/*/}
+            {/*/!*        srcSet={`${coinInfo.icon},./images/icon-default.png`}/>*!/*/}
+            {/*/!*<Avatar variant="square" alt={coinInfo?.simpleName}*!/*/}
+            {/*/!*    // src={sellData?.icon}*!/*/}
+            {/*/!*        src={hasLoaded ? coinInfo.icon : 'static/images/icon-default.png'}/>*!/*/}
+            {/*{coinIcon ?*/}
+            {/*    <AvatarCoinStyled imgx={coinIcon.x} imgy={coinIcon.y} imgheight={coinIcon.height}*/}
+            {/*                      imgwidth={coinIcon.width}*/}
+            {/*                      variant="circular" alt={simpleName as string}*/}
+            {/*        // src={sellData?.icon}*/}
+            {/*                      src={'data:image/svg+xml;utf8,' + '<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H36V36H0V0Z"/></svg>'}/>*/}
+            {/*    : <Avatar variant="circular" alt={simpleName as string} style={{*/}
+            {/*        height: 'var(--list-menu-coin-size)',*/}
+            {/*        width: 'var(--list-menu-coin-size)'*/}
+            {/*    }}*/}
+            {/*        // src={sellData?.icon}*/}
+            {/*              src={'static/images/icon-default.png'}/>}*/}
         </ListItemIcon>
         <ListItemText primary={simpleName} secondary={
             <>
-                <Typography sx={{display: 'block'}} component="span" color="textSecondary" variant="body1">
+                <Typography sx={{display: 'block'}} component="span" color="textSecondary" variant={'h5'}>
                     {walletCoin.count}
                 </Typography>
             </>

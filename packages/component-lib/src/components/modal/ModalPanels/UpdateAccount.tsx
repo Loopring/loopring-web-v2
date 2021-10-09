@@ -1,6 +1,6 @@
-import { Trans, WithTranslation } from "react-i18next"
+import {  WithTranslation } from "react-i18next"
 import { UpdateAccountBase, IconType, PanelProps } from "./BasicPanel"
-import { Box, Typography } from '@material-ui/core/';
+import { Box, Typography } from '@mui/material';
 import { AnimationArrow, Button } from '../../../index';
 import { AccountBasePanel,AccountBaseProps, } from './index';
 
@@ -8,10 +8,12 @@ export const UpdateAccount = ({
     t,
     goUpdateAccount,
     ...props
-}: WithTranslation &AccountBaseProps & { goUpdateAccount?: () => void }) => {
+}: WithTranslation & AccountBaseProps & { goUpdateAccount?: () => void }) => {
     return <Box flex={1} display={'flex'} flexDirection={'column'} justifyContent={'space-between'}
         alignItems={'center'}>
-        <AccountBasePanel {...props} t={t} />
+        <Box display={'flex'} flex={1} marginBottom={5} justifyContent={'center'} alignItems={'center'}>
+            <AccountBasePanel {...props} t={t} />
+        </Box>
         <Box display={'flex'} marginTop={2} alignSelf={'stretch'} paddingX={5} flexDirection={'column'} alignItems={'center'}>
             <Typography variant={'body2'} >
                 {t('labelActivatedAccountDeposit')}
@@ -30,9 +32,7 @@ export const UpdateAccount = ({
 export const UpdateAccount_Approve_WaitForAuth = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.LoadingIcon,
-        describe1: <Trans i18nKey={'label_UpdateAccount_Approve_WaitForAuth'}>
-            Waiting for {props.symbol} Auth.
-        </Trans>
+        describe1: props.t('labelWaitForAuth')
     }
     return <UpdateAccountBase {...props} {...propsPatch} />
 }
@@ -40,8 +40,7 @@ export const UpdateAccount_Approve_WaitForAuth = (props: PanelProps & WithTransl
 export const UpdateAccount_First_Method_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_First_Method_Denied'}>
-        </Trans>
+        describe1: props.t('labelFirstSignDenied'),
     }
     return <UpdateAccountBase {...propsPatch} {...props} />
 }
@@ -49,30 +48,28 @@ export const UpdateAccount_First_Method_Denied = (props: PanelProps & WithTransl
 export const UpdateAccount_User_Denied = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.RefuseIcon,
-        describe1: <Trans i18nKey={'label_Denied'}>
-        </Trans>
+        describe1: props.t('labelSignDenied'),
     }
     return <UpdateAccountBase {...propsPatch} {...props} />
 }
 
 // symbol
 export const UpdateAccount_Success = (props: PanelProps & WithTranslation) => {
+    const describe1 = props.t(props.patch?.isReset ? 'labelResetAccountSuccess' : 'labelUpdateAccountSuccess')
+    const describe2 = props.t(props.patch?.isReset ? 'labelResetAccountSuccess2' : 'labelUpdateAccountSuccess2')
     const propsPatch = {
         iconType: IconType.DoneIcon,
-        describe1: <Trans i18nKey={'label_UpdateAccount_Success'}>
-        </Trans>,
-        describe2: <Trans i18nKey={'label_UpdateAccount_Success2'}>
-        </Trans>
+        describe1,
+        describe2,
     }
     return <UpdateAccountBase {...propsPatch} {...props} />
 }
 
 // value symbol
-export const UpdateAccount_Submited = (props: PanelProps & WithTranslation) => {
+export const UpdateAccount_Submit = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.SubmitIcon,
-        describe1: <Trans i18nKey={'label_UpdateAccount_Submited'}>
-        </Trans>
+        describe1: props.t('labelUpdateAccountSubmit')
     }
     return <UpdateAccountBase {...propsPatch} {...props} />
 }
@@ -81,9 +78,7 @@ export const UpdateAccount_Submited = (props: PanelProps & WithTranslation) => {
 export const UpdateAccount_Failed = (props: PanelProps & WithTranslation) => {
     const propsPatch = {
         iconType: IconType.FailedIcon,
-        describe1: <Trans i18nKey={'label_UpdateAccount_Failed'}>
-            {props.value} {props.symbol} Update Account Failed.
-        </Trans>
+        describe1:props.t('labelUpdateAccountFailed')
     }
     return <UpdateAccountBase {...propsPatch} {...props} />
 }

@@ -1,4 +1,4 @@
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
 import { Button, ModalCloseButton } from '@loopring-web/component-lib';
 import styled from '@emotion/styled';
 import React from 'react';
@@ -29,7 +29,7 @@ export interface PopperProps {
 export const BottomRule = ({ isShow, title, content, btnTxt, clickToConfirm }: PopperProps) => {
   const [_isShow,setIsShow] = React.useState(isShow)
   const trans = useTranslation();
-  return _isShow ? <StyledBox height={80} width={'100%'} flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'row'} position={'fixed'}>
+  return _isShow ? <StyledBox height={60} width={'100%'} flex={1} display={'flex'} alignItems={'center'} justifyContent={'center'} flexDirection={'row'} position={'fixed'}>
     {title ? <Typography className={'title'}>{title}</Typography> : <></>}
     <Typography className={'content'} color={'textSecondary'} variant={'body1'} paddingX={3}>{content}</Typography>
     <Button variant={'contained'} size={'small'} onClick={() => {
@@ -38,6 +38,6 @@ export const BottomRule = ({ isShow, title, content, btnTxt, clickToConfirm }: P
         setIsShow(false)
       }
     }}> {btnTxt} </Button>
-    <ModalCloseButton  onClose={()=>setIsShow(false)} tReady={true}  {...trans}/>
+    <ModalCloseButton  onClose={()=>setIsShow(false)}  {...{...trans,tReady:true}}/>
   </StyledBox> : <></>;
 }

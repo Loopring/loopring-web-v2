@@ -1,6 +1,5 @@
-import { Box, Grid, IconButton, Typography } from '@material-ui/core/';
-import { getThousandFormattedNumbers, HideIcon, ViewIcon } from '@loopring-web/common-resources';
-import React from 'react';
+import { Box, Grid, IconButton, Typography } from '@mui/material';
+import { HideIcon, ViewIcon, getValuePrecisionThousand } from '@loopring-web/common-resources';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { AssetTitleProps } from './Interface';
 import styled from '@emotion/styled';
@@ -24,22 +23,24 @@ export const AssetTitle = withTranslation('common')(({
                                                          btnShowDepositStatus,
                                                          btnShowTransferStatus,
                                                          btnShowWithdrawStatus,
+                                                         hideL2Assets,
+                                                         setHideL2Assets,
                                                      }: AssetTitleProps & WithTranslation) => {
 
-    const [isShow, setIsShow] = React.useState<boolean>(assetInfo.isShow ? assetInfo.isShow : true);
+    // const [isShow, setIsShow] = React.useState<boolean>(assetInfo.isShow ? assetInfo.isShow : true);
     return <Grid container spacing={2} justifyContent={'space-between'} alignItems={'flex-start'}>
         <Grid item xs={7} display={'flex'} flexDirection={'column'}>
             <BoxStyled component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}
-                       marginTop={1} marginBottom={'16px'}>
+                        marginBottom={'16px'}>
                 <Typography component={'span'} variant={'body1'} paddingRight={3} color={'textSecondary'}>
                     {t('labelAssetTitle')}
                     {' '}
                     <IconButton
                         size={'small'}
                         // color={'secondary'}
-                        onClick={() => setIsShow(!isShow)}
+                        onClick={() => setHideL2Assets(!hideL2Assets)}
                         aria-label={t('labelShowAccountInfo')}>
-                        {isShow ? <HideIcon/> : <ViewIcon/>}
+                        {!hideL2Assets ? <ViewIcon/> : <HideIcon/>}
                     </IconButton>
                 </Typography>
 
@@ -48,8 +49,8 @@ export const AssetTitle = withTranslation('common')(({
             <Typography component={'p'} display={'flex'} alignItems={'center'} justifyContent={'flex-start'}
                         marginTop={1}>
                 <Typography component={'span'} paddingRight={1} variant={'h1'}> {assetInfo.priceTag} </Typography>
-                {isShow && assetInfo.totalAsset ? <Typography component={'span'}
-                                      variant={'h1'}>{assetInfo.totalAsset ? getThousandFormattedNumbers(Number(assetInfo.totalAsset.toFixed(2))) : 0.00}</Typography> :
+                {!hideL2Assets && assetInfo.totalAsset ? <Typography component={'span'}
+                                      variant={'h1'}>{assetInfo.totalAsset ? getValuePrecisionThousand(assetInfo.totalAsset, 2, 2, 2, true, { floor: true }) : '0.00'}</Typography> :
                     <Typography component={'span'}
                                 variant={'h1'}>&#10033;&#10033;&#10033;&#10033;.&#10033;&#10033;</Typography>}
             </Typography>

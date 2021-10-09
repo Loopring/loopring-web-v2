@@ -1,5 +1,5 @@
 import { CountDownStyled } from '../Styled';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
 import React from 'react';
 import { globalSetup, refreshTime } from '@loopring-web/common-resources';
 import * as _ from 'lodash'

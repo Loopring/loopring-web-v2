@@ -1,64 +1,98 @@
-import { HashRouter as Router, Route, Switch, } from 'react-router-dom'
-
+import { Route, Switch } from 'react-router-dom'
+import React from 'react';
+import { Container, Box } from '@mui/material'
 import Header from 'layouts/header'
-
-import QuotePage from 'pages/QuotePage'
-import { SwapPage } from 'pages/SwapPage'
-
-import Container from '@material-ui/core/Container'
-import { Box } from '@material-ui/core'
-import { Layer2Page } from '../pages/Layer2Page'
-import { LiquidityPage } from '../pages/LiquidityPage'
-import { MiningPage } from '../pages/MiningPage'
+import Footer from '../layouts/footer';
 import { ModalGroup } from '../modal';
-// import React from 'react';
+import { LAYOUT } from '../defs/common_defs';
+import { QuotePage } from 'pages/QuotePage'
+import { SwapPage } from 'pages/SwapPage'
+import { Layer2Page } from 'pages/Layer2Page'
+import { LiquidityPage } from 'pages/LiquidityPage'
+import { MiningPage } from 'pages/MiningPage'
+import { OrderbookPage } from 'pages/ProTradePage';
+import { useTicker } from '../stores/ticker';
+import { useSystem } from '../stores/system';
+import { LoadingPage } from '../pages/LoadingPage';
+
+
+
+const ContentWrap = ({ children }: React.PropsWithChildren<any>) => {
+    return <> <Header isHideOnScroll={false}/><Container maxWidth="lg"
+        style={{
+            minHeight: `calc(100% - ${LAYOUT.HEADER_HEIGHT}px - 32px)`,
+            display: 'flex',
+            flexDirection: 'column'
+        }}>
+        <Box display={'flex'} flex={1} alignItems={'stretch'} flexDirection={'row'} marginTop={3}>
+            {children}
+        </Box>
+    </Container></>
+}
 
 const RouterView = () => {
 
-    return <Router>
-        <Header />
+    // const location = useLocation()
 
-        {/*<Box style={{marginTop: `var(--header-height)`}} flex={1} display={'flex'}>*/}
-        <Container maxWidth="lg" style={{minHeight:'calc(100% - 64px - 32px)',display:'flex',flexDirection:'column'}}>
-            {/*style={{height: '100%' }}*/}
-            <Box display={'flex'} flex={1} alignItems={'stretch'} flexDirection={'row'} marginTop={3}  >
-                <Switch>
-                    <Route exact component={SwapPage} path='/'/>
-                    <Route exact component={QuotePage} path='/markets'/>
-                    <Route component={SwapPage} path='/trading/lite'/>
-                    <Route component={SwapPage} path='/trading/lite(/:symbol)'/>
-                    <Route exact component={MiningPage} path='/mining'/>
+    // React.useEffect(() => {
+    //     if(location.pathname){
+    //         const pathname = location.pathname;
+    //         if(pathname.match(/(trading\/lite)|(landing-pag)/ig))  {
+    //             store.dispatch(resetSwap(undefined))
+    //         }
+    //         if(pathname.match(/(liquidity\/pools)/ig))  {
+    //             store.dispatch(resetAmmPool(undefined))
+    //         }
+    //     }
+    // }, [location?.pathname])
+    const proFlag = (process.env.REACT_APP_WITH_PRO && process.env.REACT_APP_WITH_PRO === 'true')
+    const {tickerMap} = useTicker();
+    const {allowTrade} = useSystem();
 
-                    <Route exact component={Layer2Page} path='/layer2'/>
-                    <Route exact component={Layer2Page} path='/layer2/assets'/>
-                    <Route exact component={Layer2Page} path='/layer2/my-liquidity'/>
-                    <Route exact component={Layer2Page} path='/layer2/history'/>
-                    <Route exact component={Layer2Page} path='/layer2/order'/>
-                    <Route exact component={Layer2Page} path='/layer2/rewards'/>
-                    {/* <Route exact component={Layer2Page} path='/layer2/red-packet'/>
-                    <Route exact component={Layer2Page} path='/layer2/security'/>
-                    <Route exact component={Layer2Page} path='/layer2/vip'/> */}
-                    {/* <Route exact component={Layer2Page} path='/layer2/transactions'/>
-                    <Route exact component={Layer2Page} path='/layer2/trades'/>
-                    <Route exact component={Layer2Page} path='/layer2/ammRecords'/> */}
-                    {/* <Route exact component={Layer2Page} path='/layer2/orders'/> */}
-                    <Route exact component={Layer2Page} path='/layer2/setting'/>
+    return <>
 
-                    <Route exact component={LiquidityPage} path='/liquidity'/>
-                    <Route exact component={LiquidityPage} path='/liquidity/pools/*'/>
-                    <Route exact component={LiquidityPage} path='/liquidity/pools'/>
-                    {/*<Route exact component={LiquidityPage} path='/liquidity/pools/coinPair(/:symbol)'/>*/}
-                    <Route exact component={LiquidityPage} path='/liquidity/amm-mining'/>
-                    <Route exact component={LiquidityPage} path='/liquidity/my-liquidity'/>
-                    {/* <Route exact component={LiquidityPage} path='/liquidity/orderBook-Mining'/>
-                    <Route exact component={LiquidityPage} path='/liquidity/maker-rebates'/> */}
+        <Switch>
+            {/*<Route exact component={LandPage} path='/landing-page'/>*/}
+            <Route exact path='/landing-page'>
+                <ContentWrap>
+                    {allowTrade?.order.enable ? <SwapPage/> : <Layer2Page/>}
+                </ContentWrap>
+            </Route>
+            <Route exact path='/'><ContentWrap>
+                {allowTrade?.order.enable ? <SwapPage/> : <Layer2Page/>}
+            </ContentWrap></Route>
+            <Route path='/trade/lite'><ContentWrap><SwapPage/></ContentWrap></Route>
+            <Route path='/trade/lite(/:symbol)'><ContentWrap><SwapPage/></ContentWrap></Route>
 
-                </Switch>
-            </Box>
-        </Container>
-        {/*</Box>*/}
+            {
+                proFlag && tickerMap && <Route path='/trade/pro'>
+                  <Header isHideOnScroll={true}/>
+                  <OrderbookPage/></Route>
+            }
+            {
+                proFlag && tickerMap && <Route path='/trade/pro(/:symbol)'><OrderbookPage/></Route>
+            }
+            <Route exact path='/loading'><LoadingPage/> </Route>
+            <Route exact path='/markets'><ContentWrap><QuotePage/></ContentWrap> </Route>
+            <Route exact path='/mining'><ContentWrap><MiningPage/></ContentWrap> </Route>
+            <Route exact path='/layer2'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            <Route exact path='/layer2/assets'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            <Route exact path='/layer2/my-liquidity'><ContentWrap><Layer2Page/></ContentWrap> </Route>
+            <Route exact path='/layer2/history'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            <Route exact path='/layer2/order'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            <Route exact path='/layer2/rewards'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            <Route exact path='/layer2/security'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            <Route exact path='/layer2/vip'><ContentWrap><Layer2Page/></ContentWrap></Route>
+            <Route exact path='/liquidity'> <ContentWrap><LiquidityPage/></ContentWrap></Route>
+            <Route exact path='/liquidity/pools/*'><ContentWrap><LiquidityPage/></ContentWrap></Route>
+            <Route exact path='/liquidity/pools'><ContentWrap><LiquidityPage/></ContentWrap></Route>
+            <Route exact path='/liquidity/amm-mining'><ContentWrap><LiquidityPage/></ContentWrap> </Route>
+            <Route exact path='/liquidity/my-liquidity'><ContentWrap><LiquidityPage/></ContentWrap></Route>
+
+        </Switch>
         <ModalGroup/>
-    </Router>
+        <Footer/>
+    </>
 }
 
 export default RouterView

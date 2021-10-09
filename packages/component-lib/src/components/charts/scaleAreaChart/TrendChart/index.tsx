@@ -4,7 +4,7 @@ import { Area, ComposedChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, 
 import moment from 'moment'
 import { ScaleAreaChartProps } from '../ScaleAreaChart'
 import { getRenderData } from '../data'
-import { Box, Typography } from '@material-ui/core'
+import { Box, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import { useSettings } from '@loopring-web/component-lib/src/stores'
 
@@ -30,11 +30,11 @@ const TrendChart = ({
                         data,
                         yAxisDomainPercent = DEFAULT_YAXIS_DOMAIN,
                         handleMove,
-                        // riseColor = 'green',
                         showTooltip = true,
                         showArea = true,
                         extraInfo,
                         showXAxis = false,
+                        isHeadTailCompare = false,
                     }: ScaleAreaChartProps) => {
     const userSettings = useSettings()
     const upColor = userSettings ? userSettings.upColor : 'green'
@@ -46,11 +46,11 @@ const TrendChart = ({
     const trendColor =
         upColor === 'green'
             ? priceTrend === 'up'
-            ? UP_COLOR
-            : DOWN_COLOR
+                ? UP_COLOR
+                : DOWN_COLOR
             : priceTrend === 'up'
-            ? DOWN_COLOR
-            : UP_COLOR
+                ? DOWN_COLOR
+                : UP_COLOR
     const hasData = data && Array.isArray(data) && !!data.length
 
     const handleMousemove = useCallback(
@@ -106,10 +106,14 @@ const TrendChart = ({
     }, [renderData])
 
     useDeepCompareEffect(() => {
-        if (renderData && !!renderData.length) {
+        if (!isHeadTailCompare && renderData && !!renderData.length) {
             setPriceTrend(renderData[ renderData.length - 1 ].sign === 1
                 ? 'up'
                 : 'down')
+        }
+        if (isHeadTailCompare) {
+            const isUp = (renderData[0]?.close || 0) < (renderData[ renderData.length - 1 ]?.close || 0)
+            setPriceTrend(isUp ? 'up' : 'down')
         }
     }, [renderData])
 
@@ -127,9 +131,9 @@ const TrendChart = ({
     }
 
     return (
-        <ResponsiveContainer debounce={1} width={'99%'}>
+        <ResponsiveContainer debounce={100} width={'95%'}>
             <ComposedChart data={renderData} onMouseMove={showTooltip && handleMousemove}
-                           onMouseLeave={handleMouseLeave}>
+                        onMouseLeave={showTooltip && handleMouseLeave}>
                 <defs>
                     <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                         {/* <stop offset="5%" stopColor="rgba(1, 187, 168, 0.4)" stopOpacity={0.8}/> */}

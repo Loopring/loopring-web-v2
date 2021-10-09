@@ -7,16 +7,15 @@ import storageSession from 'redux-persist/lib/storage/session'
 import storage from 'redux-persist/lib/storage'
 import persistStore from 'redux-persist/es/persistStore'
 import hardSet from 'redux-persist/lib/stateReconciler/hardSet'
-
+import mySaga from './rootSaga';
+import { updateVersion } from './global/actions'
 import createSagaMiddleware from 'redux-saga'
 import * as imgConfig from '@loopring-web/common-resources/assets/images/coin/loopring.json'
 import { reduxBatch } from '@manaflair/redux-batch'
-import { updateVersion } from './global/actions'
 import accountSlice from './account/reducer'
 import { modalsSlice, setCoinJson, setLanguage, settingsSlice, SettingsState, } from '@loopring-web/component-lib';
 import { ammReducer } from './Amm';
 import { tokenMapSlice } from './token';
-import mySaga from './rootSaga';
 import { tickerMapSlice } from './ticker';
 import { systemSlice } from './system';
 import { walletLayer1Slice } from './walletLayer1';
@@ -24,12 +23,16 @@ import { walletLayer2Slice } from './walletLayer2';
 import { socketSlice } from './socket';
 import { userRewardsMapSlice } from './userRewards';
 import { localStoreReducer } from './localStore';
-import { myLog } from 'utils/log_tools'
+import { myLog } from "@loopring-web/common-resources";
 import { FavoriteMarketStates } from './localStore/favoriteMarket'
 import { OnchainHashInfo } from './localStore/onchainHashInfo'
 import { Confirmation } from './localStore/confirmation'
 import { WalletInfo } from './localStore/walletInfo'
-import { amountMapSlice, AmountStates } from './amount';
+import { amountMapSlice } from './amount';
+import { pageTradeLiteSlice, pageAmmPoolSlice, modalDataSlice,
+    pageTradeProSlice,
+} from './router';
+import { tokenPricesSlice } from './tokenPrices';
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -75,11 +78,19 @@ const reducer = combineReducers({
     userRewardsMap: userRewardsMapSlice.reducer,
     amm: ammReducer,
     tokenMap: tokenMapSlice.reducer,
+    tokenPrices: tokenPricesSlice.reducer,
+
     walletLayer2: walletLayer2Slice.reducer,
     walletLayer1: walletLayer1Slice.reducer,
     tickerMap: tickerMapSlice.reducer,
     localStore: persistedLocalStoreReducer,
-    amountMap: amountMapSlice.reducer
+    amountMap: amountMapSlice.reducer,
+
+    // router redux
+    _router_pageTradeLite: pageTradeLiteSlice.reducer,
+    _router_pageTradePro: pageTradeProSlice.reducer,
+    _router_pageAmmPool: pageAmmPoolSlice.reducer,
+    _router_modalData: modalDataSlice.reducer,
 })
 
 //const persistedReducer = persistReducer(persistConfig ,reducer)

@@ -11,6 +11,7 @@ const initialState: AccountState = {
     eddsaKey: '',
     publicKey: {},
     level: '',
+    keySeed: '',
     nonce: undefined,
     keyNonce: undefined,
     connectName: ConnectProviders.unknown,
@@ -27,7 +28,7 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
         updateAccountStatus(state: AccountState, action: PayloadAction<Partial<Account>>) {
             state.status = SagaStatus.PENDING
         },
-        changeShowModel(state: AccountState, action: PayloadAction<{_userOnModel:boolean|undefined}>) {
+        changeShowModel(state: AccountState, action: PayloadAction<{ _userOnModel: boolean | undefined }>) {
             const {
                 _userOnModel
             } = action.payload;
@@ -50,20 +51,21 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                     apiKey,
                     eddsaKey,
                     _chainId,
+                    keySeed,
                     nonce,
                     connectName,
                     // _userOnModel
                 } = action.payload;
-                
+
                 if (accAddress !== undefined) {
                     state.accAddress = accAddress;
                 }
-                
+
                 if (qrCodeUrl !== undefined) {
                     state.qrCodeUrl = qrCodeUrl;
                 }
-                
-                if(wrongChain !== undefined){
+
+                if (wrongChain !== undefined) {
                     state.wrongChain = wrongChain
                 }
                 if (readyState) {
@@ -90,10 +92,13 @@ const accountSlice: Slice<AccountState> = createSlice<AccountState, SliceCaseRed
                 if (nonce !== undefined) {
                     state.nonce = nonce;
                 }
+                if (keySeed !== undefined) {
+                    state.keySeed = keySeed;
+                }
                 state.status = SagaStatus.DONE;
             }
         },
-        cleanAccountStatus(state: AccountState, action: PayloadAction<{shouldUpdateProvider?:boolean|undefined}>) {
+        cleanAccountStatus(state: AccountState, action: PayloadAction<{ shouldUpdateProvider?: boolean | undefined }>) {
             state.status = SagaStatus.PENDING
         },
         statusUnset: (state: AccountState) => {

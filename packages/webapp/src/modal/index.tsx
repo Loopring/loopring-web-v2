@@ -1,13 +1,12 @@
-import { ModalPanel, Toast, useOpenModals } from '@loopring-web/component-lib';
+import { AlertNotSupport, useOpenModals } from '@loopring-web/component-lib';
 import { ModalWalletConnectPanel } from './WalletModal';
 import { ModalAccountInfo } from './AccountModal';
 import { withTranslation, WithTranslation } from 'react-i18next';
-import { useTransfer } from 'hooks/useractions/useTransfer';
-import { useDeposit } from 'hooks/useractions/useDeposit';
-import { useWithdraw } from 'hooks/useractions/useWithdraw';
 import { useSystem } from '../stores/system';
 import { useAccountModal } from 'hooks/useractions/useAccountModal';
-import { TOAST_TIME } from '../defs/common_defs';
+import React from 'react'
+import { useAccount } from 'stores/account';
+import { AccountStatus } from '@loopring-web/common-resources';
 
 export const ModalGroup = withTranslation('common', {
     withRef: true,
@@ -21,20 +20,44 @@ export const ModalGroup = withTranslation('common', {
         onWalletConnectPanelClose?: (event: MouseEvent) => void
         onAccountInfoPanelClose?: (event: MouseEvent) => void
     }) => {
-    const {etherscanUrl} = useSystem();
-    useAccountModal();
-    const {modals: {isShowAccount, isShowConnect}, setShowConnect, setShowAccount} = useOpenModals();
-    return <>
+    const {etherscanBaseUrl} = useSystem();
 
+    useAccountModal()
+
+    const {
+        modals: {isShowAccount, isShowConnect,isShowSupport},
+        setShowSupport,
+        setShowDeposit,
+        setShowTransfer,
+        setShowWithdraw,
+        setShowResetAccount,
+    } = useOpenModals()
+    
+    const { account } = useAccount()
+
+    React.useEffect(() => {
+        if (account.readyState !== AccountStatus.ACTIVATED) {
+            setShowDeposit({ isShow: false })
+            setShowTransfer({ isShow: false })
+            setShowWithdraw({ isShow: false })
+            setShowResetAccount({ isShow: false })
+        }
+    }, [account.readyState])
+
+    return <>
+        <AlertNotSupport open ={isShowSupport.isShow} handleClose={()=> {
+             setShowSupport({isShow: false});
+        }}   />
         <ModalWalletConnectPanel {...{
             ...rest,
             open: isShowConnect.isShow,
             onClose: onWalletConnectPanelClose
         }} />
+        
         <ModalAccountInfo
             {...{
                 ...rest,
-                etherscanUrl,
+                etherscanBaseUrl,
                 open: isShowAccount.isShow,
                 onClose: onAccountInfoPanelClose
             }}

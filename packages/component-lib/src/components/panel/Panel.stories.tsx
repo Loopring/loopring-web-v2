@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Meta, Story } from '@storybook/react/types-6-0';
 import { MemoryRouter } from 'react-router-dom';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 // import { useTranslation } from 'react-i18next';
 // import { useDispatch } from 'react-redux';
 import { FilterMarketPanel } from './FilterMarketsPanel';

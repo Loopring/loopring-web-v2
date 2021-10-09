@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box  } from "@material-ui/core";
+import { Box  } from '@mui/material';
 import { CloseIcon, CoinInfo, CoinKey, globalSetup } from '@loopring-web/common-resources';
 import React from "react";
 import { InputSelectProps } from "./Interface";
@@ -110,15 +110,14 @@ function _InputSelect<C, I extends string = CoinKey<C>>({
                              value={value?.selected}
                              className={'search-wrap'}
                              onChange={_handleContentChange} />
-                {value?.selected !== '' ? <IconClearStyled size={'small'}  style={{top:'6px'}} aria-label="Clear" onClick={handleClear}>
+                {/* {value?.selected !== '' ? <IconClearStyled size={'small'}  style={{top:'6px'}} aria-label="Clear" onClick={handleClear}>
                     <CloseIcon/>
-                </IconClearStyled> : ''}
+                </IconClearStyled> : ''} */}
             </Box>
             {backElement?<Box marginLeft={2}>{backElement}</Box>:<></>}
             {/*</Grid>*/}
         </Box>
         <Box flex={1} ref={panelRef}>
-
             {panelRender({selected, value: value.selected})}
         </Box>
     </WrapStyled>

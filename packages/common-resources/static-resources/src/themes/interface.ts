@@ -1,4 +1,4 @@
-import { AvatarProps, Theme } from '@material-ui/core';
+import { AvatarProps, Theme } from '@mui/material';
 import { ColorBaseInterface } from './css/color-lib';
 
 export enum ThemeType {
@@ -9,7 +9,7 @@ export enum ThemeType {
 export type ThemeKeys = keyof typeof ThemeType;
 export type LoopringTheme = Theme & {
     colorBase: ColorBaseInterface
-    fontDefault: { h1: string, h2: string, h3: string, h4: string, h5: string, h6: string, body1: string },
+    fontDefault: { h1: string, h2: string, h3: string, h4: string, h5: string, h6: string, body1: string, body2: string },
     unit: number,
     mode: ThemeKeys,
     border: {

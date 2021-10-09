@@ -2,16 +2,19 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3 from "web3";
 import { walletServices } from '../walletServices';
 import { ErrorType } from '../command';
-import { ConnectProviders } from '@loopring-web/common-resources';
-import { MetaMaskUnsubscribe } from '../metamask';
+import { ConnectProviders, myLog } from '@loopring-web/common-resources';
 
 const BRIDGE_URL = process.env.REACT_APP_WALLET_CONNECT_BRIDGE ?? 'https://bridge.walletconnect.org'
+
+myLog('---BRIDGE_URL:', BRIDGE_URL)
 
 const RPC_URLS: { [ chainId: number ]: string } = {
     1: process.env.REACT_APP_RPC_URL_1 as string,
     5: process.env.REACT_APP_RPC_URL_5 as string
 }
+
 const POLLING_INTERVAL = 12000
+
 export const WalletConnectProvide = async (account?: string): Promise<{ provider?: WalletConnectProvider, web3?: Web3, } | undefined> => {
     try {
         const provider: WalletConnectProvider = new WalletConnectProvider({
@@ -41,17 +44,6 @@ export const WalletConnectProvide = async (account?: string): Promise<{ provider
             await provider.enable();
             web3 = new Web3(provider as any);
             walletServices.sendConnect(web3, provider)
-            // const wc = await provider.getWalletConnector()
-            // if (wc) {
-            //     await provider.start();
-            //     provider.subscribeWalletConnector();
-            //     web3 = new Web3(provider as any);
-            //     // connector.updateSession({accounts:[account],chainId:connector.chainId})
-            //     walletServices.sendConnect(web3, provider)
-            // }else {
-            //     web3=undefined
-            //     throw new Error('walletConnect not connect');
-            // }
         }
         return {provider, web3}
     } catch (error) {
@@ -63,10 +55,6 @@ export const WalletConnectProvide = async (account?: string): Promise<{ provider
 export const WalletConnectSubscribe = (provider: any, web3: Web3, account?: string) => {
     const {connector} = provider;
     if (provider && connector && connector.connected) {
-
-        // if(account) {
-        //     connector.approveSession({accounts:[account], chainId:provider.chainId})
-        // }
 
         connector.on("connect", (error: Error | null, payload: any | null) => {
             if (error) {
@@ -196,7 +184,7 @@ export const WalletConnectUnsubscribe = async  (provider: any) => {
 //
 // export const walletlink = new WalletLinkConnector({
 //     url: RPC_URLS[1],
-//     appName: 'Loopring DEX'
+//     appName: 'Loopring L2'
 // })
 //
 // export const ledger = new LedgerConnector({ chainId: 1, url: RPC_URLS[1], pollingInterval: POLLING_INTERVAL })

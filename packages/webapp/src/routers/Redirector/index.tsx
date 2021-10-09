@@ -4,7 +4,7 @@ import { useAccount } from '../../stores/account'
 
 const Redirector = ({children}: { children: React.ReactNode }) => {
 
-    const { account: { accountId } } = useAccount()
+    const {account: {accountId}} = useAccount()
 
     return (
         <React.Fragment>
@@ -13,7 +13,7 @@ const Redirector = ({children}: { children: React.ReactNode }) => {
                     <>
                         {children}
                     </>
-                ) : <Redirect to="/" />
+                ) : <Redirect to="/"/>
             }
         </React.Fragment>
     )

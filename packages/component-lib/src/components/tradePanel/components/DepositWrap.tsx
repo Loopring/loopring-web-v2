@@ -2,7 +2,7 @@ import { CloseIcon, globalSetup, IBData } from '@loopring-web/common-resources';
 import { TradeBtnStatus } from '../Interface';
 import { Trans, WithTranslation } from 'react-i18next';
 import React, { ChangeEvent } from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
 import { Button, IconClearStyled, TextField, TypographyGood } from '../../../index';
 import { DepositViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
@@ -63,6 +63,9 @@ export const DepositWrap = <T extends IBData<I>,
     const inputButtonDefaultProps = {
         label: t('depositLabelEnterToken'),
     }
+
+    console.log('redender old!!!!!!!')
+
     return <Grid className={walletMap ? '' : 'loading'} paddingLeft={5 / 2} paddingRight={5 / 2} container
                  direction={"column"}
                  justifyContent={'space-between'} alignItems={"center"} flex={1} height={'100%'}>

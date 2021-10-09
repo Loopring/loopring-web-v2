@@ -1,24 +1,23 @@
 import { updateAccountStatus } from '../../stores/account';
 import { AccountStep, setShowAccount, setShowConnect } from '@loopring-web/component-lib';
 import store from '../../stores';
-import { AccountStatus } from '@loopring-web/common-resources';
-import { myLog } from 'utils/log_tools';
+import { AccountStatus, FeeInfo } from '@loopring-web/common-resources';
+import { myLog } from "@loopring-web/common-resources";
 import { LoopringAPI } from 'api_wrapper';
 import { connectProvides } from '@loopring-web/web3-provider';
 import * as sdk from 'loopring-sdk'
 import { ActionResult, ActionResultCode, DAYS, } from 'defs/common_defs';
-import { dumpError400 } from 'loopring-sdk';
 import { getTimestampDaysLater } from 'utils/dt_tools';
 
-export async function activeAccount({ reason, shouldShow }: { reason: any, shouldShow: boolean }) {
+export async function activeAccount({reason, shouldShow}: { reason: any, shouldShow: boolean }) {
     const account = store.getState().account;
     // const {exchangeInfo} = store.getState().system;
     if (reason?.response?.data?.resultInfo?.code === 100001) {
         // deposited, but need update account
         myLog('SignAccount')
-        store.dispatch(setShowConnect({ isShow: false }));
-        store.dispatch(setShowAccount({ isShow: true, step: AccountStep.UpdateAccount }));
-        store.dispatch(updateAccountStatus({ readyState: AccountStatus.DEPOSITING }));
+        store.dispatch(setShowConnect({isShow: false}));
+        store.dispatch(setShowAccount({isShow: true, step: AccountStep.UpdateAccount}));
+        store.dispatch(updateAccountStatus({readyState: AccountStatus.DEPOSITING}));
 
     } else {
         // need to deposit.
@@ -26,39 +25,39 @@ export async function activeAccount({ reason, shouldShow }: { reason: any, shoul
         if (activeDeposit) {
             activeDeposit = JSON.stringify(activeDeposit);
         }
-        if (activeDeposit && activeDeposit[account.accAddress]) {
+        if (activeDeposit && activeDeposit[ account.accAddress ]) {
             myLog('DEPOSITING')
-            store.dispatch(setShowConnect({ isShow: false }));
-            store.dispatch(setShowAccount({ isShow: shouldShow, step: AccountStep.Deposit_Submited }));
-            store.dispatch(updateAccountStatus({ readyState: AccountStatus.DEPOSITING }));
+            store.dispatch(setShowConnect({isShow: false}));
+            store.dispatch(setShowAccount({isShow: shouldShow, step: AccountStep.Deposit_Submit}));
+            store.dispatch(updateAccountStatus({readyState: AccountStatus.DEPOSITING}));
             // store.dispatch(statusAccountUnset(undefined))
         } else {
             myLog('NO_ACCOUNT')
-            setShowConnect({ isShow: false });
-            setShowAccount({ isShow: shouldShow, step: AccountStep.NoAccount });
-            store.dispatch(updateAccountStatus({ readyState: AccountStatus.NO_ACCOUNT }));
+            setShowConnect({isShow: false});
+            setShowAccount({isShow: shouldShow, step: AccountStep.NoAccount});
+            store.dispatch(updateAccountStatus({readyState: AccountStatus.NO_ACCOUNT}));
             // store.dispatch(statusAccountUnset(undefined));
         }
     }
 }
 
-export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolean, }) {
+export async function updateAccountFromServer({isHWAddr, feeInfo, isReset, }: { isHWAddr: boolean, feeInfo?: FeeInfo, isReset?: boolean }) {
 
     const system = store.getState().system
     const account = store.getState().account
 
-    let eddsaKey = account.eddsaKey
+    let eddsaKey = isReset ? undefined : account.eddsaKey
 
     myLog('before check!', account)
 
-    let result: ActionResult = { code: ActionResultCode.NoError, }
+    let result: ActionResult = {code: ActionResultCode.NoError,}
 
     try {
 
         if (LoopringAPI.userAPI && LoopringAPI.exchangeAPI && system.exchangeInfo && connectProvides.usedWeb3 && account
             && system.chainId !== 'unknown' && account.connectName !== 'unknown') {
 
-            const { accInfo } = (await LoopringAPI.exchangeAPI.getAccount({
+            const {accInfo} = (await LoopringAPI.exchangeAPI.getAccount({
                 owner: account.accAddress
             }))
 
@@ -67,36 +66,37 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
                 const connectName = account.connectName as sdk.ConnectorNames
 
                 try {
-                        if (!eddsaKey) {
-                            myLog('no eddsaKey ！!')
-                            eddsaKey = await sdk
-                            .generateKeyPair(
-                                connectProvides.usedWeb3,
-                                accInfo.owner,
-                                system.exchangeInfo.exchangeAddress,
-                                accInfo.nonce,
-                                connectName,
+                    if (!eddsaKey) {
+                        myLog('no eddsaKey ！!')
+                        eddsaKey = await sdk
+                            .generateKeyPair({
+                                web3: connectProvides.usedWeb3,
+                                address: accInfo.owner,
+                                exchangeAddress: system.exchangeInfo.exchangeAddress,
+                                keyNonce: accInfo.nonce,
+                                walletType: connectName,
+                            }
                             )
-                            myLog('no eddsaKey! after generateKeyPair')
-                        }
+                        myLog('no eddsaKey! after generateKeyPair')
+                    }
 
                     try {
 
-                        const feeMap = {
-                            'ETH': '529000000000000',
-                            'LRC': '34000000000000000000',
-                            'USDT': '7850000',
-                            'DAI': '98100000000000000000',
-                        }
+                        let tokenId = 0
 
-                        myLog('fee:', sdk.toBig(feeMap['ETH']).div('1e18').toNumber())
+                        let feeVol = '0'
+
+                        if (feeInfo) {
+                            tokenId = feeInfo.__raw__.tokenId
+                            feeVol = feeInfo.__raw__.feeRaw
+                        }
 
                         const request: sdk.UpdateAccountRequestV3 = {
                             exchange: system.exchangeInfo.exchangeAddress,
                             owner: accInfo.owner,
                             accountId: accInfo.accountId,
-                            publicKey: { x: eddsaKey.formatedPx, y: eddsaKey.formatedPy, },
-                            maxFee: { tokenId: 0, volume: feeMap['ETH'] },
+                            publicKey: {x: eddsaKey.formatedPx, y: eddsaKey.formatedPy,},
+                            maxFee: {tokenId, volume: feeVol},
                             validUntil: getTimestampDaysLater(DAYS),
                             nonce: accInfo.nonce as number,
                         }
@@ -105,8 +105,8 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
 
                         const updateAccountResponse = await LoopringAPI.userAPI.updateAccount({
                             request,
-                            web3: connectProvides.usedWeb3, 
-                            chainId: system.chainId, 
+                            web3: connectProvides.usedWeb3,
+                            chainId: system.chainId,
                             walletType: connectName,
                             isHWAddr,
                         })
@@ -118,6 +118,12 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
                             result.data = {
                                 eddsaKey,
                                 errorInfo: updateAccountResponse.errorInfo,
+                            }
+                        } else if (updateAccountResponse?.resultInfo) {
+                            result.code = ActionResultCode.UpdateAccoutError
+                            result.data = {
+                                eddsaKey,
+                                errorInfo: updateAccountResponse.resultInfo,
                             }
                         } else {
                             result.data = {
@@ -131,7 +137,7 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
                         result.data = {
                             errorInfo: reason
                         }
-                        dumpError400(reason)
+                        sdk.dumpError400(reason)
                     }
 
                 } catch (reason) {
@@ -142,7 +148,7 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
                     result.data = {
                         errorInfo: reason
                     }
-                    dumpError400(reason)
+                    sdk.dumpError400(reason)
                 }
             }
         }
@@ -151,7 +157,7 @@ export async function updateAccountFromServer({ isHWAddr, } : { isHWAddr: boolea
         myLog('other error!!!!!!! ')
         result.code = ActionResultCode.GetAccError
         result.data = reason
-        dumpError400(reason)
+        sdk.dumpError400(reason)
     }
 
     return result

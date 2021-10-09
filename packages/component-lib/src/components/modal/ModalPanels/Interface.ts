@@ -23,14 +23,14 @@ export enum AccountStep {
     HadAccount,
 
     // new
-    Deposit,
+    // Deposit,
     Deposit_Approve_WaitForAuth,
     Deposit_Approve_Denied,
-    Deposit_Approve_Submited,
+    Deposit_Approve_Submit,
     Deposit_WaitForAuth,
     Deposit_Denied,
     Deposit_Failed,
-    Deposit_Submited,
+    Deposit_Submit,
 
     Transfer_WaitForAuth,
     Transfer_First_Method_Denied,
@@ -48,18 +48,18 @@ export enum AccountStep {
 
     CreateAccount_Approve_WaitForAuth,
     CreateAccount_Approve_Denied,
-    CreateAccount_Approve_Submited,
+    CreateAccount_Approve_Submit,
     CreateAccount_WaitForAuth,
     CreateAccount_Denied,
     CreateAccount_Failed,
-    CreateAccount_Submited,
+    CreateAccount_Submit,
     
     UpdateAccount,
     UpdateAccount_Approve_WaitForAuth,
     UpdateAccount_First_Method_Denied,
     UpdateAccount_User_Denied,
     UpdateAccount_Success,
-    UpdateAccount_Submited,
+    UpdateAccount_Submit,
     UpdateAccount_Failed,
     
     // UnlockAccount,
@@ -67,5 +67,17 @@ export enum AccountStep {
     UnlockAccount_User_Denied,
     UnlockAccount_Success,
     UnlockAccount_Failed,
+
+    ResetAccount_Approve_WaitForAuth,
+    ResetAccount_First_Method_Denied,
+    ResetAccount_User_Denied,
+    ResetAccount_Success,
+    ResetAccount_Submit,
+    ResetAccount_Failed,
+
+    ExportAccount_Approve_WaitForAuth,
+    ExportAccount_User_Denied,
+    ExportAccount_Success,
+    ExportAccount_Failed,
 
 }
