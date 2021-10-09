@@ -147,7 +147,7 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
             <Grid container spacing={3} marginLeft={0} display={'flex'} alignItems={'center'}>
                 <Grid item>
                     <Typography fontWeight={500}
-                                color={marketTicker.isRise ? 'var(--color-success)' : 'var(--color-error)'}>
+                                color={!marketTicker?.tradeFloat?.close ? 'var(--color-text-primary)' : marketTicker.isRise ? 'var(--color-success)' : 'var(--color-error)'}>
                         {marketTicker.tradeFloat.close??EmptyValueTag}</Typography>
                     <PriceValueStyled>{isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand((isUSD ? marketTicker.basePriceDollar : marketTicker.basePriceYuan), undefined, undefined, undefined, true, {isFait: true})}</PriceValueStyled>
                 </Grid>

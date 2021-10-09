@@ -20,7 +20,9 @@ const ChartWrapperStyled = styled(Box)`
 `
 
 const ChartItemStyled = styled(Typography)`
+    font-size: 1.2em;
     cursor: pointer;
+    margin-top: 1px;
 `
 
 const formatDateData = testKlineData.map(d => ({
@@ -177,12 +179,12 @@ export const ChartView = withTranslation('common')(({market, rowLength, t, i18n,
                 <Box>
                     <Grid container spacing={2}>
                         <Grid item onClick={() => handleChartTypeChange(ChartType.Kline)}>
-                            <ChartItemStyled color={isKline ? 'var(--color-text-primary)' : 'var(--color-text-third)'}>
+                            <ChartItemStyled style={{ fontSize: 14 }} color={isKline ? 'var(--color-text-primary)' : 'var(--color-text-third)'}>
                                 {t('labelProChartTradingView')}
                             </ChartItemStyled>
                         </Grid>
                         <Grid item onClick={() => handleChartTypeChange(ChartType.Depth)}>
-                            <ChartItemStyled color={!isKline ? 'var(--color-text-primary)' : 'var(--color-text-third)'}>
+                            <ChartItemStyled style={{ fontSize: 14 }} color={!isKline ? 'var(--color-text-primary)' : 'var(--color-text-third)'}>
                                 {t('labelProChartDepth')}
                             </ChartItemStyled>
                         </Grid>
