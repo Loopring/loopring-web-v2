@@ -11,7 +11,6 @@ import { useOverview } from './hook';
 import { useSystem } from 'stores/system'
 import { TableWrapStyled } from 'pages/styled'
 import { useAmmActivityMap } from 'stores/Amm/AmmActivityMap'
-import { Currency } from 'loopring-sdk';
 
 
 //TODO: FIXED:  demo data
