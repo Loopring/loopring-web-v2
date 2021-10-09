@@ -1,4 +1,4 @@
-import { AlertNotSupport, useOpenModals } from '@loopring-web/component-lib';
+import { AlertNotSupport, ModalSettingFee, useOpenModals } from '@loopring-web/component-lib';
 import { ModalWalletConnectPanel } from './WalletModal';
 import { ModalAccountInfo } from './AccountModal';
 import { withTranslation, WithTranslation } from 'react-i18next';
@@ -21,6 +21,7 @@ export const ModalGroup = withTranslation('common', {
         onAccountInfoPanelClose?: (event: MouseEvent) => void
     }) => {
     const {etherscanBaseUrl} = useSystem();
+    const {modals: {isShowFeeSetting}, setShowFeeSetting} = useOpenModals();
 
     useAccountModal()
 
@@ -62,6 +63,8 @@ export const ModalGroup = withTranslation('common', {
                 onClose: onAccountInfoPanelClose
             }}
         ></ModalAccountInfo>
+        <ModalSettingFee open={isShowFeeSetting.isShow}
+            onClose={() => setShowFeeSetting({isShow: false})}/>
     </>
 
 })

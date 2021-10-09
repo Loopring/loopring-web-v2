@@ -3,6 +3,7 @@ import { Box, Button, Divider, Grid, Typography } from '@mui/material';
 import React from 'react';
 import { Trans, WithTranslation, withTranslation } from 'react-i18next';
 import { useExportAccountInfo, useResetAccount } from './hook';
+import { useOpenModals, useSettings } from '@loopring-web/component-lib';
 
 const StyledPaper = styled(Grid)`
   width: 100%;
@@ -25,7 +26,7 @@ const StyledDivider = styled(Divider)`
 export const SecurityPanel = withTranslation(['common', 'layout'])(({t, i18n, ...rest}: & WithTranslation) => {
 
     const { resetKeypair, } = useResetAccount()
-
+    const { setShowFeeSetting } = useOpenModals()
     const {exportAccInfo, exportAccount} = useExportAccountInfo()
 
     return <StyledPaper container className={'MuiPaper-elevation2'} marginBottom={2}>
@@ -74,7 +75,6 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({t, i18n, ..
                 {/*        <Typography variant={'body2'} color={'text.secondary'} component={'p'}*/}
                 {/*                    paddingTop={1}>{t('labelHadChangPassword', {passDay: '14 hours'})}</Typography>*/}
                 {/*    </Grid>*/}
-
                 {/*</Grid>*/}
             </Box>
             <StyledDivider/>
@@ -96,7 +96,7 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({t, i18n, ..
                     </Grid>
                 </Grid>
             </Box>
-            {/* <StyledDivider/>
+            <StyledDivider/>
             <Box component={'section'} display={'flex'} flexDirection={'column'}>
                 <Typography variant={'h4'} color={'text.primary'} component={'h4'} paddingX={4}
                             marginY={1}>{t('labelSettingFee')}</Typography>
@@ -110,12 +110,13 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({t, i18n, ..
                     <Grid item xs={5} display={'flex'} flexDirection={'column'} justifyContent={'space-evenly'}
                           alignItems={'flex-end'} alignSelf={'stretch'}>
                         <Grid item> <Button onClick={() => {
-                            exportAccInfo()
+                            // exportAccInfo()
+                            setShowFeeSetting({isShow:true})
                         }} variant={'outlined'} size={'medium'}
-                                            color={'primary'} disabled={false}>{t('labelBtnFix')}</Button></Grid>
+                                            color={'primary'} disabled={false}>{t('labelBtnEdit')}</Button></Grid>
                     </Grid>
                 </Grid>
-            </Box> */}
+            </Box> 
         </Grid>
     </StyledPaper>
 })

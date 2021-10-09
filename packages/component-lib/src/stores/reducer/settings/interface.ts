@@ -21,5 +21,6 @@ export interface SettingsState {
     hideL2Assets: boolean
     hideLpToken: boolean
     hideSmallBalances: boolean
-    proLayout: Layouts
+    proLayout: Layouts,
+    feeChargeOrder:string[],
 }
