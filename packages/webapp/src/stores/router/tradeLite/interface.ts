@@ -8,7 +8,7 @@ export type PageTradeLite = {
     tradePair?: MarketType  //eg: ETH-LRC or LRC-ETH  ${sell}-${buy}
     request?: sdk.SubmitOrderRequestV3 | null | undefined,
     minOrderInfo?: sdk.OrderInfo & OrderInfoPatch | undefined | null,
-    calcTradeParams?: {
+    calcTradeParams?: Partial<{
         exceedDepth: boolean;
         isReverse: boolean;
         isAtoB: boolean;
@@ -26,7 +26,7 @@ export type PageTradeLite = {
             minReceivedVal: string;
         };
         priceImpact: string;
-    } | null | undefined,
+    } >| null | undefined,
     priceImpactObj?: {    // account has activated or undefined
         value: number | string,
         priceImpactColor: string,
