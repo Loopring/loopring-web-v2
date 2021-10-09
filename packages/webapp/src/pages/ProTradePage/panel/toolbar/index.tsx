@@ -148,22 +148,22 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
                 <Grid item>
                     <Typography fontWeight={500}
                                 color={marketTicker.isRise ? 'var(--color-success)' : 'var(--color-error)'}>
-                        {marketTicker.tradeFloat.close??EmptyValueTag}</Typography>
+                        {marketTicker?.tradeFloat?.close??EmptyValueTag}</Typography>
                     <PriceValueStyled>{isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand((isUSD ? marketTicker.basePriceDollar : marketTicker.basePriceYuan), undefined, undefined, undefined, true, {isFait: true})}</PriceValueStyled>
                 </Grid>
                 <Grid item>
                     <PriceTitleStyled>{t('labelProToolbar24hChange')}</PriceTitleStyled>
                     <PriceValueStyled color={marketTicker.isRise ? 'var(--color-success)' : 'var(--color-error)'}>
-                        {`${marketTicker.isRise ? '+' : ''} ${getValuePrecisionThousand(marketTicker.tradeFloat.change, undefined, undefined, 2, true)}%`}
+                        {`${marketTicker.isRise ? '+' : ''} ${getValuePrecisionThousand(marketTicker?.tradeFloat?.change, undefined, undefined, 2, true)}%`}
                     </PriceValueStyled>
                 </Grid>
                 <Grid item>
                     <PriceTitleStyled>{t('labelProToolbar24hHigh')}</PriceTitleStyled>
-                    <PriceValueStyled>{getValuePrecisionThousand(marketTicker.tradeFloat.high, undefined, undefined, getMarketPrecision(market), true, {isPrice: true})}</PriceValueStyled>
+                    <PriceValueStyled>{getValuePrecisionThousand(marketTicker?.tradeFloat?.high, undefined, undefined, getMarketPrecision(market), true, {isPrice: true})}</PriceValueStyled>
                 </Grid>
                 <Grid item>
                     <PriceTitleStyled>{t('labelProToolbar24hLow')}</PriceTitleStyled>
-                    <PriceValueStyled>{getValuePrecisionThousand(marketTicker.tradeFloat.low, undefined, undefined, getMarketPrecision(market), true, {isPrice: true})}</PriceValueStyled>
+                    <PriceValueStyled>{getValuePrecisionThousand(marketTicker?.tradeFloat?.low, undefined, undefined, getMarketPrecision(market), true, {isPrice: true})}</PriceValueStyled>
                 </Grid>
                 <Grid item>
                     <PriceTitleStyled>{t('labelProToolbar24hBaseVol', {symbol: marketTicker.base})}</PriceTitleStyled>

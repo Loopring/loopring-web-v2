@@ -55,7 +55,7 @@ const Footer = withTranslation('layout')(({t}:WithTranslation) => {
                     <Typography style={{fontSize:'9px'}} component={'span'}>All Rights Reversed by Loopring.</Typography>
                 </Typography>
                 <Typography component={'p'}  variant={'body2'} paddingTop={1}  textAlign={'center'}>
-                    <Link target={'_blank'} href={'https://github.com/Loopring/loopring-web-v2/issues/new'}> I need report issue </Link>
+                    <Link target={'_blank'} href={'https://github.com/Loopring/loopring-web-v2/issues/new'}> let me report issue ^. ^</Link>
                 </Typography>
             </Container>
     </FooterDiv>
