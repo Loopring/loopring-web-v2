@@ -12,7 +12,7 @@ export type IdMap = {
 }
 
 export type TokenMapStates<R extends { [ key: string ]: any }> = {
-    coinMap: CoinMap<R> | undefined,
+    coinMap: CoinMap<R>,
     totalCoinMap?: CoinMap<R> | undefined,
     marketArray: string[],
     marketCoins: string[]
