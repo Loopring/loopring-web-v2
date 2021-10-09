@@ -53,6 +53,7 @@ const Footer = withTranslation('layout')(({t}:WithTranslation) => {
                 <Typography component={'p'}  variant={'body2'} paddingY={2} textAlign={'center'}>
                     <Typography style={{fontSize:'9px'}} component={'span'}>Copyright (c) 2017-{new Date().getFullYear()}.</Typography>
                     <Typography style={{fontSize:'9px'}} component={'span'}>All Rights Reversed by Loopring.</Typography>
+
                 </Typography>
             </Container>
     </FooterDiv>
