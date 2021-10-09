@@ -13,7 +13,7 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
 
     const {txs: txTableData, txsTotal, showLoading: showTxsLoading, getUserTxnList} = useGetTxs()
     const {userTrades, getUserTradeList, userTradesTotal, showLoading: showTradeLoading} = useGetTrades()
-    const {ammRecordList, showLoading: ammLoading} = useGetAmmRecord()
+    const {ammRecordList, showLoading: ammLoading, getAmmpoolList} = useGetAmmRecord()
     const {tokenMap, marketMap} = store.getState().tokenMap
 
     const {t} = rest
@@ -38,10 +38,28 @@ const HistoryPanel = withTranslation('common')((rest: WithTranslation<'common'>)
 
     const { etherscanBaseUrl, } = useSystem()
 
+    const handleTabChange = React.useCallback((value: string) => {
+        setCurrentTab(value)
+        if (value === 'transactions') {
+            getUserTxnList({
+                limit: pageSize,
+                types: 'deposit,transfer,offchain_withdrawal',
+            })
+        }
+        if (value === 'trades') {
+            getUserTradeList({
+                limit: pageSize,
+            })
+        }
+        if (value === 'ammRecords') {
+            getAmmpoolList()
+        }
+    }, [getAmmpoolList, getUserTradeList, getUserTxnList, pageSize])
+
     return (
         <StylePaper ref={container}>
             <Box marginTop={2} marginLeft={2}>
-                <Tabs value={currentTab} onChange={(_event, value) => setCurrentTab(value)}
+                <Tabs value={currentTab} onChange={(_event, value) => handleTabChange(value)}
                       aria-label="l2-history-tabs">
                     <Tab label={t('labelLayer2HistoryTransactions')} value="transactions"></Tab>
                     <Tab label={t('labelLayer2HistoryTrades')} value="trades"></Tab>

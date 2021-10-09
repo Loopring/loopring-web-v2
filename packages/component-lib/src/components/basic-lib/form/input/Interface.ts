@@ -53,6 +53,7 @@ export type InputCoinProps<T, R, I> = {
     name?: string,
     isShowCoinInfo?: boolean,
     coinLabelStyle?: React.CSSProperties,
+    coinPrecision?: number,
 }
 export type InputSelectProps<T, I = CoinKey<T>> = {
     // coinMap: CoinMap<R,I extends CoinInfo?CoinInfo:CoinInfo>,

@@ -108,7 +108,7 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
 
     /*** Btn related function ***/
     const swapFunc = React.useCallback(async (event: MouseEvent, isAgree?: boolean) => {
-        let { calcTradeParams, tradeChannel, orderType, totalFee } = pageTradeLite;
+        let {calcTradeParams, tradeChannel, orderType} = pageTradeLite;
         setAlertOpen(false)
         setConfirmOpen(false)
 
@@ -218,6 +218,24 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
                             fee: undefined
                         }
                     })
+                    updatePageTradeLite({
+                        market, calcTradeParams: {
+                            ...calcTradeParams,
+                            takerRate: '',
+                            feeBips: '',
+                            output: '',
+                            sellAmt: '',
+                            buyAmt: '',
+                            amountS: '',
+                            amountBOut: '',
+                            amountBOutWithoutFee: '',
+                            amountBOutSlip: {
+                                minReceived: '',
+                                minReceivedVal: '',
+                            },
+                            priceImpact: '',
+                        }
+                    })
                 }
             } catch (reason) {
                 sdk.dumpError400(reason)
@@ -234,7 +252,7 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
             setIsSwapLoading(false);
         }
 
-    }, [account.readyState, pageTradeLite, tokenMap, tradeData, setIsSwapLoading, setToastOpen, setTradeData])
+    }, [account.readyState, pageTradeLite, tokenMap, tradeData, setIsSwapLoading, setToastOpen, setTradeData, market])
 
     const btnLabelAccountActive = React.useCallback((): string | undefined => {
 
@@ -865,7 +883,7 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
         marketArray,
         onSwapClick,
         swapBtnI18nKey,
-        swapBtnStatus: swapBtnStatus,
+        swapBtnStatus,
         handleSwapPanelEvent,
         should15sRefresh,
         refreshRef,
