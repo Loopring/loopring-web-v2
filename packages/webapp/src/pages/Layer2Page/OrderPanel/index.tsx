@@ -35,6 +35,7 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
 
     React.useEffect(() => {
         if (pageSize) {
+            myLog(66666)
             getOrderList({
                 limit: pageSize,
                 status: tableValue === 0 ? 'processing' : 'processed,failed,cancelled,cancelling,expired'

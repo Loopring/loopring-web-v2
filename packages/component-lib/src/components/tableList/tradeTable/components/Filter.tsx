@@ -67,6 +67,7 @@ export const Filter = withTranslation('tables', {withRef: true})(({
             value: 'Taker'
         },
     ]
+    myLog({marketMap})
 
     const rawPairList = rawData.map(item => `${item.amount.from.key}-${item.amount.to.key}`).filter(o => marketMap[o]).map(market => {
         const formattedMarket = market.split('-')

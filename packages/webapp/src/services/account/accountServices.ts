@@ -10,6 +10,7 @@ import * as sdk from 'loopring-sdk'
 import _ from 'lodash'
 import { unlockAccount } from './unlockAccount';
 import { resetLayer12Data, resetLayer2Data } from './resetAccount';
+// import { sleep } from 'loopring-sdk';
 
 const subject = new Subject<{ status: keyof typeof Commands, data: any, }>();
 

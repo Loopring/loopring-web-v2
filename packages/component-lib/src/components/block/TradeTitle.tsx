@@ -4,7 +4,6 @@ import {
     CoinInfo,
     FloatTag,
     getValuePrecisionThousand,
-    myLog,
     PriceTag,
     TradeFloat
 } from '@loopring-web/common-resources';
