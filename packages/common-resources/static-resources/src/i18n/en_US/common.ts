@@ -372,8 +372,11 @@ export default {
     labelTradeProHideOtherPairs: 'Hide other trading pairs',
     labelCancelAllOrders: 'Confirm cancelling all orders?',
     labelConfirm: 'Confirm',
-    labelSettingFee: 'Query Fee Charge Token list',
-    descriptionSettingFee: 'Query a Token list charge or fee',
-    labelBtnEdit:'Edit'
-
+    labelSettingFee: 'Fee Charge Token Query',
+    descriptionSettingFee: 'Query a Token  charge or fee',
+    labelBtnEdit: 'Edit',
+    labelSettingChargeFeeOrder: 'Query Token charge or fee',
+    desSettingChargeFeeOrder: 'Loopring Layer2 will follow the priority charge or fee',
+    labelReset: 'Reset',
+    labelQueryFeeOK: 'Save',
 }

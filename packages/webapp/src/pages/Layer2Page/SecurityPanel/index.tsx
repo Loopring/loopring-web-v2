@@ -3,7 +3,7 @@ import { Box, Button, Divider, Grid, Typography } from '@mui/material';
 import React from 'react';
 import { Trans, WithTranslation, withTranslation } from 'react-i18next';
 import { useExportAccountInfo, useResetAccount } from './hook';
-import { useOpenModals, useSettings } from '@loopring-web/component-lib';
+import { useOpenModals } from '@loopring-web/component-lib';
 
 const StyledPaper = styled(Grid)`
   width: 100%;
@@ -23,21 +23,21 @@ const StyledDivider = styled(Divider)`
 //   background: var(--color-divide)
 // `
 
-export const SecurityPanel = withTranslation(['common', 'layout'])(({t, i18n, ...rest}: & WithTranslation) => {
+export const SecurityPanel = withTranslation(['common', 'layout'])(({t}: & WithTranslation) => {
 
-    const { resetKeypair, } = useResetAccount()
-    const { setShowFeeSetting } = useOpenModals()
-    const {exportAccInfo, exportAccount} = useExportAccountInfo()
+    const {resetKeypair,} = useResetAccount()
+    const {setShowFeeSetting} = useOpenModals()
+    const {exportAccount} = useExportAccountInfo()
 
     return <StyledPaper container className={'MuiPaper-elevation2'} marginBottom={2}>
         {/*<Typography variant={'h5'} component={'h3'} paddingLeft={2}>{t('labelTitleSecurity')}</Typography>*/}
-        <Grid item xs={12} display={'flex'} flexDirection={'column'}  paddingY={1}>
-            <Box component={'section'} display={'flex'} flexDirection={'column'}  paddingX={4} paddingY={3}>
+        <Grid item xs={12} display={'flex'} flexDirection={'column'} paddingY={1}>
+            <Box component={'section'} display={'flex'} flexDirection={'column'} paddingX={4} paddingY={3}>
                 <Grid container display={'flex'}>
                     <Grid item xs={7}>
                         <Typography variant={'h4'} color={'text.primary'} component={'h4'}
                                     marginBottom={1}>{t('labelTitleResetL2Keypair')}</Typography>
-                        <Typography variant={'body1'} color={'text.secondary'} component={'p'} marginTop={1}>
+                        <Typography variant={'body1'} color={'text.secondary'} component={'p'}>
                             <Trans i18nKey="resetDescription">
                                 Create a new signing key for layer-2 authentication (no backup needed). This will
                                 <Typography component={'span'}>cancel all your pending orders</Typography>.
@@ -83,7 +83,7 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({t, i18n, ..
                     <Grid item xs={7}>
                         <Typography variant={'h4'} color={'text.primary'} component={'h4'}
                                     marginBottom={1}>{t('labelTitleExportAccount')}</Typography>
-                        <Typography variant={'body1'} color={'text.secondary'} component={'p'} marginTop={1}>
+                        <Typography variant={'body1'} color={'text.secondary'} component={'p'}>
                             {t('descriptionExportAccount')}</Typography>
                     </Grid>
                     <Grid item xs={5} display={'flex'} justifyContent={'flex-start'} alignItems={'flex-end'} flexDirection={'column'}>
@@ -97,21 +97,21 @@ export const SecurityPanel = withTranslation(['common', 'layout'])(({t, i18n, ..
                 </Grid>
             </Box>
             <StyledDivider/>
-            <Box component={'section'} display={'flex'} flexDirection={'column'}>
-                <Typography variant={'h4'} color={'text.primary'} component={'h4'} paddingX={4}
-                            marginY={1}>{t('labelSettingFee')}</Typography>
-
+            <Box component={'section'} display={'flex'} flexDirection={'column'} paddingY={3} paddingX={4}>
                 <Grid container display={'flex'} flexDirection={'row'} justifyContent={'stretch'}
-                      alignItems={'flex-start'} paddingX={4} marginBottom={2}>
+                      alignItems={'flex-start'}>
                     <Grid item xs={7} display={'flex'} flexDirection={'column'}>
+                        <Typography variant={'h4'} color={'text.primary'} component={'h4'}
+                                    marginBottom={1}>{t('labelSettingFee')}</Typography>
                         <Typography variant={'body1'} color={'text.secondary'}
                                     component={'p'}>{t('descriptionSettingFee')}</Typography>
                     </Grid>
-                    <Grid item xs={5} display={'flex'} flexDirection={'column'} justifyContent={'space-evenly'}
+                    <Grid item xs={5} display={'flex'} flexDirection={'column'}
+                          justifyContent={'flex-start'}
                           alignItems={'flex-end'} alignSelf={'stretch'}>
                         <Grid item> <Button onClick={() => {
                             // exportAccInfo()
-                            setShowFeeSetting({isShow:true})
+                            setShowFeeSetting({isShow: true})
                         }} variant={'outlined'} size={'medium'}
                                             color={'primary'} disabled={false}>{t('labelBtnEdit')}</Button></Grid>
                     </Grid>
