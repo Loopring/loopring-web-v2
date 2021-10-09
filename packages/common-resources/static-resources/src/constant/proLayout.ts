@@ -23,7 +23,7 @@ const basicLayout = {
         'xlg': [
             {i: 'toolbar', x: 0, y: 0, w: 24, h: 9, minW: 24, minH: 9},
             {i: 'walletInfo', x: 0, y: 10, w: 4, h: 28, minW: 4, minH: 26},
-            {i: 'spot', x: 0, y: 14, w: 4, h: 120, minW: 4, minH: 70},
+            {i: 'spot', x: 0, y: 14, w: 4, h: 115, minW: 4, minH: 70},
             {i: 'market', x: 4, y: 10, w: 4, h: 88, minW: 4, minH: 58},
             {i: 'chart', x: 8, y: 10, w: 12, h: 88, minW: 6, minH: 32},
             {i: 'market2', x: 20, y: 10, w: 4, h: 88, minW: 4, minH: 36},
@@ -32,7 +32,7 @@ const basicLayout = {
         'lg': [
             {i: 'toolbar', x: 0, y: 0, w: 24, h: 9, minW: 24, minH: 9},
             {i: 'walletInfo', x: 0, y: 10, w: 4, h: 28, minW: 4, minH: 26},
-            {i: 'spot', x: 0, y: 26, w: 4, h: 94, minW: 4, minH: 70},
+            {i: 'spot', x: 0, y: 26, w: 4, h: 89, minW: 4, minH: 70},
             {i: 'market', x: 4, y: 10, w: 4, h: 73, minW: 4, minH: 58},
             {i: 'chart', x: 8, y: 10, w: 12, h: 73, minW: 6, minH: 32},
             {i: 'market2', x: 20, y: 10, w: 4, h: 73, minW: 4, minH: 58},
