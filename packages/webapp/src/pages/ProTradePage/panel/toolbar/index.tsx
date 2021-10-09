@@ -2,7 +2,7 @@ import React from 'react';
 import { TFunction, withTranslation } from 'react-i18next';
 import {
     CoinInfo,
-    DropDownIcon,
+    DropDownIcon, EmptyValueTag,
     getValuePrecisionThousand, layoutConfigs,
     MarketType,
     PriceTag,
@@ -19,7 +19,6 @@ import { Currency } from 'loopring-sdk';
 import { Layout, Layouts } from 'react-grid-layout';
 import { useTokenPrices } from 'stores/tokenPrices';
 import { useSystem } from 'stores/system';
-import { useHistory } from 'react-router-dom';
 
 const PriceTitleStyled = styled(Typography)`
   color: var(--color-text-third);
@@ -44,32 +43,44 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
     handleOnMarketChange: (newMarket: MarketType) => void,
     // marketTicker:  MarketBlockProps<C>
 }) => {
-    const {tickerMap, status: tickerStatus} = useTicker();
-    const [,setMarketTicker] = React.useState<MarketBlockProps<C> | undefined>(undefined);
+    //@ts-ignore
+    const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
     const {coinMap, marketArray, marketMap, tokenMap} = useTokenMap();
-    const {pageTradePro: {ticker}} = usePageTradePro()
+    const {tickerMap, status: tickerStatus} = useTicker();
+    const [marketTicker,setMarketTicker] = React.useState<MarketBlockProps<C> & any | undefined>({
+        coinAInfo: coinMap[ coinA ] as CoinInfo<C>,
+        coinBInfo: coinMap[ coinB ] as CoinInfo<C>,
+        tradeFloat: tickerMap[market],
+        // base,
+        // quote,
+        // isRise,
+        // baseVol,
+        // basePriceDollar,
+        // basePriceYuan
+    });
+    // const {pageTradePro: {ticker}} = usePageTradePro()
     const {currency} = useSettings()
     const {forex} = useSystem()
     const {tokenPrices} = useTokenPrices()
 
-    const {
-        change,
-        close,
-        floatTag,
-        high,
-        low,
-        volume: quoteVol,
-        // priceDollar,
-        // priceYuan,
-        __rawTicker__,
-    } = ticker || {} as any
-    const base = __rawTicker__?.base
-    const quote = __rawTicker__?.quote
-    const baseVol = volumeToCount(base, __rawTicker__?.base_token_volume || 0)
-    const isRise = floatTag === 'increase'
+    // const {
+    //     change,
+    //     close,
+    //     floatTag,
+    //     high,
+    //     low,
+    //     volume: quoteVol,
+    //     // priceDollar,
+    //     // priceYuan,
+    //     __rawTicker__,
+    // } = tickerMap[] || {} as any
+    // const base = __rawTicker__?.base
+    // const quote = __rawTicker__?.quote
+    // const baseVol = volumeToCount(base, __rawTicker__?.base_token_volume || 0)
+    // const isRise = floatTag === 'increase'
     const isUSD = currency === Currency.usd
-    const basePriceDollar = tokenPrices ? tokenPrices[base] : 0
-    const basePriceYuan = basePriceDollar * forex
+    // const basePriceDollar = tokenPrices ? tokenPrices[base] : 0
+    // const basePriceYuan = basePriceDollar * forex
 
     const getMarketPrecision = React.useCallback((market: string) => {
         if (marketMap) {
@@ -84,21 +95,34 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
         }
         return undefined
     }, [tokenMap])
-
     // const {pageTradePro,updatePageTradePro} = usePageTradePro()
     React.useEffect(() => {
         if (tickerStatus === SagaStatus.UNSET) {
             setDefaultData();
         }
-    }, [tickerStatus]);
+    }, [tickerStatus,market]);
     const setDefaultData = React.useCallback(() => {
-        if (coinMap && tickerMap) {
-            //@ts-ignore
-            const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
-            setMarketTicker({
-                coinAInfo: coinMap[ coinA ] as CoinInfo<C>,
-                coinBInfo: coinMap[ coinB ] as CoinInfo<C>,
-                tradeFloat: tickerMap[ market as string ]
+        if (coinMap && tickerMap && tickerMap[ market ] && tickerMap[ market ].__rawTicker__) {
+
+            // const [, coinA, coinB] = market.match(/(\w+)-(\w+)/i);
+            const ticker = tickerMap[ market ]
+            const base:string =  ticker.__rawTicker__?.base??'';
+            const quote:string =  ticker.__rawTicker__?.quote??'';
+            const baseVol = volumeToCount(base, ticker.__rawTicker__?.base_token_volume || 0)
+            const isRise = ticker.floatTag === 'increase'
+            const basePriceDollar = tokenPrices ? tokenPrices[base] : 0
+            const basePriceYuan = basePriceDollar * forex
+            setMarketTicker((state: any)=>{
+                return {
+                    ...state,
+                    tradeFloat: ticker,
+                    base,
+                    quote,
+                    isRise,
+                    baseVol,
+                    basePriceDollar,
+                    basePriceYuan
+                }
             })
         }
 
@@ -123,30 +147,31 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
             <Grid container spacing={3} marginLeft={0} display={'flex'} alignItems={'center'}>
                 <Grid item>
                     <Typography fontWeight={500}
-                                color={isRise ? 'var(--color-success)' : 'var(--color-error)'}>{close}</Typography>
-                    <PriceValueStyled>{isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand((isUSD ? basePriceDollar : basePriceYuan), undefined, undefined, undefined, true, {isFait: true})}</PriceValueStyled>
+                                color={marketTicker.isRise ? 'var(--color-success)' : 'var(--color-error)'}>
+                        {marketTicker.tradeFloat.close??EmptyValueTag}</Typography>
+                    <PriceValueStyled>{isUSD ? PriceTag.Dollar : PriceTag.Yuan}{getValuePrecisionThousand((isUSD ? marketTicker.basePriceDollar : marketTicker.basePriceYuan), undefined, undefined, undefined, true, {isFait: true})}</PriceValueStyled>
                 </Grid>
                 <Grid item>
                     <PriceTitleStyled>{t('labelProToolbar24hChange')}</PriceTitleStyled>
-                    <PriceValueStyled color={isRise ? 'var(--color-success)' : 'var(--color-error)'}>
-                        {`${isRise ? '+' : ''} ${getValuePrecisionThousand(change, undefined, undefined, 2, true)}%`}
+                    <PriceValueStyled color={marketTicker.isRise ? 'var(--color-success)' : 'var(--color-error)'}>
+                        {`${marketTicker.isRise ? '+' : ''} ${getValuePrecisionThousand(marketTicker.tradeFloat.change, undefined, undefined, 2, true)}%`}
                     </PriceValueStyled>
                 </Grid>
                 <Grid item>
                     <PriceTitleStyled>{t('labelProToolbar24hHigh')}</PriceTitleStyled>
-                    <PriceValueStyled>{getValuePrecisionThousand(high, undefined, undefined, getMarketPrecision(market), true, {isPrice: true})}</PriceValueStyled>
+                    <PriceValueStyled>{getValuePrecisionThousand(marketTicker.tradeFloat.high, undefined, undefined, getMarketPrecision(market), true, {isPrice: true})}</PriceValueStyled>
                 </Grid>
                 <Grid item>
                     <PriceTitleStyled>{t('labelProToolbar24hLow')}</PriceTitleStyled>
-                    <PriceValueStyled>{getValuePrecisionThousand(low, undefined, undefined, getMarketPrecision(market), true, {isPrice: true})}</PriceValueStyled>
+                    <PriceValueStyled>{getValuePrecisionThousand(marketTicker.tradeFloat.low, undefined, undefined, getMarketPrecision(market), true, {isPrice: true})}</PriceValueStyled>
                 </Grid>
                 <Grid item>
-                    <PriceTitleStyled>{t('labelProToolbar24hBaseVol', {symbol: base})}</PriceTitleStyled>
-                    <PriceValueStyled>{getValuePrecisionThousand(baseVol, undefined, undefined, getTokenPrecision(base), true, {isPrice: true})}</PriceValueStyled>
+                    <PriceTitleStyled>{t('labelProToolbar24hBaseVol', {symbol: marketTicker.base})}</PriceTitleStyled>
+                    <PriceValueStyled>{getValuePrecisionThousand(marketTicker.baseVol, undefined, undefined, getTokenPrecision(marketTicker.base), true, {isPrice: true})}</PriceValueStyled>
                 </Grid>
                 <Grid item>
-                    <PriceTitleStyled>{t('labelProToolbar24hQuoteVol', {symbol: quote})}</PriceTitleStyled>
-                    <PriceValueStyled>{getValuePrecisionThousand(quoteVol, undefined, undefined, getTokenPrecision(quote), true, {isPrice: true})}</PriceValueStyled>
+                    <PriceTitleStyled>{t('labelProToolbar24hQuoteVol', {symbol: marketTicker.quote})}</PriceTitleStyled>
+                    <PriceValueStyled>{getValuePrecisionThousand(marketTicker.quoteVol, undefined, undefined, getTokenPrecision(marketTicker.quote), true, {isPrice: true})}</PriceValueStyled>
                 </Grid>
             </Grid>
         </Box>

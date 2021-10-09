@@ -148,7 +148,7 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
                     },
                     buyToken: {
                         tokenId: buyToken.tokenId,
-                        volume: calcTradeParams.amountBOutSlip.minReceived as string
+                        volume: calcTradeParams.amountBOutSlip?.minReceived as string
                     },
                     allOrNone: false,
                     validUntil: getTimestampDaysLater(__DAYS__),
@@ -221,19 +221,16 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
                     updatePageTradeLite({
                         market, calcTradeParams: {
                             ...calcTradeParams,
-                            takerRate: '',
-                            feeBips: '',
-                            output: '',
-                            sellAmt: '',
-                            buyAmt: '',
-                            amountS: '',
-                            amountBOut: '',
-                            amountBOutWithoutFee: '',
-                            amountBOutSlip: {
-                                minReceived: '',
-                                minReceivedVal: '',
-                            },
-                            priceImpact: '',
+                            // takerRate: undefined,
+                            // feeBips: undefined,
+                            output: undefined,
+                            sellAmt: undefined,
+                            buyAmt: undefined,
+                            amountS: undefined,
+                            amountBOut: undefined,
+                            amountBOutWithoutFee: undefined,
+                            amountBOutSlip: undefined,
+                            priceImpact: undefined,
                         }
                     })
                 }
@@ -274,9 +271,9 @@ export const useSwap = <C extends { [key: string]: any }>({ path }: { path: stri
         let validAmt = !!(calcTradeParams?.amountS && sellMinAmt
             && sdk.toBig(calcTradeParams?.amountS).gte(sdk.toBig(sellMinAmt)));
 
-        const sellExceed = sdk.toBig(sellToken?.orderAmounts?.maximum).lt(calcTradeParams?.amountS)
+        const sellExceed = sdk.toBig(sellToken?.orderAmounts?.maximum).lt(calcTradeParams.amountS??0)
 
-        const buyExceed = sdk.toBig(buyToken?.orderAmounts?.maximum).lt(calcTradeParams?.amountBOutSlip.minReceived)
+        const buyExceed = sdk.toBig(buyToken?.orderAmounts?.maximum).lt(calcTradeParams?.amountBOutSlip?.minReceived??0)
 
         if (sellExceed || buyExceed) {
             validAmt = false
