@@ -13,3 +13,4 @@ export const RowConfig = {
     rowHeight:44,
     rowHeaderHeight:44,
 }
+export const FeeChargeOrderDefault = ['ETH','USDT','LRC','DAI','USDC'];
