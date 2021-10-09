@@ -186,7 +186,7 @@ export const MarketView = withTranslation('common')(({
         }
         close = (close ? close.toFixed(marketMap[ market ].precisionForPrice) : undefined)
         return <Typography color={'var(--color-text-third)'} variant={'body2'} component={'p'} display={'inline-flex'}
-                           textAlign={'center'} alignItems={'center'} onClick={(event: any) => {
+                           textAlign={'center'} alignItems={'baseline'} onClick={(event: any) => {
             priceClick(event, close as any)
         }}>
             {close ? <>
@@ -321,7 +321,7 @@ export const MarketView = withTranslation('common')(({
                             // showTitle={true}
                         />
                         <Box display={'flex'} flexDirection={'column'}
-                             alignItems={'center'}
+                             alignItems={'center'}  justifyContent={'center'}
                              height={24} style={{cursor: 'pointer'}}
                         >
                             {middlePrice}
