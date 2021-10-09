@@ -14,10 +14,10 @@ import { usePageTradePro } from '../../stores/router';
 import { useHistory } from 'react-router-dom';
 
 const MARKET_ROW_LENGTH: number = 8;
-const MARKET_ROW_LENGTH_LG: number = 11;
+// const MARKET_ROW_LENGTH_LG: number = 11;
 
 const MARKET_TRADES_LENGTH: number = 19;
-const MARKET_TRADES_LENGTH_LG: number = 24;
+// const MARKET_TRADES_LENGTH_LG: number = 24;
 export const HeaderHeight = 44;
 
 
@@ -69,7 +69,7 @@ const initBreakPoint = (): BreakPoint => {
     }
 };
 export const OrderbookPage = withTranslation('common')(() => {
-    const {pageTradePro: {depthLevel, depth, depthForCalc},} = usePageTradePro();
+    const {pageTradePro: {depthLevel, depthForCalc},} = usePageTradePro();
     const {market, handleOnMarketChange, resetTradeCalcData} = usePro();
     const {unit} = useTheme();
     const {proLayout, setLayouts} = useSettings();
@@ -180,20 +180,16 @@ export const OrderbookPage = withTranslation('common')(() => {
         if (layoutItem.i === 'market2') {
             onRestMarketTableLength(layoutItem)
         }
-        myLog('currentBreakpoint',configLayout.currentBreakpoint,layout)
+        myLog('currentBreakpoint', configLayout.currentBreakpoint, layout)
         setLayouts({[ configLayout.currentBreakpoint ]: layout})
-
-    }, [configLayout ,setRowLength])
-    const handleLayoutChange = React.useCallback((currentLayout: Layout[], allLayouts?: Layouts, layouts?: Layouts) => {
-        if (layouts) {
-            setLayouts(layouts)
-            setConfigLayout((state: Config) => {
-                return {
-                    ...state,
-                    layouts: layouts,
-                }
-            })
-            history.go(1)
+    }, [configLayout, setRowLength])
+    const handleLayoutChange = React.useCallback((currentLayout: Layout[], allLayouts?: Layouts, defaultlayouts?: Layouts) => {
+        if (defaultlayouts) {
+            setLayouts(defaultlayouts)
+            history.push('/loading')
+            setTimeout(() => {
+                history.go(-1);
+            }, 0)
         } else {
             // if(allLayouts){
             //     myLog('currentLayout',configLayout.currentBreakpoint,currentLayout,allLayouts)
@@ -218,7 +214,8 @@ export const OrderbookPage = withTranslation('common')(() => {
     const ViewList = {
         toolbar: React.useMemo(() => <Toolbar market={market as any}
                                               handleLayoutChange={handleLayoutChange}
-                                              handleOnMarketChange={handleOnMarketChange}/>, [market, handleLayoutChange,handleOnMarketChange]),
+                                              handleOnMarketChange={handleOnMarketChange}/>,
+            [market, handleLayoutChange, handleOnMarketChange]),
         walletInfo: React.useMemo(() => <WalletInfo market={market as any}/>, [market]),
         spot: sportMemo,
         market: React.useMemo(() => <>{depthLevel
@@ -245,7 +242,6 @@ export const OrderbookPage = withTranslation('common')(() => {
             onBreakpointChange={onBreakpointChange}
             onLayoutChange={handleLayoutChange}
             onResizeStop={onResize}
-            // onLayoutChange={()=>{}}
             resizeHandle={<IconButton size={'medium'} style={{position: 'absolute', zIndex: 78, right: 0, bottom: 0}}
                                       className={'resize-holder'}>
                 <ResizeIcon style={{marginRight: `-${unit}px`, marginBottom: `-${unit}px`}}/></IconButton>}
@@ -256,7 +252,7 @@ export const OrderbookPage = withTranslation('common')(() => {
             margin={[unit / 2, unit / 2]}>
             {configLayout.layouts[ configLayout.currentBreakpoint ].map((layout) => {
                 return <BoxStyle key={layout.i} overflow={'hidden'} className={layout.i}
-                                 data-grid={{...layout}}
+                    // data-grid={{...layout}}
                                  component={'section'} position={'relative'}>
                     {ViewList[ layout.i ]}
                     <IconButton size={'medium'} style={{position: 'absolute', zIndex: 78, right: 0, top: 0}}

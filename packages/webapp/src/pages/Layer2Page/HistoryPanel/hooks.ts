@@ -215,9 +215,9 @@ export function useGetTrades() {
         }
     }, [accountId, apiKey, tokenMap])
 
-    React.useEffect(() => {
-        getUserTradeList({})
-    }, [getUserTradeList])
+    // React.useEffect(() => {
+    //     getUserTradeList({})
+    // }, [getUserTradeList])
 
     return {
         userTrades,
@@ -277,12 +277,13 @@ export function useGetAmmRecord() {
         }
     }, [accountId, apiKey, getTokenName])
 
-    React.useEffect(() => {
-        getAmmpoolList()
-    }, [getAmmpoolList])
+    // React.useEffect(() => {
+    //     getAmmpoolList()
+    // }, [getAmmpoolList])
 
     return {
         ammRecordList,
         showLoading,
+        getAmmpoolList,
     }
 }

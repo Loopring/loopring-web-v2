@@ -42,13 +42,7 @@ const OrderPanel = withTranslation('common')((rest: WithTranslation) => {
         }
     }, [pageSize, getOrderList, tableValue])
 
-    // const handleTabChange = React.useCallback((index: 0 | 1) => {
-    //     console.log({pageSize})
-    //     getOrderList({
-    //         limit: pageSize,
-    //         status: index === 0 ? 'processing' : ''
-    //     })
-    // }, [getOrderList, pageSize])
+
 
     const handleChangeIndex = (index: 0 | 1) => {
         clearRawData()

@@ -41,6 +41,8 @@ export type AmmProps<T extends AmmJoinData<C extends IBData<I> ? C : IBData<I>>,
     refreshRef: React.Ref<any>,
     onRefreshData?: () => void,
     accStatus?: AccountStatus,
+    coinAPrecision?: number,
+    coinBPrecision?: number,
 }
     & AmmWithdrawBaseProps<TW, I>
     & AmmDepositBaseProps<T, I>
