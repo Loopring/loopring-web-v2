@@ -372,4 +372,8 @@ export default {
     labelTradeProHideOtherPairs: 'Hide other trading pairs',
     labelCancelAllOrders: 'Confirm cancelling all orders?',
     labelConfirm: 'Confirm',
+    labelSettingFee: 'Query Fee Charge Token list',
+    descriptionSettingFee: 'Query a Token list charge or fee',
+    labelBtnEdit:'Edit'
+
 }
