@@ -3,7 +3,6 @@ import React from 'react'
 import * as sdk from 'loopring-sdk'
 import { IOHLCData } from '@loopring-web/component-lib'
 import { useTokenMap } from 'stores/token'
-import { myLog } from '@loopring-web/common-resources'
 
 export function useKlineChart(market: string | undefined) {
 
@@ -66,8 +65,9 @@ export function useKlineChart(market: string | undefined) {
     }, [market, genCandlestickData])
 
     return {
-        candlestickViewData,
         market,
+        candlestickViewData,
+        setCandlestickViewData,
         genCandlestickData,
     }
 }

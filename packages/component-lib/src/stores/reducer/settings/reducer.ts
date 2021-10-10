@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { PlatFormType, SettingsState } from "./interface";
 import {
+    FeeChargeOrderDefault,
     i18n,
     LanguageKeys,
     layoutConfigs,
@@ -13,7 +14,7 @@ import moment from 'moment';
 import * as imgConfig from '@loopring-web/common-resources/assets/images/coin/loopring.json'
 import { Slice } from '@reduxjs/toolkit/src/createSlice';
 import { Currency } from 'loopring-sdk';
-import { Layout, Layouts } from 'react-grid-layout';
+import { Layouts } from 'react-grid-layout';
 
 const initialState: SettingsState = {
     themeMode: ThemeType.dark, //localStore.getItem('ThemeType')?localStore.getItem('ThemeType') as ThemeKeys :ThemeType.dark,
@@ -23,6 +24,7 @@ const initialState: SettingsState = {
     upColor: UpColor.green,//localStore.getItem('UpColor')?localStore.getItem('UpColor') as keyof typeof UpColor: UpColor.green,
     coinJson: imgConfig.frames,
     slippage: 'N',
+    feeChargeOrder:FeeChargeOrderDefault,
     hideL2Assets: false,
     hideLpToken: false,
     hideSmallBalances: true,
@@ -114,6 +116,9 @@ export const settingsSlice: Slice<SettingsState> = createSlice({
         setHideSmallBalances(state, action: PayloadAction<boolean>) {
             state.hideSmallBalances = action.payload
         },
+        setFeeChargeOrder(state, action: PayloadAction<string[]>){
+            state.feeChargeOrder  =   action.payload
+        } ,
         setLayouts(state, action: PayloadAction<Layouts>) {
             // localStore.setItem('UpColor',action.payload)
             const result: Layouts = {
@@ -176,6 +181,7 @@ export const {
     setUpColor,
     setSlippage,
     setCoinJson,
+    setFeeChargeOrder,
     setHideL2Assets,
     setHideLpToken,
     setHideSmallBalances
