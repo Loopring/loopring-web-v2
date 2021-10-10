@@ -105,7 +105,7 @@ export const ResetWrap = <T extends object>({
             </Typography>
             <Typography component={'p'} variant="body1" color={'var(--color-text-secondary)'}>
                 <Trans i18nKey="resetDescription">
-                    Create a new signing key for layer-2 authentication (no backup needed). This will
+                    Create a new signing key for layer2 authentication (no backup needed). This will
                     <TypographyStrong component={'span'}>cancel all your pending orders</TypographyStrong>.
                 </Trans>
             </Typography>
