@@ -66,8 +66,8 @@ const LogoStyle = styled(Typography)`
     color: var(--color-logo);
     display: block;
     font-size: 1rem;
-    right: -18px;
-    top: 23px;
+    right: -16px;
+    top: 16px;
     font-weight: 200;
   }
 
