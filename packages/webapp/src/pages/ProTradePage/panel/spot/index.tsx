@@ -1,4 +1,4 @@
-import { WithTranslation, withTranslation } from 'react-i18next';
+import { Trans, WithTranslation, withTranslation } from 'react-i18next';
 import React from 'react';
 import {
     AlertImpact,
@@ -6,16 +6,19 @@ import {
     ConfirmImpact,
     LimitTrade,
     MarketTrade,
+    PopoverPure,
     Toast,
     TradeProType
 } from '@loopring-web/component-lib';
 import { TOAST_TIME } from 'defs/common_defs';
-import { getValuePrecisionThousand, MarketType } from '@loopring-web/common-resources';
+import { getValuePrecisionThousand, HelpIcon, MarketType } from '@loopring-web/common-resources';
 import { usePageTradePro } from 'stores/router';
 import { useMarket } from './hookMarket';
 import { useLimit } from './hookLimit';
-import { Box, Divider, Tab, Tabs } from '@mui/material';
+import { Box, Divider, Tab, Tabs, Typography } from '@mui/material';
 import { useTokenMap } from 'stores/token';
+import { bindHover } from 'material-ui-popup-state/es';
+import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 
 // const TabsStyle = styled(Tabs)`
 //   flex: 1;
@@ -75,6 +78,61 @@ export const SpotView = withTranslation('common')(({
     }, [market])
 
     const p = getValuePrecisionThousand(parseFloat(pageTradePro.calcTradeParams?.priceImpact ?? '0') * 100, 2) + '%' as any
+    const popupLimitState = usePopupState({variant: 'popover', popupId: `popupId-limit`});
+    const popupMarketState = usePopupState({variant: 'popover', popupId: `popupId-market`});
+
+    const limitLabel = React.useMemo(() => {
+        return <><Typography display={'inline-flex'} alignItems={'center'}>
+            <Typography component={'span'} marginRight={1}> {t('labelProLimit')} </Typography>
+                <HelpIcon {...bindHover(popupLimitState)} fontSize={'medium'}
+                                          htmlColor={'var(--color-text-third)'}/>
+        </Typography>
+            <PopoverPure
+                className={'arrow-center'}
+                {...bindPopper(popupLimitState)}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+            >
+                <Typography padding={2} component={'p'} variant={'body2'} whiteSpace={'pre-line'} maxWidth={280}>
+                    <Trans i18nKey={'depositLimit'}>
+                        Limit orders set the maximum or minimum price at which you are willing to buy or sell.
+                    </Trans>
+                </Typography>
+            </PopoverPure>
+        </>
+    }, [popupLimitState])
+    const marketLabel = React.useMemo(() => {
+        return <><Typography display={'inline-flex'} alignItems={'center'}>
+            <Typography component={'span'}  marginRight={1}>{t('labelProMarket')}</Typography>
+                <HelpIcon {...bindHover(popupMarketState)} fontSize={'medium'}
+                          htmlColor={'var(--color-text-third)'}/>
+        </Typography>
+            <PopoverPure
+                className={'arrow-center'}
+                {...bindPopper(popupMarketState)}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+            >
+                <Typography padding={2} component={'p'} variant={'body2'} whiteSpace={'pre-line'} maxWidth={280}>
+                    <Trans i18nKey={'depositMarket'}>
+                        Market orders are transactions meant to execute as quickly as possible at the current market price.
+                    </Trans>
+                </Typography>
+            </PopoverPure>
+        </>
+    }, [popupMarketState])
 
     return <>
         <Toast alertText={toastOpen?.content ?? ''} severity={toastOpen?.type ?? 'success'}
@@ -93,10 +151,12 @@ export const SpotView = withTranslation('common')(({
         <Box display={'flex'} flexDirection={'column'} alignItems={'stretch'}>
             <Box component={'header'} width={'100%'}>
                 <Tabs variant={'fullWidth'} value={tabIndex} onChange={onTabChange}>
-                    <Tab value={TabIndex.limit} label={t('labelProLimit')}/>
-                    <Tab value={TabIndex.market} label={t('labelProMarket')}/>
+                    <Tab value={TabIndex.limit} label={limitLabel}/>
+                    <Tab value={TabIndex.market} label={marketLabel}/>
                 </Tabs>
+
             </Box>
+
             <Divider style={{marginTop: '-1px'}}/>
             <Box flex={1} component={'section'}>
                 {tabIndex === TabIndex.limit && <LimitTrade
