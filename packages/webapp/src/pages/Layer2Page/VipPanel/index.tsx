@@ -76,8 +76,6 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
         result()
     },[])
 
-
-
     return <>
         <StylePaper container className={'MuiPaper-elevation2'} padding={4} marginBottom={1}>
             <Grid item xs={12}>
@@ -87,12 +85,14 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
                         <Typography component={'h3'} variant={'h4'} color={'text.secondary'} paddingRight={1}>
                             {t('labelTradeFeeLevel')}
                         </Typography>
+                        {/*{getImagePath}*/}
                         {/*<VipStyled component={'span'} variant={'body2'} > {'VIP 1'} </VipStyled>*/}
                         <Typography variant={'body1'} component={'span'} display={'flex'} flexDirection={'row'}
                                     alignItems={'center'} paddingRight={1}>
-                            <Typography component={'span'} variant={'body2'}>
-                                { level && <img alt="VIP" style={{verticalAlign: 'text-bottom', width: '32px', height: '16px'}}
-                                               src={getImagePath()}/>}
+                            <Typography component={'span'} variant={'body1'}>
+                                {level ?
+                                    <img alt="VIP" style={{verticalAlign: 'text-bottom', width: '32px', height: '16px'}}
+                                         src={getImagePath()}/> : 'Basic'}
                             </Typography>
                         </Typography>
                     </Typography>
@@ -118,7 +118,10 @@ export const VipPanel = withTranslation(['common', 'layout'])(({t}: & WithTransl
             <Grid item xs={12}>
                 <Typography component={'h3'} variant={'h4'} color={'text.secondary'}>Fee List</Typography>
                 <Box marginTop={2} flex={1}>
-                    <VipView rawData={vipTable}/>
+                    {/*<VipView rawData={vipTable}/>*/}
+                    <Typography component={'h6'} variant={'h1'} padding={3} textAlign={'center'}>
+                        Coming soon
+                    </Typography>
                 </Box>
             </Grid>
             {/*<Grid item xs={12} marginTop={2} flex={1}>*/}
