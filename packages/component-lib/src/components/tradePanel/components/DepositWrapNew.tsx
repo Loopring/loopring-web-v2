@@ -6,7 +6,7 @@ import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
 import React, { ChangeEvent } from 'react';
 import { Box, Grid, Typography } from '@mui/material';
 import { PopoverPure } from '../../'
-import { Button, IconClearStyled, TextField, TypographyGood } from '../../../index';
+import { Button, IconClearStyled, TextField } from '../../../index';
 import { DepositViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import * as _ from 'lodash'
@@ -95,12 +95,12 @@ export const DepositWrapNew = <T extends IBData<I>,
                     horizontal: 'center',
                 }}
             >
-                <Box padding={2}>
+                <Typography padding={2} component={'p'} variant={'body2'} whiteSpace={'pre-line'}>
                     <Trans i18nKey={description ? description : 'depositDescription'}>
                         Once your deposit is confirmed on Ethereum, it
                         will be added to your balance within 2 minutes.
                     </Trans>
-                </Box>
+                </Typography>
             </PopoverPure>
         </Grid>
         <Grid item marginTop={2} alignSelf={"stretch"}>

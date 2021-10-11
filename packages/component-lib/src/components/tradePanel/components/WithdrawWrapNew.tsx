@@ -6,7 +6,7 @@ import { FormControlLabel, Grid, Radio, RadioGroup, Typography, Box, IconProps }
 import { CloseIcon, DropDownIcon, globalSetup, IBData, WithdrawTypes, HelpIcon } from '@loopring-web/common-resources';
 import { PopoverPure } from '../..'
 import { TradeBtnStatus } from '../Interface';
-import { Button, IconClearStyled, TextField,TypographyGood, TypographyStrong } from '../../../index';
+import { Button, IconClearStyled, TextField} from '../../../index';
 import { WithdrawViewProps } from './Interface';
 import { BasicACoinTrade } from './BasicACoinTrade';
 import { ToggleButtonGroup } from '../../basic-lib';
@@ -169,11 +169,11 @@ export const WithdrawWrapNew = <T extends IBData<I>,
                     horizontal: 'center',
                 }}
             >
-                <Box padding={2} maxWidth={490}>
+                <Typography padding={2} maxWidth={490} variant={'body2'} whiteSpace={'pre-line'}>
                     <Trans i18nKey="withdrawDescription">
                         Your withdrawal will be processed in the next batch, which usually takes 30 minutes to 2 hours. (There will be a large delay if the Ethereum gas price exceeds 500 GWei.）
                     </Trans>
-                </Box>
+                </Typography>
             </PopoverPure>
         </Grid>
         <Grid item /* marginTop={2} */ alignSelf={"stretch"}>

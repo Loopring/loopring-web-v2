@@ -379,4 +379,6 @@ export default {
     DesSettingChargeFeeOrder: '',
     labelReset: '',
     labelQueryFeeOK: '',
+    depositLimit:'',
+    depositMarket:'',
 }

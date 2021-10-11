@@ -73,7 +73,7 @@ export const DepositWrap = <T extends IBData<I>,
             <Typography component={'h4'} textAlign={'center'} variant={'h3'} marginBottom={2}>
                 {title ? title : t('depositTitle')}
             </Typography>
-            <Typography component={'p'} variant="body1">
+            <Typography component={'p'} variant={'body1'} whiteSpace={'pre-line'}>
                 <Trans i18nKey={description ? description : 'depositDescription'}>
                     Once your deposit is <TypographyGood component={'span'}>confirmed on Ethereum</TypographyGood>, it
                     will be added to your balance within <TypographyGood component={'span'}>2 minutes</TypographyGood>.
