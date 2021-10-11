@@ -373,10 +373,10 @@ export default {
     labelCancelAllOrders: 'Confirm cancelling all orders?',
     labelConfirm: 'Confirm',
     labelSettingFee: 'Fee Charge Token Query',
-    descriptionSettingFee: 'Query a Token  charge or fee',
+    descriptionSettingFee: 'Service charge priority order',
     labelBtnEdit: 'Edit',
-    labelSettingChargeFeeOrder: 'Query Token charge or fee',
-    desSettingChargeFeeOrder: 'Loopring Layer2 will follow the priority charge or fee',
+    labelSettingChargeFeeOrder: 'Service charge priority order',
+    desSettingChargeFeeOrder: 'Loopring Layer2 will follow the priority to charge the service fee',
     labelReset: 'Reset',
     labelQueryFeeOK: 'Save',
 }
