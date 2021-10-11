@@ -26,6 +26,8 @@ export default {
     labelTrades: '交易记录',
     labelHistory: '交易历史',
     labelOrder: '订单记录',
+    labelReward:'',
+    labelRedPock:'红包',
     labelAmmRecords: 'AMM记录',
     labelAmmRecordsDes: '(出金和入金)',
     rewards: '推荐奖励',

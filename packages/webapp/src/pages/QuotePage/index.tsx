@@ -11,7 +11,7 @@ import {
 import { WithTranslation, withTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import * as _ from 'lodash'
- import { RowConfig } from '@loopring-web/common-resources'
+import { RowConfig } from '@loopring-web/common-resources'
 import { Box, Container, Divider, Grid, Tab, Tabs } from '@mui/material'
 import { useQuote } from './hook'
 import { LoopringAPI } from 'api_wrapper'
