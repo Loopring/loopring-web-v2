@@ -2,7 +2,7 @@ import {
     AssetsIcon,
     L2HistoryIcon,
     L2MyLiquidityIcon,
-    L2OrderIcon,
+    L2OrderIcon, RedPockIcon, RewardIcon,
     // RedPockIcon,
     // RewardIcon,
     SecurityIcon,
@@ -140,19 +140,20 @@ export const subMenuLayer2 = {
         label: {
             id: 'order', i18nKey: 'labelOrder'
         }
-    // }, {
-    //     icon: RewardIcon,
-    //     router: {path: '/layer2/rewards'},
-    //     label: {
-    //         id: 'order', i18nKey: 'labelOrder',
-    //     },
-    // }, {
-    //     icon: RedPockIcon,
-    //     router: {path: '/layer2/redPock'},
-    //     label: {
-    //         id: 'order', i18nKey: 'labelOrder',
-    //     },
-    }],
+    }, {
+        icon: RewardIcon,
+        router: {path: '/layer2/rewards'},
+        label: {
+            id: 'reward', i18nKey: 'labelReward',
+        },
+    }, {
+        icon: RedPockIcon,
+        router: {path: '/layer2/redpock'},
+        label: {
+            id: 'redpock', i18nKey: 'labelRedPock',
+        },
+    }
+    ],
     settingGroup: [{
         icon: SecurityIcon,
         router: {path: '/layer2/security'},

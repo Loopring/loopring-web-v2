@@ -3,7 +3,7 @@ import React, { ChangeEvent } from 'react';
 import { Grid, Typography, Box, IconProps } from '@mui/material';
 import { bindHover } from 'material-ui-popup-state/es';
 import { bindPopper, usePopupState } from 'material-ui-popup-state/hooks';
-import { CloseIcon, DropDownIcon, globalSetup, IBData, HelpIcon, getValuePrecisionThousand, myLog } from '@loopring-web/common-resources';
+import { CloseIcon, DropDownIcon, globalSetup, IBData, HelpIcon, getValuePrecisionThousand } from '@loopring-web/common-resources';
 import { Button, IconClearStyled, TextField, TradeBtnStatus } from '../../index';
 import { PopoverPure } from '../../'
 import { TransferViewProps } from './Interface';
@@ -166,13 +166,13 @@ export const TransferWrapNew = <T extends IBData<I>,
                     horizontal: 'center',
                 }}
             >
-                <Box padding={2} maxWidth={450} fontSize={14}>
+                <Typography  padding={2} maxWidth={450} fontSize={14} variant={'body2'} whiteSpace={'pre-line'}>
                     <Trans i18nKey="transferDescription">
                         Transfer to any valid Ethereum addresses instantly. Please make
                         sure the recipient address accepts Loopring
                         layer-2 payments before you proceed.
                     </Trans>
-                </Box>
+                </Typography>
             </PopoverPure>
             {/* <Typography component={'p'} variant="body1">
                 <Trans i18nKey="transferDescription">
