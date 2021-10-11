@@ -15,6 +15,8 @@ import { accountStaticCallBack, btnClickMap, btnLabel } from '../../layouts/conn
 import _ from 'lodash'
 import { SecurityPanel } from './SecurityPanel';
 import { VipPanel } from './VipPanel';
+import { RewardPanel } from './RewardPanel';
+import { RedPockPanel } from './RedPockPanel';
 
 
 export const subMenu = subMenuLayer2
@@ -64,9 +66,34 @@ export const Layer2Page = () => {
         // statusUnset: accountStatusUnset
     } = useAccount();
 
-    const {t} = useTranslation(['common','layout']);
+    const {t} = useTranslation(['common', 'layout']);
     const selected = match?.params.item ?? 'assets';
-    // const {depositProps} = useDeposit()
+    // debugger
+    const layer2Router = React.useMemo(() => {
+        switch (selected) {
+            case 'assets':
+                return <AssetPanel/>
+            case 'my-liquidity' :
+                return <MyLiqudityPanel/>
+            case 'history' :
+                return <HistoryPanel/>
+            case 'order' :
+                return <OrderPanel/>
+            case 'redpock' :
+                return <RedPockPanel/>
+            case 'rewards' :
+                return <RewardPanel/>
+            case 'security' :
+                return <SecurityPanel/>
+            case 'vip' :
+                return <VipPanel/>
+            default:
+                <AssetPanel/>
+
+        }
+
+
+    }, [selected])
 
     const viewTemplate = React.useMemo(() => {
         switch (account.readyState) {
@@ -134,16 +161,7 @@ export const Layer2Page = () => {
                     </Box>
                     <Box minHeight={420} display={'flex'} alignItems={'stretch'} flexDirection={'column'} marginTop={0}
                          flex={1}>
-
-                        {selected === 'assets' && <AssetPanel/>}
-                        {selected === 'my-liquidity' && <MyLiqudityPanel/>}
-                        {selected === 'history' && <HistoryPanel/>}
-                        {/* {selected === 'transactions' && <TxPanel/>}
-                        {selected === 'trades' && <TradePanel/>}
-                        {selected === 'ammRecords' && <AmmPanel/>} */}
-                        {selected === 'order' && <OrderPanel/>}
-                        {selected === 'security' && <SecurityPanel/>}
-                        {selected === 'vip' && <VipPanel/>}
+                        {layer2Router}
 
                     </Box>
                 </>
