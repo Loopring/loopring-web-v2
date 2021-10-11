@@ -17,10 +17,12 @@ const StylePaper = styled(Grid)`
 
 export const RedPockPanel = withTranslation(['common', 'layout'])(({t}: & WithTranslation) => {
 
-    return <StylePaper spacing={2} flex={1} alignItems={'center'} justifyContent={'center'} textAlign={'center'} >
-       <Typography component={'h6'} variant={'h1'} padding={4}>
-           Coming soon
-       </Typography>
+    return <StylePaper spacing={2} flex={1} alignItems={'center'}
+                       justifyContent={'center'} textAlign={'center'} className={'MuiPaper-elevation2'}
+                       marginBottom={2}>
+        <Typography component={'h6'} variant={'h1'} padding={3}>
+            Coming soon
+        </Typography>
         {/*<StylePaper item xs={12}> Developing </StylePaper>*/}
     </StylePaper>
 })
