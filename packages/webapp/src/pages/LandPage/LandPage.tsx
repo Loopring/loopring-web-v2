@@ -5,6 +5,7 @@ import { DropDownIcon, ThemeType } from '@loopring-web/common-resources';
 import { withTranslation } from 'react-i18next';
 import { useTheme } from '@emotion/react';
 import { Card } from './Card';
+import { useHistory } from 'react-router-dom';
 
 
 const HeightConfig = {
@@ -163,7 +164,8 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
     // const value = {}
     const [size, setSize] = React.useState<[number, number]>([1200, 0]);
 
-    const theme = useTheme()
+    const theme = useTheme();
+    const history = useHistory()
     React.useLayoutEffect(() => {
         function updateSize() {
             setSize([1200, window.innerHeight - HeightConfig.headerHeight - HeightConfig.whiteHeight]);
@@ -210,13 +212,13 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                             {t('labelH1Title')}
                         </Typography>
                         <Typography marginTop={10} width={260}>
-                            <Button href={'/trade/lite/LRC-ETH'} fullWidth={true} size={'large'} variant={'contained'}
+                            <Button  onClick={()=>history.push('/layer2')} fullWidth={true} size={'large'} variant={'contained'}
                                     style={{
                                         height: 64,
                                         justifyContent: 'space-around',
                                         borderRadius: '0', textTransform: 'uppercase'
                                     }}>
-                                {t('labelStartTrade')}
+                                {t('labelBtnStart')}
                                 <i><DropDownIcon style={{transform: 'rotate(-90deg) scale(1.5)'}}/></i>
                             </Button>
                         </Typography>
@@ -332,12 +334,18 @@ export const LandPage = withTranslation(['landPage', 'common'])(({t}: any) => {
                             {t('labelSuperpowers')}
                         </Typography>
 
-                        <Typography marginTop={3} width={260} color={'var(--text-third)'}>
+                        <Typography marginTop={3} width={480} color={'var(--text-third)'} >
                             {t('describeSuperpowers')}
                         </Typography>
-                        <Typography marginTop={8} >
-                            <Button variant={'contained'} size={'large'}  style={{textTransform: 'uppercase'}} >
+                        <Typography marginTop={8}  width={260} >
+                            <Button onClick={()=>history.push('/layer2')} fullWidth={true} size={'large'} variant={'contained'}
+                                    style={{
+                                        height: 64,
+                                        justifyContent: 'space-around',
+                                        borderRadius: '0', textTransform: 'uppercase'
+                                    }}>
                                 {t('labelBtnStart')}
+                                <i><DropDownIcon style={{transform: 'rotate(-90deg) scale(1.5)'}}/></i>
                             </Button>
                         </Typography>
 

@@ -12,7 +12,9 @@ export default {
     labelLowCost:'Low Cost',
     labelFastTransfer:'Fast Transfer',
     labelSuperpowers :'Superpowers for DeFi developers.',
-    describeLowCost:'Low Cost',
-    describeFastTransfer:'Fast Transfer',
-    describeSuperpowers :'Superpowers for DeFi developers.',
+    describeSafety:'Roadprint ensures that user\n assets are as secure as\n ethereum\'s main network',
+    describeLowCost:'The cost of a transaction is less than\n 0.001 RMB. For the first time,\n market makers and specialist trading\n houses could be free from the unfair\n conventions and restrictions of centralised trading platforms.',
+    describeFastTransfer:'2,025 transactions per second.\n For the first time, \ndecentralized exchanges could be\n a serious business model.',
+    describeSuperpowers :'Build DApps and tools on the largest crypto project on Ethereum. Get started with quick start guides, protocol documentation, a Javascript SDK, and fully open source code.',
+    labelBtnStart:'Start Layer2'
 }
