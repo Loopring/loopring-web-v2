@@ -35,7 +35,8 @@ const Header = withTranslation('common')(withRouter(({t,location,isHideOnScroll 
                                    headerMenuData={headerMenuData} headerToolBarData={headerToolBarData}
                                       selected={location.pathname === '/' ? headerRoot : location.pathname}></HeaderUI>}
         <Toolbar/>
-        <BottomRule isShow={!confirmation?.confirmed}
+        {/* <BottomRule isShow={!confirmation?.confirmed} */}
+        <BottomRule isShow={false}
                     content={t('labelAgreeLoopringTxt')} btnTxt={t('labelCookiesAgree')}
                     clickToConfirm={() => confirmWrapper()}/>
     </>)
