@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { AppBar, Box, Container, IconButton, Slide, Toolbar, Typography, useScrollTrigger } from '@mui/material';
+import { AppBar, Box, Container, IconButton, Link, Slide, Toolbar, Typography, useScrollTrigger } from '@mui/material';
 import { Link as RouterLink } from "react-router-dom";
 import logoSVG from '@loopring-web/common-resources/assets/svg/logo.svg'
 import { WithTranslation, withTranslation } from 'react-i18next';
@@ -25,12 +25,13 @@ const ToolBarStyled = styled(Toolbar)`
     padding: 0;
   }
 `
-// const StyledDiv = styled.div`
-//   &.item-scrolled .MuiAppBar-root.MuiAppBar-positionFixed {
-//     //background: var(--color-global-bg);
-//     //box-shadow: var(--shadow);
-//   }
-// `
+const LinkStyle = styled(Link)`
+  color: var(--color-text-secondary);
+  //&.item-scrolled .MuiAppBar-root.MuiAppBar-positionFixed {
+  //  //background: var(--color-global-bg);
+  //  //box-shadow: var(--shadow);
+  //}
+` as typeof Link
 const HeaderStyled = styled(AppBar)`
   && {
     z-index: 400;
@@ -57,6 +58,18 @@ const HeaderStyled = styled(AppBar)`
 const LogoStyle = styled(Typography)`
   display: flex;
   align-items: center;
+  position: relative;
+
+  &:after {
+    content: 'beta';
+    position: absolute;
+    color: var(--color-logo);
+    display: block;
+    font-size: 1rem;
+    right: -16px;
+    top: 16px;
+    font-weight: 200;
+  }
 
   a.MuiButtonBase-root {
     height: auto;
@@ -79,6 +92,7 @@ const LogoStyle = styled(Typography)`
       background-color: inherit;
       background: var(--color-logo);
     }
+
   }
 ` as typeof Typography
 
@@ -227,6 +241,13 @@ export const Header = withTranslation(['layout', 'common'], {withRef: true})(Rea
                 </Box>
                 <Box component={'ul'} display="flex" alignItems="center" justifyContent={"flex-end"}
                      color={'textColorSecondary'}>
+                    {/*<Button variant={'text'} size={'small'} to={'https:v1.loopring.io'}>*/}
+                    {/*   <Typography variant={'body1'}>Switch to V1</Typography>*/}
+                    {/*</Button>*/}
+                    <LinkStyle variant={'body2'} href={'https://v1.loopring.io/'}>
+                        Switch to V1
+                        {/*<Typography  color={'text.Secondary'}></Typography>*/}
+                    </LinkStyle>
                     {getMenuButtons({toolbarList: headerToolBarData, i18n, ...rest})}
                 </Box>
             </ToolBarStyled>

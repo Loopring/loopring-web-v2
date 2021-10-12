@@ -28,66 +28,74 @@ const StyleBox = styled(Box)`
 export const RewardPanel = withTranslation(['common', 'layout'])(({t}: & WithTranslation) => {
     const {userRewardsMap} = useUserRewards()
     const {txs: txTableData, txsTotal, showLoading: showTxsLoading, getUserTxnList} = useGetTxs()
-    return   <Grid container spacing={2} >
-        <Grid item xs={12} >
-            <StylePaper paddingY={3}>
-                <Typography paddingX={3} color={'text.secondary'}  variant={'h5'} marginBottom={3}>{t('labelMyRewards')}</Typography>
-                <Typography paddingX={3} component={'p'} display={'inline-flex'}>
-                    Coming soon
-                    {/*<Typography  component={'span'}*/}
-                    {/*             variant={'h1'}>{assetInfo.totalAsset ? getValuePrecisionThousand(assetInfo.totalAsset, 2, 2, 2, true, { floor: true }) : '0.00'}</Typography>*/}
-                    {/*<Typography  component={'span'} color={'text.secondary'}*/}
-                    {/*             variant={'body1'}>*/}
-                    {/*    {t('labelUnVested')}*/}
-                    {/*</Typography>*/}
-                </Typography>
-           </StylePaper>
-        </Grid>
-        <Grid item xs={12} >
-                <Grid container  spacing={2} >
-                    <Grid item xs={6} lg={3}  >
-                        <StyleBox minHeight={80} display={'flex'} alignItems={'center'} padding={3}>
-                            Coming soon
-                        </StyleBox>
-                    </Grid>
-                    <Grid item xs={6} lg={3} >
-                        <StyleBox  minHeight={80} display={'flex'} alignItems={'center'} padding={3}>
-                            Coming soon
-                        </StyleBox>
-                    </Grid>
-                    <Grid item xs={6} lg={3}>
-                        <StyleBox  minHeight={80} display={'flex'} alignItems={'center'} padding={3}>
-                            Coming soon
-                        </StyleBox>
-                    </Grid>
-                    <Grid item xs={6} lg={3} >
-                        <StyleBox  minHeight={80} display={'flex'} alignItems={'center'} padding={3}>
-                            Coming soon
-                        </StyleBox>
-                    </Grid>
-                </Grid>
-        </Grid>
-        <Grid item xs={12} flex={1} >
-            <StyleBox flex={1} paddingY={3} >
-                <Typography paddingX={3} color={'text.secondary'}  variant={'h5'} marginBottom={3}>{t('labelTransactions')}</Typography>
-
-                <TransactionTable    {
-                                         ...{
-                                             etherscanBaseUrl:'',
-                                             rawData: [],
-                                             pagination: {
-                                                 // pageSize: number;
-                                                 // total: number;
-                                                 total:0,
-                                                 pageSize:0
-                                             },
-                                             getTxnList: getUserTxnList,
-                                             // showFilter?: boolean;
-                                             showloading: true
-                                         }
-                                     }
-                />
-            </StyleBox>
-        </Grid>
-    </Grid>
+    return <StylePaper spacing={2} flex={1} alignItems={'center'}
+                       justifyContent={'center'} textAlign={'center'} className={'MuiPaper-elevation2'}
+                       marginBottom={2}>
+        <Typography component={'h6'} variant={'h1'} padding={3}>
+            Coming soon
+        </Typography>
+        {/*<StylePaper item xs={12}> Developing </StylePaper>*/}
+    </StylePaper>
+    //  <Grid container spacing={2} flex={1} >
+    //     <Grid item xs={12} >
+    //         <StylePaper paddingY={3} className={'MuiPaper-elevation2'}>
+    //             <Typography paddingX={3} color={'text.secondary'}  variant={'h5'} marginBottom={3}>{t('labelMyRewards')}</Typography>
+    //             <Typography paddingX={3} component={'p'} display={'inline-flex'} >
+    //                 Coming soon
+    //                 {/*<Typography  component={'span'}*/}
+    //                 {/*             variant={'h1'}>{assetInfo.totalAsset ? getValuePrecisionThousand(assetInfo.totalAsset, 2, 2, 2, true, { floor: true }) : '0.00'}</Typography>*/}
+    //                 {/*<Typography  component={'span'} color={'text.secondary'}*/}
+    //                 {/*             variant={'body1'}>*/}
+    //                 {/*    {t('labelUnVested')}*/}
+    //                 {/*</Typography>*/}
+    //             </Typography>
+    //        </StylePaper>
+    //     </Grid>
+    //     <Grid item xs={12} >
+    //             <Grid container  spacing={2} >
+    //                 <Grid item xs={6} lg={3}  >
+    //                     <StyleBox minHeight={80} display={'flex'} alignItems={'center'} padding={3} className={'MuiPaper-elevation2'}>
+    //                         Coming soon
+    //                     </StyleBox>
+    //                 </Grid>
+    //                 <Grid item xs={6} lg={3} >
+    //                     <StyleBox  minHeight={80} display={'flex'} alignItems={'center'} padding={3} className={'MuiPaper-elevation2'}>
+    //                         Coming soon
+    //                     </StyleBox>
+    //                 </Grid>
+    //                 <Grid item xs={6} lg={3}>
+    //                     <StyleBox  minHeight={80} display={'flex'} alignItems={'center'} padding={3} className={'MuiPaper-elevation2'}>
+    //                         Coming soon
+    //                     </StyleBox>
+    //                 </Grid>
+    //                 <Grid item xs={6} lg={3} >
+    //                     <StyleBox  minHeight={80} display={'flex'} alignItems={'center'} padding={3} className={'MuiPaper-elevation2'}>
+    //                         Coming soon
+    //                     </StyleBox>
+    //                 </Grid>
+    //             </Grid>
+    //     </Grid>
+    //     <Grid item xs={12} flex={1} >
+    //         <StyleBox flex={1} padding={3}  className={'MuiPaper-elevation2'}>
+    //             <Typography paddingX={3} color={'text.secondary'}  variant={'h5'} marginBottom={3}>{t('labelTransactions')}</Typography>
+    //
+    //             <TransactionTable    {
+    //                                      ...{
+    //                                          etherscanBaseUrl:'',
+    //                                          rawData: [],
+    //                                          pagination: {
+    //                                              // pageSize: number;
+    //                                              // total: number;
+    //                                              total:0,
+    //                                              pageSize:0
+    //                                          },
+    //                                          getTxnList: getUserTxnList,
+    //                                          // showFilter?: boolean;
+    //                                          showloading: true
+    //                                      }
+    //                                  }
+    //             />
+    //         </StyleBox>
+    //     </Grid>
+    // </Grid>
 })

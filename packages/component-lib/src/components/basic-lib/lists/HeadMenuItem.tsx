@@ -4,7 +4,7 @@ import { bindHover, bindMenu, usePopupState } from "material-ui-popup-state/hook
 import { BasicHeaderItem, HeadMenuType, MenuItemLink, MenuItemProps } from './Interface'
 import styled from "@emotion/styled";
 import clsx from "clsx";
-import { ammDisableList, DropDownIcon, myLog, orderDisableList } from '@loopring-web/common-resources';
+import { ammDisableList, DropDownIcon, orderDisableList } from '@loopring-web/common-resources';
 import Menu from 'material-ui-popup-state/HoverMenu';
 import React, { ForwardedRef, RefAttributes } from "react";
 import { useHistory } from 'react-router-dom';
