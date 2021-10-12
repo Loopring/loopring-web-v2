@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import {
     setCoinJson,
-    setCurrency,
+    setCurrency, setFeeChargeOrder,
     setHideL2Assets,
     setHideLpToken,
     setHideSmallBalances,
@@ -30,6 +30,7 @@ export function useSettings(): SettingsState & {
     setHideLpToken(value: boolean): void,
     setHideSmallBalances(value: boolean): void,
     setLayouts(value: Layouts): void,
+    setFeeChargeOrder( value:string[]):void,
 } {
     const settings: SettingsState = useSelector((state: any) => state.settings)
     const dispatch = useDispatch();
@@ -46,6 +47,7 @@ export function useSettings(): SettingsState & {
         setHideLpToken: React.useCallback((value: boolean) => dispatch(setHideLpToken(value)), [dispatch]),
         setHideSmallBalances: React.useCallback((value: boolean) => dispatch(setHideSmallBalances(value)), [dispatch]),
         setLayouts: React.useCallback((value: Layouts) => dispatch(setLayouts(value)), [dispatch]),
+        setFeeChargeOrder:React.useCallback((value: string[]) => dispatch(setFeeChargeOrder(value)), [dispatch]),
 
     }
 }

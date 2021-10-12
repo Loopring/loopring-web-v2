@@ -27,7 +27,10 @@ const TableWrapperStyled = styled(Box)`
 
 const TableStyled = styled(Table)`
     &.rdg{
-        height: ${(props: any) =>   {
+        height: ${(props: any) => {
+            if (props.ispro === 'pro') {
+                return '620px';
+            }
             if(props.currentheight && props.currentheight>350) {
                 return props.currentheight+'px';
             }else{
@@ -35,7 +38,7 @@ const TableStyled = styled(Table)`
             }   
         }};
       
-        --template-columns: 240px 220px 100px auto auto auto 132px !important;
+        --template-columns: ${({ispro}: any) => ispro === 'pro' ? '240px 220px 120px' : '240px 220px 100px auto auto auto 132px'} !important;
         .rdg-cell.action{
             display: flex;
             justify-content: center;
@@ -52,7 +55,7 @@ const TableStyled = styled(Table)`
     .textAlignCenter {
         text-align: center;
     }
-`
+` as any
 
 // export type QuoteTableRawDataItem = (string | number | string[] | number[])[]
 export type QuoteTableRawDataItem = {
@@ -95,182 +98,187 @@ type IGetColumnModePros = {
     history: any,
     upColor: 'green' | 'red',
     handleStartClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, isFavourite: boolean, pair: string) => void,
-    favoriteMarket: string[]
+    favoriteMarket: string[];
+    isPro: boolean;
 }
 
 // const getColumnModelQuoteTable = (t: TFunction, history: any): Column<Row, unknown>[] => [
 const getColumnMode = (props: IGetColumnModePros & { currency: Currency }): Column<QuoteTableRawDataItem, unknown>[] => {
-    const {t: {t}, history, upColor, handleStartClick, favoriteMarket, currency} = props
+    const {t: {t}, history, upColor, handleStartClick, favoriteMarket, currency, isPro} = props
     const isUSD = currency === Currency.usd
-    return (
-        [
-            {
-                key: 'pair',
-                name: t('labelQuotaPair'),
-                // sortable: true,
-                // resizable: true,
-                sortable: true,
-                formatter: ({row}) => {
-                    const {coinA, coinB} = row[ 'pair' ]
-                    const pair = `${coinA}-${coinB}`
-                    const isFavourite = favoriteMarket?.includes(pair)
-                    return (
-                        <Box className="rdg-cell-value"
-                            display={'flex'}
-                            alignItems={'center'}
-                            height={'100%'}
+    const basicRender = [
+        {
+            key: 'pair',
+            name: t('labelQuotaPair'),
+            // sortable: true,
+            // resizable: true,
+            sortable: true,
+            formatter: ({row}: any) => {
+                const {coinA, coinB} = row[ 'pair' ]
+                const pair = `${coinA}-${coinB}`
+                const isFavourite = favoriteMarket?.includes(pair)
+                return (
+                    <Box className="rdg-cell-value"
+                        display={'flex'}
+                        alignItems={'center'}
+                        height={'100%'}
+                        >
+                        <Typography  marginRight={1}>
+                            <IconButton style={{color:'var(--color-star)'}} size={'large'} onClick={(e:any) => handleStartClick(e, isFavourite, pair)}>
+                                {isFavourite ? (
+                                    <StarSolidIcon  cursor={'pointer'}/>
+                                ) : (
+                                    <StarHollowIcon cursor={'pointer'}/>
+                                )}
+                            </IconButton>
+                        </Typography>
+                        <Typography component={'span'}>
+                            {coinA}
+                            <Typography
+                                component={'span'}
+                                color={'textSecondary'}
                             >
-                            <Typography  marginRight={1}>
-                                <IconButton style={{color:'var(--color-star)'}} size={'large'} onClick={(e:any) => handleStartClick(e, isFavourite, pair)}>
-                                    {isFavourite ? (
-                                        <StarSolidIcon  cursor={'pointer'}/>
-                                    ) : (
-                                        <StarHollowIcon cursor={'pointer'}/>
-                                    )}
-                                </IconButton>
+                                /{coinB}
                             </Typography>
-                            <Typography component={'span'}>
-                                {coinA}
-                                <Typography
-                                    component={'span'}
-                                    color={'textSecondary'}
-                                >
-                                    / {coinB}
-                                </Typography>
-                            </Typography>
-                        </Box>
-                    )
-                },
+                        </Typography>
+                    </Box>
+                )
             },
-            {
-                key: 'close',
-                name: t('labelQuotaLastPrice'),
-                sortable: true,
-                // resizable: true,
-                formatter: ({row}) => {
-                    const value = row[ 'close' ]
-                    const priceDollar = row['coinAPriceDollar']
-                    const priceYuan = row['coinAPriceYuan']
-                    const precision = row['precision'] || 6
-                    // const [valueFirst, valueLast] = value
-                    // const getRenderValue = (value: number) => {
-                    //     return Number.isFinite(value) ? value.toFixed(2) : EmptyValueTag;
-                    // }
-                    // const RenderValue = styled.span`
-                    // 	color: var(--color-text-secondary)
-                    // `
-                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, undefined, undefined, precision, true, { isPrice: true }) : EmptyValueTag
+        },
+        {
+            key: 'close',
+            name: t('labelQuotaLastPrice'),
+            sortable: true,
+            // resizable: true,
+            formatter: ({row}: any) => {
+                const value = row[ 'close' ]
+                const priceDollar = row['coinAPriceDollar']
+                const priceYuan = row['coinAPriceYuan']
+                const precision = row['precision'] || 6
+                // const [valueFirst, valueLast] = value
+                // const getRenderValue = (value: number) => {
+                //     return Number.isFinite(value) ? value.toFixed(2) : EmptyValueTag;
+                // }
+                // const RenderValue = styled.span`
+                // 	color: var(--color-text-secondary)
+                // `
+                const price = Number.isFinite(value) ? getValuePrecisionThousand(value, undefined, undefined, precision, true, { isPrice: true }) : EmptyValueTag
 
-                    const faitPrice = Number.isFinite(value)
-                        ? isUSD 
-                            ? PriceTag.Dollar + getValuePrecisionThousand(priceDollar, 2, 2, 2, true, {
-                                isFait: true
-                            })
-                            : PriceTag.Yuan + getValuePrecisionThousand(priceYuan, 2, 2, 2, true, {
-                                isFait: true
-                            })
-                        : EmptyValueTag
-                    return (
-                        <div className="rdg-cell-value">
-                            <span>{price}</span>
-                            <Typography color={'var(--color-text-third)'} component={'span'}> / {faitPrice}</Typography>
-                        </div>
-                    )
-                },
+                const faitPrice = Number.isFinite(value)
+                    ? isUSD 
+                        ? PriceTag.Dollar + getValuePrecisionThousand(priceDollar, 2, 2, 2, true, {
+                            isFait: true
+                        })
+                        : PriceTag.Yuan + getValuePrecisionThousand(priceYuan, 2, 2, 2, true, {
+                            isFait: true
+                        })
+                    : EmptyValueTag
+                return (
+                    <div className="rdg-cell-value">
+                        <span>{price}</span>
+                        <Typography color={'var(--color-text-third)'} component={'span'}> / {faitPrice}</Typography>
+                    </div>
+                )
             },
-            {
-                key: 'change',
-                name: t('labelQuota24hChange'),
-                // resizable: true,
-                sortable: true,
-                headerCellClass: 'textAlignRight',
-                formatter: ({row}) => {
-                    const value = row.change
+        },
+        {
+            key: 'change',
+            name: t('labelQuota24hChange'),
+            // resizable: true,
+            sortable: true,
+            headerCellClass: 'textAlignRight',
+            formatter: ({row}: any) => {
+                const value = row.change
 
-                    // const hasValue = Number.isFinite(value)
-                    // const isPositive = value > 0
-                    // const sign = isPositive ? '+' : ''
-                    // const renderValue = hasValue ? `${sign}${value.toFixed(2)}%` : 'N/A%'
-                    return (
-                        <div className="rdg-cell-value textAlignRight">
-                            <QuoteTableChangedCell value={value} upColor={upColor}>
-                                {typeof value !== 'undefined' ? (
-                                    (row.floatTag === FloatTag.increase ? '+' : '') + getValuePrecisionThousand(value, 2, 2, 2, true) + '%') : EmptyValueTag}
-                            </QuoteTableChangedCell>
-                        </div>
-                    )
-                },
+                // const hasValue = Number.isFinite(value)
+                // const isPositive = value > 0
+                // const sign = isPositive ? '+' : ''
+                // const renderValue = hasValue ? `${sign}${value.toFixed(2)}%` : 'N/A%'
+                return (
+                    <div className="rdg-cell-value textAlignRight">
+                        <QuoteTableChangedCell value={value} upColor={upColor}>
+                            {typeof value !== 'undefined' ? (
+                                (row.floatTag === FloatTag.increase ? '+' : '') + getValuePrecisionThousand(value, 2, 2, 2, true) + '%') : EmptyValueTag}
+                        </QuoteTableChangedCell>
+                    </div>
+                )
             },
-            {
-                key: 'high',
-                name: t('labelQuota24hHigh'),
-                headerCellClass: 'textAlignRight',
-                // resizable: true,
-                // sortable: true,
-                formatter: ({row, column}) => {
-                    const value = row[ column.key ]
-                    const precision = row['precision'] || 6
-                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, undefined, undefined, precision, true, {isPrice: true}) : EmptyValueTag
-                    return (
-                        <div className="rdg-cell-value textAlignRight">
-                            <span>{price}</span>
-                        </div>
-                    )
-                },
+        },
+    ]
+    const extraRender = [
+        {
+            key: 'high',
+            name: t('labelQuota24hHigh'),
+            headerCellClass: 'textAlignRight',
+            // resizable: true,
+            // sortable: true,
+            formatter: ({row, column}: any) => {
+                const value = row[ column.key ]
+                const precision = row['precision'] || 6
+                const price = Number.isFinite(value) ? getValuePrecisionThousand(value, undefined, undefined, precision, true, {isPrice: true}) : EmptyValueTag
+                return (
+                    <div className="rdg-cell-value textAlignRight">
+                        <span>{price}</span>
+                    </div>
+                )
             },
-            {
-                key: 'low',
-                name: t('labelQuota24hLow'),
-                headerCellClass: 'textAlignRight',
-                // resizable: true,
-                // sortable: true,
-                formatter: ({row, column}) => {
-                    const value = row[ column.key ]
-                    const precision = row['precision'] || 6
-                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, undefined, undefined, precision, true, {isPrice: true}) : EmptyValueTag
-                    return (
-                        <div className="rdg-cell-value textAlignRight">
-                            <span>{price}</span>
-                        </div>
-                    )
-                },
+        },
+        {
+            key: 'low',
+            name: t('labelQuota24hLow'),
+            headerCellClass: 'textAlignRight',
+            // resizable: true,
+            // sortable: true,
+            formatter: ({row, column}: any) => {
+                const value = row[ column.key ]
+                const precision = row['precision'] || 6
+                const price = Number.isFinite(value) ? getValuePrecisionThousand(value, undefined, undefined, precision, true, {isPrice: true}) : EmptyValueTag
+                return (
+                    <div className="rdg-cell-value textAlignRight">
+                        <span>{price}</span>
+                    </div>
+                )
             },
-            {
-                key: 'volume',
-                name: t('labelQuota24hAmount'),
-                headerCellClass: 'textAlignRight',
-                // resizable: true,
-                sortable: true,
-                formatter: ({row}) => {
-                    const value = row[ 'volume' ]
-                    const precision = row['precision'] || 6
-                    const price = Number.isFinite(value) ? getValuePrecisionThousand(value, precision, undefined, undefined, true, {isTrade: true}) : EmptyValueTag
-                    return (
-                        <div className="rdg-cell-value textAlignRight">
-                            <span>{price}</span>
-                        </div>
-                    )
-                },
+        },
+        {
+            key: 'volume',
+            name: t('labelQuota24hAmount'),
+            headerCellClass: 'textAlignRight',
+            // resizable: true,
+            sortable: true,
+            formatter: ({row}: any) => {
+                const value = row[ 'volume' ]
+                const precision = row['precision'] || 6
+                const price = Number.isFinite(value) ? getValuePrecisionThousand(value, precision, undefined, undefined, true, {isTrade: true}) : EmptyValueTag
+                return (
+                    <div className="rdg-cell-value textAlignRight">
+                        <span>{price}</span>
+                    </div>
+                )
             },
-            {
-                key: 'actions',
-                // resizable: true,
-                headerCellClass: 'textAlignCenter',
-                name: t('labelQuoteAction'),
-                formatter: ({row}) => {
-                    const {coinA, coinB} = row[ 'pair' ]
-                    const tradePair = `${coinA}-${coinB}`
-                    return (
-                        <div className="rdg-cell-value textAlignCenter">
-                            <Button variant="outlined" onClick={() => history.push({
-                                pathname: `/trade/lite/${tradePair}`
-                            })}>{t('labelTrade')}</Button>
-                        </div>
-                    )
-                }
+        },
+        {
+            key: 'actions',
+            // resizable: true,
+            headerCellClass: 'textAlignCenter',
+            name: t('labelQuoteAction'),
+            formatter: ({row}: any) => {
+                const {coinA, coinB} = row[ 'pair' ]
+                const tradePair = `${coinA}-${coinB}`
+                return (
+                    <div className="rdg-cell-value textAlignCenter">
+                        <Button variant="outlined" onClick={() => history.push({
+                            pathname: `/trade/lite/${tradePair}`
+                        })}>{t('labelTrade')}</Button>
+                    </div>
+                )
             }
-        ]
-    )
+        }
+    ]
+    if (isPro) {
+        return [...basicRender]
+    }
+    return [...basicRender, ...extraRender]
 }
 
 export interface QuoteTableProps {
@@ -284,6 +292,7 @@ export interface QuoteTableProps {
     removeFavoriteMarket: (pair: string) => void;
     currentheight?: number;
     showLoading?: boolean;
+    isPro?: boolean;
     // generateColumns: ({
     //                       columnsRaw,
     //                       t,
@@ -309,6 +318,7 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
                                                                     addFavoriteMarket,
                                                                     removeFavoriteMarket,
                                                                     showLoading,
+                                                                    isPro = false,
                                                                     ...rest
                                                                 }: QuoteTableProps & WithTranslation & RouteComponentProps) => {
     //const formattedRawData = rawData && Array.isArray(rawData) ? rawData : []
@@ -332,12 +342,12 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
     const dispatch = useDispatch()
 
     const handleStartClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, isFavourite: boolean, pair: string):void => {
-        // console.log(isFavoourite, pair)
         event.stopPropagation()
         if (isFavourite) {
             dispatch(removeFavoriteMarket(pair))
+        } else {
+            dispatch(addFavoriteMarket(pair))
         }
-        dispatch(addFavoriteMarket(pair))
     }
 
     // const finalData = formattedRawData.map(o => Object.values(o))
@@ -349,7 +359,8 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
             upColor,
             handleStartClick,
             favoriteMarket,
-            currency
+            currency,
+            isPro,
         }),//getColumnModelQuoteTable(t, history),
         generateRows: (rawData: any) => rawData,
         onRowClick: onRowClick,
@@ -455,6 +466,7 @@ export const QuoteTable = withTranslation('tables')(withRouter(({
         <TableWrapperStyled>
             <TableStyled
                 currentheight={currentheight}
+                ispro={isPro ? 'pro' : 'simple'}
                 className={'scrollable'} {...{
                 ...defaultArgs, ...rest,
                 onVisibleRowsChange,

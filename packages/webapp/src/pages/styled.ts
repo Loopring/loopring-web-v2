@@ -37,7 +37,6 @@ export const StylePaper = styled(Box)`
   }
 ` as typeof Box;
 
-
 export const TableWrapStyled = styled(Box)`
  
   &{
@@ -69,6 +68,47 @@ export const TableWrapStyled = styled(Box)`
       background: var(--color-box);
      
 
+    }
+  }
+  
+` as typeof Grid
+
+export const TableProWrapStyled = styled(Box)`
+  &{
+    .toolbar{
+      padding: 0;
+    }
+    background: var(--color-pop-bg);
+    border-radius: ${({theme}) => theme.unit}px;
+    .rdg{
+      .rdg-header-row {
+        border-radius: ${({theme}) => theme.unit}px ${({theme}) => theme.unit}px 0 0;
+        background: var(--color-pop-bg) !important;
+
+        // .rdg-cell:last-of-type {
+        //   padding-right: 0;
+        // }
+      }
+    }
+    // .rdg-row .rdg-cell:last-of-type {
+    //   padding-right: 0 !important;
+    // }
+  }
+  ${({theme}) => TablePaddingX({pLeft: theme.unit * 3, pRight: theme.unit * 3})};
+  &.fixed{
+    position: relative;
+    .toolbar{
+      position: fixed;
+      top: ${LAYOUT.HEADER_HEIGHT}px;
+      @media (min-width: 1200px){
+        max-width: calc(1200px - 48px)
+      }
+
+      max-width: calc(100% - ${({theme}) => 6*theme.unit}px);
+
+      // width: calc(100% - ${({theme}) => 6*theme.unit}px);
+      z-index: 209;
+      background: var(--color-box);
     }
   }
   

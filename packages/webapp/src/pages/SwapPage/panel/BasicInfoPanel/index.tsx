@@ -1,4 +1,4 @@
-import { UpColor } from '@loopring-web/common-resources'
+import { myLog, UpColor } from '@loopring-web/common-resources'
 import { ChartType, ScaleAreaChart, ToggleButtonGroup, TradeTitle, useSettings } from '@loopring-web/component-lib'
 import { Box, Grid } from '@mui/material'
 import { WithTranslation } from 'react-i18next'
@@ -17,7 +17,7 @@ const BasicInfoPanel = ({props, coinAInfo, coinBInfo, tradeFloat, marketArray, t
         originData,
     } = useBasicInfo(props, coinAInfo, coinBInfo, marketArray, t)
     const {upColor} = useSettings();
-    const {tokenMap:{marketMap}} = useTokenMap()
+    const {marketMap} = useTokenMap()
     const baseToken = coinAInfo?.name
     const quoteToken = coinBInfo?.name
     const marketPrecision = marketMap ? marketMap[`${baseToken}-${quoteToken}`].precisionForPrice : 0
