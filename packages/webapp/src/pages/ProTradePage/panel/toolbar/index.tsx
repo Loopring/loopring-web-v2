@@ -251,6 +251,9 @@ export const Toolbar = withTranslation('common')(<C extends { [ key: string ]: a
             <Box display={'flex'} alignItems={'center'} fontSize={'1.6rem'} {...bindTrigger(popState)} onClick={(e: any) => {
                     bindTrigger(popState).onClick(e);
                     setIsDropdownOpen(true);
+                    if (tableTabValue === 'favourite') {
+                        handleTabChange(_, 'favourite');
+                    }
                 }} width={'min-content'} style={{ cursor: 'pointer', whiteSpace: 'nowrap' }}>
                     {market}
                     <DropDownIcon htmlColor={'var(--color-text-third)'} style={{ marginBottom: 2, transform: isDropdownOpen ? 'rotate(0.5turn)' : 'rotate(0)' }} />
