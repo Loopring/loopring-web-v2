@@ -3,14 +3,22 @@ import { WithTranslation } from "react-i18next";
 import React from "react";
 import styled from "@emotion/styled";
 import { CoinItemProps, CoinMenuProps } from "./Interface";
-import { CoinInfo, CoinKey, myLog, WalletCoin } from '@loopring-web/common-resources';
+import { CoinInfo, CoinKey, WalletCoin } from '@loopring-web/common-resources';
 import { Virtuoso } from 'react-virtuoso';
 import { CoinIcon } from '../form';
 
 function _CoinMenu<C, I extends CoinInfo<C>>({
-                                                 coinMap = {}, walletMap = {}, nonZero, sorted, filterBy = (ele, filterString) => {
-        return filterString && filterString.length ? RegExp(filterString).test(ele.simpleName as string) : true
-    }, filterString, handleSelect, allowScroll = true, selected = null,
+                                                 coinMap = {},
+                                                 walletMap = {},
+                                                 nonZero,
+                                                 sorted,
+                                                 filterBy = (ele, filterString) => {
+                                                     return filterString && filterString.length ? RegExp(filterString).test(ele.simpleName as string) : true
+                                                 },
+                                                 filterString,
+                                                 handleSelect,
+                                                 allowScroll = true,
+                                                 selected = null,
                                                  listProps = {},
                                                  height = '100px',
                                                  ...rest
@@ -45,7 +53,7 @@ function _CoinMenu<C, I extends CoinInfo<C>>({
     }, [])
 
     if (sorted) {
-        list.sort(function(a, b) {
+        list.sort(function (a, b) {
             if (a.walletCoin.count && b.walletCoin.count) {
                 return b.walletCoin.count - a.walletCoin.count
             } else if (a.walletCoin.count && !b.walletCoin.count) {
@@ -74,7 +82,7 @@ function _CoinMenu<C, I extends CoinInfo<C>>({
                                                                          select: select,
                                                                          handleListItemClick,
                                                                          itemKey: key as CoinKey<C>, ...rest
-                                                                     }} ></CoinItem>
+                                                                     }} />
 
                                                                  }}
     />
@@ -94,12 +102,15 @@ const StyledCoinItem = styled(ListItem)`
     padding-left: ${({theme}) => theme.unit / 2 * 5}px;
     padding-right: ${({theme}) => theme.unit / 2 * 5}px;
   }
+
   &.Mui-selected, &.Mui-focusVisible {
-    background:var(--color-box-hover);
+    background: var(--color-box-hover);
+
     &:hover {
-      background:var(--color-box-hover);
+      background: var(--color-box-hover);
     }
   }
+
   .MuiListItemIcon-root {
     height: var(--btn-icon-size);
     width: var(--btn-icon-size);
@@ -109,7 +120,6 @@ const StyledCoinItem = styled(ListItem)`
     justify-content: center;
     justify-items: center;
     align-items: center;
-    
     .MuiAvatar-root {
       transform-origin: center;
     }
@@ -145,7 +155,7 @@ export const CoinItem = React.memo(React.forwardRef(<C extends any>({
         onClick={(event: React.MouseEvent) => handleListItemClick(event, itemKey)}
     >
         <ListItemIcon>
-            <CoinIcon symbol={simpleName} size={24} lpSize={24} />
+            <CoinIcon symbol={simpleName} size={24} lpSize={24}/>
             {/*/!*<img src={coinInfo.icon} alt={t(simpleName)}/>*!/*/}
             {/*/!*<Avatar alt={simpleName}*!/*/}
             {/*/!*        src={coinInfo.icon}*!/*/}

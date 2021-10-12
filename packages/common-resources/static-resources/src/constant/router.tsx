@@ -2,11 +2,11 @@ import {
     AssetsIcon,
     L2HistoryIcon,
     L2MyLiquidityIcon,
-    L2OrderIcon,
+    L2OrderIcon, RedPockIcon, RewardIcon,
     // RedPockIcon,
     // RewardIcon,
     SecurityIcon,
-    // VipIcon,
+    VipIcon,
 } from '../svg';
 
 import { HeaderMenuItemInterface, HeaderMenuTabStatus } from '../loopring-interface';
@@ -144,15 +144,16 @@ export const subMenuLayer2 = {
     //     icon: RewardIcon,
     //     router: {path: '/layer2/rewards'},
     //     label: {
-    //         id: 'order', i18nKey: 'labelOrder',
+    //         id: 'reward', i18nKey: 'labelReward',
     //     },
     // }, {
     //     icon: RedPockIcon,
-    //     router: {path: '/layer2/redPock'},
+    //     router: {path: '/layer2/redpock'},
     //     label: {
-    //         id: 'order', i18nKey: 'labelOrder',
+    //         id: 'redpock', i18nKey: 'labelRedPock',
     //     },
-    }],
+    }
+    ],
     settingGroup: [{
         icon: SecurityIcon,
         router: {path: '/layer2/security'},
@@ -160,15 +161,15 @@ export const subMenuLayer2 = {
             id: 'security',
             i18nKey: 'labelSecurity',
         }
-    }], 
-    // {
-    //     icon: VipIcon,
-    //     router: {path: '/layer2/vip'},
-    //     label: {
-    //         id: 'vipPanel',
-    //         i18nKey: 'labelVipPanel',
-    //     },
-    // }]
+    }, 
+    {
+        icon: VipIcon,
+        router: {path: '/layer2/vip'},
+        label: {
+            id: 'vipPanel',
+            i18nKey: 'labelVipPanel',
+        },
+    }]
 }
 
 

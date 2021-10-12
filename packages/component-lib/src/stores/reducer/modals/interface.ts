@@ -25,4 +25,5 @@ export interface ModalState {
     isShowAmm: ModalStatePlayLoad,
     isShowConnect: ModalStatePlayLoad & { step: number },
     isShowAccount: ModalStatePlayLoad & { step: number },
+    isShowFeeSetting: ModalStatePlayLoad,
 }

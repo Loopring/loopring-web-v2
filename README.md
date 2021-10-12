@@ -26,6 +26,6 @@ cd ./packages/webapp
 npm run dev
 ```
 
-## Framwork Design
+##Framwork Design
 
-![](https://raw.githubusercontent.com/Loopring/loopring-web-v2/alpha-v2/docs/Loopring%20framwork.png)
+![](docs/Loopring framwork.png)
