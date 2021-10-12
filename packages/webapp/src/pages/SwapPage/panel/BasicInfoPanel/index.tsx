@@ -20,7 +20,7 @@ const BasicInfoPanel = ({props, coinAInfo, coinBInfo, tradeFloat, marketArray, t
     const {marketMap} = useTokenMap()
     const baseToken = coinAInfo?.name
     const quoteToken = coinBInfo?.name
-    const marketPrecision = marketMap ? marketMap[`${baseToken}-${quoteToken}`].precisionForPrice : 0
+    const marketPrecision = marketMap ? marketMap[`${baseToken}-${quoteToken}`]?.precisionForPrice : 0
 
     // myLog('basicInfo baseToken:', baseToken, ' quoteToken:', quoteToken)
 
